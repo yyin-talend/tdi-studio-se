@@ -1,0 +1,111 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Simple HTML">
+    <meta name="LASTUPDATED" content="10/05/07 18:38:02">
+    <title>Scenario: Iterate on files and merge the content</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tUnite_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tVtigerCRMInput_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp1444387"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<a name="wp1449885"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+Scenario: Iterate on files and merge the content
+</b></font></h3>
+<a name="wp1445425"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The following job iterates on a list of files then merges their  content and diplays the final 2-column content on the console.
+</font></p>
+<a name="wp1444424"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<div align="center"><img src="images/Use_Case_tUnite1.png" border="0" hspace="0" vspace="0"></div><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></p>
+<ul>
+<ul>
+<a name="wp1444441"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click and drop the following components onto the design workspace: <b>tFileList</b>, <b>tFileInputDelimited</b>, <b>tUnite</b> and <b>tLogRow</b>.</font></li>
+<a name="wp1445124"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Connect the <b>tFileList</b> to the <b>tFileInputDelimited</b> using an <b>iterate</b> connection and connect the other component using a <b>row main</b> link.</font></li>
+<a name="wp1444462"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the <b>tFileList</b> <b>Properties</b> view, browse to the directory, where the files to merge are stored.</font></li>
+<a name="wp1444532"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tUnite2.png" border="0" hspace="0" vspace="0"><br>
+
+</font></p>
+<a name="wp1444549"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">As <b>Filemask</b>, type in <code>*.txt</code> as all files to be merged are of this type.</font></li>
+<a name="wp1444599"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The <b>Case Sensitive</b> box is checked by default. No need to uncheck it. </font></li>
+<a name="wp1445247"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The files are pretty basic and contain a list of countries and their respective score.</font></li>
+<a name="wp1445310"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tUnite5.png" border="0" hspace="0" vspace="0"><br>
+
+</font></p>
+<a name="wp1445323"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Select the <b>tFileInputdelimited</b> component, and display this component&#39;s <b>Properties </b>view.</font></li>
+<a name="wp1445313"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In this use case, the input files&#39; connection properties are not centrally stored in the <b>Repository</b>, therefore select <b>Built-In </b>as <b>Property type</b> and set every single field manually.</font></li>
+<a name="wp1445266"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tUnite3.png" border="0" hspace="0" vspace="0"><br>
+
+</font></p>
+<a name="wp1444677"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">To fill in the <b>File Name</b> field, use the <b>Ctrl+Space bar</b> combination to access the variable completion list. To process all files from the directory defined in the <b>tFileList</b>, select <code>$_globals{tFileList_1}{CURRENT_FILEPATH}</code> on the global variable list (in Perl).</font></li>
+<a name="wp1444896"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Keep the default setting for the <b>Row</b> and <b>Field separators</b> as well as the other fields.</font></li>
+<a name="wp1444987"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click the <b>Edit Schema</b> button and set manually the 2-column schema to reflect the input files&#39; content. </font></li>
+<a name="wp1445013"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tUnite4.png" border="0" hspace="0" vspace="0"><br>
+
+</font></p>
+<a name="wp1445030"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">For this example, the 2 columns are <i>Country</i> and <i>Points</i> .They are both <b>nullable</b>. </font></li>
+<a name="wp1445101"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click <b>OK</b> to validate the setting and accept to propagate the schema throughout the job.</font></li>
+<a name="wp1445063"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then select the <b>tUnite</b> component and display the <b>Properties</b> view.  Notice that the output schema strictly reflects the input schema and is read-only. </font></li>
+<a name="wp1445175"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the <b>tLogRow</b> Properties view, check the <b>Print values in cells of the table</b> box to display properly the output values.</font></li>
+<a name="wp1445350"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Save the job and execute it.</font></li>
+<a name="wp1445363"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tUnite6.png" border="0" hspace="0" vspace="0"><br>
+
+</font></p>
+<a name="wp1445379"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The console shows the data from the various files, merged into one single table. This uniformized output can then be aggregated to set 
+</font></p>
+</ul>
+</ul>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tUnite_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tVtigerCRMInput_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

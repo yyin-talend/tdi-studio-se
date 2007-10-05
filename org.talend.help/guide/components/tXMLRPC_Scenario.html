@@ -1,0 +1,97 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Simple HTML">
+    <meta name="LASTUPDATED" content="10/05/07 18:38:02">
+    <title>Scenario: Guessing the State name from an XMLRPC</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tXMLRPC_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tXSDValidator_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp1431541"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<a name="wp1431551"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+Scenario: Guessing the State name from an XMLRPC
+</b></font></h3>
+<a name="wp1445636"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+This scenario describes a two-component job aiming at using a RPC method and displaying the output on the console view.
+</font></p>
+<a name="wp1431891"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<div align="center"><img src="images/Use_Case_tXMLRPC1.png" border="0" hspace="0" vspace="0"></div><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></p>
+<ul>
+<ul>
+<a name="wp1431908"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click and drop the <b>tXMLRPC</b> and a <b>tLogRow</b> components.</font></li>
+<a name="wp1431934"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Set the <b>tXMLRPC</b> properties.</font></li>
+<a name="wp1431953"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tXMLRPC2.png" border="0" hspace="0" vspace="0"><br>
+
+</font></p>
+<a name="wp1431973"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Define the <b>Schema type</b> as<b> Built-in</b> for this use case. </font></li>
+<a name="wp1432003"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Set a single-column schema as the expected output for the called method is only one parameter: <i>StateName</i>. </font></li>
+<a name="wp1432052"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tXMLRPC3.png" border="0" hspace="0" vspace="0"><br>
+
+</font></p>
+<a name="wp1432072"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then set the<b> Server url</b>. For this demo, use: <i>http://phpxmlrpc.sourceforge.net/server.php</i> </font></li>
+<a name="wp1432108"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">No authentication details are required in this use case.</font></li>
+<a name="wp1432123"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The <b>Method</b> to be called is: <i>examples.getStateName</i></font></li>
+<a name="wp1432256"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The <b>return class</b> is not compulsory for this method but might be strictly required for another. Leave the default setting for this use case. </font></li>
+<a name="wp1432266"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then set the input <b>Parameters</b> required by the method called. The <b>Name</b> field is not used in the code but the value should follow the syntax expected by the method. In this example, the Name used is <i>State Nr</i> and the value randomly chosen is <i>42</i>.</font></li>
+<a name="wp1432274"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"> The class has not much impact using this demo method but could have with another method, so leave the default setting.</font></li>
+<a name="wp1432323"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">On the <b>tLogRow</b> component <b>Properties</b> view, check the box: <b>Print schema column name in front of each value</b>.</font></li>
+<a name="wp1432361"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then save the job and execute.</font></li>
+<a name="wp1432376"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tXMLRPC4.png" border="0" hspace="0" vspace="0"><br>
+
+</font></p>
+<a name="wp1432395"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+ <i>South Dakota</i> is the state name found using the <code>GetStateName</code> RPC method  and corresponds the 42nd State of the United States as defined as input parameter.
+</font></p>
+</ul>
+</ul>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tXMLRPC_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tXSDValidator_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

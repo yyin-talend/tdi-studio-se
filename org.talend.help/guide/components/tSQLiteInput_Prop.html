@@ -1,0 +1,201 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Simple HTML">
+    <meta name="LASTUPDATED" content="10/05/07 18:38:02">
+    <title>tSQLiteInput</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tSortRow_Scenario.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tSQLite_Scenario.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp1339517"> </a><h2><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="4"><b>
+tSQLiteInput
+</b></font></h2>
+<a name="wp1407564"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="left"><img src="images/tSQLiteInput.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<a name="wp1449454"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+tSQLiteInput Properties
+</b></font></h3>
+<a name="wp1345031"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<div align="center">
+<table border="1">
+  <caption></caption>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1337376"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Component family</b>
+</font></div>
+</td>
+    <td><a name="wp1337379"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Databases
+</font></div>
+</td>
+    <td><a name="wp1337391"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<img src="images/Full-6-278-070.jpg" height="59" width="112" border="0" hspace="0" vspace="0">
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1337399"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Function</b>
+</font></div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp1337402"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>tSQLiteInput</b> reads a database file and extracts fields based on an SQL query.  As it embeds the SQLite engine, no need of connecting to any database server.
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1337413"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Purpose</b>
+</font></div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp1337436"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>tSQLiteInput</b> executes a DB query with a defined command which must correspond to the schema definition. Then it passes on rows to the next component via a Main row link. 
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1337448"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Properties</b>
+</font></div>
+</td>
+    <td><a name="wp1337455"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Database
+</font></div>
+</td>
+    <td><a name="wp1337458"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Filepath to the SQLite database file.
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1337556"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1337566"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<i>Schema type</i> and <i>Edit Schema</i>
+</font></div>
+</td>
+    <td><a name="wp1337570"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+A schema is a row description, i.e., it defines the number of fields to be processed and passed on to the next component.  The schema is either built-in or remotely stored in the Repository. 
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1337574"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1337577"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1337584"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Built-in</b>: The schema is created and stored locally for this component only. Related topic: <a href="Technical_Process-06.html#wp1014762"><i>Setting a built-in schema</i></a>
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1337592"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1337595"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1337602"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Repository</b>: The schema already  exists and is stored in  the Repository, hence can be reused. Related topic: <a href="Technical_Process-06.html#wp1014787"><i>Setting a repository schema</i></a>
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1338396"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1338399"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<i>Query type</i>
+</font></div>
+</td>
+    <td><a name="wp1338402"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The query can be built-in for a particular job or for commonly used query, it can be stored in the repository to ease the query reuse.
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1337610"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1337617"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<i>Query</i>
+</font></div>
+</td>
+    <td><a name="wp1337620"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+If your query is not stored in the Repository,  type in your DB query  paying particularly attention to properly sequence the fields in order to  match  the schema definition. 
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1337624"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1337631"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<i>Encoding</i>
+</font></div>
+</td>
+    <td><a name="wp1337634"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Select the encoding from the list or select Custom and define it manually. This field is compulsory for DB data handling.
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1337642"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Usage</b>
+</font></div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp1337645"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+This component is standalone as it includes the SQLite engine. This is a startable component that can iniate a data flow processing. 
+</font></div>
+</td>
+</tr>
+</table>
+</div>
+<p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></p>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tSortRow_Scenario.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tSQLite_Scenario.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

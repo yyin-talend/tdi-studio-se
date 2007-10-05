@@ -1,0 +1,167 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Simple HTML">
+    <meta name="LASTUPDATED" content="10/05/07 18:38:02">
+    <title>tReplace</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tPostgresqlRow_Scenario.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tReplace_Scenario.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp1201440"> </a><h2><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="4"><b>
+tReplace
+</b></font></h2>
+<a name="wp1438029"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="left"><img src="images/tReplace.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<a name="wp1449352"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+tReplace Properties
+</b></font></h3>
+<a name="wp1435721"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<div align="center">
+<table border="1">
+  <caption></caption>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1435609"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Component family</b>
+</font></div>
+</td>
+    <td><a name="wp1435611"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Processing
+</font></div>
+</td>
+    <td><a name="wp1435619"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<img src="images/perl_icon.png" border="0" hspace="0" vspace="0">
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1435624"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Function</b>
+</font></div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp1435626"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Carries out a Search &amp; Replace operation in the input columns defined. 
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1435633"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Purpose</b>
+</font></div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp1435635"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Helps to cleanse all files before further processing. 
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1435642"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Properties</b>
+</font></div>
+</td>
+    <td colspan="1" rowspan="3"><a name="wp1435647"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<i>Schema type</i> and <i>Edit Schema</i>
+</font></div>
+</td>
+    <td><a name="wp1435652"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+A schema is a row description, i.e., it defines the number of fields that will be processed and passed on to the next component.  The schema is either built-in or remote in the Repository. <br>Two read-only columns, Value and Match are added  to the output schema automatically. These 
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1435654"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1435661"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Built-in</b>: The schema will be created and stored locally for this component only. Related topic: <a href="Technical_Process-06.html#wp1014762"><i>Setting a built-in schema</i></a>
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1435666"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1435673"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Repository</b>: The schema already  exists and is stored in  the Repository, hence can be reused in various  projects and job designs. Related topic: <a href="Technical_Process-06.html#wp1014787"><i>Setting a repository schema</i></a>
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1435678"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1435682"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<i>Simple Mode <br>Search / Replace</i>
+</font></div>
+</td>
+    <td><a name="wp1435685"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Click Plus to add as many conditions as needed. The conditions are performed one after the other for each row.<br><b>Input column</b>: Select the column of the schema  the search &amp; replace  is to be operated on<br><b>Search</b>: Type in the value to search in the input column<br><b>Replace with</b>: Type in the subsitution value.<br><b>Whole word</b>: Check the box if the searched value is to be considered as whole.<br><b>Case sensitive</b>: Check the box to care about the case.<br>Note that you cannot use regular expression in these columns. 
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1435702"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1435707"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<i>Use advanced mode</i>
+</font></div>
+</td>
+    <td><a name="wp1435709"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Check this box when the operation you want to perform cannot be carried out through the simple mode. In the text field, type in the regular expression as required. 
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1435714"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Usage</b>
+</font></div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp1435716"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+This component is not startable as it requires an input flow. And it requires an output component.
+</font></div>
+</td>
+</tr>
+</table>
+</div>
+<p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></p>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tPostgresqlRow_Scenario.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tReplace_Scenario.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

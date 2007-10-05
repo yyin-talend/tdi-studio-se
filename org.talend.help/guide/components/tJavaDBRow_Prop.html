@@ -1,0 +1,331 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Simple HTML">
+    <meta name="LASTUPDATED" content="10/05/07 18:38:02">
+    <title>tJavaDBRow</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tJavaDBOutput_Scenario.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tJavaDBRow_Scenario.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp1402737"> </a><h2><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="4"><b>
+tJavaDBRow
+</b></font></h2>
+<a name="wp1406186"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="left"><img src="images/tUndefDBSQLRow.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<a name="wp1448587"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+tJavaDBRow properties
+</b></font></h3>
+<a name="wp1403092"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<div align="center">
+<table border="1">
+  <caption></caption>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1402768"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Component family</b>
+</font></div>
+</td>
+    <td><a name="wp1402771"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Databases/JavaDB
+</font></div>
+</td>
+    <td><a name="wp1402783"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<img src="images/java_icon.png" border="0" hspace="0" vspace="0">
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1402791"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Function</b>
+</font></div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp1402798"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>tJavaDBRow</b> is the specific component for this database query. It executes the SQL query stated onto the specified database. The row suffix  means the component implements a flow in the job design although it doesn&#39;t provide output. 
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1402809"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Purpose</b>
+</font></div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp1402816"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Depending on the nature of the query and the database, <b>tJavaDBRow</b> acts on the actual DB structure or on the data (although without handling data). The SQLBuilder tool helps you write easily your SQL statements.
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1402827"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Properties</b>
+</font></div>
+</td>
+    <td><a name="wp1402834"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<i>Property type</i>
+</font></div>
+</td>
+    <td><a name="wp1402837"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Either Built-in or Repository. 
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1402841"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1402844"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1402851"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Built-in</b>: No property data stored centrally.
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1402855"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1402858"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1402865"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Repository</b>: Select the Repository file where Properties are stored. The following fields are pre-filled in using fetched data.
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1406116"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1406123"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<i>Framework</i>
+</font></div>
+</td>
+    <td><a name="wp1406126"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Select your Java database framework on the list
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1406130"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1406137"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<i>Database</i>
+</font></div>
+</td>
+    <td><a name="wp1406140"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Name of the database
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1406144"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1406151"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<i>DB root path</i>
+</font></div>
+</td>
+    <td><a name="wp1406154"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Browse to your database root.
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1402911"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1402918"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<i>Username</i> and <i>Password</i>
+</font></div>
+</td>
+    <td><a name="wp1402925"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+DB user authentication data.
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1402929"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1402939"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<i>Schema type</i> and <i>Edit Schema</i>
+</font></div>
+</td>
+    <td><a name="wp1402943"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+A schema is a row description, i.e., it defines the number of fields to be processed and passed on to the next component.  The schema is either built-in or remotely stored in the Repository. 
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1402947"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1402950"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1402957"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Built-in</b>: The schema is created and stored locally for this component only. Related topic: <a href="Technical_Process-06.html#wp1014762"><i>Setting a built-in schema</i></a>
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1402965"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1402968"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1402975"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Repository</b>: The schema already  exists and is stored in  the Repository, hence can be reused. Related topic: <a href="Technical_Process-06.html#wp1014787"><i>Setting a repository schema</i></a>
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1402983"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1402990"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<i>Query type</i>
+</font></div>
+</td>
+    <td><a name="wp1402993"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Either Built-in or Repository. 
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1402997"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1403000"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1403007"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Built-in</b>: Fill in manually the query statement or build it graphically using SQLBuilder
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1403011"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1403014"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1403021"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Repository</b>: Select the relevant query stored in the Repository. The Query field gets accordingly filled in.
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1403025"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1403032"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<i>Query</i>
+</font></div>
+</td>
+    <td><a name="wp1403035"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Enter your DB query  paying particularly attention to properly sequence the fields in order to  match  the schema definition. 
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1403039"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1403042"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Commit every
+</font></div>
+</td>
+    <td><a name="wp1403045"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Number of rows to be completed before commiting batches of rows together into the DB. This option ensures transaction quality (but not rollback) and above all better performance on executions.
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1403049"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1403056"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<i>Encoding</i>
+</font></div>
+</td>
+    <td><a name="wp1403059"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Select the encoding from the list or select Custom and define it manually. This field is compulsory for DB data handling.
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1403063"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1403070"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<i>Die on error</i>
+</font></div>
+</td>
+    <td><a name="wp1403073"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Uncheck this box to skip the row on error and complete the process for non-error rows. 
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1403081"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Usage</b>
+</font></div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp1403084"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+This component offers the flexibility benefit of the DB query and covers all possibilities of SQL queries.
+</font></div>
+</td>
+</tr>
+</table>
+</div>
+<p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></p>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tJavaDBOutput_Scenario.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tJavaDBRow_Scenario.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

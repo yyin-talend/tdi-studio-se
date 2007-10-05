@@ -1,0 +1,156 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Simple HTML">
+    <meta name="LASTUPDATED" content="10/05/07 18:38:02">
+    <title>Scenario: Tracking changes using Slowly Changing Dimension </title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tMysqlSCD_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tMysqlSP_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp1413804"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<a name="wp1413812"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+Scenario: Tracking changes using Slowly Changing Dimension 
+</b></font></h3>
+<a name="wp1413815"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+This scenario describes a job that tracks changes and updates of a source file and writes the history of changes in an SCD table.
+</font></p>
+<a name="wp1413819"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The source file contains various person profiles including their name, their number of pets and their home city. An id column helps ensuring the unicity of the line. 
+</font></p>
+<a name="wp1413827"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<div align="center"><img src="images/Use_Case_tMysqlSCD1.png" border="0" hspace="0" vspace="0"></div><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></p>
+<ul>
+<ul>
+<a name="wp1413832"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click and drop the following components from the Palette onto the design workspace: <b>tMysqlConnection</b>, <b>tFileInputPositional</b>, <b>tLogRow</b>, <b>tMysqlSCD</b>, <b>tMysqlCommit</b>.</font></li>
+<a name="wp1413863"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Connect first the <b>tFileInputPositional</b>, <b>tLogRow</b>, <b>tMysqlSCD</b> using the <b>Row Main</b> link. This is the main flow of your job.</font></li>
+<a name="wp1413875"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then connect <b>tMysqlConnection</b> to the <b>tFileInputPositional</b> component using a <b>Then Run</b> link.</font></li>
+<a name="wp1413890"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">And connect <b>tMysqlSCD</b> to a <b>tMysqlCommit</b> using a <b>OnOK </b>trigger.</font></li>
+<a name="wp1413893"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">First configure the connection to the SCD table where all changes will be tracked down. The <b>tMysqlConnection</b> component should be used to avoid setting several times the same DB connection when multiple DB components are used.</font></li>
+<a name="wp1413905"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tMysqlSCD2.png" border="0" hspace="0" vspace="0"><br>
+
+</font></p>
+<a name="wp1413916"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">If your database details are stored in the repository, select <b>Repository</b> in the <b>Property type</b> field</font></li>
+<a name="wp1413921"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">And select the relevant repository entry if several databases are stored centrally.</font></li>
+<a name="wp1413929"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then define the <b>tFileInputPositional</b> properties:</font></li>
+<a name="wp1413936"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tMysqlSCD3.png" border="0" hspace="0" vspace="0"><br>
+
+</font></p>
+<a name="wp1413941"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Recall the tFileInputPositional properties from the Repository, else fill in the Built-in settings.</font></li>
+<a name="wp1413947"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In this example, the schema holds four column and follows this pattern: 3,19,11,9 </font></li>
+<a name="wp1413954"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tMysqlSCD4.png" border="0" hspace="0" vspace="0"><br>
+
+</font></p>
+<a name="wp1413962"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then set the <b>tLogRow</b> in order for the content of the varying  input file to display on the console before being processed through the SCD component.</font></li>
+<a name="wp1413969"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In this example, check the <b>Print values in cells of a table</b> box so that the content displays in a table.</font></li>
+<a name="wp1413978"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then set the <b>tMysqlSCD</b> component to track changes in the input file.</font></li>
+<a name="wp1413985"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tMysqlSCD5.png" border="0" hspace="0" vspace="0"><br>
+
+</font></p>
+<a name="wp1413993"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Check the <b>Use an existing connection</b> box to reuse the details defined on the  <b>tMysqlConnection</b> properties.</font></li>
+<a name="wp1414002"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Set the table name to be used to track changes. The SCD-type table must exist.</font></li>
+<a name="wp1414009"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tMysqlSCD8.png" border="0" hspace="0" vspace="0"><br>
+
+</font></p>
+<a name="wp1414014"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Define the table schema. In addition to the flow schema, the SCD schema should include SCD-specific columns to hold  standard log information such as: Start date, End date, Status (Active/Disabled) and Version number. </font></li>
+<a name="wp1414020"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Add these columns to the schema if it does not include them already.</font></li>
+<a name="wp1414027"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tMysqlSCD5.png" border="0" hspace="0" vspace="0"><br>
+
+</font></p>
+<a name="wp1414038"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">On the <b>Source keys</b> table, add at least one column using the <b>plus</b> button and select the relevant column that ensures the unicity of the records. It can be a generated <b>Surrogate Key</b> or  you can use several columns to create a key that will ensure the unicity of each record.</font></li>
+<a name="wp1414045"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then check the <b>Use SCD type 1 fields</b> to set the columns, for which changes will be implemented without being tracked down.</font></li>
+<a name="wp1414054"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tMysqlSCD6.png" border="0" hspace="0" vspace="0"><br>
+
+</font></p>
+<a name="wp1414059"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The SCD type 1 should be used mainly for typos and small mistake corrections, which don&#39;t need to be traced, but should be reflected in the output.</font></li>
+<a name="wp1414067"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click on the <b>Plus</b> button and select the relevant table column name.</font></li>
+<a name="wp1414073"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then check the <b>Use SCD type 2 fields</b> box to set the columns, for which changes will be implemented and tracked down in the SCD table.  </font></li>
+<a name="wp1414082"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tMysqlSCD7.png" border="0" hspace="0" vspace="0"><br>
+
+</font></p>
+<a name="wp1414091"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click the <b>Plus</b> button as many times as required and select the relevant column names.</font></li>
+<a name="wp1414094"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">SCD Type-2 principle lies in the fact that a new record is added to the SCD table when changes are detected on the columns defined. Note that although several changes may be made to the same record on various columns defined as SCD type-2, only one additional line tracks these changes in the SCD table.</font></li>
+<a name="wp1414104"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Define the columns of your table that will hold the <b>Start date </b>and<b> End date</b> values. The End date is null for current records until a change is detected. Then the End date gets filled in and a new record is added with no End date.</font></li>
+<a name="wp1414117"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Check the <b>Log active status</b> box, and select the column that will hold the <b>True</b> or <b>False</b> status. True for the current active record and False for the changed record.</font></li>
+<a name="wp1414128"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Check the <b>Log versions</b> box and select the column that will hold the  <b>Version number </b>value.</font></li>
+<a name="wp1414134"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Check the <b>Debug mode</b> if you wish to trace the SCD tracking steps on the console during the job execution. </font></li>
+<a name="wp1414139"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then select the tMysqlCommit component and select the relevant connection on the list.</font></li>
+<a name="wp1414147"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Press <b>F6 </b>to execute your job.</font></li>
+<a name="wp1414154"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tMysqlSCD9.png" border="0" hspace="0" vspace="0"><br>
+
+</font></p>
+<a name="wp1414157"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The Run Job tab console shows all SCD steps along with the content of the varying input file (first and last on the example only). The SCD table shows the history of changes made to the input file along with the status and version number. 
+</font></p>
+<a name="wp1414165"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tMysqlSCD10.png" border="0" hspace="0" vspace="0"><br>
+
+</font></p>
+<a name="wp1414177"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The <b>End date </b>is <b>Null</b> when the record status is active (current).
+</font></p>
+</ul>
+</ul>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tMysqlSCD_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tMysqlSP_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

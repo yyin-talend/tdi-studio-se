@@ -1,0 +1,124 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Simple HTML">
+    <meta name="LASTUPDATED" content="10/05/07 18:38:02">
+    <title>Scenario: multiple replacements and column filtering</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tReplace_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tRowGenerator_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp1435725"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<a name="wp1438061"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+Scenario: multiple replacements and column filtering
+</b></font></h3>
+<a name="wp1438084"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+This following job (made in Perl) searches and replaces various typos and defects in a csv file then operates a column filtering before producing a new csv file with the final output.
+</font></p>
+<a name="wp1435854"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<div align="center"><img src="images/Use_Case_tReplace1.png" border="0" hspace="0" vspace="0"></div><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></p>
+<ul>
+<ul>
+<a name="wp1435877"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click &amp; drop the following components from the <b>Palette</b>: <b>tFileInputDelimited</b>, <b>tReplace</b>, <b>tFilterColumn</b> and <b>tFileOutputDelimited</b>.</font></li>
+<a name="wp1435926"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Connect the components using<b> Main Row</b> connections via a right-click on each component.</font></li>
+<a name="wp1435955"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Select the <b>tFileInputDelimited</b> component and set the input flow parameters.</font></li>
+<a name="wp1435973"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tReplace2.png" border="0" hspace="0" vspace="0"><br>
+
+</font></p>
+<a name="wp1436342"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The <b>Property type</b> for this scenario is <b>Built-in</b>. Therefore the following fields are to be set manually unlike the Properties stored centrally in the repository, that are retrieved automatically.</font></li>
+<a name="wp1436352"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The <b>File</b> is a simple csv file stored locally. The <b>Row Separator</b> is a carriage return and the <b>Field Separator</b> is a semi-colon. In this example no <b>Header</b>, no <b>Footer</b> and no <b>Limit</b> are to be set.</font></li>
+<a name="wp1436368"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The file contains characters such as: <code>\t, |||, [d]</code> or <code>*d</code> which should not be interpreted as special characters or wild card. </font></li>
+<a name="wp1436379"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tReplace3.png" border="0" hspace="0" vspace="0"><br>
+
+</font></p>
+<a name="wp1436502"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The schema for this file is built in also and made of four columns of various types (string or int). </font></li>
+<a name="wp1436559"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Now select the <b>tReplace</b> component to set the search &amp; replace parameters.</font></li>
+<a name="wp1436583"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tReplace4.png" border="0" hspace="0" vspace="0"><br>
+
+</font></p>
+<a name="wp1436603"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The schema can be synchronized with the incoming flow.</font></li>
+<a name="wp1436622"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Check the <b>Simple mode</b> box as the search parameters can be easily set without requiring the use of regexp. </font></li>
+<a name="wp1436649"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click the plus sign to add some lines to the parameters table. </font></li>
+<a name="wp1436671"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">On the first parameter line, select <i>amount</i> as <b>input column</b>. In the <b>search</b> field look for the decimal <i>dot</i> separator and <b>replace</b> it with a <i>comma</i>, in between single quotes.</font></li>
+<a name="wp1436989"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">On the second parameter line, select <i>str</i> as <b>input column</b>. In the <b>search</b> field, look for <i>stret</i> or <i>streat</i> or <i>stre</i>. Note that these values are separated by a pipe that means <code>or</code> in Perl  language. Replace them by <i>Street</i>. Check the <b>whole word </b>box. </font></li>
+<a name="wp1437178"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">On the third parameter line, select again <i>str</i> as <b>input column</b>, <b>search</b> the pipe character using a backslash in front, to differenciate it from the &quot;or&quot; in Perl language. and replace it with nothing between single quotes (`&#39;).</font></li>
+<a name="wp1437188"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">On the fourth parameter line, select <i>firstname</i> as <b>input column</b>. In the <b>Search </b>field, look for the following characters: <code>[, ], +, *</code>. Note that these values are separated by a pipe that means <code>or</code>  in Perl  language. Replace them with nothing between single quotes (`&#39;).</font></li>
+<a name="wp1437416"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">On the fifth parameter line, select <i>amount</i> as<b> input column</b>. In the Search field, type in the dollar sign between single quotes and In the Replace field, type in the Euro sign.</font></li>
+<a name="wp1437564"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">On the last parameter line, select <i>firstname</i> as <b>input column</b>. Search the string: <code>\t</code>. To differenciate it from the tabulation, add as many backslashes in front of it as there are parsing, in other words, two backlashes are used to avoid misinterpreting and two extra backslashes constitute part of the character being looked for. In total four backslahes including the one in the character it self are being searched. Replace them with nothing between single quotes (`&#39;). And check the <b>whole word </b>box.</font></li>
+<a name="wp1437721"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The advanced mode isn&#39;t used in this scenario. </font></li>
+<a name="wp1437736"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Select the next component in the job, <b>tFilterColumn</b>.</font></li>
+<a name="wp1437753"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tReplace5.png" border="0" hspace="0" vspace="0"><br>
+
+</font></p>
+<a name="wp1437779"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The <b>tFilterColumn</b> component holds a schema editor allowing to build the output schema based on the column names of the input schema. In this use case, change the order of the input schema columns and add 3 new columns, to obtain a schema as follows: <i>empty_field, firstname, name, str, amount, filler1, filler2</i>. </font></li>
+<a name="wp1437864"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click <b>OK </b>to validate.</font></li>
+<a name="wp1437878"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tReplace6.png" border="0" hspace="0" vspace="0"><br>
+
+</font></p>
+<a name="wp1437902"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Set the <b>tFileOutputDelimited</b> properties manually.</font></li>
+<a name="wp1437921"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The schema is built-in for this scenario, and comes from the preceding component in the job.</font></li>
+<a name="wp1437960"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Save the job and execute it.</font></li>
+<a name="wp1437971"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tReplace7.png" border="0" hspace="0" vspace="0"><br>
+
+</font></p>
+<a name="wp1437990"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The first column is empty and the rest of the columns have been cleaned up from the parasitical characters. The street column was moved. And the decimal delimiter has been changed from a dot to a comma, along with the currency sign.
+</font></p>
+</ul>
+</ul>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tReplace_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tRowGenerator_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

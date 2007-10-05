@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Simple HTML">
-    <meta name="LASTUPDATED" content="07/06/07 15:53:51">
+    <meta name="LASTUPDATED" content="10/05/07 18:38:02">
     <title>tUniqRow</title>
   </head>
 
@@ -13,7 +13,7 @@
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a href="tSystem_Scenario.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tUniqRow_Scenario.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+<a href="tTeradataRow_Scenario.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tUniqRow_Scenario.html"><img src="images/snext.gif" border="0" alt="Next"></a>
         </td>
       </tr>
     </table-->
@@ -22,15 +22,18 @@
     <hr align="left"-->
 
     <blockquote>
-<a name="wp1188954"> </a><h2><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="4"><b>
+<a name="wp1393159"> </a><h2><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="4"><b>
 tUniqRow
 </b></font></h2>
-<a name="wp1088519"> </a><div><font color="#2d96db" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
-</b></font></div>
-<div align="left"><img src="images/tUniqueRow.png" border="0" hspace="0" vspace="0"></div><div><font color="#2d96db" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
-tUniqRow properties
-</b></font></div>
-<a name="wp1296120"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1407935"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="left"><img src="images/tUniqueRow.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<a name="wp1449711"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+tUniqRow Properties
+</b></font></h3>
+<a name="wp1449719"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 </font></p>
 <div align="center">
 <table border="1">
@@ -44,7 +47,7 @@ Data Quality
 </font></div>
 </td>
     <td><a name="wp1301238"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-<img src="images/Full-6-158-016.jpg" height="59" width="112" border="0" hspace="0" vspace="0">
+<img src="images/Full-6-316-018.jpg" height="59" width="112" border="0" hspace="0" vspace="0">
 </font></div>
 </td>
 </tr>
@@ -53,7 +56,7 @@ Data Quality
 </font></div>
 </td>
     <td colspan="2" rowspan="1"><a name="wp1076340"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-Compares entries and removes the first encountered duplicate from the input flow.
+Compares entries and removes the first encountered duplicate from the input flow. 
 </font></div>
 </td>
 </tr>
@@ -70,12 +73,20 @@ Ensures data quality of input or output flow in a job.
 <b>Properties</b>
 </font></div>
 </td>
-    <td><a name="wp1076355"> </a><div><div align="center"><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
-Schema type and Edit Schema
-</b></font></div></div>
+    <td><a name="wp1076355"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<i>Schema type</i> and <i>Edit Schema</i>
+</font></div>
 </td>
-    <td><a name="wp1076360"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-A schema is a row description, i.e., it defines the number of fields that will be processed and passed on to the next component.  The schema is either built-in or remote in the Repository. <br>Click Edit Schema to make changes to the schema. Note that if you make changes, the schema automatically becomes built-in.<br>Click Sync columns to retrieve the schema from the previous component connected in the job.
+    <td><a name="wp1360302"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+A schema is a row description, i.e., it defines the number of fields that will be processed and passed on to the next component.  The schema is either built-in or remote in the Repository. <br>Click Edit Schema to make changes to the schema. Note that if you make changes, the schema automatically becomes built-in.<br>Click Sync columns to retrieve the schema from the previous component connected in the job.<br>
+</font></div>
+<a name="wp1360317"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/warning_iconee.gif" align="left" border="0" hspace="0" vspace="0"></table></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<a name="wp1360318"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+If you want the deduplication to be carried out on particular columns, define them on the schema.
 </font></div>
 </td>
 </tr>
@@ -109,9 +120,9 @@ A schema is a row description, i.e., it defines the number of fields that will b
 &#160;
 </font></div>
 </td>
-    <td><a name="wp1076391"> </a><div><div align="center"><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
-Case sensitive
-</b></font></div></div>
+    <td><a name="wp1076391"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<i>Case sensitive</i>
+</font></div>
 </td>
     <td><a name="wp1076393"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 Check the box to consider the lower or upper case.
@@ -160,7 +171,7 @@ n/a
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a href="tSystem_Scenario.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tUniqRow_Scenario.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+<a href="tTeradataRow_Scenario.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tUniqRow_Scenario.html"><img src="images/snext.gif" border="0" alt="Next"></a>
         </td>
       </tr>
     </table-->

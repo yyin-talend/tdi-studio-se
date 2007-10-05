@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Simple HTML">
-    <meta name="LASTUPDATED" content="07/06/07 15:53:51">
+    <meta name="LASTUPDATED" content="10/05/07 18:38:02">
     <title>Scenario: Dynamic context use in MySQL DB insert</title>
   </head>
 
@@ -13,7 +13,7 @@
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a href="tContextLoad_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tAddCRCRow_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+<a href="tContextLoad_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tCreateTable_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
         </td>
       </tr>
     </table-->
@@ -22,20 +22,20 @@
     <hr align="left"-->
 
     <blockquote>
-<a name="wp1355073"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1404584"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 
 </font></div>
-<a name="wp1355081"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+<a name="wp1404591"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
 Scenario: Dynamic context use in MySQL DB insert
 </b></font></h3>
-<dl><a name="wp1355084"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1355084"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 This scenario is made of two subjobs. The first subjob aims at dynamically load the context parameters, and the second subjob uses the loaded context to display the content of a DB table.
-</font></dd>
-</dl><a name="wp1355092"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tContextLoad1.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<a name="wp1355092"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<div align="center"><img src="images/Use_Case_tContextLoad1.png" border="0" hspace="0" vspace="0"></div><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 
-</font></div>
+</font></p>
 <ul>
 <ul>
 <a name="wp1355107"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click and drop a <b>tFilelist</b>, <b>tFileInputDelimited</b>, <b>tContextLoad</b> for the first subjob.</font></li>
@@ -43,15 +43,11 @@ This scenario is made of two subjobs. The first subjob aims at dynamically load 
 <a name="wp1355121"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Connect all the components together.</font></li>
 <a name="wp1355124"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Create as many delimited files as there are different contexts and store them in a specific directory, named <i>Contexts</i>. In this scenario, <i>test.txt</i> contains the local database connection details for testing purpose. And  <i>prod.txt</i> holds the actual production db details.</font></li>
 <a name="wp1355137"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Each file is made of two fields, contain the parameter name and the corresponding value, according to the context.</font></li>
-</ul>
-</ul>
-<a name="wp1355146"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tContextLoad2.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1355146"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tContextLoad2.png" border="0" hspace="0" vspace="0"><br>
 
-</font></div>
-<ul>
-<ul>
+</font></p>
 <a name="wp1355157"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the <b>tFileList</b> component <b>Properties</b> panel, select the directory where both context files, <i>test</i> and <i>prod</i>, are held.</font></li>
 <a name="wp1355176"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the <b>tFileInputDelimited</b> component <b>Properties</b> panel, press <b>Ctrl+Space bar</b> to access the global variable list. Select $_globals{tFileList_1}{CURRENT_FILEPATH} to loop on the context files&#39; directory.</font></li>
 <a name="wp1355188"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Define the schema manually (Built-in). It contains two columns defined as: <i>Key</i> and <i>Value</i>.</font></li>
@@ -59,29 +55,24 @@ This scenario is made of two subjobs. The first subjob aims at dynamically load 
 <a name="wp1355203"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">For this scenario, check the <b>Print operations</b> box in order for the context parameters in use to be displayed on the <b>Run Job </b>panel.  </font></li>
 <a name="wp1355217"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then double-click to open the <b>tMySQLInput</b> component <b>Properties</b>.</font></li>
 <a name="wp1355220"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">For each of the field values being stored in a context file, press F5 and define the user-defined context parameter. For example: The <b>Host</b> field has for value parameter <i>$_context{host}</i>, as the parameter name is <i>host</i> in the context file. Its actual value being <i>talend-dbms</i>.</font></li>
-</ul>
-</ul>
-<a name="wp1355241"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tContextLoad4.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1355241"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tContextLoad4.png" border="0" hspace="0" vspace="0"><br>
 
-</font></div>
-<ul>
-<ul>
+</font></p>
 <a name="wp1355246"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then fill in the Schema information. If you store the schema in the Repository Metadata, then you can retrieve by selecting <b>Repository</b> and the relevant entry in the list.</font></li>
 <a name="wp1355256"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">And type in the SQL <b>Query</b> to be executed on the DB table specified. In this case, a simple select of three columns of the table, which will be displayed on the <b>Run Job</b> tab, through the <b>tLogRow</b> component.</font></li>
 <a name="wp1355271"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Eventually, press <b>F6</b> to run the job.</font></li>
-</ul>
-</ul>
-<a name="wp1355278"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tContextLoad5.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1355278"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tContextLoad5.png" border="0" hspace="0" vspace="0"><br>
 
-</font></div>
-<dl><a name="wp1355283"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<a name="wp1358310"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 The context parameters as well as the select values from the DB table are all displayed on the <b>Run Job </b>view.
-</font></dd>
-</dl>
+</font></p>
+</ul>
+</ul>
     </blockquote>
     <hr>
 
@@ -101,7 +92,7 @@ The context parameters as well as the select values from the DB table are all di
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a href="tContextLoad_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tAddCRCRow_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+<a href="tContextLoad_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tCreateTable_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
         </td>
       </tr>
     </table-->

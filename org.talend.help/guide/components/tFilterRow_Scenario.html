@@ -1,0 +1,103 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Simple HTML">
+    <meta name="LASTUPDATED" content="10/05/07 18:38:02">
+    <title>Scenario: Filtering and searching a list of names</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tFilterRow_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tFirebirdInput_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp1433576"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<a name="wp1433590"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+Scenario: Filtering and searching a list of names
+</b></font></h3>
+<a name="wp1435008"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The following use case filters a list of first names based on the name gender. Then using a regular expression, the first names starting with `rom&#39; are listed.  
+</font></p>
+<a name="wp1433626"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<div align="center"><img src="images/Use_Case_tFilterRow1.png" border="0" hspace="0" vspace="0"></div><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></p>
+<ul>
+<ul>
+<a name="wp1433643"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click and drop a <b>tFileInputDelimited</b>, a <b>tFilterRow</b> and a <b>tLogRow</b> component.</font></li>
+<a name="wp1433674"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">On the <b>tFileInputDelimited</b>, set the file path and separators.</font></li>
+<a name="wp1433688"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tFilterRow2.png" border="0" hspace="0" vspace="0"><br>
+
+</font></p>
+<a name="wp1433708"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The row separator is a carriage return and the field separator is a tabulation.</font></li>
+<a name="wp1434367"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The properties and schema are <b>Built-in</b> for this job. This means, the retrieval information is not stored in the <b>Repository</b>.</font></li>
+<a name="wp1434379"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tFilterRow3.png" border="0" hspace="0" vspace="0"><br>
+
+</font></p>
+<a name="wp1434390"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The schema is made of the following four columns in this example: <b>firstname</b>, <b>gender</b>, <b>language</b>, <b>frequency</b>.</font></li>
+<a name="wp1434515"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then select the <b>Encoding type</b> in the list according to your file.</font></li>
+<a name="wp1434522"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tFilterRow4.png" border="0" hspace="0" vspace="0"><br>
+
+</font></p>
+<a name="wp1434594"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the <b>Conditions</b> table, fill in the filtering parameters based on the <i>gender </i>column. </font></li>
+<a name="wp1434634"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In <b>Function</b>, select <b>value of,</b> as <b>Input column</b>, select <i>gender</i> and as operator, select Equals (Str) as the expected values are of string type.</font></li>
+<a name="wp1434677"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the <b>Value</b> column, type in <i>m</i> between double quotes to filter only the male names.</font></li>
+<a name="wp1434709"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then to implement the search on first names starting with the <i>rom</i> syllable, check the <b>Use advanced mode</b> box and type in the following regular expression (in Perl) that includes the name of the column to be searched: <code>$input_row[firstname] =~ /^rom/</code> </font></li>
+<a name="wp1434771"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">To combine both conditions (simple and advanced), select <b>And</b> as logical operator for this use case.</font></li>
+<a name="wp1434793"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The <b>tLogRow</b> component doesn&#39;t require any particular setting for this example.</font></li>
+<a name="wp1434828"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Save and execute the job.</font></li>
+<a name="wp1434852"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tFilterRow5.png" border="0" hspace="0" vspace="0"><br>
+
+</font></p>
+<a name="wp1434881"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Only the male names starting with the <i>rom</i> syllable are listed on the console.
+</font></p>
+</ul>
+</ul>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tFilterRow_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tFirebirdInput_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

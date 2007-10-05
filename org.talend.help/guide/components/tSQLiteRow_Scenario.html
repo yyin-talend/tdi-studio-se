@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Simple HTML">
-    <meta name="LASTUPDATED" content="07/06/07 15:53:51">
+    <meta name="LASTUPDATED" content="10/05/07 18:38:02">
     <title>Scenario: Updating SQLite rows</title>
   </head>
 
@@ -13,7 +13,7 @@
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a href="tSQLiteRow_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tStatCatcher_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+<a href="tSQLiteRow_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tSSH_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
         </td>
       </tr>
     </table-->
@@ -28,70 +28,53 @@
 <a name="wp1341776"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
 Scenario: Updating SQLite rows
 </b></font></h3>
-<dl><a name="wp1341132"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1341132"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 This scenario describes a job which updates an SQLite database file based on a prepared statement and using a delimited file.
-</font></dd>
-</dl><a name="wp1341795"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tSQLiteRow1.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<a name="wp1341795"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<div align="center"><img src="images/Use_Case_tSQLiteRow1.png" border="0" hspace="0" vspace="0"></div><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 
-</font></div>
+</font></p>
 <ul>
 <ul>
 <a name="wp1341812"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click and drop a <b>tFileInputDelimited</b> and a <b>tSQLiteRow</b> component.</font></li>
 <a name="wp1341836"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">On the <b>tFileInputDelimited</b> <b>Properties </b>panel, browse to the input file that will be used to update rows in the database.</font></li>
-</ul>
-</ul>
-<a name="wp1341922"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tSQLiteRow2.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1341922"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tSQLiteRow2.png" border="0" hspace="0" vspace="0"><br>
 
-</font></div>
-<ul>
-<ul>
+</font></p>
 <a name="wp1341957"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">There is no header nor footer. The Row separator is a carriage return and the field separator is a semi-colon. </font></li>
 <a name="wp1341960"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Edit the schema in case it is not stored in the Repository.</font></li>
-</ul>
-</ul>
-<a name="wp1341985"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tSQLiteRow3.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1341985"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tSQLiteRow3.png" border="0" hspace="0" vspace="0"><br>
 
-</font></div>
-<ul>
-<ul>
+</font></p>
 <a name="wp1342010"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Make sure the length and type are respectively correct and large enough to define the columns.</font></li>
 <a name="wp1342366"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then in the <b>tSQLiteRow</b> <b>Properties</b> panel, set the <b>Database</b> filepath to the file to be updated.</font></li>
-</ul>
-</ul>
-<a name="wp1342409"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tSQLiteRow4.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1342409"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tSQLiteRow4.png" border="0" hspace="0" vspace="0"><br>
 
-</font></div>
-<ul>
-<ul>
+</font></p>
 <a name="wp1342437"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The schema is read-only as it is required to match the input schema.</font></li>
-<a name="wp1342465"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Type in the query or retrieve it from the Repository. In this use case, we updated the <i>type_os</i> for the <i>id</i> defined in the Input flow. The statement is as follows: <code>&#39;Update download set type_os=? where id=?&#39;</code> </font></li>
+<a name="wp1342465"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Type in the query or retrieve it from the Repository. In this use case, we updated the <i>type_os</i> for the <i>id</i> defined in the Input flow. The statement is as follows: &#39;Update download set type_os=? where id=?&#39; </font></li>
 <a name="wp1342512"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then check the <b>Prepared statement</b> box to display the placeholders&#39; parameter table.</font></li>
-</ul>
-</ul>
-<a name="wp1342536"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tSQLiteRow4.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1342536"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tSQLiteRow4.png" border="0" hspace="0" vspace="0"><br>
 
-</font></div>
-<ul>
-<ul>
+</font></p>
 <a name="wp1342563"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the Input parameters table, add as many lines as necessary to cover all placeholders. In this scenario, <i>type_os</i> and <i>id</i> are to be defined.</font></li>
 <a name="wp1342597"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Set the <b>Commit every</b> field and select the <b>Encoding type</b> in the list.</font></li>
 <a name="wp1342619"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Save the job and press <b>F6</b> to run it. </font></li>
-</ul>
-</ul>
-<dl><a name="wp1342642"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1451027"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 The  <i>dowload</i> table from the SQLite database is thus updated with new <i>type_os</i> code according to the delimited input file.
-</font></dd>
-</dl>
+</font></p>
+</ul>
+</ul>
     </blockquote>
     <hr>
 
@@ -111,7 +94,7 @@ The  <i>dowload</i> table from the SQLite database is thus updated with new <i>t
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a href="tSQLiteRow_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tStatCatcher_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+<a href="tSQLiteRow_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tSSH_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
         </td>
       </tr>
     </table-->

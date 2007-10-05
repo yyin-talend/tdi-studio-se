@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Simple HTML">
-    <meta name="LASTUPDATED" content="07/06/07 15:53:51">
+    <meta name="LASTUPDATED" content="10/05/07 18:38:02">
     <title>Scenario: Comparing unzipped files</title>
   </head>
 
@@ -22,67 +22,59 @@
     <hr align="left"-->
 
     <blockquote>
-<a name="wp1321188"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1420436"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 
 </font></div>
-<a name="wp1321200"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+<a name="wp1420443"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
 Scenario: Comparing unzipped files
 </b></font></h3>
-<dl><a name="wp1322249"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1420446"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 This scenario describes a job unarchiving a file and comparing it to a reference file to make sure it didn&#39;t change. The output of the comparison is stored into a delimited file and a message displays in the console.
-</font></dd>
-</dl><a name="wp1321390"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tFileCompare1.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<a name="wp1420454"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<div align="center"><img src="images/Use_Case_tFileCompare1.png" border="0" hspace="0" vspace="0"></div><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 
-</font></div>
+</font></p>
 <ul>
 <ul>
-<a name="wp1321411"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Drag and drop the following components: <b>tFileUnarchive</b>, <b>tFileCompare</b>, and <b>tFileOutputDelimited</b>.</font></li>
-<a name="wp1321449"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Link the <b>tFileUnarchive</b> to the <b>tFileCompare</b> with <b>Iterate</b> connection. </font></li>
-<a name="wp1321496"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Connect the <b>tFileCompare</b> to the output component, using a <b>Main</b> row link.</font></li>
-<a name="wp1321518"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the <b>tFileUnarchive</b> component properties, fill in the path to the archive to unzip.</font></li>
-<a name="wp1321818"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the <b>Extraction Directory </b>field, fill in the destination folder for the unarchived file.</font></li>
-<a name="wp1322567"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the <b>tFileCompare </b>Properties, set the <b>File to compare</b>. Press <i>Ctrl+Space bar</i> to display the list of global variables. Select <i>$_globals{tFileUnarchive_1}{CURRENT_FILEPATH}</i> or <i>&quot;((String)globalMap.get(&quot;tFileUnarchive_1_CURRENT_FILEPATH&quot;))&quot;</i> according to the language  you work with, to fetch the file path from the <b>tFileUnarchive</b> component.</font></li>
-</ul>
-</ul>
-<a name="wp1321929"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tFileCompare2.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1420465"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Drag and drop the following components: <b>tFileUnarchive</b>, <b>tFileCompare</b>, and <b>tFileOutputDelimited</b>.</font></li>
+<a name="wp1420482"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Link the <b>tFileUnarchive</b> to the <b>tFileCompare</b> with <b>Iterate</b> connection. </font></li>
+<a name="wp1420492"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Connect the <b>tFileCompare</b> to the output component, using a <b>Main</b> row link.</font></li>
+<a name="wp1420499"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the <b>tFileUnarchive</b> component properties, fill in the path to the archive to unzip.</font></li>
+<a name="wp1420506"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the <b>Extraction Directory </b>field, fill in the destination folder for the unarchived file.</font></li>
+<a name="wp1420518"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the <b>tFileCompare </b>Properties, set the <b>File to compare</b>. Press <i>Ctrl+Space bar</i> to display the list of global variables. Select <i>$_globals{tFileUnarchive_1}{CURRENT_FILEPATH}</i> or <i>&quot;((String)globalMap.get(&quot;tFileUnarchive_1_CURRENT_FILEPATH&quot;))&quot;</i> according to the language  you work with, to fetch the file path from the <b>tFileUnarchive</b> component.</font></li>
+<a name="wp1420536"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tFileCompare2.png" border="0" hspace="0" vspace="0"><br>
 
-</font></div>
-<ul>
-<ul>
-<a name="wp1322025"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">And set the <b>Reference file</b> to base the comparison on it.</font></li>
-<a name="wp1322040"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the messages fields, set the messages you want to see in case the files differ or in case the files are identical, for example: &#39;[job &#39;.$_globals{job_name}.&#39;] Files differ&#39; if you work with Perl or <i>&quot;[job &quot; + jobName + &quot;] Files differ&quot;</i> if you work in Java.</font></li>
-<a name="wp1322044"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Check the <b>Print to Console</b> box, for the message defined to display at the end of the execution.</font></li>
-<a name="wp1322060"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The schema is read-only and contains standard information data. Click <b>Edit schema</b> to have a look to it.</font></li>
-</ul>
-</ul>
-<a name="wp1322078"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tFileCompare3.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<a name="wp1420545"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">And set the <b>Reference file</b> to base the comparison on it.</font></li>
+<a name="wp1420548"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the messages fields, set the messages you want to see in case the files differ or in case the files are identical, for example: &#39;[job &#39;.$_globals{job_name}.&#39;] Files differ&#39; if you work with Perl or <i>&quot;[job &quot; + jobName + &quot;] Files differ&quot;</i> if you work in Java.</font></li>
+<a name="wp1420558"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Check the <b>Print to Console</b> box, for the message defined to display at the end of the execution.</font></li>
+<a name="wp1420565"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The schema is read-only and contains standard information data. Click <b>Edit schema</b> to have a look to it.</font></li>
+<a name="wp1420574"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tFileCompare3.png" border="0" hspace="0" vspace="0"><br>
 
-</font></div>
-<ul>
-<ul>
-<a name="wp1322107"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then set the output component as usual with semi-colon as data separators.</font></li>
-<a name="wp1322155"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Save your job and press <b>F6</b> to run it.</font></li>
-</ul>
-</ul>
-<a name="wp1322178"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tFileCompare4.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<a name="wp1420580"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then set the output component as usual with semi-colon as data separators.</font></li>
+<a name="wp1420588"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Save your job and press <b>F6</b> to run it.</font></li>
+<a name="wp1420595"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tFileCompare4.png" border="0" hspace="0" vspace="0"><br>
 
-</font></div>
-<dl><a name="wp1323131"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<a name="wp1420599"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 The message set is displayed to the console and the output shows the schema information data.
-</font></dd>
-</dl><a name="wp1323140"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tFileCompare5.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<a name="wp1420608"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tFileCompare5.png" border="0" hspace="0" vspace="0"><br>
 
-</font></div>
+</font></p>
+</ul>
+</ul>
     </blockquote>
     <hr>
 

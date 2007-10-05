@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Simple HTML">
-    <meta name="LASTUPDATED" content="07/06/07 15:53:51">
+    <meta name="LASTUPDATED" content="10/05/07 18:38:02">
     <title>Scenario: Extracting account data from SugarCRM</title>
   </head>
 
@@ -28,54 +28,45 @@
 <a name="wp1308593"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
 Scenario: Extracting account data from SugarCRM
 </b></font></h3>
-<dl><a name="wp1308621"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1308621"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 This scenario describes a two-component job which aims at extracting account information from a SugarCRM database to an Excel output file.
-</font></dd>
-</dl><a name="wp1308638"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tSugarCRMInput1.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<a name="wp1308638"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<div align="center"><img src="images/Use_Case_tSugarCRMInput1.png" border="0" hspace="0" vspace="0"></div><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 
-</font></div>
+</font></p>
 <ul>
 <ul>
 <a name="wp1308656"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click and drop a <b>tSugarCRMInput</b> and a <b>tFileOutputExcel</b> component.</font></li>
 <a name="wp1319524"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Connect the input component to the output component using a main row link.</font></li>
 <a name="wp1309528"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">On the <b>tSugarCRMInput</b> Properties panel, fill in the connection information in the SugarCRM Web Service URL as well as the <b>Username</b> and <b>Password</b> fields</font></li>
 <a name="wp1309549"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then select the <b>Module</b> in the list of modules offered. In this example, <i>Accounts</i> is selected.</font></li>
-</ul>
-</ul>
-<a name="wp1309709"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tSugarCRMInput2.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1309709"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tSugarCRMInput2.png" border="0" hspace="0" vspace="0"><br>
 
-</font></div>
-<ul>
-<ul>
+</font></p>
 <a name="wp1309719"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The <b>Schema</b> is then automatically set according to the module selected. But you can change it and remove the columns that you don&#39;t require in the output. </font></li>
-<a name="wp1309712"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the <b>Query Condition</b> field, type in the query you want to extract from the CRM. In this example: <code>&quot;billing_address_city=&#39;Sunnyvale&#39;&quot;</code></font></li>
+<a name="wp1309712"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the <b>Query Condition</b> field, type in the query you want to extract from the CRM. In this example: &quot;billing_address_city=&#39;Sunnyvale&#39;&quot;</font></li>
 <a name="wp1309696"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then select the <b>tFileOutputExcel</b> component, .</font></li>
-</ul>
-</ul>
-<a name="wp1319571"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tSugarCRMInput3.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1319571"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tSugarCRMInput3.png" border="0" hspace="0" vspace="0"><br>
 
-</font></div>
-<ul>
-<ul>
+</font></p>
 <a name="wp1319588"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Set the destination file name as well as the <b>Sheet</b> name and check the <b>Include header</b> box.</font></li>
 <a name="wp1319635"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Save the job and press F6 to run it.</font></li>
-</ul>
-</ul>
-<a name="wp1319725"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tSugarCRMInput4.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1319725"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tSugarCRMInput4.png" border="0" hspace="0" vspace="0"><br>
 
-</font></div>
-<dl><a name="wp1319750"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<a name="wp1319750"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 The filtered data is output in the defined spreadsheet of the specified Excel type file.
-</font></dd>
-</dl>
+</font></p>
+</ul>
+</ul>
     </blockquote>
     <hr>
 

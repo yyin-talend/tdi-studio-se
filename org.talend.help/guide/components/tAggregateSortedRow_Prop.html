@@ -1,0 +1,249 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Simple HTML">
+    <meta name="LASTUPDATED" content="10/05/07 18:38:02">
+    <title>tAggregateSortedRow</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tAggregateRow_scenario.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tAggregateSortedRow_Scenario.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp1362209"> </a><h2><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="4"><b>
+tAggregateSortedRow
+</b></font></h2>
+<a name="wp1440687"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="left"><img src="images/tAggregateSortedRow.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<a name="wp1446889"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+tAggregateSortedRow properties
+</b></font></h3>
+<a name="wp1440476"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<div align="center">
+<table border="1">
+  <caption></caption>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1440232"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Component family</b>
+</font></div>
+</td>
+    <td><a name="wp1440235"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Processing
+</font></div>
+</td>
+    <td><a name="wp1440247"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<img src="images/Full-6-010-154.jpg" height="59" width="112" border="0" hspace="0" vspace="0">
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1440255"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Function</b>
+</font></div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp1440262"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>tAggregateSortedRow</b> receives a sorted flow and aggregates it based on one or more columns. For each output line, are provided the aggregation key and the relevant result of set operations (min, max, sum...).
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1440273"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Purpose</b>
+</font></div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp1440276"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Helps to provide a set of metrics based on values or calculations. As the input flow is meant to be sorted already, the performance are hence greatly optimized.
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1440287"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Properties</b>
+</font></div>
+</td>
+    <td><a name="wp1440294"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<i>Schema type</i> and <i>Edit Schema</i>
+</font></div>
+</td>
+    <td><a name="wp1440301"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+A schema is a row description, i.e., it defines the number of fields that will be processed and passed on to the next component.  The schema is either built-in or remote in the Repository. <br>Click Edit Schema to make changes to the schema. Note that if you make changes, the schema automatically becomes built-in.
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1440305"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1440308"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1440315"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Built-in</b>: The schema will be created and stored locally for this component only. Related topic: <a href="Technical_Process-06.html#wp1014762"><i>Setting a built-in schema</i></a>
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1440323"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1440326"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1440333"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Repository</b>: The schema already  exists and is stored in  the Repository, hence can be reused in various  projets and job flowcharts. Related topic: <a href="Technical_Process-06.html#wp1014787"><i>Setting a repository schema</i></a>
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1440341"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1440348"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<i>Group by</i>
+</font></div>
+</td>
+    <td><a name="wp1440351"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Define the aggregation sets, the values of which will be used for calculations.
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1440355"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1440358"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1440365"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Output Column</b>: Select the column label in the list offered based on the schema structure you defined. You can add as many output columns as you wish to make more precise aggregations. <br>Ex: Select Country to calculate an average of values for each country of a list or select Country and Region if you want to compare one country&#39;s regions with another country&#39; regions.
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1440369"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1440372"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1440379"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Input Column</b>: Match the input column label with your output columns, in case the output label of the aggregation set needs to be different.
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1440383"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1440390"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<i>Operations</i>
+</font></div>
+</td>
+    <td><a name="wp1440393"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Select the type of operation along with the value to use for the calculation and the output field.
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1440397"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1440400"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1440407"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Output Column</b>: Select the destination field in the list.
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1440411"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1440414"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1440421"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Function</b>: Select the operator among: count, min, max, avg, first, last.
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1440425"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1440428"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1440435"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Input column</b>: Select the input column from which the values are taken to be aggregated.
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1440443"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Usage</b>
+</font></div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp1440446"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+This component handles flow of data therefore it requires input and  output, hence is defined as an intermediary step. 
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1440465"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Limitation</b>
+</font></div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp1440468"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+n/a
+</font></div>
+</td>
+</tr>
+</table>
+</div>
+<p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></p>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tAggregateRow_scenario.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tAggregateSortedRow_Scenario.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

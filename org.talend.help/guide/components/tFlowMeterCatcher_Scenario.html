@@ -1,0 +1,136 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Simple HTML">
+    <meta name="LASTUPDATED" content="10/05/07 18:38:02">
+    <title>Scenario: Catching flow metrics from a job</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tFlowMeterCatcher_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tFor_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp1417343"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<a name="wp1419790"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+Scenario: Catching flow metrics from a job
+</b></font></h3>
+<a name="wp1419782"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The following basic job aims at catching the number of rows being passed in the flow processed. The measures are taken twice, once after the input component, that is, before the filtering step and once right after the filtering step, that is, before the output component.
+</font></p>
+<a name="wp1417353"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<div align="center"><img src="images/Use_Case_tFlowMeterCatcher1.png" border="0" hspace="0" vspace="0"></div><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></p>
+<ul>
+<ul>
+<a name="wp1418650"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click and drop the following components from the Palette to the Designer workspace: <b>tMysqlInput</b>, <b>tFlowMeter</b> (x2), <b>tMap</b>, <b>tLogRow</b>, <b>tFlowMeterCatcher</b> and <b>tFileOutputCSV</b>.</font></li>
+<a name="wp1418672"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Link the main job using row main connections and click on the label to give consistent name throughout the job, such as <i>US_States</i> from the input component and <i>filtered_states</i> for the output from the <b>tMap</b> component, for example.</font></li>
+<a name="wp1418688"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Link the <b>tFlowMeterCatcher</b> to the <b>tFileOutputCSV</b> component using a row main link also as data is passed.</font></li>
+<a name="wp1418698"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">On the <b>tMysqlInput</b> properties view, configure the connection properties as <b>Repository</b>, if  the table metadata are stored in the Repository. Or else, set the Type as <b>Built-in</b> and configure manually the connection and schema details if they are built-in for this job.</font></li>
+<a name="wp1418347"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tFlowMeterCatcher2.png" border="0" hspace="0" vspace="0"><br>
+
+</font></p>
+<a name="wp1418362"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The <b>Schema</b> is simply made of two columns: <i>idState</i> and <i>LabelState</i>.</font></li>
+<a name="wp1418369"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The <b>Query type</b> is Built-in for this job example.</font></li>
+<a name="wp1418375"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The 50 States of the USA are recorded in the table <i>us_states</i>. In order for all 50 entries of the table to get selected, the query to run onto the Mysql database is as follows:<br><code>select * from us_states</code>. </font></li>
+<a name="wp1418386"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Select the relevant <b>Encoding type</b> in the list.</font></li>
+<a name="wp1418394"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then select the following component which is a <b>tFlowMeter</b> and set its properties. </font></li>
+<a name="wp1418558"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tFlowMeterCatcher4.png" border="0" hspace="0" vspace="0"><br>
+
+</font></p>
+<a name="wp1418580"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Check the box <b>Use input connection name as label</b>, in order to reuse the label you chose in the log output file (<b>tFileOutputCSV</b>). </font></li>
+<a name="wp1418776"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The mode is <b>Absolute</b> as there is no reference flow to meter against, also no <b>Threshold</b> is to be set for this example.</font></li>
+<a name="wp1418854"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Note:	The <b>Thresholds</b> information is of use within a supervising tool such as <b>Talend</b>&#39;s <b>Activity Monitoring Console</b> in order to get a proportional representation of the flow process. See <b>Activity Monitoring Console</b> User guide for more information.
+</font></p>
+<a name="wp1418933"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then launch the <b>tMap</b> editor to set the filtering properties.</font></li>
+<a name="wp1418952"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">For this use case, drag and drop the ID and States columns from the Input area of the tMap towards the Output area. No variable is used in this example.</font></li>
+<a name="wp1418980"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tFlowMeterCatcher5.png" border="0" hspace="0" vspace="0"><br>
+
+</font></p>
+<a name="wp1419000"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">On the Output flow area (labelled <i>filtered_states</i> in this example), click the arrow &amp; plus button to activate the expression filter field. </font></li>
+<a name="wp1419015"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Drag the <i>LabelState</i> column from the Input area (<i>row2</i>) towards the expression filter field and type in the rest of the expression in order to filter the state labels starting with the letter <i>M</i>. The final expression looks like: <code>row2.LabelState.startsWith(&quot;M&quot;)</code> </font></li>
+<a name="wp1419109"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click <b>OK</b> to validate the setting.</font></li>
+<a name="wp1419131"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then select the second <b>tFlowMeter</b> component and set its properties.</font></li>
+<a name="wp1419153"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tFlowMeterCatcher6.png" border="0" hspace="0" vspace="0"><br>
+
+</font></p>
+<a name="wp1419176"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Check the box <b>Use input connection name as label</b>.</font></li>
+<a name="wp1419193"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Select <b>Relative </b>as <b>Mode</b> and in the <b>Reference connection</b> list, select <i>US_States</i> as reference to be measured against.</font></li>
+<a name="wp1419241"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Once again, no threshold is used for this use case.</font></li>
+<a name="wp1419258"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">No particular setting is required in the <b>tLogRow</b>. </font></li>
+<a name="wp1419290"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Neither does the <b>tFlowMeterCatcher</b> as this component&#39;s properties are limited to a  preset schema which includes typical log information.</font></li>
+<a name="wp1419369"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">So eventually set the log output component (<b>tFileOutputCSV</b>).</font></li>
+<a name="wp1419384"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tFlowMeterCatcher8.png" border="0" hspace="0" vspace="0"><br>
+
+</font></p>
+<a name="wp1419410"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Check the <b>Append</b> box in order to log all <b>tFlowMeter</b> measures.</font></li>
+<a name="wp1419452"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then save your job and run it.</font></li>
+<a name="wp1419460"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tFlowMeterCatcher9.png" border="0" hspace="0" vspace="0"><br>
+
+</font></p>
+<a name="wp1419506"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The <b>Run Job</b> view shows the filtered state labels as defined in the job.
+</font></p>
+<a name="wp1419509"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tFlowMeterCatcher7.png" border="0" hspace="0" vspace="0"><br>
+
+</font></p>
+<a name="wp1419497"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+In the delimited csv file, the number of rows shown in column <b>count</b> varies between <b>tFlowMeter1</b> and <b>tFlowMeter2</b> as the filtering has then been carried out. The <b>reference</b> column shows also this difference.
+</font></p>
+</ul>
+</ul>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tFlowMeterCatcher_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tFor_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

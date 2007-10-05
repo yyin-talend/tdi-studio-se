@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Simple HTML">
-    <meta name="LASTUPDATED" content="07/06/07 15:53:51">
+    <meta name="LASTUPDATED" content="10/05/07 18:38:02">
     <title>Scenario: Delimited file content display</title>
   </head>
 
@@ -28,58 +28,51 @@
 <a name="wp1298070"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
 Scenario: Delimited file content display
 </b></font></h3>
-<dl><a name="wp1287607"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1287607"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 The following scenario creates a two-component job, which aims at reading each row of a file, selecting delimited data and displaying the output in the <b>Run Job</b> log console.
-</font></dd>
-</dl><a name="wp1095697"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/UseCase_tFileInputDelimited1.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<a name="wp1095697"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<div align="center"><img src="images/UseCase_tFileInputDelimited1.png" border="0" hspace="0" vspace="0"></div><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 
-</font></div>
+</font></p>
 <ul>
 <ul>
 <a name="wp1006861"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click and drop a <b>tFileInputDelimited</b> component from the Palette to the design workspace.</font></li>
 <a name="wp1006869"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click and drop a <b>tLogRow</b> component the same way.</font></li>
 <a name="wp1006872"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Right-click on the <b>tFileInputDelimited</b> component and select <i>Row &gt; Main</i>. Then drag it onto the <b>tLogRow</b> component and release when the plug symbol shows up.</font></li>
 <a name="wp1006881"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Select the <b>tFileInputDelimited</b> component again, and define its properties:</font></li>
-</ul>
-</ul>
-<a name="wp1006886"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/UseCase_tFileInputDelimited.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1006886"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/UseCase_tFileInputDelimited.png" border="0" hspace="0" vspace="0"><br>
 
-</font></div>
-<ul>
-<ul>
+</font></p>
 <a name="wp1006920"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Fill in a path to the file in the <b>File Name</b> field. This field is mandatory.</font></li>
 <a name="wp1025169"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Define the <b>Row separator</b> allowing to identify the end of a row. Then define the <b>Field separator</b> used to delimit fields in a row.</font></li>
 <a name="wp1025179"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In this scenario, the header and footer limits are not set. And the <b>Limit</b> number of processed rows is set on 50.  </font></li>
 <a name="wp1007018"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Select either a local (<b>Built-in</b>) or a remotely managed (<b>Repository</b>) <b>Schema type</b> to define the data to pass on to the <b>tLogRow</b> component. </font></li>
 <a name="wp1007303"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">You can load and/or edit the schema via the <b>Edit Schema</b> function. </font></li>
-</ul>
-</ul>
-<dl><a name="wp1007219"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1007219"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 Related topics: <a href="Technical_Process-06.html#wp1014762"><i>Setting a built-in schema</i></a> and <a href="Technical_Process-06.html#wp1014787"><i>Setting a repository schema</i></a>
-</font></dd>
-<ul>
+</font></p>
 <a name="wp1007348"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">As selected, the empty rows will be ignored.</font></li>
 <a name="wp1007398"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Enter the encoding standard the input file is encoded in. This setting is meant to ensure encoding consistency throughout all input and output files.</font></li>
-<a name="wp1075191"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Select the <b>tLogRow</b> and define the <b>Field separator </b>to use for the output display. Related topic: <a href="tLogRow_Prop.html#wp1293552"><i>tLogRow properties</i></a>.</font></li>
+<a name="wp1075191"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Select the <b>tLogRow</b> and define the <b>Field separator </b>to use for the output display. Related topic: <a href="tLogRow_Prop.html#wp1448725"><i>tLogRow properties</i></a>.</font></li>
 <a name="wp1235528"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Check the <b>Print schema column name in front of each value</b> box to retrieve the column labels in the output displayed.</font></li>
 <a name="wp1075206"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Go to <b>Run Job</b> tab, and click on <b>Run</b> to execute the job.</font></li>
-</ul>
-<a name="wp1052377"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1052377"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 The file is read row by row and the extracted fields are displayed on the Run Job log as defined in both components <b>Properties</b>.
-</font></dd>
-</dl><a name="wp1052384"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/UseCase_tFileInputDelimited3.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<a name="wp1052384"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/UseCase_tFileInputDelimited3.png" border="0" hspace="0" vspace="0"><br>
 
-</font></div>
-<dl><a name="wp1052366"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<a name="wp1052366"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 The Log sums up all parameters in a header followed by the result of the job.
-</font></dd>
-</dl>
+</font></p>
+</ul>
+</ul>
     </blockquote>
     <hr>
 

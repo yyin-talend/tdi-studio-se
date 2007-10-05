@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Simple HTML">
-    <meta name="LASTUPDATED" content="07/06/07 15:53:51">
+    <meta name="LASTUPDATED" content="10/05/07 18:38:02">
     <title>Scenario: Displaying DB output </title>
   </head>
 
@@ -28,55 +28,46 @@
 <a name="wp1294658"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
 Scenario: Displaying DB output 
 </b></font></h3>
-<dl><a name="wp1287525"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1287525"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 This following scenario is a three-component  job aiming at creating a new table in the database defined and filling it with data. The <b>tFileInputdelimited</b> passes on the Input flow to the <b>tDBoutput</b> component. As the content of a DB is not viewable as such, a <b>tLogRow</b> component is used to display the main flow on the <b>Run Job </b>console.
-</font></dd>
-</dl><a name="wp1201999"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tDBOutput1.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<a name="wp1201999"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<div align="center"><img src="images/Use_Case_tDBOutput1.png" border="0" hspace="0" vspace="0"></div><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 
-</font></div>
+</font></p>
 <ul>
 <ul>
 <a name="wp1202005"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">First click and drop the three components required for this job.</font></li>
 <a name="wp1202014"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">On the <b>Properties</b> tab of <b>tFileInputDelimited</b>, define the input flow parameters. In this use case, the file contains cars&#39; owner id, makes, color and registration references organised as follows: semi-colon as field separator, carriage return as row separator. The input file contains a header row to be considered in the schema. If this file is already described in your metadata, you can retrieve the properties by selecting the relevant repository entry list.</font></li>
-</ul>
-</ul>
-<a name="wp1202023"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tDBOutput2.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1202023"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tDBOutput2.png" border="0" hspace="0" vspace="0"><br>
 
-</font></div>
-<ul>
-<ul>
+</font></p>
 <a name="wp1202033"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">And also, if your schema is already loaded in the Repository, select <b>Repository</b> as <b>Schema type</b> and choose the relevant metadata entry in the list. If you haven&#39;t defined the schema already, define the data structure in the built-in schema you edit.</font></li>
 <a name="wp1202039"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Restrict the extraction to 10 lines, for this example.</font></li>
-<a name="wp1202045"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then define the <b>tDBOutput</b> component to configure the output flow. Select the database to connect to. Note that you can store all the database connection details in different context variables. For more information about how to create and use context variables <a href="Technical_Process-12.html">, see&#160;<i>Defining a job design context and related variables.</i></a></font></li>
-</ul>
-</ul>
-<a name="wp1202057"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tDBOutput3.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1202045"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then define the <b>tDBOutput</b> component to configure the output flow. Select the database to connect to. Note that you can store all the database connection details in different context variables. For more information about how to create and use context variables <a href="Technical_Process-13.html">, see&#160;<i>Defining Contexts and variables.</i></a></font></li>
+<a name="wp1202057"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tDBOutput3.png" border="0" hspace="0" vspace="0"><br>
 
-</font></div>
-<ul>
-<ul>
+</font></p>
 <a name="wp1202066"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Fill in the table name in the <b>Table</b> field. Then select the operations to be performed:</font></li>
-<a name="wp1202075"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">As <b>Action on table</b>, select <b>Drop and create table</b> in the list. This allows you to overwrite the possible existing table with the new selected data. Alternately you can insert only extra rows into an existing table, but note that duplicate management is not supported natively. See <a href="tUniqRow_Prop.html#wp1088519"><i>tUniqRow properties</i></a> for further information.</font></li>
+<a name="wp1202075"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">As <b>Action on table</b>, select <b>Drop and create table</b> in the list. This allows you to overwrite the possible existing table with the new selected data. Alternately you can insert only extra rows into an existing table, but note that duplicate management is not supported natively. See <a href="tUniqRow_Prop.html#wp1449711"><i>tUniqRow Properties</i></a> for further information.</font></li>
 <a name="wp1233707"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">As <b>Action on data</b>, select <b>Insert</b>. The data flow incoming as input will be thus added to the selected table.</font></li>
 <a name="wp1202092"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">To view the output flow easily, connect the DBOuput component to an tLogRow component. Define the field separator as a pipe symbol. Press <b>F6</b> to execute the job.</font></li>
 <a name="wp1202102"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">As the processing can take some time to reach the <b>tLogRow</b> component, we recommend you to enable the <b>Statistics</b> functionality on the<b> Run Job</b> console.</font></li>
-</ul>
-</ul>
-<a name="wp1202117"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tDBOutput4.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1202117"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tDBOutput4.png" border="0" hspace="0" vspace="0"><br>
 
-</font></div>
-<dl><a name="wp1202123"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-Related topic: <a href="tMysqlOutput_Prop.html#wp1202241"><i>tMysqlOutput properties</i></a>
-</font></dd>
-</dl>
+</font></p>
+<a name="wp1202123"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Related topic: <a href="tMysqlOutput_Prop.html#wp1448957"><i>tMysqlOutput properties</i></a>
+</font></p>
+</ul>
+</ul>
     </blockquote>
     <hr>
 

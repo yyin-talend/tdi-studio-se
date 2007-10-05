@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Simple HTML">
-    <meta name="LASTUPDATED" content="07/06/07 15:53:51">
+    <meta name="LASTUPDATED" content="10/05/07 18:38:02">
     <title>Scenario: Executing a remote job</title>
   </head>
 
@@ -13,7 +13,7 @@
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a href="tRunJob_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tSalesForceInput_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+<a href="tRunJob_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tSalesforceInput_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
         </td>
       </tr>
     </table-->
@@ -28,41 +28,35 @@
 <a name="wp1295914"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
 Scenario: Executing a remote job
 </b></font></h3>
-<dl><a name="wp1289142"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1289142"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 This particular scenario describes a single-component job calling in and executing another job. The job to be executed reads a basic delimited file and simply displays its content on the Run Job log console. The particularity of this job lies in the fact that this latter job is executed from a separate job and uses a context variable to prompt for the input file to be processed.
-</font></dd>
-</dl><a name="wp1188107"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tRunJob1.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<a name="wp1188107"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<div align="center"><img src="images/Use_Case_tRunJob1.png" border="0" hspace="0" vspace="0"></div><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 
-</font></div>
-<dl><a name="wp1239081"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<a name="wp1239081"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 Create the first job reading the delimited file.
-</font></dd>
+</font></p>
+<ul>
 <ul>
 <a name="wp1188119"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click and drop a <b>tFileInputDelimited</b> and a <b>tLogRow</b> onto the Designer.</font></li>
 <a name="wp1188126"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Set the input component properties in the <b>Properties</b> panel.</font></li>
 <a name="wp1188137"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Set the <b>Property type</b> on <b>Built-In</b> for this job. </font></li>
-</ul>
-</dl><a name="wp1188144"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tRunJob3.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1188144"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tRunJob3.png" border="0" hspace="0" vspace="0"><br>
 
-</font></div>
-<ul>
-<ul>
+</font></p>
 <a name="wp1188152"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In <b>File Name</b>, browse to the input file. In this example, the file is a txt file called Comprehensive.</font></li>
 <a name="wp1188160"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Select the path to this Input file and press <b>F5</b> to open the Variable configuration window.</font></li>
 <a name="wp1188165"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Give a name to the new context variable, in this scenario, it is called File.</font></li>
-</ul>
-</ul>
-<a name="wp1188172"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tRunJob4.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1188172"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tRunJob4.png" border="0" hspace="0" vspace="0"><br>
 
-</font></div>
-<ul>
-<ul>
+</font></p>
 <a name="wp1188180"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">No need to check the <b>Prompt for value </b>box nor set a prompt message for this use case, as the default parameter value is ok to be used.</font></li>
 <a name="wp1188190"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click <b>Finish</b> to validate and press again <b>Enter</b> to make sure the new context variable is stored the <b>File Name</b> field.</font></li>
 <a name="wp1188201"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Back on the <b>Properties</b> view, type in the field and row separators used in the input file.</font></li>
@@ -71,39 +65,32 @@ Create the first job reading the delimited file.
 <a name="wp1188221"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Add two columns and name them following the first and second column name of your input file. In this example: ID and Registration. </font></li>
 <a name="wp1188225"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">If you stored your schema in the repository, you only need to select the relevant metadata entry corresponding to your input file structure.</font></li>
 <a name="wp1188234"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then link the Input component to your output component, <b>tLogRow</b>.</font></li>
-</ul>
-</ul>
-<dl><a name="wp1188238"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1188238"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 Create the second job, to play the role of master job.
-</font></dd>
-<ul>
+</font></p>
 <a name="wp1188244"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the Properties panel of the tRunJob component, select the job to be executed.</font></li>
 <a name="wp1188247"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">We recommend you to run once the called-in job before executing it through the <b>tRunJob</b> component in order to make sure it runs smoothly. </font></li>
-</ul>
-</dl><a name="wp1188256"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tRunJob5.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1188256"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tRunJob5.png" border="0" hspace="0" vspace="0"><br>
 
-</font></div>
-<ul>
-<ul>
+</font></p>
 <a name="wp1188261"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the <b>Context</b> field, select the relevant context. In this case, only the <b>Default</b> context is available and holds the context variable created earlier. </font></li>
 <a name="wp1337946"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click <b>Generate Code</b> to validate the context selection and generate the related code.</font></li>
 <a name="wp1188267"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Save the master job and press <b>F6</b> to run it.</font></li>
-</ul>
-</ul>
-<a name="wp1188274"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tRunJob6.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1188274"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tRunJob6.png" border="0" hspace="0" vspace="0"><br>
 
-</font></div>
-<dl><a name="wp1188277"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<a name="wp1188277"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 The called-in job reads the data contained in the input file, as defined by the input schema, and the result of this job is displayed directly in the <b>Run Job</b> console.
-</font></dd>
-<a name="wp1209540"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<a name="wp1209540"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 Related topic: <a href="tFor_Scenario.html#wp1295105"><i>Scenario: Job execution in a loop</i></a>
-</font></dd>
-</dl>
+</font></p>
+</ul>
+</ul>
     </blockquote>
     <hr>
 
@@ -123,7 +110,7 @@ Related topic: <a href="tFor_Scenario.html#wp1295105"><i>Scenario: Job execution
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a href="tRunJob_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tSalesForceInput_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+<a href="tRunJob_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tSalesforceInput_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
         </td>
       </tr>
     </table-->

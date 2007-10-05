@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Simple HTML">
-    <meta name="LASTUPDATED" content="07/06/07 15:53:51">
+    <meta name="LASTUPDATED" content="10/05/07 18:38:02">
     <title>Scenario: Removing and regenerating a MySQL table index</title>
   </head>
 
@@ -13,7 +13,7 @@
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a href="tMysqlRow_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tMsgBox_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+<a href="tMysqlRow_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tMysqlSCD_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
         </td>
       </tr>
     </table-->
@@ -22,49 +22,48 @@
     <hr align="left"-->
 
     <blockquote>
-<a name="wp1198685"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1383846"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 
 </font></div>
-<a name="wp1316432"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+<a name="wp1383853"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
 Scenario: Removing and regenerating a MySQL table index
 </b></font></h3>
-<dl><a name="wp1316435"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1365427"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 This scenario describes a four-component job which wants to remove a table index, make a select insert action onto a table then regenerate the index.
-</font></dd>
-</dl><a name="wp1316447"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tMySQLRow.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<a name="wp1365435"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<div align="center"><img src="images/Use_Case_tMySQLRow.png" border="0" hspace="0" vspace="0"></div><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 
-</font></div>
+</font></p>
 <ul>
 <ul>
-<a name="wp1316532"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Select and drop the following components onto the graphical workspace: <b>tMysqlRow</b> (x2), <b>tRowGenerator</b>, <b>tMysqlOutput</b>.</font></li>
-<a name="wp1198772"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Connect <b>tMysqlIntput</b> to the <b>tRowGenerator</b>.</font></li>
-<a name="wp1198815"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then using a <b>ThenRun</b> connection, link the first <b>tMysqlRow</b> to the <b>tMysqlInput</b>, </font></li>
-<a name="wp1199034"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then connect <b>tRowGenerator</b> to the second <b>tMysqlRow</b> using a <b>ThenRun</b> link again.</font></li>
-<a name="wp1199106"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Select the <b>tMysqlRow</b> to fill in the DB <b>Properties</b>. </font></li>
-<a name="wp1199132"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In <b>Property type </b>as well in <b>Schema type</b>, select the relevant DB entry in the list.</font></li>
-<a name="wp1199455"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The DB connection details and the table schema are accordingly filled in. </font></li>
-<a name="wp1199608"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Propagate the properties and schema details onto the other components of the job.</font></li>
-<a name="wp1199614"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The query being stored in the <b>Metadata</b> area of the Repository, you can also select <b>Repository</b> in the <b>Query type</b> field and the relevant query entry. </font></li>
-<a name="wp1199764"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">If you didn&#39;t store your query in the <b>Repository</b>, type in the following SQL statement to alter the database entries: drop index &lt;index_name&gt; on &lt;table_name&gt; </font></li>
-<a name="wp1199769"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then select the second <b>tMysqlRow</b> component, check the DB properties and schema.</font></li>
-<a name="wp1199772"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then type in the SQL statement to recreate an index on the table using the following statement: create index &lt;index_name&gt; on &lt;table_name&gt; (&lt;column_name&gt;); </font></li>
-<a name="wp1199835"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The <b>tRowGenerator</b> component is used to generate automatically the columns to be added to the DB output table defined.</font></li>
-<a name="wp1200615"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Select the <b>tMysqlOutput</b> component and fill in the DB connection properties either from the Repository or manually the DB connection details are specific for this use only. The table to be fed is named: <i>comprehensive</i>.</font></li>
-<a name="wp1200528"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The schema should be automatically inheritated from the data flow coming from the <b>tLogRow</b>. Edit the schema to check its structure and check that it corresponds to the schema expected on the DB table specified.</font></li>
-<a name="wp1200540"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The <b>Action on table</b> is <i>None</i> and the <b>Action on data</b> is <i>Insert</i>. </font></li>
-<a name="wp1200665"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">No additional Columns is required for this job.</font></li>
-<a name="wp1200674"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Press <b>F6</b> to run the job.</font></li>
-</ul>
-</ul>
-<dl><a name="wp1200690"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1365443"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Select and drop the following components onto the graphical workspace: <b>tMysqlRow</b> (x2), <b>tRowGenerator</b>, <b>tMysqlOutput</b>.</font></li>
+<a name="wp1365460"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Connect <b>tMysqlIntput</b> to the <b>tRowGenerator</b>.</font></li>
+<a name="wp1365473"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then using a <b>ThenRun</b> connection, link the first <b>tMysqlRow</b> to the <b>tMysqlInput</b>, </font></li>
+<a name="wp1365486"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then connect <b>tRowGenerator</b> to the second <b>tMysqlRow</b> using a <b>ThenRun</b> link again.</font></li>
+<a name="wp1365496"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Select the <b>tMysqlRow</b> to fill in the DB <b>Properties</b>. </font></li>
+<a name="wp1365506"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In <b>Property type </b>as well in <b>Schema type</b>, select the relevant DB entry in the list.</font></li>
+<a name="wp1365510"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The DB connection details and the table schema are accordingly filled in. </font></li>
+<a name="wp1365514"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Propagate the properties and schema details onto the other components of the job.</font></li>
+<a name="wp1365520"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The query being stored in the <b>Metadata</b> area of the Repository, you can also select <b>Repository</b> in the <b>Query type</b> field and the relevant query entry. </font></li>
+<a name="wp1365533"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">If you didn&#39;t store your query in the <b>Repository</b>, type in the following SQL statement to alter the database entries: drop index &lt;index_name&gt; on &lt;table_name&gt; </font></li>
+<a name="wp1365541"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then select the second <b>tMysqlRow</b> component, check the DB properties and schema.</font></li>
+<a name="wp1365544"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then type in the SQL statement to recreate an index on the table using the following statement: create index &lt;index_name&gt; on &lt;table_name&gt; (&lt;column_name&gt;); </font></li>
+<a name="wp1365551"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The <b>tRowGenerator</b> component is used to generate automatically the columns to be added to the DB output table defined.</font></li>
+<a name="wp1365558"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Select the <b>tMysqlOutput</b> component and fill in the DB connection properties either from the Repository or manually the DB connection details are specific for this use only. The table to be fed is named: <i>comprehensive</i>.</font></li>
+<a name="wp1365565"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The schema should be automatically inheritated from the data flow coming from the <b>tLogRow</b>. Edit the schema to check its structure and check that it corresponds to the schema expected on the DB table specified.</font></li>
+<a name="wp1365585"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The <b>Action on table</b> is <i>None</i> and the <b>Action on data</b> is <i>Insert</i>. </font></li>
+<a name="wp1365589"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">No additional Columns is required for this job.</font></li>
+<a name="wp1365597"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Press <b>F6</b> to run the job.</font></li>
+<a name="wp1365600"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 If you manage to watch the action on DB data, you can notice that the index is dropped at the start of the job and recreated at the end of the insert action.
-</font></dd>
-<a name="wp1200707"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-Related topics: <a href="tDBSQLRow_Prop.html#wp1198862"><i>tDBSQLRow properties</i></a>.
-</font></dd>
-</dl>
+</font></p>
+<a name="wp1413565"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Related topics: <a href="tDBSQLRow_Prop.html#wp1447255"><i>tDBSQLRow properties</i></a>.
+</font></p>
+</ul>
+</ul>
     </blockquote>
     <hr>
 
@@ -84,7 +83,7 @@ Related topics: <a href="tDBSQLRow_Prop.html#wp1198862"><i>tDBSQLRow properties<
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a href="tMysqlRow_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tMsgBox_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+<a href="tMysqlRow_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tMysqlSCD_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
         </td>
       </tr>
     </table-->

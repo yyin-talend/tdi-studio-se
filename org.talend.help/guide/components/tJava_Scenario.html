@@ -1,0 +1,108 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Simple HTML">
+    <meta name="LASTUPDATED" content="10/05/07 18:38:02">
+    <title>Scenario: Printing out a variable content</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tJava_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tJavaDBInput_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp1408555"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<a name="wp1449861"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+Scenario: Printing out a variable content
+</b></font></h3>
+<a name="wp1409299"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The following scenario is a simple demo of the application extend of the tJava component. The job aims at printing out the number of lines being processed using a Java command and the global variable provided in <b>Talend Open Studio</b>.
+</font></p>
+<a name="wp1408590"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<div align="center"><img src="images/Use_Case_tJava1.png" border="0" hspace="0" vspace="0"></div><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></p>
+<ul>
+<ul>
+<a name="wp1408607"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Select and drop the following components from the palette: <b>tFileInputDelimited</b>, <b>tFileOutputExcel</b>, <b>tJava</b>.</font></li>
+<a name="wp1408651"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Connect the <b>tFileInputDelimited</b> to the <b>tFileOutputExcel</b> using a <b>Row Main</b> connection. The content from a delimited txt file will be passed on through the connection to an xls-type of file without further transformation.</font></li>
+<a name="wp1408670"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then connect the <b>tFileInputDelimited</b> component to the <b>tJava</b> component using a <b>Then Run</b> link. This link sets a sequence ordering the tjava to execute at the end of the main process.</font></li>
+<a name="wp1408728"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Set the <b>Properties</b> of the <b>tFileInputDelimited</b> component. The input file used in this example is a simple text file made of two columns: Name and their respective Emails</font></li>
+<a name="wp1408769"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tJava2.png" border="0" hspace="0" vspace="0"><br>
+
+</font></p>
+<a name="wp1408809"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The schema has not been stored in the repository for this use case, therefore you need to set manually the two-column schema </font></li>
+<a name="wp1408841"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click the <b>Edit Schema</b> button. </font></li>
+<a name="wp1408850"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tJava3.png" border="0" hspace="0" vspace="0"><br>
+
+</font></p>
+<a name="wp1408872"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">When prompted, click OK to accept the propagation, so that the tFileOutputExcel component gets automatically set with the input schema. Therefore no need to set the schema again.</font></li>
+<a name="wp1408892"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Set the output file to receive the input content without changes. If the file doesn&#39;t exist already, it&#39;ll get created.</font></li>
+<a name="wp1408905"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tJava4.png" border="0" hspace="0" vspace="0"><br>
+
+</font></p>
+<a name="wp1408934"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In this example, the Sheet name is Email and the Include Header box is checked. </font></li>
+<a name="wp1408960"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then select the <b>tJava</b> component to set the Java command to execute.</font></li>
+<a name="wp1408981"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tJava5.png" border="0" hspace="0" vspace="0"><br>
+
+</font></p>
+<a name="wp1409008"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the <b>Code</b> area, type in the following command:<br><code>String var = &quot;Nb of line processed: &quot;;<br>var = var + globalMap.get(&quot;tFileInputDelimited_1_NB_LINE&quot;);<br>System.out.println(var);</code></font></li>
+<a name="wp1409051"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In this use case, we use the NB_Line variable. To  access the global variable list, press Ctrl + Space bar on your keyboard and select the relevant global parameter.</font></li>
+<a name="wp1409092"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Save your job and press F6 to execute it.  </font></li>
+<a name="wp1409123"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tJava6.png" border="0" hspace="0" vspace="0"><br>
+
+</font></p>
+<a name="wp1409143"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The content gets passed on to the Excel file defined and the Number of lines processed are displayed on the <b>Run Job</b> console.
+</font></p>
+</ul>
+</ul>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tJava_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tJavaDBInput_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

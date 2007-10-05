@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Simple HTML">
-    <meta name="LASTUPDATED" content="07/06/07 15:53:51">
+    <meta name="LASTUPDATED" content="10/05/07 18:38:02">
     <title>Scenario 1: Levenshtein distance of 0 in first names</title>
   </head>
 
@@ -13,7 +13,7 @@
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a href="tFuzzyMatch_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tLogCatcher_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+<a href="tFuzzyMatch_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tHSQLDbInput_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
         </td>
       </tr>
     </table-->
@@ -28,14 +28,14 @@
 <a name="wp1318644"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
 Scenario 1: Levenshtein distance of 0 in first names
 </b></font></h3>
-<dl><a name="wp1319422"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-This scenario describes a four-component job aiming at checking the edit distance between the First Name column of an input file with the data of the reference input file. The output of this Levenshtein type check is displayed along with the content of the main flow on a 
-</font></dd>
-</dl><a name="wp1318043"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tFuzzyMatch1.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1319422"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+This scenario describes a four-component job aiming at checking the edit distance between the <i>First Name</i> column of an input file with the data of the reference input file. The output of this Levenshtein type check is displayed along with the content of the main flow on a table
+</font></p>
+<a name="wp1318043"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<div align="center"><img src="images/Use_Case_tFuzzyMatch1.png" border="0" hspace="0" vspace="0"></div><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 
-</font></div>
+</font></p>
 <ul>
 <ul>
 <a name="wp1318048"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Drag and drop the following components from the Palette to the workspace: <b>tFileInputDelimited</b> (x2), <b>tFuzzyMatch</b>, <b>tFileOutputDelimited</b>.</font></li>
@@ -46,113 +46,99 @@ This scenario describes a four-component job aiming at checking the edit distanc
 <a name="wp1318097"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 WARNING-Make sure the reference column is set as key column in the schema of the lookup flow.
 </font></p>
-</ul>
-</ul>
-<a name="wp1318104"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tFuzzyMatch2.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1318104"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tFuzzyMatch2.png" border="0" hspace="0" vspace="0"><br>
 
-</font></div>
-<ul>
-<ul>
+</font></p>
 <a name="wp1318111"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then connect the second input component to the <b>tFuzzyMatch</b> using a main row (which displays as a <b>Lookup</b> row on the workspace).</font></li>
 <a name="wp1317789"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Select the <b>tFuzzyMatch</b> properties. </font></li>
 <a name="wp1317906"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The <b>Schema</b> should match the <b>Main</b> input flow schema in order for the main flow to be checked against the reference.</font></li>
-</ul>
-</ul>
-<a name="wp1317973"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tFuzzyMatch4.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1317973"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tFuzzyMatch4.png" border="0" hspace="0" vspace="0"><br>
 
-</font></div>
-<ul>
-<ul>
+</font></p>
 <a name="wp1317988"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Note that two columns, <b>Value</b> and <b>Matching</b>, are added to the output schema. These are standard matching information and are read-only. </font></li>
 <a name="wp1318003"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Select the method to be used to check the incoming data. In this scenario, <i>Levenshtein</i> is the <b>Matching type</b> to be used.</font></li>
 <a name="wp1317980"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then set the distance. In this method, the distance is the number of char changes (insertion, deletion or substitution) that needs to be carried out in order for the entry to fully match the reference.  </font></li>
-</ul>
-</ul>
-<a name="wp1317933"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tFuzzyMatch3.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1317933"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tFuzzyMatch3.png" border="0" hspace="0" vspace="0"><br>
 
-</font></div>
-<ul>
-<ul>
+</font></p>
 <a name="wp1318166"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In this use case, we want the distance be of 0 for the min. or for the max. This means only the exact matchs will be output.</font></li>
 <a name="wp1318181"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Also, uncheck the <b>Case sensitive</b> box.</font></li>
 <a name="wp1318228"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">And select the column of the main flow schema that will be checked. In this example, the first name.</font></li>
 <a name="wp1318240"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">No need to check the <b>Unique matching  </b>nor hence the separator.</font></li>
 <a name="wp1318270"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Link the <b>tFuzzyMatch</b> to the standard output <b>tLogRow</b>. No other parameters than the display delimiter is ot be set for this scenario.</font></li>
 <a name="wp1318297"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Save the job and press <b>F6</b> to execute the job.</font></li>
-</ul>
-</ul>
-<a name="wp1318313"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tFuzzyMatch5.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1318313"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tFuzzyMatch5.png" border="0" hspace="0" vspace="0"><br>
 
-</font></div>
-<dl><a name="wp1318551"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<a name="wp1318551"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 As the edit distance has been set to 0 (min and max), the output shows the result of a regular join between the main flow and the lookup (reference) flow, hence only full matchs with Value of 0  are displayed. 
-</font></dd>
-<a name="wp1318609"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<a name="wp1318609"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 A more obvious example is with a minimum distance of 1 and a max. distance of 2<a href="tFuzzyMatch_Scenario.html#wp1318621">, see&#160;<i>Scenario 2: Levenshtein distance of 1 or 2 in first names.</i></a>
-</font></dd>
-</dl><a name="wp1318621"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+</font></p>
+</ul>
+</ul>
+<a name="wp1318621"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
 Scenario 2: Levenshtein distance of 1 or 2 in first names 
 </b></font></h3>
-<dl><a name="wp1318902"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1318902"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 This scenario is based on the scenario 1 described above. Only the min and max distance settings in <b>tFuzzyMatch </b>component get modified, which will change the output displayed. 
-</font></dd>
+</font></p>
+<ul>
 <ul>
 <a name="wp1318911"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the Properties panel of the <b>tFuzzyMatch</b>, change the min distance from 0 to 1. This excludes straight away the exact matchs (which would show a distance of 0).</font></li>
 <a name="wp1318915"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Change also the max distance to 2 as the max distance cannot be lower than the min distance.  The output will provide all matching entries showing a discrepancy of 2 characters at most.</font></li>
-</ul>
-</dl><a name="wp1319064"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tFuzzyMatch6.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1319064"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tFuzzyMatch6.png" border="0" hspace="0" vspace="0"><br>
 
-</font></div>
-<ul>
-<ul>
+</font></p>
 <a name="wp1319081"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">No other change of the setting is required.</font></li>
 <a name="wp1319090"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Make sure the Matching item separator is defined, as several references might be matching the main flow entry. </font></li>
 <a name="wp1319099"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Save the new job and press F6 to run it.</font></li>
-</ul>
-</ul>
-<a name="wp1319117"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tFuzzyMatch7.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1319117"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tFuzzyMatch7.png" border="0" hspace="0" vspace="0"><br>
 
-</font></div>
-<dl><a name="wp1319136"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<a name="wp1319136"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 As the edit distance has been set to 2, some entries of the main flow match several reference entries.
-</font></dd>
-<a name="wp1319145"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<a name="wp1319145"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 You can also use another method, the metaphone, to assess the distance between the main flow and the reference, 
-</font></dd>
-</dl><a name="wp1319193"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+</font></p>
+</ul>
+</ul>
+<a name="wp1319193"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
 Scenario 3: Metaphonic distance in first name
 </b></font></h3>
-<dl><a name="wp1319234"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1319234"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 This scenario is based on the scenario 1 described above. 
-</font></dd>
-</dl><a name="wp1319248"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tFuzzyMatch8.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<a name="wp1319248"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<div align="center"><img src="images/Use_Case_tFuzzyMatch8.png" border="0" hspace="0" vspace="0"></div><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 
-</font></div>
+</font></p>
 <ul>
 <ul>
 <a name="wp1319261"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Change the <b>Matching type </b>to <b>Metaphone</b>. There is no min nor max distance to set as the matching method is based on the discrepancies with the phonetics of the reference.</font></li>
 <a name="wp1319287"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"> Save the job and press <b>F6</b>. The phonetics value is displayed along with the possible matchs.</font></li>
-</ul>
-</ul>
-<a name="wp1319278"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tFuzzyMatch9.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1319278"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tFuzzyMatch9.png" border="0" hspace="0" vspace="0"><br>
 
-</font></div>
+</font></p>
+</ul>
+</ul>
     </blockquote>
     <hr>
 
@@ -172,7 +158,7 @@ This scenario is based on the scenario 1 described above.
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a href="tFuzzyMatch_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tLogCatcher_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+<a href="tFuzzyMatch_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tHSQLDbInput_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
         </td>
       </tr>
     </table-->

@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Simple HTML">
-    <meta name="LASTUPDATED" content="07/06/07 15:53:51">
+    <meta name="LASTUPDATED" content="10/05/07 18:38:02">
     <title>tMysqlInput</title>
   </head>
 
@@ -13,7 +13,7 @@
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a href="tMysqlCommit_Scenario.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tMysqlInput_Scenario.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+<a href="tMysqlConnection_Scenario.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tMysqlInput_Scenario.html"><img src="images/snext.gif" border="0" alt="Next"></a>
         </td>
       </tr>
     </table-->
@@ -22,21 +22,236 @@
     <hr align="left"-->
 
     <blockquote>
-<a name="wp1307784"> </a><h2><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="4"><b>
+<a name="wp1379304"> </a><h2><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="4"><b>
 tMysqlInput
 </b></font></h2>
-<a name="wp1204685"> </a><div><font color="#2d96db" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
-</b></font></div>
-<div align="left"><img src="images/tMysqlInput.png" border="0" hspace="0" vspace="0"></div><div><font color="#2d96db" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+<a name="wp1406685"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="left"><img src="images/tMysqlInput.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<a name="wp1448944"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
 tMysqlInput properties
-</b></font></div>
-<dl><a name="wp1295314"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-The properties of the generic component, <b>tDBInput</b>, apply to the <b>tMysqlInput</b> component, therefore the properties are not detailed again here.
-</font></dd>
-<a name="wp1204724"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-For detailed information about generic <b>tDBInput</b> properties<a href="tDBInput_Prop.html#wp1187566">, see&#160;<i>tDBInput properties.</i></a>
-</font></dd>
-</dl>
+</b></font></h3>
+<a name="wp1376103"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<div align="center">
+<table border="1">
+  <caption></caption>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1375864"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Component family</b>
+</font></div>
+</td>
+    <td><a name="wp1375867"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Databases/MySQL
+</font></div>
+</td>
+    <td><a name="wp1375879"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<img src="images/Full-6-200-090.jpg" height="59" width="112" border="0" hspace="0" vspace="0">
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1375887"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Function</b>
+</font></div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp1375894"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>tMysqlInput</b> reads a database and extracts fields based on a query. 
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1375905"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Purpose</b>
+</font></div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp1375912"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>tMysqlInput</b> executes a DB query with a strictly defined order which must correspond to the schema definition. Then it passes on the field list to the next component via a Main row link.
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1375923"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Properties</b>
+</font></div>
+</td>
+    <td><a name="wp1375930"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<i>Property type</i>
+</font></div>
+</td>
+    <td><a name="wp1375933"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Either Built-in or Repository
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1375937"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1375940"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1375947"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Built-in</b>: No property data stored centrally.
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1375951"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1375954"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1375961"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Repository</b>: Select the Repository file where Properties are stored. The following fields are pre-filled in using fetched data.
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1376555"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1376558"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<i>Use existing connection</i>
+</font></div>
+</td>
+    <td><a name="wp1376561"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Check this box when using a <b>tMySQLConnection</b>
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1375965"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1375972"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<i>Host</i>
+</font></div>
+</td>
+    <td><a name="wp1375975"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Database server IP address
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1375979"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1375986"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<i>Port</i>
+</font></div>
+</td>
+    <td><a name="wp1375989"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Listening port number of DB server.
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1375993"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1375996"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<i>Database</i>
+</font></div>
+</td>
+    <td><a name="wp1375999"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Name of the database
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1376003"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1376010"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<i>Username</i> and <i>Password</i>
+</font></div>
+</td>
+    <td><a name="wp1376017"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+DB user authentication data.
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1376021"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1376031"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<i>Schema type</i> and <i>Edit Schema</i>
+</font></div>
+</td>
+    <td><a name="wp1376035"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+A schema is a row description, i.e., it defines the number of fields to be processed and passed on to the next component.  The schema is either built-in or remotely stored in the Repository. 
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1376039"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1376042"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1376049"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Built-in</b>: The schema is created and stored locally for this component only. Related topic: <a href="Technical_Process-06.html#wp1014762"><i>Setting a built-in schema</i></a>
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1376057"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1376060"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1376067"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Repository</b>: The schema already  exists and is stored in  the Repository, hence can be reused. Related topic: <a href="Technical_Process-06.html#wp1014787"><i>Setting a repository schema</i></a>
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1376075"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1376082"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<i>Query type </i>and <i>Query</i>
+</font></div>
+</td>
+    <td><a name="wp1376085"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Enter your DB query  paying particularly attention to properly sequence the fields in order to  match  the schema definition. 
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1376697"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1376704"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<i>Encoding</i>
+</font></div>
+</td>
+    <td><a name="wp1376707"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Select the encoding from the list or select Custom and define it manually. This field is compulsory for DB data handling.
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1376093"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Usage</b>
+</font></div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp1376096"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+This component covers all possibilities of  SQL queries onto a Mysql database.
+</font></div>
+</td>
+</tr>
+</table>
+</div>
+<p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></p>
     </blockquote>
     <hr>
 
@@ -56,7 +271,7 @@ For detailed information about generic <b>tDBInput</b> properties<a href="tDBInp
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a href="tMysqlCommit_Scenario.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tMysqlInput_Scenario.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+<a href="tMysqlConnection_Scenario.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tMysqlInput_Scenario.html"><img src="images/snext.gif" border="0" alt="Next"></a>
         </td>
       </tr>
     </table-->

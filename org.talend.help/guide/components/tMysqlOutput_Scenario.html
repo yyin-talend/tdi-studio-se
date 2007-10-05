@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Simple HTML">
-    <meta name="LASTUPDATED" content="07/06/07 15:53:51">
+    <meta name="LASTUPDATED" content="10/05/07 18:38:02">
     <title>Scenario: Adding new column and altering data </title>
   </head>
 
@@ -28,14 +28,14 @@
 <a name="wp1295392"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
 Scenario: Adding new column and altering data 
 </b></font></h3>
-<dl><a name="wp1288987"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1288987"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 This scenario is a three-component job aiming at creating random data using a <b>tRowGenerator</b>, duplicating a column to be altered using the <b>tMap</b> component, eventually altering the data to be inserted based on a SQL expression, as well as inserting a new column in the DB, using the <b>tDBOutput</b> component.
-</font></dd>
-</dl><a name="wp1202969"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tMySQLOutput1.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<a name="wp1202969"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<div align="center"><img src="images/Use_Case_tMySQLOutput1.png" border="0" hspace="0" vspace="0"></div><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 
-</font></div>
+</font></p>
 <ul>
 <ul>
 <a name="wp1202983"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Drag and drop the <b>tRowGenerator</b>, <b>tMap</b> and <b>tMySQLOutput</b> components onto the designer.</font></li>
@@ -55,15 +55,14 @@ This scenario is a three-component job aiming at creating random data using a <b
 <a name="wp1206029"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Note that for this job we duplicated the <i>random_date_1</i> column in the DB table before replacing one instance of it with the <i>One_Month_Later</i> column. The aim of this workaround was to be able to view upfront the modification performed.</font></li>
 <a name="wp1203683"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The second entry is the new column, <i>moment</i>, to be inserted into the database table. As <b>SQL expression</b>, type in the moment function: <i>now()</i> and in the <b>Position</b> field, select <b>Before</b>, the <b>Reference column</b> is name in this example.</font></li>
 <a name="wp1203750"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Once the Output setting is complete, press <b>F6</b> to run the job.</font></li>
-</ul>
-</ul>
-<dl><a name="wp1203789"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1203789"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 Two new columns were added or altered onto the DB table: <i>One_Month_Later</i> and <i>Moment</i>.
-</font></dd>
-<a name="wp1203821"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-Related topic: <a href="tDBOutput_Prop.html#wp1184946"><i>DBOutput properties</i></a>
-</font></dd>
-</dl>
+</font></p>
+<a name="wp1203821"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Related topic: <a href="tDBOutput_Prop.html#wp1447242"><i>tDBOutput properties</i></a>
+</font></p>
+</ul>
+</ul>
     </blockquote>
     <hr>
 

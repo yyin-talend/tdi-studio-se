@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Simple HTML">
-    <meta name="LASTUPDATED" content="07/06/07 15:53:51">
+    <meta name="LASTUPDATED" content="10/05/07 18:38:02">
     <title>tDBInput </title>
   </head>
 
@@ -13,7 +13,7 @@
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a href="tDB2Row_Scenario.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tDBInput_Scenario.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+<a href="tDB2SP_Scenario.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tDBInput_Scenario.html"><img src="images/snext.gif" border="0" alt="Next"></a>
         </td>
       </tr>
     </table-->
@@ -22,14 +22,17 @@
     <hr align="left"-->
 
     <blockquote>
-<a name="wp1202701"> </a><h2><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="4"><b>
+<a name="wp1465375"> </a><h2><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="4"><b>
 tDBInput 
 </b></font></h2>
-<a name="wp1187566"> </a><div><font color="#2d96db" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
-</b></font></div>
-<div align="left"><img src="images/tDBInput.png" border="0" hspace="0" vspace="0"></div><div><font color="#2d96db" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+<a name="wp1404866"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="left"><img src="images/tDBInput.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<a name="wp1447229"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
 tDBInput properties
-</b></font></div>
+</b></font></h3>
 <a name="wp1294624"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 </font></p>
 <div align="center">
@@ -40,11 +43,11 @@ tDBInput properties
 </font></div>
 </td>
     <td><a name="wp1187579"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-Databases
+Databases/DB Generic
 </font></div>
 </td>
     <td><a name="wp1296626"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-<img src="images/Full-6-014-013.jpg" height="59" width="112" border="0" hspace="0" vspace="0">
+<img src="images/Full-6-040-015.jpg" height="59" width="112" border="0" hspace="0" vspace="0">
 </font></div>
 </td>
 </tr>
@@ -53,7 +56,7 @@ Databases
 </font></div>
 </td>
     <td colspan="2" rowspan="1"><a name="wp1187585"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-tDBInput reads a database and extracts fields based on a query. 
+<b>tDBInput</b> reads a database and extracts fields based on a query. 
 </font></div>
 </td>
 </tr>
@@ -62,10 +65,10 @@ tDBInput reads a database and extracts fields based on a query.
 </font></div>
 </td>
     <td colspan="2" rowspan="1"><a name="wp1200289"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-tDBInput executes a DB query with a strictly defined order which must correspond to the schema definition. Then it passes on the field list to the next component via a Main row link. The following DB-specific input components share tDBInput&#39;s properties: <b>tMysqlInput</b>, <b>tDB2Input</b>, <b>tOracleInput</b>, <b>tSybaseInput</b>.
+<b>tDBInput</b> executes a DB query with a strictly defined order which must correspond to the schema definition. Then it passes on the field list to the next component via a Main row link. 
 </font></div>
 <a name="wp1200318"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-Note:	For performance reasons, specific Input component (if offered) should always be preferred to generic DBInput component.
+Note:	For performance reasons, a specific Input component (e.g.: tMySQLInput for MySQL database) should always be preferred to the generic component.
 </font></p>
 </td>
 </tr>
@@ -73,9 +76,9 @@ Note:	For performance reasons, specific Input component (if offered) should alwa
 <b>Properties</b>
 </font></div>
 </td>
-    <td><a name="wp1187600"> </a><div><div align="center"><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
-Property type
-</b></font></div></div>
+    <td><a name="wp1187600"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<i>Property type</i>
+</font></div>
 </td>
     <td><a name="wp1187602"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 Either Built-in or Repository
@@ -91,7 +94,7 @@ Either Built-in or Repository
 </font></div>
 </td>
     <td><a name="wp1187611"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-<b>Built-in</b>: No existing property data is to be retrieved
+<b>Built-in</b>: No property data stored centrally.
 </font></div>
 </td>
 </tr>
@@ -112,38 +115,12 @@ Either Built-in or Repository
 &#160;
 </font></div>
 </td>
-    <td><a name="wp1187627"> </a><div><div align="center"><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
-DB driver
-</b></font></div></div>
+    <td><a name="wp1187627"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<i>Connection type</i>
+</font></div>
 </td>
     <td><a name="wp1187629"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-Available DBMS are MySQL,MS SQL and PostgreSQL..
-</font></div>
-</td>
-</tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1187631"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-&#160;
-</font></div>
-</td>
-    <td><a name="wp1187633"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-Host
-</font></div>
-</td>
-    <td><a name="wp1187635"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-Database server IP address
-</font></div>
-</td>
-</tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1187637"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-&#160;
-</font></div>
-</td>
-    <td><a name="wp1187642"> </a><div><div align="center"><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
-Port
-</b></font></div></div>
-</td>
-    <td><a name="wp1187644"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-Listening port number of DB server.
+Drop-down list of available DBMS drivers.
 </font></div>
 </td>
 </tr>
@@ -164,9 +141,9 @@ Name of the database
 &#160;
 </font></div>
 </td>
-    <td><a name="wp1187657"> </a><div><div align="center"><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
-Username and Password
-</b></font></div></div>
+    <td><a name="wp1187657"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<i>Username</i> and <i>Password</i>
+</font></div>
 </td>
     <td><a name="wp1187662"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 DB user authentication data.
@@ -177,9 +154,9 @@ DB user authentication data.
 &#160;
 </font></div>
 </td>
-    <td><a name="wp1187671"> </a><div><div align="center"><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
-Schema type and Edit Schema
-</b></font></div></div>
+    <td><a name="wp1187671"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<i>Schema type</i> and <i>Edit Schema</i>
+</font></div>
 </td>
     <td><a name="wp1187674"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 A schema is a row description, i.e., it defines the number of fields to be processed and passed on to the next component.  The schema is either built-in or remotely stored in the Repository. 
@@ -216,9 +193,9 @@ A schema is a row description, i.e., it defines the number of fields to be proce
 &#160;
 </font></div>
 </td>
-    <td><a name="wp1187714"> </a><div><div align="center"><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
-Query
-</b></font></div></div>
+    <td><a name="wp1187714"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<i>Query</i>
+</font></div>
 </td>
     <td><a name="wp1187716"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 Enter your DB query  paying particularly attention to properly sequence the fields in order to  match  the schema definition. 
@@ -229,9 +206,9 @@ Enter your DB query  paying particularly attention to properly sequence the fiel
 &#160;
 </font></div>
 </td>
-    <td><a name="wp1187723"> </a><div><div align="center"><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
-Encoding
-</b></font></div></div>
+    <td><a name="wp1187723"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<i>Encoding</i>
+</font></div>
 </td>
     <td><a name="wp1187725"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 Select the encoding from the list or select Custom and define it manually. This field is compulsory for DB data handling.
@@ -243,7 +220,7 @@ Select the encoding from the list or select Custom and define it manually. This 
 </font></div>
 </td>
     <td colspan="2" rowspan="1"><a name="wp1187729"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-This component offers the flexibility benefit of the DB query and covers all possibilities of SQL queries. More scenarios are available for specific DB Input components
+This component offers the flexibility benefit of the DB query and covers all possibilities of SQL queries using a generic ODBC connection.
 </font></div>
 </td>
 </tr>
@@ -271,7 +248,7 @@ This component offers the flexibility benefit of the DB query and covers all pos
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a href="tDB2Row_Scenario.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tDBInput_Scenario.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+<a href="tDB2SP_Scenario.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tDBInput_Scenario.html"><img src="images/snext.gif" border="0" alt="Next"></a>
         </td>
       </tr>
     </table-->

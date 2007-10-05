@@ -1,0 +1,119 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Simple HTML">
+    <meta name="LASTUPDATED" content="10/05/07 18:38:02">
+    <title>Scenario: Finding a State Label using a stored procedure</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tMysqlSP_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tMsgBox_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp1449104"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<a name="wp1449107"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+Scenario: Finding a State Label using a stored procedure
+</b></font></h3>
+<a name="wp1416289"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The following job aims at finding the State labels matching the odd State IDs in a Mysql two-column table. A stored procedure is used to carry out this operation. 
+</font></p>
+<a name="wp1415085"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<div align="center"><img src="images/Use_Case_tMysqlSP1.png" border="0" hspace="0" vspace="0"></div><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></p>
+<ul>
+<ul>
+<a name="wp1415102"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Drag and drop the following components used in this example: <b>tRowGenerator</b>, <b>tMysqlSP</b>, <b>tLogRow</b>.</font></li>
+<a name="wp1415137"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Connect the components using the <b>Row Main </b>link.</font></li>
+<a name="wp1415154"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The <b>tRowGenerator</b> is used to generate the odd id number. Double-click on the component to launch the editor.</font></li>
+<a name="wp1415170"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tMysqlSP2.png" border="0" hspace="0" vspace="0"><br>
+
+</font></p>
+<a name="wp1415197"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click on the <b>Plus</b> button to add a column to the schema to generate.</font></li>
+<a name="wp1415208"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Check the <b>Key</b> box and define the <b>Type</b> to <b>Int</b>. </font></li>
+<a name="wp1415227"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The <b>Length</b> equals to 2 digits max.</font></li>
+<a name="wp1415254"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Use the preset function called <b>sequence</b> but customize the Parameters in the lower part of the window.</font></li>
+<a name="wp1415322"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tMysqlSP2.png" border="0" hspace="0" vspace="0"><br>
+
+</font></p>
+<a name="wp1415348"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Change the <b>Value</b> of <b>step</b> from <i>1 </i>to <i>2 </i>for this example, still starting from 1.</font></li>
+<a name="wp1415387"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Set the <b>Number of generated rows</b> to 25 in order for all the odd State id (of 50 states) to be generated.</font></li>
+<a name="wp1415430"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click <b>OK</b> to validate the configuration.</font></li>
+<a name="wp1415450"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then select the <b>tMysqlSP</b> component and define its properties.</font></li>
+<a name="wp1415470"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tMysqlSP3.png" border="0" hspace="0" vspace="0"><br>
+
+</font></p>
+<a name="wp1415615"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Set the <b>Property type </b>field to <b>Repository</b> and  select the relevant entry on the list. The connection details get filled in automatically.</font></li>
+<a name="wp1415638"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Else, set manually the connection information.</font></li>
+<a name="wp1415647"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click <b>Sync Column</b> to retrieve the generated schema from the preceding component. </font></li>
+<a name="wp1415681"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then click <b>Edit Schema</b> and add an extra column to hold the State Label to be output, in addition to the ID.</font></li>
+<a name="wp1415738"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Select the encoding type on the list.</font></li>
+<a name="wp1415794"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Type in the name of the procedure in the <b>SP Name</b> field as it is called in the Database. In this example, <i>getstate</i>. The procedure to be executed states as follows:<br><code>DROP PROCEDURE IF EXISTS `talend`.`getstate` $$<br>CREATE DEFINER=`root`@`localhost` PROCEDURE `getstate`(IN pid INT, OUT pstate VARCHAR(50))<br>BEGIN<br> SELECT LabelState INTO pstate FROM us_states WHERE idState = pid;<br>END $$</code></font></li>
+<a name="wp1415845"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the <b>Parameters</b> area, click the plus button to add a line to the table. </font></li>
+<a name="wp1416008"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Set the <b>Column</b> field to <i>ID</i>, and the <b>Type</b> field to <i>IN</i> as it will be given as input parameter to the procedure.</font></li>
+<a name="wp1416015"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Add a second line and set the <b>Column</b> field to <i>State</i> and the <b>Type</b> to <i>Out</i> as this is the output parameter to be returned.</font></li>
+<a name="wp1416127"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Eventually, set the <b>tLogRow</b> component properties.</font></li>
+<a name="wp1416146"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tMysqlSP4.png" border="0" hspace="0" vspace="0"><br>
+
+</font></p>
+<a name="wp1416166"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Synchronize the schema with the preceding component.</font></li>
+<a name="wp1416181"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">And check the <b>Print values in cells of a table</b> box for reading convenience.</font></li>
+<a name="wp1416203"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then save your job and execute it.</font></li>
+<a name="wp1416214"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tMysqlSP5.png" border="0" hspace="0" vspace="0"><br>
+
+</font></p>
+<a name="wp1416238"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The output shows the state labels corresponding to the odd state ids as defined in the procedure.
+</font></p>
+</ul>
+</ul>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tMysqlSP_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tMsgBox_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

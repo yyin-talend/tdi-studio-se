@@ -1,0 +1,145 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Simple HTML">
+    <meta name="LASTUPDATED" content="10/05/07 18:38:02">
+    <title>Scenario: Slow Changing Dimension type 3</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tMSSqlSCD_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tMSSqlSP_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp1458760"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<a name="wp1459669"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+Scenario: Slow Changing Dimension type 3
+</b></font></h3>
+<a name="wp1462660"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The following scenario aims at showing the use of slow changing dimension type 1.2 and 3. Some changes are brought to the input csv file, and an extra Date column is added to the schema. The successive  changes are  tracked down in an MSSQL SCD table.
+</font></p>
+<a name="wp1458771"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<div align="center"><img src="images/Use_Case_tMSSQLSCD1.png" border="0" hspace="0" vspace="0"></div><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></p>
+<ul>
+<ul>
+<a name="wp1458785"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click &amp; drop the following components: <b>tFileInputCSV</b>, <b>tMap</b>, and <b>tMSSqlSCD</b>.</font></li>
+<a name="wp1458796"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Connect all components using a <b>Row Main </b>link.</font></li>
+<a name="wp1460250"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The input file is very large. In this example, changes are performed on the STORE_MANAGER column.</font></li>
+<a name="wp1460135"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tMSSQLSCD6.png" border="0" hspace="0" vspace="0"><br>
+
+</font></p>
+<a name="wp1461327"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The changes mentioned above are carried out on the second entry, on <i>Adams</i>.</font></li>
+<a name="wp1460227"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Select the <b>tFileInputCSV</b> component and click on the <b>Properties</b> view</font></li>
+<a name="wp1460156"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tMSSQLScd2.png" border="0" hspace="0" vspace="0"><br>
+
+</font></p>
+<a name="wp1458822"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The properties of the csv file are not stored centrally in the <b>Repository</b>, therefore, select <b>Built-In</b> as <b>Property Type</b>. Consequently you need to set manually all file details.</font></li>
+<a name="wp1458836"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In <b>File Name</b>, browse to the csv file. </font></li>
+<a name="wp1458849"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Set the comma as  <b>Field separator</b> and backslash apostrophes (<code>\&quot;</code>) as <b>Text enclosure</b>.</font></li>
+<a name="wp1458856"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Set the <b>Header </b>to 1.</font></li>
+<a name="wp1458864"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then click <b>Edit schema</b> to upload the schema.</font></li>
+<a name="wp1458871"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tMSSQLSCD3.png" border="0" hspace="0" vspace="0"><br>
+
+</font></p>
+<a name="wp1458881"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Make sure the data types are set properly and a key is defined.</font></li>
+<a name="wp1458887"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Double-click on the <b>tMap</b> component to open the mapper. Use the <b>AutoMap</b> button to automatically copy over all columns from the input to the output.</font></li>
+<a name="wp1460775"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Add an extra column to the output table, to hold the end date. This column will be reused in the SCD component to feed the the End Date of the SCD table. </font></li>
+<a name="wp1460784"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tMSSQLSCD4.png" border="0" hspace="0" vspace="0"><br>
+
+</font></p>
+<a name="wp1460795"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the <b>Expression</b> field, press <b>Ctrl+Space bar</b> to open the completion list. Select the <code>GetCurrentDate</code> function and set the column name as <code>DATE</code>.</font></li>
+<a name="wp1460809"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click <b>OK </b>to validate.</font></li>
+<a name="wp1460817"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Select the <b>tMSSqlSCD</b> component and set the changes tracking parameters.</font></li>
+<a name="wp1460936"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Set the MS SQL server connection parameters manually.</font></li>
+<a name="wp1460823"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tMSSQLSCD7.png" border="0" hspace="0" vspace="0"><br>
+
+</font></p>
+<a name="wp1460955"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Set the <b>Server</b>, <b>Port</b>, <b>Database</b> and <b>User</b> &amp; <b>password</b>.</font></li>
+<a name="wp1460966"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Type in the <b>Table</b> name, where the SCD information should be stored. In this example: <code>STORE_DMTEST</code></font></li>
+<a name="wp1461043"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The SCD Table schema should include an extra column to hold the surrogate key.</font></li>
+<a name="wp1461074"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Create a <b>Surrogate key</b>, based on the table max value incremented by 1. Select the column in the list (<i>STORE_SK</i> in this example) and <b>Table max + 1</b> in the <b>Creation</b> field. </font></li>
+<a name="wp1461924"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">On the Source keys  table, add one line and select the column to use as key in the source file. In this example, <i>STORE_ID</i>.</font></li>
+<a name="wp1461936"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tMSSQLSCD8.png" border="0" hspace="0" vspace="0"><br>
+
+</font></p>
+<a name="wp1461941"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In this example, the SCD type 1 and 2 are not used. For more information regarding SCD type 1, see <b>tMySqlSCD </b><a href="tMysqlSCD_Scenario.html#wp1413812"><i>Scenario: Tracking changes using Slowly Changing Dimension</i></a>.</font></li>
+<a name="wp1461955"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Check the <b>SCD type 2 fields </b>box.</font></li>
+<a name="wp1461958"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the table, add as many entries as you need to track the important changes. In this example, all column but the ID are selected.</font></li>
+<a name="wp1461962"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Select the Start date  and End date columns where the Start and End date should be put in. In this example, the date has been added to the schema and the current date is used as Start date. </font></li>
+<a name="wp1461987"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Check the <b>Use SCD Type 3 fields </b>box.</font></li>
+<a name="wp1462127"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Check the <b>Log active</b> status and <b>Log versions</b>, and select the relevant column in the SCD table where to store these values, in this example, respectively <i>SCD_START</i> and <i>SCD_END</i>.</font></li>
+<a name="wp1461993"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tMSSQLSCD9.png" border="0" hspace="0" vspace="0"><br>
+
+</font></p>
+<a name="wp1462151"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Add as many lines as required. In this example, we will focus on the <i>STORE_MANAGER</i> column. </font></li>
+<a name="wp1462164"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The SCD table schema should inclue the previous value column in order to store the former current value of the selected column. In this example, we focus on <i>PREV_STORE_MANAGER</i>. </font></li>
+<a name="wp1462197"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Save the job.</font></li>
+<a name="wp1462214"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Make the following changes to the <i>STORE_MANAGER</i> column of the input csv file: change <i>Adams</i> to Smith</font></li>
+<a name="wp1462309"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tMSSQLSCD10.png" border="0" hspace="0" vspace="0"><br>
+
+</font></p>
+<a name="wp1462331"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The name <i>Adams</i> is now in the <i>PREV_STORE_MANAGER</i> column and the new name <i>Smith</i> is now in the <i>STORE_MANAGER</i> column.
+</font></p>
+<a name="wp1462369"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+For more information regarding the SCD Type 1&amp; 2<a href="tMysqlSCD_Scenario.html#wp1413812">, see&#160;<i>Scenario: Tracking changes using Slowly Changing Dimension.</i></a>
+</font></p>
+</ul>
+</ul>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tMSSqlSCD_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tMSSqlSP_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

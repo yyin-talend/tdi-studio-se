@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Simple HTML">
-    <meta name="LASTUPDATED" content="07/06/07 15:53:51">
+    <meta name="LASTUPDATED" content="10/05/07 18:38:02">
     <title>Scenario: Writing DB data into an LDIF-type file</title>
   </head>
 
@@ -28,55 +28,46 @@
 <a name="wp1295052"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
 Scenario: Writing DB data into an LDIF-type file
 </b></font></h3>
-<dl><a name="wp1287690"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1287690"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 This scenario describes a two component job which aims at extracting data from a database table and writing this data into a new output LDIF file.
-</font></dd>
-</dl><a name="wp1187095"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tFileOutputLDIF1.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<a name="wp1187095"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<div align="center"><img src="images/Use_Case_tFileOutputLDIF1.png" border="0" hspace="0" vspace="0"></div><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 
-</font></div>
+</font></p>
 <ul>
 <ul>
 <a name="wp1187106"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click and drop a <b>tDBInput</b> and a <b>tFileOutputLDIF</b> component from the Palette to the design area. Bind them together using a <b>Row &gt; Main</b> link.</font></li>
 <a name="wp1187122"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Select the <b>tDBInput</b> component, and go to the <b>Properties</b> panel then select the <b>Properties</b> tab.</font></li>
 <a name="wp1187129"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">If you stored the  DB connection details in a <b>Metadata</b> entry in the Repository, set the <b>Property type</b> as well as the <b>Schema type</b> on <b>Repository</b> and select the relevant metadata entry. All other fields are filled in automatically, and retrieve the metadata-stored parameters. </font></li>
-</ul>
-</ul>
-<a name="wp1187147"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tFileOutputLDIF2.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1187147"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tFileOutputLDIF2.png" border="0" hspace="0" vspace="0"><br>
 
-</font></div>
-<ul>
-<ul>
+</font></p>
 <a name="wp1187161"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Alternatively select <b>Built-in</b> as <b>Property type</b> and <b>Schema type</b> and fill in the DB connection and schema fields manually.</font></li>
 <a name="wp1187172"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then double-click on <b>tFileOutpuLDIF</b> and define the <b>Properties</b>.</font></li>
 <a name="wp1187175"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Browse to the folder where you store the Output file. In this use case, a new LDIF file is to be created. Thus type in the name of this new file.</font></li>
 <a name="wp1187182"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the <b>Wrap</b> field, enter the number of characters held on one line. The text coming afterwards will get wrapped onto the next line.</font></li>
-</ul>
-</ul>
-<a name="wp1187191"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tFileOutputLDIF3.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1187191"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tFileOutputLDIF3.png" border="0" hspace="0" vspace="0"><br>
 
-</font></div>
-<ul>
-<ul>
+</font></p>
 <a name="wp1187202"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Select <b>Add</b> as <b>Change Type</b> as the newly created file is by definition empty. In case of modification type of Change, you&#39;ll need to define the nature of the modification you want to make to the file.</font></li>
 <a name="wp1187215"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">As <b>Schema Type</b>, select <b>Built-in</b> and use the <b>Sync Columns</b> button to retrieve the input schema definition.</font></li>
 <a name="wp1187221"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Press F6 to short run the job.</font></li>
-</ul>
-</ul>
-<a name="wp1187228"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tFileOutputLDIF4.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1187228"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tFileOutputLDIF4.png" border="0" hspace="0" vspace="0"><br>
 
-</font></div>
-<dl><a name="wp1187231"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<a name="wp1187231"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 The LDIF file created contains the data from the DB table and the type of change made to the file, in this use case, addition.
-</font></dd>
-</dl>
+</font></p>
+</ul>
+</ul>
     </blockquote>
     <hr>
 

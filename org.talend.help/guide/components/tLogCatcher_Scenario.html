@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Simple HTML">
-    <meta name="LASTUPDATED" content="07/06/07 15:53:51">
+    <meta name="LASTUPDATED" content="10/05/07 18:38:02">
     <title>Scenario1: warning &amp; log on entries</title>
   </head>
 
@@ -28,103 +28,83 @@
 <a name="wp1295180"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
 Scenario1: warning &amp; log on entries
 </b></font></h3>
-<dl><a name="wp1294091"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1294091"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 In this basic scenario made of three components, a <b>tRowGenerator</b> creates random entries (id to be incremented). The input hits a <b>tWarn</b> component which triggers the <b>tLogCatcher</b> subjob. This subjob fetches the warning message as well as standard predefined information and passes them on to the <b>tLogRow</b> for a quick display of the log data.
-</font></dd>
-</dl><a name="wp1205101"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tCatch1.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<a name="wp1205101"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<div align="center"><img src="images/Use_Case_tCatch1.png" border="0" hspace="0" vspace="0"></div><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 
-</font></div>
+</font></p>
 <ul>
 <ul>
 <a name="wp1205118"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click and drop a <b>tRowGenerator</b>, a <b>tWarn</b>, a <b>tLogCatcher</b> and a <b>tLogRow</b> from the Palette, on your workspace</font></li>
 <a name="wp1205129"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Connect the <b>tRowGenerator</b> to the <b>tWarn</b> component.</font></li>
 <a name="wp1205139"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Connect separately the <b>tLogCatcher</b> to the <b>tLogRow</b>.</font></li>
 <a name="wp1205148"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">On the <b>tRowGenerator</b> editor, set the random entries creation using a basic Perl function: </font></li>
-</ul>
-</ul>
-<a name="wp1205157"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tCatch2.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1205157"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tCatch2.png" border="0" hspace="0" vspace="0"><br>
 
-</font></div>
-<ul>
-<ul>
+</font></p>
 <a name="wp1236843"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">On the <b>tWarn</b> Properties panel, set your warning message, the code the priority level. In this case, the message is &quot;this is a warning&#39;.</font></li>
 <a name="wp1205173"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">For this scenario, we will concatenate a Perl function to the message above, in order to collect the first value from the input table.</font></li>
-</ul>
-</ul>
-<a name="wp1205182"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tCatch3.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1205182"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tCatch3.png" border="0" hspace="0" vspace="0"><br>
 
-</font></div>
-<ul>
-<ul>
+</font></p>
 <a name="wp1205193"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">On the <b>tLogCatcher</b> properties panel, check the <b>tWarn</b> box in order for the message from the latter to be collected by the subjob.</font></li>
 <a name="wp1205200"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click <b>Edit Schema </b>to view the schema used as log output. Notice that the log is comprehensive.</font></li>
-</ul>
-</ul>
-<a name="wp1205209"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tCatch4.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1205209"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tCatch4.png" border="0" hspace="0" vspace="0"><br>
 
-</font></div>
-<dl><a name="wp1205214"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<a name="wp1205214"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 Press <b>F6</b> to execute the job. Notice that the Log produced is exhaustive.
-</font></dd>
-</dl><a name="wp1205220"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+</font></p>
+</ul>
+</ul>
+<a name="wp1205220"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
 Scenario 2: log &amp; kill a job
 </b></font></h3>
-<dl><a name="wp1295196"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1295196"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 This scenario uses a <b>tLogCatcher</b> and a <b>tDie</b> component. A <b>tRowGenerator</b> is connected to a <b>tFileOutputDelimited</b> using a Row link. On error, the <b>tDie</b> triggers the catcher subjob which displays the log data content on the <b>Run Job</b> console.
-</font></dd>
-</dl><a name="wp1205249"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tDie1.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<a name="wp1205249"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<div align="center"><img src="images/Use_Case_tDie1.png" border="0" hspace="0" vspace="0"></div><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 
-</font></div>
+</font></p>
 <ul>
 <ul>
-<a name="wp1205257"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click and drop all required components from various folders of the <b>Palette</b>: <b>tRowGenerator</b>, tFileOutputDelimited, tDie, tLogCatcher, tLogRow.</font></li>
+<a name="wp1205257"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click and drop all required components from various folders of the <b>Palette</b>: <b>tRowGenerator</b>, <b>tFileOutputDelimited</b>, <b>tDie</b>, <b>tLogCatcher</b>, <b>tLogRow</b>.</font></li>
 <a name="wp1205266"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">On the tRowGenerator properties panel, define the setting of the input entries to be handled.</font></li>
-</ul>
-</ul>
-<a name="wp1205273"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tDie2.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1205273"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tDie2.png" border="0" hspace="0" vspace="0"><br>
 
-</font></div>
-<ul>
-<ul>
+</font></p>
 <a name="wp1205280"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Edit the schema and define the following columns as random input examples: <i>id, name, quantity, flag and creation</i>.</font></li>
 <a name="wp1205288"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Set the <b>Number of rows</b> onto 0. This will constitute the error which the Die operation is based on.</font></li>
 <a name="wp1205299"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">On the <b>Values</b> table, define the <b>Perl array</b> functions to feed the input flow.</font></li>
 <a name="wp1205305"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Define the <b>tFileOutputDelimited</b> to hold the possible output data. The row connection from the tRowGenerator feeds automatically the output schema. The separator is a simple semi-colon.</font></li>
-<a name="wp1237081"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Connect this output component to the tDie using a <b>Trigger  &gt; If </b> connection. Double-click on the newly created connection to define the if: <br><i>$_globals{tRowGenerator_1}{NB_LINE} &lt;= 0</i></font></li>
+<a name="wp1237081"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Connect this output component to the tDie using a <b>Trigger  &gt; If </b> connection. Double-click on the newly created connection to define the if: <br><code>$_globals{tRowGenerator_1}{NB_LINE} &lt;= 0</code></font></li>
 <a name="wp1205331"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then double-click to select and define the <b>Properties</b> of the <b>tDie</b> component.</font></li>
-</ul>
-</ul>
-<a name="wp1205338"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tDie3.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1205338"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tDie3.png" border="0" hspace="0" vspace="0"><br>
 
-</font></div>
-<ul>
-<ul>
+</font></p>
 <a name="wp1205349"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Enter your <b>Die</b> message to be transmitted to the <b>tLogCatcher</b> before the actual kill job operation happens.</font></li>
 <a name="wp1205356"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Next to the job but not physically connected to it, click and drop a <b>tLogCatcher</b> and connect it to a <b>tLogRow</b> component.</font></li>
 <a name="wp1205366"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Define the tLogCatcher properties. Make sure the <b>tDie</b> box is checked in order to add the Die message to the Log information transmitted to the final component. </font></li>
-</ul>
-</ul>
-<a name="wp1205375"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tDie4.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1205375"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tDie4.png" border="0" hspace="0" vspace="0"><br>
 
-</font></div>
-<ul>
-<ul>
+</font></p>
 <a name="wp1205381"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Press <b>F6</b> to run the job and notice that the log contains a black message and a red one.</font></li>
 <a name="wp1205384"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The black log data come from the tDie and are transmitted by the tLogCatcher. In addition the normal PerlDie message in red displays as a job abnormally died.</font></li>
 </ul>

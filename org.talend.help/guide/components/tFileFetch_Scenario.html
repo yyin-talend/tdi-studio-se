@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Simple HTML">
-    <meta name="LASTUPDATED" content="07/06/07 15:53:51">
+    <meta name="LASTUPDATED" content="10/05/07 18:38:02">
     <title>Scenario: Fetching data through HTTP</title>
   </head>
 
@@ -28,14 +28,14 @@
 <a name="wp1294890"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
 Scenario: Fetching data through HTTP
 </b></font></h3>
-<dl><a name="wp1287593"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1287593"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 This scenario describes a three-component job which retrieves data from an HTTP website and select data that will be stored into a delimited file. 
-</font></dd>
-</dl><a name="wp1210146"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tFileFetch1.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<a name="wp1210146"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<div align="center"><img src="images/Use_Case_tFileFetch1.png" border="0" hspace="0" vspace="0"></div><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 
-</font></div>
+</font></p>
 <ul>
 <ul>
 <a name="wp1210160"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click and drop a <b>tFileFetch</b>, a <b>tFileInputRegex</b> and a <b>tFileOutputDelimited</b> onto your workspace.</font></li>
@@ -43,24 +43,21 @@ This scenario describes a three-component job which retrieves data from an HTTP 
 <a name="wp1210178"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the <b>Destination directory</b> field, browse to the folder where the fetched file is to be stored. </font></li>
 <a name="wp1210184"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the <b>Filename</b> field, type in a  new name for the file if you want it to be changed. In this example, <i>filefetch.txt</i>.</font></li>
 <a name="wp1210198"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Select the <b>tFileInputRegex</b>, set the <b>File name</b> so that it corresponds to the file fetched earlier.</font></li>
-<a name="wp1210270"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Using a regular expression, in the <b>Regex </b>field, select the relevant data from the fetched file. In this example: <code>&lt;td(?: class=&quot;leftalign&quot;)?&gt; \s* (t\w+) \s* &lt;/td&gt;</code> </font></li>
-</ul>
-</ul>
-<a name="wp1349491"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/warning_iconee.gif" align="left" border="0" hspace="0" vspace="0"></table></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1210270"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Using a regular expression, in the <b>Regex </b>field, select the relevant data from the fetched file. In this example: &lt;td(?: class=&quot;leftalign&quot;)?&gt; \s* (t\w+) \s* &lt;/td&gt; </font></li>
+<a name="wp1349491"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/warning_iconee.gif" align="left" border="0" hspace="0" vspace="0"><br>
 
-</font></div>
-<dl><a name="wp1349506"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-Take care to use the correct Regex syntax according to the generation language in use as the syntax is different in Java/Perl.
-</font></dd>
-<ul>
+</font></p>
+<a name="wp1349506"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Take care to use the correct Regex syntax according to the generation language in use as the syntax is different in Java/Perl, and to include the regexp in single or double quotes accordingly.
+</font></p>
 <a name="wp1349580"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Define the <b>header</b>, <b>footer</b> and <b>limit</b> if need be. In this case, we&#39;ll ignore these fields.</font></li>
 <a name="wp1349583"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Define also the schema describing the flow to be passed on to the final output.</font></li>
 <a name="wp1349565"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The schema should be automatically propagated to the final output, but to be sure, check the schema in the <b>Properties</b> panel of the tFileOutputDelimited component.</font></li>
 <a name="wp1349554"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then press <b>F6</b> to run the job.</font></li>
 </ul>
-</dl>
+</ul>
     </blockquote>
     <hr>
 

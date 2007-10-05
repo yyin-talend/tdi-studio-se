@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Simple HTML">
-    <meta name="LASTUPDATED" content="07/06/07 15:53:51">
+    <meta name="LASTUPDATED" content="10/05/07 18:38:02">
     <title>Scenario: Displaying number of processed lines</title>
   </head>
 
@@ -13,7 +13,7 @@
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a href="tPerl_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tPostgresqlInput_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+<a href="tPerl_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tPostgresqlBulkExec_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
         </td>
       </tr>
     </table-->
@@ -22,70 +22,61 @@
     <hr align="left"-->
 
     <blockquote>
-<a name="wp1186292"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1449297"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 
 </font></div>
 <a name="wp1295801"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
 Scenario: Displaying number of processed lines
 </b></font></h3>
-<dl><a name="wp1289080"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1289080"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 This scenario is a three-component job showing  in the Log the number of rows being processed and output in an XML file.
-</font></dd>
-</dl><a name="wp1186304"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tPerl.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<a name="wp1186304"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<div align="center"><img src="images/Use_Case_tPerl.png" border="0" hspace="0" vspace="0"></div><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 
-</font></div>
+</font></p>
 <ul>
 <ul>
 <a name="wp1238575"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click and drop three components from the Palette to the workspace: <b>tFileInputDelimited</b>, <b>tFileOutputExcel</b>, <b>tPerl</b></font></li>
 <a name="wp1186320"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Right-click on the <b>tFileInputDelimited</b> object and connect it  to the <b>tFileOutputExcel</b> component using a main Row.</font></li>
 <a name="wp1186327"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Right-click again on <b>tFileInputDelimited</b> and link it with the tPerl component using a <b>Trigger &gt; ThenRun </b>link. This link means that, following the arrow direction, the first component (tFileDelimited) will run before the second component (tPerl).</font></li>
 <a name="wp1186340"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click once on <b>tFileInputDelimited</b> and select <b>Properties</b> tab to define the component properties.</font></li>
-</ul>
-</ul>
-<a name="wp1186349"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tPerl1.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1186349"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tPerl1.png" border="0" hspace="0" vspace="0"><br>
 
-</font></div>
-<ul>
-<ul>
+</font></p>
 <a name="wp1186357"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The <b>Properties</b> are not reused from or for another job stored in the repository, but instead are used for this job only. Therefore select <b>Built-In</b> in the drop-down list.</font></li>
 <a name="wp1186364"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Enter a path or browse to the file containing the data to be processed. In this example, the text file gathers a list of names facing the relevant email addresses.</font></li>
 <a name="wp1186374"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Define the <b>Row</b> and <b>Field</b> separators. In this scenario, there is one name and the matching email per row. And the fields are separated by a semi-colon.</font></li>
 <a name="wp1186378"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The first row of the file contains the labels of the columns, therefore it should be ignored in the job. Therefore the the Header field value is 1.</font></li>
 <a name="wp1186383"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">There is no footer nor limit value to be defined for this scenario.</font></li>
-<a name="wp1186392"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The <b>Schema type</b> is also built-in in this case. Click on <b>Edit Schema</b> and describe the content of the input file. In this scenario, there are two columns labelled Name and Emails, of type String and with no length defined. Key field being Email.</font></li>
+<a name="wp1186392"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The <b>Schema type</b> is also built-in in this case. Click on <b>Edit Schema</b> and describe the content of the input file. In this scenario, there are two columns labelled <i>Name</i> and <i>Emails</i>, of type String and with no length defined. Key field being <i>Email</i>.</font></li>
 <a name="wp1186397"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Select the <b>tFileOutputExcel</b> component and define it accordingly. </font></li>
 <a name="wp1186400"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Select the output file path, Sheet and synchronize the schema.</font></li>
 <a name="wp1186407"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then define the <b>tPerl</b> sub-job in order to get the number of rows transferred to the XML Output file.</font></li>
-</ul>
-</ul>
-<a name="wp1186416"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tPerl2.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1186416"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tPerl2.png" border="0" hspace="0" vspace="0"><br>
 
-</font></div>
-<ul>
-<ul>
-<a name="wp1186424"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Enter the Perl command <i>print</i> to get the variable containing the number of rows read in the tFileInputDelimited. To access the list of available variables, press <b>Ctrl+Space</b> then select the relevant variable in the list. </font></li>
+</font></p>
+<a name="wp1186424"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Enter the Perl command <code>print</code> to get the variable containing the number of rows read in the tFileInputDelimited. To access the list of available variables, press <b>Ctrl+Space</b> then select the relevant variable in the list. </font></li>
 <a name="wp1186434"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">For a better readability in the <b>Run Job</b> log, add equal signs before and after the commands. Note also that commands, strings and variables are coloured differently. </font></li>
 <a name="wp1186443"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then switch to the <b>Run Job</b> tab and execute the job.</font></li>
-</ul>
-</ul>
-<dl><a name="wp1186446"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1186446"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 The job runs smoothly and create an output xml file following the two-field schema defined: Name and Email.
-</font></dd>
-</dl><a name="wp1186454"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tPerl3.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<a name="wp1186454"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tPerl3.png" border="0" hspace="0" vspace="0"><br>
 
-</font></div>
-<dl><a name="wp1186460"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<a name="wp1186460"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 The Perl command result is shown in the job log.
-</font></dd>
-</dl>
+</font></p>
+</ul>
+</ul>
     </blockquote>
     <hr>
 
@@ -105,7 +96,7 @@ The Perl command result is shown in the job log.
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a href="tPerl_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tPostgresqlInput_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+<a href="tPerl_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tPostgresqlBulkExec_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
         </td>
       </tr>
     </table-->

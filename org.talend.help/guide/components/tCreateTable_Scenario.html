@@ -1,0 +1,96 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Simple HTML">
+    <meta name="LASTUPDATED" content="10/05/07 18:38:02">
+    <title>Scenario: Creating new table in a Mysql Database</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tCreateTable_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tDB2Input_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp1358295"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<a name="wp1359703"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+Scenario: Creating new table in a Mysql Database
+</b></font></h3>
+<a name="wp1359724"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The job described below aims at creating a table in a database, made of a dummy schema taken from a delimited file schema stored in the Repository. This job is composed of a single component.
+</font></p>
+<a name="wp1359156"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<div align="center"><img src="images/Use_Case_tCreateTable1.png" border="0" hspace="0" vspace="0"></div><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></p>
+<ul>
+<ul>
+<a name="wp1359173"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click and drop a <b>tCreateTable</b> component from the <b>Databases</b> family in the <b>Palette</b>.</font></li>
+<a name="wp1359204"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the <b>Properties</b> view, define the<b> Database type</b> on <i>MySQL</i> for this use case.</font></li>
+<a name="wp1359235"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tCreateTable2.png" border="0" hspace="0" vspace="0"><br>
+
+</font></p>
+<a name="wp1359348"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the <b>Special Action</b> list, select <b>Create table</b>.</font></li>
+<a name="wp1359354"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Check <b>Use Existing Connection</b> only in the case, you are using a dedicated connection component<a href="tMysqlConnection_Prop.html">, see&#160;<i>tMysqlConnection.</i></a> In this use case, we won&#39;t use this option.</font></li>
+<a name="wp1359365"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the <b>Property type</b> field, select <b>Repository</b> so that all following connection fields are automatically filled in. If you didn&#39;t define a <b>Metadata DB connection</b> entry for your Db connection, fill in manually the details as <b>Built-in</b>. </font></li>
+<a name="wp1359484"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the <b>New Table Name</b> field, fill in a name for the table to be created.</font></li>
+<a name="wp1359506"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">If you want to retrieve the <b>Schema</b> from the Metadata (it doesn&#39;t need to be a DB connection Schema metadata), select Repository then the relevant entry.</font></li>
+<a name="wp1359528"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In any case (Built-in  or Repository) click <b>Edit Schema</b> to check the Data type mapping.</font></li>
+<a name="wp1359574"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tCreateTable3.png" border="0" hspace="0" vspace="0"><br>
+
+</font></p>
+<a name="wp1359600"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click the <b>Reset DB Types</b> button in case the DB type column is empty or shows discrepancies marks (orange colour). This allows to map any data type to the relevant DB data type.</font></li>
+<a name="wp1359629"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click <b>OK</b>.</font></li>
+<a name="wp1359638"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then press <b>F6</b> to run the job.</font></li>
+<a name="wp1359660"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The table is created empty but with all columns defined in the Schema.
+</font></p>
+<a name="wp1359674"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tCreateTable4.png" border="0" hspace="0" vspace="0"><br>
+
+</font></p>
+</ul>
+</ul>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tCreateTable_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tDB2Input_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

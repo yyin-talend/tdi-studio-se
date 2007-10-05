@@ -1,0 +1,135 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Simple HTML">
+    <meta name="LASTUPDATED" content="10/05/07 18:38:02">
+    <title>Scenario: asynchronous communication via a MOM server</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tMomInput_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tMomOutput_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp1423917"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<a name="wp1425361"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+Scenario: asynchronous communication via a MOM server
+</b></font></h3>
+<a name="wp1425376"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+This scenario is made of two jobs. The first job aims at posting messages onto a JBoss server queue and the second job fetches the message from the server.
+</font></p>
+<a name="wp1424021"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+In the first job, a string message is created using a <b>tRowGenerator</b> and put on a JBoss server using a <b>tMomOutput</b>. An intermediary <b>tLogRow</b> component displays the flow being passed.
+</font></p>
+<a name="wp1423964"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<div align="center"><img src="images/Use_Case_tMomInput1.png" border="0" hspace="0" vspace="0"></div><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></p>
+<ul>
+<ul>
+<a name="wp1423981"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click and drop the three components of this first job and right-click to connect them using a <b>Main </b>row link.</font></li>
+<a name="wp1424005"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Double-click on the <b>tRowGenerator</b> to set the schema to be randomly generated.</font></li>
+<a name="wp1424060"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tMomInput2.png" border="0" hspace="0" vspace="0"><br>
+
+</font></p>
+<a name="wp1424080"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Set only one column called <i>message</i>. This is the message to be put on the MOM queue.</font></li>
+<a name="wp1424122"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">This column is of <b>String</b> type and is nullable.To produce the data, use a preset function which concatenates randomly chosen ascii characters to form a 6-char string. This function is <code>getAsciiRandomString</code>. (Java version). Click the Preview button to view a random sample of data generated.</font></li>
+<a name="wp1424182"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Set the <b>Number of rows to be generated</b> to <i>10</i>.</font></li>
+<a name="wp1424204"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click <b>OK</b> to validate.</font></li>
+<a name="wp1424508"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The <b>tLogRow</b> is only used to display a intermediary state of the data to be handled. In this example, it doesn&#39;t require any specific configuration.</font></li>
+<a name="wp1424254"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then select the <b>tMomOutput </b>component.</font></li>
+<a name="wp1424282"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tMomInput3.png" border="0" hspace="0" vspace="0"><br>
+
+</font></p>
+<a name="wp1424310"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In this use case, the<b> MQ server</b> to be used is <b>JBoss</b>.</font></li>
+<a name="wp1424334"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In <b>Host</b> and <b>Port</b> fields, fill in the relevant connection information.</font></li>
+<a name="wp1424383"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Select the <b>Message type</b> in the list. The message can be of <b>Queue</b> or <b>Topic</b> type. In this example, select the <b>Queue </b>type on the list. </font></li>
+<a name="wp1424358"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the <b>To</b> field, type in the message source information strictly as expected by the server. This should match the Message Type you selected, such as: <code>queue/A</code>.  </font></li>
+<a name="wp1424458"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Note:	The message name is case-sensitive, therefore <code>queue/A </code>and <code>Queue/A</code> are different. 
+</font></p>
+<a name="wp1424481"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then click <b>Sync Columns</b> to pass on the schema from the preceding component. The schema being read-only, it cannot be changed. The data posted onto the MQ come from the first encountered column of the schema.</font></li>
+<a name="wp1425140"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Run the job and see  the console the data flow being passed on thanks to the tLogRow component.</font></li>
+<a name="wp1425211"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tMomInput6.png" border="0" hspace="0" vspace="0"><br>
+
+</font></p>
+<a name="wp1425280"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Then set the second job in order to fetch the queuing messages from the MOM server.
+</font></p>
+<a name="wp1425214"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tMomInput4.png" border="0" hspace="0" vspace="0"><br>
+
+</font></p>
+<a name="wp1425202"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click and drop the <b>tMomInput</b> component (from the <b>Internet</b> folder in the <b>Palette</b>) and a <b>tLogRow</b> to display the fetched messages.</font></li>
+<a name="wp1424920"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Select the <b>tMomInput</b> to set the parameters.</font></li>
+<a name="wp1424934"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tMomInput5.png" border="0" hspace="0" vspace="0"><br>
+
+</font></p>
+<a name="wp1424954"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Select the <b>MQ server</b> on the list. In this example, a JBoss messaging server is used. </font></li>
+<a name="wp1424971"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Set the server <b>Host</b> and <b>Port</b> information.</font></li>
+<a name="wp1425010"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Set the <b>Message From</b> and the <b>Message Type</b> to match the source and type expected by the messaging server.</font></li>
+<a name="wp1425048"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The <b>Schema</b> is read-only and is made of two columns: <b>From</b> and <b>Message</b>.</font></li>
+<a name="wp1425085"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Check the <b>Keep listening</b> box and set the frequency of verification to <i>5 </i>seconds.</font></li>
+<a name="wp1425221"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Note:	When using the <b>Keep Listening</b> option, you&#39;ll need to kill the job to end it. 
+</font></p>
+<a name="wp1425237"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">No need to change any default setting from the <b>tLogRow</b>.</font></li>
+<a name="wp1425254"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Save the job and run it (when launching for the first time or if you killed it on a previous run).</font></li>
+<a name="wp1425293"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tMomInput7.png" border="0" hspace="0" vspace="0"><br>
+
+</font></p>
+<a name="wp1425309"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The messages fetched on the server are displayed on the console.
+</font></p>
+</ul>
+</ul>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tMomInput_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tMomOutput_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

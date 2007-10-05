@@ -1,0 +1,110 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Simple HTML">
+    <meta name="LASTUPDATED" content="10/05/07 18:38:02">
+    <title>Scenario: Editing data in an LDAP directory</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tLDAPOutput_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tLogCatcher_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp1428263"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<a name="wp1431057"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+Scenario: Editing data in an LDAP directory
+</b></font></h3>
+<a name="wp1431063"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The following scenario describes a job that reads an LDAP directory, updates the email of a selected entry and displays the output before writing the LDAP directory. To keep it simple, no alias dereferencing nor referral handling is performed. This scenario is based on <b>LDAPInput</b>&#39;s <a href="tLDAPInput_Scenario.html#wp1431029"><i>Scenario: Displaying LDAP directory&#39;s filtered content</i></a>. The result returned was a single entry, related to an organisational person, whom email  is to be updated.
+</font></p>
+<a name="wp1429698"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<div align="center"><img src="images/Use_Case_tLDAPOutput1.png" border="0" hspace="0" vspace="0"></div><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></p>
+<ul>
+<ul>
+<a name="wp1429716"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click and drop the <b>tLDAPInput</b>, <b>tLDAPOutput</b>, <b>tMap</b> and <b>tLogRow</b> components.</font></li>
+<a name="wp1429725"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Connect the input component to the <b>tMap</b> then to the <b>tLogRow</b> and to the output component.</font></li>
+<a name="wp1429732"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the <b>tLDAPInput</b> properties view, set the connection details to the LDAP directory server as well as the filter as described in <a href="tLDAPInput_Scenario.html#wp1431029"><i>Scenario: Displaying LDAP directory&#39;s filtered content</i></a>.</font></li>
+<a name="wp1429750"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Change the schema to make it simpler, by removing the unused fields: <i>dc</i>, <i>ou</i>, <i>objectclass</i>.</font></li>
+<a name="wp1429756"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tLDAPOutput2.png" border="0" hspace="0" vspace="0"><br>
+
+</font></p>
+<a name="wp1429904"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then open the mapper to set the edit to be carried out.</font></li>
+<a name="wp1429920"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Drag &amp; drop the uid column from the input table to the output as no change is required on this column.</font></li>
+<a name="wp1429929"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tLDAPOutput3.png" border="0" hspace="0" vspace="0"><br>
+
+</font></p>
+<a name="wp1430033"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the <b>Expression</b> field of the <i>dn</i> column (output), fill in with the exact expression expected by the LDAP server to reach the target tree leaf and allow directory writing on the condition that you haven&#39;t set it already in the <b>Base DN </b>field of the <b>tLDAPOutput</b> component.</font></li>
+<a name="wp1430117"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In this use case, the <b>GetResultName</b> global variable is used to retrieve this path automatically. Press <b>Ctrl+Space bar</b> to access the variable list and select <code>tLDAPInput_1_RESULT_NAME</code>.</font></li>
+<a name="wp1430162"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the <i>mail</i> column&#39;s expression field, type in the new email that will overwrite the current data in the LDAP directory. In this example, we change to <i>Pierre.Dupont@talend.com</i>.</font></li>
+<a name="wp1430182"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click <b>OK</b> to validate the changes.</font></li>
+<a name="wp1430211"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The <b>tLogRow</b> component doesn&#39;t need any particular setting.</font></li>
+<a name="wp1430234"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then select the <b>tLDAPOutput</b> component to set the directory writing properties.</font></li>
+<a name="wp1430301"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tLDAPOutput5.png" border="0" hspace="0" vspace="0"><br>
+
+</font></p>
+<a name="wp1430333"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Set the <b>Port</b> and <b>Host</b> details manually if they aren&#39;t stored in the <b>Repository</b>.</font></li>
+<a name="wp1430371"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In <b>Base DN</b> field, set the highest tree leaf you have the rights to access. If you haven&#39;t set previously the exact and full path of the target DN you want to access, then fill in it here. In this use case, the full DN is provided by the <i>dn</i> output from the tMap component, therefore only the highest accessible leaf is given: <i>o=directoryRoot</i>.</font></li>
+<a name="wp1430499"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Select the relevant protocol to be used: <b>LDAP</b> for this example.</font></li>
+<a name="wp1430523"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then fill in the <b>User</b> and <b>Password</b> as expected by the LDAP directory.</font></li>
+<a name="wp1430555"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Use the default setting of <b>Alias Dereferencing</b> and <b>Referral Handling</b> fields, respectively <b>Always</b> and <b>Ignore</b>.</font></li>
+<a name="wp1430599"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The <b>Insert mode</b> for this use case is <b>Update</b> (the email address).</font></li>
+<a name="wp1430629"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The schema was provided by the previous component through the propagation operation.</font></li>
+<a name="wp1430754"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Save the job and execute.</font></li>
+<a name="wp1430761"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tLDAPOutput4.png" border="0" hspace="0" vspace="0"><br>
+
+</font></p>
+<a name="wp1430767"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The output shows the following fields: <i>dn</i>, <i>uid</i> and <i>mail</i> as defined in the job. 
+</font></p>
+</ul>
+</ul>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tLDAPOutput_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tLogCatcher_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

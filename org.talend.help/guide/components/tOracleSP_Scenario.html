@@ -1,0 +1,126 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Simple HTML">
+    <meta name="LASTUPDATED" content="10/05/07 18:38:02">
+    <title>Scenario: Checking number format using a stored procedure</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tOracleSP_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tPerl_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp1449255"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<a name="wp1449258"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+Scenario: Checking number format using a stored procedure
+</b></font></h3>
+<a name="wp1413014"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The following job aims at connecting to an Oracle Database containing Social Security Numbers and their holders&#39; name, calling a stored procedure that checks the SSN format of against a standard ###-##-#### format. Then the verification output results, 1 for valid format and 0 for wrong format  get displayed onto the execution console. 
+</font></p>
+<a name="wp1410908"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<div align="center"><img src="images/Use_Case_tOracleSP1.png" border="0" hspace="0" vspace="0"></div><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></p>
+<ul>
+<ul>
+<a name="wp1410925"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Drag and drop the following components from the Palette: <b>tOracleConnection</b>, <b>tOracleInput</b>, <b>tOracleSP</b> and <b>tLogRow</b>.</font></li>
+<a name="wp1410965"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Link the <b>tOracleConnection</b> to the tOracleInput using a <b>Then Run</b> connection as no data is handled here. </font></li>
+<a name="wp1411012"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">And connect the other components using a <b>Row Main</b> link as rows are to be passed on as parameter to the SP component and to the console.</font></li>
+<a name="wp1411055"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the <b>tOracleConnection</b>, define the details of connection to the relevant Database. You will then be able to reuse this information in all other DB-related components.</font></li>
+<a name="wp1411083"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then select the <b>tOracleInput</b> and define its properties. </font></li>
+<a name="wp1411112"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tOracleSP3.png" border="0" hspace="0" vspace="0"><br>
+
+</font></p>
+<a name="wp1411899"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Check the <b>Use an existing connection</b> and select the <b>tOracleConnection</b> component in the list in order to reuse the connection details that you already set.</font></li>
+<a name="wp1411903"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Select <b>Repository</b> as <b>Property type</b> as the Oracle schema is defined in the DB Oracle connection entry of the Repository. If you haven&#39;t recorded the Oracle DB details  in the <b>Repository</b>, then fill in the Schema name manually.</font></li>
+<a name="wp1411311"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then select <b>Repository</b> as <b>Schema type</b>, and retrieve the relevant schema corresponding to your Oracle DB table.</font></li>
+<a name="wp1411962"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tOracleSP2.png" border="0" hspace="0" vspace="0"><br>
+
+</font></p>
+<a name="wp1411997"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In this example, the SSN table has a four-column schema that includes <i>ID</i>, <i>NAME</i>, <i>CITY</i> and <i>SSNUMBER</i>.</font></li>
+<a name="wp1412024"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the <b>Query</b> field, type in the following Select query or select it in the list, if you stored it in the Repository.<br><code>select ID, NAME, CITY, SSNUMBER from SSN</code>  </font></li>
+<a name="wp1411984"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then select the <b>tOracleSP</b> and define its <b>Properties</b>.</font></li>
+<a name="wp1411951"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tOracleSP4.png" border="0" hspace="0" vspace="0"><br>
+
+</font></p>
+<a name="wp1411918"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Like for the <b>tOracleInput</b> component, select <b>Repository</b> in the <b>Property type</b> field and check the <b>Use an existing connection</b> box, then select the relevant entries in the respective list.</font></li>
+<a name="wp1412628"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The schema used for the <b>tOracleSP</b> slightly differs from the input schema. Indeed, an extra column (<i>SSN_Valid</i>) is added to the Input schema. This column will hold the format validity status (<i>1</i> or <i>0</i>) produced  by the procedure. </font></li>
+<a name="wp1412646"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tOracleSP5.png" border="0" hspace="0" vspace="0"><br>
+
+</font></p>
+<a name="wp1412652"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then select the <b>Encoding type</b> in the list.</font></li>
+<a name="wp1412658"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the <b>SP Name</b> field, type in the exact name of the stored procedure (or function) as called in the Database. In this use case, the stored procedure name is <i>is_ssn</i>.</font></li>
+<a name="wp1413076"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The basic function used in this particular example is as follows:<br><code>CREATE OR REPLACE FUNCTION is_ssn(string_in VARCHAR2) RETURN PLS_INTEGER<br>IS<br>-- validating ###-##-#### format<br>BEGIN<br>  IF TRANSLATE(string_in, &#39;0123456789A&#39;, &#39;AAAAAAAAAAB&#39;) =<br>     &#39;AAA-AA-AAAA&#39; THEN<br>    RETURN 1;<br>  END IF;<br>  RETURN 0;<br>END is_ssn;<br>/</code></font></li>
+<a name="wp1412665"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">As a return value is expected in this use case, the procedure acts as a function, so check the <b>Is function</b> box. </font></li>
+<a name="wp1412675"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The only return value expected is based on the <i>ssn_valid</i> column, hence select the relevant list entry.</font></li>
+<a name="wp1412682"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the <b>Parameters</b> area, define the input and output parameters used in the procedure. In this use case, only the <i>SSNumber</i> column from the schema is used in the procedure.</font></li>
+<a name="wp1412692"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click the plus sign to add a line to the table and select the relevant column (<i>SSNumber</i>) and type (<i>IN</i>).</font></li>
+<a name="wp1412973"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then select the tLogRow component and click Sync Column to make sure the schema is passed on from the preceding <b>tOracleSP</b> component.</font></li>
+<a name="wp1412950"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tOracleSP6.png" border="0" hspace="0" vspace="0"><br>
+
+</font></p>
+<a name="wp1412953"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Check the <b>Print values in cells of a table</b> to facilitate the output reading.</font></li>
+<a name="wp1412912"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then save your job and press <b>F6</b> to run it. </font></li>
+<a name="wp1412938"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tOracleSP7.png" border="0" hspace="0" vspace="0"><br>
+
+</font></p>
+<a name="wp1412941"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+On the console, you can read the output results. All input schema columns are displayed eventhough they are not used as parameters in the stored procedure.
+</font></p>
+<a name="wp1412875"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The final column shows the expected return value, i.e. whether the SS Number checked is valid or not.
+</font></p>
+</ul>
+</ul>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tOracleSP_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tPerl_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

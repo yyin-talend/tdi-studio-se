@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Simple HTML">
-    <meta name="LASTUPDATED" content="07/06/07 15:53:51">
+    <meta name="LASTUPDATED" content="10/05/07 18:38:02">
     <title>Scenario: Adding a surrogate key to a file</title>
   </head>
 
@@ -13,7 +13,7 @@
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a href="tAddCRCRow_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tDB2Input_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+<a href="tAddCRCRow_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tAS400Input_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
         </td>
       </tr>
     </table-->
@@ -22,69 +22,56 @@
     <hr align="left"-->
 
     <blockquote>
-<a name="wp1349726"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1447061"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 
 </font></div>
-<a name="wp1357726"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+<a name="wp1447067"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
 Scenario: Adding a surrogate key to a file
 </b></font></h3>
-<dl><a name="wp1349730"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1362354"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 This scenario describes a job adding a surrogate key to a delimited file schema.
-</font></dd>
-</dl><a name="wp1349736"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tAddCRCRow1.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<a name="wp1362361"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<div align="center"><img src="images/Use_Case_tAddCRCRow1.png" border="0" hspace="0" vspace="0"></div><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 
-</font></div>
+</font></p>
 <ul>
 <ul>
-<a name="wp1349772"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click and drop the following components: <b>tFileInputDelimited</b>, <b>tAddCRCRow</b> and <b>tLogRow</b>.</font></li>
-<a name="wp1349805"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Connect them using a <b>Main row</b> connection.</font></li>
-<a name="wp1349822"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the <b>tFileInputDelimited</b> <b>Properties</b> view, set the <b>File Name </b>path and all related properties in case these are not stored in the <b>Repository</b>.</font></li>
-</ul>
-</ul>
-<a name="wp1349878"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tAddCRCRow2.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1362372"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click and drop the following components: <b>tFileInputDelimited</b>, <b>tAddCRCRow</b> and <b>tLogRow</b>.</font></li>
+<a name="wp1362383"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Connect them using a <b>Main row</b> connection.</font></li>
+<a name="wp1362395"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the <b>tFileInputDelimited</b> <b>Properties</b> view, set the <b>File Name </b>path and all related properties in case these are not stored in the <b>Repository</b>.</font></li>
+<a name="wp1362407"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tAddCRCRow2.png" border="0" hspace="0" vspace="0"><br>
 
-</font></div>
-<ul>
-<ul>
-<a name="wp1349898"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Create the schema through the <b>Edit Schema</b> button, in case the schema is not stored already in the <b>Repository</b><a href="http://java.sun.com/j2se/1.5.0/docs/api/index.html">. In Java, mind the data type column and in case of Date pattern to be filled in, check out </a>http://java.sun.com/j2se/1.5.0/docs/api/index.html.</font></li>
-<a name="wp1350114"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the <b>tAddCRCRow</b> <b>Properties</b> view, check the Input flow columns to be used to calculate the CRC.</font></li>
-</ul>
-</ul>
-<a name="wp1349964"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tAddCRCRow3.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<a name="wp1362415"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Create the schema through the <b>Edit Schema</b> button, in case the schema is not stored already in the <b>Repository</b><a href="http://java.sun.com/j2se/1.5.0/docs/api/index.html">. In Java, mind the data type column and in case of Date pattern to be filled in, check out http://java.sun.com/j2se/1.5.0/docs/api/index.html.</a></font></li>
+<a name="wp1362429"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the <b>tAddCRCRow</b> <b>Properties</b> view, check the Input flow columns to be used to calculate the CRC.</font></li>
+<a name="wp1362438"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tAddCRCRow3.png" border="0" hspace="0" vspace="0"><br>
 
-</font></div>
-<ul>
-<ul>
-<a name="wp1349915"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Notice that a CRC column (read-only) has been added at the end of the schema. </font></li>
-<a name="wp1350327"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Select <b>CRC32</b> as <b>CRC Type</b> to get a longer surrogate key.</font></li>
-</ul>
-</ul>
-<a name="wp1350334"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tAddCRCRow4.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<a name="wp1362444"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Notice that a CRC column (read-only) has been added at the end of the schema. </font></li>
+<a name="wp1362455"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Select <b>CRC32</b> as <b>CRC Type</b> to get a longer surrogate key.</font></li>
+<a name="wp1362462"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tAddCRCRow4.png" border="0" hspace="0" vspace="0"><br>
 
-</font></div>
-<ul>
-<ul>
-<a name="wp1350345"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the <b>tLogRow</b> Properties view, check the <b>Print values in cells of a table</b> option to display the output data in a table on the Console.</font></li>
-<a name="wp1350401"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then save your job and run it.</font></li>
-</ul>
-</ul>
-<a name="wp1350354"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tAddCRCRow5.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<a name="wp1362473"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the <b>tLogRow</b> Properties view, check the <b>Print values in cells of a table</b> option to display the output data in a table on the Console.</font></li>
+<a name="wp1362479"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then save your job and run it.</font></li>
+<a name="wp1362486"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tAddCRCRow5.png" border="0" hspace="0" vspace="0"><br>
 
-</font></div>
-<dl><a name="wp1350357"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<a name="wp1362489"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 An additional CRC Column has been added to the schema calculated on all previouly selected columns (in this case all columns of the schema).
-</font></dd>
-</dl>
+</font></p>
+</ul>
+</ul>
     </blockquote>
     <hr>
 
@@ -104,7 +91,7 @@ An additional CRC Column has been added to the schema calculated on all previoul
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a href="tAddCRCRow_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tDB2Input_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+<a href="tAddCRCRow_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tAS400Input_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
         </td>
       </tr>
     </table-->

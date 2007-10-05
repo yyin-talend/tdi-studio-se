@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Simple HTML">
-    <meta name="LASTUPDATED" content="07/06/07 15:53:51">
+    <meta name="LASTUPDATED" content="10/05/07 18:38:02">
     <title>Scenario: Aggregating values and sorting data</title>
   </head>
 
@@ -13,7 +13,7 @@
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a href="tAggregateRow_prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tContextLoad_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+<a href="tAggregateRow_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tAggregateSortedRow_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
         </td>
       </tr>
     </table-->
@@ -22,20 +22,20 @@
     <hr align="left"-->
 
     <blockquote>
-<a name="wp1357021"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1404260"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 
 </font></div>
-<a name="wp1357028"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+<a name="wp1404267"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
 Scenario: Aggregating values and sorting data
 </b></font></h3>
-<dl><a name="wp1354727"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1354727"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 The following scenario describes a four-component job. As input component, a CSV file contains countries and notation values to be sorted by best average value. This component is connected to a <b>tAggregateRow</b> operator, in charge of the average calculation then to a <b>tSortRow</b> component for the ascending sort. The output flow goes to the new csv file. 
-</font></dd>
-</dl><a name="wp1354741"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tAggregateRow1.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<a name="wp1354741"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<div align="center"><img src="images/Use_Case_tAggregateRow1.png" border="0" hspace="0" vspace="0"></div><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 
-</font></div>
+</font></p>
 <ul>
 <ul>
 <a name="wp1354753"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">From the <b>File</b> folder in the Palette, click and drop a <b>tFileInputCSV</b> component. </font></li>
@@ -45,52 +45,40 @@ The following scenario describes a four-component job. As input component, a CSV
 <a name="wp1354798"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then from the <b>Processing</b> folder in the Palette, click and drop a <b>tAggregateRow</b> component. Rename it as <i>Calculation</i>.</font></li>
 <a name="wp1354818"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Connect <i>Countries</i> to <i>Calculation</i> via a right-click and select <b>Row &gt; Main</b>.</font></li>
 <a name="wp1354824"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Double-click on <i>Calculation</i> (tAggregateRow component) to set the properties. Click on <b>Edit schema</b> and define the output schema. You can add as many columns as you need to hold the set operations results in the output flow.</font></li>
-</ul>
-</ul>
-<a name="wp1354836"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tAggregateRow3.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1354836"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tAggregateRow3.png" border="0" hspace="0" vspace="0"><br>
 
-</font></div>
-<ul>
-<ul>
+</font></p>
 <a name="wp1354841"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In this example, we&#39;ll calculate the average notation value and we will display the max and the min notation for each country, given that each country holds several notations. Click OK when the schema is complete.</font></li>
 <a name="wp1354848"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">To carry out the various set operations, back in the <b>Properties</b> panel, define the sets holding the operations in the <b>Group By </b>area. In this example, select <b>Country</b> as group by column. Note that the output column needs to be defined a key field in the schema. The first column mentioned as output column in the Group By table is the main set of calculation. All other output sets will be secondary by order of display. </font></li>
 <a name="wp1354859"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Choose the input column which the values will be taken from.</font></li>
 <a name="wp1354862"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then fill in the various operations to be carried out. The functions are average, min, max for this use case. Select the Input columns, where the values are taken from.</font></li>
-</ul>
-</ul>
-<a name="wp1354871"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tAggregateRow4.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1354871"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tAggregateRow4.png" border="0" hspace="0" vspace="0"><br>
 
-</font></div>
-<ul>
-<ul>
-<a name="wp1354879"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click and drop a <b>tSortRow</b> component from the Palette onto the modeling workspace. For more information regarding this component <a href="tSortRow_Prop.html#wp1189009">, see&#160;<i>tSortRow properties.</i></a></font></li>
+</font></p>
+<a name="wp1354879"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click and drop a <b>tSortRow</b> component from the Palette onto the modeling workspace. For more information regarding this component <a href="tSortRow_Prop.html#wp1449441">, see&#160;<i>tSortRow properties.</i></a></font></li>
 <a name="wp1354890"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Connect the <b>tAggregateRow</b> to this new component using a row main link. </font></li>
 <a name="wp1354893"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">On the Properties tab of the tSortRow component, define the column the sorting is based on, the sorting type and order. </font></li>
-</ul>
-</ul>
-<a name="wp1354902"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tAggregateRow5.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1354902"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tAggregateRow5.png" border="0" hspace="0" vspace="0"><br>
 
-</font></div>
-<ul>
-<ul>
+</font></p>
 <a name="wp1354907"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In this case, the column to be sorted by is Country, the sort type is alphabetical and the order is ascending.</font></li>
 <a name="wp1354911"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Add a last component to your job, to set the output flow. Click and drop a tFileOutputDelimited and define it.</font></li>
 <a name="wp1354916"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Connect the tSortRow component to this output component.</font></li>
 <a name="wp1354919"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the Properties panel, enter the output filepath. Edit the schema if need be. In this case the delimited file is of csv type. And check the Include Header box to reuse the schema column labels in your output flow.</font></li>
 <a name="wp1354925"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Press F6 to execute the job. The csv file thus created contains the aggregating result. </font></li>
-</ul>
-</ul>
-<a name="wp1354934"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tAggregateRow6.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1354934"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tAggregateRow6.png" border="0" hspace="0" vspace="0"><br>
 
-</font></div>
+</font></p>
+</ul>
+</ul>
     </blockquote>
     <hr>
 
@@ -110,7 +98,7 @@ The following scenario describes a four-component job. As input component, a CSV
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a href="tAggregateRow_prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tContextLoad_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+<a href="tAggregateRow_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tAggregateSortedRow_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
         </td>
       </tr>
     </table-->

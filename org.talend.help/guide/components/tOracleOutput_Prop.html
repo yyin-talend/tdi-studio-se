@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Simple HTML">
-    <meta name="LASTUPDATED" content="07/06/07 15:53:51">
+    <meta name="LASTUPDATED" content="10/05/07 18:38:02">
     <title>tOracleOutput</title>
   </head>
 
@@ -13,7 +13,7 @@
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a href="tOracleBulkExec_Scenario.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tOracleOutput_Scenario.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+<a href="tOracleInput_Scenario.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tOracleOutput_Scenario.html"><img src="images/snext.gif" border="0" alt="Next"></a>
         </td>
       </tr>
     </table-->
@@ -25,18 +25,381 @@
 <a name="wp1261774"> </a><h2><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="4"><b>
 tOracleOutput
 </b></font></h2>
-<a name="wp1203950"> </a><div><font color="#2d96db" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
-</b></font></div>
-<div align="left"><img src="images/tOracleOutput.png" border="0" hspace="0" vspace="0"></div><div><font color="#2d96db" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+<a name="wp1407135"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="left"><img src="images/tOracleOutput.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<a name="wp1449197"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
 tOracleOutput properties
-</b></font></div>
-<dl><a name="wp1295541"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-The properties of the generic component, <b>tDBOutput</b>, apply to the <b>tOracleOutput</b> component, therefore the properties are not detailed again here.
-</font></dd>
-<a name="wp1204006"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-For detailed information about generic <b>tDBOutput</b> properties<a href="tDBOutput_Prop.html#wp1184946">, see&#160;<i>DBOutput properties.</i></a>
-</font></dd>
-</dl>
+</b></font></h3>
+<a name="wp1381373"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<div align="center">
+<table border="1">
+  <caption></caption>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1380917"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Component family</b>
+</font></div>
+</td>
+    <td><a name="wp1380920"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Databases/Oracle
+</font></div>
+</td>
+    <td><a name="wp1380932"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<img src="images/Full-6-228-101.jpg" height="59" width="112" border="0" hspace="0" vspace="0">
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1380940"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Function</b>
+</font></div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp1380947"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>tOracleOutput</b> writes, updates, makes changes or suppresses entries in a database. 
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1380958"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Purpose</b>
+</font></div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp1380965"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>tOracleOutput</b> executes the action defined on the table and/or on the data contained in the table, based on the flow incoming from the preceding component in the job. 
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1380976"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Properties</b>
+</font></div>
+</td>
+    <td><a name="wp1380983"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<i>Property type</i>
+</font></div>
+</td>
+    <td><a name="wp1380986"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Either Built-in or Repository. 
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1380990"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1380993"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1381000"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Built-in</b>: No property data stored centrally.
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1381004"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1381007"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1381014"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Repository</b>: Select the Repository file where Properties are stored. The following fields are pre-filled in using fetched data.
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1381018"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1381024"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<i>Use existing connection</i>
+</font></div>
+</td>
+    <td><a name="wp1381032"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Check this box when using a <b>tOracleConnection</b>
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1381436"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1381443"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<i>Connection type</i>
+</font></div>
+</td>
+    <td><a name="wp1381446"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Drop-down list of available drivers.
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1381036"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1381043"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<i>Host</i>
+</font></div>
+</td>
+    <td><a name="wp1381046"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Database server IP address
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1381050"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1381057"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<i>Port</i>
+</font></div>
+</td>
+    <td><a name="wp1381060"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Listening port number of DB server.
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1381064"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1381071"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<i>Database</i>
+</font></div>
+</td>
+    <td><a name="wp1381074"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Name of the database
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1381078"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1381085"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<i>Username</i> and <i>Password</i>
+</font></div>
+</td>
+    <td><a name="wp1381092"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+DB user authentication data.
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1381096"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1381103"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<i>Table</i>
+</font></div>
+</td>
+    <td><a name="wp1381106"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Name of the table to be written. Note that only one table can be written at a time
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1381118"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/warning_iconee.gif" align="left" border="0" hspace="0" vspace="0"></table></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<a name="wp1381122"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<i>In Java, use tCreateTable as substitute for this function..</i>
+</font></div>
+</td>
+    <td><a name="wp1381130"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<i>Action on table</i>
+</font></div>
+</td>
+    <td><a name="wp1381133"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+On the table defined, you can perform one of the following operations:<br><b>None</b>: No operation carried out<br><b>Drop and create the table</b>: The table is removed and created again<br><b>Create a table</b>: The table doesn&#39;t exist and gets created.<br><b>Clear a table</b>: The table content is deleted
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1381153"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1381160"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<i>Action on data</i>
+</font></div>
+</td>
+    <td><a name="wp1381163"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+On the data of the table defined, you can perform:<br><b>Insert</b>: Add new entries to the table. If duplicates are found, job stops.<br><b>Update</b>: Make changes to existing entries<br><b>Insert or update</b>: Add entries or update existing ones.<br><b>Update or insert</b>: Update existing entries or create it if non existing<br><b>Delete</b>: Remove entries corresponding to the input flow.
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1381187"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1381194"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<i>Clear data in table</i>
+</font></div>
+</td>
+    <td><a name="wp1381197"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Wipes out data from the selected table before action.
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1381201"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1381211"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<i>Schema type</i> and <i>Edit Schema</i>
+</font></div>
+</td>
+    <td><a name="wp1381215"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+A schema is a row description, i.e., it defines the number of fields to be processed and passed on to the next component.  The schema is either built-in or remotely stored in the Repository. 
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1381219"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1381222"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1381229"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Built-in</b>: The schema is created and stored locally for this component only. Related topic: <a href="Technical_Process-06.html#wp1014762"><i>Setting a built-in schema</i></a>
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1381237"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1381240"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1381247"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Repository</b>: The schema already  exists and is stored in  the Repository, hence can be reused. Related topic: <a href="Technical_Process-06.html#wp1014787"><i>Setting a repository schema</i></a>
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1381255"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1381262"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<i>Encoding</i>
+</font></div>
+</td>
+    <td><a name="wp1381265"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Select the encoding from the list or select Custom and define it manually. This field is compulsory for DB data handling.
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1381269"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1381276"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<i>Additional Columns</i>
+</font></div>
+</td>
+    <td><a name="wp1381279"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+This option is not offered if you create (with or without drop) the Db table. This option allows you to perform actions on columns,  which are not insert, nor update or delete actions or requires a particular preprocessing. 
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1381283"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1381286"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1381293"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Name:</b> Type in the name of the schema column to be altered or inserted as new column
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1381297"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1381300"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1381307"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>SQL expression:</b> Type in the SQL statement to be executed in order to alter or insert the relevant column data.
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1381311"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1381314"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1381321"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Position:</b> Select Before, Replace or After, following the action to be performed on the reference column.
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1381325"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1381328"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1381335"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Reference column:</b> Type in a column of reference that the tDBOutput can use to place or replace the new or altered column.
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1381339"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1381342"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Commit every
+</font></div>
+</td>
+    <td><a name="wp1381345"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Number of rows to be completed before commiting batches of rows together into the DB. This option ensures transaction quality (but not rollback) and above all better performance on executions.
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1381349"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1381356"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<i>Die on error</i>
+</font></div>
+</td>
+    <td><a name="wp1381359"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Uncheck this box to skip the row on error and complete the process for non-error rows. 
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1381363"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Usage
+</font></div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp1381366"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+This component offers the flexibility benefit of the DB query and covers all possibilities of SQL queries.
+</font></div>
+</td>
+</tr>
+</table>
+</div>
+<p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></p>
     </blockquote>
     <hr>
 
@@ -56,7 +419,7 @@ For detailed information about generic <b>tDBOutput</b> properties<a href="tDBOu
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a href="tOracleBulkExec_Scenario.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tOracleOutput_Scenario.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+<a href="tOracleInput_Scenario.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tOracleOutput_Scenario.html"><img src="images/snext.gif" border="0" alt="Next"></a>
         </td>
       </tr>
     </table-->

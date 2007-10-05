@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Simple HTML">
-    <meta name="LASTUPDATED" content="07/06/07 15:53:51">
+    <meta name="LASTUPDATED" content="10/05/07 18:38:02">
     <title>tLogCatcher</title>
   </head>
 
@@ -13,7 +13,7 @@
     <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a href="tFuzzyMatch_Scenario.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tLogCatcher_Scenario.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+<a href="tLDAPOutput_Scenario.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tLogCatcher_Scenario.html"><img src="images/snext.gif" border="0" alt="Next"></a>
         </td>
       </tr>
     </table-->
@@ -22,18 +22,21 @@
     <hr align="left"-->
 
     <blockquote>
-<a name="wp1318923"> </a><h2><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="4"><b>
+<a name="wp1430772"> </a><h2><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="4"><b>
 tLogCatcher
 </b></font></h2>
-<a name="wp1292383"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1406215"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 </font></div>
 <div align="left"><img src="images/tLogCatcher.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-Both <b>tDie</b> and <b>tWarn</b> components are closely related to the <b>tLogCatcher</b> component.They generally make sense when used alongside a tLogCatcher in order for the log data collected to be encapsulated and passed on to the output defined.
+
 </font></div>
 <a name="wp1204812"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
 tLogCatcher properties 
 </b></font></h3>
-<a name="wp1295166"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1448704"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Both <b>tDie</b> and <b>tWarn</b> components are closely related to the <b>tLogCatcher</b> component.They generally make sense when used alongside a <b>tLogCatcher</b> in order for the log data collected to be encapsulated and passed on to the output defined.
+</font></p>
+<a name="wp1448711"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 </font></p>
 <div align="center">
 <table border="1">
@@ -47,7 +50,7 @@ Log &amp; Error
 </font></div>
 </td>
     <td><a name="wp1299012"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-<img src="images/Full-6-072-019.jpg" height="59" width="112" border="0" hspace="0" vspace="0">
+<img src="images/Full-6-168-022.jpg" height="59" width="112" border="0" hspace="0" vspace="0">
 </font></div>
 </td>
 </tr>
@@ -56,7 +59,7 @@ Log &amp; Error
 </font></div>
 </td>
     <td colspan="2" rowspan="1"><a name="wp1204833"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-Fetches set fields and messages from PerlDie, tDie and/or tWarn and passes them on to the next component.
+Fetches set fields and messages from Java Exception/PerlDie, tDie and/or tWarn and passes them on to the next component.
 </font></div>
 </td>
 </tr>
@@ -65,7 +68,7 @@ Fetches set fields and messages from PerlDie, tDie and/or tWarn and passes them 
 </font></div>
 </td>
     <td colspan="2" rowspan="1"><a name="wp1204839"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-Operates as a log function triggered  by one of the three:  PerlDie, tDie or tWarn, to collect and transfer log data.
+Operates as a log function triggered  by one of the three: Java exception/PerlDie, tDie or tWarn, to collect and transfer log data.
 </font></div>
 </td>
 </tr>
@@ -73,9 +76,9 @@ Operates as a log function triggered  by one of the three:  PerlDie, tDie or tWa
 &#160;
 </font></div>
 </td>
-    <td><a name="wp1204850"> </a><div><div align="center"><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
-Schema type and Edit Schema
-</b></font></div></div>
+    <td><a name="wp1204850"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<i>Schema type</i> and <i>Edit Schema</i>
+</font></div>
 </td>
     <td><a name="wp1204853"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 A schema is a row description, i.e., it defines the number of fields that will be processed and passed on to the next component.  The schema is either built-in or remote in the Repository. 
@@ -112,12 +115,12 @@ A schema is a row description, i.e., it defines the number of fields that will b
 &#160;
 </font></div>
 </td>
-    <td><a name="wp1204884"> </a><div><div align="center"><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
-Catch PerlDie
-</b></font></div></div>
+    <td><a name="wp1204884"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<i>Catch PerlDie</i><br><i>Catch Java Exception</i>
+</font></div>
 </td>
     <td><a name="wp1204886"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-Check this box to trigger the tCatch function when a PerlDie occurs in the job
+Check this box to trigger the tCatch function when a PerlDie/Java Exception occurs in the job
 </font></div>
 </td>
 </tr>
@@ -125,9 +128,9 @@ Check this box to trigger the tCatch function when a PerlDie occurs in the job
 &#160;
 </font></div>
 </td>
-    <td><a name="wp1204893"> </a><div><div align="center"><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
-Catch tDie
-</b></font></div></div>
+    <td><a name="wp1204893"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<i>Catch tDie</i>
+</font></div>
 </td>
     <td><a name="wp1204895"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 Check this box to trigger the tCatch function when a tDie is called in a job
@@ -138,9 +141,9 @@ Check this box to trigger the tCatch function when a tDie is called in a job
 &#160;
 </font></div>
 </td>
-    <td><a name="wp1204902"> </a><div><div align="center"><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
-Catch tWarn
-</b></font></div></div>
+    <td><a name="wp1204902"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<i>Catch tWarn</i>
+</font></div>
 </td>
     <td><a name="wp1204904"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 Check this box to trigger the tCatch function when a tWarn is called in a job
@@ -189,7 +192,7 @@ n/a
     <!--table width="220" border="0" cellpadding="0" cellspacing="0">
       <tr> 
         <td>
-<a href="tFuzzyMatch_Scenario.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tLogCatcher_Scenario.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+<a href="tLDAPOutput_Scenario.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tLogCatcher_Scenario.html"><img src="images/snext.gif" border="0" alt="Next"></a>
         </td>
       </tr>
     </table-->

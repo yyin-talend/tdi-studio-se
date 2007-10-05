@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Simple HTML">
-    <meta name="LASTUPDATED" content="07/06/07 15:53:42">
+    <meta name="LASTUPDATED" content="07/16/07 18:20:38">
     <title>Defining a job design context and related variables</title>
   </head>
 
@@ -45,7 +45,7 @@ Click on the <b>Contexts</b> tab located next to the properties tab system, to d
 <a name="wp1094092"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 If the <b>Contexts</b> view is not offered in the tab system, go to <b>Window</b> &gt; <b>Show view</b> &gt; <b>Talend</b>, and select <b>Contexts</b>.
 </font></p>
-<a name="wp1094120"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+<a name="wp1095149"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
 Adding or renaming a context
 </b></font></h3>
 <dl><a name="wp1007835"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
@@ -76,8 +76,107 @@ You can switch Default context by simply selecting the new default context on th
 <a name="wp1008418"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 Note that the Default context can never be deleted. There should always be a context to run the job. This context being called Default or any other name.
 </font></dd>
-</dl><a name="wp1007880"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
-Defining the context parameters
+</dl><a name="wp1095203"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+Defining the context variables  
+</b></font></h3>
+<dl><a name="wp1095209"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+In any <b>Properties</b> field defining a component, you can use an existing global variable or a context variables. 
+</font></dd>
+<a name="wp1095216"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Press <b>Ctrl+Space</b> to display the whole list of global and context variables used in various predefined Perl functions. The context variables are created by the user for a particular context, whereas the global variables are a system variables.
+</font></dd>
+<a name="wp1095221"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The list grows along with new user (aka context) variable creations.
+</font></dd>
+<a name="wp1095228"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Related topic: <a href="Technical_Process-12.html"><i>Defining a job design context and related variables</i></a>
+</font></dd>
+</dl><a name="wp1095235"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Short creation of context variables 
+</b></font></h4>
+<dl><dl><a name="wp1095242"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Create quickly your context variables via the <b>F5</b> keystroke:
+</font></dd>
+<ul>
+<a name="wp1095247"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Place your cursor on the relevant field that you want to parameterize in the current context (possibly the default one). </font></li>
+<a name="wp1095256"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Press <b>F5</b> to display the context parameter dialog box:</font></li>
+</ul>
+</dl></dl><a name="wp1095263"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/VariableF5.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<ul>
+<a name="wp1095278"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Give a <b>Name</b> to this new variable, fill in the <b>Comment</b> zone and choose the <b>Type</b>.</font></li>
+<a name="wp1095284"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Enter a <b>Prompt</b> to be displayed to confirm the use of this variable in the current job execution.</font></li>
+<a name="wp1095291"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Check the <b>Prompt for value</b> box to display the field as editable value. If you filled in a value already in the corresponding properties field, this value is displayed in the <b>Default value</b> field. </font></li>
+<a name="wp1095301"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click <b>Finish</b> to validate. Click anywhere on your job&#39;s design workspace, and go to the <b>Properties</b> tab. Notice that the context parameters lists the newly created variable.</font></li>
+</ul>
+</ul>
+</ul>
+<a name="wp1095313"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/VariableF5_contxt.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><dl><a name="wp1095318"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+You can modify this variable at any time.
+</font></dd>
+</dl></dl><a name="wp1095325"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+StoreSQLQuery
+</b></font></h4>
+<a name="wp1095331"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>StoreSQLQuery</b> is a context specific variable, in the sense that it gets set up by the user and is not provided by the system. This variable is dedicated to debugging mainly.
+</font></p>
+<dl><dl><a name="wp1095335"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+StoreSQLQuery is different from other context variables in the fact that its main purpose is to be used as parameter of a specific global variable, said &quot;Query&quot;. It allows you to dynamically feed the global query variable. 
+</font></dd>
+<a name="wp1095339"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The global variable Query, is available on the proposals list (Ctrl+Space) for couple of DB input components.
+</font></dd>
+<a name="wp1095348"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+For further details on StoreSQLQuery settings, see <a href="Component_intro.html"><i>Components</i></a>.
+</font></dd>
+</dl></dl><a name="wp1095354"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Storing contexts in the Repository
+</b></font></h4>
+<dl><dl><a name="wp1095357"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+We strongly recommend to store centrally all contexts for ease of use in all your jobs within a project. 
+</font></dd>
+<a name="wp1095368"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Right-click on the <b>Contexts</b> entry in the repository and select <b>Create new Context</b> in the list.
+</font></dd>
+</dl></dl><a name="wp1095375"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Repository-Context.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><dl><a name="wp1095378"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+A wizard helps you to define the context parameters, that you&#39;ll be able to select for a Job execution.
+</font></dd>
+</dl></dl><a name="wp1095386"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Repo-Context.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><dl><a name="wp1095393"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Click <b>Finish</b> to validate. 
+</font></dd>
+<a name="wp1095396"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+To apply a context to a job, click on any empty area of your relevant job workspace and in the <b>Context</b> tab, select <b>Repository</b> as <b>Context type</b>. 
+</font></dd>
+</dl></dl><a name="wp1095413"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Repo-Context2.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><dl><a name="wp1095419"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Then select the relevant <b>Context</b> from the repository. Click on the relevant tab, the selected context&#39;s parameters show as read-only values.
+</font></dd>
+</dl></dl><a name="wp1095425"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+Defining the parameters in the Context tab
 </b></font></h3>
 <dl><a name="wp1007888"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 A context is characterized by parameters. These parameters are mostly context-sensitive variables which will be added to the list of variables available for reuse in the component-specific properties through the Ctrl+Space keystrokes.
@@ -174,106 +273,7 @@ This field is read-only. A script code is generated according to the parameter n
 <a name="wp1008569"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 Note that the variable or parameter name should follow some typing rules and should not contain any forbidden characters, such as space char. 
 </font></dd>
-</dl><a name="wp1062174"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
-Variables and aliases  
-</b></font></h3>
-<dl><a name="wp1062177"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-In any <b>Properties</b> field defining a component, you can use an existing global variable or a context variables. 
-</font></dd>
-<a name="wp1062184"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-Press <b>Ctrl+Space</b> to display the whole list of global and context variables used in various predefined Perl functions. The context variables are created by the user for a particular context, whereas the global variables are a system variables.
-</font></dd>
-<a name="wp1062189"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-The list grows along with new user (aka context) variable creations.
-</font></dd>
-<a name="wp1062196"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-Related topic: <a href="Technical_Process-12.html"><i>Defining a job design context and related variables</i></a>
-</font></dd>
-</dl><a name="wp1062202"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
-Short creation of context variables 
-</b></font></h4>
-<dl><dl><a name="wp1062209"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-Create quickly your context variables via the <b>F5</b> keystroke:
-</font></dd>
-<ul>
-<a name="wp1062215"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Place your cursor on the relevant field that you want to parameterize in the current context (possibly the default one). </font></li>
-<a name="wp1062223"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Press <b>F5</b> to display the context parameter dialog box:</font></li>
-</ul>
-</dl></dl><a name="wp1062230"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/VariableF5.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-
-</font></div>
-<ul>
-<ul>
-<ul>
-<a name="wp1062236"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Give a <b>Name</b> to this new variable, fill in the <b>Comment</b> zone and choose the <b>Type</b>.</font></li>
-<a name="wp1062242"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Enter a <b>Prompt</b> to be displayed to confirm the use of this variable in the current job execution.</font></li>
-<a name="wp1062358"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Check the <b>Prompt for value</b> box to display the field as editable value. If you filled in a value already in the corresponding properties field, this value is displayed in the <b>Default value</b> field. </font></li>
-<a name="wp1062437"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click <b>Finish</b> to validate. Click anywhere on your job&#39;s design workspace, and go to the <b>Properties</b> tab. Notice that the context parameters lists the newly created variable.</font></li>
-</ul>
-</ul>
-</ul>
-<a name="wp1062389"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/VariableF5_contxt.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-
-</font></div>
-<dl><dl><a name="wp1062474"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-You can modify this variable at any time.
-</font></dd>
-</dl></dl><a name="wp1062248"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
-StoreSQLQuery
-</b></font></h4>
-<a name="wp1062254"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-<b>StoreSQLQuery</b> is a context specific variable, in the sense that it gets set up by the user and is not provided by the system. This variable is dedicated to debugging mainly.
-</font></p>
-<dl><dl><a name="wp1062258"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-StoreSQLQuery is different from other context variables in the fact that its main purpose is to be used as parameter of a specific global variable, said &quot;Query&quot;. It allows you to dynamically feed the global query variable. 
-</font></dd>
-<a name="wp1062262"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-The global variable Query, is available on the proposals list (Ctrl+Space) for couple of DB input components.
-</font></dd>
-<a name="wp1062272"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-For further details on StoreSQLQuery settings, see <a href="Component_intro.html"><i>Components</i></a>.
-</font></dd>
-</dl></dl><a name="wp1082534"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
-Storing contexts in the Repository
-</b></font></h4>
-<dl><dl><a name="wp1082550"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-We strongly recommend to store centrally all contexts for ease of use in all your jobs within a project. 
-</font></dd>
-<a name="wp1082564"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-Right-click on the <b>Contexts</b> entry in the repository and select <b>Create new Context</b> in the list.
-</font></dd>
-</dl></dl><a name="wp1082590"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Repository-Context.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-
-</font></div>
-<dl><dl><a name="wp1082608"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-A wizard helps you to define the context parameters, that you&#39;ll be able to select for a Job execution.
-</font></dd>
-</dl></dl><a name="wp1082630"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Repo-Context.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-
-</font></div>
-<dl><dl><a name="wp1082643"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-Click <b>Finish</b> to validate. 
-</font></dd>
-<a name="wp1082672"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-To apply a context to a job, click on any empty area of your relevant job workspace and in the <b>Context</b> tab, select <b>Repository</b> as <b>Context type</b>. 
-</font></dd>
-</dl></dl><a name="wp1082689"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Repo-Context2.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-
-</font></div>
-<dl><dl><a name="wp1082703"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-Then select the relevant <b>Context</b> from the repository. Click on the relevant tab, the selected context&#39;s parameters show as read-only values.
-</font></dd>
-</dl></dl><a name="wp1062275"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+</dl><a name="wp1062275"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
 Running a job in selected context
 </b></font></h3>
 <dl><a name="wp1008654"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
@@ -294,7 +294,7 @@ If you didn&#39;t create any context, only the <b>Default</b> context shows on t
 All the context variables you created for the selected context display, along with their respective value, in a table underneath.  If you checked the <b>Prompt</b> box next to some variables, you will get a dialog box allowing you to change the variable value for this job execution only. 
 </font></dd>
 <a name="wp1008809"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-To make a change permanent in a variable value, you need to change it on the context parameter setup panel. Related topic: <a href="Technical_Process-12.html#wp1007880"><i>Defining the context parameters</i></a>
+To make a change permanent in a variable value, you need to change it on the context parameter setup panel. Related topic: <a href="Technical_Process-12.html#wp1095425"><i>Defining the parameters in the Context tab</i></a>
 </font></dd>
 </dl>
     </blockquote>

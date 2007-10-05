@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Simple HTML">
-    <meta name="LASTUPDATED" content="07/06/07 15:53:51">
+    <meta name="LASTUPDATED" content="10/05/07 18:38:02">
     <title>Scenario 1: Updating Oracle DB entries</title>
   </head>
 
@@ -22,78 +22,66 @@
     <hr align="left"-->
 
     <blockquote>
-<a name="wp1231341"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1487812"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 
 </font></div>
-<a name="wp1294836"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+<a name="wp1487820"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
 Scenario 1: Updating Oracle DB entries
 </b></font></h3>
-<dl><a name="wp1287580"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1487825"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 This scenario relies on the job described in ELT MySQL components, <a href="tELTMysqlMap_Scenario.html#wp1294755"><i>Scenario1: Aggregating table columns and filtering</i></a>. As the update action on the data is available in Oracle DB, this scenario describes a job updating particular entries of the <i>results</i> table, adding a <i>model</i> to the <i>make</i> column of the <i>cars</i> table.
-</font></dd>
-</dl><a name="wp1231443"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tELTOracle1-1.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<a name="wp1487846"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<div align="center"><img src="images/Use_Case_tELTOracle1-1.png" border="0" hspace="0" vspace="0"></div><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 
-</font></div>
+</font></p>
 <ul>
 <ul>
-<a name="wp1231465"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Define all three Input components as described in <a href="tELTMysqlMap_Scenario.html#wp1294755"><i>Scenario1: Aggregating table columns and filtering</i></a>. </font></li>
-<a name="wp1231488"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">When connecting the ELT Input components to the ELT mapper, make sure you use the relevant table names as these table names will be used as parameters in the SQL statement generated in the ELT mapper.</font></li>
-<a name="wp1232019"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Remove the additional clause used to filter the output columns. </font></li>
-<a name="wp1231529"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Add a new filter row to the output table in the ELT mapper to setup a relationship between input and output tables : owners.ID_OWNER=results.ID_OWNER </font></li>
-</ul>
-</ul>
-<a name="wp1231559"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tELTOracle1-2.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1487853"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Define all three Input components as described in <a href="tELTMysqlMap_Scenario.html#wp1294755"><i>Scenario1: Aggregating table columns and filtering</i></a>. </font></li>
+<a name="wp1487858"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">When connecting the ELT Input components to the ELT mapper, make sure you use the relevant table names as these table names will be used as parameters in the SQL statement generated in the ELT mapper.</font></li>
+<a name="wp1487863"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Remove the additional clause used to filter the output columns. </font></li>
+<a name="wp1487866"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Add a new filter row to the output table in the ELT mapper to setup a relationship between input and output tables : owners.ID_OWNER=results.ID_OWNER </font></li>
+<a name="wp1487875"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tELTOracle1-2.png" border="0" hspace="0" vspace="0"><br>
 
-</font></div>
-<ul>
-<ul>
-<a name="wp1232245"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Remove also all the columns unused for the <b>Update</b> action on the output table.</font></li>
-<a name="wp1232204"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then apply the update to the <i>Make</i> column adding the mention <i>C-Class</i> preceding by a double-pipe.</font></li>
-<a name="wp1231612"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">And also add the mention <i>Sold by</i> in front of the <i>reseller name</i> column from the <i>resellers</i> table.</font></li>
-<a name="wp1232336"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Check the <b>Generated SQL select query</b> to be executed.</font></li>
-</ul>
-</ul>
-<a name="wp1231657"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tELTOracle1-3.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<a name="wp1487884"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Remove also all the columns unused for the <b>Update</b> action on the output table.</font></li>
+<a name="wp1487893"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then apply the update to the <i>Make</i> column adding the mention <i>C-Class</i> preceding by a double-pipe.</font></li>
+<a name="wp1487906"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">And also add the mention <i>Sold by</i> in front of the <i>reseller name</i> column from the <i>resellers</i> table.</font></li>
+<a name="wp1487915"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Check the <b>Generated SQL select query</b> to be executed.</font></li>
+<a name="wp1487922"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tELTOracle1-3.png" border="0" hspace="0" vspace="0"><br>
 
-</font></div>
-<ul>
-<ul>
-<a name="wp1232302"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click <b>OK</b> to validate the changes in the ELT mapper. And make sure the Oracle DB connection details are filled in in the <b>tELTOracleMap</b> component properties.</font></li>
-<a name="wp1231668"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Select the <b>tELTOracleOutput</b> component to define the Action on data to be carried out.</font></li>
-</ul>
-</ul>
-<a name="wp1231686"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tELTOracle1-4.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<a name="wp1487930"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click <b>OK</b> to validate the changes in the ELT mapper. And make sure the Oracle DB connection details are filled in in the <b>tELTOracleMap</b> component properties.</font></li>
+<a name="wp1487942"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Select the <b>tELTOracleOutput</b> component to define the Action on data to be carried out.</font></li>
+<a name="wp1487949"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tELTOracle1-4.png" border="0" hspace="0" vspace="0"><br>
 
-</font></div>
-<ul>
-<ul>
-<a name="wp1231816"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">There is no action on the table, and the <b>Action on data</b> is set to <b>Update</b>.</font></li>
-<a name="wp1231820"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Check that the Schema type corresponds to the output table from the ELT Mapper.</font></li>
-<a name="wp1231823"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the <b>Where clause</b> area, add an additional clause: results.MAKE= `Mercedes&#39;.</font></li>
-<a name="wp1231831"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then press <b>F6</b> to run the job and check the results table in a DB viewer.</font></li>
-</ul>
-</ul>
-<a name="wp1232259"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tELTOracle1-5.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<a name="wp1487961"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">There is no action on the table, and the <b>Action on data</b> is set to <b>Update</b>.</font></li>
+<a name="wp1487965"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Check that the Schema type corresponds to the output table from the ELT Mapper.</font></li>
+<a name="wp1487972"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the <b>Where clause</b> area, add an additional clause: results.MAKE= `Mercedes&#39;.</font></li>
+<a name="wp1487980"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then press <b>F6</b> to run the job and check the results table in a DB viewer.</font></li>
+<a name="wp1487987"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tELTOracle1-5.png" border="0" hspace="0" vspace="0"><br>
 
-</font></div>
-<dl><a name="wp1232272"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<a name="wp1487991"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 The job executes the query generated and updates the relevant rows.
-</font></dd>
-</dl><a name="wp1232356"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Use_Case_tELTOracle1-6.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<a name="wp1488000"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tELTOracle1-6.png" border="0" hspace="0" vspace="0"><br>
 
-</font></div>
+</font></p>
+</ul>
+</ul>
     </blockquote>
     <hr>
 

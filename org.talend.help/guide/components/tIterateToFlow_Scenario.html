@@ -1,0 +1,105 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Simple HTML">
+    <meta name="LASTUPDATED" content="10/05/07 18:38:02">
+    <title>Scenario: Transforming a list of files as data flow</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tIterateToFlow_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tJava_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp1456603"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<a name="wp1457518"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+Scenario: Transforming a list of files as data flow
+</b></font></h3>
+<a name="wp1457530"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The following scenario describes a job that iterates on a list of files, picks up the filename and current date and transforms this into a flow, that gets displayed on the console.
+</font></p>
+<a name="wp1456635"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<div align="center"><img src="images/Use_Case_tIterateToFlow1.png" border="0" hspace="0" vspace="0"></div><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></p>
+<ul>
+<ul>
+<a name="wp1456652"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click and drop the following components: <b>tFileList</b>, <b>tIterateToFlow</b> and <b>tLogRow</b>.</font></li>
+<a name="wp1456683"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Connect the <b>tFileList</b> to the <b>tIterateToFlow</b> using an <b>iterate</b> link and connect the job to the <b>tLogRow</b> using a <b>Row main</b> connection.</font></li>
+<a name="wp1456726"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the <b>tFileList</b> <b>Properties</b> view, set the directory where the list of files is stored.</font></li>
+<a name="wp1456755"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tIterateToFlow2.png" border="0" hspace="0" vspace="0"><br>
+
+</font></p>
+<a name="wp1456791"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In this example, the files are three simple .txt files held in one directory: <i>Countries</i>. </font></li>
+<a name="wp1456805"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">No need to care about the case, hence uncheck the <b>Case sensitive </b>checkbox.</font></li>
+<a name="wp1456819"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Leave the <b>Include Subdirectories</b> option unchecked.</font></li>
+<a name="wp1456849"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then select the <b>tIterateToFlow</b> component et click <b>Edit Schema</b> to set the new schema</font></li>
+<a name="wp1456874"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tIterateToFlow3.png" border="0" hspace="0" vspace="0"><br>
+
+</font></p>
+<a name="wp1456903"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Add two new columns: <i>Filename</i> of <b>String</b> type and <i>Date</i> of <b>date</b> type. Make sure you define the correct pattern in Java.</font></li>
+<a name="wp1457006"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click <b>OK </b>to validate.</font></li>
+<a name="wp1457176"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Notice that the newly created schema shows on the <b>Mapping </b>table.</font></li>
+<a name="wp1457183"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tIterateToFlow4.png" border="0" hspace="0" vspace="0"><br>
+
+</font></p>
+<a name="wp1457191"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In each cell of the <b>Value</b> field, press <b>Ctrl+Space bar </b>to access the list of global and user-specific variables.</font></li>
+<a name="wp1457199"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">For the <i>Filename</i> column, use the global variable: (<code>$_globals{tFileList_1}{CURRENT_FILEPATH</code>}. It retrieves the current filepath in order to catch the name of each file, the job iterates on. </font></li>
+<a name="wp1457321"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">For the <i>Date</i> column, use the Talend routine: <code>Date.GetDate</code> (Perl) or <code>TalendDate.getCurrentDate()</code> (in Java)</font></li>
+<a name="wp1457359"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then on the <b>tLogRow</b> component Properties view, check the <b>Print values in cells of a table </b>box.</font></li>
+<a name="wp1457409"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Save your job and execute it.</font></li>
+<a name="wp1457420"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<br>
+<img src="images/Use_Case_tIterateToFlow5.png" border="0" hspace="0" vspace="0"><br>
+
+</font></p>
+<a name="wp1457443"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The filepath displays on the <i>Filename</i> column and the current date displays on the <i>Date</i> column.
+</font></p>
+</ul>
+</ul>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tIterateToFlow_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tJava_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

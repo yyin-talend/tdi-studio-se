@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Simple HTML">
-    <meta name="LASTUPDATED" content="07/06/07 15:53:51">
+    <meta name="LASTUPDATED" content="10/05/07 18:38:02">
     <title>tDBSQLRow</title>
   </head>
 
@@ -25,11 +25,14 @@
 <a name="wp1202127"> </a><h2><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="4"><b>
 tDBSQLRow
 </b></font></h2>
-<a name="wp1198862"> </a><div><font color="#2d96db" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
-</b></font></div>
-<div align="left"><img src="images/tDBSQLRow.png" border="0" hspace="0" vspace="0"></div><div><font color="#2d96db" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+<a name="wp1404924"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="left"><img src="images/tDBSQLRow.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<a name="wp1447255"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
 tDBSQLRow properties
-</b></font></div>
+</b></font></h3>
 <a name="wp1294667"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 </font></p>
 <div align="center">
@@ -40,11 +43,11 @@ tDBSQLRow properties
 </font></div>
 </td>
     <td><a name="wp1190848"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-Databases
+Databases/DB Generic
 </font></div>
 </td>
     <td><a name="wp1296810"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-<img src="images/Full-6-018-030.jpg" height="59" width="112" border="0" hspace="0" vspace="0">
+<img src="images/Full-6-044-033.jpg" height="59" width="112" border="0" hspace="0" vspace="0">
 </font></div>
 </td>
 </tr>
@@ -53,8 +56,11 @@ Databases
 </font></div>
 </td>
     <td colspan="2" rowspan="1"><a name="wp1190858"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-tDBSQLRow is the generic component for database query. It executes the SQL query stated onto the specified database. The row suffix  means the component implements a flow in the job design although it doesn&#39;t provide output.  The following DB-specific row components share tDBSQLRow&#39;s properties: <b>tMySQLRow</b>, <b>tDB2Row</b>, <b>tOracleRow</b>, <b>tSybaseRow</b>. 
+<b>tDBSQLRow</b> is the generic component for database query. It executes the SQL query stated onto the specified database. The row suffix  means the component implements a flow in the job design although it doesn&#39;t provide output. 
 </font></div>
+<a name="wp1375063"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Note:	For performance reasons, specific DB component should always be preferred to the generic component.
+</font></p>
 </td>
 </tr>
   <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1190865"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
@@ -62,7 +68,7 @@ tDBSQLRow is the generic component for database query. It executes the SQL query
 </font></div>
 </td>
     <td colspan="2" rowspan="1"><a name="wp1190868"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-Depending on the nature of the query and the database, tDBSQLRow acts on the actual DB structure or on the data (although without handling data). The SQLBuilder tool helps you write easily your SQL statements.
+Depending on the nature of the query and the database, <b>tDBSQLRow</b> acts on the actual DB structure or on the data (although without handling data). The SQLBuilder tool helps you write easily your SQL statements.
 </font></div>
 </td>
 </tr>
@@ -70,9 +76,9 @@ Depending on the nature of the query and the database, tDBSQLRow acts on the act
 <b>Properties</b>
 </font></div>
 </td>
-    <td><a name="wp1190882"> </a><div><div align="center"><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
-Property type
-</b></font></div></div>
+    <td><a name="wp1190882"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<i>Property type</i>
+</font></div>
 </td>
     <td><a name="wp1190885"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 Either Built-in or Repository. 
@@ -88,7 +94,7 @@ Either Built-in or Repository.
 </font></div>
 </td>
     <td><a name="wp1190899"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-<b>Built-in</b>: No existing property data is to be retrieved
+<b>Built-in</b>: No property data stored centrally.
 </font></div>
 </td>
 </tr>
@@ -105,51 +111,12 @@ Either Built-in or Repository.
 </font></div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1190917"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-&#160;
-</font></div>
-</td>
-    <td><a name="wp1190924"> </a><div><div align="center"><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
-DB driver
-</b></font></div></div>
-</td>
-    <td><a name="wp1190927"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-Available DBMS are MySQL, MS SQL and PostgreSQL. or other specific DBMS
-</font></div>
-</td>
-</tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1190931"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-&#160;
-</font></div>
-</td>
-    <td><a name="wp1190934"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-Host
-</font></div>
-</td>
-    <td><a name="wp1190937"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-Database server IP address
-</font></div>
-</td>
-</tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1190941"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-&#160;
-</font></div>
-</td>
-    <td><a name="wp1190948"> </a><div><div align="center"><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
-Port
-</b></font></div></div>
-</td>
-    <td><a name="wp1190951"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-Listening port number of DB server.
-</font></div>
-</td>
-</tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1190955"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1190955"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 &#160;
 </font></div>
 </td>
     <td><a name="wp1190958"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-Database
+<i>Database</i>
 </font></div>
 </td>
     <td><a name="wp1190961"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
@@ -157,33 +124,33 @@ Name of the database
 </font></div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1190965"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1190965"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 &#160;
 </font></div>
 </td>
-    <td><a name="wp1190972"> </a><div><div align="center"><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
-Username and Password
-</b></font></div></div>
+    <td><a name="wp1190972"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<i>Username</i> and <i>Password</i>
+</font></div>
 </td>
     <td><a name="wp1190979"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 DB user authentication data.
 </font></div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1190983"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1190983"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 &#160;
 </font></div>
 </td>
-    <td><a name="wp1190993"> </a><div><div align="center"><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
-Schema type and Edit Schema
-</b></font></div></div>
+    <td><a name="wp1190993"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<i>Schema type</i> and <i>Edit Schema</i>
+</font></div>
 </td>
     <td><a name="wp1190997"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 A schema is a row description, i.e., it defines the number of fields to be processed and passed on to the next component.  The schema is either built-in or remotely stored in the Repository. 
 </font></div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1191001"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1191001"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 &#160;
 </font></div>
 </td>
@@ -196,7 +163,7 @@ A schema is a row description, i.e., it defines the number of fields to be proce
 </font></div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1191019"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1191019"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 &#160;
 </font></div>
 </td>
@@ -209,20 +176,20 @@ A schema is a row description, i.e., it defines the number of fields to be proce
 </font></div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1191422"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1191422"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 &#160;
 </font></div>
 </td>
-    <td><a name="wp1191425"> </a><div><div align="center"><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
-Query type
-</b></font></div></div>
+    <td><a name="wp1191425"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<i>Query type</i>
+</font></div>
 </td>
     <td><a name="wp1191428"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 Either Built-in or Repository. 
 </font></div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1191448"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1191448"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 &#160;
 </font></div>
 </td>
@@ -235,7 +202,7 @@ Either Built-in or Repository.
 </font></div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1191467"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1191467"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 &#160;
 </font></div>
 </td>
@@ -248,16 +215,29 @@ Either Built-in or Repository.
 </font></div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1191051"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1191051"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 &#160;
 </font></div>
 </td>
-    <td><a name="wp1191058"> </a><div><div align="center"><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
-Query
-</b></font></div></div>
+    <td><a name="wp1191058"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<i>Query</i>
+</font></div>
 </td>
     <td><a name="wp1191061"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 Enter your DB query  paying particularly attention to properly sequence the fields in order to  match  the schema definition. 
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1382929"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1382932"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Commit every
+</font></div>
+</td>
+    <td><a name="wp1382935"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Number of rows to be completed before commiting batches of rows together into the DB. This option ensures transaction quality (but not rollback) and above all better performance on executions.
 </font></div>
 </td>
 </tr>
@@ -265,16 +245,29 @@ Enter your DB query  paying particularly attention to properly sequence the fiel
 &#160;
 </font></div>
 </td>
-    <td><a name="wp1191072"> </a><div><div align="center"><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
-Encoding
-</b></font></div></div>
+    <td><a name="wp1191072"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<i>Encoding</i>
+</font></div>
 </td>
     <td><a name="wp1191075"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 Select the encoding from the list or select Custom and define it manually. This field is compulsory for DB data handling.
 </font></div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1191079"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1382996"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1383003"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<i>Die on error</i>
+</font></div>
+</td>
+    <td><a name="wp1383006"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Uncheck this box to skip the row on error and complete the process for non-error rows. 
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1191079"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 <b>Usage</b>
 </font></div>
 </td>
@@ -283,12 +276,12 @@ This component offers the flexibility benefit of the DB query and covers all pos
 </font></div>
 </td>
 </tr>
-  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1191216"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1191216"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 &#160;
 </font></div>
 </td>
     <td colspan="2" rowspan="1"><a name="wp1191219"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-Use the relevant DBRow component according to the DB type you use. Most of the database have their specific DBRow component.
+Use the relevant DBRow component according to the DB type you use. Most of the databases have their specific DBRow component.
 </font></div>
 </td>
 </tr>
