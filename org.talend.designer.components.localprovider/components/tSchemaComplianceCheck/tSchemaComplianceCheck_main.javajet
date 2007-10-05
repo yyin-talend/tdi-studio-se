@@ -4,11 +4,11 @@ imports="
     org.talend.core.model.process.INode
     org.talend.core.model.process.ElementParameterParser
     org.talend.core.model.process.IConnection
-    org.talend.core.model.process.IConnectionCategory    
     org.talend.core.model.metadata.IMetadataColumn
     org.talend.core.model.metadata.IMetadataTable
     org.talend.core.model.metadata.types.JavaTypesManager
     org.talend.core.model.metadata.types.JavaType
+    org.talend.core.model.process.IConnectionCategory
     java.util.List
     java.util.Map
     "
@@ -35,9 +35,16 @@ if(rejectConns != null && rejectConns.size() > 0) {
 }
 List<? extends IConnection> outgoingConns = node.getOutgoingSortedConnections();
 List<IMetadataColumn> columnList = node.getMetadataFromConnector("FLOW").getListColumns();
+List<IMetadataColumn> columnListToTest = columnList;
 
 if(incomingConnName != null && columnList != null && columnList.size() > 0) {
-    %>
+    for(IConnection conn : outgoingConns) {
+    	if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+    %><%=conn.getName() %> = null;			
+<%
+    	}
+	}
+%>    
     boolean ifPassed_<%=cid%> = true;
     String errorCode_<%=cid%> = null;
     String errorMessage_<%=cid%> = null;
@@ -48,77 +55,7 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
     if(anotherChecked.equals("true")) {
         IMetadataTable schemaOther = node.getMetadataFromConnector("OTHER");
         if(schemaOther != null) {
-            schemaOtherColumns = schemaOther.getListColumns();
-        }
-        if(schemaOtherColumns != null && schemaOtherColumns.size() > 0) {
-            %>
-            //validate column number
-            Integer schemaNumber_<%=cid%> = <%=columnList.size()%>;
-            Integer otherSchemaNumber_<%=cid%> = <%=schemaOtherColumns.size()%>;
-            if(schemaNumber_<%=cid%> != otherSchemaNumber_<%=cid%>) {
-                ifPassed_<%=cid%> = false;
-                errorCode_<%=cid%> = "1";
-                errorMessage_<%=cid%> = "wrong number of columns";
-                continue;
-            }
-            //validate column type            
-            String columnType_<%=cid%> = null;
-            String otherColumnType_<%=cid%> = null;            
-            <%
-            int upperBound = -1;
-            if(columnList.size() > schemaOtherColumns.size()) {
-                upperBound = schemaOtherColumns.size();
-            } else {
-                upperBound = columnList.size();
-            }            
-            for(int i = 0 ; i < upperBound ; i++) {
-                %>
-                columnType_<%=cid%> = "<%=JavaTypesManager.getTypeToGenerate(((IMetadataColumn)columnList.get(i)).getTalendType(), ((IMetadataColumn)columnList.get(i)).isNullable())%>";
-                otherColumnType_<%=cid%> = "<%=JavaTypesManager.getTypeToGenerate(((IMetadataColumn)schemaOtherColumns.get(i)).getTalendType(), ((IMetadataColumn)schemaOtherColumns.get(i)).isNullable())%>";
-                if(!columnType_<%=cid%>.equals(otherColumnType_<%=cid%>)) {
-                    ifPassed_<%=cid%> = false;
-                    errorCode_<%=cid%> = "2";
-                    errorMessage_<%=cid%> = "wrong type";
-                    continue;
-                }
-                <%
-            }
-            %>
-            //validate nullable            
-            boolean columnNullable_<%=cid%> = false;
-            boolean otherColumnNullable_<%=cid%> = false;
-            <%
-            for(int i = 0 ; i < upperBound ; i++) {
-                %>
-                columnNullable_<%=cid%> = <%=((IMetadataColumn)columnList.get(i)).isNullable()%>;
-                otherColumnNullable_<%=cid%> = <%=((IMetadataColumn)schemaOtherColumns.get(i)).isNullable()%>;
-                if(columnNullable_<%=cid%> != otherColumnNullable_<%=cid%>) {
-                    ifPassed_<%=cid%> = false;
-                    errorCode_<%=cid%> = "4";
-                    errorMessage_<%=cid%> = "empty or null";
-                    continue;                    
-                }
-                <%
-            }
-            %>
-            //validate maxlength
-            Integer columnMaxLength_<%=cid%> = -1;
-            Integer otherColumnMaxLength_<%=cid%> = -1;
-            <%
-            for(int i = 0 ; i < upperBound ; i++) {
-                %>
-                columnMaxLength_<%=cid%> = <%=((IMetadataColumn)columnList.get(i)).getLength()%>;
-                otherColumnMaxLength_<%=cid%> = <%=((IMetadataColumn)schemaOtherColumns.get(i)).getLength()%>;
-                if((columnMaxLength_<%=cid%> != null && otherColumnMaxLength_<%=cid%> != null && columnMaxLength_<%=cid%> > otherColumnMaxLength_<%=cid%>) || 
-                        (columnMaxLength_<%=cid%> == null && otherColumnMaxLength_<%=cid%> != null) || 
-                        (columnMaxLength_<%=cid%> != null && otherColumnMaxLength_<%=cid%> == null)) {
-                    ifPassed_<%=cid%> = false;
-                    errorCode_<%=cid%> = "8";
-                    errorMessage_<%=cid%> = "exceed max length";
-                    continue;                     
-                }
-                <%
-            }
+            columnListToTest = schemaOther.getListColumns();
         }
     }
     class SchemaChecker {
@@ -136,10 +73,9 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
                 <%
             }
         }
-        public void testDataLength(String incomingConnName, IMetadataColumn metadataColumn, String cid) {
+        public void testDataLength(String incomingConnName, IMetadataColumn metadataColumn, Integer maxLength, String cid) {
             JavaType javaType = JavaTypesManager.getJavaTypeFromId(metadataColumn.getTalendType());
             if(javaType == JavaTypesManager.STRING) {
-                Integer maxLength = metadataColumn.getLength();
                 if(maxLength != null)
                 {
                     %>
@@ -160,26 +96,38 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
     for(IMetadataColumn metadataColumn : columnList) {
         for(Map<String, String> checkedColumn : checkedColumns) {
             if(metadataColumn.getLabel().equals(checkedColumn.get("SCHEMA_COLUMN"))) {
-                checker.testDataType(incomingConnName,metadataColumn,checkedColumn.get("SELECTED_TYPE"),cid);
-                if(checkAll.equals("true")) {
+            	int columnIndex = columnList.indexOf(metadataColumn);
+            	if (anotherChecked.equals("true") && (columnListToTest.size() > columnIndex)) {
+            		String typeToTest = columnListToTest.get(columnList.indexOf(metadataColumn)).getTalendType();
+            		typeToTest = JavaTypesManager.getTypeToGenerate(typeToTest, true);
+            		checker.testDataType(incomingConnName,metadataColumn,typeToTest,cid);
+            	} else {
+                	checker.testDataType(incomingConnName,metadataColumn,checkedColumn.get("SELECTED_TYPE"),cid);
+                }
+                if(checkAll.equals("true") || anotherChecked.equals("true")) {
+                	if (columnListToTest.size() < columnIndex) {
+                		continue;
+                	}
                     %>
                     //validate nullable
-                    boolean <%=metadataColumn.getLabel()%>nullable_<%=cid%> = <%=metadataColumn.isNullable()%>;
-                    if(!<%=metadataColumn.getLabel()%>nullable_<%=cid%>) {
+                    boolean <%=metadataColumn.getLabel()%>_inputTypeCanTestNullable_<%=cid%> = <%=!JavaTypesManager.getJavaTypeFromId(metadataColumn.getTalendType()).isPrimitive()%>;
+                    if(<%=!columnListToTest.get(columnIndex).isNullable()%> && <%=metadataColumn.getLabel()%>_inputTypeCanTestNullable_<%=cid%> && 
+                       	<%=incomingConnName%>.<%=metadataColumn.getLabel()%> == null) {
                         ifPassed_<%=cid%> = false;
                         errorCode_<%=cid%> = "4";
                         errorMessage_<%=cid%> = "empty or null";                        
                     }
                     //validate maxlength
                     <%
-                    checker.testDataLength(incomingConnName,metadataColumn,cid);
+                    checker.testDataLength(incomingConnName,metadataColumn,columnListToTest.get(columnIndex).getLength(),cid);
                 } else {
                     String checkNullable = checkedColumn.get("NULLABLE");
                     String checkMaxLength = checkedColumn.get("MAX_LENGTH");
-                    if(checkNullable.equals("true")) {
+                    if(checkNullable.equals("true") && !metadataColumn.isNullable()) { // if the column we test is nullable, no need
                         %>
-                        boolean <%=metadataColumn.getLabel()%>nullable_<%=cid%> = <%=metadataColumn.isNullable()%>;
-                        if(!<%=metadataColumn.getLabel()%>nullable_<%=cid%>) {
+                        boolean <%=metadataColumn.getLabel()%>_inputTypeCanTestNullable_<%=cid%> = <%=!JavaTypesManager.getJavaTypeFromId(metadataColumn.getTalendType()).isPrimitive()%>;
+                        if(<%=metadataColumn.getLabel()%>_inputTypeCanTestNullable_<%=cid%> && 
+                        	<%=incomingConnName%>.<%=metadataColumn.getLabel()%> == null) {
                             ifPassed_<%=cid%> = false;
                             errorCode_<%=cid%> = "4";
                             errorMessage_<%=cid%> = "empty or null";                        
@@ -187,7 +135,7 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
                         <%
                     }
                     if(checkMaxLength.equals("true")) {
-                        checker.testDataLength(incomingConnName,metadataColumn,cid);
+                        checker.testDataLength(incomingConnName,metadataColumn, metadataColumn.getLength(),cid);
                     }
                 }
                 break;
@@ -200,12 +148,12 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
         <%    
             for(IConnection conn : outgoingConns) {
                 if(rejectConnName == null || (rejectConnName != null && !rejectConnName.equals(conn.getName()))){
-                    if(conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
-                        for(IMetadataColumn metadataColumn : columnList) {
-                            %>
-                            <%=conn.getName()%>.<%=metadataColumn.getLabel()%> = <%=incomingConnName%>.<%=metadataColumn.getLabel()%>;
-                            <%
-                        }
+            %>            
+                <%=conn.getName() %> = new <%=conn.getName() %>Struct();
+                    <%for(IMetadataColumn metadataColumn : columnList) {
+                        %>
+                        <%=conn.getName()%>.<%=metadataColumn.getLabel()%> = <%=incomingConnName%>.<%=metadataColumn.getLabel()%>;
+                        <%
                     }
                 }
             }
@@ -216,6 +164,7 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
     if(rejectConnName != null) {
         %>
         if(!ifPassed_<%=cid%>) {
+            <%=rejectConnName %> = new <%=rejectConnName %>Struct();
             <%
             for(IMetadataColumn metadataColumn : columnList) {
                 %>
