@@ -90,8 +90,8 @@ public class ContextWizard extends RepositoryWizard implements INewWizard {
         if (creation) {
             contextItem = PropertiesFactory.eINSTANCE.createContextItem();
             contextProperty = PropertiesFactory.eINSTANCE.createProperty();
-            contextProperty.setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
-                    .getUser());
+            contextProperty.setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(
+                    Context.REPOSITORY_CONTEXT_KEY)).getUser());
             contextProperty.setVersion(VersionUtils.DEFAULT_VERSION);
             contextProperty.setStatusCode(""); //$NON-NLS-1$
 
@@ -116,17 +116,19 @@ public class ContextWizard extends RepositoryWizard implements INewWizard {
      * Adding the page to the wizard.
      */
     public void addPages() {
-        setWindowTitle("Create / Edit a context group"); //$NON-NLS-1$
+        setWindowTitle(Messages.getString("ContextWizard.Title")); //$NON-NLS-1$
         contextWizardPage0 = new Step0WizardPage(contextProperty, pathToSave, ERepositoryObjectType.CONTEXT,
                 !isRepositoryObjectEditable(), creation);
-        contextWizardPage0.setTitle("");
-        contextWizardPage0.setDescription("");
+        contextWizardPage0.setTitle(Messages.getString("ContextWizard.step0Title")); //$NON-NLS-1$
+        contextWizardPage0.setDescription(Messages.getString("ContextWizard.step0Description")); //$NON-NLS-1$
         addPage(contextWizardPage0);
         if (creation) {
             contextWizardPage0.setPageComplete(false);
         }
 
         ContextPage contextPage = new ContextPage("test", contextManager, !isRepositoryObjectEditable()); //$NON-NLS-1$
+        contextPage.setTitle(Messages.getString("ContextWizard.contextPageTitle")); //$NON-NLS-1$
+        contextPage.setDescription(Messages.getString("ContextWizard.contextPageDescription")); //$NON-NLS-1$
         addPage(contextPage);
     }
 
@@ -164,7 +166,8 @@ public class ContextWizard extends RepositoryWizard implements INewWizard {
                 closeLockStrategy();
             } catch (PersistenceException e) {
                 String detailError = e.toString();
-                new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("CommonWizard.persistenceException"), //$NON-NLS-1$
+                new ErrorDialogWidthDetailArea(getShell(), PID,
+                        Messages.getString("CommonWizard.persistenceException"), //$NON-NLS-1$
                         detailError);
                 log.error(Messages.getString("CommonWizard.persistenceException") + "\n" + detailError); //$NON-NLS-1$ //$NON-NLS-2$
                 return false;
