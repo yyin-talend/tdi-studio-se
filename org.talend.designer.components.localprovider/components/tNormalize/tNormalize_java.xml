@@ -42,8 +42,9 @@
       NAME="DEDUPLICATE"
       FIELD="CHECK"
       NUM_ROW="2"
+      SHOW="false"
     >
-      <DEFAULT>true</DEFAULT>
+      <DEFAULT>false</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
