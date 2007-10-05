@@ -155,7 +155,7 @@
       NUM_ROW="10"
       REQUIRED="true"
     >
-      <DEFAULT>1000</DEFAULT>
+      <DEFAULT>10000</DEFAULT>
     </PARAMETER>
 
   </PARAMETERS>

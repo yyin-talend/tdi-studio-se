@@ -181,7 +181,7 @@
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
       REQUIRED="true"
     >
-      <DEFAULT>100</DEFAULT>
+      <DEFAULT>10000</DEFAULT>
     </PARAMETER>
 
     <PARAMETER

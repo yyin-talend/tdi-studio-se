@@ -127,7 +127,7 @@
       NUM_ROW="8"
       REQUIRED="true"
     >
-      <DEFAULT>100</DEFAULT>
+      <DEFAULT>10000</DEFAULT>
     </PARAMETER>
     
     <PARAMETER

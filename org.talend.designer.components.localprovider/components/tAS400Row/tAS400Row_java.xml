@@ -142,7 +142,7 @@
       NUM_ROW="10"
       REQUIRED="true"
     >
-      <DEFAULT>100</DEFAULT>
+      <DEFAULT>10000</DEFAULT>
     </PARAMETER>
     
     <PARAMETER
