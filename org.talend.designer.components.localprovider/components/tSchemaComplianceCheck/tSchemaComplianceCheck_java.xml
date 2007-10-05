@@ -18,8 +18,9 @@
   </DOCUMENTATION>
 
   <CONNECTORS>
+	<CONNECTOR NAME="REJECT" CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="1" LINE_STYLE="2" COLOR="FF0000" BASE_SCHEMA="FLOW" />  
     <CONNECTOR CTYPE="FLOW" MAX_INPUT="1"/>
-    <CONNECTOR NAME="REJECT" CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="1" LINE_STYLE="2" COLOR="FF0000" BASE_SCHEMA="FLOW" />
+    <CONNECTOR NAME="OTHER" CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="0"/>
     <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="0" MAX_INPUT="0"/>
     <CONNECTOR CTYPE="THEN_RUN" MAX_INPUT="1"/>
     <CONNECTOR CTYPE="REFERENCE"/>
@@ -50,10 +51,27 @@
     </PARAMETER>
 
     <PARAMETER
+      NAME="CHECK_ANOTHER"
+      FIELD="CHECK"
+      NUM_ROW="3" 
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="SCHEMA_OTHER"
+      FIELD="SCHEMA_TYPE"
+      REQUIRED="true"
+      NUM_ROW="4"
+      CONTEXT="OTHER"
+      NOT_SHOW_IF="CHECK_ANOTHER == 'false'">
+    </PARAMETER>
+
+    <PARAMETER
       NAME="CHECK_ALL"
       FIELD="CHECK"
-      NUM_ROW="3"
-    >
+      NUM_ROW="5"
+      NOT_SHOW_IF="CHECK_ANOTHER == 'true'">
       <DEFAULT>true</DEFAULT>
     </PARAMETER>
       
@@ -61,15 +79,26 @@
       NAME="CHECKCOLS"
       FIELD="TABLE"
       REQUIRED="true"
-      NUM_ROW="4"
+      NUM_ROW="6"
       NB_LINES="5"
-      NOT_SHOW_IF="CHECK_ALL == 'true'"
+      NOT_SHOW_IF="(CHECK_ALL == 'true' or CHECK_ANOTHER == 'true')"
     >
-      <ITEMS>
-      	<ITEM NAME="CHECK_COLUMN" FIELD="PREV_COLUMN_LIST" />     	
-        <ITEM NAME="NULLABLE" FIELD="CHECK" VALUE="false"/>
+      <ITEMS BASED_ON_SCHEMA="true">
+      	<ITEM NAME="SELECTED_TYPE" FIELD="CLOSED_LIST">
+      		<ITEMS DEFAULT="STRING">
+		        <ITEM NAME="BYTE" VALUE="Byte"/>
+		        <ITEM NAME="SHORT" VALUE="Short"/>
+		        <ITEM NAME="INTEGER" VALUE="Integer"/>
+		        <ITEM NAME="LONG" VALUE="Long"/>
+		        <ITEM NAME="FLOAT" VALUE="Float"/>
+		        <ITEM NAME="DOUBLE" VALUE="Double"/>
+		        <ITEM NAME="BOOLEAN" VALUE="Boolean"/>
+		        <ITEM NAME="CHARACTER" VALUE="Character"/>
+		        <ITEM NAME="STRING" VALUE="String"/>		        
+      		</ITEMS>
+      	</ITEM>
+      	<ITEM NAME="NULLABLE" FIELD="CHECK" VALUE="false"/>
         <ITEM NAME="MAX_LENGTH" FIELD="CHECK" VALUE="false"/>
-        <ITEM NAME="ALL" FIELD="CHECK" VALUE="false"/>
       </ITEMS>
     </PARAMETER>  
   </PARAMETERS>
