@@ -33,6 +33,7 @@
 <%
 	if(isRunInMultiThread){
 %>
+    private static ThreadLocal threadLocal = new ThreadLocal();
 	private static SyncInt runningThreadCount =new SyncInt();
 	
 	private static class SyncInt
@@ -131,8 +132,7 @@
 	long end = 0;
 	long start = java.util.Calendar.getInstance().getTimeInMillis();
 <%
-	if(isRunInMultiThread 
-		&& process.getNodesOfType("tStatCatcher").size() + rootNodes.size()>1){
+	if(isRunInMultiThread){
 %>
 	final <%=process.getName() %> <%=process.getName() %>Class = new <%=process.getName() %>(); 
 <%
@@ -149,14 +149,29 @@
    		new Thread(){
 	    	public void run()
 	   		{
-	        	try {
+                java.util.Map threadRunResultMap = new java.util.HashMap();
+                threadRunResultMap.put(errorCode, null);
+                threadRunResultMap.put(status, "");
+                threadLocal.set(threadRunResultMap);
+	    	    
+	    	    try {
 	            	<%=process.getName() %>Class.<%=rootNode.getUniqueName() %>Process();
 	            } catch (TalendException e) {
-	            	status="failure";
+	                ((java.util.Map)threadLocal.get()).put(status, "failure");  
 	            	e.printStackTrace();
 	         	}finally
 	         	{
-	            	runningThreadCount.add(-1);
+	                Integer localErrorCode = (Integer)(((java.util.Map)threadLocal.get()).get(errorCode));
+	                String localStatus = (String)(((java.util.Map)threadLocal.get()).get(status));
+	                if (localErrorCode != null) {
+	                    if (errorCode == null || localErrorCode.compareTo(errorCode) > 0) {
+	                       errorCode = localErrorCode;
+	                    }
+	                }else if(!status.equals("failure")){
+	                        status = localStatus;
+	                }	
+	         	    
+	                runningThreadCount.add(-1);
 	        	}
 	    	}
 		}.start();
@@ -227,8 +242,7 @@
 		}
 <%
     }
-    if(!(isRunInMultiThread 
-    	&& process.getNodesOfType("tStatCatcher").size() + rootNodes.size()>1)){
+    if(!isRunInMultiThread){
     // next brace is end of finally.
 %>
         

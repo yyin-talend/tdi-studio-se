@@ -261,10 +261,25 @@ if (!node.getComponent().getName().equals("tDie")) {
    	for (IConnection conn : conns) {
    		if (conn.getLineStyle().equals(EConnectionType.RUN_IF_ERROR)) {
 %>
-	try {
-	    errorCode = null;
-	    <%=conn.getTarget().getUniqueName() %>Process();
-    	status="end";
+	try {	    
+	
+	<%
+	    if(isRunInMultiThread ){
+	%>
+	    ((java.util.Map)threadLocal.get()).put(errorCode, null); 
+        <%=conn.getTarget().getUniqueName() %>Process();
+        ((java.util.Map)threadLocal.get()).put(status, "end");
+	<%
+	    }else {
+	%>
+        errorCode = null;
+        <%=conn.getTarget().getUniqueName() %>Process();
+        status="end";
+    <%
+	    }
+    %>
+    	
+    	
     } catch (Exception e) {
     	e.printStackTrace();
     }

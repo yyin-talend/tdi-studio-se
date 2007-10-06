@@ -19,7 +19,8 @@ imports="
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
-    
+	boolean isRunInMultiThread = codeGenArgument.getIsRunInMultiThread();
+	
     List<Map<String, String>> contextParams = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__CONTEXTPARAMS__");
     String process = ElementParameterParser.getValue(node,"__PROCESS_TYPE_PROCESS__");
     String context = ElementParameterParser.getValue(node,"__PROCESS_TYPE_CONTEXT__");
@@ -82,10 +83,25 @@ for (int i=0; i<contextParams.size(); i++) {
 <%
     if (childJob!=null) {
 %>  
-    errorCode = <%=childJob %>.errorCode;
-    if (<%=childJob %>.errorCode != null || <%=childJob %>.status.equals("failure")) {
-        throw new TRunJobException();
-    } 
+
+    <%
+        if(isRunInMultiThread ){
+    %>
+        ((java.util.Map)threadLocal.get()).put(errorCode, <%=childJob %>.errorCode); 
+
+        if (<%=childJob %>.errorCode != null || <%=childJob %>.status.equals("failure")) {
+            throw new TRunJobException();
+        }
+    <%
+        }else {
+    %>
+        errorCode = <%=childJob %>.errorCode;
+        if (<%=childJob %>.errorCode != null || <%=childJob %>.status.equals("failure")) {
+            throw new TRunJobException();
+        }
+    <%
+        }
+    %>
 <%
     }
 %>

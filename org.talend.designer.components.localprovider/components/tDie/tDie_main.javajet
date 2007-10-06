@@ -11,6 +11,7 @@
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
+	boolean isRunInMultiThread = codeGenArgument.getIsRunInMultiThread();
 %>
 
 <%
@@ -29,7 +30,18 @@
 
 	System.err.println(<%=ElementParameterParser.getValue(node, "__MESSAGE__") %>);
 	currentComponent = "<%=cid %>";
-	errorCode = new Integer(<%=ElementParameterParser.getValue(node, "__CODE__") %>);
+    <%
+    if(isRunInMultiThread ){
+    %>
+        ((java.util.Map)threadLocal.get()).put(errorCode, new Integer(<%=ElementParameterParser.getValue(node, "__CODE__") %>)); 
+    <%
+        }else {
+    %>
+        errorCode = new Integer(<%=ElementParameterParser.getValue(node, "__CODE__") %>);
+    <%
+        }
+    %>
+	
 	if(true){
 	    throw new TDieException();
 	}
