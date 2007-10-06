@@ -8,13 +8,19 @@ imports="
     org.talend.designer.codegen.config.CodeGeneratorArgument
     org.talend.core.model.process.IConnectionCategory
     java.util.List
-" 
-class="LDAPInput"
+"
 %>
 
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
+	
+	List<IMetadataTable> metadatas = node.getMetadataList();
+	    if ((metadatas!=null)&&(metadatas.size()>0)) {
+	        IMetadataTable metadata = metadatas.get(0);	        
+	        if(metadata!=null) {
+
+	List<IMetadataColumn> columnList = metadata.getListColumns();
 	String cid = node.getUniqueName();
 	String host=ElementParameterParser.getValue(node, "__HOST__");
 	String port=ElementParameterParser.getValue(node, "__PORT__");
@@ -84,18 +90,6 @@ class="LDAPInput"
 %>
 	javax.naming.directory.SearchControls searchCtls_<%=cid%> = new javax.naming.directory.SearchControls();
     searchCtls_<%=cid%>.setSearchScope(javax.naming.directory.SearchControls.SUBTREE_SCOPE);
-<%
-	List<IMetadataTable> metadatas = node.getMetadataList();
-	if ((metadatas!=null)&&(metadatas.size()>0)) {
-		IMetadataTable metadata = metadatas.get(0);
-		List<IMetadataColumn> columnList = metadata.getListColumns();
-		
-    	List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
-    	for(IConnection conn:conns){
-    		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {
-     			String firstConnName = conn.getName();
-    			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {	
-%>
     searchCtls_<%=cid%>.setReturningAttributes(new String[]{
 <%
 					for(IMetadataColumn column:columnList){		
@@ -132,7 +126,7 @@ class="LDAPInput"
 					}
 %>
 	int entryCount_<%=cid%> = 0;
-    while (answer_<%=cid%> .hasMoreElements()) {
+    while (answer_<%=cid%> .hasMoreElements()) {//a
     	if(entryCount_<%=cid%> >= <%=limit%>){
     		break;
     	}
@@ -140,10 +134,24 @@ class="LDAPInput"
         javax.naming.directory.SearchResult sr_<%=cid%>  = (javax.naming.directory.SearchResult) answer_<%=cid%>.next();
 		globalMap.put("<%=cid%>_RESULT_NAME",sr_<%=cid%>.getName());
         javax.naming.directory.Attributes attrs_<%=cid%> = sr_<%=cid%>.getAttributes();
-        if (attrs_<%=cid%> != null) {
+
+     // for output
+        <%
+            List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
+            String firstConnName = "";
+            if (conns!=null) {//1
+                if (conns.size()>0) {//2
+                
+                    IConnection conn = conns.get(0); //the first connection
+                    firstConnName = conn.getName();         
+                    if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {//3
+
+                        %>
+                        
+        if (attrs_<%=cid%> != null) {//b
         	entryCount_<%=cid%>++;
 <%
-					for(IMetadataColumn column:columnList){		
+					for(IMetadataColumn column:columnList){//5		
 %>        	
 			javax.naming.directory.Attribute attr_<%=column.getLabel()%>_<%=cid%> = attrs_<%=cid%>.get("<%=column.getLabel()%>");
 			if(attr_<%=column.getLabel()%>_<%=cid%> != null)
@@ -161,9 +169,31 @@ class="LDAPInput"
 			}
 			
 <%
-                	}
-				}
-			}
-		}
-	}
+                	}//5
+
+        }//3
+        
+        
+        if (conns.size()>1) {
+            for (int i=1;i<conns.size();i++) {
+                IConnection conn2 = conns.get(i);
+                if ((conn2.getName().compareTo(firstConnName)!=0)&&(conn2.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA))) {
+                    for (IMetadataColumn column: metadata.getListColumns()) {%>
+                <%=conn2.getName() %>.<%=column.getLabel() %> = <%=firstConnName %>.<%=column.getLabel() %>;
+                 <%
+                    }
+                }
+            }
+        }
+        
+        
+    }//2
+    
+}//1
+
 %>
+///////////////////////////////////        
+<%
+  }
+}  
+ %>
