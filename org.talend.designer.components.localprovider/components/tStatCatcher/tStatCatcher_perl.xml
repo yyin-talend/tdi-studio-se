@@ -36,19 +36,19 @@
       READONLY="true"
     >
       <TABLE>
-        <COLUMN NAME="moment" TYPE="Day"/>
-        <COLUMN NAME="pid" TYPE="String" LENGTH="20"/>
-        <COLUMN NAME="father_pid" TYPE="String" LENGTH="20"/>
-        <COLUMN NAME="root_pid" TYPE="String" LENGTH="20"/>
+        <COLUMN NAME="moment" TYPE="datetime"/>
+        <COLUMN NAME="pid" TYPE="string" LENGTH="20"/>
+        <COLUMN NAME="father_pid" TYPE="string" LENGTH="20"/>
+        <COLUMN NAME="root_pid" TYPE="string" LENGTH="20"/>
         <COLUMN NAME="system_pid" TYPE="int" LENGTH="10"/>
-        <COLUMN NAME="project" TYPE="String" LENGTH="50"/>
-        <COLUMN NAME="job" TYPE="String" LENGTH="50"/>
-        <COLUMN NAME="job_repository_id" TYPE="String" LENGTH="50"/>
-        <COLUMN NAME="job_version" TYPE="String" LENGTH="50"/>
-        <COLUMN NAME="context" TYPE="String" LENGTH="50"/>
-        <COLUMN NAME="origin" TYPE="String" LENGTH="255"/>
-        <COLUMN NAME="message_type" TYPE="String" LENGTH="10"/>
-        <COLUMN NAME="message" TYPE="String" LENGTH="255"/>
+        <COLUMN NAME="project" TYPE="string" LENGTH="50"/>
+        <COLUMN NAME="job" TYPE="string" LENGTH="50"/>
+        <COLUMN NAME="job_repository_id" TYPE="string" LENGTH="50"/>
+        <COLUMN NAME="job_version" TYPE="string" LENGTH="50"/>
+        <COLUMN NAME="context" TYPE="string" LENGTH="50"/>
+        <COLUMN NAME="origin" TYPE="string" LENGTH="255"/>
+        <COLUMN NAME="message_type" TYPE="string" LENGTH="10"/>
+        <COLUMN NAME="message" TYPE="string" LENGTH="255"/>
         <COLUMN NAME="duration" TYPE="int" LENGTH="10"/>
       </TABLE>
     </PARAMETER>

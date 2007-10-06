@@ -32,15 +32,15 @@ COMPATIBILITY="ALL"
 
     <PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" REQUIRED="true" NUM_ROW="1" READONLY="true">
       <TABLE>
-        <COLUMN NAME="moment" TYPE="Day"/>
-        <COLUMN NAME="pid" TYPE="String" LENGTH="20"/>
-        <COLUMN NAME="project" TYPE="String" LENGTH="50"/>
-        <COLUMN NAME="job" TYPE="String" LENGTH="50"/>
-        <COLUMN NAME="language" TYPE="String" LENGTH="5"/>
-        <COLUMN NAME="origin" TYPE="String" LENGTH="255"/>
-        <COLUMN NAME="status" TYPE="String" LENGTH="10"/>
-        <COLUMN NAME="substatus" TYPE="String" LENGTH="255"/>
-        <COLUMN NAME="description" TYPE="String" LENGTH="255"/>
+        <COLUMN NAME="moment" TYPE="datetime"/>
+        <COLUMN NAME="pid" TYPE="string" LENGTH="20"/>
+        <COLUMN NAME="project" TYPE="string" LENGTH="50"/>
+        <COLUMN NAME="job" TYPE="string" LENGTH="50"/>
+        <COLUMN NAME="language" TYPE="string" LENGTH="5"/>
+        <COLUMN NAME="origin" TYPE="string" LENGTH="255"/>
+        <COLUMN NAME="status" TYPE="string" LENGTH="10"/>
+        <COLUMN NAME="substatus" TYPE="string" LENGTH="255"/>
+        <COLUMN NAME="description" TYPE="string" LENGTH="255"/>
       </TABLE>
     </PARAMETER>
 

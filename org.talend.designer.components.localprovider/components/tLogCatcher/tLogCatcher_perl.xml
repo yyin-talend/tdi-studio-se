@@ -31,18 +31,18 @@ COMPATIBILITY="ALL"
   <PARAMETERS>
     <PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" REQUIRED="true" NUM_ROW="1" READONLY="true">
       <TABLE>
-        <COLUMN NAME="moment" TYPE="Day"/>
-        <COLUMN NAME="pid" TYPE="String" LENGTH="20"/>
-        <COLUMN NAME="father_pid" TYPE="String" LENGTH="20"/>
-        <COLUMN NAME="root_pid" TYPE="String" LENGTH="20"/>
-        <COLUMN NAME="project" TYPE="String" LENGTH="50"/>
-        <COLUMN NAME="job" TYPE="String" LENGTH="50"/>
-        <COLUMN NAME="context" TYPE="String" LENGTH="50"/>
+        <COLUMN NAME="moment" TYPE="datetime"/>
+        <COLUMN NAME="pid" TYPE="string" LENGTH="20"/>
+        <COLUMN NAME="father_pid" TYPE="string" LENGTH="20"/>
+        <COLUMN NAME="root_pid" TYPE="string" LENGTH="20"/>
+        <COLUMN NAME="project" TYPE="string" LENGTH="50"/>
+        <COLUMN NAME="job" TYPE="string" LENGTH="50"/>
+        <COLUMN NAME="context" TYPE="string" LENGTH="50"/>
         <COLUMN NAME="priority" TYPE="int" LENGTH="3"/>
-        <COLUMN NAME="type" TYPE="String" LENGTH="255"/>
-        <COLUMN NAME="origin" TYPE="String" LENGTH="255"/>
-        <COLUMN NAME="message" TYPE="String" LENGTH="255"/>
-        <COLUMN NAME="code" TYPE="String" LENGTH="255"/>
+        <COLUMN NAME="type" TYPE="string" LENGTH="255"/>
+        <COLUMN NAME="origin" TYPE="string" LENGTH="255"/>
+        <COLUMN NAME="message" TYPE="string" LENGTH="255"/>
+        <COLUMN NAME="code" TYPE="string" LENGTH="255"/>
       </TABLE>
     </PARAMETER>
 
