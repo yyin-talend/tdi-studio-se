@@ -9,12 +9,6 @@ imports="
     java.util.List
 "
 %>
-    class TRunJobException extends Exception {
-
-        public TRunJobException() {
-            super();
-        }
-    }
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
