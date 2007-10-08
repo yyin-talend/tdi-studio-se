@@ -3,11 +3,90 @@
 		org.talend.core.model.process.INode 
 		org.talend.core.model.process.ElementParameterParser
 		org.talend.designer.codegen.config.CodeGeneratorArgument
-		org.talend.core.model.metadata.IMetadataTable 
-    	org.talend.core.model.metadata.IMetadataColumn 
-    	org.talend.core.model.process.IConnection
-   		org.talend.core.model.process.IConnectionCategory
-   		    java.util.Map
-    java.util.List
 	"
 %>
+
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	String cid = node.getUniqueName();
+	
+	String command = ElementParameterParser.getValue(node, "__COMMAND__");
+		
+	String outputAction  = ElementParameterParser.getValue(node, "__OUTPUT__");
+	
+	// To launch an internal command to cmd.exe (XP), you have to call :
+	// cmd.exe /c dir (for example)
+%>
+
+Runtime runtime_<%=cid %> = Runtime.getRuntime();
+final Process ps_<%=cid %> = runtime_<%=cid %>.exec(<%=command %>);
+Thread normal_<%=cid %> = new Thread() {
+	public void run() {
+		try {
+			java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.InputStreamReader(ps_<%=cid %>.getInputStream()));
+			String line = "";
+			try {
+				while((line = reader.readLine()) != null) {
+<%
+	if (outputAction.equals("OUTPUT_TO_CONSOLE")) {
+%>
+					System.out.println(line);
+<%
+	} else if (outputAction.equals("RETRIEVE_OUTPUT")) {
+%>
+					if (globalMap.get("<%=cid %>_OUTPUT") != null) {
+						globalMap.put("<%=cid %>_OUTPUT", (String)globalMap.get("<%=cid %>_OUTPUT")+"\n"+line);
+					} else {
+						globalMap.put("<%=cid %>_OUTPUT", line);
+					}
+<%
+	}
+%>
+				}
+			} finally {
+				reader.close();
+			}
+		} catch(java.io.IOException ioe) {
+			ioe.printStackTrace();
+		}
+	}
+};
+normal_<%=cid %>.start();
+
+Thread error_<%=cid %> = new Thread() {
+	public void run() {
+		try {
+			java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.InputStreamReader(ps_<%=cid %>.getErrorStream()));
+			String line = "";
+			try {
+				while((line = reader.readLine()) != null) {
+<%
+	if (outputAction.equals("OUTPUT_TO_CONSOLE")) {
+%>
+					System.err.println(line);
+<%
+	} else if (outputAction.equals("RETRIEVE_OUTPUT")) {
+%>
+					if (globalMap.get("<%=cid %>_OUTPUT") != null) {
+						globalMap.put("<%=cid %>_OUTPUT", (String)globalMap.get("<%=cid %>_OUTPUT")+"\n"+line);
+					} else {
+						globalMap.put("<%=cid %>_OUTPUT", line);
+					}
+<%
+	}
+%>
+				}
+			} finally {
+				reader.close();
+			}
+		} catch(java.io.IOException ioe) {
+			ioe.printStackTrace();
+		}
+	}
+};
+error_<%=cid %>.start();
+
+ps_<%=cid %>.waitFor();
+normal_<%=cid %>.interrupt();
+error_<%=cid %>.interrupt();
