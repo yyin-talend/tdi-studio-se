@@ -1,0 +1,32 @@
+<%@ jet
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.core.model.process.ElementParameterParser
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.metadata.IMetadataTable 
+    	org.talend.core.model.metadata.IMetadataColumn 
+    	org.talend.core.model.process.IConnection
+    	java.util.List
+	"
+%>
+
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	String outputAction  = ElementParameterParser.getValue(node, "__OUTPUT__");
+    if(outputAction.equals("NORMAL_OUTPUT")){
+    	List<IMetadataTable> metadatas = node.getMetadataList();
+        if ((metadatas!=null)&&(metadatas.size()>0)) {
+        	IMetadataTable metadata = metadatas.get(0);
+        	if (metadata!=null) {
+        		List<IMetadataColumn> columns=metadata.getListColumns();
+        		List<? extends IConnection> conns = node.getOutgoingSortedConnections();
+        		if (conns!=null && conns.size()>0) {
+%>
+}			
+<%
+				}
+			}
+		}
+	}
+%>
