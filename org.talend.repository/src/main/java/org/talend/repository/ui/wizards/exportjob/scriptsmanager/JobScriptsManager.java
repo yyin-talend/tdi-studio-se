@@ -84,7 +84,7 @@ public abstract class JobScriptsManager {
         exportChoiceMap.put(ExportChoice.needUserRoutine, true);
         exportChoiceMap.put(ExportChoice.needTalendLibraries, true);
         exportChoiceMap.put(ExportChoice.needJob, true);
-        exportChoiceMap.put(ExportChoice.needSource, false);
+        exportChoiceMap.put(ExportChoice.needSource, true);
         exportChoiceMap.put(ExportChoice.needContext, true);
         exportChoiceMap.put(ExportChoice.applyToChildren, true);
         return exportChoiceMap;
@@ -311,7 +311,7 @@ public abstract class JobScriptsManager {
     protected void generateJobFiles(ProcessItem process, String contextName, boolean statistics, boolean trace,
             boolean applyContextToChildren) {
         ProcessorUtilities.generateCode(process.getProperty().getLabel(), contextName, statistics, trace,
-                applyContextToChildren); //$NON-NLS-1$
+                applyContextToChildren);
     }
 
     protected IResource[] sourceResouces = null;
@@ -325,7 +325,7 @@ public abstract class JobScriptsManager {
                 IProject prj = ResourceModelUtils.getProject(project);
                 IFolder folder = prj.getFolder(ERepositoryObjectType.getFolderName(ERepositoryObjectType.PROCESS));
                 sourceFile.add(prj.getFile(FileConstants.LOCAL_PROJECT_FILENAME));
-                addNodeToResource(folder.members(), sourceFile);
+                // addNodeToResource(folder.members(), sourceFile);
                 sourceResouces = sourceFile.toArray(new IResource[sourceFile.size()]);
             } catch (Exception e) {
                 ExceptionHandler.process(e);
@@ -351,7 +351,7 @@ public abstract class JobScriptsManager {
 
     protected List<URL> getSource(ProcessItem processItem, boolean needChoice) {
         List<String> list = new ArrayList<String>();
-        IResource[] resources = new IResource[0]; 
+        IResource[] resources = new IResource[0];
         if (needChoice) {
             try {
                 String name = processItem.getProperty().getLabel() + "_" + processItem.getProperty().getVersion(); //$NON-NLS-1$
