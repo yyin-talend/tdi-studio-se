@@ -19,7 +19,7 @@
 			public String fileName;
 			public String filePath;
 			
-			public UnzippedFile_<%=cid %>(String fileName, filePath) {
+			public UnzippedFile_<%=cid %>(String fileName, String filePath) {
 				this.fileName = fileName;
 				this.filePath = filePath;				
 			} 
@@ -28,7 +28,7 @@
 		
 		class Util_<%=cid %>
         {
-        	public java.util.List<UnzippedFile_<%=cid %>> unzippedFiles = new java.util.List<UnzippedFile_<%=cid %>>();
+        	public java.util.List<UnzippedFile_<%=cid %>> unzippedFiles = new java.util.ArrayList<UnzippedFile_<%=cid %>>();
         	
             public void deleteDir(java.io.File dir) {
                 if (dir.isDirectory()) {
