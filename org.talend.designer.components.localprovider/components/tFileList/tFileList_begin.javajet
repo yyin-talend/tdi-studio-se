@@ -12,83 +12,128 @@
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
-    boolean incldSubdir=ElementParameterParser.getValue(node, "__INCLUDSUBDIR__").equals("true");
+    boolean incldSubdir = ElementParameterParser.getValue(node, "__INCLUDSUBDIR__").equals("true");
+    String filelistType = ElementParameterParser.getValue(node, "__LIST_MODE__");
 %>
 
-        String directory<%=cid %>       = <%=ElementParameterParser.getValue(node, "__DIRECTORY__") %>;
-        String filemask<%=cid %>        = <%=ElementParameterParser.getValue(node, "__FILEMASK__")%>+"$";
-        boolean flag<%=cid%>=false;
-        if(filemask<%=cid %>.indexOf("^")==-1) 
-        {
-            filemask<%=cid %>="^"+filemask<%=cid %>;
-        }
-        if(!(filemask<%=cid %>.lastIndexOf(".*$")==-1) &&  filemask<%=cid %>.lastIndexOf("*.*$")==-1)
-        {
-            filemask<%=cid %>=filemask<%=cid %>.substring(0,filemask<%=cid %>.length()-3)+"$";
-            flag<%=cid%>=true;
-        }else{
-            filemask<%=cid %> = java.util.regex.Pattern.compile("[*]").matcher(filemask<%=cid %>).replaceAll(".*");
-        }
-       
-        boolean case_sensitive<%=cid %> = <%=ElementParameterParser.getValue(node, "__CASE_SENSITIVE__").equals("YES") %>;
-		java.util.regex.Pattern fileNamePattern<%=cid %> = java.util.regex.Pattern.compile(filemask<%=cid %>);
-		if(!case_sensitive<%=cid %>){
-        	fileNamePattern<%=cid %> = java.util.regex.Pattern.compile(filemask<%=cid %>, java.util.regex.Pattern.CASE_INSENSITIVE);
-		}       
- 		java.io.File file<%=cid %>=new java.io.File(directory<%=cid %>);
-        final java.util.List<java.io.File> list_<%=cid%>= new java.util.ArrayList<java.io.File>(); 
- <%
-   if(incldSubdir==true)
-   {
- %>
-        file<%=cid%>.listFiles(new java.io.FilenameFilter() {
+    String directory_<%=cid%> = <%=ElementParameterParser.getValue(node, "__DIRECTORY__") %>;
+    String filemask_<%=cid%> = <%=ElementParameterParser.getValue(node, "__FILEMASK__")%> + "$";
+    boolean flag_<%=cid%> = false;
+    if(filemask_<%=cid%>.indexOf("^") == -1) 
+    {
+        filemask_<%=cid%> = "^" + filemask_<%=cid%>;
+    }
+    if(!(filemask_<%=cid%>.lastIndexOf(".*$") == -1) &&  filemask_<%=cid%>.lastIndexOf("*.*$") == -1)
+    {
+        filemask_<%=cid%> = filemask_<%=cid%>.substring(0,filemask_<%=cid%>.length()-3) + "$";
+        flag_<%=cid%> = true;
+    }else{
+        filemask_<%=cid%> = java.util.regex.Pattern.compile("[*]").matcher(filemask_<%=cid%>).replaceAll(".*");
+    }
+   
+    boolean case_sensitive_<%=cid%> = <%=ElementParameterParser.getValue(node, "__CASE_SENSITIVE__").equals("YES") %>;
+	java.util.regex.Pattern fileNamePattern_<%=cid%> = java.util.regex.Pattern.compile(filemask_<%=cid%>);
+	if(!case_sensitive_<%=cid%>){
+    	fileNamePattern_<%=cid%> = java.util.regex.Pattern.compile(filemask_<%=cid%>, java.util.regex.Pattern.CASE_INSENSITIVE);
+	}       
+	java.io.File file_<%=cid%> = new java.io.File(directory_<%=cid%>);
+    final java.util.List<java.io.File> list_<%=cid%> = new java.util.ArrayList<java.io.File>(); 
+    <%
+    if(incldSubdir) {
+    %>
+        file_<%=cid%>.listFiles(new java.io.FilenameFilter() {
             public boolean accept(java.io.File dir, String name) {
                 java.io.File file = new java.io.File(dir, name);
-                if (file.isFile()) {
-                    list_<%=cid%>.add(file);
-                    return true;
-                } else {
-                
-                    file.listFiles(this);
+                <%
+                if(filelistType.equals("FILES")) {
+                    %>
+                    if(!file.isDirectory()) {
+                        list_<%=cid%>.add(file);
+                        return true;
+                    } else {
+                        file.listFiles(this);
+                    }
+                    <%
+                } else if(filelistType.equals("DIRECTORIES")) {
+                    %>
+                    if(!file.isDirectory()) {
+                        return true;
+                    } else {
+                        list_<%=cid%>.add(file);
+                        file.listFiles(this);
+                    }
+                    <%
+                } else if(filelistType.equals("BOTH")) {
+                    %>
+                    if(!file.isDirectory()) {
+                        list_<%=cid%>.add(file);
+                    } else {
+                        list_<%=cid%>.add(file);
+                        file.listFiles(this);
+                    }
+                    <%
                 }
+                %>
                 return false;
             }
         });
- <%}else{%> 
- file<%=cid%>.listFiles(new java.io.FilenameFilter() {
-     public boolean accept(java.io.File dir, String name) {
-         java.io.File file = new java.io.File(dir, name);
-             list_<%=cid%>.add(file);
-             return true;
-     }
- });
-<%}%> 
-        for (int i<%=cid%> = 0; i<%=cid%> < list_<%=cid%>.size(); i<%=cid%>++){
-            
-            java.io.File files<%=cid%> =list_<%=cid%>.get(i<%=cid%>);
-            String fileName<%=cid%>=files<%=cid%>.getName();
-            if(flag<%=cid%>==true)
+    <%} 
+    else 
+    {%> 
+         file_<%=cid%>.listFiles(new java.io.FilenameFilter() {
+             public boolean accept(java.io.File dir, String name) {
+                 java.io.File file = new java.io.File(dir, name);
+                 <%
+                 if(filelistType.equals("FILES")) {
+                     %>
+                     if(!file.isDirectory()) {
+                         list_<%=cid%>.add(file);
+                     }
+                     <%
+                 } else if(filelistType.equals("DIRECTORIES")) {
+                     %>
+                     if(file.isDirectory()) {
+                         list_<%=cid%>.add(file);
+                     }
+                     <%
+                 } else if(filelistType.equals("BOTH")) {
+                     %>
+                     list_<%=cid%>.add(file);
+                     <%
+                 }
+                 %>
+                 return true;
+             }
+         });
+    <%
+    }
+    %> 
+    for (int i_<%=cid%> = 0; i_<%=cid%> < list_<%=cid%>.size() ; i_<%=cid%>++){
+        
+        java.io.File files_<%=cid%> =list_<%=cid%>.get(i_<%=cid%>);
+        String fileName_<%=cid%> = files_<%=cid%>.getName();
+        if(flag_<%=cid%> == true)
+        {
+            if(!(fileName_<%=cid%>.indexOf(".") == -1))
             {
-                if(!(fileName<%=cid%>.indexOf(".")==-1))
-                {
-                    if(!fileNamePattern<%=cid %>.matcher(fileName<%=cid%>.substring(0,fileName<%=cid%>.indexOf("."))).find()){
-                        continue;
-                    }
-                }else
-                {
-                    if(!fileNamePattern<%=cid %>.matcher(fileName<%=cid%>).find()){
-                        continue;
-                    }
+                if(!fileNamePattern_<%=cid%>.matcher(fileName_<%=cid%>.substring(0,fileName_<%=cid%>.indexOf("."))).find()){
+                    continue;
                 }
             }else
             {
-                if(!fileNamePattern<%=cid %>.matcher(fileName<%=cid%>).find()){
+                if(!fileNamePattern_<%=cid%>.matcher(fileName_<%=cid%>).find()){
                     continue;
                 }
             }
-           
-            String currentFileName_<%=cid%> = files<%=cid %>.getName(); 
-            String currentFilePath_<%=cid%> = files<%=cid %>.getAbsolutePath();
-            
-            globalMap.put("<%=cid %>_CURRENT_FILE", currentFileName_<%=cid%>);
-            globalMap.put("<%=cid %>_CURRENT_FILEPATH", currentFilePath_<%=cid%>);
+        }else
+        {
+            if(!fileNamePattern_<%=cid%>.matcher(fileName_<%=cid%>).find()){
+                continue;
+            }
+        }
+       
+        String currentFileName_<%=cid%> = files_<%=cid%>.getName(); 
+        String currentFilePath_<%=cid%> = files_<%=cid%>.getAbsolutePath();
+        
+        globalMap.put("<%=cid%>_CURRENT_FILE", currentFileName_<%=cid%>);
+        globalMap.put("<%=cid %>_CURRENT_FILEPATH", currentFilePath_<%=cid%>);
