@@ -55,15 +55,7 @@
         if(footer_<%=cid %> > 0){
 			while (in<%=cid %>.readRecord()) {
                 str<%=cid %> =in<%=cid %>.getRowRecord();        
-				<%if(!row_separator.equals("\"\\n\"")){%>
-        			java.util.StringTokenizer strRowToken<%=cid %>=new java.util.StringTokenizer(str<%=cid %>.trim(),<%=row_separator %>);
-        	 		while(strRowToken<%=cid %>.hasMoreTokens()){
-        	 		str<%=cid %>=strRowToken<%=cid %>.nextToken();
-        		<%}%>
 				totalLine<%=cid %>++;
-				<%if(!row_separator.equals("\"\\n\"")){%>
-    			}
-    			<%}%>
 			}
 			int lastLineTemp<%=cid %> = totalLine<%=cid %> - footer_<%=cid %>   < 0? 0 : totalLine<%=cid %> - footer_<%=cid %> ;
 			if(lastLine<%=cid %> > 0){
@@ -80,12 +72,6 @@
         java.util.regex.Matcher matcher<%= cid %> = null;
         while (in<%=cid %>.readRecord()) {
             str<%=cid %> =in<%=cid %>.getRowRecord(); 
-        	<%if(!row_separator.equals("\"\\n\"")){%>
-        	java.util.StringTokenizer strRowToken<%=cid %>=new java.util.StringTokenizer(str<%=cid %>.trim(), <%=row_separator %>);
-        	 while(strRowToken<%=cid %>.hasMoreTokens()){
-        	 	str<%=cid %>=strRowToken<%=cid %>.nextToken();
-        	<%}%>
-        	
         	
        		currentLine<%=cid %>++;
         	if(currentLine<%=cid %> < beginLine<%=cid %>) {

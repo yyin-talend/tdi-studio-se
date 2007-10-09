@@ -13,12 +13,7 @@
 	String cid = node.getUniqueName();
 	String row_separator = ElementParameterParser.getValue(node, "__ROWSEPARATOR__");
 %>
-
     		}
-    		<%if(!row_separator.equals("\"\\n\"")){%>
-    		}
-    		<%}%>
-
 <%
 	List<IMetadataTable> metadatas = node.getMetadataList();
 	if ((metadatas!=null)&&(metadatas.size()>0)) {
