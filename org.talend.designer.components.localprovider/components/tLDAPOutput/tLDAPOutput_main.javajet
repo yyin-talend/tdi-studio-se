@@ -58,7 +58,11 @@ imports="
 						}
 						index++;
 					}
-					if(insertMode.equals("INSERT")){
+					if(insertMode.equals("ADD")){
+%>
+	ctx_<%=cid%>.modifyAttributes(dn_<%=cid%>, javax.naming.directory.DirContext.ADD_ATTRIBUTE, entry_<%=cid%>);
+<%
+					} else if(insertMode.equals("INSERT")){
 %> 
 	ctx_<%=cid%>.createSubcontext(dn_<%=cid%>, entry_<%=cid%>);
 <%
