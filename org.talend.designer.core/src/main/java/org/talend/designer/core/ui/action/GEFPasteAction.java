@@ -27,6 +27,8 @@ import java.util.List;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.ui.actions.Clipboard;
 import org.eclipse.gef.ui.actions.SelectionAction;
+import org.eclipse.swt.dnd.TextTransfer;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchPart;
@@ -72,6 +74,13 @@ public class GEFPasteAction extends SelectionAction {
     protected boolean calculateEnabled() {
         Object o = Clipboard.getDefault().getContents();
 
+        org.eclipse.swt.dnd.Clipboard systemClipboard = new org.eclipse.swt.dnd.Clipboard(Display.getCurrent());
+        Object systemObject = systemClipboard.getContents(TextTransfer.getInstance());
+
+        if (o == null && systemObject != null && systemObject instanceof String) {
+            return true;
+        }
+
         if (o instanceof String) {
             return true;
         }
@@ -95,6 +104,10 @@ public class GEFPasteAction extends SelectionAction {
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     public void run() {
         Object clipBoardContent = Clipboard.getDefault().getContents();
+
+        org.eclipse.swt.dnd.Clipboard systemClipboard = new org.eclipse.swt.dnd.Clipboard(Display.getCurrent());
+        Object systemObject = systemClipboard.getContents(TextTransfer.getInstance());
+
         if (clipBoardContent instanceof List) {
             List<EditPart> partsList = (List<EditPart>) Clipboard.getDefault().getContents();
             if (partsList == null || partsList.isEmpty()) {
@@ -129,6 +142,35 @@ public class GEFPasteAction extends SelectionAction {
 
             if (objects.size() == 1) {
                 String content = (String) clipBoardContent;
+                if (objects.get(0) instanceof NoteEditPart
+                        && ((NoteEditPart) objects.get(0)).getDirectEditManager() != null) {
+                    Text text = ((NoteEditPart) objects.get(0)).getDirectEditManager().getTextControl();
+                    if (text != null) {
+                        text.insert(content);
+                    }
+                } else if (objects.get(0) instanceof ConnLabelEditPart
+                        && ((ConnLabelEditPart) objects.get(0)).getDirectEditManager() != null) {
+                    Text text = ((ConnLabelEditPart) objects.get(0)).getDirectEditManager().getTextControl();
+                    if (text != null) {
+                        text.insert(content);
+                    }
+                } else if (objects.get(0) instanceof NodeLabelEditPart
+                        && ((NodeLabelEditPart) objects.get(0)).getDirectEditManager() != null) {
+                    {
+                        Text text = (Text) ((NodeLabelEditPart) objects.get(0)).getDirectEditManager().getCellEditor()
+                                .getControl();
+                        if (text != null) {
+                            text.insert(content);
+                        }
+                    }
+
+                }
+            }
+        } else if (systemObject != null && systemObject instanceof String) {
+            List objects = getSelectedObjects();
+
+            if (objects.size() == 1) {
+                String content = (String) systemObject;
                 if (objects.get(0) instanceof NoteEditPart
                         && ((NoteEditPart) objects.get(0)).getDirectEditManager() != null) {
                     Text text = ((NoteEditPart) objects.get(0)).getDirectEditManager().getTextControl();
