@@ -344,6 +344,16 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+    
+    <PARAMETER
+      NAME="TEMPTABLE"
+      FIELD="CHECK"
+      NUM_ROW="6"
+      REQUIRED="true"
+      SHOW_IF="(DBTYPE=='MYSQL')"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER> 
 
     <PARAMETER
       NAME="SCHEMA"

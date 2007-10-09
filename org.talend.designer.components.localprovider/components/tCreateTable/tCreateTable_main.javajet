@@ -187,6 +187,8 @@ class Transfer{
 	if(dbType.equals("Postgre")){
 		String schema = ElementParameterParser.getValue(node,"__SCHEMA_POSTGRES__");
 		sql="create table \\\"\"+"+schema+"+\"\\\"."+protectChar(dbType, tableName)+" (";
+	}else if(dbType.equals("MySQL")&&ElementParameterParser.getValue(node,"__TEMPTABLE__").equals("true")){
+	    sql="create temporary table "+protectChar(dbType, tableName)+" (";
 	}else{
 		sql="create table "+protectChar(dbType, tableName)+" (";
 	}
