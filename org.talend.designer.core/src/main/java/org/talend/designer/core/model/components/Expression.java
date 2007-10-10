@@ -28,293 +28,268 @@ import org.talend.core.model.process.IElementParameter;
 /**
  * This class will test an expression in the element parameters. <br>
  * The expression can be for example: <br>
- * ((VAR1 == 'value1' and VAR2 == 'value2') or (VAR3 != 'value3')) or (VAR4 ==
- * 'value4') <br>
- * With VAR1, VAR2, VAR3 & VAR4 as the name of differents parameters and
- * 'value1'.. the values to test. (values must be between quotes)<br>
+ * ((VAR1 == 'value1' and VAR2 == 'value2') or (VAR3 != 'value3')) or (VAR4 == 'value4') <br>
+ * With VAR1, VAR2, VAR3 & VAR4 as the name of differents parameters and 'value1'.. the values to test. (values must be
+ * between quotes)<br>
  * 
- * $Id: Expression.java 301 2006-11-02 13:10:03 +0000 (jeu., 02 nov. 2006)
- * smallet $
+ * $Id$
  * 
  */
 public final class Expression {
 
-	private Expression leftExpression;
+    private Expression leftExpression;
 
-	private Expression rightExpression;
+    private Expression rightExpression;
 
-	private String condition; // and / or
+    private String condition; // and / or
 
-	private String expressionString;
+    private String expressionString;
 
-	private boolean valid;
+    private boolean valid;
 
-	private static final String AND = "and"; //$NON-NLS-1$
+    private static final String AND = "and"; //$NON-NLS-1$
 
-	private static final String OR = "or"; //$NON-NLS-1$
+    private static final String OR = "or"; //$NON-NLS-1$
 
-	private static final String EQUALS = "=="; //$NON-NLS-1$
+    private static final String EQUALS = "=="; //$NON-NLS-1$
 
-	private static final String NOT_EQUALS = "!="; //$NON-NLS-1$
+    private static final String NOT_EQUALS = "!="; //$NON-NLS-1$
 
-	private Expression(String expressionString) {
-		this.expressionString = expressionString;
-	}
+    private Expression(String expressionString) {
+        this.expressionString = expressionString;
+    }
 
-	private String getExpressionString() {
-		return this.expressionString;
-	}
+    private String getExpressionString() {
+        return this.expressionString;
+    }
 
-	private void setExpressionString(String value) {
-		this.expressionString = value;
-	}
+    private void setExpressionString(String value) {
+        this.expressionString = value;
+    }
 
-	private String getCondition() {
-		return this.condition;
-	}
+    private String getCondition() {
+        return this.condition;
+    }
 
-	private void setCondition(String condition) {
-		this.condition = condition;
-	}
+    private void setCondition(String condition) {
+        this.condition = condition;
+    }
 
-	private Expression getLeftExpression() {
-		return this.leftExpression;
-	}
+    private Expression getLeftExpression() {
+        return this.leftExpression;
+    }
 
-	private void setLeftExpression(Expression leftExpression) {
-		this.leftExpression = leftExpression;
-	}
+    private void setLeftExpression(Expression leftExpression) {
+        this.leftExpression = leftExpression;
+    }
 
-	private Expression getRightExpression() {
-		return this.rightExpression;
-	}
+    private Expression getRightExpression() {
+        return this.rightExpression;
+    }
 
-	private void setRightExpression(Expression rightExpression) {
-		this.rightExpression = rightExpression;
-	}
+    private void setRightExpression(Expression rightExpression) {
+        this.rightExpression = rightExpression;
+    }
 
-	private boolean isValid() {
-		return this.valid;
-	}
+    private boolean isValid() {
+        return this.valid;
+    }
 
-	private void setValid(boolean value) {
-		this.valid = value;
-	}
+    private void setValid(boolean value) {
+        this.valid = value;
+    }
 
-	public static boolean evaluate(final String string,
-			List<? extends IElementParameter> listParam) {
-		if (string.contains("(") //$NON-NLS-1$
-				&& (isThereCondition(string, AND) || isThereCondition(string,
-						OR))) {
-			return evaluateExpression(new Expression(string), listParam)
-					.isValid();
-		} else {
-			String newValue; // remove brackets
-			newValue = string.replace("(", ""); //$NON-NLS-1$ //$NON-NLS-2$
-			newValue = newValue.replace(")", ""); //$NON-NLS-1$ //$NON-NLS-2$
-			return evaluateSimpleExpression(newValue, listParam);
-		}
+    public static boolean evaluate(final String string, List<? extends IElementParameter> listParam) {
+        if (string.contains("(") //$NON-NLS-1$
+                && (isThereCondition(string, AND) || isThereCondition(string, OR))) {
+            return evaluateExpression(new Expression(string), listParam).isValid();
+        } else {
+            String newValue; // remove brackets
+            newValue = string.replace("(", ""); //$NON-NLS-1$ //$NON-NLS-2$
+            newValue = newValue.replace(")", ""); //$NON-NLS-1$ //$NON-NLS-2$
+            return evaluateSimpleExpression(newValue, listParam);
+        }
 
-	}
+    }
 
-	public static boolean isThereCondition(String expression, String condition) {
-		// example for the reg exp: (.*)[')][ ]*or[ ]*[\w(](.*)
-		if (expression.matches("(.*)[')][ ]*" + condition + "[ ]*[\\w(](.*)")) { //$NON-NLS-1$ //$NON-NLS-2$
-			return true;
-		}
-		if (expression.matches("(.*)[')][ ]*" + condition.toUpperCase() //$NON-NLS-1$
-				+ "[ ]*[\\w(](.*)")) { //$NON-NLS-1$
-			return true;
-		}
-		return false;
-	}
+    public static boolean isThereCondition(String expression, String condition) {
+        // example for the reg exp: (.*)[')][ ]*or[ ]*[\w(](.*)
+        String refixReg = "(.*)[') ][ ]*"; //$NON-NLS-1$
+        String suffixReg = "[ ]*[ (](.*)"; //$NON-NLS-1$
+        if (expression.matches(refixReg + condition + suffixReg)) {
+            return true;
+        }
+        if (expression.matches(refixReg + condition.toUpperCase() + suffixReg)) {
+            return true;
+        }
+        return false;
+    }
 
-	private static boolean evaluateSimpleExpression(String simpleExpression,
-			List<? extends IElementParameter> listParam) {
-		boolean showParameter = false;
-		String test = null;
-		if (simpleExpression.contains(EQUALS)) {
-			test = EQUALS;
-		} else {
-			if (simpleExpression.contains(NOT_EQUALS)) {
-				test = NOT_EQUALS;
-			}
-		}
-		String[] strings = simpleExpression.split(test);
+    private static boolean evaluateSimpleExpression(String simpleExpression, List<? extends IElementParameter> listParam) {
+        boolean showParameter = false;
+        String test = null;
+        if (simpleExpression.contains(EQUALS)) {
+            test = EQUALS;
+        } else {
+            if (simpleExpression.contains(NOT_EQUALS)) {
+                test = NOT_EQUALS;
+            }
+        }
+        String[] strings = simpleExpression.split(test);
 
-		String variableName = null, variableValue = null;
+        String variableName = null, variableValue = null;
 
-		for (int i = 0; i < strings.length; i++) {
-			String string = strings[i].trim();
-			if (string.contains("'")) { // value //$NON-NLS-1$
-				variableValue = string;
-				variableValue = variableValue.substring(1, string
-						.lastIndexOf("'")); //$NON-NLS-1$
-			} else {
-				variableName = string;
-			}
-		}
-		if ((variableName != null) && (variableValue != null)) {
-			for (IElementParameter param : listParam) {
-				if (param.getName().equals(variableName)) {
-					boolean found = false;
-					Object value = param.getValue();
-					if (value instanceof String) {
-						if (param.getListItemsValue() instanceof Object[]) {
-                            Object[] values = (Object[]) param
-									.getListItemsValue();
-							for (int i = 0; i < values.length && !found; i++) {
-								if (values[i].equals(param.getValue())) {
-									String variableCode = param
-											.getListItemsDisplayCodeName()[i];
-									if (variableCode.equals(variableValue)) {
-										found = true;
-									}
-								}
-							}
-						}
-					} else {
-						if (value instanceof Boolean) {
-							Boolean tmpValue = new Boolean(variableValue);
-							if (tmpValue.equals(value)) {
-								found = true;
-							}
-						}
-					}
-					
-					if (found) {
-						if (test.equals(EQUALS)) {
-							showParameter = true;
-						}
-					} else {
-						if (test.equals(NOT_EQUALS)) {
-							showParameter = true;
-						}
-					}
+        for (int i = 0; i < strings.length; i++) {
+            String string = strings[i].trim();
+            if (string.contains("'")) { // value //$NON-NLS-1$
+                variableValue = string;
+                variableValue = variableValue.substring(1, string.lastIndexOf("'")); //$NON-NLS-1$
+            } else {
+                variableName = string;
+            }
+        }
+        if ((variableName != null) && (variableValue != null)) {
+            for (IElementParameter param : listParam) {
+                if (param.getName().equals(variableName)) {
+                    boolean found = false;
+                    Object value = param.getValue();
+                    if (value instanceof String) {
+                        if (param.getListItemsValue() instanceof Object[]) {
+                            Object[] values = (Object[]) param.getListItemsValue();
+                            for (int i = 0; i < values.length && !found; i++) {
+                                if (values[i].equals(param.getValue())) {
+                                    String variableCode = param.getListItemsDisplayCodeName()[i];
+                                    if (variableCode.equals(variableValue)) {
+                                        found = true;
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        if (value instanceof Boolean) {
+                            Boolean tmpValue = new Boolean(variableValue);
+                            if (tmpValue.equals(value)) {
+                                found = true;
+                            }
+                        }
+                    }
 
-				}
-			}
-		}
-		return showParameter;
-	}
+                    if (found) {
+                        if (test.equals(EQUALS)) {
+                            showParameter = true;
+                        }
+                    } else {
+                        if (test.equals(NOT_EQUALS)) {
+                            showParameter = true;
+                        }
+                    }
 
-	private static Expression evaluateExpression(Expression expression,
-			List<? extends IElementParameter> listParam) {
-		int indexBegining = 0, indexEnd;
-		int expressionLevel = 0;
-		String string = expression.getExpressionString();
-		boolean conditionFound = false;
+                }
+            }
+        }
+        return showParameter;
+    }
 
-		// if there's no braket then there should be only simple expression
-		// or only one expression.
-		for (int i = 0; i < string.length() && !conditionFound; i++) {
-			if (string.charAt(i) == '(') {
-				if (expressionLevel == 0) {
-					indexBegining = i + 1;
-				}
-				expressionLevel++;
-			} else if (string.charAt(i) == ')') {
-				expressionLevel--;
-				indexEnd = i;
+    private static Expression evaluateExpression(Expression expression, List<? extends IElementParameter> listParam) {
+        int indexBegining = 0, indexEnd;
+        int expressionLevel = 0;
+        String string = expression.getExpressionString();
+        boolean conditionFound = false;
 
-				if (expressionLevel == 0) {
-					if (isThereCondition(string, AND)
-							|| isThereCondition(string, OR)) {
-						String leftString = string.substring(indexBegining,
-								indexEnd).trim();
-						if (isThereCondition(leftString, AND)
-								|| isThereCondition(leftString, OR)) {
-							Expression leftExpression = new Expression(
-									leftString);
-							expression.setLeftExpression(leftExpression);
-							evaluateExpression(leftExpression, listParam);
-						} else {
-							Expression leftExpression = new Expression(
-									leftString);
-							expression.setLeftExpression(leftExpression);
-							leftExpression.setValid(evaluateSimpleExpression(
-									leftString, listParam));
-							// debug: System.out.println(leftString + " => " +
-							// leftExpression.isValid());
-						}
-					} else {
-						String newValue; // remove brackets
-						newValue = string.replace("(", ""); //$NON-NLS-1$ //$NON-NLS-2$
-						newValue = newValue.replace(")", ""); //$NON-NLS-1$ //$NON-NLS-2$
-						expression.setExpressionString(newValue);
-						expression.setValid(evaluateSimpleExpression(newValue,
-								listParam));
-					}
-				}
-			} else if (expressionLevel == 0) {
-				if ((string.indexOf(AND, i) == i)
-						|| (string.indexOf(AND.toUpperCase(), i) == i)) {
-					String subStr = string.substring(i - 3, i + 5);
-					if (isThereCondition(subStr, AND)) {
-						expression.setCondition(AND);
-						conditionFound = true;
-					}
-				} else if ((string.indexOf(OR, i) == i)
-						|| (string.indexOf(OR.toUpperCase(), i) == i)) {
-					String subStr = string.substring(i - 3, i + 5);
-					if (isThereCondition(subStr, OR)) {
-						expression.setCondition(OR);
-						conditionFound = true;
-					}
-				}
-			}
-			if (conditionFound) {
-				if (expression.getLeftExpression() == null) { // no bracket ==
-																// evaluate
-																// expression
-					String leftString = string.substring(0, i - 1).trim();
-					Expression leftExpression = new Expression(leftString);
-					expression.setLeftExpression(leftExpression);
-					leftExpression.setValid(evaluateSimpleExpression(
-							leftString, listParam));
-					// debug: System.out.println(leftString + " => " +
-					// leftExpression.isValid());
-				}
-				String rightString = string.substring(i + 3, string.length())
-						.trim();
-				Expression rightExpression = new Expression(rightString);
-				expression.setRightExpression(rightExpression);
-				if (rightString.contains("(") //$NON-NLS-1$
-						|| isThereCondition(rightString, AND)
-						|| isThereCondition(rightString, OR)) {
-					evaluateExpression(rightExpression, listParam);
-				} else { // no bracket == evaluate expression
-					rightExpression.setValid(evaluateSimpleExpression(
-							rightString, listParam));
-					// debug: System.out.println(rightString + " => " +
-					// rightExpression.isValid());
-				}
-				if (expression.getCondition().equals(AND)) {
-					if (expression.getLeftExpression().isValid()
-							&& expression.getRightExpression().isValid()) {
-						expression.setValid(true);
-					} else {
-						expression.setValid(false);
-					}
-				} else if (expression.getCondition().equals(OR)) {
-					if (expression.getLeftExpression().isValid()
-							|| expression.getRightExpression().isValid()) {
-						expression.setValid(true);
-					} else {
-						expression.setValid(false);
-					}
-				}
-			}
-		}
-		// if after an expression between bracket there's no other expression,
-		// then the validation of the expression
-		// will depends on the "left" expression.
-		if ((expression.getRightExpression() == null)
-				&& (expression.getLeftExpression() != null)) {
-			expression.setValid(expression.getLeftExpression().isValid());
-		}
-		// debug: System.out.println(expression.getExpressionString() + " => " +
-		// expression.isValid());
-		return expression;
-	}
+        // if there's no braket then there should be only simple expression
+        // or only one expression.
+        for (int i = 0; i < string.length() && !conditionFound; i++) {
+            if (string.charAt(i) == '(') {
+                if (expressionLevel == 0) {
+                    indexBegining = i + 1;
+                }
+                expressionLevel++;
+            } else if (string.charAt(i) == ')') {
+                expressionLevel--;
+                indexEnd = i;
+
+                if (expressionLevel == 0) {
+                    if (isThereCondition(string, AND) || isThereCondition(string, OR)) {
+                        String leftString = string.substring(indexBegining, indexEnd).trim();
+                        if (isThereCondition(leftString, AND) || isThereCondition(leftString, OR)) {
+                            Expression leftExpression = new Expression(leftString);
+                            expression.setLeftExpression(leftExpression);
+                            evaluateExpression(leftExpression, listParam);
+                        } else {
+                            Expression leftExpression = new Expression(leftString);
+                            expression.setLeftExpression(leftExpression);
+                            leftExpression.setValid(evaluateSimpleExpression(leftString, listParam));
+                            // debug: System.out.println(leftString + " => " +
+                            // leftExpression.isValid());
+                        }
+                    } else {
+                        String newValue; // remove brackets
+                        newValue = string.replace("(", ""); //$NON-NLS-1$ //$NON-NLS-2$
+                        newValue = newValue.replace(")", ""); //$NON-NLS-1$ //$NON-NLS-2$
+                        expression.setExpressionString(newValue);
+                        expression.setValid(evaluateSimpleExpression(newValue, listParam));
+                    }
+                }
+            } else if (expressionLevel == 0) {
+                if ((string.indexOf(AND, i) == i) || (string.indexOf(AND.toUpperCase(), i) == i)) {
+                    String subStr = string.substring(i - 3, i + 5);
+                    if (isThereCondition(subStr, AND)) {
+                        expression.setCondition(AND);
+                        conditionFound = true;
+                    }
+                } else if ((string.indexOf(OR, i) == i) || (string.indexOf(OR.toUpperCase(), i) == i)) {
+                    String subStr = string.substring(i - 3, i + 5);
+                    if (isThereCondition(subStr, OR)) {
+                        expression.setCondition(OR);
+                        conditionFound = true;
+                    }
+                }
+            }
+            if (conditionFound) {
+                if (expression.getLeftExpression() == null) { // no bracket ==
+                    // evaluate
+                    // expression
+                    String leftString = string.substring(0, i - 1).trim();
+                    Expression leftExpression = new Expression(leftString);
+                    expression.setLeftExpression(leftExpression);
+                    leftExpression.setValid(evaluateSimpleExpression(leftString, listParam));
+                    // debug: System.out.println(leftString + " => " +
+                    // leftExpression.isValid());
+                }
+                String rightString = string.substring(i + 3, string.length()).trim();
+                Expression rightExpression = new Expression(rightString);
+                expression.setRightExpression(rightExpression);
+                if (rightString.contains("(") //$NON-NLS-1$
+                        || isThereCondition(rightString, AND) || isThereCondition(rightString, OR)) {
+                    evaluateExpression(rightExpression, listParam);
+                } else { // no bracket == evaluate expression
+                    rightExpression.setValid(evaluateSimpleExpression(rightString, listParam));
+                    // debug: System.out.println(rightString + " => " +
+                    // rightExpression.isValid());
+                }
+                if (expression.getCondition().equals(AND)) {
+                    if (expression.getLeftExpression().isValid() && expression.getRightExpression().isValid()) {
+                        expression.setValid(true);
+                    } else {
+                        expression.setValid(false);
+                    }
+                } else if (expression.getCondition().equals(OR)) {
+                    if (expression.getLeftExpression().isValid() || expression.getRightExpression().isValid()) {
+                        expression.setValid(true);
+                    } else {
+                        expression.setValid(false);
+                    }
+                }
+            }
+        }
+        // if after an expression between bracket there's no other expression,
+        // then the validation of the expression
+        // will depends on the "left" expression.
+        if ((expression.getRightExpression() == null) && (expression.getLeftExpression() != null)) {
+            expression.setValid(expression.getLeftExpression().isValid());
+        }
+        // debug: System.out.println(expression.getExpressionString() + " => " +
+        // expression.isValid());
+        return expression;
+    }
 }
