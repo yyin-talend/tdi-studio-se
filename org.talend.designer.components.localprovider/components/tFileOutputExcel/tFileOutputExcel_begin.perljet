@@ -6,6 +6,7 @@ imports="
     org.talend.core.model.metadata.IMetadataColumn
     org.talend.designer.codegen.config.CodeGeneratorArgument
     java.util.List
+    java.util.Map
 "
 %>
 
@@ -33,6 +34,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             node,
             "__INCLUDEHEADER__"
         );
+
+        List<Map<String, String>> columnformats = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__COLUMNFORMATS__");
 %>
 
 use FileHandle;
@@ -61,27 +64,60 @@ my %desc_<%=cid %> = (
     ],
 );
 
+<%
+        int column_number = 0;
+        for (IMetadataColumn column: metadata.getListColumns()) {
+%>
+use constant <%=cid%>__<%=column.getLabel() %> => <%=column_number%>;
+<%
+            column_number++;
+        }
+%>
+
 my $nb_fields_<%=cid %> = scalar @{ $desc_<%=cid %>{schema} };
 my $nb_line_<%=cid %> = 0;
 
 my $workbook_<%=cid%>  = Spreadsheet::WriteExcel->new(<%=filename%>);
 my $worksheet_<%=cid%> = $workbook_<%=cid%>->add_worksheet(<%=sheetname%>);
 
+my $curr_column_<%=cid%> = 0;
+for (1 .. scalar @{ $desc_<%=cid%>{schema} }) {
 <%
         if (includeHeader.equals("true")) {
 %>
-for (1 .. scalar @{ $desc_<%=cid%>{schema} }) {
     $worksheet_<%=cid %>->write(
         $nb_line_<%=cid %>,
         $_ - 1,
         $desc_<%=cid%>{schema}[$_ - 1]{name}
     );
-}
-
-$nb_line_<%=cid %>++;
 <%
         }
 %>
+    $curr_column_<%=cid%>++;
+}
+
+
+my $column_formats_<%=cid%> = [];
+<%
+        for (int i=0; i<columnformats.size(); i++) {
+            Map<String, String> columnformat = columnformats.get(i);
+%>
+    $column_formats_<%=cid%>->[<%=cid%>__<%=columnformat.get("OUTPUT_COLUMN")%>] = $workbook_<%=cid%>->add_format();
+    $column_formats_<%=cid%>->[<%=cid%>__<%=columnformat.get("OUTPUT_COLUMN")%>]->set_num_format(<%=columnformat.get("COLUMN_FORMAT")%>) if defined <%=columnformat.get("COLUMN_FORMAT")%>;
+    $column_formats_<%=cid%>->[<%=cid%>__<%=columnformat.get("OUTPUT_COLUMN")%>]->set_align(<%=columnformat.get("HALIGN")%>) if defined <%=columnformat.get("HALIGN")%>;
+    $column_formats_<%=cid%>->[<%=cid%>__<%=columnformat.get("OUTPUT_COLUMN")%>]->set_align(<%=columnformat.get("VALIGN")%>) if defined <%=columnformat.get("VALIGN")%>;
+
+    $worksheet_<%=cid %>->set_column(
+                                         <%=cid%>__<%=columnformat.get("OUTPUT_COLUMN")%>,
+                                         <%=cid%>__<%=columnformat.get("OUTPUT_COLUMN")%>,
+                                         <%=columnformat.get("LENGTH")%>,
+                                     ) if defined <%=columnformat.get("LENGTH")%> ;
+<%
+        }
+%>
+
+
+$nb_line_<%=cid %>++;
 
 
 <%

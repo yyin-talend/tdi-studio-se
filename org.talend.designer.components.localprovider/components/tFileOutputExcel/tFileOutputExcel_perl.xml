@@ -64,24 +64,95 @@
     </PARAMETER>
 
     <PARAMETER
-      NAME="ENCODING"
-      FIELD="ENCODING_TYPE"
+      NAME="COLUMNFORMATS"
+      FIELD="TABLE"
       NUM_ROW="6"
-      REQUIRED="true"
+      NB_LINES="2"
     >
-      <DEFAULT>'ISO-8859-15'</DEFAULT>
-    </PARAMETER>
-
-  </PARAMETERS>
-
-  <CODEGENERATION>
-    <IMPORTS>
+      <ITEMS>
+        <ITEM NAME="OUTPUT_COLUMN" FIELD="COLUMN_LIST" />
+        <ITEM NAME="COLUMN_FORMAT" FIELD="CLOSED_LIST"  >
+            <ITEMS DEFAULT="0x00">
+                <ITEM NAME="0x00" VALUE="0x00" />
+                <ITEM NAME="0x01" VALUE="0x01" />
+                <ITEM NAME="0x02" VALUE="0x02" />
+                <ITEM NAME="0x03" VALUE="0x03" />
+                <ITEM NAME="0x04" VALUE="0x04" />
+                <ITEM NAME="0x05" VALUE="0x05" />
+                <ITEM NAME="0x06" VALUE="0x06" />
+                <ITEM NAME="0x07" VALUE="0x07" />
+                <ITEM NAME="0x08" VALUE="0x08" />
+                <ITEM NAME="0x09" VALUE="0x09" />
+                <ITEM NAME="0x0a" VALUE="0x0a" />
+                <ITEM NAME="0x0b" VALUE="0x0b" />
+                <ITEM NAME="0x0c" VALUE="0x0c" />
+                <ITEM NAME="0x0d" VALUE="0x0d" />
+                <ITEM NAME="0x0e" VALUE="0x0e" />
+                <ITEM NAME="0x0f" VALUE="0x0f" />
+                <ITEM NAME="0x10" VALUE="0x10" />
+                <ITEM NAME="0x11" VALUE="0x11" />
+                <ITEM NAME="0x12" VALUE="0x12" />
+                <ITEM NAME="0x13" VALUE="0x13" />
+                <ITEM NAME="0x14" VALUE="0x14" />
+                <ITEM NAME="0x15" VALUE="0x15" />
+                <ITEM NAME="0x16" VALUE="0x16" />
+                <ITEM NAME="0x25" VALUE="0x25" />
+                <ITEM NAME="0x26" VALUE="0x26" />
+                <ITEM NAME="0x27" VALUE="0x27" />
+                <ITEM NAME="0x28" VALUE="0x28" />
+                <ITEM NAME="0x29" VALUE="0x29" />
+                <ITEM NAME="0x2a" VALUE="0x2a" />
+                <ITEM NAME="0x2b" VALUE="0x2b" />
+                <ITEM NAME="0x2c" VALUE="0x2c" />
+                <ITEM NAME="0x2d" VALUE="0x2d" />
+                <ITEM NAME="0x2e" VALUE="0x2e" />
+                <ITEM NAME="0x2f" VALUE="0x2f" />
+                <ITEM NAME="0x30" VALUE="0x30" />
+                <ITEM NAME="0x31" VALUE="0x31" />
+            </ITEMS>                      
+        </ITEM>                           
+        <ITEM NAME="LENGTH" FIELD="TEXT" />
+        <ITEM NAME="HALIGN" FIELD="CLOSED_LIST" >
+            <ITEMS DEFAULT="left">
+                <ITEM NAME="left" VALUE="left" />
+                <ITEM NAME="center" VALUE="center" />
+                <ITEM NAME="right" VALUE="right" />
+                <ITEM NAME="fill" VALUE="fill" />
+                <ITEM NAME="justify" VALUE="justify" />
+                <ITEM NAME="center_across" VALUE="center_across" />
+            </ITEMS>                      
+        </ITEM>                           
+        <ITEM NAME="VALIGN" FIELD="CLOSED_LIST" >
+            <ITEMS DEFAULT="top">
+                <ITEM NAME="top" VALUE="top" />
+                <ITEM NAME="vcenter" VALUE="vcenter" />
+                <ITEM NAME="bottom" VALUE="bottom" />
+                <ITEM NAME="vjustify" VALUE="vjustify" />
+            </ITEMS>                      
+        </ITEM>                           
+      </ITEMS>                            
+    </PARAMETER>                          
+                                          
+                                          
+    <PARAMETER                            
+      NAME="ENCODING"                     
+      FIELD="ENCODING_TYPE"               
+      NUM_ROW="10"                        
+      REQUIRED="true"                     
+    >                                     
+      <DEFAULT>'ISO-8859-15'</DEFAULT>    
+    </PARAMETER>                          
+                                          
+  </PARAMETERS>                           
+                                          
+  <CODEGENERATION>                        
+    <IMPORTS>                             
       <IMPORT NAME="Spreadsheet-WriteExcel" MODULE="Spreadsheet::WriteExcel" REQUIRED="true" />
-    </IMPORTS>
-  </CODEGENERATION>
-
-  <RETURNS>
+    </IMPORTS>                            
+  </CODEGENERATION>                       
+                                          
+  <RETURNS>                               
     <RETURN NAME="NB_LINE" TYPE="INTEGER" AVAILABILITY="AFTER"/>
-  </RETURNS>
-
-</COMPONENT>
+  </RETURNS>                              
+                                          
+</COMPONENT>                              

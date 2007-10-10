@@ -8,7 +8,6 @@ imports="
     java.util.List
 "
 %>
-
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
@@ -27,9 +26,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     foreach my $cell (@$<%=cid%>[0 .. <%=nbFields%>]) {
         $worksheet_<%=cid %>->write(
             $nb_line_<%=cid %>,
-            $colnum++,
-            $cell
+            $colnum,
+            $cell,
+            $column_formats_<%=cid%>->[$colnum],
         );
+        $colnum++;
     }
 
     $nb_line_<%=cid %>++;
