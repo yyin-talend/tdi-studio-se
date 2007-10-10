@@ -115,6 +115,10 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
 
         copyServerConfigFileToTempDir();
 
+        // Gets talend libraries
+        List<URL> talendLibraries = getExternalLibraries(true, process);
+        libResource.addResources(talendLibraries);
+
         for (int i = 0; i < process.length; i++) {
             ProcessItem processItem = process[i].getProcess();
             // generate the source files
@@ -131,7 +135,7 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
 
             // generate the WSDL file
             ExportFileResource wsdlFile = getWSDLFile(processItem, BooleanUtils.isTrue(exportChoice
-                    .get(ExportChoice.needWSDL)));
+                    .get(ExportChoice.needWSDL)), talendLibraries);
             list.add(wsdlFile);
 
             // edit the WSDD file
@@ -172,10 +176,6 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
         // Gets user routines
         List<URL> userRoutineList = getUserRoutine(true);
         libResource.addResources(userRoutineList);
-
-        // Gets talend libraries
-        List<URL> talendLibraries = getExternalLibraries(true, process);
-        libResource.addResources(talendLibraries);
 
         // Gets axis libraries
         List<URL> axisLibList = getAxisLib(BooleanUtils.isTrue(exportChoice.get(ExportChoice.needAXISLIB)));
@@ -269,7 +269,7 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
      * 
      * @param list
      */
-    private ExportFileResource getWSDLFile(ProcessItem processItem, Boolean needWSDL) {
+    private ExportFileResource getWSDLFile(ProcessItem processItem, Boolean needWSDL, List<URL> externalLibs) {
         ExportFileResource wsdl = new ExportFileResource(null, "wsdl"); //$NON-NLS-1$
 
         List<URL> wsdlUrlList = new ArrayList<URL>();
@@ -289,8 +289,16 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
                 return wsdl;
             }
 
+            StringBuffer libPaths = new StringBuffer();
+            if (externalLibs != null) {
+                for (URL libUrl : externalLibs) {
+                    libPaths.append(libUrl.getFile());
+                    libPaths.append(";");
+                }
+            }
+
             TalendJava2WSDL.generateWSDL(new String[] { "-T1.2", "-yDOCUMENT", "-uLITERAL", "-o" + wsdlFilePath, "-d", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
-                    "-l http://localhost:8080/" + jobName, "-X" + classRoot, "-m" + EXPORT_METHOD, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    "-l http://localhost:8080/" + jobName, "-X" + classRoot + ";" + libPaths, "-m" + EXPORT_METHOD, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                     projectName + "." + jobFolderName + "." + jobName }); //$NON-NLS-1$ //$NON-NLS-2$
 
             wsdlUrlList.add(new File(wsdlFilePath).toURL());
