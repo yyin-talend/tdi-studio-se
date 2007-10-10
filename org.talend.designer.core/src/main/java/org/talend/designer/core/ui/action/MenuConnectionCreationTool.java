@@ -53,4 +53,46 @@ public class MenuConnectionCreationTool extends ConnectionCreationTool {
         setCurrentCommand(cmd);
         setState(STATE_CONNECTION_STARTED);
     }
+
+    // /*
+    // * This method is useful when debugging.
+    // *
+    // * @see org.eclipse.gef.tools.AbstractTool#setState(int)
+    // */
+    // @Override
+    // protected void setState(int state) {
+    // // TODO Auto-generated method stub
+    // super.setState(state);
+    //
+    // if (isInState(STATE_CONNECTION_STARTED)) {
+    // System.out.println("STATE_CONNECTION_STARTED");
+    // } else if (isInState(STATE_INITIAL)) {
+    // System.out.println("STATE_INITIAL");
+    // } else if (isInState(STATE_DRAG)) {
+    // System.out.println("STATE_DRAG");
+    // } else if (isInState(STATE_TERMINAL)) {
+    // System.out.println("STATE_TERMINAL");
+    // } else {
+    // System.out.println("other " + state);
+    // }
+    //
+    // }
+
+    /*
+     * override this method for issue 1253.
+     * 
+     * @see org.eclipse.gef.tools.AbstractConnectionCreationTool#handleCreateConnection()
+     */
+    protected boolean handleCreateConnection() {
+        Command endCommand = getCommand();
+        if (endCommand != null) {
+            return super.handleCreateConnection();
+        }
+        if (isInState(STATE_TERMINAL)) {
+            // Fake a drag to cause feedback to be displayed immediately on mouse down.
+            setState(STATE_CONNECTION_STARTED);
+            handleDrag();
+        }
+        return true;
+    }
 }
