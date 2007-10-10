@@ -46,6 +46,7 @@ import org.talend.designer.core.ui.action.ConnectionSetAsMainRef;
 import org.talend.designer.core.ui.action.GEFCopyAction;
 import org.talend.designer.core.ui.action.ModifyMergeOrderAction;
 import org.talend.designer.core.ui.action.NodeBreakpointAction;
+import org.talend.designer.core.ui.action.PropertiesContextAction;
 import org.talend.designer.core.ui.action.SendBackwardAction;
 import org.talend.designer.core.ui.action.SendToBackAction;
 
@@ -87,7 +88,6 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
         menu.add(new Separator(GEFActionConstants.GROUP_EDIT));
         menu.add(new Separator(GEFActionConstants.GROUP_REST));
         menu.add(new Separator(GEFActionConstants.GROUP_VIEW));
-
         IAction action;
 
         menu.appendToGroup(GEFActionConstants.GROUP_UNDO, // target group id
@@ -243,6 +243,12 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
             ((NodeBreakpointAction) action).update();
             if (action.isEnabled()) {
                 menu.appendToGroup(GEFActionConstants.GROUP_REST, action);
+            }
+            action = new PropertiesContextAction(part);
+            ((PropertiesContextAction) action).update();
+            if (action.isEnabled()) {
+                menu.add(new Separator());
+                menu.add(action);
             }
 
             action = new BringForwardAction(part);
