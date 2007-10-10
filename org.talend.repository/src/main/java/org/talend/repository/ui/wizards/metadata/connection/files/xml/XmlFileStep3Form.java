@@ -56,12 +56,10 @@ import org.talend.core.model.metadata.builder.connection.XmlXPathLoopDescriptor;
 import org.talend.core.model.metadata.editor.MetadataEmfTableEditor;
 import org.talend.core.model.metadata.types.JavaDataTypeHelper;
 import org.talend.core.model.metadata.types.PerlDataTypeHelper;
+import org.talend.core.model.metadata.types.PerlTypesManager;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.ui.metadata.editor.MetadataEmfTableEditorView;
 import org.talend.core.utils.CsvArray;
-import org.talend.core.utils.XmlArray;
-import org.talend.core.utils.XmlField;
-import org.talend.core.utils.XmlRow;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.preview.ProcessDescription;
@@ -102,8 +100,7 @@ public class XmlFileStep3Form extends AbstractXmlFileStepForm {
      * 
      * @param Composite
      */
-    public XmlFileStep3Form(Composite parent, ConnectionItem connectionItem, MetadataTable metadataTable,
-            String[] existingNames) {
+    public XmlFileStep3Form(Composite parent, ConnectionItem connectionItem, MetadataTable metadataTable, String[] existingNames) {
         super(parent, connectionItem, metadataTable, existingNames);
         this.connectionItem = connectionItem;
         this.metadataTable = metadataTable;
@@ -153,8 +150,7 @@ public class XmlFileStep3Form extends AbstractXmlFileStepForm {
         Composite compositeMetaData = Form.startNewGridLayout(groupMetaData, 1);
 
         // Composite Guess
-        Composite compositeGuessButton = Form.startNewDimensionnedGridLayout(compositeMetaData, 2,
-                WIDTH_GRIDDATA_PIXEL, 40);
+        Composite compositeGuessButton = Form.startNewDimensionnedGridLayout(compositeMetaData, 2, WIDTH_GRIDDATA_PIXEL, 40);
         informationLabel = new Label(compositeGuessButton, SWT.NONE);
         informationLabel
                 .setText(Messages.getString("FileStep3.informationLabel") + "                                                  "); //$NON-NLS-1$ //$NON-NLS-2$
@@ -174,8 +170,7 @@ public class XmlFileStep3Form extends AbstractXmlFileStepForm {
             // Bottom Button
             Composite compositeBottomButton = Form.startNewGridLayout(this, 2, false, SWT.CENTER, SWT.CENTER);
             // Button Cancel
-            cancelButton = new UtilsButton(compositeBottomButton,
-                    Messages.getString("CommonWizard.cancel"), WIDTH_BUTTON_PIXEL, //$NON-NLS-1$
+            cancelButton = new UtilsButton(compositeBottomButton, Messages.getString("CommonWizard.cancel"), WIDTH_BUTTON_PIXEL, //$NON-NLS-1$
                     HEIGHT_BUTTON_PIXEL);
         }
         addUtilsButtonListeners();
@@ -236,9 +231,8 @@ public class XmlFileStep3Form extends AbstractXmlFileStepForm {
 
                     if (!guessButton.getEnabled()) {
                         guessButton.setEnabled(true);
-                        if (MessageDialog.openConfirm(getShell(),
-                                Messages.getString("FileStep3.guessConfirmation"), Messages //$NON-NLS-1$
-                                        .getString("FileStep3.guessConfirmationMessage"))) { //$NON-NLS-1$
+                        if (MessageDialog.openConfirm(getShell(), Messages.getString("FileStep3.guessConfirmation"), Messages //$NON-NLS-1$
+                                .getString("FileStep3.guessConfirmationMessage"))) { //$NON-NLS-1$
                             runShadowProcess();
                         }
                     } else {
@@ -303,8 +297,7 @@ public class XmlFileStep3Form extends AbstractXmlFileStepForm {
                 informationLabel.setText("   " + Messages.getString("FileStep3.guessFailure")); //$NON-NLS-1$ //$NON-NLS-2$
 
             } else {
-                refreshMetaDataTable(csvArray, ((XmlXPathLoopDescriptor) getConnection().getSchema().get(0))
-                        .getSchemaTargets());
+                refreshMetaDataTable(csvArray, ((XmlXPathLoopDescriptor) getConnection().getSchema().get(0)).getSchemaTargets());
             }
 
         } catch (CoreException e) {
@@ -312,8 +305,7 @@ public class XmlFileStep3Form extends AbstractXmlFileStepForm {
                 new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("FileStep3.guessFailureTip") + "\n" //$NON-NLS-1$ //$NON-NLS-2$
                         + Messages.getString("FileStep3.guessFailureTip2"), e.getMessage()); //$NON-NLS-1$
             } else {
-                new ErrorDialogWidthDetailArea(getShell(), PID,
-                        Messages.getString("FileStep3.guessFailureTip"), e.getMessage()); //$NON-NLS-1$
+                new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("FileStep3.guessFailureTip"), e.getMessage()); //$NON-NLS-1$
             }
             log.error(Messages.getString("FileStep3.guessFailure") + " " + e.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$
         }
@@ -432,7 +424,8 @@ public class XmlFileStep3Form extends AbstractXmlFileStepForm {
                 if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
                     talendType = globalType;
                 } else {
-                    talendType = MetadataTalendType.loadTalendType(globalType, "TALENDDEFAULT", false); //$NON-NLS-1$
+                    talendType = PerlTypesManager.getNewTypeName(MetadataTalendType.loadTalendType(globalType,
+                            "TALENDDEFAULT", false)); //$NON-NLS-1$
                 }
                 metadataColumn.setTalendType(talendType);
                 metadataColumn.setLength(lengthValue);

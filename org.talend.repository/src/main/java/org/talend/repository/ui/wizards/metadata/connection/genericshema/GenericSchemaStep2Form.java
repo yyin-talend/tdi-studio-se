@@ -56,6 +56,7 @@ import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.editor.MetadataEmfTableEditor;
 import org.talend.core.model.metadata.types.JavaDataTypeHelper;
 import org.talend.core.model.metadata.types.PerlDataTypeHelper;
+import org.talend.core.model.metadata.types.PerlTypesManager;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.ui.metadata.dialog.CustomTableManagerOnlyForGenericSchema;
 import org.talend.core.ui.metadata.editor.MetadataEmfTableEditorView;
@@ -328,8 +329,7 @@ public class GenericSchemaStep2Form extends AbstractForm {
             // Bottom Button
             Composite compositeBottomButton = Form.startNewGridLayout(this, 2, false, SWT.CENTER, SWT.CENTER);
             // Button Cancel
-            cancelButton = new UtilsButton(compositeBottomButton,
-                    Messages.getString("CommonWizard.cancel"), WIDTH_BUTTON_PIXEL, //$NON-NLS-1$
+            cancelButton = new UtilsButton(compositeBottomButton, Messages.getString("CommonWizard.cancel"), WIDTH_BUTTON_PIXEL, //$NON-NLS-1$
                     HEIGHT_BUTTON_PIXEL);
         }
         addUtilsButtonListeners();
@@ -667,7 +667,8 @@ public class GenericSchemaStep2Form extends AbstractForm {
                 if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
                     talendType = globalType;
                 } else {
-                    talendType = MetadataTalendType.loadTalendType(globalType, "TALENDDEFAULT", false); //$NON-NLS-1$
+                    talendType = PerlTypesManager.getNewTypeName(MetadataTalendType.loadTalendType(globalType,
+                            "TALENDDEFAULT", false)); //$NON-NLS-1$
                 }
                 metadataColumn.setTalendType(talendType);
                 metadataColumn.setLength(lengthValue);
