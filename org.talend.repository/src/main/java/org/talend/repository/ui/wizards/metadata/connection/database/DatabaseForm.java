@@ -207,13 +207,23 @@ public class DatabaseForm extends AbstractForm {
     @Override
     protected void addFields() {
         int width = getSize().x;
-
+        GridLayout layout2;
         // Group Database Settings
-        Group group = Form.createGroup(this, 1, Messages.getString("DatabaseForm.groupDatabaseSettings"), 330); //$NON-NLS-1$
+        Group group = Form.createGroup(this, 1, Messages.getString("DatabaseForm.groupDatabaseSettings"), 365); //$NON-NLS-1$
         Composite compositeGroupDbSettings = Form.startNewGridLayout(group, 1);
-        compositeDbSettings = Form.startNewDimensionnedGridLayout(compositeGroupDbSettings, 3, width, 250);
-        GridLayout layout2 = (GridLayout) compositeDbSettings.getLayout();
+        layout2 = (GridLayout) compositeGroupDbSettings.getLayout();
         layout2.marginHeight = 0;
+        layout2.marginTop = 0;
+        layout2.marginBottom = 0;
+        layout2.marginLeft = 0;
+        layout2.marginRight = 0;
+        layout2.marginWidth = 0;
+
+        compositeDbSettings = Form.startNewDimensionnedGridLayout(compositeGroupDbSettings, 3, width, 330);
+        layout2 = (GridLayout) compositeDbSettings.getLayout();
+        layout2.marginHeight = 0;
+        layout2.marginTop = 0;
+        layout2.marginBottom = 0;
 
         // Main Fields
 
@@ -250,7 +260,8 @@ public class DatabaseForm extends AbstractForm {
 
         // Field connectionString
         urlDataStringConnection.setSelectionIndex(dbTypeCombo.getSelectionIndex());
-        urlConnectionStringText = new LabelledText(compositeDbSettings, Messages.getString("DatabaseForm.stringConnection"), 2); //$NON-NLS-1$
+        urlConnectionStringText = new LabelledText(compositeDbSettings, Messages
+                .getString("DatabaseForm.stringConnection"), 2); //$NON-NLS-1$
         urlConnectionStringText.setEditable(false);
 
         // Field login & password
@@ -271,8 +282,14 @@ public class DatabaseForm extends AbstractForm {
         directoryField = new LabelledDirectoryField(compositeDbSettings, "DB Root Path"); //$NON-NLS-1$
 
         // Button Check
-        Composite compositeCheckButton = Form.startNewGridLayout(compositeGroupDbSettings, 1, false, SWT.CENTER, SWT.CENTER);
-        checkButton = new UtilsButton(compositeCheckButton, Messages.getString("DatabaseForm.check"), WIDTH_BUTTON_PIXEL, //$NON-NLS-1$
+        Composite compositeCheckButton = Form.startNewGridLayout(compositeGroupDbSettings, 1, false, SWT.CENTER,
+                SWT.BOTTOM);
+        layout2 = (GridLayout) compositeCheckButton.getLayout();
+        layout2.marginHeight = 0;
+        layout2.marginTop = 0;
+        layout2.marginBottom = 0;
+        checkButton = new UtilsButton(compositeCheckButton,
+                Messages.getString("DatabaseForm.check"), WIDTH_BUTTON_PIXEL, //$NON-NLS-1$
                 HEIGHT_BUTTON_PIXEL);
         checkButton.setEnabled(false);
 
@@ -283,10 +300,12 @@ public class DatabaseForm extends AbstractForm {
 
         // PTODO !StandBy! (use width SQL Editor): to define the values of SQL Syntax (need by SQL Editor)
         String[] item = { "SQL 92" }; //$NON-NLS-1$
-        sqlSyntaxCombo = new LabelledCombo(compositeGroupDbProperties, Messages.getString("DatabaseForm.sqlSyntax"), null, item, //$NON-NLS-1$
+        sqlSyntaxCombo = new LabelledCombo(compositeGroupDbProperties,
+                Messages.getString("DatabaseForm.sqlSyntax"), null, item, //$NON-NLS-1$
                 3);
 
-        stringQuoteText = new LabelledText(compositeGroupDbProperties, Messages.getString("DatabaseForm.stringQuote"), false); //$NON-NLS-1$
+        stringQuoteText = new LabelledText(compositeGroupDbProperties,
+                Messages.getString("DatabaseForm.stringQuote"), false); //$NON-NLS-1$
         nullCharText = new LabelledText(compositeGroupDbProperties, Messages.getString("DatabaseForm.nullChar"), false); //$NON-NLS-1$
     }
 
@@ -304,12 +323,12 @@ public class DatabaseForm extends AbstractForm {
         }
         ManagerConnection managerConnection = new ManagerConnection();
         // set the value
-        managerConnection.setValue(0, dbTypeCombo.getItem(dbTypeCombo.getSelectionIndex()), urlConnectionStringText.getText(),
-                serverText.getText(), usernameText.getText(), passwordText.getText(), sidOrDatabaseText.getText(), portText
-                        .getText(), fileField.getText(), datasourceText.getText(), schemaText.getText());
+        managerConnection.setValue(0, dbTypeCombo.getItem(dbTypeCombo.getSelectionIndex()), urlConnectionStringText
+                .getText(), serverText.getText(), usernameText.getText(), passwordText.getText(), sidOrDatabaseText
+                .getText(), portText.getText(), fileField.getText(), datasourceText.getText(), schemaText.getText());
         managerConnection.setDbRootPath(directoryField.getText());
-        managerConnection.setValueProperties(sqlSyntaxCombo.getItem(sqlSyntaxCombo.getSelectionIndex()), stringQuoteText
-                .getText(), nullCharText.getText());
+        managerConnection.setValueProperties(sqlSyntaxCombo.getItem(sqlSyntaxCombo.getSelectionIndex()),
+                stringQuoteText.getText(), nullCharText.getText());
 
         // check the connection
         databaseSettingIsValide = managerConnection.check();
@@ -536,7 +555,8 @@ public class DatabaseForm extends AbstractForm {
                 setPropertiesFormEditable(true);
                 getConnection().setDatabaseType(dbTypeCombo.getText());
                 portText.setText(urlDataStringConnection.getDefaultPort());
-                final String product = EDatabaseTypeName.getTypeFromDisplayName(getConnection().getDatabaseType()).getProduct();
+                final String product = EDatabaseTypeName.getTypeFromDisplayName(getConnection().getDatabaseType())
+                        .getProduct();
                 getConnection().setProductId(product);
                 final String mapping = MetadataTalendType.getDefaultDbmsFromProduct(product).getId();
                 getConnection().setDbmsId(mapping);
@@ -712,9 +732,9 @@ public class DatabaseForm extends AbstractForm {
     }
 
     private String getStringConnection() {
-        String s = urlDataStringConnection.getString(dbTypeCombo.getSelectionIndex(), serverText.getText(), usernameText
-                .getText(), passwordText.getText(), portText.getText(), sidOrDatabaseText.getText(), fileField.getText()
-                .toLowerCase(), datasourceText.getText(), directoryField.getText());
+        String s = urlDataStringConnection.getString(dbTypeCombo.getSelectionIndex(), serverText.getText(),
+                usernameText.getText(), passwordText.getText(), portText.getText(), sidOrDatabaseText.getText(),
+                fileField.getText().toLowerCase(), datasourceText.getText(), directoryField.getText());
         return s;
     }
 
