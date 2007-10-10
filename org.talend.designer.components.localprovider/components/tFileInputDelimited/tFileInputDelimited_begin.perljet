@@ -1,48 +1,154 @@
 <%@ jet 
-	imports="
-		org.talend.core.model.process.INode 
-		org.talend.core.model.process.ElementParameterParser 
-		org.talend.core.model.metadata.IMetadataTable 
-		org.talend.core.model.metadata.IMetadataColumn 
-		org.talend.designer.codegen.config.CodeGeneratorArgument
-		java.util.List
-	" 
+imports="
+    org.talend.core.model.process.INode
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.core.model.metadata.IMetadataTable
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.lang.Integer
+    java.lang.NumberFormatException
+    java.util.List
+" 
 %>
 
 <%
-	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
-	INode node = (INode)codeGenArgument.getArgument();
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
-	
-	List<IMetadataTable> metadatas = node.getMetadataList();
-	if ((metadatas!=null)&&(metadatas.size()>0)) {
-		IMetadataTable metadata = metadatas.get(0);
-		if (metadata!=null) {
 
-                                int nbFields = metadata.getListColumns().size();
+String filename = ElementParameterParser.getValue(
+    node,
+    "__FILENAME__"
+);
+
+String rowSeparator = ElementParameterParser.getValue(
+    node,
+    "__ROWSEPARATOR__"
+);
+
+String headerString = ElementParameterParser.getValue(
+    node,
+    "__HEADER__"
+);
+boolean hasHeader;
+int header = 0;
+try {
+    header = Integer.parseInt(headerString);
+
+    if (header > 0) {
+        hasHeader = true;
+    }
+    else {
+        hasHeader = false;
+    }
+}
+catch (NumberFormatException e) {
+    hasHeader = false;
+}
+
+String footerString = ElementParameterParser.getValue(
+    node,
+    "__FOOTER__"
+);
+boolean hasFooter;
+int footer = 0;
+
+try {
+    footer = Integer.parseInt(footerString);
+
+    if (footer > 0) {
+        hasFooter = true;
+    }
+    else {
+        hasFooter = false;
+    }
+}
+catch (NumberFormatException e) {
+    hasFooter = false;
+}
+
+String limitString = ElementParameterParser.getValue(
+    node,
+    "__LIMIT__"
+);
+boolean hasLimit;
+int limit = 0;
+
+try {
+    limit = Integer.parseInt(limitString);
+
+    if (limit > 0) {
+        hasLimit = true;
+    }
+    else {
+        hasLimit = false;
+    }
+}
+catch (NumberFormatException e) {
+    hasLimit = false;
+}
+
+boolean isRandom = ElementParameterParser.getValue(
+    node,
+    "__RANDOM__"
+).equals("true");
+
+String nbRandom = ElementParameterParser.getValue(
+    node,
+    "__NB_RANDOM__"
+);
+
+String fieldSeparator = ElementParameterParser.getValue(
+    node,
+    "__FIELDSEPARATOR__"
+);
+
+boolean removeEmptyRow = ElementParameterParser.getValue(
+    node,
+    "__REMOVE_EMPTY_ROW__"
+).equals("true");
+
+boolean csvOption = ElementParameterParser.getValue(
+    node,
+    "__CSV_OPTION__"
+).equals("true");
+
+String escapeChar = ElementParameterParser.getValue(
+    node,
+    "__ESCAPE_CHAR__"
+    );
+
+String textEnclosure = ElementParameterParser.getValue(
+    node,
+    "__TEXT_ENCLOSURE__"
+);
+
+	
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+        int nbFields = metadata.getListColumns().size();
 %>
 
 use FileHandle;
 use List::Util qw/min/;
 use talend::filesOp;
+<%
+        if (csvOption) {
+%>
+use Text::CSV_XS;
+<%
+        }
+%>
 
 my %desc_<%=cid %> = (
-    filename      => <%=ElementParameterParser.getValue(node, "__FILENAME__") %>,
-    row_separator => <%=ElementParameterParser.getValue(node, "__ROWSEPARATOR__") %>,
-    header        => <%=ElementParameterParser.getValue(node, "__HEADER__") %>,
-    footer        => <% String myFooter = ElementParameterParser.getValue(node, "__FOOTER__"); if (myFooter.equals("")) myFooter = null; %><%=myFooter%>,
-    limit         => <% String myLimit = ElementParameterParser.getValue(node, "__LIMIT__"); if (myLimit.equals("")) myLimit = null; %><%=myLimit%>,
-<%
-    if (ElementParameterParser.getValue(node, "__RANDOM__").equals("true")) {
-%>
-    nb_random     => <%=ElementParameterParser.getValue(node, "__NB_RANDOM__")%>,
-<%
-    }
-%>
+    filename      => <%=filename%>,
+    row_separator => <%=rowSeparator%>,
     schema        => [
-    <%
-		for (IMetadataColumn column: metadata.getListColumns()) {
-    %>
+<%
+        for (IMetadataColumn column: metadata.getListColumns()) {
+%>
     	{
             name    => '<%=column.getLabel() %>',
             key     => <%=column.isKey() %>,
@@ -52,32 +158,39 @@ my %desc_<%=cid %> = (
             default => '<%=column.getDefault() %>',
             comment => '<%=column.getComment() %>',
 		},
-	<%
-		}
-    %>
+<%
+        }
+%>
     ]
 );
 
-use constant INPUT_FIELD_SEPARATOR_<%=cid %> => <%=ElementParameterParser.getValue(node, "__FIELDSEPARATOR__") %>;
-$/ = $desc_<%=cid %>{row_separator};
+$/ = <%=rowSeparator%>;
 
 my $input_FH_<%=cid %> = new FileHandle;
 open($input_FH_<%=cid %>, '<', $desc_<%=cid %>{filename})
     or die 'cannot open file "' . $desc_<%=cid %>{filename} . '"';
 
 <%
-  if ((!ElementParameterParser.getValue(node, "__HEADER__").equals(""))
-      && (!ElementParameterParser.getValue(node, "__HEADER__").equals("0")))
-  {
+        if (csvOption) {
+%>
+my $csv_<%=cid%> = Text::CSV_XS->new({
+    sep_char     => <%=fieldSeparator%>,
+    escape_char  => <%=escapeChar%>,
+    quote_char   => <%=textEnclosure%>,
+    binary       => 1,
+});
+<%
+        }
+%>
+
+<%
+        if (hasHeader) {
 %>
 
 # move to the first useful line
-if ($desc_<%=cid %>{header} > 0) {
-    for (1..$desc_<%=cid %>{header}) {
-        my $useless_line_<%=cid %> = <$input_FH_<%=cid %>>;
-    }
+for (1..<%=header%>) {
+    my $useless_line_<%=cid %> = <$input_FH_<%=cid %>>;
 }
-
 <%
   }
 %>
@@ -85,11 +198,7 @@ if ($desc_<%=cid %>{header} > 0) {
 $nb_line_<%=cid %> = 0;
 
 <%
-  if (((!ElementParameterParser.getValue(node, "__FOOTER__").equals(""))
-        && (!ElementParameterParser.getValue(node, "__FOOTER__").equals("0")))
-      || (!ElementParameterParser.getValue(node, "__LIMIT__").equals(""))
-      || (ElementParameterParser.getValue(node, "__RANDOM__").equals("true")))
-  {
+        if (hasFooter || hasLimit || isRandom) {
 %>
 
 # as we have a limit and/or a footer, we need to know the number of rows in
@@ -101,87 +210,112 @@ my $total_line_<%=cid %> = tFileRowCount(
 );
 
 my ($first_row_<%=cid%>, $last_row_<%=cid%>) = getFirstAndLastRowNumber(
-    header  => $desc_<%=cid%>{header},
-    footer  => $desc_<%=cid%>{footer},
-    limit   => $desc_<%=cid%>{limit},
+    header  => <%=header%>,
+    footer  => <%=footer%>,
+<%
+            if (hasLimit) {
+%>
+    limit   => <%=limit%>,
+<%
+            }
+%>
     total   => $total_line_<%=cid%>,
 );
 
 <%
-  if (ElementParameterParser.getValue(node, "__RANDOM__").equals("true")) {
+            if (isRandom) {
 %>
 use List::Util qw/shuffle/;
 
-my $nb_lines_<%=cid%> = $last_row_<%=cid%> - $first_row_<%=cid%>;
+my $nb_lines_<%=cid%> = $last_row_<%=cid%> - $first_row_<%=cid%> + 1;
 
 my %random_line_number_<%=cid%> =
     map {$_ => 1}
     sort {$a <=> $b}
-    (shuffle 1..$nb_lines_<%=cid%>)[1..$desc_<%=cid %>{nb_random}];
+    (shuffle 1..$nb_lines_<%=cid%>)[1..<%=nbRandom%>];
 
 <%
-  }
+            }
 %>
 
 for ($first_row_<%=cid %> .. $last_row_<%=cid %>) {
     my $_<%=cid %> = <$input_FH_<%=cid %>>;
 <%
-  }
-  else
-  {
+        }
+        else {
 %>
 
 while (my $_<%=cid %> = <$input_FH_<%=cid %>>) {
 
 <%
-  }
+        }
 %>
 
     chomp $_<%=cid %>;
 
 <%
-    if (ElementParameterParser.getValue(node, "__REMOVE_EMPTY_ROW__").equals("true")) {
+        if (removeEmptyRow) {
 %>
     next if ($_<%=cid %> eq '');
 <%
-    }
+        }
 %>
 
     # increase number of line really splitted
     $nb_line_<%=cid %>++;
 
 <%
-  if (ElementParameterParser.getValue(node, "__RANDOM__").equals("true")) {
+        if (isRandom) {
 %>
     next if (not defined $random_line_number_<%=cid%>{$nb_line_<%=cid %>});
+<%
+        }
+%>
 
 <%
-  }
+        if (csvOption) {
 %>
+
+    if (not $csv_<%=cid%>->parse($_<%=cid%>)) {
+        warn "A problem has happened parsing the following input line\n";
+        warn "====\n";
+        warn $csv_<%=cid%>->error_input();
+        warn "====\n";
+        next;
+    }
+    my $<%=cid%> = [ ($csv_<%=cid%>->fields()) ];
+<%
+        }
+        else {
+%>
+
     my $<%=cid %> = [
         (
             split(
-                INPUT_FIELD_SEPARATOR_<%=cid %>,
+                <%=fieldSeparator%>,
                 $_<%=cid %>
                 <% if (nbFields>0) { %>,<%=nbFields + 1%><% } %>
             )
         ) 
     ];
+<%
+        }
+%>
     
-    if( <%=nbFields%> != scalar(@$<%=cid%>) ){
+    if (<%=nbFields%> != scalar(@$<%=cid%>)) {
         $<%=cid %> = [
 <%
-    int icol = 0;
-    for (IMetadataColumn column: metadata.getListColumns()) {
+        int icol = 0;
+        for (IMetadataColumn column: metadata.getListColumns()) {
 %>
             $<%=cid %>->[<%=icol%>],
 <%
-        icol++;
-    }
+            icol++;
+        }
 %>        
         ];
     }
 <%
-		}
-	}
+    }
+}
 %>
