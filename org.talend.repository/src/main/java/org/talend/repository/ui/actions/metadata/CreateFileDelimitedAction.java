@@ -53,9 +53,9 @@ public class CreateFileDelimitedAction extends AbstractCreateAction {
 
     private static final String OPEN_LABEL = Messages.getString("CreateFileDelimitedAction.action.openTitle"); //$NON-NLS-1$
 
-    protected static final int WIZARD_WIDTH = 800;
+    protected static final int WIZARD_WIDTH = 920;
 
-    protected static final int WIZARD_HEIGHT = 475;
+    protected static final int WIZARD_HEIGHT = 510;
 
     private boolean creation = false;
 
@@ -74,8 +74,8 @@ public class CreateFileDelimitedAction extends AbstractCreateAction {
 
     public void run() {
         ISelection selection = getSelection();
-        WizardDialog wizardDialog = new WizardDialog(new Shell(), new DelimitedFileWizard(PlatformUI.getWorkbench(), creation,
-                selection, getExistingNames()));
+        WizardDialog wizardDialog = new WizardDialog(new Shell(), new DelimitedFileWizard(PlatformUI.getWorkbench(),
+                creation, selection, getExistingNames()));
         wizardDialog.setPageSize(WIZARD_WIDTH, WIZARD_HEIGHT);
         wizardDialog.create();
         wizardDialog.open();
