@@ -505,7 +505,7 @@ if(sameGroup_<%=cid %>){
 				}
 			}
 			if(!sumHasAvg){
-%>sum_<%=column_op[i][0].getLabel() %>_<%=cid %> = 0;
+%>sum_<%=column_op[i][0].getLabel() %>_<%=cid %> = <%=connName %>.<%=column_op[i][0].getLabel() %>;
 <%			}
 		}else if(functions[i].equals("avg")){
 			if(javaType == JavaTypesManager.BYTE || javaType == JavaTypesManager.CHARACTER 
