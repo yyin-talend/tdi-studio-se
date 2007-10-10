@@ -406,7 +406,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         GridLayout layout = new GridLayout();
         optionsGroupComposite = new Composite(parent, SWT.NONE);
         GridData gridData = new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL);
-        gridData.heightHint = 170;
+        gridData.heightHint = 200;
         optionsGroupComposite.setLayoutData(gridData);
         optionsGroupComposite.setLayout(layout);
         // options group
