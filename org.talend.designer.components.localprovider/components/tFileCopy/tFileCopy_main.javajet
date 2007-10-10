@@ -18,24 +18,20 @@
 	boolean rpFile=ElementParameterParser.getValue(node,"__REPLACE_FILE__").equals("true");
     boolean creatDir=ElementParameterParser.getValue(node,"__CREATE_DIRECTORY__").equals("true");
 %>     
+		String fileName_<%=cid%> = <%=fileName %>;
         String directory_<%=cid%>=<%=destination%>;
-        java.io.File file_<%=cid %> = new java.io.File( <%=fileName %>);
+        java.io.File file_<%=cid %> = new java.io.File( fileName_<%=cid%>);
         if(!directory_<%=cid%>.endsWith("/")){
            directory_<%=cid%> = directory_<%=cid%> + "/";
         }
         
-<%
-		if(destination_filename=="" || destination_filename.equals("\"\"")){
-			destination_filename= fileName.substring(fileName.lastIndexOf("/")+1,fileName.length()-1);
-%>
-		directory_<%=cid%>=directory_<%=cid%>+"<%=destination_filename%>";     
-<%
+		String desFileName_<%=cid%> = <%=destination_filename%>;
+		if( desFileName_<%=cid%>.equals("") || desFileName_<%=cid%>.equals("\"\"")){
+			directory_<%=cid%>=directory_<%=cid%>+fileName_<%=cid%>.substring(fileName_<%=cid%>.lastIndexOf("/")+1);     
 		}else{
-%>
-		directory_<%=cid%>=directory_<%=cid%>+<%=destination_filename%>; 
-<%		
+			directory_<%=cid%>=directory_<%=cid%>+desFileName_<%=cid%>; 
 		}
-%>        
+       
         
         java.io.File dirfile_<%=cid%>=new java.io.File(directory_<%=cid%>);
         if(dirfile_<%=cid%>.exists()&& !<%=rpFile%>)
