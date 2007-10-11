@@ -1,0 +1,59 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.IConnection
+    org.talend.core.model.process.EConnectionType
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser 
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.metadata.IMetadataColumn 
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+    java.util.Map
+" 
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+
+String lookupSearchIndex = ElementParameterParser.getValue(
+    node,
+    "__LOOKUP_SEARCH_INDEX__"
+);
+
+String lookupReplacementIndex = ElementParameterParser.getValue(
+    node,
+    "__LOOKUP_REPLACEMENT_INDEX__"
+);
+
+	
+List<IMetadataTable> metadatas = node.getMetadataList();
+
+if (metadatas != null && metadatas.size() > 0) {
+    String lookup = null;
+
+    List<IConnection> inputConnections;
+    inputConnections = (List<IConnection>) node.getIncomingConnections();
+    for (IConnection connection : inputConnections) {
+        if (connection == null) {
+            continue;
+        }
+
+        if (connection.getLineStyle() == EConnectionType.FLOW_REF) {
+            lookup = connection.getName();
+            continue;
+        }
+    }
+%>
+my %replace_<%=cid%> = ();
+
+foreach my $key (keys %tHash_<%=lookup%>) {
+    my $search = $tHash_<%=lookup%>{$key}[<%=lookupSearchIndex%>];
+    my $replacement = $tHash_<%=lookup%>{$key}[<%=lookupReplacementIndex%>];
+
+    $replace_<%=cid%>{$search} = $replacement;
+}
+<%
+}
+%>
