@@ -123,8 +123,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
                 IRepositoryObject repositoryObject = node.getObject();
                 if (repositoryObject.getProperty().getItem() instanceof ProcessItem) {
                     ProcessItem processItem = (ProcessItem) repositoryObject.getProperty().getItem();
-                    ExportFileResource resource = new ExportFileResource(processItem, processItem.getProperty()
-                            .getLabel());
+                    ExportFileResource resource = new ExportFileResource(processItem, processItem.getProperty().getLabel());
                     list.add(resource);
                 }
             }
@@ -294,7 +293,6 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
         applyToChildrenButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
         applyToChildrenButton.setText(Messages.getString("JobScriptsExportWizardPage.ApplyToChildren")); //$NON-NLS-1$
-        applyToChildrenButton.setSelection(true);
         // genCodeButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
         // genCodeButton.setText(Messages.getString("JobScriptsExportWizardPage.generatePerlFiles")); //$NON-NLS-1$
         // genCodeButton.setSelection(true);
@@ -462,8 +460,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
             JobResourceManager reManager = JobResourceManager.getInstance();
             for (JobResource r : jobResources) {
                 if (reManager.isProtected(r)) {
-                    ProcessorUtilities.generateCode(r.getJobName(), processItem.getProcess().getDefaultContext(),
-                            false, false);
+                    ProcessorUtilities.generateCode(r.getJobName(), processItem.getProcess().getDefaultContext(), false, false);
                 } else {
                     reManager.deleteResource(r);
                 }
@@ -481,8 +478,8 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
      * @return
      */
     protected ArchiveFileExportOperationFullPath getExporterOperation(List<ExportFileResource> resourcesToExport) {
-        ArchiveFileExportOperationFullPath exporterOperation = new ArchiveFileExportOperationFullPath(
-                resourcesToExport, getDestinationValue());
+        ArchiveFileExportOperationFullPath exporterOperation = new ArchiveFileExportOperationFullPath(resourcesToExport,
+                getDestinationValue());
         return exporterOperation;
     }
 
