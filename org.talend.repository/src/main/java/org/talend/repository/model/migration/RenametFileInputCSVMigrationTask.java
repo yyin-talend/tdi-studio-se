@@ -24,7 +24,6 @@ package org.talend.repository.model.migration;
 import java.util.Arrays;
 
 import org.talend.commons.exception.ExceptionHandler;
-import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.components.ModifyComponentsAction;
 import org.talend.core.model.components.conversions.AddPropertyCSVOptionConversion;
 import org.talend.core.model.components.conversions.IComponentConversion;
@@ -36,27 +35,26 @@ import org.talend.core.model.migration.AbstractMigrationTask;
 import org.talend.core.model.migration.IProjectMigrationTask;
 
 /**
- * Migration task use to rename tRunProcess components in tRunJob.
+ * Migration task use to rename component name tFileInputCSV to tFileInputDelimited.
  */
 public class RenametFileInputCSVMigrationTask extends AbstractMigrationTask implements IProjectMigrationTask {
 
     public ExecutionResult execute(Project project) {
-    	 if (project.getLanguage() != ECodeLanguage.PERL) {
-             return ExecutionResult.NOTHING_TO_DO;
-         }
-         try {
-             IComponentFilter filter1 = new NameComponentFilter("tFileInputCSV"); //$NON-NLS-1$
 
-             IComponentConversion addProperty = new AddPropertyCSVOptionConversion();
-             IComponentConversion renameComponent = new RenameComponentConversion( "tFileInputDelimited");
+        try {
+            IComponentFilter filter1 = new NameComponentFilter("tFileInputCSV"); //$NON-NLS-1$
 
-             ModifyComponentsAction.searchAndModify(filter1, Arrays.<IComponentConversion> asList(addProperty, renameComponent));
+            IComponentConversion addProperty = new AddPropertyCSVOptionConversion();
+            IComponentConversion renameComponent = new RenameComponentConversion("tFileInputDelimited");
 
-             return ExecutionResult.SUCCESS_WITH_ALERT;
-         } catch (Exception e) {
-             ExceptionHandler.process(e);
-             return ExecutionResult.FAILURE;
-         }
+            ModifyComponentsAction.searchAndModify(filter1, Arrays.<IComponentConversion> asList(addProperty,
+                    renameComponent));
+
+            return ExecutionResult.SUCCESS_WITH_ALERT;
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
+            return ExecutionResult.FAILURE;
+        }
     }
 
 }

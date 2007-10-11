@@ -545,7 +545,12 @@
       <projecttask
             class="org.talend.repository.model.migration.RenametFileInputCSVMigrationTask"
             id="org.talend.repository.renametFileInputCSV"
-            name="rename tFileInputCSV">
+            name="rename tFileInputCSV to tFileInputDelimited">
+      </projecttask>
+      <projecttask
+            class="org.talend.repository.model.migration.RenametFileOutputCSVMigrationTask"
+            id="org.talend.repository.renametFileOutputCSV"
+            name="rename tFileOutputCSV to tFileOutputDelimited">
       </projecttask>
    </extension>
    <extension
