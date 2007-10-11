@@ -1,6 +1,7 @@
 <%@ jet 
 	imports="
-		org.talend.core.model.process.INode 
+		org.talend.core.model.process.INode
+		org.talend.core.model.process.ElementParameterParser  
 		org.talend.core.model.metadata.IMetadataTable
 		org.talend.core.model.metadata.IMetadataColumn
 		org.talend.core.model.process.IConnection
@@ -20,6 +21,46 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     IMetadataTable metadata = metadatas.get(0);
     if (metadata!=null) {
         String cid = node.getUniqueName();
+        
+        String filename = ElementParameterParser.getValueWithUIFieldKey(
+            node,
+            "__FILENAME__",
+            "FILENAME"
+        );
+        
+        String prefixfileName = filename.substring(0,filename.lastIndexOf("."));
+        String suffixfileName=filename.substring(filename.lastIndexOf("."),filename.length());
+        
+        String fieldSeparator = ElementParameterParser.getValueWithUIFieldKey(
+            node,
+            "__FIELDSEPARATOR__",
+            "FIELDSEPARATOR"
+        );
+        
+        String rowSeparator = ElementParameterParser.getValueWithUIFieldKey(
+            node,
+            "__ROWSEPARATOR__",
+            "ROWSEPARATOR"
+        );
+        
+        String encoding = ElementParameterParser.getValue(
+            node,
+            "__ENCODING__"
+        );
+        
+        boolean isAppend = ElementParameterParser.getValue(
+            node,
+            "__APPEND__"
+        ).equals("true");
+        
+        boolean isIncludeHeader = ElementParameterParser.getValue(
+            node,
+            "__INCLUDEHEADER__"
+        ).equals("true");
+		String fileNewname = ElementParameterParser.getValue(node,"__FILENAME__");
+		
+		boolean split = ElementParameterParser.getValue(node, "__SPLIT__").equals("true");
+        String splitEvery = ElementParameterParser.getValue(node, "__SPLIT_EVERY__");
 
     	List< ? extends IConnection> conns = node.getIncomingConnections();
     	for (IConnection conn : conns) {
@@ -69,7 +110,64 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     			}
     			%>
     			sb_<%=cid %>.append(OUT_DELIM_ROWSEP_<%=cid %>);
+    			
+<% if(split){ %>
+		if(currentRow_<%=cid%> % splitEvery_<%=cid%>==0 && currentRow_<%=cid%>!=0){
+			splitedFileNo_<%=cid%>++;
+			out<%=cid %>.close(); 
+			//close original outputStream
+<%
+ 		if(filename.startsWith("\"") && filename.endsWith("\"")){
+%>
+
+		out<%=cid %> = new java.io.BufferedWriter(new java.io.OutputStreamWriter(
+        		new java.io.FileOutputStream(<%=prefixfileName %>"+splitedFileNo_<%=cid%>+"<%=suffixfileName%>, <%= isAppend%>),<%= encoding%>));
+       java.io.File file<%=cid%>=new java.io.File(<%=prefixfileName %>"+splitedFileNo_<%=cid%>+"<%=suffixfileName%>);	  
+<%
+ 		}else{
+%>
+		out<%=cid %> = new java.io.BufferedWriter(new java.io.OutputStreamWriter(
+        		new java.io.FileOutputStream(prefix_fn_<%=cid%>+splitedFileNo_<%=cid%>+suffix_fn_<%=cid%>, <%= isAppend%>),<%= encoding%>));
+        file<%=cid%>=new java.io.File(prefix_fn_<%=cid%>+splitedFileNo_<%=cid%>+suffix_fn_<%=cid%>);	  
+<%
+ 		}
+%> 					
+
+<%
+		if(isIncludeHeader){
+%>
+     	  if(file<%=cid%>.length()==0)  
+     	  {
+<%		
+    		List<IMetadataColumn> columns = metadata.getListColumns();
+    		int sizeColumns = columns.size();
+    		for (int i = 0; i < sizeColumns; i++) {
+    			IMetadataColumn column = columns.get(i);
+    		%>
+    			out<%=cid %>.write("<%=column.getLabel() %>");
+    		<%
+    			if(i != sizeColumns - 1) {
+    				%>out<%=cid %>.write(OUT_DELIM_<%=cid %>);<%
+    			}
+    		}%>
+    		out<%=cid %>.write(OUT_DELIM_ROWSEP_<%=cid %>);
+    	  }	
+<%
+		}
+%>
+			out<%=cid %>.write(sb_<%=cid %>.toString());
+ 		}else{
+ 			out<%=cid %>.write(sb_<%=cid %>.toString());
+ 		}	
+ 		currentRow_<%=cid%>++;				
+					
+		
+<% } else { %>
+    			
     			out<%=cid %>.write(sb_<%=cid %>.toString());
+<%
+	}
+%>  			
     			nb_line_<%=cid %>++;
     <%
     		}

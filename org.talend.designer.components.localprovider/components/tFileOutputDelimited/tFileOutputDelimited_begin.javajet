@@ -25,6 +25,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             "FILENAME"
         );
         
+        String prefixfileName = filename.substring(0,filename.lastIndexOf("."));
+        String suffixfileName=filename.substring(filename.lastIndexOf("."),filename.length());
+        
         String fieldSeparator = ElementParameterParser.getValueWithUIFieldKey(
             node,
             "__FIELDSEPARATOR__",
@@ -52,48 +55,73 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             "__INCLUDEHEADER__"
         ).equals("true");
 		String fileNewname = ElementParameterParser.getValue(node,"__FILENAME__");
+		
+		boolean split = ElementParameterParser.getValue(node, "__SPLIT__").equals("true");
+        String splitEvery = ElementParameterParser.getValue(node, "__SPLIT_EVERY__");
 %>
 		int nb_line_<%=cid%> = 0;
+        int splitEvery_<%=cid%> = <%=splitEvery %>;
+        int splitedFileNo_<%=cid%> =0;
+        int currentRow_<%=cid%> = 0;		
 		
 		final String OUT_DELIM_<%=cid %> = <%=fieldSeparator %>;
 		
 		final String OUT_DELIM_ROWSEP_<%=cid %> = <%=rowSeparator %>;
-		String fileNewName_<%=cid%> = <%=fileNewname%>;
-		java.io.File createFile<%=cid%> = new java.io.File(fileNewName_<%=cid%>);
-<%
-		if(ElementParameterParser.getValue(node,"__CREATE__").equals("true")){
-%>
+  <%if(ElementParameterParser.getValue(node,"__CREATE__").equals("true")){%>
 //create directory only if not exists
+		 String fileNewName_<%=cid%> = <%=fileNewname%>;
+		 java.io.File createFile<%=cid%> = new java.io.File(fileNewName_<%=cid%>);
 		 if(!createFile<%=cid%>.exists()){
 		 	(new java.io.File(fileNewName_<%=cid%>.substring(0,fileNewName_<%=cid%>.lastIndexOf("/")))).mkdirs();
 		 }
-<%
-		}
-%>
-		
-		final java.io.BufferedWriter out<%=cid %> = new java.io.BufferedWriter(new java.io.OutputStreamWriter(
+<%}%>
+
+<% 	
+	if(!split){
+%>		
+		java.io.BufferedWriter out<%=cid %> = new java.io.BufferedWriter(new java.io.OutputStreamWriter(
         		new java.io.FileOutputStream(<%=filename %>, <%= isAppend%>),<%= encoding%>));
+        java.io.File file<%=cid%>=new java.io.File(<%=filename %>);
+<% } else {
+ 		if(filename.startsWith("\"") && filename.endsWith("\"")){
+%>
+
+		java.io.BufferedWriter out<%=cid %> = new java.io.BufferedWriter(new java.io.OutputStreamWriter(
+        		new java.io.FileOutputStream(<%=prefixfileName %>"+splitedFileNo_<%=cid%>+"<%=suffixfileName%>, <%= isAppend%>),<%= encoding%>));
+       java.io.File file<%=cid%>=new java.io.File(<%=prefixfileName %>"+splitedFileNo_<%=cid%>+"<%=suffixfileName%>);	  
+<%
+ 		}else{
+%>
+		String fn_<%=cid%> = <%=filename %>;
+		String prefix_fn_<%=cid%> = fn_<%=cid%>.substring(0,fn_<%=cid%>.lastIndexOf("."));
+		String suffix_fn_<%=cid%>=fn_<%=cid%>.substring(fn_<%=cid%>.lastIndexOf("."),fn_<%=cid%>.length());
+		java.io.BufferedWriter out<%=cid %> = new java.io.BufferedWriter(new java.io.OutputStreamWriter(
+        		new java.io.FileOutputStream(prefix_fn_<%=cid%>+splitedFileNo_<%=cid%>+suffix_fn_<%=cid%>, <%= isAppend%>),<%= encoding%>));
+        java.io.File file<%=cid%>=new java.io.File(prefix_fn_<%=cid%>+splitedFileNo_<%=cid%>+suffix_fn_<%=cid%>);	  
+<%
+ 		}
+    }
+%>
+        		
 <%
 		if(isIncludeHeader){
 %>
-		if(createFile<%=cid%>.length()==0){
-<%
+     	  if(file<%=cid%>.length()==0)  
+     	  {
+<%		
     		List<IMetadataColumn> columns = metadata.getListColumns();
     		int sizeColumns = columns.size();
     		for (int i = 0; i < sizeColumns; i++) {
     			IMetadataColumn column = columns.get(i);
-%>
+    		%>
     			out<%=cid %>.write("<%=column.getLabel() %>");
-<%
+    		<%
     			if(i != sizeColumns - 1) {
-%>
-    			out<%=cid %>.write(OUT_DELIM_<%=cid %>);
-<%
+    				%>out<%=cid %>.write(OUT_DELIM_<%=cid %>);<%
     			}
-			}
-%>
-    		out<%=cid %>.write(OUT_DELIM_ROWSEP_<%=cid %>);	
-    	}
+    		}%>
+    		out<%=cid %>.write(OUT_DELIM_ROWSEP_<%=cid %>);
+    	  }	
 <%
 		}
     }
