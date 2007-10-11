@@ -66,7 +66,7 @@
     </PARAMETER>
     
     <PARAMETER
-      NAME="CSV"
+      NAME="CSV_OPTION"
       FIELD="CHECK"
       REQUIRED="true"
       NUM_ROW="35"
