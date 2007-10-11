@@ -60,13 +60,13 @@ public final class LicenseWizardDialog extends WizardDialog {
         Button button = getButton(IDialogConstants.FINISH_ID);
         if (button != null) {
             button.setText(Messages.getString("LicenseWizard.accept")); //$NON-NLS-1$
-            GridData data = new GridData(250, 23);
+            GridData data = new GridData(250, -1);
             button.setLayoutData(data);
         }
         Button buttonCancle = getButton(IDialogConstants.CANCEL_ID);
         if (buttonCancle != null) {
             buttonCancle.setText(Messages.getString("LicenseWizard.btnCancle")); //$NON-NLS-1$
-            GridData data = new GridData(-1, 23);
+            GridData data = new GridData(-1, -1);
             buttonCancle.setLayoutData(data);
         }
     }

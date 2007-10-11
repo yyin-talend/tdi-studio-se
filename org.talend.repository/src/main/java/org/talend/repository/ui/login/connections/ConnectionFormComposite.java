@@ -26,8 +26,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -50,11 +48,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.forms.widgets.Form;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.talend.commons.ui.swt.formtools.LabelText;
 import org.talend.core.model.general.ConnectionBean;
-import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.DynamicButtonBean;
 import org.talend.repository.model.DynamicFieldBean;
@@ -108,7 +105,8 @@ public class ConnectionFormComposite extends Composite {
         this.connectionsListComposite = connectionsListComposite;
 
         toolkit = new FormToolkit(this.getDisplay());
-        Form form = toolkit.createForm(this);
+        ScrolledForm form = toolkit.createScrolledForm(this);
+        // Form form = toolkit.createForm(this);
         Composite formBody = form.getBody();
 
         GridLayout layout = new GridLayout();
@@ -236,13 +234,13 @@ public class ConnectionFormComposite extends Composite {
                 Button button = new Button(formBody, SWT.PUSH);
                 button.setText(currentButtonBean.getName());
                 button.addSelectionListener(new DelegateSelectionListener(currentButtonBean));
-                
+
                 data = new FormData();
                 data.left = new FormAttachment(0, ConnectionsDialog.STANDARD_LABEL_WIDTH);
                 data.right = new FormAttachment(100, -ConnectionsDialog.HSPACE);
                 data.top = new FormAttachment(baseControl, ConnectionsDialog.VSPACE);
                 button.setLayoutData(data);
-                
+
                 listButtons.put(currentButtonBean.getId(), button);
             }
 

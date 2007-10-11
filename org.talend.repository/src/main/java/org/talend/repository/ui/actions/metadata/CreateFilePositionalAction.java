@@ -53,9 +53,9 @@ public class CreateFilePositionalAction extends AbstractCreateAction {
 
     private static final String CREATE_LABEL = Messages.getString("CreateFilePositionalAction.action.createTitle"); //$NON-NLS-1$
 
-    protected static final int WIZARD_WIDTH = 800;
+    protected static final int WIZARD_WIDTH = 920;
 
-    protected static final int WIZARD_HEIGHT = 475;
+    protected static final int WIZARD_HEIGHT = 520;
 
     private boolean creation = false;
 
@@ -79,8 +79,8 @@ public class CreateFilePositionalAction extends AbstractCreateAction {
 
     public void run() {
         ISelection selection = getSelection();
-        WizardDialog wizardDialog = new WizardDialog(new Shell(), new FilePositionalWizard(PlatformUI.getWorkbench(), creation,
-                selection, getExistingNames()));
+        WizardDialog wizardDialog = new WizardDialog(new Shell(), new FilePositionalWizard(PlatformUI.getWorkbench(),
+                creation, selection, getExistingNames()));
         wizardDialog.setPageSize(WIZARD_WIDTH, WIZARD_HEIGHT);
         wizardDialog.create();
         wizardDialog.open();
