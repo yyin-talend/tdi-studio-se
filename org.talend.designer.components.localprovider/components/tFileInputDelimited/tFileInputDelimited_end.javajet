@@ -7,11 +7,53 @@
 		java.util.List
 	" 
 %>
+
+<% 
+    CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+    INode node = (INode)codeGenArgument.getArgument();
+    String cid = node.getUniqueName();	
+	if(ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("false")) {	
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+%>
+
 <%
-CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
-INode node = (INode)codeGenArgument.getArgument();
-String cid = node.getUniqueName();
-%>}
-fid_<%=cid %>.close();
-globalMap.put("<%=cid %>_NB_LINE", fid_<%=cid %>.getRowNumber());
-  
+	List<IMetadataTable> metadatas = node.getMetadataList();
+	if ((metadatas!=null)&&(metadatas.size()>0)) {
+		IMetadataTable metadata = metadatas.get(0);
+		if (metadata!=null) {
+%>
+
+            }
+            fid_<%=cid %>.close();
+            globalMap.put("<%=cid %>_NB_LINE", fid_<%=cid %>.getRowNumber());
+<%
+		}
+	}
+%>
+
+<%
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+}else{//the following is the tFileInputCSV component
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+%>
+
+<%
+	List<IMetadataTable> metadatas = node.getMetadataList();
+	if ((metadatas!=null)&&(metadatas.size()>0)) {
+		IMetadataTable metadata = metadatas.get(0);
+		if (metadata!=null) {
+%>
+
+				nb_line_<%=cid%>++;
+			}
+			csvReader<%=cid %>.close();
+			globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
+<%
+		}
+	}
+%>
+			
+<%
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  }
+%>			  
