@@ -193,7 +193,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
             String currentProcess = part.getTalendEditor().getProcess().getLabel();
             for (Content<String, IRepositoryObject> object : processAbsoluteMembers.values()) {
                 IRepositoryObject process = object.getContent();
-                if (factory.getStatus(process) != ERepositoryStatus.DELETED && !currentProcess.equals(process.getLabel())) {
+                if (factory.getStatus(process) != ERepositoryStatus.DELETED
+                        && !currentProcess.equals(process.getLabel())) {
                     String path = object.getParent().getPath().toString();
                     String name;
                     if (path.equals("")) { //$NON-NLS-1$
@@ -443,10 +444,12 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                 repositorySchemaType.setListItemsDisplayName(repositoryTableNameList);
                 repositorySchemaType.setListItemsValue(repositoryTableValueList);
                 if (!repositoryTableMap.keySet().contains(repositorySchemaType.getValue())) {
-                    List<String> list2 = tablesMap.get(elem.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName()));
+                    List<String> list2 = tablesMap.get(elem.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE
+                            .getName()));
                     boolean isNeeded = list2 != null && !list2.isEmpty();
                     if (repositoryTableNameList.length > 0 && repositoryConnectionValueList.length > 0 && isNeeded) {
-                        repositorySchemaType.setValue(getDefaultRepository(param, true, repositoryConnectionValueList[0]));
+                        repositorySchemaType.setValue(getDefaultRepository(param, true,
+                                repositoryConnectionValueList[0]));
                         // elem.setPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName(),
                         // getDefaultRepository(
                         // true, repositoryConnectionValueList[0]));
@@ -457,17 +460,20 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                 param.setListItemsDisplayName(repositoryQueryNameList);
                 param.setListItemsValue(repositoryQueryValueList);
                 if (!repositoryQueryStoreMap.keySet().contains(param.getValue())) {
-                    List<String> list2 = queriesMap.get(elem.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName()));
+                    List<String> list2 = queriesMap.get(elem.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE
+                            .getName()));
                     boolean isNeeded = list2 != null && !list2.isEmpty();
                     if (repositoryQueryNameList.length > 0 && repositoryConnectionValueList.length > 0 && isNeeded) {
-                        elem.setPropertyValue(EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName(), getDefaultRepository(elem
-                                .getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE), false,
-                                repositoryConnectionValueList[0]));
+                        elem.setPropertyValue(EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName(),
+                                getDefaultRepository(
+                                        elem.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE), false,
+                                        repositoryConnectionValueList[0]));
                     }
                 }
             }
             if (param.getName().equals(EParameterName.REPOSITORY_PROPERTY_TYPE.getName())) {
-                String repositoryValue = elem.getElementParameter(EParameterName.PROPERTY_TYPE.getName()).getRepositoryValue();
+                String repositoryValue = elem.getElementParameter(EParameterName.PROPERTY_TYPE.getName())
+                        .getRepositoryValue();
                 if (repositoryValue != null) {
                     List<String> connectionNamesList = new ArrayList<String>();
                     List<String> connectionValuesList = new ArrayList<String>();
@@ -528,9 +534,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                 param.setListItemsValue(repositoryConnectionValueList);
                 if (!repositoryConnectionItemMap.keySet().contains(param.getValue())) {
                     if (repositoryConnectionNameList.length > 0) {
-                        elem
-                                .setPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName(),
-                                        repositoryConnectionValueList[0]);
+                        elem.setPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName(),
+                                repositoryConnectionValueList[0]);
                     }
                 }
             }
@@ -619,7 +624,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
 
         oldProcessType = (String) elem.getPropertyValue(EParameterName.PROCESS_TYPE_PROCESS.getName());
         if (oldProcessType != null) {
-            String[] list = elem.getElementParameter(EParameterName.PROCESS_TYPE_PROCESS.getName()).getListItemsDisplayName();
+            String[] list = elem.getElementParameter(EParameterName.PROCESS_TYPE_PROCESS.getName())
+                    .getListItemsDisplayName();
             if ((oldProcessType.equals("NO_PROCESS") || (list.length == 0))) { //$NON-NLS-1$
                 updateProcessList();
                 updateContextList();
@@ -696,7 +702,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         // **********************");
         TabbedPropertyComposite tabbedPropertyComposite = this.getTabbedPropertyComposite();
         int additionalHeightSize = 0;
-        if (tabbedPropertyComposite != null && (!(elem instanceof org.talend.designer.core.ui.editor.connections.Connection))) {
+        if (tabbedPropertyComposite != null
+                && (!(elem instanceof org.talend.designer.core.ui.editor.connections.Connection))) {
             additionalHeightSize = estimatePropertyHeightSize(maxRow, listParam, tabbedPropertyComposite);
         }
 
@@ -725,8 +732,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                             // System.out.println("show:" + curParam.getName()+
                             // " field:"+curParam.getField());
                             numInRow++;
-                            AbstractElementPropertySectionController controller = generator.getController(curParam.getField(),
-                                    this);
+                            AbstractElementPropertySectionController controller = generator.getController(curParam
+                                    .getField(), this);
 
                             if (controller == null) {
                                 break;
@@ -782,8 +789,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                         if (curParam.isShow(listParam)) {
                             // System.out.println("show:" + curParam.getName()+
                             // " field:"+curParam.getField());
-                            AbstractElementPropertySectionController controller = generator.getController(curParam.getField(),
-                                    this);
+                            AbstractElementPropertySectionController controller = generator.getController(curParam
+                                    .getField(), this);
 
                             if (controller == null) {
                                 break;
@@ -900,8 +907,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         for (int i = 0; i < listParam.size(); i++) {
             if (listParam.get(i).getCategory() == section) {
                 if (listParam.get(i).isShow(listParam)) {
-                    AbstractElementPropertySectionController controller = generator.getController(listParam.get(i).getField(),
-                            this);
+                    AbstractElementPropertySectionController controller = generator.getController(listParam.get(i)
+                            .getField(), this);
                     if (controller != null) {
                         controller.refresh(listParam.get(i), checkErrorsWhenViewRefreshed);
                     }
@@ -931,7 +938,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         if (workbenchPart instanceof MultiPageTalendEditor) {
             part = (MultiPageTalendEditor) workbenchPart;
         } else {
-            part = (MultiPageTalendEditor) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+            part = (MultiPageTalendEditor) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+                    .getActiveEditor();
         }
         super.setInput(part, selection);
         commandStackEventListener = null;
@@ -1186,7 +1194,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         }
 
         if (metadataInput && istable) {
-            return (String) baseParam.getChildParameters().get(EParameterName.REPOSITORY_SCHEMA_TYPE.getName()).getValue();
+            return (String) baseParam.getChildParameters().get(EParameterName.REPOSITORY_SCHEMA_TYPE.getName())
+                    .getValue();
         }
         Object propertyValue = elem.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
         if ((propertyValue == null || !(propertyValue instanceof String)) && defaultPropertyValue != null) {
@@ -1296,8 +1305,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         TabbedPropertyComposite tabbedPropertyComposite = getTabbedPropertyComposite();
         if (tabbedPropertyComposite != null) {
             tabbedPropertyComposite.getScrolledComposite().setAlwaysShowScrollBars(true);
-            tabbedPropertyComposite.getScrolledComposite().getHorizontalBar().setVisible(false);
-            tabbedPropertyComposite.getScrolledComposite().setExpandHorizontal(false);
+            // tabbedPropertyComposite.getScrolledComposite().getHorizontalBar().setVisible(false);
+            tabbedPropertyComposite.getScrolledComposite().setExpandHorizontal(true);
             tabbedPropertyComposite.removeListener(SWT.Resize, REFRESH_LISTENER);
 
             tabbedPropertyComposite.addListener(SWT.Resize, REFRESH_LISTENER);
