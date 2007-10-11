@@ -42,7 +42,7 @@ public class FileInputCSVNode extends FileInputNode {
      */
     public FileInputCSVNode(String filename, String rowSep, String fieldSep, int limitRows, int headerRows,
             int footerRows, String escapeChar, String textEnclosure, boolean removeEmptyRow, String encoding) {
-        super("tFileInputCSV"); //$NON-NLS-1$
+        super("tFileInputDelimited"); //$NON-NLS-1$
 
         CsvReader cr = null;
         try {
@@ -86,10 +86,10 @@ public class FileInputCSVNode extends FileInputNode {
         }
 
         String[] paramNames = new String[] { "FILENAME", "ROWSEPARATOR", "FIELDSEPARATOR", "LIMIT", "HEADER", "FOOTER", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
-                "ESCAPE_CHAR", "TEXT_ENCLOSURE", "REMOVE_EMPTY_ROW", "ENCODING" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                "ESCAPE_CHAR", "TEXT_ENCLOSURE", "REMOVE_EMPTY_ROW", "ENCODING", "CSV_OPTION" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         String[] paramValues = new String[] { filename, rowSep, fieldSep, Integer.toString(limitRows),
                 Integer.toString(headerRows), Integer.toString(footerRows), escapeChar, textEnclosure,
-                Boolean.toString(removeEmptyRow), encoding };
+                Boolean.toString(removeEmptyRow), encoding, "true" };
 
         for (int i = 0; i < paramNames.length; i++) {
             if (paramValues[i] != null) {

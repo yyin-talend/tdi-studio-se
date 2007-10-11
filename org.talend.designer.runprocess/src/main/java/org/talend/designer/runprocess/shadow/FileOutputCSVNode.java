@@ -35,8 +35,9 @@ public class FileOutputCSVNode extends ShadowNode {
      * Constructs a new FileOutputXmlNode.
      */
     public FileOutputCSVNode(String filename, String encoding) {
-        super("tFileOutputCSV"); //$NON-NLS-1$
+        super("tFileOutputDelimited"); //$NON-NLS-1$
 
+        TextElementParameter param0 = new TextElementParameter("CSV_OPTION", "true"); //$NON-NLS-1$
         TextElementParameter param1 = new TextElementParameter("FILENAME", filename); //$NON-NLS-1$
         TextElementParameter param2 = new TextElementParameter("ENCODING", encoding); //$NON-NLS-1$
         TextElementParameter param3 = new TextElementParameter("ROWSEPARATOR", "\"\\n\""); //$NON-NLS-1$

@@ -40,7 +40,7 @@ public class FileInputDelimitedNode extends FileInputNode {
     public FileInputDelimitedNode(String filename, String rowSep, String fieldSep, int limitRows, int headerRows,
             int footerRows, boolean removeEmptyRow, String encoding) {
         super("tFileInputDelimited"); //$NON-NLS-1$
-        
+
         DelimitedDataReader dr = null;
         try {
             dr = DelimitedDataReaderFactory.createDelimitedDataReader(trimParameter(filename), trimParameter(encoding),
@@ -51,17 +51,18 @@ public class FileInputDelimitedNode extends FileInputNode {
                 this.setColumnNumber(max);
             }
         } catch (IOException e) {
-//             e.printStackTrace();
+            // e.printStackTrace();
         } finally {
             if (dr != null) {
                 dr.close();
             }
         }
-        
+
         String[] paramNames = new String[] { "FILENAME", "ROWSEPARATOR", "FIELDSEPARATOR", "LIMIT", "HEADER", "FOOTER", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
-                "REMOVE_EMPTY_ROW", "ENCODING" }; //$NON-NLS-1$
+                "REMOVE_EMPTY_ROW", "ENCODING", "CSV_OPTION" }; //$NON-NLS-1$
         String[] paramValues = new String[] { filename, rowSep, fieldSep, Integer.toString(limitRows),
-                Integer.toString(headerRows), Integer.toString(footerRows), Boolean.toString(removeEmptyRow), encoding };
+                Integer.toString(headerRows), Integer.toString(footerRows), Boolean.toString(removeEmptyRow), encoding,
+                "false" };
 
         for (int i = 0; i < paramNames.length; i++) {
             if (paramValues[i] != null) {
