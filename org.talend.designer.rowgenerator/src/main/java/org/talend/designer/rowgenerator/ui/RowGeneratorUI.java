@@ -213,7 +213,7 @@ public class RowGeneratorUI {
         for (int j = 0; j < outputMetaTable2.getListColumns().size(); j++) {
             IMetadataColumn column = outputMetaTable2.getListColumns().get(j);
             if (column instanceof MetadataColumnExt) {
-                exts.add(column);
+                exts.add(column.clone());
             } else if (column instanceof MetadataColumn) {
                 MetadataColumnExt ext = new MetadataColumnExt((MetadataColumn) column);
                 List<Function> funs = functionManager.getFunctionByName(ext.getTalendType());
