@@ -92,17 +92,13 @@ public class RepositoryDropAdapter extends PluginDropAdapter {
             RepositoryNode sourceNode = (RepositoryNode) obj;
             switch (operation) {
             case DND.DROP_COPY:
-                // System.out.println("Copy");
                 isValid = CopyObjectAction.getInstance().validateAction(sourceNode, (RepositoryNode) target);
                 break;
             case DND.DROP_NONE:
-                // System.out.println("None->");
             case DND.DROP_MOVE:
-                // System.out.println("Move");
                 isValid = MoveObjectAction.getInstance().validateAction(sourceNode, (RepositoryNode) target);
                 break;
             case DND.DROP_DEFAULT:
-                // System.out.println("Def");
             default:
                 isValid = false;
             }
