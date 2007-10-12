@@ -21,6 +21,7 @@
 // ============================================================================
 package org.talend.repository.ui.login.connections;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -194,7 +195,7 @@ public class ConnectionFormComposite extends Composite {
         data.bottom = new FormAttachment(passwordText, 0, SWT.BOTTOM);
         passwordLabel.setLayoutData(data);
 
-        List<IRepositoryFactory> availableRepositories = RepositoryFactoryProvider.getAvailableRepositories();
+        List<IRepositoryFactory> availableRepositories = getUsableRepositoryProvider();
         for (IRepositoryFactory current : availableRepositories) {
             Map<String, LabelText> list = new HashMap<String, LabelText>();
             Map<String, LabelText> listRequired = new HashMap<String, LabelText>();
@@ -422,9 +423,21 @@ public class ConnectionFormComposite extends Composite {
     }
 
     private void fillLists() {
-        List<IRepositoryFactory> availableRepositories = RepositoryFactoryProvider.getAvailableRepositories();
+        List<IRepositoryFactory> availableRepositories = getUsableRepositoryProvider();
         repositoryCombo.setInput(availableRepositories);
         fillFields();
+    }
+
+    private List<IRepositoryFactory> getUsableRepositoryProvider() {
+        List<IRepositoryFactory> availableRepositories = RepositoryFactoryProvider.getAvailableRepositories();
+
+        List<IRepositoryFactory> result = new ArrayList<IRepositoryFactory>();
+        for (IRepositoryFactory repositoryFactory : availableRepositories) {
+            if (repositoryFactory.isDisplayToUser()) {
+                result.add(repositoryFactory);
+            }
+        }
+        return result;
     }
 
     private void fillFields() {

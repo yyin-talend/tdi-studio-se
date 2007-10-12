@@ -59,14 +59,14 @@ public class RepositoryFactoryProvider {
                     currentAction.setId(current.getAttribute("id")); //$NON-NLS-1$
                     currentAction.setName(current.getAttribute("name")); //$NON-NLS-1$
                     currentAction.setAuthenticationNeeded(new Boolean(current.getAttribute("authenticationNeeded"))); //$NON-NLS-1$
+                    currentAction.setDisplayToUser(new Boolean(current.getAttribute("displayToUser")).booleanValue()); //$NON-NLS-1$
 
                     // Getting dynamic login fields:
                     for (IConfigurationElement currentLoginField : current.getChildren("loginField")) { //$NON-NLS-1$
-                        DynamicFieldBean key = new DynamicFieldBean(
-                                        currentLoginField.getAttribute("id"), //$NON-NLS-1$
-                                        currentLoginField.getAttribute("name"), //$NON-NLS-1$
-                                        new Boolean(currentLoginField.getAttribute("required")), //$NON-NLS-1$
-                                        new Boolean(currentLoginField.getAttribute("password"))); //$NON-NLS-1$
+                        DynamicFieldBean key = new DynamicFieldBean(currentLoginField.getAttribute("id"), //$NON-NLS-1$
+                                currentLoginField.getAttribute("name"), //$NON-NLS-1$
+                                new Boolean(currentLoginField.getAttribute("required")), //$NON-NLS-1$
+                                new Boolean(currentLoginField.getAttribute("password"))); //$NON-NLS-1$
                         currentAction.getFields().add(key);
                     }
 

@@ -46,6 +46,8 @@ public abstract class AbstractRepositoryFactory implements IRepositoryFactory {
 
     private String id;
 
+    private boolean displayToUser;
+
     private boolean authenticationNeeded;
 
     private List<DynamicFieldBean> fields = new ArrayList<DynamicFieldBean>();
@@ -169,6 +171,14 @@ public abstract class AbstractRepositoryFactory implements IRepositoryFactory {
         }
 
         return result;
+    }
+
+    public boolean isDisplayToUser() {
+        return displayToUser;
+    }
+
+    public void setDisplayToUser(boolean displayToUser) {
+        this.displayToUser = displayToUser;
     }
 
 }

@@ -24,7 +24,6 @@ package org.talend.repository.model;
 import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.team.core.ITeamStatus;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.PersistenceException;
@@ -232,9 +231,9 @@ public interface IRepositoryFactory {
     public RootContainer<String, IRepositoryObject> getMetadataFileXml() throws PersistenceException;
 
     public RootContainer<String, IRepositoryObject> getMetadataFileLdif() throws PersistenceException;
-    
+
     public RootContainer<String, IRepositoryObject> getMetadataLDAPSchema() throws PersistenceException;
-    
+
     public RootContainer<String, IRepositoryObject> getMetadataGenericSchema() throws PersistenceException;
 
     public List<IRepositoryObject> getRecycleBinItems() throws PersistenceException;
@@ -256,5 +255,8 @@ public interface IRepositoryFactory {
 
     public Boolean hasChildren(Object parent);
 
+    public void setDisplayToUser(boolean bool);
+
+    public boolean isDisplayToUser();
 
 }
