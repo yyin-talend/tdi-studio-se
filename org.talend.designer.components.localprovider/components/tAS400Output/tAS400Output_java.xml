@@ -172,12 +172,21 @@
 
       </ITEMS>
     </PARAMETER>
-
+	
+	<PARAMETER
+      NAME="USE_COMMIT_CONTROL"
+      FIELD="CHECK"
+      NUM_ROW="8"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+	
     <PARAMETER
       NAME="COMMIT_EVERY"
       FIELD="TEXT"
       NUM_ROW="8"
       REQUIRED="true"
+      SHOW_IF="USE_COMMIT_CONTROL == 'true'"
     >
       <DEFAULT>10000</DEFAULT>
     </PARAMETER>

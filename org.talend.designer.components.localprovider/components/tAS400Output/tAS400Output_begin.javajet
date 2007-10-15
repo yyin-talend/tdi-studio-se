@@ -372,15 +372,18 @@ for(Column colStmt:stmtStructure){
 	<%		
 	}
 }
-if(!commitEvery.equals("")&&!commitEvery.equals("0")){
-%>
 
-int commitEvery_<%=cid%> = <%=commitEvery%>;
-
-int commitCounter_<%=cid%> = 0;
-
-conn_<%=cid%>.setAutoCommit(false);
-<%
+if(ElementParameterParser.getValue(node,"__USE_COMMIT_CONTROL__").equals("true")){// if use commit control
+    if(!commitEvery.equals("")&&!commitEvery.equals("0")){
+    %>
+    
+    int commitEvery_<%=cid%> = <%=commitEvery%>;
+    
+    int commitCounter_<%=cid%> = 0;
+    
+    conn_<%=cid%>.setAutoCommit(false);
+    <%
+    }
 }
 %>
 
