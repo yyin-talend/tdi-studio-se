@@ -207,6 +207,12 @@
              level="10"
              name="Metadata/Create LDAP schemas">
        </Action>
+       <Action
+             class="org.talend.repository.ui.actions.metadata.CopyToGenericSchemaAction"
+             id="org.talend.repository.CopyToGenericSchemaAction"
+             level="18"
+             name="Metadata/Copy to Generic schema action">
+       </Action>
    </extension>
    <extension
          point="org.eclipse.ui.views.properties.tabbed.propertyContributor">

@@ -24,22 +24,9 @@ package org.talend.repository.model.actions;
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.emf.common.util.EList;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
-import org.talend.commons.utils.VersionUtils;
 import org.talend.commons.utils.workbench.resources.ResourceUtils;
-import org.talend.core.CorePlugin;
-import org.talend.core.context.Context;
-import org.talend.core.context.RepositoryContext;
-import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
-import org.talend.core.model.metadata.builder.connection.GenericSchemaConnection;
-import org.talend.core.model.metadata.builder.connection.MetadataColumn;
-import org.talend.core.model.metadata.builder.connection.MetadataTable;
-import org.talend.core.model.metadata.builder.connection.impl.MetadataColumnImpl;
-import org.talend.core.model.properties.ConnectionItem;
-import org.talend.core.model.properties.GenericSchemaConnectionItem;
-import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -53,6 +40,7 @@ import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
+import org.talend.repository.ui.actions.metadata.CopyToGenericSchemaHelper;
 
 /**
  * DOC smallet class global comment. Detailed comment <br/>
@@ -67,8 +55,6 @@ public class MoveObjectAction {
     private static MoveObjectAction singleton = new MoveObjectAction();
 
     private boolean isGenericSchema;
-
-    private static final String DEFAULT_TABLE_NAME = "metadata";
 
     public static MoveObjectAction getInstance() {
         return singleton;
@@ -186,7 +172,7 @@ public class MoveObjectAction {
                 } else {
                     // Move :
                     if (isGenericSchema) {
-                        moveToGenericSchema(factory, objectToMove);
+                        CopyToGenericSchemaHelper.copyToGenericSchema(factory, objectToMove);
 
                     } else {
                         factory.moveObject(objectToMove, targetPath);
@@ -200,103 +186,5 @@ public class MoveObjectAction {
                     .getProperties(EProperties.CONTENT_TYPE);
             factory.moveFolder(sourceType, sourcePath, targetPath);
         }
-    }
-
-    /**
-     * DOC Administrator Comment method "moveToGenericSchema".
-     * 
-     * @param factory
-     * @param ve
-     * @param isConnectionTableSchema
-     * @throws PersistenceException
-     */
-    private void moveToGenericSchema(IProxyRepositoryFactory factory, IRepositoryObject objectToMove)
-            throws PersistenceException {
-        String dbmsId = null;
-
-        GenericSchemaConnectionItem connectionItem = PropertiesFactory.eINSTANCE.createGenericSchemaConnectionItem();
-        GenericSchemaConnection connection = ConnectionFactory.eINSTANCE.createGenericSchemaConnection();
-        connection.setLabel("connectionLabel");
-        connection.setComment("connectionComment");
-
-        if (dbmsId != null && dbmsId.length() > 0) {
-            connection.setMappingTypeId(dbmsId);
-            connection.setMappingTypeUsed(true);
-        }
-
-        MetadataTable metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
-        metadataTable.setConnection(connection);
-
-        ConnectionItem itemToMove = (ConnectionItem) objectToMove.getProperty().getItem();
-        EList tables = itemToMove.getConnection().getTables();
-        EList listColumns = null;
-
-        MetadataTable table = null;
-        for (Object object : tables) {
-            table = (MetadataTable) object;
-            listColumns = table.getColumns();
-        }
-
-        boolean isConnectionTableSchema = checkIsConnectionTableSchema(objectToMove);
-        if (isConnectionTableSchema) {
-            metadataTable.setLabel(DEFAULT_TABLE_NAME);
-        } else {
-            metadataTable.setLabel(table.getLabel() == null ? DEFAULT_TABLE_NAME : table.getLabel());
-        }
-        for (Object temp : listColumns) {
-            MetadataColumn column = (MetadataColumnImpl) temp;
-            MetadataColumn metadataColumn = ConnectionFactory.eINSTANCE.createMetadataColumn();
-            metadataColumn.setComment(column.getComment());
-            metadataColumn.setLabel(column.getLabel());
-            metadataColumn.setDefaultValue(column.getDefaultValue());
-            // metadataColumn.setId(column.getId() + "");
-            metadataColumn.setKey(column.isKey());
-
-            metadataColumn.setLength(column.getLength());
-
-            metadataColumn.setPrecision(column.getPrecision());
-
-            metadataColumn.setPattern(column.getPattern());
-            metadataColumn.setNullable(column.isNullable());
-            metadataColumn.setOriginalField(column.getLabel());
-            metadataColumn.setTalendType(column.getTalendType());
-            metadataColumn.setSourceType(column.getSourceType());
-
-            metadataTable.getColumns().add(metadataColumn);
-        }
-
-        Property connectionProperty = PropertiesFactory.eINSTANCE.createProperty();
-        connectionProperty.setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(
-                Context.REPOSITORY_CONTEXT_KEY)).getUser());
-        connectionProperty.setVersion(VersionUtils.DEFAULT_VERSION);
-        connectionProperty.setStatusCode(""); //$NON-NLS-1$
-        connectionProperty.setLabel(objectToMove.getLabel());
-
-        connection.getTables().add(metadataTable);
-        connectionItem.setConnection(connection);
-        connectionProperty.setItem(connectionItem);
-        connectionProperty.setId(factory.getNextId());
-
-        factory.create(connectionItem, new Path(""));
-    }
-
-    /**
-     * Comment method "checkIsConnectionTableSchema".
-     * 
-     * @param objectToM m isConnectionTableSchema
-     * @return
-     */
-    private boolean checkIsConnectionTableSchema(IRepositoryObject objectToMove) {
-        if (objectToMove != null && objectToMove.getType() != null) {
-            switch (objectToMove.getType()) {
-            case METADATA_CON_TABLE:
-            case METADATA_CON_SYNONYM:
-            case METADATA_CON_VIEW:
-                return true;
-            default:
-                return false;
-            }
-        }
-        return false;
     }
 }
