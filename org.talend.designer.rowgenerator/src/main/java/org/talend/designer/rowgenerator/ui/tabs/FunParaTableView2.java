@@ -89,6 +89,12 @@ public class FunParaTableView2 extends AbstractDataTableEditorView<Parameter> {
 
     }
 
+    private ExtendedTextCellEditorWithProposal cellEditor;
+
+    public void notifyOkPressed() {
+        cellEditor.focusLost();
+    }
+
     @Override
     protected void createColumns(TableViewerCreator<Parameter> tableViewerCreator, final Table table) {
         this.tableViewerCreator = tableViewerCreator;
@@ -118,8 +124,8 @@ public class FunParaTableView2 extends AbstractDataTableEditorView<Parameter> {
         column.setTitle(Messages.getString("FunParaTableView2.Value"));
         column.setId(VALUE_PROPERTY);
 
-        final ExtendedTextCellEditorWithProposal cellEditor = new ExtendedTextCellEditorWithProposal(tableViewerCreator
-                .getTable(), SWT.MULTI | SWT.BORDER, column);
+        cellEditor = new ExtendedTextCellEditorWithProposal(tableViewerCreator.getTable(), SWT.MULTI | SWT.BORDER,
+                column);
 
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<Parameter, Object>() {
 

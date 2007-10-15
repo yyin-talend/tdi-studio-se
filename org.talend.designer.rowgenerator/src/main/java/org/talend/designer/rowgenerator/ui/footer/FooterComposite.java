@@ -35,19 +35,20 @@ import org.eclipse.swt.widgets.Composite;
 import org.talend.designer.rowgenerator.i18n.Messages;
 import org.talend.designer.rowgenerator.managers.RowGeneratorManager;
 import org.talend.designer.rowgenerator.managers.UIManager;
+import org.talend.designer.rowgenerator.ui.tabs.FunParaTableView2;
 
 /**
- *  amaumont class global comment. Detailled comment <br/>
+ * amaumont class global comment. Detailled comment <br/>
  * 
  * $Id: FooterComposite.java,v 1.3 2007/01/31 06:17:55 pub Exp $
  * 
  */
 public class FooterComposite extends Composite {
 
-    private RowGeneratorManager generatorManager;
+    private final RowGeneratorManager generatorManager;
 
     /**
-     *  amaumont FooterComposite constructor comment.
+     * amaumont FooterComposite constructor comment.
      * 
      * @param parent
      * @param style
@@ -60,7 +61,7 @@ public class FooterComposite extends Composite {
     }
 
     /**
-     *  amaumont Comment method "createComponents".
+     * amaumont Comment method "createComponents".
      */
     private void createComponents() {
 
@@ -77,7 +78,7 @@ public class FooterComposite extends Composite {
         FormData okFormData = new FormData();
         Point minSize = okButton.computeSize(SWT.DEFAULT, SWT.DEFAULT, true);
         okFormData.width = Math.max(IDialogConstants.BUTTON_WIDTH, minSize.x);
-        
+
         okButton.setLayoutData(okFormData);
         okButton.addSelectionListener(new SelectionListener() {
 
@@ -85,6 +86,8 @@ public class FooterComposite extends Composite {
             }
 
             public void widgetSelected(SelectionEvent e) {
+                FunParaTableView2 editor = uiManager.getGeneratorUI().getTabFolderEditors().getParameterEditor();
+                editor.notifyOkPressed();
                 uiManager.closeRowGenerator(SWT.OK);
             }
 
@@ -111,5 +114,4 @@ public class FooterComposite extends Composite {
         okFormData.right = new FormAttachment(cancelButton, -5);
 
     }
-
 }
