@@ -57,7 +57,9 @@ class Transfer{
 			return "org.postgresql.Driver";
 		}else if(dbType.equals("Access")){
 			return "sun.jdbc.odbc.JdbcOdbcDriver";
-		}else if(dbType.equals("DB2")){
+		}else if(dbType.equals("AS400")){
+            return "com.ibm.as400.access.AS400JDBCDriver";
+        }else if(dbType.equals("DB2")){
 			return "com.ibm.db2.jcc.DB2Driver";
 		}else if(dbType.equals("Firebird")){
 			return "org.firebirdsql.jdbc.FBDriver";
@@ -112,9 +114,11 @@ class Transfer{
 		}else if(dbType.equals("Postgre")){
 			return "\"jdbc:postgresql://\"+"+host+"+\":\"+"+port+"+\"/\"+"+dbname;
 		}else if(dbType.equals("Access")){
-		String accessDbname = ElementParameterParser.getValue(node,"__ACCESSDBNAME__");
+		    String accessDbname = ElementParameterParser.getValue(node,"__ACCESSDBNAME__");
 			return "\"jdbc:odbc:Driver={Microsoft Access Driver (*.mdb)};DBQ=\"+"+accessDbname;
-		}else if(dbType.equals("DB2")){
+		}else if(dbType.equals("AS400")){
+            return "\"jdbc:as400://\"+" + host + "+\"/\"+" + dbname + "+\";prompt=false\"";
+        }else if(dbType.equals("DB2")){
 			return "\"jdbc:db2://\"+"+host+"+\":\"+"+port+"+\"/\"+"+dbname;
 		}else if(dbType.equals("Firebird")){			
 			String firebirdDB=ElementParameterParser.getValue(node,"__FIREBIRDDBNAME__");
@@ -176,7 +180,9 @@ class Transfer{
 			return "`\"+"+tableName+"+\"`";
 		}else if(dbType.equals("Sybase")){
 			return "\"+"+tableName+"+\"";
-		}
+		}else if(dbType.equals("AS400")){
+            return "\"+"+tableName+"+\"";
+        }
 		return "\"+"+tableName+"+\"";
 	}
 	
@@ -204,7 +210,9 @@ class Transfer{
 			 	//column name
 			 	   if(dbType.equals("MySQL")){
 			 			sql=sql+"`"+column.getOriginalDbColumnName()+"` ";
-			 		}else{
+			 		}else if(dbType.equals("AS400")){
+			            sql=sql+column.getOriginalDbColumnName();
+			        }else{
 			 			sql=sql+"\\\""+column.getOriginalDbColumnName()+"\\\" ";
 			 		}
 			 	//primary key
@@ -264,6 +272,7 @@ class Transfer{
 		 	}
 	 	}		
 		sql=sql+")";
+System.out.println("sql2 = " +sql);
 		return sql;
 	}
 	
