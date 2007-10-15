@@ -30,7 +30,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         List<Map<String, String>> mailParts = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node,"__MAIL_PARTS__");
       
 %> 
-	if(!<%=directory%>.endsWith("/")){
+	if(!(<%=directory%>).endsWith("/")){
            globalMap.put("<%=cid %>_EXPORTED_FILE_PATH",<%=directory%> + "/");
         		}else
         		{
@@ -116,7 +116,10 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	           list_<%=cid %>.add(content_<%=cid %>);
            	}    
         }   
- 	}           
+ 	}   
+	
+
+	
  	//attachment Deal
  	if(msg_<%=cid %>.isMimeType("multipart/*")){
  	      javax.mail.Multipart mp<%=cid%> = (javax.mail.Multipart) msg_<%=cid %>.getContent();
@@ -130,7 +133,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 if ((disposition<%=cid%> != null)
                         && ((disposition<%=cid%>.equals(javax.mail.Part.ATTACHMENT)) || (disposition<%=cid%>.equals(javax.mail.Part.INLINE)))) {
                     attachfileName<%=cid%> = mpart<%=cid%>.getFileName();
-                     if(!<%=directory%>.endsWith("/")){
+                     if(!(<%=directory%>).endsWith("/")){
            				 path<%=cid%> = <%=directory%> + "/";
         				}else
         				{
