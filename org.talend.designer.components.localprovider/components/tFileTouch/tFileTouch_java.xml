@@ -38,15 +38,7 @@
     >
       <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/in.csv"</DEFAULT>
     </PARAMETER>
-    <PARAMETER
-      NAME="REPLACE_FILE"
-      FIELD="CHECK"
-      REQUIRED="true"
-      NUM_ROW="2"
-      REPOSITORY_VALUE="REPLACE_FILE"
-    >
-      <DEFAULT>true</DEFAULT>
-    </PARAMETER>
+    
   </PARAMETERS>
   <CODEGENERATION/>
 <RETURNS/>

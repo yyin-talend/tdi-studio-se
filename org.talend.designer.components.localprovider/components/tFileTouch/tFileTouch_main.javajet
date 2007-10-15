@@ -15,14 +15,9 @@
    
 %>     
         java.io.File file_<%=cid %> = new java.io.File( <%=fileName %>);
+        //create new file
         boolean result<%=cid %> = file_<%=cid %>.createNewFile();
-<%
-	if (replaceFile) {
-%>
+        //if file already exists, modify the last-modified-time of the file
         if (!result<%=cid %>) {
-        	file_<%=cid %>.delete();
-        	file_<%=cid %>.createNewFile();
+        	file_<%=cid %>.setLastModified((new Date()).getTime());
         }
-<%
-	}
-%>
