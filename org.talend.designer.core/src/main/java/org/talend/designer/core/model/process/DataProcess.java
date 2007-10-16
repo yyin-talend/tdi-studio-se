@@ -207,7 +207,7 @@ public class DataProcess {
         dataConnec.setActivate(connection.isActivate());
         dataConnec.setLineStyle(connection.getLineStyle());
         dataConnec.setMetadataTable(meterNode.getMetadataList().get(0));
-        dataConnec.setName("meterRow" + connection.getName());
+        dataConnec.setName(connection.getName());
         dataConnec.setUniqueName("meterRow" + connection.getUniqueName());
         dataConnec.setSource(meterNode);
         dataConnec.setCondition(connection.getCondition());
@@ -617,7 +617,7 @@ public class DataProcess {
                         ((List<IConnection>) refSource.getOutgoingConnections()).remove(connecToMove);
                         ((List<IConnection>) meterNode.getOutgoingConnections()).add(connecToMove);
                         ((DataConnection) connecToMove).setSource(meterNode);
-                        ((DataConnection) connecToMove).setName("meterRow" + connecToMove.getName());
+                        ((DataConnection) connecToMove).setName(connecToMove.getName());
                         ((DataConnection) connecToMove).setUniqueName("meterRow" + connecToMove.getUniqueName());
                     }
                 } else {
