@@ -42,13 +42,6 @@
         currentTarget = outGraphicalConnection.getTarget();
        }
       }
-      		if (currentTarget == null) {
-			%>
-				connectionName=<%=connectionName%> //// <%=connection.toString()%>
-				nodeSource=<%=nodeSource%>
-			<%
-				continue;
-      		}
 
 			if(!(currentTarget instanceof IHashableInputConnections)) {
 				currentTarget = currentTarget.getExternalNode();
