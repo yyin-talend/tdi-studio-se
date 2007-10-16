@@ -325,7 +325,12 @@ public abstract class JobScriptsManager {
                 IProject prj = ResourceModelUtils.getProject(project);
                 IFolder folder = prj.getFolder(ERepositoryObjectType.getFolderName(ERepositoryObjectType.PROCESS));
                 sourceFile.add(prj.getFile(FileConstants.LOCAL_PROJECT_FILENAME));
-                // addNodeToResource(folder.members(), sourceFile);
+                try {
+                    addNodeToResource(folder.members(), sourceFile);
+                } catch (Throwable e) {
+                    // TODO correct origin of problem in TIS context job generation
+                    ExceptionHandler.process(e);
+                }
                 sourceResouces = sourceFile.toArray(new IResource[sourceFile.size()]);
             } catch (Exception e) {
                 ExceptionHandler.process(e);
