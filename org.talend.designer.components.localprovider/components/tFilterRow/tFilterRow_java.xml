@@ -1,143 +1,97 @@
 <COMPONENT>
 
-  <HEADER
-    PLATEFORM="ALL"
-    SERIAL=""
-    VERSION="0.102"
-    STATUS="ALPHA"
-    
-    COMPATIBILITY="ALL"
-    AUTHOR="Talend"
-    RELEASE_DATE="20070312A"
-    STARTABLE="false"
-    HAS_CONDITIONAL_OUTPUTS="true"
-    DATA_AUTO_PROPAGATE="false"
-  >
-    <SIGNATURE/>
-  </HEADER>
+	<HEADER 
+		PLATEFORM="ALL" 
+		SERIAL="" 
+		VERSION="0.102" 
+		STATUS="ALPHA"
+		COMPATIBILITY="ALL" 
+		AUTHOR="Talend" 
+		RELEASE_DATE="20070312A"
+		STARTABLE="false" 
+		HAS_CONDITIONAL_OUTPUTS="true"
+		DATA_AUTO_PROPAGATE="false">
+		<SIGNATURE />
+	</HEADER>
 
-  <DOCUMENTATION>
-    <URL/>
-  </DOCUMENTATION>
+	<DOCUMENTATION>
+		<URL />
+	</DOCUMENTATION>
 
-  <CONNECTORS>
-  	<CONNECTOR CTYPE="FLOW" MAX_OUTPUT="0" MAX_INPUT="1"/>
-  	<CONNECTOR
-      NAME="FILTER"
-      CTYPE="FLOW"
-      COLOR="086438"
-      BASE_SCHEMA="FLOW"
-    />
-    <CONNECTOR
-      NAME="REJECT"
-      CTYPE="FLOW"
-      LINE_STYLE="2"
-      COLOR="f36300"
-      BASE_SCHEMA="FLOW"
-    />
-    <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="0" MAX_INPUT="0"/>
-    <CONNECTOR CTYPE="THEN_RUN" MAX_INPUT="1"/>
-    <CONNECTOR CTYPE="REFERENCE"/>
-    <CONNECTOR CTYPE="RUN_OK"/>
-    <CONNECTOR CTYPE="RUN_ERROR"/>
-    <CONNECTOR CTYPE="RUN_IF"/>
-  </CONNECTORS>
+	<CONNECTORS>
+		<CONNECTOR CTYPE="FLOW" MAX_OUTPUT="0" MAX_INPUT="1" />
+		<CONNECTOR NAME="FILTER" CTYPE="FLOW" COLOR="086438" BASE_SCHEMA="FLOW" />
+		<CONNECTOR NAME="REJECT" CTYPE="FLOW" LINE_STYLE="2" COLOR="f36300" BASE_SCHEMA="FLOW" />
+		<CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="0" MAX_INPUT="0" />
+		<CONNECTOR CTYPE="THEN_RUN" MAX_INPUT="1" />
+		<CONNECTOR CTYPE="REFERENCE" />
+		<CONNECTOR CTYPE="RUN_OK" />
+		<CONNECTOR CTYPE="RUN_ERROR" />
+		<CONNECTOR CTYPE="RUN_IF" />
+	</CONNECTORS>
 
-<PARAMETERS>
-    <PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" REQUIRED="true" NUM_ROW="1">
-      <DEFAULT/> 
-    </PARAMETER>
-    <PARAMETER NAME="SCHEMA_FILTER" FIELD="SCHEMA_TYPE" NUM_ROW="1" CONTEXT="FILTER">
-    	<DEFAULT/> 
-    </PARAMETER>
-    <PARAMETER NAME="SCHEMA_REJECT" FIELD="SCHEMA_TYPE" NUM_ROW="1" CONTEXT="REJECT">
-		<DEFAULT/> 
-    </PARAMETER>
-    <PARAMETER
-      NAME="CONDITIONS"
-      FIELD="TABLE"
-      REQUIRED="false"
-      NUM_ROW="2"
-      NB_LINES="3"
-    >
-      <ITEMS>
-        <ITEM NAME="FUNCTION" FIELD="CLOSED_LIST">
-          <ITEMS DEFAULT="VALUE_OF">
-            <ITEM NAME="S_VALUE_OF"    VALUE="S_VALUE_OF"/>
-            <ITEM NAME="N_VALUE_OF_FLOAT"    VALUE="N_VALUE_OF_FLOAT"/>
-            <ITEM NAME="N_VALUE_OF_INTEGER"    VALUE="N_VALUE_OF_INTEGER"/>
-            <ITEM NAME="ABS_VALUE_FLOAT"    VALUE="ABS_VALUE_FLOAT"/>
-            <ITEM NAME="ABS_VALUE_INTEGER"    VALUE="ABS_VALUE_INTEGER"/>
-            <ITEM NAME="LC"    VALUE="LC"/>
-            <ITEM NAME="UC"    VALUE="UC"/>
-            <ITEM NAME="LCFIRST"    VALUE="LCFIRST"/>
-            <ITEM NAME="UCFIRST"    VALUE="UCFIRST"/>
-            <ITEM NAME="LENGTH"  VALUE="LENGTH"/>
-          </ITEMS>
-        </ITEM>
+	<PARAMETERS>
+		<PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" REQUIRED="true" NUM_ROW="1" />
+		<PARAMETER NAME="SCHEMA_FILTER" FIELD="SCHEMA_TYPE" NUM_ROW="1"	CONTEXT="FILTER" />
+		<PARAMETER NAME="SCHEMA_REJECT" FIELD="SCHEMA_TYPE" NUM_ROW="1"	CONTEXT="REJECT" />
+		
+		<PARAMETER NAME="LOGICAL_OP" FIELD="CLOSED_LIST" NUM_ROW="2" REQUIRED="true">
+			<ITEMS DEFAULT="AND">
+				<ITEM NAME="OR" VALUE="||" />
+				<ITEM NAME="AND" VALUE="&amp;&amp;" />
+			</ITEMS>
+		</PARAMETER>		
+		
+		<PARAMETER NAME="CONDITIONS" FIELD="TABLE" REQUIRED="false"	NUM_ROW="3" NB_LINES="3">
+			<ITEMS>
+				<ITEM NAME="FUNCTION" FIELD="CLOSED_LIST">
+					<ITEMS DEFAULT="EMPTY">
+						<ITEM NAME="EMPTY" VALUE="" />
+						<ITEM NAME="ABS_VALUE"	VALUE="Math.abs($source) $operator $target" />
+						<ITEM NAME="LC"		 	VALUE="$source == null? false : $source.toLowerCase().compareTo($target) $operator 0" />
+						<ITEM NAME="UC"		 	VALUE="$source == null? false : $source.toUpperCase().compareTo($target) $operator 0" />
+						<ITEM NAME="LCFIRST" 	VALUE="$source == null? false : String.valueOf($source.toLowerCase().charAt(0)).compareTo($target) $operator 0" />
+						<ITEM NAME="UCFIRST" 	VALUE="$source == null? false : String.valueOf($source.toUpperCase().charAt(0)).compareTo($target) $operator 0" />
+						<ITEM NAME="LENGTH"  	VALUE="$source == null? false : $source.length() $operator $target" />
+						<ITEM NAME="MATCH"    	VALUE="$source == null? false : $source.matches($target) $operator true"/>
+					</ITEMS>
+				</ITEM>
 
-        <ITEM NAME="INPUT_COLUMN" FIELD="PREV_COLUMN_LIST" />
+				<ITEM NAME="INPUT_COLUMN" FIELD="PREV_COLUMN_LIST" />
 
-        <ITEM NAME="OPERATOR" FIELD="CLOSED_LIST">
-          <ITEMS DEFAULT="EQ">
-           	<ITEM NAME="EQ"  VALUE="EQ"/>
-            <ITEM NAME="NE"    VALUE="NE"/>
-            <ITEM NAME="GT"    VALUE="GT"/>
-            <ITEM NAME="LT"    VALUE="LT"/>
-            <ITEM NAME="GE"    VALUE="GE"/>
-            <ITEM NAME="LE"    VALUE="LE"/>
-            <ITEM NAME="MATCH"    VALUE="MATCH"/>
-            <ITEM NAME="NMATCH"    VALUE="NMATCH"/>
-          </ITEMS>
-        </ITEM>
-        <ITEM NAME="RVALUE" FIELD="String" />
-      </ITEMS>
-    </PARAMETER>
+				<ITEM NAME="OPERATOR" FIELD="CLOSED_LIST">
+					<ITEMS DEFAULT="EQ_JAVA">
+						<ITEM NAME="EQ_JAVA" VALUE="==" />
+						<ITEM NAME="NE_JAVA" VALUE="!=" />
+						<ITEM NAME="GT_JAVA" VALUE="&gt;" />
+						<ITEM NAME="LT_JAVA" VALUE="&lt;" />
+						<ITEM NAME="GE_JAVA" VALUE="&gt;=" />
+						<ITEM NAME="LE_JAVA" VALUE="&lt;=" />						
+					</ITEMS>
+				</ITEM>
+				<ITEM NAME="RVALUE" FIELD="String" />
+			</ITEMS>
+		</PARAMETER>
 
-    <PARAMETER
-      NAME="USE_ADVANCED"
-      FIELD="CHECK"
-      REQUIRED="true"
-      NUM_ROW="3"
-    >
-      <DEFAULT>false</DEFAULT>
-    </PARAMETER>
+		<PARAMETER NAME="USE_ADVANCED" FIELD="CHECK" REQUIRED="true" NUM_ROW="4">
+			<DEFAULT>false</DEFAULT>
+		</PARAMETER>
 
 
-    <PARAMETER
-      NAME="ADVANCED_COND"
-      FIELD="MEMO"
-      NUM_ROW="4"
-      NB_LINES="4"
-      NOT_SHOW_IF="(USE_ADVANCED=='false')"
-    >
-      <DEFAULT>// code sample : use $input_row to define the condition.
-// input_row.columnName1.equals("foo") || !(input_row.columnName2.equals("xo"))
-
-// replace the following expression by your own filter condition
+		<PARAMETER NAME="ADVANCED_COND" FIELD="MEMO_JAVA" NUM_ROW="5" NB_LINES="5" NOT_SHOW_IF="(USE_ADVANCED=='false')">
+			<DEFAULT>// code sample : use input_row to define the condition.
+// input_row.columnName1.equals("foo") ||!(input_row.columnName2.equals("bar"))
+// replace the following expression by your own filter condition 
 input_row.columnName1.equals(input_row.columnName2)
-    </DEFAULT>
-    </PARAMETER>
+			</DEFAULT>
+		</PARAMETER>
 
-    <PARAMETER
-      NAME="LOGICAL_OP"
-      FIELD="CLOSED_LIST"
-      NUM_ROW="5"      
-      REQUIRED="true"
-    >
-      <ITEMS DEFAULT="AND">
-		  <ITEM NAME="OR"   VALUE="OR" />
-		  <ITEM NAME="AND"   VALUE="AND" />
-      </ITEMS>
-    </PARAMETER>
+	</PARAMETERS>
 
-</PARAMETERS>
+	<CODEGENERATION />
 
-  <CODEGENERATION>
-
-  </CODEGENERATION>
-
-   <RETURNS>
-      <RETURN NAME="NB_LINE" TYPE="id_Integer" AVAILABILITY="AFTER"/>
-   </RETURNS>
+	<RETURNS>
+		<RETURN NAME="NB_LINE" TYPE="id_Integer" AVAILABILITY="AFTER"/>
+		<RETURN NAME="NB_LINE_OK" TYPE="id_Integer"	AVAILABILITY="AFTER"/>
+	</RETURNS>
 </COMPONENT>
