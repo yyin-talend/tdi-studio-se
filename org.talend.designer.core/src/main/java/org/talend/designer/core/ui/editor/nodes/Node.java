@@ -765,9 +765,17 @@ public class Node extends Element implements INode {
      */
     public void setPropertyValue(final String id, final Object value) {
         IElementParameter parameter = getElementParameter(id);
+        if (id.equals(EParameterName.SCHEMA_TYPE.getName()) || id.equals(EParameterName.QUERYSTORE_TYPE.getName())
+                || id.equals(EParameterName.PROPERTY_TYPE.getName())
+                || id.equals(EParameterName.PROCESS_TYPE_PROCESS.getName())) {
+            setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), Boolean.TRUE);
+        }
         if (parameter == null) { // in case we try to set a value to a
             // parameter that doesn't exists
             return;
+        }
+        if (parameter.getField().equals(EParameterFieldType.ENCODING_TYPE)) {
+            setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), Boolean.TRUE);
         }
         if (id.equals(EParameterName.LABEL.getName())) {
             labelToParse = (String) value;
@@ -794,12 +802,7 @@ public class Node extends Element implements INode {
         if (id.equals(EParameterName.SHOW_HINT.getName())) {
             setShowHint((Boolean) value);
         }
-        if (id.equals(EParameterName.SCHEMA_TYPE.getName()) || id.equals(EParameterName.QUERYSTORE_TYPE.getName())
-                || id.equals(EParameterName.PROPERTY_TYPE.getName())
-                || id.equals(EParameterName.PROCESS_TYPE_PROCESS.getName())
-                || parameter.getField().equals(EParameterFieldType.ENCODING_TYPE)) {
-            setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), Boolean.TRUE);
-        }
+        
 
         if (id.equals(EParameterName.PROCESS_TYPE_CONTEXT.getName())) {
             if (!CorePlugin.getContext().isHeadless()) {
