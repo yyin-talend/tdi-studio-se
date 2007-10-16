@@ -64,326 +64,318 @@ import org.talend.sqlbuilder.util.TextUtil;
 /**
  * qzhang class global comment. Detailled comment <br/>
  * 
- * $Id: talend-code-templates.xml 1 2007-3-20 下午05:42:58 (星期五, 29 九月 2006)
- * qzhang $
+ * $Id: talend-code-templates.xml 1 2007-3-20 下午05:42:58 (星期五, 29 九月 2006) qzhang $
  * 
  */
 public class BuildInDBStructure extends SashForm {
 
-	private Image tableImage = ImageUtil.getImage("Images.TableNodeIcon");
+    private final Image tableImage = ImageUtil.getImage("Images.TableNodeIcon");
 
-	private Image columnImage = ImageUtil.getImage("Images.ColumnNodeIcon");
+    private final Image columnImage = ImageUtil.getImage("Images.ColumnNodeIcon");
 
-	private SQLBuilderDialog dialog;
+    private final SQLBuilderDialog dialog;
 
-	private DBStructureComposite dbstructureCom;
+    private DBStructureComposite dbstructureCom;
 
-	private TreeViewer treeViewer;
+    private TreeViewer treeViewer;
 
-	private IMetadataTable metadataTable;
+    private IMetadataTable metadataTable;
 
-	private IMetadataConnection parentMetadata;
+    private IMetadataConnection parentMetadata;
 
-	private String schema = QueryUtil.DEFAULT_TABLE_NAME;
+    private String schema = QueryUtil.DEFAULT_TABLE_NAME;
 
-	private ConnectionParameters connectionParameters;
+    private final ConnectionParameters connectionParameters;
 
-	/**
-	 * qzhang BuildInDBStructure constructor comment.
-	 */
-	public BuildInDBStructure(Composite parent, int style,
-			SQLBuilderDialog dialog, ConnectionParameters connectionParameters) {
-		super(parent, style);
-		this.dialog = dialog;
-		this.metadataTable = connectionParameters.getMetadataTable();
-		this.connectionParameters = connectionParameters;
-		schema = (connectionParameters.getSchemaName() != null && !connectionParameters
-				.getSchemaName().equals("")) ? connectionParameters
-				.getSchemaName() : schema;
-		addCompnoents();
-		setWeights(new int[] { 1, 2 });
-	}
+    /**
+     * qzhang BuildInDBStructure constructor comment.
+     */
+    public BuildInDBStructure(Composite parent, int style, SQLBuilderDialog dialog,
+            ConnectionParameters connectionParameters) {
+        super(parent, style);
+        this.dialog = dialog;
+        this.metadataTable = connectionParameters.getMetadataTable();
+        this.connectionParameters = connectionParameters;
+        schema = getTableName(connectionParameters);
+        addCompnoents();
+        setWeights(new int[] { 1, 2 });
+    }
 
-	/**
-	 * qzhang Comment method "addCompnoents".
-	 */
-	private void addCompnoents() {
-		createCurrentSchemaComposite();
-		dbstructureCom = new DBStructureComposite(this, SWT.BORDER, dialog);
-	}
+    /**
+     * DOC qiang.zhang Comment method "getTableName".
+     * 
+     * @param connectionParameters
+     * @return
+     */
+    private String getTableName(ConnectionParameters connectionParameters) {
+        String string = (connectionParameters.getSchemaName() != null && !connectionParameters.getSchemaName().equals(
+                "")) ? connectionParameters.getSchemaName() : schema;
+        int indexOf = string.indexOf(".");
+        if (indexOf > -1) {
+            string = TalendTextUtils.removeQuotes(string.substring(indexOf + 1));
+        }
+        return string;
+    }
 
-	/**
-	 * qzhang Comment method "createCurrentSchemaComposite".
-	 */
-	private void createCurrentSchemaComposite() {
-		Composite curShemaComposite = new Composite(this, SWT.BORDER);
-		GridLayout gridLayout = new GridLayout();
-		gridLayout.numColumns = 1;
-		gridLayout.marginBottom = 0;
-		gridLayout.marginHeight = 0;
-		gridLayout.marginLeft = 0;
-		gridLayout.marginRight = 0;
-		gridLayout.marginTop = 0;
-		gridLayout.marginWidth = 0;
-		gridLayout.verticalSpacing = 0;
-		curShemaComposite.setLayout(gridLayout);
-		GridData gridData = new GridData(GridData.FILL_BOTH);
-		curShemaComposite.setLayoutData(gridData);
+    /**
+     * qzhang Comment method "addCompnoents".
+     */
+    private void addCompnoents() {
+        createCurrentSchemaComposite();
+        dbstructureCom = new DBStructureComposite(this, SWT.BORDER, dialog);
+    }
 
-		treeViewer = new TreeViewer(curShemaComposite, SWT.MULTI | SWT.H_SCROLL
-				| SWT.V_SCROLL | SWT.FULL_SELECTION);
-		treeViewer.getControl().setLayoutData(new GridData(GridData.FILL_BOTH));
-		treeViewer.setUseHashlookup(true);
-		Tree tree = treeViewer.getTree();
-		tree.setHeaderVisible(true);
-		TreeColumn treeColumn = new TreeColumn(tree, SWT.LEFT);
-		treeColumn.setText(Messages.getString("BuildInDBStructure.CurrentSchema")); //$NON-NLS-1$
-		treeColumn.setWidth(300);
-		SchemaTreePrivder schemaTreePrivder = new SchemaTreePrivder();
-		treeViewer.setContentProvider(schemaTreePrivder);
-		treeViewer.setLabelProvider(schemaTreePrivder);
-		parentMetadata = new MetadataConnection();
-		List<IMetadataTable> tables = new ArrayList<IMetadataTable>();
-		if (metadataTable == null) {
-			metadataTable = new MetadataTable();
-			metadataTable.setListColumns(new ArrayList<IMetadataColumn>());
-		}
-		tables.add(metadataTable);
-		parentMetadata.setListTables(tables);
-		treeViewer.setInput(parentMetadata);
-		generateSelectAction = new GenerateSqlAction(treeViewer);
-		addContextMenu();
-	}
+    /**
+     * qzhang Comment method "createCurrentSchemaComposite".
+     */
+    private void createCurrentSchemaComposite() {
+        Composite curShemaComposite = new Composite(this, SWT.BORDER);
+        GridLayout gridLayout = new GridLayout();
+        gridLayout.numColumns = 1;
+        gridLayout.marginBottom = 0;
+        gridLayout.marginHeight = 0;
+        gridLayout.marginLeft = 0;
+        gridLayout.marginRight = 0;
+        gridLayout.marginTop = 0;
+        gridLayout.marginWidth = 0;
+        gridLayout.verticalSpacing = 0;
+        curShemaComposite.setLayout(gridLayout);
+        GridData gridData = new GridData(GridData.FILL_BOTH);
+        curShemaComposite.setLayoutData(gridData);
 
-	/**
-	 * qzhang Comment method "addContextMenu".
-	 */
-	private void addContextMenu() {
-		MenuManager menuMgr = new MenuManager("Menu"); //$NON-NLS-1$
-		menuMgr.setRemoveAllWhenShown(true);
-		menuMgr.addMenuListener(new IMenuListener() {
+        treeViewer = new TreeViewer(curShemaComposite, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION);
+        treeViewer.getControl().setLayoutData(new GridData(GridData.FILL_BOTH));
+        treeViewer.setUseHashlookup(true);
+        Tree tree = treeViewer.getTree();
+        tree.setHeaderVisible(true);
+        TreeColumn treeColumn = new TreeColumn(tree, SWT.LEFT);
+        treeColumn.setText(Messages.getString("BuildInDBStructure.CurrentSchema")); //$NON-NLS-1$
+        treeColumn.setWidth(300);
+        SchemaTreePrivder schemaTreePrivder = new SchemaTreePrivder();
+        treeViewer.setContentProvider(schemaTreePrivder);
+        treeViewer.setLabelProvider(schemaTreePrivder);
+        parentMetadata = new MetadataConnection();
+        List<IMetadataTable> tables = new ArrayList<IMetadataTable>();
+        if (metadataTable == null) {
+            metadataTable = new MetadataTable();
+            metadataTable.setListColumns(new ArrayList<IMetadataColumn>());
+        }
+        tables.add(metadataTable);
+        parentMetadata.setListTables(tables);
+        treeViewer.setInput(parentMetadata);
+        generateSelectAction = new GenerateSqlAction(treeViewer);
+        addContextMenu();
+    }
 
-			public void menuAboutToShow(IMenuManager manager) {
-				manager.add(generateSelectAction);
-			}
+    /**
+     * qzhang Comment method "addContextMenu".
+     */
+    private void addContextMenu() {
+        MenuManager menuMgr = new MenuManager("Menu"); //$NON-NLS-1$
+        menuMgr.setRemoveAllWhenShown(true);
+        menuMgr.addMenuListener(new IMenuListener() {
 
-		});
-		Menu contextMenu = menuMgr.createContextMenu(treeViewer.getTree());
-		treeViewer.getTree().setMenu(contextMenu);
-	}
+            public void menuAboutToShow(IMenuManager manager) {
+                manager.add(generateSelectAction);
+            }
 
-	private GenerateSqlAction generateSelectAction;
+        });
+        Menu contextMenu = menuMgr.createContextMenu(treeViewer.getTree());
+        treeViewer.getTree().setMenu(contextMenu);
+    }
 
-	/**
-	 * qzhang BuildInDBStructure class global comment. Detailled comment <br/>
-	 * 
-	 */
-	public class GenerateSqlAction extends SelectionProviderAction {
+    private GenerateSqlAction generateSelectAction;
 
-		private List<IMetadataColumn> selectedNodes = new ArrayList<IMetadataColumn>();
+    /**
+     * qzhang BuildInDBStructure class global comment. Detailled comment <br/>
+     * 
+     */
+    public class GenerateSqlAction extends SelectionProviderAction {
 
-		/**
-		 * qzhang GenerateSqlAction constructor comment.
-		 * 
-		 * @param provider
-		 * @param text
-		 */
-		protected GenerateSqlAction(ISelectionProvider provider) {
-			super(
-					provider,
-					Messages
-							.getString("GenerateSelectSQLAction.textCenerateSelectStatement"));
-			setImageDescriptor(ImageUtil.getDescriptor("Images.SqlEditorIcon"));
-			init();
-		}
+        private final List<IMetadataColumn> selectedNodes = new ArrayList<IMetadataColumn>();
 
-		@Override
-		public void selectionChanged(IStructuredSelection selection) {
-			init();
-		}
+        /**
+         * qzhang GenerateSqlAction constructor comment.
+         * 
+         * @param provider
+         * @param text
+         */
+        protected GenerateSqlAction(ISelectionProvider provider) {
+            super(provider, Messages.getString("GenerateSelectSQLAction.textCenerateSelectStatement"));
+            setImageDescriptor(ImageUtil.getDescriptor("Images.SqlEditorIcon"));
+            init();
+        }
 
-		@SuppressWarnings("unchecked")//$NON-NLS-1$
-		public void init() {
-			selectedNodes.clear();
-			Object[] structuredSelection = ((IStructuredSelection) treeViewer
-					.getSelection()).toArray();
-			for (Object object : structuredSelection) {
-				if (object instanceof MetadataTable) {
-					selectedNodes.clear();
-					if (((MetadataTable) object).getListColumns().isEmpty()) {
-						setEnabled(false);
-						return;
-					}
-					selectedNodes.addAll(((MetadataTable) object)
-							.getListColumns());
-					break;
-				}
-				if (object instanceof MetadataColumn) {
-					selectedNodes.add((IMetadataColumn) object);
-				}
-			}
-		}
+        @Override
+        public void selectionChanged(IStructuredSelection selection) {
+            init();
+        }
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see org.eclipse.jface.action.Action#run()
-		 */
-		@Override
-		public void run() {
+        @SuppressWarnings("unchecked")//$NON-NLS-1$
+        public void init() {
+            selectedNodes.clear();
+            Object[] structuredSelection = ((IStructuredSelection) treeViewer.getSelection()).toArray();
+            for (Object object : structuredSelection) {
+                if (object instanceof MetadataTable) {
+                    selectedNodes.clear();
+                    if (((MetadataTable) object).getListColumns().isEmpty()) {
+                        setEnabled(false);
+                        return;
+                    }
+                    selectedNodes.addAll(((MetadataTable) object).getListColumns());
+                    break;
+                }
+                if (object instanceof MetadataColumn) {
+                    selectedNodes.add((IMetadataColumn) object);
+                }
+            }
+        }
 
-			CTabItem item = dialog.getEditorComposite().getTabFolder().getItem(
-					0);
-			CTabItem item2 = ((CTabFolder) item.getControl()).getItem(0);
-			SQLBuilderEditorComposite editorComposite = (SQLBuilderEditorComposite) item2
-					.getControl();
-			editorComposite.getRepositoryNode();
-			connectionParameters.setQuery(QueryUtil.generateNewQuery(
-					connectionParameters.getNode(), metadataTable,
-					connectionParameters.getDbType(), connectionParameters
-							.getSchema(), schema));
-			dialog.openEditor(editorComposite.getRepositoryNode(),
-					Arrays.asList((new String[] { editorComposite
-							.getRepositoryName() })), connectionParameters,
-					false);
-		}
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.eclipse.jface.action.Action#run()
+         */
+        @Override
+        public void run() {
 
-		/**
-		 * qzhang Comment method "getSchemaSql".
-		 * 
-		 * @return
-		 */
-		private String getSchemaSql() {
-			String sql = "select ";
-			String newschema = TalendTextUtils.addQuotesWithSpaceField(schema,
-					connectionParameters.getDbType());
-			for (IMetadataColumn column : selectedNodes) {
-				sql += TextUtil.addSqlQuots(connectionParameters.getDbType(),
-						TalendTextUtils.addQuotesWithSpaceField(column
-								.getOriginalDbColumnName(),
-								connectionParameters.getDbType()), newschema)
-						+ ", ";
-			}
-			sql = sql.substring(0, sql.length() - 2);
-			sql += "\nfrom "
-					+ TextUtil.addSqlQuots(connectionParameters.getDbType(),
-							newschema, connectionParameters.getSchema());
-			return sql;
-		}
+            CTabItem item = dialog.getEditorComposite().getTabFolder().getItem(0);
+            CTabItem item2 = ((CTabFolder) item.getControl()).getItem(0);
+            SQLBuilderEditorComposite editorComposite = (SQLBuilderEditorComposite) item2.getControl();
+            editorComposite.getRepositoryNode();
+            connectionParameters.setQuery(QueryUtil.generateNewQuery(connectionParameters.getNode(), metadataTable,
+                    connectionParameters.getDbType(), connectionParameters.getSchema(), schema));
+            dialog.openEditor(editorComposite.getRepositoryNode(), Arrays.asList((new String[] { editorComposite
+                    .getRepositoryName() })), connectionParameters, false);
+        }
 
-	}
+        /**
+         * qzhang Comment method "getSchemaSql".
+         * 
+         * @return
+         */
+        private String getSchemaSql() {
+            String sql = "select ";
+            String newschema = TalendTextUtils.addQuotesWithSpaceField(schema, connectionParameters.getDbType());
+            for (IMetadataColumn column : selectedNodes) {
+                sql += TextUtil.addSqlQuots(connectionParameters.getDbType(), TalendTextUtils.addQuotesWithSpaceField(
+                        column.getOriginalDbColumnName(), connectionParameters.getDbType()), newschema)
+                        + ", ";
+            }
+            sql = sql.substring(0, sql.length() - 2);
+            sql += "\nfrom "
+                    + TextUtil.addSqlQuots(connectionParameters.getDbType(), newschema, connectionParameters
+                            .getSchema());
+            return sql;
+        }
 
-	public DBStructureComposite getDbstructureCom() {
-		return this.dbstructureCom;
-	}
+    }
 
-	/**
-	 * qzhang BuildInDBStructure class global comment. Detailled comment <br/>
-	 * 
-	 * $Id: talend-code-templates.xml 1 2007-3-21 上午11:08:52 (星期五, 29 九月 2006)
-	 * qzhang $
-	 * 
-	 */
-	public class SchemaTreePrivder extends LabelProvider implements
-			ITableLabelProvider, ITreeContentProvider {
+    public DBStructureComposite getDbstructureCom() {
+        return this.dbstructureCom;
+    }
 
-		/*
-		 * (non-Java)
-		 * 
-		 * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnImage(java.lang.Object,
-		 *      int)
-		 */
-		public Image getColumnImage(Object element, int columnIndex) {
-			if (element instanceof IMetadataTable) {
-				return tableImage;
-			} else {
-				return columnImage;
-			}
-		}
+    /**
+     * qzhang BuildInDBStructure class global comment. Detailled comment <br/>
+     * 
+     * $Id: talend-code-templates.xml 1 2007-3-21 上午11:08:52 (星期五, 29 九月 2006) qzhang $
+     * 
+     */
+    public class SchemaTreePrivder extends LabelProvider implements ITableLabelProvider, ITreeContentProvider {
 
-		/*
-		 * (non-Java)
-		 * 
-		 * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnText(java.lang.Object,
-		 *      int)
-		 */
-		public String getColumnText(Object element, int columnIndex) {
-			if (element instanceof IMetadataTable) {
-				// IMetadataTable metadataTable3 = (IMetadataTable) element;
-				// if (metadataTable3.getLabel() == null ||
-				// "".equals(metadataTable3.getLabel())) {
-				return schema;
-				// } else {
-				// return metadataTable3.getLabel();
-				// }
-			} else if (element instanceof IMetadataColumn) {
-				final IMetadataColumn metadataColumn = ((IMetadataColumn) element);
-				String originalDbColumnName = metadataColumn
-						.getOriginalDbColumnName();
-				return originalDbColumnName;
-			}
-			return null;
-		}
+        /*
+         * (non-Java)
+         * 
+         * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnImage(java.lang.Object, int)
+         */
+        public Image getColumnImage(Object element, int columnIndex) {
+            if (element instanceof IMetadataTable) {
+                return tableImage;
+            } else {
+                return columnImage;
+            }
+        }
 
-		/*
-		 * (non-Java)
-		 * 
-		 * @see org.eclipse.jface.viewers.ITreeContentProvider#getChildren(java.lang.Object)
-		 */
-		public Object[] getChildren(Object parentElement) {
-			return getElements(parentElement);
-		}
+        /*
+         * (non-Java)
+         * 
+         * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnText(java.lang.Object, int)
+         */
+        public String getColumnText(Object element, int columnIndex) {
+            if (element instanceof IMetadataTable) {
+                // IMetadataTable metadataTable3 = (IMetadataTable) element;
+                // if (metadataTable3.getLabel() == null ||
+                // "".equals(metadataTable3.getLabel())) {
+                return schema;
+                // } else {
+                // return metadataTable3.getLabel();
+                // }
+            } else if (element instanceof IMetadataColumn) {
+                final IMetadataColumn metadataColumn = ((IMetadataColumn) element);
+                String originalDbColumnName = metadataColumn.getOriginalDbColumnName();
+                return originalDbColumnName;
+            }
+            return null;
+        }
 
-		/*
-		 * (non-Java)
-		 * 
-		 * @see org.eclipse.jface.viewers.ITreeContentProvider#getParent(java.lang.Object)
-		 */
-		public Object getParent(Object element) {
-			if (element instanceof IMetadataColumn) {
-				return metadataTable;
-			}
-			return parentMetadata;
-		}
+        /*
+         * (non-Java)
+         * 
+         * @see org.eclipse.jface.viewers.ITreeContentProvider#getChildren(java.lang.Object)
+         */
+        public Object[] getChildren(Object parentElement) {
+            return getElements(parentElement);
+        }
 
-		/*
-		 * (non-Java)
-		 * 
-		 * @see org.eclipse.jface.viewers.ITreeContentProvider#hasChildren(java.lang.Object)
-		 */
-		public boolean hasChildren(Object element) {
-			if (element instanceof IMetadataTable) {
-				return true;
-			}
-			return false;
-		}
+        /*
+         * (non-Java)
+         * 
+         * @see org.eclipse.jface.viewers.ITreeContentProvider#getParent(java.lang.Object)
+         */
+        public Object getParent(Object element) {
+            if (element instanceof IMetadataColumn) {
+                return metadataTable;
+            }
+            return parentMetadata;
+        }
 
-		/*
-		 * (non-Java)
-		 * 
-		 * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object)
-		 */
-		public Object[] getElements(Object inputElement) {
+        /*
+         * (non-Java)
+         * 
+         * @see org.eclipse.jface.viewers.ITreeContentProvider#hasChildren(java.lang.Object)
+         */
+        public boolean hasChildren(Object element) {
+            if (element instanceof IMetadataTable) {
+                return true;
+            }
+            return false;
+        }
 
-			if (inputElement instanceof IMetadataTable) {
-				IMetadataTable metadataTable3 = (IMetadataTable) inputElement;
-				return metadataTable3.getListColumns().toArray();
-			} else if (inputElement instanceof IMetadataConnection) {
-				return ((IMetadataConnection) inputElement).getListTables()
-						.toArray();
-			}
-			return Collections.EMPTY_LIST.toArray();
-		}
+        /*
+         * (non-Java)
+         * 
+         * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object)
+         */
+        public Object[] getElements(Object inputElement) {
 
-		/*
-		 * (non-Java)
-		 * 
-		 * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer,
-		 *      java.lang.Object, java.lang.Object)
-		 */
-		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+            if (inputElement instanceof IMetadataTable) {
+                IMetadataTable metadataTable3 = (IMetadataTable) inputElement;
+                return metadataTable3.getListColumns().toArray();
+            } else if (inputElement instanceof IMetadataConnection) {
+                return ((IMetadataConnection) inputElement).getListTables().toArray();
+            }
+            return Collections.EMPTY_LIST.toArray();
+        }
 
-		}
+        /*
+         * (non-Java)
+         * 
+         * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer,
+         * java.lang.Object, java.lang.Object)
+         */
+        public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 
-	}
+        }
+
+    }
 }
