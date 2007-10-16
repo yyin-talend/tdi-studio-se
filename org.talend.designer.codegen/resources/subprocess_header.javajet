@@ -193,7 +193,6 @@ public void <%=subTree.getName() %>Process() throws TalendException {
 <%
 	}
   } else {  
-  
     List<INode> sortedMergeBranchStarts = subTree.getSortedMergeBranchStarts();    
     for (INode startNode : sortedMergeBranchStarts) {
        List< ? extends IConnection> rootConns = startNode.getOutgoingConnections();

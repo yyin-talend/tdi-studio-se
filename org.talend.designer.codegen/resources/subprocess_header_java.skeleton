@@ -1,24 +1,35 @@
 public class CLASS
 {
-    public String createPrivateClassInstance(INode n, String parentLastRoot, boolean force) {
+    // add the list of the connection names to avoid to declare two times the same name.
+    public String createPrivateClassInstance(INode node, String parentLastRoot, boolean force) {
+    	return createPrivateClassInstance(node, parentLastRoot, force, new HashSet<String>());
+    }
+
+    public String createPrivateClassInstance(INode n, String parentLastRoot, boolean force, Set<String> names) {
         String toReturn = "";
         // declare root structs (all main outgoing connections)
         for (IConnection conn : n.getOutgoingConnections()) {
             if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN) || conn.getLineStyle().equals(EConnectionType.FLOW_MERGE)) {
                 if ((force)||(n.isSubProcessStart() || !(n.getComponent().isDataAutoPropagated()))) {
                     // new Instance
-                    toReturn += conn.getName() + "Struct " + conn.getName() + " = new " + conn.getName()
-                            + "Struct();\n";
-                    parentLastRoot = conn.getName();
-                } else {
+                    if (!names.contains(conn.getName())) {
+	                    toReturn += conn.getName() + "Struct " + conn.getName() + " = new " + conn.getName()
+	                            + "Struct();\n";
+	                    names.add(conn.getName());
+	                    parentLastRoot = conn.getName();
+                    }
+	            } else {
                     // copy
-                    toReturn += parentLastRoot + "Struct " + conn.getName() + " = " + parentLastRoot + ";\n";
+                    if (!names.contains(conn.getName())) {
+	                    toReturn += parentLastRoot + "Struct " + conn.getName() + " = " + parentLastRoot + ";\n";
+	                    names.add(conn.getName());
+                    }
                 }
                 if(!conn.getTarget().getComponent().useMerge()) {
-                   toReturn += createPrivateClassInstance(conn.getTarget(), parentLastRoot, false);
+                   toReturn += createPrivateClassInstance(conn.getTarget(), parentLastRoot, false, names);
                 }
             } else if (conn.getLineStyle().equals(EConnectionType.ITERATE)) {
-            	toReturn += createPrivateClassInstance(conn.getTarget(), parentLastRoot, true);
+            	toReturn += createPrivateClassInstance(conn.getTarget(), parentLastRoot, true, names);
             }
         }
         return toReturn;
