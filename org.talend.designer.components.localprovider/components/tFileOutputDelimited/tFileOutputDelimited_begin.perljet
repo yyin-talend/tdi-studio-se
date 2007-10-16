@@ -14,38 +14,60 @@ CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 
+String filename = ElementParameterParser.getValue(
+    node,
+    "__FILENAME__"
+);
+
+String rowSeparator = ElementParameterParser.getValue(
+    node,
+    "__ROWSEPARATOR__"
+);
+
+String fieldSeparator = ElementParameterParser.getValue(
+    node,
+    "__FIELDSEPARATOR__"
+);
+
+boolean append = ElementParameterParser.getValue(
+    node,
+    "__APPEND__"
+).equals("true");
+
+boolean includeHeader = ElementParameterParser.getValue(
+    node,
+    "__INCLUDEHEADER__"
+).equals("true");
+
+boolean csvOption = ElementParameterParser.getValue(
+    node,
+    "__CSV_OPTION__"
+).equals("true");
+
+String escapeChar = ElementParameterParser.getValue(
+    node,
+    "__ESCAPE_CHAR__"
+    );
+
+String textEnclosure = ElementParameterParser.getValue(
+    node,
+    "__TEXT_ENCLOSURE__"
+);
+
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
     IMetadataTable metadata = metadatas.get(0);
     if (metadata!=null) {
-
-        String filename = ElementParameterParser.getValue(
-            node,
-            "__FILENAME__"
-        );
-
-        String rowSeparator = ElementParameterParser.getValue(
-            node,
-            "__ROWSEPARATOR__"
-        );
-
-        String fieldSeparator = ElementParameterParser.getValue(
-            node,
-            "__FIELDSEPARATOR__"
-        );
-
-        String append = ElementParameterParser.getValue(
-            node,
-            "__APPEND__"
-        );
-
-        String includeHeader = ElementParameterParser.getValue(
-            node,
-            "__INCLUDEHEADER__"
-        );
 %>
 
 use FileHandle;
+<%
+        if (csvOption) {
+%>
+use Text::CSV_XS;
+<%
+        }
+%>
 
 my %desc_<%=cid %> = (
     filename => <%=filename %>,
@@ -58,13 +80,7 @@ my %desc_<%=cid %> = (
         for (IMetadataColumn column: metadata.getListColumns()) {
 %>
     	{
-            name    => '<%=column.getLabel() %>',
-            key     => <%=column.isKey() %>,
-            type    => '<%=column.getType() %>',
-            len     => <%=column.getLength() %>,
-            null    => <%=column.isNullable() %>,
-            default => '<%=column.getDefault() %>',
-            comment => '<%=column.getComment() %>',
+            name => '<%=column.getLabel() %>',
         },
 <%
         }
@@ -72,46 +88,67 @@ my %desc_<%=cid %> = (
     ]
 );
 
-use constant OUTPUT_FIELD_SEPARATOR_<%=cid %> => <%=fieldSeparator %>;
-use constant OUTPUT_ROW_SEPARATOR_<%=cid %> => <%=rowSeparator %>;
+<%
+        if (csvOption) {
+%>
+my $csv_<%=cid%> = Text::CSV_XS->new({
+    sep_char     => <%=fieldSeparator%>,
+    escape_char  => <%=escapeChar%>,
+    quote_char   => <%=textEnclosure%>,
+    binary       => 1,
+});
+<%
+        }
+%>
+
 my $nb_fields_<%=cid %> = scalar @{ $desc_<%=cid %>{schema} };
 my $nb_line_<%=cid %> = 0;
 
 my $output_FH_<%=cid %> = new FileHandle;
 
-my $mode = '>';
-if ($desc_<%=cid %>{append}) {
-    $mode = '>>';
-}
-
-open($output_FH_<%=cid %>, $mode, $desc_<%=cid %>{filename})
-    or die 'cannot open file "' . $desc_<%=cid %>{filename} . '"';
-
-my $printHeader = <%=includeHeader %> ;
-if( '>>' eq $mode ){
-    $printHeader = 0 if -s $desc_<%=cid %>{filename} ;
-}
+<%
+        String writeMode = ">";
+        if (append) {
+            writeMode = ">>";
+        }
+%>
+open($output_FH_<%=cid %>, '<%=writeMode%>', $desc_<%=cid %>{filename})
+    or die '[<%=cid%>] cannot open file "'.$desc_<%=cid %>{filename}.'"';
 
 <%
-        if (includeHeader.equals("true")) {
+        if (includeHeader) {
 %>
-if($printHeader){
-print {$output_FH_<%=cid %>} (
-    join(
-        OUTPUT_FIELD_SEPARATOR_<%=cid %>,
-        map { $_->{name} } @{ $desc_<%=cid %>{schema} }
-    ),
-    OUTPUT_ROW_SEPARATOR_<%=cid %>
-)
-    or die "can't write to file " . $desc_<%=cid %>{filename} . "\n";
-}
-$nb_line_<%=cid %>++;
+if (not -s $desc_<%=cid %>{filename}) {
+<%
+        if (csvOption) {
+%>
+    my @fields = map { $_->{name} } @{ $desc_<%=cid %>{schema} };
 
+    if (not $csv_<%=cid%>->print($output_FH_<%=cid %>, \@fields)) {
+        die "[<%=cid%>] failed to write header";
+    }
+    print {$output_FH_<%=cid %>} <%=rowSeparator%>
+        or die "[<%=cid%>] failed to write header eol";
+<%
+        }
+        else {
+%>
+    print {$output_FH_<%=cid %>} (
+        join(
+            <%=fieldSeparator%>,
+            map { $_->{name} } @{ $desc_<%=cid %>{schema} }
+        ),
+        <%=rowSeparator%>
+    )
+        or die "[<%=cid%>] cannot write header";
 <%
         }
 %>
+    $nb_line_<%=cid %>++;
+}
 
 <%
+        }
     }
 }
 %>

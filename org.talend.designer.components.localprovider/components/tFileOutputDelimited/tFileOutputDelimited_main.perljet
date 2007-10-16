@@ -1,36 +1,62 @@
 <%@ jet 
-	imports="
-		org.talend.core.model.process.INode 
-		org.talend.core.model.metadata.IMetadataTable 
-		org.talend.designer.codegen.config.CodeGeneratorArgument
-		java.util.List
-	"
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+"
 %>
 
 <%
-	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
-	INode node = (INode)codeGenArgument.getArgument();
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
-	
-	List<IMetadataTable> metadatas = node.getMetadataList();
-	if ((metadatas!=null)&&(metadatas.size()>0)) {
-		IMetadataTable metadata = metadatas.get(0);
-		if (metadata!=null) {
-%>
 
+String rowSeparator = ElementParameterParser.getValue(
+    node,
+    "__ROWSEPARATOR__"
+);
+
+String fieldSeparator = ElementParameterParser.getValue(
+    node,
+    "__FIELDSEPARATOR__"
+);
+
+boolean csvOption = ElementParameterParser.getValue(
+    node,
+    "__CSV_OPTION__"
+).equals("true");
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+        if (csvOption) {
+%>
+    if (not $csv_<%=cid%>->print($output_FH_<%=cid%>, $<%=cid%>)) {
+        die "[<%=cid%>] failed to write row";
+    }
+    print {$output_FH_<%=cid%>} <%=rowSeparator%>
+        or die "[<%=cid%>] failed to write eol";
+<%
+        }
+        else {
+%>
     print {$output_FH_<%=cid%>} (
 	    join(
-                OUTPUT_FIELD_SEPARATOR_<%=cid%>,
+                <%=fieldSeparator%>,
                 @$<%=cid%>
             ),
-	    OUTPUT_ROW_SEPARATOR_<%=cid%>
+	    <%=rowSeparator%>
     )
-        or die "can't write to file " . $output_desc_<%=cid%>{filename} . "\n";
+        or die "[<%=cid%>] faile to write row";
+<%
+        }
+%>
 
     $nb_line_<%=cid%>++;
-
-    
 <%
-		}
-	}
+    }
+}
 %>
