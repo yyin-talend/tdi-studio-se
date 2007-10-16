@@ -80,8 +80,10 @@ if(conns != null && conns.size()>0){
  	  	  if(typeToGenerate.equals("byte[]")){
  	  	   	typeToGenerate = "Bytes";
  	   	  }else if(typeToGenerate.equals("java.util.Date")){
- 	   	  	typeToGenerate = "Timestamp";
- 	   	  }else if(typeToGenerate.equals("Integer")){
+ 	   	  	typeToGenerate = "Date";
+ 	   	  }else if(typeToGenerate.equals("java.sql.Timestamp")){
+            typeToGenerate = "Timestamp";
+          }else if(typeToGenerate.equals("Integer")){
  	   	  	typeToGenerate = "Int";
  	   	  }else{
 			typeToGenerate=typeToGenerate.substring(0,1).toUpperCase()+typeToGenerate.substring(1);
@@ -129,7 +131,15 @@ if(conns != null && conns.size()>0){
 			 	<%=firstConnName%>.<%=column.getLabel()%> =  null;
 			 }
 			 <%
-           	 }else if (typeToGenerate.equals("List")) {
+           	 }else if(typeToGenerate.equals("Date")){
+            %>
+            if(rs_<%=cid %>.getDate(<%=currentColNo%>)!=null){
+               <%=firstConnName%>.<%=column.getLabel()%>=new java.util.Date(rs_<%=cid %>.getDate(<%=currentColNo%>).getTime());
+            }else{
+               <%=firstConnName%>.<%=column.getLabel()%> =  null;
+            }
+            <%
+            }else if (typeToGenerate.equals("List")) {
           	 %>
          		<%=firstConnName%>.<%=column.getLabel()%> = (List)rs_<%=cid %>.getObject(<%=currentColNo%>);
 			 <% 	

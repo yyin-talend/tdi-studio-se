@@ -209,7 +209,9 @@ class Operation{
  	  		typeToGenerate = "Bytes";
  	   	}else if(typeToGenerate.equals("java.util.Date")){
  	   		typeToGenerate = "Date";
- 	  	}else if(typeToGenerate.equals("Integer")){
+ 	  	}else if(typeToGenerate.equals("java.sql.Timestamp")){
+            typeToGenerate = "Timestamp";
+        }else if(typeToGenerate.equals("Integer")){
  	   		typeToGenerate = "Int";
  	   	}else if(typeToGenerate.equals("List")){  
  	   	    typeToGenerate = "Object";                 
@@ -243,6 +245,12 @@ if(<%=incomingConnName%>.<%=column.getName()%>==null){
 	%>
 if(<%=incomingConnName%>.<%=column.getName()%>==null){
 	<%=prefix+cid%>.setNull(<%=counter%>,java.sql.Types.DATE);
+	<%
+    }else if(typeToGenerate.equals("Timestamp")){
+    isObject = true;
+    %>
+if(<%=incomingConnName%>.<%=column.getName()%>==null){
+    <%=prefix+cid%>.setNull(<%=counter%>,java.sql.Types.TIMESTAMP);
 	<%
 	}else if(typeToGenerate.equals("byte[]")){
 	isObject = true;
@@ -318,13 +326,25 @@ if(isObject){
 	%>
 	if(<%=incomingConnName%>.<%=column.getName()%>!=null){
 	
-		<%=prefix+cid%>.setTimestamp(<%=counter%>,new java.sql.Timestamp(<%=incomingConnName%>.<%=column.getName()%>.getTime()));
+		<%=prefix+cid%>.setDate(<%=counter%>,new java.sql.Date(<%=incomingConnName%>.<%=column.getName()%>.getTime()));
 		
 	}else{
 	
 		<%=prefix+cid%>.setNull(<%=counter%>,java.sql.Types.DATE);
 		
 	}
+	<%
+    }else if(typeToGenerate.equals("Timestamp")){
+    %>
+    if(<%=incomingConnName%>.<%=column.getName()%>!=null){
+    
+        <%=prefix+cid%>.setTimestamp(<%=counter%>,new java.sql.Timestamp(<%=incomingConnName%>.<%=column.getName()%>.getTime()));
+        
+    }else{
+    
+        <%=prefix+cid%>.setNull(<%=counter%>,java.sql.Types.TIMESTAMP);
+        
+    }
 	<%
 	}else{
 	%>
