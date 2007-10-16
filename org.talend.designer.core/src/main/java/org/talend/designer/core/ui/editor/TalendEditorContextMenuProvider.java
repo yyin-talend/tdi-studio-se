@@ -246,10 +246,8 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
             }
             action = new PropertiesContextAction(part);
             ((PropertiesContextAction) action).update();
-            if (action.isEnabled()) {
-                menu.add(new Separator());
-                menu.add(action);
-            }
+            menu.add(new Separator());
+            menu.add(action);
 
             action = new BringForwardAction(part);
             ((SelectionAction) action).update();

@@ -60,7 +60,6 @@ public class PropertiesContextAction extends SelectionAction {
         setId(ID);
         setImageDescriptor(DesignerPlugin.getImageDescriptor("icons/breakpoint.png")); //$NON-NLS-1$
         setText(Messages.getString("PropertiesContextAction.Properties")); //$NON-NLS-1$
-
     }
 
     /*
@@ -70,7 +69,14 @@ public class PropertiesContextAction extends SelectionAction {
      */
     @Override
     protected boolean calculateEnabled() {
-        return canPerformAction();
+        List objects = getSelectedObjects();
+        if (objects.isEmpty()) {
+            return false;
+        }
+        if (!(objects.get(0) instanceof EditPart)) {
+            return false;
+        }
+        return true;
     }
 
     /**
