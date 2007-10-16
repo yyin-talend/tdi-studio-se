@@ -38,11 +38,17 @@
    
       List<IConnection> outGraphicalConnections = (List<IConnection>) nodeSource.getOutgoingConnections(EConnectionType.FLOW_REF);
       for(IConnection outGraphicalConnection : outGraphicalConnections) {
-       if(outGraphicalConnection.getUniqueName().equals(connectionName)) {
+       if(outGraphicalConnection.getUniqueName().equals(connection.getUniqueName())) {
         currentTarget = outGraphicalConnection.getTarget();
        }
       }
-			
+      		if (currentTarget == null) {
+			%>
+				connectionName=<%=connectionName%> //// <%=connection.toString()%>
+				nodeSource=<%=nodeSource%>
+			<%
+				continue;
+      		}
 
 			if(!(currentTarget instanceof IHashableInputConnections)) {
 				currentTarget = currentTarget.getExternalNode();

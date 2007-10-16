@@ -10,6 +10,7 @@
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		java.util.List
 		java.util.ArrayList
+		org.talend.core.model.process.EConnectionType
 	"
 %>
 
@@ -33,17 +34,23 @@ String cid = node.getUniqueName();
 			INode currentTarget = null;
 	
 			// searching the target graphic node of current tHash because no generation nodes are connected at outputs
-		    for(INode graphcalNode : graphicalNodes) {
-		    	if(nodeSource.getUniqueName().equals(graphcalNode.getUniqueName()) || nodeSource.getUniqueName().startsWith(graphcalNode.getUniqueName() + "_")) {
-		    		List<IConnection> outGraphicalConnections = (List<IConnection>) graphcalNode.getOutgoingConnections();
-		    		for(IConnection outGraphicalConnection : outGraphicalConnections) {
-		    			if(outGraphicalConnection.getUniqueName().equals(connectionName)) {
-		    				currentTarget = outGraphicalConnection.getTarget();
-		    			}
-		    		}
-		    	}
-		    }
+		    //for(INode graphcalNode : graphicalNodes) {
+		    //	if(nodeSource.getUniqueName().equals(graphcalNode.getUniqueName()) || nodeSource.getUniqueName().startsWith(graphcalNode.getUniqueName() + "_")) {
+		    //		List<IConnection> outGraphicalConnections = (List<IConnection>) graphcalNode.getOutgoingConnections();
+		    //		for(IConnection outGraphicalConnection : outGraphicalConnections) {
+		    //			if(outGraphicalConnection.getUniqueName().equals(connectionName)) {
+		    //				currentTarget = outGraphicalConnection.getTarget();
+		    //			}
+		    //		}
+		    //	}
+		    //}
 
+			List<IConnection> outGraphicalConnections = (List<IConnection>) nodeSource.getOutgoingConnections(EConnectionType.FLOW_REF);
+      		for(IConnection outGraphicalConnection : outGraphicalConnections) {
+       			if(outGraphicalConnection.getUniqueName().equals(connection.getUniqueName())) {
+        			currentTarget = outGraphicalConnection.getTarget();
+       			}
+      		}
 			
 
 			if(!(currentTarget instanceof IHashableInputConnections)) {
