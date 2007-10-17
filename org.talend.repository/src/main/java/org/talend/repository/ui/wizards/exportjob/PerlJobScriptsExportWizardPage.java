@@ -23,8 +23,12 @@ package org.talend.repository.ui.wizards.exportjob;
 
 import java.util.List;
 
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.properties.Property;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobPerlScriptsManager;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager;
 
@@ -58,6 +62,7 @@ public class PerlJobScriptsExportWizardPage extends JobScriptsExportWizardPage {
 
     private static final String STORE_DESTINATION_NAMES_ID = "PerlJobScriptsExportWizardPage.STORE_DESTINATION_NAMES_ID"; //$NON-NLS-1$
 
+    @Override
     protected JobScriptsManager createJobScriptsManager() {
         return new JobPerlScriptsManager();
     }
@@ -86,6 +91,7 @@ public class PerlJobScriptsExportWizardPage extends JobScriptsExportWizardPage {
     /**
      * Hook method for saving widget values for restoration by the next instance of this class.
      */
+    @Override
     protected void internalSaveWidgetValues() {
         // update directory names history
         IDialogSettings settings = getDialogSettings();
@@ -113,15 +119,44 @@ public class PerlJobScriptsExportWizardPage extends JobScriptsExportWizardPage {
      * Hook method for restoring widget values to the values that they held last time this wizard was used to
      * completion.
      */
+    @Override
     protected void restoreWidgetValues() {
+
+        List<ExportFileResource> exportResource = getExportResources();
+        int sizeOfExportResource = exportResource.size();
+        Property property = null;
+        if (sizeOfExportResource == 1) {
+            for (ExportFileResource exportFileResource : exportResource) {
+                ProcessItem item = exportFileResource.getProcess();
+                if (item != null) {
+                    property = item.getProperty();
+                    break;
+                }
+            }
+        }
+
         IDialogSettings settings = getDialogSettings();
+
         if (settings != null) {
             String[] directoryNames = settings.getArray(STORE_DESTINATION_NAMES_ID);
             if (directoryNames != null) {
                 // destination
-                setDestinationValue(directoryNames[0]);
+                boolean isFirstValid = false;
                 for (int i = 0; i < directoryNames.length; i++) {
                     addDestinationItem(directoryNames[i]);
+
+                    if (!isFirstValid) {
+
+                        if (sizeOfExportResource == 1) {
+                            IPath path = new Path(directoryNames[i]);
+                            String directory = directoryNames[i].substring(0, directoryNames[i].indexOf(path
+                                    .lastSegment()));
+                            setDestinationValue(directory + property.getLabel() + "_" + property.getVersion() + ".zip");
+                        } else {
+                            setDestinationValue(directoryNames[i]);
+                        }
+                        isFirstValid = true;
+                    }
                 }
             }
             shellLauncherButton.setSelection(settings.getBoolean(STORE_SHELL_LAUNCHER_ID));
