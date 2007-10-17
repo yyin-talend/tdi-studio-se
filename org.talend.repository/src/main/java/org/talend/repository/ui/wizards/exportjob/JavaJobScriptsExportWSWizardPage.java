@@ -26,6 +26,8 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
@@ -43,6 +45,8 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.internal.ide.IDEWorkbenchMessages;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
+import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.properties.Property;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager;
@@ -113,6 +117,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         return EXPORTTYPE_POJO;
     }
 
+    @Override
     public void createControl(Composite parent) {
 
         initializeDialogUnits(parent);
@@ -219,6 +224,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         return JobScriptsManagerFactory.getInstance().createManagerInstance(language, getCurrentExportType());
     }
 
+    @Override
     protected String getOutputSuffix() {
         if (getCurrentExportType().equals(EXPORTTYPE_WSWAR)) {
             return ".war"; //$NON-NLS-1$
@@ -230,6 +236,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
     /**
      * Open an appropriate destination browser so that the user can specify a source to import from.
      */
+    @Override
     protected void handleDestinationBrowseButtonPressed() {
         FileDialog dialog = new FileDialog(getContainer().getShell(), SWT.SAVE);
         if (getCurrentExportType().equals(EXPORTTYPE_WSWAR)) {
@@ -299,16 +306,41 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
 
     protected void restoreWidgetValuesForPOJO() {
         IDialogSettings settings = getDialogSettings();
+
+        List<ExportFileResource> exportResource = getExportResources();
+        int sizeOfExportResource = exportResource.size() - 1;
+        Property property = null;
+        if (sizeOfExportResource == 1) {
+            for (ExportFileResource exportFileResource : exportResource) {
+                ProcessItem item = exportFileResource.getProcess();
+                if (item != null) {
+                    property = item.getProperty();
+                    break;
+                }
+            }
+        }
+
         if (settings != null) {
             String[] directoryNames = settings.getArray(STORE_DESTINATION_NAMES_ID);
             if (directoryNames != null) {
                 // destination
                 boolean isFirstValid = false;
+
                 for (int i = 0; i < directoryNames.length; i++) {
                     if (directoryNames[i].substring(directoryNames[i].indexOf('.')).equalsIgnoreCase(".zip")) { //$NON-NLS-1$
                         addDestinationItem(directoryNames[i]);
+
                         if (!isFirstValid) {
-                            setDestinationValue(directoryNames[i]);
+
+                            if (sizeOfExportResource == 1) {
+                                IPath path = new Path(directoryNames[i]);
+                                String directory = directoryNames[i].substring(0, directoryNames[i].indexOf(path
+                                        .lastSegment()));
+                                setDestinationValue(directory + property.getLabel() + "_" + property.getVersion()
+                                        + ".zip");
+                            } else {
+                                setDestinationValue(directoryNames[i]);
+                            }
                             isFirstValid = true;
                         }
                     }
@@ -339,6 +371,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         }
     }
 
+    @Override
     protected void internalSaveWidgetValues() {
         // update directory names history
         IDialogSettings settings = getDialogSettings();
@@ -377,6 +410,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         }
     }
 
+    @Override
     protected Map<ExportChoice, Boolean> getExportChoiceMap() {
 
         if (exportTypeCombo.getText().equals(EXPORTTYPE_POJO)) {
@@ -517,6 +551,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         }
     }
 
+    @Override
     protected List<ExportFileResource> getExportResources() {
         Map<ExportChoice, Boolean> exportChoiceMap = getExportChoiceMap();
 
@@ -529,6 +564,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         }
     }
 
+    @Override
     protected void setTopFolder(List<ExportFileResource> resourcesToExport, String topFolder) {
         if (exportTypeCombo.getText().equals(EXPORTTYPE_WSWAR) || exportTypeCombo.getText().equals(EXPORTTYPE_WSZIP)) {
             return;
