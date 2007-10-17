@@ -21,11 +21,16 @@
 // ============================================================================
 package org.talend.repository.ui.actions.metadata;
 
+import java.util.List;
+
 import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.util.EList;
+import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.VersionUtils;
 import org.talend.core.CorePlugin;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.core.IService;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
@@ -35,18 +40,24 @@ import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.impl.MetadataColumnImpl;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.GenericSchemaConnectionItem;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
+import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.repository.localprovider.ILocalRepositoryFactory;
+import org.talend.repository.localprovider.IRepositoryComponentsLocalProviderService;
 import org.talend.repository.model.IProxyRepositoryFactory;
 
 /**
- * DOC Administrator class global comment. Detailled comment <br/>
+ * Administrator class global comment. Detailed comment <br/>
  * 
  */
 public class CopyToGenericSchemaHelper {
-    
+
     private static final String DEFAULT_TABLE_NAME = "metadata";
+    
+    private static IProxyRepositoryFactory repositoryFactory; 
 
     /**
      * Administrator Comment method "moveToGenericSchema".
@@ -58,6 +69,9 @@ public class CopyToGenericSchemaHelper {
      */
     public static void copyToGenericSchema(IProxyRepositoryFactory factory, IRepositoryObject objectToMove)
             throws PersistenceException {
+        
+        repositoryFactory = factory;
+        
         String dbmsId = null;
 
         GenericSchemaConnectionItem connectionItem = PropertiesFactory.eINSTANCE.createGenericSchemaConnectionItem();
@@ -119,8 +133,16 @@ public class CopyToGenericSchemaHelper {
         connectionItem.setConnection(connection);
         connectionProperty.setItem(connectionItem);
         connectionProperty.setId(factory.getNextId());
+              
 
-        factory.create(connectionItem, new Path(""));
+        if (!repositoryFactory.isNameAvailable(connectionItem, objectToMove.getLabel()))// name is existing in generic schema.
+            try {
+                setPropNewName(connectionProperty);
+            } catch (BusinessException e) {
+                e.printStackTrace();
+            }
+            
+            repositoryFactory.create(connectionItem, new Path(""));
     }
 
     /**
@@ -141,6 +163,33 @@ public class CopyToGenericSchemaHelper {
             }
         }
         return false;
+    }
+
+    /**
+     * Comment method "getCopiedLabel".
+     * 
+     * @param copiedProperty
+     * @return
+     * @throws PersistenceException
+     * @throws BusinessException
+     */
+    private static void setPropNewName(Property copiedProperty) throws PersistenceException, BusinessException {
+        String originalLabel = copiedProperty.getLabel();
+        String add1 = "Copy_of_"; //$NON-NLS-1$
+        String initialTry = add1 + originalLabel;
+        copiedProperty.setLabel(initialTry);
+        if (repositoryFactory.isNameAvailable(copiedProperty.getItem(), null)) {
+            return;
+        } else {
+            char j = 'a';
+            while (!repositoryFactory.isNameAvailable(copiedProperty.getItem(), null)) {
+                if (j > 'z') {
+                    throw new BusinessException("Cannot generate pasted item label.");
+                }
+                String nextTry = initialTry + "_" + (j++) + ""; //$NON-NLS-1$ //$NON-NLS-2$
+                copiedProperty.setLabel(nextTry);
+            }
+        }
     }
 
 }
