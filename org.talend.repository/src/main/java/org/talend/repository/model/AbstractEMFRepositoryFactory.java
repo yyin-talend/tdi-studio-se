@@ -48,6 +48,7 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.designer.codegen.IRoutineSynchronizer;
 import org.talend.repository.preference.StatusPreferenceInitializer;
 
 /**
@@ -67,6 +68,7 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
      * @throws PersistenceException
      * @throws PersistenceException if processes cannot be retrieved
      */
+    @Override
     public String getNextId() {
         return EcoreUtil.generateUUID();
     }
@@ -114,13 +116,13 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
     public RootContainer<String, IRepositoryObject> getMetadataFileLdif() throws PersistenceException {
         return getObjectFromFolder(ERepositoryObjectType.METADATA_FILE_LDIF, true);
     }
-    
+
     public RootContainer<String, IRepositoryObject> getMetadataLDAPSchema() throws PersistenceException {
         return getObjectFromFolder(ERepositoryObjectType.METADATA_LDAP_SCHEMA, true);
     }
-    
-        public RootContainer<String, IRepositoryObject> getMetadataGenericSchema() throws PersistenceException {
-            return getObjectFromFolder(ERepositoryObjectType.METADATA_GENERIC_SCHEMA, true);
+
+    public RootContainer<String, IRepositoryObject> getMetadataGenericSchema() throws PersistenceException {
+        return getObjectFromFolder(ERepositoryObjectType.METADATA_GENERIC_SCHEMA, true);
     }
 
     /*
@@ -135,7 +137,7 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
                 ERepositoryObjectType.CONTEXT, ERepositoryObjectType.ROUTINES, ERepositoryObjectType.BUSINESS_PROCESS,
                 ERepositoryObjectType.METADATA_FILE_REGEXP, ERepositoryObjectType.METADATA_FILE_XML,
                 ERepositoryObjectType.METADATA_FILE_LDIF, ERepositoryObjectType.METADATA_LDAP_SCHEMA,
-                ERepositoryObjectType.METADATA_GENERIC_SCHEMA};
+                ERepositoryObjectType.METADATA_GENERIC_SCHEMA };
 
         List<IRepositoryObject> deletedItems = new ArrayList<IRepositoryObject>();
         for (int i = 0; i < types.length; i++) {
@@ -173,9 +175,8 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
                 ERepositoryObjectType.METADATA_CONNECTIONS, ERepositoryObjectType.METADATA_FILE_DELIMITED,
                 ERepositoryObjectType.METADATA_FILE_POSITIONAL, ERepositoryObjectType.METADATA_FILE_REGEXP,
                 ERepositoryObjectType.METADATA_FILE_XML, ERepositoryObjectType.METADATA_FILE_LDIF,
-                ERepositoryObjectType.PROCESS, ERepositoryObjectType.ROUTINES, 
-                ERepositoryObjectType.CONTEXT, ERepositoryObjectType.METADATA_LDAP_SCHEMA,
-                ERepositoryObjectType.METADATA_GENERIC_SCHEMA };
+                ERepositoryObjectType.PROCESS, ERepositoryObjectType.ROUTINES, ERepositoryObjectType.CONTEXT,
+                ERepositoryObjectType.METADATA_LDAP_SCHEMA, ERepositoryObjectType.METADATA_GENERIC_SCHEMA };
         for (ERepositoryObjectType repositoryObjectType : repositoryObjectTypeList) {
             Object folder = getFolder(project, repositoryObjectType);
             toReturn.addAll(getSerializableFromFolder(folder, id, repositoryObjectType, allVersion, true, true));
@@ -308,7 +309,9 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
             routineItem.setProperty(property);
             routineItem.setContent(byteArray);
             routineItem.setBuiltIn(true);
-            create(routineItem, path);
+            if (!routineItem.getProperty().getLabel().equals(IRoutineSynchronizer.TEMPLATE)) {
+                create(routineItem, path);
+            }
         } catch (IOException ioe) {
             if (stream != null) {
                 try {
