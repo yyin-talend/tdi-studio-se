@@ -21,16 +21,12 @@
 // ============================================================================
 package org.talend.repository.ui.actions.metadata;
 
-import java.util.List;
-
 import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.util.EList;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.VersionUtils;
 import org.talend.core.CorePlugin;
-import org.talend.core.GlobalServiceRegister;
-import org.talend.core.IService;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
@@ -40,13 +36,9 @@ import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.impl.MetadataColumnImpl;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.GenericSchemaConnectionItem;
-import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
-import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
-import org.talend.repository.localprovider.ILocalRepositoryFactory;
-import org.talend.repository.localprovider.IRepositoryComponentsLocalProviderService;
 import org.talend.repository.model.IProxyRepositoryFactory;
 
 /**
@@ -132,8 +124,7 @@ public class CopyToGenericSchemaHelper {
         connection.getTables().add(metadataTable);
         connectionItem.setConnection(connection);
         connectionProperty.setItem(connectionItem);
-        connectionProperty.setId(factory.getNextId());
-              
+        connectionProperty.setId(factory.getNextId());   
 
         if (!repositoryFactory.isNameAvailable(connectionItem, objectToMove.getLabel()))// name is existing in generic schema.
             try {
@@ -191,5 +182,4 @@ public class CopyToGenericSchemaHelper {
             }
         }
     }
-
 }
