@@ -13,6 +13,7 @@
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
+    String cid = node.getUniqueName();
 	String outputAction  = ElementParameterParser.getValue(node, "__OUTPUT__");
     if(outputAction.equals("NORMAL_OUTPUT")){
     	List<IMetadataTable> metadatas = node.getMetadataList();
@@ -30,3 +31,4 @@
 		}
 	}
 %>
+globalMap.put("<%=cid %>_EXIT_VALUE", ps_<%=cid %>.exitValue());
