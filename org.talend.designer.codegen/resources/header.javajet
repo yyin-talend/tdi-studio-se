@@ -11,6 +11,7 @@
 		org.talend.designer.codegen.i18n.Messages
 		org.talend.core.ui.branding.IBrandingService
 		org.talend.core.GlobalServiceRegister
+		org.talend.designer.codegen.IRoutineSynchronizer
 		java.util.List
 		java.util.Vector
 	"
@@ -44,9 +45,11 @@
 %> 
 package <%= packageName %>;
 
-<%for (String routine : CodeGeneratorRoutine.getRoutineName()) {%>
+<%for (String routine : CodeGeneratorRoutine.getRoutineName()) {
+	if(!routine.equals(IRoutineSynchronizer.TEMPLATE)){%>
 import routines.<%=routine%>;
-<%}%>
+<%	}
+}%>
 import routines.system.*;
 
 import java.text.ParseException;
