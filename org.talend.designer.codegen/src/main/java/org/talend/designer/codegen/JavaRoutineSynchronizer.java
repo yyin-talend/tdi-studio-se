@@ -58,7 +58,7 @@ import org.talend.repository.model.IProxyRepositoryFactory;
  * 
  */
 public class JavaRoutineSynchronizer implements IRoutineSynchronizer {
-    
+
     /*
      * (non-Javadoc)
      * 
@@ -114,11 +114,14 @@ public class JavaRoutineSynchronizer implements IRoutineSynchronizer {
 
             if (copyToTemp) {
                 String routineContent = new String(routineItem.getContent().getInnerContent());
-                routineContent = routineContent.replaceAll("__CLASS_NAME__", routineItem.getProperty().getLabel());
-                File f = file.getLocation().toFile();
-                FileOutputStream fos = new FileOutputStream(f);
-                fos.write(routineContent.getBytes());
-                fos.close();
+                String label = routineItem.getProperty().getLabel();
+                if (!label.equals("__TEMPLATE__")) {
+                    routineContent = routineContent.replaceAll("__TEMPLATE__", label);
+                    File f = file.getLocation().toFile();
+                    FileOutputStream fos = new FileOutputStream(f);
+                    fos.write(routineContent.getBytes());
+                    fos.close();
+                }
             }
             if (!file.exists()) {
                 file.refreshLocal(1, null);
