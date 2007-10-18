@@ -29,12 +29,12 @@ import org.talend.core.model.utils.TalendTextUtils;
  * $Id: FileOutputXmlNode.java 4749 2007-07-24 05:37:22Z ftang $
  * 
  */
-public class FileOutputCSVNode extends ShadowNode {
+public class FileOutputDelimitedNode extends ShadowNode {
 
     /**
      * Constructs a new FileOutputXmlNode.
      */
-    public FileOutputCSVNode(String filename, String encoding) {
+    public FileOutputDelimitedNode(String filename, String encoding) {
         super("tFileOutputDelimited"); //$NON-NLS-1$
 
         TextElementParameter param0 = new TextElementParameter("CSV_OPTION", "true"); //$NON-NLS-1$

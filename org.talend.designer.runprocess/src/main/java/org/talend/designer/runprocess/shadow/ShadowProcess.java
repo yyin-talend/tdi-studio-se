@@ -114,7 +114,7 @@ public class ShadowProcess<T extends IProcessDescription> {
 
     private IProcess buildProcess() {
         IProcess ps = null;
-        FileOutputCSVNode outNode = new FileOutputCSVNode(TalendTextUtils
+        FileOutputDelimitedNode outNode = new FileOutputDelimitedNode(TalendTextUtils
                 .addQuotes("" + PathUtils.getPortablePath(outPath.toOSString())), description.getEncoding()); //$NON-NLS-1$ //$NON-NLS-2$
         switch (type) {
 

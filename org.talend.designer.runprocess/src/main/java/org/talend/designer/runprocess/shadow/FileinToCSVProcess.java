@@ -64,12 +64,12 @@ public class FileinToCSVProcess<K extends FileInputNode> extends RepositoryObjec
 
     private K inNode;
 
-    private FileOutputCSVNode outNode;
+    private FileOutputDelimitedNode outNode;
 
     /**
      * Constructs a new FileinToXmlProcess.
      */
-    public FileinToCSVProcess(K inNode, FileOutputCSVNode outNode) {
+    public FileinToCSVProcess(K inNode, FileOutputDelimitedNode outNode) {
         super();
 
         this.inNode = inNode;
