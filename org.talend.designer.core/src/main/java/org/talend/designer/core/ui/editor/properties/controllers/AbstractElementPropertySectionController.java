@@ -67,6 +67,7 @@ import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.Problem;
 import org.talend.core.model.process.Problem.ProblemStatus;
@@ -222,8 +223,33 @@ public abstract class AbstractElementPropertySectionController implements Proper
         return "";
     }
 
+    protected String getValueFromRepositoryName(Element elem2, String repositoryName) {
+        for (IElementParameter param : (List<IElementParameter>) elem2.getElementParameters()) {
+            if (param.getRepositoryValue() != null) {
+                if (param.getRepositoryValue().equals(repositoryName)) {
+                    if (param.getField().equals(EParameterFieldType.CLOSED_LIST)) {
+                        return getRepositoryItemFromRepositoryName(param, repositoryName);
+                    }
+                    return (String) param.getValue();
+                }
+            }
+        }
+        return "";
+    }
+
     protected String getParaNameFromRepositoryName(String repositoryName) {
         for (IElementParameter param : (List<IElementParameter>) elem.getElementParameters()) {
+            if (param.getRepositoryValue() != null) {
+                if (param.getRepositoryValue().equals(repositoryName)) {
+                    return param.getName();
+                }
+            }
+        }
+        return null;
+    }
+
+    protected String getParaNameFromRepositoryName(Element elem2, String repositoryName) {
+        for (IElementParameter param : (List<IElementParameter>) elem2.getElementParameters()) {
             if (param.getRepositoryValue() != null) {
                 if (param.getRepositoryValue().equals(repositoryName)) {
                     return param.getName();
@@ -813,22 +839,39 @@ public abstract class AbstractElementPropertySectionController implements Proper
 
     protected ConnectionParameters connParameters;
 
-    protected void initConnectionParameters() {
-        connParameters = new ConnectionParameters();
-        connParameters.setNode(elem);
-        String selectedComponentName = (String) elem.getPropertyValue(EParameterName.UNIQUE_NAME.getName());
-        connParameters.setSelectedComponentName(selectedComponentName);
-
-        connParameters.setFieldType(paramFieldType);
-        String type = getValueFromRepositoryName("TYPE"); //$NON-NLS-1$
+    private void setConnectionParameters(Element element) {
+        String type = getValueFromRepositoryName(element, "TYPE"); //$NON-NLS-1$
         connParameters.setDbType(type);
-        String frameWorkKey = getValueFromRepositoryName("FRAMEWORK_TYPE"); //$NON-NLS-1$
+        String frameWorkKey = getValueFromRepositoryName(element, "FRAMEWORK_TYPE"); //$NON-NLS-1$
         connParameters.setFrameworkType(frameWorkKey);
 
-        String schema = setConnectionParameter(connParameters, EConnectionParameterName.SCHEMA.getName());
+        String schema = setConnectionParameter(element, connParameters, EConnectionParameterName.SCHEMA.getName());
         connParameters.setSchema(schema);
+
+        String userName = setConnectionParameter(element, connParameters, EConnectionParameterName.USERNAME.getName());
+        connParameters.setUserName(userName);
+
+        String password = setConnectionParameter(element, connParameters, EConnectionParameterName.PASSWORD.getName());
+        connParameters.setPassword(password);
+
+        String host = setConnectionParameter(element, connParameters, EConnectionParameterName.SERVER_NAME.getName());
+        connParameters.setHost(host);
+
+        String port = setConnectionParameter(element, connParameters, EConnectionParameterName.PORT.getName());
+        connParameters.setPort(port);
+        String datasource = setConnectionParameter(element, connParameters, EConnectionParameterName.DATASOURCE
+                .getName());
+        connParameters.setDatasource(datasource);
+
+        String dbName = setConnectionParameter(element, connParameters, EConnectionParameterName.SID.getName());
+        connParameters.setDbName(dbName);
+        String file = setConnectionParameter(element, connParameters, EConnectionParameterName.FILE.getName());
+        connParameters.setFilename(file);
+        String dir = setConnectionParameter(element, connParameters, EConnectionParameterName.DIRECTORY.getName());
+        connParameters.setDirectory(dir);
+
         String realTableName = null;
-        if (elem.getPropertyValue(EParameterName.SCHEMA_TYPE.getName()).equals(EmfComponent.REPOSITORY)) {
+        if (EmfComponent.REPOSITORY.equals(elem.getPropertyValue(EParameterName.SCHEMA_TYPE.getName()))) {
             final Object propertyValue = elem.getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
             final IMetadataTable metadataTable = dynamicTabbedPropertySection.getRepositoryTableMap()
                     .get(propertyValue);
@@ -839,29 +882,25 @@ public abstract class AbstractElementPropertySectionController implements Proper
         connParameters.setSchemaName(QueryUtil.getTableName(elem, connParameters.getMetadataTable(), schema, type,
                 realTableName));
 
-        String userName = setConnectionParameter(connParameters, EConnectionParameterName.USERNAME.getName());
-        connParameters.setUserName(userName);
+    }
 
-        String password = setConnectionParameter(connParameters, EConnectionParameterName.PASSWORD.getName());
-        connParameters.setPassword(password);
+    protected void initConnectionParameters() {
+        connParameters = new ConnectionParameters();
+        String type = getValueFromRepositoryName(elem, "TYPE"); //$NON-NLS-1$
+        connParameters.setDbType(type);
 
-        String host = setConnectionParameter(connParameters, EConnectionParameterName.SERVER_NAME.getName());
-        connParameters.setHost(host);
+        connParameters.setNode(elem);
+        String selectedComponentName = (String) elem.getPropertyValue(EParameterName.UNIQUE_NAME.getName());
+        connParameters.setSelectedComponentName(selectedComponentName);
+        connParameters.setFieldType(paramFieldType);
+        connParameters.setMetadataTable(((Node) elem).getMetadataList().get(0));
 
-        String port = setConnectionParameter(connParameters, EConnectionParameterName.PORT.getName());
-        connParameters.setPort(port);
-        String datasource = setConnectionParameter(connParameters, EConnectionParameterName.DATASOURCE.getName());
-        connParameters.setDatasource(datasource);
-
-        String dbName = setConnectionParameter(connParameters, EConnectionParameterName.SID.getName());
-        connParameters.setDbName(dbName);
-        String file = setConnectionParameter(connParameters, EConnectionParameterName.FILE.getName());
-        connParameters.setFilename(file);
-        String dir = setConnectionParameter(connParameters, EConnectionParameterName.DIRECTORY.getName());
-        connParameters.setDirectory(dir);
+        connParameters.setSchemaRepository(EmfComponent.REPOSITORY.equals(elem
+                .getPropertyValue(EParameterName.SCHEMA_TYPE.getName())));
+        connParameters.setFromDBNode(true);
 
         connParameters.setQuery("");
-        connParameters.setMetadataTable(((Node) elem).getMetadataList().get(0));
+
         List<? extends IElementParameter> list = elem.getElementParameters();
         boolean end = false;
         for (int i = 0; i < list.size() && !end; i++) {
@@ -872,20 +911,58 @@ public abstract class AbstractElementPropertySectionController implements Proper
             }
 
         }
-        connParameters.setSchemaRepository(EmfComponent.REPOSITORY.equals(elem
-                .getPropertyValue(EParameterName.SCHEMA_TYPE.getName())));
-        connParameters.setMetadataTable(((Node) elem).getMetadataList().get(0));
-        connParameters.setFromDBNode(true);
+
+        Object value = elem.getPropertyValue("USE_EXISTING_CONNECTION");
+        IElementParameter compList = elem.getElementParameterFromField(EParameterFieldType.COMPONENT_LIST);
+        if (value != null && (value instanceof Boolean) && ((Boolean) value) && compList != null) {
+            Object compValue = compList.getValue();
+            Node connectionNode = null;
+            if (compValue != null && !compValue.equals("")) {
+                List<? extends INode> nodes = part.getProcess().getGraphicalNodes();
+                for (INode node : nodes) {
+                    if (node.getUniqueName().equals(compValue) && (node instanceof Node)) {
+                        connectionNode = (Node) node;
+                        break;
+                    }
+                }
+                if (connectionNode != null) {
+                    setConnectionParameters(connectionNode);
+                }
+            }
+        } else {
+            setConnectionParameters(elem);
+        }
+        setConnectionParameterNames(elem, connParameters);
+    }
+
+    private String setConnectionParameter(Element element, ConnectionParameters connParameters, String repositoryName) {
+        String userName = getValueFromRepositoryName(element, repositoryName); //$NON-NLS-1$
+        return userName;
+    }
+
+    private void setConnectionParameterNames(Element element, ConnectionParameters connParameters) {
+        setConnectionParameterName(element, connParameters, EConnectionParameterName.SCHEMA.getName());
+
+        setConnectionParameterName(element, connParameters, EConnectionParameterName.USERNAME.getName());
+
+        setConnectionParameterName(element, connParameters, EConnectionParameterName.PASSWORD.getName());
+
+        setConnectionParameterName(element, connParameters, EConnectionParameterName.SERVER_NAME.getName());
+
+        setConnectionParameterName(element, connParameters, EConnectionParameterName.PORT.getName());
+        setConnectionParameterName(element, connParameters, EConnectionParameterName.DATASOURCE.getName());
+
+        setConnectionParameterName(element, connParameters, EConnectionParameterName.SID.getName());
+        setConnectionParameterName(element, connParameters, EConnectionParameterName.FILE.getName());
+        setConnectionParameterName(element, connParameters, EConnectionParameterName.DIRECTORY.getName());
 
     }
 
-    private String setConnectionParameter(ConnectionParameters connParameters, String repositoryName) {
-        String userName = getValueFromRepositoryName(repositoryName); //$NON-NLS-1$
-        final String paraNameFromRepositoryName = getParaNameFromRepositoryName(repositoryName);
+    private void setConnectionParameterName(Element element, ConnectionParameters connParameters, String repositoryName) {
+        final String paraNameFromRepositoryName = getParaNameFromRepositoryName(element, repositoryName);
         if (paraNameFromRepositoryName != null) {
             connParameters.getRepositoryNameParaName().put(repositoryName, paraNameFromRepositoryName);
         }
-        return userName;
     }
 
 }
