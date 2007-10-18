@@ -95,8 +95,8 @@ public class DataStringConnection {
         dataConnection[11] = new DataConnection("Microsoft SQL Server", "jdbc:jtds:sqlserver://<host>:<port>/<sid>",
                 "jdbc:jtds:sqlserver://" + host + ":" + port + "/" + sid, "1433"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
-        dataConnection[12] = new DataConnection("FireBird", "jdbc:firebirdsql:<host>:<sid>",
-                "jdbc:firebirdsql:" + host + ":" + sid); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        dataConnection[12] = new DataConnection("FireBird", "jdbc:firebirdsql:<host>:<filename>",
+                "jdbc:firebirdsql:" + host + ":" + file); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
         dataConnection[13] = new DataConnection("Informix",
                 "jdbc:informix-sqli://<host>:<port>/<sid>:informixserver=<datasource>",

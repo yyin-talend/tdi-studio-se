@@ -790,8 +790,14 @@ public class DatabaseForm extends AbstractForm {
             if (s.contains("<filename>")) { // &&
                 // urlDataStringConnection.getStringConnectionTemplate().contains("jdbc:sqlite")
                 fileField.setEditable(visible);
-                usernameText.setEditable(false);
-                passwordText.setEditable(false);
+                if (EDatabaseTypeName.getTypeFromDisplayName(getConnection().getDatabaseType()).equals(
+                        EDatabaseTypeName.SQLITE)) {
+                    usernameText.setEditable(false);
+                    passwordText.setEditable(false);
+                } else {
+                    usernameText.setEditable(true);
+                    passwordText.setEditable(true);
+                }
             }
             // if (s.contains("<filename>")) { //$NON-NLS-1$
             // fileField.setEditable(visible);
