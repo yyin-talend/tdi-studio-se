@@ -138,7 +138,7 @@ if(tableAction.equals("true"))
 {
 %>
 java.sql.Statement stmtClear_<%=cid%> = conn_<%=cid%>.createStatement();
-deletedCount_<%=cid%> = deletedCount_<%=cid%> + stmtClear_<%=cid%>.executeUpdate("delete from \""+<%=tableSchema%>+"\".\"" + <%=tableName%>+"\"");
+deletedCount_<%=cid%> = deletedCount_<%=cid%> + stmtClear_<%=cid%>.executeUpdate("delete from "+<%=tableSchema%>+"." + <%=tableName%>);
 <%	
 }
 %>
@@ -285,13 +285,13 @@ for(IMetadataColumn column:columnList){
 				}
 				
 				if(addCol.get("POS").equals("AFTER")){
-					Column insertAfter = new Column("\"+"+addCol.get("NAME")+"+\"","\"+"+addCol.get("SQL")+"+\"",true);
+					Column insertAfter = new Column(addCol.get("NAME"),addCol.get("SQL"),true);
 					stmtStructure.add(stmtIndex+1,insertAfter);
 				}else if(addCol.get("POS").equals("BEFORE")){
-					Column insertBefore = new Column("\"+"+addCol.get("NAME")+"+\"","\"+"+addCol.get("SQL")+"+\"",true);
+					Column insertBefore = new Column(addCol.get("NAME"),addCol.get("SQL"),true);
 					stmtStructure.add(stmtIndex,insertBefore);
 				}else if(addCol.get("POS").equals("REPLACE")){
-					Column replacementCol = new Column("\"+"+addCol.get("NAME")+"+\"","\"+"+addCol.get("SQL")+"+\"",true);
+					Column replacementCol = new Column(addCol.get("NAME"),addCol.get("SQL"),true);
 					Column replacedCol = (Column) stmtStructure.get(stmtIndex);
 					replacedCol.replace(replacementCol);
 				}
@@ -314,7 +314,7 @@ for(Column colStmt:stmtStructure){
 			suffix = "";
 		}
 		for(Column replacement:replacedColumns){
-			insertColName.append("\\\"" + replacement.getName() + "\\\"" + suffix);
+			insertColName.append(replacement.getName() + suffix);
 			insertValueStmt.append(replacement.getSqlStmt() + suffix);
 			if(!colStmt.getColumn().isKey()){
 				if(!firstNoneKey){
@@ -322,7 +322,7 @@ for(Column colStmt:stmtStructure){
 				}else{
 					firstNoneKey = false;
 				}
-				updateSetStmt.append("\\\""+replacement.getName()+"\\\"");
+				updateSetStmt.append(replacement.getName());
 				updateSetStmt.append("=" + replacement.getSqlStmt());
 			}else{
 				if(!firstKey){
@@ -330,7 +330,7 @@ for(Column colStmt:stmtStructure){
 				}else{
 					firstKey = false;
 				}
-				updateWhereStmt.append("\\\""+replacement.getName()+"\\\"");
+				updateWhereStmt.append(replacement.getName());
 				updateWhereStmt.append("=" + replacement.getSqlStmt());
 			}
 			counterReplace++;
@@ -340,12 +340,12 @@ for(Column colStmt:stmtStructure){
 			suffix = "";
 		}
 		if(colStmt.isAddCol()){
-			insertColName.append("\\\""+colStmt.getDBName()+"\\\""+suffix);
+			insertColName.append(colStmt.getDBName()+suffix);
 			insertValueStmt.append(colStmt.getSqlStmt()+suffix);
-			updateSetStmt.append("\\\""+colStmt.getDBName()+"\\\"");
+			updateSetStmt.append(colStmt.getDBName());
 			updateSetStmt.append("=" + colStmt.getSqlStmt()+suffix);
 		}else{
-			insertColName.append("\\\""+colStmt.getDBName()+"\\\""+suffix);
+			insertColName.append(colStmt.getDBName()+suffix);
 			insertValueStmt.append(colStmt.getValue()+suffix);
 			if(!colStmt.getColumn().isKey()){
 				if(!firstNoneKey){
@@ -353,7 +353,7 @@ for(Column colStmt:stmtStructure){
 				}else{
 					firstNoneKey = false;
 				}
-				updateSetStmt.append("\\\""+colStmt.getDBName()+"\\\"");
+				updateSetStmt.append(colStmt.getDBName());
 				updateSetStmt.append(colStmt.getSqlStmt());
 			}else{
 				if(!firstKey){
@@ -361,7 +361,7 @@ for(Column colStmt:stmtStructure){
 				}else{
 					firstKey = false;
 				}
-				updateWhereStmt.append("\\\""+colStmt.getDBName()+"\\\"");
+				updateWhereStmt.append(colStmt.getDBName());
 				updateWhereStmt.append(colStmt.getSqlStmt());
 			}
 		}
@@ -373,36 +373,36 @@ for(Column colStmt:stmtStructure){
 	if(dataAction.equals("INSERT")){
 	%>	
 	
-pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("INSERT INTO \""+<%=tableSchema%>+"\".\""+<%=tableName%>+"\" (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)");
+pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("INSERT INTO "+<%=tableSchema%>+"."+<%=tableName%>+" (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)");
 
 	<%
 	}else if (dataAction.equals("UPDATE")){
 	%>
 	
-pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("UPDATE \""+<%=tableSchema%>+"\".\""+<%=tableName%>+"\" SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>");
+pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("UPDATE "+<%=tableSchema%>+"."+<%=tableName%>+" SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>");
 
 	<%		
 	}else if (dataAction.equals("INSERT_OR_UPDATE")){
 	%>
-pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("SELECT COUNT(1) FROM \""+<%=tableSchema%>+"\".\"" + <%=tableName%> + "\" WHERE <%=updateWhereStmt.toString()%>");	
+pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("SELECT COUNT(1) FROM "+<%=tableSchema%>+"." + <%=tableName%> + " WHERE <%=updateWhereStmt.toString()%>");	
 	
-pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement("INSERT INTO \""+<%=tableSchema%>+"\".\""+<%=tableName%>+"\" (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)");
+pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement("INSERT INTO "+<%=tableSchema%>+"."+<%=tableName%>+" (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)");
 
-pstmtUpdate_<%=cid %> = conn_<%=cid%>.prepareStatement("UPDATE \""+<%=tableSchema%>+"\".\""+<%=tableName%>+"\" SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>");
+pstmtUpdate_<%=cid %> = conn_<%=cid%>.prepareStatement("UPDATE "+<%=tableSchema%>+"."+<%=tableName%>+" SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>");
 
 	<%
 	}else if (dataAction.equals("UPDATE_OR_INSERT")){
 	%>
-pstmtUpdate_<%=cid %> = conn_<%=cid%>.prepareStatement("UPDATE \""+<%=tableSchema%>+"\".\""+<%=tableName%>+"\" SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>");
+pstmtUpdate_<%=cid %> = conn_<%=cid%>.prepareStatement("UPDATE "+<%=tableSchema%>+"."+<%=tableName%>+" SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>");
 
-pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement("INSERT INTO \""+<%=tableSchema%>+"\".\""+<%=tableName%>+"\" (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)");
+pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement("INSERT INTO "+<%=tableSchema%>+"."+<%=tableName%>+" (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)");
 		
 	<%
 			
 	}else if (dataAction.equals("DELETE")){
 	%>
 	
-pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("DELETE  FROM \""+<%=tableSchema%>+"\".\""+<%=tableName%>+"\" WHERE <%=updateWhereStmt.toString()%>");
+pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("DELETE  FROM "+<%=tableSchema%>+"."+<%=tableName%>+" WHERE <%=updateWhereStmt.toString()%>");
 
 	<%		
 	}

@@ -172,7 +172,7 @@ class Transfer{
 	}
 	
 	public String protectChar(String dbType, String tableName){
-		if(dbType.equals("DB2")||dbType.equals("Ingres")||dbType.equals("MSSQL")||dbType.equals("Oracle")||dbType.equals("Postgre")||dbType.equals("SQLite")||dbType.equals("Firebird")||dbType.equals("JavaDB")||dbType.equals("HSQLdb")||dbType.equals("Interbase")||dbType.equals("Informix")){
+		if(dbType.equals("DB2")||dbType.equals("Ingres")||dbType.equals("MSSQL")||dbType.equals("Postgre")||dbType.equals("SQLite")||dbType.equals("Firebird")||dbType.equals("JavaDB")||dbType.equals("HSQLdb")||dbType.equals("Interbase")||dbType.equals("Informix")){
 			return "\\\"\"+"+tableName+"+\"\\\"";
 		}else if(dbType.equals("Access")){
 			return "[\"+"+tableName+"+\"]";
@@ -210,8 +210,8 @@ class Transfer{
 			 	//column name
 			 	   if(dbType.equals("MySQL")){
 			 			sql=sql+"`"+column.getOriginalDbColumnName()+"` ";
-			 		}else if(dbType.equals("AS400")){
-			            sql=sql+column.getOriginalDbColumnName();
+			 		}else if(dbType.equals("AS400")||dbType.equals("Oracle")){
+			            sql=sql+column.getOriginalDbColumnName()+" ";
 			        }else{
 			 			sql=sql+"\\\""+column.getOriginalDbColumnName()+"\\\" ";
 			 		}
@@ -262,6 +262,8 @@ class Transfer{
 					 	
 						 	if(dbType.equals("MySQL")){
 				 				sql=sql+"`"+(String)PKey.get(i)+"` ";
+					 		}else if(dbType.equals("Oracle")){
+					 			sql=sql+(String)PKey.get(i);
 					 		}else{
 					 			sql=sql+"\\\""+(String)PKey.get(i)+"\\\" ";
 					 		}
@@ -272,7 +274,6 @@ class Transfer{
 		 	}
 	 	}		
 		sql=sql+")";
-System.out.println("sql2 = " +sql);
 		return sql;
 	}
 	
