@@ -49,13 +49,12 @@ import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.ui.utils.TableUtils;
 import org.talend.core.model.metadata.builder.connection.SchemaTarget;
 import org.talend.core.model.metadata.builder.connection.XmlXPathLoopDescriptor;
-import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.extraction.ExtractionFieldsWithXPathEditorView;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.extraction.ExtractionLoopWithXPathEditorView;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.extraction.XmlToXPathLinker;
 
 /**
- * DOC amaumont class global comment. Detailled comment <br/>
+ * DOC amaumont class global comment. Detailed comment <br/>
  * 
  * $Id$
  * 
@@ -272,21 +271,24 @@ public class XmlToSchemaDragAndDropHandler {
                     Display display = linker.getTree().getDisplay();
                     Cursor cursor = new Cursor(display, SWT.CURSOR_WAIT);
                     linker.getTree().getShell().setCursor(cursor);
-                    loopTableEditorView.getTableViewerCreator().setBeanValue(xpathColumn, pathLoopDescriptor, absoluteXPath, true);
+                    loopTableEditorView.getTableViewerCreator().setBeanValue(xpathColumn, pathLoopDescriptor,
+                            absoluteXPath, true);
                     linker.getTree().getShell().setCursor(null);
                 }
 
             } else {
 
                 ExtractionFieldsWithXPathEditorView tableEditorView = linker.getFieldsTableEditorView();
-                Integer startInsertAtThisIndex = TableUtils.getItemIndexWhereInsertFromPosition(fieldsTable, new Point(event.x, event.y));
+                Integer startInsertAtThisIndex = TableUtils.getItemIndexWhereInsertFromPosition(fieldsTable, new Point(
+                        event.x, event.y));
                 List<SchemaTarget> list = new ArrayList<SchemaTarget>(transferableEntryList.size());
                 for (TransferableXPathEntry entry : transferableEntryList) {
 
                     ArrayList<String> loopXpathNodes = linker.getLoopXpathNodes();
                     if (loopXpathNodes.size() > 0) {
                         String loopPath = loopXpathNodes.get(0);
-                        String relativeXPath = XPathPopulationUtil.populateColumnPath(loopPath, entry.getAbsoluteXPath());
+                        String relativeXPath = XPathPopulationUtil.populateColumnPath(loopPath, entry
+                                .getAbsoluteXPath());
 
                         if (relativeXPath.startsWith("/")) { //$NON-NLS-1$
                             relativeXPath = relativeXPath.substring(1);
@@ -300,9 +302,9 @@ public class XmlToSchemaDragAndDropHandler {
 
                         SchemaTarget newTargetEntry = linker.getNewSchemaTargetEntry(relativeXPath);
                         String name = extractLastWord(extractLastWord(relativeXPath));
-                        if (!name.equals(relativeXPath)) {
+//                        if (!name.equals(relativeXPath)) {
                             newTargetEntry.setTagName(name);
-                        }
+//                        }
                         list.add(newTargetEntry);
                     }
                 }
@@ -346,7 +348,8 @@ public class XmlToSchemaDragAndDropHandler {
     public static void main(String[] args) {
         String relativePath = XPathPopulationUtil.populateColumnPath("/doc/members/member/returns", "/doc/members"); //$NON-NLS-1$ //$NON-NLS-2$
         // System.out.println(relativePath);
-        relativePath = XPathPopulationUtil.populateColumnPath("/doc/members/member/returns/see/@cref", "/doc/members/member/summary/@name"); //$NON-NLS-1$ //$NON-NLS-2$
+        relativePath = XPathPopulationUtil.populateColumnPath(
+                "/doc/members/member/returns/see/@cref", "/doc/members/member/summary/@name"); //$NON-NLS-1$ //$NON-NLS-2$
         // System.out.println(relativePath);
     }
 }
