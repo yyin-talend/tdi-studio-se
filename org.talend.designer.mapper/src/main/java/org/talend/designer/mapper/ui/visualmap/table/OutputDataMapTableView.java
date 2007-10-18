@@ -67,354 +67,328 @@ import org.talend.designer.mapper.ui.visualmap.zone.Zone;
  */
 public class OutputDataMapTableView extends DataMapTableView {
 
-	public OutputDataMapTableView(Composite parent, int style,
-			IDataMapTable abstractDataMapTable, MapperManager mapperManager) {
-		super(parent, style, abstractDataMapTable, mapperManager);
-	}
+    public OutputDataMapTableView(Composite parent, int style, IDataMapTable abstractDataMapTable,
+            MapperManager mapperManager) {
+        super(parent, style, abstractDataMapTable, mapperManager);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.talend.designer.mapper.ui.visualmap.table.DataMapTableView#createContent()
-	 */
-	@Override
-	protected void createContent() {
-		createTableForColumns();
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.mapper.ui.visualmap.table.DataMapTableView#createContent()
+     */
+    @Override
+    protected void createContent() {
+        createTableForColumns();
+    }
 
-	@Override
-	public void initColumnsOfTableColumns(
-			final TableViewerCreator tableViewerCreatorForColumns) {
-		TableViewerCreatorColumn column = new TableViewerCreatorColumn(
-				tableViewerCreatorForColumns);
-		column.setTitle(Messages
-				.getString("OutputDataMapTableView.columnTitle.expression")); //$NON-NLS-1$
-		column.setId(DataMapTableView.ID_EXPRESSION_COLUMN);
-		final ExtendedTextCellEditor expressionCellEditor = createExpressionCellEditor(
-				tableViewerCreatorForColumns, column, new Zone[] { Zone.INPUTS,
-						Zone.VARS }, false);
-		column
-				.setBeanPropertyAccessors(new IBeanPropertyAccessors<OutputColumnTableEntry, String>() {
+    private ExtendedTextCellEditor expressionCellEditor;
 
-					public String get(OutputColumnTableEntry bean) {
-						return bean.getExpression();
-					}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.mapper.ui.visualmap.table.DataMapTableView#notifyFocusLost()
+     */
+    @Override
+    public void notifyFocusLost() {
+        if (expressionCellEditor != null) {
+            expressionCellEditor.focusLost();
+        }
+    }
 
-					public void set(OutputColumnTableEntry bean, String value) {
-						bean.setExpression(value);
-						mapperManager.getProblemsManager()
-								.checkProblemsForTableEntry(bean, true);
-						tableViewerCreatorForColumns.getTableViewer().refresh(
-								bean);
-					}
+    @Override
+    public void initColumnsOfTableColumns(final TableViewerCreator tableViewerCreatorForColumns) {
+        TableViewerCreatorColumn column = new TableViewerCreatorColumn(tableViewerCreatorForColumns);
+        column.setTitle(Messages.getString("OutputDataMapTableView.columnTitle.expression")); //$NON-NLS-1$
+        column.setId(DataMapTableView.ID_EXPRESSION_COLUMN);
+        expressionCellEditor = createExpressionCellEditor(tableViewerCreatorForColumns, column, new Zone[] {
+                Zone.INPUTS, Zone.VARS }, false);
+        column.setBeanPropertyAccessors(new IBeanPropertyAccessors<OutputColumnTableEntry, String>() {
 
-				});
-		column.setModifiable(!mapperManager.componentIsReadOnly());
-		column.setDefaultInternalValue(""); //$NON-NLS-1$
-		column.setWeight(COLUMN_EXPRESSION_SIZE_WEIGHT);
+            public String get(OutputColumnTableEntry bean) {
+                return bean.getExpression();
+            }
 
-		column = new TableViewerCreatorColumn(tableViewerCreatorForColumns);
-		column.setTitle(DataMapTableView.COLUMN_NAME);
-		column.setId(DataMapTableView.ID_NAME_COLUMN);
-		column
-				.setBeanPropertyAccessors(new IBeanPropertyAccessors<OutputColumnTableEntry, String>() {
+            public void set(OutputColumnTableEntry bean, String value) {
+                bean.setExpression(value);
+                mapperManager.getProblemsManager().checkProblemsForTableEntry(bean, true);
+                tableViewerCreatorForColumns.getTableViewer().refresh(bean);
+            }
 
-					public String get(OutputColumnTableEntry bean) {
-						return bean.getMetadataColumn().getLabel();
-					}
+        });
+        column.setModifiable(!mapperManager.componentIsReadOnly());
+        column.setDefaultInternalValue(""); //$NON-NLS-1$
+        column.setWeight(COLUMN_EXPRESSION_SIZE_WEIGHT);
 
-					public void set(OutputColumnTableEntry bean, String value) {
-						bean.getMetadataColumn().setLabel(value);
-					}
+        column = new TableViewerCreatorColumn(tableViewerCreatorForColumns);
+        column.setTitle(DataMapTableView.COLUMN_NAME);
+        column.setId(DataMapTableView.ID_NAME_COLUMN);
+        column.setBeanPropertyAccessors(new IBeanPropertyAccessors<OutputColumnTableEntry, String>() {
 
-				});
-		column.setWeight(COLUMN_NAME_SIZE_WEIGHT);
-	}
+            public String get(OutputColumnTableEntry bean) {
+                return bean.getMetadataColumn().getLabel();
+            }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.talend.designer.mapper.ui.visualmap.table.DataMapTableView#initTableConstraints()
-	 */
-	@Override
-	protected void initTableFilters() {
-		createFiltersTable();
+            public void set(OutputColumnTableEntry bean, String value) {
+                bean.getMetadataColumn().setLabel(value);
+            }
 
-		List<FilterTableEntry> entries = ((OutputTable) getDataMapTable())
-				.getFilterEntries();
+        });
+        column.setWeight(COLUMN_NAME_SIZE_WEIGHT);
+    }
 
-		// correct partially layout problem with GTK when cell editor value is
-		// applied
-		tableViewerCreatorForFilters
-				.setAdjustWidthValue(WindowSystem.isGTK() ? -20
-						: ADJUST_WIDTH_VALUE);
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.mapper.ui.visualmap.table.DataMapTableView#initTableConstraints()
+     */
+    @Override
+    protected void initTableFilters() {
+        createFiltersTable();
 
-		tableViewerCreatorForFilters.init(entries);
-		updateGridDataHeightForTableConstraints();
+        List<FilterTableEntry> entries = ((OutputTable) getDataMapTable()).getFilterEntries();
 
-		if (WindowSystem.isGTK()) {
-			tableViewerCreatorForFilters.layout();
-		}
-	}
+        // correct partially layout problem with GTK when cell editor value is
+        // applied
+        tableViewerCreatorForFilters.setAdjustWidthValue(WindowSystem.isGTK() ? -20 : ADJUST_WIDTH_VALUE);
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.talend.designer.mapper.ui.visualmap.table.DataMapTableView#addEntriesActionsComponents()
-	 */
-	@Override
-	protected boolean addToolItems() {
-		createFiltersToolItems();
-		// addToolItemSeparator();
-		// createToolItems();
-		return true;
-	}
+        tableViewerCreatorForFilters.init(entries);
+        updateGridDataHeightForTableConstraints();
 
-	protected void createFiltersTable() {
+        if (WindowSystem.isGTK()) {
+            tableViewerCreatorForFilters.layout();
+        }
+    }
 
-		this.extendedTableViewerForFilters = new AbstractExtendedTableViewer<FilterTableEntry>(
-				((OutputTable) abstractDataMapTable)
-						.getTableFiltersEntriesModel(), centerComposite) {
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.mapper.ui.visualmap.table.DataMapTableView#addEntriesActionsComponents()
+     */
+    @Override
+    protected boolean addToolItems() {
+        createFiltersToolItems();
+        // addToolItemSeparator();
+        // createToolItems();
+        return true;
+    }
 
-			@Override
-			protected void createColumns(
-					TableViewerCreator<FilterTableEntry> tableViewerCreator,
-					Table table) {
-				createFiltersColumns(tableViewerCreator);
-			}
+    protected void createFiltersTable() {
 
-			/*
-			 * (non-Javadoc)
-			 * 
-			 * @see org.talend.commons.ui.swt.extended.macrotable.AbstractExtendedTableViewer#setTableViewerCreatorOptions(org.talend.commons.ui.swt.tableviewer.TableViewerCreator)
-			 */
-			@Override
-			protected void setTableViewerCreatorOptions(
-					TableViewerCreator<FilterTableEntry> newTableViewerCreator) {
-				super.setTableViewerCreatorOptions(newTableViewerCreator);
-				newTableViewerCreator.setColumnsResizableByDefault(false);
-				newTableViewerCreator.setBorderVisible(false);
-				newTableViewerCreator
-						.setLayoutMode(LAYOUT_MODE.FILL_HORIZONTAL);
-				newTableViewerCreator
-						.setKeyboardManagementForCellEdition(false);
-				// tableViewerCreatorForColumns.setUseCustomItemColoring(this.getDataMapTable()
-				// instanceof
-				// AbstractInOutTable);
-				newTableViewerCreator.setFirstColumnMasked(true);
+        this.extendedTableViewerForFilters = new AbstractExtendedTableViewer<FilterTableEntry>(
+                ((OutputTable) abstractDataMapTable).getTableFiltersEntriesModel(), centerComposite) {
 
-			}
+            @Override
+            protected void createColumns(TableViewerCreator<FilterTableEntry> tableViewerCreator, Table table) {
+                createFiltersColumns(tableViewerCreator);
+            }
 
-		};
-		tableViewerCreatorForFilters = this.extendedTableViewerForFilters
-				.getTableViewerCreator();
-		this.extendedTableViewerForFilters.setCommandStack(mapperManager
-				.getCommandStack());
+            /*
+             * (non-Javadoc)
+             * 
+             * @see org.talend.commons.ui.swt.extended.macrotable.AbstractExtendedTableViewer#setTableViewerCreatorOptions(org.talend.commons.ui.swt.tableviewer.TableViewerCreator)
+             */
+            @Override
+            protected void setTableViewerCreatorOptions(TableViewerCreator<FilterTableEntry> newTableViewerCreator) {
+                super.setTableViewerCreatorOptions(newTableViewerCreator);
+                newTableViewerCreator.setColumnsResizableByDefault(false);
+                newTableViewerCreator.setBorderVisible(false);
+                newTableViewerCreator.setLayoutMode(LAYOUT_MODE.FILL_HORIZONTAL);
+                newTableViewerCreator.setKeyboardManagementForCellEdition(false);
+                // tableViewerCreatorForColumns.setUseCustomItemColoring(this.getDataMapTable()
+                // instanceof
+                // AbstractInOutTable);
+                newTableViewerCreator.setFirstColumnMasked(true);
 
-		tableForConstraints = tableViewerCreatorForFilters.getTable();
-		tableForConstraintsGridData = new GridData(GridData.FILL_HORIZONTAL);
-		tableForConstraints.setLayoutData(tableForConstraintsGridData);
+            }
 
-		boolean tableConstraintsVisible = false;
-		if (abstractDataMapTable instanceof OutputTable) {
-			tableConstraintsVisible = ((OutputTable) abstractDataMapTable)
-					.getFilterEntries().size() > 0;
-		}
+        };
+        tableViewerCreatorForFilters = this.extendedTableViewerForFilters.getTableViewerCreator();
+        this.extendedTableViewerForFilters.setCommandStack(mapperManager.getCommandStack());
 
-		tableForConstraintsGridData.exclude = !tableConstraintsVisible;
-		tableForConstraints.setVisible(tableConstraintsVisible);
+        tableForConstraints = tableViewerCreatorForFilters.getTable();
+        tableForConstraintsGridData = new GridData(GridData.FILL_HORIZONTAL);
+        tableForConstraints.setLayoutData(tableForConstraintsGridData);
 
-		if (!mapperManager.componentIsReadOnly()) {
-			new DragNDrop(mapperManager, tableForConstraints, false, true);
-		}
+        boolean tableConstraintsVisible = false;
+        if (abstractDataMapTable instanceof OutputTable) {
+            tableConstraintsVisible = ((OutputTable) abstractDataMapTable).getFilterEntries().size() > 0;
+        }
 
-		tableViewerCreatorForFilters
-				.addCellValueModifiedListener(new ITableCellValueModifiedListener() {
+        tableForConstraintsGridData.exclude = !tableConstraintsVisible;
+        tableForConstraints.setVisible(tableConstraintsVisible);
 
-					public void cellValueModified(TableCellValueModifiedEvent e) {
-						unselectAllEntriesIfErrorDetected(e);
-					}
-				});
+        if (!mapperManager.componentIsReadOnly()) {
+            new DragNDrop(mapperManager, tableForConstraints, false, true);
+        }
 
-		final TableViewer tableViewer = tableViewerCreatorForFilters
-				.getTableViewer();
+        tableViewerCreatorForFilters.addCellValueModifiedListener(new ITableCellValueModifiedListener() {
 
-		tableViewer
-				.addSelectionChangedListener(new ISelectionChangedListener() {
+            public void cellValueModified(TableCellValueModifiedEvent e) {
+                unselectAllEntriesIfErrorDetected(e);
+            }
+        });
 
-					public void selectionChanged(SelectionChangedEvent event) {
-						ISelection selection = event.getSelection();
-						selectThisDataMapTableView();
-						UIManager uiManager = mapperManager.getUiManager();
-						uiManager
-								.selectLinks(
-										OutputDataMapTableView.this,
-										uiManager
-												.extractSelectedTableEntries(selection),
-										false, false);
-					}
+        final TableViewer tableViewer = tableViewerCreatorForFilters.getTableViewer();
 
-				});
+        tableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
-		tableForConstraints.addListener(SWT.KeyDown, new Listener() {
+            public void selectionChanged(SelectionChangedEvent event) {
+                ISelection selection = event.getSelection();
+                selectThisDataMapTableView();
+                UIManager uiManager = mapperManager.getUiManager();
+                uiManager.selectLinks(OutputDataMapTableView.this, uiManager.extractSelectedTableEntries(selection),
+                        false, false);
+            }
 
-			public void handleEvent(Event event) {
-				processEnterKeyDown(tableViewerCreatorForFilters, event);
-			}
+        });
 
-		});
+        tableForConstraints.addListener(SWT.KeyDown, new Listener() {
 
-		tableViewerCreatorForFilters
-				.setLabelProvider(new DefaultTableLabelProvider(
-						tableViewerCreatorForFilters) {
+            public void handleEvent(Event event) {
+                processEnterKeyDown(tableViewerCreatorForFilters, event);
+            }
 
-					@Override
-					public Color getBackground(Object element, int columnIndex) {
-						return getBackgroundCellColor(tableViewerCreator,
-								element, columnIndex);
-					}
+        });
 
-					@Override
-					public Color getForeground(Object element, int columnIndex) {
-						return getForegroundCellColor(tableViewerCreator,
-								element, columnIndex);
-					}
+        tableViewerCreatorForFilters.setLabelProvider(new DefaultTableLabelProvider(tableViewerCreatorForFilters) {
 
-				});
+            @Override
+            public Color getBackground(Object element, int columnIndex) {
+                return getBackgroundCellColor(tableViewerCreator, element, columnIndex);
+            }
 
-		initShowMessageErrorListener(tableForConstraints);
-	}
+            @Override
+            public Color getForeground(Object element, int columnIndex) {
+                return getForegroundCellColor(tableViewerCreator, element, columnIndex);
+            }
 
-	public void createFiltersColumns(
-			final TableViewerCreator<FilterTableEntry> tableViewerCreatorForFilters) {
-		TableViewerCreatorColumn column = new TableViewerCreatorColumn(
-				tableViewerCreatorForFilters);
-		column
-				.setTitle(Messages
-						.getString("OutputDataMapTableView.columnTitle.filterCondition")); //$NON-NLS-1$
-		column.setId(DataMapTableView.ID_EXPRESSION_COLUMN);
-		final ExtendedTextCellEditor expressionCellEditor = createExpressionCellEditor(
-				tableViewerCreatorForFilters, column, new Zone[] { Zone.INPUTS,
-						Zone.VARS }, true);
-		column
-				.setBeanPropertyAccessors(new IBeanPropertyAccessors<FilterTableEntry, String>() {
+        });
 
-					public String get(FilterTableEntry bean) {
-						return bean.getExpression();
-					}
+        initShowMessageErrorListener(tableForConstraints);
+    }
 
-					public void set(FilterTableEntry bean, String value) {
-						bean.setExpression(value);
-						mapperManager.getProblemsManager()
-								.checkProblemsForTableEntry(bean, true);
-					}
+    public void createFiltersColumns(final TableViewerCreator<FilterTableEntry> tableViewerCreatorForFilters) {
+        TableViewerCreatorColumn column = new TableViewerCreatorColumn(tableViewerCreatorForFilters);
+        column.setTitle(Messages.getString("OutputDataMapTableView.columnTitle.filterCondition")); //$NON-NLS-1$
+        column.setId(DataMapTableView.ID_EXPRESSION_COLUMN);
+        final ExtendedTextCellEditor expressionCellEditor = createExpressionCellEditor(tableViewerCreatorForFilters,
+                column, new Zone[] { Zone.INPUTS, Zone.VARS }, true);
+        column.setBeanPropertyAccessors(new IBeanPropertyAccessors<FilterTableEntry, String>() {
 
-				});
-		column.setModifiable(true);
-		column.setDefaultInternalValue(""); //$NON-NLS-1$
-		column.setWeight(99);
-		column.setMoveable(false);
-		column.setResizable(false);
+            public String get(FilterTableEntry bean) {
+                return bean.getExpression();
+            }
 
-		// Column with remove button
-		column = new TableViewerCreatorColumn(tableViewerCreatorForFilters);
-		column.setTitle(""); //$NON-NLS-1$
-		column.setDefaultDisplayedValue(""); //$NON-NLS-1$
-		column.setWidth(16);
-		column.setMoveable(false);
-		column.setResizable(false);
-		ButtonPushImageTableEditorContent buttonImage = new ButtonPushImageTableEditorContent() {
+            public void set(FilterTableEntry bean, String value) {
+                bean.setExpression(value);
+                mapperManager.getProblemsManager().checkProblemsForTableEntry(bean, true);
+            }
 
-			/*
-			 * (non-Javadoc)
-			 * 
-			 * @see org.talend.commons.ui.swt.tableviewer.tableeditor.ButtonImageTableEditorContent#selectionEvent(org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn,
-			 *      java.lang.Object)
-			 */
-			@Override
-			protected void selectionEvent(TableViewerCreatorColumn column,
-					Object bean) {
-				ExtendedTableRemoveCommand removeCommand = new ExtendedTableRemoveCommand(
-						bean, extendedTableViewerForFilters
-								.getExtendedTableModel());
-				mapperManager.removeTableEntry((ITableEntry) bean);
-				mapperManager.executeCommand(removeCommand);
-				tableViewerCreatorForFilters.getTableViewer().refresh();
-				List list = tableViewerCreatorForFilters.getInputList();
-				updateGridDataHeightForTableConstraints();
-				if (list != null && list.size() == 0) {
-					showTableConstraints(false);
-				} else {
-					showTableConstraints(true);
-				}
+        });
+        column.setModifiable(true);
+        column.setDefaultInternalValue(""); //$NON-NLS-1$
+        column.setWeight(99);
+        column.setMoveable(false);
+        column.setResizable(false);
 
-			}
+        // Column with remove button
+        column = new TableViewerCreatorColumn(tableViewerCreatorForFilters);
+        column.setTitle(""); //$NON-NLS-1$
+        column.setDefaultDisplayedValue(""); //$NON-NLS-1$
+        column.setWidth(16);
+        column.setMoveable(false);
+        column.setResizable(false);
+        ButtonPushImageTableEditorContent buttonImage = new ButtonPushImageTableEditorContent() {
 
-		};
-		buttonImage.setImage(ImageProvider.getImage(EImage.MINUS_ICON));
-		column.setTableEditorContent(buttonImage);
+            /*
+             * (non-Javadoc)
+             * 
+             * @see org.talend.commons.ui.swt.tableviewer.tableeditor.ButtonImageTableEditorContent#selectionEvent(org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn,
+             * java.lang.Object)
+             */
+            @Override
+            protected void selectionEvent(TableViewerCreatorColumn column, Object bean) {
+                ExtendedTableRemoveCommand removeCommand = new ExtendedTableRemoveCommand(bean,
+                        extendedTableViewerForFilters.getExtendedTableModel());
+                mapperManager.removeTableEntry((ITableEntry) bean);
+                mapperManager.executeCommand(removeCommand);
+                tableViewerCreatorForFilters.getTableViewer().refresh();
+                List list = tableViewerCreatorForFilters.getInputList();
+                updateGridDataHeightForTableConstraints();
+                if (list != null && list.size() == 0) {
+                    showTableConstraints(false);
+                } else {
+                    showTableConstraints(true);
+                }
 
-	}
+            }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.talend.designer.mapper.ui.visualmap.table.DataMapTableView#getZone()
-	 */
-	@Override
-	public Zone getZone() {
-		return Zone.OUTPUTS;
-	}
+        };
+        buttonImage.setImage(ImageProvider.getImage(EImage.MINUS_ICON));
+        column.setTableEditorContent(buttonImage);
 
-	@Override
-	public void unselectAllConstraintEntries() {
-		tableViewerCreatorForFilters.getSelectionHelper().deselectAll();
-	}
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.talend.designer.mapper.ui.visualmap.table.DataMapTableView#toolbarNeededToBeRightStyle()
-	 */
-	@Override
-	public boolean toolbarNeedToHaveRightStyle() {
-		return false;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.mapper.ui.visualmap.table.DataMapTableView#getZone()
+     */
+    @Override
+    public Zone getZone() {
+        return Zone.OUTPUTS;
+    }
 
-	public OutputTable getOutputTable() {
-		return (OutputTable) abstractDataMapTable;
-	}
+    @Override
+    public void unselectAllConstraintEntries() {
+        tableViewerCreatorForFilters.getSelectionHelper().deselectAll();
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.talend.designer.mapper.ui.visualmap.table.DataMapTableView#hasDropDownToolBarItem()
-	 */
-	@Override
-	public boolean hasDropDownToolBarItem() {
-		return false;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.mapper.ui.visualmap.table.DataMapTableView#toolbarNeededToBeRightStyle()
+     */
+    @Override
+    public boolean toolbarNeedToHaveRightStyle() {
+        return false;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.talend.designer.mapper.ui.visualmap.table.DataMapTableView#getValidZonesForExpressionFilterField()
-	 */
-	@Override
-	protected Zone[] getValidZonesForExpressionFilterField() {
-		return new Zone[] { Zone.INPUTS };
-	}
+    public OutputTable getOutputTable() {
+        return (OutputTable) abstractDataMapTable;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.talend.designer.mapper.ui.visualmap.table.DataMapTableView#loaded()
-	 */
-	@Override
-	public void loaded() {
-		super.loaded();
-		configureExpressionFilter();
-		checkChangementsAfterEntryModifiedOrAdded(false);
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.mapper.ui.visualmap.table.DataMapTableView#hasDropDownToolBarItem()
+     */
+    @Override
+    public boolean hasDropDownToolBarItem() {
+        return false;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.mapper.ui.visualmap.table.DataMapTableView#getValidZonesForExpressionFilterField()
+     */
+    @Override
+    protected Zone[] getValidZonesForExpressionFilterField() {
+        return new Zone[] { Zone.INPUTS };
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.mapper.ui.visualmap.table.DataMapTableView#loaded()
+     */
+    @Override
+    public void loaded() {
+        super.loaded();
+        configureExpressionFilter();
+        checkChangementsAfterEntryModifiedOrAdded(false);
+    }
 
 }

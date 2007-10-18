@@ -67,7 +67,6 @@ import org.talend.commons.utils.data.list.ListenableListEvent.TYPE;
 import org.talend.commons.utils.image.ImageCapture;
 import org.talend.commons.utils.image.ImageUtils;
 import org.talend.commons.utils.threading.AsynchronousThreading;
-import org.talend.commons.utils.time.TimeMeasure;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
@@ -128,7 +127,7 @@ import org.talend.designer.mapper.utils.ParseExpressionResult;
  */
 public class UIManager extends AbstractUIManager {
 
-    private MapperManager mapperManager;
+    private final MapperManager mapperManager;
 
     private MapperUI mapperUI;
 
@@ -140,13 +139,13 @@ public class UIManager extends AbstractUIManager {
 
     private int mapperResponse = SWT.NONE;
 
-    private TableManager tableManager;
+    private final TableManager tableManager;
 
     private ILineSelectionListener inputsSelectionChangedListener;
 
     private ILineSelectionListener outputsSelectionChangedListener;
 
-    private List<IColumnEntry> lastCreatedInOutColumnEntries = new ArrayList<IColumnEntry>();
+    private final List<IColumnEntry> lastCreatedInOutColumnEntries = new ArrayList<IColumnEntry>();
 
     private ExternalMapperUiProperties uiProperties;
 
@@ -409,7 +408,7 @@ public class UIManager extends AbstractUIManager {
             public void handleEvent(ModifiedBeanEvent<IMetadataColumn> event) {
                 if (AbstractMetadataTableEditorView.ID_COLUMN_NAME.equals(event.column.getId())
                         && !event.previousValue.equals(event.newValue)) {
-                    IMetadataColumn modifiedObject = (IMetadataColumn) event.bean;
+                    IMetadataColumn modifiedObject = event.bean;
                     if (modifiedObject != null) {
                         TableEntryLocation tableEntryLocation = new TableEntryLocation(dataMapTableView
                                 .getDataMapTable().getName(), (String) event.previousValue);
@@ -626,7 +625,11 @@ public class UIManager extends AbstractUIManager {
     public void closeMapper(int response) {
 
         boolean save = true;
+        for (DataMapTableView dataMapTableView : getOutputsTablesView()) {
+            dataMapTableView.notifyFocusLost();
+        }
         if (response == SWT.OK && mapperManager.getProblemsManager().checkProblemsForAllEntriesOfAllTables(false)) {
+
             save = MessageDialog.openConfirm(getMapperContainer().getShell(), Messages
                     .getString("UIManager.SaveDespiteErrors.Title"), //$NON-NLS-1$
                     Messages.getString("UIManager.SaveDespiteErrors.Message")); //$NON-NLS-1$
@@ -644,6 +647,7 @@ public class UIManager extends AbstractUIManager {
 
     /**
      * DOC amaumont Comment method "saveDataBeforeClose".
+     * 
      * @param response
      */
     public void prepareClosing(int response) {
@@ -928,7 +932,7 @@ public class UIManager extends AbstractUIManager {
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     public List<ITableEntry> extractSelectedTableEntries(ISelection selection) {
         StructuredSelection currentSelection = (StructuredSelection) selection;
-        return (List<ITableEntry>) currentSelection.toList();
+        return currentSelection.toList();
     }
 
     /**
@@ -1963,15 +1967,13 @@ public class UIManager extends AbstractUIManager {
         return false;
     }
 
-    
     /**
      * Getter for closeWithoutPrompt.
+     * 
      * @return the closeWithoutPrompt
      */
     public boolean isCloseWithoutPrompt() {
         return this.closeWithoutPrompt;
     }
 
-    
-    
 }

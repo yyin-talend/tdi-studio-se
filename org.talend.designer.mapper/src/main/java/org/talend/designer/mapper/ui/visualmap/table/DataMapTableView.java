@@ -2579,4 +2579,6 @@ public abstract class DataMapTableView extends Composite {
         this.previousStateCheckFilter = previousStateCheckFilter;
     }
 
+    public abstract void notifyFocusLost();
+
 }
