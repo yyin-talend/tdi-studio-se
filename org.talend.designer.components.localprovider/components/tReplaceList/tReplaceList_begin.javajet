@@ -1,0 +1,84 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.IConnection
+    org.talend.core.model.process.EConnectionType
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser 
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.metadata.IMetadataColumn 
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+    java.util.Map
+" 
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+IMetadataTable metadata = metadatas.get(0);
+
+String lookupSearchIndex = ElementParameterParser.getValue(
+    node,
+    "__LOOKUP_SEARCH_INDEX__"
+);
+String lookupSearchName = null;
+
+
+String lookupReplacementIndex = ElementParameterParser.getValue(
+    node,
+    "__LOOKUP_REPLACEMENT_INDEX__"
+);
+String lookupReplacementName = null;
+	
+
+
+
+if (metadatas != null && metadatas.size() > 0) {
+    String lookup = null;
+
+    List<IConnection> inputConnections;
+    inputConnections = (List<IConnection>) node.getIncomingConnections();
+    for (IConnection connection : inputConnections) {
+        if (connection == null) {
+            continue;
+        }
+
+        if (connection.getLineStyle() == EConnectionType.FLOW_REF) {
+            lookup = connection.getName();
+            IMetadataTable lookupMetadata = connection.getSource().getMetadataList().get(0);
+            for(int i=0;i<lookupMetadata.getListColumns().size();i++){
+                System.out.println("i = "+i);
+                System.out.println("search index = " + Integer.parseInt(lookupSearchIndex));
+                System.out.println("replace index = " + Integer.parseInt(lookupReplacementIndex));
+                    if(i == Integer.parseInt(lookupSearchIndex))
+                        lookupSearchName = lookupMetadata.getListColumns().get(i).getLabel();
+                    if(i == Integer.parseInt(lookupReplacementIndex))
+                        lookupReplacementName = lookupMetadata.getListColumns().get(i).getLabel();
+                }
+            continue;
+        }
+    }
+    
+    
+    
+    
+    
+    
+%>
+
+java.util.Map<<%=lookup %>Struct, <%=lookup %>Struct>  tMap_<%=lookup%>_<%=cid %> = (java.util.Map<<%=lookup %>Struct, <%=lookup %>Struct>) globalMap.get("tHash_<%=lookup %>");
+java.util.Map<String,String> replace_<%=cid%> = new java.util.HashMap<String,String>();
+
+for (Object o : tMap_<%=lookup%>_<%=cid %>.keySet()) {
+    
+    String search = tMap_<%=lookup%>_<%=cid %>.get(o).<%=lookupSearchName%>;
+    String replacement = tMap_<%=lookup%>_<%=cid %>.get(o).<%=lookupReplacementName%>;
+    replace_<%=cid%>.put(search,replacement);
+}
+
+<%
+}
+%>
