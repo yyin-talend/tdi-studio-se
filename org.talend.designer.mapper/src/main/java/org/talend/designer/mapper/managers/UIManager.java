@@ -628,6 +628,10 @@ public class UIManager extends AbstractUIManager {
         for (DataMapTableView dataMapTableView : getOutputsTablesView()) {
             dataMapTableView.notifyFocusLost();
         }
+        for (DataMapTableView dataMapTableView : getVarsTablesView()) {
+            dataMapTableView.notifyFocusLost();
+        }
+
         if (response == SWT.OK && mapperManager.getProblemsManager().checkProblemsForAllEntriesOfAllTables(false)) {
 
             save = MessageDialog.openConfirm(getMapperContainer().getShell(), Messages
