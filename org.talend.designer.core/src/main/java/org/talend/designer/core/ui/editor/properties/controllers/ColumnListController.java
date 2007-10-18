@@ -383,6 +383,8 @@ public class ColumnListController extends AbstractElementPropertySectionControll
                             } else {
                                 tmpParam.setDefaultClosedListValue(""); //$NON-NLS-1$
                             }
+                            updateNodePropertiesTableColumns(param, columnsChanged, curColumnNameList, tmpParam
+                                    .getName());
                         }
                     }
                 }
@@ -554,6 +556,44 @@ public class ColumnListController extends AbstractElementPropertySectionControll
             refColumnLists.put(connection, columnList);
         }
         return refColumnLists;
+    }
+
+    /*
+     * synchronize the the modified column of schema
+     */
+    private static void updateNodePropertiesTableColumns(IElementParameter param,
+            List<ColumnNameChanged> columnsChanged, String[] columnNameList, final String columnName) {
+        if (columnsChanged == null || columnsChanged.isEmpty()) {
+            return;
+        }
+        if (columnNameList == null || columnNameList.length == 0) {
+            return;
+        }
+        if (columnName == null || columnName == "") {
+            return;
+        }
+
+        for (int j = 0; j < columnNameList.length; j++) {
+
+            ColumnNameChanged theChanged = null;
+
+            for (ColumnNameChanged colChanged : columnsChanged) {
+                if (colChanged.getNewName().equals(columnNameList[j])) {
+                    theChanged = colChanged;
+                    break;
+                }
+            }
+
+            // found
+            if (theChanged != null) {
+                for (Map<String, Object> currentLine : (List<Map<String, Object>>) param.getValue()) {
+                    if (currentLine.get(columnName).equals(theChanged.getOldName())) {
+                        currentLine.put(columnName, theChanged.getNewName());
+                        break;
+                    }
+                }
+            }
+        }
     }
 
 }
