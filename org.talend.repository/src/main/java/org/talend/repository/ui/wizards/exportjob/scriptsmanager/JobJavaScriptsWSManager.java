@@ -129,10 +129,11 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
                     + ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR + "."; //$NON-NLS-1$
             ProcessorUtilities.setExportConfig("java", standardJars, libPath); //$NON-NLS-1$
 
-            generateJobFiles(processItem, contextName, statisticPort != IProcessor.NO_STATISTICS,
-                    tracePort != IProcessor.NO_TRACES, BooleanUtils.isTrue(exportChoice
-                            .get(ExportChoice.applyToChildren)));
-
+            if (BooleanUtils.isTrue(exportChoice.get(ExportChoice.compileCode))) {
+                generateJobFiles(processItem, contextName, statisticPort != IProcessor.NO_STATISTICS,
+                        tracePort != IProcessor.NO_TRACES, BooleanUtils.isTrue(exportChoice
+                                .get(ExportChoice.applyToChildren)));
+            }
             // generate the WSDL file
             ExportFileResource wsdlFile = getWSDLFile(processItem, BooleanUtils.isTrue(exportChoice
                     .get(ExportChoice.needWSDL)), talendLibraries);

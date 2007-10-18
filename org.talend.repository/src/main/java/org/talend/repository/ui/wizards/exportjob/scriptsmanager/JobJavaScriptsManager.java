@@ -97,9 +97,11 @@ public class JobJavaScriptsManager extends JobScriptsManager {
                     + ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR + ".";
             ProcessorUtilities.setExportConfig("java", standardJars, libPath);
 
-            generateJobFiles(processItem, contextName, statisticPort != IProcessor.NO_STATISTICS,
-                    tracePort != IProcessor.NO_TRACES, BooleanUtils.isTrue(exportChoice
-                            .get(ExportChoice.applyToChildren)));
+            if (BooleanUtils.isTrue(exportChoice.get(ExportChoice.compileCode))) {
+                generateJobFiles(processItem, contextName, statisticPort != IProcessor.NO_STATISTICS,
+                        tracePort != IProcessor.NO_TRACES, BooleanUtils.isTrue(exportChoice
+                                .get(ExportChoice.applyToChildren)));
+            }
             List<URL> resources = new ArrayList<URL>();
             resources.addAll(getLauncher(BooleanUtils.isTrue(exportChoice.get(ExportChoice.needLauncher)), processItem,
                     escapeSpace(contextName), escapeSpace(launcher), statisticPort, tracePort, codeOptions));
