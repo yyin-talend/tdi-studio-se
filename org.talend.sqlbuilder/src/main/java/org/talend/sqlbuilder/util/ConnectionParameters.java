@@ -96,41 +96,41 @@ public class ConnectionParameters {
 
     private IMetadataTable metadataTable;
 
-    private String schemaName;
+    private String schemaName = "";
 
-    private String query;
+    private String query = "";
 
-    private String port;
+    private String port = "";
 
-    private String userName;
+    private String userName = "";
 
-    private String password;
+    private String password = "";
 
-    private String host;
+    private String host = "";
 
-    private String dbName;
+    private String dbName = "";
 
-    private String dbType;
+    private String dbType = "";
 
-    private String datasource;
+    private String datasource = "";
 
-    private String filename;
+    private String filename = "";
 
-    private String directory;
+    private String directory = "";
 
-    private String repositoryName;
+    private String repositoryName = "";
 
-    private String selectedComponentName;
+    private String selectedComponentName = "";
 
     private Query queryObject;
 
     private RepositoryNode repositoryNodeBuiltIn;
 
-    private String connectionComment;
+    private String connectionComment = "";
 
     private boolean status = true;
 
-    private String schema;
+    private String schema = "";
 
     private boolean isShowDialog = false;
 
@@ -142,7 +142,7 @@ public class ConnectionParameters {
 
     private EParameterFieldType fieldType;
 
-    private String selectDBTable;
+    private String selectDBTable = "";
 
     /**
      * Sets the connectionComment.
@@ -293,7 +293,7 @@ public class ConnectionParameters {
     }
 
     public boolean isRepository() {
-        return repositoryName != null;
+        return repositoryName != null && !"".equals(repositoryName);
     }
 
     /**
