@@ -738,6 +738,7 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
 
     @Override
     protected void initializeGraphicalViewer() {
+        super.initializeGraphicalViewer();
         // this uses the PartFactory set in configureGraphicalViewer
         // to create an EditPart for the diagram and sets it as the
         // content for the viewer
