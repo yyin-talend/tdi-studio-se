@@ -126,7 +126,7 @@ public class ShadowProcess<T extends IProcessDescription> {
                     .getRowSeparator(), description.getFieldSeparator(), description.getLimitRows(), description
                     .getHeaderRow(), description.getFooterRow(), description.getEscapeCharacter(), description
                     .getTextEnclosure(), description.getRemoveEmptyRowsToSkip(), description.getEncoding(), type);
-            ps = new FileinToCSVProcess<FileInputDelimitedNode>(inDelimitedNode, outNode);
+            ps = new FileinToDelimitedProcess<FileInputDelimitedNode>(inDelimitedNode, outNode);
             break;
 
         case FILE_POSITIONAL:
@@ -136,7 +136,7 @@ public class ShadowProcess<T extends IProcessDescription> {
                             .getFooterRow(), description.getLimitRows(), description.getRemoveEmptyRowsToSkip(),
                     description.getEncoding());
             outNode.setColumnNumber(inPositionalNode.getColumnNumber());
-            ps = new FileinToCSVProcess<FileInputPositionalNode>(inPositionalNode, outNode);
+            ps = new FileinToDelimitedProcess<FileInputPositionalNode>(inPositionalNode, outNode);
             break;
 
         case FILE_REGEXP:
@@ -145,7 +145,7 @@ public class ShadowProcess<T extends IProcessDescription> {
                             .getRowSeparator(), description.getPattern(), description.getLimitRows(), description
                             .getHeaderRow(), description.getFooterRow(), description.getRemoveEmptyRowsToSkip(),
                     description.getEncoding());
-            ps = new FileinToCSVProcess<FileInputRegExpNode>(inRegExpNode, outNode);
+            ps = new FileinToDelimitedProcess<FileInputRegExpNode>(inRegExpNode, outNode);
             break;
         case FILE_XML:
             List<Map<String, String>> newmappings = new ArrayList<Map<String, String>>();
@@ -158,19 +158,19 @@ public class ShadowProcess<T extends IProcessDescription> {
             FileInputXmlNode inXmlNode = new FileInputXmlNode(PathUtils.getPortablePath(inPath.toOSString()),
                     description.getLoopQuery(), //$NON-NLS-1$ //$NON-NLS-2$
                     description.getMapping(), description.getLoopLimit(), description.getEncoding());
-            ps = new FileinToCSVProcess<FileInputXmlNode>(inXmlNode, outNode);
+            ps = new FileinToDelimitedProcess<FileInputXmlNode>(inXmlNode, outNode);
             break;
         case FILE_LDIF:
-            outNode = new FileOutputCSVForLDIF(TalendTextUtils.addQuotes(""
+            outNode = new FileOutputDelimitedForLDIF(TalendTextUtils.addQuotes(""
                     + PathUtils.getPortablePath(outPath.toOSString())), description.getEncoding());
 
             FileInputLdifNode inLdifNode = new FileInputLdifNode(PathUtils.getPortablePath(inPath.toOSString()),
                     description.getSchema(), description.getEncoding()); //$NON-NLS-1$ //$NON-NLS-2$
             outNode.setMetadataList(inLdifNode.getMetadataList());
-            ps = new FileinToCSVProcess<FileInputLdifNode>(inLdifNode, outNode);
+            ps = new FileinToDelimitedProcess<FileInputLdifNode>(inLdifNode, outNode);
             break;
         case LDAP_SCHEMA:
-            outNode = new FileOutputCSVForLDIF(TalendTextUtils.addQuotes(""
+            outNode = new FileOutputDelimitedForLDIF(TalendTextUtils.addQuotes(""
                     + PathUtils.getPortablePath(outPath.toOSString())), description.getEncoding());
 
             LDAPSchemaInputNode inLDAPSchemaNode = new LDAPSchemaInputNode(TalendTextUtils.addQuotes(""
@@ -178,7 +178,7 @@ public class ShadowProcess<T extends IProcessDescription> {
                     .getEncoding(), description.getLdapSchemaBean());
 
             outNode.setMetadataList(inLDAPSchemaNode.getMetadataList());
-            ps = new FileinToCSVProcess<LDAPSchemaInputNode>(inLDAPSchemaNode, outNode);
+            ps = new FileinToDelimitedProcess<LDAPSchemaInputNode>(inLDAPSchemaNode, outNode);
             break;
         default:
             break;

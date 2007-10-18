@@ -31,7 +31,7 @@ import org.talend.core.model.metadata.IMetadataTable;
  * $Id: FileOutputCSVForLDIF.java 下午03:30:59 2007-8-15 +0000 (2007-8-15) yzhang $
  * 
  */
-public class FileOutputCSVForLDIF extends FileOutputDelimitedNode {
+public class FileOutputDelimitedForLDIF extends FileOutputDelimitedNode {
 
     List<IMetadataTable> metadataList;
 
@@ -41,7 +41,7 @@ public class FileOutputCSVForLDIF extends FileOutputDelimitedNode {
      * @param filename
      * @param encoding
      */
-    public FileOutputCSVForLDIF(String filename, String encoding) {
+    public FileOutputDelimitedForLDIF(String filename, String encoding) {
         super(filename, encoding);
     }
 

@@ -54,11 +54,11 @@ import org.talend.designer.runprocess.IProcessor;
  * 
  * @param <K>
  */
-public class FileinToCSVProcess<K extends FileInputNode> extends RepositoryObject implements IProcess {
+public class FileinToDelimitedProcess<K extends FileInputNode> extends RepositoryObject implements IProcess {
 
     // private String name = "ShadowFileInputToXmlOutput"; //$NON-NLS-1$
 
-    private String name = "ShadowFileInputToCSVOutput"; //$NON-NLS-1$
+    private String name = "ShadowFileInputToDelimitedOutput"; //$NON-NLS-1$
 
     private IContextManager contextManager;
 
@@ -69,7 +69,7 @@ public class FileinToCSVProcess<K extends FileInputNode> extends RepositoryObjec
     /**
      * Constructs a new FileinToXmlProcess.
      */
-    public FileinToCSVProcess(K inNode, FileOutputDelimitedNode outNode) {
+    public FileinToDelimitedProcess(K inNode, FileOutputDelimitedNode outNode) {
         super();
 
         this.inNode = inNode;
