@@ -193,7 +193,8 @@ public class ComponentsFactory implements IComponentsFactory {
         // Bundle bundle = Platform.getBundle(pluginFullName);
         // ClassLoader classLoader = bundle.getClass().getClassLoader();
         // return ResourceBundle.getBundle(label, Locale.getDefault(), classLoader);
-        ResourceBundle.clearCache();
+
+        // ResourceBundle.clearCache();
         return ResourceBundle.getBundle(label);
     }
 
