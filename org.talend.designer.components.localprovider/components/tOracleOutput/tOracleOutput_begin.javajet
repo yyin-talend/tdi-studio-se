@@ -45,6 +45,8 @@ imports="
 	String tableAction = ElementParameterParser.getValue(node,"__CLEAR_TABLE__");
 	
 	String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
+	
+	String tableSchema = ElementParameterParser.getValue(node,"__TABLESCHEMA__");
 
 %>
 
@@ -136,7 +138,7 @@ if(tableAction.equals("true"))
 {
 %>
 java.sql.Statement stmtClear_<%=cid%> = conn_<%=cid%>.createStatement();
-deletedCount_<%=cid%> = deletedCount_<%=cid%> + stmtClear_<%=cid%>.executeUpdate("delete from \"" + <%=tableName%>+"\"");
+deletedCount_<%=cid%> = deletedCount_<%=cid%> + stmtClear_<%=cid%>.executeUpdate("delete from \""+<%=tableSchema%>+"\".\"" + <%=tableName%>+"\"");
 <%	
 }
 %>
@@ -371,36 +373,36 @@ for(Column colStmt:stmtStructure){
 	if(dataAction.equals("INSERT")){
 	%>	
 	
-pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("INSERT INTO \""+<%=tableName%>+"\" (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)");
+pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("INSERT INTO \""+<%=tableSchema%>+"\".\""+<%=tableName%>+"\" (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)");
 
 	<%
 	}else if (dataAction.equals("UPDATE")){
 	%>
 	
-pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("UPDATE \""+<%=tableName%>+"\" SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>");
+pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("UPDATE \""+<%=tableSchema%>+"\".\""+<%=tableName%>+"\" SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>");
 
 	<%		
 	}else if (dataAction.equals("INSERT_OR_UPDATE")){
 	%>
-pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("SELECT COUNT(1) FROM \"" + <%=tableName%> + "\" WHERE <%=updateWhereStmt.toString()%>");	
+pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("SELECT COUNT(1) FROM \""+<%=tableSchema%>+"\".\"" + <%=tableName%> + "\" WHERE <%=updateWhereStmt.toString()%>");	
 	
-pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement("INSERT INTO \""+<%=tableName%>+"\" (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)");
+pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement("INSERT INTO \""+<%=tableSchema%>+"\".\""+<%=tableName%>+"\" (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)");
 
-pstmtUpdate_<%=cid %> = conn_<%=cid%>.prepareStatement("UPDATE \""+<%=tableName%>+"\" SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>");
+pstmtUpdate_<%=cid %> = conn_<%=cid%>.prepareStatement("UPDATE \""+<%=tableSchema%>+"\".\""+<%=tableName%>+"\" SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>");
 
 	<%
 	}else if (dataAction.equals("UPDATE_OR_INSERT")){
 	%>
-pstmtUpdate_<%=cid %> = conn_<%=cid%>.prepareStatement("UPDATE \""+<%=tableName%>+"\" SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>");
+pstmtUpdate_<%=cid %> = conn_<%=cid%>.prepareStatement("UPDATE \""+<%=tableSchema%>+"\".\""+<%=tableName%>+"\" SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>");
 
-pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement("INSERT INTO \""+<%=tableName%>+"\" (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)");
+pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement("INSERT INTO \""+<%=tableSchema%>+"\".\""+<%=tableName%>+"\" (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)");
 		
 	<%
 			
 	}else if (dataAction.equals("DELETE")){
 	%>
 	
-pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("DELETE  FROM \""+<%=tableName%>+"\" WHERE <%=updateWhereStmt.toString()%>");
+pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("DELETE  FROM \""+<%=tableSchema%>+"\".\""+<%=tableName%>+"\" WHERE <%=updateWhereStmt.toString()%>");
 
 	<%		
 	}

@@ -129,6 +129,16 @@
     </PARAMETER>
 
     <PARAMETER
+      NAME="TABLESCHEMA"
+      FIELD="TEXT"
+      NUM_ROW="6"
+      REPOSITORY_VALUE="SCHEMA"
+      REQUIRED="true"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
       NAME="TABLE"
       FIELD="DBTABLE"
       NUM_ROW="6"
