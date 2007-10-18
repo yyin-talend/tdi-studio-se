@@ -117,14 +117,18 @@ public class ShadowProcess<T extends IProcessDescription> {
         FileOutputCSVNode outNode = new FileOutputCSVNode(TalendTextUtils
                 .addQuotes("" + PathUtils.getPortablePath(outPath.toOSString())), description.getEncoding()); //$NON-NLS-1$ //$NON-NLS-2$
         switch (type) {
+
         case FILE_DELIMITED:
-            FileInputDelimitedNode inDelimitedNode = new FileInputDelimitedNode(
-                    PathUtils.getPortablePath(inPath.toOSString()), //$NON-NLS-1$ //$NON-NLS-2$
-                    description.getRowSeparator(), description.getFieldSeparator(), description.getLimitRows(),
-                    description.getHeaderRow(), description.getFooterRow(), description.getRemoveEmptyRowsToSkip(),
-                    description.getEncoding());
+
+        case FILE_CSV:
+            FileInputDelimitedNode inDelimitedNode = new FileInputDelimitedNode(PathUtils.getPortablePath(inPath
+                    .toOSString()), description //$NON-NLS-1$ //$NON-NLS-2$
+                    .getRowSeparator(), description.getFieldSeparator(), description.getLimitRows(), description
+                    .getHeaderRow(), description.getFooterRow(), description.getEscapeCharacter(), description
+                    .getTextEnclosure(), description.getRemoveEmptyRowsToSkip(), description.getEncoding(), type);
             ps = new FileinToCSVProcess<FileInputDelimitedNode>(inDelimitedNode, outNode);
             break;
+
         case FILE_POSITIONAL:
             FileInputPositionalNode inPositionalNode = new FileInputPositionalNode(
                     PathUtils.getPortablePath(inPath.toOSString()), //$NON-NLS-1$ //$NON-NLS-2$
@@ -134,14 +138,7 @@ public class ShadowProcess<T extends IProcessDescription> {
             outNode.setColumnNumber(inPositionalNode.getColumnNumber());
             ps = new FileinToCSVProcess<FileInputPositionalNode>(inPositionalNode, outNode);
             break;
-        case FILE_CSV:
-            FileInputCSVNode inCSVNode = new FileInputCSVNode(PathUtils.getPortablePath(inPath.toOSString()),
-                    description //$NON-NLS-1$ //$NON-NLS-2$
-                            .getRowSeparator(), description.getFieldSeparator(), description.getLimitRows(),
-                    description.getHeaderRow(), description.getFooterRow(), description.getEscapeCharacter(),
-                    description.getTextEnclosure(), description.getRemoveEmptyRowsToSkip(), description.getEncoding());
-            ps = new FileinToCSVProcess<FileInputCSVNode>(inCSVNode, outNode);
-            break;
+
         case FILE_REGEXP:
             FileInputRegExpNode inRegExpNode = new FileInputRegExpNode(PathUtils.getPortablePath(inPath.toOSString()),
                     description //$NON-NLS-1$ //$NON-NLS-2$
