@@ -66,7 +66,7 @@ public class SpagicJavaDeployManager extends
                     + ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR + ".";
             ProcessorUtilities.setExportConfig("java", standardJars, libPath);
 
-            if (BooleanUtils.isTrue(exportChoice.get(ExportChoice.compileCode))) {
+            if (!BooleanUtils.isTrue(exportChoice.get(ExportChoice.doNotCompileCode))) {
                 generateJobFiles(processItem, contextName, statisticPort != IProcessor.NO_STATISTICS,
                         tracePort != IProcessor.NO_TRACES, BooleanUtils.isTrue(exportChoice
                                 .get(ExportChoice.applyToChildren)));

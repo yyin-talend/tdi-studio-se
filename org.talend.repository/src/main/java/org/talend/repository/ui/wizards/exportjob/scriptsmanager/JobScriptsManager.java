@@ -87,7 +87,7 @@ public abstract class JobScriptsManager {
         exportChoiceMap.put(ExportChoice.needSource, true);
         exportChoiceMap.put(ExportChoice.needContext, true);
         exportChoiceMap.put(ExportChoice.applyToChildren, true);
-        exportChoiceMap.put(ExportChoice.compileCode, true);
+        exportChoiceMap.put(ExportChoice.doNotCompileCode, false);
         return exportChoiceMap;
     }
 
@@ -113,7 +113,7 @@ public abstract class JobScriptsManager {
         needSource,
         needContext,
         applyToChildren,
-        compileCode
+        doNotCompileCode
     }
 
     /**

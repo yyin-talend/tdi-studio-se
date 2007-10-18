@@ -83,7 +83,7 @@ public class JobPerlScriptsManager extends JobScriptsManager {
 
         for (int i = 0; i < process.length; i++) {
             ProcessItem processItem = process[i].getProcess();
-            if (BooleanUtils.isTrue(exportChoice.get(ExportChoice.compileCode))) {
+            if (!BooleanUtils.isTrue(exportChoice.get(ExportChoice.doNotCompileCode))) {
                 generateJobFiles(processItem, contextName, statisticPort != IProcessor.NO_STATISTICS,
                         statisticPort != IProcessor.NO_TRACES, exportChoice.get(ExportChoice.applyToChildren));
             }
