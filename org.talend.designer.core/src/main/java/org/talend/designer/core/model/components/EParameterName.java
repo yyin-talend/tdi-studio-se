@@ -109,8 +109,16 @@ public enum EParameterName {
     CATCH_RUNTIME_ERRORS(Messages.getString("EParameterName.catchRuntimeErrors")), //$NON-NLS-1$
     CATCH_USER_ERRORS(Messages.getString("EParameterName.catchUserErrors")), //$NON-NLS-1$
     CATCH_USER_WARNING(Messages.getString("EParameterName.catchUserWarning")), //$NON-NLS-1$
-    CATCH_REALTIME_STATS(Messages.getString("EParameterName.catchRealtimeStats")) //$NON-NLS-1$
+    CATCH_REALTIME_STATS(Messages.getString("EParameterName.catchRealtimeStats")), //$NON-NLS-1$
 
+    /**
+     * For stats & Trace parameters.
+     */
+    ON_STATISTICS_FLAG("statistics"),
+    ON_TRACES_FLAG("trace"),
+    ON_SAVEBEFORE_FLAG("save before run"),
+    ON_CLEARBEFORE_FLAG("clear before run"),
+    ON_EXECTIME_FLAG("Exec time"),
     /*
      * PERL_ON_FILES_FLAG(Messages.getString("EParameterName.onFileFlag")), //$NON-NLS-1$
      * PERL_FILE_PATH(Messages.getString("EParameterName.filePath")), //$NON-NLS-1$
