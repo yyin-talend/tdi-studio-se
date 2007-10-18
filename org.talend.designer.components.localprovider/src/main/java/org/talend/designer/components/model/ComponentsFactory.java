@@ -149,8 +149,9 @@ public class ComponentsFactory implements IComponentsFactory {
                 } catch (MissingMainXMLComponentFileException e) {
                     log.trace(currentFolder.getName() + " is not a " + getCodeLanguageSuffix() + " component", e);
                 } catch (BusinessException e) {
-                    BusinessException ex = new BusinessException("Cannot load component \"" + currentFolder.getName() + "\": " //$NON-NLS-1$ //$NON-NLS-2$
-                            + e.getMessage(), e);
+                    BusinessException ex = new BusinessException(
+                            "Cannot load component \"" + currentFolder.getName() + "\": " //$NON-NLS-1$ //$NON-NLS-2$
+                                    + e.getMessage(), e);
                     ExceptionHandler.process(ex, Level.WARN);
                 }
             }
@@ -192,6 +193,7 @@ public class ComponentsFactory implements IComponentsFactory {
         // Bundle bundle = Platform.getBundle(pluginFullName);
         // ClassLoader classLoader = bundle.getClass().getClassLoader();
         // return ResourceBundle.getBundle(label, Locale.getDefault(), classLoader);
+        ResourceBundle.clearCache();
         return ResourceBundle.getBundle(label);
     }
 
@@ -255,7 +257,8 @@ public class ComponentsFactory implements IComponentsFactory {
      */
     public URL getComponentPath() throws IOException {
         Bundle b = Platform.getBundle(IComponentsFactory.COMPONENTS_LOCATION);
-        URL url = FileLocator.toFileURL(FileLocator.find(b, new Path(IComponentsFactory.COMPONENTS_INNER_FOLDER), null));
+        URL url = FileLocator
+                .toFileURL(FileLocator.find(b, new Path(IComponentsFactory.COMPONENTS_INNER_FOLDER), null));
         return url;
     }
 }
