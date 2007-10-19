@@ -13,6 +13,11 @@
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
+
+boolean trimAll = ElementParameterParser.getValue(
+    node,
+    "__TRIMALL__"
+).equals("true");
 	
 	List<IMetadataTable> metadatas = node.getMetadataList();
 	if ((metadatas!=null)&&(metadatas.size()>0)) {
@@ -23,6 +28,13 @@ String cid = node.getUniqueName();
 use FileHandle;
 use List::Util qw/min/;
 use talend::filesOp;
+<%
+  if (trimAll) {
+%>
+use Text::Trim;
+<%
+  }
+%>
 
 my %desc_<%=cid%> = (
     filename      => <%=ElementParameterParser.getValue(node, "__FILENAME__") %>,
@@ -135,10 +147,18 @@ while (my $_<%=cid%> = <$input_FH_<%=cid%>>) {
     # increase number of line really splitted
     $nb_line_<%=cid%>++;
 
-    my $<%=cid%> = [ unpack(
+    my @<%=cid%> = unpack(
         $pattern_<%=cid%>,
         $_<%=cid%>
-    ) ];
+    );
+<%
+      if (trimAll) {
+%>
+    trim @<%=cid%>;
+<%
+      }
+%>
+    my $<%=cid%> = \@<%=cid%>;
 <%
 		}
 	}

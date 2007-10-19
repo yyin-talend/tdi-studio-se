@@ -67,6 +67,14 @@
     </PARAMETER>
 
     <PARAMETER
+      NAME="TRIMALL"
+      FIELD="CHECK"
+      NUM_ROW="3"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
       NAME="HEADER"
       FIELD="TEXT"
       NUM_ROW="4"
