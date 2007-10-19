@@ -80,7 +80,7 @@ public class MemoController extends AbstractElementPropertySectionController {
             final int nbInRow, final int top, final Control lastControl) {
         int nbLines = param.getNbLines();
 
-        DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL,
+        DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL | SWT.WRAP,
                 new SelectAllTextControlCreator());
         if (param.isRequired()) {
             FieldDecoration decoration = FieldDecorationRegistry.getDefault().getFieldDecoration(
@@ -166,8 +166,8 @@ public class MemoController extends AbstractElementPropertySectionController {
     @Override
     public int estimateRowSize(Composite subComposite, IElementParameter param) {
         if (!estimateInitialized) {
-            DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL
-                    | SWT.H_SCROLL, new TextControlCreator());
+            DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL
+                    | SWT.WRAP, new TextControlCreator());
             Text text = (Text) dField.getControl();
             FormData d = (FormData) text.getLayoutData();
             d.height = text.getLineHeight();

@@ -30,7 +30,9 @@ import org.eclipse.jdt.ui.text.JavaTextTools;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
@@ -38,6 +40,7 @@ import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.ISelectionListener;
@@ -170,6 +173,7 @@ public class CodeView extends ViewPart implements ISelectionListener {
         parent.setLayout(new FillLayout());
         ECodeLanguage language = LanguageManager.getCurrentLanguage();
         ISourceViewer viewer;
+        final StyledText text;
         int styles = SWT.H_SCROLL | SWT.V_SCROLL;
         document = new Document();
         switch (language) {
@@ -190,8 +194,22 @@ public class CodeView extends ViewPart implements ISelectionListener {
             viewer = new TalendPerlSourceViewer(parent, null, styles, document);
         }
         viewer.setEditable(false);
+        text = viewer.getTextWidget();
         getSite().getWorkbenchWindow().getSelectionService().addSelectionListener(this);
+        IToolBarManager tbm = getViewSite().getActionBars().getToolBarManager();
+        IAction wrapAction = new Action() {
+
+            @Override
+            public void run() {
+                text.setWordWrap(isChecked());
+            }
+        };
+        wrapAction.setToolTipText("wrap");
+        wrapAction.setChecked(false);
+        wrapAction.setImageDescriptor(ImageDescriptor.createFromFile(DesignerPlugin.class, "/icons/wrap.gif")); //$NON-NLS-1$
+        tbm.add(wrapAction);
         createMenu();
+
     }
 
     private void createMenu() {

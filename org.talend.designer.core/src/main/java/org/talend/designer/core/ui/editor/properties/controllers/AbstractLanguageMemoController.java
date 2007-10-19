@@ -101,9 +101,9 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
         };
         DecoratedField dField = null;
         if (param.getNbLines() != 1) {
-            dField = new DecoratedField(subComposite, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL, txtCtrl);
+            dField = new DecoratedField(subComposite, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL | SWT.WRAP, txtCtrl);
         } else {
-            dField = new DecoratedField(subComposite, SWT.BORDER, txtCtrl);
+            dField = new DecoratedField(subComposite, SWT.BORDER | SWT.WRAP, txtCtrl);
         }
         if (param.isRequired()) {
             FieldDecoration decoration = FieldDecorationRegistry.getDefault().getFieldDecoration(
@@ -201,9 +201,10 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
 
             DecoratedField dField = null;
             if (param.getNbLines() != 1) {
-                dField = new DecoratedField(subComposite, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL, txtCtrl);
+                dField = new DecoratedField(subComposite, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL | SWT.WRAP,
+                        txtCtrl);
             } else {
-                dField = new DecoratedField(subComposite, SWT.BORDER, txtCtrl);
+                dField = new DecoratedField(subComposite, SWT.BORDER | SWT.WRAP, txtCtrl);
             }
 
             ColorStyledText text = (ColorStyledText) dField.getControl();

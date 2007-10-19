@@ -34,6 +34,8 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
@@ -149,6 +151,16 @@ public class ExpressionComposite extends Composite {
         upperOperationButtonBar.setLayoutData(new GridData(GridData.FILL_HORIZONTAL | GridData.HORIZONTAL_ALIGN_END));
         upperOperationButtonBar.setData("nsd", null); //$NON-NLS-1$
 
+        final Button wrapButton = new Button(upperOperationButtonBar, SWT.CHECK);
+        wrapButton.setText("Wrap");
+        wrapButton.setSelection(true);
+        wrapButton.addSelectionListener(new SelectionAdapter() {
+
+            public void widgetSelected(SelectionEvent e) {
+                text.setWordWrap(wrapButton.getSelection());
+            }
+
+        });
         final Button undoButton = new Button(upperOperationButtonBar, SWT.NONE);
         undoButton.setText("Undo(Ctrl + Z)");
         undoButton.setEnabled(false);
@@ -203,9 +215,12 @@ public class ExpressionComposite extends Composite {
         if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.JAVA)) {
             viewer = TalendJavaSourceViewer.createViewer(composite, "", SWT.NONE);
         } else {
+
             viewer = TalendPerlSourceViewer.createViewer(composite, "", SWT.NONE);
         }
+
         text = viewer.getTextWidget();
+        text.setWordWrap(wrapButton.getSelection());
         text.setLayoutData(new GridData(GridData.FILL_BOTH));
         text.addModifyListener(new ModifyListener() {
 
