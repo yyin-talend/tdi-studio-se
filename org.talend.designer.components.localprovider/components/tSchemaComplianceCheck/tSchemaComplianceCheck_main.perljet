@@ -1,0 +1,208 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.IConnection
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+    java.util.Map
+    java.util.HashMap
+"
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if(metadata!=null) {
+        List<Map<String, String>> checkcolumns = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__CHECK_COLUMNS__");
+        for (IConnection outConn: node.getOutgoingConnections("FLOW")) {
+%>
+$branch_<%=outConn.getName()%>_is_active = true;
+<%
+        }
+
+
+        for (IConnection outConn: node.getOutgoingConnections("REJECT")) {
+%>
+$branch_<%=outConn.getName()%>_is_active = false;
+<%
+        }
+%>
+while(1){
+<%
+        String checkAll = ElementParameterParser.getValue(node,"__CHECK_ALL__");
+        boolean testLength = false ;
+        HashMap<String, Integer> hCheckColumnsMaxLength = new HashMap<String, Integer>();
+        if(checkAll.equals("true")){
+            for (IMetadataColumn column: metadata.getListColumns()) {
+                if(column.getLength() != null && column.getLength() > 0 ){
+                    testLength = true ;
+                    hCheckColumnsMaxLength.put(column.getLabel(), column.getLength());
+                }
+            }
+        }else{
+            for (int i=0; i<checkcolumns.size(); i++) {
+                Map<String, String> checkcolumn = checkcolumns.get(i);
+                if(checkcolumn.get("MAX_LENGTH").equals("true")){
+                    testLength = true ;
+                    hCheckColumnsMaxLength.put(checkcolumn.get("SCHEMA_COLUMN"), metadata.getListColumns().get(i).getLength());
+                }
+            }        
+        }
+        if(testLength){
+%>
+<%
+            for (IMetadataColumn column: metadata.getListColumns()) {
+               if( hCheckColumnsMaxLength.get(column.getLabel()) != null ){
+%>
+    if( !(length $<%=cid %>->[<%=cid %>__<%=column.getLabel() %>] le <%=hCheckColumnsMaxLength.get(column.getLabel()) %>)){
+<% 
+                   for (IConnection outConn: node.getOutgoingConnections("FLOW")) {
+%>
+        $branch_<%=outConn.getName()%>_is_active = false;
+<%
+                   }
+                   for (IConnection outConn: node.getOutgoingConnections("REJECT")) {
+%>
+        $branch_<%=outConn.getName() %>_is_active = true;
+<%
+                   }
+%>
+        $<%=cid %>->[<%=cid%>__reject__errorCode] = 8;
+        $<%=cid %>->[<%=cid%>__reject__errorMessage] = "Column '<%=column.getLabel() %>' length ". length($<%=cid %>->[<%=cid %>__<%=column.getLabel() %>])." exceeds <%=hCheckColumnsMaxLength.get(column.getLabel()) %>";
+        last ;
+    } # LENGTH REJECT
+<%
+               }
+            }
+        }// test length
+
+%>
+<%
+        HashMap<String, Boolean> hCheckColumnsCheckNull = new HashMap<String, Boolean>();
+        if(checkAll.equals("true")){
+            for (IMetadataColumn column: metadata.getListColumns()) {
+                hCheckColumnsCheckNull.put(column.getLabel(), !column.isNullable());
+            }
+        }else{
+            for (int i=0; i<checkcolumns.size(); i++) {
+                Map<String, String> checkcolumn = checkcolumns.get(i);
+                if(checkcolumn.get("NOT_NULL").equals("true")){
+                   // true if we have to check if the column has null values
+                   hCheckColumnsCheckNull.put(checkcolumn.get("SCHEMA_COLUMN"), !metadata.getListColumns().get(i).isNullable());
+                }
+            }
+        }        
+            for (IMetadataColumn column: metadata.getListColumns()) {
+               if( hCheckColumnsCheckNull.get(column.getLabel()) != null && hCheckColumnsCheckNull.get(column.getLabel()) ){
+%>
+    if( !( defined($<%=cid %>->[<%=cid %>__<%=column.getLabel() %>])) || ( $<%=cid %>->[<%=cid %>__<%=column.getLabel() %>] eq '') ){
+<% 
+                   for (IConnection outConn: node.getOutgoingConnections("FLOW")) {
+%>
+        $branch_<%=outConn.getName()%>_is_active = false;
+<%
+                   }
+                   for (IConnection outConn: node.getOutgoingConnections("REJECT")) {
+%>
+        $branch_<%=outConn.getName() %>_is_active = true;
+<%
+                   }
+%>
+        $<%=cid %>->[<%=cid%>__reject__errorCode] = 4;
+        $<%=cid %>->[<%=cid%>__reject__errorMessage] = "Column '<%=column.getLabel() %>' empty or undef" ;
+        last ;
+    } # NULLABLE REJECT
+<%
+                }
+            }
+
+        boolean testType = false ;
+        HashMap<String, String> hCheckColumnsType = new HashMap<String, String>();
+        if(checkAll.equals("true")){
+            for (IMetadataColumn column: metadata.getListColumns()) {
+                if(column.getTalendType() != null){
+                    testType = true ;
+                    hCheckColumnsType.put(column.getLabel(), column.getTalendType());
+                }
+            }
+        }
+        else{
+            for (int i=0; i<checkcolumns.size(); i++) {
+                Map<String, String> checkcolumn = checkcolumns.get(i);
+                if(checkcolumn.get("TYPE").equals("true")){
+                    testType = true ;
+                    hCheckColumnsType.put(checkcolumn.get("SCHEMA_COLUMN"), metadata.getListColumns().get(i).getTalendType());
+                }
+            }        
+        }
+        if(testType){
+            String dateFormat = ElementParameterParser.getValue(node,"__DATE_FORMAT__");
+            String dateLanguage = ElementParameterParser.getValue(node,"__DATE_LANGUAGE__");
+%>
+<%
+            for (IMetadataColumn column: metadata.getListColumns()) {
+               // do not need to test string type	
+               if(hCheckColumnsType.get(column.getLabel()) != null && !hCheckColumnsType.get(column.getLabel()).equals("string")){
+%>
+                       <%if(hCheckColumnsType.get(column.getLabel()) != null && hCheckColumnsType.get(column.getLabel()).equals("boolean")){%>
+    if( !($is_boolean{$<%=cid %>->[<%=cid %>__<%=column.getLabel() %>]}) ){
+                       <%}%>
+                       <%if(hCheckColumnsType.get(column.getLabel()) != null && hCheckColumnsType.get(column.getLabel()).equals("int")){%>
+    if( !($<%=cid %>->[<%=cid %>__<%=column.getLabel() %>] =~ m{^$RE{num}{int}$}) ){
+                       <%}%>
+                       <%if(hCheckColumnsType.get(column.getLabel()) != null && hCheckColumnsType.get(column.getLabel()).equals("decimal")){%>
+    if( !($<%=cid %>->[<%=cid %>__<%=column.getLabel() %>] =~ m{^$RE{num}{real}$}) ){
+                       <%}%>
+                       <%if(hCheckColumnsType.get(column.getLabel()) != null && ( hCheckColumnsType.get(column.getLabel()).equals("date")||hCheckColumnsType.get(column.getLabel()).equals("datetime")) ){%>
+    if( !ParseDate($<%=cid %>->[<%=cid %>__<%=column.getLabel() %>]) ){
+                       <%}%>
+<% 
+                   for (IConnection outConn: node.getOutgoingConnections("FLOW")) {
+%>
+        $branch_<%=outConn.getName()%>_is_active = false;
+<%
+                   }
+                   for (IConnection outConn: node.getOutgoingConnections("REJECT")) {
+%>
+        $branch_<%=outConn.getName() %>_is_active = true;
+<%
+                   }
+%>
+        $<%=cid %>->[<%=cid%>__reject__errorCode] = 2;
+        $<%=cid %>->[<%=cid%>__reject__errorMessage] = "Column '<%=column.getLabel() %>' wrong type : <%=column.getTalendType() %>";
+        last ;
+    } # TYPE REJECT
+<%
+                }// if checked type
+            }// for columns
+        }// test type
+%>
+    last;
+}
+
+<% 
+                   for (IConnection outConn: node.getOutgoingConnections("FLOW")) {
+%>
+$nb_compliants_<%=cid %>++ if $branch_<%=outConn.getName()%>_is_active ;
+<%
+                   }
+                   for (IConnection outConn: node.getOutgoingConnections("REJECT")) {
+%>
+$nb_rejects_<%=cid %>++ if $branch_<%=outConn.getName() %>_is_active ;
+<%
+                   }
+%>
+
+
+<%
+    }
+}
+%>

@@ -1,0 +1,128 @@
+<COMPONENT>
+  <HEADER
+    PLATEFORM="ALL"
+    SERIAL=""
+    VERSION="0.101"
+    STATUS="ALPHA"
+    
+    COMPATIBILITY="ALL"
+    AUTHOR="Talend"
+    RELEASE_DATE="20050320A"
+    STARTABLE="false"
+    HAS_CONDITIONAL_OUTPUTS="true"
+  >
+    <SIGNATURE />
+  </HEADER>
+
+  <DOCUMENTATION>
+    <URL/>
+  </DOCUMENTATION>
+
+  <CONNECTORS>
+    <CONNECTOR CTYPE="FLOW" MAX_INPUT="1"/>
+    <CONNECTOR NAME="REJECT" CTYPE="FLOW" MAX_INPUT="0" COLOR="FF0000" BASE_SCHEMA="FLOW"/>
+    <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="1" MAX_INPUT="0"/>
+    <CONNECTOR CTYPE="THEN_RUN" MAX_INPUT="1"/>
+    <CONNECTOR CTYPE="REFERENCE"/>
+    <CONNECTOR CTYPE="RUN_OK"/>
+    <CONNECTOR CTYPE="RUN_ERROR"/>
+    <CONNECTOR CTYPE="RUN_IF"/>
+  </CONNECTORS>
+
+  <PARAMETERS>
+    <PARAMETER
+      NAME="SCHEMA_FLOW"
+      FIELD="SCHEMA_TYPE"
+      REQUIRED="true"
+      NUM_ROW="1"
+      CONTEXT="FLOW"
+    >
+      <TABLE/>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="SCHEMA_REJECT"
+      FIELD="SCHEMA_TYPE"
+      REQUIRED="true"
+      NUM_ROW="2"
+      CONTEXT="REJECT"
+      SHOW="true">
+      <TABLE READONLY="true">
+        <COLUMN NAME="errorCode" TYPE="string" LENGTH="255" READONLY="false" CUSTOM="true"/>
+        <COLUMN NAME="errorMessage" TYPE="string" LENGTH="255" READONLY="false" CUSTOM="true"/>
+      </TABLE>
+    </PARAMETER>
+
+
+    <PARAMETER
+      NAME="DATE_LANGUAGE"
+      FIELD="CLOSED_LIST"
+      REQUIRED="true"
+      NUM_ROW="4"
+    >
+      <ITEMS DEFAULT="ENGLISH">
+        <ITEM NAME="ENGLISH"     VALUE="English" />
+        <ITEM NAME="FRENCH"      VALUE="French" />
+        <ITEM NAME="GERMAN"      VALUE="German" />
+        <ITEM NAME="DUTCH"       VALUE="Dutch" />
+        <ITEM NAME="POLISH"      VALUE="Polish" />
+        <ITEM NAME="SPANISH"     VALUE="Spanish" />
+        <ITEM NAME="PORTUGUESE"  VALUE="Portuguese" />
+        <ITEM NAME="ROMANIAN"    VALUE="Romanian" />
+        <ITEM NAME="ITALIAN"     VALUE="Italian" />
+        <ITEM NAME="RUSSIAN"     VALUE="Russian" />
+        <ITEM NAME="TURKISH"     VALUE="Turkish" />
+        <ITEM NAME="DANISH"      VALUE="Danish" />
+      </ITEMS>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="DATE_FORMAT"
+      FIELD="CLOSED_LIST"
+      REQUIRED="true"
+      NUM_ROW="4"
+    >
+      <ITEMS DEFAULT="US">
+        <ITEM NAME="US"      VALUE="US" />
+        <ITEM NAME="NON-US"      VALUE="non-US" />
+      </ITEMS>
+    </PARAMETER>
+
+
+
+    <PARAMETER
+      NAME="CHECK_ALL"
+      FIELD="CHECK"
+      NUM_ROW="9"
+    >
+      <DEFAULT>true</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="CHECK_COLUMNS"
+      FIELD="TABLE"
+      REQUIRED="true"
+      NUM_ROW="10"
+      NB_LINES="5"
+      SHOW_IF="(CHECK_ALL == 'false')"
+    >
+      <ITEMS BASED_ON_SCHEMA="true">
+		<ITEM NAME="TYPE" FIELD="CHECK" VALUE="false"/>
+		<ITEM NAME="NOT_NULL" FIELD="CHECK" VALUE="false"/>
+		<ITEM NAME="MAX_LENGTH" FIELD="CHECK" VALUE="false"/>
+      </ITEMS>
+    </PARAMETER>
+  </PARAMETERS>
+
+  <CODEGENERATION>
+     <IMPORTS>
+       <IMPORT NAME="Date-Manip" MODULE="Date::Manip" REQUIRED="true" />
+       <IMPORT NAME="Regexp-Common" MODULE="Regexp::Common" REQUIRED="true" />
+     </IMPORTS>
+  </CODEGENERATION>
+
+  <RETURNS>
+    <RETURN NAME="NB_COMPLIANT" TYPE="INTEGER" AVAILABILITY="AFTER"/>
+    <RETURN NAME="NB_REJECTED" TYPE="INTEGER" AVAILABILITY="AFTER"/>
+  </RETURNS>
+</COMPONENT>
