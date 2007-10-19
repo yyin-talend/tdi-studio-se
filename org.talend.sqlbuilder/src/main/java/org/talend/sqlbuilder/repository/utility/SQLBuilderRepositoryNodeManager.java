@@ -528,6 +528,9 @@ public class SQLBuilderRepositoryNodeManager {
     public RepositoryNode getRepositoryNodeByBuildIn(RepositoryNode node, ConnectionParameters parameters) {
 
         DatabaseConnection connection = createConnection(parameters);
+        if (connection == null) {
+            return null;
+        }
         IMetadataConnection iMetadataConnection = ConvertionHelper.convert(connection);
 
         RepositoryNode newNode = createNewRepositoryNode(node, parameters, connection, iMetadataConnection);
