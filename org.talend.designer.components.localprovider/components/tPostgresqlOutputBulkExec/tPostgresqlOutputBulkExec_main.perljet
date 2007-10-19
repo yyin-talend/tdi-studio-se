@@ -1,0 +1,49 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+    java.util.ArrayList
+    org.talend.commons.utils.StringUtils
+"
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+
+String dbh = "dbh_" + cid;
+
+String commitEvery = ElementParameterParser.getValue(
+    node,
+    "__COMMIT_EVERY__"
+);
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if (metadatas != null && metadatas.size() > 0) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+%>
+
+my $line_<%=cid%> = join("\t", @$<%=cid%>)."\n";
+
+$<%=dbh%>->pg_putline($line_<%=cid%>)
+    or die '[<%=cid%>] cannot put line "'.$line_<%=cid%>.'"';
+
+if (++$nb_line_current_commit_<%=cid%> >= <%=commitEvery %>) {
+    $nb_line_current_commit_<%=cid%> = 0;
+    $<%=dbh%>->pg_endcopy
+        or die '[<%=cid%>] cannot end copy';
+    $<%=dbh%>->commit()
+        or die '[<%=cid%>] cannot commit';
+    $<%=dbh%>->do($sql_copy_<%=cid%>)
+        or die '[<%=cid%>] cannot initialize copy';
+}
+<%
+    }
+}
+%>

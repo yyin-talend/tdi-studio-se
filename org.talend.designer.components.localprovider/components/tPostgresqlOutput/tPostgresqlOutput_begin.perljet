@@ -137,114 +137,24 @@ my $<%=dbh%> = DBI->connect(
 )
     or die "can't connect to database";
 
-{
-    my $sth_<%=cid %>;
-    my $query;
-    
-    $query = '
-    set names \''.<%=encoding %>.'\'
-    ';
-    $sth_<%=cid %> = $<%=dbh%>->prepare($query);
-    $sth_<%=cid %>->execute();
-}
+$<%=dbh%>->do("set names '".<%=encoding %>."'")
+    or die '[<%=cid%>] cannot set encoding';
 
 <%
         }
 %>
+
+tPostgresqlOutput::Postgresql::performTableAction(
+    tableAction => '<%=tableAction%>',
+    dbschema => <%=dbschema %>,
+    dbh => $<%=dbh%>,
+    dbtable => <%=dbtable %>,
+    component => <%=cid%>,
+    schema => $desc_<%=cid %>{schema},
+
+);
 
 my $sth_<%=cid %>;
-my $query;
-
-<%
-        if (tableAction.equals("DROP_CREATE")
-            || tableAction.equals("CREATE_IF_NOT_EXISTS")) {
-%>
-# We need the table list to know if drop or "create if not exists" is
-# relevant
-my $schema = <%=dbschema %>;
-my $catalog = undef;
-my $tabsth = $<%=dbh%>->table_info($catalog, $schema);
-my @tables = ();
-
-while (my $entity = $tabsth->fetchrow_hashref()) {
-    if ($entity->{TABLE_TYPE} eq 'TABLE') {
-        push @tables, lc $entity->{TABLE_NAME};
-    }
-}
-
-#    print "===\n";
-#    print "existing tables:\n";
-#    print join("\n", map {"  - ".$_} @tables), "\n";
-#    print "===\n";
-
-my $test_table = lc $desc_<%=cid %>{dbtable};
-my $table_exists = grep /^$test_table$/, @tables;
-<%
-        }
-
-        if (tableAction.equals("DROP_CREATE")) {
-%>
-if ($table_exists) {
-    $query = '
-DROP TABLE '.<%=dbschema %>.'.'.<%=dbtable%>.'
-';
-    $sth_<%=cid %> = $<%=dbh%>->prepare($query);
-
-    $sth_<%=cid %>->execute()
-        or die "can't drop table";
-
-    # the table does not exist anymore
-    $table_exists = 0;
-}
-<%
-        }
-
-        if (tableAction.equals("CREATE")
-            || tableAction.equals("DROP_CREATE")
-            || tableAction.equals("CREATE_IF_NOT_EXISTS")) {
-
-            if (tableAction.equals("CREATE_IF_NOT_EXISTS")) {
-%>
-if (not $table_exists) {
-<%
-            }
-%>
-# now we create the table
-$query = tPostgresqlOutput::Postgresql::getTableCreationQuery(
-    tablename  => <%=dbtable%>,
-    dbschema   => <%=dbschema %>,
-    schema     => $desc_<%=cid %>{schema},
-);
-
-$sth_<%=cid %> = $<%=dbh%>->prepare(
-    $query
-);
-
-$sth_<%=cid %>->execute()
-  or die "can't create table\n===\n$query\n===\n";
-
-<%
-            if (tableAction.equals("CREATE_IF_NOT_EXISTS")) {
-%>
-}
-<%
-            }
-        }
-
-        if (tableAction.equals("CLEAR")) {
-%>
-$query = '
-DELETE
-  FROM '.<%=dbschema %>.'.'.<%=dbtable%>.'
-';
-
-$sth_<%=cid %> = $<%=dbh%>->prepare($query);
-$sth_<%=cid %>->execute()
-    or die "can't clear table";
-<%
-        }
-%>
-
 my $query = '';
 
 <%

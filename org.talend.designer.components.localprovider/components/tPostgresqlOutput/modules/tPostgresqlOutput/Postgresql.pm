@@ -109,4 +109,110 @@ sub getTableCreationQuery {
     return $query;
 }
 
+sub performTableAction {
+    my %param = @_;
+
+
+    # tableAction
+    # dbschema
+    # dbh
+    # dbtable
+    # dbschema
+    # component
+    # schema
+
+    my $sth;
+    my $table_exists;
+
+    if ($param{tableAction} eq "DROP_CREATE"
+        or $param{tableAction} eq "CREATE_IF_NOT_EXISTS") {
+        # We need the table list to know if drop or "create if not exists"
+        # is relevant
+        my $schema = $param{dbschema};
+        my $catalog = undef;
+        my $tabsth = $param{dbh}->table_info($catalog, $schema);
+        my @tables = ();
+
+        while (my $entity = $tabsth->fetchrow_hashref()) {
+            if ($entity->{TABLE_TYPE} eq 'TABLE') {
+                push @tables, lc $entity->{TABLE_NAME};
+            }
+        }
+
+        # print "===\n";
+        # print "existing tables:\n";
+        # print join("\n", map {"  - ".$_} @tables), "\n";
+        # print "===\n";
+
+        my $test_table = lc $param{dbtable};
+        $table_exists = grep /^$test_table$/, @tables;
+    }
+
+    if ($param{tableAction} eq "DROP_CREATE" and $table_exists) {
+        $query = sprintf(
+            'DROP TABLE %s.%s',
+            $param{dbschema},
+            $param{dbtable},
+        );
+
+        $sth = $param{dbh}->prepare($query);
+
+        $sth->execute()
+            or die sprintf("[%s] can't drop table", $param{component});
+
+        # the table does not exist anymore
+        $table_exists = 0;
+    }
+
+    if ($param{tableAction} eq "CREATE"
+        or $param{tableAction} eq "DROP_CREATE"
+        or ($param{tableAction} eq "CREATE_IF_NOT_EXISTS"
+            and not $table_exists)) {
+        # now we create the table
+        $query = getTableCreationQuery(
+            tablename  => $param{dbtable},
+            dbschema   => $param{dbschema},
+            schema     => $param{schema},
+        );
+
+        $sth = $param{dbh}->prepare($query);
+        $sth->execute()
+            or die sprintf(
+                "[%s] cannot create table\n===\n%s\n===\n",
+                $param{component},
+                $query,
+            );
+    }
+
+    if ($param{tableAction} eq "CLEAR") {
+        $query = sprintf(
+            'DELETE FROM %s.%s',
+            $param{dbschema},
+            $param{dbtable},
+        );
+
+        $sth = $param{dbh}->prepare($query);
+        $sth->execute()
+            or die sprintf(
+                "[%s] cannot clear table",
+                $param{component}
+            );
+    }
+
+    if ($param{tableAction} eq "TRUNCATE") {
+        $query = sprintf(
+            'TRUNCATE %s.%s',
+            $param{dbschema},
+            $param{dbtable},
+        );
+
+        $sth = $param{dbh}->prepare($query);
+        $sth->execute()
+            or die sprintf(
+                "[%s] cannot truncate table",
+                $param{component}
+            );
+    }
+}
+
 1;
