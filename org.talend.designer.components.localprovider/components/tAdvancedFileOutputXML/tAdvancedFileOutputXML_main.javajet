@@ -69,20 +69,47 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             	for(Map<String, String> map:rootTable){
             		String value = null;
             		if( map.get("COLUMN")!=null && map.get("COLUMN").length()>0){
-            			value = conn.getName()+"."+map.get("COLUMN");
+            			for(IMetadataColumn column:metadata.getListColumns()) {
+            				if(column.getLabel().equals(map.get("COLUMN"))){
+            					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+            					if(JavaTypesManager.isJavaPrimitiveType( column.getTalendType(), column.isNullable())){
+            						value = "String.valueOf("+conn.getName()+"."+map.get("COLUMN")+")";
+            					}else if(javaType == JavaTypesManager.DATE){
+            						if( column.getPattern() != null && column.getPattern().trim().length() != 0 ){
+            							value ="FormatterUtils.format_Date(" + conn.getName() + "." +column.getLabel()+ "," +column.getPattern()+")";
+            						}else{
+            							value = conn.getName()+"."+map.get("COLUMN");
+            						}
+            					}else{
+            						value = conn.getName()+"."+map.get("COLUMN");
+            					}
+            				}
+            			}
         			}else if(map.get("VALUE") != null && map.get("VALUE").length()>0){
         				value = map.get("VALUE");
         			}
             		String path = map.get("PATH");
                     if (map.get("ATTRIBUTE").equals("true")) {
                         if(isRootAttribute){ //it is the attirbute of root
+                        	if(value!=null){
 %>
-		doc_<%=cid%>.getRootElement().addAttribute("<%=path%>",<%=value==null?"\"\"":value%>);
+		doc_<%=cid%>.getRootElement().addAttribute("<%=path%>",<%=value%>==null?"\"\"":<%=value%>.toString());
 <%
+							}else{
+%>
+		doc_<%=cid%>.getRootElement().addAttribute("<%=path%>","");
+<%
+							}
 						}else{
+							if(value!=null){
 %>
-		<%=currEleName%>_<%=cid%>.addAttribute("<%=path%>",<%=value==null?"\"\"":value%>);
+		<%=currEleName%>_<%=cid%>.addAttribute("<%=path%>",<%=value%>==null?"\"\"":<%=value%>.toString());
 <%
+							}else{
+%>
+		<%=currEleName%>_<%=cid%>.addAttribute("<%=path%>",""));
+<%
+							}
 						}
             		}else{
             			if(currEleName==null){
@@ -97,7 +124,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
 						if(value!=null){
 %>
-		<%=currEleName%>_<%=cid%>.setText(<%=value%>);
+		<%=currEleName%>_<%=cid%>.setText(<%=value%>==null?"\"\"":<%=value%>.toString());
 <%
 						}
             		}
@@ -121,7 +148,22 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				for(Map<String, String> map:groupTable){
             		String value = null;
             		if( map.get("COLUMN")!=null && map.get("COLUMN").length()>0){
-            			value = conn.getName()+"."+map.get("COLUMN");
+            			for(IMetadataColumn column:metadata.getListColumns()) {
+            				if(column.getLabel().equals(map.get("COLUMN"))){
+            					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+            					if(JavaTypesManager.isJavaPrimitiveType( column.getTalendType(), column.isNullable())){
+            						value = "String.valueOf("+conn.getName()+"."+map.get("COLUMN")+")";
+            					}else if(javaType == JavaTypesManager.DATE){
+            						if( column.getPattern() != null && column.getPattern().trim().length() != 0 ){
+            							value ="FormatterUtils.format_Date(" + conn.getName() + "." +column.getLabel()+ "," +column.getPattern()+")";
+            						}else{
+            							value = conn.getName()+"."+map.get("COLUMN");
+            						}
+            					}else{
+            						value = conn.getName()+"."+map.get("COLUMN");
+            					}
+            				}
+            			}
         			}else if(map.get("VALUE") != null && map.get("VALUE").length()>0){
         				value = map.get("VALUE");
         			}
@@ -131,9 +173,15 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                     	if(map.get("TYPE")!=null && map.get("TYPE").length()>0){
                     		currAttributeNameList.add(path);
                     	}
+                    	if(value!=null){
 %>
-	<%=currEleName%>_<%=cid%>.addAttribute("<%=path%>",<%=value==null?"\"\"":value%>);
+	<%=currEleName%>_<%=cid%>.addAttribute("<%=path%>",<%=value%>==null?"\"\"":<%=value%>.toString());
 <%
+						}else{
+%>
+	<%=currEleName%>_<%=cid%>.addAttribute("<%=path%>","");
+<%
+						}
                     }else{
                     	currEleName =  "element"+elementCount;
             			elementCount++;
@@ -181,7 +229,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
 							if(value!=null){
 %>
-	<%=currEleName%>_<%=cid%>.setText(<%=value%>);
+	<%=currEleName%>_<%=cid%>.setText(<%=value%>==null?"\"\"":<%=value%>.toString());
 <%
 							}
                     	}
@@ -221,16 +269,37 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				for(Map<String, String> map:loopTable){
             		String value = null;
             		if( map.get("COLUMN")!=null && map.get("COLUMN").length()>0){
-            			value = conn.getName()+"."+map.get("COLUMN");
+            			for(IMetadataColumn column:metadata.getListColumns()) {
+            				if(column.getLabel().equals(map.get("COLUMN"))){
+            					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+            					if(JavaTypesManager.isJavaPrimitiveType( column.getTalendType(), column.isNullable())){
+            						value = "String.valueOf("+conn.getName()+"."+map.get("COLUMN")+")";
+            					}else if(javaType == JavaTypesManager.DATE){
+            						if( column.getPattern() != null && column.getPattern().trim().length() != 0 ){
+            							value ="FormatterUtils.format_Date(" + conn.getName() + "." +column.getLabel()+ "," +column.getPattern()+")";
+            						}else{
+            							value = conn.getName()+"."+map.get("COLUMN");
+            						}
+            					}else{
+            						value = conn.getName()+"."+map.get("COLUMN");
+            					}
+            				}
+            			}
         			}else if(map.get("VALUE") != null && map.get("VALUE").length()>0){
         				value = map.get("VALUE");
         			}
         			
             		String path = map.get("PATH");
                      if (map.get("ATTRIBUTE").equals("true")) {
+                     	if(value!=null){
 %>
-	<%=currEleName%>_<%=cid%>.addAttribute("<%=path%>",<%=value==null?"\"\"":value%>);
+	<%=currEleName%>_<%=cid%>.addAttribute("<%=path%>",<%=value%>==null?"\"\"":<%=value%>.toString());
 <%
+						}else{
+%>
+	<%=currEleName%>_<%=cid%>.addAttribute("<%=path%>","");
+<%
+						}
                     }else{
                     	if(loopRootName == null){// the first one
                    			loopRootName = path.substring(path.lastIndexOf("/") + 1);
@@ -255,7 +324,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 						}
 						if(value!=null){
 %>
-	<%=currEleName%>_<%=cid%>.setText(<%=value%>);
+	<%=currEleName%>_<%=cid%>.setText(<%=value%>==null?"\"\"":<%=value%>.toString());
 <%
 						}
                     }
