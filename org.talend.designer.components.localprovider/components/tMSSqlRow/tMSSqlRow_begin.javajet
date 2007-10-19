@@ -23,21 +23,29 @@ imports="
 	       dbquery = dbquery.replaceAll("\n"," ");
     	   dbquery = dbquery.replaceAll("\r"," ");  
     String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
+
+	String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
+	if(useExistingConn.equals("true"))
+	{
+		String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
+		String conn = "conn_" + connection;
+%>
+java.sql.Connection conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
+<%
+	}
+	else
+	{
 %>
 java.lang.Class.forName("net.sourceforge.jtds.jdbc.Driver");
-
 String url_<%=cid %> = "jdbc:jtds:sqlserver://"+<%=dbhost%>+":"+<%=dbport%>+"//"+<%=dbname%>;
-
 String dbUser_<%=cid %> = <%=dbuser%>;
-
 String dbPwd_<%=cid %> = <%=dbpwd%>;
-
 java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
-
+<%
+	}
+%>
 java.sql.PreparedStatement pstmt_<%=cid %> = null;
-
 boolean whetherReject_<%=cid%> = false;
-
 globalMap.put("<%=cid %>_QUERY",<%=dbquery%>);
 <%
 if(!commitEvery.equals("")&&!commitEvery.equals("0")){
