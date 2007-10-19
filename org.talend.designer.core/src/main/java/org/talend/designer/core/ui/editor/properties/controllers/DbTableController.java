@@ -57,6 +57,7 @@ import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
+import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.database.ConnectionStatus;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataFromDataBase;
 import org.talend.core.model.process.EParameterFieldType;
@@ -323,9 +324,13 @@ public class DbTableController extends AbstractElementPropertySectionController 
                 if (connParameters == null) {
                     initConnectionParameters();
                 }
-                final IMetadataConnection iMetadataConnection = ConvertionHelper.convert(manager
-                        .createConnection(connParameters));
-                boolean isStatus = checkConnection(iMetadataConnection);
+                DatabaseConnection connt = manager.createConnection(connParameters);
+                IMetadataConnection iMetadataConnection = null;
+                boolean isStatus = false;
+                if (connt != null) {
+                    iMetadataConnection = ConvertionHelper.convert(connt);
+                    isStatus = checkConnection(iMetadataConnection);
+                }
                 if (!monitor.isCanceled()) {
                     try {
                         if (isStatus) {
