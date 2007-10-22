@@ -68,6 +68,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		
 		boolean split = ElementParameterParser.getValue(node, "__SPLIT__").equals("true");
         String splitEvery = ElementParameterParser.getValue(node, "__SPLIT_EVERY__");
+        
+        boolean flushOnRow = ElementParameterParser.getValue(node, "__FLUSHONROW__").equals("true");
 
     	List< ? extends IConnection> conns = node.getIncomingConnections();
     	for (IConnection conn : conns) {
@@ -163,8 +165,18 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		}
 %>
 			out<%=cid %>.write(sb_<%=cid %>.toString());
+    		<% if(flushOnRow) { %>
+    		out<%=cid %>.flush();
+    		<%
+    			}
+    		%> 			
  		}else{
  			out<%=cid %>.write(sb_<%=cid %>.toString());
+    		<% if(flushOnRow) { %>
+    		out<%=cid %>.flush();
+    		<%
+    			}
+    		%>  			
  		}	
  		currentRow_<%=cid%>++;				
 					
@@ -172,6 +184,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <% } else { %>
     			
     			out<%=cid %>.write(sb_<%=cid %>.toString());
+        		<% if(flushOnRow) { %>
+        		out<%=cid %>.flush();
+        		<%
+        			}
+        		%>     			
 <%
 	}
 %>  			
@@ -211,6 +228,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     	String textEnclosure = textEnclosure1.substring(1,textEnclosure1.length()-1);
     	if ("".equals(textEnclosure)) textEnclosure = "\0";
     	boolean split = ElementParameterParser.getValue(node, "__SPLIT__").equals("true");
+    	boolean flushOnRow = ElementParameterParser.getValue(node, "__FLUSHONROW__").equals("true");
+    	
     	List< ? extends IConnection> conns = node.getIncomingConnections();
           	if(!rowSeparator.equals("\\n") && !rowSeparator.equals("\\r")){
  %>
@@ -336,10 +355,20 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 						%> 
 						CsvWriter<%=cid %>.setTextQualifier('<%=textEnclosure %>'); 
   						CsvWriter<%=cid %>.setForceQualifier(true);            		
-                		CsvWriter<%=cid%>.writeRecord(row<%=cid%>); 
+                		CsvWriter<%=cid%>.writeRecord(row<%=cid%>);
+                		<% if(flushOnRow) { %>
+                		CsvWriter<%=cid%>.flush();
+                		<%
+                			}
+                		%> 
  				
  					}else{
  					CsvWriter<%=cid%>.writeRecord(row<%=cid%>);	
+            		<% if(flushOnRow) { %>
+            		CsvWriter<%=cid%>.flush();
+            		<%
+            			}
+            		%>  					
  				}	
  				currentRow_<%=cid%>++;		
      			
@@ -347,6 +376,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     			}else{
  %>
  				CsvWriter<%=cid%>.writeRecord(row<%=cid%>);	
+        		<% if(flushOnRow) { %>
+        		CsvWriter<%=cid%>.flush();
+        		<%
+        			}
+        		%>  				
  <%   		
     		
     			}

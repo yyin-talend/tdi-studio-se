@@ -100,7 +100,11 @@
       SHOW_IF="SPLIT == 'true'"
     >
     <DEFAULT>1000</DEFAULT>
-    </PARAMETER>    
+    </PARAMETER>
+    
+    <PARAMETER NAME="FLUSHONROW" FIELD="CHECK" REQUIRED="true" NUM_ROW="55">
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>        
 
     <PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" REQUIRED="true" NUM_ROW="60">
       <DEFAULT/> 
