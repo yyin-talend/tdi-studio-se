@@ -137,8 +137,13 @@ else
 if(tableAction.equals("true"))
 {
 %>
-java.sql.Statement stmtClear_<%=cid%> = conn_<%=cid%>.createStatement();
-deletedCount_<%=cid%> = deletedCount_<%=cid%> + stmtClear_<%=cid%>.executeUpdate("delete from "+<%=tableSchema%>+"." + <%=tableName%>);
+    java.sql.Statement stmtClearCount_<%=cid%> = conn_<%=cid%>.createStatement();
+    java.sql.ResultSet rsClearCount_<%=cid%> = stmtClearCount_<%=cid%>.executeQuery("select count(1) from " + <%=tableSchema%> + "." + <%=tableName%>);
+    java.sql.Statement stmtClear_<%=cid%> = conn_<%=cid%>.createStatement();
+    stmtClear_<%=cid%>.executeUpdate("truncate table " + <%=tableSchema%> + "." + <%=tableName%>);
+    while(rsClearCount_<%=cid%>.next()) {
+        deletedCount_<%=cid%> += rsClearCount_<%=cid%>.getInt(1);
+    }
 <%	
 }
 %>
