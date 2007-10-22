@@ -95,7 +95,8 @@
 		        <ITEM NAME="DOUBLE" VALUE="Double"/>
 		        <ITEM NAME="BOOLEAN" VALUE="Boolean"/>
 		        <ITEM NAME="CHARACTER" VALUE="Character"/>
-		        <ITEM NAME="STRING" VALUE="String"/>		        
+		        <ITEM NAME="STRING" VALUE="String"/>	
+		       	<ITEM NAME="DATE" VALUE="Date"/>
       		</ITEMS>
       	</ITEM>
       	<ITEM NAME="NULLABLE" FIELD="CHECK" VALUE="false"/>

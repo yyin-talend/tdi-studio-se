@@ -90,6 +90,21 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
                 }
             }
         }
+        public void  testDate(String incomingConnName, IMetadataColumn metadataColumn, String pattern, String cid) {
+			JavaType javaType = JavaTypesManager.getJavaTypeFromId(metadataColumn.getTalendType());
+            if(javaType == JavaTypesManager.STRING) {
+%>
+				try {
+					java.text.SimpleDateFormat dateFormate = new java.text.SimpleDateFormat(<%=pattern%>);
+					dateFormate.parse(<%=incomingConnName%>.<%=metadataColumn.getLabel()%>);
+				} catch(Exception e) {
+                    ifPassed_<%=cid%> = false;
+                    errorCode_<%=cid%> = "2";
+                    errorMessage_<%=cid%> = "Date format not valid";
+                }
+<%
+			}
+        }
     }
     SchemaChecker checker = new SchemaChecker();
     List<Map<String, String>> checkedColumns = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node,"__CHECKCOLS__");
@@ -98,11 +113,21 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
             if(metadataColumn.getLabel().equals(checkedColumn.get("SCHEMA_COLUMN"))) {
             	int columnIndex = columnList.indexOf(metadataColumn);
             	if (anotherChecked.equals("true") && (columnListToTest.size() > columnIndex)) {
-            		String typeToTest = columnListToTest.get(columnList.indexOf(metadataColumn)).getTalendType();
+            		IMetadataColumn testColumn = columnListToTest.get(columnList.indexOf(metadataColumn));
+            		String typeToTest = testColumn.getTalendType();
             		typeToTest = JavaTypesManager.getTypeToGenerate(typeToTest, true);
-            		checker.testDataType(incomingConnName,metadataColumn,typeToTest,cid);
+            		if(typeToTest.equals("java.util.Date")){
+            			checker.testDate(incomingConnName,metadataColumn,testColumn.getPattern(),cid);
+            		}else{
+            			checker.testDataType(incomingConnName,metadataColumn,typeToTest,cid);
+            		}
             	} else {
-                	checker.testDataType(incomingConnName,metadataColumn,checkedColumn.get("SELECTED_TYPE"),cid);
+            		String selectedType = checkedColumn.get("SELECTED_TYPE");
+            		if(selectedType.equals("Date")){
+            			checker.testDate(incomingConnName,metadataColumn,"\"yyyy-MM-dd\"",cid);
+            		}else{
+                		checker.testDataType(incomingConnName,metadataColumn,selectedType,cid);
+                	}
                 }
                 if(checkAll.equals("true") || anotherChecked.equals("true")) {
                 	if (columnListToTest.size() < columnIndex) {
