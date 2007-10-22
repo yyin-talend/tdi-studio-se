@@ -113,7 +113,9 @@ public class RunProcessPreferencePage extends FieldEditorPreferencePage implemen
 
     @Override
     protected IPreferenceStore doGetPreferenceStore() {
+
         return RunProcessPlugin.getDefault().getPreferenceStore();
+
     }
 
     /*
@@ -123,6 +125,7 @@ public class RunProcessPreferencePage extends FieldEditorPreferencePage implemen
      */
     public void createControl(Composite parent) {
         super.createControl(parent);
+
     }
 
     /**
@@ -215,8 +218,8 @@ public class RunProcessPreferencePage extends FieldEditorPreferencePage implemen
         compositeClearBeforeRun.setLayout(gridLayoutClearBeforeRun);
         onClearbeforeField = new BooleanFieldEditor(RunProcessPrefsConstants.ISCLEARBEFORERUN, "Clear before run", SWT.NONE,
                 compositeClearBeforeRun);
+        RunProcessPlugin.getDefault().getPreferenceStore().setValue(RunProcessPrefsConstants.ISCLEARBEFORERUN, true);
         addField(onClearbeforeField);
-
         Composite compositeExecTimeRun = new Composite(compositeStateTraceRun, SWT.NONE);
         compositeExecTimeRun.setLayoutData(new GridData(GridData.FILL_BOTH));
         GridLayout gridLayoutExecTimeRun = new GridLayout(1, true);
@@ -253,6 +256,7 @@ public class RunProcessPreferencePage extends FieldEditorPreferencePage implemen
      * @see IWorkbenchPreferencePage#init(IWorkbench)
      */
     public void init(IWorkbench workbench) {
+
     }
 
     /*
@@ -282,7 +286,9 @@ public class RunProcessPreferencePage extends FieldEditorPreferencePage implemen
      * @see org.eclipse.jface.preference.PreferencePage#performDefaults()
      */
     protected void performDefaults() {
+        RunProcessPlugin.getDefault().getPreferenceStore().setDefault(RunProcessPrefsConstants.ISCLEARBEFORERUN, true);
         super.performDefaults();
+
     }
 
     protected boolean canClearErrorMessage() {
