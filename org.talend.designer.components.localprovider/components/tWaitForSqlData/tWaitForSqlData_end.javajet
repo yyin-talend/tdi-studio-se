@@ -13,7 +13,7 @@ String cid = node.getUniqueName();
 if(ElementParameterParser.getValue(node, "__THEN__").equals("exitloop")){
 %>
     if(true){
-        break;
+    	break;
     }
 <%
 } else { 
@@ -21,6 +21,7 @@ if(ElementParameterParser.getValue(node, "__THEN__").equals("exitloop")){
     if(false){
         break;
     }
+    Thread.currentThread().sleep(<%=ElementParameterParser.getValue(node, "__WAIT__")%>*1000);
 <%
 }
 %>
