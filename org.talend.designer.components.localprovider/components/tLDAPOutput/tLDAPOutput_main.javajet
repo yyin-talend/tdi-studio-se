@@ -17,8 +17,11 @@ imports="
 	INode node = (INode)codeGenArgument.getArgument();
 	
 	String insertMode =ElementParameterParser.getValue(node, "__INSERT_MODE__");
-	String separator=ElementParameterParser.getValue(node, "__MULTI_VALUE_SEPARATOR__");
-	
+	String separatorText=ElementParameterParser.getValue(node, "__MULTI_VALUE_SEPARATOR__");
+	String separator = separatorText;
+	if(separatorText.equals("\"|\"")){
+		separator="\"\\\\|\"";
+	}
 	String cid = node.getUniqueName();
 	List<IMetadataTable> metadatas = node.getMetadataList();
 	if ((metadatas!=null)&&(metadatas.size()>0)) {
@@ -44,7 +47,7 @@ imports="
 						}else if(!insertMode.equals("DELETE")){
 %>
 	if(<%=conn.getName() %>.<%=column.getLabel()%> != null){
-    	if(<%=conn.getName() %>.<%=column.getLabel()%>.trim().indexOf(<%=separator%>)>0){
+    	if(<%=conn.getName() %>.<%=column.getLabel()%>.trim().indexOf(<%=separatorText%>)>0){
     		javax.naming.directory.Attribute attr_<%=cid%> = new javax.naming.directory.BasicAttribute("<%=column.getLabel()%>");
     		for(String value_<%=cid%> : <%=conn.getName() %>.<%=column.getLabel()%>.trim().split(<%=separator%>)){
     			attr_<%=cid%>.add(value_<%=cid%>);    		
