@@ -47,6 +47,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.core.model.metadata.ColumnNameChanged;
+import org.talend.core.model.metadata.ColumnNameChangedExt;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
@@ -354,6 +355,8 @@ public class ColumnListController extends AbstractElementPropertySectionControll
                     || param.getField() == EParameterFieldType.LOOKUP_COLUMN_LIST) {
                 param.setListItemsDisplayName(curColumnNameList);
                 param.setListItemsValue(curColumnValueList);
+                syncNodePropertiesColumns(param, columnsChanged, curColumnNameList);
+
             }
             if (param.getField() == EParameterFieldType.TABLE) {
                 Object[] itemsValue = param.getListItemsValue();
@@ -383,8 +386,8 @@ public class ColumnListController extends AbstractElementPropertySectionControll
                             } else {
                                 tmpParam.setDefaultClosedListValue(""); //$NON-NLS-1$
                             }
-                            updateNodePropertiesTableColumns(param, columnsChanged, curColumnNameList, tmpParam
-                                    .getName());
+                            syncNodePropertiesTableColumns(param, columnsChanged, curColumnNameList, tmpParam);
+
                         }
                     }
                 }
@@ -558,42 +561,132 @@ public class ColumnListController extends AbstractElementPropertySectionControll
         return refColumnLists;
     }
 
-    /*
-     * synchronize the the modified column of schema
+    /**
+     * 
+     * DOC ggu Comment method "syncNodePropertiesTableColumns".<BR/>
+     * 
+     * synchronize COLUMN_LIST, PREV_COLUMN_LIST, LOOKUP_COLUMN_LIST in table. <br/> when modified column name of schema .
+     * 
+     * @param param
+     * @param columnsChanged
+     * @param columnNameList
+     * @param tmpParam
      */
-    private static void updateNodePropertiesTableColumns(IElementParameter param,
-            List<ColumnNameChanged> columnsChanged, String[] columnNameList, final String columnName) {
+    private static void syncNodePropertiesTableColumns(IElementParameter param, List<ColumnNameChanged> columnsChanged,
+            String[] columnNameList, IElementParameter tmpParam) {
         if (columnsChanged == null || columnsChanged.isEmpty()) {
             return;
         }
         if (columnNameList == null || columnNameList.length == 0) {
             return;
         }
-        if (columnName == null || columnName == "") {
+        if (!isUpdateColumnEnable(param, columnsChanged, tmpParam)) {
             return;
         }
-
-        for (int j = 0; j < columnNameList.length; j++) {
-
+        String componentUniqueName = "";
+        String preRowLookup = "";
+        if (tmpParam.getField() == EParameterFieldType.LOOKUP_COLUMN_LIST && columnNameList[0].indexOf(".") > 0) {
+            ColumnNameChanged tmpChanged = columnsChanged.get(0);
+            if (tmpChanged instanceof ColumnNameChangedExt) {
+                componentUniqueName = ((ColumnNameChangedExt) tmpChanged).getChangedNode().getUniqueName() + ".";
+                preRowLookup = columnNameList[0].substring(0, columnNameList[0].indexOf(".") + 1);
+            }
+        }
+        for (ColumnNameChanged colChanged : columnsChanged) {
+            String newName = preRowLookup + colChanged.getNewName();
             ColumnNameChanged theChanged = null;
-
-            for (ColumnNameChanged colChanged : columnsChanged) {
-                if (colChanged.getNewName().equals(columnNameList[j])) {
+            for (int j = 0; j < columnNameList.length; j++) {
+                if (newName.equals(columnNameList[j])) {
                     theChanged = colChanged;
                     break;
                 }
             }
-
             // found
             if (theChanged != null) {
                 for (Map<String, Object> currentLine : (List<Map<String, Object>>) param.getValue()) {
-                    if (currentLine.get(columnName).equals(theChanged.getOldName())) {
-                        currentLine.put(columnName, theChanged.getNewName());
-                        break;
+                    if (currentLine.get(tmpParam.getName()).equals(componentUniqueName + theChanged.getOldName())) {
+                        currentLine.put(tmpParam.getName(), componentUniqueName + theChanged.getNewName());
                     }
                 }
             }
         }
+
+    }
+
+    /**
+     * 
+     * DOC ggu Comment method "syncNodePropertiesColumns".<BR/>
+     * 
+     * synchronize COLUMN_LIST, PREV_COLUMN_LIST, LOOKUP_COLUMN_LIST
+     * 
+     * @param param
+     * @param columnsChanged
+     * @param columnNameList
+     */
+    private static void syncNodePropertiesColumns(IElementParameter param, List<ColumnNameChanged> columnsChanged,
+            String[] columnNameList) {
+        if (columnsChanged == null || columnsChanged.isEmpty()) {
+            return;
+        }
+        if (columnNameList == null || columnNameList.length == 0) {
+            return;
+        }
+        if (!isUpdateColumnEnable(param, columnsChanged, param)) {
+            return;
+        }
+        String componentUniqueName = "";
+        String preRowLookup = "";
+        if (param.getField() == EParameterFieldType.LOOKUP_COLUMN_LIST && columnNameList[0].indexOf(".") > 0) {
+            ColumnNameChanged tmpChanged = columnsChanged.get(0);
+            if (tmpChanged instanceof ColumnNameChangedExt) {
+                componentUniqueName = ((ColumnNameChangedExt) tmpChanged).getChangedNode().getUniqueName() + ".";
+                preRowLookup = columnNameList[0].substring(0, columnNameList[0].indexOf(".") + 1);
+            }
+        }
+
+        for (ColumnNameChanged colChanged : columnsChanged) {
+            boolean found = false;
+            String newName = preRowLookup + colChanged.getNewName();
+            for (int j = 0; j < columnNameList.length; j++) {
+                if (newName.equals(columnNameList[j])) {
+                    found = true;
+                    break;
+                }
+            }
+            if (found) {
+                if (param.getValue().equals(componentUniqueName + colChanged.getOldName())) {
+                    param.setValue(componentUniqueName + colChanged.getNewName());
+                }
+            }
+        }
+
+    }
+
+    private static boolean isUpdateColumnEnable(IElementParameter param, List<ColumnNameChanged> columnsChanged,
+            IElementParameter tmpParam) {
+        ColumnNameChanged tmpChanged = columnsChanged.get(0);
+        if (tmpChanged instanceof ColumnNameChangedExt && param.getElement() instanceof Node) {
+            INode curNode = (Node) param.getElement();
+            INode changedNode = ((ColumnNameChangedExt) tmpChanged).getChangedNode();
+
+            if (changedNode == null) {
+                return false;
+            }
+
+            if (changedNode != curNode) {
+                // if not update current node, don't update the current column list
+                if (tmpParam.getField() == EParameterFieldType.COLUMN_LIST) {
+                    return false;
+                }
+            } else {
+                // if update current node, don't update the prev/lookup column list
+                if (tmpParam.getField() == EParameterFieldType.PREV_COLUMN_LIST
+                        || tmpParam.getField() == EParameterFieldType.LOOKUP_COLUMN_LIST) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
 }

@@ -444,6 +444,17 @@ public class ChangeMetadataCommand extends Command {
         List<ColumnNameChanged> columnNameChanged = MetadataTool.getColumnNameChanged(oldOutputMetadata,
                 newOutputMetadata);
         ColumnListController.updateColumnList(node, columnNameChanged, true);
+
+        if (inputNode != null) {
+            List<ColumnNameChanged> inputColumnNameChangedExt = MetadataTool.getColumnNameChangedExt(inputNode,
+                    oldInputMetadata, newInputMetadata);
+            ColumnListController.updateColumnList(node, inputColumnNameChangedExt);
+        }
+        //
+        List<ColumnNameChanged> outputColumnNameChangedExt = MetadataTool.getColumnNameChangedExt(node,
+                oldOutputMetadata, newOutputMetadata);
+        syncOutputNodeColumnsList(outputColumnNameChangedExt);
+
         setXMLMAPPING();
 
         if (!internal) {
@@ -454,6 +465,25 @@ public class ChangeMetadataCommand extends Command {
     }
 
     private org.talend.core.model.metadata.builder.connection.Connection connection;
+
+    /*
+     * use to synchronize column list for output connections.
+     */
+    private void syncOutputNodeColumnsList(List<ColumnNameChanged> columnNameChanged) {
+        if (outputdataContainer == null) {
+            return;
+        }
+        for (IConnection conn : node.getOutgoingConnections()) {
+            INode targetNode = conn.getTarget();
+            EConnectionType connStyle = conn.getLineStyle();
+            if (EConnectionType.FLOW_MAIN.equals(connStyle) || EConnectionType.FLOW_MERGE.equals(connStyle)
+                    || EConnectionType.FLOW_REF.equals(connStyle)) {
+                ColumnListController.updateColumnList(targetNode, columnNameChanged);
+            }
+
+        }
+
+    }
 
     /**
      * qzhang Comment method "setXMLMAPPING".
