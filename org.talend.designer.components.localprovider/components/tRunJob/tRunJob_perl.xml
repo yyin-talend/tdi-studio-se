@@ -35,10 +35,17 @@
     />
 
     <PARAMETER
+      NAME="DIE_ON_CHILD_ERROR"
+      FIELD="CHECK"
+      NUM_ROW="11"
+    >
+      <DEFAULT>true</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
       NAME="TRANSMIT_WHOLE_CONTEXT"
       FIELD="CHECK"
       NUM_ROW="20"
-      NB_LINES="2"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>	

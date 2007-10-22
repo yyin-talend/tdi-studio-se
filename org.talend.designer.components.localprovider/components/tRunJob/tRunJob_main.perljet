@@ -30,6 +30,10 @@ boolean transmitWholeContext = ElementParameterParser.getValue(
    "__TRANSMIT_WHOLE_CONTEXT__"
 ).equals("true");
 
+boolean dieOnChildError = ElementParameterParser.getValue(
+   node,
+   "__DIE_ON_CHILD_ERROR__"
+).equals("true");
 
 List<Map<String, String>> contextParams =
     (List<Map<String,String>>)ElementParameterParser.getObjectValue(
@@ -169,8 +173,13 @@ push @arguments, '--context_param <%=name%>="'.<%=value%>.'"';
     #     "CHILD_RETURN_CODE : %s\n",
     #     $_globals{<%=cid%>}{CHILD_RETURN_CODE}
     # );
-
+<%
+if (dieOnChildError) {
+%>
     if ($_globals{<%=cid%>}{CHILD_RETURN_CODE}) {
         die "Process <%=process %> died.\n" ;	
     }
+<%
+}
+%>
 }
