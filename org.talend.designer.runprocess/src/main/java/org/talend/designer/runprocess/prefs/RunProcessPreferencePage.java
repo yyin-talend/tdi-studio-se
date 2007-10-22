@@ -21,7 +21,6 @@
 // ============================================================================
 package org.talend.designer.runprocess.prefs;
 
-import org.eclipse.debug.internal.ui.preferences.BooleanFieldEditor2;
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
@@ -90,10 +89,18 @@ public class RunProcessPreferencePage extends FieldEditorPreferencePage implemen
     private IntegerFieldEditor fClientStatPortEditor;
 
     private IntegerFieldEditor fClientTraceEditor;
-    
-    private BooleanFieldEditor fSaveBeforeRunEditor;
+
+    private BooleanFieldEditor onSavebeforeField;
 
     private Group remoteServersGroup;
+
+    private BooleanFieldEditor onClearbeforeField;
+
+    private BooleanFieldEditor onExecTimeField;
+
+    private BooleanFieldEditor onStatisticsField;
+
+    private BooleanFieldEditor onTracesField;
 
     /**
      * Create the console page.
@@ -189,12 +196,50 @@ public class RunProcessPreferencePage extends FieldEditorPreferencePage implemen
         fClientStatPortEditor.setErrorMessage(Messages.getString("prefs.clientStatInvalidRange"));
         // /////////////////////////////////////////////////////////////////////////////
 
-        Composite compositeSaveBeforeRun = new Composite(clientGroup, SWT.NONE);
+        Composite compositeStateTraceRun = new Composite(clientGroup, SWT.NONE);
+        compositeStateTraceRun.setLayoutData(new GridData(GridData.FILL_BOTH));
+        GridLayout gridLayoutStateTraceRun = new GridLayout(3, true);
+        compositeStateTraceRun.setLayout(gridLayoutStateTraceRun);
+
+        Composite compositeSaveBeforeRun = new Composite(compositeStateTraceRun, SWT.NONE);
         compositeSaveBeforeRun.setLayoutData(new GridData(GridData.FILL_BOTH));
         GridLayout gridLayoutSaveBeforeRun = new GridLayout(1, true);
         compositeSaveBeforeRun.setLayout(gridLayoutSaveBeforeRun);
-        fSaveBeforeRunEditor = new BooleanFieldEditor(RunProcessPrefsConstants.ISSAVEBEFORERUN,"Save job before run" ,SWT.NONE,compositeSaveBeforeRun);
-        addField(fSaveBeforeRunEditor);
+        onSavebeforeField = new BooleanFieldEditor(RunProcessPrefsConstants.ISSAVEBEFORERUN, "Save before run", SWT.NONE,
+                compositeSaveBeforeRun);
+        addField(onSavebeforeField);
+
+        Composite compositeClearBeforeRun = new Composite(compositeStateTraceRun, SWT.NONE);
+        compositeClearBeforeRun.setLayoutData(new GridData(GridData.FILL_BOTH));
+        GridLayout gridLayoutClearBeforeRun = new GridLayout(1, true);
+        compositeClearBeforeRun.setLayout(gridLayoutClearBeforeRun);
+        onClearbeforeField = new BooleanFieldEditor(RunProcessPrefsConstants.ISCLEARBEFORERUN, "Clear before run", SWT.NONE,
+                compositeClearBeforeRun);
+        addField(onClearbeforeField);
+
+        Composite compositeExecTimeRun = new Composite(compositeStateTraceRun, SWT.NONE);
+        compositeExecTimeRun.setLayoutData(new GridData(GridData.FILL_BOTH));
+        GridLayout gridLayoutExecTimeRun = new GridLayout(1, true);
+        compositeExecTimeRun.setLayout(gridLayoutExecTimeRun);
+        onExecTimeField = new BooleanFieldEditor(RunProcessPrefsConstants.ISEXECTIMERUN, "Exec time", SWT.NONE,
+                compositeExecTimeRun);
+        addField(onExecTimeField);
+
+        Composite compositeStatisticsRun = new Composite(compositeStateTraceRun, SWT.NONE);
+        compositeStatisticsRun.setLayoutData(new GridData(GridData.FILL_BOTH));
+        GridLayout gridLayoutStatisticsRun = new GridLayout(1, true);
+        compositeStatisticsRun.setLayout(gridLayoutStatisticsRun);
+        onStatisticsField = new BooleanFieldEditor(RunProcessPrefsConstants.ISSTATISTICSRUN, "Statistics", SWT.NONE,
+                compositeStatisticsRun);
+        addField(onStatisticsField);
+
+        Composite compositeTracesRun = new Composite(compositeStateTraceRun, SWT.NONE);
+        compositeTracesRun.setLayoutData(new GridData(GridData.FILL_BOTH));
+        GridLayout gridLayoutTracesRun = new GridLayout(1, true);
+        compositeTracesRun.setLayout(gridLayoutTracesRun);
+        onTracesField = new BooleanFieldEditor(RunProcessPrefsConstants.ISTRACESRUN, "Traces", SWT.NONE, compositeTracesRun);
+        addField(onTracesField);
+
     }
 
     protected void createSpacer(Composite composite, int columnSpan) {

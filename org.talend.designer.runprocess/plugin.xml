@@ -20,25 +20,6 @@
             name="%runJobAction.title"/>
    </extension>
    <extension
-         point="org.eclipse.ui.preferencePages">
-     <page
-            category="org.talend.core.prefs"
-            class="org.talend.designer.runprocess.ui.preferences.StatsAndTracesPreferenceNodePage"
-            id="org.talend.designer.runprocess.ui.preferences.StatsAndTracesPreferenceNodePage"
-            name="%statsAndTraces">
-     </page>
-        <page
-            category="org.talend.designer.runprocess.ui.preferences.StatsAndTracesPreferenceNodePage"
-            class="org.talend.designer.runprocess.ui.preferences.PERLStatsAndTracesPreferencePage"
-            id="org.talend.designer.runprocess.ui.preferences.PERLStatsAndTracesPreferencePage"
-            name="Perl"/>
-     <page
-            category="org.talend.designer.runprocess.ui.preferences.StatsAndTracesPreferenceNodePage"
-            class="org.talend.designer.runprocess.ui.preferences.JAVAStatsAndTracesPreferencePage"
-            id="org.talend.designer.runprocess.ui.preferences.JAVAStatsAndTracesPreferencePage"
-            name="Java"/>
-  </extension>
-   <extension
          point="org.eclipse.ui.commands">
       <context
             id="talend.runProcess"

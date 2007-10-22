@@ -74,7 +74,6 @@ import org.talend.core.CorePlugin;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.process.IContext;
 import org.talend.designer.core.DesignerPlugin;
-import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.runprocess.IProcessMessage;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessMessage;
@@ -85,6 +84,7 @@ import org.talend.designer.runprocess.RunProcessContext;
 import org.talend.designer.runprocess.RunProcessPlugin;
 import org.talend.designer.runprocess.ProcessMessage.MsgType;
 import org.talend.designer.runprocess.i18n.Messages;
+import org.talend.designer.runprocess.prefs.RunProcessPrefsConstants;
 import org.talend.designer.runprocess.ui.actions.ClearPerformanceAction;
 import org.talend.designer.runprocess.ui.actions.ClearTraceAction;
 import org.talend.designer.runprocess.ui.actions.SaveJobBeforeRunAction;
@@ -172,8 +172,7 @@ public class ProcessComposite extends Composite {
         GridData data;
         GridLayout layout = new GridLayout();
         setLayout(layout);
-        IPreferenceStore preferenceStore = DesignerPlugin.getDefault().getPreferenceStore();
-        String languagePrefix = LanguageManager.getCurrentLanguage().toString() + "_";
+
         // Splitter
         SashForm sash = new SashForm(this, SWT.HORIZONTAL | SWT.SMOOTH);
         sash.setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -267,10 +266,8 @@ public class ProcessComposite extends Composite {
         saveJobBeforeRunButton.setText(Messages.getString("ProcessComposite.saveBeforeRun")); //$NON-NLS-1$
         saveJobBeforeRunButton.setToolTipText(Messages.getString("ProcessComposite.saveBeforeRunHint")); //$NON-NLS-1$
         saveJobBeforeRunButton.setEnabled(false);
-        // saveJobBeforeRunButton.setSelection(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(
-        // RunProcessPrefsConstants.ISSAVEBEFORERUN));
-        saveJobBeforeRunButton.setSelection(preferenceStore.getBoolean(languagePrefix
-                + EParameterName.ON_SAVEBEFORE_FLAG.getName()));
+        saveJobBeforeRunButton.setSelection(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(
+                RunProcessPrefsConstants.ISSAVEBEFORERUN));
         data = new GridData();
         data.horizontalSpan = 2;
         data.horizontalAlignment = SWT.END;
@@ -284,7 +281,8 @@ public class ProcessComposite extends Composite {
         clearBeforeExec.setText(Messages.getString("ProcessComposite.clearBefore")); //$NON-NLS-1$
         clearBeforeExec.setToolTipText(Messages.getString("ProcessComposite.clearBeforeHint")); //$NON-NLS-1$
         clearBeforeExec.setEnabled(false);
-        clearBeforeExec.setSelection(preferenceStore.getBoolean(languagePrefix + EParameterName.ON_CLEARBEFORE_FLAG.getName()));
+        clearBeforeExec.setSelection(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(
+                RunProcessPrefsConstants.ISCLEARBEFORERUN));
         data = new GridData();
         data.horizontalSpan = 2;
         data.horizontalAlignment = SWT.END;
@@ -298,7 +296,8 @@ public class ProcessComposite extends Composite {
         watchBtn.setText(Messages.getString("ProcessComposite.execTime")); //$NON-NLS-1$
         watchBtn.setToolTipText(Messages.getString("ProcessComposite.execTimeHint")); //$NON-NLS-1$
         watchBtn.setEnabled(false);
-        watchBtn.setSelection(preferenceStore.getBoolean(languagePrefix + EParameterName.ON_EXECTIME_FLAG.getName()));
+        watchBtn.setSelection(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(
+                RunProcessPrefsConstants.ISEXECTIMERUN));
         data = new GridData();
         data.horizontalSpan = 2;
         data.horizontalAlignment = SWT.END;
@@ -327,12 +326,14 @@ public class ProcessComposite extends Composite {
         perfBtn.setText(Messages.getString("ProcessComposite.stat")); //$NON-NLS-1$
         perfBtn.setToolTipText(Messages.getString("ProcessComposite.statHint")); //$NON-NLS-1$
         perfBtn.setEnabled(false);
-        perfBtn.setSelection(preferenceStore.getBoolean(languagePrefix + EParameterName.ON_STATISTICS_FLAG.getName()));
+        perfBtn.setSelection(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(
+                RunProcessPrefsConstants.ISSTATISTICSRUN));
         traceBtn = new Button(statisticsButtonComposite, SWT.CHECK);
         traceBtn.setText(Messages.getString("ProcessComposite.trace")); //$NON-NLS-1$
         traceBtn.setToolTipText(Messages.getString("ProcessComposite.traceHint")); //$NON-NLS-1$
         traceBtn.setEnabled(false);
-        traceBtn.setSelection(preferenceStore.getBoolean(languagePrefix + EParameterName.ON_TRACES_FLAG.getName()));
+        traceBtn
+                .setSelection(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(RunProcessPrefsConstants.ISTRACESRUN));
 
         clearTracePerfBtn = new Button(statisticsComposite, SWT.PUSH);
         clearTracePerfBtn.setText(Messages.getString("ProcessComposite.clear")); //$NON-NLS-1$
@@ -513,12 +514,16 @@ public class ProcessComposite extends Composite {
         // perfBtn.setSelection(processContext != null && processContext.isMonitorPerf());
         // traceBtn.setSelection(processContext != null && processContext.isMonitorTrace());
         // watchBtn.setSelection(processContext != null && processContext.isWatchAllowed());
-        perfBtn.setSelection(preferenceStore.getBoolean(languagePrefix + EParameterName.ON_STATISTICS_FLAG.getName()));
-        traceBtn.setSelection(preferenceStore.getBoolean(languagePrefix + EParameterName.ON_TRACES_FLAG.getName()));
-        watchBtn.setSelection(preferenceStore.getBoolean(languagePrefix + EParameterName.ON_EXECTIME_FLAG.getName()));
-        saveJobBeforeRunButton.setSelection(preferenceStore.getBoolean(languagePrefix
-                + EParameterName.ON_SAVEBEFORE_FLAG.getName()));
-        clearBeforeExec.setSelection(preferenceStore.getBoolean(languagePrefix + EParameterName.ON_CLEARBEFORE_FLAG.getName()));
+        perfBtn.setSelection(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(
+                RunProcessPrefsConstants.ISSTATISTICSRUN));
+        traceBtn
+                .setSelection(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(RunProcessPrefsConstants.ISTRACESRUN));
+        watchBtn.setSelection(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(
+                RunProcessPrefsConstants.ISEXECTIMERUN));
+        saveJobBeforeRunButton.setSelection(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(
+                RunProcessPrefsConstants.ISSAVEBEFORERUN));
+        clearBeforeExec.setSelection(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(
+                RunProcessPrefsConstants.ISCLEARBEFORERUN));
 
         // saveJobBeforeRunButton.setSelection(processContext != null && processContext.isSaveBeforeRun());
         setRunnable(processContext != null && !processContext.isRunning());
