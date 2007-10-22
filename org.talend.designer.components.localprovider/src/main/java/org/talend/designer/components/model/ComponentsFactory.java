@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.ResourceBundle;
 
 import org.apache.log4j.Level;
@@ -186,6 +187,26 @@ public class ComponentsFactory implements IComponentsFactory {
         return dir;
     }
 
+    /**
+     * 
+     * 
+     * Needs to create our own class loader in order to clear the cache for a ResourceBundle. Without using a new class
+     * loader each time the values would not be reread from the .properties file
+     * 
+     * http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4212439
+     * 
+     * yzhang ComponentsFactory class global comment. Detailled comment <br/>
+     * 
+     * $Id$
+     * 
+     */
+    private static class ResClassLoader extends ClassLoader {
+
+        ResClassLoader(ClassLoader parent) {
+            super(parent);
+        }
+    }
+
     private ResourceBundle getComponentResourceBundle(IComponent currentComp, String source) {
         String label = ComponentFilesNaming.getInstance().getBundleName(currentComp.getName(), source);
         // String pluginFullName = currentComp.getPluginFullName();
@@ -194,8 +215,10 @@ public class ComponentsFactory implements IComponentsFactory {
         // ClassLoader classLoader = bundle.getClass().getClassLoader();
         // return ResourceBundle.getBundle(label, Locale.getDefault(), classLoader);
 
-        // ResourceBundle.clearCache();
-        return ResourceBundle.getBundle(label);
+        ResourceBundle bundle = ResourceBundle.getBundle(label, Locale.getDefault(), new ResClassLoader(getClass()
+                .getClassLoader()));
+
+        return bundle;
     }
 
     private String getCodeLanguageSuffix() {
