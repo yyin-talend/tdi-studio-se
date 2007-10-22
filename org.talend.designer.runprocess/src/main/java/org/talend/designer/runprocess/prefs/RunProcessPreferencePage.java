@@ -218,7 +218,7 @@ public class RunProcessPreferencePage extends FieldEditorPreferencePage implemen
         compositeClearBeforeRun.setLayout(gridLayoutClearBeforeRun);
         onClearbeforeField = new BooleanFieldEditor(RunProcessPrefsConstants.ISCLEARBEFORERUN, "Clear before run", SWT.NONE,
                 compositeClearBeforeRun);
-        RunProcessPlugin.getDefault().getPreferenceStore().setValue(RunProcessPrefsConstants.ISCLEARBEFORERUN, true);
+
         addField(onClearbeforeField);
         Composite compositeExecTimeRun = new Composite(compositeStateTraceRun, SWT.NONE);
         compositeExecTimeRun.setLayoutData(new GridData(GridData.FILL_BOTH));

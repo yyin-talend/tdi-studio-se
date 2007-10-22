@@ -27,9 +27,8 @@ import org.talend.designer.runprocess.RunProcessPlugin;
 
 /**
  * 
- * DOC amaumont  class global comment. Detailled comment
- * <br/>
- *
+ * DOC amaumont class global comment. Detailled comment <br/>
+ * 
  */
 public class RunProcessPreferenceInitializer extends AbstractPreferenceInitializer {
 
@@ -45,12 +44,12 @@ public class RunProcessPreferenceInitializer extends AbstractPreferenceInitializ
         prefs.putValue(RunProcessPrefsConstants.CLIENT_STATS_PORT_BOUND2, "4333");
         prefs.putValue(RunProcessPrefsConstants.CLIENT_TRACE_PORT_BOUND1, "4334");
         prefs.putValue(RunProcessPrefsConstants.CLIENT_TRACE_PORT_BOUND2, "5333");
-
-        
+        prefs.setDefault(RunProcessPrefsConstants.ISCLEARBEFORERUN, true);
     }
 
     /**
      * DOC amaumont Comment method "getPluginPreferenceStore".
+     * 
      * @return
      */
     public static IPreferenceStore getPluginPreferenceStore() {
