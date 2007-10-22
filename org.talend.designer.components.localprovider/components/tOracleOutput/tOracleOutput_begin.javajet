@@ -93,6 +93,20 @@ int insertedCount_<%=cid%>=0;
 boolean whetherReject_<%=cid%> = false;
 
 java.sql.Connection conn_<%=cid%> = null;
+
+//optional schema.table
+String dbschema_<%=cid%> = null;
+dbschema_<%=cid%> = <%=tableSchema%>;
+String tableName_<%=cid%> = null;
+if(dbschema_<%=cid%> == null || dbschema_<%=cid%>.trim().length() == 0)
+{
+    tableName_<%=cid%> = <%=tableName%>;
+}
+else
+{
+    tableName_<%=cid%> =dbschema_<%=cid%> + "." + <%=tableName%>;
+}   
+
 <%
 String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
 if(useExistingConn.equals("true"))
@@ -129,6 +143,9 @@ else
 	String dbPwd_<%=cid%> = <%=dbpwd%>;
 
 	conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
+	
+	
+	
 	<%
 }
 %> 
@@ -138,9 +155,9 @@ if(tableAction.equals("true"))
 {
 %>
     java.sql.Statement stmtClearCount_<%=cid%> = conn_<%=cid%>.createStatement();
-    java.sql.ResultSet rsClearCount_<%=cid%> = stmtClearCount_<%=cid%>.executeQuery("select count(1) from " + <%=tableSchema%> + "." + <%=tableName%>);
+    java.sql.ResultSet rsClearCount_<%=cid%> = stmtClearCount_<%=cid%>.executeQuery("select count(1) from " + tableName_<%=cid%>);
     java.sql.Statement stmtClear_<%=cid%> = conn_<%=cid%>.createStatement();
-    stmtClear_<%=cid%>.executeUpdate("truncate table " + <%=tableSchema%> + "." + <%=tableName%>);
+    stmtClear_<%=cid%>.executeUpdate("truncate table " + tableName_<%=cid%>);
     while(rsClearCount_<%=cid%>.next()) {
         deletedCount_<%=cid%> += rsClearCount_<%=cid%>.getInt(1);
     }
@@ -375,39 +392,41 @@ for(Column colStmt:stmtStructure){
 }
 
 
+
+
 	if(dataAction.equals("INSERT")){
 	%>	
 	
-pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("INSERT INTO "+<%=tableSchema%>+"."+<%=tableName%>+" (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)");
+pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("INSERT INTO "+tableName_<%=cid%>+" (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)");
 
 	<%
 	}else if (dataAction.equals("UPDATE")){
 	%>
 	
-pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("UPDATE "+<%=tableSchema%>+"."+<%=tableName%>+" SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>");
+pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("UPDATE "+tableName_<%=cid%>+" SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>");
 
 	<%		
 	}else if (dataAction.equals("INSERT_OR_UPDATE")){
 	%>
-pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("SELECT COUNT(1) FROM "+<%=tableSchema%>+"." + <%=tableName%> + " WHERE <%=updateWhereStmt.toString()%>");	
+pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("SELECT COUNT(1) FROM "+tableName_<%=cid%> + " WHERE <%=updateWhereStmt.toString()%>");	
 	
-pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement("INSERT INTO "+<%=tableSchema%>+"."+<%=tableName%>+" (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)");
+pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement("INSERT INTO "+tableName_<%=cid%>+" (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)");
 
-pstmtUpdate_<%=cid %> = conn_<%=cid%>.prepareStatement("UPDATE "+<%=tableSchema%>+"."+<%=tableName%>+" SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>");
+pstmtUpdate_<%=cid %> = conn_<%=cid%>.prepareStatement("UPDATE "+tableName_<%=cid%>+" SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>");
 
 	<%
 	}else if (dataAction.equals("UPDATE_OR_INSERT")){
 	%>
-pstmtUpdate_<%=cid %> = conn_<%=cid%>.prepareStatement("UPDATE "+<%=tableSchema%>+"."+<%=tableName%>+" SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>");
+pstmtUpdate_<%=cid %> = conn_<%=cid%>.prepareStatement("UPDATE "+tableName_<%=cid%>+" SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>");
 
-pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement("INSERT INTO "+<%=tableSchema%>+"."+<%=tableName%>+" (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)");
+pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement("INSERT INTO "+tableName_<%=cid%>+" (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)");
 		
 	<%
 			
 	}else if (dataAction.equals("DELETE")){
 	%>
 	
-pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("DELETE  FROM "+<%=tableSchema%>+"."+<%=tableName%>+" WHERE <%=updateWhereStmt.toString()%>");
+pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("DELETE  FROM "+tableName_<%=cid%>+" WHERE <%=updateWhereStmt.toString()%>");
 
 	<%		
 	}
@@ -427,4 +446,5 @@ if(conn_<%=cid%>.getAutoCommit())
 
 }
 %>
+
 
