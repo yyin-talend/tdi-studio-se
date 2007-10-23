@@ -49,7 +49,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
-import org.talend.repository.i18n.Messages;
+import org.talend.repository.ui.swt.filepositionalviewer.GraphicRule.HorizontalMarkerEditor;
 import org.talend.repository.ui.swt.filepositionalviewer.GraphicRule.PositionMarkerEditor;
 
 /**
@@ -224,9 +224,10 @@ public class FilePositionalViewer extends Composite {
                 int lineToPrint = (new Integer(drawLine[i]).intValue()) + oldToPrint;
                 drawVerticalMarker(adjustPositionWithPixel(lineToPrint));
                 GraphicRule.drawGraphicRule(adjustPositionWithPixel(lineToPrint));
-                GraphicRule.drawHorizontalRule(fieldPositionText, fieldSeparatorValue);
+
                 oldToPrint = lineToPrint;
             }
+            GraphicRule.drawHorizontalRule(fieldPositionText, fieldSeparatorValue);
         }
     }
 
@@ -236,10 +237,11 @@ public class FilePositionalViewer extends Composite {
      * 
      * @param s
      */
-    public void setPositionValue(String s) {
+    public void setPositionValue(String s, boolean eraseMarkersIsNedeed) {
         fieldPositionText = s;
-        cleanAllMarkers();
-
+        if (eraseMarkersIsNedeed) {
+            cleanAllMarkers();
+        }
         if (s != null & !s.equals("")) { //$NON-NLS-1$
             fieldPositionText = s;
             if (s != null & !s.equals("")) { //$NON-NLS-1$
@@ -247,8 +249,9 @@ public class FilePositionalViewer extends Composite {
                 for (int i = 0; i < drawLine.length; i++) {
                     drawVerticalMarker(adjustPositionWithPixel(new Integer(drawLine[i]).intValue()));
                     GraphicRule.drawGraphicRule(adjustPositionWithPixel(new Integer(drawLine[i]).intValue()));
-                    GraphicRule.drawHorizontalRule(fieldPositionText, fieldSeparatorValue);
+
                 }
+                GraphicRule.drawHorizontalRule(fieldPositionText, fieldSeparatorValue);
             }
         }
     }
@@ -259,20 +262,33 @@ public class FilePositionalViewer extends Composite {
     public void cleanAllMarkers() {
         if (listVerticalMarker != null && !listVerticalMarker.isEmpty()) {
             for (VerticalMarkerEditor marker : listVerticalMarker) {
-                eraseVerticalMarker(marker, marker.posX, -10);
+                marker.dispose();
             }
+            listVerticalMarker.clear();
         }
 
         if (listTopMarkerEditor != null && !listTopMarkerEditor.isEmpty()) {
             for (TopMarkerEditor top : listTopMarkerEditor) {
-                eraseTopMarker(top, top.posX, -10);
+                top.dispose();
             }
+            listTopMarkerEditor.clear();
         }
 
         if (GraphicRule.listPositionMarker != null && !GraphicRule.listPositionMarker.isEmpty()) {
             for (PositionMarkerEditor position : GraphicRule.listPositionMarker) {
-                GraphicRule.erasePositionMarker(position, position.posX, -10);
+                position.dispose();
             }
+            GraphicRule.listPositionMarker.clear();
+        }
+
+        if (GraphicRule.listHorizontalMarker != null && !GraphicRule.listHorizontalMarker.isEmpty()) {
+            for (HorizontalMarkerEditor horizontal : GraphicRule.listHorizontalMarker) {
+                horizontal.dispose();
+            }
+            GraphicRule.listHorizontalMarker.clear();
+        }
+        if (positionBarre != null) {
+            positionBarre.clear();
         }
     }
 
@@ -566,8 +582,8 @@ public class FilePositionalViewer extends Composite {
                                 if (resizeHelper.isDragging()) {
                                     for (VerticalMarkerEditor marker : listVerticalMarker) {
                                         if (posX == marker.getPosX()) {
-                                            if (!composite.translateVerticalMarker(marker,
-                                                    adjustPositionWithPixel(marker.posX), newPoint.x)) {
+                                            if (!composite.translateVerticalMarker(marker, adjustPositionWithPixel(marker.posX),
+                                                    newPoint.x)) {
                                                 stopDrag = true;
                                                 event.type = SWT.MouseUp;
                                                 break;
@@ -576,8 +592,7 @@ public class FilePositionalViewer extends Composite {
                                     }
                                     for (TopMarkerEditor top : listTopMarkerEditor) {
                                         if (posX == top.getPosX()) {
-                                            composite.translateTopMarker(top, adjustPositionWithPixel(top.posX),
-                                                    newPoint.x);
+                                            composite.translateTopMarker(top, adjustPositionWithPixel(top.posX), newPoint.x);
                                         }
                                     }
                                     resizeHelper.setLastDragPoint(newPoint);
@@ -665,8 +680,7 @@ public class FilePositionalViewer extends Composite {
         }
 
         private void setDeleteCursor() {
-            Cursor cursor = new Cursor(this.getDisplay(),
-                    ImageProvider.getImageDesc(EImage.DELETE_ICON).getImageData(), 0, 0);
+            Cursor cursor = new Cursor(this.getDisplay(), ImageProvider.getImageDesc(EImage.DELETE_ICON).getImageData(), 0, 0);
             this.setCursor(cursor);
         }
 

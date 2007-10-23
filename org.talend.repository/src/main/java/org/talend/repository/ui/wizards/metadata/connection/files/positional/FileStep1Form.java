@@ -182,10 +182,8 @@ public class FileStep1Form extends AbstractPositionalFileStepForm {
         int heightViewer = 150;
 
         // Group File Location
-        Group groupFileViewer = Form
-                .createGroup(this, 1, Messages.getString("FileStep1.groupFileLocationSettings"), 95); //$NON-NLS-1$
-        Composite compositeFileLocation = Form.startNewDimensionnedGridLayout(groupFileViewer, 3, WIDTH_GRIDDATA_PIXEL,
-                95);
+        Group groupFileViewer = Form.createGroup(this, 1, Messages.getString("FileStep1.groupFileLocationSettings"), 95); //$NON-NLS-1$
+        Composite compositeFileLocation = Form.startNewDimensionnedGridLayout(groupFileViewer, 3, WIDTH_GRIDDATA_PIXEL, 95);
 
         // server Combo
         String[] serverLocation = { "Localhost 127.0.0.1" }; //$NON-NLS-1$
@@ -214,8 +212,7 @@ public class FileStep1Form extends AbstractPositionalFileStepForm {
 
         graphicRule = new GraphicRule(compositeBorderFileViewer, SWT.NONE);
 
-        scrolledCompositeFileViewer = new ScrolledComposite(compositeBorderFileViewer, SWT.H_SCROLL | SWT.V_SCROLL
-                | SWT.NONE);
+        scrolledCompositeFileViewer = new ScrolledComposite(compositeBorderFileViewer, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NONE);
         scrolledCompositeFileViewer.setExpandHorizontal(true);
         scrolledCompositeFileViewer.setExpandVertical(true);
         GridData gridData1 = new GridData(GridData.FILL_BOTH);
@@ -232,15 +229,12 @@ public class FileStep1Form extends AbstractPositionalFileStepForm {
         scrolledCompositeFileViewer.setMinSize(filePositionalViewer.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 
         // Field fieldSeparatorText
-        Composite compositeFieldSeparator = Form.startNewDimensionnedGridLayout(groupFileViewer, 2,
-                WIDTH_GRIDDATA_PIXEL, 50);
-        fieldSeparatorText = new LabelledText(compositeFieldSeparator,
-                Messages.getString("FileStep2.fieldSeparator"), 1, true, //$NON-NLS-1$
+        Composite compositeFieldSeparator = Form.startNewDimensionnedGridLayout(groupFileViewer, 2, WIDTH_GRIDDATA_PIXEL, 50);
+        fieldSeparatorText = new LabelledText(compositeFieldSeparator, Messages.getString("FileStep2.fieldSeparator"), 1, true, //$NON-NLS-1$
                 SWT.RIGHT);
         fieldSeparatorText.setToolTipText(Messages.getString("FileStep2.fieldSeparatorPositionalTip")); //$NON-NLS-1$
 
-        fieldPositionText = new LabelledText(compositeFieldSeparator,
-                Messages.getString("FileStep2.fieldPosition"), 1, true, //$NON-NLS-1$
+        fieldPositionText = new LabelledText(compositeFieldSeparator, Messages.getString("FileStep2.fieldPosition"), 1, true, //$NON-NLS-1$
                 SWT.RIGHT);
         fieldPositionText.setToolTipText(Messages.getString("FileStep2.fieldPositionTip")); //$NON-NLS-1$
 
@@ -248,8 +242,7 @@ public class FileStep1Form extends AbstractPositionalFileStepForm {
             // Composite BottomButton
             Composite compositeBottomButton = Form.startNewGridLayout(this, 2, false, SWT.CENTER, SWT.CENTER);
             // Button Cancel
-            cancelButton = new UtilsButton(compositeBottomButton,
-                    Messages.getString("CommonWizard.Cancel"), WIDTH_BUTTON_PIXEL, //$NON-NLS-1$
+            cancelButton = new UtilsButton(compositeBottomButton, Messages.getString("CommonWizard.Cancel"), WIDTH_BUTTON_PIXEL, //$NON-NLS-1$
                     HEIGHT_BUTTON_PIXEL);
             // nextButton = new UtilsButton(compositeBottomButton, "Next", WIDTH_BUTTON_PIXEL, HEIGHT_BUTTON_PIXEL);
         }
@@ -287,8 +280,7 @@ public class FileStep1Form extends AbstractPositionalFileStepForm {
 
             public void handleEvent(Event e) {
                 int hSelection = scrolledCompositeFileViewer.getHorizontalBar().getSelection();
-                graphicRule.setBounds(5 - hSelection, 5, filePositionalViewer.getText().getSize().x, graphicRule
-                        .getSize().y);
+                graphicRule.setBounds(5 - hSelection, 5, filePositionalViewer.getText().getSize().x, graphicRule.getSize().y);
             }
         });
         scrolledCompositeFileViewer.addControlListener(new ControlListener() {
@@ -388,25 +380,29 @@ public class FileStep1Form extends AbstractPositionalFileStepForm {
                     if (!checkFieldSeparatorValue()) {
                         // the value isn't correct => clean markers of the positionalViewer
                         fieldPositionText.setEditable(false);
-                        filePositionalViewer.cleanAllMarkers();
-                        filePositionalViewer.setEnabled(false);
-                        graphicRule.setEnabled(false);
+                        if (filePositionalViewer.getVisible()) {
+                            filePositionalViewer.cleanAllMarkers();
+                            filePositionalViewer.setEnabled(false);
+                            graphicRule.setEnabled(false);
+                        }
                     } else {
                         String value = getValidateFieldSeparator(fieldSeparatorText.getText());
                         Point selection = fieldSeparatorText.getSelection();
                         if ((!value.equals(getConnection().getFieldSeparatorValue()))) {
                             // the value isn't correct => clean markers of the positionalViewer
                             fieldPositionText.setEditable(false);
-                            filePositionalViewer.setEnabled(false);
-                            graphicRule.setEnabled(false);
-                            filePositionalViewer.cleanAllMarkers();
+                            if (filePositionalViewer.getVisible()) {
+                                filePositionalViewer.setEnabled(false);
+                                graphicRule.setEnabled(false);
+                                filePositionalViewer.cleanAllMarkers();
+                            }
                         } else {
                             // the value is correct
                             filePositionalViewer.setEnabled(true);
                             graphicRule.setEnabled(true);
 
                             // update the positionalViewer
-                            filePositionalViewer.setSeparatorValue(value, true);
+                            filePositionalViewer.setSeparatorValue(value, filePositionalViewer.getVisible());
                             // update the field position Text
                             String newPosition = filePositionalViewer.calculatePositionX();
                             if (!fieldPositionText.getText().equals(newPosition)) {
@@ -439,16 +435,18 @@ public class FileStep1Form extends AbstractPositionalFileStepForm {
                     if (!checkFieldPositionValue()) {
                         // the value isn't correct => clean markers of the positionalViewer
                         fieldSeparatorText.setEditable(false);
-                        filePositionalViewer.setEnabled(false);
-                        graphicRule.setEnabled(false);
-                        filePositionalViewer.cleanAllMarkers();
+                        if (filePositionalViewer.getVisible()) {
+                            filePositionalViewer.setEnabled(false);
+                            graphicRule.setEnabled(false);
+                            filePositionalViewer.cleanAllMarkers();
+                        }
                     } else {
                         filePositionalViewer.setEnabled(true);
                         graphicRule.setEnabled(true);
                         String value = getValidateFieldPosition(fieldPositionText.getText());
                         Point selection = fieldPositionText.getSelection();
                         // the value is correct
-                        filePositionalViewer.setPositionValue(value);
+                        filePositionalViewer.setPositionValue(value, filePositionalViewer.getVisible());
                         fieldSeparatorText.setEditable(true);
                         value = filePositionalViewer.getSeparatorValue();
                         if (fieldSeparatorText.getText().equals("")) { //$NON-NLS-1$
@@ -469,8 +467,8 @@ public class FileStep1Form extends AbstractPositionalFileStepForm {
 
             @Override
             public void keyPressed(KeyEvent e) {
-                e.doit = charIsAcceptedOnFieldPosition(fieldPositionText.getText(), e.character, fieldPositionText
-                        .getSelection().x);
+                e.doit = charIsAcceptedOnFieldPosition(fieldPositionText.getText(), e.character,
+                        fieldPositionText.getSelection().x);
             }
         });
 
