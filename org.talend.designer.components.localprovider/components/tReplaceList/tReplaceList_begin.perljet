@@ -17,14 +17,14 @@ CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 
-String lookupSearchIndex = ElementParameterParser.getValue(
+String lookupSearchColumn = ElementParameterParser.getValue(
     node,
-    "__LOOKUP_SEARCH_INDEX__"
+    "__LOOKUP_SEARCH_COLUMN__"
 );
 
-String lookupReplacementIndex = ElementParameterParser.getValue(
+String lookupReplacementColumn = ElementParameterParser.getValue(
     node,
-    "__LOOKUP_REPLACEMENT_INDEX__"
+    "__LOOKUP_REPLACEMENT_COLUMN__"
 );
 
 	
@@ -32,6 +32,8 @@ List<IMetadataTable> metadatas = node.getMetadataList();
 
 if (metadatas != null && metadatas.size() > 0) {
     String lookup = null;
+    int lookupSearchIndex = 0;
+    int lookupReplacementIndex = 0;
 
     List<IConnection> inputConnections;
     inputConnections = (List<IConnection>) node.getIncomingConnections();
@@ -42,6 +44,25 @@ if (metadatas != null && metadatas.size() > 0) {
 
         if (connection.getLineStyle() == EConnectionType.FLOW_REF) {
             lookup = connection.getName();
+
+            // Here we search the index of the lookup columns in the lookup
+            // metadata.
+            IMetadataTable lookupMetadata = connection.getMetadataTable();
+            int colnum = 0;
+            for (IMetadataColumn column: lookupMetadata.getListColumns()) {
+                // lookup columns are fetched with the following format:
+                // tFileInputDelimited_2.column_name, so we have to match
+                // ".column_name" because it's not easy (and useless) to
+                // know the origin component name.
+                if (lookupSearchColumn.endsWith("."+column.getLabel())) {
+                    lookupSearchIndex = colnum;
+                }
+                if (lookupReplacementColumn.endsWith("."+column.getLabel())) {
+                    lookupReplacementIndex = colnum;
+                }
+                colnum++;
+            }
+
             continue;
         }
     }
