@@ -10,6 +10,7 @@
     RELEASE_DATE="20070806A"
     STARTABLE="false"
     DATA_AUTO_PROPAGATE="false"
+    HAS_CONDITIONAL_OUTPUTS="true"
   >
     <SIGNATURE/>
   </HEADER>

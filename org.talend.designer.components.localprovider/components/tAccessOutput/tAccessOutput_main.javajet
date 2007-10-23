@@ -69,6 +69,13 @@ imports="
     }
     
     List<? extends IConnection> outgoingConns = node.getOutgoingSortedConnections();
+    for(IConnection conn : outgoingConns) {
+        if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+%>
+        
+        <%=conn.getName() %> = null;            
+<%      }
+    }
 
 ///////////////Inner Class Column///////////////////////////
 class Column{
@@ -379,7 +386,9 @@ if(incomingConnName != null && columnList != null){
                 throw(e);
                 <%
             } else {
-                if(rejectConnName != null && rejectColumnList != null && rejectColumnList.size() > 0) {
+                if(rejectConnName != null && rejectColumnList != null && rejectColumnList.size() > 0) {%>
+                    <%=rejectConnName %> = new <%=rejectConnName %>Struct();
+                <%
                     for(IMetadataColumn column : columnList) {
                         %>
                         <%=rejectConnName%>.<%=column.getLabel()%> = <%=incomingConnName%>.<%=column.getLabel()%>;
@@ -439,7 +448,9 @@ if(incomingConnName != null && columnList != null){
                 throw(e);
                 <%
             } else {
-                if(rejectConnName != null && rejectColumnList != null && rejectColumnList.size() > 0) {
+                if(rejectConnName != null && rejectColumnList != null && rejectColumnList.size() > 0) {%>
+                    <%=rejectConnName %> = new <%=rejectConnName %>Struct();
+                <%
                     for(IMetadataColumn column : columnList) {
                         %>
                         <%=rejectConnName%>.<%=column.getLabel()%> = <%=incomingConnName%>.<%=column.getLabel()%>;
@@ -513,7 +524,9 @@ if(incomingConnName != null && columnList != null){
                     throw(e);
                     <%
                 } else {
-                    if(rejectConnName != null && rejectColumnList != null && rejectColumnList.size() > 0) {
+                    if(rejectConnName != null && rejectColumnList != null && rejectColumnList.size() > 0) {%>
+                    <%=rejectConnName %> = new <%=rejectConnName %>Struct();
+                    <%
                         for(IMetadataColumn column : columnList) {
                             %>
                             <%=rejectConnName%>.<%=column.getLabel()%> = <%=incomingConnName%>.<%=column.getLabel()%>;
@@ -553,7 +566,9 @@ if(incomingConnName != null && columnList != null){
                     throw(e);
                     <%
                 } else {
-                    if(rejectConnName != null && rejectColumnList != null && rejectColumnList.size() > 0) {
+                    if(rejectConnName != null && rejectColumnList != null && rejectColumnList.size() > 0) {%>
+                    <%=rejectConnName %> = new <%=rejectConnName %>Struct();
+                    <%
                         for(IMetadataColumn column : columnList) {
                             %>
                             <%=rejectConnName%>.<%=column.getLabel()%> = <%=incomingConnName%>.<%=column.getLabel()%>;
@@ -617,7 +632,9 @@ if(incomingConnName != null && columnList != null){
                    throw(e);
                    <%
                } else {
-                   if(rejectConnName != null && rejectColumnList != null && rejectColumnList.size() > 0) {
+                   if(rejectConnName != null && rejectColumnList != null && rejectColumnList.size() > 0) {%>
+                   <%=rejectConnName %> = new <%=rejectConnName %>Struct();
+                   <%
                        for(IMetadataColumn column : columnList) {
                            %>
                            <%=rejectConnName%>.<%=column.getLabel()%> = <%=incomingConnName%>.<%=column.getLabel()%>;
@@ -659,7 +676,9 @@ if(incomingConnName != null && columnList != null){
                         throw(e);
                         <%
                     } else {
-                        if(rejectConnName != null && rejectColumnList != null && rejectColumnList.size() > 0) {
+                        if(rejectConnName != null && rejectColumnList != null && rejectColumnList.size() > 0) {%>
+                        <%=rejectConnName %> = new <%=rejectConnName %>Struct();
+                        <%
                             for(IMetadataColumn column : columnList) {
                                 %>
                                 <%=rejectConnName%>.<%=column.getLabel()%> = <%=incomingConnName%>.<%=column.getLabel()%>;
@@ -705,7 +724,9 @@ if(incomingConnName != null && columnList != null){
                 throw(e);
                 <%
             } else {
-                if(rejectConnName != null && rejectColumnList != null && rejectColumnList.size() > 0) {
+                if(rejectConnName != null && rejectColumnList != null && rejectColumnList.size() > 0) {%>
+                    <%=rejectConnName %> = new <%=rejectConnName %>Struct();
+                <%
                     for(IMetadataColumn column : columnList) {
                         %>
                         <%=rejectConnName%>.<%=column.getLabel()%> = <%=incomingConnName%>.<%=column.getLabel()%>;
