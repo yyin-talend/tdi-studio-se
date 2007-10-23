@@ -102,7 +102,7 @@ my $nb_rows = 0;
 <%
         if (dataAction.equals("UPDATE")) {
 %>
-$nb_rows = $usth_<%=cid %>->execute(@<%=cid%>[<%=positionsString%>])
+$nb_rows = $usth_<%=cid %>->execute(@$<%=cid%>[<%=positionsString%>])
     or die "can't execute update query\n";
 
 if ($nb_rows) {
