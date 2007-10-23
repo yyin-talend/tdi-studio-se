@@ -123,6 +123,7 @@ ThenRunStruct<%=destination %> aggregated_row_<%=cid %> = new ThenRunStruct<%=de
 				IMetadataColumn column = listColumns.get(c);
 				String columnName = column.getLabel();
 				String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+				String typeName = JavaTypesManager.getTypeToGenerate(column.getTalendType(), false);
 				JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 				String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
 				for(int g = 0; g < sizeGroupbys; g++){
@@ -188,7 +189,8 @@ aggregated_row_<%=cid %>.<%=outputColumn %> = <%
             								if(function.equals("first")||function.equals("last")||function.equals("min")||function.equals("max")){
             									sameType = (JavaTypesManager.getJavaTypeFromId(inColumn.getTalendType()) == javaType);
             								}else if(function.equals("avg")||function.equals("sum")){
-            									sameType = (typeToGenerate.equals("float")||typeToGenerate.equals("double"));
+                                                sameType = (typeToGenerate.equals("byte") || typeToGenerate.equals("short") || typeToGenerate.equals("int") || typeToGenerate.equals("long") || typeToGenerate.equals("float") || typeToGenerate.equals("double") || 
+                                                        typeToGenerate.equals("Byte") || typeToGenerate.equals("Short") || typeToGenerate.equals("Integer") || typeToGenerate.equals("Long") || typeToGenerate.equals("Float") || typeToGenerate.equals("Double"));
             								}else{
             									sameType = (typeToGenerate.equals("int")||typeToGenerate.equals("long"));
             								}
@@ -204,13 +206,19 @@ float <%=outOperation %>_avg_temp = 0;
 if(operation_result_<%=cid %>.<%=inOperation %>_count > 0){
 	<%=outOperation %>_avg_temp = operation_result_<%=cid %>.<%=inOperation %>_sum / operation_result_<%=cid %>.<%=inOperation %>_count ;
 }
-<%if(sameType){%>aggregated_row_<%=cid %>.<%=outOperation %> = <%=outOperation %>_avg_temp;<%}else{%>String temps<%=outOperation %> = String.valueOf(<%if(javaType == JavaTypesManager.INTEGER || javaType == JavaTypesManager.LONG || javaType == JavaTypesManager.BYTE || javaType == JavaTypesManager.SHORT || javaType == JavaTypesManager.CHARACTER){%>(<%=typeToGenerate %>)<%}%><%=outOperation %>_avg_temp);<%}%>
+<%if(sameType){%>aggregated_row_<%=cid %>.<%=outOperation %> = (<%=typeName%>)<%=outOperation %>_avg_temp;<%}else{%>String temps<%=outOperation %> = String.valueOf(<%if(javaType == JavaTypesManager.INTEGER || javaType == JavaTypesManager.LONG || javaType == JavaTypesManager.BYTE || javaType == JavaTypesManager.SHORT || javaType == JavaTypesManager.CHARACTER){%>(<%=typeToGenerate %>)<%}%><%=outOperation %>_avg_temp);<%}%>
 <%
             			}else{
 							if(sameType){
-%>
-aggregated_row_<%=cid %>.<%=outOperation %> = operation_result_<%=cid %>.<%=inOperation %>_<%=function %>;
-<%
+                                if(function.equals("sum")) {
+                                    %>
+                                    aggregated_row_<%=cid %>.<%=outOperation %> = (<%=typeName%>)operation_result_<%=cid %>.<%=inOperation %>_<%=function %>;
+                                    <%
+                                } else {
+                                    %>
+                                    aggregated_row_<%=cid %>.<%=outOperation %> = operation_result_<%=cid %>.<%=inOperation %>_<%=function %>;
+                                    <%
+                                }
 							}else{
 %>
 String temps<%=outOperation %> = String.valueOf(<%if(function.equals("sum")&&(javaType == JavaTypesManager.INTEGER || javaType == JavaTypesManager.LONG || javaType == JavaTypesManager.BYTE || javaType == JavaTypesManager.SHORT || javaType == JavaTypesManager.CHARACTER)){%>(<%=typeToGenerate %>)<%}%>operation_result_<%=cid %>.<%=inOperation %>_<%=function %>);//??
