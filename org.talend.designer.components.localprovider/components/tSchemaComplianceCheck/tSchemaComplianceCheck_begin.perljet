@@ -13,13 +13,13 @@ imports="
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
+String dateFormat = ElementParameterParser.getValue(node,"__DATE_FORMAT__");
+String dateLanguage = ElementParameterParser.getValue(node,"__DATE_LANGUAGE__");
 
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
     IMetadataTable metadata = metadatas.get(0);
     if (metadata!=null) {
-        String dateFormat = ElementParameterParser.getValue(node,"__DATE_FORMAT__");
-        String dateLanguage = ElementParameterParser.getValue(node,"__DATE_LANGUAGE__");
 
 
 %>
@@ -32,26 +32,6 @@ $ENV{TZ}='GMT';
 
 my %is_boolean = ( 0 => 1, 1 => 1) ;
 
-
-my %desc_<%=cid %> = (
-    schema        => [
-<%
-        for (IMetadataColumn column: metadata.getListColumns()) {
-%>
-        {
-            name    => '<%=column.getLabel() %>',
-            key     => <%=column.isKey() %>,
-            type    => '<%=column.getTalendType() %>',
-            len     => <%=column.getLength() %>,
-            null    => <%=column.isNullable() %>,
-            default => '<%=column.getDefault() %>',
-            comment => '<%=column.getComment() %>',
-        },
-<%
-        }
-%>
-    ],
-);
 
 <%
         int column_rej_number = 0;
