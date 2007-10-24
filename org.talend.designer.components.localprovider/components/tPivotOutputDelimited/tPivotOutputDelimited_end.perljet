@@ -1,0 +1,74 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+"
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+	
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+        boolean csvOption = ElementParameterParser.getValue(
+            node,
+            "__CSV_OPTION__"
+        ).equals("true");
+
+%>
+
+# groupby columns distinct values
+while( my ($row_key_<%=cid%>, $row_indx_<%=cid%>) = each %$<%=cid%>_row_keys){
+    $<%=cid%>_cross_table->[ $row_indx_<%=cid%> ]->[0] = $row_key_<%=cid%>;
+}
+
+# The cross-table header
+$<%=cid%>_cross_table->[0] = [
+    ( sort { $<%=cid%>_header->{$a} <=> $<%=cid%>_header->{$b} }  ( 
+        keys %$<%=cid%>_header )
+    ),
+    (  sort { $<%=cid%>_pivot->{$a} <=> $<%=cid%>_pivot->{$b} }  ( 
+        keys %$<%=cid%>_pivot )
+    ),
+];
+
+foreach my $row_<%=cid%> (@$<%=cid%>_cross_table){
+<%
+if(csvOption){
+%>
+    if (not $csv_<%=cid%>->print($output_FH_<%=cid%>, $row_<%=cid%>)) {
+        die "[<%=cid%>] failed to write row";
+    }
+    print {$output_FH_<%=cid%>} OUTPUT_ROW_SEPARATOR_<%=cid %>
+        or die "[<%=cid%>] failed to write eol";
+<%
+}
+else{
+%>
+    print {$output_FH_<%=cid%>} (
+	    join(
+                OUTPUT_FIELD_SEPARATOR_<%=cid %>,
+                @$row_<%=cid%>
+            ),
+	    OUTPUT_ROW_SEPARATOR_<%=cid %>
+    )
+        or die "[<%=cid%>] failed to write row";
+<%
+}
+%>
+}# foreach cross_table row
+
+close($output_FH_<%=cid%>);
+
+
+<%
+    }
+}
+%>

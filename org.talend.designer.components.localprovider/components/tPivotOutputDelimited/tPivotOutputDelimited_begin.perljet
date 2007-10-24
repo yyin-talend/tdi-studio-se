@@ -1,0 +1,123 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.core.model.metadata.IMetadataTable
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.core.model.process.IConnection
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+    java.util.Map
+"
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+        List<Map<String, String>> groupbys = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__GROUPBYS__");
+
+        String filename = ElementParameterParser.getValue(
+            node,
+            "__FILENAME__"
+        );
+
+        String rowSeparator = ElementParameterParser.getValue(
+            node,
+            "__ROWSEPARATOR__"
+        );
+
+        String fieldSeparator = ElementParameterParser.getValue(
+            node,
+            "__FIELDSEPARATOR__"
+        );
+
+        boolean csvOption = ElementParameterParser.getValue(
+            node,
+            "__CSV_OPTION__"
+        ).equals("true");
+        
+        String escapeChar = ElementParameterParser.getValue(
+            node,
+            "__ESCAPE_CHAR__"
+            );
+        
+        String textEnclosure = ElementParameterParser.getValue(
+            node,
+            "__TEXT_ENCLOSURE__"
+        );
+
+        int column_number = 0;
+        List<? extends IConnection> incomingConnections = node.getIncomingConnections();
+        if (incomingConnections != null && !incomingConnections.isEmpty()) {
+            IMetadataTable inMetadata = incomingConnections.get(0).getMetadataTable();
+            column_number = 0;
+            String inConnName = inMetadata.getTableName();
+            for (IMetadataColumn column: inMetadata.getListColumns()) {
+%>
+use constant <%=inConnName %>__<%=column.getLabel() %> => <%=column_number%>;
+<%
+                column_number++;
+            }
+        }
+%>
+
+use FileHandle;
+<%
+        if (csvOption) {
+%>
+use Text::CSV_XS;
+<%
+        }
+%>
+
+
+use constant OUTPUT_FIELD_SEPARATOR_<%=cid %> => <%=fieldSeparator %>;
+use constant OUTPUT_ROW_SEPARATOR_<%=cid %> => <%=rowSeparator %>;
+
+<%
+        if (csvOption) {
+%>
+my $csv_<%=cid%> = Text::CSV_XS->new({
+    sep_char     => <%=fieldSeparator%>,
+    escape_char  => <%=escapeChar%>,
+    quote_char   => <%=textEnclosure%>,
+    binary       => 1,
+});
+<%
+        }
+%>
+
+
+my $output_FH_<%=cid %> = new FileHandle;
+open($output_FH_<%=cid %>, ">", <%=filename%>)
+    or die '[<%=cid%>] cannot open file "'.<%=filename%>.'"';
+
+
+my $<%=cid%>_cross_table = [];
+my $<%=cid%>_header = {};
+my $<%=cid%>_pivot = {};
+my $<%=cid%>_row_keys = {};
+
+<%
+        for (int i=0; i<groupbys.size(); i++) {
+            Map<String, String> groupby = groupbys.get(i);
+%>
+$<%=cid%>_header->{<%= groupby.get("INPUT_COLUMN") %>} ||= 
+    scalar keys %$<%=cid%>_header;
+<%
+        }
+%>
+if( 0 == scalar keys %$<%=cid%>_header){
+    $<%=cid%>_header->{''} = 1;
+}
+<%
+    }
+}
+%>
