@@ -751,7 +751,6 @@ int updateFlag_<%=cid%>=0;
                     if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
                         
         %>
-                        if(<%=outgoingConn.getName()%>==null){
                                 <%=outgoingConn.getName()%> = new <%=outgoingConn.getName()%>Struct();
        <%
                         for(IMetadataColumn column : columnList) {
@@ -759,9 +758,6 @@ int updateFlag_<%=cid%>=0;
                             <%=outgoingConn.getName()%>.<%=column.getLabel()%> = <%=incomingConnName%>.<%=column.getLabel()%>;
                             <%                  
                         }
-         %>
-                  }
-         <%
                     }
                 }
             }

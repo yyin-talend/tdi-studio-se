@@ -756,7 +756,6 @@ if(incomingConnName != null && columnList != null){
                     if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
                         
         %>
-                        if(<%=outgoingConn.getName()%>==null){
                                 <%=outgoingConn.getName()%> = new <%=outgoingConn.getName()%>Struct();
        <%
                         for(IMetadataColumn column : columnList) {
@@ -764,9 +763,6 @@ if(incomingConnName != null && columnList != null){
                             <%=outgoingConn.getName()%>.<%=column.getLabel()%> = <%=incomingConnName%>.<%=column.getLabel()%>;
                             <%                  
                         }
-       %>
-                        }
-                     <%
                     }
                 }
             }
