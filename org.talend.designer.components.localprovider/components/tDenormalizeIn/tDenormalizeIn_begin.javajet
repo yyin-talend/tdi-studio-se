@@ -33,7 +33,7 @@ String origin = ElementParameterParser.getValue(node, "__ORIGIN__");
 	}
 
 String outRowName = "";
-if ((node.getOutgoingConnections()!=null) && (node.getOutgoingConnections().size()>0)) {
+if ((node.getOutgoingSortedConnections()!=null) && (node.getOutgoingSortedConnections().size()>0)) {
     for(IConnection outgoingConn : node.getOutgoingConnections()) {
         if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
             outRowName = outgoingConn.getName();
