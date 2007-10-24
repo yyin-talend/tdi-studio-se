@@ -27,7 +27,6 @@ import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.MetadataColumn;
 import org.talend.designer.rowgenerator.data.Function;
 import org.talend.designer.rowgenerator.data.Parameter;
-import org.talend.expressionbuilder.test.shadow.Variable;
 
 /**
  * qzhang class global comment. Detailled comment <br/>
@@ -37,128 +36,122 @@ import org.talend.expressionbuilder.test.shadow.Variable;
  */
 public class MetadataColumnExt extends MetadataColumn {
 
-	private boolean isChanged;
+    private boolean isChanged;
 
-	/**
-	 * qzhang MetadataColumnExt constructor comment.
-	 */
-	public MetadataColumnExt() {
-		super();
-	}
+    /**
+     * qzhang MetadataColumnExt constructor comment.
+     */
+    public MetadataColumnExt() {
+        super();
+    }
 
-	/**
-	 * qzhang MetadataColumnExt constructor comment.
-	 */
-	public MetadataColumnExt(MetadataColumn metadataColumn) {
-		this.setComment(metadataColumn.getComment());
-		this.setDefault(metadataColumn.getDefault());
-		this.setLabel(metadataColumn.getLabel());
-		this.setTalendType(metadataColumn.getTalendType());
-		this.setType(metadataColumn.getType());
-		this.setId(metadataColumn.getId());
+    /**
+     * qzhang MetadataColumnExt constructor comment.
+     */
+    public MetadataColumnExt(MetadataColumn metadataColumn) {
+        super(metadataColumn);
+    }
 
-		this.setLength(metadataColumn.getLength());
-		this.setPrecision(metadataColumn.getPrecision());
-		this.setDefault(metadataColumn.getDefault());
+    private Function function;
 
-		this.setKey(metadataColumn.isKey());
+    public Function getFunction() {
+        return this.function;
+    }
 
-		this.setNullable(metadataColumn.isNullable());
-		this.setPattern(metadataColumn.getPattern());
-	}
+    public void setFunction(Function function) {
+        this.function = function;
+    }
 
-	private Function function;
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    public String getParameter() {
+        String currentPara = ""; //$NON-NLS-1$
+        if (this.function != null) {
+            for (Parameter para : (List<Parameter>) function.getParameters()) {
+                currentPara += para.getName() + "=>" + para.getValue() + " ; "; //$NON-NLS-1$ //$NON-NLS-2$
+            }
+        }
+        return currentPara;
+    }
 
-	public Function getFunction() {
+    private String[] arrayFunctions;
 
-		return this.function;
-	}
+    public String[] getArrayFunctions() {
+        return this.arrayFunctions;
+    }
 
-	public void setFunction(Function function) {
-		this.function = function;
-	}
+    public void setArrayFunctions(String[] arrayFunctions) {
+        this.arrayFunctions = arrayFunctions;
+    }
 
-	@SuppressWarnings("unchecked")//$NON-NLS-1$
-	public String getParameter() {
-		String currentPara = ""; //$NON-NLS-1$
-		if (this.function != null) {
-			for (Parameter para : (List<Parameter>) function.getParameters()) {
-				currentPara += para.getName() + "=>" + para.getValue() + " ; "; //$NON-NLS-1$ //$NON-NLS-2$
-			}
-		}
-		return currentPara;
-	}
+    /*
+     * (non-Java)
+     * 
+     * @see org.talend.core.model.metadata.MetadataColumn#clone()
+     */
+    @Override
+    public IMetadataColumn clone() {
+        MetadataColumnExt ext = new MetadataColumnExt((MetadataColumn) super.clone());
+        if (getFunction() != null) {
+            ext.setFunction((Function) getFunction().clone());
+            ext.setArrayFunctions(getArrayFunctions());
+        }
+        return ext;
+    }
 
-	private String[] arrayFunctions;
+    private String preview;
 
-	public String[] getArrayFunctions() {
-		return this.arrayFunctions;
-	}
+    /**
+     * Getter for preview.
+     * 
+     * @return the preview
+     */
+    public String getPreview() {
+        return this.preview;
+    }
 
-	public void setArrayFunctions(String[] arrayFunctions) {
-		this.arrayFunctions = arrayFunctions;
-	}
+    /**
+     * Sets the preview.
+     * 
+     * @param preview the preview to set
+     */
+    public void setPreview(String preview) {
+        this.preview = preview;
+        function.setPreview(preview);
+    }
 
-	/*
-	 * (non-Java)
-	 * 
-	 * @see org.talend.core.model.metadata.MetadataColumn#clone()
-	 */
-	@Override
-	public IMetadataColumn clone() {
-		MetadataColumnExt ext = new MetadataColumnExt((MetadataColumn) super
-				.clone());
-		if (getFunction() != null) {
-			ext.setFunction((Function) getFunction().clone());
-			ext.setArrayFunctions(getArrayFunctions());
-		}
-		return ext;
-	}
+    public boolean sameMetacolumnAs2(IMetadataColumn metaColumn) {
+        boolean b = super.sameMetacolumnAs(metaColumn);
+        if (metaColumn instanceof MetadataColumnExt) {
+            final MetadataColumnExt another = (MetadataColumnExt) metaColumn;
+            if (this.function == null) {
+                if (another.function != null) {
+                    return false;
+                }
+            } else if (!this.function.sameFunctionAs(another.function)) {
+                return false;
+            }
+        }
+        return b;
 
-	private String preview;
+    }
 
-	/**
-	 * Getter for preview.
-	 * 
-	 * @return the preview
-	 */
-	public String getPreview() {
-		return this.preview;
-	}
+    public boolean isChanged() {
+        return this.isChanged;
+    }
 
-	/**
-	 * Sets the preview.
-	 * 
-	 * @param preview
-	 *            the preview to set
-	 */
-	public void setPreview(String preview) {
-		this.preview = preview;
-		function.setPreview(preview);
-	}
+    public void setChanged(boolean isChanged) {
+        this.isChanged = isChanged;
+    }
 
-	public boolean sameMetacolumnAs2(IMetadataColumn metaColumn) {
-		boolean b = super.sameMetacolumnAs(metaColumn);
-		if (metaColumn instanceof MetadataColumnExt) {
-			final MetadataColumnExt another = (MetadataColumnExt) metaColumn;
-			if (this.function == null) {
-				if (another.function != null) {
-					return false;
-				}
-			} else if (!this.function.sameFunctionAs(another.function)) {
-				return false;
-			}
-		}
-		return b;
-
-	}
-
-	public boolean isChanged() {
-		return this.isChanged;
-	}
-
-	public void setChanged(boolean isChanged) {
-		this.isChanged = isChanged;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.metadata.MetadataColumn#setLabel(java.lang.String)
+     */
+    @Override
+    public void setLabel(String label) {
+        super.setLabel(label);
+        setOriginalDbColumnName(label);
+    }
 
 }
