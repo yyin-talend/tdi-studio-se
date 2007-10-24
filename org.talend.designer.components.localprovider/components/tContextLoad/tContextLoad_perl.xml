@@ -32,8 +32,8 @@
       READONLY="true"
     >
       <TABLE>
-        <COLUMN NAME="key" TYPE="String" LENGTH="255"/>
-        <COLUMN NAME="value" TYPE="String" LENGTH="255"/>
+        <COLUMN NAME="key" TYPE="string" LENGTH="255"/>
+        <COLUMN NAME="value" TYPE="string" LENGTH="255"/>
       </TABLE>
     </PARAMETER>
 

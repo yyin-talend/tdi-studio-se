@@ -34,7 +34,7 @@
       NUM_ROW="1"
     >
       <TABLE READONLY="false">
-        <COLUMN NAME="LOOKUP" TYPE="String" LENGTH="255" READONLY="false" CUSTOM="true"/>
+        <COLUMN NAME="LOOKUP" TYPE="string" LENGTH="255" READONLY="false" CUSTOM="true"/>
       </TABLE>
     </PARAMETER>
 

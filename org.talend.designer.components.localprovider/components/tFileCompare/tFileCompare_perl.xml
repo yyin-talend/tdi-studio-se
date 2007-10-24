@@ -36,13 +36,13 @@
       READONLY="true"
     >
       <TABLE>
-        <COLUMN NAME="file" TYPE="String" LENGTH="255"/>
-        <COLUMN NAME="file_ref" TYPE="String" LENGTH="255"/>
-        <COLUMN NAME="moment" TYPE="Day"/>
-        <COLUMN NAME="job" TYPE="String" LENGTH="50"/>
-        <COLUMN NAME="component" TYPE="String" LENGTH="255"/>
+        <COLUMN NAME="file" TYPE="string" LENGTH="255"/>
+        <COLUMN NAME="file_ref" TYPE="string" LENGTH="255"/>
+        <COLUMN NAME="moment" TYPE="datetime"/>
+        <COLUMN NAME="job" TYPE="string" LENGTH="50"/>
+        <COLUMN NAME="component" TYPE="string" LENGTH="255"/>
         <COLUMN NAME="differ" TYPE="int" LENGTH="1"/>
-        <COLUMN NAME="message" TYPE="String" LENGTH="255"/>
+        <COLUMN NAME="message" TYPE="string" LENGTH="255"/>
       </TABLE>
     </PARAMETER>
 

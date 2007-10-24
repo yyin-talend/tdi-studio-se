@@ -34,8 +34,8 @@
       NUM_ROW="1"
     >
       <TABLE READONLY="true">
-        <COLUMN NAME="VALUE" TYPE="String" LENGTH="255" READONLY="false" CUSTOM="true"/>
-        <COLUMN NAME="MATCHING" TYPE="String" LENGTH="255" READONLY="false" CUSTOM="true"/>
+        <COLUMN NAME="VALUE" TYPE="string" LENGTH="255" READONLY="false" CUSTOM="true"/>
+        <COLUMN NAME="MATCHING" TYPE="string" LENGTH="255" READONLY="false" CUSTOM="true"/>
       </TABLE>
     </PARAMETER>
 
