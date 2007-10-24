@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.gef.commands.Command;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.fieldassist.DecoratedField;
 import org.eclipse.jface.fieldassist.FieldDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
@@ -311,10 +312,9 @@ public class ColumnListController extends AbstractElementPropertySectionControll
         }
     }
 
-    // only set synWidthWithMetadataColumn =true, when use the metadataDialog to set the matadata.
+    // only set synWidthWithMhaoetadataColumn =true, when use the metadataDialog to set the matadata.
     // see issue 0001676
-    public static void updateColumnList(INode node, List<ColumnNameChanged> columnsChanged,
-            boolean synWidthWithMetadataColumn) {
+    public static void updateColumnList(INode node, List<ColumnNameChanged> columnsChanged, boolean synWidthWithMetadataColumn) {
         List<String> columnList = getColumnList(node);
         List<String> prevColumnList = getPrevColumnList(node);
         Map<IConnection, List<String>> refColumnLists = getRefColumnLists(node);
@@ -350,8 +350,7 @@ public class ColumnListController extends AbstractElementPropertySectionControll
                 curColumnNameList = refColumnListNames;
                 curColumnValueList = refColumnListValues;
             }
-            if (param.getField() == EParameterFieldType.COLUMN_LIST
-                    || param.getField() == EParameterFieldType.PREV_COLUMN_LIST
+            if (param.getField() == EParameterFieldType.COLUMN_LIST || param.getField() == EParameterFieldType.PREV_COLUMN_LIST
                     || param.getField() == EParameterFieldType.LOOKUP_COLUMN_LIST) {
                 param.setListItemsDisplayName(curColumnNameList);
                 param.setListItemsValue(curColumnValueList);
@@ -439,12 +438,21 @@ public class ColumnListController extends AbstractElementPropertySectionControll
                     }
                     newParamValues.add(j, newLine);
                 }
+                synLengthTipFlag = null;
                 paramValues.clear();
                 paramValues.addAll(newParamValues);
 
             }
         }
     }
+
+    /**
+     * FOR ISSUE 1678 <br>
+     * null: need tip<br>
+     * true: no need to tip, and confirmation is ok. <br>
+     * false: no need to tip and confirmation is canceled.
+     */
+    private static Boolean synLengthTipFlag = null;
 
     public static void updateColumnList(INode node, List<ColumnNameChanged> columnsChanged) {
         updateColumnList(node, columnsChanged, false);
@@ -493,13 +501,21 @@ public class ColumnListController extends AbstractElementPropertySectionControll
      * @return
      */
     public static boolean needSynchronizeSize(IElementParameter param) {
-        Object[] paras = param.getListItemsValue();
-        for (Object object : paras) {
-            IElementParameter pamameter = (IElementParameter) object;
-            if ("LENGTH".equals(pamameter.getContext())) {
-                // if (pamameter.getName().equals("SIZE")) {
-                return true;
-                // }
+        if (synLengthTipFlag == null) {
+            Node node = (Node) param.getElement();
+            boolean ok = MessageDialog.openConfirm(null, "Confirm",
+                    "Do you want to take the length from the schema of the component<" + node.getLabel() + ">?");
+            synLengthTipFlag = new Boolean(ok);
+        }
+        if (synLengthTipFlag.booleanValue()) {
+            Object[] paras = param.getListItemsValue();
+            for (Object object : paras) {
+                IElementParameter pamameter = (IElementParameter) object;
+                if ("LENGTH".equals(pamameter.getContext())) {
+                    // if (pamameter.getName().equals("SIZE")) {
+                    return true;
+                    // }
+                }
             }
         }
         return false;

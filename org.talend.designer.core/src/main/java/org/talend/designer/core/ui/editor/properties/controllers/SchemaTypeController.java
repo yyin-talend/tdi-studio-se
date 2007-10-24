@@ -296,9 +296,9 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
             String propertyName = (String) inputButton.getData(PARAMETER_NAME);
             IElementParameter param = node.getElementParameter(propertyName);
             IMetadataTable originaleOutputTable = node.getMetadataFromConnector(param.getContext());
-            for (IMetadataColumn column : originaleOutputTable.getListColumns()) {
-                setColumnLength(node, param, column);
-            }
+            // for (IMetadataColumn column : originaleOutputTable.getListColumns()) {
+            // setColumnLength(node, param, column);
+            // }
 
             IMetadataTable outputMetaCopy = originaleOutputTable.clone();
             for (IMetadataColumn column : originaleOutputTable.getListColumns()) {
@@ -420,19 +420,22 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
                     }
 
                     if (modified) {
-                        if (switchParam != null) {
-                            switchParam.setValue(Boolean.FALSE);
-                        }
-                        Node inputNode = null;
-                        if (inputConec != null) {
-                            inputNode = inputConec.getSource();
-                        }
-                        ChangeMetadataCommand changeMetadataCommand = new ChangeMetadataCommand(node, param, inputNode,
-                                inputMetadata, inputMetaCopy, originaleOutputTable, outputMetaCopy);
+                        if (true) {
+                            if (switchParam != null) {
+                                switchParam.setValue(Boolean.FALSE);
+                            }
+                            Node inputNode = null;
+                            if (inputConec != null) {
+                                inputNode = inputConec.getSource();
+                            }
+                            ChangeMetadataCommand changeMetadataCommand = new ChangeMetadataCommand(node, param, inputNode,
+                                    inputMetadata, inputMetaCopy, originaleOutputTable, outputMetaCopy);
 
-                        return changeMetadataCommand;
+                            return changeMetadataCommand;
 
+                        }
                     }
+
                 }
 
             }
