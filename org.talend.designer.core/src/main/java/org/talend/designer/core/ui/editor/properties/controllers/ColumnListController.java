@@ -438,12 +438,11 @@ public class ColumnListController extends AbstractElementPropertySectionControll
                     }
                     newParamValues.add(j, newLine);
                 }
-                synLengthTipFlag = null;
                 paramValues.clear();
                 paramValues.addAll(newParamValues);
-
             }
         }
+        synLengthTipFlag = null;
     }
 
     /**
