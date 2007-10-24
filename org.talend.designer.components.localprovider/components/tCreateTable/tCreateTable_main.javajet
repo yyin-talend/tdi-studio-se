@@ -22,6 +22,7 @@ imports="
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();	
 	String cid = node.getUniqueName();
+	boolean isRunInMultiThread = codeGenArgument.getIsRunInMultiThread();
 	String tableName = ElementParameterParser.getValue(node,"__TABLE__");
 	String dbType = ElementParameterParser.getValue(node,"__DBTYPE__");
 	String host = ElementParameterParser.getValue(node,"__HOST__");
@@ -465,7 +466,17 @@ try{
 
 }catch(Exception e){
 	globalMap.put("<%=cid%>_ERROR_MESSAGE",e.getMessage());
+<%
+	if(isRunInMultiThread ){
+%>
+	throw new TalendException(this, e, "tCreateTable");
+<%
+	}else{
+%>
 	throw new TalendException(this, e);
+<%
+	}
+%>
 	}
 
 		
