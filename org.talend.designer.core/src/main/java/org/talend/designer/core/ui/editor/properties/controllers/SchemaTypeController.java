@@ -420,20 +420,18 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
                     }
 
                     if (modified) {
-                        if (true) {
-                            if (switchParam != null) {
-                                switchParam.setValue(Boolean.FALSE);
-                            }
-                            Node inputNode = null;
-                            if (inputConec != null) {
-                                inputNode = inputConec.getSource();
-                            }
-                            ChangeMetadataCommand changeMetadataCommand = new ChangeMetadataCommand(node, param, inputNode,
-                                    inputMetadata, inputMetaCopy, originaleOutputTable, outputMetaCopy);
-
-                            return changeMetadataCommand;
-
+                        if (switchParam != null) {
+                            switchParam.setValue(Boolean.FALSE);
                         }
+                        Node inputNode = null;
+                        if (inputConec != null) {
+                            inputNode = inputConec.getSource();
+                        }
+                        ChangeMetadataCommand changeMetadataCommand = new ChangeMetadataCommand(node, param, inputNode,
+                                inputMetadata, inputMetaCopy, originaleOutputTable, outputMetaCopy);
+
+                        return changeMetadataCommand;
+
                     }
 
                 }
