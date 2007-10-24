@@ -500,24 +500,28 @@ public class ColumnListController extends AbstractElementPropertySectionControll
      * @return
      */
     public static boolean needSynchronizeSize(IElementParameter param) {
-        if (synLengthTipFlag == null) {
-            Node node = (Node) param.getElement();
-            boolean ok = MessageDialog.openConfirm(null, "Confirm",
-                    "Do you want to take the length from the schema of the component<" + node.getLabel() + ">?");
-            synLengthTipFlag = new Boolean(ok);
-        }
-        if (synLengthTipFlag.booleanValue()) {
-            Object[] paras = param.getListItemsValue();
-            for (Object object : paras) {
-                IElementParameter pamameter = (IElementParameter) object;
-                if ("LENGTH".equals(pamameter.getContext())) {
-                    // if (pamameter.getName().equals("SIZE")) {
-                    return true;
-                    // }
-                }
+        boolean find = false;
+        Object[] paras = param.getListItemsValue();
+        for (Object object : paras) {
+            IElementParameter pamameter = (IElementParameter) object;
+            if ("LENGTH".equals(pamameter.getContext())) {
+                // if (pamameter.getName().equals("SIZE")) {
+                find = true;
+                // }
             }
         }
-        return false;
+
+        if (!find) {
+            return false;
+        }
+
+        if (synLengthTipFlag == null) {
+            Node node = (Node) param.getElement();
+            boolean ok = MessageDialog.openConfirm(null, "Confirm", "The schema of the component <" + node.getLabel()
+                    + "> has been modified.\nDo you want to take the length to the table ?");
+            synLengthTipFlag = new Boolean(ok);
+        }
+        return synLengthTipFlag.booleanValue();
     }
 
     private static List<String> getColumnList(INode node) {
