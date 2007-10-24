@@ -262,8 +262,7 @@ public class DbTableController extends AbstractElementPropertySectionController 
      * @param nbInRow
      * @return
      */
-    private Control addOpenSqlBulderButton(Composite subComposite, IElementParameter param, int top, int numInRow,
-            int nbInRow) {
+    private Control addOpenSqlBulderButton(Composite subComposite, IElementParameter param, int top, int numInRow, int nbInRow) {
         final DecoratedField dField1 = new DecoratedField(subComposite, SWT.PUSH, new IControlCreator() {
 
             public Control createControl(Composite parent, int style) {
@@ -293,8 +292,8 @@ public class DbTableController extends AbstractElementPropertySectionController 
      * @param top
      * @return
      */
-    private Control addListTablesButton(final Composite subComposite, final IElementParameter param, final int top,
-            int numInRow, final int nbInRow) {
+    private Control addListTablesButton(final Composite subComposite, final IElementParameter param, final int top, int numInRow,
+            final int nbInRow) {
 
         openListTable = getWidgetFactory().createButton(subComposite, "", SWT.PUSH); //$NON-NLS-1$
         openListTable.setImage(CorePlugin.getImageDescriptor(DOTS_BUTTON).createImage());
@@ -370,8 +369,7 @@ public class DbTableController extends AbstractElementPropertySectionController 
                                     }
                                     object.addChildren(connO);
                                     String propertyName = (String) openListTable.getData(PARAMETER_NAME);
-                                    DbTableSelectorDialog selectorDialog = new DbTableSelectorDialog(composite
-                                            .getShell(), object);
+                                    DbTableSelectorDialog selectorDialog = new DbTableSelectorDialog(composite.getShell(), object);
                                     if (selectorDialog.open() == DbTableSelectorDialog.OK) {
                                         String name = selectorDialog.getSelectName();
                                         if (name != null) {
@@ -418,9 +416,9 @@ public class DbTableController extends AbstractElementPropertySectionController 
      */
     protected boolean checkConnection(IMetadataConnection metadataConnection) {
         try {
-            ConnectionStatus testConnection = ExtractMetaDataFromDataBase.testConnection(
-                    metadataConnection.getDbType(), metadataConnection.getUrl(), metadataConnection.getUsername(),
-                    metadataConnection.getPassword(), metadataConnection.getSchema());
+            ConnectionStatus testConnection = ExtractMetaDataFromDataBase.testConnection(metadataConnection.getDbType(),
+                    metadataConnection.getUrl(), metadataConnection.getUsername(), metadataConnection.getPassword(),
+                    metadataConnection.getSchema());
             connParameters.setConnectionComment(testConnection.getMessageException());
             return testConnection.getResult();
         } catch (Exception e) {
@@ -456,7 +454,7 @@ public class DbTableController extends AbstractElementPropertySectionController 
     @Override
     public void refresh(IElementParameter param, boolean checkErrorsWhenViewRefreshed) {
         Text labelText = (Text) hashCurControls.get(param.getName());
-        if (labelText == null) {
+        if (labelText == null || labelText.isDisposed()) {
             return;
         }
         Object value = param.getValue();
