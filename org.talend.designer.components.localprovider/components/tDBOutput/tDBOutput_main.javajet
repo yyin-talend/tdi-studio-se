@@ -751,11 +751,19 @@ if(incomingConnName != null && columnList != null){
             for(IConnection outgoingConn : outgoingConns) {
                 if(rejectConnName == null || (rejectConnName != null && !outgoingConn.getName().equals(rejectConnName))) {
                     if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+                        
+        %>
+                        if(<%=outgoingConn.getName()%>==null){
+                                <%=outgoingConn.getName()%> = new <%=outgoingConn.getName()%>Struct();
+       <%
                         for(IMetadataColumn column : columnList) {
                             %>
                             <%=outgoingConn.getName()%>.<%=column.getLabel()%> = <%=incomingConnName%>.<%=column.getLabel()%>;
                             <%                  
                         }
+         %>
+                    }
+         <%
                     }
                 }
             }
