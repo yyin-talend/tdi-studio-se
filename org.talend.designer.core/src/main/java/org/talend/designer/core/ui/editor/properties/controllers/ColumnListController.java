@@ -517,8 +517,9 @@ public class ColumnListController extends AbstractElementPropertySectionControll
 
         if (synLengthTipFlag == null) {
             Node node = (Node) param.getElement();
-            boolean ok = MessageDialog.openConfirm(null, "Confirm", "The schema of the component <" + node.getLabel()
-                    + "> has been modified.\nDo you want to take the length to the table ?");
+
+            boolean ok = MessageDialog.openConfirm(null, "Confirm", "Length column in " + node.getLabel()
+                    + " schema has been modified. Do you want to propagate the change?");
             synLengthTipFlag = new Boolean(ok);
         }
         return synLengthTipFlag.booleanValue();
