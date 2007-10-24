@@ -95,8 +95,9 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
             if(javaType == JavaTypesManager.STRING) {
 %>
 				try {
-					java.text.SimpleDateFormat dateFormate = new java.text.SimpleDateFormat(<%=pattern%>);
-					dateFormate.parse(<%=incomingConnName%>.<%=metadataColumn.getLabel()%>);
+					java.text.SimpleDateFormat dateFormate_<%=cid%> = new java.text.SimpleDateFormat(<%=pattern%>);
+					dateFormate_<%=cid%>.setLenient(false);
+					dateFormate_<%=cid%>.parse(<%=incomingConnName%>.<%=metadataColumn.getLabel()%>);
 				} catch(Exception e) {
                     ifPassed_<%=cid%> = false;
                     errorCode_<%=cid%> = "2";
@@ -113,7 +114,7 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
             if(metadataColumn.getLabel().equals(checkedColumn.get("SCHEMA_COLUMN"))) {
             	int columnIndex = columnList.indexOf(metadataColumn);
             	if (anotherChecked.equals("true") && (columnListToTest.size() > columnIndex)) {
-            		IMetadataColumn testColumn = columnListToTest.get(columnList.indexOf(metadataColumn));
+            		IMetadataColumn testColumn = columnListToTest.get(columnIndex);
             		String typeToTest = testColumn.getTalendType();
             		typeToTest = JavaTypesManager.getTypeToGenerate(typeToTest, true);
             		if(typeToTest.equals("java.util.Date")){
@@ -130,7 +131,7 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
                 	}
                 }
                 if(checkAll.equals("true") || anotherChecked.equals("true")) {
-                	if (columnListToTest.size() < columnIndex) {
+                	if (columnListToTest.size() <= columnIndex) {
                 		continue;
                 	}
                     %>
