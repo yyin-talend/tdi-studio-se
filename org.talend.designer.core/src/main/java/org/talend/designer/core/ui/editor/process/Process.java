@@ -172,6 +172,8 @@ public class Process extends Element implements IProcess {
 
     private IProcessor processor;
 
+    private MultiPageTalendEditor editor;
+
     public Process() {
         contextManager = new JobContextManager();
         createProcessParameters();
@@ -2190,5 +2192,23 @@ public class Process extends Element implements IProcess {
      */
     public List<Note> getNotes() {
         return notes;
+    }
+
+    /**
+     * Getter for editor.
+     * 
+     * @return the editor
+     */
+    public MultiPageTalendEditor getEditor() {
+        return this.editor;
+    }
+
+    /**
+     * Sets the editor.
+     * 
+     * @param editor the editor to set
+     */
+    public void setEditor(MultiPageTalendEditor editor) {
+        this.editor = editor;
     }
 }

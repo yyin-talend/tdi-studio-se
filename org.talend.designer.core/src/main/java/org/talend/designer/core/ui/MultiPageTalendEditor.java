@@ -216,6 +216,7 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
         setTitleImage(ImageProvider.getImage(ECoreImage.PROCESS_ICON));
         createPage0();
         createPage1();
+        process.setEditor(this);
     }
 
     /**
@@ -248,6 +249,9 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
         IRepositoryView viewPart = (IRepositoryView) getSite().getPage().findView(IRepositoryView.VIEW_ID);
         if (viewPart != null) {
             viewPart.refresh();
+        }
+        if (process != null) {
+            process.setEditor(null);
         }
     }
 

@@ -23,6 +23,7 @@ package org.talend.designer.core.ui.editor.properties.controllers;
 
 import java.beans.PropertyChangeEvent;
 
+import org.eclipse.jdt.internal.ui.preferences.formatter.CompilationUnitPreview;
 import org.eclipse.jface.fieldassist.DecoratedField;
 import org.eclipse.jface.fieldassist.FieldDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
@@ -30,6 +31,7 @@ import org.eclipse.jface.fieldassist.IControlCreator;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
+import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.GC;
@@ -43,8 +45,12 @@ import org.talend.commons.ui.swt.colorstyledtext.ColorManager;
 import org.talend.commons.ui.swt.colorstyledtext.ColorStyledText;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.IProcess;
 import org.talend.designer.core.DesignerPlugin;
+import org.talend.designer.core.ui.MultiPageTalendEditor;
+import org.talend.designer.core.ui.editor.TalendJavaEditor;
 import org.talend.designer.core.ui.editor.nodes.Node;
+import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 
@@ -74,6 +80,19 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
 
     private String language;
 
+    private Control createViewer(Composite parent, int styles) {
+        if (elem instanceof Node) {
+            IProcess process = ((Node) elem).getProcess();
+            MultiPageTalendEditor mpte = ((Process) process).getEditor();
+            TalendJavaEditor codeEditor = mpte.getCodeEditor();
+
+            CompilationUnitPreview preview = new CompilationUnitPreview(null, parent);
+
+            return preview.getControl();
+        }
+        return null;
+    }
+
     /*
      * (non-Javadoc)
      * 
@@ -88,15 +107,16 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
         IControlCreator txtCtrl = new IControlCreator() {
 
             public Control createControl(final Composite parent, final int style) {
-                ColorManager colorManager = new ColorManager(CorePlugin.getDefault().getPreferenceStore());
-                ColorStyledText colorText = new ColorStyledText(parent, style, colorManager, language);
+                // ColorManager colorManager = new ColorManager(CorePlugin.getDefault().getPreferenceStore());
+                // ColorStyledText colorText = new ColorStyledText(parent, style, colorManager, language);
+                // createViewer(parent, style);
 
-                IPreferenceStore preferenceStore = DesignerPlugin.getDefault().getPreferenceStore();
-                String fontType = preferenceStore.getString(TalendDesignerPrefConstants.MEMO_TEXT_FONT);
-                FontData fontData = new FontData(fontType);
-                Font font = new Font(parent.getDisplay(), fontData);
-                colorText.setFont(font);
-                return colorText;
+                // IPreferenceStore preferenceStore = DesignerPlugin.getDefault().getPreferenceStore();
+                // String fontType = preferenceStore.getString(TalendDesignerPrefConstants.MEMO_TEXT_FONT);
+                // FontData fontData = new FontData(fontType);
+                // Font font = new Font(parent.getDisplay(), fontData);
+                // colorText.setFont(font);
+                return createViewer(parent, style);
             }
         };
         DecoratedField dField = null;
@@ -111,7 +131,7 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
             dField.addFieldDecoration(decoration, SWT.RIGHT | SWT.TOP, false);
         }
         Control cLayout = dField.getLayoutControl();
-        ColorStyledText text = (ColorStyledText) dField.getControl();
+        StyledText text = (StyledText) dField.getControl();
 
         editionControlHelper.register(param.getName(), text, true);
 
@@ -252,7 +272,7 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
 
     @Override
     public void refresh(IElementParameter param, boolean checkErrorsWhenViewRefreshed) {
-        ColorStyledText text = (ColorStyledText) hashCurControls.get(param.getName());
+        StyledText text = (StyledText) hashCurControls.get(param.getName());
         Object value = param.getValue();
         boolean valueChanged = false;
         if (value == null) {

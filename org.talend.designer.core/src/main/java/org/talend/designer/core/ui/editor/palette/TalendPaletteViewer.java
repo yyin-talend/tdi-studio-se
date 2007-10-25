@@ -22,7 +22,6 @@
 package org.talend.designer.core.ui.editor.palette;
 
 import org.eclipse.gef.EditDomain;
-import org.eclipse.gef.internal.ui.palette.PaletteSelectionTool;
 import org.eclipse.gef.ui.palette.PaletteViewer;
 import org.eclipse.gef.ui.parts.PaletteViewerKeyHandler;
 
@@ -31,11 +30,8 @@ import org.eclipse.gef.ui.parts.PaletteViewerKeyHandler;
  */
 public class TalendPaletteViewer extends PaletteViewer {
 
-    public TalendPaletteViewer() {
-        EditDomain domain = new EditDomain();
-        domain.setDefaultTool(new PaletteSelectionTool());
-        domain.loadDefaultTool();
-        setEditDomain(domain);
+    public TalendPaletteViewer(EditDomain graphicalViewerDomain) {
+        setEditDomain(graphicalViewerDomain);
         setKeyHandler(new PaletteViewerKeyHandler(this));
         setEditPartFactory(new TalendPaletteEditPartFactory());
     }

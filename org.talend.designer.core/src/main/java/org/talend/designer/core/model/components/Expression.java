@@ -21,9 +21,22 @@
 // ============================================================================
 package org.talend.designer.core.model.components;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import org.talend.commons.utils.StringUtils;
+import org.talend.core.language.LanguageManager;
+import org.talend.core.model.metadata.IMetadataColumn;
+import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.types.JavaTypesManager;
+import org.talend.core.model.process.EConnectionType;
+import org.talend.core.model.process.EParameterFieldType;
+import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.INode;
+
+import com.ibm.icu.util.StringTokenizer;
 
 /**
  * This class will test an expression in the element parameters. <br>
@@ -54,6 +67,8 @@ public final class Expression {
     private static final String EQUALS = "=="; //$NON-NLS-1$
 
     private static final String NOT_EQUALS = "!="; //$NON-NLS-1$
+
+    private static ElementParameter currentParam;
 
     private Expression(String expressionString) {
         this.expressionString = expressionString;
@@ -100,6 +115,11 @@ public final class Expression {
     }
 
     public static boolean evaluate(final String string, List<? extends IElementParameter> listParam) {
+        return evaluate(string, listParam, null);
+    }
+
+    public static boolean evaluate(final String string, List<? extends IElementParameter> listParam, ElementParameter curParam) {
+        currentParam = curParam;
         if (string.contains("(") //$NON-NLS-1$
                 && (isThereCondition(string, AND) || isThereCondition(string, OR))) {
             return evaluateExpression(new Expression(string), listParam).isValid();
@@ -148,29 +168,130 @@ public final class Expression {
                 variableName = string;
             }
         }
+        // 3 levels of variable name accepted maximum (ex: MY_VAR.TABLE.FIELD == 'test')
+        String[] varNames;
+        StringTokenizer token = new StringTokenizer(variableName, ".");
+        varNames = StringUtils.split(variableName, '.');
+
         if ((variableName != null) && (variableValue != null)) {
             for (IElementParameter param : listParam) {
-                if (param.getName().equals(variableName)) {
+
+                if (param.getName().equals(varNames[0])) {
+                    IElementParameter testedParameter = param;
+                    Object value = null;
                     boolean found = false;
-                    Object value = param.getValue();
+                    if (param.getField().equals(EParameterFieldType.TABLE)) {
+                        List<Map<String, Object>> tableValues = (List<Map<String, Object>>) param.getValue();
+                        Map<String, Object> currentRow = tableValues.get(currentParam.getCurrentRow());
+                        if (currentRow.containsKey(varNames[1])) {
+                            for (Object curObj : param.getListItemsValue()) {
+                                if (curObj instanceof IElementParameter) {
+                                    IElementParameter testParam = (IElementParameter) curObj;
+                                    if (testParam.getName().equals(varNames[1])) {
+                                        testedParameter = testParam;
+                                        break;
+                                    }
+                                }
+                            }
+                            if (varNames.length == 2) { // simple value
+                                value = currentRow.get(varNames[1]);
+                            } else {
+                                if ("TYPE".equals(varNames[2])) {
+                                    IMetadataTable baseTable = null;
+                                    IMetadataColumn baseColumn = null;
+                                    INode node;
+                                    String columnName = (String) currentRow.get(testedParameter.getName());
+                                    if (currentParam.getElement() instanceof INode) {
+                                        node = (INode) currentParam.getElement();
+
+                                        switch (testedParameter.getField()) {
+                                        case COLUMN_LIST:
+                                            baseTable = node.getMetadataList().get(0);
+                                            break;
+                                        case PREV_COLUMN_LIST:
+                                            IConnection connection = null;
+                                            for (int i = 0; i < node.getIncomingConnections().size(); i++) {
+                                                IConnection curConnec = node.getIncomingConnections().get(i);
+                                                if (curConnec.getLineStyle() == EConnectionType.FLOW_MAIN) {
+                                                    connection = curConnec;
+                                                    break;
+                                                }
+                                            }
+                                            if (connection != null) {
+                                                baseTable = connection.getMetadataTable();
+                                            }
+                                            break;
+                                        case LOOKUP_COLUMN_LIST:
+                                            List<IConnection> refConnections = new ArrayList<IConnection>();
+                                            for (int i = 0; i < node.getIncomingConnections().size(); i++) {
+                                                IConnection curConnec = node.getIncomingConnections().get(i);
+                                                if (curConnec.getLineStyle() == EConnectionType.FLOW_REF) {
+                                                    refConnections.add(curConnec);
+                                                }
+                                            }
+                                            for (IConnection curConnec : refConnections) {
+                                                IMetadataTable table = curConnec.getMetadataTable();
+                                                for (IMetadataColumn column : table.getListColumns()) {
+                                                    String name = curConnec.getName() + "." + column.getLabel();
+                                                    if (name.equals(columnName)) {
+                                                        baseColumn = column;
+                                                    }
+                                                }
+                                            }
+                                            break;
+                                        default:
+                                        }
+
+                                        if (baseTable != null) {
+                                            for (IMetadataColumn column : baseTable.getListColumns()) {
+                                                if (column.getLabel().equals(columnName)) {
+                                                    baseColumn = column;
+                                                    break;
+                                                }
+                                            }
+                                        }
+
+                                        if (baseColumn != null) {
+                                            switch (LanguageManager.getCurrentLanguage()) {
+                                            case JAVA:
+                                                value = JavaTypesManager.getTypeToGenerate(baseColumn.getTalendType(), baseColumn
+                                                        .isNullable());
+                                                break;
+                                            default:
+                                                value = baseColumn.getTalendType();
+                                            }
+                                            if (value.equals(variableValue)) {
+                                                found = true;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        value = testedParameter.getValue();
+                    }
+                    if (value instanceof Integer) {
+                        if (((Integer) value) < testedParameter.getListItemsValue().length) {
+                            value = testedParameter.getListItemsValue()[(Integer) value];
+                        }
+                    }
                     if (value instanceof String) {
-                        if (param.getListItemsValue() instanceof Object[]) {
-                            Object[] values = (Object[]) param.getListItemsValue();
+                        if (testedParameter.getListItemsValue() instanceof Object[]) {
+                            Object[] values = (Object[]) testedParameter.getListItemsValue();
                             for (int i = 0; i < values.length && !found; i++) {
-                                if (values[i].equals(param.getValue())) {
-                                    String variableCode = param.getListItemsDisplayCodeName()[i];
+                                if (values[i].equals(value)) {
+                                    String variableCode = testedParameter.getListItemsDisplayCodeName()[i];
                                     if (variableCode.equals(variableValue)) {
                                         found = true;
                                     }
                                 }
                             }
                         }
-                    } else {
-                        if (value instanceof Boolean) {
-                            Boolean tmpValue = new Boolean(variableValue);
-                            if (tmpValue.equals(value)) {
-                                found = true;
-                            }
+                    } else if (value instanceof Boolean) {
+                        Boolean tmpValue = new Boolean(variableValue);
+                        if (tmpValue.equals(value)) {
+                            found = true;
                         }
                     }
 

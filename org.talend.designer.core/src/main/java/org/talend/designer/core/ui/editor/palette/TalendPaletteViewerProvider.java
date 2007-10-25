@@ -31,13 +31,16 @@ import org.eclipse.swt.widgets.Composite;
  */
 public class TalendPaletteViewerProvider extends PaletteViewerProvider {
 
+    EditDomain graphicalViewerDomain;
+
     public TalendPaletteViewerProvider(EditDomain graphicalViewerDomain) {
         super(graphicalViewerDomain);
+        this.graphicalViewerDomain = graphicalViewerDomain;
     }
 
     @Override
     public PaletteViewer createPaletteViewer(Composite parent) {
-        PaletteViewer pViewer = new TalendPaletteViewer();
+        PaletteViewer pViewer = new TalendPaletteViewer(graphicalViewerDomain);
         pViewer.createControl(parent);
         configurePaletteViewer(pViewer);
         hookPaletteViewer(pViewer);

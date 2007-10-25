@@ -103,6 +103,8 @@ public class ElementParameter implements IElementParameter {
 
     private IElementParameter parentParameter;
 
+    private int currentRow; // for Table only
+
     public ElementParameter(final IElement element) {
         this.element = element;
     }
@@ -363,9 +365,9 @@ public class ElementParameter implements IElementParameter {
 
         if (((conditionShowIf != null) || (conditionNotShowIf != null)) && show) {
             if (conditionShowIf != null) {
-                showParameter = Expression.evaluate(conditionShowIf, listParam);
+                showParameter = Expression.evaluate(conditionShowIf, listParam, this);
             } else {
-                showParameter = !Expression.evaluate(conditionNotShowIf, listParam);
+                showParameter = !Expression.evaluate(conditionNotShowIf, listParam, this);
             }
         } else {
             showParameter = show;
@@ -503,5 +505,23 @@ public class ElementParameter implements IElementParameter {
 
     public boolean isDisplayedByDefault() {
         return this.show;
+    }
+
+    /**
+     * Getter for currentRow.
+     * 
+     * @return the currentRow
+     */
+    public int getCurrentRow() {
+        return this.currentRow;
+    }
+
+    /**
+     * Sets the currentRow.
+     * 
+     * @param currentRow the currentRow to set
+     */
+    public void setCurrentRow(int currentRow) {
+        this.currentRow = currentRow;
     }
 }

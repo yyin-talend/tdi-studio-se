@@ -21,6 +21,9 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.properties.macrowidgets.tableeditor;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.jface.viewers.CellEditor;
@@ -43,9 +46,11 @@ import org.talend.commons.ui.swt.tableviewer.behavior.CellEditorValueAdapter;
 import org.talend.commons.ui.swt.tableviewer.behavior.IColumnColorProvider;
 import org.talend.commons.ui.swt.tableviewer.tableeditor.CheckboxTableEditorContent;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
+import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.ui.proposal.ProcessProposalProvider;
+import org.talend.designer.core.model.components.ElementParameter;
 
 /**
  * MetadataTableEditorView2 must be used.
@@ -77,10 +82,9 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
      * @param labelVisible TODO
      * @param extendedTableModel
      */
-    public PropertiesTableEditorView(Composite parentComposite, int mainCompositeStyle,
-            PropertiesTableEditorModel model, boolean toolbarVisible, boolean labelVisible) {
-        super(parentComposite, mainCompositeStyle, model, model.getElemParameter().isReadOnly(), toolbarVisible,
-                labelVisible);
+    public PropertiesTableEditorView(Composite parentComposite, int mainCompositeStyle, PropertiesTableEditorModel model,
+            boolean toolbarVisible, boolean labelVisible) {
+        super(parentComposite, mainCompositeStyle, model, model.getElemParameter().isReadOnly(), toolbarVisible, labelVisible);
     }
 
     /**
@@ -137,10 +141,10 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
         final String[] items = model.getItems();
         // final Element elem = model.getElement();
         final IElementParameter param = model.getElemParameter();
+        final IElement element = model.getElement();
         for (int i = 0; i < titles.length; i++) {
             final int curCol = i;
-            if (param.isShow(model.getItemsShowIf()[i], model.getItemsNotShowIf()[i], model.getElement()
-                    .getElementParameters())) {
+            if (param.isShow(model.getItemsShowIf()[i], model.getItemsNotShowIf()[i], element.getElementParameters())) {
                 TableViewerCreatorColumn column = new TableViewerCreatorColumn(tableViewerCreator);
                 column.setTitle(titles[i]);
                 column.setModifiable(true);
@@ -157,10 +161,29 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                 case DBTYPE_LIST:
                 case COMPONENT_LIST:
                 case PREV_COLUMN_LIST:
-                    ComboBoxCellEditor cellEditor = new ComboBoxCellEditor(table, tmpParam.getListItemsDisplayName());
+                    final ComboBoxCellEditor cellEditor = new ComboBoxCellEditor(table, tmpParam.getListItemsDisplayName());
+                    final IElementParameter copyOfTmpParam = tmpParam;
                     ((CCombo) cellEditor.getControl()).setEditable(false);
                     ((CCombo) cellEditor.getControl())
                             .setEnabled(!(param.isRepositoryValueUsed() || param.isReadOnly() || tmpParam.isReadOnly()));
+                    // ((CCombo) cellEditor.getControl()).addFocusListener(new FocusListener() {
+                    //
+                    // public void focusGained(FocusEvent e) {
+                    // CCombo combo = (CCombo) e.getSource();
+                    // Table table = (Table) combo.getParent();
+                    // int rowNumber = table.getSelectionIndex();
+                    // String[] listToDisplay = getItemsToDisplay(element, copyOfTmpParam, rowNumber);
+                    // if (!Arrays.equals(listToDisplay, cellEditor.getItems())) {
+                    // cellEditor.setItems(listToDisplay);
+                    // }
+                    // }
+                    //
+                    // public void focusLost(FocusEvent e) {
+                    // // TODO Auto-generated method stub
+                    //
+                    // }
+                    //
+                    // });
                     column.setCellEditor(cellEditor, new CellEditorValueAdapter() {
 
                         @Override
@@ -187,10 +210,15 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
 
                         @Override
                         public Object getCellEditorTypedValue(CellEditor cellEditor, Object originalTypedValue) {
-
+                            CCombo combo = (CCombo) cellEditor.getControl();
+                            int rowNumber = ((Table) combo.getParent()).getSelectionIndex();
+                            String[] listToDisplay = getItemsToDisplay(element, copyOfTmpParam, rowNumber);
+                            if (!Arrays.equals(listToDisplay, ((ComboBoxCellEditor) cellEditor).getItems())) {
+                                ((ComboBoxCellEditor) cellEditor).setItems(listToDisplay);
+                            }
                             Object returnedValue = 0;
                             if (originalTypedValue != null) {
-                                String[] namesSet = ((CCombo) cellEditor.getControl()).getItems();
+                                String[] namesSet = listToDisplay;
                                 for (int j = 0; j < namesSet.length; j++) {
                                     if (namesSet[j].equals(originalTypedValue)) {
                                         returnedValue = j;
@@ -203,8 +231,7 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                     });
                     break;
                 case COLOR:
-                    column.setModifiable((!param.isRepositoryValueUsed()) && (!param.isReadOnly())
-                            && (!tmpParam.isReadOnly()));
+                    column.setModifiable((!param.isRepositoryValueUsed()) && (!param.isReadOnly()) && (!tmpParam.isReadOnly()));
                     // column.setDisplayedValue("");
 
                     column.setLabelProvider(null);
@@ -248,16 +275,15 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                     });
                     break;
                 case CHECK:
-                    column.setModifiable((!param.isRepositoryValueUsed()) && (!param.isReadOnly())
-                            && (!tmpParam.isReadOnly()));
+                    column.setModifiable((!param.isRepositoryValueUsed()) && (!param.isReadOnly()) && (!tmpParam.isReadOnly()));
                     column.setTableEditorContent(new CheckboxTableEditorContent());
                     column.setDisplayedValue(""); //$NON-NLS-1$
                     break;
                 default: // TEXT
                     TextCellEditorWithProposal textCellEditor = new TextCellEditorWithProposal(table, column);
                     textCellEditor.setContentProposalProvider(processProposalProvider);
-                    if (((i == 0) && (param.isBasedOnSchema())) || (param.isRepositoryValueUsed())
-                            || (param.isReadOnly()) || tmpParam.isReadOnly()) {
+                    if (((i == 0) && (param.isBasedOnSchema())) || (param.isRepositoryValueUsed()) || (param.isReadOnly())
+                            || tmpParam.isReadOnly()) {
                         // read only cell
                     } else {
                         // writable cell
@@ -367,5 +393,36 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
 
     public PropertiesTableEditorModel getModel() {
         return (PropertiesTableEditorModel) getExtendedTableModel();
+    }
+
+    /**
+     * DOC nrousseau Comment method "getItemsToDisplay".
+     * 
+     * @param element
+     * @param param
+     * @param rowNumber
+     * @return
+     */
+    private String[] getItemsToDisplay(final IElement element, final IElementParameter param, int rowNumber) {
+        if (param instanceof ElementParameter) {
+            ((ElementParameter) param).setCurrentRow(rowNumber);
+        }
+        String[] originalList = param.getListItemsDisplayName();
+        List<String> stringToDisplay = new ArrayList<String>();
+        String[] itemsShowIf = param.getListItemsShowIf();
+        if (itemsShowIf != null && (itemsShowIf.length > 0)) {
+            String[] itemsNotShowIf = param.getListItemsNotShowIf();
+            for (int i = 0; i < originalList.length; i++) {
+                if (param.isShow(itemsShowIf[i], itemsNotShowIf[i], element.getElementParameters())) {
+                    stringToDisplay.add(originalList[i]);
+                }
+            }
+        } else {
+            for (int i = 0; i < originalList.length; i++) {
+                stringToDisplay.add(originalList[i]);
+            }
+        }
+        String[] listToDisplay = stringToDisplay.toArray(new String[0]);
+        return listToDisplay;
     }
 }

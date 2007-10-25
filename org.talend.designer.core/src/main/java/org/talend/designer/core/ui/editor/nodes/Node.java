@@ -78,6 +78,7 @@ import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.TalendEditor;
 import org.talend.designer.core.ui.editor.cmd.ChangeMetadataCommand;
+import org.talend.designer.core.ui.editor.cmd.ConnectionCreateCommand;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.process.Process;
@@ -534,6 +535,10 @@ public class Node extends Element implements INode {
         this.inputs.add(connection);
         fireStructureChange(INPUTS, connection);
 
+        if (!ConnectionCreateCommand.isCreatingConnection()) {
+            return;
+        }
+
         INodeConnector mainConnector;
         if (isELTComponent()) {
             mainConnector = this.getConnectorFromType(EConnectionType.TABLE);
@@ -650,12 +655,9 @@ public class Node extends Element implements INode {
     }
 
     private CommandStack getCommandStack() {
-        IEditorPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
         CommandStack cmdStack = null;
-        if (part instanceof MultiPageTalendEditor) {
-            TalendEditor talendEditor = ((MultiPageTalendEditor) part).getTalendEditor();
-            cmdStack = (CommandStack) talendEditor.getAdapter(CommandStack.class);
-        }
+        TalendEditor talendEditor = process.getEditor().getTalendEditor();
+        cmdStack = (CommandStack) talendEditor.getAdapter(CommandStack.class);
         return cmdStack;
     }
 
