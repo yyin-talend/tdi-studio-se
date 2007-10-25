@@ -57,7 +57,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>
 
 
-	if (	
+	if (
+<% 
+	if(keyColumns.size()>0 || use_advanced) { //111
+%>		
+		
 <%		
 	int ii = 0;
 	for(Map<String, String> keyColumn:keyColumns){
@@ -82,7 +86,14 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	 }
    }	 	
 %>
-		<%=use_advanced? (keyColumns.size()<1 ? "":logical) + advancedCondition.replace("input_row", connName) : ""%>	
+		<%=use_advanced? (keyColumns.size()<1 ? "":logical) + advancedCondition.replace("input_row", connName) : ""%>
+<% 
+     } else { //111 
+%>
+		true
+<%
+	} //111
+%>			
 	) 
 	
 	{
