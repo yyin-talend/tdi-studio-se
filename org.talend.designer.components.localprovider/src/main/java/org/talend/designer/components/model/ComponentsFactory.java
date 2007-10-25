@@ -41,9 +41,7 @@ import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.utils.time.TimeMeasure;
 import org.talend.core.CorePlugin;
-import org.talend.core.context.Context;
-import org.talend.core.context.RepositoryContext;
-import org.talend.core.language.ECodeLanguage;
+import org.talend.core.language.LanguageManager;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -60,8 +58,6 @@ public class ComponentsFactory implements IComponentsFactory {
     private static final String COMPONENTS_FOLDER_NAME = "components" + File.separatorChar;//$NON-NLS-1$
 
     private static List<IComponent> componentList = null;
-
-    private ECodeLanguage codeLanguage;
 
     public ComponentsFactory() {
     }
@@ -222,12 +218,7 @@ public class ComponentsFactory implements IComponentsFactory {
     }
 
     private String getCodeLanguageSuffix() {
-        if (codeLanguage == null) {
-            RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
-                    Context.REPOSITORY_CONTEXT_KEY);
-            codeLanguage = repositoryContext.getProject().getLanguage();
-        }
-        return codeLanguage.getName();
+        return LanguageManager.getCurrentLanguage().getName();
     }
 
     private void loadIcons(File folder, IComponent component) {
