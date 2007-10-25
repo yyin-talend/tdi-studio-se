@@ -694,19 +694,25 @@ public class ColumnListController extends AbstractElementPropertySectionControll
             }
 
             if (changedNode != curNode) {
-                // if not update current node, don't update the current column list
-                if (tmpParam.getField() == EParameterFieldType.COLUMN_LIST) {
-                    return false;
-                }
-            } else {
-                // if update current node, don't update the prev/lookup column list
+                // if not update current node, only update the prev/lookup column list
                 if (tmpParam.getField() == EParameterFieldType.PREV_COLUMN_LIST
                         || tmpParam.getField() == EParameterFieldType.LOOKUP_COLUMN_LIST) {
-                    return false;
+                    return true;
+                }
+
+            } else {
+                // if update current node, only update the self column list
+                if (tmpParam.getField() == EParameterFieldType.COLUMN_LIST) {
+                    return true;
                 }
             }
+        } else {
+            // only update self column list
+            if (tmpParam.getField() == EParameterFieldType.COLUMN_LIST) {
+                return true;
+            }
         }
-        return true;
+        return false;
     }
 
 }
