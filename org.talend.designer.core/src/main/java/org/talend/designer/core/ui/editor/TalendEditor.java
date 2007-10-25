@@ -867,14 +867,14 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
 
     @Override
     protected PaletteRoot getPaletteRoot() {
-        if (paletteRoot == null || ComponentUtilities.isComponentPaletteNeedFresh) {
+        if (paletteRoot == null || ComponentUtilities.isComponentPaletteNeedRefresh) {
 
             /** * Components Factory ** */
             components = ComponentsFactoryProvider.getInstance();
 
             paletteRoot = TalendEditorPaletteFactory.createPalette(components);
 
-            ComponentUtilities.isComponentPaletteNeedFresh = false;
+            ComponentUtilities.isComponentPaletteNeedRefresh = false;
         }
         return paletteRoot;
     }
