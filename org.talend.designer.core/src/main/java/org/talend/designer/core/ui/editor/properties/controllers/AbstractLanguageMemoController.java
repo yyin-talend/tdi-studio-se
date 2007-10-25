@@ -23,7 +23,6 @@ package org.talend.designer.core.ui.editor.properties.controllers;
 
 import java.beans.PropertyChangeEvent;
 
-import org.eclipse.jdt.internal.ui.preferences.formatter.CompilationUnitPreview;
 import org.eclipse.jface.fieldassist.DecoratedField;
 import org.eclipse.jface.fieldassist.FieldDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
@@ -45,12 +44,8 @@ import org.talend.commons.ui.swt.colorstyledtext.ColorManager;
 import org.talend.commons.ui.swt.colorstyledtext.ColorStyledText;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.process.IElementParameter;
-import org.talend.core.model.process.IProcess;
 import org.talend.designer.core.DesignerPlugin;
-import org.talend.designer.core.ui.MultiPageTalendEditor;
-import org.talend.designer.core.ui.editor.TalendJavaEditor;
 import org.talend.designer.core.ui.editor.nodes.Node;
-import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 
@@ -80,19 +75,6 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
 
     private String language;
 
-    private Control createViewer(Composite parent, int styles) {
-        if (elem instanceof Node) {
-            IProcess process = ((Node) elem).getProcess();
-            MultiPageTalendEditor mpte = ((Process) process).getEditor();
-            TalendJavaEditor codeEditor = mpte.getCodeEditor();
-
-            CompilationUnitPreview preview = new CompilationUnitPreview(null, parent);
-
-            return preview.getControl();
-        }
-        return null;
-    }
-
     /*
      * (non-Javadoc)
      * 
@@ -107,16 +89,14 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
         IControlCreator txtCtrl = new IControlCreator() {
 
             public Control createControl(final Composite parent, final int style) {
-                // ColorManager colorManager = new ColorManager(CorePlugin.getDefault().getPreferenceStore());
-                // ColorStyledText colorText = new ColorStyledText(parent, style, colorManager, language);
-                // createViewer(parent, style);
-
-                // IPreferenceStore preferenceStore = DesignerPlugin.getDefault().getPreferenceStore();
-                // String fontType = preferenceStore.getString(TalendDesignerPrefConstants.MEMO_TEXT_FONT);
-                // FontData fontData = new FontData(fontType);
-                // Font font = new Font(parent.getDisplay(), fontData);
-                // colorText.setFont(font);
-                return createViewer(parent, style);
+                ColorManager colorManager = new ColorManager(CorePlugin.getDefault().getPreferenceStore());
+                ColorStyledText colorText = new ColorStyledText(parent, style, colorManager, language);
+                IPreferenceStore preferenceStore = DesignerPlugin.getDefault().getPreferenceStore();
+                String fontType = preferenceStore.getString(TalendDesignerPrefConstants.MEMO_TEXT_FONT);
+                FontData fontData = new FontData(fontType);
+                Font font = new Font(parent.getDisplay(), fontData);
+                colorText.setFont(font);
+                return colorText;
             }
         };
         DecoratedField dField = null;
