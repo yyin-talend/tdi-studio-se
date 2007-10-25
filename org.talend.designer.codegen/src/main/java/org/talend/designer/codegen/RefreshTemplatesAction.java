@@ -48,7 +48,7 @@ public class RefreshTemplatesAction extends Action {
     public void run() {
         CodeGeneratorEmittersPoolFactory.initialize();
         CorePlugin.getDefault().getLibrariesService().syncLibraries();
-        ComponentUtilities.isComponentPaletteNeedFresh = true;
+        ComponentUtilities.isComponentPaletteNeedRefresh = true;
     }
 
 }
