@@ -213,6 +213,12 @@
              level="18"
              name="Metadata/Copy to Generic schema action">
        </Action>
+       <Action
+             class="org.talend.repository.ui.actions.metadata.ImportSchemaFileAction"
+             id="org.talend.repository.actions.ImportSchemaFileAction"
+             level="10"
+             name="Metadata/Import schema file">
+       </Action>
    </extension>
    <extension
          point="org.eclipse.ui.views.properties.tabbed.propertyContributor">
