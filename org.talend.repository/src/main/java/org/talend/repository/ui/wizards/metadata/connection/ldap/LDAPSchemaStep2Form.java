@@ -530,13 +530,15 @@ public class LDAPSchemaStep2Form extends AbstractForm {
             this.fetchBaseDnsButton.setEnabled(false);
             updateStatus(IStatus.ERROR, "Bind DN or user name must be specified"); //$NON-NLS-1$
             return false;
-        } else if (isSampleAuthMethod && (bindPasswordText.getText() == null || bindPasswordText.getText().equals(""))) {
-            // bindPasswordText.forceFocus();
-            this.checkPrincipalPasswordAuthButton.setEnabled(false);
-            this.fetchBaseDnsButton.setEnabled(false);
-            updateStatus(IStatus.ERROR, "Bind password must be specified"); //$NON-NLS-1$
-            return false;
-        } else if (isSampleAuthMethod
+        }
+//        } else if (isSampleAuthMethod && (bindPasswordText.getText() == null || bindPasswordText.getText().equals(""))) {
+//            // bindPasswordText.forceFocus();
+//            this.checkPrincipalPasswordAuthButton.setEnabled(false);
+//            this.fetchBaseDnsButton.setEnabled(false);
+//            updateStatus(IStatus.ERROR, "Bind password must be specified"); //$NON-NLS-1$
+//            return false;
+//        } 
+            else if (isSampleAuthMethod
                 && (bindPasswordText.getText() == null || bindPasswordText.getText().length() > 0)) {
             updateStatus(IStatus.ERROR, "Please click \"Check Authentication\" button to verify Authentication.");
             checkPrincipalPasswordAuthButton.setEnabled(true);
