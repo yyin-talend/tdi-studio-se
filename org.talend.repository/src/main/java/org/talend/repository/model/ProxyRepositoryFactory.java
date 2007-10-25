@@ -46,6 +46,7 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.ECodeLanguage;
+import org.talend.core.language.LanguageManager;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.metadata.builder.connection.AbstractMetadataObject;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
@@ -807,6 +808,7 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         service.executeProjectTasks(project, true);
 
         getRepositoryContext().setProject(project);
+        LanguageManager.reset();
         this.repositoryFactoryFromProvider.logOnProject(project);
 
         emptyTempFolder(project);
