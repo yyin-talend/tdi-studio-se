@@ -20,6 +20,7 @@ List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
     IMetadataTable metadata = metadatas.get(0);
     if (metadata!=null) {
+    boolean flushOnRow = ElementParameterParser.getValue(node, "__FLUSHONROW__").equals("true");    
     String split = ElementParameterParser.getValue(node, "__SPLIT__");
 	String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
 	String fileName = ElementParameterParser.getValue(node, "__FILENAME__");
@@ -310,7 +311,14 @@ out_<%=cid %>.newLine();
 <%
 	}
 }
-%>nb_line_<%=cid %>++;
+%>
+
+<% if(flushOnRow) { %>
+out_<%=cid %>.flush();
+<%
+	}
+%>
+nb_line_<%=cid %>++;
 
 <%
     if(split.equals("true")){

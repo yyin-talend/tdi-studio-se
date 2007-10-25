@@ -114,11 +114,15 @@
     >
       <DEFAULT>true</DEFAULT>
     </PARAMETER>
+    
+    <PARAMETER NAME="FLUSHONROW" FIELD="CHECK" REQUIRED="true" NUM_ROW="6">
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>    
 
     <PARAMETER
       NAME="ENCODING"
       FIELD="ENCODING_TYPE"
-      NUM_ROW="6"
+      NUM_ROW="7"
       REQUIRED="true"
     >
       <DEFAULT>"ISO-8859-15"</DEFAULT>

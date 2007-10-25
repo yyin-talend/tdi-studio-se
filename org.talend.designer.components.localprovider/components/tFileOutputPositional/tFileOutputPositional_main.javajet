@@ -34,6 +34,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 node,
                 "__FORMATS__"
             );
+            
+        boolean flushOnRow = ElementParameterParser.getValue(node, "__FLUSHONROW__").equals("true");            
 %>
 
 				String tempStringM<%=cid %>= null;
@@ -130,6 +132,12 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			%>
 			sb_<%=cid %>.append(<%=separator%>);
 			out<%=cid %>.write(sb_<%=cid %>.toString());
+    		<% if(flushOnRow) { %>
+    		out<%=cid %>.flush();
+    		<%
+    			}
+    		%> 			
+			
 			nb_line_<%=cid %>++;
 <%
 		}
