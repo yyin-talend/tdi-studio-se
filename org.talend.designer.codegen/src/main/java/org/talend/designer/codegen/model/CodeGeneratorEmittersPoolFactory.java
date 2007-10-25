@@ -48,6 +48,7 @@ import org.eclipse.emf.codegen.jet.JETEmitter;
 import org.eclipse.emf.codegen.jet.JETException;
 import org.eclipse.emf.common.CommonPlugin;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.swt.widgets.Display;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.utils.StringUtils;
@@ -102,6 +103,7 @@ public final class CodeGeneratorEmittersPoolFactory {
             // Code Generator initialisation with Progress Bar
             Job job = new Job(Messages.getString("CodeGeneratorEmittersPoolFactory.initMessage")) {
 
+                @Override
                 protected IStatus run(IProgressMonitor monitor) {
                     try {
                         initInProgress = true;
@@ -150,6 +152,14 @@ public final class CodeGeneratorEmittersPoolFactory {
 
                         initializeEmittersPool(jetBeans, codeLanguage, monitorWrap);
                         monitorWrap.done();
+                        Display.getDefault().asyncExec(new Runnable() {
+
+                            public void run() {
+                                CorePlugin.getDefault().getDesignerCoreService().refreshDesignerPalette();
+                            }
+
+                        });
+
                         log.debug("Components compiled in " + (System.currentTimeMillis() - startTime) + " ms");
                         initialized = true;
                     } catch (Exception e) {
