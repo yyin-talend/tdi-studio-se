@@ -21,6 +21,8 @@
 // ============================================================================
 package org.talend.designer.runprocess.ui;
 
+import java.util.Arrays;
+
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -36,6 +38,7 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.DirectoryDialog;
@@ -199,6 +202,37 @@ public class PromptDialog extends Dialog {
         layout.marginHeight = 0;
         child.setLayout(layout);
         child.setLayoutData(new GridData(GridData.FILL_BOTH));
+
+        if (DefaultCellEditorFactory.isList(parameter.getType())) {
+            final Combo combo = new Combo(child, SWT.BORDER);
+
+            String[] valueList = parameter.getValueList();
+            combo.setItems(valueList);
+            int index = Arrays.binarySearch(valueList, parameter.getValue());
+            if (index >= 0) {
+                combo.select(index);
+            } else {
+                combo.select(0);
+            }
+
+            combo.addModifyListener(new ModifyListener() {
+
+                public void modifyText(ModifyEvent e) {
+                    parameter.setValue(combo.getText());
+                }
+            });
+            if (parameter.getComment() != null) {
+                if (!parameter.getComment().equals("")) { //$NON-NLS-1$
+                    label.setToolTipText(parameter.getComment());
+                    combo.setToolTipText(parameter.getComment());
+                }
+            }
+            GridData data = new GridData(GridData.FILL_HORIZONTAL);
+            data.minimumWidth = MINIMUM_WIDTH;
+            combo.setLayoutData(data);
+            return;
+        }
+
         final Text text = new Text(child, SWT.SINGLE | SWT.BORDER);
         text.setText(parameter.getValue());
         text.addModifyListener(new ModifyListener() {

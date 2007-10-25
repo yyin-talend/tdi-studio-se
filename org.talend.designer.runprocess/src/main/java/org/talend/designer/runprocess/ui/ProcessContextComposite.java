@@ -218,6 +218,7 @@ public class ProcessContextComposite extends Composite {
                         paramCopy = contextCopy.getContextParameterList().get(i);
                         if (param.getName().equals(paramCopy.getName())) {
                             param.setValue(paramCopy.getValue());
+                            param.setValueList(paramCopy.getValueList());
                             found = true;
                         }
                     }
