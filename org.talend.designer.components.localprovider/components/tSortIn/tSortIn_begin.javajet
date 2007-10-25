@@ -8,6 +8,7 @@ imports="
     org.talend.core.model.metadata.types.JavaType
     org.talend.core.model.metadata.types.JavaTypesManager
     org.talend.core.model.process.IConnection
+    org.talend.core.model.process.IConnectionCategory    
     java.util.List
     java.util.Map
 " 
@@ -33,8 +34,13 @@ String origin = ElementParameterParser.getValue(node, "__ORIGIN__");
 
 <%
 String outRowName = "";
-if ((node.getOutgoingConnections()!=null)&&(node.getOutgoingConnections().size()>0)) {
-	outRowName = node.getOutgoingConnections().get(0).getName();
+if ((node.getOutgoingSortedConnections()!=null)&&(node.getOutgoingSortedConnections().size()>0)) {
+    for(IConnection outgoingConn : node.getOutgoingSortedConnections()) {
+        if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+            outRowName = outgoingConn.getName();
+            break;
+        }
+    }
 } else {
 	outRowName = "defaultRow";
 }
