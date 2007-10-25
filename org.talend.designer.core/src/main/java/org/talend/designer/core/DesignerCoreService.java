@@ -33,10 +33,12 @@ import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.action.SaveJobBeforeRunAction;
+import org.talend.designer.core.ui.editor.TalendEditor;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.properties.GefEditorLabelProvider;
 import org.talend.designer.core.ui.editor.properties.RepositoryValueUtils;
 import org.talend.designer.core.ui.views.contexts.Contexts;
+import org.talend.designer.runprocess.ProcessorUtilities;
 
 /**
  * Detailled comment <br/>.
@@ -115,5 +117,18 @@ public class DesignerCoreService implements IDesignerCoreService {
         }
         IProcess process = ((MultiPageTalendEditor) editor).getProcess();
         return process;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.core.IDesignerCoreService#refreshDesignerPalette()
+     */
+    public void refreshDesignerPalette() {
+
+        for (IEditorPart editor : ProcessorUtilities.getOpenedEditors()) {
+            ((TalendEditor) editor).updatePaletteContent();
+        }
+
     }
 }

@@ -68,6 +68,7 @@ import org.eclipse.gef.SnapToGrid;
 import org.eclipse.gef.editparts.LayerManager;
 import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
 import org.eclipse.gef.editparts.ZoomManager;
+import org.eclipse.gef.palette.PaletteEntry;
 import org.eclipse.gef.palette.PaletteRoot;
 import org.eclipse.gef.ui.actions.ActionRegistry;
 import org.eclipse.gef.ui.actions.DirectEditAction;
@@ -149,6 +150,7 @@ import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.process.ProcessPart;
 import org.talend.designer.core.ui.editor.process.ProcessTemplateTransferDropTargetListener;
 import org.talend.designer.core.ui.editor.process.TalendEditorDropTargetListener;
+import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.job.deletion.IJobResourceProtection;
 import org.talend.repository.job.deletion.JobResource;
 import org.talend.repository.job.deletion.JobResourceManager;
@@ -198,9 +200,12 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
 
     public TalendEditor() {
         this(false);
+
     }
 
     public TalendEditor(boolean readOnly) {
+
+        ProcessorUtilities.addOpenEditor(this);
 
         // an EditDomain is a "session" of editing which contains things
         // like the CommandStack
@@ -877,6 +882,26 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
             ComponentUtilities.isComponentPaletteNeedRefresh = false;
         }
         return paletteRoot;
+    }
+
+    /**
+     * yzhang Comment method "updatePaletteContent".
+     */
+    public void updatePaletteContent() {
+
+        components = ComponentsFactoryProvider.getInstance();
+
+        PaletteRoot newRoot = TalendEditorPaletteFactory.createPalette(components);
+
+        List oldRoots = new ArrayList(paletteRoot.getChildren());
+        for (Object obj : oldRoots) {
+            paletteRoot.remove((PaletteEntry) obj);
+        }
+
+        for (Object obj : newRoot.getChildren()) {
+            paletteRoot.add((PaletteEntry) obj);
+        }
+
     }
 
     public IComponent getComponent(String name) {
