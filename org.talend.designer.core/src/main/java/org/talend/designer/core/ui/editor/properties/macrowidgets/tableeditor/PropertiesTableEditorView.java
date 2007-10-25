@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ColorCellEditor;
 import org.eclipse.jface.viewers.ComboBoxCellEditor;
@@ -381,6 +382,7 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                         default:
                         }
                         ((Map<String, Object>) bean).put(items[curCol], finalValue);
+                        resetValuesIfNeeded(element, param, (Map<String, Object>) bean);
                     }
                 });
             }
@@ -393,6 +395,47 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
 
     public PropertiesTableEditorModel getModel() {
         return (PropertiesTableEditorModel) getExtendedTableModel();
+    }
+
+    private void resetValuesIfNeeded(IElement element, IElementParameter mainParam, Map<String, Object> currentLine) {
+        List<Map<String, Object>> tableValues = (List<Map<String, Object>>) mainParam.getValue();
+        int rowNumber = tableValues.indexOf(currentLine);
+        if (rowNumber != -1) {
+            for (Object item : mainParam.getListItemsValue()) {
+                if (item instanceof IElementParameter) {
+                    IElementParameter curParam = (IElementParameter) item;
+                    switch (curParam.getField()) {
+                    case CLOSED_LIST:
+                        String[] itemsToDisplay = getItemsToDisplay(element, curParam, rowNumber);
+                        Object currentValue = currentLine.get(curParam.getName());
+                        String currentDisplay = null;
+                        if (currentValue instanceof Integer) {
+                            currentDisplay = curParam.getListItemsDisplayName()[(Integer) currentValue];
+                        } else if (currentValue instanceof String) {
+                            int index = ArrayUtils.indexOf(curParam.getListItemsValue(), currentValue);
+                            if (index != -1) {
+                                currentDisplay = curParam.getListItemsDisplayName()[index];
+                            }
+                        }
+
+                        if (currentDisplay != null) {
+                            // if the current displayed shouldn't be used anymore, reset the value.
+                            if (!ArrayUtils.contains(itemsToDisplay, currentDisplay)) {
+                                String newValue = "";
+                                if (itemsToDisplay.length > 0) {
+                                    int index = ArrayUtils.indexOf(curParam.getListItemsDisplayName(), itemsToDisplay[0]);
+                                    newValue = (String) curParam.getListItemsValue()[index];
+                                }
+                                currentLine.put(curParam.getName(), newValue);
+                            }
+                        }
+                        break;
+                    default:
+                    }
+
+                }
+            }
+        }
     }
 
     /**
