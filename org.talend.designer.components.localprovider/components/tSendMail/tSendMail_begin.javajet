@@ -28,7 +28,20 @@
 	to = to.replace(";",",");
 %>
 	String smtpHost_<%=cid %> = <%=smtpHost %>;
-	String smtpPort_<%=cid %> = "<%=smtpPort %>";
+	
+	<%
+    try {
+        int port = Integer.parseInt(smtpPort);
+    %>
+        String smtpPort_<%=cid %> = "<%=smtpPort %>";
+    <%
+    } catch (Exception e) {
+    %>
+        String smtpPort_<%=cid %> = <%=smtpPort %>;
+    <%
+    }
+	%>
+	
 	String from_<%=cid %> = <%=from %>;
     String to_<%=cid %> = <%=to %>;
     String cc_<%=cid %> = <%=(cc==null || "".equals(cc))?null:cc.replace(";",",") %>;
