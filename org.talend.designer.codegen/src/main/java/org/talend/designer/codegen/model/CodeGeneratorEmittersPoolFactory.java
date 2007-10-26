@@ -152,13 +152,16 @@ public final class CodeGeneratorEmittersPoolFactory {
 
                         initializeEmittersPool(jetBeans, codeLanguage, monitorWrap);
                         monitorWrap.done();
-                        Display.getDefault().asyncExec(new Runnable() {
 
-                            public void run() {
-                                CorePlugin.getDefault().getDesignerCoreService().refreshDesignerPalette();
-                            }
+                        if (!CorePlugin.getContext().isHeadless()) {
+                            Display.getDefault().asyncExec(new Runnable() {
 
-                        });
+                                public void run() {
+                                    CorePlugin.getDefault().getDesignerCoreService().refreshDesignerPalette();
+                                }
+
+                            });
+                        }
 
                         log.debug("Components compiled in " + (System.currentTimeMillis() - startTime) + " ms");
                         initialized = true;
