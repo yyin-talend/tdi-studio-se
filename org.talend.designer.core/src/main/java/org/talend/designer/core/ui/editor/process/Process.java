@@ -2162,14 +2162,26 @@ public class Process extends Element implements IProcess {
      */
     public Set<String> getSubJobs(String processName) {
         Set<String> curSubJobs = new HashSet<String>();
+        calculateSubJobs(processName, curSubJobs);
+        return curSubJobs;
+    }
+
+    /**
+     * Get sub jobs under this process
+     * 
+     * yzhang Comment method "getSubJobs".
+     * 
+     * @return
+     */
+    public void calculateSubJobs(String processName, Set<String> curSubJobs) {
         Process currentProcess;
         if (processName == null) {
             currentProcess = this;
         } else {
             ProcessItem pi = ProcessorUtilities.getProcessItem(processName);
-            if (pi == null) { // if the job is not valid, then return empty
-                // childs
-                return curSubJobs;
+            if (pi == null) {
+                // if the job is not valid, then return empty childs
+                return;
             }
             currentProcess = new Process(pi.getProperty());
             currentProcess.loadXmlFile(pi.getProcess());
@@ -2178,11 +2190,12 @@ public class Process extends Element implements IProcess {
             Node node = (Node) iter.next();
             if ((node != null) && node.getComponent().getName().equals("tRunJob")) {
                 String curProcessName = (String) node.getPropertyValue(EParameterName.PROCESS_TYPE_PROCESS.getName());
-                curSubJobs.add(curProcessName);
-                curSubJobs.addAll(getSubJobs(curProcessName));
+                if (!curSubJobs.contains(curProcessName)) {
+                    curSubJobs.add(curProcessName);
+                    calculateSubJobs(curProcessName, curSubJobs);
+                }
             }
         }
-        return curSubJobs;
     }
 
     /**
