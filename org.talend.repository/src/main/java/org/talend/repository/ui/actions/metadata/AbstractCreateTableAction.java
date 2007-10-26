@@ -80,7 +80,7 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
 
     protected static final int WIZARD_WIDTH = 800;
 
-    protected static final int WIZARD_HEIGHT = 475;
+    protected static final int WIZARD_HEIGHT = 495;
 
     /**
      * DOC mhelleboid Comment method "handleWizard".
@@ -153,7 +153,7 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
      */
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     protected void createFilePositionalTableWizard(IStructuredSelection selection, boolean forceReadOnly) {
-        Object obj = ((IStructuredSelection) selection).getFirstElement();
+        Object obj = (selection).getFirstElement();
         RepositoryNode node = (RepositoryNode) obj;
         PositionalFileConnection connection = null;
         MetadataTable metadataTable = null;
@@ -204,7 +204,7 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
      */
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     protected void createFileRegexpTableWizard(IStructuredSelection selection, boolean forceReadOnly) {
-        Object obj = ((IStructuredSelection) selection).getFirstElement();
+        Object obj = (selection).getFirstElement();
         RepositoryNode node = (RepositoryNode) obj;
         RegexpFileConnection connection = null;
         MetadataTable metadataTable = null;
@@ -253,7 +253,7 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
      */
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     protected void createFileXmlTableWizard(IStructuredSelection selection, boolean forceReadOnly) {
-        Object obj = ((IStructuredSelection) selection).getFirstElement();
+        Object obj = (selection).getFirstElement();
         RepositoryNode node = (RepositoryNode) obj;
         XmlFileConnection connection = null;
         MetadataTable metadataTable = null;
@@ -302,7 +302,7 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
      */
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     protected void createFileDelimitedTableWizard(IStructuredSelection selection, boolean forceReadOnly) {
-        Object obj = ((IStructuredSelection) selection).getFirstElement();
+        Object obj = (selection).getFirstElement();
         RepositoryNode node = (RepositoryNode) obj;
         DelimitedFileConnection connection = null;
         MetadataTable metadataTable = null;
@@ -352,7 +352,7 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
      */
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     protected void createFileLdifTableWizard(IStructuredSelection selection, boolean forceReadOnly) {
-        Object obj = ((IStructuredSelection) selection).getFirstElement();
+        Object obj = (selection).getFirstElement();
         RepositoryNode node = (RepositoryNode) obj;
         LdifFileConnection connection = null;
         MetadataTable metadataTable = null;
@@ -395,7 +395,7 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
     }
 
     protected void createGenericSchemaWizard(IStructuredSelection selection, final boolean forceReadOnly) {
-        Object obj = ((IStructuredSelection) selection).getFirstElement();
+        Object obj = (selection).getFirstElement();
         RepositoryNode node = (RepositoryNode) obj;
         GenericSchemaConnection connection = null;
         MetadataTable metadataTable = null;
@@ -444,7 +444,7 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
      * @param b
      */
     public void createLDAPSchemaWizard(IStructuredSelection selection, final boolean forceReadOnly) {
-        Object obj = ((IStructuredSelection) selection).getFirstElement();
+        Object obj = (selection).getFirstElement();
         RepositoryNode node = (RepositoryNode) obj;
         LDAPSchemaConnection connection = null;
         MetadataTable metadataTable = null;
@@ -495,7 +495,7 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
      */
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     protected void createDatabaseTableWizard(IStructuredSelection selection, final boolean forceReadOnly) {
-        Object obj = ((IStructuredSelection) selection).getFirstElement();
+        Object obj = (selection).getFirstElement();
         final RepositoryNode node = (RepositoryNode) obj;
 
         // Define the repositoryObject

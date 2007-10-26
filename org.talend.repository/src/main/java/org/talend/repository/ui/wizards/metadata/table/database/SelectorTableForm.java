@@ -22,13 +22,16 @@
 package org.talend.repository.ui.wizards.metadata.table.database;
 
 import java.lang.reflect.InvocationTargetException;
+import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -41,6 +44,8 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -48,10 +53,13 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.dialogs.SearchPattern;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.commons.ui.swt.formtools.Form;
@@ -67,6 +75,7 @@ import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.TableHelper;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataFromDataBase;
+import org.talend.core.model.metadata.builder.database.TableInfoParameters;
 import org.talend.core.model.metadata.editor.MetadataEmfTableEditor;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.repository.i18n.Messages;
@@ -89,7 +98,7 @@ public class SelectorTableForm extends AbstractForm {
     /**
      * FormTable Var.
      */
-    private ManagerConnection managerConnection;
+    private final ManagerConnection managerConnection;
 
     private List<String> itemTableName;
 
@@ -108,7 +117,7 @@ public class SelectorTableForm extends AbstractForm {
     /**
      * Anothers Fields.
      */
-    private ConnectionItem connectionItem;
+    private final ConnectionItem connectionItem;
 
     // private DatabaseConnection connection;
 
@@ -116,9 +125,15 @@ public class SelectorTableForm extends AbstractForm {
 
     private int count = 0;
 
-    private WizardPage parentWizardPage;
+    private final WizardPage parentWizardPage;
 
     CustomThreadPoolExecutor threadExecutor;
+
+    ScrolledComposite scrolledCompositeFileViewer;
+
+    private Text nameFilter;
+
+    private final TableInfoParameters tableInfoParameters;
 
     /**
      * TableForm Constructor to use by RCP Wizard.
@@ -129,11 +144,12 @@ public class SelectorTableForm extends AbstractForm {
      * @param page
      * @param metadataTable
      */
-    public SelectorTableForm(Composite parent, ConnectionItem connectionItem, WizardPage page) {
+    public SelectorTableForm(Composite parent, ConnectionItem connectionItem, SelectorTableWizardPage page) {
         super(parent, SWT.NONE);
         managerConnection = new ManagerConnection();
         this.connectionItem = connectionItem;
         this.parentWizardPage = page;
+        this.tableInfoParameters = page.getTableInfoParameters();
         setupForm();
     }
 
@@ -142,6 +158,7 @@ public class SelectorTableForm extends AbstractForm {
      * Initialize value, forceFocus first field for right Click (new Table).
      * 
      */
+    @Override
     public void initialize() {
     }
 
@@ -151,6 +168,7 @@ public class SelectorTableForm extends AbstractForm {
         count = 0;
     }
 
+    @Override
     protected void addFields() {
         int leftCompositeWidth = 80;
         int rightCompositeWidth = WIDTH_GRIDDATA_PIXEL - leftCompositeWidth;
@@ -161,7 +179,8 @@ public class SelectorTableForm extends AbstractForm {
         int height = headerCompositeHeight + tableSettingsCompositeHeight + tableCompositeHeight;
 
         // Main Composite : 2 columns
-        Composite mainComposite = Form.startNewDimensionnedGridLayout(this, 1, leftCompositeWidth + rightCompositeWidth, height);
+        Composite mainComposite = Form.startNewDimensionnedGridLayout(this, 1,
+                leftCompositeWidth + rightCompositeWidth, height);
         mainComposite.setLayout(new GridLayout(1, false));
         GridData gridData = new GridData(GridData.FILL_BOTH);
         mainComposite.setLayoutData(gridData);
@@ -169,17 +188,29 @@ public class SelectorTableForm extends AbstractForm {
         Composite rightComposite = Form.startNewDimensionnedGridLayout(mainComposite, 1, rightCompositeWidth, height);
 
         // Group Table Settings
-        Group groupTableSettings = Form.createGroup(rightComposite, 1,
-                Messages.getString("SelectorTableForm.groupTableSettings"), tableSettingsCompositeHeight); //$NON-NLS-1$
+        Group groupTableSettings = Form.createGroup(rightComposite, 1, Messages
+                .getString("SelectorTableForm.groupTableSettings"), tableSettingsCompositeHeight); //$NON-NLS-1$
 
         // Composite TableSettings
-        Composite compositeTableSettings = Form.startNewDimensionnedGridLayout(groupTableSettings, 1, rightCompositeWidth,
-                tableSettingsCompositeHeight);
+        Composite compositeTableSettings = Form.startNewDimensionnedGridLayout(groupTableSettings, 1,
+                rightCompositeWidth, tableSettingsCompositeHeight);
         gridData = new GridData(GridData.FILL_BOTH);
         gridData.widthHint = rightCompositeWidth;
         gridData.horizontalSpan = 3;
 
-        ScrolledComposite scrolledCompositeFileViewer = new ScrolledComposite(compositeTableSettings, SWT.H_SCROLL | SWT.V_SCROLL
+        Composite filterComposite = new Composite(compositeTableSettings, SWT.NONE);
+        GridLayout gridLayout = new GridLayout(2, false);
+        filterComposite.setLayout(gridLayout);
+        GridData gridData2 = new GridData(GridData.FILL_HORIZONTAL);
+        filterComposite.setLayoutData(gridData2);
+        Label label = new Label(filterComposite, SWT.NONE);
+        label.setText("Name Filter:");
+        nameFilter = new Text(filterComposite, SWT.BORDER);
+        nameFilter.setToolTipText("Enter type name prefix or pattern(*,?,or camel case).");
+        nameFilter.setEditable(true);
+        gridData2 = new GridData(GridData.FILL_HORIZONTAL);
+        nameFilter.setLayoutData(gridData2);
+        scrolledCompositeFileViewer = new ScrolledComposite(compositeTableSettings, SWT.H_SCROLL | SWT.V_SCROLL
                 | SWT.NONE);
         scrolledCompositeFileViewer.setExpandHorizontal(true);
         scrolledCompositeFileViewer.setExpandVertical(true);
@@ -189,41 +220,7 @@ public class SelectorTableForm extends AbstractForm {
         gridData1.horizontalSpan = 2;
         scrolledCompositeFileViewer.setLayoutData(gridData1);
 
-        // List Table
-        TableViewerCreator tableViewerCreator = new TableViewerCreator(scrolledCompositeFileViewer);
-        tableViewerCreator.setColumnsResizableByDefault(true);
-        tableViewerCreator.setBorderVisible(true);
-        tableViewerCreator.setLayoutMode(LAYOUT_MODE.FILL_HORIZONTAL);
-        tableViewerCreator.setCheckboxInFirstColumn(true);
-        // tableViewerCreator.setAdjustWidthValue(-15);
-        tableViewerCreator.setFirstColumnMasked(true);
-
-        table = tableViewerCreator.createTable();
-        table.setLayoutData(new GridData(GridData.FILL_BOTH));
-
-        // table = new Table(scrolledCompositeFileViewer, SWT.CHECK | SWT.BORDER);
-        // table.setBackground(table.getDisplay().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
-        // table.setHeaderVisible(true);
-
-        // table.setHeaderVisible(true);
-        TableColumn tableName = new TableColumn(table, SWT.NONE);
-        tableName.setText(Messages.getString("SelectorTableForm.TableName")); //$NON-NLS-1$
-        tableName.setWidth(300);
-
-        TableColumn tableType = new TableColumn(table, SWT.NONE);
-        tableType.setText(Messages.getString("SelectorTableForm.TableType")); //$NON-NLS-1$
-        tableType.setWidth(140);
-
-        TableColumn nbColumns = new TableColumn(table, SWT.RIGHT);
-        nbColumns.setText(Messages.getString("SelectorTableForm.ColumnNumber")); //$NON-NLS-1$
-        nbColumns.setWidth(125);
-
-        TableColumn creationStatus = new TableColumn(table, SWT.RIGHT);
-        creationStatus.setText(Messages.getString("SelectorTableForm.CreationStatus")); //$NON-NLS-1$
-        creationStatus.setWidth(140);
-
-        scrolledCompositeFileViewer.setContent(table);
-        scrolledCompositeFileViewer.setMinSize(table.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+        createTable();
 
         // Composite retreiveSchema
         Composite compositeRetreiveSchemaButton = Form.startNewGridLayout(compositeTableSettings, 3, false, SWT.CENTER,
@@ -245,14 +242,148 @@ public class SelectorTableForm extends AbstractForm {
     }
 
     /**
+     * DOC qzhang Comment method "createTable".
+     */
+    private void createTable() {
+        // List Table
+        TableViewerCreator tableViewerCreator = new TableViewerCreator(scrolledCompositeFileViewer);
+        tableViewerCreator.setColumnsResizableByDefault(true);
+        tableViewerCreator.setBorderVisible(true);
+        tableViewerCreator.setLayoutMode(LAYOUT_MODE.FILL_HORIZONTAL);
+        tableViewerCreator.setCheckboxInFirstColumn(true);
+        // tableViewerCreator.setAdjustWidthValue(-15);
+        tableViewerCreator.setFirstColumnMasked(true);
+
+        table = tableViewerCreator.createTable();
+        table.setLayoutData(new GridData(GridData.FILL_BOTH));
+
+        // table = new Table(scrolledCompositeFileViewer, SWT.CHECK | SWT.BORDER);
+        // table.setBackground(table.getDisplay().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
+        // table.setHeaderVisible(true);
+
+        // table.setHeaderVisible(true);
+        TableColumn tableName = new TableColumn(table, SWT.NONE);
+        tableName.setText(Messages.getString("SelectorTableForm.TableName")); //$NON-NLS-1$
+        tableName.setWidth(300);
+
+        tableName.addSelectionListener(getColumnSelectionListener());
+        TableColumn tableType = new TableColumn(table, SWT.NONE);
+        tableType.setText(Messages.getString("SelectorTableForm.TableType")); //$NON-NLS-1$
+        tableType.setWidth(140);
+
+        tableType.addSelectionListener(getColumnSelectionListener());
+        TableColumn nbColumns = new TableColumn(table, SWT.RIGHT);
+        nbColumns.setText(Messages.getString("SelectorTableForm.ColumnNumber")); //$NON-NLS-1$
+        nbColumns.setWidth(125);
+
+        TableColumn creationStatus = new TableColumn(table, SWT.RIGHT);
+        creationStatus.setText(Messages.getString("SelectorTableForm.CreationStatus")); //$NON-NLS-1$
+        creationStatus.setWidth(140);
+
+        scrolledCompositeFileViewer.setContent(table);
+        scrolledCompositeFileViewer.setMinSize(table.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+    }
+
+    private final Collator col = Collator.getInstance(Locale.getDefault());
+
+    /**
+     * DOC qzhang Comment method "getColumnSelectionListener".
+     * 
+     * @return
+     */
+    private SelectionAdapter getColumnSelectionListener() {
+        return new SelectionAdapter() {
+
+            int colIndex = 1;
+
+            int updown = 1;
+
+            private final Comparator strComparator = new Comparator() {
+
+                public int compare(Object arg0, Object arg1) {
+
+                    TableItem t1 = (TableItem) arg0;
+                    TableItem t2 = (TableItem) arg1;
+
+                    String v1 = (t1.getText(colIndex));
+                    String v2 = (t2.getText(colIndex));
+
+                    return (col.compare(v1, v2)) * updown;
+                }
+            };
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                updown = updown * -1;
+
+                TableColumn currentColumn = (TableColumn) e.widget;
+                Table selectiontable = currentColumn.getParent();
+
+                colIndex = searchColumnIndex(currentColumn);
+
+                selectiontable.setRedraw(false);
+
+                TableItem[] items = table.getItems();
+
+                Arrays.sort(items, strComparator);
+
+                selectiontable.setItemCount(items.length);
+
+                for (int i = 0; i < items.length; i++) {
+                    TableItem item = new TableItem(table, SWT.NONE, i);
+                    item.setText(getData(items[i]));
+                    if (items[i].getChecked()) {
+                        clearTableItem(items[i]);
+                        items[i].setChecked(false);
+                        item.setChecked(true);
+                        createTable(item);
+                    }
+                    items[i].dispose();
+                }
+
+                selectiontable.setRedraw(true);
+                selectiontable.getParent().layout(true, true);
+            }
+
+            private String[] getData(TableItem t) {
+                Table selectiontable = t.getParent();
+
+                int colCount = selectiontable.getColumnCount();
+                String[] s = new String[colCount];
+
+                for (int i = 0; i < colCount; i++) {
+                    s[i] = t.getText(i);
+                }
+                return s;
+
+            }
+
+            private int searchColumnIndex(TableColumn currentColumn) {
+                Table selectiontable = currentColumn.getParent();
+
+                int in = 0;
+
+                for (int i = 0; i < selectiontable.getColumnCount(); i++) {
+                    if (selectiontable.getColumn(i) == currentColumn) {
+                        in = i;
+                        break;
+                    }
+                }
+                return in;
+            }
+        };
+    }
+
+    /**
      * addButtonControls.
      * 
      */
+    @Override
     protected void addUtilsButtonListeners() {
-
         // Event CheckConnection Button
         checkConnectionButton.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(final SelectionEvent e) {
                 count = 0;
                 checkConnection(true);
@@ -261,6 +392,7 @@ public class SelectorTableForm extends AbstractForm {
 
         selectAllTablesButton.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(final SelectionEvent e) {
                 updateStatus(IStatus.ERROR, null);
                 TableItem[] tableItems = table.getItems();
@@ -281,6 +413,7 @@ public class SelectorTableForm extends AbstractForm {
 
         selectNoneTablesButton.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(final SelectionEvent e) {
                 count = 0;
                 TableItem[] tableItems = table.getItems();
@@ -294,9 +427,17 @@ public class SelectorTableForm extends AbstractForm {
             }
         });
 
+        addTableListener();
+    }
+
+    /**
+     * DOC qzhang Comment method "addTableListener".
+     */
+    private void addTableListener() {
         // Event checkBox action
         table.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(final SelectionEvent e) {
                 if (e.detail == SWT.CHECK) {
                     TableItem tableItem = (TableItem) e.item;
@@ -327,42 +468,24 @@ public class SelectorTableForm extends AbstractForm {
             parentWizardPage.getWizard().getContainer().run(true, true, new IRunnableWithProgress() {
 
                 public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-                    monitor.beginTask(Messages.getString("CreateTableAction.action.createTitle"), IProgressMonitor.UNKNOWN);
+                    monitor.beginTask(Messages.getString("CreateTableAction.action.createTitle"),
+                            IProgressMonitor.UNKNOWN);
 
                     iMetadataConnection = ConvertionHelper.convert(getConnection());
                     managerConnection.check(iMetadataConnection);
 
                     if (managerConnection.getIsValide()) {
-                        itemTableName = ExtractMetaDataFromDataBase.returnTablesFormConnection(iMetadataConnection);
+                        itemTableName = ExtractMetaDataFromDataBase.returnTablesFormConnection(iMetadataConnection,
+                                getTableInfoParameters());
                         if (itemTableName.size() <= 0) {
                             // connection is done but any table exist
                             if (displayMessageBox) {
-                                openInfoDialogInUIThread(getShell(),
-                                        Messages.getString("DatabaseTableForm.checkConnection"), Messages //$NON-NLS-1$
-                                                .getString("DatabaseTableForm.tableNoExist"), true);//$NON-NLS-1$
+                                openInfoDialogInUIThread(getShell(), Messages
+                                        .getString("DatabaseTableForm.checkConnection"), Messages //$NON-NLS-1$
+                                        .getString("DatabaseTableForm.tableNoExist"), true);//$NON-NLS-1$
                             }
                         } else {
-                            Display.getDefault().asyncExec(new Runnable() {
-
-                                public void run() {
-                                    // connection is done and tables exist
-                                    if (itemTableName != null && !itemTableName.isEmpty()) {
-                                        // fill the combo
-                                        Iterator<String> iterate = itemTableName.iterator();
-                                        while (iterate.hasNext()) {
-                                            String nameTable = iterate.next();
-                                            TableItem item = new TableItem(table, SWT.NONE);
-                                            item.setText(0, nameTable);
-                                            item.setText(1, ExtractMetaDataFromDataBase.getTableTypeByTableName(nameTable));
-                                        }
-                                    }
-                                    if (displayMessageBox) {
-                                        String msg = Messages.getString("DatabaseTableForm.connectionIsDone"); //$NON-NLS-1$
-                                        openInfoDialogInUIThread(getShell(), Messages
-                                                .getString("DatabaseTableForm.checkConnection"), msg, false);
-                                    }
-                                }
-                            });
+                            createAllItems(displayMessageBox, null);
                         }
                     } else if (displayMessageBox) {
                         // connection failure
@@ -384,7 +507,44 @@ public class SelectorTableForm extends AbstractForm {
 
     }
 
-    public static void openInfoDialogInUIThread(final Shell shell, final String title, final String msg, boolean ifUseRunnable) {
+    /**
+     * DOC qzhang Comment method "createAllItems".
+     * 
+     * @param displayMessageBox
+     * @param newList
+     */
+    private void createAllItems(final boolean displayMessageBox, final List<String> newList) {
+        Display.getDefault().asyncExec(new Runnable() {
+
+            public void run() {
+                List<String> list = new ArrayList<String>();
+                if (newList != null) {
+                    list.addAll(newList);
+                } else {
+                    list = itemTableName;
+                }
+                // connection is done and tables exist
+                if (list != null && !list.isEmpty()) {
+                    // fill the combo
+                    Iterator<String> iterate = list.iterator();
+                    while (iterate.hasNext()) {
+                        String nameTable = iterate.next();
+                        TableItem item = new TableItem(table, SWT.NONE);
+                        item.setText(0, nameTable);
+                        item.setText(1, ExtractMetaDataFromDataBase.getTableTypeByTableName(nameTable));
+                    }
+                }
+                if (displayMessageBox) {
+                    String msg = Messages.getString("DatabaseTableForm.connectionIsDone"); //$NON-NLS-1$
+                    openInfoDialogInUIThread(getShell(), Messages.getString("DatabaseTableForm.checkConnection"), msg,
+                            false);
+                }
+            }
+        });
+    }
+
+    public static void openInfoDialogInUIThread(final Shell shell, final String title, final String msg,
+            boolean ifUseRunnable) {
         if (ifUseRunnable) {
             shell.getDisplay().asyncExec(new Runnable() {
 
@@ -609,7 +769,8 @@ public class SelectorTableForm extends AbstractForm {
                 if (isCanceled()) {
                     return;
                 }
-                metadataColumns = ExtractMetaDataFromDataBase.returnMetadataColumnsFormTable(iMetadataConnection, tableString);
+                metadataColumns = ExtractMetaDataFromDataBase.returnMetadataColumnsFormTable(iMetadataConnection,
+                        tableString);
                 if (isCanceled()) {
                     return;
                 }
@@ -655,7 +816,8 @@ public class SelectorTableForm extends AbstractForm {
                 tableItem.setText(3, Messages.getString("SelectorTableForm.Success")); //$NON-NLS-1$
             } else {
                 updateStatus(IStatus.WARNING, Messages.getString("DatabaseTableForm.connectionFailure")); //$NON-NLS-1$
-                new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("DatabaseTableForm.connectionFailure"), //$NON-NLS-1$
+                new ErrorDialogWidthDetailArea(getShell(), PID, Messages
+                        .getString("DatabaseTableForm.connectionFailure"), //$NON-NLS-1$
                         managerConnection.getMessageException());
 
             }
@@ -714,13 +876,46 @@ public class SelectorTableForm extends AbstractForm {
     /**
      * Main Fields addControls.
      */
+    @Override
     protected void addFieldsListeners() {
+        nameFilter.addModifyListener(new ModifyListener() {
 
+            public void modifyText(ModifyEvent e) {
+                List<String> newList = new ArrayList<String>();
+
+                String pattern = nameFilter.getText();
+                SearchPattern matcher = new SearchPattern();
+                matcher.setPattern(pattern);
+                for (int i = 0; i < itemTableName.size(); i++) {
+                    String item = itemTableName.get(i);
+                    if (matcher.matches(item)) {
+                        newList.add(item);
+                    }
+                }
+                for (int j = 0; j < table.getItemCount(); j++) {
+                    TableItem item = table.getItem(j);
+                    if (item.getChecked()) {
+                        clearTableItem(item);
+                        item.setChecked(false);
+                    }
+                }
+                table.clearAll();
+                if (!table.isDisposed()) {
+                    table.dispose();
+                    table = null;
+                    createTable();
+                    addTableListener();
+                }
+                createAllItems(false, newList);
+            }
+
+        });
     }
 
     /**
      * Ensures that fields are set. Update checkEnable / use to checkTableSetting().
      */
+    @Override
     protected boolean checkFieldsValue() {
         updateStatus(IStatus.OK, null);
         return true;
@@ -731,6 +926,7 @@ public class SelectorTableForm extends AbstractForm {
      * 
      * @see org.talend.repository.ui.swt.AbstractForm#adaptFormToReadOnly()
      */
+    @Override
     protected void adaptFormToReadOnly() {
     }
 
@@ -740,13 +936,23 @@ public class SelectorTableForm extends AbstractForm {
      * @see org.eclipse.swt.widgets.Control#setVisible(boolean)
      * 
      */
+    @Override
     public void setVisible(boolean visible) {
         super.setVisible(visible);
         if (visible) {
             initializeForm();
         }
+        // initControlData();
+    }
+
+    /**
+     * DOC qzhang Comment method "initControlData".
+     */
+    public void initControlData() {
         checkConnection(false);
-        threadExecutor = new CustomThreadPoolExecutor(itemTableName.size());
+        if (itemTableName.size() > 0) {
+            threadExecutor = new CustomThreadPoolExecutor(itemTableName.size());
+        }
     }
 
     protected DatabaseConnection getConnection() {
@@ -765,13 +971,26 @@ public class SelectorTableForm extends AbstractForm {
     @Override
     public void dispose() {
         super.dispose();
-        threadExecutor.shutdownNow();
+        if (threadExecutor != null) {
+            threadExecutor.shutdownNow();
+        }
     }
 
     /**
      * DOC nrousseau Comment method "performCancel".
      */
     public void performCancel() {
-        threadExecutor.shutdownNow();
+        if (threadExecutor != null) {
+            threadExecutor.shutdownNow();
+        }
+    }
+
+    /**
+     * Getter for tableInfoParameters.
+     * 
+     * @return the tableInfoParameters
+     */
+    public TableInfoParameters getTableInfoParameters() {
+        return this.tableInfoParameters;
     }
 }

@@ -33,6 +33,7 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
+import org.talend.core.model.metadata.builder.database.TableInfoParameters;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.ui.images.ECoreImage;
@@ -55,13 +56,15 @@ public class DatabaseTableWizard extends RepositoryWizard implements INewWizard 
 
     private DatabaseTableWizardPage tableWizardpage;
 
-    private ConnectionItem connectionItem;
+    private DatabaseTableFilterWizardPage tableFilterWizardPage;
 
-    private MetadataTable metadataTable;
+    private final ConnectionItem connectionItem;
+
+    private final MetadataTable metadataTable;
 
     private boolean skipStep;
 
-    private ManagerConnection managerConnection;
+    private final ManagerConnection managerConnection;
 
     /**
      * DOC ocarbone DatabaseTableWizard constructor comment.
@@ -74,7 +77,8 @@ public class DatabaseTableWizard extends RepositoryWizard implements INewWizard 
      */
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     public DatabaseTableWizard(IWorkbench workbench, boolean creation, ConnectionItem connectionItem,
-            MetadataTable metadataTable, String[] existingNames, boolean forceReadOnly, ManagerConnection managerConnection) {
+            MetadataTable metadataTable, String[] existingNames, boolean forceReadOnly,
+            ManagerConnection managerConnection) {
         super(workbench, creation, forceReadOnly);
         this.connectionItem = connectionItem;
         this.metadataTable = metadataTable;
@@ -99,16 +103,21 @@ public class DatabaseTableWizard extends RepositoryWizard implements INewWizard 
     /**
      * Adding the page to the wizard.
      */
+    @Override
     public void addPages() {
         setWindowTitle(Messages.getString("TableWizard.windowTitle")); //$NON-NLS-1$
         setDefaultPageImageDescriptor(ImageProvider.getImageDesc(ECoreImage.METADATA_TABLE_WIZ));
-
-        selectorWizardPage = new SelectorTableWizardPage(connectionItem, metadataTable, isRepositoryObjectEditable());
+        TableInfoParameters tableInfoParameters = new TableInfoParameters();
+        selectorWizardPage = new SelectorTableWizardPage(connectionItem, metadataTable, isRepositoryObjectEditable(),
+                tableInfoParameters);
 
         tableWizardpage = new DatabaseTableWizardPage(managerConnection, connectionItem, metadataTable,
                 isRepositoryObjectEditable());
-
+        tableFilterWizardPage = new DatabaseTableFilterWizardPage(tableInfoParameters);
         if (creation && !skipStep) {
+
+            tableFilterWizardPage.setDescription("Filter for the Table.");
+            tableFilterWizardPage.setPageComplete(true);
             selectorWizardPage
                     .setTitle(Messages.getString("TableWizardPage.titleCreate") + " \"" + connectionItem.getProperty().getLabel() //$NON-NLS-1$ //$NON-NLS-2$
                             + "\""); //$NON-NLS-1$
@@ -121,6 +130,7 @@ public class DatabaseTableWizard extends RepositoryWizard implements INewWizard 
             tableWizardpage.setDescription(Messages.getString("TableWizardPage.descriptionCreate")); //$NON-NLS-1$
             tableWizardpage.setPageComplete(false);
 
+            addPage(tableFilterWizardPage);
             addPage(selectorWizardPage);
             addPage(tableWizardpage);
 
@@ -139,6 +149,7 @@ public class DatabaseTableWizard extends RepositoryWizard implements INewWizard 
      * This method determine if the 'Finish' button is enable This method is called when 'Finish' button is pressed in
      * the wizard. We will create an operation and run it using wizard as execution context.
      */
+    @Override
     public boolean performFinish() {
         if (tableWizardpage.isPageComplete()) {
             saveMetaData();
@@ -171,7 +182,8 @@ public class DatabaseTableWizard extends RepositoryWizard implements INewWizard 
             factory.save(repositoryObject.getProperty().getItem());
         } catch (PersistenceException e) {
             String detailError = e.toString();
-            new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("CommonWizard.persistenceException"), detailError); //$NON-NLS-1$
+            new ErrorDialogWidthDetailArea(getShell(), PID,
+                    Messages.getString("CommonWizard.persistenceException"), detailError); //$NON-NLS-1$
             log.error(Messages.getString("CommonWizard.persistenceException") + "\n" + detailError); //$NON-NLS-1$ //$NON-NLS-2$
         }
     }

@@ -22,43 +22,35 @@
 package org.talend.repository.ui.wizards.metadata.table.database;
 
 import org.eclipse.jface.dialogs.IDialogPage;
+import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.widgets.Composite;
-import org.talend.core.model.metadata.builder.connection.MetadataTable;
+import org.talend.core.CorePlugin;
 import org.talend.core.model.metadata.builder.database.TableInfoParameters;
-import org.talend.core.model.properties.ConnectionItem;
 import org.talend.repository.ui.swt.utils.AbstractForm;
 
 /**
  * TableWizard present the TableForm width the MetaDataTable. Use to create a new table (need a connection to a DB).
  * Page allows setting a table.
  */
-public class SelectorTableWizardPage extends WizardPage {
+public class DatabaseTableFilterWizardPage extends WizardPage {
 
-    private SelectorTableForm tableForm;
-
-    private final MetadataTable metadataTable;
-
-    private final ConnectionItem connectionItem;
-
-    private boolean isRepositoryObjectEditable;
+    private DatabaseTableFilterForm tableForm;
 
     private final TableInfoParameters tableInfoParameters;
 
     /**
-     * SelectorTableWizardPage constructor (to instance IMetadataConnection OR MetaDataTableType). If MetaDataTableType
+     * DatabaseWizardPage constructor (to instance IMetadataConnection OR MetaDataTableType). If MetaDataTableType
      * exist, it's an update of existing metadata else it's a new metadata.
      * 
      * @param tableInfoParameters
      * 
+     * @param managerConnection
+     * 
      * @param ISelection
      */
-    public SelectorTableWizardPage(ConnectionItem connectionItem, MetadataTable metadataTable,
-            boolean isRepositoryObjectEditable, TableInfoParameters tableInfoParameters) {
+    public DatabaseTableFilterWizardPage(TableInfoParameters tableInfoParameters) {
         super("wizardPage"); //$NON-NLS-1$
-        this.connectionItem = connectionItem;
-        this.metadataTable = metadataTable;
-        this.isRepositoryObjectEditable = isRepositoryObjectEditable;
         this.tableInfoParameters = tableInfoParameters;
     }
 
@@ -69,17 +61,18 @@ public class SelectorTableWizardPage extends WizardPage {
      */
     public void createControl(final Composite parent) {
 
-        tableForm = new SelectorTableForm(parent, connectionItem, this);
-        tableForm.setReadOnly(!isRepositoryObjectEditable);
+        tableForm = new DatabaseTableFilterForm(parent, this);
 
         AbstractForm.ICheckListener listener = new AbstractForm.ICheckListener() {
 
             public void checkPerformed(final AbstractForm source) {
                 if (source.isStatusOnError()) {
-                    SelectorTableWizardPage.this.setPageComplete(false);
-                }
-                if (source.isStatusOnValid()) {
-                    SelectorTableWizardPage.this.setPageComplete(true);
+                    DatabaseTableFilterWizardPage.this.setPageComplete(false);
+                    setErrorMessage(source.getStatus());
+                } else {
+                    DatabaseTableFilterWizardPage.this.setPageComplete(false);
+                    setErrorMessage(null);
+                    setMessage(source.getStatus(), source.getStatusLevel());
                 }
             }
         };
@@ -87,13 +80,31 @@ public class SelectorTableWizardPage extends WizardPage {
         setControl(tableForm);
     }
 
-    /**
-     * DOC nrousseau Comment method "performCancel".
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jface.wizard.WizardPage#getNextPage()
      */
-    public void performCancel() {
-        if (tableForm != null) {
-            tableForm.performCancel();
+    @Override
+    public IWizardPage getNextPage() {
+        CorePlugin.getDefault().getPreferenceStore().setValue(DatabaseTableFilterForm.PREFS_NAMEFILTER,
+                tableForm.getNameFilter());
+        getTableInfoParameters().setNameFilters(tableForm.getFilters());
+        IWizardPage nextPage = super.getNextPage();
+        if (nextPage instanceof SelectorTableWizardPage) {
+            ((SelectorTableWizardPage) nextPage).initControlData();
         }
+        return nextPage;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jface.wizard.WizardPage#canFlipToNextPage()
+     */
+    @Override
+    public boolean canFlipToNextPage() {
+        return true;
     }
 
     /**
@@ -105,7 +116,4 @@ public class SelectorTableWizardPage extends WizardPage {
         return this.tableInfoParameters;
     }
 
-    public void initControlData() {
-        tableForm.initControlData();
-    }
 }
