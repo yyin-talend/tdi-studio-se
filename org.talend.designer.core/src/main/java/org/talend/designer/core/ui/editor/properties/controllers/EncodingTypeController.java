@@ -25,6 +25,7 @@ import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.fieldassist.DecoratedField;
 import org.eclipse.jface.fieldassist.FieldDecoration;
@@ -63,7 +64,7 @@ public class EncodingTypeController extends AbstractElementPropertySectionContro
 
     @Override
     protected Command getTextCommandForHelper(String paramName, String value) {
-        return new EncodingTypeChangeCommand(elem, paramName, value);
+        return new EncodingTypeChangeCommand(elem, paramName, value, false);
     }
 
     /**
@@ -112,7 +113,7 @@ public class EncodingTypeController extends AbstractElementPropertySectionContro
             tempValue = TalendTextUtils.addQuotes(tempValue);
         }
 
-        return new EncodingTypeChangeCommand(elem, paramName, tempValue);
+        return new EncodingTypeChangeCommand(elem, paramName, tempValue, true);
     }
 
     /*
@@ -190,7 +191,16 @@ public class EncodingTypeController extends AbstractElementPropertySectionContro
             combo.setLayoutData(data);
             combo.addSelectionListener(selectionChangeListener);
             lastControlUsed = combo;
+
+            String tempValue = (String) param.getValue();
+            tempValue = tempValue.replaceAll("'", "");
+            tempValue = tempValue.replaceAll("\"", "");
+
+            if (!ArrayUtils.contains(encodingTypeParameter.getListItemsValue(), tempValue)) {
+                encodingTypeParameter.setValue(EmfComponent.ENCODING_TYPE_CUSTOM);
+            }
             String encodingType = (String) encodingTypeParameter.getValue();
+
             if (encodingType != null && encodingType.equals(EmfComponent.ENCODING_TYPE_CUSTOM)) {
                 lastControlUsed = addCustomEncodingTypeText(subComposite, param, lastControlUsed, numInRow, nbInRow, top);
             }
@@ -285,7 +295,8 @@ public class EncodingTypeController extends AbstractElementPropertySectionContro
         IElementParameter encodingTypeParameter = param.getChildParameters().get(EParameterName.ENCODING_TYPE.getName());
         Object value = encodingTypeParameter.getValue();
 
-        if (value instanceof String) {
+        if ((value instanceof String)
+                && ((hashCurControls.get(param.getName()) == null) || !EmfComponent.ENCODING_TYPE_CUSTOM.equals(combo.getText()))) {
             String strValue = ""; //$NON-NLS-1$
             int nbInList = 0, nbMax = encodingTypeParameter.getListItemsValue().length;
             String name = (String) value;

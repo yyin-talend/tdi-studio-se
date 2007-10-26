@@ -42,11 +42,14 @@ public class EncodingTypeChangeCommand extends PropertyChangeCommand {
 
     private IElementParameter paramEncoding;
 
-    public EncodingTypeChangeCommand(Element elem, String propName, Object propValue) {
+    private boolean fromCombo;
+
+    public EncodingTypeChangeCommand(Element elem, String propName, Object propValue, boolean fromCombo) {
         super(elem, propName, EmfComponent.ENCODING_TYPE_CUSTOM.equals(propValue) ? elem.getPropertyValue(propName) : propValue);
         newRealValue = (String) propValue;
         IElementParameter curParam = getElement().getElementParameter(getPropName());
         paramEncoding = curParam.getChildParameters().get(EParameterName.ENCODING_TYPE.getName());
+        this.fromCombo = fromCombo;
     }
 
     @Override
@@ -56,19 +59,26 @@ public class EncodingTypeChangeCommand extends PropertyChangeCommand {
         String tempValue = newRealValue;
         tempValue = tempValue.replaceAll("'", "");
         tempValue = tempValue.replaceAll("\"", "");
-        if (ArrayUtils.contains(paramEncoding.getListItemsValue(), tempValue)
-                && (!EmfComponent.ENCODING_TYPE_CUSTOM.equals(tempValue))) {
+
+        boolean newIsCustomAndoldIsNotCustom = tempValue.equals(EmfComponent.ENCODING_TYPE_CUSTOM)
+                && !paramEncoding.getValue().equals(EmfComponent.ENCODING_TYPE_CUSTOM);
+        boolean newIsNotCustomAndoldIsCustom = !tempValue.equals(EmfComponent.ENCODING_TYPE_CUSTOM)
+                && paramEncoding.getValue().equals(EmfComponent.ENCODING_TYPE_CUSTOM);
+        boolean toRefresh = false;
+        if (fromCombo && (newIsCustomAndoldIsNotCustom || newIsNotCustomAndoldIsCustom)) {
+            toRefresh = true;
+        }
+        if (ArrayUtils.contains(paramEncoding.getListItemsValue(), tempValue)) {
             paramEncoding.setValue(tempValue);
-            super.execute();
-        } else {
-            paramEncoding.setValue(EmfComponent.ENCODING_TYPE_CUSTOM);
+        }
+        if (toRefresh) {
             getElement().setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), Boolean.TRUE);
             if (DynamicTabbedPropertySection.getLastPropertyUsed() != null) {
                 DynamicTabbedPropertySection.getLastPropertyUsed().refresh();
             }
-            // IElementParameter curParam = getElement().getElementParameter(getPropName());
-            // curParam.setShow(true);
         }
+        super.execute();
+
     }
 
     @Override
