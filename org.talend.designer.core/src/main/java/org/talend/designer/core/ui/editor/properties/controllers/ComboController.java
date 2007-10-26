@@ -574,6 +574,7 @@ public class ComboController extends AbstractElementPropertySectionController {
                 combo.setItems(paramItems);
             }
             combo.setText(strValue);
+            combo.setVisible(true);
         }
     }
 

@@ -24,18 +24,15 @@ package org.talend.designer.core.ui.editor.properties.process;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IWorkbenchPart;
 import org.talend.core.model.process.EComponentCategory;
-import org.talend.core.model.process.IElementParameter;
-import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.process.ProcessPart;
 import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
 import org.talend.repository.model.RepositoryNode;
 
 /**
- * DOC Administrator class global comment. Detailled comment <br/>
+ * DOC Administrator class global comment. Detailed comment <br/>
  * 
  */
 public class StatsAndLogsTabPropertySection extends DynamicTabbedPropertySection {

@@ -539,7 +539,7 @@ public class ChangeMetadataCommand extends Command {
         IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
         IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet"); //$NON-NLS-1$
         PropertySheet sheet = (PropertySheet) view;
-        if (sheet.getCurrentPage() instanceof TabbedPropertySheetPage) {
+        if ( sheet!=null && sheet.getCurrentPage()!=null && sheet.getCurrentPage() instanceof TabbedPropertySheetPage) {
             TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) sheet.getCurrentPage();
             if (tabbedPropertySheetPage.getCurrentTab() != null) {
                 tabbedPropertySheetPage.refresh();

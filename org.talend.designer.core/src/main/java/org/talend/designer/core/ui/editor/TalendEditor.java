@@ -1305,4 +1305,13 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
         return getActionRegistry().getAction(actionID);
     }
 
+    /**
+     * DOC Administrator Comment method "getProcessPart".
+     * @return
+     */
+    public ProcessPart getProcessPart() {
+       RootEditPart rootEditPart = ( (ScrollingGraphicalViewer) getGraphicalViewer()).getRootEditPart();
+        return (ProcessPart)rootEditPart.getChildren().get(0);
+    }
+
 }

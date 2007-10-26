@@ -250,7 +250,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
     }
 
     /**
-     * Sort the element order of the inputted list.
+     * Sort the element order of the inputed list.
      * 
      * @param compareList
      */
@@ -662,7 +662,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
 
         Control lastControl = null;
         if (reInitialize) {
-            if (currentComponent != null) {
+            if (currentComponent != null&& composite!=null) {
                 Control[] ct = composite.getChildren();
                 for (int i = 0; i < ct.length; i++) {
                     ct[i].dispose();
@@ -822,7 +822,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         Composite tmpComposite = composite;
         while (tabbedPropertyComposite == null) { // to retrieve the main
             // composite of the TabbedProperties
-            if (tmpComposite.isDisposed() || tmpComposite.getParent().isDisposed()) {
+            if (tmpComposite==null||tmpComposite.isDisposed() || tmpComposite.getParent()==null||tmpComposite.getParent().isDisposed()) {
                 return null;
             }
             if (tmpComposite.getParent() instanceof TabbedPropertyComposite) {
@@ -1128,7 +1128,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
     /**
      * amaumont Comment method "registerListenerForRefreshingSection".
      */
-    private void registerListenerForRefreshingSection() {
+    public void registerListenerForRefreshingSection() {
         if (commandStackEventListener == null) {
 
             DynamicTabbedPropertySection.commandStackEventListener = new CommandStackEventListener() {
@@ -1322,5 +1322,10 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
      */
     public static DynamicTabbedPropertySection getLastPropertyUsed() {
         return lastPropertyUsed;
+    }
+
+    
+    public void setComposite(Composite composite) {
+        this.composite = composite;
     }
 }

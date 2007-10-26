@@ -28,6 +28,8 @@ import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.views.contexts.Contexts;
 import org.talend.designer.core.ui.views.problems.Problems;
+import org.talend.designer.core.ui.views.statsandlogs.StatsAndLogs;
+import org.talend.designer.core.ui.views.statsandlogs.StatsAndLogsView;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.sqlbuilder.util.UIUtils;
 
@@ -102,8 +104,18 @@ public class ActiveProcessTracker implements IPartListener {
         IProcess process = getJobFromActivatedEditor(part);
         if (process != null) {
             currentProcess = process;
-            setContextsView(process);
+             setContextsView(process);
+            setStatsAndLogsView(process);
         }
+    }
+
+    /**
+     * ftang Comment method "setStatsAndLogsView".
+     * @param process
+     */
+    private void setStatsAndLogsView(IProcess process) {
+        StatsAndLogs.setTitle("Job " + process.getProperty().getLabel()); //$NON-NLS-1$
+        StatsAndLogs.switchToCurStatsAndLogsView(); 
     }
 
     /**
@@ -152,6 +164,8 @@ public class ActiveProcessTracker implements IPartListener {
                 Problems.clearAll();
                 Contexts.setTitle(""); //$NON-NLS-1$
                 Contexts.clearAll();
+                StatsAndLogs.setTitle("");
+                StatsAndLogs.clearAll();
             }
             UIUtils.closeSqlBuilderDialogs(process.getName());
         }

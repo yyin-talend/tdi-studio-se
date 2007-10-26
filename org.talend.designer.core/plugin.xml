@@ -176,19 +176,6 @@
                tab="mainTab">
             <input type="org.talend.designer.core.ui.editor.notes.Note"/>
          </propertySection>
-         <propertySection
-               class="org.talend.designer.core.ui.editor.properties.process.StatsAndLogsTabPropertySection"
-               enablesFor="1"
-               filter="org.talend.designer.core.ui.editor.properties.process.StatsAndLogsSectionFilter"
-               id="StatsAndLogsTabPropertySection"
-               tab="statsAndLogsTab">
-         </propertySection>
-         <propertySection
-               class="org.talend.designer.core.ui.editor.properties.process.EmptyStatsAndLogsTabPropertySection"
-               enablesFor="1"
-               filter="org.talend.designer.core.ui.editor.properties.process.EmptyStatsAndLogsSectionFilter"
-               id="EmptyStatsAndLogsTabPropertySection"
-               tab="emptyStatsAndLogsTab"/>
       </propertySections>
    </extension>
    <extension
@@ -213,6 +200,13 @@
                         icon="platform:/plugin/org.talend.core/icons/context_icon.gif"
                         id="org.talend.designer.core.ui.views.ContextsView"
                         name="%contexts"/>
+                  <view
+                        category="org.talend.core.root"
+                        class="org.talend.designer.core.ui.views.statsandlogs.StatsAndLogsView"
+                        icon="platform:/plugin/org.talend.core/icons/context_icon.gif"
+                        id="org.talend.designer.core.ui.views.statsandlogs.statsAndLogsView"
+                        name="%statsAndLogsView">
+                  </view>
    </extension>
    <extension
          point="org.talend.core.repositoryContextualsActions">

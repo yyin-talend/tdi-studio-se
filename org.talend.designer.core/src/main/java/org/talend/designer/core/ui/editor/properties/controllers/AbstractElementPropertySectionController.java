@@ -293,7 +293,15 @@ public abstract class AbstractElementPropertySectionController implements Proper
      * @return
      */
     protected TabbedPropertySheetWidgetFactory getWidgetFactory() {
-        return dynamicTabbedPropertySection.getWidgetFactory();
+        try {
+            TabbedPropertySheetWidgetFactory widgetFactory = dynamicTabbedPropertySection.getWidgetFactory();
+            
+            if(widgetFactory!=null){
+                return widgetFactory;
+            }
+        } catch (Exception e) {
+        }
+        return  new TabbedPropertySheetWidgetFactory();
     }
 
     /**

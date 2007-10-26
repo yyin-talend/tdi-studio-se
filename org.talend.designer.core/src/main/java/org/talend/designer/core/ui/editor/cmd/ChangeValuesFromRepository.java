@@ -27,6 +27,9 @@ import java.util.Map;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.PlatformUI;
 import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.builder.connection.Connection;
@@ -42,6 +45,7 @@ import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
+import org.talend.designer.core.ui.views.statsandlogs.StatsAndLogsView;
 
 /**
  * DOC nrousseau class global comment. Detailled comment <br/>
@@ -179,8 +183,22 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
         }
 
         refreshPropertyView();
+        refreshStatsAndLogsView();
+        
         if (elem instanceof Node) {
             ((Process) ((Node) elem).getProcess()).checkProcess();
+        }
+    }
+    
+    /**
+     * ftang Comment method "refreshStatsAndLogsView".
+     */
+    private void refreshStatsAndLogsView() {
+        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+        IViewPart view = page.findView(StatsAndLogsView.ID); 
+       if (view != null) {
+            StatsAndLogsView statsAndLogsView = (StatsAndLogsView) view;
+            statsAndLogsView.refresh();
         }
     }
 
