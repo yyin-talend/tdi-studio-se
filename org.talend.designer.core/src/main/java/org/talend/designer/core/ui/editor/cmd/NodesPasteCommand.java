@@ -282,7 +282,7 @@ public class NodesPasteCommand extends Command {
             pastedNode.getNodeLabel().setOffset(new Point(copiedNode.getNodeLabel().getOffset()));
             oldNameTonewNameMap.put(copiedNode.getUniqueName(), pastedNode.getUniqueName());
 
-            for (ElementParameter param : (List<ElementParameter>) copiedNode.getElementParameters()) {
+            for (ElementParameter param : (List<ElementParameter>) copiedNode.getElementParametersWithChildrens()) {
                 if (!EParameterName.UNIQUE_NAME.getName().equals(param.getName())) {
                     if (param.getField() == EParameterFieldType.TABLE) {
                         List<Map<String, Object>> tableValues = (List<Map<String, Object>>) param.getValue();
