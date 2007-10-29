@@ -124,18 +124,15 @@ public class FunParaTableView2 extends AbstractDataTableEditorView<Parameter> {
         column.setTitle(Messages.getString("FunParaTableView2.Value"));
         column.setId(VALUE_PROPERTY);
 
-        cellEditor = new ExtendedTextCellEditorWithProposal(tableViewerCreator.getTable(), SWT.MULTI | SWT.BORDER,
-                column);
+        cellEditor = new ExtendedTextCellEditorWithProposal(tableViewerCreator.getTable(), SWT.MULTI | SWT.BORDER, column);
 
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<Parameter, Object>() {
 
             public String get(Parameter bean) {
                 StringBuffer id = new StringBuffer();
 
-                IEditorPart editor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-                        .getActiveEditor();
-                Object obj = ((MultiPageTalendEditor) editor).getTalendEditor().getViewer().getSelectedEditParts().get(
-                        0);
+                IEditorPart editor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+                Object obj = ((MultiPageTalendEditor) editor).getTalendEditor().getViewer().getSelectedEditParts().get(0);
                 EditPart editorPart = (EditPart) obj;
                 id.append(((INode) editorPart.getModel()).getLabel() + "=>");
 
@@ -145,6 +142,8 @@ public class FunParaTableView2 extends AbstractDataTableEditorView<Parameter> {
                 }
 
                 cellEditor.setOwnerId(id.append(bean.getName()).toString());
+
+                cellEditor.setExpressionType(bean.getType());
 
                 return bean.getValue();
             }
@@ -167,8 +166,8 @@ public class FunParaTableView2 extends AbstractDataTableEditorView<Parameter> {
         column.setModifiable(true);
         column.setWidth(115);
 
-        dialog = ((IExpressionBuilderDialogService) expressionBuilderDialogService).getExpressionBuilderInstance(
-                mainComposite, cellEditor);
+        dialog = ((IExpressionBuilderDialogService) expressionBuilderDialogService).getExpressionBuilderInstance(mainComposite,
+                cellEditor);
 
         CellEditorDialogBehavior behavior = new CellEditorDialogBehavior(cellEditor);
         behavior.setCellEditorDialog(dialog);
@@ -176,6 +175,7 @@ public class FunParaTableView2 extends AbstractDataTableEditorView<Parameter> {
 
         cellEditor.init();
         cellEditor.setContentProposalProvider(getProcessProposals());
+        cellEditor.setExpressionType("String");
         column.setCellEditor(cellEditor);
 
         // ////////////////////////////////////////////////////////
