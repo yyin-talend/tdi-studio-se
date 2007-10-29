@@ -146,8 +146,8 @@ public final class TalendEditorPaletteFactory {
                     imageLarge = xmlComponent.getIcon32();
                 }
 
-                component = new CombinedTemplateCreationEntry(name, name, Node.class, new PaletteComponentFactory(xmlComponent),
-                        imageSmall, imageLarge);
+                component = new CombinedTemplateCreationEntry(name, name, Node.class, new PaletteComponentFactory(
+                        xmlComponent), imageSmall, imageLarge);
                 component.setDescription(longName);
 
                 String[] strings = family.split(FAMILY_SEPARATOR_REGEX);
@@ -211,7 +211,8 @@ public final class TalendEditorPaletteFactory {
         }
     }
 
-    private static void saveFamilyState(PaletteViewer viewer, IPreferenceStore preferenceStore, PaletteDrawer paletteItem) {
+    private static void saveFamilyState(PaletteViewer viewer, IPreferenceStore preferenceStore,
+            PaletteDrawer paletteItem) {
         String family = paletteItem.getLabel();
         int value;
         if (viewer.isExpanded(paletteItem)) {
@@ -223,7 +224,7 @@ public final class TalendEditorPaletteFactory {
         preferenceStore.setValue(PALETTE_STATE + family, value);
 
         for (Iterator iter = paletteItem.getChildren().iterator(); iter.hasNext();) {
-            Object object = (Object) iter.next();
+            Object object = iter.next();
             if (object instanceof PaletteDrawer) {
                 PaletteDrawer paletteDrawer = (PaletteDrawer) object;
                 saveFamilyState(viewer, preferenceStore, paletteDrawer);
@@ -240,6 +241,21 @@ public final class TalendEditorPaletteFactory {
     static PaletteRoot createPalette(final IComponentsFactory compFac) {
         palette = new PaletteRoot();
         palette.add(createToolsGroup());
+        createComponentsDrawer(compFac);
+        return palette;
+    }
+
+    /**
+     * Reload the palette components.
+     * 
+     * yzhang Comment method "createPalette".
+     * 
+     * @param compFac
+     * @param root
+     * @return
+     */
+    static PaletteRoot createPalette(final IComponentsFactory compFac, PaletteRoot root) {
+        palette = root;
         createComponentsDrawer(compFac);
         return palette;
     }
@@ -292,7 +308,8 @@ public final class TalendEditorPaletteFactory {
         // Add a marquee tool to the group
         // toolGroup.add(new MarqueeToolEntry());
 
-        CreationToolEntry noteCreationToolEntry = new CreationToolEntry(Messages.getString("TalendEditorPaletteFactory.Note"), //$NON-NLS-1$
+        CreationToolEntry noteCreationToolEntry = new CreationToolEntry(Messages
+                .getString("TalendEditorPaletteFactory.Note"), //$NON-NLS-1$
                 Messages.getString("TalendEditorPaletteFactory.CreateNote"), //$NON-NLS-1$
                 new NoteCreationFactory(), ImageProvider.getImageDesc(ECoreImage.CODE_ICON), ImageProvider
                         .getImageDesc(ECoreImage.CODE_ICON));

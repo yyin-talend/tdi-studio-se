@@ -69,6 +69,7 @@ import org.eclipse.gef.editparts.LayerManager;
 import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
 import org.eclipse.gef.editparts.ZoomManager;
 import org.eclipse.gef.palette.PaletteEntry;
+import org.eclipse.gef.palette.PaletteGroup;
 import org.eclipse.gef.palette.PaletteRoot;
 import org.eclipse.gef.ui.actions.ActionRegistry;
 import org.eclipse.gef.ui.actions.DirectEditAction;
@@ -891,16 +892,15 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
 
         components = ComponentsFactoryProvider.getInstance();
 
-        PaletteRoot newRoot = TalendEditorPaletteFactory.createPalette(components);
-
         List oldRoots = new ArrayList(paletteRoot.getChildren());
         for (Object obj : oldRoots) {
+            if (obj instanceof PaletteGroup) {
+                continue;
+            }
             paletteRoot.remove((PaletteEntry) obj);
         }
 
-        for (Object obj : newRoot.getChildren()) {
-            paletteRoot.add((PaletteEntry) obj);
-        }
+        TalendEditorPaletteFactory.createPalette(components, paletteRoot);
 
     }
 
