@@ -23,10 +23,8 @@ package org.talend.expressionbuilder.ui;
 
 import java.util.List;
 
-import org.eclipse.jface.bindings.keys.KeyStroke;
-import org.eclipse.jface.bindings.keys.ParseException;
-import org.eclipse.jface.fieldassist.ContentProposalAdapter;
-import org.eclipse.jface.fieldassist.IControlContentAdapter;
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
@@ -46,7 +44,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.talend.commons.exception.RuntimeExceptionHandler;
+import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.ui.viewer.java.TalendJavaSourceViewer;
@@ -54,9 +52,8 @@ import org.talend.core.ui.viewer.perl.TalendPerlSourceViewer;
 import org.talend.designer.rowgenerator.data.Function;
 import org.talend.designer.rowgenerator.data.FunctionManager;
 import org.talend.designer.rowgenerator.data.Parameter;
+import org.talend.expressionbuilder.IExpressionDataBean;
 import org.talend.expressionbuilder.i18n.Messages;
-import org.talend.expressionbuilder.ui.proposal.ExpressionBuilderProposalProvider;
-import org.talend.expressionbuilder.ui.proposal.ExpressionBuilderTextContentAdapter;
 
 /**
  * DOC yzhang class global comment. Detailled comment <br/>
@@ -64,11 +61,15 @@ import org.talend.expressionbuilder.ui.proposal.ExpressionBuilderTextContentAdap
  */
 public class ExpressionComposite extends Composite {
 
-    private final StyledText text;
+    private final IDocument document;
+
+    private final StyledText textControl;
 
     private String replacedText;
 
     private final ExpressionRecorder modificationRecord;
+
+    private ISourceViewer viewer;
 
     /**
      * DOC yzhang ExpressionComposite class global comment. Detailled comment <br/>
@@ -86,38 +87,22 @@ public class ExpressionComposite extends Composite {
             if (e.getSource() instanceof Button) {
                 Button button = (Button) e.getSource();
                 String buttonType = button.getText();
-                if (buttonType.equals("+")) { //$NON-NLS-1$
-                    text.insert("+"); //$NON-NLS-1$
-                } else if (buttonType.equals("-")) { //$NON-NLS-1$
-                    text.insert("-"); //$NON-NLS-1$
-                } else if (buttonType.equals("*")) { //$NON-NLS-1$
-                    text.insert("*"); //$NON-NLS-1$
-                } else if (buttonType.equals("/")) { //$NON-NLS-1$
-                    text.insert("/"); //$NON-NLS-1$
-                } else if (buttonType.equals("==")) { //$NON-NLS-1$
-                    text.insert("=="); //$NON-NLS-1$
-                } else if (buttonType.equals(">")) { //$NON-NLS-1$
-                    text.insert("<"); //$NON-NLS-1$
-                } else if (buttonType.equals("<")) { //$NON-NLS-1$
-                    text.insert(">"); //$NON-NLS-1$
-                } else if (buttonType.equals("<>")) { //$NON-NLS-1$
-                    text.insert("<>"); //$NON-NLS-1$
-                } else if (buttonType.equals(">=")) { //$NON-NLS-1$
-                    text.insert(">="); //$NON-NLS-1$
-                } else if (buttonType.equals("<=")) { //$NON-NLS-1$
-                    text.insert("<="); //$NON-NLS-1$
-                } else if (buttonType.equals("not")) { //$NON-NLS-1$
-                    text.insert("!"); //$NON-NLS-1$
-                } else if (buttonType.equals("and")) { //$NON-NLS-1$
-                    text.insert("&&"); //$NON-NLS-1$
-                } else if (buttonType.equals("or")) { //$NON-NLS-1$
-                    text.insert("||"); //$NON-NLS-1$
-                } else if (buttonType.equals("(")) { //$NON-NLS-1$
-                    text.insert("("); //$NON-NLS-1$
-                } else if (buttonType.equals(")")) { //$NON-NLS-1$
-                    text.insert(")"); //$NON-NLS-1$
-                }
+                Point sel = viewer.getSelectedRange();
 
+                String textToInsert = buttonType;
+
+                if (buttonType.equals("not")) { //$NON-NLS-1$
+                    textToInsert = "!"; //$NON-NLS-1$
+                } else if (buttonType.equals("and")) { //$NON-NLS-1$
+                    textToInsert = "&&"; //$NON-NLS-1$
+                } else if (buttonType.equals("or")) { //$NON-NLS-1$
+                    textToInsert = "||"; //$NON-NLS-1$
+                }
+                try {
+                    document.replace(sel.x, sel.y, textToInsert);
+                } catch (BadLocationException e1) {
+                    MessageBoxExceptionHandler.process(e1);
+                }
             }
         }
     }
@@ -128,7 +113,7 @@ public class ExpressionComposite extends Composite {
      * @param parent
      * @param style
      */
-    public ExpressionComposite(Composite parent, int style) {
+    public ExpressionComposite(Composite parent, int style, IExpressionDataBean dataBean) {
         super(parent, style);
         setLayout(new FillLayout());
 
@@ -157,7 +142,7 @@ public class ExpressionComposite extends Composite {
         wrapButton.addSelectionListener(new SelectionAdapter() {
 
             public void widgetSelected(SelectionEvent e) {
-                text.setWordWrap(wrapButton.getSelection());
+                textControl.setWordWrap(wrapButton.getSelection());
             }
 
         });
@@ -194,7 +179,7 @@ public class ExpressionComposite extends Composite {
              */
             @Override
             public void mouseUp(MouseEvent e) {
-                text.setText(""); //$NON-NLS-1$
+                document.set(""); //$NON-NLS-1$
             }
         });
 
@@ -211,18 +196,17 @@ public class ExpressionComposite extends Composite {
         composite.setLayout(layout);
         // text = new ColorStyledText(composite, SWT.BORDER | SWT.MULTI | SWT.WRAP | SWT.V_SCROLL, colorManager,
         // LanguageManager.getCurrentLanguage().getName());
-        ISourceViewer viewer;
         if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.JAVA)) {
-            viewer = TalendJavaSourceViewer.createViewer(composite, "", SWT.NONE);
+            viewer = TalendJavaSourceViewer.createViewer2(composite, SWT.NONE, dataBean);
         } else {
-
             viewer = TalendPerlSourceViewer.createViewer(composite, "", SWT.NONE);
         }
 
-        text = viewer.getTextWidget();
-        text.setWordWrap(wrapButton.getSelection());
-        text.setLayoutData(new GridData(GridData.FILL_BOTH));
-        text.addModifyListener(new ModifyListener() {
+        textControl = viewer.getTextWidget();
+        document = viewer.getDocument();
+        textControl.setWordWrap(wrapButton.getSelection());
+        textControl.setLayoutData(new GridData(GridData.FILL_BOTH));
+        textControl.addModifyListener(new ModifyListener() {
 
             public void modifyText(ModifyEvent e) {
 
@@ -362,7 +346,8 @@ public class ExpressionComposite extends Composite {
                 newValue += PERL_FUN_SUFFIX; //$NON-NLS-1$
             }
         }
-        text.setText(newValue);
+        document.set(newValue);
+        // text.setText(newValue);
     }
 
     /**
@@ -371,8 +356,8 @@ public class ExpressionComposite extends Composite {
      * @return
      */
     public String getExpression() {
-        if (text != null) {
-            return text.getText();
+        if (document != null) {
+            return viewer.getTextWidget().getText();
         }
         return null;
     }
@@ -384,27 +369,15 @@ public class ExpressionComposite extends Composite {
      */
     public void setExpression(String expression, boolean append) {
         if (append) {
-            text.insert(expression);
+            Point sel = viewer.getSelectedRange();
+            try {
+                document.replace(sel.x, sel.y, expression);
+            } catch (BadLocationException e) {
+                MessageBoxExceptionHandler.process(e);
+            }
         } else {
-            text.setText(expression);
+            document.set(expression);
         }
-    }
-
-    /**
-     * yzhang Comment method "setPropersoal".
-     */
-    public void configProposal() {
-        try {
-            KeyStroke stroke = KeyStroke.getInstance("Ctrl+Space"); //$NON-NLS-1$
-            IControlContentAdapter contorlContentAdapter = new ExpressionBuilderTextContentAdapter();
-            ExpressionBuilderProposalProvider contentProposalProvider = new ExpressionBuilderProposalProvider();
-            ContentProposalAdapter proposal = new ContentProposalAdapter(text, contorlContentAdapter, contentProposalProvider,
-                    stroke, new char[] { '+', '.' });
-
-        } catch (ParseException e) {
-            RuntimeExceptionHandler.process(e);
-        }
-
     }
 
     /**
@@ -424,10 +397,17 @@ public class ExpressionComposite extends Composite {
      */
     public void replacedContent(String content, Point position) {
         if (replacedText.startsWith("*")) { //$NON-NLS-1$
-            text.setSelection(position.x, position.x);
+            textControl.setSelection(position.x, position.x);
         } else {
-            text.setSelection(position.x - replacedText.length(), position.x);
+            textControl.setSelection(position.x - replacedText.length(), position.x);
         }
-        text.insert(content);
+
+        Point sel = viewer.getSelectedRange();
+
+        try {
+            document.replace(sel.x, sel.y, content);
+        } catch (BadLocationException e1) {
+            MessageBoxExceptionHandler.process(e1);
+        }
     }
 }

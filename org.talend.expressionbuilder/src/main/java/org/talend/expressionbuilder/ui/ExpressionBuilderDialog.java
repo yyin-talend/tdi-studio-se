@@ -63,7 +63,6 @@ import org.talend.core.model.general.Project;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.expressionbuilder.ExpressionFileOperation;
 import org.talend.expressionbuilder.ExpressionPersistance;
-import org.talend.expressionbuilder.IExpressionConsumer;
 import org.talend.expressionbuilder.IExpressionDataBean;
 import org.talend.expressionbuilder.i18n.Messages;
 import org.talend.expressionbuilder.model.CategoryManager;
@@ -91,7 +90,7 @@ public class ExpressionBuilderDialog extends Dialog implements IExpressionBuilde
 
     private final CategoryManager manager = new CategoryManager();
 
-    private final IExpressionConsumer consumer;
+    private final IExpressionDataBean dataBean;
 
     private String defaultExpression = ""; //$NON-NLS-1$
 
@@ -104,10 +103,10 @@ public class ExpressionBuilderDialog extends Dialog implements IExpressionBuilde
      * 
      * @param parentShell
      */
-    public ExpressionBuilderDialog(Shell parentShell, IExpressionConsumer consumer) {
+    public ExpressionBuilderDialog(Shell parentShell, IExpressionDataBean dataBean) {
         super(parentShell);
         setShellStyle(this.getShellStyle() | SWT.RESIZE);
-        this.consumer = consumer;
+        this.dataBean = dataBean;
     }
 
     /**
@@ -130,7 +129,7 @@ public class ExpressionBuilderDialog extends Dialog implements IExpressionBuilde
 
         final SashForm upperSashform = new SashForm(upperComposite, SWT.NONE);
 
-        expressionComposite = new ExpressionComposite(upperSashform, SWT.NONE);
+        expressionComposite = new ExpressionComposite(upperSashform, SWT.NONE, dataBean);
         expressionComposite.setExpression(defaultExpression, true);
 
         testComposite = new TestComposite(upperSashform, SWT.NONE);
@@ -145,7 +144,6 @@ public class ExpressionBuilderDialog extends Dialog implements IExpressionBuilde
         final GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
         sashForm.setLayoutData(gridData);
         sashForm.setWeights(new int[] { 3, 2 });
-        // expressionComposite.configProposal();
 
         return container;
     }
@@ -222,8 +220,7 @@ public class ExpressionBuilderDialog extends Dialog implements IExpressionBuilde
         exportButton.setImage(ImageProvider.getImage(EImage.IMPORT_ICON));
 
         createButton(parent, IDialogConstants.OK_ID, Messages.getString("ExpressionBuilderDialog.ok.button"), true); //$NON-NLS-1$
-        createButton(parent, IDialogConstants.CANCEL_ID,
-                Messages.getString("ExpressionBuilderDialog.cancel.button"), false); //$NON-NLS-1$
+        createButton(parent, IDialogConstants.CANCEL_ID, Messages.getString("ExpressionBuilderDialog.cancel.button"), false); //$NON-NLS-1$
 
         exportButton.addMouseListener(new MouseAdapter() {
 
@@ -353,7 +350,7 @@ public class ExpressionBuilderDialog extends Dialog implements IExpressionBuilde
     @Override
     protected void okPressed() {
 
-        consumer.setConsumerExpression(expressionComposite.getExpression() + " ");
+        dataBean.setConsumerExpression(expressionComposite.getExpression() + " ");
 
         ExpressionPersistance.getInstance().saveExpression(
                 new Expression(expressionComposite.getExpression(), testComposite.getVariableList()));
