@@ -210,7 +210,7 @@ public class GenericSchemaStep2Form extends AbstractForm {
         metadataEditor.setMetadataTable(metadataTable);
 
         tableEditorView.setMetadataEditor(metadataEditor);
-
+        metadataEditor.setEditorView(tableEditorView);
         // mappingTypeCheckBox.setSelection(mappingTypeUsed);
         mappingTypeCombo.setEnabled(mappingTypeUsed);
         CustomTableManagerOnlyForGenericSchema.addCustomManagementToTable(tableEditorView, false);
@@ -329,7 +329,8 @@ public class GenericSchemaStep2Form extends AbstractForm {
             // Bottom Button
             Composite compositeBottomButton = Form.startNewGridLayout(this, 2, false, SWT.CENTER, SWT.CENTER);
             // Button Cancel
-            cancelButton = new UtilsButton(compositeBottomButton, Messages.getString("CommonWizard.cancel"), WIDTH_BUTTON_PIXEL, //$NON-NLS-1$
+            cancelButton = new UtilsButton(compositeBottomButton,
+                    Messages.getString("CommonWizard.cancel"), WIDTH_BUTTON_PIXEL, //$NON-NLS-1$
                     HEIGHT_BUTTON_PIXEL);
         }
         addUtilsButtonListeners();
@@ -379,7 +380,12 @@ public class GenericSchemaStep2Form extends AbstractForm {
                     tableEditorView.setShowDbColumnName(true, true);
 
                     getConnection().setMappingTypeUsed(true);
-                    String mappingTypeId = mappingTypeCombo.getText().trim();
+                    String mappingTypeId = null;
+                    if (tableEditorView.getCurrentDbms() != null && tableEditorView.getCurrentDbms().trim() != "") {
+                        mappingTypeId = getMappingTypeLabelById(tableEditorView.getCurrentDbms().trim());
+                    } else {
+                        mappingTypeId = mappingTypeCombo.getText().trim();
+                    }
                     isMappingIdUsed = mappingTypeId != null && mappingTypeId.length() > 0;
                     if (isMappingIdUsed) {
                         mappingTypeCombo.setText(mappingTypeId);

@@ -23,8 +23,6 @@ package org.talend.repository.ui.wizards.metadata.connection.genericshema;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -42,6 +40,7 @@ import org.talend.commons.utils.VersionUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
+import org.talend.core.model.metadata.MetadataColumnsAndDbmsId;
 import org.talend.core.model.metadata.MetadataSchema;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.GenericSchemaConnection;
@@ -67,7 +66,7 @@ public class ImportSchemaFileWizard extends RepositoryWizard implements INewWiza
 
     private static Logger log = Logger.getLogger(ImportSchemaFileWizard.class);
 
-    private List<MetadataColumn> columns = Collections.EMPTY_LIST;
+    private MetadataColumnsAndDbmsId<MetadataColumn> metadataColumnsAndDbmsId;
 
     IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
 
@@ -164,7 +163,7 @@ public class ImportSchemaFileWizard extends RepositoryWizard implements INewWiza
     private void initWizard() {
         try {
 
-            columns = MetadataSchema.loadMetadataColumnFromFile(file);
+            metadataColumnsAndDbmsId = MetadataSchema.loadMetadataColumnsAndDbmsIdFromFile(file);
 
         } catch (ParserConfigurationException e) {
             showErrorMessages(e.toString());
@@ -176,7 +175,9 @@ public class ImportSchemaFileWizard extends RepositoryWizard implements INewWiza
             showErrorMessages(e.toString());
             return;
         }
-
+        if (metadataColumnsAndDbmsId == null) {
+            initOK = false;
+        }
         if (selection == null || existingNames == null) {
             initConnection();
             pathToSave = new Path("");
@@ -207,12 +208,18 @@ public class ImportSchemaFileWizard extends RepositoryWizard implements INewWiza
         connectionItem.setProperty(connectionProperty);
         connectionItem.setConnection(connection);
 
+        String dbmsId = metadataColumnsAndDbmsId.getDbmsId();
+        if (dbmsId != null && dbmsId.trim() != "") {
+            GenericSchemaConnection gsConnection = (GenericSchemaConnection) connection;
+            gsConnection.setMappingTypeUsed(true);
+            gsConnection.setMappingTypeId(dbmsId);
+        }
         MetadataTable metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
         metadataTable.setId(factory.getNextId());
         metadataTable.setLabel("metadata");
         metadataTable.setConnection(connection);
 
-        metadataTable.getColumns().addAll(columns);
+        metadataTable.getColumns().addAll(metadataColumnsAndDbmsId.getMetadataColumns());
 
         connection.getTables().add(metadataTable);
 
@@ -249,9 +256,10 @@ public class ImportSchemaFileWizard extends RepositoryWizard implements INewWiza
     }
 
     private void showErrorMessages(String detailError) {
+        initOK = false;
         new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("CommonWizard.persistenceException"), //$NON-NLS-1$
                 detailError);
         log.error(Messages.getString("CommonWizard.persistenceException") + "\n" + detailError); //$NON-NLS-1$ //$NON-NLS-2$
-        initOK = false;
+
     }
 }

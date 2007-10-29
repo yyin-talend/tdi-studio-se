@@ -217,7 +217,7 @@
              class="org.talend.repository.ui.actions.metadata.ImportSchemaFileAction"
              id="org.talend.repository.actions.ImportSchemaFileAction"
              level="10"
-             name="Metadata/Import schema file">
+             name="Metadata/Create generic schema from xml">
        </Action>
    </extension>
    <extension

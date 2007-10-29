@@ -30,9 +30,10 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
-import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.ui.images.ECoreImage;
+import org.talend.core.ui.images.OverlayImageProvider;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.EProperties;
@@ -54,7 +55,9 @@ public class ImportSchemaFileAction extends CreateGenericSchemaAction {
     public ImportSchemaFileAction() {
         this.setText(LABEL);
         this.setToolTipText(LABEL);
-        this.setImageDescriptor(ImageProvider.getImageDesc(EImage.IMPORT_ICON));
+        this.setImageDescriptor(OverlayImageProvider.getImageWithNew(ImageProvider
+                .getImage(ECoreImage.METADATA_FILE_LDIF_ICON)));
+
     }
 
     /*
