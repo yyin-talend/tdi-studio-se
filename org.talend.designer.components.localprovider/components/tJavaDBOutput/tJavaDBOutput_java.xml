@@ -140,6 +140,20 @@
     </PARAMETER> 
 
     <PARAMETER
+      NAME="TABLE_ACTION"
+      FIELD="CLOSED_LIST"
+      NUM_ROW="7"
+    >
+      <ITEMS DEFAULT="NONE">
+        <ITEM NAME="NONE" VALUE="NONE" />
+        <ITEM NAME="DROP_CREATE" VALUE="DROP_CREATE"/>
+        <ITEM NAME="CREATE" VALUE="CREATE"/>
+        <ITEM NAME="CREATE_IF_NOT_EXISTS" VALUE="CREATE_IF_NOT_EXISTS"/>
+        <ITEM NAME="CLEAR" VALUE="CLEAR"/>
+      </ITEMS>
+    </PARAMETER>
+
+    <PARAMETER
       NAME="DATA_ACTION"
       FIELD="CLOSED_LIST"
       NUM_ROW="7"
@@ -234,6 +248,16 @@
     >
       <DEFAULT>true</DEFAULT>
     </PARAMETER>
+    
+	<PARAMETER
+      NAME="MAPPING"
+      FIELD="MAPPING_TYPE"
+      NUM_ROW="10"
+      SHOW="false"
+    >       
+      <DEFAULT>javadb_id</DEFAULT>
+    </PARAMETER>    
+    
   </PARAMETERS>
 
   <CODEGENERATION>

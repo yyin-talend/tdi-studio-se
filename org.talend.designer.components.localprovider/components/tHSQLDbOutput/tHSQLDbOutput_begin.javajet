@@ -8,7 +8,7 @@ imports="
 		org.talend.core.model.metadata.MetadataTalendType
 		org.talend.core.model.metadata.types.JavaTypesManager
 		org.talend.core.model.metadata.types.JavaType 
-		
+        org.talend.core.model.metadata.MappingTypeRetriever		
 		java.util.List
 		java.util.ArrayList
 		java.util.Map
@@ -45,7 +45,7 @@ imports="
 	
 	String dataAction = ElementParameterParser.getValue(node,"__DATA_ACTION__");
 	
-	String tableAction = ElementParameterParser.getValue(node,"__CLEAR_TABLE__");
+	String tableAction = ElementParameterParser.getValue(node,"__TABLE_ACTION__");
 	
 	String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
 
@@ -145,12 +145,142 @@ String dbPwd_<%=cid %> = <%=dbpwd%>;
 java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
 
 <%
-if(tableAction.equals("true"))
-{
-%>
-java.sql.Statement stmtClear_<%=cid%> = conn_<%=cid%>.createStatement();
-deletedCount_<%=cid%> = deletedCount_<%=cid%> + stmtClear_<%=cid%>.executeUpdate("delete from \"" + <%=tableName%>+"\"");
-<%	
+if(!tableAction.equals("NONE")) {
+    class SQLBuilder {
+        public String createSQL(List<IMetadataColumn> columnList, String tableName) {
+            MappingTypeRetriever mappingType = MetadataTalendType.getMappingTypeRetriever("hsqldb_id");
+            StringBuilder createSQL = new StringBuilder();
+            String newTableName = null;
+            if(tableName == null || tableName.equals("") || tableName.equals("\"\"")) {
+                newTableName = "";
+            } else {
+                newTableName = tableName.substring(1,tableName.length() - 1);
+            }
+            createSQL.append("create table \\\"" + newTableName + "\\\"(");
+            List<String> pkList = new ArrayList<String>();
+            int count = 0;
+            for(IMetadataColumn metadataColumn : columnList) {
+                if(metadataColumn.isKey()) {
+                    pkList.add("\\\"" + metadataColumn.getOriginalDbColumnName() + "\\\"");
+                }
+                createSQL.append("\\\"" + metadataColumn.getOriginalDbColumnName() + "\\\" ");
+                String dataType = null;
+                if(metadataColumn.getType() == null || metadataColumn.getType().trim().equals("")) {
+                    dataType = mappingType.getDefaultSelectedDbType(metadataColumn.getTalendType());
+                } else {
+                    dataType = metadataColumn.getType();
+                }
+                createSQL.append(dataType);
+                Integer length = metadataColumn.getLength() == null ? 0 : metadataColumn.getLength();
+                Integer precision = metadataColumn.getPrecision() == null ? 0 : metadataColumn.getPrecision();
+                boolean lengthIgnored = mappingType.isLengthIgnored("hsqldb_id",dataType);
+                boolean precisionIgnored = mappingType.isPrecisionIgnored("hsqldb_id",dataType);
+                String prefix = "";
+                String suffix = "";
+                String comma = "";                
+                if(mappingType.isPreBeforeLength("hsqldb_id",dataType)) {
+                    if(!precisionIgnored) {
+                        prefix = "(";
+                        suffix = ") ";
+                        createSQL.append(prefix + precision);
+                    }
+                    if(!lengthIgnored) {
+                        prefix = (prefix.equals("") ? "(" : prefix);
+                        suffix = (suffix.equals("") ? ")" : suffix);
+                        comma = ",";
+                        createSQL.append(comma + length);
+                    }
+                    createSQL.append(suffix);
+                } else {
+                    if(!lengthIgnored) {
+                        prefix = "(";
+                        suffix = ") ";
+                        createSQL.append(prefix + length);                        
+                    }
+                    if(!precisionIgnored) {
+                        prefix = (prefix.equals("") ? "(" : prefix);
+                        suffix = (suffix.equals("") ? ")" : suffix);
+                        comma = ",";
+                        createSQL.append(comma + precision);                        
+                    }
+                    createSQL.append(suffix);                    
+                }
+                createSQL.append(setDefaultValue(metadataColumn.getDefault(),dataType));
+                if(!metadataColumn.isNullable()) {
+                    createSQL.append("not null");
+                }
+                if((count != columnList.size() - 1) || (count == columnList.size() - 1) && pkList.size() > 0) {
+                    createSQL.append(",");
+                }
+                count++;
+            }
+            if(pkList.size() > 0) {
+                createSQL.append("primary key(");
+                int i = 0;
+                for(String pk : pkList) {
+                    createSQL.append(pk);
+                    if(i != pkList.size() - 1) {
+                        createSQL.append(",");
+                    }
+                    i++;
+                }
+                createSQL.append(")");
+            }
+            createSQL.append(")");
+            return createSQL.toString();
+        }
+        
+        private String setDefaultValue(String defaultValue, String columnType) {
+            if(defaultValue == null || defaultValue.equals("\"\"") || defaultValue.equals("")) {
+                return " ";
+            } else if((defaultValue.startsWith("\"") || defaultValue.startsWith("'")) && (defaultValue.endsWith("\"") || defaultValue.endsWith("'"))) {
+                return "default '" + defaultValue.substring(1,defaultValue.length() - 1) + "' ";
+            } else if(defaultValue.equalsIgnoreCase("null")) {
+                return "default null ";
+            } else {
+                return "default " + defaultValue + " ";
+            }
+        }
+    }
+    SQLBuilder builder = new SQLBuilder();
+    if(tableAction.equals("DROP_CREATE")) {
+        %>
+        java.sql.Statement stmtDrop_<%=cid%> = conn_<%=cid%>.createStatement();
+        stmtDrop_<%=cid%>.execute("drop table \"" + <%=tableName%> + "\"");
+        java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
+        stmtCreate_<%=cid%>.execute("<%=builder.createSQL(columnList,tableName)%>");
+        <%
+        addCols.clear();
+    } else if(tableAction.equals("CREATE")) {
+        %>
+        java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
+        stmtCreate_<%=cid%>.execute("<%=builder.createSQL(columnList,tableName)%>");
+        <%
+        addCols.clear();
+    } else if(tableAction.equals("CREATE_IF_NOT_EXISTS")) {
+        %>
+        java.sql.DatabaseMetaData dbMetaData_<%=cid%> = conn_<%=cid%>.getMetaData();
+        java.sql.ResultSet rsTable_<%=cid%> = dbMetaData_<%=cid%>.getTables(null, null, null, new String[]{"TABLE"});
+        boolean whetherExist_<%=cid%> = false;
+        while(rsTable_<%=cid%>.next()) {
+            String table_<%=cid%> = rsTable_<%=cid%>.getString("TABLE_NAME");
+            if(table_<%=cid%>.equalsIgnoreCase(<%=tableName%>)) {
+                whetherExist_<%=cid%> = true;
+                break;
+            }
+        }
+        if(!whetherExist_<%=cid%>) {
+            java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
+            stmtCreate_<%=cid%>.execute("<%=builder.createSQL(columnList,tableName)%>");            
+        }
+        <%
+        addCols.clear();
+    } else if(tableAction.equals("CLEAR")) {
+        %>
+        java.sql.Statement stmtClear_<%=cid%> = conn_<%=cid%>.createStatement();
+        deletedCount_<%=cid%> = deletedCount_<%=cid%> + stmtClear_<%=cid%>.executeUpdate("delete from \"" + <%=tableName%> + "\"");
+        <%
+    }
 }
 %>
 

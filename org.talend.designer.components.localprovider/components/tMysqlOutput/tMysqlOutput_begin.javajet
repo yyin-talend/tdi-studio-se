@@ -133,7 +133,13 @@ if(!tableAction.equals("NONE")) {
         public String createSQL(List<IMetadataColumn> columnList, String tableName) {
             MappingTypeRetriever mappingType = MetadataTalendType.getMappingTypeRetriever("mysql_id");
             StringBuilder createSQL = new StringBuilder();
-            createSQL.append("create table `" + tableName.substring(1,tableName.length() - 1) + "`(");
+            String newTableName = null;
+            if(tableName == null || tableName.equals("") || tableName.equals("\"\"")) {
+                newTableName = "";
+            } else {
+                newTableName = tableName.substring(1,tableName.length() - 1);
+            }
+            createSQL.append("create table `" + newTableName + "`(");
             List<String> pkList = new ArrayList<String>();
             int count = 0;
             for(IMetadataColumn metadataColumn : columnList) {
@@ -141,15 +147,21 @@ if(!tableAction.equals("NONE")) {
                     pkList.add("`" + metadataColumn.getOriginalDbColumnName() + "`");
                 }
                 createSQL.append("`" + metadataColumn.getOriginalDbColumnName() + "` ");
-                createSQL.append(mappingType.getDefaultSelectedDbType(metadataColumn.getTalendType()));
+                String dataType = null;
+                if(metadataColumn.getType() == null || metadataColumn.getType().trim().equals("")) {
+                    dataType = mappingType.getDefaultSelectedDbType(metadataColumn.getTalendType());
+                } else {
+                    dataType = metadataColumn.getType();
+                }
+                createSQL.append(dataType);
                 Integer length = metadataColumn.getLength() == null ? 0 : metadataColumn.getLength();
                 Integer precision = metadataColumn.getPrecision() == null ? 0 : metadataColumn.getPrecision();
-                boolean lengthIgnored = mappingType.isLengthIgnored("mysql_id",mappingType.getDefaultSelectedDbType(metadataColumn.getTalendType()));
-                boolean precisionIgnored = mappingType.isPrecisionIgnored("mysql_id",mappingType.getDefaultSelectedDbType(metadataColumn.getTalendType()));
+                boolean lengthIgnored = mappingType.isLengthIgnored("mysql_id",dataType);
+                boolean precisionIgnored = mappingType.isPrecisionIgnored("mysql_id",dataType);
                 String prefix = "";
                 String suffix = "";
                 String comma = "";                
-                if(mappingType.isPreBeforeLength("mysql_id",metadataColumn.getType())) {
+                if(mappingType.isPreBeforeLength("mysql_id",dataType)) {
                     if(!precisionIgnored) {
                         prefix = "(";
                         suffix = ") ";
@@ -176,7 +188,7 @@ if(!tableAction.equals("NONE")) {
                     }
                     createSQL.append(suffix);                    
                 }
-                createSQL.append(setDefaultValue(metadataColumn.getDefault(),mappingType.getDefaultSelectedDbType(metadataColumn.getTalendType())));
+                createSQL.append(setDefaultValue(metadataColumn.getDefault(),dataType));
                 if(!metadataColumn.isNullable()) {
                     createSQL.append("not null");
                 }

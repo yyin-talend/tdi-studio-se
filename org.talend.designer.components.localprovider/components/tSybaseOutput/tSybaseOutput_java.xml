@@ -105,6 +105,20 @@
     </PARAMETER>
 
     <PARAMETER
+      NAME="TABLE_ACTION"
+      FIELD="CLOSED_LIST"
+      NUM_ROW="6"
+    >
+      <ITEMS DEFAULT="NONE">
+        <ITEM NAME="NONE" VALUE="NONE" />
+        <ITEM NAME="DROP_CREATE" VALUE="DROP_CREATE"/>
+        <ITEM NAME="CREATE" VALUE="CREATE"/>
+        <ITEM NAME="CREATE_IF_NOT_EXISTS" VALUE="CREATE_IF_NOT_EXISTS"/>
+        <ITEM NAME="CLEAR" VALUE="CLEAR"/>
+      </ITEMS>
+    </PARAMETER>
+
+    <PARAMETER
       NAME="DATA_ACTION"
       FIELD="CLOSED_LIST"
       NUM_ROW="6"
@@ -118,14 +132,6 @@
       </ITEMS>
     </PARAMETER>
     
-    <PARAMETER
-      NAME="CLEAR_TABLE"
-      FIELD="CHECK"
-      NUM_ROW="6"
-    >
-      <DEFAULT>false</DEFAULT>
-    </PARAMETER>    
-
     <PARAMETER
       NAME="SCHEMA_FLOW"
       FIELD="SCHEMA_TYPE"
@@ -190,6 +196,16 @@
     >
       <DEFAULT>true</DEFAULT>
     </PARAMETER>
+    
+	<PARAMETER
+      NAME="MAPPING"
+      FIELD="MAPPING_TYPE"
+      NUM_ROW="10"
+      SHOW="false"
+    >       
+      <DEFAULT>sybase_id</DEFAULT>
+    </PARAMETER>    
+    
   </PARAMETERS>
 
   <CODEGENERATION>
