@@ -37,7 +37,12 @@ if(metadataTable != null) {
 }
 
 List<? extends IConnection> outgoingConns = node.getOutgoingSortedConnections();
-
+for(IConnection conn : outgoingConns) {
+    if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {%>
+    
+    <%=conn.getName() %> = null;            
+<%      }
+}
 if(!commitEvery.equals("")&&!commitEvery.equals("0")){
     %>
     commitCounter_<%=cid%>++;
@@ -119,6 +124,10 @@ while (index>=0) {
             <%
         } else {
             if(rejectConnName != null && rejectColumnList != null && rejectColumnList.size() > 0) {
+
+                %>
+                    <%=rejectConnName %> = new <%=rejectConnName %>Struct();
+                <%
                 for(IMetadataColumn column : columnList) {
                     %>
                     <%=rejectConnName%>.<%=column.getLabel()%> = <%=incomingConnName%>.<%=column.getLabel()%>;
@@ -144,6 +153,10 @@ while (index>=0) {
             for(IConnection outgoingConn : outgoingConns) {
                 if(rejectConnName == null || (rejectConnName != null && !outgoingConn.getName().equals(rejectConnName))) {
                     if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+                        
+                        %>
+                                       <%=outgoingConn.getName()%> = new <%=outgoingConn.getName()%>Struct();
+                        <%
                         for(IMetadataColumn column : columnList) {
                             %>
                             <%=outgoingConn.getName()%>.<%=column.getLabel()%> = <%=incomingConnName%>.<%=column.getLabel()%>;
