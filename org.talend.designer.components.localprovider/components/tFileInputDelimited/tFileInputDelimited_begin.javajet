@@ -7,9 +7,10 @@
 		org.talend.core.model.process.IConnection
 		org.talend.core.model.process.IConnectionCategory
 		org.talend.designer.codegen.config.CodeGeneratorArgument
-		java.util.List 
 		org.talend.core.model.metadata.types.JavaTypesManager
 		org.talend.core.model.metadata.types.JavaType
+		java.util.List 
+    	java.util.Map		
 	" 
 %>
 <% 
@@ -47,6 +48,10 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     			random="0";
     		}
     	}
+    	
+		List<Map<String, String>> trimSelects = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__TRIMSELECT__");
+		boolean isTrimAll = ElementParameterParser.getValue(node,"__TRIMALL__").equals("true");
+		
     	String fieldSeparator = ElementParameterParser.getValue(node, "__FIELDSEPARATOR__");
     	String rowSeparator = ElementParameterParser.getValue(node, "__ROWSEPARATOR__");
     	String removeEmptyRowFlag =  ElementParameterParser.getValue(node, "__REMOVE_EMPTY_ROW__");
@@ -85,10 +90,10 @@ while (fid_<%=cid %>.nextRecord()) {
 
 					%><%
 if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT){%>
-<%=conn.getName() %>.<%=column.getLabel() %> = fid_<%=cid %>.get(<%=valueN%>);
+<%=conn.getName() %>.<%=column.getLabel() %> = fid_<%=cid %>.get(<%=valueN%>)<%=(isTrimAll || trimSelects.get(valueN).get("TRIM").equals("true"))?".trim()":"" %>;
 <%
 }else{ 
-%>temp_<%=cid %> = fid_<%=cid %>.get(<%=valueN%>);
+%>temp_<%=cid %> = fid_<%=cid %>.get(<%=valueN%>)<%=(isTrimAll || trimSelects.get(valueN).get("TRIM").equals("true"))?".trim()":"" %>;
 if(temp_<%=cid %>.length() > 0) {
 <%
 					if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
@@ -177,6 +182,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     		textEnclosure = "\\'";
     	}
     	String removeEmptyRow = ElementParameterParser.getValue(node, "__REMOVE_EMPTY_ROW__");
+    	
+    	List<Map<String, String>> trimSelects = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__TRIMSELECT__");
+		boolean isTrimAll = ElementParameterParser.getValue(node,"__TRIMALL__").equals("true");
 %>		
 		int nb_line_<%=cid%> = 0;
 		int footer_<%=cid %> = <%= footer%>;
@@ -330,7 +338,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
 					if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
 %>
-					<%=conn.getName() %>.<%=column.getLabel() %> = row<%=cid %>[<%=i %>];
+					<%=conn.getName() %>.<%=column.getLabel() %> = row<%=cid %>[<%=i %>]<%=(isTrimAll || trimSelects.get(i).get("TRIM").equals("true"))?".trim()":"" %>;
 <%
 					} else {
 %>
@@ -338,11 +346,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	<%
 							if(javaType == JavaTypesManager.DATE) {
 	%>
-								<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(row<%=cid %>[<%=i %>], <%= patternValue %>);
+								<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(row<%=cid %>[<%=i %>]<%=(isTrimAll || trimSelects.get(i).get("TRIM").equals("true"))?".trim()":"" %>, <%= patternValue %>);
 	<%
 							} else {
 	%>
-								<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(row<%=cid %>[<%=i %>]);
+								<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(row<%=cid %>[<%=i %>]<%=(isTrimAll || trimSelects.get(i).get("TRIM").equals("true"))?".trim()":"" %>);
 	<%
 							}
 	%>					

@@ -140,6 +140,27 @@
     >
       <DEFAULT>10</DEFAULT>
     </PARAMETER>
+    
+	<PARAMETER
+      NAME="TRIMALL"
+      FIELD="CHECK"
+      NUM_ROW="46"
+    >
+      <DEFAULT>true</DEFAULT>
+    </PARAMETER>
+
+	<PARAMETER
+      NAME="TRIMSELECT"
+      FIELD="TABLE"
+      NUM_ROW="47"
+      NB_LINES="5"
+      SHOW_IF="TRIMALL=='false'"
+    >
+      <ITEMS BASED_ON_SCHEMA="true">
+        <ITEM NAME="TRIM" FIELD="CHECK">
+        </ITEM>
+      </ITEMS>
+    </PARAMETER>    
 
     <PARAMETER
       NAME="SCHEMA"
