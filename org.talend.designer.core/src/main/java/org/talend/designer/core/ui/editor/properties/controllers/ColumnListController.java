@@ -312,7 +312,7 @@ public class ColumnListController extends AbstractElementPropertySectionControll
         }
     }
 
-    // only set synWidthWithMhaoetadataColumn =true, when use the metadataDialog to set the matadata.
+    // only set synWidthWithMhaoetadataColumn =true, when use the metadataDialog to set the metadata.
     // see issue 0001676
     public static void updateColumnList(INode node, List<ColumnNameChanged> columnsChanged, boolean synWidthWithMetadataColumn) {
         List<String> columnList = getColumnList(node);
@@ -328,7 +328,7 @@ public class ColumnListController extends AbstractElementPropertySectionControll
         List<String> refColumnListValuesTmp = new ArrayList<String>();
         for (IConnection connection : refColumnLists.keySet()) {
             String name = connection.getName() + ".";
-            String value = connection.getSource().getUniqueName() + ".";
+            String value = connection.getName() + ".";
             for (String column : refColumnLists.get(connection)) {
                 refColumnListNamesTmp.add(name + column);
                 refColumnListValuesTmp.add(value + column);
