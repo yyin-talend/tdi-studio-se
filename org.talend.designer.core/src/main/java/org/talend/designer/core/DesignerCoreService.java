@@ -27,10 +27,12 @@ import java.util.Map;
 
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.PlatformUI;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.designer.core.ui.ActiveProcessTracker;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.action.SaveJobBeforeRunAction;
 import org.talend.designer.core.ui.editor.TalendEditor;
@@ -130,5 +132,15 @@ public class DesignerCoreService implements IDesignerCoreService {
             ((TalendEditor) editor).updatePaletteContent();
         }
 
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.core.IDesignerCoreService#getActiveProcessTracker()
+     */
+    public IPartListener getActiveProcessTracker() {
+
+        return new ActiveProcessTracker();
     }
 }

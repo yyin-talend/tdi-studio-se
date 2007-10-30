@@ -28,6 +28,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 import org.talend.commons.ui.swt.colorstyledtext.jedit.Modes;
+import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.IService;
 import org.talend.designer.codegen.ICodeGeneratorService;
@@ -72,6 +73,7 @@ public class DesignerPlugin extends AbstractUIPlugin {
          */
     }
 
+    @Override
     public void start(final BundleContext context) throws Exception {
         super.start(context);
         IWorkbenchWindow activeWorkbenchWindow = null;
@@ -80,12 +82,15 @@ public class DesignerPlugin extends AbstractUIPlugin {
             if (activeWorkbenchWindow != null) {
                 IPartService partService = activeWorkbenchWindow.getPartService();
                 partService.addPartListener(new ActiveProcessTracker());
+            } else if (!CorePlugin.getDefault().getRepositoryService().isRCPMode()) {
+                CorePlugin.getDefault().getRepositoryService().setPartListener(true);
             }
         } catch (Exception e) {
             // should occur if we start the platform in headless mode, and should be ignored
         }
     }
 
+    @Override
     public void stop(final BundleContext context) throws Exception {
         super.stop(context);
         plugin = null;

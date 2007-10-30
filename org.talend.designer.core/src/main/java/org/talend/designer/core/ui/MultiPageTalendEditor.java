@@ -59,6 +59,7 @@ import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.epic.perleditor.PerlEditorPlugin;
 import org.talend.commons.exception.BusinessException;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.ImageProvider;
@@ -104,8 +105,9 @@ import org.talend.repository.ui.views.IRepositoryView;
 public class MultiPageTalendEditor extends MultiPageEditorPart implements IResourceChangeListener, ISelectionListener,
         IUIRefresher {
 
-    private AdapterImpl dirtyListener = new AdapterImpl() {
+    private final AdapterImpl dirtyListener = new AdapterImpl() {
 
+        @Override
         public void notifyChanged(Notification notification) {
             if (notification.getEventType() != Notification.REMOVING_ADAPTER) {
                 propertyIsDirty = true;
@@ -121,7 +123,7 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
 
     public static final String ID = "org.talend.designer.core.ui.MultiPageTalendEditor"; //$NON-NLS-1$
 
-    private TalendEditor designerEditor = new TalendEditor();;
+    private final TalendEditor designerEditor = new TalendEditor();;
 
     private AbstractDecoratedTextEditor codeEditor;
 
@@ -135,6 +137,25 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
 
     public MultiPageTalendEditor() {
         super();
+
+        if (CorePlugin.getDefault().getRepositoryService().needSetPartListener()) {
+
+            PlatformUI.getWorkbench().getActiveWorkbenchWindow().getPartService().addPartListener(
+                    CorePlugin.getDefault().getDesignerCoreService().getActiveProcessTracker());
+            CorePlugin.getDefault().getRepositoryService().setPartListener(false);
+
+            Display.getDefault().asyncExec(new Runnable() {
+
+                public void run() {
+                    try {
+                        CorePlugin.getDefault().getCodeGeneratorService().createRoutineSynchronizer().syncAllRoutines();
+                    } catch (Exception e) {
+                        ExceptionHandler.process(e);
+                    }
+                }
+            });
+
+        }
         ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
         // MultieditPlugin.getDefault().getPreferenceStore().addPropertyChangeListener(
         // (org.eclipse.jface.util.IPropertyChangeListener)this);
@@ -194,8 +215,8 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
                     null, pie.getStatus());
         }
         if (process.getGeneratingNodes().size() != 0) {
-            ProcessorUtilities.generateCode(process, process.getContextManager().getDefaultContext(), false, false, true,
-                    ProcessorUtilities.GENERATE_WITH_FIRST_CHILD);
+            ProcessorUtilities.generateCode(process, process.getContextManager().getDefaultContext(), false, false,
+                    true, ProcessorUtilities.GENERATE_WITH_FIRST_CHILD);
         }
     }
 
@@ -212,6 +233,7 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
     /**
      * Creates the pages of the multi-page editor.
      */
+    @Override
     protected void createPages() {
         setTitleImage(ImageProvider.getImage(ECoreImage.PROCESS_ICON));
         createPage0();
@@ -223,6 +245,7 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
      * The <code>MultiPageEditorPart</code> implementation of this <code>IWorkbenchPart</code> method disposes all
      * nested editors. Subclasses may extend.
      */
+    @Override
     public void dispose() {
         ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
         if (this.codeEditor instanceof TalendJavaEditor) {
@@ -258,6 +281,7 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
     /**
      * Saves the multi-page editor's document.
      */
+    @Override
     public void doSave(final IProgressMonitor monitor) {
         if (!isDirty()) {
             return;
@@ -293,6 +317,7 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
      * Saves the multi-page editor's document as another file. Also updates the text for page 0's tab, and updates this
      * multi-page editor's input to correspond to the nested editor's.
      */
+    @Override
     public void doSaveAs() {
         IEditorPart editor = getEditor(0);
         editor.doSaveAs();
@@ -311,6 +336,7 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
      * The <code>MultiPageEditorExample</code> implementation of this method checks that the input is an instance of
      * <code>IFileEditorInput</code>.
      */
+    @Override
     public void init(final IEditorSite site, final IEditorInput editorInput) throws PartInitException {
         if (!(editorInput instanceof IFileEditorInput) && !(editorInput instanceof ProcessEditorInput)) {
             throw new PartInitException(Messages.getString("MultiPageTalendEditor.InvalidInput")); //$NON-NLS-1$
@@ -347,6 +373,7 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
     /*
      * (non-Javadoc) Method declared on IEditorPart.
      */
+    @Override
     public boolean isSaveAsAllowed() {
         return true;
     }
@@ -354,6 +381,7 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
     /**
      * Calculates the contents of page 2 when the it is activated.
      */
+    @Override
     protected void pageChange(final int newPageIndex) {
         super.pageChange(newPageIndex);
         setName();
@@ -471,7 +499,7 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
                     node = (Node) editPart.getModel();
                 } else if (selection instanceof NodeLabelEditPart) {
                     NodeLabelEditPart editPart = (NodeLabelEditPart) selection;
-                    node = (Node) ((NodeLabel) editPart.getModel()).getNode();
+                    node = ((NodeLabel) editPart.getModel()).getNode();
                 }
             }
         }
@@ -503,8 +531,8 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
                 public void run() {
                     IWorkbenchPage[] pages = getSite().getWorkbenchWindow().getPages();
                     for (int i = 0; i < pages.length; i++) {
-                        if (((FileEditorInput) designerEditor.getEditorInput()).getFile().getProject()
-                                .equals(event.getResource())) {
+                        if (((FileEditorInput) designerEditor.getEditorInput()).getFile().getProject().equals(
+                                event.getResource())) {
                             IEditorPart editorPart = pages[i].findEditor(designerEditor.getEditorInput());
                             pages[i].closeEditor(editorPart, true);
                         }
