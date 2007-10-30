@@ -199,7 +199,7 @@ public class ExpressionComposite extends Composite {
         if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.JAVA)) {
             viewer = TalendJavaSourceViewer.createViewer2(composite, SWT.NONE, dataBean);
         } else {
-            viewer = TalendPerlSourceViewer.createViewer(composite, "", SWT.NONE);
+            viewer = TalendPerlSourceViewer.createViewer(composite, SWT.NONE, true);
         }
 
         textControl = viewer.getTextWidget();
