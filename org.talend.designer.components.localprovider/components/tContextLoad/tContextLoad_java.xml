@@ -38,19 +38,62 @@
     </PARAMETER>
 
     <PARAMETER
+	  NAME="LOAD_NEW_VARIABLE"
+	  FIELD="CLOSED_LIST"
+	  REQUIRED="false"
+	  NUM_ROW="2">
+	  <ITEMS DEFAULT="WARNING">
+		<ITEM NAME="ERROR" VALUE="Error" />
+		<ITEM NAME="WARNING" VALUE="Warning" />
+		<ITEM NAME="INFO" VALUE="Info" />
+	  </ITEMS>
+	</PARAMETER>
+	
+	<PARAMETER
+	  NAME="NOT_LOAD_OLD_VARIABLE"
+	  FIELD="CLOSED_LIST"
+	  REQUIRED="false"
+	  NUM_ROW="3">
+	  <ITEMS DEFAULT="WARNING">
+		<ITEM NAME="ERROR" VALUE="Error" />
+		<ITEM NAME="WARNING" VALUE="Warning" />
+		<ITEM NAME="INFO" VALUE="Info" />
+	  </ITEMS>
+	</PARAMETER>
+	
+    <PARAMETER
       NAME="PRINT_OPERATIONS"
       FIELD="CHECK"
       REQUIRED="true"
-      NUM_ROW="2"
+      NUM_ROW="4"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
 
 	<PARAMETER
+      NAME="DISABLE_ERROR"
+      FIELD="CHECK"
+      REQUIRED="true"
+      NUM_ROW="5"
+    >
+      <DEFAULT>true</DEFAULT>
+    </PARAMETER>
+    
+
+	<PARAMETER
       NAME="DISABLE_WARNINGS"
       FIELD="CHECK"
       REQUIRED="true"
-      NUM_ROW="2"
+      NUM_ROW="5"
+    >
+      <DEFAULT>true</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="DISABLE_INFO"
+      FIELD="CHECK"
+      REQUIRED="true"
+      NUM_ROW="5"
     >
       <DEFAULT>true</DEFAULT>
     </PARAMETER>
