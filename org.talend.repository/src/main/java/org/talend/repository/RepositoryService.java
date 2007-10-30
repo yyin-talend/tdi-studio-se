@@ -30,7 +30,9 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbench;
 import org.talend.core.CorePlugin;
+import org.talend.core.context.Context;
 import org.talend.core.model.components.IComponentsFactory;
+import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -38,11 +40,13 @@ import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
+import org.talend.repository.plugin.integration.SwitchProjectAction;
+import org.talend.repository.ui.utils.ColumnNameValidator;
 import org.talend.repository.ui.views.RepositoryView;
 import org.talend.repository.ui.wizards.metadata.connection.genericshema.GenericSchemaWizard;
-import org.talend.repository.ui.utils.ColumnNameValidator;
 import org.talend.repository.utils.RepositoryPathProvider;
-import org.talend.core.model.properties.Property;;
+
+;
 
 /**
  * DOC qian class global comment. Detailled comment <br/>
@@ -117,10 +121,55 @@ public class RepositoryService implements IRepositoryService {
         }
         return null;
     }
-    
+
     public IPath getPathForSaveAsGenericSchema() {
-        if (this.genericSchemaWizard != null) 
-        {return this.genericSchemaWizard.getPathForSaveAsGenericSchema();}
+        if (this.genericSchemaWizard != null) {
+            return this.genericSchemaWizard.getPathForSaveAsGenericSchema();
+        }
         return null;
     }
+
+    public void openLoginDialog() {
+        SwitchProjectAction switchAction = new SwitchProjectAction();
+        switchAction.run();
+    }
+
+    public void initializeForTalendStartupJob() {
+        // do nothing now.
+
+    }
+
+    public void initializeTalend() {
+
+        if (CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY) != null) {
+            return;
+        }
+        openLoginDialog();
+    }
+
+    boolean rcpMode = false;
+
+    public boolean isRCPMode() {
+        return rcpMode;
+    }
+
+    public void setRCPMode() {
+        rcpMode = true;
+    }
+
+    boolean needSetPartListener;
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.model.IRepositoryService#setPartListener(boolean)
+     */
+    public void setPartListener(boolean isReuqired) {
+        this.needSetPartListener = isReuqired;
+    }
+
+    public boolean needSetPartListener() {
+        return needSetPartListener;
+    }
+
 }

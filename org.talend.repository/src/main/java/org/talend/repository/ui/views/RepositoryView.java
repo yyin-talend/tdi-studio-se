@@ -63,6 +63,7 @@ import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchActionConstants;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.TextActionHandler;
 import org.eclipse.ui.commands.ActionHandler;
@@ -116,6 +117,8 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
 
     private List<ITreeContextualAction> contextualsActions;
 
+    private static boolean codeGenerationEngineInitialised;
+
     private Action doubleClickAction;
 
     private Action refreshAction;
@@ -125,11 +128,30 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
     public RepositoryView() {
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.ui.part.ViewPart#init(org.eclipse.ui.IViewSite)
+     */
+    @Override
+    public void init(IViewSite site) throws PartInitException {
+        super.init(site);
+        CorePlugin.getDefault().getRepositoryService().initializeTalend();
+        if (!codeGenerationEngineInitialised && !CorePlugin.getDefault().getRepositoryService().isRCPMode()) {
+
+            CorePlugin.getDefault().getCodeGeneratorService().generationInit();
+            CorePlugin.getDefault().getLibrariesService().syncLibraries();
+            codeGenerationEngineInitialised = true;
+        }
+    }
+
     public static IRepositoryView show() {
-        IViewPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(IRepositoryView.VIEW_ID);
+        IViewPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(
+                IRepositoryView.VIEW_ID);
         if (part == null) {
             try {
-                part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(IRepositoryView.VIEW_ID);
+                part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(
+                        IRepositoryView.VIEW_ID);
             } catch (Exception e) {
                 ExceptionHandler.process(e);
             }
@@ -185,16 +207,16 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
 
             public void focusGained(FocusEvent e) {
                 log.trace("Repository gain focus"); //$NON-NLS-1$
-                IContextService contextService = (IContextService) RepositoryPlugin.getDefault().getWorkbench().getAdapter(
-                        IContextService.class);
+                IContextService contextService = (IContextService) RepositoryPlugin.getDefault().getWorkbench()
+                        .getAdapter(IContextService.class);
                 ca = contextService.activateContext("talend.repository"); //$NON-NLS-1$
             }
 
             public void focusLost(FocusEvent e) {
                 log.trace("Repository lost focus"); //$NON-NLS-1$
                 if (ca != null) {
-                    IContextService contextService = (IContextService) RepositoryPlugin.getDefault().getWorkbench().getAdapter(
-                            IContextService.class);
+                    IContextService contextService = (IContextService) RepositoryPlugin.getDefault().getWorkbench()
+                            .getAdapter(IContextService.class);
                     contextService.deactivateContext(ca);
                 }
             }
@@ -230,8 +252,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
     protected void initDragAndDrop() {
         int ops = DND.DROP_COPY | DND.DROP_MOVE;
         Transfer[] transfers = new Transfer[] { LocalSelectionTransfer.getTransfer() };
-        
-        
+
         viewer.addDragSupport(ops, transfers, new DragSourceAdapter() {
 
             private static final long FFFFFFFFL = 0xFFFFFFFFL;
@@ -416,7 +437,9 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
         // timer.print();
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.repository.ui.views.IRepositoryView#refresh(java.lang.Object)
      */
     public void refresh(Object object) {
