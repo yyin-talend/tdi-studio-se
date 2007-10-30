@@ -68,10 +68,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         		boolean isRootAttribute = false;
             	for(Map<String, String> map:rootTable){
             		String value = null;
+            		JavaType javaType = null;
             		if( map.get("COLUMN")!=null && map.get("COLUMN").length()>0){
             			for(IMetadataColumn column:metadata.getListColumns()) {
             				if(column.getLabel().equals(map.get("COLUMN"))){
-            					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+            					javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
             					if(JavaTypesManager.isJavaPrimitiveType( column.getTalendType(), column.isNullable())){
             						value = "String.valueOf("+conn.getName()+"."+map.get("COLUMN")+")";
             					}else if(javaType == JavaTypesManager.DATE){
@@ -107,7 +108,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
 							}else{
 %>
-		<%=currEleName%>_<%=cid%>.addAttribute("<%=path%>",""));
+		<%=currEleName%>_<%=cid%>.addAttribute("<%=path%>","");
 <%
 							}
 						}
@@ -123,9 +124,22 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		org.dom4j.Element <%=currEleName%>_<%=cid%> = org.dom4j.DocumentHelper.makeElement(doc_<%=cid%>,"<%=path%>");		
 <%
 						if(value!=null){
+							if(javaType == JavaTypesManager.OBJECT){
+%>
+	try {
+		org.dom4j.io.SAXReader reader4Obj_<%=cid%> = new org.dom4j.io.SAXReader();
+        org.dom4j.Document doc4Obj_<%=cid%> = reader4Obj_<%=cid%>.read(new java.io.StringReader(<%=value%>==null?"\"\"":<%=value%>.toString()));
+		<%=currEleName%>_<%=cid%>.add(doc4Obj_<%=cid%>.getRootElement());
+	} catch (Exception e) {
+		<%=currEleName%>_<%=cid%>.setText(<%=value%>==null?"\"\"":<%=value%>.toString());
+    }
+<%
+
+							}else{
 %>
 		<%=currEleName%>_<%=cid%>.setText(<%=value%>==null?"\"\"":<%=value%>.toString());
 <%
+							}
 						}
             		}
             	}
@@ -147,10 +161,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				int groupRootCount = 0;
 				for(Map<String, String> map:groupTable){
             		String value = null;
+            		JavaType javaType=null;
             		if( map.get("COLUMN")!=null && map.get("COLUMN").length()>0){
             			for(IMetadataColumn column:metadata.getListColumns()) {
             				if(column.getLabel().equals(map.get("COLUMN"))){
-            					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+            					javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
             					if(JavaTypesManager.isJavaPrimitiveType( column.getTalendType(), column.isNullable())){
             						value = "String.valueOf("+conn.getName()+"."+map.get("COLUMN")+")";
             					}else if(javaType == JavaTypesManager.DATE){
@@ -228,9 +243,22 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		org.dom4j.DocumentHelper.makeElement(<%=currentGroupRoot%>_<%=cid%>,"<%=path.replaceFirst(currentGroupRootPath,"")%>");
 <%
 							if(value!=null){
+        						if(javaType == JavaTypesManager.OBJECT){
+%>
+	try {
+		org.dom4j.io.SAXReader reader4Obj_<%=cid%> = new org.dom4j.io.SAXReader();
+        org.dom4j.Document doc4Obj_<%=cid%> = reader4Obj_<%=cid%>.read(new java.io.StringReader(<%=value%>==null?"\"\"":<%=value%>.toString()));
+		<%=currEleName%>_<%=cid%>.add(doc4Obj_<%=cid%>.getRootElement());
+	} catch (Exception e) {
+		<%=currEleName%>_<%=cid%>.setText(<%=value%>==null?"\"\"":<%=value%>.toString());
+    }
+<%
+
+        						}else{
 %>
 	<%=currEleName%>_<%=cid%>.setText(<%=value%>==null?"\"\"":<%=value%>.toString());
 <%
+								}
 							}
                     	}
                     }
@@ -268,10 +296,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				String loopRootPath = null;
 				for(Map<String, String> map:loopTable){
             		String value = null;
+            		JavaType javaType=null;
             		if( map.get("COLUMN")!=null && map.get("COLUMN").length()>0){
             			for(IMetadataColumn column:metadata.getListColumns()) {
             				if(column.getLabel().equals(map.get("COLUMN"))){
-            					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+            					javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
             					if(JavaTypesManager.isJavaPrimitiveType( column.getTalendType(), column.isNullable())){
             						value = "String.valueOf("+conn.getName()+"."+map.get("COLUMN")+")";
             					}else if(javaType == JavaTypesManager.DATE){
@@ -323,9 +352,21 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
 						}
 						if(value!=null){
+							if(javaType == JavaTypesManager.OBJECT){
+%>
+	try {
+		org.dom4j.io.SAXReader reader4Obj_<%=cid%> = new org.dom4j.io.SAXReader();
+        org.dom4j.Document doc4Obj_<%=cid%> = reader4Obj_<%=cid%>.read(new java.io.StringReader(<%=value%>==null?"\"\"":<%=value%>.toString()));
+		<%=currEleName%>_<%=cid%>.add(doc4Obj_<%=cid%>.getRootElement());
+	} catch (Exception e) {
+		<%=currEleName%>_<%=cid%>.setText(<%=value%>==null?"\"\"":<%=value%>.toString());
+    }
+<%
+							}else{
 %>
 	<%=currEleName%>_<%=cid%>.setText(<%=value%>==null?"\"\"":<%=value%>.toString());
 <%
+							}
 						}
                     }
 				}
