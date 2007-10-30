@@ -281,7 +281,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefres
         loopTableEditorView = new ExtractionLoopWithXPathEditorView(loopModel, group);
         loopTableEditorView.getExtendedTableViewer().setCommandStack(commandStack);
         GridData data2 = new GridData(GridData.FILL_HORIZONTAL);
-        data2.heightHint = 70;
+        data2.heightHint = 90;
         if (WindowSystem.isGTK()) {
             data2.heightHint = 90;
         }
