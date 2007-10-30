@@ -191,7 +191,8 @@ public class CodeView extends ViewPart implements ISelectionListener {
             document = viewer.getDocument();
             break;
         default: // PERL
-            viewer = new TalendPerlSourceViewer(parent, null, styles, document);
+            viewer = TalendPerlSourceViewer.createViewer(parent, styles, false);
+            document = viewer.getDocument();
         }
         viewer.setEditable(false);
         text = viewer.getTextWidget();

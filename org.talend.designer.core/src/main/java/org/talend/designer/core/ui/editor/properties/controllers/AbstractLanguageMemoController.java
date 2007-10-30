@@ -37,6 +37,8 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
@@ -44,8 +46,12 @@ import org.talend.commons.ui.swt.colorstyledtext.ColorManager;
 import org.talend.commons.ui.swt.colorstyledtext.ColorStyledText;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.ui.viewer.perl.TalendPerlSourceViewer;
 import org.talend.designer.core.DesignerPlugin;
+import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
+import org.talend.designer.core.ui.editor.process.Process;
+import org.talend.designer.core.ui.editor.properties.ContextParameterExtractor;
 import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 
@@ -90,37 +96,74 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
 
             public Control createControl(final Composite parent, final int style) {
                 ColorManager colorManager = new ColorManager(CorePlugin.getDefault().getPreferenceStore());
-                ColorStyledText colorText = new ColorStyledText(parent, style, colorManager, language);
+                StyledText control = new ColorStyledText(parent, style, colorManager, language);
                 IPreferenceStore preferenceStore = DesignerPlugin.getDefault().getPreferenceStore();
                 String fontType = preferenceStore.getString(TalendDesignerPrefConstants.MEMO_TEXT_FONT);
                 FontData fontData = new FontData(fontType);
                 Font font = new Font(parent.getDisplay(), fontData);
-                colorText.setFont(font);
-                return colorText;
+                control.setFont(font);
+                return control;
             }
         };
         DecoratedField dField = null;
+        Control cLayout;
+        StyledText text;
+        FormData data;
         if (param.getNbLines() != 1) {
-            dField = new DecoratedField(subComposite, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL | SWT.WRAP, txtCtrl);
+            if (language.equals("java")) {
+                dField = new DecoratedField(subComposite, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL | SWT.WRAP,
+                        txtCtrl);
+                cLayout = dField.getLayoutControl();
+                text = (StyledText) dField.getControl();
+                data = (FormData) text.getLayoutData();
+                editionControlHelper.register(param.getName(), text, true);
+            } else {
+                Composite a = new Composite(subComposite, SWT.NO_FOCUS);
+                a.setLayout(new FormLayout());
+                Composite b = new Composite(a, SWT.NO_FOCUS);
+                b.setLayout(new GridLayout());
+                data = new FormData();
+                data.left = new FormAttachment(0, 0);
+                data.top = new FormAttachment(0, 0);
+                data.right = new FormAttachment(100, 0);
+                data.bottom = new FormAttachment(100, 0);
+
+                b.setLayoutData(data);
+                TalendPerlSourceViewer viewer = (TalendPerlSourceViewer) TalendPerlSourceViewer.createViewer(b, SWT.BORDER
+                        | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL | SWT.WRAP, true);
+                text = viewer.getTextWidget();
+
+                Process process = null;
+                if (elem instanceof Node) {
+                    process = (Process) ((Node) elem).getProcess();
+                } else if (elem instanceof Connection) {
+                    process = (Process) ((Connection) elem).getSource().getProcess();
+                }
+                if (process != null) {
+                    ContextParameterExtractor.installOn(text, process, param.getName(), elem);
+                }
+                UndoRedoHelper helper = new UndoRedoHelper();
+                helper.register(text);
+                cLayout = a;
+            }
+
         } else {
             dField = new DecoratedField(subComposite, SWT.BORDER | SWT.WRAP, txtCtrl);
+            cLayout = dField.getLayoutControl();
+            text = (StyledText) dField.getControl();
+            data = (FormData) text.getLayoutData();
+            editionControlHelper.register(param.getName(), text, true);
         }
         if (param.isRequired()) {
             FieldDecoration decoration = FieldDecorationRegistry.getDefault().getFieldDecoration(
                     FieldDecorationRegistry.DEC_REQUIRED);
             dField.addFieldDecoration(decoration, SWT.RIGHT | SWT.TOP, false);
         }
-        Control cLayout = dField.getLayoutControl();
-        StyledText text = (StyledText) dField.getControl();
 
-        editionControlHelper.register(param.getName(), text, true);
-
-        FormData d = (FormData) text.getLayoutData();
         if (getAdditionalHeightSize() != 0) {
             nbLines += this.getAdditionalHeightSize() / text.getLineHeight();
         }
-        d.height = text.getLineHeight() * nbLines;
-        FormData data;
+        data.height = text.getLineHeight() * nbLines;
         text.getParent().setSize(subComposite.getSize().x, text.getLineHeight() * nbLines);
         cLayout.setBackground(subComposite.getBackground());
         text.setEnabled(!param.isReadOnly());
@@ -169,7 +212,7 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
         // **********************
         hashCurControls.put(param.getName(), text);
 
-        Point initialSize = dField.getLayoutControl().computeSize(SWT.DEFAULT, SWT.DEFAULT);
+        Point initialSize = cLayout.computeSize(SWT.DEFAULT, SWT.DEFAULT);
 
         dynamicTabbedPropertySection.setCurRowSize(initialSize.y + ITabbedPropertyConstants.VSPACE);
         return null;
@@ -207,7 +250,7 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
                 dField = new DecoratedField(subComposite, SWT.BORDER | SWT.WRAP, txtCtrl);
             }
 
-            ColorStyledText text = (ColorStyledText) dField.getControl();
+            StyledText text = (StyledText) dField.getControl();
             FormData d = (FormData) text.getLayoutData();
             d.height = text.getLineHeight();
             text.getParent().setSize(subComposite.getSize().x, text.getLineHeight());
@@ -254,17 +297,17 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
     public void refresh(IElementParameter param, boolean checkErrorsWhenViewRefreshed) {
         StyledText text = (StyledText) hashCurControls.get(param.getName());
         Object value = param.getValue();
-        boolean valueChanged = false;
+        // boolean valueChanged = false;
         if (value == null) {
             text.setText(""); //$NON-NLS-1$
         } else {
             if (!value.equals(text.getText())) {
                 text.setText((String) value);
-                valueChanged = true;
+                // valueChanged = true;
             }
         }
-        if (checkErrorsWhenViewRefreshed || valueChanged) {
-            checkErrorsForPropertiesOnly(text);
-        }
+        // if (checkErrorsWhenViewRefreshed || valueChanged) {
+        // checkErrorsForPropertiesOnly(text);
+        // }
     }
 }

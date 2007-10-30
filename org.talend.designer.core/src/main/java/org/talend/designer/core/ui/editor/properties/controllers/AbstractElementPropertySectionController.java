@@ -153,8 +153,8 @@ public abstract class AbstractElementPropertySectionController implements Proper
      * @return. The control created by this method will be the paramenter of next be called createControl method for
      * position calculate.
      */
-    public abstract Control createControl(final Composite subComposite, final IElementParameter param,
-            final int numInRow, final int nbInRow, final int top, final Control lastControl);
+    public abstract Control createControl(final Composite subComposite, final IElementParameter param, final int numInRow,
+            final int nbInRow, final int top, final Control lastControl);
 
     public abstract int estimateRowSize(final Composite subComposite, final IElementParameter param);
 
@@ -295,13 +295,13 @@ public abstract class AbstractElementPropertySectionController implements Proper
     protected TabbedPropertySheetWidgetFactory getWidgetFactory() {
         try {
             TabbedPropertySheetWidgetFactory widgetFactory = dynamicTabbedPropertySection.getWidgetFactory();
-            
-            if(widgetFactory!=null){
+
+            if (widgetFactory != null) {
                 return widgetFactory;
             }
         } catch (Exception e) {
         }
-        return  new TabbedPropertySheetWidgetFactory();
+        return new TabbedPropertySheetWidgetFactory();
     }
 
     /**
@@ -362,8 +362,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
                         if (control instanceof Text) {
                             ContextParameterExtractor.saveContext(parameterName, elem, ((Text) control).getText());
                         } else if (control instanceof StyledText) {
-                            ContextParameterExtractor
-                                    .saveContext(parameterName, elem, ((StyledText) control).getText());
+                            ContextParameterExtractor.saveContext(parameterName, elem, ((StyledText) control).getText());
                         }
                     }
                 });
@@ -498,8 +497,8 @@ public abstract class AbstractElementPropertySectionController implements Proper
             boolean isRequired = elem.getElementParameter(getParameterName(control)).isRequired();
             if (problems != null) {
                 if (isRequired && (valueFinal == null || valueFinal.trim().length() == 0)) {
-                    problems.add(new Problem(null, Messages
-                            .getString("AbstractElementPropertySectionController.fieldRequired"), ProblemStatus.ERROR)); //$NON-NLS-1$
+                    problems.add(new Problem(null,
+                            Messages.getString("AbstractElementPropertySectionController.fieldRequired"), ProblemStatus.ERROR)); //$NON-NLS-1$
                 }
             }
 
@@ -633,7 +632,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
          * 
          * @param control
          */
-        private void register(Control control) {
+        public void register(Control control) {
             // ControlUtils.addModifyListener(control, modifyListenerForUndoRedo);
             typedTextCommandExecutor.register(control);
         }
@@ -836,8 +835,8 @@ public abstract class AbstractElementPropertySectionController implements Proper
     }
 
     public void openSqlBuilderBuildIn(final ConnectionParameters connParameters, final String propertyName) {
-        OpenSQLBuilderDialogJob openDialogJob = new OpenSQLBuilderDialogJob(connParameters, composite, elem,
-                propertyName, getCommandStack(), this);
+        OpenSQLBuilderDialogJob openDialogJob = new OpenSQLBuilderDialogJob(connParameters, composite, elem, propertyName,
+                getCommandStack(), this);
 
         IWorkbenchSiteProgressService siteps = (IWorkbenchSiteProgressService) part.getSite().getAdapter(
                 IWorkbenchSiteProgressService.class);
@@ -867,8 +866,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
 
         String port = setConnectionParameter(element, connParameters, EConnectionParameterName.PORT.getName());
         connParameters.setPort(port);
-        String datasource = setConnectionParameter(element, connParameters, EConnectionParameterName.DATASOURCE
-                .getName());
+        String datasource = setConnectionParameter(element, connParameters, EConnectionParameterName.DATASOURCE.getName());
         connParameters.setDatasource(datasource);
 
         String dbName = setConnectionParameter(element, connParameters, EConnectionParameterName.SID.getName());
@@ -881,14 +879,13 @@ public abstract class AbstractElementPropertySectionController implements Proper
         String realTableName = null;
         if (EmfComponent.REPOSITORY.equals(elem.getPropertyValue(EParameterName.SCHEMA_TYPE.getName()))) {
             final Object propertyValue = elem.getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
-            final IMetadataTable metadataTable = dynamicTabbedPropertySection.getRepositoryTableMap()
-                    .get(propertyValue);
+            final IMetadataTable metadataTable = dynamicTabbedPropertySection.getRepositoryTableMap().get(propertyValue);
             if (metadataTable != null) {
                 realTableName = metadataTable.getTableName();
             }
         }
-        connParameters.setSchemaName(QueryUtil.getTableName(elem, connParameters.getMetadataTable(), schema, type,
-                realTableName));
+        connParameters
+                .setSchemaName(QueryUtil.getTableName(elem, connParameters.getMetadataTable(), schema, type, realTableName));
 
     }
 
@@ -903,8 +900,8 @@ public abstract class AbstractElementPropertySectionController implements Proper
         connParameters.setFieldType(paramFieldType);
         connParameters.setMetadataTable(((Node) elem).getMetadataList().get(0));
 
-        connParameters.setSchemaRepository(EmfComponent.REPOSITORY.equals(elem
-                .getPropertyValue(EParameterName.SCHEMA_TYPE.getName())));
+        connParameters.setSchemaRepository(EmfComponent.REPOSITORY.equals(elem.getPropertyValue(EParameterName.SCHEMA_TYPE
+                .getName())));
         connParameters.setFromDBNode(true);
 
         connParameters.setQuery("");
