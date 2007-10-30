@@ -47,6 +47,7 @@ import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.components.IMultipleComponentItem;
 import org.talend.core.model.components.IMultipleComponentManager;
+import org.talend.core.model.general.InstallModule;
 import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
@@ -67,6 +68,7 @@ import org.talend.designer.core.model.utils.emf.component.CONNECTORType;
 import org.talend.designer.core.model.utils.emf.component.DEFAULTType;
 import org.talend.designer.core.model.utils.emf.component.DocumentRoot;
 import org.talend.designer.core.model.utils.emf.component.IMPORTType;
+import org.talend.designer.core.model.utils.emf.component.INSTALLType;
 import org.talend.designer.core.model.utils.emf.component.ITEMSType;
 import org.talend.designer.core.model.utils.emf.component.ITEMType;
 import org.talend.designer.core.model.utils.emf.component.LINKTOType;
@@ -1239,14 +1241,47 @@ public class EmfComponent implements IComponent {
                 if (msg.startsWith(Messages.KEY_NOT_FOUND_PREFIX)) {
                     msg = Messages.getString("modules.required"); //$NON-NLS-1$
                 }
-
+                List<InstallModule> list = getInstallCommand(importType);
                 ModuleNeeded componentImportNeeds = new ModuleNeeded(this.getName(), importType.getMODULE(), msg, importType
-                        .isREQUIRED());
+                        .isREQUIRED(), list);
                 componentImportNeeds.setShow(importType.isSHOW());
                 componentImportNeedsList.add(componentImportNeeds);
             }
         }
         return componentImportNeedsList;
+    }
+
+    // public List<String> getInstallCommand(String mouduleName) {
+    // List<String> componentInstallList = new ArrayList<String>();
+    // if (compType.getCODEGENERATION().getIMPORTS() != null) {
+    // EList emfImportList;
+    // emfImportList = compType.getCODEGENERATION().getIMPORTS().getIMPORT();
+    // for (int i = 0; i < emfImportList.size(); i++) {
+    // IMPORTType importType = (IMPORTType) emfImportList.get(i);
+    // if (importType.getMODULE().equals(mouduleName)) {
+    // EList emfInstall = importType.getINSTALL();
+    // for (int j = 0; j < emfInstall.size(); j++) {
+    // INSTALLType installtype = (INSTALLType) emfInstall.get(j);
+    // if ((System.getProperty("os.name").indexOf(installtype.getOS())) >= 0) {
+    // componentInstallList.add(installtype.getCOMMAND());
+    // }
+    // }
+    // }
+    // }
+    // }
+    //
+    // return componentInstallList;
+    // }
+
+    public List<InstallModule> getInstallCommand(IMPORTType importType) {
+        List<InstallModule> list = new ArrayList<InstallModule>();
+        EList emfInstall = importType.getINSTALL();
+        for (int j = 0; j < emfInstall.size(); j++) {
+            INSTALLType installtype = (INSTALLType) emfInstall.get(j);
+            InstallModule installModuleNeeds = new InstallModule(installtype.getOS(), installtype.getCOMMAND());
+            list.add(installModuleNeeds);
+        }
+        return list;
     }
 
     public IMultipleComponentManager getMultipleComponentManager() {
