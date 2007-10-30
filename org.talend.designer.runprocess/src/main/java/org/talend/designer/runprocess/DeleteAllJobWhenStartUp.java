@@ -86,16 +86,18 @@ public class DeleteAllJobWhenStartUp implements IStartup {
         }
 
         // fix bug 1151, move the sync all routines here from JavaProcessor and PerlProcessor.
+        if (CorePlugin.getDefault().getRepositoryService().isRCPMode()) {
+            Display.getDefault().asyncExec(new Runnable() {
 
-        Display.getDefault().asyncExec(new Runnable() {
-
-            public void run() {
-                try {
-                    RunProcessPlugin.getDefault().getCodeGeneratorService().createRoutineSynchronizer().syncAllRoutines();
-                } catch (Exception e) {
-                    ExceptionHandler.process(e);
+                public void run() {
+                    try {
+                        RunProcessPlugin.getDefault().getCodeGeneratorService().createRoutineSynchronizer()
+                                .syncAllRoutines();
+                    } catch (Exception e) {
+                        ExceptionHandler.process(e);
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 }
