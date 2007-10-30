@@ -204,32 +204,7 @@ public class PromptDialog extends Dialog {
         child.setLayoutData(new GridData(GridData.FILL_BOTH));
 
         if (DefaultCellEditorFactory.isList(parameter.getType())) {
-            final Combo combo = new Combo(child, SWT.BORDER);
-
-            String[] valueList = parameter.getValueList();
-            combo.setItems(valueList);
-            int index = Arrays.binarySearch(valueList, parameter.getValue());
-            if (index >= 0) {
-                combo.select(index);
-            } else {
-                combo.select(0);
-            }
-
-            combo.addModifyListener(new ModifyListener() {
-
-                public void modifyText(ModifyEvent e) {
-                    parameter.setValue(combo.getText());
-                }
-            });
-            if (parameter.getComment() != null) {
-                if (!parameter.getComment().equals("")) { //$NON-NLS-1$
-                    label.setToolTipText(parameter.getComment());
-                    combo.setToolTipText(parameter.getComment());
-                }
-            }
-            GridData data = new GridData(GridData.FILL_HORIZONTAL);
-            data.minimumWidth = MINIMUM_WIDTH;
-            combo.setLayoutData(data);
+            createListParameterArea(parameter, label, child);
             return;
         }
 
@@ -317,6 +292,44 @@ public class PromptDialog extends Dialog {
 
             });
         }
+    }
+
+    /**
+     * DOC bqian Comment method "createListParameterArea".
+     * 
+     * @param parameter
+     * @param label
+     * @param parent
+     */
+    private void createListParameterArea(final IContextParameter parameter, Label label, final Composite parent) {
+
+        final Combo combo = new Combo(parent, SWT.BORDER);
+        GridData data = new GridData(GridData.FILL_HORIZONTAL);
+        data.minimumWidth = MINIMUM_WIDTH;
+        combo.setLayoutData(data);
+
+        String[] valueList = parameter.getValueList();
+        combo.setItems(valueList);
+        int index = Arrays.binarySearch(valueList, parameter.getValue());
+        if (index >= 0) {
+            combo.select(index);
+        } else {
+            combo.select(0);
+        }
+
+        combo.addModifyListener(new ModifyListener() {
+
+            public void modifyText(ModifyEvent e) {
+                parameter.setValue(combo.getText());
+            }
+        });
+        if (parameter.getComment() != null) {
+            if (!parameter.getComment().equals("")) { //$NON-NLS-1$
+                label.setToolTipText(parameter.getComment());
+                combo.setToolTipText(parameter.getComment());
+            }
+        }
+
     }
 
     @Override

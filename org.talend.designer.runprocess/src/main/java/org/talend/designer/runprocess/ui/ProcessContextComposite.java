@@ -217,8 +217,8 @@ public class ProcessContextComposite extends Composite {
                     for (int i = 0; i < contextCopy.getContextParameterList().size() & !found; i++) {
                         paramCopy = contextCopy.getContextParameterList().get(i);
                         if (param.getName().equals(paramCopy.getName())) {
-                            param.setValue(paramCopy.getValue());
-                            param.setValueList(paramCopy.getValueList());
+                            // param.setValueList(paramCopy.getValueList());
+                            param.setInternalValue(paramCopy.getValue());
                             found = true;
                         }
                     }
@@ -233,8 +233,30 @@ public class ProcessContextComposite extends Composite {
                 continueLaunch = MessageDialog.openQuestion(shell, Messages.getString("ProcessComposite.confirmTitle"), //$NON-NLS-1$
                         Messages.getString("ProcessComposite.confirmText", context.getName())); //$NON-NLS-1$ //$NON-NLS-2$
             }
+
+            updateDefaultValueForListTypeParameter(context.getContextParameterList());
         }
         return continueLaunch;
+    }
+
+    /**
+     * Set the first item of value list for the default value if this parameter does not need to prompt.
+     * 
+     * @param contextParameterList
+     */
+    private static void updateDefaultValueForListTypeParameter(List<IContextParameter> contextParameterList) {
+        for (IContextParameter contextParameter : contextParameterList) {
+            String[] list = contextParameter.getValueList();
+            if (list == null) {
+                continue;
+            }
+            if (list.length == 0) {
+                contextParameter.setInternalValue("");
+            } else {
+                contextParameter.setInternalValue(list[0]);
+            }
+
+        }
     }
 
     /**
