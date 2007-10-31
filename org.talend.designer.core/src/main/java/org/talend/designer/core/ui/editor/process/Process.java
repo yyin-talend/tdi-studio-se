@@ -1698,8 +1698,10 @@ public class Process extends Element implements IProcess {
             }
             node.setPropertyValue(EParameterName.ACTIVATE.getName(), new Boolean(active));
             for (Connection connec : (List<Connection>) node.getOutgoingConnections()) {
-                if (connec.getTarget().isActivate() != active) {
-                    setActivateSubjob(connec.getTarget(), active, activateNode);
+                if (connec.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+                    if (connec.getTarget().isActivate() != active) {
+                        setActivateSubjob(connec.getTarget(), active, activateNode);
+                    }
                 }
             }
 
