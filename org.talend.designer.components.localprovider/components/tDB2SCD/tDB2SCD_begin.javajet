@@ -213,9 +213,15 @@ if (inMetadata != null && metadata != null) {
 					    		hashCode = prime * hashCode + (<%=colname%> == null ? 0 : <%=colname%>.hashCode());
 					    		<%
 				    		} else {
-					    		%>
+				    			if (javaType == JavaTypesManager.LONG) {
+                            %>
+                                hashCode = prime * hashCode + (new Long(<%=colname%>)).hashCode();
+                            <%
+                                } else {
+					    	%>
 					    		hashCode = prime * hashCode + <%=colname%>;
-					    		<%
+					    	<%
+					    		}
 				    		}
 				    	}
 				   	}
