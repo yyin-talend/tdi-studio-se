@@ -50,20 +50,21 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     	}
     	
 		List<Map<String, String>> trimSelects = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__TRIMSELECT__");
-		boolean isTrimAll = ElementParameterParser.getValue(node,"__TRIMALL__").equals("true");
+		String isTrimAllStr = ElementParameterParser.getValue(node,"__TRIMALL__");
+		boolean isTrimAll = (isTrimAllStr!=null&&!isTrimAllStr.equals(""))?isTrimAllStr.equals("true"):true;
 		
     	String fieldSeparator = ElementParameterParser.getValue(node, "__FIELDSEPARATOR__");
     	String rowSeparator = ElementParameterParser.getValue(node, "__ROWSEPARATOR__");
     	String removeEmptyRowFlag =  ElementParameterParser.getValue(node, "__REMOVE_EMPTY_ROW__");
-		boolean dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__").equals("true");    	
+    	String dieOnErrorStr = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
+		boolean dieOnError = (dieOnErrorStr!=null&&!dieOnErrorStr.equals(""))?dieOnErrorStr.equals("true"):false;    	
 %>
 org.talend.fileprocess.FileInputDelimited fid_<%=cid %> = new org.talend.fileprocess.FileInputDelimited(<%=filename %>,<%=encoding %>,<%=fieldSeparator %>,<%=rowSeparator %>,<%=removeEmptyRowFlag %>,<%=header %>,<%=footer %>,<%=limit %>,<%=random %>);
 while (fid_<%=cid %>.nextRecord()) {
 <%
 	List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
-	List<? extends IConnection> connsFlow = node.getOutgoingConnections("FLOW");
 
-    String rejectConnName = null;
+    String rejectConnName = "";
     List<? extends IConnection> rejectConns = node.getOutgoingConnections("REJECT");
     if(rejectConns != null && rejectConns.size() > 0) {
         IConnection rejectConn = rejectConns.get(0);
@@ -159,7 +160,7 @@ if(temp_<%=cid %>.length() > 0) {
             throw(e);
             <%
         } else {
-            if(rejectConnName != null && rejectColumnList != null && rejectColumnList.size() > 0) {
+            if(!rejectConnName.equals("")&& rejectColumnList != null && rejectColumnList.size() > 0) {
 
                 %>
                     <%=rejectConnName %> = new <%=rejectConnName %>Struct();
@@ -185,13 +186,13 @@ if(temp_<%=cid %>.length() > 0) {
 <%
 			}
 		}
-		if (connsFlow.size()>0) {
+		if (conns.size()>0) {
 %>
         if(!whetherReject_<%=cid%>) {
 <%		
-			for (int i=0;i<connsFlow.size();i++) {
-				IConnection conn = connsFlow.get(i);
-				if ((conn.getName().compareTo(firstConnName)!=0)&&(conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA))) {
+			for (int i=0;i<conns.size();i++) {
+				IConnection conn = conns.get(i);
+				if ((conn.getName().compareTo(rejectConnName)!=0)&&(conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA))) {
 %>
                      
              if(<%=conn.getName() %> == null){ 
@@ -258,8 +259,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     	String removeEmptyRow = ElementParameterParser.getValue(node, "__REMOVE_EMPTY_ROW__");
     	
     	List<Map<String, String>> trimSelects = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__TRIMSELECT__");
-		boolean isTrimAll = ElementParameterParser.getValue(node,"__TRIMALL__").equals("true");
-		boolean dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__").equals("true"); 
+		String isTrimAllStr = ElementParameterParser.getValue(node,"__TRIMALL__");
+		boolean isTrimAll = (isTrimAllStr!=null&&!isTrimAllStr.equals(""))?isTrimAllStr.equals("true"):true;
+		
+    	String dieOnErrorStr = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
+		boolean dieOnError = (dieOnErrorStr!=null&&!dieOnErrorStr.equals(""))?dieOnErrorStr.equals("true"):false;  
 %>		
 		int nb_line_<%=cid%> = 0;
 		int footer_<%=cid %> = <%= footer%>;
@@ -378,9 +382,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                                                                       
 <%
 	List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
-	List<? extends IConnection> connsFlow = node.getOutgoingConnections("FLOW");
 
-    String rejectConnName = null;
+    String rejectConnName = "";
     List<? extends IConnection> rejectConns = node.getOutgoingConnections("REJECT");
     if(rejectConns != null && rejectConns.size() > 0) {
         IConnection rejectConn = rejectConns.get(0);
@@ -484,7 +487,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             throw(e);
             <%
         } else {
-            if(rejectConnName != null && rejectColumnList != null && rejectColumnList.size() > 0) {
+            if(!rejectConnName.equals("")&& rejectColumnList != null && rejectColumnList.size() > 0) {
 
                 %>
                     <%=rejectConnName %> = new <%=rejectConnName %>Struct();
@@ -509,13 +512,13 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%			
 			}
 		}
-		if (connsFlow.size()>0) {
+		if (conns.size()>0) {
 %>
         if(!whetherReject_<%=cid%>) {
 <%		
-			for (int i=0;i<connsFlow.size();i++) {
-				IConnection conn = connsFlow.get(i);
-				if ((conn.getName().compareTo(firstConnName)!=0)&&(conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA))) {
+			for (int i=0;i<conns.size();i++) {
+				IConnection conn = conns.get(i);
+				if ((conn.getName().compareTo(rejectConnName)!=0)&&(conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA))) {
 %>
                      
              if(<%=conn.getName() %> == null){ 
