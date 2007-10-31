@@ -22,11 +22,9 @@
 package org.talend.designer.fileoutputxml.action;
 
 import org.eclipse.jface.dialogs.InputDialog;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.ui.actions.SelectionProviderAction;
-import org.talend.designer.fileoutputxml.data.Attribute;
 import org.talend.designer.fileoutputxml.data.Element;
 import org.talend.designer.fileoutputxml.data.FOXTreeNode;
 import org.talend.designer.fileoutputxml.data.NameSpaceNode;
@@ -35,12 +33,11 @@ import org.talend.designer.fileoutputxml.ui.FOXUI;
 import org.talend.designer.fileoutputxml.util.StringUtil;
 
 /**
- * bqian Create a xml node. <br/>
  * 
- * $Id: CreateElementAction.java,v 1.1 2007/06/12 07:20:38 gke Exp $
+ * $Id: CreateNameSpaceAction.java,v 1.1 2007/10/30 07:20:38 xzhang Exp $
  * 
  */
-public class CreateElementAction extends SelectionProviderAction {
+public class CreateNameSpaceAction extends SelectionProviderAction {
 
     // the xml viewer, see FOXUI.
     private TreeViewer xmlViewer;
@@ -53,12 +50,12 @@ public class CreateElementAction extends SelectionProviderAction {
      * @param provider
      * @param text
      */
-    public CreateElementAction(TreeViewer xmlViewer, String text) {
+    public CreateNameSpaceAction(TreeViewer xmlViewer, String text) {
         super(xmlViewer, text);
         this.xmlViewer = xmlViewer;
     }
 
-    public CreateElementAction(TreeViewer xmlViewer, FOXUI foxui, String text) {
+    public CreateNameSpaceAction(TreeViewer xmlViewer, FOXUI foxui, String text) {
         super(xmlViewer, text);
         this.xmlViewer = xmlViewer;
         this.foxui = foxui;
@@ -72,8 +69,8 @@ public class CreateElementAction extends SelectionProviderAction {
     @Override
     public void run() {
         FOXTreeNode node = (FOXTreeNode) this.getStructuredSelection().getFirstElement();
-        if (createChildNode(node)) {
-            foxui.redrawLinkers();
+        if (node != null) {
+            createChildNode(node);
         }
     }
 
@@ -82,34 +79,24 @@ public class CreateElementAction extends SelectionProviderAction {
      * 
      * @param node
      */
-    private boolean createChildNode(FOXTreeNode node) {
-        if (node.getColumn() != null) {
-            if (!MessageDialog.openConfirm(xmlViewer.getControl().getShell(), Messages
-                    .getString("CreateElementAction.0"), //$NON-NLS-1$
-                    Messages.getString("CreateElementAction.1") //$NON-NLS-1$
-                            + node.getLabel() + "\"?")) { //$NON-NLS-1$
-                return false;
-            }
-            node.setColumn(null);
-        }
-        String label = ""; //$NON-NLS-1$
+    private void createChildNode(FOXTreeNode node) {
+        String label = null; //$NON-NLS-1$
         while (!StringUtil.validateLabelForXML(label)) {
-            InputDialog dialog = new InputDialog(null,
-                    Messages.getString("CreateElementAction.4"), Messages.getString("CreateElementAction.5"), //$NON-NLS-1$ //$NON-NLS-2$
-                    "", null); //$NON-NLS-1$
+            InputDialog dialog = new InputDialog(null, Messages.getString("CreateNameSpaceAction.1"), //$NON-NLS-1$
+                    Messages.getString("CreateNameSpaceAction.2"), "", null); //$NON-NLS-1$ //$NON-NLS-2$
             int status = dialog.open();
             if (status == InputDialog.OK) {
                 label = dialog.getValue().trim();
             }
             if (status == InputDialog.CANCEL) {
-                return false;
+                return;
             }
         }
-        FOXTreeNode child = new Element(label);
+        FOXTreeNode child = new NameSpaceNode(label);
         node.addChild(child);
         this.xmlViewer.refresh(node);
-        this.xmlViewer.expandAll();
-        return true;
+        xmlViewer.expandAll();
+        foxui.redrawLinkers();
     }
 
     /*
@@ -120,28 +107,14 @@ public class CreateElementAction extends SelectionProviderAction {
     @Override
     public void selectionChanged(IStructuredSelection selection) {
         FOXTreeNode node = (FOXTreeNode) this.getStructuredSelection().getFirstElement();
-        if (node == null) {
+        if (node != null && node.getClass() != Element.class) {
             this.setEnabled(false);
-            return;
+        } else {
+            if (node == null) {
+                this.setEnabled(false);
+            } else {
+                this.setEnabled(true);
+            }
         }
-        if (node instanceof Attribute) {
-            this.setEnabled(false);
-            return;
-        }
-
-        if (node instanceof NameSpaceNode) {
-            this.setEnabled(false);
-            return;
-        }
-        // let user can add more children to a root.
-        // Element e = (Element) node;
-        // if (e.getParent() == null) {
-        // if (e.getElementChildren().size() >= 1) {
-        // this.setEnabled(false);
-        // return;
-        // }
-        // }
-        this.setEnabled(true);
-
     }
 }

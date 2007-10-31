@@ -26,6 +26,7 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.ui.actions.SelectionProviderAction;
 import org.talend.designer.fileoutputxml.data.Attribute;
 import org.talend.designer.fileoutputxml.data.FOXTreeNode;
+import org.talend.designer.fileoutputxml.data.NameSpaceNode;
 import org.talend.designer.fileoutputxml.util.TreeUtil;
 
 /**
@@ -88,6 +89,11 @@ public class SetForLoopAction extends SelectionProviderAction {
             return;
         }
         if (node instanceof Attribute) {
+            this.setEnabled(false);
+            return;
+        }
+
+        if (node instanceof NameSpaceNode) {
             this.setEnabled(false);
             return;
         }

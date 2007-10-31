@@ -29,8 +29,8 @@ import org.eclipse.ui.actions.SelectionProviderAction;
 import org.talend.designer.fileoutputxml.data.Attribute;
 import org.talend.designer.fileoutputxml.data.Element;
 import org.talend.designer.fileoutputxml.data.FOXTreeNode;
+import org.talend.designer.fileoutputxml.data.NameSpaceNode;
 import org.talend.designer.fileoutputxml.ui.FOXUI;
-import org.talend.designer.fileoutputxml.util.TreeUtil;
 
 /**
  * bqian Create a xml node. <br/>
@@ -82,9 +82,9 @@ public class DeleteNodeAction extends SelectionProviderAction {
             disconnectSubTree(node);
         }
         parent.removeChild(node);
-//        if (TreeUtil.refreshTree((FOXTreeNode) xmlViewer.getTree().getItem(0).getData())) {
-//            xmlViewer.refresh();
-//        }
+        // if (TreeUtil.refreshTree((FOXTreeNode) xmlViewer.getTree().getItem(0).getData())) {
+        // xmlViewer.refresh();
+        // }
         xmlViewer.refresh(parent);
         xmlViewer.expandAll();
         foxui.redrawLinkers();
@@ -104,6 +104,9 @@ public class DeleteNodeAction extends SelectionProviderAction {
             node.setColumn(null);
         }
         if (node instanceof Attribute) {
+            return;
+        }
+        if (node instanceof NameSpaceNode) {
             return;
         }
         List<FOXTreeNode> children = node.getChildren();

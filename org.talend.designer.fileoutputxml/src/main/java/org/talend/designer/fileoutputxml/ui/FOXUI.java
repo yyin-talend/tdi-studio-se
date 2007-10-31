@@ -62,6 +62,7 @@ import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.designer.fileoutputxml.FileOutputXMLComponent;
 import org.talend.designer.fileoutputxml.action.CreateAttributeAction;
 import org.talend.designer.fileoutputxml.action.CreateElementAction;
+import org.talend.designer.fileoutputxml.action.CreateNameSpaceAction;
 import org.talend.designer.fileoutputxml.action.DeleteNodeAction;
 import org.talend.designer.fileoutputxml.action.DisconnectAction;
 import org.talend.designer.fileoutputxml.action.ImportTreeFromXMLAction;
@@ -106,6 +107,8 @@ public class FOXUI {
     private IAction disconnectAction;
 
     private IAction createAttributeAction;
+
+    private IAction createNamespaceAction;
 
     private IAction importFromXMLAction;
 
@@ -177,8 +180,7 @@ public class FOXUI {
         if (column != null) {
             for (int i = 0; i < tableItems.length; i++) {
                 if (tableItems[i].getData().equals(column)) {
-                    linker.addLoopLink(tableItems[i], tableItems[i].getData(), xmlViewer.getTree(), (FOXTreeNode) node
-                            .getData());
+                    linker.addLoopLink(tableItems[i], tableItems[i].getData(), xmlViewer.getTree(), (FOXTreeNode) node.getData());
                     break;
                 }
             }
@@ -315,6 +317,7 @@ public class FOXUI {
     protected void fillContextMenu(IMenuManager manager) {
         manager.add(createAction);
         manager.add(createAttributeAction);
+        manager.add(createNamespaceAction);
         // manager.add(editAction);
         manager.add(new Separator());
         manager.add(deleteAction);
@@ -332,6 +335,7 @@ public class FOXUI {
     private void createAction() {
         createAction = new CreateElementAction(xmlViewer, this, Messages.getString("FOXUI.10")); //$NON-NLS-1$
         createAttributeAction = new CreateAttributeAction(xmlViewer, this, Messages.getString("FOXUI.11")); //$NON-NLS-1$
+        createNamespaceAction = new CreateNameSpaceAction(xmlViewer, this, Messages.getString("FOXUI.22"));
         // editAction = new EditLabelAction(xmlViewer, "Edit Label");
         deleteAction = new DeleteNodeAction(xmlViewer, this, Messages.getString("FOXUI.12")); //$NON-NLS-1$
         disconnectAction = new DisconnectAction(xmlViewer, this, Messages.getString("FOXUI.13")); //$NON-NLS-1$
@@ -386,8 +390,8 @@ public class FOXUI {
             table.addListener(SWT.Paint, new Listener() {
 
                 public void handleEvent(Event event) {
-                    Point offsetPoint = event.display.map(linker.getBgDrawableComposite(), schemaViewer.getTable(),
-                            new Point(0, 0));
+                    Point offsetPoint = event.display.map(linker.getBgDrawableComposite(), schemaViewer.getTable(), new Point(0,
+                            0));
                     linker.setOffset(offsetPoint);
                     linker.drawBackground(event.gc);
                 }

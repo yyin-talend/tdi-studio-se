@@ -34,12 +34,15 @@ public class Element extends FOXTreeNode {
 
     private List<Attribute> attributes = new ArrayList<Attribute>();
 
+    private List<NameSpaceNode> nameSpaces = new ArrayList<NameSpaceNode>();
+
     /**
      * Element constructor comment.
      */
     public Element() {
         super();
     }
+
     /**
      * Element constructor comment.
      */
@@ -52,6 +55,11 @@ public class Element extends FOXTreeNode {
         if (child instanceof Attribute) {
             Attribute element = (Attribute) child;
             attributes.remove(element);
+            return;
+        }
+        if (child instanceof NameSpaceNode) {
+            NameSpaceNode element = (NameSpaceNode) child;
+            nameSpaces.remove(element);
             return;
         }
         super.removeChild(child);
@@ -80,6 +88,12 @@ public class Element extends FOXTreeNode {
             child.setParent(this);
             return;
         }
+        if (child instanceof NameSpaceNode) {
+            NameSpaceNode element = (NameSpaceNode) child;
+            nameSpaces.add(element);
+            child.setParent(this);
+            return;
+        }
         super.addChild(child);
     }
 
@@ -92,6 +106,7 @@ public class Element extends FOXTreeNode {
     public List<FOXTreeNode> getChildren() {
         List<FOXTreeNode> list = new ArrayList<FOXTreeNode>();
         list.addAll(attributes);
+        list.addAll(nameSpaces);
         list.addAll(super.getChildren());
 
         return list;
@@ -100,11 +115,16 @@ public class Element extends FOXTreeNode {
     public List<FOXTreeNode> getElementChildren() {
         return super.getChildren();
     }
-    
+
     public List<FOXTreeNode> getAttributeChildren() {
         List<FOXTreeNode> list = new ArrayList<FOXTreeNode>();
         list.addAll(attributes);
+        return list;
+    }
 
+    public List<FOXTreeNode> getNameSpaceChildren() {
+        List<FOXTreeNode> list = new ArrayList<FOXTreeNode>();
+        list.addAll(nameSpaces);
         return list;
     }
 

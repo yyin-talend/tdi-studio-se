@@ -32,6 +32,7 @@ import org.talend.designer.fileoutputxml.FileOutputXMLComponent;
 import org.talend.designer.fileoutputxml.data.Attribute;
 import org.talend.designer.fileoutputxml.data.Element;
 import org.talend.designer.fileoutputxml.data.FOXTreeNode;
+import org.talend.designer.fileoutputxml.data.NameSpaceNode;
 import org.talend.designer.fileoutputxml.util.TreeUtil;
 
 /**
@@ -108,8 +109,11 @@ public class FOXManager {
                 .getTableList(FileOutputXMLComponent.ROOT);
         for (Map<String, String> rootMap : rootTable) {
             String path = rootMap.get(FileOutputXMLComponent.PATH);
-            if (Boolean.parseBoolean(rootMap.get(FileOutputXMLComponent.ATTRIBUTE))) {
+            if (rootMap.get(FileOutputXMLComponent.ATTRIBUTE).equals("true")) {
                 temp = new Attribute(path);
+                current.addChild(temp);
+            } else if (rootMap.get(FileOutputXMLComponent.ATTRIBUTE).equals("ns")) {
+                temp = new NameSpaceNode(path);
                 current.addChild(temp);
             } else {
                 String name = path.substring(path.lastIndexOf("/") + 1);
@@ -138,8 +142,11 @@ public class FOXManager {
                 .getTableList(FileOutputXMLComponent.GROUP);
         for (Map<String, String> groupMap : groupTable) {
             String path = groupMap.get(FileOutputXMLComponent.PATH);
-            if (Boolean.parseBoolean(groupMap.get(FileOutputXMLComponent.ATTRIBUTE))) {
+            if (groupMap.get(FileOutputXMLComponent.ATTRIBUTE).equals("true")) {
                 temp = new Attribute(path);
+                current.addChild(temp);
+            } else if (groupMap.get(FileOutputXMLComponent.ATTRIBUTE).equals("ns")) {
+                temp = new NameSpaceNode(path);
                 current.addChild(temp);
             } else {
                 String name = path.substring(path.lastIndexOf("/") + 1);
@@ -170,8 +177,11 @@ public class FOXManager {
                 .getTableList(FileOutputXMLComponent.LOOP);
         for (Map<String, String> loopMap : loopTable) {
             String path = loopMap.get(FileOutputXMLComponent.PATH);
-            if (Boolean.parseBoolean(loopMap.get(FileOutputXMLComponent.ATTRIBUTE))) {
+            if (loopMap.get(FileOutputXMLComponent.ATTRIBUTE).equals("true")) {
                 temp = new Attribute(path);
+                current.addChild(temp);
+            } else if (loopMap.get(FileOutputXMLComponent.ATTRIBUTE).equals("ns")) {
+                temp = new NameSpaceNode(path);
                 current.addChild(temp);
             } else {
                 String name = path.substring(path.lastIndexOf("/") + 1);
@@ -248,6 +258,14 @@ public class FOXManager {
             newMap.put(FileOutputXMLComponent.PATH, att.getLabel());
             newMap.put(FileOutputXMLComponent.COLUMN, att.getColumnLabel());
             newMap.put(FileOutputXMLComponent.ATTRIBUTE, "true"); //$NON-NLS-1$
+            newMap.put(FileOutputXMLComponent.VALUE, ""); //$NON-NLS-1$
+            table.add(newMap);
+        }
+        for (FOXTreeNode att : element.getNameSpaceChildren()) {
+            newMap = new HashMap<String, String>();
+            newMap.put(FileOutputXMLComponent.PATH, att.getLabel());
+            newMap.put(FileOutputXMLComponent.COLUMN, att.getColumnLabel());
+            newMap.put(FileOutputXMLComponent.ATTRIBUTE, "ns"); //$NON-NLS-1$
             newMap.put(FileOutputXMLComponent.VALUE, ""); //$NON-NLS-1$
             table.add(newMap);
         }
