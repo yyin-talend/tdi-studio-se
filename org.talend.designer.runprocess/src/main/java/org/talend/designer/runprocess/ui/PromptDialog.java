@@ -25,6 +25,7 @@ import java.util.Arrays;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
@@ -38,7 +39,6 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.DirectoryDialog;
@@ -303,7 +303,8 @@ public class PromptDialog extends Dialog {
      */
     private void createListParameterArea(final IContextParameter parameter, Label label, final Composite parent) {
 
-        final Combo combo = new Combo(parent, SWT.BORDER);
+        final CCombo combo = new CCombo(parent, SWT.BORDER);
+        combo.setEditable(false);
         GridData data = new GridData(GridData.FILL_HORIZONTAL);
         data.minimumWidth = MINIMUM_WIDTH;
         combo.setLayoutData(data);
@@ -316,7 +317,7 @@ public class PromptDialog extends Dialog {
         } else {
             combo.select(0);
         }
-
+        parameter.setInternalValue(combo.getText());
         combo.addModifyListener(new ModifyListener() {
 
             public void modifyText(ModifyEvent e) {
