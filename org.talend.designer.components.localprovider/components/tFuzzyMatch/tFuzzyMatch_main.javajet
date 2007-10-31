@@ -38,7 +38,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	boolean caseSens = caseS.equals("true");
 	String separator = ElementParameterParser.getValue(node, "__ITEMSEPARATOR__");
 	String lookUpColumn = ElementParameterParser.getValue(node, "__LOOKUP_COLUMN__");
-	lookUpColumn = lookUpColumn.substring(lookUpColumn.indexOf(".") + 1);
 
     List< ? extends IConnection> conns = node.getIncomingConnections();
     IConnection inRefCon = null;
