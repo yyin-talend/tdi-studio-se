@@ -9,6 +9,7 @@
     AUTHOR="Talend"
     RELEASE_DATE="20050320A"
     STARTABLE="true"
+	HAS_CONDITIONAL_OUTPUTS="true"    
   >
     <SIGNATURE/>
   </HEADER>
@@ -19,6 +20,7 @@
 
   <CONNECTORS>
     <CONNECTOR CTYPE="FLOW" MAX_INPUT="0"/>
+    <CONNECTOR NAME="REJECT" CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="1" LINE_STYLE="2" COLOR="FF0000" BASE_SCHEMA="FLOW" />    
     <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="1" MAX_INPUT="1"/>
     <CONNECTOR CTYPE="THEN_RUN" MAX_INPUT="1"/>
     <CONNECTOR CTYPE="REFERENCE"/>
@@ -33,7 +35,7 @@
       NAME="PROPERTY"
       FIELD="PROPERTY_TYPE"
       SHOW="true"
-      NUM_ROW="1"
+      NUM_ROW="10"
       REPOSITORY_VALUE="REGEX"
     >
       <DEFAULT/>
@@ -42,7 +44,7 @@
     <PARAMETER
       NAME="FILENAME"
       FIELD="FILE"
-      NUM_ROW="2"
+      NUM_ROW="20"
       REQUIRED="true"
       REPOSITORY_VALUE="FILE_PATH"
     >
@@ -52,7 +54,7 @@
     <PARAMETER
       NAME="ROWSEPARATOR"
       FIELD="TEXT"
-      NUM_ROW="3"
+      NUM_ROW="30"
       REPOSITORY_VALUE="ROW_SEPARATOR"
     >
       <DEFAULT>"\n"</DEFAULT>
@@ -61,7 +63,7 @@
     <PARAMETER
       NAME="REGEX"
       FIELD="MEMO"
-      NUM_ROW="4"
+      NUM_ROW="40"
       REPOSITORY_VALUE="REGEXP"
     >
       <DEFAULT>"^"+
@@ -77,7 +79,7 @@
     <PARAMETER
       NAME="HEADER"
       FIELD="TEXT"
-      NUM_ROW="5"
+      NUM_ROW="50"
       REPOSITORY_VALUE="HEADER"
     >
       <DEFAULT>0</DEFAULT>
@@ -86,7 +88,7 @@
     <PARAMETER
       NAME="FOOTER"
       FIELD="TEXT"
-      NUM_ROW="5"
+      NUM_ROW="50"
       REPOSITORY_VALUE="FOOTER"
     >
       <DEFAULT>0</DEFAULT>
@@ -95,35 +97,56 @@
     <PARAMETER
       NAME="LIMIT"
       FIELD="TEXT"
-      NUM_ROW="5"
+      NUM_ROW="50"
       REPOSITORY_VALUE="LIMIT"
     >
       <DEFAULT/>
     </PARAMETER>
+    
+    <PARAMETER
+      NAME="REMOVE_EMPTY_ROW"
+      FIELD="CHECK"
+      REQUIRED="true"
+      NUM_ROW="55"
+      REPOSITORY_VALUE="REMOVE_EMPTY_ROW"
+    >
+      <DEFAULT>true</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="DIE_ON_ERROR"
+      FIELD="CHECK"
+      NUM_ROW="55"
+    >
+      <DEFAULT>true</DEFAULT>
+    </PARAMETER>        
 
     <PARAMETER
       NAME="SCHEMA"
       FIELD="SCHEMA_TYPE"
       REQUIRED="true"
-      NUM_ROW="6"
+      NUM_ROW="60"
     >
       <DEFAULT/> 
     </PARAMETER>
-
+    
     <PARAMETER
-      NAME="REMOVE_EMPTY_ROW"
-      FIELD="CHECK"
+      NAME="SCHEMA_REJECT"
+      FIELD="SCHEMA_TYPE"
       REQUIRED="true"
-      NUM_ROW="7"
-      REPOSITORY_VALUE="REMOVE_EMPTY_ROW"
-    >
-      <DEFAULT>true</DEFAULT>
-    </PARAMETER>
+      NUM_ROW="60"
+      CONTEXT="REJECT"
+      SHOW="true">
+      <TABLE READONLY="true">
+        <COLUMN NAME="errorCode" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
+        <COLUMN NAME="errorMessage" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
+      </TABLE>
+    </PARAMETER>    
 
     <PARAMETER
       NAME="ENCODING"
       FIELD="ENCODING_TYPE"
-      NUM_ROW="8"
+      NUM_ROW="80"
       REQUIRED="true"
       REPOSITORY_VALUE="ENCODING"
     >

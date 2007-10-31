@@ -9,6 +9,7 @@
     AUTHOR="Talend"
     RELEASE_DATE="20050320A"
     STARTABLE="true"
+	HAS_CONDITIONAL_OUTPUTS="true"    
   >
     <SIGNATURE />
   </HEADER>
@@ -19,6 +20,7 @@
 
   <CONNECTORS>
     <CONNECTOR CTYPE="FLOW" MAX_INPUT="0" />
+    <CONNECTOR NAME="REJECT" CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="1" LINE_STYLE="2" COLOR="FF0000" BASE_SCHEMA="FLOW" />    
     <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="1" MAX_INPUT="1" />
     <CONNECTOR CTYPE="THEN_RUN" MAX_INPUT="1"/>
     <CONNECTOR CTYPE="REFERENCE" />
@@ -31,7 +33,7 @@
     <PARAMETER
       NAME="FILENAME"
       FIELD="FILE"
-      NUM_ROW="2"
+      NUM_ROW="20"
       REQUIRED="true"
     >
       <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/in.xls"</DEFAULT>
@@ -40,7 +42,7 @@
     <PARAMETER
       NAME="SHEETNAME"
       FIELD="TEXT"
-      NUM_ROW="3"
+      NUM_ROW="30"
       REQUIRED="true"
     >
       <DEFAULT>"Sheet1"</DEFAULT>
@@ -49,7 +51,7 @@
     <PARAMETER
       NAME="HEADER"
       FIELD="TEXT"
-      NUM_ROW="4"
+      NUM_ROW="40"
     >
       <DEFAULT>0</DEFAULT>
     </PARAMETER>
@@ -57,7 +59,7 @@
     <PARAMETER
       NAME="FOOTER"
       FIELD="TEXT"
-      NUM_ROW="4"
+      NUM_ROW="40"
     >
       <DEFAULT>0</DEFAULT>
     </PARAMETER>
@@ -65,7 +67,7 @@
     <PARAMETER
       NAME="LIMIT"
       FIELD="TEXT"
-      NUM_ROW="4"
+      NUM_ROW="40"
     >
       <DEFAULT />
     </PARAMETER>
@@ -73,7 +75,7 @@
     <PARAMETER
       NAME="FIRST_COLUMN"
       FIELD="TEXT"
-      NUM_ROW="5"
+      NUM_ROW="50"
     >
       <DEFAULT>1</DEFAULT>
     </PARAMETER>
@@ -81,22 +83,43 @@
     <PARAMETER
       NAME="LAST_COLUMN"
       FIELD="TEXT"
-      NUM_ROW="5"
+      NUM_ROW="50"
     >
       <DEFAULT/>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="DIE_ON_ERROR"
+      FIELD="CHECK"
+      NUM_ROW="48"
+    >
+      <DEFAULT>true</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
       NAME="SCHEMA"
       FIELD="SCHEMA_TYPE"
       REQUIRED="true"
-      NUM_ROW="6"
+      NUM_ROW="60"
     />
+    
+    <PARAMETER
+      NAME="SCHEMA_REJECT"
+      FIELD="SCHEMA_TYPE"
+      REQUIRED="true"
+      NUM_ROW="60"
+      CONTEXT="REJECT"
+      SHOW="true">
+      <TABLE READONLY="true">
+        <COLUMN NAME="errorCode" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
+        <COLUMN NAME="errorMessage" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
+      </TABLE>
+    </PARAMETER>    
 
     <PARAMETER
       NAME="ENCODING"
       FIELD="ENCODING_TYPE"
-      NUM_ROW="7"
+      NUM_ROW="70"
       REQUIRED="true"
     >
       <DEFAULT>"ISO-8859-15"</DEFAULT>

@@ -22,7 +22,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     if (metadata!=null) {
         // component id
         String cid = node.getUniqueName();
-        String filename = ElementParameterParser.getValue(node,"__FILENAME__");       
+        String filename = ElementParameterParser.getValue(node,"__FILENAME__"); 
+    	String dieOnErrorStr = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
+		boolean dieOnError = (dieOnErrorStr!=null&&!dieOnErrorStr.equals(""))?dieOnErrorStr.equals("true"):false;               
         List<IMetadataColumn> listColumns = metadata.getListColumns();         
 %>
 ///////////////////////////////////
@@ -94,17 +96,45 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 // for output
 <%
 	List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
+
+    String rejectConnName = "";
+    List<? extends IConnection> rejectConns = node.getOutgoingConnections("REJECT");
+    if(rejectConns != null && rejectConns.size() > 0) {
+        IConnection rejectConn = rejectConns.get(0);
+        rejectConnName = rejectConn.getName();
+    }
+    List<IMetadataColumn> rejectColumnList = null;
+    IMetadataTable metadataTable = node.getMetadataFromConnector("REJECT");
+    if(metadataTable != null) {
+        rejectColumnList = metadataTable.getListColumns();      
+    }
+
+    	if (conns!=null) {
+    		if (conns.size()>0) {
+    			for (int i=0;i<conns.size();i++) {
+    				IConnection connTemp = conns.get(i);
+    				if (connTemp.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+%>
+    		<%=connTemp.getName() %> = null;			
+<%
+    				}
+    			}
+    		}
+    	}
+    	
 	String firstConnName = "";
 	if (conns!=null) {//1
 		if (conns.size()>0) {//2
 		
 			IConnection conn = conns.get(0); //the first connection
-			firstConnName = conn.getName();			
+			firstConnName = cid;		
 			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {//3
 
 				%>
 
-			
+			boolean whetherReject_<%=cid %> = false;
+			<%=conn.getName() %>Struct <%=firstConnName %> = new <%=conn.getName() %>Struct();
+			try {			
 <%
 			List<IMetadataColumn> columns=metadata.getListColumns();
 			int columnSize = columns.size();
@@ -120,45 +150,90 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
 					if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) { //String or Object
 %>
-					<%=conn.getName() %>.<%=column.getLabel() %> = results_<%=cid %>[<%=i %>];
+					<%=firstConnName %>.<%=column.getLabel() %> = results_<%=cid %>[<%=i %>];
 <%
 					} else if(javaType == JavaTypesManager.DATE) { //Date
 %>
-					<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(results_<%=cid %>[<%=i %>], <%= patternValue %>);
+					<%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(results_<%=cid %>[<%=i %>], <%= patternValue %>);
 <%
 					} else if(javaType == JavaTypesManager.BYTE_ARRAY) { //byte[]
 %>
-					<%=conn.getName() %>.<%=column.getLabel() %> = results_<%=cid %>[<%=i %>].getBytes();
+					<%=firstConnName %>.<%=column.getLabel() %> = results_<%=cid %>[<%=i %>].getBytes();
 	
 <%
 					} else  { //other
 %>						
-					<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(results_<%=cid %>[<%=i %>]);
+					<%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(results_<%=cid %>[<%=i %>]);
 <%
 					}
 %>
 			
 			} else { 
 			
-					<%=conn.getName() %>.<%=column.getLabel() %> = <%=JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate)%>;
+					<%=firstConnName %>.<%=column.getLabel() %> = <%=JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate)%>;
 			}
 			
 			
 <%			
-			} //4
+			} //4%>
+			
+    } catch (Exception e) {
+        whetherReject_<%=cid%> = true;
+        <%
+        if (dieOnError) {
+            %>
+            throw(e);
+            <%
+        } else {
+            if(!rejectConnName.equals("")&& rejectColumnList != null && rejectColumnList.size() > 0) {
+
+                %>
+                    <%=rejectConnName %> = new <%=rejectConnName %>Struct();
+                <%
+                for(IMetadataColumn column : metadata.getListColumns()) {
+                    %>
+                    <%=rejectConnName%>.<%=column.getLabel()%> = <%=firstConnName%>.<%=column.getLabel()%>;
+                    <%
+                }
+                %>
+                <%=rejectConnName%>.errorMessage = e.getMessage();
+                <%
+            } else {
+                %>
+                System.err.print(e.getMessage());
+                <%
+            }
+        } 
+        %>
+    }
+			
+<%
 		}//3
 		
 		
-		if (conns.size()>1) {
-			for (int i=1;i<conns.size();i++) {
-				IConnection conn2 = conns.get(i);
-				if ((conn2.getName().compareTo(firstConnName)!=0)&&(conn2.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA))) {
-			    	for (IMetadataColumn column: metadata.getListColumns()) {%>
-      			<%=conn2.getName() %>.<%=column.getLabel() %> = <%=firstConnName %>.<%=column.getLabel() %>;
-				 <%
+		if (conns.size()>0) {
+%>
+        if(!whetherReject_<%=cid%>) {
+<%		
+			for (int i=0;i<conns.size();i++) {
+				conn = conns.get(i);
+				if ((conn.getName().compareTo(rejectConnName)!=0)&&(conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA))) {
+%>
+                     
+             if(<%=conn.getName() %> == null){ 
+            	 <%=conn.getName() %> = new <%=conn.getName() %>Struct();
+             }				
+<%
+			    	 for (IMetadataColumn column: metadata.getListColumns()) {
+%>
+	    	 <%=conn.getName() %>.<%=column.getLabel() %> = <%=firstConnName %>.<%=column.getLabel() %>;    				
+<%
 				 	}
 				}
 			}
+%>
+		}	
+<%
 		}
 		
 		

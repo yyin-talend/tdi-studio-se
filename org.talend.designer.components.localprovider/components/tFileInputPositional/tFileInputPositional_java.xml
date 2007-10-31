@@ -10,6 +10,7 @@
     AUTHOR="Talend"
     RELEASE_DATE="20070210A"
     STARTABLE="true"
+	HAS_CONDITIONAL_OUTPUTS="true"     
   >
     <SIGNATURE/>
   </HEADER>
@@ -20,6 +21,7 @@
 
   <CONNECTORS>
     <CONNECTOR CTYPE="FLOW" MAX_INPUT="0"/>
+    <CONNECTOR NAME="REJECT" CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="1" LINE_STYLE="2" COLOR="FF0000" BASE_SCHEMA="FLOW" />    
     <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="1" MAX_INPUT="1"/>
     <CONNECTOR CTYPE="THEN_RUN" MAX_INPUT="1"/>
     <CONNECTOR CTYPE="REFERENCE"/>
@@ -122,6 +124,24 @@
     </PARAMETER>
 
     <PARAMETER
+      NAME="REMOVE_EMPTY_ROW"
+      FIELD="CHECK"
+      REQUIRED="true"
+      NUM_ROW="50"
+      REPOSITORY_VALUE="REMOVE_EMPTY_ROW"
+    >
+      <DEFAULT>true</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="DIE_ON_ERROR"
+      FIELD="CHECK"
+      NUM_ROW="65"
+    >
+      <DEFAULT>true</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
       NAME="HEADER"
       FIELD="TEXT"
       NUM_ROW="70"
@@ -156,16 +176,19 @@
     >
       <DEFAULT/> 
     </PARAMETER>
-
+    
     <PARAMETER
-      NAME="REMOVE_EMPTY_ROW"
-      FIELD="CHECK"
+      NAME="SCHEMA_REJECT"
+      FIELD="SCHEMA_TYPE"
       REQUIRED="true"
       NUM_ROW="80"
-      REPOSITORY_VALUE="REMOVE_EMPTY_ROW"
-    >
-      <DEFAULT>true</DEFAULT>
-    </PARAMETER>
+      CONTEXT="REJECT"
+      SHOW="true">
+      <TABLE READONLY="true">
+        <COLUMN NAME="errorCode" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
+        <COLUMN NAME="errorMessage" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
+      </TABLE>
+    </PARAMETER>    
 
     <PARAMETER
       NAME="ENCODING"
