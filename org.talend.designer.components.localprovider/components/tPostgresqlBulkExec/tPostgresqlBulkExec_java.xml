@@ -92,9 +92,17 @@
     </PARAMETER>
 
     <PARAMETER
+      NAME="SCHEMA"
+      FIELD="SCHEMA_TYPE"
+      NUM_ROW="7"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
       NAME="FILENAME"
       FIELD="FILE"
-      NUM_ROW="7"
+      NUM_ROW="8"
       REQUIRED="true"
     >
       <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/in.csv"</DEFAULT>
@@ -103,7 +111,7 @@
     <PARAMETER
       NAME="FIELDS_TERMINATED_BY"
       FIELD="TEXT"
-      NUM_ROW="8"
+      NUM_ROW="9"
       REQUIRED="true"
     >
       <DEFAULT>";"</DEFAULT>

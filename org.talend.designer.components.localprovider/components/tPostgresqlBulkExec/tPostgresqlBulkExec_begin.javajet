@@ -3,12 +3,34 @@ imports="
     org.talend.core.model.process.INode 
     org.talend.core.model.process.ElementParameterParser 
     org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.metadata.IMetadataColumn
+    java.util.List    
 " 
 %>
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
+List<IMetadataColumn> listColumns = null;
+List<IMetadataTable> metadataTables = node.getMetadataList();
+if(metadataTables != null && metadataTables.size() > 0) {
+    IMetadataTable metadataTable = metadataTables.get(0);
+    listColumns = metadataTable.getListColumns();
+}
+StringBuilder columns = new StringBuilder("");
+if(listColumns != null && listColumns.size() > 0) {
+    columns.append("(");
+    int i = 0;
+    for(IMetadataColumn metadataColumn : listColumns) {
+        columns.append(metadataColumn.getLabel());
+        if(i != listColumns.size() - 1) {
+            columns.append(",");
+        }
+        i++;
+    }
+    columns.append(")");
+}
 %> 
 String field_separator_<%=cid %> = <%=ElementParameterParser.getValue(node, "__FIELDS_TERMINATED_BY__") %>;
 String file_<%=cid %> = <%=ElementParameterParser.getValue(node, "__FILENAME__") %>;
@@ -20,9 +42,9 @@ String pas_<%=cid %> = <%=ElementParameterParser.getValue(node, "__PASS__") %>;
 String table_<%=cid %> = <%=ElementParameterParser.getValue(node, "__TABLE__") %>;
 
 Class.forName("org.postgresql.Driver").newInstance();
-java.sql.Connection con_<%=cid %>=java.sql.DriverManager.getConnection("jdbc:postgresql://"+host_<%=cid %>+":"+port_<%=cid %>+"/"+db_<%=cid %>, user_<%=cid %>, pas_<%=cid %>);
-java.sql.Statement stmt_<%=cid %>=con_<%=cid %>.createStatement();
+java.sql.Connection con_<%=cid %> = java.sql.DriverManager.getConnection("jdbc:postgresql://" + host_<%=cid %> + ":" + port_<%=cid %> + "/" + db_<%=cid %>, user_<%=cid %>, pas_<%=cid %>);
+java.sql.Statement stmt_<%=cid %> = con_<%=cid %>.createStatement();
 //stmt.execute("SET client_encoding to 'UNICODE'");
-stmt_<%=cid %>.execute("copy "+table_<%=cid %>+" from '"+file_<%=cid %>+"' with delimiter '"+field_separator_<%=cid %>+"'");
+stmt_<%=cid %>.execute("copy " + table_<%=cid %> + "<%=columns.toString()%>" + " from '" + file_<%=cid %> + "' with delimiter '" + field_separator_<%=cid %>+"'");
 stmt_<%=cid %>.close();
 con_<%=cid %>.close();
