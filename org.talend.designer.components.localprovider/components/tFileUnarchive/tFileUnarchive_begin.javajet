@@ -175,7 +175,7 @@
 <%
 	// iterate output
 %>
-	for (UnzippedFile_<%=cid %> uf : util_<%=cid %>.unzippedFiles) {
-		globalMap.put("<%=cid %>_CURRENT_FILE", uf.fileName);
-		globalMap.put("<%=cid %>_CURRENT_FILEPATH", uf.filePath);
+	for (UnzippedFile_<%=cid %> uf<%=cid %> : util_<%=cid %>.unzippedFiles) {
+		globalMap.put("<%=cid %>_CURRENT_FILE", uf<%=cid %>.fileName);
+		globalMap.put("<%=cid %>_CURRENT_FILEPATH", uf<%=cid %>.filePath);
 	
