@@ -10,7 +10,7 @@ imports="
     org.talend.commons.utils.StringUtils
     org.talend.core.model.process.IConnection
     org.talend.core.model.metadata.IMetadataColumn
-  	org.talend.core.model.process.IConnectionCategory
+    org.talend.core.model.process.IConnectionCategory
 "
 %>
 <%
@@ -25,84 +25,85 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         String cid = node.getUniqueName();
         List<Map<String, String>> implication =(List<Map<String,String>>)ElementParameterParser.getObjectValue(node,"__IMPLICATION__");
         List keyCols = new ArrayList();
-		for (int i=0; i<implication.size(); i++) {
+        for (int i=0; i<implication.size(); i++) {
             Map<String, String> col = implication.get(i);
             if (col.get("USE_IN_CRC").equals("true")) {
                 keyCols.add(i);
             }
         }
        List< ? extends IConnection> conns = node.getIncomingConnections();
-  %>
-    String crcComputedValue<%=cid %>="";
-  <%
-      if(conns!=null){
-   		if (conns.size()>0){
+       %>
+       Long crcComputedValue<%=cid %> = null;
+       <%
+       if(conns!=null){
+           if (conns.size()>0){
        
-       	IConnection conn =conns.get(0);
-       	List<IMetadataColumn> columns = metadata.getListColumns();
-%>
-    	StringBuffer strBuffer_<%=cid%> = new StringBuffer();
-<%
-    	for (int i = 0; i < columns.size()-1; i++) {
-    		IMetadataColumn column = columns.get(i);
-    		if(keyCols.contains(i))
-    		{
-    		
-%>
-    			strBuffer_<%=cid%>.append(<%=conn.getName() %>.<%=column.getLabel() %>);
-    			
-<%	
-  			}
-		 
-    	}
-   if(crcType.equals("crc32")){%>
-   		
-    		java.util.zip.CRC32 crc32<%=cid%> = new java.util.zip.CRC32();  
-    		crc32<%=cid%>.update(strBuffer_<%=cid%>.toString().getBytes());
-    	    crcComputedValue<%=cid %>=Long.toOctalString(crc32<%=cid%>.getValue());
- 		<%	   		
-        	}   
-       if(crcType.equals("crc8")){
+                IConnection conn =conns.get(0);
+                List<IMetadataColumn> columns = metadata.getListColumns();
+                %>
+                StringBuffer strBuffer_<%=cid%> = new StringBuffer();
+                <%
+                for (int i = 0; i < columns.size()-1; i++) {
+                    IMetadataColumn column = columns.get(i);
+                    if(keyCols.contains(i))
+                    {
+            
+                        %>
+                        strBuffer_<%=cid%>.append(<%=conn.getName() %>.<%=column.getLabel() %>);
+                
+                        <%  
+                    }
+         
+                }
+                if(crcType.equals("crc32")){
+                    %>
+        
+                    java.util.zip.CRC32 crc32<%=cid%> = new java.util.zip.CRC32();  
+                    crc32<%=cid%>.update(strBuffer_<%=cid%>.toString().getBytes());
+                    crcComputedValue<%=cid %> = new Long(crc32<%=cid%>.getValue());
+                    <%          
+                }   
+                if(crcType.equals("crc8")){
           
-   %>
-   		
-   		crcComputedValue<%=cid %>= Integer.toString(com.dalsemi.onewire.utils.CRC8.compute(strBuffer_<%=cid%>.toString().getBytes()));	
-   <%       
-          }	
-          if(crcType.equals("crc16")){
+                    %>
+        
+                    crcComputedValue<%=cid %> = new Long(com.dalsemi.onewire.utils.CRC8.compute(strBuffer_<%=cid%>.toString().getBytes())); 
+                    <%       
+                }   
+                if(crcType.equals("crc16")){
           
-    %>      
-   		crcComputedValue<%=cid %>=Integer.toString(com.dalsemi.onewire.utils.CRC16.compute(strBuffer_<%=cid%>.toString().getBytes()));		
-    <%      
-          }
-          List< ? extends IConnection> connsout = node.getOutgoingConnections(); 
-           if (connsout!=null) {
-           List<IMetadataColumn> columnsout = metadata.getListColumns();
-			 for(int i=0;i<connsout.size();i++) {
-			 	IConnection connout = connsout.get(i);
-			 if(connout.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA))
-			 	{
-			 	int columnSize=columnsout.size()-1;
-    			for (int j = 0; j < columnSize; j++) {
-    			   IMetadataColumn columnout=columnsout.get(j);
-    			   
-   %>
-   			<%=connout.getName() %>.<%=columnout.getLabel() %>=<%=conn.getName() %>.<%=columnout.getLabel() %>;
-   <% 			  
-		          }  
-		        IMetadataColumn columnout=columnsout.get(columnSize); 
-	%>
-				<%=connout.getName() %>.<%=columnout.getLabel() %>=crcComputedValue<%=cid %>;
-	<%	                
-				}
-				}
-			}
-%>
-	nb_line_<%=cid %>++;
-<%
-		}   
-     } 
-        		
-	}
+                    %>      
+                    crcComputedValue<%=cid %> = new Long(com.dalsemi.onewire.utils.CRC16.compute(strBuffer_<%=cid%>.toString().getBytes()));        
+                    <%      
+                }
+                List< ? extends IConnection> connsout = node.getOutgoingConnections(); 
+                if (connsout!=null) {
+                    List<IMetadataColumn> columnsout = metadata.getListColumns();
+                    for(int i=0;i<connsout.size();i++) {
+                        IConnection connout = connsout.get(i);
+                        if(connout.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA))
+                        {
+                            int columnSize=columnsout.size()-1;
+                            for (int j = 0; j < columnSize; j++) {
+                                IMetadataColumn columnout=columnsout.get(j);
+                   
+                                %>
+                                <%=connout.getName() %>.<%=columnout.getLabel() %>=<%=conn.getName() %>.<%=columnout.getLabel() %>;
+                                <%            
+                            }  
+                            IMetadataColumn columnout=columnsout.get(columnSize); 
+                            %>
+                            <%=connout.getName() %>.<%=columnout.getLabel() %>=crcComputedValue<%=cid %>;
+                            <%                  
+                        }
+                    }
+                }
+                %>
+                nb_line_<%=cid %>++;
+                <%
+           }   
+       } 
+                
+    }
 }
 %>
