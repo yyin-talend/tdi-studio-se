@@ -21,32 +21,25 @@
 // ============================================================================
 package org.talend.designer.core.ui.views.statsandlogs;
 
-import java.util.List;
-
 import org.eclipse.draw2d.GridData;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
-import org.talend.core.language.LanguageManager;
 import org.talend.core.model.process.Element;
-import org.talend.core.model.process.IElementParameter;
-import org.talend.designer.core.DesignerPlugin;
-import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.TalendEditor;
 import org.talend.designer.core.ui.editor.process.Process;
@@ -55,10 +48,6 @@ import org.talend.designer.core.ui.editor.properties.process.StatsAndLogsTabProp
 
 /**
  * class global comment. Detailed comment <br/>
- * 
- */
-/**
- * DOC Administrator class global comment. Detailed comment <br/>
  * 
  */
 public class StatsAndLogsView extends ViewPart {
@@ -113,7 +102,12 @@ public class StatsAndLogsView extends ViewPart {
      * @param parent
      */
     private void createEmptyPartControl(Composite parent) {
-        // Do nothing.
+        Composite alertComposite = new Composite(parent, SWT.NONE);
+        alertComposite.setLayout(new GridLayout());
+        alertComposite.setLayoutData(new GridData());
+        Text alertText = new Text(alertComposite, SWT.NONE);
+        alertText.setText("A Stats/Logs is not available.");
+        alertText.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
     }
 
     /**
@@ -122,28 +116,39 @@ public class StatsAndLogsView extends ViewPart {
      * @param parent
      */
     private void createFullPartControl(Composite parentComposite) {
-        this.parent.setVisible(true);
 
-        parentComposite.setLayout(new GridLayout());
-        parentComposite.setBackground(new Color(null, 255, 255, 255));//White color
+        parentComposite.setLayout(new FillLayout());
+        ScrolledComposite scrolledComposite = new ScrolledComposite(parentComposite, SWT.H_SCROLL | SWT.V_SCROLL);
+
+        Composite mainComposite = new Composite(scrolledComposite, SWT.NONE);
+        scrolledComposite.setContent(mainComposite);
+        mainComposite.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));// White color
+        mainComposite.setLayout(new GridLayout(1, true));
         GridData data = new GridData(GridData.FILL_BOTH);
-        parentComposite.setLayoutData(data);
+        mainComposite.setLayoutData(data);
 
-        Composite topComposite = new Composite(parentComposite, SWT.NONE);
+        Composite topComposite = new Composite(mainComposite, SWT.NONE);
         topComposite.setLayout(new GridLayout(2, false));
+        topComposite.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));// White color
 
-        reloadBtn = new Button(topComposite, SWT.NONE);
-        reloadBtn.setText("&Reload");
+        reloadBtn = new Button(topComposite, SWT.PUSH);
+        reloadBtn.setText("&Reload from preferences");
         reloadBtn.setToolTipText("Reload values from preference page(Shift+R)");
 
-        saveBtn = new Button(topComposite, SWT.NONE);
-        saveBtn.setText("&Save");
+        saveBtn = new Button(topComposite, SWT.PUSH);
+        saveBtn.setText("&Save to preferences");
         saveBtn.setToolTipText("save values to preference page(Shift+S)");
 
         addButtonListeners();
 
-        createStatsAndLogsComposite();
+        createStatsAndLogsComposite(mainComposite);
 
+        mainComposite.setSize(mainComposite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+
+        scrolledComposite.setExpandHorizontal(true);
+        scrolledComposite.setExpandVertical(true);
+        scrolledComposite.setMinWidth(800);
+        scrolledComposite.setMinHeight(400);
     }
 
     /**
@@ -151,16 +156,15 @@ public class StatsAndLogsView extends ViewPart {
      * 
      * @param parentComposite
      */
-    private void createStatsAndLogsComposite() {
-        statsAndLogsViewComposite = new Composite(this.parent, SWT.NONE);
+    private void createStatsAndLogsComposite(Composite mainComposite) {
+        statsAndLogsViewComposite = new Composite(mainComposite, SWT.BORDER);
         statsAndLogsViewComposite.setLayout(new FormLayout());
-        statsAndLogsViewComposite.setBackground(new Color(null, 255, 255, 255));//White color
+        statsAndLogsViewComposite.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));// White color
     }
 
     /**
-     * ftang Comment method "refreshStatsAndLogsView".
+     * ftang Comment method "createStatsAndLogsView".
      * 
-     * @param bottomComosite
      */
     public void createStatsAndLogsView() {
         this.parent.setVisible(true);
@@ -176,14 +180,23 @@ public class StatsAndLogsView extends ViewPart {
             StructuredSelection sel = new StructuredSelection(part);
             section.setInput(activeEditor, sel);
 
-            if (this.statsAndLogsViewComposite == null) {
-                Control[] children = this.parent.getChildren();
-                for (Control control : children) {
-                    control.dispose();
-                }
-                createFullPartControl(this.parent);
-            }
+            Control[] children = this.parent.getChildren();
+            disposeControls(children);
+
+            createFullPartControl(this.parent);
             section.setComposite(this.statsAndLogsViewComposite);
+            this.parent.getParent().layout(true, true);
+        }
+    }
+
+    /**
+     * ftang Comment method "disposeControls".
+     * 
+     * @param children
+     */
+    private void disposeControls(Control[] children) {
+        for (Control control : children) {
+                control.dispose();
         }
     }
 
@@ -242,15 +255,7 @@ public class StatsAndLogsView extends ViewPart {
     @Override
     public void setFocus() {
         this.parent.setFocus();
-    }
-
-    /**
-     * Gets preferenceStore for getting value from preference page.
-     * 
-     * @return
-     */
-    private IPreferenceStore getPreferenceStore() {
-        return DesignerPlugin.getDefault().getPreferenceStore();
+        // this.statsAndLogsViewComposite.setFocus();
     }
 
     /**
@@ -292,10 +297,23 @@ public class StatsAndLogsView extends ViewPart {
     }
 
     /**
-     * DOC Administrator Comment method "emptyView".
+     * Empty view if no job is opened.
      */
     public void emptyView() {
-        this.parent.setVisible(false);
+//        this.parent.setVisible(false);
+        Control[] children = this.parent.getChildren();
+        disposeControls(children);
+        createEmptyPartControl(parent);
+        this.parent.getParent().layout(true,true);
+    }
+
+    /**
+     * ftang Comment method "refreshView".
+     */
+    public void refreshView() {
+        if (!this.isEmptyComposite) {
+            this.section.refresh();
+        }
     }
 
 }

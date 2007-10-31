@@ -21,7 +21,11 @@
 // ============================================================================
 package org.talend.designer.core.ui.preferences;
 
+import java.io.File;
+
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.gmf.runtime.common.ui.preferences.CheckBoxFieldEditor;
+import org.eclipse.gmf.runtime.notation.Location;
 import org.eclipse.jface.preference.DirectoryFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -36,6 +40,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.talend.commons.utils.workbench.preferences.ComboFieldEditor;
 import org.talend.core.language.ECodeLanguage;
+import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
 
@@ -149,12 +154,23 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
                 EParameterName.ON_FILES_FLAG.getDisplayName(), parent);
         filePathField = new DirectoryFieldEditor(languagePrefix + EParameterName.FILE_PATH.getName(),
                 EParameterName.FILE_PATH.getDisplayName(), parent);
+      
+        
         statsFileNameField = new StringFieldEditor(languagePrefix + EParameterName.FILENAME_STATS.getName(),
                 EParameterName.FILENAME_STATS.getDisplayName(), parent);
+        
+        statsFileNameField.getTextControl(parent).setText(TalendTextUtils.addQuotes("stats_file.txt"));
+        
+        
         logsFileNameField = new StringFieldEditor(languagePrefix + EParameterName.FILENAME_LOGS.getName(),
                 EParameterName.FILENAME_LOGS.getDisplayName(), parent);
+        
+        logsFileNameField.getTextControl(parent).setText(TalendTextUtils.addQuotes("logs_file.txt"));
+        
         metterFileNameField = new StringFieldEditor(languagePrefix + EParameterName.FILENAME_METTER.getName(),
                 EParameterName.FILENAME_METTER.getDisplayName(), parent);
+        
+        metterFileNameField.getTextControl(parent).setText(TalendTextUtils.addQuotes("metter_file.txt"));
 
         onDatabaseField = new CheckBoxFieldEditor(languagePrefix + EParameterName.ON_DATABASE_FLAG.getName(),
                 EParameterName.ON_DATABASE_FLAG.getDisplayName(), parent);
@@ -347,6 +363,7 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
      * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
      */
     public void init(IWorkbench workbench) {
+
     }
 
 }

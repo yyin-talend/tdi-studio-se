@@ -22,6 +22,8 @@
 package org.talend.designer.core.ui.editor.properties.controllers;
 
 import java.beans.PropertyChangeEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.jface.fieldassist.DecoratedField;
 import org.eclipse.jface.fieldassist.FieldDecoration;
@@ -29,19 +31,25 @@ import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.jface.fieldassist.TextControlCreator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
+import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
 import org.talend.designer.core.ui.editor.properties.controllers.creator.SelectAllTextControlCreator;
+import org.talend.designer.core.ui.views.statsandlogs.StatsAndLogsViewHelper;
 
 /**
  * DOC yzhang class global comment. Detailled comment <br/>
@@ -176,10 +184,16 @@ public class TextController extends AbstractElementPropertySectionController {
 
     @Override
     public void refresh(IElementParameter param, boolean checkErrorsWhenViewRefreshed) {
-        Text labelText = (Text) hashCurControls.get(param.getName());
+        String paramName = param.getName();
+        Text labelText = (Text) hashCurControls.get(paramName);
         if (labelText == null || labelText.isDisposed()) {
             return;
         }
+
+        Color red = Display.getCurrent().getSystemColor(SWT.COLOR_RED);
+        Color white = Display.getCurrent().getSystemColor(SWT.COLOR_WHITE);
+        boolean isFieNameStr = false;
+
         Object value = param.getValue();
         boolean valueChanged = false;
         if (value == null) {
@@ -190,9 +204,52 @@ public class TextController extends AbstractElementPropertySectionController {
                 valueChanged = true;
             }
         }
+
+        // Only for statsandlogs View.
+        if (param.getCategory() == EComponentCategory.STATSANDLOGS) {
+            if (value instanceof String) {
+                String str = (String) value;
+
+                List<String> fileNameList = new ArrayList<String>();
+
+                fileNameList.add(EParameterName.FILENAME_LOGS.getName());
+                fileNameList.add(EParameterName.FILENAME_METTER.getName());
+                fileNameList.add(EParameterName.FILENAME_STATS.getName());
+
+                String removedQuotesStr = TalendTextUtils.removeQuotes(str);
+
+                isFieNameStr = fileNameList.contains(paramName);
+                if (str == null || removedQuotesStr.length() == 0) {
+                    setTextErrorInfo(labelText, red);
+                } else if (isFieNameStr && !removedQuotesStr.matches(StatsAndLogsViewHelper.FILE_NAME_REGEX)
+                        && (!str.equals(EParameterName.FILE_PATH.getName()))) {
+                    setTextErrorInfo(labelText, red);
+                }
+
+                else if (!removedQuotesStr.matches(StatsAndLogsViewHelper.OTHER_FILE_NAME_REGEX)) {
+                    setTextErrorInfo(labelText, red);
+                } else {
+                    labelText.setBackground(white);
+                    labelText.setToolTipText("");
+                }
+            }
+        }
+
         if (checkErrorsWhenViewRefreshed || valueChanged) {
             checkErrorsForPropertiesOnly(labelText);
         }
         fixedCursorPosition(param, labelText, value, valueChanged);
+
+    }
+
+    /**
+     * DOC Administrator Comment method "setTextErrorInfo".
+     * 
+     * @param labelText
+     * @param red
+     */
+    private void setTextErrorInfo(Text labelText, Color red) {
+        labelText.setBackground(red);
+        labelText.setToolTipText("Value is invalid");
     }
 }

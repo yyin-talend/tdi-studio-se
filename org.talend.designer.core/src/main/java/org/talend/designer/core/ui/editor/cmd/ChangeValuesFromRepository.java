@@ -198,7 +198,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
         IViewPart view = page.findView(StatsAndLogsView.ID); 
        if (view != null) {
             StatsAndLogsView statsAndLogsView = (StatsAndLogsView) view;
-            statsAndLogsView.refresh();
+            statsAndLogsView.refreshView();
         }
     }
 

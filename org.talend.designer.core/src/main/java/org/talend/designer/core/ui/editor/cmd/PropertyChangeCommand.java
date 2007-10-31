@@ -112,7 +112,7 @@ public class PropertyChangeCommand extends Command {
         IViewPart view = page.findView(StatsAndLogsView.ID); 
        if (view != null) {
             StatsAndLogsView statsAndLogsView = (StatsAndLogsView) view;
-            statsAndLogsView.refresh();
+            statsAndLogsView.refreshView();
         }
     }
 
@@ -136,7 +136,8 @@ public class PropertyChangeCommand extends Command {
         } else {
             repositoryValueWasUsed = false;
         }
-
+        
+        
         oldValue = elem.getPropertyValue(propName);
         elem.setPropertyValue(propName, newValue);
 

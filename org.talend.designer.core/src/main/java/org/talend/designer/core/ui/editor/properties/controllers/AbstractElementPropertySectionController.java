@@ -47,6 +47,7 @@ import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
@@ -71,6 +72,7 @@ import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.Problem;
 import org.talend.core.model.process.Problem.ProblemStatus;
+import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.ui.proposal.ProcessProposalUtils;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
@@ -84,6 +86,8 @@ import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.properties.ContextParameterExtractor;
 import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
 import org.talend.designer.core.ui.editor.properties.OpenSQLBuilderDialogJob;
+import org.talend.designer.core.ui.views.statsandlogs.StatsAndLogsView;
+import org.talend.designer.core.ui.views.statsandlogs.StatsAndLogsViewHelper;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.sqlbuilder.util.ConnectionParameters;
 import org.talend.sqlbuilder.util.EConnectionParameterName;
@@ -153,8 +157,8 @@ public abstract class AbstractElementPropertySectionController implements Proper
      * @return. The control created by this method will be the paramenter of next be called createControl method for
      * position calculate.
      */
-    public abstract Control createControl(final Composite subComposite, final IElementParameter param, final int numInRow,
-            final int nbInRow, final int top, final Control lastControl);
+    public abstract Control createControl(final Composite subComposite, final IElementParameter param,
+            final int numInRow, final int nbInRow, final int top, final Control lastControl);
 
     public abstract int estimateRowSize(final Composite subComposite, final IElementParameter param);
 
@@ -362,7 +366,8 @@ public abstract class AbstractElementPropertySectionController implements Proper
                         if (control instanceof Text) {
                             ContextParameterExtractor.saveContext(parameterName, elem, ((Text) control).getText());
                         } else if (control instanceof StyledText) {
-                            ContextParameterExtractor.saveContext(parameterName, elem, ((StyledText) control).getText());
+                            ContextParameterExtractor
+                                    .saveContext(parameterName, elem, ((StyledText) control).getText());
                         }
                     }
                 });
@@ -497,8 +502,8 @@ public abstract class AbstractElementPropertySectionController implements Proper
             boolean isRequired = elem.getElementParameter(getParameterName(control)).isRequired();
             if (problems != null) {
                 if (isRequired && (valueFinal == null || valueFinal.trim().length() == 0)) {
-                    problems.add(new Problem(null,
-                            Messages.getString("AbstractElementPropertySectionController.fieldRequired"), ProblemStatus.ERROR)); //$NON-NLS-1$
+                    problems.add(new Problem(null, Messages
+                            .getString("AbstractElementPropertySectionController.fieldRequired"), ProblemStatus.ERROR)); //$NON-NLS-1$
                 }
             }
 
@@ -599,8 +604,48 @@ public abstract class AbstractElementPropertySectionController implements Proper
                 public void addNewCommand(Control control) {
                     String name = getParameterName(control);
                     String text = ControlUtils.getText(control);
-                    Command cmd = getTextCommandForHelper(name, text);
-                    getCommandStack().execute(cmd);
+
+                    Color red = Display.getCurrent().getSystemColor(SWT.COLOR_RED);
+                    Color white = Display.getCurrent().getSystemColor(SWT.COLOR_WHITE);
+
+                    List<String> fileNameList = new ArrayList<String>();
+
+                    fileNameList.add(EParameterName.FILENAME_LOGS.getName());
+                    fileNameList.add(EParameterName.FILENAME_METTER.getName());
+                    fileNameList.add(EParameterName.FILENAME_STATS.getName());
+
+                    String removedQuotesStr = TalendTextUtils.removeQuotes(text);
+
+                    boolean isStatsAndLogsViewOpened = (section == EComponentCategory.STATSANDLOGS);
+
+                    Text labelText = (Text) control;
+                    if (fileNameList.contains(name)) {
+                        if (text == null || removedQuotesStr.length() == 0) {
+                            setTextErrorInfo(labelText, red);
+                        } else if (!removedQuotesStr.matches(StatsAndLogsViewHelper.FILE_NAME_REGEX)) {
+                            setTextErrorInfo(labelText, red);
+                        } else {
+                            labelText.setBackground(white);
+                            labelText.setToolTipText("");
+
+                            Command cmd = getTextCommandForHelper(name, text);
+                            getCommandStack().execute(cmd);
+                        }
+                    } else if (isStatsAndLogsViewOpened && (!name.equals(EParameterName.FILE_PATH.getName()))) {
+                        if (text == null || removedQuotesStr.length() == 0) {
+                            setTextErrorInfo(labelText, red);
+                        }
+
+                        else if (!removedQuotesStr.matches(StatsAndLogsViewHelper.OTHER_FILE_NAME_REGEX)) {
+                            setTextErrorInfo(labelText, red);
+                        } else {
+                            Command cmd = getTextCommandForHelper(name, text);
+                            getCommandStack().execute(cmd);
+                        }
+                    } else {
+                        Command cmd = getTextCommandForHelper(name, text);
+                        getCommandStack().execute(cmd);
+                    }
                 }
 
                 @Override
@@ -786,7 +831,8 @@ public abstract class AbstractElementPropertySectionController implements Proper
     protected void fixedCursorPosition(IElementParameter param, Control labelText, Object value, boolean valueChanged) {
         IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
         IWorkbenchPart workbenchPart = page.getActivePart();
-        if (workbenchPart instanceof PropertySheet) {
+
+        if ((workbenchPart instanceof PropertySheet) || (workbenchPart instanceof StatsAndLogsView)) {
             Object control = editionControlHelper.undoRedoHelper.typedTextCommandExecutor.getActiveControl();
             if (param.getName().equals(control) && valueChanged && !param.isRepositoryValueUsed()) {
                 String previousText = editionControlHelper.undoRedoHelper.typedTextCommandExecutor.getPreviousText2();
@@ -835,8 +881,8 @@ public abstract class AbstractElementPropertySectionController implements Proper
     }
 
     public void openSqlBuilderBuildIn(final ConnectionParameters connParameters, final String propertyName) {
-        OpenSQLBuilderDialogJob openDialogJob = new OpenSQLBuilderDialogJob(connParameters, composite, elem, propertyName,
-                getCommandStack(), this);
+        OpenSQLBuilderDialogJob openDialogJob = new OpenSQLBuilderDialogJob(connParameters, composite, elem,
+                propertyName, getCommandStack(), this);
 
         IWorkbenchSiteProgressService siteps = (IWorkbenchSiteProgressService) part.getSite().getAdapter(
                 IWorkbenchSiteProgressService.class);
@@ -866,7 +912,8 @@ public abstract class AbstractElementPropertySectionController implements Proper
 
         String port = setConnectionParameter(element, connParameters, EConnectionParameterName.PORT.getName());
         connParameters.setPort(port);
-        String datasource = setConnectionParameter(element, connParameters, EConnectionParameterName.DATASOURCE.getName());
+        String datasource = setConnectionParameter(element, connParameters, EConnectionParameterName.DATASOURCE
+                .getName());
         connParameters.setDatasource(datasource);
 
         String dbName = setConnectionParameter(element, connParameters, EConnectionParameterName.SID.getName());
@@ -879,13 +926,14 @@ public abstract class AbstractElementPropertySectionController implements Proper
         String realTableName = null;
         if (EmfComponent.REPOSITORY.equals(elem.getPropertyValue(EParameterName.SCHEMA_TYPE.getName()))) {
             final Object propertyValue = elem.getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
-            final IMetadataTable metadataTable = dynamicTabbedPropertySection.getRepositoryTableMap().get(propertyValue);
+            final IMetadataTable metadataTable = dynamicTabbedPropertySection.getRepositoryTableMap()
+                    .get(propertyValue);
             if (metadataTable != null) {
                 realTableName = metadataTable.getTableName();
             }
         }
-        connParameters
-                .setSchemaName(QueryUtil.getTableName(elem, connParameters.getMetadataTable(), schema, type, realTableName));
+        connParameters.setSchemaName(QueryUtil.getTableName(elem, connParameters.getMetadataTable(), schema, type,
+                realTableName));
 
     }
 
@@ -900,8 +948,8 @@ public abstract class AbstractElementPropertySectionController implements Proper
         connParameters.setFieldType(paramFieldType);
         connParameters.setMetadataTable(((Node) elem).getMetadataList().get(0));
 
-        connParameters.setSchemaRepository(EmfComponent.REPOSITORY.equals(elem.getPropertyValue(EParameterName.SCHEMA_TYPE
-                .getName())));
+        connParameters.setSchemaRepository(EmfComponent.REPOSITORY.equals(elem
+                .getPropertyValue(EParameterName.SCHEMA_TYPE.getName())));
         connParameters.setFromDBNode(true);
 
         connParameters.setQuery("");
@@ -968,6 +1016,17 @@ public abstract class AbstractElementPropertySectionController implements Proper
         if (paraNameFromRepositoryName != null) {
             connParameters.getRepositoryNameParaName().put(repositoryName, paraNameFromRepositoryName);
         }
+    }
+
+    /**
+     * DOC Administrator Comment method "setTextErrorInfo".
+     * 
+     * @param labelText
+     * @param red
+     */
+    private void setTextErrorInfo(Text labelText, Color red) {
+        labelText.setBackground(red);
+        labelText.setToolTipText("Value is invalid");
     }
 
 }
