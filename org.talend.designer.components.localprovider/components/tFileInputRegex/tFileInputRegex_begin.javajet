@@ -172,7 +172,7 @@
 								/** begin **/
 							} else if(javaType == JavaTypesManager.BYTE_ARRAY) { 
 								/** end **/
-								%><%=firstConnName %>.<%=column.getLabel() %> = value<%=cid %>[<%=valueN%>].getBytes();<%
+								%><%=firstConnName %>.<%=column.getLabel() %> = value<%=cid %>[<%=valueN%>].getBytes(<%=encoding%>);<%
 								/** begin **/
 							} else {
 								/** end **/

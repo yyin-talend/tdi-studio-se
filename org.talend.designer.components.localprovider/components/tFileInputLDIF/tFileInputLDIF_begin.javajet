@@ -23,6 +23,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         // component id
         String cid = node.getUniqueName();
         String filename = ElementParameterParser.getValue(node,"__FILENAME__"); 
+        String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
     	String dieOnErrorStr = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
 		boolean dieOnError = (dieOnErrorStr!=null&&!dieOnErrorStr.equals(""))?dieOnErrorStr.equals("true"):false;               
         List<IMetadataColumn> listColumns = metadata.getListColumns();         
@@ -158,7 +159,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
 					} else if(javaType == JavaTypesManager.BYTE_ARRAY) { //byte[]
 %>
-					<%=firstConnName %>.<%=column.getLabel() %> = results_<%=cid %>[<%=i %>].getBytes();
+					<%=firstConnName %>.<%=column.getLabel() %> = results_<%=cid %>[<%=i %>].getBytes(<%=encoding%>);
 	
 <%
 					} else  { //other

@@ -295,7 +295,7 @@ while (reader_<%=cid %>.readRecord()) {
 <%
 						}else if(javaType == JavaTypesManager.BYTE_ARRAY) {
 %>
-		<%=firstConnName %>.<%=column.getLabel() %> = column_<%=cid %>.getBytes();
+		<%=firstConnName %>.<%=column.getLabel() %> = column_<%=cid %>.getBytes(<%=encoding%>);
 <%
 							} else {
 %>
@@ -372,7 +372,7 @@ while (reader_<%=cid %>.readRecord()) {
 <%
 							}else if(javaType == JavaTypesManager.BYTE_ARRAY) {
 %>	
-		<%=firstConnName %>.<%=column.getLabel() %> = columnValue<%=cid %>[<%=valueN%>].getBytes();
+		<%=firstConnName %>.<%=column.getLabel() %> = columnValue<%=cid %>[<%=valueN%>].getBytes(<%=encoding%>);
 <%
 							} else {
 %>	

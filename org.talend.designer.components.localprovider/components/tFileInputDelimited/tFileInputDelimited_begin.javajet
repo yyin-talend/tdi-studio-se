@@ -128,7 +128,7 @@ if(temp_<%=cid %>.length() > 0) {
 <%
 					if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
 					} else if(javaType == JavaTypesManager.BYTE_ARRAY){ 
-%><%=firstConnName %>.<%=column.getLabel() %> = temp_<%=cid %>.getBytes();
+%><%=firstConnName %>.<%=column.getLabel() %> = temp_<%=cid %>.getBytes(<%=encoding%>);
 <%
 					}else if(javaType == JavaTypesManager.DATE) { 
 %><%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(temp_<%=cid %>, <%= patternValue %>);
