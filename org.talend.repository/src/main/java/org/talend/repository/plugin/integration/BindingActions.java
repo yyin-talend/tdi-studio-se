@@ -42,7 +42,7 @@ import org.talend.core.CorePlugin;
  * $Id: BoundingActions.java 下午04:56:43 2007-10-24 +0000 (2007-10-24) yzhang $
  * 
  */
-public class BoundingActions implements IStartup {
+public class BindingActions implements IStartup {
 
     private final List<IAction> actions = new ArrayList<IAction>();
 
