@@ -36,7 +36,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 String splitEvery = ElementParameterParser.getValue(node, "__SPLIT_EVERY__");
                 
                 //mark the main group in groupTable
-                if(loopTable.size() > 0){
+                if(loopTable.size() > 0 && groupTable.size()>0){
+                    ArrayList<Map<String, String>> newGroupList = new ArrayList<Map<String, String>>();
                     String loopPath=loopTable.get(0).get("PATH");
                     boolean isMainGroupAttribute = false;
                     for(Map<String, String> map:groupTable){
@@ -44,15 +45,41 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                     		if(isMainGroupAttribute){
                     			map.put("TYPE","Group");
                     		}
-                    	}else{
+                    	}else if(map.get("ATTRIBUTE").equals("false")){
                     		if( loopPath.startsWith(map.get("PATH"))){
                     			map.put("TYPE","Main");
+                    			newGroupList.add(map);
                     			isMainGroupAttribute = true;
                     		}else{
                     			isMainGroupAttribute = false;
                     		}
                     	}
                     }
+                    
+                    for (int i = newGroupList.size() - 1; i >= 0; i--) {
+                        boolean isNeedAdd = false;
+                        int index = i;
+                        String checkPath = newGroupList.get(i).get("PATH");
+                        for (Map<String, String> map : groupTable) {
+                            if (map.get("ATTRIBUTE").equals("false")) {
+                                if (map.get("PATH").startsWith(checkPath) && map.get("TYPE") == null) {
+                                    if (!newGroupList.contains(map)) {
+                                        isNeedAdd = true;
+                                        newGroupList.add(++index, map);
+                                    }
+                                } else if (map.get("PATH").equals(checkPath)) {
+                                    isNeedAdd = true;
+                                } else {
+                                    isNeedAdd = false;
+                                }
+                            } else {
+                                if (isNeedAdd) {
+                                    newGroupList.add(++index, map);
+                                }
+                            }
+                        }
+                    }
+                    groupTable = newGroupList;
                 }
 %>
 	nb_line_<%=cid%>++;
@@ -109,6 +136,28 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 							}else{
 %>
 		<%=currEleName%>_<%=cid%>.addAttribute("<%=path%>","");
+<%
+							}
+						}
+					}else if (map.get("ATTRIBUTE").equals("ns")) {
+                        if(isRootAttribute){ //it is the attirbute of root
+                        	if(value!=null){
+%>
+		doc_<%=cid%>.getRootElement().addNamespace("<%=path%>",<%=value%>==null?"\"\"":<%=value%>.toString());
+<%
+							}else{
+%>
+		doc_<%=cid%>.getRootElement().addNamespace("<%=path%>","");
+<%
+							}
+						}else{
+							if(value!=null){
+%>
+		<%=currEleName%>_<%=cid%>.addNamespace("<%=path%>",<%=value%>==null?"\"\"":<%=value%>.toString());
+<%
+							}else{
+%>
+		<%=currEleName%>_<%=cid%>.addNamespace("<%=path%>","");
 <%
 							}
 						}
@@ -195,6 +244,16 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 						}else{
 %>
 	<%=currEleName%>_<%=cid%>.addAttribute("<%=path%>","");
+<%
+						}
+					}else if (map.get("ATTRIBUTE").equals("ns")) {
+                    	if(value!=null){
+%>
+	<%=currEleName%>_<%=cid%>.addNamespace("<%=path%>",<%=value%>==null?"\"\"":<%=value%>.toString());
+<%
+						}else{
+%>
+	<%=currEleName%>_<%=cid%>.addNamespace("<%=path%>","");
 <%
 						}
                     }else{
@@ -327,6 +386,16 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 						}else{
 %>
 	<%=currEleName%>_<%=cid%>.addAttribute("<%=path%>","");
+<%
+						}
+					}else if (map.get("ATTRIBUTE").equals("ns")) {
+                     	if(value!=null){
+%>
+	<%=currEleName%>_<%=cid%>.addNamespace("<%=path%>",<%=value%>==null?"\"\"":<%=value%>.toString());
+<%
+						}else{
+%>
+	<%=currEleName%>_<%=cid%>.addNamespace("<%=path%>","");
 <%
 						}
                     }else{
