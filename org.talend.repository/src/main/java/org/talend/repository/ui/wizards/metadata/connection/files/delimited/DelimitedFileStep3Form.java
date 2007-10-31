@@ -387,7 +387,8 @@ public class DelimitedFileStep3Form extends AbstractDelimitedFileStepForm {
                             label[i] = fields[i].trim().replaceAll(" ", "_"); //$NON-NLS-1$ //$NON-NLS-2$
                             label[i] = ColumnNameValidator.validateColumnNameFormat(label[i], i);
                         } else {
-                            label[i] = Messages.getString("FileStep3.column") + " " + i; //$NON-NLS-1$ //$NON-NLS-2$
+                            // label[i] = Messages.getString("FileStep3.column") + " " + i; //$NON-NLS-1$ //$NON-NLS-2$
+                            label[i] = Messages.getString("FileStep3.column") + i;
                         }
                     } else {// current field size is less than bigest column size
                         if (i < fields.length) {
