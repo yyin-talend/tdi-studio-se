@@ -618,7 +618,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
 
                     boolean isStatsAndLogsViewOpened = (section == EComponentCategory.STATSANDLOGS);
 
-                    //some text are ColorStyledText
+                    // some texts are ColorStyledText
                     if (control instanceof Text) {
                         Text labelText = (Text) control;
                         if (fileNameList.contains(name)) {
@@ -644,6 +644,9 @@ public abstract class AbstractElementPropertySectionController implements Proper
                                 Command cmd = getTextCommandForHelper(name, text);
                                 getCommandStack().execute(cmd);
                             }
+                        } else {
+                            Command cmd = getTextCommandForHelper(name, text);
+                            getCommandStack().execute(cmd);
                         }
                     } else {
                         Command cmd = getTextCommandForHelper(name, text);
