@@ -618,29 +618,32 @@ public abstract class AbstractElementPropertySectionController implements Proper
 
                     boolean isStatsAndLogsViewOpened = (section == EComponentCategory.STATSANDLOGS);
 
-                    Text labelText = (Text) control;
-                    if (fileNameList.contains(name)) {
-                        if (text == null || removedQuotesStr.length() == 0) {
-                            setTextErrorInfo(labelText, red);
-                        } else if (!removedQuotesStr.matches(StatsAndLogsViewHelper.FILE_NAME_REGEX)) {
-                            setTextErrorInfo(labelText, red);
-                        } else {
-                            labelText.setBackground(white);
-                            labelText.setToolTipText("");
+                    //some text are ColorStyledText
+                    if (control instanceof Text) {
+                        Text labelText = (Text) control;
+                        if (fileNameList.contains(name)) {
+                            if (text == null || removedQuotesStr.length() == 0) {
+                                setTextErrorInfo(labelText, red);
+                            } else if (!removedQuotesStr.matches(StatsAndLogsViewHelper.FILE_NAME_REGEX)) {
+                                setTextErrorInfo(labelText, red);
+                            } else {
+                                labelText.setBackground(white);
+                                labelText.setToolTipText("");
 
-                            Command cmd = getTextCommandForHelper(name, text);
-                            getCommandStack().execute(cmd);
-                        }
-                    } else if (isStatsAndLogsViewOpened && (!name.equals(EParameterName.FILE_PATH.getName()))) {
-                        if (text == null || removedQuotesStr.length() == 0) {
-                            setTextErrorInfo(labelText, red);
-                        }
+                                Command cmd = getTextCommandForHelper(name, text);
+                                getCommandStack().execute(cmd);
+                            }
+                        } else if (isStatsAndLogsViewOpened && (!name.equals(EParameterName.FILE_PATH.getName()))) {
+                            if (text == null || removedQuotesStr.length() == 0) {
+                                setTextErrorInfo(labelText, red);
+                            }
 
-                        else if (!removedQuotesStr.matches(StatsAndLogsViewHelper.OTHER_FILE_NAME_REGEX)) {
-                            setTextErrorInfo(labelText, red);
-                        } else {
-                            Command cmd = getTextCommandForHelper(name, text);
-                            getCommandStack().execute(cmd);
+                            else if (!removedQuotesStr.matches(StatsAndLogsViewHelper.OTHER_FILE_NAME_REGEX)) {
+                                setTextErrorInfo(labelText, red);
+                            } else {
+                                Command cmd = getTextCommandForHelper(name, text);
+                                getCommandStack().execute(cmd);
+                            }
                         }
                     } else {
                         Command cmd = getTextCommandForHelper(name, text);
