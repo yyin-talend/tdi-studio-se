@@ -39,6 +39,7 @@ import org.talend.core.model.process.INodeConnector;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.action.ActivateElementAction;
 import org.talend.designer.core.ui.action.ActivateSubjobAction;
+import org.talend.designer.core.ui.action.ActivateSubjobOneComponentAction;
 import org.talend.designer.core.ui.action.BringForwardAction;
 import org.talend.designer.core.ui.action.BringToFrontAction;
 import org.talend.designer.core.ui.action.ConnectionCreateAction;
@@ -120,6 +121,11 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
                 menu.appendToGroup(GEFActionConstants.GROUP_REST, action);
             }
 
+            action = new ActivateSubjobOneComponentAction(part);
+            ((ActivateSubjobOneComponentAction) action).update();
+            if (action.isEnabled()) {
+                menu.appendToGroup(GEFActionConstants.GROUP_REST, action);
+            }
             action = getAction(ConnectionSetAsMainRef.ID);
             if (action.isEnabled()) {
                 menu.appendToGroup(GEFActionConstants.GROUP_REST, action);

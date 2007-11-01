@@ -1681,7 +1681,7 @@ public class Process extends Element implements IProcess {
     }
 
     @SuppressWarnings("unchecked")//$NON-NLS-1$
-    private void setActivateSubjob(Node node, boolean active, Node activateNode) {
+    private void setActivateSubjob(Node node, boolean active, Node activateNode, boolean oneComponent) {
         Node mainSubProcess = node.getSubProcessStartNode(false);
 
         // if the selected node is the start node, then everything will be
@@ -1691,18 +1691,26 @@ public class Process extends Element implements IProcess {
                 if (connec.getSource().isActivate() != active) {
                     if (connec.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
                         if (connec.getSource().getSubProcessStartNode(false).isActivate() != active) {
-                            setActivateSubjob(connec.getSource().getSubProcessStartNode(false), active, activateNode);
+                            setActivateSubjob(connec.getSource().getSubProcessStartNode(false), active, activateNode,
+                                    oneComponent);
                         }
                     }
                 }
             }
             node.setPropertyValue(EParameterName.ACTIVATE.getName(), new Boolean(active));
             for (Connection connec : (List<Connection>) node.getOutgoingConnections()) {
-                if (connec.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+                if (!oneComponent) {
                     if (connec.getTarget().isActivate() != active) {
-                        setActivateSubjob(connec.getTarget(), active, activateNode);
+                        setActivateSubjob(connec.getTarget(), active, activateNode, oneComponent);
+                    }
+                } else {
+                    if (connec.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+                        if (connec.getTarget().isActivate() != active) {
+                            setActivateSubjob(connec.getTarget(), active, activateNode, oneComponent);
+                        }
                     }
                 }
+
             }
 
         } else {
@@ -1711,14 +1719,14 @@ public class Process extends Element implements IProcess {
                 for (Connection connec : (List<Connection>) node.getIncomingConnections()) {
                     if (connec.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
                         if (connec.getSource().isActivate() != active) {
-                            setActivateSubjob(connec.getSource(), active, activateNode);
+                            setActivateSubjob(connec.getSource(), active, activateNode, oneComponent);
                         }
                     }
                 }
                 for (Connection connec : (List<Connection>) node.getOutgoingConnections()) {
                     if (connec.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
                         if (connec.getTarget().isActivate() != active) {
-                            setActivateSubjob(connec.getTarget(), active, activateNode);
+                            setActivateSubjob(connec.getTarget(), active, activateNode, oneComponent);
                         }
                     }
                 }
@@ -1727,11 +1735,11 @@ public class Process extends Element implements IProcess {
         }
     }
 
-    public void setActivateSubjob(Node node, boolean active) {
+    public void setActivateSubjob(Node node, boolean active, boolean oneComponent) {
         // desactive first the process to avoid to check the process during the
         // activation / desactivation
         setActivate(false);
-        setActivateSubjob(node, active, node);
+        setActivateSubjob(node, active, node, oneComponent);
         // now that everything is set, reactivate the process
         setActivate(true);
     }

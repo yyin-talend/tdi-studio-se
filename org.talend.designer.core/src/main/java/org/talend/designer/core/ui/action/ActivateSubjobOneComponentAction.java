@@ -37,19 +37,15 @@ import org.talend.designer.core.ui.editor.nodes.NodePart;
  * $Id: NodeSetActivateAction.java 3351 2007-05-04 12:14:00 +0000 (ven., 04 mai 2007) plegall $
  * 
  */
-public class ActivateSubjobAction extends SelectionAction {
+public class ActivateSubjobOneComponentAction extends SelectionAction {
 
     public static final String ID = "org.talend.designer.core.ui.editor.action.NodeSetActivateAction"; //$NON-NLS-1$
-
-    private static final String TEXT_SET_ACTIVATE_COMPLETE = Messages.getString("ActivateSubjobAction.ActivateComplete"); //$NON-NLS-1$
-
-    private static final String TEXT_REM_ACTIVATE_COMPLETE = Messages.getString("ActivateSubjobAction.DeactivateComplete"); //$NON-NLS-1$
 
     private static final String TEXT_SET_ACTIVATE_PART = Messages.getString("ActivateSubjobAction.ActivatePart"); //$NON-NLS-1$
 
     private static final String TEXT_REM_ACTIVATE_PART = Messages.getString("ActivateSubjobAction.DeactivatePart"); //$NON-NLS-1$
 
-    public ActivateSubjobAction(IWorkbenchPart part) {
+    public ActivateSubjobOneComponentAction(IWorkbenchPart part) {
         super(part);
         setId(ID);
     }
@@ -79,27 +75,23 @@ public class ActivateSubjobAction extends SelectionAction {
                 return false;
             }
             Node node = (Node) part.getModel();
+
             if (node.isReadOnly()) {
                 return false;
             }
             if (node.getPropertyValue(EParameterName.ACTIVATE.getName()) == null) {
                 return false;
             }
-
-            if (node.isStart()) {
-                if (node.isActivate()) {
-                    setText(TEXT_REM_ACTIVATE_COMPLETE);
-                } else {
-                    setText(TEXT_SET_ACTIVATE_COMPLETE);
-                }
-            } else {
+            if (node.isSubProcessStart() && node.isStart()) {
                 if (node.isActivate()) {
                     setText(TEXT_REM_ACTIVATE_PART);
                 } else {
                     setText(TEXT_SET_ACTIVATE_PART);
                 }
+                return true;
+            } else {
+                return false;
             }
-            return true;
         }
         return false;
     }
@@ -115,7 +107,7 @@ public class ActivateSubjobAction extends SelectionAction {
             NodePart part = (NodePart) editparts.get(0);
 
             ChangeActivateStatusSubjobCommand changeActivateStatusCommand = new ChangeActivateStatusSubjobCommand((Node) part
-                    .getModel(), false);
+                    .getModel(), true);
             execute(changeActivateStatusCommand);
         }
     }

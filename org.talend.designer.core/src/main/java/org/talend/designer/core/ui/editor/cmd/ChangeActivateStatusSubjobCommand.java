@@ -43,13 +43,16 @@ public class ChangeActivateStatusSubjobCommand extends Command {
 
     private boolean value;
 
+    private boolean oneComponent;
+
     /**
      * Gives the node where the status will be set or removed.
      * 
      * @param newStartNode
      */
-    public ChangeActivateStatusSubjobCommand(Node node) {
+    public ChangeActivateStatusSubjobCommand(Node node, boolean oneComponent) {
         this.node = node;
+        this.oneComponent = oneComponent;
         if (node.isStart()) {
             if (node.isActivate()) {
                 value = false;
@@ -83,7 +86,7 @@ public class ChangeActivateStatusSubjobCommand extends Command {
 
     public void execute() {
         Process process = (Process) node.getProcess();
-        process.setActivateSubjob(node, value);
+        process.setActivateSubjob(node, value, oneComponent);
         process.checkStartNodes();
         process.checkProcess();
         refreshPropertyView();
@@ -91,7 +94,7 @@ public class ChangeActivateStatusSubjobCommand extends Command {
 
     public void undo() {
         Process process = (Process) node.getProcess();
-        process.setActivateSubjob(node, !value);
+        process.setActivateSubjob(node, !value, oneComponent);
         process.checkStartNodes();
         process.checkProcess();
         refreshPropertyView();
