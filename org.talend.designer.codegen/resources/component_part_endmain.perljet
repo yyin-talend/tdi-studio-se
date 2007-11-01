@@ -6,6 +6,7 @@
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
         boolean trace =  codeGenArgument.isTrace();
+        int pauseTime = codeGenArgument.getPauseTime()/1000;
 %>
 # +-------------------------------------------------------------------------+
 # | [                                                                       |
@@ -14,7 +15,7 @@
 <%
 if (trace) {
 %>
-sleep 2 if defined $opt{trace_port};
+sleep <%=pauseTime%> if defined $opt{trace_port};
 <%
 }
 %>

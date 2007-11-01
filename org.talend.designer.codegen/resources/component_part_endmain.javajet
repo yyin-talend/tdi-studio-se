@@ -10,12 +10,19 @@
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
 	boolean trace =  codeGenArgument.isTrace();
+	int pauseTime = codeGenArgument.getPauseTime();
 %>
 
 <%
 if ((trace)&&(node!=null)&&(!node.isThereLinkWithHash())) {
 %>
-Thread.sleep(2000);
+if (runTrace.isPause()) {
+   while (runTrace.isPause()) {
+   	Thread.sleep(100);
+   };
+} else {
+   Thread.sleep(<%=pauseTime%>);
+}
 <%
 }
 %>

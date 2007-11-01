@@ -54,8 +54,10 @@ public class CodeGeneratorArgument {
     private ECodePart codePart;
 
     String incomingName;
-    
+
     private boolean isRunInMultiThread;
+
+    private int pauseTime;
 
     /**
      * Constructor.
@@ -199,13 +201,29 @@ public class CodeGeneratorArgument {
         return incomingName;
     }
 
-    
     public boolean getIsRunInMultiThread() {
         return this.isRunInMultiThread;
     }
 
-    
     public void setIsRunInMultiThread(boolean isRunInMultiThread) {
         this.isRunInMultiThread = isRunInMultiThread;
+    }
+
+    /**
+     * Getter for pauseTime.
+     * 
+     * @return the pauseTime
+     */
+    public int getPauseTime() {
+        return this.pauseTime;
+    }
+
+    /**
+     * Sets the pauseTime.
+     * 
+     * @param pauseTime the pauseTime to set
+     */
+    public void setPauseTime(int pauseTime) {
+        this.pauseTime = pauseTime;
     }
 }
