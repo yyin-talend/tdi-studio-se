@@ -10,234 +10,278 @@ imports="
 %>
 
 <% 
-    CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
-    INode node = (INode)codeGenArgument.getArgument();
-    String cid = node.getUniqueName();	
-	if(ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("false")) {	
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-%>
-
-<%
-
-List<IMetadataTable> metadatas = node.getMetadataList();
-if ((metadatas!=null)&&(metadatas.size()>0)) {
-    IMetadataTable metadata = metadatas.get(0);
-    if (metadata!=null) {
-
-        String filename = ElementParameterParser.getValueWithUIFieldKey(
-            node,
-            "__FILENAME__",
-            "FILENAME"
-        );
-        
-        String prefixfileName = filename.substring(0,filename.lastIndexOf("."));
-        String suffixfileName=filename.substring(filename.lastIndexOf("."),filename.length());
-        
-        String fieldSeparator = ElementParameterParser.getValueWithUIFieldKey(
-            node,
-            "__FIELDSEPARATOR__",
-            "FIELDSEPARATOR"
-        );
-        
-        String rowSeparator = ElementParameterParser.getValueWithUIFieldKey(
-            node,
-            "__ROWSEPARATOR__",
-            "ROWSEPARATOR"
-        );
-        
-        String encoding = ElementParameterParser.getValue(
-            node,
-            "__ENCODING__"
-        );
-        
-        boolean isAppend = ElementParameterParser.getValue(
-            node,
-            "__APPEND__"
-        ).equals("true");
-        
-        boolean isIncludeHeader = ElementParameterParser.getValue(
-            node,
-            "__INCLUDEHEADER__"
-        ).equals("true");
-		String fileNewname = ElementParameterParser.getValue(node,"__FILENAME__");
-		
-		boolean split = ElementParameterParser.getValue(node, "__SPLIT__").equals("true");
-        String splitEvery = ElementParameterParser.getValue(node, "__SPLIT_EVERY__");
-%>
-		int nb_line_<%=cid%> = 0;
-        int splitEvery_<%=cid%> = <%=splitEvery %>;
-        int splitedFileNo_<%=cid%> =0;
-        int currentRow_<%=cid%> = 0;		
-		
-		final String OUT_DELIM_<%=cid %> = <%=fieldSeparator %>;
-		
-		final String OUT_DELIM_ROWSEP_<%=cid %> = <%=rowSeparator %>;
-  <%if(ElementParameterParser.getValue(node,"__CREATE__").equals("true")){%>
-//create directory only if not exists
-		 String fileNewName_<%=cid%> = <%=fileNewname%>;
-		 java.io.File createFile<%=cid%> = new java.io.File(fileNewName_<%=cid%>);
-		 if(!createFile<%=cid%>.exists()){
-		 	(new java.io.File(fileNewName_<%=cid%>.substring(0,fileNewName_<%=cid%>.lastIndexOf("/")))).mkdirs();
-		 }
-<%}%>
-
-<% 	
-	if(!split){
-%>		
-		java.io.BufferedWriter out<%=cid %> = new java.io.BufferedWriter(new java.io.OutputStreamWriter(
-        		new java.io.FileOutputStream(<%=filename %>, <%= isAppend%>),<%= encoding%>));
-        java.io.File file<%=cid%>=new java.io.File(<%=filename %>);
-<% } else {
- 		if(filename.startsWith("\"") && filename.endsWith("\"")){
-%>
-
-		java.io.BufferedWriter out<%=cid %> = new java.io.BufferedWriter(new java.io.OutputStreamWriter(
-        		new java.io.FileOutputStream(<%=prefixfileName %>"+splitedFileNo_<%=cid%>+"<%=suffixfileName%>, <%= isAppend%>),<%= encoding%>));
-       java.io.File file<%=cid%>=new java.io.File(<%=prefixfileName %>"+splitedFileNo_<%=cid%>+"<%=suffixfileName%>);	  
-<%
- 		}else{
-%>
-		String fn_<%=cid%> = <%=filename %>;
-		String prefix_fn_<%=cid%> = fn_<%=cid%>.substring(0,fn_<%=cid%>.lastIndexOf("."));
-		String suffix_fn_<%=cid%>=fn_<%=cid%>.substring(fn_<%=cid%>.lastIndexOf("."),fn_<%=cid%>.length());
-		java.io.BufferedWriter out<%=cid %> = new java.io.BufferedWriter(new java.io.OutputStreamWriter(
-        		new java.io.FileOutputStream(prefix_fn_<%=cid%>+splitedFileNo_<%=cid%>+suffix_fn_<%=cid%>, <%= isAppend%>),<%= encoding%>));
-        java.io.File file<%=cid%>=new java.io.File(prefix_fn_<%=cid%>+splitedFileNo_<%=cid%>+suffix_fn_<%=cid%>);	  
-<%
- 		}
-    }
-%>
-        		
-<%
-		if(isIncludeHeader){
-%>
-     	  if(file<%=cid%>.length()==0)  
-     	  {
-<%		
-    		List<IMetadataColumn> columns = metadata.getListColumns();
-    		int sizeColumns = columns.size();
-    		for (int i = 0; i < sizeColumns; i++) {
-    			IMetadataColumn column = columns.get(i);
-    		%>
-    			out<%=cid %>.write("<%=column.getLabel() %>");
-    		<%
-    			if(i != sizeColumns - 1) {
-    				%>out<%=cid %>.write(OUT_DELIM_<%=cid %>);<%
-    			}
-    		}%>
-    		out<%=cid %>.write(OUT_DELIM_ROWSEP_<%=cid %>);
-    	  }	
-<%
-		}
-    }
-}
-%>
-
-<%
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-}else{//the following is the tFileOutputCSV component
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-%>
-
-<%
-
-List<IMetadataTable> metadatas = node.getMetadataList();
-if ((metadatas!=null)&&(metadatas.size()>0)) {
-    IMetadataTable metadata = metadatas.get(0);
-    if (metadata!=null) {
-        String filename = ElementParameterParser.getValue(node,"__FILENAME__");
-        String prefixfileName = filename.substring(0,filename.lastIndexOf("."));
-        String suffixfileName=filename.substring(filename.lastIndexOf("."),filename.length());
-        String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
-		String delim1 = ElementParameterParser.getValue(node, "__FIELDSEPARATOR__");
-    	String delim = delim1.substring(1,delim1.length()-1);
-    	boolean isAppend = ElementParameterParser.getValue(node,"__APPEND__").equals("true");
-    	boolean isIncludeHeader = ElementParameterParser.getValue(node,"__INCLUDEHEADER__").equals("true");
-    	boolean split = ElementParameterParser.getValue(node, "__SPLIT__").equals("true");
-        String splitEvery = ElementParameterParser.getValue(node, "__SPLIT_EVERY__");
- %>        
- int nb_line_<%=cid%> = 0;
- int splitEvery_<%=cid%> = <%=splitEvery %>;
- int splitedFileNo_<%=cid%> =0;
- int currentRow_<%=cid%> = 0;
-   <%if(ElementParameterParser.getValue(node,"__CREATE__").equals("true")){%>
-	 //create directory only if not exists
-	 String fileNewName_<%=cid%> = <%=filename%>;
-	 java.io.File createFile<%=cid%> = new java.io.File(fileNewName_<%=cid%>);
-	 if(!createFile<%=cid%>.exists()){
-	 	(new java.io.File(fileNewName_<%=cid%>.substring(0,fileNewName_<%=cid%>.lastIndexOf("/")))).mkdirs();
-	 }
-
-<%
-	}
-	
- 	if(!split){
-%>
-    com.csvreader.CsvWriter CsvWriter<%=cid%>=new com.csvreader.CsvWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(
-                new java.io.FileOutputStream(<%=filename %>,<%= isAppend%>),<%=encoding %>)), '<%=delim %>');  
-                java.io.File file<%=cid%>=new java.io.File(<%=filename%>);	
-<%
- 	}else{
- 		if(filename.startsWith("\"") && filename.endsWith("\"")){
-%>
-	  com.csvreader.CsvWriter CsvWriter<%=cid%>=new com.csvreader.CsvWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(
-                new java.io.FileOutputStream(<%=prefixfileName %>"+splitedFileNo_<%=cid%>+"<%=suffixfileName%>,<%= isAppend%>),<%=encoding %>)), '<%=delim %>');
-                java.io.File file<%=cid%>=new java.io.File(<%=prefixfileName %>"+splitedFileNo_<%=cid%>+"<%=suffixfileName%>);	  
-<%
- 		}else{
-%>
-		String fn_<%=cid%> = <%=filename %>;
-		String prefix_fn_<%=cid%> = fn_<%=cid%>.substring(0,fn_<%=cid%>.lastIndexOf("."));
-		String suffix_fn_<%=cid%>=fn_<%=cid%>.substring(fn_<%=cid%>.lastIndexOf("."),fn_<%=cid%>.length());
-	  	com.csvreader.CsvWriter CsvWriter<%=cid%>=new com.csvreader.CsvWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(
-        	new java.io.FileOutputStream(prefix_fn_<%=cid%>+splitedFileNo_<%=cid%>+suffix_fn_<%=cid%>,<%= isAppend%>),<%=encoding %>)), '<%=delim %>');
-        java.io.File file<%=cid%>=new java.io.File(prefix_fn_<%=cid%>+splitedFileNo_<%=cid%>+suffix_fn_<%=cid%>);	  
-<%
- 		}
-    }
-    List<IMetadataColumn> columns = metadata.getListColumns();
-    	int sizeColumns = columns.size();
-   %>
-   		String[] headColu<%=cid%>=new String[<%=sizeColumns%>];
-   <% 		
- 		  if(isIncludeHeader&&!isAppend)
- 		  {
- 		  	for(int i = 0; i < sizeColumns; i++)
-    		{
-    			IMetadataColumn column = columns.get(i);
- %>
-   				headColu<%=cid%>[<%=i%>]="<%=column.getLabel() %>";
-   <%
-    		}
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();	
+if(ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("false")) {	
+// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     %>
-    		CsvWriter<%=cid%>.writeRecord(headColu<%=cid%>);	
-    <%		
- 		  }
- 		   if(isIncludeHeader&&isAppend)
- 		   {
- 		   
- 	%>		   
-     	      if(file<%=cid%>.length()==0)  
-     	      {
-    <%			
-     			for(int i = 0; i < sizeColumns; i++)
-    			{
-    				IMetadataColumn column = columns.get(i);
-     %>	      	
-     	     	headColu<%=cid%>[<%=i%>]="<%=column.getLabel() %>";
-     <%
-     			}
-      %>	 
-      		CsvWriter<%=cid%>.writeRecord(headColu<%=cid%>);    	
-     	      }
- 
- <%		  } 
-    	}
+
+    <%
+    
+    List<IMetadataTable> metadatas = node.getMetadataList();
+    if ((metadatas!=null)&&(metadatas.size()>0)) {
+        IMetadataTable metadata = metadatas.get(0);
+        if (metadata!=null) {
+            String fileName = ElementParameterParser.getValue(node,"__FILENAME__");
+            String fullName = null;
+            String extensionName = null;
+            String directoryName = null;
+            if(fileName != null && !fileName.equals("") && !fileName.equals("\"\"")) {
+                if(fileName.startsWith("\"") && fileName.endsWith("\"")) {
+                    fileName = fileName.substring(1,fileName.length() - 1);
+                } else {
+                    fileName = fileName.replaceAll("\"","");
+                }
+            } else {
+                fileName = "";
+            }
+            if(fileName.indexOf("/") == -1) {
+                if(fileName.lastIndexOf(".") == -1) {
+                    fullName = fileName;
+                    extensionName = "";
+                    directoryName = "";
+                } else {
+                    fullName = fileName.substring(0, fileName.lastIndexOf("."));
+                    extensionName = fileName.substring(fileName.lastIndexOf("."), fileName.length());
+                    directoryName = "";
+                }
+            } else {
+                String simpleName = fileName.replaceAll(".*[^/]+((/+).*)", "$1");
+                if(simpleName.lastIndexOf(".") != -1) {
+                    fullName = fileName.substring(0, fileName.lastIndexOf(simpleName)) + simpleName.substring(0, simpleName.lastIndexOf("."));
+                    extensionName = simpleName.substring(simpleName.lastIndexOf("."), simpleName.length());
+                } else {
+                    fullName = fileName;
+                    extensionName = "";
+                }
+                directoryName = fileName.substring(0,fileName.lastIndexOf(simpleName));
+            }    
+            
+            String fieldSeparator = ElementParameterParser.getValueWithUIFieldKey(
+                node,
+                "__FIELDSEPARATOR__",
+                "FIELDSEPARATOR"
+            );
+            
+            String rowSeparator = ElementParameterParser.getValueWithUIFieldKey(
+                node,
+                "__ROWSEPARATOR__",
+                "ROWSEPARATOR"
+            );
+            
+            String encoding = ElementParameterParser.getValue(
+                node,
+                "__ENCODING__"
+            );
+            
+            boolean isAppend = ElementParameterParser.getValue(
+                node,
+                "__APPEND__"
+            ).equals("true");
+            
+            boolean isIncludeHeader = ElementParameterParser.getValue(
+                node,
+                "__INCLUDEHEADER__"
+            ).equals("true");
+    		String fileNewname = ElementParameterParser.getValue(node,"__FILENAME__");
+    		
+    		boolean split = ElementParameterParser.getValue(node, "__SPLIT__").equals("true");
+            String splitEvery = ElementParameterParser.getValue(node, "__SPLIT_EVERY__");
+            %>
+    		int nb_line_<%=cid%> = 0;
+            int splitEvery_<%=cid%> = <%=splitEvery %>;
+            int splitedFileNo_<%=cid%> = 0;
+            int currentRow_<%=cid%> = 0;		
+    		
+    		final String OUT_DELIM_<%=cid %> = <%=fieldSeparator %>;
+    		
+    		final String OUT_DELIM_ROWSEP_<%=cid %> = <%=rowSeparator %>;
+    		<%
+    		if(ElementParameterParser.getValue(node,"__CREATE__").equals("true")){
+    		    // create directory only if not exists
+    		    if(directoryName != null && directoryName.trim().length() != 0) {
+    		        %>
+    		        java.io.File directory_<%=cid%> = new java.io.File("<%=directoryName%>");
+    		        if(!directory_<%=cid%>.exists()) {
+    		            directory_<%=cid%>.mkdirs();
+    		        }
+    		        <%
+    		    }
+    		}
+    		%>
+    
+    		<% 	
+    		if(!split){
+    		    %>		
+    		    java.io.BufferedWriter out<%=cid %> = new java.io.BufferedWriter(new java.io.OutputStreamWriter(
+            		new java.io.FileOutputStream("<%=fileName%>", <%=isAppend%>),<%=encoding%>));
+    		    java.io.File file<%=cid%> = new java.io.File("<%=fileName%>");
+    		    <% 
+    		} else {
+    		    %>
+                java.io.BufferedWriter out<%=cid %> = new java.io.BufferedWriter(new java.io.OutputStreamWriter(
+                        new java.io.FileOutputStream("<%=fullName%>" + splitedFileNo_<%=cid%> + "<%=extensionName%>", <%=isAppend%>),<%=encoding%>));
+                java.io.File file<%=cid%> = new java.io.File("<%=fullName%>" + splitedFileNo_<%=cid%> + "<%=extensionName%>");
+                <%
+    		}
+    		%>
+            		
+    		<%
+    		if(isIncludeHeader){
+    		    %>
+    		    if(file<%=cid%>.length()==0)  
+    		    {
+    		        <%		
+    		        List<IMetadataColumn> columns = metadata.getListColumns();
+    		        int sizeColumns = columns.size();
+    		        for (int i = 0; i < sizeColumns; i++) {
+    		            IMetadataColumn column = columns.get(i);
+    		            %>
+    		            out<%=cid %>.write("<%=column.getLabel() %>");
+    		            <%
+    		            if(i != sizeColumns - 1) {
+    		                %>
+    		                out<%=cid %>.write(OUT_DELIM_<%=cid %>);
+    		                <%
+    		            }
+    		        }
+    		        %>
+    		        out<%=cid %>.write(OUT_DELIM_ROWSEP_<%=cid %>);
+    		    }	
+    		    <%
+    		}
+        }
     }
-%>
+    %>
+
+<%
+// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+}else{// the following is the tFileOutputCSV component
+// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    %>
+
+    <%
+    
+    List<IMetadataTable> metadatas = node.getMetadataList();
+    if ((metadatas!=null)&&(metadatas.size()>0)) {
+        IMetadataTable metadata = metadatas.get(0);
+        if (metadata!=null) {
+            String fileName = ElementParameterParser.getValue(node,"__FILENAME__");
+            String fullName = null;
+            String extensionName = null;
+            String directoryName = null;
+            if(fileName != null && !fileName.equals("") && !fileName.equals("\"\"")) {
+                if(fileName.startsWith("\"") && fileName.endsWith("\"")) {
+                    fileName = fileName.substring(1,fileName.length() - 1);
+                } else {
+                    fileName = fileName.replaceAll("\"","");
+                }
+            } else {
+                fileName = "";
+            }
+            if(fileName.indexOf("/") == -1) {
+                if(fileName.lastIndexOf(".") == -1) {
+                    fullName = fileName;
+                    extensionName = "";
+                    directoryName = "";
+                } else {
+                    fullName = fileName.substring(0, fileName.lastIndexOf("."));
+                    extensionName = fileName.substring(fileName.lastIndexOf("."), fileName.length());
+                    directoryName = "";
+                }
+            } else {
+                String simpleName = fileName.replaceAll(".*[^/]+((/+).*)", "$1");
+                if(simpleName.lastIndexOf(".") != -1) {
+                    fullName = fileName.substring(0, fileName.lastIndexOf(simpleName)) + simpleName.substring(0, simpleName.lastIndexOf("."));
+                    extensionName = simpleName.substring(simpleName.lastIndexOf("."), simpleName.length());
+                } else {
+                    fullName = fileName;
+                    extensionName = "";
+                }
+                directoryName = fileName.substring(0,fileName.lastIndexOf(simpleName));
+            }            
+            
+            String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
+    		String delim1 = ElementParameterParser.getValue(node, "__FIELDSEPARATOR__");
+        	String delim = delim1.substring(1,delim1.length()-1);
+        	boolean isAppend = ElementParameterParser.getValue(node,"__APPEND__").equals("true");
+        	boolean isIncludeHeader = ElementParameterParser.getValue(node,"__INCLUDEHEADER__").equals("true");
+        	boolean split = ElementParameterParser.getValue(node, "__SPLIT__").equals("true");
+            String splitEvery = ElementParameterParser.getValue(node, "__SPLIT_EVERY__");
+            %>        
+            int nb_line_<%=cid%> = 0;
+            int splitEvery_<%=cid%> = <%=splitEvery %>;
+            int splitedFileNo_<%=cid%> =0;
+            int currentRow_<%=cid%> = 0;
+            <%
+            if(ElementParameterParser.getValue(node,"__CREATE__").equals("true")){
+                if(directoryName != null && directoryName.trim().length() != 0) {
+                    %>
+                    java.io.File directory_<%=cid%> = new java.io.File("<%=directoryName%>");
+                    if(!directory_<%=cid%>.exists()) {
+                        directory_<%=cid%>.mkdirs();
+                    }
+                    <%
+                }
+            }
+    	
+            if(!split){
+                %>
+                com.csvreader.CsvWriter CsvWriter<%=cid%> = new com.csvreader.CsvWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(
+                            new java.io.FileOutputStream("<%=fileName%>", <%=isAppend%>), <%=encoding%>)), '<%=delim%>');  
+                            java.io.File file_<%=cid%>=new java.io.File("<%=fileName%>");   
+                <%
+            }else{
+                %>
+                com.csvreader.CsvWriter CsvWriter<%=cid%> = new com.csvreader.CsvWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(new java.io.FileOutputStream("<%=fullName%>" + splitedFileNo_<%=cid%> + "<%=extensionName%>", <%=isAppend%>), <%=encoding%>)), '<%=delim%>');
+                java.io.File file_<%=cid%> = new java.io.File("<%=fullName%>" + splitedFileNo_<%=cid%> + "<%=extensionName%>");
+                <%
+            }
+            List<IMetadataColumn> columns = metadata.getListColumns();
+    	    int sizeColumns = columns.size();
+    	    %>
+    	    String[] headColu<%=cid%> = new String[<%=sizeColumns%>];
+    	    <% 		
+    	    if(isIncludeHeader && !isAppend)
+    	    {
+    	        for(int i = 0; i < sizeColumns; i++)
+        		{
+        			IMetadataColumn column = columns.get(i);
+        			%>
+       				headColu<%=cid%>[<%=i%>]="<%=column.getLabel() %>";
+       				<%
+        		}
+    	        %>
+        		CsvWriter<%=cid%>.writeRecord(headColu<%=cid%>);	
+        		<%		
+    	    }
+    	    if(isIncludeHeader && isAppend)
+    	    {
+     		   
+    	        %>		   
+    	        if(file_<%=cid%>.length()==0)  
+    	        {
+    	            <%			
+         			for(int i = 0 ; i < sizeColumns ; i++)
+        			{
+        				IMetadataColumn column = columns.get(i);
+        				%>	      	
+        				headColu<%=cid%>[<%=i%>]="<%=column.getLabel() %>";
+        				<%
+         			}
+    	            %>	 
+    	            CsvWriter<%=cid%>.writeRecord(headColu<%=cid%>);    	
+    	        }
+     
+    	        <%		  
+    	    } 
+	    }
+    }
+    %>
 
 
 <%
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  }
+// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+}
 %>
