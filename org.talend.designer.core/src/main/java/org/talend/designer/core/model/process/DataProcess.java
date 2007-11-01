@@ -42,6 +42,7 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IExternalData;
 import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.process.INode;
+import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IProcess;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.process.statsandlogs.StatsAndLogsManager;
@@ -59,8 +60,6 @@ import org.talend.repository.model.ExternalNodesFactory;
 public class DataProcess {
 
     private static final String HASH_COMPONENT_NAME = "tHash"; //$NON-NLS-1$
-
-    private static final String ADVANCED_HASH_COMPONENT_NAME = "tAdvancedHash"; //$NON-NLS-1$
 
     private static Map<INode, INode> buildCheckMap = null;
 
@@ -553,20 +552,15 @@ public class DataProcess {
                 String uniqueName = null;
                 IComponent component = null;
 
-                // ///////////////////////////////////////////////////////////////////////////
-                // ///////////////////////////////////////////////////////////////////////////
-                // temporary solution (13 jun 2007)
-                // IExternalNode externalNode = connection.getTarget().getExternalNode();
-                // if (externalNode != null
-                // && externalNode.getUniqueName().startsWith("tMap") && LanguageManager.getCurrentLanguage() ==
-                // ECodeLanguage.JAVA) { //$NON-NLS-1$
-                if (connection.getTarget().getUniqueName().startsWith("tMap")) {
-                    uniqueName = ADVANCED_HASH_COMPONENT_NAME + "_" + connection.getName(); //$NON-NLS-1$
-                    component = ComponentsFactoryProvider.getInstance().get(ADVANCED_HASH_COMPONENT_NAME);
-                    // ///////////////////////////////////////////////////////////////////////////
-                } else {
+                INodeConnector connector = connection.getTarget().getConnectorFromName(connection.getConnectorName());
+                String hashComponent = connector.getConnectionProperty(EConnectionType.FLOW_REF).getLinkedComponent();
+
+                if (hashComponent == null) {
                     uniqueName = HASH_COMPONENT_NAME + "_" + connection.getName(); //$NON-NLS-1$
                     component = ComponentsFactoryProvider.getInstance().get(HASH_COMPONENT_NAME);
+                } else {
+                    uniqueName = hashComponent + "_" + connection.getName(); //$NON-NLS-1$
+                    component = ComponentsFactoryProvider.getInstance().get(hashComponent);
                 }
                 if (component == null) {
                     continue;

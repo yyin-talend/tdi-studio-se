@@ -234,6 +234,8 @@ public class NodeConnector implements INodeConnector {
 
         private RGB rgb;
 
+        private String linkedComponent;
+
         public ConnectionProperty(RGB rgb, Integer lineStyle) {
             super();
             this.lineStyle = lineStyle;
@@ -274,6 +276,24 @@ public class NodeConnector implements INodeConnector {
          */
         public void setLineStyle(Integer lineStyle) {
             this.lineStyle = lineStyle;
+        }
+
+        /**
+         * Getter for linkedComponent.
+         * 
+         * @return the linkedComponent
+         */
+        public String getLinkedComponent() {
+            return this.linkedComponent;
+        }
+
+        /**
+         * Sets the linkedComponent.
+         * 
+         * @param linkedComponent the linkedComponent to set
+         */
+        public void setLinkedComponent(String linkedComponent) {
+            this.linkedComponent = linkedComponent;
         }
     }
 

@@ -57,6 +57,7 @@ import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.ElementParameterParser;
+import org.talend.core.model.process.IConnectionProperty;
 import org.talend.core.model.process.IElementParameterDefaultValue;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
@@ -1082,9 +1083,8 @@ public class EmfComponent implements IComponent {
         listConnType = compType.getCONNECTORS().getCONNECTOR();
         for (int i = 0; i < listConnType.size(); i++) {
             connType = (CONNECTORType) listConnType.get(i);
-            // EConnectionType currentType = EConnectionType.values()[i];
             EConnectionType currentType = EConnectionType.getTypeFromName(connType.getCTYPE());
-            if (currentType == null) {
+            if (currentType == null || connType.getCTYPE().equals("LOOKUP") || connType.getCTYPE().equals("MERGE")) {
                 continue;
             }
             nodeConnector = new NodeConnector();
@@ -1139,11 +1139,8 @@ public class EmfComponent implements IComponent {
             }
 
             listConnector.add(nodeConnector);
-            if (connType.getCTYPE().equals("FLOW")) { // if kind is "flow"
-                // (main type), then add
-                // the same for the
-                // //$NON-NLS-1$
-                // lookup.
+            if (connType.getCTYPE().equals("FLOW")) {
+                // if kind is "flow" (main type), then add the same for the lookup and merge.
                 currentType = EConnectionType.FLOW_REF;
 
                 if (connType.getCOLOR() == null) {
@@ -1162,6 +1159,24 @@ public class EmfComponent implements IComponent {
                     lineStyle = currentType.getDefaultLineStyle();
                 }
                 nodeConnector.addConnectionProperty(currentType, rgb, lineStyle);
+            }
+        }
+
+        // set the specific parameters for the Lookup (if there is for merge later, this should be placed here)
+        for (int i = 0; i < listConnType.size(); i++) {
+            connType = (CONNECTORType) listConnType.get(i);
+            EConnectionType currentType = EConnectionType.getTypeFromName(connType.getCTYPE());
+            if (currentType == null) {
+                continue;
+            }
+            if (connType.getCTYPE().equals("LOOKUP") && (connType.getCOMPONENT() != null)) {
+                for (INodeConnector connector : listConnector) {
+                    if (connector.getName().equals("FLOW")) {
+                        IConnectionProperty property = connector.getConnectionProperty(EConnectionType.FLOW_REF);
+                        property.setLinkedComponent(connType.getCOMPONENT());
+                        break;
+                    }
+                }
             }
         }
 
