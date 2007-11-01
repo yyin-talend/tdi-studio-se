@@ -196,7 +196,7 @@ public class StatsAndLogsView extends ViewPart {
      */
     private void disposeControls(Control[] children) {
         for (Control control : children) {
-                control.dispose();
+            control.dispose();
         }
     }
 
@@ -215,6 +215,15 @@ public class StatsAndLogsView extends ViewPart {
                         "Current setting will be covered, do you want to continue?");
                 if (isOK) {
                     StatsAndLogsViewHelper.reloadValuesFromPreferencePage(element);
+
+                    IEditorPart activeEditor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+                            .getActiveEditor();
+
+                    if (activeEditor != null) {
+                        TalendEditor workbenchPart = ((MultiPageTalendEditor) activeEditor).getTalendEditor();
+                        workbenchPart.setDirty(true);
+                    }
+
                     section.refresh();
                 }
             }
@@ -300,11 +309,11 @@ public class StatsAndLogsView extends ViewPart {
      * Empty view if no job is opened.
      */
     public void emptyView() {
-//        this.parent.setVisible(false);
+        // this.parent.setVisible(false);
         Control[] children = this.parent.getChildren();
         disposeControls(children);
         createEmptyPartControl(parent);
-        this.parent.getParent().layout(true,true);
+        this.parent.getParent().layout(true, true);
     }
 
     /**
