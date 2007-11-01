@@ -87,7 +87,8 @@ public class PropertyChangeCommand extends Command {
         IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
         IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet"); //$NON-NLS-1$
         PropertySheet sheet = (PropertySheet) view;
-        if (sheet!=null && sheet.getCurrentPage()!=null && sheet.getCurrentPage() instanceof TabbedPropertySheetPage) {
+        if (sheet != null && sheet.getCurrentPage() != null
+                && sheet.getCurrentPage() instanceof TabbedPropertySheetPage) {
             TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) sheet.getCurrentPage();
             if (tabbedPropertySheetPage.getCurrentTab() != null) {
                 tabbedPropertySheetPage.refresh();
@@ -103,14 +104,14 @@ public class PropertyChangeCommand extends Command {
             codeView.refresh();
         }
     }
-    
+
     /**
      * ftang Comment method "refreshStatsAndLogsView".
      */
     private void refreshStatsAndLogsView() {
         IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-        IViewPart view = page.findView(StatsAndLogsView.ID); 
-       if (view != null) {
+        IViewPart view = page.findView(StatsAndLogsView.ID);
+        if (view != null) {
             StatsAndLogsView statsAndLogsView = (StatsAndLogsView) view;
             statsAndLogsView.refreshView();
         }
@@ -120,6 +121,10 @@ public class PropertyChangeCommand extends Command {
     public void execute() {
         IElementParameter currentParam = elem.getElementParameter(propName);
         oldElementValues.clear();
+
+        if (currentParam == null) {
+            return;
+        }
 
         if (currentParam.isRepositoryValueUsed()) {
             if (currentParam.getField() == EParameterFieldType.MEMO_SQL) {
@@ -136,8 +141,7 @@ public class PropertyChangeCommand extends Command {
         } else {
             repositoryValueWasUsed = false;
         }
-        
-        
+
         oldValue = elem.getPropertyValue(propName);
         elem.setPropertyValue(propName, newValue);
 
