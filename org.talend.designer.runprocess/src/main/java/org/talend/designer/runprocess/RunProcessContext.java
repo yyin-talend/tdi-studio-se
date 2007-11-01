@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
+import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -83,10 +84,10 @@ public class RunProcessContext {
     private boolean watchAllowed;
 
     /** Change property listeners. */
-    private transient PropertyChangeSupport pcsDelegate;
+    private final transient PropertyChangeSupport pcsDelegate;
 
     /** The process. */
-    private IProcess process;
+    private final IProcess process;
 
     /** The selected context to run process with. */
     private IContext selectedContext;
@@ -118,7 +119,7 @@ public class RunProcessContext {
     /** Kill is in progress. */
     private boolean killing;
 
-    private IProcessMessageManager processMessageManager;
+    private final IProcessMessageManager processMessageManager;
 
     private int statsPort = IProcessor.NO_STATISTICS;
 
@@ -127,6 +128,8 @@ public class RunProcessContext {
     private org.eclipse.debug.core.model.IProcess debugProcess;
 
     private boolean saveBeforeRun;
+
+    private boolean isTracPause = false;
 
     /**
      * Constrcuts a new RunProcessContext.
@@ -253,6 +256,8 @@ public class RunProcessContext {
         selectedContext = context;
     }
 
+    Thread thread;
+
     /**
      * Launch the process.
      */
@@ -279,8 +284,7 @@ public class RunProcessContext {
 
                         final EventLoopProgressMonitor progressMonitor = new EventLoopProgressMonitor(monitor);
 
-                        progressMonitor.beginTask(
-                                Messages.getString("ProcessComposite.buildTask"), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
+                        progressMonitor.beginTask(Messages.getString("ProcessComposite.buildTask"), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
                         try {
                             findNewStatsPort();
                             if (monitorPerf) {
@@ -318,18 +322,18 @@ public class RunProcessContext {
                                                     final String startingPattern = Messages
                                                             .getString("ProcessComposite.startPattern"); //$NON-NLS-1$
                                                     MessageFormat mf = new MessageFormat(startingPattern);
-                                                    String welcomeMsg = mf.format(new Object[] { process.getLabel(),
-                                                            new Date() });
-                                                    processMessageManager.addMessage(new ProcessMessage(
-                                                            MsgType.CORE_OUT, welcomeMsg));
-                                                    new Thread(psMonitor).start();
+                                                    String welcomeMsg = mf
+                                                            .format(new Object[] { process.getLabel(), new Date() });
+                                                    processMessageManager.addMessage(new ProcessMessage(MsgType.CORE_OUT,
+                                                            welcomeMsg));
+                                                    thread = new Thread(psMonitor);
+                                                    thread.start();
                                                 } else {
                                                     setRunning(false);
                                                 }
                                             } catch (Exception e) {
                                                 Throwable cause = e.getCause();
-                                                if (cause != null
-                                                        && cause.getClass().equals(InterruptedException.class)) {
+                                                if (cause != null && cause.getClass().equals(InterruptedException.class)) {
                                                     setRunning(false);
                                                 } else {
                                                     ExceptionHandler.process(e);
@@ -337,7 +341,7 @@ public class RunProcessContext {
                                                     kill();
                                                 }
                                             } finally {
-//                                                progressMonitor.done();
+                                                // progressMonitor.done();
                                                 refreshUiAndWait[0] = false;
                                             }
                                         }
@@ -504,13 +508,13 @@ public class RunProcessContext {
         volatile boolean stopThread;
 
         /** The monitoring process. */
-        private Process process;
+        private final Process process;
 
         /** Input stream for stdout of the process. */
-        private BufferedReader outIs;
+        private final BufferedReader outIs;
 
         /** Input stream for stderr of the process. */
-        private BufferedReader errIs;
+        private final BufferedReader errIs;
 
         public ProcessMonitor(Process ps) {
             super();
@@ -794,8 +798,17 @@ public class RunProcessContext {
                     LineNumberReader reader = new LineNumberReader(new InputStreamReader(in));
                     while (!stopThread) {
                         final String data = reader.readLine();
+                        PrintWriter pred = new java.io.PrintWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(
+                                processSocket.getOutputStream())), true);
+                        if (isTracPause()) {
+                            pred.println("PAUSE");
+                        } else {
+                            pred.println("RUN");
+                        }
                         if (data == null) {
                             stopThread = true;
+                        } else if ("ID_STATUS".equals(data)) {
+                            continue;
                         } else {
                             TraceData traceData = new TraceData(data);
                             String connectionId = traceData.getElementId();
@@ -833,8 +846,7 @@ public class RunProcessContext {
 
         private IConnection findConnection(final String connectionId) {
             IConnection connection = null;
-            for (Iterator<? extends INode> i = process.getGraphicalNodes().iterator(); connection == null
-                    && i.hasNext();) {
+            for (Iterator<? extends INode> i = process.getGraphicalNodes().iterator(); connection == null && i.hasNext();) {
                 INode psNode = i.next();
                 for (IConnection connec : psNode.getOutgoingConnections()) {
                     if (connec.getName().equals(connectionId)) {
@@ -895,16 +907,33 @@ public class RunProcessContext {
     }
 
     public void setSaveBeforeRun(boolean saveBeforeRun) {
-      this.saveBeforeRun =  saveBeforeRun;       
+        this.saveBeforeRun = saveBeforeRun;
     }
 
-    
     /**
      * Getter for saveBeforeRun.
+     * 
      * @return the saveBeforeRun
      */
     public boolean isSaveBeforeRun() {
         return this.saveBeforeRun;
     }
 
+    /**
+     * Getter for isTracPause.
+     * 
+     * @return the isTracPause
+     */
+    public boolean isTracPause() {
+        return this.isTracPause;
+    }
+
+    /**
+     * Sets the isTracPause.
+     * 
+     * @param isTracPause the isTracPause to set
+     */
+    public void setTracPause(boolean isTracPause) {
+        this.isTracPause = isTracPause;
+    }
 }

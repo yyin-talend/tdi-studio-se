@@ -106,6 +106,12 @@ public class ProcessComposite extends Composite {
 
     private static final int MINIMUM_WIDTH = 530;
 
+    private static final int EXEC_ID = 21;
+
+    private static final int PAUSE_ID = 22;
+
+    private static final int RESUME_ID = 23;
+
     private RunProcessContext processContext;
 
     /** Context composite. */
@@ -419,6 +425,10 @@ public class ProcessComposite extends Composite {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
+                if (processContext == null) {
+                    clearTracePerfBtn.setEnabled(false);
+                    return;
+                }
                 ClearPerformanceAction clearPerfAction = new ClearPerformanceAction();
                 clearPerfAction.setProcess(processContext.getProcess());
                 clearPerfAction.run();
@@ -436,7 +446,19 @@ public class ProcessComposite extends Composite {
 
             @Override
             public void widgetSelected(final SelectionEvent e) {
-                exec();
+                if (processContext == null) {
+                    execBtn.setEnabled(false);
+                    return;
+                }
+                if (execBtn.getData().equals(PAUSE_ID)) {
+                    pause(PAUSE_ID);
+                } else if (execBtn.getData().equals(RESUME_ID)) {
+                    pause(RESUME_ID);
+                } else if (execBtn.getData().equals(EXEC_ID)) {
+                    exec();
+                    execBtn.setData(PAUSE_ID);
+                }
+
             }
         });
 
@@ -471,6 +493,19 @@ public class ProcessComposite extends Composite {
                 processContext.setSaveBeforeRun(saveJobBeforeRunButton.getSelection());
             }
         });
+    }
+
+    public void pause(int id) {
+        boolean isPause = id == PAUSE_ID;
+        setExecBtn(isPause);
+        if (isPause) {
+            execBtn.setText("Resume");
+            execBtn.setToolTipText("Resume");
+            execBtn.setData(RESUME_ID);
+        } else {
+            execBtn.setData(PAUSE_ID);
+        }
+        processContext.setTracPause(isPause);
     }
 
     /*
@@ -537,12 +572,40 @@ public class ProcessComposite extends Composite {
         perfBtn.setEnabled(runnable);
         traceBtn.setEnabled(runnable);
         clearTracePerfBtn.setEnabled(runnable);
-        execBtn.setEnabled(runnable);
+
+        setExecBtn(runnable);
         debugBtn.setEnabled(runnable);
         contextComposite.setEnabled(runnable);
         clearBeforeExec.setEnabled(runnable);
         saveJobBeforeRunButton.setEnabled(runnable);
         watchBtn.setEnabled(runnable);
+    }
+
+    /**
+     * qzhang Comment method "setExecBtn".
+     * 
+     * @param runnable
+     */
+    private void setExecBtn(final boolean runnable) {
+        if (traceBtn.getSelection()) {
+            boolean b = processContext != null;
+            if (!runnable && b) {
+                execBtn.setText("Pause");
+                execBtn.setToolTipText("Pause the Job");
+                execBtn.setImage(ImageProvider.getImage(ERunprocessImages.PAUSE_PROCESS_ACTION));
+            } else {
+                execBtn.setText(Messages.getString("ProcessComposite.exec")); //$NON-NLS-1$
+                execBtn.setToolTipText(Messages.getString("ProcessComposite.execHint")); //$NON-NLS-1$
+                execBtn.setImage(ImageProvider.getImage(ERunprocessImages.RUN_PROCESS_ACTION));
+            }
+            execBtn.setEnabled(b);
+        } else {
+            execBtn.setEnabled(runnable);
+            execBtn.setText(Messages.getString("ProcessComposite.exec")); //$NON-NLS-1$
+            execBtn.setToolTipText(Messages.getString("ProcessComposite.execHint")); //$NON-NLS-1$
+            execBtn.setImage(ImageProvider.getImage(ERunprocessImages.RUN_PROCESS_ACTION));
+        }
+        execBtn.setData(EXEC_ID);
     }
 
     private void appendToConsole(final IProcessMessage message) {
@@ -598,6 +661,9 @@ public class ProcessComposite extends Composite {
     }
 
     public void exec() {
+        if (getProcessContext() == null) {
+            return;
+        }
         CorePlugin.getDefault().getDesignerCoreService().saveJobBeforeRun(getProcessContext().getProcess());
         if (clearBeforeExec.getSelection()) {
             processContext.clearMessages();
@@ -817,6 +883,7 @@ public class ProcessComposite extends Composite {
         }
     }
 
+    @Override
     public Display getDisplay() {
         return Display.getDefault();
     }

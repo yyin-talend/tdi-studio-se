@@ -31,7 +31,8 @@ import org.talend.designer.runprocess.RunProcessPlugin;
  * 
  */
 public enum ERunprocessImages implements IImage {
-    RUN_PROCESS_ACTION("/icons/process_run.gif"); //$NON-NLS-1$
+    RUN_PROCESS_ACTION("/icons/process_run.gif"), //$NON-NLS-1$
+    PAUSE_PROCESS_ACTION("/icons/process_pause.gif"); //$NON-NLS-1$
 
     private String path;
 

@@ -45,4 +45,6 @@ public class RunProcessPrefsConstants {
 
     public static final String ISTRACESRUN = "tracesRun";
 
+    public static final String STRACESTIME = "tracesTime";
+
 }

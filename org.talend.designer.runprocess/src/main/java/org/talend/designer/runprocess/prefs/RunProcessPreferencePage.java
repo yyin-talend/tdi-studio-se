@@ -59,6 +59,7 @@ public class RunProcessPreferencePage extends FieldEditorPreferencePage implemen
         /**
          * @see org.eclipse.jface.preference.FieldEditor#refreshValidState()
          */
+        @Override
         protected void refreshValidState() {
             super.refreshValidState();
         }
@@ -67,6 +68,7 @@ public class RunProcessPreferencePage extends FieldEditorPreferencePage implemen
          * Clears the error message from the message line if the error message is the error message from this field
          * editor.
          */
+        @Override
         protected void clearErrorMessage() {
             if (canClearErrorMessage()) {
                 super.clearErrorMessage();
@@ -75,12 +77,12 @@ public class RunProcessPreferencePage extends FieldEditorPreferencePage implemen
     }
 
     // private BooleanFieldEditor2 fWrapEditor = null;
-    private IntegerFieldEditor fClientComPortEditor = null;
+    private final IntegerFieldEditor fClientComPortEditor = null;
 
     // private BooleanFieldEditor2 fUseBufferSize = null;
-    private ConsoleIntegerFieldEditor fBufferSizeEditor = null;
+    private final ConsoleIntegerFieldEditor fBufferSizeEditor = null;
 
-    private ConsoleIntegerFieldEditor fTabSizeEditor = null;
+    private final ConsoleIntegerFieldEditor fTabSizeEditor = null;
 
     private Group clientGroup;
 
@@ -101,6 +103,8 @@ public class RunProcessPreferencePage extends FieldEditorPreferencePage implemen
     private BooleanFieldEditor onStatisticsField;
 
     private BooleanFieldEditor onTracesField;
+
+    private IntegerFieldEditor tracesTime;
 
     /**
      * Create the console page.
@@ -123,6 +127,7 @@ public class RunProcessPreferencePage extends FieldEditorPreferencePage implemen
      * 
      * @see org.eclipse.jface.preference.PreferencePage#createControl(Composite)
      */
+    @Override
     public void createControl(Composite parent) {
         super.createControl(parent);
 
@@ -131,6 +136,7 @@ public class RunProcessPreferencePage extends FieldEditorPreferencePage implemen
     /**
      * Create all field editors for this page
      */
+    @Override
     public void createFieldEditors() {
 
         clientGroup = new Group(getFieldEditorParent(), SWT.NONE);
@@ -208,16 +214,16 @@ public class RunProcessPreferencePage extends FieldEditorPreferencePage implemen
         compositeSaveBeforeRun.setLayoutData(new GridData(GridData.FILL_BOTH));
         GridLayout gridLayoutSaveBeforeRun = new GridLayout(1, true);
         compositeSaveBeforeRun.setLayout(gridLayoutSaveBeforeRun);
-        onSavebeforeField = new BooleanFieldEditor(RunProcessPrefsConstants.ISSAVEBEFORERUN, "Save before run", SWT.NONE,
-                compositeSaveBeforeRun);
+        onSavebeforeField = new BooleanFieldEditor(RunProcessPrefsConstants.ISSAVEBEFORERUN, "Save before run",
+                SWT.NONE, compositeSaveBeforeRun);
         addField(onSavebeforeField);
 
         Composite compositeClearBeforeRun = new Composite(compositeStateTraceRun, SWT.NONE);
         compositeClearBeforeRun.setLayoutData(new GridData(GridData.FILL_BOTH));
         GridLayout gridLayoutClearBeforeRun = new GridLayout(1, true);
         compositeClearBeforeRun.setLayout(gridLayoutClearBeforeRun);
-        onClearbeforeField = new BooleanFieldEditor(RunProcessPrefsConstants.ISCLEARBEFORERUN, "Clear before run", SWT.NONE,
-                compositeClearBeforeRun);
+        onClearbeforeField = new BooleanFieldEditor(RunProcessPrefsConstants.ISCLEARBEFORERUN, "Clear before run",
+                SWT.NONE, compositeClearBeforeRun);
 
         addField(onClearbeforeField);
         Composite compositeExecTimeRun = new Composite(compositeStateTraceRun, SWT.NONE);
@@ -238,10 +244,18 @@ public class RunProcessPreferencePage extends FieldEditorPreferencePage implemen
 
         Composite compositeTracesRun = new Composite(compositeStateTraceRun, SWT.NONE);
         compositeTracesRun.setLayoutData(new GridData(GridData.FILL_BOTH));
-        GridLayout gridLayoutTracesRun = new GridLayout(1, true);
+        GridLayout gridLayoutTracesRun = new GridLayout(1, false);
         compositeTracesRun.setLayout(gridLayoutTracesRun);
-        onTracesField = new BooleanFieldEditor(RunProcessPrefsConstants.ISTRACESRUN, "Traces", SWT.NONE, compositeTracesRun);
+        onTracesField = new BooleanFieldEditor(RunProcessPrefsConstants.ISTRACESRUN, "Traces", SWT.NONE,
+                compositeTracesRun);
         addField(onTracesField);
+
+        Composite compositeTracesTime = new Composite(compositeStateTraceRun, SWT.NONE);
+        compositeTracesTime.setLayoutData(new GridData(GridData.FILL_BOTH));
+        GridLayout gridLayoutTracesTime = new GridLayout(1, false);
+        compositeTracesTime.setLayout(gridLayoutTracesTime);
+        tracesTime = new IntegerFieldEditor(RunProcessPrefsConstants.STRACESTIME, "Pause Time(ms)", compositeTracesTime);
+        addField(tracesTime);
 
     }
 
@@ -264,6 +278,7 @@ public class RunProcessPreferencePage extends FieldEditorPreferencePage implemen
      * 
      * @see org.eclipse.jface.preference.IPreferencePage#performOk()
      */
+    @Override
     public boolean performOk() {
         boolean ok = super.performOk();
         // update high water mark to be (about) 100 lines (100 * 80 chars) greater than low water mark
@@ -278,6 +293,7 @@ public class RunProcessPreferencePage extends FieldEditorPreferencePage implemen
     /**
      * @see org.eclipse.jface.preference.FieldEditorPreferencePage#initialize()
      */
+    @Override
     protected void initialize() {
         super.initialize();
     }
@@ -285,6 +301,7 @@ public class RunProcessPreferencePage extends FieldEditorPreferencePage implemen
     /**
      * @see org.eclipse.jface.preference.PreferencePage#performDefaults()
      */
+    @Override
     protected void performDefaults() {
         RunProcessPlugin.getDefault().getPreferenceStore().setDefault(RunProcessPrefsConstants.ISCLEARBEFORERUN, true);
         super.performDefaults();
@@ -301,6 +318,7 @@ public class RunProcessPreferencePage extends FieldEditorPreferencePage implemen
     /**
      * @see org.eclipse.jface.util.IPropertyChangeListener#propertyChange(org.eclipse.jface.util.PropertyChangeEvent)
      */
+    @Override
     public void propertyChange(PropertyChangeEvent event) {
 
         if (event.getProperty().equals(FieldEditor.IS_VALID)) {

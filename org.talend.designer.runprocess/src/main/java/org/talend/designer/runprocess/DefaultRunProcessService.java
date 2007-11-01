@@ -35,6 +35,7 @@ import org.talend.designer.runprocess.java.JavaProcessor;
 import org.talend.designer.runprocess.language.SyntaxCheckerFactory;
 import org.talend.designer.runprocess.perl.PerlProcessor;
 import org.talend.designer.runprocess.perl.PerlUtils;
+import org.talend.designer.runprocess.prefs.RunProcessPrefsConstants;
 import org.talend.designer.runprocess.ui.views.ProcessView;
 
 /**
@@ -83,8 +84,8 @@ public class DefaultRunProcessService implements IRunProcessService {
             String perlInterpreterLibOption, String perlModuleDirectoryOption, int statOption, int traceOption,
             String... codeOptions) throws ProcessorException {
 
-        return PerlProcessor.exec(out, err, absCodePath, contextName, level, perlInterpreterLibOption, perlModuleDirectoryOption,
-                statOption, traceOption, codeOptions);
+        return PerlProcessor.exec(out, err, absCodePath, contextName, level, perlInterpreterLibOption,
+                perlModuleDirectoryOption, statOption, traceOption, codeOptions);
 
     }
 
@@ -145,7 +146,8 @@ public class DefaultRunProcessService implements IRunProcessService {
             return PerlUtils.getProject();
         }
     }
-    public IJavaProject getJavaProject() throws CoreException{
+
+    public IJavaProject getJavaProject() throws CoreException {
         return JavaProcessor.getJavaProject();
     }
 
@@ -155,7 +157,8 @@ public class DefaultRunProcessService implements IRunProcessService {
      * @see org.talend.designer.runprocess.IRunProcessService#setDelegateService(org.talend.designer.runprocess.IRunProcessService)
      */
     public void setDelegateService(IRunProcessService delegateService) {
-        throw new UnsupportedOperationException("This method should'nt be called here, use it on RunProcessService class.");
+        throw new UnsupportedOperationException(
+                "This method should'nt be called here, use it on RunProcessService class.");
     }
 
     public void updateLibraries() throws CoreException {
@@ -172,5 +175,14 @@ public class DefaultRunProcessService implements IRunProcessService {
         if (view != null) {
             view.refresh();
         }
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.runprocess.IRunProcessService#getPauseTime()
+     */
+    public int getPauseTime() {
+        return RunProcessPlugin.getDefault().getPreferenceStore().getInt(RunProcessPrefsConstants.STRACESTIME);
     }
 }

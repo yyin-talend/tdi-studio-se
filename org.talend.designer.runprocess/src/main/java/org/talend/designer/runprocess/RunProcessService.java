@@ -132,7 +132,7 @@ public class RunProcessService implements IRunProcessService {
      * @see org.talend.designer.runprocess.IRunProcessService#setDelegateService(org.talend.designer.runprocess.IRunProcessService)
      */
     public void setDelegateService(IRunProcessService delegateService) {
-        boolean isValidDelegate = delegateService != null && !(delegateService instanceof RunProcessService); 
+        boolean isValidDelegate = delegateService != null && !(delegateService instanceof RunProcessService);
         if (isValidDelegate) {
             this.delegateService = delegateService;
         } else {
@@ -143,16 +143,27 @@ public class RunProcessService implements IRunProcessService {
     public void updateLibraries() throws CoreException {
         delegateService.updateLibraries();
     }
-    
-    public void refreshView(){
+
+    public void refreshView() {
         delegateService.refreshView();
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.designer.runprocess.IRunProcessService#getJavaProject()
      */
     public IJavaProject getJavaProject() throws CoreException {
         return delegateService.getJavaProject();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.runprocess.IRunProcessService#getPauseTime()
+     */
+    public int getPauseTime() {
+        return delegateService.getPauseTime();
     }
 
 }
