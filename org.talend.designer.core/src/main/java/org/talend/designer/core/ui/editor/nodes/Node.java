@@ -563,9 +563,9 @@ public class Node extends Element implements INode {
                     }
                 }
             }
+            IMetadataTable inputTable = connection.getMetadataTable();
 
-            if (component.isSchemaAutoPropagated() && !repositoryMode) {
-                IMetadataTable inputTable = connection.getMetadataTable();
+            if (component.isSchemaAutoPropagated() && !repositoryMode && (inputTable.getListColumns().size() != 0)) {
 
                 // if the selected connector's schema type is in repository
                 // mode or read only, then don't propagate.
@@ -581,8 +581,9 @@ public class Node extends Element implements INode {
                                 break;
                             }
                         }
-                        if (((customFound && targetTable.isReadOnly()) || (outputs.size() == 0) || (connection.getLineStyle() == EConnectionType.FLOW_MERGE))
-                                && (inputTable.getListColumns().size() != 0)) {
+                        if (targetTable.getListColumns().size() == 0
+                                && (((customFound && targetTable.isReadOnly()) || (outputs.size() == 0) || (connection
+                                        .getLineStyle() == EConnectionType.FLOW_MERGE)) && (inputTable.getListColumns().size() != 0))) {
                             // For the auto propagate.
                             MetadataTool.copyTable(inputTable, targetTable);
                             ColumnListController.updateColumnList(this, null, true);
@@ -590,33 +591,36 @@ public class Node extends Element implements INode {
                     }
                 }
             } else {
+                IConnection outputConnection = null;
                 // schema not auto-propagated or in repository mode
                 if ((connection.getSource().getSchemaParameterFromConnector(mainConnector.getName()) != null)) {
-                    IConnection outputConnection = null;
 
                     if (connection.getSource().getOutgoingConnections(connection.getConnectorName()).size() == 1) {
                         outputConnection = connection.getSource().getOutgoingConnections(connection.getConnectorName()).get(0);
                     }
-                    if ((outputConnection != null) && (mainTargetTable != null) && (mainTargetTable.getListColumns().size() != 0)) {
-                        if (takeSchema == null) {
-                            takeSchema = getTakeSchema();
-                        }
-                        if (takeSchema) {
-                            connection.getSource().takeSchemaFrom(this, mainConnector.getName());
-                        }
-                    } else {
-                        connection.getSource().checkAndRefreshNode();
-                        checkAndRefreshNode();
+
+                    if (takeSchema == null) {
+                        takeSchema = getTakeSchema();
                     }
+                    if (takeSchema) {
+                        connection.getSource().takeSchemaFrom(this, mainConnector.getName());
+                    }
+                } else if (connection.getSourceNodeConnector().isBuiltIn() && (mainTargetTable != null)
+                        && (mainTargetTable.getListColumns().size() != 0)) {
+                    if (takeSchema == null) {
+                        takeSchema = getTakeSchema();
+                    }
+                    MetadataTool.copyTable(mainTargetTable, connection.getMetadataTable());
+                } else {
+                    connection.getSource().checkAndRefreshNode();
+                    checkAndRefreshNode();
                 }
             }
         }
     }
 
     private boolean getTakeSchema() {
-        return MessageDialog
-                .openQuestion(new Shell(), "",
-                        "The target component has a fixed schema or based from the repository\nDo you want to apply to the source component?");
+        return MessageDialog.openQuestion(new Shell(), "", "Do you want to get the schema of the target component?");
     }
 
     public IElementParameter getSchemaParameterFromConnector(String connector) {
@@ -987,9 +991,9 @@ public class Node extends Element implements INode {
     public IMetadataTable getMetadataTable(String metaName) {
         for (int i = 0; i < metadataList.size(); i++) {
             if (metadataList.get(i).getTableName().equals(metaName)/*
-                                                                     * &&
-                                                                     * metadataList.get(i).getAttachedConnector().equals(connectorName)
-                                                                     */) {
+             * &&
+             * metadataList.get(i).getAttachedConnector().equals(connectorName)
+             */) {
                 return metadataList.get(i);
             }
         }
@@ -1340,9 +1344,9 @@ public class Node extends Element implements INode {
         // not a sub process start
         if (!isSubProcessStart() || (!(Boolean) getPropertyValue(EParameterName.STARTABLE.getName()))) {
             if (/*
-                 * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_AFTER) > 0) ||
-                 * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_BEFORE) > 0)||
-                 */
+             * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_AFTER) > 0) ||
+             * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_BEFORE) > 0)||
+             */
             (getCurrentActiveLinksNbOutput(EConnectionType.THEN_RUN) > 0)) {
                 String errorMessage = "A component that is not a sub process start can not have any link run after / run before in output.";
                 Problems.add(ProblemStatus.ERROR, this, errorMessage);
@@ -1353,9 +1357,9 @@ public class Node extends Element implements INode {
         // not a sub process start
         if ((!isELTComponent() && !isSubProcessStart()) || (!(Boolean) getPropertyValue(EParameterName.STARTABLE.getName()))) {
             if (/*
-                 * (getCurrentActiveLinksNbInput(EConnectionType.RUN_AFTER) > 0) ||
-                 * (getCurrentActiveLinksNbInput(EConnectionType.RUN_BEFORE) > 0) ||
-                 */(getCurrentActiveLinksNbInput(EConnectionType.THEN_RUN) > 0)
+             * (getCurrentActiveLinksNbInput(EConnectionType.RUN_AFTER) > 0) ||
+             * (getCurrentActiveLinksNbInput(EConnectionType.RUN_BEFORE) > 0) ||
+             */(getCurrentActiveLinksNbInput(EConnectionType.THEN_RUN) > 0)
                     || (getCurrentActiveLinksNbInput(EConnectionType.RUN_IF) > 0)
                     || (getCurrentActiveLinksNbInput(EConnectionType.RUN_IF_OK) > 0)
                     || (getCurrentActiveLinksNbInput(EConnectionType.RUN_IF_ERROR) > 0)) {
