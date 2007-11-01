@@ -591,6 +591,10 @@ public class Node extends Element implements INode {
                     }
                 }
             } else {
+                if ((mainTargetTable == null) || (mainTargetTable.getListColumns().size() == 0)
+                        || mainTargetTable.sameMetadataAs(connection.getMetadataTable())) {
+                    return;
+                }
                 IConnection outputConnection = null;
                 // schema not auto-propagated or in repository mode
                 if ((connection.getSource().getSchemaParameterFromConnector(mainConnector.getName()) != null)) {
@@ -605,8 +609,7 @@ public class Node extends Element implements INode {
                     if (takeSchema) {
                         connection.getSource().takeSchemaFrom(this, mainConnector.getName());
                     }
-                } else if (connection.getSourceNodeConnector().isBuiltIn() && (mainTargetTable != null)
-                        && (mainTargetTable.getListColumns().size() != 0)) {
+                } else if (connection.getSourceNodeConnector().isBuiltIn()) {
                     if (takeSchema == null) {
                         takeSchema = getTakeSchema();
                     }
