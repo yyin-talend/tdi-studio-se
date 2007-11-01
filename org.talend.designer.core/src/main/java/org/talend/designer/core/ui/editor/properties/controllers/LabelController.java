@@ -1,0 +1,135 @@
+// ============================================================================
+//
+// Talend Community Edition
+//
+// Copyright (C) 2006-2007 Talend - www.talend.com
+//
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation; either
+// version 2.1 of the License.
+//
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+// Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+//
+// ============================================================================
+package org.talend.designer.core.ui.editor.properties.controllers;
+
+import java.beans.PropertyChangeEvent;
+
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CLabel;
+import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
+import org.talend.core.model.process.IElementParameter;
+import org.talend.designer.core.ui.editor.nodes.Node;
+import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
+
+/**
+ * DOC qwei class global comment. Detailled comment <br/>
+ * 
+ * $Id: talend.epf 1 2006-09-29 17:06:40 +0000 (ææäº, 29 ä¹æ 2006) nrousseau $
+ * 
+ */
+public class LabelController extends AbstractElementPropertySectionController {
+
+    /**
+     * DOC qwei LabelController constructor comment.
+     * 
+     * @param dtp
+     */
+    public LabelController(DynamicTabbedPropertySection dtp) {
+        super(dtp);
+        // TODO Auto-generated constructor stub
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#createControl(org.eclipse.swt.widgets.Composite,
+     * org.talend.core.model.process.IElementParameter, int, int, int, org.eclipse.swt.widgets.Control)
+     */
+    @Override
+    public Control createControl(Composite subComposite, IElementParameter param, int numInRow, int nbInRow, int top,
+            Control lastControl) {
+        // TODO Auto-generated method stub
+        FormData data;
+        CLabel labelLabel = getWidgetFactory().createCLabel(subComposite, (String) param.getValue(), SWT.SHADOW_NONE); //$NON-NLS-1$
+
+        labelLabel.setData(PARAMETER_NAME, param.getName());
+        if (elem instanceof Node) {
+            labelLabel.setToolTipText(VARIABLE_TOOLTIP + param.getVariableName());
+        }
+        data = new FormData();
+        if (lastControl != null) {
+            data.left = new FormAttachment(lastControl, 0);
+        } else {
+            data.left = new FormAttachment((((numInRow - 1) * MAX_PERCENT) / nbInRow), 0);
+        }
+        data.top = new FormAttachment(0, top);
+        labelLabel.setLayoutData(data);
+        if (numInRow != 1) {
+            labelLabel.setAlignment(SWT.RIGHT);
+        }
+        // **************************
+        data = new FormData();
+        int currentLabelWidth = STANDARD_LABEL_WIDTH;
+        GC gc = new GC(labelLabel);
+        Point labelSize = gc.stringExtent(param.getDisplayName());
+        gc.dispose();
+
+        if ((labelSize.x + ITabbedPropertyConstants.HSPACE) > currentLabelWidth) {
+            currentLabelWidth = labelSize.x + ITabbedPropertyConstants.HSPACE;
+        }
+        if (numInRow == 1) {
+            if (lastControl != null) {
+                data.left = new FormAttachment(lastControl, currentLabelWidth);
+            } else {
+                data.left = new FormAttachment(0, currentLabelWidth);
+            }
+        } else {
+            data.left = new FormAttachment(labelLabel, 0, SWT.RIGHT);
+        }
+        return null;
+    }
+
+    @Override
+    public void refresh(IElementParameter param, boolean check) {
+        // TODO Auto-generated method stub
+
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
+     */
+    public void propertyChange(PropertyChangeEvent evt) {
+        // TODO Auto-generated method stub
+
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize(org.eclipse.swt.widgets.Composite,
+     * org.talend.core.model.process.IElementParameter)
+     */
+    @Override
+    public int estimateRowSize(Composite subComposite, IElementParameter param) {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+}
