@@ -21,15 +21,19 @@
 // ============================================================================
 package org.talend.designer.core.ui;
 
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IPartListener;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.PlatformUI;
 import org.talend.core.model.process.IProcess;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.views.contexts.Contexts;
 import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.designer.core.ui.views.statsandlogs.StatsAndLogs;
-import org.talend.designer.core.ui.views.statsandlogs.StatsAndLogsView;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.sqlbuilder.util.UIUtils;
 
@@ -74,27 +78,6 @@ public class ActiveProcessTracker implements IPartListener {
         }
     }
 
-    // private boolean updateContextSection() {
-    // boolean modified = false;
-    // IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-    // IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet"); //$NON-NLS-1$
-    // PropertySheet sheet = (PropertySheet) view;
-    // if (view instanceof TabbedPropertySheetPage) {
-    // TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) sheet.getCurrentPage();
-    // if (tabbedPropertySheetPage.getCurrentTab() == null) {
-    // return modified;
-    // }
-    // ISection[] sections = tabbedPropertySheetPage.getCurrentTab().getSections();
-    // for (int i = 0; i < sections.length; i++) {
-    // if (sections[i] instanceof ContextProcessSection2) {
-    // ContextProcessSection2 currentSection = (ContextProcessSection2) sections[i];
-    // modified = currentSection.updateContextView();
-    // }
-    // }
-    // }
-    // return modified;
-    // }
-
     /*
      * (non-Javadoc)
      * 
@@ -104,18 +87,19 @@ public class ActiveProcessTracker implements IPartListener {
         IProcess process = getJobFromActivatedEditor(part);
         if (process != null) {
             currentProcess = process;
-             setContextsView(process);
+            setContextsView(process);
             setStatsAndLogsView(process);
         }
     }
 
     /**
      * ftang Comment method "setStatsAndLogsView".
+     * 
      * @param process
      */
     private void setStatsAndLogsView(IProcess process) {
         StatsAndLogs.setTitle("Job " + process.getProperty().getLabel()); //$NON-NLS-1$
-        StatsAndLogs.switchToCurStatsAndLogsView(); 
+        StatsAndLogs.switchToCurStatsAndLogsView();
     }
 
     /**
@@ -152,6 +136,13 @@ public class ActiveProcessTracker implements IPartListener {
      * @see org.eclipse.ui.IPartListener#partClosed(org.eclipse.ui.IWorkbenchPart)
      */
     public void partClosed(IWorkbenchPart part) {
+        if (MultiPageTalendEditor.ID.equals(part.getSite().getId())) {
+            MultiPageTalendEditor mpte = (MultiPageTalendEditor) part;
+            if (mpte.isKeepPropertyLocked()) {
+                return;
+            }
+        }
+
         IProcess process = getJobFromActivatedEditor(part);
         if (process != null) {
             Problems.removeProblemsByProcess(process);
@@ -190,6 +181,19 @@ public class ActiveProcessTracker implements IPartListener {
      * @see org.eclipse.ui.IPartListener#partOpened(org.eclipse.ui.IWorkbenchPart)
      */
     public void partOpened(IWorkbenchPart part) {
+        if (MultiPageTalendEditor.ID.equals(part.getSite().getId())) {
+            MultiPageTalendEditor mpte = (MultiPageTalendEditor) part;
+            if (mpte.isJobAlreadyOpened()) {
+                mpte.updateChildrens();
+                // close the first editor and keep the new one. (so only one will remain)
+                IEditorReference[] ref = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findEditors(
+                        mpte.getEditorInput(), MultiPageTalendEditor.ID, IWorkbenchPage.MATCH_INPUT);
+                IEditorPart editorPart = ref[0].getEditor(false);
+                editorPart.doSave(new NullProgressMonitor());
+                ((MultiPageTalendEditor) editorPart).setKeepPropertyLocked(true);
+                PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().closeEditor(editorPart, false);
+            }
+        }
         IProcess process = getJobFromActivatedEditor(part);
         if (process != null) {
             currentProcess = process;

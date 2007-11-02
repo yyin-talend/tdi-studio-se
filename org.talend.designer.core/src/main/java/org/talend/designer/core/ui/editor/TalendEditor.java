@@ -137,6 +137,7 @@ import org.talend.core.model.properties.Property;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
+import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.action.ConnectionSetAsMainRef;
 import org.talend.designer.core.ui.action.GEFCopyAction;
 import org.talend.designer.core.ui.action.GEFDeleteAction;
@@ -213,14 +214,16 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
         setEditDomain(new TalendEditDomain(this));
         this.readOnly = readOnly;
 
-        projectName = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
-                .getProject().getLabel();
+        projectName = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject()
+                .getLabel();
         currentJobResource = new JobResource();
         protectedJobs = new HashMap<String, JobResource>();
         initializeKeyBindingScopes();
     }
 
     private String[] fKeyBindingScopes;
+
+    private MultiPageTalendEditor parent;
 
     /**
      * Sets the key binding scopes for this editor.
@@ -495,8 +498,7 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
                     }
                 }
             });
-            sharedKeyHandler.put(KeyStroke.getPressed(SWT.DEL, 0), getActionRegistry().getAction(
-                    ActionFactory.DELETE.getId()));
+            sharedKeyHandler.put(KeyStroke.getPressed(SWT.DEL, 0), getActionRegistry().getAction(ActionFactory.DELETE.getId()));
             // deactivate the F2 shortcut as it's not used anymore
             // sharedKeyHandler.put(KeyStroke.getPressed(SWT.F2, 0),
             // getActionRegistry().getAction(GEFActionConstants.DIRECT_EDIT));
@@ -570,8 +572,7 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
         PartFactory partFactory = new PartFactory();
         // set the factory to use for creating EditParts for elements in the model
         getGraphicalViewer().setEditPartFactory(partFactory);
-        getGraphicalViewer().setKeyHandler(
-                new GraphicalViewerKeyHandler(getGraphicalViewer()).setParent(getCommonKeyHandler()));
+        getGraphicalViewer().setKeyHandler(new GraphicalViewerKeyHandler(getGraphicalViewer()).setParent(getCommonKeyHandler()));
 
         initializeActivationCodeTrigger();
 
@@ -586,17 +587,14 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
          * (manager != null) { manager.setZoom(getProcess().getZoom()); }
          */
         // Scroll-wheel Zoom
-        getGraphicalViewer().setProperty(MouseWheelHandler.KeyGenerator.getKey(SWT.MOD1),
-                MouseWheelZoomHandler.SINGLETON);
+        getGraphicalViewer().setProperty(MouseWheelHandler.KeyGenerator.getKey(SWT.MOD1), MouseWheelZoomHandler.SINGLETON);
 
         /** * Snap To Grid ** */
         // Grid properties
         getGraphicalViewer().setProperty(SnapToGrid.PROPERTY_GRID_SPACING, new Dimension(GRID_SIZE, GRID_SIZE));
-        getGraphicalViewer().setProperty(SnapToGrid.PROPERTY_GRID_ENABLED,
-                new Boolean(true/* getProcess().isGridEnabled() */));
+        getGraphicalViewer().setProperty(SnapToGrid.PROPERTY_GRID_ENABLED, new Boolean(true/* getProcess().isGridEnabled() */));
         // We keep grid visibility and enablement in sync
-        getGraphicalViewer().setProperty(SnapToGrid.PROPERTY_GRID_VISIBLE,
-                new Boolean(true/* getProcess().isGridEnabled() */));
+        getGraphicalViewer().setProperty(SnapToGrid.PROPERTY_GRID_VISIBLE, new Boolean(true/* getProcess().isGridEnabled() */));
         IAction showGrid = new ToggleGridAction(getGraphicalViewer());
         getActionRegistry().registerAction(showGrid);
 
@@ -782,8 +780,7 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
 
         try {
             if (getEditorInput() instanceof ProcessEditorInput) {
-                boolean saved = ((ProcessEditorInput) getEditorInput()).saveProcess(
-                        new SubProgressMonitor(monitor, 80), null);
+                boolean saved = ((ProcessEditorInput) getEditorInput()).saveProcess(new SubProgressMonitor(monitor, 80), null);
                 if (!saved) {
                     monitor.setCanceled(true);
                     throw new InterruptedException();
@@ -791,8 +788,7 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
             }
             getCommandStack().markSaveLocation();
             setDirty(false);
-            ((ILibrariesService) GlobalServiceRegister.getDefault().getService(ILibrariesService.class))
-                    .resetModulesNeeded();
+            ((ILibrariesService) GlobalServiceRegister.getDefault().getService(ILibrariesService.class)).resetModulesNeeded();
             monitor.worked(10);
 
             saveOutlinePicture((ScrollingGraphicalViewer) getGraphicalViewer());
@@ -975,8 +971,7 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
                     showPage(ID_OUTLINE);
                 }
             };
-            showOutlineAction.setImageDescriptor(ImageDescriptor.createFromFile(DesignerPlugin.class,
-                    "/icons/outline.gif")); //$NON-NLS-1$
+            showOutlineAction.setImageDescriptor(ImageDescriptor.createFromFile(DesignerPlugin.class, "/icons/outline.gif")); //$NON-NLS-1$
             tbm.add(showOutlineAction);
             showOverviewAction = new Action() {
 
@@ -985,8 +980,7 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
                     showPage(ID_OVERVIEW);
                 }
             };
-            showOverviewAction.setImageDescriptor(ImageDescriptor.createFromFile(DesignerPlugin.class,
-                    "/icons/overview.gif")); //$NON-NLS-1$
+            showOverviewAction.setImageDescriptor(ImageDescriptor.createFromFile(DesignerPlugin.class, "/icons/overview.gif")); //$NON-NLS-1$
             tbm.add(showOverviewAction);
             showPage(ID_OUTLINE);
         }
@@ -1114,11 +1108,12 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
 
     @Override
     public void dispose() {
-
-        JobResourceManager manager = JobResourceManager.getInstance();
-        manager.removeProtection(this);
-        for (JobResource r : protectedJobs.values()) {
-            manager.deleteResource(r);
+        if (!getParent().isKeepPropertyLocked()) {
+            JobResourceManager manager = JobResourceManager.getInstance();
+            manager.removeProtection(this);
+            for (JobResource r : protectedJobs.values()) {
+                manager.deleteResource(r);
+            }
         }
         super.dispose();
     }
@@ -1305,13 +1300,17 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
         return getActionRegistry().getAction(actionID);
     }
 
-    /**
-     * DOC Administrator Comment method "getProcessPart".
-     * @return
-     */
     public ProcessPart getProcessPart() {
-       RootEditPart rootEditPart = ( (ScrollingGraphicalViewer) getGraphicalViewer()).getRootEditPart();
-        return (ProcessPart)rootEditPart.getChildren().get(0);
+        RootEditPart rootEditPart = ((ScrollingGraphicalViewer) getGraphicalViewer()).getRootEditPart();
+        return (ProcessPart) rootEditPart.getChildren().get(0);
+    }
+
+    public void setParent(MultiPageTalendEditor multiPageTalendEditor) {
+        this.parent = multiPageTalendEditor;
+    }
+
+    public MultiPageTalendEditor getParent() {
+        return this.parent;
     }
 
 }

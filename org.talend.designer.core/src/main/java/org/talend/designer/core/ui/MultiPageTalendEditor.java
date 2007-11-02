@@ -45,6 +45,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.ISelectionListener;
@@ -53,6 +54,7 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.internal.WorkbenchPage;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
@@ -135,6 +137,8 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
 
     private String oldJobName;
 
+    private boolean keepPropertyLocked; // used only if the user try to open more than one editor at a time.
+
     public MultiPageTalendEditor() {
         super();
 
@@ -157,8 +161,6 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
 
         }
         ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
-        // MultieditPlugin.getDefault().getPreferenceStore().addPropertyChangeListener(
-        // (org.eclipse.jface.util.IPropertyChangeListener)this);
     }
 
     public void setReadOnly(boolean readonly) {
@@ -172,6 +174,7 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
         try {
             int index = addPage(designerEditor, getEditorInput());
             setPageText(index, Messages.getString("MultiPageTalendEditor.Designer")); //$NON-NLS-1$
+            designerEditor.setParent(this);
         } catch (PartInitException e) {
             ErrorDialog.openError(getSite().getShell(), Messages.getString("MultiPageTalendEditor.Designer.Error"), //$NON-NLS-1$
                     null, e.getStatus());
@@ -215,8 +218,8 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
                     null, pie.getStatus());
         }
         if (process.getGeneratingNodes().size() != 0) {
-            ProcessorUtilities.generateCode(process, process.getContextManager().getDefaultContext(), false, false,
-                    true, ProcessorUtilities.GENERATE_WITH_FIRST_CHILD);
+            ProcessorUtilities.generateCode(process, process.getContextManager().getDefaultContext(), false, false, true,
+                    ProcessorUtilities.GENERATE_WITH_FIRST_CHILD);
         }
     }
 
@@ -255,6 +258,10 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
         // MultieditPlugin.getDefault().getPreferenceStore().removePropertyChangeListener(
         // (org.eclipse.jface.util.IPropertyChangeListener) this);
         super.dispose();
+
+        if (isKeepPropertyLocked()) {
+            return;
+        }
 
         // Unlock the process :
         IRepositoryService service = DesignerPlugin.getDefault().getRepositoryService();
@@ -531,8 +538,8 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
                 public void run() {
                     IWorkbenchPage[] pages = getSite().getWorkbenchWindow().getPages();
                     for (int i = 0; i < pages.length; i++) {
-                        if (((FileEditorInput) designerEditor.getEditorInput()).getFile().getProject().equals(
-                                event.getResource())) {
+                        if (((FileEditorInput) designerEditor.getEditorInput()).getFile().getProject()
+                                .equals(event.getResource())) {
                             IEditorPart editorPart = pages[i].findEditor(designerEditor.getEditorInput());
                             pages[i].closeEditor(editorPart, true);
                         }
@@ -683,4 +690,55 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
             }
         }
     }
+
+    public boolean isJobAlreadyOpened() {
+        return foundExistEditor(this.getEditorInput());
+    }
+
+    private boolean foundExistEditor(final IEditorInput editorInput) {
+        IWorkbenchWindow activeWorkbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+        if (activeWorkbenchWindow != null) {
+
+            WorkbenchPage page = (WorkbenchPage) activeWorkbenchWindow.getActivePage();
+            if (page != null) {
+                int i = 0;
+                if (editorInput instanceof ProcessEditorInput) {
+                    ProcessEditorInput curEditorInput = (ProcessEditorInput) editorInput;
+
+                    IEditorReference[] ref = page.findEditors(curEditorInput, ID, IWorkbenchPage.MATCH_INPUT);
+                    boolean exist = ref.length > 1;
+                    if (exist) {
+                        // MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                        // "New Editor Error!", " It's not possible to open another editor of current job. ");
+                        IEditorPart activePart = page.getActiveEditor();
+                        // activePart.removePropertyListener(listener);
+                        // page.getEditorPresentation().closeEditor(activePart);
+
+                    }
+                    return exist;
+                }
+            }
+
+        }
+        return false;
+    }
+
+    /**
+     * Getter for keepPropertyLocked.
+     * 
+     * @return the keepPropertyLocked
+     */
+    public boolean isKeepPropertyLocked() {
+        return this.keepPropertyLocked;
+    }
+
+    /**
+     * Sets the keepPropertyLocked.
+     * 
+     * @param keepPropertyLocked the keepPropertyLocked to set
+     */
+    public void setKeepPropertyLocked(boolean keepPropertyLocked) {
+        this.keepPropertyLocked = keepPropertyLocked;
+    }
+
 }
