@@ -1,0 +1,32 @@
+<%@ jet 
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.process.ElementParameterParser
+	" 
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+String filename = ElementParameterParser.getValue(node,"__FILENAME__");
+boolean isAppend = ElementParameterParser.getValue(node,"__APPEND__").equals("true");
+%>	
+try {
+    java.io.FileOutputStream out<%=cid%> = new java.io.FileOutputStream(fileNewName_<%=cid%>, <%=isAppend%>);
+<% if(isAppend){%>
+    StringBuffer sb<%=cid%> = new StringBuffer();
+    for (int i = oldInsNum<%=cid%>; i < m_Data<%=cid%>.numInstances(); i++) {
+        sb<%=cid%>.append("\n");
+        sb<%=cid%>.append(m_Data<%=cid%>.instance(i).toString());
+    }
+    out<%=cid%>.write(sb<%=cid%>.toString().getBytes(), 0, sb<%=cid%>.toString().getBytes().length);
+<%}else{%>   
+    out<%=cid%>.write(m_Data<%=cid%>.toString().getBytes(),0,m_Data<%=cid%>.toString().getBytes().length);
+<%}%>
+} catch (java.io.IOException e) {
+    // TODO Auto-generated catch block
+    e.printStackTrace();
+}
+globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);

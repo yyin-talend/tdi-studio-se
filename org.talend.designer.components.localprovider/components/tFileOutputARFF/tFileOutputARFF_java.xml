@@ -1,0 +1,126 @@
+<COMPONENT>
+
+  <HEADER
+    PLATEFORM="ALL"
+    SERIAL=""
+    VERSION="0.102"
+    STATUS="ALPHA"
+    
+    COMPATIBILITY="ALL"
+    AUTHOR="Talend"
+    RELEASE_DATE="20050320A"
+    STARTABLE="false"
+  >
+    <SIGNATURE />
+  </HEADER>
+
+  <DOCUMENTATION>
+    <URL />
+  </DOCUMENTATION>
+
+   <CONNECTORS>
+    <CONNECTOR CTYPE="FLOW" MAX_INPUT="1"/>
+    <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="0" MAX_INPUT="0"/>
+    <CONNECTOR CTYPE="THEN_RUN" MAX_INPUT="1"/>
+    <CONNECTOR CTYPE="REFERENCE"/>
+    <CONNECTOR CTYPE="RUN_OK"/>
+    <CONNECTOR CTYPE="RUN_ERROR"/>
+    <CONNECTOR CTYPE="RUN_IF"/>
+  </CONNECTORS>
+
+  <PARAMETERS>
+
+    <PARAMETER
+      NAME="PROPERTY"
+      FIELD="PROPERTY_TYPE"
+      SHOW="true"
+      NUM_ROW="1"
+      REPOSITORY_VALUE="DELIMITED"
+    />
+
+    <PARAMETER
+      NAME="FILENAME"
+      FIELD="FILE"
+      NUM_ROW="2"
+      REQUIRED="true"
+      REPOSITORY_VALUE="FILE_PATH"
+    >
+      <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/out.csv"</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="COLDEFINE"
+      FIELD="TABLE"
+      REQUIRED="false"
+      NUM_ROW="3"
+      NB_LINES="3"
+    >
+      <ITEMS>
+		<ITEM NAME="NAME" VALUE='"attName"' />
+		<ITEM NAME="TYPE" FIELD="CLOSED_LIST">
+          <ITEMS DEFAULT="STRING">
+            <ITEM NAME="STRING" VALUE="String"/>
+            <ITEM NAME="NUMERIC" VALUE="Numeric"/>
+            <ITEM NAME="DATE" VALUE="Date"/>
+            <ITEM NAME="NOMINAL" VALUE="Nominal"/>
+          </ITEMS>
+        </ITEM>
+		<ITEM NAME="PATTERN" VALUE=""/>
+		<ITEM NAME="REFCOL" FIELD="COLUMN_LIST"/>
+	  </ITEMS>
+    </PARAMETER>
+    
+    
+	<PARAMETER
+      NAME="RELATION"
+      FIELD="TEXT"
+      REQUIRED="false"
+      NUM_ROW="4"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+    <PARAMETER
+      NAME="APPEND"
+      FIELD="CHECK"
+      REQUIRED="true"
+      NUM_ROW="5"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="SCHEMA"
+      FIELD="SCHEMA_TYPE"
+      REQUIRED="true"
+      NUM_ROW="5"
+    />
+     
+     <PARAMETER
+      NAME="CREATE"
+      FIELD="CHECK"
+      REQUIRED="true"
+      NUM_ROW="6"
+    >
+      <DEFAULT>true</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="ENCODING"
+      FIELD="ENCODING_TYPE"
+      NUM_ROW="7"
+      REQUIRED="true"
+      REPOSITORY_VALUE="ENCODING"
+    >
+      <DEFAULT>"ISO-8859-15"</DEFAULT>
+    </PARAMETER>
+
+  </PARAMETERS>
+
+  <CODEGENERATION>
+  </CODEGENERATION>
+
+  <RETURNS>
+    <RETURN NAME="NB_LINE" TYPE="id_Integer" AVAILABILITY="AFTER" />
+  </RETURNS>
+
+</COMPONENT>

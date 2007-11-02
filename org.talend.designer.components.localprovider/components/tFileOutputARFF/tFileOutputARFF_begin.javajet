@@ -1,0 +1,135 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser 
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.metadata.IMetadataColumn 
+    org.talend.core.model.process.IConnection
+    org.talend.core.model.process.EConnectionType
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+    org.talend.core.model.metadata.types.JavaTypesManager
+	org.talend.core.model.metadata.types.JavaType
+	java.util.Map
+" 
+%>
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+     	String cid = node.getUniqueName();
+        String filename = ElementParameterParser.getValue(node,"__FILENAME__");
+        String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
+	    boolean isAppend = ElementParameterParser.getValue(node,"__APPEND__").equals("true");
+	    List<Map<String, String>> colDef = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__COLDEFINE__");
+	    String relation = ElementParameterParser.getValue(node,"__RELATION__");
+ %>        
+ int nb_line_<%=cid%> = 0;
+ int splitedFileNo_<%=cid%> =0;
+ int currentRow_<%=cid%> = 0;
+ double vals<%=cid%>[];
+ String fileNewName_<%=cid%> = <%=filename%>;
+ java.io.File createFile<%=cid%> = new java.io.File(fileNewName_<%=cid%>);
+   <%if(ElementParameterParser.getValue(node,"__CREATE__").equals("true")){%>
+	 //create directory only if not exists
+
+	 if(!createFile<%=cid%>.exists()){
+	 	(new java.io.File(fileNewName_<%=cid%>.substring(0,fileNewName_<%=cid%>.lastIndexOf("/")))).mkdirs();
+	 }
+<%
+	}
+
+    List<IMetadataColumn> columns = metadata.getListColumns();
+    	int sizeColumns = columns.size();
+    	
+    
+    for(int i=0;i<colDef.size();i++){
+        if(colDef.get(i).get("TYPE").equals("Nominal")){
+%>
+       //initialize nominal array
+      weka.core.FastVector classValues<%=cid%><%=i%>;
+      String nom<%=cid%><%=i%>[] = <%=colDef.get(i).get("PATTERN")%>.split(",");
+      classValues<%=cid%><%=i%> = new weka.core.FastVector(nom<%=cid%><%=i%>.length);
+      for(int j=0;j<nom<%=cid%><%=i%>.length;j++){
+          classValues<%=cid%><%=i%>.addElement(nom<%=cid%><%=i%>[j]);
+      }
+<%  
+        }
+    }
+   %>
+   		String[] headColu<%=cid%>=new String[<%=sizeColumns%>];	
+   		createFile<%=cid%>.createNewFile();
+   		weka.core.Instances data<%=cid%>;
+   		weka.core.Instances m_Data<%=cid%>;
+   		<%if(isAppend){%>
+   		 try{
+             //read existing Instances
+   		    m_Data<%=cid%> = new weka.core.Instances(new java.io.BufferedReader(new java.io.FileReader(fileNewName_<%=cid%>)));
+         }catch(Exception e){
+               // Create vector of attributes.
+               int numAtts<%=cid%>=<%=colDef.size()%>;
+               weka.core.FastVector attributes<%=cid%> = new weka.core.FastVector(numAtts<%=cid%>);
+ <%            int attIndex=0;
+               for(Map<String, String> colD:colDef){
+                  if(colD.get("TYPE").equals("String")){%>
+                      //A String attribute
+                      attributes<%=cid%>.addElement(new weka.core.Attribute(<%=colD.get("NAME")%>, (weka.core.FastVector) null));
+<%                }else if(colD.get("TYPE").equals("Numeric")){%>
+                      //A Numeric attribute
+                      attributes<%=cid%>.addElement(new weka.core.Attribute(<%=colD.get("NAME")%>));
+<%                }else if(colD.get("TYPE").equals("Date")){%>
+                      //A Date attribute
+                      attributes<%=cid%>.addElement(new weka.core.Attribute(<%=colD.get("NAME")%>, <%=colD.get("PATTERN")%>));
+<%                }else if(colD.get("TYPE").equals("Nominal")){%>
+                      //A Nominal attribute
+                      attributes<%=cid%>.addElement(new weka.core.Attribute(<%=colD.get("NAME")%>, classValues<%=cid%><%=attIndex%>));
+<%                }
+                  attIndex++;
+               }
+ %>
+            //Create a new Instances
+             m_Data<%=cid%> = new weka.core.Instances(<%=relation%>, attributes<%=cid%>, 100);
+             m_Data<%=cid%>.setClassIndex(m_Data<%=cid%>.numAttributes() - 1);
+        }
+ <%       }else{%>
+        int numAtts<%=cid%>=<%=colDef.size()%>;
+        weka.core.FastVector attributes<%=cid%> = new weka.core.FastVector(numAtts<%=cid%>);
+<%      int attIndex=0;
+        for(Map<String, String> colD:colDef){//for 1
+           if(colD.get("TYPE").equals("String")){%>
+               //A String attribute
+               attributes<%=cid%>.addElement(new weka.core.Attribute(<%=colD.get("NAME")%>, (weka.core.FastVector) null));
+<%         }else if(colD.get("TYPE").equals("Numeric")){%>
+               //A Numeric attribute
+               attributes<%=cid%>.addElement(new weka.core.Attribute(<%=colD.get("NAME")%>));
+<%         }else if(colD.get("TYPE").equals("Date")){%>
+               //A Date attribute
+               attributes<%=cid%>.addElement(new weka.core.Attribute(<%=colD.get("NAME")%>, <%=colD.get("PATTERN")%>));
+<%         }else if(colD.get("TYPE").equals("Nominal")){%>
+               //A Nominal attribute
+               attributes<%=cid%>.addElement(new weka.core.Attribute(<%=colD.get("NAME")%>, classValues<%=cid%><%=attIndex%>));
+<%         }
+           attIndex++;
+        }//for 1
+%>
+            //Create a new Instances
+            m_Data<%=cid%> = new weka.core.Instances(<%=relation%>, attributes<%=cid%>, 100);
+            m_Data<%=cid%>.setClassIndex(m_Data<%=cid%>.numAttributes() - 1);
+<%  	}%>
+
+int oldInsNum<%=cid%>=m_Data<%=cid%>.numInstances();
+    
+
+<%    	}
+    }
+%>
+
+
+
+   
+
+
+

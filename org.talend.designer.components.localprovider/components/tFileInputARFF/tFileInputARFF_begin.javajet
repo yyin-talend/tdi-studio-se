@@ -1,0 +1,83 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser 
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.metadata.IMetadataColumn 
+    org.talend.core.model.process.IConnection
+    org.talend.core.model.process.IConnectionCategory
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+    org.talend.core.model.metadata.types.JavaTypesManager
+	org.talend.core.model.metadata.types.JavaType
+" 
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+        String cid = node.getUniqueName();      
+        String filename = ElementParameterParser.getValue(node,"__FILENAME__");
+    	String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
+%>		
+		int nb_line_<%=cid%> = 0;
+		int totalLine<%=cid %> = 0;
+		String filename<%=cid%>=<%=filename%>;
+		weka.core.Instances data<%=cid%> = new weka.core.Instances(new java.io.BufferedReader(new java.io.FileReader(filename<%=cid%>)));
+        data<%=cid%>.setClassIndex(data.numAttributes()-1);
+        //read line
+        for(int lineNo=0;lineNo<data.numInstances();lineNo++){
+           //read column
+            
+            
+            
+ <%
+ 
+ List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
+ String firstConnName = "";
+ if (conns!=null) {
+     if (conns.size()>0) {
+         for(IConnection conn:conns){
+         firstConnName = conn.getName();
+         
+         if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {%><%  
+             List<IMetadataColumn> listColumns = metadata.getListColumns();
+             int colNo = 0;
+             for (IMetadataColumn column: listColumns) {
+                 if(column.getTalendType().equals("id_String")){
+%>          
+                     <%=conn.getName() %>.<%=column.getLabel() %> = data<%=cid%>.instance(lineNo).stringValue(<%=colNo%>);
+<%               }else if(column.getTalendType().equals("id_Date")){%>
+                     <%=conn.getName() %>.<%=column.getLabel() %> = new java.text.SimpleDateFormat(<%=column.getPattern()%>).parse(data<%=cid%>.instance(lineNo).stringValue(<%=colNo%>));
+<%               }else{%>
+                     <%=conn.getName()%>.<%=column.getLabel()%> = data<%=cid%>.instance(lineNo).value(<%=colNo%>);
+<%               }
+                 colNo++;
+             }       
+         }
+        } 
+     }
+ }
+%>
+
+
+
+
+
+             
+        //}
+<%
+    }// end if (metadata!=null) 
+}// end if ((metadatas!=null)&&(metadatas.size()>0)) 
+%>
+
+		
+		
+		
+		
+		
+		
