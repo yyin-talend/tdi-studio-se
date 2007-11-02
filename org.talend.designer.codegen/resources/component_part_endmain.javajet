@@ -16,13 +16,7 @@
 <%
 if ((trace)&&(node!=null)&&(!node.isThereLinkWithHash())) {
 %>
-if (runTrace.isPause()) {
-   while (runTrace.isPause()) {
-   	Thread.sleep(100);
-   };
-} else {
    Thread.sleep(<%=pauseTime%>);
-}
 <%
 }
 %>

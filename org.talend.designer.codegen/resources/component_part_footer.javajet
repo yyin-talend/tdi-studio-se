@@ -44,12 +44,20 @@ if((codePart.equals(ECodePart.END))&&(stat)&&connSet.size()>0){
      if (trace) {    
 %>
   if (<%=conn.getName() %> !=null) {
+  runTrace.isPause();
+  if (runTrace.isPause()) {
+   while (runTrace.isPause()) {
+   	Thread.sleep(100);
+   }
+  }	 else {
+  	
    // here we dump the line content for trace purpose
    runTrace.sendTrace("<%=conn.getName() %>","<%
          for (IMetadataColumn column : metadata.getListColumns()) {
    %><%=column.getLabel() %>="+<%=conn.getName() %>.<%=column.getLabel() %>+"|<%
          }
 %>");
+	}
   }
 <%
      }
