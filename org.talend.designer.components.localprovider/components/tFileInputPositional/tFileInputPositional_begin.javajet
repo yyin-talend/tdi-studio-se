@@ -408,10 +408,12 @@ while (reader_<%=cid %>.readRecord()) {
                 }
                 %>
                 <%=rejectConnName%>.errorMessage = e.getMessage();
+                <%=firstConnName %> = null;
                 <%
             } else {
                 %>
                 System.err.print(e.getMessage());
+                <%=firstConnName %> = null;
                 <%
             }
         } 

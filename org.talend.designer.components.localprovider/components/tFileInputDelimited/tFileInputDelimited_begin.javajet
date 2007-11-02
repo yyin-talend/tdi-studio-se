@@ -172,10 +172,12 @@ if(temp_<%=cid %>.length() > 0) {
                 }
                 %>
                 <%=rejectConnName%>.errorMessage = e.getMessage();
+                <%=firstConnName %> = null;
                 <%
             } else {
                 %>
                 System.err.print(e.getMessage());
+                <%=firstConnName %> = null;
                 <%
             }
         } 
@@ -497,10 +499,12 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 }
                 %>
                 <%=rejectConnName%>.errorMessage = e.getMessage();
+                <%=firstConnName %> = null;
                 <%
             } else {
                 %>
                 System.err.print(e.getMessage());
+                <%=firstConnName %> = null;
                 <%
             }
         } 
