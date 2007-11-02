@@ -25,6 +25,7 @@ import java.beans.PropertyChangeEvent;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FormAttachment;
@@ -33,6 +34,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
 
@@ -65,13 +67,23 @@ public class LabelController extends AbstractElementPropertySectionController {
             Control lastControl) {
         // TODO Auto-generated method stub
         FormData data;
-        CLabel labelLabel = getWidgetFactory().createCLabel(subComposite, (String) param.getValue(), SWT.SHADOW_NONE); //$NON-NLS-1$
+        CLabel labelLabel;
+        if (param.getValue().equals("")) {
+            labelLabel = getWidgetFactory().createCLabel(subComposite, param.getDisplayName(), SWT.SHADOW_NONE); //$NON-NLS-1$
+        } else {
+            labelLabel = getWidgetFactory().createCLabel(subComposite, (String) param.getValue(), SWT.SHADOW_NONE); //$NON-NLS-1$
+        }
 
         labelLabel.setData(PARAMETER_NAME, param.getName());
+        if (param.getContext() != null) {
+            labelLabel.setForeground(new Color(null, TalendTextUtils.stringToRGB(param.getContext())));
+        }
         if (elem instanceof Node) {
             labelLabel.setToolTipText(VARIABLE_TOOLTIP + param.getVariableName());
         }
+        hashCurControls.put(param.getName(), labelLabel);
         data = new FormData();
+
         if (lastControl != null) {
             data.left = new FormAttachment(lastControl, 0);
         } else {
@@ -107,6 +119,14 @@ public class LabelController extends AbstractElementPropertySectionController {
     @Override
     public void refresh(IElementParameter param, boolean check) {
         // TODO Auto-generated method stub
+        final String name2 = param.getName();
+        CLabel labelText = (CLabel) hashCurControls.get(name2);
+        Object value = param.getValue();
+        if (value.equals("")) {
+            labelText.setText(param.getDisplayName());
+        } else {
+            labelText.setText((String) value);
+        }
 
     }
 
