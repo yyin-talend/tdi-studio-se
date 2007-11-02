@@ -31,7 +31,7 @@ import org.talend.designer.core.i18n.Messages;
  */
 public enum EParameterName {
     NAME(Messages.getString("EParameterName.Name")), //$NON-NLS-1$
-    UNIQUE_NAME(Messages.getString("EParameterName.uniqueName")), //$NON-NLS-1$
+    UNIQUE_NAME(Messages.getString("EParameterName.uniqueName")), //$NON-NLS-1$    
     TRANSLATED_UNIQUE_NAME("Translated Unique Name"), //$NON-NLS-1$
     AUTHOR(Messages.getString("EParameterName.Author")), //$NON-NLS-1$
     PURPOSE(Messages.getString("EParameterName.Purpose")), //$NON-NLS-1$
@@ -47,6 +47,7 @@ public enum EParameterName {
     ACTIVATE(Messages.getString("EParameterName.Activate")), //$NON-NLS-1$
     LABEL(Messages.getString("EParameterName.LabelFormat")), //$NON-NLS-1$
     HINT(Messages.getString("EParameterName.HintFormat")), //$NON-NLS-1$
+    CONNECTION("Connection format"),
     SHOW_HINT(Messages.getString("EParameterName.ShowHint")), //$NON-NLS-1$
     COMMENT(Messages.getString("EParameterName.Comment")), //$NON-NLS-1$
     LOG_FILENAME(Messages.getString("EParameterName.FileName")), //$NON-NLS-1$

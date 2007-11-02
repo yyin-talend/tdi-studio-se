@@ -130,7 +130,7 @@ public class Node extends Element implements INode {
 
     protected String name, label, componentName;
 
-    private List<Connection> outputs = new ArrayList<Connection>();
+    private final List<Connection> outputs = new ArrayList<Connection>();
 
     private List<Connection> inputs = new ArrayList<Connection>();
 
@@ -148,9 +148,13 @@ public class Node extends Element implements INode {
 
     private String showHintText;
 
+    private String connectionName;
+
     private String labelToParse;
 
     private String hintToParse;
+
+    private String connectionToParse;
 
     private IExternalNode externalNode = null;
 
@@ -208,6 +212,7 @@ public class Node extends Element implements INode {
 
         labelToParse = store.getString(TalendDesignerPrefConstants.DEFAULT_LABEL);
         hintToParse = store.getString(TalendDesignerPrefConstants.DEFAULT_HINT);
+        connectionToParse = store.getString(TalendDesignerPrefConstants.DEFAULT_CONNECTION);
         showHint = store.getBoolean(TalendDesignerPrefConstants.DEFAULT_HINT_USED);
 
         nodeLabel = new NodeLabel(label, this);
@@ -290,6 +295,7 @@ public class Node extends Element implements INode {
         }
         setPropertyValue(EParameterName.LABEL.getName(), labelToParse);
         setPropertyValue(EParameterName.HINT.getName(), hintToParse);
+        setPropertyValue(EParameterName.CONNECTION.getName(), connectionToParse);
         setPropertyValue(EParameterName.SHOW_HINT.getName(), new Boolean(showHint));
         pluginFullName = newComponent.getPluginFullName();
         if (pluginFullName != IComponentsFactory.COMPONENTS_LOCATION) {
@@ -505,6 +511,11 @@ public class Node extends Element implements INode {
         String newshowHintText = ElementParameterParser.parse(this, hintToParse);
         if (!newshowHintText.equals(showHintText)) {
             setShowHintText(newshowHintText);
+        }
+
+        String newshoConnectionText = ElementParameterParser.parse(this, connectionToParse);
+        if (!newshoConnectionText.equals(connectionName)) {
+            setConnectionName(newshoConnectionText);
         }
     }
 
@@ -754,6 +765,7 @@ public class Node extends Element implements INode {
      * 
      * @see org.talend.designer.core.ui.editor.Element#getPropertyValue(java.lang.Object)
      */
+    @Override
     public Object getPropertyValue(final String id) {
         if (id.equals(EParameterName.UNIQUE_NAME.getName())) {
             return getUniqueName();
@@ -767,6 +779,7 @@ public class Node extends Element implements INode {
      * 
      * @see org.talend.designer.core.ui.editor.Element#setPropertyValue(java.lang.Object, java.lang.Object)
      */
+    @Override
     public void setPropertyValue(final String id, final Object value) {
         IElementParameter parameter = getElementParameter(id);
         if (id.equals(EParameterName.SCHEMA_TYPE.getName()) || id.equals(EParameterName.QUERYSTORE_TYPE.getName())
@@ -783,6 +796,12 @@ public class Node extends Element implements INode {
 
             setLabel(newValue);
         }
+
+        if (id.equals(EParameterName.CONNECTION.getName())) {
+            String newValue = ElementParameterParser.parse(this, connectionToParse);
+            setConnectionName(newValue);
+        }
+
         if (id.equals(EParameterName.START.getName())) {
             setStart((Boolean) value);
         }
@@ -1861,5 +1880,25 @@ public class Node extends Element implements INode {
             }
             return canBeStart;
         }
+    }
+
+    /**
+     * yzhang Comment method "setConnectionName".
+     * 
+     * @param name
+     */
+    public void setConnectionName(String name) {
+        this.connectionName = name;
+        firePropertyChange(EParameterName.CONDITION.getName(), null, null);
+    }
+
+    /**
+     * yzhang Comment method "getConnectionName".
+     * 
+     * @param name
+     * @return
+     */
+    public String getConnectionName() {
+        return this.connectionName;
     }
 }

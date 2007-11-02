@@ -82,6 +82,7 @@ public class DesignerPreferencePage extends FieldEditorPreferencePage implements
     public void createFieldEditors() {
         StringFieldEditor labelField;
         StringFieldEditor hintField;
+        StringFieldEditor connectionField;
         BooleanFieldEditor showHint;
         BooleanFieldEditor displayComponent;
 
@@ -91,6 +92,8 @@ public class DesignerPreferencePage extends FieldEditorPreferencePage implements
         hintField = new StringFieldEditor(TalendDesignerPrefConstants.DEFAULT_HINT, Messages
                 .getString("DesignerPreferencePage.component.defaultHint"), //$NON-NLS-1$
                 getFieldEditorParent());
+        connectionField = new StringFieldEditor(TalendDesignerPrefConstants.DEFAULT_CONNECTION, "Components default connection",
+                getFieldEditorParent());
         showHint = new BooleanFieldEditor(TalendDesignerPrefConstants.DEFAULT_HINT_USED, Messages
                 .getString("DesignerPreferencePage.hintShowed"), //$NON-NLS-1$
                 getFieldEditorParent());
@@ -99,31 +102,29 @@ public class DesignerPreferencePage extends FieldEditorPreferencePage implements
 
         addField(labelField);
         addField(hintField);
+        addField(connectionField);
         addField(showHint);
         addField(displayComponent);
 
-        DirectoryFieldEditor compDefaultFileDir = new DirectoryFieldEditor(
-                TalendDesignerPrefConstants.COMP_DEFAULT_FILE_DIR, Messages
-                        .getString("DesignerPreferencePage.defaultFilePathDirectory"), getFieldEditorParent()); //$NON-NLS-1$
+        DirectoryFieldEditor compDefaultFileDir = new DirectoryFieldEditor(TalendDesignerPrefConstants.COMP_DEFAULT_FILE_DIR,
+                Messages.getString("DesignerPreferencePage.defaultFilePathDirectory"), getFieldEditorParent()); //$NON-NLS-1$
         addField(compDefaultFileDir);
 
         addField(new BooleanFieldEditor(TalendDesignerPrefConstants.PROPERTY_CODE_CHECK, Messages
                 .getString("DesignerPreferencePage.propertyCodeCheck"), getFieldEditorParent())); //$NON-NLS-1$
 
-        RadioGroupFieldEditor largeIconsSizeField = new RadioGroupFieldEditor(
-                TalendDesignerPrefConstants.LARGE_ICONS_SIZE, Messages
-                        .getString("DesignerPreferencePage.largeIconsSize"), 2, new String[][] {
-                        { "24 pixels", "" + 24 }, { "32 pixels", "" + 32 } }, getFieldEditorParent());
+        RadioGroupFieldEditor largeIconsSizeField = new RadioGroupFieldEditor(TalendDesignerPrefConstants.LARGE_ICONS_SIZE,
+                Messages.getString("DesignerPreferencePage.largeIconsSize"), 2, new String[][] { { "24 pixels", "" + 24 }, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                        { "32 pixels", "" + 32 } }, getFieldEditorParent()); //$NON-NLS-1$ //$NON-NLS-2$
         addField(largeIconsSizeField);
 
         BooleanFieldEditor antialiasing;
         antialiasing = new BooleanFieldEditor(TalendDesignerPrefConstants.EDITOR_ANTIALIASING,
-                "enhanced using antialiasing and interpolation in the Job Designer", getFieldEditorParent());
+                "enhanced using antialiasing and interpolation in the Job Designer", getFieldEditorParent()); //$NON-NLS-1$
         addField(antialiasing);
         // BooleanFieldEditor interpolation;
         // interpolation = new BooleanFieldEditor(TalendDesignerPrefConstants.EDITOR_INTERPOLATION,
         // "interpolation in the Job Designer", getFieldEditorParent());
         // addField(interpolation);
     }
-
 }

@@ -344,7 +344,12 @@ public class Connection extends Element implements IConnection, IPerformance {
 
         if (updateName) {
             if (!label.getLabelText().equals(labelText)) {
-                label.setLabelText(labelText);
+
+                if (source.getProcess().checkValidConnectionName(source.getConnectionName(), false)) {
+                    label.setLabelText(source.getConnectionName());
+                } else {
+                    label.setLabelText(labelText);
+                }
             }
             firePropertyChange(NAME, null, name);
         }
@@ -489,6 +494,7 @@ public class Connection extends Element implements IConnection, IPerformance {
      * 
      * @see org.talend.designer.core.ui.editor.Element#setPropertyValue(java.lang.Object, java.lang.Object)
      */
+    @Override
     public void setPropertyValue(String id, Object value) {
         if (id.equals(EParameterName.ACTIVATE.getName())) {
             setActivate((Boolean) value);
@@ -511,6 +517,7 @@ public class Connection extends Element implements IConnection, IPerformance {
      * 
      * @see org.talend.designer.core.ui.editor.Element#getPropertyValue(java.lang.Object)
      */
+    @Override
     public Object getPropertyValue(String id) {
         if (id.equals(LINESTYLE_PROP)) {
             return getLineStyle();
@@ -760,7 +767,7 @@ public class Connection extends Element implements IConnection, IPerformance {
         List<INode> metterNodes = (List<INode>) sourceNode.getProcess().getNodesOfType("tFlowMeter");
         if (metterNodes.size() > 0) {
 
-            Iterator<INode> it = (Iterator<INode>) metterNodes.iterator();
+            Iterator<INode> it = metterNodes.iterator();
             while (it.hasNext()) {
                 INode node = it.next();
 

@@ -93,7 +93,7 @@ public class EmfComponent implements IComponent {
 
     private static final String DEFAULT_COLOR = "255;255;255"; //$NON-NLS-1$
 
-    private File file;
+    private final File file;
 
     private static final long serialVersionUID = 1L;
 
@@ -107,7 +107,7 @@ public class EmfComponent implements IComponent {
 
     private ImageDescriptor icon16;
 
-    private ECodeLanguage codeLanguage;
+    private final ECodeLanguage codeLanguage;
 
     public static final String BUILTIN = "BUILT_IN"; //$NON-NLS-1$
 
@@ -297,12 +297,23 @@ public class EmfComponent implements IComponent {
         listParam.add(param);
 
         param = new ElementParameter(node);
+        param.setName(EParameterName.CONNECTION.getName());
+        param.setDisplayName(EParameterName.CONNECTION.getDisplayName());
+        param.setField(EParameterFieldType.TEXT);
+        param.setCategory(EComponentCategory.VIEW);
+        param.setNumRow(3);
+        param.setReadOnly(false);
+        param.setRequired(false);
+        param.setShow(true);
+        listParam.add(param);
+
+        param = new ElementParameter(node);
         param.setName(EParameterName.SHOW_HINT.getName());
         param.setValue(new Boolean(false));
         param.setDisplayName(EParameterName.SHOW_HINT.getDisplayName());
         param.setField(EParameterFieldType.CHECK);
         param.setCategory(EComponentCategory.VIEW);
-        param.setNumRow(3);
+        param.setNumRow(4);
         param.setReadOnly(false);
         param.setRequired(false);
         param.setShow(true);
