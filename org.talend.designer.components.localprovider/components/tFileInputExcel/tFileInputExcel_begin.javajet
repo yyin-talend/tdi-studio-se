@@ -89,7 +89,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		if (conns!=null) {
 			if (conns.size()>0) {
 				IConnection conn = conns.get(0);
-				firstConnName = cid;
+				firstConnName = conn.getName();
 				List<IMetadataColumn> listColumns = metadata.getListColumns();
 				int size = listColumns.size();
 				if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
@@ -106,7 +106,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			}
 			
 			boolean whetherReject_<%=cid %> = false;
-			<%=conn.getName() %>Struct <%=firstConnName %> = new <%=conn.getName() %>Struct();
+			<%=firstConnName %> = new <%=conn.getName() %>Struct();
 			try {			
 <%
 //start
@@ -187,7 +187,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             throw(e);
             <%
         } else {
-            if(!rejectConnName.equals("")&& rejectColumnList != null && rejectColumnList.size() > 0) {
+            if(!rejectConnName.equals("")&&!rejectConnName.equals(firstConnName)&&rejectColumnList != null && rejectColumnList.size() > 0) {
 
                 %>
                     <%=rejectConnName %> = new <%=rejectConnName %>Struct();
@@ -212,15 +212,13 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 					<%
 				}
 			}
-		if (conns.size()>0) {
-%>
-        if(!whetherReject_<%=cid%>) {
-<%		
+		if (conns.size()>0) {	
+			boolean isFirstEnter = true;
 			for (int i=0;i<conns.size();i++) {
 				IConnection conn = conns.get(i);
-				if ((conn.getName().compareTo(rejectConnName)!=0)&&(conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA))) {
+				if ((conn.getName().compareTo(firstConnName)!=0)&&(conn.getName().compareTo(rejectConnName)!=0)&&(conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA))) {
 %>
-                     
+		<% if(isFirstEnter) {%>if(!whetherReject_<%=cid%>) { <% isFirstEnter = false; } %>      
              if(<%=conn.getName() %> == null){ 
             	 <%=conn.getName() %> = new <%=conn.getName() %>Struct();
              }				
@@ -233,7 +231,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				}
 			}
 %>
-		}	
+		<% if(!isFirstEnter) {%> } <% } %>	
 <%
 		}
 		}

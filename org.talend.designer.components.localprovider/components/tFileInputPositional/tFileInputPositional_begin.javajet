@@ -230,11 +230,11 @@ while (reader_<%=cid %>.readRecord()) {
 	if (conns!=null) {
 		if (conns.size()>0) {
 			IConnection conn = conns.get(0);
-			firstConnName =  cid;
+			firstConnName = conn.getName();
 			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {%>
 			
 			boolean whetherReject_<%=cid %> = false;
-			<%=conn.getName() %>Struct <%=firstConnName %> = new <%=conn.getName() %>Struct();
+			<%=firstConnName %> = new <%=conn.getName() %>Struct();
 			try {
 			
 			<%
@@ -396,7 +396,7 @@ while (reader_<%=cid %>.readRecord()) {
             throw(e);
             <%
         } else {
-            if(!rejectConnName.equals("")&& rejectColumnList != null && rejectColumnList.size() > 0) {
+            if(!rejectConnName.equals("")&&!rejectConnName.equals(firstConnName)&&rejectColumnList != null && rejectColumnList.size() > 0) {
 
                 %>
                     <%=rejectConnName %> = new <%=rejectConnName %>Struct();
@@ -420,15 +420,13 @@ while (reader_<%=cid %>.readRecord()) {
         			
         			<%        			
         		}
-		if (conns.size()>0) {
-%>
-        if(!whetherReject_<%=cid%>) {
-<%		
+		if (conns.size()>0) {	
+			boolean isFirstEnter = true;
 			for (int i=0;i<conns.size();i++) {
 				conn = conns.get(i);
-				if ((conn.getName().compareTo(rejectConnName)!=0)&&(conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA))) {
+				if ((conn.getName().compareTo(firstConnName)!=0)&&(conn.getName().compareTo(rejectConnName)!=0)&&(conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA))) {
 %>
-                     
+		<% if(isFirstEnter) {%>if(!whetherReject_<%=cid%>) { <% isFirstEnter = false; } %>      
              if(<%=conn.getName() %> == null){ 
             	 <%=conn.getName() %> = new <%=conn.getName() %>Struct();
              }				
@@ -441,7 +439,7 @@ while (reader_<%=cid %>.readRecord()) {
 				}
 			}
 %>
-		}	
+		<% if(!isFirstEnter) {%> } <% } %>	
 <%
 		}
         	}

@@ -128,13 +128,13 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		if (conns.size()>0) {//2
 		
 			IConnection conn = conns.get(0); //the first connection
-			firstConnName = cid;		
+			firstConnName = conn.getName();		
 			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {//3
 
 				%>
 
 			boolean whetherReject_<%=cid %> = false;
-			<%=conn.getName() %>Struct <%=firstConnName %> = new <%=conn.getName() %>Struct();
+			<%=firstConnName %> = new <%=conn.getName() %>Struct();
 			try {			
 <%
 			List<IMetadataColumn> columns=metadata.getListColumns();
@@ -186,7 +186,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             throw(e);
             <%
         } else {
-            if(!rejectConnName.equals("")&& rejectColumnList != null && rejectColumnList.size() > 0) {
+            if(!rejectConnName.equals("")&&!rejectConnName.equals(firstConnName)&&rejectColumnList != null && rejectColumnList.size() > 0) {
 
                 %>
                     <%=rejectConnName %> = new <%=rejectConnName %>Struct();
@@ -212,15 +212,13 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		}//3
 		
 		
-		if (conns.size()>0) {
-%>
-        if(!whetherReject_<%=cid%>) {
-<%		
+		if (conns.size()>0) {	
+			boolean isFirstEnter = true;
 			for (int i=0;i<conns.size();i++) {
 				conn = conns.get(i);
-				if ((conn.getName().compareTo(rejectConnName)!=0)&&(conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA))) {
+				if ((conn.getName().compareTo(firstConnName)!=0)&&(conn.getName().compareTo(rejectConnName)!=0)&&(conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA))) {
 %>
-                     
+		<% if(isFirstEnter) {%>if(!whetherReject_<%=cid%>) { <% isFirstEnter = false; } %>      
              if(<%=conn.getName() %> == null){ 
             	 <%=conn.getName() %> = new <%=conn.getName() %>Struct();
              }				
@@ -233,7 +231,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				}
 			}
 %>
-		}	
+		<% if(!isFirstEnter) {%> } <% } %>	
 <%
 		}
 		
