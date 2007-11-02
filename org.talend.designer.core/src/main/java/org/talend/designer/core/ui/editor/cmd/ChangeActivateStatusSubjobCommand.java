@@ -57,28 +57,28 @@ public class ChangeActivateStatusSubjobCommand extends Command {
             if (!oneComponent) {
                 if (node.isActivate()) {
                     value = false;
-                    setLabel(Messages.getString("ChangeActivateStatusSubjobCommand.Label.ActiveComplete")); //$NON-NLS-1$
+                    setLabel(Messages.getString("ChangeActivateStatusSubjobCommand.Label.DeactiveComplete")); //$NON-NLS-1$
                 } else {
                     value = true;
-                    setLabel(Messages.getString("ChangeActivateStatusSubjobCommand.Label.DeactiveComplete")); //$NON-NLS-1$
+                    setLabel(Messages.getString("ChangeActivateStatusSubjobCommand.Label.ActiveComplete")); //$NON-NLS-1$
                 }
             } else {
                 if (node.isActivate()) {
                     value = false;
-                    setLabel(Messages.getString("ChangeActivateStatusSubjobCommand.Label.ActivePart")); //$NON-NLS-1$
+                    setLabel(Messages.getString("ChangeActivateStatusSubjobCommand.Label.DeactivePart")); //$NON-NLS-1$
                 } else {
                     value = true;
-                    setLabel(Messages.getString("ChangeActivateStatusSubjobCommand.Label.DeactivePart")); //$NON-NLS-1$
+                    setLabel(Messages.getString("ChangeActivateStatusSubjobCommand.Label.ActivePart")); //$NON-NLS-1$
                 }
             }
 
         } else {
             if (node.isActivate()) {
                 value = false;
-                setLabel(Messages.getString("ChangeActivateStatusSubjobCommand.Label.ActivePart")); //$NON-NLS-1$
+                setLabel(Messages.getString("ChangeActivateStatusSubjobCommand.Label.DeactivePart")); //$NON-NLS-1$
             } else {
                 value = true;
-                setLabel(Messages.getString("ChangeActivateStatusSubjobCommand.Label.DeactivePart")); //$NON-NLS-1$
+                setLabel(Messages.getString("ChangeActivateStatusSubjobCommand.Label.ActivePart")); //$NON-NLS-1$
             }
         }
     }
