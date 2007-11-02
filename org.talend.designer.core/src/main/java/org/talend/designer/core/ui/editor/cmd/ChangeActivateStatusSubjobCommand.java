@@ -54,13 +54,24 @@ public class ChangeActivateStatusSubjobCommand extends Command {
         this.node = node;
         this.oneComponent = oneComponent;
         if (node.isStart()) {
-            if (node.isActivate()) {
-                value = false;
-                setLabel(Messages.getString("ChangeActivateStatusSubjobCommand.Label.ActiveComplete")); //$NON-NLS-1$
+            if (!oneComponent) {
+                if (node.isActivate()) {
+                    value = false;
+                    setLabel(Messages.getString("ChangeActivateStatusSubjobCommand.Label.ActiveComplete")); //$NON-NLS-1$
+                } else {
+                    value = true;
+                    setLabel(Messages.getString("ChangeActivateStatusSubjobCommand.Label.DeactiveComplete")); //$NON-NLS-1$
+                }
             } else {
-                value = true;
-                setLabel(Messages.getString("ChangeActivateStatusSubjobCommand.Label.DeactiveComplete")); //$NON-NLS-1$
+                if (node.isActivate()) {
+                    value = false;
+                    setLabel(Messages.getString("ChangeActivateStatusSubjobCommand.Label.ActivePart")); //$NON-NLS-1$
+                } else {
+                    value = true;
+                    setLabel(Messages.getString("ChangeActivateStatusSubjobCommand.Label.DeactivePart")); //$NON-NLS-1$
+                }
             }
+
         } else {
             if (node.isActivate()) {
                 value = false;
