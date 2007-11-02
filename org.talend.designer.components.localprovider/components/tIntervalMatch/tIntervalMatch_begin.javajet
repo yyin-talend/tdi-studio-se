@@ -45,7 +45,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
         String mainName = ElementParameterParser.getValue(node, "__MAIN_COLUMN__");
         String minName = minNameOrigi.substring(minNameOrigi.lastIndexOf('.')+1);
         String maxName = maxNameOrigi.substring(maxNameOrigi.lastIndexOf('.')+1);
-        String lookupName = ElementParameterParser.getValue(node, "__LOOKUP_COLUMN__");
+        String lookupNameOrigi = ElementParameterParser.getValue(node, "__LOOKUP_COLUMN__");
+    	String lookUpName = lookupNameOrigi.substring(lookupNameOrigi.lastIndexOf('.')+1);
         String lookupConName = inRefCon.getName();
         String mainConName = inMainCon.getName();
 
