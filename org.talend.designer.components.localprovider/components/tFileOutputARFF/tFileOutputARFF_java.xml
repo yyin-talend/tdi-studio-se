@@ -104,19 +104,14 @@
       <DEFAULT>true</DEFAULT>
     </PARAMETER>
     
-    <PARAMETER
-      NAME="ENCODING"
-      FIELD="ENCODING_TYPE"
-      NUM_ROW="7"
-      REQUIRED="true"
-      REPOSITORY_VALUE="ENCODING"
-    >
-      <DEFAULT>"ISO-8859-15"</DEFAULT>
-    </PARAMETER>
+
 
   </PARAMETERS>
 
   <CODEGENERATION>
+    <IMPORTS>
+      <IMPORT NAME="WEKA" MODULE="weka.jar" REQUIRED="true" />
+    </IMPORTS>
   </CODEGENERATION>
 
   <RETURNS>

@@ -28,9 +28,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		int totalLine<%=cid %> = 0;
 		String filename<%=cid%>=<%=filename%>;
 		weka.core.Instances data<%=cid%> = new weka.core.Instances(new java.io.BufferedReader(new java.io.FileReader(filename<%=cid%>)));
-        data<%=cid%>.setClassIndex(data.numAttributes()-1);
+        data<%=cid%>.setClassIndex(data<%=cid%>.numAttributes()-1);
         //read line
-        for(int lineNo=0;lineNo<data.numInstances();lineNo++){
+        for(int lineNo=0;lineNo<data<%=cid%>.numInstances();lineNo++){
            //read column
             
             
