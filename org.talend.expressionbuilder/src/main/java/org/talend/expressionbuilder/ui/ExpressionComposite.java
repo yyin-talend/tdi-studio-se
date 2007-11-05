@@ -23,6 +23,8 @@ package org.talend.expressionbuilder.ui;
 
 import java.util.List;
 
+import org.eclipse.jdt.internal.ui.javaeditor.JavaEditor;
+import org.eclipse.jface.dialogs.TrayDialog;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.source.ISourceViewer;
@@ -44,6 +46,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.ui.IEditorPart;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
@@ -61,6 +64,10 @@ import org.talend.expressionbuilder.i18n.Messages;
  */
 public class ExpressionComposite extends Composite {
 
+    private static final String TEXT_OPEN_SNIPPETS = "Open Snippets";
+
+    private static final String TEXT_CLOSE_SNIPPETS = "Close Snippets";
+
     private final IDocument document;
 
     private final StyledText textControl;
@@ -70,6 +77,12 @@ public class ExpressionComposite extends Composite {
     private final ExpressionRecorder modificationRecord;
 
     private ISourceViewer viewer;
+
+    TrayDialog trayDialog = null;
+
+    private IEditorPart editorPart;
+
+    private Button insertSnippetsButton;
 
     /**
      * DOC yzhang ExpressionComposite class global comment. Detailled comment <br/>
@@ -110,13 +123,15 @@ public class ExpressionComposite extends Composite {
     /**
      * Create the composite
      * 
+     * @param expressionBuilderDialog
+     * 
      * @param parent
      * @param style
      */
-    public ExpressionComposite(Composite parent, int style, IExpressionDataBean dataBean) {
+    public ExpressionComposite(TrayDialog expressionBuilderDialog, Composite parent, int style, IExpressionDataBean dataBean) {
         super(parent, style);
         setLayout(new FillLayout());
-
+        this.trayDialog = expressionBuilderDialog;
         final Group expressionGroup = new Group(this, SWT.NONE);
         GridLayout groupLayout = new GridLayout();
         expressionGroup.setLayout(groupLayout);
@@ -125,7 +140,7 @@ public class ExpressionComposite extends Composite {
         final Composite upperOperationButtonBar = new Composite(expressionGroup, SWT.NONE);
         final GridLayout gridLayout = new GridLayout();
         gridLayout.horizontalSpacing = 8;
-        gridLayout.numColumns = 3;
+        gridLayout.numColumns = 4;
         gridLayout.marginTop = 0;
         gridLayout.marginBottom = 0;
         gridLayout.marginLeft = 0;
@@ -135,6 +150,17 @@ public class ExpressionComposite extends Composite {
         upperOperationButtonBar.setLayout(gridLayout);
         upperOperationButtonBar.setLayoutData(new GridData(GridData.FILL_HORIZONTAL | GridData.HORIZONTAL_ALIGN_END));
         upperOperationButtonBar.setData("nsd", null); //$NON-NLS-1$
+
+        insertSnippetsButton = new Button(upperOperationButtonBar, SWT.TOGGLE);
+        insertSnippetsButton.setText(TEXT_OPEN_SNIPPETS);
+        insertSnippetsButton.addSelectionListener(new SelectionAdapter() {
+
+            public void widgetSelected(SelectionEvent e) {
+                Button b = (Button) e.widget;
+                processSnippetsTray(b.getSelection());
+            }
+
+        });
 
         final Button wrapButton = new Button(upperOperationButtonBar, SWT.CHECK);
         wrapButton.setText("Wrap");
@@ -197,7 +223,9 @@ public class ExpressionComposite extends Composite {
         // text = new ColorStyledText(composite, SWT.BORDER | SWT.MULTI | SWT.WRAP | SWT.V_SCROLL, colorManager,
         // LanguageManager.getCurrentLanguage().getName());
         if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.JAVA)) {
-            viewer = TalendJavaSourceViewer.createViewer2(composite, SWT.NONE, dataBean);
+            JavaEditor editor = TalendJavaSourceViewer.createViewer2(composite, SWT.NONE, dataBean);
+            editorPart = editor;
+            viewer = editor.getViewer();
         } else {
             viewer = TalendPerlSourceViewer.createViewer(composite, SWT.NONE, true);
         }
@@ -296,6 +324,23 @@ public class ExpressionComposite extends Composite {
         final Button rightBracketbutton = new Button(lowerOperationButtonBar, SWT.NONE);
         rightBracketbutton.setText(")"); //$NON-NLS-1$
         rightBracketbutton.addMouseListener(buttonListener);
+
+    }
+
+    private void processSnippetsTray(boolean open) {
+        if (open) {
+            if (trayDialog.getTray() != null) {
+                // already open.
+                return;
+            }
+            SnippetsDialogTray tray = new SnippetsDialogTray();
+            tray.setEditor(editorPart);
+            insertSnippetsButton.setText(TEXT_CLOSE_SNIPPETS);
+            trayDialog.openTray(tray);
+        } else {
+            insertSnippetsButton.setText(TEXT_OPEN_SNIPPETS);
+            trayDialog.closeTray();
+        }
 
     }
 

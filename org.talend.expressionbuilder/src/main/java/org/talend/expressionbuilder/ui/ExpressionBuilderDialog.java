@@ -34,8 +34,8 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.TrayDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.KeyAdapter;
@@ -76,7 +76,7 @@ import org.xml.sax.SAXException;
  * $Id: ExpressionBuilderDialog.java ä¸Šå�ˆ10:12:13 2007-7-24 +0000 (2007-7-24) yzhang $
  * 
  */
-public class ExpressionBuilderDialog extends Dialog implements IExpressionBuilderDialogController {
+public class ExpressionBuilderDialog extends TrayDialog implements IExpressionBuilderDialogController {
 
     private static final int EXPORT_ID = IDialogConstants.CLIENT_ID + 22;
 
@@ -129,7 +129,7 @@ public class ExpressionBuilderDialog extends Dialog implements IExpressionBuilde
 
         final SashForm upperSashform = new SashForm(upperComposite, SWT.NONE);
 
-        expressionComposite = new ExpressionComposite(upperSashform, SWT.NONE, dataBean);
+        expressionComposite = new ExpressionComposite(this, upperSashform, SWT.NONE, dataBean);
         expressionComposite.setExpression(defaultExpression, true);
 
         testComposite = new TestComposite(upperSashform, SWT.NONE);
