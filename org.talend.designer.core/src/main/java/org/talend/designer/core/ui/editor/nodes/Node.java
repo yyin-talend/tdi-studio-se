@@ -293,6 +293,20 @@ public class Node extends Element implements INode {
                 }
             }
         }
+
+        for (int i = 0; i < getElementParameters().size(); i++) {
+            IElementParameter param = getElementParameters().get(i);
+            Object obj = param.getValue();
+            if (obj != null) {
+                if (param.getName().equals(EParameterName.LABEL.getName())) {
+                    labelToParse = (String) obj;
+                } else if (param.getName().equals(EParameterName.HINT.getName())) {
+                    hintToParse = (String) obj;
+                } else if (param.getName().equals(EParameterName.CONNECTION.getName())) {
+                    connectionToParse = (String) obj;
+                }
+            }
+        }
         setPropertyValue(EParameterName.LABEL.getName(), labelToParse);
         setPropertyValue(EParameterName.HINT.getName(), hintToParse);
         setPropertyValue(EParameterName.CONNECTION.getName(), connectionToParse);
@@ -798,6 +812,7 @@ public class Node extends Element implements INode {
         }
 
         if (id.equals(EParameterName.CONNECTION.getName())) {
+            connectionToParse = (String) value;
             String newValue = ElementParameterParser.parse(this, connectionToParse);
             setConnectionName(newValue);
         }
@@ -1889,7 +1904,7 @@ public class Node extends Element implements INode {
      */
     public void setConnectionName(String name) {
         this.connectionName = name;
-        firePropertyChange(EParameterName.CONDITION.getName(), null, null);
+        firePropertyChange(EParameterName.CONNECTION.getName(), null, this.connectionName);
     }
 
     /**

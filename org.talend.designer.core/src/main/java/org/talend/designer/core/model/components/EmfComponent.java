@@ -68,6 +68,7 @@ import org.talend.designer.core.model.utils.emf.component.COMPONENTType;
 import org.talend.designer.core.model.utils.emf.component.CONNECTORType;
 import org.talend.designer.core.model.utils.emf.component.DEFAULTType;
 import org.talend.designer.core.model.utils.emf.component.DocumentRoot;
+import org.talend.designer.core.model.utils.emf.component.FORMATType;
 import org.talend.designer.core.model.utils.emf.component.IMPORTType;
 import org.talend.designer.core.model.utils.emf.component.INSTALLType;
 import org.talend.designer.core.model.utils.emf.component.ITEMSType;
@@ -274,6 +275,8 @@ public class EmfComponent implements IComponent {
     private void addViewParameters(final List<ElementParameter> listParam, INode node) {
         ElementParameter param;
 
+        FORMATType formatType = compType.getHEADER().getFORMAT();
+
         param = new ElementParameter(node);
         param.setName(EParameterName.LABEL.getName());
         param.setDisplayName(EParameterName.LABEL.getDisplayName());
@@ -283,6 +286,9 @@ public class EmfComponent implements IComponent {
         param.setReadOnly(false);
         param.setRequired(false);
         param.setShow(true);
+        if (formatType != null) {
+            param.setValue(formatType.getLABEL());
+        }
         listParam.add(param);
 
         param = new ElementParameter(node);
@@ -294,6 +300,9 @@ public class EmfComponent implements IComponent {
         param.setReadOnly(false);
         param.setRequired(false);
         param.setShow(true);
+        if (formatType != null) {
+            param.setValue(formatType.getHINT());
+        }
         listParam.add(param);
 
         param = new ElementParameter(node);
@@ -305,6 +314,9 @@ public class EmfComponent implements IComponent {
         param.setReadOnly(false);
         param.setRequired(false);
         param.setShow(true);
+        if (formatType != null) {
+            param.setValue(formatType.getCONNECTION());
+        }
         listParam.add(param);
 
         param = new ElementParameter(node);

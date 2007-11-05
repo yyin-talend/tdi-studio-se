@@ -294,9 +294,8 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
                 ((NodeFigure) figure).setHint(""); //$NON-NLS-1$
             }
         } else if (changeEvent.getPropertyName().equals(EParameterName.CONNECTION.getName())) {
-
-            // TODO
-            System.out.println("see mark GEF Listener");
+            refreshTargetConnections();
+            refreshSourceConnections();
         }
     }
 
