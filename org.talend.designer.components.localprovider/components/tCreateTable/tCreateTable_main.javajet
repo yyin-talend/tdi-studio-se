@@ -175,7 +175,11 @@ class Transfer{
 	public String protectChar(String dbType, String tableName, INode node){
         if(dbType.equals("Postgre")) {
             String schema = ElementParameterParser.getValue(node,"__SCHEMA_POSTGRES__");
-            return "\\\"\"+"+schema+"+\"\\\".\\\"\"+"+tableName+"+\"\\\"";		
+            if(schema == null || schema.equals("") || schema.equals("\"\"")) {
+                return "\\\"\"+"+tableName+"+\"\\\"";
+            } else {
+                return "\\\"\"+"+schema+"+\"\\\".\\\"\"+"+tableName+"+\"\\\"";
+            }
         } else if(dbType.equals("DB2")||dbType.equals("Ingres")||dbType.equals("MSSQL")||dbType.equals("SQLite")||dbType.equals("Firebird")||dbType.equals("JavaDB")||dbType.equals("HSQLdb")||dbType.equals("Interbase")||dbType.equals("Informix")){
 			return "\\\"\"+"+tableName+"+\"\\\"";
 		}else if(dbType.equals("Access")){
