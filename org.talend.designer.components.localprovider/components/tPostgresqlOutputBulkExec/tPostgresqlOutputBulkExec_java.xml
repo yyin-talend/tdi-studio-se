@@ -57,8 +57,17 @@
     <PARAMETER
       NAME="DBNAME"
       FIELD="TEXT"
-      NUM_ROW="3"
+      NUM_ROW="4"
       REPOSITORY_VALUE="SID"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="SCHEMA_DB"
+      FIELD="TEXT"
+      NUM_ROW="4"
+      REPOSITORY_VALUE="SCHEMA"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -66,7 +75,7 @@
     <PARAMETER
       NAME="USER"
       FIELD="TEXT"
-      NUM_ROW="4"
+      NUM_ROW="5"
       REPOSITORY_VALUE="USERNAME"
     >
       <DEFAULT>""</DEFAULT>
@@ -75,7 +84,7 @@
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
-      NUM_ROW="4"
+      NUM_ROW="5"
       REPOSITORY_VALUE="PASSWORD"
     >
       <DEFAULT>""</DEFAULT>
@@ -133,6 +142,7 @@
       <TEMPLATE_PARAM SOURCE="self.DBNAME" TARGET="tPBE.DBNAME" />
       <TEMPLATE_PARAM SOURCE="self.PORT"   TARGET="tPBE.PORT"   />
       <TEMPLATE_PARAM SOURCE="self.USER"   TARGET="tPBE.USER" />
+      <TEMPLATE_PARAM SOURCE="self.SCHEMA_DB"   TARGET="tPBE.SCHEMA_DB" />
       <TEMPLATE_PARAM SOURCE="self.PASS"   TARGET="tPBE.PASS" />
       <TEMPLATE_PARAM SOURCE="self.TABLE"  TARGET="tPBE.TABLE" />
 
