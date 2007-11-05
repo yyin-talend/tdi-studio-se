@@ -55,7 +55,7 @@ public class ConnectionCreateAction extends SelectionAction {
 
     public static final String ID = "org.talend.designer.core.ui.editor.action.ConnectionCreateAction"; //$NON-NLS-1$
 
-    private EConnectionType connecType;
+    private final EConnectionType connecType;
 
     private NodePart nodePart;
 
@@ -141,7 +141,7 @@ public class ConnectionCreateAction extends SelectionAction {
 
             if (curNodeConnector.isBuiltIn()) {
                 for (int i = 0; i < node.getMetadataList().size(); i++) {
-                    IMetadataTable table = ((IMetadataTable) node.getMetadataList().get(i));
+                    IMetadataTable table = (node.getMetadataList().get(i));
                     String name = table.getTableName();
                     if (connecType.equals(EConnectionType.TABLE)) {
                         name = table.getLabel() + " (" + name + ")"; //$NON-NLS-1$ //$NON-NLS-2$
@@ -262,6 +262,7 @@ public class ConnectionCreateAction extends SelectionAction {
      * 
      * @see org.eclipse.jface.action.Action#run()
      */
+    @Override
     public void run() {
         IMetadataTable meta = null;
         IMetadataTable newMetadata = null;
@@ -309,7 +310,7 @@ public class ConnectionCreateAction extends SelectionAction {
                 } else {
                     boolean metaExist = false;
                     for (int i = 0; i < node.getMetadataList().size(); i++) {
-                        if (((IMetadataTable) node.getMetadataList().get(i)).getTableName().equals(connectionName)) {
+                        if ((node.getMetadataList().get(i)).getTableName().equals(connectionName)) {
                             metaExist = true;
                         }
                     }
@@ -360,7 +361,7 @@ public class ConnectionCreateAction extends SelectionAction {
             if (node.getMetadataList().size() == 0) {
                 meta = null;
             } else {
-                meta = (IMetadataTable) node.getMetadataFromConnector(curNodeConnector.getName());
+                meta = node.getMetadataFromConnector(curNodeConnector.getName());
             }
         }
 
@@ -401,7 +402,15 @@ public class ConnectionCreateAction extends SelectionAction {
         } else {
             listArgs.add(node.getUniqueName());
         }
-        listArgs.add(connectionName);
+
+        String baseName = node.getConnectionName() + "_";
+        String fromConnectionName = node.getProcess().generateUniqueConnectionName(baseName);
+        if (node.getProcess().checkValidConnectionName(fromConnectionName, false)) {
+            listArgs.add(fromConnectionName);
+        } else {
+            listArgs.add(connectionName);
+        }
+
         listArgs.add(newMetadata);
         MenuConnectionCreationTool myConnectTool = new MenuConnectionCreationTool(new CreationFactory() {
 

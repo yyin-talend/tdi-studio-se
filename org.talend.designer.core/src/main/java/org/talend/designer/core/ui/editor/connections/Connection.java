@@ -343,14 +343,13 @@ public class Connection extends Element implements IConnection, IPerformance {
          */
 
         if (updateName) {
+
             if (!label.getLabelText().equals(labelText)) {
 
-                if (source.getProcess().checkValidConnectionName(source.getConnectionName(), false)) {
-                    label.setLabelText(source.getConnectionName());
-                } else {
-                    label.setLabelText(labelText);
-                }
+                label.setLabelText(labelText);
+
             }
+
             firePropertyChange(NAME, null, name);
         }
     }
