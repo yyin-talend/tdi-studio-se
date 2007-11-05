@@ -97,6 +97,7 @@ public class MemoryHashMapTest {
         }
 
         int loop = 10000000;
+//        int loop = 100;
         // int LOOP = 5000000;
 
         Sizeof.runGC();
@@ -106,15 +107,16 @@ public class MemoryHashMapTest {
 
         long time1 = System.currentTimeMillis();
 
-        // Tests pour 10 000 000 d'items
+        // Tests for 10 000 000 items
 
-        // Map hashMap = new HashMap(); // 47 bytes, 12 s
-        //Map hashMap = new HashMap(loop, 1f); // 47 bytes, 7 s
-        // Map hashMap = new THashMap(); // 37 bytes 14 s
-        // Map hashMap = new THashMap(loop, 0.1f); // 96 bytes, 14 s
-         Map hashMap = new THashMap(loop, 1f); // 24 bytes, 10 s
-        // Map hashMap = new THashMap(loop + 10000, 1.0f); // 24 bytes, 11 s
-        // Map hashMap = new THashMap(loop + 10000, 0.99f); // 24 bytes, 10 s
+//         Map hashMap = new HashMap(); // 47 bytes, 18 s
+//        Map hashMap = new HashMap(loop, 1f); // 47 byts, 18 s
+//         Map hashMap = new THashMap(); // 37 bytes, 7 s
+//         Map hashMap = new THashMap(loop, 0.1f); // ???
+//         Map hashMap = new THashMap(loop, 1f); // 25 bytes, 6 s
+//         Map hashMap = new THashMap(loop + 10000, 1.0f); // 25 bytes, 5 s
+//         Map hashMap = new THashMap(loop + 10000, 0.99f); // 25 bytes, 6 s
+         Map hashMap = new THashMap(10000, 1.0f); // 25 bytes, 7 s
 
         for (int i = 0; i < loop; i++) {
             KeyForMap keyForMap = new KeyForMap(i);
