@@ -94,7 +94,8 @@ public class DateSection extends AbstractSection {
         modificationDate.setLayoutData(data);
         modificationDate.setEnabled(false);
 
-        CLabel modificationLabel = getWidgetFactory().createCLabel(composite, Messages.getString("DateSection.ModificationLabel")); //$NON-NLS-1$
+        CLabel modificationLabel = getWidgetFactory()
+                .createCLabel(composite, Messages.getString("DateSection.ModificationLabel")); //$NON-NLS-1$
         data = new FormData();
         data.left = new FormAttachment(creationDate, ITabbedPropertyConstants.HSPACE * 3);
         data.right = new FormAttachment(modificationDate, -ITabbedPropertyConstants.HSPACE);
@@ -109,7 +110,7 @@ public class DateSection extends AbstractSection {
         commitDate.setLayoutData(data);
         commitDate.setEnabled(false);
 
-         commitLabel = getWidgetFactory().createCLabel(composite, Messages.getString("DateSection.commitLabel")); //$NON-NLS-1$
+        commitLabel = getWidgetFactory().createCLabel(composite, Messages.getString("DateSection.commitLabel")); //$NON-NLS-1$
         data = new FormData();
         data.left = new FormAttachment(modificationDate, ITabbedPropertyConstants.HSPACE * 3);
         data.right = new FormAttachment(commitDate, -ITabbedPropertyConstants.HSPACE);
@@ -124,7 +125,7 @@ public class DateSection extends AbstractSection {
         creationDate.setText(getCreationDate() != null ? FORMATTER.format(getCreationDate()) : ""); //$NON-NLS-1$
         modificationDate.setText(getModificationDate() != null ? FORMATTER.format(getModificationDate()) : ""); //$NON-NLS-1$
         commitDate.setText(getCommitDate() != null ? FORMATTER.format(getCommitDate()) : ""); //$NON-NLS-1$
-        
+
         commitLabel.setVisible(getCommitDate() != null);
         commitDate.setVisible(getCommitDate() != null);
     }
@@ -139,7 +140,7 @@ public class DateSection extends AbstractSection {
 
     protected Date getCommitDate() {
         Property property = getObject().getProperty();
-        if (property == null) {
+        if (property == null || property.getItem() == null) {
             return null;
         }
 

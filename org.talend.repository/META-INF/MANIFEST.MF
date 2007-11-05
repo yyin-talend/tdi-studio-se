@@ -27,7 +27,8 @@ Require-Bundle: org.eclipse.core.resources,
  org.eclipse.ltk.ui.refactoring,
  org.eclipse.jdt.core.manipulation,
  org.eclipse.jdt.ui,
- javax.xml.rpc
+ javax.xml.rpc,
+ org.eclipse.wst.common.snippets
 Export-Package: org.talend.repository,
  org.talend.repository.constants,
  org.talend.repository.i18n,

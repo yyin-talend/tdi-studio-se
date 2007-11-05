@@ -104,6 +104,7 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
             // TODO SML remove this table rustine
             switch (object.getType()) {
             case METADATA_CON_QUERY:
+            case SNIPPETS:
             case METADATA_CON_SYNONYM:
             case METADATA_CON_TABLE:
             case METADATA_CON_VIEW:
@@ -163,6 +164,7 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
 
             switch (node.getObject().getType()) {
             case METADATA_CON_QUERY:
+            case SNIPPETS:
             case METADATA_CON_SYNONYM:
             case METADATA_CON_TABLE:
             case METADATA_CON_VIEW:

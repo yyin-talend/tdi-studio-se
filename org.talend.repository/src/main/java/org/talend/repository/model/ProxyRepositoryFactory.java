@@ -152,15 +152,12 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         if (!Pattern.matches(pattern, fileName)) {
             // i18n
             // throw new IllegalArgumentException("Label " + fileName + " does not match pattern " + pattern);
-            throw new IllegalArgumentException(
-                    Messages
-                            .getString(
-                                    "ProxyRepositoryFactory.illegalArgumentException.labelNotMatchPattern", new String[] { fileName, pattern })); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString(
+                    "ProxyRepositoryFactory.illegalArgumentException.labelNotMatchPattern", new String[] { fileName, pattern })); //$NON-NLS-1$
         }
     }
 
-    private void checkFileNameAndPath(Item item, String pattern, IPath path, boolean folder)
-            throws PersistenceException {
+    private void checkFileNameAndPath(Item item, String pattern, IPath path, boolean folder) throws PersistenceException {
         String fileName = item.getProperty().getLabel();
         checkFileName(fileName, pattern);
         if (!this.repositoryFactoryFromProvider.isNameAvailable(item, null)) {
@@ -171,8 +168,8 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         }
     }
 
-    private void checkFileNameAndPath(String label, String pattern, ERepositoryObjectType type, IPath path,
-            boolean folder) throws PersistenceException {
+    private void checkFileNameAndPath(String label, String pattern, ERepositoryObjectType type, IPath path, boolean folder)
+            throws PersistenceException {
         String fileName = label;
         checkFileName(fileName, pattern);
         if (!this.repositoryFactoryFromProvider.isPathValid(type, path, label)) {
@@ -300,8 +297,7 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * @see org.talend.repository.model.IProxyRepositoryFactory#getMetadataConnection()
      */
     public RootContainer<String, IRepositoryObject> getMetadataConnection() throws PersistenceException {
-        RootContainer<String, IRepositoryObject> metadataConnection = this.repositoryFactoryFromProvider
-                .getMetadataConnection();
+        RootContainer<String, IRepositoryObject> metadataConnection = this.repositoryFactoryFromProvider.getMetadataConnection();
 
         return metadataConnection;
     }
@@ -355,6 +351,16 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      */
     public RootContainer<String, IRepositoryObject> getRoutine() throws PersistenceException {
         return this.repositoryFactoryFromProvider.getRoutine();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.model.IProxyRepositoryFactory#getSnippets()
+     */
+    public RootContainer<String, IRepositoryObject> getSnippets() throws PersistenceException {
+        // TODO Auto-generated method stub
+        return null;
     }
 
     /*
@@ -425,11 +431,9 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * @see org.talend.repository.model.IProxyRepositoryFactory#restoreObject(org.talend.core.model.repository.IRepositoryObject,
      * org.eclipse.core.runtime.IPath)
      */
-    public void restoreObject(IRepositoryObject objToRestore, IPath path) throws PersistenceException,
-            BusinessException {
+    public void restoreObject(IRepositoryObject objToRestore, IPath path) throws PersistenceException, BusinessException {
         if (ProxyRepositoryFactory.getInstance().isUserReadOnlyOnCurrentProject()) {
-            throw new BusinessException(Messages
-                    .getString("ProxyRepositoryFactory.bussinessException.itemNonModifiable")); //$NON-NLS-1$
+            throw new BusinessException(Messages.getString("ProxyRepositoryFactory.bussinessException.itemNonModifiable")); //$NON-NLS-1$
         }
         this.repositoryFactoryFromProvider.restoreObject(objToRestore, path);
         unlock(objToRestore);
@@ -454,8 +458,7 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      */
     public void moveObject(IRepositoryObject objToMove, IPath path) throws PersistenceException, BusinessException {
         checkAvailability(objToMove);
-        checkFileNameAndPath(objToMove.getProperty().getItem(), RepositoryConstants.getPattern(objToMove.getType()),
-                path, false);
+        checkFileNameAndPath(objToMove.getProperty().getItem(), RepositoryConstants.getPattern(objToMove.getType()), path, false);
         this.repositoryFactoryFromProvider.moveObject(objToMove, path);
 
         // i18n
@@ -467,10 +470,8 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
 
     // TODO SML Renommer et finir la m�thode et la plugger dans toutes les m�thodes
     private void checkAvailability(IRepositoryObject objToMove) throws BusinessException {
-        if (!isEditableAndLockIfPossible(objToMove)
-                || ProxyRepositoryFactory.getInstance().isUserReadOnlyOnCurrentProject()) {
-            throw new BusinessException(Messages
-                    .getString("ProxyRepositoryFactory.bussinessException.itemNonModifiable")); //$NON-NLS-1$
+        if (!isEditableAndLockIfPossible(objToMove) || ProxyRepositoryFactory.getInstance().isUserReadOnlyOnCurrentProject()) {
+            throw new BusinessException(Messages.getString("ProxyRepositoryFactory.bussinessException.itemNonModifiable")); //$NON-NLS-1$
         }
     }
 
@@ -600,8 +601,7 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
             }
         }
 
-        if (source.getType() == FolderType.SYSTEM_FOLDER_LITERAL
-                || source.getType() == FolderType.STABLE_SYSTEM_FOLDER_LITERAL) {
+        if (source.getType() == FolderType.SYSTEM_FOLDER_LITERAL || source.getType() == FolderType.STABLE_SYSTEM_FOLDER_LITERAL) {
             boolean match = source.getProperty().getLabel().equals(type);
 
             for (Object current : source.getChildren()) {
@@ -1020,10 +1020,9 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         switch (((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject()
                 .getLanguage()) {
         case JAVA:
-            IPath path = new Path(JavaUtils.JAVA_SRC_DIRECTORY).append(JavaResourcesHelper.getCurrentProjectName())
-                    .append(JavaResourcesHelper.getJobFolderName(process.getName())).append(
-                            JobJavaScriptsManager.JOB_CONTEXT_FOLDER).append(
-                            context.getName() + JavaUtils.JAVA_CONTEXT_EXTENSION);
+            IPath path = new Path(JavaUtils.JAVA_SRC_DIRECTORY).append(JavaResourcesHelper.getCurrentProjectName()).append(
+                    JavaResourcesHelper.getJobFolderName(process.getName())).append(JobJavaScriptsManager.JOB_CONTEXT_FOLDER)
+                    .append(context.getName() + JavaUtils.JAVA_CONTEXT_EXTENSION);
             return JavaResourcesHelper.getSpecificResourceInJavaProject(path);
         case PERL:
             String contextFullName = PerlResourcesHelper.getCurrentProjectName()
