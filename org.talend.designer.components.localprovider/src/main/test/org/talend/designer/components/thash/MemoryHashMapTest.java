@@ -46,24 +46,17 @@ public class MemoryHashMapTest {
          */
         class KeyForMap {
 
+            int id;
+            
             int hashcode;
-
-            int key;
             
             /**
              * DOC amaumont KeyForMap constructor comment.
              */
-            public KeyForMap(int key) {
+            public KeyForMap(int id, int hashcode) {
                 super();
-                this.key = key;
-                computeHashcode();
-            }
-
-            /**
-             * DOC amaumont Comment method "computeHashcode".
-             */
-            private void computeHashcode() {
-                this.hashcode = 31 + this.key;
+                this.id = id;
+                this.hashcode = hashcode;
             }
 
             /* (non-Javadoc)
@@ -86,7 +79,7 @@ public class MemoryHashMapTest {
                 if (getClass() != obj.getClass())
                     return false;
                 final KeyForMap other = (KeyForMap) obj;
-                if (this.key != other.key)
+                if (this.id != other.id)
                     return false;
                 return true;
             }
@@ -109,17 +102,17 @@ public class MemoryHashMapTest {
 
         // Tests for 10 000 000 items
 
-//         Map hashMap = new HashMap(); // 47 bytes, 18 s
-//        Map hashMap = new HashMap(loop, 1f); // 47 byts, 18 s
-//         Map hashMap = new THashMap(); // 37 bytes, 7 s
+//         Map hashMap = new HashMap(); // 47 bytes, ?? s
+//        Map hashMap = new HashMap(loop, 1f); // 47 byts, ?? s
+//         Map hashMap = new THashMap(); // 37 bytes, ?? s
 //         Map hashMap = new THashMap(loop, 0.1f); // ???
-//         Map hashMap = new THashMap(loop, 1f); // 25 bytes, 6 s
-//         Map hashMap = new THashMap(loop + 10000, 1.0f); // 25 bytes, 5 s
-//         Map hashMap = new THashMap(loop + 10000, 0.99f); // 25 bytes, 6 s
-         Map hashMap = new THashMap(10000, 1.0f); // 25 bytes, 7 s
+//         Map hashMap = new THashMap(loop, 1f); // 25 bytes, ?? s
+//         Map hashMap = new THashMap(loop + 10000, 1.0f); // 25 bytes, ?? s
+//         Map hashMap = new THashMap(loop + 10000, 0.99f); // 25 bytes, ?? s
+         Map hashMap = new THashMap(10000, 1.0f); // 25 bytes, 9 s
 
         for (int i = 0; i < loop; i++) {
-            KeyForMap keyForMap = new KeyForMap(i);
+            KeyForMap keyForMap = new KeyForMap(i, i /*computed hashcode*/); // in reel tests second parameter will be computed from properties of value bean 
             hashMap.put(keyForMap, keyForMap);
         }
 
