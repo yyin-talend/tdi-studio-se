@@ -22,7 +22,8 @@
 package org.talend.designer.components.thash;
 
 
-import java.util.HashMap;
+import gnu.trove.THashMap;
+
 import java.util.Map;
 
 /**
@@ -45,9 +46,53 @@ public class MemoryHashMapTest {
          */
         class KeyForMap {
 
-            int hashcode = 0;
+            int hashcode;
 
-            int key = 0;
+            int key;
+            
+            /**
+             * DOC amaumont KeyForMap constructor comment.
+             */
+            public KeyForMap(int key) {
+                super();
+                this.key = key;
+                computeHashcode();
+            }
+
+            /**
+             * DOC amaumont Comment method "computeHashcode".
+             */
+            private void computeHashcode() {
+                this.hashcode = 31 + this.key;
+            }
+
+            /* (non-Javadoc)
+             * @see java.lang.Object#hashCode()
+             */
+            @Override
+            public int hashCode() {
+                return this.hashcode;
+            }
+
+            /* (non-Javadoc)
+             * @see java.lang.Object#equals(java.lang.Object)
+             */
+            @Override
+            public boolean equals(Object obj) {
+                if (this == obj)
+                    return true;
+                if (obj == null)
+                    return false;
+                if (getClass() != obj.getClass())
+                    return false;
+                final KeyForMap other = (KeyForMap) obj;
+                if (this.key != other.key)
+                    return false;
+                return true;
+            }
+            
+            
+            
 
         }
 
@@ -64,15 +109,15 @@ public class MemoryHashMapTest {
         // Tests pour 10 000 000 d'items
 
         // Map hashMap = new HashMap(); // 47 bytes, 12 s
-        Map hashMap = new HashMap(loop, 1f); // 47 bytes, 7 s
+        //Map hashMap = new HashMap(loop, 1f); // 47 bytes, 7 s
         // Map hashMap = new THashMap(); // 37 bytes 14 s
-        // Map hashMap = new THashMap(LOOP, 0.1f); // 96 bytes, 14 s
-        // Map hashMap = new THashMap(LOOP, 1f); // 24 bytes, 10 s
-        // Map hashMap = new THashMap(LOOP + 10000, 1.0f); // 24 bytes, 11 s
-        // Map hashMap = new THashMap(LOOP + 10000, 0.99f); // 24 bytes, 10 s
+        // Map hashMap = new THashMap(loop, 0.1f); // 96 bytes, 14 s
+         Map hashMap = new THashMap(loop, 1f); // 24 bytes, 10 s
+        // Map hashMap = new THashMap(loop + 10000, 1.0f); // 24 bytes, 11 s
+        // Map hashMap = new THashMap(loop + 10000, 0.99f); // 24 bytes, 10 s
 
         for (int i = 0; i < loop; i++) {
-            KeyForMap keyForMap = new KeyForMap();
+            KeyForMap keyForMap = new KeyForMap(i);
             hashMap.put(keyForMap, keyForMap);
         }
 
@@ -87,7 +132,11 @@ public class MemoryHashMapTest {
         System.out.println("'before' heap: " + heap1 + " bytes, 'after' heap: " + heap2 + " bytes ");
         System.out.println("heap delta: " + (heap2 - heap1) + " bytes ");
         System.out.println("size by item: " + size + " bytes ");
+        System.out.println("Number of loops: " + loop);
         System.out.println("Number of items: " + hashMap.size());
+        if(loop != hashMap.size()) {
+            System.out.println("WARNING: loops number is different of items number !");
+        }
         System.out.println("Time: " + ((time2 - time1) / 1000) + " s");
 
     }
