@@ -28,41 +28,6 @@ if(ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("false")) {
     if ((metadatas!=null)&&(metadatas.size()>0)) {
         IMetadataTable metadata = metadatas.get(0);
         if (metadata!=null) {
-
-            String fileName = ElementParameterParser.getValue(node,"__FILENAME__");
-            String fullName = null;
-            String extensionName = null;
-            String directoryName = null;
-            if(fileName != null && !fileName.equals("") && !fileName.equals("\"\"")) {
-                if(fileName.startsWith("\"") && fileName.endsWith("\"")) {
-                    fileName = fileName.substring(1,fileName.length() - 1);
-                } else {
-                    fileName = fileName.replaceAll("\"","");
-                }
-            } else {
-                fileName = "";
-            }
-            if(fileName.indexOf("/") == -1) {
-                if(fileName.lastIndexOf(".") == -1) {
-                    fullName = fileName;
-                    extensionName = "";
-                    directoryName = "";
-                } else {
-                    fullName = fileName.substring(0, fileName.lastIndexOf("."));
-                    extensionName = fileName.substring(fileName.lastIndexOf("."), fileName.length());
-                    directoryName = "";
-                }
-            } else {
-                String simpleName = fileName.replaceAll(".*[^/]+((/+).*)", "$1");
-                if(simpleName.lastIndexOf(".") != -1) {
-                    fullName = fileName.substring(0, fileName.lastIndexOf(simpleName)) + simpleName.substring(0, simpleName.lastIndexOf("."));
-                    extensionName = simpleName.substring(simpleName.lastIndexOf("."), simpleName.length());
-                } else {
-                    fullName = fileName;
-                    extensionName = "";
-                }
-                directoryName = fileName.substring(0,fileName.lastIndexOf(simpleName));
-            }            
                         
             String fieldSeparator = ElementParameterParser.getValueWithUIFieldKey(
                 node,
@@ -154,8 +119,8 @@ if(ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("false")) {
     		                out<%=cid %>.close(); 
     		                //close original outputStream
     		                out<%=cid %> = new java.io.BufferedWriter(new java.io.OutputStreamWriter(
-    		                        new java.io.FileOutputStream("<%=fullName%>" + splitedFileNo_<%=cid%> + "<%=extensionName%>", <%= isAppend%>),<%= encoding%>));
-    		                file<%=cid%> = new java.io.File("<%=fullName%>" + splitedFileNo_<%=cid%> + "<%=extensionName%>");  					
+    		                        new java.io.FileOutputStream(fullName_<%=cid%> + splitedFileNo_<%=cid%> + extension_<%=cid%>, <%= isAppend%>),<%= encoding%>));
+    		                file<%=cid%> = new java.io.File(fullName_<%=cid%> + splitedFileNo_<%=cid%> + extension_<%=cid%>);  					
     
     		                <%
     		                if(isIncludeHeader){
@@ -237,43 +202,7 @@ if(ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("false")) {
     List<IMetadataTable> metadatas = node.getMetadataList();
     if ((metadatas!=null)&&(metadatas.size()>0)) {
         IMetadataTable metadata = metadatas.get(0);
-        if (metadata!=null) {
-            
-            String fileName = ElementParameterParser.getValue(node,"__FILENAME__");
-            String fullName = null;
-            String extensionName = null;
-            String directoryName = null;
-            if(fileName != null && !fileName.equals("") && !fileName.equals("\"\"")) {
-                if(fileName.startsWith("\"") && fileName.endsWith("\"")) {
-                    fileName = fileName.substring(1,fileName.length() - 1);
-                } else {
-                    fileName = fileName.replaceAll("\"","");
-                }
-            } else {
-                fileName = "";
-            }
-            if(fileName.indexOf("/") == -1) {
-                if(fileName.lastIndexOf(".") == -1) {
-                    fullName = fileName;
-                    extensionName = "";
-                    directoryName = "";
-                } else {
-                    fullName = fileName.substring(0, fileName.lastIndexOf("."));
-                    extensionName = fileName.substring(fileName.lastIndexOf("."), fileName.length());
-                    directoryName = "";
-                }
-            } else {
-                String simpleName = fileName.replaceAll(".*[^/]+((/+).*)", "$1");
-                if(simpleName.lastIndexOf(".") != -1) {
-                    fullName = fileName.substring(0, fileName.lastIndexOf(simpleName)) + simpleName.substring(0, simpleName.lastIndexOf("."));
-                    extensionName = simpleName.substring(simpleName.lastIndexOf("."), simpleName.length());
-                } else {
-                    fullName = fileName;
-                    extensionName = "";
-                }
-                directoryName = fileName.substring(0,fileName.lastIndexOf(simpleName));
-            }            
-            
+        if (metadata!=null) {                                    
             String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
     		String delim1 = ElementParameterParser.getValue(node, "__FIELDSEPARATOR__");
         	String delim = delim1.substring(1,delim1.length()-1);
@@ -365,7 +294,7 @@ if(ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("false")) {
             			        splitedFileNo_<%=cid%>++;
             			        CsvWriter<%=cid%>.close(); 
             			        //close original outputStream
-            	                CsvWriter<%=cid%> = new com.csvreader.CsvWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(new java.io.FileOutputStream("<%=fullName%>" + splitedFileNo_<%=cid%> + "<%=extensionName%>", <%=isAppend%>), <%=encoding%>)), '<%=delim%>');
+            	                CsvWriter<%=cid%> = new com.csvreader.CsvWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(new java.io.FileOutputStream(fullName_<%=cid%> + splitedFileNo_<%=cid%> + extension_<%=cid%>, <%=isAppend%>), <%=encoding%>)), '<%=delim%>');
             			        //set header.
             			        <%
             			        if(isIncludeHeader && !isAppend){
@@ -375,7 +304,7 @@ if(ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("false")) {
             			        }
             			        if(isIncludeHeader && isAppend){
             			            %>
-                                    file_<%=cid%> = new java.io.File("<%=fullName%>" + splitedFileNo_<%=cid%> + "<%=extensionName%>");
+                                    file_<%=cid%> = new java.io.File(fullName_<%=cid%> + splitedFileNo_<%=cid%> + extension_<%=cid%>);
                         		    if(file_<%=cid%>.length() == 0) {
                         		        CsvWriter<%=cid%>.writeRecord(headColu<%=cid%>); 
                         		    }	  
