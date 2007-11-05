@@ -370,7 +370,7 @@ public class CodeGenerator implements ICodeGenerator {
         if (!CorePlugin.getContext().isHeadless()) {
             return CorePlugin.getDefault().getPreferenceStore().getBoolean(ITalendCorePrefConstants.RUN_IN_MULTI_THREAD);
         } else {
-            return true;
+            return false;
         }
     }
 
