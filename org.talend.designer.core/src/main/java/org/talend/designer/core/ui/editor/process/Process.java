@@ -390,7 +390,7 @@ public class Process extends Element implements IProcess {
             generatingProcess = new DataProcess(this);
         }
         List<INode> generatedNodeList = generatingProcess.getNodeList();
-        if (generatedNodeList == null || generatedNodeList.isEmpty() || this.getEditor().isDirty()) {
+        if (generatedNodeList == null || generatedNodeList.isEmpty() || this.getEditor() == null || this.getEditor().isDirty()) {
             generatingProcess.buildFromGraphicalProcess(nodes);
             generatedNodeList = generatingProcess.getNodeList();
         }
