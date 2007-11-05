@@ -61,22 +61,28 @@ public class DataProcess {
 
     private static final String HASH_COMPONENT_NAME = "tHash"; //$NON-NLS-1$
 
-    private static Map<INode, INode> buildCheckMap = null;
+    private Map<INode, INode> buildCheckMap = null;
 
-    private static List<Node> checkRefList = null;
+    private List<Node> checkRefList = null;
 
-    private static Map<INode, INode> checkMultipleMap = null;
+    private Map<INode, INode> checkMultipleMap = null;
 
-    private static List<INode> dataNodeList;
+    private List<INode> dataNodeList;
 
-    private static void initialize() {
+    private Process process;
+
+    public DataProcess(Process process) {
+        this.process = process;
+    }
+
+    private void initialize() {
         buildCheckMap = new HashMap<INode, INode>();
         checkRefList = new ArrayList<Node>();
         checkMultipleMap = new HashMap<INode, INode>();
         dataNodeList = new ArrayList<INode>();
     }
 
-    private static void initializeDataFromGraphical(INode newNode, INode graphicalNode) {
+    private void initializeDataFromGraphical(INode newNode, INode graphicalNode) {
         for (IElementParameter curParam : graphicalNode.getElementParameters()) {
             IElementParameter dataNodeParam = newNode.getElementParameter(curParam.getName());
             if (dataNodeParam != null) {
@@ -90,7 +96,7 @@ public class DataProcess {
 
     // should only be called by a starting node
     @SuppressWarnings("unchecked")//$NON-NLS-1$
-    private static INode buildfromNode(final Node graphicalNode) {
+    private INode buildfromNode(final Node graphicalNode) {
         if (buildCheckMap.containsKey(graphicalNode)) {
             return buildCheckMap.get(graphicalNode);
         }
@@ -168,7 +174,7 @@ public class DataProcess {
         return dataNode;
     }
 
-    private static INode addvFlowMeterBetween(INode sourceNode, INode targetNode, IConnection connection, IProcess process,
+    private INode addvFlowMeterBetween(INode sourceNode, INode targetNode, IConnection connection, IProcess process,
             List<? extends IElementParameter> parameters) {
         // from current node to vFlowMeter node.
         DataConnection dataConnec = new DataConnection();
@@ -227,7 +233,7 @@ public class DataProcess {
      * @return
      */
     @SuppressWarnings("unchecked")//$NON-NLS-1$
-    private static AbstractNode addMultipleNode(INode graphicalNode, IMultipleComponentManager multipleComponentManager) {
+    private AbstractNode addMultipleNode(INode graphicalNode, IMultipleComponentManager multipleComponentManager) {
         AbstractNode dataNode;
         // prepare all the nodes
 
@@ -288,7 +294,7 @@ public class DataProcess {
      * @param graphicalNode
      * @param dataNode
      */
-    private static void addAllMultipleComponentConnections(Map<IMultipleComponentItem, AbstractNode> itemsMap,
+    private void addAllMultipleComponentConnections(Map<IMultipleComponentItem, AbstractNode> itemsMap,
             IMultipleComponentManager multipleComponentManager, INode graphicalNode, AbstractNode dataNode, INode previousNode) {
         List<IConnection> incomingConnections, outgoingConnections;
 
@@ -385,7 +391,7 @@ public class DataProcess {
      * @param multipleComponentManager
      * @param graphicalNode
      */
-    private static void prepareAllMultipleComponentNodes(Map<IMultipleComponentItem, AbstractNode> itemsMap,
+    private void prepareAllMultipleComponentNodes(Map<IMultipleComponentItem, AbstractNode> itemsMap,
             IMultipleComponentManager multipleComponentManager, INode graphicalNode) {
 
         List<IMultipleComponentItem> itemList = multipleComponentManager.getItemList();
@@ -419,7 +425,7 @@ public class DataProcess {
      * @param itemsMap
      * @param graphicalNode
      */
-    private static void setMultipleComponentParameters(IMultipleComponentManager multipleComponentManager,
+    private void setMultipleComponentParameters(IMultipleComponentManager multipleComponentManager,
             Map<IMultipleComponentItem, AbstractNode> itemsMap, INode graphicalNode) {
 
         List<IMultipleComponentItem> itemList = multipleComponentManager.getItemList();
@@ -509,7 +515,7 @@ public class DataProcess {
     }
 
     @SuppressWarnings("unchecked")//$NON-NLS-1$
-    private static void checkFlowRefLink(final Node graphicalNode) {
+    private void checkFlowRefLink(final Node graphicalNode) {
         if (checkRefList.contains(graphicalNode)) {
             return;
         }
@@ -630,7 +636,7 @@ public class DataProcess {
      * 
      * @param node
      */
-    private static INode replaceMultipleComponents(INode graphicalNode) {
+    private INode replaceMultipleComponents(INode graphicalNode) {
         if (checkMultipleMap.containsKey(graphicalNode)) {
             return checkMultipleMap.get(graphicalNode);
         }
@@ -652,7 +658,7 @@ public class DataProcess {
         return dataNode;
     }
 
-    public static void buildFromGraphicalProcess(Process process, List<Node> graphicalNodeList) {
+    public void buildFromGraphicalProcess(List<Node> graphicalNodeList) {
         initialize();
         for (Node node : graphicalNodeList) {
             if (node.isSubProcessStart() && node.isActivate()) {
@@ -706,7 +712,7 @@ public class DataProcess {
 
     }
 
-    public static List<INode> getNodeList() {
+    public List<INode> getNodeList() {
         return dataNodeList;
     }
 }

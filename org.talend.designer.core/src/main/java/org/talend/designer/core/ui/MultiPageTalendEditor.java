@@ -191,6 +191,7 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
     void createPage1() {
         codeEditor = CodeEditorFactory.getInstance().getCodeEditor(getCurrentLang());
         process = designerEditor.getProcess();
+        process.setEditor(this);
         processor = ProcessorUtilities.getProcessor(process, process.getContextManager().getDefaultContext());
 
         process.setProcessor(processor);
@@ -241,7 +242,6 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
         setTitleImage(ImageProvider.getImage(ECoreImage.PROCESS_ICON));
         createPage0();
         createPage1();
-        process.setEditor(this);
     }
 
     /**

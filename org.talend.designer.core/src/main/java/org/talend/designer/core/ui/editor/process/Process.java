@@ -383,9 +383,18 @@ public class Process extends Element implements IProcess {
         return this.nodes;
     }
 
+    DataProcess generatingProcess = null;
+
     public List<? extends INode> getGeneratingNodes() {
-        DataProcess.buildFromGraphicalProcess(this, nodes);
-        return DataProcess.getNodeList();
+        if (generatingProcess == null) {
+            generatingProcess = new DataProcess(this);
+        }
+        List<INode> generatedNodeList = generatingProcess.getNodeList();
+        if (generatedNodeList == null || generatedNodeList.isEmpty() || this.getEditor().isDirty()) {
+            generatingProcess.buildFromGraphicalProcess(nodes);
+            generatedNodeList = generatingProcess.getNodeList();
+        }
+        return generatedNodeList;
     }
 
     /*
@@ -1986,8 +1995,9 @@ public class Process extends Element implements IProcess {
      * @return all the activated matching nodes in the process
      */
     public List<INode> getNodesOfType(String componentName) {
+        List<INode> generatingNodes = (List<INode>) getGeneratingNodes();
         List<INode> matchingNodes = new ArrayList<INode>();
-        for (INode node : getGeneratingNodes()) {
+        for (INode node : generatingNodes) {
             if (node.isActivate()) {
                 if (componentName == null) { // means all nodes will be
                     // returned
