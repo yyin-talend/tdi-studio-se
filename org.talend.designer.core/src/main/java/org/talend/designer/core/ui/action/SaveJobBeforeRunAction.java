@@ -21,12 +21,12 @@
 // ============================================================================
 package org.talend.designer.core.ui.action;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.action.Action;
-import org.eclipse.swt.custom.CLabel;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.PlatformUI;
@@ -85,16 +85,15 @@ public class SaveJobBeforeRunAction extends Action {
             INode node = iter.next();
             boolean saveBeforeRun = Boolean.parseBoolean(ElementParameterParser.getValue(node, "__SAVE_BEFORE_RUN__"));
             String process = ElementParameterParser.getValue(node, "__PROCESS_TYPE_PROCESS__");
-            System.out.println(process);
             String editorName = editor.getProcess().getName();
-            if (saveBeforeRun&&process.indexOf(editorName) > -1 ) {
+            if (saveBeforeRun && process.indexOf(editorName) > -1) {
                 editor.doSave(new NullProgressMonitor());
             }
         }
     }
 
     private List<? extends INode> filterTRunJobNode() {
-        List<? extends INode> list = activeProcess.getGeneratingNodes();
+        List<? extends INode> list = new ArrayList<INode>(activeProcess.getGeneratingNodes());
         for (Iterator<? extends INode> iter = list.iterator(); iter.hasNext();) {
             INode node = iter.next();
             if (!node.getComponent().getName().equals(T_RUN_JOB_NAME)) {
