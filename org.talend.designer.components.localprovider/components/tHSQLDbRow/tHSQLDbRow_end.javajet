@@ -25,7 +25,9 @@ if(!commitEvery.equals("")&&!commitEvery.equals("0")){
 <%
 }
 %>
+if(pstmt_<%=cid %>!=null){
 pstmt_<%=cid %>.close();
+}
 
 java.sql.Statement stmtClose_<%=cid%> = conn_<%=cid %>.createStatement();
 stmtClose_<%=cid%>.execute("SHUTDOWN");

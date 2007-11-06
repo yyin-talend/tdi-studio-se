@@ -22,5 +22,8 @@ if (!commitEvery.equals("") && !commitEvery.equals("0")) {
 	<%
 }
 %>
+if(statement_<%=cid%>!=null){
 statement_<%=cid%>.close();
+}
+
 connection_<%=cid%>.close();

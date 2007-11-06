@@ -28,7 +28,9 @@ imports="
         }
     }
 %>
+ if(pstmt_<%=cid %>!=null){
     pstmt_<%=cid %>.close();
+ }
 <%
 	if(!useExistingConn.equals("true"))
 	{

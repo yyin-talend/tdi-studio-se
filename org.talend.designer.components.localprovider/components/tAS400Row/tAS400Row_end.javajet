@@ -25,5 +25,7 @@ if(commitEvery_<%=cid%>>commitCounter_<%=cid%>){
 <%
 }
 %>
+if(pstmt_<%=cid %>!=null){
 pstmt_<%=cid %>.close();
+}
 conn_<%=cid %> .close();

@@ -14,7 +14,9 @@ imports="
 	
 	String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
 %>
-	pstmt_<%=cid %>.close();
+if(pstmt_<%=cid %>!=null){
+pstmt_<%=cid %>.close();
+}
 	
 <%
 	if(!useExistingConn.equals("true"))
