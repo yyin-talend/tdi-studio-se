@@ -23,7 +23,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     if (metadata!=null) {
         String cid = node.getUniqueName();
         String filename = ElementParameterParser.getValue(node,"__FILENAME__");
-        String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
     	boolean isAppend = ElementParameterParser.getValue(node,"__APPEND__").equals("true");
     	List<Map<String, String>> colDef = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__COLDEFINE__");
     	List< ? extends IConnection> conns = node.getIncomingConnections();
@@ -41,39 +40,29 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                     IMetadataTable inMetaTable=inMetaTables.get(0);
                     if(inMetaTable != null){
                         columnList = inMetaTable.getListColumns();
-                
-                    
-                
                 int colNum=0;
-                for(Map<String, String> colD:colDef){
+                //for(Map<String, String> colD:colDef){
                         for(IMetadataColumn column:columnList){
-                            if(colD.get("REFCOL").equals(column.getLabel())){
-                                if(colD.get("TYPE").equals("String")){%>
+                           // if(colDef.get(colNum).get("REFCOL").equals(column.getLabel())){
+                                if(colDef.get(colNum).get("TYPE").equals("String")){%>
                                     //insert String value
                                     vals<%=cid%>[<%=colNum%>]=m_Data<%=cid%>.attribute(<%=colNum%>).addStringValue(<%=conn.getName() %>.<%=column.getLabel()%>);
-          <%                    }else if(colD.get("TYPE").equals("Numeric")){%>
+          <%                    }else if(colDef.get(colNum).get("TYPE").equals("Numeric")){%>
                                     //insert Numeric value
                                     vals<%=cid%>[<%=colNum%>]=<%=conn.getName() %>.<%=column.getLabel()%>;
-          <%                    }else if(colD.get("TYPE").equals("Date")){%>
+          <%                    }else if(colDef.get(colNum).get("TYPE").equals("Date")){%>
                                     //insert Date value
-                                    vals<%=cid%>[<%=colNum%>]=m_Data<%=cid%>.attribute(<%=colNum%>).parseDate(new java.text.SimpleDateFormat(<%=colD.get("PATTERN")%>).format(<%=conn.getName() %>.<%=column.getLabel()%>));
-          <%                    }else if(colD.get("TYPE").equals("Nominal")){%>
+                                    vals<%=cid%>[<%=colNum%>]=m_Data<%=cid%>.attribute(<%=colNum%>).parseDate(new java.text.SimpleDateFormat(<%=colDef.get(colNum).get("PATTERN")%>).format(<%=conn.getName() %>.<%=column.getLabel()%>));
+          <%                    }else if(colDef.get(colNum).get("TYPE").equals("Nominal")){%>
                                     //insert Nominal value          
                                     vals<%=cid%>[<%=colNum%>]=classValues<%=cid%><%=colNum%>.indexOf(<%=conn.getName() %>.<%=column.getLabel()%>);
           <%                    }
-                            }
-                        }
+                         //   }
+                        //}
                         colNum++;
                  }
-                  
-                  
-
                 }
-                    
-                    
-                    
-                    
-                    }
+              }
                 %>  
              instt<%=cid%>=new weka.core.Instance(1.0,vals<%=cid%>);
              m_Data<%=cid%>.add(instt<%=cid%>);			

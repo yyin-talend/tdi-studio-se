@@ -22,7 +22,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     if (metadata!=null) {
      	String cid = node.getUniqueName();
         String filename = ElementParameterParser.getValue(node,"__FILENAME__");
-        String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
 	    boolean isAppend = ElementParameterParser.getValue(node,"__APPEND__").equals("true");
 	    List<Map<String, String>> colDef = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__COLDEFINE__");
 	    String relation = ElementParameterParser.getValue(node,"__RELATION__");
@@ -76,16 +75,16 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                for(Map<String, String> colD:colDef){
                   if(colD.get("TYPE").equals("String")){%>
                       //A String attribute
-                      attributes<%=cid%>.addElement(new weka.core.Attribute(<%=colD.get("NAME")%>, (weka.core.FastVector) null));
+                      attributes<%=cid%>.addElement(new weka.core.Attribute("<%=columns.get(attIndex).getLabel()%>", (weka.core.FastVector) null));
 <%                }else if(colD.get("TYPE").equals("Numeric")){%>
                       //A Numeric attribute
-                      attributes<%=cid%>.addElement(new weka.core.Attribute(<%=colD.get("NAME")%>));
+                      attributes<%=cid%>.addElement(new weka.core.Attribute("<%=columns.get(attIndex).getLabel()%>"));
 <%                }else if(colD.get("TYPE").equals("Date")){%>
                       //A Date attribute
-                      attributes<%=cid%>.addElement(new weka.core.Attribute(<%=colD.get("NAME")%>, <%=colD.get("PATTERN")%>));
+                      attributes<%=cid%>.addElement(new weka.core.Attribute("<%=columns.get(attIndex).getLabel()%>", <%=colD.get("PATTERN")%>));
 <%                }else if(colD.get("TYPE").equals("Nominal")){%>
                       //A Nominal attribute
-                      attributes<%=cid%>.addElement(new weka.core.Attribute(<%=colD.get("NAME")%>, classValues<%=cid%><%=attIndex%>));
+                      attributes<%=cid%>.addElement(new weka.core.Attribute("<%=columns.get(attIndex).getLabel()%>", classValues<%=cid%><%=attIndex%>));
 <%                }
                   attIndex++;
                }
@@ -101,16 +100,16 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         for(Map<String, String> colD:colDef){//for 1
            if(colD.get("TYPE").equals("String")){%>
                //A String attribute
-               attributes<%=cid%>.addElement(new weka.core.Attribute(<%=colD.get("NAME")%>, (weka.core.FastVector) null));
+               attributes<%=cid%>.addElement(new weka.core.Attribute("<%=columns.get(attIndex).getLabel()%>", (weka.core.FastVector) null));
 <%         }else if(colD.get("TYPE").equals("Numeric")){%>
                //A Numeric attribute
-               attributes<%=cid%>.addElement(new weka.core.Attribute(<%=colD.get("NAME")%>));
+               attributes<%=cid%>.addElement(new weka.core.Attribute("<%=columns.get(attIndex).getLabel()%>"));
 <%         }else if(colD.get("TYPE").equals("Date")){%>
                //A Date attribute
-               attributes<%=cid%>.addElement(new weka.core.Attribute(<%=colD.get("NAME")%>, <%=colD.get("PATTERN")%>));
+               attributes<%=cid%>.addElement(new weka.core.Attribute("<%=columns.get(attIndex).getLabel()%>", <%=colD.get("PATTERN")%>));
 <%         }else if(colD.get("TYPE").equals("Nominal")){%>
                //A Nominal attribute
-               attributes<%=cid%>.addElement(new weka.core.Attribute(<%=colD.get("NAME")%>, classValues<%=cid%><%=attIndex%>));
+               attributes<%=cid%>.addElement(new weka.core.Attribute("<%=columns.get(attIndex).getLabel()%>", classValues<%=cid%><%=attIndex%>));
 <%         }
            attIndex++;
         }//for 1

@@ -45,7 +45,7 @@
       REQUIRED="true"
       REPOSITORY_VALUE="FILE_PATH"
     >
-      <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/out.csv"</DEFAULT>
+      <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/out.arff"</DEFAULT>
     </PARAMETER>
     
     <PARAMETER
@@ -55,8 +55,7 @@
       NUM_ROW="3"
       NB_LINES="3"
     >
-      <ITEMS>
-		<ITEM NAME="NAME" VALUE='"attName"' />
+      <ITEMS BASED_ON_SCHEMA="true">
 		<ITEM NAME="TYPE" FIELD="CLOSED_LIST">
           <ITEMS DEFAULT="STRING">
             <ITEM NAME="STRING" VALUE="String"/>
@@ -65,8 +64,7 @@
             <ITEM NAME="NOMINAL" VALUE="Nominal"/>
           </ITEMS>
         </ITEM>
-		<ITEM NAME="PATTERN" VALUE=""/>
-		<ITEM NAME="REFCOL" FIELD="COLUMN_LIST"/>
+        <ITEM NAME="PATTERN" FIELD="TEXT" VALUE='""'/>
 	  </ITEMS>
     </PARAMETER>
     
