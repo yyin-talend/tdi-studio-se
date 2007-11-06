@@ -36,7 +36,7 @@ import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.ui.editor.nodes.Node;
-import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
+import org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty;
 
 /**
  * DOC qwei class global comment. Detailled comment <br/>
@@ -51,9 +51,8 @@ public class LabelController extends AbstractElementPropertySectionController {
      * 
      * @param dtp
      */
-    public LabelController(DynamicTabbedPropertySection dtp) {
-        super(dtp);
-        // TODO Auto-generated constructor stub
+    public LabelController(IDynamicProperty dp) {
+        super(dp);
     }
 
     /*

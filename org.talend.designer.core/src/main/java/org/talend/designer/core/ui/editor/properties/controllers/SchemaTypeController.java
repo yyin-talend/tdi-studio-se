@@ -67,7 +67,7 @@ import org.talend.designer.core.ui.editor.cmd.ChangeMetadataCommand;
 import org.talend.designer.core.ui.editor.cmd.RepositoryChangeMetadataCommand;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
-import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
+import org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty;
 
 /**
  * DOC nrousseau class global comment. Detailled comment <br/>
@@ -81,8 +81,8 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
 
     private static final String SCHEMA = "SCHEMA"; //$NON-NLS-1$
 
-    public SchemaTypeController(DynamicTabbedPropertySection dtp) {
-        super(dtp);
+    public SchemaTypeController(IDynamicProperty dp) {
+        super(dp);
     }
 
     /*
@@ -102,7 +102,7 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
 
     private Command createComboCommand(CCombo combo) {
         IMetadataTable repositoryMetadata;
-        Map<String, IMetadataTable> repositoryTableMap = dynamicTabbedPropertySection.getRepositoryTableMap();
+        Map<String, IMetadataTable> repositoryTableMap = dynamicProperty.getRepositoryTableMap();
 
         // String paramName;
 
@@ -140,15 +140,14 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
         org.talend.core.model.metadata.builder.connection.Connection connection = null;
         if (fullParamName.contains(EParameterName.REPOSITORY_SCHEMA_TYPE.getName())) {
             if (elem instanceof Node) {
-                this.dynamicTabbedPropertySection.updateRepositoryList();
+                this.dynamicProperty.updateRepositoryList();
                 if (repositoryTableMap.containsKey(value)) {
                     repositoryMetadata = repositoryTableMap.get(value);
                     IElementParameter property = ((Node) elem).getElementParameter(EParameterName.PROPERTY_TYPE.getName());
                     if ((property != null) && EmfComponent.REPOSITORY.equals(property.getValue())) {
                         String propertySelected = (String) ((Node) elem).getElementParameter(
                                 EParameterName.REPOSITORY_PROPERTY_TYPE.getName()).getValue();
-                        connection = dynamicTabbedPropertySection.getRepositoryConnectionItemMap().get(propertySelected)
-                                .getConnection();
+                        connection = dynamicProperty.getRepositoryConnectionItemMap().get(propertySelected).getConnection();
                     }
                 } else {
                     repositoryMetadata = new MetadataTable();
@@ -193,13 +192,12 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
 
                     }
                 } else {
-                    this.dynamicTabbedPropertySection.updateRepositoryList();
+                    this.dynamicProperty.updateRepositoryList();
                     IElementParameter property = ((Node) elem).getElementParameter(EParameterName.PROPERTY_TYPE.getName());
                     if ((property != null) && EmfComponent.REPOSITORY.equals(property.getValue())) {
                         String propertySelected = (String) ((Node) elem).getElementParameter(
                                 EParameterName.REPOSITORY_PROPERTY_TYPE.getName()).getValue();
-                        connection = dynamicTabbedPropertySection.getRepositoryConnectionItemMap().get(propertySelected)
-                                .getConnection();
+                        connection = dynamicProperty.getRepositoryConnectionItemMap().get(propertySelected).getConnection();
                     }
 
                     String schemaSelected = (String) param.getParentParameter().getChildParameters().get(
@@ -614,7 +612,7 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
             hashCurControls.put(param.getName() + ":" + schemaTypeParameter.getName(), combo);
 
             Point initialSize = combo.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-            dynamicTabbedPropertySection.setCurRowSize(initialSize.y + ITabbedPropertyConstants.VSPACE);
+            dynamicProperty.setCurRowSize(initialSize.y + ITabbedPropertyConstants.VSPACE);
         }
         lastControlUsed = addButton(subComposite, param, lastControlUsed, numInRow, top);
         return lastControlUsed;
@@ -725,7 +723,7 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
         btn.setLayoutData(data);
 
         // curRowSize = btnSize.y + ITabbedPropertyConstants.VSPACE;
-        dynamicTabbedPropertySection.setCurRowSize(btnSize.y + ITabbedPropertyConstants.VSPACE);
+        dynamicProperty.setCurRowSize(btnSize.y + ITabbedPropertyConstants.VSPACE);
         return lastControlUsed;
     }
 
@@ -760,7 +758,7 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
         // elem.getElementParameter(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
         combo.setData(PARAMETER_NAME, param.getName() + ":" + repositorySchemaTypeParameter.getName());
         hashCurControls.put(param.getName() + ":" + repositorySchemaTypeParameter.getName(), dField.getControl());
-        dynamicTabbedPropertySection.updateRepositoryList();
+        dynamicProperty.updateRepositoryList();
         String[] paramItems = repositorySchemaTypeParameter.getListItemsDisplayName();
         // ControlUtils.setSortedValuesForCombo(combo, paramItems);
         combo.setItems(paramItems);
@@ -828,7 +826,7 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
         value = repositorySchemaTypeParameter.getValue();
 
         if (value instanceof String) {
-            dynamicTabbedPropertySection.updateRepositoryList();
+            dynamicProperty.updateRepositoryList();
             String strValue = ""; //$NON-NLS-1$
             int nbInList = 0, nbMax = repositorySchemaTypeParameter.getListItemsValue().length;
             String name = (String) value;

@@ -42,7 +42,6 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
-import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
@@ -50,8 +49,7 @@ import org.talend.designer.core.ui.editor.cmd.ChangeActivateStatusElementCommand
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
-import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
-import org.talend.designer.core.ui.views.statsandlogs.StatsAndLogsView;
+import org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty;
 
 /**
  * DOC yzhang class global comment. Detailled comment <br/>
@@ -66,9 +64,8 @@ public class CheckController extends AbstractElementPropertySectionController {
      * 
      * @param parameterBean
      */
-    public CheckController(DynamicTabbedPropertySection parameterBean) {
-        super(parameterBean);
-        // TODO Auto-generated constructor stub
+    public CheckController(IDynamicProperty dp) {
+        super(dp);
     }
 
     /*
@@ -157,7 +154,7 @@ public class CheckController extends AbstractElementPropertySectionController {
         }
 
         Point initialSize = checkBtn.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-        dynamicTabbedPropertySection.setCurRowSize(initialSize.y + ITabbedPropertyConstants.VSPACE);
+        dynamicProperty.setCurRowSize(initialSize.y + ITabbedPropertyConstants.VSPACE);
         return cLayout;
     }
 

@@ -50,7 +50,7 @@ import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
-import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
+import org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty;
 
 /**
  * bqian Connection List controller <br/>
@@ -65,8 +65,8 @@ public class ConnectionListController extends AbstractElementPropertySectionCont
      * 
      * @param parameterBean
      */
-    public ConnectionListController(DynamicTabbedPropertySection dtp) {
-        super(dtp);
+    public ConnectionListController(IDynamicProperty dp) {
+        super(dp);
     }
 
     /*
@@ -187,7 +187,7 @@ public class ConnectionListController extends AbstractElementPropertySectionCont
         // **********************
         hashCurControls.put(param.getName(), combo);
 
-        dynamicTabbedPropertySection.setCurRowSize(initialSize.y + ITabbedPropertyConstants.VSPACE);
+        dynamicProperty.setCurRowSize(initialSize.y + ITabbedPropertyConstants.VSPACE);
         updateConnectionList(elem, param, param.getFilter());
         return cLayout;
     }

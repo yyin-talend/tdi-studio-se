@@ -21,32 +21,32 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.properties.controllers.generator;
 
-import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
 import org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController;
 import org.talend.designer.core.ui.editor.properties.controllers.DateController;
 
-
 /**
- * DOC nrousseau  class global comment. Detailled comment
- * <br/>
- *
+ * DOC nrousseau class global comment. Detailled comment <br/>
+ * 
  */
 public class DateControllerGenerator implements IControllerGenerator {
-    
-    private DynamicTabbedPropertySection dtp;
-    
-    /* (non-Javadoc)
+
+    private IDynamicProperty dp;
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.designer.core.ui.editor.properties.controllers.generator.IControllerGenerator#generate()
      */
     public AbstractElementPropertySectionController generate() {
-        return new DateController(dtp);
+        return new DateController(dp);
     }
 
-    /* (non-Javadoc)
-     * @see org.talend.designer.core.ui.editor.properties.controllers.generator.IControllerGenerator#setDynamicTabbedPropertySection(org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.core.ui.editor.properties.controllers.generator.IControllerGenerator#setDynamicProperty(org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty)
      */
-    public void setDynamicTabbedPropertySection(DynamicTabbedPropertySection dtp) {
-        this.dtp = dtp;
+    public void setDynamicProperty(IDynamicProperty dp) {
+        this.dp = dp;
     }
-
 }

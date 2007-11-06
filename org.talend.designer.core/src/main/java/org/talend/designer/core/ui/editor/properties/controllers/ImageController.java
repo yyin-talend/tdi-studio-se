@@ -24,7 +24,6 @@ package org.talend.designer.core.ui.editor.properties.controllers;
 import java.beans.PropertyChangeEvent;
 import java.io.File;
 
-import org.eclipse.gef.commands.Command;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.events.DisposeEvent;
@@ -37,7 +36,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.designer.core.DesignerPlugin;
-import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
+import org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty;
 import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.model.RepositoryConstants;
 
@@ -54,8 +53,8 @@ public class ImageController extends AbstractElementPropertySectionController {
      * 
      * @param parameterBean
      */
-    public ImageController(DynamicTabbedPropertySection dtp) {
-        super(dtp);
+    public ImageController(IDynamicProperty dp) {
+        super(dp);
     }
 
     /*
@@ -114,13 +113,17 @@ public class ImageController extends AbstractElementPropertySectionController {
         }
     }
 
-    /* (non-Javadoc)
-     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize(org.eclipse.swt.widgets.Composite, org.talend.core.model.process.IElementParameter)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize(org.eclipse.swt.widgets.Composite,
+     * org.talend.core.model.process.IElementParameter)
      */
     @Override
     public int estimateRowSize(Composite subComposite, IElementParameter param) {
         IRepositoryService service = DesignerPlugin.getDefault().getRepositoryService();
-        String filePath = service.getPathFileName(RepositoryConstants.IMG_DIRECTORY, (String) param.getValue()).toPortableString();
+        String filePath = service.getPathFileName(RepositoryConstants.IMG_DIRECTORY, (String) param.getValue())
+                .toPortableString();
 
         if (filePath != null) {
             File fileOrFolder = new java.io.File(filePath);
@@ -143,7 +146,6 @@ public class ImageController extends AbstractElementPropertySectionController {
         // TODO Auto-generated method stub
 
     }
-
 
     @Override
     public void refresh(IElementParameter param, boolean check) {

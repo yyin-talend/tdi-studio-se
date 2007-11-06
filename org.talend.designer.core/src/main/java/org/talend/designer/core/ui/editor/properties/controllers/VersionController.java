@@ -41,8 +41,8 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.designer.core.ui.editor.nodes.Node;
-import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
 import org.talend.designer.core.ui.editor.properties.controllers.creator.SelectAllTextControlCreator;
+import org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty;
 
 /**
  * DOC yzhang class global comment. Detailled comment <br/>
@@ -61,8 +61,8 @@ public class VersionController extends AbstractElementPropertySectionController 
      * 
      * @param parameterBean
      */
-    public VersionController(DynamicTabbedPropertySection dtp) {
-        super(dtp);
+    public VersionController(IDynamicProperty dp) {
+        super(dp);
 
     }
 
@@ -97,10 +97,8 @@ public class VersionController extends AbstractElementPropertySectionController 
         btnDown.addSelectionListener(listenerSelection);
 
         data = new FormData();
-        data.left = new FormAttachment(((numInRow * MAX_PERCENT) / nbInRow),
-                -((btnSize.x * 2) + ITabbedPropertyConstants.HSPACE));
-        data.right = new FormAttachment(((numInRow * MAX_PERCENT) / nbInRow),
-                -(btnSize.x + ITabbedPropertyConstants.HSPACE));
+        data.left = new FormAttachment(((numInRow * MAX_PERCENT) / nbInRow), -((btnSize.x * 2) + ITabbedPropertyConstants.HSPACE));
+        data.right = new FormAttachment(((numInRow * MAX_PERCENT) / nbInRow), -(btnSize.x + ITabbedPropertyConstants.HSPACE));
         data.top = new FormAttachment(0, top);
         data.height = btnSize.y;
         btnUp.setLayoutData(data);
@@ -155,9 +153,9 @@ public class VersionController extends AbstractElementPropertySectionController 
         Point initialSize = dField.getLayoutControl().computeSize(SWT.DEFAULT, SWT.DEFAULT);
         if (btnSize.y > initialSize.y) {
             // curRowSize = btnSize.y + ITabbedPropertyConstants.VSPACE;
-            dynamicTabbedPropertySection.setCurRowSize(btnSize.y + ITabbedPropertyConstants.VSPACE);
+            dynamicProperty.setCurRowSize(btnSize.y + ITabbedPropertyConstants.VSPACE);
         } else {
-            dynamicTabbedPropertySection.setCurRowSize(initialSize.y + ITabbedPropertyConstants.VSPACE);
+            dynamicProperty.setCurRowSize(initialSize.y + ITabbedPropertyConstants.VSPACE);
             // curRowSize = initialSize.y + ITabbedPropertyConstants.VSPACE;
         }
         return btnDown;

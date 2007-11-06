@@ -65,7 +65,7 @@ import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.ConfigureConnParamDialog;
-import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
+import org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.ui.SQLBuilderDialog;
 import org.talend.sqlbuilder.util.TextUtil;
@@ -86,8 +86,8 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
      * 
      * @param dtp
      */
-    public SqlMemoController(DynamicTabbedPropertySection dtp) {
-        super(dtp);
+    public SqlMemoController(IDynamicProperty dp) {
+        super(dp);
     }
 
     private Button openSQLEditorButton;
@@ -142,8 +142,8 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
         if (repositoryType.equals(EmfComponent.BUILTIN)) {
             connParameters.setQuery(query);
             if (connParameters.isShowConfigParamDialog()) {
-                ConfigureConnParamDialog paramDialog = new ConfigureConnParamDialog(composite.getShell(),
-                        connParameters, part.getTalendEditor().getProcess().getContextManager());
+                ConfigureConnParamDialog paramDialog = new ConfigureConnParamDialog(composite.getShell(), connParameters, part
+                        .getTalendEditor().getProcess().getContextManager());
                 if (paramDialog.open() == Window.OK) {
                     openSqlBuilderBuildIn(connParameters, propertyName);
                 }
@@ -161,11 +161,11 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
                 // System.out.println(param.toString());
                 if (param.getName().equals(EParameterName.REPOSITORY_PROPERTY_TYPE.getName())) {
                     String value = (String) param.getValue();
-                    for (String key : this.dynamicTabbedPropertySection.getRepositoryConnectionItemMap().keySet()) {
+                    for (String key : this.dynamicProperty.getRepositoryConnectionItemMap().keySet()) {
 
                         if (key.equals(value)) {
-                            repositoryName2 = this.dynamicTabbedPropertySection.getRepositoryConnectionItemMap().get(
-                                    key).getProperty().getLabel();
+                            repositoryName2 = this.dynamicProperty.getRepositoryConnectionItemMap().get(key).getProperty()
+                                    .getLabel();
 
                         }
                     }
@@ -178,8 +178,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
                         .getString("NoRepositoryDialog.Text")); //$NON-NLS-1$
                 return null;
             }
-            String key = this.part.getTalendEditor().getProcess().getName() + ((Node) elem).getUniqueName()
-                    + repositoryName2;
+            String key = this.part.getTalendEditor().getProcess().getName() + ((Node) elem).getUniqueName() + repositoryName2;
             final SQLBuilderDialog builderDialog = sqlbuilers.get(key);
             if (!composite.isDisposed() && builderDialog != null && builderDialog.getShell() != null
                     && !builderDialog.getShell().isDisposed()) {
@@ -379,7 +378,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
 
         Point initialSize = dField.getLayoutControl().computeSize(SWT.DEFAULT, SWT.DEFAULT);
         // curRowSize = initialSize.y + ITabbedPropertyConstants.VSPACE;
-        dynamicTabbedPropertySection.setCurRowSize(initialSize.y + ITabbedPropertyConstants.VSPACE);
+        dynamicProperty.setCurRowSize(initialSize.y + ITabbedPropertyConstants.VSPACE);
 
         return null;
     }

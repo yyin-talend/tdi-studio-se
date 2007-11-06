@@ -38,7 +38,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.designer.core.model.components.EParameterName;
-import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
+import org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty;
 import org.talend.designer.runprocess.ProcessorUtilities;
 
 /**
@@ -49,8 +49,8 @@ import org.talend.designer.runprocess.ProcessorUtilities;
  */
 public class ProcessController extends AbstractElementPropertySectionController {
 
-    public ProcessController(DynamicTabbedPropertySection dtp) {
-        super(dtp);
+    public ProcessController(IDynamicProperty dp) {
+        super(dp);
     }
 
     @Override
@@ -83,12 +83,15 @@ public class ProcessController extends AbstractElementPropertySectionController 
         btn.addSelectionListener(listenerSelection);
 
         Point initialSize = btn.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-        dynamicTabbedPropertySection.setCurRowSize(initialSize.y + ITabbedPropertyConstants.VSPACE);
+        dynamicProperty.setCurRowSize(initialSize.y + ITabbedPropertyConstants.VSPACE);
         return cLayout;
     }
 
-    /* (non-Javadoc)
-     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize(org.eclipse.swt.widgets.Composite, org.talend.core.model.process.IElementParameter)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize(org.eclipse.swt.widgets.Composite,
+     * org.talend.core.model.process.IElementParameter)
      */
     @Override
     public int estimateRowSize(Composite subComposite, IElementParameter param) {
@@ -101,7 +104,7 @@ public class ProcessController extends AbstractElementPropertySectionController 
         });
         Point initialSize = dField.getLayoutControl().computeSize(SWT.DEFAULT, SWT.DEFAULT);
         dField.getLayoutControl().dispose();
-        
+
         return initialSize.y + ITabbedPropertyConstants.VSPACE;
     }
 

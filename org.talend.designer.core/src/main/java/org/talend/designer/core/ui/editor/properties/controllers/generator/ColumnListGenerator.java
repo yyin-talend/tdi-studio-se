@@ -21,7 +21,6 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.properties.controllers.generator;
 
-import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
 import org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController;
 import org.talend.designer.core.ui.editor.properties.controllers.ColumnListController;
 
@@ -33,7 +32,7 @@ import org.talend.designer.core.ui.editor.properties.controllers.ColumnListContr
  */
 public class ColumnListGenerator implements IControllerGenerator {
 
-    private DynamicTabbedPropertySection dtp;
+    private IDynamicProperty dp;
 
     /*
      * (non-Javadoc)
@@ -41,7 +40,7 @@ public class ColumnListGenerator implements IControllerGenerator {
      * @see org.talend.designer.core.ui.editor.properties.controllers.generator.IControllerGenerator#generate()
      */
     public AbstractElementPropertySectionController generate() {
-        return new ColumnListController(dtp);
+        return new ColumnListController(dp);
     }
 
     /*
@@ -49,8 +48,8 @@ public class ColumnListGenerator implements IControllerGenerator {
      * 
      * @see org.talend.designer.core.ui.editor.properties.controllers.generator.IControllerGenerator#setDynamicTabbedPropertySection(org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection)
      */
-    public void setDynamicTabbedPropertySection(DynamicTabbedPropertySection dtp) {
-        this.dtp = dtp;
+    public void setDynamicProperty(IDynamicProperty dp) {
+        this.dp = dp;
 
     }
 

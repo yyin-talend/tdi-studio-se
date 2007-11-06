@@ -22,10 +22,7 @@
 package org.talend.designer.core.ui.editor.properties.controllers;
 
 import java.beans.PropertyChangeEvent;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.gef.commands.Command;
@@ -48,25 +45,18 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.model.metadata.ColumnNameChanged;
-import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
-import org.talend.core.model.metadata.MappingTypeRetriever;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.MetadataTalendType;
 import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
-import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
-import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
-import org.talend.core.model.properties.ConnectionItem;
-import org.talend.designer.core.model.components.EParameterName;
-import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
-import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
+import org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty;
 
 /**
  * DOC yzhang class global comment. Detailled comment <br/>
@@ -81,8 +71,8 @@ public class DbTypeListController extends AbstractElementPropertySectionControll
      * 
      * @param parameterBean
      */
-    public DbTypeListController(DynamicTabbedPropertySection dtp) {
-        super(dtp);
+    public DbTypeListController(IDynamicProperty dp) {
+        super(dp);
     }
 
     /*
@@ -210,7 +200,7 @@ public class DbTypeListController extends AbstractElementPropertySectionControll
         updateData();
         // this.dynamicTabbedPropertySection.updateColumnList(null);
 
-        dynamicTabbedPropertySection.setCurRowSize(initialSize.y + ITabbedPropertyConstants.VSPACE);
+        dynamicProperty.setCurRowSize(initialSize.y + ITabbedPropertyConstants.VSPACE);
         return cLayout;
     }
 
@@ -248,7 +238,7 @@ public class DbTypeListController extends AbstractElementPropertySectionControll
 
         public void widgetSelected(SelectionEvent event) {
             // updateRepositoryList();
-            dynamicTabbedPropertySection.updateRepositoryList();
+            dynamicProperty.updateRepositoryList();
             Command cmd = createCommand(event);
             if (cmd != null) {
                 getCommandStack().execute(cmd);
@@ -312,8 +302,7 @@ public class DbTypeListController extends AbstractElementPropertySectionControll
                             tmpParam.setListItemsDisplayName(columnNameList);
                             tmpParam.setListItemsValue(columnNameList);
                             if (columnNameList.length > 0) {
-                                tmpParam.setDefaultClosedListValue(MetadataTalendType.getDbms(dbmsId)
-                                        .getDefaultDbType());
+                                tmpParam.setDefaultClosedListValue(MetadataTalendType.getDbms(dbmsId).getDefaultDbType());
                             } else {
                                 tmpParam.setDefaultClosedListValue(""); //$NON-NLS-1$
                             }

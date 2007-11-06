@@ -21,7 +21,6 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.properties.controllers.generator;
 
-import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
 import org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController;
 import org.talend.designer.core.ui.editor.properties.controllers.PerlMemoController;
 
@@ -33,7 +32,7 @@ import org.talend.designer.core.ui.editor.properties.controllers.PerlMemoControl
  */
 public class PerlMemoGenerator implements IControllerGenerator {
 
-    private DynamicTabbedPropertySection dtp;
+    private IDynamicProperty dp;
 
     /*
      * (non-Javadoc)
@@ -41,17 +40,15 @@ public class PerlMemoGenerator implements IControllerGenerator {
      * @see org.talend.designer.core.ui.editor.properties.controllers.generator.IControllerGenerator#generate()
      */
     public AbstractElementPropertySectionController generate() {
-        return new PerlMemoController(dtp);
+        return new PerlMemoController(dp);
     }
 
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.generator.IControllerGenerator#setDynamicTabbedPropertySection(org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection)
+     * @see org.talend.designer.core.ui.editor.properties.controllers.generator.IControllerGenerator#setDynamicProperty(org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty)
      */
-    public void setDynamicTabbedPropertySection(DynamicTabbedPropertySection dtp) {
-        this.dtp = dtp;
-
+    public void setDynamicProperty(IDynamicProperty dp) {
+        this.dp = dp;
     }
-
 }

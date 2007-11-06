@@ -21,7 +21,7 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.properties.controllers;
 
-import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
+import org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty;
 
 /**
  * DOC ftang class global comment. Detailled comment <br/>
@@ -31,8 +31,8 @@ import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySectio
  */
 public class JavaMemoController extends AbstractLanguageMemoController {
 
-    public JavaMemoController(DynamicTabbedPropertySection dtp) {
-        super(dtp);
+    public JavaMemoController(IDynamicProperty dp) {
+        super(dp);
     }
 
     /*

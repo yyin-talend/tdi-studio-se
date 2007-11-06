@@ -56,7 +56,7 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
-import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
+import org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty;
 import org.talend.librariesmanager.model.ModulesNeededProvider;
 
 /**
@@ -74,8 +74,8 @@ public class ModuleListController extends AbstractElementPropertySectionControll
      * 
      * @param parameterBean
      */
-    public ModuleListController(DynamicTabbedPropertySection dtp) {
-        super(dtp);
+    public ModuleListController(IDynamicProperty dp) {
+        super(dp);
     }
 
     public Command createCommand(Button button) {
@@ -88,8 +88,7 @@ public class ModuleListController extends AbstractElementPropertySectionControll
                 String lastSegment = Path.fromOSString(file).lastSegment();
                 if (!elem.getPropertyValue(propertyName).equals(lastSegment)) {
                     try {
-                        CorePlugin.getDefault().getLibrariesService().deployLibrary(
-                                Path.fromOSString(file).toFile().toURL());
+                        CorePlugin.getDefault().getLibrariesService().deployLibrary(Path.fromOSString(file).toFile().toURL());
                     } catch (Exception e) {
                         ExceptionHandler.process(e);
                     }
@@ -237,7 +236,7 @@ public class ModuleListController extends AbstractElementPropertySectionControll
         updateData();
         // this.dynamicTabbedPropertySection.updateColumnList(null);
 
-        dynamicTabbedPropertySection.setCurRowSize(initialSize.y + ITabbedPropertyConstants.VSPACE);
+        dynamicProperty.setCurRowSize(initialSize.y + ITabbedPropertyConstants.VSPACE);
         return cLayout;
     }
 

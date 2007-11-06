@@ -40,11 +40,10 @@ import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IExternalNode;
-import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.ExternalUtilities;
 import org.talend.designer.core.ui.editor.cmd.ExternalNodeChangeCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
-import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
+import org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty;
 
 /**
  * DOC yzhang class global comment. Detailled comment <br/>
@@ -61,9 +60,8 @@ public class ExternalController extends AbstractElementPropertySectionController
      * 
      * @param parameterBean
      */
-    public ExternalController(DynamicTabbedPropertySection dtp) {
-        super(dtp);
-        // TODO Auto-generated constructor stub
+    public ExternalController(IDynamicProperty dp) {
+        super(dp);
     }
 
     /*
@@ -107,7 +105,7 @@ public class ExternalController extends AbstractElementPropertySectionController
         FormData data;
         btnEdit.setData(NAME, EXTERNAL);
         btnEdit.setData(PARAMETER_NAME, param.getName());
-//        btnEdit.setEnabled(!param.isReadOnly());
+        // btnEdit.setEnabled(!param.isReadOnly());
         btnEdit.addSelectionListener(listenerSelection);
         if (elem instanceof Node) {
             btnEdit.setToolTipText(VARIABLE_TOOLTIP + param.getVariableName());
@@ -154,12 +152,15 @@ public class ExternalController extends AbstractElementPropertySectionController
         hashCurControls.put(param.getName(), btnEdit);
 
         Point initialSize = btnEdit.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-        dynamicTabbedPropertySection.setCurRowSize(initialSize.y + ITabbedPropertyConstants.VSPACE);
+        dynamicProperty.setCurRowSize(initialSize.y + ITabbedPropertyConstants.VSPACE);
         return btnEdit;
     }
 
-    /* (non-Javadoc)
-     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize(org.eclipse.swt.widgets.Composite, org.talend.core.model.process.IElementParameter)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize(org.eclipse.swt.widgets.Composite,
+     * org.talend.core.model.process.IElementParameter)
      */
     @Override
     public int estimateRowSize(Composite subComposite, IElementParameter param) {
@@ -200,7 +201,7 @@ public class ExternalController extends AbstractElementPropertySectionController
     @Override
     public void refresh(IElementParameter param, boolean check) {
         // TODO Auto-generated method stub
-        
+
     }
 
 }

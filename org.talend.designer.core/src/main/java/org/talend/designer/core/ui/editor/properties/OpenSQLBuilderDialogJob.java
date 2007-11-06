@@ -113,7 +113,7 @@ public class OpenSQLBuilderDialogJob extends Job {
     @Override
     protected IStatus run(IProgressMonitor monitor) {
         loginProgress = new OpenSQLBuilderDialogProgress(connectionParameters, manager, composite);
-        final Process process = controller.getDynamicTabbedPropertySection().part.getTalendEditor().getProcess();
+        final Process process = controller.getDynamicProperty().getPart().getTalendEditor().getProcess();
         try {
             loginProgress.run(monitor);
             if (connectionParameters.isStatus()) {
@@ -133,8 +133,8 @@ public class OpenSQLBuilderDialogJob extends Job {
                                     // if (selectDBTable != null) {
                                     // Command cmd = new PropertyChangeCommand(elem, propertyName, TalendTextUtils
                                     // .addSQLQuotes(selectDBTable));
-                                    //                                        commandStack.execute(cmd);
-                                    //                                    }
+                                    // commandStack.execute(cmd);
+                                    // }
                                 } else {
                                     String sql = connectionParameters.getQuery();
                                     sql = TalendTextUtils.addSQLQuotes(sql);

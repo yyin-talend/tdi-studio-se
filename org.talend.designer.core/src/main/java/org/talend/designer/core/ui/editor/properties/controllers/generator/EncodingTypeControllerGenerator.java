@@ -21,7 +21,6 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.properties.controllers.generator;
 
-import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
 import org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController;
 import org.talend.designer.core.ui.editor.properties.controllers.EncodingTypeController;
 
@@ -33,18 +32,18 @@ import org.talend.designer.core.ui.editor.properties.controllers.EncodingTypeCon
  */
 public class EncodingTypeControllerGenerator implements IControllerGenerator {
 
-    /**
-     * 
-     */
-    private DynamicTabbedPropertySection dtp;
+    private IDynamicProperty dp;
 
     public AbstractElementPropertySectionController generate() {
-        return new EncodingTypeController(dtp);
+        return new EncodingTypeController(dp);
     }
 
-    public void setDynamicTabbedPropertySection(DynamicTabbedPropertySection dtp) {
-        this.dtp = dtp;
-
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.core.ui.editor.properties.controllers.generator.IControllerGenerator#setDynamicProperty(org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty)
+     */
+    public void setDynamicProperty(IDynamicProperty dp) {
+        this.dp = dp;
     }
-
 }

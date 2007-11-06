@@ -21,27 +21,29 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.properties.controllers.generator;
 
-import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
 import org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController;
 import org.talend.designer.core.ui.editor.properties.controllers.ProcessController;
 
-
 /**
- * DOC nrousseau  class global comment. Detailled comment
- * <br/>
- *
+ * DOC nrousseau class global comment. Detailled comment <br/>
+ * 
  * $Id: talend-code-templates.xml 1 2006-09-29 17:06:40 +0000 (ven., 29 sept. 2006) nrousseau $
- *
+ * 
  */
 public class ProcessGenerator implements IControllerGenerator {
-    private DynamicTabbedPropertySection dtp;
+
+    private IDynamicProperty dp;
 
     public AbstractElementPropertySectionController generate() {
-        return new ProcessController(dtp);
+        return new ProcessController(dp);
     }
 
-    public void setDynamicTabbedPropertySection(DynamicTabbedPropertySection dtp) {
-        this.dtp = dtp;
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.core.ui.editor.properties.controllers.generator.IControllerGenerator#setDynamicProperty(org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty)
+     */
+    public void setDynamicProperty(IDynamicProperty dp) {
+        this.dp = dp;
     }
-
 }

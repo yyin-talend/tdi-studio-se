@@ -52,7 +52,7 @@ import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
-import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
+import org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty;
 import org.talend.designer.core.ui.editor.properties.macrowidgets.tableeditor.PropertiesTableEditorModel;
 import org.talend.designer.core.ui.editor.properties.macrowidgets.tableeditor.PropertiesTableEditorView;
 import org.talend.designer.runprocess.ProcessorUtilities;
@@ -75,8 +75,8 @@ public class TableController extends AbstractElementPropertySectionController {
      * 
      * @param dtp
      */
-    public TableController(DynamicTabbedPropertySection dtp) {
-        super(dtp);
+    public TableController(IDynamicProperty dp) {
+        super(dp);
     }
 
     /*
@@ -156,8 +156,7 @@ public class TableController extends AbstractElementPropertySectionController {
 
         int currentHeightEditor = table.getHeaderHeight() + ((List) param.getValue()).size() * table.getItemHeight()
                 + table.getItemHeight() + 50;
-        int minHeightEditor = table.getHeaderHeight() + MIN_NUMBER_ROWS * table.getItemHeight() + table.getItemHeight()
-                + 50;
+        int minHeightEditor = table.getHeaderHeight() + MIN_NUMBER_ROWS * table.getItemHeight() + table.getItemHeight() + 50;
         int ySize2 = Math.max(currentHeightEditor, minHeightEditor);
 
         formData.bottom = new FormAttachment(0, top + ySize2);
@@ -165,9 +164,9 @@ public class TableController extends AbstractElementPropertySectionController {
 
         hashCurControls.put(param.getName(), tableEditorView.getExtendedTableViewer().getTableViewerCreator());
 
-        this.dynamicTabbedPropertySection.setCurRowSize(ySize2 + ITabbedPropertyConstants.VSPACE);
+        this.dynamicProperty.setCurRowSize(ySize2 + ITabbedPropertyConstants.VSPACE);
 
-        top += this.dynamicTabbedPropertySection.getCurRowSize();
+        top += this.dynamicProperty.getCurRowSize();
 
         return null;
     }
@@ -193,8 +192,7 @@ public class TableController extends AbstractElementPropertySectionController {
         final Table table = tableEditorView.getTable();
         int currentHeightEditor = table.getHeaderHeight() + ((List) param.getValue()).size() * table.getItemHeight()
                 + table.getItemHeight() + 50;
-        int minHeightEditor = table.getHeaderHeight() + MIN_NUMBER_ROWS * table.getItemHeight() + table.getItemHeight()
-                + 50;
+        int minHeightEditor = table.getHeaderHeight() + MIN_NUMBER_ROWS * table.getItemHeight() + table.getItemHeight() + 50;
 
         tableEditorView.getMainComposite().dispose();
 
@@ -215,8 +213,7 @@ public class TableController extends AbstractElementPropertySectionController {
     @Override
     public void refresh(IElementParameter param, boolean check) {
         TableViewerCreator tableViewerCreator = (TableViewerCreator) hashCurControls.get(param.getName());
-        if (tableViewerCreator == null || tableViewerCreator.getTable() == null
-                || tableViewerCreator.getTable().isDisposed()) {
+        if (tableViewerCreator == null || tableViewerCreator.getTable() == null || tableViewerCreator.getTable().isDisposed()) {
             return;
         }
         Object value = param.getValue();
@@ -490,8 +487,7 @@ public class TableController extends AbstractElementPropertySectionController {
         case DBTYPE_LIST:
         case LOOKUP_COLUMN_LIST:
         case PREV_COLUMN_LIST:
-            line.put(items[0], new Integer(tmpParam.getIndexOfItemFromList((String) tmpParam
-                    .getDefaultClosedListValue())));
+            line.put(items[0], new Integer(tmpParam.getIndexOfItemFromList((String) tmpParam.getDefaultClosedListValue())));
             break;
         case COLOR:
         case CHECK:
@@ -516,8 +512,7 @@ public class TableController extends AbstractElementPropertySectionController {
             case CONNECTION_LIST:
             case LOOKUP_COLUMN_LIST:
             case PREV_COLUMN_LIST:
-                line.put(items[i], new Integer(tmpParam.getIndexOfItemFromList((String) tmpParam
-                        .getDefaultClosedListValue())));
+                line.put(items[i], new Integer(tmpParam.getIndexOfItemFromList((String) tmpParam.getDefaultClosedListValue())));
                 break;
             default: // TEXT or CHECK or COLOR (means String or Boolean)
                 line.put(items[i], tmpParam.getValue());

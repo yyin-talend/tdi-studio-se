@@ -55,7 +55,7 @@ import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.TalendEditor;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
-import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
+import org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty;
 
 /**
  * DOC nrousseau class global comment. Detailled comment <br/>
@@ -63,8 +63,8 @@ import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySectio
  */
 public class ComponentListController extends AbstractElementPropertySectionController {
 
-    public ComponentListController(DynamicTabbedPropertySection dtp) {
-        super(dtp);
+    public ComponentListController(IDynamicProperty dp) {
+        super(dp);
     }
 
     private Command createCommand(SelectionEvent selectionEvent) {
@@ -176,7 +176,7 @@ public class ComponentListController extends AbstractElementPropertySectionContr
 
         refresh(param, false);
 
-        dynamicTabbedPropertySection.setCurRowSize(initialSize.y + ITabbedPropertyConstants.VSPACE);
+        dynamicProperty.setCurRowSize(initialSize.y + ITabbedPropertyConstants.VSPACE);
         return cLayout;
     }
 
@@ -224,8 +224,7 @@ public class ComponentListController extends AbstractElementPropertySectionContr
                 if (value == null || value.equals("")) {
                     elem.setPropertyValue(param.getName(), componentValueList[0]);
                 } else {
-                    IEditorPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-                            .getActiveEditor();
+                    IEditorPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
                     if (part instanceof MultiPageTalendEditor) {
                         TalendEditor te = ((MultiPageTalendEditor) part).getTalendEditor();
                         CommandStack cmdStack = (CommandStack) te.getAdapter(CommandStack.class);

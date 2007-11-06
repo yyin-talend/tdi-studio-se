@@ -207,6 +207,12 @@
                         id="org.talend.designer.core.ui.views.statsandlogs.statsAndLogsView"
                         name="%statsAndLogsView">
                   </view>
+                  <view
+                        category="org.talend.core.root"
+                        class="org.talend.designer.core.ui.views.properties.ComponentSettingsView"
+                        id="org.talend.designer.core.ui.views.properties.ComponentSettingsView"
+                        name="%componentSettingsView">
+                  </view>
    </extension>
    <extension
          point="org.talend.core.repositoryContextualsActions">

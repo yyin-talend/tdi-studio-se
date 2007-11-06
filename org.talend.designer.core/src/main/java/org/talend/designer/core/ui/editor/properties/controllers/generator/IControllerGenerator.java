@@ -21,7 +21,6 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.properties.controllers.generator;
 
-import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
 import org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController;
 
 /**
@@ -34,6 +33,6 @@ public interface IControllerGenerator {
 
     public AbstractElementPropertySectionController generate();
 
-    public void setDynamicTabbedPropertySection(DynamicTabbedPropertySection dtp);
+    public void setDynamicProperty(IDynamicProperty dp);
 
 }

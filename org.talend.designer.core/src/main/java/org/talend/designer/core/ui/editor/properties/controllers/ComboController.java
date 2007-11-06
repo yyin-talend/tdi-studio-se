@@ -68,7 +68,7 @@ import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.cmd.QueryGuessCommand;
 import org.talend.designer.core.ui.editor.cmd.RepositoryChangeQueryCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
-import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
+import org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty;
 
 /**
  * DOC yzhang class global comment. Detailled comment <br/>
@@ -95,8 +95,8 @@ public class ComboController extends AbstractElementPropertySectionController {
      * 
      * @param parameterBean
      */
-    public ComboController(DynamicTabbedPropertySection dtp) {
-        super(dtp);
+    public ComboController(IDynamicProperty dp) {
+        super(dp);
     }
 
     /*
@@ -105,10 +105,10 @@ public class ComboController extends AbstractElementPropertySectionController {
      * @see org.talend.designer.core.ui.editor.properties2.editors.AbstractElementPropertySectionController#createCommand()
      */
     public Command createComboCommand(SelectionEvent event) {
-        repositoryTableMap = dynamicTabbedPropertySection.getRepositoryTableMap();
-        repositoryConnectionItemMap = dynamicTabbedPropertySection.getRepositoryConnectionItemMap();
-        tablesmap = dynamicTabbedPropertySection.getTablesMap();
-        queriesmap = dynamicTabbedPropertySection.getQueriesMap();
+        repositoryTableMap = dynamicProperty.getRepositoryTableMap();
+        repositoryConnectionItemMap = dynamicProperty.getRepositoryConnectionItemMap();
+        tablesmap = dynamicProperty.getTablesMap();
+        queriesmap = dynamicProperty.getQueriesMap();
         Set<String> elementsName;
         Control ctrl;
         Connection repositoryConnection = null;
@@ -151,10 +151,9 @@ public class ComboController extends AbstractElementPropertySectionController {
                         }
 
                         if (name.equals(EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName())) {
-                            this.dynamicTabbedPropertySection.updateRepositoryList();
+                            this.dynamicProperty.updateRepositoryList();
                             if (elem instanceof Node) {
-                                Map<String, Query> repositoryQueryStoreMap = this.dynamicTabbedPropertySection
-                                        .getRepositoryQueryStoreMap();
+                                Map<String, Query> repositoryQueryStoreMap = this.dynamicProperty.getRepositoryQueryStoreMap();
                                 if (repositoryQueryStoreMap.containsKey(value)) {
                                     Query query = repositoryQueryStoreMap.get(value);
                                     IElementParameter queryText = getQueryTextElementParameter(elem);
@@ -207,13 +206,13 @@ public class ComboController extends AbstractElementPropertySectionController {
 
                             else if (name.equals(EParameterName.QUERYSTORE_TYPE.getName())) {
                                 if (elem instanceof Node) {
-                                    this.dynamicTabbedPropertySection.updateRepositoryList();
+                                    this.dynamicProperty.updateRepositoryList();
                                     String querySelected;
                                     Query repositoryQuery = null;
                                     querySelected = (String) elem.getPropertyValue(EParameterName.REPOSITORY_QUERYSTORE_TYPE
                                             .getName());
 
-                                    Map<String, Query> repositoryQueryStoreMap = this.dynamicTabbedPropertySection
+                                    Map<String, Query> repositoryQueryStoreMap = this.dynamicProperty
                                             .getRepositoryQueryStoreMap();
                                     if (repositoryQueryStoreMap.containsKey(querySelected)) {
                                         repositoryQuery = repositoryQueryStoreMap.get(querySelected);
@@ -339,7 +338,7 @@ public class ComboController extends AbstractElementPropertySectionController {
         hashCurControls.put(param.getName(), combo);
 
         Point initialSize = dField.getLayoutControl().computeSize(SWT.DEFAULT, SWT.DEFAULT);
-        dynamicTabbedPropertySection.setCurRowSize(initialSize.y + ITabbedPropertyConstants.VSPACE);
+        dynamicProperty.setCurRowSize(initialSize.y + ITabbedPropertyConstants.VSPACE);
         return cLayout;
     }
 
@@ -405,7 +404,7 @@ public class ComboController extends AbstractElementPropertySectionController {
     SelectionListener listenerSelection = new SelectionAdapter() {
 
         public void widgetSelected(SelectionEvent event) {
-            dynamicTabbedPropertySection.updateRepositoryList();
+            dynamicProperty.updateRepositoryList();
             Command cmd = createCommand(event);
             if (cmd != null) {
                 getCommandStack().execute(cmd);
@@ -442,7 +441,7 @@ public class ComboController extends AbstractElementPropertySectionController {
 
         // Only for getting the real table name.
         if (elem.getPropertyValue(EParameterName.SCHEMA_TYPE.getName()).equals(EmfComponent.REPOSITORY)) {
-            Map<String, IMetadataTable> repositoryTableMap = dynamicTabbedPropertySection.getRepositoryTableMap();
+            Map<String, IMetadataTable> repositoryTableMap = dynamicProperty.getRepositoryTableMap();
             String paramName;
             IElementParameter repositorySchemaTypeParameter = elem.getElementParameter(EParameterName.REPOSITORY_SCHEMA_TYPE
                     .getName());
@@ -466,7 +465,7 @@ public class ComboController extends AbstractElementPropertySectionController {
                         }
                     }
                     if (elem instanceof Node) {
-                        this.dynamicTabbedPropertySection.updateRepositoryList();
+                        this.dynamicProperty.updateRepositoryList();
                         if (repositoryTableMap.containsKey(value)) {
                             repositoryMetadata = repositoryTableMap.get(value);
                             realTableName = repositoryMetadata.getTableName();
@@ -500,8 +499,7 @@ public class ComboController extends AbstractElementPropertySectionController {
         }
         cmd = new QueryGuessCommand(node, newRepositoryMetadata);
 
-        cmd.setMaps(dynamicTabbedPropertySection.getTableIdAndDbTypeMap(), dynamicTabbedPropertySection
-                .getTableIdAndDbSchemaMap(), repositoryTableMap);
+        cmd.setMaps(dynamicProperty.getTableIdAndDbTypeMap(), dynamicProperty.getTableIdAndDbSchemaMap(), repositoryTableMap);
         String type = getValueFromRepositoryName("TYPE");
         cmd.setParameters(realTableId, realTableName, type);
 

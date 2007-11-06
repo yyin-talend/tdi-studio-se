@@ -57,6 +57,7 @@ import org.talend.commons.utils.data.container.Content;
 import org.talend.commons.utils.data.container.ContentList;
 import org.talend.commons.utils.data.container.RootContainer;
 import org.talend.commons.utils.threading.ExecutionLimiter;
+import org.talend.commons.utils.time.TimeMeasure;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.Connection;
@@ -95,6 +96,8 @@ import org.talend.designer.core.ui.editor.outline.NodeReturnsTreeEditPart;
 import org.talend.designer.core.ui.editor.outline.NodeTreeEditPart;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController;
+import org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty;
+import org.talend.designer.core.ui.views.properties.DynamicPropertyGenerator;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 
@@ -104,7 +107,7 @@ import org.talend.repository.model.IProxyRepositoryFactory;
  * $Id$
  * 
  */
-public class DynamicTabbedPropertySection extends AbstractPropertySection {
+public class DynamicTabbedPropertySection extends AbstractPropertySection implements IDynamicProperty {
 
     protected MultiPageTalendEditor part;
 
@@ -120,7 +123,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
 
     protected int curRowSize;
 
-    protected DynamicTabbedPropertyGenerator generator = DynamicTabbedPropertyGenerator.getDefault();
+    protected DynamicPropertyGenerator generator = DynamicPropertyGenerator.getDefault();
 
     private String oldProcessType;
 
@@ -662,7 +665,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
 
         Control lastControl = null;
         if (reInitialize) {
-            if (currentComponent != null&& composite!=null) {
+            if (currentComponent != null && composite != null) {
                 Control[] ct = composite.getChildren();
                 for (int i = 0; i < ct.length; i++) {
                     ct[i].dispose();
@@ -822,7 +825,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         Composite tmpComposite = composite;
         while (tabbedPropertyComposite == null) { // to retrieve the main
             // composite of the TabbedProperties
-            if (tmpComposite==null||tmpComposite.isDisposed() || tmpComposite.getParent()==null||tmpComposite.getParent().isDisposed()) {
+            if (tmpComposite == null || tmpComposite.isDisposed() || tmpComposite.getParent() == null
+                    || tmpComposite.getParent().isDisposed()) {
                 return null;
             }
             if (tmpComposite.getParent() instanceof TabbedPropertyComposite) {
@@ -873,6 +877,9 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
 
     @Override
     public void refresh() {
+        TimeMeasure.display = false;
+        TimeMeasure.measureActive = true;
+        TimeMeasure.begin("DTP:refresh:" + getCurrentComponent());
         if (elem == null) {
             return;
         }
@@ -914,6 +921,11 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
             propertyResized = false;
         }
         checkErrorsWhenViewRefreshed = false;
+        long time = TimeMeasure.timeSinceBegin("DTP:refresh:" + getCurrentComponent());
+        TimeMeasure.end("DTP:refresh:" + getCurrentComponent());
+        if (time != 0) {
+            System.out.println("DTP;" + getCurrentComponent() + ";" + time);
+        }
     }
 
     // private ISelection lastSelection;
@@ -1324,8 +1336,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         return lastPropertyUsed;
     }
 
-    
     public void setComposite(Composite composite) {
         this.composite = composite;
     }
+
 }

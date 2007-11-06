@@ -21,7 +21,7 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.properties.controllers;
 
-import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
+import org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty;
 
 /**
  * DOC yzhang class global comment. Detailled comment <br/>
@@ -31,8 +31,8 @@ import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySectio
  */
 public class PerlMemoController extends AbstractLanguageMemoController {
 
-    public PerlMemoController(DynamicTabbedPropertySection dtp) {
-        super(dtp);
+    public PerlMemoController(IDynamicProperty dp) {
+        super(dp);
     }
 
     @Override

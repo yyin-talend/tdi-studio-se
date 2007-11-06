@@ -62,7 +62,7 @@ import org.talend.core.model.properties.ConnectionItem;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
-import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
+import org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty;
 
 /**
  * DOC yzhang class global comment. Detailled comment <br/>
@@ -83,8 +83,8 @@ public class ColumnListController extends AbstractElementPropertySectionControll
      * 
      * @param parameterBean
      */
-    public ColumnListController(DynamicTabbedPropertySection dtp) {
-        super(dtp);
+    public ColumnListController(IDynamicProperty dp) {
+        super(dp);
     }
 
     /*
@@ -93,8 +93,8 @@ public class ColumnListController extends AbstractElementPropertySectionControll
      * @see org.talend.designer.core.ui.editor.properties2.editors.AbstractElementPropertySectionController#createCommand()
      */
     public Command createCommand(SelectionEvent selectionEvent) {
-        repositoryTableMap = dynamicTabbedPropertySection.getRepositoryTableMap();
-        repositoryConnectionItemMap = dynamicTabbedPropertySection.getRepositoryConnectionItemMap();
+        repositoryTableMap = dynamicProperty.getRepositoryTableMap();
+        repositoryConnectionItemMap = dynamicProperty.getRepositoryConnectionItemMap();
 
         Set<String> elementsName;
         Control ctrl;
@@ -232,7 +232,7 @@ public class ColumnListController extends AbstractElementPropertySectionControll
         updateData();
         // this.dynamicTabbedPropertySection.updateColumnList(null);
 
-        dynamicTabbedPropertySection.setCurRowSize(initialSize.y + ITabbedPropertyConstants.VSPACE);
+        dynamicProperty.setCurRowSize(initialSize.y + ITabbedPropertyConstants.VSPACE);
         return cLayout;
     }
 
@@ -271,7 +271,7 @@ public class ColumnListController extends AbstractElementPropertySectionControll
         @Override
         public void widgetSelected(SelectionEvent event) {
             // updateRepositoryList();
-            dynamicTabbedPropertySection.updateRepositoryList();
+            dynamicProperty.updateRepositoryList();
             Command cmd = createCommand(event);
             if (cmd != null) {
                 getCommandStack().execute(cmd);
