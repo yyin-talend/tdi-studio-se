@@ -249,6 +249,10 @@ if (canGenerate) {
 								%>
 								<%=firstOutConnection.getName()%>.<%=argName%> = <%=inConnectionName%>.<%=argName%>;
 								<%
+							} else if(argType.equals("RECORDSET")){
+%>
+								<%=firstOutConnection.getName()%>.<%=argName%> = statement_<%=cid%>.getResultSet();
+<%
 							} else {
 								// Retrieve parameter value (INOUT or OUT)
 								String method;

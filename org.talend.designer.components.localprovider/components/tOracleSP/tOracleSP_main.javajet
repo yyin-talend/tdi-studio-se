@@ -203,10 +203,14 @@ if (canGenerate) {
 			}
 			
 			// Output argument
-			if (argType.equals("OUT") || argType.equals("INOUT")) {
+			if (argType.equals("OUT") || argType.equals("INOUT") ) {
 				%>
 				statement_<%=cid%>.registerOutParameter(<%=argIndex%>, java.sql.Types.<%=converter.convert(typeToGenerate)%>);
 	  			<%
+			}else if(argType.equals("RECORDSET")){
+%>
+				statement_<%=cid%>.registerOutParameter(<%=argIndex%>, oracle.jdbc.OracleTypes.CURSOR);
+<%
 			}
 		}
 		
@@ -249,6 +253,10 @@ if (canGenerate) {
 								%>
 								<%=firstOutConnection.getName()%>.<%=argName%> = <%=inConnectionName%>.<%=argName%>;
 								<%
+							} else if(argType.equals("RECORDSET")){
+%>
+								<%=firstOutConnection.getName()%>.<%=argName%> = statement_<%=cid%>.getObject(<%=argIndex%>);
+<%
 							} else {
 								// Retrieve parameter value (INOUT or OUT)
 								String method;
