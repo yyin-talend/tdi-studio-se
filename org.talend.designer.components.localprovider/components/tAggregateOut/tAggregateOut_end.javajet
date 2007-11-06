@@ -205,7 +205,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             				}
                 			if(function.equals("avg")){
                 			    %>
-                			    float <%=outOperation %>_avg_temp = 0;
+                			    double <%=outOperation %>_avg_temp = 0;
                                 if(operation_result_<%=cid %>.<%=inOperation %>_count > 0){
                                 	<%=outOperation %>_avg_temp = operation_result_<%=cid %>.<%=inOperation %>_sum / operation_result_<%=cid %>.<%=inOperation %>_count ;
                                 }
