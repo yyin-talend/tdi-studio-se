@@ -23,6 +23,8 @@ package org.talend.expressionbuilder.ui;
 
 import org.eclipse.jface.dialogs.DialogTray;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
@@ -65,14 +67,22 @@ public class SnippetsDialogTray extends DialogTray {
                 snippetsview = (SnippetsView) SnippetsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow()
                         .getActivePage().showView(SnippetsPlugin.NAMES.VIEW_ID);
             }
-            SnippetsDialogTrayView view = new SnippetsDialogTrayView();
+            final SnippetsDialogTrayView view = new SnippetsDialogTrayView();
             view.setEditor(editorPart);
             view.init(snippetsview.getViewSite());
             view.createPartControl(content);
+            content.addDisposeListener(new DisposeListener() {
+
+                @Override
+                public void widgetDisposed(DisposeEvent e) {
+                    view.dispose();
+                }
+            });
         } catch (PartInitException e) {
             Logger.logException(e);
         }
         // PartSite partSite = (PartSite) snippetsview.getSite();
+
         return content;
     }
 

@@ -139,4 +139,15 @@ public class SnippetsDialogTrayView extends SnippetsView {
     public void insert(SnippetPaletteItem item) {
         insertionHelper.insert(item, editorPart);
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.wst.common.snippets.internal.ui.SnippetsView#dispose()
+     */
+    @Override
+    public void dispose() {
+        super.dispose();
+    }
+
 }
