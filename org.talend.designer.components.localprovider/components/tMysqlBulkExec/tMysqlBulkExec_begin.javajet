@@ -27,7 +27,10 @@ if(encoding.equals("\"GBK\"")){
 	charset = "ucs2";
 }
 %> 
+String lines_separator_<%=cid %> = <%=ElementParameterParser.getValue(node, "__LINES_TERMINATED_BY__") %>;
 String field_separator_<%=cid %> = <%=ElementParameterParser.getValue(node, "__FIELDS_TERMINATED_BY__") %>;
+String escaped_str_<%=cid %> = <%=ElementParameterParser.getValue(node, "__ESCAPED_BY__") %>;
+String enclosed_str_<%=cid %> = <%=ElementParameterParser.getValue(node, "__ENCLOSED_BY__") %>;
 String file_<%=cid %> = <%=ElementParameterParser.getValue(node, "__FILENAME__") %>;
 String host_<%=cid %> = <%=ElementParameterParser.getValue(node, "__HOST__") %>;
 String port_<%=cid %> = <%=ElementParameterParser.getValue(node, "__PORT__") %>;
@@ -56,6 +59,14 @@ Class.forName("com.mysql.jdbc.Driver").newInstance();
 java.sql.Connection con_<%=cid %>=java.sql.DriverManager.getConnection("jdbc:MySQL://"+host_<%=cid %>+":"+port_<%=cid %>+"/"+db_<%=cid %>, user_<%=cid %>, pas_<%=cid %>);
 java.sql.Statement stmt_<%=cid %>=con_<%=cid %>.createStatement();
 stmt_<%=cid %>.execute("SET character_set_database=<%=charset %>");
-stmt_<%=cid %>.execute("LOAD DATA LOCAL INFILE '" + file_<%=cid %> + "' " + replace_<%=cid%> + " INTO TABLE "+table_<%=cid %>+" FIELDS TERMINATED BY '"+field_separator_<%=cid %>+"'");
+stmt_<%=cid %>.execute(
+    "LOAD DATA LOCAL INFILE '" + file_<%=cid %> + "' " 
+    + replace_<%=cid%> 
+    + " INTO TABLE " + table_<%=cid %>
+    + " FIELDS TERMINATED BY '" + field_separator_<%=cid %>.replaceAll("\\\\", "\\\\\\\\") + "'"
+    + " ENCLOSED BY '" + enclosed_str_<%=cid %>.replaceAll("\\\\", "\\\\\\\\") + "'"
+    + " ESCAPED BY '" + escaped_str_<%=cid %>.replaceAll("\\\\", "\\\\\\\\") + "'"
+    + " LINES TERMINATED BY '" + lines_separator_<%=cid %>.replaceAll("\\\\", "\\\\\\\\") + "'"        
+);
 stmt_<%=cid %>.close();
 con_<%=cid %>.close();

@@ -3,7 +3,6 @@ imports="
     org.talend.core.model.process.INode 
     org.talend.core.model.process.ElementParameterParser
     org.talend.core.model.metadata.IMetadataTable
-    org.talend.core.model.metadata.IMetadataColumn
     org.talend.designer.codegen.config.CodeGeneratorArgument
     java.util.List
 " 
@@ -17,63 +16,50 @@ List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
     IMetadataTable metadata = metadatas.get(0);
     if (metadata!=null) {
-        String filename = ElementParameterParser.getValueWithUIFieldKey(
-            node,
-            "__FILENAME__",
-            "FILENAME"
-        );
+        String filename = ElementParameterParser.getValue(node,"__FILENAME__");
         
-        String fieldSeparator = ElementParameterParser.getValueWithUIFieldKey(
-            node,
-            "__FIELDSEPARATOR__",
-            "FIELDSEPARATOR"
-        );
+        String rowSeparator = ElementParameterParser.getValue(node,"__ROWSEPARATOR__");
         
-        String rowSeparator = ElementParameterParser.getValueWithUIFieldKey(
-            node,
-            "__ROWSEPARATOR__",
-            "ROWSEPARATOR"
-        );
+        String fieldSeparator = ElementParameterParser.getValue(node,"__FIELDSEPARATOR__");
         
-        String encoding = ElementParameterParser.getValue(
-            node,
-            "__ENCODING__"
-        );
+        String escapeChar = ElementParameterParser.getValue(node, "__ESCAPE_CHAR__");
         
-        boolean isAppend = ElementParameterParser.getValue(
-            node,
-            "__APPEND__"
-        ).equals("true");
+        String textEnclosure = ElementParameterParser.getValue(node, "__TEXT_ENCLOSURE__");
         
-        boolean isIncludeHeader = ElementParameterParser.getValue(
-            node,
-            "__INCLUDEHEADER__"
-        ).equals("true");
+        String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
+        
+        boolean isAppend = ElementParameterParser.getValue(node,"__APPEND__").equals("true");
+        
+        boolean isCreateDir = ElementParameterParser.getValue(node,"__CREATE__").equals("true");
 %>
 		int nb_line_<%=cid%> = 0;
+		char rowSeparator_<%=cid %> = <%=rowSeparator.length()==0||rowSeparator.equals("")?"'\\n'" : rowSeparator + ".charAt(0)"%>;
+		char fieldSeparator_<%=cid %> = <%=fieldSeparator.length()==0||fieldSeparator.equals("")?"';'" : fieldSeparator + ".charAt(0)"%>;
+		char escapeChar_<%=cid %> = <%=escapeChar.length()==0||escapeChar.equals("")?"'\\\\'" : escapeChar + ".charAt(0)"%>;
+		char textEnclosure_<%=cid %> = <%=textEnclosure.length()==0||textEnclosure.equals("")?"'\"'" : textEnclosure + ".charAt(0)"%>;
 		
-		final String OUT_DELIM_<%=cid %> = <%=fieldSeparator %>;
-		
-		final String OUT_DELIM_ROWSEP_<%=cid %> = <%=rowSeparator %>;
-		
-		final java.io.BufferedWriter out<%=cid %> = new java.io.BufferedWriter(new java.io.OutputStreamWriter(
-        		new java.io.FileOutputStream(<%=filename %>, <%= isAppend%>),<%= encoding%>));
-<%
-		if(isIncludeHeader&&!isAppend){
-    		List<IMetadataColumn> columns = metadata.getListColumns();
-    		int sizeColumns = columns.size();
-    		for (int i = 0; i < sizeColumns; i++) {
-    			IMetadataColumn column = columns.get(i);
-    		%>
-    			out<%=cid %>.write("<%=column.getLabel() %>");
-    		<%
-    			if(i != sizeColumns - 1) {
-    				%>out<%=cid %>.write(OUT_DELIM_<%=cid %>);<%
-    			}
-    		}%>
-    		out<%=cid %>.write(OUT_DELIM_ROWSEP_<%=cid %>);
-<%
+		int escape_mode_<%=cid %> = com.csvreader.CsvWriter.ESCAPE_MODE_DOUBLED;
+		if(escapeChar_<%=cid %>=='\\'){
+			escape_mode_<%=cid %> = com.csvreader.CsvWriter.ESCAPE_MODE_BACKSLASH;
+		}else if(escapeChar_<%=cid %> == textEnclosure_<%=cid %>){
+			escape_mode_<%=cid %> = com.csvreader.CsvWriter.ESCAPE_MODE_DOUBLED;
+		}else {
+			throw new Exception("The escape mode only support the '\\' or double text enclosure.");
 		}
+				
+		java.io.File file_<%=cid %> = new java.io.File(<%=filename %>);		
+		<%if(isCreateDir) {%>
+		file_<%=cid %>.getParentFile().mkdirs();
+		<%}%>
+				
+		com.csvreader.CsvWriter csvWriter_<%=cid%> = new com.csvreader.CsvWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(
+        new java.io.FileOutputStream(file_<%=cid %>, <%=isAppend %>), <%=encoding %>)), fieldSeparator_<%=cid %>);
+        
+        csvWriter_<%=cid %>.setRecordDelimiter(rowSeparator_<%=cid %>);              	
+        csvWriter_<%=cid %>.setEscapeMode(escape_mode_<%=cid %>);      		
+      	csvWriter_<%=cid %>.setTextQualifier(textEnclosure_<%=cid %>); 
+      	csvWriter_<%=cid %>.setForceQualifier(true);        
+<%
     }
 }
 %>

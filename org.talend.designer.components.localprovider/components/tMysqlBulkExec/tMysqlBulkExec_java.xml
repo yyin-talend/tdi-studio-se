@@ -34,14 +34,14 @@
       NAME="PROPERTY"
       FIELD="PROPERTY_TYPE"
       SHOW="true"
-      NUM_ROW="1"
+      NUM_ROW="10"
       REPOSITORY_VALUE="DATABASE:MYSQL"
     />
 
     <PARAMETER
       NAME="HOST"
       FIELD="TEXT"
-      NUM_ROW="2"
+      NUM_ROW="20"
       REPOSITORY_VALUE="SERVER_NAME"
     >
       <DEFAULT>"localhost"</DEFAULT>
@@ -50,7 +50,7 @@
     <PARAMETER
       NAME="PORT"
       FIELD="TEXT"
-      NUM_ROW="2"
+      NUM_ROW="20"
       REPOSITORY_VALUE="PORT"
     >
       <DEFAULT>"3306"</DEFAULT>
@@ -59,7 +59,7 @@
     <PARAMETER
       NAME="DBNAME"
       FIELD="TEXT"
-      NUM_ROW="2"
+      NUM_ROW="20"
       REPOSITORY_VALUE="SID"
     >
       <DEFAULT>""</DEFAULT>
@@ -68,7 +68,7 @@
     <PARAMETER
       NAME="USER"
       FIELD="TEXT"
-      NUM_ROW="3"
+      NUM_ROW="30"
       REPOSITORY_VALUE="USERNAME"
     >
       <DEFAULT>""</DEFAULT>
@@ -77,7 +77,7 @@
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
-      NUM_ROW="3"
+      NUM_ROW="30"
       REPOSITORY_VALUE="PASSWORD"
     >
       <DEFAULT>""</DEFAULT>
@@ -86,41 +86,68 @@
     <PARAMETER
       NAME="TABLE"
       FIELD="TEXT"
-      NUM_ROW="4"
+      NUM_ROW="40"
     >
       <DEFAULT>"employee"</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
-      NAME="IS_UPDATE"
-      FIELD="CHECK"
-      NUM_ROW="4"
-    >
-      <DEFAULT>false</DEFAULT>
-    </PARAMETER> 
-
-    <PARAMETER
       NAME="FILENAME"
       FIELD="FILE"
-      NUM_ROW="5"
+      NUM_ROW="50"
       REQUIRED="true"
     >
       <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/mysql_bulk.txt"</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
+      NAME="LINES_TERMINATED_BY"
+      FIELD="TEXT"
+      NUM_ROW="60"
+      REQUIRED="true"
+    >
+      <DEFAULT>"\n"</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
       NAME="FIELDS_TERMINATED_BY"
       FIELD="TEXT"
-      NUM_ROW="6"
+      NUM_ROW="60"
       REQUIRED="true"
     >
       <DEFAULT>";"</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
+      NAME="ESCAPED_BY"
+      FIELD="TEXT"
+      NUM_ROW="60"
+      REQUIRED="true"
+    >
+      <DEFAULT>"\\"</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="ENCLOSED_BY"
+      FIELD="TEXT"
+      NUM_ROW="60"
+      REQUIRED="true"
+    >
+      <DEFAULT>"\""</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="IS_UPDATE"
+      FIELD="CHECK"
+      NUM_ROW="70"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>         
+
+    <PARAMETER
       NAME="ENCODING"
       FIELD="ENCODING_TYPE"
-      NUM_ROW="7"
+      NUM_ROW="80"
       REQUIRED="true"
     >
       <DEFAULT>"UTF-8"</DEFAULT>
