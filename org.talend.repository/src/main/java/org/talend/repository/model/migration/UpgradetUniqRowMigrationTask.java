@@ -31,9 +31,8 @@ import org.talend.core.model.components.conversions.IComponentConversion;
 import org.talend.core.model.components.conversions.RemovePropertyComponentConversion;
 import org.talend.core.model.components.filters.IComponentFilter;
 import org.talend.core.model.components.filters.NameComponentFilter;
-import org.talend.core.model.general.Project;
-import org.talend.core.model.migration.AbstractMigrationTask;
-import org.talend.core.model.migration.IProjectMigrationTask;
+import org.talend.core.model.migration.AbstractJobMigrationTask;
+import org.talend.core.model.properties.ProcessItem;
 
 /**
  * Use to rename tDB(Input|Output|SQLRow) into tMysql(Input|Output|Row). Related bug 540.
@@ -41,10 +40,10 @@ import org.talend.core.model.migration.IProjectMigrationTask;
  * $Id: talend.epf 1 2006-09-29 17:06:40 +0000 (ven., 29 sept. 2006) nrousseau $
  * 
  */
-public class UpgradetUniqRowMigrationTask extends AbstractMigrationTask implements IProjectMigrationTask {
+public class UpgradetUniqRowMigrationTask extends AbstractJobMigrationTask {
 
-    public ExecutionResult execute(Project project) {
-        if (project.getLanguage() != ECodeLanguage.PERL) {
+    public ExecutionResult executeOnProcess(ProcessItem item) {
+        if (getProject().getLanguage() != ECodeLanguage.PERL) {
             return ExecutionResult.NOTHING_TO_DO;
         }
         try {
@@ -53,7 +52,8 @@ public class UpgradetUniqRowMigrationTask extends AbstractMigrationTask implemen
             IComponentConversion removeProperty = new RemovePropertyComponentConversion("CASE_SENSITIVE"); //$NON-NLS-1$
             IComponentConversion addProperty = new AddPropertyUniqueKeyFortUniqRowConversion("UNIQUE_KEY", "TABLE"); //$NON-NLS-1$ //$NON-NLS-2$
 
-            ModifyComponentsAction.searchAndModify(filter1, Arrays.<IComponentConversion> asList(removeProperty, addProperty));
+            ModifyComponentsAction.searchAndModify(item, filter1, Arrays.<IComponentConversion> asList(removeProperty,
+                    addProperty));
 
             return ExecutionResult.SUCCESS_NO_ALERT;
         } catch (Exception e) {

@@ -30,9 +30,8 @@ import org.talend.core.model.components.conversions.RemovePropertyComponentConve
 import org.talend.core.model.components.conversions.RenameComponentConversion;
 import org.talend.core.model.components.filters.IComponentFilter;
 import org.talend.core.model.components.filters.PropertyComponentFilter;
-import org.talend.core.model.general.Project;
-import org.talend.core.model.migration.AbstractMigrationTask;
-import org.talend.core.model.migration.IProjectMigrationTask;
+import org.talend.core.model.migration.AbstractJobMigrationTask;
+import org.talend.core.model.properties.ProcessItem;
 
 /**
  * Use to rename tDB(Input|Output|SQLRow) into tPostgresql(Input|Output|Row).
@@ -40,29 +39,26 @@ import org.talend.core.model.migration.IProjectMigrationTask;
  * $Id: talend.epf 1 2006-09-29 17:06:40 +0000 (ven., 29 sept. 2006) nrousseau $
  * 
  */
-public class RenametDBInputToPostgresqlMigrationTask extends AbstractMigrationTask implements IProjectMigrationTask {
+public class RenametDBInputToPostgresqlMigrationTask extends AbstractJobMigrationTask {
 
-    public ExecutionResult execute(Project project) {
+    public ExecutionResult executeOnProcess(ProcessItem item) {
         try {
             IComponentConversion removePropertyComponentConversion = new RemovePropertyComponentConversion("TYPE"); //$NON-NLS-1$
 
             RenameComponentConversion renameComponentConversion = new RenameComponentConversion("tPostgresqlInput"); //$NON-NLS-1$
-            IComponentFilter filter1 = 
-                new PropertyComponentFilter("tDBInput", "TYPE", "postgresql"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-            ModifyComponentsAction.searchAndModify(filter1, Arrays.<IComponentConversion> asList(
-                    renameComponentConversion, removePropertyComponentConversion));
+            IComponentFilter filter1 = new PropertyComponentFilter("tDBInput", "TYPE", "postgresql"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            ModifyComponentsAction.searchAndModify(item, filter1, Arrays.<IComponentConversion> asList(renameComponentConversion,
+                    removePropertyComponentConversion));
 
             renameComponentConversion.setNewName("tPostgresqlOutput"); //$NON-NLS-1$
-            IComponentFilter filter2 = 
-                new PropertyComponentFilter("tDBOutput", "TYPE", "postgresql"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-            ModifyComponentsAction.searchAndModify(filter2, Arrays.<IComponentConversion> asList(
-                    renameComponentConversion, removePropertyComponentConversion));
+            IComponentFilter filter2 = new PropertyComponentFilter("tDBOutput", "TYPE", "postgresql"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            ModifyComponentsAction.searchAndModify(item, filter2, Arrays.<IComponentConversion> asList(renameComponentConversion,
+                    removePropertyComponentConversion));
 
             renameComponentConversion.setNewName("tPostgresqlRow"); //$NON-NLS-1$
-            IComponentFilter filter3 = 
-                new PropertyComponentFilter("tDBSQLRow", "TYPE", "postgresql"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-            ModifyComponentsAction.searchAndModify(filter3, Arrays.<IComponentConversion> asList(
-                    renameComponentConversion, removePropertyComponentConversion));
+            IComponentFilter filter3 = new PropertyComponentFilter("tDBSQLRow", "TYPE", "postgresql"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            ModifyComponentsAction.searchAndModify(item, filter3, Arrays.<IComponentConversion> asList(renameComponentConversion,
+                    removePropertyComponentConversion));
 
             return ExecutionResult.SUCCESS_WITH_ALERT;
         } catch (Exception e) {

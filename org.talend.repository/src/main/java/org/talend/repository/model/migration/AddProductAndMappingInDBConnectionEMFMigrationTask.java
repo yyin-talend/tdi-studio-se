@@ -21,19 +21,18 @@
 // ============================================================================
 package org.talend.repository.model.migration;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.database.EDatabaseTypeName;
-import org.talend.core.model.general.Project;
 import org.talend.core.model.metadata.MetadataTalendType;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
-import org.talend.core.model.migration.AbstractMigrationTask;
-import org.talend.core.model.migration.IProjectMigrationTask;
+import org.talend.core.model.migration.AbstractItemMigrationTask;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.repository.model.ProxyRepositoryFactory;
 
 /**
@@ -41,16 +40,16 @@ import org.talend.repository.model.ProxyRepositoryFactory;
  * comment. Detailled comment <br/>
  * 
  */
-public class AddProductAndMappingInDBConnectionEMFMigrationTask extends AbstractMigrationTask implements IProjectMigrationTask {
+public class AddProductAndMappingInDBConnectionEMFMigrationTask extends AbstractItemMigrationTask {
 
     /*
      * (non-Javadoc)
      * 
      * @see org.talend.core.model.migration.IProjectMigrationTask#execute(org.talend.core.model.general.Project)
      */
-    public ExecutionResult execute(Project project) {
+    public ExecutionResult execute(Item item) {
         try {
-            addProductAndMapping();
+            addProductAndMapping((ConnectionItem) item);
             return ExecutionResult.SUCCESS_WITH_ALERT;
         } catch (Exception e) {
             ExceptionHandler.process(e);
@@ -58,26 +57,23 @@ public class AddProductAndMappingInDBConnectionEMFMigrationTask extends Abstract
         }
     }
 
+    @Override
+    public List<ERepositoryObjectType> getTypes() {
+        List<ERepositoryObjectType> toReturn = new ArrayList<ERepositoryObjectType>();
+        toReturn.add(ERepositoryObjectType.METADATA_CONNECTIONS);
+        return toReturn;
+    }
+
     /**
      * qzhang Comment method "addProductAndMapping".
      */
-    private boolean addProductAndMapping() throws PersistenceException {
+    private void addProductAndMapping(ConnectionItem item) throws PersistenceException {
         ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
-        List<IRepositoryObject> list = factory.getAll(ERepositoryObjectType.METADATA_CONNECTIONS, true);
-        boolean modified = false;
-        for (IRepositoryObject mainObject : list) {
-            List<IRepositoryObject> allVersion = factory.getAllVersion(mainObject.getId());
-            for (IRepositoryObject object : allVersion) {
-                final ConnectionItem item = (ConnectionItem) object.getProperty().getItem();
-                final DatabaseConnection connection = (DatabaseConnection) item.getConnection();
-                final String product = EDatabaseTypeName.getTypeFromDisplayName(connection.getDatabaseType()).getProduct();
-                connection.setProductId(product);
-                connection.setDbmsId(MetadataTalendType.getDefaultDbmsFromProduct(product).getId());
-                factory.save(item);
-                modified = true;
-            }
-        }
-        return modified;
+        final DatabaseConnection connection = (DatabaseConnection) item.getConnection();
+        final String product = EDatabaseTypeName.getTypeFromDisplayName(connection.getDatabaseType()).getProduct();
+        connection.setProductId(product);
+        connection.setDbmsId(MetadataTalendType.getDefaultDbmsFromProduct(product).getId());
+        factory.save(item);
     }
 
 }

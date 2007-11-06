@@ -23,9 +23,8 @@ package org.talend.repository.model.migration;
 
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.model.components.ModifyComponentsAction;
-import org.talend.core.model.general.Project;
-import org.talend.core.model.migration.AbstractMigrationTask;
-import org.talend.core.model.migration.IProjectMigrationTask;
+import org.talend.core.model.migration.AbstractJobMigrationTask;
+import org.talend.core.model.properties.ProcessItem;
 
 /**
  * Use to rename tDB(Input|Output|SQLRow) into tMSSql(Input|Output|Row).
@@ -33,11 +32,11 @@ import org.talend.core.model.migration.IProjectMigrationTask;
  * $Id: talend.epf 1 2006-09-29 17:06:40 +0000 (ven., 29 sept. 2006) nrousseau $
  * 
  */
-public class MigratetRowGeneratorMigrationTask extends AbstractMigrationTask implements IProjectMigrationTask {
+public class MigratetRowGeneratorMigrationTask extends AbstractJobMigrationTask {
 
-    public ExecutionResult execute(Project project) {
+    public ExecutionResult executeOnProcess(ProcessItem item) {
         try {
-            ModifyComponentsAction.searchAndRename("tRowGenerator2", "tRowGenerator"); //$NON-NLS-1$ //$NON-NLS-2$
+            ModifyComponentsAction.searchAndRename(item, "tRowGenerator2", "tRowGenerator"); //$NON-NLS-1$ //$NON-NLS-2$
             return ExecutionResult.SUCCESS_WITH_ALERT;
         } catch (Exception e) {
             ExceptionHandler.process(e);

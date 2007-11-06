@@ -23,9 +23,8 @@ package org.talend.repository.model.migration;
 
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.model.components.ModifyComponentsAction;
-import org.talend.core.model.general.Project;
-import org.talend.core.model.migration.AbstractMigrationTask;
-import org.talend.core.model.migration.IProjectMigrationTask;
+import org.talend.core.model.migration.AbstractJobMigrationTask;
+import org.talend.core.model.properties.ProcessItem;
 
 /**
  * DOC smallet class global comment. Detailled comment <br/>
@@ -33,12 +32,12 @@ import org.talend.core.model.migration.IProjectMigrationTask;
  * $Id: talend.epf 1 2006-09-29 17:06:40 +0000 (ven., 29 sept. 2006) nrousseau $
  * 
  */
-public class RenametFileZipUnzipMigrationTask extends AbstractMigrationTask implements IProjectMigrationTask {
+public class RenametFileZipUnzipMigrationTask extends AbstractJobMigrationTask {
 
-    public ExecutionResult execute(Project project) {
+    public ExecutionResult executeOnProcess(ProcessItem item) {
         try {
-            ModifyComponentsAction.searchAndRename("tFileZip", "tFileArchive"); //$NON-NLS-1$ //$NON-NLS-2$
-            ModifyComponentsAction.searchAndRename("tFileUnzip", "tFileUnarchive"); //$NON-NLS-3$ //$NON-NLS-4$
+            ModifyComponentsAction.searchAndRename(item, "tFileZip", "tFileArchive"); //$NON-NLS-1$ //$NON-NLS-2$
+            ModifyComponentsAction.searchAndRename(item, "tFileUnzip", "tFileUnarchive"); //$NON-NLS-3$ //$NON-NLS-4$
             return ExecutionResult.SUCCESS_WITH_ALERT;
         } catch (Exception e) {
             ExceptionHandler.process(e);
@@ -47,4 +46,3 @@ public class RenametFileZipUnzipMigrationTask extends AbstractMigrationTask impl
     }
 
 }
-

@@ -30,16 +30,15 @@ import org.talend.core.model.components.conversions.IComponentConversion;
 import org.talend.core.model.components.conversions.RenameComponentConversion;
 import org.talend.core.model.components.filters.IComponentFilter;
 import org.talend.core.model.components.filters.NameComponentFilter;
-import org.talend.core.model.general.Project;
-import org.talend.core.model.migration.AbstractMigrationTask;
-import org.talend.core.model.migration.IProjectMigrationTask;
+import org.talend.core.model.migration.AbstractJobMigrationTask;
+import org.talend.core.model.properties.ProcessItem;
 
 /**
  * Migration task use to rename component name tFileInputCSV to tFileInputDelimited.
  */
-public class RenametFileInputCSVMigrationTask extends AbstractMigrationTask implements IProjectMigrationTask {
+public class RenametFileInputCSVMigrationTask extends AbstractJobMigrationTask {
 
-    public ExecutionResult execute(Project project) {
+    public ExecutionResult executeOnProcess(ProcessItem item) {
 
         try {
             IComponentFilter filter1 = new NameComponentFilter("tFileInputCSV"); //$NON-NLS-1$
@@ -47,7 +46,7 @@ public class RenametFileInputCSVMigrationTask extends AbstractMigrationTask impl
             IComponentConversion addProperty = new AddPropertyCSVOptionConversion();
             IComponentConversion renameComponent = new RenameComponentConversion("tFileInputDelimited");
 
-            ModifyComponentsAction.searchAndModify(filter1, Arrays.<IComponentConversion> asList(addProperty,
+            ModifyComponentsAction.searchAndModify(item, filter1, Arrays.<IComponentConversion> asList(addProperty,
                     renameComponent));
 
             return ExecutionResult.SUCCESS_WITH_ALERT;

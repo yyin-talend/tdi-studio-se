@@ -21,16 +21,10 @@
 // ============================================================================
 package org.talend.repository.model.migration;
 
-import java.util.List;
-
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
-import org.talend.core.model.general.Project;
-import org.talend.core.model.migration.AbstractMigrationTask;
-import org.talend.core.model.migration.IProjectMigrationTask;
+import org.talend.core.model.migration.AbstractJobMigrationTask;
 import org.talend.core.model.properties.ProcessItem;
-import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.designer.core.model.utils.emf.talendfile.ColumnType;
 import org.talend.designer.core.model.utils.emf.talendfile.MetadataType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
@@ -49,16 +43,16 @@ import org.talend.repository.model.ProxyRepositoryFactory;
  * <li>3. If in TOS 2.2 M1, the DbColumn and the column name are not same, the project import to TOS 2.2 M2, it will
  * create the wrong SQL statement.</li>
  */
-public class AddDdColumnMigrationTask extends AbstractMigrationTask implements IProjectMigrationTask {
+public class AddDdColumnMigrationTask extends AbstractJobMigrationTask {
 
     /*
      * (non-Javadoc)
      * 
      * @see org.talend.core.model.migration.IProjectMigrationTask#execute(org.talend.core.model.general.Project)
      */
-    public ExecutionResult execute(Project project) {
+    public ExecutionResult executeOnProcess(ProcessItem item) {
         try {
-            removeDbColumn();
+            removeDbColumn(item);
             return ExecutionResult.SUCCESS_NO_ALERT;
         } catch (Exception e) {
             ExceptionHandler.process(e);
@@ -66,46 +60,34 @@ public class AddDdColumnMigrationTask extends AbstractMigrationTask implements I
         }
     }
 
-    private void removeDbColumn() throws PersistenceException {
+    private void removeDbColumn(ProcessItem item) throws PersistenceException {
         ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
-        List<IRepositoryObject> list = factory.getAll(ERepositoryObjectType.PROCESS, true);
 
-        boolean modified;
-        for (IRepositoryObject mainObject : list) {
+        boolean modified = false;
 
-            List<IRepositoryObject> allVersion = factory.getAllVersion(mainObject.getId());
+        for (Object o : item.getProcess().getNode()) {
 
-            for (IRepositoryObject object : allVersion) {
+            NodeType node = (NodeType) o;
 
-                ProcessItem item = (ProcessItem) object.getProperty().getItem();
+            for (Object o2 : node.getMetadata()) {
 
-                modified = false;
+                MetadataType metadata = (MetadataType) o2;
 
-                for (Object o : item.getProcess().getNode()) {
+                for (Object o3 : metadata.getColumn()) {
+                    ColumnType column = (ColumnType) o3;
 
-                    NodeType node = (NodeType) o;
-
-                    for (Object o2 : node.getMetadata()) {
-
-                        MetadataType metadata = (MetadataType) o2;
-
-                        for (Object o3 : metadata.getColumn()) {
-                            ColumnType column = (ColumnType) o3;
-
-                            if (column.getOriginalDbColumnName() != null) {
-                                column.setOriginalDbColumnName(null);
-                                modified = true;
-                            }
-
-                        }
-
+                    if (column.getOriginalDbColumnName() != null) {
+                        column.setOriginalDbColumnName(null);
+                        modified = true;
                     }
+
                 }
 
-                if (modified) {
-                    factory.save(item);
-                }
             }
+        }
+
+        if (modified) {
+            factory.save(item);
         }
     }
 }

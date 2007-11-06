@@ -21,16 +21,16 @@
 // ============================================================================
 package org.talend.repository.model.migration;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
-import org.talend.core.language.LanguageManager;
-import org.talend.core.model.general.Project;
-import org.talend.core.model.migration.AbstractMigrationTask;
-import org.talend.core.model.migration.IProjectMigrationTask;
+import org.talend.core.language.ECodeLanguage;
+import org.talend.core.model.migration.AbstractItemMigrationTask;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.ContextItem;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -42,41 +42,68 @@ import org.talend.repository.model.ProxyRepositoryFactory;
  * DOC ggu class global comment. Detailled comment <br/>
  * 
  */
-public class ConvertOldPerlTypesMigrationTask extends AbstractMigrationTask implements IProjectMigrationTask {
+public class ConvertOldPerlTypesMigrationTask extends AbstractItemMigrationTask {
 
     private static final ProxyRepositoryFactory FACTORY = ProxyRepositoryFactory.getInstance();
 
     private boolean changed = false;
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.migration.IProjectMigrationTask#execute(org.talend.core.model.general.Project)
-     */
-    public ExecutionResult execute(Project project) {
+    @Override
+    public ExecutionResult execute(Item item) {
+        if (getProject().getLanguage() == ECodeLanguage.JAVA) {
+            return ExecutionResult.NOTHING_TO_DO;
+        }
         try {
-
-            switch (LanguageManager.getCurrentLanguage()) {
-            case JAVA:
-                changed = false;
-                break;
-            case PERL:
-            default:
-
-                convertJobs();
-                convertContext();
-                convertRoutines();
-                convertMetadata();
-            }
-
+            convertItem(item);
             if (changed) {
                 return ExecutionResult.SUCCESS_WITH_ALERT;
             } else {
                 return ExecutionResult.SUCCESS_NO_ALERT;
             }
-        } catch (Exception e) {
+        } catch (PersistenceException e) {
             ExceptionHandler.process(e);
             return ExecutionResult.FAILURE;
+        }
+    }
+
+    @Override
+    public List<ERepositoryObjectType> getTypes() {
+        List<ERepositoryObjectType> toReturn = new ArrayList<ERepositoryObjectType>();
+        toReturn.add(ERepositoryObjectType.PROCESS);
+        toReturn.add(ERepositoryObjectType.CONTEXT);
+        toReturn.add(ERepositoryObjectType.ROUTINES);
+        toReturn.add(ERepositoryObjectType.METADATA_CONNECTIONS);
+        toReturn.add(ERepositoryObjectType.METADATA_FILE_DELIMITED);
+        toReturn.add(ERepositoryObjectType.METADATA_FILE_POSITIONAL);
+        toReturn.add(ERepositoryObjectType.METADATA_FILE_REGEXP);
+        toReturn.add(ERepositoryObjectType.METADATA_FILE_XML);
+        toReturn.add(ERepositoryObjectType.METADATA_FILE_LDIF);
+        toReturn.add(ERepositoryObjectType.METADATA_GENERIC_SCHEMA);
+        return toReturn;
+    }
+
+    private void convertItem(Item item) throws PersistenceException {
+        ERepositoryObjectType itemType = ERepositoryObjectType.getItemType(item);
+        switch (itemType) {
+        case PROCESS:
+            convertJobs((ProcessItem) item);
+            break;
+        case CONTEXT:
+            convertContext((ContextItem) item);
+            break;
+        case ROUTINES:
+            convertRoutines((RoutineItem) item);
+            break;
+        case METADATA_CONNECTIONS:
+        case METADATA_FILE_DELIMITED:
+        case METADATA_FILE_POSITIONAL:
+        case METADATA_FILE_REGEXP:
+        case METADATA_FILE_XML:
+        case METADATA_FILE_LDIF:
+        case METADATA_GENERIC_SCHEMA:
+            changeMetadataConnections((ConnectionItem) item);
+        default:
+            break;
         }
     }
 
@@ -88,23 +115,14 @@ public class ConvertOldPerlTypesMigrationTask extends AbstractMigrationTask impl
      * 
      * @return
      */
-    private void convertJobs() throws PersistenceException {
-
+    private void convertJobs(ProcessItem processItem) throws PersistenceException {
         List<IRepositoryObject> processList = FACTORY.getAll(ERepositoryObjectType.PROCESS, true);
-        for (IRepositoryObject processObject : processList) {
-            List<IRepositoryObject> allVersion = FACTORY.getAllVersion(processObject.getId());
-            for (IRepositoryObject object : allVersion) {
-                ProcessItem processItem = (ProcessItem) object.getProperty().getItem();
+        PerlItemOldTypesConverter converter = new PerlItemOldTypesConverter(processItem);
 
-                PerlItemOldTypesConverter converter = new PerlItemOldTypesConverter(processItem);
-
-                if (converter.isModified()) {
-                    FACTORY.save(processItem);
-                    changed = true;
-                }
-            }
+        if (converter.isModified()) {
+            FACTORY.save(processItem);
+            changed = true;
         }
-
     }
 
     /**
@@ -117,24 +135,13 @@ public class ConvertOldPerlTypesMigrationTask extends AbstractMigrationTask impl
      * @return
      * @throws PersistenceException
      */
-    private void convertContext() throws PersistenceException {
+    private void convertContext(ContextItem contextItem) throws PersistenceException {
+        PerlItemOldTypesConverter converter = new PerlItemOldTypesConverter(contextItem);
 
-        List<IRepositoryObject> contextList = FACTORY.getAll(ERepositoryObjectType.CONTEXT, true);
-        for (IRepositoryObject contextObject : contextList) {
-            List<IRepositoryObject> allVersion = FACTORY.getAllVersion(contextObject.getId());
-            for (IRepositoryObject object : allVersion) {
-                ContextItem contextItem = (ContextItem) object.getProperty().getItem();
-
-                PerlItemOldTypesConverter converter = new PerlItemOldTypesConverter(contextItem);
-
-                if (converter.isModified()) {
-                    FACTORY.save(contextItem);
-                    changed = true;
-                }
-
-            }
+        if (converter.isModified()) {
+            FACTORY.save(contextItem);
+            changed = true;
         }
-
     }
 
     /**
@@ -145,88 +152,21 @@ public class ConvertOldPerlTypesMigrationTask extends AbstractMigrationTask impl
      * 
      * @return
      */
-    private void convertRoutines() throws PersistenceException {
+    private void convertRoutines(RoutineItem routineItem) throws PersistenceException {
+        PerlItemOldTypesConverter converter = new PerlItemOldTypesConverter(routineItem);
 
-        List<IRepositoryObject> routinesList = FACTORY.getAll(ERepositoryObjectType.ROUTINES, true);
-        for (IRepositoryObject routinesObject : routinesList) {
-            List<IRepositoryObject> allVersion = FACTORY.getAllVersion(routinesObject.getId());
-            for (IRepositoryObject object : allVersion) {
-                RoutineItem routineItem = (RoutineItem) object.getProperty().getItem();
-
-                PerlItemOldTypesConverter converter = new PerlItemOldTypesConverter(routineItem);
-
-                if (converter.isModified()) {
-                    FACTORY.save(routineItem);
-                    changed = true;
-                }
-
-            }
+        if (converter.isModified()) {
+            FACTORY.save(routineItem);
+            changed = true;
         }
-
     }
 
-    /**
-     * 
-     * DOC ggu Comment method "convertMetadata".<br>
-     * 
-     * convert the Schemas under the Metadata Repository
-     * 
-     * @return
-     * @throws PersistenceException
-     */
-    private void convertMetadata() throws PersistenceException {
+    private void changeMetadataConnections(ConnectionItem connectionItem) throws PersistenceException {
+        PerlItemOldTypesConverter converter = new PerlItemOldTypesConverter(connectionItem);
 
-        // DB
-        changeMetadataConnections(ERepositoryObjectType.METADATA_CONNECTIONS);
-        // FileDelimited
-        changeMetadataConnections(ERepositoryObjectType.METADATA_FILE_DELIMITED);
-        // File Positional
-        changeMetadataConnections(ERepositoryObjectType.METADATA_FILE_POSITIONAL);
-        // File RegExp
-        changeMetadataConnections(ERepositoryObjectType.METADATA_FILE_REGEXP);
-        // File XML
-        changeMetadataConnections(ERepositoryObjectType.METADATA_FILE_XML);
-        // File ldif
-        changeMetadataConnections(ERepositoryObjectType.METADATA_FILE_LDIF);
-        // GenericSchema
-        changeMetadataConnections(ERepositoryObjectType.METADATA_GENERIC_SCHEMA);
-
-        // // BD view schema
-        // try {
-        // changeMetadataConnections(ERepositoryObjectType.METADATA_CON_VIEW);// error?
-        // } catch (PersistenceException e) {
-        // e.printStackTrace();
-        // }
-        // // DB synonym schema
-        // try {
-        // changeMetadataConnections(ERepositoryObjectType.METADATA_CON_SYNONYM);// error?
-        // } catch (PersistenceException e) {
-        // e.printStackTrace();
-        // }
-        // // meta table
-        // try {
-        // changeMetadataConnections(ERepositoryObjectType.METADATA_CON_TABLE);// error?
-        // } catch (PersistenceException e) {
-        // e.printStackTrace();
-        // }
-
-    }
-
-    private void changeMetadataConnections(ERepositoryObjectType repositoryObjectType) throws PersistenceException {
-
-        List<IRepositoryObject> connList = FACTORY.getAll(repositoryObjectType, true);
-        for (IRepositoryObject connObject : connList) {
-            List<IRepositoryObject> allVersion = FACTORY.getAllVersion(connObject.getId());
-            for (IRepositoryObject object : allVersion) {
-                ConnectionItem connectionItem = (ConnectionItem) object.getProperty().getItem();
-                PerlItemOldTypesConverter converter = new PerlItemOldTypesConverter(connectionItem);
-
-                if (converter.isModified()) {
-                    FACTORY.save(connectionItem);
-                    changed = true;
-                }
-            }
+        if (converter.isModified()) {
+            FACTORY.save(connectionItem);
+            changed = true;
         }
-
     }
 }

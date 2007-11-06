@@ -24,17 +24,13 @@ package org.talend.repository.model.migration;
 import java.util.Arrays;
 
 import org.talend.commons.exception.ExceptionHandler;
-import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.components.ModifyComponentsAction;
-import org.talend.core.model.components.conversions.AddPropertyUniqueKeyFortUniqRowConversion;
 import org.talend.core.model.components.conversions.IComponentConversion;
-import org.talend.core.model.components.conversions.RemovePropertyComponentConversion;
 import org.talend.core.model.components.conversions.RemoveQuotesInPropertyComponentConversion;
 import org.talend.core.model.components.filters.IComponentFilter;
 import org.talend.core.model.components.filters.NameComponentFilter;
-import org.talend.core.model.general.Project;
-import org.talend.core.model.migration.AbstractMigrationTask;
-import org.talend.core.model.migration.IProjectMigrationTask;
+import org.talend.core.model.migration.AbstractJobMigrationTask;
+import org.talend.core.model.properties.ProcessItem;
 
 /**
  * Use to rename tDB(Input|Output|SQLRow) into tMysql(Input|Output|Row). Related bug 540.
@@ -42,16 +38,16 @@ import org.talend.core.model.migration.IProjectMigrationTask;
  * $Id: talend.epf 1 2006-09-29 17:06:40 +0000 (ven., 29 sept. 2006) nrousseau $
  * 
  */
-public class UpgradetRunJobRemoveQuotesMigrationTask extends AbstractMigrationTask implements IProjectMigrationTask {
+public class UpgradetRunJobRemoveQuotesMigrationTask extends AbstractJobMigrationTask {
 
-    public ExecutionResult execute(Project project) {
+    public ExecutionResult executeOnProcess(ProcessItem item) {
         try {
             IComponentFilter filter1 = new NameComponentFilter("tRunJob"); //$NON-NLS-1$
 
             IComponentConversion removeQuotes1 = new RemoveQuotesInPropertyComponentConversion("PROCESS_TYPE_PROCESS"); //$NON-NLS-1$
             IComponentConversion removeQuotes2 = new RemoveQuotesInPropertyComponentConversion("PROCESS_TYPE_CONTEXT"); //$NON-NLS-1$
 
-            ModifyComponentsAction.searchAndModify(filter1, Arrays.<IComponentConversion> asList(removeQuotes1,
+            ModifyComponentsAction.searchAndModify(item, filter1, Arrays.<IComponentConversion> asList(removeQuotes1,
                     removeQuotes2));
 
             return ExecutionResult.SUCCESS_NO_ALERT;

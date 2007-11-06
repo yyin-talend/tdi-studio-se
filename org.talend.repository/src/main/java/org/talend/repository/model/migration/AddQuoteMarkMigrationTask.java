@@ -21,18 +21,17 @@
 // ============================================================================
 package org.talend.repository.model.migration;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
-import org.talend.core.model.general.Project;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.FileConnection;
-import org.talend.core.model.migration.AbstractMigrationTask;
-import org.talend.core.model.migration.IProjectMigrationTask;
+import org.talend.core.model.migration.AbstractItemMigrationTask;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.repository.model.ProxyRepositoryFactory;
 
@@ -44,22 +43,29 @@ import org.talend.repository.model.ProxyRepositoryFactory;
  * $Id: AddQutoMigrationTask.java 下午01:23:38 2007-7-4 +0000 (2007-7-4) yzhang $
  * 
  */
-public class AddQuoteMarkMigrationTask extends AbstractMigrationTask implements IProjectMigrationTask {
+public class AddQuoteMarkMigrationTask extends AbstractItemMigrationTask {
 
     /*
      * (non-Javadoc)
      * 
      * @see org.talend.core.model.migration.IProjectMigrationTask#execute(org.talend.core.model.general.Project)
      */
-    public ExecutionResult execute(Project project) {
+    public ExecutionResult execute(Item item) {
 
         try {
-            addQuote();
+            addQuote((ConnectionItem) item);
             return ExecutionResult.SUCCESS_NO_ALERT;
         } catch (Exception e) {
             ExceptionHandler.process(e);
             return ExecutionResult.FAILURE;
         }
+    }
+
+    @Override
+    public List<ERepositoryObjectType> getTypes() {
+        List<ERepositoryObjectType> toReturn = new ArrayList<ERepositoryObjectType>();
+        toReturn.add(ERepositoryObjectType.METADATA);
+        return toReturn;
     }
 
     /**
@@ -69,52 +75,44 @@ public class AddQuoteMarkMigrationTask extends AbstractMigrationTask implements 
      * 
      * @throws PersistenceException
      */
-    private void addQuote() throws PersistenceException {
-
+    private void addQuote(ConnectionItem connItem) throws PersistenceException {
         ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
-        List<IRepositoryObject> list = factory.getAll(ERepositoryObjectType.METADATA, true);
 
-        for (IRepositoryObject mainObject : list) {
-            List<IRepositoryObject> allVersion = factory.getAllVersion(mainObject.getId());
-            for (IRepositoryObject object : allVersion) {
-                boolean modified = false;
+        boolean modified = false;
 
-                ConnectionItem connItem = (ConnectionItem) object.getProperty().getItem();
-                Connection conn = connItem.getConnection();
-                if (conn instanceof FileConnection) {
-                    FileConnection fileConnection = (FileConnection) conn;
-                    String old = null;
+        Connection conn = connItem.getConnection();
+        if (conn instanceof FileConnection) {
+            FileConnection fileConnection = (FileConnection) conn;
+            String old = null;
 
-                    old = fileConnection.getFieldSeparatorValue();
-                    if (!isWithinQuote(old)) {
-                        fileConnection.setFieldSeparatorValue(surroundDQuote(old));
-                        modified = true;
-                    }
-
-                    old = fileConnection.getRowSeparatorValue();
-                    if (!isWithinQuote(old)) {
-                        fileConnection.setRowSeparatorValue(surroundDQuote(old));
-                        modified = true;
-                    }
-
-                    old = fileConnection.getEscapeChar();
-                    if (!isWithinQuote(old)) {
-                        fileConnection.setEscapeChar(TalendTextUtils.addQuotes(old));
-                        modified = true;
-                    }
-
-                    old = fileConnection.getTextEnclosure();
-                    if (!isWithinQuote(old)) {
-                        fileConnection.setTextEnclosure(TalendTextUtils.addQuotes(old));
-                        modified = true;
-                    }
-
-                }
-
-                if (modified) {
-                    factory.save(connItem);
-                }
+            old = fileConnection.getFieldSeparatorValue();
+            if (!isWithinQuote(old)) {
+                fileConnection.setFieldSeparatorValue(surroundDQuote(old));
+                modified = true;
             }
+
+            old = fileConnection.getRowSeparatorValue();
+            if (!isWithinQuote(old)) {
+                fileConnection.setRowSeparatorValue(surroundDQuote(old));
+                modified = true;
+            }
+
+            old = fileConnection.getEscapeChar();
+            if (!isWithinQuote(old)) {
+                fileConnection.setEscapeChar(TalendTextUtils.addQuotes(old));
+                modified = true;
+            }
+
+            old = fileConnection.getTextEnclosure();
+            if (!isWithinQuote(old)) {
+                fileConnection.setTextEnclosure(TalendTextUtils.addQuotes(old));
+                modified = true;
+            }
+
+        }
+
+        if (modified) {
+            factory.save(connItem);
         }
     }
 

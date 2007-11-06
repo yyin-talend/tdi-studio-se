@@ -21,16 +21,10 @@
 // ============================================================================
 package org.talend.repository.model.migration;
 
-import java.util.List;
-
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
-import org.talend.core.model.general.Project;
-import org.talend.core.model.migration.AbstractMigrationTask;
-import org.talend.core.model.migration.IProjectMigrationTask;
+import org.talend.core.model.migration.AbstractJobMigrationTask;
 import org.talend.core.model.properties.ProcessItem;
-import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.repository.model.ProxyRepositoryFactory;
 
 /**
@@ -41,17 +35,17 @@ import org.talend.repository.model.ProxyRepositoryFactory;
  * $Id: ChangeRunBeforeAfterToThenRunMigrationTask.java 下午04:41:56 2007-5-17 +0000 (2007-5-17) yzhang $
  * 
  */
-public class RemoveSpaceInJobNameMigrationTask extends AbstractMigrationTask implements IProjectMigrationTask {
+public class RemoveSpaceInJobNameMigrationTask extends AbstractJobMigrationTask {
 
     /*
      * (non-Javadoc)
      * 
      * @see org.talend.core.model.migration.IProjectMigrationTask#execute(org.talend.core.model.general.Project)
      */
-    public ExecutionResult execute(Project project) {
+    public ExecutionResult executeOnProcess(ProcessItem item) {
 
         try {
-            renameJobs();
+            renameJobs(item);
             return ExecutionResult.SUCCESS_WITH_ALERT;
         } catch (Exception e) {
             ExceptionHandler.process(e);
@@ -66,26 +60,12 @@ public class RemoveSpaceInJobNameMigrationTask extends AbstractMigrationTask imp
      * 
      * @throws PersistenceException
      */
-    public boolean renameJobs() throws PersistenceException {
+    private void renameJobs(ProcessItem item) throws PersistenceException {
         ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
-        List<IRepositoryObject> list = factory.getAll(ERepositoryObjectType.PROCESS, true);
 
-        boolean modified = false;
-        for (IRepositoryObject mainObject : list) {
-
-            List<IRepositoryObject> allVersion = factory.getAllVersion(mainObject.getId());
-
-            for (IRepositoryObject object : allVersion) {
-
-                ProcessItem item = (ProcessItem) object.getProperty().getItem();
-
-                if (item.getProperty().getLabel().contains(" ")) { // if the job contain some spaces
-                    item.getProperty().setLabel(item.getProperty().getLabel().replaceAll(" ", "_"));
-                    factory.save(item);
-                    modified = true;
-                }
-            }
+        if (item.getProperty().getLabel().contains(" ")) { // if the job contain some spaces
+            item.getProperty().setLabel(item.getProperty().getLabel().replaceAll(" ", "_"));
+            factory.save(item);
         }
-        return modified;
     }
 }

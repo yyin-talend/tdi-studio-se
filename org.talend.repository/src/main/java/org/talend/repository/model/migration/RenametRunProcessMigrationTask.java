@@ -23,18 +23,17 @@ package org.talend.repository.model.migration;
 
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.model.components.ModifyComponentsAction;
-import org.talend.core.model.general.Project;
-import org.talend.core.model.migration.AbstractMigrationTask;
-import org.talend.core.model.migration.IProjectMigrationTask;
+import org.talend.core.model.migration.AbstractJobMigrationTask;
+import org.talend.core.model.properties.ProcessItem;
 
 /**
  * Migration task use to rename tRunProcess components in tRunJob.
  */
-public class RenametRunProcessMigrationTask extends AbstractMigrationTask implements IProjectMigrationTask {
+public class RenametRunProcessMigrationTask extends AbstractJobMigrationTask {
 
-    public ExecutionResult execute(Project project) {
+    public ExecutionResult executeOnProcess(ProcessItem item) {
         try {
-            ModifyComponentsAction.searchAndRename("tRunProcess", "tRunJob"); //$NON-NLS-1$ //$NON-NLS-2$
+            ModifyComponentsAction.searchAndRename(item, "tRunProcess", "tRunJob"); //$NON-NLS-1$ //$NON-NLS-2$
             return ExecutionResult.SUCCESS_WITH_ALERT;
         } catch (Exception e) {
             ExceptionHandler.process(e);
