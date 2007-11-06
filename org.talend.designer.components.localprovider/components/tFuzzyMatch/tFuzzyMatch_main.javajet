@@ -37,8 +37,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	String caseS = ElementParameterParser.getValue(node, "__CASE_SENSITIVE__");
 	boolean caseSens = caseS.equals("true");
 	String separator = ElementParameterParser.getValue(node, "__ITEMSEPARATOR__");
-	String lookupNameOrigi = ElementParameterParser.getValue(node, "__LOOKUP_COLUMN__");
-    String lookUpColumn = lookupNameOrigi.substring(lookupNameOrigi.lastIndexOf('.')+1);
+	String lookUpColumn = ElementParameterParser.getValue(node, "__LOOKUP_COLUMN__");
 
     List< ? extends IConnection> conns = node.getIncomingConnections();
     IConnection inRefCon = null;
