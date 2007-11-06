@@ -73,7 +73,6 @@ public class SnippetsDialogTray extends DialogTray {
             view.createPartControl(content);
             content.addDisposeListener(new DisposeListener() {
 
-                @Override
                 public void widgetDisposed(DisposeEvent e) {
                     view.dispose();
                 }
