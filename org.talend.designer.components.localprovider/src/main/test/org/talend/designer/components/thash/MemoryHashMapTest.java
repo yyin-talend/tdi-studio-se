@@ -21,15 +21,16 @@
 // ============================================================================
 package org.talend.designer.components.thash;
 
-
 import gnu.trove.THashMap;
 
 import java.util.Map;
 
+import org.talend.commons.utils.Bean;
+
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
  * 
- *
+ * 
  * launched with these VM arguments: -Xms512m -Xmx1400m -XX:MaxPermSize=256m
  */
 public class MemoryHashMapTest {
@@ -38,18 +39,16 @@ public class MemoryHashMapTest {
 
         /**
          * 
-         * DOC amaumont MemoryHashMapTest class global comment. Detailled comment
-         * <br/>
-         *
-         * $Id: talend.epf 1 2006-09-29 17:06:40Z nrousseau $
-         *
+         * DOC amaumont MemoryHashMapTest class global comment. Detailled comment <br/>
+         * 
          */
+
         class KeyForMap {
 
             int id;
-            
+
             int hashcode;
-            
+
             /**
              * DOC amaumont KeyForMap constructor comment.
              */
@@ -59,7 +58,9 @@ public class MemoryHashMapTest {
                 this.hashcode = hashcode;
             }
 
-            /* (non-Javadoc)
+            /*
+             * (non-Javadoc)
+             * 
              * @see java.lang.Object#hashCode()
              */
             @Override
@@ -67,7 +68,9 @@ public class MemoryHashMapTest {
                 return this.hashcode;
             }
 
-            /* (non-Javadoc)
+            /*
+             * (non-Javadoc)
+             * 
              * @see java.lang.Object#equals(java.lang.Object)
              */
             @Override
@@ -83,18 +86,13 @@ public class MemoryHashMapTest {
                     return false;
                 return true;
             }
-            
-            
-            
 
         }
 
         int loop = 10000000;
-//        int loop = 100;
+        // int loop = 100;
         // int LOOP = 5000000;
 
-        Sizeof.runGC();
-        Sizeof.runGC();
         Sizeof.runGC();
         long heap1 = Sizeof.usedMemory(); // Take a before heap snapshot
 
@@ -102,24 +100,25 @@ public class MemoryHashMapTest {
 
         // Tests for 10 000 000 items
 
-//         Map hashMap = new HashMap(); // 47 bytes, ?? s
-//        Map hashMap = new HashMap(loop, 1f); // 47 byts, ?? s
-//         Map hashMap = new THashMap(); // 37 bytes, ?? s
-//         Map hashMap = new THashMap(loop, 0.1f); // ???
-//         Map hashMap = new THashMap(loop, 1f); // 25 bytes, ?? s
-//         Map hashMap = new THashMap(loop + 10000, 1.0f); // 25 bytes, ?? s
-//         Map hashMap = new THashMap(loop + 10000, 0.99f); // 25 bytes, ?? s
-         Map hashMap = new THashMap(10000, 1.0f); // 25 bytes, 9 s
+        // Map hashMap = new HashMap(); // 47 bytes, ?? s
+        // Map hashMap = new HashMap(loop, 1f); // 47 byts, ?? s
+        // Map hashMap = new THashMap(); // 37 bytes, ?? s
+        // Map hashMap = new THashMap(loop, 0.1f); // ???
+        // Map hashMap = new THashMap(loop, 1f); // 25 bytes, ?? s
+        // Map hashMap = new THashMap(loop + 10000, 1.0f); // 25 bytes, ?? s
+        // Map hashMap = new THashMap(loop + 10000, 0.99f); // 25 bytes, ?? s
+        Map hashMap = new THashMap(10000, 1.0f); // 25 bytes, 9 s
 
         for (int i = 0; i < loop; i++) {
-            KeyForMap keyForMap = new KeyForMap(i, i /*computed hashcode*/); // in reel tests second parameter will be computed from properties of value bean 
+            KeyForMap keyForMap = new KeyForMap(i, i /* computed hashcode */); // in reel tests second parameter will
+                                                                                // be computed from properties of value
+                                                                                // bean
             hashMap.put(keyForMap, keyForMap);
         }
 
         long time2 = System.currentTimeMillis();
 
-        Sizeof.runGC();
-        Sizeof.runGC();
+        System.out.println("waiting for garbage collector...");
         Sizeof.runGC();
         long heap2 = Sizeof.usedMemory(); // Take a before heap snapshot
 
@@ -129,12 +128,11 @@ public class MemoryHashMapTest {
         System.out.println("size by item: " + size + " bytes ");
         System.out.println("Number of loops: " + loop);
         System.out.println("Number of items: " + hashMap.size());
-        if(loop != hashMap.size()) {
+        if (loop != hashMap.size()) {
             System.out.println("WARNING: loops number is different of items number !");
         }
         System.out.println("Time: " + ((time2 - time1) / 1000) + " s");
 
     }
 
-    
 }
