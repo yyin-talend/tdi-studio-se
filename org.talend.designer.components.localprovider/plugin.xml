@@ -22,6 +22,12 @@
             class="org.talend.designer.components.ui.ComponenttRunJobPreferencePage"
             id="org.talend.designer.components.ui.trunjobpreferencepage"
             name="%trunjob"/>
+      <page
+            category="org.talend.designer.components.localprovider.page1"
+            class="org.talend.designer.components.ui.ComponentsFormatPreferencePage"
+            id="org.talend.designer.components.localprovider.page1"
+            name="Format">
+      </page>
    </extension>
 
 </plugin>

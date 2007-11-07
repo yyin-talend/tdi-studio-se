@@ -5,7 +5,8 @@ Bundle-SymbolicName: org.talend.designer.components.localprovider;singleton:=tru
 Bundle-Version: 2.2.0.qualifier
 Bundle-Activator: org.talend.designer.components.ComponentsLocalProviderPlugin
 Bundle-Localization: plugin
-Require-Bundle: org.eclipse.ui,
+Require-Bundle: 
+ org.eclipse.ui,
  org.eclipse.core.runtime,
  org.talend.commons,
  org.talend.libraries,

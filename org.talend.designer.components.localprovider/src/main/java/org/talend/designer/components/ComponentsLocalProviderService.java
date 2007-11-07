@@ -21,6 +21,7 @@
 // ============================================================================
 package org.talend.designer.components;
 
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.talend.designer.components.ui.ComponenttRunJobPreferencePage;
 
 /**
@@ -37,8 +38,17 @@ public class ComponentsLocalProviderService implements IComponentsLocalProviderS
      * @see org.talend.designer.components.IComponentsLocalProviderService#isAvoidToShowJobAfterDoubleClick()
      */
     public boolean isAvoidToShowJobAfterDoubleClick() {
-        return ComponentsLocalProviderPlugin.getDefault().getPreferenceStore().getBoolean(
-                ComponenttRunJobPreferencePage.IS_AVOID);
+        return ComponentsLocalProviderPlugin.getDefault().getPreferenceStore()
+                .getBoolean(ComponenttRunJobPreferencePage.IS_AVOID);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.components.IComponentsLocalProviderService#getPreferenceStore()
+     */
+    public IPreferenceStore getPreferenceStore() {
+        return ComponentsLocalProviderPlugin.getDefault().getPreferenceStore();
     }
 
 }
