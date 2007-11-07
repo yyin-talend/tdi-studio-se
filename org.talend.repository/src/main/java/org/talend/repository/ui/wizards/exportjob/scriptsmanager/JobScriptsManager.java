@@ -30,26 +30,20 @@ import java.util.EnumMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
 import org.talend.commons.exception.ExceptionHandler;
-import org.talend.core.CorePlugin;
-import org.talend.core.context.Context;
-import org.talend.core.context.RepositoryContext;
-import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.ProcessItem;
-import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
-import org.talend.repository.constants.FileConstants;
 import org.talend.repository.i18n.Messages;
-import org.talend.repository.model.ResourceModelUtils;
+import org.talend.repository.local.ExportItemUtil;
 import org.talend.repository.ui.utils.PerlResourcesHelper;
 import org.talend.repository.ui.wizards.exportjob.ExportFileResource;
 
@@ -318,30 +312,6 @@ public abstract class JobScriptsManager {
 
     protected IResource[] sourceResouces = null;
 
-    protected IResource[] getAllSourceFiles() {
-        if (sourceResouces == null) {
-            try {
-                List<IResource> sourceFile = new ArrayList<IResource>();
-                Project project = ((RepositoryContext) CorePlugin.getContext().getProperty(
-                        Context.REPOSITORY_CONTEXT_KEY)).getProject();
-                IProject prj = ResourceModelUtils.getProject(project);
-                IFolder folder = prj.getFolder(ERepositoryObjectType.getFolderName(ERepositoryObjectType.PROCESS));
-                sourceFile.add(prj.getFile(FileConstants.LOCAL_PROJECT_FILENAME));
-                try {
-                    addNodeToResource(folder.members(), sourceFile);
-                } catch (Throwable e) {
-                    // TODO correct origin of problem in TIS context job generation
-                    ExceptionHandler.process(e);
-                }
-                sourceResouces = sourceFile.toArray(new IResource[sourceFile.size()]);
-            } catch (Exception e) {
-                ExceptionHandler.process(e);
-                sourceResouces = new IResource[0];
-            }
-        }
-        return sourceResouces;
-    }
-
     protected void addNodeToResource(IResource[] resources, List<IResource> sourceFile) throws CoreException {
 
         for (IResource resource : resources) {
@@ -357,23 +327,19 @@ public abstract class JobScriptsManager {
     }
 
     protected List<URL> getSource(ProcessItem processItem, boolean needChoice) {
-        List<String> list = new ArrayList<String>();
-        IResource[] resources = new IResource[0];
+        List<URL> list = new ArrayList<URL>();
         if (needChoice) {
             try {
-                String name = processItem.getProperty().getLabel() + "_" + processItem.getProperty().getVersion(); //$NON-NLS-1$
-                name = name != null ? name.replace(" ", "") : ""; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                list.add(name + ".item"); //$NON-NLS-1$
-                list.add(name + ".properties"); //$NON-NLS-1$
-                list.add(FileConstants.LOCAL_PROJECT_FILENAME);
-                resources = this.getAllSourceFiles();
+                Set<File> files = new ExportItemUtil().createLocalResources(new File(getTmpFolder()), processItem);
+                for (File file : files) {
+                    list.add(file.toURI().toURL());
+                }
             } catch (Exception e) {
                 ExceptionHandler.process(e);
             }
-
         }
 
-        return getResourcesURL(resources, list);
+        return list;
     }
 
     /**
