@@ -44,13 +44,56 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>
 int nb_line_<%=cid%> = 0;
 
+class NameSpaceTool_<%=cid%> {
+
+    public java.util.HashMap<String, String> xmlNameSpaceMap = new java.util.HashMap<String, String>();
+
+	private boolean hasDefaultNS = false;
+
+    public void countNSMap(org.dom4j.Element el) {
+
+        for (org.dom4j.Namespace ns : (java.util.List<org.dom4j.Namespace>) el.declaredNamespaces()) {
+            if (ns.getPrefix().trim().length() == 0) {
+                xmlNameSpaceMap.put("pre", ns.getURI());
+                hasDefaultNS = true;
+            } else {
+                xmlNameSpaceMap.put(ns.getPrefix(), ns.getURI());
+            }
+
+        }
+        for (org.dom4j.Element e : (java.util.List<org.dom4j.Element>) el.elements()) {
+            countNSMap(e);
+        }
+    }
+    
+    public String addDefaultNSPrefix(String path) {
+        if (hasDefaultNS) {
+            StringBuffer newPath = new StringBuffer();
+            for (String tmp : path.split("/")) {
+                if (newPath.length() > 0) {
+                    newPath.append("/");
+                }
+                if (tmp.length() > 0 && tmp.indexOf(":") == -1 && tmp.indexOf(".") == -1 && tmp.indexOf("@") == -1) {
+                    newPath.append("pre:").append(tmp);
+                } else {
+                    newPath.append(tmp);
+                }
+            }
+            return newPath.toString();
+        }
+        return path;
+    }
+}
+
 org.dom4j.io.SAXReader reader_<%=cid%> = new org.dom4j.io.SAXReader();
 org.dom4j.Document doc_<%=cid%>= reader_<%=cid%>.read(new java.io.FileInputStream(<%=filename %>));
-String ns_<%=cid%> = doc_<%=cid%>.getRootElement().getNamespaceURI();
-java.util.HashMap xmlNameSpaceMap_<%=cid%> = new java.util.HashMap();  
-xmlNameSpaceMap_<%=cid%>.put("ns",ns_<%=cid%>);
 
-org.dom4j.XPath x_<%=cid%> = doc_<%=cid%>.createXPath(<%=loopQuery.replace("/", "/ns:") %>);  
+NameSpaceTool_<%=cid%> nsTool_<%=cid%> = new NameSpaceTool_<%=cid%>();
+nsTool_<%=cid%>.countNSMap(doc_<%=cid%>.getRootElement());
+java.util.HashMap<String,String> xmlNameSpaceMap_<%=cid%> = nsTool_<%=cid%>.xmlNameSpaceMap;  
+
+
+org.dom4j.XPath x_<%=cid%> = doc_<%=cid%>.createXPath(nsTool_<%=cid%>.addDefaultNSPrefix(<%=loopQuery%>));  
 x_<%=cid%>.setNamespaceURIs(xmlNameSpaceMap_<%=cid%>); 
 
 java.util.List<org.dom4j.tree.AbstractNode> nodeList_<%=cid%> = (java.util.List<org.dom4j.tree.AbstractNode>)x_<%=cid%>.selectNodes(doc_<%=cid%>);	
@@ -61,30 +104,8 @@ for (org.dom4j.tree.AbstractNode temp_<%=cid%>: nodeList_<%=cid%>) {
 <%	
 				for (int i=0;i<mapping.size();i++) { 
 					String query = mapping.get(i).get("QUERY");
-					if(query.startsWith("\"") && query.endsWith("\"")){
-						query = query.substring(1, query.length() - 1);
-					}
-					if (!query.startsWith("@")) {
-	                    if (query.indexOf("@") < 0 && query.indexOf("/") < 0) {
-	                        query = "ns:" + query;
-	                    } else {
-	                        String[] s = query.split("/");
-	                        java.lang.StringBuffer result = new java.lang.StringBuffer();
-	                        for (String tmp : s) {
-	                            if (result.length() > 0) {
-	                                result.append("/");
-	                            }
-	                            if (tmp.length() > 0 && !tmp.startsWith(".") && !tmp.startsWith("@")) {
-	                                result.append("ns:").append(tmp);
-	                            } else {
-	                                result.append(tmp);
-	                            }
-	                        }
-	                        query = result.toString();
-	                    }
-	                }
 %>
-	org.dom4j.XPath xTmp<%=i%>_<%=cid%> = temp_<%=cid%>.createXPath("<%=query%>");
+	org.dom4j.XPath xTmp<%=i%>_<%=cid%> = temp_<%=cid%>.createXPath(nsTool_<%=cid%>.addDefaultNSPrefix(<%=query%>));
     xTmp<%=i%>_<%=cid%>.setNamespaceURIs(xmlNameSpaceMap_<%=cid%>);  
     str_<%=cid %> = xTmp<%=i%>_<%=cid%>.valueOf(temp_<%=cid%>);
 	if (str_<%=cid %> != null ) {  
