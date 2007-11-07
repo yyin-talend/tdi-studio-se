@@ -83,6 +83,7 @@ import org.talend.designer.core.ui.editor.TalendEditor;
 import org.talend.designer.core.ui.editor.cmd.ChangeMetadataCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
+import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
 import org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController;
 import org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty;
 import org.talend.repository.model.ERepositoryStatus;
@@ -692,8 +693,32 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
         // TabbedPropertyComposite tabbedPropertyComposite = this.getTabbedPropertyComposite();
         int additionalHeightSize = 0;
         if ((!(elem instanceof org.talend.designer.core.ui.editor.connections.Connection))) {
-            additionalHeightSize = estimatePropertyHeightSize(maxRow, listParam);
+            boolean hasDynamicRow = false;
+            for (int i = 0; i < listParam.size(); i++) {
+                IElementParameter curParam = listParam.get(i);
+                if (curParam.getCategory() == section) {
+                    if (curParam.getField() != EParameterFieldType.TECHNICAL) {
+                        if (curParam.isShow(listParam)) {
+                            AbstractElementPropertySectionController controller = generator.getController(curParam.getField(),
+                                    this);
+
+                            if (controller == null) {
+                                break;
+                            }
+                            if (controller.hasDynamicRowSize()) {
+                                hasDynamicRow = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            if (hasDynamicRow) {
+                additionalHeightSize = estimatePropertyHeightSize(maxRow, listParam);
+            }
         }
+
+        long lastTime = TimeMeasure.timeSinceBegin("DTP:refresh:" + getCurrentComponent());
 
         for (int curRow = 1; curRow <= maxRow; curRow++) {
             maxRowSize = 0;
@@ -732,6 +757,12 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
 
                             lastControl = controller.createControl(composite, curParam, numInRow, nbInRow, heightSize,
                                     lastControl);
+
+                            lastTime = TimeMeasure.timeSinceBegin("DC:refresh:" + getCurrentComponent()) - lastTime;
+                            if (DynamicTabbedPropertySection.DEBUG_TIME) {
+                                System.out.println("DC;create:" + curParam.getField().getName() + ";" + getCurrentComponent()
+                                        + ";" + lastTime);
+                            }
 
                             // System.out.println("param:" + curParam.getName()
                             // + " - curRowSize:" + curRowSize);
@@ -871,7 +902,9 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
         checkErrorsWhenViewRefreshed = false;
         long time = TimeMeasure.timeSinceBegin("DC:refresh:" + getCurrentComponent());
         TimeMeasure.end("DC:refresh:" + getCurrentComponent());
-        System.out.println("DC;" + getCurrentComponent() + ";" + time);
+        if (DynamicTabbedPropertySection.DEBUG_TIME) {
+            System.out.println("DC;total;" + getCurrentComponent() + ";" + time);
+        }
     }
 
     private static final Listener REFRESH_LISTENER = new Listener() {

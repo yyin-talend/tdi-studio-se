@@ -153,6 +153,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
 
     private boolean propertyResized;
 
+    public static final boolean DEBUG_TIME = false;
+
     /**
      * ftang Comment method "showQueryStoreRepositoryList".
      * 
@@ -701,8 +703,32 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
         TabbedPropertyComposite tabbedPropertyComposite = this.getTabbedPropertyComposite();
         int additionalHeightSize = 0;
         if (tabbedPropertyComposite != null && (!(elem instanceof org.talend.designer.core.ui.editor.connections.Connection))) {
-            additionalHeightSize = estimatePropertyHeightSize(maxRow, listParam, tabbedPropertyComposite);
+            boolean hasDynamicRow = false;
+            for (int i = 0; i < listParam.size(); i++) {
+                IElementParameter curParam = listParam.get(i);
+                if (curParam.getCategory() == section) {
+                    if (curParam.getField() != EParameterFieldType.TECHNICAL) {
+                        if (curParam.isShow(listParam)) {
+                            AbstractElementPropertySectionController controller = generator.getController(curParam.getField(),
+                                    this);
+
+                            if (controller == null) {
+                                break;
+                            }
+                            if (controller.hasDynamicRowSize()) {
+                                hasDynamicRow = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            if (hasDynamicRow) {
+                additionalHeightSize = estimatePropertyHeightSize(maxRow, listParam, tabbedPropertyComposite);
+            }
         }
+
+        long lastTime = TimeMeasure.timeSinceBegin("DTP:refresh:" + getCurrentComponent());
 
         for (int curRow = 1; curRow <= maxRow; curRow++) {
             maxRowSize = 0;
@@ -741,6 +767,11 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
 
                             lastControl = controller.createControl(composite, curParam, numInRow, nbInRow, heightSize,
                                     lastControl);
+                            lastTime = TimeMeasure.timeSinceBegin("DTP:refresh:" + getCurrentComponent()) - lastTime;
+                            if (DynamicTabbedPropertySection.DEBUG_TIME) {
+                                System.out.println("DTP;create:" + curParam.getField().getName() + ";" + getCurrentComponent()
+                                        + ";" + lastTime);
+                            }
 
                             // System.out.println("param:" + curParam.getName()
                             // + " - curRowSize:" + curRowSize);
@@ -923,8 +954,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
         checkErrorsWhenViewRefreshed = false;
         long time = TimeMeasure.timeSinceBegin("DTP:refresh:" + getCurrentComponent());
         TimeMeasure.end("DTP:refresh:" + getCurrentComponent());
-        if (time != 0) {
-            System.out.println("DTP;" + getCurrentComponent() + ";" + time);
+        if (DEBUG_TIME) {
+            System.out.println("DTP;total;" + getCurrentComponent() + ";" + time);
         }
     }
 

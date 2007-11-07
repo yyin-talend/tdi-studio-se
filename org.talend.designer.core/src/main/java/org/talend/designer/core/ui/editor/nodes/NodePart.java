@@ -65,6 +65,7 @@ import org.talend.designer.core.ui.editor.cmd.ExternalNodeChangeCommand;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainerPart;
 import org.talend.designer.core.ui.editor.process.ProcessPart;
+import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
 import org.talend.designer.core.ui.views.properties.ComponentSettingsView;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.ui.views.IRepositoryView;
@@ -103,10 +104,12 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
             PlatformUI.getWorkbench().getHelpSystem().displayHelp(helpLink);
         }
 
-        view = page.findView(ComponentSettingsView.ID); //$NON-NLS-1$
-        if (view != null) {
-            ComponentSettingsView compSettings = (ComponentSettingsView) view;
-            compSettings.setElement((Node) getModel());
+        if (DynamicTabbedPropertySection.DEBUG_TIME) {
+            view = page.findView(ComponentSettingsView.ID); //$NON-NLS-1$
+            if (view != null) {
+                ComponentSettingsView compSettings = (ComponentSettingsView) view;
+                compSettings.setElement((Node) getModel());
+            }
         }
     }
 
