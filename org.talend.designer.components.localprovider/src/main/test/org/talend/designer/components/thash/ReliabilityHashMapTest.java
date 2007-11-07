@@ -49,7 +49,6 @@ public class ReliabilityHashMapTest {
              * 
              * @see gnu.trove.TObjectHashingStrategy#computeHashCode(java.lang.Object)
              */
-            @Override
             public int computeHashCode(Object o) {
                 return o == null ? 0 : o.hashCode();
             }
@@ -59,7 +58,6 @@ public class ReliabilityHashMapTest {
              * 
              * @see gnu.trove.TObjectHashingStrategy#equals(java.lang.Object, java.lang.Object)
              */
-            @Override
             public boolean equals(Object o1, Object o2) {
                 return o2 == null ? o1 == null : o2.equals(o1);
             }
@@ -67,15 +65,15 @@ public class ReliabilityHashMapTest {
         };
 
         // Tests for 5 000 000 items
-        
+
         // ################################################################################
-        // Do not compare bytes number in this class with bytes number MemoryHashMapTest, 
+        // Do not compare bytes number in this class with bytes number MemoryHashMapTest,
         // the purpose of this test class is not to measure heap memory !
         // ################################################################################
 
         // Map hashMap = new HashMap(); // 142 bytes, 94 s
         // Map hashMap = new HashMap(loop, 1f); // ??
-//         Map hashMap = new THashMap(objectHashingStrategy); // 132 bytes, 25 s
+        // Map hashMap = new THashMap(objectHashingStrategy); // 132 bytes, 25 s
         // Map hashMap = new THashMap(loop, 0.1f, objectHashingStrategy); // ??
         // Map hashMap = new THashMap(loop, 1f, objectHashingStrategy); // ??
         // Map hashMap = new THashMap(loop + 10000, 1.0f, objectHashingStrategy); // ??
@@ -86,12 +84,12 @@ public class ReliabilityHashMapTest {
         for (int i = 0; i < loop; i++) {
             // => bean from tFileInput for example...
             Bean bean = new Bean(i, String.valueOf(i));
-            
+
             // => THash storing step
             KeyForMap keyForMap = new KeyForMap(i, bean.hashCode());
             hashMap.put(keyForMap, keyForMap);
             DB.put(null, i, bean);
-            
+
             if (i % 100000 == 0) {
                 System.out.println("Writing " + i);
             }
@@ -102,11 +100,10 @@ public class ReliabilityHashMapTest {
             if (i % 100000 == 0) {
                 System.out.println("Reading " + i);
             }
-            
-            
+
             // => bean from main flow in tMap for example...
             Bean bean = new Bean(i, String.valueOf(i));
-            
+
             // => search properties of bean in lookup for example...
             KeyForMap keyForMap = (KeyForMap) hashMap.get(bean);
 
@@ -117,7 +114,7 @@ public class ReliabilityHashMapTest {
 
             // => bean found from DB
             Bean beanFromDB = (Bean) DB.get(null, keyForMap.dbIdBean);
-            
+
             // validity test
             if (beanFromDB == null) {
                 throw new RuntimeException("Bean not found with id " + keyForMap.dbIdBean);
