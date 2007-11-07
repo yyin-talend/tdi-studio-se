@@ -674,15 +674,15 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
                 }
             }
         } else {
-            Control[] ct = composite.getChildren();
-            int curY = 0, maxY = 0;
-            for (int i = 0; i < ct.length; i++) {
-                curY = ct[i].getLocation().y + ct[i].computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
-                if (curY > maxY) {
-                    maxY = curY;
-                }
-            }
-            heightSize = maxY;
+            // Control[] ct = composite.getChildren();
+            // int curY = 0, maxY = 0;
+            // for (int i = 0; i < ct.length; i++) {
+            // curY = ct[i].getLocation().y + ct[i].computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
+            // if (curY > maxY) {
+            // maxY = curY;
+            // }
+            // }
+            heightSize = curRowSize;
         }
 
         hashCurControls = new DualHashBidiMap();
@@ -729,7 +729,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
         }
 
         long lastTime = TimeMeasure.timeSinceBegin("DTP:refresh:" + getCurrentComponent());
-
+        curRowSize = 0;
         for (int curRow = 1; curRow <= maxRow; curRow++) {
             maxRowSize = 0;
             nbInRow = 0;
@@ -744,7 +744,6 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
             }
             numInRow = 0;
             lastControl = null;
-            curRowSize = 0;
             for (int i = 0; i < listParam.size(); i++) {
                 IElementParameter curParam = listParam.get(i);
                 if (curParam.getCategory() == section) {
@@ -971,6 +970,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
         if (!(selection instanceof IStructuredSelection)) {
             return;
         }
+        curRowSize = 0;
         Object input = ((IStructuredSelection) selection).getFirstElement();
         if (input instanceof NodeContainerPart) {
             NodeContainerPart nContainer = (NodeContainerPart) input;

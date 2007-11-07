@@ -28,6 +28,7 @@ import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.editor.MetadataTableEditor;
@@ -99,7 +100,13 @@ public class MainConnectionSection extends DynamicTabbedPropertySection {
                 CustomTableManager.addCustomManagementToTable(metadataTableEditorView, true);
                 Composite compositeEditorView = metadataTableEditorView.getMainComposite();
                 compositeEditorView.setLayoutData(data);
-                compositeEditorView.getParent().layout();
+                // compositeEditorView.getParent().layout();
+
+                Table table = metadataTableEditorView.getTable();
+                int currentHeightEditor = table.getHeaderHeight() + outputMetaTable.getListColumns().size()
+                        * table.getItemHeight() + table.getItemHeight() + 50;
+                curRowSize = currentHeightEditor + ITabbedPropertyConstants.VSPACE + curRowSize;
+
             }
             super.addComponents(forceRedraw, false);
         } else if (conIf()) {
