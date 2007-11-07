@@ -53,6 +53,9 @@ import org.eclipse.emf.ecore.xmi.XMLResource;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.SnapToGeometry;
 import org.eclipse.gef.SnapToGrid;
+import org.eclipse.gef.commands.CommandStack;
+import org.eclipse.gef.commands.CommandStackEvent;
+import org.eclipse.gef.commands.CommandStackEventListener;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
@@ -390,11 +393,22 @@ public class Process extends Element implements IProcess {
             generatingProcess = new DataProcess(this);
         }
         List<INode> generatedNodeList = generatingProcess.getNodeList();
-        if (generatedNodeList == null || generatedNodeList.isEmpty() || this.getEditor() == null || this.getEditor().isDirty()) {
+        if (isProcessModified()) {
             generatingProcess.buildFromGraphicalProcess(nodes);
             generatedNodeList = generatingProcess.getNodeList();
+            processModified = false;
         }
         return generatedNodeList;
+    }
+
+    boolean processModified = true;
+
+    private boolean isProcessModified() {
+        List<INode> generatedNodeList = generatingProcess.getNodeList();
+        if (generatedNodeList == null || generatedNodeList.isEmpty() || this.getEditor() == null) {
+            return true;
+        }
+        return processModified;
     }
 
     /*
@@ -2243,5 +2257,15 @@ public class Process extends Element implements IProcess {
      */
     public void setEditor(MultiPageTalendEditor editor) {
         this.editor = editor;
+        if (editor != null) {
+            CommandStackEventListener commandStackEventListener = new CommandStackEventListener() {
+
+                public void stackChanged(CommandStackEvent event) {
+                    processModified = true;
+                }
+            };
+            CommandStack commandStack = (CommandStack) editor.getTalendEditor().getAdapter(CommandStack.class);
+            commandStack.addCommandStackEventListener(commandStackEventListener);
+        }
     }
 }
