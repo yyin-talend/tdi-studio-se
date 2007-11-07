@@ -89,7 +89,6 @@ import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.designer.runprocess.RunProcessPlugin;
 import org.talend.designer.runprocess.i18n.Messages;
 import org.talend.designer.runprocess.prefs.RunProcessPrefsConstants;
-import org.talend.designer.runprocess.prefs.VMArgumentsViewer;
 import org.talend.librariesmanager.model.ModulesNeededProvider;
 
 /**
@@ -783,7 +782,7 @@ public class JavaProcessor extends Processor {
 
     private String[] addVMArguments(String[] strings) {
         String string = RunProcessPlugin.getDefault().getPreferenceStore().getString(RunProcessPrefsConstants.VMARGUMENTS);
-        String replaceAll = string.replaceAll(VMArgumentsViewer.EQ_DELIMITER, "").trim();
+        String replaceAll = string.trim();
         String[] vmargs = replaceAll.split(" ");
         String[] lines = new String[strings.length + vmargs.length];
         System.arraycopy(strings, 0, lines, 0, 1);

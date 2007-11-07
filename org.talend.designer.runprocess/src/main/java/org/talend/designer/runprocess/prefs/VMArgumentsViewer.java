@@ -53,8 +53,6 @@ public class VMArgumentsViewer extends TableEditor {
 
     private static final String ARG_DELIMITER = " -";
 
-    public static final String EQ_DELIMITER = "=";
-
     /**
      * qzhang VMArgumentsViewer constructor comment.
      * 
@@ -103,16 +101,12 @@ public class VMArgumentsViewer extends TableEditor {
 
             public String getColumnText(Object element, int columnIndex) {
                 String value = ((String) element);
-                String[] texts = value.split(EQ_DELIMITER);
-                if (texts.length == 1) {
-                    if (columnIndex == 0) {
-                        return texts[0];
+                if (columnIndex == 0) {
+                    String trim = ARG_DELIMITER.trim();
+                    if (value.trim().startsWith(trim)) {
+                        return value;
                     }
-                    if (columnIndex == 1) {
-                        return "";
-                    }
-                } else {
-                    return texts[columnIndex];
+                    return trim + value;
                 }
                 throw new IllegalStateException();
             }
@@ -146,11 +140,7 @@ public class VMArgumentsViewer extends TableEditor {
 
         TableColumn engineName = new TableColumn(contextTable, SWT.NONE);
         engineName.setText("Argument");
-        engineName.setWidth(150);
-
-        TableColumn shortDescription = new TableColumn(contextTable, SWT.NONE);
-        shortDescription.setText("Value");
-        shortDescription.setWidth(150);
+        engineName.setWidth(350);
         return contextTable;
     }
 
@@ -194,21 +184,11 @@ public class VMArgumentsViewer extends TableEditor {
         }
         ArrayList<String> result = new ArrayList<String>(50);
         for (String tmp : stringList.split(ARG_DELIMITER)) {
-            if (tmp != null && !"".equals(tmp) && check(tmp)) {
+            if (tmp != null && !"".equals(tmp)) {
                 result.add(tmp);
             }
         }
         return result;
-    }
-
-    /**
-     * DOC qzhang Comment method "check".
-     * 
-     * @param tmp
-     * @return
-     */
-    private boolean check(String tmp) {
-        return tmp.contains(EQ_DELIMITER);
     }
 
     /*
@@ -224,7 +204,12 @@ public class VMArgumentsViewer extends TableEditor {
         for (int i = 0; i < size; i++) {
             buf.append(items.get(i));
             if (i != size - 1) {
-                buf.append(ARG_DELIMITER);
+                String trim = ARG_DELIMITER.trim();
+                if (!items.get(i + 1).trim().startsWith(trim)) {
+                    buf.append(ARG_DELIMITER);
+                } else {
+                    buf.append(" ");
+                }
             }
         }
         return buf.toString();
@@ -240,10 +225,6 @@ public class VMArgumentsViewer extends TableEditor {
 
         private final String arg;
 
-        private final String value;
-
-        private Text valueText;
-
         private String newItem;
 
         /**
@@ -255,15 +236,8 @@ public class VMArgumentsViewer extends TableEditor {
             super(parentShell);
             if (item == null || "".equals(item)) {
                 arg = "";
-                value = "";
             } else {
-                String[] split = item.split(EQ_DELIMITER);
-                arg = split[0];
-                if (split.length > 1) {
-                    value = split[1];
-                } else {
-                    value = "";
-                }
+                arg = item;
             }
         }
 
@@ -294,12 +268,6 @@ public class VMArgumentsViewer extends TableEditor {
             argText.setLayoutData(gridData);
             argText.setText(arg);
 
-            addLabel = new Label(container, SWT.NONE);
-            addLabel.setText("Value:");
-            valueText = new Text(container, SWT.BORDER);
-            gridData = new GridData(GridData.FILL_BOTH);
-            valueText.setLayoutData(gridData);
-            valueText.setText(value);
             return container;
         }
 
@@ -310,7 +278,7 @@ public class VMArgumentsViewer extends TableEditor {
          */
         @Override
         protected void okPressed() {
-            newItem = argText.getText() + EQ_DELIMITER + valueText.getText();
+            newItem = argText.getText();
             super.okPressed();
         }
 
