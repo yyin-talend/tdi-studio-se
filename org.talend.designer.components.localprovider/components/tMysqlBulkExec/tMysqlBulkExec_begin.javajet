@@ -3,6 +3,9 @@ imports="
     org.talend.core.model.process.INode 
     org.talend.core.model.process.ElementParameterParser 
     org.talend.designer.codegen.config.CodeGeneratorArgument
+	org.talend.core.model.metadata.IMetadataTable
+	org.talend.core.model.metadata.IMetadataColumn
+    java.util.List
 " 
 %>
 <%
@@ -26,6 +29,7 @@ if(encoding.equals("\"GBK\"")){
 }else if(encoding.equals("\"UCS-2\"")){
 	charset = "ucs2";
 }
+
 %> 
 String lines_separator_<%=cid %> = <%=ElementParameterParser.getValue(node, "__LINES_TERMINATED_BY__") %>;
 String field_separator_<%=cid %> = <%=ElementParameterParser.getValue(node, "__FIELDS_TERMINATED_BY__") %>;
@@ -66,7 +70,22 @@ stmt_<%=cid %>.execute(
     + " FIELDS TERMINATED BY '" + field_separator_<%=cid %>.replaceAll("\\\\", "\\\\\\\\") + "'"
     + " ENCLOSED BY '" + enclosed_str_<%=cid %>.replaceAll("\\\\", "\\\\\\\\") + "'"
     + " ESCAPED BY '" + escaped_str_<%=cid %>.replaceAll("\\\\", "\\\\\\\\") + "'"
-    + " LINES TERMINATED BY '" + lines_separator_<%=cid %>.replaceAll("\\\\", "\\\\\\\\") + "'"        
+    + " LINES TERMINATED BY '" + lines_separator_<%=cid %>.replaceAll("\\\\", "\\\\\\\\") + "'"  
+<%
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+		List<IMetadataColumn> columns = metadata.getListColumns();
+		int sizeColumns = columns.size();
+		for (int i = 0; i < sizeColumns; i++) {
+			IMetadataColumn column = columns.get(i);
+%><%=i==0?"+ \" (":""%>`<%=column.getOriginalDbColumnName() %>`<%=i==sizeColumns-1?")\"":","%><%
+		}
+	}
+}
+%>
+          
 );
 stmt_<%=cid %>.close();
 con_<%=cid %>.close();

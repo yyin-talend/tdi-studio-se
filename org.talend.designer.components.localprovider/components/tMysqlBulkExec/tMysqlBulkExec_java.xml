@@ -85,7 +85,7 @@
 
     <PARAMETER
       NAME="TABLE"
-      FIELD="TEXT"
+      FIELD="DBTABLE"
       NUM_ROW="40"
     >
       <DEFAULT>"employee"</DEFAULT>
@@ -142,7 +142,15 @@
       NUM_ROW="70"
     >
       <DEFAULT>false</DEFAULT>
-    </PARAMETER>         
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="SCHEMA"
+      FIELD="SCHEMA_TYPE"
+      NUM_ROW="75"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>             
 
     <PARAMETER
       NAME="ENCODING"
