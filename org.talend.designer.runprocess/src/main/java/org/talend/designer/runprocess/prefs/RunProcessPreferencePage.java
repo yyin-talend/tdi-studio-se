@@ -106,6 +106,10 @@ public class RunProcessPreferencePage extends FieldEditorPreferencePage implemen
 
     private IntegerFieldEditor tracesTime;
 
+    private Group vmGroup;
+
+    private Composite parent;
+
     /**
      * Create the console page.
      */
@@ -134,12 +138,24 @@ public class RunProcessPreferencePage extends FieldEditorPreferencePage implemen
     }
 
     /**
-     * Create all field editors for this page
+     * Create all field editors for this page.
      */
     @Override
     public void createFieldEditors() {
 
-        clientGroup = new Group(getFieldEditorParent(), SWT.NONE);
+        parent = new Composite(getFieldEditorParent(), SWT.NONE);
+        GridLayout gridLayout = new GridLayout(1, false);
+        gridLayout.marginBottom = 0;
+        gridLayout.marginWidth = 0;
+        gridLayout.marginTop = 0;
+        gridLayout.marginRight = 0;
+        gridLayout.marginLeft = 0;
+        gridLayout.marginHeight = 0;
+        parent.setLayout(gridLayout);
+        GridData gridData = new GridData(GridData.FILL_BOTH);
+        parent.setLayoutData(gridData);
+
+        clientGroup = new Group(parent, SWT.NONE);
         clientGroup.setText(Messages.getString("prefs.clientConfiguration"));
         GridLayout layout = new GridLayout();
         layout.numColumns = 1;
@@ -152,7 +168,7 @@ public class RunProcessPreferencePage extends FieldEditorPreferencePage implemen
 
         Composite compositeStatsPorts = new Composite(clientGroup, SWT.NONE);
         compositeStatsPorts.setLayoutData(new GridData(GridData.FILL_BOTH));
-        GridLayout gridLayout = new GridLayout(2, true);
+        gridLayout = new GridLayout(2, true);
         compositeStatsPorts.setLayout(gridLayout);
 
         Composite compositeStatsPort1 = new Composite(compositeStatsPorts, SWT.NONE);
@@ -214,16 +230,16 @@ public class RunProcessPreferencePage extends FieldEditorPreferencePage implemen
         compositeSaveBeforeRun.setLayoutData(new GridData(GridData.FILL_BOTH));
         GridLayout gridLayoutSaveBeforeRun = new GridLayout(1, true);
         compositeSaveBeforeRun.setLayout(gridLayoutSaveBeforeRun);
-        onSavebeforeField = new BooleanFieldEditor(RunProcessPrefsConstants.ISSAVEBEFORERUN, "Save before run",
-                SWT.NONE, compositeSaveBeforeRun);
+        onSavebeforeField = new BooleanFieldEditor(RunProcessPrefsConstants.ISSAVEBEFORERUN, "Save before run", SWT.NONE,
+                compositeSaveBeforeRun);
         addField(onSavebeforeField);
 
         Composite compositeClearBeforeRun = new Composite(compositeStateTraceRun, SWT.NONE);
         compositeClearBeforeRun.setLayoutData(new GridData(GridData.FILL_BOTH));
         GridLayout gridLayoutClearBeforeRun = new GridLayout(1, true);
         compositeClearBeforeRun.setLayout(gridLayoutClearBeforeRun);
-        onClearbeforeField = new BooleanFieldEditor(RunProcessPrefsConstants.ISCLEARBEFORERUN, "Clear before run",
-                SWT.NONE, compositeClearBeforeRun);
+        onClearbeforeField = new BooleanFieldEditor(RunProcessPrefsConstants.ISCLEARBEFORERUN, "Clear before run", SWT.NONE,
+                compositeClearBeforeRun);
 
         addField(onClearbeforeField);
         Composite compositeExecTimeRun = new Composite(compositeStateTraceRun, SWT.NONE);
@@ -246,8 +262,7 @@ public class RunProcessPreferencePage extends FieldEditorPreferencePage implemen
         compositeTracesRun.setLayoutData(new GridData(GridData.FILL_BOTH));
         GridLayout gridLayoutTracesRun = new GridLayout(1, false);
         compositeTracesRun.setLayout(gridLayoutTracesRun);
-        onTracesField = new BooleanFieldEditor(RunProcessPrefsConstants.ISTRACESRUN, "Traces", SWT.NONE,
-                compositeTracesRun);
+        onTracesField = new BooleanFieldEditor(RunProcessPrefsConstants.ISTRACESRUN, "Traces", SWT.NONE, compositeTracesRun);
         addField(onTracesField);
 
         Composite compositeTracesTime = new Composite(compositeStateTraceRun, SWT.NONE);
@@ -257,6 +272,13 @@ public class RunProcessPreferencePage extends FieldEditorPreferencePage implemen
         tracesTime = new IntegerFieldEditor(RunProcessPrefsConstants.STRACESTIME, "Pause Time(ms)", compositeTracesTime);
         addField(tracesTime);
 
+        Composite argumentsComposite = new Composite(parent, SWT.NONE);
+        argumentsComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
+        GridLayout gridLayoutArguments = new GridLayout(1, false);
+        argumentsComposite.setLayout(gridLayoutArguments);
+        VMArgumentsViewer argumentsViewer = new VMArgumentsViewer(RunProcessPrefsConstants.VMARGUMENTS, "Job Run VM arguments",
+                argumentsComposite);
+        addField(argumentsViewer);
     }
 
     protected void createSpacer(Composite composite, int columnSpan) {
@@ -338,5 +360,4 @@ public class RunProcessPreferencePage extends FieldEditorPreferencePage implemen
             super.propertyChange(event);
         }
     }
-
 }

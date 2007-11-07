@@ -46,6 +46,7 @@ public class RunProcessPreferenceInitializer extends AbstractPreferenceInitializ
         prefs.putValue(RunProcessPrefsConstants.CLIENT_TRACE_PORT_BOUND2, "5333");
         prefs.setDefault(RunProcessPrefsConstants.ISCLEARBEFORERUN, true);
         prefs.setDefault(RunProcessPrefsConstants.STRACESTIME, 1000);
+        prefs.setDefault(RunProcessPrefsConstants.VMARGUMENTS, " -Xms=256M -Xmx=1024M");
     }
 
     /**

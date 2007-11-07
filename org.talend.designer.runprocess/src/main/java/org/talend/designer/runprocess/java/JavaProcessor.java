@@ -88,6 +88,8 @@ import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.designer.runprocess.RunProcessPlugin;
 import org.talend.designer.runprocess.i18n.Messages;
+import org.talend.designer.runprocess.prefs.RunProcessPrefsConstants;
+import org.talend.designer.runprocess.prefs.VMArgumentsViewer;
 import org.talend.librariesmanager.model.ModulesNeededProvider;
 
 /**
@@ -115,7 +117,7 @@ public class JavaProcessor extends Processor {
     private IPath compiledContextPath;
 
     /** Tells if filename is based on id or label of the process. */
-    private boolean filenameFromLabel;
+    private final boolean filenameFromLabel;
 
     private String typeName;
 
@@ -154,6 +156,7 @@ public class JavaProcessor extends Processor {
      * 
      * @see org.talend.designer.runprocess.IProcessor#initPaths(org.talend.core.model.process.IContext)
      */
+    @Override
     public void initPaths(IContext context) throws ProcessorException {
         if (context.equals(this.context)) {
             return;
@@ -222,6 +225,7 @@ public class JavaProcessor extends Processor {
      * @see org.talend.designer.runprocess.IProcessor#generateCode(org.talend.core.model.process.IContext, boolean,
      * boolean, boolean)
      */
+    @Override
     public void generateCode(boolean statistics, boolean trace, boolean javaProperties) throws ProcessorException {
         super.generateCode(statistics, trace, javaProperties);
         try {
@@ -284,6 +288,7 @@ public class JavaProcessor extends Processor {
         }
     }
 
+    @Override
     public void setSyntaxCheckableEditor(ISyntaxCheckableEditor checkableEditor) {
         this.checkableEditor = checkableEditor;
     }
@@ -299,6 +304,7 @@ public class JavaProcessor extends Processor {
      * 
      * @see org.talend.designer.runprocess.IProcessor#getCodeContext()
      */
+    @Override
     public String getCodeContext() {
         return getCodeProject().getLocation().append(getContextPath()).removeLastSegments(1).toOSString();
     }
@@ -312,6 +318,7 @@ public class JavaProcessor extends Processor {
      * 
      * @see org.talend.designer.runprocess.IProcessor#getCodePath()
      */
+    @Override
     public IPath getCodePath() {
         return this.states.getCodePath();
     }
@@ -321,6 +328,7 @@ public class JavaProcessor extends Processor {
      * 
      * @see org.talend.designer.runprocess.IProcessor#getContextPath()
      */
+    @Override
     public IPath getContextPath() {
         return this.states.getContextPath();
     }
@@ -330,6 +338,7 @@ public class JavaProcessor extends Processor {
      * 
      * @see org.talend.designer.runprocess.IProcessor#getCodeProject()
      */
+    @Override
     public IProject getCodeProject() {
         return this.project.getProject();
     }
@@ -394,6 +403,7 @@ public class JavaProcessor extends Processor {
      * 
      * @param nodeName
      */
+    @Override
     public int getLineNumber(String nodeName) {
         IFile codeFile = this.project.getProject().getFile(this.codePath);
         int[] lineNumbers = new int[] { 0 };
@@ -487,7 +497,7 @@ public class JavaProcessor extends Processor {
             }
         }
 
-        IClasspathEntry[] classpathEntryArray = (IClasspathEntry[]) classpath.toArray(new IClasspathEntry[classpath.size()]);
+        IClasspathEntry[] classpathEntryArray = classpath.toArray(new IClasspathEntry[classpath.size()]);
 
         javaProject.setRawClasspath(classpathEntryArray, null);
 
@@ -602,6 +612,7 @@ public class JavaProcessor extends Processor {
      * 
      * @see org.talend.designer.runprocess.IProcessor#getInterpreter()
      */
+    @Override
     public String getInterpreter() throws ProcessorException {
         // if the interpreter has been set to a specific one (not standard),
         // then this value won't be null
@@ -622,6 +633,7 @@ public class JavaProcessor extends Processor {
         return javaInterpreter;
     }
 
+    @Override
     public String getLibraryPath() throws ProcessorException {
         // if the library path has been set to a specific one (not standard),
         // then this value won't be null
@@ -632,6 +644,7 @@ public class JavaProcessor extends Processor {
         return CorePlugin.getDefault().getLibrariesService().getLibrariesPath();
     }
 
+    @Override
     public String getCodeLocation() throws ProcessorException {
         // if the routine path has been set to a specific one (not standard),
         // then this value won't be null
@@ -678,6 +691,7 @@ public class JavaProcessor extends Processor {
         return this.contextPath;
     }
 
+    @Override
     public String[] getCommandLine() throws ProcessorException {
         // java -cp libdirectory/*.jar;project_path classname;
 
@@ -762,8 +776,20 @@ public class JavaProcessor extends Processor {
         } else {
             libFolder = new Path(externalLibDirectory.getAbsolutePath()).toPortableString() + classPathSeparator;
         }
-        return new String[] { new Path(command).toPortableString(), "-Xms256M", "-Xmx1024M", "-cp",
+        String[] strings = new String[] { new Path(command).toPortableString(), "-cp",
                 libPath.toString() + new Path(projectPath).toPortableString() + exportJar + libFolder, className };
+        return addVMArguments(strings);
+    }
+
+    private String[] addVMArguments(String[] strings) {
+        String string = RunProcessPlugin.getDefault().getPreferenceStore().getString(RunProcessPrefsConstants.VMARGUMENTS);
+        String replaceAll = string.replaceAll(VMArgumentsViewer.EQ_DELIMITER, "").trim();
+        String[] vmargs = replaceAll.split(" ");
+        String[] lines = new String[strings.length + vmargs.length];
+        System.arraycopy(strings, 0, lines, 0, 1);
+        System.arraycopy(vmargs, 0, lines, 1, vmargs.length);
+        System.arraycopy(strings, 1, lines, vmargs.length + 1, strings.length - 1);
+        return lines;
     }
 
     private Set<String> getChildren(ProcessItem processItem) {
@@ -789,6 +815,7 @@ public class JavaProcessor extends Processor {
      * 
      * @see org.talend.designer.runprocess.IProcessor#getProcessorType()
      */
+    @Override
     public String getProcessorType() {
         return JavaUtils.PROCESSOR_TYPE;
     }
@@ -798,6 +825,7 @@ public class JavaProcessor extends Processor {
      * 
      * @see org.talend.designer.runprocess.IProcessor#getProcessorStates()
      */
+    @Override
     public void setProcessorStates(int states) {
         if (states == STATES_RUNTIME) {
             new JavaProcessorRuntimeStates(this);
@@ -812,6 +840,7 @@ public class JavaProcessor extends Processor {
      * 
      * @see org.talend.designer.runprocess.IProcessor#getTypeName()
      */
+    @Override
     public String getTypeName() {
         return this.typeName;
     }
@@ -821,6 +850,7 @@ public class JavaProcessor extends Processor {
      * 
      * @see org.talend.designer.runprocess.IProcessor#saveLaunchConfiguration()
      */
+    @Override
     public Object saveLaunchConfiguration() throws CoreException {
         ILaunchConfiguration config = null;
         ILaunchManager launchManager = DebugPlugin.getDefault().getLaunchManager();
