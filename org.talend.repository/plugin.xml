@@ -366,7 +366,7 @@
       		class="org.talend.repository.RepositoryService"/>
    </extension>
    
-   <extension
+   <!--extension
          point="org.eclipse.ui.exportWizards">
       <category
             name="Talend"
@@ -385,7 +385,7 @@
                class="org.eclipse.core.resources.IResource">
          </selection>
       </wizard>
-   </extension>
+   </extension-->
    <extension
          point="org.eclipse.ui.actionSets">
       <actionSet
