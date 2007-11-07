@@ -36,7 +36,7 @@ public class TalendDesignerPrefConstants {
     public static final String DEFAULT_HINT = "defaultHint"; //$NON-NLS-1$
 
     /** Default label used for the components. */
-    public static final String DEFAULT_CONNECTION = "defaultConnection";//$NON-NLS-1$
+    public static final String DEFAULT_CONNECTION_FORMAT = "defaultConnection";//$NON-NLS-1$
 
     /** Default label used for the components. */
     public static final String DEFAULT_HINT_USED = "hintUsed"; //$NON-NLS-1$

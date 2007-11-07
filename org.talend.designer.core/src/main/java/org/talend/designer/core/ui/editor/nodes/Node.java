@@ -212,7 +212,7 @@ public class Node extends Element implements INode {
 
         labelToParse = store.getString(TalendDesignerPrefConstants.DEFAULT_LABEL);
         hintToParse = store.getString(TalendDesignerPrefConstants.DEFAULT_HINT);
-        connectionToParse = store.getString(TalendDesignerPrefConstants.DEFAULT_CONNECTION);
+        connectionToParse = store.getString(TalendDesignerPrefConstants.DEFAULT_CONNECTION_FORMAT);
         showHint = store.getBoolean(TalendDesignerPrefConstants.DEFAULT_HINT_USED);
 
         nodeLabel = new NodeLabel(label, this);
@@ -302,14 +302,14 @@ public class Node extends Element implements INode {
                     labelToParse = (String) obj;
                 } else if (param.getName().equals(EParameterName.HINT.getName())) {
                     hintToParse = (String) obj;
-                } else if (param.getName().equals(EParameterName.CONNECTION.getName())) {
+                } else if (param.getName().equals(EParameterName.CONNECTION_FORMAT.getName())) {
                     connectionToParse = (String) obj;
                 }
             }
         }
         setPropertyValue(EParameterName.LABEL.getName(), labelToParse);
         setPropertyValue(EParameterName.HINT.getName(), hintToParse);
-        setPropertyValue(EParameterName.CONNECTION.getName(), connectionToParse);
+        setPropertyValue(EParameterName.CONNECTION_FORMAT.getName(), connectionToParse);
         setPropertyValue(EParameterName.SHOW_HINT.getName(), new Boolean(showHint));
         pluginFullName = newComponent.getPluginFullName();
         if (pluginFullName != IComponentsFactory.COMPONENTS_LOCATION) {
@@ -811,7 +811,7 @@ public class Node extends Element implements INode {
             setLabel(newValue);
         }
 
-        if (id.equals(EParameterName.CONNECTION.getName())) {
+        if (id.equals(EParameterName.CONNECTION_FORMAT.getName())) {
             connectionToParse = (String) value;
             String newValue = ElementParameterParser.parse(this, connectionToParse);
             setConnectionName(newValue);
@@ -1904,7 +1904,7 @@ public class Node extends Element implements INode {
      */
     public void setConnectionName(String name) {
         this.connectionName = name;
-        firePropertyChange(EParameterName.CONNECTION.getName(), null, this.connectionName);
+        firePropertyChange(EParameterName.CONNECTION_FORMAT.getName(), null, this.connectionName);
     }
 
     /**

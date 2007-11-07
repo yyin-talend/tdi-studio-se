@@ -303,7 +303,7 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
             } else {
                 ((NodeFigure) figure).setHint(""); //$NON-NLS-1$
             }
-        } else if (changeEvent.getPropertyName().equals(EParameterName.CONNECTION.getName())) {
+        } else if (changeEvent.getPropertyName().equals(EParameterName.CONNECTION_FORMAT.getName())) {
             refreshTargetConnections();
             refreshSourceConnections();
         }

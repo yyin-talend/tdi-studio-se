@@ -276,6 +276,7 @@ public class EmfComponent implements IComponent {
         ElementParameter param;
 
         FORMATType formatType = compType.getHEADER().getFORMAT();
+        CorePlugin.getDefault().getComponentsLocalProviderService().getPreferenceStore();
 
         param = new ElementParameter(node);
         param.setName(EParameterName.LABEL.getName());
@@ -306,8 +307,8 @@ public class EmfComponent implements IComponent {
         listParam.add(param);
 
         param = new ElementParameter(node);
-        param.setName(EParameterName.CONNECTION.getName());
-        param.setDisplayName(EParameterName.CONNECTION.getDisplayName());
+        param.setName(EParameterName.CONNECTION_FORMAT.getName());
+        param.setDisplayName(EParameterName.CONNECTION_FORMAT.getDisplayName());
         param.setField(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.VIEW);
         param.setNumRow(3);

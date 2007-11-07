@@ -146,8 +146,8 @@ public final class TalendEditorPaletteFactory {
                     imageLarge = xmlComponent.getIcon32();
                 }
 
-                component = new CombinedTemplateCreationEntry(name, name, Node.class, new PaletteComponentFactory(
-                        xmlComponent), imageSmall, imageLarge);
+                component = new CombinedTemplateCreationEntry(name, name, Node.class, new PaletteComponentFactory(xmlComponent),
+                        imageSmall, imageLarge);
                 component.setDescription(longName);
 
                 String[] strings = family.split(FAMILY_SEPARATOR_REGEX);
@@ -211,8 +211,7 @@ public final class TalendEditorPaletteFactory {
         }
     }
 
-    private static void saveFamilyState(PaletteViewer viewer, IPreferenceStore preferenceStore,
-            PaletteDrawer paletteItem) {
+    private static void saveFamilyState(PaletteViewer viewer, IPreferenceStore preferenceStore, PaletteDrawer paletteItem) {
         String family = paletteItem.getLabel();
         int value;
         if (viewer.isExpanded(paletteItem)) {
@@ -238,7 +237,7 @@ public final class TalendEditorPaletteFactory {
      * 
      * @return a new PaletteRoot
      */
-    static PaletteRoot createPalette(final IComponentsFactory compFac) {
+    public static PaletteRoot createPalette(final IComponentsFactory compFac) {
         palette = new PaletteRoot();
         palette.add(createToolsGroup());
         createComponentsDrawer(compFac);
@@ -308,8 +307,7 @@ public final class TalendEditorPaletteFactory {
         // Add a marquee tool to the group
         // toolGroup.add(new MarqueeToolEntry());
 
-        CreationToolEntry noteCreationToolEntry = new CreationToolEntry(Messages
-                .getString("TalendEditorPaletteFactory.Note"), //$NON-NLS-1$
+        CreationToolEntry noteCreationToolEntry = new CreationToolEntry(Messages.getString("TalendEditorPaletteFactory.Note"), //$NON-NLS-1$
                 Messages.getString("TalendEditorPaletteFactory.CreateNote"), //$NON-NLS-1$
                 new NoteCreationFactory(), ImageProvider.getImageDesc(ECoreImage.CODE_ICON), ImageProvider
                         .getImageDesc(ECoreImage.CODE_ICON));

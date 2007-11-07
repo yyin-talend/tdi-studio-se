@@ -59,14 +59,14 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
     @Override
     public void initializeDefaultPreferences() {
         IPreferenceStore store = DesignerPlugin.getDefault().getPreferenceStore();
-        
+
         String logPath = Platform.getLogFileLocation().toOSString();
         int lastIndex = logPath.lastIndexOf(File.separatorChar);
         logPath = logPath.substring(0, lastIndex);
 
         store.setDefault(TalendDesignerPrefConstants.DEFAULT_LABEL, "__UNIQUE_NAME__"); //$NON-NLS-1$
         store.setDefault(TalendDesignerPrefConstants.DEFAULT_HINT, "<b>__UNIQUE_NAME__</b><br>__COMMENT__"); //$NON-NLS-1$
-        store.setDefault(TalendDesignerPrefConstants.DEFAULT_CONNECTION, "from___UNIQUE_NAME__");//$NON-NLS-1$
+        store.setDefault(TalendDesignerPrefConstants.DEFAULT_CONNECTION_FORMAT, "row___UNIQUE_NAME__");//$NON-NLS-1$
         store.setDefault(TalendDesignerPrefConstants.DEFAULT_HINT_USED, false);
         store.setDefault(TalendDesignerPrefConstants.DEFAULT_DISPLAY, false);
         store.setDefault(TalendEditorPaletteFactory.PALETTE_STATE, FlyoutPaletteComposite.STATE_PINNED_OPEN);
@@ -81,14 +81,12 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
         store.setDefault(ECodeLanguage.JAVA.toString() + "_" + EParameterName.CATCH_USER_ERRORS.getName(), true);
         store.setDefault(ECodeLanguage.JAVA.toString() + "_" + EParameterName.CATCH_USER_WARNING.getName(), true);
 
-        
         store.setDefault(ECodeLanguage.JAVA.toString() + "_" + EParameterName.FILE_PATH.getName(), logPath);
-        store.setDefault(ECodeLanguage.JAVA.toString() + "_" + EParameterName.FILENAME_LOGS.getName(),
-                DEFAULT_LOGS_FILE_NAME);
-        store.setDefault(ECodeLanguage.JAVA.toString() + "_" + EParameterName.FILENAME_STATS.getName(),
-                DEFAULT_STATS_FILE_NAME);
-        store.setDefault(ECodeLanguage.JAVA.toString() + "_" + EParameterName.FILENAME_METTER.getName(),
-                DEFAULT_METTER_FILE_NAME);
+        store.setDefault(ECodeLanguage.JAVA.toString() + "_" + EParameterName.FILENAME_LOGS.getName(), DEFAULT_LOGS_FILE_NAME);
+        store.setDefault(ECodeLanguage.JAVA.toString() + "_" + EParameterName.FILENAME_STATS.getName(), DEFAULT_STATS_FILE_NAME);
+        store
+                .setDefault(ECodeLanguage.JAVA.toString() + "_" + EParameterName.FILENAME_METTER.getName(),
+                        DEFAULT_METTER_FILE_NAME);
 
         // defaults for the stats preferences for perl
         store.setDefault(ECodeLanguage.PERL.toString() + "_" + EParameterName.PROPERTY_TYPE.getName(), EmfComponent.BUILTIN);
@@ -97,12 +95,11 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
         store.setDefault(ECodeLanguage.PERL.toString() + "_" + EParameterName.CATCH_USER_ERRORS.getName(), true);
         store.setDefault(ECodeLanguage.PERL.toString() + "_" + EParameterName.CATCH_USER_WARNING.getName(), true);
         store.setDefault(ECodeLanguage.PERL.toString() + "_" + EParameterName.FILE_PATH.getName(), logPath);
-        store.setDefault(ECodeLanguage.PERL.toString() + "_" + EParameterName.FILENAME_LOGS.getName(),
-                DEFAULT_LOGS_FILE_NAME);
-        store.setDefault(ECodeLanguage.PERL.toString() + "_" + EParameterName.FILENAME_STATS.getName(),
-                DEFAULT_STATS_FILE_NAME);
-        store.setDefault(ECodeLanguage.PERL.toString() + "_" + EParameterName.FILENAME_METTER.getName(),
-                DEFAULT_METTER_FILE_NAME);
+        store.setDefault(ECodeLanguage.PERL.toString() + "_" + EParameterName.FILENAME_LOGS.getName(), DEFAULT_LOGS_FILE_NAME);
+        store.setDefault(ECodeLanguage.PERL.toString() + "_" + EParameterName.FILENAME_STATS.getName(), DEFAULT_STATS_FILE_NAME);
+        store
+                .setDefault(ECodeLanguage.PERL.toString() + "_" + EParameterName.FILENAME_METTER.getName(),
+                        DEFAULT_METTER_FILE_NAME);
 
         if (!CorePlugin.getContext().isHeadless()) {
             Font font = new Font(Display.getDefault(), "courier", 10, SWT.NONE);

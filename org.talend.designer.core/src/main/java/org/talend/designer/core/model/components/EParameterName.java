@@ -47,7 +47,7 @@ public enum EParameterName {
     ACTIVATE(Messages.getString("EParameterName.Activate")), //$NON-NLS-1$
     LABEL(Messages.getString("EParameterName.LabelFormat")), //$NON-NLS-1$
     HINT(Messages.getString("EParameterName.HintFormat")), //$NON-NLS-1$
-    CONNECTION("Connection format"),
+    CONNECTION_FORMAT("Connection format"),
     SHOW_HINT(Messages.getString("EParameterName.ShowHint")), //$NON-NLS-1$
     COMMENT(Messages.getString("EParameterName.Comment")), //$NON-NLS-1$
     LOG_FILENAME(Messages.getString("EParameterName.FileName")), //$NON-NLS-1$
