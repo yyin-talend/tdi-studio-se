@@ -200,7 +200,13 @@ public final class Expression {
                                     IMetadataTable baseTable = null;
                                     IMetadataColumn baseColumn = null;
                                     INode node;
-                                    String columnName = (String) currentRow.get(testedParameter.getName());
+                                    Object obj = currentRow.get(testedParameter.getName());
+                                    String columnName = "";
+                                    if (obj instanceof String) {
+                                        columnName = (String) obj;
+                                    } else if (obj instanceof Integer) {
+                                        columnName = testedParameter.getListItemsDisplayName()[(Integer) obj];
+                                    }
                                     if (currentParam.getElement() instanceof INode) {
                                         node = (INode) currentParam.getElement();
 
