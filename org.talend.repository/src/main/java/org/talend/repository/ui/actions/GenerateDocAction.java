@@ -97,11 +97,12 @@ public class GenerateDocAction extends AContextualAction {
         process = getExportFileResources();
         if (process != null && process.length > 0) {
             List<ExportFileResource> exportResources = manager.getExportResources(process);
-
+            
             for (ExportFileResource exportFileResource : exportResources) {
-                // System.out.println(");
+//                System.out.println(");
             }
-
+            
+            
         }
     }
 

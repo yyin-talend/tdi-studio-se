@@ -243,12 +243,6 @@
              level="16"
              name="Generate all jobs documentation">
        </Action>
-       <Action
-             class="org.talend.repository.ui.actions.GenerateDocAction"
-             id="org.talend.repository.ui.GenerateDocAction"
-             level="98"
-             name="Generate documentation">
-       </Action>
    </extension>
    <extension
          point="org.eclipse.ui.views.properties.tabbed.propertyContributor">
