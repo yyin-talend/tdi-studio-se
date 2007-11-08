@@ -22,6 +22,10 @@ if(dbSchema == null || dbSchema.equals("") || dbSchema.equals("\"\"")) {
         tableName.append(dbSchema.substring(0, dbSchema.length() - 1) + "." + table.substring(1, table.length()));
     }
 }
+
+boolean useCsvStyle = ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("true");
+String escapeChar = ElementParameterParser.getValue(node, "__ESCAPE_CHAR__");        
+String textEnclosure = ElementParameterParser.getValue(node, "__TEXT_ENCLOSURE__");
 %> 
 String field_separator_<%=cid %> = <%=ElementParameterParser.getValue(node, "__FIELDS_TERMINATED_BY__") %>;
 String file_<%=cid %> = <%=ElementParameterParser.getValue(node, "__FILENAME__") %>;
@@ -35,6 +39,21 @@ Class.forName("org.postgresql.Driver").newInstance();
 java.sql.Connection con_<%=cid %> = java.sql.DriverManager.getConnection("jdbc:postgresql://" + host_<%=cid %> + ":" + port_<%=cid %> + "/" + db_<%=cid %>, user_<%=cid %>, pas_<%=cid %>);
 java.sql.Statement stmt_<%=cid %> = con_<%=cid %>.createStatement();
 //stmt.execute("SET client_encoding to 'UNICODE'");
-stmt_<%=cid %>.execute("copy " + <%=tableName.toString()%> + " from '"+file_<%=cid %>+"' with delimiter '"+field_separator_<%=cid %>+"'");
+stmt_<%=cid %>.execute(
+"copy " 
++ <%=tableName.toString()%> 
++ " from '"
++ file_<%=cid %> 
++ "' with delimiter '"
++ field_separator_<%=cid %>
++ "'"
+<%if (useCsvStyle) {%>
++ "CSV quote '"
++ <%=textEnclosure %>.replaceAll("\\\\", "\\\\\\\\")
++ "' escape '"
++ <%=escapeChar %>.replaceAll("\\\\", "\\\\\\\\")
++ "'"
+<%}%>
+);
 stmt_<%=cid %>.close();
 con_<%=cid %>.close();
