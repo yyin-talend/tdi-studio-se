@@ -21,12 +21,14 @@
 // ============================================================================
 package org.talend.designer.components.thash;
 
+import java.io.Serializable;
+
 /**
  * 
  * DOC amaumont class global comment. Detailled comment <br/>
  * 
  */
-public class Bean {
+public class Bean implements Serializable {
 
     int primitiveInt;
 
@@ -70,7 +72,17 @@ public class Bean {
         if (obj == null)
             return false;
         final KeyForMap other = (KeyForMap) obj;
-        Bean bean = (Bean) DB.get("<ID_CONTAINER_NAME>", other.dbIdBean);
+        Object o = null;
+        try {
+            o = DB.get("buffer", other.dbIdBean);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (o == null) {
+            return false;
+        }
+        Bean bean = (Bean) o;
+
         if (this.name == null) {
             if ((String) bean.name != null)
                 return false;
