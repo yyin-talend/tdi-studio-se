@@ -31,6 +31,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.PropertySheet;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
@@ -84,14 +85,15 @@ public class PropertyChangeCommand extends Command {
     }
 
     private void refreshPropertyView() {
-        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-        IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet"); //$NON-NLS-1$
-        PropertySheet sheet = (PropertySheet) view;
-        if (sheet != null && sheet.getCurrentPage() != null
-                && sheet.getCurrentPage() instanceof TabbedPropertySheetPage) {
-            TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) sheet.getCurrentPage();
-            if (tabbedPropertySheetPage.getCurrentTab() != null) {
-                tabbedPropertySheetPage.refresh();
+        if (!elem.getElementParameter(propName).getCategory().equals(EComponentCategory.STATSANDLOGS)) {
+            IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+            IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet"); //$NON-NLS-1$
+            PropertySheet sheet = (PropertySheet) view;
+            if (sheet != null && sheet.getCurrentPage() != null && sheet.getCurrentPage() instanceof TabbedPropertySheetPage) {
+                TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) sheet.getCurrentPage();
+                if (tabbedPropertySheetPage.getCurrentTab() != null) {
+                    tabbedPropertySheetPage.refresh();
+                }
             }
         }
     }
@@ -109,11 +111,13 @@ public class PropertyChangeCommand extends Command {
      * ftang Comment method "refreshStatsAndLogsView".
      */
     private void refreshStatsAndLogsView() {
-        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-        IViewPart view = page.findView(StatsAndLogsView.ID);
-        if (view != null) {
-            StatsAndLogsView statsAndLogsView = (StatsAndLogsView) view;
-            statsAndLogsView.refreshView();
+        if (elem.getElementParameter(propName).getCategory().equals(EComponentCategory.STATSANDLOGS)) {
+            IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+            IViewPart view = page.findView(StatsAndLogsView.ID);
+            if (view != null) {
+                StatsAndLogsView statsAndLogsView = (StatsAndLogsView) view;
+                statsAndLogsView.refreshView();
+            }
         }
     }
 
