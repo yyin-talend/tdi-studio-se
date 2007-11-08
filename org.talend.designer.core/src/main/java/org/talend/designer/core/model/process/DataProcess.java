@@ -558,7 +558,8 @@ public class DataProcess {
                 String uniqueName = null;
                 IComponent component = null;
 
-                INodeConnector connector = connection.getTarget().getConnectorFromName(connection.getConnectorName());
+                String baseConnector = connection.getSource().getConnectorFromName(connection.getConnectorName()).getBaseSchema();
+                INodeConnector connector = connection.getTarget().getConnectorFromName(baseConnector);
                 String hashComponent = connector.getConnectionProperty(EConnectionType.FLOW_REF).getLinkedComponent();
 
                 if (hashComponent == null) {
