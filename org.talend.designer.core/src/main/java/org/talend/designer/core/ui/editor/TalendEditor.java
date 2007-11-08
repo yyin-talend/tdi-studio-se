@@ -134,6 +134,7 @@ import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.general.ILibrariesService;
 import org.talend.core.model.properties.Property;
+import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
@@ -792,6 +793,13 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
             monitor.worked(10);
 
             saveOutlinePicture((ScrollingGraphicalViewer) getGraphicalViewer());
+
+            if (CorePlugin.getDefault().getPreferenceStore().getBoolean(ITalendCorePrefConstants.DOC_GENERATION)) {
+                //PTODO ftang
+                //Step1: generate the HTML;
+                //Step2: copy it to Documentation Node(Find the relevant path, if path is not existing, create it); 
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
             monitor.setCanceled(true);
