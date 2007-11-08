@@ -21,8 +21,6 @@
 // ============================================================================
 package org.talend.designer.components.ui;
 
-import org.eclipse.gef.palette.PaletteContainer;
-import org.eclipse.gef.palette.PaletteEntry;
 import org.eclipse.gef.palette.PaletteRoot;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -34,9 +32,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.talend.core.model.components.ComponentUtilities;
-import org.talend.designer.core.ui.editor.TalendEditorPaletteFactory;
-import org.talend.repository.model.ComponentsFactoryProvider;
 
 /**
  * yzhang class global comment. Detailled comment <br/>
@@ -100,32 +95,8 @@ public class PaletteContentDialog extends Dialog {
         viewer = new TreeViewer(parent);
         viewer.setContentProvider(new TalendPaletteTreeProvider());
         viewer.setLabelProvider(new TalendPaletteLabelProvider());
-        viewer.setInput(getPaletteRoot());
+        viewer.setInput(page.getPaletteRoot());
         viewer.getControl().setLayoutData(new GridData(GridData.FILL_BOTH));
-    }
-
-    /**
-     * DC yzhang Comment method "getPaletteRoot".
-     * 
-     * @return
-     */
-    private PaletteRoot getPaletteRoot() {
-
-        if (paletteRoot == null || ComponentUtilities.isComponentPaletteNeedRefresh) {
-            paletteRoot = TalendEditorPaletteFactory.createPalette(ComponentsFactoryProvider.getInstance());
-            PaletteEntry entry = null;
-            for (Object element : paletteRoot.getChildren()) {
-                if (((PaletteContainer) element).getLabel().equals("Tools")) {
-                    entry = (PaletteEntry) element;
-                    break;
-                }
-            }
-            if (entry != null) {
-                paletteRoot.remove(entry);
-            }
-        }
-
-        return paletteRoot;
     }
 
     /**
