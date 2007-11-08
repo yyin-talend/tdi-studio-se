@@ -1,0 +1,56 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser 
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.metadata.IMetadataColumn 
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+" 
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+
+String port = ElementParameterParser.getValue(
+    node,
+    "__PORT__"
+);
+
+
+
+%>
+
+use Socket;
+use IO::Handle;
+use constant MY_PORT => <%=port%>;
+use IO::File;
+autoflush STDOUT 1;
+
+$_globals{<%=cid %>}{CURRENT_ITERATION} = 0;
+
+
+socket(SOCK, AF_INET, SOCK_STREAM, getprotobyname('tcp')) or 
+    die "socket() failed: $!";
+
+setsockopt(SOCK,SOL_SOCKET,SO_REUSEADDR,1) or 
+    die "Can't set SO_REUSADDR: $!" ;
+
+my $my_addr = sockaddr_in(MY_PORT,INADDR_ANY);
+bind(SOCK,$my_addr) or 
+    die "bind() failed: $!";
+
+listen(SOCK,SOMAXCONN)or 
+    die "listen() failed: $!";
+
+while (1) {
+    $_globals{<%=cid %>}{CURRENT_ITERATION}++;
+    next unless my $remote_addr = accept(SESSION,SOCK);
+    SESSION->autoflush(1);
+
+
+
+
+    
