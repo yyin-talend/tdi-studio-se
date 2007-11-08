@@ -45,7 +45,6 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
-import org.talend.commons.ui.swt.advanced.dataeditor.commands.IExtendedTableCommand;
 import org.talend.commons.utils.data.container.Content;
 import org.talend.commons.utils.data.container.ContentList;
 import org.talend.commons.utils.data.container.RootContainer;
@@ -126,8 +125,6 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
     private final Map<String, Query> repositoryQueryStoreMap;
 
     private String oldQueryStoreType;
-
-    private static CommandStackEventListener commandStackEventListener;
 
     private Map<String, String> tableIdAndDbTypeMap;
 
@@ -582,7 +579,6 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
      * Initialize all components for the defined section for this node.
      */
     public void addComponents(boolean forceRedraw, boolean reInitialize) {
-        registerListenerForRefreshingSection();
         checkErrorsWhenViewRefreshed = true;
         int heightSize = 0, maxRowSize = 0, nbInRow, numInRow;
         int maxRow;
@@ -990,7 +986,38 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
         currentComponent = elem.getElementName();
 
         addListener(SWT.Resize, REFRESH_LISTENER);
+
+        getCommandStack().addCommandStackEventListener(commandStackEventListener);
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.swt.widgets.Widget#dispose()
+     */
+    @Override
+    public void dispose() {
+        getCommandStack().removeCommandStackEventListener(commandStackEventListener);
+        super.dispose();
+    }
+
+    CommandStackEventListener commandStackEventListener = new CommandStackEventListener() {
+
+        public void stackChanged(CommandStackEvent event) {
+            int detail = event.getDetail();
+            if ((getElement() instanceof org.talend.designer.core.ui.editor.connections.Connection)
+                    && (event.getCommand() instanceof ChangeMetadataCommand)
+                    && (0 != (detail & CommandStack.POST_EXECUTE) || 0 != (detail & CommandStack.POST_REDO) // 
+                    || 0 != (detail & CommandStack.POST_REDO))) {
+                addComponents(true);
+                refresh();
+            }
+            Boolean updateNeeded = (Boolean) elem.getPropertyValue(EParameterName.UPDATE_COMPONENTS.getName());
+            if (updateNeeded || 0 != (detail & CommandStack.POST_UNDO) || 0 != (detail & CommandStack.POST_REDO)) {
+                refresh();
+            }
+        }
+    };
 
     /**
      * yzhang Comment method "setCurRowSize" Sets the curRowSize.
@@ -1085,37 +1112,6 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
         TalendEditor talendEditor = part.getTalendEditor();
         Object adapter = talendEditor.getAdapter(CommandStack.class);
         return (CommandStack) adapter;
-    }
-
-    /**
-     * amaumont Comment method "registerListenerForRefreshingSection".
-     */
-    public void registerListenerForRefreshingSection() {
-        if (commandStackEventListener == null) {
-
-            DynamicComposite.commandStackEventListener = new CommandStackEventListener() {
-
-                public void stackChanged(CommandStackEvent event) {
-                    int detail = event.getDetail();
-                    if (lastCompositeUsed != null) {
-                        if ((lastCompositeUsed.getElement() instanceof org.talend.designer.core.ui.editor.connections.Connection)
-                                && (event.getCommand() instanceof ChangeMetadataCommand)
-                                && (0 != (detail & CommandStack.POST_EXECUTE) || 0 != (detail & CommandStack.POST_REDO) // 
-                                || 0 != (detail & CommandStack.POST_REDO))) {
-                            lastCompositeUsed.addComponents(true);
-                            lastCompositeUsed.refresh();
-                        }
-                        if (0 != (detail & CommandStack.POST_UNDO) || 0 != (detail & CommandStack.POST_REDO)) {
-                            if (event.getCommand() instanceof IExtendedTableCommand) {
-                                lastCompositeUsed.refresh();
-                            }
-                        }
-                    }
-                }
-
-            };
-            getCommandStack().addCommandStackEventListener(DynamicComposite.commandStackEventListener);
-        }
     }
 
     @SuppressWarnings("unchecked")
