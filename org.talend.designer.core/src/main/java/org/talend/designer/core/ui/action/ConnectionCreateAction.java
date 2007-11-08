@@ -403,7 +403,7 @@ public class ConnectionCreateAction extends SelectionAction {
             listArgs.add(node.getUniqueName());
         }
 
-        String baseName = node.getConnectionName() + "_";
+        String baseName = node.getConnectionName();
         String fromConnectionName = node.getProcess().generateUniqueConnectionName(baseName);
         if (connecType.hasConnectionCategory(IConnectionCategory.FLOW)
                 && node.getProcess().checkValidConnectionName(fromConnectionName, false)) {

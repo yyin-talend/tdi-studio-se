@@ -35,6 +35,7 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.RGB;
 import org.talend.commons.exception.BusinessException;
@@ -62,6 +63,7 @@ import org.talend.core.model.process.IElementParameterDefaultValue;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.temp.ECodePart;
+import org.talend.designer.components.IComponentsLocalProviderService;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.utils.emf.component.COLUMNType;
 import org.talend.designer.core.model.utils.emf.component.COMPONENTType;
@@ -275,8 +277,27 @@ public class EmfComponent implements IComponent {
     private void addViewParameters(final List<ElementParameter> listParam, INode node) {
         ElementParameter param;
 
-        FORMATType formatType = compType.getHEADER().getFORMAT();
-        CorePlugin.getDefault().getComponentsLocalProviderService().getPreferenceStore();
+        FORMATType formatTypeInXML = compType.getHEADER().getFORMAT();
+
+        IPreferenceStore store = CorePlugin.getDefault().getComponentsLocalProviderService().getPreferenceStore();
+        String ids = store.getString(IComponentsLocalProviderService.FORMAT_IDS);
+        String connectionId = node.getLabel() + IComponentsLocalProviderService.PALETTE_ENTRY_TYPE
+                + IComponentsLocalProviderService.PREFERENCE_TYPE_CONNECTION;
+        boolean contained = false;
+        if (!"".equals(ids)) {
+            String[] idArray = ids.split(IComponentsLocalProviderService.IDS_SEPARATOR);
+            for (String id : idArray) {
+                if (id.contains(connectionId)) {
+                    contained = true;
+                    break;
+                }
+            }
+
+        }
+        String hintId = node.getLabel() + IComponentsLocalProviderService.PALETTE_ENTRY_TYPE
+                + IComponentsLocalProviderService.PREFERENCE_TYPE_HINT;
+        String labelId = node.getLabel() + IComponentsLocalProviderService.PALETTE_ENTRY_TYPE
+                + IComponentsLocalProviderService.PREFERENCE_TYPE_LABEL;
 
         param = new ElementParameter(node);
         param.setName(EParameterName.LABEL.getName());
@@ -287,8 +308,11 @@ public class EmfComponent implements IComponent {
         param.setReadOnly(false);
         param.setRequired(false);
         param.setShow(true);
-        if (formatType != null) {
-            param.setValue(formatType.getLABEL());
+        if (formatTypeInXML != null) {
+            param.setValue(formatTypeInXML.getLABEL());
+        }
+        if (contained && !"".equals(store.getString(labelId))) {
+            param.setValue(store.getString(labelId));
         }
         listParam.add(param);
 
@@ -301,8 +325,11 @@ public class EmfComponent implements IComponent {
         param.setReadOnly(false);
         param.setRequired(false);
         param.setShow(true);
-        if (formatType != null) {
-            param.setValue(formatType.getHINT());
+        if (formatTypeInXML != null) {
+            param.setValue(formatTypeInXML.getHINT());
+        }
+        if (contained && !"".equals(store.getString(hintId))) {
+            param.setValue(store.getString(hintId));
         }
         listParam.add(param);
 
@@ -315,22 +342,26 @@ public class EmfComponent implements IComponent {
         param.setReadOnly(false);
         param.setRequired(false);
         param.setShow(true);
-        if (formatType != null) {
-            param.setValue(formatType.getCONNECTION());
+        if (formatTypeInXML != null) {
+            param.setValue(formatTypeInXML.getCONNECTION());
+        }
+        if (contained && !"".equals(store.getString(connectionId))) {
+            param.setValue(store.getString(connectionId));
         }
         listParam.add(param);
 
-        param = new ElementParameter(node);
-        param.setName(EParameterName.SHOW_HINT.getName());
-        param.setValue(new Boolean(false));
-        param.setDisplayName(EParameterName.SHOW_HINT.getDisplayName());
-        param.setField(EParameterFieldType.CHECK);
-        param.setCategory(EComponentCategory.VIEW);
-        param.setNumRow(4);
-        param.setReadOnly(false);
-        param.setRequired(false);
-        param.setShow(true);
-        listParam.add(param);
+        // Remove show hint item in view section for feature 2389.
+        // param = new ElementParameter(node);
+        // param.setName(EParameterName.SHOW_HINT.getName());
+        // param.setValue(new Boolean(false));
+        // param.setDisplayName(EParameterName.SHOW_HINT.getDisplayName());
+        // param.setField(EParameterFieldType.CHECK);
+        // param.setCategory(EComponentCategory.VIEW);
+        // param.setNumRow(4);
+        // param.setReadOnly(false);
+        // param.setRequired(false);
+        // param.setShow(true);
+        // listParam.add(param);
     }
 
     private void addMainParameters(final List<ElementParameter> listParam, INode node) {
