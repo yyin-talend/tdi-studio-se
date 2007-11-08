@@ -27,6 +27,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.ObjectUtils;
+import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EConnectionType;
@@ -134,7 +135,13 @@ public class Connection extends Element implements IConnection, IPerformance {
         updateName();
         if (lineStyle.equals(EConnectionType.RUN_IF)) {
             IElementParameter param = new ElementParameter(this);
-            param.setField(EParameterFieldType.MEMO_PERL);
+            switch (LanguageManager.getCurrentLanguage()) {
+            case JAVA:
+                param.setField(EParameterFieldType.MEMO_JAVA);
+                break;
+            default:
+                param.setField(EParameterFieldType.MEMO_PERL);
+            }
             param.setCategory(EComponentCategory.MAIN);
             param.setValue(""); //$NON-NLS-1$
             param.setNbLines(5);
