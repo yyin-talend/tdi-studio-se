@@ -19,17 +19,24 @@ String fileName_<%=cid%> = (new java.io.File(<%=fileName%>)).getAbsolutePath();
 String fullName_<%=cid%> = null;
 String extension_<%=cid%> = null;
 String directory_<%=cid%> = null;
-if(fileName_<%=cid%>.lastIndexOf(".") != -1) {
-    fullName_<%=cid%> = fileName_<%=cid%>.substring(0, fileName_<%=cid%>.lastIndexOf("."));
-    extension_<%=cid%> = fileName_<%=cid%>.substring(fileName_<%=cid%>.lastIndexOf("."));
+if(fileName_<%=cid%>.indexOf("\\") != -1) {
+    if(fileName_<%=cid%>.lastIndexOf(".") < fileName_<%=cid%>.lastIndexOf("\\")) {
+        fullName_<%=cid%> = fileName_<%=cid%>;
+        extension_<%=cid%> = "";
+    } else {
+        fullName_<%=cid%> = fileName_<%=cid%>.substring(0, fileName_<%=cid%>.lastIndexOf("."));
+        extension_<%=cid%> = fileName_<%=cid%>.substring(fileName_<%=cid%>.lastIndexOf("."));
+    }           
+    directory_<%=cid%> = fileName_<%=cid%>.substring(0, fileName_<%=cid%>.lastIndexOf("\\"));;              
 } else {
-    fullName_<%=cid%> = fileName_<%=cid%>;
-    extension_<%=cid%> = "";
-}        
-if(fileName_<%=cid%>.indexOf("\\") == -1) {
-    directory_<%=cid%> = "";                
-} else {
-    directory_<%=cid%> = fileName_<%=cid%>.substring(0, fileName_<%=cid%>.lastIndexOf("\\"));           
+    if(fileName_<%=cid%>.lastIndexOf(".") != -1) {
+        fullName_<%=cid%> = fileName_<%=cid%>.substring(0, fileName_<%=cid%>.lastIndexOf("."));
+        extension_<%=cid%> = fileName_<%=cid%>.substring(fileName_<%=cid%>.lastIndexOf("."));
+    } else {
+        fullName_<%=cid%> = fileName_<%=cid%>;
+        extension_<%=cid%> = "";
+    }
+    directory_<%=cid%> = "";
 }
 <%
 if(ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("false")) {	
