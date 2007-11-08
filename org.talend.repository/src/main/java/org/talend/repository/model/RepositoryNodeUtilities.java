@@ -23,9 +23,9 @@ package org.talend.repository.model;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.talend.repository.i18n.Messages;
-import org.talend.repository.model.RepositoryNode;
+import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.repository.model.RepositoryNode.ENodeType;
+import org.talend.repository.model.RepositoryNode.EProperties;
 
 /**
  * Utility class to manage RepositoryNode.<br/>
@@ -42,14 +42,28 @@ public class RepositoryNodeUtilities {
         if (node.isBin()) {
             return new Path("bin"); //$NON-NLS-1$
         }
-        if (node.getType() == ENodeType.STABLE_SYSTEM_FOLDER || node.getType() == ENodeType.SYSTEM_FOLDER) {
+        if ((node.getType() == ENodeType.STABLE_SYSTEM_FOLDER && node.getContentType() != ERepositoryObjectType.JOBS)
+                || node.getType() == ENodeType.SYSTEM_FOLDER) {
             return new Path(""); //$NON-NLS-1$
         }
         if (node.getType() == ENodeType.SIMPLE_FOLDER) {
             String label = node.getObject().getProperty().getLabel();
             return getPath(node.getParent()).append(label);
-        } else {
-            return getPath(node.getParent());
         }
+
+        String label = node.getLabel();
+        // checks if node is under Documentations/Generatated/Jobs
+        if (node.getType() == ENodeType.STABLE_SYSTEM_FOLDER && node.getContentType() == ERepositoryObjectType.JOBS) {
+            String nodeLabel = (String) node.getProperties(EProperties.LABEL);
+            if (nodeLabel.equalsIgnoreCase(ERepositoryObjectType.JOBS.toString())) {
+                return new Path("");
+            } else
+            {
+                return getPath(node.getParent()).append(label);
+            }
+        }
+        else {
+                return getPath(node.getParent()).append(label);
+            }
     }
 }

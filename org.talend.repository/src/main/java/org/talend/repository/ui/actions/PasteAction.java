@@ -33,6 +33,7 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
+import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.actions.CopyObjectAction;
@@ -92,7 +93,12 @@ public class PasteAction extends AContextualAction {
         RepositoryNode target = (RepositoryNode) selection.getFirstElement();
         TreeSelection selectionInClipboard = (TreeSelection) LocalSelectionTransfer.getTransfer().getSelection();
 
-        if (selectionInClipboard != null) {
+        if (target.getContentType() == ERepositoryObjectType.JOBS || target.getContentType() == ERepositoryObjectType.GENERATED) {
+            visible = false;
+            enabled = false;
+        }
+
+        else if (selectionInClipboard != null) {
             for (Object obj : ((StructuredSelection) selectionInClipboard).toArray()) {
                 if (enabled) {
                     RepositoryNode sourceNode = (RepositoryNode) obj;

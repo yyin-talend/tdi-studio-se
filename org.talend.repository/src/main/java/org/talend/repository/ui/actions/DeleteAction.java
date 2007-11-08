@@ -22,6 +22,7 @@
 package org.talend.repository.ui.actions;
 
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -44,6 +45,7 @@ import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.actions.metadata.DeleteTableAction;
+import org.talend.repository.ui.wizards.genHTMLDoc.DocumentationHelper;
 
 /**
  * Action used to delete object from repository. This action manages logical and physical deletions.<br/>
@@ -80,6 +82,8 @@ public class DeleteAction extends AContextualAction {
         Boolean confirm = null;
         IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
 
+        boolean isSyncWithDocumentationNode = DocumentationHelper.isSyncWithDocumentation();
+
         for (Object obj : ((IStructuredSelection) selection).toArray()) {
             if (obj instanceof RepositoryNode) {
                 RepositoryNode node = (RepositoryNode) obj;
@@ -88,8 +92,7 @@ public class DeleteAction extends AContextualAction {
                         IRepositoryObject objToDelete = node.getObject();
 
                         // To manage case of we have a subitem. This is possible using 'DEL' shortcut:
-                        ERepositoryObjectType nodeType = (ERepositoryObjectType) node
-                                .getProperties(EProperties.CONTENT_TYPE);
+                        ERepositoryObjectType nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
                         if (nodeType.isSubItem()) {
                             new DeleteTableAction().run();
                             return;
@@ -111,6 +114,21 @@ public class DeleteAction extends AContextualAction {
                         }
 
                     } else if (node.getType() == ENodeType.SIMPLE_FOLDER) {
+                        if (!node.hasChildren()) {
+                            IPath path = RepositoryNodeUtilities.getPath(node);
+                            ERepositoryObjectType objectType = (ERepositoryObjectType) node
+                                    .getProperties(EProperties.CONTENT_TYPE);
+                            factory.deleteFolder(objectType, path);
+
+                            boolean isPathNotExisting = DocumentationHelper.isPathValid(ERepositoryObjectType.JOBS,
+                                    path, "");
+                            if (isSyncWithDocumentationNode && !isPathNotExisting) {
+                                factory.deleteFolder(ERepositoryObjectType.JOBS, path);
+                            }
+                        }
+                    } else if (node.getType() == ENodeType.STABLE_SYSTEM_FOLDER
+                            && node.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.JOBS
+                            && isSyncWithDocumentationNode) {
                         if (!node.hasChildren()) {
                             IPath path = RepositoryNodeUtilities.getPath(node);
                             ERepositoryObjectType objectType = (ERepositoryObjectType) node
@@ -146,6 +164,11 @@ public class DeleteAction extends AContextualAction {
                 RepositoryNode node = (RepositoryNode) o;
                 switch (node.getType()) {
                 case STABLE_SYSTEM_FOLDER:
+                    if (node.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.JOBS
+                            && node.getProperties(EProperties.LABEL) != ERepositoryObjectType.JOBS.toString()) {
+                        visible = true;
+                        break;
+                    }
                 case SYSTEM_FOLDER:
                     visible = false;
                     break;
@@ -166,8 +189,7 @@ public class DeleteAction extends AContextualAction {
                     boolean isDeleted = repFactory.getStatus(repObj) == ERepositoryStatus.DELETED;
 
                     if (isDeleted) {
-                        ERepositoryObjectType nodeType = (ERepositoryObjectType) node
-                                .getProperties(EProperties.CONTENT_TYPE);
+                        ERepositoryObjectType nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
                         if (ERepositoryObjectType.METADATA_CON_TABLE.equals(nodeType)) {
                             visible = false;
                             break;

@@ -219,6 +219,36 @@
              level="10"
              name="Metadata/Create generic schema from xml">
        </Action>
+       <Action
+             class="org.talend.repository.ui.actions.documentation.ExportAllProjectsDocAction"
+             id="org.talend.repository.ExportAllProjectsDocAction"
+             level="13"
+             name="Export all projects documentation">
+       </Action>
+       <Action
+             class="org.talend.repository.ui.actions.documentation.GenerateAllProjectsDocAction"
+             id="org.talend.repository.GenerateAllJobsDocAction"
+             level="14"
+             name="Generate all projects documentation">
+       </Action>
+       <Action
+             class="org.talend.repository.ui.actions.documentation.ExportAllJobsDocAction"
+             id="org.talend.repository.ExportAllJobsDocAction"
+             level="15"
+             name="Export all jobs documentation">
+       </Action>
+       <Action
+             class="org.talend.repository.ui.actions.documentation.GenerateAllJobsDocAction"
+             id="org.talend.repository.GenerateAllJobsDocAction"
+             level="16"
+             name="Generate all jobs documentation">
+       </Action>
+       <Action
+             class="org.talend.repository.ui.actions.GenerateDocAction"
+             id="org.talend.repository.ui.GenerateDocAction"
+             level="98"
+             name="Generate documentation">
+       </Action>
    </extension>
    <extension
          point="org.eclipse.ui.views.properties.tabbed.propertyContributor">
@@ -297,6 +327,12 @@
             class="org.talend.repository.preference.StatusPreferencePage"
             id="org.talend.repository.prefs.status"
             name="%prefsStatusName"/>
+      <page
+            category="org.talend.core.prefs"
+            class="org.talend.repository.preference.DocumentationPreferencePage"
+            id="org.talend.repository.prefs.documentation"
+            name="Documentation">
+      </page>
    </extension>
    <extension
          point="org.eclipse.ui.commands">

@@ -78,7 +78,7 @@ public class CreateFolderAction extends AContextualAction {
             return;
         }
         objectType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
-
+     
         if (objectType != null) {
             FolderWizard processWizard = new FolderWizard(path, objectType, null);
             Shell activeShell = Display.getCurrent().getActiveShell();
@@ -105,10 +105,17 @@ public class CreateFolderAction extends AContextualAction {
         if (canWork) {
             Object o = selection.getFirstElement();
             RepositoryNode node = (RepositoryNode) o;
+            Object property = node.getProperties(EProperties.CONTENT_TYPE);
             switch (node.getType()) {
             case REPOSITORY_ELEMENT:
             case STABLE_SYSTEM_FOLDER:
                 canWork = false;
+                break;
+            case SYSTEM_FOLDER:
+                if(property==ERepositoryObjectType.GENERATED|| property==ERepositoryObjectType.JOBS)
+                {
+                    canWork = false;
+                }
                 break;
             default:
                 // Nothing to do

@@ -38,6 +38,8 @@ import java.util.Set;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -61,6 +63,7 @@ import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
+import org.talend.core.model.repository.Folder;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.model.utils.emf.talendfile.ConnectionType;
@@ -115,6 +118,17 @@ public class HTMLDocGenerator {
 
             String jobName = resource.getProcess().getProperty().getLabel();
 
+//            IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(getProject().getTechnicalLabel());
+//            File file = project.getLocation().toFile();
+//            String string = file.toString() + IPath.SEPARATOR + "documentations/generated/jobs" + IPath.SEPARATOR + "." +jobName+ "_doc";
+//
+//           File folder = new File(string);
+//           if(!folder.exists())
+//           {
+//               folder.mkdir();    
+//           }
+//           
+//           String tempFolderPath = folder.toString();
             String tempFolderPath = checkTempDirIsExists(resource);
 
             handleXMLFile(resource, tempFolderPath);

@@ -36,6 +36,7 @@ import org.eclipse.wst.common.snippets.internal.SnippetsPlugin;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.exception.RuntimeExceptionHandler;
 import org.talend.commons.utils.data.container.Container;
+import org.talend.commons.utils.data.container.RootContainer;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.AbstractMetadataObject;
 import org.talend.core.model.metadata.builder.connection.Connection;
@@ -135,6 +136,8 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
                 } else if (parent == contextNode) {
                     convert(factory.getContext(), contextNode, ERepositoryObjectType.CONTEXT, recBinNode);
                 } else if (parent == docNode) {
+                    // convertDocumentation(factory.getDocumentation(), docNode, ERepositoryObjectType.DOCUMENTATION,
+                    // recBinNode);
                     convert(factory.getDocumentation(), docNode, ERepositoryObjectType.DOCUMENTATION, recBinNode);
                 } else if (parent == metadataConNode) {
                     convert(factory.getMetadataConnection(), metadataConNode, ERepositoryObjectType.METADATA_CONNECTIONS,
@@ -330,22 +333,78 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
 
     }
 
-    private void convert(Container fromModel, RepositoryNode parent, ERepositoryObjectType type, RepositoryNode recBinNode) {
+    /**
+     * ftang Comment method "convertDocumentation".
+     * 
+     * @param fromModel
+     * @param parent
+     * @param type
+     * @param recBinNode
+     */
+    private void convertDocumentation(Container fromModel, RepositoryNode parent, ERepositoryObjectType type,
+            RepositoryNode recBinNode) {
+        RepositoryNode generatedFolder = new StableRepositoryNode(parent, ERepositoryObjectType.GENERATED.toString(),
+                ECoreImage.FOLDER_CLOSE_ICON);
+        StableRepositoryNode jobsFolder = new StableRepositoryNode(generatedFolder, ERepositoryObjectType.JOBS.toString(),
+                ECoreImage.FOLDER_CLOSE_ICON);
 
-        handleReferenced(parent);
+        jobsFolder.setProperties(EProperties.LABEL, ERepositoryObjectType.JOBS.toString());
+        jobsFolder.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.JOBS);
+        generatedFolder.getChildren().add(jobsFolder);
 
-        if (fromModel.isEmpty()) {
-            return;
+        List subContainerList = fromModel.getSubContainer();
+        Container generatedContainer = (Container) (subContainerList.get(0));
+        List jobsContainerList = generatedContainer.getSubContainer();
+
+        Container jobsNode = (Container) jobsContainerList.get(0);
+        createSubFolder(jobsFolder, jobsNode);
+        generatedFolder.setProperties(EProperties.LABEL, ERepositoryObjectType.GENERATED.toString());
+        generatedFolder.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.GENERATED); // ERepositoryObjectType.FOLDER);
+        parent.getChildren().add(generatedFolder);
+    }
+
+    /**
+     * ftang Comment method "createSubFolder".
+     * 
+     * @param folder
+     * @param fromModel
+     */
+    private void createSubFolder(RepositoryNode folder, Container fromModel) {
+
+        for (Object object : fromModel.getSubContainer()) {
+            Container container = (Container) object;
+            // Folder oFolder = new Folder((Property) container.getProperty(), ERepositoryObjectType.JOBS);
+            RepositoryNode subFolder = new StableRepositoryNode(folder, container.getLabel(), ECoreImage.FOLDER_CLOSE_ICON);
+            subFolder.setProperties(EProperties.LABEL, container.getLabel());
+            subFolder.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.JOBS); // ERepositoryObjectType.FOLDER);
+            folder.getChildren().add(subFolder);
+            if (container.getSubContainer() != null && container.getSubContainer().size() > 0) {
+                createSubFolder(subFolder, container);
+            }
         }
 
+    }
+
+    private void convert(Container fromModel, RepositoryNode parent, ERepositoryObjectType type, RepositoryNode recBinNode) {
+        
+        handleReferenced(parent);
+        
+        if(parent == null)
+        {
+            return;
+        }
+        
         for (Object obj : fromModel.getSubContainer()) {
             Container container = (Container) obj;
             Folder oFolder = new Folder((Property) container.getProperty(), type);
 
-            RepositoryNode folder;
+            RepositoryNode folder = null;
             if (container.getLabel().equals(RepositoryConstants.SYSTEM_DIRECTORY)) {
                 folder = new StableRepositoryNode(parent,
                         Messages.getString("RepositoryContentProvider.repositoryLabel.system"), ECoreImage.FOLDER_CLOSE_ICON); //$NON-NLS-1$
+            } else if (container.getLabel().equalsIgnoreCase(ERepositoryObjectType.GENERATED.toString())) {
+                convertDocumentation(fromModel, parent, type, recBinNode);
+                continue;
             } else {
                 folder = new RepositoryNode(oFolder, parent, ENodeType.SIMPLE_FOLDER);
             }
