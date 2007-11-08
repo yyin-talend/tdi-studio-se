@@ -36,7 +36,6 @@ import org.eclipse.wst.common.snippets.internal.SnippetsPlugin;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.exception.RuntimeExceptionHandler;
 import org.talend.commons.utils.data.container.Container;
-import org.talend.commons.utils.data.container.RootContainer;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.AbstractMetadataObject;
 import org.talend.core.model.metadata.builder.connection.Connection;
@@ -352,11 +351,21 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
         jobsFolder.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.JOBS);
         generatedFolder.getChildren().add(jobsFolder);
 
-        List subContainerList = fromModel.getSubContainer();
-        Container generatedContainer = (Container) (subContainerList.get(0));
-        List jobsContainerList = generatedContainer.getSubContainer();
+        Container generatedContainer = null;
+        for (Object object : fromModel.getSubContainer()) {
+            if (((Container) object).getLabel().equalsIgnoreCase(ERepositoryObjectType.GENERATED.toString())) {
+                generatedContainer = (Container) object;
+                break;
+            }
+        }
 
-        Container jobsNode = (Container) jobsContainerList.get(0);
+        Container jobsNode = null;
+        for (Object object : generatedContainer.getSubContainer()) {
+            if (((Container) object).getLabel().equalsIgnoreCase(ERepositoryObjectType.JOBS.toString())) {
+                jobsNode = (Container) object;
+                break;
+            }
+        }
         createSubFolder(jobsFolder, jobsNode);
         generatedFolder.setProperties(EProperties.LABEL, ERepositoryObjectType.GENERATED.toString());
         generatedFolder.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.GENERATED); // ERepositoryObjectType.FOLDER);
@@ -386,14 +395,13 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
     }
 
     private void convert(Container fromModel, RepositoryNode parent, ERepositoryObjectType type, RepositoryNode recBinNode) {
-        
+
         handleReferenced(parent);
-        
-        if(parent == null)
-        {
+
+        if (parent == null) {
             return;
         }
-        
+
         for (Object obj : fromModel.getSubContainer()) {
             Container container = (Container) obj;
             Folder oFolder = new Folder((Property) container.getProperty(), type);
