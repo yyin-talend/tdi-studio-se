@@ -54,7 +54,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%               }else if(column.getTalendType().equals("id_Date")){%>
                      <%=conn.getName() %>.<%=column.getLabel() %> = new java.text.SimpleDateFormat(<%=column.getPattern()%>).parse(data<%=cid%>.instance(lineNo).stringValue(<%=colNo%>));
 <%               }else{%>
-                     <%=conn.getName()%>.<%=column.getLabel()%> = data<%=cid%>.instance(lineNo).value(<%=colNo%>);
+                     <%=conn.getName()%>.<%=column.getLabel()%> = (<%=JavaTypesManager.getJavaTypeFromId(column.getTalendType()).getPrimitiveClass()%>)data<%=cid%>.instance(lineNo).value(<%=colNo%>);
 <%               }
                  colNo++;
              }       
