@@ -393,12 +393,15 @@ public class RowGeneratorComponent extends AbstractExternalNode {
 
     public String getColumnValue(IMetadataColumn ext, int index) {
         List<Map<String, Object>> map = getMapList();
-        String arrayValue = (String) map.get(index).get(ARRAY); //$NON-NLS-1$
-        for (int i = 0; i < map.size(); i++) {
-            Map<String, Object> line = map.get(i);
-            if (ext.getLabel().equals(line.get(COLUMN_NAME))) {
-                arrayValue = (String) line.get(ARRAY);
-                break;
+        String arrayValue = "";
+        if (map.size() > index) {
+            arrayValue = (String) map.get(index).get(ARRAY); //$NON-NLS-1$
+            for (int i = 0; i < map.size(); i++) {
+                Map<String, Object> line = map.get(i);
+                if (ext.getLabel().equals(line.get(COLUMN_NAME))) {
+                    arrayValue = (String) line.get(ARRAY);
+                    break;
+                }
             }
         }
         return arrayValue;
