@@ -51,6 +51,8 @@ import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.CorePlugin;
+import org.talend.core.model.process.IConnection;
+import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.properties.ProcessItem;
@@ -62,6 +64,7 @@ import org.talend.designer.core.model.components.ExternalUtilities;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.ProcessEditorInput;
 import org.talend.designer.core.ui.editor.cmd.ExternalNodeChangeCommand;
+import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainerPart;
 import org.talend.designer.core.ui.editor.process.ProcessPart;
@@ -304,8 +307,19 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
                 ((NodeFigure) figure).setHint(""); //$NON-NLS-1$
             }
         } else if (changeEvent.getPropertyName().equals(EParameterName.CONNECTION_FORMAT.getName())) {
-            refreshTargetConnections();
-            refreshSourceConnections();
+            Node node = (Node) getModel();
+
+            for (IConnection conn : ((Node) getModel()).getOutgoingConnections()) {
+
+                String connIdName = node.getProcess().generateUniqueConnectionName(node.getConnectionName());
+
+                if (conn instanceof Connection && conn.getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)
+                        && node.getProcess().checkValidConnectionName(connIdName, false)) {
+                    ((Connection) conn).setName(connIdName);
+                }
+
+            }
+
         }
     }
 
