@@ -98,7 +98,7 @@
 		Util_<%=cid %> util_<%=cid %> = new Util_<%=cid %>();
         
         String zipFileURL_<%=cid %> = <%=zipFile %>;
-        zipFileURL_<%=cid %> = zipFileURL_<%=cid %>.toLowerCase();
+        String tmpFileURL_<%=cid %> = zipFileURL_<%=cid %>.toLowerCase();
         String outputPath_<%=cid %> = <%=directory %>;
         
         
@@ -109,7 +109,7 @@
         java.io.File file_<%=cid %> = new java.io.File(zipFileURL_<%=cid %>);        
         String name_<%=cid %> = file_<%=cid %>.getName();        
 		int i_<%=cid %> = 0;
-		if (zipFileURL_<%=cid %>.endsWith(".tar.gz"))  {
+		if (tmpFileURL_<%=cid %>.endsWith(".tar.gz"))  {
 			i_<%=cid %> = name_<%=cid %>.length()-7;
    		} else {           
             i_<%=cid %> = name_<%=cid %>.lastIndexOf('.');        
@@ -122,7 +122,7 @@
   }
 %>
 
-	if (zipFileURL_<%=cid %>.endsWith(".tar.gz") || zipFileURL_<%=cid %>.endsWith(".tgz")){   
+	if (tmpFileURL_<%=cid %>.endsWith(".tar.gz") || tmpFileURL_<%=cid %>.endsWith(".tgz")){   
       
         org.apache.tools.tar.TarInputStream zip_<%=cid %> = new org.apache.tools.tar.TarInputStream(new java.util.zip.GZIPInputStream(new java.io.FileInputStream(zipFileURL_<%=cid %>)));
         
@@ -136,7 +136,7 @@
 		}
 		zip_<%=cid %>.close();
 
-	} else if (zipFileURL_<%=cid %>.endsWith(".tar")){ 
+	} else if (tmpFileURL_<%=cid %>.endsWith(".tar")){ 
 
         org.apache.tools.tar.TarInputStream zip_<%=cid %> = new org.apache.tools.tar.TarInputStream(new java.io.FileInputStream(zipFileURL_<%=cid %>));
         
@@ -149,7 +149,7 @@
 			}
 		}
 		zip_<%=cid %>.close();
-  	}else if (zipFileURL_<%=cid %>.endsWith(".gz")){ 
+  	}else if (tmpFileURL_<%=cid %>.endsWith(".gz")){ 
         java.util.zip.GZIPInputStream zip_<%=cid %> = new java.util.zip.GZIPInputStream(new java.io.FileInputStream(new java.io.File(zipFileURL_<%=cid %>)));
         java.io.InputStream is_<%=cid %> = zip_<%=cid %>;
         String fullName_<%=cid %> = new java.io.File(zipFileURL_<%=cid %>).getName();  
