@@ -713,7 +713,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
                                     this);
 
                             if (controller == null) {
-                                break;
+                                continue;
                             }
                             if (controller.hasDynamicRowSize()) {
                                 hasDynamicRow = true;
@@ -758,7 +758,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
                                     this);
 
                             if (controller == null) {
-                                break;
+                                continue;
                             }
                             if (controller.hasDynamicRowSize()) {
                                 controller.setAdditionalHeightSize(additionalHeightSize);
@@ -767,7 +767,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
                             lastControl = controller.createControl(composite, curParam, numInRow, nbInRow, heightSize,
                                     lastControl);
                             lastTime = TimeMeasure.timeSinceBegin("DTP:refresh:" + getCurrentComponent()) - lastTime;
-                            if (DynamicTabbedPropertySection.DEBUG_TIME) {
+                            if ((DynamicTabbedPropertySection.DEBUG_TIME) && !getCurrentComponent().equals("Job")) {
                                 System.out.println("DTP;create:" + curParam.getField().getName() + ";" + getCurrentComponent()
                                         + ";" + lastTime);
                             }
@@ -953,7 +953,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
         checkErrorsWhenViewRefreshed = false;
         long time = TimeMeasure.timeSinceBegin("DTP:refresh:" + getCurrentComponent());
         TimeMeasure.end("DTP:refresh:" + getCurrentComponent());
-        if (DEBUG_TIME) {
+        if ((DEBUG_TIME) && !getCurrentComponent().equals("Job")) {
             System.out.println("DTP;total;" + getCurrentComponent() + ";" + time);
         }
     }

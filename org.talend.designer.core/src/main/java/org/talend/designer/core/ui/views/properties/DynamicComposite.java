@@ -703,7 +703,7 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
                                     this);
 
                             if (controller == null) {
-                                break;
+                                continue;
                             }
                             if (controller.hasDynamicRowSize()) {
                                 hasDynamicRow = true;
@@ -749,7 +749,7 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
                                     this);
 
                             if (controller == null) {
-                                break;
+                                continue;
                             }
                             if (controller.hasDynamicRowSize()) {
                                 controller.setAdditionalHeightSize(additionalHeightSize);
@@ -955,7 +955,6 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
         setExpandHorizontal(true);
         // setExpandVertical(true);
 
-        // composite = new Composite(this, SWT.NO_FOCUS);
         composite = new WidgetFactory().createComposite(this, SWT.NO_FOCUS);
         setContent(composite);
 
