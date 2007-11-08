@@ -15,7 +15,7 @@ SubTreeArgument subTreeArgument = (SubTreeArgument)codeGenArgument.getArgument()
 IConnection connection = subTreeArgument.getInputSubtreeConnection();
 
 if(subTreeArgument.isSourceComponentHasConditionnalOutputs()
-    	&& connection.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {
+    	&& connection.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
 %>
 
 if($branch_<%= connection.getName()%>_is_active) {

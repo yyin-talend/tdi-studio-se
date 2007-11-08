@@ -15,7 +15,7 @@
 	IConnection connection = subTreeArgument.getInputSubtreeConnection();
 
     if(subTreeArgument.isSourceComponentHasConditionnalOutputs()
-    	&& connection.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {
+    	&& connection.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
 %>
 
 // Start of branch "<%= connection.getName()%>"

@@ -19,7 +19,7 @@ if (subTreeArgument.isMultiplyingOutputComponents()) {
 	}
 
 if(subTreeArgument.isSourceComponentHasConditionnalOutputs()
-    	&& connection.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {
+    	&& connection.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
 %>
 
 } # End of branch "$branch_<%= connection.getName()%>_is_active"

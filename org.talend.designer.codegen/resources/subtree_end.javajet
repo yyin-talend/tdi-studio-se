@@ -21,7 +21,7 @@ CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	}
 
     if(subTreeArgument.isSourceComponentHasConditionnalOutputs()
-    	&& connection.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {
+    	&& connection.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
 %>
 
 } // End of branch "<%= connection.getName()%>"
