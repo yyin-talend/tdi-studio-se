@@ -57,12 +57,13 @@ imports="
 	out_<%=cid %>.close();
 
 
-java.lang.StringBuffer sb_<%=cid %> = new java.lang.StringBuffer();
-<% if (!SortCMDPath.equals("")) { %> sb_<%=cid %>.append(<%=SortCMDPath %>);   <% } else { %> sb_<%=cid %>.append("sort"); <% } %>
+String[] sb_<%=cid %> = new String[] {
 
-sb_<%=cid %>.append(" -S " + <%=maxMemory%>);
-<% if (!tempDir.equals("")) { %> sb_<%=cid %>.append(" -T \"" + <%=tempDir %> + "\"");   <% } %>
-sb_<%=cid %>.append(" -t " + <%=fieldSeparator %>);
+<% if (!SortCMDPath.equals("")) { %> <%=SortCMDPath %>,   <% } else { %> "sort", <% } %>
+
+"--buffer-size="+<%=maxMemory%>,
+<% if (!tempDir.equals("")) { %>"--temporary-directory="+<%=tempDir %>,<% } %>
+"--field-separator="+<%=fieldSeparator %>,
 <%
         for(int i=0; i<criteria.size(); i++) {
             Map<String, String> line = criteria.get(i);
@@ -78,21 +79,14 @@ sb_<%=cid %>.append(" -t " + <%=fieldSeparator %>);
                 j++;
             }	
 %>
-sb_<%=cid %>.append(" -k ");
-sb_<%=cid %>.append(<%=colnum %>);
-sb_<%=cid %>.append(",");
-sb_<%=cid %>.append(<%=colnum %>);
-<% if (line.get("ORDER").toLowerCase().equals("desc")) { %>  sb_<%=cid %>.append("r"); <% } %>
-<% if (line.get("SORT").toLowerCase().startsWith("num")) { %> sb_<%=cid %>.append("n"); <% } %>
-<%
- }
-%>
-sb_<%=cid %>.append(" -o \"" + <%=filename%> + "\"");
-sb_<%=cid %>.append(" \"" + tempFile_<%=cid %>.getAbsolutePath() + "\"");
-
+"--key=<%=colnum %>,<%=colnum %><% if (line.get("ORDER").toLowerCase().equals("desc")) { %>r<% } %><% if (line.get("SORT").toLowerCase().startsWith("num")) { %>n<% } %>",
+<% } %>
+"--output="+<%=filename%>,
+""+tempFile_<%=cid %>.getAbsolutePath()+""
+};
 
 Runtime runtime_<%=cid %> = Runtime.getRuntime();
-final Process ps_<%=cid %> = runtime_<%=cid %>.exec(sb_<%=cid %>.toString());
+final Process ps_<%=cid %> = runtime_<%=cid %>.exec(sb_<%=cid %>);
 
 		Thread normal_<%=cid %> = new Thread() {
 			public void run() {

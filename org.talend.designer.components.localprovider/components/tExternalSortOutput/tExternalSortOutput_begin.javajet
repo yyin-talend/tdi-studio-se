@@ -20,6 +20,7 @@ imports="
 		 java.io.File createFile<%=cid%> = new java.io.File(fileNewName_<%=cid%>);
 		 if(!createFile<%=cid%>.exists()){
 		 	(new java.io.File(fileNewName_<%=cid%>.substring(0,fileNewName_<%=cid%>.lastIndexOf("/")))).mkdirs();
+		 	createFile<%=cid%>.createNewFile();
 		 }
 	<%}%>
 		int nb_line_<%=cid%> = 0;
