@@ -15,6 +15,75 @@ imports="
 "
 %>
 <%
+//XMLTool
+class XMLTool{
+	public void setText(String cid, String currEleName, String value, JavaType javaType){
+		if(value!=null){
+			if(javaType == JavaTypesManager.OBJECT){
+%>
+	try {
+		 
+		org.dom4j.io.SAXReader reader4Obj_<%=cid%> = new org.dom4j.io.SAXReader();
+        org.dom4j.Document doc4Obj_<%=cid%> = reader4Obj_<%=cid%>.read(new java.io.StringReader("<root>"+(<%=value%>==null?"\"\"":<%=value%>.toString()) + "</root>"));
+		<%=currEleName%>_<%=cid%>.setContent(doc4Obj_<%=cid%>.getRootElement().content());
+	} catch (Exception e) {
+		e.printStackTrace();
+		<%=currEleName%>_<%=cid%>.setText(<%=value%>==null?"\"\"":<%=value%>.toString());
+    }
+<%
+			}else{
+%>
+		<%=currEleName%>_<%=cid%>.setText(<%=value%>==null?"\"\"":<%=value%>.toString());
+<%
+			}
+		}
+	}
+	public void addAttribute(String cid, String currEleName, String value, String path){
+		if(value!=null){
+%>
+		<%=currEleName%>_<%=cid%>.addAttribute("<%=path%>",<%=value%>==null?"\"\"":<%=value%>.toString());
+<%
+		}else{
+%>
+		<%=currEleName%>_<%=cid%>.addAttribute("<%=path%>","");
+<%
+		}
+	}
+	public void addAttribute(String cid, String value, String path){
+		if(value!=null){
+%>
+		doc_<%=cid%>.getRootElement().addNamespace("<%=path%>",<%=value%>==null?"\"\"":<%=value%>.toString());
+<%
+		}else{
+%>
+		doc_<%=cid%>.getRootElement().addNamespace("<%=path%>","");
+<%
+		}
+	}
+	public void addNameSpace(String cid, String currEleName, String value, String path){
+		if(value!=null){
+%>
+		<%=currEleName%>_<%=cid%>.addNamespace("<%=path%>",<%=value%>==null?"\"\"":<%=value%>.toString());
+<%
+		}else{
+%>
+		<%=currEleName%>_<%=cid%>.addNamespace("<%=path%>","");
+<%
+		}
+	}
+	public void addNameSpace(String cid, String value, String path){
+		if(value!=null){
+%>
+		doc_<%=cid%>.getRootElement().addNamespace("<%=path%>",<%=value%>==null?"\"\"":<%=value%>.toString());
+<%
+		}else{
+%>
+		doc_<%=cid%>.getRootElement().addNamespace("<%=path%>","");
+<%
+		}
+	}
+}
+
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
@@ -34,6 +103,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 	(List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__LOOP__");
                 String split = ElementParameterParser.getValue(node, "__SPLIT__");
                 String splitEvery = ElementParameterParser.getValue(node, "__SPLIT_EVERY__");
+                
+                //XMLTool
+                XMLTool tool = new XMLTool();
                 
                 //mark the main group in groupTable
                 if(loopTable.size() > 0 && groupTable.size()>0){
@@ -119,47 +191,15 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             		String path = map.get("PATH");
                     if (map.get("ATTRIBUTE").equals("true")) {
                         if(isRootAttribute){ //it is the attirbute of root
-                        	if(value!=null){
-%>
-		doc_<%=cid%>.getRootElement().addAttribute("<%=path%>",<%=value%>==null?"\"\"":<%=value%>.toString());
-<%
-							}else{
-%>
-		doc_<%=cid%>.getRootElement().addAttribute("<%=path%>","");
-<%
-							}
+                        	tool.addAttribute(cid, value, path);
 						}else{
-							if(value!=null){
-%>
-		<%=currEleName%>_<%=cid%>.addAttribute("<%=path%>",<%=value%>==null?"\"\"":<%=value%>.toString());
-<%
-							}else{
-%>
-		<%=currEleName%>_<%=cid%>.addAttribute("<%=path%>","");
-<%
-							}
+							tool.addAttribute(cid, currEleName, value, path);
 						}
 					}else if (map.get("ATTRIBUTE").equals("ns")) {
                         if(isRootAttribute){ //it is the attirbute of root
-                        	if(value!=null){
-%>
-		doc_<%=cid%>.getRootElement().addNamespace("<%=path%>",<%=value%>==null?"\"\"":<%=value%>.toString());
-<%
-							}else{
-%>
-		doc_<%=cid%>.getRootElement().addNamespace("<%=path%>","");
-<%
-							}
+                        	tool.addNameSpace(cid, value, path);
 						}else{
-							if(value!=null){
-%>
-		<%=currEleName%>_<%=cid%>.addNamespace("<%=path%>",<%=value%>==null?"\"\"":<%=value%>.toString());
-<%
-							}else{
-%>
-		<%=currEleName%>_<%=cid%>.addNamespace("<%=path%>","");
-<%
-							}
+							tool.addNameSpace(cid, currEleName, value, path);
 						}
             		}else{
             			if(currEleName==null){
@@ -172,24 +212,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>
 		org.dom4j.Element <%=currEleName%>_<%=cid%> = org.dom4j.DocumentHelper.makeElement(doc_<%=cid%>,"<%=path%>");		
 <%
-						if(value!=null){
-							if(javaType == JavaTypesManager.OBJECT){
-%>
-	try {
-		org.dom4j.io.SAXReader reader4Obj_<%=cid%> = new org.dom4j.io.SAXReader();
-        org.dom4j.Document doc4Obj_<%=cid%> = reader4Obj_<%=cid%>.read(new java.io.StringReader(<%=value%>==null?"\"\"":<%=value%>.toString()));
-		<%=currEleName%>_<%=cid%>.add(doc4Obj_<%=cid%>.getRootElement());
-	} catch (Exception e) {
-		<%=currEleName%>_<%=cid%>.setText(<%=value%>==null?"\"\"":<%=value%>.toString());
-    }
-<%
-
-							}else{
-%>
-		<%=currEleName%>_<%=cid%>.setText(<%=value%>==null?"\"\"":<%=value%>.toString());
-<%
-							}
-						}
+						tool.setText(cid, currEleName, value, javaType);
             		}
             	}
 %>
@@ -237,25 +260,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                     	if(map.get("TYPE")!=null && map.get("TYPE").length()>0){
                     		currAttributeNameList.add(path);
                     	}
-                    	if(value!=null){
-%>
-	<%=currEleName%>_<%=cid%>.addAttribute("<%=path%>",<%=value%>==null?"\"\"":<%=value%>.toString());
-<%
-						}else{
-%>
-	<%=currEleName%>_<%=cid%>.addAttribute("<%=path%>","");
-<%
-						}
+                    	tool.addAttribute(cid, currEleName, value, path);
 					}else if (map.get("ATTRIBUTE").equals("ns")) {
-                    	if(value!=null){
-%>
-	<%=currEleName%>_<%=cid%>.addNamespace("<%=path%>",<%=value%>==null?"\"\"":<%=value%>.toString());
-<%
-						}else{
-%>
-	<%=currEleName%>_<%=cid%>.addNamespace("<%=path%>","");
-<%
-						}
+						tool.addNameSpace(cid, currEleName, value, path);
                     }else{
                     	currEleName =  "element"+elementCount;
             			elementCount++;
@@ -301,24 +308,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	org.dom4j.Element <%=currEleName%>_<%=cid%> = 
 		org.dom4j.DocumentHelper.makeElement(<%=currentGroupRoot%>_<%=cid%>,"<%=path.replaceFirst(currentGroupRootPath,"")%>");
 <%
-							if(value!=null){
-        						if(javaType == JavaTypesManager.OBJECT){
-%>
-	try {
-		org.dom4j.io.SAXReader reader4Obj_<%=cid%> = new org.dom4j.io.SAXReader();
-        org.dom4j.Document doc4Obj_<%=cid%> = reader4Obj_<%=cid%>.read(new java.io.StringReader(<%=value%>==null?"\"\"":<%=value%>.toString()));
-		<%=currEleName%>_<%=cid%>.add(doc4Obj_<%=cid%>.getRootElement());
-	} catch (Exception e) {
-		<%=currEleName%>_<%=cid%>.setText(<%=value%>==null?"\"\"":<%=value%>.toString());
-    }
-<%
-
-        						}else{
-%>
-	<%=currEleName%>_<%=cid%>.setText(<%=value%>==null?"\"\"":<%=value%>.toString());
-<%
-								}
-							}
+							tool.setText(cid, currEleName, value, javaType);
                     	}
                     }
         		}
@@ -379,25 +369,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         			
             		String path = map.get("PATH");
                      if (map.get("ATTRIBUTE").equals("true")) {
-                     	if(value!=null){
-%>
-	<%=currEleName%>_<%=cid%>.addAttribute("<%=path%>",<%=value%>==null?"\"\"":<%=value%>.toString());
-<%
-						}else{
-%>
-	<%=currEleName%>_<%=cid%>.addAttribute("<%=path%>","");
-<%
-						}
+                     	tool.addAttribute(cid, currEleName, value, path);
 					}else if (map.get("ATTRIBUTE").equals("ns")) {
-                     	if(value!=null){
-%>
-	<%=currEleName%>_<%=cid%>.addNamespace("<%=path%>",<%=value%>==null?"\"\"":<%=value%>.toString());
-<%
-						}else{
-%>
-	<%=currEleName%>_<%=cid%>.addNamespace("<%=path%>","");
-<%
-						}
+                     	tool.addNameSpace(cid, currEleName, value, path);
                     }else{
                     	if(loopRootName == null){// the first one
                    			loopRootName = path.substring(path.lastIndexOf("/") + 1);
@@ -420,23 +394,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		org.dom4j.DocumentHelper.makeElement(<%=loopRootName%>_<%=cid%>,"<%=path.replaceFirst(loopRootPath,"")%>");
 <%
 						}
-						if(value!=null){
-							if(javaType == JavaTypesManager.OBJECT){
-%>
-	try {
-		org.dom4j.io.SAXReader reader4Obj_<%=cid%> = new org.dom4j.io.SAXReader();
-        org.dom4j.Document doc4Obj_<%=cid%> = reader4Obj_<%=cid%>.read(new java.io.StringReader(<%=value%>==null?"\"\"":<%=value%>.toString()));
-		<%=currEleName%>_<%=cid%>.add(doc4Obj_<%=cid%>.getRootElement());
-	} catch (Exception e) {
-		<%=currEleName%>_<%=cid%>.setText(<%=value%>==null?"\"\"":<%=value%>.toString());
-    }
-<%
-							}else{
-%>
-	<%=currEleName%>_<%=cid%>.setText(<%=value%>==null?"\"\"":<%=value%>.toString());
-<%
-							}
-						}
+						tool.setText(cid, currEleName, value, javaType);
                     }
 				}
 				
