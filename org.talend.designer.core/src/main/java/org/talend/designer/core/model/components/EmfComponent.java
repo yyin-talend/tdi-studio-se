@@ -1311,7 +1311,7 @@ public class EmfComponent implements IComponent {
                 if (msg.startsWith(Messages.KEY_NOT_FOUND_PREFIX)) {
                     msg = Messages.getString("modules.required"); //$NON-NLS-1$
                 }
-                List<InstallModule> list = getInstallCommand(importType);
+                List<String> list = getInstallURL(importType);
                 ModuleNeeded componentImportNeeds = new ModuleNeeded(this.getName(), importType.getMODULE(), msg, importType
                         .isREQUIRED(), list);
                 componentImportNeeds.setShow(importType.isSHOW());
@@ -1319,6 +1319,16 @@ public class EmfComponent implements IComponent {
             }
         }
         return componentImportNeedsList;
+    }
+
+    public List<String> getInstallURL(IMPORTType importType) {
+        List<String> list = new ArrayList<String>();
+        EList emfInstall = importType.getURL();
+        for (int j = 0; j < emfInstall.size(); j++) {
+            String installtype = (String) emfInstall.get(j);
+            list.add(installtype);
+        }
+        return list;
     }
 
     // public List<String> getInstallCommand(String mouduleName) {
