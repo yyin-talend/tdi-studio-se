@@ -24,7 +24,7 @@
             name="%trunjob"/>
       <page
             category="org.talend.designer.components.localprovider.page1"
-            class="org.talend.designer.components.ui.ComponentsFormatPreferencePage"
+            class="org.talend.designer.components.preference.labelformat.ComponentsFormatPreferencePage"
             id="org.talend.designer.components.localprovider.page1"
             name="Format">
       </page>
