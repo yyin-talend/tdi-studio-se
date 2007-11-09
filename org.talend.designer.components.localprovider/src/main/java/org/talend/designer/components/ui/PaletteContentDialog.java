@@ -41,7 +41,7 @@ import org.eclipse.swt.widgets.Text;
  */
 public class PaletteContentDialog extends Dialog {
 
-    private static final String DIALOG_TITLE = "Select the itmes in palette";
+    private static final String DIALOG_TITLE = "Select the items in palette";
 
     private TreeViewer viewer;
 
