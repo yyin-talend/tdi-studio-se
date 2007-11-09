@@ -404,8 +404,11 @@ public class ConnectionCreateAction extends SelectionAction {
         }
 
         String baseName = node.getConnectionName();
-        String fromConnectionName = node.getProcess().generateUniqueConnectionName(baseName);
-        if (connecType.hasConnectionCategory(IConnectionCategory.FLOW)
+        String fromConnectionName = null;
+        if (node.getProcess().checkValidConnectionName(baseName)) {
+            fromConnectionName = node.getProcess().generateUniqueConnectionName(baseName);
+        }
+        if (fromConnectionName != null && connecType.hasConnectionCategory(IConnectionCategory.FLOW)
                 && node.getProcess().checkValidConnectionName(fromConnectionName, false)) {
 
             listArgs.add(fromConnectionName);

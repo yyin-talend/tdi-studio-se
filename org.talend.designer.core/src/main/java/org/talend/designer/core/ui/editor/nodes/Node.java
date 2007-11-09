@@ -1903,7 +1903,7 @@ public class Node extends Element implements INode {
      * @param name
      */
     public void setConnectionName(String name) {
-        this.connectionName = name;
+        this.connectionName = name.replaceAll("\"", "").replaceAll(" ", "");
         firePropertyChange(EParameterName.CONNECTION_FORMAT.getName(), null, this.connectionName);
     }
 
