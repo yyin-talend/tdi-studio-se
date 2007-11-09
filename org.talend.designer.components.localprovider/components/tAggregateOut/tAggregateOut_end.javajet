@@ -212,7 +212,14 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                                 <%
                                 if(sameType){
                                     %>
-                                    aggregated_row_<%=cid %>.<%=outOperation %> = (<%=typeName%>)<%=outOperation %>_avg_temp;
+                                            <%
+                                       		 Integer precision = column.getPrecision();
+                                       		 if(precision!=null && precision!=0) {
+                                            %>
+                                            	aggregated_row_<%=cid %>.<%=outOperation %> = new java.math.BigDecimal(<%=outOperation %>_avg_temp).setScale(<%=precision %>, java.math.BigDecimal.ROUND_HALF_UP).<%=typeName%>Value();
+                                            <%} else {%>
+                                                aggregated_row_<%=cid %>.<%=outOperation %> = (<%=typeName%>)<%=outOperation %>_avg_temp;
+                                            <%}%>                                   
                                     <%
                                 }else{
                                     %>
@@ -224,8 +231,15 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 			}else{
     							if(sameType){
                                     if(function.equals("sum")) {
-                                        %>
-                                        aggregated_row_<%=cid %>.<%=outOperation %> = (<%=typeName%>)operation_result_<%=cid %>.<%=inOperation %>_<%=function %>;
+                                        %>                                        
+                                            <%
+                                       		 Integer precision = column.getPrecision();
+                                       		 if(precision!=null && precision!=0) {
+                                            %>
+                                            	aggregated_row_<%=cid %>.<%=outOperation %> = new java.math.BigDecimal(operation_result_<%=cid %>.<%=inOperation %>_<%=function %>).setScale(<%=precision %>, java.math.BigDecimal.ROUND_HALF_UP).<%=typeName%>Value();
+                                            <%} else {%>
+                                                aggregated_row_<%=cid %>.<%=outOperation %> = (<%=typeName%>)operation_result_<%=cid %>.<%=inOperation %>_<%=function %>;
+                                            <%}%>                                        
                                         <%
                                     } else {
                                         %>
