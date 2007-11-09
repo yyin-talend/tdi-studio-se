@@ -63,6 +63,8 @@ import org.talend.repository.ui.utils.DataStringConnection;
  */
 public final class ConnectionDBTableHelper {
 
+    private static boolean connectionCreated = false;
+
     private static final IProxyRepositoryFactory FACTORY = ProxyRepositoryFactory.getInstance();
 
     public static DBTableForDelimitedBean getRowData(final String line) {
@@ -243,6 +245,7 @@ public final class ConnectionDBTableHelper {
         if (isNullable(bean.getName())) {
             return null;
         }
+        connectionCreated = false;
         DatabaseConnectionItem connItem = getSuitableConnectionItem(bean);
         if (connItem == null) {
             return null;
@@ -287,6 +290,15 @@ public final class ConnectionDBTableHelper {
         if (isNullable(name)) {
             return null;
         }
+
+        // RootContainer<String, IRepositoryObject> metadata = FACTORY.getMetadataConnection();
+        // ContentList<String, IRepositoryObject> processAbsoluteMembers = metadata.getAbsoluteMembers();
+        //
+        // for (Content<String, IRepositoryObject> object : processAbsoluteMembers.values()) {
+        // IRepositoryObject meta = object.getContent();
+        // System.out.println(meta.getLabel());
+        // }
+
         List<IRepositoryObject> repositoryObjs = FACTORY.getAll(ERepositoryObjectType.METADATA_CONNECTIONS, withDeleted);
         for (IRepositoryObject obj : repositoryObjs) {
             if (obj.getLabel().toLowerCase().equals(name.toLowerCase())) {
@@ -308,6 +320,8 @@ public final class ConnectionDBTableHelper {
             return null;
         }
         connItem.setConnection(conn);
+
+        connectionCreated = true;
 
         return connItem;
 
@@ -489,7 +503,16 @@ public final class ConnectionDBTableHelper {
         metadataColumn.setLabel(genLabel);
 
         metadataColumn.setOriginalField(bean.getOriginalLabel());
-        metadataColumn.setTalendType(bean.getTalendType());
+        ECodeLanguage codeLanguage = LanguageManager.getCurrentLanguage();
+        if (codeLanguage == ECodeLanguage.JAVA) {
+            if ("".equals(bean.getTalendType())) {
+                metadataColumn.setTalendType("id_String"); //$NON-NLS-1$
+            } else {
+                metadataColumn.setTalendType(bean.getTalendType());
+            }
+        } else {
+            metadataColumn.setTalendType(bean.getTalendType());
+        }
 
         metadataColumn.setDefaultValue(bean.getDefaultValue());
         metadataColumn.setPattern(bean.getPattern());
@@ -501,11 +524,7 @@ public final class ConnectionDBTableHelper {
         metadataColumn.setPrecision(bean.getPrecision());
 
         if ("".equals(bean.getDbType())) {
-            ECodeLanguage codeLanguage = LanguageManager.getCurrentLanguage();
             if (codeLanguage == ECodeLanguage.JAVA) {
-                // if ("".equals(bean.getTalendType())) {
-                // bean.setTalendType("id_String"); //$NON-NLS-1$
-                // }
                 if (!"".equals(bean.getDatabaseType()) && !"".equals(bean.getTalendType())) {
                     metadataColumn.setSourceType(TypesManager.getDBTypeFromTalendType(bean.getDatabaseType(), bean
                             .getTalendType()));
@@ -554,6 +573,15 @@ public final class ConnectionDBTableHelper {
             }
         }
         return false;
+    }
+
+    /**
+     * Getter for connectionCreated.
+     * 
+     * @return the connectionCreated
+     */
+    public static boolean isConnectionCreated() {
+        return connectionCreated;
     }
 
 }

@@ -178,12 +178,12 @@ public class ImportDBTableWizard extends RepositoryWizard implements IImportWiza
                         continue;
                     }
                     try {
-                        connItem.getProperty().setId(FACTORY.getNextId());
-                        // if (FACTORY.isNameAvailable(connItem, null)) {
-                        // FACTORY.save(connItem);
-                        // } else {
-                        FACTORY.create(connItem, pathToSave);
-                        // }
+                        if (ConnectionDBTableHelper.isConnectionCreated()) {
+                            connItem.getProperty().setId(FACTORY.getNextId());
+                            FACTORY.create(connItem, pathToSave);
+                        } else {
+                            FACTORY.save(connItem);
+                        }
                     } catch (PersistenceException e) {
                         e.printStackTrace();
                         writeRejects(line, bean);

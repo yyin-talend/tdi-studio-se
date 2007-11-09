@@ -243,6 +243,12 @@
              level="16"
              name="Generate all jobs documentation">
        </Action>
+       <Action
+             class="org.talend.repository.ui.actions.metadata.database.ImportDBTableFromDelimitedAction"
+             id="org.talend.repository.ui.actions.metadata.database.ImportDBTableFromDelimitedAction"
+             level="10"
+             name="Metadata/Import database from delimited">
+       </Action>
    </extension>
    <extension
          point="org.eclipse.ui.views.properties.tabbed.propertyContributor">
