@@ -26,11 +26,12 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     	String firstColumn = ElementParameterParser.getValue(node, "__FIRST_COLUMN__");
     	String lastColumn = ElementParameterParser.getValue(node, "__LAST_COLUMN__");
     	String dieOnErrorStr = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
-		boolean dieOnError = (dieOnErrorStr!=null&&!dieOnErrorStr.equals(""))?dieOnErrorStr.equals("true"):false;    	
+		boolean dieOnError = (dieOnErrorStr!=null&&!dieOnErrorStr.equals(""))?dieOnErrorStr.equals("true"):false;
+		String encoding = ElementParameterParser.getValue(node,"__ENCODING__");    	
 %>
 		
 		final jxl.WorkbookSettings workbookSettings_<%= cid %> = new jxl.WorkbookSettings();
-        workbookSettings_<%= cid %>.setEncoding(<%=ElementParameterParser.getValue(node,"__ENCODING__") %>);
+        workbookSettings_<%= cid %>.setEncoding(<%=encoding %>);
         final jxl.Workbook workbook_<%= cid %> = jxl.Workbook.getWorkbook(new java.io.BufferedInputStream(new java.io.FileInputStream(
         						<%=ElementParameterParser.getValue(node,"__FILENAME__")%>)), workbookSettings_<%= cid %>);
         final jxl.Sheet sheet_<%= cid %>  = workbook_<%= cid %>.getSheet(<%= ElementParameterParser.getValue(node, "__SHEETNAME__")%>);
@@ -122,14 +123,14 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
 //start
 //
+
 						if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
 //
 //end%>
 			<%=firstConnName %>.<%=column.getLabel() %> = temp_row_<%=cid %>[<%=i%>];
 <%		
 //start
-//
-						} else if(javaType == JavaTypesManager.DATE) {
+			} else if(javaType == JavaTypesManager.DATE) {
 //
 //end%>		
 			if(<%= i%><actual_end_column_<%= cid %>){
@@ -140,9 +141,12 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				}
 			}
 <%
-//start
-//
-						} else {
+//start			
+			} else if(javaType == JavaTypesManager.BYTE_ARRAY) { 
+	%>							
+			<%=firstConnName %>.<%=column.getLabel() %> = temp_row_<%=cid %>[<%=i%>].getBytes(<%=encoding %>);
+	<%
+			} else {
 //
 //end%>
 			<%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(temp_row_<%=cid %>[<%=i%>]);

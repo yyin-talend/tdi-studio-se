@@ -458,6 +458,10 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	%>
 								<%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(row<%=cid %>[<%=i %>]<%=(isTrimAll || trimSelects.get(i).get("TRIM").equals("true"))?".trim()":"" %>, <%= patternValue %>);
 	<%
+							} else if(javaType == JavaTypesManager.BYTE_ARRAY){ 
+	%>							
+							    <%=firstConnName %>.<%=column.getLabel() %> = row<%=cid %>[<%=i %>]<%=(isTrimAll || trimSelects.get(i).get("TRIM").equals("true"))?".trim()":"" %>.getBytes(<%=encoding %>);
+	<%
 							} else {
 	%>
 								<%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(row<%=cid %>[<%=i %>]<%=(isTrimAll || trimSelects.get(i).get("TRIM").equals("true"))?".trim()":"" %>);

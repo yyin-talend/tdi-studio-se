@@ -124,8 +124,12 @@ for (org.dom4j.tree.AbstractNode temp_<%=cid%>: nodeList_<%=cid%>) {
 									if (javaType == JavaTypesManager.DATE) {
 %>
 		<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(str_<%= cid %>, <%= patternValue %>);
+<%  
+	} else if(javaType == JavaTypesManager.BYTE_ARRAY){ 
+%>							
+		<%=conn.getName() %>.<%=column.getLabel() %> = str_<%= cid %>.getBytes(<%=encoding %>);
 <%
-									} else {
+			} else {
 %>
 		<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(str_<%= cid %>);
 <%
