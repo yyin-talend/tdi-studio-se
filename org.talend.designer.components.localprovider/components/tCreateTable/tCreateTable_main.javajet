@@ -236,7 +236,7 @@ class Transfer{
 			 		if(column.getLength()!=0&&column.getPrecision()==0){     //only Length
 			 				if(!mtr.isLengthIgnored(dbmsId,column.getType()))	//and Length is not ignored
 			 					sql=sql+"("+column.getLength()+")";		 				
-			 		}else if(column.getLength()!=0&&column.getLength()!=0){		//Length and Precision not null
+			 		}else if(column.getLength()!=0&&column.getPrecision()!=0){		//Length and Precision not null
 			 				if(mtr.isPrecisionIgnored(dbmsId,column.getType())&&!mtr.isLengthIgnored(dbmsId,column.getType()))
 			 					sql=sql+"("+column.getLength()+")";				//only Precision is ignored
 			 				else if(!mtr.isPrecisionIgnored(dbmsId,column.getType())&&!mtr.isLengthIgnored(dbmsId,column.getType())){
@@ -322,12 +322,6 @@ class Transfer{
 
 
 try{
-
-
-
-
-
-
 
 <% 
   if (tr.isLackDBType(node)){
