@@ -35,22 +35,52 @@
       <DEFAULT>2003</DEFAULT>
     </PARAMETER>
 
+    <PARAMETER 
+      NAME="EOL_CHAR" 
+      FIELD="TEXT" 
+      REQUIRED="true"
+      NUM_ROW="2"
+    >
+      <DEFAULT>"\n"</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER 
+      NAME="OUTPUT" 
+      FIELD="TEXT" 
+      NUM_ROW="3"
+    >
+      <DEFAULT>"to client : $_"</DEFAULT>
+    </PARAMETER>
+
     <PARAMETER
       NAME="THEN"
       FIELD="CLOSED_LIST"
       REQUIRED="true"
-      NUM_ROW="2"
+      NUM_ROW="4"
     >
       <ITEMS DEFAULT="continue">
         <ITEM NAME="CONTINUE" VALUE="continue" />
         <ITEM NAME="EXIT_LOOP" VALUE="exitloop" />
       </ITEMS>
     </PARAMETER>
+
+    <PARAMETER
+      NAME="PRINT"
+      FIELD="CHECK"
+      SHOW="true"
+      NUM_ROW="5"
+    >
+        <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+
+
   </PARAMETERS>
 
 
 
   <CODEGENERATION/>
 
-  <RETURNS/>
+  <RETURNS>
+    <RETURN NAME="INPUT_DATA" TYPE="STRING" AVAILABILITY="FLOW"/>
+  </RETURNS>
 </COMPONENT>

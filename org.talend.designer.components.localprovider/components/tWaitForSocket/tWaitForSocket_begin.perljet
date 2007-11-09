@@ -19,17 +19,34 @@ String port = ElementParameterParser.getValue(
     "__PORT__"
 );
 
+String output = ElementParameterParser.getValue(
+    node,
+    "__OUTPUT__"
+);
 
+String eol = ElementParameterParser.getValue(
+    node,
+    "__EOL_CHAR__"
+);
+
+String print = ElementParameterParser.getValue(
+    node,
+    "__PRINT__"
+);
 
 %>
 
-use Socket;
+use Socket qw/:DEFAULT :crlf/;
 use IO::Handle;
 use constant MY_PORT => <%=port%>;
 use IO::File;
-autoflush STDOUT 1;
 
-$_globals{<%=cid %>}{CURRENT_ITERATION} = 0;
+
+{
+STDOUT->autoflush(1);
+
+local $/;
+$/ = <%=eol%>;
 
 
 socket(SOCK, AF_INET, SOCK_STREAM, getprotobyname('tcp')) or 
@@ -46,9 +63,25 @@ listen(SOCK,SOMAXCONN)or
     die "listen() failed: $!";
 
 while (1) {
-    $_globals{<%=cid %>}{CURRENT_ITERATION}++;
     next unless my $remote_addr = accept(SESSION,SOCK);
     SESSION->autoflush(1);
+    while (<SESSION>) {
+    	chomp;
+        $_globals{<%=cid %>}{INPUT_DATA} = $_;
+
+<%if(print.equals("true")){%>
+        print STDOUT "read : ".$_.<%=eol%> ;
+<%}%>
+
+        my $output_<%=cid%>;
+<%if(output != null && output.length()> 0 ){%>
+        $output_<%=cid%> = <%=output%>;
+<%}%>
+        print SESSION $output_<%=cid%>.<%=eol%> ;
+
+<%if(print.equals("true")){%>
+        print STDOUT "write : ".$output_<%=cid%>.<%=eol%> ;
+<%}%>
 
 
 

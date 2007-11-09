@@ -15,6 +15,8 @@ INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 
 %>
+    # read loop
+    }
 <%if(ElementParameterParser.getValue(node, "__THEN__").equals("exitloop")){%>
     last ;
 <%}%> 
@@ -22,3 +24,5 @@ String cid = node.getUniqueName();
 }
 
 close SOCK ;
+
+}# local block
