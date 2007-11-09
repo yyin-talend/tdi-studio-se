@@ -81,6 +81,7 @@ public class ReliabilityHashMapTest {
         Map hashMap = new THashMap(10000, 1.0f, objectHashingStrategy); // 119 bytes , 34 s
 
         System.out.println("Write step");
+        long start = System.currentTimeMillis();
         for (int i = 0; i < loop; i++) {
             // => bean from tFileInput for example...
             Bean bean = new Bean(i, String.valueOf(i));
@@ -88,14 +89,17 @@ public class ReliabilityHashMapTest {
             // => THash storing step
             KeyForMap keyForMap = new KeyForMap(i, bean.hashCode());
             hashMap.put(keyForMap, keyForMap);
-            DB.put(null, i, bean);
+            DB.put("buffer", bean);
 
             if (i % 100000 == 0) {
                 System.out.println("Writing " + i);
             }
         }
+        long end = System.currentTimeMillis();
+        System.out.println((end - start) + " milliseconds for " + loop + " objects to store.");
 
         System.out.println("Read step");
+        start = System.currentTimeMillis();
         for (int i = 0; i < loop; i++) {
             if (i % 100000 == 0) {
                 System.out.println("Reading " + i);
@@ -113,7 +117,7 @@ public class ReliabilityHashMapTest {
             }
 
             // => bean found from DB
-            Bean beanFromDB = (Bean) DB.get(null, keyForMap.dbIdBean);
+            Bean beanFromDB = (Bean) DB.get("buffer", keyForMap.dbIdBean);
 
             // validity test
             if (beanFromDB == null) {
@@ -124,6 +128,8 @@ public class ReliabilityHashMapTest {
                 throw new RuntimeException("Values of beans are different with id " + keyForMap.dbIdBean);
             }
         }
+        end = System.currentTimeMillis();
+        System.out.println((end - start) + " milliseconds for " + loop + " objects to store.");
 
         long time2 = System.currentTimeMillis();
 
