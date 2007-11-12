@@ -428,8 +428,12 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
         }
     }
 
-    private void convertSnippets(RepositoryNode parent) {
+    public static boolean useSNIPPETS = false;
 
+    private void convertSnippets(RepositoryNode parent) {
+        if (!useSNIPPETS) {
+            return;
+        }
         handleReferenced(parent);
         SnippetDefinitions definition = SnippetsPlugin.getSnippetManager().getDefinitions();
         List<ISnippetCategory> categories = (List<ISnippetCategory>) definition.getCategories();
