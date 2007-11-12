@@ -30,16 +30,16 @@ package org.talend.designer.components.thash.io;
      */
     class KeyForMap {
 
-        int dbIdBean;
+        int cursorPosition;
 
         int hashcode;
 
         /**
          * DOC amaumont KeyForMap constructor comment.
          */
-        public KeyForMap(int dbIdBean, int hashcode) {
+        public KeyForMap(int cursorPosition, int hashcode) {
             super();
-            this.dbIdBean = dbIdBean;
+            this.cursorPosition = cursorPosition;
             this.hashcode = hashcode;
         }
 
@@ -67,7 +67,7 @@ package org.talend.designer.components.thash.io;
             if (getClass() != obj.getClass())
                 return false;
             final KeyForMap other = (KeyForMap) obj;
-            if (this.dbIdBean != other.dbIdBean)
+            if (this.cursorPosition != other.cursorPosition)
                 return false;
             return true;
         }
