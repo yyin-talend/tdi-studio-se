@@ -12,7 +12,5 @@ imports="
 %>
 }
 stmt_<%=cid %>.close();
-java.sql.Statement stmtClose_<%=cid%> = conn_<%=cid %>.createStatement();
-stmtClose_<%=cid%>.execute("SHUTDOWN");
 conn_<%=cid %> .close();
 globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid%>);

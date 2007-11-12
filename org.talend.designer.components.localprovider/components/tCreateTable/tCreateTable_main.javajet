@@ -438,13 +438,7 @@ try{
 		stmt<%=cid%>.execute(sql<%=cid%>);
 <%}
 //close
-	if(dbType.equals("HSQLdb")){
-%>
-		java.sql.Statement stmtClose<%=cid%>=con<%=cid%>.createStatement();
-		stmtClose<%=cid%>.execute("SHUTDOWN");
-<%	}%>
 
-<%
 	if(!dbType.equals("MySQL") && !dbType.equals("Oracle") && !dbType.equals("Postgre"))
 	{
 		%>

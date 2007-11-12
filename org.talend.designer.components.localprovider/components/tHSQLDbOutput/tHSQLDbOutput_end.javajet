@@ -62,8 +62,6 @@ imports="
         <%
     }   
     %>
-	java.sql.Statement stmtClose_<%=cid%> = conn_<%=cid %>.createStatement();
-	stmtClose_<%=cid%>.execute("SHUTDOWN");
 	conn_<%=cid%> .close();
 	
 	nb_line_deleted_<%=cid%>=nb_line_deleted_<%=cid%>+ deletedCount_<%=cid%>;
