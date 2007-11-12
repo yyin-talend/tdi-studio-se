@@ -14,11 +14,15 @@ imports="
 
     String connection = ElementParameterParser.getValue(node, "__CONNECTION__");
 
+    boolean close = ElementParameterParser.getValue(node,"__CLOSE__").equals("true");
+
     String conn = "conn_" + connection;
 %>
 java.sql.Connection conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
 if(conn_<%=cid%> != null && !conn_<%=cid%>.isClosed()) {
 	conn_<%=cid%>.rollback();
-	conn_<%=cid%>.close();
+<%  if(close){%>
+    conn_<%=cid%>.close();
+<% }%>
 }
 

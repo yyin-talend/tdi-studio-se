@@ -34,6 +34,11 @@
       FILTER="tPostgresqlConnection"
       NUM_ROW="1"
     />
+    <PARAMETER
+      NAME="CLOSE"
+      FIELD="CHECK"
+      NUM_ROW="11"
+    />
   </PARAMETERS>
 
   <CODEGENERATION/>

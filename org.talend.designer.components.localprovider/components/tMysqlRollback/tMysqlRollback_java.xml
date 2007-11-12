@@ -34,6 +34,11 @@
       FILTER="tMysqlConnection"
       NUM_ROW="10"
     />
+    <PARAMETER
+      NAME="CLOSE"
+      FIELD="CHECK"
+      NUM_ROW="11"
+    />
   </PARAMETERS>
 
   <CODEGENERATION/>
