@@ -82,6 +82,32 @@ class XMLTool{
 <%
 		}
 	}
+
+	public Object[] getValueString(Map<String,String> map, List<IMetadataColumn> colList, String connName){
+        String value = null;
+        JavaType javaType=null;
+     	if( map.get("COLUMN")!=null && map.get("COLUMN").length()>0){
+           for(IMetadataColumn column:colList) {
+                if(column.getLabel().equals(map.get("COLUMN"))){
+                    javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+                    if(JavaTypesManager.isJavaPrimitiveType( column.getTalendType(), column.isNullable())){
+                        value = "String.valueOf("+connName+"."+map.get("COLUMN")+")";
+                    }else if(javaType == JavaTypesManager.DATE){
+                        if( column.getPattern() != null && column.getPattern().trim().length() != 0 ){
+                            value ="FormatterUtils.format_Date(" + connName + "." +column.getLabel()+ "," +column.getPattern()+")";
+                        }else{
+                            value = connName+"."+map.get("COLUMN");
+                        }
+                    }else{
+                        value = connName+"."+map.get("COLUMN");
+                    }
+                }
+            }
+        }else if(map.get("VALUE") != null && map.get("VALUE").length()>0){
+            value = map.get("VALUE");
+        }
+        return new Object[]{value,javaType};
+    }
 }
 
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
@@ -166,28 +192,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         		int elementCount = 0;
         		boolean isRootAttribute = false;
             	for(Map<String, String> map:rootTable){
-            		String value = null;
-            		JavaType javaType = null;
-            		if( map.get("COLUMN")!=null && map.get("COLUMN").length()>0){
-            			for(IMetadataColumn column:metadata.getListColumns()) {
-            				if(column.getLabel().equals(map.get("COLUMN"))){
-            					javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
-            					if(JavaTypesManager.isJavaPrimitiveType( column.getTalendType(), column.isNullable())){
-            						value = "String.valueOf("+conn.getName()+"."+map.get("COLUMN")+")";
-            					}else if(javaType == JavaTypesManager.DATE){
-            						if( column.getPattern() != null && column.getPattern().trim().length() != 0 ){
-            							value ="FormatterUtils.format_Date(" + conn.getName() + "." +column.getLabel()+ "," +column.getPattern()+")";
-            						}else{
-            							value = conn.getName()+"."+map.get("COLUMN");
-            						}
-            					}else{
-            						value = conn.getName()+"."+map.get("COLUMN");
-            					}
-            				}
-            			}
-        			}else if(map.get("VALUE") != null && map.get("VALUE").length()>0){
-        				value = map.get("VALUE");
-        			}
+            		Object[] objs=tool.getValueString(map, metadata.getListColumns(), conn.getName());
+            		String value = (String)objs[0];
+            		JavaType javaType=(JavaType)objs[1];
             		String path = map.get("PATH");
                     if (map.get("ATTRIBUTE").equals("true")) {
                         if(isRootAttribute){ //it is the attirbute of root
@@ -232,28 +239,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				String currentGroupRootPath = null;
 				int groupRootCount = 0;
 				for(Map<String, String> map:groupTable){
-            		String value = null;
-            		JavaType javaType=null;
-            		if( map.get("COLUMN")!=null && map.get("COLUMN").length()>0){
-            			for(IMetadataColumn column:metadata.getListColumns()) {
-            				if(column.getLabel().equals(map.get("COLUMN"))){
-            					javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
-            					if(JavaTypesManager.isJavaPrimitiveType( column.getTalendType(), column.isNullable())){
-            						value = "String.valueOf("+conn.getName()+"."+map.get("COLUMN")+")";
-            					}else if(javaType == JavaTypesManager.DATE){
-            						if( column.getPattern() != null && column.getPattern().trim().length() != 0 ){
-            							value ="FormatterUtils.format_Date(" + conn.getName() + "." +column.getLabel()+ "," +column.getPattern()+")";
-            						}else{
-            							value = conn.getName()+"."+map.get("COLUMN");
-            						}
-            					}else{
-            						value = conn.getName()+"."+map.get("COLUMN");
-            					}
-            				}
-            			}
-        			}else if(map.get("VALUE") != null && map.get("VALUE").length()>0){
-        				value = map.get("VALUE");
-        			}
+            		Object[] objs=tool.getValueString(map, metadata.getListColumns(), conn.getName());
+            		String value = (String)objs[0];
+            		JavaType javaType=(JavaType)objs[1];
 
         			String path = map.get("PATH");
                     if (map.get("ATTRIBUTE").equals("true")) {
@@ -343,30 +331,12 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
 				String loopRootName=null;
 				String loopRootPath = null;
+				String loopRootEleName=null;
 				for(Map<String, String> map:loopTable){
-            		String value = null;
-            		JavaType javaType=null;
-            		if( map.get("COLUMN")!=null && map.get("COLUMN").length()>0){
-            			for(IMetadataColumn column:metadata.getListColumns()) {
-            				if(column.getLabel().equals(map.get("COLUMN"))){
-            					javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
-            					if(JavaTypesManager.isJavaPrimitiveType( column.getTalendType(), column.isNullable())){
-            						value = "String.valueOf("+conn.getName()+"."+map.get("COLUMN")+")";
-            					}else if(javaType == JavaTypesManager.DATE){
-            						if( column.getPattern() != null && column.getPattern().trim().length() != 0 ){
-            							value ="FormatterUtils.format_Date(" + conn.getName() + "." +column.getLabel()+ "," +column.getPattern()+")";
-            						}else{
-            							value = conn.getName()+"."+map.get("COLUMN");
-            						}
-            					}else{
-            						value = conn.getName()+"."+map.get("COLUMN");
-            					}
-            				}
-            			}
-        			}else if(map.get("VALUE") != null && map.get("VALUE").length()>0){
-        				value = map.get("VALUE");
-        			}
-        			
+            		Object[] objs=tool.getValueString(map, metadata.getListColumns(), conn.getName());
+            		String value = (String)objs[0];
+            		JavaType javaType=(JavaType)objs[1];
+
             		String path = map.get("PATH");
                      if (map.get("ATTRIBUTE").equals("true")) {
                      	tool.addAttribute(cid, currEleName, value, path);
@@ -376,7 +346,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                     	if(loopRootName == null){// the first one
                    			loopRootName = path.substring(path.lastIndexOf("/") + 1);
                    			loopRootPath = path;
-                   			currEleName = loopRootName;
+                   			currEleName = "element"+elementCount;
+            				elementCount++;
+            				loopRootEleName=currEleName;
 %>
 	if(group4Loop_<%=cid%> == null)
 	{
@@ -391,7 +363,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             				elementCount++;
 %>
 	org.dom4j.Element <%=currEleName%>_<%=cid%> = 
-		org.dom4j.DocumentHelper.makeElement(<%=loopRootName%>_<%=cid%>,"<%=path.replaceFirst(loopRootPath,"")%>");
+		org.dom4j.DocumentHelper.makeElement(<%=loopRootEleName%>_<%=cid%>,"<%=path.replaceFirst(loopRootPath,"")%>");
 <%
 						}
 						tool.setText(cid, currEleName, value, javaType);
