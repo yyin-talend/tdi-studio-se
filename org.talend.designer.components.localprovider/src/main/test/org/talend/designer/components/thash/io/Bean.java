@@ -13,6 +13,7 @@
 package org.talend.designer.components.thash.io;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * 
@@ -26,7 +27,7 @@ public class Bean implements Serializable {
     String name;
 
     transient int hashcode = -1;
-
+    
     /**
      * DOC amaumont Bean constructor comment.
      * 
@@ -92,6 +93,26 @@ public class Bean implements Serializable {
         if (this.primitiveInt != bean.primitiveInt)
             return false;
         return true;
+    }
+
+    
+    public int getPrimitiveInt() {
+        return primitiveInt;
+    }
+
+    
+    public void setPrimitiveInt(int primitiveInt) {
+        this.primitiveInt = primitiveInt;
+    }
+
+    
+    public String getName() {
+        return name;
+    }
+
+    
+    public void setName(String name) {
+        this.name = name;
     }
 
 }
