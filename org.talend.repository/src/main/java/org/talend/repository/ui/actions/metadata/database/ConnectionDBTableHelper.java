@@ -24,7 +24,9 @@ package org.talend.repository.ui.actions.metadata.database;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.talend.commons.exception.BusinessException;
@@ -64,6 +66,8 @@ import org.talend.repository.ui.utils.DataStringConnection;
 public final class ConnectionDBTableHelper {
 
     private static boolean connectionCreated = false;
+
+    private static Map<String, String> tableName = new HashMap<String, String>();
 
     private static final IProxyRepositoryFactory FACTORY = ProxyRepositoryFactory.getInstance();
 
@@ -178,8 +182,7 @@ public final class ConnectionDBTableHelper {
         }
         // Length
         tmp = datas[23].trim();
-        if (tmp == "") {
-            // FIXME need check this
+        if ("".equals(tmp)) {
             return null;
         }
         try {
@@ -219,7 +222,8 @@ public final class ConnectionDBTableHelper {
     }
 
     private static String[] parseLines(final String line) {
-        // FIXME need process the data, such as Description= "a;b,c""
+        // FIXME there are some problem about parsing the line,
+        // process the data that contain semicolon, such as Description= "a;b,c""
         String[] datas = new String[DBTableForDelimitedBean.TOTAL];
         for (int i = 0; i < datas.length; i++) {
             datas[i] = ""; //$NON-NLS-1$
@@ -278,8 +282,18 @@ public final class ConnectionDBTableHelper {
 
         } else if (connItem == null) {
             // the item in recycle, need rename the item.
-            connItem = createConnectionItem(bean);
-            setPropNewName(connItem.getProperty());
+            String genName = tableName.get(bean.getName());
+            if (genName == null) {
+                connItem = createConnectionItem(bean);
+                // generate a new name.
+                setPropNewName(connItem.getProperty());
+                tableName.put(bean.getName(), connItem.getProperty().getLabel());
+            } else {
+                // Use the existed connection.
+                connItem = searchConnectionItem(genName, false);
+
+            }
+
         }
 
         return connItem;
@@ -455,6 +469,8 @@ public final class ConnectionDBTableHelper {
             return false;
         }
         boolean found = true;
+        // FIXME need check the table in recycle bin.
+
         MetadataTable metadataTable = searchMetadataTable(conn, bean.getTableName());
         if (metadataTable == null) { // need create new table
             found = false;
@@ -496,7 +512,7 @@ public final class ConnectionDBTableHelper {
         MetadataColumn metadataColumn = ConnectionFactory.eINSTANCE.createMetadataColumn();
 
         metadataColumn.setComment(bean.getComment());
-        String genLabel = getUniqueColumnName(table, bean.getLabel());
+        String genLabel = getUniqueColumnName(table, bean);
         if (genLabel == null) {
             return false;
         }
@@ -544,15 +560,19 @@ public final class ConnectionDBTableHelper {
 
     }
 
-    private static String getUniqueColumnName(MetadataTable table, String label) {
-        if (isNullable(label)) {
+    private static String getUniqueColumnName(MetadataTable table, DBTableForDelimitedBean bean) {
+        if (isNullable(bean.getLabel()) || isNullable(bean.getOriginalLabel())) {
             // can't add
             return null;
         }
-        if (isExistedColumn(table, label)) {
+        if (isExistedColumn(table, bean.getOriginalLabel(), true)) {
+            // not allow the duplicated OriginalField
+            return null;
+        }
+        if (isExistedColumn(table, bean.getLabel(), false)) {
 
-            UniqueStringGenerator<MetadataColumn> uniqueStringGenerator = new UniqueStringGenerator<MetadataColumn>(label, table
-                    .getColumns()) {
+            UniqueStringGenerator<MetadataColumn> uniqueStringGenerator = new UniqueStringGenerator<MetadataColumn>(bean
+                    .getLabel(), table.getColumns()) {
 
                 @Override
                 protected String getBeanString(MetadataColumn bean) {
@@ -560,15 +580,18 @@ public final class ConnectionDBTableHelper {
                 }
             };
             return uniqueStringGenerator.getUniqueString();
+
         }
-        return label;
+        return bean.getLabel();
 
     }
 
-    private static boolean isExistedColumn(MetadataTable table, String label) {
+    private static boolean isExistedColumn(MetadataTable table, String label, boolean isOriginal) {
         for (Object colObject : table.getColumns()) {
             MetadataColumn column = (MetadataColumn) colObject;
-            if (label.trim().equals(column.getLabel())) {
+            if (isOriginal && label.trim().equals(column.getOriginalField())) {
+                return true;
+            } else if (label.trim().equals(column.getLabel())) {
                 return true;
             }
         }
@@ -584,4 +607,7 @@ public final class ConnectionDBTableHelper {
         return connectionCreated;
     }
 
+    public static void initGenTableName() {
+        tableName.clear();
+    }
 }

@@ -79,7 +79,7 @@ public class ImportDBTableForm extends AbstractForm {
         int width = getSize().x;
         GridLayout layout2;
 
-        Group group = Form.createGroup(this, 1, "Import", 50);
+        Group group = Form.createGroup(this, 1, Messages.getString("ImportDBTableForm.GroupTitle"), 50); //$NON-NLS-1$
 
         Composite paraSetting = Form.startNewDimensionnedGridLayout(group, 3, width, 50);
         // layout2 = (GridLayout) paraSetting.getLayout();
@@ -93,7 +93,8 @@ public class ImportDBTableForm extends AbstractForm {
         Composite tmpSetting = Form.startNewGridLayout(paraSetting, 3);
         GridData layoutData = (GridData) tmpSetting.getLayoutData();
         layoutData.horizontalSpan = 3;
-        importFile = new LabelledFileField(tmpSetting, "Import File:", new String[] { "*.csv", "*.*" });
+        String[] ext = new String[] { "*.csv", "*.*" }; //$NON-NLS-1$ //$NON-NLS-2$ 
+        importFile = new LabelledFileField(tmpSetting, Messages.getString("ImportDBTableForm.ImportLabel"), ext); //$NON-NLS-1$
 
     }
 
@@ -108,13 +109,13 @@ public class ImportDBTableForm extends AbstractForm {
 
             public void modifyText(ModifyEvent e) {
                 String str = importFile.getText().trim();
-                if (str == "") {
+                if ("".equals(str)) { //$NON-NLS-1$
                     updateStatus(IStatus.ERROR, Messages.getString("ImportDBTableWizard.Description")); //$NON-NLS-1$
                     return;
                 }
                 File file = new File(str);
                 if (!file.exists()) {
-                    updateStatus(IStatus.ERROR, "File not found.");
+                    updateStatus(IStatus.ERROR, Messages.getString("ImportDBTableForm.FileNotFound")); //$NON-NLS-1$
                     return;
                 }
                 updateStatus(IStatus.OK, Messages.getString("ImportDBTableWizard.Description")); //$NON-NLS-1$

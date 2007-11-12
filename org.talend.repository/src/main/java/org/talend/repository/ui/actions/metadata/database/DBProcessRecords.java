@@ -133,7 +133,7 @@ public class DBProcessRecords {
             return false;
         }
         if (name instanceof String) {
-            if (name.toString().trim() == "") {
+            if ("".equals(name.toString().trim())) {
                 return false;
             }
         }

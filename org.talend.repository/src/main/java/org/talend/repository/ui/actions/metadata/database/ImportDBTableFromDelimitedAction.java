@@ -31,6 +31,7 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.core.ui.images.OverlayImageProvider;
 import org.talend.repository.RepositoryPlugin;
+import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.actions.metadata.AbstractCreateTableAction;
@@ -46,7 +47,7 @@ public class ImportDBTableFromDelimitedAction extends AbstractCreateTableAction 
 
     protected static final String PID = RepositoryPlugin.PLUGIN_ID;
 
-    private static final String LABEL = "Import database from delimited";
+    private static final String LABEL = Messages.getString("ImportDBTableFromDelimitedAction.Label"); //$NON-NLS-1$
 
     /**
      * DOC ggu ImportConnectionTableFromCSV constructor comment.
