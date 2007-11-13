@@ -22,33 +22,20 @@
 package org.talend.designer.components.thash.io;
 
 import java.beans.PropertyDescriptor;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.io.RandomAccessFile;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
-import org.apache.commons.beanutils.DynaBean;
-import org.apache.commons.beanutils.WrapDynaBean;
-import org.talend.designer.components.thash.Sizeof;
+import org.apache.commons.beanutils.PropertyUtils;
 
 /**
- * DOC amaumont class global comment. Detailled comment <br/>
  * 
- * $Id: talend.epf 1 2006-09-29 17:06:40Z nrousseau $
- * 
- * 
- * 
- * 
-  74829 milliseconds for 5000000 objects to STORE using IntrospectionHashFile. 66000 items/s. 10 bytes per item in storage. 
-  94422 milliseconds for 5000000 objects to STORE using SimpleHashFile. 52000 items/s. 125 bytes per item in storage.
-  163735 milliseconds for 5000000 objects to STORE using DoubleHashFile. 30000 items/s.
- * 
- * 
+ * DOC slanglois class global comment. Detailled comment <br/>
  * 
  */
 class IntrospectionHashFile {
@@ -84,17 +71,29 @@ class IntrospectionHashFile {
 
     int[] types = null;
 
-    public Object get(String container, long cursorPosition) throws IOException, ClassNotFoundException {
-        // TODO Auto-generated method stub
-        return null;
+    private Class<Bean> beanClass;
+
+    public Object get(String container, long cursorPosition) throws IOException, ClassNotFoundException,
+            InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+        if (cursorPosition != lastRetrievedCursorPosition) {
+            lastRetrievedObject = beanClass.newInstance();
+            ra.seek(cursorPosition);
+            for (int i = 0; i < types.length; i++) {
+                read(i);
+            }
+            lastRetrievedCursorPosition = cursorPosition;
+        }
+        return lastRetrievedObject;
+
     }
 
     public long put(String container, Object bean) throws IOException, IllegalAccessException,
             InvocationTargetException, NoSuchMethodException {
         long returnPosition = bw.getFilePointer();
         if (!readonly) {
+            lastRetrievedObject = bean;
             for (int i = 0; i < names.length; i++) {
-                write(org.apache.commons.beanutils.PropertyUtils.getProperty(bean, names[i]), types[i]);
+                write(i);
             }
         }
         return returnPosition;
@@ -130,8 +129,8 @@ class IntrospectionHashFile {
     }
 
     public void init(Class beanClass) {
-        PropertyDescriptor[] propertyDescriptors = org.apache.commons.beanutils.PropertyUtils
-                .getPropertyDescriptors(beanClass);
+        this.beanClass = beanClass;
+        PropertyDescriptor[] propertyDescriptors = PropertyUtils.getPropertyDescriptors(beanClass);
         names = new String[propertyDescriptors.length - 1];
         types = new int[propertyDescriptors.length - 1];
         for (int i = 0, j = 0; i < propertyDescriptors.length; i++) {
@@ -169,67 +168,9 @@ class IntrospectionHashFile {
         }
     }
 
-    public void write(Object value) throws IOException {
-        if (value == null) {
-            bw.writeInt((int) 0);
-            return;
-        }
-
-        if (value instanceof Boolean) {
-            bw.writeBoolean((Boolean) value);
-            return;
-        }
-        if (value instanceof Byte) {
-            bw.writeByte((Byte) value);
-            return;
-        }
-        if (value instanceof Short) {
-            bw.writeShort((Short) value);
-            return;
-        }
-        if (value instanceof Integer) {
-            bw.writeInt((Integer) value);
-            return;
-        }
-        if (value instanceof Long) {
-            bw.writeLong((Long) value);
-            return;
-        }
-        if (value instanceof Float) {
-            bw.writeFloat((Float) value);
-            return;
-        }
-        if (value instanceof Double) {
-            bw.writeDouble((Double) value);
-            return;
-        }
-        if (value instanceof Character) {
-            bw.writeChar((Character) value);
-            return;
-        }
-        if (value instanceof String) {
-            bw.write(((String) value).getBytes());
-            return;
-        }
-        if (value instanceof byte[]) {
-            bw.write((byte[]) value);
-            return;
-        }
-        if (value instanceof Date) {
-            bw.writeLong(((Date) value).getTime());
-            return;
-        }
-
-        bw.write(value.toString().getBytes());
-    }
-
-    public void write(Object value, int type) throws IOException {
-        if (value == null) {
-            bw.writeInt((int) 0);
-            return;
-        }
-
-        switch (type) {
+    public void write(int index) throws IOException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+        Object value = PropertyUtils.getSimpleProperty(lastRetrievedObject, names[index]);
+        switch (types[index]) {
         case 0:
             bw.writeBoolean((Boolean) value);
             return;
@@ -255,72 +196,95 @@ class IntrospectionHashFile {
             bw.writeChar((Character) value);
             return;
         case 8:
-            bw.write(((String) value).getBytes());
+            byte[] byteArray = null;
+            if (value == null) {
+                byteArray = new byte[0];
+            } else {
+                byteArray = ((String) value).getBytes();
+            }
+            bw.writeInt(byteArray.length);
+            bw.write(byteArray);
+            return;
+        case 9:
+            if (value == null) {
+                byteArray = new byte[0];
+            } else {
+                byteArray = (byte[]) value;
+            }
+            bw.writeInt(byteArray.length);
+            bw.write(byteArray);
             return;
         case 10:
-            bw.write((byte[]) value);
-            return;
-        case 11:
-            bw.writeLong(((Date) value).getTime());
+            if (value == null) {
+                bw.writeLong((long) 0);
+            } else {
+                bw.writeLong(((Date) value).getTime());
+            }
             return;
         default:
-            bw.write(value.toString().getBytes());
+            if (value == null) {
+                byteArray = new byte[0];
+            } else {
+                byteArray = value.toString().getBytes();
+            }
+            bw.writeInt(byteArray.length);
+            bw.write(byteArray);
         }
     }
 
-    public static void main(String[] args) throws IOException, IllegalAccessException, InvocationTargetException,
+    public void read(int index) throws IOException, IllegalAccessException, InvocationTargetException,
             NoSuchMethodException {
-        int loop = 5000000;
+        int type = types[index];
 
-        IntrospectionHashFile ihf = IntrospectionHashFile.getInstance();
-        long start = System.currentTimeMillis();
-
-        ihf.init(Bean.class);
-        ihf.initPut("D:/cache");
-        for(int i = 0; i < loop; i++){
-            Bean bean = new Bean(i, String.valueOf(i));
-            ihf.put("", bean);
+        switch (type) {
+        case 0:
+            PropertyUtils.setSimpleProperty(lastRetrievedObject, names[index], ra.readBoolean());
+            return;
+        case 1:
+            PropertyUtils.setSimpleProperty(lastRetrievedObject, names[index], ra.readByte());
+            return;
+        case 2:
+            PropertyUtils.setSimpleProperty(lastRetrievedObject, names[index], ra.readShort());
+            return;
+        case 3:
+            PropertyUtils.setSimpleProperty(lastRetrievedObject, names[index], ra.readInt());
+            return;
+        case 4:
+            PropertyUtils.setSimpleProperty(lastRetrievedObject, names[index], ra.readLong());
+            return;
+        case 5:
+            PropertyUtils.setSimpleProperty(lastRetrievedObject, names[index], ra.readFloat());
+            return;
+        case 6:
+            PropertyUtils.setSimpleProperty(lastRetrievedObject, names[index], ra.readDouble());
+            return;
+        case 7:
+            PropertyUtils.setSimpleProperty(lastRetrievedObject, names[index], ra.readChar());
+            return;
+        case 8:
+            byte[] byteArray = new byte[ra.readInt()];
+            ra.read(byteArray);
+            PropertyUtils.setSimpleProperty(lastRetrievedObject, names[index], new String(byteArray));
+            return;
+        case 9:
+            byteArray = new byte[ra.readInt()];
+            ra.read(byteArray);
+            PropertyUtils.setSimpleProperty(lastRetrievedObject, names[index], byteArray);
+            return;
+        case 10:
+            long time = ra.readLong();
+            if (time == 0) {
+                PropertyUtils.setSimpleProperty(lastRetrievedObject, names[index], null);
+            } else {
+                PropertyUtils.setSimpleProperty(lastRetrievedObject, names[index], new Date(time));
+            }
+            return;
+        default:
+            byteArray = new byte[ra.readInt()];
+            ra.read(byteArray);
+            PropertyUtils.setSimpleProperty(lastRetrievedObject, names[index], byteArray.toString());
+            return;
         }
-        ihf.endPut();
-
-        long end = System.currentTimeMillis();
-        long deltaTime = (end - start);
-        System.out.print(deltaTime + " milliseconds for " + loop + " objects to STORE using IntrospectionHashFile. "
-                + (loop / deltaTime * 1000) + " items/s. ");
-        File file = new File("D:/cache");
-        System.out.println((file.length() / loop) + " bytes per item in storage.");
-
-        SimpleHashFile shf = SimpleHashFile.getInstance();
-        start = System.currentTimeMillis();
-
-        shf.initPut("D:/cache2");
-        for(int i = 0; i < loop; i++){
-            Bean bean = new Bean(i, String.valueOf(i));
-            shf.put("", bean);
-        }
-        ihf.endPut();
-
-        end = System.currentTimeMillis();
-        deltaTime = (end - start);
-        System.out.print(deltaTime + " milliseconds for " + loop + " objects to STORE using SimpleHashFile. "
-                + (loop / deltaTime * 1000) + " items/s. ");
-        file = new File("D:/cache2");
-        System.out.println((file.length() / loop) + " bytes per item in storage.");
-
-        DoubleHashFile dhf = DoubleHashFile.getInstance();
-        start = System.currentTimeMillis();
-
-        dhf.initPut("D:/cache3");
-        for (int i = 0; i < loop; i++) {
-            Bean bean = new Bean(i, String.valueOf(i));
-            dhf.put("", bean);
-        }
-        dhf.endPut();
-
-        end = System.currentTimeMillis();
-        deltaTime = (end - start);
-        System.out.print(deltaTime + " milliseconds for " + loop + " objects to STORE using DoubleHashFile. "
-                + (loop / deltaTime * 1000) + " items/s. ");
     }
 
 }

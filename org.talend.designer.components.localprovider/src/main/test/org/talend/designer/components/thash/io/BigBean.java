@@ -17,30 +17,48 @@ import java.util.Date;
 
 /**
  * 
- * DOC amaumont class global comment. Detailled comment <br/>
+ * DOC slanglois class global comment. Detailled comment <br/>
  * 
  */
-public class Bean implements Serializable {
+public class BigBean implements Serializable {
 
     int primitiveInt;
 
     String name;
-
-    transient int hashcode = -1;
     
+    String address;
+    
+    float price;
+
+    Date date = null;
+    
+    Date date2 = null;
+    
+    byte[] b= null;
+    
+    boolean flag;
+    
+    transient int hashcode = -1;
+
     /**
      * DOC amaumont Bean constructor comment.
      * 
      * @param primitiveInt
      * @param name
      */
-    public Bean(int primitiveInt, String name) {
+    public BigBean(int primitiveInt, String name) {
         super();
         this.primitiveInt = primitiveInt;
         this.name = name;
+        this.address = "Address" + name;
+        this.b = address.getBytes();
+        this.date = new Date();
+        this.date2 = new Date();
+        this.price = (float)primitiveInt;
+        this.flag = true;
     }
     
-    public Bean(){
+    public BigBean(){
         super();
     }
 
@@ -51,7 +69,7 @@ public class Bean implements Serializable {
      */
     @Override
     public int hashCode() {
-        if(hashcode == -1) {
+        if (hashcode == -1) {
             final int prime = 31;
             int result = 1;
             result = prime * result + ((this.name == null) ? 0 : this.name.hashCode());
@@ -74,20 +92,20 @@ public class Bean implements Serializable {
             return false;
         final KeyForMap other = (KeyForMap) obj;
 
-        if(this.hashCode() != other.hashcode) {
+        if (this.hashCode() != other.hashcode) {
             return false;
         }
-        
+
         Object o = null;
         try {
-            o = ReliabilityHashMapFileTest.hashFile.get("", (long)other.cursorPosition);
+            o = ReliabilityHashMapFileTest.hashFile.get("", (long) other.cursorPosition);
         } catch (Exception e) {
             e.printStackTrace();
         }
         if (o == null) {
             return false;
         }
-        Bean bean = (Bean) o;
+        BigBean bean = (BigBean) o;
 
         if (this.name == null) {
             if ((String) bean.name != null)
@@ -99,24 +117,80 @@ public class Bean implements Serializable {
         return true;
     }
 
-    
     public int getPrimitiveInt() {
         return primitiveInt;
     }
 
-    
     public void setPrimitiveInt(int primitiveInt) {
         this.primitiveInt = primitiveInt;
     }
 
-    
     public String getName() {
         return name;
     }
 
-    
     public void setName(String name) {
         this.name = name;
+    }
+
+    
+    public Date getDate() {
+        return date;
+    }
+
+    
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    
+    public byte[] getB() {
+        return b;
+    }
+
+    
+    public void setB(byte[] b) {
+        this.b = b;
+    }
+
+    
+    public String getAddress() {
+        return address;
+    }
+
+    
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    
+    public float getPrice() {
+        return price;
+    }
+
+    
+    public void setPrice(float price) {
+        this.price = price;
+    }
+
+    
+    public Date getDate2() {
+        return date2;
+    }
+
+    
+    public void setDate2(Date date2) {
+        this.date2 = date2;
+    }
+
+    
+    public boolean isFlag() {
+        return flag;
+    }
+
+    
+    public void setFlag(boolean flag) {
+        this.flag = flag;
     }
 
 }
