@@ -80,7 +80,7 @@ public class Bean implements Serializable {
         
         Object o = null;
         try {
-            o = ReliabilityHashMapFileTest.hashFile.get("", (long)other.cursorPosition);
+            o = ReliabilityHashMapFileTest.hashFile.get("buffer", (long)other.cursorPosition);
         } catch (Exception e) {
             e.printStackTrace();
         }

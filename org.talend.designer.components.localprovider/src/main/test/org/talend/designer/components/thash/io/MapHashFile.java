@@ -33,7 +33,7 @@ import java.io.IOException;
  */
 interface MapHashFile {
 
-    public Object get(String container, long cursorPosition) throws IOException, ClassNotFoundException;
+    public Object get(String container, long cursorPosition) throws Exception;
 
     public long put(String container, Object bean) throws IOException;
 

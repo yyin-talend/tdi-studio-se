@@ -16,6 +16,7 @@ import gnu.trove.THashMap;
 import gnu.trove.TObjectHashingStrategy;
 
 import java.util.Map;
+import java.util.Random;
 
 import org.talend.designer.components.thash.Sizeof;
 
@@ -23,109 +24,6 @@ import org.talend.designer.components.thash.Sizeof;
  * DOC amaumont class global comment. Detailled comment <br/>
  *
  *
-
-With THashMap class and WITHOUT HashFile
-------------------
-134151 milliseconds for 60000000 objects to STORE. 447000 items/s 
-waiting for garbage collector...
-'before' heap: 140168 bytes, 'after' heap: 1554156024 bytes 
-heap delta: 1554015856 bytes 
-size by item: 26 bytes 
-Number of loops: 60000000
-Number of items: 60000000
-Time: 135 s
-
-152120 milliseconds for 70000000 objects to STORE. 460000 items/s 
-waiting for garbage collector...
-'before' heap: 140696 bytes, 'after' heap: 1707881976 bytes 
-heap delta: 1707741280 bytes 
-size by item: 24 bytes 
-Number of loops: 70000000
-Number of items: 70000000
-Time: 153 s
-
-
-With THashMap class and SimpleHashFile
-------------------
-3856 milliseconds for 100000 objects to STORE. 25000 items/s 
-3615 milliseconds for 100000 objects to READ. 27000 items/s 
-'before' heap: 1274168 bytes, 'after' heap: 4977296 bytes 
-heap delta: 3703128 bytes 
-size by item: 37 bytes 
-Number of loops: 100000
-Number of items: 100000
-Time: 7 s
-
-279767 milliseconds for 10000000 objects to STORE. 35000 items/s 
-302748 milliseconds for 10000000 objects to READ. 33000 items/s 
-'before' heap: 1274168 bytes, 'after' heap: 325257696 bytes 
-heap delta: 323983528 bytes 
-size by item: 32 bytes 
-Number of loops: 10000000
-Number of items: 10000000
-Time: 582 s
-
-1401670 milliseconds for 42000000 objects to STORE. 29000 items/s
-1561101 milliseconds for 42000000 objects to READ. 26000 items/s 
-'before' heap: 140168 bytes, 'after' heap: 1344255912 bytes 
-heap delta: 1344115744 bytes 
-size by item: 32 bytes 
-Number of loops: 42000000
-Number of items: 42000000
-Time: 2962 s
-
-With THashMap class and DoubleHashFile
-------------------
-2358244 milliseconds for 42000000 objects to STORE. 17811 items/s 
-1715513 milliseconds for 42000000 objects to READ. 24489 items/s 
-waiting for garbage collector...
-'before' heap: 140168 bytes, 'after' heap: 1008256048 bytes 
-heap delta: 1008115880 bytes 
-size by item: 24 bytes 
-Number of loops: 42000000
-Number of items: 42000000
-Time: 4073 s
-
-3942866 milliseconds for 70000000 objects to STORE. 17000 items/s 
-4086505 milliseconds for 70000000 objects to READ. 17000 items/s 
-waiting for garbage collector...
-'before' heap: 140168 bytes, 'after' heap: 1707900576 bytes 
-heap delta: 1707760408 bytes 
-size by item: 24 bytes 
-Number of loops: 70000000
-Number of items: 70000000
-Time: 8030 s
-
-
- * 
- * 
-With HashMap class
-------------------
-284282 milliseconds for 10000000 objects to READ. 35000 items/s 
-35 items/s 
-waiting for garbage collector...
-'before' heap: 1274872 bytes, 'after' heap: 548383120 bytes 
-heap delta: 547108248 bytes 
-size by item: 55 bytes 
-Number of loops: 10000000
-Number of items: 10000000
-Time: 366 s
-
-
-693379 milliseconds for 25000000 objects to STORE. 36000 items/s 
-794806 milliseconds for 25000000 objects to READ. 31000 items/s 
-31 items/s 
-waiting for garbage collector...
-'before' heap: 140696 bytes, 'after' heap: 1334371592 bytes 
-heap delta: 1334230896 bytes 
-size by item: 53 bytes 
-Number of loops: 25000000
-Number of items: 25000000
-Time: 1488 s
-
-
-
-
  * 
  * 
  * 
@@ -137,10 +35,10 @@ public class ReliabilityHashMapFileTest {
 
     public static void main(String[] args) throws Exception {
 
-//         int loop = 2;
-//        int loop = 100000;
-//        int loop = 1000000;
-        int loop = 10000000;
+//         int loop = 1;
+//        int loop = 100000;    //   100 000 
+//        int loop = 1000000;   //  1 000 000
+        int loop = 10000000;  // 10 000 000
 //        int loop = 25000000;
 //        int loop = 42000000;
 //        int loop = 53000000;
@@ -152,12 +50,14 @@ public class ReliabilityHashMapFileTest {
         // change also in Bean.equals(...) class
 //        hashFile = SimpleHashFile.getInstance();
         hashFile = DoubleHashFile.getInstance();
+//        hashFile = SqliteDBHash.getInstance();
 
         
         String filePath = "/tmp/talend_hash";
         
         System.out.println("Starting with " + loop + " items ");
 
+        boolean randomRead = true;
         
         boolean readonly = false;
         
@@ -255,8 +155,10 @@ public class ReliabilityHashMapFileTest {
         long end = System.currentTimeMillis();
         long deltaTime = (end - start);
         System.out.println(deltaTime + " milliseconds for " + loop + " objects to STORE. "
-                + (loop / deltaTime * 1000) + " items/s ");
+                + (int)((float)loop / (float)deltaTime * 1000f) + " items/s ");
 
+        
+        Random rand = new Random(System.currentTimeMillis());
         
         if (readAfterStore) {
             System.out.println("Read step");
@@ -266,12 +168,18 @@ public class ReliabilityHashMapFileTest {
             for (int i = 0; i < loop; i++) {
                 if (i % 100000 == 0) {
                     System.out.println("Reading " + i + ", time since last display"
-                            + (System.currentTimeMillis() - lastTime) / 1000 + " s");
+                            + (float)(System.currentTimeMillis() - lastTime) / 1000 + " s");
                     lastTime = System.currentTimeMillis();
                 }
 
+                Bean bean = null;
                 // => bean from main flow in tMap for example...
-                Bean bean = new Bean(i, String.valueOf(i));
+                if(randomRead) {
+                	int j = rand.nextInt(loop);
+                	bean = new Bean(j, String.valueOf(j));
+                } else {
+                	bean = new Bean(i, String.valueOf(i));
+                }
 
                 // => search properties of bean in lookup for example...
                 KeyForMap keyForMap = (KeyForMap) hashMap.get(bean);
@@ -299,7 +207,7 @@ public class ReliabilityHashMapFileTest {
             
             deltaTime = (end - start);
             System.out.println(deltaTime + " milliseconds for " + loop + " objects to READ. "
-                    + (loop / deltaTime * 1000) + " items/s ");
+                    + (int)((float)loop / (float)deltaTime * 1000f) + " items/s ");
 
         }
 

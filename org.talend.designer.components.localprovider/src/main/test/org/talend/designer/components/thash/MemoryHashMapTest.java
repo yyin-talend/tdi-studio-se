@@ -16,8 +16,6 @@ import gnu.trove.THashMap;
 
 import java.util.Map;
 
-import org.talend.commons.utils.Bean;
-
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
  * 
