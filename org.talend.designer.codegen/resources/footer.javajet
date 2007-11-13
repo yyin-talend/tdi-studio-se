@@ -63,9 +63,18 @@
     }
     
     public static int runJob(String[] args) {
-    	for (String arg : args) {
-    		evalParam(arg);
-    	}
+    
+        String lastStr = "";
+        for (String arg : args) {
+            if (arg.equalsIgnoreCase("--context_param")) {
+                lastStr = arg;
+            } else if (lastStr.equals("")) {
+                evalParam(arg);
+            } else {
+                evalParam(lastStr + " " + arg);
+                lastStr = "";
+            }
+        }
     	
     	if(clientHost == null) {
     		clientHost = defaultClientHost;
