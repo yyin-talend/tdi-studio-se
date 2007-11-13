@@ -5,7 +5,7 @@
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
 //
-// You should have received a copy of the  agreement
+// You should have received a copy of the agreement
 // along with this program; if not, write to Talend SA
 // 9 rue Pages 92150 Suresnes, France
 //   
@@ -27,6 +27,9 @@ import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.impl.AdapterImpl;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.GraphicalViewer;
+import org.eclipse.gef.commands.CommandStack;
+import org.eclipse.gef.commands.CommandStackEvent;
+import org.eclipse.gef.commands.CommandStackEventListener;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
@@ -120,8 +123,6 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
 
     private AbstractDecoratedTextEditor codeEditor;
 
-    private boolean alreadyGenerated = false;
-
     private Process process;
 
     private IProcessor processor;
@@ -129,6 +130,8 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
     private String oldJobName;
 
     private boolean keepPropertyLocked; // used only if the user try to open more than one editor at a time.
+
+    private boolean codeSync = false;
 
     public MultiPageTalendEditor() {
         super();
@@ -212,7 +215,18 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
         if (process.getGeneratingNodes().size() != 0) {
             ProcessorUtilities.generateCode(process, process.getContextManager().getDefaultContext(), false, false, true,
                     ProcessorUtilities.GENERATE_WITH_FIRST_CHILD);
+            codeSync = true;
         }
+
+        CommandStackEventListener commandStackEventListener = new CommandStackEventListener() {
+
+            public void stackChanged(CommandStackEvent event) {
+                codeSync = false;
+            }
+        };
+        CommandStack commandStack = (CommandStack) designerEditor.getAdapter(CommandStack.class);
+        commandStack.addCommandStackEventListener(commandStackEventListener);
+
     }
 
     /**
@@ -287,7 +301,6 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
         getTalendEditor().getProperty().eAdapters().remove(dirtyListener);
         getEditor(0).doSave(monitor);
         getTalendEditor().getProperty().eAdapters().add(dirtyListener);
-        alreadyGenerated = false;
         codeSync();
 
         propertyIsDirty = false;
@@ -296,19 +309,15 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
     }
 
     public void codeSync() {
-        if (alreadyGenerated) {
-            return;
-        }
-        // ProcessorUtilities.generateCode(process,
-        // process.getContextManager().getDefaultContext(), false, false,
-        // true);
-        try {
-            processor.generateCode(false, false, true);
+        if (!codeSync && process.getGeneratingNodes().size() != 0) {
+            try {
+                processor.generateCode(false, false, true);
 
-        } catch (ProcessorException pe) {
-            MessageBoxExceptionHandler.process(pe);
+            } catch (ProcessorException pe) {
+                MessageBoxExceptionHandler.process(pe);
+            }
+            codeSync = true;
         }
-        alreadyGenerated = true;
     }
 
     /**
@@ -384,9 +393,6 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
         super.pageChange(newPageIndex);
         setName();
         if (newPageIndex == 1) {
-            if (isDirty()) {
-                alreadyGenerated = false;
-            }
             codeSync();
 
             if (codeEditor instanceof ISyntaxCheckableEditor) {

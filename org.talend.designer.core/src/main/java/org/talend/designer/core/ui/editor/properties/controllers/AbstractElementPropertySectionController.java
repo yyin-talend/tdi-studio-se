@@ -5,7 +5,7 @@
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
 //
-// You should have received a copy of the  agreement
+// You should have received a copy of the agreement
 // along with this program; if not, write to Talend SA
 // 9 rue Pages 92150 Suresnes, France
 //   
@@ -655,7 +655,9 @@ public abstract class AbstractElementPropertySectionController implements Proper
                             PropertyChangeCommand lastCommand = (PropertyChangeCommand) lastCommandObject;
                             if (name.equals(lastCommand.getPropName()) && (lastCommand.getElement() == elem)) {
                                 String text = ControlUtils.getText(control);
-                                lastCommand.modifyValue(text);
+                                lastCommand.dispose();
+                                commandStack.execute(new PropertyChangeCommand(elem, name, text));
+                                // lastCommand.modifyValue(text);
                             }
                         }
                     }
