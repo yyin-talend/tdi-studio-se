@@ -1,0 +1,162 @@
+#########
+Axel PC
+#########
+
+With THashMap class and WITHOUT HashFile
+------------------
+134151 milliseconds for 60000000 objects to STORE. 447000 items/s 
+waiting for garbage collector...
+'before' heap: 140168 bytes, 'after' heap: 1554156024 bytes 
+heap delta: 1554015856 bytes 
+size by item: 26 bytes 
+Number of loops: 60000000
+Number of items: 60000000
+Time: 135 s
+
+152120 milliseconds for 70000000 objects to STORE. 460000 items/s 
+waiting for garbage collector...
+'before' heap: 140696 bytes, 'after' heap: 1707881976 bytes 
+heap delta: 1707741280 bytes 
+size by item: 24 bytes 
+Number of loops: 70000000
+Number of items: 70000000
+Time: 153 s
+
+
+With THashMap class and SimpleHashFile
+------------------
+3856 milliseconds for 100000 objects to STORE. 25000 items/s 
+3615 milliseconds for 100000 objects to READ. 27000 items/s 
+'before' heap: 1274168 bytes, 'after' heap: 4977296 bytes 
+heap delta: 3703128 bytes 
+size by item: 37 bytes 
+Number of loops: 100000
+Number of items: 100000
+Time: 7 s
+
+279767 milliseconds for 10000000 objects to STORE. 35000 items/s 
+302748 milliseconds for 10000000 objects to READ. 33000 items/s 
+'before' heap: 1274168 bytes, 'after' heap: 325257696 bytes 
+heap delta: 323983528 bytes 
+size by item: 32 bytes 
+Number of loops: 10000000
+Number of items: 10000000
+Time: 582 s
+
+1401670 milliseconds for 42000000 objects to STORE. 29000 items/s
+1561101 milliseconds for 42000000 objects to READ. 26000 items/s 
+'before' heap: 140168 bytes, 'after' heap: 1344255912 bytes 
+heap delta: 1344115744 bytes 
+size by item: 32 bytes 
+Number of loops: 42000000
+Number of items: 42000000
+Time: 2962 s
+
+With THashMap class and DoubleHashFile
+------------------
+2358244 milliseconds for 42000000 objects to STORE. 17811 items/s 
+1715513 milliseconds for 42000000 objects to READ. 24489 items/s 
+waiting for garbage collector...
+'before' heap: 140168 bytes, 'after' heap: 1008256048 bytes 
+heap delta: 1008115880 bytes 
+size by item: 24 bytes 
+Number of loops: 42000000
+Number of items: 42000000
+Time: 4073 s
+
+3942866 milliseconds for 70000000 objects to STORE. 17000 items/s 
+4086505 milliseconds for 70000000 objects to READ. 17000 items/s 
+waiting for garbage collector...
+'before' heap: 140168 bytes, 'after' heap: 1707900576 bytes 
+heap delta: 1707760408 bytes 
+size by item: 24 bytes 
+Number of loops: 70000000
+Number of items: 70000000
+Time: 8030 s
+
+
+ * 
+ * 
+With HashMap class
+------------------
+284282 milliseconds for 10000000 objects to READ. 35000 items/s 
+35 items/s 
+waiting for garbage collector...
+'before' heap: 1274872 bytes, 'after' heap: 548383120 bytes 
+heap delta: 547108248 bytes 
+size by item: 55 bytes 
+Number of loops: 10000000
+Number of items: 10000000
+Time: 366 s
+
+
+693379 milliseconds for 25000000 objects to STORE. 36000 items/s 
+794806 milliseconds for 25000000 objects to READ. 31000 items/s 
+31 items/s 
+waiting for garbage collector...
+'before' heap: 140696 bytes, 'after' heap: 1334371592 bytes 
+heap delta: 1334230896 bytes 
+size by item: 53 bytes 
+Number of loops: 25000000
+Number of items: 25000000
+Time: 1488 s
+
+
+#########
+Dali PC
+#########
+
+With THashMap class, DoubleHashFile, WITHOUT random read access
+------------------------------------------
+
+3712 milliseconds for 100000 objects to STORE. 26939 items/s 
+Read step
+Reading 0, time since last display0.0 s
+3149 milliseconds for 100000 objects to READ. 31756 items/s 
+waiting for garbage collector...
+'before' heap: 138904 bytes, 'after' heap: 2596176 bytes 
+heap delta: 2457272 bytes 
+size by item: 25 bytes 
+Number of loops: 100000
+Number of items: 100000
+Time: 6 s
+
+33656 milliseconds for 1000000 objects to STORE. 29712 items/s 
+Read step
+27129 milliseconds for 1000000 objects to READ. 36860 items/s 
+waiting for garbage collector...
+'before' heap: 138904 bytes, 'after' heap: 24741008 bytes 
+heap delta: 24602104 bytes 
+size by item: 25 bytes 
+Number of loops: 1000000
+Number of items: 1000000
+Time: 60 s
+
+
+With THashMap class, DoubleHashFile, with random read access
+------------------------------------------
+
+
+389997 milliseconds for 10000000 objects to STORE. 25000 items/s 
+3866934 milliseconds for 10000000 objects to READ. 2000 items/s 
+waiting for garbage collector...
+'before' heap: 136848 bytes, 'after' heap: 244180584 bytes 
+heap delta: 244043736 bytes 
+size by item: 24 bytes 
+Number of loops: 10000000
+Number of items: 10000000
+Time: 4257 s
+
+
+With THashMap class, SqliteDBHash, with random read access
+------------------------------------------
+39503 milliseconds for 100000 objects to STORE. 2531 items/s 
+43118 milliseconds for 100000 objects to READ. 2319 items/s 
+waiting for garbage collector...
+'before' heap: 137992 bytes, 'after' heap: 7163432 bytes 
+heap delta: 7025440 bytes 
+size by item: 70 bytes 
+Number of loops: 100000
+Number of items: 100000
+Time: 82 s
+
