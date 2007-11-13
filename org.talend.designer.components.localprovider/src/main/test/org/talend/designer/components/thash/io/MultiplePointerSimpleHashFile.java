@@ -69,7 +69,7 @@ class MultiplePointerSimpleHashFile implements MapHashFile {
     
     long totalGetTime = 0;
     
-    int readPointersNumber = 500;
+    int readPointersNumber = 1000;
 
     private RandomAccessFile[] raArray;
 

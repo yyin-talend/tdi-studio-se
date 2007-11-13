@@ -21,6 +21,10 @@
 //============================================================================
 package org.talend.designer.components.thash.io;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.ObjectOutputStream;
+
 
 /**
  * DOC amaumont  class global comment. Detailled comment
@@ -49,6 +53,14 @@ public class Test {
         System.out.println("short2=" +shortAddressable/8 );
         
         System.out.println(24 % 100);
+        
+//        ByteArrayOutputStream bao = new ByteArrayOutputStream();
+//        DataOutputStream dos = new DataOutputStream(bao);
+//        ObjectOutputStream oos = new ObjectOutputStream(dos);
+//        oos.writeObject(object);
+//        dos.write(..)
+//        
+//        randomAccessFile.write(bao.toByteArray()
         
         
     }

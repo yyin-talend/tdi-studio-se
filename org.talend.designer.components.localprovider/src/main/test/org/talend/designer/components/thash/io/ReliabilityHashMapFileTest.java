@@ -116,17 +116,7 @@ public class ReliabilityHashMapFileTest {
         
          Map hashMap = new THashMap(loop, 1.0f, objectHashingStrategy); // ??
 //        Map hashMap = new THashMap(loop + (int)((float)loop * 0.1f), 0.1f, objectHashingStrategy);
-        
-        if(hashMap instanceof THashMap) {
-            System.out.println(">> THashMap");
-        } else if(hashMap instanceof THashMap) {
-            System.out.println(">> HashMap");
-        } else {
-            System.out.println(">> HashMap type not found");
-        }
-        
-
-
+                
         hashFile.readonly = readonly;
 
         System.out.println("Write step");
@@ -231,6 +221,8 @@ public class ReliabilityHashMapFileTest {
         System.out.println("size by item: " + size + " bytes ");
         System.out.println("Number of loops: " + loop);
         System.out.println("Number of items: " + hashMap.size());
+        System.out.println("Read randomized: " + randomRead);
+        System.out.println("Hash class used: " + hashFile.getClass().getName());
         if (loop != hashMap.size()) {
             System.out.println("WARNING: loops number is different of items number !");
         }

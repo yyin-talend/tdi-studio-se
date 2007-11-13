@@ -102,9 +102,33 @@ Number of items: 25000000
 Time: 1488 s
 
 
+With THashMap class, SimpleHashFile, with random read access
+------------------------------------------
+
+389997 milliseconds for 10000000 objects to STORE. 25000 items/s 
+??? milliseconds for 10000000 objects to READ. Near 300 items/s 
+
 #########
 Dali PC
 #########
+
+
+With THashMap class, SimpleHashFile, WITHOUT random read access
+------------------------------------------
+
+Starting with 10000000 items 
+229114 milliseconds for 10000000 objects to STORE. 43646 items/s 
+245129 milliseconds for 10000000 objects to READ. 40794  items/s 
+totalGetTime from disk=62790 ms
+countReturnFalse1=26091810
+waiting for garbage collector...
+'before' heap: 716952 bytes, 'after' heap: 244757952 bytes 
+heap delta: 244041000 bytes 
+size by item: 24 bytes 
+Number of loops: 10000000
+Number of items: 10000000
+Time: 474 s
+
 
 With THashMap class, DoubleHashFile, WITHOUT random read access
 ------------------------------------------
@@ -134,17 +158,46 @@ Time: 60 s
 
 
 
-With THashMap class, SimpleHashFile, with random read access
+
+With THashMap class, DoubleHashFile, with random read access
 ------------------------------------------
 
-389997 milliseconds for 10000000 objects to STORE. 25000 items/s 
-??? milliseconds for 10000000 objects to READ. Near 300 items/s 
+Starting with 10000000 items 
+344760 milliseconds for 10000000 objects to STORE. 29005 items/s 
+totalGetTime from disk=1436938 ms
+Reading 9999999, time since last display: 2534 ms
+1629884 milliseconds for 10000000 objects to READ. 6135  items/s 
+countReturnFalse1=26101284
+waiting for garbage collector...
+'before' heap: 716792 bytes, 'after' heap: 244728712 bytes 
+heap delta: 244011920 bytes 
+size by item: 24 bytes 
+Number of loops: 10000000
+Number of items: 10000000
+Time: 1974 s
+
+
+With THashMap class, MultiplePointerSimpleHashFile with 1000 read pointers, with random read access
+------------------------------------------
+
+229703 milliseconds for 10000000 objects to STORE. 43534 items/s 
+608532 milliseconds for 10000000 objects to READ. 16432  items/s 
+countReturnFalse1=26049086
+waiting for garbage collector...
+'before' heap: 717808 bytes, 'after' heap: 244773512 bytes 
+heap delta: 244055704 bytes 
+size by item: 24 bytes 
+Number of loops: 10000000
+Number of items: 10000000
+Time: 838 s
+
+
+
 
 
 
 With THashMap class, DoubleHashFile, WITHOUT random read access
 ------------------------------------------
-
 
 389997 milliseconds for 10000000 objects to STORE. 25000 items/s 
 3866934 milliseconds for 10000000 objects to READ. 2000 items/s 
