@@ -31,7 +31,7 @@ import org.talend.designer.components.thash.Sizeof;
  */
 public class ReliabilityHashMapFileTest {
 
-    public static MultipleHashFile hashFile;
+    public static MultiplePointerSimpleHashFile hashFile;
 
     public static void main(String[] args) throws Exception {
 
@@ -50,7 +50,8 @@ public class ReliabilityHashMapFileTest {
         
         // change also in Bean.equals(...) class
 //        hashFile = SimpleHashFile.getInstance();
-        hashFile = MultipleHashFile.getInstance();
+        hashFile = MultiplePointerSimpleHashFile.getInstance();
+//        hashFile = DoubleHashFile.getInstance();
 
         
         String filePath = "/tmp/talend_hash";
@@ -168,12 +169,6 @@ public class ReliabilityHashMapFileTest {
             long lastTime = start;
             hashFile.initGet(filePath);
             for (int i = 0; i < loop; i++) {
-                if (i % 100000 == 0) {
-                    System.out.println("Reading " + i + ", time since last display"
-                            + (System.currentTimeMillis() - lastTime) / 1000 + " s");
-                    lastTime = System.currentTimeMillis();
-                }
-
                 Bean bean = null;
                 // => bean from main flow in tMap for example...
                 if(randomRead) {
@@ -203,6 +198,15 @@ public class ReliabilityHashMapFileTest {
                     throw new RuntimeException("Values of beans are different with cursorPosition "
                             + keyForMap.cursorPosition);
                 }
+                
+                if ((i + 1) % 100000 == 0) {
+                    long currentTimeMillis = System.currentTimeMillis();
+                    System.out.println("Reading " + i + ", time since last display: "
+                            + (int)((float)(currentTimeMillis - lastTime)) + " ms");
+                    lastTime = currentTimeMillis;
+                }
+
+                
             }
             hashFile.endGet(filePath);
             end = System.currentTimeMillis();

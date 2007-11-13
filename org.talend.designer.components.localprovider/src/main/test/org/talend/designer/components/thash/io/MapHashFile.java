@@ -41,7 +41,7 @@ interface MapHashFile {
 
     public void endPut() throws IOException;
 
-    public void initGet(String container) throws FileNotFoundException;
+    public void initGet(String container) throws IOException;
 
     public void endGet(String container) throws IOException;
 

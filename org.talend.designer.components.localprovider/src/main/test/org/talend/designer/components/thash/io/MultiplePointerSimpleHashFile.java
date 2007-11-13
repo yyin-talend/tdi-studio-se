@@ -27,11 +27,11 @@ import java.io.RandomAccessFile;
  * DOC amaumont class global comment. Detailled comment <br/>
  * 
  */
-class SimpleHashFile implements MapHashFile {
+class MultiplePointerSimpleHashFile implements MapHashFile {
 
-    private static SimpleHashFile instance;
+    private static MultiplePointerSimpleHashFile instance;
 
-    private SimpleHashFile() {
+    private MultiplePointerSimpleHashFile() {
     }
 
     /**
@@ -39,9 +39,9 @@ class SimpleHashFile implements MapHashFile {
      * 
      * @return the instance if this project handler
      */
-    public static synchronized SimpleHashFile getInstance() {
+    public static synchronized MultiplePointerSimpleHashFile getInstance() {
         if (instance == null) {
-            instance = new SimpleHashFile();
+            instance = new MultiplePointerSimpleHashFile();
         }
         return instance;
     }
@@ -68,17 +68,26 @@ class SimpleHashFile implements MapHashFile {
     boolean threaded = true;
     
     long totalGetTime = 0;
+    
+    int readPointersNumber = 500;
+
+    private RandomAccessFile[] raArray;
+
+    private long fileSize;
+
+    private int offsetBetweenPointer;
 
     public Object get(String container, long cursorPosition, int hashcode) throws IOException, ClassNotFoundException {
         if (cursorPosition != lastRetrievedCursorPosition) {
             long timeBefore = System.currentTimeMillis();
+            RandomAccessFile ra = getPointer(cursorPosition);
             ra.seek(cursorPosition);
             byte[] byteArray = new byte[ra.readInt()];
             ra.read(byteArray);
             totalGetTime += System.currentTimeMillis() - timeBefore;
             lastRetrievedObject = new ObjectInputStream(new ByteArrayInputStream(byteArray)).readObject();
             lastRetrievedCursorPosition = cursorPosition;
-            if((++count + 1) % 100000 == 0) {
+            if((++count + 1) % 10000 == 0) {
                 System.out.println("totalGetTime from disk=" + totalGetTime + " ms");
             }
         }
@@ -122,6 +131,12 @@ class SimpleHashFile implements MapHashFile {
         return returnPosition;
     }
 
+    public RandomAccessFile getPointer(long cursorPosition) {
+        int index = (int) (cursorPosition/offsetBetweenPointer);
+//        System.out.println(index);
+        return raArray[index];
+    }
+    
     public void initPut(String container) throws IOException {
         if (!readonly) {
             File file = new File(container);
@@ -137,14 +152,26 @@ class SimpleHashFile implements MapHashFile {
         }
     }
 
-    public void initGet(String container) throws FileNotFoundException {
-        ra = new RandomAccessFile(container, "r");
+    public void initGet(String container) throws IOException {
+        raArray = new RandomAccessFile[readPointersNumber];
+        File file = new File(container);
+        fileSize = file.length();
+        
+        offsetBetweenPointer = (int)((float)fileSize / (float)(readPointersNumber));
+        
+        for (int i = 0; i < readPointersNumber; i++) {
+            raArray[i] = new RandomAccessFile(container, "r");
+            raArray[i].seek((offsetBetweenPointer) * (i + 1) - offsetBetweenPointer / 2);
+        }
     }
 
     public void endGet(String container) throws IOException {
         if (!readonly) {
-            if (ra != null) {
-                ra.close();
+            for (int i = 0; i < readPointersNumber; i++) {
+                RandomAccessFile ra = raArray[i];
+                if (ra != null) {
+                    ra.close();
+                }
             }
             File file = new File(container);
 //            file.delete();

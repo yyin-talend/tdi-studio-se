@@ -133,7 +133,16 @@ Number of items: 1000000
 Time: 60 s
 
 
-With THashMap class, DoubleHashFile, with random read access
+
+With THashMap class, SimpleHashFile, with random read access
+------------------------------------------
+
+389997 milliseconds for 10000000 objects to STORE. 25000 items/s 
+??? milliseconds for 10000000 objects to READ. Near 300 items/s 
+
+
+
+With THashMap class, DoubleHashFile, WITHOUT random read access
 ------------------------------------------
 
 

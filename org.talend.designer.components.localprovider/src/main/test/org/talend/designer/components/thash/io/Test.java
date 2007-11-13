@@ -47,6 +47,10 @@ public class Test {
         int shortAddressable = ((int)Short.MAX_VALUE) - ((int)Short.MIN_VALUE);
         System.out.println("short=" +shortAddressable );
         System.out.println("short2=" +shortAddressable/8 );
+        
+        System.out.println(24 % 100);
+        
+        
     }
     
 }
