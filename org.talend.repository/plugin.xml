@@ -606,6 +606,11 @@
             id="org.talend.repository.migration.upgradetAdvancedXML"
             name="%migrationtask.UpgradetAdvancedFileOutputXMLMigrationTask.title"
             description="%migrationtask.UpgradetAdvancedFileOutputXMLMigrationTask.description"/>
+      <projecttask
+            class="org.talend.repository.model.migration.DieOnErrorDefaultValueMigrationTask"
+            id="org.talend.repository.model.migration.DieOnErrorDefaultValueMigrationTask"
+            name="set the Die On Error option default value as false">
+      </projecttask>
    </extension>
    <extension
          point="org.talend.core.librariesNeeded">
