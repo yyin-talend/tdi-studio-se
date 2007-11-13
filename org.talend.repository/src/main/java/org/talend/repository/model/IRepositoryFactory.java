@@ -5,7 +5,7 @@
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
 //
-// You should have received a copy of the  agreement
+// You should have received a copy of the agreement
 // along with this program; if not, write to Talend SA
 // 9 rue Pages 92150 Suresnes, France
 //   
@@ -20,6 +20,7 @@ import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.data.container.RootContainer;
 import org.talend.core.language.ECodeLanguage;
+import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.ContextItem;
@@ -249,5 +250,7 @@ public interface IRepositoryFactory {
     public void setDisplayToUser(boolean bool);
 
     public boolean isDisplayToUser();
+
+    public List<ModuleNeeded> getModulesNeededForJobs() throws PersistenceException;
 
 }
