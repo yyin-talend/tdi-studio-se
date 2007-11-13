@@ -5,7 +5,7 @@
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
 //
-// You should have received a copy of the  agreement
+// You should have received a copy of the agreement
 // along with this program; if not, write to Talend SA
 // 9 rue Pages 92150 Suresnes, France
 //   
@@ -248,6 +248,9 @@ public class TableController extends AbstractElementPropertySectionController {
                     if (tmpParam.getField() == EParameterFieldType.COLUMN_LIST
                             || tmpParam.getField() == EParameterFieldType.PREV_COLUMN_LIST
                             || tmpParam.getField() == EParameterFieldType.LOOKUP_COLUMN_LIST) {
+                        if ((j + 1) >= colList.size()) {
+                            break;
+                        }
                         TableViewerCreatorColumn column = (TableViewerCreatorColumn) colList.get(j + 1);
 
                         CCombo combo = (CCombo) column.getCellEditor().getControl();

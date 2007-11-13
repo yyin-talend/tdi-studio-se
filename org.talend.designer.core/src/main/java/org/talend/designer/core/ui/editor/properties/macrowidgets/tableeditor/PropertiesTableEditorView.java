@@ -5,7 +5,7 @@
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
 //
-// You should have received a copy of the  agreement
+// You should have received a copy of the agreement
 // along with this program; if not, write to Talend SA
 // 9 rue Pages 92150 Suresnes, France
 //   
@@ -158,24 +158,6 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                     ((CCombo) cellEditor.getControl()).setEditable(false);
                     ((CCombo) cellEditor.getControl())
                             .setEnabled(!(param.isRepositoryValueUsed() || param.isReadOnly() || tmpParam.isReadOnly()));
-                    // ((CCombo) cellEditor.getControl()).addFocusListener(new FocusListener() {
-                    //
-                    // public void focusGained(FocusEvent e) {
-                    // CCombo combo = (CCombo) e.getSource();
-                    // Table table = (Table) combo.getParent();
-                    // int rowNumber = table.getSelectionIndex();
-                    // String[] listToDisplay = getItemsToDisplay(element, copyOfTmpParam, rowNumber);
-                    // if (!Arrays.equals(listToDisplay, cellEditor.getItems())) {
-                    // cellEditor.setItems(listToDisplay);
-                    // }
-                    // }
-                    //
-                    // public void focusLost(FocusEvent e) {
-                    // // TODO Auto-generated method stub
-                    //
-                    // }
-                    //
-                    // });
                     column.setCellEditor(cellEditor, new CellEditorValueAdapter() {
 
                         @Override
