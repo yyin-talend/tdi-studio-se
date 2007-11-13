@@ -65,7 +65,7 @@ class SimpleHashFile implements MapHashFile {
 
     private int count;
 
-    public Object get(String container, long cursorPosition) throws IOException, ClassNotFoundException {
+    public Object get(String container, long cursorPosition, int hashcode) throws IOException, ClassNotFoundException {
         if (cursorPosition != lastRetrievedCursorPosition) {
             ra.seek(cursorPosition);
             byte[] byteArray = new byte[ra.readInt()];
@@ -138,7 +138,7 @@ class SimpleHashFile implements MapHashFile {
                 ra.close();
             }
             File file = new File(container);
-            file.delete();
+//            file.delete();
         }
     }
 

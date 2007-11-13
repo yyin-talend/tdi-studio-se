@@ -41,7 +41,7 @@ public class TestRAFile {
         hashFile.initGet(D_20071109TEMP);
         int size = cursorPositionList.size();
         for (int i = 0; i < size; i++) {
-            Bean bean = (Bean) hashFile.get("", cursorPositionList.get(i));
+            Bean bean = (Bean) hashFile.get("", cursorPositionList.get(i), -1);
 //            System.out.println(bean.primitiveInt + "  " + bean.name);
         }
         hashFile.endGet(D_20071109TEMP);

@@ -21,8 +21,6 @@
 //============================================================================
 package org.talend.designer.components.thash.io;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 
 /**
  * DOC amaumont  class global comment. Detailled comment
@@ -31,18 +29,24 @@ import java.io.IOException;
  * $Id: talend.epf 1 2006-09-29 17:06:40Z nrousseau $
  *
  */
-interface MapHashFile {
+public class Test {
 
-    public Object get(String container, long cursorPosition, int hashcode) throws IOException, ClassNotFoundException;
-
-    public long put(String container, Object bean) throws IOException;
-
-    public void initPut(String container) throws IOException;
-
-    public void endPut() throws IOException;
-
-    public void initGet(String container) throws FileNotFoundException;
-
-    public void endGet(String container) throws IOException;
-
+    public static void main(String[] args) {
+        
+        System.out.println(Long.SIZE);
+        System.out.println(Integer.SIZE);
+        System.out.println(Short.SIZE);
+        long intAddressable = ((long)Integer.MAX_VALUE) - ((long)Integer.MIN_VALUE);
+        
+        
+        
+        System.out.println("intAddressable / 121 = " + intAddressable/121);
+        System.out.println(intAddressable);
+        System.out.println(Integer.MAX_VALUE/8);
+        System.out.println(intAddressable/8 );
+        int shortAddressable = ((int)Short.MAX_VALUE) - ((int)Short.MIN_VALUE);
+        System.out.println("short=" +shortAddressable );
+        System.out.println("short2=" +shortAddressable/8 );
+    }
+    
 }

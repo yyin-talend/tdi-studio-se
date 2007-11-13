@@ -31,11 +31,12 @@ import org.talend.designer.components.thash.Sizeof;
  */
 public class ReliabilityHashMapFileTest {
 
-    public static DoubleHashFile hashFile;
+    public static MultipleHashFile hashFile;
 
     public static void main(String[] args) throws Exception {
 
 //         int loop = 1;
+//        int loop = 10000;
 //        int loop = 100000;    //   100 000 
 //        int loop = 1000000;   //  1 000 000
         int loop = 10000000;  // 10 000 000
@@ -49,8 +50,7 @@ public class ReliabilityHashMapFileTest {
         
         // change also in Bean.equals(...) class
 //        hashFile = SimpleHashFile.getInstance();
-        hashFile = DoubleHashFile.getInstance();
-//        hashFile = SqliteDBHash.getInstance();
+        hashFile = MultipleHashFile.getInstance();
 
         
         String filePath = "/tmp/talend_hash";
@@ -113,7 +113,8 @@ public class ReliabilityHashMapFileTest {
         // Data in File, ?? bytes , all=?? s, write=?? s (?? min), read=???? s (?? min)
         
         
-        Map hashMap = new THashMap(loop, 1.0f, objectHashingStrategy);
+         Map hashMap = new THashMap(loop, 1.0f, objectHashingStrategy); // ??
+//        Map hashMap = new THashMap(loop + (int)((float)loop * 0.1f), 0.1f, objectHashingStrategy);
         
         if(hashMap instanceof THashMap) {
             System.out.println(">> THashMap");
@@ -159,6 +160,7 @@ public class ReliabilityHashMapFileTest {
 
         
         Random rand = new Random(System.currentTimeMillis());
+
         
         if (readAfterStore) {
             System.out.println("Read step");
@@ -168,17 +170,17 @@ public class ReliabilityHashMapFileTest {
             for (int i = 0; i < loop; i++) {
                 if (i % 100000 == 0) {
                     System.out.println("Reading " + i + ", time since last display"
-                            + (float)(System.currentTimeMillis() - lastTime) / 1000 + " s");
+                            + (System.currentTimeMillis() - lastTime) / 1000 + " s");
                     lastTime = System.currentTimeMillis();
                 }
 
                 Bean bean = null;
                 // => bean from main flow in tMap for example...
                 if(randomRead) {
-                	int j = rand.nextInt(loop);
-                	bean = new Bean(j, String.valueOf(j));
+                    int v = rand.nextInt(loop);
+                    bean = new Bean(v, String.valueOf(v));
                 } else {
-                	bean = new Bean(i, String.valueOf(i));
+                    bean = new Bean(i, String.valueOf(i));
                 }
 
                 // => search properties of bean in lookup for example...
@@ -190,7 +192,7 @@ public class ReliabilityHashMapFileTest {
                 }
 
                 // => bean found from DB
-                Bean beanFromDB = (Bean) hashFile.get("buffer", keyForMap.cursorPosition);
+                Bean beanFromDB = (Bean) hashFile.get("buffer", keyForMap.cursorPosition, keyForMap.hashcode);
 
                 // validity test
                 if (beanFromDB == null) {
@@ -207,12 +209,13 @@ public class ReliabilityHashMapFileTest {
             
             deltaTime = (end - start);
             System.out.println(deltaTime + " milliseconds for " + loop + " objects to READ. "
-                    + (int)((float)loop / (float)deltaTime * 1000f) + " items/s ");
+                    + (int)((float)loop / (float)deltaTime * 1000f) + "  items/s ");
 
         }
 
         long time2 = System.currentTimeMillis();
 
+        System.out.println("countReturnFalse1=" + Bean.countReturnFalse1);
         System.out.println("waiting for garbage collector...");
         Sizeof.runGC();
         long heap2 = Sizeof.usedMemory(); // Take a before heap snapshot

@@ -13,7 +13,6 @@
 package org.talend.designer.components.thash.io;
 
 import java.io.Serializable;
-import java.util.Date;
 
 /**
  * 
@@ -28,6 +27,8 @@ public class Bean implements Serializable {
 
     transient int hashcode = -1;
     
+    public static int countReturnFalse1 = 0;
+
     /**
      * DOC amaumont Bean constructor comment.
      * 
@@ -72,15 +73,16 @@ public class Bean implements Serializable {
             return true;
         if (obj == null)
             return false;
-        final KeyForMap other = (KeyForMap) obj;
-
-        if(this.hashCode() != other.hashcode) {
+        
+        if(this.hashCode() != obj.hashCode()) {
+            countReturnFalse1++;
             return false;
         }
+        final KeyForMap other = (KeyForMap) obj;
         
         Object o = null;
         try {
-            o = ReliabilityHashMapFileTest.hashFile.get("buffer", (long)other.cursorPosition);
+            o = ReliabilityHashMapFileTest.hashFile.get("buffer", (long)other.cursorPosition, hashcode);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -90,33 +92,19 @@ public class Bean implements Serializable {
         Bean bean = (Bean) o;
 
         if (this.name == null) {
-            if ((String) bean.name != null)
+            if ((String) bean.name != null) {
+                System.out.println("return false 2");
                 return false;
-        } else if (!this.name.equals((String) bean.name))
+            }
+        } else if (!this.name.equals((String) bean.name)) {
+            System.out.println("return false 3");
             return false;
-        if (this.primitiveInt != bean.primitiveInt)
+        }
+        if (this.primitiveInt != bean.primitiveInt) {
+            System.out.println("return false 4");
             return false;
+        }
         return true;
-    }
-
-    
-    public int getPrimitiveInt() {
-        return primitiveInt;
-    }
-
-    
-    public void setPrimitiveInt(int primitiveInt) {
-        this.primitiveInt = primitiveInt;
-    }
-
-    
-    public String getName() {
-        return name;
-    }
-
-    
-    public void setName(String name) {
-        this.name = name;
     }
 
 }

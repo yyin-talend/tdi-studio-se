@@ -24,7 +24,7 @@ package org.talend.designer.components.thash.io;
         int cursorPosition;
 
         int hashcode;
-
+        
         /**
          * DOC amaumont KeyForMap constructor comment.
          */
@@ -55,6 +55,9 @@ package org.talend.designer.components.thash.io;
                 return true;
             if (obj == null)
                 return false;
+            if(this.hashcode != obj.hashCode()) {
+                return false;
+            }
             if (getClass() != obj.getClass())
                 return false;
             final KeyForMap other = (KeyForMap) obj;
