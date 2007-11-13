@@ -5,7 +5,7 @@
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
 //
-// You should have received a copy of the  agreement
+// You should have received a copy of the agreement
 // along with this program; if not, write to Talend SA
 // 9 rue Pages 92150 Suresnes, France
 //   
@@ -264,8 +264,13 @@ public class JavaProcessor extends Processor {
             if (!breakpointNodes.isEmpty()) {
                 String[] nodeNames = new String[breakpointNodes.size()];
                 int pos = 0;
+                String nodeName;
                 for (INode node : breakpointNodes) {
-                    nodeNames[pos++] = "[" + node.getUniqueName() + " main ] start"; //$NON-NLS-1$ //$NON-NLS-2$
+                    nodeName = node.getUniqueName();
+                    if (node.getComponent().getMultipleComponentManager() != null) {
+                        nodeName += "_" + node.getComponent().getMultipleComponentManager().getInput().getName(); //$NON-NLS-1$
+                    }
+                    nodeNames[pos++] = "[" + nodeName + " main ] start"; //$NON-NLS-1$ //$NON-NLS-2$
                 }
                 int[] lineNumbers = getLineNumbers(codeFile, nodeNames);
                 setBreakpoints(codeFile, getTypeName(), lineNumbers);
