@@ -386,7 +386,17 @@ if(columnList != null && columnList.size()>0){
                                     
                                     suffix = (suffix.equals("") ? ") " : suffix);
                                     
-                                    comma = ",";
+                                    if(precisionIgnored) {
+                                        
+                                        createSQL.append(prefix);
+                                        
+                                        comma = "";
+                                        
+                                    } else {
+                                        
+                                        comma = ",";
+                                        
+                                    }
                                     
                                     createSQL.append(comma + length);
                                     
@@ -411,7 +421,17 @@ if(columnList != null && columnList.size()>0){
                                     
                                     suffix = (suffix.equals("") ? ") " : suffix);
                                     
-                                    comma = ",";
+                                    if(lengthIgnored) {
+                                        
+                                        createSQL.append(prefix);
+                                        
+                                        comma = ""; 
+                                        
+                                    } else {
+                                        
+                                        comma = ",";
+                                        
+                                    }
                                     
                                     createSQL.append(comma + precision); 
                                     
