@@ -15,459 +15,1003 @@ imports="
 	java.util.List
 	java.util.ArrayList
 	java.util.Map
+	java.util.HashMap
 "
 %>
 
-<%
-	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
-	INode node = (INode)codeGenArgument.getArgument();	
-	String cid = node.getUniqueName();
-	boolean isRunInMultiThread = codeGenArgument.getIsRunInMultiThread();
-	String tableName = ElementParameterParser.getValue(node,"__TABLE__");
-	String dbType = ElementParameterParser.getValue(node,"__DBTYPE__");
-	String host = ElementParameterParser.getValue(node,"__HOST__");
-	String port = ElementParameterParser.getValue(node,"__PORT__");
-	String dbname = ElementParameterParser.getValue(node,"__DBNAME__");
-	String user = ElementParameterParser.getValue(node,"__USER__");
-	String pass = ElementParameterParser.getValue(node,"__PASS__");
-	String frameworkType=ElementParameterParser.getValue(node,"__JAVADBFRAME__");
-	final String dbmsId= ElementParameterParser.getValue(node,"__MAPPING__");
-	Dbms dbms=MetadataTalendType.getDbms(dbmsId);
-	
-	List<IMetadataColumn> columnList = null;
-	List<IMetadataTable> metadatas = node.getMetadataList();
-	
-	if(metadatas != null && metadatas.size()>0){
-		IMetadataTable metadata = metadatas.get(0);
-		if(metadata != null){
-			columnList = metadata.getListColumns();
-		}
-	}
-
-//inner class
-class Transfer{
-	public String dbDriver(INode node){
-		String dbType = ElementParameterParser.getValue(node,"__DBTYPE__");
-		if(dbType.equals("MSSQL")){
-			return "net.sourceforge.jtds.jdbc.Driver";
-		}else if(dbType.equals("MySQL")){
-			return "org.gjt.mm.mysql.Driver";
-		}else if(dbType.equals("Oracle")){
-			return "oracle.jdbc.driver.OracleDriver";
-		}else if(dbType.equals("Postgre")){
-			return "org.postgresql.Driver";
-		}else if(dbType.equals("Access")){
-			return "sun.jdbc.odbc.JdbcOdbcDriver";
-		}else if(dbType.equals("AS400")){
-            return "com.ibm.as400.access.AS400JDBCDriver";
-        }else if(dbType.equals("DB2")){
-			return "com.ibm.db2.jcc.DB2Driver";
-		}else if(dbType.equals("Firebird")){
-			return "org.firebirdsql.jdbc.FBDriver";
-		}else if(dbType.equals("Informix")){
-			return "com.informix.jdbc.IfxDriver";
-		}else if(dbType.equals("Ingres")){
-			return "com.ingres.jdbc.IngresDriver";
-		}else if(dbType.equals("JavaDB")){
-			String frameworkType=ElementParameterParser.getValue(node,"__JAVADBFRAME__");
-			if(frameworkType.equals("Embeded")){
-				return "org.apache.derby.jdbc.EmbeddedDriver";
-			}else if(frameworkType.equals("JCCJDBC")){
-				return "com.ibm.db2.jcc.DB2Driver";
-			}else if(frameworkType.equals("DERBYCLIENT")){
-				return "org.apache.derby.jdbc.ClientDriver";
-			}
-		}else if(dbType.equals("SQLite")){
-			return "org.sqlite.JDBC";
-		}else if(dbType.equals("Sybase")){
-			return "com.sybase.jdbc3.jdbc.SybDriver";
-		}else if(dbType.equals("ODBC")){
-			return "sun.jdbc.odbc.JdbcOdbcDriver";
-		}else if(dbType.equals("HSQLdb")){
-			return "org.hsqldb.jdbcDriver";
-		}else if(dbType.equals("Interbase")){
-			return "interbase.interclient.Driver";
-		}
-		return null;
-	}
-	
-	
-	public String url(INode node){	
-		//String tableName = ElementParameterParser.getValue(node,"__TABLE__");
-		String dbType = ElementParameterParser.getValue(node,"__DBTYPE__");
-		String host = ElementParameterParser.getValue(node,"__HOST__");
-		String port = ElementParameterParser.getValue(node,"__PORT__");
-		String dbname = ElementParameterParser.getValue(node,"__DBNAME__");
-		String user = ElementParameterParser.getValue(node,"__USER__");
-		String pass = ElementParameterParser.getValue(node,"__PASS__");
-		String oraType = ElementParameterParser.getValue(node,"__ORACLETYPE__");
-
-		if(dbType.equals("MSSQL")){
-			return "\"jdbc:jtds:sqlserver://\"+"+host+"+\":\"+"+port+"+\"//\"+"+dbname;
-		}else if(dbType.equals("MySQL")){
-			return "\"jdbc:mysql://\"+"+host+"+\":\"+"+port+"+\"/\"+"+dbname+ "+\"?noDatetimeStringSync=true\"";
-		}else if(dbType.equals("Oracle")){//depends on SID/Service
-					if(oraType.equals("Oracle SID")){
-						return "\"jdbc:oracle:thin:@\"+"+host+"+\":\"+" + port + "+\":\"+" + dbname;
-					}else{
-						return "\"dbc:oracle:thin:@(description=(address=(protocol=tcp)(host=\"+" + host + "+\")(port=\"+" + port + "+\"))(connect_data=(service_name=\"+" + dbname +"+\")))\"";			
-					}
-		}else if(dbType.equals("Postgre")){
-			return "\"jdbc:postgresql://\"+"+host+"+\":\"+"+port+"+\"/\"+"+dbname;
-		}else if(dbType.equals("Access")){
-		    String accessDbname = ElementParameterParser.getValue(node,"__ACCESSDBNAME__");
-			return "\"jdbc:odbc:Driver={Microsoft Access Driver (*.mdb)};DBQ=\"+"+accessDbname;
-		}else if(dbType.equals("AS400")){
-            return "\"jdbc:as400://\"+" + host + "+\"/\"+" + dbname + "+\";prompt=false\"";
-        }else if(dbType.equals("DB2")){
-			return "\"jdbc:db2://\"+"+host+"+\":\"+"+port+"+\"/\"+"+dbname;
-		}else if(dbType.equals("Firebird")){			
-			String firebirdDB=ElementParameterParser.getValue(node,"__FIREBIRDDBNAME__");
-			return "\"jdbc:firebirdsql:\"+"+host+"+\":\"+"+firebirdDB;
-		}else if(dbType.equals("Informix")){
-			String server=ElementParameterParser.getValue(node,"__INFORMIXSERVER__");			
-			return "\"jdbc:informix-sqli://\"+"+host+ "+\":\"+"+port+"+\"/\"+"+dbname+"+\":informixserver=\"+"+server;
-		}else if(dbType.equals("Ingres")){
-			return "\"jdbc:ingres://\"+"+host+"+\":\"+"+port+"+\"/\"+"+dbname;
-		}else if(dbType.equals("JavaDB")){
-			String frameworkType=ElementParameterParser.getValue(node,"__JAVADBFRAME__");
-			if(frameworkType.equals("Embeded")){
-				return "\"jdbc:derby:\"+" + dbname;
-			}else if(frameworkType.equals("JCCJDBC")){
-				return "\"+jdbc:derby:net://\"+"+host+"+\":\"+"+port+"+\"/\"+"+dbname;
-			}else if(frameworkType.equals("DERBYCLIENT")){
-				return "\"+jdbc:derby://\"+"+host+"+\":\"+"+port+"+\"/\"+"+dbname;
-			}
-		}else if(dbType.equals("SQLite")){		
-			String sqliteDB=ElementParameterParser.getValue(node,"__SQLITEDBNAME__");
-			return "\"jdbc:sqlite:/\"+" +sqliteDB.toLowerCase();
-		}else if(dbType.equals("Sybase")){
-			return "\"jdbc:sybase:Tds:\"+"+host+"+\":\"+"+port+"+\"/\"+"+dbname;
-		}else if(dbType.equals("ODBC")){
-			return "\"jdbc:odbc:\" + " + dbname;
-		}else if(dbType.equals("HSQLdb")){
-			String runningMode=ElementParameterParser.getValue(node,"__HSQLMODE__");
-			String tls=ElementParameterParser.getValue(node,"__TLS__");
-			String dbalias=ElementParameterParser.getValue(node,"__HSQLDATABASEALIAS__");
-			if(runningMode.equals("SERVER")){
-				if(tls.equals("true")){
-					return "\"jdbc:hsqldb:hsqls://\"+" + host + "+\":\"+" + port + "+\"/\"+" + dbalias;
-				}else{
-					return "\"jdbc:hsqldb:hsql://\"+" + host + "+\":\"+" + port + "+\"/\"+" + dbalias;
-				}
-			}else if(runningMode.equals("WEBSERVER")){
-				if(tls.equals("true")){
-					return "\"jdbc:hsqldb:https://\"+" + host + "+\":\"+" + port + "+\"/\"+" + dbalias;
-				}else{
-					return  "\"jdbc:hsqldb:http://\"+" + host + "+\":\"+" + port + "+\"/\"+" + dbalias;
-				}
-			}else if(runningMode.equals("PROCESS")){
-				String dbpath=ElementParameterParser.getValue(node,"__HSQLDATABASEPATH__");
-				String hdbname=ElementParameterParser.getValue(node,"__HSQLDATABASE__");
-				return "\"jdbc:hsqldb:file:\"+" + dbpath + "+\"/\"+" + hdbname + "+\";ifexists=true\"";
-			}
-		}else if(dbType.equals("Interbase")){
-			return "\"jdbc:interbase://\"+"+host+"+\"/\"+"+dbname;
-		}
-		return null;
-	}
-	
-	public String protectChar(String dbType, String tableName, INode node){
-        if(dbType.equals("Postgre")) {
-            String schema = ElementParameterParser.getValue(node,"__SCHEMA_POSTGRES__");
-            if(schema == null || schema.equals("") || schema.equals("\"\"")) {
-                return "\\\"\"+"+tableName+"+\"\\\"";
+<%	
+abstract class  Manager {
+    protected String dbName;
+    protected String userName;
+    protected String password;
+    protected String cid;
+    protected boolean temporary;
+    protected abstract String getDriver();
+    public abstract String getConnectionURL();
+    protected abstract String getDBMSId();
+    protected abstract String getLProtectedChar();
+    protected abstract String getRProtectedChar();
+    public Manager(String dbName, String userName, String password) {
+        this.dbName = dbName;
+        this.userName = userName;
+        this.password = password;        
+    }
+    public Manager(String dbName, String userName, String password, String cid) {
+        this(dbName, userName, password);
+        this.cid = cid;
+    }
+    public String getConnection() {
+        StringBuilder javaCode = new StringBuilder();
+        javaCode.append("java.lang.Class.forName(\"" + getDriver()+ "\");\r\n");
+        javaCode.append("java.sql.Connection conn_" + cid + "= java.sql.DriverManager.getConnection(\"" + getConnectionURL() + "\",\"" + userName + "\",\"" + password + "\");\r\n");
+        return javaCode.toString();
+    }
+    public String closeConnection() {
+        StringBuilder javaCode = new StringBuilder();
+        javaCode.append("if(conn_" + cid + " != null && !conn_" + cid + ".isClosed()) {\r\n");
+        javaCode.append("conn_" + cid + ".close();\r\n");
+        javaCode.append("}\r\n");
+        return javaCode.toString();
+    }
+    protected String retrieveTableName(String tableName) {
+        return tableName;
+    }
+    public String getDropTableSQL(String tableName) {
+        StringBuilder dropTableSQL = new StringBuilder();
+        dropTableSQL.append("DROP TABLE " + getLProtectedChar() + retrieveTableName(tableName) + getRProtectedChar());
+        return dropTableSQL.toString();
+    }
+    public String getCreateTableSQL(String tableName, List<IMetadataColumn> listColumn) {
+        MappingTypeRetriever mappingType = MetadataTalendType.getMappingTypeRetriever(getDBMSId());
+        StringBuilder createTableSQL = new StringBuilder();
+        String temp = "";
+        if(temporary) {
+            temp = "TEMPORARY "; 
+        }
+        createTableSQL.append("CREATE " + temp + "TABLE " + getLProtectedChar() + retrieveTableName(tableName) + getRProtectedChar() + "(");
+        List<String> pkList = new ArrayList<String>();
+        int count = 0;
+        String ending = ",";
+        for(IMetadataColumn metadataColumn : listColumn) {
+            if(count == listColumn.size() - 1 && pkList.size() == 0) {
+                ending = "";
+            }
+            if(metadataColumn.isKey()) {
+                pkList.add(getLProtectedChar() + metadataColumn.getOriginalDbColumnName() + getRProtectedChar() + " ");
+            }
+            createTableSQL.append(getLProtectedChar() + metadataColumn.getOriginalDbColumnName() + getRProtectedChar() + " ");
+            String dataType = null;
+            if(metadataColumn.getType() == null || metadataColumn.getType().trim().length() == 0) {
+                dataType = mappingType.getDefaultSelectedDbType(metadataColumn.getTalendType());
             } else {
-                return "\\\"\"+"+schema+"+\"\\\".\\\"\"+"+tableName+"+\"\\\"";
+                dataType = metadataColumn.getType();
             }
-        } else if(dbType.equals("DB2")||dbType.equals("Ingres")||dbType.equals("MSSQL")||dbType.equals("SQLite")||dbType.equals("Firebird")||dbType.equals("JavaDB")||dbType.equals("HSQLdb")||dbType.equals("Interbase")||dbType.equals("Informix")){
-			return "\\\"\"+"+tableName+"+\"\\\"";
-		}else if(dbType.equals("Access")){
-			return "[\"+"+tableName+"+\"]";
-		}else if(dbType.equals("MySQL")){
-			return "`\"+"+tableName+"+\"`";
-		}else if(dbType.equals("Sybase")){
-			return "\"+"+tableName+"+\"";
-		}else if(dbType.equals("AS400")){
-            return "\"+"+tableName+"+\"";
-        }
-		return "\"+"+tableName+"+\"";
-	}
-	
-	
-	public String sql(String dbType,String tableName,INode node){
-	String sql="";
-	//table name (special postgres schema)
-	if(dbType.equals("MySQL")&&ElementParameterParser.getValue(node,"__TEMPTABLE__").equals("true")){
-	    sql="create temporary table "+protectChar(dbType, tableName, node)+" (";
-	}else{
-		sql="create table "+protectChar(dbType, tableName, node)+" (";
-	}
-	
-		List<IMetadataTable> metadatas = node.getMetadataList();
-		List PKey=new ArrayList();	
-		if ((metadatas!=null)&&(metadatas.size()>0)) {
-			IMetadataTable metadata = metadatas.get(0);
-			if (metadata!=null) {
-				List<IMetadataColumn> columnList = metadata.getListColumns();
-				int colNum=1;									
-			 	for(IMetadataColumn column:columnList){	
-			 	//column name
-			 	   if(dbType.equals("MySQL")){
-			 			sql=sql+"`"+column.getOriginalDbColumnName()+"` ";
-			 		}else if(dbType.equals("AS400")||dbType.equals("Oracle")){
-			            sql=sql+column.getOriginalDbColumnName()+" ";
-			        }else{
-			 			sql=sql+"\\\""+column.getOriginalDbColumnName()+"\\\" ";
-			 		}
-			 	//primary key
-					if(column.isKey()==true){PKey.add(column.getOriginalDbColumnName());}
-			 	//column type
-				 		sql=sql+column.getType();
-			 	//column DataDefine
-			 	
-			 	MappingTypeRetriever mtr=MetadataTalendType.getMappingTypeRetriever(dbmsId);		 	
-			 
-			 
-			 
-			 	
-					if(column.getLength()==null) {column.setLength(0);};
-					if(column.getPrecision()==null) {column.setPrecision(0);};
-			 		if(column.getLength()!=0&&column.getPrecision()==0){     //only Length
-			 				if(!mtr.isLengthIgnored(dbmsId,column.getType()))	//and Length is not ignored
-			 					sql=sql+"("+column.getLength()+")";		 				
-			 		}else if(column.getLength()!=0&&column.getPrecision()!=0){		//Length and Precision not null
-			 				if(mtr.isPrecisionIgnored(dbmsId,column.getType())&&!mtr.isLengthIgnored(dbmsId,column.getType()))
-			 					sql=sql+"("+column.getLength()+")";				//only Precision is ignored
-			 				else if(!mtr.isPrecisionIgnored(dbmsId,column.getType())&&!mtr.isLengthIgnored(dbmsId,column.getType())){
-			 					// Precision and Length are not ignored	
-			 					if(mtr.isPreBeforeLength(dbmsId,column.getType()))
-								 	sql=sql+"("+column.getPrecision()+","+column.getLength()+")"; 
-								else
-								 	sql=sql+"("+column.getLength()+","+column.getPrecision()+")"; 				
-			 				}
-			 				else
-			 					sql=sql;					 				 			
-			 		}		 	
-			 		sql=sql+" ";
-			 	//default_value
-					sql=sql+fillValue(column.getDefault(),column.getTalendType());
-			 	//nullable
-			 		if(column.isNullable()==false){
-			 			sql=sql+"not null ";
-			 		}
-			 	//if_there_should_be_a ','
-			 		colNum=colNum+1;
-			 		if(!((colNum>columnList.size())&&(PKey.isEmpty()))){sql=sql+",";}
-			 	}
-			 	//primary key
-				 	if(!(PKey.isEmpty())){
-					 	sql=sql+" primary key (";
-					 	for(int i=0;i<PKey.size();i++){
-					 	
-						 	if(dbType.equals("MySQL")){
-				 				sql=sql+"`"+(String)PKey.get(i)+"` ";
-					 		}else if(dbType.equals("Oracle")){
-					 			sql=sql+(String)PKey.get(i);
-					 		}else{
-					 			sql=sql+"\\\""+(String)PKey.get(i)+"\\\" ";
-					 		}
-					 		if(i<PKey.size()-1){sql=sql+",";}
-					 	}
-					 	sql=sql+")";
-				 	}
-		 	}
-	 	}		
-		sql=sql+")";
-		return sql;
-	}
-	
-    public boolean isLackDBType(INode node) {
-
-        List<IMetadataTable> metadatas = node.getMetadataList();
-        List PKey = new ArrayList();
-        if ((metadatas != null) && (metadatas.size() > 0)) {
-            IMetadataTable metadata = metadatas.get(0);
-            if (metadata != null) {
-                List<IMetadataColumn> columnList = metadata.getListColumns();
-                for (IMetadataColumn column : columnList) {
-                    if (column.getType() == null || column.getType().trim().length() == 0) {
-                        return true;
-                    }
+            createTableSQL.append(dataType);
+            Integer length = metadataColumn.getLength() == null ? 0 : metadataColumn.getLength();
+            Integer precision = metadataColumn.getPrecision() == null ? 0 : metadataColumn.getPrecision();
+            boolean lengthIgnored = mappingType.isLengthIgnored(getDBMSId(), dataType);
+            boolean precisionIgnored = mappingType.isPrecisionIgnored(getDBMSId(), dataType);
+            String prefix = "";
+            String suffix = "";
+            String comma = "";
+            if(mappingType.isPreBeforeLength(getDBMSId(),dataType)) {
+                if(!precisionIgnored) {
+                    prefix = "(";
+                    suffix = ") ";
+                    createTableSQL.append(prefix + precision);
                 }
+                if(!lengthIgnored) {
+                    prefix = (prefix.equals("") ? "(" : prefix);
+                    suffix = (suffix.equals("") ? ") " : suffix);
+                    if(precisionIgnored) {
+                        createTableSQL.append(prefix);
+                        comma = "";
+                    } else {
+                        comma = ",";
+                    }
+                    createTableSQL.append(comma + length);
+                }
+                createTableSQL.append(suffix);
+            } else {
+                if(!lengthIgnored) {
+                    prefix = "(";
+                    suffix = ") ";
+                    createTableSQL.append(prefix + length);
+                }
+                if(!precisionIgnored) {
+                    prefix = (prefix.equals("") ? "(" : prefix);
+                    suffix = (suffix.equals("") ? ") " : suffix);
+                    if(lengthIgnored) {
+                        createTableSQL.append(prefix);
+                        comma = "";                        
+                    } else {
+                        comma = ",";
+                    }
+                    createTableSQL.append(comma + precision);
+                }
+                createTableSQL.append(suffix);
+            }
+            createTableSQL.append(getDefaultValueSQL(metadataColumn.getDefault()));
+            if(!metadataColumn.isNullable()) {
+                createTableSQL.append("not null" + ending);
+            }
+            count++;
+        }
+        if(pkList.size() > 0) {                
+            createTableSQL.append("primary key(");                
+            int i = 0;                
+            for(String pk : pkList) {                    
+                createTableSQL.append(pk);                    
+                if(i != pkList.size() - 1) {                        
+                    createTableSQL.append(",");                        
+                }                    
+                i++;                    
+            }                
+            createTableSQL.append(")");                
+        }
+        createTableSQL.append(")");
+        return createTableSQL.toString();
+    }
+    private String getDefaultValueSQL(String defaultValue) {
+        if(defaultValue == null || defaultValue.equals("\"\"") || defaultValue.equals("")) {
+            return " ";
+        } else if((defaultValue.startsWith("\"") || defaultValue.startsWith("'")) && (defaultValue.endsWith("\"") || defaultValue.endsWith("'"))) {
+            return "default '" + defaultValue.substring(1,defaultValue.length() - 1) + "' ";
+        } else if(defaultValue.equalsIgnoreCase("null")) {
+            return "default null ";
+        } else {
+            return "default " + defaultValue + " ";
+        }            
+    }
+}
+class AS400Manager extends Manager {
+    private String host;
+    public AS400Manager(String host, String dbName, String userName, String password, String cid) {
+        super(dbName, userName, password, cid);
+        this.host = host;
+    }
+    protected String getDriver() {
+        return "com.ibm.as400.access.AS400JDBCDriver";
+    }
+    public String getConnectionURL() {
+        return "jdbc:as400://" + host + "/"+ dbName + ";prompt=false";
+    }
+    protected String getDBMSId() {
+        return "as400_id";
+    }
+    protected String getLProtectedChar() {
+        return "\\\"";
+    }
+    protected String getRProtectedChar() {
+        return "\\\"";
+    }
+}   
+class AccessManager extends Manager {
+    public AccessManager(String dbName, String userName, String password, String cid) {
+        super(dbName, userName, password, cid);
+    }
+    protected String getDriver() {
+        return "sun.jdbc.odbc.JdbcOdbcDriver";
+    }
+    public String getConnectionURL() {
+        return "jdbc:odbc:Driver={Microsoft Access Driver (*.mdb)};DBQ=" + dbName;
+    }
+    protected String getDBMSId() {
+        return "access_id";
+    }
+    protected String getLProtectedChar() {
+        return "[";
+    }
+    protected String getRProtectedChar() {
+        return "]";
+    }
+}
+class DB2Manager extends Manager {
+    private String host;
+    private String port;
+    public DB2Manager(String host, String port, String dbName, String userName, String password, String cid) {
+        super(dbName, userName, password, cid);
+        this.host = host;
+        this.port = port;
+    }
+    protected String getDriver() {
+        return "com.ibm.db2.jcc.DB2Driver";
+    }
+    public String getConnectionURL() {
+        return "jdbc:db2://" + host + ":" + port + "/" + dbName;
+    }
+    protected String getDBMSId() {
+        return "ibmdb2_id";
+    }
+    protected String getLProtectedChar() {
+        return "\\\"";
+    }
+    protected String getRProtectedChar() {
+        return "\\\"";
+    }
+}
+class FirebirdManager extends Manager {
+    private String host;
+    public FirebirdManager(String host, String dbName, String userName, String password, String cid) {
+        super(dbName, userName, password, cid);
+        this.host = host;
+    }
+    protected String getDriver() {
+        return "org.firebirdsql.jdbc.FBDriver";
+    }
+    public String getConnectionURL() {
+        return "jdbc:firebirdsql:" + host + ":" + dbName;
+    }
+    protected String getDBMSId() {
+        return "firebird_id";
+    }
+    protected String getLProtectedChar() {
+        return "\\\"";
+    }
+    protected String getRProtectedChar() {
+        return "\\\"";
+    }
+}
+class HSQLDBManager extends Manager {
+    private String runningMode;
+    private String host;
+    private String port;
+    private String dbPath;
+    private String dbAlias;
+    private boolean tls;
+    public HSQLDBManager(String host, String port, String dbPath, String dbName, String dbAlias, String userName, String password, 
+            String runningMode, boolean tls, String cid) {
+        super(dbName, userName, password, cid);
+        this.host = host;
+        this.port = port;
+        this.dbPath = dbPath;
+        this.dbAlias = dbAlias;
+        this.runningMode = runningMode;
+        this.tls = tls;
+    }
+    protected String getDriver() {
+        return "org.hsqldb.jdbcDriver";
+    }
+    public String getConnectionURL() {
+        String connectionURL = null;
+        if(runningMode.equals("HSQLDB_SERVER")) {
+            if(tls) {
+                connectionURL = "jdbc:hsqldb:hsqls://" + host + ":" + port + "/" + dbAlias;
+            } else {
+                connectionURL = "jdbc:hsqldb:hsql://" + host + ":" + port + "/" + dbAlias;
+            }
+        } else if(runningMode.equals("HSQLDB_WEBSERVER")) {
+            if(tls) {
+                connectionURL = "jdbc:hsqldb:https://" + host + ":" + port + "/" + dbAlias;
+            } else {
+                connectionURL = "jdbc:hsqldb:http://" + host + ":" + port + "/" + dbAlias;
+            }               
+        } else {
+            connectionURL = "jdbc:hsqldb:file:" + dbPath + "/" + dbName + ";ifexists=true";
+        }
+        return connectionURL;
+    }
+    protected String getDBMSId() {
+        return "hsqldb_id";
+    }
+    protected String getLProtectedChar() {
+        return "\\\"";
+    }
+    protected String getRProtectedChar() {
+        return "\\\"";
+    }
+    public String closeConnection() {
+        StringBuilder javaCode = new StringBuilder();
+        javaCode.append("if(conn_" + cid + " != null && !conn_" + cid + ".isClosed()) {\r\n");
+        javaCode.append("java.sql.Statement stmtClose_" + cid + " = conn_" + cid + ".createStatement();\r\n");
+        javaCode.append("stmtClose_" + cid + ".execute(\"SHUTDOWN\");\r\n");
+        javaCode.append("conn_" + cid + ".close();\r\n");
+        javaCode.append("}\r\n");
+        return javaCode.toString();
+    }
+}
+class InformixManager extends Manager {
+    private String host;
+    private String port;
+    private String dbServer;
+    public InformixManager(String host, String port, String dbName, String dbServer, String userName, String password, String cid) {
+        super(dbName, userName, password, cid);
+        this.host = host;
+        this.port = port;
+        this.dbServer = dbServer;
+    }
+    protected String getDriver() {
+        return "com.informix.jdbc.IfxDriver";
+    }
+    public String getConnectionURL() {
+        return "jdbc:informix-sqli://" + host + ":" + port + "/" + dbName + ":informixserver=" + dbServer;
+    }
+    protected String getDBMSId() {
+        return "informix_id";
+    }
+    protected String getLProtectedChar() {
+        return "\\\"";
+    }
+    protected String getRProtectedChar() {
+        return "\\\"";
+    }
+}
+class IngresManager extends Manager {
+    private String host;
+    private String port;
+    public IngresManager(String host, String port, String dbName, String userName, String password, String cid) {
+        super(dbName, userName, password, cid);
+        this.host = host;
+        this.port = port;
+    }
+    protected String getDriver() {
+        return "com.ingres.jdbc.IngresDriver";
+    }
+    public String getConnectionURL() {
+        return "jdbc:ingres://" + host + ":" + port + "/" + dbName;
+    }
+    protected String getDBMSId() {
+        return "ingres_id";
+    }
+    protected String getLProtectedChar() {
+        return "\\\"";
+    }
+    protected String getRProtectedChar() {
+        return "\\\"";
+    }
+}
+class InterbaseManager extends Manager {
+    private String host;
+    public InterbaseManager(String host, String dbName, String userName, String password, String cid) {
+        super(dbName, userName, password, cid);
+        this.host = host;
+    }
+    protected String getDriver() {
+        return "interbase.interclient.Driver";
+    }
+    public String getConnectionURL() {
+        return "jdbc:interbase://" + host + "/" + dbName;
+    }
+    protected String getDBMSId() {
+        return "interbase_id";
+    }
+    protected String getLProtectedChar() {
+        return "\\\"";
+    }
+    protected String getRProtectedChar() {
+        return "\\\"";
+    }
+}
+class JavaDBManager extends Manager {
+    private String host;
+    private String port;
+    private String dbRootPath;
+    private String frameworkType;
+    private boolean connectionFlag;
+    public JavaDBManager(String host, String port, String dbRootPath, String dbName, String userName, String password, String frameworkType, boolean connectionFlag, String cid) {
+        super(dbName, userName, password, cid);
+        this.host = host;
+        this.port = port;
+        this.dbRootPath = dbRootPath;
+        this.frameworkType = frameworkType;
+        this.connectionFlag = connectionFlag;
+    }
+    protected String getDriver() {
+        String driver = null;
+        if(frameworkType.equals("EMBEDED")) {
+            driver = "org.apache.derby.jdbc.EmbeddedDriver";
+        } if(frameworkType.equals("JCCJDBC")) {
+            driver = "com.ibm.db2.jcc.DB2Driver";
+        } else {
+            driver = "org.apache.derby.jdbc.ClientDriver";
+        }
+        return driver;
+    }
+    public String getConnectionURL() {
+        String connectionURL = null;
+        if(frameworkType.equals("EMBEDED")) {
+            connectionURL = "jdbc:derby:" + dbName;
+        } else if(frameworkType.equals("JCCJDBC")) {
+            connectionURL = "jdbc:derby:net://" + host + ":" + port + "/" + dbName;
+        } else {
+            connectionURL = "jdbc:derby://" + host + ":" + port + "/" + dbName;
+        }
+        return connectionURL;
+    }
+    public String getConnection() {
+        StringBuilder javaCode = new StringBuilder();
+        if(frameworkType.equals("EMBEDED")) {
+            javaCode.append("System.setProperty(\"derby.system.home\", \"" + dbRootPath + "\");\r\n");              
+        } else {
+            if(!connectionFlag) {
+                javaCode.append(startServer());
             }
         }
-        return false;
-    }	
-    
-    
-    public String fillValue(String value, String colType) {
-		if(value==null || value.equals("\"\"")){
-	  		return " ";
-	  	}else if((value.startsWith("\"")||value.startsWith("'") )&& (value.endsWith("\"")||value.endsWith("'"))){
-			return "default '"+value.substring(1,value.length()-1)+"' ";
-	   	}else if(value.equalsIgnoreCase("null")){
-	   		return "default null ";
-	   	}else if(value.equals("")){
-	   		return " ";
-		}else{
-			return "default "+value+" ";
-		}
-	}
-    
-    
-}
-       Transfer tr=new Transfer();
-%>
-
-
-try{
-
-<% 
-  if (tr.isLackDBType(node)){
-%>		
-		boolean isLackDBType = <%=tr.isLackDBType(node) %>;
-		if(isLackDBType)
-		{
-		 	throw new Exception("To create a table, the DB Type in the schema must be set");
-		}
-<%
-  }
-%>
-		String url<%=cid%>=null;
-		java.sql.Connection con<%=cid%>=null;
-		java.sql.Statement stmt<%=cid%>=null;
-		String sql<%=cid%>=null;
-<%
-	String useExistingConn = ElementParameterParser.getValue(node,"__EXISTINGCONNECTION__");
-	String oraType = ElementParameterParser.getValue(node,"__ORACLETYPE__");
-	if((dbType.equals("MySQL"))&&(useExistingConn.equals("true")))
-	{
-		String connection = ElementParameterParser.getValue(node,"__CONNECTION_MYSQL__");
-		String conn = "conn_" + connection;
-%>
-		Class.forName("<%=tr.dbDriver(node)%>");
-		con<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
-<%		
-	}else if((dbType.equals("Oracle"))&&(useExistingConn.equals("true"))){
-		
-		String connection = ElementParameterParser.getValue(node,"__CONNECTION_ORACLE__");
-		String conn = "conn_" + connection;
-%>
-		con<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
-<%
-	}else if((dbType.equals("Postgre"))&&(useExistingConn.equals("true"))){
-		String connection = ElementParameterParser.getValue(node,"__CONNECTION_POSTGRE__");
-		String conn = "conn_" + connection;
-%>
-		con<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");				
-<%  }else if((dbType.equals("Access"))||(dbType.equals("SQLite"))){%>
-		Class.forName("<%=tr.dbDriver(node)%>");
-		url<%=cid%> = <%=tr.url(node)%>;
-		con<%=cid%> = java.sql.DriverManager.getConnection(url<%=cid %>);
-<%	}else if(dbType.equals("JavaDB")){%>
-		url<%=cid%> = <%=tr.url(node)%>;
-<%		if(frameworkType.equals("Embeded")){%>
-			System.setProperty("derby.system.home",<%=ElementParameterParser.getValue(node,"__DBPATH__")%>);
-<%		}else{
-		String connectionFlag = ElementParameterParser.getValue(node, "__JAVADBNETSERVER__");
-    	if(connectionFlag.equals("false")){%>
-       		org.apache.derby.drda.NetworkServerControl serverControl_<%=cid%>;
-        	serverControl_<%=cid%> = new org.apache.derby.drda.NetworkServerControl(java.net.InetAddress.getByName(<%=host%>),Integer.parseInt(<%=port%>));
-			serverControl_<%=cid%>.start(new java.io.PrintWriter(System.out,true));
-        	boolean isServerUp_<%=cid%> = false;
-        	int timeOut_<%=cid%> = 5;
-        	while(!isServerUp_<%=cid%> && timeOut_<%=cid%> > 0)
-        	{	try
-        		{	timeOut_<%=cid%>--;
-            		serverControl_<%=cid%>.ping();
-            		isServerUp_<%=cid%> = true;
-        		}catch(Exception e) {
-    				Thread.currentThread().sleep(3000);
-    			}    				
-        	}
-        	if(!isServerUp_<%=cid%>)
-        	{	System.exit(1);	}
-<%			}
-		}%>
-		java.util.Properties properties<%=cid%>=new java.util.Properties();
-		Class.forName("<%=tr.dbDriver(node)%>");
-		properties<%=cid%>.put("user",<%=user%>);
-		properties<%=cid%>.put("password",<%=pass%>);
-		con<%=cid%>=java.sql.DriverManager.getConnection(url<%=cid%>,properties<%=cid%>);
-<%	}else{%>
-		Class.forName("<%=tr.dbDriver(node)%>");
-		url<%=cid%>=<%=tr.url(node)%>;
-		con<%=cid%>=java.sql.DriverManager.getConnection(url<%=cid%>,<%=user%>,<%=pass%>);
-<%	} %>
-
-		stmt<%=cid%> = con<%=cid%>.createStatement();
-	
- 
-<%//  special action / Main action
-	String specialAction=ElementParameterParser.getValue(node,"__SPECIALACTION__");
-	if(specialAction.equals("DropAndCreate")){%>//drop and then create
-		try{
-			stmt<%=cid%>.execute("drop table "+"<%=tr.protectChar(dbType, tableName, node)%>");	
-		}catch(Exception e){	
-		}		
-		sql<%=cid%>="<%=tr.sql(dbType,tableName,node)%>";
-		stmt<%=cid%>.execute(sql<%=cid%>);	
-<%	}else if(specialAction.equals("CreateOnly")){%>		
-        java.sql.DatabaseMetaData dbMetaData_<%=cid%> = con<%=cid%>.getMetaData();
-        java.sql.ResultSet rs_<%=cid%> = dbMetaData_<%=cid%>.getTables(null, null, null, new String[]{"TABLE"});
-        boolean flag_<%=cid%> = false;
-        while(rs_<%=cid%>.next())
-        {
-        	String table_<%=cid%> = rs_<%=cid%>.getString("TABLE_NAME");
-			if(table_<%=cid%>.equalsIgnoreCase(<%=tableName%>))
-			{
-				flag_<%=cid%> = true;
-				break;
-			}
+        javaCode.append("java.lang.Class.forName(\"" + getDriver() + "\");\r\n");
+        javaCode.append("java.sql.Connection conn_" + cid + " = java.sql.DriverManager.getConnection(\"" + getConnectionURL() + "\",\"" + userName + "\",\"" + password + "\");\r\n");
+        return javaCode.toString();
+    }
+    private String startServer() {
+        StringBuilder javaCode = new StringBuilder();
+        javaCode.append("org.apache.derby.drda.NetworkServerControl serverControl_" + cid + " = new org.apache.derby.drda.NetworkServerControl(java.net.InetAddress.getByName(\"" + host + "\"),Integer.parseInt(\"" + port + "\"));\r\n");
+        javaCode.append("serverControl_" + cid + ".start(new java.io.PrintWriter(System.out,true));\r\n");
+        javaCode.append("boolean isServerUp_" + cid + " = false;\r\n");
+        javaCode.append("int timeOut_" + cid + " = 5;\r\n");
+        javaCode.append("while(!isServerUp_" + cid + " && timeOut_" + cid + " > 0) {\r\n");
+        javaCode.append("try {\r\n");
+        javaCode.append("timeOut_" + cid + "--;\r\n");
+        javaCode.append("serverControl_" + cid + ".ping();\r\n");
+        javaCode.append("} catch(Exception e) {\r\n");
+        javaCode.append("Thread.currentThread().sleep(3000);\r\n");
+        javaCode.append("}\r\n");
+        javaCode.append("if(!isServerUp_" + cid + ") {\r\n");
+        javaCode.append("System.exit(1);\r\n");
+        javaCode.append("}\r\n");
+        return javaCode.toString();
+    }
+    public String closeConnection() {
+        StringBuilder javaCode = new StringBuilder();
+        javaCode.append("if(conn_" + cid + " != null && !conn_" + cid + ".isClosed()) {\r\n");
+        javaCode.append("conn_" + cid + ".close();\r\n");
+        javaCode.append("}\r\n");
+        if(frameworkType.equals("EMBEDED")) {
+            javaCode.append("try {\r\n");
+            javaCode.append("java.sql.DriverManager.getConnection(\"jdbc:derby:;shutdown=true\");\r\n");
+            javaCode.append("} catch(java.sql.SQLException se) {\r\n");
+            javaCode.append("}\r\n");               
         }
-        rs_<%=cid%>.close();
-        if(!flag_<%=cid%>)
-        {
-           sql<%=cid%>="<%=tr.sql(dbType,tableName,node)%>";
-           globalMap.put("<%=cid%>_QUERY",sql<%=cid%>);
-           stmt<%=cid%>.execute(sql<%=cid%>);         	
-        }  				
-<%}else{%>// just create
-		sql<%=cid%>="<%=tr.sql(dbType,tableName,node)%>";
-		stmt<%=cid%>.execute(sql<%=cid%>);
-<%}
-//close
+        return javaCode.toString();
+    }
+    protected String getDBMSId() {
+        return "javadb_id";
+    }
+    protected String getLProtectedChar() {
+        return "\\\"";
+    }
+    protected String getRProtectedChar() {
+        return "\\\"";
+    }
+}
+class MSSQLManager extends Manager {
+    private String host;
+    private String port;
+    private boolean useExistingConnection;
+    private String connection;
+    public MSSQLManager(String host, String port, String dbName, String userName, String password, boolean useExistingConnection, String connection, String cid) {
+        super(dbName, userName, password, cid);
+        this.host = host;
+        this.port = port;
+        this.useExistingConnection = useExistingConnection;
+        this.connection = connection;
+    }
+    protected String getDriver() {
+        return "net.sourceforge.jtds.jdbc.Driver";
+    }
+    public String getConnectionURL() {
+        return "jdbc:jtds:sqlserver://" + host + ":" + port + "//" + dbName;
+    }
+    public String getConnection() {
+        StringBuilder javaCode = new StringBuilder();
+        if(useExistingConnection) {
+            javaCode.append("java.sql.Connection conn_" + cid + " = (java.sql.Connection)globalMap.get(\"conn_" + connection + "\");");
+        } else {
+            javaCode.append("java.lang.Class.forName(\"" + getDriver()+ "\");\r\n");
+            javaCode.append("java.sql.Connection conn_" + cid + " = java.sql.DriverManager.getConnection(\"" + getConnectionURL() + "\",\"" + userName + "\",\"" + password + "\");\r\n");
+        }
+        return javaCode.toString();
+    }
+    protected String getDBMSId() {
+        return "id_MSSQL";
+    }
+    protected String getLProtectedChar() {
+        return "[";
+    }
+    protected String getRProtectedChar() {
+        return "]";
+    }
+    public String closeConnection() {
+        StringBuilder javaCode = new StringBuilder();
+        if(useExistingConnection) {
+            javaCode.append("");
+        } else {
+            javaCode.append("if(conn_" + cid + " != null && !conn_" + cid + ".isClosed()) {\r\n");
+            javaCode.append("conn_" + cid + ".close();\r\n");
+            javaCode.append("}\r\n");            
+        }
+        return javaCode.toString();
+    }
+}
+class MysqlManager extends Manager {
+    private String host;
+    private String port;
+    private boolean useExistingConnection;
+    private String connection;        
+    public MysqlManager(String host, String port, String dbName, String userName, String password, boolean useExistingConnection, String connection, boolean temporary, String cid) {
+        super(dbName, userName, password, cid);
+        this.host = host;
+        this.port = port;
+        this.useExistingConnection = useExistingConnection;
+        this.connection = connection;
+        this.temporary = temporary;
+    }
+    protected String getDriver() {
+        return "org.gjt.mm.mysql.Driver";
+    }
+    public String getConnectionURL() {
+        return "jdbc:mysql://" + host + ":" + port + "/" + dbName;
+    }
+    public String getConnection() {
+        StringBuilder javaCode = new StringBuilder();
+        if(useExistingConnection) {
+            javaCode.append("java.sql.Connection conn_" + cid + " = (java.sql.Connection)globalMap.get(\"conn_" + connection + "\");");
+        } else {
+            javaCode.append("java.lang.Class.forName(\"" + getDriver()+ "\");\r\n");
+            javaCode.append("java.sql.Connection conn_" + cid + " = java.sql.DriverManager.getConnection(\"" + getConnectionURL() + "\",\"" + userName + "\",\"" + password + "\");\r\n");
+        }
+        return javaCode.toString();
+    }        
+    protected String getDBMSId() {
+        return "mysql_id";
+    }
+    protected String getLProtectedChar() {
+        return "`";
+    }
+    protected String getRProtectedChar() {
+        return "`";
+    }
+    public String closeConnection() {
+        StringBuilder javaCode = new StringBuilder();
+        if(useExistingConnection) {
+            javaCode.append("");
+        } else {
+            javaCode.append("if(conn_" + cid + " != null && !conn_" + cid + ".isClosed()) {\r\n");
+            javaCode.append("conn_" + cid + ".close();\r\n");
+            javaCode.append("}\r\n");            
+        }
+        return javaCode.toString();
+    }    
+}
+class OracleManager extends Manager {
+    private String host;
+    private String port;
+    private String dbSchema;
+    private String connectionType;
+    private boolean useExistingConnection;
+    private String connection;        
+    public OracleManager(String host, String port, String dbName, String dbSchema, String useName, String password, String connectionType, boolean useExistingConnection, String connection, String cid) {
+        super(dbName, useName, password, cid);
+        this.host = host;
+        this.port = port;
+        this.dbSchema = dbSchema;
+        this.connectionType = connectionType;
+        this.useExistingConnection = useExistingConnection;
+        this.connection = connection;
+    }
+    protected String getDriver() {
+        return "oracle.jdbc.driver.OracleDriver";
+    }
+    public String getConnectionURL() {
+        String connectionURL = null;
+        if(connectionType.equals("ORACLE_SID")) {
+            connectionURL = "jdbc:oracle:thin:@" + host + ":" + port + ":" + dbName;
+        } else if(connectionType.equals("ORACLE_SERVICE_NAME")) {
+            connectionURL = "jdbc:oracle:thin:@(description=(address=(protocol=tcp)(host=" + host + ")(port=" + port + "))(connect_data=(service_name=" + dbName + ")))";
+        }
+        return connectionURL;
+    }
+    public String getConnection() {
+        StringBuilder javaCode = new StringBuilder();
+        if(useExistingConnection) {
+            javaCode.append("java.sql.Connection conn_" + cid + " = (java.sql.Connection)globalMap.get(\"conn_" + connection + "\");");
+        } else {
+            javaCode.append("java.lang.Class.forName(\"" + getDriver()+ "\");\r\n");
+            javaCode.append("java.sql.Connection conn_" + cid + " = java.sql.DriverManager.getConnection(\"" + getConnectionURL() + "\",\"" + userName + "\",\"" + password + "\");\r\n");
+        }
+        return javaCode.toString();
+    }        
+    protected String getDBMSId() {
+        return "oracle_id";
+    }
+    protected String getLProtectedChar() {
+        return "";
+    }
+    protected String getRProtectedChar() {
+        return "";
+    }
+    public String closeConnection() {
+        StringBuilder javaCode = new StringBuilder();
+        if(useExistingConnection) {
+            javaCode.append("");
+        } else {
+            javaCode.append("if(conn_" + cid + " != null && !conn_" + cid + ".isClosed()) {\r\n");
+            javaCode.append("conn_" + cid + ".close();\r\n");
+            javaCode.append("}\r\n");            
+        }
+        return javaCode.toString();
+    }
+    protected String retrieveTableName(String tableName) {
+        StringBuilder javaCode = new StringBuilder();
+        if(useExistingConnection) {
+            javaCode.append("\" + globalMap.get(\"schema_" + connection + "\") + \".\" + \"" + tableName); 
+        } else {
+            if(dbSchema == null || dbSchema.trim().length() == 0) {
+                javaCode.append(tableName);
+            } else {
+                javaCode.append(dbSchema + "." + tableName);
+            }            
+        }
+        return javaCode.toString();
+    }
+}
+class PostgreManager extends Manager {
+    private String host;
+    private String port;
+    private String dbSchema;
+    private boolean useExistingConnection;
+    private String connection;        
+    public PostgreManager(String host, String port, String dbName, String dbSchema, String userName, String password, boolean useExistingConnection, String connection, String cid) {
+        super(dbName, userName ,password, cid);
+        this.host = host;
+        this.port = port;
+        this.dbSchema = dbSchema;
+        this.useExistingConnection = useExistingConnection;
+        this.connection = connection;
+    }
+    protected String getDriver() {
+        return "org.postgresql.Driver";
+    }
+    public String getConnectionURL() {
+        return "jdbc:postgresql://" + host + ":" + port + "/" + dbName;
+    }
+    public String getConnection() {
+        StringBuilder javaCode = new StringBuilder();
+        if(useExistingConnection) {
+            javaCode.append("java.sql.Connection conn_" + cid + " = (java.sql.Connection)globalMap.get(\"conn_" + connection + "\");");
+        } else {
+            javaCode.append("java.lang.Class.forName(\"" + getDriver()+ "\");\r\n");
+            javaCode.append("java.sql.Connection conn_" + cid + " = java.sql.DriverManager.getConnection(\"" + getConnectionURL() + "\",\"" + userName + "\",\"" + password + "\");\r\n");
+        }
+        return javaCode.toString();
+    }        
+    protected String getDBMSId() {
+        return "postgres_id";
+    }
+    protected String getLProtectedChar() {
+        return "\\\"";
+    }
+    protected String getRProtectedChar() {
+        return "\\\"";
+    }
+    public String closeConnection() {
+        StringBuilder javaCode = new StringBuilder();
+        if(useExistingConnection) {
+            javaCode.append("");
+        } else {
+            javaCode.append("if(conn_" + cid + " != null && !conn_" + cid + ".isClosed()) {\r\n");
+            javaCode.append("conn_" + cid + ".close();\r\n");
+            javaCode.append("}\r\n");            
+        }
+        return javaCode.toString();
+    }
+    protected String retrieveTableName(String tableName) {
+        StringBuilder javaCode = new StringBuilder();
+        if(useExistingConnection) {
+            javaCode.append("\" + globalMap.get(\"schema_" + connection + "\") + \"\\\"\" + \".\" + \"\\\"\" + \"" + tableName); 
+        } else {
+            if(dbSchema == null || dbSchema.trim().length() == 0) {
+                javaCode.append(tableName);
+            } else {
+                javaCode.append(dbSchema + "\\\".\\\"" + tableName);
+            }            
+        }
+        return javaCode.toString();        
+    }
+}
+class SQLiteManager extends Manager {
+    public SQLiteManager(String dbName, String userName, String password, String cid) {
+        super(dbName, userName, password, cid);
+    }
+    protected String getDriver() {
+        return "org.sqlite.JDBC";
+    }
+    public String getConnectionURL() {
+        return "jdbc:sqlite:"+ "/" + dbName.toLowerCase();
+    }
+    protected String getDBMSId() {
+        return "sqlite_id";
+    }
+    protected String getLProtectedChar() {
+        return "\\\"";
+    }
+    protected String getRProtectedChar() {
+        return "\\\"";
+    }
+}
+class SybaseManager extends Manager {
+    private String host;
+    private String port;
+    public SybaseManager(String host, String port, String dbName, String userName, String password, String cid) {
+        super(dbName, userName, password, cid);
+        this.host = host;
+        this.port = port;
+    }
+    protected String getDriver() {
+        return "com.sybase.jdbc3.jdbc.SybDriver";
+    }
+    public String getConnectionURL() {
+        return "jdbc:sybase:Tds:" + host + ":" + port + "/" + dbName;
+    }
+    protected String getDBMSId() {
+        return "sybase_id";
+    }
+    protected String getLProtectedChar() {
+        return "\\\"";
+    }
+    protected String getRProtectedChar() {
+        return "\\\"";
+    }
+}
+class ODBCManager extends Manager {
+    public ODBCManager(String dbName, String userName, String password, String cid) {
+        super(dbName, userName, password, cid);
+    }
+    protected String getDriver() {
+        return "sun.jdbc.odbc.JdbcOdbcDriver";
+    }
+    public String getConnectionURL() {
+        return "jdbc:odbc:" + dbName;
+    }
+    protected String getDBMSId() {
+        return "MSODBC";
+    }
+    protected String getLProtectedChar() {
+        return "\\\"";
+    }
+    protected String getRProtectedChar() {
+        return "\\\"";
+    }
+}
+class TeradataManager extends Manager {
+    private String host;
+    private String port;
+    protected TeradataManager(String host, String port, String dbName, String userName, String password, String cid) {
+        super(dbName, userName, password, cid);
+        this.host = host;
+        this.port = port;
+    }
+    protected String getDriver() {
+        return "com.ncr.teradata.TeraDriver";
+    }
+    public String getConnectionURL() {
+        return "jdbc:teradata://" + host;
+    }
+    protected String getDBMSId() {
+        return "teradata_id";
+    }
+    protected String getLProtectedChar() {
+        return "\\\"";
+    }
+    protected String getRProtectedChar() {
+        return "\\\"";
+    }
+}
+class StringUtil {
+    public String getString(String source) {
+        String tmp = null;
+        if(source == null || source.equals("") || source.equals("\"\"")) {
+            tmp = "";
+        } else {
+            tmp = source.substring(1, source.length() - 1);
+        }
+        return tmp;
+    }
+}
+class ManagerFactory {
+    private StringUtil stringUtil = new StringUtil();
+    public Manager createManager(String dbType, INode node) {
+        Manager manager = null;
+        String cid = node.getUniqueName();
+        if(dbType.equals("ACCESS")){
+            String dbName = stringUtil.getString(ElementParameterParser.getValue(node, "__DBFILE_ACCESS__"));
+            String userName = stringUtil.getString(ElementParameterParser.getValue(node, "__USER__"));
+            String password = stringUtil.getString(ElementParameterParser.getValue(node, "__PASS__"));
+            manager = new AccessManager(dbName, userName, password, cid);
+        }else if(dbType.equals("AS400")){
+            String host = stringUtil.getString(ElementParameterParser.getValue(node, "__HOST__"));
+            String dbName = stringUtil.getString(ElementParameterParser.getValue(node, "__DBNAME__"));
+            String userName = stringUtil.getString(ElementParameterParser.getValue(node, "__USER__"));
+            String password = stringUtil.getString(ElementParameterParser.getValue(node, "__PASS__"));
+            manager = new AS400Manager(host, dbName, userName, password, cid);
+        }else if(dbType.equals("DB2")){
+            String host = stringUtil.getString(ElementParameterParser.getValue(node, "__HOST__"));
+            String port = stringUtil.getString(ElementParameterParser.getValue(node, "__PORT__"));
+            String dbName = stringUtil.getString(ElementParameterParser.getValue(node, "__DBNAME__"));
+            String userName = stringUtil.getString(ElementParameterParser.getValue(node, "__USER__"));
+            String password = stringUtil.getString(ElementParameterParser.getValue(node, "__PASS__"));
+            manager = new DB2Manager(host, port, dbName, userName, password, cid);
+        }else if(dbType.equals("FIREBIRD")){
+            String host = stringUtil.getString(ElementParameterParser.getValue(node, "__HOST__"));
+            String dbName = stringUtil.getString(ElementParameterParser.getValue(node, "__DBFILE_FIREBIRD__"));
+            String userName = stringUtil.getString(ElementParameterParser.getValue(node, "__USER__"));
+            String password = stringUtil.getString(ElementParameterParser.getValue(node, "__PASS__"));
+            manager = new FirebirdManager(host, dbName, userName, password, cid);
+        }else if(dbType.equals("HSQLDB")){
+            String host = stringUtil.getString(ElementParameterParser.getValue(node, "__HOST__"));
+            String port = stringUtil.getString(ElementParameterParser.getValue(node, "__PORT__"));
+            String dbPath = stringUtil.getString(ElementParameterParser.getValue(node, "__DBPATH_HSQL__"));
+            String dbName = stringUtil.getString(ElementParameterParser.getValue(node, "__DBNAME_HSQL__"));
+            String dbAlias = stringUtil.getString(ElementParameterParser.getValue(node, "__DATABASE_ALIAS__"));
+            String userName = stringUtil.getString(ElementParameterParser.getValue(node, "__USER__"));
+            String password = stringUtil.getString(ElementParameterParser.getValue(node, "__PASS__"));
+            String runningMode = ElementParameterParser.getValue(node, "__RUNNING_MODE__");
+            boolean tls = ElementParameterParser.getValue(node, "__TLS__").equals("true");
+            manager = new HSQLDBManager(host, port, dbPath, dbName, dbAlias, userName, password, runningMode, tls, cid);
+        }else if(dbType.equals("INFORMIX")){
+            String host = stringUtil.getString(ElementParameterParser.getValue(node, "__HOST__"));
+            String port = stringUtil.getString(ElementParameterParser.getValue(node, "__PORT__"));
+            String dbName = stringUtil.getString(ElementParameterParser.getValue(node, "__DBNAME__"));
+            String dbServer = stringUtil.getString(ElementParameterParser.getValue(node, "__DBSERVER__"));
+            String userName = stringUtil.getString(ElementParameterParser.getValue(node, "__USER__"));
+            String password = ElementParameterParser.getValue(node, "__PASS__");
+            manager = new InformixManager(host, port, dbName, dbServer, userName, password, cid);
+        }else if(dbType.equals("INGRES")){
+            String host = stringUtil.getString(ElementParameterParser.getValue(node, "__HOST__"));
+            String port = stringUtil.getString(ElementParameterParser.getValue(node, "__PORT__"));
+            String dbName = stringUtil.getString(ElementParameterParser.getValue(node, "__DBNAME__"));
+            String userName = stringUtil.getString(ElementParameterParser.getValue(node, "__USER__"));
+            String password = stringUtil.getString(ElementParameterParser.getValue(node, "__PASS__"));
+            manager = new IngresManager(host, port, dbName, userName, password, cid);
+        }else if(dbType.equals("INTERBASE")){
+            String host = stringUtil.getString(ElementParameterParser.getValue(node, "__HOST__"));
+            String dbName = stringUtil.getString(ElementParameterParser.getValue(node, "__DBFILE_INTERBASE__"));
+            String userName = stringUtil.getString(ElementParameterParser.getValue(node, "__USER__"));
+            String password = stringUtil.getString(ElementParameterParser.getValue(node, "__PASS__"));
+            manager = new InterbaseManager(host, dbName, userName, password, cid);
+        }else if(dbType.equals("JAVADB")){
+            String host = stringUtil.getString(ElementParameterParser.getValue(node, "__HOST__"));
+            String port = stringUtil.getString(ElementParameterParser.getValue(node, "__PORT__"));
+            String dbRootPath = stringUtil.getString(ElementParameterParser.getValue(node, "__DBROOTPATH__"));
+            String dbName = stringUtil.getString(ElementParameterParser.getValue(node, "__DBNAME_JAVADB__"));
+            String userName = stringUtil.getString(ElementParameterParser.getValue(node, "__USER__"));
+            String password = stringUtil.getString(ElementParameterParser.getValue(node, "__PASS__"));
+            String frameworkType = ElementParameterParser.getValue(node, "__FRAMEWORK_TYPE__");
+            boolean connectionFlag = ElementParameterParser.getValue(node, "__CONNECTION_FLAG__").equals("true");
+            manager = new JavaDBManager(host, port, dbRootPath, dbName, userName, password, frameworkType, connectionFlag, cid);
+        }else if(dbType.equals("MSSQL")){
+            String host = stringUtil.getString(ElementParameterParser.getValue(node, "__HOST__"));
+            String port = stringUtil.getString(ElementParameterParser.getValue(node, "__PORT__"));
+            String dbName = stringUtil.getString(ElementParameterParser.getValue(node, "__DBNAME__"));
+            String userName = stringUtil.getString(ElementParameterParser.getValue(node, "__USER__"));
+            String password = stringUtil.getString(ElementParameterParser.getValue(node, "__PASS__"));            
+            boolean useExistingConnection = ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__").equals("true");
+            String connection = stringUtil.getString(ElementParameterParser.getValue(node, "__CONNECTION_MSSQL__"));
+            manager = new MSSQLManager(host, port, dbName, userName, password, useExistingConnection, connection, cid);
+        }else if(dbType.equals("MYSQL")){
+            String host = stringUtil.getString(ElementParameterParser.getValue(node, "__HOST__"));
+            String port = stringUtil.getString(ElementParameterParser.getValue(node, "__PORT__"));
+            String dbName = stringUtil.getString(ElementParameterParser.getValue(node, "__DBNAME__"));
+            String userName = stringUtil.getString(ElementParameterParser.getValue(node, "__USER__"));
+            String password = stringUtil.getString(ElementParameterParser.getValue(node, "__PASS__"));            
+            boolean useExistingConnection = ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__").equals("true");
+            String connection = stringUtil.getString(ElementParameterParser.getValue(node, "__CONNECTION_MYSQL__"));
+            boolean temporary = ElementParameterParser.getValue(node, "__TEMPTABLE__").equals("true");
+            manager = new MysqlManager(host, port, dbName, userName, password, useExistingConnection, connection, temporary, cid);
+        }else if(dbType.equals("DBORACLE")){
+            String host = stringUtil.getString(ElementParameterParser.getValue(node, "__HOST__"));
+            String port = stringUtil.getString(ElementParameterParser.getValue(node, "__PORT__"));
+            String dbSchema = stringUtil.getString(ElementParameterParser.getValue(node, "__SCHEMA_DB__"));
+            String dbName = stringUtil.getString(ElementParameterParser.getValue(node, "__DBNAME__"));
+            String userName = stringUtil.getString(ElementParameterParser.getValue(node, "__USER__"));
+            String password = stringUtil.getString(ElementParameterParser.getValue(node, "__PASS__"));
+            String connectionType = ElementParameterParser.getValue(node, "__CONNECTION_TYPE__");
+            boolean useExistingConnection = ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__").equals("true");
+            String connection = stringUtil.getString(ElementParameterParser.getValue(node, "__CONNECTION_ORACLE__"));
+            manager = new OracleManager(host, port, dbName, dbSchema, userName, password, connectionType, useExistingConnection, connection, cid);
+        }else if(dbType.equals("POSTGRE")){
+            String host = stringUtil.getString(ElementParameterParser.getValue(node, "__HOST__"));
+            String port = stringUtil.getString(ElementParameterParser.getValue(node, "__PORT__"));
+            String dbSchema = stringUtil.getString(ElementParameterParser.getValue(node, "__SCHEMA_DB__"));
+            String dbName = stringUtil.getString(ElementParameterParser.getValue(node, "__DBNAME__"));
+            String userName = stringUtil.getString(ElementParameterParser.getValue(node, "__USER__"));
+            String password = stringUtil.getString(ElementParameterParser.getValue(node, "__PASS__"));            
+            boolean useExistingConnection = ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__").equals("true");
+            String connection = stringUtil.getString(ElementParameterParser.getValue(node, "__CONNECTION_POSTGRE__"));
+            manager = new PostgreManager(host, port, dbName, dbSchema, userName, password, useExistingConnection, connection, cid);
+        }else if(dbType.equals("SQLITE")){
+            String dbName = stringUtil.getString(ElementParameterParser.getValue(node, "__DBFILE_SQLITE__"));
+            String userName = stringUtil.getString(ElementParameterParser.getValue(node, "__USER__"));
+            String password = stringUtil.getString(ElementParameterParser.getValue(node, "__PASS__"));
+            manager = new SQLiteManager(dbName, userName, password, cid);
+        }else if(dbType.equals("SYBASE")){
+            String host = stringUtil.getString(ElementParameterParser.getValue(node, "__HOST__"));
+            String port = stringUtil.getString(ElementParameterParser.getValue(node, "__PORT__"));
+            String dbName = stringUtil.getString(ElementParameterParser.getValue(node, "__DBNAME__"));
+            String userName = stringUtil.getString(ElementParameterParser.getValue(node, "__USER__"));
+            String password = stringUtil.getString(ElementParameterParser.getValue(node, "__PASS__"));
+            manager = new SybaseManager(host, port, dbName, userName, password, cid);
+        }else if(dbType.equals("ODBC")){
+            String odbcName = stringUtil.getString(ElementParameterParser.getValue(node, "__ODBCNAME__"));
+            String userName = stringUtil.getString(ElementParameterParser.getValue(node, "__USER__"));
+            String password = stringUtil.getString(ElementParameterParser.getValue(node, "__PASS__"));
+            manager = new ODBCManager(odbcName, userName, password, cid);
+        }
+        return manager;
+    }
+}
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+List<IMetadataColumn> columnList = null;
+List<IMetadataTable> metadatas = node.getMetadataList();
+if(metadatas != null && metadatas.size() > 0) {
+    IMetadataTable metadata = metadatas.get(0);
+    columnList = metadata.getListColumns();
+}
+if(columnList != null && columnList.size() > 0) {
+    boolean isRunInMultiThread = codeGenArgument.getIsRunInMultiThread();
+    String dbType = ElementParameterParser.getValue(node,"__DBTYPE__");    
+    ManagerFactory factory = new ManagerFactory();
+    Manager manager = factory.createManager(dbType,node);
+    StringUtil stringUtil = new StringUtil();
+    String tableAction = ElementParameterParser.getValue(node,"__TABLEACTION__");
+    String cid = node.getUniqueName();
+    String tableName = ElementParameterParser.getValue(node,"__TABLE__");    
+    %>
+    try{
+        <%=manager.getConnection()%>
+        <%
+        if(tableAction.equals("CREATE_TABLE")) {
+            %>
+            java.sql.Statement stmt_<%=cid%> = conn_<%=cid%>.createStatement();
+            stmt_<%=cid%>.execute("<%=manager.getCreateTableSQL(stringUtil.getString(tableName), columnList)%>");
+            <%
+        } else {
+            %>
+            java.sql.DatabaseMetaData dbMetaData_<%=cid%> = conn_<%=cid%>.getMetaData();
+            java.sql.ResultSet rsTable_<%=cid%> = dbMetaData_<%=cid%>.getTables(null, null, null, new String[]{"TABLE"});
+            boolean whetherExist_<%=cid%> = false;
+            while(rsTable_<%=cid%>.next()) {
+                String table_<%=cid%> = rsTable_<%=cid%>.getString("TABLE_NAME");
+                if(table_<%=cid%>.equalsIgnoreCase(<%=tableName%>)) {
+                    whetherExist_<%=cid%> = true;
+                    break;
+                }
+            }        
+            <%
+            if(tableAction.equals("CREATE_IF_NOT_EXIST")) {
+                %>
+                if(!whetherExist_<%=cid%>) {
+                    java.sql.Statement stmt_<%=cid%> = conn_<%=cid%>.createStatement();
+                    stmt_<%=cid%>.execute("<%=manager.getCreateTableSQL(stringUtil.getString(tableName), columnList)%>");                
+                }
+                <%
+            } else if(tableAction.equals("DROP_IF_EXIST_CREATE")) {
+                %>
+                if(whetherExist_<%=cid%>) {
+                    java.sql.Statement stmtDrop_<%=cid%> = conn_<%=cid%>.createStatement();
+                    stmtDrop_<%=cid%>.execute("<%=manager.getDropTableSQL(stringUtil.getString(tableName))%>");
+                }
+                java.sql.Statement stmt_<%=cid%> = conn_<%=cid%>.createStatement();
+                stmt_<%=cid%>.execute("<%=manager.getCreateTableSQL(stringUtil.getString(tableName), columnList)%>");            
+                <%
+            }
+        }
+        %>
+        <%=manager.closeConnection()%>
+    } catch(Exception e) {
+        globalMap.put("<%=cid%>_ERROR_MESSAGE",e.getMessage());
+        <%
+        if(isRunInMultiThread ) {
+            %>
+            throw new TalendException(this, e, "tCreateTable");
+            <%
+        } else {
+            %>
+            throw new TalendException(this, e);
+            <%
+        }
+        %>
+    }
+<%
+}
+%>
 
-	if(!dbType.equals("MySQL") && !dbType.equals("Oracle") && !dbType.equals("Postgre"))
-	{
-		%>
-		con<%=cid%>.close();
-		<%			
-	}
-	else
-	{
-		if(!useExistingConn.equals("true"))
-		{
-			%>
-			con<%=cid%>.close();
-			<%
-		}
-	}
-%>
-
-}catch(Exception e){
-	globalMap.put("<%=cid%>_ERROR_MESSAGE",e.getMessage());
-<%
-	if(isRunInMultiThread ){
-%>
-	throw new TalendException(this, e, "tCreateTable");
-<%
-	}else{
-%>
-	throw new TalendException(this, e);
-<%
-	}
-%>
-	}
-		

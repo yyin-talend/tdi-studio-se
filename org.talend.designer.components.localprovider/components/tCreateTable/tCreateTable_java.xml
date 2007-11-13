@@ -30,313 +30,285 @@
 
   
 
-  <PARAMETERS>
+	<PARAMETERS>
+  
+  <PARAMETER
+    NAME="PROPERTY"
+    FIELD="PROPERTY_TYPE"
+    NUM_ROW="1"
+    REPOSITORY_VALUE="DATABASE"
+    NOT_SHOW_IF="(DBTYPE=='MYSQL' and USE_EXISTING_CONNECTION=='TRUE') or (DBTYPE=='MSSQL' and USE_EXISTING_CONNECTION == 'true') or (DBTYPE=='DBORACLE' and USE_EXISTING_CONNECTION=='TRUE') or (DBTYPE=='POSTGRE' and USE_EXISTING_CONNECTION=='TRUE')"
+  />
+  
   <PARAMETER
       NAME="DBTYPE"
       FIELD="CLOSED_LIST"
-      NUM_ROW="1"
+      NUM_ROW="2"
     >
-      <ITEMS DEFAULT="ACCESS">  
-      	<ITEM NAME="ACCESS"        VALUE="Access" />
+      <ITEMS DEFAULT="MYSQL">  
+      	<ITEM NAME="ACCESS"        VALUE="ACCESS" />
         <ITEM NAME="AS400"        VALUE="AS400" /> 
         <ITEM NAME="DB2"           VALUE="DB2"/>
-        <ITEM NAME="FIREBIRD"      VALUE="Firebird"/>
-        <ITEM NAME="HSQLDB"      VALUE="HSQLdb"/>
-        <ITEM NAME="INFORMIX"      VALUE="Informix"/>
-        <ITEM NAME="INGRES"      VALUE="Ingres"/>
-        <ITEM NAME="INTERBASE"      VALUE="Interbase"/>
-        <ITEM NAME="JAVADB"      VALUE="JavaDB"/>
+        <ITEM NAME="FIREBIRD"      VALUE="FIREBIRD"/>
+        <ITEM NAME="HSQLDB"      VALUE="HSQLDB"/>
+        <ITEM NAME="INFORMIX"      VALUE="INFORMIX"/>
+        <ITEM NAME="INGRES"      VALUE="INGRES"/>
+        <ITEM NAME="INTERBASE"      VALUE="INTERBASE"/>
+        <ITEM NAME="JAVADB"      VALUE="JAVADB"/>
         <ITEM NAME="MSSQL" 		   VALUE="MSSQL"/>
-        <ITEM NAME="MYSQL"         VALUE="MySQL"/>
-        <ITEM NAME="DBORACLE"      VALUE="Oracle"/>
-        <ITEM NAME="POSTGRE"      VALUE="Postgre"/>
-        <ITEM NAME="SQLITE"      VALUE="SQLite"/>
-        <ITEM NAME="SYBASE"      VALUE="Sybase"/>
+        <ITEM NAME="MYSQL"         VALUE="MYSQL"/>
+        <ITEM NAME="DBORACLE"      VALUE="DBORACLE"/>
+        <ITEM NAME="POSTGRE"      VALUE="POSTGRE"/>
+        <ITEM NAME="SQLITE"      VALUE="SQLITE"/>
+        <ITEM NAME="SYBASE"      VALUE="SYBASE"/>
         <ITEM NAME="ODBC"      VALUE="ODBC"/>       
       </ITEMS>
-    </PARAMETER>
+   </PARAMETER>
     
     <PARAMETER
-      NAME="SPECIALACTION"
+      NAME="TABLEACTION"
       FIELD="CLOSED_LIST"
-      NUM_ROW="1"
+      NUM_ROW="2"
     >
-      <ITEMS DEFAULT="NONE">       
-        <ITEM NAME="NONE"        VALUE="None" />
-        <ITEM NAME="CREATEONLY"           VALUE="CreateOnly"/>
-        <ITEM NAME="DROPANDCREATE"      VALUE="DropAndCreate"/>
+      <ITEMS DEFAULT="CREATE_TABLE">       
+        <ITEM NAME="CREATE_TABLE"        VALUE="CREATE_TABLE" />
+        <ITEM NAME="CREATE_IF_NOT_EXIST"           VALUE="CREATE_IF_NOT_EXIST"/>
+        <ITEM NAME="DROP_IF_EXIST_CREATE"      VALUE="DROP_IF_EXIST_CREATE"/>
       </ITEMS>
     </PARAMETER>
-     
-     <PARAMETER
-      NAME="EXISTINGCONNECTION"
-      FIELD="CHECK"
-      SHOW_IF="(DBTYPE=='MYSQL' or DBTYPE=='DBORACLE' or DBTYPE=='POSTGRE')"
-      NUM_ROW="2"
-    >
-    <DEFAULT>false</DEFAULT>
-    </PARAMETER>
-    
-    <PARAMETER
-      NAME="CONNECTION_MYSQL"
-      FIELD="COMPONENT_LIST"
-      FILTER="tMysqlConnection"
-      NUM_ROW="2"
-      SHOW_IF="(DBTYPE=='MYSQL' and EXISTINGCONNECTION == 'true')"
-    />
-           
-    <PARAMETER
-      NAME="CONNECTION_ORACLE"
-      FIELD="COMPONENT_LIST"
-      FILTER="tOracleConnection"
-      NUM_ROW="2"
-      SHOW_IF="(DBTYPE=='DBORACLE' and EXISTINGCONNECTION == 'true')"
-    />
-    
-    <PARAMETER
-      NAME="CONNECTION_POSTGRE"
-      FIELD="COMPONENT_LIST"
-      FILTER="tPostgresqlConnection"
-      NUM_ROW="2"
-      SHOW_IF="(DBTYPE=='POSTGRE' and EXISTINGCONNECTION == 'true')"
-    />        
 
     <PARAMETER
-      NAME="ORACLETYPE"
-      FIELD="CLOSED_LIST"
-      NUM_ROW="2"
-	  SHOW_IF="(EXISTINGCONNECTION == 'false' and DBTYPE=='DBORACLE')"  
-    >
-      <ITEMS DEFAULT="ORACLE SID">
-        <ITEM NAME="ORACLE SID"        VALUE="Oracle SID" />
-        <ITEM NAME="ORACLE SERVICE"    VALUE="Oracle Service"/>
-      </ITEMS>
-    </PARAMETER> 
-     
-     <PARAMETER
-      NAME="JAVADBFRAME"
-      FIELD="CLOSED_LIST"
-      NUM_ROW="2"
-	  SHOW_IF="(DBTYPE=='JAVADB')"  
-    >
-      <ITEMS DEFAULT="EMBEDED">
-        <ITEM NAME="EMBEDED"        VALUE="Embeded" />
-        <ITEM NAME="JCCJDBC"    	VALUE="JCCJDBC"/>
-        <ITEM NAME="DERBYCLIENT"    VALUE="DERBYCLIENT"/>
-      </ITEMS>
-    </PARAMETER>
- 
-     <PARAMETER
-      NAME="JAVADBNETSERVER"
+      NAME="TEMPTABLE"
       FIELD="CHECK"
-      SHOW_IF="(DBTYPE=='JAVADB' and (JAVADBFRAME == 'JCCJDBC' or JAVADBFRAME == 'DERBYCLIENT'))"
-      NUM_ROW="2"    
-    >   
-      <DEFAULT>false</DEFAULT>
-    </PARAMETER>  
-    
-    
-    
-    
-    
-    
-    <PARAMETER
-      NAME="PROPERTY"
-      FIELD="PROPERTY_TYPE"
-      NUM_ROW="3"
-      REPOSITORY_VALUE="DATABASE"
-      NOT_SHOW_IF="(DBTYPE=='MYSQL' and EXISTINGCONNECTION=='TRUE') or (DBTYPE=='DBORACLE' and EXISTINGCONNECTION=='TRUE') or (DBTYPE=='POSTGRE' and EXISTINGCONNECTION=='TRUE')"
-    />
-    
-    <PARAMETER
-      NAME="ACCESSDBNAME"
-      FIELD="FILE"
-      NUM_ROW="4"
+      NUM_ROW="2"
       REQUIRED="true"
-      SHOW_IF="(DBTYPE=='ACCESS')"
-      REPOSITORY_VALUE="FILE"
-    >
-      <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/in.mdb"</DEFAULT>
-    </PARAMETER> 
-
-
-    <PARAMETER
-      NAME="DBPATH"
-      FIELD="DIRECTORY"
-      NUM_ROW="4"
-      REQUIRED="true"
-      SHOW_IF="(DBTYPE=='JAVADB' and JAVADBFRAME=='EMBEDED')"
-    >
-      <DEFAULT>""</DEFAULT>
-    </PARAMETER>
-    
-    <PARAMETER
-      NAME="HSQLMODE"
-      FIELD="CLOSED_LIST"
-      NUM_ROW="4"
-      REQUIRED="true"
-      SHOW_IF="(DBTYPE=='HSQLDB')"     
-    >
-      <ITEMS DEFAULT="SERVER">
-        <ITEM NAME="SERVER"        VALUE="SERVER" />
-        <ITEM NAME="WEBSERVER"    	VALUE="WEBSERVER"/>
-        <ITEM NAME="PROCESS"    VALUE="PROCESS"/>
-      </ITEMS>
-    </PARAMETER>
-    <PARAMETER
-      NAME="TLS"
-      FIELD="CHECK"
-      NUM_ROW="4"
-      SHOW_IF="(DBTYPE == 'HSQLDB') and (HSQLMODE=='SERVER' or HSQLMODE=='WEBSERVER')"
+      SHOW_IF="(DBTYPE=='MYSQL')"
     >
       <DEFAULT>false</DEFAULT>
-    </PARAMETER> 
-    
-    <PARAMETER
-      NAME="HOST"
-      FIELD="TEXT"
-      NUM_ROW="4"
-      REPOSITORY_VALUE="SERVER_NAME"
-      NOT_SHOW_IF="(DBTYPE=='ACCESS') or (DBTYPE=='SQLITE') or (DBTYPE=='MYSQL' and EXISTINGCONNECTION=='TRUE') or (DBTYPE=='DBORACLE' and EXISTINGCONNECTION=='TRUE') or (DBTYPE == 'JAVADB' and JAVADBFRAME=='EMBEDED') or (DBTYPE=='POSTGRE' and EXISTINGCONNECTION=='TRUE') or (DBTYPE == 'ODBC') or (DBTYPE == 'HSQLDB' and HSQLMODE == 'PROCESS')"
-    >
-      <DEFAULT>""</DEFAULT>
     </PARAMETER>
-
+    
+	<!--AS400 configuration start-->
+	<PARAMETER NAME="HOST" FIELD="TEXT" NUM_ROW="4"
+		REPOSITORY_VALUE="SERVER_NAME" NOT_SHOW_IF="(DBTYPE=='ACCESS') or (DBTYPE=='SQLITE') or (DBTYPE == 'ODBC') or (DBTYPE == 'JAVADB' and FRAMEWORK_TYPE=='EMBEDED') or (DBTYPE == 'HSQLDB' and RUNNING_MODE == 'HSQLDB_INPROGRESS_PERSISTENT') or (DBTYPE=='MYSQL' and USE_EXISTING_CONNECTION=='TRUE') or (DBTYPE=='MSSQL' and USE_EXISTING_CONNECTION == 'true') or (DBTYPE=='DBORACLE' and USE_EXISTING_CONNECTION=='TRUE') or (DBTYPE=='POSTGRE' and USE_EXISTING_CONNECTION=='TRUE')">
+		<DEFAULT>""</DEFAULT>
+	</PARAMETER>
+	<PARAMETER NAME="DBNAME" FIELD="TEXT" NUM_ROW="4"
+		REPOSITORY_VALUE="SID" REQUIRED="true" NOT_SHOW_IF="(DBTYPE=='FIREBIRD') or (DBTYPE=='ACCESS') or (DBTYPE=='SQLITE') or (DBTYPE == 'INTERBASE') or (DBTYPE == 'HSQLDB') or (DBTYPE == 'ODBC') or (DBTYPE=='MYSQL' and USE_EXISTING_CONNECTION=='TRUE') or (DBTYPE=='MSSQL' and USE_EXISTING_CONNECTION == 'true') or (DBTYPE=='DBORACLE' and USE_EXISTING_CONNECTION=='TRUE') or (DBTYPE=='POSTGRE' and USE_EXISTING_CONNECTION=='TRUE')">
+		<DEFAULT>""</DEFAULT>
+	</PARAMETER>
+	<PARAMETER NAME="USER" FIELD="TEXT" NUM_ROW="5"
+		REPOSITORY_VALUE="USERNAME" REQUIRED="true" NOT_SHOW_IF="(DBTYPE=='SQLITE') or (DBTYPE=='MSSQL' and USE_EXISTING_CONNECTION == 'true') or (DBTYPE=='MYSQL' and USE_EXISTING_CONNECTION=='TRUE') or (DBTYPE=='DBORACLE' and USE_EXISTING_CONNECTION=='TRUE') or (DBTYPE=='POSTGRE' and USE_EXISTING_CONNECTION=='TRUE')">
+		<DEFAULT>""</DEFAULT>
+	</PARAMETER>
+	<PARAMETER NAME="PASS" FIELD="TEXT" NUM_ROW="5"
+		REPOSITORY_VALUE="PASSWORD" REQUIRED="true" NOT_SHOW_IF="(DBTYPE=='SQLITE') or (DBTYPE=='MSSQL' and USE_EXISTING_CONNECTION == 'true') or (DBTYPE=='MYSQL' and USE_EXISTING_CONNECTION=='TRUE') or (DBTYPE=='DBORACLE' and USE_EXISTING_CONNECTION=='TRUE') or (DBTYPE=='POSTGRE' and USE_EXISTING_CONNECTION=='TRUE')">
+		<DEFAULT>""</DEFAULT>
+	</PARAMETER>
+	<!--AS400 configuration end-->
+	
+	<!--Access configuration start-->
+	<PARAMETER NAME="DBFILE_ACCESS" FIELD="FILE" NUM_ROW="4" REQUIRED="true"
+		REPOSITORY_VALUE="FILE" SHOW_IF="(DBTYPE=='ACCESS')">
+		<DEFAULT>"__COMP_DEFAULT_FILE_DIR__/in.mdb"</DEFAULT>
+	</PARAMETER>        	
+	<!--Access configuration end-->
+	     
+	<!--DB2 configuration start-->
     <PARAMETER
       NAME="PORT"
       FIELD="TEXT"
       NUM_ROW="4"
       REPOSITORY_VALUE="PORT"
-      NOT_SHOW_IF="(DBTYPE=='FIREBIRD') or (DBTYPE=='ACCESS') or (DBTYPE=='SQLITE')  or (DBTYPE=='MYSQL' and EXISTINGCONNECTION=='TRUE') or (DBTYPE=='DBORACLE' and EXISTINGCONNECTION=='TRUE') or (DBTYPE=='POSTGRE' and EXISTINGCONNECTION=='TRUE') or (DBTYPE == 'JAVADB' and JAVADBFRAME=='EMBEDED') or (DBTYPE == 'ODBC') or (DBTYPE == 'INTERBASE') or (DBTYPE == 'HSQLDB' and HSQLMODE == 'PROCESS')"
+	  NOT_SHOW_IF="(DBTYPE=='FIREBIRD') or (DBTYPE=='ACCESS') or (DBTYPE=='SQLITE')  or (DBTYPE=='MSSQL' and USE_EXISTING_CONNECTION == 'true') or (DBTYPE=='MYSQL' and USE_EXISTING_CONNECTION=='TRUE') or (DBTYPE=='DBORACLE' and USE_EXISTING_CONNECTION=='TRUE') or (DBTYPE=='POSTGRE' and USE_EXISTING_CONNECTION=='TRUE') or (DBTYPE == 'JAVADB' and FRAMEWORK_TYPE=='EMBEDED') or (DBTYPE == 'ODBC') or (DBTYPE == 'INTERBASE') or (DBTYPE == 'HSQLDB' and RUNNING_MODE == 'PROCESS')"      
     >
-      <DEFAULT>"50000"</DEFAULT>
-    </PARAMETER>
-    
+      <DEFAULT>"2648"</DEFAULT>
+    </PARAMETER>	                	
+	<!--DB2 configuration end-->
+	
+	<!--Firebird configuration start-->
+	<PARAMETER NAME="DBFILE_FIREBIRD" FIELD="FILE" NUM_ROW="3"
+		REPOSITORY_VALUE="FILE" REQUIRED="true" SHOW_IF="(DBTYPE=='FIREBIRD')">
+		<DEFAULT>"__COMP_DEFAULT_FILE_DIR__/in.FDB"</DEFAULT>
+	</PARAMETER>
+	<!--Firebird configuration end-->
+	
+	<!--HSQLDb configuration start-->
+	<PARAMETER NAME="RUNNING_MODE" FIELD="CLOSED_LIST" NUM_ROW="3"
+		SHOW_IF="(DBTYPE=='HSQLDB')">
+		<ITEMS DEFAULT="HSQLDB_SERVER">
+			<ITEM NAME="HSQLDB_SERVER" VALUE="HSQLDB_SERVER" />
+			<ITEM NAME="HSQLDB_WEBSERVER" VALUE="HSQLDB_WEBSERVER" />
+			<ITEM NAME="HSQLDB_INPROGRESS_PERSISTENT"
+				VALUE="HSQLDB_INPROGRESS_PERSISTENT" />
+		</ITEMS>
+	</PARAMETER>
+	<PARAMETER
+      NAME="TLS"
+      FIELD="CHECK"
+      NUM_ROW="3"
+      SHOW_IF="(DBTYPE=='HSQLDB') and (RUNNING_MODE=='HSQLDB_SERVER' or RUNNING_MODE=='HSQLDB_WEBSERVER')"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER> 
     <PARAMETER
-      NAME="DBNAME"
+      NAME="DBPATH_HSQL"
+      FIELD="DIRECTORY"
+      NUM_ROW="4"
+      SHOW_IF="(DBTYPE=='HSQLDB') and (RUNNING_MODE=='HSQLDB_INPROGRESS_PERSISTENT')"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+    <PARAMETER
+      NAME="DBNAME_HSQL"
+      FIELD="TEXT"
+      NUM_ROW="4"
+      SHOW_IF="(DBTYPE=='HSQLDB') and (RUNNING_MODE=='HSQLDB_INPROGRESS_PERSISTENT')"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+    <PARAMETER
+      NAME="DATABASE_ALIAS"
+      FIELD="TEXT"
+      NUM_ROW="4" SHOW_IF="(DBTYPE=='HSQLDB') and (RUNNING_MODE=='HSQLDB_SERVER' or RUNNING_MODE=='HSQLDB_WEBSERVER')">
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>                               	
+	<!--HSQLDb configuration end-->
+	
+	<!--Informix configuration start-->
+    <PARAMETER
+      NAME="DBSERVER"
       FIELD="TEXT"
       NUM_ROW="4"
       REQUIRED="true"
-      REPOSITORY_VALUE="SID"
-      NOT_SHOW_IF="(DBTYPE=='FIREBIRD') or (DBTYPE=='ACCESS') or (DBTYPE=='SQLITE')  or (DBTYPE=='MYSQL' and EXISTINGCONNECTION=='TRUE') or (DBTYPE=='DBORACLE' and EXISTINGCONNECTION=='TRUE') or (DBTYPE=='POSTGRE' and EXISTINGCONNECTION=='TRUE') or (DBTYPE == 'INTERBASE') or (DBTYPE == 'HSQLDB')"
+      REPOSITORY_VALUE="DATASOURCE"
+      SHOW_IF="(DBTYPE=='INFORMIX')"
     >
       <DEFAULT>""</DEFAULT>
+    </PARAMETER>                    	
+	<!--Informix configuration end-->
+	
+	<!--Ingres configuration start-->                	
+	<!--Ingres configuration end-->
+	
+	<!--Interbase configuration start-->
+	<PARAMETER NAME="DBFILE_INTERBASE" FIELD="TEXT" NUM_ROW="4"
+		REQUIRED="true" REPOSITORY_VALUE="SID" SHOW_IF="(DBTYPE=='INTERBASE')">
+		<DEFAULT>"__COMP_DEFAULT_FILE_DIR__/in.gdb"</DEFAULT>
+	</PARAMETER>
+	<!--Interbase configuration end-->
+	
+	<!--JavaDb configuration start-->
+	<PARAMETER NAME="FRAMEWORK_TYPE" FIELD="CLOSED_LIST" NUM_ROW="3"
+		REPOSITORY_VALUE="FRAMEWORK_TYPE" SHOW_IF="(DBTYPE=='JAVADB')">
+		<ITEMS DEFAULT="EMBEDED">
+			<ITEM NAME="EMBEDED" VALUE="EMBEDED" />
+			<ITEM NAME="JCCJDBC" VALUE="JCCJDBC" />
+			<ITEM NAME="DERBYCLIENT" VALUE="DERBYCLIENT" />
+		</ITEMS>
+	</PARAMETER>
+	<PARAMETER
+      NAME="CONNECTION_FLAG"
+      FIELD="CHECK"
+      NUM_ROW="3" SHOW_IF="(DBTYPE=='JAVADB') and (FRAMEWORK_TYPE=='JCCJDBC' or FRAMEWORK_TYPE=='DERBYCLIENT')">
+      <DEFAULT>false</DEFAULT>
     </PARAMETER>
-    
-    
-    
-    <PARAMETER
-      NAME="HSQLDATABASEALIAS"
-      FIELD="TEXT"
-      NUM_ROW="5"
-      REQUIRED="true"
-      SHOW_IF="(DBTYPE=='HSQLDB' and (HSQLMODE=='SERVER' or HSQLMODE=='WEBSERVER'))"
-    >
-      <DEFAULT>""</DEFAULT>
-    </PARAMETER>
-     
-     <PARAMETER
-      NAME="HSQLDATABASEPATH"
+	<PARAMETER NAME="DBNAME_JAVADB" FIELD="TEXT" NUM_ROW="4"
+		REQUIRED="true" REPOSITORY_VALUE="SID" SHOW_IF="(DBTYPE=='JAVADB')">
+		<DEFAULT>""</DEFAULT>
+	</PARAMETER>
+	<PARAMETER
+      NAME="DBROOTPATH"
       FIELD="DIRECTORY"
       NUM_ROW="4"
       REQUIRED="true"
-      SHOW_IF="(DBTYPE=='HSQLDB' and HSQLMODE=='PROCESS')"     
+      SHOW_IF="(DBTYPE=='JAVADB') and (FRAMEWORK_TYPE=='EMBEDED')"
+      REPOSITORY_VALUE="DIRECTORY"
     >
       <DEFAULT>""</DEFAULT>
-    </PARAMETER>
-     <PARAMETER
-      NAME="HSQLDATABASE"
-      FIELD="TEXT"
-      NUM_ROW="4"
-      REQUIRED="true"
-      SHOW_IF="(DBTYPE=='HSQLDB' and HSQLMODE=='PROCESS')"     
-    >
-      <DEFAULT>""</DEFAULT>
-    </PARAMETER>
-    
-    
-    
+    </PARAMETER>                            	
+	<!--JavaDb configuration end-->
+	
+	<!--MSSQL configuration start-->
+	<PARAMETER NAME="USE_EXISTING_CONNECTION" FIELD="CHECK" NUM_ROW="3"
+		SHOW_IF="(DBTYPE=='MSSQL') or (DBTYPE=='MYSQL') or (DBTYPE=='DBORACLE') or (DBTYPE=='POSTGRE')">
+		<DEFAULT>false</DEFAULT>
+	</PARAMETER>
+	<PARAMETER
+      NAME="CONNECTION_MSSQL"
+      FIELD="COMPONENT_LIST"
+      FILTER="tMSSqlConnection"
+      NUM_ROW="3"
+      SHOW_IF="(DBTYPE=='MSSQL') and (USE_EXISTING_CONNECTION == 'true')"
+    />                        	
+	<!--MSSQL configuration end-->
+   	
+	<!--Mysql configuration start-->
     <PARAMETER
-      NAME="INTERBASEDBNAME"
-      FIELD="TEXT"
-      NUM_ROW="4"
-      REQUIRED="true"
-      SHOW_IF="(DBTYPE=='INTERBASE')" 
-      REPOSITORY_VALUE="SID"    
-    >
-      <DEFAULT>"../test.gdb"</DEFAULT>
-    </PARAMETER> 
-    
-   <PARAMETER
-      NAME="SQLITEDBNAME"
-      FIELD="FILE"
-      NUM_ROW="4"
-      REQUIRED="true"
-      SHOW_IF="(DBTYPE=='SQLITE')"  
-      REPOSITORY_VALUE="FILE"   
-    >
-      <DEFAULT>""</DEFAULT>
-    </PARAMETER> 
-
-   <PARAMETER
-      NAME="FIREBIRDDBNAME"
-      FIELD="FILE"
-      NUM_ROW="4"
-      REQUIRED="true"
-      SHOW_IF="(DBTYPE=='FIREBIRD')"   
-      REPOSITORY_VALUE="SID"  
-    >
-      <DEFAULT>""</DEFAULT>
-    </PARAMETER>
-
+      NAME="CONNECTION_MYSQL"
+      FIELD="COMPONENT_LIST"
+      FILTER="tMysqlConnection"
+      NUM_ROW="3"
+      SHOW_IF="(DBTYPE=='MYSQL') and (USE_EXISTING_CONNECTION == 'true')"
+    ></PARAMETER>      	
+	<!--Mysql configuration end-->
+	
+	<!--Oracle configuration start-->    
     <PARAMETER
-      NAME="INFORMIXSERVER"
-      FIELD="TEXT"
-      NUM_ROW="5"
-      REQUIRED="true"
-      SHOW_IF="(DBTYPE=='INFORMIX')"
-      REPOSITORY_VALUE="DATASOURCE"
-    >
-      <DEFAULT>""</DEFAULT>
-    </PARAMETER>
-
-
+      NAME="CONNECTION_ORACLE"
+      FIELD="COMPONENT_LIST"
+      FILTER="tOracleConnection"
+      NUM_ROW="3"
+      SHOW_IF="(DBTYPE=='DBORACLE') and (USE_EXISTING_CONNECTION == 'true')"
+    />
     <PARAMETER
-      NAME="USER"
-      FIELD="TEXT"
-      NUM_ROW="5"
-      REPOSITORY_VALUE="USERNAME"
-      REQUIRED="true"
-      NOT_SHOW_IF="(DBTYPE=='MYSQL' and EXISTINGCONNECTION=='TRUE') or (DBTYPE=='DBORACLE' and EXISTINGCONNECTION=='TRUE') or (DBTYPE=='POSTGRE' and EXISTINGCONNECTION=='TRUE') or (DBTYPE=='SQLITE') "
+      NAME="CONNECTION_TYPE"
+      FIELD="CLOSED_LIST"
+      NUM_ROW="3"
+      SHOW_IF="(DBTYPE=='DBORACLE') and (USE_EXISTING_CONNECTION == 'false')"
     >
-      <DEFAULT>""</DEFAULT>
-    </PARAMETER>
-    
-    <PARAMETER
-      NAME="PASS"
-      FIELD="TEXT"
-      NUM_ROW="5"
-      REPOSITORY_VALUE="PASSWORD"
-      REQUIRED="true"
-      NOT_SHOW_IF="(DBTYPE=='MYSQL' and EXISTINGCONNECTION=='TRUE') or (DBTYPE=='DBORACLE' and EXISTINGCONNECTION=='TRUE') or (DBTYPE=='POSTGRE' and EXISTINGCONNECTION=='TRUE') or (DBTYPE=='SQLITE') "
-    >
-      <DEFAULT>""</DEFAULT>
-    </PARAMETER>
-    
-    
-    <PARAMETER
-      NAME="SCHEMA_POSTGRES"
+      <ITEMS DEFAULT="ORACLE_SID">
+        <ITEM NAME="ORACLE_SID" VALUE="ORACLE_SID" />
+        <ITEM NAME="ORACLE_SERVICE_NAME" VALUE="ORACLE_SERVICE_NAME"/>
+      </ITEMS>
+    </PARAMETER>    
+    <PARAMETER 
+      NAME="SCHEMA_DB"
       FIELD="TEXT"
       NUM_ROW="5"
       REPOSITORY_VALUE="SCHEMA"
-      REQUIRED="true"
-      SHOW_IF="(DBTYPE=='POSTGRE')" 
-     >
+      SHOW_IF="(DBTYPE=='DBORACLE' or DBTYPE=='POSTGRE') and (USE_EXISTING_CONNECTION == 'false')"
+    >
       <DEFAULT>""</DEFAULT>
-    </PARAMETER>
-        
-
-    
+    </PARAMETER>                	
+	<!--Oracle configuration end-->
+	
+	<!--Postgre configuration start-->    
+    <PARAMETER
+      NAME="CONNECTION_POSTGRE"
+      FIELD="COMPONENT_LIST"
+      FILTER="tPostgresqlConnection"
+      NUM_ROW="3"
+      SHOW_IF="(DBTYPE=='POSTGRE') and (USE_EXISTING_CONNECTION == 'true')"
+    />    	
+	<!--Postgre configuration end-->
+	
+	<!--SQLite configuration start-->
+	<PARAMETER NAME="DBFILE_SQLITE" FIELD="FILE" NUM_ROW="4"
+		REPOSITORY_VALUE="FILE" REQUIRED="true" SHOW_IF="(DBTYPE=='SQLITE')">
+		<DEFAULT>"__COMP_DEFAULT_FILE_DIR__/talend.db"</DEFAULT>
+	</PARAMETER>
+	<!--SQLite configuration end-->
+	
+	<!--Sybase configuration start-->    	
+	<!--Sybase configuration end-->
+	
+	<!--ODBC configuration start-->
+	<PARAMETER NAME="ODBCNAME" FIELD="TEXT" NUM_ROW="4"
+		REPOSITORY_VALUE="SID" SHOW_IF="(DBTYPE=='ODBC')">
+		<DEFAULT>""</DEFAULT>
+	</PARAMETER>
+	<!--ODBC configuration end-->     
+	         
     <PARAMETER
       NAME="TABLE"
       FIELD="TEXT"
@@ -346,16 +318,6 @@
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
     
-    <PARAMETER
-      NAME="TEMPTABLE"
-      FIELD="CHECK"
-      NUM_ROW="6"
-      REQUIRED="true"
-      SHOW_IF="(DBTYPE=='MYSQL')"
-    >
-      <DEFAULT>false</DEFAULT>
-    </PARAMETER> 
-
     <PARAMETER
       NAME="SCHEMA"
       FIELD="SCHEMA_TYPE"
