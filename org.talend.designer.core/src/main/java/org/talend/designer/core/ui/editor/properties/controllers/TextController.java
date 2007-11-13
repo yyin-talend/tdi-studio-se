@@ -5,7 +5,7 @@
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
 //
-// You should have received a copy of the  agreement
+// You should have received a copy of the agreement
 // along with this program; if not, write to Talend SA
 // 9 rue Pages 92150 Suresnes, France
 //   
@@ -183,7 +183,6 @@ public class TextController extends AbstractElementPropertySectionController {
 
         Color red = Display.getCurrent().getSystemColor(SWT.COLOR_RED);
         Color white = Display.getCurrent().getSystemColor(SWT.COLOR_WHITE);
-        boolean isFieNameStr = false;
 
         Object value = param.getValue();
         boolean valueChanged = false;
@@ -198,26 +197,13 @@ public class TextController extends AbstractElementPropertySectionController {
 
         // Only for statsandlogs View.
         if (param.getCategory() == EComponentCategory.STATSANDLOGS) {
-            if (value instanceof String) {
+            if ((value instanceof String) && param.isRequired()) {
+
                 String str = (String) value;
-
-                List<String> fileNameList = new ArrayList<String>();
-
-                fileNameList.add(EParameterName.FILENAME_LOGS.getName());
-                fileNameList.add(EParameterName.FILENAME_METTER.getName());
-                fileNameList.add(EParameterName.FILENAME_STATS.getName());
 
                 String removedQuotesStr = TalendTextUtils.removeQuotes(str);
 
-                isFieNameStr = fileNameList.contains(paramName);
-                if (str == null || removedQuotesStr.length() == 0) {
-                    setTextErrorInfo(labelText, red);
-                } else if (isFieNameStr && !removedQuotesStr.matches(StatsAndLogsViewHelper.FILE_NAME_REGEX)
-                        && (!str.equals(EParameterName.FILE_PATH.getName()))) {
-                    setTextErrorInfo(labelText, red);
-                }
-
-                else if (!removedQuotesStr.matches(StatsAndLogsViewHelper.OTHER_FILE_NAME_REGEX)) {
+                if (str == null || removedQuotesStr.length() == 0 || str.length() == 0) {
                     setTextErrorInfo(labelText, red);
                 } else {
                     labelText.setBackground(white);
@@ -241,6 +227,6 @@ public class TextController extends AbstractElementPropertySectionController {
      */
     private void setTextErrorInfo(Text labelText, Color red) {
         labelText.setBackground(red);
-        labelText.setToolTipText("Value is invalid");
+        labelText.setToolTipText("Value is invalid.");
     }
 }

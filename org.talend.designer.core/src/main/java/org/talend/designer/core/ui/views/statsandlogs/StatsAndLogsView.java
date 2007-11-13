@@ -5,7 +5,7 @@
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
 //
-// You should have received a copy of the  agreement
+// You should have received a copy of the agreement
 // along with this program; if not, write to Talend SA
 // 9 rue Pages 92150 Suresnes, France
 //   
@@ -13,16 +13,8 @@
 package org.talend.designer.core.ui.views.statsandlogs;
 
 import org.eclipse.draw2d.GridData;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.ScrolledComposite;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
@@ -30,12 +22,10 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
-import org.talend.core.model.process.Element;
+import org.talend.core.model.process.EComponentCategory;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.TalendEditor;
 import org.talend.designer.core.ui.editor.process.Process;
-import org.talend.designer.core.ui.editor.process.ProcessPart;
-import org.talend.designer.core.ui.editor.properties.process.StatsAndLogsTabPropertySection;
 
 /**
  * class global comment. Detailed comment <br/>
@@ -49,17 +39,11 @@ public class StatsAndLogsView extends ViewPart {
 
     private Process process;
 
-    private StatsAndLogsTabPropertySection section;
-
     private String title;
 
     private Composite parent;
 
-    private Button reloadBtn;
-
-    private Button saveBtn;
-
-    private Composite statsAndLogsViewComposite;
+    private StatsAndLogsComposite statsAndLogsViewComposite;
 
     private boolean isEmptyComposite;
 
@@ -79,9 +63,7 @@ public class StatsAndLogsView extends ViewPart {
         this.parent = parent;
         this.getCurrentJob();
         if (this.process != null) {
-            this.createFullPartControl(parent);
             createStatsAndLogsView();
-            this.section.refresh();
         } else {
             this.createEmptyPartControl(parent);
         }
@@ -93,12 +75,21 @@ public class StatsAndLogsView extends ViewPart {
      * @param parent
      */
     private void createEmptyPartControl(Composite parent) {
+
+        if (parent != null && !parent.isDisposed()) {
+            Control[] children = parent.getChildren();
+            for (Control control : children) {
+                control.dispose();
+            }
+        }
+
         Composite alertComposite = new Composite(parent, SWT.NONE);
         alertComposite.setLayout(new GridLayout());
         alertComposite.setLayoutData(new GridData());
         Text alertText = new Text(alertComposite, SWT.NONE);
         alertText.setText("A Stats/Logs is not available.");
         alertText.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
+        parent.layout();
     }
 
     /**
@@ -106,51 +97,18 @@ public class StatsAndLogsView extends ViewPart {
      * 
      * @param parent
      */
-    private void createFullPartControl(Composite parentComposite) {
+    private void createFullPartControl(Composite parentComposite, Process process) {
 
-        parentComposite.setLayout(new FillLayout());
-        ScrolledComposite scrolledComposite = new ScrolledComposite(parentComposite, SWT.H_SCROLL | SWT.V_SCROLL);
+        if (parentComposite != null && !parentComposite.isDisposed()) {
+            Control[] children = parentComposite.getChildren();
+            for (Control control : children) {
+                control.dispose();
+            }
+        }
 
-        Composite mainComposite = new Composite(scrolledComposite, SWT.NONE);
-        scrolledComposite.setContent(mainComposite);
-        mainComposite.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));// White color
-        mainComposite.setLayout(new GridLayout(1, true));
-        GridData data = new GridData(GridData.FILL_BOTH);
-        mainComposite.setLayoutData(data);
-
-        Composite topComposite = new Composite(mainComposite, SWT.NONE);
-        topComposite.setLayout(new GridLayout(2, false));
-        topComposite.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));// White color
-
-        reloadBtn = new Button(topComposite, SWT.PUSH);
-        reloadBtn.setText("&Reload from preferences");
-        reloadBtn.setToolTipText("Reload values from preference page(Shift+R)");
-
-        saveBtn = new Button(topComposite, SWT.PUSH);
-        saveBtn.setText("&Save to preferences");
-        saveBtn.setToolTipText("save values to preference page(Shift+S)");
-
-        addButtonListeners();
-
-        createStatsAndLogsComposite(mainComposite);
-
-        mainComposite.setSize(mainComposite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
-
-        scrolledComposite.setExpandHorizontal(true);
-        scrolledComposite.setExpandVertical(true);
-        scrolledComposite.setMinWidth(800);
-        scrolledComposite.setMinHeight(400);
-    }
-
-    /**
-     * ftang Comment method "createStatsAndLogsComposite".
-     * 
-     * @param parentComposite
-     */
-    private void createStatsAndLogsComposite(Composite mainComposite) {
-        statsAndLogsViewComposite = new Composite(mainComposite, SWT.BORDER);
-        statsAndLogsViewComposite.setLayout(new FormLayout());
-        statsAndLogsViewComposite.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));// White color
+        statsAndLogsViewComposite = new StatsAndLogsComposite(parentComposite, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS,
+                EComponentCategory.STATSANDLOGS, process);
+        statsAndLogsViewComposite.refresh();
     }
 
     /**
@@ -158,93 +116,9 @@ public class StatsAndLogsView extends ViewPart {
      * 
      */
     public void createStatsAndLogsView() {
-        this.parent.setVisible(true);
-        IEditorPart activeEditor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-                .getActiveEditor();
-        if (activeEditor == null) {
-            createEmptyPartControl(this.parent);
-            this.isEmptyComposite = true;
-        } else {
-            TalendEditor workbenchPart = ((MultiPageTalendEditor) activeEditor).getTalendEditor();
-            ProcessPart part = workbenchPart.getProcessPart();
-            section = new StatsAndLogsTabPropertySection();
-            StructuredSelection sel = new StructuredSelection(part);
-            section.setInput(activeEditor, sel);
-
-            Control[] children = this.parent.getChildren();
-            disposeControls(children);
-
-            createFullPartControl(this.parent);
-            section.setComposite(this.statsAndLogsViewComposite);
-            this.parent.getParent().layout(true, true);
-        }
-    }
-
-    /**
-     * ftang Comment method "disposeControls".
-     * 
-     * @param children
-     */
-    private void disposeControls(Control[] children) {
-        for (Control control : children) {
-            control.dispose();
-        }
-    }
-
-    /**
-     * DOC Administrator Comment method "addButtonListeners".
-     */
-    private void addButtonListeners() {
-        reloadBtn.addSelectionListener(new SelectionListener() {
-
-            public void widgetSelected(SelectionEvent e) {
-                Element element = section.getElement();
-                if (element == null) {
-                    return;
-                }
-                boolean isOK = MessageDialog.openConfirm(Display.getDefault().getActiveShell(), "Stats/Logs View",
-                        "Current setting will be covered, do you want to continue?");
-                if (isOK) {
-                    StatsAndLogsViewHelper.reloadValuesFromPreferencePage(element);
-
-                    IEditorPart activeEditor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-                            .getActiveEditor();
-
-                    if (activeEditor != null) {
-                        TalendEditor workbenchPart = ((MultiPageTalendEditor) activeEditor).getTalendEditor();
-                        workbenchPart.setDirty(true);
-                    }
-
-                    section.refresh();
-                }
-            }
-
-            public void widgetDefaultSelected(SelectionEvent e) {
-                widgetSelected(e);
-            }
-
-        });
-
-        saveBtn.addSelectionListener(new SelectionListener() {
-
-            public void widgetSelected(SelectionEvent e) {
-                Element element = section.getElement();
-                if (element == null) {
-                    return;
-                }
-                boolean isOK = MessageDialog.openConfirm(Display.getDefault().getActiveShell(), "Stats/Logs View",
-                        "Current preference page setting will be covered, do you want to continue?");
-                if (isOK) {
-                    StatsAndLogsViewHelper.saveValuesToPreferencePage(element);
-                }
-            }
-
-            public void widgetDefaultSelected(SelectionEvent e) {
-                widgetSelected(e);
-            }
-
-        });
-
+        IEditorPart activeEditor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+        TalendEditor talendEditor = ((MultiPageTalendEditor) activeEditor).getTalendEditor();
+        createFullPartControl(this.parent, talendEditor.getProcess());
     }
 
     /*
@@ -255,7 +129,6 @@ public class StatsAndLogsView extends ViewPart {
     @Override
     public void setFocus() {
         this.parent.setFocus();
-        // this.statsAndLogsViewComposite.setFocus();
     }
 
     /**
@@ -290,21 +163,18 @@ public class StatsAndLogsView extends ViewPart {
      * ftang Comment method "refresh".
      */
     public void refresh() {
-        createStatsAndLogsView();
-        if (!this.isEmptyComposite) {
-            this.section.refresh();
+        if (statsAndLogsViewComposite == null || statsAndLogsViewComposite.isDisposed()) {
+            createStatsAndLogsView();
         }
+        statsAndLogsViewComposite.refresh();
     }
 
     /**
      * Empty view if no job is opened.
      */
     public void emptyView() {
-        // this.parent.setVisible(false);
-        Control[] children = this.parent.getChildren();
-        disposeControls(children);
         createEmptyPartControl(parent);
-        this.parent.getParent().layout(true, true);
+
     }
 
     /**
@@ -312,7 +182,7 @@ public class StatsAndLogsView extends ViewPart {
      */
     public void refreshView() {
         if (!this.isEmptyComposite) {
-            this.section.refresh();
+            refresh();
         }
     }
 

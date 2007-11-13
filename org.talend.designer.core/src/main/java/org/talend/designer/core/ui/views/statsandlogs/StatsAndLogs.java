@@ -71,7 +71,7 @@ public class StatsAndLogs {
                 view.setPartName(newTitle);
                 currentTitle = newTitle;
             }
-            view.refresh();
+            view.createStatsAndLogsView();
         }
     }
     

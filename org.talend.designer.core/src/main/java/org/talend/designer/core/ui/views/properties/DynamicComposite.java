@@ -563,79 +563,30 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
     private boolean checkErrorsWhenViewRefreshed;
 
     public void addComponents(boolean forceRedraw) {
-        addComponents(forceRedraw, true);
+        addComponents(forceRedraw, true, 0);
+    }
+    
+    protected void disposeChildren() {
+        // Empty the composite before use (kinda refresh) :
+        Control[] ct = composite.getChildren();
+        for (int i = 0; i < ct.length; i++) {
+            ct[i].dispose();
+        }
     }
 
     /**
      * Initialize all components for the defined section for this node.
      */
-    public void addComponents(boolean forceRedraw, boolean reInitialize) {
+    public void addComponents(boolean forceRedraw, boolean reInitialize, int height) {
         checkErrorsWhenViewRefreshed = true;
         int heightSize = 0, maxRowSize = 0, nbInRow, numInRow;
         int maxRow;
         List<? extends IElementParameter> listParam = elem.getElementParameters();
 
-        oldQueryStoreType = (String) elem.getPropertyValue(EParameterName.QUERYSTORE_TYPE.getName());
-        if (oldQueryStoreType != null) {
-            if (oldQueryStoreType.equals(EmfComponent.REPOSITORY)) {
-                showQueryStoreRepositoryList(true);
-                updateRepositoryList();
-            } else {
-                showQueryStoreRepositoryList(false);
-            }
-        }
-
-        IElementParameter param = elem.getElementParameter(EParameterName.PROPERTY_TYPE.getName());
-        if (param != null) {
-            oldPropertyType = (String) param.getValue();
-            if (param.isShow(elem.getElementParameters())) {
-                if (oldPropertyType.equals(EmfComponent.REPOSITORY)) {
-                    showPropertyRepositoryList(true);
-                    updateRepositoryList();
-                } else {
-                    showPropertyRepositoryList(false);
-                }
-            } else {
-                showPropertyRepositoryList(false);
-            }
-        }
-
-        oldProcessType = (String) elem.getPropertyValue(EParameterName.PROCESS_TYPE_PROCESS.getName());
-        if (oldProcessType != null) {
-            String[] list = elem.getElementParameter(EParameterName.PROCESS_TYPE_PROCESS.getName()).getListItemsDisplayName();
-            if ((oldProcessType.equals("NO_PROCESS") || (list.length == 0))) { //$NON-NLS-1$
-                updateProcessList();
-                updateContextList();
-                if (elem instanceof Node) {
-                    ((Node) elem).checkAndRefreshNode();
-                }
-            }
-        }
+        updateMainParameters();
 
         if (!forceRedraw) {
-            boolean needRedraw = false;
-            for (IElementParameter elementParameter : elem.getElementParametersWithChildrens()) {
-                if (elementParameter.getCategory().equals(section)
-                        && (elementParameter.getField() != EParameterFieldType.SCHEMA_TYPE)
-                        && (elementParameter.getField() != EParameterFieldType.QUERYSTORE_TYPE)) {
-                    // if the component must be displayed, then check if the
-                    // control exists or not.
-                    boolean show = elementParameter.isShow(elem.getElementParameters());
-                    Object control;
-                    if (elementParameter.getParentParameter() == null) {
-                        control = hashCurControls.get(elementParameter.getName());
-                    } else {
-                        control = hashCurControls.get(elementParameter.getParentParameter().getName() + ":"
-                                + elementParameter.getName());
-                    }
-                    if ((control == null && show) || (control != null && !show)) {
-                        needRedraw = true;
-                        break;
-                        // System.out.println(elementParameter.getName() + "
-                        // need redraw");
-                    }
-                }
-            }
+            boolean needRedraw = isNeedRedraw();
             if (!needRedraw) {
                 // System.out.println("no need redraw");
                 return;
@@ -645,21 +596,10 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
         Control lastControl = null;
         if (reInitialize) {
             if (currentComponent != null) {
-                Control[] ct = composite.getChildren();
-                for (int i = 0; i < ct.length; i++) {
-                    ct[i].dispose();
-                }
+                disposeChildren();
             }
         } else {
-            Control[] ct = composite.getChildren();
-            int curY = 0, maxY = 0;
-            for (int i = 0; i < ct.length; i++) {
-                curY = ct[i].getLocation().y + ct[i].computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
-                if (curY > maxY) {
-                    maxY = curY;
-                }
-            }
-            heightSize = maxY;
+            heightSize = height;
         }
 
         hashCurControls = new DualHashBidiMap();
@@ -765,6 +705,78 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
 
         }
         resizeScrolledComposite();
+    }
+
+    /**
+     * DOC Administrator Comment method "updateMainParameters".
+     */
+    protected void updateMainParameters() {
+        oldQueryStoreType = (String) elem.getPropertyValue(EParameterName.QUERYSTORE_TYPE.getName());
+        if (oldQueryStoreType != null) {
+            if (oldQueryStoreType.equals(EmfComponent.REPOSITORY)) {
+                showQueryStoreRepositoryList(true);
+                updateRepositoryList();
+            } else {
+                showQueryStoreRepositoryList(false);
+            }
+        }
+
+        IElementParameter param = elem.getElementParameter(EParameterName.PROPERTY_TYPE.getName());
+        if (param != null) {
+            oldPropertyType = (String) param.getValue();
+            if (param.isShow(elem.getElementParameters())) {
+                if (oldPropertyType.equals(EmfComponent.REPOSITORY)) {
+                    showPropertyRepositoryList(true);
+                    updateRepositoryList();
+                } else {
+                    showPropertyRepositoryList(false);
+                }
+            } else {
+                showPropertyRepositoryList(false);
+            }
+        }
+
+        oldProcessType = (String) elem.getPropertyValue(EParameterName.PROCESS_TYPE_PROCESS.getName());
+        if (oldProcessType != null) {
+            String[] list = elem.getElementParameter(EParameterName.PROCESS_TYPE_PROCESS.getName()).getListItemsDisplayName();
+            if ((oldProcessType.equals("NO_PROCESS") || (list.length == 0))) { //$NON-NLS-1$
+                updateProcessList();
+                updateContextList();
+                if (elem instanceof Node) {
+                    ((Node) elem).checkAndRefreshNode();
+                }
+            }
+        }
+    }
+
+    /**
+     * DOC Administrator Comment method "isNeedRedraw".
+     * @return
+     */
+    protected boolean isNeedRedraw() {
+        boolean needRedraw = false;
+        for (IElementParameter elementParameter : elem.getElementParametersWithChildrens()) {
+            if (elementParameter.getCategory().equals(section)
+                    && (elementParameter.getField() != EParameterFieldType.SCHEMA_TYPE)
+                    && (elementParameter.getField() != EParameterFieldType.QUERYSTORE_TYPE)) {
+                // if the component must be displayed, then check if the
+                // control exists or not.
+                boolean show = elementParameter.isShow(elem.getElementParameters());
+                Object control;
+                if (elementParameter.getParentParameter() == null) {
+                    control = hashCurControls.get(elementParameter.getName());
+                } else {
+                    control = hashCurControls.get(elementParameter.getParentParameter().getName() + ":"
+                            + elementParameter.getName());
+                }
+                if ((control == null && show) || (control != null && !show)) {
+                    needRedraw = true;
+                    break;
+
+                }
+            }
+        }
+        return needRedraw;
     }
 
     /**
@@ -955,6 +967,9 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
             org.talend.designer.core.ui.editor.connections.Connection connection;
             connection = (org.talend.designer.core.ui.editor.connections.Connection) elem;
             process = (Process) connection.getSource().getProcess();
+        }
+        if (elem instanceof Process) {
+            process = (Process) elem;
         }
         if (process != null) {
             part = process.getEditor();

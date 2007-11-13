@@ -591,54 +591,8 @@ public abstract class AbstractElementPropertySectionController implements Proper
                 public void addNewCommand(Control control) {
                     String name = getParameterName(control);
                     String text = ControlUtils.getText(control);
-
-                    Color red = Display.getCurrent().getSystemColor(SWT.COLOR_RED);
-                    Color white = Display.getCurrent().getSystemColor(SWT.COLOR_WHITE);
-
-                    List<String> fileNameList = new ArrayList<String>();
-
-                    fileNameList.add(EParameterName.FILENAME_LOGS.getName());
-                    fileNameList.add(EParameterName.FILENAME_METTER.getName());
-                    fileNameList.add(EParameterName.FILENAME_STATS.getName());
-
-                    String removedQuotesStr = TalendTextUtils.removeQuotes(text);
-
-                    boolean isStatsAndLogsViewOpened = (section == EComponentCategory.STATSANDLOGS);
-
-                    // some texts are ColorStyledText
-                    if (control instanceof Text) {
-                        Text labelText = (Text) control;
-                        if (fileNameList.contains(name)) {
-                            if (text == null || removedQuotesStr.length() == 0) {
-                                setTextErrorInfo(labelText, red);
-                            } else if (!removedQuotesStr.matches(StatsAndLogsViewHelper.FILE_NAME_REGEX)) {
-                                setTextErrorInfo(labelText, red);
-                            } else {
-                                labelText.setBackground(white);
-                                labelText.setToolTipText("");
-
-                                Command cmd = getTextCommandForHelper(name, text);
-                                getCommandStack().execute(cmd);
-                            }
-                        } else if (isStatsAndLogsViewOpened && (!name.equals(EParameterName.FILE_PATH.getName()))) {
-                            if (text == null || removedQuotesStr.length() == 0) {
-                                setTextErrorInfo(labelText, red);
-                            }
-
-                            else if (!removedQuotesStr.matches(StatsAndLogsViewHelper.OTHER_FILE_NAME_REGEX)) {
-                                setTextErrorInfo(labelText, red);
-                            } else {
-                                Command cmd = getTextCommandForHelper(name, text);
-                                getCommandStack().execute(cmd);
-                            }
-                        } else {
-                            Command cmd = getTextCommandForHelper(name, text);
-                            getCommandStack().execute(cmd);
-                        }
-                    } else {
-                        Command cmd = getTextCommandForHelper(name, text);
-                        getCommandStack().execute(cmd);
-                    }
+                    Command cmd = getTextCommandForHelper(name, text);
+                    getCommandStack().execute(cmd);
                 }
 
                 @Override
