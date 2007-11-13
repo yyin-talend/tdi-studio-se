@@ -18,18 +18,11 @@
 
     String directory_<%=cid%> = <%=ElementParameterParser.getValue(node, "__DIRECTORY__") %>;
     String filemask_<%=cid%> = <%=ElementParameterParser.getValue(node, "__FILEMASK__")%> + "$";
-    boolean flag_<%=cid%> = false;
     if(filemask_<%=cid%>.indexOf("^") == -1) 
     {
         filemask_<%=cid%> = "^" + filemask_<%=cid%>;
     }
-    if(!(filemask_<%=cid%>.lastIndexOf(".*$") == -1) &&  filemask_<%=cid%>.lastIndexOf("*.*$") == -1)
-    {
-        filemask_<%=cid%> = filemask_<%=cid%>.substring(0,filemask_<%=cid%>.length()-3) + "$";
-        flag_<%=cid%> = true;
-    }else{
-        filemask_<%=cid%> = java.util.regex.Pattern.compile("[*]").matcher(filemask_<%=cid%>).replaceAll(".*");
-    }
+    filemask_<%=cid%> = java.util.regex.Pattern.compile("[*]").matcher(filemask_<%=cid%>).replaceAll(".*");
    
     boolean case_sensitive_<%=cid%> = <%=ElementParameterParser.getValue(node, "__CASE_SENSITIVE__").equals("YES") %>;
 	java.util.regex.Pattern fileNamePattern_<%=cid%> = java.util.regex.Pattern.compile(filemask_<%=cid%>);
@@ -112,24 +105,9 @@
         
         java.io.File files_<%=cid%> =list_<%=cid%>.get(i_<%=cid%>);
         String fileName_<%=cid%> = files_<%=cid%>.getName();
-        if(flag_<%=cid%> == true)
-        {
-            if(!(fileName_<%=cid%>.indexOf(".") == -1))
-            {
-                if(!fileNamePattern_<%=cid%>.matcher(fileName_<%=cid%>.substring(0,fileName_<%=cid%>.indexOf("."))).find()){
-                    continue;
-                }
-            }else
-            {
-                if(!fileNamePattern_<%=cid%>.matcher(fileName_<%=cid%>).find()){
-                    continue;
-                }
-            }
-        }else
-        {
-            if(!fileNamePattern_<%=cid%>.matcher(fileName_<%=cid%>).find()){
-                continue;
-            }
+
+        if(!fileNamePattern_<%=cid%>.matcher(fileName_<%=cid%>).find()){
+            continue;
         }
        
         String currentFileName_<%=cid%> = files_<%=cid%>.getName(); 
