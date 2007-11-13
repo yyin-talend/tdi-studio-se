@@ -98,7 +98,7 @@ public class BigBean implements Serializable {
 
         Object o = null;
         try {
-            o = ReliabilityHashMapFileTest.hashFile.get("", (long) other.cursorPosition);
+            o = ReliabilityHashMapFileTest.hashFile.get("", (long) other.cursorPosition, -1);
         } catch (Exception e) {
             e.printStackTrace();
         }

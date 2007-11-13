@@ -2,7 +2,7 @@
 //
 // Talend Community Edition
 //
-// Copyright (C) 2006 Talend â€?www.talend.com
+// Copyright (C) 2006 Talend ï¿½?www.talend.com
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -69,7 +69,7 @@ class BeanIntrospectionHashFile  implements MapHashFile {
 
     long lastRetrievedCursorPosition = -1;
 
-    public Object get(String container, long cursorPosition) throws IOException {
+    public Object get(String container, long cursorPosition, int hashcode) throws IOException {
         if (cursorPosition != lastRetrievedCursorPosition) {
             lastRetrievedObject = new Bean();
             ra.seek(cursorPosition);

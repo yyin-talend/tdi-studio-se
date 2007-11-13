@@ -79,7 +79,7 @@ class SqliteDBHash implements MapHashFile {
 
 	private int counter;
 
-	public Object get(String container, long id) throws Exception {
+	public Object get(String container, long id, int hashcode) throws Exception {
 		if (conn == null) {
 			new SQLException("No database was set for serialize.");
 		}

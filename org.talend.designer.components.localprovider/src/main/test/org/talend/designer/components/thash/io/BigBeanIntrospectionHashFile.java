@@ -2,7 +2,7 @@
 //
 // Talend Community Edition
 //
-// Copyright (C) 2006 Talend â€?www.talend.com
+// Copyright (C) 2006 Talend ï¿½?www.talend.com
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -71,7 +71,7 @@ class BigBeanIntrospectionHashFile implements MapHashFile {
 
     long lastRetrievedCursorPosition = -1;
 
-    public Object get(String container, long cursorPosition) throws IOException {
+    public Object get(String container, long cursorPosition, int hashcode) throws IOException {
         if (cursorPosition != lastRetrievedCursorPosition) {
             lastRetrievedObject = new BigBean();
             ra.seek(cursorPosition);
@@ -184,7 +184,9 @@ class BigBeanIntrospectionHashFile implements MapHashFile {
         List<Long> cursors = new ArrayList<Long>();
         long start = System.currentTimeMillis();
 
-        nihf.initPut("D:/cache0");
+        String folder = "/tmp/";
+        
+        nihf.initPut(folder + "cache0");
         for (int i = 1; i < loop; i++) {
             BigBean bean = new BigBean(i, String.valueOf(i));
             nihf.put("", bean);
@@ -195,7 +197,7 @@ class BigBeanIntrospectionHashFile implements MapHashFile {
         long deltaTime = (end - start);
         System.out.print(deltaTime + " milliseconds for " + loop + " objects to STORE using BigBeanIntrospectionHashFile. "
                 + (loop / deltaTime * 1000) + " items/s. ");
-        File file = new File("D:/cache0");
+        File file = new File(folder + "cache0");
         System.out.println((file.length() / loop) + " bytes per item in storage.");
 
         
@@ -203,7 +205,7 @@ class BigBeanIntrospectionHashFile implements MapHashFile {
         start = System.currentTimeMillis();
 
         ihf.init(BigBean.class);
-        ihf.initPut("D:/cache1");
+        ihf.initPut(folder + "cache1");
         for (int i = 1; i < loop; i++) {
             BigBean bean = new BigBean(i, String.valueOf(i));
             ihf.put("", bean);
@@ -214,14 +216,14 @@ class BigBeanIntrospectionHashFile implements MapHashFile {
         deltaTime = (end - start);
         System.out.print(deltaTime + " milliseconds for " + loop + " objects to STORE using IntrospectionHashFile. "
                 + (loop / deltaTime * 1000) + " items/s. ");
-        file = new File("D:/cache1");
+        file = new File(folder + "cache1");
         System.out.println((file.length() / loop) + " bytes per item in storage.");
         
         
          SimpleHashFile shf = SimpleHashFile.getInstance();
          start = System.currentTimeMillis();
         
-         shf.initPut("D:/cache2");
+         shf.initPut(folder + "cache2");
          for (int i = 0; i < loop; i++) {
              BigBean bean = new BigBean(i, String.valueOf(i));
          shf.put("", bean);
@@ -232,13 +234,13 @@ class BigBeanIntrospectionHashFile implements MapHashFile {
          deltaTime = (end - start);
          System.out.print(deltaTime + " milliseconds for " + loop + " objects to STORE using SimpleHashFile. "
          + (loop / deltaTime * 1000) + " items/s. ");
-         file = new File("D:/cache2");
+         file = new File(folder + "cache2");
          System.out.println((file.length() / loop) + " bytes per item in storage.");
         
          DoubleHashFile dhf = DoubleHashFile.getInstance();
          start = System.currentTimeMillis();
         
-         dhf.initPut("D:/cache3");
+         dhf.initPut(folder + "cache3");
          for (int i = 0; i < loop; i++) {
              BigBean bean = new BigBean(i, String.valueOf(i));
          dhf.put("", bean);
