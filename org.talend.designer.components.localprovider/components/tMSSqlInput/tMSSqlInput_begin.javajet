@@ -29,6 +29,7 @@ imports="
 	String dbquery= ElementParameterParser.getValue(node, "__QUERY__");
 	       dbquery = dbquery.replaceAll("\n"," ");
     	   dbquery = dbquery.replaceAll("\r"," ");
+    String dbversion = ElementParameterParser.getValue(node, "__DBVERSION__");
 	
 	List<IMetadataTable> metadatas = node.getMetadataList();
 	if ((metadatas!=null)&&(metadatas.size()>0)) {
@@ -49,6 +50,8 @@ java.sql.Connection conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%
         	}
         	else
         	{
+        	  //SQL version        
+        	  if(dbversion.equals("MSSQL2000")){
 %>
 java.lang.Class.forName("net.sourceforge.jtds.jdbc.Driver");
 String url_<%=cid %> = "jdbc:jtds:sqlserver://"+<%=dbhost%>+":"+<%=dbport%>+"//"+<%=dbname%>;
@@ -56,6 +59,15 @@ String dbUser_<%=cid %> = <%=dbuser%>;
 String dbPwd_<%=cid %> = <%=dbpwd%>;
 java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
 <%
+        	  }else{
+%>
+java.lang.Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+String url_<%=cid %> = "jdbc:sqlserver://"+<%=dbhost%>+":"+<%=dbport%>+";DatabaseName="+<%=dbname%>;
+String dbUser_<%=cid %> = <%=dbuser%>;
+String dbPwd_<%=cid %> = <%=dbpwd%>;
+java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
+
+<%        	  }
 			}
 %>
 java.sql.Statement stmt_<%=cid %> = conn_<%=cid%>.createStatement();

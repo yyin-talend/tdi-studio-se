@@ -11,17 +11,27 @@ imports="
     INode node = (INode)codeGenArgument.getArgument();
 	
     String cid = node.getUniqueName();
-	String javaDbDriver   = "net.sourceforge.jtds.jdbc.Driver";
+	String javaDbDriver;
     String dbhost = ElementParameterParser.getValue(node, "__HOST__");
     String dbport = ElementParameterParser.getValue(node, "__PORT__");
     String dbname = ElementParameterParser.getValue(node, "__DBNAME__");
     String dbuser = ElementParameterParser.getValue(node, "__USER__");
     String dbpass = ElementParameterParser.getValue(node, "__PASS__");
     String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
+    String dbversion = ElementParameterParser.getValue(node, "__DBVERSION__");
+    if(dbversion.equals("MSSQL2000")){
+        javaDbDriver   = "net.sourceforge.jtds.jdbc.Driver";
+%>
+String url_<%=cid%> = "jdbc:jtds:sqlserver://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%>;     
+<%
+    }else{
+        javaDbDriver   = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
+%>
+String url_<%=cid %> = "jdbc:sqlserver://"+<%=dbhost%>+":"+<%=dbport%>+";DatabaseName="+<%=dbname%>;
+<%
+    }
 %>
 java.lang.Class.forName("<%=javaDbDriver %>");
-
-String url_<%=cid%> = "jdbc:jtds:sqlserver://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%>;
 
 String userName_<%=cid%> = <%=dbuser%>;
 
