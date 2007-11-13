@@ -5,7 +5,7 @@
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
 //
-// You should have received a copy of the  agreement
+// You should have received a copy of the agreement
 // along with this program; if not, write to Talend SA
 // 9 rue Pages 92150 Suresnes, France
 //   
@@ -167,6 +167,10 @@ public class ImportDBTableWizard extends RepositoryWizard implements IImportWiza
     private void process(File file) {
         BufferedReader reader = null;
         ConnectionDBTableHelper.initGenTableName();
+        File rFile = getRejectsFile();
+        if (rFile.exists()) {
+            rFile.delete();
+        }
         try {
             reader = new BufferedReader(new FileReader(file));
             String line;
@@ -264,13 +268,11 @@ public class ImportDBTableWizard extends RepositoryWizard implements IImportWiza
     private void writeRejects(String line, DBTableForDelimitedBean bean) {
         // write .rejects
         try {
-            String logs = System.getProperty("osgi.logfile"); //$NON-NLS-1$
-            if (ConnectionDBTableHelper.isNullable(logs)) {
+            File rFile = getRejectsFile();
+            if (rFile == null) {
                 return;
             }
-
-            String rejectsFile = new File(logs).getParent() + File.separator + ".rejects"; //$NON-NLS-1$
-            PrintWriter pw = new PrintWriter(new FileWriter(rejectsFile, true), true);
+            PrintWriter pw = new PrintWriter(new FileWriter(rFile, true), true);
             pw.println(line);
             pw.flush();
             pw.close();
@@ -284,6 +286,16 @@ public class ImportDBTableWizard extends RepositoryWizard implements IImportWiza
         } else {
             addRecords(ProcessType.REJECT, bean);
         }
+    }
+
+    private File getRejectsFile() {
+        String logs = System.getProperty("osgi.logfile"); //$NON-NLS-1$
+        if (ConnectionDBTableHelper.isNullable(logs)) {
+            return null;
+        }
+
+        String rejectsFile = new File(logs).getParent() + File.separator + ".rejects"; //$NON-NLS-1$
+        return new File(rejectsFile);
     }
 
     private void addRecords(ProcessType rType, DBTableForDelimitedBean bean) {
