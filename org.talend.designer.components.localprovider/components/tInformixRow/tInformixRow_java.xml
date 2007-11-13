@@ -170,7 +170,7 @@
       FIELD="CHECK"
       NUM_ROW="8"
     >
-      <DEFAULT>true</DEFAULT>
+      <DEFAULT>false</DEFAULT>
     </PARAMETER>
 
   </PARAMETERS>
