@@ -5,7 +5,7 @@
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
 //
-// You should have received a copy of the  agreement
+// You should have received a copy of the agreement
 // along with this program; if not, write to Talend SA
 // 9 rue Pages 92150 Suresnes, France
 //   
@@ -94,10 +94,10 @@ public class FOXManager {
         FOXTreeNode rootNode = null;
         FOXTreeNode current = null;
         FOXTreeNode temp = null;
+        String currentPath = null;
 
         // build root tree
-        List<Map<String, String>> rootTable = (List<Map<String, String>>) foxComponent
-                .getTableList(FileOutputXMLComponent.ROOT);
+        List<Map<String, String>> rootTable = (List<Map<String, String>>) foxComponent.getTableList(FileOutputXMLComponent.ROOT);
         for (Map<String, String> rootMap : rootTable) {
             String path = rootMap.get(FileOutputXMLComponent.PATH);
             if (rootMap.get(FileOutputXMLComponent.ATTRIBUTE).equals("true")) {
@@ -140,21 +140,9 @@ public class FOXManager {
                 temp = new NameSpaceNode(path);
                 current.addChild(temp);
             } else {
-                String name = path.substring(path.lastIndexOf("/") + 1);
-                String parentPath = path.substring(0, path.lastIndexOf("/"));
-                temp = new Element(name);
-                if (current == null) {
-                    temp.setGroup(true);
-                    FOXTreeNode parent = this.selectNode(parentPath, rootNode);
-                    parent.addChild(temp);
-                } else {
-                    String parentName = parentPath.substring(parentPath.lastIndexOf("/") + 1);
-                    while (!current.getLabel().equals(parentName)) {
-                        current = current.getParent();
-                    }
-                    current.addChild(temp);
-                }
+                temp = this.addElement(rootNode, current, currentPath, path);
                 current = temp;
+                currentPath = path;
             }
             String columnName = groupMap.get(FileOutputXMLComponent.COLUMN);
             if (columnName != null && columnName.length() > 0) {
@@ -164,8 +152,8 @@ public class FOXManager {
 
         // build loop tree
         current = null;
-        List<Map<String, String>> loopTable = (List<Map<String, String>>) foxComponent
-                .getTableList(FileOutputXMLComponent.LOOP);
+        currentPath = null;
+        List<Map<String, String>> loopTable = (List<Map<String, String>>) foxComponent.getTableList(FileOutputXMLComponent.LOOP);
         for (Map<String, String> loopMap : loopTable) {
             String path = loopMap.get(FileOutputXMLComponent.PATH);
             if (loopMap.get(FileOutputXMLComponent.ATTRIBUTE).equals("true")) {
@@ -175,21 +163,9 @@ public class FOXManager {
                 temp = new NameSpaceNode(path);
                 current.addChild(temp);
             } else {
-                String name = path.substring(path.lastIndexOf("/") + 1);
-                String parentPath = path.substring(0, path.lastIndexOf("/"));
-                temp = new Element(name);
-                if (current == null) {
-                    temp.setLoop(true);
-                    FOXTreeNode parent = this.selectNode(parentPath, rootNode);
-                    parent.addChild(temp);
-                } else {
-                    String parentName = parentPath.substring(parentPath.lastIndexOf("/") + 1);
-                    while (!current.getLabel().equals(parentName)) {
-                        current = current.getParent();
-                    }
-                    current.addChild(temp);
-                }
+                temp = this.addElement(rootNode, current, currentPath, path);
                 current = temp;
+                currentPath = path;
             }
             String columnName = loopMap.get(FileOutputXMLComponent.COLUMN);
             if (columnName != null && columnName.length() > 0) {
@@ -314,5 +290,36 @@ public class FOXManager {
         }
 
         return null;
+    }
+
+    private FOXTreeNode addElement(FOXTreeNode root, FOXTreeNode current, String currentPath, String newPath) {
+        String name = newPath.substring(newPath.lastIndexOf("/") + 1);
+        String parentPath = newPath.substring(0, newPath.lastIndexOf("/"));
+        FOXTreeNode temp = new Element(name);
+        if (current == null) {
+            temp.setLoop(true);
+            FOXTreeNode parent = this.selectNode(parentPath, root);
+            parent.addChild(temp);
+        } else {
+            if (currentPath.equals(parentPath)) {
+                current.addChild(temp);
+            } else {
+                String[] nods = currentPath.split("/");
+                String[] newNods = parentPath.split("/");
+                int parentLevel = 0;
+                int checkLength = nods.length < newNods.length ? nods.length : newNods.length;
+                for (int i = 1; i < checkLength; i++) {
+                    if (nods[i].equals(newNods[i])) {
+                        parentLevel = i;
+                    }
+                }
+                FOXTreeNode parent = current;
+                for (int i = 0; i < nods.length - (parentLevel + 1); i++) {
+                    parent = parent.getParent();
+                }
+                parent.addChild(temp);
+            }
+        }
+        return temp;
     }
 }
