@@ -5,7 +5,7 @@
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
 //
-// You should have received a copy of the  agreement
+// You should have received a copy of the agreement
 // along with this program; if not, write to Talend SA
 // 9 rue Pages 92150 Suresnes, France
 //   
@@ -217,7 +217,9 @@ public class TextUtil {
 
     public static void setDialogTitle(String jobName, String nodeLabel, String uniqueName) {
         String title = "";
-        if (nodeLabel.indexOf("__UNIQUE_NAME__") != -1) {
+        if (nodeLabel == null || uniqueName == null) {
+            title = TalendTextUtils.SQL_BUILDER_TITLE_COMP_PREFIX + jobName;
+        } else if (nodeLabel.indexOf("__UNIQUE_NAME__") != -1) {
             title = TalendTextUtils.SQL_BUILDER_TITLE_COMP_PREFIX + jobName;
             title += TalendTextUtils.SQL_BUILDER_TITLE_COMP_NAME + uniqueName;
         } else {
