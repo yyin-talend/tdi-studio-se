@@ -181,7 +181,7 @@ class MultiPointersMultiHashFiles implements MapHashFile {
         private String containerFilePath;
         private RandomAccessFile[] pointersArray;
 
-        int pointersNumber = 75;
+        int pointersNumber = 100;
 
         private int offsetBetweenPointer;
         private long fileSize;
