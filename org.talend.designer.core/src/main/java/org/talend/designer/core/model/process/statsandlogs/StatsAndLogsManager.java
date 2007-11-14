@@ -5,7 +5,7 @@
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
 //
-// You should have received a copy of the  agreement
+// You should have received a copy of the agreement
 // along with this program; if not, write to Talend SA
 // 9 rue Pages 92150 Suresnes, France
 //   
@@ -402,6 +402,7 @@ public class StatsAndLogsManager {
         param.setField(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setShowIf("(ON_FILES_FLAG == 'true' and ON_STATCATCHER_FLAG == 'true')");
+        param.setRequired(true);
         param.setNumRow(12);
 
         paramList.add(param);
@@ -414,6 +415,7 @@ public class StatsAndLogsManager {
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setShowIf("(ON_FILES_FLAG == 'true' and ON_LOGCATCHER_FLAG == 'true')");
         param.setNumRow(13);
+        param.setRequired(true);
         paramList.add(param);
 
         param = new ElementParameter(process);
@@ -423,6 +425,7 @@ public class StatsAndLogsManager {
         param.setField(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setShowIf("(ON_FILES_FLAG == 'true' and ON_METERCATCHER_FLAG == 'true')");
+        param.setRequired(true);
         param.setNumRow(14);
         paramList.add(param);
     }
@@ -587,7 +590,7 @@ public class StatsAndLogsManager {
         param.setName(EParameterName.TABLE_STATS.getName());
         param.setValue(addQuotes(preferenceStore.getString(languagePrefix + EParameterName.TABLE_STATS.getName())));
         param.setDisplayName(EParameterName.TABLE_STATS.getDisplayName());
-        param.setField(EParameterFieldType.TEXT);
+        param.setField(EParameterFieldType.DBTABLE);
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setNumRow(55);
         param.setShowIf("(ON_DATABASE_FLAG == 'true' and ON_STATCATCHER_FLAG == 'true')");
@@ -598,9 +601,9 @@ public class StatsAndLogsManager {
         param.setName(EParameterName.TABLE_LOGS.getName());
         param.setValue(addQuotes(preferenceStore.getString(languagePrefix + EParameterName.TABLE_LOGS.getName())));
         param.setDisplayName(EParameterName.TABLE_LOGS.getDisplayName());
-        param.setField(EParameterFieldType.TEXT);
+        param.setField(EParameterFieldType.DBTABLE);
         param.setCategory(EComponentCategory.STATSANDLOGS);
-        param.setNumRow(55);
+        param.setNumRow(56);
         param.setShowIf("(ON_DATABASE_FLAG == 'true' and ON_LOGCATCHER_FLAG == 'true')");
         paramList.add(param);
 
@@ -609,9 +612,9 @@ public class StatsAndLogsManager {
         param.setName(EParameterName.TABLE_METER.getName()); //$NON-NLS-1$
         param.setValue(addQuotes(preferenceStore.getString(languagePrefix + EParameterName.TABLE_METER.getName())));
         param.setDisplayName(EParameterName.TABLE_METER.getDisplayName());
-        param.setField(EParameterFieldType.TEXT);
+        param.setField(EParameterFieldType.DBTABLE);
         param.setCategory(EComponentCategory.STATSANDLOGS);
-        param.setNumRow(55);
+        param.setNumRow(57);
         param.setShowIf("(ON_DATABASE_FLAG == 'true' and ON_METERCATCHER_FLAG == 'true')");
         paramList.add(param);
     }

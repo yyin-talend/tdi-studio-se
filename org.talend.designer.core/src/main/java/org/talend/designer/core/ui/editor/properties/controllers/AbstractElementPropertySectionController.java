@@ -38,7 +38,6 @@ import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
@@ -62,7 +61,6 @@ import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.Problem;
 import org.talend.core.model.process.Problem.ProblemStatus;
-import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.ui.proposal.ProcessProposalUtils;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
@@ -78,7 +76,6 @@ import org.talend.designer.core.ui.editor.properties.OpenSQLBuilderDialogJob;
 import org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty;
 import org.talend.designer.core.ui.views.properties.WidgetFactory;
 import org.talend.designer.core.ui.views.statsandlogs.StatsAndLogsView;
-import org.talend.designer.core.ui.views.statsandlogs.StatsAndLogsViewHelper;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.sqlbuilder.util.ConnectionParameters;
 import org.talend.sqlbuilder.util.EConnectionParameterName;
@@ -893,7 +890,9 @@ public abstract class AbstractElementPropertySectionController implements Proper
         String selectedComponentName = (String) elem.getPropertyValue(EParameterName.UNIQUE_NAME.getName());
         connParameters.setSelectedComponentName(selectedComponentName);
         connParameters.setFieldType(paramFieldType);
-        connParameters.setMetadataTable(((Node) elem).getMetadataList().get(0));
+        if (elem instanceof Node) {
+            connParameters.setMetadataTable(((Node) elem).getMetadataList().get(0));
+        }
 
         connParameters.setSchemaRepository(EmfComponent.REPOSITORY.equals(elem.getPropertyValue(EParameterName.SCHEMA_TYPE
                 .getName())));

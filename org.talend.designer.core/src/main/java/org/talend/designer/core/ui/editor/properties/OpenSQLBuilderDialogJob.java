@@ -5,7 +5,7 @@
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
 //
-// You should have received a copy of the  agreement
+// You should have received a copy of the agreement
 // along with this program; if not, write to Talend SA
 // 9 rue Pages 92150 Suresnes, France
 //   
@@ -112,8 +112,12 @@ public class OpenSQLBuilderDialogJob extends Job {
 
                     public void run() {
                         Shell parentShell = new Shell(composite.getShell().getDisplay());
-                        TextUtil.setDialogTitle(process.getName(),
-                                (String) ((Node) elem).getElementParameter("LABEL").getValue(), elem.getElementName());
+                        if (elem instanceof Node) {
+                            TextUtil.setDialogTitle(process.getName(), (String) ((Node) elem).getElementParameter("LABEL")
+                                    .getValue(), elem.getElementName());
+                        } else {
+                            TextUtil.setDialogTitle(process.getName(), null, null);
+                        }
                         SQLBuilderDialog dial = new SQLBuilderDialog(parentShell);
                         UIUtils.addSqlBuilderDialog(process.getName(), dial);
                         dial.setConnParameters(connectionParameters);

@@ -5,7 +5,7 @@
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
 //
-// You should have received a copy of the  agreement
+// You should have received a copy of the agreement
 // along with this program; if not, write to Talend SA
 // 9 rue Pages 92150 Suresnes, France
 //   
@@ -73,10 +73,6 @@ import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
  */
 public class DbTableController extends AbstractElementPropertySectionController {
 
-    private Button openListTable;
-
-    private Button openSQLEditorButton;
-
     private static Logger log = Logger.getLogger(DbTableController.class);
 
     /**
@@ -95,7 +91,7 @@ public class DbTableController extends AbstractElementPropertySectionController 
         }
 
         public void widgetSelected(SelectionEvent e) {
-            createListTablesCommand();
+            createListTablesCommand((Button) e.getSource());
         }
     };
 
@@ -106,7 +102,7 @@ public class DbTableController extends AbstractElementPropertySectionController 
         }
 
         public void widgetSelected(SelectionEvent e) {
-            createOpenSQLCommand();
+            createOpenSQLCommand((Button) e.getSource());
         }
     };
 
@@ -122,8 +118,8 @@ public class DbTableController extends AbstractElementPropertySectionController 
         this.paramFieldType = param.getField();
 
         Control lastDbControl;
-        Control buttonControl = addListTablesButton(subComposite, param, top, numInRow, nbInRow);
-        lastDbControl = buttonControl;
+        Button openListTable = addListTablesButton(subComposite, param, top, numInRow, nbInRow);
+        lastDbControl = openListTable;
 
         Control openSqlBuilder = null;
         if (!isContainSqlMemo()) {
@@ -211,7 +207,7 @@ public class DbTableController extends AbstractElementPropertySectionController 
         } else {
             data.left = new FormAttachment(labelLabel, 0, SWT.RIGHT);
         }
-        data.right = new FormAttachment(buttonControl, -5, SWT.LEFT);
+        data.right = new FormAttachment(openListTable, -5, SWT.LEFT);
         // data.right = new FormAttachment((numInRow * MAX_PERCENT) / nbInRow, 0);
         data.top = new FormAttachment(0, top);
         cLayout.setLayoutData(data);
@@ -227,10 +223,12 @@ public class DbTableController extends AbstractElementPropertySectionController 
 
     /**
      * qzhang Comment method "createOpenSQLCommand".
+     * 
+     * @param button
      */
-    protected void createOpenSQLCommand() {
+    protected void createOpenSQLCommand(Button button) {
         initConnectionParameters();
-        openSqlBuilderBuildIn(connParameters, (String) openSQLEditorButton.getData(PARAMETER_NAME));
+        openSqlBuilderBuildIn(connParameters, (String) button.getData(PARAMETER_NAME));
     }
 
     /**
@@ -262,7 +260,8 @@ public class DbTableController extends AbstractElementPropertySectionController 
         });
 
         Control buttonControl = dField1.getLayoutControl();
-        openSQLEditorButton = (Button) dField1.getControl();
+
+        Button openSQLEditorButton = (Button) dField1.getControl();
         openSQLEditorButton.computeSize(SWT.DEFAULT, SWT.DEFAULT);
         openSQLEditorButton.setImage(ImageProvider.getImageDesc(EImage.READ_ICON).createImage());
         buttonControl.setBackground(subComposite.getBackground());
@@ -283,10 +282,10 @@ public class DbTableController extends AbstractElementPropertySectionController 
      * @param top
      * @return
      */
-    private Control addListTablesButton(final Composite subComposite, final IElementParameter param, final int top, int numInRow,
+    private Button addListTablesButton(final Composite subComposite, final IElementParameter param, final int top, int numInRow,
             final int nbInRow) {
 
-        openListTable = getWidgetFactory().createButton(subComposite, "", SWT.PUSH); //$NON-NLS-1$
+        Button openListTable = getWidgetFactory().createButton(subComposite, "", SWT.PUSH); //$NON-NLS-1$
         openListTable.setImage(CorePlugin.getImageDescriptor(DOTS_BUTTON).createImage());
         return openListTable;
     }
@@ -294,17 +293,21 @@ public class DbTableController extends AbstractElementPropertySectionController 
     /**
      * qzhang Comment method "createCommand".
      * 
+     * @param button
+     * 
      * @return
      */
-    protected void createListTablesCommand() {
+    protected void createListTablesCommand(Button button) {
         initConnectionParameters();
-        openDbTableSelectorJob();
+        openDbTableSelectorJob(button);
     }
 
     /**
      * qzhang Comment method "openDbTableSelectorJob".
+     * 
+     * @param openListTable
      */
-    private void openDbTableSelectorJob() {
+    private void openDbTableSelectorJob(final Button openListTable) {
         Job job = new Job("Open Database Table Selector Dialog") {
 
             @Override
@@ -343,19 +346,6 @@ public class DbTableController extends AbstractElementPropertySectionController 
                                         DbTableSelectorObject tableO = new DbTableSelectorObject();
                                         tableO.setLabel(string);
                                         tableO.setType(ObjectType.TABLE);
-                                        // List<MetadataColumn> cols =
-                                        // ExtractMetaDataFromDataBase.returnMetadataColumnsFormTable(
-                                        // iMetadataConnection, string);
-                                        // if (monitor.isCanceled()) {
-                                        // monitor.done();
-                                        // return;
-                                        // }
-                                        // for (MetadataColumn column : cols) {
-                                        // DbTableSelectorObject columnO = new DbTableSelectorObject();
-                                        // columnO.setLabel(column.getLabel());
-                                        // columnO.setType(ObjectType.COLUMN);
-                                        // tableO.addChildren(columnO);
-                                        // }
                                         connO.addChildren(tableO);
                                     }
                                     object.addChildren(connO);

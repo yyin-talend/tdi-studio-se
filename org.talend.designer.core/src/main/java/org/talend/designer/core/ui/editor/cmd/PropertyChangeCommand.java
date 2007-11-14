@@ -32,7 +32,6 @@ import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.views.CodeView;
-import org.talend.designer.core.ui.views.statsandlogs.StatsAndLogsView;
 
 /**
  * Command that changes a given property. It will call the set or get property value in an element. This element can be
@@ -95,20 +94,6 @@ public class PropertyChangeCommand extends Command {
         if (view != null) {
             CodeView codeView = (CodeView) view;
             codeView.refresh();
-        }
-    }
-
-    /**
-     * ftang Comment method "refreshStatsAndLogsView".
-     */
-    private void refreshStatsAndLogsView() {
-        if (elem.getElementParameter(propName).getCategory().equals(EComponentCategory.STATSANDLOGS)) {
-            IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-            IViewPart view = page.findView(StatsAndLogsView.ID);
-            if (view != null) {
-                StatsAndLogsView statsAndLogsView = (StatsAndLogsView) view;
-                statsAndLogsView.refreshView();
-            }
         }
     }
 
@@ -188,7 +173,6 @@ public class PropertyChangeCommand extends Command {
         }
         refreshPropertyView();
         refreshCodeView();
-        refreshStatsAndLogsView();
 
         if (elem instanceof Node) {
             ((Node) elem).checkAndRefreshNode();

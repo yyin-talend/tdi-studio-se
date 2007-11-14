@@ -5,7 +5,7 @@
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
 //
-// You should have received a copy of the  agreement
+// You should have received a copy of the agreement
 // along with this program; if not, write to Talend SA
 // 9 rue Pages 92150 Suresnes, France
 //   
@@ -565,7 +565,7 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
     public void addComponents(boolean forceRedraw) {
         addComponents(forceRedraw, true, 0);
     }
-    
+
     protected void disposeChildren() {
         // Empty the composite before use (kinda refresh) :
         Control[] ct = composite.getChildren();
@@ -751,6 +751,7 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
 
     /**
      * DOC Administrator Comment method "isNeedRedraw".
+     * 
      * @return
      */
     protected boolean isNeedRedraw() {
@@ -1018,7 +1019,8 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
                 addComponents(true);
                 refresh();
             }
-            Boolean updateNeeded = (Boolean) elem.getPropertyValue(EParameterName.UPDATE_COMPONENTS.getName());
+            Boolean updateNeeded = true; // (Boolean)
+                                            // elem.getPropertyValue(EParameterName.UPDATE_COMPONENTS.getName());
             if (updateNeeded || 0 != (detail & CommandStack.POST_UNDO) || 0 != (detail & CommandStack.POST_REDO)) {
                 refresh();
             }
