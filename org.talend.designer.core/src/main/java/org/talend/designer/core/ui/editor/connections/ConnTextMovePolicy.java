@@ -5,7 +5,7 @@
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
 //
-// You should have received a copy of the  agreement
+// You should have received a copy of the agreement
 // along with this program; if not, write to Talend SA
 // 9 rue Pages 92150 Suresnes, France
 //   
@@ -18,6 +18,7 @@ import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.editpolicies.NonResizableEditPolicy;
 import org.eclipse.gef.requests.ChangeBoundsRequest;
 import org.talend.designer.core.ui.editor.cmd.MoveConnTextCommand;
+import org.talend.designer.core.ui.editor.cmd.MoveConnTraceCommand;
 
 /**
  * Policy that will allow to move the label of the connection. <br/>
@@ -36,11 +37,19 @@ public class ConnTextMovePolicy extends NonResizableEditPolicy {
         if (((Connection) getHost().getParent().getModel()).isReadOnly()) {
             return null;
         }
-        ConnectionLabel model = (ConnectionLabel) getHost().getModel();
-        Point delta = request.getMoveDelta();
-        ConnectionPart edge = (ConnectionPart) getHost().getParent();
-        MoveConnTextCommand command = new MoveConnTextCommand(model, (Figure) edge.getFigure(), delta);
-        return command;
+        if (getHost().getModel() instanceof ConnectionTrace) {
+            ConnectionTrace model = (ConnectionTrace) getHost().getModel();
+            Point delta = request.getMoveDelta();
+            ConnectionPart edge = (ConnectionPart) getHost().getParent();
+            MoveConnTraceCommand command = new MoveConnTraceCommand(model, (Figure) edge.getFigure(), delta);
+            return command;
+        } else if (getHost().getModel() instanceof ConnectionLabel) {
+            ConnectionLabel model = (ConnectionLabel) getHost().getModel();
+            Point delta = request.getMoveDelta();
+            ConnectionPart edge = (ConnectionPart) getHost().getParent();
+            MoveConnTextCommand command = new MoveConnTextCommand(model, (Figure) edge.getFigure(), delta);
+            return command;
+        }
+        return null;
     }
-
 }

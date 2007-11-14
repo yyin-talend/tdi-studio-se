@@ -5,7 +5,7 @@
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
 //
-// You should have received a copy of the  agreement
+// You should have received a copy of the agreement
 // along with this program; if not, write to Talend SA
 // 9 rue Pages 92150 Suresnes, France
 //   
@@ -15,6 +15,7 @@ package org.talend.designer.core.ui.editor.connections;
 import java.util.List;
 
 import org.eclipse.draw2d.geometry.Dimension;
+import org.eclipse.draw2d.geometry.Point;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
 
@@ -25,6 +26,8 @@ import org.talend.core.model.process.IElementParameter;
  * 
  */
 public class ConnectionTrace extends Element {
+
+    private Point offset = new Point();
 
     public static final String TRACE_PROP = "traceChange"; //$NON-NLS-1$
 
@@ -90,6 +93,29 @@ public class ConnectionTrace extends Element {
     @Override
     public String getElementName() {
         return connection.getElementName();
+    }
+
+    private static final int MAX_DISTANCE = 50;
+
+    /**
+     * Set the offset for the label. The offset is linked to the position of the label. The offset will be limited to a
+     * distance maximum to avoid to have a label too far away from the connection.
+     * 
+     * @param offset Point
+     */
+    public void setOffset(Point offset) {
+        this.offset.x = offset.x;
+        this.offset.y = offset.y;
+        firePropertyChange("positionChange", null, null); //$NON-NLS-1$
+    }
+
+    /**
+     * Return the offset of the label.
+     * 
+     * @return
+     */
+    public Point getOffset() {
+        return offset;
     }
 
     /*

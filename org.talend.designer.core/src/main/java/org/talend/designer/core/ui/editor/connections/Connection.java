@@ -5,7 +5,7 @@
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
 //
-// You should have received a copy of the  agreement
+// You should have received a copy of the agreement
 // along with this program; if not, write to Talend SA
 // 9 rue Pages 92150 Suresnes, France
 //   
@@ -122,6 +122,8 @@ public class Connection extends Element implements IConnection, IPerformance {
             createMeterParameters((Process) source.getProcess());
         }
         setName(linkName);
+        trace.setOffset(label.getOffset());
+
         reconnect(source, target, lineStyle);
         updateName();
         if (lineStyle.equals(EConnectionType.RUN_IF)) {
