@@ -2,7 +2,7 @@
 //
 // Talend Community Edition
 //
-// Copyright (C) 2006 Talend â€?www.talend.com
+// Copyright (C) 2006 Talend ï¿½?www.talend.com
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -71,7 +71,7 @@ class IntrospectionHashFile {
 
     int[] types = null;
 
-    private Class<Bean> beanClass;
+    private Class<InternalSmallBean> beanClass;
 
     public Object get(String container, long cursorPosition) throws IOException, ClassNotFoundException,
             InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {

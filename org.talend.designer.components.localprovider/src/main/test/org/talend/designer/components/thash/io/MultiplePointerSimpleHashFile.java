@@ -134,6 +134,9 @@ class MultiplePointerSimpleHashFile implements MapHashFile {
     public RandomAccessFile getPointer(long cursorPosition) {
         int index = (int) (cursorPosition/offsetBetweenPointer);
 //        System.out.println(index);
+        if(index >= readPointersNumber) {
+        	index = readPointersNumber - 1;
+        }
         return raArray[index];
     }
     

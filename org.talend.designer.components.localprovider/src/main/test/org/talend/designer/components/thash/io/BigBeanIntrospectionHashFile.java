@@ -67,13 +67,13 @@ class BigBeanIntrospectionHashFile implements MapHashFile {
 
     RandomAccessFile ra = null;
 
-    BigBean lastRetrievedObject;
+    InternalBigBean lastRetrievedObject;
 
     long lastRetrievedCursorPosition = -1;
 
     public Object get(String container, long cursorPosition, int hashcode) throws IOException {
         if (cursorPosition != lastRetrievedCursorPosition) {
-            lastRetrievedObject = new BigBean();
+            lastRetrievedObject = new InternalBigBean();
             ra.seek(cursorPosition);
             lastRetrievedObject.primitiveInt = ra.readInt();
             byte[] bytes = new byte[ra.readInt()];
@@ -109,7 +109,7 @@ class BigBeanIntrospectionHashFile implements MapHashFile {
     public long put(String container, Object BigBean) throws IOException {
         long returnPosition = bw.getFilePointer();
         if (!readonly) {
-            lastRetrievedObject = (BigBean)BigBean;
+            lastRetrievedObject = (InternalBigBean)BigBean;
             bw.writeInt(lastRetrievedObject.primitiveInt);
             byte[] bytes = null;
             if(lastRetrievedObject.name == null){
@@ -188,7 +188,7 @@ class BigBeanIntrospectionHashFile implements MapHashFile {
         
         nihf.initPut(folder + "cache0");
         for (int i = 1; i < loop; i++) {
-            BigBean bean = new BigBean(i, String.valueOf(i));
+            InternalBigBean bean = new InternalBigBean(i, String.valueOf(i));
             nihf.put("", bean);
         }
         nihf.endPut();
@@ -204,10 +204,10 @@ class BigBeanIntrospectionHashFile implements MapHashFile {
         IntrospectionHashFile ihf = IntrospectionHashFile.getInstance();
         start = System.currentTimeMillis();
 
-        ihf.init(BigBean.class);
+        ihf.init(InternalBigBean.class);
         ihf.initPut(folder + "cache1");
         for (int i = 1; i < loop; i++) {
-            BigBean bean = new BigBean(i, String.valueOf(i));
+            InternalBigBean bean = new InternalBigBean(i, String.valueOf(i));
             ihf.put("", bean);
         }
         ihf.endPut();
@@ -225,7 +225,7 @@ class BigBeanIntrospectionHashFile implements MapHashFile {
         
          shf.initPut(folder + "cache2");
          for (int i = 0; i < loop; i++) {
-             BigBean bean = new BigBean(i, String.valueOf(i));
+             InternalBigBean bean = new InternalBigBean(i, String.valueOf(i));
          shf.put("", bean);
          }
          ihf.endPut();
@@ -242,7 +242,7 @@ class BigBeanIntrospectionHashFile implements MapHashFile {
         
          dhf.initPut(folder + "cache3");
          for (int i = 0; i < loop; i++) {
-             BigBean bean = new BigBean(i, String.valueOf(i));
+             InternalBigBean bean = new InternalBigBean(i, String.valueOf(i));
          dhf.put("", bean);
          }
          dhf.endPut();

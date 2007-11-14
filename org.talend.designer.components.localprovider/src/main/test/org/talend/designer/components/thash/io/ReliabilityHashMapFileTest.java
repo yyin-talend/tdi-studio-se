@@ -31,7 +31,7 @@ import org.talend.designer.components.thash.Sizeof;
  */
 public class ReliabilityHashMapFileTest {
 
-    public static MultiplePointerSimpleHashFile hashFile;
+    public static MultipleHashFile hashFile;
 
     public static void main(String[] args) throws Exception {
 
@@ -49,8 +49,8 @@ public class ReliabilityHashMapFileTest {
 
         
         // change also in Bean.equals(...) class
-//        hashFile = SimpleHashFile.getInstance();
-        hashFile = MultiplePointerSimpleHashFile.getInstance();
+        hashFile = MultipleHashFile.getInstance();
+//        hashFile = MultiplePointerSimpleHashFile.getInstance();
 //        hashFile = DoubleHashFile.getInstance();
 
         

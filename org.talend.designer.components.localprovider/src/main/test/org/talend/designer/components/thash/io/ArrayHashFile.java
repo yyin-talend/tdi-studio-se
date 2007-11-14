@@ -72,7 +72,7 @@ class ArrayHashFile implements MapHashFile {
 
     long lastRetrievedCursorPosition = -1;
 
-    public Object get(String container, long cursorPosition) throws IOException, ClassNotFoundException {
+    public Object get(String container, long cursorPosition, int hashcode) throws IOException, ClassNotFoundException {
         if (cursorPosition != lastRetrievedCursorPosition) {
             ra.seek(cursorPosition);
             byte[] byteArray = new byte[ra.readInt()];
@@ -146,7 +146,7 @@ class ArrayHashFile implements MapHashFile {
 
         nihf.initPut("D:/cache0");
         for (int i = 1; i < loop; i++) {
-            Bean bean = new Bean(i, String.valueOf(i));
+            InternalSmallBean bean = new InternalSmallBean(i, String.valueOf(i));
             cursors.add(nihf.put("", bean.toArray()));
         }
         nihf.endPut();
@@ -172,7 +172,7 @@ class ArrayHashFile implements MapHashFile {
 
         shf.initPut("D:/cache1");
         for (int i = 1; i < loop; i++) {
-            Bean bean = new Bean(i, String.valueOf(i));
+            InternalSmallBean bean = new InternalSmallBean(i, String.valueOf(i));
             cursors.add(shf.put("", bean));
         }
         shf.endPut();
@@ -191,7 +191,7 @@ class ArrayHashFile implements MapHashFile {
 
         nihf.initPut("D:/cache2");
         for (int i = 1; i < loop; i++) {
-            BigBean bean = new BigBean(i, String.valueOf(i));
+            InternalBigBean bean = new InternalBigBean(i, String.valueOf(i));
             cursors.add(nihf.put("", bean.toArray()));
         }
         nihf.endPut();
@@ -217,7 +217,7 @@ class ArrayHashFile implements MapHashFile {
 
         shf.initPut("D:/cache3");
         for (int i = 1; i < loop; i++) {
-            BigBean bean = new BigBean(i, String.valueOf(i));
+            InternalBigBean bean = new InternalBigBean(i, String.valueOf(i));
             cursors.add(shf.put("", bean));
         }
         shf.endPut();
@@ -233,7 +233,7 @@ class ArrayHashFile implements MapHashFile {
 }
 
 
-class Bean implements Serializable {
+class InternalSmallBean implements Serializable {
 
     int primitiveInt;
 
@@ -247,17 +247,17 @@ class Bean implements Serializable {
      * @param primitiveInt
      * @param name
      */
-    public Bean(int primitiveInt, String name) {
+    public InternalSmallBean(int primitiveInt, String name) {
         super();
         this.primitiveInt = primitiveInt;
         this.name = name;
     }
     
-    public Bean(){
+    public InternalSmallBean(){
         super();
     }
     
-    public Bean(Object[] objs) {
+    public InternalSmallBean(Object[] objs) {
         super();
         this.primitiveInt = (Integer)objs[0];
         this.name = (String)objs[1];
@@ -299,14 +299,14 @@ class Bean implements Serializable {
         
         Object o = null;
         try {
-            o = ReliabilityHashMapFileTest.hashFile.get("", (long)other.cursorPosition);
+            o = ReliabilityHashMapFileTest.hashFile.get("", (long)other.cursorPosition, -1);
         } catch (Exception e) {
             e.printStackTrace();
         }
         if (o == null) {
             return false;
         }
-        Bean bean = (Bean) o;
+        InternalSmallBean bean = (InternalSmallBean) o;
 
         if (this.name == null) {
             if ((String) bean.name != null)
@@ -348,7 +348,7 @@ class Bean implements Serializable {
 }
 
 
-class BigBean implements Serializable {
+class InternalBigBean implements Serializable {
 
     int primitiveInt;
 
@@ -374,7 +374,7 @@ class BigBean implements Serializable {
      * @param primitiveInt
      * @param name
      */
-    public BigBean(int primitiveInt, String name) {
+    public InternalBigBean(int primitiveInt, String name) {
         super();
         this.primitiveInt = primitiveInt;
         this.name = name;
@@ -386,11 +386,11 @@ class BigBean implements Serializable {
         this.flag = true;
     }
     
-    public BigBean(){
+    public InternalBigBean(){
         super();
     }
     
-    public BigBean(Object[] objs) {
+    public InternalBigBean(Object[] objs) {
         super();
         this.primitiveInt = (Integer)objs[0];
         this.name = (String)objs[1];
@@ -438,14 +438,14 @@ class BigBean implements Serializable {
 
         Object o = null;
         try {
-            o = ReliabilityHashMapFileTest.hashFile.get("", (long) other.cursorPosition);
+            o = ReliabilityHashMapFileTest.hashFile.get("", (long) other.cursorPosition, -1);
         } catch (Exception e) {
             e.printStackTrace();
         }
         if (o == null) {
             return false;
         }
-        BigBean bean = (BigBean) o;
+        InternalBigBean bean = (InternalBigBean) o;
 
         if (this.name == null) {
             if ((String) bean.name != null)

@@ -199,7 +199,6 @@ class DoubleHashFileWithCompressor implements MapHashFile {
                  * 
                  * @see java.lang.Runnable#run()
                  */
-                @Override
                 public void run() {
                     try {
                         if (!readonly) {

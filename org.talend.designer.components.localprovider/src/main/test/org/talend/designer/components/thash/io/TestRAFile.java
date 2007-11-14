@@ -29,7 +29,7 @@ public class TestRAFile {
         long end = 0;
         long start = java.util.Calendar.getInstance().getTimeInMillis();
         for (int i = 0; i < loop; i++) {
-            Bean bean = new Bean(i, "test" + i);
+            InternalSmallBean bean = new InternalSmallBean(i, "test" + i);
             // KeyForMap keyForMap = new KeyForMap(id, bean.hashCode());
             cursorPositionList.add(hashFile.put("", bean));
         }
@@ -41,7 +41,7 @@ public class TestRAFile {
         hashFile.initGet(D_20071109TEMP);
         int size = cursorPositionList.size();
         for (int i = 0; i < size; i++) {
-            Bean bean = (Bean) hashFile.get("", cursorPositionList.get(i), -1);
+            InternalSmallBean bean = (InternalSmallBean) hashFile.get("", cursorPositionList.get(i), -1);
 //            System.out.println(bean.primitiveInt + "  " + bean.name);
         }
         hashFile.endGet(D_20071109TEMP);
