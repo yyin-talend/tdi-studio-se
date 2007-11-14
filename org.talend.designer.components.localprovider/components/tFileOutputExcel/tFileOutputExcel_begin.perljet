@@ -117,7 +117,13 @@ my $column_formats_<%=cid%> = [];
 %>
 
 
+<%
+if (includeHeader.equals("true")) {
+%>
 $nb_line_<%=cid %>++;
+<%
+}
+%>
 
 
 <%
