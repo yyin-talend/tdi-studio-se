@@ -5,7 +5,7 @@
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
 //
-// You should have received a copy of the  agreement
+// You should have received a copy of the agreement
 // along with this program; if not, write to Talend SA
 // 9 rue Pages 92150 Suresnes, France
 //   
@@ -35,12 +35,25 @@ import org.talend.core.CorePlugin;
  */
 public class DeleteAllJobWhenStartUp implements IStartup {
 
+    public static boolean executed;
+
+    private boolean startUnderPluginModel;
+
+    public void startup(boolean pluginModel) {
+        startUnderPluginModel = pluginModel;
+        earlyStartup();
+    }
+
     /*
      * (non-Javadoc)
      * 
      * @see org.eclipse.ui.IStartup#earlyStartup()
      */
     public void earlyStartup() {
+
+        if (!startUnderPluginModel && !CorePlugin.getDefault().getRepositoryService().isRCPMode()) {
+            return;
+        }
 
         IWorkspace workspace = ResourcesPlugin.getWorkspace();
         IWorkspaceRoot workspaceRoot = workspace.getRoot();
@@ -77,18 +90,18 @@ public class DeleteAllJobWhenStartUp implements IStartup {
         }
 
         // fix bug 1151, move the sync all routines here from JavaProcessor and PerlProcessor.
-        if (CorePlugin.getDefault().getRepositoryService().isRCPMode()) {
-            Display.getDefault().asyncExec(new Runnable() {
+        Display.getDefault().asyncExec(new Runnable() {
 
-                public void run() {
-                    try {
-                        RunProcessPlugin.getDefault().getCodeGeneratorService().createRoutineSynchronizer()
-                                .syncAllRoutines();
-                    } catch (Exception e) {
-                        ExceptionHandler.process(e);
-                    }
+            public void run() {
+                try {
+                    RunProcessPlugin.getDefault().getCodeGeneratorService().createRoutineSynchronizer().syncAllRoutines();
+                } catch (Exception e) {
+                    ExceptionHandler.process(e);
                 }
-            });
-        }
+            }
+        });
+
+        executed = true;
+
     }
 }

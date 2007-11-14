@@ -5,7 +5,7 @@
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
 //
-// You should have received a copy of the  agreement
+// You should have received a copy of the agreement
 // along with this program; if not, write to Talend SA
 // 9 rue Pages 92150 Suresnes, France
 //   
@@ -75,8 +75,8 @@ public class DefaultRunProcessService implements IRunProcessService {
             String perlInterpreterLibOption, String perlModuleDirectoryOption, int statOption, int traceOption,
             String... codeOptions) throws ProcessorException {
 
-        return PerlProcessor.exec(out, err, absCodePath, contextName, level, perlInterpreterLibOption,
-                perlModuleDirectoryOption, statOption, traceOption, codeOptions);
+        return PerlProcessor.exec(out, err, absCodePath, contextName, level, perlInterpreterLibOption, perlModuleDirectoryOption,
+                statOption, traceOption, codeOptions);
 
     }
 
@@ -148,8 +148,7 @@ public class DefaultRunProcessService implements IRunProcessService {
      * @see org.talend.designer.runprocess.IRunProcessService#setDelegateService(org.talend.designer.runprocess.IRunProcessService)
      */
     public void setDelegateService(IRunProcessService delegateService) {
-        throw new UnsupportedOperationException(
-                "This method should'nt be called here, use it on RunProcessService class.");
+        throw new UnsupportedOperationException("This method should'nt be called here, use it on RunProcessService class.");
     }
 
     public void updateLibraries() throws CoreException {
@@ -175,5 +174,23 @@ public class DefaultRunProcessService implements IRunProcessService {
      */
     public int getPauseTime() {
         return RunProcessPlugin.getDefault().getPreferenceStore().getInt(RunProcessPrefsConstants.STRACESTIME);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.runprocess.IRunProcessService#needDeleteAllJobs()
+     */
+    public boolean needDeleteAllJobs() {
+        return !DeleteAllJobWhenStartUp.executed;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.runprocess.IRunProcessService#deleteAllJobx(boolean)
+     */
+    public void deleteAllJobs(boolean fromPluginModel) {
+        new DeleteAllJobWhenStartUp().startup(fromPluginModel);
     }
 }

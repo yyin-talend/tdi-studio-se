@@ -5,7 +5,7 @@
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
 //
-// You should have received a copy of the  agreement
+// You should have received a copy of the agreement
 // along with this program; if not, write to Talend SA
 // 9 rue Pages 92150 Suresnes, France
 //   
@@ -27,6 +27,7 @@ import org.talend.core.model.process.IProcess;
  * $Id: talend-code-templates.xml 1 2006-09-29 17:06:40 +0000 (星期五, 29 九月 2006) nrousseau $
  * 
  */
+
 public class RunProcessService implements IRunProcessService {
 
     private IRunProcessService delegateService;
@@ -155,6 +156,24 @@ public class RunProcessService implements IRunProcessService {
      */
     public int getPauseTime() {
         return delegateService.getPauseTime();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.runprocess.IRunProcessService#deleteAllJobs(boolean)
+     */
+    public void deleteAllJobs(boolean fromPluginModel) {
+        new DeleteAllJobWhenStartUp().startup(fromPluginModel);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.runprocess.IRunProcessService#needDeleteAllJobs()
+     */
+    public boolean needDeleteAllJobs() {
+        return !DeleteAllJobWhenStartUp.executed;
     }
 
 }
