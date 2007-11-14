@@ -41,8 +41,13 @@
 					(templateOrigin.compareTo("")!=0) ||
 					(conn.getLineStyle().equals(EConnectionType.FLOW_MAIN))||
 					(conn.getLineStyle().equals(EConnectionType.FLOW_REF)) ||
-					(conn.getLineStyle().equals(EConnectionType.FLOW_MERGE)) 
+					(conn.getLineStyle().equals(EConnectionType.FLOW_MERGE))||
+					(conn.getLineStyle().equals(EConnectionType.RUN_AFTER)) 
 				) {
+
+					if(conn.getLineStyle().equals(EConnectionType.RUN_AFTER)){
+						templateOrigin = ElementParameterParser.getValue(conn.getSource(), "__ORIGIN__");
+					}				
 					if (!hSet.contains(conn.getName() + templateOrigin)) {
 						hSet.add(conn.getName() + templateOrigin);
 						IMetadataTable metadata = conn.getMetadataTable();
