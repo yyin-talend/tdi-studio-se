@@ -139,12 +139,14 @@ class ArrayHashFile implements MapHashFile {
             NoSuchMethodException, ClassNotFoundException, InstantiationException {
         int loop = 1000000;
 
+        String folder = "/tmp/";
+        
         // test bean write using ArrayHashFile
         ArrayHashFile nihf = ArrayHashFile.getInstance();
         List<Long> cursors = new ArrayList<Long>();
         long start = System.currentTimeMillis();
 
-        nihf.initPut("D:/cache0");
+        nihf.initPut(folder + "cache0");
         for (int i = 1; i < loop; i++) {
             InternalSmallBean bean = new InternalSmallBean(i, String.valueOf(i));
             cursors.add(nihf.put("", bean.toArray()));
@@ -155,22 +157,22 @@ class ArrayHashFile implements MapHashFile {
         long deltaTime = (end - start);
         System.out.print(deltaTime + " milliseconds for " + loop + " beans to STORE using ArrayHashFile. "
                 + (loop / deltaTime * 1000) + " items/s. ");
-        File file = new File("D:/cache0");
+        File file = new File(folder + "cache0");
         System.out.println((file.length() / loop) + " bytes per item in storage.");
 
-        // nihf.initGet("D:/cache0");
+        // nihf.initGet(folder + "cache0");
         //        
         // for(int i = 0; i < cursors.size(); i++){
         // Bean be = new Bean((Object[])nihf.get("", cursors.get(i)));
         // }
-        // nihf.endGet("D:/cache0");
+        // nihf.endGet(folder + "cache0");
 
         // test bean write using SimpleHashFile
         SimpleHashFile shf = SimpleHashFile.getInstance();
         cursors = new ArrayList<Long>();
         start = System.currentTimeMillis();
 
-        shf.initPut("D:/cache1");
+        shf.initPut(folder + "cache1");
         for (int i = 1; i < loop; i++) {
             InternalSmallBean bean = new InternalSmallBean(i, String.valueOf(i));
             cursors.add(shf.put("", bean));
@@ -181,7 +183,7 @@ class ArrayHashFile implements MapHashFile {
         deltaTime = (end - start);
         System.out.print(deltaTime + " milliseconds for " + loop + " beans to STORE using SimpleHashFile. "
                 + (loop / deltaTime * 1000) + " items/s. ");
-        file = new File("D:/cache1");
+        file = new File(folder + "cache1");
         System.out.println((file.length() / loop) + " bytes per item in storage.");
 
         // test big bean write using ArrayHashFile
@@ -189,7 +191,7 @@ class ArrayHashFile implements MapHashFile {
         cursors = new ArrayList<Long>();
         start = System.currentTimeMillis();
 
-        nihf.initPut("D:/cache2");
+        nihf.initPut(folder + "cache2");
         for (int i = 1; i < loop; i++) {
             InternalBigBean bean = new InternalBigBean(i, String.valueOf(i));
             cursors.add(nihf.put("", bean.toArray()));
@@ -200,22 +202,22 @@ class ArrayHashFile implements MapHashFile {
         deltaTime = (end - start);
         System.out.print(deltaTime + " milliseconds for " + loop + " big beans to STORE using ArrayHashFile. "
                 + (loop / deltaTime * 1000) + " items/s. ");
-        file = new File("D:/cache2");
+        file = new File(folder + "cache2");
         System.out.println((file.length() / loop) + " bytes per item in storage.");
 
-        // nihf.initGet("D:/cache2");
+        // nihf.initGet(folder + "cache2");
         //        
         // for(int i = 0; i < cursors.size(); i++){
         // BigBean be = new BigBean((Object[])nihf.get("", cursors.get(i)));
         // }
-        // nihf.endGet("D:/cache2");
+        // nihf.endGet(folder + "cache2");
 
         // test big bean write using SimpleHashFile
         shf = SimpleHashFile.getInstance();
         cursors = new ArrayList<Long>();
         start = System.currentTimeMillis();
 
-        shf.initPut("D:/cache3");
+        shf.initPut(folder + "cache3");
         for (int i = 1; i < loop; i++) {
             InternalBigBean bean = new InternalBigBean(i, String.valueOf(i));
             cursors.add(shf.put("", bean));
@@ -226,7 +228,7 @@ class ArrayHashFile implements MapHashFile {
         deltaTime = (end - start);
         System.out.print(deltaTime + " milliseconds for " + loop + " beans to STORE using SimpleHashFile. "
                 + (loop / deltaTime * 1000) + " items/s. ");
-        file = new File("D:/cache3");
+        file = new File(folder + "cache3");
         System.out.println((file.length() / loop) + " bytes per item in storage.");
     }
 
