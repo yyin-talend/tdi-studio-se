@@ -107,6 +107,19 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
 <%
 			}
         }
+        
+        public void testNull(String incomingConnName, IMetadataColumn metadataColumn, String cid){
+        	if(metadataColumn.isNullable()){
+%>
+			// validate nullable
+			if(<%=incomingConnName%>.<%=metadataColumn.getLabel()%> == null) {
+                ifPassed_<%=cid%> = false;
+                errorCode_<%=cid%> = "4";
+                errorMessage_<%=cid%> = "empty or null";                        
+            }
+<%
+			}
+        }
     }
     SchemaChecker checker = new SchemaChecker();
     List<Map<String, String>> checkedColumns = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node,"__CHECKCOLS__");
@@ -131,37 +144,22 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
                 		checker.testDataType(incomingConnName,metadataColumn,selectedType,cid);
                 	}
                 }
-                if(checkAll.equals("true") || anotherChecked.equals("true")) {
+                if(anotherChecked.equals("true")) {
                 	if (columnListToTest.size() <= columnIndex) {
                 		continue;
                 	}
-                	if(!JavaTypesManager.getJavaTypeFromId(metadataColumn.getTalendType()).isPrimitive()){
-                    %>
-                    //validate nullable
-                    if(<%=!columnListToTest.get(columnIndex).isNullable()%> && 
-                       	<%=incomingConnName%>.<%=metadataColumn.getLabel()%> == null) {
-                        ifPassed_<%=cid%> = false;
-                        errorCode_<%=cid%> = "4";
-                        errorMessage_<%=cid%> = "empty or null";                        
-                    }
-                    <%
+                	//if input field is nullable and output field can't nullable, it must check.
+                	if(!columnListToTest.get(columnIndex).isNullable()){
+                		checker.testNull(incomingConnName,metadataColumn,cid);
                     }
                     checker.testDataLength(incomingConnName,metadataColumn,columnListToTest.get(columnIndex).getLength(),cid);
                 } else {
                     String checkNullable = checkedColumn.get("NULLABLE");
                     String checkMaxLength = checkedColumn.get("MAX_LENGTH");
-                    if(checkNullable.equals("true") 
-                    	&& !JavaTypesManager.getJavaTypeFromId(metadataColumn.getTalendType()).isPrimitive()) { // if the column we test is nullable, no need
-                        %>
-                        if(<%=!metadataColumn.isNullable()%> && 
-                        	<%=incomingConnName%>.<%=metadataColumn.getLabel()%> == null) {
-                            ifPassed_<%=cid%> = false;
-                            errorCode_<%=cid%> = "4";
-                            errorMessage_<%=cid%> = "empty or null";                        
-                        }                        
-                        <%
+                    if(checkAll.equals("true") || checkNullable.equals("true")) { // if the column we test is nullable, no need
+                        checker.testNull(incomingConnName,metadataColumn,cid);
                     }
-                    if(checkMaxLength.equals("true")) {
+                    if(checkAll.equals("true") || checkMaxLength.equals("true")) {
                         checker.testDataLength(incomingConnName,metadataColumn, metadataColumn.getLength(),cid);
                     }
                 }
