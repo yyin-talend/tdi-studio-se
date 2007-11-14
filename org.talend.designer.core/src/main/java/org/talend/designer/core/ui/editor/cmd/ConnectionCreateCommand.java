@@ -5,7 +5,7 @@
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
 //
-// You should have received a copy of the  agreement
+// You should have received a copy of the agreement
 // along with this program; if not, write to Talend SA
 // 9 rue Pages 92150 Suresnes, France
 //   
@@ -15,7 +15,10 @@ package org.talend.designer.core.ui.editor.cmd;
 import java.util.List;
 
 import org.eclipse.gef.commands.Command;
+import org.eclipse.jface.dialogs.InputDialog;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.designer.core.i18n.Messages;
@@ -75,6 +78,16 @@ public class ConnectionCreateCommand extends Command {
         this.target = targetNode;
     }
 
+    private String askForConnectionName(String nodeLabel) {
+        InputDialog id = new InputDialog(null, nodeLabel + Messages.getString("ConnectionCreateAction.dialogTitle"), //$NON-NLS-1$
+                Messages.getString("ConnectionCreateAction.dialogMessage"), "", null); //$NON-NLS-1$ //$NON-NLS-2$
+        id.open();
+        if (id.getReturnCode() == InputDialog.CANCEL) {
+            return ""; //$NON-NLS-1$
+        }
+        return id.getValue();
+    }
+
     public boolean canExecute() {
         if (target != null) {
             if (!ConnectionManager.canConnectToTarget(source, null, target, source.getConnectorFromName(connectorName)
@@ -89,6 +102,54 @@ public class ConnectionCreateCommand extends Command {
     }
 
     public void execute() {
+        if (connectionName == null) {
+            // ask for the name if there is no
+
+            final INodeConnector mainConnector;
+
+            EConnectionType connecType;
+            if (source.isELTComponent()) {
+                connecType = EConnectionType.TABLE;
+            } else {
+                connecType = EConnectionType.FLOW_MAIN;
+            }
+            mainConnector = source.getConnectorFromType(connecType);
+
+            if (source.getConnectorFromName(connectorName).isBuiltIn()) {
+                boolean connectionOk = false;
+                while (!connectionOk) {
+                    connectionName = askForConnectionName(source.getLabel());
+                    if (connectionName.equals("")) {
+                        creatingConnection = false;
+                        dispose();
+                        return;
+                    }
+                    metaName = connectionName;
+                    newMetadata = new MetadataTable();
+                    newMetadata.setTableName(connectionName);
+                    newMetadata.setLabel(connectionName);
+                    if ((connecType.equals(EConnectionType.TABLE) || source.getProcess().checkValidConnectionName(connectionName))
+                            && ConnectionManager.canConnectToTarget(source, null, target, source.getConnectorFromName(
+                                    connectorName).getDefaultConnectionType(), connectorName, connectionName)) {
+                        connectionOk = true;
+                    } else {
+                        String message = Messages.getString("ConnectionCreateAction.errorCreateConnectionName", //$NON-NLS-1$
+                                connectionName);
+                        MessageDialog.openError(null, Messages.getString("ConnectionCreateAction.error"), message); //$NON-NLS-1$
+                    }
+                }
+
+            } else {
+                newMetadata = null;
+                metaName = source.getMetadataFromConnector(mainConnector.getName()).getTableName();
+                String baseName = source.getConnectionName();
+                if (source.getProcess().checkValidConnectionName(baseName)) {
+                    connectionName = source.getProcess().generateUniqueConnectionName(baseName);
+                }
+            }
+
+        }
+
         if (newMetadata != null) {
             source.getMetadataList().add(newMetadata);
             this.connection = new Connection(source, target, newLineStyle, connectorName, metaName, connectionName);
@@ -105,7 +166,6 @@ public class ConnectionCreateCommand extends Command {
         ((Process) source.getProcess()).checkStartNodes();
         source.checkAndRefreshNode();
         target.checkAndRefreshNode();
-        // ((Process) source.getProcess()).checkProcess();
     }
 
     public void undo() {

@@ -41,7 +41,6 @@ import org.talend.designer.core.ui.action.NodeBreakpointAction;
 import org.talend.designer.core.ui.action.PropertiesContextAction;
 import org.talend.designer.core.ui.action.SendBackwardAction;
 import org.talend.designer.core.ui.action.SendToBackAction;
-import org.talend.designer.core.ui.action.TalendConnectionCreationTool;
 
 /**
  * Class that manages the context menu in the Gef Editor. <br/>
@@ -59,6 +58,8 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
 
     private static final String GROUP_CONNECTIONS = "ConnectionsGroup"; //$NON-NLS-1$
 
+    private static boolean enableContextMenu = true;
+
     public TalendEditorContextMenuProvider(IWorkbenchPart part, EditPartViewer viewer, ActionRegistry registry) {
         super(viewer);
         if (registry == null) {
@@ -74,7 +75,7 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
      * @see org.eclipse.gef.ContextMenuProvider#buildContextMenu(org.eclipse.jface.action.IMenuManager)
      */
     public void buildContextMenu(final IMenuManager menu) {
-        if (this.getViewer().getEditDomain().getActiveTool() instanceof TalendConnectionCreationTool) {
+        if (!isEnableContextMenu()) {
             return;
         }
 
@@ -172,12 +173,6 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
                     }
                 }
             }
-
-            // action = new ConnectionCreateAction(part, EConnectionType.LOOKUP);
-            // ((ConnectionCreateAction) action).update();
-            // if (action.isEnabled()) {
-            // subMenu.add(action);
-            // }
 
             action = new ConnectionCreateAction(part, EConnectionType.ITERATE);
             ((ConnectionCreateAction) action).update();
@@ -277,5 +272,23 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
 
     private IAction getAction(final String actionId) {
         return actionRegistry.getAction(actionId);
+    }
+
+    /**
+     * Getter for enableContextMenu.
+     * 
+     * @return the enableContextMenu
+     */
+    public static boolean isEnableContextMenu() {
+        return enableContextMenu;
+    }
+
+    /**
+     * Sets the enableContextMenu.
+     * 
+     * @param enableContextMenu the enableContextMenu to set
+     */
+    public static void setEnableContextMenu(boolean enableContextMenu) {
+        TalendEditorContextMenuProvider.enableContextMenu = enableContextMenu;
     }
 }

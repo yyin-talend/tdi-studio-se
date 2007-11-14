@@ -87,7 +87,7 @@ public class TalendConnectionCreationTool extends ConnectionCreationTool {
     @Override
     protected boolean handleButtonUp(int button) {
         if (!fromMenu && button == 3) {
-            return super.handleButtonDown(1);
+            super.handleButtonDown(1);
         }
         return super.handleButtonUp(button);
     }

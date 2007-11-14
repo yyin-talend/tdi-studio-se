@@ -126,7 +126,6 @@ import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.general.ILibrariesService;
-import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.properties.Property;
@@ -1240,6 +1239,7 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
          */
         @Override
         public void mouseDown(org.eclipse.swt.events.MouseEvent mouseEvent, EditPartViewer viewer) {
+            TalendEditorContextMenuProvider.setEnableContextMenu(true);
             createConnection = false;
             if (mouseEvent.button == 2) {
                 getEditor().setCursor(Cursors.HAND);
@@ -1333,17 +1333,23 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
             }
 
             Node node = (Node) part.getModel();
-            final INodeConnector curNodeConnector = node.getConnectorFromType(EConnectionType.FLOW_MAIN);
 
-            if (curNodeConnector == null || curNodeConnector.isBuiltIn()) {
+            final INodeConnector mainConnector;
+            if (node.isELTComponent()) {
+                mainConnector = node.getConnectorFromType(EConnectionType.TABLE);
+            } else {
+                mainConnector = node.getConnectorFromType(EConnectionType.FLOW_MAIN);
+            }
+
+            if (mainConnector == null) {
                 return;
             }
-            if (curNodeConnector.getMaxLinkOutput() != -1) {
-                if (curNodeConnector.getCurLinkNbOutput() >= curNodeConnector.getMaxLinkOutput()) {
+            if (mainConnector.getMaxLinkOutput() != -1) {
+                if (mainConnector.getCurLinkNbOutput() >= mainConnector.getMaxLinkOutput()) {
                     return;
                 }
             }
-            if (curNodeConnector.getMaxLinkOutput() == 0) {
+            if (mainConnector.getMaxLinkOutput() == 0) {
                 return;
             }
 
@@ -1351,7 +1357,7 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
 
             Canvas canvas = (Canvas) getViewer().getControl();
             Event event = new Event();
-            event.button = 1;
+            event.button = 3;
             event.count = 0;
             event.detail = 0;
             event.end = 0;
@@ -1371,18 +1377,10 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
 
             final List<Object> listArgs = new ArrayList<Object>();
 
-            IMetadataTable meta = node.getMetadataFromConnector(curNodeConnector.getName());
+            listArgs.add(null);
+            listArgs.add(null);
+            listArgs.add(null);
 
-            listArgs.add(meta.getTableName());
-
-            String baseName = node.getConnectionName();
-            String connectionName = null;
-            if (node.getProcess().checkValidConnectionName(baseName)) {
-                connectionName = node.getProcess().generateUniqueConnectionName(baseName);
-            }
-            listArgs.add(connectionName);
-            IMetadataTable newMetadata = null;
-            listArgs.add(newMetadata);
             TalendConnectionCreationTool myConnectTool = new TalendConnectionCreationTool(new CreationFactory() {
 
                 public Object getNewObject() {
@@ -1390,12 +1388,13 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
                 }
 
                 public Object getObjectType() {
-                    return curNodeConnector.getName();
+                    return mainConnector.getName();
                 }
             }, false);
             myConnectTool.performConnectionStartWith(part);
             getViewer().getEditDomain().setActiveTool(myConnectTool);
             canvas.notifyListeners(3, event);
+            TalendEditorContextMenuProvider.setEnableContextMenu(false);
         }
 
     }
