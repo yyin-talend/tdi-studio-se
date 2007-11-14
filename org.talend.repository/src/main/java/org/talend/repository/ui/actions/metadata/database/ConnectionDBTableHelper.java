@@ -5,19 +5,28 @@
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
 //
-// You should have received a copy of the  agreement
+// You should have received a copy of the agreement
 // along with this program; if not, write to Talend SA
 // 9 rue Pages 92150 Suresnes, France
 //   
 // ============================================================================
 package org.talend.repository.ui.actions.metadata.database;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.talend.commons.exception.BusinessException;
@@ -37,6 +46,7 @@ import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.types.TypesManager;
+import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ItemState;
@@ -48,6 +58,8 @@ import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryConstants;
+import org.talend.repository.ui.actions.metadata.database.DBProcessRecords.ProcessType;
+import org.talend.repository.ui.actions.metadata.database.DBProcessRecords.RecordsType;
 import org.talend.repository.ui.utils.DataStringConnection;
 
 /**
@@ -56,13 +68,42 @@ import org.talend.repository.ui.utils.DataStringConnection;
  */
 public final class ConnectionDBTableHelper {
 
-    private static boolean connectionCreated = false;
+    private static final String RETURN = "\r\n"; //$NON-NLS-1$
 
-    private static Map<String, String> tableName = new HashMap<String, String>();
+    private File importedfile = null;
 
-    private static final IProxyRepositoryFactory FACTORY = ProxyRepositoryFactory.getInstance();
+    private String importedName = ""; //$NON-NLS-1$
 
-    public static DBTableForDelimitedBean getRowData(final String line) {
+    private boolean connectionCreated = false;
+
+    private StringBuilder unknownLine = new StringBuilder();
+
+    private Map<String, String> connNameMap = new HashMap<String, String>();
+
+    private Map<String, Set<String>> tableNameMap = new HashMap<String, Set<String>>();
+
+    private Map<String, Set<String>> rejectedTableNameMap = new HashMap<String, Set<String>>();
+
+    private Set<String> dbReject = new HashSet<String>();
+
+    private final IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+
+    private DBProcessRecords processRecords = new DBProcessRecords();
+
+    private int rejectedNum = 0;
+
+    public ConnectionDBTableHelper(File file) {
+        this.importedfile = file;
+
+        String name = file.getName();
+        int index = name.lastIndexOf("."); //$NON-NLS-1$
+        if (index > 0) {
+            importedName = name.substring(0, index);
+        }
+
+    }
+
+    public DBTableForDelimitedBean getRowData(final String line) {
         DBTableForDelimitedBean bean = new DBTableForDelimitedBean();
 
         String[] datas = parseLines(line);
@@ -74,7 +115,7 @@ public final class ConnectionDBTableHelper {
          */
         // name
         tmp = datas[0].trim();
-        if ("".equals(tmp)) {
+        if ("".equals(tmp)) { //$NON-NLS-1$
             return null;
         }
         bean.setName(tmp);
@@ -83,7 +124,7 @@ public final class ConnectionDBTableHelper {
         bean.setDescription(datas[2].trim());
         // Version
         tmp = datas[3].trim();
-        if ("".equals(tmp)) {
+        if ("".equals(tmp)) { //$NON-NLS-1$
             bean.setVersion(VersionUtils.DEFAULT_VERSION); //$NON-NLS-1$
         } else {
             bean.setVersion(tmp);
@@ -131,26 +172,26 @@ public final class ConnectionDBTableHelper {
          */
         // Original Table Name
         tmp = datas[17].trim();
-        if ("".equals(tmp)) {
+        if ("".equals(tmp)) { //$NON-NLS-1$
             return null;
         }
         bean.setOriginalTableName(tmp);
         // Table Name
         tmp = datas[16].trim();
-        if (tmp == "") {
+        if (tmp == "") { //$NON-NLS-1$
             bean.setTableName(bean.getOriginalTableName());
         } else {
             bean.setTableName(tmp);
         }
         // Original Label
         tmp = datas[19].trim();
-        if ("".equals(tmp)) {
+        if ("".equals(tmp)) { //$NON-NLS-1$
             return null;
         }
         bean.setOriginalLabel(tmp);
         // Label
         tmp = datas[18].trim();
-        if ("".equals(tmp)) {
+        if ("".equals(tmp)) { //$NON-NLS-1$
             bean.setLabel(bean.getOriginalLabel());
         } else {
             bean.setLabel(tmp);
@@ -161,7 +202,7 @@ public final class ConnectionDBTableHelper {
         bean.setDefaultValue(datas[21].trim());
         // key
         tmp = datas[22].trim();
-        if ("".equals(tmp)) {
+        if ("".equals(tmp)) { //$NON-NLS-1$
             return null;
         }
         if ("true".equals(tmp.toLowerCase())) { //$NON-NLS-1$
@@ -173,7 +214,7 @@ public final class ConnectionDBTableHelper {
         }
         // Length
         tmp = datas[23].trim();
-        if ("".equals(tmp)) {
+        if ("".equals(tmp)) { //$NON-NLS-1$
             return null;
         }
         try {
@@ -195,7 +236,7 @@ public final class ConnectionDBTableHelper {
         bean.setPattern(datas[25].trim());
         // Precision
         tmp = datas[26].trim();
-        if ("".equals(tmp)) {
+        if ("".equals(tmp)) { //$NON-NLS-1$
             bean.setPrecision(0);
         } else {
             try {
@@ -212,7 +253,7 @@ public final class ConnectionDBTableHelper {
         return bean;
     }
 
-    private static String[] parseLines(final String line) {
+    private String[] parseLines(final String line) {
         // FIXME there are some problem about parsing the line,
         // process the data that contain semicolon, such as Description= "a;b,c""
         String[] datas = new String[DBTableForDelimitedBean.TOTAL];
@@ -228,14 +269,14 @@ public final class ConnectionDBTableHelper {
         return datas;
     }
 
-    public static boolean isNullable(String name) {
-        if (name == null || "".equals(name.trim())) {
+    public boolean isNullable(String name) {
+        if (name == null || "".equals(name.trim())) { //$NON-NLS-1$
             return true;
         }
         return false;
     }
 
-    public static DatabaseConnectionItem setConnectionItemData(DBTableForDelimitedBean bean) throws PersistenceException,
+    public DatabaseConnectionItem setConnectionItemData(DBTableForDelimitedBean bean) throws PersistenceException,
             BusinessException {
         if (isNullable(bean.getName())) {
             return null;
@@ -251,13 +292,14 @@ public final class ConnectionDBTableHelper {
             return null;
         }
         if (!setMetadataTableData(conn, bean)) {
+            addTableName(bean.getName(), bean.getTableName(), true);
             return null;
         }
-
+        connNameMap.put(bean.getName(), connItem.getProperty().getLabel());
         return connItem;
     }
 
-    private static DatabaseConnectionItem getSuitableConnectionItem(DBTableForDelimitedBean bean) throws PersistenceException,
+    private DatabaseConnectionItem getSuitableConnectionItem(DBTableForDelimitedBean bean) throws PersistenceException,
             BusinessException {
         if (isNullable(bean.getName())) {
             return null;
@@ -270,15 +312,13 @@ public final class ConnectionDBTableHelper {
         if (connItemAll == null) {
             // need create new connection item.
             connItem = createConnectionItem(bean);
-
         } else if (connItem == null) {
             // the item in recycle, need rename the item.
-            String genName = tableName.get(bean.getName());
+            String genName = connNameMap.get(bean.getName());
             if (genName == null) {
                 connItem = createConnectionItem(bean);
                 // generate a new name.
                 setPropNewName(connItem.getProperty());
-                tableName.put(bean.getName(), connItem.getProperty().getLabel());
             } else {
                 // Use the existed connection.
                 connItem = searchConnectionItem(genName, false);
@@ -286,12 +326,11 @@ public final class ConnectionDBTableHelper {
             }
 
         }
-
         return connItem;
 
     }
 
-    private static DatabaseConnectionItem searchConnectionItem(String name, boolean withDeleted) throws PersistenceException {
+    private DatabaseConnectionItem searchConnectionItem(String name, boolean withDeleted) throws PersistenceException {
         if (isNullable(name)) {
             return null;
         }
@@ -304,7 +343,7 @@ public final class ConnectionDBTableHelper {
         // System.out.println(meta.getLabel());
         // }
 
-        List<IRepositoryObject> repositoryObjs = FACTORY.getAll(ERepositoryObjectType.METADATA_CONNECTIONS, withDeleted);
+        List<IRepositoryObject> repositoryObjs = factory.getAll(ERepositoryObjectType.METADATA_CONNECTIONS, withDeleted);
         for (IRepositoryObject obj : repositoryObjs) {
             if (obj.getLabel().toLowerCase().equals(name.toLowerCase())) {
                 Item item = obj.getProperty().getItem();
@@ -316,7 +355,7 @@ public final class ConnectionDBTableHelper {
         return null;
     }
 
-    private static DatabaseConnectionItem createConnectionItem(DBTableForDelimitedBean bean) {
+    private DatabaseConnectionItem createConnectionItem(DBTableForDelimitedBean bean) {
 
         DatabaseConnection conn = createDBConnection(bean);
         DatabaseConnectionItem connItem = PropertiesFactory.eINSTANCE.createDatabaseConnectionItem();
@@ -332,7 +371,7 @@ public final class ConnectionDBTableHelper {
 
     }
 
-    private static DatabaseConnection createDBConnection(DBTableForDelimitedBean bean) {
+    private DatabaseConnection createDBConnection(DBTableForDelimitedBean bean) {
         DatabaseConnection connection = ConnectionFactory.eINSTANCE.createDatabaseConnection();
         connection.setDatabaseType(bean.getDatabaseType());
         connection.setDatasourceName(bean.getDataSource());
@@ -368,7 +407,7 @@ public final class ConnectionDBTableHelper {
 
     }
 
-    private static boolean checkDBConnectionURL(DBTableForDelimitedBean bean) {
+    private boolean checkDBConnectionURL(DBTableForDelimitedBean bean) {
         if (isNullable(bean.getDatabaseType())) {
             // not need check
             return true;
@@ -378,29 +417,33 @@ public final class ConnectionDBTableHelper {
         int index = urlDBStr.getIndexOfLabel(bean.getDatabaseType());
         if (index == -1) {
             // not existed Database.
+            // add rejected dbtype
+            dbReject.add(bean.getDatabaseType());
             return false;
         }
 
         if (LanguageManager.getCurrentLanguage() == ECodeLanguage.PERL) {
             Collection<String> databasePerl = new ArrayList<String>(Arrays.asList(urlDBStr.getItem()));
-            databasePerl.remove("Microsoft SQL Server");
-            databasePerl.remove("Ingres");
-            databasePerl.remove("Interbase");
-            databasePerl.remove("FireBird");
-            databasePerl.remove("Informix");
-            databasePerl.remove("Access");
-            databasePerl.remove("Teradata");
-            databasePerl.remove("AS400");
+            databasePerl.remove("Microsoft SQL Server"); //$NON-NLS-1$
+            databasePerl.remove("Ingres"); //$NON-NLS-1$
+            databasePerl.remove("Interbase"); //$NON-NLS-1$
+            databasePerl.remove("FireBird"); //$NON-NLS-1$
+            databasePerl.remove("Informix"); //$NON-NLS-1$
+            databasePerl.remove("Access"); //$NON-NLS-1$
+            databasePerl.remove("Teradata"); //$NON-NLS-1$
+            databasePerl.remove("AS400"); //$NON-NLS-1$
 
-            databasePerl.remove("JavaDB Embeded");
-            databasePerl.remove("JavaDB JCCJDBC");
-            databasePerl.remove("JavaDB DerbyClient");
+            databasePerl.remove("JavaDB Embeded"); //$NON-NLS-1$
+            databasePerl.remove("JavaDB JCCJDBC"); //$NON-NLS-1$
+            databasePerl.remove("JavaDB DerbyClient"); //$NON-NLS-1$
 
-            databasePerl.remove("HSQLDB Server");
-            databasePerl.remove("HSQLDB WebServer");
-            databasePerl.remove("HSQLDB In-Process");
+            databasePerl.remove("HSQLDB Server"); //$NON-NLS-1$
+            databasePerl.remove("HSQLDB WebServer"); //$NON-NLS-1$
+            databasePerl.remove("HSQLDB In-Process"); //$NON-NLS-1$
             if (!databasePerl.contains(bean.getDatabaseType())) {
                 // not supported by perl
+                // add rejected dbtype
+                dbReject.add(bean.getDatabaseType());
                 return false;
             }
         }
@@ -416,14 +459,14 @@ public final class ConnectionDBTableHelper {
 
     }
 
-    private static Property createProperty(DatabaseConnectionItem connItem, DBTableForDelimitedBean bean) {
+    private Property createProperty(DatabaseConnectionItem connItem, DBTableForDelimitedBean bean) {
 
         Property connectionProperty = PropertiesFactory.eINSTANCE.createProperty();
 
         connectionProperty.setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
                 .getUser());
 
-        connectionProperty.setVersion(VersionUtils.DEFAULT_VERSION);
+        connectionProperty.setVersion(bean.getVersion());
 
         connectionProperty.setStatusCode(bean.getStatus());
         connectionProperty.setDescription(bean.getDescription());
@@ -437,11 +480,11 @@ public final class ConnectionDBTableHelper {
         return connectionProperty;
     }
 
-    private static void setPropNewName(Property theProperty) throws PersistenceException, BusinessException {
+    private void setPropNewName(Property theProperty) throws PersistenceException, BusinessException {
         String originalLabel = theProperty.getLabel();
 
         char j = 'a';
-        while (!FACTORY.isNameAvailable(theProperty.getItem(), null)) {
+        while (!factory.isNameAvailable(theProperty.getItem(), null)) {
             String nextTry = originalLabel + "_" + (j++); //$NON-NLS-1$ //$NON-NLS-2$
             theProperty.setLabel(nextTry);
             if (j > 'z') {
@@ -454,23 +497,35 @@ public final class ConnectionDBTableHelper {
     /*
      * set the table data in a connection.
      */
-    public static boolean setMetadataTableData(DatabaseConnection conn, DBTableForDelimitedBean bean) {
+    private boolean setMetadataTableData(DatabaseConnection conn, DBTableForDelimitedBean bean) {
 
         if (isNullable(bean.getTableName())) {
             return false;
         }
+        if (isContainTableName(bean.getName(), bean.getTableName(), true)) {
+            // this table have be rejected
+            return false;
+        }
         boolean found = true;
-        // FIXME need check the table in recycle bin.
 
         MetadataTable metadataTable = searchMetadataTable(conn, bean.getTableName());
         if (metadataTable == null) { // need create new table
             found = false;
             metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
             metadataTable.setConnection(conn);
-            metadataTable.setId(FACTORY.getNextId());
+            metadataTable.setId(factory.getNextId());
             metadataTable.setLabel(bean.getTableName());
             metadataTable.setSourceName(bean.getOriginalTableName());
             metadataTable.setTableType("TABLE"); //$NON-NLS-1$ 
+            // record the generated table name.
+            addTableName(bean.getName(), bean.getTableName(), false);
+        } else if (!isContainTableName(bean.getName(), bean.getTableName(), false)) {
+            // have existed table, and it's the existed table before.
+            // reject it.
+
+            // FIXME maybe need check the table in recycle bin.
+            return false;
+
         }
         boolean isOk = setMetadataColumnData(metadataTable, bean);
         if (!isOk) {
@@ -485,7 +540,7 @@ public final class ConnectionDBTableHelper {
 
     }
 
-    private static MetadataTable searchMetadataTable(DatabaseConnection conn, String name) {
+    private MetadataTable searchMetadataTable(DatabaseConnection conn, String name) {
         for (Object tableObject : conn.getTables()) {
             MetadataTable metadataTable = (MetadataTable) tableObject;
             if (name.trim().equals(metadataTable.getLabel())) {
@@ -498,7 +553,7 @@ public final class ConnectionDBTableHelper {
     /*
      * add the a column data in table
      */
-    public static boolean setMetadataColumnData(MetadataTable table, DBTableForDelimitedBean bean) {
+    private boolean setMetadataColumnData(MetadataTable table, DBTableForDelimitedBean bean) {
 
         MetadataColumn metadataColumn = ConnectionFactory.eINSTANCE.createMetadataColumn();
 
@@ -512,7 +567,7 @@ public final class ConnectionDBTableHelper {
         metadataColumn.setOriginalField(bean.getOriginalLabel());
         ECodeLanguage codeLanguage = LanguageManager.getCurrentLanguage();
         if (codeLanguage == ECodeLanguage.JAVA) {
-            if ("".equals(bean.getTalendType())) {
+            if ("".equals(bean.getTalendType())) { //$NON-NLS-1$
                 metadataColumn.setTalendType("id_String"); //$NON-NLS-1$
             } else {
                 metadataColumn.setTalendType(bean.getTalendType());
@@ -530,16 +585,16 @@ public final class ConnectionDBTableHelper {
         metadataColumn.setLength(bean.getLength());
         metadataColumn.setPrecision(bean.getPrecision());
 
-        if ("".equals(bean.getDbType())) {
+        if ("".equals(bean.getDbType())) { //$NON-NLS-1$
             if (codeLanguage == ECodeLanguage.JAVA) {
-                if (!"".equals(bean.getDatabaseType()) && !"".equals(bean.getTalendType())) {
+                if (!"".equals(bean.getDatabaseType()) && !"".equals(bean.getTalendType())) { //$NON-NLS-1$ //$NON-NLS-2$
                     metadataColumn.setSourceType(TypesManager.getDBTypeFromTalendType(bean.getDatabaseType(), bean
                             .getTalendType()));
                 } else {
-                    metadataColumn.setSourceType("");
+                    metadataColumn.setSourceType(""); //$NON-NLS-1$
                 }
             } else {
-                metadataColumn.setSourceType("");
+                metadataColumn.setSourceType(""); //$NON-NLS-1$
             }
         } else {
             metadataColumn.setSourceType(bean.getDbType());
@@ -551,7 +606,7 @@ public final class ConnectionDBTableHelper {
 
     }
 
-    private static String getUniqueColumnName(MetadataTable table, DBTableForDelimitedBean bean) {
+    private String getUniqueColumnName(MetadataTable table, DBTableForDelimitedBean bean) {
         if (isNullable(bean.getLabel()) || isNullable(bean.getOriginalLabel())) {
             // can't add
             return null;
@@ -577,7 +632,7 @@ public final class ConnectionDBTableHelper {
 
     }
 
-    private static boolean isExistedColumn(MetadataTable table, String label, boolean isOriginal) {
+    private boolean isExistedColumn(MetadataTable table, String label, boolean isOriginal) {
         for (Object colObject : table.getColumns()) {
             MetadataColumn column = (MetadataColumn) colObject;
             if (isOriginal && label.trim().equals(column.getOriginalField())) {
@@ -589,16 +644,272 @@ public final class ConnectionDBTableHelper {
         return false;
     }
 
+    private boolean isContainTableName(String connName, String tableName, boolean isRejected) {
+        Map<String, Set<String>> tmpMap = null;
+        if (isRejected) {
+            tmpMap = rejectedTableNameMap;
+        } else {
+            tmpMap = tableNameMap;
+        }
+
+        Set<String> tableSet = tmpMap.get(connName);
+        if (tableSet == null) {
+            tmpMap.put(connName, new HashSet<String>());
+        } else {
+            return tableSet.contains(tableName);
+        }
+        return false;
+    }
+
+    private void addTableName(String connName, String tableName, boolean isRejected) {
+        if (isNullable(connName) || isNullable(tableName)) {
+            return;
+        }
+        Map<String, Set<String>> tmpMap = null;
+        if (isRejected) {
+            tmpMap = rejectedTableNameMap;
+        } else {
+            tmpMap = tableNameMap;
+        }
+        Set<String> tableSet = tmpMap.get(connName);
+        if (tableSet == null) {
+            tableSet = new HashSet<String>();
+            tableSet.add(tableName);
+            tmpMap.put(connName, tableSet);
+        } else {
+            tableSet.add(tableName);
+        }
+    }
+
+    public File getRejectsFile() {
+        File path = importedfile.getParentFile();
+        return new File(path, importedName + ".rejects"); //$NON-NLS-1$
+
+    }
+
+    public File getLogsFile() {
+        File path = importedfile.getParentFile();
+        return new File(path, importedName + ".log"); //$NON-NLS-1$
+
+    }
+
     /**
      * Getter for connectionCreated.
      * 
      * @return the connectionCreated
      */
-    public static boolean isConnectionCreated() {
+    public boolean isConnectionCreated() {
         return connectionCreated;
     }
 
-    public static void initGenTableName() {
-        tableName.clear();
+    /**
+     * 
+     * write the records to log.
+     * 
+     * @param log
+     */
+    public void writeLogs() {
+        StringBuilder sb = new StringBuilder();
+        String space = " "; //$NON-NLS-1$
+        int conNum = processRecords.getRecords(ProcessType.IMPORT, RecordsType.CONNECTION);
+        int tableNum = processRecords.getRecords(ProcessType.IMPORT, RecordsType.TABLE);
+        int fieldNum = processRecords.getRecords(ProcessType.IMPORT, RecordsType.FIELD);
+
+        sb.append(Messages.getString("ConnectionDBTableHelper.Imported")); //$NON-NLS-1$
+        sb.append(RETURN);
+        sb.append(space + space);
+        sb.append(conNum);
+        sb.append(space);
+        sb.append(Messages.getString("ConnectionDBTableHelper.Connections")); //$NON-NLS-1$
+        sb.append(tableNum);
+        sb.append(space);
+        sb.append(Messages.getString("ConnectionDBTableHelper.Tables")); //$NON-NLS-1$
+        sb.append(fieldNum);
+        sb.append(space);
+        sb.append(Messages.getString("ConnectionDBTableHelper.Fields")); //$NON-NLS-1$
+        sb.append(RETURN);
+        conNum = processRecords.getRecords(ProcessType.REJECT, RecordsType.CONNECTION);
+        tableNum = processRecords.getRecords(ProcessType.REJECT, RecordsType.TABLE);
+        fieldNum = processRecords.getRecords(ProcessType.REJECT, RecordsType.FIELD);
+
+        sb.append(Messages.getString("ConnectionDBTableHelper.Rejected")); //$NON-NLS-1$
+        sb.append(RETURN);
+        sb.append(space + space);
+        sb.append(conNum);
+        sb.append(space);
+        sb.append(Messages.getString("ConnectionDBTableHelper.Connections")); //$NON-NLS-1$
+        sb.append(tableNum);
+        sb.append(space);
+        sb.append(Messages.getString("ConnectionDBTableHelper.Tables")); //$NON-NLS-1$
+        sb.append(fieldNum);
+        sb.append(space);
+        sb.append(Messages.getString("ConnectionDBTableHelper.Fields")); //$NON-NLS-1$
+        sb.append(RETURN);
+        if (rejectedNum > 0) {
+            sb.append(Messages.getString("ConnectionDBTableHelper.UnknownData")); //$NON-NLS-1$
+            sb.append(rejectedNum);
+            sb.append(RETURN);
+            sb.append(RETURN);
+        }
+        // have more rejected records
+        if (conNum > 0 || rejectedNum > 0) {
+            sb.append(Messages.getString("ConnectionDBTableHelper.Details")); //$NON-NLS-1$
+            sb.append(RETURN);
+        }
+        // details for something
+        if (conNum > 0 && dbReject.size() > 0) {
+            for (String dbType : dbReject) {
+                sb.append(Messages.getString("ConnectionDBTableHelper.DBTypeUnknown")); //$NON-NLS-1$
+                sb.append(dbType);
+                sb.append(RETURN);
+            }
+        }
+        // added the unknown line
+        if (rejectedNum > 0) {
+            sb.append("---------"); //$NON-NLS-1$
+            sb.append(Messages.getString("ConnectionDBTableHelper.UnknownLine")); //$NON-NLS-1$
+            sb.append("---------"); //$NON-NLS-1$
+            sb.append(RETURN);
+            sb.append(unknownLine);
+        }
+
+        PrintWriter pw = null;
+        try {
+            pw = new PrintWriter(new FileWriter(getLogsFile()));
+            pw.println(sb.toString());
+
+            pw.flush();
+        } catch (FileNotFoundException e) {
+            // 
+        } catch (IOException e) {
+            // 
+        } finally {
+            if (pw != null) {
+                pw.close();
+                pw = null;
+            }
+        }
+
+    }
+
+    public void recordRejects(DBTableForDelimitedBean bean, ConnectionItem connItem) {
+        if (bean == null) {
+            rejectedNum++;
+        } else {
+            if (connItem == null) {
+                addTableName(bean.getName(), bean.getTableName(), true);
+            } else {
+                addTableName(connItem.getConnection().getLabel(), bean.getTableName(), true);
+            }
+
+            processRecords.rejectRecords(bean);
+        }
+    }
+
+    /**
+     * 
+     * write .rejects
+     * 
+     * @param line
+     * @param bean
+     */
+    public void writeRejects() {
+        File rFile = getRejectsFile();
+        if (rFile == null || importedfile == null) {
+            return;
+        }
+
+        PrintWriter pw = null;
+        BufferedReader reader = null;
+        try {
+            pw = new PrintWriter(new FileWriter(rFile), true);
+            reader = new BufferedReader(new FileReader(importedfile));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                DBTableForDelimitedBean bean = getRowData(line);
+                if (bean != null) {
+                    // connection name
+                    String connName = connNameMap.get(bean.getName());
+                    if (connName == null || isContainTableName(connName, bean.getTableName(), true)) {
+                        // rejected.
+                        pw.println(line);
+                    }
+                } else {
+                    pw.println(line);
+                    unknownLine.append(line);
+                    unknownLine.append(RETURN);
+                }
+
+            }
+            pw.flush();
+        } catch (FileNotFoundException e) {
+            //
+        } catch (IOException e) {
+            //
+
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    // nothing to do
+                }
+                reader = null;
+            }
+            if (pw != null) {
+                pw.close();
+            }
+            pw = null;
+        }
+        try {
+            deleteGeneratedTable();
+        } catch (PersistenceException e) {
+            // 
+        }
+
+    }
+
+    private void deleteGeneratedTable() throws PersistenceException {
+        Set<String> connSet = rejectedTableNameMap.keySet();
+        if (connSet == null) {
+            return;
+        }
+        for (String connName : connSet) {
+            // also be generated connection
+            String connMapName = connNameMap.get(connName);
+            if (connMapName == null) {
+                continue;
+            }
+            ConnectionItem connItem = searchConnectionItem(connName, false);
+
+            if (connItem != null) {
+                DatabaseConnection conn = (DatabaseConnection) connItem.getConnection();
+                Set<String> rejectedTableSet = rejectedTableNameMap.get(connName);
+                if (rejectedTableSet != null) {
+                    for (String tableName : rejectedTableSet) {
+                        Set<String> tableSet = tableNameMap.get(connName);
+                        if (tableSet != null && tableSet.contains(tableName)) {
+
+                            MetadataTable table = searchMetadataTable(conn, tableName);
+                            if (table != null) {
+                                conn.getTables().remove(table);
+                            }
+                        }
+                    }
+                }
+                factory.save(connItem);
+            }
+        }
+    }
+
+    /**
+     * 
+     * record generated connection , connectionItem and table name.
+     * 
+     * @param rType
+     * @param bean
+     */
+    public void addRecords(DBTableForDelimitedBean bean) {
+        processRecords.importedRecords(bean);
     }
 }

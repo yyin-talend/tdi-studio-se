@@ -16,9 +16,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 
 import org.apache.log4j.Logger;
@@ -30,6 +28,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.internal.dialogs.EventLoopProgressMonitor;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
@@ -43,10 +42,7 @@ import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.ui.actions.metadata.database.ConnectionDBTableHelper;
-import org.talend.repository.ui.actions.metadata.database.DBProcessRecords;
 import org.talend.repository.ui.actions.metadata.database.DBTableForDelimitedBean;
-import org.talend.repository.ui.actions.metadata.database.DBProcessRecords.ProcessType;
-import org.talend.repository.ui.actions.metadata.database.DBProcessRecords.RecordsType;
 import org.talend.repository.ui.wizards.RepositoryWizard;
 
 /**
@@ -57,13 +53,11 @@ public class ImportDBTableWizard extends RepositoryWizard implements IImportWiza
 
     private static Logger log = Logger.getLogger(ImportDBTableWizard.class);
 
+    private static final int TOTALWORK = 100;
+
     private static final IProxyRepositoryFactory FACTORY = ProxyRepositoryFactory.getInstance();
 
     private ImportDBTableWizardPage importWizardPage;
-
-    private DBProcessRecords processRecords = new DBProcessRecords();
-
-    private static int rejectedNum = 0;
 
     /**
      * ggu ImportDBTableWizard constructor comment.
@@ -151,7 +145,12 @@ public class ImportDBTableWizard extends RepositoryWizard implements IImportWiza
 
             @Override
             public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-                process(file);
+                IProgressMonitor monitorWrap = new EventLoopProgressMonitor(monitor);
+                monitorWrap.setCanceled(false);
+                monitor.beginTask(Messages.getString("ImportDBTableWizard.ProcessLabel"), 1000); //$NON-NLS-1$
+                process(file, monitorWrap);
+                monitorWrap.done();
+
             }
         };
 
@@ -164,55 +163,60 @@ public class ImportDBTableWizard extends RepositoryWizard implements IImportWiza
         }
     }
 
-    private void process(File file) {
+    private void process(File file, IProgressMonitor monitor) {
+
         BufferedReader reader = null;
-        ConnectionDBTableHelper.initGenTableName();
-        File rFile = getRejectsFile();
-        if (rFile.exists()) {
-            rFile.delete();
-        }
+        ConnectionDBTableHelper helper = new ConnectionDBTableHelper(file);
+
         try {
             reader = new BufferedReader(new FileReader(file));
             String line;
+            int i = 0;
             while ((line = reader.readLine()) != null) {
+                if (i < TOTALWORK * 0.8 && i % 2 == 0) {
+                    i++;
+                }
+                monitor.worked(i);
 
-                DBTableForDelimitedBean bean = ConnectionDBTableHelper.getRowData(line);
+                DBTableForDelimitedBean bean = helper.getRowData(line);
                 if (bean != null) { // the line is suitable format.
 
                     ConnectionItem connItem = null;
                     try {
-                        connItem = ConnectionDBTableHelper.setConnectionItemData(bean);
+                        connItem = helper.setConnectionItemData(bean);
                     } catch (PersistenceException e) {
-                        writeRejects(line, bean);
+                        helper.recordRejects(bean, null);
                         continue;
                     } catch (BusinessException e) {
-                        writeRejects(line, bean);
+                        helper.recordRejects(bean, null);
                         continue;
                     }
                     if (connItem == null) {
-                        writeRejects(line, bean);
+                        helper.recordRejects(bean, null);
                         continue;
                     }
                     try {
-                        if (ConnectionDBTableHelper.isConnectionCreated()) {
+                        if (helper.isConnectionCreated()) {
                             connItem.getProperty().setId(FACTORY.getNextId());
                             FACTORY.create(connItem, pathToSave);
                         } else {
                             FACTORY.save(connItem);
                         }
                     } catch (PersistenceException e) {
-                        writeRejects(line, bean);
+                        helper.recordRejects(bean, connItem);
                         continue;
                     }
-                    addRecords(ProcessType.IMPORT, bean);
+                    helper.addRecords(bean);
                 } else { // this line isn't right format. record it in ".log" and ".rejects"
                     // bean = null
-                    writeRejects(line, null);
+                    helper.recordRejects(null, null);
 
                 }
             }
-            // write the .log
-            writeLogs();
+            monitor.worked(TOTALWORK * 90 / 100);
+            // write the .log and .rejects
+            helper.writeRejects();
+            helper.writeLogs();
         } catch (FileNotFoundException e) {
             MessageBoxExceptionHandler.process(e, getShell());
 
@@ -231,77 +235,4 @@ public class ImportDBTableWizard extends RepositoryWizard implements IImportWiza
         }
 
     }
-
-    private void writeLogs() {
-        StringBuffer sb = new StringBuffer();
-
-        int conNum = processRecords.getRecord(ProcessType.IMPORT, RecordsType.CONNECTION);
-        int tableNum = processRecords.getRecord(ProcessType.IMPORT, RecordsType.TABLE);
-        int fieldNum = processRecords.getRecord(ProcessType.IMPORT, RecordsType.FIELD);
-
-        sb.append(Messages.getString("ImportDBTableWizard.Imported")); //$NON-NLS-1$
-        sb.append(conNum);
-        sb.append(Messages.getString("ImportDBTableWizard.Connections")); //$NON-NLS-1$
-        sb.append(tableNum);
-        sb.append(Messages.getString("ImportDBTableWizard.Tables")); //$NON-NLS-1$
-        sb.append(fieldNum);
-        sb.append(Messages.getString("ImportDBTableWizard.Fields")); //$NON-NLS-1$
-
-        conNum = processRecords.getRecord(ProcessType.REJECT, RecordsType.CONNECTION);
-        tableNum = processRecords.getRecord(ProcessType.REJECT, RecordsType.TABLE);
-        fieldNum = processRecords.getRecord(ProcessType.REJECT, RecordsType.FIELD);
-        // can't parse some line. add rejected number.
-        conNum += rejectedNum;
-        tableNum += rejectedNum;
-        fieldNum += rejectedNum;
-
-        sb.append(Messages.getString("ImportDBTableWizard.Rejected")); //$NON-NLS-1$
-        sb.append(conNum);
-        sb.append(Messages.getString("ImportDBTableWizard.Connections")); //$NON-NLS-1$
-        sb.append(tableNum);
-        sb.append(Messages.getString("ImportDBTableWizard.Tables")); //$NON-NLS-1$
-        sb.append(fieldNum);
-        sb.append(Messages.getString("ImportDBTableWizard.Fields")); //$NON-NLS-1$
-        log.info(sb.toString());
-    }
-
-    private void writeRejects(String line, DBTableForDelimitedBean bean) {
-        // write .rejects
-        try {
-            File rFile = getRejectsFile();
-            if (rFile == null) {
-                return;
-            }
-            PrintWriter pw = new PrintWriter(new FileWriter(rFile, true), true);
-            pw.println(line);
-            pw.flush();
-            pw.close();
-
-        } catch (IOException e) {
-            //
-        }
-
-        if (bean == null) {
-            rejectedNum++;
-        } else {
-            addRecords(ProcessType.REJECT, bean);
-        }
-    }
-
-    private File getRejectsFile() {
-        String logs = System.getProperty("osgi.logfile"); //$NON-NLS-1$
-        if (ConnectionDBTableHelper.isNullable(logs)) {
-            return null;
-        }
-
-        String rejectsFile = new File(logs).getParent() + File.separator + ".rejects"; //$NON-NLS-1$
-        return new File(rejectsFile);
-    }
-
-    private void addRecords(ProcessType rType, DBTableForDelimitedBean bean) {
-        processRecords.addRecord(rType, RecordsType.CONNECTION, bean.getName());
-        processRecords.addRecord(rType, RecordsType.TABLE, bean.getTableName());
-        processRecords.addRecord(rType, RecordsType.FIELD, bean.getLabel());
-    }
-
 }
