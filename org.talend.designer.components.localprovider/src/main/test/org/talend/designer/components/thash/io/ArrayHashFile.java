@@ -33,10 +33,11 @@ import java.util.List;
  * DOC slanglois class global comment. Detailled comment <br/>
  * 
  * 
-24422 milliseconds for 1000000 beans to STORE using ArrayHashFile. 40000 items/s. 133 bytes per item in storage.
-21391 milliseconds for 1000000 beans to STORE using SimpleHashFile. 46000 items/s. 124 bytes per item in storage.
-42500 milliseconds for 1000000 big beans to STORE using ArrayHashFile. 23000 items/s. 335 bytes per item in storage.
-36594 milliseconds for 1000000 beans to STORE using SimpleHashFile. 27000 items/s. 321 bytes per item in storage. 
+ * 11687 milliseconds for 1000000 beans to STORE using ArrayHashFile. 85000 items/s. 17 bytes per item in storage. 
+ * 20578 milliseconds for 1000000 beans to STORE using SimpleHashFile. 48000 items/s. 137 bytes per item in storage. 
+ * 14406 milliseconds for 1000000 big beans to STORE using ArrayHashFile. 69000 items/s. 72 bytes per item in storage. 
+ * 34547 milliseconds for 1000000 beans to STORE using SimpleHashFile. 28000 items/s. 329 bytes per item in storage.
+ * 
  * 
  */
 class ArrayHashFile implements MapHashFile {
@@ -77,7 +78,7 @@ class ArrayHashFile implements MapHashFile {
             ra.seek(cursorPosition);
             byte[] byteArray = new byte[ra.readInt()];
             ra.read(byteArray);
-            lastRetrievedObject = new ObjectInputStream(new DataInputStream(new ByteArrayInputStream(byteArray))).readObject();
+            lastRetrievedObject = byteArray;
             lastRetrievedCursorPosition = cursorPosition;
         }
         return lastRetrievedObject;
@@ -85,19 +86,12 @@ class ArrayHashFile implements MapHashFile {
 
     public long put(String container, Object object) throws IOException {
 
-        ByteArrayOutputStream bao = new ByteArrayOutputStream();
-        DataOutputStream dos = new DataOutputStream(bao);
-        ObjectOutputStream oos = new ObjectOutputStream(dos);
-        oos.writeObject(object);
-
-        int sizeBytes = bao.size();
-
+        byte[] byteArray = (byte[]) object;
+        int sizeBytes = byteArray.length;
         if (!readonly) {
             bw.writeInt(sizeBytes);
-            bw.write(bao.toByteArray());
+            bw.write(byteArray);
         }
-
-        bao.close();
 
         long returnPosition = position;
 
@@ -140,7 +134,7 @@ class ArrayHashFile implements MapHashFile {
         int loop = 1000000;
 
         String folder = "/tmp/";
-        
+
         // test bean write using ArrayHashFile
         ArrayHashFile nihf = ArrayHashFile.getInstance();
         List<Long> cursors = new ArrayList<Long>();
@@ -149,7 +143,7 @@ class ArrayHashFile implements MapHashFile {
         nihf.initPut(folder + "cache0");
         for (int i = 1; i < loop; i++) {
             InternalSmallBean bean = new InternalSmallBean(i, String.valueOf(i));
-            cursors.add(nihf.put("", bean.toArray()));
+            cursors.add(nihf.put("", bean.toByteArray()));
         }
         nihf.endPut();
 
@@ -161,9 +155,10 @@ class ArrayHashFile implements MapHashFile {
         System.out.println((file.length() / loop) + " bytes per item in storage.");
 
         // nihf.initGet(folder + "cache0");
-        //        
-        // for(int i = 0; i < cursors.size(); i++){
-        // Bean be = new Bean((Object[])nihf.get("", cursors.get(i)));
+        //
+        // for (int i = 0; i < cursors.size(); i++) {
+        // InternalSmallBean be = new InternalSmallBean((byte[]) nihf.get("", cursors.get(i), -1));
+        // System.out.println(be.primitiveInt + ": " + be.name);
         // }
         // nihf.endGet(folder + "cache0");
 
@@ -194,7 +189,7 @@ class ArrayHashFile implements MapHashFile {
         nihf.initPut(folder + "cache2");
         for (int i = 1; i < loop; i++) {
             InternalBigBean bean = new InternalBigBean(i, String.valueOf(i));
-            cursors.add(nihf.put("", bean.toArray()));
+            cursors.add(nihf.put("", bean.toByteArray()));
         }
         nihf.endPut();
 
@@ -206,9 +201,11 @@ class ArrayHashFile implements MapHashFile {
         System.out.println((file.length() / loop) + " bytes per item in storage.");
 
         // nihf.initGet(folder + "cache2");
-        //        
-        // for(int i = 0; i < cursors.size(); i++){
-        // BigBean be = new BigBean((Object[])nihf.get("", cursors.get(i)));
+        //
+        // for (int i = 0; i < cursors.size(); i++) {
+        // InternalBigBean be = new InternalBigBean((byte[]) nihf.get("", cursors.get(i), -1));
+        // System.out.println(be.primitiveInt + ": " + be.name + "#" + be.address + "#" + be.price + "#" + be.date + "#"
+        // + be.date2 + "#" + be.b.toString() + "#" + be.flag);
         // }
         // nihf.endGet(folder + "cache2");
 
@@ -234,7 +231,6 @@ class ArrayHashFile implements MapHashFile {
 
 }
 
-
 class InternalSmallBean implements Serializable {
 
     int primitiveInt;
@@ -242,7 +238,7 @@ class InternalSmallBean implements Serializable {
     String name;
 
     transient int hashcode = -1;
-    
+
     /**
      * DOC amaumont Bean constructor comment.
      * 
@@ -254,15 +250,25 @@ class InternalSmallBean implements Serializable {
         this.primitiveInt = primitiveInt;
         this.name = name;
     }
-    
-    public InternalSmallBean(){
+
+    public InternalSmallBean() {
         super();
     }
-    
-    public InternalSmallBean(Object[] objs) {
+
+    public InternalSmallBean(byte[] bytes) throws IOException {
         super();
-        this.primitiveInt = (Integer)objs[0];
-        this.name = (String)objs[1];
+        ByteArrayInputStream bai = new ByteArrayInputStream(bytes);
+        DataInputStream dis = new DataInputStream(bai);
+        this.primitiveInt = dis.readInt();
+        byte[] byteArray = null;
+        int length = dis.readInt();
+        if (length == -1) {
+            this.name = null;
+        } else {
+            byteArray = new byte[length];
+            dis.read(byteArray);
+            this.name = new String(byteArray);
+        }
     }
 
     /*
@@ -272,7 +278,7 @@ class InternalSmallBean implements Serializable {
      */
     @Override
     public int hashCode() {
-        if(hashcode == -1) {
+        if (hashcode == -1) {
             final int prime = 31;
             int result = 1;
             result = prime * result + ((this.name == null) ? 0 : this.name.hashCode());
@@ -295,13 +301,13 @@ class InternalSmallBean implements Serializable {
             return false;
         final KeyForMap other = (KeyForMap) obj;
 
-        if(this.hashCode() != other.hashcode) {
+        if (this.hashCode() != other.hashcode) {
             return false;
         }
-        
+
         Object o = null;
         try {
-            o = ReliabilityHashMapFileTest.hashFile.get("", (long)other.cursorPosition, -1);
+            o = ReliabilityHashMapFileTest.hashFile.get("", (long) other.cursorPosition, -1);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -320,54 +326,60 @@ class InternalSmallBean implements Serializable {
         return true;
     }
 
-    
     public int getPrimitiveInt() {
         return primitiveInt;
     }
 
-    
     public void setPrimitiveInt(int primitiveInt) {
         this.primitiveInt = primitiveInt;
     }
 
-    
     public String getName() {
         return name;
     }
 
-    
     public void setName(String name) {
         this.name = name;
     }
-    
-    public Object[] toArray(){
-        Object[] result = new Object[2];
-        result[0] = primitiveInt;
-        result[1] = name;
-        return result;
+
+    public byte[] toByteArray() throws IOException {
+        ByteArrayOutputStream bao = new ByteArrayOutputStream();
+        DataOutputStream dos = new DataOutputStream(bao);
+        dos.writeInt(this.primitiveInt);
+        byte[] bytes = null;
+        if (this.name == null) {
+            dos.writeInt(-1);
+        } else {
+            bytes = this.name.getBytes();
+            dos.writeInt(bytes.length);
+            dos.write(bytes);
+        }
+        dos.close();
+        bytes = bao.toByteArray();
+        bao.close();
+        return bytes;
     }
 
 }
-
 
 class InternalBigBean implements Serializable {
 
     int primitiveInt;
 
     String name;
-    
+
     String address;
-    
+
     float price;
 
     Date date = null;
-    
+
     Date date2 = null;
-    
-    byte[] b= null;
-    
+
+    byte[] b = null;
+
     boolean flag;
-    
+
     transient int hashcode = -1;
 
     /**
@@ -384,24 +396,65 @@ class InternalBigBean implements Serializable {
         this.b = address.getBytes();
         this.date = new Date();
         this.date2 = new Date();
-        this.price = (float)primitiveInt;
+        this.price = (float) primitiveInt;
         this.flag = true;
     }
-    
-    public InternalBigBean(){
+
+    public InternalBigBean() {
         super();
     }
-    
-    public InternalBigBean(Object[] objs) {
+
+    public InternalBigBean(byte[] byteArray) throws IOException, ClassNotFoundException {
         super();
-        this.primitiveInt = (Integer)objs[0];
-        this.name = (String)objs[1];
-        this.address = (String)objs[2];
-        this.price = (Float)objs[3];
-        this.date = (Date)objs[4];
-        this.date2 = (Date)objs[5];
-        this.b = (byte[])objs[6];
-        this.flag = (Boolean)objs[7];
+        ByteArrayInputStream bai = new ByteArrayInputStream(byteArray);
+        DataInputStream dis = new DataInputStream(bai);
+        this.primitiveInt = dis.readInt();
+        byte[] bytes = null;
+        int length = dis.readInt();
+        if (length == -1) {
+            this.name = null;
+        } else {
+            bytes = new byte[length];
+            dis.read(bytes);
+            this.name = new String(bytes);
+        }
+
+        length = dis.readInt();
+        if (length == -1) {
+            this.address = null;
+        } else {
+            bytes = new byte[length];
+            dis.read(bytes);
+            this.address = new String(bytes);
+        }
+
+        this.price = dis.readFloat();
+
+        long time = dis.readLong();
+        if (time == -1) {
+            this.date = null;
+        } else {
+            this.date = new Date(time);
+        }
+
+        time = dis.readLong();
+        if (time == -1) {
+            this.date2 = null;
+        } else {
+            this.date2 = new Date(time);
+        }
+
+        length = dis.readInt();
+        if (length == -1) {
+            this.b = null;
+        } else {
+            bytes = new byte[length];
+            dis.read(bytes);
+            this.b = bytes;
+        }
+        this.flag = dis.readBoolean();
+
+        dis.close();
     }
 
     /*
@@ -475,80 +528,103 @@ class InternalBigBean implements Serializable {
         this.name = name;
     }
 
-    
     public Date getDate() {
         return date;
     }
 
-    
     public void setDate(Date date) {
         this.date = date;
     }
 
-    
     public byte[] getB() {
         return b;
     }
 
-    
     public void setB(byte[] b) {
         this.b = b;
     }
 
-    
     public String getAddress() {
         return address;
     }
 
-    
     public void setAddress(String address) {
         this.address = address;
     }
 
-    
     public float getPrice() {
         return price;
     }
 
-    
     public void setPrice(float price) {
         this.price = price;
     }
 
-    
     public Date getDate2() {
         return date2;
     }
 
-    
     public void setDate2(Date date2) {
         this.date2 = date2;
     }
 
-    
     public boolean isFlag() {
         return flag;
     }
 
-    
     public void setFlag(boolean flag) {
         this.flag = flag;
     }
-    
-    
-    public Object[] toArray(){
-        Object[] result = new Object[8];
-        result[0] = primitiveInt;
-        result[1] = name;
-        result[2] = address;
-        result[3] = price;
-        result[4] = date;
-        result[5] = date2;
-        result[6] = b;
-        result[7] = flag;
-        return result;
+
+    public byte[] toByteArray() throws IOException {
+        ByteArrayOutputStream bao = new ByteArrayOutputStream();
+        DataOutputStream dos = new DataOutputStream(bao);
+        dos.writeInt(this.primitiveInt);
+
+        byte[] bytes = null;
+
+        if (this.name == null) {
+            dos.writeInt(-1);
+        } else {
+            bytes = this.name.getBytes();
+            dos.writeInt(bytes.length);
+            dos.write(bytes);
+        }
+
+        if (this.address == null) {
+            dos.writeInt(-1);
+        } else {
+            bytes = this.address.getBytes();
+            dos.writeInt(bytes.length);
+            dos.write(bytes);
+        }
+
+        dos.writeFloat(this.price);
+
+        if (this.date == null) {
+            dos.writeLong(-1);
+        } else {
+            dos.writeLong(this.date.getTime());
+        }
+
+        if (this.date2 == null) {
+            dos.writeLong(-1);
+        } else {
+            dos.writeLong(this.date2.getTime());
+        }
+
+        if (this.b == null) {
+            dos.writeInt(-1);
+        } else {
+            dos.writeInt(this.b.length);
+            dos.write(this.b);
+        }
+        dos.writeBoolean(this.flag);
+
+        dos.close();
+        bytes = bao.toByteArray();
+        bao.close();
+        return bytes;
     }
 
 }
-
-
