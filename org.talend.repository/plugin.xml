@@ -657,12 +657,15 @@
             id="org.talend.repository.integration"
             name="Talend">
       </category>
+      <!--
       <command
             categoryId="org.talend.repository.integration"
             id="org.talend.repository.integration.bootTalend"
             name="Boot Talend">
       </command>
+      -->
    </extension>
+   <!--
    <extension
          point="org.eclipse.ui.handlers">
       <handler
@@ -670,6 +673,8 @@
             commandId="org.talend.repository.integration.bootTalend">
       </handler>
    </extension>
+   -->
+   <!--
    <extension
          point="org.eclipse.ui.bindings">
       <key
@@ -679,6 +684,7 @@
             sequence="Ctrl+Shift+B">
       </key>
    </extension>
+   -->
    <extension
          point="org.eclipse.ui.menus">
       <menuContribution
