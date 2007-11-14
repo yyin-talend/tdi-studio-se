@@ -5,7 +5,7 @@
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
 //
-// You should have received a copy of the  agreement
+// You should have received a copy of the agreement
 // along with this program; if not, write to Talend SA
 // 9 rue Pages 92150 Suresnes, France
 //   
@@ -35,13 +35,13 @@ import org.talend.designer.core.ui.editor.nodes.Node;
  */
 public class QueryGuessCommand extends Command {
 
-    private Element node;
+    private final Element node;
 
     private String propName;
 
     private Object oldValue;
 
-    private IMetadataTable newOutputMetadataTable;
+    private final IMetadataTable newOutputMetadataTable;
 
     private IMetadataTable newOutputMetadata;
 
@@ -57,6 +57,10 @@ public class QueryGuessCommand extends Command {
 
     private String realDBType;
 
+    private String schema;
+
+    private String dbType;
+
     /**
      * The property is defined in an element, which can be either a node or a connection.
      * 
@@ -67,6 +71,20 @@ public class QueryGuessCommand extends Command {
     public QueryGuessCommand(Element node, IMetadataTable newOutputMetadataTable) {
         this.node = node;
         this.newOutputMetadataTable = newOutputMetadataTable;
+    }
+
+    /**
+     * DOC qzhang QueryGuessCommand constructor comment.
+     * 
+     * @param node2
+     * @param metadataTable
+     * @param schema
+     * @param dbType
+     */
+    public QueryGuessCommand(Node node2, IMetadataTable metadataTable, String schema, String dbType) {
+        this(node2, metadataTable);
+        this.schema = schema;
+        this.dbType = dbType;
     }
 
     private void refreshPropertyView() {
@@ -82,7 +100,6 @@ public class QueryGuessCommand extends Command {
 
         // used for generating new Query.
 
-        String dbType = "";
         if (realDBType != null) {
             dbType = realDBType;
         }
@@ -90,7 +107,9 @@ public class QueryGuessCommand extends Command {
             dbType = this.dbNameAndDbTypeMap.get(this.realTableId);
         }
 
-        String schema = this.dbNameAndSchemaMap.get(this.realTableId);
+        if (dbNameAndSchemaMap != null) {
+            schema = this.dbNameAndSchemaMap.get(this.realTableId);
+        }
 
         if (schema == null) {
             for (IElementParameter param : this.node.getElementParameters()) {

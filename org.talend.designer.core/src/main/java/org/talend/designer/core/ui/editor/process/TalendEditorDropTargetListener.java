@@ -5,7 +5,7 @@
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
 //
-// You should have received a copy of the  agreement
+// You should have received a copy of the agreement
 // along with this program; if not, write to Talend SA
 // 9 rue Pages 92150 Suresnes, France
 //   
@@ -58,6 +58,7 @@ import org.talend.designer.core.ui.editor.TalendEditor;
 import org.talend.designer.core.ui.editor.cmd.ChangeValuesFromRepository;
 import org.talend.designer.core.ui.editor.cmd.CreateNodeContainerCommand;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
+import org.talend.designer.core.ui.editor.cmd.QueryGuessCommand;
 import org.talend.designer.core.ui.editor.cmd.RepositoryChangeMetadataCommand;
 import org.talend.designer.core.ui.editor.cmd.RepositoryChangeQueryCommand;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
@@ -188,8 +189,7 @@ public class TalendEditorDropTargetListener implements TransferDropTargetListene
         /*
          * translate to Viewport coordinate with zoom
          */
-        org.eclipse.draw2d.geometry.Point draw2dPosition = new org.eclipse.draw2d.geometry.Point(swtLocation.x,
-                swtLocation.y);
+        org.eclipse.draw2d.geometry.Point draw2dPosition = new org.eclipse.draw2d.geometry.Point(swtLocation.x, swtLocation.y);
 
         /*
          * calcule the view port position. Take into acounte the scroll position
@@ -236,8 +236,8 @@ public class TalendEditorDropTargetListener implements TransferDropTargetListene
         List<Command> list = new ArrayList<Command>();
         if (selectedNode.getObject().getProperty().getItem() instanceof ConnectionItem) {
             node.setPropertyValue(EParameterName.PROPERTY_TYPE.getName(), EmfComponent.REPOSITORY);
-            node.setPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), selectedNode.getObject()
-                    .getProperty().getId());
+            node.setPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), selectedNode.getObject().getProperty()
+                    .getId());
 
             ConnectionItem connectionItem = (ConnectionItem) selectedNode.getObject().getProperty().getItem();
 
@@ -271,8 +271,8 @@ public class TalendEditorDropTargetListener implements TransferDropTargetListene
                 }
             }
             tablesMap.put(connectionItem.getProperty().getId(), tableValuesList);
-            IElementParameter repositorySchemaTypeParameter = node
-                    .getElementParameter(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
+            IElementParameter repositorySchemaTypeParameter = node.getElementParameter(EParameterName.REPOSITORY_SCHEMA_TYPE
+                    .getName());
             repositorySchemaTypeParameter.setListItemsValue(tableValuesList.toArray(new String[0]));
             if (connection instanceof DatabaseConnection && !connection.isReadOnly()) {
                 DatabaseConnection dbConnection = (DatabaseConnection) connection;
@@ -315,12 +315,18 @@ public class TalendEditorDropTargetListener implements TransferDropTargetListene
                         EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName(), value);
                 list.add(command3);
             }
+            if (connection instanceof DatabaseConnection) {
+                DatabaseConnection connection2 = (DatabaseConnection) connection;
+                String schema = connection2.getSchema();
+                String dbType = connection2.getDatabaseType();
+                QueryGuessCommand queryGuessCommand = new QueryGuessCommand(node, node.getMetadataList().get(0), schema, dbType);
+                list.add(queryGuessCommand);
+            }
         } else if (selectedNode.getObject().getProperty().getItem() instanceof ProcessItem) {
             ProcessItem processItem = (ProcessItem) selectedNode.getObject().getProperty().getItem();
             // command used to set job
             String value = processItem.getProperty().getLabel();
-            PropertyChangeCommand command4 = new PropertyChangeCommand(node, EParameterName.PROCESS_TYPE_PROCESS
-                    .getName(), value);
+            PropertyChangeCommand command4 = new PropertyChangeCommand(node, EParameterName.PROCESS_TYPE_PROCESS.getName(), value);
             list.add(command4);
         }
 
