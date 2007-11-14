@@ -52,11 +52,11 @@ class XMLTool{
 	public void addAttribute(String cid, String value, String path){
 		if(value!=null){
 %>
-		doc_<%=cid%>.getRootElement().addNamespace("<%=path%>",<%=value%>==null?"\"\"":<%=value%>.toString());
+		doc_<%=cid%>.getRootElement().addAttribute("<%=path%>",<%=value%>==null?"\"\"":<%=value%>.toString());
 <%
 		}else{
 %>
-		doc_<%=cid%>.getRootElement().addNamespace("<%=path%>","");
+		doc_<%=cid%>.getRootElement().addAttribute("<%=path%>","");
 <%
 		}
 	}
@@ -375,8 +375,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>
     currentRowCount_<%=cid %>++;
     if(currentRowCount_<%=cid %> == <%= splitEvery%>){
-        org.dom4j.io.XMLWriter output_<%=cid%> = new org.dom4j.io.XMLWriter(new java.io.FileWriter(
-        	new java.io.File(fileName_<%=cid%>)), format_<%=cid%>);
+    	java.io.FileOutputStream stream_<%=cid%> = new java.io.FileOutputStream(fileName_<%=cid%>);
+        org.dom4j.io.XMLWriter output_<%=cid%> = new org.dom4j.io.XMLWriter(stream_<%=cid%>, format_<%=cid%>);
         output_<%=cid%>.write(doc_<%=cid%>);
         output_<%=cid%>.close();
         
