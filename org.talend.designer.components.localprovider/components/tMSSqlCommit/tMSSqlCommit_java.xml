@@ -38,7 +38,9 @@
       NAME="CLOSE"
       FIELD="CHECK"
       NUM_ROW="11"
-    />
+     >
+     <DEFAULT>true</DEFAULT>
+     </PARAMETER>
   </PARAMETERS>
 
   <CODEGENERATION/>
