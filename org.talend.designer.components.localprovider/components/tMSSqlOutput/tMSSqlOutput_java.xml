@@ -156,34 +156,12 @@
 			<DEFAULT>false</DEFAULT>
 		</PARAMETER>
 
-	     <PARAMETER
-	      NAME="DBVERSION"
-	      FIELD="CLOSED_LIST"
-	      NUM_ROW="11"
-	    >
-	      <ITEMS DEFAULT="MSSQL2000">  
-	      	<ITEM NAME="MSSQL2000"        VALUE="MSSQL2000" />
-	        <ITEM NAME="MSSQL2005"        VALUE="MSSQL2005" />      
-	      </ITEMS>
-	    </PARAMETER> 
-	    
-	    <PARAMETER
-	      NAME="MAPPING"
-	      FIELD="MAPPING_TYPE"
-	      NUM_ROW="11"
-	      SHOW="false"
-	    >  
-	      <DEFAULT IF="DBVERSION=='MSSQL2000'">id_MSSQL</DEFAULT>
-	      <DEFAULT IF="DBVERSION=='MSSQL2005'">id_MSSQL2005</DEFAULT>  
-	      <DEFAULT>id_MSSQL</DEFAULT>
-	    </PARAMETER>
 		</PARAMETERS>
 
 	<CODEGENERATION>
 		<IMPORTS>
 			<IMPORT NAME="Driver-jTDS" MODULE="jtds-1.2.jar"
 				REQUIRED="true" />
-			<IMPORT NAME="Driver-SQL2005" MODULE="sqljdbc.jar" REQUIRED="true" />
 		</IMPORTS>
 	</CODEGENERATION>
 

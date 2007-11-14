@@ -1,10 +1,10 @@
 <%@ jet 
 imports="
-	org.talend.core.model.process.INode
-	org.talend.core.model.process.ElementParameterParser
-	org.talend.designer.codegen.config.CodeGeneratorArgument
-	java.util.List
-	java.util.Map
+    org.talend.core.model.process.INode
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+    java.util.Map
 " 
 %>
 
@@ -19,31 +19,24 @@ String dbname = ElementParameterParser.getValue(node, "__DBNAME__");
 String dbuser = ElementParameterParser.getValue(node, "__USER__");
 String dbpwd  = ElementParameterParser.getValue(node, "__PASS__");
 String spName = ElementParameterParser.getValue(node, "__SP_NAME__");
-String dbversion = ElementParameterParser.getValue(node, "__DBVERSION__");
 boolean isFunction = ElementParameterParser.getValue(node, "__IS_FUNCTION__").equals("true");
 List<Map<String, String>> spArgs = (List<Map<String,String>>) ElementParameterParser.getObjectValue(node, "__SP_ARGS__");
-if(dbversion.equals("MSSQL2000")){
+
 %>
 java.lang.Class.forName("net.sourceforge.jtds.jdbc.Driver");
 String connectionString_<%=cid%> = "jdbc:jtds:sqlserver://" + <%=dbhost%> + ":" + <%=dbport%> + "//" + <%=dbname%>;
 java.sql.Connection connection_<%=cid%> = java.sql.DriverManager.getConnection(connectionString_<%=cid%>, <%=dbuser%>, <%=dbpwd%>);
-<%
-}else{%>
-java.lang.Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-String connectionString_<%=cid%> = "jdbc:sqlserver://"+<%=dbhost%>+":"+<%=dbport%>+";DatabaseName="+<%=dbname%>;
-java.sql.Connection connection_<%=cid%> = java.sql.DriverManager.getConnection(connectionString_<%=cid%>, <%=dbuser%>, <%=dbpwd%>);
-<%}%>
+
 java.sql.CallableStatement statement_<%=cid%> = connection_<%=cid%>.prepareCall("{<%=isFunction ? "? = " : ""%>call <%=spName%>(
 <%
-
 for (int i = 0; i < spArgs.size(); i++) {
-	if(!spArgs.get(i).get("TYPE").equals("RECORDSET")){
-    	if (i < spArgs.size() - 1) {
-    		%>?,<%
-    	} else {
-    		%>?<%
-    	}
-	}
+    if(!spArgs.get(i).get("TYPE").equals("RECORDSET")){
+        if (i < spArgs.size() - 1) {
+            %>?,<%
+        } else {
+            %>?<%
+        }
+    }
 }
 %>)}");
 

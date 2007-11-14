@@ -47,8 +47,6 @@ imports="
 	String tableAction = ElementParameterParser.getValue(node,"__TABLE_ACTION__");
 	
 	String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
-	
-	String dbversion = ElementParameterParser.getValue(node, "__DBVERSION__");
 
 %>
 int nb_line_<%=cid%> = 0;
@@ -104,7 +102,6 @@ if(useExistingConn.equals("true"))
 }
 else
 {
-    if(dbversion.equals("MSSQL2000")){//sql 2000
     %>
     java.lang.Class.forName("net.sourceforge.jtds.jdbc.Driver");
     String url_<%=cid %> = "jdbc:jtds:sqlserver://"+<%=dbhost%>+":"+<%=dbport%>+"//"+<%=dbname%>;
@@ -112,15 +109,6 @@ else
     String dbPwd_<%=cid %> = <%=dbpwd%>;
     java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
     <%
-    }else{// sql2005
-    %>
-    java.lang.Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-    String url_<%=cid %> = "jdbc:sqlserver://"+<%=dbhost%>+":"+<%=dbport%>+";DatabaseName="+<%=dbname%>;
-    String dbUser_<%=cid %> = <%=dbuser%>;
-    String dbPwd_<%=cid %> = <%=dbpwd%>;
-    java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
-    <%
-    }    
 }
 %>
 
