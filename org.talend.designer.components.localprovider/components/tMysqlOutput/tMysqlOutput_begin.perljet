@@ -155,24 +155,16 @@ if (<%=encoding%> =~ m/utf-?8/i) {
 %>
 # We need the table list to know if drop or "create if not exists" is
 # relevant
-my $schema = '%';
-my $catalog = undef;
-my $tabsth = $<%=dbh%>->table_info($catalog, $schema);
-my @tables = ();
-
-while (my $entity = $tabsth->fetchrow_hashref()) {
-    if ($entity->{TABLE_TYPE} eq 'TABLE') {
-        push @tables, lc $entity->{TABLE_NAME};
+my $tabsth = $<%=dbh%>->prepare('SHOW TABLES');
+$tabsth->execute();
+my $table_exists = 0;
+my $test_table = lc $desc_<%=cid %>{dbtable};
+while (my $row_aref = $tabsth->fetchrow_arrayref()) {
+    if (lc $row_aref->[0] eq $test_table) {
+        $table_exists = 1;
+        last;
     }
 }
-
-#     print "===\n";
-#     print "existing tables:\n";
-#     print join("\n", map {"  - ".$_} @tables), "\n";
-#     print "===\n";
-
-my $test_table = lc $desc_<%=cid %>{dbtable};
-my $table_exists = grep /^$test_table$/, @tables;
 <%
         }
 
