@@ -20,21 +20,18 @@ String cid = node.getUniqueName();
 List<IMetadataTable> metadatas = node.getMetadataList();
 IMetadataTable metadata = metadatas.get(0);
 
-String lookupSearchIndex = ElementParameterParser.getValue(
+String lookupSearchColumn = ElementParameterParser.getValue(
     node,
-    "__LOOKUP_SEARCH_INDEX__"
+    "__LOOKUP_SEARCH_COLUMN__"
 );
 String lookupSearchName = null;
 
 
-String lookupReplacementIndex = ElementParameterParser.getValue(
+String lookupReplacementColumn = ElementParameterParser.getValue(
     node,
-    "__LOOKUP_REPLACEMENT_INDEX__"
+    "__LOOKUP_REPLACEMENT_COLUMN__"
 );
 String lookupReplacementName = null;
-	
-
-
 
 if (metadatas != null && metadatas.size() > 0) {
     String lookup = null;
@@ -49,24 +46,19 @@ if (metadatas != null && metadatas.size() > 0) {
         if (connection.getLineStyle() == EConnectionType.FLOW_REF) {
             lookup = connection.getName();
             IMetadataTable lookupMetadata = connection.getSource().getMetadataList().get(0);
-            for(int i=0;i<lookupMetadata.getListColumns().size();i++){
-                System.out.println("i = "+i);
-                System.out.println("search index = " + Integer.parseInt(lookupSearchIndex));
-                System.out.println("replace index = " + Integer.parseInt(lookupReplacementIndex));
-                    if(i == Integer.parseInt(lookupSearchIndex))
-                        lookupSearchName = lookupMetadata.getListColumns().get(i).getLabel();
-                    if(i == Integer.parseInt(lookupReplacementIndex))
-                        lookupReplacementName = lookupMetadata.getListColumns().get(i).getLabel();
-                }
-            continue;
+          
+            int colnum = 0; 
+            for(IMetadataColumn column: lookupMetadata.getListColumns()){
+                if (lookupSearchColumn.equals(column.getLabel())) 
+                       lookupSearchName = column.getLabel();     
+                if (lookupReplacementColumn.equals(column.getLabel()))  
+                       lookupReplacementName = column.getLabel();  
+                colnum++;
+            }
+          
         }
     }
-    
-    
-    
-    
-    
-    
+   
 %>
 
 java.util.Map<<%=lookup %>Struct, <%=lookup %>Struct>  tMap_<%=lookup%>_<%=cid %> = (java.util.Map<<%=lookup %>Struct, <%=lookup %>Struct>) globalMap.get("tHash_<%=lookup %>");
