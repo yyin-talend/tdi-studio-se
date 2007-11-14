@@ -5,7 +5,7 @@
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
 //
-// You should have received a copy of the  agreement
+// You should have received a copy of the agreement
 // along with this program; if not, write to Talend SA
 // 9 rue Pages 92150 Suresnes, France
 //   
@@ -25,10 +25,13 @@ import org.talend.designer.core.ui.editor.nodes.NodePart;
  * $Id$
  * 
  */
-public class MenuConnectionCreationTool extends ConnectionCreationTool {
+public class TalendConnectionCreationTool extends ConnectionCreationTool {
 
-    public MenuConnectionCreationTool(CreationFactory factory) {
+    private boolean fromMenu;
+
+    public TalendConnectionCreationTool(CreationFactory factory, boolean fromMenu) {
         super(factory);
+        this.fromMenu = fromMenu;
         setUnloadWhenFinished(true);
     }
 
@@ -44,30 +47,6 @@ public class MenuConnectionCreationTool extends ConnectionCreationTool {
         setCurrentCommand(cmd);
         setState(STATE_CONNECTION_STARTED);
     }
-
-    // /*
-    // * This method is useful when debugging.
-    // *
-    // * @see org.eclipse.gef.tools.AbstractTool#setState(int)
-    // */
-    // @Override
-    // protected void setState(int state) {
-    // // TODO Auto-generated method stub
-    // super.setState(state);
-    //
-    // if (isInState(STATE_CONNECTION_STARTED)) {
-    // System.out.println("STATE_CONNECTION_STARTED");
-    // } else if (isInState(STATE_INITIAL)) {
-    // System.out.println("STATE_INITIAL");
-    // } else if (isInState(STATE_DRAG)) {
-    // System.out.println("STATE_DRAG");
-    // } else if (isInState(STATE_TERMINAL)) {
-    // System.out.println("STATE_TERMINAL");
-    // } else {
-    // System.out.println("other " + state);
-    // }
-    //
-    // }
 
     /*
      * override this method for issue 1253.
@@ -86,4 +65,31 @@ public class MenuConnectionCreationTool extends ConnectionCreationTool {
         }
         return true;
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.gef.tools.ConnectionCreationTool#handleButtonDown(int)
+     */
+    @Override
+    protected boolean handleButtonDown(int button) {
+        if (!fromMenu && button == 3) {
+            return super.handleButtonDown(1);
+        }
+        return super.handleButtonDown(button);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.gef.tools.AbstractConnectionCreationTool#handleButtonUp(int)
+     */
+    @Override
+    protected boolean handleButtonUp(int button) {
+        if (!fromMenu && button == 3) {
+            return super.handleButtonDown(1);
+        }
+        return super.handleButtonUp(button);
+    }
+
 }

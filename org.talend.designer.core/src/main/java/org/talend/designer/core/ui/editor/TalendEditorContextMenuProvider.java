@@ -5,7 +5,7 @@
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
 //
-// You should have received a copy of the  agreement
+// You should have received a copy of the agreement
 // along with this program; if not, write to Talend SA
 // 9 rue Pages 92150 Suresnes, France
 //   
@@ -41,6 +41,7 @@ import org.talend.designer.core.ui.action.NodeBreakpointAction;
 import org.talend.designer.core.ui.action.PropertiesContextAction;
 import org.talend.designer.core.ui.action.SendBackwardAction;
 import org.talend.designer.core.ui.action.SendToBackAction;
+import org.talend.designer.core.ui.action.TalendConnectionCreationTool;
 
 /**
  * Class that manages the context menu in the Gef Editor. <br/>
@@ -63,7 +64,7 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
         if (registry == null) {
             throw new IllegalArgumentException();
         }
-        actionRegistry = registry;
+        this.actionRegistry = registry;
         this.part = part;
     }
 
@@ -73,6 +74,10 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
      * @see org.eclipse.gef.ContextMenuProvider#buildContextMenu(org.eclipse.jface.action.IMenuManager)
      */
     public void buildContextMenu(final IMenuManager menu) {
+        if (this.getViewer().getEditDomain().getActiveTool() instanceof TalendConnectionCreationTool) {
+            return;
+        }
+
         // Add standard action groups to the menu
         menu.add(new Separator(GROUP_CONNECTIONS));
         menu.add(new Separator(GEFActionConstants.GROUP_UNDO));

@@ -5,7 +5,7 @@
 // This source code is available under agreement available at
 // %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
 //
-// You should have received a copy of the  agreement
+// You should have received a copy of the agreement
 // along with this program; if not, write to Talend SA
 // 9 rue Pages 92150 Suresnes, France
 //   
@@ -62,6 +62,7 @@ import org.eclipse.gef.editparts.ZoomManager;
 import org.eclipse.gef.palette.PaletteEntry;
 import org.eclipse.gef.palette.PaletteGroup;
 import org.eclipse.gef.palette.PaletteRoot;
+import org.eclipse.gef.requests.CreationFactory;
 import org.eclipse.gef.ui.actions.ActionRegistry;
 import org.eclipse.gef.ui.actions.DirectEditAction;
 import org.eclipse.gef.ui.actions.ToggleGridAction;
@@ -99,6 +100,7 @@ import org.eclipse.swt.graphics.ImageLoader;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
@@ -124,6 +126,9 @@ import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.general.ILibrariesService;
+import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.process.EConnectionType;
+import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.properties.Property;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.designer.core.DesignerPlugin;
@@ -135,6 +140,7 @@ import org.talend.designer.core.ui.action.GEFCopyAction;
 import org.talend.designer.core.ui.action.GEFDeleteAction;
 import org.talend.designer.core.ui.action.GEFPasteAction;
 import org.talend.designer.core.ui.action.ModifyMergeOrderAction;
+import org.talend.designer.core.ui.action.TalendConnectionCreationTool;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
 import org.talend.designer.core.ui.editor.outline.NodeTreeEditPart;
@@ -786,9 +792,9 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
             saveOutlinePicture((ScrollingGraphicalViewer) getGraphicalViewer());
 
             if (CorePlugin.getDefault().getPreferenceStore().getBoolean(ITalendCorePrefConstants.DOC_GENERATION)) {
-                //PTODO ftang
-                //Step1: generate the HTML;
-                //Step2: copy it to Documentation Node(Find the relevant path, if path is not existing, create it); 
+                // PTODO ftang
+                // Step1: generate the HTML;
+                // Step2: copy it to Documentation Node(Find the relevant path, if path is not existing, create it);
             }
 
         } catch (Exception e) {
@@ -1212,7 +1218,11 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
 
         }
 
-        DragProcessor processor = null;
+        private DragProcessor processor = null;
+
+        private boolean createConnection = false;
+
+        private Point startPoint = null;
 
         /**
          * bqian TalendEditDomain constructor comment.
@@ -1230,11 +1240,16 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
          */
         @Override
         public void mouseDown(org.eclipse.swt.events.MouseEvent mouseEvent, EditPartViewer viewer) {
+            createConnection = false;
             if (mouseEvent.button == 2) {
                 getEditor().setCursor(Cursors.HAND);
                 processor = new DragProcessor();
                 processor.x = mouseEvent.x;
                 processor.y = mouseEvent.y;
+            } else if (mouseEvent.button == 3) {
+                startPoint = new Point(mouseEvent.x, mouseEvent.y);
+                createConnection = true;
+                super.mouseDown(mouseEvent, viewer);
             } else {
                 super.mouseDown(mouseEvent, viewer);
             }
@@ -1262,7 +1277,6 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
         @Override
         public void mouseDrag(org.eclipse.swt.events.MouseEvent mouseEvent, EditPartViewer viewer) {
             super.mouseDrag(mouseEvent, viewer);
-
             if (processor != null) {
                 int offX = mouseEvent.x - processor.x;
                 int offY = mouseEvent.y - processor.y;
@@ -1270,6 +1284,8 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
                 updateViewport(offX, offY);
                 processor.x = mouseEvent.x;
                 processor.y = mouseEvent.y;
+            } else if (createConnection) {
+                handleCreateDefaultConnection(new Point(mouseEvent.x, mouseEvent.y));
             }
         }
 
@@ -1280,13 +1296,108 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
          */
         @Override
         public void mouseUp(org.eclipse.swt.events.MouseEvent mouseEvent, EditPartViewer viewer) {
-            if (mouseEvent.button == 1) {
+            createConnection = false;
+            if (mouseEvent.button != 2) {
                 super.mouseUp(mouseEvent, viewer);
-            } else if (mouseEvent.button == 2) {
+            } else {
                 getEditor().setCursor(null);
                 processor = null;
             }
         }
+
+        public void handleCreateDefaultConnection(Point currentLocation) {
+            if (getActiveTool() instanceof TalendConnectionCreationTool) {
+                // if a connection is already in creation, no need to create it again
+                return;
+            }
+
+            if (getViewer().getSelectedEditParts().size() != 1) {
+                return;
+            }
+
+            EditPart part = (EditPart) getViewer().getSelectedEditParts().get(0);
+            if (!(part instanceof NodePart)) {
+                return;
+            }
+
+            IFigure figure = ((NodePart) part).getFigure();
+
+            if (!figure.getBounds().contains(startPoint)) {
+                // if the start location of the drag is not in the component, ignore it
+                return;
+            }
+
+            if (startPoint.getDistance2(currentLocation) < 30) {
+                // need to move a minimum the mouse for the drag, if not enough, display the context menu
+                return;
+            }
+
+            Node node = (Node) part.getModel();
+            final INodeConnector curNodeConnector = node.getConnectorFromType(EConnectionType.FLOW_MAIN);
+
+            if (curNodeConnector == null || curNodeConnector.isBuiltIn()) {
+                return;
+            }
+            if (curNodeConnector.getMaxLinkOutput() != -1) {
+                if (curNodeConnector.getCurLinkNbOutput() >= curNodeConnector.getMaxLinkOutput()) {
+                    return;
+                }
+            }
+            if (curNodeConnector.getMaxLinkOutput() == 0) {
+                return;
+            }
+
+            figure.translateToAbsolute(startPoint);
+
+            Canvas canvas = (Canvas) getViewer().getControl();
+            Event event = new Event();
+            event.button = 1;
+            event.count = 0;
+            event.detail = 0;
+            event.end = 0;
+            event.height = 0;
+            event.keyCode = 0;
+            event.start = 0;
+            event.stateMask = 0;
+            event.time = 9516624; // any old time... doesn't matter
+            event.type = 3;
+            event.widget = canvas;
+            event.width = 0;
+            event.x = startPoint.x + 3;
+            event.y = startPoint.y + 3;
+            /**
+             * Set the connection tool to be the current tool
+             */
+
+            final List<Object> listArgs = new ArrayList<Object>();
+
+            IMetadataTable meta = node.getMetadataFromConnector(curNodeConnector.getName());
+
+            listArgs.add(meta.getTableName());
+
+            String baseName = node.getConnectionName();
+            String connectionName = null;
+            if (node.getProcess().checkValidConnectionName(baseName)) {
+                connectionName = node.getProcess().generateUniqueConnectionName(baseName);
+            }
+            listArgs.add(connectionName);
+            IMetadataTable newMetadata = null;
+            listArgs.add(newMetadata);
+            TalendConnectionCreationTool myConnectTool = new TalendConnectionCreationTool(new CreationFactory() {
+
+                public Object getNewObject() {
+                    return listArgs;
+                }
+
+                public Object getObjectType() {
+                    return curNodeConnector.getName();
+                }
+            }, false);
+            myConnectTool.performConnectionStartWith(part);
+            getViewer().getEditDomain().setActiveTool(myConnectTool);
+            canvas.notifyListeners(3, event);
+        }
+
     }
 
     /**

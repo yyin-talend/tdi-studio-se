@@ -411,7 +411,7 @@ public class ConnectionCreateAction extends SelectionAction {
         }
 
         listArgs.add(newMetadata);
-        MenuConnectionCreationTool myConnectTool = new MenuConnectionCreationTool(new CreationFactory() {
+        TalendConnectionCreationTool myConnectTool = new TalendConnectionCreationTool(new CreationFactory() {
 
             public Object getNewObject() {
                 return listArgs;
@@ -420,7 +420,7 @@ public class ConnectionCreateAction extends SelectionAction {
             public Object getObjectType() {
                 return curNodeConnector.getName();
             }
-        });
+        }, true);
         myConnectTool.performConnectionStartWith(nodePart);
         nodePart.getViewer().getEditDomain().setActiveTool(myConnectTool);
 
