@@ -28,6 +28,10 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         List<IMetadataColumn> listColumns = metadata.getListColumns(); 
         
         List<Map<String, String>> params = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node,"__PARAMS__");
+        
+        boolean needAuth = ElementParameterParser.getValue(node,"__NEED_AUTH__").equals("true");
+        String username = ElementParameterParser.getValue(node,"__AUTH_USERNAME__");
+        String password = ElementParameterParser.getValue(node,"__AUTH_PASSWORD__");
 %>
 /////////////////////////////////// 
         
@@ -42,8 +46,15 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
         }
 %>      
-        };  
+        };
         
+<% 
+		if (needAuth) {
+%>        	   
+        org.talend.DynamicInvoker.setAuth(true, <%=username %>, <%=password %>); 		
+<%
+  		}
+%> 		
  		org.talend.DynamicInvoker.main(params_<%=cid %>);
  		java.util.Map result = org.talend.DynamicInvoker.getResult();
         
@@ -52,7 +63,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	
         for (Object key : result.keySet()) {
         
-           results_<%=cid %> = new String[<%=listColumns.size() %>];
+           results_<%=cid %> = new String[<%=listColumns.size()==0? 1 : listColumns.size()%>];
             
            Object value = result.get(key);
            if (value instanceof Object[]){

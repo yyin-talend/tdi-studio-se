@@ -45,6 +45,34 @@
     >
       <DEFAULT>"http://www.atomic-x.com/xmlservices/imageextractorws.asmx?wsdl"</DEFAULT>
     </PARAMETER>
+    
+    <PARAMETER
+      NAME="NEED_AUTH"
+      FIELD="CHECK"
+      REQUIRED="true"
+      NUM_ROW="50"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="AUTH_USERNAME"
+      FIELD="TEXT"
+      REQUIRED="true"
+      NUM_ROW="50"
+      SHOW_IF="NEED_AUTH == 'true'"
+    >
+      <DEFAULT>"username"</DEFAULT>
+    </PARAMETER>
+    <PARAMETER
+      NAME="AUTH_PASSWORD"
+      FIELD="TEXT"
+      REQUIRED="true"
+      NUM_ROW="50"
+      SHOW_IF="NEED_AUTH == 'true'"
+    >
+      <DEFAULT>"password"</DEFAULT>
+    </PARAMETER>    
  
     <PARAMETER
       NAME="METHOD"
