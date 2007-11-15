@@ -104,8 +104,29 @@ if (metadata != null) {
 				 			<%
 				 		} else {
 			   	 			%>
-							<%=firstOutConnection.getName()%>.<%=column.getLabel()%> = resultSet_<%=cid%>.get<%=method%>(<%=currentColumn%>);
-							<%
+			   	 			
+			   	 			
+    			   	 		if(resultSet_<%=cid%>.getObject(<%=currentColumn%>) != null)
+                            {
+                               <%=firstOutConnection.getName()%>.<%=column.getLabel()%> = resultSet_<%=cid%>.get<%=method%>(<%=currentColumn%>);
+                            }
+                            else
+                            {
+                                <%
+                                if(column.isNullable())
+                                {
+                                %>
+                                <%=firstOutConnection.getName()%>.<%=column.getLabel()%> = null;
+                                <%
+                                }else{
+                                %>    
+                                    throw new RuntimeException("Null value in non-Nullable column");
+                                <%    
+                                }
+                                %>
+                            }<%
+                        
+                        
 						}
 						
 						if (column.isNullable()) {
@@ -114,12 +135,7 @@ if (metadata != null) {
 								<%=firstOutConnection.getName()%>.<%=column.getLabel()%> = null;
 							}
 							<%
-						}else{
-	                        %>
-						    throw new RuntimeException("Null value in non-Nullable column");
-	                        <%    
-	                            }
-			   	 		
+						}	   	 		
 			   	 		%>
 			   	 	}
 			   	 	<%
