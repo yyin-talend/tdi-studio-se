@@ -210,9 +210,6 @@ public class TalendEditorDropTargetListener implements TransferDropTargetListene
             processSpecificDBTypeIfSameProduct(store.componentName, node);
             NodeContainer nc = new NodeContainer(node);
 
-            for (IElementParameter p : node.getElementParameters()) {
-                System.out.println(p.getDisplayName() + "  " + p.getName() + "  " + p.getValue());
-            }
             // create the node on the design sheet
             new CreateNodeContainerCommand(editor.getProcess(), nc, draw2dPosition).execute();
 
