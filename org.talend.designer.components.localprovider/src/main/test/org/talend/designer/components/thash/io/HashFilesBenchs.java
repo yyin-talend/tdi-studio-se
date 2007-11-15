@@ -75,9 +75,9 @@ public class HashFilesBenchs {
 
         int[] nbItemsArray = new int[] { 10000, 100000 };// , 1000000, 10000000, 30000000, 60000000, 10000000};
 
-        int[] nbFilesArray = new int[] { 1, 10, 25, 50, 75, 100 };// , };
+        int[] nbFilesArray = new int[] { 1, 10, 20, 40, 60, 80, 100 };// , };
 
-        int[] pointersByFileArray = new int[] { 1, 10, 20, 50, 75, 100, 200, 400, 800, 1000 };// , };
+        int[] pointersByFileArray = new int[] { 1, 10, 20, 40, 60, 80, 100, 200, 400, 800, 1000 };// , };
 
         // int loop = 1;
         // int loop = 10000;
@@ -105,12 +105,13 @@ public class HashFilesBenchs {
                 for (int j = 0; j < nbFilesArray.length; j++) {
                     int nbFiles = nbFilesArray[j];
                     DataBench dataWrite = new DataBench();
-                    hashFile = MultiPointersMultiHashFiles.createInstance(nbFiles);
+                    dataWrite.setNbFiles(nbFiles);
+                    hashFile = new MultiPointersMultiHashFiles(filePath, nbFiles);
                     try {
-                        launchWriteBenchs(nbItemsArray[nbItemsIndex], nbFiles, dataWrite);
+                        launchWriteBenchs(nbItems, nbFiles, dataWrite);
+                        dataWrite.setWriteEndedWithSuccess(true);
                     } catch (Throwable e) {
                         e.printStackTrace();
-                        dataWrite.setWriteEndedWithSuccess(true);
                         dataWrite.setWriteError(e.getMessage() + ":" + e.getStackTrace()[0]);
                         writeData(dataWrite);
                         continue;
@@ -121,10 +122,10 @@ public class HashFilesBenchs {
                         int pointersByFile = pointersByFileArray[pointersByFileIdx];
                         try {
                             launchReadBenchs(nbItems, nbFiles, pointersByFile, dataReadWrite);
+                            dataReadWrite.setReadEndedWithSuccess(true);
                         } catch (Throwable e) {
                             e.printStackTrace();
-                            dataWrite.setWriteEndedWithSuccess(true);
-                            dataWrite.setWriteError(e.getMessage() + ":" + e.getStackTrace()[0]);
+                            dataReadWrite.setReadError(e.getMessage() + ":" + e.getStackTrace()[0]);
                             continue;
                         } finally {
                             writeData(dataReadWrite);
@@ -169,12 +170,15 @@ public class HashFilesBenchs {
      * @throws IOException
      */
     private void openDataFile() throws IOException {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy_MM_dd_hh'h'mm'm'ss's'");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy_MM_dd_HH'h'mm'm'ss's'");
 
-        String filePath = folderStatsPath + sdf.format(new Date()) + "_" + fileHashBenchsBaseName + ".csv";
+        String filePath = folderStatsPath
+        // + sdf.format(new Date())
+                + "_" + fileHashBenchsBaseName + ".csv";
         try {
             this.fileData = new FileOutputStream(filePath);
             this.fileData.write(DataBench.getFileHeader().getBytes());
+            this.fileData.write('\n');
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -258,7 +262,7 @@ public class HashFilesBenchs {
         // Data in File, ?? bytes , all=?? s, write=?? s (?? min), read=???? s (?? min)
 
         dataWrite.setNbItems(nbItems);
-        dataWrite.setNbItems(nbFiles);
+        dataWrite.setNbFiles(nbFiles);
 
         hashMap = new THashMap(nbItems, 1.0f, objectHashingStrategy); // ??
         // Map hashMap = new THashMap(loop + (int)((float)loop * 0.1f), 0.1f, objectHashingStrategy);
@@ -290,9 +294,9 @@ public class HashFilesBenchs {
                 }
 
             }
-        
+
             dataWrite.setWriteEndedWithSuccess(true);
-            
+
         } finally {
             hashFile.endPut();
         }
@@ -300,7 +304,11 @@ public class HashFilesBenchs {
         Sizeof.runGC();
         long heap2 = Sizeof.usedMemory(); // Take a before heap snapshot
 
-        final int bytesPerItems = Math.round(((float) (heap2 - heap1)) / nbItems);
+        long memoryHeap = heap2 - heap1;
+
+        dataWrite.setHeapMemoryWrite(memoryHeap);
+
+        final int bytesPerItems = Math.round(((float) memoryHeap) / nbItems);
         System.out.println("'before' heap: " + heap1 + " bytes, 'after' heap: " + heap2 + " bytes "); //
 
         dataWrite.setBytesPerItemWrite(bytesPerItems);
@@ -356,8 +364,8 @@ public class HashFilesBenchs {
         if (readAfterStore) {
             System.out.println("Read step");
             long lastTime = start;
-            hashFile.initGet(filePath);
             try {
+                hashFile.initGet(filePath);
                 for (int i = 0; i < nbItems; i++) {
                     Bean bean = null;
                     // => bean from main flow in tMap for example...
@@ -399,6 +407,8 @@ public class HashFilesBenchs {
                 }
                 dataReadWrite.setReadEndedWithSuccess(true);
 
+            } catch (FileNotFoundException e) {
+                throw e;
             } finally {
                 hashFile.endGet(filePath);
             }
@@ -407,16 +417,27 @@ public class HashFilesBenchs {
             Sizeof.runGC();
             long heap2 = Sizeof.usedMemory(); // Take a before heap snapshot
 
+            long memoryHeap = heap2 - heap1;
+
+            dataReadWrite.setHeapMemoryRead(memoryHeap);
+
             final int bytesPerItems = Math.round(((float) (heap2 - heap1)) / nbItems);
             System.out.println("'before' heap: " + heap1 + " bytes, 'after' heap: " + heap2 + " bytes "); //
 
             dataReadWrite.setBytesPerItemRead(bytesPerItems);
 
-            dataReadWrite.setStartReadDate(new Date(end));
+            dataReadWrite.setEndReadDate(new Date(end));
 
             long deltaTime = (end - start);
+
+            dataReadWrite.setTimeRead(deltaTime);
+
+            int itemsPerSec = (int) ((float) nbItems / (float) deltaTime * 1000f);
+            
+            dataReadWrite.setItemsPerSecRead(itemsPerSec);
+            
             System.out.println(deltaTime + " milliseconds for " + nbItems + " objects to READ. "
-                    + (int) ((float) nbItems / (float) deltaTime * 1000f) + "  items/s ");
+                    + itemsPerSec + "  items/s ");
 
         }
 

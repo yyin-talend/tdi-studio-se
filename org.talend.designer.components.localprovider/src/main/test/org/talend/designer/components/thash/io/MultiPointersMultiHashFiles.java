@@ -29,8 +29,6 @@ import java.io.RandomAccessFile;
  */
 class MultiPointersMultiHashFiles implements MapHashFile {
 
-    private static MultiPointersMultiHashFiles instance;
-
     private int filePointersNumber;
 
     private RandomAccessFile[] bwArray = null;
@@ -41,8 +39,6 @@ class MultiPointersMultiHashFiles implements MapHashFile {
 
     private int hashFilesNumber;
 
-    private byte numberOfChars;
-
     private MultiReadPointersFileHandler[] fileHandlersArray = null;
 
     private Object[] lastRetrievedObjectArray = null;
@@ -51,23 +47,12 @@ class MultiPointersMultiHashFiles implements MapHashFile {
 
     private int countUniqueGet;
 
-    private MultiPointersMultiHashFiles(int hashFilesNumber) {
-        super();
-        this.hashFilesNumber = hashFilesNumber;
-        System.out.println("hashFilesNumber = " + hashFilesNumber);
-        this.numberOfChars = (byte) (String.valueOf(hashFilesNumber).length() - 1);
-    }
+    private String filePath;
 
-    /**
-     * getInstance.
-     * 
-     * @param filesNumber number of hash files generated 10,100
-     * @param filePointersNumber number of file pointers by file, number greater than 0
-     * 
-     * @return the instance if this project handler
-     */
-    public static synchronized MultiPointersMultiHashFiles createInstance(int filesNumber) {
-        return new MultiPointersMultiHashFiles(filesNumber);
+    public MultiPointersMultiHashFiles(String filePath, int hashFilesNumber) {
+        super();
+        this.filePath = filePath;
+        this.hashFilesNumber = hashFilesNumber;
     }
 
     public Object get(String container, long cursorPosition, int hashcode) throws IOException, ClassNotFoundException {
@@ -144,9 +129,9 @@ class MultiPointersMultiHashFiles implements MapHashFile {
             bwArray = new RandomAccessFile[hashFilesNumber];
             bwPositionArray = new int[hashFilesNumber];
             for (int i = 0; i < hashFilesNumber; i++) {
-                File file = new File(container + i);
+                File file = new File(this.filePath + i);
                 file.delete();
-                bwArray[i] = new RandomAccessFile(container + i, "rw");
+                bwArray[i] = new RandomAccessFile(this.filePath + i, "rw");
             }
         }
     }
@@ -170,7 +155,8 @@ class MultiPointersMultiHashFiles implements MapHashFile {
         lastRetrievedCursorPositionArray = new long[hashFilesNumber];
         lastRetrievedObjectArray = new Object[hashFilesNumber];
         for (int i = 0; i < hashFilesNumber; i++) {
-            fileHandlersArray[i] = new MultiReadPointersFileHandler(container + i, filePointersNumber);
+            fileHandlersArray[i] = new MultiReadPointersFileHandler(this.filePath + i, filePointersNumber);
+            fileHandlersArray[i].init();
             lastRetrievedCursorPositionArray[i] = -1;
         }
     }
@@ -182,7 +168,7 @@ class MultiPointersMultiHashFiles implements MapHashFile {
                 if (ra != null) {
                     ra.close();
                 }
-                File file = new File(container + i);
+                File file = new File(this.filePath + i);
                 // file.delete();
             }
         }
@@ -212,8 +198,6 @@ class MultiPointersMultiHashFiles implements MapHashFile {
             super();
             this.containerFilePath = containerFilePath;
             this.filePointersNumber = filePointersNumber;
-
-            init();
         }
 
         /**
@@ -221,7 +205,7 @@ class MultiPointersMultiHashFiles implements MapHashFile {
          * 
          * @throws IOException
          */
-        private void init() throws IOException {
+        public void init() throws IOException {
             pointersArray = new RandomAccessFile[filePointersNumber];
             File file = new File(containerFilePath);
             fileSize = file.length();
@@ -281,11 +265,12 @@ class MultiPointersMultiHashFiles implements MapHashFile {
      */
     @Override
     public long getTotalSize() {
+        long size = 0;
         for (int i = 0; i < hashFilesNumber; i++) {
-            File file = new File(container + i);
-            file.length();
+            File file = new File(this.filePath + i);
+            size += file.length();
         }
-        return 0;
+        return size;
     }
 
 }

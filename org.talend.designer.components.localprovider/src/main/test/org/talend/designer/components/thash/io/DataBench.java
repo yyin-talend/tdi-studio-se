@@ -38,9 +38,9 @@ public class DataBench implements Cloneable {
 
     private int pointersByFile;
 
-    private int heapMemoryWrite; // bytes
+    private long heapMemoryWrite; // bytes
 
-    private int heapMemoryRead; // bytes
+    private long heapMemoryRead; // bytes
 
     private long totalFilesSize; // bytes
 
@@ -54,7 +54,7 @@ public class DataBench implements Cloneable {
 
     private float loadFactorMap;
 
-    private float initialCapacityMap;
+    private int initialCapacityMap;
 
     private boolean writeEndedWithSuccess;
 
@@ -65,17 +65,19 @@ public class DataBench implements Cloneable {
     private String readError;
 
     private int itemsPerSecWrite;
-    
+
     private int itemsPerSecRead;
-    
+
     private Date startWriteDate;
+
     private Date endWriteDate;
 
     private Date startReadDate;
+
     private Date endReadDate;
-    
-    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
-    
+
+    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+
     /*
      * (non-Javadoc)
      * 
@@ -145,7 +147,7 @@ public class DataBench implements Cloneable {
      * 
      * @return the heapMemoryWrite
      */
-    public int getHeapMemoryWrite() {
+    public long getHeapMemoryWrite() {
         return this.heapMemoryWrite;
     }
 
@@ -154,7 +156,7 @@ public class DataBench implements Cloneable {
      * 
      * @param heapMemoryWrite the heapMemoryWrite to set
      */
-    public void setHeapMemoryWrite(int heapMemoryWrite) {
+    public void setHeapMemoryWrite(long heapMemoryWrite) {
         this.heapMemoryWrite = heapMemoryWrite;
     }
 
@@ -163,7 +165,7 @@ public class DataBench implements Cloneable {
      * 
      * @return the heapMemoryRead
      */
-    public int getHeapMemoryRead() {
+    public long getHeapMemoryRead() {
         return this.heapMemoryRead;
     }
 
@@ -172,7 +174,7 @@ public class DataBench implements Cloneable {
      * 
      * @param heapMemoryRead the heapMemoryRead to set
      */
-    public void setHeapMemoryRead(int heapMemoryRead) {
+    public void setHeapMemoryRead(long heapMemoryRead) {
         this.heapMemoryRead = heapMemoryRead;
     }
 
@@ -289,7 +291,7 @@ public class DataBench implements Cloneable {
      * 
      * @return the initialCapacityMap
      */
-    public float getInitialCapacityMap() {
+    public int getInitialCapacityMap() {
         return this.initialCapacityMap;
     }
 
@@ -298,7 +300,7 @@ public class DataBench implements Cloneable {
      * 
      * @param initialCapacityMap the initialCapacityMap to set
      */
-    public void setInitialCapacityMap(float initialCapacityMap) {
+    public void setInitialCapacityMap(int initialCapacityMap) {
         this.initialCapacityMap = initialCapacityMap;
     }
 
@@ -374,7 +376,6 @@ public class DataBench implements Cloneable {
         this.readError = readError;
     }
 
-    
     /**
      * Getter for itemsPerSecWrite.
      * @return the itemsPerSecWrite
@@ -383,7 +384,6 @@ public class DataBench implements Cloneable {
         return this.itemsPerSecWrite;
     }
 
-    
     /**
      * Sets the itemsPerSecWrite.
      * @param itemsPerSecWrite the itemsPerSecWrite to set
@@ -392,7 +392,6 @@ public class DataBench implements Cloneable {
         this.itemsPerSecWrite = itemsPerSecWrite;
     }
 
-    
     /**
      * Getter for itemsPerSecRead.
      * @return the itemsPerSecRead
@@ -401,7 +400,6 @@ public class DataBench implements Cloneable {
         return this.itemsPerSecRead;
     }
 
-    
     /**
      * Sets the itemsPerSecRead.
      * @param itemsPerSecRead the itemsPerSecRead to set
@@ -410,7 +408,6 @@ public class DataBench implements Cloneable {
         this.itemsPerSecRead = itemsPerSecRead;
     }
 
-    
     /**
      * Getter for startWriteDate.
      * @return the startWriteDate
@@ -419,7 +416,6 @@ public class DataBench implements Cloneable {
         return this.startWriteDate;
     }
 
-    
     /**
      * Sets the startWriteDate.
      * @param startWriteDate the startWriteDate to set
@@ -428,7 +424,6 @@ public class DataBench implements Cloneable {
         this.startWriteDate = startWriteDate;
     }
 
-    
     /**
      * Getter for endWriteDate.
      * @return the endWriteDate
@@ -437,7 +432,6 @@ public class DataBench implements Cloneable {
         return this.endWriteDate;
     }
 
-    
     /**
      * Sets the endWriteDate.
      * @param endWriteDate the endWriteDate to set
@@ -446,7 +440,6 @@ public class DataBench implements Cloneable {
         this.endWriteDate = endWriteDate;
     }
 
-    
     /**
      * Getter for startReadDate.
      * @return the startReadDate
@@ -455,7 +448,6 @@ public class DataBench implements Cloneable {
         return this.startReadDate;
     }
 
-    
     /**
      * Sets the startReadDate.
      * @param startReadDate the startReadDate to set
@@ -464,7 +456,6 @@ public class DataBench implements Cloneable {
         this.startReadDate = startReadDate;
     }
 
-    
     /**
      * Getter for endReadDate.
      * @return the endReadDate
@@ -473,7 +464,6 @@ public class DataBench implements Cloneable {
         return this.endReadDate;
     }
 
-    
     /**
      * Sets the endReadDate.
      * @param endReadDate the endReadDate to set
@@ -493,7 +483,7 @@ public class DataBench implements Cloneable {
         try {
             for (int i = 0; i < properties.length; i++) {
                 String propertyName = properties[i];
-                buffer.append(" " + propertyName+ " = ").append(PropertyUtils.getProperty(this, propertyName));
+                buffer.append(" " + propertyName + " = ").append(PropertyUtils.getProperty(this, propertyName));
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -507,18 +497,17 @@ public class DataBench implements Cloneable {
         String comma = "";
         try {
             for (int i = 0; i < properties.length; i++) {
-                if(i == 1) {
+                if (i == 1) {
                     comma = ";";
                 }
                 String propertyName = properties[i];
-                
+
                 Object object = PropertyUtils.getProperty(this, propertyName);
                 String value = null;
-                if(object instanceof Date) {
-                    value = sdf.format((Date)object);
-                }
-                if(object == null) {
+                if (object == null) {
                     value = "";
+                } else if (object instanceof Date) {
+                    value = sdf.format((Date) object);
                 } else {
                     value = String.valueOf(object);
                 }
@@ -532,13 +521,13 @@ public class DataBench implements Cloneable {
 
     // buffer.append\("(.*);"\);
     // ,"$1"
-    
+
     public static String getFileHeader() {
         StringBuffer buffer = new StringBuffer();
         String comma = "";
         try {
             for (int i = 0; i < properties.length; i++) {
-                if(i == 1) {
+                if (i == 1) {
                     comma = ";";
                 }
                 String propertyName = properties[i];
