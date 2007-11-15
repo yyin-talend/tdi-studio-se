@@ -700,5 +700,22 @@
          </toolbar>
       </menuContribution>
    </extension>
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            id="org.talend.repository.bootTalendActionSet"
+            label="label"
+            visible="true">
+         <action
+               class="org.talend.repository.plugin.integration.BootTalendAction"
+               icon="icons/newProject.png"
+               id="org.talend.repository.bootTalendAction"
+               label="Boot Talend"
+               style="push"
+               toolbarPath="Default"
+               tooltip="boot a new Talend Open Studio.">
+         </action>
+      </actionSet>
+   </extension>
 
 </plugin>

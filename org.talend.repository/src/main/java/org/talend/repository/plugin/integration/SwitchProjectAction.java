@@ -30,6 +30,10 @@ public class SwitchProjectAction extends Action {
 
     private static final boolean PLUGIN_MODEL = true;
 
+    private static final String COMMAND_ID = "org.talend.repository.integration.bootTalend";
+
+    private static final String CATEGORY_ID = "org.talend.repository.integration";
+
     public SwitchProjectAction() {
 
     }
@@ -44,6 +48,7 @@ public class SwitchProjectAction extends Action {
         logged = loginDialog.open() == LoginDialog.OK;
         if (logged) {
 
+            // addCommand();
             new DisableLanguageActions().earlyStartup();
 
             new BindingActions().bind();
@@ -59,5 +64,24 @@ public class SwitchProjectAction extends Action {
             CorePlugin.getDefault().getDesignerCoreService().refreshDesignerPalette();
 
         }
+
     }
+
+    // private void addCommand() {
+    //
+    // ICommandService cmdService = (ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class);
+    // Category category = cmdService.getCategory(CATEGORY_ID);
+    // if (!category.isDefined()) {
+    // category.define("Talend", "");
+    // }
+    // Command command = cmdService.getCommand(COMMAND_ID);
+    // if (!command.isDefined()) {
+    // command.define("Boot Talend", "", category);
+    // }
+    // command.setHandler(new LaunchTalendHandler());
+    //
+    // IHandlerService service = (IHandlerService) PlatformUI.getWorkbench().getService(IHandlerService.class);
+    // LaunchTalendHandler handler = new LaunchTalendHandler();
+    // service.activateHandler(COMMAND_ID, handler);
+    // }
 }
