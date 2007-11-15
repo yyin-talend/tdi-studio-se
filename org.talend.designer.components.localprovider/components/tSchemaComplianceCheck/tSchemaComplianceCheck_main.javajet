@@ -46,8 +46,10 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
 	}
 %>    
     boolean ifPassed_<%=cid%> = true;
-    String errorCode_<%=cid%> = null;
-    String errorMessage_<%=cid%> = null;
+    int errorCode_<%=cid%> = 0;
+    String errorMessage_<%=cid%> = "";
+    int resultErrorCode_<%=cid%> = 0;
+    String resultErrorMessage_<%=cid%>="";
     <%
     String anotherChecked = ElementParameterParser.getValue(node,"__CHECK_ANOTHER__");
     String checkAll = ElementParameterParser.getValue(node,"__CHECK_ALL__");
@@ -67,8 +69,8 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
                     <%=typeSelected%> tester_<%=cid%> = <%=typeSelected%>.valueOf(<%=incomingConnName%>.<%=metadataColumn.getLabel()%>);
                 } catch(Exception e) {
                     ifPassed_<%=cid%> = false;
-                    errorCode_<%=cid%> = "2";
-                    errorMessage_<%=cid%> = "wrong type";
+                    errorCode_<%=cid%> += 2;
+                    errorMessage_<%=cid%> += "|wrong type";
                 }
                 <%
             }
@@ -83,8 +85,8 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
                     if(<%=incomingConnName%>.<%=metadataColumn.getLabel()%> != null) {
                         if(<%=incomingConnName%>.<%=metadataColumn.getLabel()%>.length() > <%=maxLength%>) {
                             ifPassed_<%=cid%> = false;
-                            errorCode_<%=cid%> = "8";
-                            errorMessage_<%=cid%> = "exceed max length";                        
+                            errorCode_<%=cid%> += 8;
+                            errorMessage_<%=cid%> += "|exceed max length";                        
                         }
                     }
                     <%
@@ -101,8 +103,8 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
 					dateFormate_<%=cid%>.parse(<%=incomingConnName%>.<%=metadataColumn.getLabel()%>);
 				} catch(Exception e) {
                     ifPassed_<%=cid%> = false;
-                    errorCode_<%=cid%> = "2";
-                    errorMessage_<%=cid%> = "Date format not valid";
+                    errorCode_<%=cid%> += 2;
+                    errorMessage_<%=cid%> += "|Date format not valid";
                 }
 <%
 			}
@@ -114,8 +116,8 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
 			// validate nullable
 			if(<%=incomingConnName%>.<%=metadataColumn.getLabel()%> == null) {
                 ifPassed_<%=cid%> = false;
-                errorCode_<%=cid%> = "4";
-                errorMessage_<%=cid%> = "empty or null";                        
+                errorCode_<%=cid%> += 4;
+                errorMessage_<%=cid%> += "|empty or null";                        
             }
 <%
 			}
@@ -163,6 +165,25 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
                         checker.testDataLength(incomingConnName,metadataColumn, metadataColumn.getLength(),cid);
                     }
                 }
+%>
+		if(errorCode_<%=cid%> >0){
+			if(resultErrorCode_<%=cid%> >0){
+				resultErrorCode_<%=cid%> = 16;
+			}else{
+				resultErrorCode_<%=cid%> = errorCode_<%=cid%>;
+			}
+			errorCode_<%=cid%> = 0;
+		}
+		
+		if(errorMessage_<%=cid%>.length()>0){
+			if(resultErrorMessage_<%=cid%>.length()>0){
+				resultErrorMessage_<%=cid%> += ";" + errorMessage_<%=cid%>.replaceFirst("\\|","<%=metadataColumn.getLabel()%>:");
+			}else{
+				resultErrorMessage_<%=cid%> = errorMessage_<%=cid%>.replaceFirst("\\|","<%=metadataColumn.getLabel()%>:");
+			}
+			errorMessage_<%=cid%>="";
+		}
+<%
                 break;
             }
         }
@@ -197,8 +218,8 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
                 <%
             }
             %>
-            <%=rejectConnName%>.errorCode = errorCode_<%=cid%>;
-            <%=rejectConnName%>.errorMessage = errorMessage_<%=cid%>;            
+            <%=rejectConnName%>.errorCode = String.valueOf(resultErrorCode_<%=cid%>);
+            <%=rejectConnName%>.errorMessage = resultErrorMessage_<%=cid%>;            
         }
         <%
     }
