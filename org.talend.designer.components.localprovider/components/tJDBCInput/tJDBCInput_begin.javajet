@@ -114,7 +114,11 @@ if (metadata != null) {
 								<%=firstOutConnection.getName()%>.<%=column.getLabel()%> = null;
 							}
 							<%
-						}
+						}else{
+	                        %>
+						    throw new RuntimeException("Null value in non-Nullable column");
+	                        <%    
+	                            }
 			   	 		
 			   	 		%>
 			   	 	}

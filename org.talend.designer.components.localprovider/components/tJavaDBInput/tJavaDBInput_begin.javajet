@@ -229,7 +229,11 @@ imports="
             		 			%>
             		 			<%=firstConnName%>.<%=column.getLabel()%> = null;
             		 			<%
-            		 			}
+            		 			}else{
+                                %>    
+            		 			    throw new RuntimeException("Null value in non-Nullable column");
+                                <%    
+                                        }
             		 			%>
              			 	}
              			 <%

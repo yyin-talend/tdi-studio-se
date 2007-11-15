@@ -153,7 +153,11 @@ if(conns != null && conns.size()>0){
 		 			%>
 		 			<%=firstConnName%>.<%=column.getLabel()%> = null;
 		 			<%
-		 			}
+		 			}else{
+                    %>    
+		 			    throw new RuntimeException("Null value in non-Nullable column");
+                    <%    
+                            }
 		 			%>
  			 	}
  			 <%
