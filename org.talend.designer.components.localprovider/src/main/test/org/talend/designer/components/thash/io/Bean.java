@@ -3,7 +3,7 @@
 // Copyright (C) 2006-2007 Talend Inc. - www.talend.com
 //
 // This source code is available under agreement available at
-// %InstallDIR%featuresorg.talend.rcp.branding.%PRODUCTNAME%%PRODUCTNAME%license.txt
+// %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
 //
 // You should have received a copy of the agreement
 // along with this program; if not, write to Talend SA
@@ -26,7 +26,7 @@ public class Bean implements Serializable {
     String name;
 
     transient int hashcode = -1;
-    
+
     public static int countReturnFalse1 = 0;
 
     /**
@@ -40,8 +40,8 @@ public class Bean implements Serializable {
         this.primitiveInt = primitiveInt;
         this.name = name;
     }
-    
-    public Bean(){
+
+    public Bean() {
         super();
     }
 
@@ -52,7 +52,7 @@ public class Bean implements Serializable {
      */
     @Override
     public int hashCode() {
-        if(hashcode == -1) {
+        if (hashcode == -1) {
             final int prime = 31;
             int result = 1;
             result = prime * result + ((this.name == null) ? 0 : this.name.hashCode());
@@ -73,16 +73,16 @@ public class Bean implements Serializable {
             return true;
         if (obj == null)
             return false;
-        
-        if(this.hashCode() != obj.hashCode()) {
+
+        if (this.hashCode() != obj.hashCode()) {
             countReturnFalse1++;
             return false;
         }
         final KeyForMap other = (KeyForMap) obj;
-        
+
         Object o = null;
         try {
-            o = HashFilesBenchs.hashFile.get("buffer", (long)other.cursorPosition, hashcode);
+            o = HashFilesBenchs.hashFile.get("buffer", (long) other.cursorPosition, hashcode);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -93,15 +93,15 @@ public class Bean implements Serializable {
 
         if (this.name == null) {
             if ((String) bean.name != null) {
-//                System.out.println("return false 2");
+                // System.out.println("return false 2");
                 return false;
             }
         } else if (!this.name.equals((String) bean.name)) {
-//            System.out.println("return false 3");
+            // System.out.println("return false 3");
             return false;
         }
         if (this.primitiveInt != bean.primitiveInt) {
-//            System.out.println("return false 4");
+            // System.out.println("return false 4");
             return false;
         }
         return true;
