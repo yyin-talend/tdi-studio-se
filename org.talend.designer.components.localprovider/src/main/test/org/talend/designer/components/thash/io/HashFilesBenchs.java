@@ -73,7 +73,7 @@ public class HashFilesBenchs {
     public HashFilesBenchs() throws IOException, ClassNotFoundException, Exception {
         super();
 
-        int[] nbItemsArray = new int[] { 10000, 100000 };// , 1000000, 10000000, 30000000, 60000000, 10000000};
+        int[] nbItemsArray = new int[] { 10000, 100000 , 1000000, 10000000, 30000000, 60000000, 10000000};
 
         int[] nbFilesArray = new int[] { 1, 10, 20, 40, 60, 80, 100 };// , };
 
