@@ -122,7 +122,9 @@ public class Connection extends Element implements IConnection, IPerformance {
             createMeterParameters((Process) source.getProcess());
         }
         setName(linkName);
-        trace.setOffset(label.getOffset());
+        if (trace != null) {
+            trace.setOffset(label.getOffset());
+        }
 
         reconnect(source, target, lineStyle);
         updateName();
@@ -338,9 +340,9 @@ public class Connection extends Element implements IConnection, IPerformance {
             }
             updateName = true;
         } /*
-         * else if (getLineStyle().equals(EConnectionType.LOOKUP)) { labelText += " (" + nodeConnector.getLinkName() +
-         * ")"; updateName = true; }
-         */
+             * else if (getLineStyle().equals(EConnectionType.LOOKUP)) { labelText += " (" + nodeConnector.getLinkName() +
+             * ")"; updateName = true; }
+             */
 
         if (updateName) {
 
