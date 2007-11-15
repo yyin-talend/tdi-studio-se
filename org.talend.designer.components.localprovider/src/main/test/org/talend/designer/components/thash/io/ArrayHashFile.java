@@ -229,6 +229,15 @@ class ArrayHashFile implements MapHashFile {
         System.out.println((file.length() / loop) + " bytes per item in storage.");
     }
 
+    /* (non-Javadoc)
+     * @see org.talend.designer.components.thash.io.MapHashFile#getTotalSize()
+     */
+    @Override
+    public long getTotalSize() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
 }
 
 class InternalSmallBean implements Serializable {
@@ -307,7 +316,7 @@ class InternalSmallBean implements Serializable {
 
         Object o = null;
         try {
-            o = ReliabilityHashMapFileTest.hashFile.get("", (long) other.cursorPosition, -1);
+            o = HashFilesBenchs.hashFile.get("", (long)other.cursorPosition, -1);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -493,7 +502,7 @@ class InternalBigBean implements Serializable {
 
         Object o = null;
         try {
-            o = ReliabilityHashMapFileTest.hashFile.get("", (long) other.cursorPosition, -1);
+            o = HashFilesBenchs.hashFile.get("", (long) other.cursorPosition, -1);
         } catch (Exception e) {
             e.printStackTrace();
         }

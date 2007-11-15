@@ -45,4 +45,6 @@ interface MapHashFile {
 
     public void endGet(String container) throws IOException;
 
+    public long getTotalSize();
+    
 }

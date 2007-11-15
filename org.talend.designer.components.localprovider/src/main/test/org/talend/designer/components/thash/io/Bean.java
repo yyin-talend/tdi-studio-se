@@ -82,7 +82,7 @@ public class Bean implements Serializable {
         
         Object o = null;
         try {
-            o = ReliabilityHashMapFileTest.hashFile.get("buffer", (long)other.cursorPosition, hashcode);
+            o = HashFilesBenchs.hashFile.get("buffer", (long)other.cursorPosition, hashcode);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -93,15 +93,15 @@ public class Bean implements Serializable {
 
         if (this.name == null) {
             if ((String) bean.name != null) {
-                System.out.println("return false 2");
+//                System.out.println("return false 2");
                 return false;
             }
         } else if (!this.name.equals((String) bean.name)) {
-            System.out.println("return false 3");
+//            System.out.println("return false 3");
             return false;
         }
         if (this.primitiveInt != bean.primitiveInt) {
-            System.out.println("return false 4");
+//            System.out.println("return false 4");
             return false;
         }
         return true;

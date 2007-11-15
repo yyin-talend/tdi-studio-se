@@ -253,4 +253,13 @@ class BigBeanIntrospectionHashFile implements MapHashFile {
          + (loop / deltaTime * 1000) + " items/s. ");
     }
 
+    /* (non-Javadoc)
+     * @see org.talend.designer.components.thash.io.MapHashFile#getTotalSize()
+     */
+    @Override
+    public long getTotalSize() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
 }

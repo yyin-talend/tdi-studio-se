@@ -113,6 +113,25 @@ Dali PC
 #########
 
 
+With THashMap class, MultiPointersMultiHashFiles, 10 files, 75 read pointers/file
+------------------------------------------
+
+Starting with 10000000 items 
+203011 milliseconds for 10000000 objects to STORE. 49258 items/s 
+530530 milliseconds for 10000000 objects to READ. 18849  items/s 
+countUniqueGet = 10000686
+countReturnFalse1=26112750
+waiting for garbage collector...
+'before' heap: 137632 bytes, 'after' heap: 244232216 bytes 
+heap delta: 244094584 bytes 
+size by item: 24 bytes 
+Number of loops: 10000000
+Number of items: 10000000
+Read randomized: true
+Hash class used: org.talend.designer.components.thash.io.MultiPointersMultiHashFiles
+Time: 733 s
+
+
 With THashMap class, SimpleHashFile, WITHOUT random read access
 ------------------------------------------
 
@@ -128,34 +147,6 @@ size by item: 24 bytes
 Number of loops: 10000000
 Number of items: 10000000
 Time: 474 s
-
-
-With THashMap class, DoubleHashFile, WITHOUT random read access
-------------------------------------------
-
-3712 milliseconds for 100000 objects to STORE. 26939 items/s 
-Read step
-Reading 0, time since last display0.0 s
-3149 milliseconds for 100000 objects to READ. 31756 items/s 
-waiting for garbage collector...
-'before' heap: 138904 bytes, 'after' heap: 2596176 bytes 
-heap delta: 2457272 bytes 
-size by item: 25 bytes 
-Number of loops: 100000
-Number of items: 100000
-Time: 6 s
-
-33656 milliseconds for 1000000 objects to STORE. 29712 items/s 
-Read step
-27129 milliseconds for 1000000 objects to READ. 36860 items/s 
-waiting for garbage collector...
-'before' heap: 138904 bytes, 'after' heap: 24741008 bytes 
-heap delta: 24602104 bytes 
-size by item: 25 bytes 
-Number of loops: 1000000
-Number of items: 1000000
-Time: 60 s
-
 
 
 
@@ -192,22 +183,40 @@ Number of items: 10000000
 Time: 838 s
 
 
-
-
-
-
-With THashMap class, DoubleHashFile, WITHOUT random read access
+With THashMap class, MultipleHashFile with 100 files, with random read access
 ------------------------------------------
 
-389997 milliseconds for 10000000 objects to STORE. 25000 items/s 
-3866934 milliseconds for 10000000 objects to READ. 2000 items/s 
+238097 milliseconds for 10000000 objects to STORE. 41999 items/s 
+countUniqueGet = 10000782
+1354419 milliseconds for 10000000 objects to READ. 7383  items/s 
+countReturnFalse1=26112242
 waiting for garbage collector...
-'before' heap: 136848 bytes, 'after' heap: 244180584 bytes 
-heap delta: 244043736 bytes 
+'before' heap: 716768 bytes, 'after' heap: 244730440 bytes 
+heap delta: 244013672 bytes 
 size by item: 24 bytes 
 Number of loops: 10000000
 Number of items: 10000000
-Time: 4257 s
+Read randomized: true
+Hash class used: org.talend.designer.components.thash.io.MultipleHashFile
+Time: 1592 s
+
+With THashMap class, MultipleHashFile with 10 files, with random read access
+------------------------------------------
+
+Starting with 10000000 items 
+210012 milliseconds for 10000000 objects to STORE. 47616 items/s 
+countUniqueGet = 10000663
+2438355 milliseconds for 10000000 objects to READ. 4101  items/s 
+countReturnFalse1=26080229
+waiting for garbage collector...
+'before' heap: 138112 bytes, 'after' heap: 244182608 bytes 
+heap delta: 244044496 bytes 
+size by item: 24 bytes 
+Number of loops: 10000000
+Number of items: 10000000
+Read randomized: true
+Hash class used: org.talend.designer.components.thash.io.MultipleHashFile
+Time: 2648 s
 
 
 With THashMap class, SqliteDBHash, with random read access

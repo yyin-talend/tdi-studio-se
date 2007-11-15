@@ -53,7 +53,7 @@ public class Test {
         System.out.println("short2=" +shortAddressable/8 );
         
         System.out.println(24 % 100);
-        
+        System.out.println(2444024 % 25);
 //        ByteArrayOutputStream bao = new ByteArrayOutputStream();
 //        DataOutputStream dos = new DataOutputStream(bao);
 //        ObjectOutputStream oos = new ObjectOutputStream(dos);

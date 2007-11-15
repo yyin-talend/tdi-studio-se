@@ -185,4 +185,13 @@ class MultipleHashFile implements MapHashFile {
         System.out.println("countUniqueGet = "+countUniqueGet);
     }
 
+    /* (non-Javadoc)
+     * @see org.talend.designer.components.thash.io.MapHashFile#getTotalSize()
+     */
+    @Override
+    public long getTotalSize() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
 }
