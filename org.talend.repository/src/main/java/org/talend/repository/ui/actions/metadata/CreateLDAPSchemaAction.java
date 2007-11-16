@@ -52,15 +52,17 @@ public class CreateLDAPSchemaAction extends AbstractCreateAction {
 
     private ERepositoryObjectType currentNodeType;
 
+    private boolean isToolbar = false;
+
     public CreateLDAPSchemaAction() {
         super();
-        
-        //TODO: should to fix the I18N issue.
+
+        // TODO: should to fix the I18N issue.
         createLabel = "Create LDAP schema";
         editLabel = "Edit LDAP schema";
         openLabel = "Open LDAP schema";
 
-        //TODO: should change to another icon.
+        // TODO: should change to another icon.
         defaultImage = ImageProvider.getImageDesc(ECoreImage.METADATA_FILE_LDIF_ICON);
         createImage = OverlayImageProvider.getImageWithNew(ImageProvider.getImage(ECoreImage.METADATA_FILE_LDIF_ICON));
 
@@ -71,15 +73,49 @@ public class CreateLDAPSchemaAction extends AbstractCreateAction {
         currentNodeType = ERepositoryObjectType.METADATA_LDAP_SCHEMA;
     }
 
+    public CreateLDAPSchemaAction(boolean isToolbar) {
+        super();
+
+        // TODO: should to fix the I18N issue.
+        createLabel = "Create LDAP schema";
+        editLabel = "Edit LDAP schema";
+        openLabel = "Open LDAP schema";
+
+        // TODO: should change to another icon.
+        defaultImage = ImageProvider.getImageDesc(ECoreImage.METADATA_FILE_LDIF_ICON);
+        createImage = OverlayImageProvider.getImageWithNew(ImageProvider.getImage(ECoreImage.METADATA_FILE_LDIF_ICON));
+        this.isToolbar = isToolbar;
+        setText(createLabel);
+        setToolTipText(createLabel);
+        setImageDescriptor(defaultImage);
+
+        currentNodeType = ERepositoryObjectType.METADATA_LDAP_SCHEMA;
+    }
+
     public void run() {
+        RepositoryNode metadataNode = getViewPart().getRoot().getChildren().get(6);
+        RepositoryNode fileLDAPSchemaNode = metadataNode.getChildren().get(6);
         ISelection selection = getSelection();
-        WizardDialog wizardDialog = new WizardDialog(new Shell(), new LDAPSchemaWizard(PlatformUI.getWorkbench(),
-                creation, selection, getExistingNames(),false));
+        init(fileLDAPSchemaNode);
+        WizardDialog wizardDialog;
+        if (isToolbar) {
+            wizardDialog = new WizardDialog(new Shell(), new LDAPSchemaWizard(PlatformUI.getWorkbench(), creation,
+                    fileLDAPSchemaNode, getExistingNames(), false));
+        } else {
+            wizardDialog = new WizardDialog(new Shell(), new LDAPSchemaWizard(PlatformUI.getWorkbench(), creation, selection,
+                    getExistingNames(), false));
+        }
+
         wizardDialog.setPageSize(WIZARD_WIDTH, WIZARD_HEIGHT);
         wizardDialog.create();
 
         wizardDialog.open();
-        refresh(((IStructuredSelection) selection).getFirstElement());
+        if (isToolbar) {
+            refresh(fileLDAPSchemaNode);
+        } else {
+            refresh(((IStructuredSelection) selection).getFirstElement());
+        }
+
     }
 
     protected void init(RepositoryNode node) {

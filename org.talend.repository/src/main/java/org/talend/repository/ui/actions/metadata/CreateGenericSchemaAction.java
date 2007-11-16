@@ -53,6 +53,8 @@ public class CreateGenericSchemaAction extends AbstractCreateAction {
 
     private ERepositoryObjectType currentNodeType;
 
+    private boolean isToolbar = false;
+
     public CreateGenericSchemaAction() {
         super();
         createLabel = "Create generic schema";
@@ -69,15 +71,44 @@ public class CreateGenericSchemaAction extends AbstractCreateAction {
         currentNodeType = ERepositoryObjectType.METADATA_GENERIC_SCHEMA;
     }
 
+    public CreateGenericSchemaAction(boolean isToolbar) {
+        super();
+        createLabel = "Create generic schema";
+        editLabel = "Edit generic schema";
+        openLabel = "Open generic schema";
+
+        defaultImage = ImageProvider.getImageDesc(ECoreImage.METADATA_FILE_LDIF_ICON);
+        createImage = OverlayImageProvider.getImageWithNew(ImageProvider.getImage(ECoreImage.METADATA_FILE_LDIF_ICON));
+        this.isToolbar = isToolbar;
+        setText(createLabel);
+        setToolTipText(createLabel);
+        setImageDescriptor(defaultImage);
+
+        currentNodeType = ERepositoryObjectType.METADATA_GENERIC_SCHEMA;
+    }
+
     public void run() {
+        RepositoryNode metadataNode = getViewPart().getRoot().getChildren().get(6);
+        RepositoryNode fileGenericSchemaNode = metadataNode.getChildren().get(7);
         ISelection selection = getSelection();
-        WizardDialog wizardDialog = new WizardDialog(new Shell(), new GenericSchemaWizard(PlatformUI.getWorkbench(),
-                creation, selection, getExistingNames(),false));
+        init(fileGenericSchemaNode);
+        WizardDialog wizardDialog;
+        if (isToolbar) {
+            wizardDialog = new WizardDialog(new Shell(), new GenericSchemaWizard(PlatformUI.getWorkbench(), creation,
+                    fileGenericSchemaNode, getExistingNames(), false));
+        } else {
+            wizardDialog = new WizardDialog(new Shell(), new GenericSchemaWizard(PlatformUI.getWorkbench(), creation, selection,
+                    getExistingNames(), false));
+        }
         wizardDialog.setPageSize(WIZARD_WIDTH, WIZARD_HEIGHT);
         wizardDialog.create();
-
         wizardDialog.open();
-        refresh(((IStructuredSelection) selection).getFirstElement());
+        if (isToolbar) {
+            refresh(fileGenericSchemaNode);
+        } else {
+            refresh(((IStructuredSelection) selection).getFirstElement());
+        }
+
     }
 
     protected void init(RepositoryNode node) {

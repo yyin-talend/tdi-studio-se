@@ -50,10 +50,12 @@ public class CreateFileLdifAction extends AbstractCreateAction {
 
     private boolean creation = false;
 
+    private boolean isToolbar = false;
+
     ImageDescriptor defaultImage = ImageProvider.getImageDesc(ECoreImage.METADATA_FILE_LDIF_ICON);
 
-    ImageDescriptor createImage = OverlayImageProvider.getImageWithNew(ImageProvider
-            .getImage(ECoreImage.METADATA_FILE_LDIF_ICON));
+    ImageDescriptor createImage = OverlayImageProvider
+            .getImageWithNew(ImageProvider.getImage(ECoreImage.METADATA_FILE_LDIF_ICON));
 
     public CreateFileLdifAction() {
         super();
@@ -63,14 +65,37 @@ public class CreateFileLdifAction extends AbstractCreateAction {
         this.setImageDescriptor(ImageProvider.getImageDesc(ECoreImage.METADATA_FILE_LDIF_ICON));
     }
 
+    public CreateFileLdifAction(boolean isToolbar) {
+        super();
+        this.isToolbar = isToolbar;
+        this.setText(CREATE_LABEL);
+        this.setToolTipText(CREATE_LABEL);
+        this.setImageDescriptor(ImageProvider.getImageDesc(ECoreImage.METADATA_FILE_LDIF_ICON));
+    }
+
     public void run() {
+        RepositoryNode metadataNode = getViewPart().getRoot().getChildren().get(6);
+        RepositoryNode fileLdifNode = metadataNode.getChildren().get(5);
         ISelection selection = getSelection();
-        WizardDialog wizardDialog = new WizardDialog(new Shell(), new LdifFileWizard(PlatformUI.getWorkbench(), creation,
-                selection, getExistingNames()));
+        WizardDialog wizardDialog;
+        init(fileLdifNode);
+        if (isToolbar) {
+            wizardDialog = new WizardDialog(new Shell(), new LdifFileWizard(PlatformUI.getWorkbench(), creation, fileLdifNode,
+                    getExistingNames()));
+        } else {
+            wizardDialog = new WizardDialog(new Shell(), new LdifFileWizard(PlatformUI.getWorkbench(), creation, selection,
+                    getExistingNames()));
+        }
+
         wizardDialog.setPageSize(WIZARD_WIDTH, WIZARD_HEIGHT);
         wizardDialog.create();
         wizardDialog.open();
-        refresh(((IStructuredSelection) selection).getFirstElement());
+        if (isToolbar) {
+            refresh(fileLdifNode);
+        } else {
+            refresh(((IStructuredSelection) selection).getFirstElement());
+        }
+
     }
 
     protected void init(RepositoryNode node) {

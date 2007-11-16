@@ -95,8 +95,9 @@ public class LDAPSchemaWizard extends RepositoryWizard implements INewWizard {
 
         if (selection == null || existingNames == null) {
             connectionProperty = PropertiesFactory.eINSTANCE.createProperty();
-            connectionProperty.setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(
-                    Context.REPOSITORY_CONTEXT_KEY)).getUser());
+            connectionProperty
+                    .setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
+                            .getUser());
             connectionProperty.setVersion(VersionUtils.DEFAULT_VERSION);
             connectionProperty.setStatusCode(""); //$NON-NLS-1$
 
@@ -126,8 +127,9 @@ public class LDAPSchemaWizard extends RepositoryWizard implements INewWizard {
             metadataTable.setId(factory.getNextId());
             connection.getTables().add(metadataTable);
             connectionProperty = PropertiesFactory.eINSTANCE.createProperty();
-            connectionProperty.setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(
-                    Context.REPOSITORY_CONTEXT_KEY)).getUser());
+            connectionProperty
+                    .setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
+                            .getUser());
             connectionProperty.setVersion(VersionUtils.DEFAULT_VERSION);
             connectionProperty.setStatusCode(""); //$NON-NLS-1$
 
@@ -137,8 +139,59 @@ public class LDAPSchemaWizard extends RepositoryWizard implements INewWizard {
             break;
 
         case REPOSITORY_ELEMENT:
-            connection = (LDAPSchemaConnection) ((ConnectionItem) node.getObject().getProperty().getItem())
-                    .getConnection();
+            connection = (LDAPSchemaConnection) ((ConnectionItem) node.getObject().getProperty().getItem()).getConnection();
+            connectionProperty = node.getObject().getProperty();
+            connectionItem = (ConnectionItem) node.getObject().getProperty().getItem();
+            // set the repositoryObject, lock and set isRepositoryObjectEditable
+            setRepositoryObject(node.getObject());
+            isRepositoryObjectEditable();
+            initLockStrategy();
+            break;
+        }
+
+    }
+
+    public LDAPSchemaWizard(IWorkbench workbench, boolean creation, RepositoryNode node, String[] existingNames,
+            boolean isSinglePageOnly) {
+        super(workbench, creation);
+        this.existingNames = existingNames;
+        this.isSinglePageOnly = isSinglePageOnly;
+        setNeedsProgressMonitor(true);
+
+        // TODO: should to changed icon.
+        setDefaultPageImageDescriptor(ImageProvider.getImageDesc(ECoreImage.METADATA_FILE_DELIMITED_WIZ));
+        switch (node.getType()) {
+        case SIMPLE_FOLDER:
+        case REPOSITORY_ELEMENT:
+            pathToSave = RepositoryNodeUtilities.getPath(node);
+            break;
+        case SYSTEM_FOLDER:
+            pathToSave = new Path(""); //$NON-NLS-1$
+            break;
+        }
+
+        switch (node.getType()) {
+        case SIMPLE_FOLDER:
+        case SYSTEM_FOLDER:
+            connection = ConnectionFactory.eINSTANCE.createLDAPSchemaConnection();
+            MetadataTable metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
+            IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+            metadataTable.setId(factory.getNextId());
+            connection.getTables().add(metadataTable);
+            connectionProperty = PropertiesFactory.eINSTANCE.createProperty();
+            connectionProperty
+                    .setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
+                            .getUser());
+            connectionProperty.setVersion(VersionUtils.DEFAULT_VERSION);
+            connectionProperty.setStatusCode(""); //$NON-NLS-1$
+
+            connectionItem = PropertiesFactory.eINSTANCE.createLDAPSchemaConnectionItem();
+            connectionItem.setProperty(connectionProperty);
+            connectionItem.setConnection(connection);
+            break;
+
+        case REPOSITORY_ELEMENT:
+            connection = (LDAPSchemaConnection) ((ConnectionItem) node.getObject().getProperty().getItem()).getConnection();
             connectionProperty = node.getObject().getProperty();
             connectionItem = (ConnectionItem) node.getObject().getProperty().getItem();
             // set the repositoryObject, lock and set isRepositoryObjectEditable
@@ -162,7 +215,8 @@ public class LDAPSchemaWizard extends RepositoryWizard implements INewWizard {
         ldapSchemaWizardPage4 = null;
 
         if (creation) {
-            setWindowTitle(Messages.getString("LDAPSchemaWizard.CreateNewLdapSchema"));// Messages.getString("DelimitedFileWizard.windowTitleCreate")); //$NON-NLS-1$
+            setWindowTitle(Messages.getString("LDAPSchemaWizard.CreateNewLdapSchema"));// Messages.getString("DelimitedFileWizard.windowTitleCreate"));
+            // //$NON-NLS-1$
             // //$NON-NLS-1$
             ldapSchemaWizardPage0 = new Step0WizardPage(connectionProperty, pathToSave,
                     ERepositoryObjectType.METADATA_GENERIC_SCHEMA, !isRepositoryObjectEditable(), creation);
@@ -203,7 +257,8 @@ public class LDAPSchemaWizard extends RepositoryWizard implements INewWizard {
 
         } else {
 
-            setWindowTitle(Messages.getString("LDAPSchemaWizard.UpdateLdapSchema"));// Messages.getString("DelimitedFileWizard.windowTitleUpdate")); //$NON-NLS-1$
+            setWindowTitle(Messages.getString("LDAPSchemaWizard.UpdateLdapSchema"));// Messages.getString("DelimitedFileWizard.windowTitleUpdate"));
+            // //$NON-NLS-1$
             // //$NON-NLS-1$
 
             ldapSchemaWizardPage0 = new Step0WizardPage(connectionProperty, pathToSave,
@@ -270,8 +325,7 @@ public class LDAPSchemaWizard extends RepositoryWizard implements INewWizard {
                 }
             } catch (PersistenceException e) {
                 String detailError = e.toString();
-                new ErrorDialogWidthDetailArea(getShell(), PID,
-                        Messages.getString("CommonWizard.persistenceException"), //$NON-NLS-1$
+                new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("CommonWizard.persistenceException"), //$NON-NLS-1$
                         detailError);
                 log.error(Messages.getString("CommonWizard.persistenceException") + "\n" + detailError); //$NON-NLS-1$ //$NON-NLS-2$
                 return false;

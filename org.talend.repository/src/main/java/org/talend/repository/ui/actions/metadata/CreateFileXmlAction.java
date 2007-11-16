@@ -50,10 +50,11 @@ public class CreateFileXmlAction extends AbstractCreateAction {
 
     private boolean creation = false;
 
+    private boolean isToolbar = false;
+
     ImageDescriptor defaultImage = ImageProvider.getImageDesc(ECoreImage.METADATA_FILE_XML_ICON);
 
-    ImageDescriptor createImage = OverlayImageProvider
-            .getImageWithNew(ImageProvider.getImage(ECoreImage.METADATA_FILE_XML_ICON));
+    ImageDescriptor createImage = OverlayImageProvider.getImageWithNew(ImageProvider.getImage(ECoreImage.METADATA_FILE_XML_ICON));
 
     /**
      * DOC cantoine CreateFileXmlAction constructor comment.
@@ -68,15 +69,38 @@ public class CreateFileXmlAction extends AbstractCreateAction {
         this.setImageDescriptor(defaultImage);
     }
 
+    public CreateFileXmlAction(boolean isToolbar) {
+        super();
+        this.isToolbar = isToolbar;
+        this.setText(CREATE_LABEL);
+        this.setToolTipText(CREATE_LABEL);
+        this.setImageDescriptor(defaultImage);
+    }
+
     public void run() {
+        RepositoryNode metadataNode = getViewPart().getRoot().getChildren().get(6);
+        RepositoryNode fileXMLNode = metadataNode.getChildren().get(4);
         ISelection selection = getSelection();
-        WizardDialog wizardDialog = new WizardDialog(new Shell(), new XmlFileWizard(PlatformUI.getWorkbench(), creation,
-                selection, getExistingNames()));
+        WizardDialog wizardDialog;
+        init(fileXMLNode);
+        if (isToolbar) {
+            wizardDialog = new WizardDialog(new Shell(), new XmlFileWizard(PlatformUI.getWorkbench(), creation, fileXMLNode,
+                    getExistingNames()));
+        } else {
+            wizardDialog = new WizardDialog(new Shell(), new XmlFileWizard(PlatformUI.getWorkbench(), creation, selection,
+                    getExistingNames()));
+        }
+
         //        
         wizardDialog.setPageSize(WIZARD_WIDTH, WIZARD_HEIGHT);
         wizardDialog.create();
         wizardDialog.open();
-        refresh(((IStructuredSelection) selection).getFirstElement());
+        if (isToolbar) {
+            refresh(fileXMLNode);
+        } else {
+            refresh(((IStructuredSelection) selection).getFirstElement());
+        }
+
     }
 
     public Class getClassForDoubleClick() {

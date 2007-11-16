@@ -50,6 +50,8 @@ public class CreateFilePositionalAction extends AbstractCreateAction {
 
     private boolean creation = false;
 
+    private boolean isToolbar = false;
+
     ImageDescriptor defaultImage = ImageProvider.getImageDesc(ECoreImage.METADATA_FILE_POSITIONAL_ICON);
 
     ImageDescriptor createImage = OverlayImageProvider.getImageWithNew(ImageProvider
@@ -68,14 +70,35 @@ public class CreateFilePositionalAction extends AbstractCreateAction {
         this.setImageDescriptor(defaultImage);
     }
 
+    public CreateFilePositionalAction(boolean isToolbar) {
+        super();
+        this.isToolbar = isToolbar;
+        this.setText(CREATE_LABEL);
+        this.setToolTipText(CREATE_LABEL);
+        this.setImageDescriptor(defaultImage);
+    }
+
     public void run() {
+        RepositoryNode metadataNode = getViewPart().getRoot().getChildren().get(6);
+        RepositoryNode filePositionalNode = metadataNode.getChildren().get(2);
         ISelection selection = getSelection();
-        WizardDialog wizardDialog = new WizardDialog(new Shell(), new FilePositionalWizard(PlatformUI.getWorkbench(),
-                creation, selection, getExistingNames()));
+        init(filePositionalNode);
+        WizardDialog wizardDialog;
+        if (isToolbar) {
+            wizardDialog = new WizardDialog(new Shell(), new FilePositionalWizard(PlatformUI.getWorkbench(), creation,
+                    filePositionalNode, getExistingNames()));
+        } else {
+            wizardDialog = new WizardDialog(new Shell(), new FilePositionalWizard(PlatformUI.getWorkbench(), creation, selection,
+                    getExistingNames()));
+        }
         wizardDialog.setPageSize(WIZARD_WIDTH, WIZARD_HEIGHT);
         wizardDialog.create();
         wizardDialog.open();
-        refresh(((IStructuredSelection) selection).getFirstElement());
+        if (isToolbar) {
+            refresh(filePositionalNode);
+        } else {
+            refresh(((IStructuredSelection) selection).getFirstElement());
+        }
     }
 
     public Class getClassForDoubleClick() {

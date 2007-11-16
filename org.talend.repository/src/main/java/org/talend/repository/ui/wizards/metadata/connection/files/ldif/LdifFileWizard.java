@@ -72,7 +72,7 @@ public class LdifFileWizard extends RepositoryWizard implements INewWizard {
      * @param selection
      * @param strings
      */
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     public LdifFileWizard(IWorkbench workbench, boolean creation, ISelection selection, String[] existingNames) {
         super(workbench, creation);
         this.selection = selection;
@@ -124,12 +124,60 @@ public class LdifFileWizard extends RepositoryWizard implements INewWizard {
         }
     }
 
+    public LdifFileWizard(IWorkbench workbench, boolean creation, RepositoryNode node, String[] existingNames) {
+        super(workbench, creation);
+        this.selection = selection;
+        this.existingNames = existingNames;
+        setNeedsProgressMonitor(true);
+        setDefaultPageImageDescriptor(ImageProvider.getImageDesc(ECoreImage.METADATA_FILE_LDIF_WIZ));
+        switch (node.getType()) {
+        case SIMPLE_FOLDER:
+        case REPOSITORY_ELEMENT:
+            pathToSave = RepositoryNodeUtilities.getPath(node);
+            break;
+        case SYSTEM_FOLDER:
+            pathToSave = new Path(""); //$NON-NLS-1$
+            break;
+        }
+
+        switch (node.getType()) {
+        case SIMPLE_FOLDER:
+        case SYSTEM_FOLDER:
+            connection = ConnectionFactory.eINSTANCE.createLdifFileConnection();
+            MetadataTable metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
+            IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+            metadataTable.setId(factory.getNextId());
+            connection.getTables().add(metadataTable);
+            connectionProperty = PropertiesFactory.eINSTANCE.createProperty();
+            connectionProperty
+                    .setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
+                            .getUser());
+            connectionProperty.setVersion(VersionUtils.DEFAULT_VERSION);
+            connectionProperty.setStatusCode(""); //$NON-NLS-1$
+
+            connectionItem = PropertiesFactory.eINSTANCE.createLdifFileConnectionItem();
+            connectionItem.setProperty(connectionProperty);
+            connectionItem.setConnection(connection);
+            break;
+
+        case REPOSITORY_ELEMENT:
+            connection = (LdifFileConnection) ((ConnectionItem) node.getObject().getProperty().getItem()).getConnection();
+            connectionProperty = node.getObject().getProperty();
+            connectionItem = (ConnectionItem) node.getObject().getProperty().getItem();
+            // set the repositoryObject, lock and set isRepositoryObjectEditable
+            setRepositoryObject(node.getObject());
+            isRepositoryObjectEditable();
+            initLockStrategy();
+            break;
+        }
+    }
+
     /**
      * Adding the page to the wizard.
      */
     public void addPages() {
-        ldifFileWizardPage0 = new Step0WizardPage(connectionProperty, pathToSave,
-                ERepositoryObjectType.METADATA_FILE_LDIF, !isRepositoryObjectEditable(), creation);
+        ldifFileWizardPage0 = new Step0WizardPage(connectionProperty, pathToSave, ERepositoryObjectType.METADATA_FILE_LDIF,
+                !isRepositoryObjectEditable(), creation);
         ldifFileWizardPage1 = new LdifFileWizardPage(1, connectionItem, isRepositoryObjectEditable(), existingNames);
         ldifFileWizardPage2 = new LdifFileWizardPage(2, connectionItem, isRepositoryObjectEditable(), existingNames);
 
@@ -161,7 +209,7 @@ public class LdifFileWizard extends RepositoryWizard implements INewWizard {
             ldifFileWizardPage1.setPageComplete(false);
             ldifFileWizardPage2.setPageComplete(false);
             ldifFileWizardPage3.setPageComplete(false);
-            
+
         } else {
             setWindowTitle(Messages.getString("LdifFileWizard.windowTitleUpdate")); //$NON-NLS-1$
 

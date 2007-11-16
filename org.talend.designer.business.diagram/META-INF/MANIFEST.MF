@@ -7,7 +7,8 @@ Bundle-ClassPath: .
 Bundle-Activator: org.talend.designer.business.model.business.diagram.part.BusinessDiagramEditorPlugin
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
-Export-Package: org.talend.designer.business.model.business.diagram.edit.parts, 
+Export-Package: org.talend.designer.business.diagram.custom.actions,
+ org.talend.designer.business.model.business.diagram.edit.parts,
  org.talend.designer.business.model.business.diagram.part,
  org.talend.designer.business.model.business.diagram.providers
 Require-Bundle: org.eclipse.core.runtime,

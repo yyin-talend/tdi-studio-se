@@ -72,7 +72,7 @@ public class FilePositionalWizard extends RepositoryWizard implements INewWizard
      * @param selection
      * @param strings
      */
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     public FilePositionalWizard(IWorkbench workbench, boolean creation, ISelection selection, String[] existingNames) {
         super(workbench, creation);
         this.selection = selection;
@@ -84,6 +84,55 @@ public class FilePositionalWizard extends RepositoryWizard implements INewWizard
         Object obj = ((IStructuredSelection) selection).getFirstElement();
         RepositoryNode node = (RepositoryNode) obj;
 
+        switch (node.getType()) {
+        case SIMPLE_FOLDER:
+        case REPOSITORY_ELEMENT:
+            pathToSave = RepositoryNodeUtilities.getPath(node);
+            break;
+        case SYSTEM_FOLDER:
+            pathToSave = new Path(""); //$NON-NLS-1$
+            break;
+        }
+
+        switch (node.getType()) {
+        case SIMPLE_FOLDER:
+        case SYSTEM_FOLDER:
+            connection = ConnectionFactory.eINSTANCE.createPositionalFileConnection();
+            MetadataTable metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
+            IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+            metadataTable.setId(factory.getNextId());
+            connection.getTables().add(metadataTable);
+            connectionProperty = PropertiesFactory.eINSTANCE.createProperty();
+            connectionProperty
+                    .setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
+                            .getUser());
+            connectionProperty.setVersion(VersionUtils.DEFAULT_VERSION);
+            connectionProperty.setStatusCode(""); //$NON-NLS-1$
+
+            connectionItem = PropertiesFactory.eINSTANCE.createPositionalFileConnectionItem();
+            connectionItem.setProperty(connectionProperty);
+            connectionItem.setConnection(connection);
+            break;
+
+        case REPOSITORY_ELEMENT:
+            connection = (PositionalFileConnection) ((ConnectionItem) node.getObject().getProperty().getItem()).getConnection();
+            connectionProperty = node.getObject().getProperty();
+            connectionItem = (ConnectionItem) node.getObject().getProperty().getItem();
+            // set the repositoryObject, lock and set isRepositoryObjectEditable
+            setRepositoryObject(node.getObject());
+            isRepositoryObjectEditable();
+            initLockStrategy();
+            break;
+        }
+    }
+
+    public FilePositionalWizard(IWorkbench workbench, boolean creation, RepositoryNode node, String[] existingNames) {
+        super(workbench, creation);
+        this.selection = selection;
+        this.existingNames = existingNames;
+
+        setNeedsProgressMonitor(true);
+        setDefaultPageImageDescriptor(ImageProvider.getImageDesc(ECoreImage.METADATA_FILE_POSITIONAL_WIZ));
         switch (node.getType()) {
         case SIMPLE_FOLDER:
         case REPOSITORY_ELEMENT:

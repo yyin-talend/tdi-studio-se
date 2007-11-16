@@ -56,6 +56,8 @@ public class CreateConnectionAction extends AbstractCreateAction {
 
     private static final String CREATE_LABEL = Messages.getString("CreateConnectionAction.action.createTitle"); //$NON-NLS-1$
 
+    private boolean isToolbar = false;
+
     ImageDescriptor defaultImage = ImageProvider.getImageDesc(ECoreImage.METADATA_CONNECTION_ICON);
 
     ImageDescriptor createImage = OverlayImageProvider.getImageWithNew(ImageProvider
@@ -64,6 +66,14 @@ public class CreateConnectionAction extends AbstractCreateAction {
     public CreateConnectionAction() {
         super();
 
+        this.setText(CREATE_LABEL);
+        this.setToolTipText(CREATE_LABEL);
+        this.setImageDescriptor(defaultImage);
+    }
+
+    public CreateConnectionAction(boolean isToolbar) {
+        super();
+        this.isToolbar = isToolbar;
         this.setText(CREATE_LABEL);
         this.setToolTipText(CREATE_LABEL);
         this.setImageDescriptor(defaultImage);
@@ -107,8 +117,7 @@ public class CreateConnectionAction extends AbstractCreateAction {
         switch (node.getType()) {
         case REPOSITORY_ELEMENT:
             // pathToSave = null;
-            connection = (DatabaseConnection) ((ConnectionItem) node.getObject().getProperty().getItem())
-                    .getConnection();
+            connection = (DatabaseConnection) ((ConnectionItem) node.getObject().getProperty().getItem()).getConnection();
             creation = false;
             break;
         case SIMPLE_FOLDER:
@@ -125,15 +134,24 @@ public class CreateConnectionAction extends AbstractCreateAction {
 
         // Init the content of the Wizard
         init(node);
-        DatabaseWizard databaseWizard = new DatabaseWizard(PlatformUI.getWorkbench(), creation, selection,
-                getExistingNames());
+        DatabaseWizard databaseWizard;
+        if (isToolbar) {
+            databaseWizard = new DatabaseWizard(PlatformUI.getWorkbench(), creation, node, getExistingNames());
+        } else {
+            databaseWizard = new DatabaseWizard(PlatformUI.getWorkbench(), creation, selection, getExistingNames());
+        }
 
         // Open the Wizard
         WizardDialog wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), databaseWizard);
         wizardDialog.setPageSize(600, 500);
         wizardDialog.create();
         wizardDialog.open();
-        refresh(((IStructuredSelection) getSelection()).getFirstElement());
+        if (isToolbar) {
+            refresh(node);
+        } else {
+            refresh(((IStructuredSelection) getSelection()).getFirstElement());
+        }
+
     }
 
     @Override

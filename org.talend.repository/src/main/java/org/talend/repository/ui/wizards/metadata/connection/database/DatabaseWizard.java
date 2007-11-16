@@ -95,8 +95,9 @@ public class DatabaseWizard extends RepositoryWizard implements INewWizard {
         case SYSTEM_FOLDER:
             connection = ConnectionFactory.eINSTANCE.createDatabaseConnection();
             connectionProperty = PropertiesFactory.eINSTANCE.createProperty();
-            connectionProperty.setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(
-                    Context.REPOSITORY_CONTEXT_KEY)).getUser());
+            connectionProperty
+                    .setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
+                            .getUser());
             connectionProperty.setVersion(VersionUtils.DEFAULT_VERSION);
             connectionProperty.setStatusCode(""); //$NON-NLS-1$
 
@@ -106,8 +107,56 @@ public class DatabaseWizard extends RepositoryWizard implements INewWizard {
             break;
 
         case REPOSITORY_ELEMENT:
-            connection = (DatabaseConnection) ((ConnectionItem) node.getObject().getProperty().getItem())
-                    .getConnection();
+            connection = (DatabaseConnection) ((ConnectionItem) node.getObject().getProperty().getItem()).getConnection();
+            connectionProperty = node.getObject().getProperty();
+            connectionItem = (ConnectionItem) node.getObject().getProperty().getItem();
+            // set the repositoryObject, lock and set isRepositoryObjectEditable
+            setRepositoryObject(node.getObject());
+            isRepositoryObjectEditable();
+            initLockStrategy();
+            break;
+        }
+    }
+
+    /**
+     * Constructor for DatabaseWizard. Analyse Iselection to extract DatabaseConnection and the pathToSave. Start the
+     * Lock Strategy.
+     * 
+     * @param selection
+     * @param existingNames
+     */
+    public DatabaseWizard(IWorkbench workbench, boolean creation, RepositoryNode node, String[] existingNames) {
+        super(workbench, creation);
+        this.existingNames = existingNames;
+        setNeedsProgressMonitor(true);
+        switch (node.getType()) {
+        case SIMPLE_FOLDER:
+        case REPOSITORY_ELEMENT:
+            pathToSave = RepositoryNodeUtilities.getPath(node);
+            break;
+        case SYSTEM_FOLDER:
+            pathToSave = new Path(""); //$NON-NLS-1$
+            break;
+        }
+
+        switch (node.getType()) {
+        case SIMPLE_FOLDER:
+        case SYSTEM_FOLDER:
+            connection = ConnectionFactory.eINSTANCE.createDatabaseConnection();
+            connectionProperty = PropertiesFactory.eINSTANCE.createProperty();
+            connectionProperty
+                    .setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
+                            .getUser());
+            connectionProperty.setVersion(VersionUtils.DEFAULT_VERSION);
+            connectionProperty.setStatusCode(""); //$NON-NLS-1$
+
+            connectionItem = PropertiesFactory.eINSTANCE.createDatabaseConnectionItem();
+            connectionItem.setProperty(connectionProperty);
+            connectionItem.setConnection(connection);
+            break;
+
+        case REPOSITORY_ELEMENT:
+            connection = (DatabaseConnection) ((ConnectionItem) node.getObject().getProperty().getItem()).getConnection();
             connectionProperty = node.getObject().getProperty();
             connectionItem = (ConnectionItem) node.getObject().getProperty().getItem();
             // set the repositoryObject, lock and set isRepositoryObjectEditable
@@ -125,8 +174,8 @@ public class DatabaseWizard extends RepositoryWizard implements INewWizard {
         setWindowTitle(Messages.getString("DatabaseWizard.windowTitle")); //$NON-NLS-1$
         setDefaultPageImageDescriptor(ImageProvider.getImageDesc(ECoreImage.METADATA_CONNECTION_WIZ));
 
-        propertiesWizardPage = new Step0WizardPage(connectionProperty, pathToSave,
-                ERepositoryObjectType.METADATA_CONNECTIONS, !isRepositoryObjectEditable(), creation);
+        propertiesWizardPage = new Step0WizardPage(connectionProperty, pathToSave, ERepositoryObjectType.METADATA_CONNECTIONS,
+                !isRepositoryObjectEditable(), creation);
         databaseWizardPage = new DatabaseWizardPage(connectionItem, isRepositoryObjectEditable(), existingNames);
 
         if (creation) {
@@ -182,8 +231,7 @@ public class DatabaseWizard extends RepositoryWizard implements INewWizard {
                 }
             } catch (PersistenceException e) {
                 String detailError = e.toString();
-                new ErrorDialogWidthDetailArea(getShell(), PID,
-                        Messages.getString("CommonWizard.persistenceException"), //$NON-NLS-1$
+                new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("CommonWizard.persistenceException"), //$NON-NLS-1$
                         detailError);
                 log.error(Messages.getString("CommonWizard.persistenceException") + "\n" + detailError); //$NON-NLS-1$ //$NON-NLS-2$
                 return false;

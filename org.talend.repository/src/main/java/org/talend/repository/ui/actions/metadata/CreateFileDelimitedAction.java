@@ -50,6 +50,8 @@ public class CreateFileDelimitedAction extends AbstractCreateAction {
 
     private boolean creation = false;
 
+    private boolean isToolbar = false;
+
     ImageDescriptor defaultImage = ImageProvider.getImageDesc(ECoreImage.METADATA_FILE_DELIMITED_ICON);
 
     ImageDescriptor createImage = OverlayImageProvider.getImageWithNew(ImageProvider
@@ -63,14 +65,36 @@ public class CreateFileDelimitedAction extends AbstractCreateAction {
         this.setImageDescriptor(defaultImage);
     }
 
+    public CreateFileDelimitedAction(boolean isToolbar) {
+        super();
+        this.isToolbar = isToolbar;
+        this.setText(CREATE_LABEL);
+        this.setToolTipText(CREATE_LABEL);
+        this.setImageDescriptor(defaultImage);
+    }
+
     public void run() {
+        RepositoryNode metadataNode = getViewPart().getRoot().getChildren().get(6);
+        RepositoryNode fileDelimitedNode = metadataNode.getChildren().get(1);
         ISelection selection = getSelection();
-        WizardDialog wizardDialog = new WizardDialog(new Shell(), new DelimitedFileWizard(PlatformUI.getWorkbench(),
-                creation, selection, getExistingNames()));
+        WizardDialog wizardDialog;
+        init(fileDelimitedNode);
+        if (isToolbar) {
+            wizardDialog = new WizardDialog(new Shell(), new DelimitedFileWizard(PlatformUI.getWorkbench(), creation,
+                    fileDelimitedNode, getExistingNames()));
+        } else {
+            wizardDialog = new WizardDialog(new Shell(), new DelimitedFileWizard(PlatformUI.getWorkbench(), creation, selection,
+                    getExistingNames()));
+        }
+
         wizardDialog.setPageSize(WIZARD_WIDTH, WIZARD_HEIGHT);
         wizardDialog.create();
         wizardDialog.open();
-        refresh(((IStructuredSelection) selection).getFirstElement());
+        if (isToolbar) {
+            refresh(fileDelimitedNode);
+        } else {
+            refresh(((IStructuredSelection) selection).getFirstElement());
+        }
     }
 
     protected void init(RepositoryNode node) {
