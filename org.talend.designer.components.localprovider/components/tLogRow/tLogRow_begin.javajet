@@ -21,6 +21,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
 
 	String cid = node.getUniqueName();
 	String label = ElementParameterParser.getValue(node, "__LABEL__");
+	if(label.equals("__UNIQUE_NAME__"))
+	    label=cid;
     String tablePrint = ElementParameterParser.getValue(node,"__TABLE_PRINT__");
     String printHeader = ElementParameterParser.getValue(node,"__PRINT_HEADER__");
 
