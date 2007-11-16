@@ -45,6 +45,7 @@ import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.editor.MetadataEmfTableEditor;
 import org.talend.core.model.metadata.types.JavaDataTypeHelper;
+import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.model.metadata.types.PerlDataTypeHelper;
 import org.talend.core.model.metadata.types.PerlTypesManager;
 import org.talend.core.model.properties.ConnectionItem;
@@ -77,7 +78,7 @@ public class DelimitedFileStep3Form extends AbstractDelimitedFileStepForm {
 
     private Label informationLabel;
 
-    private MetadataTable metadataTable;
+    private final MetadataTable metadataTable;
 
     private LabelledText metadataNameText;
 
@@ -102,6 +103,7 @@ public class DelimitedFileStep3Form extends AbstractDelimitedFileStepForm {
      * 
      * Initialize value, forceFocus first field.
      */
+    @Override
     protected void initialize() {
         // init the metadata Table
         metadataNameText.setText(metadataTable.getLabel());
@@ -121,6 +123,7 @@ public class DelimitedFileStep3Form extends AbstractDelimitedFileStepForm {
      * DOC ocarbone Comment method "adaptFormToReadOnly".
      * 
      */
+    @Override
     protected void adaptFormToReadOnly() {
         readOnly = isReadOnly();
         guessButton.setEnabled(!isReadOnly());
@@ -129,6 +132,7 @@ public class DelimitedFileStep3Form extends AbstractDelimitedFileStepForm {
         tableEditorView.setReadOnly(isReadOnly());
     }
 
+    @Override
     protected void addFields() {
 
         // Header Fields
@@ -170,6 +174,7 @@ public class DelimitedFileStep3Form extends AbstractDelimitedFileStepForm {
     /**
      * Main Fields addControls.
      */
+    @Override
     protected void addFieldsListeners() {
         // metadataNameText : Event modifyText
         metadataNameText.addModifyListener(new ModifyListener() {
@@ -182,6 +187,7 @@ public class DelimitedFileStep3Form extends AbstractDelimitedFileStepForm {
         // metadataNameText : Event KeyListener
         metadataNameText.addKeyListener(new KeyAdapter() {
 
+            @Override
             public void keyPressed(KeyEvent e) {
                 if ((!Character.isIdentifierIgnorable(e.character))
                         && (!Pattern.matches(RepositoryConstants.REPOSITORY_ITEM_PATTERN, "" + e.character))) { //$NON-NLS-1$
@@ -212,11 +218,13 @@ public class DelimitedFileStep3Form extends AbstractDelimitedFileStepForm {
      * 
      * @param cancelButton
      */
+    @Override
     protected void addUtilsButtonListeners() {
 
         // Event guessButton
         guessButton.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(final SelectionEvent e) {
                 if (tableEditorView.getMetadataEditor().getBeanCount() > 0) {
 
@@ -246,6 +254,7 @@ public class DelimitedFileStep3Form extends AbstractDelimitedFileStepForm {
             // Event CancelButton
             cancelButton.addSelectionListener(new SelectionAdapter() {
 
+                @Override
                 public void widgetSelected(final SelectionEvent e) {
                     getShell().close();
                 }
@@ -409,9 +418,9 @@ public class DelimitedFileStep3Form extends AbstractDelimitedFileStepForm {
                         } else {
                             globalType = JavaDataTypeHelper.getTalendTypeOfValue(csvRows.get(current)[i]);
                             current++;
-                            if (current == csvRows.size()) {
-                                globalType = "id_String"; //$NON-NLS-1$
-                            }
+                            // if (current == csvRows.size()) {
+                            // globalType = "id_String"; //$NON-NLS-1$
+                            // }
                         }
                     } else {
                         if (i >= csvRows.get(current).length) {
@@ -419,9 +428,9 @@ public class DelimitedFileStep3Form extends AbstractDelimitedFileStepForm {
                         } else {
                             globalType = PerlDataTypeHelper.getTalendTypeOfValue(csvRows.get(current)[i]);
                             current++;
-                            if (current == csvRows.size()) {
-                                globalType = "String"; //$NON-NLS-1$
-                            }
+                            // if (current == csvRows.size()) {
+                            // globalType = "String"; //$NON-NLS-1$
+                            // }
                         }
                     }
                 }
@@ -464,17 +473,23 @@ public class DelimitedFileStep3Form extends AbstractDelimitedFileStepForm {
                 String talendType = null;
                 if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
                     talendType = globalType;
+                    if (globalType.equals(JavaTypesManager.FLOAT.getId()) || globalType.equals(JavaTypesManager.DOUBLE.getId())) {
+                        metadataColumn.setPrecision(precisionValue);
+                    } else {
+                        metadataColumn.setPrecision(0);
+                    }
                 } else {
                     talendType = PerlTypesManager.getNewTypeName(MetadataTalendType.loadTalendType(globalType,
                             "TALENDDEFAULT", false)); //$NON-NLS-1$
+                    if (globalType.equals("FLOAT") || globalType.equals("DOUBLE")) { //$NON-NLS-1$ //$NON-NLS-2$
+                        metadataColumn.setPrecision(precisionValue);
+                    } else {
+                        metadataColumn.setPrecision(0);
+                    }
                 }
                 metadataColumn.setTalendType(talendType);
                 metadataColumn.setLength(lengthValue);
-                if (globalType.equals("FLOAT") || globalType.equals("DOUBLE")) { //$NON-NLS-1$ //$NON-NLS-2$
-                    metadataColumn.setPrecision(precisionValue);
-                } else {
-                    metadataColumn.setPrecision(0);
-                }
+
                 // Check the label and add it to the table
                 metadataColumn.setLabel(tableEditorView.getMetadataEditor().getNextGeneratedColumnName(label[i]));
                 tableEditorView.getMetadataEditor().add(metadataColumn, i);
@@ -511,6 +526,7 @@ public class DelimitedFileStep3Form extends AbstractDelimitedFileStepForm {
      * 
      * @return
      */
+    @Override
     protected boolean checkFieldsValue() {
         if (metadataNameText.getCharCount() == 0) {
             metadataNameText.forceFocus();
@@ -542,6 +558,7 @@ public class DelimitedFileStep3Form extends AbstractDelimitedFileStepForm {
      * @see org.eclipse.swt.widgets.Control#setVisible(boolean)
      * 
      */
+    @Override
     public void setVisible(boolean visible) {
         super.setVisible(visible);
         if (super.isVisible()) {
