@@ -1306,9 +1306,9 @@ public class Process extends Element implements IProcess {
                 // correct
                 // (used for automatic component upgrade, to avoid migration
                 // each time)
-                if ((source.getConnectorFromName(connectorName) != null)
-                        && source.getConnectorFromName(connectorName).getConnectionProperty(
-                                EConnectionType.getTypeFromId(lineStyleId)) != null) {
+                if (source.getConnectorFromName(connectorName) != null
+                        && (source.getConnectorFromName(connectorName).getConnectionProperty(
+                                EConnectionType.getTypeFromId(lineStyleId)) != null)) {
                     connectionTypeFound = true;
                 }
             }
