@@ -1,3 +1,15 @@
+// ============================================================================
+//
+// Copyright (C) 2006-2007 Talend Inc. - www.talend.com
+//
+// This source code is available under agreement available at
+// %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
+//
+// You should have received a copy of the agreement
+// along with this program; if not, write to Talend SA
+// 9 rue Pages 92150 Suresnes, France
+//
+// ============================================================================
 package org.talend.repository.plugin.integration;
 
 import org.eclipse.jface.action.IAction;
@@ -10,6 +22,9 @@ import org.talend.core.CorePlugin;
 import org.talend.repository.ui.views.IRepositoryView;
 import org.talend.repository.ui.views.RepositoryView;
 
+/**
+ * DOC yzhang class global comment. Detailled comment
+ */
 public class BootTalendAction implements IWorkbenchWindowActionDelegate {
 
     public final static String TALEND_PERSPECTIVE_ID = "org.talend.rcp.perspective";
