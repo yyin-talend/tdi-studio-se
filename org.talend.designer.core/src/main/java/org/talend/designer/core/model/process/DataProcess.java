@@ -121,6 +121,18 @@ public class DataProcess {
         dataNode.setProcess(graphicalNode.getProcess());
         dataNode.setComponent(graphicalNode.getComponent());
 
+        if (dataNode.isDummy()) {
+            dataNode = new DataNode(ComponentsFactoryProvider.getInstance().get("tDummy"), graphicalNode.getUniqueName());
+            dataNode.setActivate(true);
+            dataNode.setStart(graphicalNode.isStart());
+            dataNode.setMetadataList(graphicalNode.getMetadataList());
+            dataNode.setSubProcessStart(graphicalNode.isSubProcessStart());
+            dataNode.setThereLinkWithHash(graphicalNode.isThereLinkWithHash());
+            dataNode.setHasConditionalOutputs(graphicalNode.hasConditionalOutputs());
+            dataNode.setIsMultiplyingOutputs(graphicalNode.isMultiplyingOutputs());
+            dataNode.setProcess(graphicalNode.getProcess());
+        }
+
         List<IConnection> outgoingConnections = new ArrayList<IConnection>();
         List<IConnection> incomingConnections = new ArrayList<IConnection>();
         dataNode.setIncomingConnections(incomingConnections);
