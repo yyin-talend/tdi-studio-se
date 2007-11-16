@@ -60,7 +60,7 @@ public class DataProcess {
 
     private List<INode> dataNodeList;
 
-    private Process process;
+    private final Process process;
 
     public DataProcess(Process process) {
         this.process = process;
@@ -109,6 +109,7 @@ public class DataProcess {
         dataNode.setActivate(graphicalNode.isActivate());
         dataNode.setStart(graphicalNode.isStart());
         dataNode.setMetadataList(graphicalNode.getMetadataList());
+        dataNode.setDummy(graphicalNode.isDummy());
         dataNode.setPluginFullName(graphicalNode.getPluginFullName());
         dataNode.setElementParameters(graphicalNode.getComponent().createElementParameters(dataNode));
         initializeDataFromGraphical(dataNode, graphicalNode);
@@ -644,7 +645,7 @@ public class DataProcess {
 
         for (IConnection connection : graphicalNode.getOutgoingConnections()) {
             if (connection.isActivate()) {
-                replaceMultipleComponents((Node) connection.getTarget());
+                replaceMultipleComponents(connection.getTarget());
             }
         }
         return dataNode;

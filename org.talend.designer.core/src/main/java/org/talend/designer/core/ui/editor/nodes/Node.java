@@ -78,6 +78,7 @@ import org.talend.designer.core.ui.editor.properties.controllers.ColumnListContr
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.designer.runprocess.ProcessorUtilities;
+import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.ExternalNodesFactory;
 
 /**
@@ -169,6 +170,12 @@ public class Node extends Element implements INode {
 
     private Dimension size;
 
+    private boolean dummy;
+
+    private final IComponent oldcomponent;
+
+    private List<? extends IElementParameter> oldElementParameters;
+
     /**
      * This constructor is called when the node is created from the palette the unique name will be determined with the
      * number of components of this type.
@@ -176,6 +183,7 @@ public class Node extends Element implements INode {
      * @param component
      */
     public Node(IComponent component) {
+        this.oldcomponent = component;
         IEditorPart editorPart = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
         if (editorPart instanceof MultiPageTalendEditor) {
             Process activeProcess = ((MultiPageTalendEditor) editorPart).getTalendEditor().getProcess();
@@ -190,6 +198,7 @@ public class Node extends Element implements INode {
     }
 
     public Node(IComponent component, Process process) {
+        this.oldcomponent = component;
         this.process = process;
         init(component);
     }
@@ -206,7 +215,9 @@ public class Node extends Element implements INode {
         connectionToParse = store.getString(TalendDesignerPrefConstants.DEFAULT_CONNECTION_FORMAT);
         showHint = store.getBoolean(TalendDesignerPrefConstants.DEFAULT_HINT_USED);
 
-        nodeLabel = new NodeLabel(label, this);
+        if (nodeLabel == null) {
+            nodeLabel = new NodeLabel(label, this);
+        }
 
         listConnector = this.component.createConnectors();
         metadataList = new ArrayList<IMetadataTable>();
@@ -221,8 +232,16 @@ public class Node extends Element implements INode {
                 }
             }
         }
-
-        setElementParameters(component.createElementParameters(this));
+        String uniqueName2 = null;
+        IElementParameter unparam = getElementParameter(EParameterName.UNIQUE_NAME.getName());
+        if (unparam != null) {
+            uniqueName2 = (String) unparam.getValue();
+        }
+        if (oldElementParameters != null) {
+            setElementParameters(oldElementParameters);
+        } else {
+            setElementParameters(component.createElementParameters(this));
+        }
 
         // if (hasMetadata) {
         boolean hasSchemaType = false;
@@ -249,9 +268,14 @@ public class Node extends Element implements INode {
         // }
 
         listReturn = this.component.createReturns();
-        String uniqueName = ((Process) getProcess()).generateUniqueNodeName(this);
-        ((Process) getProcess()).addUniqueNodeName(uniqueName);
-        setPropertyValue(EParameterName.UNIQUE_NAME.getName(), uniqueName);
+        if (uniqueName2 != null) {
+            setPropertyValue(EParameterName.UNIQUE_NAME.getName(), uniqueName2);
+        } else {
+            uniqueName2 = ((Process) getProcess()).generateUniqueNodeName(this);
+            ((Process) getProcess()).addUniqueNodeName(uniqueName2);
+        }
+
+        setPropertyValue(EParameterName.UNIQUE_NAME.getName(), uniqueName2);
 
         IElementParameter mappingParameter = MetadataTool.getMappingParameter((List<IElementParameter>) this
                 .getElementParameters());
@@ -259,7 +283,7 @@ public class Node extends Element implements INode {
         for (IMetadataTable table : metadataList) {
             if (table.getAttachedConnector().equals(EConnectionType.FLOW_MAIN.getName())
                     || table.getAttachedConnector().equals(EConnectionType.TABLE.getName())) {
-                table.setTableName(uniqueName);
+                table.setTableName(uniqueName2);
             } else {
                 table.setTableName(table.getAttachedConnector());
             }
@@ -420,11 +444,11 @@ public class Node extends Element implements INode {
      * @return ImageDescriptor
      */
     public ImageDescriptor getIcon32() {
-        return component.getIcon32();
+        return oldcomponent.getIcon32();
     }
 
     public ImageDescriptor getIcon24() {
-        return component.getIcon24();
+        return oldcomponent.getIcon24();
     }
 
     /**
@@ -959,16 +983,20 @@ public class Node extends Element implements INode {
     private void setActivate(final boolean activate) {
         this.activate = activate;
         nodeLabel.setActivate(activate);
-        List<Connection> listConnections = (List<Connection>) this.getOutgoingConnections();
-        for (int i = 0; i < listConnections.size(); i++) {
-            if (listConnections.get(i).getTarget().isActivate()) {
-                listConnections.get(i).setPropertyValue(EParameterName.ACTIVATE.getName(), activate);
+        List<Connection> connectionsOutputs = (List<Connection>) this.getOutgoingConnections();
+        List<Connection> connectionsInputs = (List<Connection>) this.getIncomingConnections();
+        for (int i = 0; i < connectionsOutputs.size(); i++) {
+            if (!isDummy()) {
+                // if (connectionsOutputs.get(i).getTarget().isActivate()) {
+                connectionsOutputs.get(i).setPropertyValue(EParameterName.ACTIVATE.getName(), activate);
+                // }
             }
         }
-        listConnections = (List<Connection>) this.getIncomingConnections();
-        for (int i = 0; i < listConnections.size(); i++) {
-            if (listConnections.get(i).getSource().isActivate()) {
-                listConnections.get(i).setPropertyValue(EParameterName.ACTIVATE.getName(), activate);
+        for (int i = 0; i < connectionsInputs.size(); i++) {
+            if (!isDummy()) {
+                // if (connectionsInputs.get(i).getSource().isActivate()) {
+                connectionsInputs.get(i).setPropertyValue(EParameterName.ACTIVATE.getName(), activate);
+                // }
             }
         }
         firePropertyChange(EParameterName.ACTIVATE.getName(), null, null);
@@ -1019,9 +1047,9 @@ public class Node extends Element implements INode {
     public IMetadataTable getMetadataTable(String metaName) {
         for (int i = 0; i < metadataList.size(); i++) {
             if (metadataList.get(i).getTableName().equals(metaName)/*
-                                                                     * &&
-                                                                     * metadataList.get(i).getAttachedConnector().equals(connectorName)
-                                                                     */) {
+             * &&
+             * metadataList.get(i).getAttachedConnector().equals(connectorName)
+             */) {
                 return metadataList.get(i);
             }
         }
@@ -1372,9 +1400,9 @@ public class Node extends Element implements INode {
         // not a sub process start
         if (!isSubProcessStart() || (!(Boolean) getPropertyValue(EParameterName.STARTABLE.getName()))) {
             if (/*
-                 * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_AFTER) > 0) ||
-                 * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_BEFORE) > 0)||
-                 */
+             * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_AFTER) > 0) ||
+             * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_BEFORE) > 0)||
+             */
             (getCurrentActiveLinksNbOutput(EConnectionType.THEN_RUN) > 0)) {
                 String errorMessage = "A component that is not a sub process start can not have any link run after / run before in output.";
                 Problems.add(ProblemStatus.ERROR, this, errorMessage);
@@ -1385,9 +1413,9 @@ public class Node extends Element implements INode {
         // not a sub process start
         if ((!isELTComponent() && !isSubProcessStart()) || (!(Boolean) getPropertyValue(EParameterName.STARTABLE.getName()))) {
             if (/*
-                 * (getCurrentActiveLinksNbInput(EConnectionType.RUN_AFTER) > 0) ||
-                 * (getCurrentActiveLinksNbInput(EConnectionType.RUN_BEFORE) > 0) ||
-                 */(getCurrentActiveLinksNbInput(EConnectionType.THEN_RUN) > 0)
+             * (getCurrentActiveLinksNbInput(EConnectionType.RUN_AFTER) > 0) ||
+             * (getCurrentActiveLinksNbInput(EConnectionType.RUN_BEFORE) > 0) ||
+             */(getCurrentActiveLinksNbInput(EConnectionType.THEN_RUN) > 0)
                     || (getCurrentActiveLinksNbInput(EConnectionType.RUN_IF) > 0)
                     || (getCurrentActiveLinksNbInput(EConnectionType.RUN_IF_OK) > 0)
                     || (getCurrentActiveLinksNbInput(EConnectionType.RUN_IF_ERROR) > 0)) {
@@ -1907,5 +1935,86 @@ public class Node extends Element implements INode {
      */
     public String getConnectionName() {
         return this.connectionName;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.INode#getOldComponent()
+     */
+    public IComponent getOldComponent() {
+        if (isDummy() && oldcomponent != null) {
+            return this.oldcomponent;
+        }
+        return this.component;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.INode#isDummy()
+     */
+    public boolean isDummy() {
+        return this.dummy;
+    }
+
+    private void resume() {
+        init(oldcomponent);
+    }
+
+    public IMetadataTable syncMetadata() {
+
+        IMetadataTable metaCopy = getMetadataList().get(0).clone(true);
+        boolean inputFound = false;
+        for (Connection connec : (List<Connection>) getIncomingConnections()) {
+            if (connec.isActivate() && connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)
+                    || connec.getLineStyle().equals(EConnectionType.TABLE)) {
+                MetadataTool.copyTable(connec.getMetadataTable().clone(), metaCopy);
+                inputFound = true;
+            }
+        }
+
+        if (!inputFound) {
+            List<IMetadataColumn> columnsToRemove = new ArrayList<IMetadataColumn>();
+            for (IMetadataColumn column : metaCopy.getListColumns()) {
+                if (!column.isCustom()) {
+                    columnsToRemove.add(column);
+                }
+            }
+            metaCopy.getListColumns().removeAll(columnsToRemove);
+        }
+        return metaCopy;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.INode#setDummy(boolean)
+     */
+    public void setDummy(boolean dummy) {
+        this.dummy = dummy;
+        // if (getOutgoingConnections().size() == 0 || getIncomingConnections().size() == 0) {
+        // return;
+        // }
+        if (dummy) {
+            oldElementParameters = getElementParameters();
+            IComponent ncomponent = ComponentsFactoryProvider.getInstance().get("tDummy");
+            init(ncomponent);
+        } else {
+            resume();
+        }
+        IElementParameter param = getElementParameter("SCHEMA");
+        if (param != null) {
+            boolean b = getIncomingConnections().size() == 1
+                    && (!getIncomingConnections().get(0).getSource().isActivate() && !getIncomingConnections().get(0).getSource()
+                            .getComponent().isSchemaAutoPropagated());
+            if (b) {
+                return;
+            }
+            IMetadataTable meta = getMetadataFromConnector(param.getContext());
+            IMetadataTable metaCopy = meta.clone(true);
+            metaCopy = syncMetadata();
+            new ChangeMetadataCommand(this, param, meta, metaCopy).execute(Boolean.FALSE);
+        }
     }
 }

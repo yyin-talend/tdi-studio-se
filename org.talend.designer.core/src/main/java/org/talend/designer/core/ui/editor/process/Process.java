@@ -571,7 +571,13 @@ public class Process extends Element implements IProcess {
                         // value)
                     }
                     if (param.getField().equals(EParameterFieldType.CHECK)) {
-                        elemParam.setPropertyValue(pType.getName(), new Boolean(pType.getValue()));
+                        Boolean boolean1 = new Boolean(pType.getValue());
+                        if (EParameterName.ACTIVATE.getName().equals(param.getName())) {
+                            if ((elemParam instanceof Node) && !boolean1) {
+                                ((Node) elemParam).setDummy(!boolean1);
+                            }
+                        }
+                        elemParam.setPropertyValue(pType.getName(), boolean1);
                     } else if (param.getField().equals(EParameterFieldType.TABLE)) {
                         List<Map<String, Object>> tableValues = new ArrayList<Map<String, Object>>();
                         String[] codeList = param.getListItemsDisplayCodeName();
@@ -710,7 +716,7 @@ public class Process extends Element implements IProcess {
         IMetadataTable metaData;
         nType = fileFact.createNodeType();
         nType.setComponentVersion(node.getComponent().getVersion());
-        nType.setComponentName(node.getComponent().getName());
+        nType.setComponentName(node.getOldComponent().getName());
         nType.setPosX(node.getLocation().x);
         nType.setPosY(node.getLocation().y);
         nType.setOffsetLabelX(node.getNodeLabel().getOffset().x);
