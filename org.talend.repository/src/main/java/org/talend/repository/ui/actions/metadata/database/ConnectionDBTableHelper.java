@@ -136,7 +136,13 @@ public final class ConnectionDBTableHelper {
          * Database Connection
          */
         // Database Type
-        bean.setDatabaseType(datas[5].trim());
+        tmp = datas[5].trim();
+        if ("".equals(tmp)) { //$NON-NLS-1$            
+            return null;
+        } else {
+            bean.setDatabaseType(tmp);
+        }
+
         // Connection String
         bean.setConnectionStr(datas[6].trim());
         // Login and Password
@@ -372,7 +378,17 @@ public final class ConnectionDBTableHelper {
     }
 
     private DatabaseConnection createDBConnection(DBTableForDelimitedBean bean) {
+        if (isNullable(bean.getDatabaseType())) {
+            return null;
+        }
+        final String product = EDatabaseTypeName.getTypeFromDisplayName(bean.getDatabaseType()).getProduct();
+        if (product == null) {
+            // not suppored database
+            processRecords.addRejectedRecords(RejectedType.DATABASETYPE, bean.getDatabaseType());
+            return null;
+        }
         DatabaseConnection connection = ConnectionFactory.eINSTANCE.createDatabaseConnection();
+
         connection.setDatabaseType(bean.getDatabaseType());
         connection.setDatasourceName(bean.getDataSource());
 
@@ -392,15 +408,12 @@ public final class ConnectionDBTableHelper {
         connection.setURL(bean.getConnectionStr());
         connection.setUsername(bean.getLogin());
 
-        if (!isNullable(bean.getDatabaseType())) {
-            final String product = EDatabaseTypeName.getTypeFromDisplayName(bean.getDatabaseType()).getProduct();
-            connection.setProductId(product);
+        connection.setProductId(product);
 
-            final String mapping = MetadataTalendType.getDefaultDbmsFromProduct(product).getId();
-            connection.setDbmsId(mapping);
-            if (!checkDBConnectionURL(bean)) {
-                return null;
-            }
+        final String mapping = MetadataTalendType.getDefaultDbmsFromProduct(product).getId();
+        connection.setDbmsId(mapping);
+        if (!checkDBConnectionURL(bean)) {
+            return null;
         }
 
         return connection;
@@ -447,7 +460,7 @@ public final class ConnectionDBTableHelper {
                 return false;
             }
         }
-        urlDBStr.setSelectionIndex(index);
+        // urlDBStr.setSelectionIndex(index);
         // check the schema needed
         // if (urlDBStr.isSchemaNeeded() && isNullable(bean.getDbSchema())) {
         // return false;
