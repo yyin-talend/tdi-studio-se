@@ -73,9 +73,6 @@ abstract class  Manager {
         int count = 0;
         String ending = ",";
         for(IMetadataColumn metadataColumn : listColumn) {
-            if(count == listColumn.size() - 1 && pkList.size() == 0) {
-                ending = "";
-            }
             if(metadataColumn.isKey()) {
                 pkList.add(getLProtectedChar() + metadataColumn.getOriginalDbColumnName() + getRProtectedChar() + " ");
             }
@@ -133,8 +130,12 @@ abstract class  Manager {
             }
             createTableSQL.append(getDefaultValueSQL(metadataColumn.getDefault()));
             if(!metadataColumn.isNullable()) {
-                createTableSQL.append("not null" + ending);
+                createTableSQL.append("not null");
             }
+            if(count == listColumn.size() - 1 && pkList.size() == 0) {
+                ending = "";
+            }
+            createTableSQL.append(ending);
             count++;
         }
         if(pkList.size() > 0) {                
@@ -1011,6 +1012,7 @@ if(columnList != null && columnList.size() > 0) {
         }
         %>
     }
+    globalMap.put("<%=cid%>_QUERY", "<%=manager.getCreateTableSQL(stringUtil.getString(tableName), columnList)%>");
 <%
 }
 %>
