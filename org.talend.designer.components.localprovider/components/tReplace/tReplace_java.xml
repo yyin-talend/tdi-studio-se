@@ -80,7 +80,8 @@
     >
       <ITEMS>
         <ITEM NAME="INPUT_COLUMN" FIELD="PREV_COLUMN_LIST" />
-        <ITEM NAME="SEARCH_REPLACE" FIELD="String" VALUE="&quot;\\w+&quot;" />
+        <ITEM NAME="SEARCH_COLUMN" FIELD="String" VALUE="&quot;\\w+&quot;" />
+        <ITEM NAME="REPLACE_COLUMN" FIELD="String" VALUE="&quot;default&quot;" />
         <ITEM NAME="COMMENT" FIELD="String" />
       </ITEMS>
     </PARAMETER>

@@ -28,36 +28,14 @@ if(metadataTables != null && metadataTables.size() > 0) {
     columnList = metadataTable.getListColumns();
 }
 List<? extends IConnection> outgoingConns = node.getOutgoingConnections();
+
+
 if(incomingConnName != null && columnList != null && columnList.size() > 0) {
     String advancedMode = ElementParameterParser.getValue( node, "__ADVANCED_MODE__" );
     String simpleMode = ElementParameterParser.getValue( node, "__SIMPLE_MODE__" );
     List<Map<String, String>> patterns = null;
-    if(advancedMode.equals("true")) {
-        patterns = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node,"__ADVANCED_SUBST__");
-        if(patterns != null && patterns.size() > 0) {
-            boolean whetherFirst = true;
-            %>
-            if(
-            <%
-            for(Map<String,String> pattern : patterns) {
-                String patternStr = pattern.get("SEARCH_REPLACE");
-                if(patternStr != null && !patternStr.equals("")) {
-                    if(!whetherFirst) {
-                        %>
-                         && 
-                        <%
-                    }
-                    whetherFirst = false;
-                    %>
-                    java.util.regex.Pattern.compile(<%=patternStr%>).matcher(<%=incomingConnName%>.<%=pattern.get("INPUT_COLUMN")%>).matches()
-                    <%
-                }
-            }
-            %>
-            ) {
-            <%
-        }
-    }
+          
+    //simple mode Replacement    
     if(simpleMode.equals("true")) {
         List<Map<String, String>> substitutions = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node,"__SUBSTITUTIONS__");
         if(substitutions != null && substitutions.size() > 0) {
@@ -81,11 +59,25 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
             <%
         }
     }
-    if(advancedMode.equals("true") && patterns != null && patterns.size() > 0) {
-        %>
+    
+    
+    
+    //advanced mode Replacement
+    if(advancedMode.equals("true")) {
+        patterns = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node,"__ADVANCED_SUBST__");
+        if(patterns != null && patterns.size() > 0) {
+            for(Map<String,String> pattern:patterns){
+                String replacePat = pattern.get("REPLACE_COLUMN");
+                if(replacePat != null && !replacePat.equals("")) {
+                    %>
+                    <%=incomingConnName%>.<%=pattern.get("INPUT_COLUMN")%> = <%=incomingConnName%>.<%=pattern.get("INPUT_COLUMN")%>.replaceAll(<%=pattern.get("SEARCH_COLUMN")%>, <%=pattern.get("REPLACE_COLUMN")%>);
+                    <%
+                }
+            }
         }
-        <%
-    }
+    }  
+    
+    
     if(outgoingConns != null && outgoingConns.size() > 0) {
         for(IConnection outgoingConn : outgoingConns) {
             for(IMetadataColumn metadataColumn : columnList) {
@@ -95,6 +87,8 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
             }
         }
     }
+    
+    
     %>
     nb_line_<%=cid%>++;
     <%
