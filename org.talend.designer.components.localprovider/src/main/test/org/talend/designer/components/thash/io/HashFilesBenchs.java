@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Random;
@@ -125,14 +126,48 @@ public class HashFilesBenchs {
         // hashFile = MultiplePointerSimpleHashFile.getInstance();
         // hashFile = DoubleHashFile.getInstance();
 
+        StringBuilder sbPreview = new StringBuilder();
+        
+        NumberFormat nf = NumberFormat.getInstance(); 
+        
+        
+        sbPreview.append("nbItems list: ");
+        for (int i = 0; i < nbItemsArray.length; i++) {
+            int j = nbItemsArray[i];
+            sbPreview.append(nf.format(j));
+            sbPreview.append("  |  ");
+        }
+        sbPreview.append("\n");
+        
+        sbPreview.append("nbFiles list: ");
+        for (int i = 0; i < nbFilesArray.length; i++) {
+            int j = nbFilesArray[i];
+            sbPreview.append(nf.format(j));
+            sbPreview.append("  |  ");
+        }
+        sbPreview.append("\n");
+        
+        sbPreview.append("pointersByFile list: ");
+        for (int i = 0; i < pointersByFileArray.length; i++) {
+            int j = pointersByFileArray[i];
+            sbPreview.append(nf.format(j));
+            sbPreview.append("  |  ");
+        }
+        sbPreview.append("\n");
+        
+        System.out.println(sbPreview.toString());
+        
         openDataFile();
 
         try {
             for (int nbItemsIndex = 0; nbItemsIndex < nbItemsArray.length; nbItemsIndex++) {
                 int nbItems = nbItemsArray[nbItemsIndex];
 
+                System.out.println("Current items number: " + nf.format(nbItems));
+                
                 for (int j = 0; j < nbFilesArray.length; j++) {
                     int nbFiles = nbFilesArray[j];
+                    System.out.println("Current files number: " + nf.format(nbFiles));
                     DataBench dataWrite = new DataBench();
                     dataWrite.setNbFiles(nbFiles);
                     hashFile = new MultiPointersMultiHashFiles(filePath, nbFiles);
@@ -149,6 +184,7 @@ public class HashFilesBenchs {
                     for (int pointersByFileIdx = 0; pointersByFileIdx < pointersByFileArray.length; pointersByFileIdx++) {
                         DataBench dataReadWrite = (DataBench) dataWrite.clone();
                         int pointersByFile = pointersByFileArray[pointersByFileIdx];
+                        System.out.println("Current pointersByFile number: " + nf.format(pointersByFile));
                         try {
                             launchReadBenchs(nbItems, nbFiles, pointersByFile, dataReadWrite);
                             dataReadWrite.setReadEndedWithSuccess(true);
