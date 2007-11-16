@@ -265,44 +265,57 @@ public class EmfComponent implements IComponent {
         listParam.add(param);
     }
 
+    private final IPreferenceStore store = CorePlugin.getDefault().getComponentsLocalProviderService().getPreferenceStore();
+
+    /**
+     * yzhang Comment method "getNodeFormatId".
+     * 
+     * @param nodeLabel
+     * @param nodeFamily
+     * @return
+     */
+    private String getNodeFormatIdWithoutFormatType(String nodeLabel, String nodeFamily) {
+
+        String ids = store.getString(IComponentsLocalProviderService.FORMAT_IDS);
+        String[] idArray = null;
+        if (ids != "") {
+            idArray = ids.split(IComponentsLocalProviderService.IDS_SEPARATOR);
+
+            String label = nodeLabel + IComponentsLocalProviderService.PALETTE_ENTRY_TYPE;
+            for (String id : idArray) {
+                if (id.contains(label)) {
+                    return nodeLabel + IComponentsLocalProviderService.PALETTE_ENTRY_TYPE;
+                }
+            }
+
+            label = nodeFamily + IComponentsLocalProviderService.PALETTE_CONTAINER_TYPE;
+            for (String id : idArray) {
+                if (id.contains(label)) {
+                    return nodeFamily + IComponentsLocalProviderService.PALETTE_CONTAINER_TYPE;
+                }
+            }
+
+            if (nodeFamily.contains("/")) {
+                String rootFamily = nodeFamily.split("/")[0];
+                label = rootFamily + IComponentsLocalProviderService.PALETTE_CONTAINER_TYPE;
+                for (String id : idArray) {
+                    if (id.contains(label)) {
+                        return rootFamily + IComponentsLocalProviderService.PALETTE_CONTAINER_TYPE;
+                    }
+                }
+            }
+
+        }
+
+        return null;
+    }
+
     private void addViewParameters(final List<ElementParameter> listParam, INode node) {
         ElementParameter param;
 
         FORMATType formatTypeInXML = compType.getHEADER().getFORMAT();
 
-        IPreferenceStore store = CorePlugin.getDefault().getComponentsLocalProviderService().getPreferenceStore();
-        String ids = store.getString(IComponentsLocalProviderService.FORMAT_IDS);
-
-        String connectionIdItem = node.getLabel() + IComponentsLocalProviderService.PALETTE_ENTRY_TYPE
-                + IComponentsLocalProviderService.PREFERENCE_TYPE_CONNECTION;
-        String hintIdItem = node.getLabel() + IComponentsLocalProviderService.PALETTE_ENTRY_TYPE
-                + IComponentsLocalProviderService.PREFERENCE_TYPE_HINT;
-        String labelIdItem = node.getLabel() + IComponentsLocalProviderService.PALETTE_ENTRY_TYPE
-                + IComponentsLocalProviderService.PREFERENCE_TYPE_LABEL;
-
-        String connectionIdCategory = getFamily() + IComponentsLocalProviderService.PALETTE_CONTAINER_TYPE
-                + IComponentsLocalProviderService.PREFERENCE_TYPE_CONNECTION;
-        String hintIdCategory = getFamily() + IComponentsLocalProviderService.PALETTE_CONTAINER_TYPE
-                + IComponentsLocalProviderService.PREFERENCE_TYPE_HINT;
-        String labelIdCategory = getFamily() + IComponentsLocalProviderService.PALETTE_CONTAINER_TYPE
-                + IComponentsLocalProviderService.PREFERENCE_TYPE_LABEL;
-
-        boolean itemContained = false;
-        boolean categoryContained = false;
-
-        if (!"".equals(ids)) {
-            String[] idArray = ids.split(IComponentsLocalProviderService.IDS_SEPARATOR);
-            for (String id : idArray) {
-                if (itemContained && id.contains(connectionIdItem)) {
-                    itemContained = true;
-                } else if (!categoryContained && id.contains(connectionIdCategory)) {
-                    categoryContained = true;
-                } else if (itemContained && categoryContained) {
-                    break;
-                }
-            }
-
-        }
+        String formatId = getNodeFormatIdWithoutFormatType(node.getLabel(), getFamily());
 
         param = new ElementParameter(node);
         param.setName(EParameterName.LABEL.getName());
@@ -315,12 +328,13 @@ public class EmfComponent implements IComponent {
         param.setShow(true);
         if (formatTypeInXML != null) {
             param.setValue(formatTypeInXML.getLABEL());
+        } else if (formatId != null) {
+            String label = store.getString(formatId + IComponentsLocalProviderService.PREFERENCE_TYPE_LABEL);
+            if (!"".equals(label)) {
+                param.setValue(label);
+            }
         }
-        if (itemContained && !"".equals(store.getString(labelIdItem))) {
-            param.setValue(store.getString(labelIdItem));
-        } else if (categoryContained && !"".equals(store.getString(labelIdCategory))) {
-            param.setValue(store.getString(labelIdCategory));
-        }
+
         listParam.add(param);
 
         param = new ElementParameter(node);
@@ -334,12 +348,13 @@ public class EmfComponent implements IComponent {
         param.setShow(true);
         if (formatTypeInXML != null) {
             param.setValue(formatTypeInXML.getHINT());
+        } else if (formatId != null) {
+            String label = store.getString(formatId + IComponentsLocalProviderService.PREFERENCE_TYPE_HINT);
+            if (!"".equals(label)) {
+                param.setValue(label);
+            }
         }
-        if (itemContained && !"".equals(store.getString(hintIdItem))) {
-            param.setValue(store.getString(hintIdItem));
-        } else if (categoryContained && !"".equals(store.getString(hintIdCategory))) {
-            param.setValue(store.getString(hintIdCategory));
-        }
+
         listParam.add(param);
 
         param = new ElementParameter(node);
@@ -353,11 +368,11 @@ public class EmfComponent implements IComponent {
         param.setShow(true);
         if (formatTypeInXML != null) {
             param.setValue(formatTypeInXML.getCONNECTION());
-        }
-        if (itemContained && !"".equals(store.getString(connectionIdItem))) {
-            param.setValue(store.getString(connectionIdItem));
-        } else if (categoryContained && !"".equals(store.getString(connectionIdCategory))) {
-            param.setValue(store.getString(connectionIdCategory));
+        } else if (formatId != null) {
+            String label = store.getString(formatId + IComponentsLocalProviderService.PREFERENCE_TYPE_CONNECTION);
+            if (!"".equals(label)) {
+                param.setValue(label);
+            }
         }
         listParam.add(param);
 
