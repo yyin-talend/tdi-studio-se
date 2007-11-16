@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.utils.generation.CodeGenerationUtils;
 import org.talend.commons.utils.threading.ExecutionLimiter;
@@ -34,7 +35,8 @@ import org.talend.core.model.process.Problem.ProblemStatus;
 import org.talend.designer.abstractmap.model.tableentry.IColumnEntry;
 import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
 import org.talend.designer.codegen.IAloneProcessNodeConfigurer;
-import org.talend.designer.mapper.external.data.ExternalMapperData;
+import org.talend.designer.core.DesignerPlugin;
+import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.mapper.language.ILanguage;
 import org.talend.designer.mapper.language.LanguageProvider;
 import org.talend.designer.mapper.language.generation.JavaGenerationManager;
@@ -149,7 +151,10 @@ public class ProblemsManager {
      * Check all problems and save in cache for Java only.
      */
     public void checkProblems() {
-        if (codeLanguage == ECodeLanguage.JAVA) {
+        
+        IPreferenceStore preferenceStore = DesignerPlugin.getDefault().getPreferenceStore();
+
+        if (codeLanguage == ECodeLanguage.JAVA && !preferenceStore.getBoolean(TalendDesignerPrefConstants.PROPERTY_CODE_CHECK)) {
             codeChecker.checkProblems(nodeConfigurer);
         }
     }
