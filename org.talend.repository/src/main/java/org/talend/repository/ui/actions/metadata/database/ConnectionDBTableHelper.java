@@ -45,6 +45,7 @@ import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
+import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.model.metadata.types.TypesManager;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.DatabaseConnectionItem;
@@ -60,6 +61,7 @@ import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.ui.actions.metadata.database.DBProcessRecords.ProcessType;
 import org.talend.repository.ui.actions.metadata.database.DBProcessRecords.RecordsType;
+import org.talend.repository.ui.actions.metadata.database.DBProcessRecords.RejectedType;
 import org.talend.repository.ui.utils.DataStringConnection;
 
 /**
@@ -67,8 +69,6 @@ import org.talend.repository.ui.utils.DataStringConnection;
  * 
  */
 public final class ConnectionDBTableHelper {
-
-    private static final String RETURN = "\r\n"; //$NON-NLS-1$
 
     private File importedfile = null;
 
@@ -84,8 +84,6 @@ public final class ConnectionDBTableHelper {
 
     private Map<String, Set<String>> rejectedTableNameMap = new HashMap<String, Set<String>>();
 
-    private Set<String> dbReject = new HashSet<String>();
-
     private final IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
 
     private DBProcessRecords processRecords = new DBProcessRecords();
@@ -99,6 +97,8 @@ public final class ConnectionDBTableHelper {
         int index = name.lastIndexOf("."); //$NON-NLS-1$
         if (index > 0) {
             importedName = name.substring(0, index);
+        } else {
+            importedName = name;
         }
 
     }
@@ -418,7 +418,7 @@ public final class ConnectionDBTableHelper {
         if (index == -1) {
             // not existed Database.
             // add rejected dbtype
-            dbReject.add(bean.getDatabaseType());
+            processRecords.addRejectedRecords(RejectedType.DATABASETYPE, bean.getDatabaseType());
             return false;
         }
 
@@ -443,7 +443,7 @@ public final class ConnectionDBTableHelper {
             if (!databasePerl.contains(bean.getDatabaseType())) {
                 // not supported by perl
                 // add rejected dbtype
-                dbReject.add(bean.getDatabaseType());
+                processRecords.setUnknownDBForPerl(bean.getDatabaseType());
                 return false;
             }
         }
@@ -522,7 +522,7 @@ public final class ConnectionDBTableHelper {
         } else if (!isContainTableName(bean.getName(), bean.getTableName(), false)) {
             // have existed table, and it's the existed table before.
             // reject it.
-
+            processRecords.addExistedTable(bean);
             // FIXME maybe need check the table in recycle bin.
             return false;
 
@@ -568,12 +568,31 @@ public final class ConnectionDBTableHelper {
         ECodeLanguage codeLanguage = LanguageManager.getCurrentLanguage();
         if (codeLanguage == ECodeLanguage.JAVA) {
             if ("".equals(bean.getTalendType())) { //$NON-NLS-1$
-                metadataColumn.setTalendType("id_String"); //$NON-NLS-1$
+                metadataColumn.setTalendType(JavaTypesManager.getDefaultJavaType().getId());
             } else {
-                metadataColumn.setTalendType(bean.getTalendType());
+                try {
+                    JavaTypesManager.getJavaTypeFromId(bean.getTalendType());
+                    metadataColumn.setTalendType(bean.getTalendType());
+                } catch (IllegalArgumentException e) {
+                    // not supported this talendtype
+                    processRecords.addRejectedRecords(RejectedType.TALENDTYPE, bean.getTalendType());
+                    return false;
+                }
             }
         } else {
-            metadataColumn.setTalendType(bean.getTalendType());
+            if (!"".equals(bean.getTalendType())) { //$NON-NLS-1$
+                List<String> perlTypes = Arrays.asList(MetadataTalendType.getPerlTypes());
+                if (perlTypes.contains(bean.getTalendType())) {
+                    metadataColumn.setTalendType(bean.getTalendType());
+                } else {
+                    // not supported by perl
+                    processRecords.addRejectedRecords(RejectedType.TALENDTYPE, bean.getTalendType());
+                    return false;
+                }
+            } else {
+                metadataColumn.setTalendType(""); //$NON-NLS-1$
+            }
+
         }
 
         metadataColumn.setDefaultValue(bean.getDefaultValue());
@@ -585,19 +604,25 @@ public final class ConnectionDBTableHelper {
         metadataColumn.setLength(bean.getLength());
         metadataColumn.setPrecision(bean.getPrecision());
 
-        if ("".equals(bean.getDbType())) { //$NON-NLS-1$
-            if (codeLanguage == ECodeLanguage.JAVA) {
-                if (!"".equals(bean.getDatabaseType()) && !"".equals(bean.getTalendType())) { //$NON-NLS-1$ //$NON-NLS-2$
-                    metadataColumn.setSourceType(TypesManager.getDBTypeFromTalendType(bean.getDatabaseType(), bean
-                            .getTalendType()));
-                } else {
-                    metadataColumn.setSourceType(""); //$NON-NLS-1$
-                }
+        if (!"".equals(bean.getDatabaseType()) && !"".equals(bean.getTalendType())) { //$NON-NLS-1$ //$NON-NLS-2$
+            final String product = EDatabaseTypeName.getTypeFromDisplayName(bean.getDatabaseType()).getProduct();
+            final String mapping = MetadataTalendType.getDefaultDbmsFromProduct(product).getId();
+
+            if ("".equals(bean.getDbType())) { //$NON-NLS-1$  
+                metadataColumn.setSourceType(TypesManager.getDBTypeFromTalendType(mapping, bean.getTalendType()));
             } else {
-                metadataColumn.setSourceType(""); //$NON-NLS-1$
+                try {
+                    if (!TypesManager.checkDBType(mapping, bean.getTalendType(), bean.getDbType())) {
+                        processRecords.setTypeNotMapping(bean);
+                        return false;
+                    }
+                } catch (IllegalArgumentException e) {
+                    // database type not be supported.
+                    processRecords.addRejectedRecords(RejectedType.DATABASETYPE, bean.getDatabaseType());
+                    return false;
+                }
+                metadataColumn.setSourceType(bean.getDbType());
             }
-        } else {
-            metadataColumn.setSourceType(bean.getDbType());
         }
 
         table.getColumns().add(metadataColumn);
@@ -617,8 +642,8 @@ public final class ConnectionDBTableHelper {
         }
         if (isExistedColumn(table, bean.getLabel(), false)) {
 
-            UniqueStringGenerator<MetadataColumn> uniqueStringGenerator = new UniqueStringGenerator<MetadataColumn>(bean
-                    .getLabel(), table.getColumns()) {
+            UniqueStringGenerator<MetadataColumn> uniqueStringGenerator = new UniqueStringGenerator<MetadataColumn>("newColumn", //$NON-NLS-1$
+                    table.getColumns()) {
 
                 @Override
                 protected String getBeanString(MetadataColumn bean) {
@@ -710,66 +735,32 @@ public final class ConnectionDBTableHelper {
      */
     public void writeLogs() {
         StringBuilder sb = new StringBuilder();
-        String space = " "; //$NON-NLS-1$
-        int conNum = processRecords.getRecords(ProcessType.IMPORT, RecordsType.CONNECTION);
-        int tableNum = processRecords.getRecords(ProcessType.IMPORT, RecordsType.TABLE);
-        int fieldNum = processRecords.getRecords(ProcessType.IMPORT, RecordsType.FIELD);
 
-        sb.append(Messages.getString("ConnectionDBTableHelper.Imported")); //$NON-NLS-1$
-        sb.append(RETURN);
-        sb.append(space + space);
-        sb.append(conNum);
-        sb.append(space);
-        sb.append(Messages.getString("ConnectionDBTableHelper.Connections")); //$NON-NLS-1$
-        sb.append(tableNum);
-        sb.append(space);
-        sb.append(Messages.getString("ConnectionDBTableHelper.Tables")); //$NON-NLS-1$
-        sb.append(fieldNum);
-        sb.append(space);
-        sb.append(Messages.getString("ConnectionDBTableHelper.Fields")); //$NON-NLS-1$
-        sb.append(RETURN);
-        conNum = processRecords.getRecords(ProcessType.REJECT, RecordsType.CONNECTION);
-        tableNum = processRecords.getRecords(ProcessType.REJECT, RecordsType.TABLE);
-        fieldNum = processRecords.getRecords(ProcessType.REJECT, RecordsType.FIELD);
-
-        sb.append(Messages.getString("ConnectionDBTableHelper.Rejected")); //$NON-NLS-1$
-        sb.append(RETURN);
-        sb.append(space + space);
-        sb.append(conNum);
-        sb.append(space);
-        sb.append(Messages.getString("ConnectionDBTableHelper.Connections")); //$NON-NLS-1$
-        sb.append(tableNum);
-        sb.append(space);
-        sb.append(Messages.getString("ConnectionDBTableHelper.Tables")); //$NON-NLS-1$
-        sb.append(fieldNum);
-        sb.append(space);
-        sb.append(Messages.getString("ConnectionDBTableHelper.Fields")); //$NON-NLS-1$
-        sb.append(RETURN);
+        sb.append(LogDetailsHelper.getMainReportLogs(ProcessType.IMPORT, processRecords));
+        sb.append(LogDetailsHelper.getMainReportLogs(ProcessType.REJECT, processRecords));
         if (rejectedNum > 0) {
             sb.append(Messages.getString("ConnectionDBTableHelper.UnknownData")); //$NON-NLS-1$
             sb.append(rejectedNum);
-            sb.append(RETURN);
-            sb.append(RETURN);
+            sb.append(LogDetailsHelper.RETURN);
         }
+        sb.append(LogDetailsHelper.RETURN);
+
+        boolean haveRejects = processRecords.getRecords(ProcessType.REJECT, RecordsType.CONNECTION) > 0;
         // have more rejected records
-        if (conNum > 0 || rejectedNum > 0) {
+        if (haveRejects) {
             sb.append(Messages.getString("ConnectionDBTableHelper.Details")); //$NON-NLS-1$
-            sb.append(RETURN);
+            sb.append(LogDetailsHelper.RETURN);
+            // added the existed table
+            sb.append(LogDetailsHelper.getExistedTableLogs(processRecords));
+            // Type unknown
+            sb.append(LogDetailsHelper.getUnknownLogs(processRecords));
+            sb.append(LogDetailsHelper.RETURN);
         }
-        // details for something
-        if (conNum > 0 && dbReject.size() > 0) {
-            for (String dbType : dbReject) {
-                sb.append(Messages.getString("ConnectionDBTableHelper.DBTypeUnknown")); //$NON-NLS-1$
-                sb.append(dbType);
-                sb.append(RETURN);
-            }
-        }
+
         // added the unknown line
         if (rejectedNum > 0) {
-            sb.append("---------"); //$NON-NLS-1$
             sb.append(Messages.getString("ConnectionDBTableHelper.UnknownLine")); //$NON-NLS-1$
-            sb.append("---------"); //$NON-NLS-1$
-            sb.append(RETURN);
+            sb.append(LogDetailsHelper.RETURN);
             sb.append(unknownLine);
         }
 
@@ -821,6 +812,7 @@ public final class ConnectionDBTableHelper {
 
         PrintWriter pw = null;
         BufferedReader reader = null;
+        boolean created = false;
         try {
             pw = new PrintWriter(new FileWriter(rFile), true);
             reader = new BufferedReader(new FileReader(importedfile));
@@ -833,11 +825,13 @@ public final class ConnectionDBTableHelper {
                     if (connName == null || isContainTableName(connName, bean.getTableName(), true)) {
                         // rejected.
                         pw.println(line);
+                        created = true;
                     }
                 } else {
                     pw.println(line);
                     unknownLine.append(line);
-                    unknownLine.append(RETURN);
+                    unknownLine.append(LogDetailsHelper.RETURN);
+                    created = true;
                 }
 
             }
@@ -858,8 +852,12 @@ public final class ConnectionDBTableHelper {
             }
             if (pw != null) {
                 pw.close();
+                pw = null;
             }
-            pw = null;
+            if (!created && rFile.exists()) {
+                rFile.delete();
+            }
+
         }
         try {
             deleteGeneratedTable();

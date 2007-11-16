@@ -12,8 +12,11 @@
 // ============================================================================
 package org.talend.repository.ui.actions.metadata.database;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -24,12 +27,12 @@ import java.util.Set;
 public class DBProcessRecords {
 
     /**
-     * 
+     * record the rejected details
      */
-    public enum DBType {
-        CONNECTION,
-        TABLE,
-        FIELD
+    public enum RejectedType {
+        TALENDTYPE,
+        DATABASETYPE
+        // database name
     }
 
     /**
@@ -45,6 +48,8 @@ public class DBProcessRecords {
      * 
      */
     public enum ProcessType {
+        TYPE_NOT_MAPPING,
+        EXISTEDTABLE,
         REJECT,
         IMPORT
     }
@@ -59,6 +64,15 @@ public class DBProcessRecords {
 
     private Map<String, Set<String>> rejectedTableToFieldMap = new HashMap<String, Set<String>>();
 
+    private Map<RejectedType, Set<String>> rejectedMap = new HashMap<RejectedType, Set<String>>();
+
+    // not supported by perl
+    private Set<String> perlDatabaseRejectedMap = new HashSet<String>();
+
+    private Map<String, Set<String>> existedTableMap = new HashMap<String, Set<String>>();
+
+    private List<TalendTypeMappingBean> dbTypeNotMappingList = new ArrayList<TalendTypeMappingBean>();
+
     public DBProcessRecords() {
         super();
         initNum();
@@ -68,21 +82,105 @@ public class DBProcessRecords {
         processToConnMap.put(ProcessType.IMPORT, new HashSet<String>());
         processToConnMap.put(ProcessType.REJECT, new HashSet<String>());
 
+        rejectedMap.put(RejectedType.DATABASETYPE, new HashSet<String>());
+        rejectedMap.put(RejectedType.TALENDTYPE, new HashSet<String>());
+
     }
 
-    public void importedRecords(DBTableForDelimitedBean bean) {
-        addRecords(ProcessType.IMPORT, bean);
+    public void setTypeNotMapping(DBTableForDelimitedBean bean) {
+        addRecords(ProcessType.TYPE_NOT_MAPPING, bean);
+
+    }
+
+    public List<TalendTypeMappingBean> getTypeNotMapping() {
+        return dbTypeNotMappingList;
     }
 
     /**
      * 
-     * ggu Comment method "addRecords".
+     * DOC ggu Comment method "addRejectedRecords".
      * 
-     * according to ProcessType and bean, add records
+     * @param rType
+     * @param name
+     */
+    public void addRejectedRecords(RejectedType rType, String name) {
+        if (!isValid(name) || !isValid(rType)) {
+            return;
+        }
+
+        switch (rType) {
+        case TALENDTYPE:
+        case DATABASETYPE:
+            Set<String> rejectedSet = rejectedMap.get(rType);
+            if (rejectedSet == null) {
+                rejectedSet = new HashSet<String>();
+                rejectedMap.put(rType, rejectedSet);
+            }
+            rejectedSet.add(name);
+        default:
+        }
+
+    }
+
+    public Set<String> getRejectedRecords(RejectedType rType) {
+        if (!isValid(rType)) {
+            return Collections.emptySet();
+        }
+        switch (rType) {
+        case TALENDTYPE:
+        case DATABASETYPE:
+            Set<String> rejectedSet = rejectedMap.get(rType);
+            if (rejectedSet == null) {
+                return Collections.emptySet();
+            }
+            return rejectedSet;
+        default:
+        }
+        return Collections.emptySet();
+    }
+
+    /**
      * 
-     * @param pType
+     * DOC ggu Comment method "setUnknownDBForPerl".
+     * 
+     * @param dbName
+     */
+
+    public void setUnknownDBForPerl(String dbName) {
+        if (!isValid(dbName)) {
+            return;
+        }
+        perlDatabaseRejectedMap.add(dbName);
+    }
+
+    public Set<String> getUnknownDBForPerl() {
+        return perlDatabaseRejectedMap;
+    }
+
+    /**
+     * 
+     * DOC ggu Comment method "addExistedTable".
+     * 
      * @param bean
      */
+    public void addExistedTable(DBTableForDelimitedBean bean) {
+        addRecords(ProcessType.EXISTEDTABLE, bean);
+    }
+
+    public Map<String, Set<String>> getExistedTableMap() {
+        return existedTableMap;
+    }
+
+    /**
+     * 
+     * DOC ggu Comment method "importedRecords".
+     * 
+     * @param bean
+     */
+    public void importedRecords(DBTableForDelimitedBean bean) {
+        addRecords(ProcessType.IMPORT, bean);
+    }
+
     private void addRecords(ProcessType pType, DBTableForDelimitedBean bean) {
         if (!checkBean(bean)) {
             return;
@@ -101,6 +199,24 @@ public class DBProcessRecords {
                 connSet.add(connName);
             }
             addTable(pType, bean);
+
+            break;
+        case EXISTEDTABLE:
+            Set<String> tableSet = existedTableMap.get(bean.getName());
+            if (tableSet == null) {
+                tableSet = new HashSet<String>();
+                existedTableMap.put(bean.getName(), tableSet);
+            }
+            tableSet.add(bean.getTableName());
+
+            break;
+        case TYPE_NOT_MAPPING:
+            if (!isValid(bean.getTalendType()) || !isValid(bean.getTalendType())) {
+                return;
+            }
+            TalendTypeMappingBean typeBean = new TalendTypeMappingBean(bean.getName(), bean.getTableName(), bean.getLabel(), bean
+                    .getTalendType(), bean.getDbType());
+            dbTypeNotMappingList.add(typeBean);
             break;
         default:
         }
@@ -300,4 +416,5 @@ public class DBProcessRecords {
         }
         return true;
     }
+
 }
