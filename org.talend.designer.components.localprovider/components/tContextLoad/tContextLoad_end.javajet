@@ -31,7 +31,7 @@
 		|| (newVariable.equals("Info") && disInfo==false) ){
 %>
 	for(Object obj_<%=cid %> :newPropertyList_<%=cid%>){
-		System.<%=newVariable.equals("Error")?"err":"out"%>.println("<%=newVariable%>: Parameter " + obj_<%=cid %> + " is a new parameter of <%=cid %>");
+		System.<%=newVariable.equals("Error")?"err":"out"%>.println("<%=newVariable%>: Parameter \"" + obj_<%=cid %> + "\" is a new parameter of <%=cid %>");
 	}
 <%
 	}
@@ -40,7 +40,7 @@
 		|| (oldVariable.equals("Info") && disInfo==false) ){
 %>
 	for(Object obj_<%=cid %> :noAssignList_<%=cid %>){
-		System.<%=oldVariable.equals("Error")?"err":"out"%>.println("<%=oldVariable%>: Parameter " + obj_<%=cid %> + " has not been set by <%=cid %>");
+		System.<%=oldVariable.equals("Error")?"err":"out"%>.println("<%=oldVariable%>: Parameter \"" + obj_<%=cid %> + "\" has not been set by <%=cid %>");
 	}
 <%
 	}
