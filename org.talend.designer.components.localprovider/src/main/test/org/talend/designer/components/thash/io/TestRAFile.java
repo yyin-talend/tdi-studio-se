@@ -1,53 +1,1 @@
-// ============================================================================//// Copyright (C) 2006-2007 Talend Inc. - www.talend.com//// This source code is available under agreement available at// %InstallDIR%featuresorg.talend.rcp.branding.%PRODUCTNAME%%PRODUCTNAME%license.txt//// You should have received a copy of the  agreement// along with this program; if not, write to Talend SA// 9 rue Pages 92150 Suresnes, France//// ============================================================================
-package org.talend.designer.components.thash.io;
-
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-/**
- * 
- * DOC slanglois class global comment. Detailled comment <br/>
- * 
- */
-public class TestRAFile {
-
-    /**
-     * 
-     */
-    private static final String D_20071109TEMP = "/tmp/20071109temp";
-
-    public static void main(String[] args) throws ClassNotFoundException, SQLException, IOException {
-        SimpleHashFile hashFile = SimpleHashFile.getInstance();        
-        hashFile.initPut(D_20071109TEMP);
-
-        List<Long> cursorPositionList = new ArrayList<Long>();
-
-        int loop = 1000000;
-        long end = 0;
-        long start = java.util.Calendar.getInstance().getTimeInMillis();
-        for (int i = 0; i < loop; i++) {
-            InternalSmallBean bean = new InternalSmallBean(i, "test" + i);
-            // KeyForMap keyForMap = new KeyForMap(id, bean.hashCode());
-            cursorPositionList.add(hashFile.put("", bean));
-        }
-        hashFile.endPut();
-        end = java.util.Calendar.getInstance().getTimeInMillis();
-        System.out.println((end - start) + " milliseconds for " + loop + " objects to store.");
-
-        start = java.util.Calendar.getInstance().getTimeInMillis();
-        hashFile.initGet(D_20071109TEMP);
-        int size = cursorPositionList.size();
-        for (int i = 0; i < size; i++) {
-            InternalSmallBean bean = (InternalSmallBean) hashFile.get("", cursorPositionList.get(i), -1);
-//            System.out.println(bean.primitiveInt + "  " + bean.name);
-        }
-        hashFile.endGet(D_20071109TEMP);
-
-        end = java.util.Calendar.getInstance().getTimeInMillis();
-        System.out.println((end - start) + " milliseconds for " + loop + " objects to get.");
-
-    }
-}
+// ============================================================================//// Copyright (C) 2006-2007 Talend Inc. - www.talend.com//// This source code is available under agreement available at// %InstallDIR%featuresorg.talend.rcp.branding.%PRODUCTNAME%%PRODUCTNAME%license.txt//// You should have received a copy of the agreement// along with this program; if not, write to Talend SA// 9 rue Pages 92150 Suresnes, France//// ============================================================================package org.talend.designer.components.thash.io;import java.io.IOException;import java.sql.SQLException;import java.util.ArrayList;import java.util.Collections;import java.util.List;/** *  * DOC slanglois class global comment. Detailled comment <br/> *  */public class TestRAFile {    /**     *      */    private static final String D_20071109TEMP = "/tmp/20071109temp";    public static void main(String[] args) throws ClassNotFoundException, SQLException, IOException {        MultiplePointerSimpleHashFile hashFile = MultiplePointerSimpleHashFile.getInstance();        hashFile.initPut(D_20071109TEMP);        List<Long> cursorPositionList = new ArrayList<Long>();        int loop = 10000000;        long end = 0;        long start = java.util.Calendar.getInstance().getTimeInMillis();        for (int i = 0; i < loop; i++) {            InternalSmallBean bean = new InternalSmallBean(i, "test" + i);            // KeyForMap keyForMap = new KeyForMap(id, bean.hashCode());            cursorPositionList.add(hashFile.put("", bean));        }        hashFile.endPut();        end = java.util.Calendar.getInstance().getTimeInMillis();        System.out.println((end - start) + " milliseconds for " + loop + " objects to store.");        Collections.shuffle(cursorPositionList);// shuffle for random read.        int size = 1;        for (int ii = 1; ii < 5; ii++) {            size *= 10;            start = java.util.Calendar.getInstance().getTimeInMillis();            hashFile.initGet(D_20071109TEMP);            for (int i = 0; i < size; i++) {                InternalSmallBean bean = (InternalSmallBean) hashFile.get("", cursorPositionList.get(i), -1);                // if(ii == 1){                // System.out.println(bean.primitiveInt + " " + bean.name);                // }            }            hashFile.endGet(D_20071109TEMP);            end = java.util.Calendar.getInstance().getTimeInMillis();            System.out.println("Old: " + (end - start) + " milliseconds for " + size + " objects to get.");            NewMultiplePointerSimpleHashFile nhashFile = NewMultiplePointerSimpleHashFile.getInstance();            start = java.util.Calendar.getInstance().getTimeInMillis();            nhashFile.initGet(D_20071109TEMP);            // size = cursorPositionList.size();            for (int i = 0; i < size; i++) {                InternalSmallBean bean = (InternalSmallBean) nhashFile.get("", cursorPositionList.get(i), -1);                // if(ii == 1){                // System.out.println(bean.primitiveInt + " " + bean.name);                // }            }            nhashFile.endGet(D_20071109TEMP);            end = java.util.Calendar.getInstance().getTimeInMillis();            System.out.println("New: " + (end - start) + " milliseconds for " + size + " objects to get.");        }    }}/* * 186297 milliseconds for 10000000 objects to store. Old: 266 milliseconds for 10 objects to get. New: 156 milliseconds * for 10 objects to get. Old: 1172 milliseconds for 100 objects to get. New: 218 milliseconds for 100 objects to get. * Old: 10610 milliseconds for 1000 objects to get. New: 344 milliseconds for 1000 objects to get. Old: 203921 * milliseconds for 10000 objects to get. New: 205657 milliseconds for 10000 objects to get. */
