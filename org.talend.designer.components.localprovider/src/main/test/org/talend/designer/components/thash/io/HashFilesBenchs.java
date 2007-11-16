@@ -52,7 +52,7 @@ public class HashFilesBenchs {
 
     String filePath = "/tmp/talend_hash";
 
-    String folderStatsPath = "/home/amaumont/hash_benchs";
+    String folderStatsPath = "/home/amaumont/hash_benchs/";
 
     String fileHashBenchsBaseName = "HashBenchs";
 
