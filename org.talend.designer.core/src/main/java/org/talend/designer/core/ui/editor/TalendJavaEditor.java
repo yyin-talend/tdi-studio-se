@@ -22,8 +22,6 @@ import org.eclipse.jdt.internal.ui.javaeditor.JavaSourceViewer;
 import org.eclipse.jdt.internal.ui.javaeditor.WorkingCopyManager;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.PlatformUI;
 import org.talend.designer.core.ISyntaxCheckableEditor;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 
@@ -91,29 +89,17 @@ public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCh
      * @see org.talend.designer.core.ui.editor.ISyntaxCheckable#validateSyntax()
      */
     public void validateSyntax() {
-        // check if the validation is on the active editor
-        try {
-            IEditorPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
-
-            if (!(part instanceof MultiPageTalendEditor)) {
-                return;
-            }
-            MultiPageTalendEditor multi = (MultiPageTalendEditor) part;
-            if (!multi.getCodeEditor().equals(this)) {
-                return;
-            }
-        } catch (NullPointerException e) {
-            return;
-        }
-
         ISourceViewer sourceViewer = getSourceViewer();
         if (sourceViewer instanceof JavaSourceViewer) {
-            JavaSourceViewer javaSourceViewer = (JavaSourceViewer) sourceViewer;
-            selectAndReveal(0, 0);
-            javaSourceViewer.doOperation(ISourceViewer.FORMAT);
-            doSave(null);
+            this.getSourceViewer().getTextWidget().getDisplay().asyncExec(new Runnable() {
+
+                public void run() {
+                    JavaSourceViewer javaSourceViewer = (JavaSourceViewer) getSourceViewer();
+                    javaSourceViewer.doOperation(ISourceViewer.FORMAT);
+                    doSave(null);
+                }
+            });
         }
-        setFocus();
     }
 
     /*
