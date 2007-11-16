@@ -107,6 +107,9 @@ public class ChangeActivateStatusElementCommand extends Command {
         process.setActivate(false);
         for (Node node : nodeList) {
             // node.setActivate(!value);
+            if (node.getComponent().isSchemaAutoPropagated()) {
+                node.setDummy(value);
+            }
             node.setPropertyValue(EParameterName.ACTIVATE.getName(), !value);
         }
         for (Connection connection : connectionList) {
