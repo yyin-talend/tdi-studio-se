@@ -121,7 +121,7 @@ public class NodesSubTree {
             System.out.print(node.getUniqueName());
         }
         for (IConnection connection : node.getOutgoingSortedConnections()) {
-            if (connection.getTarget().isActivate() || connection.getTarget().isDummy()) {
+            if (connection.getTarget().isActivate()) {
                 // Old FLOW Check
                 // if (connection.getLineStyle().getCategory().equals(EConnectionCategory.MAIN)) {
                 // if (DEBUG) {
