@@ -82,7 +82,7 @@ public class HashFilesBenchs {
 //                10000000, 
                 30000000, 
                 60000000, 
-                10000000,
+                100000000,
                 };
 
         int[] nbFilesArray = new int[] { 
