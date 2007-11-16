@@ -81,7 +81,7 @@ public class NodesSubTree {
             mergeBranchStarts.add(node);
 
             Map<INode, Integer> mergeInfo = rootNode.getLinkedMergeInfo();
-            mergeNode = (INode) (mergeInfo.keySet().toArray(new INode[1])[0]);
+            mergeNode = (mergeInfo.keySet().toArray(new INode[1])[0]);
 
             uniteMergeSubTree(nodes);
         }
@@ -121,7 +121,7 @@ public class NodesSubTree {
             System.out.print(node.getUniqueName());
         }
         for (IConnection connection : node.getOutgoingSortedConnections()) {
-            if (connection.getTarget().isActivate()) {
+            if (connection.getTarget().isActivate() || connection.getTarget().isDummy()) {
                 // Old FLOW Check
                 // if (connection.getLineStyle().getCategory().equals(EConnectionCategory.MAIN)) {
                 // if (DEBUG) {
@@ -137,7 +137,7 @@ public class NodesSubTree {
                     if (DEBUG) {
                         System.out.print(" -> ");
                     }
-                    buildSubTree((INode) connection.getTarget(), breakWhenMerge);
+                    buildSubTree(connection.getTarget(), breakWhenMerge);
                 }
                 if (connection.getLineStyle().equals(EConnectionType.RUN_AFTER)) {
                     afterSubProcesses.add(connection.getTarget().getUniqueName());
