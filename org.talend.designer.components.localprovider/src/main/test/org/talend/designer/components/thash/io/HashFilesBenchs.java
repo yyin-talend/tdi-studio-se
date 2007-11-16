@@ -15,6 +15,7 @@ package org.talend.designer.components.thash.io;
 import gnu.trove.THashMap;
 import gnu.trove.TObjectHashingStrategy;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -51,7 +52,7 @@ public class HashFilesBenchs {
 
     String filePath = "/tmp/talend_hash";
 
-    String folderStatsPath = "/home/amaumont/";
+    String folderStatsPath = "/home/amaumont/hash_benchs";
 
     String fileHashBenchsBaseName = "HashBenchs";
 
@@ -73,11 +74,39 @@ public class HashFilesBenchs {
     public HashFilesBenchs() throws IOException, ClassNotFoundException, Exception {
         super();
 
-        int[] nbItemsArray = new int[] { 10000, 100000 , 1000000, 10000000, 30000000, 60000000, 10000000};
+        int[] nbItemsArray = new int[] { 
+//                10000, 
+//                100000, 
+//                1000000, 
+//                10000000, 
+                30000000, 
+                60000000, 
+                10000000,
+                };
 
-        int[] nbFilesArray = new int[] { 1, 10, 20, 40, 60, 80, 100 };// , };
+        int[] nbFilesArray = new int[] { 
+//                1, 
+                10, 
+                20, 
+                40, 
+                60, 
+                80, 
+                100, 
+                150, 
+                };// , };
 
-        int[] pointersByFileArray = new int[] { 1, 10, 20, 40, 60, 80, 100, 200, 400, 800, 1000 };// , };
+        int[] pointersByFileArray = new int[] { 
+                1, 
+                10, 
+                20, 
+                40, 
+                60, 
+                80, 
+                100, 
+                200, 
+                400, 
+                800, 
+                1000 };// , };
 
         // int loop = 1;
         // int loop = 10000;
@@ -175,10 +204,16 @@ public class HashFilesBenchs {
         String filePath = folderStatsPath
         // + sdf.format(new Date())
                 + "_" + fileHashBenchsBaseName + ".csv";
+        
+        File file = new File(filePath);
+        boolean exists = file.exists();
+        
         try {
-            this.fileData = new FileOutputStream(filePath);
-            this.fileData.write(DataBench.getFileHeader().getBytes());
-            this.fileData.write('\n');
+            this.fileData = new FileOutputStream(filePath, true);
+            if(!exists) {
+                this.fileData.write(DataBench.getFileHeader().getBytes());
+                this.fileData.write('\n');
+            }
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -364,9 +399,12 @@ public class HashFilesBenchs {
         if (readAfterStore) {
             System.out.println("Read step");
             long lastTime = start;
+            long timeOut = 300000;
             try {
                 hashFile.initGet(filePath);
                 for (int i = 0; i < nbItems; i++) {
+//                    System.out.println(i);
+                    
                     Bean bean = null;
                     // => bean from main flow in tMap for example...
                     if (randomRead) {
@@ -397,6 +435,11 @@ public class HashFilesBenchs {
                                 + keyForMap.cursorPosition);
                     }
 
+                    if(System.currentTimeMillis() - lastTime > timeOut) {
+                        dataReadWrite.setTimeRead((int)(((double)(System.currentTimeMillis() - lastTime)* nbItems) / (double)i));
+                        throw new RuntimeException("Timeout, read is too long !");
+                    }
+                    
                     if ((i + 1) % 100000 == 0) {
                         long currentTimeMillis = System.currentTimeMillis();
                         System.out.println("Reading " + i + ", time since last display: "
