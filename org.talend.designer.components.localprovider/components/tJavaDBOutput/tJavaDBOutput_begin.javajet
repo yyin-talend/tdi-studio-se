@@ -398,14 +398,14 @@ if(columnList != null && columnList.size()>0){
                         }
                         
                     } else {
-                        
-                        if(count == columnList.size() - 1 && pkList.size() == 0) {
-                            
-                            ending = "";
-                            
-                        }
-                        
+                                                
                         if(column.isAddCol()) {
+                            
+                            if(count == columnList.size() - 1 && pkList.size() == 0) {
+                                
+                                ending = "";
+                                
+                            }                            
                             
                             createSQL.append("\\\"" + column.getName().replaceAll("(\\+|\")","") + "\\\" ");
                             
@@ -525,9 +525,17 @@ if(columnList != null && columnList.size()>0){
                             
                             if(!column.getColumn().isNullable()) {
                                 
-                                createSQL.append("not null" + ending);
+                                createSQL.append("not null");
+                                
+                            }
+                            
+                            if(count == columnList.size() - 1 && pkList.size() == 0) {
+                                
+                                ending = "";
                                 
                             }                            
+                            
+                            createSQL.append(ending);                            
                             
                         }
                         
