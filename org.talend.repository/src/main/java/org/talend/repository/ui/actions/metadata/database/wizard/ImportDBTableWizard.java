@@ -53,7 +53,7 @@ public class ImportDBTableWizard extends RepositoryWizard implements IImportWiza
 
     private static Logger log = Logger.getLogger(ImportDBTableWizard.class);
 
-    private static final int TOTALWORK = 100;
+    private static int totalWorks = 100;
 
     private static final IProxyRepositoryFactory FACTORY = ProxyRepositoryFactory.getInstance();
 
@@ -147,7 +147,18 @@ public class ImportDBTableWizard extends RepositoryWizard implements IImportWiza
             public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                 IProgressMonitor monitorWrap = new EventLoopProgressMonitor(monitor);
                 monitorWrap.setCanceled(false);
-                monitor.beginTask(Messages.getString("ImportDBTableWizard.ProcessLabel"), 1000); //$NON-NLS-1$
+                totalWorks = 0;
+                try {
+                    BufferedReader reader = new BufferedReader(new FileReader(file));
+                    while (reader.readLine() != null) {
+                        totalWorks++;
+                    }
+                } catch (FileNotFoundException e) {
+                    return;
+                } catch (IOException e) {
+                    return;
+                }
+                monitor.beginTask(Messages.getString("ImportDBTableWizard.ProcessLabel"), totalWorks); //$NON-NLS-1$
                 process(file, monitorWrap);
                 monitorWrap.done();
 
@@ -171,13 +182,8 @@ public class ImportDBTableWizard extends RepositoryWizard implements IImportWiza
         try {
             reader = new BufferedReader(new FileReader(file));
             String line;
-            int i = 0;
             while ((line = reader.readLine()) != null) {
-                if (i < TOTALWORK * 0.8 && i % 2 == 0) {
-                    i++;
-                }
-                monitor.worked(i);
-
+                monitor.worked(1);
                 DBTableForDelimitedBean bean = helper.getRowData(line);
                 if (bean != null) { // the line is suitable format.
 
@@ -213,10 +219,10 @@ public class ImportDBTableWizard extends RepositoryWizard implements IImportWiza
 
                 }
             }
-            monitor.worked(TOTALWORK * 90 / 100);
             // write the .log and .rejects
             helper.writeRejects();
             helper.writeLogs();
+
         } catch (FileNotFoundException e) {
             MessageBoxExceptionHandler.process(e, getShell());
 
@@ -235,4 +241,5 @@ public class ImportDBTableWizard extends RepositoryWizard implements IImportWiza
         }
 
     }
+
 }

@@ -137,11 +137,7 @@ public final class ConnectionDBTableHelper {
          */
         // Database Type
         tmp = datas[5].trim();
-        if ("".equals(tmp)) { //$NON-NLS-1$            
-            return null;
-        } else {
-            bean.setDatabaseType(tmp);
-        }
+        bean.setDatabaseType(tmp);
 
         // Connection String
         bean.setConnectionStr(datas[6].trim());
@@ -323,6 +319,9 @@ public final class ConnectionDBTableHelper {
             String genName = connNameMap.get(bean.getName());
             if (genName == null) {
                 connItem = createConnectionItem(bean);
+                if (connItem == null) {
+                    return null;
+                }
                 // generate a new name.
                 setPropNewName(connItem.getProperty());
             } else {
@@ -379,12 +378,13 @@ public final class ConnectionDBTableHelper {
 
     private DatabaseConnection createDBConnection(DBTableForDelimitedBean bean) {
         if (isNullable(bean.getDatabaseType())) {
+            processRecords.addRejectedRecords(RejectedType.DATABASETYPE, bean.getDatabaseType(), bean.getName());
             return null;
         }
         final String product = EDatabaseTypeName.getTypeFromDisplayName(bean.getDatabaseType()).getProduct();
         if (product == null) {
             // not suppored database
-            processRecords.addRejectedRecords(RejectedType.DATABASETYPE, bean.getDatabaseType());
+            processRecords.addRejectedRecords(RejectedType.DATABASETYPE, bean.getDatabaseType(), bean.getName());
             return null;
         }
         DatabaseConnection connection = ConnectionFactory.eINSTANCE.createDatabaseConnection();
@@ -422,8 +422,8 @@ public final class ConnectionDBTableHelper {
 
     private boolean checkDBConnectionURL(DBTableForDelimitedBean bean) {
         if (isNullable(bean.getDatabaseType())) {
-            // not need check
-            return true;
+            processRecords.addRejectedRecords(RejectedType.DATABASETYPE, bean.getDatabaseType(), bean.getName());
+            return false;
         }
         // check the url.
         DataStringConnection urlDBStr = new DataStringConnection();
@@ -431,7 +431,7 @@ public final class ConnectionDBTableHelper {
         if (index == -1) {
             // not existed Database.
             // add rejected dbtype
-            processRecords.addRejectedRecords(RejectedType.DATABASETYPE, bean.getDatabaseType());
+            processRecords.addRejectedRecords(RejectedType.DATABASETYPE, bean.getDatabaseType(), bean.getName());
             return false;
         }
 
@@ -456,7 +456,7 @@ public final class ConnectionDBTableHelper {
             if (!databasePerl.contains(bean.getDatabaseType())) {
                 // not supported by perl
                 // add rejected dbtype
-                processRecords.setUnknownDBForPerl(bean.getDatabaseType());
+                processRecords.setUnknownDBForPerl(bean.getDatabaseType(), bean.getName());
                 return false;
             }
         }
@@ -588,7 +588,7 @@ public final class ConnectionDBTableHelper {
                     metadataColumn.setTalendType(bean.getTalendType());
                 } catch (IllegalArgumentException e) {
                     // not supported this talendtype
-                    processRecords.addRejectedRecords(RejectedType.TALENDTYPE, bean.getTalendType());
+                    processRecords.addRejectedRecords(RejectedType.TALENDTYPE, bean.getTalendType(), bean.getName());
                     return false;
                 }
             }
@@ -599,7 +599,7 @@ public final class ConnectionDBTableHelper {
                     metadataColumn.setTalendType(bean.getTalendType());
                 } else {
                     // not supported by perl
-                    processRecords.addRejectedRecords(RejectedType.TALENDTYPE, bean.getTalendType());
+                    processRecords.addRejectedRecords(RejectedType.TALENDTYPE, bean.getTalendType(), bean.getName());
                     return false;
                 }
             } else {
@@ -631,7 +631,7 @@ public final class ConnectionDBTableHelper {
                     }
                 } catch (IllegalArgumentException e) {
                     // database type not be supported.
-                    processRecords.addRejectedRecords(RejectedType.DATABASETYPE, bean.getDatabaseType());
+                    processRecords.addRejectedRecords(RejectedType.DATABASETYPE, bean.getDatabaseType(), bean.getName());
                     return false;
                 }
                 metadataColumn.setSourceType(bean.getDbType());
@@ -770,12 +770,12 @@ public final class ConnectionDBTableHelper {
             sb.append(LogDetailsHelper.RETURN);
         }
 
-        // added the unknown line
-        if (rejectedNum > 0) {
-            sb.append(Messages.getString("ConnectionDBTableHelper.UnknownLine")); //$NON-NLS-1$
-            sb.append(LogDetailsHelper.RETURN);
-            sb.append(unknownLine);
-        }
+        // // added the unknown line
+        // if (rejectedNum > 0) {
+        // sb.append(Messages.getString("ConnectionDBTableHelper.UnknownLine")); //$NON-NLS-1$
+        // sb.append(LogDetailsHelper.RETURN);
+        // sb.append(unknownLine);
+        // }
 
         PrintWriter pw = null;
         try {

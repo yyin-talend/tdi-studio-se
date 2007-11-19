@@ -70,13 +70,14 @@ public final class LogDetailsHelper {
                 }
             }
         }
+        sb.append(RETURN);
         return sb.toString();
     }
 
     public static String getUnknownLogs(DBProcessRecords processRecords) {
         StringBuilder sb = new StringBuilder();
-        sb.append(getUnknownLogs(RejectedType.DATABASETYPE, processRecords));
         sb.append(getUnknownDBForPerl(processRecords));
+        sb.append(getUnknownLogs(RejectedType.DATABASETYPE, processRecords));
         sb.append(getUnknownLogs(RejectedType.TALENDTYPE, processRecords));
         sb.append(getTypeNotMappingLogs(processRecords));
         return sb.toString();
@@ -86,45 +87,37 @@ public final class LogDetailsHelper {
     private static String getUnknownLogs(RejectedType rType, DBProcessRecords processRecords) {
         StringBuilder sb = new StringBuilder();
 
-        Set<String> records = processRecords.getRejectedRecords(rType);
+        Set<ValueTypeBean> records = processRecords.getRejectedRecords(rType);
         if (records.isEmpty()) {
             return ""; //$NON-NLS-1$
         }
-        switch (rType) {
-        case TALENDTYPE:
-            sb.append(Messages.getString("LogDetailsHelper.UnknownTalendType")); //$NON-NLS-1$
-            break;
-        case DATABASETYPE:
-            sb.append(Messages.getString("LogDetailsHelper.UnknownDatabaseType")); //$NON-NLS-1$
-            break;
-        default:
-            return ""; //$NON-NLS-1$
+        for (ValueTypeBean bean : records) {
+            switch (rType) {
+            case TALENDTYPE:
+                sb.append(Messages.getString("LogDetailsHelper.UnknownTalendType", bean.getValue(), bean.getConnName())); //$NON-NLS-1$
+                break;
+            case DATABASETYPE:
+                sb.append(Messages.getString("LogDetailsHelper.UnknownDatabaseType", bean.getValue(), bean.getConnName())); //$NON-NLS-1$
+                break;
+            default:
+            }
+            sb.append(RETURN);
         }
-        sb.append(SPACE);
-        for (String type : records) {
-            sb.append(type);
-            sb.append(SEMICOLON);
-            sb.append(SPACE);
-        }
-        sb = sb.deleteCharAt(sb.lastIndexOf(SEMICOLON));
+
         sb.append(RETURN);
         return sb.toString();
     }
 
     private static String getUnknownDBForPerl(DBProcessRecords processRecords) {
         StringBuilder sb = new StringBuilder();
-        Set<String> records = processRecords.getUnknownDBForPerl();
+        Set<ValueTypeBean> records = processRecords.getUnknownDBForPerl();
         if (records.isEmpty()) {
             return ""; //$NON-NLS-1$
         }
-        sb.append(Messages.getString("LogDetailsHelper.UnknownDatabaseTypeByPerl")); //$NON-NLS-1$
-        sb.append(SPACE);
-        for (String type : records) {
-            sb.append(type);
-            sb.append(SEMICOLON);
-            sb.append(SPACE);
+        for (ValueTypeBean bean : records) {
+            sb.append(Messages.getString("LogDetailsHelper.UnknownDatabaseTypeByPerl", bean.getValue(), bean.getConnName())); //$NON-NLS-1$
+            sb.append(RETURN);
         }
-        sb = sb.deleteCharAt(sb.lastIndexOf(SEMICOLON));
         sb.append(RETURN);
         return sb.toString();
 

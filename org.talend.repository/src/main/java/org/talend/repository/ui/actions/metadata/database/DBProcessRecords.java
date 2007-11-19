@@ -64,10 +64,10 @@ public class DBProcessRecords {
 
     private Map<String, Set<String>> rejectedTableToFieldMap = new HashMap<String, Set<String>>();
 
-    private Map<RejectedType, Set<String>> rejectedMap = new HashMap<RejectedType, Set<String>>();
+    private Map<RejectedType, Set<ValueTypeBean>> rejectedMap = new HashMap<RejectedType, Set<ValueTypeBean>>();
 
     // not supported by perl
-    private Set<String> perlDatabaseRejectedMap = new HashSet<String>();
+    private Set<ValueTypeBean> perlDatabaseRejectedMap = new HashSet<ValueTypeBean>();
 
     private Map<String, Set<String>> existedTableMap = new HashMap<String, Set<String>>();
 
@@ -82,8 +82,8 @@ public class DBProcessRecords {
         processToConnMap.put(ProcessType.IMPORT, new HashSet<String>());
         processToConnMap.put(ProcessType.REJECT, new HashSet<String>());
 
-        rejectedMap.put(RejectedType.DATABASETYPE, new HashSet<String>());
-        rejectedMap.put(RejectedType.TALENDTYPE, new HashSet<String>());
+        rejectedMap.put(RejectedType.DATABASETYPE, new HashSet<ValueTypeBean>());
+        rejectedMap.put(RejectedType.TALENDTYPE, new HashSet<ValueTypeBean>());
 
     }
 
@@ -103,33 +103,33 @@ public class DBProcessRecords {
      * @param rType
      * @param name
      */
-    public void addRejectedRecords(RejectedType rType, String name) {
-        if (!isValid(name) || !isValid(rType)) {
+    public void addRejectedRecords(RejectedType rType, String name, String connName) {
+        if (name == null || !isValid(connName) || !isValid(rType)) {
             return;
         }
 
         switch (rType) {
         case TALENDTYPE:
         case DATABASETYPE:
-            Set<String> rejectedSet = rejectedMap.get(rType);
+            Set<ValueTypeBean> rejectedSet = rejectedMap.get(rType);
             if (rejectedSet == null) {
-                rejectedSet = new HashSet<String>();
+                rejectedSet = new HashSet<ValueTypeBean>();
                 rejectedMap.put(rType, rejectedSet);
             }
-            rejectedSet.add(name);
+            rejectedSet.add(new ValueTypeBean(connName, name));
         default:
         }
 
     }
 
-    public Set<String> getRejectedRecords(RejectedType rType) {
+    public Set<ValueTypeBean> getRejectedRecords(RejectedType rType) {
         if (!isValid(rType)) {
             return Collections.emptySet();
         }
         switch (rType) {
         case TALENDTYPE:
         case DATABASETYPE:
-            Set<String> rejectedSet = rejectedMap.get(rType);
+            Set<ValueTypeBean> rejectedSet = rejectedMap.get(rType);
             if (rejectedSet == null) {
                 return Collections.emptySet();
             }
@@ -146,14 +146,14 @@ public class DBProcessRecords {
      * @param dbName
      */
 
-    public void setUnknownDBForPerl(String dbName) {
-        if (!isValid(dbName)) {
+    public void setUnknownDBForPerl(String dbName, String connName) {
+        if (!isValid(connName) || dbName == null) {
             return;
         }
-        perlDatabaseRejectedMap.add(dbName);
+        perlDatabaseRejectedMap.add(new ValueTypeBean(connName, dbName));
     }
 
-    public Set<String> getUnknownDBForPerl() {
+    public Set<ValueTypeBean> getUnknownDBForPerl() {
         return perlDatabaseRejectedMap;
     }
 
