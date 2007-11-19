@@ -12,6 +12,10 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor;
 
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.FindReplaceDocumentAdapter;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.Region;
 import org.epic.perleditor.editors.PerlEditor;
 import org.talend.designer.core.ISyntaxCheckableEditor;
 
@@ -24,6 +28,8 @@ import org.talend.designer.core.ISyntaxCheckableEditor;
 public class TalendPerlEditor extends PerlEditor implements ISyntaxCheckableEditor {
 
     private boolean disposed = false;
+
+    private String currentSelection;
 
     /**
      * Constructs a new TalendPerlEditor.
@@ -59,6 +65,7 @@ public class TalendPerlEditor extends PerlEditor implements ISyntaxCheckableEdit
      */
     public void validateSyntax() {
         revalidateSyntax();
+        placeCursorToSelection();
     }
 
     /*
@@ -79,6 +86,38 @@ public class TalendPerlEditor extends PerlEditor implements ISyntaxCheckableEdit
     public void dispose() {
         this.disposed = true;
         super.dispose();
+    }
+
+    private void placeCursorToSelection() {
+        String mainPart = "[" + currentSelection + " main ] start";
+        String assignmentPart = "$current_component=\"" + currentSelection + "\";";
+        IDocument doc = getDocumentProvider().getDocument(getEditorInput());
+        FindReplaceDocumentAdapter frda = new FindReplaceDocumentAdapter(doc);
+        try {
+            Region region = (Region) frda.find(0, mainPart, true, false, false, false);
+            if (region != null) {
+                Region region2 = (Region) frda.find(region.getOffset(), assignmentPart, true, false, false, false);
+                if (region2 != null) {
+                    selectAndReveal(region2.getOffset(), assignmentPart.length());
+                } else {
+                    selectAndReveal(region.getOffset(), mainPart.length());
+                }
+            } else {
+                selectAndReveal(0, 0);
+            }
+        } catch (BadLocationException e) {
+            selectAndReveal(0, 0);
+        }
+    }
+
+    /**
+     * DOC nrousseau Comment method "placeCursorTo".
+     * 
+     * @param string
+     */
+    public void placeCursorTo(String currentSelection) {
+        this.currentSelection = currentSelection;
+        placeCursorToSelection();
     }
 
 }

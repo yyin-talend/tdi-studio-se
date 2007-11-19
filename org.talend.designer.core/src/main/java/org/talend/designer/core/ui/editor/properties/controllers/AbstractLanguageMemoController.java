@@ -108,6 +108,42 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
                 text = (StyledText) dField.getControl();
                 data = (FormData) text.getLayoutData();
                 editionControlHelper.register(param.getName(), text, true);
+
+                // following commented code is for test only
+                //                
+                // Composite a = new Composite(subComposite, SWT.NO_FOCUS);
+                // a.setLayout(new FormLayout());
+                // Composite b = new Composite(a, SWT.NO_FOCUS);
+                // b.setLayout(new GridLayout());
+                // data = new FormData();
+                // data.left = new FormAttachment(0, 0);
+                // data.top = new FormAttachment(0, 0);
+                // data.right = new FormAttachment(100, 0);
+                // data.bottom = new FormAttachment(100, 0);
+                //
+                // b.setLayoutData(data);
+                // Process process = null;
+                // if (elem instanceof Node) {
+                // process = (Process) ((Node) elem).getProcess();
+                // } else if (elem instanceof Connection) {
+                // process = (Process) ((Connection) elem).getSource().getProcess();
+                // }
+                // TalendJavaEditor javaEditor = process.getEditor().getCodeEditor();
+                //
+                // IDocument document = javaEditor.getDocumentProvider().getDocument(javaEditor.getEditorInput());
+                // TalendJavaSourceViewer viewer = (TalendJavaSourceViewer)
+                // TalendJavaSourceViewer.createViewerForComponent(b,
+                // SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL | SWT.WRAP, document, null,
+                // elem.getElementName(),
+                // ECodePart.BEGIN);
+                // text = viewer.getTextWidget();
+                //
+                // if (process != null) {
+                // ContextParameterExtractor.installOn(text, process, param.getName(), elem);
+                // }
+                // UndoRedoHelper helper = new UndoRedoHelper();
+                // helper.register(text);
+                // cLayout = a;
             } else {
                 Composite a = new Composite(subComposite, SWT.NO_FOCUS);
                 a.setLayout(new FormLayout());

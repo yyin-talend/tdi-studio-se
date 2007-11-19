@@ -20,6 +20,10 @@ import org.eclipse.jdt.internal.ui.JavaPlugin;
 import org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor;
 import org.eclipse.jdt.internal.ui.javaeditor.JavaSourceViewer;
 import org.eclipse.jdt.internal.ui.javaeditor.WorkingCopyManager;
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.FindReplaceDocumentAdapter;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.widgets.Composite;
 import org.talend.designer.core.ISyntaxCheckableEditor;
@@ -40,6 +44,8 @@ public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCh
     private boolean disposed = false;
 
     private List<MultiPageTalendEditor> editPartListener = new ArrayList<MultiPageTalendEditor>();
+
+    private String currentSelection;
 
     /**
      * DOC amaumont TalendJavaEditor constructor comment.
@@ -94,11 +100,35 @@ public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCh
             this.getSourceViewer().getTextWidget().getDisplay().asyncExec(new Runnable() {
 
                 public void run() {
+                    selectAndReveal(0, 0);
                     JavaSourceViewer javaSourceViewer = (JavaSourceViewer) getSourceViewer();
                     javaSourceViewer.doOperation(ISourceViewer.FORMAT);
                     doSave(null);
+                    placeCursorToSelection();
                 }
             });
+        }
+    }
+
+    private void placeCursorToSelection() {
+        String mainPart = "[" + currentSelection + " main ] start";
+        String assignmentPart = "currentComponent = \"" + currentSelection + "\";";
+        IDocument doc = getDocumentProvider().getDocument(getEditorInput());
+        FindReplaceDocumentAdapter frda = new FindReplaceDocumentAdapter(doc);
+        try {
+            Region region = (Region) frda.find(0, mainPart, true, false, false, false);
+            if (region != null) {
+                Region region2 = (Region) frda.find(region.getOffset(), assignmentPart, true, false, false, false);
+                if (region2 != null) {
+                    selectAndReveal(region2.getOffset(), assignmentPart.length());
+                } else {
+                    selectAndReveal(region.getOffset(), mainPart.length());
+                }
+            } else {
+                selectAndReveal(0, 0);
+            }
+        } catch (BadLocationException e) {
+            selectAndReveal(0, 0);
         }
     }
 
@@ -188,5 +218,15 @@ public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCh
     @Override
     protected void restoreSelection() {
         super.restoreSelection();
+    }
+
+    /**
+     * DOC nrousseau Comment method "placeCursorTo".
+     * 
+     * @param string
+     */
+    public void placeCursorTo(String currentSelection) {
+        this.currentSelection = currentSelection;
+        placeCursorToSelection();
     }
 }

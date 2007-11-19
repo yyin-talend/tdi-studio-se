@@ -34,8 +34,6 @@ import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.commands.CommandStackEvent;
 import org.eclipse.gef.commands.CommandStackEventListener;
 import org.eclipse.jface.dialogs.ErrorDialog;
-import org.eclipse.jface.text.BadLocationException;
-import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.widgets.Display;
@@ -77,6 +75,7 @@ import org.talend.designer.core.ui.editor.CodeEditorFactory;
 import org.talend.designer.core.ui.editor.ProcessEditorInput;
 import org.talend.designer.core.ui.editor.TalendEditor;
 import org.talend.designer.core.ui.editor.TalendJavaEditor;
+import org.talend.designer.core.ui.editor.TalendPerlEditor;
 import org.talend.designer.core.ui.editor.TalendTabbedPropertySheetPage;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodeLabel;
@@ -407,10 +406,8 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
         super.pageChange(newPageIndex);
         setName();
         if (newPageIndex == 1) {
-            codeSync();
-
             if (codeEditor instanceof ISyntaxCheckableEditor) {
-                moveCursorToSelectedComponent(processor);
+                moveCursorToSelectedComponent();
 
                 /*
                  * Belowing method had been called at line 331 within the generateCode method, as soon as code
@@ -418,6 +415,7 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
                  */
                 // ((ISyntaxCheckableEditor) codeEditor).validateSyntax();
             }
+            codeSync();
         }
     }
 
@@ -450,27 +448,13 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
      * 
      * @param processor
      */
-    private void moveCursorToSelectedComponent(IProcessor processor) {
+    private void moveCursorToSelectedComponent() {
         String nodeName = getSelectedNodeName();
-        int shift = 0;
-        if (processor.getProcessorType().equals(ECodeLanguage.JAVA.getName())) {
-            shift = 2;
-        } else if (processor.getProcessorType().equals(ECodeLanguage.PERL.getName())) {
-            shift = 1;
-        }
-
         if (nodeName != null) {
             if (codeEditor instanceof TalendJavaEditor) {
-                ((TalendJavaEditor) codeEditor).validateSyntax();
-            }
-            int lineNumber = processor.getLineNumber("[" + nodeName + " main ] start") - shift; //$NON-NLS-1$ //$NON-NLS-2$
-            IDocument document = codeEditor.getDocumentProvider().getDocument(codeEditor.getEditorInput());
-            try {
-                int start = document.getLineOffset(lineNumber);
-                int end = start + document.getLineLength(lineNumber) - shift;
-                codeEditor.selectAndReveal(start, end - start);
-            } catch (BadLocationException e) {
-                codeEditor.selectAndReveal(0, 0);
+                ((TalendJavaEditor) codeEditor).placeCursorTo(nodeName); //$NON-NLS-1$ //$NON-NLS-2$
+            } else {
+                ((TalendPerlEditor) codeEditor).placeCursorTo(nodeName); //$NON-NLS-1$ //$NON-NLS-2$
             }
         }
     }
@@ -484,7 +468,7 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
         String nodeName = null;
         Node node = getSelectedGraphicNode();
         if (node != null) {
-            if (node.isActivate()) {
+            if (node.isActivate() || node.isDummy()) {
                 nodeName = node.getUniqueName();
             } else {
                 nodeName = null;
