@@ -22,6 +22,8 @@ import java.io.IOException;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 import org.talend.designer.components.thash.Sizeof;
@@ -51,13 +53,13 @@ public class HashFilesBenchs {
 
     boolean readAfterStore = true;
 
-    String filePath = "/tmp/talend_hash";
+    String filePath = "/home/amaumont/hash_benchs/talend_hash";
 
     String folderStatsPath = "/home/amaumont/hash_benchs/";
 
-    String fileHashBenchsBaseName = "HashBenchs";
+    String fileHashBenchsBaseName = "HashBenchs4";
 
-    private THashMap hashMap;
+    private Map hashMap;
 
     private long time1;
 
@@ -80,34 +82,37 @@ public class HashFilesBenchs {
 //                100000, 
 //                1000000, 
 //                10000000, 
-                30000000, 
-                60000000, 
-                100000000,
+                20000000, 
+//                30000000, 
+//                60000000, 
+//                100000000,
                 };
 
         int[] nbFilesArray = new int[] { 
-//                1, 
-                10, 
-                20, 
-                40, 
-                60, 
-                80, 
-                100, 
-                150, 
+                1, 
+//                10, 
+//                20, 
+//                40, 
+//                60, 
+//                80, 
+//                100, 
+//                150, 
                 };// , };
 
         int[] pointersByFileArray = new int[] { 
                 1, 
-                10, 
-                20, 
-                40, 
-                60, 
-                80, 
-                100, 
-                200, 
-                400, 
-                800, 
-                1000 };// , };
+//                10, 
+//                20, 
+//                40, 
+//                60, 
+//                80, 
+//                100, 
+//                200, 
+//                400, 
+//                800, 
+//                1000 
+                
+        };// , };
 
         // int loop = 1;
         // int loop = 10000;
@@ -184,6 +189,8 @@ public class HashFilesBenchs {
                     for (int pointersByFileIdx = 0; pointersByFileIdx < pointersByFileArray.length; pointersByFileIdx++) {
                         DataBench dataReadWrite = (DataBench) dataWrite.clone();
                         int pointersByFile = pointersByFileArray[pointersByFileIdx];
+                        System.out.println("Current items number: " + nf.format(nbItems));
+                        System.out.println("Current files number: " + nf.format(nbFiles));
                         System.out.println("Current pointersByFile number: " + nf.format(pointersByFile));
                         try {
                             launchReadBenchs(nbItems, nbFiles, pointersByFile, dataReadWrite);
@@ -319,7 +326,7 @@ public class HashFilesBenchs {
         // ################################################################################
 
         // Map hashMap = new HashMap();
-        // Map hashMap = new HashMap(loop, 1f);
+//         hashMap = new HashMap(nbItems, 1f);
         // Map hashMap = new HashMap(10000, 1f);
         // Map hashMap = new THashMap(objectHashingStrategy);
         // Map hashMap = new THashMap(loop, 0.1f, objectHashingStrategy);
@@ -335,13 +342,13 @@ public class HashFilesBenchs {
         dataWrite.setNbItems(nbItems);
         dataWrite.setNbFiles(nbFiles);
 
-        hashMap = new THashMap(nbItems, 1.0f, objectHashingStrategy); // ??
+//        hashMap = new THashMap(nbItems, 1.0f, objectHashingStrategy); // ??
         // Map hashMap = new THashMap(loop + (int)((float)loop * 0.1f), 0.1f, objectHashingStrategy);
 
         dataWrite.setInitialCapacityMap(nbItems);
         dataWrite.setLoadFactorMap(1.0f);
 
-        THashMap localHashMap = hashMap;
+        Map localHashMap = hashMap;
 
         hashFile.readonly = readonly;
 
@@ -430,8 +437,10 @@ public class HashFilesBenchs {
 
         dataReadWrite.setPointersByFile(pointersByFile);
 
-        THashMap localHashMap = hashMap;
+        Map localHashMap = hashMap;
 
+        Bean.getDataCountRequested = 0;
+        
         if (readAfterStore) {
             System.out.println("Read step");
             long lastTime = start;
@@ -471,15 +480,19 @@ public class HashFilesBenchs {
                                 + keyForMap.cursorPosition);
                     }
 
-                    if(System.currentTimeMillis() - lastTime > timeOut) {
-                        dataReadWrite.setTimeRead((int)(((double)(System.currentTimeMillis() - lastTime)* nbItems) / (double)i));
+                    if(false && System.currentTimeMillis() - lastTime > timeOut) {
+                        int timeRead = (int)(((double)(System.currentTimeMillis() - lastTime)* nbItems) / (double)i);
+                        dataReadWrite.setTimeRead(timeRead);
+                        dataReadWrite.setItemsPerSecRead(1000 * nbItems / timeRead);
                         throw new RuntimeException("Timeout, read is too long !");
                     }
                     
-                    if ((i + 1) % 100000 == 0) {
+                    if (i % 10000 == 0) {
                         long currentTimeMillis = System.currentTimeMillis();
                         System.out.println("Reading " + i + ", time since last display: "
                                 + (int) ((float) (currentTimeMillis - lastTime)) + " ms");
+                        
+                        System.out.println("Bean.getDataCountRequested =" + Bean.getDataCountRequested);
                         lastTime = currentTimeMillis;
                     }
 

@@ -12,8 +12,11 @@
 // ============================================================================
 package org.talend.designer.components.thash.io;
 
+import gnu.trove.THashMap;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.EOFException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -22,6 +25,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.RandomAccessFile;
 
+import org.apache.commons.lang.ArrayUtils;
+
 /**
  * 
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -29,7 +34,12 @@ import java.io.RandomAccessFile;
  */
 class MultiPointersMultiHashFiles implements MapHashFile {
 
-    private int filePointersNumber;
+    /**
+     * 
+     */
+    private static final int INTEGER_BYTES_SIZE = 4;
+
+    private int filePointersNumberPrm = -1;
 
     private RandomAccessFile[] bwArray = null;
 
@@ -49,28 +59,21 @@ class MultiPointersMultiHashFiles implements MapHashFile {
 
     private String filePath;
 
+    private int maxSizeData;
+
+    private byte[] readBuffer;
+
+    private int cacheLimit = 1000000;
+
+    private boolean cacheEnabled;
+    
+    private THashMap<Integer, Object> cache = (cacheEnabled ? new THashMap<Integer, Object>(cacheLimit) : null);
+
+
     public MultiPointersMultiHashFiles(String filePath, int hashFilesNumber) {
         super();
         this.filePath = filePath;
         this.hashFilesNumber = hashFilesNumber;
-    }
-
-    public Object get(String container, long cursorPosition, int hashcode) throws IOException, ClassNotFoundException {
-
-        int fileNumber = getFileNumber(hashcode);
-
-        RandomAccessFile ra = fileHandlersArray[fileNumber].getPointer(cursorPosition);
-
-        if (cursorPosition != lastRetrievedCursorPositionArray[fileNumber]) {
-            ++countUniqueGet;
-            ra.seek(cursorPosition);
-            byte[] byteArray = new byte[ra.readInt()];
-            ra.read(byteArray);
-            lastRetrievedObjectArray[fileNumber] = new ObjectInputStream(new ByteArrayInputStream(byteArray))
-                    .readObject();
-            lastRetrievedCursorPositionArray[fileNumber] = cursorPosition;
-        }
-        return lastRetrievedObjectArray[fileNumber];
     }
 
     /**
@@ -79,9 +82,21 @@ class MultiPointersMultiHashFiles implements MapHashFile {
      * @param hashcode
      * @return
      */
-    private int getFileNumber(int hashcode) {
+    public int getFileNumber(int hashcode) {
         int index = Math.abs(hashcode) % hashFilesNumber;
         return index;
+    }
+
+    public void initPut(String container) throws IOException {
+        if (!readonly) {
+            bwArray = new RandomAccessFile[hashFilesNumber];
+            bwPositionArray = new int[hashFilesNumber];
+            for (int i = 0; i < hashFilesNumber; i++) {
+                File file = new File(this.filePath + i);
+                file.delete();
+                bwArray[i] = new RandomAccessFile(this.filePath + i, "rw");
+            }
+        }
     }
 
     public long put(String container, Object bean) throws IOException {
@@ -92,6 +107,7 @@ class MultiPointersMultiHashFiles implements MapHashFile {
         ByteArrayOutputStream byteArrayOutputStream = null;
         try {
             byteArrayOutputStream = new ByteArrayOutputStream();
+            // byteArrayOutputStream.wr
             objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
             objectOutputStream.writeObject(bean);
             objectOutputStream.flush();
@@ -111,28 +127,35 @@ class MultiPointersMultiHashFiles implements MapHashFile {
 
         if (!readonly) {
             RandomAccessFile bw = bwArray[fileNumber];
+            // bw.wr
             bw.writeInt(sizeBytes);
             bw.write(byteArrayOutputStream.toByteArray());
+        }
+
+        if (maxSizeData < sizeBytes) {
+            maxSizeData = sizeBytes;
         }
 
         byteArrayOutputStream.close();
 
         long returnPosition = bwPositionArray[fileNumber];
 
-        bwPositionArray[fileNumber] += (4 + sizeBytes);
+        //putInCache((int)returnPosition, bean);
+
+        bwPositionArray[fileNumber] += (INTEGER_BYTES_SIZE + sizeBytes);
 
         return returnPosition;
     }
 
-    public void initPut(String container) throws IOException {
-        if (!readonly) {
-            bwArray = new RandomAccessFile[hashFilesNumber];
-            bwPositionArray = new int[hashFilesNumber];
-            for (int i = 0; i < hashFilesNumber; i++) {
-                File file = new File(this.filePath + i);
-                file.delete();
-                bwArray[i] = new RandomAccessFile(this.filePath + i, "rw");
-            }
+    /**
+     * DOC amaumont Comment method "putInCache".
+     * 
+     * @param bean
+     * @param returnPosition
+     */
+    private void putInCache(int returnPosition, Object bean) {
+        if (bean.hashCode() % 10 == 0 && cache.size() < cacheLimit) {
+            cache.put((int) returnPosition, bean);
         }
     }
 
@@ -151,14 +174,97 @@ class MultiPointersMultiHashFiles implements MapHashFile {
     }
 
     public void initGet(String container) throws IOException {
+        if(filePointersNumberPrm == -1) {
+            throw new IllegalStateException("filePointersNumberPrm must be set before call initGet");
+        }
+        
         fileHandlersArray = new MultiReadPointersFileHandler[hashFilesNumber];
         lastRetrievedCursorPositionArray = new long[hashFilesNumber];
         lastRetrievedObjectArray = new Object[hashFilesNumber];
         for (int i = 0; i < hashFilesNumber; i++) {
-            fileHandlersArray[i] = new MultiReadPointersFileHandler(this.filePath + i, filePointersNumber);
+            fileHandlersArray[i] = new MultiReadPointersFileHandler(this.filePath + i, filePointersNumberPrm);
             fileHandlersArray[i].init();
             lastRetrievedCursorPositionArray[i] = -1;
         }
+        readBuffer = new byte[INTEGER_BYTES_SIZE + maxSizeData];
+    }
+
+    public Object get(String container, long cursorPosition, int hashcode) throws IOException, ClassNotFoundException {
+
+        int fileNumber = getFileNumber(hashcode);
+
+        MultiReadPointersFileHandler fh = fileHandlersArray[fileNumber];
+        RandomAccessFile ra = fh.getPointer(cursorPosition);
+
+        if (cursorPosition != lastRetrievedCursorPositionArray[fileNumber]) {
+            if(hashFilesNumber == 1 && cacheEnabled) {
+                Object object = getFromChache((int) cursorPosition);
+                if (object == null) {
+                    ++countUniqueGet;
+                    object = readData(cursorPosition, fileNumber, ra);
+                    putInCache((int) cursorPosition, object);
+                } else {
+                    lastRetrievedObjectArray[fileNumber] = object;
+                    System.out.println("Found in cache !");
+                }
+            } else {
+                readData(cursorPosition, fileNumber, ra);
+            }
+        } else {
+            //System.out.println("previous is good !");
+        }
+        return lastRetrievedObjectArray[fileNumber];
+    }
+
+    public MultiReadPointersFileHandler getFileHandler(int index) {
+        return fileHandlersArray[index];
+    }
+    
+    /**
+     * DOC amaumont Comment method "readData".
+     * @param cursorPosition
+     * @param fileNumber
+     * @param ra
+     * @return
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
+    private Object readData(long cursorPosition, int fileNumber, RandomAccessFile ra) throws IOException,
+            ClassNotFoundException {
+        Object object;
+        
+        if(cursorPosition < 0) {
+            cursorPosition = -1*cursorPosition + Integer.MAX_VALUE; 
+        }
+        
+        ra.seek(cursorPosition);
+        ra.read(readBuffer);
+        object = new ObjectInputStream(new ByteArrayInputStream(readBuffer,
+                INTEGER_BYTES_SIZE, getDataLength(readBuffer[0], readBuffer[1], readBuffer[2], readBuffer[3])))
+                .readObject();
+        lastRetrievedObjectArray[fileNumber] = object;
+        lastRetrievedCursorPositionArray[fileNumber] = cursorPosition;
+        return object;
+    }
+
+    /**
+     * DOC amaumont Comment method "getFromChache".
+     * 
+     * @param cursorPosition
+     * @return
+     */
+    private Object getFromChache(int cursorPosition) {
+        return cache.get(cursorPosition);
+    }
+
+    /**
+     * DOC amaumont Comment method "getDataLength".
+     * 
+     * @param readBuffer2
+     * @return
+     */
+    private int getDataLength(int byte0, int byte1, int byte2, int byte3) {
+        return ((byte0 << 24) + (byte1 << 16) + (byte2 << 8) + (byte3 << 0));
     }
 
     public void endGet(String container) throws IOException {
@@ -246,7 +352,7 @@ class MultiPointersMultiHashFiles implements MapHashFile {
      * @return the filePointersNumber
      */
     public int getFilePointersNumber() {
-        return this.filePointersNumber;
+        return this.filePointersNumberPrm;
     }
 
     /**
@@ -255,7 +361,7 @@ class MultiPointersMultiHashFiles implements MapHashFile {
      * @param filePointersNumber the filePointersNumber to set
      */
     public void setFilePointersNumber(int filePointersNumber) {
-        this.filePointersNumber = filePointersNumber;
+        this.filePointersNumberPrm = filePointersNumber;
     }
 
     /*
