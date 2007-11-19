@@ -17,9 +17,11 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jface.action.IAction;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.ICodeProblemsChecker;
 import org.talend.core.model.process.IProcess;
+import org.talend.designer.runprocess.ui.actions.RunProcessAction;
 
 /**
  * DOC qian class global comment. An implementation of the IRunProcessService. <br/>
@@ -176,4 +178,8 @@ public class RunProcessService implements IRunProcessService {
         return !DeleteAllJobWhenStartUp.executed;
     }
 
+    public IAction getRunProcessAction() {
+        return new RunProcessAction();
+
+    }
 }

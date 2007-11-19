@@ -82,7 +82,7 @@
       		serviceId="IRunProcessService" 
       		class="org.talend.designer.runprocess.RunProcessService"/>
    </extension>
- <extension
+ <!--extension
        point="org.eclipse.ui.actionSets">
     <actionSet
           id="org.talend.designer.runprocess.actionSet"
@@ -90,6 +90,7 @@
           visible="true">
        <action
              class="org.talend.designer.runprocess.ui.actions.RunProcessAction"
+             disabledIcon="icons/process_kill.gif"
              icon="icons/process_run.gif"
              id="org.talend.designer.runprocess.action4"
              label="%runJobAction.title"
@@ -97,7 +98,7 @@
              toolbarPath="Default"
              tooltip="%runJobAction.toolTip"/>
     </actionSet>
- </extension>
+ </extension>-->
  <extension
        point="org.eclipse.core.runtime.preferences">
     <initializer class="org.talend.designer.runprocess.prefs.RunProcessPreferenceInitializer"/>

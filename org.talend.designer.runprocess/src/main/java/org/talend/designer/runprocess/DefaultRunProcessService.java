@@ -17,6 +17,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jface.action.IAction;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.ICodeProblemsChecker;
 import org.talend.core.language.LanguageManager;
@@ -192,5 +193,15 @@ public class DefaultRunProcessService implements IRunProcessService {
      */
     public void deleteAllJobs(boolean fromPluginModel) {
         new DeleteAllJobWhenStartUp().startup(fromPluginModel);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.runprocess.IRunProcessService#getRunProcessAction()
+     */
+    public IAction getRunProcessAction() {
+        // TODO Auto-generated method stub
+        return null;
     }
 }
