@@ -671,7 +671,7 @@ public class FileStep1Form extends AbstractPositionalFileStepForm {
         if (super.isVisible()) {
             // Adapt the UI fieldSeparator and Position to step1
             String value = getConnection().getFieldSeparatorValue();
-            value = TalendTextUtils.removeQuotes(value);
+            value = TalendTextUtils.removeQuotes(value, TalendTextUtils.QUOTATION_MARK);
             fieldSeparatorText.setText(value);
             if (value.endsWith("*")) {
                 value = value.substring(0, value.length() - 1);
