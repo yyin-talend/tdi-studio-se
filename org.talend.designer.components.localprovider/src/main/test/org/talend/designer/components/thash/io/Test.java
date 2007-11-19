@@ -42,6 +42,9 @@ public class Test {
         System.out.println(Short.SIZE);
         long intAddressable = ((long)Integer.MAX_VALUE) - ((long)Integer.MIN_VALUE);
         
+        System.out.println("(int)(long)(Integer.MAX_VALUE + 1)="+(int)(long)(Integer.MAX_VALUE + 1));
+        System.out.println("(long)(int)(long)(Integer.MAX_VALUE + 1)="+(long)(int)(long)(Integer.MAX_VALUE + 1));
+        
         
         
         System.out.println("intAddressable / 121 = " + intAddressable/121);

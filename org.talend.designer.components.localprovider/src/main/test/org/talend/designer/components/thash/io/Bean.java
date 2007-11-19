@@ -29,6 +29,8 @@ public class Bean implements Serializable {
 
     public static int countReturnFalse1 = 0;
 
+    public static int getDataCountRequested = 0;
+
     /**
      * DOC amaumont Bean constructor comment.
      * 
@@ -82,6 +84,7 @@ public class Bean implements Serializable {
 
         Object o = null;
         try {
+            getDataCountRequested++;
             o = HashFilesBenchs.hashFile.get("buffer", (long) other.cursorPosition, hashcode);
         } catch (Exception e) {
             e.printStackTrace();
