@@ -14,6 +14,7 @@ package org.talend.expressionbuilder.ui;
 
 import java.util.Stack;
 
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Button;
 
 /**
@@ -32,6 +33,8 @@ public class ExpressionRecorder {
     private boolean isUndo;
 
     private int undoCounter;
+
+    private Point cursorPosition;
 
     /**
      * yzhang ExpressionRecorder constructor comment.
@@ -94,6 +97,24 @@ public class ExpressionRecorder {
             return expression;
         }
         return "";
+    }
+
+    /**
+     * Getter for cursorPosition.
+     * 
+     * @return the cursorPosition
+     */
+    public Point getCursorPosition() {
+        return this.cursorPosition;
+    }
+
+    /**
+     * Sets the cursorPosition.
+     * 
+     * @param cursorPosition the cursorPosition to set
+     */
+    public void setCursorPosition(Point cursorPosition) {
+        this.cursorPosition = cursorPosition;
     }
 
 }

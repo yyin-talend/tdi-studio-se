@@ -14,10 +14,10 @@ package org.talend.expressionbuilder.ui;
 
 import java.util.List;
 
-import org.eclipse.jdt.internal.ui.javaeditor.JavaEditor;
 import org.eclipse.jface.dialogs.TrayDialog;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
@@ -201,7 +201,12 @@ public class ExpressionComposite extends Composite {
              */
             @Override
             public void mouseUp(MouseEvent e) {
-                document.set(""); //$NON-NLS-1$
+                IRegion region = viewer.getVisibleRegion();
+                try {
+                    document.replace(region.getOffset(), region.getLength(), "");
+                } catch (BadLocationException ex) {
+                    MessageBoxExceptionHandler.process(ex);
+                }
             }
         });
 
@@ -219,9 +224,7 @@ public class ExpressionComposite extends Composite {
         // text = new ColorStyledText(composite, SWT.BORDER | SWT.MULTI | SWT.WRAP | SWT.V_SCROLL, colorManager,
         // LanguageManager.getCurrentLanguage().getName());
         if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.JAVA)) {
-            JavaEditor editor = TalendJavaSourceViewer.createViewer2(composite, SWT.NONE, dataBean);
-            editorPart = editor;
-            viewer = editor.getViewer();
+            viewer = TalendJavaSourceViewer.createViewerWithVariables(composite, SWT.NONE, dataBean);
         } else {
             viewer = TalendPerlSourceViewer.createViewer(composite, SWT.NONE, true);
         }
@@ -236,6 +239,8 @@ public class ExpressionComposite extends Composite {
 
                 String content = getExpression();
                 modificationRecord.pushRecored(content);
+                Point cursorPos = textControl.getSelection();
+                modificationRecord.setCursorPosition(cursorPos);
             }
 
         });
@@ -348,7 +353,7 @@ public class ExpressionComposite extends Composite {
         modificationRecord.undo();
         setExpression(modificationRecord.popRecored(), false);
         modificationRecord.undoFinished();
-
+        textControl.setSelection(modificationRecord.getCursorPosition());
     }
 
     public static final String PERL_FUN_PREFIX = "sub{"; //$NON-NLS-1$
@@ -387,8 +392,12 @@ public class ExpressionComposite extends Composite {
                 newValue += PERL_FUN_SUFFIX; //$NON-NLS-1$
             }
         }
-        document.set(newValue);
-        // text.setText(newValue);
+        IRegion region = viewer.getVisibleRegion();
+        try {
+            document.replace(region.getOffset(), region.getLength(), newValue);
+        } catch (BadLocationException e) {
+            MessageBoxExceptionHandler.process(e);
+        }
     }
 
     /**
@@ -417,7 +426,12 @@ public class ExpressionComposite extends Composite {
                 MessageBoxExceptionHandler.process(e);
             }
         } else {
-            document.set(expression);
+            IRegion region = viewer.getVisibleRegion();
+            try {
+                document.replace(region.getOffset(), region.getLength(), expression);
+            } catch (BadLocationException e) {
+                MessageBoxExceptionHandler.process(e);
+            }
         }
     }
 
