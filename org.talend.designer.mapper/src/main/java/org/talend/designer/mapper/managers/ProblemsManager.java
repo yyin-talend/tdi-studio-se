@@ -154,7 +154,7 @@ public class ProblemsManager {
         
         IPreferenceStore preferenceStore = DesignerPlugin.getDefault().getPreferenceStore();
 
-        if (codeLanguage == ECodeLanguage.JAVA && !preferenceStore.getBoolean(TalendDesignerPrefConstants.PROPERTY_CODE_CHECK)) {
+        if (codeLanguage == ECodeLanguage.JAVA && preferenceStore.getBoolean(TalendDesignerPrefConstants.PROPERTY_CODE_CHECK)) {
             codeChecker.checkProblems(nodeConfigurer);
         }
     }
