@@ -14,21 +14,25 @@ package org.talend.repository.ui.actions.documentation;
 
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.wizard.WizardDialog;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IWorkbench;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.EProperties;
-import org.talend.repository.ui.actions.AContextualAction;
+import org.talend.repository.ui.wizards.genHTMLDoc.GenerateDocAsHTMLWizard;
 
 /**
- * DOC ftang class global comment. Detailled comment <br/>
+ * DOC ftang class global comment. Detailed comment <br/>
  * 
  * $Id: talend.epf 1 2006-09-29 17:06:40 +0000 (ææäº, 29 ä¹æ 2006) nrousseau $
  * 
  */
-public class ExportAllJobsDocAction extends AContextualAction {
+public class ExportAllJobsDocAction extends ExportHTMLDocumentationAction {
 
     /**
      * Constructs a new ExportAllJobsDocAction.
@@ -64,15 +68,6 @@ public class ExportAllJobsDocAction extends AContextualAction {
             }
         }
         setEnabled(canWork);
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.jface.action.Action#run()
-     */
-    public void run() {
-        System.out.println("run.. in ExportAllJobsDocAction");
     }
 
 }

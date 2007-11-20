@@ -29,7 +29,7 @@ import org.talend.repository.ui.actions.AContextualAction;
  * $Id: talend.epf 1 2006-09-29 17:06:40 +0000 (ææäº, 29 ä¹æ 2006) nrousseau $
  * 
  */
-public class GenerateAllJobsDocAction extends AContextualAction {
+public class GenerateAllJobsDocAction extends UpdateHTMLDocumentationAction {
 
     /**
      * Constructs a new ExportAllJobsDocAction.
@@ -66,9 +66,4 @@ public class GenerateAllJobsDocAction extends AContextualAction {
         }
         setEnabled(canWork);
     }
-
-    public void run() {
-        System.out.println("run.. in GenerateAllJobsDocAction");
-    }
-
 }

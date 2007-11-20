@@ -27,6 +27,7 @@ import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.model.actions.CopyObjectAction;
 
 /**
@@ -84,7 +85,8 @@ public class PasteAction extends AContextualAction {
         RepositoryNode target = (RepositoryNode) selection.getFirstElement();
         TreeSelection selectionInClipboard = (TreeSelection) LocalSelectionTransfer.getTransfer().getSelection();
 
-        if (target.getContentType() == ERepositoryObjectType.JOBS || target.getContentType() == ERepositoryObjectType.GENERATED) {
+        if (target.getContentType() == ERepositoryObjectType.JOBS || target.getContentType() == ERepositoryObjectType.GENERATED
+                || target.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.HTML_DOC) {
             visible = false;
             enabled = false;
         }

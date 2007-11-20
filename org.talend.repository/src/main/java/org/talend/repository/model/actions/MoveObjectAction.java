@@ -51,6 +51,12 @@ public class MoveObjectAction {
         return singleton;
     }
 
+    /**
+     * DOC Administrator Comment method "validateAction".
+     * @param sourceNode
+     * @param targetNode
+     * @return
+     */
     public boolean validateAction(RepositoryNode sourceNode, RepositoryNode targetNode) {
         if (sourceNode == null) {
             return false;
@@ -63,6 +69,16 @@ public class MoveObjectAction {
             Property property = objectToCopy.getProperty();
             RoutineItem item = (RoutineItem) property.getItem();
             return !item.isBuiltIn();
+        }
+
+       //cannot move html documentation node:
+        if (objectToCopy != null && objectToCopy.getType() == ERepositoryObjectType.HTML_DOC) {
+            return false;
+        }
+
+        //Cannot move folder in documentation node:
+        if (sourceNode.getType() == ENodeType.SIMPLE_FOLDER && sourceNode.getContentType() == ERepositoryObjectType.HTML_DOC) {
+            return false;
         }
 
         if (targetNode == null) {
@@ -109,8 +125,7 @@ public class MoveObjectAction {
                 return false;
             }
 
-            ERepositoryObjectType sourceType = (ERepositoryObjectType) sourceNode
-                    .getProperties(EProperties.CONTENT_TYPE);
+            ERepositoryObjectType sourceType = (ERepositoryObjectType) sourceNode.getProperties(EProperties.CONTENT_TYPE);
             if (((ERepositoryObjectType) targetNode.getProperties(EProperties.CONTENT_TYPE)) != sourceType) {
                 return false;
             }
@@ -173,8 +188,7 @@ public class MoveObjectAction {
             }
         } else if (sourceNode.getType().equals(ENodeType.SIMPLE_FOLDER)) {
             // Source is a folder :
-            ERepositoryObjectType sourceType = (ERepositoryObjectType) sourceNode
-                    .getProperties(EProperties.CONTENT_TYPE);
+            ERepositoryObjectType sourceType = (ERepositoryObjectType) sourceNode.getProperties(EProperties.CONTENT_TYPE);
             factory.moveFolder(sourceType, sourcePath, targetPath);
         }
     }

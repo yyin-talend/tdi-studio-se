@@ -13,7 +13,6 @@
 package org.talend.repository.ui.actions;
 
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -70,39 +69,23 @@ public class DeleteAction extends AContextualAction {
     @Override
     public void run() {
         ISelection selection = getSelection();
-        Boolean confirm = null;
         IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
-
-        boolean isSyncWithDocumentationNode = DocumentationHelper.isSyncWithDocumentation();
 
         for (Object obj : ((IStructuredSelection) selection).toArray()) {
             if (obj instanceof RepositoryNode) {
                 RepositoryNode node = (RepositoryNode) obj;
                 try {
                     if (node.getType() == ENodeType.REPOSITORY_ELEMENT) {
-                        IRepositoryObject objToDelete = node.getObject();
-
-                        // To manage case of we have a subitem. This is possible using 'DEL' shortcut:
-                        ERepositoryObjectType nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
-                        if (nodeType.isSubItem()) {
-                            new DeleteTableAction().run();
+                        boolean needReturn = deleteElements(factory, node);
+                        if (needReturn) {
                             return;
                         }
 
-                        if (factory.getStatus(objToDelete) == ERepositoryStatus.DELETED) {
-                            if (confirm == null) {
-                                String title = Messages.getString("DeleteAction.dialog.title"); //$NON-NLS-1$
-                                String message = Messages.getString("DeleteAction.dialog.message1") + "\n" //$NON-NLS-1$ //$NON-NLS-2$
-                                        + Messages.getString("DeleteAction.dialog.message2"); //$NON-NLS-1$
-                                confirm = (MessageDialog.openQuestion(new Shell(), title, message));
-                            }
-                            if (confirm) {
-                                factory.deleteObjectPhysical(objToDelete);
-                                ExpressionPersistance.getInstance().jobDeleted(objToDelete.getLabel());
-                            }
-                        } else {
-                            factory.deleteObjectLogical(objToDelete);
-                        }
+                        // Step 1: get the node in Documentation;
+
+                        // Step 2: delete the relevant documetation;
+
+                        // step 3 : delete the same node in documentation;
 
                     } else if (node.getType() == ENodeType.SIMPLE_FOLDER) {
                         if (!node.hasChildren()) {
@@ -111,20 +94,18 @@ public class DeleteAction extends AContextualAction {
                                     .getProperties(EProperties.CONTENT_TYPE);
                             factory.deleteFolder(objectType, path);
 
-                            boolean isPathNotExisting = DocumentationHelper.isPathValid(ERepositoryObjectType.JOBS,
-                                    path, "");
-                            if (isSyncWithDocumentationNode && !isPathNotExisting) {
-                                factory.deleteFolder(ERepositoryObjectType.JOBS, path);
+                            boolean isPathExisting = DocumentationHelper.isPathValid(ERepositoryObjectType.JOBS, path, "");
+                            if (!isPathExisting) {
+                                // factory.deleteFolder(ERepositoryObjectType.JOBS, path);
                             }
                         }
                     } else if (node.getType() == ENodeType.STABLE_SYSTEM_FOLDER
-                            && node.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.JOBS
-                            && isSyncWithDocumentationNode) {
+                            && node.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.JOBS) {
                         if (!node.hasChildren()) {
                             IPath path = RepositoryNodeUtilities.getPath(node);
                             ERepositoryObjectType objectType = (ERepositoryObjectType) node
                                     .getProperties(EProperties.CONTENT_TYPE);
-                            factory.deleteFolder(objectType, path);
+                            // factory.deleteFolder(objectType, path);
                         }
                     }
                 } catch (PersistenceException e) {
@@ -135,6 +116,44 @@ public class DeleteAction extends AContextualAction {
             }
         }
         refresh();
+    }
+
+    /**
+     * DOC Administrator Comment method "deleteElements".
+     * 
+     * @param factory
+     * @param node
+     * @throws PersistenceException
+     * @throws BusinessException
+     */
+    private boolean deleteElements(IProxyRepositoryFactory factory, RepositoryNode node) throws PersistenceException,
+            BusinessException {
+        Boolean confirm = null;
+        boolean needReturn = false;
+        IRepositoryObject objToDelete = node.getObject();
+
+        // To manage case of we have a subitem. This is possible using 'DEL' shortcut:
+        ERepositoryObjectType nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
+        if (nodeType.isSubItem()) {
+            new DeleteTableAction().run();
+            needReturn = true;
+        }
+
+        if (factory.getStatus(objToDelete) == ERepositoryStatus.DELETED) {
+            if (confirm == null) {
+                String title = Messages.getString("DeleteAction.dialog.title"); //$NON-NLS-1$
+                String message = Messages.getString("DeleteAction.dialog.message1") + "\n" //$NON-NLS-1$ //$NON-NLS-2$
+                        + Messages.getString("DeleteAction.dialog.message2"); //$NON-NLS-1$
+                confirm = (MessageDialog.openQuestion(new Shell(), title, message));
+            }
+            if (confirm) {
+                factory.deleteObjectPhysical(objToDelete);
+                ExpressionPersistance.getInstance().jobDeleted(objToDelete.getLabel());
+            }
+        } else {
+            factory.deleteObjectLogical(objToDelete);
+        }
+        return needReturn;
     }
 
     /*
@@ -155,23 +174,27 @@ public class DeleteAction extends AContextualAction {
                 RepositoryNode node = (RepositoryNode) o;
                 switch (node.getType()) {
                 case STABLE_SYSTEM_FOLDER:
-                    if (node.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.JOBS
-                            && node.getProperties(EProperties.LABEL) != ERepositoryObjectType.JOBS.toString()) {
-                        visible = true;
-                        break;
-                    }
+                    visible = false;
                 case SYSTEM_FOLDER:
                     visible = false;
                     break;
                 case SIMPLE_FOLDER:
-                    this.setText(DELETE_LOGICAL_TITLE);
-                    this.setToolTipText(DELETE_LOGICAL_TOOLTIP);
-                    if (node.hasChildren()) {
-                        visible = true;
-                        enabled = false;
+                    if (node.getContentType() == ERepositoryObjectType.HTML_DOC) {
+                        visible = false;
+                    } else {
+                        this.setText(DELETE_LOGICAL_TITLE);
+                        this.setToolTipText(DELETE_LOGICAL_TOOLTIP);
+                        if (node.hasChildren()) {
+                            visible = true;
+                            enabled = false;
+                        }
                     }
                     break;
                 case REPOSITORY_ELEMENT:
+                    if (node.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.HTML_DOC) {
+                        visible = false;
+                        break;
+                    }
                     IRepositoryObject repObj = node.getObject();
                     IProxyRepositoryFactory repFactory = ProxyRepositoryFactory.getInstance();
 

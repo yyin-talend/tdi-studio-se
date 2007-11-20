@@ -18,9 +18,11 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
+import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.model.actions.CopyObjectAction;
 
 /**
@@ -55,14 +57,16 @@ public class CopyAction extends AContextualAction {
 
     public void init(TreeViewer viewer, IStructuredSelection selection) {
         boolean canWork = true;
+        RepositoryNode node = (RepositoryNode) selection.getFirstElement();
         if (ProxyRepositoryFactory.getInstance().isUserReadOnlyOnCurrentProject()) {
             canWork = false;
         }
         for (Object obj : ((StructuredSelection) selection).toArray()) {
             if (canWork) {
                 RepositoryNode sourceNode = (RepositoryNode) obj;
-
                 if (!CopyObjectAction.getInstance().validateAction(sourceNode, null)) {
+                    canWork = false;
+                } else if (node.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.HTML_DOC) {
                     canWork = false;
                 }
             }

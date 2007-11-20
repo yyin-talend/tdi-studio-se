@@ -28,7 +28,7 @@ import org.talend.repository.ui.actions.AContextualAction;
  * $Id: talend.epf 1 2006-09-29 17:06:40 +0000 (ææäº, 29 ä¹æ 2006) nrousseau $
  * 
  */
-public class GenerateAllProjectsDocAction extends AContextualAction {
+public class GenerateAllProjectsDocAction extends GenerateAllJobsDocAction {
 
     /**
      * Constructs a new ExportAllProjectsDocAction.
@@ -63,14 +63,4 @@ public class GenerateAllProjectsDocAction extends AContextualAction {
         }
         setEnabled(canWork);
     }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.jface.action.Action#run()
-     */
-    public void run() {
-        System.out.println("run... in GenerateAllProjectsDocAction");
-    }
-
 }

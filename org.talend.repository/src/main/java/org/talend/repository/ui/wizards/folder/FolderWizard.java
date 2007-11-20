@@ -77,21 +77,20 @@ public class FolderWizard extends Wizard {
 
         IProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
 
-        boolean isSyncWithDocumentationNode = DocumentationHelper.isSyncWithDocumentation();
-        boolean isPathNotExisting = DocumentationHelper.isPathValid(ERepositoryObjectType.JOBS, path, folderName);
+//        boolean isPathNotExisting = DocumentationHelper.isPathValid(ERepositoryObjectType.JOBS, path, folderName);
         try {
 
             if (defaultLabel == null) {
                 repositoryFactory.createFolder(type, path, folderName);
 
                 // Check in Documentation node also.
-                if (type != ERepositoryObjectType.DOCUMENTATION && isSyncWithDocumentationNode && isPathNotExisting ) {
+                if (type == ERepositoryObjectType.PROCESS && type != ERepositoryObjectType.DOCUMENTATION) {
                     repositoryFactory.createFolder(ERepositoryObjectType.JOBS, path, folderName);
                 }
             } else {
                 repositoryFactory.renameFolder(type, path, folderName);
-                isPathNotExisting = DocumentationHelper.isPathValid(ERepositoryObjectType.JOBS, path, defaultLabel);
-                if (type == ERepositoryObjectType.PROCESS && isSyncWithDocumentationNode && !isPathNotExisting) {
+                 boolean isPathNotExisting = DocumentationHelper.isPathValid(ERepositoryObjectType.JOBS, path, defaultLabel);
+                if (type == ERepositoryObjectType.PROCESS && !isPathNotExisting) {
                     repositoryFactory.renameFolder(ERepositoryObjectType.JOBS, path, folderName);
                 }
             }

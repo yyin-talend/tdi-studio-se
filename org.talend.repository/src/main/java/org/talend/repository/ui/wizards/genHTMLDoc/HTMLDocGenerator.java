@@ -29,8 +29,6 @@ import java.util.Set;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -54,7 +52,7 @@ import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
-import org.talend.core.model.repository.Folder;
+import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.core.model.utils.emf.talendfile.ConnectionType;
@@ -109,17 +107,6 @@ public class HTMLDocGenerator {
 
             String jobName = resource.getProcess().getProperty().getLabel();
 
-//            IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(getProject().getTechnicalLabel());
-//            File file = project.getLocation().toFile();
-//            String string = file.toString() + IPath.SEPARATOR + "documentations/generated/jobs" + IPath.SEPARATOR + "." +jobName+ "_doc";
-//
-//           File folder = new File(string);
-//           if(!folder.exists())
-//           {
-//               folder.mkdir();    
-//           }
-//           
-//           String tempFolderPath = folder.toString();
             String tempFolderPath = checkTempDirIsExists(resource);
 
             handleXMLFile(resource, tempFolderPath);
@@ -153,6 +140,79 @@ public class HTMLDocGenerator {
             List<URL> resultFiles = parseXML2HTML(tempFolderPath, jobName, xslFilePath);
 
             addResources(resource, resultFiles);
+
+            resource.addResources(IHTMLDocConstants.PIC_FOLDER_NAME, picList);
+
+            // List<URL> externalList = getExternalHtmlPath();
+            // resource.addResources(IHTMLDocConstants.EXTERNAL_FOLDER_NAME, externalList);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            ExceptionHandler.process(e);
+
+        }
+
+        targetConnectionMap = null;
+        sourceConnectionMap = null;
+    }
+
+    /**
+     * This method is used for generating HTML file base on an instance of <code>ExportFileResource</code>
+     * 
+     * @param resource
+     */
+    public void generateHTMLFile(ExportFileResource resource, String targetPath) {
+        try {
+
+            // Store all pictures' path.
+            List<URL> picList = new ArrayList<URL>(5);
+
+            String jobName = resource.getProcess().getProperty().getLabel();
+
+            if (targetPath.endsWith(ERepositoryObjectType.JOBS.toString().toLowerCase())) {
+                targetPath = targetPath + IPath.SEPARATOR + jobName;
+            }
+
+            String jobVersion = resource.getProcess().getProperty().getVersion();
+            targetPath = targetPath + "_" + jobVersion;
+
+            File file = new File(targetPath);
+            if (!file.exists()) {
+                file.mkdirs();
+            }
+
+            handleXMLFile(resource, targetPath);
+
+            String picFolderPath = checkPicDirIsExists(resource, targetPath);
+
+            final Bundle b = Platform.getBundle(RepositoryPlugin.PLUGIN_ID);
+
+            final URL xslFileUrl = FileLocator.toFileURL(FileLocator
+                    .find(b, new Path(IHTMLDocConstants.MAIN_XSL_FILE_PATH), null));
+            // final URL logoFileUrl = FileLocator.toFileURL(FileLocator.find(b,
+            // new Path(IHTMLDocConstants.LOGO_FILE_PATH), null));
+
+            File logoFile = new File(picFolderPath + File.separatorChar + IHTMLDocConstants.TALEND_LOGO_FILE_NAME);
+            saveLogoImage(SWT.IMAGE_JPEG, logoFile);
+
+            String xslFilePath = xslFileUrl.getPath();
+            // String logoFilePath = logoFileUrl.getPath();
+            // FileCopyUtils.copy(logoFilePath, picFolderPath + File.separatorChar
+            // + IHTMLDocConstants.TALEND_LOGO_FILE_NAME);
+
+            picList.add(logoFile.toURL());
+
+            Set keySet = picFilePathMap.keySet();
+            for (Object key : keySet) {
+                String value = (String) picFilePathMap.get(key);
+                FileCopyUtils.copy(value, picFolderPath + File.separatorChar + key);
+                picList.add(new File(picFolderPath + File.separatorChar + key).toURL());
+            }
+
+            List<URL> resultFiles = parseXML2HTML(targetPath, jobName+"_"+jobVersion, xslFilePath);
+
+//            addResources(resource, resultFiles);
+            resource.addResources(resultFiles);
 
             resource.addResources(IHTMLDocConstants.PIC_FOLDER_NAME, picList);
 
@@ -280,8 +340,8 @@ public class HTMLDocGenerator {
             generateConnectionsInfo(jobElement, connectionList);
         }
 
-        String filePath = tempFolderPath + File.separatorChar + processItem.getProperty().getLabel()
-                + IHTMLDocConstants.XML_FILE_SUFFIX;
+        String filePath = tempFolderPath + File.separatorChar + processItem.getProperty().getLabel() + "_"
+                + processItem.getProperty().getVersion() + IHTMLDocConstants.XML_FILE_SUFFIX;
 
         XMLHandler.generateXMLFile(tempFolderPath, filePath, document);
     }

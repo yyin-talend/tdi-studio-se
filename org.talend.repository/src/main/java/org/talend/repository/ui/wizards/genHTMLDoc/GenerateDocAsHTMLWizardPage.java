@@ -14,7 +14,6 @@ package org.talend.repository.ui.wizards.genHTMLDoc;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -26,17 +25,18 @@ import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.internal.wizards.datatransfer.DataTransferMessages;
 import org.eclipse.ui.internal.wizards.datatransfer.WizardFileSystemResourceExportPage1;
-import org.talend.core.model.properties.ProcessItem;
-import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.wizards.exportjob.ArchiveFileExportOperationFullPath;
 import org.talend.repository.ui.wizards.exportjob.ExportFileResource;
@@ -53,57 +53,24 @@ public class GenerateDocAsHTMLWizardPage extends WizardFileSystemResourceExportP
 
     private JobHTMLScriptsManager manager;
 
+    private Combo versionCombo;
+
+    private List<ExportFileResource> exportFileResources;
+
+    private RepositoryNode currentRepositoryNode;
+
     // dialog store id constants
     private static final String STORE_DESTINATION_NAMES_ID = "GenerateDocAsHTMLWizardPage.STORE_DESTINATION_NAMES_ID"; //$NON-NLS-1$
 
     /**
      * Create an instance of this class.
      * 
-     * @param name java.lang.String
+     * @param structuredSelection java.lang.String
+     * @param currentRepositoryNode
      */
-    protected GenerateDocAsHTMLWizardPage(String name, IStructuredSelection selection) {
-        super(name, null);
-        manager = new JobHTMLScriptsManager();
-
-        RepositoryNode[] nodes = (RepositoryNode[]) selection.toList().toArray(new RepositoryNode[selection.size()]);
-
-        List<ExportFileResource> list = new ArrayList<ExportFileResource>();
-        for (int i = 0; i < nodes.length; i++) {
-            RepositoryNode node = nodes[i];
-            if (node.getType() == ENodeType.SYSTEM_FOLDER || node.getType() == ENodeType.SIMPLE_FOLDER) {
-                addTreeNode(node, node.getProperties(EProperties.LABEL).toString(), list);
-            }
-            if (node.getType() == ENodeType.REPOSITORY_ELEMENT) {
-                IRepositoryObject repositoryObject = node.getObject();
-                if (repositoryObject.getProperty().getItem() instanceof ProcessItem) {
-                    ProcessItem processItem = (ProcessItem) repositoryObject.getProperty().getItem();
-                    ExportFileResource resource = new ExportFileResource(processItem, processItem.getProperty()
-                            .getLabel());
-                    list.add(resource);
-                }
-            }
-        }
-
-        process = list.toArray(new ExportFileResource[list.size()]);
-    }
-
-    private void addTreeNode(RepositoryNode node, String path, List<ExportFileResource> list) {
-        if (node != null && node.getType() == ENodeType.REPOSITORY_ELEMENT) {
-            IRepositoryObject repositoryObject = node.getObject();
-            if (repositoryObject.getProperty().getItem() instanceof ProcessItem) {
-                ProcessItem processItem = (ProcessItem) repositoryObject.getProperty().getItem();
-                ExportFileResource resource = new ExportFileResource(processItem, path);
-                list.add(resource);
-            }
-        }
-        Object[] nodes = node.getChildren().toArray();
-        if (nodes.length <= 0) {
-            return;
-        }
-        for (int i = 0; i < nodes.length; i++) {
-            addTreeNode((RepositoryNode) nodes[i], path + "/" //$NON-NLS-1$
-                    + ((RepositoryNode) nodes[i]).getProperties(EProperties.LABEL).toString(), list);
-        }
+    protected GenerateDocAsHTMLWizardPage(IStructuredSelection structuredSelection, RepositoryNode currentRepositoryNode) {
+        super(structuredSelection);
+        this.currentRepositoryNode = currentRepositoryNode;
     }
 
     /**
@@ -112,7 +79,7 @@ public class GenerateDocAsHTMLWizardPage extends WizardFileSystemResourceExportP
      * @param selection the selection
      */
     public GenerateDocAsHTMLWizardPage(IStructuredSelection selection) {
-        this("generateDocAsHTMLPage1", selection); //$NON-NLS-1$
+        this(selection, null); //$NON-NLS-1$
         setDescription(Messages.getString("GenerateDocAsHTMLWizardPage.generateDocAsHTML"));//$NON-NLS-1$
         setTitle(DataTransferMessages.ArchiveExport_exportTitle);
     }
@@ -120,16 +87,19 @@ public class GenerateDocAsHTMLWizardPage extends WizardFileSystemResourceExportP
     /**
      * (non-Javadoc) Method declared on IDialogPage.
      */
+    @SuppressWarnings("restriction")
     public void createControl(Composite parent) {
 
         initializeDialogUnits(parent);
 
         Composite composite = new Composite(parent, SWT.NULL);
         composite.setLayout(new GridLayout());
-        composite.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_FILL | GridData.HORIZONTAL_ALIGN_FILL));
+        composite.setLayoutData(new GridData());
         composite.setFont(parent.getFont());
 
         createDestinationGroup(composite);
+
+        createVersionSelectionGroup(composite);
 
         restoreResourceSpecificationWidgetValues(); // ie.- local
         restoreWidgetValues(); // ie.- subclass hook
@@ -140,6 +110,73 @@ public class GenerateDocAsHTMLWizardPage extends WizardFileSystemResourceExportP
 
         setControl(composite);
         giveFocusToDestination();
+    }
+
+    /**
+     * DOC Administrator Comment method "createVersionSelectionGroup".
+     * 
+     * @param composite
+     */
+    private void createVersionSelectionGroup(Composite parent) {
+        Font font = parent.getFont();
+
+        // Version selection group --label
+        Composite versionSelectionGroup = new Composite(parent, SWT.NONE);
+        GridLayout layout = new GridLayout();
+        layout.numColumns = 2;
+        versionSelectionGroup.setLayout(layout);
+        versionSelectionGroup.setLayoutData(new GridData());
+        versionSelectionGroup.setFont(font);
+
+        Label destinationLabel = new Label(versionSelectionGroup, SWT.NONE);
+        destinationLabel.setText("Select version:");
+        destinationLabel.setFont(font);
+
+        // Version selection group --combo
+        versionCombo = new Combo(versionSelectionGroup, SWT.SINGLE | SWT.BORDER);
+        versionCombo.addListener(SWT.Modify, this);
+        versionCombo.addListener(SWT.Selection, this);
+        GridData data = new GridData();
+        data.widthHint = COMBO_HISTORY_LENGTH * 6;
+        versionCombo.setLayoutData(data);
+        versionCombo.setFont(font);
+        versionCombo.setItems(getAllVersions());
+        versionCombo.setText(getCurrentVersion());
+
+        Composite generatedGroup = new Composite(parent, SWT.NONE);
+        GridLayout layout1 = new GridLayout();
+        layout1.numColumns = 2;
+        generatedGroup.setLayout(layout1);
+        generatedGroup.setLayoutData(new GridData());
+        generatedGroup.setFont(font);
+        Label isRegenerateLabel = new Label(generatedGroup, SWT.NONE);
+        isRegenerateLabel.setText("Re-generate documentation?");
+        Button isRegenerateButton = new Button(generatedGroup, SWT.CHECK);
+        isRegenerateButton.setSelection(false);
+
+        // PTODO ftang: should make them enable.
+        versionCombo.setEnabled(false);
+        isRegenerateButton.setEnabled(false);
+
+    }
+
+    /**
+     * DOC Administrator Comment method "getCurrentJobVersion".
+     * 
+     * @return
+     */
+    private String getCurrentVersion() {
+        // TODO Auto-generated method stub
+        return "0.1";
+    }
+
+    /**
+     * DOC Administrator Comment method "getAllVersions".
+     * 
+     * @return
+     */
+    private String[] getAllVersions() {
+        return new String[] { "0.1", "0.2" };
     }
 
     /*
@@ -251,16 +288,29 @@ public class GenerateDocAsHTMLWizardPage extends WizardFileSystemResourceExportP
         // about to invoke the operation so save our state
         saveWidgetValues();
 
-        List<ExportFileResource> resourcesToExport = getExportResources();
-        setTopFolder(resourcesToExport, topFolder);
+        JobHTMLScriptsManager manager = new JobHTMLScriptsManager();
 
-        ArchiveFileExportOperationFullPath runnable = new ArchiveFileExportOperationFullPath(resourcesToExport,
+        java.io.File folder = DocumentationHelper.getHTMLFilePath(this.currentRepositoryNode);
+        Object jobName = this.currentRepositoryNode.getProperties(EProperties.LABEL);
+        String targetPath = folder.toString();
+
+        // File htmlFile = new File(targetPath + IPath.SEPARATOR + jobName + ".html");
+
+        // Generates HTML file if it is not existing.
+        ExportFileResource[] exportFileResources2 = DocumentationHelper.getExportFileResources(this.currentRepositoryNode);
+
+        exportFileResources = manager.getExportResources(exportFileResources2, targetPath);
+
+        // List<ExportFileResource> resourcesToExport = getExportResources();
+        setTopFolder(exportFileResources, topFolder);
+
+        ArchiveFileExportOperationFullPath runnable = new ArchiveFileExportOperationFullPath(exportFileResources,
                 getDestinationValue());
         // output everything
         runnable.setRegEx("*");//$NON-NLS-1$
 
         boolean ok = executeExportOperation(runnable);
-        manager.deleteTempFiles();
+        // manager.deleteTempFiles();
 
         return ok;
     }
@@ -299,14 +349,14 @@ public class GenerateDocAsHTMLWizardPage extends WizardFileSystemResourceExportP
         return DataTransferMessages.ArchiveExport_destinationLabel;
     }
 
-    /**
-     * Returns resources to be exported. This returns file - for just the files use getSelectedResources.
-     * 
-     * @return a collection of resources currently selected for export (element type: <code>IResource</code>)
-     */
-    protected List<ExportFileResource> getExportResources() {
-        return manager.getExportResources(process);
-    }
+    // /**
+    // * Returns resources to be exported. This returns file - for just the files use getSelectedResources.
+    // *
+    // * @return a collection of resources currently selected for export (element type: <code>IResource</code>)
+    // */
+    // protected List<ExportFileResource> getExportResources() {
+    // return manager.getExportResources(process);
+    // }
 
     /**
      * Answer the contents of self's destination specification widget. If this value does not have a suffix then add it

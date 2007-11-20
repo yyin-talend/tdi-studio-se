@@ -43,7 +43,7 @@ public class DocumentationPreferencePage extends FieldEditorPreferencePage imple
     @Override
     protected void createFieldEditors() {
         booleanFieldEditor = new BooleanFieldEditor(ITalendCorePrefConstants.DOC_GENERATION,
-                "Create job's documentation automatically if job is created, moved or deleted.", getFieldEditorParent());
+                "Update relevant documentation automatically if job is saved, re-named or moved.", getFieldEditorParent());
         addField(booleanFieldEditor);
     }
 

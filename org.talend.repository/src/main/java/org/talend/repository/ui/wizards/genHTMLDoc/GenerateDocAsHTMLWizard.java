@@ -26,6 +26,8 @@ import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.internal.ide.IDEWorkbenchPlugin;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.ui.wizards.exportjob.ExportFileResource;
 
 /**
  * This is a wizard for generating job information as HTML file.
@@ -38,6 +40,8 @@ public class GenerateDocAsHTMLWizard extends Wizard implements IExportWizard {
     private IStructuredSelection selection;
 
     private GenerateDocAsHTMLWizardPage mainPage;
+
+    private RepositoryNode currentJobNode;
 
     /**
      * Creates a wizard for exporting workspace resources to a zip file.
@@ -57,15 +61,16 @@ public class GenerateDocAsHTMLWizard extends Wizard implements IExportWizard {
      */
     public void addPages() {
         super.addPages();
-        mainPage = new GenerateDocAsHTMLWizardPage(selection);
+        mainPage = new GenerateDocAsHTMLWizardPage(this.selection, this.currentJobNode);
         addPage(mainPage);
     }
 
     /*
      * (non-Javadoc) Method declared on IWorkbenchWizard.
      */
-    public void init(IWorkbench workbench, IStructuredSelection currentSelection) {
+    public void init(IWorkbench workbench, IStructuredSelection currentSelection, RepositoryNode currentJobNode) {
         this.selection = currentSelection;
+        this.currentJobNode = currentJobNode;
         List selectedResources = IDE.computeSelectedResources(currentSelection);
         if (!selectedResources.isEmpty()) {
             this.selection = new StructuredSelection(selectedResources);
@@ -81,5 +86,15 @@ public class GenerateDocAsHTMLWizard extends Wizard implements IExportWizard {
      */
     public boolean performFinish() {
         return mainPage.finish();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.ui.IWorkbenchWizard#init(org.eclipse.ui.IWorkbench,
+     * org.eclipse.jface.viewers.IStructuredSelection)
+     */
+    public void init(IWorkbench workbench, IStructuredSelection selection) {
+        // Do nothing
     }
 }

@@ -159,6 +159,7 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
             case METADATA_CON_SYNONYM:
             case METADATA_CON_TABLE:
             case METADATA_CON_VIEW:
+            case HTML_DOC:
                 return ImageProvider.getImage(node.getIcon());
             default:
                 break;

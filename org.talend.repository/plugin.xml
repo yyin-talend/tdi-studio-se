@@ -182,11 +182,6 @@
              level="12"
              name="Read context"/>
        <Action
-             class="org.talend.repository.ui.actions.GenerateDocAsHTMLAction"
-             id="org.talend.repository.actions.generateDocAsHTML"
-             level="98"
-             name="Generate Doc as HTML"/> 
-       <Action
              class="org.talend.repository.ui.actions.ConfigRoutineLibraryAction"
              id="org.talend.repository.actions.ImportExternalJAR"
              level="97"
@@ -242,6 +237,24 @@
              id="org.talend.repository.GenerateAllJobsDocAction"
              level="16"
              name="Generate all jobs documentation">
+       </Action>
+              <Action
+             class="org.talend.repository.ui.actions.documentation.OpenHTMLDocInTOSAction"
+             id="org.talend.repository.ui.actions.documentation.OpenHTMLDocInTOSAction"
+             level="17"
+             name="Open HTML Documentation in TOS Action">
+       </Action>
+       <Action
+             class="org.talend.repository.ui.actions.documentation.UpdateHTMLDocumentationAction"
+             id="rg.talend.repository.ui.actions.documentation.UpdateHTMLDocumentationAction"
+             level="18"
+             name="Update HTML documentation action">
+       </Action>
+       <Action
+             class="org.talend.repository.ui.actions.documentation.ExportHTMLDocumentationAction"
+             id="org.talend.repository.ui.actions.documentation.ExportHTMLDocumentationAction"
+             level="19"
+             name="Export HTML documentation action">
        </Action>
        <Action
              class="org.talend.repository.ui.actions.metadata.database.ImportDBTableFromDelimitedAction"

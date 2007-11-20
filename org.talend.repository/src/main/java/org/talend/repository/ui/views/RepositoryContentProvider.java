@@ -357,10 +357,13 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
                 break;
             }
         }
-        createSubFolder(jobsFolder, jobsNode);
+
+        // get the files under generated/nodes.
+        convert(jobsNode, jobsFolder, ERepositoryObjectType.HTML_DOC, recBinNode);
         generatedFolder.setProperties(EProperties.LABEL, ERepositoryObjectType.GENERATED.toString());
         generatedFolder.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.GENERATED); // ERepositoryObjectType.FOLDER);
         parent.getChildren().add(generatedFolder);
+
     }
 
     /**
@@ -396,11 +399,16 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
         for (Object obj : fromModel.getSubContainer()) {
             Container container = (Container) obj;
             Folder oFolder = new Folder((Property) container.getProperty(), type);
+            if (oFolder.getProperty() == null) {
+                continue;
+            }
 
             RepositoryNode folder = null;
             if (container.getLabel().equals(RepositoryConstants.SYSTEM_DIRECTORY)) {
                 folder = new StableRepositoryNode(parent,
                         Messages.getString("RepositoryContentProvider.repositoryLabel.system"), ECoreImage.FOLDER_CLOSE_ICON); //$NON-NLS-1$
+            } else if (container.getLabel().equals("pictures")) {
+                continue;
             } else if (container.getLabel().equalsIgnoreCase(ERepositoryObjectType.GENERATED.toString())) {
                 convertDocumentation(fromModel, parent, type, recBinNode);
                 continue;

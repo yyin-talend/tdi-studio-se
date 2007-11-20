@@ -37,7 +37,20 @@ public class JobHTMLScriptsManager {
      */
     public List<ExportFileResource> getExportResources(ExportFileResource[] process) {
         for (int i = 0; i < process.length; i++) {
-            docGenerator.generateHTMLFile(process[i]);
+            docGenerator.generateHTMLFile(process[i]);// added path
+        }
+        return Arrays.asList(process);
+    }
+    
+    /**
+     * Gets the set of <code>ExportFileResource</code>
+     * 
+     * @param process
+     * @return
+     */
+    public List<ExportFileResource> getExportResources(ExportFileResource[] process, String filePath) {
+        for (int i = 0; i < process.length; i++) {
+            docGenerator.generateHTMLFile(process[i],filePath);//added path
         }
         return Arrays.asList(process);
     }

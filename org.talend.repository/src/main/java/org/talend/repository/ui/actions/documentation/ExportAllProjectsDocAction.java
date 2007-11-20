@@ -29,7 +29,7 @@ import org.talend.repository.ui.actions.AContextualAction;
  * 
  * 
  */
-public class ExportAllProjectsDocAction extends AContextualAction {
+public class ExportAllProjectsDocAction extends ExportAllJobsDocAction {
 
     /**
      * Constructs a new ExportAllProjectsDocAction.
@@ -64,14 +64,4 @@ public class ExportAllProjectsDocAction extends AContextualAction {
         }
         setEnabled(canWork);
     }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.jface.action.Action#run()
-     */
-    public void run() {
-        System.out.println("run... in ExportAllProjectsDocAction");
-    }
-
 }
