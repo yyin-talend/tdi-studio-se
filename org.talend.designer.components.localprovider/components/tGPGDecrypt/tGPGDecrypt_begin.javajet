@@ -1,0 +1,90 @@
+<%@ jet
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.core.model.process.ElementParameterParser
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.metadata.IMetadataTable 
+    	org.talend.core.model.metadata.IMetadataColumn 
+    	org.talend.core.model.process.IConnection
+    	java.util.List
+	"
+%>
+
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	String cid = node.getUniqueName();
+	
+	String gpgBin = ElementParameterParser.getValue(node, "__GPGBIN__");		
+	String inputFile  = ElementParameterParser.getValue(node, "__INPUT_FILE__");
+	String outputFile  = ElementParameterParser.getValue(node, "__OUTPUT_FILE__");
+	String password  = ElementParameterParser.getValue(node, "__PASSPHRASE__");
+	
+	//"cmd /c " + gpgBin + " --yes -q  -d --passphrase " + password + " -o " + outputFile + " " + inputFile;
+	
+	// To launch an internal command to cmd.exe (XP), you have to call :
+	// cmd.exe /c dir (for example)
+%>
+			String[] cmdArray_<%=cid %> = new String[]{
+											<%=gpgBin %>, 
+											"--yes",
+											"-q",
+											"-d",
+											"--passphrase",
+											<%=password %>,
+											"-o",
+											<%=outputFile %>,
+											<%=inputFile %>
+							 				};
+            
+            Runtime runtime_<%=cid %> = Runtime.getRuntime();
+            final Process ps_<%=cid %> = runtime_<%=cid %>.exec(cmdArray_<%=cid %>);
+            Thread normal_<%=cid %> = new Thread() {
+
+                public void run() {
+                    try {
+                        java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.InputStreamReader(ps_<%=cid %>
+                                .getInputStream()));
+                        String line = "";
+                        try {
+                            while ((line = reader.readLine()) != null) {
+                                System.out.println(line);
+                            }
+                        } finally {
+                            reader.close();
+                        }
+                    } catch (java.io.IOException ioe) {
+                        ioe.printStackTrace();
+                    }
+                }
+            };
+            normal_<%=cid %>.start();
+
+            Thread error_<%=cid %> = new Thread() {
+
+                public void run() {
+                    try {
+                        java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.InputStreamReader(ps_<%=cid %>
+                                .getErrorStream()));
+                        String line = "";
+                        try {
+                            while ((line = reader.readLine()) != null) {
+                                System.err.println(line);
+                            }
+                        } finally {
+                            reader.close();
+                        }
+                    } catch (java.io.IOException ioe) {
+                        ioe.printStackTrace();
+                    }
+                }
+            };
+            error_<%=cid %>.start();
+
+            ps_<%=cid %>.waitFor();
+            normal_<%=cid %>.join(10000);
+            error_<%=cid %>.join(10000);
+            
+            java.io.File file_<%=cid %> = new java.io.File(<%=outputFile %>);
+            globalMap.put("<%=cid %>_FILE", file_<%=cid %>.getName());
+            globalMap.put("<%=cid %>_FILEPATH", file_<%=cid %>.getPath());
