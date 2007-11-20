@@ -43,6 +43,7 @@ import org.talend.core.model.process.AbstractExternalNode;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IComponentDocumentation;
 import org.talend.core.model.process.IConnection;
+import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IExternalData;
 import org.talend.core.model.process.Problem;
@@ -423,8 +424,10 @@ public class RowGeneratorComponent extends AbstractExternalNode {
 
         List<IODataComponent> outputs = inAndOut.getOuputs();
         for (IConnection currentConnection : getOutgoingConnections()) {
-            IODataComponent component = new IODataComponent(currentConnection, metadataListOut.get(0));
-            outputs.add(component);
+            if (currentConnection.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+                IODataComponent component = new IODataComponent(currentConnection, metadataListOut.get(0));
+                outputs.add(component);
+            }
         }
         return inAndOut;
 
