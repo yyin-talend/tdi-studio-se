@@ -19,13 +19,13 @@ import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
 
+import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -71,6 +71,8 @@ public class TalendJetEmitter extends JETEmitter {
 
     private String componentFamily;
 
+    private static Logger log = Logger.getLogger(TalendJetEmitter.class);
+
     /**
      * DOC mhirt TalendJetEmitter constructor comment.
      * 
@@ -93,8 +95,7 @@ public class TalendJetEmitter extends JETEmitter {
             String codePart, TalendEclipseHelper teh) {
         super(arg0, arg1);
         if (templateName.endsWith(codePart + "" + templateLanguage)) {
-            this.templateName = templateName.substring(templateName.lastIndexOf(".") + 1, templateName
-                    .lastIndexOf(codePart));
+            this.templateName = templateName.substring(templateName.lastIndexOf(".") + 1, templateName.lastIndexOf(codePart));
         } else {
             this.templateName = templateName;
         }
@@ -193,8 +194,8 @@ public class TalendJetEmitter extends JETEmitter {
                         new Object[] { project.getName() }));
                 IClasspathEntry classpathEntry = JavaCore.newSourceEntry(new Path("/" + project.getName() + "/src"));
 
-                IClasspathEntry jreClasspathEntry = JavaCore.newContainerEntry(new Path(
-                        "org.eclipse.jdt.launching.JRE_CONTAINER"));
+                IClasspathEntry jreClasspathEntry = JavaCore
+                        .newContainerEntry(new Path("org.eclipse.jdt.launching.JRE_CONTAINER"));
 
                 Set<IClasspathEntry> classpath = new HashSet<IClasspathEntry>();
                 classpath.add(classpathEntry);
@@ -210,8 +211,8 @@ public class TalendJetEmitter extends JETEmitter {
                     runtimeFolder.create(false, true, new SubProgressMonitor(progressMonitor, 1));
                 }
 
-                IClasspathEntry[] classpathEntryArray = (IClasspathEntry[]) classpath
-                        .toArray(new IClasspathEntry[classpath.size()]);
+                IClasspathEntry[] classpathEntryArray = (IClasspathEntry[]) classpath.toArray(new IClasspathEntry[classpath
+                        .size()]);
 
                 javaProject.setRawClasspath(classpathEntryArray, new SubProgressMonitor(progressMonitor, 1));
                 javaProject.setOutputLocation(new Path("/" + project.getName() + "/runtime"), new SubProgressMonitor(
@@ -236,14 +237,13 @@ public class TalendJetEmitter extends JETEmitter {
 
             try {
                 final JETCompiler jetCompiler = jetEmitter.templateURIPath == null ? new MyBaseJETCompiler(
-                        jetEmitter.templateURI, jetEmitter.encoding, jetEmitter.classLoader)
-                        : new MyBaseJETCompiler(jetEmitter.templateURIPath, jetEmitter.templateURI,
-                                jetEmitter.encoding, jetEmitter.classLoader);
+                        jetEmitter.templateURI, jetEmitter.encoding, jetEmitter.classLoader) : new MyBaseJETCompiler(
+                        jetEmitter.templateURIPath, jetEmitter.templateURI, jetEmitter.encoding, jetEmitter.classLoader);
 
                 progressMonitor.subTask(CodeGenPlugin.getPlugin().getString("_UI_JETParsing_message",
                         new Object[] { jetCompiler.getResolvedTemplateURI() }));
                 jetCompiler.parse();
-                jetCompiler.getSkeleton().setPackageName("org.talend.designer.codegen.translators."+componentFamily);
+                jetCompiler.getSkeleton().setPackageName("org.talend.designer.codegen.translators." + componentFamily);
                 jetCompiler.getSkeleton().setClassName(templateName + codePart + templateLanguage);
                 progressMonitor.worked(1);
 
@@ -276,14 +276,13 @@ public class TalendJetEmitter extends JETEmitter {
                     sourceContainer = sourceContainer.getFolder(new Path(folderName));
                     if (!sourceContainer.exists()) {
                         try {
-                        ((IFolder) sourceContainer).create(true, true, new SubProgressMonitor(subProgressMonitor, 1));
+                            ((IFolder) sourceContainer).create(true, true, new SubProgressMonitor(subProgressMonitor, 1));
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }
                 }
-                IFile targetFile = sourceContainer
-                        .getFile(new Path(jetCompiler.getSkeleton().getClassName() + ".java"));
+                IFile targetFile = sourceContainer.getFile(new Path(jetCompiler.getSkeleton().getClassName() + ".java"));
                 if (!targetFile.exists()) {
                     subProgressMonitor.subTask(CodeGenPlugin.getPlugin().getString("_UI_JETCreating_message",
                             new Object[] { targetFile.getFullPath() }));
@@ -296,8 +295,7 @@ public class TalendJetEmitter extends JETEmitter {
 
                 subProgressMonitor.subTask(CodeGenPlugin.getPlugin().getString("_UI_JETBuilding_message",
                         new Object[] { project.getName() }));
-                project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD,
-                        new SubProgressMonitor(subProgressMonitor, 1));
+                project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new SubProgressMonitor(subProgressMonitor, 1));
 
                 IMarker[] markers = targetFile.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
                 boolean errors = false;
@@ -306,6 +304,12 @@ public class TalendJetEmitter extends JETEmitter {
                     if (marker.getAttribute(IMarker.SEVERITY, IMarker.SEVERITY_INFO) == IMarker.SEVERITY_ERROR) {
                         errors = true;
                         subProgressMonitor.subTask(marker.getAttribute(IMarker.MESSAGE)
+                                + " : "
+                                + (CodeGenPlugin.getPlugin().getString("jet.mark.file.line", new Object[] {
+                                        targetFile.getLocation(), marker.getAttribute(IMarker.LINE_NUMBER) })));
+                        log.error(jetEmitter.templateURI.substring(jetEmitter.templateURI.lastIndexOf("/") + 1)
+                                + " compile fail : "
+                                + marker.getAttribute(IMarker.MESSAGE)
                                 + " : "
                                 + (CodeGenPlugin.getPlugin().getString("jet.mark.file.line", new Object[] {
                                         targetFile.getLocation(), marker.getAttribute(IMarker.LINE_NUMBER) })));
@@ -318,8 +322,8 @@ public class TalendJetEmitter extends JETEmitter {
 
                     // Construct a proper URL for relative lookup.
                     //
-                    URL url = new File(project.getLocation() + "/"
-                            + javaProject.getOutputLocation().removeFirstSegments(1) + "/").toURL();
+                    URL url = new File(project.getLocation() + "/" + javaProject.getOutputLocation().removeFirstSegments(1) + "/")
+                            .toURL();
                     URLClassLoader theClassLoader = new URLClassLoader(new URL[] { url }, jetEmitter.classLoader);
                     Class theClass = theClassLoader.loadClass((packageName.length() == 0 ? "" : packageName + ".")
                             + jetCompiler.getSkeleton().getClassName());
