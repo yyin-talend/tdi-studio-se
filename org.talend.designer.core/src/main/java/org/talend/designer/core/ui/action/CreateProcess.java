@@ -116,7 +116,8 @@ public class CreateProcess extends AContextualAction {
         NewProcessWizard processWizard = new NewProcessWizard(path);
         WizardDialog dlg = new WizardDialog(Display.getCurrent().getActiveShell(), processWizard);
         if (dlg.open() == Window.OK) {
-            refresh(node);
+//            refresh(node);
+            getViewPart().refresh();
             ProcessEditorInput fileEditorInput;
             try {
                 fileEditorInput = new ProcessEditorInput(processWizard.getProcess(), false);
