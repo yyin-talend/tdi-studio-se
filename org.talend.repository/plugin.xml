@@ -730,6 +730,19 @@
                tooltip="boot a new Talend Open Studio.">
          </action>
       </actionSet>
+         <actionSet
+            id="org.talend.repository.CreateactionSet"
+            label="Action set"
+            visible="true">
+         <action
+               class="org.talend.repository.ui.actions.toolbar.CreateToolbarItemAction"
+              icon="icons/process_icon.gif"
+               id="org.talend.repository.repositoryitem.createJob"
+               style="pulldown"
+               tooltip="Create"
+               label="Create"
+               toolbarPath="Default"/>
+      </actionSet>
    </extension>
 
 </plugin>

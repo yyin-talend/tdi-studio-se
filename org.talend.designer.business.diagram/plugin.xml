@@ -527,6 +527,12 @@
       </propertySections>
    </extension>
    
+     <extension
+         point="org.talend.core.service">
+      <Service
+      		serviceId="IDiagramModelService" 
+      		class="org.talend.designer.business.diagram.custom.DiagramModelService"/>
+   </extension>
    <extension
          point="org.talend.core.repositoryContextualsActions">
       <Action

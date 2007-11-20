@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.gef.palette.PaletteRoot;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IPartListener;
@@ -27,6 +28,7 @@ import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.designer.core.ui.ActiveProcessTracker;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
+import org.talend.designer.core.ui.action.CreateProcess;
 import org.talend.designer.core.ui.action.SaveJobBeforeRunAction;
 import org.talend.designer.core.ui.editor.TalendEditor;
 import org.talend.designer.core.ui.editor.TalendEditorPaletteFactory;
@@ -154,5 +156,9 @@ public class DesignerCoreService implements IDesignerCoreService {
      */
     public PaletteRoot createPalette(IComponentsFactory factory) {
         return TalendEditorPaletteFactory.createPalette(factory);
+    }
+
+    public IAction getCreateProcessAction(boolean isToolbar) {
+        return new CreateProcess(isToolbar);
     }
 }
