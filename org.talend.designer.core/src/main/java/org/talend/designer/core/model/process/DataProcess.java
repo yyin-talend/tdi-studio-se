@@ -122,7 +122,7 @@ public class DataProcess {
         dataNode.setComponent(graphicalNode.getComponent());
 
         if (dataNode.isDummy()) {
-            dataNode = new DataNode(ComponentsFactoryProvider.getInstance().get("tDummy"), graphicalNode.getUniqueName());
+            dataNode = new DataNode(ComponentsFactoryProvider.getInstance().get("tDummyRow"), graphicalNode.getUniqueName());
             dataNode.setActivate(true);
             dataNode.setStart(graphicalNode.isStart());
             dataNode.setMetadataList(graphicalNode.getMetadataList());
