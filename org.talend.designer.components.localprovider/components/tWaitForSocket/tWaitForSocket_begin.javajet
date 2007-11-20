@@ -1,0 +1,68 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser 
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.metadata.IMetadataColumn 
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+" 
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+
+String port = ElementParameterParser.getValue(node,"__PORT__");
+
+String output = ElementParameterParser.getValue(node,"__OUTPUT__");
+
+String eol = ElementParameterParser.getValue(node,"__EOL_CHAR__");
+
+String print = ElementParameterParser.getValue(node,"__PRINT__");
+
+boolean then = ElementParameterParser.getValue(node,"__THEN__").equals("continue");
+
+%>
+
+java.net.Socket socket<%=cid%>;
+java.io.PrintWriter out<%=cid%>;
+java.io.BufferedReader in<%=cid%>;
+
+java.net.ServerSocket ss<%=cid%> = new java.net.ServerSocket(<%=port%>);
+boolean ifContinue<%=cid%> = true;
+while (ifContinue<%=cid%>) {
+    socket<%=cid%> = ss<%=cid%>.accept();    
+   // new SocketDataProcess(socket);
+    try{       
+        //write data to client
+        out<%=cid%> = new java.io.PrintWriter(socket<%=cid%>.getOutputStream(), true);
+        out<%=cid%>.println(<%=output%>); 
+        
+        <% if(print.equals("true")){ %>
+        //get data from client
+            System.out.println(socket<%=cid%>.getInetAddress()+" input is : ");
+            in<%=cid%> = new java.io.BufferedReader(new java.io.InputStreamReader(socket<%=cid%>.getInputStream()));
+            StringBuffer sb<%=cid%> = new StringBuffer();
+            char[] target<%=cid%> = new char[1024];
+            in<%=cid%>.read(target<%=cid%>);
+            sb<%=cid%>.append(target<%=cid%>);
+            String spl<%=cid%>[] = sb<%=cid%>.toString().trim().split(<%=eol%>);
+            for (int i = 0; i < spl<%=cid%>.length; i++) {
+                System.out.println(spl<%=cid%>[i]);
+            }
+            in<%=cid%>.close();
+        <%}%>
+        //put in globalMap 
+        globalMap.put("<%=cid %>_INPUT_DATA",sb<%=cid%>.toString().trim());
+        out<%=cid%>.close();
+        socket<%=cid%>.close();
+    }catch (java.io.IOException e) {
+       e.printStackTrace();
+    }   
+    
+    ifContinue<%=cid%> = <%=then%>;
+    
+
+    
