@@ -106,7 +106,7 @@ public class NewProcessWizard extends Wizard {
 
             String jobVersion = processItem.getProperty().getVersion();
 
-            createDocumentationNode(jobVersion);
+            // createDocumentationNode(jobVersion);
 
         } catch (PersistenceException e) {
             MessageDialog.openError(getShell(), Messages.getString("NewProcessWizard.failureTitle"), Messages //$NON-NLS-1$
