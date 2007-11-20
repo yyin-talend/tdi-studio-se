@@ -1,4 +1,4 @@
-<!-- $Id: tDie_perl.xml 1528 2007-01-19 17:03:36Z smallet $ -->
+<!-- $Id: tDie_perl.xml 5799 2007-09-21 16:08:24Z plegall $ -->
 <COMPONENT>
   <HEADER
     PLATEFORM="ALL"
@@ -9,7 +9,8 @@
 COMPATIBILITY="ALL"
        AUTHOR="Talend"
  RELEASE_DATE="20050320A"
-    STARTABLE="true"
+    STARTABLE="false"
+     VISIBLE="false"
   >
     <SIGNATURE></SIGNATURE>
   </HEADER>
@@ -33,8 +34,10 @@ COMPATIBILITY="ALL"
       NAME="SCHEMA"
       FIELD="SCHEMA_TYPE"
       REQUIRED="true"
+      SHOW="false"
       NUM_ROW="1"
     />
+
    </PARAMETERS>
 
    <CODEGENERATION/>
