@@ -118,8 +118,8 @@
     >
       <ITEMS DEFAULT="INSERT">
     		<ITEM NAME="INSERT" VALUE="Insert" />
-    		<ITEM NAME="UPDATA" VALUE="Updata" />
-    		<ITEM NAME="UPSERT" VALUE="InsertOrUpdata" />
+    		<ITEM NAME="UPDATE" VALUE="Update" />
+    		<ITEM NAME="UPSERT" VALUE="InsertOrUpdate" />
     	</ITEMS>
     </PARAMETER>
 

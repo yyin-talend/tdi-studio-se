@@ -42,35 +42,38 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 }
 %>
 String tableFullName_<%=cid%> = <%=dbname%> + "." + <%=table%>;
+java.io.FileWriter fw_<%=cid %> = new java.io.FileWriter(<%=mloadPath%>+"mload.script");
 
 <%//build script---------------------------------------------------------%>
+
 StringBuffer script_<%=cid%> = new StringBuffer();
-script_<%=cid%>.append(".LOGTABLE inslogtable;\r\n");
-script_<%=cid%>.append(".LOGON ").append(<%=dbuser%>).append(",").append(<%=dbpwd%>).append(";\r\n");
+fw_<%=cid %>.write(".LOGTABLE inslogtable;\r\n");
+fw_<%=cid %>.write(".LOGON "+<%=dbuser%>+","+<%=dbpwd%>+";\r\n");
 
 <%//drop table-----------------------------------------------------------%>
+
 <%
 if(action.equals("Insert")){
 %>
-script_<%=cid%>.append("DROP TABLE ").append(tableFullName_<%=cid%>).append(";\r\n");
+fw_<%=cid %>.write("DROP TABLE "+tableFullName_<%=cid%>+";\r\n");
 <%
 }
 %>
-script_<%=cid%>.append("DROP TABLE ").append(<%=dbname%>).append(".et_").append(<%=table%>).append(";\r\n");
-script_<%=cid%>.append("DROP TABLE ").append(<%=dbname%>).append(".ut_").append(<%=table%>).append(";\r\n");
-script_<%=cid%>.append("DROP TABLE ").append(<%=dbname%>).append(".uv_").append(<%=table%>).append(";\r\n");
-script_<%=cid%>.append("DROP TABLE ").append(<%=dbname%>).append(".wt_").append(<%=table%>).append(";\r\n");
+fw_<%=cid %>.write("DROP TABLE "+<%=dbname%>+".et_"+<%=table%>+";\r\n");
+fw_<%=cid %>.write("DROP TABLE "+<%=dbname%>+".ut_"+<%=table%>+";\r\n");
+fw_<%=cid %>.write("DROP TABLE "+<%=dbname%>+".uv_"+<%=table%>+";\r\n");
+fw_<%=cid %>.write("DROP TABLE "+<%=dbname%>+".wt_"+<%=table%>+";\r\n");
 
 <%//create table---------------------------------------------------------%>
 <%
 if(action.equals("Insert")){
 %>
-script_<%=cid%>.append("CREATE MULTISET TABLE ").append(tableFullName_<%=cid%>).append(",\r\n");
-script_<%=cid%>.append("FALLBACK,\r\n");
-script_<%=cid%>.append("NO BEFORE JOURNAL,\r\n");
-script_<%=cid%>.append("NO AFTER JOURNAL,\r\n");
-script_<%=cid%>.append("CHECKSUM = DEFAULT\r\n");
-script_<%=cid%>.append("(");
+fw_<%=cid %>.write("CREATE MULTISET TABLE "+tableFullName_<%=cid%>+",\r\n");
+fw_<%=cid %>.write("FALLBACK,\r\n");
+fw_<%=cid %>.write("NO BEFORE JOURNAL,\r\n");
+fw_<%=cid %>.write("NO AFTER JOURNAL,\r\n");
+fw_<%=cid %>.write("CHECKSUM = DEFAULT\r\n");
+fw_<%=cid %>.write("(");
 <%
 	String keySQL = "";	
 	StringBuffer tableColumnSQL = new StringBuffer();
@@ -122,42 +125,42 @@ script_<%=cid%>.append("(");
     	}
 	}
 %>
-script_<%=cid%>.append("<%=tableColumnSQL.toString()%>");
-script_<%=cid%>.append(")\r\n");
+fw_<%=cid %>.write("<%=tableColumnSQL.toString()%>");
+fw_<%=cid %>.write(")\r\n");
 <%
 	if(keySQL.length()>0){
 		keySQL = "\"PRIMARY INDEX ( " + keySQL + " );\"\r\n";
 %>
-script_<%=cid%>.append(<%=keySQL%>);
+fw_<%=cid %>.write(<%=keySQL%>);
 <%
 	}
 }
 %>
 
 <%//Layout---------------------------------------------------------------%>
-script_<%=cid%>.append(".BEGIN IMPORT MLOAD TABLES ").append(tableFullName_<%=cid%>).append("SESSIONS 8;\r\n");
-script_<%=cid%>.append(".LAYOUT customer_layout;\r\n");
+fw_<%=cid %>.write(".BEGIN IMPORT MLOAD TABLES "+tableFullName_<%=cid%>+"SESSIONS 8;\r\n");
+fw_<%=cid %>.write(".LAYOUT customer_layout;\r\n");
 <%
 if(columnList!=null){
 	for(IMetadataColumn column:columnList){	
 %>
-script_<%=cid%>.append(".FIELD ").append("<%=column.getOriginalDbColumnName()%>").append(" * ").append("<%=column.getType()%>");
+fw_<%=cid %>.write(".FIELD "+"<%=column.getOriginalDbColumnName()%>"+" * "+"<%=column.getType()%>");
 <%
 		MappingTypeRetriever mtr=MetadataTalendType.getMappingTypeRetriever(dbmsId);
 		if(column.getLength()!=null && column.getLength()!=0 && !mtr.isLengthIgnored(dbmsId,column.getType()) ){
 %>
-script_<%=cid%>.append("(").append("<%=column.getLength()%>").append(");\r\n");
+fw_<%=cid %>.write("("+"<%=column.getLength()%>"+");\r\n");
 <%
 		}
 	}
 }
 %>
-script_<%=cid%>.append(".DML LABEL DML_LABEL;\r\n");
+fw_<%=cid %>.write(".DML LABEL DML_LABEL;\r\n");
 
 <%//SQL statements-------------------------------------------------------%>
 <%
-StringBuffer updataSetSQL = new StringBuffer();
-StringBuffer updataWhereSQL = new StringBuffer();
+StringBuffer updateSetSQL = new StringBuffer();
+StringBuffer updateWhereSQL = new StringBuffer();
 StringBuffer insertColSQL = new StringBuffer();
 StringBuffer insertValueSQL = new StringBuffer();
 if(columnList!=null){
@@ -175,45 +178,44 @@ if(columnList!=null){
  		insertValueSQL.append(":").append(columnName);
  		
  		if(column.isKey()){
- 			if(updataWhereSQL.length()>0){
-     			updataWhereSQL.append(" AND ");
+ 			if(updateWhereSQL.length()>0){
+     			updateWhereSQL.append(" AND ");
      		}
-     		updataWhereSQL.append(columnName).append("=:").append(columnName);
+     		updateWhereSQL.append(columnName).append("=:").append(columnName);
  		}else{
-     		if(updataSetSQL.length()>0){
-     			updataSetSQL.append(",");
+     		if(updateSetSQL.length()>0){
+     			updateSetSQL.append(",");
      		}
-     		updataSetSQL.append(columnName).append("=:").append(columnName);
+     		updateSetSQL.append(columnName).append("=:").append(columnName);
  		}
 	}
 }
-if(action.equals("Updata") || action.equals("InsertOrUpdata")){
+if(action.equals("Update") || action.equals("InsertOrUpdate")){
 %>
-script_<%=cid%>.append("UPDATA ").append(tableFullName_<%=cid%>).append(" SET ").append("<%=updataSetSQL.toString()%>")
-	.append(" WHERE ").append("<%=updataWhereSQL%>").append(";\r\n");
+fw_<%=cid %>.write("UPDATE "+tableFullName_<%=cid%>+" SET "+"<%=updateSetSQL.toString()%>"
+	+" WHERE "+"<%=updateWhereSQL%>"+";\r\n");
 <%
 }
-if(action.equals("Insert") || action.equals("InsertOrUpdata")){
+if(action.equals("Insert") || action.equals("InsertOrUpdate")){
 %>
-script_<%=cid%>.append("INSERT INTO ").append(tableFullName_<%=cid%>).append("(")
-	.append("<%=insertColSQL%>").append(") VAlUES(").append("<%=insertValueSQL.toString()%>").append(");\r\n");
+fw_<%=cid %>.write("INSERT INTO "+tableFullName_<%=cid%>+"("
+	+"<%=insertColSQL%>"+") VAlUES("+"<%=insertValueSQL.toString()%>"+");\r\n");
 <%
 }
 %>
 
 <%//Import file----------------------------------------------------------%>
-script_<%=cid%>.append("IMPORT INFILE ").append(<%=loadFile%>);
-script_<%=cid%>.append(" FORMAT VARText ").append(<%=separator%>).append(" LAYOUT customer_layout APPLY DML_LABEL;\r\n");
-script_<%=cid%>.append(".END MLOAD;\r\n");
-script_<%=cid%>.append(".LOGOFF;\r\n");
+fw_<%=cid %>.write("IMPORT INFILE "+<%=loadFile%>);
+fw_<%=cid %>.write(" FORMAT VARText "+<%=separator%>+" LAYOUT customer_layout APPLY DML_LABEL;\r\n");
+fw_<%=cid %>.write(".END MLOAD;\r\n");
+fw_<%=cid %>.write(".LOGOFF;\r\n");
 
 <%//write script to file-------------------------------------------------%>
-java.io.FileWriter fw_<%=cid %> = new java.io.FileWriter(<%=mloadPath%>+"mload.script");
-fw_<%=cid %>.write(script_<%=cid%>.toString());
 fw_<%=cid %>.close();
 
 <%//run mload command----------------------------------------------------%>
-final Process process_<%=cid %> = Runtime.getRuntime().exec(<%=mloadPath%>+"mload < mload.script > "+<%=errorFile%>); 
+String[] sb_<%=cid%>= new String[]{ <%=mloadPath%>, "mload", "< mload.script", "> "+<%=errorFile%> };
+final Process process_<%=cid %> = Runtime.getRuntime().exec(sb_<%=cid%>); 
 Thread normal_<%=cid %> = new Thread() {
     public void run() {
     	try {
