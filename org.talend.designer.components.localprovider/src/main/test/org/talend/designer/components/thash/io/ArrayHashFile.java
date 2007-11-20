@@ -40,7 +40,7 @@ import java.util.List;
  * 
  * 
  */
-class ArrayHashFile implements MapHashFile {
+class ArrayHashFile implements IMapHashFile {
 
     private static ArrayHashFile instance;
 
@@ -63,7 +63,7 @@ class ArrayHashFile implements MapHashFile {
 
     boolean readonly;
 
-    final int START_POSITION = 0;
+    static final int START_POSITION = 0;
 
     long position;
 
@@ -240,6 +240,10 @@ class ArrayHashFile implements MapHashFile {
 
 }
 
+/**
+ * 
+ * DOC amaumont  class global comment. Detailled comment
+ */
 class InternalSmallBean implements Serializable {
 
     int primitiveInt;
@@ -371,6 +375,10 @@ class InternalSmallBean implements Serializable {
 
 }
 
+/**
+ * 
+ * DOC amaumont  class global comment. Detailled comment
+ */
 class InternalBigBean implements Serializable {
 
     int primitiveInt;

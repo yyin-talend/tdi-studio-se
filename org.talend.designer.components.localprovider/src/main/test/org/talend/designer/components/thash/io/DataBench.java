@@ -1,3 +1,15 @@
+// ============================================================================
+//
+// Copyright (C) 2006-2007 Talend Inc. - www.talend.com
+//
+// This source code is available under agreement available at
+// %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
+//
+// You should have received a copy of the agreement
+// along with this program; if not, write to Talend SA
+// 9 rue Pages 92150 Suresnes, France
+//
+// ============================================================================
 package org.talend.designer.components.thash.io;
 
 import java.text.SimpleDateFormat;
@@ -5,9 +17,15 @@ import java.util.Date;
 
 import org.apache.commons.beanutils.PropertyUtils;
 
+/**
+ * 
+ * DOC amaumont  class global comment. Detailled comment
+ * <br/>
+ *
+ */
 public class DataBench implements Cloneable {
 
-    private final static String[] properties = new String[] {
+    private final static String[] PROPERTIES = new String[] {
         "nbItems",
         "nbFiles",
         "pointersByFile",
@@ -481,8 +499,8 @@ public class DataBench implements Cloneable {
         StringBuffer buffer = new StringBuffer();
         buffer.append("DataStats[");
         try {
-            for (int i = 0; i < properties.length; i++) {
-                String propertyName = properties[i];
+            for (int i = 0; i < PROPERTIES.length; i++) {
+                String propertyName = PROPERTIES[i];
                 buffer.append(" " + propertyName + " = ").append(PropertyUtils.getProperty(this, propertyName));
             }
         } catch (Exception e) {
@@ -496,11 +514,11 @@ public class DataBench implements Cloneable {
         StringBuffer buffer = new StringBuffer();
         String comma = "";
         try {
-            for (int i = 0; i < properties.length; i++) {
+            for (int i = 0; i < PROPERTIES.length; i++) {
                 if (i == 1) {
                     comma = ";";
                 }
-                String propertyName = properties[i];
+                String propertyName = PROPERTIES[i];
 
                 Object object = PropertyUtils.getProperty(this, propertyName);
                 String value = null;
@@ -526,11 +544,11 @@ public class DataBench implements Cloneable {
         StringBuffer buffer = new StringBuffer();
         String comma = "";
         try {
-            for (int i = 0; i < properties.length; i++) {
+            for (int i = 0; i < PROPERTIES.length; i++) {
                 if (i == 1) {
                     comma = ";";
                 }
-                String propertyName = properties[i];
+                String propertyName = PROPERTIES[i];
                 buffer.append(comma + propertyName);
             }
         } catch (Exception e) {

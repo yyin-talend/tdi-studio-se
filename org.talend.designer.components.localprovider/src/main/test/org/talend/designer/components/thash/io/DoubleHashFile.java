@@ -26,10 +26,9 @@ import java.util.concurrent.Executors;
 
 /**
  * 
- * DOC amaumont class global comment. Detailled comment <br/>
- * 
+ * DOC amaumont  class global comment. Detailled comment
  */
-class DoubleHashFile implements MapHashFile {
+class DoubleHashFile implements IMapHashFile {
 
     /**
      * 
@@ -42,7 +41,7 @@ class DoubleHashFile implements MapHashFile {
 
     private static final String SUFFIX_FILE_DATA = ".data";
 
-    private static final boolean threaded = false;
+    private static final boolean THREADED = false;
 
     private ExecutorService executor = Executors.newSingleThreadExecutor();
 
@@ -69,7 +68,7 @@ class DoubleHashFile implements MapHashFile {
 
     boolean readonly;
 
-    final int START_POSITION = 0;
+    static final int START_POSITION = 0;
 
     long positionData;
 
@@ -123,7 +122,7 @@ class DoubleHashFile implements MapHashFile {
 
         final boolean[] writeEnded = new boolean[1];
 
-        if (threaded) {
+        if (THREADED) {
             executor.execute(new Runnable() {
 
                 /*
@@ -168,7 +167,7 @@ class DoubleHashFile implements MapHashFile {
 
         positionIdx += LONG_BYTES_SIZE;
 
-        if (threaded) {
+        if (THREADED) {
             try {
                 while (!writeEnded[0]) {
                     Thread.sleep(5);

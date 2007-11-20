@@ -32,7 +32,7 @@ import org.apache.commons.lang.ArrayUtils;
  * DOC amaumont class global comment. Detailled comment <br/>
  * 
  */
-class MultiPointersMultiHashFiles implements MapHashFile {
+class MultiPointersMultiHashFiles implements IMapHashFile {
 
     /**
      * 
@@ -282,6 +282,10 @@ class MultiPointersMultiHashFiles implements MapHashFile {
         System.out.println("countUniqueGet = " + countUniqueGet);
     }
 
+    /**
+     * 
+     * DOC amaumont MultiPointersMultiHashFiles class global comment. Detailled comment
+     */
     class MultiReadPointersFileHandler {
 
         private String containerFilePath;

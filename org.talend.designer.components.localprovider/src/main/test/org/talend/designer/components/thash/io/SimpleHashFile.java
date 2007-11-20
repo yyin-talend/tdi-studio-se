@@ -27,7 +27,7 @@ import java.io.RandomAccessFile;
  * DOC amaumont class global comment. Detailled comment <br/>
  * 
  */
-class SimpleHashFile implements MapHashFile {
+class SimpleHashFile implements IMapHashFile {
 
     private static SimpleHashFile instance;
 
@@ -51,7 +51,7 @@ class SimpleHashFile implements MapHashFile {
 
     boolean readonly;
 
-    final int START_POSITION = 0;
+    static final int START_POSITION = 0;
 
     long position;
 
