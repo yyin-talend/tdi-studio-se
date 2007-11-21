@@ -42,8 +42,10 @@
       REQUIRED="false"
       NUM_ROW="2"
       NB_LINES="9"
+      CONTEXT="begin"
     >
-      <DEFAULT>// start part of your Java code</DEFAULT>
+      <DEFAULT>// start part of your Java code
+      </DEFAULT>
     </PARAMETER>
 
     <PARAMETER
@@ -52,10 +54,12 @@
       REQUIRED="false"
       NUM_ROW="3"
       NB_LINES="9"
+      CONTEXT="main"
     >
       <DEFAULT>// here is the main part of the component,
 // a piece of code executed in the row
-// loop</DEFAULT>
+// loop
+</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
@@ -64,8 +68,10 @@
       REQUIRED="false"
       NUM_ROW="4"
       NB_LINES="9"
+      CONTEXT="end"
     >
-      <DEFAULT>// end of the component, outside/closing the loop</DEFAULT>
+      <DEFAULT>// end of the component, outside/closing the loop
+      </DEFAULT>
     </PARAMETER>
    </PARAMETERS>
 
