@@ -29,19 +29,18 @@
   </CONNECTORS>
 
   <PARAMETERS>
-
     <PARAMETER
       NAME="PROPERTY"
       FIELD="PROPERTY_TYPE"
       SHOW="true"
-      NUM_ROW="1"
+      NUM_ROW="20"
       REPOSITORY_VALUE="DATABASE:MYSQL"
     />
 
     <PARAMETER
       NAME="HOST"
       FIELD="TEXT"
-      NUM_ROW="3"
+      NUM_ROW="30"
       REPOSITORY_VALUE="SERVER_NAME"
     >
       <DEFAULT>'localhost'</DEFAULT>
@@ -50,7 +49,7 @@
     <PARAMETER
       NAME="PORT"
       FIELD="TEXT"
-      NUM_ROW="3"
+      NUM_ROW="40"
       REPOSITORY_VALUE="PORT"
     >
       <DEFAULT>'3306'</DEFAULT>
@@ -59,7 +58,7 @@
     <PARAMETER
       NAME="DBNAME"
       FIELD="TEXT"
-      NUM_ROW="3"
+      NUM_ROW="50"
       REPOSITORY_VALUE="SID"
     >
       <DEFAULT>''</DEFAULT>
@@ -68,7 +67,7 @@
     <PARAMETER
       NAME="USER"
       FIELD="TEXT"
-      NUM_ROW="4"
+      NUM_ROW="60"
       REPOSITORY_VALUE="USERNAME"
     >
       <DEFAULT>''</DEFAULT>
@@ -77,7 +76,7 @@
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
-      NUM_ROW="4"
+      NUM_ROW="70"
       REPOSITORY_VALUE="PASSWORD"
     >
       <DEFAULT>''</DEFAULT>
@@ -86,7 +85,7 @@
     <PARAMETER
       NAME="TABLE"
       FIELD="TEXT"
-      NUM_ROW="6"
+      NUM_ROW="80"
     >
       <DEFAULT>'employee'</DEFAULT>
     </PARAMETER>
@@ -94,25 +93,67 @@
     <PARAMETER
       NAME="FILENAME"
       FIELD="FILE"
-      NUM_ROW="7"
+      NUM_ROW="90"
       REQUIRED="true"
     >
-      <DEFAULT>'C:\talend_files\mysql_bulk.txt'</DEFAULT>
+      <DEFAULT>'__COMP_DEFAULT_FILE_DIR__/mysql_bulk.txt'</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
       NAME="FIELDS_TERMINATED_BY"
       FIELD="TEXT"
-      NUM_ROW="8"
+      NUM_ROW="100"
       REQUIRED="true"
     >
       <DEFAULT>';'</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
+      NAME="TABLE_ACTION"
+      FIELD="CLOSED_LIST"
+      NUM_ROW="110"
+    >
+      <ITEMS DEFAULT="NONE">
+        <ITEM
+          NAME="NONE"
+          VALUE="NONE"
+        />
+        <ITEM
+          NAME="DROP_CREATE"
+          VALUE="DROP_CREATE"
+        />
+        <ITEM
+          NAME="CREATE"
+          VALUE="CREATE"
+        />
+        <ITEM
+          NAME="CREATE_IF_NOT_EXISTS"
+          VALUE="CREATE_IF_NOT_EXISTS"
+        />
+        <ITEM
+          NAME="CLEAR"
+          VALUE="CLEAR"
+        />
+        <ITEM
+          NAME="TRUNCATE"
+          VALUE="TRUNCATE"
+        />
+      </ITEMS>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="SCHEMA"
+      FIELD="SCHEMA_TYPE"
+      SHOW_IF="(TABLE_ACTION=='DROP_CREATE' or TABLE_ACTION=='CREATE' or TABLE_ACTION=='CREATE_IF_NOT_EXISTS')"
+      NUM_ROW="111"
+    >
+      <DEFAULT/> 
+    </PARAMETER>
+
+    <PARAMETER
       NAME="ENCODING"
       FIELD="ENCODING_TYPE"
-      NUM_ROW="10"
+      NUM_ROW="120"
       REQUIRED="true"
     >
       <DEFAULT>'ISO-8859-15'</DEFAULT>

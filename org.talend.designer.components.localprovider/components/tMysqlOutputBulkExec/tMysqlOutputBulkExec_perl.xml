@@ -29,17 +29,26 @@
 
   <PARAMETERS>
     <PARAMETER
+      NAME="SCHEMA"
+      FIELD="SCHEMA_TYPE"
+      REQUIRED="true"
+      NUM_ROW="9"
+    >
+      <DEFAULT/> 
+    </PARAMETER>
+
+    <PARAMETER
       NAME="PROPERTY"
       FIELD="PROPERTY_TYPE"
       SHOW="true"
-      NUM_ROW="2"
+      NUM_ROW="10"
       REPOSITORY_VALUE="DATABASE:MYSQL"
     />
 
     <PARAMETER
       NAME="HOST"
       FIELD="TEXT"
-      NUM_ROW="3"
+      NUM_ROW="20"
       REPOSITORY_VALUE="SERVER_NAME"
     >
       <DEFAULT>'localhost'</DEFAULT>
@@ -48,7 +57,7 @@
     <PARAMETER
       NAME="PORT"
       FIELD="TEXT"
-      NUM_ROW="3"
+      NUM_ROW="30"
       REPOSITORY_VALUE="PORT"
     >
       <DEFAULT>'3306'</DEFAULT>
@@ -57,7 +66,7 @@
     <PARAMETER
       NAME="DBNAME"
       FIELD="TEXT"
-      NUM_ROW="3"
+      NUM_ROW="40"
       REPOSITORY_VALUE="SID"
     >
       <DEFAULT>''</DEFAULT>
@@ -66,7 +75,7 @@
     <PARAMETER
       NAME="USER"
       FIELD="TEXT"
-      NUM_ROW="4"
+      NUM_ROW="50"
       REPOSITORY_VALUE="USERNAME"
     >
       <DEFAULT>''</DEFAULT>
@@ -75,7 +84,7 @@
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
-      NUM_ROW="4"
+      NUM_ROW="60"
       REPOSITORY_VALUE="PASSWORD"
     >
       <DEFAULT>''</DEFAULT>
@@ -84,9 +93,42 @@
     <PARAMETER
       NAME="TABLE"
       FIELD="TEXT"
-      NUM_ROW="6"
+      NUM_ROW="70"
     >
       <DEFAULT>'employee'</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="TABLE_ACTION"
+      FIELD="CLOSED_LIST"
+      NUM_ROW="80"
+    >
+      <ITEMS DEFAULT="NONE">
+        <ITEM
+          NAME="NONE"
+          VALUE="NONE"
+        />
+        <ITEM
+          NAME="DROP_CREATE"
+          VALUE="DROP_CREATE"
+        />
+        <ITEM
+          NAME="CREATE"
+          VALUE="CREATE"
+        />
+        <ITEM
+          NAME="CREATE_IF_NOT_EXISTS"
+          VALUE="CREATE_IF_NOT_EXISTS"
+        />
+        <ITEM
+          NAME="CLEAR"
+          VALUE="CLEAR"
+        />
+        <ITEM
+          NAME="TRUNCATE"
+          VALUE="TRUNCATE"
+        />
+      </ITEMS>
     </PARAMETER>
 
 <!-- following property should not be displayed -->
@@ -94,7 +136,7 @@
     <PARAMETER
       NAME="FILENAME"
       FIELD="FILE"
-      NUM_ROW="14"
+      NUM_ROW="100"
       REQUIRED="true"
     >
       <DEFAULT>'C:\temp\mysql_data.txt'</DEFAULT>
@@ -103,7 +145,7 @@
     <PARAMETER
       NAME="ROWSEPARATOR"
       FIELD="TEXT"
-      NUM_ROW="15"
+      NUM_ROW="110"
       REPOSITORY_VALUE="ROW_SEPARATOR"
     >
       <DEFAULT>"\n"</DEFAULT>
@@ -112,7 +154,7 @@
     <PARAMETER
       NAME="FIELDSEPARATOR"
       FIELD="TEXT"
-      NUM_ROW="16"
+      NUM_ROW="120"
       REPOSITORY_VALUE="FIELD_SEPARATOR"
     >
       <DEFAULT>';'</DEFAULT>
@@ -123,7 +165,7 @@
   <CODEGENERATION>
     <TEMPLATES INPUT="tMOB" OUTPUT="tMBE">
 
-      <TEMPLATE NAME="tMOB" COMPONENT="tFileOutputDelimited">
+      <TEMPLATE NAME="tMOB" COMPONENT="tMysqlOutputBulk">
         <LINK_TO NAME="tMBE" CTYPE="THEN_RUN"/>
       </TEMPLATE>
       
@@ -136,6 +178,9 @@
       <TEMPLATE_PARAM SOURCE="self.PASS"   TARGET="tMBE.PASS" />
       <TEMPLATE_PARAM SOURCE="self.TABLE"  TARGET="tMBE.TABLE" />
 
+      <TEMPLATE_PARAM SOURCE="self.SCHEMA" TARGET="tMOB.SCHEMA" />
+      <TEMPLATE_PARAM SOURCE="self.SCHEMA" TARGET="tMBE.SCHEMA" />
+
       <TEMPLATE_PARAM SOURCE="self.FILENAME" TARGET="tMOB.FILENAME" />
       <TEMPLATE_PARAM SOURCE="self.FILENAME" TARGET="tMBE.FILENAME" />
 
@@ -144,6 +189,8 @@
 
       <TEMPLATE_PARAM SOURCE="self.FIELDSEPARATOR"  TARGET="tMOB.FIELDSEPARATOR" />
       <TEMPLATE_PARAM SOURCE="self.FIELDSEPARATOR"  TARGET="tMBE.FIELDS_TERMINATED_BY" />
+
+      <TEMPLATE_PARAM SOURCE="self.TABLE_ACTION" TARGET="tMBE.TABLE_ACTION" />
 
     </TEMPLATES>
   </CODEGENERATION>

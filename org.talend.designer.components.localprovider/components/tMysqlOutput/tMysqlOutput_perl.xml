@@ -177,6 +177,10 @@
           NAME="CLEAR"
           VALUE="CLEAR"
         />
+        <ITEM
+          NAME="TRUNCATE"
+          VALUE="TRUNCATE"
+        />
       </ITEMS>
     </PARAMETER>
 

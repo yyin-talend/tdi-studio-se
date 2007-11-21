@@ -167,86 +167,13 @@ if (<%=encoding%> =~ m/utf-?8/i) {
         }
 %>
 
-<%
-        if (tableAction.equals("DROP_CREATE")
-            || tableAction.equals("CREATE_IF_NOT_EXISTS")) {
-%>
-# We need the table list to know if drop or "create if not exists" is
-# relevant
-my $tabsth = $<%=dbh%>->prepare('SHOW TABLES');
-$tabsth->execute();
-my $table_exists = 0;
-my $test_table = lc $desc_<%=cid %>{dbtable};
-while (my $row_aref = $tabsth->fetchrow_arrayref()) {
-    if (lc $row_aref->[0] eq $test_table) {
-        $table_exists = 1;
-        last;
-    }
-}
-$tabsth->finish();
-<%
-        }
-
-        if (tableAction.equals("DROP_CREATE")) {
-%>
-if ($table_exists) {
-    $query = '
-DROP TABLE '.<%=dbtable%>.'
-';
-    $sth_<%=cid %> = $<%=dbh%>->prepare($query);
-
-    $sth_<%=cid %>->execute()
-        or die "can't drop table";
-
-    # the table does not exist anymore
-    $table_exists = 0;
-}
-<%
-        }
-
-        if (tableAction.equals("CREATE")
-            || tableAction.equals("DROP_CREATE")
-            || tableAction.equals("CREATE_IF_NOT_EXISTS")) {
-
-            if (tableAction.equals("CREATE_IF_NOT_EXISTS")) {
-%>
-if (not $table_exists) {
-<%
-            }
-%>
-# now we create the table
-$query = tMysqlOutput::Mysql::getTableCreationQuery(
-    tablename  => $desc_<%=cid %>{dbtable},
-    schema     => $desc_<%=cid %>{schema},
+tMysqlOutput::Mysql::performTableAction(
+    tableAction => '<%=tableAction%>',
+    dbh => $<%=dbh%>,
+    dbtable => <%=dbtable %>,
+    component => <%=cid%>,
+    schema => $desc_<%=cid %>{schema}
 );
-
-$sth_<%=cid %> = $<%=dbh%>->prepare(
-    $query
-);
-
-$sth_<%=cid %>->execute()
-    or die "can't create table";
-<%
-            if (tableAction.equals("CREATE_IF_NOT_EXISTS")) {
-%>
-}
-<%
-            }
-        }
-
-        if (tableAction.equals("CLEAR")) {
-%>
-$query = '
-DELETE
-  FROM '.<%=dbtable%>.'
-';
-
-$sth_<%=cid %> = $<%=dbh%>->prepare($query);
-$sth_<%=cid %>->execute()
-    or die "can't clear table";
-<%
-        }
-%>
 
 my $query = '';
 

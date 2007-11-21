@@ -129,4 +129,80 @@ INSERT
     );
 }
 
+sub performTableAction {
+    my %param = @_;
+
+    # tableAction
+    # dbschema
+    # dbh
+    # dbtable
+    # dbschema
+    # component
+    # schema
+
+    my $sth;
+    my $table_exists;
+
+    if ($param{tableAction} eq "DROP_CREATE"
+        or $param{tableAction} eq "CREATE_IF_NOT_EXISTS") {
+        # We need the table list to know if drop or "create if not exists"
+        # is relevant
+        my $tabsth = $param{dbh}->prepare('SHOW TABLES');
+        $tabsth->execute();
+        $table_exists = 0;
+        my $test_table = lc $param{dbtable};
+
+        while (my $row_aref = $tabsth->fetchrow_arrayref()) {
+            if (lc $row_aref->[0] eq $test_table) {
+                $table_exists = 1;
+                last;
+            }
+        }
+        $tabsth->finish();
+    }
+
+    if ($param{tableAction} eq "DROP_CREATE" and $table_exists) {
+        $param{dbh}->do('DROP TABLE '.$param{dbtable})
+            or die sprintf("[%s] can't drop table", $param{component});
+
+        $table_exists = 0;
+    }
+
+    if ($param{tableAction} eq "CREATE"
+        or $param{tableAction} eq "DROP_CREATE"
+        or ($param{tableAction} eq "CREATE_IF_NOT_EXISTS"
+            and not $table_exists)) {
+
+        # now we create the table
+        $query = getTableCreationQuery(
+            tablename  => $param{dbtable},
+            schema     => $param{schema},
+        );
+
+        $param{dbh}->do($query)
+            or die sprintf(
+                "[%s] cannot create table\n===\n%s\n===\n",
+                $param{component},
+                $query,
+            );
+    }
+
+    if ($param{tableAction} eq "CLEAR") {
+        $param{dbh}->do('DELETE FROM '.$param{dbtable})
+            or die sprintf(
+                "[%s] can't clear table",
+                $param{component}
+            );
+    }
+
+    if ($param{tableAction} eq "TRUNCATE") {
+        $param{dbh}->do('TRUNCATE TABLE '.$param{dbtable})
+            or die sprintf(
+                "[%s] cannot truncate table",
+                $param{component}
+            );
+    }
+
+}
+
 1;

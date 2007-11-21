@@ -13,40 +13,83 @@ imports="
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
+
+String tableAction = ElementParameterParser.getValue(
+    node,
+    "__TABLE_ACTION__"
+);
+
+String filename = ElementParameterParser.getValue(
+    node,
+    "__FILENAME__"
+);
+
+String fieldsTerminatedBy = ElementParameterParser.getValue(
+    node,
+    "__FIELDS_TERMINATED_BY__"
+);
+
+String dbtable = ElementParameterParser.getValue(node, "__TABLE__");
+String dbhost = ElementParameterParser.getValue(node, "__HOST__");
+String dbport = ElementParameterParser.getValue(node, "__PORT__");
+String dbname = ElementParameterParser.getValue(node, "__DBNAME__");
+String dbuser = ElementParameterParser.getValue(node, "__USER__");
+String dbpass = ElementParameterParser.getValue(node, "__PASS__");
+String encoding = ElementParameterParser.getValue(
+    node,
+    "__ENCODING__"
+);
+
+IMetadataTable metadata = null;
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    metadata = metadatas.get(0);
+}
 %>
 
 use DBI;
 use talend::dbOp;
+use tMysqlOutput::Mysql;
 
 my %desc_<%=cid %> = (
-    dbtype    => 'mysql',
-    driver    => 'mysql',
-    filename  => <%=ElementParameterParser.getValue(node, "__FILENAME__") %>,
-    dbhost    => <%=ElementParameterParser.getValue(node, "__HOST__") %>,
-    dbport    => <%=ElementParameterParser.getValue(node, "__PORT__") %>,
-    dbname    => <%=ElementParameterParser.getValue(node, "__DBNAME__") %>,
-    dbuser    => <%=ElementParameterParser.getValue(node, "__USER__") %>,
-    dbpass    => <%=ElementParameterParser.getValue(node, "__PASS__") %>,
-    table     => <%=ElementParameterParser.getValue(node, "__TABLE__") %>,
-    fields_terminated_by => <%=ElementParameterParser.getValue(node, "__FIELDS_TERMINATED_BY__") %>,
-    encoding  => <%=ElementParameterParser.getValue(node, "__ENCODING__") %>,
+    filename  => <%=filename%>,
+    schema        => [
+<%
+if (metadata != null) {
+    for (IMetadataColumn column: metadata.getListColumns()) {
+%>
+        {
+            name    => '`<%=column.getLabel() %>`',
+            key     => <%=column.isKey() %>,
+            type    => '<%=column.getTalendType() %>',
+            len     => <%=column.getLength() %>,
+            precision => <%=column.getPrecision() %>,
+            null    => <%=column.isNullable() %>,
+            default => '<%=column.getDefault() %>',
+            comment => '<%=column.getComment() %>',
+        },
+<%
+    }
+%>
+    ],
 );
 
 my $dbh_<%=cid %> = DBI->connect(
-    getConnectionString(
-        driver => $desc_<%=cid %>{driver},
-        dbname => $desc_<%=cid %>{dbname},
-        dbhost => $desc_<%=cid %>{dbhost},
-        dbport => $desc_<%=cid %>{dbport},
+    sprintf(
+        'DBI:mysql:database=%s;host=%s;port=%s',
+        <%=dbname %>,
+        <%=dbhost %>,
+        <%=dbport %>,
     ),
-    $desc_<%=cid %>{dbuser},
-    $desc_<%=cid %>{dbpass},
+    <%=dbuser %>,
+    <%=dbpass %>
 )
-    or die "can't connect to database";
+    or die "[<%=cid%>] can't connect to database";
 
 my $sth_<%=cid %>;
 
-if (lc $desc_<%=cid %>{encoding} eq 'utf-8') {
+if (<%=encoding%> =~ m/utf-?8/i) {
     $sth_<%=cid %> = $dbh_<%=cid %>->prepare(
         'SET character_set_database=utf8'
     );
@@ -54,18 +97,29 @@ if (lc $desc_<%=cid %>{encoding} eq 'utf-8') {
     $sth_<%=cid %>->finish();
 }
 
+tMysqlOutput::Mysql::performTableAction(
+    tableAction => '<%=tableAction%>',
+    dbh => $dbh_<%=cid %>,
+    dbtable => <%=dbtable %>,
+    component => <%=cid%>,
+    schema => $desc_<%=cid %>{schema},
+);
+
 $sth_<%=cid %> = $dbh_<%=cid %>->prepare(
     sprintf(
         'LOAD DATA LOCAL INFILE ? INTO TABLE %s FIELDS TERMINATED BY ?',
-        $desc_<%=cid %>{table},
+        <%=dbtable%>,
     )
 );
 
 $sth_<%=cid %>->execute(
-    $desc_<%=cid %>{filename},
-    $desc_<%=cid %>{fields_terminated_by},
+    <%=filename%>,
+    <%=fieldsTerminatedBy%>,
 )
-    or die "can't execute load data query";
+    or die "[<%=cid%>] can't execute load data query";
 
 $sth_<%=cid %>->finish();
 $dbh_<%=cid %>->disconnect();
+<%
+}
+%>

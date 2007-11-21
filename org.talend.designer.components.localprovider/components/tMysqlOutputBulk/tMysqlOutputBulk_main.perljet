@@ -3,6 +3,7 @@ imports="
     org.talend.core.model.process.INode 
     org.talend.core.model.metadata.IMetadataTable 
     org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.process.ElementParameterParser
     java.util.List
 "
 %>
@@ -11,15 +12,31 @@ imports="
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
+
+String rowSeparator = ElementParameterParser.getValue(
+    node,
+    "__ROWSEPARATOR__"
+);
+
+String fieldSeparator = ElementParameterParser.getValue(
+    node,
+    "__FIELDSEPARATOR__"
+);
 %>
 
     print {$output_FH_<%=cid%>} (
         join(
-            OUTPUT_FIELD_SEPARATOR_<%=cid%>,
+            <%=fieldSeparator%>,
             @$<%=cid%>
         ),
-        OUTPUT_ROW_SEPARATOR_<%=cid%>
+        <%=rowSeparator%>
     )
-        or die "can't write to file ".$output_desc_<%=cid%>{filename}."\n";
+        or die(
+            sprintf(
+                '[%s] cannot write to file "%s"',
+                <%=cid%>,
+                $output_desc_<%=cid%>{filename},
+            )
+        );
 
     $nb_line_<%=cid%>++;
