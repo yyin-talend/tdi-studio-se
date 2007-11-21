@@ -4,6 +4,7 @@
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		org.talend.designer.codegen.i18n.Messages
 		org.talend.core.ui.branding.IBrandingService
+		org.talend.core.GlobalServiceRegister
 		java.text.DateFormat
 		java.util.Calendar
 	"
