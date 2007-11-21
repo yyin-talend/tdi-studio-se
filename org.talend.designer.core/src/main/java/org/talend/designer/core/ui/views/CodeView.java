@@ -44,7 +44,6 @@ import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.temp.ECodePart;
-import org.talend.core.ui.viewer.java.TalendJavaViewerConfiguration;
 import org.talend.core.ui.viewer.perl.TalendPerlSourceViewer;
 import org.talend.designer.codegen.ICodeGenerator;
 import org.talend.designer.codegen.ICodeGeneratorService;
@@ -176,7 +175,6 @@ public class CodeView extends ViewPart implements ISelectionListener {
             tools.setupJavaDocumentPartitioner(viewer.getDocument(), IJavaPartitions.JAVA_PARTITIONING);
             SimpleJavaSourceViewerConfiguration config = new SimpleJavaSourceViewerConfiguration(tools.getColorManager(), store,
                     null, IJavaPartitions.JAVA_PARTITIONING, true);
-            TalendJavaViewerConfiguration config2 = new TalendJavaViewerConfiguration(tools.getColorManager(), store, null);
             viewer.configure(config);
             viewer.getTextWidget().setFont(JFaceResources.getFont(PreferenceConstants.EDITOR_TEXT_FONT));
             document = viewer.getDocument();

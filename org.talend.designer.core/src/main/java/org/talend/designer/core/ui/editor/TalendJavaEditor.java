@@ -16,10 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jdt.internal.ui.JavaPlugin;
 import org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor;
 import org.eclipse.jdt.internal.ui.javaeditor.JavaSourceViewer;
-import org.eclipse.jdt.internal.ui.javaeditor.WorkingCopyManager;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.FindReplaceDocumentAdapter;
 import org.eclipse.jface.text.IDocument;
@@ -38,8 +36,6 @@ import org.talend.designer.core.ui.MultiPageTalendEditor;
 public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCheckableEditor {
 
     private org.eclipse.jdt.core.ICompilationUnit unit;
-
-    private static org.eclipse.jdt.core.ICompilationUnit workingCopy;
 
     private boolean disposed = false;
 
@@ -73,10 +69,6 @@ public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCh
      */
     private void addCompiler() {
         unit = (org.eclipse.jdt.core.ICompilationUnit) getInputJavaElement();
-
-        WorkingCopyManager fManager = JavaPlugin.getDefault().getWorkingCopyManager();
-        workingCopy = (org.eclipse.jdt.core.ICompilationUnit) fManager.getWorkingCopy(getEditorInput());
-
     }
 
     /*
@@ -102,7 +94,9 @@ public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCh
                 public void run() {
                     selectAndReveal(0, 0);
                     JavaSourceViewer javaSourceViewer = (JavaSourceViewer) getSourceViewer();
-                    javaSourceViewer.doOperation(ISourceViewer.FORMAT);
+                    if (javaSourceViewer != null) {
+                        javaSourceViewer.doOperation(ISourceViewer.FORMAT);
+                    }
                     doSave(null);
                     placeCursorToSelection();
                 }

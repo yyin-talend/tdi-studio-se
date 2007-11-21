@@ -19,6 +19,7 @@ import org.eclipse.jface.fieldassist.FieldDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.jface.fieldassist.IControlCreator;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.custom.StyledText;
@@ -37,8 +38,10 @@ import org.talend.commons.ui.swt.colorstyledtext.ColorManager;
 import org.talend.commons.ui.swt.colorstyledtext.ColorStyledText;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.ui.viewer.java.TalendJavaSourceViewer;
 import org.talend.core.ui.viewer.perl.TalendPerlSourceViewer;
 import org.talend.designer.core.DesignerPlugin;
+import org.talend.designer.core.ui.editor.TalendJavaEditor;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
@@ -100,50 +103,72 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
         Control cLayout;
         StyledText text;
         FormData data;
+        ISourceViewer viewer = null;
         if (param.getNbLines() != 1) {
             if (language.equals("java")) {
-                dField = new DecoratedField(subComposite, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL | SWT.WRAP,
-                        txtCtrl);
-                cLayout = dField.getLayoutControl();
-                text = (StyledText) dField.getControl();
-                data = (FormData) text.getLayoutData();
-                editionControlHelper.register(param.getName(), text, true);
+                String context = param.getContext();
+                if (!param.isNoCheck() && context != null
+                        && (context.equals("begin") || context.equals("main") || context.equals("end"))) {
+                    Composite a = new Composite(subComposite, SWT.NO_FOCUS);
+                    a.setLayout(new FormLayout());
+                    Composite b = new Composite(a, SWT.NO_FOCUS);
+                    b.setLayout(new GridLayout());
+                    data = new FormData();
+                    data.left = new FormAttachment(0, 0);
+                    data.top = new FormAttachment(0, 0);
+                    data.right = new FormAttachment(100, 0);
+                    data.bottom = new FormAttachment(100, 0);
 
-                // following commented code is for test only
-                //                
-                // Composite a = new Composite(subComposite, SWT.NO_FOCUS);
-                // a.setLayout(new FormLayout());
-                // Composite b = new Composite(a, SWT.NO_FOCUS);
-                // b.setLayout(new GridLayout());
-                // data = new FormData();
-                // data.left = new FormAttachment(0, 0);
-                // data.top = new FormAttachment(0, 0);
-                // data.right = new FormAttachment(100, 0);
-                // data.bottom = new FormAttachment(100, 0);
-                //
-                // b.setLayoutData(data);
-                // Process process = null;
-                // if (elem instanceof Node) {
-                // process = (Process) ((Node) elem).getProcess();
-                // } else if (elem instanceof Connection) {
-                // process = (Process) ((Connection) elem).getSource().getProcess();
-                // }
-                // TalendJavaEditor javaEditor = process.getEditor().getCodeEditor();
-                //
-                // IDocument document = javaEditor.getDocumentProvider().getDocument(javaEditor.getEditorInput());
-                // TalendJavaSourceViewer viewer = (TalendJavaSourceViewer)
-                // TalendJavaSourceViewer.createViewerForComponent(b,
-                // SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL | SWT.WRAP, document, null,
-                // elem.getElementName(),
-                // ECodePart.BEGIN);
-                // text = viewer.getTextWidget();
-                //
-                // if (process != null) {
-                // ContextParameterExtractor.installOn(text, process, param.getName(), elem);
-                // }
-                // UndoRedoHelper helper = new UndoRedoHelper();
-                // helper.register(text);
-                // cLayout = a;
+                    b.setLayoutData(data);
+                    Process process = null;
+                    if (elem instanceof Node) {
+                        process = (Process) ((Node) elem).getProcess();
+                    } else if (elem instanceof Connection) {
+                        process = (Process) ((Connection) elem).getSource().getProcess();
+                    }
+                    TalendJavaEditor javaEditor = process.getEditor().getCodeEditor();
+
+                    viewer = (TalendJavaSourceViewer) TalendJavaSourceViewer.createViewerForComponent(b, SWT.BORDER | SWT.MULTI
+                            | SWT.V_SCROLL | SWT.H_SCROLL | SWT.WRAP, javaEditor, null, elem.getElementName(), context);
+                    text = viewer.getTextWidget();
+
+                    if (process != null) {
+                        ContextParameterExtractor.installOn(text, process, param.getName(), elem);
+                    }
+                    text.setData(PARAMETER_NAME, param.getName());
+                    UndoRedoHelper helper = new UndoRedoHelper();
+                    helper.register(text);
+                    cLayout = a;
+                } else {
+                    Composite a = new Composite(subComposite, SWT.NO_FOCUS);
+                    a.setLayout(new FormLayout());
+                    Composite b = new Composite(a, SWT.NO_FOCUS);
+                    b.setLayout(new GridLayout());
+                    data = new FormData();
+                    data.left = new FormAttachment(0, 0);
+                    data.top = new FormAttachment(0, 0);
+                    data.right = new FormAttachment(100, 0);
+                    data.bottom = new FormAttachment(100, 0);
+
+                    b.setLayoutData(data);
+                    Process process = null;
+                    if (elem instanceof Node) {
+                        process = (Process) ((Node) elem).getProcess();
+                    } else if (elem instanceof Connection) {
+                        process = (Process) ((Connection) elem).getSource().getProcess();
+                    }
+                    viewer = (TalendJavaSourceViewer) TalendJavaSourceViewer.createViewer(b, SWT.BORDER | SWT.MULTI
+                            | SWT.V_SCROLL | SWT.H_SCROLL | SWT.WRAP, false);
+                    text = viewer.getTextWidget();
+
+                    if (process != null) {
+                        ContextParameterExtractor.installOn(text, process, param.getName(), elem);
+                    }
+                    text.setData(PARAMETER_NAME, param.getName());
+                    UndoRedoHelper helper = new UndoRedoHelper();
+                    helper.register(text);
+                    cLayout = a;
+                }
             } else {
                 Composite a = new Composite(subComposite, SWT.NO_FOCUS);
                 a.setLayout(new FormLayout());
@@ -156,8 +181,8 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
                 data.bottom = new FormAttachment(100, 0);
 
                 b.setLayoutData(data);
-                TalendPerlSourceViewer viewer = (TalendPerlSourceViewer) TalendPerlSourceViewer.createViewer(b, SWT.BORDER
-                        | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL | SWT.WRAP, true);
+                viewer = (TalendPerlSourceViewer) TalendPerlSourceViewer.createViewer(b, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL
+                        | SWT.H_SCROLL | SWT.WRAP, true);
                 text = viewer.getTextWidget();
 
                 Process process = null;
@@ -169,6 +194,7 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
                 if (process != null) {
                     ContextParameterExtractor.installOn(text, process, param.getName(), elem);
                 }
+                text.setData(PARAMETER_NAME, param.getName());
                 UndoRedoHelper helper = new UndoRedoHelper();
                 helper.register(text);
                 cLayout = a;
@@ -237,6 +263,7 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
         data.top = new FormAttachment(0, top);
         cLayout.setLayoutData(data);
         // **********************
+
         hashCurControls.put(param.getName(), text);
 
         Point initialSize = cLayout.computeSize(SWT.DEFAULT, SWT.DEFAULT);
@@ -322,19 +349,20 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
 
     @Override
     public void refresh(IElementParameter param, boolean checkErrorsWhenViewRefreshed) {
-        StyledText text = (StyledText) hashCurControls.get(param.getName());
+        Object o = hashCurControls.get(param.getName());
         Object value = param.getValue();
-        // boolean valueChanged = false;
-        if (value == null) {
-            text.setText(""); //$NON-NLS-1$
-        } else {
-            if (!value.equals(text.getText())) {
-                text.setText((String) value);
-                // valueChanged = true;
+        if (o instanceof StyledText) {
+            StyledText text = (StyledText) o;
+            if (text.isDisposed()) {
+                return;
+            }
+            if (value == null) {
+                text.setText(""); //$NON-NLS-1$
+            } else {
+                if (!value.equals(text.getText())) {
+                    text.setText((String) value);
+                }
             }
         }
-        // if (checkErrorsWhenViewRefreshed || valueChanged) {
-        // checkErrorsForPropertiesOnly(text);
-        // }
     }
 }

@@ -13,8 +13,6 @@
 package org.talend.designer.core.ui.editor.properties.controllers;
 
 import java.beans.PropertyChangeEvent;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.eclipse.jface.fieldassist.DecoratedField;
 import org.eclipse.jface.fieldassist.FieldDecoration;
@@ -36,11 +34,9 @@ import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.i18n.Messages;
-import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.controllers.creator.SelectAllTextControlCreator;
 import org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty;
-import org.talend.designer.core.ui.views.statsandlogs.StatsAndLogsViewHelper;
 
 /**
  * DOC yzhang class global comment. Detailled comment <br/>
@@ -181,9 +177,6 @@ public class TextController extends AbstractElementPropertySectionController {
             return;
         }
 
-        Color red = Display.getCurrent().getSystemColor(SWT.COLOR_RED);
-        Color white = Display.getCurrent().getSystemColor(SWT.COLOR_WHITE);
-
         Object value = param.getValue();
         boolean valueChanged = false;
         if (value == null) {
@@ -197,6 +190,9 @@ public class TextController extends AbstractElementPropertySectionController {
 
         // Only for statsandlogs View.
         if (param.getCategory() == EComponentCategory.STATSANDLOGS) {
+            Color red = Display.getCurrent().getSystemColor(SWT.COLOR_RED);
+            Color white = Display.getCurrent().getSystemColor(SWT.COLOR_WHITE);
+
             if ((value instanceof String) && param.isRequired()) {
 
                 String str = (String) value;
