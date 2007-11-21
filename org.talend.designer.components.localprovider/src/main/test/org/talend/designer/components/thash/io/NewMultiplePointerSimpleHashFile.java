@@ -10,13 +10,12 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
+
 package org.talend.designer.components.thash.io;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -54,8 +53,6 @@ class NewMultiplePointerSimpleHashFile implements IMapHashFile {
 
     RandomAccessFile ra = null;
 
-    private FileOutputStream fis;
-
     Object lastRetrievedObject;
 
     long lastRetrievedCursorPosition = -1;
@@ -66,30 +63,24 @@ class NewMultiplePointerSimpleHashFile implements IMapHashFile {
 
     long totalGetTime = 0;
 
-    private ReadPointerCollection oraArray = null;
-
-    long readCounter = 0;
+    private HashFileReader hfr = null;
 
     public Object get(String container, long cursorPosition, int hashcode) throws IOException, ClassNotFoundException {
         if (cursorPosition != lastRetrievedCursorPosition) {
             long timeBefore = System.currentTimeMillis();
-            // System.out.println("Require: " + cursorPosition);
-            ObservableRandomAccessFile ora = oraArray.getPointer(cursorPosition);
-            byte[] byteArray = ora.read(cursorPosition);
-            readCounter++;
-            if (readCounter == 1000) {
-                oraArray.scatterPointers();
-                readCounter = 0;
-            }
+            byte[] byteArray = hfr.read(cursorPosition);
             totalGetTime += System.currentTimeMillis() - timeBefore;
             lastRetrievedObject = new ObjectInputStream(new ByteArrayInputStream(byteArray)).readObject();
             lastRetrievedCursorPosition = cursorPosition;
-            // if ((++count + 1) % 10000 == 0) {
-            // System.out.println("totalGetTime from disk=" + totalGetTime + " ms");
+            if ((++count + 1) % 1000 == 0) {
+                System.out.println("Total time to get 1000 items from disk=" + totalGetTime + " ms");
+                totalGetTime = 0;
+            }
+            // do scatter after 10000 items was get.
+            // if ((count + 1) % 10000 == 0) {
+            // hfr.scatterPointers();
             // }
         }
-        // System.out.println("After: " + oraArray);
-
         return lastRetrievedObject;
     }
 
@@ -146,13 +137,13 @@ class NewMultiplePointerSimpleHashFile implements IMapHashFile {
     }
 
     public void initGet(String container) throws IOException {
-        oraArray = new ReadPointerCollection(container, 1000);
+        hfr = new HashFileReader(container, 1000);
 
     }
 
     public void endGet(String container) throws IOException {
         if (!readonly) {
-            oraArray.close();
+            hfr.close();
             File file = new File(container);
             // file.delete();
         }

@@ -87,8 +87,12 @@ class MultiplePointerSimpleHashFile implements IMapHashFile {
             totalGetTime += System.currentTimeMillis() - timeBefore;
             lastRetrievedObject = new ObjectInputStream(new ByteArrayInputStream(byteArray)).readObject();
             lastRetrievedCursorPosition = cursorPosition;
-            if((++count + 1) % 10000 == 0) {
-                System.out.println("totalGetTime from disk=" + totalGetTime + " ms");
+//            if((++count + 1) % 10000 == 0) {
+//                System.out.println("totalGetTime from disk=" + totalGetTime + " ms");
+//            }
+            if((++count + 1) % 1000 == 0) {
+                System.out.println("Total time to get 1000 items from disk=" + totalGetTime + " ms");
+                totalGetTime = 0;
             }
         }
         return lastRetrievedObject;
@@ -164,7 +168,7 @@ class MultiplePointerSimpleHashFile implements IMapHashFile {
         
         for (int i = 0; i < readPointersNumber; i++) {
             raArray[i] = new RandomAccessFile(container, "r");
-            raArray[i].seek((offsetBetweenPointer) * (i + 1) - offsetBetweenPointer / 2);
+            raArray[i].seek((long)(offsetBetweenPointer) * (i + 1) - (long)offsetBetweenPointer / 2);
         }
     }
 
