@@ -29,41 +29,51 @@
 
   <PARAMETERS>
     <PARAMETER
+      NAME="SCHEMA"
+      FIELD="SCHEMA_TYPE"
+      NUM_ROW="1"
+    >
+      <DEFAULT>''</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
       NAME="PROPERTY"
       FIELD="PROPERTY_TYPE"
       SHOW="true"
-      NUM_ROW="1"
+      NUM_ROW="10"
       REPOSITORY_VALUE="DATABASE:MYSQL"
     />
 
     <PARAMETER
-      NAME="USE_EXISTING_CONNECTION"
-      FIELD="CHECK"
-      NUM_ROW="2"
-    >
-      <DEFAULT>false</DEFAULT>
-    </PARAMETER>
-	<PARAMETER
       NAME="TYPE"
       FIELD="TEXT"
-      NUM_ROW="3"
+      NUM_ROW="11"
       SHOW="false"
       REPOSITORY_VALUE="TYPE"
     >
       <DEFAULT>MySQL</DEFAULT>
     </PARAMETER>
+
+    <PARAMETER
+      NAME="USE_EXISTING_CONNECTION"
+      FIELD="CHECK"
+      NUM_ROW="20"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+
     <PARAMETER
       NAME="CONNECTION"
       FIELD="COMPONENT_LIST"
       FILTER="tMysqlConnection"
-      NUM_ROW="2"
+      NUM_ROW="20"
       SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
     />
 
     <PARAMETER
       NAME="HOST"
       FIELD="TEXT"
-      NUM_ROW="3"
+      NUM_ROW="30"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
       REPOSITORY_VALUE="SERVER_NAME"
     >
@@ -73,7 +83,7 @@
     <PARAMETER
       NAME="PORT"
       FIELD="TEXT"
-      NUM_ROW="3"
+      NUM_ROW="40"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
       REPOSITORY_VALUE="PORT"
     >
@@ -83,7 +93,7 @@
     <PARAMETER
       NAME="DBNAME"
       FIELD="TEXT"
-      NUM_ROW="3"
+      NUM_ROW="50"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
       REPOSITORY_VALUE="SID"
       REQUIRED="true"
@@ -94,7 +104,7 @@
     <PARAMETER
       NAME="USER"
       FIELD="TEXT"
-      NUM_ROW="4"
+      NUM_ROW="60"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
       REPOSITORY_VALUE="USERNAME"
       REQUIRED="true"
@@ -105,7 +115,7 @@
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
-      NUM_ROW="4"
+      NUM_ROW="70"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
       REPOSITORY_VALUE="PASSWORD"
       REQUIRED="true"
@@ -114,9 +124,28 @@
     </PARAMETER>
 
     <PARAMETER
+      NAME="ENCODING"
+      FIELD="ENCODING_TYPE"
+      NUM_ROW="71"
+      REQUIRED="true"
+    >
+      <DEFAULT>'ISO-8859-15'</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="COMMIT_EVERY"
+      FIELD="TEXT"
+      NUM_ROW="72"
+      REQUIRED="true"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
+    >
+      <DEFAULT>10000</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
       NAME="TABLE"
       FIELD="DBTABLE"
-      NUM_ROW="5"
+      NUM_ROW="80"
       REQUIRED="true"
     >
       <DEFAULT>''</DEFAULT>
@@ -125,7 +154,7 @@
     <PARAMETER
       NAME="TABLE_ACTION"
       FIELD="CLOSED_LIST"
-      NUM_ROW="6"
+      NUM_ROW="90"
     >
       <ITEMS DEFAULT="NONE">
         <ITEM
@@ -154,7 +183,7 @@
     <PARAMETER
       NAME="DATA_ACTION"
       FIELD="CLOSED_LIST"
-      NUM_ROW="6"
+      NUM_ROW="100"
     >
       <ITEMS DEFAULT="INSERT">
         <ITEM NAME="INSERT"           VALUE="INSERT" />
@@ -164,30 +193,13 @@
         <ITEM NAME="DELETE"           VALUE="DELETE"/>
       </ITEMS>
     </PARAMETER>
-
-    <PARAMETER
-      NAME="SCHEMA"
-      FIELD="SCHEMA_TYPE"
-      NUM_ROW="7"
-    >
-      <DEFAULT>''</DEFAULT>
-    </PARAMETER>
     
-    <PARAMETER
-      NAME="ENCODING"
-      FIELD="ENCODING_TYPE"
-      NUM_ROW="8"
-      REQUIRED="true"
-    >
-      <DEFAULT>'ISO-8859-15'</DEFAULT>
-    </PARAMETER>
-
     <PARAMETER
       NAME="ADD_COLS"
       FIELD="TABLE"
       REQUIRED="false"
       NOT_SHOW_IF="(TABLE_ACTION=='DROP_CREATE' or TABLE_ACTION=='CREATE' or TABLE_ACTION=='CREATE_IF_NOT_EXISTS')"
-      NUM_ROW="9"
+      NUM_ROW="110"
       NB_LINES="3"
     >
       <ITEMS>
@@ -210,13 +222,21 @@
     </PARAMETER>
 
     <PARAMETER
-      NAME="COMMIT_EVERY"
-      FIELD="TEXT"
-      NUM_ROW="10"
-      REQUIRED="true"
-      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
+      NAME="USE_EXTENDED_INSERTS"
+      FIELD="CHECK"
+      NUM_ROW="120"
     >
-      <DEFAULT>10000</DEFAULT>
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="NB_ROWS_PER_INSERT"
+      FIELD="TEXT"
+      NUM_ROW="121"
+      REQUIRED="true"
+      SHOW_IF="USE_EXTENDED_INSERTS == 'true'"
+    >
+      <DEFAULT>100</DEFAULT>
     </PARAMETER>
 
   </PARAMETERS>

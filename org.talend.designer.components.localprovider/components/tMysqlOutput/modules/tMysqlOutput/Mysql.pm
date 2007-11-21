@@ -113,4 +113,20 @@ sub getTableCreationQuery {
     return $query;
 }
 
+sub getInsertQuery {
+    my ($table, $keyString, $parametersString, $nbInserts) = @_;
+
+    $query = '
+INSERT
+  INTO '.$table.'
+  ('.$keyString.')
+  VALUES
+';
+
+    return $query.join(
+        "\n  ,",
+        map {'('.$parametersString.')'} (1..$nbInserts)
+    );
+}
+
 1;

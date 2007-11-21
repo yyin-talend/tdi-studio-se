@@ -89,6 +89,18 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         else {
             dbh+= cid;
         }
+
+        Boolean useExtendedInserts = new Boolean(
+            ElementParameterParser.getValue(
+                node,
+                "__USE_EXTENDED_INSERTS__"
+            )
+        );
+
+        String nbRowsPerInsert = ElementParameterParser.getValue(
+            node,
+            "__NB_ROWS_PER_INSERT__"
+        );
 %>
 
 # keyPositionsString : <%=keyPositionsString%>
@@ -108,13 +120,30 @@ if ($nb_rows) {
 <%
         }
         else if (dataAction.equals("INSERT")) {
+            if (useExtendedInserts && !nbRowsPerInsert.equals("1")) {
 %>
+push @buffer_<%=cid%>, @$<%=cid %>;
+$nb_rows_in_buffer_<%=cid%>++;
 
+if ($nb_rows_in_buffer_<%=cid%> == <%=nbRowsPerInsert%>) {
+    $isth_<%=cid %>->execute(@buffer_<%=cid %>)
+        or die "[<%=cid%>] can't execute extended insert query\n";
+
+    $nb_line_inserted_<%=cid%>+= $nb_rows_in_buffer_<%=cid%>;
+     
+    $nb_rows_in_buffer_<%=cid%> = 0;
+    @buffer_<%=cid%> = ();
+}
+<%
+            }
+            else {
+%>
 $isth_<%=cid %>->execute(@$<%=cid %>)
-    or die "can't execute insert query\n";
+    or die "[<%=cid%>] can't execute insert query\n";
 
 $nb_line_inserted_<%=cid%>++;
 <%
+            }
         }
         else if (dataAction.equals("INSERT_OR_UPDATE")) {
 %>

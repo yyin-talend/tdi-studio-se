@@ -17,6 +17,24 @@ List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
     IMetadataTable metadata = metadatas.get(0);
     if (metadata!=null) {
+        String dataAction = ElementParameterParser.getValue(
+            node,
+            "__DATA_ACTION__"
+        );
+
+        String dbtable = ElementParameterParser.getValue(node, "__TABLE__");
+
+        Boolean useExtendedInserts = new Boolean(
+            ElementParameterParser.getValue(
+                node,
+                "__USE_EXTENDED_INSERTS__"
+            )
+        );
+
+        String nbRowsPerInsert = ElementParameterParser.getValue(
+            node,
+            "__NB_ROWS_PER_INSERT__"
+        );
 
         String useExistingConnection = ElementParameterParser.getValue(
             node,
@@ -36,12 +54,34 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             dbh+= cid;
         }
 
+        if (dataAction.equals("INSERT")) {
+            if (useExtendedInserts && !nbRowsPerInsert.equals("1")) {
+%>
+if ($nb_rows_in_buffer_<%=cid%> > 0) {
+    $query = tMysqlOutput::Mysql::getInsertQuery(
+        <%=dbtable%>,
+        $keyString_<%=cid%>,
+        $parametersString_<%=cid%>,
+        $nb_rows_in_buffer_<%=cid%>
+    );
+    my $isth_<%=cid %> = $<%=dbh%>->prepare($query);
+
+    $isth_<%=cid %>->execute(@buffer_<%=cid %>)
+        or die "[<%=cid%>] can't execute extended insert query\n";
+    
+    $nb_line_inserted_<%=cid%>+= $buffer_size_<%=cid%>;
+}
+<%
+            }
+        }
+
         if (useExistingConnection.equals("false")) {
 %>
 $<%=dbh%>->commit();
 $<%=dbh%>->disconnect();
 <%
         }
+
 %>
 
 $_globals{<%=cid %>}{NB_LINE} = $nb_line_<%=cid %>;
