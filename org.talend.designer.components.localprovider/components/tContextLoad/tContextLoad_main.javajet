@@ -10,12 +10,17 @@
 		org.talend.core.model.metadata.types.JavaTypesManager
 		org.talend.core.model.metadata.types.JavaType
 		java.util.List
+		org.talend.core.model.process.IProcess
+		org.talend.core.model.process.IContextParameter
+		java.util.ArrayList
 	"
 %>
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
-
+IProcess process=node.getProcess();
+List<IContextParameter> params = new ArrayList<IContextParameter>();
+params=process.getContextManager().getDefaultContext().getContextParameterList();
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
     IMetadataTable metadata = metadatas.get(0);
@@ -75,9 +80,33 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     	if (context.getProperty(key_<%=cid %>)!=null)
     	{
     		context.setProperty(key_<%=cid %>,value_<%=cid %>);
+    	<%
+            for (IContextParameter ctxParam :params)
+             {
+        %>  
+        if(key_<%=cid %>!=null && "<%=ctxParam.getName()%>".equals(key_<%=cid %>))
+        {
+            <%=ctxParam.getName()%>= value_<%=cid %>;
+        }
+       
+         <%               
+             }
+        %>	
     		assignList_<%=cid %>.add(key_<%=cid %>);
     	}else  {
     		context.setProperty(key_<%=cid %>,value_<%=cid %>);
+    	<%
+            for (IContextParameter ctxParam :params)
+             {
+        %>  
+        if(key_<%=cid %>!=null && "<%=ctxParam.getName()%>".equals(key_<%=cid %>))
+        {
+            <%=ctxParam.getName()%>= value_<%=cid %>;
+        }
+       
+         <%               
+             }
+        %>  
     		newPropertyList_<%=cid %>.add(key_<%=cid %>);
     	}
     	nb_line_<%=cid %>++;

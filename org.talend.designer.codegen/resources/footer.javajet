@@ -8,6 +8,9 @@
 		
 		java.util.Vector
 		java.util.List
+		java.util.ArrayList
+		org.talend.core.model.process.IContextParameter
+		org.talend.core.model.metadata.types.JavaTypesManager
 	" 
 	class="Footer" 
 %>
@@ -20,6 +23,8 @@
 	boolean stats = codeGenArgument.isStatistics();
 	boolean trace = codeGenArgument.isTrace();
 	boolean isRunInMultiThread = codeGenArgument.getIsRunInMultiThread();
+	List<IContextParameter> params = new ArrayList<IContextParameter>();
+    params=process.getContextManager().getDefaultContext().getContextParameterList();
 %>
     public static boolean watch = false;
     public static int portStats = 3334;
@@ -108,7 +113,13 @@
 			if(!context_param.isEmpty()) {						
 			    context.putAll(context_param);		
 			}
-			
+			<% for (IContextParameter ctxParam :params)
+			{
+			%>
+			<%=ctxParam.getName()%>=context.getProperty("<%=ctxParam.getName()%>");
+			<%
+			}
+			%>
     	} catch (java.io.IOException ie) {
     		System.err.println("Could not load context "+contextStr);
     		ie.printStackTrace();

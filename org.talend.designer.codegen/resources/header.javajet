@@ -13,7 +13,10 @@
 		org.talend.core.GlobalServiceRegister
 		org.talend.designer.codegen.IRoutineSynchronizer
 		java.util.List
+		java.util.ArrayList
 		java.util.Vector
+		org.talend.core.model.process.IContextParameter
+		org.talend.core.model.metadata.types.JavaTypesManager
 	"
 	class="Header" 
 %>
@@ -27,6 +30,8 @@
 	boolean stats = codeGenArgument.isStatistics();
 	boolean trace = codeGenArgument.isTrace();
 	boolean isRunInMultiThread = codeGenArgument.getIsRunInMultiThread();
+	List<IContextParameter> params = new ArrayList<IContextParameter>();
+	params=process.getContextManager().getDefaultContext().getContextParameterList();
 %>
 // ============================================================================
 //
@@ -70,7 +75,14 @@ import java.math.BigDecimal;
 	private static java.util.Properties defaultProps = new java.util.Properties();
 	// create application properties with default
 	private static java.util.Properties context = new java.util.Properties();
-
+<%
+    for (IContextParameter ctxParam :params)
+     {
+%>      
+private static String <%=ctxParam.getName()%>;
+  <%       
+     }
+%>
 	private static final String jobName = "<%=codeGenArgument.getJobName() %>";
 	private static final String projectName = "<%=codeGenArgument.getCurrentProjectName() %>";
 	public static Integer errorCode = null;
