@@ -1,0 +1,142 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser 
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.metadata.IMetadataColumn 
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+" 
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+
+String hostname = ElementParameterParser.getValue(
+    node,
+    "__HOSTNAME__"
+);
+
+
+String port = ElementParameterParser.getValue(
+    node,
+    "__PORT__"
+);
+
+String eol = ElementParameterParser.getValue(
+    node,
+    "__EOL_CHAR__"
+);
+
+String fieldSeparator = ElementParameterParser.getValue(
+    node,
+    "__FIELD_SEP__"
+);
+
+String endOfData = ElementParameterParser.getValue(
+    node,
+    "__END_OF_DATA__"
+);
+
+
+String openingMsg = ElementParameterParser.getValue(
+    node,
+    "__OPENING_MSG__"
+);
+
+String msg = ElementParameterParser.getValue(
+    node,
+    "__MSG__"
+);
+
+String ackMsg = ElementParameterParser.getValue(
+    node,
+    "__ACK_MSG__"
+);
+
+String closingMsg = ElementParameterParser.getValue(
+    node,
+    "__CLOSING_MSG__"
+);
+
+String print = ElementParameterParser.getValue(
+    node,
+    "__PRINT__"
+);
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+        int nbFields = metadata.getListColumns().size();
+%>
+
+
+use Socket;
+use IO::Handle;
+use IO::Socket qw(:all);
+
+
+{
+STDERR->autoflush(1);
+STDOUT->autoflush(1);
+
+local $/;
+$/ = <%=eol%>;
+
+
+my $end_of_data;
+<%if(endOfData != null && endOfData.length()> 0 ){%>
+$end_of_data = <%=endOfData%>;
+<%}%>
+
+
+my $host = inet_aton(<%=hostname%>) or die "<%=hostname%>: unknown host";
+
+socket(SOCK_<%=cid%>, AF_INET, SOCK_STREAM, getprotobyname('tcp')) or 
+    die "socket() failed: $!";
+
+my $dest_addr = sockaddr_in(<%=port%>,$host);
+
+connect(SOCK_<%=cid%>,$dest_addr) or 
+   die "connect() failed: $!";
+
+SOCK_<%=cid%>->autoflush(1);
+
+
+<%if(openingMsg != null && openingMsg.length()> 0 ){%>
+print SOCK_<%=cid%> <%=openingMsg%> . <%=eol%> ;
+<%}%>
+
+
+while (1) {
+    <%if(msg != null && msg.length()> 0 ){%>
+    print SOCK_<%=cid%> <%=msg%> . <%=eol%> ;
+    <%}%>
+
+    my $msg_in_<%=cid %> = <SOCK_<%=cid%>>;
+
+    chomp $msg_in_<%=cid %> ;
+    $_globals{<%=cid %>}{INPUT_DATA} = $msg_in_<%=cid %>;
+    
+    last unless defined $msg_in_<%=cid %> ;
+    last if ( $end_of_data eq $msg_in_<%=cid %> ) ;
+    my $<%=cid %> = [
+        (
+            split(
+                <%=fieldSeparator%>,
+                $msg_in_<%=cid %>
+                <% if (nbFields>0) { %>,<%=nbFields + 1%><% } %>
+            )
+        ) 
+    ];
+    <%if(ackMsg != null && ackMsg.length()> 0 ){%>
+    print SOCK_<%=cid%> <%=ackMsg%> . <%=eol%> ;
+    <%}%>
+
+<%
+		}
+	}
+%>

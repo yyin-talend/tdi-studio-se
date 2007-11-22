@@ -1,0 +1,124 @@
+<COMPONENT>
+  <HEADER
+    PLATEFORM="ALL"
+    SERIAL=""
+    VERSION="0.102"
+    STATUS="ALPHA"
+    
+    COMPATIBILITY="ALL"
+    AUTHOR="Talend"
+    RELEASE_DATE="20050320A"
+    STARTABLE="true"
+  >
+    <SIGNATURE/>
+  </HEADER>
+
+  <DOCUMENTATION>
+    <URL/>
+  </DOCUMENTATION>
+
+  <CONNECTORS>
+    <CONNECTOR CTYPE="FLOW" MAX_INPUT="0"/>
+    <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="1" MAX_INPUT="1"/>
+    <CONNECTOR CTYPE="THEN_RUN" MAX_INPUT="1"/>
+    <CONNECTOR CTYPE="REFERENCE"/>
+    <CONNECTOR CTYPE="RUN_OK"/>
+    <CONNECTOR CTYPE="RUN_ERROR"/>
+    <CONNECTOR CTYPE="RUN_IF"/>
+  </CONNECTORS>
+
+  <PARAMETERS>
+    <PARAMETER
+      NAME="SCHEMA"
+      FIELD="SCHEMA_TYPE"
+      REQUIRED="true"
+      NUM_ROW="1"
+    >
+      <DEFAULT/> 
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="HOSTNAME"
+      FIELD="TEXT"
+      REQUIRED="true"
+      NUM_ROW="10"
+    >
+      <DEFAULT>'myhost'</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="PORT"
+      FIELD="TEXT"
+      REQUIRED="true"
+      NUM_ROW="20"
+    >
+      <DEFAULT>2003</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER 
+      NAME="EOL_CHAR" 
+      FIELD="TEXT" 
+      REQUIRED="true"
+      NUM_ROW="30"
+    >
+      <DEFAULT>"\n"</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER 
+      NAME="FIELD_SEP" 
+      FIELD="TEXT" 
+      NUM_ROW="40"
+    >
+      <DEFAULT>"\t"</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER 
+      NAME="END_OF_DATA" 
+      FIELD="TEXT" 
+      NUM_ROW="41"
+    >
+      <DEFAULT>"eof"</DEFAULT>
+    </PARAMETER>
+
+
+    <PARAMETER 
+      NAME="OPENING_MSG" 
+      FIELD="TEXT" 
+      NUM_ROW="50"
+    >
+      <DEFAULT></DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER 
+      NAME="MSG" 
+      FIELD="TEXT" 
+      NUM_ROW="60"
+    >
+      <DEFAULT>"message : $_"</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER 
+      NAME="ACK_MSG" 
+      FIELD="TEXT" 
+      NUM_ROW="70"
+    >
+      <DEFAULT></DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER 
+      NAME="CLOSING_MSG" 
+      FIELD="TEXT" 
+      NUM_ROW="80"
+    >
+      <DEFAULT></DEFAULT>
+    </PARAMETER>
+
+   </PARAMETERS>
+
+   <CODEGENERATION/>
+
+   <RETURNS>
+    <RETURN NAME="INPUT_DATA" TYPE="STRING" AVAILABILITY="FLOW"/>
+   </RETURNS>
+
+</COMPONENT>
