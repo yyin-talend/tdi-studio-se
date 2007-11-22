@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 
+import org.talend.commons.utils.StringUtils;
 import org.talend.designer.runprocess.shadow.ShadowProcess.EShadowProcessType;
 import org.talend.fileprocess.delimited.DelimitedDataReader;
 import org.talend.fileprocess.delimited.DelimitedDataReaderFactory;
@@ -36,9 +37,8 @@ public class FileInputDelimitedNode extends FileInputNode {
     /**
      * Constructs a new FileInputNode.
      */
-    public FileInputDelimitedNode(String filename, String rowSep, String fieldSep, int limitRows, int headerRows,
-            int footerRows, String escapeChar, String textEnclosure, boolean removeEmptyRow, String encoding,
-            EShadowProcessType fileType) {
+    public FileInputDelimitedNode(String filename, String rowSep, String fieldSep, int limitRows, int headerRows, int footerRows,
+            String escapeChar, String textEnclosure, boolean removeEmptyRow, String encoding, EShadowProcessType fileType) {
         super("tFileInputDelimited"); //$NON-NLS-1$
 
         boolean csvoption = false;
@@ -48,8 +48,8 @@ public class FileInputDelimitedNode extends FileInputNode {
             csvoption = false;
             DelimitedDataReader dr = null;
             try {
-                dr = DelimitedDataReaderFactory.createDelimitedDataReader(trimParameter(filename),
-                        trimParameter(encoding), trimParameter(fieldSep), trimParameter(rowSep), true);
+                dr = DelimitedDataReaderFactory.createDelimitedDataReader(trimParameter(filename), trimParameter(encoding),
+                        trimParameter(StringUtils.loadConvert(fieldSep)), trimParameter(StringUtils.loadConvert(rowSep)), true);
                 dr.skipHeaders(0);
                 int max = dr.getMaxColumnCount(limitRows);
                 if (max > 0) {
@@ -68,11 +68,10 @@ public class FileInputDelimitedNode extends FileInputNode {
             csvoption = true;
             CsvReader cr = null;
             try {
-                cr = new CsvReader(new BufferedReader(new InputStreamReader(
-                        new FileInputStream(trimParameter(filename)), trimParameter(encoding))),
-                        trimParameter(fieldSep).charAt(0));
+                cr = new CsvReader(new BufferedReader(new InputStreamReader(new FileInputStream(trimParameter(filename)),
+                        trimParameter(encoding))), trimParameter(StringUtils.loadConvert(fieldSep)).charAt(0));
                 if (!rowSep.equals("\"\\n\"") && !rowSep.equals("\"\\r\"")) {
-                    cr.setRecordDelimiter(trimParameter(rowSep).charAt(0));
+                    cr.setRecordDelimiter(trimParameter(StringUtils.loadConvert(rowSep)).charAt(0));
                 }
                 cr.setSkipEmptyRecords(true);
                 String en = trimParameter(textEnclosure);
