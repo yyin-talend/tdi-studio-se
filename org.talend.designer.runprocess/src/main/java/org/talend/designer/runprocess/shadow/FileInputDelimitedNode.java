@@ -20,6 +20,7 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 
 import org.talend.commons.utils.StringUtils;
+import org.talend.core.language.LanguageManager;
 import org.talend.designer.runprocess.shadow.ShadowProcess.EShadowProcessType;
 import org.talend.fileprocess.delimited.DelimitedDataReader;
 import org.talend.fileprocess.delimited.DelimitedDataReaderFactory;
@@ -42,14 +43,17 @@ public class FileInputDelimitedNode extends FileInputNode {
         super("tFileInputDelimited"); //$NON-NLS-1$
 
         boolean csvoption = false;
+        String languageName = LanguageManager.getCurrentLanguage().getName();
         switch (fileType) {
 
         case FILE_DELIMITED:
             csvoption = false;
             DelimitedDataReader dr = null;
             try {
+
                 dr = DelimitedDataReaderFactory.createDelimitedDataReader(trimParameter(filename), trimParameter(encoding),
-                        trimParameter(StringUtils.loadConvert(fieldSep)), trimParameter(StringUtils.loadConvert(rowSep)), true);
+                        trimParameter(StringUtils.loadConvert(fieldSep, languageName)), trimParameter(StringUtils.loadConvert(
+                                rowSep, languageName)), true);
                 dr.skipHeaders(0);
                 int max = dr.getMaxColumnCount(limitRows);
                 if (max > 0) {
@@ -69,9 +73,9 @@ public class FileInputDelimitedNode extends FileInputNode {
             CsvReader cr = null;
             try {
                 cr = new CsvReader(new BufferedReader(new InputStreamReader(new FileInputStream(trimParameter(filename)),
-                        trimParameter(encoding))), trimParameter(StringUtils.loadConvert(fieldSep)).charAt(0));
+                        trimParameter(encoding))), trimParameter(StringUtils.loadConvert(fieldSep, languageName)).charAt(0));
                 if (!rowSep.equals("\"\\n\"") && !rowSep.equals("\"\\r\"")) {
-                    cr.setRecordDelimiter(trimParameter(StringUtils.loadConvert(rowSep)).charAt(0));
+                    cr.setRecordDelimiter(trimParameter(StringUtils.loadConvert(rowSep, languageName)).charAt(0));
                 }
                 cr.setSkipEmptyRecords(true);
                 String en = trimParameter(textEnclosure);
