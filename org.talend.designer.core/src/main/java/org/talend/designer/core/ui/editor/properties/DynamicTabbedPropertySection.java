@@ -88,6 +88,7 @@ import org.talend.designer.core.ui.editor.outline.NodeTreeEditPart;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController;
 import org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty;
+import org.talend.designer.core.ui.views.properties.ComponentSettingsView;
 import org.talend.designer.core.ui.views.properties.DynamicPropertyGenerator;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -898,6 +899,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
 
     @Override
     public void refresh() {
+
         TimeMeasure.display = false;
         TimeMeasure.measureActive = true;
         TimeMeasure.begin("DTP:refresh:" + getCurrentComponent());

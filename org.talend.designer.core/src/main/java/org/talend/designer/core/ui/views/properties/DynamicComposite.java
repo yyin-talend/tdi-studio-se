@@ -566,6 +566,16 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
         addComponents(forceRedraw, true, 0);
     }
 
+    /**
+     * yzhang Comment method "addcomponents".
+     * 
+     * @param forceRedraw
+     * @param reInitialize
+     */
+    public void addComponents(boolean forceRedraw, boolean reInitialize) {
+        addComponents(forceRedraw, reInitialize, 0);
+    }
+
     protected void disposeChildren() {
         // Empty the composite before use (kinda refresh) :
         Control[] ct = composite.getChildren();
@@ -1019,8 +1029,7 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
                 addComponents(true);
                 refresh();
             }
-            Boolean updateNeeded = true; // (Boolean)
-                                            // elem.getPropertyValue(EParameterName.UPDATE_COMPONENTS.getName());
+            Boolean updateNeeded = (Boolean) elem.getPropertyValue(EParameterName.UPDATE_COMPONENTS.getName());
             if (updateNeeded || 0 != (detail & CommandStack.POST_UNDO) || 0 != (detail & CommandStack.POST_REDO)) {
                 refresh();
             }

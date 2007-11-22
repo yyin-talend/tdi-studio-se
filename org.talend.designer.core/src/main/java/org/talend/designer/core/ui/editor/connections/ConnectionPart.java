@@ -25,9 +25,15 @@ import org.eclipse.gef.editparts.AbstractConnectionEditPart;
 import org.eclipse.gef.editpolicies.ConnectionEditPolicy;
 import org.eclipse.gef.editpolicies.ConnectionEndpointEditPolicy;
 import org.eclipse.gef.requests.GroupRequest;
+import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.PlatformUI;
 import org.talend.core.model.process.Element;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.cmd.ConnectionDeleteCommand;
+import org.talend.designer.core.ui.editor.nodes.Node;
+import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
+import org.talend.designer.core.ui.views.properties.ComponentSettingsView;
 
 /**
  * Graphical part of the connection of Gef. <br/>
@@ -74,6 +80,16 @@ public class ConnectionPart extends AbstractConnectionEditPart implements Proper
                 ((EditPart) cl.get(i)).setSelected(value);
             }
         }
+
+        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+        if (DynamicTabbedPropertySection.DEBUG_TIME) {
+            IViewPart view = page.findView(ComponentSettingsView.ID); //$NON-NLS-1$
+            if (view != null) {
+                ComponentSettingsView compSettings = (ComponentSettingsView) view;
+                compSettings.setElement((Connection) getModel());
+            }
+        }
+
     }
 
     /*
