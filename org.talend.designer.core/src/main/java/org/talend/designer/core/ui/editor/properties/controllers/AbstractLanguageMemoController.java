@@ -206,11 +206,11 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
             text = (StyledText) dField.getControl();
             data = (FormData) text.getLayoutData();
             editionControlHelper.register(param.getName(), text, true);
-        }
-        if (param.isRequired()) {
-            FieldDecoration decoration = FieldDecorationRegistry.getDefault().getFieldDecoration(
-                    FieldDecorationRegistry.DEC_REQUIRED);
-            dField.addFieldDecoration(decoration, SWT.RIGHT | SWT.TOP, false);
+            if (param.isRequired()) {
+                FieldDecoration decoration = FieldDecorationRegistry.getDefault().getFieldDecoration(
+                        FieldDecorationRegistry.DEC_REQUIRED);
+                dField.addFieldDecoration(decoration, SWT.RIGHT | SWT.TOP, false);
+            }
         }
 
         if (getAdditionalHeightSize() != 0) {
