@@ -152,6 +152,7 @@ if (defined $previous_key_<%=cid%>
 <%
         }
 %>
+    $<%=cid%> = \@<%=cid%>;
 
     %operations_<%=cid%> = ();
 }
