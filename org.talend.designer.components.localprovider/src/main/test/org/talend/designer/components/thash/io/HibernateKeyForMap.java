@@ -54,15 +54,15 @@ public class HibernateKeyForMap {
     public static Map<KeyForMap, KeyForMap> readAsMap(String file) throws IOException {
         DataInputStream dis = new DataInputStream(new BufferedInputStream(new FileInputStream(file)));
         int size = dis.readInt();
-        TObjectHashingStrategy<KeyForMap> objectHashingStrategy = new TObjectHashingStrategy<KeyForMap>() {
+        TObjectHashingStrategy objectHashingStrategy = new TObjectHashingStrategy() {
 
             @Override
-            public int computeHashCode(KeyForMap arg0) {
+            public int computeHashCode(Object arg0) {
                 return arg0 == null ? 0 : arg0.hashCode();
             }
 
             @Override
-            public boolean equals(KeyForMap arg0, KeyForMap arg1) {
+            public boolean equals(Object arg0, Object arg1) {
                 return arg1 == null ? arg0 == null : arg1.equals(arg0);
             }
 
