@@ -72,6 +72,7 @@ public enum EParameterName {
     ENCODING_TYPE(Messages.getString("EParameterName.encodingType")), //$NON-NLS-1$
     COMPONENT_LIST(Messages.getString("EParameterName.componentList")), //$NON-NLS-1$
     MAPPING_TYPE(Messages.getString("EParameterName.mapping")), //$NON-NLS-1$
+    DUMMY("DUMMY"), //$NON-NLS-1$ Hidden parameter so no translation needed
     DBTABLE("Table Name"),
     MODULE_LIST("Module List"),
 

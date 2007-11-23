@@ -56,6 +56,7 @@ import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.ProcessEditorInput;
 import org.talend.designer.core.ui.editor.cmd.ExternalNodeChangeCommand;
 import org.talend.designer.core.ui.editor.connections.Connection;
+import org.talend.designer.core.ui.editor.connections.ConnectionFigure;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainerPart;
 import org.talend.designer.core.ui.editor.process.ProcessPart;
@@ -217,6 +218,7 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
             nodeFigure.setHint(((Node) getModel()).getShowHintText());
         }
 
+        nodeFigure.setDummy(((Node) getModel()).isDummy());
         if (((INode) getModel()).isActivate()) {
             nodeFigure.setAlpha(-1);
         } else {
@@ -273,10 +275,12 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
             getParent().refresh();
         } else if (changeEvent.getPropertyName().equals(EParameterName.ACTIVATE.getName())) {
             if (((INode) getModel()).isActivate()) {
+                ((NodeFigure) figure).setDummy(((Node) getModel()).isDummy());
                 ((NodeFigure) figure).setAlpha(-1);
                 ((NodeFigure) figure).repaint();
                 refreshVisuals();
             } else {
+                ((NodeFigure) figure).setDummy(((Node) getModel()).isDummy());
                 ((NodeFigure) figure).setAlpha(Node.ALPHA_VALUE);
                 ((NodeFigure) figure).repaint();
                 refreshVisuals();
@@ -332,6 +336,9 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
      * @see org.eclipse.gef.NodeEditPart#getSourceConnectionAnchor(org.eclipse.gef.ConnectionEditPart)
      */
     public ConnectionAnchor getSourceConnectionAnchor(final ConnectionEditPart connection) {
+        if (((Connection) connection.getModel()).getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)) {
+            ((NodeFigure) getFigure()).addSourceConnection((ConnectionFigure) connection.getFigure());
+        }
         return new ChopboxAnchor(getFigure());
     }
 
@@ -341,6 +348,9 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
      * @see org.eclipse.gef.NodeEditPart#getTargetConnectionAnchor(org.eclipse.gef.ConnectionEditPart)
      */
     public ConnectionAnchor getTargetConnectionAnchor(final ConnectionEditPart connection) {
+        if (((Connection) connection.getModel()).getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)) {
+            ((NodeFigure) getFigure()).setTargetConnection((ConnectionFigure) connection.getFigure());
+        }
         return new ChopboxAnchor(getFigure());
     }
 

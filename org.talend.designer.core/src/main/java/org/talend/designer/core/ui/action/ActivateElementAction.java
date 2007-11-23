@@ -20,7 +20,6 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.cmd.ChangeActivateStatusElementCommand;
-import org.talend.designer.core.ui.editor.cmd.ChangeActivateStatusSubjobCommand;
 import org.talend.designer.core.ui.editor.connections.ConnLabelEditPart;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.connections.ConnectionLabel;
@@ -85,16 +84,13 @@ public class ActivateElementAction extends SelectionAction {
             for (int i = 0; i < parts.size(); i++) {
                 if (parts.get(i) instanceof ConnectionPart) {
                     Connection connection = ((Connection) ((ConnectionPart) parts.get(i)).getModel());
-                    if (!connection.isReadOnly() && connection.getSource().isActivate()
-                            && connection.getTarget().isActivate()) {
+                    if (!connection.isReadOnly() && connection.getSource().isActivate() && connection.getTarget().isActivate()) {
                         connectionList.add(connection);
                     }
                 }
                 if (parts.get(i) instanceof ConnLabelEditPart) {
-                    Connection connection = ((ConnectionLabel) ((ConnLabelEditPart) parts.get(i)).getModel())
-                            .getConnection();
-                    if (!connection.isReadOnly() && connection.getSource().isActivate()
-                            && connection.getTarget().isActivate()) {
+                    Connection connection = ((ConnectionLabel) ((ConnLabelEditPart) parts.get(i)).getModel()).getConnection();
+                    if (!connection.isReadOnly() && connection.getSource().isActivate() && connection.getTarget().isActivate()) {
                         connectionList.add(connection);
                     }
                 }
@@ -148,8 +144,8 @@ public class ActivateElementAction extends SelectionAction {
     public void run() {
         List editparts = getSelectedObjects();
         if (editparts.size() >= 1) {
-            ChangeActivateStatusElementCommand changeActivateStatusCommand = new ChangeActivateStatusElementCommand(
-                    activate, nodeList, connectionList);
+            ChangeActivateStatusElementCommand changeActivateStatusCommand = new ChangeActivateStatusElementCommand(activate,
+                    nodeList, connectionList);
             execute(changeActivateStatusCommand);
         }
     }

@@ -497,6 +497,18 @@ public class EmfComponent implements IComponent {
         param.setShow(true);
         listParam.add(param);
 
+        param = new ElementParameter(node);
+        param.setName(EParameterName.DUMMY.getName());
+        param.setValue(Boolean.FALSE);
+        param.setDisplayName(EParameterName.DUMMY.getDisplayName());
+        param.setField(EParameterFieldType.CHECK);
+        param.setCategory(EComponentCategory.MAIN);
+        param.setNumRow(5);
+        param.setReadOnly(false);
+        param.setRequired(false);
+        param.setShow(false);
+        listParam.add(param);
+
         boolean tStatCatcherAvailable = ComponentsFactoryProvider.getInstance().get(TSTATCATCHER_NAME) != null;
         param = new ElementParameter(node);
         param.setName(EParameterName.TSTATCATCHER_STATS.getName());

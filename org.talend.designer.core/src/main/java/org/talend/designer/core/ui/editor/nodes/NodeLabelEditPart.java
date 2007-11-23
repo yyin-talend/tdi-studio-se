@@ -132,8 +132,8 @@ public class NodeLabelEditPart extends AbstractGraphicalEditPart implements Prop
             // set the new size to update the node container
             ((NodeLabel) getModel()).setLabelSize(((SimpleHtmlFigure) figure).getPreferredSize());
             NodeLabel label = (NodeLabel) getModel();
-            UIUtils.updateSqlBuilderDialogTitle(label.getLabelText(), label.getNode().getProcess().getName(), label
-                    .getNode().getUniqueName());
+            UIUtils.updateSqlBuilderDialogTitle(label.getLabelText(), label.getNode().getProcess().getName(), label.getNode()
+                    .getUniqueName());
             getParent().refresh();
         }
         if (request.equals(NodeLabel.LOCATION)) { //$NON-NLS-1$

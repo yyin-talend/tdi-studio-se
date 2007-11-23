@@ -838,6 +838,11 @@ public class Node extends Element implements INode {
         if (id.equals(EParameterName.ACTIVATE.getName())) {
             setActivate((Boolean) value);
         }
+
+        if (id.equals(EParameterName.DUMMY.getName())) {
+            setDummy((Boolean) value);
+        }
+
         if (id.equals(EParameterName.HINT.getName())) {
             hintToParse = (String) value;
             String newValue = ElementParameterParser.parse(this, hintToParse);
@@ -984,21 +989,61 @@ public class Node extends Element implements INode {
         nodeLabel.setActivate(activate);
         List<Connection> connectionsOutputs = (List<Connection>) this.getOutgoingConnections();
         List<Connection> connectionsInputs = (List<Connection>) this.getIncomingConnections();
-        for (int i = 0; i < connectionsOutputs.size(); i++) {
-            if (!isDummy()) {
-                // if (connectionsOutputs.get(i).getTarget().isActivate()) {
-                connectionsOutputs.get(i).setPropertyValue(EParameterName.ACTIVATE.getName(), activate);
-                // }
+
+        boolean hasActivatedOutput = false;
+        for (Connection connection : connectionsOutputs) {
+            if (connection.isActivate() && connection.getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)) {
+                hasActivatedOutput = true;
             }
         }
-        for (int i = 0; i < connectionsInputs.size(); i++) {
-            if (!isDummy()) {
-                // if (connectionsInputs.get(i).getSource().isActivate()) {
-                connectionsInputs.get(i).setPropertyValue(EParameterName.ACTIVATE.getName(), activate);
-                // }
+        if (!hasActivatedOutput) {
+            setDummy(false);
+        }
+
+        if (!isDummy()) {
+            for (Connection connection : connectionsOutputs) {
+                if (connection.getTarget().isActivate() || connection.getSource().isDummy()) {
+                    connection.setPropertyValue(EParameterName.ACTIVATE.getName(), activate);
+                }
+            }
+            for (Connection connection : connectionsInputs) {
+                if (connection.getSource().isActivate() || connection.getSource().isDummy()) {
+                    connection.setPropertyValue(EParameterName.ACTIVATE.getName(), activate);
+                }
+                if (!connection.getSource().isActivate() && !activate) {
+                    // check if the input has activated outputs
+                    hasActivatedOutput = false;
+                    for (Connection sourceConn : (List<Connection>) connection.getSource().getOutgoingConnections()) {
+                        if (sourceConn.isActivate() && sourceConn.getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)) {
+                            hasActivatedOutput = true;
+                        }
+                    }
+                    if (!hasActivatedOutput) {
+                        connection.getSource().setPropertyValue(EParameterName.DUMMY.getName(), false);
+                        connection.getSource().setPropertyValue(EParameterName.ACTIVATE.getName(), false);
+                    }
+                }
             }
         }
         firePropertyChange(EParameterName.ACTIVATE.getName(), null, null);
+    }
+
+    /**
+     * DOC nrousseau Comment method "isDummy".
+     * 
+     * @return
+     */
+    public boolean isDummy() {
+        return dummy;
+    }
+
+    /**
+     * DOC nrousseau Comment method "setDummy".
+     * 
+     * @param value
+     */
+    private void setDummy(Boolean value) {
+        dummy = value;
     }
 
     public boolean hasRunIfLink() {
@@ -1048,10 +1093,7 @@ public class Node extends Element implements INode {
 
     public IMetadataTable getMetadataTable(String metaName) {
         for (int i = 0; i < metadataList.size(); i++) {
-            if (metadataList.get(i).getTableName().equals(metaName)/*
-             * &&
-             * metadataList.get(i).getAttachedConnector().equals(connectorName)
-             */) {
+            if (metadataList.get(i).getTableName().equals(metaName)) {
                 return metadataList.get(i);
             }
         }
@@ -1939,33 +1981,4 @@ public class Node extends Element implements INode {
         return this.connectionName;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.process.INode#getOldComponent()
-     */
-    public IComponent getOldComponent() {
-        if (isDummy() && oldcomponent != null) {
-            return this.oldcomponent;
-        }
-        return this.component;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.process.INode#isDummy()
-     */
-    public boolean isDummy() {
-        return this.dummy;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.process.INode#setDummy(boolean)
-     */
-    public void setDummy(boolean dummy) {
-        this.dummy = dummy;
-    }
 }

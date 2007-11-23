@@ -104,12 +104,10 @@ public class DataProcess {
                 ((IExternalNode) dataNode).setExternalData(externalData);
             }
         }
-        buildCheckMap.put(graphicalNode, dataNode);
         dataNodeList.add(dataNode);
         dataNode.setActivate(graphicalNode.isActivate());
         dataNode.setStart(graphicalNode.isStart());
         dataNode.setMetadataList(graphicalNode.getMetadataList());
-        dataNode.setDummy(graphicalNode.isDummy());
         dataNode.setPluginFullName(graphicalNode.getPluginFullName());
         dataNode.setElementParameters(graphicalNode.getComponent().createElementParameters(dataNode));
         initializeDataFromGraphical(dataNode, graphicalNode);
@@ -121,7 +119,7 @@ public class DataProcess {
         dataNode.setProcess(graphicalNode.getProcess());
         dataNode.setComponent(graphicalNode.getComponent());
 
-        if (dataNode.isDummy()) {
+        if (graphicalNode.isDummy()) {
             dataNode = new DataNode(ComponentsFactoryProvider.getInstance().get("tDummyRow"), graphicalNode.getUniqueName());
             dataNode.setActivate(true);
             dataNode.setStart(graphicalNode.isStart());
@@ -132,6 +130,7 @@ public class DataProcess {
             dataNode.setIsMultiplyingOutputs(graphicalNode.isMultiplyingOutputs());
             dataNode.setProcess(graphicalNode.getProcess());
         }
+        buildCheckMap.put(graphicalNode, dataNode);
 
         List<IConnection> outgoingConnections = new ArrayList<IConnection>();
         List<IConnection> incomingConnections = new ArrayList<IConnection>();

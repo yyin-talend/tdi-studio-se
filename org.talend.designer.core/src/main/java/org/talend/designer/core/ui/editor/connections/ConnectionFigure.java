@@ -28,6 +28,8 @@ public class ConnectionFigure extends PolylineConnection {
 
     private int alpha = -1;
 
+    private IConnectionProperty connectionProperty;
+
     public ConnectionFigure(IConnectionProperty connectionProperty) {
         setTargetDecoration(new PolygonDecoration());
         setConnectionProperty(connectionProperty);
@@ -50,8 +52,18 @@ public class ConnectionFigure extends PolylineConnection {
     }
 
     protected void setConnectionProperty(IConnectionProperty connectionProperty) {
+        this.connectionProperty = connectionProperty;
         setLineStyle(connectionProperty.getLineStyle());
         setForegroundColor(new Color(null, connectionProperty.getRGB()));
+    }
+
+    /**
+     * Getter for connectionProperty.
+     * 
+     * @return the connectionProperty
+     */
+    public IConnectionProperty getConnectionProperty() {
+        return this.connectionProperty;
     }
 
 }

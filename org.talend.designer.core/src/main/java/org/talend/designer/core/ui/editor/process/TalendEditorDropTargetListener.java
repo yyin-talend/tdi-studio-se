@@ -115,9 +115,11 @@ public class TalendEditorDropTargetListener implements TransferDropTargetListene
             return;
         }
 
-        RepositoryNode sourceNode = (RepositoryNode) selection.getFirstElement();
-        if (equalsJobInCurrentEditor(sourceNode)) {
-            event.detail = DND.DROP_NONE;
+        if (selection.getFirstElement() instanceof RepositoryNode) {
+            RepositoryNode sourceNode = (RepositoryNode) selection.getFirstElement();
+            if (equalsJobInCurrentEditor(sourceNode)) {
+                event.detail = DND.DROP_NONE;
+            }
         }
     }
 
@@ -158,24 +160,26 @@ public class TalendEditorDropTargetListener implements TransferDropTargetListene
 
         IStructuredSelection selection = getSelection();
         for (Object obj : selection.toArray()) {
-            RepositoryNode sourceNode = (RepositoryNode) obj;
-            if (equalsJobInCurrentEditor(sourceNode)) {
-                continue;
-            }
+            if (obj instanceof RepositoryNode) {
+                RepositoryNode sourceNode = (RepositoryNode) obj;
+                if (equalsJobInCurrentEditor(sourceNode)) {
+                    continue;
+                }
 
-            Item item = sourceNode.getObject().getProperty().getItem();
-            if (!(item instanceof ConnectionItem) && !(item instanceof ProcessItem)) {
-                continue;
-            }
-            TempStore store = new TempStore();
-            store.seletetedNode = sourceNode;
-            getCorrespondingComponent(item, isInput, store);
-            if (store.component != null) {
-                list.add(store);
-            } else {
-                MessageDialog.openInformation(editor.getEditorSite().getShell(), Messages
-                        .getString("TalendEditorDropTargetListener.dngsupportdialog.title"), //$NON-NLS-1$
-                        Messages.getString("TalendEditorDropTargetListener.dngsupportdialog.content")); //$NON-NLS-1$
+                Item item = sourceNode.getObject().getProperty().getItem();
+                if (!(item instanceof ConnectionItem) && !(item instanceof ProcessItem)) {
+                    continue;
+                }
+                TempStore store = new TempStore();
+                store.seletetedNode = sourceNode;
+                getCorrespondingComponent(item, isInput, store);
+                if (store.component != null) {
+                    list.add(store);
+                } else {
+                    MessageDialog.openInformation(editor.getEditorSite().getShell(), Messages
+                            .getString("TalendEditorDropTargetListener.dngsupportdialog.title"), //$NON-NLS-1$
+                            Messages.getString("TalendEditorDropTargetListener.dngsupportdialog.content")); //$NON-NLS-1$
+                }
             }
         }
 

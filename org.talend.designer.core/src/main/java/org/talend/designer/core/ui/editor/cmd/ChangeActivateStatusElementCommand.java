@@ -20,6 +20,9 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.PropertySheet;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
+import org.talend.core.model.metadata.IMetadataColumn;
+import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.process.IConnectionCategory;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.connections.Connection;
@@ -80,13 +83,11 @@ public class ChangeActivateStatusElementCommand extends Command {
         }
         process.setActivate(false);
         for (Connection connection : connectionList) {
-            // connection.setActivate(value);
             connection.setPropertyValue(EParameterName.ACTIVATE.getName(), value);
         }
         for (Node node : nodeList) {
-            // node.setActivate(value);
-            if (node.getComponent().isSchemaAutoPropagated()) {
-                node.setDummy(!value);
+            if (isSameSchemaInputOutput(node)) {
+                node.setPropertyValue(EParameterName.DUMMY.getName(), !value);
             }
             node.setPropertyValue(EParameterName.ACTIVATE.getName(), value);
         }
@@ -94,6 +95,40 @@ public class ChangeActivateStatusElementCommand extends Command {
         process.checkStartNodes();
         process.checkProcess();
         refreshPropertyView();
+    }
+
+    private boolean isSameSchemaInputOutput(Node node) {
+        boolean hasInput = false;
+        IMetadataTable inputMetadata = null;
+        for (Connection connection : (List<Connection>) node.getIncomingConnections()) {
+            if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)) {
+                if (hasInput) {
+                    // if the flag is already set, that means that there is more than one input link
+                    // so don't accept the dummy
+                    return false;
+                }
+                hasInput = true;
+                inputMetadata = connection.getMetadataTable();
+            }
+        }
+
+        if (!hasInput) {
+            return false;
+        }
+
+        for (Connection outputConnection : (List<Connection>) node.getOutgoingConnections()) {
+            if (outputConnection.getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)) {
+                IMetadataTable outputMeta = outputConnection.getMetadataTable();
+                if (!inputMetadata.sameMetadataAs(outputMeta, IMetadataColumn.OPTIONS_IGNORE_KEY
+                        | IMetadataColumn.OPTIONS_IGNORE_NULLABLE | IMetadataColumn.OPTIONS_IGNORE_COMMENT
+                        | IMetadataColumn.OPTIONS_IGNORE_PATTERN | IMetadataColumn.OPTIONS_IGNORE_DBCOLUMNNAME
+                        | IMetadataColumn.OPTIONS_IGNORE_DBTYPE)) {
+                    // input and output schema is different, so don't accept dummy
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     @Override
@@ -106,14 +141,12 @@ public class ChangeActivateStatusElementCommand extends Command {
         }
         process.setActivate(false);
         for (Node node : nodeList) {
-            // node.setActivate(!value);
-            if (node.getComponent().isSchemaAutoPropagated()) {
-                node.setDummy(value);
+            if (isSameSchemaInputOutput(node)) {
+                node.setPropertyValue(EParameterName.DUMMY.getName(), value);
             }
             node.setPropertyValue(EParameterName.ACTIVATE.getName(), !value);
         }
         for (Connection connection : connectionList) {
-            // connection.setActivate(!value);
             connection.setPropertyValue(EParameterName.ACTIVATE.getName(), !value);
         }
         process.setActivate(true);
