@@ -141,6 +141,9 @@ public class FOXManager {
                 current.addChild(temp);
             } else {
                 temp = this.addElement(rootNode, current, currentPath, path);
+                if (current == null) {
+                    temp.setGroup(true);
+                }
                 current = temp;
                 currentPath = path;
             }
@@ -164,6 +167,9 @@ public class FOXManager {
                 current.addChild(temp);
             } else {
                 temp = this.addElement(rootNode, current, currentPath, path);
+                if (current == null) {
+                    temp.setLoop(true);
+                }
                 current = temp;
                 currentPath = path;
             }
@@ -297,7 +303,7 @@ public class FOXManager {
         String parentPath = newPath.substring(0, newPath.lastIndexOf("/"));
         FOXTreeNode temp = new Element(name);
         if (current == null) {
-            temp.setLoop(true);
+            // temp.setLoop(true);
             FOXTreeNode parent = this.selectNode(parentPath, root);
             parent.addChild(temp);
         } else {

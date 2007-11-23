@@ -78,6 +78,9 @@ public class CreateNameSpaceAction extends SelectionProviderAction {
             int status = dialog.open();
             if (status == InputDialog.OK) {
                 label = dialog.getValue().trim();
+                if (label != null && label.length() == 0) {
+                    break;
+                }
             }
             if (status == InputDialog.CANCEL) {
                 return;

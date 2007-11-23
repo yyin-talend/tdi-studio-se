@@ -247,7 +247,10 @@ public class FOXUI {
 
             public boolean canModify(Object element, String property) {
                 if (property.equals("C1")) { //$NON-NLS-1$
-                    return true;
+                    FOXTreeNode node = (FOXTreeNode) element;
+                    if (node.getLabel() != null && node.getLabel().length() > 0) {
+                        return true;
+                    }
                 }
                 return false;
             }

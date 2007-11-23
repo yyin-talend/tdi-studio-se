@@ -42,7 +42,11 @@ public class NameSpaceNode extends FOXTreeNode {
      */
     @Override
     public String getLabelForViewer() {
-        return "xmlns:" + super.getLabel(); //$NON-NLS-1$
+        if (super.getLabel() != null && super.getLabel().length() > 0) {
+            return "xmlns:" + super.getLabel(); //$NON-NLS-1$
+        } else {
+            return "xmlns:(default)";
+        }
     }
 
     @Override
