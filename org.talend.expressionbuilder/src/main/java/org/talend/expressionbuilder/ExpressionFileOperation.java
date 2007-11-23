@@ -13,6 +13,7 @@
 package org.talend.expressionbuilder;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -25,10 +26,11 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.swt.widgets.Shell;
 import org.osgi.framework.Bundle;
 import org.talend.commons.xml.XSDValidator;
-import org.talend.core.CorePlugin;
-import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.expressionbuilder.i18n.Messages;
 import org.talend.expressionbuilder.test.shadow.Variable;
 import org.w3c.dom.Attr;
@@ -67,8 +69,8 @@ public class ExpressionFileOperation {
      * @throws IOException
      * @throws ParserConfigurationException
      */
-    public boolean saveExpressionToFile(File file, List<Variable> variables, String expressionContent)
-            throws IOException, ParserConfigurationException {
+    public boolean saveExpressionToFile(File file, List<Variable> variables, String expressionContent) throws IOException,
+            ParserConfigurationException {
 
         final DocumentBuilderFactory fabrique = DocumentBuilderFactory.newInstance();
 
@@ -118,6 +120,16 @@ public class ExpressionFileOperation {
             value.setNodeValue(variable.getValue());
             variableElement.setAttributeNode(value);
 
+            Attr talendType = document.createAttribute(Messages.getString("ExpressionFileOperation.talendType"));
+            //$NON-NLS-1$
+            talendType.setNodeValue(variable.getTalendType());
+            variableElement.setAttributeNode(talendType);
+
+            Attr nullable = document.createAttribute(Messages.getString("ExpressionFileOperation.nullable"));
+            //$NON-NLS-1$
+            nullable.setNodeValue(String.valueOf(variable.isNullable()));
+            variableElement.setAttributeNode(nullable);
+
         }
 
         // use specific Xerces class to write DOM-data to a file:
@@ -125,8 +137,10 @@ public class ExpressionFileOperation {
         OutputFormat outputFormat = new OutputFormat();
         outputFormat.setIndenting(true);
         serializer.setOutputFormat(outputFormat);
-        serializer.setOutputCharStream(new java.io.FileWriter(file));
+        FileWriter writer = new FileWriter(file);
+        serializer.setOutputCharStream(writer);
         serializer.serialize(document);
+        writer.close();
         return true;
 
     }
@@ -140,46 +154,70 @@ public class ExpressionFileOperation {
      * @throws SAXException
      * @throws ParserConfigurationException
      */
-    public List importExpressionFromFile(File file) throws IOException, ParserConfigurationException, SAXException {
+    public List importExpressionFromFile(File file, Shell shell) throws IOException, ParserConfigurationException, SAXException {
         if (file != null) {
             List list = new ArrayList();
 
-            final DocumentBuilderFactory fabrique = DocumentBuilderFactory.newInstance();
+            if (!file.isFile()) {
+                openDialog(shell);
+                return list;
+            } else {
+                final DocumentBuilderFactory fabrique = DocumentBuilderFactory.newInstance();
 
-            final Bundle b = Platform.getBundle(PLUGIN_ID);
-            final URL url = FileLocator.toFileURL(FileLocator.find(b, new Path(SCHEMA_XSD), null));
-            final File schema = new File(url.getPath());
-            final Document document = XSDValidator.checkXSD(file, schema);
+                final Bundle b = Platform.getBundle(PLUGIN_ID);
+                final URL url = FileLocator.toFileURL(FileLocator.find(b, new Path(SCHEMA_XSD), null));
+                final File schema = new File(url.getPath());
+                final Document document = XSDValidator.checkXSD(file, schema);
 
-            final NodeList expressionNodes = document.getElementsByTagName(Messages.getString("ExpressionFileOperation.expression")); //$NON-NLS-1$
-            if (expressionNodes.getLength() == 1) {
+                final NodeList expressionNodes = document.getElementsByTagName(Messages
+                        .getString("ExpressionFileOperation.expression")); //$NON-NLS-1$
+                if (expressionNodes.getLength() == 1) {
 
-                Node expressionNode = expressionNodes.item(0);
-                NamedNodeMap epxressionAttrs = expressionNode.getAttributes();
-                Node contentNode = epxressionAttrs.getNamedItem(Messages.getString("ExpressionFileOperation.content")); //$NON-NLS-1$
-                list.add(contentNode.getNodeValue());
+                    Node expressionNode = expressionNodes.item(0);
+                    NamedNodeMap epxressionAttrs = expressionNode.getAttributes();
+                    Node contentNode = epxressionAttrs.getNamedItem(Messages.getString("ExpressionFileOperation.content")); //$NON-NLS-1$
+                    list.add(contentNode.getNodeValue());
 
+                }
+
+                final NodeList variableNodes = document.getElementsByTagName(Messages
+                        .getString("ExpressionFileOperation.variable")); //$NON-NLS-1$
+                for (int i = 0; i < variableNodes.getLength(); i++) {
+
+                    Node variableNode = variableNodes.item(i);
+                    NamedNodeMap varAttrs = variableNode.getAttributes();
+
+                    Node nameNode = varAttrs.getNamedItem(Messages.getString("ExpressionFileOperation.name")); //$NON-NLS-1$
+                    Node valueNode = varAttrs.getNamedItem(Messages.getString("ExpressionFileOperation.value")); //$NON-NLS-1$
+                    Node talendTypeNode = varAttrs.getNamedItem(Messages.getString("ExpressionFileOperation.talendType")); //$NON-NLS-1$
+                    Node nullableNode = varAttrs.getNamedItem(Messages.getString("ExpressionFileOperation.nullable")); //$NON-NLS-1$
+
+                    Variable variable = new Variable();
+                    variable.setName(nameNode.getNodeValue());
+                    variable.setValue(valueNode.getNodeValue());
+                    variable.setTalendType(talendTypeNode.getNodeValue());
+                    String s = nullableNode.getNodeValue();
+                    Boolean boo = Boolean.valueOf(s);
+                    if (boo == null) {
+                        boo = false;
+                    }
+                    variable.setNullable(boo);
+                    list.add(variable);
+
+                }
+
+                return list;
             }
-
-            final NodeList variableNodes = document.getElementsByTagName(Messages.getString("ExpressionFileOperation.variable")); //$NON-NLS-1$
-            for (int i = 0; i < variableNodes.getLength(); i++) {
-
-                Node variableNode = variableNodes.item(i);
-                NamedNodeMap varAttrs = variableNode.getAttributes();
-
-                Node nameNode = varAttrs.getNamedItem(Messages.getString("ExpressionFileOperation.name")); //$NON-NLS-1$
-                Node valueNode = varAttrs.getNamedItem(Messages.getString("ExpressionFileOperation.value")); //$NON-NLS-1$
-
-                Variable variable = new Variable();
-                variable.setName(nameNode.getNodeValue());
-                variable.setValue(valueNode.getNodeValue());
-                list.add(variable);
-
-            }
-
-            return list;
         }
         return null;
 
     }
+
+    private void openDialog(Shell shell) {
+        MessageBox box = new MessageBox(shell, SWT.ICON_WARNING);
+        box.setText("warn");
+        box.setMessage(Messages.getString("OpenDialog.Warn"));
+        int count = box.open();
+    }
+
 }

@@ -204,11 +204,11 @@ public class ExpressionBuilderDialog extends TrayDialog implements IExpressionBu
 
         final Button importButton = new Button(buttons, SWT.PUSH);
         importButton.setToolTipText(Messages.getString("ExpressionBuilderDialog.import"));//$NON-NLS-1$
-        importButton.setImage(ImageProvider.getImage(EImage.EXPORT_ICON));
+        importButton.setImage(ImageProvider.getImage(EImage.IMPORT_ICON));
 
         final Button exportButton = new Button(buttons, SWT.PUSH);
         exportButton.setToolTipText(Messages.getString("ExpressionBuilderDialog.export"));//$NON-NLS-1$
-        exportButton.setImage(ImageProvider.getImage(EImage.IMPORT_ICON));
+        exportButton.setImage(ImageProvider.getImage(EImage.EXPORT_ICON));
 
         createButton(parent, IDialogConstants.OK_ID, Messages.getString("ExpressionBuilderDialog.ok.button"), true); //$NON-NLS-1$
         createButton(parent, IDialogConstants.CANCEL_ID, Messages.getString("ExpressionBuilderDialog.cancel.button"), false); //$NON-NLS-1$
@@ -263,7 +263,7 @@ public class ExpressionBuilderDialog extends TrayDialog implements IExpressionBu
                     File file = new File(filePath);
                     ExpressionFileOperation operation = new ExpressionFileOperation();
                     try {
-                        List list = operation.importExpressionFromFile(file);
+                        List list = operation.importExpressionFromFile(file, getShell());
                         if (list != null && list.size() != 0) {
                             expressionComposite.setExpression((String) list.get(0), false);
                             list.remove(0);
