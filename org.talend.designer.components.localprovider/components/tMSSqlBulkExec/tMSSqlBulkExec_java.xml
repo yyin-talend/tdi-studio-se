@@ -127,11 +127,35 @@
     >
       <DEFAULT>"employee"</DEFAULT>
     </PARAMETER>
+
+    <PARAMETER
+      NAME="TABLE_ACTION"
+      FIELD="CLOSED_LIST"
+      NUM_ROW="6"
+      SHOW_IF="ACTION=='INSERT'"
+    >
+      <ITEMS DEFAULT="NONE">
+        <ITEM NAME="NONE" VALUE="NONE" />
+        <ITEM NAME="DROP_CREATE" VALUE="DROP_CREATE"/>
+        <ITEM NAME="CREATE" VALUE="CREATE"/>
+        <ITEM NAME="CREATE_IF_NOT_EXISTS" VALUE="CREATE_IF_NOT_EXISTS"/>
+        <ITEM NAME="CLEAR" VALUE="CLEAR"/>
+      </ITEMS>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="SCHEMA"
+      FIELD="SCHEMA_TYPE"
+      NUM_ROW="7"
+      SHOW_IF="ACTION=='INSERT'"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
     
    <PARAMETER
     	NAME="QUERY"
     	FIELD="MEMO_SQL"
-    	NUM_ROW="7"
+    	NUM_ROW="8"
     	SHOW_IF="ACTION=='EXPORT'"
     	REQUIRED="true"
     >
@@ -141,7 +165,7 @@
     <PARAMETER
       NAME="REMOTE_FILENAME"
       FIELD="FILE"
-      NUM_ROW="8"
+      NUM_ROW="9"
       REQUIRED="true"
       SHOW_IF="ACTION=='INSERT'"
     >
@@ -151,7 +175,7 @@
     <PARAMETER
       NAME="FIELDS_TERMINATED_BY"
       FIELD="TEXT"
-      NUM_ROW="9"
+      NUM_ROW="10"
       REQUIRED="true"
     >
       <DEFAULT>";"</DEFAULT>
@@ -160,7 +184,7 @@
    <PARAMETER
       NAME="ROW_TERMINATED_BY"
       FIELD="TEXT"
-      NUM_ROW="9"
+      NUM_ROW="10"
       REQUIRED="true"
       SHOW_IF ="ACTION=='INSERT'"
     >
@@ -170,7 +194,7 @@
    <PARAMETER
       NAME="ROW_TERMINATED_EXPORT"
       FIELD="TEXT"
-      NUM_ROW="9"
+      NUM_ROW="10"
       REQUIRED="true"
       SHOW_IF ="ACTION=='EXPORT'"
     >
@@ -180,7 +204,7 @@
    <PARAMETER
       NAME="FIRST_ROW"
       FIELD="TEXT"
-      NUM_ROW="9"
+      NUM_ROW="10"
       REQUIRED="true"
       SHOW_IF="ACTION=='INSERT'"
     >
@@ -190,7 +214,7 @@
     <PARAMETER
       NAME="DATA_FILE_TYPE"
       FIELD="CLOSED_LIST"
-      NUM_ROW="10"
+      NUM_ROW="11"
       REQUIRED="true"
     >
       <ITEMS DEFAULT ="char" >
@@ -204,7 +228,7 @@
     <PARAMETER 
     	NAME="OUTPUT_FILE_NAME"
     	FIELD="FILE"
-    	NUM_ROW="10"
+    	NUM_ROW="11"
     	REQUIRED="true"
     	SHOW_IF="ACTION=='EXPORT'"
     >
@@ -214,7 +238,7 @@
     <PARAMETER
     	NAME="OUTPUT"
     	FIELD="CLOSED_LIST"
-    	NUM_ROW="11"
+    	NUM_ROW="12"
     	REQUIRED = "true"
     	SHOW_IF="ACTION=='EXPORT'"
     >
@@ -223,7 +247,16 @@
     		<ITEM NAME="VARIABLE" VALUE="RETRIEVE_OUTPUT" />
     	</ITEMS>
     </PARAMETER>
-
+    
+	<PARAMETER
+      NAME="MAPPING"
+      FIELD="MAPPING_TYPE"
+      NUM_ROW="13"
+      SHOW="false"
+    >       
+      <DEFAULT>id_MSSQL</DEFAULT>
+    </PARAMETER>
+    
    </PARAMETERS>
 
    <CODEGENERATION>

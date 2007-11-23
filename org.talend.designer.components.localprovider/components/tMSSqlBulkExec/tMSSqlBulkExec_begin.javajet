@@ -3,6 +3,12 @@ imports="
     org.talend.core.model.process.INode 
     org.talend.core.model.process.ElementParameterParser 
     org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.core.model.metadata.MetadataTalendType    
+    org.talend.core.model.metadata.MappingTypeRetriever     
+    java.util.List
+    java.util.ArrayList    
 " 
 %>
 <%
@@ -26,18 +32,172 @@ String table = ElementParameterParser.getValue(node, "__TABLE__");
 String data_file_type = ElementParameterParser.getValue(node, "__DATA_FILE_TYPE__");
 
 if(action.equals("INSERT")){
-%>
-
-java.lang.Class.forName("net.sourceforge.jtds.jdbc.Driver").newInstance();
-String url_<%=cid %> = "jdbc:jtds:sqlserver://"+<%=host%>+":"+<%=port%>+"//"+<%=db%>;
-java.sql.Connection con_<%=cid %>=java.sql.DriverManager.getConnection(url_<%=cid %>, <%=user%>, <%=pas%>);
-java.sql.Statement stmt_<%=cid %>=con_<%=cid %>.createStatement();
-
-stmt_<%=cid %>.execute("BULK INSERT "+<%=db%>+".."+<%=table%>+" FROM '"+<%=file%>+"' WITH ( DATAFILETYPE='<%=data_file_type%>',FIELDTERMINATOR='"+<%=field_separator%>+"',FIRSTROW ="+<%=first_row%>+",ROWTERMINATOR='"+<%=row_separator%>+"')");
-stmt_<%=cid %>.close();
-con_<%=cid %>.close();
-
-<%
+    class MSSQLManager {
+        public String getCreateTableSQL(String tableName, List<IMetadataColumn> listColumn, String dbmsId) {
+            MappingTypeRetriever mappingType = MetadataTalendType.getMappingTypeRetriever(dbmsId);
+            StringBuilder createTableSQL = new StringBuilder();
+            String newTableName = null;            
+            if(tableName == null || tableName.equals("") || tableName.equals("\"\"")) {                
+                newTableName = "";                
+            } else {                
+                newTableName = tableName.substring(1, tableName.length() - 1);                
+            }            
+            createTableSQL.append("CREATE TABLE [" + newTableName + "](");
+            List<String> pkList = new ArrayList<String>();
+            int count = 0;
+            String ending = ",";
+            for(IMetadataColumn metadataColumn : listColumn) {
+                if(metadataColumn.isKey()) {
+                    pkList.add("[" + metadataColumn.getOriginalDbColumnName() + "]");
+                }
+                createTableSQL.append("[" + metadataColumn.getOriginalDbColumnName() + "] ");
+                String dataType = null;
+                if(metadataColumn.getType() == null || metadataColumn.getType().trim().length() == 0) {
+                    dataType = mappingType.getDefaultSelectedDbType(metadataColumn.getTalendType());
+                } else {
+                    dataType = metadataColumn.getType();
+                }
+                createTableSQL.append(dataType);
+                Integer length = metadataColumn.getLength() == null ? 0 : metadataColumn.getLength();
+                Integer precision = metadataColumn.getPrecision() == null ? 0 : metadataColumn.getPrecision();
+                boolean lengthIgnored = mappingType.isLengthIgnored(dbmsId, dataType);
+                boolean precisionIgnored = mappingType.isPrecisionIgnored(dbmsId, dataType);
+                String prefix = "";
+                String suffix = "";
+                String comma = "";
+                if(mappingType.isPreBeforeLength(dbmsId, dataType)) {
+                    if(!precisionIgnored) {
+                        prefix = "(";
+                        suffix = ") ";
+                        createTableSQL.append(prefix + precision);
+                    }
+                    if(!lengthIgnored) {
+                        prefix = (prefix.equals("") ? "(" : prefix);
+                        suffix = (suffix.equals("") ? ") " : suffix);
+                        if(precisionIgnored) {
+                            createTableSQL.append(prefix);
+                            comma = "";
+                        } else {
+                            comma = ",";
+                        }
+                        createTableSQL.append(comma + length);
+                    }
+                    createTableSQL.append(suffix);
+                } else {
+                    if(!lengthIgnored) {
+                        prefix = "(";
+                        suffix = ") ";
+                        createTableSQL.append(prefix + length);
+                    }
+                    if(!precisionIgnored) {
+                        prefix = (prefix.equals("") ? "(" : prefix);
+                        suffix = (suffix.equals("") ? ") " : suffix);
+                        if(lengthIgnored) {
+                            createTableSQL.append(prefix);
+                            comma = "";                        
+                        } else {
+                            comma = ",";
+                        }
+                        createTableSQL.append(comma + precision);
+                    }
+                    createTableSQL.append(suffix);
+                }
+                createTableSQL.append(getDefaultValueSQL(metadataColumn.getDefault()));
+                if(!metadataColumn.isNullable()) {
+                    createTableSQL.append("not null");
+                }
+                if(count == listColumn.size() - 1 && pkList.size() == 0) {
+                    ending = "";
+                }
+                createTableSQL.append(ending);
+                count++;
+            }
+            if(pkList.size() > 0) {                
+                createTableSQL.append("primary key(");                
+                int i = 0;                
+                for(String pk : pkList) {                    
+                    createTableSQL.append(pk);                    
+                    if(i != pkList.size() - 1) {                        
+                        createTableSQL.append(",");                        
+                    }                    
+                    i++;                    
+                }                
+                createTableSQL.append(")");                
+            }
+            createTableSQL.append(")");
+            return createTableSQL.toString();
+        }
+        private String getDefaultValueSQL(String defaultValue) {
+            if(defaultValue == null || defaultValue.equals("\"\"") || defaultValue.equals("")) {
+                return " ";
+            } else if((defaultValue.startsWith("\"") || defaultValue.startsWith("'")) && (defaultValue.endsWith("\"") || defaultValue.endsWith("'"))) {
+                return "default '" + defaultValue.substring(1,defaultValue.length() - 1) + "' ";
+            } else if(defaultValue.equalsIgnoreCase("null")) {
+                return "default null ";
+            } else {
+                return "default " + defaultValue + " ";
+            }            
+        }        
+    }
+    List<IMetadataColumn> columnList = null;
+    List<IMetadataTable> metadatas = node.getMetadataList();
+    if(metadatas !=null && metadatas.size()>0){
+        IMetadataTable metadata = metadatas.get(0);
+        if(metadata != null){
+            columnList = metadata.getListColumns();
+        }
+    }    
+    %>
+    java.lang.Class.forName("net.sourceforge.jtds.jdbc.Driver").newInstance();
+    String url_<%=cid %> = "jdbc:jtds:sqlserver://" + <%=host%> + ":" + <%=port%> + "//" + <%=db%>;
+    java.sql.Connection conn_<%=cid %> = java.sql.DriverManager.getConnection(url_<%=cid %>, <%=user%>, <%=pas%>);
+    <%
+    String tableAction = ElementParameterParser.getValue(node,"__TABLE_ACTION__");
+    String dbmsId = ElementParameterParser.getValue(node,"__MAPPING__");
+    if(columnList != null && columnList.size() > 0) {
+        MSSQLManager builder = new MSSQLManager();
+        if(tableAction.equals("DROP_CREATE")) {
+            %>
+            java.sql.Statement stmtDrop_<%=cid%> = conn_<%=cid%>.createStatement();
+            stmtDrop_<%=cid%>.execute("drop table [" + <%=table%> + "]");
+            java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
+            stmtCreate_<%=cid%>.execute("<%=builder.getCreateTableSQL(table, columnList, dbmsId)%>");
+            <%
+        } else if(tableAction.equals("CREATE")) {
+            %>
+            java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
+            stmtCreate_<%=cid%>.execute("<%=builder.getCreateTableSQL(table, columnList, dbmsId)%>");
+            <%
+        } else if(tableAction.equals("CREATE_IF_NOT_EXISTS")) {
+            %>
+            java.sql.DatabaseMetaData dbMetaData_<%=cid%> = conn_<%=cid%>.getMetaData();
+            java.sql.ResultSet rsTable_<%=cid%> = dbMetaData_<%=cid%>.getTables(null, null, null, new String[]{"TABLE"});
+            boolean whetherExist_<%=cid%> = false;
+            while(rsTable_<%=cid%>.next()) {
+                String table_<%=cid%> = rsTable_<%=cid%>.getString("TABLE_NAME");
+                if(table_<%=cid%>.equalsIgnoreCase(<%=table%>)) {
+                    whetherExist_<%=cid%> = true;
+                    break;
+                }
+            }
+            if(!whetherExist_<%=cid%>) {
+                java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
+                stmtCreate_<%=cid%>.execute("<%=builder.getCreateTableSQL(table, columnList, dbmsId)%>");            
+            }
+            <%
+        } else if(tableAction.equals("CLEAR")) {
+            %>
+            java.sql.Statement stmtClear_<%=cid%> = conn_<%=cid%>.createStatement();
+            stmtClear_<%=cid%>.executeUpdate("truncate table [" + <%=table%>+"]");
+            <%
+        }        
+    }
+    %>
+    java.sql.Statement stmt_<%=cid %> = conn_<%=cid %>.createStatement();
+    stmt_<%=cid %>.execute("BULK INSERT " + <%=db%> + ".." + <%=table%> + " FROM '" + <%=file%> + "' WITH ( DATAFILETYPE='<%=data_file_type%>',FIELDTERMINATOR='" + <%=field_separator%> + "',FIRSTROW =" + <%=first_row%> + ",ROWTERMINATOR='" + <%=row_separator%>+"')");
+    stmt_<%=cid %>.close();
+    conn_<%=cid %>.close();
+    <%
 }else if(action.equals("EXPORT")){
 
 String bcp_utility = ElementParameterParser.getValue(node, "__BCP_UTILITY__");
