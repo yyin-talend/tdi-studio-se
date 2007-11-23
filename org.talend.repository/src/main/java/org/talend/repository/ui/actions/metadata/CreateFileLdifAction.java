@@ -78,8 +78,8 @@ public class CreateFileLdifAction extends AbstractCreateAction {
         RepositoryNode fileLdifNode = metadataNode.getChildren().get(5);
         ISelection selection = getSelection();
         WizardDialog wizardDialog;
-        init(fileLdifNode);
         if (isToolbar) {
+            init(fileLdifNode);
             wizardDialog = new WizardDialog(new Shell(), new LdifFileWizard(PlatformUI.getWorkbench(), creation, fileLdifNode,
                     getExistingNames()));
         } else {

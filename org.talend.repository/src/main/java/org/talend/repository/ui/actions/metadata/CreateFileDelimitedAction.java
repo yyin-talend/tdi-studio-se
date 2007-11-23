@@ -78,8 +78,8 @@ public class CreateFileDelimitedAction extends AbstractCreateAction {
         RepositoryNode fileDelimitedNode = metadataNode.getChildren().get(1);
         ISelection selection = getSelection();
         WizardDialog wizardDialog;
-        init(fileDelimitedNode);
         if (isToolbar) {
+            init(fileDelimitedNode);
             wizardDialog = new WizardDialog(new Shell(), new DelimitedFileWizard(PlatformUI.getWorkbench(), creation,
                     fileDelimitedNode, getExistingNames()));
         } else {

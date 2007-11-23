@@ -83,8 +83,8 @@ public class CreateFileRegexpAction extends AbstractCreateAction {
         RepositoryNode fileRegexpNode = metadataNode.getChildren().get(3);
         ISelection selection = getSelection();
         WizardDialog wizardDialog;
-        init(fileRegexpNode);
         if (isToolbar) {
+            init(fileRegexpNode);
             wizardDialog = new WizardDialog(new Shell(), new RegexpFileWizard(PlatformUI.getWorkbench(), creation,
                     fileRegexpNode, getExistingNames()));
 
