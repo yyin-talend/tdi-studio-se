@@ -968,7 +968,7 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
         composite = new WidgetFactory().createComposite(this, SWT.NO_FOCUS);
         setContent(composite);
 
-        generator = DynamicPropertyGenerator.getDefault();
+        generator = new DynamicPropertyGenerator();
         this.section = section;
         this.elem = element;
         if (elem instanceof Node) {

@@ -39,13 +39,6 @@ public class DynamicPropertyGenerator {
 
     private Map<EParameterFieldType, AbstractElementPropertySectionController> dtpControls;
 
-    public static DynamicPropertyGenerator getDefault() {
-        if (instance == null) {
-            instance = new DynamicPropertyGenerator();
-        }
-        return instance;
-    }
-
     /**
      * DOC yzhang Comment method "initController".
      */
