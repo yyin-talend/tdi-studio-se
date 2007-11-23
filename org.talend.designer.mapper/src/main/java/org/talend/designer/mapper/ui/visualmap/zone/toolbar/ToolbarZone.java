@@ -20,6 +20,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.talend.commons.ui.image.EImage;
+import org.talend.commons.ui.ws.WindowSystem;
 import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.managers.UIManager;
 import org.talend.designer.mapper.ui.image.ImageInfo;
@@ -61,7 +62,14 @@ public abstract class ToolbarZone {
         this.mapperManager = manager;
         composite = new Composite(parent, style);
         composite.setLayout(new RowLayout(SWT.HORIZONTAL));
+
         toolBarActions = new ToolBar(composite, SWT.FLAT | SWT.RIGHT);
+
+        if (WindowSystem.isGTK()) {
+            composite.setBackground(parent.getDisplay().getSystemColor(SWT.COLOR_YELLOW));
+            composite.setBackgroundMode(SWT.INHERIT_NONE);
+            toolBarActions.setBackground(parent.getDisplay().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
+        }
     }
 
     /**

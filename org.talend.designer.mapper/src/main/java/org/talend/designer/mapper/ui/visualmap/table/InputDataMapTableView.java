@@ -500,7 +500,7 @@ public class InputDataMapTableView extends DataMapTableView {
             getActivateFilterCheck().setSelection(false);
             getActivateFilterCheck().setEnabled(false);
         }
-        updateViewAfterChangingFilterCheck();
+        updateExepressionFilterTextAndLayout(false);
     }
 
     /**

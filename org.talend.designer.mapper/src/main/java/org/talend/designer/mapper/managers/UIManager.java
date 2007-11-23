@@ -965,7 +965,6 @@ public class UIManager extends AbstractUIManager {
             }
         } else if (tableEntry instanceof ExpressionFilterEntry) {
             StyledText expressionFilterText = dataMapTableView.getExpressionFilterText();
-            Point size = expressionFilterText.computeSize(SWT.DEFAULT, SWT.DEFAULT);
             Point point = new Point(-dataMapTableView.getBorderWidth(), 16);
             pointFromTableViewOrigin = display.map(expressionFilterText, dataMapTableView, point);
         }

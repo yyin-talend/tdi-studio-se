@@ -18,6 +18,10 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.ViewerCell;
+import org.talend.commons.ui.swt.proposal.ExtendedTextCellEditorWithProposal;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.utils.generation.CodeGenerationUtils;
 import org.talend.commons.utils.threading.ExecutionLimiter;
@@ -151,10 +155,11 @@ public class ProblemsManager {
      * Check all problems and save in cache for Java only.
      */
     public void checkProblems() {
-        
+
         IPreferenceStore preferenceStore = DesignerPlugin.getDefault().getPreferenceStore();
 
-        if (codeLanguage == ECodeLanguage.JAVA && preferenceStore.getBoolean(TalendDesignerPrefConstants.PROPERTY_CODE_CHECK)) {
+        if (codeLanguage == ECodeLanguage.JAVA
+                && preferenceStore.getBoolean(TalendDesignerPrefConstants.PROPERTY_CODE_CHECK)) {
             codeChecker.checkProblems(nodeConfigurer);
         }
     }
@@ -316,7 +321,7 @@ public class ProblemsManager {
         if (tableEntry != this.checkProblemForEntryLimiter.getPreviousTableEntry()) {
             this.checkProblemForEntryLimiter.execute(false);
         } else {
-            
+
             this.checkProblemForEntryLimiter.resetTimer();
             this.checkProblemForEntryLimiter.startIfExecutable(true);
         }
@@ -374,9 +379,20 @@ public class ProblemsManager {
         tableEntry.setProblems(problems);
 
         TableViewerCreator tableViewerCreator = mapperManager.retrieveTableViewerCreator(tableEntry);
+        DataMapTableView retrieveDataMapTableView = mapperManager.retrieveDataMapTableView(tableEntry);
         if (tableViewerCreator != null && tableViewerCreator.getTableViewer() != null
                 && !tableViewerCreator.getTableViewer().getTable().isDisposed()) {
-            tableViewerCreator.getTableViewer().refresh(tableEntry, true);
+            TableViewer tableViewer = tableViewerCreator.getTableViewer();
+            if (tableViewer.isCellEditorActive()) {
+                CellEditor[] cellEditors = tableViewer.getCellEditors();
+                for (int i = 0; i < cellEditors.length; i++) {
+                    CellEditor cellEditor = cellEditors[i];
+                    if (cellEditor != null && cellEditor.isActivated() && cellEditor instanceof ExtendedTextCellEditorWithProposal) {
+                        ((ExtendedTextCellEditorWithProposal) cellEditor).fireApplyEditorValue();
+                    }
+                }
+            }
+            tableViewer.refresh(tableEntry, true);
         }
 
         if (problems != null) {

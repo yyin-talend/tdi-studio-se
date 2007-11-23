@@ -26,8 +26,6 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
-import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -53,6 +51,7 @@ import org.talend.commons.ui.swt.linking.BgDrawableComposite;
 import org.talend.commons.ui.ws.WindowSystem;
 import org.talend.commons.utils.threading.AsynchronousThreading;
 import org.talend.commons.utils.threading.ExecutionLimiter;
+import org.talend.commons.utils.threading.ExecutionLimiterImproved;
 import org.talend.designer.abstractmap.model.table.IDataMapTable;
 import org.talend.designer.abstractmap.ui.visualmap.link.IMapperLink;
 import org.talend.designer.mapper.MapperComponent;
@@ -96,7 +95,7 @@ public class MapperUI {
     /**
      * Default value for middle performance in ms.
      */
-    public static final int DEFAULT_TIME_BEFORE_NEW_BG_REFRESH = 5;
+    public static final int DEFAULT_TIME_BEFORE_NEW_BG_REFRESH = 100;
 
     private SashForm datasFlowViewSashForm;
 
@@ -172,6 +171,8 @@ public class MapperUI {
     private Display display;
 
     private Shell shell;
+
+    private boolean updateBackgroundEnabled;
 
     public MapperUI(Composite parent, MapperManager mapperManager) {
         super();
@@ -285,6 +286,8 @@ public class MapperUI {
         // CommandStack commandStack = new CommandStackForComposite(this.mapperUIParent);
         // mapperManager.setCommandStack(commandStack);
 
+        updateBackgroundEnabled = false;
+
         final UIManager uiManager = mapperManager.getUiManager();
         final ExternalMapperUiProperties uiProperties = uiManager.getUiProperties();
 
@@ -355,18 +358,9 @@ public class MapperUI {
 
         new FooterComposite(this.mapperUIParent, SWT.NONE, mapperManager);
 
-        if (WindowSystem.isGTK()) {
-            // resize especially for GTK
-            new AsynchronousThreading(1000, false, display, new Runnable() {
-
-                public void run() {
-                    resizeNotMinimizedTablesAtExpandedSize(display);
-                    mapperUIParent.getShell().layout();
-                }
-
-            }).start();
-        }
         selectFirstInOutTablesView();
+        updateBackgroundEnabled = true;
+        updateBackground(true, false);
 
     }
 
@@ -393,7 +387,7 @@ public class MapperUI {
     }
 
     private void resizeNotMinimizedTablesAtExpandedSize(final Display display) {
-        display.asyncExec(new Runnable() {
+        display.syncExec(new Runnable() {
 
             public void run() {
 
@@ -431,13 +425,7 @@ public class MapperUI {
                     mouseMoveScrollZoneHelper.mouseDownOnScroll = true;
                     mouseMoveScrollZoneHelper.scrolling = true;
                     backgroundRefreshLimiter.setTimeBeforeNewExecution(backgroundRefreshTimeForScrolling);
-                    display.asyncExec(new Runnable() {
-
-                        public void run() {
-                            backgroundRefreshLimiter.startIfExecutable();
-                        }
-                    });
-
+                    backgroundRefreshLimiter.startIfExecutable();
                 }
             }
         };
@@ -447,12 +435,15 @@ public class MapperUI {
     }
 
     private void addBackgroundRefreshLimiters(final Display display) {
-        backgroundRefreshLimiter = new ExecutionLimiter(DEFAULT_TIME_BEFORE_NEW_BG_REFRESH, true) {
+        backgroundRefreshLimiter = (ExecutionLimiter) new ExecutionLimiterImproved(DEFAULT_TIME_BEFORE_NEW_BG_REFRESH,
+                true) {
 
             @Override
             public void execute(final boolean isFinalExecution) {
 
-                display.asyncExec(new Runnable() {
+                // new Exception("backgroundRefreshLimiter.updateBackground").printStackTrace();
+
+                display.syncExec(new Runnable() {
 
                     public void run() {
 
@@ -467,11 +458,15 @@ public class MapperUI {
 
             }
         };
-        backgroundRefreshLimiterForceRecalculate = new ExecutionLimiter(DEFAULT_TIME_BEFORE_NEW_BG_REFRESH, true) {
+        backgroundRefreshLimiterForceRecalculate = (ExecutionLimiter) new ExecutionLimiterImproved(
+                DEFAULT_TIME_BEFORE_NEW_BG_REFRESH, true) {
 
             @Override
             public void execute(final boolean isFinalExecution) {
-                display.asyncExec(new Runnable() {
+
+                // new Exception("backgroundRefreshLimiterForceRecalculate.updateBackground").printStackTrace();
+
+                display.syncExec(new Runnable() {
 
                     public void run() {
                         if (!isFinalExecution) {
@@ -788,9 +783,14 @@ public class MapperUI {
 
     protected void updateBackground(boolean forceRecalculate, boolean antialias) {
 
-        bgDrawableComposite.setAntialias(antialias);
-        bgDrawableComposite.setForceRecalculate(forceRecalculate);
-        backgroundRefresher.refreshBackground();
+        if (updateBackgroundEnabled) {
+
+            antialias = false;
+
+            bgDrawableComposite.setAntialias(antialias);
+            bgDrawableComposite.setForceRecalculate(forceRecalculate);
+            backgroundRefresher.refreshBackground();
+        }
 
     }
 
@@ -940,13 +940,7 @@ public class MapperUI {
     }
 
     private void onSashResized(Display display) {
-        display.asyncExec(new Runnable() {
-
-            public void run() {
-
-                backgroundRefreshLimiterForceRecalculate.startIfExecutable();
-            }
-        });
+        backgroundRefreshLimiterForceRecalculate.startIfExecutable();
     }
 
     public InputTablesZoneView getInputTablesZoneView() {

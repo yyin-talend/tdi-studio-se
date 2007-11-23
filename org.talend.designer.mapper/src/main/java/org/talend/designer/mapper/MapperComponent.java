@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -31,6 +32,7 @@ import org.exolab.castor.xml.Unmarshaller;
 import org.exolab.castor.xml.ValidationException;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.SystemException;
+import org.talend.commons.ui.swt.cursor.CursorHelper;
 import org.talend.core.model.genhtml.HTMLDocUtils;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.BlockCode;
@@ -118,18 +120,25 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
     public int open(final Display display) {
         // TimeMeasure.start("Total open");
         // TimeMeasure.display = false;
-        initMapperMain(true);
-        mapperMain.createModelFromExternalData(getIODataComponents(), getMetadataList(), externalData, true);
-        Shell shell = mapperMain.createUI(display);
-        // TimeMeasure.display = true;
-        // TimeMeasure.end("Total open");
+
+        Shell shell = null;
+        CursorHelper.changeCursor(display, SWT.CURSOR_WAIT);
         try {
-            refreshMapperConnectorData();
-            mapperMain.getMapperManager().setOriginalExternalData(externalData.clone());
-        } catch (CloneNotSupportedException e1) {
-            ExceptionHandler.process(e1);
+            initMapperMain(true);
+            mapperMain.createModelFromExternalData(getIODataComponents(), getMetadataList(), externalData, true);
+            shell = mapperMain.createUI(display);
+            // TimeMeasure.display = true;
+            // TimeMeasure.end("Total open");
+            try {
+                refreshMapperConnectorData();
+                mapperMain.getMapperManager().setOriginalExternalData(externalData.clone());
+            } catch (CloneNotSupportedException e1) {
+                ExceptionHandler.process(e1);
+            }
+        } finally {
+            CursorHelper.changeCursor(display, SWT.CURSOR_ARROW);
         }
-        while (!shell.isDisposed()) {
+        while (shell != null && !shell.isDisposed()) {
             try {
                 if (!display.readAndDispatch()) {
                     display.sleep();
