@@ -12,16 +12,12 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.properties;
 
-import java.util.List;
-
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Text;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
@@ -34,9 +30,7 @@ import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IContextParameter;
-import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.utils.ContextParameterUtils;
-import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.wizards.ContextParameterWizard;
@@ -61,31 +55,28 @@ public final class ContextParameterExtractor {
      * @param text Component on wich extractor is installed.
      * @param process Process on wich context parameter is added.
      */
-    public static void installOn(final Control text, final Process process, final String parameterName,
-            final Element elem) {
+    public static void installOn(final Control text, final Process process, final String parameterName, final Element elem) {
         text.addKeyListener(new KeyAdapter() {
 
             @SuppressWarnings("unchecked")
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.keyCode == SWT.F5) {
-                    String repositoryId = process.getRepositoryId();
-                    if (repositoryId != null) {
-                        MessageDialog.openWarning(Display.getCurrent().getActiveShell(), Messages
-                                .getString("ContextParameterExtractor.Warning"), Messages
-                                .getString("ContextParameterExtractor.warningInfo"));// "It is impossible to add a
-                                                                                        // new parameter when using a
-                                                                                        // repository context.");
-                        return;
-                    }
+                    // String repositoryId = process.getRepositoryId();
+                    // if (repositoryId != null) {
+                    // MessageDialog.openWarning(Display.getCurrent().getActiveShell(), Messages
+                    // .getString("ContextParameterExtractor.Warning"), Messages
+                    // .getString("ContextParameterExtractor.warningInfo"));// "It is impossible to add a
+                    // // new parameter when using a
+                    // // repository context.");
+                    // return;
+                    // }
                     IContextParameter parameter = buildParameterFrom(text, process.getContextManager(), parameterName);
-                    ContextParameterWizard prmWizard = new ContextParameterWizard(process.getContextManager(),
-                            parameter);
+                    ContextParameterWizard prmWizard = new ContextParameterWizard(process.getContextManager(), parameter);
                     WizardDialog dlg = new WizardDialog(text.getShell(), prmWizard);
                     if (dlg.open() == WizardDialog.OK) {
-                        String replaceCode = ContextParameterUtils.getScriptCode(parameter,
-                                ((RepositoryContext) CorePlugin.getContext()
-                                        .getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject().getLanguage());
+                        String replaceCode = ContextParameterUtils.getScriptCode(parameter, ((RepositoryContext) CorePlugin
+                                .getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject().getLanguage());
                         if (text instanceof Text) {
                             if (((Text) text).getSelectionCount() == 0) {
                                 ((Text) text).setText(replaceCode);

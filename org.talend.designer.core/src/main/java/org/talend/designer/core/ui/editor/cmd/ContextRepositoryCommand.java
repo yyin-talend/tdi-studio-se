@@ -46,7 +46,7 @@ public class ContextRepositoryCommand extends Command {
 
     private IContext oldDefaultContext;
 
-    private String oldRepositoryId;
+    // private String oldRepositoryId;
 
     private Process process;
 
@@ -64,11 +64,11 @@ public class ContextRepositoryCommand extends Command {
             oldDefaultContext = contextManager.getDefaultContext();
             oldContextList.addAll(contextManager.getListContext());
             contextManager.loadFromEmf(contextItem.getContext(), contextItem.getDefaultContext());
-            oldRepositoryId = process.getRepositoryId();
-            process.setRepositoryId(contextItem.getProperty().getId());
+            // oldRepositoryId = process.getRepositoryId();
+            // process.setRepositoryId(contextItem.getProperty().getId());
         } else {
-            oldRepositoryId = process.getRepositoryId();
-            process.setRepositoryId(null);
+            // oldRepositoryId = process.getRepositoryId();
+            // process.setRepositoryId(null);
         }
         refreshContextView();
     }
@@ -78,11 +78,11 @@ public class ContextRepositoryCommand extends Command {
         if (contextItem != null) {
             contextManager.setListContext(oldContextList);
             contextManager.setDefaultContext(oldDefaultContext);
-            process.setRepositoryId(oldRepositoryId);
+            // process.setRepositoryId(oldRepositoryId);
         } else {
-            if (loadContextFromId(oldRepositoryId)) {
-                process.setRepositoryId(oldRepositoryId);
-            }
+            // if (loadContextFromId(oldRepositoryId)) {
+            // process.setRepositoryId(oldRepositoryId);
+            // }
         }
         refreshContextView();
     }

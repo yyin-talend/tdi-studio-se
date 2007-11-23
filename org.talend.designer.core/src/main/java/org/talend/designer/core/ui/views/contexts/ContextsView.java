@@ -12,23 +12,15 @@
 // ============================================================================
 package org.talend.designer.core.ui.views.contexts;
 
-import java.util.List;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.part.ViewPart;
-import org.talend.commons.exception.PersistenceException;
-import org.talend.core.model.context.JobContextManager;
 import org.talend.core.model.process.IContextManager;
-import org.talend.core.model.properties.ContextItem;
-import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.process.Process;
-import org.talend.repository.model.ERepositoryStatus;
-import org.talend.repository.model.IProxyRepositoryFactory;
 
 /**
  * qzhang class global comment. Detailled comment <br/>
@@ -71,30 +63,30 @@ public class ContextsView extends ViewPart {
     }
 
     public boolean updateContextFromRepository() {
-        String repositoryId = process.getRepositoryId();
-        IProxyRepositoryFactory factory = DesignerPlugin.getDefault().getProxyRepositoryFactory();
-        List<ContextItem> contextItemList = null;
-        try {
-            contextItemList = factory.getContextItem();
-        } catch (PersistenceException e) {
-            throw new RuntimeException(e);
-        }
-        if (contextItemList != null) {
-            for (ContextItem item : contextItemList) {
-                if (factory.getStatus(item) != ERepositoryStatus.DELETED) {
-                    String id = item.getProperty().getId();
-                    if (id.equals(repositoryId)) {
-                        IContextManager tmpManager = new JobContextManager(item.getContext(), item.getDefaultContext());
-                        if (tmpManager.sameAs(getContextManager())) {
-                            return false;
-                        }
-                        getContextManager().setListContext(tmpManager.getListContext());
-                        getContextManager().setDefaultContext(tmpManager.getDefaultContext());
-                        return true;
-                    }
-                }
-            }
-        }
+        // String repositoryId = process.getRepositoryId();
+        // IProxyRepositoryFactory factory = DesignerPlugin.getDefault().getProxyRepositoryFactory();
+        // List<ContextItem> contextItemList = null;
+        // try {
+        // contextItemList = factory.getContextItem();
+        // } catch (PersistenceException e) {
+        // throw new RuntimeException(e);
+        // }
+        // if (contextItemList != null) {
+        // for (ContextItem item : contextItemList) {
+        // if (factory.getStatus(item) != ERepositoryStatus.DELETED) {
+        // String id = item.getProperty().getId();
+        // if (id.equals(repositoryId)) {
+        // IContextManager tmpManager = new JobContextManager(item.getContext(), item.getDefaultContext());
+        // if (tmpManager.sameAs(getContextManager())) {
+        // return false;
+        // }
+        // getContextManager().setListContext(tmpManager.getListContext());
+        // getContextManager().setDefaultContext(tmpManager.getDefaultContext());
+        // return true;
+        // }
+        // }
+        // }
+        // }
         return false;
     }
 

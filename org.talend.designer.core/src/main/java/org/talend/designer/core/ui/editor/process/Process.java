@@ -676,9 +676,9 @@ public class Process extends Element implements IProcess {
          * Save the contexts informations
          */
         process.setDefaultContext(contextManager.getDefaultContext().getName());
-        if (repositoryId != null) {
-            process.setRepositoryContextId(repositoryId);
-        }
+        // if (repositoryId != null) {
+        // process.setRepositoryContextId(repositoryId);
+        // }
 
         contextManager.saveToEmf(process.getContext());
 
@@ -793,7 +793,7 @@ public class Process extends Element implements IProcess {
             return;
         }
 
-        repositoryId = process.getRepositoryContextId();
+        // repositoryId = process.getRepositoryContextId();
 
         loadConnections(process, nodesHashtable);
         loadContexts(process);
@@ -1554,7 +1554,7 @@ public class Process extends Element implements IProcess {
     // private InputStream content;
     private byte[] content;
 
-    private String repositoryId;
+    // private String repositoryId;
 
     /*
      * (non-Javadoc)
@@ -2102,13 +2102,13 @@ public class Process extends Element implements IProcess {
         return item;
     }
 
-    public String getRepositoryId() {
-        return repositoryId;
-    }
-
-    public void setRepositoryId(String repositoryId) {
-        this.repositoryId = repositoryId;
-    }
+    // public String getRepositoryId() {
+    // return repositoryId;
+    // }
+    //
+    // public void setRepositoryId(String repositoryId) {
+    // this.repositoryId = repositoryId;
+    // }
 
     public void addNote(Note note) {
         elem.add(note);
