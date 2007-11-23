@@ -121,8 +121,11 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
         // TimeMeasure.start("Total open");
         // TimeMeasure.display = false;
 
+        Shell parentShell = display.getActiveShell();
+        
+        CursorHelper.changeCursor(parentShell, SWT.CURSOR_WAIT);
+        
         Shell shell = null;
-        CursorHelper.changeCursor(display, SWT.CURSOR_WAIT);
         try {
             initMapperMain(true);
             mapperMain.createModelFromExternalData(getIODataComponents(), getMetadataList(), externalData, true);
@@ -136,7 +139,7 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
                 ExceptionHandler.process(e1);
             }
         } finally {
-            CursorHelper.changeCursor(display, SWT.CURSOR_ARROW);
+            CursorHelper.changeCursor(parentShell, SWT.CURSOR_ARROW);
         }
         while (shell != null && !shell.isDisposed()) {
             try {

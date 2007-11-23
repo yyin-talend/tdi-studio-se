@@ -95,7 +95,7 @@ public class MapperUI {
     /**
      * Default value for middle performance in ms.
      */
-    public static final int DEFAULT_TIME_BEFORE_NEW_BG_REFRESH = 100;
+    public static final int DEFAULT_TIME_BEFORE_NEW_BG_REFRESH = 10;
 
     private SashForm datasFlowViewSashForm;
 
@@ -435,7 +435,10 @@ public class MapperUI {
     }
 
     private void addBackgroundRefreshLimiters(final Display display) {
-        backgroundRefreshLimiter = (ExecutionLimiter) new ExecutionLimiterImproved(DEFAULT_TIME_BEFORE_NEW_BG_REFRESH,
+        
+        int time = 100;
+        
+        backgroundRefreshLimiter = (ExecutionLimiter) new ExecutionLimiterImproved(time,
                 true) {
 
             @Override
@@ -459,7 +462,7 @@ public class MapperUI {
             }
         };
         backgroundRefreshLimiterForceRecalculate = (ExecutionLimiter) new ExecutionLimiterImproved(
-                DEFAULT_TIME_BEFORE_NEW_BG_REFRESH, true) {
+                time, true) {
 
             @Override
             public void execute(final boolean isFinalExecution) {
