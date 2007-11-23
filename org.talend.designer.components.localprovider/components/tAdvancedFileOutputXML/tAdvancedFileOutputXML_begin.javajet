@@ -50,8 +50,32 @@ fileName_<%=cid%> = file_<%=cid%>+"0.xml";
 				}
 %>
 
+class NestXMLTool_<%=cid%>{
+	public void parseAndAdd(org.dom4j.Element nestRoot, String value){
+		try {
+            org.dom4j.Document doc4Str = org.dom4j.DocumentHelper.parseText("<root>"+ value + "</root>");
+    		nestRoot.setContent(doc4Str.getRootElement().content());
+    	} catch (Exception e) {
+    		e.printStackTrace();
+    		nestRoot.setText(value);
+        }
+	}
+	
+	public void replaceDefaultNameSpace(org.dom4j.Element nestRoot){
+		for (org.dom4j.Element tmp: (java.util.List<org.dom4j.Element>) nestRoot.elements()) {
+        	if (tmp.getQName().getNamespace().getURI().equals("") && tmp.getQName().getNamespace().getPrefix().equals("")){
+        		tmp.setQName(org.dom4j.DocumentHelper.createQName(tmp.getName(), nestRoot.getQName().getNamespace()));
+        	}
+        	replaceDefaultNameSpace(tmp);
+       	}
+	}
+}
+NestXMLTool_<%=cid%> nestXMLTool_<%=cid%> = new NestXMLTool_<%=cid%>();
+
 // sort group root element for judgement of group
 java.util.List<org.dom4j.Element> groupRootList_<%=cid%> = new java.util.ArrayList<org.dom4j.Element>();
+
+org.dom4j.Element root4Group_<%=cid%> = null;
 
 org.dom4j.io.OutputFormat format_<%=cid%> = org.dom4j.io.OutputFormat.createPrettyPrint();
 format_<%=cid%>.setEncoding(<%=encoding%>);

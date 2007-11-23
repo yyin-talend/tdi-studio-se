@@ -24,6 +24,7 @@ if(currentRowCount_<%=cid %> > 0){
 %>
 	java.io.FileOutputStream stream_<%=cid%> = new java.io.FileOutputStream(fileName_<%=cid%>);
     org.dom4j.io.XMLWriter output_<%=cid%> = new org.dom4j.io.XMLWriter(stream_<%=cid%>, format_<%=cid%>);
+    nestXMLTool_<%=cid%>.replaceDefaultNameSpace(doc_<%=cid%>.getRootElement());
     output_<%=cid%>.write(doc_<%=cid%>);
     output_<%=cid%>.close();
 <%

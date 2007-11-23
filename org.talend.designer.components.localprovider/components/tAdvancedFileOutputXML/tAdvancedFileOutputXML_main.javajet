@@ -8,6 +8,7 @@ imports="
     java.util.List
     java.util.ArrayList
     java.util.Map
+    java.util.HashMap
   	org.talend.core.model.process.IConnection    
 	org.talend.core.model.process.IConnectionCategory
     org.talend.core.model.metadata.types.JavaTypesManager
@@ -21,15 +22,7 @@ class XMLTool{
 		if(value!=null){
 			if(javaType == JavaTypesManager.OBJECT){
 %>
-	try {
-		 
-		org.dom4j.io.SAXReader reader4Obj_<%=cid%> = new org.dom4j.io.SAXReader();
-        org.dom4j.Document doc4Obj_<%=cid%> = reader4Obj_<%=cid%>.read(new java.io.StringReader("<root>"+(<%=value%>==null?"\"\"":<%=value%>.toString()) + "</root>"));
-		<%=currEleName%>_<%=cid%>.setContent(doc4Obj_<%=cid%>.getRootElement().content());
-	} catch (Exception e) {
-		e.printStackTrace();
-		<%=currEleName%>_<%=cid%>.setText(<%=value%>==null?"\"\"":<%=value%>.toString());
-    }
+		nestXMLTool_<%=cid%> .parseAndAdd(<%=currEleName%>_<%=cid%>,<%=value%>==null?"\"\"":<%=value%>.toString());
 <%
 			}else{
 %>
@@ -49,37 +42,28 @@ class XMLTool{
 <%
 		}
 	}
-	public void addAttribute(String cid, String value, String path){
-		if(value!=null){
-%>
-		doc_<%=cid%>.getRootElement().addAttribute("<%=path%>",<%=value%>==null?"\"\"":<%=value%>.toString());
-<%
-		}else{
-%>
-		doc_<%=cid%>.getRootElement().addAttribute("<%=path%>","");
-<%
-		}
-	}
 	public void addNameSpace(String cid, String currEleName, String value, String path){
 		if(value!=null){
 %>
 		<%=currEleName%>_<%=cid%>.addNamespace("<%=path%>",<%=value%>==null?"\"\"":<%=value%>.toString());
 <%
+			if(path ==null || path.length()==0){
+%>
+
+		<%=currEleName%>_<%=cid%>.setQName(org.dom4j.DocumentHelper.createQName(<%=currEleName%>_<%=cid%>.getName(),
+		org.dom4j.DocumentHelper.createNamespace("",<%=value%>==null?"\"\"":<%=value%>.toString())));
+<%
+			}
 		}else{
 %>
 		<%=currEleName%>_<%=cid%>.addNamespace("<%=path%>","");
 <%
-		}
-	}
-	public void addNameSpace(String cid, String value, String path){
-		if(value!=null){
+			if(path ==null || path.length()==0){
 %>
-		doc_<%=cid%>.getRootElement().addNamespace("<%=path%>",<%=value%>==null?"\"\"":<%=value%>.toString());
+		<%=currEleName%>_<%=cid%>.setQName(org.dom4j.DocumentHelper.createQName(<%=currEleName%>_<%=cid%>.getName(),
+		org.dom4j.DocumentHelper.createNamespace("","")));
 <%
-		}else{
-%>
-		doc_<%=cid%>.getRootElement().addNamespace("<%=path%>","");
-<%
+			}
 		}
 	}
 
@@ -177,12 +161,15 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                             }
                         }
                     }
+                    Map<String, String> endMap = new HashMap<String,String>();
+                    endMap.put("ATTRIBUTE","false");endMap.put("TYPE","Main");endMap.put("PATH","");
+                    newGroupList.add(endMap);
                     groupTable = newGroupList;
                 }
+                String group4LoopPath = loopTable.get(0).get("PATH");
+
 %>
 	nb_line_<%=cid%>++;
-	
-	org.dom4j.Element group4Loop_<%=cid%>=null;
 
 	// build root xml tree 
 	if (needRoot_<%=cid%>) {
@@ -197,34 +184,32 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             		JavaType javaType=(JavaType)objs[1];
             		String path = map.get("PATH");
                     if (map.get("ATTRIBUTE").equals("true")) {
-                        if(isRootAttribute){ //it is the attirbute of root
-                        	tool.addAttribute(cid, value, path);
-						}else{
-							tool.addAttribute(cid, currEleName, value, path);
-						}
+						tool.addAttribute(cid, currEleName, value, path);
 					}else if (map.get("ATTRIBUTE").equals("ns")) {
-                        if(isRootAttribute){ //it is the attirbute of root
-                        	tool.addNameSpace(cid, value, path);
-						}else{
-							tool.addNameSpace(cid, currEleName, value, path);
-						}
+						tool.addNameSpace(cid, currEleName, value, path);
             		}else{
-            			if(currEleName==null){
-            				isRootAttribute = true;
-            			}else{
-            				isRootAttribute = false;
-            			}
             			currEleName = "element"+elementCount;
-            			elementCount++;
 %>
 		org.dom4j.Element <%=currEleName%>_<%=cid%> = org.dom4j.DocumentHelper.makeElement(doc_<%=cid%>,"<%=path%>");		
 <%
+						if(elementCount==0){ // the root
+%>
+		<%=currEleName%>_<%=cid%> = doc_<%=cid%>.getRootElement();
+<%
+						}
+						if(group4LoopPath.startsWith(path)){
+%>
+		root4Group_<%=cid%>=<%=currEleName%>_<%=cid%>;
+<%
+						}
+						elementCount++;
 						tool.setText(cid, currEleName, value, javaType);
             		}
             	}
 %>
 		needRoot_<%=cid%>=false;
 	}
+	org.dom4j.Element group4Loop_<%=cid%>=root4Group_<%=cid%>;
 	
 	// build group xml tree 
 <%
@@ -269,7 +254,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 								currAttributeNameList.clear();
 %>
 	){
-        group4Loop_<%=cid%>.add(<%=currentGroupRoot%>_<%=cid%>);
         group4Loop_<%=cid%> = <%=currentGroupRoot%>_<%=cid%>;
         if(groupRootList_<%=cid%>.size()<=<%=groupRootCount%>){
         	groupRootList_<%=cid%>.add(<%=currentGroupRoot%>_<%=cid%>);
@@ -278,18 +262,17 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         }
         isNewElememt=true;
 	} else {
+		group4Loop_<%=cid%>.remove(<%=currentGroupRoot%>_<%=cid%>);
         group4Loop_<%=cid%> = groupRootList_<%=cid%>.get(<%=groupRootCount%>);
     }
 <%
 								groupRootCount++;
-                    		}else{ //currentGroupRoot == null
+							}
+							if(path.length()>0){
 %>
-	group4Loop_<%=cid%> = (org.dom4j.Element)doc_<%=cid%>.selectSingleNode("<%=path.substring(0,path.lastIndexOf("/") )%>");
+	org.dom4j.Element <%=currEleName%>_<%=cid%> = group4Loop_<%=cid%>.addElement("<%=path.substring(path.lastIndexOf("/") + 1)%>");
 <%
-                    		}
-%>
-	org.dom4j.Element <%=currEleName%>_<%=cid%> = org.dom4j.DocumentHelper.createElement("<%=path.substring(path.lastIndexOf("/") + 1)%>");
-<%
+							}
 							currentGroupRoot = currEleName;
                     	}else{ //not group element
 %>
@@ -300,32 +283,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                     	}
                     }
         		}
-        		if(currentGroupRoot!=null){ // process last group root
-%>
-	if(isNewElememt || groupRootList_<%=cid%>.size()<=<%=groupRootCount%> ||groupRootList_<%=cid%>.get(<%=groupRootCount%>)==null
-<%
-					for(String attr:currAttributeNameList)
-					{
-%>
-		|| !groupRootList_<%=cid%>.get(<%=groupRootCount%>).attribute("<%=attr%>").getText().equals(<%=currentGroupRoot%>_<%=cid%>.attribute("<%=attr%>").getText())
-<%
-					}
-					currAttributeNameList.clear();
-%>
-	){
-        group4Loop_<%=cid%>.add(<%=currentGroupRoot%>_<%=cid%>);
-        group4Loop_<%=cid%> = <%=currentGroupRoot%>_<%=cid%>;
-        if(groupRootList_<%=cid%>.size()<=<%=groupRootCount%>){
-        	groupRootList_<%=cid%>.add(<%=currentGroupRoot%>_<%=cid%>);
-        }else{
-        	groupRootList_<%=cid%>.set(<%=groupRootCount%>, <%=currentGroupRoot%>_<%=cid%>);
-        }
-	} else {
-        group4Loop_<%=cid%> = groupRootList_<%=cid%>.get(<%=groupRootCount%>);
-    }
-<%
-						groupRootCount++;
-            		}
 %>
 	// build loop xml tree 
 <%
@@ -350,13 +307,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             				elementCount++;
             				loopRootEleName=currEleName;
 %>
-	if(group4Loop_<%=cid%> == null)
-	{
-		group4Loop_<%=cid%> = (org.dom4j.Element)doc_<%=cid%>.selectSingleNode("<%=path.substring(0,path.lastIndexOf("/") )%>");
-	}
-	org.dom4j.Element <%=currEleName%>_<%=cid%> = 
-		org.dom4j.DocumentHelper.createElement("<%=loopRootName%>");//"<%=path%>".replaceFirst(group4Loop_<%=cid%>.getPath(), ""));
-	group4Loop_<%=cid%>.add(<%=currEleName%>_<%=cid%>);
+	org.dom4j.Element <%=currEleName%>_<%=cid%> = group4Loop_<%=cid%>.addElement("<%=loopRootName%>");
 <%
 						}else{
 							currEleName =  "element"+elementCount;
@@ -377,6 +328,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     if(currentRowCount_<%=cid %> == <%= splitEvery%>){
     	java.io.FileOutputStream stream_<%=cid%> = new java.io.FileOutputStream(fileName_<%=cid%>);
         org.dom4j.io.XMLWriter output_<%=cid%> = new org.dom4j.io.XMLWriter(stream_<%=cid%>, format_<%=cid%>);
+        nestXMLTool_<%=cid%>.replaceDefaultNameSpace(doc_<%=cid%>.getRootElement());
         output_<%=cid%>.write(doc_<%=cid%>);
         output_<%=cid%>.close();
         
