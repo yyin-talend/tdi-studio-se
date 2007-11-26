@@ -14,17 +14,19 @@ package org.talend.expressionbuilder.ui;
 
 import org.eclipse.jface.dialogs.DialogTray;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.wst.common.snippets.internal.Logger;
-import org.eclipse.wst.common.snippets.internal.SnippetsPlugin;
-import org.eclipse.wst.common.snippets.internal.ui.SnippetsView;
+import org.talend.commons.ui.image.EImage;
+import org.talend.commons.ui.image.ImageProvider;
+import org.talend.repository.ui.views.IRepositoryView;
+import org.talend.repository.ui.views.RepositoryView;
 
 /**
  * A subclass of DialogTray to provider the function of snippets. <br/>
@@ -48,31 +50,34 @@ public class SnippetsDialogTray extends DialogTray {
 
         Composite content = new Composite(parent, SWT.NONE);
         content.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-        content.setLayout(new FillLayout());
+        content.setLayout(new GridLayout());
 
-        SnippetsView snippetsview = null;
+        Button refreshButton = new Button(content, SWT.NONE);
+        refreshButton.setText("Refresh");
+        refreshButton.setImage(ImageProvider.getImage(EImage.REFRESH_ICON));
+
+        IRepositoryView view = RepositoryView.show();
+
+        // TreeViewer viewer = (TreeViewer) view.getViewer();
+        final SnippetsDialogTrayView repositoryView = new SnippetsDialogTrayView();
         try {
-            snippetsview = (SnippetsView) SnippetsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage()
-                    .findView(SnippetsPlugin.NAMES.VIEW_ID);
-            if (snippetsview == null) {
-                snippetsview = (SnippetsView) SnippetsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow()
-                        .getActivePage().showView(SnippetsPlugin.NAMES.VIEW_ID);
-            }
-            final SnippetsDialogTrayView view = new SnippetsDialogTrayView();
-            view.setEditor(editorPart);
-            view.init(snippetsview.getViewSite());
-            view.createPartControl(content);
-            content.addDisposeListener(new DisposeListener() {
-
-                public void widgetDisposed(DisposeEvent e) {
-                    view.dispose();
-                }
-            });
+            repositoryView.init(view.getViewSite());
         } catch (PartInitException e) {
-            Logger.logException(e);
+            e.printStackTrace();
         }
-        // PartSite partSite = (PartSite) snippetsview.getSite();
 
+        repositoryView.createPartControl(content);
+        repositoryView.refresh();
+
+        refreshButton.addSelectionListener(new SelectionAdapter() {
+
+            public void widgetSelected(SelectionEvent e) {
+                repositoryView.refresh();
+            }
+        });
+
+        // WorkbenchPage page = (WorkbenchPage) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+        // page.activate(repositoryView);
         return content;
     }
 

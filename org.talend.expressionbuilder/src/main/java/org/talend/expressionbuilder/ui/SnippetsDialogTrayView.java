@@ -12,133 +12,103 @@
 // ============================================================================
 package org.talend.expressionbuilder.ui;
 
-import org.eclipse.core.runtime.Platform;
+import org.eclipse.jface.util.LocalSelectionTransfer;
+import org.eclipse.jface.viewers.AbstractTreeViewer;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorPart;
-import org.eclipse.wst.common.snippets.core.ISnippetsEntry;
-import org.eclipse.wst.common.snippets.internal.Logger;
-import org.eclipse.wst.common.snippets.internal.PluginRecord;
-import org.eclipse.wst.common.snippets.internal.palette.SnippetPaletteItem;
-import org.eclipse.wst.common.snippets.internal.ui.SnippetsView;
-import org.eclipse.wst.common.snippets.ui.DefaultSnippetInsertion;
-import org.eclipse.wst.common.snippets.ui.ISnippetInsertion;
-import org.osgi.framework.Bundle;
+import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.model.RepositoryNode.EProperties;
+import org.talend.repository.ui.views.RepositoryContentProvider;
+import org.talend.repository.ui.views.RepositoryView;
 
 /**
  * DOC bqian class global comment. Detailled comment <br/>
  * 
  */
-public class SnippetsDialogTrayView extends SnippetsView {
+public class SnippetsDialogTrayView extends RepositoryView {
 
     private IEditorPart editorPart;
+
+    ViewerFilter filter = new ViewerFilter() {
+
+        public boolean isFilterProperty(Object element, String property) {
+            return false;
+        }
+
+        /**
+         * Returns whether the given element makes it through this filter.
+         * 
+         * @param viewer the viewer
+         * @param parentElement the parent element
+         * @param element the element
+         * @return <code>true</code> if element is included in the filtered set, and <code>false</code> if excluded
+         */
+        public boolean select(Viewer viewer, Object parentElement, Object element) {
+            RepositoryNode node = (RepositoryNode) element;
+            if (node.getProperties(EProperties.CONTENT_TYPE) != null) {
+                if (node.getProperties(EProperties.CONTENT_TYPE).equals(ERepositoryObjectType.SNIPPETS)) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+    };
 
     /**
      * DOC bqian SnippetsDialogTrayView constructor comment.
      */
     public SnippetsDialogTrayView() {
         super();
-        insertionHelper = new InsertionHelper();
     }
-
-    /**
-     * DOC bqian Comment method "setEditor".
-     * 
-     * @param editorPart
-     */
-    public void setEditor(IEditorPart editorPart) {
-        this.editorPart = editorPart;
-    }
-
-    /**
-     * DOC bqian SnippetsDialogTrayView class global comment. Detailled comment <br/>
-     * 
-     */
-    class InsertionHelper {
-
-        protected InsertionHelper() {
-            super();
-        }
-
-        protected ISnippetInsertion getInsertion(SnippetPaletteItem item) {
-            ISnippetInsertion insertion = null;
-            String className = item.getClassName();
-
-            PluginRecord record = null;
-            if (item.getSourceType() == ISnippetsEntry.SNIPPET_SOURCE_PLUGINS)
-                record = (PluginRecord) item.getSourceDescriptor();
-            // ignore the version
-            if (record != null && record.getPluginName() != null && className != null) {
-                Class theClass = null;
-                Bundle bundle = Platform.getBundle(record.getPluginName());
-                try {
-                    if (className != null && className.length() > 0)
-                        theClass = bundle.loadClass(className);
-                } catch (ClassNotFoundException e) {
-                    try { // maybe it's local???
-                        theClass = Class.forName(className);
-                    } catch (ClassNotFoundException f) {
-                        Logger.logException("Could not load Insertion class", e); //$NON-NLS-1$
-                    }
-                    if (theClass == null)
-                        Logger.logException("Could not load Insertion class", e); //$NON-NLS-1$
-                }
-                if (theClass != null) {
-                    try {
-                        insertion = (ISnippetInsertion) theClass.newInstance();
-                    } catch (IllegalAccessException e) {
-                        Logger.logException("Could not access Insertion class", e); //$NON-NLS-1$
-                    } catch (InstantiationException e) {
-                        Logger.logException("Could not instantiate Insertion class", e); //$NON-NLS-1$
-                    }
-                }
-            }
-            if (insertion == null) {
-                insertion = new DefaultSnippetInsertion();
-            }
-            return insertion;
-        }
-
-        public boolean insert(SnippetPaletteItem item, IEditorPart editorPart) {
-            ISnippetInsertion insertion = getInsertion(item);
-            if (insertion != null) {
-                insertion.setItem(item);
-                insertion.insert(editorPart);
-                return true;
-            }
-            return false;
-        }
-    }
-
-    private InsertionHelper insertionHelper;
 
     /*
      * (non-Javadoc)
      * 
-     * @see org.eclipse.wst.common.snippets.internal.ui.SnippetsView#createPartControl(org.eclipse.swt.widgets.Composite)
+     * @see org.talend.repository.ui.views.RepositoryView#createPartControl(org.eclipse.swt.widgets.Composite)
      */
     @Override
     public void createPartControl(Composite parent) {
         super.createPartControl(parent);
+        getViewer().addFilter(filter);
     }
 
     /*
      * (non-Javadoc)
      * 
-     * @see org.eclipse.wst.common.snippets.internal.ui.SnippetsView#insert(org.eclipse.wst.common.snippets.internal.palette.SnippetPaletteItem)
-     */
-    @SuppressWarnings("restriction")
-    public void insert(SnippetPaletteItem item) {
-        insertionHelper.insert(item, editorPart);
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.wst.common.snippets.internal.ui.SnippetsView#dispose()
+     * @see org.talend.repository.ui.views.RepositoryView#refresh(java.lang.Object)
      */
     @Override
-    public void dispose() {
-        super.dispose();
+    public void refresh(Object object) {
+        refresh();
+        // viewer.refresh(object);
+        if (object != null) {
+            // getViewer().setExpandedState(object, true);
+            getViewer().expandToLevel(object, AbstractTreeViewer.ALL_LEVELS);
+        }
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.ui.views.RepositoryView#refresh()
+     */
+    @Override
+    public void refresh() {
+        super.refresh();
+        getViewer().setInput(this.getViewSite());
+        RepositoryContentProvider contentProvider = (RepositoryContentProvider) getViewer().getContentProvider();
+        RepositoryNode snippetNode = contentProvider.getCodeNode();
+        getViewer().setInput(snippetNode);
+
+    }
+
+    public void dragFinished() {
+        LocalSelectionTransfer.getTransfer().setSelection(null);
+        LocalSelectionTransfer.getTransfer().setSelectionSetTime(0);
+    }
 }
