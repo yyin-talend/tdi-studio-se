@@ -11,6 +11,7 @@
 		java.util.ArrayList
 		org.talend.core.model.process.IContextParameter
 		org.talend.core.model.metadata.types.JavaTypesManager
+		org.talend.core.model.metadata.types.JavaType
 	" 
 	class="Footer" 
 %>
@@ -115,9 +116,45 @@
 			}
 			<% for (IContextParameter ctxParam :params)
 			{
+			    String typeToGenerate ="String";
+			    if( !(ctxParam.getType().equals("id_File") || ctxParam.getType().equals("id_Directory") ||ctxParam.getType().equals("id_List Of Value")))
+			    {
+			       typeToGenerate=JavaTypesManager.getTypeToGenerate(ctxParam.getType(),true);
+			    }
+			    if(typeToGenerate.equals("java.util.Date"))
+			    {
+			        
 			%>
-			<%=ctxParam.getName()%>=context.getProperty("<%=ctxParam.getName()%>");
+			try{
+			<%=ctxParam.getName()%>=(java.util.Date)(new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(context.getProperty("<%=ctxParam.getName()%>")));
+			}catch(ParseException e)
+			{
+			    e.printStackTrace();
+			}
 			<%
+			      
+			    }else if(typeToGenerate.equals("Integer"))
+			    {
+			  %> 
+			  <%=ctxParam.getName()%>=Integer.parseInt(context.getProperty("<%=ctxParam.getName()%>"));
+			  <%
+			    }else if(typeToGenerate.equals("Object")||typeToGenerate.equals("String") )
+			    {
+			    %>
+			    <%=ctxParam.getName()%>=(<%=typeToGenerate%>) context.getProperty("<%=ctxParam.getName()%>");
+			    <%
+			    }else if(typeToGenerate.equals("Character"))
+			    {
+			 %>
+			 <%=ctxParam.getName()%>= context.getProperty("<%=ctxParam.getName()%>");
+			 <%
+			    }
+			     else
+			    {
+			 %> 
+			 <%=ctxParam.getName()%>=<%=typeToGenerate%>.parse<%=typeToGenerate%> (context.getProperty("<%=ctxParam.getName()%>"));
+			 <%
+			    }
 			}
 			%>
     	} catch (java.io.IOException ie) {

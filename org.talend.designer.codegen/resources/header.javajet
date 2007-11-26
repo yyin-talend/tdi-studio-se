@@ -78,9 +78,17 @@ import java.math.BigDecimal;
 <%
     for (IContextParameter ctxParam :params)
      {
+        
+        if(ctxParam.getType().equals("id_List Of Value") || ctxParam.getType().equals("id_File") || ctxParam.getType().equals("id_Directory") || ctxParam.getType().equals("id_Character"))
+        {
+     %>
+     private static String <%=ctxParam.getName()%>;
+     <%
+        }else
+        {
 %>      
-private static String <%=ctxParam.getName()%>;
-  <%       
+private static <%=JavaTypesManager.getTypeToGenerate(ctxParam.getType(),true)%>  <%=ctxParam.getName()%>;
+  <%    }   
      }
 %>
 	private static final String jobName = "<%=codeGenArgument.getJobName() %>";
