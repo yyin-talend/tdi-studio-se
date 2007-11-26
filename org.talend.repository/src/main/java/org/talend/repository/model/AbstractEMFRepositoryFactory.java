@@ -98,6 +98,10 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         return getObjectFromFolder(ERepositoryObjectType.ROUTINES, true);
     }
 
+    public RootContainer<String, IRepositoryObject> getSnippets() throws PersistenceException {
+        return getObjectFromFolder(ERepositoryObjectType.SNIPPETS, true);
+    }
+
     public RootContainer<String, IRepositoryObject> getBusinessProcess() throws PersistenceException {
         return getObjectFromFolder(ERepositoryObjectType.BUSINESS_PROCESS, true);
     }
@@ -128,13 +132,13 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
      * @see org.talend.repository.model.IRepositoryFactory#getRecycleBinItems()
      */
     public List<IRepositoryObject> getRecycleBinItems() throws PersistenceException {
-        ERepositoryObjectType types[] = { ERepositoryObjectType.DOCUMENTATION,
-                ERepositoryObjectType.METADATA_CONNECTIONS, ERepositoryObjectType.METADATA_FILE_DELIMITED,
-                ERepositoryObjectType.METADATA_FILE_POSITIONAL, ERepositoryObjectType.PROCESS,
-                ERepositoryObjectType.CONTEXT, ERepositoryObjectType.ROUTINES, ERepositoryObjectType.BUSINESS_PROCESS,
+        ERepositoryObjectType types[] = { ERepositoryObjectType.DOCUMENTATION, ERepositoryObjectType.METADATA_CONNECTIONS,
+                ERepositoryObjectType.METADATA_FILE_DELIMITED, ERepositoryObjectType.METADATA_FILE_POSITIONAL,
+                ERepositoryObjectType.PROCESS, ERepositoryObjectType.CONTEXT, ERepositoryObjectType.SNIPPETS,
+                ERepositoryObjectType.ROUTINES, ERepositoryObjectType.BUSINESS_PROCESS,
                 ERepositoryObjectType.METADATA_FILE_REGEXP, ERepositoryObjectType.METADATA_FILE_XML,
                 ERepositoryObjectType.METADATA_FILE_LDIF, ERepositoryObjectType.METADATA_LDAP_SCHEMA,
-                ERepositoryObjectType.METADATA_GENERIC_SCHEMA,ERepositoryObjectType.JOBS};
+                ERepositoryObjectType.METADATA_GENERIC_SCHEMA, ERepositoryObjectType.JOBS };
 
         List<IRepositoryObject> deletedItems = new ArrayList<IRepositoryObject>();
         for (int i = 0; i < types.length; i++) {
@@ -163,17 +167,16 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         return toReturn;
     }
 
-    protected List<IRepositoryObject> getSerializable(Project project, String id, boolean allVersion)
-            throws PersistenceException {
+    protected List<IRepositoryObject> getSerializable(Project project, String id, boolean allVersion) throws PersistenceException {
         List<IRepositoryObject> toReturn = new ArrayList<IRepositoryObject>();
 
-        ERepositoryObjectType[] repositoryObjectTypeList = new ERepositoryObjectType[] {
-                ERepositoryObjectType.BUSINESS_PROCESS, ERepositoryObjectType.DOCUMENTATION,
-                ERepositoryObjectType.METADATA_CONNECTIONS, ERepositoryObjectType.METADATA_FILE_DELIMITED,
-                ERepositoryObjectType.METADATA_FILE_POSITIONAL, ERepositoryObjectType.METADATA_FILE_REGEXP,
-                ERepositoryObjectType.METADATA_FILE_XML, ERepositoryObjectType.METADATA_FILE_LDIF,
-                ERepositoryObjectType.PROCESS, ERepositoryObjectType.ROUTINES, ERepositoryObjectType.CONTEXT,
-                ERepositoryObjectType.METADATA_LDAP_SCHEMA, ERepositoryObjectType.METADATA_GENERIC_SCHEMA};
+        ERepositoryObjectType[] repositoryObjectTypeList = new ERepositoryObjectType[] { ERepositoryObjectType.BUSINESS_PROCESS,
+                ERepositoryObjectType.DOCUMENTATION, ERepositoryObjectType.METADATA_CONNECTIONS,
+                ERepositoryObjectType.METADATA_FILE_DELIMITED, ERepositoryObjectType.METADATA_FILE_POSITIONAL,
+                ERepositoryObjectType.METADATA_FILE_REGEXP, ERepositoryObjectType.METADATA_FILE_XML,
+                ERepositoryObjectType.METADATA_FILE_LDIF, ERepositoryObjectType.PROCESS, ERepositoryObjectType.ROUTINES,
+                ERepositoryObjectType.CONTEXT, ERepositoryObjectType.SNIPPETS, ERepositoryObjectType.METADATA_LDAP_SCHEMA,
+                ERepositoryObjectType.METADATA_GENERIC_SCHEMA };
         for (ERepositoryObjectType repositoryObjectType : repositoryObjectTypeList) {
             Object folder = getFolder(project, repositoryObjectType);
             toReturn.addAll(getSerializableFromFolder(folder, id, repositoryObjectType, allVersion, true, true));
@@ -181,8 +184,7 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         return toReturn;
     }
 
-    protected abstract Object getFolder(Project project, ERepositoryObjectType repositoryObjectType)
-            throws PersistenceException;
+    protected abstract Object getFolder(Project project, ERepositoryObjectType repositoryObjectType) throws PersistenceException;
 
     public List<IRepositoryObject> getAllVersion(String id) throws PersistenceException {
         List<IRepositoryObject> serializableAllVersion = getSerializable(getRepositoryContext().getProject(), id, true);
@@ -215,21 +217,19 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         return true;
     }
 
-    protected abstract List<IRepositoryObject> getSerializableFromFolder(Object folder, String id,
-            ERepositoryObjectType type, boolean allVersion, boolean searchInChildren, boolean withDeleted)
+    protected abstract List<IRepositoryObject> getSerializableFromFolder(Object folder, String id, ERepositoryObjectType type,
+            boolean allVersion, boolean searchInChildren, boolean withDeleted) throws PersistenceException;
+
+    protected abstract <K, T> RootContainer<K, T> getObjectFromFolder(ERepositoryObjectType type, boolean onlyLastVersion)
             throws PersistenceException;
 
-    protected abstract <K, T> RootContainer<K, T> getObjectFromFolder(ERepositoryObjectType type,
+    protected abstract <K, T> void addFolderMembers(ERepositoryObjectType type, Container<K, T> toReturn, Object objectFolder,
             boolean onlyLastVersion) throws PersistenceException;
-
-    protected abstract <K, T> void addFolderMembers(ERepositoryObjectType type, Container<K, T> toReturn,
-            Object objectFolder, boolean onlyLastVersion) throws PersistenceException;
 
     protected abstract FolderHelper getFolderHelper(org.talend.core.model.properties.Project emfProject);
 
     protected Item copyFromResource(Resource createResource) throws PersistenceException, BusinessException {
-        Item newItem = (Item) EcoreUtil.getObjectByType(createResource.getContents(), PropertiesPackage.eINSTANCE
-                .getItem());
+        Item newItem = (Item) EcoreUtil.getObjectByType(createResource.getContents(), PropertiesPackage.eINSTANCE.getItem());
         Property property = newItem.getProperty();
         property.setId(getNextId());
         property.setAuthor(getRepositoryContext().getUser());
@@ -327,8 +327,7 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
 
     public List<ModuleNeeded> getModulesNeededForJobs() throws PersistenceException {
         List<ModuleNeeded> importNeedsList = new ArrayList<ModuleNeeded>();
-        IProxyRepositoryFactory repositoryFactory = CorePlugin.getDefault().getRepositoryService()
-                .getProxyRepositoryFactory();
+        IProxyRepositoryFactory repositoryFactory = CorePlugin.getDefault().getRepositoryService().getProxyRepositoryFactory();
         List<IRepositoryObject> jobs = repositoryFactory.getAll(ERepositoryObjectType.PROCESS, true);
         for (IRepositoryObject cur : jobs) {
             if (repositoryFactory.getStatus(cur) != ERepositoryStatus.DELETED) {
@@ -339,8 +338,8 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
                     for (ElementParameterType elementParam : elementParameter) {
                         if (elementParam.getField().equals(EParameterFieldType.MODULE_LIST.getName())) {
                             String uniquename = ElementParameterParser.getUNIQUENAME(node);
-                            ModuleNeeded toAdd = new ModuleNeeded("Job " + item.getProperty().getLabel(), elementParam
-                                    .getValue(), "Required for using component : " + uniquename + ".", true);
+                            ModuleNeeded toAdd = new ModuleNeeded("Job " + item.getProperty().getLabel(),
+                                    elementParam.getValue(), "Required for using component : " + uniquename + ".", true);
                             importNeedsList.add(toAdd);
                         }
                     }

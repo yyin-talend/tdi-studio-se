@@ -12,7 +12,6 @@
 // ============================================================================
 package org.talend.repository.ui.views;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -21,9 +20,6 @@ import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.wst.common.snippets.core.ISnippetCategory;
-import org.eclipse.wst.common.snippets.internal.SnippetDefinitions;
-import org.eclipse.wst.common.snippets.internal.SnippetsPlugin;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.exception.RuntimeExceptionHandler;
 import org.talend.commons.utils.data.container.Container;
@@ -48,8 +44,6 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.Folder;
 import org.talend.core.model.repository.IRepositoryObject;
-import org.talend.core.model.snippets.SnippetCategory;
-import org.talend.core.model.snippets.SnippetItem;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.BinRepositoryNode;
@@ -78,8 +72,8 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
 
     private TreeViewer viewer;
 
-    private RepositoryNode businessProcessNode, recBinNode, routineNode, snippetsNode, processNode, contextNode, docNode,
-            metadataConNode, metadataFileNode, metadataFilePositionalNode, metadataFileRegexpNode, metadataFileXmlNode,
+    private RepositoryNode businessProcessNode, recBinNode, codeNode, routineNode, snippetsNode, processNode, contextNode,
+            docNode, metadataConNode, metadataFileNode, metadataFilePositionalNode, metadataFileRegexpNode, metadataFileXmlNode,
             metadataFileLdifNode, metadataGenericSchemaNode, metadataLDAPSchemaNode;
 
     public RepositoryContentProvider(IRepositoryView view) {
@@ -122,7 +116,7 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
                 } else if (parent == routineNode) {
                     convert(factory.getRoutine(), routineNode, ERepositoryObjectType.ROUTINES, recBinNode);
                 } else if (parent == snippetsNode) {
-                    convertSnippets(snippetsNode);
+                    convert(factory.getSnippets(), snippetsNode, ERepositoryObjectType.SNIPPETS, recBinNode);
                 } else if (parent == contextNode) {
                     convert(factory.getContext(), contextNode, ERepositoryObjectType.CONTEXT, recBinNode);
                 } else if (parent == docNode) {
@@ -244,8 +238,8 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
         nodes.add(contextNode);
 
         // 4. Code
-        RepositoryNode codeNode = new StableRepositoryNode(root, Messages
-                .getString("RepositoryContentProvider.repositoryLabel.code"), ECoreImage.CODE_ICON); //$NON-NLS-1$
+        codeNode = new StableRepositoryNode(root,
+                Messages.getString("RepositoryContentProvider.repositoryLabel.code"), ECoreImage.CODE_ICON); //$NON-NLS-1$
         codeNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.ROUTINES);
         nodes.add(codeNode);
 
@@ -256,7 +250,7 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
         codeNode.getChildren().add(routineNode);
 
         // 4.2. Snippets
-        snippetsNode = new RepositoryNode(null, codeNode, ENodeType.STABLE_SYSTEM_FOLDER);
+        snippetsNode = new RepositoryNode(null, codeNode, ENodeType.SYSTEM_FOLDER);
         snippetsNode.setProperties(EProperties.LABEL, ERepositoryObjectType.SNIPPETS);
         snippetsNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.SNIPPETS);
         codeNode.getChildren().add(snippetsNode);
@@ -425,48 +419,6 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
             IRepositoryObject repositoryObject = (IRepositoryObject) obj;
             addNode(parent, type, recBinNode, repositoryObject);
         }
-    }
-
-    public static boolean useSNIPPETS = false;
-
-    private void convertSnippets(RepositoryNode parent) {
-        if (!useSNIPPETS) {
-            return;
-        }
-        handleReferenced(parent);
-        SnippetDefinitions definition = SnippetsPlugin.getSnippetManager().getDefinitions();
-        List<ISnippetCategory> categories = (List<ISnippetCategory>) definition.getCategories();
-
-        List<SnippetCategory> list = new ArrayList<SnippetCategory>();
-        for (ISnippetCategory snippetCategory : categories) {
-            SnippetCategory snippetCategoryObject = new SnippetCategory(snippetCategory);
-            list.add(snippetCategoryObject);
-        }
-
-        for (SnippetCategory cate : list) {
-            RepositoryNode categoryNode;
-            categoryNode = new RepositoryNode(cate, parent, ENodeType.REPOSITORY_ELEMENT);
-            categoryNode.setProperties(EProperties.LABEL, cate.getLabel());
-            categoryNode.setProperties(EProperties.CONTENT_TYPE, cate.getType());
-
-            parent.getChildren().add(categoryNode);
-
-            for (IRepositoryObject object : cate.getChildren()) {
-                SnippetItem item = (SnippetItem) object;
-
-                RepositoryNode itemNode = new RepositoryNode(item, categoryNode, ENodeType.REPOSITORY_ELEMENT);
-
-                itemNode.setProperties(EProperties.LABEL, item.getLabel());
-                itemNode.setProperties(EProperties.CONTENT_TYPE, item.getType());
-
-                categoryNode.getChildren().add(itemNode);
-            }
-        }
-
-        // for (Object obj : fromModel.getMembers()) {
-        // IRepositoryObject repositoryObject = (IRepositoryObject) obj;
-        // addNode(parent, type, recBinNode, repositoryObject);
-        // }
     }
 
     private void handleReferenced(RepositoryNode parent) {
@@ -825,4 +777,23 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
             query.getQueries().getQuery().remove(query);
         }
     }
+
+    /**
+     * Getter for snippetsNode.
+     * 
+     * @return the snippetsNode
+     */
+    public RepositoryNode getSnippetsNode() {
+        return this.snippetsNode;
+    }
+
+    /**
+     * Getter for codeNode.
+     * 
+     * @return the codeNode
+     */
+    public RepositoryNode getCodeNode() {
+        return this.codeNode;
+    }
+
 }

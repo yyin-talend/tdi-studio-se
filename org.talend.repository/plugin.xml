@@ -182,6 +182,17 @@
              level="12"
              name="Read context"/>
        <Action
+             class="org.talend.repository.ui.actions.snippet.CreateSnippetAction"
+             id="org.talend.repository.createSnippet"
+             level="10"
+             name="Create Snippet"/>
+        <Action
+             class="org.talend.repository.ui.actions.snippet.EditSnippetAction"
+             id="org.talend.repository.editSnippet"
+             isEditAction="true"
+             level="10"
+             name="Edit Snippet"/>
+       <Action
              class="org.talend.repository.ui.actions.ConfigRoutineLibraryAction"
              id="org.talend.repository.actions.ImportExternalJAR"
              level="97"

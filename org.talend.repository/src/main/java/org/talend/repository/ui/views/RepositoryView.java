@@ -43,6 +43,7 @@ import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
@@ -102,7 +103,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
 
     private static Logger log = Logger.getLogger(RepositoryView.class);
 
-    private static TreeViewer viewer;
+    private TreeViewer viewer;
 
     private static RepositoryNode root = new RepositoryNode(null, null, ENodeType.STABLE_SYSTEM_FOLDER);
 
@@ -137,12 +138,10 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
     }
 
     public static IRepositoryView show() {
-        IViewPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(
-                IRepositoryView.VIEW_ID);
+        IViewPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(IRepositoryView.VIEW_ID);
         if (part == null) {
             try {
-                part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(
-                        IRepositoryView.VIEW_ID);
+                part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(IRepositoryView.VIEW_ID);
             } catch (Exception e) {
                 ExceptionHandler.process(e);
             }
@@ -153,7 +152,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
     @Override
     public void createPartControl(Composite parent) {
         viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
-
+        viewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
         viewer.setContentProvider(new RepositoryContentProvider(this));
         viewer.setLabelProvider(new RepositoryLabelProvider(this));
         viewer.setSorter(new RepositoryNameSorter());
@@ -198,16 +197,16 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
 
             public void focusGained(FocusEvent e) {
                 log.trace("Repository gain focus"); //$NON-NLS-1$
-                IContextService contextService = (IContextService) RepositoryPlugin.getDefault().getWorkbench()
-                        .getAdapter(IContextService.class);
+                IContextService contextService = (IContextService) RepositoryPlugin.getDefault().getWorkbench().getAdapter(
+                        IContextService.class);
                 ca = contextService.activateContext("talend.repository"); //$NON-NLS-1$
             }
 
             public void focusLost(FocusEvent e) {
                 log.trace("Repository lost focus"); //$NON-NLS-1$
                 if (ca != null) {
-                    IContextService contextService = (IContextService) RepositoryPlugin.getDefault().getWorkbench()
-                            .getAdapter(IContextService.class);
+                    IContextService contextService = (IContextService) RepositoryPlugin.getDefault().getWorkbench().getAdapter(
+                            IContextService.class);
                     contextService.deactivateContext(ca);
                 }
             }
@@ -285,9 +284,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
              */
             @Override
             public void dragFinished(DragSourceEvent event) {
-                refresh();
-                LocalSelectionTransfer.getTransfer().setSelection(null);
-                LocalSelectionTransfer.getTransfer().setSelectionSetTime(0);
+                RepositoryView.this.dragFinished();
             }
         });
         RepositoryDropAdapter adapter = new RepositoryDropAdapter(viewer);
@@ -302,6 +299,12 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
         viewer.getControl().addListener(SWT.DragDetect, dragDetectListener);
     }
 
+    public void dragFinished() {
+        refresh();
+        LocalSelectionTransfer.getTransfer().setSelection(null);
+        LocalSelectionTransfer.getTransfer().setSelectionSetTime(0);
+    }
+
     private void makeActions() {
         IHandlerService handlerService = (IHandlerService) getSite().getService(IHandlerService.class);
 
@@ -311,6 +314,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
 
         contextualsActions = ActionsHelper.getRepositoryContextualsActions();
         for (ITreeContextualAction action : contextualsActions) {
+            action.setWorkbenchPart(this);
             if (action.getActionDefinitionId() != null) {
                 handler1 = new ActionHandler(action);
                 handlerService.activateHandler(action.getActionDefinitionId(), handler1);

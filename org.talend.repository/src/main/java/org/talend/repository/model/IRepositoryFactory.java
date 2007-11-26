@@ -210,6 +210,8 @@ public interface IRepositoryFactory {
 
     public RootContainer<String, IRepositoryObject> getContext() throws PersistenceException;
 
+    public RootContainer<String, IRepositoryObject> getSnippets() throws PersistenceException;
+
     public RootContainer<String, IRepositoryObject> getRoutine() throws PersistenceException;
 
     public RootContainer<String, IRepositoryObject> getMetadataConnection() throws PersistenceException;
