@@ -25,6 +25,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.part.ViewPart;
+import org.talend.commons.ui.image.EImage;
+import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
 import org.talend.core.properties.tab.HorizontalTabFactory;
@@ -73,7 +75,7 @@ public class ComponentSettingsView extends ViewPart {
                         && (!currentSelectedTab.getElement().equals(descriptor.getElement()) || currentSelectedTab.getCategory() != descriptor
                                 .getCategory())) {
                     currentSelectedTab.getComposite().setVisible(false);
-                    // currentSelectedTab.getComposite().getChildren()\
+                    // currentSelectedTab.getComposite().getChildren()
                     for (Control curControl : currentSelectedTab.getComposite().getChildren()) {
                         curControl.dispose();
                     }
@@ -86,16 +88,11 @@ public class ComponentSettingsView extends ViewPart {
                     elem = descriptor.getElement();
                     parent = tabFactory.createTabComposite();
                     createDynamicComposite(parent, descriptor.getElement(), descriptor.getCategory());
+                    parent.getParent().layout();
                     parent.setVisible(true);
                 }
-
                 descriptor.setComposite(parent);
-
                 currentSelectedTab = descriptor;
-                if (currentSelectedTab.getComposite() != null) {
-                    currentSelectedTab.getComposite().getParent().layout();
-                }
-
             }
 
         });
@@ -117,7 +114,6 @@ public class ComponentSettingsView extends ViewPart {
             dc = new MainConnectionComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS, category, element);
         }
         dc.refresh();
-
     }
 
     /*
@@ -167,10 +163,12 @@ public class ComponentSettingsView extends ViewPart {
                 List<TalendPropertyTabDescriptor> d = new ArrayList<TalendPropertyTabDescriptor>();
 
                 if (descriptors.size() > 0) {
-                    for (TalendPropertyTabDescriptor ds : descriptors) {
-                        if (ds.getCategory() == currentSelectedTab.getCategory()) {
-                            d.add(ds);
-                            return d;
+                    if (currentSelectedTab != null) {
+                        for (TalendPropertyTabDescriptor ds : descriptors) {
+                            if (ds.getCategory() == currentSelectedTab.getCategory()) {
+                                d.add(ds);
+                                return d;
+                            }
                         }
                     }
                     d.add(descriptors.get(0));
@@ -192,14 +190,16 @@ public class ComponentSettingsView extends ViewPart {
      * @param elem
      */
     private void setPropertiesViewerTitle(Element elem) {
+        String label = null;
+        Image image = null;
         if (elem instanceof Node) {
-            String label = ((Node) elem).getLabel();
-            Image image = new Image(Display.getDefault(), ((Node) elem).getComponent().getIcon24().getImageData());
-            tabFactory.setTitle(label, null);
+            label = ((Node) elem).getLabel();
+            image = new Image(Display.getDefault(), ((Node) elem).getComponent().getIcon24().getImageData());
         } else if (elem instanceof Connection) {
-            String label = ((Connection) elem).getElementName();
-            tabFactory.setTitle(label, getDefaultImage());
+            label = ((Connection) elem).getElementName();
+            image = ImageProvider.getImage(EImage.RIGHT_ICON);
         }
+        tabFactory.setTitle(label, image);
     }
 
     /**
@@ -216,4 +216,5 @@ public class ComponentSettingsView extends ViewPart {
         }
         return null;
     }
+
 }

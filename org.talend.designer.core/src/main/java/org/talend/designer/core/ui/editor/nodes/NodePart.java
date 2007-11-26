@@ -60,7 +60,6 @@ import org.talend.designer.core.ui.editor.connections.ConnectionFigure;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainerPart;
 import org.talend.designer.core.ui.editor.process.ProcessPart;
-import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
 import org.talend.designer.core.ui.views.properties.ComponentSettingsView;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.ui.views.IRepositoryView;
@@ -436,7 +435,10 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
                     }
                 } else {
                     try {
-                        page.showView("org.eclipse.ui.views.PropertySheet"); //$NON-NLS-1$
+                        // modified for feature 2454.
+                        //
+                        // page.showView("org.eclipse.ui.views.PropertySheet"); //$NON-NLS-1$
+                        page.showView(ComponentSettingsView.ID);
                     } catch (PartInitException e) {
                         e.printStackTrace();
                     }
