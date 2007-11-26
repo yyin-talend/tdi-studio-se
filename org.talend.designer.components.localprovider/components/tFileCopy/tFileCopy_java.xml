@@ -32,7 +32,7 @@
     <PARAMETER
       NAME="FILENAME"
       FIELD="FILE"
-      NUM_ROW="1"
+      NUM_ROW="10"
       REQUIRED="true"
       REPOSITORY_VALUE="FILE_PATH"
     >
@@ -42,27 +42,37 @@
     <PARAMETER
       NAME="DESTINATION"
       FIELD="DIRECTORY"
-      NUM_ROW="2"
+      NUM_ROW="20"
       REQUIRED="true"
       REPOSITORY_VALUE="DESTINATION_PATH"
     > 
     <DEFAULT>"__COMP_DEFAULT_FILE_DIR__"</DEFAULT>  
     </PARAMETER>
     
-     <PARAMETER
+    <PARAMETER
+      NAME="RENAME"
+      FIELD="CHECK"
+      REQUIRED="true"
+      NUM_ROW="30"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>    
+    
+    <PARAMETER
       NAME="DESTINATION_RENAME"
       FIELD="TEXT"
-      NUM_ROW="3"
-      REQUIRED="false"
+      NUM_ROW="30"
+      REQUIRED="true"
+      SHOW_IF="RENAME == 'true'"
     > 
-    <DEFAULT>""</DEFAULT>  
+    <DEFAULT>"NewName.temp"</DEFAULT>  
     </PARAMETER>
     
    <PARAMETER
       NAME="REMOVE_FILE"
       FIELD="CHECK"
       REQUIRED="true"
-      NUM_ROW="4"
+      NUM_ROW="40"
       REPOSITORY_VALUE="REMOVE_FILE"
     >
       <DEFAULT>false</DEFAULT>
@@ -71,7 +81,7 @@
       NAME="REPLACE_FILE"
       FIELD="CHECK"
       REQUIRED="true"
-      NUM_ROW="4"
+      NUM_ROW="40"
       REPOSITORY_VALUE="REPLACE_FILE"
     >
       <DEFAULT>true</DEFAULT>
@@ -80,12 +90,19 @@
       NAME="CREATE_DIRECTORY"
       FIELD="CHECK"
       REQUIRED="true"
-      NUM_ROW="4"
+      NUM_ROW="40"
       REPOSITORY_VALUE="CREATE_DIRECTORY"
     >
       <DEFAULT>true</DEFAULT>
     </PARAMETER>
   </PARAMETERS>
-  <CODEGENERATION/>
-<RETURNS/>
+  
+  <CODEGENERATION>
+    <IMPORTS>
+      <IMPORT NAME="filecopy" MODULE="filecopy.jar" REQUIRED="true" />
+    </IMPORTS>
+  </CODEGENERATION>
+  
+  <RETURNS/>
+  
 </COMPONENT>
