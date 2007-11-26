@@ -82,7 +82,7 @@ public class ConnectionPart extends AbstractConnectionEditPart implements Proper
         }
 
         IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-        if (DynamicTabbedPropertySection.DEBUG_TIME) {
+        if (value == SELECTED_PRIMARY) {
             IViewPart view = page.findView(ComponentSettingsView.ID); //$NON-NLS-1$
             if (view != null) {
                 ComponentSettingsView compSettings = (ComponentSettingsView) view;

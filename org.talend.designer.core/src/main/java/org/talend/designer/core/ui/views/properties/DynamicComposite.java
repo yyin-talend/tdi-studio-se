@@ -1029,9 +1029,13 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
                 addComponents(true);
                 refresh();
             }
-            Boolean updateNeeded = (Boolean) elem.getPropertyValue(EParameterName.UPDATE_COMPONENTS.getName());
-            if (updateNeeded || 0 != (detail & CommandStack.POST_UNDO) || 0 != (detail & CommandStack.POST_REDO)) {
-                refresh();
+            if (0 != (detail & CommandStack.POST_EXECUTE) || 0 != (detail & CommandStack.POST_UNDO)
+                    || 0 != (detail & CommandStack.POST_REDO)) {
+                Boolean updateNeeded = (Boolean) elem.getPropertyValue(EParameterName.UPDATE_COMPONENTS.getName());
+                System.out.println("elem:" + elem.getElementName() + "(" + section + ") --- update needed:" + updateNeeded);
+                if (updateNeeded) {
+                    refresh();
+                }
             }
         }
     };

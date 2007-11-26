@@ -99,7 +99,7 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
             PlatformUI.getWorkbench().getHelpSystem().displayHelp(helpLink);
         }
 
-        if (DynamicTabbedPropertySection.DEBUG_TIME) {
+        if (value == SELECTED) {
             view = page.findView(ComponentSettingsView.ID); //$NON-NLS-1$
             if (view != null) {
                 ComponentSettingsView compSettings = (ComponentSettingsView) view;

@@ -13,11 +13,8 @@
 package org.talend.designer.core.ui.views.properties;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -25,6 +22,7 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.part.ViewPart;
 import org.talend.core.model.process.EComponentCategory;
@@ -36,26 +34,24 @@ import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.connections.MainConnectionComposite;
 
 /**
- * DOC nrousseau class global comment. Detailled comment <br/>
+ * nrousseau class global comment. Detailled comment <br/>
  * 
  */
 public class ComponentSettingsView extends ViewPart {
 
     public static final String ID = "org.talend.designer.core.ui.views.properties.ComponentSettingsView";
 
-    private Element elem = null;
+    private HorizontalTabFactory tabFactory = null;
 
-    private HorizontalTabFactory tabFactory;
+    private TalendPropertyTabDescriptor currentSelectedTab;
 
-    private Map<EComponentCategory, Composite> tabContents;
-
-    private Composite currentComposite;
+    private Element elem;
 
     /**
      * nrousseau ComponentSettings constructor comment.
      */
     public ComponentSettingsView() {
-        tabContents = new HashMap<EComponentCategory, Composite>();
+        tabFactory = new HorizontalTabFactory();
     }
 
     /*
@@ -65,7 +61,6 @@ public class ComponentSettingsView extends ViewPart {
      */
     @Override
     public void createPartControl(Composite parent) {
-        tabFactory = new HorizontalTabFactory();
         tabFactory.initComposite(parent);
         tabFactory.addSelectionChangedListener(new ISelectionChangedListener() {
 
@@ -73,20 +68,49 @@ public class ComponentSettingsView extends ViewPart {
                 IStructuredSelection selection = (IStructuredSelection) event.getSelection();
                 TalendPropertyTabDescriptor descriptor = (TalendPropertyTabDescriptor) selection.getFirstElement();
 
-                if (currentComposite == null) {
-                    currentComposite = tabContents.get(descriptor.getCategory());
-                    currentComposite.setVisible(true);
-                } else {
-                    if (!currentComposite.isDisposed()) {
-                        currentComposite.setVisible(false);
+                if (currentSelectedTab != null
+                        && currentSelectedTab.getComposite() != null
+                        && (!currentSelectedTab.getElement().equals(descriptor.getElement()) || currentSelectedTab.getCategory() != descriptor
+                                .getCategory())) {
+                    currentSelectedTab.getComposite().setVisible(false);
+                    // currentSelectedTab.getComposite().getChildren()\
+                    for (Control curControl : currentSelectedTab.getComposite().getChildren()) {
+                        curControl.dispose();
                     }
-                    currentComposite = tabContents.get(descriptor.getCategory());
-                    currentComposite.setVisible(true);
+                }
+
+                Composite parent = descriptor.getComposite();
+
+                if (elem == null || !elem.equals(descriptor.getElement())
+                        || currentSelectedTab.getCategory() != descriptor.getCategory()) {
+                    elem = descriptor.getElement();
+                    parent = tabFactory.createTabComposite();
+                    createDynamicComposite(parent, descriptor.getElement(), descriptor.getCategory());
+                    parent.setVisible(true);
+                }
+
+                descriptor.setComposite(parent);
+
+                currentSelectedTab = descriptor;
+                if (currentSelectedTab.getComposite() != null) {
+                    currentSelectedTab.getComposite().getParent().layout();
                 }
 
             }
 
         });
+    }
+
+    private void createDynamicComposite(Composite parent, Element element, EComponentCategory category) {
+        DynamicComposite dc = null;
+
+        if (element instanceof Node) {
+            dc = new DynamicComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS, category, element);
+        } else {
+            dc = new MainConnectionComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS, category, element);
+        }
+        dc.refresh();
+
     }
 
     /*
@@ -96,58 +120,24 @@ public class ComponentSettingsView extends ViewPart {
      */
     @Override
     public void setFocus() {
-        // DynamicComposite dc = (DynamicComposite) currentComposite.getChildren()[0];
-        // dc.refresh();
-        // if (dc != null) {
-        // dc.refresh();
-        // }
-    }
 
-    public void removeCategory(List<EComponentCategory> categories) {
-
-        for (EComponentCategory category : categories) {
-            tabContents.get(category).dispose();
-            tabContents.remove(category);
-        }
     }
 
     public void setElement(Element elem) {
-        this.elem = elem;
-
-        List<EComponentCategory> requiredCategories = Arrays.asList(getCategories(elem));
-
-        List<EComponentCategory> needRemoveCategories = new ArrayList<EComponentCategory>();
-        for (EComponentCategory category : tabContents.keySet()) {
-            if (!requiredCategories.contains(category)) {
-                needRemoveCategories.add(category);
-            }
+        if (currentSelectedTab != null && currentSelectedTab.getElement().equals(elem)) {
+            return;
         }
-        removeCategory(needRemoveCategories);
 
+        EComponentCategory[] categories = getCategories(elem);
         final List<TalendPropertyTabDescriptor> descriptors = new ArrayList<TalendPropertyTabDescriptor>();
-
-        for (EComponentCategory category : requiredCategories) {
-            Composite root = tabContents.get(category);
-            if (root == null) {
-                root = tabFactory.createTabComposite();
-            }
-            createComposite(root, elem, category);
-
-            descriptors.add(new TalendPropertyTabDescriptor(category));
-            tabContents.put(category, root);
-
+        for (EComponentCategory category : categories) {
+            TalendPropertyTabDescriptor d = new TalendPropertyTabDescriptor(category);
+            d.setElement(elem);
+            descriptors.add(d);
         }
-        if (elem instanceof Node) {
-            String label = ((Node) elem).getLabel();
-            Image image = new Image(Display.getDefault(), ((Node) elem).getComponent().getIcon24().getImageData());
-            tabFactory.setTitle(label, image);
-        } else if (elem instanceof Connection) {
-            String label = ((Connection) elem).getConnectionLabel().getLabelText();
-            // Image image = new Image(Display.getDefault(), ((Connection)
-            // elem).getComponent().getIcon16().getImageData());
-            tabFactory.setTitle(label, null);
-        }
+
         tabFactory.setInput(descriptors);
+        setPropertiesViewerTitle(elem);
         tabFactory.setSelection(new IStructuredSelection() {
 
             public Object getFirstElement() {
@@ -167,11 +157,11 @@ public class ComponentSettingsView extends ViewPart {
             }
 
             public List toList() {
-                List<TalendPropertyTabDescriptor> selected = new ArrayList<TalendPropertyTabDescriptor>();
+                List<TalendPropertyTabDescriptor> d = new ArrayList<TalendPropertyTabDescriptor>();
                 if (descriptors.size() > 0) {
-                    selected.add(descriptors.get(0));
+                    d.add(descriptors.get(0));
                 }
-                return selected;
+                return d;
             }
 
             public boolean isEmpty() {
@@ -182,21 +172,14 @@ public class ComponentSettingsView extends ViewPart {
 
     }
 
-    private void createComposite(Composite parentComposite, Element elem, EComponentCategory category) {
-        DynamicComposite dc = null;
-        if (parentComposite.getChildren().length > 0) {
-            dc = (DynamicComposite) parentComposite.getChildren()[0];
-        }
-        if (dc == null || !dc.getElement().equals(elem)) {
-            if (dc != null) {
-                dc.dispose();
-            }
-            if (elem instanceof Node) {
-                dc = new DynamicComposite(parentComposite, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS, category, elem);
-            } else {
-                dc = new MainConnectionComposite(parentComposite, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS, category, elem);
-            }
-            dc.refresh();
+    private void setPropertiesViewerTitle(Element elem) {
+        if (elem instanceof Node) {
+            String label = ((Node) elem).getLabel();
+            Image image = new Image(Display.getDefault(), ((Node) elem).getComponent().getIcon24().getImageData());
+            tabFactory.setTitle(label, null);
+        } else if (elem instanceof Connection) {
+            String label = ((Connection) elem).getElementName();
+            tabFactory.setTitle(label, getDefaultImage());
         }
     }
 
