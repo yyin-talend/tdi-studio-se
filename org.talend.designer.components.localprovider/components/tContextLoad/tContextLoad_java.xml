@@ -42,7 +42,7 @@
 	  FIELD="CLOSED_LIST"
 	  REQUIRED="false"
 	  NUM_ROW="2">
-	  <ITEMS DEFAULT="Error">
+	  <ITEMS DEFAULT="WARNING">
 		<ITEM NAME="ERROR" VALUE="Error" />
 		<ITEM NAME="WARNING" VALUE="Warning" />
 		<ITEM NAME="INFO" VALUE="Info" />
