@@ -58,6 +58,8 @@ import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.SystemException;
+import org.talend.commons.utils.StringUtils;
+import org.talend.commons.utils.data.container.RootContainer;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.commons.utils.io.FilesUtils;
 import org.talend.core.CorePlugin;
@@ -69,6 +71,9 @@ import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.properties.SnippetItem;
+import org.talend.core.model.properties.SnippetVariable;
+import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.core.ISyntaxCheckableEditor;
@@ -239,6 +244,8 @@ public class JavaProcessor extends Processor {
             String processCode = ""; //$NON-NLS-1$
             try {
                 processCode = codeGen.generateProcessCode();
+                processCode = replaceSnippet(processCode);
+
             } catch (SystemException e) {
                 throw new ProcessorException(Messages.getString("Processor.generationFailed"), e); //$NON-NLS-1$
             }
@@ -281,6 +288,73 @@ public class JavaProcessor extends Processor {
             }
             throw new ProcessorException(Messages.getString("Processor.tempFailed"), e1); //$NON-NLS-1$
         }
+    }
+
+    /**
+     * DOC bqian Comment method "replaceSnippet".
+     * 
+     * @param processCode
+     */
+    private String replaceSnippet(String processCode) {
+        while (true) {
+            String snippetLabel = HtmlRegexHandle.extractFristMatchFromFragment(processCode);
+
+            if (snippetLabel == null) {
+                break;
+            }
+            String codeSnippet = findSnippet(snippetLabel);
+            if (codeSnippet != null) {
+                processCode = HtmlRegexHandle.insertIntoFirstMatchFragment(codeSnippet, processCode);
+            }
+        }
+        return processCode;
+
+    }
+
+    private String findSnippet(String snippetLabel) {
+        try {
+            RootContainer<String, IRepositoryObject> snippets = RunProcessPlugin.getDefault().getRepositoryService()
+                    .getProxyRepositoryFactory().getSnippets();
+            List<IRepositoryObject> objects = snippets.getMembers();
+
+            SnippetItem item = null;
+            for (IRepositoryObject repositoryObject : objects) {
+                item = (SnippetItem) repositoryObject.getProperty().getItem();
+                if (item.getProperty().getLabel().equals(snippetLabel)) {
+                    break;
+                }
+            }
+            if (item != null) {
+                return prepareText(item);
+            }
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
+        }
+        return null;
+    }
+
+    protected String prepareText(SnippetItem fItem) {
+        // this could be horribly inefficient
+        String text = fItem.getContent();
+        List<SnippetVariable> variables = (List<SnippetVariable>) fItem.getVariables();
+        for (int i = 0; i < variables.size(); i++) {
+            SnippetVariable var = variables.get(i);
+            String value = var.getValue();
+            text = StringUtils.replace(text, "${" + var.getName() + "}", value); //$NON-NLS-1$ //$NON-NLS-2$
+        }
+
+        // remove all cursor markers
+        text = StringUtils.replace(text, "${cursor}", ""); //$NON-NLS-1$ //$NON-NLS-2$
+
+        // Update EOLs (bug 80231)
+        String systemEOL = System.getProperty("line.separator"); //$NON-NLS-1$
+        text = StringUtils.replace(text, "\r\n", "\n"); //$NON-NLS-1$ //$NON-NLS-2$
+        text = StringUtils.replace(text, "\r", "\n"); //$NON-NLS-1$ //$NON-NLS-2$
+        if (!"\n".equals(systemEOL) && systemEOL != null) { //$NON-NLS-1$
+            text = StringUtils.replace(text, "\n", systemEOL); //$NON-NLS-1$
+        }
+
+        return text;
     }
 
     @Override
