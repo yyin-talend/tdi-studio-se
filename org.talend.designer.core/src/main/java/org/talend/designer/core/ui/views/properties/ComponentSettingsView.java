@@ -101,6 +101,13 @@ public class ComponentSettingsView extends ViewPart {
         });
     }
 
+    /**
+     * yzhang Comment method "createDynamicComposite".
+     * 
+     * @param parent
+     * @param element
+     * @param category
+     */
     private void createDynamicComposite(Composite parent, Element element, EComponentCategory category) {
         DynamicComposite dc = null;
 
@@ -158,7 +165,14 @@ public class ComponentSettingsView extends ViewPart {
 
             public List toList() {
                 List<TalendPropertyTabDescriptor> d = new ArrayList<TalendPropertyTabDescriptor>();
+
                 if (descriptors.size() > 0) {
+                    for (TalendPropertyTabDescriptor ds : descriptors) {
+                        if (ds.getCategory() == currentSelectedTab.getCategory()) {
+                            d.add(ds);
+                            return d;
+                        }
+                    }
                     d.add(descriptors.get(0));
                 }
                 return d;
@@ -172,6 +186,11 @@ public class ComponentSettingsView extends ViewPart {
 
     }
 
+    /**
+     * yzhang Comment method "setPropertiesViewerTitle".
+     * 
+     * @param elem
+     */
     private void setPropertiesViewerTitle(Element elem) {
         if (elem instanceof Node) {
             String label = ((Node) elem).getLabel();
@@ -183,6 +202,12 @@ public class ComponentSettingsView extends ViewPart {
         }
     }
 
+    /**
+     * yzhang Comment method "getCategories".
+     * 
+     * @param elem
+     * @return
+     */
     private EComponentCategory[] getCategories(Element elem) {
         if (elem instanceof Connection) {
             return EElementType.CONNECTION.getCategories();
