@@ -67,7 +67,9 @@ import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IConnectionCategory;
+import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextManager;
+import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
@@ -793,7 +795,7 @@ public class Process extends Element implements IProcess {
             return;
         }
 
-        // repositoryId = process.getRepositoryContextId();
+        repositoryId = process.getRepositoryContextId();
 
         loadConnections(process, nodesHashtable);
         loadContexts(process);
@@ -1404,6 +1406,30 @@ public class Process extends Element implements IProcess {
         } else {
             contextManager = new JobContextManager(process.getContext(), defaultContextToLoad);
         }
+        updateContextBefore(contextManager);
+    }
+
+    /**
+     * 
+     * this method work for the repositoryId existed in process before v2.2.1.
+     * 
+     */
+    private void updateContextBefore(IContextManager contextManager) {
+        if (repositoryId != null && !"".equals(repositoryId)) {
+            JobContextManager jobContextManager = (JobContextManager) contextManager;
+            String sourceName = jobContextManager.getContextNameFromId(repositoryId);
+            if (sourceName == null) {
+                sourceName = IContextParameter.BUILT_IN;
+            }
+            for (IContext context : contextManager.getListContext()) {
+                for (IContextParameter param : context.getContextParameterList()) {
+                    if (!jobContextManager.isFound(sourceName, param.getName())) {
+                        sourceName = IContextParameter.BUILT_IN;
+                    }
+                    param.setSource(sourceName);
+                }
+            }
+        }
     }
 
     public boolean isReadOnly() {
@@ -1554,7 +1580,7 @@ public class Process extends Element implements IProcess {
     // private InputStream content;
     private byte[] content;
 
-    // private String repositoryId;
+    private String repositoryId;
 
     /*
      * (non-Javadoc)
@@ -2102,13 +2128,13 @@ public class Process extends Element implements IProcess {
         return item;
     }
 
-    // public String getRepositoryId() {
-    // return repositoryId;
-    // }
-    //
-    // public void setRepositoryId(String repositoryId) {
-    // this.repositoryId = repositoryId;
-    // }
+    public String getRepositoryId() {
+        return repositoryId;
+    }
+
+    public void setRepositoryId(String repositoryId) {
+        this.repositoryId = repositoryId;
+    }
 
     public void addNote(Note note) {
         elem.add(note);
