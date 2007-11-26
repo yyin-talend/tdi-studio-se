@@ -71,30 +71,20 @@ public class ComponentSettingsView extends ViewPart {
                 TalendPropertyTabDescriptor descriptor = (TalendPropertyTabDescriptor) selection.getFirstElement();
 
                 if (currentSelectedTab != null
-                        && currentSelectedTab.getComposite() != null
                         && (!currentSelectedTab.getElement().equals(descriptor.getElement()) || currentSelectedTab.getCategory() != descriptor
                                 .getCategory())) {
-                    currentSelectedTab.getComposite().setVisible(false);
-                    // currentSelectedTab.getComposite().getChildren()
-                    for (Control curControl : currentSelectedTab.getComposite().getChildren()) {
+                    for (Control curControl : tabFactory.getTabComposite().getChildren()) {
                         curControl.dispose();
                     }
                 }
 
-                Composite parent = descriptor.getComposite();
-
-                if (elem == null || !elem.equals(descriptor.getElement())
+                if (elem == null || !elem.equals(descriptor.getElement()) || currentSelectedTab == null
                         || currentSelectedTab.getCategory() != descriptor.getCategory()) {
                     elem = descriptor.getElement();
-                    parent = tabFactory.createTabComposite();
-                    createDynamicComposite(parent, descriptor.getElement(), descriptor.getCategory());
-                    parent.getParent().layout();
-                    parent.setVisible(true);
+                    currentSelectedTab = descriptor;
+                    createDynamicComposite(tabFactory.getTabComposite(), descriptor.getElement(), descriptor.getCategory());
                 }
-                descriptor.setComposite(parent);
-                currentSelectedTab = descriptor;
             }
-
         });
     }
 

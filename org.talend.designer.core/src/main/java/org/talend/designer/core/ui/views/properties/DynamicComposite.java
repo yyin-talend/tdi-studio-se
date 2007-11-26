@@ -123,8 +123,6 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
 
     private boolean forceRedraw;
 
-    private static DynamicComposite lastCompositeUsed;
-
     private int lastCompositeSize = 0;
 
     private Process process;
@@ -905,9 +903,11 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
             }
         }
         if (propertyResized) {
+            removeListener(SWT.Resize, resizeListener);
             composite.pack();
-            getParent().layout(true, true);
+            getParent().layout();
             propertyResized = false;
+            addListener(SWT.Resize, resizeListener);
         }
         checkErrorsWhenViewRefreshed = false;
         long time = TimeMeasure.timeSinceBegin("DC:refresh:" + getCurrentComponent());
@@ -917,38 +917,31 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
         }
     }
 
-    private static final Listener REFRESH_LISTENER = new Listener() {
+    private final Listener resizeListener = new Listener() {
 
         public void handleEvent(Event event) {
-            lastCompositeUsed = (DynamicComposite) event.widget;
-            REFRESH_LIMITER.resetTimer();
-            REFRESH_LIMITER.startIfExecutable(true);
+            resizeLimiter.resetTimer();
+            resizeLimiter.startIfExecutable(true);
         }
     };
 
-    private static final ExecutionLimiter REFRESH_LIMITER = new ExecutionLimiter(250, true) {
+    private final ExecutionLimiter resizeLimiter = new ExecutionLimiter(250, true) {
 
         @Override
         public void execute(final boolean isFinalExecution) {
-            Composite currentComposite = lastCompositeUsed.getComposite();
-            if (currentComposite.isDisposed()) {
-                return;
-            }
+            if (!isDisposed()) {
+                getDisplay().asyncExec(new Runnable() {
 
-            currentComposite.getDisplay().asyncExec(new Runnable() {
-
-                public void run() {
-                    if (lastCompositeUsed != null) {
-                        int currentSize = lastCompositeUsed.getParent().getClientArea().height;
-                        if (lastCompositeUsed.getLastCompositeSize() != currentSize) {
-                            lastCompositeUsed.addComponents(true);
-                            lastCompositeUsed.refresh();
+                    public void run() {
+                        int currentSize = getParent().getClientArea().height;
+                        if (getLastCompositeSize() != currentSize) {
+                            addComponents(true);
+                            refresh();
                         }
                     }
-                }
 
-            });
-
+                });
+            }
         }
     };
 
@@ -1002,7 +995,7 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
         }
         currentComponent = elem.getElementName();
 
-        addListener(SWT.Resize, REFRESH_LISTENER);
+        addListener(SWT.Resize, resizeListener);
 
         getCommandStack().addCommandStackEventListener(commandStackEventListener);
     }
@@ -1032,7 +1025,8 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
             if (0 != (detail & CommandStack.POST_EXECUTE) || 0 != (detail & CommandStack.POST_UNDO)
                     || 0 != (detail & CommandStack.POST_REDO)) {
                 Boolean updateNeeded = (Boolean) elem.getPropertyValue(EParameterName.UPDATE_COMPONENTS.getName());
-                System.out.println("elem:" + elem.getElementName() + "(" + section + ") --- update needed:" + updateNeeded);
+                // System.out.println("elem:" + elem.getElementName() + "(" + section + ") --- update needed:" +
+                // updateNeeded);
                 if (updateNeeded) {
                     refresh();
                 }
@@ -1272,36 +1266,6 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
      */
     public int getLastCompositeSize() {
         return this.lastCompositeSize;
-    }
-
-    //
-    // /*
-    // * (non-Javadoc)
-    // *
-    // * @see org.eclipse.ui.views.properties.tabbed.AbstractPropertySection#aboutToBeShown()
-    // */
-    // @Override
-    // public void aboutToBeShown() {
-    // lastPropertyUsed = this;
-    // TabbedPropertyComposite tabbedPropertyComposite = getTabbedPropertyComposite();
-    // if (tabbedPropertyComposite != null) {
-    // tabbedPropertyComposite.getScrolledComposite().setAlwaysShowScrollBars(true);
-    // // tabbedPropertyComposite.getScrolledComposite().getHorizontalBar().setVisible(false);
-    // tabbedPropertyComposite.getScrolledComposite().setExpandHorizontal(true);
-    // tabbedPropertyComposite.removeListener(SWT.Resize, REFRESH_LISTENER);
-    //
-    // tabbedPropertyComposite.addListener(SWT.Resize, REFRESH_LISTENER);
-    // }
-    // super.aboutToBeShown();
-    // }
-
-    /**
-     * Getter for lastPropertyUsed.
-     * 
-     * @return the lastPropertyUsed
-     */
-    public static DynamicComposite getLastPropertyUsed() {
-        return lastCompositeUsed;
     }
 
     /*
