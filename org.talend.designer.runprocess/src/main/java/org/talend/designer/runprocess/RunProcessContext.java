@@ -30,6 +30,7 @@ import java.util.Iterator;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.DebugException;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -249,6 +250,47 @@ public class RunProcessContext {
 
     Thread thread;
 
+    private void showErrorMassage(String category) {
+        String title = Messages.getString("RunProcessContext.PortErrorTitle", category); //$NON-NLS-1$
+        String message = Messages.getString("RunProcessContext.PortErrorMessage", category.toLowerCase()); //$NON-NLS-1$
+        MessageDialog.openError(PlatformUI.getWorkbench().getDisplay().getActiveShell(), title, message);
+    }
+
+    private boolean testPort() {
+        if (monitorPerf) {
+            try {
+                findNewStatsPort();
+            } catch (Exception e) {
+                statsPort = IProcessor.NO_STATISTICS;
+            }
+            if (getStatisticsPort() == IProcessor.NO_STATISTICS) {
+                showErrorMassage(Messages.getString("RunProcessContext.PortErrorStats")); //$NON-NLS-1$
+                // disable the check.
+                setMonitorPerf(false);
+                // set the port to no statistics
+                findNewStatsPort();
+                return false;
+            }
+
+        }
+        if (monitorTrace) {
+            try {
+                findNewTracesPort();
+            } catch (Exception e) {
+                tracesPort = IProcessor.NO_TRACES;
+            }
+            if (getTracesPort() == IProcessor.NO_TRACES) {
+                showErrorMassage(Messages.getString("RunProcessContext.PortErrorTraces")); //$NON-NLS-1$
+                // disable the check.
+                setMonitorTrace(false);
+                // set the port to no traces
+                findNewTracesPort();
+                return false;
+            }
+        }
+        return true;
+    }
+
     /**
      * Launch the process.
      */
@@ -264,7 +306,9 @@ public class RunProcessContext {
             ClearTraceAction clearTraceAction = new ClearTraceAction();
             clearTraceAction.setProcess(process);
             clearTraceAction.run();
-
+            if (monitorPerf) {
+                this.getStatisticsPort();
+            }
             final IProcessor processor = getProcessor(process);
             IProgressService progressService = PlatformUI.getWorkbench().getProgressService();
 
@@ -277,12 +321,13 @@ public class RunProcessContext {
 
                         progressMonitor.beginTask(Messages.getString("ProcessComposite.buildTask"), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
                         try {
-                            findNewStatsPort();
+                            testPort();
+                            // findNewStatsPort();
                             if (monitorPerf) {
                                 perfMonitor = new PerformanceMonitor();
                                 new Thread(perfMonitor).start();
                             }
-                            findNewTracesPort();
+                            // findNewTracesPort();
                             if (monitorTrace) {
                                 traceMonitor = new TraceMonitor();
                                 new Thread(traceMonitor).start();
@@ -399,7 +444,7 @@ public class RunProcessContext {
                 final String endingPattern = Messages.getString("ProcessComposite.endPattern"); //$NON-NLS-1$
                 MessageFormat mf = new MessageFormat(endingPattern);
                 String byeMsg = mf.format(new Object[] { process.getLabel(), new Date(), new Integer(exitCode) });
-                byeMsg = (processMessageManager.isLastMessageEndWithCR() ? "" : "\n") + byeMsg;
+                byeMsg = (processMessageManager.isLastMessageEndWithCR() ? "" : "\n") + byeMsg; //$NON-NLS-1$ //$NON-NLS-2$
                 processMessageManager.addMessage(new ProcessMessage(MsgType.CORE_OUT, byeMsg));
                 // }
             } finally {
@@ -606,7 +651,7 @@ public class RunProcessContext {
                 StringBuilder sb = new StringBuilder();
                 // while (is.ready() && (currentSizeContent < sizeBuffer)) {
                 String dataStr = is.readLine();
-                sb.append(dataStr + "\n");
+                sb.append(dataStr + "\n"); //$NON-NLS-1$
                 // currentSizeContent += dataStr.length();
                 // break;
                 // }
@@ -792,13 +837,13 @@ public class RunProcessContext {
                         PrintWriter pred = new java.io.PrintWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(
                                 processSocket.getOutputStream())), true);
                         if (isTracPause()) {
-                            pred.println("PAUSE");
+                            pred.println("PAUSE"); //$NON-NLS-1$
                         } else {
-                            pred.println("RUN");
+                            pred.println("RUN"); //$NON-NLS-1$
                         }
                         if (data == null) {
                             stopThread = true;
-                        } else if ("ID_STATUS".equals(data)) {
+                        } else if ("ID_STATUS".equals(data)) { //$NON-NLS-1$
                             continue;
                         } else {
                             TraceData traceData = new TraceData(data);
