@@ -17,12 +17,14 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.core.resources.IMarker;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.ui.views.markers.internal.MarkerMessages;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.Problem;
+import org.talend.core.model.process.RoutineProblem;
 import org.talend.core.model.process.Problem.ProblemStatus;
 import org.talend.core.model.process.Problem.ProblemType;
 import org.talend.designer.core.DesignerPlugin;
@@ -93,6 +95,20 @@ public class Problems {
         problemList.clear();
     }
 
+    public static void clearAllComliationError(String javaEditorName) {
+        for (Iterator<Problem> iter = problemList.getProblemList().iterator(); iter.hasNext();) {
+            Problem problem = iter.next();
+            if (problem instanceof RoutineProblem) {
+                RoutineProblem routineProblem = (RoutineProblem) problem;
+                if (routineProblem.getJavaUnitName() != null && (routineProblem.getJavaUnitName().equals(javaEditorName))) {
+                    iter.remove();
+                }
+
+            }
+        }
+
+    }
+
     public static String getSummary() {
         int[] counts = problemList.getMarkerCounts();
         return MessageFormat.format(MarkerMessages.problem_statusSummaryBreakdown, new Object[] { new Integer(counts[0]),
@@ -142,6 +158,11 @@ public class Problems {
         add(problem);
     }
 
+    public static void add(ProblemStatus status, IMarker marker, String javaUnitName, String markerErrorMessage, Integer lineN) {
+        Problem problem = new RoutineProblem(status, javaUnitName, marker, markerErrorMessage, lineN);
+        add(problem);
+    }
+
     public static void addAll(List<Problem> problems) {
         for (Problem current : problems) {
             add(current);
@@ -156,7 +177,7 @@ public class Problems {
         List<String> statusList = new ArrayList<String>();
 
         for (Problem problem : problemList.getProblemList()) {
-            if (problem.getElement().equals(element) && problem.getStatus().equals(status)) {
+            if (problem.getElement() != null && problem.getElement().equals(element) && problem.getStatus().equals(status)) {
                 statusList.add(problem.getDescription());
             }
         }
@@ -199,11 +220,7 @@ public class Problems {
 
     public static void refreshView() {
         if (getProblemView() != null) {
-            if (!newTitle.equals(currentTitle)) {
-                getProblemView().setPartName(newTitle);
-                currentTitle = newTitle;
-            }
-            getProblemView().refresh();
+            refreshRoutinErrorProblemView();
 
             for (IProcess process : openJobs) {
                 // ((Process) process).checkNodeProblems();
@@ -218,6 +235,17 @@ public class Problems {
         }
     }
 
+    public static void refreshRoutinErrorProblemView() {
+        if (getProblemView() != null) {
+            if (!newTitle.equals(currentTitle)) {
+                getProblemView().setPartName(newTitle);
+                currentTitle = newTitle;
+            }
+            getProblemView().refresh();
+
+        }
+    }
+
     /**
      * DOC bqian Comment method "refreshNodeStatus".
      * 
@@ -228,7 +256,7 @@ public class Problems {
 
         boolean hasStatus = false;
         for (Problem problem : problemList) {
-            if (!problem.getElement().equals(node)) {
+            if (problem.getElement() != null && (!problem.getElement().equals(node))) {
                 continue;
             }
             hasStatus = true;
@@ -253,7 +281,7 @@ public class Problems {
 
         for (Iterator<Problem> iter = problemList.getProblemList().iterator(); iter.hasNext();) {
             Problem problem = iter.next();
-            if (problem.getJob().equals(process)) {
+            if (problem.getJob() != null && (problem.getJob().equals(process))) {
                 iter.remove();
             }
 
@@ -270,7 +298,7 @@ public class Problems {
 
         for (Iterator<Problem> iter = problemList.getProblemList().iterator(); iter.hasNext();) {
             Problem problem = iter.next();
-            if (problem.getElement().equals(element)) {
+            if (problem.getElement() != null && (problem.getElement().equals(element))) {
                 iter.remove();
             }
         }
@@ -285,4 +313,5 @@ public class Problems {
     public static void setProblemView(ProblemsView problemView) {
         Problems.problemView = problemView;
     }
+
 }

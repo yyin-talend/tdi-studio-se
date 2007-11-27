@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.designer.core.ui.views.problems;
 
+import org.eclipse.core.resources.IMarker;
+import org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
@@ -33,11 +35,14 @@ import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
+import org.eclipse.ui.texteditor.MarkerUtilities;
 import org.eclipse.ui.views.markers.internal.MarkerMessages;
 import org.talend.core.model.process.Problem;
+import org.talend.core.model.process.RoutineProblem;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
+import org.talend.designer.core.ui.editor.StandAloneTalendJavaEditor;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.views.problems.Problems.Group;
 
@@ -85,7 +90,11 @@ public class ProblemsView extends ViewPart {
                 IStructuredSelection selection = (IStructuredSelection) event.getSelection();
                 Problem problem = (Problem) selection.getFirstElement();
                 if (problem != null && problem.isConcrete()) {
-                    selectInEditor((Node) problem.getElement());
+                    if (problem.getElement() instanceof Node)
+                        selectInDesigner((Node) problem.getElement());
+                    else if (problem instanceof RoutineProblem) {
+                        selectInRoutine(((RoutineProblem) problem).getMarker());
+                    }
                 }
             }
         });
@@ -141,7 +150,7 @@ public class ProblemsView extends ViewPart {
     }
 
     @SuppressWarnings("unchecked")//$NON-NLS-1$
-    private void selectInEditor(Node node) {
+    private void selectInDesigner(Node node) {
         IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 
         IEditorReference[] editorParts = page.getEditorReferences();
@@ -154,6 +163,23 @@ public class ProblemsView extends ViewPart {
                     page.bringToTop(mpte);
                     mpte.selectNode(node);
                 }
+            }
+        }
+    }
+
+    private void selectInRoutine(IMarker marker) {
+        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+
+        IEditorReference[] editorParts = page.getEditorReferences();
+
+        for (IEditorReference reference : editorParts) {
+            IEditorPart editor = reference.getEditor(false);
+            if (StandAloneTalendJavaEditor.ID.equals(editor.getSite().getId())) {
+                CompilationUnitEditor javaEditor = (CompilationUnitEditor) editor;
+                int start = MarkerUtilities.getCharStart(marker);
+                int end = MarkerUtilities.getCharEnd(marker);
+                page.bringToTop(javaEditor);
+                javaEditor.selectAndReveal(start, start);
             }
         }
     }

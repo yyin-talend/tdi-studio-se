@@ -59,6 +59,7 @@ import org.talend.repository.ui.views.IRepositoryView;
  */
 public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements IUIRefresher {
 
+    public static final String ID = "org.talend.designer.core.ui.editor.StandAloneTalendJavaEditor";
     private RepositoryEditorInput rEditorInput;
 
     /**
