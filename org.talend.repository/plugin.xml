@@ -635,6 +635,13 @@
             id="org.talend.repository.model.migration.DieOnErrorDefaultValueMigrationTask"
             name="set the Die On Error option default value as false">
       </projecttask>
+      <projecttask
+            beforeLogon="false"
+            class="org.talend.repository.model.migration.RenameRoutinesClassName"
+            description="%migrationtask.RenameTheClassnameofTheRoutinesFileMigrationTask.description"
+            id="org.talend.repository.model.migration.renameRoutinesClassName"
+            name="%migrationtask.RenameTheClassnameofTheRoutinesFileMigrationTask.title">
+      </projecttask>
    </extension>
    <extension
          point="org.talend.core.librariesNeeded">
