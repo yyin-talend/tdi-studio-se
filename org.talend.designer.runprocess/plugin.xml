@@ -115,5 +115,12 @@
        point="org.eclipse.ui.startup">
     <startup class="org.talend.designer.runprocess.DeleteAllJobWhenStartUp"/>
  </extension>
+ <extension
+       point="org.eclipse.jdt.core.compilationParticipant">
+    <compilationParticipant
+          class="org.talend.designer.runprocess.java.JavaCompilationParticipant"
+          id="org.talend.designer.runprocess.java.javaCompilationParticipant">
+    </compilationParticipant>
+ </extension>
 
 </plugin>
