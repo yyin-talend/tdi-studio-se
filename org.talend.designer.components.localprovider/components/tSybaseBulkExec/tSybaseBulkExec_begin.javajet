@@ -3,50 +3,211 @@
 		org.talend.core.model.process.INode 
 		org.talend.core.model.process.ElementParameterParser
 		org.talend.designer.codegen.config.CodeGeneratorArgument
-		
-		java.lang.StringBuffer;
+	    org.talend.core.model.metadata.IMetadataTable 
+	    org.talend.core.model.metadata.IMetadataColumn
+	    org.talend.core.model.metadata.MetadataTalendType    
+	    org.talend.core.model.metadata.MappingTypeRetriever
+	    java.util.List
+	    java.util.ArrayList	    
 	"
 %>
 
 <%
-	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
-	INode node = (INode)codeGenArgument.getArgument();
-	String cid = node.getUniqueName();
-	
-	String bcpUtility  = ElementParameterParser.getValue(node, "__BCP_UTILITY__");
-	String server = ElementParameterParser.getValue(node, "__SERVER__");
-	String database = ElementParameterParser.getValue(node, "__DBNAME__");
-	String user = ElementParameterParser.getValue(node, "__USER__");
-	String pwd = ElementParameterParser.getValue(node, "__PASS__");
-	String table = ElementParameterParser.getValue(node, "__TABLE__");
-	String dataFile  = ElementParameterParser.getValue(node, "__FILENAME__");
-	String fieldTerminator = ElementParameterParser.getValue(node, "__FIELDS_TERMINATOR__");
-	String rowTerminator =  ElementParameterParser.getValue(node, "__ROW_TERMINATOR__");
-	String headRow =  ElementParameterParser.getValue(node, "__HEAD__");
-	
-	String encoding  = ElementParameterParser.getValue(node, "__ENCODING__");
-	encoding= encoding.toUpperCase();
-     if(encoding.equals("\"UTF-8\"")){
-          encoding = "UTF8";
-     }else if(encoding.equals("\"ISO-8859-15\"")){
-   		encoding = "WE8ISO8859P15";
-     }else if(encoding.equals("\"GBK\"")){
-   		encoding = "ZHS16GBK";
-     }else if(encoding.equals("\"GB2312\"")){
-     	encoding = "ZHS16CGB231280";//ZHS16MACCGB231280 ?
-     }else if(encoding.equals("\"BIG5\"")){
-        encoding = "ZHT16BIG5";
-     } else {
-       //will be enhanced later, now default with utf-16
-   		encoding = "AL16UTF16";
-     }
-    
-	String outputAction  = ElementParameterParser.getValue(node, "__OUTPUT__");	
-		
+class SybaseManager {
+    public String getCreateTableSQL(String tableName, List<IMetadataColumn> listColumn, String dbmsId) {
+        MappingTypeRetriever mappingType = MetadataTalendType.getMappingTypeRetriever(dbmsId);
+        StringBuilder createTableSQL = new StringBuilder();
+        String newTableName = null;                        
+        createTableSQL.append("CREATE TABLE \" + " + tableName + " + \"(");
+        List<String> pkList = new ArrayList<String>();
+        int count = 0;
+        String ending = ",";
+        for(IMetadataColumn metadataColumn : listColumn) {
+            if(metadataColumn.isKey()) {
+                pkList.add(metadataColumn.getOriginalDbColumnName());
+            }
+            createTableSQL.append(metadataColumn.getOriginalDbColumnName() + " ");
+            String dataType = null;
+            if(metadataColumn.getType() == null || metadataColumn.getType().trim().length() == 0) {
+                dataType = mappingType.getDefaultSelectedDbType(metadataColumn.getTalendType());
+            } else {
+                dataType = metadataColumn.getType();
+            }
+            createTableSQL.append(dataType);
+            Integer length = metadataColumn.getLength() == null ? 0 : metadataColumn.getLength();
+            Integer precision = metadataColumn.getPrecision() == null ? 0 : metadataColumn.getPrecision();
+            boolean lengthIgnored = mappingType.isLengthIgnored(dbmsId, dataType);
+            boolean precisionIgnored = mappingType.isPrecisionIgnored(dbmsId, dataType);
+            String prefix = "";
+            String suffix = "";
+            String comma = "";
+            if(mappingType.isPreBeforeLength(dbmsId, dataType)) {
+                if(!precisionIgnored) {
+                    prefix = "(";
+                    suffix = ") ";
+                    createTableSQL.append(prefix + precision);
+                }
+                if(!lengthIgnored) {
+                    prefix = (prefix.equals("") ? "(" : prefix);
+                    suffix = (suffix.equals("") ? ") " : suffix);
+                    if(precisionIgnored) {
+                        createTableSQL.append(prefix);
+                        comma = "";
+                    } else {
+                        comma = ",";
+                    }
+                    createTableSQL.append(comma + length);
+                }
+                createTableSQL.append(suffix);
+            } else {
+                if(!lengthIgnored) {
+                    prefix = "(";
+                    suffix = ") ";
+                    createTableSQL.append(prefix + length);
+                }
+                if(!precisionIgnored) {
+                    prefix = (prefix.equals("") ? "(" : prefix);
+                    suffix = (suffix.equals("") ? ") " : suffix);
+                    if(lengthIgnored) {
+                        createTableSQL.append(prefix);
+                        comma = "";                        
+                    } else {
+                        comma = ",";
+                    }
+                    createTableSQL.append(comma + precision);
+                }
+                createTableSQL.append(suffix);
+            }
+            createTableSQL.append(getDefaultValueSQL(metadataColumn.getDefault()));
+            if(!metadataColumn.isNullable()) {
+                createTableSQL.append("not null");
+            }
+            if(count == listColumn.size() - 1 && pkList.size() == 0) {
+                ending = "";
+            }
+            createTableSQL.append(ending);
+            count++;
+        }
+        if(pkList.size() > 0) {                
+            createTableSQL.append("primary key(");                
+            int i = 0;                
+            for(String pk : pkList) {                    
+                createTableSQL.append(pk);                    
+                if(i != pkList.size() - 1) {                        
+                    createTableSQL.append(",");                        
+                }                    
+                i++;                    
+            }                
+            createTableSQL.append(")");                
+        }
+        createTableSQL.append(")");
+        return createTableSQL.toString();
+    }
+    private String getDefaultValueSQL(String defaultValue) {
+        if(defaultValue == null || defaultValue.equals("\"\"") || defaultValue.equals("")) {
+            return " ";
+        } else if((defaultValue.startsWith("\"") || defaultValue.startsWith("'")) && (defaultValue.endsWith("\"") || defaultValue.endsWith("'"))) {
+            return "default '" + defaultValue.substring(1,defaultValue.length() - 1) + "' ";
+        } else if(defaultValue.equalsIgnoreCase("null")) {
+            return "default null ";
+        } else {
+            return "default " + defaultValue + " ";
+        }            
+    }        
+}
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
 
-	
-	
-	
+String bcpUtility  = ElementParameterParser.getValue(node, "__BCP_UTILITY__");
+String server = ElementParameterParser.getValue(node, "__SERVER__");
+String port = ElementParameterParser.getValue(node, "__PORT__");
+String database = ElementParameterParser.getValue(node, "__DBNAME__");
+String user = ElementParameterParser.getValue(node, "__USER__");
+String pwd = ElementParameterParser.getValue(node, "__PASS__");
+String table = ElementParameterParser.getValue(node, "__TABLE__");
+String dataFile  = ElementParameterParser.getValue(node, "__FILENAME__");
+String fieldTerminator = ElementParameterParser.getValue(node, "__FIELDS_TERMINATOR__");
+String rowTerminator =  ElementParameterParser.getValue(node, "__ROW_TERMINATOR__");
+String headRow =  ElementParameterParser.getValue(node, "__HEAD__");
+
+%>
+String url_<%=cid %> = "jdbc:sybase:Tds:" + <%=server%> + ":" + <%=port%> + "/" + <%=database%>;
+java.lang.Class.forName("com.sybase.jdbc3.jdbc.SybDriver");
+java.sql.Connection con_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>, <%=user%>, <%=pwd%>);
+<%
+List<IMetadataColumn> columnList = null;
+List<IMetadataTable> metadatas = node.getMetadataList();
+if(metadatas !=null && metadatas.size()>0) {
+    IMetadataTable metadata = metadatas.get(0);
+    if(metadata != null) {
+        columnList = metadata.getListColumns();
+    }
+}
+String tableAction = ElementParameterParser.getValue(node,"__TABLE_ACTION__");
+String dbmsId = ElementParameterParser.getValue(node,"__MAPPING__");
+if(columnList != null && columnList.size() > 0) {
+    SybaseManager manager = new SybaseManager();
+    if(tableAction.equals("DROP_CREATE")) {
+        %>
+        java.sql.Statement stmtDrop_<%=cid%> = con_<%=cid%>.createStatement();
+        stmtDrop_<%=cid%>.execute("drop table " + <%=table%>);
+        java.sql.Statement stmtCreate_<%=cid%> = con_<%=cid%>.createStatement();
+        stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(table, columnList, dbmsId)%>");
+        <%
+    } else if(tableAction.equals("CREATE")) {
+        %>
+        java.sql.Statement stmtCreate_<%=cid%> = con_<%=cid%>.createStatement();
+        stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(table, columnList, dbmsId)%>");
+        <%
+    } else if(tableAction.equals("CREATE_IF_NOT_EXISTS")) {
+        %>
+        java.sql.DatabaseMetaData dbMetaData_<%=cid%> = con_<%=cid%>.getMetaData();
+        java.sql.ResultSet rsTable_<%=cid%> = dbMetaData_<%=cid%>.getTables(null, null, null, new String[]{"TABLE"});
+        boolean whetherExist_<%=cid%> = false;
+        while(rsTable_<%=cid%>.next()) {
+            String table_<%=cid%> = rsTable_<%=cid%>.getString("TABLE_NAME");
+            if(table_<%=cid%>.equalsIgnoreCase(<%=table%>)) {
+                whetherExist_<%=cid%> = true;
+                break;
+            }
+        }
+        if(!whetherExist_<%=cid%>) {
+            java.sql.Statement stmtCreate_<%=cid%> = con_<%=cid%>.createStatement();
+            stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(table, columnList, dbmsId)%>");            
+        }
+        <%
+    } else if(tableAction.equals("CLEAR")) {
+        %>
+        java.sql.Statement stmtClear_<%=cid%> = con_<%=cid%>.createStatement();
+        stmtClear_<%=cid%>.executeUpdate("truncate table " + <%=table%>);
+        <%
+    }    
+}
+%>
+if(con_<%=cid%> != null && !con_<%=cid%>.isClosed()) {
+    con_<%=cid%>.close();
+}
+<%
+
+String encoding  = ElementParameterParser.getValue(node, "__ENCODING__");
+encoding= encoding.toUpperCase();
+ if(encoding.equals("\"UTF-8\"")){
+      encoding = "UTF8";
+ }else if(encoding.equals("\"ISO-8859-15\"")){
+	encoding = "WE8ISO8859P15";
+ }else if(encoding.equals("\"GBK\"")){
+	encoding = "ZHS16GBK";
+ }else if(encoding.equals("\"GB2312\"")){
+ 	encoding = "ZHS16CGB231280";//ZHS16MACCGB231280 ?
+ }else if(encoding.equals("\"BIG5\"")){
+    encoding = "ZHT16BIG5";
+ } else {
+   //will be enhanced later, now default with utf-16
+	encoding = "AL16UTF16";
+ }
+
+String outputAction  = ElementParameterParser.getValue(node, "__OUTPUT__");		
 %>
 
 StringBuffer command_<%=cid %> =  new StringBuffer();
@@ -55,28 +216,37 @@ command_<%=cid %>.append(<%=bcpUtility%>);
 
 command_<%=cid %>.append(" ");
 
-<%if(database!=null&&!database.equals("\"\"")&&!database.equals("")){%>
-command_<%=cid %>.append(<%=database%>);
+<%
+if(database != null && !database.equals("\"\"") && !database.equals("")) {
+    %>
+    command_<%=cid %>.append(<%=database%>);
+    	
+    command_<%=cid %>.append("..");
+    	
+    command_<%=cid %>.append(<%=table%>);
 	
-command_<%=cid %>.append("..");
-	
-command_<%=cid %>.append(<%=table%>);
-	
-<%}else{%>
+    <%
+} else {
+    %>
 
-command_<%=cid %>.append(<%=table%>);
+    command_<%=cid %>.append(<%=table%>);
 	
-<%}%>
+<%
+}
+%>
 command_<%=cid %>.append(" in ");
 
 command_<%=cid %>.append(<%=dataFile%>);
 
-<%if(headRow!=null&&!headRow.equals("\"\"")&&!headRow.equals("")){%>
-command_<%=cid %>.append(" -F");
+<%if(headRow != null && !headRow.equals("\"\"") && !headRow.equals("")) {
+    %>
+    command_<%=cid %>.append(" -F");
+    	
+    command_<%=cid %>.append(<%=headRow %>);
 	
-command_<%=cid %>.append(<%=headRow %>);
-	
-<%}%>
+    <%
+}
+%>
 command_<%=cid %>.append(" -t");
 
 command_<%=cid %>.append(<%=fieldTerminator%>);
@@ -93,17 +263,23 @@ command_<%=cid %>.append(" -P");
 
 command_<%=cid %>.append(<%=pwd%>);
 
-<%if(server!=null&&!server.equals("\"\"")&&!encoding.equals("")){%>
-command_<%=cid %>.append(" -S");
+<%if(server != null && !server.equals("\"\"") && !encoding.equals("")) {
+    %>
+    command_<%=cid %>.append(" -S");
+    
+    command_<%=cid %>.append(<%=server%>);
 
-command_<%=cid %>.append(<%=server%>);
-
-<%}%>
-<%if(encoding!=null&&!encoding.equals("\"\"")&&!encoding.equals("")){%>
-command_<%=cid %>.append(" -J");
-
-command_<%=cid %>.append("<%=encoding %>");
-<%}%>
+    <%
+}
+%>
+<%if(encoding != null && !encoding.equals("\"\"") && !encoding.equals("")) {
+    %>
+    command_<%=cid %>.append(" -J");
+    
+    command_<%=cid %>.append("<%=encoding %>");
+<%
+}
+%>
 
 
 
@@ -118,17 +294,17 @@ Thread normal_<%=cid %> = new Thread() {
 			String line = "";
 			try {
 				while((line = reader.readLine()) != null) {
-<%
-	if (outputAction.equals("OUTPUT_TO_CONSOLE")) {
-%>
-					System.out.println(line);
-<%
-	} else if (outputAction.equals("RETRIEVE_OUTPUT")) {
-%>
-					globalMap.put("<%=cid %>_OUTPUT",(String)globalMap.get("<%=cid %>_OUTPUT")+"\n"+line);
-<%
-	}
-%>
+				    <%
+				    if (outputAction.equals("OUTPUT_TO_CONSOLE")) {
+				        %>
+				        System.out.println(line);
+				        <%
+				    } else if (outputAction.equals("RETRIEVE_OUTPUT")) {
+				        %>
+				        globalMap.put("<%=cid %>_OUTPUT",(String)globalMap.get("<%=cid %>_OUTPUT")+"\n"+line);
+				        <%
+				    }
+				    %>
 				}
 			} finally {
 				reader.close();
@@ -147,17 +323,17 @@ Thread error_<%=cid%> = new Thread() {
 			String line = "";
 			try {
 				while((line = reader.readLine()) != null) {
-<%
-	if (outputAction.equals("OUTPUT_TO_CONSOLE")) {
-%>
-					System.err.println(line);
-<%
-	} else if (outputAction.equals("RETRIEVE_OUTPUT")) {
-%>
-					globalMap.put("<%=cid %>_OUTPUT",(String)globalMap.get("<%=cid %>_OUTPUT")+"\n"+line);
-<%
-	}
-%>
+				    <%
+				    if (outputAction.equals("OUTPUT_TO_CONSOLE")) {
+				        %>
+				        System.err.println(line);
+				        <%
+				    } else if (outputAction.equals("RETRIEVE_OUTPUT")) {
+				        %>
+				        globalMap.put("<%=cid %>_OUTPUT",(String)globalMap.get("<%=cid %>_OUTPUT")+"\n"+line);
+				        <%
+				    }
+				    %>
 				}
 			} finally {
 				reader.close();

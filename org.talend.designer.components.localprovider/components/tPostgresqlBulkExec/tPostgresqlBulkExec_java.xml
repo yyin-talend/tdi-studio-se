@@ -34,14 +34,14 @@
       NAME="PROPERTY"
       FIELD="PROPERTY_TYPE"
       SHOW="true"
-      NUM_ROW="10"
+      NUM_ROW="1"
       REPOSITORY_VALUE="DATABASE:POSTGRESQL"
     />
 
     <PARAMETER
       NAME="HOST"
       FIELD="TEXT"
-      NUM_ROW="30"
+      NUM_ROW="2"
       REPOSITORY_VALUE="SERVER_NAME"
     >
       <DEFAULT>"localhost"</DEFAULT>
@@ -50,7 +50,7 @@
     <PARAMETER
       NAME="PORT"
       FIELD="TEXT"
-      NUM_ROW="30"
+      NUM_ROW="2"
       REPOSITORY_VALUE="PORT"
     >
       <DEFAULT>"5432"</DEFAULT>
@@ -59,25 +59,25 @@
     <PARAMETER
       NAME="DBNAME"
       FIELD="TEXT"
-      NUM_ROW="40"
+      NUM_ROW="3"
       REPOSITORY_VALUE="SID"
     >
-      <DEFAULT>""</DEFAULT>
+      <DEFAULT>"talend"</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
       NAME="SCHEMA_DB"
       FIELD="TEXT"
-      NUM_ROW="40"
+      NUM_ROW="3"
       REPOSITORY_VALUE="SCHEMA"
     >
-      <DEFAULT>""</DEFAULT>
+      <DEFAULT>"public"</DEFAULT>
     </PARAMETER>
     
     <PARAMETER
       NAME="USER"
       FIELD="TEXT"
-      NUM_ROW="50"
+      NUM_ROW="4"
       REPOSITORY_VALUE="USERNAME"
     >
       <DEFAULT>""</DEFAULT>
@@ -86,7 +86,7 @@
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
-      NUM_ROW="50"
+      NUM_ROW="4"
       REPOSITORY_VALUE="PASSWORD"
     >
       <DEFAULT>""</DEFAULT>
@@ -95,43 +95,90 @@
     <PARAMETER
       NAME="TABLE"
       FIELD="TEXT"
-      NUM_ROW="60"
+      NUM_ROW="5"
     >
       <DEFAULT>"employee"</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
+      NAME="TABLE_ACTION"
+      FIELD="CLOSED_LIST"
+      NUM_ROW="5"
+    >
+      <ITEMS DEFAULT="NONE">
+        <ITEM NAME="NONE" VALUE="NONE" />
+        <ITEM NAME="DROP_CREATE" VALUE="DROP_CREATE"/>
+        <ITEM NAME="CREATE" VALUE="CREATE"/>
+        <ITEM NAME="CREATE_IF_NOT_EXISTS" VALUE="CREATE_IF_NOT_EXISTS"/>
+        <ITEM NAME="CLEAR" VALUE="CLEAR"/>
+      </ITEMS>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="OIDS"
+      FIELD="CHECK"
+      REQUIRED="true"
+      NUM_ROW="6"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="HEADER"
+      FIELD="CHECK"
+      REQUIRED="true"
+      NUM_ROW="7"
+      SHOW_IF="(FILETYPE=='CSVFILE')"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>    	
+
+    <PARAMETER
       NAME="FILENAME"
       FIELD="FILE"
-      NUM_ROW="70"
+      NUM_ROW="8"
       REQUIRED="true"
     >
       <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/in.csv"</DEFAULT>
+    </PARAMETER>
+	
+    <PARAMETER
+      NAME="FILETYPE"
+      FIELD="CLOSED_LIST"
+      NUM_ROW="8"
+    >
+      <ITEMS DEFAULT="CSVFILE">
+      	<ITEM NAME="BINARYFILE" VALUE="BINARYFILE" />
+        <ITEM NAME="TXTFILE" VALUE="TXTFILE" />
+        <ITEM NAME="CSVFILE" VALUE="CSVFILE"/>
+      </ITEMS>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="NULLSTRING"
+      FIELD="TEXT"
+      NUM_ROW="9"
+      REQUIRED="true"
+      SHOW_IF="(FILETYPE=='CSVFILE' or FILETYPE=='TXTFILE')"
+    >
+      <DEFAULT>""</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
       NAME="FIELDS_TERMINATED_BY"
       FIELD="TEXT"
-      NUM_ROW="80"
+      NUM_ROW="9"
       REQUIRED="true"
+      SHOW_IF="(FILETYPE=='CSVFILE' or FILETYPE=='TXTFILE')"
     >
       <DEFAULT>";"</DEFAULT>
     </PARAMETER>
-    
-    <PARAMETER
-      NAME="CSV_OPTION"
-      FIELD="CHECK"
-      REQUIRED="true"
-      NUM_ROW="85"
-    >
-      <DEFAULT>false</DEFAULT>
-    </PARAMETER>
-        
+            
     <PARAMETER
       NAME="ESCAPE_CHAR"
       FIELD="TEXT"
-      NUM_ROW="85"
-      SHOW_IF="CSV_OPTION == 'true'"
+      NUM_ROW="9"
+      SHOW_IF="FILETYPE=='CSVFILE'"
     >
       <DEFAULT>"\\"</DEFAULT>
     </PARAMETER>
@@ -139,12 +186,42 @@
     <PARAMETER
       NAME="TEXT_ENCLOSURE"
       FIELD="TEXT"
-      NUM_ROW="85"
-      SHOW_IF="CSV_OPTION == 'true'"
+      NUM_ROW="9"
+      SHOW_IF="FILETYPE=='CSVFILE'"
     >
       <DEFAULT>"\""</DEFAULT>
     </PARAMETER>    
+   
+ 	<PARAMETER
+      NAME="FORCENOTNULL"
+      FIELD="TABLE"
+      REQUIRED="true"
+      NUM_ROW="10"
+      NB_LINES="5"
+      SHOW_IF="(FILETYPE=='CSVFILE')"
+    >
+	  <ITEMS BASED_ON_SCHEMA="true">	
+      	<ITEM NAME="FORCENOTNULL" FIELD="CHECK" VALUE="false"/>
+      </ITEMS>
+    </PARAMETER>    
+    
+    <PARAMETER
+      NAME="SCHEMA"
+      FIELD="SCHEMA_TYPE"
+      NUM_ROW="11"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
 
+	<PARAMETER
+      NAME="MAPPING"
+      FIELD="MAPPING_TYPE"
+      NUM_ROW="15"
+      SHOW="false"
+    >       
+      <DEFAULT>postgres_id</DEFAULT>
+    </PARAMETER>    
+        
    </PARAMETERS>
 
    <CODEGENERATION>

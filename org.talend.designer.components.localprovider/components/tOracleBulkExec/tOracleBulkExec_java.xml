@@ -79,7 +79,7 @@
     <PARAMETER
       NAME="PORT"
       FIELD="TEXT"
-      NUM_ROW="5"
+      NUM_ROW="4"
       REPOSITORY_VALUE="PORT"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"      
     >
@@ -89,17 +89,26 @@
     <PARAMETER
       NAME="DBNAME"
       FIELD="TEXT"
-      NUM_ROW="6"
+      NUM_ROW="5"
       REPOSITORY_VALUE="SID"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"      
     >
       <DEFAULT>"Talend"</DEFAULT>
     </PARAMETER>
+
+    <PARAMETER 
+      NAME="SCHEMA_DB"
+      FIELD="TEXT"
+      NUM_ROW="5"
+      REPOSITORY_VALUE="SCHEMA"
+    >
+      <DEFAULT>"ROOT"</DEFAULT>
+    </PARAMETER>
           
     <PARAMETER
       NAME="USER"
       FIELD="TEXT"
-      NUM_ROW="7"
+      NUM_ROW="6"
       REQUIRED="true"
       REPOSITORY_VALUE="USERNAME"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"      
@@ -110,12 +119,26 @@
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
-      NUM_ROW="8"
+      NUM_ROW="6"
       REQUIRED="true"
       REPOSITORY_VALUE="PASSWORD"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"      
     >
       <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="TABLE_ACTION"
+      FIELD="CLOSED_LIST"
+      NUM_ROW="9"
+    >
+      <ITEMS DEFAULT="NONE">
+        <ITEM NAME="NONE" VALUE="NONE" />
+        <ITEM NAME="DROP_CREATE" VALUE="DROP_CREATE"/>
+        <ITEM NAME="CREATE" VALUE="CREATE"/>
+        <ITEM NAME="CREATE_IF_NOT_EXISTS" VALUE="CREATE_IF_NOT_EXISTS"/>
+        <ITEM NAME="CLEAR" VALUE="CLEAR"/>
+      </ITEMS>
     </PARAMETER>
     
     <PARAMETER
@@ -220,6 +243,18 @@
        </ITEMS>
     </PARAMETER>
 
+    <PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" REQUIRED="true" NUM_ROW="14">
+      <DEFAULT/> 
+    </PARAMETER>
+
+	<PARAMETER
+      NAME="MAPPING"
+      FIELD="MAPPING_TYPE"
+      NUM_ROW="15"
+      SHOW="false"
+    >       
+      <DEFAULT>oracle_id</DEFAULT>
+    </PARAMETER>
 
    </PARAMETERS>
 

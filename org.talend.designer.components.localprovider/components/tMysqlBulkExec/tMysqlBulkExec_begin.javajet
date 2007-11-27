@@ -5,10 +5,115 @@ imports="
     org.talend.designer.codegen.config.CodeGeneratorArgument
 	org.talend.core.model.metadata.IMetadataTable
 	org.talend.core.model.metadata.IMetadataColumn
+    org.talend.core.model.metadata.MetadataTalendType    
+    org.talend.core.model.metadata.MappingTypeRetriever	
     java.util.List
+    java.util.ArrayList    
 " 
 %>
 <%
+class MysqlManager {
+    public String getCreateTableSQL(String tableName, List<IMetadataColumn> listColumn, String dbmsId) {
+        MappingTypeRetriever mappingType = MetadataTalendType.getMappingTypeRetriever(dbmsId);
+        StringBuilder createTableSQL = new StringBuilder();
+        String newTableName = null;                        
+        createTableSQL.append("CREATE TABLE `\" + " + tableName + " + \"`(");
+        List<String> pkList = new ArrayList<String>();
+        int count = 0;
+        String ending = ",";
+        for(IMetadataColumn metadataColumn : listColumn) {
+            if(metadataColumn.isKey()) {
+                pkList.add("`" + metadataColumn.getOriginalDbColumnName() + "`");
+            }
+            createTableSQL.append("`" + metadataColumn.getOriginalDbColumnName() + "` ");
+            String dataType = null;
+            if(metadataColumn.getType() == null || metadataColumn.getType().trim().length() == 0) {
+                dataType = mappingType.getDefaultSelectedDbType(metadataColumn.getTalendType());
+            } else {
+                dataType = metadataColumn.getType();
+            }
+            createTableSQL.append(dataType);
+            Integer length = metadataColumn.getLength() == null ? 0 : metadataColumn.getLength();
+            Integer precision = metadataColumn.getPrecision() == null ? 0 : metadataColumn.getPrecision();
+            boolean lengthIgnored = mappingType.isLengthIgnored(dbmsId, dataType);
+            boolean precisionIgnored = mappingType.isPrecisionIgnored(dbmsId, dataType);
+            String prefix = "";
+            String suffix = "";
+            String comma = "";
+            if(mappingType.isPreBeforeLength(dbmsId, dataType)) {
+                if(!precisionIgnored) {
+                    prefix = "(";
+                    suffix = ") ";
+                    createTableSQL.append(prefix + precision);
+                }
+                if(!lengthIgnored) {
+                    prefix = (prefix.equals("") ? "(" : prefix);
+                    suffix = (suffix.equals("") ? ") " : suffix);
+                    if(precisionIgnored) {
+                        createTableSQL.append(prefix);
+                        comma = "";
+                    } else {
+                        comma = ",";
+                    }
+                    createTableSQL.append(comma + length);
+                }
+                createTableSQL.append(suffix);
+            } else {
+                if(!lengthIgnored) {
+                    prefix = "(";
+                    suffix = ") ";
+                    createTableSQL.append(prefix + length);
+                }
+                if(!precisionIgnored) {
+                    prefix = (prefix.equals("") ? "(" : prefix);
+                    suffix = (suffix.equals("") ? ") " : suffix);
+                    if(lengthIgnored) {
+                        createTableSQL.append(prefix);
+                        comma = "";                        
+                    } else {
+                        comma = ",";
+                    }
+                    createTableSQL.append(comma + precision);
+                }
+                createTableSQL.append(suffix);
+            }
+            createTableSQL.append(getDefaultValueSQL(metadataColumn.getDefault()));
+            if(!metadataColumn.isNullable()) {
+                createTableSQL.append("not null");
+            }
+            if(count == listColumn.size() - 1 && pkList.size() == 0) {
+                ending = "";
+            }
+            createTableSQL.append(ending);
+            count++;
+        }
+        if(pkList.size() > 0) {                
+            createTableSQL.append("primary key(");                
+            int i = 0;                
+            for(String pk : pkList) {                    
+                createTableSQL.append(pk);                    
+                if(i != pkList.size() - 1) {                        
+                    createTableSQL.append(",");                        
+                }                    
+                i++;                    
+            }                
+            createTableSQL.append(")");                
+        }
+        createTableSQL.append(")");
+        return createTableSQL.toString();
+    }
+    private String getDefaultValueSQL(String defaultValue) {
+        if(defaultValue == null || defaultValue.equals("\"\"") || defaultValue.equals("")) {
+            return " ";
+        } else if((defaultValue.startsWith("\"") || defaultValue.startsWith("'")) && (defaultValue.endsWith("\"") || defaultValue.endsWith("'"))) {
+            return "default '" + defaultValue.substring(1,defaultValue.length() - 1) + "' ";
+        } else if(defaultValue.equalsIgnoreCase("null")) {
+            return "default null ";
+        } else {
+            return "default " + defaultValue + " ";
+        }            
+    }        
+}
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
@@ -29,19 +134,72 @@ if(encoding.equals("\"GBK\"")){
 }else if(encoding.equals("\"UCS-2\"")){
 	charset = "ucs2";
 }
-
+String host = ElementParameterParser.getValue(node, "__HOST__");
+String port = ElementParameterParser.getValue(node, "__PORT__");
+String dbName = ElementParameterParser.getValue(node, "__DBNAME__");
+String userName = ElementParameterParser.getValue(node, "__USER__");
+String password = ElementParameterParser.getValue(node, "__PASS__");
+List<IMetadataColumn> columnList = null;
+List<IMetadataTable> metadatas = node.getMetadataList();
+if(metadatas !=null && metadatas.size()>0){
+    IMetadataTable metadata = metadatas.get(0);
+    if(metadata != null){
+        columnList = metadata.getListColumns();
+    }
+}
+%>
+Class.forName("com.mysql.jdbc.Driver").newInstance();
+java.sql.Connection con_<%=cid%> = java.sql.DriverManager.getConnection("jdbc:MySQL://" + <%=host%> + ":" + <%=port%> + "/" + <%=dbName%>, <%=userName%>, <%=password%>);
+<%
+String tableAction = ElementParameterParser.getValue(node,"__TABLE_ACTION__");
+String dbmsId = ElementParameterParser.getValue(node,"__MAPPING__");
+String tableName = ElementParameterParser.getValue(node, "__TABLE__");
+if(columnList != null && columnList.size() > 0) {
+    MysqlManager manager = new MysqlManager();
+    if(tableAction.equals("DROP_CREATE")) {
+        %>
+        java.sql.Statement stmtDrop_<%=cid%> = con_<%=cid%>.createStatement();
+        stmtDrop_<%=cid%>.execute("drop table `" + <%=tableName%> + "`");
+        java.sql.Statement stmtCreate_<%=cid%> = con_<%=cid%>.createStatement();
+        stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(tableName, columnList, dbmsId)%>");
+        <%
+    } else if(tableAction.equals("CREATE")) {
+        %>
+        java.sql.Statement stmtCreate_<%=cid%> = con_<%=cid%>.createStatement();
+        stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(tableName, columnList, dbmsId)%>");
+        <%
+    } else if(tableAction.equals("CREATE_IF_NOT_EXISTS")) {
+        %>
+        java.sql.DatabaseMetaData dbMetaData_<%=cid%> = con_<%=cid%>.getMetaData();
+        java.sql.ResultSet rsTable_<%=cid%> = dbMetaData_<%=cid%>.getTables(null, null, null, new String[]{"TABLE"});
+        boolean whetherExist_<%=cid%> = false;
+        while(rsTable_<%=cid%>.next()) {
+            String table_<%=cid%> = rsTable_<%=cid%>.getString("TABLE_NAME");
+            if(table_<%=cid%>.equalsIgnoreCase(<%=tableName%>)) {
+                whetherExist_<%=cid%> = true;
+                break;
+            }
+        }
+        if(!whetherExist_<%=cid%>) {
+            java.sql.Statement stmtCreate_<%=cid%> = con_<%=cid%>.createStatement();
+            stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(tableName, columnList, dbmsId)%>");            
+        }
+        <%
+    } else if(tableAction.equals("CLEAR")) {
+        %>
+        java.sql.Statement stmtClear_<%=cid%> = con_<%=cid%>.createStatement();
+        stmtClear_<%=cid%>.executeUpdate("truncate table `" + <%=tableName%>+"`");
+        <%
+    }    
+}
 %> 
+
 String lines_separator_<%=cid %> = <%=ElementParameterParser.getValue(node, "__LINES_TERMINATED_BY__") %>;
 String field_separator_<%=cid %> = <%=ElementParameterParser.getValue(node, "__FIELDS_TERMINATED_BY__") %>;
 String escaped_str_<%=cid %> = <%=ElementParameterParser.getValue(node, "__ESCAPED_BY__") %>;
 String enclosed_str_<%=cid %> = <%=ElementParameterParser.getValue(node, "__ENCLOSED_BY__") %>;
 String file_<%=cid %> = <%=ElementParameterParser.getValue(node, "__FILENAME__") %>;
-String host_<%=cid %> = <%=ElementParameterParser.getValue(node, "__HOST__") %>;
-String port_<%=cid %> = <%=ElementParameterParser.getValue(node, "__PORT__") %>;
-String db_<%=cid %> = <%=ElementParameterParser.getValue(node, "__DBNAME__") %>;
-String user_<%=cid %> = <%=ElementParameterParser.getValue(node, "__USER__") %>;
-String pas_<%=cid %> = <%=ElementParameterParser.getValue(node, "__PASS__") %>;
-String table_<%=cid %> = <%=ElementParameterParser.getValue(node, "__TABLE__") %>;
+String table_<%=cid %> = <%=tableName%>;
 String replace_<%=cid%> = null;
 <%
 String isUpdate = ElementParameterParser.getValue(node, "__IS_UPDATE__");
@@ -57,10 +215,21 @@ else
 	replace_<%=cid%> = "";
 	<%
 }
+StringBuilder loadingCols = new StringBuilder();
+if(columnList != null && columnList.size() > 0) {
+    loadingCols.append("(");
+    int sizeColumns = columnList.size();
+    for (int i = 0; i < sizeColumns; i++) {
+        IMetadataColumn column = columnList.get(i);
+        loadingCols.append("`" + column.getOriginalDbColumnName() + "`");
+        if(i != sizeColumns - 1) {
+            loadingCols.append(",");
+        }
+    }
+    loadingCols.append(")");
+}
 %>
 
-Class.forName("com.mysql.jdbc.Driver").newInstance();
-java.sql.Connection con_<%=cid %>=java.sql.DriverManager.getConnection("jdbc:MySQL://"+host_<%=cid %>+":"+port_<%=cid %>+"/"+db_<%=cid %>, user_<%=cid %>, pas_<%=cid %>);
 java.sql.Statement stmt_<%=cid %>=con_<%=cid %>.createStatement();
 stmt_<%=cid %>.execute("SET character_set_database=<%=charset %>");
 stmt_<%=cid %>.execute(
@@ -70,22 +239,7 @@ stmt_<%=cid %>.execute(
     + " FIELDS TERMINATED BY '" + field_separator_<%=cid %>.replaceAll("\\\\", "\\\\\\\\") + "'"
     + " ENCLOSED BY '" + enclosed_str_<%=cid %>.replaceAll("\\\\", "\\\\\\\\") + "'"
     + " ESCAPED BY '" + escaped_str_<%=cid %>.replaceAll("\\\\", "\\\\\\\\") + "'"
-    + " LINES TERMINATED BY '" + lines_separator_<%=cid %>.replaceAll("\\\\", "\\\\\\\\") + "'"  
-<%
-List<IMetadataTable> metadatas = node.getMetadataList();
-if ((metadatas!=null)&&(metadatas.size()>0)) {
-    IMetadataTable metadata = metadatas.get(0);
-    if (metadata!=null) {
-		List<IMetadataColumn> columns = metadata.getListColumns();
-		int sizeColumns = columns.size();
-		for (int i = 0; i < sizeColumns; i++) {
-			IMetadataColumn column = columns.get(i);
-%><%=i==0?"+ \" (":""%>`<%=column.getOriginalDbColumnName() %>`<%=i==sizeColumns-1?")\"":","%><%
-		}
-	}
-}
-%>
-          
+    + " LINES TERMINATED BY '" + lines_separator_<%=cid %>.replaceAll("\\\\", "\\\\\\\\") + "' <%=loadingCols.toString()%>"            
 );
 stmt_<%=cid %>.close();
 con_<%=cid %>.close();

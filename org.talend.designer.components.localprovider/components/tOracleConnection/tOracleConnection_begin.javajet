@@ -15,6 +15,7 @@ imports="
     String dbhost = ElementParameterParser.getValue(node, "__HOST__");
     String dbport = ElementParameterParser.getValue(node, "__PORT__");
     String dbname = ElementParameterParser.getValue(node, "__DBNAME__");
+    String dbschema = ElementParameterParser.getValue(node, "__SCHEMA_DB__");
     String dbuser = ElementParameterParser.getValue(node, "__USER__");
     String dbpass = ElementParameterParser.getValue(node, "__PASS__");
     String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
@@ -44,5 +45,6 @@ globalMap.put("conn_" + "<%=cid%>",conn_<%=cid%>);
 globalMap.put("host_" + "<%=cid%>",<%=dbhost%>);
 globalMap.put("port_" + "<%=cid%>",<%=dbport%>);
 globalMap.put("dbname_" + "<%=cid%>",<%=dbname%>);
+globalMap.put("dbschema_" + "<%=cid%>", <%=dbschema%>);
 globalMap.put("username_" + "<%=cid%>",<%=dbuser%>);
 globalMap.put("password_" + "<%=cid%>",<%=dbpass%>);

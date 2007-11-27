@@ -80,17 +80,26 @@
     <PARAMETER
       NAME="DBNAME"
       FIELD="TEXT"
-      NUM_ROW="3"
+      NUM_ROW="4"
       REPOSITORY_VALUE="SID"
       REQUIRED="true"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
+    <PARAMETER 
+      NAME="SCHEMA_DB"
+      FIELD="TEXT"
+      NUM_ROW="4"
+      REPOSITORY_VALUE="SCHEMA"
+    >
+      <DEFAULT>"ROOT"</DEFAULT>
+    </PARAMETER>
     
     <PARAMETER
       NAME="USER"
       FIELD="TEXT"
-      NUM_ROW="4"
+      NUM_ROW="5"
       REPOSITORY_VALUE="USERNAME"
       REQUIRED="true"
     >
@@ -100,7 +109,7 @@
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
-      NUM_ROW="4"
+      NUM_ROW="5"
       REPOSITORY_VALUE="PASSWORD"
       REQUIRED="true"
     >

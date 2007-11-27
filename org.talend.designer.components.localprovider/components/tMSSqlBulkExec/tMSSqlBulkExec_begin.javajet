@@ -36,13 +36,8 @@ if(action.equals("INSERT")){
         public String getCreateTableSQL(String tableName, List<IMetadataColumn> listColumn, String dbmsId) {
             MappingTypeRetriever mappingType = MetadataTalendType.getMappingTypeRetriever(dbmsId);
             StringBuilder createTableSQL = new StringBuilder();
-            String newTableName = null;            
-            if(tableName == null || tableName.equals("") || tableName.equals("\"\"")) {                
-                newTableName = "";                
-            } else {                
-                newTableName = tableName.substring(1, tableName.length() - 1);                
-            }            
-            createTableSQL.append("CREATE TABLE [" + newTableName + "](");
+            String newTableName = null;                        
+            createTableSQL.append("CREATE TABLE [\" + " + tableName + " + \"](");
             List<String> pkList = new ArrayList<String>();
             int count = 0;
             String ending = ",";
