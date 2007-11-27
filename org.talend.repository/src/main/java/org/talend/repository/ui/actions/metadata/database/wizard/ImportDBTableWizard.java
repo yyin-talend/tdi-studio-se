@@ -22,9 +22,18 @@ import java.lang.reflect.InvocationTargetException;
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
@@ -34,6 +43,7 @@ import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.swt.dialogs.ProgressDialog;
+import org.talend.commons.ui.swt.formtools.Form;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.i18n.Messages;
@@ -50,6 +60,39 @@ import org.talend.repository.ui.wizards.RepositoryWizard;
  * 
  */
 public class ImportDBTableWizard extends RepositoryWizard implements IImportWizard {
+
+    /**
+     * DOC ggu class global comment. Detailled comment
+     */
+    private final class LogsMessageDialog extends MessageDialog {
+
+        private String logs;
+
+        /**
+         * DOC ggu LogsMessageDialog constructor comment.
+         * 
+         * @param parentShell
+         */
+        private LogsMessageDialog(Shell parentShell, String title, String messages, String logs) {
+            super(parentShell, title, null, messages, INFORMATION, new String[] { IDialogConstants.OK_LABEL }, 0); //$NON-NLS-1$
+            this.logs = logs;
+        }
+
+        @Override
+        protected Control createCustomArea(Composite parent) {
+            Group group = Form.createGroup(parent, 1, null, 200);
+
+            Text text = new Text(group, SWT.V_SCROLL | SWT.H_SCROLL | SWT.READ_ONLY);
+            // text.setBackground(new Color(text.getBackground().getDevice(), 255, 255, 255));
+            GridData data = new GridData(GridData.FILL_BOTH);
+            text.setLayoutData(data);
+            if (logs != null) {
+                text.setText(logs);
+            }
+            return group;
+        }
+
+    }
 
     private static Logger log = Logger.getLogger(ImportDBTableWizard.class);
 
@@ -133,13 +176,15 @@ public class ImportDBTableWizard extends RepositoryWizard implements IImportWiza
             if (file == null) {
                 return false;
             }
-            progressDialog(file);
+            ConnectionDBTableHelper helper = new ConnectionDBTableHelper(file);
+            progressDialog(helper);
+            showLogsDialog(helper);
             return true;
         }
         return false;
     }
 
-    private void progressDialog(final File file) {
+    private void progressDialog(final ConnectionDBTableHelper helper) {
         Shell activeShell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
         ProgressDialog progressDialog = new ProgressDialog(activeShell) {
 
@@ -149,7 +194,7 @@ public class ImportDBTableWizard extends RepositoryWizard implements IImportWiza
                 monitorWrap.setCanceled(false);
                 totalWorks = 0;
                 try {
-                    BufferedReader reader = new BufferedReader(new FileReader(file));
+                    BufferedReader reader = new BufferedReader(new FileReader(helper.getImportedFile()));
                     while (reader.readLine() != null) {
                         totalWorks++;
                     }
@@ -159,7 +204,7 @@ public class ImportDBTableWizard extends RepositoryWizard implements IImportWiza
                     return;
                 }
                 monitor.beginTask(Messages.getString("ImportDBTableWizard.ProcessLabel"), totalWorks); //$NON-NLS-1$
-                process(file, monitorWrap);
+                process(helper, monitorWrap);
                 monitorWrap.done();
 
             }
@@ -174,13 +219,12 @@ public class ImportDBTableWizard extends RepositoryWizard implements IImportWiza
         }
     }
 
-    private void process(File file, IProgressMonitor monitor) {
+    private void process(ConnectionDBTableHelper helper, IProgressMonitor monitor) {
 
         BufferedReader reader = null;
-        ConnectionDBTableHelper helper = new ConnectionDBTableHelper(file);
 
         try {
-            reader = new BufferedReader(new FileReader(file));
+            reader = new BufferedReader(new FileReader(helper.getImportedFile()));
             String line;
             while ((line = reader.readLine()) != null) {
                 monitor.worked(1);
@@ -242,4 +286,34 @@ public class ImportDBTableWizard extends RepositoryWizard implements IImportWiza
 
     }
 
+    private void showLogsDialog(ConnectionDBTableHelper helper) {
+        BufferedReader reader = null;
+        try {
+            File logsFile = helper.getLogsFile();
+            StringBuilder logsMessage = new StringBuilder();
+            reader = new BufferedReader(new FileReader(logsFile));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                logsMessage.append(line);
+                logsMessage.append("\r\n"); //$NON-NLS-1$
+            }
+            // show log
+            String title = Messages.getString("ImportDBTableWizard.LogMessageTitle"); //$NON-NLS-1$
+            String message = Messages.getString("ImportDBTableWizard.LogMessageLabel", logsFile.toString()); //$NON-NLS-1$
+            Dialog dialog = new LogsMessageDialog(getShell(), title, message, logsMessage.toString());
+            dialog.open();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                }
+                reader = null;
+            }
+        }
+    }
 }

@@ -103,6 +103,10 @@ public final class ConnectionDBTableHelper {
 
     }
 
+    public File getImportedFile() {
+        return this.importedfile;
+    }
+
     public DBTableForDelimitedBean getRowData(final String line) {
         DBTableForDelimitedBean bean = new DBTableForDelimitedBean();
 
