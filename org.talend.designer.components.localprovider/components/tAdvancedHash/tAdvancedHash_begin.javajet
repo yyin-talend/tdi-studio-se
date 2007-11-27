@@ -76,11 +76,11 @@
 					}
 					
 			   %>
-			   		org.talend.designer.components.commons.AdvancedLookup.MATCHING_MODE matchingModeEnum = 
+			   		org.talend.designer.components.commons.AdvancedLookup.MATCHING_MODE matchingModeEnum_<%=connectionName%> = 
 			   			org.talend.designer.components.commons.AdvancedLookup.MATCHING_MODE.<%= matchingModeStr %>;
 	   			org.talend.designer.components.commons.AdvancedLookup<<%=connectionName%>Struct> tHash_Lookup_<%=connectionName%> = 
 	   				org.talend.designer.components.commons.AdvancedLookup.
-	   					<<%=connectionName%>Struct>getLookup(matchingModeEnum);
+	   					<<%=connectionName%>Struct>getLookup(matchingModeEnum_<%=connectionName%>);
    	   	   globalMap.put("tHash_Lookup_<%=connectionName%>", tHash_Lookup_<%=connectionName%>);
 				<%
 			} else { 
