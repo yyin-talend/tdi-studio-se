@@ -256,7 +256,8 @@ public class RunProcessContext {
         MessageDialog.openError(PlatformUI.getWorkbench().getDisplay().getActiveShell(), title, message);
     }
 
-    private boolean testPort() {
+    private void testPort() {
+
         if (monitorPerf) {
             try {
                 findNewStatsPort();
@@ -267,9 +268,6 @@ public class RunProcessContext {
                 showErrorMassage(Messages.getString("RunProcessContext.PortErrorStats")); //$NON-NLS-1$
                 // disable the check.
                 setMonitorPerf(false);
-                // set the port to no statistics
-                findNewStatsPort();
-                return false;
             }
 
         }
@@ -283,12 +281,10 @@ public class RunProcessContext {
                 showErrorMassage(Messages.getString("RunProcessContext.PortErrorTraces")); //$NON-NLS-1$
                 // disable the check.
                 setMonitorTrace(false);
-                // set the port to no traces
-                findNewTracesPort();
-                return false;
+
             }
         }
-        return true;
+
     }
 
     /**
