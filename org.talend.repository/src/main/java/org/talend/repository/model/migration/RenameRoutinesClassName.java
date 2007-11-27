@@ -52,7 +52,7 @@ public class RenameRoutinesClassName extends AbstractItemMigrationTask {
             content.setInnerContent(str.getBytes());
             routineItem.setContent(content);
             FACTORY.save(routineItem);
-            return ExecutionResult.SUCCESS_WITH_ALERT;
+            return ExecutionResult.SUCCESS_NO_ALERT;
 
         } catch (Exception e) {
             ExceptionHandler.process(e);
