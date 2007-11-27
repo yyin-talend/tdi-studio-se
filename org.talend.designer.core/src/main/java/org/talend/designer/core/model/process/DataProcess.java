@@ -534,16 +534,18 @@ public class DataProcess {
                 AbstractNode subDataNodeStartSource = (AbstractNode) buildCheckMap.get(subNodeStartSource);
                 AbstractNode subDataNodeStartTarget = (AbstractNode) buildCheckMap.get(subNodeStartTarget);
 
-                if (subDataNodeStartSource.getMetadataList().isEmpty()) {
-                    continue;
-                }
+                // if (subDataNodeStartSource.getMetadataList().isEmpty()) {
+                // continue;
+                // }
 
                 // create a link before between the two subprocess
                 DataConnection dataConnec = new DataConnection();
                 dataConnec.setActivate(connection.isActivate());
                 dataConnec.setLineStyle(EConnectionType.RUN_AFTER);
                 // dataConnec.setLineStyle(EConnectionType.THEN_RUN);
-                dataConnec.setMetadataTable(subDataNodeStartSource.getMetadataList().get(0));
+                if (!subDataNodeStartSource.getMetadataList().isEmpty()) {
+                    dataConnec.setMetadataTable(subDataNodeStartSource.getMetadataList().get(0));
+                }
                 dataConnec.setName("after_" + subDataNodeStartSource.getUniqueName()); //$NON-NLS-1$
                 // dataConnec.setConnectorName(EConnectionType.THEN_RUN.getName());
                 dataConnec.setConnectorName(EConnectionType.RUN_AFTER.getName());
