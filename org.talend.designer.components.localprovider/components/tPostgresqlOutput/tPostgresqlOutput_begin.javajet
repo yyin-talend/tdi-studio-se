@@ -308,45 +308,13 @@ if(columnList != null && columnList.size()>0){
         
         class SQLBuilder {
             
-            public String createSQL(List<Column> columnList, String schemaName, String tableName, String dbms) {
+            public String createSQL(List<Column> columnList, String dbms, String cid) {
                 
                 MappingTypeRetriever mappingType = MetadataTalendType.getMappingTypeRetriever(dbms);
                 
                 StringBuilder createSQL = new StringBuilder();
-                
-                String newTableName = null;
-                
-                if(schemaName == null || schemaName.equals("") || schemaName.equals("\"\"")) {
-                    
-                    schemaName = "";
-                    
-                } else {
-                    
-                    schemaName = schemaName.substring(1,schemaName.length() - 1);
-                    
-                }
-                
-                if(tableName == null || tableName.equals("") || tableName.equals("\"\"")) {
-                    
-                    tableName = "";
-                    
-                } else {
-                    
-                    tableName = tableName.substring(1,tableName.length() - 1);
-                    
-                }
-                
-                if(schemaName.equals("")) {
-                    
-                    newTableName = tableName;
-                    
-                } else {
-                    
-                    newTableName = schemaName + "\\\".\\\"" + tableName;
-                    
-                }                
-                                
-                createSQL.append("create table \\\"" + newTableName + "\\\"(");
+                                                               
+                createSQL.append("create table \" + tableName_" + cid + " + \"(");
                 
                 List<String> pkList = new ArrayList<String>();
                 
@@ -585,12 +553,12 @@ if(columnList != null && columnList.size()>0){
             java.sql.Statement stmtDrop_<%=cid%> = conn_<%=cid%>.createStatement();
             stmtDrop_<%=cid%>.execute("drop table " + tableName_<%=cid%>);
             java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
-            stmtCreate_<%=cid%>.execute("<%=builder.createSQL(stmtStructure, dbschema, tableName, dbmsId)%>");
+            stmtCreate_<%=cid%>.execute("<%=builder.createSQL(stmtStructure, dbmsId, cid)%>");
             <%
         } else if(tableAction.equals("CREATE")) {
             %>
             java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
-            stmtCreate_<%=cid%>.execute("<%=builder.createSQL(stmtStructure, dbschema, tableName, dbmsId)%>");
+            stmtCreate_<%=cid%>.execute("<%=builder.createSQL(stmtStructure, dbmsId, cid)%>");
             <%
         } else if(tableAction.equals("CREATE_IF_NOT_EXISTS")) {
             %>
@@ -606,7 +574,7 @@ if(columnList != null && columnList.size()>0){
             }
             if(!whetherExist_<%=cid%>) {
                 java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
-                stmtCreate_<%=cid%>.execute("<%=builder.createSQL(stmtStructure, dbschema, tableName, dbmsId)%>");            
+                stmtCreate_<%=cid%>.execute("<%=builder.createSQL(stmtStructure, dbmsId, cid)%>");            
             }
             <%
         } else if(tableAction.equals("CLEAR")) {

@@ -279,18 +279,8 @@ if(columnList != null && columnList.size()>0){
                 StringBuilder createSQL = new StringBuilder();
                 
                 String newTableName = null;
-                
-                if(tableName == null || tableName.equals("") || tableName.equals("\"\"")) {
-                    
-                    newTableName = "";
-                    
-                } else {
-                    
-                    newTableName = tableName.substring(1,tableName.length() - 1);
-                    
-                }
-                
-                createSQL.append("create table [" + newTableName + "](");
+                                
+                createSQL.append("create table [\" + " + tableName + " + \"](");
                 
                 List<String> pkList = new ArrayList<String>();
                 
