@@ -78,7 +78,7 @@ public class JavaCompilationParticipant extends CompilationParticipant {
             Display.getDefault().asyncExec(new Runnable() {
 
                 public void run() {
-                    Problems.refreshRoutinErrorProblemView();
+                    Problems.refreshProblemTreeView();
                 }
             });
 
