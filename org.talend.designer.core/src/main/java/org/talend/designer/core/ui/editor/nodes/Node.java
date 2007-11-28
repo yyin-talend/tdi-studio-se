@@ -1042,7 +1042,7 @@ public class Node extends Element implements INode {
      * 
      * @param value
      */
-    private void setDummy(Boolean value) {
+    public void setDummy(Boolean value) {
         dummy = value;
     }
 
@@ -1635,7 +1635,8 @@ public class Node extends Element implements INode {
     public void checkAndRefreshNode() {
         Problems.clearAll(this);
         checkNode();
-        Problems.refreshView();
+        Problems.refreshOneNodeStatus(this);
+        Problems.refreshProblemTreeView();
     }
 
     public void checkNode() {

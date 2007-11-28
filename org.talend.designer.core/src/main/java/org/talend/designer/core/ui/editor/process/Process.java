@@ -1917,7 +1917,8 @@ public class Process extends Element implements IProcess {
                 node.checkNode();
             }
         }
-        Problems.refreshView();
+        Problems.refreshProcessAllNodesStatus(this);
+        Problems.refreshProblemTreeView();
     }
 
     /**

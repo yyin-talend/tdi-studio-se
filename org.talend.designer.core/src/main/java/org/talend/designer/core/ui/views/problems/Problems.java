@@ -194,16 +194,16 @@ public class Problems {
             return;
         }
         openJobs.add(process);
-        initCurrentProblems();
+        initCurrentProblems(process);
     }
 
     /**
      * DOC check the problems the corresponding of current process .
      */
-    private static void initCurrentProblems() {
-        for (IProcess process : openJobs) {
-            ((Process) process).checkProcess();
-        }
+    private static void initCurrentProblems(IProcess process) {
+        // for (IProcess process : openJobs) {
+        ((Process) process).checkProcess();
+        // }
 
     }
 
@@ -218,24 +218,27 @@ public class Problems {
         newTitle = title;
     }
 
-    public static void refreshView() {
-        if (getProblemView() != null) {
-            refreshRoutinErrorProblemView();
-
-            for (IProcess process : openJobs) {
-                // ((Process) process).checkNodeProblems();
-                List<? extends INode> nodes = process.getGraphicalNodes();
-                for (INode inode : nodes) {
-                    if (inode instanceof Node) {
-                        Node node = (Node) inode;
-                        refreshNodeStatus(node, problemList.getProblemList());
-                    }
-                }
+    public static void refreshProcessAllNodesStatus(IProcess process) {
+        List<? extends INode> processNodes = process.getGraphicalNodes();
+        for (INode inode : processNodes) {
+            if (inode instanceof Node) {
+                Node node = (Node) inode;
+                refreshNodeStatus(node, problemList.getProblemList());
             }
         }
     }
 
-    public static void refreshRoutinErrorProblemView() {
+    public static void refreshOneNodeStatus(INode iNode) {
+        if (iNode instanceof Node) {
+            Node node = (Node) iNode;
+            refreshNodeStatus(node, problemList.getProblemList());
+        }
+    }
+
+    /*
+     * DOC xhuang refresh the structure of problems view
+     */
+    public static void refreshProblemTreeView() {
         if (getProblemView() != null) {
             if (!newTitle.equals(currentTitle)) {
                 getProblemView().setPartName(newTitle);
@@ -286,8 +289,8 @@ public class Problems {
             }
 
         }
-
-        refreshView();
+        refreshProcessAllNodesStatus(process);
+        refreshProblemTreeView();
     }
 
     public static void removeJob(IProcess process) {
@@ -302,7 +305,7 @@ public class Problems {
                 iter.remove();
             }
         }
-        refreshView();
+        refreshProblemTreeView();
     }
 
     /**

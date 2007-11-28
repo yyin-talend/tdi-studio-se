@@ -43,7 +43,7 @@ public class CreateNodeContainerCommand extends CreateCommand {
         this.nodeContainer = nodeContainer;
     }
 
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     @Override
     public boolean canExecute() {
         for (Node currentNode : (List<Node>) process.getGraphicalNodes()) {
@@ -65,10 +65,10 @@ public class CreateNodeContainerCommand extends CreateCommand {
 
     public void undo() {
         this.process.removeNodeContainer(this.nodeContainer);
-//        process.checkProcess();
+        // process.checkProcess();
         process.checkStartNodes();
         Problems.clearAll(nodeContainer.getNode());
-        Problems.refreshView();
+        Problems.refreshProblemTreeView();
     }
 
     public void redo() {
