@@ -14,17 +14,15 @@ package org.talend.expressionbuilder.ui;
 
 import java.util.List;
 
-import org.eclipse.gef.dnd.TransferDropTargetListener;
 import org.eclipse.jface.dialogs.TrayDialog;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.util.LocalSelectionTransfer;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.dnd.DND;
-import org.eclipse.swt.dnd.DropTargetEvent;
+import org.eclipse.swt.dnd.DropTargetListener;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -46,9 +44,7 @@ import org.eclipse.ui.IEditorPart;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
-import org.talend.core.model.properties.SnippetItem;
-import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.snippets.SnippetManager;
+import org.talend.core.ui.snippet.SnippetDropTargetListener;
 import org.talend.core.ui.viewer.ReconcilerViewer;
 import org.talend.core.ui.viewer.java.TalendJavaSourceViewer;
 import org.talend.core.ui.viewer.perl.TalendPerlSourceViewer;
@@ -57,9 +53,6 @@ import org.talend.designer.rowgenerator.data.FunctionManager;
 import org.talend.designer.rowgenerator.data.Parameter;
 import org.talend.expressionbuilder.IExpressionDataBean;
 import org.talend.expressionbuilder.i18n.Messages;
-import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.model.RepositoryNode.ENodeType;
-import org.talend.repository.model.RepositoryNode.EProperties;
 
 /**
  * DOC yzhang class global comment. Detailled comment <br/>
@@ -238,66 +231,8 @@ public class ExpressionComposite extends Composite {
 
         textControl = viewer.getTextWidget();
         int ops = DND.DROP_COPY | DND.DROP_MOVE;
-        viewer.addDropSupport(ops, new Transfer[] { LocalSelectionTransfer.getTransfer() }, new TransferDropTargetListener() {
-
-            public void dragEnter(DropTargetEvent event) {
-                // TODO Auto-generated method stub
-
-            }
-
-            public void dragLeave(DropTargetEvent event) {
-                // TODO Auto-generated method stub
-
-            }
-
-            public void dragOperationChanged(DropTargetEvent event) {
-                // TODO Auto-generated method stub
-
-            }
-
-            public void dragOver(DropTargetEvent event) {
-                RepositoryNode sourceNode = getSelection();
-                ENodeType type = sourceNode.getType();
-                if (type.equals(ENodeType.SIMPLE_FOLDER)) {
-                    event.detail = DND.DROP_NONE;
-                }
-            }
-
-            private RepositoryNode getSelection() {
-                LocalSelectionTransfer transfer = (LocalSelectionTransfer) getTransfer();
-                IStructuredSelection selection = (IStructuredSelection) transfer.getSelection();
-                RepositoryNode node = (RepositoryNode) selection.getFirstElement();
-                return node;
-            }
-
-            public void drop(DropTargetEvent event) {
-                RepositoryNode node = getSelection();
-                if (node.getProperties(EProperties.CONTENT_TYPE).equals(ERepositoryObjectType.SNIPPETS)) {
-                    SnippetItem snippetItem = (SnippetItem) node.getObject().getProperty().getItem();
-                    String content = SnippetManager.SNIPPET_PREFFIX + snippetItem.getProperty().getLabel()
-                            + SnippetManager.SNIPPET_SUFFIX;
-                    Point sel = viewer.getSelectedRange();
-                    try {
-                        document.replace(sel.x, 0, content);
-                    } catch (BadLocationException ex) {
-                        MessageBoxExceptionHandler.process(ex);
-                    }
-                }
-            }
-
-            public void dropAccept(DropTargetEvent event) {
-                // TODO Auto-generated method stub
-
-            }
-
-            public Transfer getTransfer() {
-                return LocalSelectionTransfer.getTransfer();
-            }
-
-            public boolean isEnabled(DropTargetEvent event) {
-                return true;
-            }
-        });
+        DropTargetListener dropLisenter = new SnippetDropTargetListener(viewer);
+        viewer.addDropSupport(ops, new Transfer[] { LocalSelectionTransfer.getTransfer() }, dropLisenter);
 
         document = viewer.getDocument();
         textControl.setWordWrap(wrapButton.getSelection());
