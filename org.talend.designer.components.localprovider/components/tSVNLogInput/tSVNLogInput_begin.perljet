@@ -1,0 +1,102 @@
+<%@ jet 
+package="org.talend.designer.codegen.translators" 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser 
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.metadata.IMetadataColumn 
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+" 
+class="SVNLogInputBegin" 
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+
+        String URL = ElementParameterParser.getValue(
+            node,
+            "__URL__"
+        );
+
+        String fromRev = ElementParameterParser.getValue(
+            node,
+            "__FROM_REV__"
+        );
+
+        String singleRev = ElementParameterParser.getValue(
+            node,
+            "__SINGLE_REV__"
+        );
+
+        String toRev = ElementParameterParser.getValue(
+            node,
+            "__TO_REV__"
+        );
+%>
+
+use SVN::Log;
+
+my %desc_<%=cid %> = (
+    schema => [
+<%
+        for (IMetadataColumn column: metadata.getListColumns()) {
+%>
+    	{
+            name    => '<%=column.getLabel() %>',
+        },
+<%
+        }
+%>
+    ]
+);
+
+my $revs_<%=cid%> = SVN::Log::retrieve(
+    <%=URL%>,
+    <%=fromRev%>,
+<%
+        if (singleRev.equals("false")) {
+%>
+    <%=toRev%>
+<%
+        }
+%>
+);
+
+foreach my $rev_href_<%=cid%> (@{$revs_<%=cid%>}) {
+    {
+        my %actions = (
+            A => 0,
+            M => 0,
+            D => 0
+        );
+
+        foreach my $path (keys %{ $rev_href_<%=cid%>->{paths} }) {
+            $actions{ $rev_href_<%=cid%>->{paths}{$path}{action} }++;
+        }
+
+        $rev_href_<%=cid%>->{nb_file_added} = $actions{A};
+        $rev_href_<%=cid%>->{nb_file_modified} = $actions{M};
+        $rev_href_<%=cid%>->{nb_file_deleted} = $actions{D};
+    }
+
+    my $<%=cid%> = [
+<%
+        for (IMetadataColumn column: metadata.getListColumns()) {
+%>
+        $rev_href_<%=cid%>->{<%=column.getLabel()%>},
+<%
+        }
+%>
+    ];
+<%
+    }
+}
+%>
