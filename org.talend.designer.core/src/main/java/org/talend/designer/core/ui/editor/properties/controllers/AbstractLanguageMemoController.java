@@ -19,10 +19,16 @@ import org.eclipse.jface.fieldassist.FieldDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.jface.fieldassist.IControlCreator;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.text.TextViewer;
 import org.eclipse.jface.text.source.ISourceViewer;
+import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.DropTarget;
+import org.eclipse.swt.dnd.DropTargetListener;
+import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.GC;
@@ -38,6 +44,8 @@ import org.talend.commons.ui.swt.colorstyledtext.ColorManager;
 import org.talend.commons.ui.swt.colorstyledtext.ColorStyledText;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.ui.snippet.SnippetDropTargetListener;
+import org.talend.core.ui.viewer.ReconcilerViewer;
 import org.talend.core.ui.viewer.java.TalendJavaSourceViewer;
 import org.talend.core.ui.viewer.perl.TalendPerlSourceViewer;
 import org.talend.designer.core.DesignerPlugin;
@@ -225,7 +233,7 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
         }
 
         addDragAndDropTarget(text);
-
+        // addSnippetDropTarget(viewer);
         CLabel labelLabel = getWidgetFactory().createCLabel(subComposite, param.getDisplayName());
         data = new FormData();
         if (lastControl != null) {
@@ -270,6 +278,33 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
 
         dynamicProperty.setCurRowSize(initialSize.y + ITabbedPropertyConstants.VSPACE);
         return null;
+    }
+
+    /**
+     * DOC bqian Comment method "addSnippetDropTarget".
+     * 
+     * @param viewer
+     */
+    private void addSnippetDropTarget(ISourceViewer viewer) {
+        if (viewer.getTextWidget().getData("DropTarget") != null) {
+            DropTarget dropTarget = (DropTarget) viewer.getTextWidget().getData("DropTarget");
+            Transfer[] transfers = dropTarget.getTransfer();
+            if (!(transfers[transfers.length - 1] instanceof LocalSelectionTransfer)) {
+                Transfer[] newTransfers = new Transfer[transfers.length + 1];
+                System.arraycopy(transfers, 0, newTransfers, 0, transfers.length);
+                newTransfers[transfers.length] = LocalSelectionTransfer.getTransfer();
+                dropTarget.setTransfer(newTransfers);
+            }
+            DropTargetListener dropLisenter = new SnippetDropTargetListener((TextViewer) viewer);
+            dropTarget.addDropListener(dropLisenter);
+
+        } else {
+            int ops = DND.DROP_COPY | DND.DROP_MOVE;
+            DropTargetListener dropLisenter = new SnippetDropTargetListener((TextViewer) viewer);
+            ((ReconcilerViewer) viewer)
+                    .addDropSupport(ops, new Transfer[] { LocalSelectionTransfer.getTransfer() }, dropLisenter);
+        }
+
     }
 
     /*
