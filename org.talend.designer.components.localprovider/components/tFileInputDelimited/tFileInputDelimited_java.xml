@@ -180,7 +180,15 @@
       NUM_ROW="48"
     >
       <DEFAULT>false</DEFAULT>
-    </PARAMETER>            
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="CHECK_FIELDS_NUM"
+      FIELD="CHECK"
+      NUM_ROW="49"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>                
 
     <PARAMETER
       NAME="SCHEMA"

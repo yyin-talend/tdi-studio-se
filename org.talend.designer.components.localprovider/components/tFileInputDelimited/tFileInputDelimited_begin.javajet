@@ -57,7 +57,10 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     	String rowSeparator = ElementParameterParser.getValue(node, "__ROWSEPARATOR__");
     	String removeEmptyRowFlag =  ElementParameterParser.getValue(node, "__REMOVE_EMPTY_ROW__");
     	String dieOnErrorStr = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
-		boolean dieOnError = (dieOnErrorStr!=null&&!dieOnErrorStr.equals(""))?dieOnErrorStr.equals("true"):false;    	
+		boolean dieOnError = (dieOnErrorStr!=null&&!dieOnErrorStr.equals(""))?dieOnErrorStr.equals("true"):false; 
+		
+		String checkNumStr = ElementParameterParser.getValue(node, "__CHECK_FIELDS_NUM__");
+		boolean checkNum = (checkNumStr!=null&&!checkNumStr.equals(""))?checkNumStr.equals("true"):false; 		
 %>
 org.talend.fileprocess.FileInputDelimited fid_<%=cid %> = new org.talend.fileprocess.FileInputDelimited(<%=filename %>,<%=encoding %>,<%=fieldSeparator %>,<%=rowSeparator %>,<%=removeEmptyRowFlag %>,<%=header %>,<%=footer %>,<%=limit %>,<%=random %>);
 while (fid_<%=cid %>.nextRecord()) {
@@ -152,6 +155,27 @@ if(temp_<%=cid %>.length() > 0) {
 }
 %><%
 				}%>
+				
+<%if(checkNum) {%>
+	 if(fid_<%=cid %>.getColumnsCountOfCurrentRow()!= <%=metadata.getListColumns().size() %>){
+		whetherReject_<%=cid%> = true;
+	<%if(!rejectConnName.equals("")&&!rejectConnName.equals(firstConnName)&&rejectColumnList != null && rejectColumnList.size() > 0) { %>
+        <%=rejectConnName %> = new <%=rejectConnName %>Struct();
+        <%for(IMetadataColumn column : metadata.getListColumns()) {%>
+            <%=rejectConnName%>.<%=column.getLabel()%> = <%=firstConnName%>.<%=column.getLabel()%>;
+        <%}%>        
+    <%}%>
+    
+    <%if(rejectConnName.equals("") || !rejectConnName.equals(firstConnName)){%>
+    	<%=firstConnName %> = null;
+    <%}%>
+     }
+ 	<%if(!rejectConnName.equals("")&&rejectConnName.equals(firstConnName)&&rejectColumnList != null && rejectColumnList.size() > 0) { %>        
+        else { <%=firstConnName %> = null; }
+    <%}%>     
+     
+<%}%>				
+				
     } catch (Exception e) {
         whetherReject_<%=cid%> = true;
         <%
@@ -263,7 +287,10 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		boolean isTrimAll = (isTrimAllStr!=null&&!isTrimAllStr.equals(""))?isTrimAllStr.equals("true"):true;
 		
     	String dieOnErrorStr = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
-		boolean dieOnError = (dieOnErrorStr!=null&&!dieOnErrorStr.equals(""))?dieOnErrorStr.equals("true"):false;  
+		boolean dieOnError = (dieOnErrorStr!=null&&!dieOnErrorStr.equals(""))?dieOnErrorStr.equals("true"):false;
+		
+		String checkNumStr = ElementParameterParser.getValue(node, "__CHECK_FIELDS_NUM__");
+		boolean checkNum = (checkNumStr!=null&&!checkNumStr.equals(""))?checkNumStr.equals("true"):false; 
 %>		
 		int nb_line_<%=cid%> = 0;
 		int footer_<%=cid %> = <%= footer%>;
@@ -483,6 +510,27 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%			}%>
 
 			}
+			
+<%if(checkNum) {%>
+	 if(row<%=cid %>.length != <%=metadata.getListColumns().size() %>){
+		whetherReject_<%=cid%> = true;
+	<%if(!rejectConnName.equals("")&&!rejectConnName.equals(firstConnName)&&rejectColumnList != null && rejectColumnList.size() > 0) { %>
+        <%=rejectConnName %> = new <%=rejectConnName %>Struct();
+        <%for(IMetadataColumn column : metadata.getListColumns()) {%>
+            <%=rejectConnName%>.<%=column.getLabel()%> = <%=firstConnName%>.<%=column.getLabel()%>;
+        <%}%>        
+    <%}%>
+    
+    <%if(rejectConnName.equals("") || !rejectConnName.equals(firstConnName)){%>
+    	<%=firstConnName %> = null;
+    <%}%>
+     }
+ 	<%if(!rejectConnName.equals("")&&rejectConnName.equals(firstConnName)&&rejectColumnList != null && rejectColumnList.size() > 0) { %>        
+        else { <%=firstConnName %> = null; }
+    <%}%>     
+     
+<%}%>	
+			
     } catch (Exception e) {
         whetherReject_<%=cid%> = true;
         <%
