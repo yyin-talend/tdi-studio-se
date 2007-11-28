@@ -12,13 +12,6 @@
 // ============================================================================
 package org.talend.designer.runprocess.java;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
-
-import org.talend.commons.exception.ExceptionHandler;
-import org.talend.core.model.snippets.SnippetManager;
-
 /**
  * DOC bqian class global comment. Detailled comment <br/>
  * 
@@ -28,43 +21,46 @@ public class HtmlRegexHandle {
     public static void main(String[] args) {
     }
 
-    public static final String SNIPPET_REGEX = SnippetManager.SNIPPET_PREFFIX + "(.*?)" + SnippetManager.SNIPPET_SUFFIX;
+    // public static final String SNIPPET_REGEX = SnippetManager.SNIPPET_PREFFIX + "(.*?)" +
+    // SnippetManager.SNIPPET_SUFFIX;
 
     // public static String subjectString = "ppppuuu<fragment>secondFragement</fragmen>hh";
 
     public static String extractFristMatchFromFragment(String subjectString) {
-        String extractString = null;
-        try {
-            Pattern regex = Pattern.compile(SNIPPET_REGEX);
-            Matcher regexMatcher = regex.matcher(subjectString);
-            regexMatcher.find();
-            extractString = regexMatcher.group(1);
-        } catch (Exception e) {
-            if (!e.getMessage().equals("No match found")) {
-                ExceptionHandler.process(e);
-            }
-        }
-        return extractString;
+        // String extractString = null;
+        // try {
+        // Pattern regex = Pattern.compile(SNIPPET_REGEX);
+        // Matcher regexMatcher = regex.matcher(subjectString);
+        // regexMatcher.find();
+        // extractString = regexMatcher.group(1);
+        // } catch (Exception e) {
+        // if (!e.getMessage().equals("No match found")) {
+        // ExceptionHandler.process(e);
+        // }
+        // }
+        // return extractString;
+        return "";
     }
 
     public static String insertIntoFirstMatchFragment(String replaceString, String subjectString) {
-        StringBuffer resultString = new StringBuffer();
-        try {
-            Pattern regex = Pattern.compile(SNIPPET_REGEX);
-            Matcher regexMatcher = regex.matcher(subjectString);
-            regexMatcher.find();
-            try {
-                regexMatcher.appendReplacement(resultString, replaceString);
-            } catch (IllegalStateException ex) {
-                // appendReplacement() called without a prior successful call to find()
-            } catch (IllegalArgumentException ex) {
-                // Syntax error in the replacement text (unescaped $ signs?)
-            }
-            regexMatcher.appendTail(resultString);
-        } catch (PatternSyntaxException ex) {
-            // Syntax error in the regular expression
-        }
-        return resultString.toString();
+        // StringBuffer resultString = new StringBuffer();
+        // try {
+        // Pattern regex = Pattern.compile(SNIPPET_REGEX);
+        // Matcher regexMatcher = regex.matcher(subjectString);
+        // regexMatcher.find();
+        // try {
+        // regexMatcher.appendReplacement(resultString, replaceString);
+        // } catch (IllegalStateException ex) {
+        // // appendReplacement() called without a prior successful call to find()
+        // } catch (IllegalArgumentException ex) {
+        // // Syntax error in the replacement text (unescaped $ signs?)
+        // }
+        // regexMatcher.appendTail(resultString);
+        // } catch (PatternSyntaxException ex) {
+        // // Syntax error in the regular expression
+        // }
+        // return resultString.toString();
+        return "";
     }
 
 }
