@@ -86,7 +86,6 @@ public class SnippetWizard extends RepositoryWizard implements INewWizard {
             contextProperty.setStatusCode(""); //$NON-NLS-1$
 
             snippetItem.setProperty(contextProperty);
-            snippetManager.addSnippet(snippetItem);
         } else {
             RepositoryNode node = (RepositoryNode) ((IStructuredSelection) selection).getFirstElement();
             RepositoryObject object = (RepositoryObject) node.getObject();
@@ -131,12 +130,10 @@ public class SnippetWizard extends RepositoryWizard implements INewWizard {
                 String nextId = factory.getNextId();
                 contextProperty.setId(nextId);
                 snippetPage.updateItem();
-                snippetManager.saveToEmf(snippetItem);
 
                 factory.create(snippetItem, contextWizardPage0.getDestinationPath());
             } else {
                 snippetPage.updateItem();
-                snippetManager.saveToEmf(snippetItem);
                 factory.save(snippetItem);
 
                 updateRelatedView();
