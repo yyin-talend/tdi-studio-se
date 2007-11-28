@@ -52,9 +52,12 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchActionConstants;
+import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.TextActionHandler;
@@ -75,7 +78,10 @@ import org.talend.commons.utils.Timer;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
+import org.talend.core.model.general.Project;
+import org.talend.core.model.migration.IMigrationToolService;
 import org.talend.core.ui.images.ECoreImage;
+import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.repository.IRepositoryChangedListener;
 import org.talend.repository.RepositoryChangedEvent;
 import org.talend.repository.RepositoryPlugin;
@@ -84,6 +90,7 @@ import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.actions.MoveObjectAction;
+import org.talend.repository.plugin.integration.SwitchProjectAction;
 import org.talend.repository.ui.actions.ActionsHelper;
 import org.talend.repository.ui.actions.CopyAction;
 import org.talend.repository.ui.actions.DeleteAction;
@@ -118,6 +125,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
     private Listener dragDetectListener;
 
     public RepositoryView() {
+
     }
 
     /*
@@ -131,8 +139,9 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
         CorePlugin.getDefault().getRepositoryService().initializeTalend();
         if (!codeGenerationEngineInitialised && !CorePlugin.getDefault().getRepositoryService().isRCPMode()) {
 
-            CorePlugin.getDefault().getCodeGeneratorService().generationInit();
-            CorePlugin.getDefault().getLibrariesService().syncLibraries();
+            if (!CorePlugin.getDefault().getLibrariesService().isLibSynchronized()) {
+                CorePlugin.getDefault().getLibrariesService().syncLibraries();
+            }
             codeGenerationEngineInitialised = true;
         }
     }
@@ -146,6 +155,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
                 ExceptionHandler.process(e);
             }
         }
+
         return (IRepositoryView) part;
     }
 
@@ -212,6 +222,55 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
             }
         });
         CorePlugin.getDefault().getRepositoryService().registerRepositoryChangedListenerAsFirst(this);
+
+        if (!CorePlugin.getDefault().getRepositoryService().isRCPMode()) {
+            IMigrationToolService toolService = CorePlugin.getDefault().getMigrationToolService();
+            toolService.executeMigration(SwitchProjectAction.PLUGIN_MODEL);
+
+            IRunProcessService runService = CorePlugin.getDefault().getRunProcessService();
+            runService.deleteAllJobs(SwitchProjectAction.PLUGIN_MODEL);
+
+            final RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
+                    Context.REPOSITORY_CONTEXT_KEY);
+            final Project project = repositoryContext.getProject();
+
+            final IWorkbenchWindow activedWorkbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+            activedWorkbenchWindow.getPartService().addPartListener(new IPartListener() {
+
+                public void partActivated(IWorkbenchPart part) {
+                    if (part instanceof RepositoryView) {
+                        String title = activedWorkbenchWindow.getShell().getText();
+                        if (!title.contains("|")) {
+                            title += " | " + repositoryContext.getUser() + " | " + project.getLabel();
+                            activedWorkbenchWindow.getShell().setText(title);
+                        }
+                    }
+                }
+
+                public void partBroughtToTop(IWorkbenchPart part) {
+
+                }
+
+                public void partClosed(IWorkbenchPart part) {
+
+                }
+
+                public void partDeactivated(IWorkbenchPart part) {
+
+                }
+
+                public void partOpened(IWorkbenchPart part) {
+                    if (part instanceof RepositoryView) {
+                        String title = activedWorkbenchWindow.getShell().getText();
+                        if (!title.contains("|")) {
+                            title += " | " + repositoryContext.getUser() + " | " + project.getLabel();
+                            activedWorkbenchWindow.getShell().setText(title);
+                        }
+                    }
+                }
+
+            });
+        }
     }
 
     IContextActivation ca;

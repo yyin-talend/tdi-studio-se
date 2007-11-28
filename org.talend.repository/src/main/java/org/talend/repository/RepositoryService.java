@@ -20,18 +20,25 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.PlatformUI;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
+import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.IComponentsFactory;
+import org.talend.core.model.migration.IMigrationToolService;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.ui.DisableLanguageActions;
+import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
+import org.talend.repository.plugin.integration.BindingActions;
 import org.talend.repository.plugin.integration.SwitchProjectAction;
+import org.talend.repository.ui.login.LoginDialog;
 import org.talend.repository.ui.utils.ColumnNameValidator;
 import org.talend.repository.ui.views.RepositoryView;
 import org.talend.repository.ui.wizards.metadata.connection.genericshema.GenericSchemaWizard;
@@ -121,8 +128,35 @@ public class RepositoryService implements IRepositoryService {
     }
 
     public void openLoginDialog() {
-        SwitchProjectAction switchAction = new SwitchProjectAction();
-        switchAction.run();
+
+        if (CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY) != null) {
+            return;
+        }
+
+        Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+        boolean logged = false;
+        LoginDialog loginDialog = new LoginDialog(shell);
+        // PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().closeAllEditors(true);
+        logged = loginDialog.open() == LoginDialog.OK;
+        if (logged) {
+
+            // addCommand();
+            new DisableLanguageActions().earlyStartup();
+
+            new BindingActions().bind();
+
+            IMigrationToolService toolService = CorePlugin.getDefault().getMigrationToolService();
+            toolService.executeMigration(SwitchProjectAction.PLUGIN_MODEL);
+
+            IRunProcessService runService = CorePlugin.getDefault().getRunProcessService();
+            runService.deleteAllJobs(SwitchProjectAction.PLUGIN_MODEL);
+
+            CorePlugin.getDefault().getCodeGeneratorService().generationInit();
+            ComponentUtilities.isComponentPaletteNeedRefresh = true;
+            CorePlugin.getDefault().getDesignerCoreService().refreshDesignerPalette();
+
+        }
+
     }
 
     public void initializeForTalendStartupJob() {

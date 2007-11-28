@@ -13,6 +13,7 @@
 package org.talend.repository.plugin.integration;
 
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IPerspectiveDescriptor;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -29,21 +30,33 @@ public class BootTalendAction implements IWorkbenchWindowActionDelegate {
 
     public final static String TALEND_PERSPECTIVE_ID = "org.talend.rcp.perspective";
 
+    public static final String LOGIN_COUNTER = "loginCounter";
+
+    private IPreferenceStore store;
+
+    /**
+     * yzhang BootTalendAction constructor comment.
+     */
+    public BootTalendAction() {
+        store = CorePlugin.getDefault().getPreferenceStore();
+    }
+
     public void dispose() {
-        // TODO Auto-generated method stub
 
     }
 
     public void init(IWorkbenchWindow window) {
-        // TODO Auto-generated method stub
 
     }
 
     public void run(IAction action) {
-        if (CorePlugin.getDefault().getRepositoryService().isRCPMode()) {
+
+        if (store.getInt(LOGIN_COUNTER) > 1) {
             PlatformUI.getWorkbench().restart();
-            return;
         }
+
+        int counter = store.getInt(LOGIN_COUNTER);
+        store.setValue(LOGIN_COUNTER, ++counter);
 
         IPerspectiveDescriptor pDescriptor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
                 .getPerspective();
@@ -51,7 +64,6 @@ public class BootTalendAction implements IWorkbenchWindowActionDelegate {
         if (!pDescriptor.getId().equals(TALEND_PERSPECTIVE_ID)) {
             pDescriptor = getPerspective(TALEND_PERSPECTIVE_ID);
             PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().setPerspective(pDescriptor);
-
         }
 
         SwitchProjectAction switchAction = new SwitchProjectAction();
