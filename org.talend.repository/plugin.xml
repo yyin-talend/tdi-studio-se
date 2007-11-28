@@ -596,10 +596,10 @@
       </projecttask>
       <projecttask
             beforeLogon="false"
-            class="org.talend.repository.model.migration.AddDdColumnMigrationTask"
-            description="Add DdColumn name for all DB components"
-            id="org.talend.repository.model.migration.AddDdColumn"
-            name="Add DdColumn name for all DB components">
+            class="org.talend.repository.model.migration.AddRenameOnFileCopyMigrationTask"
+            description="Add rename checkbox on tFileCopy for java component"
+            id="org.talend.repository.model.migration.AddRenameOnFileCopyMigrationTask"
+            name="Add rename checkbox on tFileCopy for java component">
       </projecttask>
       <projecttask
             beforeLogon="false"
@@ -641,6 +641,11 @@
             description="%migrationtask.RenameTheClassnameofTheRoutinesFileMigrationTask.description"
             id="org.talend.repository.model.migration.renameRoutinesClassName"
             name="%migrationtask.RenameTheClassnameofTheRoutinesFileMigrationTask.title">
+      </projecttask>
+      <projecttask
+            class="org.talend.repository.ProjectMigrationTask1"
+            id="org.talend.repository.projecttask1"
+            name="name">
       </projecttask>
    </extension>
    <extension

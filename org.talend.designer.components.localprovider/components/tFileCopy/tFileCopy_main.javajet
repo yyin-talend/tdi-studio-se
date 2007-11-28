@@ -27,7 +27,12 @@
         }
 
         String desDirName_<%=cid %> = <%=destination %>;
-        java.io.File desFile_<%=cid %> = new java.io.File(desDirName_<%=cid %>, <%if(rename){%> <%=destination_filename %> <%}else{%> srcFile_<%=cid %>.getName() <%}%>);
+        String desFileName_<%=cid %> = <%if(rename){%> <%=destination_filename %> <%}else{%> srcFile_<%=cid %>.getName() <%}%>;
+        if(desFileName_<%=cid %> != null && desFileName_<%=cid %>.trim().equals("")){
+			desFileName_<%=cid %> = "NewName.temp";
+		}    
+        
+        java.io.File desFile_<%=cid %> = new java.io.File(desDirName_<%=cid %>, desFileName_<%=cid %>);
 
         if (!srcFile_<%=cid %>.getPath().equals(desFile_<%=cid %>.getPath()) <%if(!rpFile) {%>&& !desFile_<%=cid %>.exists() <%}%> ) {
 
