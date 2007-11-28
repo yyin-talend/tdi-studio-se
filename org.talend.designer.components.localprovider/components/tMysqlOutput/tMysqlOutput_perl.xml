@@ -127,6 +127,7 @@
       NAME="ENCODING"
       FIELD="ENCODING_TYPE"
       NUM_ROW="71"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
       REQUIRED="true"
     >
       <DEFAULT>'ISO-8859-15'</DEFAULT>
@@ -222,6 +223,68 @@
 
         <ITEM NAME="REFCOL" FIELD="COLUMN_LIST" />
 
+        <ITEM
+          NAME="UPDATE_KEY"
+          VALUE="false"
+          FIELD="CHECK"
+          SHOW_IF="USE_FIELD_OPTIONS == 'true'"
+        />
+
+        <ITEM
+          NAME="DELETE_KEY"
+          VALUE="false"
+          FIELD="CHECK"
+          SHOW_IF="USE_FIELD_OPTIONS == 'true'"
+        />
+
+        <ITEM
+          NAME="UPDATABLE"
+          VALUE="true"
+          FIELD="CHECK"
+          SHOW_IF="USE_FIELD_OPTIONS == 'true'"
+        />
+
+        <ITEM
+          NAME="INSERTABLE"
+          VALUE="true"
+          FIELD="CHECK"
+          SHOW_IF="USE_FIELD_OPTIONS == 'true'"
+        />
+
+      </ITEMS>
+    </PARAMETER>
+<!--
+    <PARAMETER
+      NAME="WARNING"
+      FIELD="LABEL"
+      REQUIRED="true"
+      NUM_ROW="113"
+      CONTEXT="255;0;0">
+      <DEFAULT>Notice: By default, update keys are schema keys and all columns are "insertables". This can be modified with "field options".</DEFAULT>
+    </PARAMETER>
+-->
+
+    <PARAMETER
+      NAME="USE_FIELD_OPTIONS"
+      FIELD="CHECK"
+      NUM_ROW="114"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="FIELD_OPTIONS"
+      FIELD="TABLE"
+      REQUIRED="true"
+      NUM_ROW="115"
+      NB_LINES="5"
+      SHOW_IF="USE_FIELD_OPTIONS == 'true'"
+    >
+      <ITEMS BASED_ON_SCHEMA="true">
+        <ITEM NAME="UPDATE_KEY" VALUE="false" FIELD="CHECK" />
+        <ITEM NAME="DELETE_KEY" VALUE="false" FIELD="CHECK" />
+        <ITEM NAME="UPDATABLE"  VALUE="true"  FIELD="CHECK" />
+        <ITEM NAME="INSERTABLE" VALUE="true"  FIELD="CHECK" />
       </ITEMS>
     </PARAMETER>
 

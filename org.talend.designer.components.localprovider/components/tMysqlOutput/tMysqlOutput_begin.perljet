@@ -9,11 +9,80 @@ imports="
     java.util.List
     java.util.Map
     java.util.ArrayList
+    java.util.HashMap
     org.talend.commons.utils.StringUtils
 " 
 %>
 
 <%
+final class SchemaColumn {
+    private String name;
+    private String sql = "?";
+    private boolean isKey = false;
+    private boolean isUpdateKey = false;
+    private boolean isDeleteKey = false;
+    private boolean insertable = true;
+    private boolean updatable = true;
+
+    public SchemaColumn(
+        String name,
+        String sql,
+        boolean isKey,
+        boolean useFieldOptions,
+        Map<String, String> fieldOptions
+        ) {
+        super();
+        this.name = name;
+        this.sql = sql;
+        this.isKey = isKey;
+
+        if (useFieldOptions) {
+            this.isUpdateKey = fieldOptions.get("UPDATE_KEY").equals("true");
+            this.isDeleteKey = fieldOptions.get("DELETE_KEY").equals("true");
+            this.insertable = fieldOptions.get("INSERTABLE").equals("true");
+            this.updatable = fieldOptions.get("UPDATABLE").equals("true");
+        }
+        else {
+            this.insertable = true;
+
+            if (isKey) {
+                this.isUpdateKey = true;
+                this.isDeleteKey = true;
+                this.updatable = false;
+            }
+            else {
+                this.isUpdateKey = false;
+                this.isDeleteKey = false;
+                this.updatable = true;
+            }
+        }
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public String getSql() {
+        return this.sql;
+    }
+
+    public boolean isUpdateKey() {
+        return this.isUpdateKey;
+    }
+
+    public boolean isDeleteKey() {
+        return this.isDeleteKey;
+    }
+
+    public boolean insertable() {
+        return this.insertable;
+    }
+
+    public boolean updatable() {
+        return this.updatable;
+    }
+}
+
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
@@ -94,6 +163,105 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         if (!useExtendedInserts || !dataAction.equals("INSERT")) {
             nbRowsPerInsert = "1";
         }
+
+        Boolean useFieldOptions = new Boolean(
+            ElementParameterParser.getValue(
+                node,
+                "__USE_FIELD_OPTIONS__"
+            )
+        );
+
+        List<Map<String, String>> fieldOptionsList =
+            (List<Map<String,String>>)ElementParameterParser.getObjectValue(
+                node,
+                "__FIELD_OPTIONS__"
+        );
+
+        // schema is built from metadata + addCols + fieldOptions
+        List<SchemaColumn> schema = new ArrayList<SchemaColumn>();
+        int i = 0;
+        for (IMetadataColumn column: metadata.getListColumns()) {
+            String colName = column.getLabel();
+            Map<String, String> fieldOptions = new HashMap();
+
+            if (useFieldOptions) {
+                fieldOptions = fieldOptionsList.get(i++);
+            }
+
+            for (Map<String, String> addCol : addCols) {
+                String refColName = addCol.get("REFCOL");
+
+                if (refColName.equals(colName)) {
+                    String addColPos = addCol.get("POS");
+
+                    if (addColPos.equals("BEFORE")) {
+                        schema.add(
+                            new SchemaColumn(
+                                addCol.get("NAME"),
+                                addCol.get("SQL"),
+                                false, // isKey
+                                useFieldOptions,
+                                addCol
+                            )
+                        );
+                    }
+                }
+            }
+
+            SchemaColumn columnToAdd = new SchemaColumn(
+                "'`" + column.getLabel() + "`'",
+                "'?'",
+                column.isKey(),
+                useFieldOptions,
+                fieldOptions
+            );
+
+            for (Map<String, String> addCol : addCols) {
+                String refColName = addCol.get("REFCOL");
+
+                if (refColName.equals(colName)) {
+                    String addColPos = addCol.get("POS");
+
+                     if (addColPos.equals("REPLACE")) {
+                         columnToAdd = new SchemaColumn(
+                             addCol.get("NAME"),
+                             addCol.get("SQL"),
+                             column.isKey(),
+                             useFieldOptions,
+                             addCol // fieldOptions
+                         );
+                     }
+                }
+            }
+
+            schema.add(columnToAdd);
+
+            for (Map<String, String> addCol : addCols) {
+                String refColName = addCol.get("REFCOL");
+
+                if (refColName.equals(colName)) {
+                    String addColPos = addCol.get("POS");
+
+                    if (addColPos.equals("AFTER")) {
+                        schema.add(
+                            new SchemaColumn(
+                                addCol.get("NAME"),
+                                addCol.get("SQL"),
+                                false, // isKey
+                                useFieldOptions,
+                                addCol
+                            )
+                        );
+                    }
+                }
+            }
+        }
+
+        for (SchemaColumn schemaColumn : schema) {
+%>
+# <%=schemaColumn.getName()%> => <%=schemaColumn.getSql()%>
+<%
+        }
 %>
 
 # <%=tableAction%>
@@ -159,9 +327,8 @@ my $<%=dbh%> = DBI->connect(
     or die "can't connect to database";
 
 if (<%=encoding%> =~ m/utf-?8/i) {
-    $query = 'set names "UTF8"';
-    $sth_<%=cid %> = $<%=dbh%>->prepare($query);
-    $sth_<%=cid %>->execute();
+    $<%=dbh%>->do('set names "UTF8"')
+        or die '[<%=cid%>] cannot change connection encoding to UTF8';
 }
 <%
         }
@@ -180,64 +347,21 @@ my $query = '';
 <%
 if ((dataAction.equals("UPDATE"))
     || (dataAction.equals("UPDATE_OR_INSERT"))
-    || (dataAction.equals("INSERT_OR_UPDATE"))
-    || (dataAction.equals("DELETE"))) {
+    || (dataAction.equals("INSERT_OR_UPDATE"))) {
     List updateCols  = new ArrayList();
     List keyCols     = new ArrayList();
 
-    for (IMetadataColumn column: metadata.getListColumns()) {
-        for(int i = 0; i < addCols.size(); i++) {
-            Map<String, String> addCol = addCols.get(i);
-            if (addCol.get("REFCOL").equals(column.getLabel())) {
-                if (addCol.get("POS").equals("BEFORE")) {
-                    updateCols.add(
-                        "'.sprintf('%s = %s', "
-                        + addCol.get("NAME")
-                        + ", "
-                        + addCol.get("SQL")
-                        + ").'"
-                    );
-                }
-            }
+    for (SchemaColumn schemaColumn : schema) {
+        String columnName = schemaColumn.getName();
+        String columnSql = schemaColumn.getSql();
+        String queryPart = columnName + ".' = '." + columnSql;
+
+        if (schemaColumn.isUpdateKey()) {
+            keyCols.add(queryPart);
         }
 
-        String currentQueryPart = "`" + column.getLabel() + "` = ?";
-
-        for(int i = 0; i < addCols.size(); i++) {
-            Map<String, String> addCol = addCols.get(i);
-            if (addCol.get("REFCOL").equals(column.getLabel())) {
-                if (addCol.get("POS").equals("REPLACE")) {
-                    currentQueryPart =
-                        "'.sprintf('%s = %s', "
-                        + addCol.get("NAME")
-                        + ", "
-                        + addCol.get("SQL")
-                        + ").'"
-                    ;
-                }
-            }
-        }
-
-        if (column.isKey()) {
-            keyCols.add(currentQueryPart);
-        }
-        else {
-            updateCols.add(currentQueryPart);
-        }
-
-        for(int i = 0; i < addCols.size(); i++) {
-            Map<String, String> addCol = addCols.get(i);
-            if (addCol.get("REFCOL").equals(column.getLabel())) {
-                if (addCol.get("POS").equals("AFTER")) {
-                    updateCols.add(
-                        "'.sprintf('%s = %s', "
-                        + addCol.get("NAME")
-                        + ", "
-                        + addCol.get("SQL")
-                        + ").'"
-                    );
-                }
-            }
+        if (schemaColumn.updatable()) {
+            updateCols.add(queryPart);
         }
     }
 
@@ -245,41 +369,67 @@ if ((dataAction.equals("UPDATE"))
 %>
 # We know there is a problem, but we cannot make it obvious yet in
 # the GUI, so we make it obvious during execution.
-die "[<%=cid%>] For update or delete, at least one key is required";
+die "[<%=cid%>] For update at least one update key is required";
 <%
     }
 
-    String keyString = StringUtils.join(keyCols.toArray(), " AND ");
-    String updateString = StringUtils.join(updateCols.toArray(), ", ");
+    String keyString = StringUtils.join(
+        keyCols.toArray(),
+        ".' AND '."
+    );
 
-    if ((dataAction.equals("UPDATE"))
-        || (dataAction.equals("UPDATE_OR_INSERT"))
-        || (dataAction.equals("INSERT_OR_UPDATE"))) {
+    String updateString = StringUtils.join(
+        updateCols.toArray(),
+        ".', '."
+    );
 %>
 
 $query = '
 UPDATE '.<%=dbtable%>.'
-  SET <%=updateString%>
-  WHERE <%=keyString%>
+  SET '.<%=updateString%>.'
+  WHERE '.<%=keyString%>.'
 ';
 
 my $usth_<%=cid %> = $<%=dbh%>->prepare($query);
 
 <%
+}
+
+if (dataAction.equals("DELETE")) {
+    List keyCols = new ArrayList();
+
+    for (SchemaColumn schemaColumn : schema) {
+        String columnName = schemaColumn.getName();
+        String columnSql = schemaColumn.getSql();
+        String queryPart = columnName + ".' = '." + columnSql;
+
+        if (schemaColumn.isDeleteKey()) {
+            keyCols.add(queryPart);
+        }
     }
 
-    if (dataAction.equals("DELETE")) {
+    if (keyCols.isEmpty()) {
+%>
+# We know there is a problem, but we cannot make it obvious yet in
+# the GUI, so we make it obvious during execution.
+die "[<%=cid%>] For delete at least one delete key is required";
+<%
+    }
+
+    String keyString = StringUtils.join(
+        keyCols.toArray(),
+        ".' AND '."
+    );
 %>
 
 $query = '
 DELETE FROM '.<%=dbtable%>.'
-  WHERE <%=keyString%>
+  WHERE '.<%=keyString%>.'
 ';
 
 my $dsth_<%=cid %> = $<%=dbh%>->prepare($query);
 
 <%
-    }
 }
 
 if ((dataAction.equals("INSERT"))
@@ -288,48 +438,28 @@ if ((dataAction.equals("INSERT"))
     List keys = new ArrayList();
     List parameters = new ArrayList();
 
-    for (IMetadataColumn column: metadata.getListColumns()) {
-        for(int i = 0; i < addCols.size(); i++) {
-            Map<String, String> addCol = addCols.get(i);
-            if (addCol.get("REFCOL").equals(column.getLabel())) {
-                if (addCol.get("POS").equals("BEFORE")) {
-                    keys.add("'." + addCol.get("NAME") + ".'");
-                    parameters.add("'." + addCol.get("SQL") + ".'");
-                }
-            }
-        }
+    for (SchemaColumn schemaColumn : schema) {
+        String columnName = schemaColumn.getName();
+        String columnSql = schemaColumn.getSql();
 
-        String currentParameter = "?";
-        String currentKey = "`" + column.getLabel() + "`";
-        for(int i = 0; i < addCols.size(); i++) {
-            Map<String, String> addCol = addCols.get(i);
-            if (addCol.get("REFCOL").equals(column.getLabel())) {
-                if (addCol.get("POS").equals("REPLACE")) {
-                    currentKey = "'." + addCol.get("NAME") + ".'";
-                    currentParameter = "'." + addCol.get("SQL") + ".'";
-                }
-            }
-        }
-        keys.add(currentKey);
-        parameters.add(currentParameter);
-
-        for(int i = 0; i < addCols.size(); i++) {
-            Map<String, String> addCol = addCols.get(i);
-            if (addCol.get("REFCOL").equals(column.getLabel())) {
-                if (addCol.get("POS").equals("AFTER")) {
-                    keys.add("'." + addCol.get("NAME") + ".'");
-                    parameters.add("'." + addCol.get("SQL") + ".'");
-                }
-            }
+        if (schemaColumn.insertable()) {
+            keys.add(columnName);
+            parameters.add(columnSql);
         }
     }
 
-    // String keyString = StringUtils.join(keys.toArray(), ".','.");
-    String keyString = StringUtils.join(keys.toArray(), ", ");
-    String parametersString = StringUtils.join(parameters.toArray(), ", ");
+    String keyString = StringUtils.join(
+        keys.toArray(),
+        ".', '."
+    );
+
+    String parametersString = StringUtils.join(
+        parameters.toArray(),
+        ".', '."
+    );
 %>
-my $keyString_<%=cid%> = '<%=keyString%>';
-my $parametersString_<%=cid%> = '<%=parametersString%>';
+my $keyString_<%=cid%> = <%=keyString%>;
+my $parametersString_<%=cid%> = <%=parametersString%>;
 
 $query = tMysqlOutput::Mysql::getInsertQuery(
     <%=dbtable%>,

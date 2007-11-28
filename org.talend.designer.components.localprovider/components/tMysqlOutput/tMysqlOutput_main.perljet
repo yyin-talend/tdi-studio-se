@@ -7,11 +7,81 @@ imports="
     org.talend.designer.codegen.config.CodeGeneratorArgument
     java.util.List
     java.util.ArrayList
+    java.util.Map
+    java.util.HashMap
     org.talend.commons.utils.StringUtils
 "
 %>
 
 <%
+final class SchemaColumn {
+    private String name;
+    private String sql = "?";
+    private boolean isKey = false;
+    private boolean isUpdateKey = false;
+    private boolean isDeleteKey = false;
+    private boolean insertable = true;
+    private boolean updatable = true;
+
+    public SchemaColumn(
+        String name,
+        String sql,
+        boolean isKey,
+        boolean useFieldOptions,
+        Map<String, String> fieldOptions
+        ) {
+        super();
+        this.name = name;
+        this.sql = sql;
+        this.isKey = isKey;
+
+        if (useFieldOptions) {
+            this.isUpdateKey = fieldOptions.get("UPDATE_KEY").equals("true");
+            this.isDeleteKey = fieldOptions.get("DELETE_KEY").equals("true");
+            this.insertable = fieldOptions.get("INSERTABLE").equals("true");
+            this.updatable = fieldOptions.get("UPDATABLE").equals("true");
+        }
+        else {
+            this.insertable = true;
+
+            if (isKey) {
+                this.isUpdateKey = true;
+                this.isDeleteKey = true;
+                this.updatable = false;
+            }
+            else {
+                this.isUpdateKey = false;
+                this.isDeleteKey = false;
+                this.updatable = true;
+            }
+        }
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public String getSql() {
+        return this.sql;
+    }
+
+    public boolean isUpdateKey() {
+        return this.isUpdateKey;
+    }
+
+    public boolean isDeleteKey() {
+        return this.isDeleteKey;
+    }
+
+    public boolean insertable() {
+        return this.insertable;
+    }
+
+    public boolean updatable() {
+        return this.updatable;
+    }
+}
+
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
@@ -90,6 +160,23 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             dbh+= cid;
         }
 
+        List<Map<String, String>> addCols =
+            (List<Map<String,String>>)ElementParameterParser.getObjectValue(
+                node,
+                "__ADD_COLS__"
+        );
+
+        String tableAction = ElementParameterParser.getValue(
+            node,
+            "__TABLE_ACTION__"
+        );
+
+        if (tableAction.equals("DROP_CREATE")
+            || tableAction.equals("CREATE")
+            || tableAction.equals("CREATE_IF_NOT_EXISTS")) {
+            addCols.clear();
+        }
+
         Boolean useExtendedInserts = new Boolean(
             ElementParameterParser.getValue(
                 node,
@@ -101,17 +188,149 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             node,
             "__NB_ROWS_PER_INSERT__"
         );
+
+        Boolean useFieldOptions = new Boolean(
+            ElementParameterParser.getValue(
+                node,
+                "__USE_FIELD_OPTIONS__"
+            )
+        );
+
+        List<Map<String, String>> fieldOptionsList =
+            (List<Map<String,String>>)ElementParameterParser.getObjectValue(
+                node,
+                "__FIELD_OPTIONS__"
+        );
+
+        // schema is built from metadata + addCols + fieldOptions
+        List<SchemaColumn> schema = new ArrayList<SchemaColumn>();
+        int i = 0;
+        for (IMetadataColumn column: metadata.getListColumns()) {
+            String colName = column.getLabel();
+            Map<String, String> fieldOptions = new HashMap();
+
+            if (useFieldOptions) {
+                fieldOptions = fieldOptionsList.get(i++);
+            }
+
+            for (Map<String, String> addCol : addCols) {
+                String refColName = addCol.get("REFCOL");
+
+                if (refColName.equals(colName)) {
+                    String addColPos = addCol.get("POS");
+
+                    if (addColPos.equals("BEFORE")) {
+                        schema.add(
+                            new SchemaColumn(
+                                addCol.get("NAME"),
+                                addCol.get("SQL"),
+                                false, // isKey
+                                useFieldOptions,
+                                addCol
+                            )
+                        );
+                    }
+                }
+            }
+
+            SchemaColumn columnToAdd = new SchemaColumn(
+                "'`" + column.getLabel() + "`'",
+                "'?'",
+                column.isKey(),
+                useFieldOptions,
+                fieldOptions
+            );
+
+            for (Map<String, String> addCol : addCols) {
+                String refColName = addCol.get("REFCOL");
+
+                if (refColName.equals(colName)) {
+                    String addColPos = addCol.get("POS");
+
+                     if (addColPos.equals("REPLACE")) {
+                         columnToAdd = new SchemaColumn(
+                             addCol.get("NAME"),
+                             addCol.get("SQL"),
+                             column.isKey(),
+                             useFieldOptions,
+                             addCol // fieldOptions
+                         );
+                     }
+                }
+            }
+
+            schema.add(columnToAdd);
+
+            for (Map<String, String> addCol : addCols) {
+                String refColName = addCol.get("REFCOL");
+
+                if (refColName.equals(colName)) {
+                    String addColPos = addCol.get("POS");
+
+                    if (addColPos.equals("AFTER")) {
+                        schema.add(
+                            new SchemaColumn(
+                                addCol.get("NAME"),
+                                addCol.get("SQL"),
+                                false, // isKey
+                                useFieldOptions,
+                                addCol
+                            )
+                        );
+                    }
+                }
+            }
+        }
+
+        List updatePositions = new ArrayList();
+        List deletePositions = new ArrayList();
+        List insertPositions = new ArrayList();
+
+        i = 0;
+        for (SchemaColumn schemaColumn : schema) {
+            if (schemaColumn.updatable()) {
+                updatePositions.add(i);
+            }
+            if (schemaColumn.insertable()) {
+                insertPositions.add(i);
+            }
+            if (schemaColumn.isDeleteKey()) {
+                deletePositions.add(i);
+            }
+            i++;
+        }
+        i = 0;
+        for (SchemaColumn schemaColumn : schema) {
+            if (schemaColumn.isUpdateKey()) {
+                updatePositions.add(i);
+            }
+            i++;
+        }
+
+        String updatePositionsString = StringUtils.join(
+            updatePositions.toArray(),
+            ","
+        );
+        String deletePositionsString = StringUtils.join(
+            deletePositions.toArray(),
+            ","
+        );
+        String insertPositionsString = StringUtils.join(
+            insertPositions.toArray(),
+            ","
+        );
 %>
 
-# keyPositionsString : <%=keyPositionsString%>
-# positionsString    : <%=positionsString%>
+# insertPositions : <%=insertPositionsString%>
+# updatePositions : <%=updatePositionsString%>
+# deletePosition  : <%=deletePositionsString%>
 
 my $nb_rows = 0;
 
 <%
         if (dataAction.equals("UPDATE")) {
 %>
-$nb_rows = $usth_<%=cid %>->execute(@$<%=cid%>[<%=positionsString%>])
+$nb_rows = $usth_<%=cid %>->execute(@$<%=cid%>[<%=updatePositionsString%>])
     or die "can't execute update query\n";
 
 if ($nb_rows) {
@@ -122,7 +341,7 @@ if ($nb_rows) {
         else if (dataAction.equals("INSERT")) {
             if (useExtendedInserts && !nbRowsPerInsert.equals("1")) {
 %>
-push @buffer_<%=cid%>, @$<%=cid %>;
+push @buffer_<%=cid%>, @$<%=cid %>[<%=insertPositionsString%>];
 $nb_rows_in_buffer_<%=cid%>++;
 
 if ($nb_rows_in_buffer_<%=cid%> == <%=nbRowsPerInsert%>) {
@@ -138,7 +357,7 @@ if ($nb_rows_in_buffer_<%=cid%> == <%=nbRowsPerInsert%>) {
             }
             else {
 %>
-$isth_<%=cid %>->execute(@$<%=cid %>)
+$isth_<%=cid %>->execute(@$<%=cid %>[<%=insertPositionsString%>])
     or die "[<%=cid%>] can't execute insert query\n";
 
 $nb_line_inserted_<%=cid%>++;
@@ -147,8 +366,8 @@ $nb_line_inserted_<%=cid%>++;
         }
         else if (dataAction.equals("INSERT_OR_UPDATE")) {
 %>
-if (not $isth_<%=cid %>->execute(@$<%=cid%>)) {
-    $nb_rows = $usth_<%=cid %>->execute(@$<%=cid%>[<%=positionsString%>])
+if (not $isth_<%=cid %>->execute(@$<%=cid%>[<%=insertPositionsString%>])) {
+    $nb_rows = $usth_<%=cid %>->execute(@$<%=cid%>[<%=updatePositionsString%>])
         or die "can't execute update query\n";
 
     if ($nb_rows) {
@@ -162,9 +381,9 @@ else {
         }
         else if (dataAction.equals("UPDATE_OR_INSERT")) {
 %>
-if ($nb_rows = $usth_<%=cid %>->execute(@$<%=cid%>[<%=positionsString%>])) {
+if ($nb_rows = $usth_<%=cid %>->execute(@$<%=cid%>[<%=updatePositionsString%>])) {
     if ($nb_rows == 0) {
-        $isth_<%=cid %>->execute(@$<%=cid%>)
+        $isth_<%=cid %>->execute(@$<%=cid%>[<%=insertPositionsString%>])
             or die "can't execute insert query\n";
 
         $nb_line_inserted_<%=cid%>++;
@@ -182,7 +401,7 @@ else {
         }
         else if (dataAction.equals("DELETE")) {
 %>
-$nb_rows = $dsth_<%=cid %>->execute(@$<%=cid%>[<%=keyPositionsString%>])
+$nb_rows = $dsth_<%=cid %>->execute(@$<%=cid%>[<%=deletePositionsString%>])
     or die "can't execute delete query\n";
 
 if ($nb_rows) {
