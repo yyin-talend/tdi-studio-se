@@ -33,6 +33,8 @@ import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.swt.advanced.dataeditor.button.AddPushButton;
 import org.talend.commons.ui.swt.advanced.dataeditor.button.AddPushButtonForExtendedTable;
 import org.talend.commons.ui.swt.advanced.dataeditor.button.ExportPushButton;
@@ -49,7 +51,10 @@ import org.talend.commons.ui.swt.advanced.dataeditor.button.RemovePushButtonForE
 import org.talend.commons.ui.swt.extended.table.AbstractExtendedTableViewer;
 import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
+import org.talend.core.model.process.IProcess;
 import org.talend.core.ui.metadata.editor.MetadataToolbarEditorView;
+import org.talend.core.ui.proposal.ProcessProposalUtils;
+import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.rowgenerator.i18n.Messages;
 
 /**
@@ -121,6 +126,10 @@ public class MetadataToolbarEditorViewExt extends MetadataToolbarEditorView {
         GridDataFactory.swtDefaults().hint(50, SWT.DEFAULT).applyTo(numRowText);
 
         numRowText.setBackground(ColorConstants.white);
+
+        IEditorPart editor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+        IProcess process = ((MultiPageTalendEditor) editor).getTalendEditor().getProcess();
+        ProcessProposalUtils.installOn(numRowText, process);
     }
 
     private Menu columnsListmenu;
