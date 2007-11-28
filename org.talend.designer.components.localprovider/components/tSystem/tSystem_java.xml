@@ -43,7 +43,7 @@
     
     <PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" NUM_ROW="5" SHOW_IF="OUTPUT=='NORMAL_OUTPUT'" READONLY="true">
   	  <TABLE>
-		<COLUMN NAME="outputline" TYPE="id_String" LENGTH="255" />
+		<COLUMN NAME="outputline" TYPE="id_String" LENGTH="255" CUSTOM="true"/>
 	  </TABLE>
   	</PARAMETER>
   </PARAMETERS>
