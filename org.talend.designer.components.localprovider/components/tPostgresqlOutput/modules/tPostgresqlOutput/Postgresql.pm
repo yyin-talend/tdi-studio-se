@@ -81,8 +81,12 @@ sub getTableCreationQuery {
             $query.= ' NOT NULL';
         }
 
-        if ($column_href->{default} ne '') {
-            $query.= " default '".$column_href->{default}."'";
+        if ($column_href->{default} ne ''
+            and $column_href->{default} ne 'null') {
+            $query.= sprintf(
+                " default '%s'",
+                $column_href->{default}
+            );
         }
 
         $query.= "\n";
