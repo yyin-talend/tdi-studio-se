@@ -133,6 +133,8 @@ public class StatsAndLogsManager {
                     process.getElementParameter(EParameterName.SCHEMA_DB.getName()).getValue());
             logsNode.getElementParameter(EParameterName.DBNAME.getName()).setValue(
                     process.getElementParameter(EParameterName.DBNAME.getName()).getValue());
+            logsNode.getElementParameter(EParameterName.INSTANCE.getName()).setValue(
+                    process.getElementParameter(EParameterName.INSTANCE.getName()).getValue());
             logsNode.getElementParameter(EParameterName.USER.getName()).setValue(
                     process.getElementParameter(EParameterName.USER.getName()).getValue());
             logsNode.getElementParameter(EParameterName.PASS.getName()).setValue(
@@ -168,6 +170,8 @@ public class StatsAndLogsManager {
                     process.getElementParameter(EParameterName.SCHEMA_DB.getName()).getValue());
             statsNode.getElementParameter(EParameterName.DBNAME.getName()).setValue(
                     process.getElementParameter(EParameterName.DBNAME.getName()).getValue());
+            statsNode.getElementParameter(EParameterName.INSTANCE.getName()).setValue(
+                    process.getElementParameter(EParameterName.INSTANCE.getName()).getValue());
             statsNode.getElementParameter(EParameterName.USER.getName()).setValue(
                     process.getElementParameter(EParameterName.USER.getName()).getValue());
             statsNode.getElementParameter(EParameterName.PASS.getName()).setValue(
@@ -197,6 +201,8 @@ public class StatsAndLogsManager {
                     process.getElementParameter(EParameterName.SCHEMA_DB.getName()).getValue());
             meterNode.getElementParameter(EParameterName.DBNAME.getName()).setValue(
                     process.getElementParameter(EParameterName.DBNAME.getName()).getValue());
+            meterNode.getElementParameter(EParameterName.INSTANCE.getName()).setValue(
+                    process.getElementParameter(EParameterName.INSTANCE.getName()).getValue());
             meterNode.getElementParameter(EParameterName.USER.getName()).setValue(
                     process.getElementParameter(EParameterName.USER.getName()).getValue());
             meterNode.getElementParameter(EParameterName.PASS.getName()).setValue(
@@ -544,6 +550,18 @@ public class StatsAndLogsManager {
                 .setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')");
         paramList.add(param);
 
+        // instance
+        param = new ElementParameter(process);
+        param.setName(EParameterName.INSTANCE.getName());
+        param.setValue(addQuotes(preferenceStore.getString(languagePrefix + EParameterName.INSTANCE.getName())));
+        param.setDisplayName(EParameterName.INSTANCE.getDisplayName());
+        param.setField(EParameterFieldType.TEXT);
+        param.setCategory(EComponentCategory.STATSANDLOGS);
+        param.setNumRow(53);
+        param.setRepositoryValue(""); //$NON-NLS-1$
+        param
+                .setShowIf("(DB_TYPE=='SQL_SERVER') and (ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')");
+        paramList.add(param);
         // schema
         param = new ElementParameter(process);
         param.setName(EParameterName.SCHEMA_DB.getName());

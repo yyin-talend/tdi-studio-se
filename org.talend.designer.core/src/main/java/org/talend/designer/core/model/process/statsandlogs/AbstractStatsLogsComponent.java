@@ -38,7 +38,7 @@ import org.talend.designer.core.model.components.MultipleComponentManager;
 public abstract class AbstractStatsLogsComponent implements IComponent {
 
     protected boolean useDb = false;
-    
+
     protected boolean useConsole = false;
 
     protected String dbComponent;
@@ -129,7 +129,7 @@ public abstract class AbstractStatsLogsComponent implements IComponent {
     public Boolean hasConditionalOutputs() {
         return null;
     }
-    
+
     // no use for virtual component
     public Boolean isMultiplyingOutputs() {
         return null;
@@ -204,6 +204,11 @@ public abstract class AbstractStatsLogsComponent implements IComponent {
 
         newParam = new ElementParameter(node);
         newParam.setName("DBNAME"); //$NON-NLS-1$
+        newParam.setField(EParameterFieldType.TEXT);
+        elemParamList.add(newParam);
+
+        newParam = new ElementParameter(node);
+        newParam.setName("INSTANCE"); //$NON-NLS-1$
         newParam.setField(EParameterFieldType.TEXT);
         elemParamList.add(newParam);
 
@@ -285,12 +290,12 @@ public abstract class AbstractStatsLogsComponent implements IComponent {
     }
 
     protected void loadMultipleComponentManager() {
-        String lastComponent= null;
+        String lastComponent = null;
         if (useConsole) {
             lastComponent = "CONSOLE"; //$NON-NLS-1$
-        } else if(useDb) {
+        } else if (useDb) {
             lastComponent = "DB"; //$NON-NLS-1$
-        }else{
+        } else {
             lastComponent = "FILE"; //$NON-NLS-1$
         }
         // create base items
@@ -330,6 +335,7 @@ public abstract class AbstractStatsLogsComponent implements IComponent {
             multipleComponentManager.addParam("self.HOST", "DB.DSN"); //$NON-NLS-1$ //$NON-NLS-2$
             multipleComponentManager.addParam("self.PORT", "DB.PORT"); //$NON-NLS-1$ //$NON-NLS-2$
             multipleComponentManager.addParam("self.DBNAME", "DB.DBNAME"); //$NON-NLS-1$ //$NON-NLS-2$
+            multipleComponentManager.addParam("self.INSTANCE", "DB.INSTANCE");
             multipleComponentManager.addParam("self.USER", "DB.USER"); //$NON-NLS-1$ //$NON-NLS-2$
             multipleComponentManager.addParam("self.PASS", "DB.PASS"); //$NON-NLS-1$ //$NON-NLS-2$
             multipleComponentManager.addParam("self.TABLE", "DB.TABLE"); //$NON-NLS-1$ //$NON-NLS-2$

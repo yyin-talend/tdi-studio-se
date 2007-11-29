@@ -12,11 +12,7 @@
 // ============================================================================
 package org.talend.designer.core.ui.preferences;
 
-import java.io.File;
-
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.gmf.runtime.common.ui.preferences.CheckBoxFieldEditor;
-import org.eclipse.gmf.runtime.notation.Location;
 import org.eclipse.jface.preference.DirectoryFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -67,6 +63,8 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
     private ComboFieldEditor dbTypeField;
 
     private StringFieldEditor hostField;
+
+    private StringFieldEditor instanceField;
 
     private StringFieldEditor portField;
 
@@ -143,24 +141,22 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
 
         onFilesField = new CheckBoxFieldEditor(languagePrefix + EParameterName.ON_FILES_FLAG.getName(),
                 EParameterName.ON_FILES_FLAG.getDisplayName(), parent);
-        filePathField = new DirectoryFieldEditor(languagePrefix + EParameterName.FILE_PATH.getName(),
-                EParameterName.FILE_PATH.getDisplayName(), parent);
-      
-        
+        filePathField = new DirectoryFieldEditor(languagePrefix + EParameterName.FILE_PATH.getName(), EParameterName.FILE_PATH
+                .getDisplayName(), parent);
+
         statsFileNameField = new StringFieldEditor(languagePrefix + EParameterName.FILENAME_STATS.getName(),
                 EParameterName.FILENAME_STATS.getDisplayName(), parent);
-        
+
         statsFileNameField.getTextControl(parent).setText(TalendTextUtils.addQuotes("stats_file.txt"));
-        
-        
+
         logsFileNameField = new StringFieldEditor(languagePrefix + EParameterName.FILENAME_LOGS.getName(),
                 EParameterName.FILENAME_LOGS.getDisplayName(), parent);
-        
+
         logsFileNameField.getTextControl(parent).setText(TalendTextUtils.addQuotes("logs_file.txt"));
-        
+
         metterFileNameField = new StringFieldEditor(languagePrefix + EParameterName.FILENAME_METTER.getName(),
                 EParameterName.FILENAME_METTER.getDisplayName(), parent);
-        
+
         metterFileNameField.getTextControl(parent).setText(TalendTextUtils.addQuotes("metter_file.txt"));
 
         onDatabaseField = new CheckBoxFieldEditor(languagePrefix + EParameterName.ON_DATABASE_FLAG.getName(),
@@ -188,29 +184,32 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
         gridLayout.numColumns = 6;
         dbTypeComposite.setLayout(gridLayout);
 
-        hostField = new StringFieldEditor(languagePrefix + EParameterName.HOST.getName(), EParameterName.HOST
-                .getDisplayName(), parent);
+        hostField = new StringFieldEditor(languagePrefix + EParameterName.HOST.getName(), EParameterName.HOST.getDisplayName(),
+                parent);
 
-        portField = new StringFieldEditor(languagePrefix + EParameterName.PORT.getName(), EParameterName.PORT
-                .getDisplayName(), parent);
+        portField = new StringFieldEditor(languagePrefix + EParameterName.PORT.getName(), EParameterName.PORT.getDisplayName(),
+                parent);
 
         dbNameField = new StringFieldEditor(languagePrefix + EParameterName.DBNAME.getName(), EParameterName.DBNAME
                 .getDisplayName(), parent);
-
-        schemaField = new StringFieldEditor(languagePrefix + EParameterName.SCHEMA_DB.getName(),
-                EParameterName.SCHEMA_DB.getDisplayName(), parent);
-
-        userField = new StringFieldEditor(languagePrefix + EParameterName.USER.getName(), EParameterName.USER
+        if (language == ECodeLanguage.JAVA) {
+            instanceField = new StringFieldEditor(languagePrefix + EParameterName.INSTANCE.getName(), EParameterName.INSTANCE
+                    .getDisplayName(), parent);
+        }
+        schemaField = new StringFieldEditor(languagePrefix + EParameterName.SCHEMA_DB.getName(), EParameterName.SCHEMA_DB
                 .getDisplayName(), parent);
+
+        userField = new StringFieldEditor(languagePrefix + EParameterName.USER.getName(), EParameterName.USER.getDisplayName(),
+                parent);
 
         passwordField = new StringFieldEditor(languagePrefix + EParameterName.PASS.getName(), EParameterName.PASS
                 .getDisplayName(), parent);
 
-        statsTableField = new StringFieldEditor(languagePrefix + EParameterName.TABLE_STATS.getName(),
-                EParameterName.TABLE_STATS.getDisplayName(), parent);
+        statsTableField = new StringFieldEditor(languagePrefix + EParameterName.TABLE_STATS.getName(), EParameterName.TABLE_STATS
+                .getDisplayName(), parent);
 
-        logsTableField = new StringFieldEditor(languagePrefix + EParameterName.TABLE_LOGS.getName(),
-                EParameterName.TABLE_LOGS.getDisplayName(), parent);
+        logsTableField = new StringFieldEditor(languagePrefix + EParameterName.TABLE_LOGS.getName(), EParameterName.TABLE_LOGS
+                .getDisplayName(), parent);
 
         metterTableField = new StringFieldEditor(languagePrefix + EParameterName.TABLE_METER.getName(),
                 EParameterName.TABLE_METER.getDisplayName(), parent);
@@ -218,16 +217,14 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
         finalPart = new Composite(parent, SWT.None);
         finalPart.setLayout(new GridLayout());
 
-        catchRuntimeErrorsField = new CheckBoxFieldEditor(languagePrefix
-                + EParameterName.CATCH_RUNTIME_ERRORS.getName(), EParameterName.CATCH_RUNTIME_ERRORS.getDisplayName(),
-                finalPart);
+        catchRuntimeErrorsField = new CheckBoxFieldEditor(languagePrefix + EParameterName.CATCH_RUNTIME_ERRORS.getName(),
+                EParameterName.CATCH_RUNTIME_ERRORS.getDisplayName(), finalPart);
         catchUserErrorsField = new CheckBoxFieldEditor(languagePrefix + EParameterName.CATCH_USER_ERRORS.getName(),
                 EParameterName.CATCH_USER_ERRORS.getDisplayName(), finalPart);
         catchUserWarningField = new CheckBoxFieldEditor(languagePrefix + EParameterName.CATCH_USER_WARNING.getName(),
                 EParameterName.CATCH_USER_WARNING.getDisplayName(), finalPart);
-        catchRealtimeStatsField = new CheckBoxFieldEditor(languagePrefix
-                + EParameterName.CATCH_REALTIME_STATS.getName(), EParameterName.CATCH_REALTIME_STATS.getDisplayName(),
-                finalPart);
+        catchRealtimeStatsField = new CheckBoxFieldEditor(languagePrefix + EParameterName.CATCH_REALTIME_STATS.getName(),
+                EParameterName.CATCH_REALTIME_STATS.getDisplayName(), finalPart);
 
         gridData = new GridData(GridData.FILL_HORIZONTAL);
         gridData.horizontalSpan = 4;
@@ -250,8 +247,13 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
 
         addField(dbTypeField);
         addField(hostField);
+
         addField(portField);
         addField(dbNameField);
+        if (language == ECodeLanguage.JAVA) {
+            addField(instanceField);
+        }
+
         addField(schemaField);
         addField(userField);
         addField(passwordField);
@@ -269,11 +271,9 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
     private void updateEnableStateFromPreferences() {
         IPreferenceStore preferenceStore = getPreferenceStore();
 
-        boolean onStatCatcher = preferenceStore.getBoolean(languagePrefix
-                + EParameterName.ON_STATCATCHER_FLAG.getName());
+        boolean onStatCatcher = preferenceStore.getBoolean(languagePrefix + EParameterName.ON_STATCATCHER_FLAG.getName());
         boolean onLogCatcher = preferenceStore.getBoolean(languagePrefix + EParameterName.ON_LOGCATCHER_FLAG.getName());
-        boolean onMetterCatcher = preferenceStore.getBoolean(languagePrefix
-                + EParameterName.ON_METERCATCHER_FLAG.getName());
+        boolean onMetterCatcher = preferenceStore.getBoolean(languagePrefix + EParameterName.ON_METERCATCHER_FLAG.getName());
         boolean onFiles = preferenceStore.getBoolean(languagePrefix + EParameterName.ON_FILES_FLAG.getName());
         boolean onDatabase = preferenceStore.getBoolean(languagePrefix + EParameterName.ON_DATABASE_FLAG.getName());
         String dbValue = preferenceStore.getString(languagePrefix + EParameterName.DB_TYPE.getName());
@@ -290,8 +290,8 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
         updateEnableState(onStatCatcher, onLogCatcher, onMetterCatcher, onFiles, onDatabase, dbValue);
     }
 
-    private void updateEnableState(boolean onStatCatcher, boolean onLogCatcher, boolean onMetterCatcher,
-            boolean onFiles, boolean onDatabase, String dbValue) {
+    private void updateEnableState(boolean onStatCatcher, boolean onLogCatcher, boolean onMetterCatcher, boolean onFiles,
+            boolean onDatabase, String dbValue) {
         onFilesField.setEnabled(onStatCatcher || onLogCatcher || onMetterCatcher, parent);
         filePathField.setEnabled(onFiles && (onStatCatcher || onLogCatcher || onMetterCatcher), parent);
         statsFileNameField.setEnabled(onFiles && onStatCatcher, parent);
@@ -304,8 +304,12 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
         dbTypeField.setEnabled(onDatabase && (onStatCatcher || onLogCatcher || onMetterCatcher), dbTypeComposite);
         hostField.setEnabled(onDatabase && (onStatCatcher || onLogCatcher || onMetterCatcher), parent);
         portField.setEnabled(onDatabase && (onStatCatcher || onLogCatcher || onMetterCatcher), parent);
+
         dbNameField.setEnabled(onDatabase && (onStatCatcher || onLogCatcher || onMetterCatcher), parent);
-        
+        if (language == ECodeLanguage.JAVA) {
+            instanceField.setEnabled(dbValue.equals("tMSSqlOutput") && onDatabase
+                    && (onStatCatcher || onLogCatcher || onMetterCatcher), parent);
+        }
         schemaField.setEnabled((dbValue.equals("tOracleOutput") || dbValue.equals("tPostgresqlOutput")) && onDatabase
                 && (onStatCatcher || onLogCatcher || onMetterCatcher), parent);
         userField.setEnabled(onDatabase && (onStatCatcher || onLogCatcher || onMetterCatcher), parent);
@@ -322,6 +326,7 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
 
     private void addListeners() {
         SelectionListener listener = new SelectionListener() {
+
             public void widgetDefaultSelected(SelectionEvent e) {
             }
 

@@ -30,6 +30,8 @@ imports="
     
     String dbname= ElementParameterParser.getValue(node, "__DBNAME__");
     
+    String dbinstance = ElementParameterParser.getValue(node, "__INSTANCE__");
+    
     String dbhost = ElementParameterParser.getValue(node, "__HOST__");
     
 	String dbport = ElementParameterParser.getValue(node, "__PORT__");
@@ -104,7 +106,18 @@ else
 {
     %>
     java.lang.Class.forName("net.sourceforge.jtds.jdbc.Driver");
-    String url_<%=cid %> = "jdbc:jtds:sqlserver://"+<%=dbhost%>+":"+<%=dbport%>+"//"+<%=dbname%>;
+    <%
+    if (dbinstance.equals("") || dbinstance.equals("\"\"")) {
+%>
+    String url_<%=cid %> = "jdbc:jtds:sqlserver://"+<%=dbhost%>+":"+<%=dbport%>+"//"+<%=dbname%> + ";appname=" + projectName;
+<%
+    }
+    else {
+%>
+    String url_<%=cid %> = "jdbc:jtds:sqlserver://"+<%=dbhost%>+":"+<%=dbport%>+"//"+<%=dbname%> + ";instance=" + <%=dbinstance%> + ";appname=" + projectName;
+<%
+    }
+%>
     String dbUser_<%=cid %> = <%=dbuser%>;
     String dbPwd_<%=cid %> = <%=dbpwd%>;
     java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
