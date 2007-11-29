@@ -1,0 +1,62 @@
+<%@ jet 
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.core.model.process.ElementParameterParser 
+		org.talend.core.model.metadata.IMetadataTable 
+		org.talend.core.model.metadata.IMetadataColumn
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		java.util.List 
+    	java.util.Map		
+	" 
+%>
+<% 
+    CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+    INode node = (INode)codeGenArgument.getArgument();
+    String cid = node.getUniqueName();	
+%>
+
+<%
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+	IMetadataTable metadata = metadatas.get(0);
+	if (metadata!=null) {   	
+    	String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
+        String delim1 = ElementParameterParser.getValue(node, "__FIELDSEPARATOR__");
+        String delim = delim1.substring(1,delim1.length()-1);
+        String port = ElementParameterParser.getValue(node,"__PORT__").replace("\"", "");
+        boolean compress = ElementParameterParser.getValue(node,"__COMPRESS__").equals("true");
+        boolean dieOnError = ElementParameterParser.getValue(node,"__DIE_ON_ERROR__").equals("true");
+%>    
+<% if(compress){%>
+class Compress{
+    public byte[] zip(byte[] data) throws java.io.IOException {
+        java.io.ByteArrayOutputStream baos = new java.io.ByteArrayOutputStream();
+        java.util.zip.ZipEntry ze = new java.util.zip.ZipEntry("servletservice");
+        java.util.zip.ZipOutputStream zos = new java.util.zip.ZipOutputStream(baos);
+        zos.putNextEntry(ze);
+        zos.write(data, 0, data.length);
+        zos.close();
+        byte[] zipBytes = baos.toByteArray();
+        return zipBytes;
+    }
+   
+}
+Compress com<%=cid%> = new Compress();
+<%}%>
+
+int nb_line_<%=cid%> = 0;
+
+java.net.ServerSocket ss<%=cid%>;
+java.net.Socket socket<%=cid%>;
+
+ss<%=cid%> = new java.net.ServerSocket(<%=port%>);
+socket<%=cid%> = ss<%=cid%>.accept();
+
+com.csvreader.CsvWriter CsvWriter<%=cid%> = 
+   new com.csvreader.CsvWriter(
+      new java.io.BufferedWriter(new java.io.OutputStreamWriter(socket<%=cid%>.getOutputStream(),<%=encoding%>)), '<%=delim%>');  
+
+<%    	
+	}
+}
+%>
