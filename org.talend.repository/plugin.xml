@@ -651,7 +651,7 @@
       </projecttask>
       <projecttask
             beforeLogon="false"
-            class="org.talend.repository.model.migration.AddPerlRefArrayPointer"
+            class="org.talend.repository.model.migration.AddPerlRefArrayMigrationTask"
             description="%migrationtask.AddPerlRefArrayPointer.desc"
             id="org.talend.repository.model.migration.AddPerlRefArrayPointer"
             name="%migrationtask.AddPerlRefArrayPointer.title">

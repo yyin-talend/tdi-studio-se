@@ -26,9 +26,11 @@ import org.apache.oro.text.regex.Perl5Compiler;
 import org.apache.oro.text.regex.Perl5Matcher;
 import org.apache.oro.text.regex.Perl5Substitution;
 import org.apache.oro.text.regex.Util;
+import org.eclipse.emf.common.util.EList;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.utils.data.text.StringHelper;
 import org.talend.core.language.ECodeLanguage;
+import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.ModifyComponentsAction;
 import org.talend.core.model.components.conversions.IComponentConversion;
 import org.talend.core.model.components.filters.IComponentFilter;
@@ -37,6 +39,7 @@ import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.designer.core.model.utils.emf.talendfile.ConnectionType;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
+import org.talend.designer.core.model.utils.emf.talendfile.MetadataType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 
@@ -44,7 +47,7 @@ import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
  * Use to replace .
  * 
  */
-public class AddPerlRefArrayPointer extends AbstractJobMigrationTask {
+public class AddPerlRefArrayMigrationTask extends AbstractJobMigrationTask {
 
     public ExecutionResult executeOnProcess(ProcessItem item) {
         try {
@@ -54,17 +57,22 @@ public class AddPerlRefArrayPointer extends AbstractJobMigrationTask {
 
             } else {
 
+                List<String> namesList = new ArrayList<String>();
+                
                 ProcessType processType = (ProcessType) item.getProcess();
-                List<String> connectionNamesList = new ArrayList<String>();
+                for (Object o : processType.getNode()) {
+                    NodeType nt = (NodeType) o;
+                    namesList.add(ComponentUtilities.getNodeUniqueName(nt));
+                }
                 for (Object o : processType.getConnection()) {
                     ConnectionType currentConnection = (ConnectionType) o;
                     int lineStyle = currentConnection.getLineStyle();
                     EConnectionType connectionType = EConnectionType.getTypeFromId(lineStyle);
                     if (connectionType.hasConnectionCategory(EConnectionType.FLOW)) {
-                        connectionNamesList.add(currentConnection.getLabel());
+                        namesList.add(currentConnection.getLabel());
                     }
                 }
-                final String[] connectionNames = connectionNamesList.toArray(new String[0]);
+                final String[] namesArrays = namesList.toArray(new String[0]);
 
                 IComponentFilter filter1 = new IComponentFilter() {
 
@@ -94,8 +102,7 @@ public class AddPerlRefArrayPointer extends AbstractJobMigrationTask {
                             ElementParameterType t = (ElementParameterType) o;
                             String value = t.getValue();
                             if (value != null) {
-                                String newValue = parser.processReplacementOperations(value, connectionNames);
-                                newValue = parser.processReplacementOperations(newValue, connectionNames);
+                                String newValue = parser.processReplacementOperations(value, namesArrays);
                                 t.setValue(newValue);
                             }
                         }
@@ -183,12 +190,12 @@ public class AddPerlRefArrayPointer extends AbstractJobMigrationTask {
                 String connectionName = tableNames[i];
 
                 recompilePatternIfNecessary(StringHelper.replacePrms(
-                        "\\$[\\s\\r\\n]*({0})[\\s\\r\\n]*\\[[\\s\\r\\n]*(\\$?\\w+)[\\s\\r\\n]*\\]",
+                        "\\$[\\s\\r\\n]*({0})[\\s\\r\\n]*\\[",
                         new Object[] { connectionName }));
                 if (returnedExpression != null) {
                     matcher.setMultiline(true);
                     Perl5Substitution substitution = new Perl5Substitution("\\$" + "$1->" //$NON-NLS-1$
-                            + "[" + "$2" + "]", Perl5Substitution.INTERPOLATE_ALL); //$NON-NLS-1$
+                            + "[", Perl5Substitution.INTERPOLATE_ALL); //$NON-NLS-1$
                     returnedExpression = Util.substitute(matcher, pattern, substitution, returnedExpression, Util.SUBSTITUTE_ALL);
                 }
 
@@ -196,7 +203,7 @@ public class AddPerlRefArrayPointer extends AbstractJobMigrationTask {
                 if (returnedExpression != null) {
                     matcher.setMultiline(true);
                     Perl5Substitution substitution = new Perl5Substitution("@\\$" + "$1" //$NON-NLS-1$
-                    , Perl5Substitution.INTERPOLATE_ALL); //$NON-NLS-1$
+                            , Perl5Substitution.INTERPOLATE_ALL); //$NON-NLS-1$
                     returnedExpression = Util.substitute(matcher, pattern, substitution, returnedExpression, Util.SUBSTITUTE_ALL);
                 }
 
