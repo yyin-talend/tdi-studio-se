@@ -99,6 +99,36 @@ public class SnippetWizard extends RepositoryWizard implements INewWizard {
         initLockStrategy();
     }
 
+    public SnippetWizard(IWorkbench workbench, boolean creation, RepositoryNode node, boolean forceReadOnly) {
+        super(workbench, creation, forceReadOnly);
+        pathToSave = RepositoryNodeUtilities.getPath(node);
+
+        setWindowTitle(""); //$NON-NLS-1$
+        setDefaultPageImageDescriptor(ImageProvider.getImageDesc(ECoreImage.CONTEXT_WIZ));
+        setNeedsProgressMonitor(true);
+        snippetManager = SnippetManager.getInstance();
+        if (creation) {
+            snippetItem = PropertiesFactory.eINSTANCE.createSnippetItem();
+
+            contextProperty = PropertiesFactory.eINSTANCE.createProperty();
+            contextProperty.setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
+                    .getUser());
+            contextProperty.setVersion(VersionUtils.DEFAULT_VERSION);
+            contextProperty.setStatusCode(""); //$NON-NLS-1$
+
+            snippetItem.setProperty(contextProperty);
+        } else {
+            RepositoryObject object = (RepositoryObject) node.getObject();
+            setRepositoryObject(object);
+            isRepositoryObjectEditable();
+            initLockStrategy();
+
+            snippetItem = (SnippetItem) object.getProperty().getItem();
+            contextProperty = snippetItem.getProperty();
+        }
+        initLockStrategy();
+    }
+
     /**
      * Adding the page to the wizard.
      */

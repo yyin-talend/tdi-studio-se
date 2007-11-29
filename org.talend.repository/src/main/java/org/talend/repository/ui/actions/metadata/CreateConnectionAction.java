@@ -99,19 +99,21 @@ public class CreateConnectionAction extends AbstractCreateAction {
 
         // Define the RepositoryNode, by default Metadata/DbConnection
         RepositoryNode node = dbConnectionNode;
-
+        ISelection selection = null;
         // When the userSelection is an element of metadataNode, use it !
-        Object userSelection = ((IStructuredSelection) getSelection()).getFirstElement();
-        if (userSelection instanceof RepositoryNode) {
-            switch (((RepositoryNode) userSelection).getType()) {
-            case REPOSITORY_ELEMENT:
-            case SIMPLE_FOLDER:
-            case SYSTEM_FOLDER:
-                node = (RepositoryNode) userSelection;
-                break;
+        if (!isToolbar) {
+            Object userSelection = ((IStructuredSelection) getSelection()).getFirstElement();
+            if (userSelection instanceof RepositoryNode) {
+                switch (((RepositoryNode) userSelection).getType()) {
+                case REPOSITORY_ELEMENT:
+                case SIMPLE_FOLDER:
+                case SYSTEM_FOLDER:
+                    node = (RepositoryNode) userSelection;
+                    break;
+                }
             }
+            selection = getSelection();
         }
-        ISelection selection = getSelection();
         boolean creation = false;
         // Define the repositoryObject DatabaseConnection and his pathToSave
         switch (node.getType()) {

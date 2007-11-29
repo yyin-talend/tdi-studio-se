@@ -81,7 +81,7 @@ public class CreateFileRegexpAction extends AbstractCreateAction {
     public void run() {
         RepositoryNode metadataNode = getViewPart().getRoot().getChildren().get(6);
         RepositoryNode fileRegexpNode = metadataNode.getChildren().get(3);
-        ISelection selection = getSelection();
+        ISelection selection = null;
         WizardDialog wizardDialog;
         if (isToolbar) {
             init(fileRegexpNode);
@@ -89,6 +89,7 @@ public class CreateFileRegexpAction extends AbstractCreateAction {
                     fileRegexpNode, getExistingNames()));
 
         } else {
+            selection = getSelection();
             wizardDialog = new WizardDialog(new Shell(), new RegexpFileWizard(PlatformUI.getWorkbench(), creation, selection,
                     getExistingNames()));
         }

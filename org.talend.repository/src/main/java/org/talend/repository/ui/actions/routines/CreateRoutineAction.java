@@ -42,9 +42,21 @@ import org.talend.repository.ui.wizards.routines.NewRoutineWizard;
  */
 public class CreateRoutineAction extends AbstractRoutineAction {
 
+    private boolean isToolbar = false;
+
     public CreateRoutineAction() {
         super();
 
+        setText(Messages.getString("CreateRoutineAction.text.createRoutine")); //$NON-NLS-1$
+        setToolTipText(Messages.getString("CreateRoutineAction.toolTipText.createRoutine")); //$NON-NLS-1$
+
+        Image folderImg = ImageProvider.getImage(ECoreImage.ROUTINE_ICON);
+        this.setImageDescriptor(OverlayImageProvider.getImageWithNew(folderImg));
+    }
+
+    public CreateRoutineAction(boolean isToolbar) {
+        super();
+        this.isToolbar = isToolbar;
         setText(Messages.getString("CreateRoutineAction.text.createRoutine")); //$NON-NLS-1$
         setToolTipText(Messages.getString("CreateRoutineAction.toolTipText.createRoutine")); //$NON-NLS-1$
 
@@ -87,16 +99,29 @@ public class CreateRoutineAction extends AbstractRoutineAction {
      * @see org.eclipse.jface.action.Action#run()
      */
     public void run() {
-        ISelection selection = getSelection();
-        Object obj = ((IStructuredSelection) selection).getFirstElement();
-        RepositoryNode node = (RepositoryNode) obj;
+        RepositoryNode codeNode = getViewPart().getRoot().getChildren().get(4);
+        RepositoryNode routineNode = codeNode.getChildren().get(0);
+        RepositoryNode node = null;
+        IPath path;
+        if (isToolbar) {
+            path = RepositoryNodeUtilities.getPath(routineNode);
 
-        IPath path = RepositoryNodeUtilities.getPath(node);
+        } else {
+            ISelection selection = getSelection();
+            Object obj = ((IStructuredSelection) selection).getFirstElement();
+            node = (RepositoryNode) obj;
+            path = RepositoryNodeUtilities.getPath(node);
+        }
 
         NewRoutineWizard routineWizard = new NewRoutineWizard(path);
         WizardDialog dlg = new WizardDialog(Display.getCurrent().getActiveShell(), routineWizard);
+
         if (dlg.open() == Window.OK) {
-            refresh(node);
+            if (isToolbar) {
+                refresh(routineNode);
+            } else {
+                refresh(node);
+            }
 
             try {
                 openRoutineEditor(routineWizard.getRoutine(), false);

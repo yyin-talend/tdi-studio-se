@@ -81,13 +81,14 @@ public class CreateFilePositionalAction extends AbstractCreateAction {
     public void run() {
         RepositoryNode metadataNode = getViewPart().getRoot().getChildren().get(6);
         RepositoryNode filePositionalNode = metadataNode.getChildren().get(2);
-        ISelection selection = getSelection();
+        ISelection selection = null;
         WizardDialog wizardDialog;
         if (isToolbar) {
             init(filePositionalNode);
             wizardDialog = new WizardDialog(new Shell(), new FilePositionalWizard(PlatformUI.getWorkbench(), creation,
                     filePositionalNode, getExistingNames()));
         } else {
+            selection = getSelection();
             wizardDialog = new WizardDialog(new Shell(), new FilePositionalWizard(PlatformUI.getWorkbench(), creation, selection,
                     getExistingNames()));
         }

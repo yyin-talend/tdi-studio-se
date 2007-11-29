@@ -90,13 +90,14 @@ public class CreateGenericSchemaAction extends AbstractCreateAction {
     public void run() {
         RepositoryNode metadataNode = getViewPart().getRoot().getChildren().get(6);
         RepositoryNode fileGenericSchemaNode = metadataNode.getChildren().get(7);
-        ISelection selection = getSelection();
         WizardDialog wizardDialog;
+        ISelection selection = null;
         if (isToolbar) {
             init(fileGenericSchemaNode);
             wizardDialog = new WizardDialog(new Shell(), new GenericSchemaWizard(PlatformUI.getWorkbench(), creation,
                     fileGenericSchemaNode, getExistingNames(), false));
         } else {
+            selection = getSelection();
             wizardDialog = new WizardDialog(new Shell(), new GenericSchemaWizard(PlatformUI.getWorkbench(), creation, selection,
                     getExistingNames(), false));
         }
