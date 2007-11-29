@@ -15,74 +15,48 @@ CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 
+String filename = ElementParameterParser.getValue(
+    node,
+    "__FILENAME__"
+);
+
+String rowSeparator = ElementParameterParser.getValue(
+    node,
+    "__ROWSEPARATOR__"
+);
+
+boolean includeHeader = ElementParameterParser.getValue(
+    node,
+    "__INCLUDEHEADER__"
+).equals("true");
+
+boolean append = ElementParameterParser.getValue(
+    node,
+    "__APPEND__"
+).equals("true");
+
+List<Map<String, String>> formats =
+    (List<Map<String,String>>)ElementParameterParser.getObjectValue(
+        node,
+        "__FORMATS__"
+    );
+
 List<IMetadataTable> metadatas = node.getMetadataList();
-if ((metadatas!=null)&&(metadatas.size()>0)) {
+if (metadatas != null && metadatas.size() > 0) {
     IMetadataTable metadata = metadatas.get(0);
     if (metadata!=null) {
-        String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
-        if (encoding!=null) {
-            if (encoding.equals("")) {
-                encoding = "undef";
-            }
-        }
-
-        String filename = ElementParameterParser.getValue(
-            node,
-            "__FILENAME__"
-        );
-
-        String includeHeader = ElementParameterParser.getValue(
-            node,
-            "__INCLUDEHEADER__"
-        );
-
-        String append = ElementParameterParser.getValue(
-            node,
-            "__APPEND__"
-        );
-
-        List<Map<String, String>> formats =
-            (List<Map<String,String>>)ElementParameterParser.getObjectValue(
-                node,
-                "__FORMATS__"
-            );
 %>
 
 use FileHandle;
 
 my %desc_<%=cid %> = (
     filename => <%=filename %>,
-    encoding => <%=encoding%> || 'UTF-8',
-    append => <%=append %>,
-    include_header => <%=includeHeader%>,
     schema   => [
 <%
         for (IMetadataColumn column: metadata.getListColumns()) {
 %>
         {
             name    => '<%=column.getLabel() %>',
-            key     => <%=column.isKey() %>,
-            type    => '<%=column.getType() %>',
-            len     => <%=column.getLength() %>,
-            null    => <%=column.isNullable() %>,
-            default => '<%=column.getDefault() %>',
-            comment => '<%=column.getComment() %>',
-        },
-<%
-        }
-%>
-    ],
-    formats => [
-<%
-        for (int i = 0; i < formats.size(); i++) {
-            Map<String, String> format = formats.get(i);
-%>
-        {
-            size         => <%= format.get("SIZE") %>,
-            padding_char => <%= format.get("PADDING_CHAR") %>,
-            align        => <%= format.get("ALIGN") %>,
-            keep         => <%= format.get("KEEP") %>,
-
         },
 <%
         }
@@ -90,19 +64,23 @@ my %desc_<%=cid %> = (
     ],
 );
 
-my $nb_fields_<%=cid %> = scalar @{ $desc_<%=cid %>{schema} };
-
 my $output_FH_<%=cid %> = new FileHandle;
 
+<%
+        String writeMode = ">";
+        if (append) {
+            writeMode = ">>";
+        }
+%>
 open(
     $output_FH_<%=cid %>,
-    $desc_<%=cid%>{append} ? '>>' : '>',
+    '<%=writeMode%>',
     $desc_<%=cid %>{filename}
 )
-    or die 'cannot open file "' . $desc_<%=cid %>{filename} . '"';
+    or die '[<%=cid%>] cannot open file "'.$desc_<%=cid %>{filename}.'"';
 
 <%
-        if (includeHeader.equals("true")) {
+        if (includeHeader) {
 %>
 print {$output_FH_<%=cid %>} (
 <%
@@ -110,25 +88,22 @@ print {$output_FH_<%=cid %>} (
                 Map<String, String> format = formats.get(i);
 %>
     formatString(
-        string       => $desc_<%=cid %>{schema}[<%=i%>]{name},
+        string       => '<%= format.get("SCHEMA_COLUMN") %>',
         size         => <%= format.get("SIZE") %>,
-        padding_char => <%= format.get("PADDING_CHAR") %>,
+        padding_char => ' ',
         align        => <%= format.get("ALIGN") %>,
-        keep         => <%= format.get("KEEP") %>,
+        keep         => 'L',
     ),
 <%
             }
 %>
-    "\n",
+    <%=rowSeparator%>,
 )
-    or die "can't write to file " . $desc_<%=cid %>{filename} . "\n";
+    or die "[<%=cid%>] can't write header";
 
 $nb_line_<%=cid %>++;
 <%
         }
-%>
-
-<%
     }
 }
 %>
