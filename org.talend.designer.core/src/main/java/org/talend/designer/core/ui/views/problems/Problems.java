@@ -289,7 +289,7 @@ public class Problems {
             }
 
         }
-        refreshProcessAllNodesStatus(process);
+//        refreshProcessAllNodesStatus(process);
         refreshProblemTreeView();
     }
 
