@@ -52,6 +52,7 @@ import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.ui.actions.metadata.database.ConnectionDBTableHelper;
+import org.talend.repository.ui.actions.metadata.database.DBBeanParserHelper;
 import org.talend.repository.ui.actions.metadata.database.DBTableForDelimitedBean;
 import org.talend.repository.ui.wizards.RepositoryWizard;
 
@@ -203,7 +204,7 @@ public class ImportDBTableWizard extends RepositoryWizard implements IImportWiza
                 } catch (IOException e) {
                     return;
                 }
-                monitor.beginTask(Messages.getString("ImportDBTableWizard.ProcessLabel"), totalWorks); //$NON-NLS-1$
+                monitor.beginTask(Messages.getString("ImportDBTableWizard.ProcessLabel"), totalWorks + 5); //$NON-NLS-1$
                 process(helper, monitorWrap);
                 monitorWrap.done();
 
@@ -226,23 +227,31 @@ public class ImportDBTableWizard extends RepositoryWizard implements IImportWiza
         try {
             reader = new BufferedReader(new FileReader(helper.getImportedFile()));
             String line;
+            int index = -1;
             while ((line = reader.readLine()) != null) {
                 monitor.worked(1);
-                DBTableForDelimitedBean bean = helper.getRowData(line);
-                if (bean != null) { // the line is suitable format.
+                index++;
+                if (helper.isNullable(line)) {
+                    continue;
+                }
+                DBTableForDelimitedBean bean = DBBeanParserHelper.parseLineToBean(line);
 
+                switch (bean.getBeanType()) {
+                case COLUMN:
+                case TABLE:
+                    // the line is suitable format.
                     ConnectionItem connItem = null;
                     try {
                         connItem = helper.setConnectionItemData(bean);
                     } catch (PersistenceException e) {
-                        helper.recordRejects(bean, null);
+                        helper.recordRejects(bean, null, index);
                         continue;
                     } catch (BusinessException e) {
-                        helper.recordRejects(bean, null);
+                        helper.recordRejects(bean, null, index);
                         continue;
                     }
                     if (connItem == null) {
-                        helper.recordRejects(bean, null);
+                        helper.recordRejects(bean, null, index);
                         continue;
                     }
                     try {
@@ -253,23 +262,25 @@ public class ImportDBTableWizard extends RepositoryWizard implements IImportWiza
                             FACTORY.save(connItem);
                         }
                     } catch (PersistenceException e) {
-                        helper.recordRejects(bean, connItem);
+                        helper.recordRejects(bean, connItem, index);
                         continue;
                     }
                     helper.addRecords(bean);
-                } else { // this line isn't right format. record it in ".log" and ".rejects"
-                    // bean = null
-                    helper.recordRejects(null, null);
+                    break;
+
+                case CONNECTION:
+                case UNKNOWN:
+                default:
+                    // this line isn't right format. record it in ".log" and ".rejects"
+                    helper.recordRejects(null, null, index);
 
                 }
             }
             // write the .log and .rejects
             helper.writeRejects();
+            monitor.worked(2);
             helper.writeLogs();
-
-        } catch (FileNotFoundException e) {
-            MessageBoxExceptionHandler.process(e, getShell());
-
+            monitor.worked(2);
         } catch (IOException e) {
             MessageBoxExceptionHandler.process(e, getShell());
 

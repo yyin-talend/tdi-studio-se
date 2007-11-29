@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.talend.repository.ui.actions.metadata.database.DBTableForDelimitedBean.BeanType;
+
 /**
  * ggu class global comment. Detailled comment <br/>
  * 
@@ -53,6 +55,8 @@ public class DBProcessRecords {
         REJECT,
         IMPORT
     }
+
+    private Set<Integer> rejectedLine = new HashSet<Integer>();
 
     private Map<ProcessType, Set<String>> processToConnMap = new HashMap<ProcessType, Set<String>>();
 
@@ -116,7 +120,16 @@ public class DBProcessRecords {
                 rejectedSet = new HashSet<ValueTypeBean>();
                 rejectedMap.put(rType, rejectedSet);
             }
-            rejectedSet.add(new ValueTypeBean(connName, name));
+            boolean found = false;
+            for (ValueTypeBean bean : rejectedSet) {
+                if (bean.getConnName().equals(connName) && bean.getValue().equals(name)) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                rejectedSet.add(new ValueTypeBean(connName, name));
+            }
         default:
         }
 
@@ -198,7 +211,9 @@ public class DBProcessRecords {
             if (!connSet.contains(connName)) {
                 connSet.add(connName);
             }
-            addTable(pType, bean);
+            if (bean.getBeanType() == BeanType.TABLE || bean.getBeanType() == BeanType.COLUMN) {
+                addTable(pType, bean);
+            }
 
             break;
         case EXISTEDTABLE:
@@ -245,7 +260,9 @@ public class DBProcessRecords {
         if (!tableSet.contains(tableName)) {
             tableSet.add(tableName);
         }
-        addField(pType, bean);
+        if (bean.getBeanType() == BeanType.COLUMN) {
+            addField(pType, bean);
+        }
     }
 
     private void addField(ProcessType pType, DBTableForDelimitedBean bean) {
@@ -399,10 +416,28 @@ public class DBProcessRecords {
     }
 
     private boolean checkBean(DBTableForDelimitedBean bean) {
-        if (isValid(bean.getName()) && isValid(bean.getTableName()) && isValid(bean.getLabel())) {
-            return true;
+        if (!isValid(bean.getName())) {
+            return false;
         }
-        return false;
+        switch (bean.getBeanType()) {
+        case COLUMN:
+            if (!isValid(bean.getLabel())) {
+                return false;
+            }
+        case TABLE:
+            if (!isValid(bean.getTableName())) {
+                return false;
+            }
+            break;
+        case CONNECTION:
+            if (!isValid(bean.getDatabaseType())) {
+                return false;
+            }
+        case UNKNOWN:
+        default:
+        }
+
+        return true;
     }
 
     private boolean isValid(Object name) {
@@ -417,4 +452,11 @@ public class DBProcessRecords {
         return true;
     }
 
+    public void setRejectedLines(int lineNum) {
+        rejectedLine.add(lineNum);
+    }
+
+    public Set<Integer> getRejectedLines() {
+        return rejectedLine;
+    }
 }

@@ -86,6 +86,33 @@ public class DBTableForDelimitedBean {
     private String dbType;
 
     /**
+     */
+    public enum BeanType {
+        CONNECTION,
+        COLUMN,
+        TABLE,
+        UNKNOWN
+
+    }
+
+    private BeanType beanType;
+
+    /**
+     * attribute position in a line.
+     */
+    public static final int POSITION_NAME = 1;
+
+    public static final int POSITION_DATABASETYPE = 6;
+
+    public static final int POSITION_ORIGINALTABLENAME = 18;
+
+    public static final int POSITION_ORIGINALLABEL = 20;
+
+    public static final int POSITION_KEY = 23;
+
+    public static final int POSITION_LENGTH = 24;
+
+    /**
      * DOC ggu DatabaseTableForDelimitedBean constructor comment.
      */
     public DBTableForDelimitedBean() {
@@ -621,6 +648,24 @@ public class DBTableForDelimitedBean {
      */
     public void setDbType(String dbType) {
         this.dbType = dbType;
+    }
+
+    /**
+     * Getter for beanType.
+     * 
+     * @return the beanType
+     */
+    public BeanType getBeanType() {
+        return this.beanType;
+    }
+
+    /**
+     * Sets the beanType.
+     * 
+     * @param beanType the beanType to set
+     */
+    public void setBeanType(BeanType beanType) {
+        this.beanType = beanType;
     }
 
 }

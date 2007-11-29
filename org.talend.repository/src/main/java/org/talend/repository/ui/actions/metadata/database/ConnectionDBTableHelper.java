@@ -32,7 +32,6 @@ import java.util.regex.Pattern;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.utils.PathUtils;
-import org.talend.commons.utils.VersionUtils;
 import org.talend.commons.utils.data.list.UniqueStringGenerator;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
@@ -62,6 +61,7 @@ import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.ui.actions.metadata.database.DBProcessRecords.ProcessType;
 import org.talend.repository.ui.actions.metadata.database.DBProcessRecords.RecordsType;
 import org.talend.repository.ui.actions.metadata.database.DBProcessRecords.RejectedType;
+import org.talend.repository.ui.actions.metadata.database.DBTableForDelimitedBean.BeanType;
 import org.talend.repository.ui.utils.DataStringConnection;
 
 /**
@@ -76,7 +76,7 @@ public final class ConnectionDBTableHelper {
 
     private boolean connectionCreated = false;
 
-    private StringBuilder unknownLine = new StringBuilder();
+    // private StringBuilder unknownLine = new StringBuilder();
 
     private Map<String, String> connNameMap = new HashMap<String, String>();
 
@@ -107,174 +107,6 @@ public final class ConnectionDBTableHelper {
         return this.importedfile;
     }
 
-    public DBTableForDelimitedBean getRowData(final String line) {
-        DBTableForDelimitedBean bean = new DBTableForDelimitedBean();
-
-        String[] datas = parseLines(line);
-
-        String tmp = null;
-
-        /**
-         * Properties
-         */
-        // name
-        tmp = datas[0].trim();
-        if ("".equals(tmp)) { //$NON-NLS-1$
-            return null;
-        }
-        bean.setName(tmp);
-        // Purpose and Description
-        bean.setPurpose(datas[1].trim());
-        bean.setDescription(datas[2].trim());
-        // Version
-        tmp = datas[3].trim();
-        if ("".equals(tmp)) { //$NON-NLS-1$
-            bean.setVersion(VersionUtils.DEFAULT_VERSION); //$NON-NLS-1$
-        } else {
-            bean.setVersion(tmp);
-        }
-        // Status
-        bean.setStatus(datas[4].trim());
-
-        /**
-         * Database Connection
-         */
-        // Database Type
-        tmp = datas[5].trim();
-        bean.setDatabaseType(tmp);
-
-        // Connection String
-        bean.setConnectionStr(datas[6].trim());
-        // Login and Password
-        bean.setLogin(datas[7].trim());
-        bean.setPassword(datas[8]);
-        // Server
-        bean.setServer(datas[9].trim());
-        // Port
-        tmp = datas[10].trim();
-        boolean b = true;
-        if (!isNullable(bean.getDatabaseType())) {
-            if (bean.getDatabaseType().equals("Ingres")) { //$NON-NLS-1$
-                b = Pattern.matches(Messages.getString("DatabaseForm.ingresDBRegex"), tmp); //$NON-NLS-1$
-            } else {
-                b = Pattern.matches(Messages.getString("DatabaseForm.otherDBRegex"), tmp); //$NON-NLS-1$
-            }
-        }
-        if (!b) { // not right
-            return null;
-        }
-        bean.setPort(tmp);
-
-        // Database, Schema, DataSource
-        bean.setDatabase(datas[11].trim());
-        bean.setDbSchema(datas[12].trim());
-        bean.setDataSource(datas[13].trim());
-        // file and Database Root Path
-        bean.setFile(datas[14].trim());
-        bean.setDbRootPath(datas[15].trim());
-
-        /**
-         * Metadata Schema
-         */
-        // Original Table Name
-        tmp = datas[17].trim();
-        if ("".equals(tmp)) { //$NON-NLS-1$
-            return null;
-        }
-        bean.setOriginalTableName(tmp);
-        // Table Name
-        tmp = datas[16].trim();
-        if (tmp == "") { //$NON-NLS-1$
-            bean.setTableName(bean.getOriginalTableName());
-        } else {
-            bean.setTableName(tmp);
-        }
-        // Original Label
-        tmp = datas[19].trim();
-        if ("".equals(tmp)) { //$NON-NLS-1$
-            return null;
-        }
-        bean.setOriginalLabel(tmp);
-        // Label
-        tmp = datas[18].trim();
-        if ("".equals(tmp)) { //$NON-NLS-1$
-            bean.setLabel(bean.getOriginalLabel());
-        } else {
-            bean.setLabel(tmp);
-        }
-        // Comment
-        bean.setComment(datas[20].trim());
-        // Default Value
-        bean.setDefaultValue(datas[21].trim());
-        // key
-        tmp = datas[22].trim();
-        if ("".equals(tmp)) { //$NON-NLS-1$
-            return null;
-        }
-        if ("true".equals(tmp.toLowerCase())) { //$NON-NLS-1$
-            bean.setKey(true);
-        } else if ("false".equals(tmp.toLowerCase())) { //$NON-NLS-1$
-            bean.setKey(false);
-        } else {
-            return null;
-        }
-        // Length
-        tmp = datas[23].trim();
-        if ("".equals(tmp)) { //$NON-NLS-1$
-            return null;
-        }
-        try {
-            int length = Integer.parseInt(tmp);
-            bean.setLength(length);
-        } catch (NumberFormatException e) {
-            return null;
-        }
-        // Nullable
-        tmp = datas[24].trim();
-        if ("true".equals(tmp.toLowerCase())) { //$NON-NLS-1$
-            bean.setNullable(true);
-        } else if ("false".equals(tmp.toLowerCase())) { //$NON-NLS-1$
-            bean.setNullable(false);
-        } else {
-            return null;
-        }
-        // Pattern
-        bean.setPattern(datas[25].trim());
-        // Precision
-        tmp = datas[26].trim();
-        if ("".equals(tmp)) { //$NON-NLS-1$
-            bean.setPrecision(0);
-        } else {
-            try {
-                int precision = Integer.parseInt(tmp);
-                bean.setPrecision(precision);
-            } catch (NumberFormatException e) {
-                bean.setPrecision(0);
-            }
-        }
-        // Talend Type and DB Type
-        bean.setTalendType(datas[27].trim());
-        bean.setDbType(datas[28].trim());
-
-        return bean;
-    }
-
-    private String[] parseLines(final String line) {
-        // FIXME there are some problem about parsing the line,
-        // process the data that contain semicolon, such as Description= "a;b,c""
-        String[] datas = new String[DBTableForDelimitedBean.TOTAL];
-        for (int i = 0; i < datas.length; i++) {
-            datas[i] = ""; //$NON-NLS-1$
-        }
-
-        String[] tmpDatas = line.split(";"); //$NON-NLS-1$
-        for (int i = 0; i < tmpDatas.length; i++) {
-            datas[i] = tmpDatas[i];
-        }
-
-        return datas;
-    }
-
     public boolean isNullable(String name) {
         if (name == null || "".equals(name.trim())) { //$NON-NLS-1$
             return true;
@@ -297,9 +129,11 @@ public final class ConnectionDBTableHelper {
         if (conn == null) {
             return null;
         }
-        if (!setMetadataTableData(conn, bean)) {
-            addTableName(bean.getName(), bean.getTableName(), true);
-            return null;
+        if (bean.getBeanType() == BeanType.COLUMN || bean.getBeanType() == BeanType.TABLE) {
+            if (!setMetadataTableData(conn, bean)) {
+                addTableName(bean.getName(), bean.getTableName(), true);
+                return null;
+            }
         }
         connNameMap.put(bean.getName(), connItem.getProperty().getLabel());
         return connItem;
@@ -310,7 +144,12 @@ public final class ConnectionDBTableHelper {
         if (isNullable(bean.getName())) {
             return null;
         }
+
         if (!Pattern.matches(RepositoryConstants.getPattern(ERepositoryObjectType.METADATA_CONNECTIONS), bean.getName())) {
+            return null;
+        }
+        if (isNullable(bean.getDatabaseType())) {
+            processRecords.addRejectedRecords(RejectedType.DATABASETYPE, bean.getDatabaseType(), bean.getName());
             return null;
         }
         DatabaseConnectionItem connItemAll = searchConnectionItem(bean.getName(), true);
@@ -343,15 +182,6 @@ public final class ConnectionDBTableHelper {
         if (isNullable(name)) {
             return null;
         }
-
-        // RootContainer<String, IRepositoryObject> metadata = FACTORY.getMetadataConnection();
-        // ContentList<String, IRepositoryObject> processAbsoluteMembers = metadata.getAbsoluteMembers();
-        //
-        // for (Content<String, IRepositoryObject> object : processAbsoluteMembers.values()) {
-        // IRepositoryObject meta = object.getContent();
-        // System.out.println(meta.getLabel());
-        // }
-
         List<IRepositoryObject> repositoryObjs = factory.getAll(ERepositoryObjectType.METADATA_CONNECTIONS, withDeleted);
         for (IRepositoryObject obj : repositoryObjs) {
             if (obj.getLabel().toLowerCase().equals(name.toLowerCase())) {
@@ -367,11 +197,11 @@ public final class ConnectionDBTableHelper {
     private DatabaseConnectionItem createConnectionItem(DBTableForDelimitedBean bean) {
 
         DatabaseConnection conn = createDBConnection(bean);
-        DatabaseConnectionItem connItem = PropertiesFactory.eINSTANCE.createDatabaseConnectionItem();
-        createProperty(connItem, bean);
         if (conn == null) {
             return null;
         }
+        DatabaseConnectionItem connItem = PropertiesFactory.eINSTANCE.createDatabaseConnectionItem();
+        createProperty(connItem, bean);
         connItem.setConnection(conn);
 
         connectionCreated = true;
@@ -381,10 +211,7 @@ public final class ConnectionDBTableHelper {
     }
 
     private DatabaseConnection createDBConnection(DBTableForDelimitedBean bean) {
-        if (isNullable(bean.getDatabaseType())) {
-            processRecords.addRejectedRecords(RejectedType.DATABASETYPE, bean.getDatabaseType(), bean.getName());
-            return null;
-        }
+
         final String product = EDatabaseTypeName.getTypeFromDisplayName(bean.getDatabaseType()).getProduct();
         if (product == null) {
             // not suppored database
@@ -544,6 +371,11 @@ public final class ConnectionDBTableHelper {
             return false;
 
         }
+        if (bean.getBeanType() == BeanType.TABLE) {
+            // only add table.
+            return true;
+        }
+
         boolean isOk = setMetadataColumnData(metadataTable, bean);
         if (!isOk) {
             return false;
@@ -800,18 +632,21 @@ public final class ConnectionDBTableHelper {
 
     }
 
-    public void recordRejects(DBTableForDelimitedBean bean, ConnectionItem connItem) {
+    public void recordRejects(DBTableForDelimitedBean bean, ConnectionItem connItem, int index) {
         if (bean == null) {
             rejectedNum++;
         } else {
-            if (connItem == null) {
-                addTableName(bean.getName(), bean.getTableName(), true);
-            } else {
-                addTableName(connItem.getConnection().getLabel(), bean.getTableName(), true);
-            }
+            if (bean.getBeanType() != BeanType.CONNECTION) {
+                if (connItem == null) {
+                    addTableName(bean.getName(), bean.getTableName(), true);
+                } else {
+                    addTableName(connItem.getConnection().getLabel(), bean.getTableName(), true);
+                }
 
-            processRecords.rejectRecords(bean);
+                processRecords.rejectRecords(bean);
+            }
         }
+        processRecords.setRejectedLines(index);
     }
 
     /**
@@ -834,23 +669,36 @@ public final class ConnectionDBTableHelper {
             pw = new PrintWriter(new FileWriter(rFile), true);
             reader = new BufferedReader(new FileReader(importedfile));
             String line;
+            int index = -1;
             while ((line = reader.readLine()) != null) {
-                DBTableForDelimitedBean bean = getRowData(line);
-                if (bean != null) {
-                    // connection name
-                    String connName = connNameMap.get(bean.getName());
-                    if (connName == null || isContainTableName(connName, bean.getTableName(), true)) {
-                        // rejected.
-                        pw.println(line);
-                        created = true;
-                    }
-                } else {
+                index++;
+                if (isNullable(line)) {
+                    continue;
+                }
+                if (processRecords.getRejectedLines().contains(new Integer(index))) {
                     pw.println(line);
-                    unknownLine.append(line);
-                    unknownLine.append(LogDetailsHelper.RETURN);
                     created = true;
                 }
-
+                // DBTableForDelimitedBean bean = DBBeanParserHelper.parseLineToBean(line);
+                // switch (bean.getBeanType()) {
+                // case COLUMN:
+                // case TABLE:
+                // // connection name
+                // String connName = connNameMap.get(bean.getName());
+                // if (connName == null || isContainTableName(connName, bean.getTableName(), true)) {
+                // // rejected.
+                // pw.println(line);
+                // created = true;
+                // }
+                // break;
+                // case CONNECTION:
+                // case UNKNOWN:
+                // default:
+                // pw.println(line);
+                // unknownLine.append(line);
+                // unknownLine.append(LogDetailsHelper.RETURN);
+                // created = true;
+                // }
             }
             pw.flush();
         } catch (FileNotFoundException e) {
