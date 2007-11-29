@@ -89,6 +89,7 @@ public class FileController extends AbstractElementPropertySectionController {
                 String propertyName = (String) button.getData(PARAMETER_NAME);
                 if (!elem.getPropertyValue(propertyName).equals(file)) {
                     String portableValue = Path.fromOSString(file).toPortableString();
+                    filePathText.setText(TalendTextUtils.addQuotes(portableValue));
                     return new PropertyChangeCommand(elem, propertyName, TalendTextUtils.addQuotes(portableValue));
 
                 }

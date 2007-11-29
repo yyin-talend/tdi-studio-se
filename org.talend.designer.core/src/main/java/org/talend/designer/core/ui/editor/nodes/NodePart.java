@@ -53,7 +53,9 @@ import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ExternalUtilities;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
+import org.talend.designer.core.ui.editor.ETalendSelectionType;
 import org.talend.designer.core.ui.editor.ProcessEditorInput;
+import org.talend.designer.core.ui.editor.TalendSelectionManager;
 import org.talend.designer.core.ui.editor.cmd.ExternalNodeChangeCommand;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.connections.ConnectionFigure;
@@ -98,13 +100,30 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
             PlatformUI.getWorkbench().getHelpSystem().displayHelp(helpLink);
         }
 
+        TalendSelectionManager selectionManager = (TalendSelectionManager) getViewer().getSelectionManager();
         if (value == SELECTED) {
-            view = page.findView(ComponentSettingsView.ID); //$NON-NLS-1$
-            if (view != null) {
-                ComponentSettingsView compSettings = (ComponentSettingsView) view;
-                compSettings.setElement((Node) getModel());
+            ComponentSettingsView viewer = (ComponentSettingsView) page.findView(ComponentSettingsView.ID); //$NON-NLS-1$
+            if (viewer == null) {
+                return;
             }
+
+            if (selectionManager.getSelectionType() == ETalendSelectionType.SINGLE) {
+                ComponentSettingsView compSettings = (ComponentSettingsView) viewer;
+                compSettings.setElement((Node) getModel());
+            } else if (!viewer.isCleaned() && selectionManager.getSelectionType() == ETalendSelectionType.MULTIPLE) {
+                ComponentSettingsView compSettings = (ComponentSettingsView) viewer;
+                compSettings.cleanDisplay();
+            }
+
+        } else if (value == SELECTED_NONE) {
+            ComponentSettingsView viewer = (ComponentSettingsView) page.findView(ComponentSettingsView.ID); //$NON-NLS-1$
+            if (viewer == null) {
+                return;
+            }
+            ComponentSettingsView compSettings = (ComponentSettingsView) viewer;
+            compSettings.cleanDisplay();
         }
+
     }
 
     protected boolean findNodeContainerPart() {

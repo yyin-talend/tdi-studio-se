@@ -31,8 +31,6 @@ import org.eclipse.ui.PlatformUI;
 import org.talend.core.model.process.Element;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.cmd.ConnectionDeleteCommand;
-import org.talend.designer.core.ui.editor.nodes.Node;
-import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
 import org.talend.designer.core.ui.views.properties.ComponentSettingsView;
 
 /**
@@ -87,6 +85,12 @@ public class ConnectionPart extends AbstractConnectionEditPart implements Proper
             if (view != null) {
                 ComponentSettingsView compSettings = (ComponentSettingsView) view;
                 compSettings.setElement((Connection) getModel());
+            }
+        } else if (value == SELECTED_NONE) {
+            IViewPart view = page.findView(ComponentSettingsView.ID); //$NON-NLS-1$
+            if (view != null) {
+                ComponentSettingsView compSettings = (ComponentSettingsView) view;
+                compSettings.cleanDisplay();
             }
         }
 

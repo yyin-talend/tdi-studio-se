@@ -56,6 +56,7 @@ import org.eclipse.gef.MouseWheelZoomHandler;
 import org.eclipse.gef.RootEditPart;
 import org.eclipse.gef.SnapToGeometry;
 import org.eclipse.gef.SnapToGrid;
+import org.eclipse.gef.editparts.AbstractEditPart;
 import org.eclipse.gef.editparts.LayerManager;
 import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
 import org.eclipse.gef.editparts.ZoomManager;
@@ -127,6 +128,7 @@ import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.general.ILibrariesService;
 import org.talend.core.model.process.EConnectionType;
+import org.talend.core.model.process.Element;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.properties.Property;
 import org.talend.core.prefs.ITalendCorePrefConstants;
@@ -140,6 +142,7 @@ import org.talend.designer.core.ui.action.GEFDeleteAction;
 import org.talend.designer.core.ui.action.GEFPasteAction;
 import org.talend.designer.core.ui.action.ModifyMergeOrderAction;
 import org.talend.designer.core.ui.action.TalendConnectionCreationTool;
+import org.talend.designer.core.ui.editor.connections.ConnectionPart;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
 import org.talend.designer.core.ui.editor.outline.NodeTreeEditPart;
@@ -149,6 +152,7 @@ import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.process.ProcessPart;
 import org.talend.designer.core.ui.editor.process.ProcessTemplateTransferDropTargetListener;
 import org.talend.designer.core.ui.editor.process.TalendEditorDropTargetListener;
+import org.talend.designer.core.ui.views.properties.ComponentSettingsView;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.job.deletion.IJobResourceProtection;
 import org.talend.repository.job.deletion.JobResource;
@@ -455,6 +459,21 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
      */
     @Override
     public void setFocus() {
+        ComponentSettingsView viewer = (ComponentSettingsView) PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+                .getActivePage().findView(ComponentSettingsView.ID);
+        if (viewer != null) {
+            IStructuredSelection selection = (IStructuredSelection) getViewer().getSelection();
+            Object objs[] = selection.toArray();
+
+            if (objs.length == 1 && (objs[0] instanceof NodePart || objs[0] instanceof ConnectionPart)) {
+
+                viewer.setElement((Element) ((AbstractEditPart) objs[0]).getModel());
+
+            } else {
+                viewer.cleanDisplay();
+            }
+        }
+
         super.setFocus();
 
         if (!readOnly) {
@@ -1118,6 +1137,11 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
             for (JobResource r : protectedJobs.values()) {
                 manager.deleteResource(r);
             }
+        }
+        ComponentSettingsView viewer = (ComponentSettingsView) PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+                .getActivePage().findView(ComponentSettingsView.ID);
+        if (viewer != null) {
+            viewer.cleanDisplay();
         }
         super.dispose();
     }

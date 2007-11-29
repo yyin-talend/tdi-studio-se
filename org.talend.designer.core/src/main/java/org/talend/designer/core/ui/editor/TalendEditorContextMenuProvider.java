@@ -38,7 +38,7 @@ import org.talend.designer.core.ui.action.ConnectionSetAsMainRef;
 import org.talend.designer.core.ui.action.GEFCopyAction;
 import org.talend.designer.core.ui.action.ModifyMergeOrderAction;
 import org.talend.designer.core.ui.action.NodeBreakpointAction;
-import org.talend.designer.core.ui.action.PropertiesContextAction;
+import org.talend.designer.core.ui.action.ShowComponentSettingViewerAction;
 import org.talend.designer.core.ui.action.SendBackwardAction;
 import org.talend.designer.core.ui.action.SendToBackAction;
 
@@ -241,8 +241,8 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
             if (action.isEnabled()) {
                 menu.appendToGroup(GEFActionConstants.GROUP_REST, action);
             }
-            action = new PropertiesContextAction(part);
-            ((PropertiesContextAction) action).update();
+            action = new ShowComponentSettingViewerAction(part);
+            ((ShowComponentSettingViewerAction) action).update();
             menu.add(new Separator());
             menu.add(action);
 

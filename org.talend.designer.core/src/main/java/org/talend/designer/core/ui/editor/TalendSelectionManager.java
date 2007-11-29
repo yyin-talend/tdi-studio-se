@@ -31,6 +31,8 @@ import org.talend.designer.core.ui.editor.process.ProcessPart;
  */
 public class TalendSelectionManager extends SelectionManager {
 
+    private ETalendSelectionType selectionType;
+
     /*
      * (non-Javadoc)
      * 
@@ -45,11 +47,11 @@ public class TalendSelectionManager extends SelectionManager {
                 selected = element;
             }
             if (getSelection().isEmpty() || (selected instanceof ProcessPart)) {
+                this.selectionType = ETalendSelectionType.SINGLE;
                 super.appendSelection(arg0);
             }
 
-            if (!(arg0 instanceof NodeLabelEditPart) && !(arg0 instanceof ConnLabelEditPart)
-                    && !(arg0 instanceof ConnectionPart)) {
+            if (!(arg0 instanceof NodeLabelEditPart) && !(arg0 instanceof ConnLabelEditPart) && !(arg0 instanceof ConnectionPart)) {
                 // removes old selections of labels by calling setSelection
                 for (Object element : selection.toArray()) {
                     if (element instanceof NodeLabelEditPart) {
@@ -77,9 +79,15 @@ public class TalendSelectionManager extends SelectionManager {
             StructuredSelection selection = (StructuredSelection) arg0;
             if (selection.size() != 1) {
                 // if there is more than one element, remove all the selections of labels
+                if (selection.size() > 1) {
+                    this.selectionType = ETalendSelectionType.MULTIPLE;
+                } else {
+                    this.selectionType = ETalendSelectionType.NONE;
+                }
                 super.setSelection(filterSelection(selection));
             }
         } else {
+            this.selectionType = ETalendSelectionType.SINGLE;
             super.setSelection(arg0);
         }
     }
@@ -95,6 +103,15 @@ public class TalendSelectionManager extends SelectionManager {
         }
         StructuredSelection newList = new StructuredSelection(newSelection);
         return newList;
+    }
+
+    /**
+     * yzhang Comment method "getSelectionType".
+     * 
+     * @return
+     */
+    public ETalendSelectionType getSelectionType() {
+        return this.selectionType;
     }
 
 }

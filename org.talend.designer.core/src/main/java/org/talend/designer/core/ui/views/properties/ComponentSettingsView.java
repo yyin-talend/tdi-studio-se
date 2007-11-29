@@ -49,6 +49,8 @@ public class ComponentSettingsView extends ViewPart {
 
     private Element elem;
 
+    private boolean cleaned;
+
     /**
      * nrousseau ComponentSettings constructor comment.
      */
@@ -116,6 +118,21 @@ public class ComponentSettingsView extends ViewPart {
 
     }
 
+    public boolean isCleaned() {
+        return this.cleaned;
+    }
+
+    public void cleanDisplay() {
+        tabFactory.setInput(null);
+        tabFactory.setTitle(null, null);
+        if (tabFactory.getTabComposite() != null) {
+            for (Control curControl : tabFactory.getTabComposite().getChildren()) {
+                curControl.dispose();
+            }
+        }
+        cleaned = true;
+    }
+
     public void setElement(Element elem) {
         if (currentSelectedTab != null && currentSelectedTab.getElement().equals(elem)) {
             return;
@@ -131,6 +148,7 @@ public class ComponentSettingsView extends ViewPart {
 
         tabFactory.setInput(descriptors);
         setPropertiesViewerTitle(elem);
+        cleaned = false;
         tabFactory.setSelection(new IStructuredSelection() {
 
             public Object getFirstElement() {
