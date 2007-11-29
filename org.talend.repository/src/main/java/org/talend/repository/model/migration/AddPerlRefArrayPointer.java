@@ -26,7 +26,6 @@ import org.apache.oro.text.regex.Perl5Compiler;
 import org.apache.oro.text.regex.Perl5Matcher;
 import org.apache.oro.text.regex.Perl5Substitution;
 import org.apache.oro.text.regex.Util;
-import org.eclipse.emf.common.util.EList;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.utils.data.text.StringHelper;
 import org.talend.core.language.ECodeLanguage;
@@ -74,7 +73,6 @@ public class AddPerlRefArrayPointer extends AbstractJobMigrationTask {
                      * 
                      * @see org.talend.core.model.components.filters.IComponentFilter#accept(org.talend.designer.core.model.utils.emf.talendfile.NodeType)
                      */
-                    @Override
                     public boolean accept(NodeType node) {
                         return true;
                     }
@@ -90,7 +88,6 @@ public class AddPerlRefArrayPointer extends AbstractJobMigrationTask {
                      * 
                      * @see org.talend.core.model.components.conversions.IComponentConversion#transform(org.talend.designer.core.model.utils.emf.talendfile.NodeType)
                      */
-                    @Override
                     public void transform(NodeType node) {
 
                         for (Object o : node.getElementParameter()) {
@@ -199,7 +196,7 @@ public class AddPerlRefArrayPointer extends AbstractJobMigrationTask {
                 if (returnedExpression != null) {
                     matcher.setMultiline(true);
                     Perl5Substitution substitution = new Perl5Substitution("@\\$" + "$1" //$NON-NLS-1$
-                            , Perl5Substitution.INTERPOLATE_ALL); //$NON-NLS-1$
+                    , Perl5Substitution.INTERPOLATE_ALL); //$NON-NLS-1$
                     returnedExpression = Util.substitute(matcher, pattern, substitution, returnedExpression, Util.SUBSTITUTE_ALL);
                 }
 
