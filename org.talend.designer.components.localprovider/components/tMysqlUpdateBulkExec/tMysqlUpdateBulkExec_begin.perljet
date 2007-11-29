@@ -1,0 +1,221 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser 
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+    java.util.ArrayList
+    java.util.Map
+    org.talend.commons.utils.StringUtils
+" 
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+
+String filename = ElementParameterParser.getValue(
+    node,
+    "__FILENAME__"
+);
+
+String fieldsTerminatedBy = ElementParameterParser.getValue(
+    node,
+    "__FIELDS_TERMINATED_BY__"
+);
+
+String dbtable = ElementParameterParser.getValue(node, "__TABLE__");
+String dbhost = ElementParameterParser.getValue(node, "__HOST__");
+String dbport = ElementParameterParser.getValue(node, "__PORT__");
+String dbname = ElementParameterParser.getValue(node, "__DBNAME__");
+String dbuser = ElementParameterParser.getValue(node, "__USER__");
+String dbpass = ElementParameterParser.getValue(node, "__PASS__");
+String encoding = ElementParameterParser.getValue(
+    node,
+    "__ENCODING__"
+);
+
+String useExistingConnection = ElementParameterParser.getValue(
+    node,
+    "__USE_EXISTING_CONNECTION__"
+);
+
+String connection = ElementParameterParser.getValue(
+    node,
+    "__CONNECTION__"
+);
+
+String dbh = "dbh_";
+if (useExistingConnection.equals("true")) {
+    dbh+= connection;
+}
+else {
+    dbh+= cid;
+}
+
+List<Map<String, String>> fieldOptionsList =
+    (List<Map<String,String>>)ElementParameterParser.getObjectValue(
+        node,
+        "__FIELD_OPTIONS__"
+);
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if (metadatas != null && metadatas.size() > 0) {
+    IMetadataTable metadata = metadatas.get(0);
+%>
+
+use DBI;
+use talend::dbOp;
+use tMysqlOutput::Mysql;
+
+my %desc_<%=cid %> = (
+    filename  => <%=filename%>,
+);
+
+<%
+    if (useExistingConnection.equals("false")) {
+%>
+my $<%=dbh%> = DBI->connect(
+    sprintf(
+        'DBI:mysql:database=%s;host=%s;port=%s',
+        <%=dbname %>,
+        <%=dbhost %>,
+        <%=dbport %>,
+    ),
+    <%=dbuser %>,
+    <%=dbpass %>
+)
+    or die "[<%=cid%>] can't connect to database";
+<%
+    }
+%>
+
+if (<%=encoding%> =~ m/utf-?8/i) {
+    $<%=dbh%>->do('SET character_set_database=utf8')
+        or die '[<%=cid%>] cannot set connection encoding';
+}
+
+my @metadata_columns = (
+<%
+    List pkCols = new ArrayList();
+    List pkColStrings = new ArrayList();
+    List upColStrings = new ArrayList();
+    
+    int i = 0;
+    for (IMetadataColumn column: metadata.getListColumns()) {
+        String colname = column.getLabel();
+%>
+    '<%=colname%>',
+<%
+        if (fieldOptionsList.get(i).get("UPDATE_KEY").equals("true")) {
+            pkCols.add(colname);
+            pkColStrings.add("t1." + colname + " = t2." + colname);
+        }
+        else {
+            upColStrings.add("t1." + colname + " = t2." + colname);
+        }
+    
+        i++;
+    }
+    
+    String pkColsString = StringUtils.join(
+        pkCols.toArray(),
+        ", "
+    );
+%>
+);
+
+my @creation_columns = ();
+
+$query = 'SHOW FULL COLUMNS FROM '.<%=dbtable%>;
+my $sth_<%=cid %> = $<%=dbh%>->prepare($query);
+$sth_<%=cid %>->execute();
+while (my $row_href = $sth_<%=cid %>->fetchrow_hashref()) {
+    my $fieldname = $row_href->{Field};
+
+    if (grep /^$fieldname$/, @metadata_columns) {
+        my $column = $fieldname.' '.$row_href->{Type};
+
+        if ($row_href->{Null} eq 'NO') {
+            $column.= ' NOT NULL';
+        }
+
+        if (defined $row_href->{Default} and $row_href->{Default} ne '') {
+            $column.= " default '".$row_href->{Default}."'";
+        }
+
+        if (defined $row_href->{Collation}
+            and $row_href->{Collation} ne 'NULL') {
+            $column.= " collate '".$row_href->{Collation}."'";
+        }
+
+        push @creation_columns, $column;
+    }
+}
+
+{
+    my $tablename = sprintf(
+        '%s_%s',
+        <%=dbtable%>,
+        getRandomString(
+            64 - 1 - length(<%=dbtable%>),
+            ['a'..'z', 0..9]
+        )
+    );
+
+    $query = '
+CREATE TABLE '.$tablename.' (
+  '.join(",\n  ", @creation_columns).',
+  PRIMARY KEY (<%=pkColsString%>)
+)';
+    # print $query, "\n"; exit();
+
+    $<%=dbh%>->do($query)
+        or die sprintf(
+            "[<%=cid%>] cannot create table\n===\n%s\n===\n",
+            $query,
+        );
+
+    $sth_<%=cid %> = $<%=dbh%>->prepare(
+        sprintf(
+            'LOAD DATA LOCAL INFILE ? INTO TABLE %s FIELDS TERMINATED BY ?',
+            $tablename,
+        )
+    );
+    
+    $sth_<%=cid %>->execute(
+        <%=filename%>,
+        <%=fieldsTerminatedBy%>,
+    )
+        or die "[<%=cid%>] can't execute load data query";
+    
+    $sth_<%=cid %>->finish();
+
+    $query = '
+UPDATE '.<%=dbtable%>.' AS t1, '.$tablename.' AS t2
+  SET <%=StringUtils.join(upColStrings.toArray(), ",\n    ")%>
+  WHERE <%=StringUtils.join(pkColStrings.toArray(), "\n    AND ")%>
+';
+    $<%=dbh%>->do($query)
+        or die "[<%=cid%>] cannot perform bulk table";
+
+    $query = '
+DROP TABLE '.$tablename.'
+';
+    $<%=dbh%>->do($query)
+        or die "[<%=cid%>] cannot delete temporary table";
+
+<%
+    if (useExistingConnection.equals("false")) {
+%>
+    $<%=dbh%>->disconnect();
+<%
+    }
+%>
+}
+<%
+}
+%>
