@@ -259,7 +259,9 @@ public class Problems {
 
         boolean hasStatus = false;
         for (Problem problem : problemList) {
-            if (problem.getElement() != null && (!problem.getElement().equals(node))) {
+            if (problem.getElement() == null) {
+                continue;
+            } else if (problem.getElement() != null && (!problem.getElement().equals(node))) {
                 continue;
             }
             hasStatus = true;
@@ -289,7 +291,7 @@ public class Problems {
             }
 
         }
-//        refreshProcessAllNodesStatus(process);
+        // refreshProcessAllNodesStatus(process);
         refreshProblemTreeView();
     }
 
