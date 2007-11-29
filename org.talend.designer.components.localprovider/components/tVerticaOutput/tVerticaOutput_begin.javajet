@@ -45,7 +45,7 @@ imports="
 	
 	String dataAction = ElementParameterParser.getValue(node,"__DATA_ACTION__");
 	
-	String tableAction = ElementParameterParser.getValue(node,"__CLEAR_TABLE__");	
+	String tableAction = ElementParameterParser.getValue(node,"__TABLE_ACTION__");	
 	
 	String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
 
@@ -260,9 +260,55 @@ if(columnList != null && columnList.size()>0){
         }
     }
     
-    if(!tableAction.equals("NONE")) {
+if(!tableAction.equals("NONE")) {
         
         class SQLBuilder {
+            public String columnList(List<Column> columnList){
+                String columnListStr = new String();
+                
+                int count = 0;
+                
+                String ending = ",";
+                
+                for(Column column : columnList) {
+                                            
+                    if(column.isReplaced()) {
+                        
+                        List<Column> replacedColumns = column.getReplacement();
+                        
+                        int replacedCount = 0;
+                        
+                        for(Column replacedColumn : replacedColumns) {                            
+                            
+                            columnListStr = columnListStr + replacedColumn.getName().replaceAll("(\\+|\")","") + " ";
+                            
+                           replacedCount++;
+                            
+                        }
+                        
+                    } else {
+                                                
+                        if(column.isAddCol()) {
+                            
+                            columnListStr = columnListStr + column.getName().replaceAll("(\\+|\")","") + " ";
+                           
+                        } else {
+                            
+                            columnListStr = columnListStr + column.getColumn().getOriginalDbColumnName() + " ";
+                            
+                            String dataType = null;
+                            
+                        }
+                        
+                    }
+                    
+                    if (count<columnList.size()-1) columnListStr = columnListStr + ",";
+                    
+                    count++;
+                    
+                }
+                return columnListStr;
+            }
             
             public String createSQL(List<Column> columnList, String tableName, String dbms) {
                 
@@ -519,14 +565,16 @@ if(columnList != null && columnList.size()>0){
         if(tableAction.equals("DROP_CREATE")) {
             %>
             java.sql.Statement stmtDrop_<%=cid%> = conn_<%=cid%>.createStatement();
-            stmtDrop_<%=cid%>.execute("drop table " + <%=tableName%>);
+            stmtDrop_<%=cid%>.execute("drop table " + <%=tableName%> + " cascade");
             java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
             stmtCreate_<%=cid%>.execute("<%=builder.createSQL(stmtStructure, tableName, dbmsId)%>");
+            stmtCreate_<%=cid%>.execute("CREATE PROJECTION "+<%=tableName%>+"_proj (<%=builder.columnList(stmtStructure)%>) AS SELECT <%=builder.columnList(stmtStructure)%> FROM "+<%=tableName%>);//
             <%
         } else if(tableAction.equals("CREATE")) {
             %>
             java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
             stmtCreate_<%=cid%>.execute("<%=builder.createSQL(stmtStructure, tableName, dbmsId)%>");
+            stmtCreate_<%=cid%>.execute("CREATE PROJECTION "+<%=tableName%>+"_proj (<%=builder.columnList(stmtStructure)%>) AS SELECT <%=builder.columnList(stmtStructure)%> FROM "+<%=tableName%>);//
             <%
         } else if(tableAction.equals("CREATE_IF_NOT_EXISTS")) {
             %>
@@ -542,7 +590,8 @@ if(columnList != null && columnList.size()>0){
             }
             if(!whetherExist_<%=cid%>) {
                 java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
-                stmtCreate_<%=cid%>.execute("<%=builder.createSQL(stmtStructure, tableName, dbmsId)%>");            
+                stmtCreate_<%=cid%>.execute("<%=builder.createSQL(stmtStructure, tableName, dbmsId)%>");     
+                stmtCreate_<%=cid%>.execute("CREATE PROJECTION "+<%=tableName%>+"_proj (<%=builder.columnList(stmtStructure)%>) AS SELECT <%=builder.columnList(stmtStructure)%> FROM "+<%=tableName%>);//
             }
             <%
         } else if(tableAction.equals("CLEAR")) {
@@ -550,7 +599,7 @@ if(columnList != null && columnList.size()>0){
             java.sql.Statement stmtClearCount_<%=cid%> = conn_<%=cid%>.createStatement();
             java.sql.ResultSet rsClearCount_<%=cid%> = stmtClearCount_<%=cid%>.executeQuery("select count(1) from " + <%=tableName%>);
             java.sql.Statement stmtClear_<%=cid%> = conn_<%=cid%>.createStatement();
-            stmtClear_<%=cid%>.executeUpdate("truncate table " + <%=tableName%>);
+            stmtClear_<%=cid%>.executeUpdate("delete from " + <%=tableName%>);
             while(rsClearCount_<%=cid%>.next()) {
                 deletedCount_<%=cid%> += rsClearCount_<%=cid%>.getInt(1);
             }
