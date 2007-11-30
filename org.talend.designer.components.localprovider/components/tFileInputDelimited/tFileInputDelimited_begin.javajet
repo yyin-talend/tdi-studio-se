@@ -158,9 +158,9 @@ if(temp_<%=cid %>.length() > 0) {
 				
 <%if(checkNum) {%>
 	 int filedsum_<%=cid %> = fid_<%=cid %>.getColumnsCountOfCurrentRow();
-	 if(filedsum_<%=cid %> > <%=metadata.getListColumns().size() %>){
+	 if(filedsum_<%=cid %> < <%=metadata.getListColumns().size() %>){
 	 	throw new Exception("Column(s) missing");
-	 } else if(filedsum_<%=cid %> < <%=metadata.getListColumns().size() %>) {
+	 } else if(filedsum_<%=cid %> > <%=metadata.getListColumns().size() %>) {
 	 	throw new Exception("Too many columns");
 	 }     
 <%}%>				
@@ -502,9 +502,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			
 <%if(checkNum) {%>
 	 int filedsum_<%=cid %> = row<%=cid %>.length;
-	 if(filedsum_<%=cid %> > <%=metadata.getListColumns().size() %>){
+	 if(filedsum_<%=cid %> < <%=metadata.getListColumns().size() %>){
 	 	throw new Exception("Column(s) missing");
-	 } else if(filedsum_<%=cid %> < <%=metadata.getListColumns().size() %>) {
+	 } else if(filedsum_<%=cid %> > <%=metadata.getListColumns().size() %>) {
 	 	throw new Exception("Too many columns");
 	 }     
 <%}%>	
