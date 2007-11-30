@@ -23,6 +23,7 @@ import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.draw2d.geometry.Translatable;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.util.TransferDropTargetListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -64,6 +65,7 @@ import org.talend.designer.core.ui.editor.cmd.RepositoryChangeMetadataCommand;
 import org.talend.designer.core.ui.editor.cmd.RepositoryChangeQueryCommand;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodes.Node;
+import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
@@ -211,6 +213,10 @@ public class TalendEditorDropTargetListener implements TransferDropTargetListene
             RepositoryNode selectedNode = store.seletetedNode;
             IComponent element = store.component;
             Node node = new Node(element);
+            IPreferenceStore preferenceStore = DesignerPlugin.getDefault().getPreferenceStore();
+            if (preferenceStore.getBoolean(TalendDesignerPrefConstants.USE_REPOSITORY_NAME)) {
+                node.setPropertyValue(EParameterName.LABEL.getName(), selectedNode.getObject().getProperty().getLabel());
+            }
             processSpecificDBTypeIfSameProduct(store.componentName, node);
             NodeContainer nc = new NodeContainer(node);
 
@@ -223,10 +229,10 @@ public class TalendEditorDropTargetListener implements TransferDropTargetListene
             for (Command command : commands) {
                 command.execute();
             }
-
             draw2dPosition = draw2dPosition.getCopy();
             draw2dPosition.x += TalendEditor.GRID_SIZE;
             draw2dPosition.y += TalendEditor.GRID_SIZE;
+
         }
 
     }

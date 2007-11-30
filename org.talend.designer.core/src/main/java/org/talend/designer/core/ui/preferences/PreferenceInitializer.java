@@ -60,6 +60,8 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
         store.setDefault(TalendDesignerPrefConstants.DEFAULT_CONNECTION_FORMAT, "row");//$NON-NLS-1$
         store.setDefault(TalendDesignerPrefConstants.DEFAULT_HINT_USED, false);
         store.setDefault(TalendDesignerPrefConstants.DEFAULT_DISPLAY, false);
+        store.setDefault(TalendDesignerPrefConstants.USE_REPOSITORY_NAME, true);
+
         store.setDefault(TalendEditorPaletteFactory.PALETTE_STATE, FlyoutPaletteComposite.STATE_PINNED_OPEN);
         store.setDefault(TalendDesignerPrefConstants.COMP_DEFAULT_FILE_DIR, Platform.getLocation().toOSString());
         store.setDefault(TalendDesignerPrefConstants.PROPERTY_CODE_CHECK, false);

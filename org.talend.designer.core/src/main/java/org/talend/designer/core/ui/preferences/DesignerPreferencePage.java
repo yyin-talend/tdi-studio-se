@@ -76,6 +76,7 @@ public class DesignerPreferencePage extends FieldEditorPreferencePage implements
         StringFieldEditor connectionField;
         BooleanFieldEditor showHint;
         BooleanFieldEditor displayComponent;
+        BooleanFieldEditor useRepositoryName;
 
         labelField = new StringFieldEditor(TalendDesignerPrefConstants.DEFAULT_LABEL, Messages
                 .getString("DesignerPreferencePage.component.defaultLabel"), //$NON-NLS-1$
@@ -83,19 +84,21 @@ public class DesignerPreferencePage extends FieldEditorPreferencePage implements
         hintField = new StringFieldEditor(TalendDesignerPrefConstants.DEFAULT_HINT, Messages
                 .getString("DesignerPreferencePage.component.defaultHint"), //$NON-NLS-1$
                 getFieldEditorParent());
-        connectionField = new StringFieldEditor(TalendDesignerPrefConstants.DEFAULT_CONNECTION_FORMAT, "Components default connection",
-                getFieldEditorParent());
+        connectionField = new StringFieldEditor(TalendDesignerPrefConstants.DEFAULT_CONNECTION_FORMAT,
+                "Components default connection", getFieldEditorParent());
         showHint = new BooleanFieldEditor(TalendDesignerPrefConstants.DEFAULT_HINT_USED, Messages
                 .getString("DesignerPreferencePage.hintShowed"), //$NON-NLS-1$
                 getFieldEditorParent());
         displayComponent = new BooleanFieldEditor(TalendDesignerPrefConstants.DEFAULT_DISPLAY, Messages
                 .getString("DesignerPreferencePage.display.hiddenComponents"), getFieldEditorParent()); //$NON-NLS-1$
-
+        useRepositoryName = new BooleanFieldEditor(TalendDesignerPrefConstants.USE_REPOSITORY_NAME, Messages
+                .getString("DesignerPreferencePage.display.useRepositoryName"), getFieldEditorParent()); //$NON-NLS-1$
         addField(labelField);
         addField(hintField);
         addField(connectionField);
         addField(showHint);
         addField(displayComponent);
+        addField(useRepositoryName);
 
         DirectoryFieldEditor compDefaultFileDir = new DirectoryFieldEditor(TalendDesignerPrefConstants.COMP_DEFAULT_FILE_DIR,
                 Messages.getString("DesignerPreferencePage.defaultFilePathDirectory"), getFieldEditorParent()); //$NON-NLS-1$
