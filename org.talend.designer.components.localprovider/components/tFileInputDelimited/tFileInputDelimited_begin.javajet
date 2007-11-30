@@ -157,23 +157,12 @@ if(temp_<%=cid %>.length() > 0) {
 				}%>
 				
 <%if(checkNum) {%>
-	 if(fid_<%=cid %>.getColumnsCountOfCurrentRow()!= <%=metadata.getListColumns().size() %>){
-		whetherReject_<%=cid%> = true;
-	<%if(!rejectConnName.equals("")&&!rejectConnName.equals(firstConnName)&&rejectColumnList != null && rejectColumnList.size() > 0) { %>
-        <%=rejectConnName %> = new <%=rejectConnName %>Struct();
-        <%for(IMetadataColumn column : metadata.getListColumns()) {%>
-            <%=rejectConnName%>.<%=column.getLabel()%> = <%=firstConnName%>.<%=column.getLabel()%>;
-        <%}%>        
-    <%}%>
-    
-    <%if(rejectConnName.equals("") || !rejectConnName.equals(firstConnName)){%>
-    	<%=firstConnName %> = null;
-    <%}%>
-     }
- 	<%if(!rejectConnName.equals("")&&rejectConnName.equals(firstConnName)&&rejectColumnList != null && rejectColumnList.size() > 0) { %>        
-        else { <%=firstConnName %> = null; }
-    <%}%>     
-     
+	 int filedsum_<%=cid %> = fid_<%=cid %>.getColumnsCountOfCurrentRow();
+	 if(filedsum_<%=cid %> > <%=metadata.getListColumns().size() %>){
+	 	throw new Exception("Column(s) missing");
+	 } else if(filedsum_<%=cid %> < <%=metadata.getListColumns().size() %>) {
+	 	throw new Exception("Too many columns");
+	 }     
 <%}%>				
 				
     } catch (Exception e) {
@@ -512,23 +501,12 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			}
 			
 <%if(checkNum) {%>
-	 if(row<%=cid %>.length != <%=metadata.getListColumns().size() %>){
-		whetherReject_<%=cid%> = true;
-	<%if(!rejectConnName.equals("")&&!rejectConnName.equals(firstConnName)&&rejectColumnList != null && rejectColumnList.size() > 0) { %>
-        <%=rejectConnName %> = new <%=rejectConnName %>Struct();
-        <%for(IMetadataColumn column : metadata.getListColumns()) {%>
-            <%=rejectConnName%>.<%=column.getLabel()%> = <%=firstConnName%>.<%=column.getLabel()%>;
-        <%}%>        
-    <%}%>
-    
-    <%if(rejectConnName.equals("") || !rejectConnName.equals(firstConnName)){%>
-    	<%=firstConnName %> = null;
-    <%}%>
-     }
- 	<%if(!rejectConnName.equals("")&&rejectConnName.equals(firstConnName)&&rejectColumnList != null && rejectColumnList.size() > 0) { %>        
-        else { <%=firstConnName %> = null; }
-    <%}%>     
-     
+	 int filedsum_<%=cid %> = row<%=cid %>.length;
+	 if(filedsum_<%=cid %> > <%=metadata.getListColumns().size() %>){
+	 	throw new Exception("Column(s) missing");
+	 } else if(filedsum_<%=cid %> < <%=metadata.getListColumns().size() %>) {
+	 	throw new Exception("Too many columns");
+	 }     
 <%}%>	
 			
     } catch (Exception e) {
