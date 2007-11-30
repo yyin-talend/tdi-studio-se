@@ -87,6 +87,14 @@
     >
     <DEFAULT>10</DEFAULT>
     </PARAMETER>
+    
+    <PARAMETER
+      NAME="DIE_ON_ERROR"
+      FIELD="CHECK"
+      NUM_ROW="5"
+    >
+    <DEFAULT>false</DEFAULT>
+    </PARAMETER>
   </PARAMETERS>
   
 	<CODEGENERATION>

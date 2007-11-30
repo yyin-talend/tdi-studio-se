@@ -30,62 +30,65 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     String rssurl<%=cid%>=<%=rss%>;
     int aMount<%=cid%>=<%=amount%>;
     java.net.URL url<%=cid%> = new java.net.URL(rssurl<%=cid%>);
-    it.sauronsoftware.feed4j.bean.Feed feed<%=cid%>= it.sauronsoftware.feed4j.FeedParser.parse(url<%=cid%> );
-   	String row<%=cid%>[]=new String [4];
-  	 int items<%=cid%>=feed<%=cid%>.getItemCount();
-  	 
-  	 <%
-  	 if(isAmount){
-  	 %>
-  	   		if(aMount<%=cid%>< items<%=cid%>)
-  	   		{
-  	   			items<%=cid%>=aMount<%=cid%>;
-  	   		}
-  	 
-  	 <%
-  	  }
-  	 %>
-      for (int i_<%=cid%> = 0; i_<%=cid%>< items<%=cid%>; i_<%=cid%>++) {
-         it.sauronsoftware.feed4j.bean.FeedItem itm<%=cid%> = feed<%=cid%>.getItem(i_<%=cid%>);
-          row<%=cid%>[0]=itm<%=cid%>.getTitle();
-          row<%=cid%>[1]=itm<%=cid%>.getDescriptionAsText();
-          row<%=cid%>[2]=(itm<%=cid%>.getPubDate()==null ? "" :itm<%=cid%>.getPubDate().toGMTString());
-          row<%=cid%>[3]=(itm<%=cid%>.getLink()==null ? "" :itm<%=cid%>.getLink().toString());
-  <%        if(isDate)
-          {
-  %>       	
-          	java.util.Date d<%=cid%>=new java.util.Date();
-          	java.text.SimpleDateFormat formatterDate<%=cid%>=new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-          	d<%=cid%>=formatterDate<%=cid%>.parse(<%=dateTime%>);
-          	 java.util.Date pubDate<%=cid%>=new java.util.Date(row<%=cid%>[2]);
-         	 int value<%=cid%>=pubDate<%=cid%>.compareTo(d<%=cid%>);
-         	 if(value<%=cid%><0)
-         	 {
-         	 	continue;
-         	 }
-  <%       	
-          }
-  %>        
-
-<%
-	if(conns!=null){
-    		if (conns.size()>0){
-       		IConnection conn =conns.get(0);
-    		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
-			List<IMetadataColumn> columns = metadata.getListColumns();
-    			int sizeColumns = columns.size();
-    			for (int j = 0; j < sizeColumns; j++) {
-    			IMetadataColumn column = columns.get(j);
-    			
- %>
- 			
- 			<%=conn.getName() %>.<%=column.getLabel() %>=row<%=cid%>[<%=j%>];
- <%
+    
+    try{
+        it.sauronsoftware.feed4j.bean.Feed feed<%=cid%>= it.sauronsoftware.feed4j.FeedParser.parse(url<%=cid%> );
+       	String row<%=cid%>[]=new String [4];
+      	 int items<%=cid%>=feed<%=cid%>.getItemCount();
+      	 
+      	 <%
+      	 if(isAmount){
+      	 %>
+      	   		if(aMount<%=cid%>< items<%=cid%>)
+      	   		{
+      	   			items<%=cid%>=aMount<%=cid%>;
+      	   		}
+      	 
+      	 <%
+      	  }
+      	 %>
+          for (int i_<%=cid%> = 0; i_<%=cid%>< items<%=cid%>; i_<%=cid%>++) {
+             it.sauronsoftware.feed4j.bean.FeedItem itm<%=cid%> = feed<%=cid%>.getItem(i_<%=cid%>);
+              row<%=cid%>[0]=itm<%=cid%>.getTitle();
+              row<%=cid%>[1]=itm<%=cid%>.getDescriptionAsText();
+              row<%=cid%>[2]=(itm<%=cid%>.getPubDate()==null ? "" :itm<%=cid%>.getPubDate().toGMTString());
+              row<%=cid%>[3]=(itm<%=cid%>.getLink()==null ? "" :itm<%=cid%>.getLink().toString());
+      <%        if(isDate)
+              {
+      %>       	
+              	java.util.Date d<%=cid%>=new java.util.Date();
+              	java.text.SimpleDateFormat formatterDate<%=cid%>=new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+              	d<%=cid%>=formatterDate<%=cid%>.parse(<%=dateTime%>);
+              	 java.util.Date pubDate<%=cid%>=new java.util.Date(row<%=cid%>[2]);
+             	 int value<%=cid%>=pubDate<%=cid%>.compareTo(d<%=cid%>);
+             	 if(value<%=cid%><0)
+             	 {
+             	 	continue;
+             	 }
+      <%       	
+              }
+      %>        
+    
+    <%
+    	if(conns!=null){
+        		if (conns.size()>0){
+           		IConnection conn =conns.get(0);
+        		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+    			List<IMetadataColumn> columns = metadata.getListColumns();
+        			int sizeColumns = columns.size();
+        			for (int j = 0; j < sizeColumns; j++) {
+        			IMetadataColumn column = columns.get(j);
+        			
+     %>
+     			
+     			<%=conn.getName() %>.<%=column.getLabel() %>=row<%=cid%>[<%=j%>];
+     <%
+        				}
     				}
-				}
-		
-			}
-		}
+    		
+    			}
+    		}
+
 	}
 }
 %>
