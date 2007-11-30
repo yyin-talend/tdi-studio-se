@@ -320,7 +320,8 @@ public class ColumnListController extends AbstractElementPropertySectionControll
         for (IConnection connection : refColumnLists.keySet()) {
             String name = connection.getName() + ".";
             for (String column : refColumnLists.get(connection)) {
-                refColumnListNamesTmp.add(name + column);
+                // refColumnListNamesTmp.add(name + column);
+                refColumnListNamesTmp.add(column);
                 refColumnListValuesTmp.add(column);
             }
         }
