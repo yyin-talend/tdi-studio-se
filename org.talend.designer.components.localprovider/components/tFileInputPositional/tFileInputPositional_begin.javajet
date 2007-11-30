@@ -388,6 +388,8 @@ while (reader_<%=cid %>.readRecord()) {
         				}
         			}%>
         			
+<%if(rejectConnName.equals(firstConnName)) {%> <%=firstConnName %> = null; <%}%>        			
+        			
     } catch (Exception e) {
         whetherReject_<%=cid%> = true;
         <%
@@ -410,12 +412,14 @@ while (reader_<%=cid %>.readRecord()) {
                 <%=rejectConnName%>.errorMessage = e.getMessage();
                 <%=firstConnName %> = null;
                 <%
-            } else {
+            } else if(rejectConnName.equals("")){
                 %>
-                System.err.print(e.getMessage());
+                System.err.println(e.getMessage());
                 <%=firstConnName %> = null;
                 <%
-            }
+            } else if(rejectConnName.equals(firstConnName)){%>
+            	<%=rejectConnName%>.errorMessage = e.getMessage();
+            <%}
         } 
         %>
     }
