@@ -139,7 +139,7 @@ public class PerlProcessor extends Processor {
             String processCode = ""; //$NON-NLS-1$
             try {
                 processCode = codeGen.generateProcessCode();
-                // processCode = replaceSnippet(processCode);
+                processCode = replaceSnippet(processCode);
             } catch (SystemException e) {
                 throw new ProcessorException(Messages.getString("Processor.generationFailed"), e); //$NON-NLS-1$
             }

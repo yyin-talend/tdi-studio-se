@@ -503,68 +503,9 @@ public abstract class Processor implements IProcessor {
      * 
      * @param processCode
      */
-    // public String replaceSnippet(String processCode) {
-    // while (true) {
-    // String snippetLabel = HtmlRegexHandle.extractFristMatchFromFragment(processCode);
-    //
-    // if (snippetLabel == null) {
-    // break;
-    // }
-    // String codeSnippet = findSnippet(snippetLabel);
-    // if (codeSnippet != null) {
-    // processCode = HtmlRegexHandle.insertIntoFirstMatchFragment(codeSnippet, processCode);
-    // } else {
-    // processCode = HtmlRegexHandle.insertIntoFirstMatchFragment("Snippet " + snippetLabel + " can not be found",
-    // processCode);
-    // }
-    // }
-    // return processCode;
-    //
-    // }
-    //
-    // private String findSnippet(String snippetLabel) {
-    // try {
-    // RootContainer<String, IRepositoryObject> snippets = RunProcessPlugin.getDefault().getRepositoryService()
-    // .getProxyRepositoryFactory().getSnippets();
-    // List<IRepositoryObject> objects = snippets.getMembers();
-    //
-    // SnippetItem item = null;
-    // for (IRepositoryObject repositoryObject : objects) {
-    // item = (SnippetItem) repositoryObject.getProperty().getItem();
-    // if (item.getProperty().getLabel().equals(snippetLabel)) {
-    // break;
-    // }
-    // }
-    // if (item != null) {
-    // return prepareText(item);
-    // }
-    // } catch (Exception e) {
-    // ExceptionHandler.process(e);
-    // }
-    // return null;
-    // }
-    //
-    // protected String prepareText(SnippetItem fItem) {
-    // // this could be horribly inefficient
-    // String text = fItem.getContent();
-    // List<SnippetVariable> variables = (List<SnippetVariable>) fItem.getVariables();
-    // for (int i = 0; i < variables.size(); i++) {
-    // SnippetVariable var = variables.get(i);
-    // String value = var.getValue();
-    // text = StringUtils.replace(text, "${" + var.getName() + "}", value); //$NON-NLS-1$ //$NON-NLS-2$
-    // }
-    //
-    // // remove all cursor markers
-    // text = StringUtils.replace(text, "${cursor}", ""); //$NON-NLS-1$ //$NON-NLS-2$
-    //
-    // // Update EOLs (bug 80231)
-    // String systemEOL = System.getProperty("line.separator"); //$NON-NLS-1$
-    // text = StringUtils.replace(text, "\r\n", "\n"); //$NON-NLS-1$ //$NON-NLS-2$
-    // text = StringUtils.replace(text, "\r", "\n"); //$NON-NLS-1$ //$NON-NLS-2$
-    // if (!"\n".equals(systemEOL) && systemEOL != null) { //$NON-NLS-1$
-    // text = StringUtils.replace(text, "\n", systemEOL); //$NON-NLS-1$
-    // }
-    //
-    // return text;
-    // }
+    public String replaceSnippet(String processCode) {
+        SnippetParser sp = new SnippetParser();
+        return sp.convertSnippet(processCode);
+    }
+
 }
