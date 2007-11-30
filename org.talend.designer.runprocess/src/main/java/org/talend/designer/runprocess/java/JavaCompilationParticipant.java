@@ -20,6 +20,7 @@ import org.eclipse.jdt.core.compiler.BuildContext;
 import org.eclipse.jdt.core.compiler.CompilationParticipant;
 import org.eclipse.swt.widgets.Display;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.core.CorePlugin;
 import org.talend.core.model.process.Problem.ProblemStatus;
 import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.designer.runprocess.i18n.Messages;
@@ -29,8 +30,6 @@ import org.talend.designer.runprocess.i18n.Messages;
  * 
  */
 public class JavaCompilationParticipant extends CompilationParticipant {
-
-    private org.eclipse.jdt.core.ICompilationUnit unit;
 
     /**
      * DOC xhuang CompilationParticipant constructor comment.
@@ -90,8 +89,9 @@ public class JavaCompilationParticipant extends CompilationParticipant {
     private boolean isRoutineFile(String filePath) {
         int endIndex = filePath.lastIndexOf("/");
         String javaFileCatalog = filePath.substring(0, endIndex);
-        if (javaFileCatalog.equals(Messages.getString("Routine.javaFilePath")))
+        if (javaFileCatalog.equals(Messages.getString("Routine.javaFilePath"))) {
             return true;
+        }
         return false;
     }
 
@@ -102,8 +102,12 @@ public class JavaCompilationParticipant extends CompilationParticipant {
      */
     @Override
     public boolean isActive(IJavaProject project) {
-        if (JavaProcessor.getJavaProject() != null)
+        if (CorePlugin.getContext().isHeadless()) {
+            return false;
+        }
+        if (JavaProcessor.getJavaProject() != null) {
             return JavaProcessor.getJavaProject().equals(project);
+        }
         return false;
     }
 
