@@ -1,0 +1,62 @@
+<COMPONENT>
+  <HEADER
+    PLATEFORM="ALL"
+    SERIAL=""
+    VERSION="0.101"
+    STATUS="ALPHA"
+    
+    COMPATIBILITY="ALL"
+    AUTHOR="Talend"
+    RELEASE_DATE="20070210A"
+    STARTABLE="true"
+  >
+    <SIGNATURE></SIGNATURE>
+  </HEADER>
+
+  <DOCUMENTATION>
+    <URL/>
+  </DOCUMENTATION>
+
+  <CONNECTORS>
+    <CONNECTOR CTYPE="FLOW" MAX_INPUT="1"/>
+    <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="1" MAX_INPUT="1"/>
+    <CONNECTOR CTYPE="THEN_RUN" MAX_INPUT="1"/>
+    <CONNECTOR CTYPE="REFERENCE"/>
+    <CONNECTOR CTYPE="RUN_OK"/>
+    <CONNECTOR CTYPE="RUN_ERROR"/>
+    <CONNECTOR CTYPE="RUN_IF"/>
+  </CONNECTORS>
+
+  <PARAMETERS>
+
+    <PARAMETER
+      NAME="CODE"
+      FIELD="MEMO_JAVA"
+      REQUIRED="false"
+      NUM_ROW="2"
+      NB_LINES="9"
+      CONTEXT="begin"
+    >
+      <DEFAULT>// your Groovy Code
+      </DEFAULT>
+    </PARAMETER>
+
+   </PARAMETERS>
+
+   <CODEGENERATION>
+   	<IMPORTS>
+		<IMPORT NAME="Groovy_Module" MODULE="antlr-2.7.5.jar" REQUIRED="true" />
+		<IMPORT NAME="Groovy_Module" MODULE="asm-2.2.jar" REQUIRED="true" />
+		<IMPORT NAME="Groovy_Module" MODULE="asm-analysis-2.2.jar" REQUIRED="true" />
+		<IMPORT NAME="Groovy_Module" MODULE="asm-attrs-2.2.jar" REQUIRED="true" />
+		<IMPORT NAME="Groovy_Module" MODULE="asm-tree-2.2.jar" REQUIRED="true" />
+		<IMPORT NAME="Groovy_Module" MODULE="asm-util-2.2.jar" REQUIRED="true" />
+		<IMPORT NAME="Groovy_Module" MODULE="groovy-1.0.jar" REQUIRED="true" />
+		<IMPORT NAME="Groovy_Module" MODULE="groovy-starter.jar" REQUIRED="true" />
+		<IMPORT NAME="Groovy_Module" MODULE="groovy-xmlrpc-0.3.jar" REQUIRED="true" />
+     </IMPORTS>
+   </CODEGENERATION>
+
+   <RETURNS/>
+
+</COMPONENT>
