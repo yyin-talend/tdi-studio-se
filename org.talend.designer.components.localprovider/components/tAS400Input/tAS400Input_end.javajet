@@ -2,6 +2,7 @@
 imports="
 		org.talend.core.model.process.INode 
 		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.process.ElementParameterParser 
 " 
 %>
 
@@ -9,8 +10,13 @@ imports="
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
+	String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
 %>
 }
 stmt_<%=cid %>.close();
+<%  if(!useExistingConn.equals("true")){%>
+
 conn_<%=cid %> .close();
+
+<%  } %>
 globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid%>);

@@ -34,6 +34,17 @@ imports="
 %>
 int nb_line_<%=cid%> = 0;
 
+<%
+String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
+if(useExistingConn.equals("true"))
+{
+    String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
+    String conn = "conn_" + connection;
+%>
+java.sql.Connection conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
+<%
+}else{
+%>
 java.lang.Class.forName("com.ibm.as400.access.AS400JDBCDriver");
 
 String url_<%=cid %> = "jdbc:as400://" + <%=dbhost%> + "/" + <%=dbname%> + ";prompt=false";
@@ -42,6 +53,9 @@ String dbUser_<%=cid %> = <%=dbuser%>;
 String dbPwd_<%=cid %> = <%=dbpwd%>;
 
 java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
+<%
+}
+%>
 
 java.sql.Statement stmt_<%=cid %> = conn_<%=cid%>.createStatement();
 java.sql.ResultSet rs_<%=cid %> = stmt_<%=cid %>.executeQuery(<%=dbquery%>);

@@ -29,20 +29,38 @@
   </CONNECTORS>
 
   <PARAMETERS>
+  
+    <PARAMETER
+      NAME="USE_EXISTING_CONNECTION"
+      FIELD="CHECK"
+      NUM_ROW="1"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="CONNECTION"
+      FIELD="COMPONENT_LIST"
+      FILTER="tAS400Connection"
+      NUM_ROW="1"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
+    />
 
     <PARAMETER
       NAME="PROPERTY"
       FIELD="PROPERTY_TYPE"
       SHOW="true"
-      NUM_ROW="1"
+      NUM_ROW="2"
       REPOSITORY_VALUE="DATABASE:AS400"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     />
 
     <PARAMETER
       NAME="HOST"
       FIELD="TEXT"
-      NUM_ROW="2"
+      NUM_ROW="3"
       REPOSITORY_VALUE="SERVER_NAME"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -50,9 +68,10 @@
     <PARAMETER
       NAME="DBNAME"
       FIELD="TEXT"
-      NUM_ROW="2"
+      NUM_ROW="3"
       REPOSITORY_VALUE="SID"
       REQUIRED="true"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>    
@@ -60,9 +79,10 @@
 	<PARAMETER
       NAME="TYPE"
       FIELD="TEXT"
-      NUM_ROW="3"
+      NUM_ROW="4"
       SHOW="false"
       REPOSITORY_VALUE="TYPE"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>AS400</DEFAULT>
     </PARAMETER>    
@@ -70,9 +90,10 @@
     <PARAMETER
       NAME="USER"
       FIELD="TEXT"
-      NUM_ROW="3"
+      NUM_ROW="4"
       REPOSITORY_VALUE="USERNAME"
       REQUIRED="true"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -80,9 +101,10 @@
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
-      NUM_ROW="3"
+      NUM_ROW="4"
       REPOSITORY_VALUE="PASSWORD"
       REQUIRED="true"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>

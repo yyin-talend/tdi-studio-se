@@ -91,6 +91,20 @@ int insertedCount_<%=cid%>=0;
 
 boolean whetherReject_<%=cid%> = false;
 
+
+<%
+String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
+if(useExistingConn.equals("true"))
+{
+    String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
+    String conn = "conn_" + connection;
+    %>
+    java.sql.Connection conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
+    <%
+}
+else
+{
+%>
 java.lang.Class.forName("com.ibm.as400.access.AS400JDBCDriver");
 
 String url_<%=cid %> = "jdbc:as400://" + <%=dbhost%> + "/" + <%=dbname%> + ";prompt=false"; 
@@ -100,7 +114,9 @@ String dbPwd_<%=cid %> = <%=dbpwd%>;
 
 java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
 
+
 <%
+}
 if(columnList != null && columnList.size()>0){
 
     class Column{
@@ -674,6 +690,7 @@ if(columnList != null && columnList.size()>0){
 }
 
 if(ElementParameterParser.getValue(node,"__USE_COMMIT_CONTROL__").equals("true")){// if use commit control
+   if(!useExistingConn.equals("true")) {
     if(!commitEvery.equals("")&&!commitEvery.equals("0")){
         %>
     
@@ -684,6 +701,7 @@ if(ElementParameterParser.getValue(node,"__USE_COMMIT_CONTROL__").equals("true")
         conn_<%=cid%>.setAutoCommit(false);
         <%
     }
+   }
 }
 %>
 
