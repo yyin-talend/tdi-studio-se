@@ -19,6 +19,7 @@ import org.eclipse.gef.EditPart;
 import org.eclipse.gef.ui.actions.Clipboard;
 import org.eclipse.gef.ui.actions.SelectionAction;
 import org.eclipse.swt.dnd.TextTransfer;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.ISharedImages;
@@ -41,6 +42,30 @@ import org.talend.designer.core.ui.editor.notes.NoteEditPart;
  * 
  */
 public class GEFPasteAction extends SelectionAction {
+
+    Point cursorLocation = null;
+
+    /**
+     * Getter for cursorLocation.
+     * 
+     * @return the cursorLocation
+     */
+    public org.eclipse.draw2d.geometry.Point getCursorLocation() {
+        if (cursorLocation != null) {
+            org.eclipse.draw2d.geometry.Point gefPoint = new org.eclipse.draw2d.geometry.Point(cursorLocation);
+            return gefPoint;
+        }
+        return null;
+    }
+
+    /**
+     * Sets the cursorLocation.
+     * 
+     * @param cursorLocation the cursorLocation to set
+     */
+    public void setCursorLocation(Point cursorLocation) {
+        this.cursorLocation = cursorLocation;
+    }
 
     /**
      * DOC nrousseau NodesPasteAction constructor comment.
@@ -117,24 +142,25 @@ public class GEFPasteAction extends SelectionAction {
             }
 
             TalendEditor editor = (TalendEditor) this.getWorkbenchPart();
-            if (nodeParts.size() != 0 && noteParts.size() != 0) {
+            org.eclipse.draw2d.geometry.Point gefPoint = getCursorLocation();
 
-                MultiplePasteCommand mpc = new MultiplePasteCommand(nodeParts, noteParts, editor.getProcess());
+            if (nodeParts.size() != 0 && noteParts.size() != 0) {
+                MultiplePasteCommand mpc = new MultiplePasteCommand(nodeParts, noteParts, editor.getProcess(), gefPoint);
                 execute(mpc);
             } else if (nodeParts.size() != 0) {
-                NodesPasteCommand cmd = new NodesPasteCommand(nodeParts, editor.getProcess());
+                NodesPasteCommand cmd = new NodesPasteCommand(nodeParts, editor.getProcess(), gefPoint);
                 execute(cmd);
             } else if (noteParts.size() != 0) {
-                NotesPasteCommand cmd = new NotesPasteCommand(noteParts, editor.getProcess());
+                NotesPasteCommand cmd = new NotesPasteCommand(noteParts, editor.getProcess(), gefPoint);
                 execute(cmd);
             }
+            setCursorLocation(null);
         } else if (clipBoardContent instanceof String) {
             List objects = getSelectedObjects();
 
             if (objects.size() == 1) {
                 String content = (String) clipBoardContent;
-                if (objects.get(0) instanceof NoteEditPart
-                        && ((NoteEditPart) objects.get(0)).getDirectEditManager() != null) {
+                if (objects.get(0) instanceof NoteEditPart && ((NoteEditPart) objects.get(0)).getDirectEditManager() != null) {
                     Text text = ((NoteEditPart) objects.get(0)).getDirectEditManager().getTextControl();
                     if (text != null) {
                         text.insert(content);
@@ -162,8 +188,7 @@ public class GEFPasteAction extends SelectionAction {
 
             if (objects.size() == 1) {
                 String content = (String) systemObject;
-                if (objects.get(0) instanceof NoteEditPart
-                        && ((NoteEditPart) objects.get(0)).getDirectEditManager() != null) {
+                if (objects.get(0) instanceof NoteEditPart && ((NoteEditPart) objects.get(0)).getDirectEditManager() != null) {
                     Text text = ((NoteEditPart) objects.get(0)).getDirectEditManager().getTextControl();
                     if (text != null) {
                         text.insert(content);

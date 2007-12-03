@@ -47,10 +47,31 @@ public class NotesPasteCommand extends Command {
 
     private boolean multipleCommand;
 
-    public NotesPasteCommand(List<NoteEditPart> noteParts, Process process) {
+    public NotesPasteCommand(List<NoteEditPart> noteParts, Process process, Point cursorLocation) {
         this.process = process;
         orderNoteParts(noteParts);
         setLabel(Messages.getString("NotesPasteCommand.label")); //$NON-NLS-1$
+        setCursorLocation(cursorLocation);
+    }
+
+    Point cursorLocation = null;
+
+    /**
+     * Getter for cursorLocation.
+     * 
+     * @return the cursorLocation
+     */
+    public Point getCursorLocation() {
+        return this.cursorLocation;
+    }
+
+    /**
+     * Sets the cursorLocation.
+     * 
+     * @param cursorLocation the cursorLocation to set
+     */
+    public void setCursorLocation(Point cursorLocation) {
+        this.cursorLocation = cursorLocation;
     }
 
     /*
@@ -104,8 +125,7 @@ public class NotesPasteCommand extends Command {
      * @return
      */
     private Point findLocationForNote(final Note note) {
-        Rectangle rect = new Rectangle(note.getLocation().x, note.getLocation().y, note.getSize().width,
-                note.getSize().height);
+        Rectangle rect = new Rectangle(note.getLocation().x, note.getLocation().y, note.getSize().width, note.getSize().height);
         Point newLocation = findLocationForNoteInProcess(rect);
         return newLocation;
     }
@@ -114,8 +134,8 @@ public class NotesPasteCommand extends Command {
     private Point findLocationForNoteInProcess(final Rectangle rectangle) {
         Point newLocation = new Point(rectangle.x, rectangle.y);
         for (Note currentNote : (List<Note>) process.getNotes()) {
-            Rectangle currentRect = new Rectangle(currentNote.getLocation().x, currentNote.getLocation().y, currentNote
-                    .getSize().width, currentNote.getSize().height);
+            Rectangle currentRect = new Rectangle(currentNote.getLocation().x, currentNote.getLocation().y,
+                    currentNote.getSize().width, currentNote.getSize().height);
             if (currentRect.intersects(rectangle)) {
                 rectangle.x += currentRect.width;
                 rectangle.y += currentRect.height;
@@ -136,7 +156,12 @@ public class NotesPasteCommand extends Command {
             pastedNote.setOpaque(copiedNote.isOpaque());
             pastedNote.setText(copiedNote.getText());
 
-            Point location = copiedNote.getLocation();
+            Point location = null;
+            if (getCursorLocation() == null) {
+                location = copiedNote.getLocation();
+            } else {
+                location = getCursorLocation();
+            }
             if (process.isGridEnabled()) {
                 // replace the component to set it on the grid if it's enabled
                 int tempVar = location.x / TalendEditor.GRID_SIZE;

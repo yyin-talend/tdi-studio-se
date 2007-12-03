@@ -15,6 +15,7 @@ package org.talend.designer.core.ui.editor.cmd;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.commands.CompoundCommand;
@@ -39,11 +40,11 @@ public class MultiplePasteCommand extends CompoundCommand {
 
     private NotesPasteCommand noteCmd;
 
-    public MultiplePasteCommand(List<NodePart> nodeParts, List<NoteEditPart> noteParts, Process process) {
-        nodeCmd = new NodesPasteCommand(nodeParts, process);
+    public MultiplePasteCommand(List<NodePart> nodeParts, List<NoteEditPart> noteParts, Process process, Point cursorLocation) {
+        nodeCmd = new NodesPasteCommand(nodeParts, process, cursorLocation);
         nodeCmd.setMultipleCommand(true);
         add(nodeCmd);
-        noteCmd = new NotesPasteCommand(noteParts, process);
+        noteCmd = new NotesPasteCommand(noteParts, process, cursorLocation);
         noteCmd.setMultipleCommand(true);
         add(noteCmd);
     }

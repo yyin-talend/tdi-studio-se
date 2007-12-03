@@ -67,10 +67,32 @@ public class NodesPasteCommand extends Command {
 
     private boolean multipleCommand;
 
-    public NodesPasteCommand(List<NodePart> nodeParts, Process process) {
+    Point cursorLocation = null;
+
+    /**
+     * Getter for cursorLocation.
+     * 
+     * @return the cursorLocation
+     */
+    public Point getCursorLocation() {
+        return this.cursorLocation;
+    }
+
+    /**
+     * Sets the cursorLocation.
+     * 
+     * @param cursorLocation the cursorLocation to set
+     */
+    public void setCursorLocation(Point cursorLocation) {
+        this.cursorLocation = cursorLocation;
+    }
+
+    public NodesPasteCommand(List<NodePart> nodeParts, Process process, Point cursorLocation) {
         this.process = process;
+        setCursorLocation(cursorLocation);
         orderNodeParts(nodeParts);
         setLabel(Messages.getString("NodesPasteCommand.label")); //$NON-NLS-1$
+
     }
 
     @SuppressWarnings("unchecked")//$NON-NLS-1$
@@ -201,7 +223,13 @@ public class NodesPasteCommand extends Command {
             Node copiedNode = (Node) copiedNodePart.getModel();
             Node pastedNode = new Node(ComponentsFactoryProvider.getInstance().get(copiedNode.getComponent().getName()), process);
 
-            Point location = copiedNode.getLocation();
+            Point location = null;
+            if (getCursorLocation() == null) {
+                location = copiedNode.getLocation();
+            } else {
+                location = getCursorLocation();
+            }
+
             if (process.isGridEnabled()) {
                 // replace the component to set it on the grid if it's enabled
                 int tempVar = location.x / TalendEditor.GRID_SIZE;

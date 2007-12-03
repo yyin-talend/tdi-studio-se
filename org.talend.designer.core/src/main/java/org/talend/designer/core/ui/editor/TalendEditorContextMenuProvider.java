@@ -23,6 +23,8 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.actions.ActionFactory;
 import org.talend.core.model.process.EConnectionType;
@@ -36,11 +38,12 @@ import org.talend.designer.core.ui.action.BringToFrontAction;
 import org.talend.designer.core.ui.action.ConnectionCreateAction;
 import org.talend.designer.core.ui.action.ConnectionSetAsMainRef;
 import org.talend.designer.core.ui.action.GEFCopyAction;
+import org.talend.designer.core.ui.action.GEFPasteAction;
 import org.talend.designer.core.ui.action.ModifyMergeOrderAction;
 import org.talend.designer.core.ui.action.NodeBreakpointAction;
-import org.talend.designer.core.ui.action.ShowComponentSettingViewerAction;
 import org.talend.designer.core.ui.action.SendBackwardAction;
 import org.talend.designer.core.ui.action.SendToBackAction;
+import org.talend.designer.core.ui.action.ShowComponentSettingViewerAction;
 
 /**
  * Class that manages the context menu in the Gef Editor. <br/>
@@ -78,7 +81,6 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
         if (!isEnableContextMenu()) {
             return;
         }
-
         // Add standard action groups to the menu
         menu.add(new Separator(GROUP_CONNECTIONS));
         menu.add(new Separator(GEFActionConstants.GROUP_UNDO));
@@ -100,6 +102,12 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
             menu.appendToGroup(GEFActionConstants.GROUP_EDIT, action);
 
             action = getAction(ActionFactory.PASTE.getId()); // new GEFPasteAction(part);
+            GEFPasteAction pasteAction = (GEFPasteAction) action;
+            Point p = Display.getCurrent().getCursorLocation();
+
+            p = this.getViewer().getControl().toControl(p);
+
+            pasteAction.setCursorLocation(p);
             menu.appendToGroup(GEFActionConstants.GROUP_EDIT, action);
 
             menu.appendToGroup(GEFActionConstants.GROUP_EDIT, getAction(ActionFactory.DELETE.getId()));
