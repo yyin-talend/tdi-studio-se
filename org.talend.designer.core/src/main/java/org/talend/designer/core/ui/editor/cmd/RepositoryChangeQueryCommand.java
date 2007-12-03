@@ -15,11 +15,6 @@ package org.talend.designer.core.ui.editor.cmd;
 import java.util.List;
 
 import org.eclipse.gef.commands.Command;
-import org.eclipse.ui.IViewPart;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.views.properties.PropertySheet;
-import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
@@ -36,7 +31,6 @@ import org.talend.designer.core.model.components.EmfComponent;
  */
 public class RepositoryChangeQueryCommand extends Command {
 
-
     private Element elem;
 
     private Query query;
@@ -48,6 +42,7 @@ public class RepositoryChangeQueryCommand extends Command {
     private Object oldMetadata;
 
     private Object oldValue;
+
     /**
      * DOC admin ChangeQueryCommand constructor comment.
      */
@@ -61,16 +56,16 @@ public class RepositoryChangeQueryCommand extends Command {
     }
 
     private void refreshPropertyView() {
-        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-        IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet"); //$NON-NLS-1$
-        PropertySheet sheet = (PropertySheet) view;
-        TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) sheet.getCurrentPage();
-        if (tabbedPropertySheetPage.getCurrentTab() != null) {
-            tabbedPropertySheetPage.refresh();
-        }
+        // IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+        // IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet"); //$NON-NLS-1$
+        // PropertySheet sheet = (PropertySheet) view;
+        // TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) sheet.getCurrentPage();
+        // if (tabbedPropertySheetPage.getCurrentTab() != null) {
+        // tabbedPropertySheetPage.refresh();
+        // }
     }
 
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     @Override
     public void execute() {
         // Force redraw of Commponents propoerties
@@ -97,10 +92,10 @@ public class RepositoryChangeQueryCommand extends Command {
         refreshPropertyView();
     }
 
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     @Override
     public void undo() {
-//      Force redraw of Commponents propoerties
+        // Force redraw of Commponents propoerties
         elem.setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), new Boolean(true));
 
         if (propertyName.equals(EParameterName.QUERYSTORE_TYPE.getName()) && (EmfComponent.BUILTIN.equals(value))) {
@@ -130,9 +125,10 @@ public class RepositoryChangeQueryCommand extends Command {
         }
         refreshPropertyView();
     }
-    
+
     /**
      * DOC admin Comment method "convertSQL".
+     * 
      * @param sql
      * @return
      */

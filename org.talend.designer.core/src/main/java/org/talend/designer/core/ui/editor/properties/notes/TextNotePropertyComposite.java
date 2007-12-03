@@ -71,6 +71,8 @@ public class TextNotePropertyComposite extends AbstractNotePropertyComposite {
         data.top = new FormAttachment(text, 0, SWT.TOP);
         labelLabel.setLayoutData(data);
 
+        text.setText(note.getText());
+
         text.addFocusListener(new FocusAdapter() {
 
             @Override

@@ -19,10 +19,7 @@ import org.eclipse.gef.commands.Command;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.views.properties.PropertySheet;
-import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.talend.core.model.metadata.IMetadataTable;
-import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
@@ -75,17 +72,18 @@ public class PropertyChangeCommand extends Command {
     }
 
     private void refreshPropertyView() {
-        if (!elem.getElementParameter(propName).getCategory().equals(EComponentCategory.STATSANDLOGS)) {
-            IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-            IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet"); //$NON-NLS-1$
-            PropertySheet sheet = (PropertySheet) view;
-            if (sheet != null && sheet.getCurrentPage() != null && sheet.getCurrentPage() instanceof TabbedPropertySheetPage) {
-                TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) sheet.getCurrentPage();
-                if (tabbedPropertySheetPage.getCurrentTab() != null) {
-                    tabbedPropertySheetPage.refresh();
-                }
-            }
-        }
+        // if (!elem.getElementParameter(propName).getCategory().equals(EComponentCategory.STATSANDLOGS)) {
+        // IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+        // IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet"); //$NON-NLS-1$
+        // PropertySheet sheet = (PropertySheet) view;
+        // if (sheet != null && sheet.getCurrentPage() != null && sheet.getCurrentPage() instanceof
+        // TabbedPropertySheetPage) {
+        // TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) sheet.getCurrentPage();
+        // if (tabbedPropertySheetPage.getCurrentTab() != null) {
+        // tabbedPropertySheetPage.refresh();
+        // }
+        // }
+        // }
     }
 
     private void refreshCodeView() {

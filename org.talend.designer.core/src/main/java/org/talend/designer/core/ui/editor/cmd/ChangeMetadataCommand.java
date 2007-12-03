@@ -527,15 +527,16 @@ public class ChangeMetadataCommand extends Command {
      * Refresh property view.
      */
     public void refreshPropertyView() {
-        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-        IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet"); //$NON-NLS-1$
-        PropertySheet sheet = (PropertySheet) view;
-        if ( sheet!=null && sheet.getCurrentPage()!=null && sheet.getCurrentPage() instanceof TabbedPropertySheetPage) {
-            TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) sheet.getCurrentPage();
-            if (tabbedPropertySheetPage.getCurrentTab() != null) {
-                tabbedPropertySheetPage.refresh();
-            }
-        }
+        // IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+        // IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet"); //$NON-NLS-1$
+        // PropertySheet sheet = (PropertySheet) view;
+        // if ( sheet!=null && sheet.getCurrentPage()!=null && sheet.getCurrentPage() instanceof
+        // TabbedPropertySheetPage) {
+        // TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) sheet.getCurrentPage();
+        // if (tabbedPropertySheetPage.getCurrentTab() != null) {
+        // tabbedPropertySheetPage.refresh();
+        // }
+        // }
     }
 
     /**

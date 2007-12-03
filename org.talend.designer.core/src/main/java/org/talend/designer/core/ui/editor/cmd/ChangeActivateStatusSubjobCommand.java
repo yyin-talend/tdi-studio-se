@@ -13,11 +13,6 @@
 package org.talend.designer.core.ui.editor.cmd;
 
 import org.eclipse.gef.commands.Command;
-import org.eclipse.ui.IViewPart;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.views.properties.PropertySheet;
-import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
@@ -75,15 +70,15 @@ public class ChangeActivateStatusSubjobCommand extends Command {
     }
 
     private void refreshPropertyView() {
-        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-        IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet"); //$NON-NLS-1$
-        PropertySheet sheet = (PropertySheet) view;
-        if (sheet.getCurrentPage() instanceof TabbedPropertySheetPage) {
-            TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) sheet.getCurrentPage();
-            if (tabbedPropertySheetPage.getCurrentTab() != null) {
-                tabbedPropertySheetPage.refresh();
-            }
-        }
+        // IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+        // IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet"); //$NON-NLS-1$
+        // PropertySheet sheet = (PropertySheet) view;
+        // if (sheet.getCurrentPage() instanceof TabbedPropertySheetPage) {
+        // TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) sheet.getCurrentPage();
+        // if (tabbedPropertySheetPage.getCurrentTab() != null) {
+        // tabbedPropertySheetPage.refresh();
+        // }
+        // }
     }
 
     public void execute() {

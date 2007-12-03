@@ -80,6 +80,7 @@
    <extension
          point="org.eclipse.ui.views.properties.tabbed.propertyTabs">
       <propertyTabs contributorId="org.talend.repository.views.repository">
+      <!--
          <propertyTab
                category="TalendEditor"
                id="mainTab"
@@ -91,16 +92,18 @@
                id="propertyTab"
                indented="false"
                label="%properties"/>
+             
          <propertyTab
                afterTab="propertyTab"
                category="TalendEditor"
                id="viewTab"
                label="%view"/>
+               
          <propertyTab
                afterTab="viewTab"
                category="TalendEditor"
                id="docTab"
-               label="%documentation"/>
+               label="%documentation"/>  -->
          <propertyTab
                afterTab="contextTab"
                category="TalendEditor"
@@ -126,7 +129,7 @@
    <extension
          point="org.eclipse.ui.views.properties.tabbed.propertySections">
         <propertySections contributorId="org.talend.repository.views.repository">
-         <propertySection
+  <!--       <propertySection
                class="org.talend.designer.core.ui.editor.properties.nodes.MainNodeSection"
                id="MainNodeSection"
                tab="mainTab">
@@ -176,6 +179,7 @@
                tab="mainTab">
             <input type="org.talend.designer.core.ui.editor.notes.Note"/>
          </propertySection>
+         -->
       </propertySections>
    </extension>
    <extension

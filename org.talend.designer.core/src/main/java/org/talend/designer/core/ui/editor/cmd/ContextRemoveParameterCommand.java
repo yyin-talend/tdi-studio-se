@@ -20,9 +20,6 @@ import org.eclipse.gef.commands.Command;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.part.IPage;
-import org.eclipse.ui.views.properties.PropertySheet;
-import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IContextParameter;
 import org.talend.designer.core.i18n.Messages;
@@ -49,14 +46,14 @@ public class ContextRemoveParameterCommand extends Command {
     }
 
     private void refreshPropertyView() {
-        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-        IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet"); //$NON-NLS-1$
-        PropertySheet sheet = (PropertySheet) view;
-        final IPage currentPage = sheet.getCurrentPage();
-        if (currentPage instanceof TabbedPropertySheetPage) {
-            TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) currentPage;
-            tabbedPropertySheetPage.refresh();
-        }
+        // IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+        // IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet"); //$NON-NLS-1$
+        // PropertySheet sheet = (PropertySheet) view;
+        // final IPage currentPage = sheet.getCurrentPage();
+        // if (currentPage instanceof TabbedPropertySheetPage) {
+        // TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) currentPage;
+        // tabbedPropertySheetPage.refresh();
+        // }
     }
 
     /**

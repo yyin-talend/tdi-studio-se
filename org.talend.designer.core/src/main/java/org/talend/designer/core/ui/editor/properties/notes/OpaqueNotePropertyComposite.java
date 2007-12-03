@@ -73,6 +73,8 @@ public class OpaqueNotePropertyComposite extends AbstractNotePropertyComposite {
         data.top = new FormAttachment(check, 0, SWT.TOP);
         labelLabel.setLayoutData(data);
 
+        check.setSelection(note.isOpaque());
+
         check.addSelectionListener(new SelectionAdapter() {
 
             @Override

@@ -20,6 +20,7 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.FormAttachment;
@@ -123,8 +124,22 @@ public class ComponentSettingsView extends ViewPart {
                 layout.marginWidth = 0;
                 layout.spacing = 0;
             }
-            Composite composite = new WidgetFactory().createComposite(parent);
+            ScrolledComposite scrolled = new ScrolledComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL);
+            scrolled.setExpandHorizontal(true);
+            scrolled.setExpandVertical(true);
+
+            scrolled.setMinWidth(600);
+            scrolled.setMinHeight(400);
+
+            Composite composite = new WidgetFactory().createComposite(scrolled);
+            scrolled.setContent(composite);
             composite.setLayout(new FormLayout());
+            FormData d = new FormData();
+            d.left = new FormAttachment(0, 0);
+            d.right = new FormAttachment(100, 0);
+            d.top = new FormAttachment(0, 0);
+            d.bottom = new FormAttachment(100, 0);
+            composite.setLayoutData(d);
 
             AbstractNotePropertyComposite c1 = new OpaqueNotePropertyComposite(composite, (Note) element, tabFactory);
             AbstractNotePropertyComposite c2 = new TextNotePropertyComposite(composite, (Note) element, tabFactory);
