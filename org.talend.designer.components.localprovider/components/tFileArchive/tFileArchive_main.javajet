@@ -17,6 +17,7 @@
 	String level = ElementParameterParser.getValue(node, "__LEVEL__");
 	boolean isAllFile = ElementParameterParser.getValue(node, "__ALL_FILES__").equals("false");
 	boolean subDir = ElementParameterParser.getValue(node, "__SUB_DIRECTROY__").equals("true");
+	String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
 	List<Map<String, String>> masks = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__MASK__");	
 %>
 
@@ -106,6 +107,7 @@
       	int beginIndex_<%=cid %> = file_<%=cid %>.getPath().length()+1;
         out_<%=cid %> = new org.apache.tools.zip.ZipOutputStream(new java.io.BufferedOutputStream(new java.io.FileOutputStream(zipFile_<%=cid %>))); 
         out_<%=cid %>.setLevel(level_<%=cid %>);
+        out_<%=cid %>.setEncoding(<%=encoding%>);
         // here get the file list
         for (int i_<%=cid %> = 0; i_<%=cid %> < list_<%=cid %>.size(); i_<%=cid %>++) {
             java.io.BufferedInputStream in_<%=cid %> = new java.io.BufferedInputStream(new java.io.FileInputStream(list_<%=cid %>.get(i_<%=cid %>)));
