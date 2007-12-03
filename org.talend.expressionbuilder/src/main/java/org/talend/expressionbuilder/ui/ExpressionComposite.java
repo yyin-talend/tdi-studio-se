@@ -201,7 +201,7 @@ public class ExpressionComposite extends Composite {
              */
             @Override
             public void mouseUp(MouseEvent e) {
-                IRegion region = viewer.getVisibleRegion();
+                IRegion region = viewer.getViewerRegion();
                 try {
                     document.replace(region.getOffset(), region.getLength(), "");
                 } catch (BadLocationException ex) {
@@ -224,9 +224,11 @@ public class ExpressionComposite extends Composite {
         // text = new ColorStyledText(composite, SWT.BORDER | SWT.MULTI | SWT.WRAP | SWT.V_SCROLL, colorManager,
         // LanguageManager.getCurrentLanguage().getName());
         if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.JAVA)) {
-            viewer = TalendJavaSourceViewer.createViewerWithVariables(composite, SWT.NONE, dataBean);
+            viewer = TalendJavaSourceViewer.createViewerWithVariables(composite, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL
+                    | SWT.H_SCROLL | SWT.WRAP, dataBean);
         } else {
-            viewer = TalendPerlSourceViewer.createViewer(composite, SWT.NONE, true);
+            viewer = TalendPerlSourceViewer.createViewer(composite, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL
+                    | SWT.WRAP, true);
         }
 
         textControl = viewer.getTextWidget();
@@ -396,7 +398,7 @@ public class ExpressionComposite extends Composite {
                 newValue += PERL_FUN_SUFFIX; //$NON-NLS-1$
             }
         }
-        IRegion region = viewer.getVisibleRegion();
+        IRegion region = viewer.getViewerRegion();
         try {
             document.replace(region.getOffset(), region.getLength(), newValue);
         } catch (BadLocationException e) {
@@ -411,7 +413,12 @@ public class ExpressionComposite extends Composite {
      */
     public String getExpression() {
         if (document != null) {
-            return viewer.getTextWidget().getText();
+            IRegion region = viewer.getViewerRegion();
+            try {
+                return document.get(region.getOffset(), region.getLength());
+            } catch (BadLocationException e) {
+                MessageBoxExceptionHandler.process(e);
+            }
         }
         return null;
     }
@@ -430,7 +437,7 @@ public class ExpressionComposite extends Composite {
                 MessageBoxExceptionHandler.process(e);
             }
         } else {
-            IRegion region = viewer.getVisibleRegion();
+            IRegion region = viewer.getViewerRegion();
             try {
                 document.replace(region.getOffset(), region.getLength(), expression);
             } catch (BadLocationException e) {

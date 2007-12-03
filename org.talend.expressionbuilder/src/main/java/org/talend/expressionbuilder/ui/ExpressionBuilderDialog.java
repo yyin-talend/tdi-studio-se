@@ -340,11 +340,10 @@ public class ExpressionBuilderDialog extends TrayDialog implements IExpressionBu
      */
     @Override
     protected void okPressed() {
+        String expression = expressionComposite.getExpression();
+        dataBean.setConsumerExpression(expression + " ");
 
-        dataBean.setConsumerExpression(expressionComposite.getExpression() + " ");
-
-        ExpressionPersistance.getInstance().saveExpression(
-                new Expression(expressionComposite.getExpression(), testComposite.getVariableList()));
+        ExpressionPersistance.getInstance().saveExpression(new Expression(expression, testComposite.getVariableList()));
 
         super.okPressed();
     }
