@@ -62,6 +62,7 @@ import org.talend.designer.core.ui.editor.connections.ConnectionFigure;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainerPart;
 import org.talend.designer.core.ui.editor.process.ProcessPart;
+import org.talend.designer.core.ui.views.CodeView;
 import org.talend.designer.core.ui.views.properties.ComponentSettingsView;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.ui.views.IRepositoryView;
@@ -110,6 +111,7 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
             if (selectionManager.getSelectionType() == ETalendSelectionType.SINGLE) {
                 ComponentSettingsView compSettings = (ComponentSettingsView) viewer;
                 compSettings.setElement((Node) getModel());
+                CodeView.refreshCodeView((Node) getModel());
             } else if (!viewer.isCleaned() && selectionManager.getSelectionType() == ETalendSelectionType.MULTIPLE) {
                 ComponentSettingsView compSettings = (ComponentSettingsView) viewer;
                 compSettings.cleanDisplay();

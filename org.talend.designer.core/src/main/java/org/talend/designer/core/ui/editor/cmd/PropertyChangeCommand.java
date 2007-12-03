@@ -86,15 +86,6 @@ public class PropertyChangeCommand extends Command {
         // }
     }
 
-    private void refreshCodeView() {
-        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-        IViewPart view = page.findView(CodeView.ID);
-        if (view != null) {
-            CodeView codeView = (CodeView) view;
-            codeView.refresh();
-        }
-    }
-
     @Override
     public void execute() {
         IElementParameter currentParam = elem.getElementParameter(propName);
@@ -170,7 +161,7 @@ public class PropertyChangeCommand extends Command {
             elem.setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), new Boolean(true));
         }
         refreshPropertyView();
-        refreshCodeView();
+        CodeView.refreshCodeView(elem);
 
         if (elem instanceof Node) {
             ((Node) elem).checkAndRefreshNode();
@@ -271,7 +262,7 @@ public class PropertyChangeCommand extends Command {
             changeMetadataCommand.undo();
         }
         refreshPropertyView();
-        refreshCodeView();
+        CodeView.refreshCodeView(elem);
         if (elem instanceof Node) {
             ((Node) elem).checkAndRefreshNode();
         }
@@ -311,7 +302,7 @@ public class PropertyChangeCommand extends Command {
             changeMetadataCommand.redo();
         }
         refreshPropertyView();
-        refreshCodeView();
+        CodeView.refreshCodeView(elem);
         if (elem instanceof Node) {
             ((Node) elem).checkAndRefreshNode();
         }
