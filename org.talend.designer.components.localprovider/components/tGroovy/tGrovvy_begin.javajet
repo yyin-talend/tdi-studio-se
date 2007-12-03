@@ -1,0 +1,24 @@
+<%@ jet 
+    imports="
+        org.talend.core.model.process.INode 
+        org.talend.core.model.process.ElementParameterParser
+        org.talend.designer.codegen.config.CodeGeneratorArgument
+    "
+%>
+
+<%
+    CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+    INode node = (INode)codeGenArgument.getArgument();
+    String cid = node.getUniqueName();
+    String codeStringArray[] = ElementParameterParser.getValue(node, "__CODE__").split("\n");
+%>
+String code<%=cid%> = "" 
+<%for(int i =0 ;i<codeStringArray.length;i++){
+    codeStringArray[i] = codeStringArray[i].replace("\\","\\\\");
+    codeStringArray[i] = codeStringArray[i].replace("\"","\\\"");    
+    %>
+    + "<%=codeStringArray[i]%>" + "\n"
+<%}%>; 
+java.io.ByteArrayInputStream is<%=cid%> = new java.io.ByteArrayInputStream(code<%=cid%>.getBytes());
+groovy.lang.GroovyShell shell<%=cid%> = new groovy.lang.GroovyShell();
+shell<%=cid%>.evaluate(is<%=cid%>);
