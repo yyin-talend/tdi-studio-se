@@ -26,14 +26,25 @@ import org.junit.Test;
  */
 public class SnippetParserTest {
 
-    static String testCode = null;
+    public static String systemEOL = SnippetParser.systemEOL;
+
+    static String javaTestCode = null;
+
+    static String perlTestCode = null;
 
     static String snippetID = "_34ejdsfy8768sdf79";
 
     static String snippetName = "SnippetAA";
 
     /**
-     * DOC bqian Comment method "setUpBeforeClass".
+     * format is: <br>
+     * SNIPPET_START:test <br>
+     * ListVar=new java.util.ArrayList<String>() <br>
+     * SourceType=String <br>
+     * {ID}=_2k63gJ7qEdyHlb_RsYibMg<br>
+     * 
+     * code... <br>
+     * SNIPPET_END
      * 
      * @throws java.lang.Exception
      */
@@ -41,15 +52,39 @@ public class SnippetParserTest {
     public static void setUpBeforeClass() throws Exception {
         // Java comment format
         StringBuilder sb = new StringBuilder();
-        String para = "(Var1=xxx Var2=yyy)";
-        String code = "String.valueof(${Var1})";
-        sb.append("other code start");
-        sb.append("\n/*SNIPPET_START ").append("ID=" + snippetID + " " + snippetName + para).append("*/");
-        sb.append("\n");
-        sb.append(code);
-        sb.append("\n/*SNIPPET_END*/\n");
-        sb.append("other code end");
-        testCode = sb.toString();
+        {
+            String para = "Var1=xxx" + systemEOL + "Var2=yyy";
+            String code = "String.valueof(${Var1})";
+            sb.append("other code start");
+            sb.append(systemEOL);
+            sb.append("/*SNIPPET_START:").append(snippetName).append(systemEOL).append(para).append(systemEOL).append(
+                    "{ID}=" + snippetID).append("*/");
+            sb.append(systemEOL);
+            sb.append(code);
+            sb.append(systemEOL);
+            sb.append("/*SNIPPET_END*/");
+            sb.append(systemEOL);
+            sb.append("other code end");
+            javaTestCode = sb.toString();
+        }
+
+        sb = new StringBuilder();
+        {
+            String para = "#Var1=xxx" + systemEOL + "#Var2=yyy";
+            String code = "my $foo = \'bar\';";
+            sb.append("other code start");
+            sb.append(systemEOL);
+            sb.append("#SNIPPET_START:").append(snippetName).append(systemEOL).append(para).append(systemEOL).append(
+                    "#{ID}=" + snippetID);
+            sb.append(systemEOL);
+            sb.append(code);
+            sb.append(systemEOL);
+            sb.append("#SNIPPET_END");
+            sb.append(systemEOL);
+            sb.append("other code end");
+            perlTestCode = sb.toString();
+        }
+
     }
 
     /**
@@ -85,11 +120,24 @@ public class SnippetParserTest {
      * Test method for {@link org.talend.designer.runprocess.SnippetParser#findFirstSnippetId(java.lang.String)}.
      */
     @Test
-    public void testFindFirstSnippetId() {
+    public void testFindFirstSnippetIdForJava() {
         SnippetParser sp = new SnippetParser();
-        String[] result = sp.findFirstSnippetId(testCode).toArray(new String[0]);
+        String[] result = sp.findFirstSnippetId(javaTestCode).toArray(new String[0]);
 
-        Assert.assertEquals(result.length, 4);
+        Assert.assertEquals(4, result.length);
+        Assert.assertEquals(result[0], snippetID);
+        Assert.assertEquals(result[1], snippetName);
+        Assert.assertEquals(result[2], "Var1=xxx");
+        Assert.assertEquals(result[3], "Var2=yyy");
+
+    }
+
+    @Test
+    public void testFindFirstSnippetIdForPerl() {
+        SnippetParser sp = new SnippetParser();
+        String[] result = sp.findFirstSnippetId(perlTestCode).toArray(new String[0]);
+
+        Assert.assertEquals(4, result.length);
         Assert.assertEquals(result[0], snippetID);
         Assert.assertEquals(result[1], snippetName);
         Assert.assertEquals(result[2], "Var1=xxx");
@@ -101,9 +149,7 @@ public class SnippetParserTest {
     public void testFindFirstSnippetIdNoResult() {
         SnippetParser sp = new SnippetParser();
         String[] result = sp.findFirstSnippetId("sdfsdf").toArray(new String[0]);
-
         Assert.assertEquals(result.length, 0);
-
     }
 
     /**
@@ -111,44 +157,22 @@ public class SnippetParserTest {
      * {@link org.talend.designer.runprocess.SnippetParser#replaceFristSnippet(java.lang.String, java.lang.String)}.
      */
     @Test
-    public void testReplaceFristSnippet() {
+    public void testReplaceFristSnippet4Java() {
         SnippetParser sp = new SnippetParser();
 
-        StringBuilder sb = new StringBuilder();
-        String para = "(Var1=xxx Var2=yyy)";
-        String code = "String.valueof(XXX,YYY)";
-        sb.append("/*SNIPPET_GERERATED_START ").append("ID=" + snippetID + " " + snippetName + para).append("*/");
-        sb.append("\n");
-        sb.append(code);
-        sb.append("\n/*SNIPPET_GERERATED_END*/");
-
-        String result = sp.replaceFristSnippet("mycode", testCode);
-        // System.out.println("result is:" + result);
-        Assert.assertEquals("other code start\nmycode\nother code end", result);
+        String result = sp.replaceFristSnippet("mycode", javaTestCode);
+        Assert.assertEquals("other code start" + systemEOL + "mycode" + systemEOL + "other code end", result);
     }
 
-    /**
-     * Test method for
-     * {@link org.talend.designer.runprocess.SnippetParser#replaceFristSnippet(java.lang.String, java.lang.String)}.
-     */
     @Test
-    public void testReplaceFristSnippet2() {
-        System.out.println(testCode);
-        System.out.println("---------------------");
+    public void testReplaceFristSnippet4Perl() {
         SnippetParser sp = new SnippetParser();
-        StringBuilder sb = new StringBuilder();
-        sb.append("start\n");
-        sb.append("/*SNIPPET_START ID=_9ufnsJ45Edy4ur SnippetMoney(name_2=list name_1=String)*/");
-        sb.append("\n");
-        sb.append("for(${name_1} str: ${name_2})");
-        sb.append("\n");
-        sb.append("{Sysout.out.println(str);}");
-        sb.append("\n");
-        sb.append("/*SNIPPET_END*/");
-        sb.append("\nend");
-        System.out.println("testCode is: \n" + sb.toString());
-        String result = sp.replaceFristSnippet("my", sb.toString());
-        // System.out.println("result is:" + result);
-        Assert.assertEquals("start\nmy\nend", result);
+        System.out.println(perlTestCode);
+        String myCode = "$foo";
+        // myCode = StringUtils.replace(myCode, "$", "\\$");
+
+        String result = sp.replaceFristSnippet(myCode, perlTestCode);
+        System.out.println(result);
+        Assert.assertEquals("other code start" + systemEOL + "$foo" + systemEOL + "other code end", result);
     }
 }
