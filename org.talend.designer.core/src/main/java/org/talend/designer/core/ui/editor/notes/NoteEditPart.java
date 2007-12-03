@@ -28,6 +28,7 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.cmd.ChangeNoteOpacityCommand;
+import org.talend.designer.core.ui.views.properties.ComponentSettingsView;
 
 /**
  */
@@ -38,6 +39,36 @@ public class NoteEditPart extends AbstractGraphicalEditPart implements PropertyC
     @Override
     protected IFigure createFigure() {
         return new NoteFigure();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.gef.editparts.AbstractEditPart#setSelected(int)
+     */
+    @Override
+    public void setSelected(int value) {
+        super.setSelected(value);
+        if (value == SELECTED) {
+            ComponentSettingsView viewer = (ComponentSettingsView) PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+                    .getActivePage().findView(ComponentSettingsView.ID);
+
+            if (viewer != null) {
+                viewer.setElement((Note) getModel());
+            }
+
+        } else if (value == SELECTED_NONE) {
+            ComponentSettingsView viewer = (ComponentSettingsView) PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+                    .getActivePage().findView(ComponentSettingsView.ID);
+
+            if (viewer == null) {
+                return;
+            }
+            ComponentSettingsView compSettings = (ComponentSettingsView) viewer;
+            compSettings.cleanDisplay();
+
+        }
+
     }
 
     @Override
@@ -87,8 +118,7 @@ public class NoteEditPart extends AbstractGraphicalEditPart implements PropertyC
         }
 
         if (request.getType() == RequestConstants.REQ_OPEN) {
-            IWorkbenchPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-                    .getActiveEditor();
+            IWorkbenchPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
             if (part instanceof MultiPageTalendEditor) {
                 CommandStack commandStack = (CommandStack) part.getAdapter(CommandStack.class);
 
@@ -99,8 +129,7 @@ public class NoteEditPart extends AbstractGraphicalEditPart implements PropertyC
         if (request.getType() == RequestConstants.REQ_DIRECT_EDIT) {
             if (directEditManager == null) {
                 NoteFigure noteFigure = (NoteFigure) getFigure();
-                directEditManager = new NoteDirectEditManager(this, TextCellEditor.class, new NoteCellEditorLocator(
-                        noteFigure));
+                directEditManager = new NoteDirectEditManager(this, TextCellEditor.class, new NoteCellEditorLocator(noteFigure));
             }
             directEditManager.show();
         }

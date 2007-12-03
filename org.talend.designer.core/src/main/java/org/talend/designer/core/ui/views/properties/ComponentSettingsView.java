@@ -21,6 +21,10 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
@@ -33,7 +37,11 @@ import org.talend.core.properties.tab.HorizontalTabFactory;
 import org.talend.core.properties.tab.TalendPropertyTabDescriptor;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
+import org.talend.designer.core.ui.editor.notes.Note;
 import org.talend.designer.core.ui.editor.properties.connections.MainConnectionComposite;
+import org.talend.designer.core.ui.editor.properties.notes.AbstractNotePropertyComposite;
+import org.talend.designer.core.ui.editor.properties.notes.OpaqueNotePropertyComposite;
+import org.talend.designer.core.ui.editor.properties.notes.TextNotePropertyComposite;
 
 /**
  * nrousseau class global comment. Detailled comment <br/>
@@ -50,6 +58,8 @@ public class ComponentSettingsView extends ViewPart {
     private Element elem;
 
     private boolean cleaned;
+
+    private boolean selectedPrimary;
 
     /**
      * nrousseau ComponentSettings constructor comment.
@@ -81,10 +91,11 @@ public class ComponentSettingsView extends ViewPart {
                 }
 
                 if (elem == null || !elem.equals(descriptor.getElement()) || currentSelectedTab == null
-                        || currentSelectedTab.getCategory() != descriptor.getCategory()) {
+                        || currentSelectedTab.getCategory() != descriptor.getCategory() || selectedPrimary) {
                     elem = descriptor.getElement();
                     currentSelectedTab = descriptor;
                     createDynamicComposite(tabFactory.getTabComposite(), descriptor.getElement(), descriptor.getCategory());
+                    selectedPrimary = false;
                 }
             }
         });
@@ -102,10 +113,32 @@ public class ComponentSettingsView extends ViewPart {
 
         if (element instanceof Node) {
             dc = new DynamicComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS, category, element);
-        } else {
+        } else if (element instanceof Connection) {
             dc = new MainConnectionComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS, category, element);
+        } else if (element instanceof Note) {
+            if (parent.getLayout() instanceof FillLayout) {
+                FillLayout layout = (FillLayout) parent.getLayout();
+                layout.type = SWT.VERTICAL;
+                layout.marginHeight = 0;
+                layout.marginWidth = 0;
+                layout.spacing = 0;
+            }
+            Composite composite = new WidgetFactory().createComposite(parent);
+            composite.setLayout(new FormLayout());
+
+            AbstractNotePropertyComposite c1 = new OpaqueNotePropertyComposite(composite, (Note) element, tabFactory);
+            AbstractNotePropertyComposite c2 = new TextNotePropertyComposite(composite, (Note) element, tabFactory);
+            FormData data = new FormData();
+            data.top = new FormAttachment(c1.getComposite(), 20, SWT.DOWN);
+            data.left = new FormAttachment(0, 0);
+            data.right = new FormAttachment(100, 0);
+            c2.getComposite().setLayoutData(data);
+
+            parent.layout();
         }
-        dc.refresh();
+        if (dc != null) {
+            dc.refresh();
+        }
     }
 
     /*
@@ -131,10 +164,11 @@ public class ComponentSettingsView extends ViewPart {
             }
         }
         cleaned = true;
+        selectedPrimary = true;
     }
 
     public void setElement(Element elem) {
-        if (currentSelectedTab != null && currentSelectedTab.getElement().equals(elem)) {
+        if (currentSelectedTab != null && currentSelectedTab.getElement().equals(elem) && !cleaned) {
             return;
         }
 
@@ -206,6 +240,9 @@ public class ComponentSettingsView extends ViewPart {
         } else if (elem instanceof Connection) {
             label = ((Connection) elem).getElementName();
             image = ImageProvider.getImage(EImage.RIGHT_ICON);
+        } else if (elem instanceof Note) {
+            label = "Note";
+            image = ImageProvider.getImage(EImage.PASTE_ICON);
         }
         tabFactory.setTitle(label, image);
     }
@@ -221,8 +258,9 @@ public class ComponentSettingsView extends ViewPart {
             return EElementType.CONNECTION.getCategories();
         } else if (elem instanceof Node) {
             return EElementType.NODE.getCategories();
+        } else if (elem instanceof Note) {
+            return EElementType.NOTE.getCategories();
         }
         return null;
     }
-
 }

@@ -24,7 +24,8 @@ public enum EElementType {
 
     NODE(EComponentCategory.MAIN, EComponentCategory.PROPERTY, EComponentCategory.VIEW, EComponentCategory.DOC),
     NODE_LABEL(EComponentCategory.MAIN, EComponentCategory.PROPERTY, EComponentCategory.VIEW, EComponentCategory.DOC),
-    CONNECTION(EComponentCategory.MAIN);
+    CONNECTION(EComponentCategory.MAIN),
+    NOTE(EComponentCategory.MAIN);
 
     private EComponentCategory[] categories;
 

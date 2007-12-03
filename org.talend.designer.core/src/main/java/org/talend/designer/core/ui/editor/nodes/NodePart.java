@@ -101,7 +101,7 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
         }
 
         TalendSelectionManager selectionManager = (TalendSelectionManager) getViewer().getSelectionManager();
-        if (value == SELECTED) {
+        if (value == SELECTED || value == SELECTED_PRIMARY) {
             ComponentSettingsView viewer = (ComponentSettingsView) page.findView(ComponentSettingsView.ID); //$NON-NLS-1$
             if (viewer == null) {
                 return;
