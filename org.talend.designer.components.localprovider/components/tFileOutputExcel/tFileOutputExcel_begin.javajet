@@ -48,8 +48,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		
 		final jxl.WorkbookSettings workbookSettings_<%= cid %> = new jxl.WorkbookSettings();
         workbookSettings_<%= cid %>.setEncoding(<%=ElementParameterParser.getValue(node,"__ENCODING__") %>);
-		final jxl.write.WritableWorkbook writeableWorkbook<%=cid %> = jxl.Workbook.createWorkbook(new java.io.BufferedOutputStream(new java.io.FileOutputStream(<%=filename%>))
-												, workbookSettings_<%= cid %>);
+		final jxl.write.WritableWorkbook writeableWorkbook<%=cid %> = new jxl.write.biff.WritableWorkbookImpl(new java.io.BufferedOutputStream(new java.io.FileOutputStream(<%=filename%>))
+												, true, workbookSettings_<%= cid %>);
         final jxl.write.WritableSheet writableSheet<%=cid%> = writeableWorkbook<%=cid%>.createSheet(<%=sheetname%>, 0);
 
         
