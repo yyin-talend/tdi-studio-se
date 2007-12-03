@@ -26,7 +26,6 @@ import org.apache.oro.text.regex.Perl5Compiler;
 import org.apache.oro.text.regex.Perl5Matcher;
 import org.apache.oro.text.regex.Perl5Substitution;
 import org.apache.oro.text.regex.Util;
-import org.eclipse.emf.common.util.EList;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.utils.data.text.StringHelper;
 import org.talend.core.language.ECodeLanguage;
@@ -39,7 +38,7 @@ import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.designer.core.model.utils.emf.talendfile.ConnectionType;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
-import org.talend.designer.core.model.utils.emf.talendfile.MetadataType;
+import org.talend.designer.core.model.utils.emf.talendfile.ElementValueType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 
@@ -58,7 +57,7 @@ public class AddPerlRefArrayMigrationTask extends AbstractJobMigrationTask {
             } else {
 
                 List<String> namesList = new ArrayList<String>();
-                
+
                 ProcessType processType = (ProcessType) item.getProcess();
                 for (Object o : processType.getNode()) {
                     NodeType nt = (NodeType) o;
@@ -99,11 +98,22 @@ public class AddPerlRefArrayMigrationTask extends AbstractJobMigrationTask {
                     public void transform(NodeType node) {
 
                         for (Object o : node.getElementParameter()) {
-                            ElementParameterType t = (ElementParameterType) o;
-                            String value = t.getValue();
-                            if (value != null) {
-                                String newValue = parser.processReplacementOperations(value, namesArrays);
-                                t.setValue(newValue);
+                            ElementParameterType pType = (ElementParameterType) o;
+                            if (pType.getField().equals("TABLE")) {
+                                for (ElementValueType elementValue : (List<ElementValueType>) pType.getElementValue()) {
+                                    elementValue.getValue();
+                                    String value = elementValue.getValue();
+                                    if (value != null) {
+                                        String newValue = parser.processReplacementOperations(value, namesArrays);
+                                        elementValue.setValue(newValue);
+                                    }
+                                }
+                            } else {
+                                String value = pType.getValue();
+                                if (value != null) {
+                                    String newValue = parser.processReplacementOperations(value, namesArrays);
+                                    pType.setValue(newValue);
+                                }
                             }
                         }
 
@@ -189,8 +199,7 @@ public class AddPerlRefArrayMigrationTask extends AbstractJobMigrationTask {
             for (int i = 0; i < tableNames.length; i++) {
                 String connectionName = tableNames[i];
 
-                recompilePatternIfNecessary(StringHelper.replacePrms(
-                        "\\$[\\s\\r\\n]*({0})[\\s\\r\\n]*\\[",
+                recompilePatternIfNecessary(StringHelper.replacePrms("\\$[\\s\\r\\n]*({0})[\\s\\r\\n]*\\[",
                         new Object[] { connectionName }));
                 if (returnedExpression != null) {
                     matcher.setMultiline(true);
@@ -203,7 +212,7 @@ public class AddPerlRefArrayMigrationTask extends AbstractJobMigrationTask {
                 if (returnedExpression != null) {
                     matcher.setMultiline(true);
                     Perl5Substitution substitution = new Perl5Substitution("@\\$" + "$1" //$NON-NLS-1$
-                            , Perl5Substitution.INTERPOLATE_ALL); //$NON-NLS-1$
+                    , Perl5Substitution.INTERPOLATE_ALL); //$NON-NLS-1$
                     returnedExpression = Util.substitute(matcher, pattern, substitution, returnedExpression, Util.SUBSTITUTE_ALL);
                 }
 

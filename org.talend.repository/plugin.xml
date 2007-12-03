@@ -656,6 +656,13 @@
             id="org.talend.repository.model.migration.AddPerlRefArrayPointer"
             name="%migrationtask.AddPerlRefArrayPointer.title">
       </projecttask>
+      <projecttask
+            beforeLogon="false"
+            class="org.talend.repository.model.migration.AddPerlRefArrayMigrationTask"
+            description="%migrationtask.AddPerlRefArrayPointer2.desc"
+            id="org.talend.repository.model.migration.AddPerlRefArrayPointer2"
+            name="%migrationtask.AddPerlRefArrayPointer2.title">
+      </projecttask>
    </extension>
    <extension
          point="org.talend.core.librariesNeeded">
