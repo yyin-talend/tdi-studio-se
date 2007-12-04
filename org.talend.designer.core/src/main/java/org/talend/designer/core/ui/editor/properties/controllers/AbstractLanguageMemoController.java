@@ -207,7 +207,6 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
                 helper.register(text);
                 cLayout = a;
             }
-
         } else {
             dField = new DecoratedField(subComposite, SWT.BORDER | SWT.WRAP, txtCtrl);
             cLayout = dField.getLayoutControl();
@@ -233,7 +232,7 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
         }
 
         addDragAndDropTarget(text);
-        // addSnippetDropTarget(viewer);
+        addSnippetDropTarget(viewer);
         CLabel labelLabel = getWidgetFactory().createCLabel(subComposite, param.getDisplayName());
         data = new FormData();
         if (lastControl != null) {
