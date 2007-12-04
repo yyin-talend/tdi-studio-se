@@ -208,7 +208,7 @@ public abstract class AbstractStatsLogsComponent implements IComponent {
         elemParamList.add(newParam);
 
         newParam = new ElementParameter(node);
-        newParam.setName("INSTANCE"); //$NON-NLS-1$
+        newParam.setName("ADD_PARAMS"); //$NON-NLS-1$
         newParam.setField(EParameterFieldType.TEXT);
         elemParamList.add(newParam);
 

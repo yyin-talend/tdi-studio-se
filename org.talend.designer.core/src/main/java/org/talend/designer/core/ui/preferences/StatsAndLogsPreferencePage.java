@@ -64,7 +64,7 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
 
     private StringFieldEditor hostField;
 
-    private StringFieldEditor instanceField;
+    private StringFieldEditor additionParamField;
 
     private StringFieldEditor portField;
 
@@ -193,8 +193,8 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
         dbNameField = new StringFieldEditor(languagePrefix + EParameterName.DBNAME.getName(), EParameterName.DBNAME
                 .getDisplayName(), parent);
         if (language == ECodeLanguage.JAVA) {
-            instanceField = new StringFieldEditor(languagePrefix + EParameterName.INSTANCE.getName(), EParameterName.INSTANCE
-                    .getDisplayName(), parent);
+            additionParamField = new StringFieldEditor(languagePrefix + EParameterName.ADD_PARAMS.getName(),
+                    EParameterName.ADD_PARAMS.getDisplayName(), parent);
         }
         schemaField = new StringFieldEditor(languagePrefix + EParameterName.SCHEMA_DB.getName(), EParameterName.SCHEMA_DB
                 .getDisplayName(), parent);
@@ -251,7 +251,7 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
         addField(portField);
         addField(dbNameField);
         if (language == ECodeLanguage.JAVA) {
-            addField(instanceField);
+            addField(additionParamField);
         }
 
         addField(schemaField);
@@ -307,7 +307,7 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
 
         dbNameField.setEnabled(onDatabase && (onStatCatcher || onLogCatcher || onMetterCatcher), parent);
         if (language == ECodeLanguage.JAVA) {
-            instanceField.setEnabled(dbValue.equals("tMSSqlOutput") && onDatabase
+            additionParamField.setEnabled(dbValue.equals("tMSSqlOutput") && onDatabase
                     && (onStatCatcher || onLogCatcher || onMetterCatcher), parent);
         }
         schemaField.setEnabled((dbValue.equals("tOracleOutput") || dbValue.equals("tPostgresqlOutput")) && onDatabase

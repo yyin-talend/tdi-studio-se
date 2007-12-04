@@ -106,6 +106,8 @@ public class DatabaseForm extends AbstractForm {
 
     private LabelledDirectoryField directoryField;
 
+    private LabelledText additionParamText;
+
     /**
      * Anothers Fields.
      */
@@ -146,12 +148,14 @@ public class DatabaseForm extends AbstractForm {
         serverText.setText(getConnection().getServerName());
         portText.setText(getConnection().getPort());
         datasourceText.setText(getConnection().getDatasourceName());
+        additionParamText.setText(getConnection().getAdditionalParams());
         sidOrDatabaseText.setText(getConnection().getSID());
         schemaText.setText(getConnection().getSchema());
         fileField.setText(getConnection().getFileFieldName());
         stringQuoteText.setText(getConnection().getStringQuote());
         nullCharText.setText(getConnection().getNullChar());
         directoryField.setText(getConnection().getDBRootPath());
+
         // PTODO !StandBy! (use width SQL Editor): to define the values of SQL Syntax (need by SQL Editor)
         getConnection().setSqlSynthax(Messages.getString("DatabaseForm.sqlSyntax")); //$NON-NLS-1$
         sqlSyntaxCombo.select(getSqlSyntaxIndex(getConnection().getSqlSynthax()));
@@ -175,6 +179,7 @@ public class DatabaseForm extends AbstractForm {
         sidOrDatabaseText.setReadOnly(isReadOnly());
         schemaText.setReadOnly(isReadOnly());
         datasourceText.setReadOnly(isReadOnly());
+        additionParamText.setReadOnly(isReadOnly());
         fileField.setReadOnly(isReadOnly());
         sqlSyntaxCombo.setReadOnly(isReadOnly());
         stringQuoteText.setReadOnly(isReadOnly());
@@ -251,8 +256,7 @@ public class DatabaseForm extends AbstractForm {
 
         // Field connectionString
         urlDataStringConnection.setSelectionIndex(dbTypeCombo.getSelectionIndex());
-        urlConnectionStringText = new LabelledText(compositeDbSettings, Messages
-                .getString("DatabaseForm.stringConnection"), 2); //$NON-NLS-1$
+        urlConnectionStringText = new LabelledText(compositeDbSettings, Messages.getString("DatabaseForm.stringConnection"), 2); //$NON-NLS-1$
         urlConnectionStringText.setEditable(false);
 
         // Field login & password
@@ -267,20 +271,19 @@ public class DatabaseForm extends AbstractForm {
         sidOrDatabaseText = new LabelledText(compositeDbSettings, Messages.getString("DatabaseForm.database"), 2); //$NON-NLS-1$
         schemaText = new LabelledText(compositeDbSettings, Messages.getString("DatabaseForm.schema"), 2); //$NON-NLS-1$
         datasourceText = new LabelledText(compositeDbSettings, Messages.getString("DatabaseForm.dataSource"), 2); //$NON-NLS-1$
+        additionParamText = new LabelledText(compositeDbSettings, Messages.getString("DatabaseForm.AddParams"), 2); //$NON-NLS-1$
 
         String[] extensions = { "*.*" }; //$NON-NLS-1$
         fileField = new LabelledFileField(compositeDbSettings, Messages.getString("DatabaseForm.mdbFile"), extensions); //$NON-NLS-1$
         directoryField = new LabelledDirectoryField(compositeDbSettings, "DB Root Path"); //$NON-NLS-1$
 
         // Button Check
-        Composite compositeCheckButton = Form.startNewGridLayout(compositeGroupDbSettings, 1, false, SWT.CENTER,
-                SWT.BOTTOM);
+        Composite compositeCheckButton = Form.startNewGridLayout(compositeGroupDbSettings, 1, false, SWT.CENTER, SWT.BOTTOM);
         layout2 = (GridLayout) compositeCheckButton.getLayout();
         layout2.marginHeight = 0;
         layout2.marginTop = 0;
         layout2.marginBottom = 0;
-        checkButton = new UtilsButton(compositeCheckButton,
-                Messages.getString("DatabaseForm.check"), WIDTH_BUTTON_PIXEL, //$NON-NLS-1$
+        checkButton = new UtilsButton(compositeCheckButton, Messages.getString("DatabaseForm.check"), WIDTH_BUTTON_PIXEL, //$NON-NLS-1$
                 HEIGHT_BUTTON_PIXEL);
         checkButton.setEnabled(false);
 
@@ -291,12 +294,10 @@ public class DatabaseForm extends AbstractForm {
 
         // PTODO !StandBy! (use width SQL Editor): to define the values of SQL Syntax (need by SQL Editor)
         String[] item = { "SQL 92" }; //$NON-NLS-1$
-        sqlSyntaxCombo = new LabelledCombo(compositeGroupDbProperties,
-                Messages.getString("DatabaseForm.sqlSyntax"), null, item, //$NON-NLS-1$
+        sqlSyntaxCombo = new LabelledCombo(compositeGroupDbProperties, Messages.getString("DatabaseForm.sqlSyntax"), null, item, //$NON-NLS-1$
                 3);
 
-        stringQuoteText = new LabelledText(compositeGroupDbProperties,
-                Messages.getString("DatabaseForm.stringQuote"), false); //$NON-NLS-1$
+        stringQuoteText = new LabelledText(compositeGroupDbProperties, Messages.getString("DatabaseForm.stringQuote"), false); //$NON-NLS-1$
         nullCharText = new LabelledText(compositeGroupDbProperties, Messages.getString("DatabaseForm.nullChar"), false); //$NON-NLS-1$
     }
 
@@ -314,12 +315,12 @@ public class DatabaseForm extends AbstractForm {
         }
         ManagerConnection managerConnection = new ManagerConnection();
         // set the value
-        managerConnection.setValue(0, dbTypeCombo.getItem(dbTypeCombo.getSelectionIndex()), urlConnectionStringText
-                .getText(), serverText.getText(), usernameText.getText(), passwordText.getText(), sidOrDatabaseText
-                .getText(), portText.getText(), fileField.getText(), datasourceText.getText(), schemaText.getText());
+        managerConnection.setValue(0, dbTypeCombo.getItem(dbTypeCombo.getSelectionIndex()), urlConnectionStringText.getText(),
+                serverText.getText(), usernameText.getText(), passwordText.getText(), sidOrDatabaseText.getText(), portText
+                        .getText(), fileField.getText(), datasourceText.getText(), schemaText.getText());
         managerConnection.setDbRootPath(directoryField.getText());
-        managerConnection.setValueProperties(sqlSyntaxCombo.getItem(sqlSyntaxCombo.getSelectionIndex()),
-                stringQuoteText.getText(), nullCharText.getText());
+        managerConnection.setValueProperties(sqlSyntaxCombo.getItem(sqlSyntaxCombo.getSelectionIndex()), stringQuoteText
+                .getText(), nullCharText.getText());
 
         // check the connection
         databaseSettingIsValide = managerConnection.check();
@@ -441,6 +442,7 @@ public class DatabaseForm extends AbstractForm {
         sidOrDatabaseText.addListener(SWT.FocusIn, listener);
         datasourceText.addListener(SWT.FocusIn, listener);
         schemaText.addListener(SWT.FocusIn, listener);
+        additionParamText.addListener(SWT.FocusIn, listener);
         urlConnectionStringText.addListener(SWT.FocusIn, listener);
 
         // serverText : Event modifyText
@@ -536,6 +538,16 @@ public class DatabaseForm extends AbstractForm {
                 }
             }
         });
+        // additional parameters: Event modifyText
+        additionParamText.addModifyListener(new ModifyListener() {
+
+            public void modifyText(final ModifyEvent e) {
+                if (!urlConnectionStringText.getEditable()) {
+                    getConnection().setAdditionalParams(additionParamText.getText());
+                    checkFieldsValue();
+                }
+            }
+        });
 
         // Event dbTypeCombo
         dbTypeCombo.addModifyListener(new ModifyListener() {
@@ -546,8 +558,7 @@ public class DatabaseForm extends AbstractForm {
                 setPropertiesFormEditable(true);
                 getConnection().setDatabaseType(dbTypeCombo.getText());
                 portText.setText(urlDataStringConnection.getDefaultPort());
-                final String product = EDatabaseTypeName.getTypeFromDisplayName(getConnection().getDatabaseType())
-                        .getProduct();
+                final String product = EDatabaseTypeName.getTypeFromDisplayName(getConnection().getDatabaseType()).getProduct();
                 getConnection().setProductId(product);
                 final String mapping = MetadataTalendType.getDefaultDbmsFromProduct(product).getId();
                 getConnection().setDbmsId(mapping);
@@ -645,6 +656,7 @@ public class DatabaseForm extends AbstractForm {
                 getConnection().setDatabaseType(dbTypeCombo.getText());
                 getConnection().setFileFieldName(fileField.getText());
                 getConnection().setDBRootPath(directoryField.getText());
+                getConnection().setAdditionalParams(additionParamText.getText());
             }
         });
 
@@ -723,9 +735,10 @@ public class DatabaseForm extends AbstractForm {
     }
 
     private String getStringConnection() {
-        String s = urlDataStringConnection.getString(dbTypeCombo.getSelectionIndex(), serverText.getText(),
-                usernameText.getText(), passwordText.getText(), portText.getText(), sidOrDatabaseText.getText(),
-                fileField.getText().toLowerCase(), datasourceText.getText(), directoryField.getText());
+        String s = urlDataStringConnection.getString(dbTypeCombo.getSelectionIndex(), serverText.getText(), usernameText
+                .getText(), passwordText.getText(), portText.getText(), sidOrDatabaseText.getText(), fileField.getText()
+                .toLowerCase(), datasourceText.getText(), directoryField.getText(), additionParamText.getText());
+
         return s;
     }
 
@@ -760,6 +773,7 @@ public class DatabaseForm extends AbstractForm {
         portText.setEditable(false);
         sidOrDatabaseText.setEditable(false);
         datasourceText.setEditable(false);
+        additionParamText.setEditable(false);
         schemaText.setEditable(false);
         fileField.setEditable(false);
         directoryField.setEditable(false);
@@ -781,8 +795,7 @@ public class DatabaseForm extends AbstractForm {
             if (s.contains("<filename>")) { // &&
                 // urlDataStringConnection.getStringConnectionTemplate().contains("jdbc:sqlite")
                 fileField.setEditable(visible);
-                if (EDatabaseTypeName.getTypeFromDisplayName(getConnection().getDatabaseType()).equals(
-                        EDatabaseTypeName.SQLITE)) {
+                if (EDatabaseTypeName.getTypeFromDisplayName(getConnection().getDatabaseType()).equals(EDatabaseTypeName.SQLITE)) {
                     usernameText.setEditable(false);
                     passwordText.setEditable(false);
                 } else {
@@ -802,6 +815,9 @@ public class DatabaseForm extends AbstractForm {
             }
             if (urlDataStringConnection.isSchemaNeeded()) {
                 schemaText.setEditable(visible);
+            }
+            if (urlDataStringConnection.isAddtionParamsNeeded()) {
+                additionParamText.setEditable(visible);
             }
         }
     }
