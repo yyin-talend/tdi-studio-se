@@ -46,6 +46,7 @@ import org.eclipse.gef.SnapToGrid;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.commands.CommandStackEvent;
 import org.eclipse.gef.commands.CommandStackEventListener;
+import org.eclipse.gef.commands.CompoundCommand;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
@@ -104,12 +105,12 @@ import org.talend.designer.core.model.utils.emf.talendfile.RequiredType;
 import org.talend.designer.core.model.utils.emf.talendfile.TalendFileFactory;
 import org.talend.designer.core.model.utils.emf.talendfile.util.TalendFileResourceImpl;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
+import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.Node.Data;
 import org.talend.designer.core.ui.editor.notes.Note;
-import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.designer.runprocess.IProcessor;
@@ -1015,23 +1016,6 @@ public class Process extends Element implements IProcess {
         return modified;
     }
 
-    private void refreshPropertyView() {
-
-        // IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-        // IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet"); //$NON-NLS-1$
-        // PropertySheet sheet = (PropertySheet) view;
-        // if (sheet.getCurrentPage() instanceof TabbedPropertySheetPage) {
-        // TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) sheet.getCurrentPage();
-        // if (tabbedPropertySheetPage.getCurrentTab() != null) {
-        // tabbedPropertySheetPage.refresh();
-        // }
-        // }
-        if (DynamicTabbedPropertySection.getLastPropertyUsed() != null) {
-            // DynamicTabbedPropertySection.getLastPropertyUsed().addComponents(true)
-            DynamicTabbedPropertySection.getLastPropertyUsed().refresh();
-        }
-    }
-
     /**
      * 
      * DOC nrousseau Comment method "checkNodePropertiesFromRepository".
@@ -1195,8 +1179,6 @@ public class Process extends Element implements IProcess {
 
                 updateNodeswithMetadata(selectResult);
 
-                refreshPropertyView();
-
                 modified = true;
 
             } else { // IDialogConstants.CANCEL_ID
@@ -1208,6 +1190,7 @@ public class Process extends Element implements IProcess {
     }
 
     private void updateNodeswithMetadata(final List<Object> list) {
+        CompoundCommand cc = new CompoundCommand();
 
         for (int k = 0; k < list.size(); k++) {
 
@@ -1262,7 +1245,6 @@ public class Process extends Element implements IProcess {
                         }
                     }
                 } else { // MetadataUpdateCheckResult.ResultType.delete
-
                     node.setPropertyValue(EParameterName.PROPERTY_TYPE.getName(), EmfComponent.BUILTIN);
                 }
 
@@ -1286,8 +1268,18 @@ public class Process extends Element implements IProcess {
             } else if (result.getRepositoryType() == MetadataUpdateCheckResult.RepositoryType.query) {
                 // here need to add the code the do the "query"
             }
+            PropertyChangeCommand pcc = new PropertyChangeCommand(node, EParameterName.UPDATE_COMPONENTS.getName(), Boolean.TRUE);
+            cc.add(pcc);
         }
 
+        if (!cc.isEmpty()) { // if there is any change, send a command to apply them
+            getCommandStack().execute(cc);
+        }
+    }
+
+    protected CommandStack getCommandStack() {
+        Object adapter = getEditor().getTalendEditor().getAdapter(CommandStack.class);
+        return (CommandStack) adapter;
     }
 
     private void loadConnections(ProcessType process, Hashtable<String, Node> nodesHashtable) {

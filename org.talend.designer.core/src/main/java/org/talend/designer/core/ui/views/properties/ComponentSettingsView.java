@@ -56,7 +56,7 @@ public class ComponentSettingsView extends ViewPart {
 
     private TalendPropertyTabDescriptor currentSelectedTab;
 
-    private Element elem;
+    private Element element;
 
     private boolean cleaned;
 
@@ -91,9 +91,9 @@ public class ComponentSettingsView extends ViewPart {
                     }
                 }
 
-                if (elem == null || !elem.equals(descriptor.getElement()) || currentSelectedTab == null
+                if (element == null || !element.equals(descriptor.getElement()) || currentSelectedTab == null
                         || currentSelectedTab.getCategory() != descriptor.getCategory() || selectedPrimary) {
-                    elem = descriptor.getElement();
+                    element = descriptor.getElement();
                     currentSelectedTab = descriptor;
                     createDynamicComposite(tabFactory.getTabComposite(), descriptor.getElement(), descriptor.getCategory());
                     selectedPrimary = false;
@@ -277,5 +277,9 @@ public class ComponentSettingsView extends ViewPart {
             return EElementType.NOTE.getCategories();
         }
         return null;
+    }
+
+    public Element getElement() {
+        return element;
     }
 }

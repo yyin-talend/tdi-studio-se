@@ -60,10 +60,7 @@ public class ActiveProcessTracker implements IPartListener {
             if (process instanceof Process) {
                 Process p = (Process) process;
                 if (!p.isReadOnly() && p.isActivate()) {
-                    if (p.checkDifferenceWithRepository()) {
-                        MultiPageTalendEditor mpte = (MultiPageTalendEditor) part;
-                        mpte.getTalendEditor().setDirty(true);
-                    }
+                    p.checkDifferenceWithRepository();
                 }
             }
         }

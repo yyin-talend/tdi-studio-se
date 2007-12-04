@@ -627,30 +627,27 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
         // **********************");
         // TabbedPropertyComposite tabbedPropertyComposite = this.getTabbedPropertyComposite();
         int additionalHeightSize = 0;
-        if ((!(elem instanceof org.talend.designer.core.ui.editor.connections.Connection))) {
-            boolean hasDynamicRow = false;
-            for (int i = 0; i < listParam.size(); i++) {
-                IElementParameter curParam = listParam.get(i);
-                if (curParam.getCategory() == section) {
-                    if (curParam.getField() != EParameterFieldType.TECHNICAL) {
-                        if (curParam.isShow(listParam)) {
-                            AbstractElementPropertySectionController controller = generator.getController(curParam.getField(),
-                                    this);
+        boolean hasDynamicRow = false;
+        for (int i = 0; i < listParam.size(); i++) {
+            IElementParameter curParam = listParam.get(i);
+            if (curParam.getCategory() == section) {
+                if (curParam.getField() != EParameterFieldType.TECHNICAL) {
+                    if (curParam.isShow(listParam)) {
+                        AbstractElementPropertySectionController controller = generator.getController(curParam.getField(), this);
 
-                            if (controller == null) {
-                                continue;
-                            }
-                            if (controller.hasDynamicRowSize()) {
-                                hasDynamicRow = true;
-                                break;
-                            }
+                        if (controller == null) {
+                            continue;
+                        }
+                        if (controller.hasDynamicRowSize()) {
+                            hasDynamicRow = true;
+                            break;
                         }
                     }
                 }
             }
-            if (hasDynamicRow) {
-                additionalHeightSize = estimatePropertyHeightSize(maxRow, listParam);
-            }
+        }
+        if (hasDynamicRow) {
+            additionalHeightSize = estimatePropertyHeightSize(maxRow, listParam);
         }
 
         long lastTime = TimeMeasure.timeSinceBegin("DTP:refresh:" + getCurrentComponent());
