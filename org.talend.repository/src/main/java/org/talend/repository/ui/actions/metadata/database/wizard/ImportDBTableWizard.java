@@ -45,15 +45,20 @@ import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.swt.dialogs.ProgressDialog;
 import org.talend.commons.ui.swt.formtools.Form;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
+import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.actions.metadata.database.ConnectionDBTableHelper;
 import org.talend.repository.ui.actions.metadata.database.DBBeanParserHelper;
 import org.talend.repository.ui.actions.metadata.database.DBTableForDelimitedBean;
+import org.talend.repository.ui.actions.metadata.database.LogDetailsHelper;
+import org.talend.repository.ui.actions.metadata.importing.AbstractImportingTablesHelper;
+import org.talend.repository.ui.actions.metadata.importing.DelimitedConnectionTablesHelper;
 import org.talend.repository.ui.wizards.RepositoryWizard;
 
 /**
@@ -83,7 +88,7 @@ public class ImportDBTableWizard extends RepositoryWizard implements IImportWiza
         protected Control createCustomArea(Composite parent) {
             Group group = Form.createGroup(parent, 1, null, 200);
 
-            Text text = new Text(group, SWT.V_SCROLL | SWT.H_SCROLL | SWT.READ_ONLY);
+            Text text = new Text(group, SWT.V_SCROLL | SWT.H_SCROLL | SWT.READ_ONLY | SWT.BORDER);
             // text.setBackground(new Color(text.getBackground().getDevice(), 255, 255, 255));
             GridData data = new GridData(GridData.FILL_BOTH);
             text.setLayoutData(data);
@@ -102,6 +107,8 @@ public class ImportDBTableWizard extends RepositoryWizard implements IImportWiza
     private static final IProxyRepositoryFactory FACTORY = ProxyRepositoryFactory.getInstance();
 
     private ImportDBTableWizardPage importWizardPage;
+
+    private ERepositoryObjectType nodeType;
 
     /**
      * ggu ImportDBTableWizard constructor comment.
@@ -122,9 +129,12 @@ public class ImportDBTableWizard extends RepositoryWizard implements IImportWiza
 
         Object userSelection = ((IStructuredSelection) selection).getFirstElement();
         if (userSelection instanceof RepositoryNode) {
-            switch (((RepositoryNode) userSelection).getType()) {
+            RepositoryNode node = (RepositoryNode) userSelection;
+            nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
+
+            switch (node.getType()) {
             case SIMPLE_FOLDER:
-                pathToSave = RepositoryNodeUtilities.getPath((RepositoryNode) userSelection);
+                pathToSave = RepositoryNodeUtilities.getPath(node);
                 break;
             case SYSTEM_FOLDER:
                 pathToSave = new Path(""); //$NON-NLS-1$
@@ -155,7 +165,25 @@ public class ImportDBTableWizard extends RepositoryWizard implements IImportWiza
     @Override
     public void addPages() {
         setWindowTitle(Messages.getString("ImportDBTableWizard.WizardTitle")); //$NON-NLS-1$
-        setDefaultPageImageDescriptor(ImageProvider.getImageDesc(ECoreImage.METADATA_CONNECTION_WIZ));
+        switch (nodeType) {
+        default:
+            // unenabled
+            return;
+        case METADATA_CONNECTIONS:
+            setDefaultPageImageDescriptor(ImageProvider.getImageDesc(ECoreImage.METADATA_CONNECTION_WIZ));
+            break;
+        case METADATA_FILE_DELIMITED:
+            setDefaultPageImageDescriptor(ImageProvider.getImageDesc(ECoreImage.METADATA_FILE_DELIMITED_WIZ));
+            break;
+        // case METADATA_FILE_POSITIONAL:
+        // case METADATA_FILE_REGEXP:
+        // case METADATA_FILE_XML:
+        // case METADATA_FILE_LDIF:
+        // case METADATA_GENERIC_SCHEMA:
+        // case METADATA_LDAP_SCHEMA:
+        // break;
+        }
+
         importWizardPage = new ImportDBTableWizardPage();
         importWizardPage.setTitle(Messages.getString("ImportDBTableWizard.Title")); //$NON-NLS-1$
         importWizardPage.setDescription(Messages.getString("ImportDBTableWizard.Description")); //$NON-NLS-1$
@@ -177,7 +205,19 @@ public class ImportDBTableWizard extends RepositoryWizard implements IImportWiza
             if (file == null) {
                 return false;
             }
-            ConnectionDBTableHelper helper = new ConnectionDBTableHelper(file);
+            AbstractImportingTablesHelper helper = null;
+            switch (nodeType) {
+            default:
+                // not process
+                return true;
+            case METADATA_CONNECTIONS:
+                helper = new ConnectionDBTableHelper(file);
+
+                break;
+            case METADATA_FILE_DELIMITED:
+                helper = new DelimitedConnectionTablesHelper(file);
+                break;
+            }
             progressDialog(helper);
             showLogsDialog(helper);
             return true;
@@ -185,7 +225,7 @@ public class ImportDBTableWizard extends RepositoryWizard implements IImportWiza
         return false;
     }
 
-    private void progressDialog(final ConnectionDBTableHelper helper) {
+    private void progressDialog(final AbstractImportingTablesHelper helper) {
         Shell activeShell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
         ProgressDialog progressDialog = new ProgressDialog(activeShell) {
 
@@ -204,7 +244,7 @@ public class ImportDBTableWizard extends RepositoryWizard implements IImportWiza
                 } catch (IOException e) {
                     return;
                 }
-                monitor.beginTask(Messages.getString("ImportDBTableWizard.ProcessLabel"), totalWorks + 5); //$NON-NLS-1$
+                monitor.beginTask(Messages.getString("ImportDBTableWizard.ProcessLabel"), totalWorks + 20); //$NON-NLS-1$
                 process(helper, monitorWrap);
                 monitorWrap.done();
 
@@ -220,21 +260,20 @@ public class ImportDBTableWizard extends RepositoryWizard implements IImportWiza
         }
     }
 
-    private void process(ConnectionDBTableHelper helper, IProgressMonitor monitor) {
+    private void process(AbstractImportingTablesHelper helper, IProgressMonitor monitor) {
 
         BufferedReader reader = null;
 
         try {
             reader = new BufferedReader(new FileReader(helper.getImportedFile()));
             String line;
-            int index = -1;
+
             while ((line = reader.readLine()) != null) {
                 monitor.worked(1);
-                index++;
                 if (helper.isNullable(line)) {
                     continue;
                 }
-                DBTableForDelimitedBean bean = DBBeanParserHelper.parseLineToBean(line);
+                DBTableForDelimitedBean bean = DBBeanParserHelper.parseLineToBean(nodeType, line);
 
                 switch (bean.getBeanType()) {
                 case COLUMN:
@@ -242,16 +281,16 @@ public class ImportDBTableWizard extends RepositoryWizard implements IImportWiza
                     // the line is suitable format.
                     ConnectionItem connItem = null;
                     try {
-                        connItem = helper.setConnectionItemData(bean);
+                        connItem = helper.convertBeanToItem(bean);
                     } catch (PersistenceException e) {
-                        helper.recordRejects(bean, null, index);
+                        helper.recordRejects(bean, null);
                         continue;
                     } catch (BusinessException e) {
-                        helper.recordRejects(bean, null, index);
+                        helper.recordRejects(bean, null);
                         continue;
                     }
                     if (connItem == null) {
-                        helper.recordRejects(bean, null, index);
+                        helper.recordRejects(bean, null);
                         continue;
                     }
                     try {
@@ -262,7 +301,7 @@ public class ImportDBTableWizard extends RepositoryWizard implements IImportWiza
                             FACTORY.save(connItem);
                         }
                     } catch (PersistenceException e) {
-                        helper.recordRejects(bean, connItem, index);
+                        helper.recordRejects(bean, connItem);
                         continue;
                     }
                     helper.addRecords(bean);
@@ -272,15 +311,15 @@ public class ImportDBTableWizard extends RepositoryWizard implements IImportWiza
                 case UNKNOWN:
                 default:
                     // this line isn't right format. record it in ".log" and ".rejects"
-                    helper.recordRejects(null, null, index);
+                    helper.recordRejects(null, null);
 
                 }
             }
             // write the .log and .rejects
             helper.writeRejects();
-            monitor.worked(2);
+            monitor.worked(10);
             helper.writeLogs();
-            monitor.worked(2);
+            monitor.worked(5);
         } catch (IOException e) {
             MessageBoxExceptionHandler.process(e, getShell());
 
@@ -297,7 +336,7 @@ public class ImportDBTableWizard extends RepositoryWizard implements IImportWiza
 
     }
 
-    private void showLogsDialog(ConnectionDBTableHelper helper) {
+    private void showLogsDialog(AbstractImportingTablesHelper helper) {
         BufferedReader reader = null;
         try {
             File logsFile = helper.getLogsFile();
@@ -306,7 +345,7 @@ public class ImportDBTableWizard extends RepositoryWizard implements IImportWiza
             String line;
             while ((line = reader.readLine()) != null) {
                 logsMessage.append(line);
-                logsMessage.append("\r\n"); //$NON-NLS-1$
+                logsMessage.append(LogDetailsHelper.RETURN);
             }
             // show log
             String title = Messages.getString("ImportDBTableWizard.LogMessageTitle"); //$NON-NLS-1$

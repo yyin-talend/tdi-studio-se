@@ -78,6 +78,7 @@ public final class LogDetailsHelper {
         StringBuilder sb = new StringBuilder();
         sb.append(getUnknownDBForPerl(processRecords));
         sb.append(getUnknownLogs(RejectedType.DATABASETYPE, processRecords));
+        sb.append(getUnknownLogs(RejectedType.FILE, processRecords));
         sb.append(getUnknownLogs(RejectedType.TALENDTYPE, processRecords));
         sb.append(getTypeNotMappingLogs(processRecords));
         return sb.toString();
@@ -98,6 +99,9 @@ public final class LogDetailsHelper {
                 break;
             case DATABASETYPE:
                 sb.append(Messages.getString("LogDetailsHelper.UnknownDatabaseType", bean.getValue(), bean.getConnName())); //$NON-NLS-1$
+                break;
+            case FILE:
+                sb.append(Messages.getString("LogDetailsHelper.NotFoundFile", bean.getValue(), bean.getConnName())); //$NON-NLS-1$
                 break;
             default:
             }

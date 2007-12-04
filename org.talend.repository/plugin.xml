@@ -268,10 +268,10 @@
              name="Export HTML documentation action">
        </Action>
        <Action
-             class="org.talend.repository.ui.actions.metadata.database.ImportDBTableFromDelimitedAction"
-             id="org.talend.repository.ui.actions.metadata.database.ImportDBTableFromDelimitedAction"
+             class="org.talend.repository.ui.actions.metadata.importing.ImportTablesFromDelimitedAction"
+             id="org.talend.repository.ui.actions.metadata.importing.ImportTablesFromDelimitedAction"
              level="10"
-             name="Metadata/Import database from delimited">
+             name="Metadata/Import tables from delimited">
        </Action>
    </extension>
    <extension

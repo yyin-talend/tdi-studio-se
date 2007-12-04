@@ -10,9 +10,8 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.repository.ui.actions.metadata.database;
+package org.talend.repository.ui.actions.metadata.importing;
 
-import org.apache.log4j.Logger;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Display;
@@ -21,34 +20,23 @@ import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.core.ui.images.OverlayImageProvider;
-import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.EProperties;
-import org.talend.repository.ui.actions.metadata.AbstractCreateTableAction;
+import org.talend.repository.ui.actions.metadata.AbstractCreateAction;
 import org.talend.repository.ui.actions.metadata.database.wizard.ImportDBTableWizard;
 
 /**
- * DOC ggu class global comment. Detailled comment <br/>
- * 
+ * DOC ggu class global comment. Detailled comment
  */
-public class ImportDBTableFromDelimitedAction extends AbstractCreateTableAction {
+public class ImportTablesFromDelimitedAction extends AbstractCreateAction {
 
-    protected static Logger log = Logger.getLogger(ImportDBTableFromDelimitedAction.class);
+    private static final String LABEL = Messages.getString("ImportTablesFromDelimitedAction.Label"); //$NON-NLS-1$
 
-    protected static final String PID = RepositoryPlugin.PLUGIN_ID;
-
-    private static final String LABEL = Messages.getString("ImportDBTableFromDelimitedAction.Label"); //$NON-NLS-1$
-
-    /**
-     * DOC ggu ImportConnectionTableFromCSV constructor comment.
-     */
-    public ImportDBTableFromDelimitedAction() {
+    public ImportTablesFromDelimitedAction() {
         this.setText(LABEL);
         this.setToolTipText(LABEL);
-        this
-                .setImageDescriptor(OverlayImageProvider.getImageWithNew(ImageProvider
-                        .getImage(ECoreImage.METADATA_CONNECTION_ICON)));
+        this.setImageDescriptor(OverlayImageProvider.getImageWithNew(ImageProvider.getImage(ECoreImage.METADATA_TABLE_ICON)));
     }
 
     /*
@@ -58,13 +46,23 @@ public class ImportDBTableFromDelimitedAction extends AbstractCreateTableAction 
      */
     @Override
     protected void init(RepositoryNode node) {
-
         ERepositoryObjectType nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
         if (nodeType == null) {
             return;
         }
-        if (nodeType != ERepositoryObjectType.METADATA_CONNECTIONS) {
+        switch (nodeType) {
+        default:
+            // unenabled
             return;
+        case METADATA_CONNECTIONS:
+        case METADATA_FILE_DELIMITED:
+            // case METADATA_FILE_POSITIONAL:
+            // case METADATA_FILE_REGEXP:
+            // case METADATA_FILE_XML:
+            // case METADATA_FILE_LDIF:
+            // case METADATA_GENERIC_SCHEMA:
+            // case METADATA_LDAP_SCHEMA:
+            break;
         }
 
         switch (node.getType()) {
@@ -74,9 +72,9 @@ public class ImportDBTableFromDelimitedAction extends AbstractCreateTableAction 
             setEnabled(true);
             break;
         default:
-            break;
+            // not enabled
+            return;
         }
-
     }
 
     /*
@@ -86,7 +84,6 @@ public class ImportDBTableFromDelimitedAction extends AbstractCreateTableAction 
      */
     @Override
     public void run() {
-
         expandNode();
         showOptionDialog();
     }
@@ -122,4 +119,5 @@ public class ImportDBTableFromDelimitedAction extends AbstractCreateTableAction 
         wizardDialog.open();
         refresh(((IStructuredSelection) getSelection()).getFirstElement());
     }
+
 }

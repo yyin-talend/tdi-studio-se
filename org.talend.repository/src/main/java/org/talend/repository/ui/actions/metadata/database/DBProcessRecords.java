@@ -33,8 +33,8 @@ public class DBProcessRecords {
      */
     public enum RejectedType {
         TALENDTYPE,
-        DATABASETYPE
-        // database name
+        DATABASETYPE,
+        FILE
     }
 
     /**
@@ -55,8 +55,6 @@ public class DBProcessRecords {
         REJECT,
         IMPORT
     }
-
-    private Set<Integer> rejectedLine = new HashSet<Integer>();
 
     private Map<ProcessType, Set<String>> processToConnMap = new HashMap<ProcessType, Set<String>>();
 
@@ -88,7 +86,7 @@ public class DBProcessRecords {
 
         rejectedMap.put(RejectedType.DATABASETYPE, new HashSet<ValueTypeBean>());
         rejectedMap.put(RejectedType.TALENDTYPE, new HashSet<ValueTypeBean>());
-
+        rejectedMap.put(RejectedType.FILE, new HashSet<ValueTypeBean>());
     }
 
     public void setTypeNotMapping(DBTableForDelimitedBean bean) {
@@ -115,6 +113,7 @@ public class DBProcessRecords {
         switch (rType) {
         case TALENDTYPE:
         case DATABASETYPE:
+        case FILE:
             Set<ValueTypeBean> rejectedSet = rejectedMap.get(rType);
             if (rejectedSet == null) {
                 rejectedSet = new HashSet<ValueTypeBean>();
@@ -142,6 +141,7 @@ public class DBProcessRecords {
         switch (rType) {
         case TALENDTYPE:
         case DATABASETYPE:
+        case FILE:
             Set<ValueTypeBean> rejectedSet = rejectedMap.get(rType);
             if (rejectedSet == null) {
                 return Collections.emptySet();
@@ -452,11 +452,4 @@ public class DBProcessRecords {
         return true;
     }
 
-    public void setRejectedLines(int lineNum) {
-        rejectedLine.add(lineNum);
-    }
-
-    public Set<Integer> getRejectedLines() {
-        return rejectedLine;
-    }
 }

@@ -20,11 +20,14 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.ui.actions.metadata.database.DBTableForDelimitedBean.BeanType;
+import org.talend.repository.ui.actions.metadata.importing.PositionHelper;
 
 /**
  * DOC ggu class global comment. Detailled comment
  */
 public final class DBBeanParserHelper {
+
+    private static PositionHelper position;
 
     /**
      * 
@@ -34,47 +37,66 @@ public final class DBBeanParserHelper {
      * 
      * need improve the splitted value.
      */
-    public static DBTableForDelimitedBean parseLineToBean(String line) {
+    public static DBTableForDelimitedBean parseLineToBean(ERepositoryObjectType nodeType, String line) {
         // TODO improving
         String[] values = line.split(";");
-        return getCheckedBeanType(values);
+        switch (nodeType) {
+        default:
+            // not process
+            return null;
+        case METADATA_CONNECTIONS:
+            position = new PositionHelper(29, 1, 6, 18, 20, 23, 24);
+            break;
+        case METADATA_FILE_DELIMITED:
+            // use the bean var
+            position = new PositionHelper(16, 1, 6, 7, 8, 11, 12);
+            break;
+        // case METADATA_FILE_POSITIONAL:
+        // case METADATA_FILE_REGEXP:
+        // case METADATA_FILE_XML:
+        // case METADATA_FILE_LDIF:
+        // case METADATA_GENERIC_SCHEMA:
+        // case METADATA_LDAP_SCHEMA:
+
+        }
+        return getCheckedBeanType(nodeType, values);
     }
 
-    private static DBTableForDelimitedBean getCheckedBeanType(String[] tmpDatas) {
+    private static DBTableForDelimitedBean getCheckedBeanType(ERepositoryObjectType nodeType, String[] tmpDatas) {
         DBTableForDelimitedBean bean = new DBTableForDelimitedBean();
         int length = tmpDatas.length;
         BeanType type = BeanType.UNKNOWN;
-        if (length < DBTableForDelimitedBean.POSITION_DATABASETYPE || length > DBTableForDelimitedBean.TOTAL) {
+        if (length < position.getConnectionIndex() || length > position.getTotal()) {
             type = BeanType.UNKNOWN;
         } else {
-            type = checkedColumn(tmpDatas, bean);
+            type = checkedColumn(nodeType, tmpDatas, bean);
         }
         bean.setBeanType(type);
         return bean;
 
     }
 
-    private static BeanType checkedColumn(String[] datas, DBTableForDelimitedBean bean) {
+    private static BeanType checkedColumn(ERepositoryObjectType nodeType, String[] datas, DBTableForDelimitedBean bean) {
         final int length = datas.length;
 
         // verify forward table part
-        BeanType type = checkedTable(datas, bean);
+        BeanType type = checkedTable(nodeType, datas, bean);
         switch (type) {
         case UNKNOWN:
         case CONNECTION:
             return type;
         case TABLE:
-            if (isAllEmpty(DBTableForDelimitedBean.POSITION_ORIGINALTABLENAME, datas)) {
+            if (isAllEmpty(position.getOriginalTablenameIndex(), datas)) {
                 return type;
             }
         default:
         }
 
-        if (length < DBTableForDelimitedBean.POSITION_LENGTH) {
+        if (length < position.getLengthIndex()) {
             return BeanType.UNKNOWN;
         }
         // OriginalLabel
-        String str = datas[DBTableForDelimitedBean.POSITION_ORIGINALLABEL - 1].trim();
+        String str = datas[position.getOriginalLabelIndex() - 1].trim();
         if (isNullable(str)) {
             return BeanType.UNKNOWN;
         }
@@ -82,18 +104,22 @@ public final class DBBeanParserHelper {
             return BeanType.UNKNOWN;
         }
         bean.setOriginalLabel(str);
-        // Label
-        str = datas[DBTableForDelimitedBean.POSITION_ORIGINALLABEL - 2].trim();
-        if (isNullable(str)) {
-            bean.setLabel(bean.getOriginalLabel());
-        } else {
-            if (!Pattern.matches(MetadataEmfTableEditor.VALID_PATTERN_COLUMN_NAME, str)) {
-                return BeanType.UNKNOWN;
+
+        if (nodeType == ERepositoryObjectType.METADATA_CONNECTIONS) {
+            // Label
+            str = datas[position.getOriginalLabelIndex() - 2].trim();
+            if (isNullable(str)) {
+                bean.setLabel(bean.getOriginalLabel());
+            } else {
+                if (!Pattern.matches(MetadataEmfTableEditor.VALID_PATTERN_COLUMN_NAME, str)) {
+                    return BeanType.UNKNOWN;
+                }
+                bean.setLabel(str);
             }
-            bean.setLabel(str);
         }
+
         // key
-        str = datas[DBTableForDelimitedBean.POSITION_KEY - 1];
+        str = datas[position.getKeyIndex() - 1];
         if (isNullable(str)) {
             return BeanType.UNKNOWN;
         }
@@ -106,7 +132,7 @@ public final class DBBeanParserHelper {
             return BeanType.UNKNOWN;
         }
         // length
-        str = datas[DBTableForDelimitedBean.POSITION_LENGTH - 1];
+        str = datas[position.getLengthIndex() - 1];
         if (isNullable(str)) {
             return BeanType.UNKNOWN;
         }
@@ -119,19 +145,19 @@ public final class DBBeanParserHelper {
         } catch (NumberFormatException e) {
             return BeanType.UNKNOWN;
         }
-        addColumnsInfo(datas, bean);
+        addColumnsInfo(nodeType, datas, bean);
 
         return BeanType.COLUMN;
     }
 
-    private static void addColumnsInfo(String[] datas, DBTableForDelimitedBean bean) {
+    private static void addColumnsInfo(ERepositoryObjectType nodeType, String[] datas, DBTableForDelimitedBean bean) {
         // Comment
-        bean.setComment(datas[20].trim());
+        bean.setComment(datas[position.getOriginalLabelIndex()].trim());
         // Default Value
-        bean.setDefaultValue(datas[21].trim());
+        bean.setDefaultValue(datas[position.getOriginalLabelIndex() + 1].trim());
 
-        final int start = DBTableForDelimitedBean.POSITION_LENGTH;
-        final int end = DBTableForDelimitedBean.TOTAL;
+        final int start = position.getLengthIndex();
+        final int end = position.getTotal();
         String[] tmpDatas = getExtendArrays(start, end, datas);
 
         // Nullable
@@ -157,30 +183,36 @@ public final class DBBeanParserHelper {
         }
         // Talend Type and DB Type
         bean.setTalendType(tmpDatas[3]);
-        bean.setDbType(tmpDatas[4]);
+        if (nodeType == ERepositoryObjectType.METADATA_CONNECTIONS) {
+            bean.setDbType(tmpDatas[4]);
+        }
 
     }
 
-    private static BeanType checkedTable(String[] datas, DBTableForDelimitedBean bean) {
+    private static BeanType checkedTable(ERepositoryObjectType nodeType, String[] datas, DBTableForDelimitedBean bean) {
         final int length = datas.length;
 
         // verify forward connection part
-        BeanType type = checkedConnectin(datas, bean);
+        BeanType type = checkedConnectin(nodeType, datas, bean);
         switch (type) {
         case UNKNOWN:
             return type;
         case CONNECTION:
-            if (isAllEmpty(DBTableForDelimitedBean.POSITION_ORIGINALTABLENAME - 2, datas)) {
+            int step = 0;
+            if (nodeType == ERepositoryObjectType.METADATA_CONNECTIONS) {
+                step = 1;
+            }
+            if (isAllEmpty(position.getOriginalTablenameIndex() - 1 - step, datas)) {
                 return BeanType.CONNECTION;
             }
         default:
         }
 
-        if (length < DBTableForDelimitedBean.POSITION_ORIGINALTABLENAME) {
+        if (length < position.getOriginalTablenameIndex()) {
             return BeanType.UNKNOWN;
         }
         // OriginalTableName
-        String tableName = datas[DBTableForDelimitedBean.POSITION_ORIGINALTABLENAME - 1].trim();
+        String tableName = datas[position.getOriginalTablenameIndex() - 1].trim();
         if (isNullable(tableName)) {
             return BeanType.UNKNOWN;
         }
@@ -193,34 +225,35 @@ public final class DBBeanParserHelper {
          */
         // Original Table Name
         bean.setOriginalTableName(tableName);
-        // Table Name
-        tableName = datas[DBTableForDelimitedBean.POSITION_ORIGINALTABLENAME - 2].trim();
-        if (isNullable(tableName)) { //$NON-NLS-1$
-            bean.setTableName(bean.getOriginalTableName());
+
+        if (nodeType == ERepositoryObjectType.METADATA_CONNECTIONS) {
+
+            tableName = datas[position.getOriginalTablenameIndex() - 2].trim();
+            if (isNullable(tableName)) { //$NON-NLS-1$
+                bean.setTableName(bean.getOriginalTableName());
+            } else {
+                bean.setTableName(tableName);
+            }
         } else {
-            bean.setTableName(tableName);
+            bean.setTableName(bean.getOriginalTableName());
         }
+        // Table Name
+
         return BeanType.TABLE;
 
     }
 
-    private static BeanType checkedConnectin(String[] datas, DBTableForDelimitedBean bean) {
+    private static BeanType checkedConnectin(ERepositoryObjectType nodeType, String[] datas, DBTableForDelimitedBean bean) {
         final int length = datas.length;
-        if (length < DBTableForDelimitedBean.POSITION_DATABASETYPE) {
+        if (length < position.getConnectionIndex()) {
             return BeanType.UNKNOWN;
         }
-        String name = datas[DBTableForDelimitedBean.POSITION_NAME - 1].trim();
-        // verify the Name and DatabaseType
+        String name = datas[position.getNameIndex() - 1].trim();
+        // verify the Name
         if (isNullable(name)) {
             return BeanType.UNKNOWN;
         }
-        // if(isNullable(datas[DBTableForDelimitedBean.POSITION_DATABASETYPE - 1])){
-        // return BeanType.UNKNOWN;
-        // }
-        // // the name verify
-        // if (!Pattern.matches(RepositoryConstants.getPattern(ERepositoryObjectType.METADATA_CONNECTIONS), name)) {
-        // return BeanType.UNKNOWN;
-        // }
+
         /**
          * Properties
          */
@@ -239,21 +272,38 @@ public final class DBBeanParserHelper {
         // Status
         bean.setStatus(datas[4].trim());
 
-        /**
-         * Database Connection
-         */
-        // Database Type
-        bean.setDatabaseType(datas[DBTableForDelimitedBean.POSITION_DATABASETYPE - 1].trim()); // 5
-        // add others
-        if (!addDBConnectionInfo(datas, bean)) {
+        // Connections
+        switch (nodeType) {
+        default:
+            // not process
             return BeanType.UNKNOWN;
+        case METADATA_CONNECTIONS:
+            // Database Type
+            bean.setDatabaseType(datas[position.getConnectionIndex() - 1].trim()); // 5
+            // add others
+            if (!addDBConnectionInfo(datas, bean)) {
+                return BeanType.UNKNOWN;
+            }
+            break;
+        case METADATA_FILE_DELIMITED:
+            // Delimited connection
+            bean.setFile(datas[position.getConnectionIndex() - 1].trim());
+            break;
+        // TODO
+        // case METADATA_FILE_POSITIONAL:
+        // case METADATA_FILE_REGEXP:
+        // case METADATA_FILE_XML:
+        // case METADATA_FILE_LDIF:
+        // case METADATA_GENERIC_SCHEMA:
+        // case METADATA_LDAP_SCHEMA:
         }
+
         return BeanType.CONNECTION;
     }
 
     private static boolean addDBConnectionInfo(String[] datas, DBTableForDelimitedBean bean) {
-        final int start = DBTableForDelimitedBean.POSITION_DATABASETYPE;
-        final int end = DBTableForDelimitedBean.POSITION_ORIGINALTABLENAME - 2;
+        final int start = position.getConnectionIndex();
+        final int end = position.getOriginalTablenameIndex() - 2;
         String[] tmpDatas = getExtendArrays(start, end, datas);
 
         // Connection String
@@ -320,8 +370,9 @@ public final class DBBeanParserHelper {
 
     // test
     public static void main(String[] args) {
-        String str = "oracleGen;some;Description;1.3;;Oracle with SID;sfsd;;;;1200;;;;;;x;c;new;OUeTq;comment;xxx;false;7;true;yy:mm;0;id_String;VARCHAR";
-        DBTableForDelimitedBean bean = getCheckedBeanType(str.split(";"));
+        // String str = "oracleGen;test;generated Metadata;1.0;;C://test.csv;e;Kd6Ozu;;;false;3;true;;5;id_String";
+        String str = "oracleGen;;;;;Oracle with SID;;;;;;;;;;;;f;a;xxx;;;false;19;true;;0;;";
+        DBTableForDelimitedBean bean = parseLineToBean(ERepositoryObjectType.METADATA_CONNECTIONS, str);
         System.out.println(bean.getBeanType());
 
     }

@@ -98,21 +98,6 @@ public class DBTableForDelimitedBean {
     private BeanType beanType;
 
     /**
-     * attribute position in a line.
-     */
-    public static final int POSITION_NAME = 1;
-
-    public static final int POSITION_DATABASETYPE = 6;
-
-    public static final int POSITION_ORIGINALTABLENAME = 18;
-
-    public static final int POSITION_ORIGINALLABEL = 20;
-
-    public static final int POSITION_KEY = 23;
-
-    public static final int POSITION_LENGTH = 24;
-
-    /**
      * DOC ggu DatabaseTableForDelimitedBean constructor comment.
      */
     public DBTableForDelimitedBean() {
