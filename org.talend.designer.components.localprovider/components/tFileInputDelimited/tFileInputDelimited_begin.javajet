@@ -468,7 +468,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
 					if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
 %>
-					<%=firstConnName %>.<%=column.getLabel() %> = row<%=cid %>[<%=i %>]<%=(isTrimAll || trimSelects.get(i).get("TRIM").equals("true"))?".trim()":"" %>;
+					<%=firstConnName %>.<%=column.getLabel() %> = row<%=cid %>[<%=i %>]<%=(isTrimAll || (!trimSelects.isEmpty() && trimSelects.get(i).get("TRIM").equals("true")))?".trim()":"" %>;
 <%
 					} else {
 %>
@@ -476,15 +476,15 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	<%
 							if(javaType == JavaTypesManager.DATE) {
 	%>
-								<%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(row<%=cid %>[<%=i %>]<%=(isTrimAll || trimSelects.get(i).get("TRIM").equals("true"))?".trim()":"" %>, <%= patternValue %>);
+								<%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(row<%=cid %>[<%=i %>]<%=(isTrimAll || (!trimSelects.isEmpty() && trimSelects.get(i).get("TRIM").equals("true")))?".trim()":"" %>, <%= patternValue %>);
 	<%
 							} else if(javaType == JavaTypesManager.BYTE_ARRAY){ 
 	%>							
-							    <%=firstConnName %>.<%=column.getLabel() %> = row<%=cid %>[<%=i %>]<%=(isTrimAll || trimSelects.get(i).get("TRIM").equals("true"))?".trim()":"" %>.getBytes(<%=encoding %>);
+							    <%=firstConnName %>.<%=column.getLabel() %> = row<%=cid %>[<%=i %>]<%=(isTrimAll || (!trimSelects.isEmpty() && trimSelects.get(i).get("TRIM").equals("true")))?".trim()":"" %>.getBytes(<%=encoding %>);
 	<%
 							} else {
 	%>
-								<%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(row<%=cid %>[<%=i %>]<%=(isTrimAll || trimSelects.get(i).get("TRIM").equals("true"))?".trim()":"" %>);
+								<%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(row<%=cid %>[<%=i %>]<%=(isTrimAll || (!trimSelects.isEmpty() && trimSelects.get(i).get("TRIM").equals("true")))?".trim()":"" %>);
 	<%
 							}
 	%>					
