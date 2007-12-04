@@ -123,10 +123,10 @@ while (fid_<%=cid %>.nextRecord()) {
 					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 					String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();%><%
 if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT){%>
-<%=firstConnName %>.<%=column.getLabel() %> = fid_<%=cid %>.get(<%=valueN%>)<%=(isTrimAll || trimSelects.get(valueN).get("TRIM").equals("true"))?".trim()":"" %>;
+<%=firstConnName %>.<%=column.getLabel() %> = fid_<%=cid %>.get(<%=valueN%>)<%=(isTrimAll || (!trimSelects.isEmpty() && trimSelects.get(valueN).get("TRIM").equals("true")))?".trim()":"" %>;
 <%
 }else{ 
-%>temp_<%=cid %> = fid_<%=cid %>.get(<%=valueN%>)<%=(isTrimAll || trimSelects.get(valueN).get("TRIM").equals("true"))?".trim()":"" %>;
+%>temp_<%=cid %> = fid_<%=cid %>.get(<%=valueN%>)<%=(isTrimAll || (!trimSelects.isEmpty() && trimSelects.get(valueN).get("TRIM").equals("true")))?".trim()":"" %>;
 if(temp_<%=cid %>.length() > 0) {
 <%
 					if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
