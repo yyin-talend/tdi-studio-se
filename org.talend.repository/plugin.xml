@@ -663,6 +663,11 @@
             id="org.talend.repository.model.migration.AddPerlRefArrayPointer2"
             name="%migrationtask.AddPerlRefArrayPointer2.title">
       </projecttask>
+      <projecttask
+            beforeLogon="false"
+            class="org.talend.repository.model.migration.UpdateLookupColumnMigrationTask"
+            id="org.talend.repository.migration.changeLookupColumnList"
+            name="Change Lookup Column Value"/>
    </extension>
    <extension
          point="org.talend.core.librariesNeeded">
