@@ -27,7 +27,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
         String hostname = ElementParameterParser.getValue(node,"__HOSTNAME__");
         String port = ElementParameterParser.getValue(node,"__PORT__").replace("\"", "");
-        boolean compress = ElementParameterParser.getValue(node,"__COMPRESS__").equals("true");
+        boolean uncompress = ElementParameterParser.getValue(node,"__UNCOMPRESS__").equals("true");
         boolean dieOnError = ElementParameterParser.getValue(node,"__DIE_ON_ERROR__").equals("true");
         
         String delim1 = ElementParameterParser.getValue(node, "__FIELDSEPARATOR__");
@@ -47,18 +47,23 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         if ("".equals(textEnclosure)) textEnclosure = "\0";
         if(textEnclosure.equals("'")) textEnclosure = "\\'";
 %>      
-<% if(compress){%>
+<% if(uncompress){%>
 class Compress{
-    public byte[] zip(byte[] data) throws java.io.IOException {
+    public byte[] unzip(byte[] zipBytes) throws java.io.IOException {
+        java.io.ByteArrayInputStream bais = new java.io.ByteArrayInputStream(zipBytes);
+        java.util.zip.ZipInputStream zis = new java.util.zip.ZipInputStream(bais);
+        zis.getNextEntry();
         java.io.ByteArrayOutputStream baos = new java.io.ByteArrayOutputStream();
-        java.util.zip.ZipEntry ze = new java.util.zip.ZipEntry("servletservice");
-        java.util.zip.ZipOutputStream zos = new java.util.zip.ZipOutputStream(baos);
-        zos.putNextEntry(ze);
-        zos.write(data, 0, data.length);
-        zos.close();
-        byte[] zipBytes = baos.toByteArray();
-        return zipBytes;
-    }  
+        final int BUFSIZ = 8192;
+        byte inbuf[] = new byte[BUFSIZ];
+        int n;
+        while ((n = zis.read(inbuf, 0, BUFSIZ)) != -1) {
+            baos.write(inbuf, 0, n);
+        }
+        byte[] data = baos.toByteArray();
+        zis.close();
+        return data;
+    } 
 }
 Compress com<%=cid%> = new Compress();
 <%}%>
@@ -97,10 +102,10 @@ while (done<%=cid%>) {
     String[] row<%=cid %>=null;   
     while (csvReader<%=cid %>.readRecord()) {         
         row<%=cid %>=csvReader<%=cid %>.getValues();
-    <% if(compress){%>
-        //encoding
+    <% if(uncompress){%>
+        //decoding
         for(int i =0;i<row<%=cid%>.length;i++){
-            row<%=cid%>[i]=new sun.misc.BASE64Encoder().encode(com<%=cid%>.zip(row<%=cid%>[i].getBytes(<%=encoding%>)));//encodeing!!!!!!!!!!!!!!!!!!!
+           row<%=cid%>[i] = new String(com<%=cid%>.unzip(new sun.misc.BASE64Decoder().decodeBuffer(row<%=cid%>[i])), <%=encoding%>);           
         }
     <% } %>   
         if(row<%=cid %>.length == 1 && row<%=cid %>[0].equals("\015")){//empty line when row separator is '\n'

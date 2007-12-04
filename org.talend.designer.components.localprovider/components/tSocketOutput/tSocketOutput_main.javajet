@@ -115,13 +115,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                         }
                     <% } %>    
                         CsvWriter<%=cid%>.writeRecord(row<%=cid%>); 
-                        <% 
-                        //if(flushOnRow) { 
-                            %>
-                            CsvWriter<%=cid%>.flush();
-                            <%
-                       // }
-                        %>                  
+                        CsvWriter<%=cid%>.flush();                
 
                     nb_line_<%=cid %>++;
                     <%          

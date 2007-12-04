@@ -32,6 +32,15 @@
   <PARAMETERS>
     
     <PARAMETER
+      NAME="HOST"
+      FIELD="TEXT"
+      SHOW="true"
+      NUM_ROW="10" 
+    >
+    	<DEFAULT>""</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
       NAME="PORT"
       FIELD="TEXT"
       SHOW="true"
@@ -44,7 +53,7 @@
       NAME="COMPRESS"
       FIELD="CHECK"
       SHOW="true"
-      NUM_ROW="10" 
+      NUM_ROW="20" 
     >
     	<DEFAULT>false</DEFAULT>
     </PARAMETER>

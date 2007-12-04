@@ -22,7 +22,6 @@
 %>
     
     socket<%=cid%>.close();
-    ss<%=cid%>.close();
     CsvWriter<%=cid%>.close();
     
     globalMap.put("<%=cid %>_NB_LINE", nb_line_<%=cid %>);
