@@ -463,11 +463,11 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
                 .getActivePage().findView(ComponentSettingsView.ID);
         if (viewer != null) {
             IStructuredSelection selection = (IStructuredSelection) getViewer().getSelection();
-            Object objs[] = selection.toArray();
 
-            if (objs.length == 1 && (objs[0] instanceof NodePart || objs[0] instanceof ConnectionPart)) {
+            if (selection.size() == 1
+                    && (selection.getFirstElement() instanceof NodePart || selection.getFirstElement() instanceof ConnectionPart)) {
 
-                viewer.setElement((Element) ((AbstractEditPart) objs[0]).getModel());
+                viewer.setElement((Element) ((AbstractEditPart) selection.getFirstElement()).getModel());
 
             } else {
                 viewer.cleanDisplay();
