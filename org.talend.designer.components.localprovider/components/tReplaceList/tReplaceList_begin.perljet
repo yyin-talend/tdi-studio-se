@@ -54,10 +54,10 @@ if (metadatas != null && metadatas.size() > 0) {
                 // tFileInputDelimited_2.column_name, so we have to match
                 // ".column_name" because it's not easy (and useless) to
                 // know the origin component name.
-                if (lookupSearchColumn.endsWith("."+column.getLabel())) {
+                if (lookupSearchColumn.equals(column.getLabel())) {
                     lookupSearchIndex = colnum;
                 }
-                if (lookupReplacementColumn.endsWith("."+column.getLabel())) {
+                if (lookupReplacementColumn.equals(column.getLabel())) {
                     lookupReplacementIndex = colnum;
                 }
                 colnum++;
