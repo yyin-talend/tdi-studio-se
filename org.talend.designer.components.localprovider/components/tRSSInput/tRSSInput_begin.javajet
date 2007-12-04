@@ -24,19 +24,27 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         boolean isAmount=ElementParameterParser.getValue(node,"__ARTICLE_AMOUNT__").equals("true");
         String  dateTime=ElementParameterParser.getValue(node,"__DATE__");
         String  amount=ElementParameterParser.getValue(node,"__AMOUNT__");
+        boolean dieOnError = ElementParameterParser.getValue(node,"__DIE_ON_ERROR__").equals("true");
        	List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
 %>
     int nb_line_<%=cid%> = 0;
     String rssurl<%=cid%>=<%=rss%>;
     int aMount<%=cid%>=<%=amount%>;
     java.net.URL url<%=cid%> = new java.net.URL(rssurl<%=cid%>);
+    it.sauronsoftware.feed4j.bean.Feed feed<%=cid%>=null;
+    boolean ifInvalid<%=cid%> = false;
     
-    try{
-        it.sauronsoftware.feed4j.bean.Feed feed<%=cid%>= it.sauronsoftware.feed4j.FeedParser.parse(url<%=cid%> );
-       	String row<%=cid%>[]=new String [4];
-      	 int items<%=cid%>=feed<%=cid%>.getItemCount();
-      	 
-      	 <%
+<%if(!dieOnError){%>    
+        try{
+<%}%>  
+        feed<%=cid%>= it.sauronsoftware.feed4j.FeedParser.parse(url<%=cid%> );
+<%if(!dieOnError){%>
+        }catch(it.sauronsoftware.feed4j.FeedXMLParseException e<%=cid%>){
+                System.err.print(e<%=cid%>.getMessage());
+                ifInvalid<%=cid%> = true;
+        }
+<%}
+
       	 if(isAmount){
       	 %>
       	   		if(aMount<%=cid%>< items<%=cid%>)
@@ -47,6 +55,10 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
       	 <%
       	  }
       	 %>
+      	 
+      	if(!ifInvalid<%=cid%>){
+          String row<%=cid%>[]=new String [4];
+          int items<%=cid%>=feed<%=cid%>.getItemCount();
           for (int i_<%=cid%> = 0; i_<%=cid%>< items<%=cid%>; i_<%=cid%>++) {
              it.sauronsoftware.feed4j.bean.FeedItem itm<%=cid%> = feed<%=cid%>.getItem(i_<%=cid%>);
               row<%=cid%>[0]=itm<%=cid%>.getTitle();
@@ -71,24 +83,24 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     
     <%
     	if(conns!=null){
-        		if (conns.size()>0){
-           		IConnection conn =conns.get(0);
-        		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
-    			List<IMetadataColumn> columns = metadata.getListColumns();
-        			int sizeColumns = columns.size();
-        			for (int j = 0; j < sizeColumns; j++) {
-        			IMetadataColumn column = columns.get(j);
-        			
-     %>
-     			
-     			<%=conn.getName() %>.<%=column.getLabel() %>=row<%=cid%>[<%=j%>];
-     <%
-        				}
-    				}
+        	if (conns.size()>0){
+           		for(IConnection conn:conns){
+            		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+        			List<IMetadataColumn> columns = metadata.getListColumns();
+            			int sizeColumns = columns.size();
+            			for (int j = 0; j < sizeColumns; j++) {
+            			IMetadataColumn column = columns.get(j);
+            			
+         %>
+         			
+         			<%=conn.getName() %>.<%=column.getLabel() %>=row<%=cid%>[<%=j%>];
+         <%
+            			}
+        			}
+           		}
     		
-    			}
-    		}
-
+        	}
+    	}
 	}
 }
 %>
