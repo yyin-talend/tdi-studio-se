@@ -37,7 +37,10 @@ if (!(node instanceof IExternalNode)) {
 %>
 
 my @colnames_<%=conn.getName() %> = undef;
-if (scalar @{ $desc_<%=node.getUniqueName() %>{schema} }) {
+if (exists $desc_<%=node.getUniqueName() %>{colnames}) {
+    @colnames_<%=conn.getName() %> = @{ $desc_<%=node.getUniqueName() %>{colnames} };
+}
+elsif (scalar @{ $desc_<%=node.getUniqueName() %>{schema} }) {
     @colnames_<%=conn.getName() %> = map { $_->{name} } @{ $desc_<%=node.getUniqueName() %>{schema} };
 }
 
