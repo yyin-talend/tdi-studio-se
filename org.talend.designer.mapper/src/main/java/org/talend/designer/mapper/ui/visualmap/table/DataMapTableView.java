@@ -1606,13 +1606,8 @@ public abstract class DataMapTableView extends Composite {
 
                     public void run() {
                         checkChangementsAfterEntryModifiedOrAdded(false);
-                        if (false && WindowSystem.isGTK()) {
-
-                            tableViewerCreator.layout();
-
-                        }
                     }
-                });// .start();
+                }).start();
             }
 
         });
