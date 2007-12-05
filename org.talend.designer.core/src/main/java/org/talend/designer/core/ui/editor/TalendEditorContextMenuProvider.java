@@ -275,6 +275,14 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
             if (action.isEnabled()) {
                 menu.appendToGroup(GEFActionConstants.GROUP_VIEW, action);
             }
+
+            List<SelectionAction> instances = CustomExternalActions.getInstances(part);
+            for (SelectionAction selectionAction : instances) {
+                selectionAction.update();
+                if (selectionAction.isEnabled()) {
+                    menu.appendToGroup(GEFActionConstants.GROUP_VIEW, selectionAction);
+                }
+            }
         }
     }
 

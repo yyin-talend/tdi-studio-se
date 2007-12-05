@@ -47,6 +47,9 @@ Export-Package: org.talend.designer.core;
    org.osgi.framework,
    org.talend.designer.codegen",
  org.talend.designer.core.model.components,
+ org.talend.designer.core.model.metadata,
+ org.talend.designer.core.model.process,
+ org.talend.designer.core.model.process.statsandlogs,
  org.talend.designer.core.ui;
   uses:="org.eclipse.core.runtime,
    org.talend.core.model.process,
@@ -116,6 +119,8 @@ Export-Package: org.talend.designer.core;
    org.eclipse.jdt.core.compiler,
    org.eclipse.swt.widgets,
    org.eclipse.gef.ui.palette",
+ org.talend.designer.core.ui.editor.connections,
+ org.talend.designer.core.ui.editor.nodes,
  org.talend.designer.core.ui.editor.process;
   uses:="org.eclipse.core.runtime,
    org.talend.core.model.process,
