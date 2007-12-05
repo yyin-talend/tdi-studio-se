@@ -63,7 +63,7 @@
 
         DataMapExpressionParser expressionParser = new DataMapExpressionParser(currentLanguage);
 
-        JavaGenerationManager gm = (JavaGenerationManager) node.getGenerationManager();
+        JavaGenerationManager gm = (JavaGenerationManager) node.initGenerationManager();
 
         StringBuilder sb = new StringBuilder();
 

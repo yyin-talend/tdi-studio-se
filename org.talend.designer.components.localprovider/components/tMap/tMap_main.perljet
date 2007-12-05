@@ -58,7 +58,7 @@
 
         DataMapExpressionParser expressionParser = new DataMapExpressionParser(currentLanguage);
 
-        PerlGenerationManager gm = (PerlGenerationManager) node.getGenerationManager();
+        PerlGenerationManager gm = (PerlGenerationManager) node.initGenerationManager();
 
         StringBuilder sb = new StringBuilder();
 

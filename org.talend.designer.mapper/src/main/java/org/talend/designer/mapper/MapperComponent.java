@@ -122,9 +122,9 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
         // TimeMeasure.display = false;
 
         Shell parentShell = display.getActiveShell();
-        
+
         CursorHelper.changeCursor(parentShell, SWT.CURSOR_WAIT);
-        
+
         Shell shell = null;
         try {
             initMapperMain(true);
@@ -421,8 +421,7 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
         List<ExternalMapperTable> tables = new ArrayList<ExternalMapperTable>(externalData.getInputTables());
         tables.addAll(new ArrayList<ExternalMapperTable>(externalData.getVarsTables()));
         tables.addAll(new ArrayList<ExternalMapperTable>(externalData.getOutputTables()));
-        DataMapExpressionParser dataMapExpressionParser = new DataMapExpressionParser(LanguageProvider
-                .getCurrentLanguage());
+        DataMapExpressionParser dataMapExpressionParser = new DataMapExpressionParser(LanguageProvider.getCurrentLanguage());
         // loop on all tables
         for (ExternalMapperTable table : tables) {
             List<ExternalMapperTableEntry> metadataTableEntries = table.getMetadataTableEntries();
@@ -436,8 +435,8 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
             if (metadataTableEntries != null) {
                 // loop on all entries of current table
                 for (ExternalMapperTableEntry entry : metadataTableEntries) {
-                    String expression = replaceLocation(oldLocation, newLocation, entry.getExpression(),
-                            dataMapExpressionParser, tableRenamed);
+                    String expression = replaceLocation(oldLocation, newLocation, entry.getExpression(), dataMapExpressionParser,
+                            tableRenamed);
                     if (expression != null) {
                         entry.setExpression(expression);
                     }
@@ -445,8 +444,8 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
             }
             if (table.getConstraintTableEntries() != null) {
                 for (ExternalMapperTableEntry entry : table.getConstraintTableEntries()) {
-                    String expression = replaceLocation(oldLocation, newLocation, entry.getExpression(),
-                            dataMapExpressionParser, tableRenamed);
+                    String expression = replaceLocation(oldLocation, newLocation, entry.getExpression(), dataMapExpressionParser,
+                            tableRenamed);
                     if (expression != null) {
                         entry.setExpression(expression);
                     }
@@ -455,8 +454,8 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
         } // for (ExternalMapperTable table : tables) {
     }
 
-    public String replaceLocation(TableEntryLocation oldLocation, TableEntryLocation newLocation,
-            String currentExpression, DataMapExpressionParser dataMapExpressionParser, boolean tableRenamed) {
+    public String replaceLocation(TableEntryLocation oldLocation, TableEntryLocation newLocation, String currentExpression,
+            DataMapExpressionParser dataMapExpressionParser, boolean tableRenamed) {
         if (currentExpression == null || currentExpression.trim().length() == 0) {
             return null;
         }
@@ -469,8 +468,7 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
                 newLocation.columnName = currentLocation.columnName;
             }
             if (currentLocation.equals(oldLocation)) {
-                currentExpression = dataMapExpressionParser.replaceLocation(currentExpression, currentLocation,
-                        newLocation);
+                currentExpression = dataMapExpressionParser.replaceLocation(currentExpression, currentLocation, newLocation);
             }
         } // for (int i = 0; i < tableEntryLocations.length; i++) {
         return currentExpression;
@@ -482,7 +480,6 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
      * 
      * @see org.talend.core.model.process.AbstractExternalNode#getProblems()
      */
-    @Override
     public List<Problem> getProblems() {
         initMapperMain(false);
         ProblemsAnalyser problemsAnalyser = new ProblemsAnalyser(mapperMain.getMapperManager());
@@ -513,17 +510,21 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
         return componentDocumentation;
     }
 
-    public GenerationManager getGenerationManager() {
-        if (this.generationManager == null) {
-            this.generationManager = GenerationManagerFactory.getInstance().getGenerationManager(
-                    LanguageProvider.getCurrentLanguage());
-        }
+    public GenerationManager initGenerationManager() {
+        this.generationManager = GenerationManagerFactory.getInstance().getGenerationManager(
+                LanguageProvider.getCurrentLanguage());
         return this.generationManager;
     }
 
-    @Override
+    public GenerationManager getGenerationManager() {
+        return this.generationManager;
+    }
+
     public List<BlockCode> getBlocksCodeToClose() {
-        return getGenerationManager().getBlocksCodeToClose();
+        if (generationManager == null) {
+            throw new IllegalStateException("generationManager is not initialized by the javajet !");
+        }
+        return this.generationManager.getBlocksCodeToClose();
     }
 
     /*
