@@ -23,7 +23,6 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.process.Problem.ProblemStatus;
 import org.talend.designer.core.ui.views.problems.Problems;
-import org.talend.designer.runprocess.i18n.Messages;
 
 /**
  * DOC xhuang class global comment. Detailled comment <br/>
@@ -89,7 +88,7 @@ public class JavaCompilationParticipant extends CompilationParticipant {
     private boolean isRoutineFile(String filePath) {
         int endIndex = filePath.lastIndexOf("/");
         String javaFileCatalog = filePath.substring(0, endIndex);
-        if (javaFileCatalog.equals(Messages.getString("Routine.javaFilePath"))) {
+        if (javaFileCatalog.equals("src/routines")) {
             return true;
         }
         return false;
