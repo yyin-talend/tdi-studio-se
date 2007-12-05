@@ -116,8 +116,8 @@ public class StatsAndLogsViewHelper {
                 elementParameter.setValue(PREFERENCE_STORE.getString(LANGUAGE_PREFIX + EParameterName.DBNAME.getName()));
                 continue;
             }
-            if (name.equals(EParameterName.ADD_PARAMS.getName())) {
-                elementParameter.setValue(PREFERENCE_STORE.getString(LANGUAGE_PREFIX + EParameterName.ADD_PARAMS.getName()));
+            if (name.equals(EParameterName.PROPERTIES.getName())) {
+                elementParameter.setValue(PREFERENCE_STORE.getString(LANGUAGE_PREFIX + EParameterName.PROPERTIES.getName()));
                 continue;
             }
 
@@ -257,8 +257,8 @@ public class StatsAndLogsViewHelper {
                 PREFERENCE_STORE.setValue(LANGUAGE_PREFIX + EParameterName.DBNAME.getName(), (String) elementValue);
                 continue;
             }
-            if (name.equals(EParameterName.ADD_PARAMS.getName())) {
-                PREFERENCE_STORE.setValue(LANGUAGE_PREFIX + EParameterName.ADD_PARAMS.getName(), (String) elementValue);
+            if (name.equals(EParameterName.PROPERTIES.getName())) {
+                PREFERENCE_STORE.setValue(LANGUAGE_PREFIX + EParameterName.PROPERTIES.getName(), (String) elementValue);
                 continue;
             }
             if (name.equals(EParameterName.SCHEMA_DB.getName())) {

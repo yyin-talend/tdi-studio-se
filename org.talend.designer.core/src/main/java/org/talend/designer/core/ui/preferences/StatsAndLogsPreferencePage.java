@@ -193,8 +193,8 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
         dbNameField = new StringFieldEditor(languagePrefix + EParameterName.DBNAME.getName(), EParameterName.DBNAME
                 .getDisplayName(), parent);
         if (language == ECodeLanguage.JAVA) {
-            additionParamField = new StringFieldEditor(languagePrefix + EParameterName.ADD_PARAMS.getName(),
-                    EParameterName.ADD_PARAMS.getDisplayName(), parent);
+            additionParamField = new StringFieldEditor(languagePrefix + EParameterName.PROPERTIES.getName(),
+                    EParameterName.PROPERTIES.getDisplayName(), parent);
         }
         schemaField = new StringFieldEditor(languagePrefix + EParameterName.SCHEMA_DB.getName(), EParameterName.SCHEMA_DB
                 .getDisplayName(), parent);

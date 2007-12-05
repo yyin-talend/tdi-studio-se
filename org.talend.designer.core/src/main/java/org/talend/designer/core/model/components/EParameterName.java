@@ -103,7 +103,7 @@ public enum EParameterName {
     CATCH_USER_ERRORS(Messages.getString("EParameterName.catchUserErrors")), //$NON-NLS-1$
     CATCH_USER_WARNING(Messages.getString("EParameterName.catchUserWarning")), //$NON-NLS-1$
     CATCH_REALTIME_STATS(Messages.getString("EParameterName.catchRealtimeStats")), //$NON-NLS-1$
-    ADD_PARAMS(Messages.getString("EParameterName.additionParam")), //$NON-NLS-1$
+    PROPERTIES(Messages.getString("EParameterName.additionParam")), //$NON-NLS-1$
 
     /*
      * PERL_ON_FILES_FLAG(Messages.getString("EParameterName.onFileFlag")), //$NON-NLS-1$

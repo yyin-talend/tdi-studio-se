@@ -208,7 +208,7 @@ public abstract class AbstractStatsLogsComponent implements IComponent {
         elemParamList.add(newParam);
 
         newParam = new ElementParameter(node);
-        newParam.setName("ADD_PARAMS"); //$NON-NLS-1$
+        newParam.setName("PROPERTIES"); //$NON-NLS-1$
         newParam.setField(EParameterFieldType.TEXT);
         elemParamList.add(newParam);
 
@@ -335,7 +335,7 @@ public abstract class AbstractStatsLogsComponent implements IComponent {
             multipleComponentManager.addParam("self.HOST", "DB.DSN"); //$NON-NLS-1$ //$NON-NLS-2$
             multipleComponentManager.addParam("self.PORT", "DB.PORT"); //$NON-NLS-1$ //$NON-NLS-2$
             multipleComponentManager.addParam("self.DBNAME", "DB.DBNAME"); //$NON-NLS-1$ //$NON-NLS-2$
-            multipleComponentManager.addParam("self.INSTANCE", "DB.INSTANCE");
+            multipleComponentManager.addParam("self.PROPERTIES", "DB.PROPERTIES");
             multipleComponentManager.addParam("self.USER", "DB.USER"); //$NON-NLS-1$ //$NON-NLS-2$
             multipleComponentManager.addParam("self.PASS", "DB.PASS"); //$NON-NLS-1$ //$NON-NLS-2$
             multipleComponentManager.addParam("self.TABLE", "DB.TABLE"); //$NON-NLS-1$ //$NON-NLS-2$
