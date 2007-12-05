@@ -20,16 +20,20 @@ import org.eclipse.gef.palette.PaletteRoot;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.part.MultiPageEditorPart;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.designer.core.ui.ActiveProcessTracker;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.action.CreateProcess;
 import org.talend.designer.core.ui.action.SaveJobBeforeRunAction;
+import org.talend.designer.core.ui.editor.ProcessEditorInput;
 import org.talend.designer.core.ui.editor.TalendEditor;
 import org.talend.designer.core.ui.editor.TalendEditorPaletteFactory;
 import org.talend.designer.core.ui.editor.process.Process;
@@ -45,6 +49,25 @@ import org.talend.designer.runprocess.ProcessorUtilities;
  * 
  */
 public class DesignerCoreService implements IDesignerCoreService {
+
+    public List<IProcess> getOpenedProcess() {
+        List<IProcess> list = new ArrayList<IProcess>();
+        IEditorReference[] reference = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getEditorReferences();
+        for (IEditorReference er : reference) {
+            IEditorPart part = er.getEditor(false);
+            if (part.getSite().getId().equals(MultiPageTalendEditor.ID)) {
+                MultiPageTalendEditor editor = (MultiPageTalendEditor) part;
+                list.add(editor.getProcess());
+            }
+        }
+        return list;
+    }
+
+    public Item getProcessItem(MultiPageEditorPart talendEditor) {
+        ProcessEditorInput processEditorInput = (ProcessEditorInput) talendEditor.getEditorInput();
+        Item item = processEditorInput.getItem();
+        return item;
+    }
 
     /*
      * (non-Javadoc)
