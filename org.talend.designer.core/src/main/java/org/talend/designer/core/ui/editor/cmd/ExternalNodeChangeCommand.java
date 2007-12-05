@@ -23,9 +23,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.views.properties.PropertySheet;
-import org.eclipse.ui.views.properties.tabbed.ISection;
-import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.components.IODataComponentContainer;
 import org.talend.core.model.metadata.IMetadataTable;
@@ -45,7 +42,6 @@ import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
-import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
 import org.talend.designer.core.ui.views.CodeView;
 
 /**
@@ -113,14 +109,12 @@ public class ExternalNodeChangeCommand extends Command {
                             EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
                     IMetadataTable repositoryMetadata = MetadataTool.getMetadataFromRepository(metaRepositoryName);
                     if (repositoryMetadata == null) {
-                        connection.getSource().setPropertyValue(EParameterName.SCHEMA_TYPE.getName(),
-                                EmfComponent.BUILTIN);
+                        connection.getSource().setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
                     } else {
                         repositoryMetadata = repositoryMetadata.clone();
                         repositoryMetadata.setTableName(connection.getSource().getUniqueName());
                         if (!repositoryMetadata.sameMetadataAs(connection.getMetadataTable())) {
-                            connection.getSource().setPropertyValue(EParameterName.SCHEMA_TYPE.getName(),
-                                    EmfComponent.BUILTIN);
+                            connection.getSource().setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
                         }
                     }
                 }
@@ -128,23 +122,6 @@ public class ExternalNodeChangeCommand extends Command {
         }
 
         setLabel(Messages.getString("ExternalNodeChangeCommand.modifaicationFrom") + node.getUniqueName()); //$NON-NLS-1$
-    }
-
-    private void refreshSectionsPropertyView() {
-        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-        IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet"); //$NON-NLS-1$
-        PropertySheet sheet = (PropertySheet) view;
-        TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) sheet.getCurrentPage();
-        ISection[] sections = tabbedPropertySheetPage.getCurrentTab().getSections();
-        for (int i = 0; i < sections.length; i++) {
-            if (sections[i] instanceof DynamicTabbedPropertySection) {
-                DynamicTabbedPropertySection currentSection = (DynamicTabbedPropertySection) sections[i];
-                if (currentSection.getElement().equals(node)) {
-                    currentSection.addComponents(false);
-                    currentSection.refresh();
-                }
-            }
-        }
     }
 
     private void refreshCodeView() {
@@ -176,13 +153,11 @@ public class ExternalNodeChangeCommand extends Command {
                     sourceNode.metadataOutputChanged(currentIO, currentIO.getName());
                     IMetadataTable oldMetadata = connection.getMetadataTable().clone();
                     currentIO.setTable(oldMetadata);
-                    String schemaType = (String) connection.getSource().getPropertyValue(
-                            EParameterName.SCHEMA_TYPE.getName());
+                    String schemaType = (String) connection.getSource().getPropertyValue(EParameterName.SCHEMA_TYPE.getName());
                     if (schemaType != null) {
                         // if there is a SCHEMA_TYPE, then switch it to BUILT_IN if REPOSITORY is set.
                         if (schemaType.equals(EmfComponent.REPOSITORY)) {
-                            connection.getSource().setPropertyValue(EParameterName.SCHEMA_TYPE.getName(),
-                                    EmfComponent.BUILTIN);
+                            connection.getSource().setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
                             metadataInputWasRepository.put(connection, Boolean.TRUE);
                         }
                     }
@@ -209,8 +184,8 @@ public class ExternalNodeChangeCommand extends Command {
                                 schemaParam = param;
                             }
                         }
-                        ChangeMetadataCommand cmd = new ChangeMetadataCommand((Node) connection.getSource(),
-                                schemaParam, connection.getMetadataTable(), dataComponent.getTable());
+                        ChangeMetadataCommand cmd = new ChangeMetadataCommand((Node) connection.getSource(), schemaParam,
+                                connection.getMetadataTable(), dataComponent.getTable());
                         cmd.execute(true);
                         metadataOutputChanges.add(cmd);
                     }
@@ -238,7 +213,6 @@ public class ExternalNodeChangeCommand extends Command {
             nodeConnectorTarget.setCurLinkNbInput(nodeConnectorTarget.getCurLinkNbInput() - 1);
         }
         ((Process) node.getProcess()).checkProcess();
-        refreshSectionsPropertyView();
         refreshCodeView();
     }
 
@@ -257,8 +231,7 @@ public class ExternalNodeChangeCommand extends Command {
                     currentIO.setTable(oldMetadata);
                     connection.getMetadataTable().setListColumns(metadata.getListColumns());
                     if (metadataInputWasRepository.get(connection) != null) {
-                        connection.getSource().setPropertyValue(EParameterName.SCHEMA_TYPE.getName(),
-                                EmfComponent.REPOSITORY);
+                        connection.getSource().setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.REPOSITORY);
                     }
                 }
             }
@@ -281,7 +254,6 @@ public class ExternalNodeChangeCommand extends Command {
             cmd.undo();
         }
         ((Process) node.getProcess()).checkProcess();
-        refreshSectionsPropertyView();
         refreshCodeView();
     }
 }
