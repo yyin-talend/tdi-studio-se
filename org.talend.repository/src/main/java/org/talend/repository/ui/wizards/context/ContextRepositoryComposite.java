@@ -15,6 +15,7 @@ package org.talend.repository.ui.wizards.context;
 import java.util.List;
 
 import org.eclipse.swt.widgets.Composite;
+import org.talend.core.model.context.JobContextManager;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IContextParameter;
@@ -82,8 +83,27 @@ public class ContextRepositoryComposite extends ContextComposite {
                 }
             }
         }
+        JobContextManager manager = (JobContextManager) contextManager;
+        manager.addNewName(newName, oldName);
         refresh();
     }
+
+    // public void onJobRenameParameter(IContextManager contextManager, String oldName, String newName) {
+    // boolean found;
+    // List<IContextParameter> listParams;
+    //
+    // for (int i = 0; i < contextManager.getListContext().size(); i++) {
+    // listParams = contextManager.getListContext().get(i).getContextParameterList();
+    // found = false;
+    // for (int j = 0; j < listParams.size() && !found; j++) {
+    // if (listParams.get(j).getName().equals(oldName)) {
+    // listParams.get(j).setName(newName);
+    // found = true;
+    // }
+    // }
+    // }
+    // refresh();
+    // }
 
     /*
      * (non-Javadoc)
