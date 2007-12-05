@@ -33,7 +33,6 @@ import org.talend.repository.ui.actions.metadata.CreateFileXmlAction;
 import org.talend.repository.ui.actions.metadata.CreateGenericSchemaAction;
 import org.talend.repository.ui.actions.metadata.CreateLDAPSchemaAction;
 import org.talend.repository.ui.actions.routines.CreateRoutineAction;
-import org.talend.repository.ui.actions.snippet.CreateSnippetAction;
 
 /**
  * DOC qwei class global comment. Detailled comment <br/>
@@ -119,7 +118,8 @@ public abstract class AbstractCreatToolbarAction implements IWorkbenchWindowPull
         addToMenu(menu, new CreateGenericSchemaAction(true), -1);
         addSeparator(menu);
         addToMenu(menu, new CreateRoutineAction(true), -1);
-        addToMenu(menu, new CreateSnippetAction(true), -1);
+        // TODO how to fix this if use TIS.
+        // addToMenu(menu, new CreateSnippetAction(true), -1);
 
     }
 
