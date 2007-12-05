@@ -338,7 +338,6 @@ public class ContextWizard extends RepositoryWizard implements INewWizard {
                         List<ContextParameterType> paramList = context.getContextParameter();
                         jobList.add(context.getName());
                         for (ContextParameterType param : paramList) {
-                            System.out.println(param.hashCode());
                             if (param.getRepositoryContextId() != null
                                     && param.getRepositoryContextId().equals(contextItem.getProperty().getId())) {
                                 if (context.getName().equals(str)) {
