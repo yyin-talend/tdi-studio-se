@@ -21,38 +21,74 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     if (metadata!=null) {
         String cid = node.getUniqueName();
 
-        String filename = ElementParameterParser.getValueWithUIFieldKey(
-            node,
-            "__FILENAME__",
-            "FILENAME"
-        );
+        String filename = ElementParameterParser.getValue(node, "__FILENAME__");
+        String sheetname = ElementParameterParser.getValue(node, "__SHEETNAME__");
         
-        String sheetname= ElementParameterParser.getValue(node,"__SHEETNAME__");
-        
-        boolean isIncludeHeader = ElementParameterParser.getValue(
-            node,
-            "__INCLUDEHEADER__"
-        ).equals("true");
-        String fileNewname = ElementParameterParser.getValue(node,"__FILENAME__");
+        boolean isIncludeHeader = ElementParameterParser.getValue(node, "__INCLUDEHEADER__").equals("true");
+        boolean isAppendFile = ElementParameterParser.getValue(node, "__APPEND_FILE__" ).equals("true");
+        boolean isAppendSheet = ElementParameterParser.getValue(node, "__APPEND_SHEET__" ).equals("true");
 %>
-  <%if(ElementParameterParser.getValue(node,"__CREATE__").equals("true")){%>
-//create directory only if not exists
-		 String fileNewName_<%=cid%> = <%=fileNewname%>;
-		 java.io.File createFile<%=cid%> = new java.io.File(fileNewName_<%=cid%>);
-		 if(!createFile<%=cid%>.exists()){
-		 	(new java.io.File(fileNewName_<%=cid%>.substring(0,fileNewName_<%=cid%>.lastIndexOf("/")))).mkdirs();
-		 }
-<%}%>
 
 		int nb_line_<%=cid%> = 0;
+		java.io.File file_<%=cid %> = new java.io.File(<%=filename %>);
 		
-		final jxl.WorkbookSettings workbookSettings_<%= cid %> = new jxl.WorkbookSettings();
+<%if(ElementParameterParser.getValue(node,"__CREATE__").equals("true")){%>
+//create directory only if not exists		  
+          java.io.File parentFile_<%=cid %> = file_<%=cid %>.getParentFile();
+          if (parentFile_<%=cid %> != null && !parentFile_<%=cid %>.exists()) {
+             parentFile_<%=cid %>.mkdirs();
+          }
+<%}%>		
+		
+		jxl.write.WritableWorkbook writeableWorkbook_<%=cid %> = null;
+		jxl.write.WritableSheet writableSheet_<%=cid %> = null;
+		
+		jxl.WorkbookSettings workbookSettings_<%= cid %> = new jxl.WorkbookSettings();
         workbookSettings_<%= cid %>.setEncoding(<%=ElementParameterParser.getValue(node,"__ENCODING__") %>);
-		final jxl.write.WritableWorkbook writeableWorkbook<%=cid %> = new jxl.write.biff.WritableWorkbookImpl(new java.io.BufferedOutputStream(new java.io.FileOutputStream(<%=filename%>))
-												, true, workbookSettings_<%= cid %>);
-        final jxl.write.WritableSheet writableSheet<%=cid%> = writeableWorkbook<%=cid%>.createSheet(<%=sheetname%>, 0);
-
         
+<%if(isAppendFile){%>  
+        if (file_<%=cid %>.exists()) {
+        jxl.Workbook workbook_<%=cid %> = jxl.Workbook.getWorkbook(file_<%=cid %>);
+        writeableWorkbook_<%=cid %> = new jxl.write.biff.WritableWorkbookImpl(
+                	new java.io.BufferedOutputStream(new java.io.FileOutputStream(file_<%=cid %>, false)), 
+                	workbook_<%=cid %>, 
+                	true,
+                    workbookSettings_<%=cid %>);
+        }else{        
+		writeableWorkbook_<%=cid %> = new jxl.write.biff.WritableWorkbookImpl(
+            		new java.io.BufferedOutputStream(new java.io.FileOutputStream(<%=filename%>)), 
+            		true, 
+            		workbookSettings_<%= cid %>);        
+        }     
+<%} else {%>
+		writeableWorkbook_<%=cid %> = new jxl.write.biff.WritableWorkbookImpl(
+            		new java.io.BufferedOutputStream(new java.io.FileOutputStream(<%=filename%>)), 
+            		true, 
+            		workbookSettings_<%= cid %>);
+<%}%>       
+
+        writableSheet_<%=cid %> = writeableWorkbook_<%=cid %>.getSheet(<%=sheetname %>);
+        if(writableSheet_<%=cid %> == null){
+        	writableSheet_<%=cid %> = writeableWorkbook_<%=cid %>.createSheet(<%=sheetname %>, writeableWorkbook_<%=cid %>.getNumberOfSheets());
+		}
+		
+<%if(isAppendFile && !isAppendSheet){%>
+        else {
+
+            String[] sheetNames_<%=cid %> = writeableWorkbook_<%=cid %>.getSheetNames();
+            for (int i = 0; i < sheetNames_<%=cid %>.length; i++) {
+                if (sheetNames_<%=cid %>[i].equals(<%=sheetname %>)) {
+                    writeableWorkbook_<%=cid %>.removeSheet(i);
+                    break;
+                }
+            }
+
+			writableSheet_<%=cid %> = writeableWorkbook_<%=cid %>.createSheet(<%=sheetname %>, writeableWorkbook_<%=cid %>.getNumberOfSheets());
+        }
+<%}%>
+
+        int startRowNum_<%=cid %> = writableSheet_<%=cid %>.getRows();
+
 <%
 		List<IMetadataColumn> columns = metadata.getListColumns();
     	int sizeColumns = columns.size();
@@ -69,13 +105,24 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		}
 <%				}
 			}
-			if(isIncludeHeader){%>
-		writableSheet<%=cid %>.addCell(new jxl.write.Label(<%=i%>, nb_line_<%=cid%>, "<%=column.getLabel() %>"));
-<%			}
+		
+	    }
+%>		
+
+
+<%if(isIncludeHeader){ %>
+		if (startRowNum_<%=cid %>==0){
+<%
+    	for (int i = 0; i < sizeColumns; i++) {
+    		IMetadataColumn column = columns.get(i);
+%>
+				writableSheet_<%=cid %>.addCell(new jxl.write.Label(<%=i%>, nb_line_<%=cid%>, "<%=column.getLabel() %>"));		
+<% } %>
+				nb_line_<%=cid %>++;
 		}
-		if(isIncludeHeader){%>
-		nb_line_<%=cid%>++;
-<%		}
+<% } %>
+		
+<%
     }
 }
 %>

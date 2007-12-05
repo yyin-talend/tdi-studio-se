@@ -18,7 +18,7 @@
   </DOCUMENTATION>
 
   <CONNECTORS>
-    <CONNECTOR CTYPE="FLOW" MAX_INPUT="1"/>
+    <CONNECTOR CTYPE="FLOW" MAX_INPUT="10"/>
     <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="0" MAX_INPUT="0"/>
     <CONNECTOR CTYPE="THEN_RUN" MAX_INPUT="1"/>
     <CONNECTOR CTYPE="REFERENCE"/>
@@ -32,7 +32,7 @@
     <PARAMETER
       NAME="FILENAME"
       FIELD="FILE"
-      NUM_ROW="2"
+      NUM_ROW="20"
       REQUIRED="true"
     >
       <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/out.xls"</DEFAULT>
@@ -41,7 +41,7 @@
     <PARAMETER
       NAME="SHEETNAME"
       FIELD="TEXT"
-      NUM_ROW="3"
+      NUM_ROW="30"
     >
       <DEFAULT>"Sheet1"</DEFAULT>
     </PARAMETER>
@@ -49,7 +49,7 @@
     <PARAMETER
       NAME="INCLUDEHEADER"
       FIELD="CHECK"
-      NUM_ROW="4"
+      NUM_ROW="40"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
@@ -58,16 +58,36 @@
       NAME="CREATE"
       FIELD="CHECK"
       REQUIRED="true"
-      NUM_ROW="4"
+      NUM_ROW="40"
     >
       <DEFAULT>true</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
+      NAME="APPEND_FILE"
+      FIELD="CHECK"
+      NUM_ROW="45"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="APPEND_SHEET"
+      FIELD="CHECK"
+      REQUIRED="true"
+      NUM_ROW="45"
+      SHOW_IF="APPEND_FILE == 'true'"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+
+
+
+    <PARAMETER
       NAME="SCHEMA"
       FIELD="SCHEMA_TYPE"
       REQUIRED="true"
-      NUM_ROW="5"
+      NUM_ROW="50"
     >
       <DEFAULT/> 
     </PARAMETER>
@@ -75,7 +95,7 @@
     <PARAMETER
       NAME="ENCODING"
       FIELD="ENCODING_TYPE"
-      NUM_ROW="6"
+      NUM_ROW="60"
       REQUIRED="true"
     >
       <DEFAULT>"ISO-8859-15"</DEFAULT>
