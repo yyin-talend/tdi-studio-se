@@ -1,0 +1,665 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.core.model.metadata.IMetadataTable
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.process.IConnection
+    org.talend.core.model.process.IConnectionCategory
+    org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils
+    org.talend.core.model.metadata.types.JavaTypesManager
+    org.talend.core.model.metadata.types.JavaType
+    java.util.List
+    java.util.ArrayList
+    java.util.Map
+    java.util.HashMap
+    org.talend.commons.utils.StringUtils
+"
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode) codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+
+// Search incoming schema
+IMetadataTable inMetadata = null;
+IConnection inConnection = null;
+String inConnectionName = null;
+
+List<? extends IConnection> incomingConnections = node.getIncomingConnections();
+if (incomingConnections != null && !incomingConnections.isEmpty()) {
+    inConnection = incomingConnections.get(0);
+    inConnectionName = inConnection.getName();
+    inMetadata = inConnection.getMetadataTable();
+}
+
+// Search outgoing schema
+IMetadataTable metadata = null;
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if (metadatas != null && metadatas.size() > 0) {
+    metadata = metadatas.get(0);
+}
+
+// We only generate output if incoming and outgoing schema are defined
+if (inMetadata != null && metadata != null) {
+    // Database parameters
+    String dbhost = ElementParameterParser.getValue(node, "__HOST__");
+    String dbport = ElementParameterParser.getValue(node, "__PORT__");
+    String dbname = ElementParameterParser.getValue(node, "__DBNAME__");
+    String dbuser = ElementParameterParser.getValue(node, "__USER__");
+    String dbpwd = ElementParameterParser.getValue(node, "__PASS__");
+    String dbtable = ElementParameterParser.getValue(node, "__TABLE__");
+    String dbencoding = ElementParameterParser.getValue(node, "__ENCODING__");
+    boolean useExistingConnection = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__").equals("true");
+    %>
+    String dbSchema_<%=cid%> = null;
+    <%
+    // Create database connection
+    if (useExistingConnection) {
+        String connection = ElementParameterParser.getValue(node, "__CONNECTION__");
+        String connectionName = "conn_" + connection;
+        %>
+        dbSchema_<%=cid%> = (String)globalMap.get("schema_" + "<%=connection%>");        
+        java.sql.Connection connection_<%=cid%> = (java.sql.Connection) globalMap.get("<%=connectionName%>");
+        <%
+    } else {
+        %>
+        dbSchema_<%=cid%> = <%=ElementParameterParser.getValue(node, "__SCHEMA_DB__")%>;
+        java.lang.Class.forName("org.postgresql.Driver");
+        String connectionString_<%=cid%> = "jdbc:postgresql://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%>;
+        java.sql.Connection connection_<%=cid%> = java.sql.DriverManager.getConnection(connectionString_<%=cid%>, <%=dbuser%>, <%=dbpwd%>);
+        <%
+    }
+    %>
+    String dbTable_<%=cid%> = null;
+    if(dbSchema_<%=cid%> == null || dbSchema_<%=cid%>.trim().length() == 0) {
+        dbTable_<%=cid%> = <%=dbtable%>;
+    } else {
+        dbTable_<%=cid%> = dbSchema_<%=cid%> + "." + <%=dbtable%>;
+    }
+    <%
+    // SCD parameters
+    String surrogateKeyField = ElementParameterParser.getValue(node, "__SURROGATE_KEY__");
+    String surrogateKeyCreation = ElementParameterParser.getValue(node, "__SK_CREATION__");
+    String skSequence = ElementParameterParser.getValue(node, "__SK_DB_SEQUENCE__");
+    String skInputField = ElementParameterParser.getValue(node, "__SK_INPUT_FIELD__");
+    String skRoutine = ElementParameterParser.getValue(node, "__SK_ROUTINE__");
+    
+    List<Map<String, String>> sourceKeys =
+        (List<Map<String, String>>) ElementParameterParser.getObjectValue(node, "__SOURCE_KEYS__");
+    
+    boolean useL1 = ElementParameterParser.getValue(node, "__USE_L1__").equals("true");
+    List<Map<String, String>> l1fields = new ArrayList<Map<String, String>>();
+    if (useL1) {
+        l1fields = (List<Map<String, String>>) ElementParameterParser.getObjectValue(node, "__L1_FIELDS__");
+    }
+    
+    boolean useL2 = ElementParameterParser.getValue(node, "__USE_L2__").equals("true");
+    List<Map<String, String>> l2fields = new ArrayList<Map<String, String>>();
+    if (useL2) {
+        l2fields = (List<Map<String, String>>) ElementParameterParser.getObjectValue(node, "__L2_FIELDS__");
+    }
+    
+    String startdateField = ElementParameterParser.getValue(node, "__L2_STARTDATE_FIELD__");
+    String startdateValue = ElementParameterParser.getValue(node, "__L2_STARTDATE_VALUE__");
+    String startdateInputField = ElementParameterParser.getValue(node, "__L2_STARTDATE_INPUT_FIELD__");
+    String enddateField = ElementParameterParser.getValue(node, "__L2_ENDDATE_FIELD__");
+    String enddateValue = ElementParameterParser.getValue(node, "__L2_ENDDATE_VALUE__");
+    String enddateYear = ElementParameterParser.getValue(node, "__L2_ENDDATE_FIXED_VALUE__");
+    
+    boolean useActive = ElementParameterParser.getValue(node, "__USE_L2_ACTIVE__").equals("true");
+    String activeField = ElementParameterParser.getValue(node, "__L2_ACTIVE_FIELD__");
+    
+    JavaType activeFieldType = null;
+    for (IMetadataColumn column : metadata.getListColumns()) {
+        if (column.getLabel().equals(activeField)) {
+            activeFieldType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+            break;
+        }
+    }
+    
+    boolean useVersion = ElementParameterParser.getValue(node, "__USE_L2_VERSION__").equals("true");
+    String versionField = ElementParameterParser.getValue(node, "__L2_VERSION_FIELD__");
+    
+    boolean useL3 = ElementParameterParser.getValue(node, "__USE_L3__").equals("true");
+    List<Map<String, String>> l3fields = new ArrayList<Map<String, String>>();
+    if (useL3) {
+        l3fields = (List<Map<String, String>>) ElementParameterParser.getObjectValue(node, "__L3_FIELDS__");
+    }
+    
+    // Build map with type (sk, L1, L2) of each column
+    Map<String, String> typeOfColumn = new HashMap<String, String>();
+    for (Map<String, String> sk : sourceKeys) {
+        typeOfColumn.put(sk.get("NAME"), "SK");
+    }
+    for (Map<String, String> l1field : l1fields) {
+        typeOfColumn.put(l1field.get("NAME"), "L1");
+    }
+    for (Map<String, String> l2field : l2fields) {
+        typeOfColumn.put(l2field.get("NAME"), "L2");
+    }
+    for (Map<String, String> l3field : l3fields) {
+        typeOfColumn.put(l3field.get("CURRENT_VALUE"), "L3C"); // L3 current
+        typeOfColumn.put(l3field.get("PREV_VALUE"), "L3P"); // L3 previous
+        
+        if (l3field.get("CURRENT_VALUE").equals(l3field.get("PREV_VALUE"))) {
+            %>
+            // Error: same column defined for current and previous value (field <%=l3field.get("CURRENT_VALUE")%>)
+            <%
+        }
+    }
+    
+    // Debug mode
+    boolean debug = ElementParameterParser.getValue(node, "__DEBUG__").equals("true");
+    
+    %>
+    java.sql.Timestamp timestamp_<%=cid%>;
+    String value_<%=cid%>;
+    
+    // Source keys
+    class SCDSK_<%=cid%> {
+        private int hashCode;
+        public boolean hashCodeDirty = true;
+        <%
+        for (IMetadataColumn column : inMetadata.getListColumns()) {
+            String colname = column.getLabel();
+            
+            if (typeOfColumn.containsKey(colname)) {
+                if (typeOfColumn.get(colname).equals("SK")) {
+                    %>
+                    private <%=JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable())%> <%=colname%>;
+                    <%
+                }
+            }
+        }
+        %>
+        
+        public boolean equals(Object o) {
+            if (!(o instanceof SCDSK_<%=cid%>)) {
+                return false;
+            }
+            
+            SCDSK_<%=cid%> sk = (SCDSK_<%=cid%>) o;
+            
+            return <%
+            boolean isFirstSK = true;
+            for (IMetadataColumn column : inMetadata.getListColumns()) {
+                String colname = column.getLabel();
+                
+                if (typeOfColumn.containsKey(colname)) {
+                    if (typeOfColumn.get(colname).equals("SK")) {
+                        JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+                        String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+                        
+                        if (isFirstSK) {
+                            isFirstSK = false;
+                        } else {
+                            %> && <%
+                        }
+                        
+                        if (javaType == JavaTypesManager.DATE ||
+                            javaType == JavaTypesManager.OBJECT ||
+                            javaType == JavaTypesManager.STRING ||
+                            column.isNullable()) {
+                            %><%=colname%>.equals(sk.<%=colname%>)<%
+                        } else {
+                            %><%=colname%> == sk.<%=colname%><%
+                        }
+                    }
+                }
+            }
+            %>;
+        }
+        
+        public int hashCode() {
+            if (hashCodeDirty) {
+                int prime = 31;
+                hashCode = 0;
+                <%
+                for (IMetadataColumn column : inMetadata.getListColumns()) {
+                    String colname = column.getLabel();
+                    
+                    if (typeOfColumn.containsKey(colname)) {
+                        if (typeOfColumn.get(colname).equals("SK")) {
+                            JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+                            
+                            if (javaType == JavaTypesManager.DATE ||
+                                javaType == JavaTypesManager.OBJECT ||
+                                javaType == JavaTypesManager.STRING ||
+                                column.isNullable()) {
+                                %>
+                                hashCode = prime * hashCode + (<%=colname%> == null ? 0 : <%=colname%>.hashCode());
+                                <%
+                            } else {
+                                if (javaType == JavaTypesManager.LONG) {
+                            %>
+                                hashCode = prime * hashCode + (new Long(<%=colname%>)).hashCode();
+                            <%
+                                } else {
+                                %>
+                                hashCode = prime * hashCode + <%=colname%>;
+                                <%
+                                }
+                            }
+                        }
+                    }
+                }
+                %>
+                hashCodeDirty = false;
+            }
+            
+            return hashCode;
+        }
+    }
+    
+    // Lookup cache structure
+    class SCDStruct_<%=cid%> {
+        <%
+        // L1, L2, L3 fields
+        for (IMetadataColumn column : metadata.getListColumns()) {
+            String colname = column.getLabel();
+            
+            if (typeOfColumn.containsKey(colname)) {
+                if (!typeOfColumn.get(colname).equals("SK")) {
+                    %>
+                    private <%=JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable())%> <%=colname%>;
+                    <%
+                }
+            }
+        }
+        
+        // Version field
+        if (useVersion) {
+            for (IMetadataColumn column : metadata.getListColumns()) {
+                String colname = column.getLabel();
+                
+                if (colname.equals(versionField)) {
+                    %>
+                    private <%=JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable())%> <%=colname%>;
+                    <%
+                    break;
+                }
+            }
+        }
+        %>
+    }
+    <%
+    
+    // Build lookup cache
+    List<String> selectColumns = new ArrayList<String>();
+    List<String> javaTypeColumns = new ArrayList<String>();
+    
+    // First we iterate on the input schema columns...
+    for (IMetadataColumn column : metadata.getListColumns()) {
+        String colname = column.getLabel();
+        
+        if (typeOfColumn.containsKey(colname)) {
+            selectColumns.add(colname);
+            javaTypeColumns.add(JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable()));
+        }
+    }
+    
+    if (useVersion) {
+        for (IMetadataColumn column : metadata.getListColumns()) {
+            String colname = column.getLabel();
+            
+            if (colname.equals(versionField)) {
+                selectColumns.add(colname);
+                javaTypeColumns.add(JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable()));
+                break;
+            }
+        }
+    }
+    
+    String[] selectColumnsArray = selectColumns.toArray(new String[selectColumns.size()]);
+    String selectColumnsString = StringUtils.join(selectColumnsArray, ", ");
+    
+    %>
+    // Retrieve active records
+    String dbquery_<%=cid %> = "SELECT <%=selectColumnsString%> FROM " + dbTable_<%=cid%>
+    <%
+    if (useL2) {
+        if (enddateValue.equals("NULL_VALUE")) {
+            %>
+            + " WHERE <%=enddateField%> IS NULL"
+            <%
+        } else {
+            %>
+            + " WHERE EXTRACT(YEAR FROM <%=enddateField%>) = " + <%=enddateYear%>
+            <%
+        }
+    }
+    %>;
+    java.sql.Statement statement_<%=cid%> = connection_<%=cid%>.createStatement();
+    java.sql.ResultSet resultSet_<%=cid%> = statement_<%=cid%>.executeQuery(dbquery_<%=cid %>);
+    
+    // Build lookup cache
+    java.util.HashMap<SCDSK_<%=cid%>, SCDStruct_<%=cid%>> cache_<%=cid%> = new java.util.HashMap<SCDSK_<%=cid%>, SCDStruct_<%=cid%>>();
+    
+    while (resultSet_<%=cid%>.next()) {
+        SCDSK_<%=cid%> sk_<%=cid%> = new SCDSK_<%=cid%>();
+        SCDStruct_<%=cid%> row_<%=cid%> = new SCDStruct_<%=cid%>();
+        <%
+        int colPosition = 1;
+        
+        for (int i = 0; i < selectColumns.size(); i++) {
+            String colname = selectColumns.get(i);
+            
+            if (typeOfColumn.containsKey(colname) || colname.equals(versionField)) {
+                // Search Java type in order to call fitted method getXxx on ResultSet
+                String typeToGenerate = javaTypeColumns.get(i);
+                String struct = (!colname.equals(versionField) && typeOfColumn.get(colname).equals("SK") ? "sk_" : "row_") + cid;
+                
+                if (typeToGenerate.equals("byte[]")) {
+                    typeToGenerate = "Bytes";
+                } else if (typeToGenerate.equals("java.util.Date")) {
+                    typeToGenerate = "Timestamp";
+                } else if (typeToGenerate.equals("Integer")) {
+                    typeToGenerate = "Int";
+                } else {
+                    typeToGenerate = typeToGenerate.substring(0, 1).toUpperCase() + typeToGenerate.substring(1);
+                }
+                
+                if (typeToGenerate.equals("Char") || typeToGenerate.equals("Character")) {
+                    %>
+                    value_<%=cid%> = resultSet_<%=cid%>.getString(<%=colPosition%>);
+                    if (value_<%=cid%> != null && value_<%=cid%>.length() > 0) {
+                        <%=struct%>.<%=colname%> = resultSet_<%=cid %>.getString(<%=colPosition%>).charAt(0);
+                    } else {
+                        <%
+                        if (typeToGenerate.equals("Character")) {
+                            %>
+                            if (value_<%=cid%> == null) {
+                                <%=struct%>.<%=colname%> = null;
+                            } else {
+                                <%=struct%>.<%=colname%> = '\0';
+                            }
+                            <%
+                        } else {
+                            %>
+                            if (value_<%=cid%>.equals("")) {
+                                <%=struct%>.<%=colname%> = '\0';
+                            } else {
+                                throw new RuntimeException("Value is empty for column : '<%=colname%>', value is invalid or this column should be nullable or have a default value.");
+                            }
+                            <%
+                        }
+                        %>
+                    }
+                    <%
+                } else if (typeToGenerate.equals("Timestamp")) {
+                    %>
+                    timestamp_<%=cid%> = resultSet_<%=cid%>.getTimestamp(<%=colPosition%>);
+                    if (timestamp_<%=cid%> != null) {
+                        <%=struct%>.<%=colname%> = new java.util.Date(timestamp_<%=cid%>.getTime());
+                    } else {
+                        <%=struct%>.<%=colname%> = null;
+                    }
+                    <%  
+                } else {
+                    %>
+                    if (resultSet_<%=cid %>.getObject(<%=colPosition%>) != null) {
+                        <%=struct%>.<%=colname%> = resultSet_<%=cid %>.get<%=typeToGenerate%>(<%=colPosition%>);
+                    }
+                    <%
+                }
+                
+                colPosition++;
+            }
+        }
+        %>
+        
+        cache_<%=cid%>.put(sk_<%=cid%>, row_<%=cid%>);
+    }
+    
+    statement_<%=cid%>.close();
+    
+    <%
+    if (surrogateKeyCreation.equals("TABLE_MAX")) {
+        for (IMetadataColumn column : metadata.getListColumns()) {
+            String colname = column.getLabel();
+            
+            if (colname.equals(surrogateKeyField)) {
+                %>
+                <%=JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable())%> nextSurrogateKey_<%=cid%> = 1;
+                <%
+            }
+        }
+        %>
+        if (cache_<%=cid%>.size() > 0) {
+            // Get table max value for surrogate key
+            dbquery_<%=cid%> = "SELECT MAX(<%=surrogateKeyField%>) FROM " + dbTable_<%=cid%>;
+            statement_<%=cid%> = connection_<%=cid%>.createStatement();
+            resultSet_<%=cid%> = statement_<%=cid%>.executeQuery(dbquery_<%=cid%>);
+            <%
+            for (IMetadataColumn column : metadata.getListColumns()) {
+                String colname = column.getLabel();
+                
+                if (colname.equals(surrogateKeyField)) {
+                    // Search Java type in order to call fitted method getXxx on ResultSet
+                    String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+                    
+                    if (typeToGenerate.equals("Integer")) {
+                        typeToGenerate = "Int";
+                    } else {
+                        typeToGenerate = typeToGenerate.substring(0, 1).toUpperCase() + typeToGenerate.substring(1);
+                    }
+                    
+                    %>
+                    if (resultSet_<%=cid%>.next() && resultSet_<%=cid%>.getObject(1) != null) {
+                        nextSurrogateKey_<%=cid%> = resultSet_<%=cid%>.get<%=typeToGenerate%>(1) + 1;
+                    }
+                    <%
+                }
+            }
+            %>
+            
+            statement_<%=cid%>.close();
+        }
+        <%
+    }
+    
+    if (debug) {
+        %>
+        System.out.println("[<%=cid%>] comparison cache loaded");
+        <%
+    }
+    
+    // INSERT query generation
+    int colposition = 1;
+    List colnames = new ArrayList();
+    List parameters = new ArrayList();
+    
+    // Surrogate key
+    if (!surrogateKeyCreation.equals("AUTO_INCREMENT") && !surrogateKeyCreation.equals("DB_SEQUENCE")) {
+        for (IMetadataColumn column : metadata.getListColumns()) {
+            String colname = column.getLabel();
+            
+            if (colname.equals(surrogateKeyField)) {
+                colnames.add(surrogateKeyField);
+                if (surrogateKeyCreation.equals("DB_SEQUENCE")) {
+                    parameters.add(skSequence + ".nextval");
+                } else {
+                    parameters.add("?");
+                }
+                colposition++;
+                break;
+            }
+        }
+    }
+    
+    // First we iterate on the input schema columns...
+    for (IMetadataColumn column : metadata.getListColumns()) {
+        // ... and we add each column only if it was chosen to be in the
+        // output, ie if its type was defined.
+        if (typeOfColumn.containsKey(column.getLabel())) {
+            colnames.add(column.getLabel());
+            parameters.add("?");
+            colposition++;
+        }
+    }
+    
+    // Then we add L2 dedicated columns to store historical informations
+    if (useL2) {
+        if (useActive) {
+            colnames.add(activeField);
+            if (activeFieldType == JavaTypesManager.STRING ||
+                    activeFieldType == JavaTypesManager.BOOLEAN) {
+                parameters.add("'true'");
+            } else {
+                parameters.add("1");
+            }
+        }
+        
+        if (useVersion) {
+            colnames.add(versionField);
+            parameters.add("?");
+            colposition++;
+        }
+        
+        colnames.add(startdateField);
+        parameters.add("?");
+        colposition++;
+        
+        colnames.add(enddateField);
+        parameters.add(enddateValue.equals("NULL_VALUE") ? "NULL" : "'\" + " + enddateYear + " + \"-01-01'");
+    }
+    
+    String colnamesString = StringUtils.join(colnames.toArray(), ", ");
+    String parametersString = StringUtils.join(parameters.toArray(), ", ");
+    
+    %>
+    // Build prepared statements
+    String insertQueryString_<%=cid%> = "INSERT INTO " + dbTable_<%=cid%> + " (<%=surrogateKeyCreation.equals("DB_SEQUENCE") ? surrogateKeyField + ", " : ""%><%=colnamesString%>) " +
+        "VALUES (<%=surrogateKeyCreation.equals("DB_SEQUENCE") ? "\" + " + skSequence + " + \".nextval, " : ""%><%=parametersString%>)";
+    java.sql.PreparedStatement insertQuery_<%=cid%> = connection_<%=cid%>.prepareStatement(insertQueryString_<%=cid%>);
+    <%
+    if (startdateValue.equals("JOB_START_TIME")) {
+        %>
+        insertQuery_<%=cid%>.setTimestamp(<%=colposition - 1%>,
+            new java.sql.Timestamp(start_Hash.get("<%=cid%>")));
+        <%
+    }
+    
+    // L1 query generation
+    List keyClauses = new ArrayList();
+    List l1fieldClauses = new ArrayList();
+    
+    for (IMetadataColumn column : metadata.getListColumns()) {
+        String colname = column.getLabel();
+        
+        if (typeOfColumn.containsKey(colname)) {
+            if (typeOfColumn.get(colname).equals("SK")) {
+                keyClauses.add(colname + " = ?");
+            } else if (typeOfColumn.get(colname).equals("L1")) {
+                l1fieldClauses.add(colname + " = ?");
+            }
+        }
+    }
+    
+    String keyClausesString = StringUtils.join(keyClauses.toArray(), " AND ");
+    String l1fieldClausesString = StringUtils.join(l1fieldClauses.toArray(), ", ");
+    
+    if (useL1) {
+        %>
+        String l1QueryString_<%=cid%> = "UPDATE " + dbTable_<%=cid%> + " SET <%=l1fieldClausesString%> WHERE <%=keyClausesString%>";
+        java.sql.PreparedStatement l1Query_<%=cid%> = connection_<%=cid%>.prepareStatement(l1QueryString_<%=cid%>);
+        <%
+    }
+    
+    // L2 query generation
+    if (useL2) {
+        %>
+        String l2QueryString_<%=cid%> = "UPDATE " + dbTable_<%=cid%> + " " +
+            "SET <%=enddateField%> = ? " +<%
+        if (useActive) {
+            %>
+            ", <%=activeField%> = <%
+            if (activeFieldType == JavaTypesManager.STRING ||
+                    activeFieldType == JavaTypesManager.BOOLEAN) {
+                %>'false'<%
+            } else {
+                %>0<%
+            }
+            %> " +<%
+        }
+        %>
+            "WHERE <%=keyClausesString%> " +
+        <%
+        if (enddateValue.equals("NULL_VALUE")) {
+            %>
+            " AND <%=enddateField%> IS NULL";
+            <%
+        } else {
+            %>
+            " AND EXTRACT(YEAR FROM <%=enddateField%>) = " + <%=enddateYear%>;
+            <%
+        }
+        %>
+        java.sql.PreparedStatement l2Query_<%=cid%> = connection_<%=cid%>.prepareStatement(l2QueryString_<%=cid%>);
+        <%
+        if (startdateValue.equals("JOB_START_TIME")) {
+            %>
+            l2Query_<%=cid%>.setTimestamp(1, new java.sql.Timestamp(start_Hash.get("<%=cid%>")));
+            <%
+        }
+    }
+    
+    // L3 query generation
+    if (useL3) {
+        List l3fieldClauses = new ArrayList();
+        
+        for (IMetadataColumn column : metadata.getListColumns()) {
+            String colname = column.getLabel();
+            
+            if (typeOfColumn.containsKey(colname)) {
+                if (typeOfColumn.get(colname).equals("L3C")) {
+                    l3fieldClauses.add(colname + " = ?");
+                    
+                    // Search previous value field matching current value field
+                    for (Map<String, String> l3field : l3fields) {
+                        if (l3field.get("CURRENT_VALUE").equals(colname)) {
+                            l3fieldClauses.add(
+                                l3field.get("PREV_VALUE") + " = ?");
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        
+        String l3fieldClausesString = StringUtils.join(l3fieldClauses.toArray(), ", ");
+        
+        %>
+        String l3QueryString_<%=cid%> = "UPDATE " + dbTable_<%=cid%> + " " +
+            "SET <%=l3fieldClausesString%> " +
+            "WHERE <%=keyClausesString%>"<%
+        if (useL2) {
+            if (enddateValue.equals("NULL_VALUE")) {
+                %>
+                + " AND <%=enddateField%> IS NULL";
+                <%
+            } else {
+                %>
+                + " AND EXTRACT(YEAR FROM <%=enddateField%>) = " + <%=enddateYear%>;
+                <%
+            }
+        }
+        %>;
+        java.sql.PreparedStatement l3Query_<%=cid%> = connection_<%=cid%>.prepareStatement(l3QueryString_<%=cid%>);
+        <%
+    }
+    
+    %>
+    SCDSK_<%=cid%> lookupRow_<%=cid%> = new SCDSK_<%=cid%>();
+    SCDStruct_<%=cid%> cacheRow_<%=cid%>;
+    <%
+} else {
+    %>
+    // No code generated: define input and output schema first
+    <%
+}
+%>
