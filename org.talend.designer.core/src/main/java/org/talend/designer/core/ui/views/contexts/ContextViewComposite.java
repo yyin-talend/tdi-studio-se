@@ -26,6 +26,7 @@ import org.talend.core.ui.context.ContextComposite;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.cmd.ContextAddParameterCommand;
+import org.talend.designer.core.ui.editor.cmd.ContextChangeDefaultCommand;
 import org.talend.designer.core.ui.editor.cmd.ContextRemoveParameterCommand;
 import org.talend.designer.core.ui.editor.cmd.ContextRenameParameterCommand;
 import org.talend.designer.core.ui.editor.cmd.ContextTemplateModifyCommand;
@@ -277,9 +278,9 @@ public class ContextViewComposite extends ContextComposite {
     }
 
     public void onContextChangeDefault(IContextManager contextManager, IContext newDefault) {
-        contextManager.setDefaultContext(newDefault);
-        refresh();
-        // getCommandStack().execute(new ContextChangeDefaultCommand(contextManager, newDefault));
+        // contextManager.setDefaultContext(newDefault);
+        // refresh();
+        getCommandStack().execute(new ContextChangeDefaultCommand(contextManager, newDefault));
     }
 
     public void onContextRenameParameter(IContextManager contextManager, String oldName, String newName) {
