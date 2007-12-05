@@ -1,22 +1,13 @@
 // ============================================================================
 //
-// Talend Community Edition
+// Copyright (C) 2006-2007 Talend Inc. - www.talend.com
 //
-// Copyright (C) 2006 Talend – www.talend.com
+// This source code is available under agreement available at
+// %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
 //
-// This library is free software; you can redistribute it and/or
-// modify it under the terms of the GNU Lesser General Public
-// License as published by the Free Software Foundation; either
-// version 2.1 of the License, or (at your option) any later version.
-//
-// This library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-// Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program; if not, write to the Free Software
-// Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+// You should have received a copy of the agreement
+// along with this program; if not, write to Talend SA
+// 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
 package org.talend.repository.model.migration;
@@ -26,7 +17,7 @@ import java.util.Arrays;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.model.components.ModifyComponentsAction;
 import org.talend.core.model.components.conversions.IComponentConversion;
-import org.talend.core.model.components.conversions.UpdateLookupColumnCoversion;
+import org.talend.core.model.components.conversions.UpdateLookupColumnConversion;
 import org.talend.core.model.components.filters.IComponentFilter;
 import org.talend.core.model.components.filters.NameComponentFilter;
 import org.talend.core.model.migration.AbstractJobMigrationTask;
@@ -51,13 +42,13 @@ public class UpdateLookupColumnMigrationTask extends AbstractJobMigrationTask {
         try {
             // 1.tFuzzyMatch:
             IComponentFilter filter1 = new NameComponentFilter("tFuzzyMatch"); //$NON-NLS-1$
-            IComponentConversion lookupProperty = new UpdateLookupColumnCoversion("LOOKUP_COLUMN");
+            IComponentConversion lookupProperty = new UpdateLookupColumnConversion("LOOKUP_COLUMN");
             ModifyComponentsAction.searchAndModify(item, filter1, Arrays.<IComponentConversion> asList(lookupProperty));
 
             // 2.tIntervalMatch
             IComponentFilter filter2 = new NameComponentFilter("tIntervalMatch"); //$NON-NLS-1$
             ModifyComponentsAction.searchAndModify(item, filter2, Arrays.<IComponentConversion> asList(lookupProperty));
-            return ExecutionResult.SUCCESS_WITH_ALERT;
+            return ExecutionResult.SUCCESS_NO_ALERT;
         } catch (Exception e) {
             ExceptionHandler.process(e);
             return ExecutionResult.FAILURE;
