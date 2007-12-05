@@ -27,6 +27,7 @@ import org.talend.core.model.process.Problem;
 import org.talend.core.model.process.RoutineProblem;
 import org.talend.core.model.process.Problem.ProblemStatus;
 import org.talend.core.model.process.Problem.ProblemType;
+import org.talend.core.model.properties.RoutineItem;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -160,6 +161,12 @@ public class Problems {
 
     public static void add(ProblemStatus status, IMarker marker, String javaUnitName, String markerErrorMessage, Integer lineN) {
         Problem problem = new RoutineProblem(status, javaUnitName, marker, markerErrorMessage, lineN);
+        add(problem);
+    }
+
+    public static void add(RoutineItem routineItem, ProblemStatus status, IMarker marker, String javaUnitName,
+            String markerErrorMessage, Integer lineN) {
+        Problem problem = new RoutineProblem(routineItem, status, javaUnitName, marker, markerErrorMessage, lineN);
         add(problem);
     }
 

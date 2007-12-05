@@ -13,7 +13,6 @@
 package org.talend.designer.core.ui.views.problems;
 
 import org.eclipse.core.resources.IMarker;
-import org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
@@ -33,18 +32,22 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
-import org.eclipse.ui.texteditor.MarkerUtilities;
 import org.eclipse.ui.views.markers.internal.MarkerMessages;
+import org.talend.commons.exception.MessageBoxExceptionHandler;
+import org.talend.commons.exception.SystemException;
+import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.process.Problem;
 import org.talend.core.model.process.RoutineProblem;
+import org.talend.core.model.properties.RoutineItem;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
-import org.talend.designer.core.ui.editor.StandAloneTalendJavaEditor;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.views.problems.Problems.Group;
+import org.talend.repository.ui.actions.routines.AbstractRoutineAction;
 
 /**
  * DOC nrousseau class global comment. Detailled comment <br/>
@@ -57,6 +60,12 @@ public class ProblemsView extends ViewPart {
     public static final String PROBLEM_TYPE_SELECTION = "PROBLEM.TYPE.SELECTION";//$NON-NLS-1$
 
     private static final String ID = "org.talend.designer.core.ui.views.ProblemsView"; //$NON-NLS-1$
+
+    private RoutineItemsCheck routineItemsCheck;
+
+    private ECodeLanguage language;
+
+    private String editorID;
 
     public static ProblemsView show() {
         IViewPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(ID);
@@ -93,7 +102,8 @@ public class ProblemsView extends ViewPart {
                     if (problem.getElement() instanceof Node)
                         selectInDesigner((Node) problem.getElement());
                     else if (problem instanceof RoutineProblem) {
-                        selectInRoutine(((RoutineProblem) problem).getMarker());
+                        // selectInRoutine(((RoutineProblem) problem).getRoutineItem(), ((RoutineProblem)
+                        // problem).getMarker());
                     }
                 }
             }
@@ -120,7 +130,10 @@ public class ProblemsView extends ViewPart {
     }
 
     public void resetContent() {
+        routineItemsCheck = new RoutineItemsCheck();
+        routineItemsCheck.addAllRoutineProblem();
         viewer.setInput(Problems.getRoot());
+
     }
 
     /*
@@ -167,21 +180,25 @@ public class ProblemsView extends ViewPart {
         }
     }
 
-    private void selectInRoutine(IMarker marker) {
-        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+    private void selectInRoutine(RoutineItem routineItem, IMarker marker) {
+        // openRoutineEditor();
+        OpenRoutineAction openRoutineAction;
 
-        IEditorReference[] editorParts = page.getEditorReferences();
-
-        for (IEditorReference reference : editorParts) {
-            IEditorPart editor = reference.getEditor(false);
-            if (StandAloneTalendJavaEditor.ID.equals(editor.getSite().getId())) {
-                CompilationUnitEditor javaEditor = (CompilationUnitEditor) editor;
-                int start = MarkerUtilities.getCharStart(marker);
-                int end = MarkerUtilities.getCharEnd(marker);
-                page.bringToTop(javaEditor);
-                javaEditor.selectAndReveal(start, start);
-            }
-        }
+        // IEditorReference[] editorParts = page.getEditorReferences();
+        new OpenRoutineAction(routineItem);
+        //
+        // for (IEditorReference reference : editorParts) {
+        // IEditorPart editor = reference.getEditor(false);
+        //
+        // if (editorID.equals(editor.getSite().getId())) {
+        //
+        // CompilationUnitEditor javaEditor = (CompilationUnitEditor) editor;
+        // int start = MarkerUtilities.getCharStart(marker);
+        // int end = MarkerUtilities.getCharEnd(marker);
+        // page.bringToTop(javaEditor);
+        // javaEditor.selectAndReveal(start, start);
+        // }
+        // }
     }
 
     @Override
@@ -254,5 +271,53 @@ public class ProblemsView extends ViewPart {
                 getDialogSettings().setValue(PROBLEM_TYPE_SELECTION, groupingField.toString());
             }
         }
+    }
+
+    /**
+     * 
+     * DOC denny ProblemsView class global comment. Detailled comment
+     */
+    private class OpenRoutineAction extends AbstractRoutineAction {
+
+        private RoutineItem routineItem;
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.talend.commons.ui.swt.actions.ITreeContextualAction#init(org.eclipse.jface.viewers.TreeViewer,
+         * org.eclipse.jface.viewers.IStructuredSelection)
+         * 
+         */
+        public OpenRoutineAction(RoutineItem routineItem) {
+            // super();
+            this.routineItem = routineItem;
+            run();
+        }
+
+        public void run() {
+            try {
+                openRoutineEditor(routineItem, false);
+
+            } catch (SystemException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+                MessageBoxExceptionHandler.process(e);
+            } catch (PartInitException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+                MessageBoxExceptionHandler.process(e);
+            }
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.talend.commons.ui.swt.actions.ITreeContextualAction#init(org.eclipse.jface.viewers.TreeViewer,
+         * org.eclipse.jface.viewers.IStructuredSelection)
+         */
+        public void init(TreeViewer viewer, IStructuredSelection selection) {
+            // setEnabled(true);
+        }
+
     }
 }
