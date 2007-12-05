@@ -34,8 +34,6 @@ public class CreateDiagramAction extends AContextualAction {
 
     private RepositoryNode repositoryNode;
 
-    private boolean isToolbar = false;
-
     public CreateDiagramAction() {
         super();
         Image folderImg = ImageProvider.getImage(ECoreImage.BUSINESS_PROCESS_ICON);
@@ -45,7 +43,7 @@ public class CreateDiagramAction extends AContextualAction {
 
     public CreateDiagramAction(boolean isToolbar) {
         super();
-        this.isToolbar = isToolbar;
+        setToolbar(isToolbar);
         Image folderImg = ImageProvider.getImage(ECoreImage.BUSINESS_PROCESS_ICON);
         this.setImageDescriptor(OverlayImageProvider.getImageWithNew(folderImg));
         setText(Messages.getString("CreateDiagramAction.CreateBusinessModel")); //$NON-NLS-1$
@@ -97,7 +95,7 @@ public class CreateDiagramAction extends AContextualAction {
 
     private IPath getPath() {
         IPath path;
-        if (isToolbar) {
+        if (isToolbar()) {
             repositoryNode = getProcessNode();
         }
 

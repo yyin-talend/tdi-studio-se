@@ -54,8 +54,6 @@ public class CreateProcess extends AContextualAction {
 
     private static final String CREATE_LABEL = Messages.getString("CreateProcess.createJob"); //$NON-NLS-1$
 
-    private boolean isToolbar = false;
-
     public CreateProcess() {
         super();
         this.setText(CREATE_LABEL);
@@ -69,7 +67,7 @@ public class CreateProcess extends AContextualAction {
         super();
         this.setText(CREATE_LABEL);
         this.setToolTipText(CREATE_LABEL);
-        this.isToolbar = isToolbar;
+        setToolbar(isToolbar);
         Image folderImg = ImageProvider.getImage(ECoreImage.PROCESS_ICON);
         this.setImageDescriptor(OverlayImageProvider.getImageWithNew(folderImg));
     }
@@ -99,7 +97,7 @@ public class CreateProcess extends AContextualAction {
      */
     public void run() {
         RepositoryNode node;
-        if (isToolbar) {
+        if (isToolbar()) {
             node = getProcessNode();
         } else {
             ISelection selection = getSelection();
@@ -116,7 +114,7 @@ public class CreateProcess extends AContextualAction {
         NewProcessWizard processWizard = new NewProcessWizard(path);
         WizardDialog dlg = new WizardDialog(Display.getCurrent().getActiveShell(), processWizard);
         if (dlg.open() == Window.OK) {
-//            refresh(node);
+            // refresh(node);
             getViewPart().refresh();
             ProcessEditorInput fileEditorInput;
             try {

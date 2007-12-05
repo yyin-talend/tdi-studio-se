@@ -50,8 +50,6 @@ public class CreateFilePositionalAction extends AbstractCreateAction {
 
     private boolean creation = false;
 
-    private boolean isToolbar = false;
-
     ImageDescriptor defaultImage = ImageProvider.getImageDesc(ECoreImage.METADATA_FILE_POSITIONAL_ICON);
 
     ImageDescriptor createImage = OverlayImageProvider.getImageWithNew(ImageProvider
@@ -72,7 +70,7 @@ public class CreateFilePositionalAction extends AbstractCreateAction {
 
     public CreateFilePositionalAction(boolean isToolbar) {
         super();
-        this.isToolbar = isToolbar;
+        setToolbar(isToolbar);
         this.setText(CREATE_LABEL);
         this.setToolTipText(CREATE_LABEL);
         this.setImageDescriptor(defaultImage);
@@ -83,7 +81,7 @@ public class CreateFilePositionalAction extends AbstractCreateAction {
         RepositoryNode filePositionalNode = metadataNode.getChildren().get(2);
         ISelection selection = null;
         WizardDialog wizardDialog;
-        if (isToolbar) {
+        if (isToolbar()) {
             init(filePositionalNode);
             wizardDialog = new WizardDialog(new Shell(), new FilePositionalWizard(PlatformUI.getWorkbench(), creation,
                     filePositionalNode, getExistingNames()));
@@ -95,7 +93,7 @@ public class CreateFilePositionalAction extends AbstractCreateAction {
         wizardDialog.setPageSize(WIZARD_WIDTH, WIZARD_HEIGHT);
         wizardDialog.create();
         wizardDialog.open();
-        if (isToolbar) {
+        if (isToolbar()) {
             refresh(filePositionalNode);
         } else {
             refresh(((IStructuredSelection) selection).getFirstElement());

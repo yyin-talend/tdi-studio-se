@@ -53,8 +53,6 @@ public class CreateGenericSchemaAction extends AbstractCreateAction {
 
     private ERepositoryObjectType currentNodeType;
 
-    private boolean isToolbar = false;
-
     public CreateGenericSchemaAction() {
         super();
         createLabel = "Create generic schema";
@@ -79,7 +77,7 @@ public class CreateGenericSchemaAction extends AbstractCreateAction {
 
         defaultImage = ImageProvider.getImageDesc(ECoreImage.METADATA_FILE_LDIF_ICON);
         createImage = OverlayImageProvider.getImageWithNew(ImageProvider.getImage(ECoreImage.METADATA_FILE_LDIF_ICON));
-        this.isToolbar = isToolbar;
+        setToolbar(isToolbar);
         setText(createLabel);
         setToolTipText(createLabel);
         setImageDescriptor(defaultImage);
@@ -92,7 +90,7 @@ public class CreateGenericSchemaAction extends AbstractCreateAction {
         RepositoryNode fileGenericSchemaNode = metadataNode.getChildren().get(7);
         WizardDialog wizardDialog;
         ISelection selection = null;
-        if (isToolbar) {
+        if (isToolbar()) {
             init(fileGenericSchemaNode);
             wizardDialog = new WizardDialog(new Shell(), new GenericSchemaWizard(PlatformUI.getWorkbench(), creation,
                     fileGenericSchemaNode, getExistingNames(), false));
@@ -104,7 +102,7 @@ public class CreateGenericSchemaAction extends AbstractCreateAction {
         wizardDialog.setPageSize(WIZARD_WIDTH, WIZARD_HEIGHT);
         wizardDialog.create();
         wizardDialog.open();
-        if (isToolbar) {
+        if (isToolbar()) {
             refresh(fileGenericSchemaNode);
         } else {
             refresh(((IStructuredSelection) selection).getFirstElement());

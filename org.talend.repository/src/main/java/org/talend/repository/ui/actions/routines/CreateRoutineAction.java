@@ -42,8 +42,6 @@ import org.talend.repository.ui.wizards.routines.NewRoutineWizard;
  */
 public class CreateRoutineAction extends AbstractRoutineAction {
 
-    private boolean isToolbar = false;
-
     public CreateRoutineAction() {
         super();
 
@@ -56,7 +54,7 @@ public class CreateRoutineAction extends AbstractRoutineAction {
 
     public CreateRoutineAction(boolean isToolbar) {
         super();
-        this.isToolbar = isToolbar;
+        setToolbar(isToolbar);
         setText(Messages.getString("CreateRoutineAction.text.createRoutine")); //$NON-NLS-1$
         setToolTipText(Messages.getString("CreateRoutineAction.toolTipText.createRoutine")); //$NON-NLS-1$
 
@@ -103,7 +101,7 @@ public class CreateRoutineAction extends AbstractRoutineAction {
         RepositoryNode routineNode = codeNode.getChildren().get(0);
         RepositoryNode node = null;
         IPath path;
-        if (isToolbar) {
+        if (isToolbar()) {
             path = RepositoryNodeUtilities.getPath(routineNode);
 
         } else {
@@ -117,7 +115,7 @@ public class CreateRoutineAction extends AbstractRoutineAction {
         WizardDialog dlg = new WizardDialog(Display.getCurrent().getActiveShell(), routineWizard);
 
         if (dlg.open() == Window.OK) {
-            if (isToolbar) {
+            if (isToolbar()) {
                 refresh(routineNode);
             } else {
                 refresh(node);

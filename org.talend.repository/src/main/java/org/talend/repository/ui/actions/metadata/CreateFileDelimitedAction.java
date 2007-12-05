@@ -50,8 +50,6 @@ public class CreateFileDelimitedAction extends AbstractCreateAction {
 
     private boolean creation = false;
 
-    private boolean isToolbar = false;
-
     ImageDescriptor defaultImage = ImageProvider.getImageDesc(ECoreImage.METADATA_FILE_DELIMITED_ICON);
 
     ImageDescriptor createImage = OverlayImageProvider.getImageWithNew(ImageProvider
@@ -67,7 +65,7 @@ public class CreateFileDelimitedAction extends AbstractCreateAction {
 
     public CreateFileDelimitedAction(boolean isToolbar) {
         super();
-        this.isToolbar = isToolbar;
+        setToolbar(isToolbar);
         this.setText(CREATE_LABEL);
         this.setToolTipText(CREATE_LABEL);
         this.setImageDescriptor(defaultImage);
@@ -78,7 +76,7 @@ public class CreateFileDelimitedAction extends AbstractCreateAction {
         RepositoryNode fileDelimitedNode = metadataNode.getChildren().get(1);
         ISelection selection = null;
         WizardDialog wizardDialog;
-        if (isToolbar) {
+        if (isToolbar()) {
             init(fileDelimitedNode);
             wizardDialog = new WizardDialog(new Shell(), new DelimitedFileWizard(PlatformUI.getWorkbench(), creation,
                     fileDelimitedNode, getExistingNames()));
@@ -91,7 +89,7 @@ public class CreateFileDelimitedAction extends AbstractCreateAction {
         wizardDialog.setPageSize(WIZARD_WIDTH, WIZARD_HEIGHT);
         wizardDialog.create();
         wizardDialog.open();
-        if (isToolbar) {
+        if (isToolbar()) {
             refresh(fileDelimitedNode);
         } else {
             refresh(((IStructuredSelection) selection).getFirstElement());

@@ -52,8 +52,6 @@ public class CreateLDAPSchemaAction extends AbstractCreateAction {
 
     private ERepositoryObjectType currentNodeType;
 
-    private boolean isToolbar = false;
-
     public CreateLDAPSchemaAction() {
         super();
 
@@ -84,7 +82,7 @@ public class CreateLDAPSchemaAction extends AbstractCreateAction {
         // TODO: should change to another icon.
         defaultImage = ImageProvider.getImageDesc(ECoreImage.METADATA_FILE_LDIF_ICON);
         createImage = OverlayImageProvider.getImageWithNew(ImageProvider.getImage(ECoreImage.METADATA_FILE_LDIF_ICON));
-        this.isToolbar = isToolbar;
+        setToolbar(isToolbar);
         setText(createLabel);
         setToolTipText(createLabel);
         setImageDescriptor(defaultImage);
@@ -97,7 +95,7 @@ public class CreateLDAPSchemaAction extends AbstractCreateAction {
         RepositoryNode fileLDAPSchemaNode = metadataNode.getChildren().get(6);
         ISelection selection = null;
         WizardDialog wizardDialog;
-        if (isToolbar) {
+        if (isToolbar()) {
             init(fileLDAPSchemaNode);
             wizardDialog = new WizardDialog(new Shell(), new LDAPSchemaWizard(PlatformUI.getWorkbench(), creation,
                     fileLDAPSchemaNode, getExistingNames(), false));
@@ -111,7 +109,7 @@ public class CreateLDAPSchemaAction extends AbstractCreateAction {
         wizardDialog.create();
 
         wizardDialog.open();
-        if (isToolbar) {
+        if (isToolbar()) {
             refresh(fileLDAPSchemaNode);
         } else {
             refresh(((IStructuredSelection) selection).getFirstElement());

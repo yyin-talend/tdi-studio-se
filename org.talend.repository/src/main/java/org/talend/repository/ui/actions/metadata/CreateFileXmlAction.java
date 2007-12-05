@@ -50,8 +50,6 @@ public class CreateFileXmlAction extends AbstractCreateAction {
 
     private boolean creation = false;
 
-    private boolean isToolbar = false;
-
     ImageDescriptor defaultImage = ImageProvider.getImageDesc(ECoreImage.METADATA_FILE_XML_ICON);
 
     ImageDescriptor createImage = OverlayImageProvider.getImageWithNew(ImageProvider.getImage(ECoreImage.METADATA_FILE_XML_ICON));
@@ -71,7 +69,7 @@ public class CreateFileXmlAction extends AbstractCreateAction {
 
     public CreateFileXmlAction(boolean isToolbar) {
         super();
-        this.isToolbar = isToolbar;
+        setToolbar(isToolbar);
         this.setText(CREATE_LABEL);
         this.setToolTipText(CREATE_LABEL);
         this.setImageDescriptor(defaultImage);
@@ -82,7 +80,7 @@ public class CreateFileXmlAction extends AbstractCreateAction {
         RepositoryNode fileXMLNode = metadataNode.getChildren().get(4);
         ISelection selection = null;
         WizardDialog wizardDialog;
-        if (isToolbar) {
+        if (isToolbar()) {
             init(fileXMLNode);
             wizardDialog = new WizardDialog(new Shell(), new XmlFileWizard(PlatformUI.getWorkbench(), creation, fileXMLNode,
                     getExistingNames()));
@@ -96,7 +94,7 @@ public class CreateFileXmlAction extends AbstractCreateAction {
         wizardDialog.setPageSize(WIZARD_WIDTH, WIZARD_HEIGHT);
         wizardDialog.create();
         wizardDialog.open();
-        if (isToolbar) {
+        if (isToolbar()) {
             refresh(fileXMLNode);
         } else {
             refresh(((IStructuredSelection) selection).getFirstElement());

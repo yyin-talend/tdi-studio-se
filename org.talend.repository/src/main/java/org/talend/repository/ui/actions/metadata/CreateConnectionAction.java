@@ -56,8 +56,6 @@ public class CreateConnectionAction extends AbstractCreateAction {
 
     private static final String CREATE_LABEL = Messages.getString("CreateConnectionAction.action.createTitle"); //$NON-NLS-1$
 
-    private boolean isToolbar = false;
-
     ImageDescriptor defaultImage = ImageProvider.getImageDesc(ECoreImage.METADATA_CONNECTION_ICON);
 
     ImageDescriptor createImage = OverlayImageProvider.getImageWithNew(ImageProvider
@@ -73,7 +71,7 @@ public class CreateConnectionAction extends AbstractCreateAction {
 
     public CreateConnectionAction(boolean isToolbar) {
         super();
-        this.isToolbar = isToolbar;
+        setToolbar(isToolbar);
         this.setText(CREATE_LABEL);
         this.setToolTipText(CREATE_LABEL);
         this.setImageDescriptor(defaultImage);
@@ -101,7 +99,7 @@ public class CreateConnectionAction extends AbstractCreateAction {
         RepositoryNode node = dbConnectionNode;
         ISelection selection = null;
         // When the userSelection is an element of metadataNode, use it !
-        if (!isToolbar) {
+        if (!isToolbar()) {
             Object userSelection = ((IStructuredSelection) getSelection()).getFirstElement();
             if (userSelection instanceof RepositoryNode) {
                 switch (((RepositoryNode) userSelection).getType()) {
@@ -137,7 +135,7 @@ public class CreateConnectionAction extends AbstractCreateAction {
         // Init the content of the Wizard
         init(node);
         DatabaseWizard databaseWizard;
-        if (isToolbar) {
+        if (isToolbar()) {
             databaseWizard = new DatabaseWizard(PlatformUI.getWorkbench(), creation, node, getExistingNames());
         } else {
             databaseWizard = new DatabaseWizard(PlatformUI.getWorkbench(), creation, selection, getExistingNames());
@@ -148,7 +146,7 @@ public class CreateConnectionAction extends AbstractCreateAction {
         wizardDialog.setPageSize(600, 500);
         wizardDialog.create();
         wizardDialog.open();
-        if (isToolbar) {
+        if (isToolbar()) {
             refresh(node);
         } else {
             refresh(((IStructuredSelection) getSelection()).getFirstElement());

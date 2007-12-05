@@ -55,8 +55,6 @@ public class CreateFileRegexpAction extends AbstractCreateAction {
     ImageDescriptor createImage = OverlayImageProvider.getImageWithNew(ImageProvider
             .getImage(ECoreImage.METADATA_FILE_REGEXP_ICON));
 
-    private boolean isToolbar = false;
-
     /**
      * DOC cantoine CreateFileRegexpAction constructor comment.
      * 
@@ -72,7 +70,7 @@ public class CreateFileRegexpAction extends AbstractCreateAction {
 
     public CreateFileRegexpAction(boolean isToolbar) {
         super();
-        this.isToolbar = isToolbar;
+        setToolbar(isToolbar);
         this.setText(CREATE_LABEL);
         this.setToolTipText(CREATE_LABEL);
         this.setImageDescriptor(defaultImage);
@@ -83,7 +81,7 @@ public class CreateFileRegexpAction extends AbstractCreateAction {
         RepositoryNode fileRegexpNode = metadataNode.getChildren().get(3);
         ISelection selection = null;
         WizardDialog wizardDialog;
-        if (isToolbar) {
+        if (isToolbar()) {
             init(fileRegexpNode);
             wizardDialog = new WizardDialog(new Shell(), new RegexpFileWizard(PlatformUI.getWorkbench(), creation,
                     fileRegexpNode, getExistingNames()));
@@ -96,7 +94,7 @@ public class CreateFileRegexpAction extends AbstractCreateAction {
         wizardDialog.setPageSize(WIZARD_WIDTH, WIZARD_HEIGHT);
         wizardDialog.create();
         wizardDialog.open();
-        if (isToolbar) {
+        if (isToolbar()) {
             refresh(fileRegexpNode);
         } else {
             refresh(((IStructuredSelection) selection).getFirstElement());

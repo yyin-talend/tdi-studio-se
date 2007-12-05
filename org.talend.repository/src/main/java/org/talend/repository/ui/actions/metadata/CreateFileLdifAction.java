@@ -50,8 +50,6 @@ public class CreateFileLdifAction extends AbstractCreateAction {
 
     private boolean creation = false;
 
-    private boolean isToolbar = false;
-
     ImageDescriptor defaultImage = ImageProvider.getImageDesc(ECoreImage.METADATA_FILE_LDIF_ICON);
 
     ImageDescriptor createImage = OverlayImageProvider
@@ -67,7 +65,7 @@ public class CreateFileLdifAction extends AbstractCreateAction {
 
     public CreateFileLdifAction(boolean isToolbar) {
         super();
-        this.isToolbar = isToolbar;
+        setToolbar(isToolbar);
         this.setText(CREATE_LABEL);
         this.setToolTipText(CREATE_LABEL);
         this.setImageDescriptor(ImageProvider.getImageDesc(ECoreImage.METADATA_FILE_LDIF_ICON));
@@ -78,7 +76,7 @@ public class CreateFileLdifAction extends AbstractCreateAction {
         RepositoryNode fileLdifNode = metadataNode.getChildren().get(5);
         ISelection selection = null;
         WizardDialog wizardDialog;
-        if (isToolbar) {
+        if (isToolbar()) {
             init(fileLdifNode);
             wizardDialog = new WizardDialog(new Shell(), new LdifFileWizard(PlatformUI.getWorkbench(), creation, fileLdifNode,
                     getExistingNames()));
@@ -91,7 +89,7 @@ public class CreateFileLdifAction extends AbstractCreateAction {
         wizardDialog.setPageSize(WIZARD_WIDTH, WIZARD_HEIGHT);
         wizardDialog.create();
         wizardDialog.open();
-        if (isToolbar) {
+        if (isToolbar()) {
             refresh(fileLdifNode);
         } else {
             refresh(((IStructuredSelection) selection).getFirstElement());
