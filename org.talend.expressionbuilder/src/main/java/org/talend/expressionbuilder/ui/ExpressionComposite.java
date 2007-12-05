@@ -42,6 +42,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IEditorPart;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
+import org.talend.core.PluginChecker;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.ui.snippet.SnippetDropTargetListener;
@@ -136,7 +137,7 @@ public class ExpressionComposite extends Composite {
         final Composite upperOperationButtonBar = new Composite(expressionGroup, SWT.NONE);
         final GridLayout gridLayout = new GridLayout();
         gridLayout.horizontalSpacing = 8;
-        gridLayout.numColumns = 4;
+        gridLayout.numColumns = 3;
         gridLayout.marginTop = 0;
         gridLayout.marginBottom = 0;
         gridLayout.marginLeft = 0;
@@ -147,16 +148,18 @@ public class ExpressionComposite extends Composite {
         upperOperationButtonBar.setLayoutData(new GridData(GridData.FILL_HORIZONTAL | GridData.HORIZONTAL_ALIGN_END));
         upperOperationButtonBar.setData("nsd", null); //$NON-NLS-1$
 
-        insertSnippetsButton = new Button(upperOperationButtonBar, SWT.TOGGLE);
-        insertSnippetsButton.setText(TEXT_OPEN_SNIPPETS);
-        insertSnippetsButton.addSelectionListener(new SelectionAdapter() {
+        if (PluginChecker.isSnippetsPluginLoaded()) {
+            gridLayout.numColumns = 4;
+            insertSnippetsButton = new Button(upperOperationButtonBar, SWT.TOGGLE);
+            insertSnippetsButton.setText(TEXT_OPEN_SNIPPETS);
+            insertSnippetsButton.addSelectionListener(new SelectionAdapter() {
 
-            public void widgetSelected(SelectionEvent e) {
-                Button b = (Button) e.widget;
-                processSnippetsTray(b.getSelection());
-            }
-
-        });
+                public void widgetSelected(SelectionEvent e) {
+                    Button b = (Button) e.widget;
+                    processSnippetsTray(b.getSelection());
+                }
+            });
+        }
 
         final Button wrapButton = new Button(upperOperationButtonBar, SWT.CHECK);
         wrapButton.setText("Wrap");
