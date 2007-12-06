@@ -68,7 +68,7 @@ public class JobScriptsExportWizard extends Wizard implements IExportWizard {
             section.put(JavaJobScriptsExportWizardPage.STORE_JOB_ID, true);
             section.put(JavaJobScriptsExportWizardPage.STORE_CONTEXT_ID, true);
             section.put(JavaJobScriptsExportWizardPage.APPLY_TO_CHILDREN_ID, true);
-            section.put(JavaJobScriptsExportWSWizardPage.STORE_EXPORTTYPE_ID, "POJO");
+            section.put(JavaJobScriptsExportWSWizardPage.STORE_EXPORTTYPE_ID, JavaJobScriptsExportWSWizardPage.EXPORTTYPE_WSWAR);
             section.put(JavaJobScriptsExportWSWizardPage.STORE_WEBXML_ID, true);
             section.put(JavaJobScriptsExportWSWizardPage.STORE_CONFIGFILE_ID, true);
             section.put(JavaJobScriptsExportWSWizardPage.STORE_AXISLIB_ID, true);

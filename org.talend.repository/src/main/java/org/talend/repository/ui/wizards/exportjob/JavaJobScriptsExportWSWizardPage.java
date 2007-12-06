@@ -105,7 +105,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
                 return settings.get(STORE_EXPORTTYPE_ID);
             }
         }
-        return EXPORTTYPE_POJO;
+        return EXPORTTYPE_WSWAR;
     }
 
     @Override
@@ -168,9 +168,9 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         gd.horizontalSpan = 1;
         exportTypeCombo.setLayoutData(gd);
 
-        exportTypeCombo.add(EXPORTTYPE_POJO);
         exportTypeCombo.add(EXPORTTYPE_WSWAR);
         exportTypeCombo.add(EXPORTTYPE_WSZIP);
+        exportTypeCombo.add(EXPORTTYPE_POJO);
         // exportTypeCombo.add("JBI (JSR 208)");
 
         exportTypeCombo.setText(getCurrentExportType());
@@ -325,10 +325,8 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
 
                             if (sizeOfExportResource == 1) {
                                 IPath path = new Path(directoryNames[i]);
-                                String directory = directoryNames[i].substring(0, directoryNames[i].indexOf(path
-                                        .lastSegment()));
-                                setDestinationValue(directory + property.getLabel() + "_" + property.getVersion()
-                                        + ".zip");
+                                String directory = directoryNames[i].substring(0, directoryNames[i].indexOf(path.lastSegment()));
+                                setDestinationValue(directory + property.getLabel() + "_" + property.getVersion() + ".zip");
                             } else {
                                 setDestinationValue(directoryNames[i]);
                             }
@@ -547,8 +545,8 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         Map<ExportChoice, Boolean> exportChoiceMap = getExportChoiceMap();
 
         if (exportTypeCombo.getText().equals(EXPORTTYPE_POJO)) {
-            return manager.getExportResources(process, exportChoiceMap, contextCombo.getText(),
-                    launcherCombo.getText(), IProcessor.NO_STATISTICS, IProcessor.NO_TRACES);
+            return manager.getExportResources(process, exportChoiceMap, contextCombo.getText(), launcherCombo.getText(),
+                    IProcessor.NO_STATISTICS, IProcessor.NO_TRACES);
         } else {
             return manager.getExportResources(process, exportChoiceMap, contextCombo.getText(), "all", //$NON-NLS-1$
                     IProcessor.NO_STATISTICS, IProcessor.NO_TRACES);
