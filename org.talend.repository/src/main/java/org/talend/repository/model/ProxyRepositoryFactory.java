@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.repository.model;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -52,6 +54,7 @@ import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.properties.FolderItem;
 import org.talend.core.model.properties.FolderType;
 import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.SpagoBiServer;
 import org.talend.core.model.properties.Status;
@@ -61,6 +64,7 @@ import org.talend.core.model.properties.UserProjectAuthorizationType;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.Folder;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.repository.documentation.ERepositoryActionName;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.utils.JavaResourcesHelper;
 import org.talend.repository.ui.utils.PerlResourcesHelper;
@@ -82,6 +86,27 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
     private IRepositoryFactory repositoryFactoryFromProvider;
 
     private static ProxyRepositoryFactory singleton = null;
+
+    private final PropertyChangeSupport support = new PropertyChangeSupport(this);
+
+    public synchronized void addPropertyChangeListener(PropertyChangeListener l) {
+        if (l == null) {
+            throw new IllegalArgumentException();
+        }
+        support.addPropertyChangeListener(l);
+    }
+
+    public synchronized void removePropertyChangeListener(PropertyChangeListener l) {
+        if (l != null) {
+            support.removePropertyChangeListener(l);
+        }
+    }
+
+    protected void fireRepositoryPropertyChange(String property, Object oldValue, Object newValue) {
+        if (support.hasListeners(property)) {
+            support.firePropertyChange(property, oldValue, newValue);
+        }
+    }
 
     /**
      * DOC smallet ProxyRepositoryFactory constructor comment.
@@ -106,6 +131,21 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         IFolder folder = RepositoryPathProvider.getFolder(RepositoryConstants.IMG_DIRECTORY_OF_JOB_OUTLINE);
         try {
             folder.refreshLocal(1, null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.model.IProxyRepositoryFactory#refreshJobPictureFolder()
+     */
+    public void refreshDocumentationFolder() {
+        IFolder folder = RepositoryPathProvider.getFolder(RepositoryConstants.DOCUMENTATION_PATH);
+        try {
+            folder.refreshLocal(IResource.DEPTH_INFINITE, null);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -253,6 +293,7 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      */
     public void deleteFolder(ERepositoryObjectType type, IPath path) throws PersistenceException {
         this.repositoryFactoryFromProvider.deleteFolder(type, path);
+
     }
 
     /*
@@ -401,6 +442,10 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         // log.debug("Logical deletion [" + objToDelete + "] by " + getRepositoryContext().getUser() + ".");
         String str[] = new String[] { objToDelete + "", getRepositoryContext().getUser() + "" };//$NON-NLS-1$ //$NON-NLS-2$
         log.debug(Messages.getString("ProxyRepositoryFactory.log.logicalDeletion", str)); //$NON-NLS-1$
+
+        if (objToDelete.getType() == ERepositoryObjectType.PROCESS) {
+            fireRepositoryPropertyChange(ERepositoryActionName.JOB_DELETE_TO_RECYCLE_BIN.getName(), null, objToDelete);
+        }
     }
 
     /*
@@ -414,6 +459,10 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         // log.info("Physical deletion [" + objToDelete + "] by " + getRepositoryContext().getUser() + ".");
         String str[] = new String[] { objToDelete.toString(), getRepositoryContext().getUser().toString() };
         log.info(Messages.getString("ProxyRepositoryFactory.log.physicalDeletion", str)); //$NON-NLS-1$
+
+        if (objToDelete.getType() == ERepositoryObjectType.PROCESS) {
+            fireRepositoryPropertyChange(ERepositoryActionName.JOB_DELETE_FOREVER.getName(), null, objToDelete);
+        }
     }
 
     /*
@@ -433,6 +482,7 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         // "\".");
         String str[] = new String[] { objToRestore + "", getRepositoryContext().getUser() + "", path + "" };//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         log.debug(Messages.getString("ProxyRepositoryFactory.log.Restoration", str)); //$NON-NLS-1$
+
     }
 
     /*
@@ -688,6 +738,9 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
     public void create(Item item, IPath path) throws PersistenceException {
         checkFileNameAndPath(item, RepositoryConstants.getPattern(ERepositoryObjectType.getItemType(item)), path, false);
         this.repositoryFactoryFromProvider.create(item, path);
+        if (item instanceof ProcessItem) {
+            fireRepositoryPropertyChange(ERepositoryActionName.JOB_CREATE.getName(), null, item);
+        }
     }
 
     /*
@@ -704,8 +757,12 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * 
      * @see org.talend.repository.model.IProxyRepositoryFactory#save(org.talend.core.model.properties.Property)
      */
-    public void save(Property property) throws PersistenceException {
+    public void save(Property property, String... originalNameAndVersion) throws PersistenceException {
         this.repositoryFactoryFromProvider.save(property);
+        if (property.getItem() instanceof ProcessItem) {
+            fireRepositoryPropertyChange(ERepositoryActionName.JOB_PROPERTIES_CHANGE.getName(), new String[] {
+                    originalNameAndVersion[0], originalNameAndVersion[1] }, property);
+        }
     }
 
     /*
@@ -1044,5 +1101,4 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
     public List<ModuleNeeded> getModulesNeededForJobs() throws PersistenceException {
         return this.repositoryFactoryFromProvider.getModulesNeededForJobs();
     }
-
 }
