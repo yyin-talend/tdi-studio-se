@@ -12,6 +12,10 @@
 // ============================================================================
 package org.talend.repository.ui.actions.toolbar;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
@@ -23,7 +27,9 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowPulldownDelegate2;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
+import org.talend.repository.ui.actions.AContextualAction;
 import org.talend.repository.ui.actions.metadata.CreateConnectionAction;
 import org.talend.repository.ui.actions.metadata.CreateFileDelimitedAction;
 import org.talend.repository.ui.actions.metadata.CreateFileLdifAction;
@@ -118,9 +124,20 @@ public abstract class AbstractCreatToolbarAction implements IWorkbenchWindowPull
         addToMenu(menu, new CreateGenericSchemaAction(true), -1);
         addSeparator(menu);
         addToMenu(menu, new CreateRoutineAction(true), -1);
-        // TODO how to fix this if use TIS.
-        // addToMenu(menu, new CreateSnippetAction(true), -1);
 
+        IExtensionRegistry registry = Platform.getExtensionRegistry();
+        IConfigurationElement[] configurationElements = registry
+                .getConfigurationElementsFor("org.talend.repository.toolbar_creation"); //$NON-NLS-1$
+        for (int i = 0; i < configurationElements.length; i++) {
+            IConfigurationElement element = configurationElements[i];
+            try {
+                AContextualAction action = (AContextualAction) element.createExecutableExtension("class"); //$NON-NLS-1$
+                action.setToolbar(true);
+                addToMenu(menu, action, -1);
+            } catch (CoreException e) {
+                ExceptionHandler.process(e);
+            }
+        }
     }
 
     /**
