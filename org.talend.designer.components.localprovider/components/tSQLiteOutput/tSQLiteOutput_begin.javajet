@@ -102,6 +102,8 @@ if(columnList != null && columnList.size()>0){
     	
     	String dataType;
     	
+        String operator;    	
+    	
     	String DBname;
     	
     	String sqlStmt;
@@ -196,7 +198,15 @@ if(columnList != null && columnList.size()>0){
         
         public String getDataType() {
             return dataType;
-        }	
+        }
+        
+        public void setOperator(String operator) {
+            this.operator = operator;
+        }
+        
+        public String getOperator() {
+            return operator;
+        }        
     }
 
     StringBuffer insertColName = new StringBuffer();
@@ -210,9 +220,9 @@ if(columnList != null && columnList.size()>0){
     List<Column> stmtStructure =  new LinkedList<Column>();
     
     for(IMetadataColumn column:columnList){
-    
-    	stmtStructure.add(new Column(column));
-    
+        Column myColumn = new Column(column);
+        myColumn.setOperator("=");    
+    	stmtStructure.add(myColumn);    
     }
 
     for(IMetadataColumn column:columnList){
@@ -231,14 +241,17 @@ if(columnList != null && columnList.size()>0){
     				if(addCol.get("POS").equals("AFTER")){
     					Column insertAfter = new Column("\"+"+addCol.get("NAME")+"+\"","\"+"+addCol.get("SQL")+"+\"",true);
     					insertAfter.setDataType(addCol.get("DATATYPE"));
+    					insertAfter.setOperator(addCol.get("OPERATOR"));
     					stmtStructure.add(stmtIndex+1,insertAfter);
     				}else if(addCol.get("POS").equals("BEFORE")){
     					Column insertBefore = new Column("\"+"+addCol.get("NAME")+"+\"","\"+"+addCol.get("SQL")+"+\"",true);
     					insertBefore.setDataType(addCol.get("DATATYPE"));
+    					insertBefore.setOperator(addCol.get("OPERATOR"));
     					stmtStructure.add(stmtIndex,insertBefore);
     				}else if(addCol.get("POS").equals("REPLACE")){
     					Column replacementCol = new Column("\"+"+addCol.get("NAME")+"+\"","\"+"+addCol.get("SQL")+"+\"",true);
     					replacementCol.setDataType(addCol.get("DATATYPE"));
+    					replacementCol.setOperator(addCol.get("OPERATOR"));
     					Column replacedCol = (Column) stmtStructure.get(stmtIndex);
     					replacedCol.replace(replacementCol);
     				}
@@ -556,7 +569,7 @@ if(columnList != null && columnList.size()>0){
                         separate = " AND ";
                     }
                     updateWhereStmt.append(separate);
-                    updateWhereStmt.append("\\\"" + replacedColumn.getName() + "\\\"=" + replacedColumn.getSqlStmt());
+                    updateWhereStmt.append("\\\"" + replacedColumn.getName() + "\\\" " + replacedColumn.getOperator() + " " + replacedColumn.getSqlStmt());
                 } else {
                     if(firstUpdateColumn) {
                         suffix = "";
@@ -565,7 +578,7 @@ if(columnList != null && columnList.size()>0){
                         suffix = ",";
                     }
                     updateSetStmt.append(suffix);
-                    updateSetStmt.append("\\\"" + replacedColumn.getName() + "\\\"=" + replacedColumn.getSqlStmt());
+                    updateSetStmt.append("\\\"" + replacedColumn.getName() + "\\\" " + replacedColumn.getOperator() + " " + replacedColumn.getSqlStmt());
                 }
                 countReplace++;
             }
@@ -588,7 +601,7 @@ if(columnList != null && columnList.size()>0){
                     suffix = ",";
                 }
                 updateSetStmt.append(suffix);
-                updateSetStmt.append("\\\"" + column.getDBName() + "\\\"=" + column.getSqlStmt());
+                updateSetStmt.append("\\\"" + column.getDBName() + "\\\" " + column.getOperator() + " " + column.getSqlStmt());
             } else {
                 if(firstInsertColumn) {
                     suffix = "";
@@ -608,7 +621,7 @@ if(columnList != null && columnList.size()>0){
                         separate = " AND ";
                     }
                     updateWhereStmt.append(separate);
-                    updateWhereStmt.append("\\\"" + column.getDBName() + "\\\"=" + column.getValue());
+                    updateWhereStmt.append("\\\"" + column.getDBName() + "\\\" " + column.getOperator() + " " + column.getValue());
                 } else {
                     if(firstUpdateColumn) {
                         suffix = "";
@@ -617,7 +630,7 @@ if(columnList != null && columnList.size()>0){
                         suffix = ",";
                     }
                     updateSetStmt.append(suffix);
-                    updateSetStmt.append("\\\"" + column.getDBName() + "\\\"=" + column.getValue());
+                    updateSetStmt.append("\\\"" + column.getDBName() + "\\\" " + column.getOperator() + " " + column.getValue());
                 }
             }
         }

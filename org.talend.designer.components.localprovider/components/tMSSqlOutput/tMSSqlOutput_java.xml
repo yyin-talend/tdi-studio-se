@@ -131,7 +131,19 @@
 			<ITEMS>
 
 				<ITEM NAME="NAME" VALUE='"colname"' />
-				<ITEM NAME="DATATYPE" VALUE="VARCHAR(50)" NOT_SHOW_IF="TABLE_ACTION=='NONE' or TABLE_ACTION=='CLEAR'"/>
+				<ITEM NAME="DATATYPE" VALUE="VARCHAR(50)" NOT_SHOW_IF="(TABLE_ACTION=='NONE') or (TABLE_ACTION=='CLEAR')"/>
+		        <ITEM NAME="OPERATOR" FIELD="CLOSED_LIST" NOT_SHOW_IF="(DATA_ACTION=='INSERT')">
+		          <ITEMS DEFAULT="EQUAL">
+		            <ITEM NAME="EQUAL" VALUE="="/>
+		            <ITEM NAME="NOT_EQUAL" VALUE="&lt;&gt;"/>
+		            <ITEM NAME="LESS_THAN" VALUE="&lt;"/>
+		            <ITEM NAME="LESS_EQUAL_THAN" VALUE="&lt;="/>
+		            <ITEM NAME="GREAT_THAN" VALUE="&gt;"/>
+		            <ITEM NAME="GREAT_EQUAL_THAN" VALUE="&gt;="/>
+		            <ITEM NAME="IS" VALUE="IS"/>
+		            <ITEM NAME="IS_NOT" VALUE="IS NOT"/>
+		          </ITEMS>
+		        </ITEM>
        		 	<ITEM NAME="SQL" VALUE='"now()"' />
 
 				<ITEM NAME="POS" FIELD="CLOSED_LIST">
