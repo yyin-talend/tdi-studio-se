@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.talend.core.language.LanguageManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.actions.metadata.database.DBProcessRecords.ProcessType;
 import org.talend.repository.ui.actions.metadata.database.DBProcessRecords.RecordsType;
@@ -77,8 +78,10 @@ public final class LogDetailsHelper {
     public static String getUnknownLogs(DBProcessRecords processRecords) {
         StringBuilder sb = new StringBuilder();
         sb.append(getUnknownDBForPerl(processRecords));
-        sb.append(getUnknownLogs(RejectedType.DATABASETYPE, processRecords));
         sb.append(getUnknownLogs(RejectedType.FILE, processRecords));
+        sb.append(getUnknownLogs(RejectedType.FORMAT, processRecords));
+        sb.append(getUnknownLogs(RejectedType.ESCAPE, processRecords));
+        sb.append(getUnknownLogs(RejectedType.DATABASETYPE, processRecords));
         sb.append(getUnknownLogs(RejectedType.TALENDTYPE, processRecords));
         sb.append(getTypeNotMappingLogs(processRecords));
         return sb.toString();
@@ -87,7 +90,7 @@ public final class LogDetailsHelper {
 
     private static String getUnknownLogs(RejectedType rType, DBProcessRecords processRecords) {
         StringBuilder sb = new StringBuilder();
-
+        String language = LanguageManager.getCurrentLanguage().getCaseName();
         Set<ValueTypeBean> records = processRecords.getRejectedRecords(rType);
         if (records.isEmpty()) {
             return ""; //$NON-NLS-1$
@@ -95,13 +98,21 @@ public final class LogDetailsHelper {
         for (ValueTypeBean bean : records) {
             switch (rType) {
             case TALENDTYPE:
-                sb.append(Messages.getString("LogDetailsHelper.UnknownTalendType", bean.getValue(), bean.getConnName())); //$NON-NLS-1$
+                sb
+                        .append(Messages.getString(
+                                "LogDetailsHelper.UnknownTalendType", language, bean.getValue(), bean.getConnName())); //$NON-NLS-1$
                 break;
             case DATABASETYPE:
                 sb.append(Messages.getString("LogDetailsHelper.UnknownDatabaseType", bean.getValue(), bean.getConnName())); //$NON-NLS-1$
                 break;
             case FILE:
                 sb.append(Messages.getString("LogDetailsHelper.NotFoundFile", bean.getValue(), bean.getConnName())); //$NON-NLS-1$
+                break;
+            case FORMAT:
+                sb.append(Messages.getString("LogDetailsHelper.UnknownFormat", bean.getValue(), bean.getConnName())); //$NON-NLS-1$
+                break;
+            case ESCAPE:
+                sb.append(Messages.getString("LogDetailsHelper.UnknownEscapeType", bean.getValue(), bean.getConnName())); //$NON-NLS-1$
                 break;
             default:
             }

@@ -261,7 +261,7 @@
              class="org.talend.repository.ui.actions.metadata.importing.ImportTablesFromDelimitedAction"
              id="org.talend.repository.ui.actions.metadata.importing.ImportTablesFromDelimitedAction"
              level="10"
-             name="Metadata/Import tables from delimited">
+             name="Metadata/Import connections from CSV">
        </Action>
    </extension>
    <extension

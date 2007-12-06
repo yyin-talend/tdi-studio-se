@@ -29,7 +29,6 @@ import java.util.regex.Pattern;
 
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.PersistenceException;
-import org.talend.commons.utils.data.list.UniqueStringGenerator;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
@@ -50,18 +49,19 @@ import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.utils.CsvArray;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryConstants;
-import org.talend.repository.ui.actions.metadata.database.DBBeanParserHelper;
+import org.talend.repository.ui.actions.metadata.database.BeanParserHelper;
 import org.talend.repository.ui.actions.metadata.database.DBProcessRecords;
 import org.talend.repository.ui.actions.metadata.database.DBTableForDelimitedBean;
 import org.talend.repository.ui.actions.metadata.database.LogDetailsHelper;
 import org.talend.repository.ui.actions.metadata.database.DBProcessRecords.ProcessType;
 import org.talend.repository.ui.actions.metadata.database.DBProcessRecords.RecordsType;
 import org.talend.repository.ui.actions.metadata.database.DBProcessRecords.RejectedType;
-import org.talend.repository.ui.actions.metadata.database.DBTableForDelimitedBean.BeanType;
+import org.talend.repository.ui.actions.metadata.importing.bean.TablesForDelimitedBean;
 
 /**
  * DOC ggu class global comment. Detailled comment
@@ -84,7 +84,7 @@ public abstract class AbstractImportingTablesHelper {
 
     protected final IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
 
-    protected DBProcessRecords processRecords = new DBProcessRecords();
+    protected DBProcessRecords processRecords;
 
     protected int rejectedNum = 0;
 
@@ -96,6 +96,7 @@ public abstract class AbstractImportingTablesHelper {
     public AbstractImportingTablesHelper(ERepositoryObjectType nodeType, File file) {
         this.nodeType = nodeType;
         this.importedfile = file;
+        processRecords = new DBProcessRecords(nodeType);
         String name = file.getName();
         int index = name.lastIndexOf("."); //$NON-NLS-1$
         if (index > 0) {
@@ -136,7 +137,7 @@ public abstract class AbstractImportingTablesHelper {
         this.connectionCreated = connectionCreated;
     }
 
-    public ConnectionItem convertBeanToItem(DBTableForDelimitedBean bean) throws PersistenceException, BusinessException {
+    public ConnectionItem convertBeanToItem(TablesForDelimitedBean bean) throws PersistenceException, BusinessException {
 
         if (isNullable(bean.getName())) {
             return null;
@@ -151,17 +152,17 @@ public abstract class AbstractImportingTablesHelper {
         if (conn == null) {
             return null;
         }
-        if (bean.getBeanType() == BeanType.COLUMN || bean.getBeanType() == BeanType.TABLE) {
-            if (!setMetadataTableData(conn, bean)) {
-                addTableName(bean.getName(), bean.getTableName(), true);
-                return null;
-            }
+
+        if (!setMetadataTableData(conn, bean)) {
+            addTableName(bean.getName(), bean.getTableName(), true);
+            return null;
         }
+
         connNameMap.put(bean.getName(), connItem.getProperty().getLabel());
         return connItem;
     }
 
-    protected ConnectionItem getSuitableConnectionItem(DBTableForDelimitedBean bean) throws PersistenceException,
+    protected ConnectionItem getSuitableConnectionItem(TablesForDelimitedBean bean) throws PersistenceException,
             BusinessException {
         if (isNullable(bean.getName())) {
             return null;
@@ -197,7 +198,7 @@ public abstract class AbstractImportingTablesHelper {
 
     }
 
-    protected abstract ConnectionItem createConnectionItem(DBTableForDelimitedBean bean);
+    protected abstract ConnectionItem createConnectionItem(TablesForDelimitedBean bean);
 
     protected ConnectionItem searchConnectionItem(String name, boolean withDeleted) throws PersistenceException {
         if (isNullable(name)) {
@@ -219,7 +220,7 @@ public abstract class AbstractImportingTablesHelper {
      * set the table data in a connection.
      */
 
-    protected boolean setMetadataTableData(Connection conn, DBTableForDelimitedBean bean) {
+    protected boolean setMetadataTableData(Connection conn, TablesForDelimitedBean bean) {
 
         if (isNullable(bean.getTableName())) {
             return false;
@@ -237,7 +238,7 @@ public abstract class AbstractImportingTablesHelper {
             metadataTable.setId(factory.getNextId());
             metadataTable.setLabel(bean.getTableName());
             if (nodeType == ERepositoryObjectType.METADATA_CONNECTIONS) {
-                metadataTable.setSourceName(bean.getOriginalTableName());
+                metadataTable.setSourceName(((DBTableForDelimitedBean) bean).getOriginalTableName());
                 metadataTable.setTableType("TABLE"); //$NON-NLS-1$ 
             }
             // record the generated table name.
@@ -249,10 +250,6 @@ public abstract class AbstractImportingTablesHelper {
             // FIXME maybe need check the table in recycle bin.
             return false;
 
-        }
-        if (bean.getBeanType() == BeanType.TABLE) {
-            // only add table.
-            return true;
         }
 
         boolean isOk = setMetadataColumnData(metadataTable, bean);
@@ -269,7 +266,7 @@ public abstract class AbstractImportingTablesHelper {
 
     }
 
-    protected Property createProperty(ConnectionItem connItem, DBTableForDelimitedBean bean) {
+    protected Property createProperty(ConnectionItem connItem, TablesForDelimitedBean bean) {
 
         Property connectionProperty = PropertiesFactory.eINSTANCE.createProperty();
 
@@ -324,17 +321,15 @@ public abstract class AbstractImportingTablesHelper {
     /*
      * add the a column data in table
      */
-    protected boolean setMetadataColumnData(MetadataTable table, DBTableForDelimitedBean bean) {
-
+    protected boolean setMetadataColumnData(MetadataTable table, TablesForDelimitedBean bean) {
+        if (!checkColumnName(table, bean)) {
+            return false;
+        }
         MetadataColumn metadataColumn = ConnectionFactory.eINSTANCE.createMetadataColumn();
 
         metadataColumn.setComment(bean.getComment());
 
-        String genLabel = getUniqueColumnName(table, bean);
-        if (genLabel == null) {
-            return false;
-        }
-        metadataColumn.setLabel(genLabel);
+        metadataColumn.setLabel(bean.getLabel());
 
         ECodeLanguage codeLanguage = LanguageManager.getCurrentLanguage();
         if (codeLanguage == ECodeLanguage.JAVA) {
@@ -375,27 +370,28 @@ public abstract class AbstractImportingTablesHelper {
         metadataColumn.setLength(bean.getLength());
         metadataColumn.setPrecision(bean.getPrecision());
         if (nodeType == ERepositoryObjectType.METADATA_CONNECTIONS) {
+            DBTableForDelimitedBean theBean = (DBTableForDelimitedBean) bean;
+            metadataColumn.setOriginalField(theBean.getOriginalLabel());
 
-            metadataColumn.setOriginalField(bean.getOriginalLabel());
-
-            if (!"".equals(bean.getDatabaseType()) && !"".equals(bean.getTalendType())) { //$NON-NLS-1$ //$NON-NLS-2$
-                final String product = EDatabaseTypeName.getTypeFromDisplayName(bean.getDatabaseType()).getProduct();
+            if (!"".equals(theBean.getDatabaseType()) && !"".equals(bean.getTalendType())) { //$NON-NLS-1$ //$NON-NLS-2$
+                final String product = EDatabaseTypeName.getTypeFromDisplayName(theBean.getDatabaseType()).getProduct();
                 final String mapping = MetadataTalendType.getDefaultDbmsFromProduct(product).getId();
 
-                if ("".equals(bean.getDbType())) { //$NON-NLS-1$  
-                    metadataColumn.setSourceType(TypesManager.getDBTypeFromTalendType(mapping, bean.getTalendType()));
+                if ("".equals(theBean.getDbType())) { //$NON-NLS-1$  
+                    metadataColumn.setSourceType(TypesManager.getDBTypeFromTalendType(mapping, theBean.getTalendType()));
                 } else {
                     try {
-                        if (!TypesManager.checkDBType(mapping, bean.getTalendType(), bean.getDbType())) {
-                            processRecords.setTypeNotMapping(bean);
+                        if (!TypesManager.checkDBType(mapping, theBean.getTalendType(), theBean.getDbType())) {
+                            processRecords.setTypeNotMapping(theBean);
                             return false;
                         }
                     } catch (IllegalArgumentException e) {
                         // database type not be supported.
-                        processRecords.addRejectedRecords(RejectedType.DATABASETYPE, bean.getDatabaseType(), bean.getName());
+                        processRecords
+                                .addRejectedRecords(RejectedType.DATABASETYPE, theBean.getDatabaseType(), theBean.getName());
                         return false;
                     }
-                    metadataColumn.setSourceType(bean.getDbType());
+                    metadataColumn.setSourceType(theBean.getDbType());
                 }
             }
         }
@@ -405,37 +401,28 @@ public abstract class AbstractImportingTablesHelper {
 
     }
 
-    protected String getUniqueColumnName(MetadataTable table, DBTableForDelimitedBean bean) {
-        if (isNullable(bean.getOriginalLabel())) {
-            // can't add
-            return null;
-        }
-        if (isExistedColumn(table, bean.getOriginalLabel(), true)) {
-            // not allow the duplicated OriginalField
-            return null;
-        }
-        if (nodeType != ERepositoryObjectType.METADATA_CONNECTIONS) {
-            return bean.getOriginalLabel();
+    protected boolean checkColumnName(MetadataTable table, TablesForDelimitedBean bean) {
+        if (nodeType == ERepositoryObjectType.METADATA_CONNECTIONS) {
+            DBTableForDelimitedBean theBean = (DBTableForDelimitedBean) bean;
+            if (isNullable(theBean.getOriginalLabel())) {
+                // can't add
+                return false;
+            }
+            if (isExistedColumn(table, theBean.getOriginalLabel(), true)) {
+                // not allow the duplicated OriginalField
+                return false;
+            }
         }
         if (isNullable(bean.getLabel())) {
             // can't add
-            return null;
+            return false;
         }
 
         if (isExistedColumn(table, bean.getLabel(), false)) {
-
-            UniqueStringGenerator<MetadataColumn> uniqueStringGenerator = new UniqueStringGenerator<MetadataColumn>("newColumn", //$NON-NLS-1$
-                    table.getColumns()) {
-
-                @Override
-                protected String getBeanString(MetadataColumn bean) {
-                    return bean.getLabel();
-                }
-            };
-            return uniqueStringGenerator.getUniqueString();
+            return false;
 
         }
-        return bean.getLabel();
+        return true;
 
     }
 
@@ -459,20 +446,25 @@ public abstract class AbstractImportingTablesHelper {
 
         PrintWriter pw = null;
         BufferedReader reader = null;
+        CsvArray array = new CsvArray();
         boolean created = false;
         try {
             pw = new PrintWriter(new FileWriter(rFile), true);
             reader = new BufferedReader(new FileReader(getImportedFile()));
+            array = array.createFrom(getImportedFile());
+
             String line;
+            int index = 0;
             while ((line = reader.readLine()) != null) {
                 if (isNullable(line)) {
                     continue;
                 }
-                DBTableForDelimitedBean bean = DBBeanParserHelper.parseLineToBean(nodeType, line);
-                switch (bean.getBeanType()) {
-                case COLUMN:
-                case TABLE:
-                case CONNECTION:
+                String[] lines = array.getRows().get(index++);
+                if (lines == null) {
+                    break;
+                }
+                TablesForDelimitedBean bean = BeanParserHelper.parseLineToBean(nodeType, Arrays.asList(lines));
+                if (bean != null) {
                     // connection name
                     String connName = connNameMap.get(bean.getName());
                     if (connName == null || isContainTableName(connName, bean.getTableName(), true)) {
@@ -480,12 +472,10 @@ public abstract class AbstractImportingTablesHelper {
                         pw.println(line);
                         created = true;
                     }
-                    break;
-                case UNKNOWN:
-                default:
+
+                } else {
                     pw.println(line);
                     created = true;
-                    break;
 
                 }
             }
@@ -641,23 +631,22 @@ public abstract class AbstractImportingTablesHelper {
         }
     }
 
-    public void recordRejects(DBTableForDelimitedBean bean, ConnectionItem connItem) {
+    public void recordRejects(TablesForDelimitedBean bean, ConnectionItem connItem) {
         if (bean == null) {
             rejectedNum++;
         } else {
-            if (bean.getBeanType() != BeanType.CONNECTION) {
-                if (connItem == null) {
-                    addTableName(bean.getName(), bean.getTableName(), true);
-                } else {
-                    addTableName(connItem.getConnection().getLabel(), bean.getTableName(), true);
-                }
-
-                processRecords.rejectRecords(bean);
+            if (connItem == null) {
+                addTableName(bean.getName(), bean.getTableName(), true);
+            } else {
+                addTableName(connItem.getConnection().getLabel(), bean.getTableName(), true);
             }
+
+            processRecords.rejectRecords(bean);
         }
+
     }
 
-    public void addRecords(DBTableForDelimitedBean bean) {
+    public void addRecords(TablesForDelimitedBean bean) {
         processRecords.importedRecords(bean);
     }
 

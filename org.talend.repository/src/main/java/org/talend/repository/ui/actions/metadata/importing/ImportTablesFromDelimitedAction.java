@@ -36,7 +36,6 @@ public class ImportTablesFromDelimitedAction extends AbstractCreateAction {
     public ImportTablesFromDelimitedAction() {
         this.setText(LABEL);
         this.setToolTipText(LABEL);
-        this.setImageDescriptor(OverlayImageProvider.getImageWithNew(ImageProvider.getImage(ECoreImage.METADATA_TABLE_ICON)));
     }
 
     /*
@@ -55,14 +54,20 @@ public class ImportTablesFromDelimitedAction extends AbstractCreateAction {
             // unenabled
             return;
         case METADATA_CONNECTIONS:
-        case METADATA_FILE_DELIMITED:
-            // case METADATA_FILE_POSITIONAL:
-            // case METADATA_FILE_REGEXP:
-            // case METADATA_FILE_XML:
-            // case METADATA_FILE_LDIF:
-            // case METADATA_GENERIC_SCHEMA:
-            // case METADATA_LDAP_SCHEMA:
+            this.setImageDescriptor(OverlayImageProvider.getImageWithNew(ImageProvider
+                    .getImage(ECoreImage.METADATA_CONNECTION_ICON)));
             break;
+        case METADATA_FILE_DELIMITED:
+            this.setImageDescriptor(OverlayImageProvider.getImageWithNew(ImageProvider
+                    .getImage(ECoreImage.METADATA_FILE_DELIMITED_ICON)));
+            break;
+        // case METADATA_FILE_POSITIONAL:
+        // case METADATA_FILE_REGEXP:
+        // case METADATA_FILE_XML:
+        // case METADATA_FILE_LDIF:
+        // case METADATA_GENERIC_SCHEMA:
+        // case METADATA_LDAP_SCHEMA:
+
         }
 
         switch (node.getType()) {

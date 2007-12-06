@@ -18,6 +18,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -38,7 +39,6 @@ import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.dialogs.EventLoopProgressMonitor;
-import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.ImageProvider;
@@ -47,6 +47,7 @@ import org.talend.commons.ui.swt.formtools.Form;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.images.ECoreImage;
+import org.talend.core.utils.CsvArray;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
@@ -54,11 +55,11 @@ import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.actions.metadata.database.ConnectionDBTableHelper;
-import org.talend.repository.ui.actions.metadata.database.DBBeanParserHelper;
-import org.talend.repository.ui.actions.metadata.database.DBTableForDelimitedBean;
+import org.talend.repository.ui.actions.metadata.database.BeanParserHelper;
 import org.talend.repository.ui.actions.metadata.database.LogDetailsHelper;
 import org.talend.repository.ui.actions.metadata.importing.AbstractImportingTablesHelper;
 import org.talend.repository.ui.actions.metadata.importing.DelimitedConnectionTablesHelper;
+import org.talend.repository.ui.actions.metadata.importing.bean.TablesForDelimitedBean;
 import org.talend.repository.ui.wizards.RepositoryWizard;
 
 /**
@@ -116,7 +117,6 @@ public class ImportDBTableWizard extends RepositoryWizard implements IImportWiza
     public ImportDBTableWizard(IWorkbench workbench, ISelection selection) {
         super(workbench, true);
         this.selection = selection;
-        setNeedsProgressMonitor(true);
         initSetting();
 
     }
@@ -234,8 +234,9 @@ public class ImportDBTableWizard extends RepositoryWizard implements IImportWiza
                 IProgressMonitor monitorWrap = new EventLoopProgressMonitor(monitor);
                 monitorWrap.setCanceled(false);
                 totalWorks = 0;
+                BufferedReader reader = null;
                 try {
-                    BufferedReader reader = new BufferedReader(new FileReader(helper.getImportedFile()));
+                    reader = new BufferedReader(new FileReader(helper.getImportedFile()));
                     while (reader.readLine() != null) {
                         totalWorks++;
                     }
@@ -243,9 +244,18 @@ public class ImportDBTableWizard extends RepositoryWizard implements IImportWiza
                     return;
                 } catch (IOException e) {
                     return;
+                } finally {
+                    if (reader != null) {
+                        try {
+                            reader.close();
+                        } catch (IOException e) {
+                        }
+                        reader = null;
+                    }
+
                 }
                 monitor.beginTask(Messages.getString("ImportDBTableWizard.ProcessLabel"), totalWorks + 20); //$NON-NLS-1$
-                process(helper, monitorWrap);
+                processDelimited(helper, monitorWrap);
                 monitorWrap.done();
 
             }
@@ -260,32 +270,20 @@ public class ImportDBTableWizard extends RepositoryWizard implements IImportWiza
         }
     }
 
-    private void process(AbstractImportingTablesHelper helper, IProgressMonitor monitor) {
-
-        BufferedReader reader = null;
-
+    private void processDelimited(AbstractImportingTablesHelper helper, IProgressMonitor monitor) {
+        CsvArray array = new CsvArray();
         try {
-            reader = new BufferedReader(new FileReader(helper.getImportedFile()));
-            String line;
 
-            while ((line = reader.readLine()) != null) {
+            array = array.createFrom(helper.getImportedFile());
+            for (String[] row : array.getRows()) {
                 monitor.worked(1);
-                if (helper.isNullable(line)) {
-                    continue;
-                }
-                DBTableForDelimitedBean bean = DBBeanParserHelper.parseLineToBean(nodeType, line);
-
-                switch (bean.getBeanType()) {
-                case COLUMN:
-                case TABLE:
+                TablesForDelimitedBean bean = BeanParserHelper.parseLineToBean(nodeType, Arrays.asList(row));
+                if (bean != null) {
                     // the line is suitable format.
                     ConnectionItem connItem = null;
                     try {
                         connItem = helper.convertBeanToItem(bean);
-                    } catch (PersistenceException e) {
-                        helper.recordRejects(bean, null);
-                        continue;
-                    } catch (BusinessException e) {
+                    } catch (Exception e) {
                         helper.recordRejects(bean, null);
                         continue;
                     }
@@ -305,35 +303,18 @@ public class ImportDBTableWizard extends RepositoryWizard implements IImportWiza
                         continue;
                     }
                     helper.addRecords(bean);
-                    break;
-
-                case CONNECTION:
-                case UNKNOWN:
-                default:
-                    // this line isn't right format. record it in ".log" and ".rejects"
+                } else {
                     helper.recordRejects(null, null);
-
                 }
             }
-            // write the .log and .rejects
-            helper.writeRejects();
-            monitor.worked(10);
-            helper.writeLogs();
-            monitor.worked(5);
-        } catch (IOException e) {
-            MessageBoxExceptionHandler.process(e, getShell());
+        } catch (IOException e1) {
 
-        } finally {
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (IOException e) {
-                    // nothing to do
-                }
-                reader = null;
-            }
         }
-
+        // write the .log and .rejects
+        helper.writeRejects();
+        monitor.worked(10);
+        helper.writeLogs();
+        monitor.worked(5);
     }
 
     private void showLogsDialog(AbstractImportingTablesHelper helper) {

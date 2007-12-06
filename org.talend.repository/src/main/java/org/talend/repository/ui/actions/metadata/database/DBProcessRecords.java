@@ -20,7 +20,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.talend.repository.ui.actions.metadata.database.DBTableForDelimitedBean.BeanType;
+import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.repository.ui.actions.metadata.importing.bean.TablesForDelimitedBean;
 
 /**
  * ggu class global comment. Detailled comment <br/>
@@ -34,7 +35,11 @@ public class DBProcessRecords {
     public enum RejectedType {
         TALENDTYPE,
         DATABASETYPE,
-        FILE
+        // delimited
+        FILE,
+        FORMAT,
+        ESCAPE
+
     }
 
     /**
@@ -75,8 +80,11 @@ public class DBProcessRecords {
 
     private List<TalendTypeMappingBean> dbTypeNotMappingList = new ArrayList<TalendTypeMappingBean>();
 
-    public DBProcessRecords() {
+    private ERepositoryObjectType nodeType;
+
+    public DBProcessRecords(ERepositoryObjectType nodeType) {
         super();
+        this.nodeType = nodeType;
         initNum();
     }
 
@@ -114,6 +122,8 @@ public class DBProcessRecords {
         case TALENDTYPE:
         case DATABASETYPE:
         case FILE:
+        case FORMAT:
+        case ESCAPE:
             Set<ValueTypeBean> rejectedSet = rejectedMap.get(rType);
             if (rejectedSet == null) {
                 rejectedSet = new HashSet<ValueTypeBean>();
@@ -142,6 +152,8 @@ public class DBProcessRecords {
         case TALENDTYPE:
         case DATABASETYPE:
         case FILE:
+        case FORMAT:
+        case ESCAPE:
             Set<ValueTypeBean> rejectedSet = rejectedMap.get(rType);
             if (rejectedSet == null) {
                 return Collections.emptySet();
@@ -176,7 +188,7 @@ public class DBProcessRecords {
      * 
      * @param bean
      */
-    public void addExistedTable(DBTableForDelimitedBean bean) {
+    public void addExistedTable(TablesForDelimitedBean bean) {
         addRecords(ProcessType.EXISTEDTABLE, bean);
     }
 
@@ -190,11 +202,11 @@ public class DBProcessRecords {
      * 
      * @param bean
      */
-    public void importedRecords(DBTableForDelimitedBean bean) {
+    public void importedRecords(TablesForDelimitedBean bean) {
         addRecords(ProcessType.IMPORT, bean);
     }
 
-    private void addRecords(ProcessType pType, DBTableForDelimitedBean bean) {
+    private void addRecords(ProcessType pType, TablesForDelimitedBean bean) {
         if (!checkBean(bean)) {
             return;
         }
@@ -211,9 +223,8 @@ public class DBProcessRecords {
             if (!connSet.contains(connName)) {
                 connSet.add(connName);
             }
-            if (bean.getBeanType() == BeanType.TABLE || bean.getBeanType() == BeanType.COLUMN) {
-                addTable(pType, bean);
-            }
+
+            addTable(pType, bean);
 
             break;
         case EXISTEDTABLE:
@@ -226,19 +237,22 @@ public class DBProcessRecords {
 
             break;
         case TYPE_NOT_MAPPING:
-            if (!isValid(bean.getTalendType()) || !isValid(bean.getTalendType())) {
-                return;
+            if (nodeType == ERepositoryObjectType.METADATA_CONNECTIONS) {
+                DBTableForDelimitedBean theBean = (DBTableForDelimitedBean) bean;
+                if (!isValid(theBean.getTalendType())) {
+                    return;
+                }
+                TalendTypeMappingBean typeBean = new TalendTypeMappingBean(theBean.getName(), theBean.getTableName(), theBean
+                        .getLabel(), theBean.getTalendType(), theBean.getDbType());
+                dbTypeNotMappingList.add(typeBean);
             }
-            TalendTypeMappingBean typeBean = new TalendTypeMappingBean(bean.getName(), bean.getTableName(), bean.getLabel(), bean
-                    .getTalendType(), bean.getDbType());
-            dbTypeNotMappingList.add(typeBean);
             break;
         default:
         }
 
     }
 
-    private void addTable(ProcessType pType, DBTableForDelimitedBean bean) {
+    private void addTable(ProcessType pType, TablesForDelimitedBean bean) {
         Map<String, Set<String>> tmpMap;
         switch (pType) {
         case REJECT:
@@ -260,12 +274,12 @@ public class DBProcessRecords {
         if (!tableSet.contains(tableName)) {
             tableSet.add(tableName);
         }
-        if (bean.getBeanType() == BeanType.COLUMN) {
-            addField(pType, bean);
-        }
+
+        addField(pType, bean);
+
     }
 
-    private void addField(ProcessType pType, DBTableForDelimitedBean bean) {
+    private void addField(ProcessType pType, TablesForDelimitedBean bean) {
         Map<String, Set<String>> tmpMap;
         switch (pType) {
         case REJECT:
@@ -373,7 +387,7 @@ public class DBProcessRecords {
      * 
      * @param bean
      */
-    public void rejectRecords(DBTableForDelimitedBean bean) {
+    public void rejectRecords(TablesForDelimitedBean bean) {
         if (!checkBean(bean)) {
             return;
         }
@@ -415,26 +429,17 @@ public class DBProcessRecords {
 
     }
 
-    private boolean checkBean(DBTableForDelimitedBean bean) {
+    private boolean checkBean(TablesForDelimitedBean bean) {
         if (!isValid(bean.getName())) {
             return false;
         }
-        switch (bean.getBeanType()) {
-        case COLUMN:
-            if (!isValid(bean.getLabel())) {
-                return false;
-            }
-        case TABLE:
-            if (!isValid(bean.getTableName())) {
-                return false;
-            }
-            break;
-        case CONNECTION:
-            if (!isValid(bean.getDatabaseType())) {
-                return false;
-            }
-        case UNKNOWN:
-        default:
+
+        if (!isValid(bean.getLabel())) {
+            return false;
+        }
+
+        if (!isValid(bean.getTableName())) {
+            return false;
         }
 
         return true;

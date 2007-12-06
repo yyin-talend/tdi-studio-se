@@ -30,6 +30,7 @@ import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.repository.ui.actions.metadata.database.DBProcessRecords.RejectedType;
 import org.talend.repository.ui.actions.metadata.importing.AbstractImportingTablesHelper;
+import org.talend.repository.ui.actions.metadata.importing.bean.TablesForDelimitedBean;
 import org.talend.repository.ui.utils.DataStringConnection;
 
 /**
@@ -43,12 +44,13 @@ public final class ConnectionDBTableHelper extends AbstractImportingTablesHelper
     }
 
     @Override
-    protected ConnectionItem createConnectionItem(DBTableForDelimitedBean bean) {
-        if (isNullable(bean.getDatabaseType())) {
-            processRecords.addRejectedRecords(RejectedType.DATABASETYPE, bean.getDatabaseType(), bean.getName());
+    protected ConnectionItem createConnectionItem(TablesForDelimitedBean bean) {
+        DBTableForDelimitedBean theBean = (DBTableForDelimitedBean) bean;
+        if (isNullable(theBean.getDatabaseType())) {
+            processRecords.addRejectedRecords(RejectedType.DATABASETYPE, theBean.getDatabaseType(), bean.getName());
             return null;
         }
-        DatabaseConnection conn = createDBConnection(bean);
+        DatabaseConnection conn = createDBConnection(theBean);
         if (conn == null) {
             return null;
         }
@@ -143,13 +145,6 @@ public final class ConnectionDBTableHelper extends AbstractImportingTablesHelper
                 return false;
             }
         }
-        // urlDBStr.setSelectionIndex(index);
-        // check the schema needed
-        // if (urlDBStr.isSchemaNeeded() && isNullable(bean.getDbSchema())) {
-        // return false;
-        // }
-
-        // need check the database url.
 
         return true;
 
