@@ -22,7 +22,6 @@ import org.talend.commons.utils.VersionUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
-import org.talend.core.model.properties.HTMLDocumentationItem;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
@@ -104,10 +103,6 @@ public class NewProcessWizard extends Wizard {
 
             repositoryFactory.create(processItem, mainPage.getDestinationPath());
 
-            String jobVersion = processItem.getProperty().getVersion();
-
-            // createDocumentationNode(jobVersion);
-
         } catch (PersistenceException e) {
             MessageDialog.openError(getShell(), Messages.getString("NewProcessWizard.failureTitle"), Messages //$NON-NLS-1$
                     .getString("NewProcessWizard.failureText")); //$NON-NLS-1$ //$NON-NLS-2$
@@ -117,35 +112,6 @@ public class NewProcessWizard extends Wizard {
         return processItem != null;
     }
 
-    /**
-     * ftang Comment method "createHTMLDoc".
-     * 
-     * @param jobVersion
-     * 
-     * @throws PersistenceException
-     */
-    private void createDocumentationNode(String jobVersion) {
-        String jobName = property.getLabel();
-        this.property = PropertiesFactory.eINSTANCE.createProperty();
-        this.property.setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
-                .getUser());
-        this.property.setVersion(jobVersion);
-        this.property.setStatusCode(""); //$NON-NLS-1$
-        property.setLabel(jobName);
-
-        HTMLDocumentationItem documentationItem = PropertiesFactory.eINSTANCE.createHTMLDocumentationItem();
-
-        documentationItem.setProperty(property);
-
-        property.setId(repositoryFactory.getNextId());
-
-        try {
-            repositoryFactory.create(documentationItem, mainPage.getDestinationPath());
-        } catch (PersistenceException e) {
-            e.printStackTrace();
-        }
-
-    }
 
     /**
      * Getter for project.
