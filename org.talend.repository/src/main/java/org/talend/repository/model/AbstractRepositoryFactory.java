@@ -45,8 +45,14 @@ public abstract class AbstractRepositoryFactory implements IRepositoryFactory {
 
     private List<DynamicButtonBean> buttons = new ArrayList<DynamicButtonBean>();
 
+    private List<DynamicChoiceBean> choices = new ArrayList<DynamicChoiceBean>();
+
     public List<DynamicButtonBean> getButtons() {
         return buttons;
+    }
+
+    public List<DynamicChoiceBean> getChoices() {
+        return choices;
     }
 
     /**

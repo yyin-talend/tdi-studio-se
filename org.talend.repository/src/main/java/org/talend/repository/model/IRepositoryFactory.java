@@ -55,6 +55,8 @@ public interface IRepositoryFactory {
 
     public List<DynamicButtonBean> getButtons();
 
+    public List<DynamicChoiceBean> getChoices();
+
     public boolean isAuthenticationNeeded();
 
     public void setAuthenticationNeeded(boolean aBnthenticationNeeded);

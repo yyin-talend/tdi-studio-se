@@ -68,6 +68,17 @@ public class RepositoryFactoryProvider {
                         currentAction.getButtons().add(key);
                     }
 
+                    for (IConfigurationElement currentLoginField : current.getChildren("choiceField")) { //$NON-NLS-1$
+                        DynamicChoiceBean key = new DynamicChoiceBean(currentLoginField.getAttribute("id"), //$NON-NLS-1$
+                                currentLoginField.getAttribute("name")); //$NON-NLS-1$
+                        for (IConfigurationElement currentChoice : currentLoginField.getChildren("choice")) { //$NON-NLS-1$
+                            String value = currentChoice.getAttribute("value");
+                            String label = currentChoice.getAttribute("label");
+                            key.addChoice(value, label);
+                        }
+                        currentAction.getChoices().add(key);
+                    }
+
                     list.add(currentAction);
                 } catch (CoreException e) {
                     e.printStackTrace();

@@ -36,6 +36,7 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
@@ -43,9 +44,11 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.talend.commons.ui.swt.formtools.LabelText;
+import org.talend.commons.ui.swt.formtools.LabelledCombo;
 import org.talend.core.model.general.ConnectionBean;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.DynamicButtonBean;
+import org.talend.repository.model.DynamicChoiceBean;
 import org.talend.repository.model.DynamicFieldBean;
 import org.talend.repository.model.IRepositoryFactory;
 import org.talend.repository.model.RepositoryConstants;
@@ -83,6 +86,8 @@ public class ConnectionFormComposite extends Composite {
     private Map<IRepositoryFactory, Map<String, LabelText>> dynamicRequiredControls = new HashMap<IRepositoryFactory, Map<String, LabelText>>();
 
     private Map<IRepositoryFactory, Map<String, Button>> dynamicButtons = new HashMap<IRepositoryFactory, Map<String, Button>>();
+
+    private Map<IRepositoryFactory, Map<String, LabelledCombo>> dynamicChoices = new HashMap<IRepositoryFactory, Map<String, LabelledCombo>>();
 
     /**
      * DOC smallet ConnectionsComposite constructor comment.
@@ -191,10 +196,36 @@ public class ConnectionFormComposite extends Composite {
             Map<String, LabelText> list = new HashMap<String, LabelText>();
             Map<String, LabelText> listRequired = new HashMap<String, LabelText>();
             Map<String, Button> listButtons = new HashMap<String, Button>();
+            Map<String, LabelledCombo> listChoices = new HashMap<String, LabelledCombo>();
             dynamicControls.put(current, list);
             dynamicRequiredControls.put(current, listRequired);
             dynamicButtons.put(current, listButtons);
+            dynamicChoices.put(current, listChoices);
             Control baseControl = passwordLabel;
+
+            for (final DynamicChoiceBean currentChoiceBean : current.getChoices()) {
+                Combo combo = new Combo(formBody, SWT.BORDER | SWT.READ_ONLY);
+                for (String label : currentChoiceBean.getChoices().values()) {
+                    combo.add(label);
+                }
+
+                data = new FormData();
+                data.left = new FormAttachment(0, ConnectionsDialog.STANDARD_LABEL_WIDTH);
+                data.right = new FormAttachment(100, -ConnectionsDialog.HSPACE);
+                data.top = new FormAttachment(baseControl, ConnectionsDialog.VSPACE);
+                combo.setLayoutData(data);
+
+                Label label = toolkit.createLabel(formBody, currentChoiceBean.getName());
+                data = new FormData();
+                data.left = new FormAttachment(0, ConnectionsDialog.HSPACE);
+                data.bottom = new FormAttachment(combo, 0, SWT.BOTTOM);
+                label.setLayoutData(data);
+
+                baseControl = combo;
+
+                listChoices.put(currentChoiceBean.getId(), new LabelledCombo(label, combo));
+            }
+
             for (DynamicFieldBean currentField : current.getFields()) {
                 int textStyle = SWT.BORDER;
                 if (currentField.isPassword()) {
@@ -233,9 +264,10 @@ public class ConnectionFormComposite extends Composite {
                 data.top = new FormAttachment(baseControl, ConnectionsDialog.VSPACE);
                 button.setLayoutData(data);
 
+                baseControl = button;
+
                 listButtons.put(currentButtonBean.getId(), button);
             }
-
         }
 
         addListeners();
@@ -296,6 +328,10 @@ public class ConnectionFormComposite extends Composite {
             for (Button control : dynamicButtons.get(f).values()) {
                 control.setVisible(false);
             }
+
+            for (LabelledCombo control : dynamicChoices.get(f).values()) {
+                control.setVisible(false);
+            }
         }
 
         // 2. Show active repository controls:
@@ -307,6 +343,11 @@ public class ConnectionFormComposite extends Composite {
             for (Button control : dynamicButtons.get(getRepository()).values()) {
                 control.setVisible(true);
             }
+
+            for (LabelledCombo control : dynamicChoices.get(getRepository()).values()) {
+                control.setVisible(true);
+            }
+
         }
     }
 
@@ -376,6 +417,12 @@ public class ConnectionFormComposite extends Composite {
                 control.addModifyListener(standardTextListener);
             }
         }
+
+        for (IRepositoryFactory f : dynamicChoices.keySet()) {
+            for (LabelledCombo control : dynamicChoices.get(f).values()) {
+                control.getCombo().addModifyListener(standardTextListener);
+            }
+        }
     }
 
     private void removeListeners() {
@@ -390,6 +437,12 @@ public class ConnectionFormComposite extends Composite {
                 control.removeModifyListener(standardTextListener);
             }
         }
+
+        for (IRepositoryFactory f : dynamicChoices.keySet()) {
+            for (LabelledCombo control : dynamicChoices.get(f).values()) {
+                control.getCombo().removeModifyListener(standardTextListener);
+            }
+        }
     }
 
     private void fillBean() {
@@ -397,11 +450,23 @@ public class ConnectionFormComposite extends Composite {
             if (getRepository() != null) {
                 connection.setRepositoryId(getRepository().getId());
 
-                Map<String, LabelText> map = dynamicControls.get(getRepository());
                 Map<String, String> connFields = new HashMap<String, String>();
+
+                Map<String, LabelText> map = dynamicControls.get(getRepository());
                 for (String fieldKey : map.keySet()) {
                     connFields.put(fieldKey, map.get(fieldKey).getText());
                 }
+
+                Map<String, LabelledCombo> map2 = dynamicChoices.get(getRepository());
+                for (String fieldKey : map2.keySet()) {
+                    for (DynamicChoiceBean dynamicChoiceBean : getRepository().getChoices()) {
+                        if (dynamicChoiceBean.getId().equals(fieldKey)) {
+                            int selectionIndex = map2.get(fieldKey).getCombo().getSelectionIndex();
+                            connFields.put(fieldKey, dynamicChoiceBean.getChoiceValue(selectionIndex));
+                        }
+                    }
+                }
+
                 connection.setDynamicFields(connFields);
             }
             connection.setName(nameText.getText());
@@ -446,6 +511,19 @@ public class ConnectionFormComposite extends Composite {
                     String string = connection.getDynamicFields().get(fieldKey);
                     current.setText(string == null ? "" : string); //$NON-NLS-1$
                 }
+
+                Map<String, LabelledCombo> map2 = dynamicChoices.get(getRepository());
+                for (String fieldKey : map2.keySet()) {
+                    Combo combo = map2.get(fieldKey).getCombo();
+                    String value = connection.getDynamicFields().get(fieldKey);
+                    combo.deselectAll();
+                    for (DynamicChoiceBean dynamicChoiceBean : getRepository().getChoices()) {
+                        if (dynamicChoiceBean.getId().equals(fieldKey)) {
+                            combo.select(dynamicChoiceBean.getChoiceIndex(value));
+                        }
+                    }
+                }
+
             }
             nameText.setText((connection.getName() == null ? "" : connection.getName())); //$NON-NLS-1$
             descriptionText.setText((connection.getDescription() == null ? "" : connection.getDescription())); //$NON-NLS-1$
