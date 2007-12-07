@@ -52,7 +52,6 @@ import org.talend.designer.core.model.utils.emf.talendfile.ContextParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
-import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
@@ -79,6 +78,8 @@ public class ContextWizard extends RepositoryWizard implements INewWizard {
 
     String oldSource;
 
+    ProxyRepositoryFactory factory;
+
     /**
      * Constructor for FileWizard.
      * 
@@ -89,6 +90,7 @@ public class ContextWizard extends RepositoryWizard implements INewWizard {
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     public ContextWizard(IWorkbench workbench, boolean creation, ISelection selection, boolean forceReadOnly) {
         super(workbench, creation, forceReadOnly);
+        factory = ProxyRepositoryFactory.getInstance();
         pathToSave = getPath(selection);
 
         setWindowTitle(""); //$NON-NLS-1$
@@ -148,7 +150,9 @@ public class ContextWizard extends RepositoryWizard implements INewWizard {
      * the wizard. We will create an operation and run it using wizard as execution context.
      */
     public boolean performFinish() {
-
+        // TimeMeasure.display = true;
+        // TimeMeasure.measureActive = true;
+        // TimeMeasure.begin("performFinish");
         boolean formIsPerformed = contextManager.getListContext().size() != 0;
         // if (delimitedFileWizardPage3 == null) {
         // formIsPerformed = delimitedFileWizardPage2.isPageComplete();
@@ -157,7 +161,7 @@ public class ContextWizard extends RepositoryWizard implements INewWizard {
         // }
 
         if (formIsPerformed) {
-            IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+            // IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             try {
                 if (creation) {
                     String nextId = factory.getNextId();
@@ -176,6 +180,7 @@ public class ContextWizard extends RepositoryWizard implements INewWizard {
 
                 }
                 closeLockStrategy();
+                // TimeMeasure.end("performFinish");
             } catch (PersistenceException e) {
                 String detailError = e.toString();
                 new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("CommonWizard.persistenceException"), //$NON-NLS-1$
@@ -224,8 +229,8 @@ public class ContextWizard extends RepositoryWizard implements INewWizard {
         IContext defaultContext = contextManager.getDefaultContext();
 
         for (IContext con : newContext) {
-            String str = con.getName();
-            contextList.add(str);
+            // String str = con.getName();
+            contextList.add(con.getName());// be optimized
         }
 
         for (IContext con : newContext) {
@@ -233,15 +238,16 @@ public class ContextWizard extends RepositoryWizard implements INewWizard {
             String str = con.getName();
             for (IContextParameter cont : conp) {
                 this.replaceJobContext(str, contextList, newContext);
+                this.replaceViewContext(defaultContext, contextList, newContext);// be optimized
             }
         }
 
-        for (IContext con : newContext) {
-            List<IContextParameter> conp = con.getContextParameterList();
-            for (IContextParameter cont : conp) {
-                this.replaceViewContext(defaultContext, contextList, newContext);
-            }
-        }
+        // for (IContext con : newContext) {
+        // List<IContextParameter> conp = con.getContextParameterList();
+        // for (IContextParameter cont : conp) {
+        // this.replaceViewContext(defaultContext, contextList, newContext);
+        // }
+        // }
 
     }
 
@@ -250,10 +256,10 @@ public class ContextWizard extends RepositoryWizard implements INewWizard {
         boolean modify = false;
         List<String> newNameList = new ArrayList<String>();
         List<String> viewList = new ArrayList();
-        ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
 
-        List<IProcess> processes = RepositoryPlugin.getDefault().getDesignerCoreService().getOpenedProcess();
         IEditorReference[] reference = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getEditorReferences();
+        List<IProcess> processes = RepositoryPlugin.getDefault().getDesignerCoreService().getOpenedProcess(reference);
+
         for (IEditorReference er : reference) {
             MultiPageEditorPart talendEditor = ((MultiPageEditorPart) (er.getPart(true)));
 
@@ -318,7 +324,7 @@ public class ContextWizard extends RepositoryWizard implements INewWizard {
     }
 
     private synchronized void replaceJobContext(String str, List<String> contextList, List<IContext> newContext) {
-        ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+        // ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         List<String> jobList = new ArrayList<String>();
 
         List<IRepositoryObject> roList;
