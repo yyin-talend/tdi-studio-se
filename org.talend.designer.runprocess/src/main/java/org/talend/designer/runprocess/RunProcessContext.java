@@ -787,6 +787,7 @@ public class RunProcessContext {
 
         public TraceMonitor() {
             super();
+            isTracPause = false;
         }
 
         /**
