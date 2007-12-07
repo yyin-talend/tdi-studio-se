@@ -85,6 +85,16 @@
       <DEFAULT>false</DEFAULT>
     </PARAMETER>         
 
+    <PARAMETER 
+	    NAME="FLUSHONROW_NUM" 
+	    FIELD="TEXT" 
+	    REQUIRED="true" 
+	    NUM_ROW="48"
+	    SHOW_IF="FLUSHONROW == 'true'"
+    >
+      <DEFAULT>1</DEFAULT>
+    </PARAMETER> 
+
     <PARAMETER
       NAME="SCHEMA"
       FIELD="SCHEMA_TYPE"

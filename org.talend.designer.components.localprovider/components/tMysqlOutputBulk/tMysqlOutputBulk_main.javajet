@@ -22,6 +22,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     if (metadata!=null) {
     
     	boolean flushOnRow = ElementParameterParser.getValue(node, "__FLUSHONROW__").equals("true");
+    	String flushMod = ElementParameterParser.getValue(node, "__FLUSHONROW_NUM__");
+    	
         String encoding = ElementParameterParser.getValue(node,"__ENCODING__");    	
     	
     	List< ? extends IConnection> conns = node.getIncomingConnections();
@@ -71,7 +73,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 
             			%>
             			    csvWriter_<%=cid%>.writeRecord(row_<%=cid%>);	
-            			    <% if(flushOnRow) { %>csvWriter_<%=cid%>.flush(); <%}%>
+            			    <% if(flushOnRow) { %>
+        		                if(nb_line_<%=cid %>%<%=flushMod %> == 0) {            			    
+            			    		csvWriter_<%=cid%>.flush();
+            			    	}	 
+            			    <%}%>
             				nb_line_<%=cid %>++;
             			<%   		
             		}

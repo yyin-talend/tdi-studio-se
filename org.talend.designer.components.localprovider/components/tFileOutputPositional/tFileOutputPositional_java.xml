@@ -117,8 +117,18 @@
     
     <PARAMETER NAME="FLUSHONROW" FIELD="CHECK" REQUIRED="true" NUM_ROW="6">
       <DEFAULT>false</DEFAULT>
-    </PARAMETER>    
-
+    </PARAMETER>
+        
+    <PARAMETER 
+	    NAME="FLUSHONROW_NUM" 
+	    FIELD="TEXT" 
+	    REQUIRED="true" 
+	    NUM_ROW="6"
+	    SHOW_IF="FLUSHONROW == 'true'"
+    >
+      <DEFAULT>1</DEFAULT>
+    </PARAMETER> 
+    
     <PARAMETER
       NAME="ENCODING"
       FIELD="ENCODING_TYPE"

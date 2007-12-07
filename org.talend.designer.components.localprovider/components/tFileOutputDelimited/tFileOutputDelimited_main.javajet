@@ -61,7 +61,8 @@ if(ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("false")) {
             String splitEvery = ElementParameterParser.getValue(node, "__SPLIT_EVERY__");
             
             boolean flushOnRow = ElementParameterParser.getValue(node, "__FLUSHONROW__").equals("true");
-    
+            String flushMod = ElementParameterParser.getValue(node, "__FLUSHONROW_NUM__");
+                
         	List< ? extends IConnection> conns = node.getIncomingConnections();
         	for (IConnection conn : conns) {
         		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
@@ -151,7 +152,9 @@ if(ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("false")) {
     		                <% 
     		                if(flushOnRow) { 
     		                    %>
-    		                    out<%=cid %>.flush();
+        		                if(nb_line_<%=cid %>%<%=flushMod %> == 0) {
+        		                out<%=cid %>.flush();
+        		                }
     		                    <%
     		                }
     		                %> 			
@@ -160,7 +163,9 @@ if(ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("false")) {
     		                <% 
     		                if(flushOnRow) { 
     		                    %>
-    		                    out<%=cid %>.flush();
+        		                if(nb_line_<%=cid %>%<%=flushMod %> == 0) {
+        		                out<%=cid %>.flush();
+        		                }
     		                    <%
     		                }
     		                %>  			
@@ -176,7 +181,9 @@ if(ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("false")) {
     		            <% 
     		            if(flushOnRow) { 
     		                %>
-    		                out<%=cid %>.flush();
+        		                if(nb_line_<%=cid %>%<%=flushMod %> == 0) {
+        		                out<%=cid %>.flush();
+        		                }
     		                <%
     		            }
     		            %>     			
@@ -217,6 +224,7 @@ if(ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("false")) {
         	if ("".equals(textEnclosure)) textEnclosure = "\0";
         	boolean split = ElementParameterParser.getValue(node, "__SPLIT__").equals("true");
         	boolean flushOnRow = ElementParameterParser.getValue(node, "__FLUSHONROW__").equals("true");
+        	String flushMod = ElementParameterParser.getValue(node, "__FLUSHONROW_NUM__");
         	
         	List< ? extends IConnection> conns = node.getIncomingConnections();
           	if(!rowSeparator.equals("\\n") && !rowSeparator.equals("\\r")){
@@ -338,7 +346,9 @@ if(ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("false")) {
                         		<% 
                         		if(flushOnRow) { 
                         		    %>
-                        		    CsvWriter<%=cid%>.flush();
+            		                if(nb_line_<%=cid %>%<%=flushMod %> == 0) {
+            		                CsvWriter<%=cid%>.flush();
+            		                }
                         		    <%
                     			}
                         		%> 
@@ -348,7 +358,9 @@ if(ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("false")) {
          					    <% 
          					    if(flushOnRow) { 
          					        %>
-         					        CsvWriter<%=cid%>.flush();
+            		                if(nb_line_<%=cid %>%<%=flushMod %> == 0) {
+            		                CsvWriter<%=cid%>.flush();
+            		                }
          					        <%
          					    }
          					    %>  					
@@ -362,7 +374,9 @@ if(ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("false")) {
             			    <% 
             			    if(flushOnRow) { 
             			        %>
-            			        CsvWriter<%=cid%>.flush();
+            		                if(nb_line_<%=cid %>%<%=flushMod %> == 0) {
+            		                CsvWriter<%=cid%>.flush();
+            		                }
             			        <%
                 			}
             			    %>  				

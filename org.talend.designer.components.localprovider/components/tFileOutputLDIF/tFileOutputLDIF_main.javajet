@@ -24,7 +24,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         String changetype = ElementParameterParser.getValue(node, "__CHANGETYPE__");
 		String changes = ElementParameterParser.getValue(node, "__CHANGES__");
         boolean flushOnRow = ElementParameterParser.getValue(node, "__FLUSHONROW__").equals("true");		
-
+        String flushMod = ElementParameterParser.getValue(node, "__FLUSHONROW_NUM__");
 %>
 		//////////////////////////
 <%
@@ -107,7 +107,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		
 		pw_<%=cid %>.write(sb_<%=cid %>.toString());
 		<% if(flushOnRow) { %>
-		pw_<%=cid %>.flush();
+            if(nb_line_<%=cid %>%<%=flushMod %> == 0) {		
+    		pw_<%=cid %>.flush();
+    		}
 		<%
 			}
 		%> 		
