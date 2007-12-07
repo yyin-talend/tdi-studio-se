@@ -94,6 +94,8 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
     protected Button applyToChildrenButton;
 
+    private RepositoryNode[] nodes;
+
     /**
      * Create an instance of this class.
      * 
@@ -104,7 +106,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
         manager = createJobScriptsManager();
 
-        RepositoryNode[] nodes = (RepositoryNode[]) selection.toList().toArray(new RepositoryNode[selection.size()]);
+        nodes = (RepositoryNode[]) selection.toList().toArray(new RepositoryNode[selection.size()]);
 
         List<ExportFileResource> list = new ArrayList<ExportFileResource>();
         for (int i = 0; i < nodes.length; i++) {
@@ -158,6 +160,29 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
     }
 
     /**
+     * yzhang Comment method "setDefaultDestination".
+     */
+    protected void setDefaultDestination() {
+        if (nodes.length == 1) {
+            String label = null;
+            RepositoryNode node = nodes[0];
+            if (node.getType() == ENodeType.SYSTEM_FOLDER || node.getType() == ENodeType.SIMPLE_FOLDER) {
+                label = node.getProperties(EProperties.LABEL).toString();
+            } else if (node.getType() == ENodeType.REPOSITORY_ELEMENT) {
+                IRepositoryObject repositoryObject = node.getObject();
+                if (repositoryObject.getProperty().getItem() instanceof ProcessItem) {
+                    ProcessItem processItem = (ProcessItem) repositoryObject.getProperty().getItem();
+                    label = processItem.getProperty().getLabel();
+                }
+            }
+            String userDir = System.getProperty("user.dir");
+            IPath path = new Path(userDir).append(label + getOutputSuffix());
+
+            setDestinationValue(path.toOSString());
+        }
+    }
+
+    /**
      * (non-Javadoc) Method declared on IDialogPage.
      */
     /**
@@ -188,6 +213,8 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
         setControl(composite);
         giveFocusToDestination();
+
+        setDefaultDestination();
     }
 
     /*

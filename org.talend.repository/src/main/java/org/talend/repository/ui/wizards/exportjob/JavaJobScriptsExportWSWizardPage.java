@@ -144,6 +144,8 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
 
         setControl(pageComposite);
         giveFocusToDestination();
+
+        setDefaultDestination();
     }
 
     protected void createExportTypeGroup(Composite parent) {
