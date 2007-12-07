@@ -26,7 +26,7 @@ import org.talend.commons.exception.ExceptionHandler;
 public class FileCopyUtils {
 
     /**
-     * This methos is used for coping file from one place to the other.
+     * This method is used for coping file from one place to the other.
      * 
      * @param srcFilePath
      * @param destFilePath

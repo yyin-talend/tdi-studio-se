@@ -17,6 +17,7 @@ import java.util.List;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.custom.BusyIndicator;
+import org.talend.repository.documentation.ExportFileResource;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobJavaScriptsManager;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager;
 
@@ -50,7 +51,10 @@ public class JavaJobScriptsExportWizardPage extends JobScriptsExportWizardPage {
 
     public static final String STORE_DESTINATION_NAMES_ID = "JavaJobScriptsExportWizardPage.STORE_DESTINATION_NAMES_ID"; //$NON-NLS-1$
 
-    protected JobScriptsManager createJobScriptsManager() {
+    /* (non-Javadoc)
+     * @see org.talend.repository.ui.wizards.exportjob.JobScriptsExportWizardPage#createJobScriptsManager()
+     */
+    public JobScriptsManager createJobScriptsManager() {
         return new JobJavaScriptsManager();
     }
 
@@ -68,7 +72,10 @@ public class JavaJobScriptsExportWizardPage extends JobScriptsExportWizardPage {
      * 
      * @return a collection of resources currently selected for export (element type: <code>IResource</code>)
      */
-    protected List<ExportFileResource> getExportResources() {
+    /* (non-Javadoc)
+     * @see org.talend.repository.ui.wizards.exportjob.JobScriptsExportWizardPage#getExportResources()
+     */
+    public List<ExportFileResource> getExportResources() {
         final List<ExportFileResource>[] resourcesToExportxx = new List[1];
 
         BusyIndicator.showWhile(this.getShell().getDisplay(), new Runnable() {

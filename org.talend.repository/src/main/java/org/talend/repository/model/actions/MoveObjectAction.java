@@ -47,12 +47,17 @@ public class MoveObjectAction {
 
     private boolean isGenericSchema;
 
+    private IPath sourcePath;
+
+    private IPath targetPath;
+
     public static MoveObjectAction getInstance() {
         return singleton;
     }
 
     /**
      * DOC Administrator Comment method "validateAction".
+     * 
      * @param sourceNode
      * @param targetNode
      * @return
@@ -71,12 +76,12 @@ public class MoveObjectAction {
             return !item.isBuiltIn();
         }
 
-       //cannot move html documentation node:
+        // cannot move html documentation node:
         if (objectToCopy != null && objectToCopy.getType() == ERepositoryObjectType.HTML_DOC) {
             return false;
         }
 
-        //Cannot move folder in documentation node:
+        // Cannot move folder in documentation node:
         if (sourceNode.getType() == ENodeType.SIMPLE_FOLDER && sourceNode.getContentType() == ERepositoryObjectType.HTML_DOC) {
             return false;
         }
@@ -94,9 +99,9 @@ public class MoveObjectAction {
             return false;
         }
 
-        IPath sourcePath = RepositoryNodeUtilities.getPath(sourceNode);
+        sourcePath = RepositoryNodeUtilities.getPath(sourceNode);
         // IPath targetPath = RepositoryNodeUtilities.getTargetPath(targetNode);
-        IPath targetPath = RepositoryNodeUtilities.getPath(targetNode);
+        targetPath = RepositoryNodeUtilities.getPath(targetNode);
         if (sourceNode.getType() == ENodeType.REPOSITORY_ELEMENT) {
             isGenericSchema = targetNode.getContentType() == ERepositoryObjectType.METADATA_GENERIC_SCHEMA;
 
@@ -159,8 +164,8 @@ public class MoveObjectAction {
             return;
         }
 
-        IPath targetPath = (targetNode == null ? new Path("") : RepositoryNodeUtilities.getPath(targetNode)); //$NON-NLS-1$
-        IPath sourcePath = RepositoryNodeUtilities.getPath(sourceNode);
+        targetPath = (targetNode == null ? new Path("") : RepositoryNodeUtilities.getPath(targetNode)); //$NON-NLS-1$
+        sourcePath = RepositoryNodeUtilities.getPath(sourceNode);
 
         IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
 
@@ -179,9 +184,8 @@ public class MoveObjectAction {
                     // Move :
                     if (isGenericSchema) {
                         CopyToGenericSchemaHelper.copyToGenericSchema(factory, objectToMove);
-
                     } else {
-                        factory.moveObject(objectToMove, targetPath);
+                        factory.moveObject(objectToMove, targetPath, sourcePath);
                     }
 
                 }

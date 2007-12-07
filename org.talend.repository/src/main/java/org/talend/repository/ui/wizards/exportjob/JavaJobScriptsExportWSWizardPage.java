@@ -39,6 +39,7 @@ import org.talend.core.language.LanguageManager;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
 import org.talend.designer.runprocess.IProcessor;
+import org.talend.repository.documentation.ExportFileResource;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManagerFactory;
@@ -208,7 +209,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
      * @see org.talend.repository.ui.wizards.exportjob.JavaJobScriptsExportWizardPage#createJobScriptsManager()
      */
     @Override
-    protected JobScriptsManager createJobScriptsManager() {
+    public JobScriptsManager createJobScriptsManager() {
         // TODO Auto-generated method stub
         ECodeLanguage language = LanguageManager.getCurrentLanguage();
 
@@ -540,8 +541,12 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         }
     }
 
-    @Override
-    protected List<ExportFileResource> getExportResources() {
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.ui.wizards.exportjob.JavaJobScriptsExportWizardPage#getExportResources()
+     */
+    public List<ExportFileResource> getExportResources() {
         Map<ExportChoice, Boolean> exportChoiceMap = getExportChoiceMap();
 
         if (exportTypeCombo.getText().equals(EXPORTTYPE_POJO)) {
@@ -553,8 +558,13 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         }
     }
 
-    @Override
-    protected void setTopFolder(List<ExportFileResource> resourcesToExport, String topFolder) {
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.ui.wizards.exportjob.JobScriptsExportWizardPage#setTopFolder(java.util.List,
+     * java.lang.String)
+     */
+    public void setTopFolder(List<ExportFileResource> resourcesToExport, String topFolder) {
         if (exportTypeCombo.getText().equals(EXPORTTYPE_WSWAR) || exportTypeCombo.getText().equals(EXPORTTYPE_WSZIP)) {
             return;
         }

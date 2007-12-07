@@ -23,10 +23,12 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
+import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.migration.IMigrationToolService;
 import org.talend.core.model.properties.Property;
+import org.talend.core.model.properties.User;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.ui.DisableLanguageActions;
 import org.talend.designer.runprocess.IRunProcessService;
@@ -56,14 +58,29 @@ public class RepositoryService implements IRepositoryService {
 
     private GenericSchemaWizard genericSchemaWizard = null;
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.model.IRepositoryService#getComponentsFactory()
+     */
     public IComponentsFactory getComponentsFactory() {
         return ComponentsFactoryProvider.getInstance();
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.model.IRepositoryService#getPathFileName(java.lang.String, java.lang.String)
+     */
     public IPath getPathFileName(String folderName, String fileName) {
         return RepositoryPathProvider.getPathFileName(folderName, fileName);
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.model.IRepositoryService#getProxyRepositoryFactory()
+     */
     public IProxyRepositoryFactory getProxyRepositoryFactory() {
         return ProxyRepositoryFactory.getInstance();
     }
@@ -74,18 +91,38 @@ public class RepositoryService implements IRepositoryService {
 
     ChangeProcessor changeProcessor = new ChangeProcessor();
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.model.IRepositoryService#registerRepositoryChangedListener(org.talend.repository.IRepositoryChangedListener)
+     */
     public void registerRepositoryChangedListener(IRepositoryChangedListener listener) {
         changeProcessor.addRepositoryChangedListener(listener);
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.model.IRepositoryService#registerRepositoryChangedListenerAsFirst(org.talend.repository.IRepositoryChangedListener)
+     */
     public void registerRepositoryChangedListenerAsFirst(IRepositoryChangedListener listener) {
         changeProcessor.registerRepositoryChangedListenerAsFirst(listener);
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.model.IRepositoryService#removeRepositoryChangedListener(org.talend.repository.IRepositoryChangedListener)
+     */
     public void removeRepositoryChangedListener(IRepositoryChangedListener listener) {
         changeProcessor.removeRepositoryChangedListener(listener);
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.model.IRepositoryService#repositoryChanged(org.talend.repository.RepositoryElementDelta)
+     */
     public void repositoryChanged(RepositoryElementDelta delta) {
         changeProcessor.repositoryChanged(delta);
     }
@@ -102,10 +139,21 @@ public class RepositoryService implements IRepositoryService {
         registerRepositoryChangedListenerAsFirst(listener);
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.model.IRepositoryService#validateColumnName(java.lang.String, int)
+     */
     public String validateColumnName(String columnName, int index) {
         return ColumnNameValidator.validateColumnNameFormat(columnName, index);
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.model.IRepositoryService#getGenericSchemaWizardDialog(org.eclipse.swt.widgets.Shell,
+     * org.eclipse.ui.IWorkbench, boolean, org.eclipse.jface.viewers.ISelection, java.lang.String[], boolean)
+     */
     public WizardDialog getGenericSchemaWizardDialog(Shell shell, IWorkbench workbench, boolean creation, ISelection selection,
             String[] existingNames, boolean isSinglePageOnly) {
 
@@ -113,6 +161,11 @@ public class RepositoryService implements IRepositoryService {
         return new WizardDialog(shell, genericSchemaWizard);
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.model.IRepositoryService#getPropertyFromWizardDialog()
+     */
     public Property getPropertyFromWizardDialog() {
         if (this.genericSchemaWizard != null) {
             return this.genericSchemaWizard.getConnectionProperty();
@@ -120,6 +173,11 @@ public class RepositoryService implements IRepositoryService {
         return null;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.model.IRepositoryService#getPathForSaveAsGenericSchema()
+     */
     public IPath getPathForSaveAsGenericSchema() {
         if (this.genericSchemaWizard != null) {
             return this.genericSchemaWizard.getPathForSaveAsGenericSchema();
@@ -127,6 +185,11 @@ public class RepositoryService implements IRepositoryService {
         return null;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.model.IRepositoryService#openLoginDialog()
+     */
     public void openLoginDialog() {
 
         if (CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY) != null) {
@@ -159,11 +222,21 @@ public class RepositoryService implements IRepositoryService {
 
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.model.IRepositoryService#initializeForTalendStartupJob()
+     */
     public void initializeForTalendStartupJob() {
         // do nothing now.
 
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.model.IRepositoryService#initializeTalend()
+     */
     public void initializeTalend() {
 
         if (CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY) != null) {
@@ -174,10 +247,20 @@ public class RepositoryService implements IRepositoryService {
 
     boolean rcpMode = false;
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.model.IRepositoryService#isRCPMode()
+     */
     public boolean isRCPMode() {
         return rcpMode;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.model.IRepositoryService#setRCPMode()
+     */
     public void setRCPMode() {
         rcpMode = true;
     }
@@ -193,8 +276,12 @@ public class RepositoryService implements IRepositoryService {
         this.needSetPartListener = isReuqired;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.model.IRepositoryService#needSetPartListener()
+     */
     public boolean needSetPartListener() {
         return needSetPartListener;
     }
-
 }

@@ -76,7 +76,6 @@ public class FolderWizard extends Wizard {
 
         IProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
 
-        // boolean isPathNotExisting = DocumentationHelper.isPathValid(ERepositoryObjectType.JOBS, path, folderName);
         try {
 
             if (defaultLabel == null) {

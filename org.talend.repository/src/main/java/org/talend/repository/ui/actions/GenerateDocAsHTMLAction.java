@@ -26,13 +26,10 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.EProperties;
-import org.talend.repository.ui.wizards.genHTMLDoc.GenerateDocAsHTMLWizard;
+import org.talend.repository.ui.wizards.htmlgeneration.GenerateDocAsHTMLWizard;
 
 /**
- * This class is a action used for generation job information as HTML file.
- * 
- * $Id: GenerateDocAsHTMLAction.java 2007-3-1,下午03:06:53 ftang $
- * 
+ * ftang class global comment. Detailed comment
  */
 public class GenerateDocAsHTMLAction extends AContextualAction {
 

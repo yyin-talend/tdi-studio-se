@@ -23,6 +23,7 @@ import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
+import org.talend.core.PluginChecker;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.expressionbuilder.ExpressionPersistance;
@@ -74,17 +75,16 @@ public class DeleteAction extends AContextualAction {
             if (obj instanceof RepositoryNode) {
                 RepositoryNode node = (RepositoryNode) obj;
                 try {
+
+                    if (isForbidNode(node)) {
+                        continue;
+                    }
+
                     if (node.getType() == ENodeType.REPOSITORY_ELEMENT) {
                         boolean needReturn = deleteElements(factory, node);
                         if (needReturn) {
                             return;
                         }
-
-                        // Step 1: get the node in Documentation;
-
-                        // Step 2: delete the relevant documetation;
-
-                        // step 3 : delete the same node in documentation;
 
                     } else if (node.getType() == ENodeType.SIMPLE_FOLDER) {
                         if (!node.hasChildren()) {
@@ -92,14 +92,6 @@ public class DeleteAction extends AContextualAction {
                             ERepositoryObjectType objectType = (ERepositoryObjectType) node
                                     .getProperties(EProperties.CONTENT_TYPE);
                             factory.deleteFolder(objectType, path);
-                        }
-                    } else if (node.getType() == ENodeType.STABLE_SYSTEM_FOLDER
-                            && node.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.JOBS) {
-                        if (!node.hasChildren()) {
-                            IPath path = RepositoryNodeUtilities.getPath(node);
-                            ERepositoryObjectType objectType = (ERepositoryObjectType) node
-                                    .getProperties(EProperties.CONTENT_TYPE);
-                            // factory.deleteFolder(objectType, path);
                         }
                     }
                 } catch (PersistenceException e) {
@@ -113,21 +105,47 @@ public class DeleteAction extends AContextualAction {
     }
 
     /**
-     * DOC Administrator Comment method "deleteElements".
+     * ftang Comment method "isForbbidNode".
+     * 
+     * @param node
+     * @return
+     */
+    private boolean isForbidNode(RepositoryNode node) {
+
+        // Avoid to delete all related documentation node by click Key "Delete" from keyboard.
+        if (node.getContentType() == ERepositoryObjectType.HTML_DOC) {
+            return true;
+        }
+
+        if (node.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.HTML_DOC) {
+            return true;
+        }
+
+        if (node.getContentType() == ERepositoryObjectType.JOBS) {
+            return true;
+        }
+        if (node.getContentType() == ERepositoryObjectType.GENERATED) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * ftang Comment method "deleteElements".
      * 
      * @param factory
-     * @param node
+     * @param currentJobNode
      * @throws PersistenceException
      * @throws BusinessException
      */
-    private boolean deleteElements(IProxyRepositoryFactory factory, RepositoryNode node) throws PersistenceException,
+    private boolean deleteElements(IProxyRepositoryFactory factory, RepositoryNode currentJobNode) throws PersistenceException,
             BusinessException {
         Boolean confirm = null;
         boolean needReturn = false;
-        IRepositoryObject objToDelete = node.getObject();
+        IRepositoryObject objToDelete = currentJobNode.getObject();
 
         // To manage case of we have a subitem. This is possible using 'DEL' shortcut:
-        ERepositoryObjectType nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
+        ERepositoryObjectType nodeType = (ERepositoryObjectType) currentJobNode.getProperties(EProperties.CONTENT_TYPE);
         if (nodeType.isSubItem()) {
             new DeleteTableAction().run();
             needReturn = true;
@@ -143,6 +161,7 @@ public class DeleteAction extends AContextualAction {
             if (confirm) {
                 factory.deleteObjectPhysical(objToDelete);
                 ExpressionPersistance.getInstance().jobDeleted(objToDelete.getLabel());
+
             }
         } else {
             factory.deleteObjectLogical(objToDelete);
@@ -264,5 +283,4 @@ public class DeleteAction extends AContextualAction {
     public void setVisible(boolean visible) {
         this.visible = visible;
     }
-
 }

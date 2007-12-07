@@ -33,10 +33,10 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
+import org.talend.repository.documentation.ExportFileResource;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.local.ExportItemUtil;
 import org.talend.repository.ui.utils.PerlResourcesHelper;
-import org.talend.repository.ui.wizards.exportjob.ExportFileResource;
 
 /**
  * Manages the job scripts to be exported. <br/>

@@ -48,13 +48,17 @@ public class RepositoryNodeUtilities {
             String nodeLabel = (String) node.getProperties(EProperties.LABEL);
             if (nodeLabel.equalsIgnoreCase(ERepositoryObjectType.JOBS.toString())) {
                 return new Path("");
-            } else
-            {
+            } else {
                 return getPath(node.getParent()).append(label);
+            }
+        } else {
+            if (!label.equals(ERepositoryObjectType.PROCESS.toString())) {
+                return getPath(node.getParent()).append(label);
+            }else
+            {
+                return getPath(node.getParent());
             }
         }
-        else {
-                return getPath(node.getParent()).append(label);
-            }
+      
     }
 }

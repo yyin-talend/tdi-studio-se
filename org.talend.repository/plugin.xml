@@ -216,52 +216,16 @@
              name="Metadata/Create generic schema from xml">
        </Action>
        <Action
-             class="org.talend.repository.ui.actions.documentation.ExportAllProjectsDocAction"
-             id="org.talend.repository.ExportAllProjectsDocAction"
-             level="13"
-             name="Export all projects documentation">
-       </Action>
-       <Action
-             class="org.talend.repository.ui.actions.documentation.GenerateAllProjectsDocAction"
-             id="org.talend.repository.GenerateAllJobsDocAction"
-             level="14"
-             name="Generate all projects documentation">
-       </Action>
-       <Action
-             class="org.talend.repository.ui.actions.documentation.ExportAllJobsDocAction"
-             id="org.talend.repository.ExportAllJobsDocAction"
-             level="15"
-             name="Export all jobs documentation">
-       </Action>
-       <Action
-             class="org.talend.repository.ui.actions.documentation.GenerateAllJobsDocAction"
-             id="org.talend.repository.GenerateAllJobsDocAction"
-             level="16"
-             name="Generate all jobs documentation">
-       </Action>
-              <Action
-             class="org.talend.repository.ui.actions.documentation.OpenHTMLDocInTOSAction"
-             id="org.talend.repository.ui.actions.documentation.OpenHTMLDocInTOSAction"
-             level="17"
-             name="Open HTML Documentation in TOS Action">
-       </Action>
-       <Action
-             class="org.talend.repository.ui.actions.documentation.UpdateHTMLDocumentationAction"
-             id="rg.talend.repository.ui.actions.documentation.UpdateHTMLDocumentationAction"
-             level="18"
-             name="Update HTML documentation action">
-       </Action>
-       <Action
-             class="org.talend.repository.ui.actions.documentation.ExportHTMLDocumentationAction"
-             id="org.talend.repository.ui.actions.documentation.ExportHTMLDocumentationAction"
-             level="19"
-             name="Export HTML documentation action">
-       </Action>
-       <Action
              class="org.talend.repository.ui.actions.metadata.importing.ImportTablesFromDelimitedAction"
              id="org.talend.repository.ui.actions.metadata.importing.ImportTablesFromDelimitedAction"
              level="10"
              name="Metadata/Import connections from CSV">
+       </Action>
+       <Action
+             class="org.talend.repository.ui.actions.GenerateDocAsHTMLAction"
+             id="org.talend.repository.ui.actions.GenerateDocAsHTMLAction"
+             level="98"
+             name="Generate Doc as HTML">
        </Action>
    </extension>
    <extension

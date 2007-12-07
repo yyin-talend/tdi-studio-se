@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.repository.ui.views;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
@@ -552,4 +554,5 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
     public void repositoryChanged(RepositoryChangedEvent event) {
         refresh();
     }
+
 }

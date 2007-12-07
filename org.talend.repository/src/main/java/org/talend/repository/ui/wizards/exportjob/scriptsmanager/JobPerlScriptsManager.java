@@ -40,9 +40,9 @@ import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.RepositoryPlugin;
+import org.talend.repository.documentation.ExportFileResource;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.ui.utils.PerlResourcesHelper;
-import org.talend.repository.ui.wizards.exportjob.ExportFileResource;
 
 /**
  * Manages the job scripts to be exported. <br/>

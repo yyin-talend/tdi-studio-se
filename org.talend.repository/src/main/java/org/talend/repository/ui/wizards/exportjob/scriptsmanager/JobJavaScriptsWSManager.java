@@ -50,8 +50,8 @@ import org.talend.core.model.properties.ProcessItem;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.RepositoryPlugin;
+import org.talend.repository.documentation.ExportFileResource;
 import org.talend.repository.ui.utils.JavaResourcesHelper;
-import org.talend.repository.ui.wizards.exportjob.ExportFileResource;
 
 /**
  * DOC x class global comment. Detailled comment <br/>

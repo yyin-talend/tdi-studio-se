@@ -46,8 +46,8 @@ import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.librariesmanager.model.ModulesNeededProvider;
 import org.talend.repository.RepositoryPlugin;
+import org.talend.repository.documentation.ExportFileResource;
 import org.talend.repository.ui.utils.JavaResourcesHelper;
-import org.talend.repository.ui.wizards.exportjob.ExportFileResource;
 
 /**
  * Manages the job scripts to be exported. <br/>
@@ -73,7 +73,6 @@ public class JobJavaScriptsManager extends JobScriptsManager {
      * @see org.talend.repository.ui.wizards.exportjob.JobScriptsManager#getExportResources(org.talend.core.model.properties.ProcessItem[],
      * boolean, boolean, boolean, boolean, boolean, boolean, boolean, java.lang.String)
      */
-    @Override
     public List<ExportFileResource> getExportResources(ExportFileResource[] process,
             Map<ExportChoice, Boolean> exportChoice, String contextName, String launcher, int statisticPort,
             int tracePort, String... codeOptions) {

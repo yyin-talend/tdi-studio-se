@@ -17,6 +17,7 @@ import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.talend.core.CorePlugin;
+import org.talend.core.PluginChecker;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 
 /**
@@ -26,6 +27,8 @@ import org.talend.core.prefs.ITalendCorePrefConstants;
 public class DocumentationPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 
     private BooleanFieldEditor booleanFieldEditor;
+    
+    private boolean isDocumentationPluginLoaded=true;
 
     /**
      * ftang DocumentationPreferencePage constructor comment.
@@ -43,8 +46,9 @@ public class DocumentationPreferencePage extends FieldEditorPreferencePage imple
     @Override
     protected void createFieldEditors() {
         booleanFieldEditor = new BooleanFieldEditor(ITalendCorePrefConstants.DOC_GENERATION,
-                "Update relevant documentation automatically if job is saved, re-named or moved.", getFieldEditorParent());
+                "Automatic update corresponding documentation if job is saved.", getFieldEditorParent());
         addField(booleanFieldEditor);
+        booleanFieldEditor.setEnabled(isDocumentationPluginLoaded, getFieldEditorParent());
     }
 
     /*
@@ -53,7 +57,7 @@ public class DocumentationPreferencePage extends FieldEditorPreferencePage imple
      * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
      */
     public void init(IWorkbench workbench) {
-        // do nothing.
+        isDocumentationPluginLoaded = PluginChecker.isDocumentationPluginLoaded();
     }
 
 }

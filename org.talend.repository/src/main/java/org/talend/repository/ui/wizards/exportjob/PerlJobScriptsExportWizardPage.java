@@ -20,6 +20,8 @@ import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
+import org.talend.repository.documentation.ArchiveFileExportOperationFullPath;
+import org.talend.repository.documentation.ExportFileResource;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobPerlScriptsManager;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager;
 
@@ -54,7 +56,7 @@ public class PerlJobScriptsExportWizardPage extends JobScriptsExportWizardPage {
     private static final String STORE_DESTINATION_NAMES_ID = "PerlJobScriptsExportWizardPage.STORE_DESTINATION_NAMES_ID"; //$NON-NLS-1$
 
     @Override
-    protected JobScriptsManager createJobScriptsManager() {
+    public JobScriptsManager createJobScriptsManager() {
         return new JobPerlScriptsManager();
     }
 
@@ -73,7 +75,7 @@ public class PerlJobScriptsExportWizardPage extends JobScriptsExportWizardPage {
      * @see org.talend.repository.ui.wizards.exportjob.JobScriptsExportWizardPage#getExporterOperation(java.util.List)
      */
     @Override
-    protected ArchiveFileExportOperationFullPath getExporterOperation(List<ExportFileResource> resourcesToExport) {
+    public ArchiveFileExportOperationFullPath getExporterOperation(List<ExportFileResource> resourcesToExport) {
         ArchiveFileExportOperationFullPath operation = super.getExporterOperation(resourcesToExport);
         operation.setRegEx(".*.pl$|.*.pm$|.*.bat$|.*.sh$");
         return operation;
@@ -83,7 +85,7 @@ public class PerlJobScriptsExportWizardPage extends JobScriptsExportWizardPage {
      * Hook method for saving widget values for restoration by the next instance of this class.
      */
     @Override
-    protected void internalSaveWidgetValues() {
+    public void internalSaveWidgetValues() {
         // update directory names history
         IDialogSettings settings = getDialogSettings();
         if (settings != null) {
@@ -111,7 +113,7 @@ public class PerlJobScriptsExportWizardPage extends JobScriptsExportWizardPage {
      * completion.
      */
     @Override
-    protected void restoreWidgetValues() {
+    public void restoreWidgetValues() {
 
         List<ExportFileResource> exportResource = getExportResources();
         int sizeOfExportResource = exportResource.size();

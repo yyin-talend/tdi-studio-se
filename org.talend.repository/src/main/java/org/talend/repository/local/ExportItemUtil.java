@@ -47,9 +47,9 @@ import org.talend.core.model.properties.User;
 import org.talend.core.model.properties.helper.ByteArrayResource;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.repository.constants.FileConstants;
-import org.talend.repository.ui.wizards.exportjob.IFileExporterFullPath;
-import org.talend.repository.ui.wizards.exportjob.TarFileExporterFullPath;
-import org.talend.repository.ui.wizards.exportjob.ZipFileExporterFullPath;
+import org.talend.repository.documentation.IFileExporterFullPath;
+import org.talend.repository.documentation.TarFileExporterFullPath;
+import org.talend.repository.documentation.ZipFileExporterFullPath;
 
 /***/
 public class ExportItemUtil {

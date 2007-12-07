@@ -76,7 +76,8 @@ public class RestoreAction extends AContextualAction {
                     }
                     refresh();
                 } catch (Exception e) {
-                    ExceptionHandler.process(e);
+//                    ExceptionHandler.process(e);
+                    e.printStackTrace();
                 }
             }
         }

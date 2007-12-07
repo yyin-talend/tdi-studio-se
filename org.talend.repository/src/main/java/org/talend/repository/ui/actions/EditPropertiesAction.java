@@ -93,7 +93,7 @@ public class EditPropertiesAction extends AContextualAction {
 
         String originalName = node.getObject().getLabel();
 
-        PropertiesWizard wizard = new PropertiesWizard(node.getObject(), path);
+        PropertiesWizard wizard = new PropertiesWizard(node, path);
         WizardDialog dlg = new WizardDialog(Display.getCurrent().getActiveShell(), wizard);
         if (dlg.open() == Window.OK) {
             refresh(node);

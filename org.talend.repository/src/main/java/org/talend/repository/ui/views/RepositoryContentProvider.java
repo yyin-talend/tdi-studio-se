@@ -23,6 +23,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.exception.RuntimeExceptionHandler;
 import org.talend.commons.utils.data.container.Container;
+import org.talend.core.model.genhtml.IHTMLDocConstants;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.AbstractMetadataObject;
 import org.talend.core.model.metadata.builder.connection.Connection;
@@ -144,7 +145,6 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
                 } else if (parent == metadataLDAPSchemaNode) {
                     convert(factory.getMetadataLDAPSchema(), metadataLDAPSchemaNode, ERepositoryObjectType.METADATA_LDAP_SCHEMA,
                             recBinNode);
-
                 } else if (parent == metadataGenericSchemaNode) {
                     convert(factory.getMetadataGenericSchema(), metadataGenericSchemaNode,
                             ERepositoryObjectType.METADATA_GENERIC_SCHEMA, recBinNode);
@@ -390,6 +390,8 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
             return;
         }
 
+        String label = null;
+
         for (Object obj : fromModel.getSubContainer()) {
             Container container = (Container) obj;
             Folder oFolder = new Folder((Property) container.getProperty(), type);
@@ -398,18 +400,26 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
             }
 
             RepositoryNode folder = null;
-            if (container.getLabel().equals(RepositoryConstants.SYSTEM_DIRECTORY)) {
+
+            label = container.getLabel();
+
+            boolean isJobDocRootFolder = ((label.indexOf("_") != -1) && (label.indexOf(".") != -1));
+            boolean isPicFolderName = label.equals(IHTMLDocConstants.PIC_FOLDER_NAME);
+
+            // Do not show job documentation root folder and Foder "pictures" on the repository view.
+            if (isJobDocRootFolder || isPicFolderName) {
+                continue;
+            }
+            if (label.equals(RepositoryConstants.SYSTEM_DIRECTORY)) {
                 folder = new StableRepositoryNode(parent,
                         Messages.getString("RepositoryContentProvider.repositoryLabel.system"), ECoreImage.FOLDER_CLOSE_ICON); //$NON-NLS-1$
-            } else if (container.getLabel().equals("pictures")) {
-                continue;
-            } else if (container.getLabel().equalsIgnoreCase(ERepositoryObjectType.GENERATED.toString())) {
+            } else if (label.equalsIgnoreCase(ERepositoryObjectType.GENERATED.toString())) {
                 convertDocumentation(fromModel, parent, type, recBinNode);
                 continue;
             } else {
                 folder = new RepositoryNode(oFolder, parent, ENodeType.SIMPLE_FOLDER);
             }
-            folder.setProperties(EProperties.LABEL, container.getLabel());
+            folder.setProperties(EProperties.LABEL, label);
             folder.setProperties(EProperties.CONTENT_TYPE, type); // ERepositoryObjectType.FOLDER);
             parent.getChildren().add(folder);
             convert(container, folder, type, recBinNode);
