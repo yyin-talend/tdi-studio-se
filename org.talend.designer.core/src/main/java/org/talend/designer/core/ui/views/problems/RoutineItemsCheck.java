@@ -25,6 +25,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Display;
 import org.epic.perleditor.editors.util.PerlValidator;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.exception.SystemException;
 import org.talend.commons.utils.data.container.Container;
@@ -94,12 +95,8 @@ public class RoutineItemsCheck {
                 }
             }
 
-        } catch (PersistenceException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
-        } catch (SystemException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        } catch (Exception e1) {
+            ExceptionHandler.process(e1);
         }
     }
 
@@ -121,23 +118,22 @@ public class RoutineItemsCheck {
                 String sourceCode = readSourceFile(file.getLocation().makeRelative().toString());
                 PerlValidator.instance().validate(file, sourceCode);
             } catch (IOException ex) {
-                ex.printStackTrace();
+                ExceptionHandler.process(ex);
             }
             IMarker[] markers = file.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_ONE);
-            String routineFileName = file.getName();
             Problems.clearAllComliationError(itemLabel);
             for (IMarker marker : markers) {
                 Integer lineNr = (Integer) marker.getAttribute(IMarker.LINE_NUMBER);
                 String message = (String) marker.getAttribute(IMarker.MESSAGE);
                 Integer severity = (Integer) marker.getAttribute(IMarker.SEVERITY);
                 if (severity == IMarker.SEVERITY_ERROR) {
-                    Problems.add(item, ProblemStatus.ERROR, marker, itemLabel, message, lineNr);
+                    Problems.add(ProblemStatus.ERROR, marker, itemLabel, message, lineNr);
 
                 } else if (severity == IMarker.SEVERITY_WARNING) {
-                    Problems.add(item, ProblemStatus.WARNING, marker, itemLabel, message, lineNr);
+                    Problems.add(ProblemStatus.WARNING, marker, itemLabel, message, lineNr);
 
                 } else if (severity == IMarker.SEVERITY_INFO) {
-                    Problems.add(item, ProblemStatus.INFO, marker, itemLabel, message, lineNr);
+                    Problems.add(ProblemStatus.INFO, marker, itemLabel, message, lineNr);
                 }
             }
             Display.getDefault().asyncExec(new Runnable() {
@@ -147,8 +143,6 @@ public class RoutineItemsCheck {
                 }
             });
         } catch (CoreException e) {
-            // MessageBoxExceptionHandler.process(e);
-            e.printStackTrace();
         }
     }
 

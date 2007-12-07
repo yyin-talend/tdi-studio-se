@@ -27,7 +27,6 @@ import org.talend.core.model.process.Problem;
 import org.talend.core.model.process.RoutineProblem;
 import org.talend.core.model.process.Problem.ProblemStatus;
 import org.talend.core.model.process.Problem.ProblemType;
-import org.talend.core.model.properties.RoutineItem;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -58,8 +57,6 @@ public class Problems {
     private static List<IProcess> openJobs = new ArrayList<IProcess>();
 
     private static String currentTitle = ""; //$NON-NLS-1$
-
-    private static String newTitle = ""; //$NON-NLS-1$
 
     private static Group groupField = null;
 
@@ -164,12 +161,6 @@ public class Problems {
         add(problem);
     }
 
-    public static void add(RoutineItem routineItem, ProblemStatus status, IMarker marker, String javaUnitName,
-            String markerErrorMessage, Integer lineN) {
-        Problem problem = new RoutineProblem(routineItem, status, javaUnitName, marker, markerErrorMessage, lineN);
-        add(problem);
-    }
-
     public static void addAll(List<Problem> problems) {
         for (Problem current : problems) {
             add(current);
@@ -221,10 +212,6 @@ public class Problems {
         getProblemView().refresh();
     }
 
-    public static void setTitle(String title) {
-        newTitle = title;
-    }
-
     public static void refreshProcessAllNodesStatus(IProcess process) {
         List<? extends INode> processNodes = process.getGraphicalNodes();
         for (INode inode : processNodes) {
@@ -247,12 +234,7 @@ public class Problems {
      */
     public static void refreshProblemTreeView() {
         if (getProblemView() != null) {
-            if (!newTitle.equals(currentTitle)) {
-                getProblemView().setPartName(newTitle);
-                currentTitle = newTitle;
-            }
             getProblemView().refresh();
-
         }
     }
 
@@ -312,6 +294,19 @@ public class Problems {
             Problem problem = iter.next();
             if (problem.getElement() != null && (problem.getElement().equals(element))) {
                 iter.remove();
+            }
+        }
+        refreshProblemTreeView();
+    }
+
+    public static void removeProblemsByRoutine(String routineName) {
+        for (Iterator<Problem> iter = problemList.getProblemList().iterator(); iter.hasNext();) {
+            Problem problem = iter.next();
+            if (problem.getType().equals(ProblemType.ROUTINE)) {
+                RoutineProblem rp = (RoutineProblem) problem;
+                if (rp.getJavaUnitName().equals(routineName)) {
+                    iter.remove();
+                }
             }
         }
         refreshProblemTreeView();

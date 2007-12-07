@@ -12,6 +12,11 @@
 // ============================================================================
 package org.talend.designer.core.ui.views.problems;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.List;
+import java.util.regex.PatternSyntaxException;
+
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
@@ -37,16 +42,22 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.views.markers.internal.MarkerMessages;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.exception.SystemException;
+import org.talend.core.CorePlugin;
 import org.talend.core.language.ECodeLanguage;
+import org.talend.core.language.LanguageManager;
 import org.talend.core.model.process.Problem;
 import org.talend.core.model.process.RoutineProblem;
 import org.talend.core.model.properties.RoutineItem;
+import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.views.problems.Problems.Group;
+import org.talend.repository.documentation.ERepositoryActionName;
 import org.talend.repository.ui.actions.routines.AbstractRoutineAction;
 
 /**
@@ -55,7 +66,7 @@ import org.talend.repository.ui.actions.routines.AbstractRoutineAction;
  * $Id$
  * 
  */
-public class ProblemsView extends ViewPart {
+public class ProblemsView extends ViewPart implements PropertyChangeListener {
 
     public static final String PROBLEM_TYPE_SELECTION = "PROBLEM.TYPE.SELECTION";//$NON-NLS-1$
 
@@ -80,11 +91,12 @@ public class ProblemsView extends ViewPart {
     private TreeViewer viewer;
 
     public ProblemsView() {
-        setPartName(""); //$NON-NLS-1$
+        setPartName(Messages.getString("ProblemsView.problems.defaultTitle")); //$NON-NLS-1$
     }
 
     @Override
     public void createPartControl(Composite parent) {
+        CorePlugin.getDefault().getRepositoryService().getProxyRepositoryFactory().addPropertyChangeListener(this);
         parent.setLayout(new FillLayout());
 
         viewer = new TreeViewer(parent, SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER | SWT.FULL_SELECTION);
@@ -102,8 +114,7 @@ public class ProblemsView extends ViewPart {
                     if (problem.getElement() instanceof Node)
                         selectInDesigner((Node) problem.getElement());
                     else if (problem instanceof RoutineProblem) {
-                        // selectInRoutine(((RoutineProblem) problem).getRoutineItem(), ((RoutineProblem)
-                        // problem).getMarker());
+                        selectInRoutine(((RoutineProblem) problem).getMarker());
                     }
                 }
             }
@@ -144,6 +155,7 @@ public class ProblemsView extends ViewPart {
     @Override
     public void dispose() {
         super.dispose();
+        CorePlugin.getDefault().getRepositoryService().getProxyRepositoryFactory().removePropertyChangeListener(this);
         Problems.setProblemView(null);
     }
 
@@ -180,39 +192,15 @@ public class ProblemsView extends ViewPart {
         }
     }
 
-    private void selectInRoutine(RoutineItem routineItem, IMarker marker) {
-        // openRoutineEditor();
-        OpenRoutineAction openRoutineAction;
+    private void selectInRoutine(IMarker marker) {
+        OpenRoutineAction openRoutineAction = new OpenRoutineAction(marker);
+        openRoutineAction.run();
 
-        // IEditorReference[] editorParts = page.getEditorReferences();
-        new OpenRoutineAction(routineItem);
-        //
-        // for (IEditorReference reference : editorParts) {
-        // IEditorPart editor = reference.getEditor(false);
-        //
-        // if (editorID.equals(editor.getSite().getId())) {
-        //
-        // CompilationUnitEditor javaEditor = (CompilationUnitEditor) editor;
-        // int start = MarkerUtilities.getCharStart(marker);
-        // int end = MarkerUtilities.getCharEnd(marker);
-        // page.bringToTop(javaEditor);
-        // javaEditor.selectAndReveal(start, start);
-        // }
-        // }
     }
 
     @Override
     public void setFocus() {
         viewer.getTree().setFocus();
-    }
-
-    public void setPartName(String title) {
-        String viewName = Messages.getString("ProblemsView.problems.defaultTitle"); //$NON-NLS-1$
-
-        if (!title.equals("")) { //$NON-NLS-1$
-            viewName = viewName + "(" + title + ")"; //$NON-NLS-1$ //$NON-NLS-2$
-        }
-        super.setPartName(viewName);
     }
 
     /**
@@ -279,7 +267,7 @@ public class ProblemsView extends ViewPart {
      */
     private class OpenRoutineAction extends AbstractRoutineAction {
 
-        private RoutineItem routineItem;
+        IMarker marker;
 
         /*
          * (non-Javadoc)
@@ -288,25 +276,70 @@ public class ProblemsView extends ViewPart {
          * org.eclipse.jface.viewers.IStructuredSelection)
          * 
          */
-        public OpenRoutineAction(RoutineItem routineItem) {
-            // super();
-            this.routineItem = routineItem;
-            run();
+        public OpenRoutineAction(IMarker marker) {
+            super();
+            this.marker = marker;
         }
 
         public void run() {
             try {
-                openRoutineEditor(routineItem, false);
-
+                RoutineItem routine = getRoutineItem();
+                openRoutineEditor(routine, false);
             } catch (SystemException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
                 MessageBoxExceptionHandler.process(e);
             } catch (PartInitException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
                 MessageBoxExceptionHandler.process(e);
             }
+        }
+
+        /**
+         * bqian Comment method "getRoutineItem".
+         * 
+         * @return
+         */
+        private RoutineItem getRoutineItem() throws PersistenceException {
+            List<IRepositoryObject> list = DesignerPlugin.getDefault().getRepositoryService().getProxyRepositoryFactory().getAll(
+                    ERepositoryObjectType.ROUTINES);
+
+            for (IRepositoryObject repositoryObject : list) {
+                String name = repositoryObject.getProperty().getLabel();
+                String id = repositoryObject.getProperty().getId();
+                if (matchRoutine(id, name, marker.getResource().getName())) {
+                    return (RoutineItem) repositoryObject.getProperty().getItem();
+                }
+            }
+            return null;
+        }
+
+        /**
+         * Check whether the routine name is correct. <br>
+         * For example: routineLabel AAA <br>
+         * resourceName AAA.java| AAA.pem
+         * 
+         * @param string
+         * 
+         * @param name
+         * @param string
+         * @return
+         */
+        public boolean matchRoutine(String routineID, String routineLabel, String resourceName) {
+            if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.JAVA)) {
+                try {
+                    Boolean foundMatch = resourceName.matches(routineLabel + "(\\.java");
+                    return foundMatch.booleanValue();
+                } catch (PatternSyntaxException ex) {
+                    // Syntax error in the regular expression
+                }
+            } else if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.PERL)) {
+                try {
+                    Boolean foundMatch = resourceName.matches("tempRoutine" + routineID);
+                    return foundMatch.booleanValue();
+                } catch (PatternSyntaxException ex) {
+                    // Syntax error in the regular expression
+                }
+            }
+
+            return false;
         }
 
         /*
@@ -319,5 +352,25 @@ public class ProblemsView extends ViewPart {
             // setEnabled(true);
         }
 
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
+     */
+    public void propertyChange(PropertyChangeEvent evt) {
+        if (!evt.getPropertyName().equals(ERepositoryActionName.JOB_DELETE_TO_RECYCLE_BIN.getName())) {
+            return;
+        }
+        if (!(evt.getNewValue() instanceof IRepositoryObject)) {
+            return;
+        }
+        IRepositoryObject object = (IRepositoryObject) evt.getNewValue();
+        if (object.getType() != ERepositoryObjectType.ROUTINES) {
+            return;
+        }
+        String routineLabel = object.getProperty().getLabel();
+        Problems.removeProblemsByRoutine(routineLabel);
     }
 }

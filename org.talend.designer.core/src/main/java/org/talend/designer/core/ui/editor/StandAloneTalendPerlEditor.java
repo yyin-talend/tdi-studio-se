@@ -168,20 +168,18 @@ public class StandAloneTalendPerlEditor extends PerlEditor implements IUIRefresh
                 Integer lineNr = (Integer) marker.getAttribute(IMarker.LINE_NUMBER);
                 String message = (String) marker.getAttribute(IMarker.MESSAGE);
                 Integer severity = (Integer) marker.getAttribute(IMarker.SEVERITY);
-                System.out.println(message);
                 if (severity == IMarker.SEVERITY_ERROR) {
-                    Problems.add(item, ProblemStatus.ERROR, marker, routineFileName, message, lineNr);
+                    Problems.add(ProblemStatus.ERROR, marker, routineFileName, message, lineNr);
 
                 } else if (severity == IMarker.SEVERITY_WARNING) {
-                    Problems.add(item, ProblemStatus.WARNING, marker, routineFileName, message, lineNr);
+                    Problems.add(ProblemStatus.WARNING, marker, routineFileName, message, lineNr);
 
                 } else if (severity == IMarker.SEVERITY_INFO) {
-                    Problems.add(item, ProblemStatus.INFO, marker, routineFileName, message, lineNr);
+                    Problems.add(ProblemStatus.INFO, marker, routineFileName, message, lineNr);
                 }
             }
             Problems.refreshProblemTreeView();
         } catch (CoreException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
