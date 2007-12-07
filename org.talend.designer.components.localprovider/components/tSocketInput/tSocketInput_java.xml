@@ -138,7 +138,6 @@
 
   <CODEGENERATION>
     <IMPORTS>
-      <IMPORT  NAME="BZIP2" MODULE="bzip2.jar" REQUIRED="true"/>
       <IMPORT NAME="CSV_Reader" MODULE="javacsv.jar" REQUIRED="true" />
     </IMPORTS>
   </CODEGENERATION>
