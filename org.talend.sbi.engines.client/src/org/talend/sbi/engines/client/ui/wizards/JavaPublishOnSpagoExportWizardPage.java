@@ -17,7 +17,7 @@ import java.util.List;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.custom.BusyIndicator;
-import org.talend.repository.ui.wizards.exportjob.ExportFileResource;
+import org.talend.repository.documentation.ExportFileResource;
 
 /**
  * Publish SpagoBI Export Wizard. <br/>
