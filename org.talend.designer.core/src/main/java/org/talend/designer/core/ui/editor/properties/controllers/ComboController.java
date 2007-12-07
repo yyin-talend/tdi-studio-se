@@ -41,6 +41,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
+import org.talend.commons.ui.swt.colorstyledtext.ColorStyledText;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.MetadataTool;
@@ -397,9 +398,18 @@ public class ComboController extends AbstractElementPropertySectionController {
         public void widgetSelected(SelectionEvent event) {
             dynamicProperty.updateRepositoryList();
             Command cmd = createCommand(event);
+
             if (cmd != null) {
                 getCommandStack().execute(cmd);
             }
+            IElementParameter elementParameterFromField = elem.getElementParameterFromField(EParameterFieldType.MEMO_SQL);
+            Object value = elementParameterFromField.getValue();
+            Object object = hashCurControls.get(elementParameterFromField.getName());
+            if (object instanceof ColorStyledText) {
+                ColorStyledText text = (ColorStyledText) object;
+                text.setText(value.toString());
+            }
+
         }
     };
 
