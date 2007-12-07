@@ -16,14 +16,15 @@ import java.util.List;
 
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.talend.repository.ui.wizards.exportjob.ArchiveFileExportOperationFullPath;
-import org.talend.repository.ui.wizards.exportjob.ExportFileResource;
+import org.talend.repository.documentation.ArchiveFileExportOperationFullPath;
+import org.talend.repository.documentation.ExportFileResource;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager;
 
 /**
  * Page of the Job Scripts Export Wizard. <br/>
  * 
- * @referto WizardArchiveFileResourceExportPage1 $Id: JobScriptsExportWizardPage.java 1 2006-12-13 涓嬪�?3:09:07 bqian
+ * @referto WizardArchiveFileResourceExportPage1 $Id: JobScriptsExportWizardPage.java 1 2006-12-13 涓嬪�?3:09:07
+ * bqian
  * 
  */
 public class PerlSpagicDeployWizardPage extends SpagicDeployWizardPage {
