@@ -50,9 +50,10 @@ import org.talend.designer.runprocess.ProcessorUtilities;
  */
 public class DesignerCoreService implements IDesignerCoreService {
 
-    public List<IProcess> getOpenedProcess() {
+    public List<IProcess> getOpenedProcess(IEditorReference[] reference) {
         List<IProcess> list = new ArrayList<IProcess>();
-        IEditorReference[] reference = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getEditorReferences();
+        // IEditorReference[] reference =
+        // PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getEditorReferences();
         for (IEditorReference er : reference) {
             IEditorPart part = er.getEditor(false);
             if (part.getSite().getId().equals(MultiPageTalendEditor.ID)) {
