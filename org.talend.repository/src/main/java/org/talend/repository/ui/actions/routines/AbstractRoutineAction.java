@@ -14,7 +14,11 @@ package org.talend.repository.ui.actions.routines;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IEditorReference;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.editors.text.TextEditor;
 import org.talend.commons.exception.SystemException;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
@@ -43,6 +47,9 @@ public abstract class AbstractRoutineAction extends AContextualAction {
      * @throws PartInitException
      */
     protected void openRoutineEditor(RoutineItem routineItem, boolean readOnly) throws SystemException, PartInitException {
+        if (routineItem == null) {
+            return;
+        }
         ICodeGeneratorService service = (ICodeGeneratorService) GlobalServiceRegister.getDefault().getService(
                 ICodeGeneratorService.class);
 
@@ -60,11 +67,30 @@ public abstract class AbstractRoutineAction extends AContextualAction {
             throw new UnsupportedOperationException("Unknow language " + lang);
         }
 
-        IFile file = routineSynchronizer.syncRoutine(routineItem, true);
-        RepositoryEditorInput input = new RepositoryEditorInput(file, routineItem);
-        input.setReadOnly(readOnly);
+        // check if the related editor is open.
+        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 
-        IEditorPart part = getActivePage().openEditor(input,
-                "org.talend.designer.core.ui.editor.StandAloneTalend" + lang.getCaseName() + "Editor"); //$NON-NLS-1$
+        IEditorReference[] editorParts = page.getEditorReferences();
+        String talendEditorID = "org.talend.designer.core.ui.editor.StandAloneTalend" + lang.getCaseName() + "Editor";
+        boolean found = false;
+        for (IEditorReference reference : editorParts) {
+            IEditorPart editor = reference.getEditor(false);
+            if (talendEditorID.equals(editor.getSite().getId())) {
+                TextEditor talendEditor = (TextEditor) editor;
+                RepositoryEditorInput editorInput = (RepositoryEditorInput) talendEditor.getEditorInput();
+                if (editorInput.getItem().equals(routineItem)) {
+                    page.bringToTop(talendEditor);
+                    found = true;
+                    break;
+                }
+            }
+        }
+
+        if (!found) {
+            IFile file = routineSynchronizer.syncRoutine(routineItem, true);
+            RepositoryEditorInput input = new RepositoryEditorInput(file, routineItem);
+            input.setReadOnly(readOnly);
+            IEditorPart part = getActivePage().openEditor(input, talendEditorID); //$NON-NLS-1$
+        }
     }
 }

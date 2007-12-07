@@ -455,7 +455,8 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         String str[] = new String[] { objToDelete + "", getRepositoryContext().getUser() + "" };//$NON-NLS-1$ //$NON-NLS-2$
         log.debug(Messages.getString("ProxyRepositoryFactory.log.logicalDeletion", str)); //$NON-NLS-1$
 
-        if (objToDelete.getType() == ERepositoryObjectType.PROCESS) {
+        // TODO this need to be refactered after M2.
+        if (objToDelete.getType() == ERepositoryObjectType.PROCESS || objToDelete.getType() == ERepositoryObjectType.ROUTINES) {
             fireRepositoryPropertyChange(ERepositoryActionName.JOB_DELETE_TO_RECYCLE_BIN.getName(), null, objToDelete);
         }
     }
@@ -527,7 +528,7 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
             if (sourcePath != null && sourcePath.length == 1) {
                 fireRepositoryPropertyChange(ERepositoryActionName.JOB_MOVE.getName(), objToMove, new IPath[] { sourcePath[0],
                         targetPath });
-            } 
+            }
         }
 
     }
@@ -798,7 +799,7 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      */
     public Item copy(Item item, IPath path) throws PersistenceException, BusinessException {
         return this.repositoryFactoryFromProvider.copy(item, path);
-        
+
     }
 
     /*
