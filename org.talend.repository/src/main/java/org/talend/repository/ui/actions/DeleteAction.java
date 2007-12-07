@@ -35,7 +35,6 @@ import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.actions.metadata.DeleteTableAction;
-import org.talend.repository.ui.wizards.genHTMLDoc.DocumentationHelper;
 
 /**
  * Action used to delete object from repository. This action manages logical and physical deletions.<br/>
@@ -93,11 +92,6 @@ public class DeleteAction extends AContextualAction {
                             ERepositoryObjectType objectType = (ERepositoryObjectType) node
                                     .getProperties(EProperties.CONTENT_TYPE);
                             factory.deleteFolder(objectType, path);
-
-                            boolean isPathExisting = DocumentationHelper.isPathValid(ERepositoryObjectType.JOBS, path, "");
-                            if (!isPathExisting) {
-                                // factory.deleteFolder(ERepositoryObjectType.JOBS, path);
-                            }
                         }
                     } else if (node.getType() == ENodeType.STABLE_SYSTEM_FOLDER
                             && node.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.JOBS) {

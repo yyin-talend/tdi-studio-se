@@ -282,7 +282,11 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      */
     public Folder createFolder(ERepositoryObjectType type, IPath path, String label) throws PersistenceException {
         checkFileNameAndPath(label, RepositoryConstants.FOLDER_PATTERN, type, path, true);
-        return this.repositoryFactoryFromProvider.createFolder(type, path, label);
+        Folder createFolder = this.repositoryFactoryFromProvider.createFolder(type, path, label);
+        if (type == ERepositoryObjectType.PROCESS) {
+            fireRepositoryPropertyChange(ERepositoryActionName.FOLDER_CREATE.getName(), path, createFolder);
+        }
+        return createFolder;
     }
 
     /*
@@ -293,7 +297,9 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      */
     public void deleteFolder(ERepositoryObjectType type, IPath path) throws PersistenceException {
         this.repositoryFactoryFromProvider.deleteFolder(type, path);
-
+        if (type == ERepositoryObjectType.PROCESS) {
+            fireRepositoryPropertyChange(ERepositoryActionName.FOLDER_DELETE.getName(), path, type);
+        }
     }
 
     /*
@@ -304,6 +310,9 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      */
     public void moveFolder(ERepositoryObjectType type, IPath sourcePath, IPath targetPath) throws PersistenceException {
         this.repositoryFactoryFromProvider.moveFolder(type, sourcePath, targetPath);
+        if (type == ERepositoryObjectType.PROCESS) {
+            fireRepositoryPropertyChange(ERepositoryActionName.FOLDER_MOVE.getName(), sourcePath, targetPath);
+        }
     }
 
     /*
@@ -421,6 +430,9 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      */
     public void renameFolder(ERepositoryObjectType type, IPath path, String label) throws PersistenceException {
         this.repositoryFactoryFromProvider.renameFolder(type, path, label);
+        if (type == ERepositoryObjectType.PROCESS) {
+            fireRepositoryPropertyChange(ERepositoryActionName.FOLDER_RENAME.getName(), path, label);
+        }
     }
 
     /*
@@ -482,7 +494,9 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         // "\".");
         String str[] = new String[] { objToRestore + "", getRepositoryContext().getUser() + "", path + "" };//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         log.debug(Messages.getString("ProxyRepositoryFactory.log.Restoration", str)); //$NON-NLS-1$
-
+        if (objToRestore.getType() == ERepositoryObjectType.PROCESS) {
+            fireRepositoryPropertyChange(ERepositoryActionName.JOB_RESTORE.getName(), null, objToRestore);
+        }
     }
 
     /*
@@ -750,6 +764,9 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      */
     public void save(Item item) throws PersistenceException {
         this.repositoryFactoryFromProvider.save(item);
+        if (item instanceof ProcessItem) {
+            fireRepositoryPropertyChange(ERepositoryActionName.JOB_SAVE.getName(), null, item);
+        }
     }
 
     /*
@@ -760,8 +777,7 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
     public void save(Property property, String... originalNameAndVersion) throws PersistenceException {
         this.repositoryFactoryFromProvider.save(property);
         if (property.getItem() instanceof ProcessItem) {
-            fireRepositoryPropertyChange(ERepositoryActionName.JOB_PROPERTIES_CHANGE.getName(), new String[] {
-                    originalNameAndVersion[0], originalNameAndVersion[1] }, property);
+            fireRepositoryPropertyChange(ERepositoryActionName.JOB_PROPERTIES_CHANGE.getName(), originalNameAndVersion, property);
         }
     }
 
