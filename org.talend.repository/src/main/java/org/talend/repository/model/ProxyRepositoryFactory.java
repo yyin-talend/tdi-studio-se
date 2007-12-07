@@ -495,8 +495,9 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         String str[] = new String[] { objToRestore + "", getRepositoryContext().getUser() + "", path + "" };//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         log.debug(Messages.getString("ProxyRepositoryFactory.log.Restoration", str)); //$NON-NLS-1$
         if (objToRestore.getType() == ERepositoryObjectType.PROCESS) {
-            fireRepositoryPropertyChange(ERepositoryActionName.JOB_RESTORE.getName(), null, objToRestore);
+            fireRepositoryPropertyChange(ERepositoryActionName.RESTORE.getName(), null, objToRestore);
         }
+
     }
 
     /*
@@ -511,16 +512,24 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * @see org.talend.repository.model.IProxyRepositoryFactory#moveObject(org.talend.core.model.repository.IRepositoryObject,
      * org.eclipse.core.runtime.IPath)
      */
-    public void moveObject(IRepositoryObject objToMove, IPath path) throws PersistenceException, BusinessException {
+    public void moveObject(IRepositoryObject objToMove, IPath targetPath, IPath... sourcePath) throws PersistenceException,
+            BusinessException {
         checkAvailability(objToMove);
-        checkFileNameAndPath(objToMove.getProperty().getItem(), RepositoryConstants.getPattern(objToMove.getType()), path, false);
-        this.repositoryFactoryFromProvider.moveObject(objToMove, path);
-
+        checkFileNameAndPath(objToMove.getProperty().getItem(), RepositoryConstants.getPattern(objToMove.getType()), targetPath,
+                false);
+        this.repositoryFactoryFromProvider.moveObject(objToMove, targetPath);
         // i18n
         // log.debug("Move [" + objToMove + "] to \"" + path + "\".");
-        String str[] = new String[] { objToMove + "", path + "" }; //$NON-NLS-1$ //$NON-NLS-2$
+        String str[] = new String[] { objToMove + "", targetPath + "" }; //$NON-NLS-1$ //$NON-NLS-2$
         log.debug(Messages.getString("ProxyRepositoryFactory.log.move", str)); //$NON-NLS-1$
         unlock(getItem(objToMove));
+        if (objToMove.getType() == ERepositoryObjectType.PROCESS) {
+            if (sourcePath != null && sourcePath.length == 1) {
+                fireRepositoryPropertyChange(ERepositoryActionName.JOB_MOVE.getName(), objToMove, new IPath[] { sourcePath[0],
+                        targetPath });
+            } 
+        }
+
     }
 
     // TODO SML Renommer et finir la m�thode et la plugger dans toutes les m�thodes
@@ -789,6 +798,7 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      */
     public Item copy(Item item, IPath path) throws PersistenceException, BusinessException {
         return this.repositoryFactoryFromProvider.copy(item, path);
+        
     }
 
     /*
