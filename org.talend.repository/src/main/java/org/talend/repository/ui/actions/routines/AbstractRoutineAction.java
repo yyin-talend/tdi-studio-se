@@ -18,7 +18,6 @@ import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.editors.text.TextEditor;
 import org.talend.commons.exception.SystemException;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
@@ -76,10 +75,10 @@ public abstract class AbstractRoutineAction extends AContextualAction {
         for (IEditorReference reference : editorParts) {
             IEditorPart editor = reference.getEditor(false);
             if (talendEditorID.equals(editor.getSite().getId())) {
-                TextEditor talendEditor = (TextEditor) editor;
-                RepositoryEditorInput editorInput = (RepositoryEditorInput) talendEditor.getEditorInput();
+                // TextEditor talendEditor = (TextEditor) editor;
+                RepositoryEditorInput editorInput = (RepositoryEditorInput) editor.getEditorInput();
                 if (editorInput.getItem().equals(routineItem)) {
-                    page.bringToTop(talendEditor);
+                    page.bringToTop(editor);
                     found = true;
                     break;
                 }
