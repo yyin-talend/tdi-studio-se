@@ -19,6 +19,8 @@ CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 ECodePart codePart = codeGenArgument.getCodePart();
 boolean trace = codeGenArgument.isTrace();
+
+String componentName = node.getComponent().getName();
 %>
 
 <%
@@ -65,11 +67,17 @@ elsif (scalar @{ $desc_<%=node.getUniqueName() %>{schema} }) {
 
                     if (lineStyle.equals(EConnectionType.FLOW_MAIN)
                         || lineStyle.equals(EConnectionType.FLOW_MERGE)) {
+
+                        if (componentName.equals("tReplicate")) {
 %>
-
-my $<%=conn.getName() %> = $<%=node.getUniqueName() %>;
-
+my $<%=conn.getName() %> = [@$<%=node.getUniqueName() %>];
 <%
+                        }
+                        else {
+%>
+my $<%=conn.getName() %> = $<%=node.getUniqueName() %>;
+<%
+                        }
                     }
                 }
             }
