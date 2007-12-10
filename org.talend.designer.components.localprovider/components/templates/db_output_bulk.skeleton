@@ -1,0 +1,721 @@
+import java.util.List;
+
+public class CLASS {
+    public static final String INSERT_COLUMN_NAME = "insertColName";
+    public static final String INSERT_VALUE_STMT = "insertValueStmt";
+    public static final String UPDATE_SET_STMT = "updateSetStmt";
+    public static final String UPDATE_WHERE_STMT = "updateWhereStmt";
+    public static final String ACCESS = "access_id";
+    public static final String AS400 = "as400_id";
+    public static final String DB2 = "ibmdb2_id";
+    public static final String FIREBIRD = "firebird_id";
+    public static final String HSQLDB = "hsqldb_id";
+    public static final String INFORMIX = "informix_id";
+    public static final String INGRES = "ingres_id";
+    public static final String INTERBASE = "interbase_id";
+    public static final String JAVADB = "javadb_id";
+    public static final String MSSQL = "id_MSSQL";
+    public static final String MYSQL = "mysql_id";
+    public static final String ORACLE = "oracle_id";
+    public static final String POSTGRESQL = "postgres_id";
+    public static final String SQLITE = "sqlite_id";
+    public static final String SYBASE = "sybase_id";
+    public static final String TERADATA = "teradata_id";
+    public static final String VERTICA = "vertica_id";
+    private static Map<String, Manager> managerMap = new HashMap<String, Manager>();
+    public class Column {
+        IMetadataColumn column;
+        String name;
+        String dataType;
+        String operator;
+        String DBname;
+        String sqlStmt;
+        String value;
+        boolean addCol;
+        List<Column> replacement = new ArrayList<Column>();
+        public Column(String colName, String sqlStmt, boolean addCol) {
+            this.column = null;
+            this.name = colName;
+            this.DBname = colName;
+            this.sqlStmt = sqlStmt;
+            this.value = "?";
+            this.addCol = addCol;
+        }
+        public Column(IMetadataColumn column) {
+            this.column = column;
+            this.name = column.getLabel();
+            this.sqlStmt = "=?";
+            this.value = "?";
+            this.addCol = false;
+            this.DBname = column.getOriginalDbColumnName();
+        }
+        public boolean isReplaced() {
+            return replacement.size() > 0;
+        }
+        public void replace(Column column) {
+            this.replacement.add(column);
+        }
+        public List<Column> getReplacement() {
+            return this.replacement;
+        }
+        public void setColumn(IMetadataColumn column) {
+            this.column = column;
+        }
+        public IMetadataColumn getColumn() {
+            return this.column;
+        }
+        public void setName(String name) {
+            this.name = name;
+        }
+        public String getName() {
+            return this.name;
+        }
+        public void setDBName(String DBname) {
+            this.DBname = DBname;
+        }
+        public String getDBName() {
+            return this.DBname;
+        }
+        public void setIsAddCol(boolean isadd) {
+            this.addCol = isadd;
+        }
+        public boolean isAddCol() {
+            return this.addCol;
+        }
+        public void setSqlStmt(String sql) {
+            this.sqlStmt = sql;
+        }
+        public String getSqlStmt() {
+            return this.sqlStmt;
+        }
+        public void setValue(String value) {
+            this.value = value;
+        }
+        public String getValue() {
+            return this.value;
+        }
+        public void setDataType(String dataType) {
+            this.dataType = dataType;
+        }
+        public String getDataType() {
+            return dataType;
+        }
+        public void setOperator(String operator) {
+            this.operator = operator;
+        }
+        public String getOperator() {
+            return operator;
+        }
+    }
+
+    public Column getColumn(IMetadataColumn column) {
+        return new Column(column);
+    }
+
+    public Column getColumn(String colName, String sqlStmt, boolean addCol) {
+        return new Column(colName, sqlStmt, addCol);
+    }
+
+    public abstract class Manager {
+        protected String cid;        
+        protected abstract String getDBMSId();
+        protected abstract String getLProtectedChar();
+        protected abstract String getRProtectedChar();        
+        public Manager() {}
+        public Manager(String cid) {
+            this.cid = cid;
+        }
+        public String getDropTableSQL() {
+            StringBuilder dropTableSQL = new StringBuilder();
+            dropTableSQL.append("DROP TABLE " + getLProtectedChar() + "\" + tableName_" + cid + " + \"" + getRProtectedChar());
+            return dropTableSQL.toString();
+        }
+        public String getCreateTableSQL(List<Column> columnList) {
+            MappingTypeRetriever mappingType = MetadataTalendType.getMappingTypeRetriever(getDBMSId());
+            StringBuilder createSQL = new StringBuilder();
+            createSQL.append("CREATE TABLE " + getLProtectedChar() + "\" + tableName_" + cid + " + \"" + getRProtectedChar() + "(");
+            List<String> pkList = new ArrayList<String>();
+            int count = 0;
+            String ending = ",";
+            for (Column column : columnList) {
+                if (column.isReplaced()) {
+                    List<Column> replacedColumns = column.getReplacement();
+                    if (column.getColumn() != null && column.getColumn().isKey()) {
+                        for (Column replacedColumn : replacedColumns) {
+                            pkList.add(getLProtectedChar() + replacedColumn.getName() + getRProtectedChar());
+                        }
+                    }
+                    int replacedCount = 0;
+                    for (Column replacedColumn : replacedColumns) {
+                        if (count == columnList.size() - 1 && replacedCount == replacedColumns.size() - 1 && pkList.size() == 0) {
+                            ending = "";
+                        }
+                        createSQL.append(getLProtectedChar() + replacedColumn.getName() + getRProtectedChar() + " ");
+                        createSQL.append(replacedColumn.getDataType() + ending);
+                        replacedCount++;
+                    }
+                } else {
+                    if (column.isAddCol()) {
+                        if (count == columnList.size() - 1 && pkList.size() == 0) {
+                            ending = "";
+                        }
+                        createSQL.append(getLProtectedChar() + column.getName() + getRProtectedChar() + " ");
+                        createSQL.append(column.getDataType() + ending);
+                    } else {
+                        if (column.getColumn() != null && column.getColumn().isKey()) {
+                            pkList.add(getLProtectedChar() + column.getColumn().getOriginalDbColumnName() + getRProtectedChar());
+                        }
+                        createSQL.append(getLProtectedChar() + column.getColumn().getOriginalDbColumnName() + getRProtectedChar() + " ");
+                        String dataType = null;
+                        if (column.getColumn().getType() == null || column.getColumn().getType().trim().equals("")) {
+                            dataType = mappingType.getDefaultSelectedDbType(column.getColumn().getTalendType());
+                        } else {
+                            dataType = column.getColumn().getType();
+                        }
+                        createSQL.append(dataType);
+                        Integer length = column.getColumn().getLength() == null ? 0 : column.getColumn().getLength();
+                        Integer precision = column.getColumn().getPrecision() == null ? 0 : column.getColumn().getPrecision();
+                        boolean lengthIgnored = mappingType.isLengthIgnored(getDBMSId(), dataType);
+                        boolean precisionIgnored = mappingType.isPrecisionIgnored(getDBMSId(), dataType);
+                        String prefix = "";
+                        String suffix = "";
+                        String comma = "";
+                        if (mappingType.isPreBeforeLength(getDBMSId(), dataType)) {
+                            if (!precisionIgnored) {
+                                prefix = "(";
+                                suffix = ") ";
+                                createSQL.append(prefix + precision);
+                            }
+                            if (!lengthIgnored) {
+                                prefix = (prefix.equals("") ? "(" : prefix);
+                                suffix = (suffix.equals("") ? ") " : suffix);
+                                if (precisionIgnored) {
+                                    createSQL.append(prefix);
+                                    comma = "";
+                                } else {
+                                    comma = ",";
+                                }
+                                createSQL.append(comma + length);
+                            }
+                            createSQL.append(suffix);
+                        } else {
+                            if (!lengthIgnored) {
+                                prefix = "(";
+                                suffix = ") ";
+                                createSQL.append(prefix + length);
+                            }
+                            if (!precisionIgnored) {
+                                prefix = (prefix.equals("") ? "(" : prefix);
+                                suffix = (suffix.equals("") ? ") " : suffix);
+                                if (lengthIgnored) {
+                                    createSQL.append(prefix);
+                                    comma = "";
+                                } else {
+                                    comma = ",";
+                                }
+                                createSQL.append(comma + precision);
+                            }
+                            createSQL.append(suffix);
+                        }
+                        createSQL.append(setDefaultValue(column.getColumn().getDefault(), dataType));
+                        if (!column.getColumn().isNullable()) {
+                            createSQL.append("not null");
+                        }
+                        if (count == columnList.size() - 1 && pkList.size() == 0) {
+                            ending = "";
+                        }
+                        createSQL.append(ending);
+                    }
+                }
+                count++;
+            }
+            if (pkList.size() > 0) {
+                createSQL.append("primary key(");
+                int i = 0;
+                for (String pk : pkList) {
+                    createSQL.append(pk);
+                    if (i != pkList.size() - 1) {
+                        createSQL.append(",");
+                    }
+                    i++;
+                }
+                createSQL.append(")");
+            }
+            createSQL.append(")");
+            return createSQL.toString();
+        }
+        private String setDefaultValue(String defaultValue, String columnType) {
+            if (defaultValue == null || defaultValue.equals("\"\"") || defaultValue.equals("")) {
+                return " ";
+            } else if ((defaultValue.startsWith("\"") || defaultValue.startsWith("'"))
+                    && (defaultValue.endsWith("\"") || defaultValue.endsWith("'"))) {
+                return "default '" + defaultValue.substring(1, defaultValue.length() - 1) + "' ";
+            } else if (defaultValue.equalsIgnoreCase("null")) {
+                return "default null ";
+            } else {
+                return "default " + defaultValue + " ";
+            }
+        }        
+        public List<Column> createColumnList(List<IMetadataColumn> columnList, List<Map<String, String>> addCols) {
+            List<Column> stmtStructure = new ArrayList<Column>();
+            for(IMetadataColumn column : columnList) {
+                Column skeletonColumn = getColumn(column);
+                skeletonColumn.setOperator("=");
+                stmtStructure.add(skeletonColumn);
+            }
+            for(IMetadataColumn column : columnList) {
+                if(addCols != null && addCols.size() > 0) {
+                    for(Map<String, String> additionColumn : addCols) {
+                        if(additionColumn.get("REFCOL").equals(column.getLabel())) {
+                            int stmtIndex = 0;      
+                            for(Column stmtStr : stmtStructure){          
+                                if(stmtStr.getName().equals(additionColumn.get("REFCOL"))) {
+                                    break;
+                                }
+                                stmtIndex++;
+                            }           
+                            if(additionColumn.get("POS").equals("AFTER")) {
+                                Column insertAfter = getColumn("\" + " + additionColumn.get("NAME") + " + \"", "\" + " + additionColumn.get("SQL") + " + \"", true);
+                                insertAfter.setDataType(additionColumn.get("DATATYPE"));
+                                insertAfter.setOperator(additionColumn.get("OPERATOR"));
+                                stmtStructure.add(stmtIndex+1, insertAfter);
+                            } else if(additionColumn.get("POS").equals("BEFORE")) {
+                                Column insertBefore = getColumn("\" + " + additionColumn.get("NAME") + " + \"", "\" + " + additionColumn.get("SQL") + " + \"", true);
+                                insertBefore.setDataType(additionColumn.get("DATATYPE"));
+                                insertBefore.setOperator(additionColumn.get("OPERATOR"));
+                                stmtStructure.add(stmtIndex, insertBefore);
+                            } else if(additionColumn.get("POS").equals("REPLACE")) {
+                                Column replacementCol = getColumn("\" + " + additionColumn.get("NAME") + " + \"", "\" + " + additionColumn.get("SQL") + " + \"", true);
+                                replacementCol.setDataType(additionColumn.get("DATATYPE"));
+                                replacementCol.setOperator(additionColumn.get("OPERATOR"));
+                                Column replacedCol = (Column) stmtStructure.get(stmtIndex);
+                                replacedCol.replace(replacementCol);
+                            }
+                        }                        
+                    }
+                }
+            }
+            return stmtStructure;
+        }
+        public Map<String, StringBuilder> createActionSQL(List<Column> stmtStructure) {
+            StringBuilder insertColName = new StringBuilder();        
+            StringBuilder insertValueStmt = new StringBuilder();        
+            StringBuilder updateSetStmt = new StringBuilder();        
+            StringBuilder updateWhereStmt = new StringBuilder();
+            String suffix = null;
+            String separate = null;
+            boolean firstKeyColumn = true;
+            boolean firstInsertColumn = true;
+            boolean firstUpdateColumn = true;
+            for(Column column : stmtStructure) {
+                if(column.isReplaced()) {
+                    List<Column> replacedColumns = column.getReplacement();
+                    int countReplace = 0;            
+                    for(Column replacedColumn : replacedColumns) {
+                        if(firstInsertColumn) {
+                            suffix = "";
+                            firstInsertColumn = false;
+                        } else {
+                            suffix = ",";
+                        }
+                        insertColName.append(suffix);
+                        insertColName.append(getLProtectedChar() + replacedColumn.getName() + getRProtectedChar());
+                        insertValueStmt.append(suffix);
+                        insertValueStmt.append(replacedColumn.getSqlStmt());
+                        if(column.getColumn().isKey()) {
+                            if(firstKeyColumn) {
+                                separate = "";
+                                firstKeyColumn = false;
+                            } else {
+                                separate = " AND ";
+                            }
+                            updateWhereStmt.append(separate);
+                            updateWhereStmt.append(getLProtectedChar() + replacedColumn.getName() + getRProtectedChar() + " " + replacedColumn.getOperator() + " " + replacedColumn.getSqlStmt());
+                        } else {
+                            if(firstUpdateColumn) {
+                                suffix = "";
+                                firstUpdateColumn = false;
+                            } else {
+                                suffix = ",";
+                            }
+                            updateSetStmt.append(suffix);
+                            updateSetStmt.append(getLProtectedChar() + replacedColumn.getName() + getRProtectedChar() + " " + replacedColumn.getOperator() + " " + replacedColumn.getSqlStmt());
+                        }
+                        countReplace++;
+                    }
+                } else {
+                    if(column.isAddCol()) {
+                        if(firstInsertColumn) {
+                            suffix = "";
+                            firstInsertColumn = false;
+                        } else {
+                            suffix = ",";
+                        }
+                        insertColName.append(suffix);
+                        insertColName.append(getLProtectedChar() + column.getDBName() + getRProtectedChar());
+                        insertValueStmt.append(suffix);
+                        insertValueStmt.append(column.getSqlStmt());
+                        if(firstUpdateColumn) {
+                            suffix = "";
+                            firstUpdateColumn = false;
+                        } else {
+                            suffix = ",";
+                        }
+                        updateSetStmt.append(suffix);
+                        updateSetStmt.append(getLProtectedChar() + column.getDBName() + getRProtectedChar() + " " + column.getOperator() + " " + column.getSqlStmt());
+                    } else {
+                        if(firstInsertColumn) {
+                            suffix = "";
+                            firstInsertColumn = false;
+                        } else {
+                            suffix = ",";
+                        }
+                        insertColName.append(suffix);
+                        insertColName.append(getLProtectedChar() + column.getDBName() + getRProtectedChar());
+                        insertValueStmt.append(suffix);
+                        insertValueStmt.append(column.getValue());
+                        if(column.getColumn().isKey()) {
+                            if(firstKeyColumn) {
+                                separate = "";
+                                firstKeyColumn = false;
+                            } else {
+                                separate = " AND ";
+                            }
+                            updateWhereStmt.append(separate);
+                            updateWhereStmt.append(getLProtectedChar() + column.getDBName() + getRProtectedChar() + " " + column.getOperator() + " " + column.getValue());
+                        } else {
+                            if(firstUpdateColumn) {
+                                suffix = "";
+                                firstUpdateColumn = false;
+                            } else {
+                                suffix = ",";
+                            }
+                            updateSetStmt.append(suffix);
+                            updateSetStmt.append(getLProtectedChar() + column.getDBName() + getRProtectedChar() + " " + column.getOperator() + " " + column.getValue());
+                        }
+                    }
+                }
+            }
+            Map<String, StringBuilder> actionSQLMap = new HashMap<String, StringBuilder>();
+            actionSQLMap.put(INSERT_COLUMN_NAME, insertColName);
+            actionSQLMap.put(INSERT_VALUE_STMT, insertValueStmt);
+            actionSQLMap.put(UPDATE_SET_STMT, updateSetStmt);
+            actionSQLMap.put(UPDATE_WHERE_STMT, updateWhereStmt);
+            return actionSQLMap;
+        }        
+    }
+    
+    public class AS400Manager extends Manager {
+        public AS400Manager(String cid) {
+            super(cid);
+        }
+        protected String getDBMSId() {
+            return AS400;
+        }
+        protected String getLProtectedChar() {
+            return "\\\"";
+        }
+        protected String getRProtectedChar() {
+            return "\\\"";
+        }
+    }
+    
+    public class AccessManager extends Manager {
+        public AccessManager(String cid) {
+            super(cid);
+        }
+        protected String getDBMSId() {
+            return ACCESS;
+        }
+        protected String getLProtectedChar() {
+            return "[";
+        }
+        protected String getRProtectedChar() {
+            return "]";
+        }        
+    }
+    
+    public class DB2Manager extends Manager {
+        public DB2Manager(String cid) {
+            super(cid);
+        }
+        protected String getDBMSId() {
+            return DB2;
+        }
+        protected String getLProtectedChar() {
+            return "\\\"";
+        }
+        protected String getRProtectedChar() {
+            return "\\\"";
+        }        
+    }
+    
+    public class FirebirdManager extends Manager {
+        public FirebirdManager(String cid) {
+            super(cid);
+        }
+        protected String getDBMSId() {
+            return FIREBIRD;
+        }
+        protected String getLProtectedChar() {
+            return "\\\"";
+        }
+        protected String getRProtectedChar() {
+            return "\\\"";
+        }        
+    }
+    
+    public class HSQLDBManager extends Manager {
+        public HSQLDBManager(String cid) {
+            super(cid);
+        }
+        protected String getDBMSId() {
+            return HSQLDB;
+        }
+        protected String getLProtectedChar() {
+            return "\\\"";
+        }
+        protected String getRProtectedChar() {
+            return "\\\"";
+        }        
+    }
+    
+    public class InformixManager extends Manager {
+        public InformixManager(String cid) {
+            super(cid);
+        }
+        protected String getDBMSId() {
+            return INFORMIX;
+        }
+        protected String getLProtectedChar() {
+            return "\\\"";
+        }
+        protected String getRProtectedChar() {
+            return "\\\"";
+        }        
+    }
+    
+    public class IngresManager extends Manager {
+        public IngresManager(String cid) {
+            super(cid);
+        }
+        protected String getDBMSId() {
+            return INGRES;
+        }
+        protected String getLProtectedChar() {
+            return "\\\"";
+        }
+        protected String getRProtectedChar() {
+            return "\\\"";
+        }        
+    }
+    
+    public class InterbaseManager extends Manager {
+        public InterbaseManager(String cid) {
+            super(cid);
+        }
+        protected String getDBMSId() {
+            return INTERBASE;
+        }
+        protected String getLProtectedChar() {
+            return "\\\"";
+        }
+        protected String getRProtectedChar() {
+            return "\\\"";
+        }        
+    }
+    
+    public class JavaDBManager extends Manager {
+        public JavaDBManager(String cid) {
+            super(cid);
+        }
+        protected String getDBMSId() {
+            return JAVADB;
+        }
+        protected String getLProtectedChar() {
+            return "\\\"";
+        }
+        protected String getRProtectedChar() {
+            return "\\\"";
+        }        
+    }
+    
+    public class MSSQLManager extends Manager {
+        public MSSQLManager(String cid) {
+            super(cid);
+        }
+        protected String getDBMSId() {
+            return MSSQL;
+        }
+        protected String getLProtectedChar() {
+            return "[";
+        }
+        protected String getRProtectedChar() {
+            return "]";
+        }        
+    }
+    
+    public class MysqlManager extends Manager {
+        public MysqlManager(String cid) {
+            super(cid);
+        }
+        protected String getDBMSId() {
+            return MYSQL;
+        }
+        protected String getLProtectedChar() {
+            return "`";
+        }
+        protected String getRProtectedChar() {
+            return "`";
+        }        
+    }
+    
+    public class OracleManager extends Manager {
+        public OracleManager(String cid) {
+            super(cid);
+        }
+        protected String getDBMSId() {
+            return ORACLE;
+        }
+        protected String getLProtectedChar() {
+            return "";
+        }
+        protected String getRProtectedChar() {
+            return "";
+        }        
+    }
+    
+    public class PostgreManager extends Manager {
+        public PostgreManager(String cid) {
+            super(cid);
+        }
+        protected String getDBMSId() {
+            return POSTGRESQL;
+        }
+        protected String getLProtectedChar() {
+            return "\\\"";
+        }
+        protected String getRProtectedChar() {
+            return "\\\"";
+        }        
+    }
+    
+    public class SQLiteManager extends Manager {
+        public SQLiteManager(String cid) {
+            super(cid);
+        }
+        protected String getDBMSId() {
+            return SQLITE;
+        }
+        protected String getLProtectedChar() {
+            return "\\\"";
+        }
+        protected String getRProtectedChar() {
+            return "\\\"";
+        }        
+    }
+    
+    public class SybaseManager extends Manager {
+        public SybaseManager(String cid) {
+            super(cid);
+        }
+        protected String getDBMSId() {
+            return SYBASE;
+        }
+        protected String getLProtectedChar() {
+            return "";
+        }
+        protected String getRProtectedChar() {
+            return "";
+        }        
+    }
+    
+    public class TeradataManager extends Manager {
+        public TeradataManager(String cid) {
+            super(cid);
+        }
+        protected String getDBMSId() {
+            return TERADATA;
+        }
+        protected String getLProtectedChar() {
+            return "\\\"";
+        }
+        protected String getRProtectedChar() {
+            return "\\\"";
+        }        
+    }
+    
+    public class VerticaManager extends Manager {
+        public VerticaManager(String cid) {
+            super(cid);
+        }
+        protected String getDBMSId() {
+            return VERTICA;
+        }
+        protected String getLProtectedChar() {
+            return "";
+        }
+        protected String getRProtectedChar() {
+            return "";
+        }        
+    }
+    
+    public Manager getManager(String dbmsId, String cid) {
+        Manager manager = managerMap.get(dbmsId);
+        if(manager == null) {
+            if(dbmsId.equalsIgnoreCase(AS400)) {
+                manager = new AS400Manager(cid);
+            } else if(dbmsId.equalsIgnoreCase(ACCESS)) {
+                manager = new AccessManager(cid);
+            } else if(dbmsId.equalsIgnoreCase(DB2)) {
+                manager = new DB2Manager(cid);
+            } else if(dbmsId.equalsIgnoreCase(FIREBIRD)) {
+                manager = new FirebirdManager(cid);
+            } else if(dbmsId.equalsIgnoreCase(HSQLDB)) {
+                manager = new HSQLDBManager(cid);
+            } else if(dbmsId.equalsIgnoreCase(INFORMIX)) {
+                manager = new InformixManager(cid);
+            } else if(dbmsId.equalsIgnoreCase(INGRES)) {
+                manager = new IngresManager(cid);
+            } else if(dbmsId.equalsIgnoreCase(INTERBASE)) {
+                manager = new InterbaseManager(cid);
+            } else if(dbmsId.equalsIgnoreCase(JAVADB)) {
+                manager = new JavaDBManager(cid);
+            } else if(dbmsId.equalsIgnoreCase(MSSQL)) {
+                manager = new MSSQLManager(cid);
+            } else if(dbmsId.equalsIgnoreCase(MYSQL)) {
+                manager = new MysqlManager(cid);
+            } else if(dbmsId.equalsIgnoreCase(ORACLE)) {
+                manager = new OracleManager(cid);
+            } else if(dbmsId.equalsIgnoreCase(POSTGRESQL)) {
+                manager = new PostgreManager(cid);
+            } else if(dbmsId.equalsIgnoreCase(SQLITE)) {
+                manager = new SQLiteManager(cid);
+            } else if(dbmsId.equalsIgnoreCase(SYBASE)) {
+                manager = new SybaseManager(cid);
+            } else if(dbmsId.equalsIgnoreCase(TERADATA)) {
+                manager = new TeradataManager(cid);
+            } else if(dbmsId.equalsIgnoreCase(VERTICA)) {
+                manager = new VerticaManager(cid);
+            }
+        }
+        managerMap.put(dbmsId, manager);
+        return manager;
+    }
+    
+    public List<IMetadataColumn> getColumnList(INode node) {
+        List<IMetadataColumn> columnList = null;
+        List<IMetadataTable> metadatas = node.getMetadataList();
+        if(metadatas != null && metadatas.size() > 0) {
+            IMetadataTable metadata = metadatas.get(0);
+            if(metadata != null) {
+                columnList = metadata.getListColumns();
+            }
+        }
+        return columnList;
+    }
+
+    public String generate(Object argument) {
+
+    }
+}
