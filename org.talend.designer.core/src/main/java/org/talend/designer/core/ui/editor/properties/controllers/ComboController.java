@@ -403,11 +403,13 @@ public class ComboController extends AbstractElementPropertySectionController {
                 getCommandStack().execute(cmd);
             }
             IElementParameter elementParameterFromField = elem.getElementParameterFromField(EParameterFieldType.MEMO_SQL);
-            Object value = elementParameterFromField.getValue();
-            Object object = hashCurControls.get(elementParameterFromField.getName());
-            if (object instanceof ColorStyledText) {
-                ColorStyledText text = (ColorStyledText) object;
-                text.setText(value.toString());
+            if (elementParameterFromField != null) {
+                Object value = elementParameterFromField.getValue();
+                Object object = hashCurControls.get(elementParameterFromField.getName());
+                if (object instanceof ColorStyledText) {
+                    ColorStyledText text = (ColorStyledText) object;
+                    text.setText(value.toString());
+                }
             }
 
         }
