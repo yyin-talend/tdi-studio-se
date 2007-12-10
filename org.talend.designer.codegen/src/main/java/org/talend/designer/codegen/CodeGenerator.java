@@ -378,38 +378,30 @@ public class CodeGenerator implements ICodeGenerator {
             throws CodeGeneratorException {
         StringBuffer codeComponent = new StringBuffer();
         Boolean isMarked = subProcess.isMarkedNode(node, part);
-        boolean isIterate = isIterateNode(node, incomingName);
+        boolean isIterate = isIterateNode(node);
         if ((isMarked != null) && (!isMarked)) {
             switch (part) {
             case BEGIN:
-                // if (isIterate) {
-                // codeComponent.append(generateComponentCode(node, ECodePart.BEGIN, incomingName));
-                // }
+                if (isIterate) {
+                    codeComponent.append(generateComponentCode(node, ECodePart.BEGIN, incomingName));
+                }
                 codeComponent.append(generatesTreeCode(subProcess, node, part));
                 if (!isIterate) {
                     codeComponent.append(generateComponentCode(node, ECodePart.BEGIN, incomingName));
                 }
                 break;
             case MAIN:
-                if (isIterate) {
-                    codeComponent.append(generateComponentCode(node, ECodePart.BEGIN, incomingName));
-                }
-
                 codeComponent.append(generateComponentCode(node, ECodePart.MAIN, incomingName));
                 codeComponent.append(generatesTreeCode(subProcess, node, part));
-
-                if (isIterate) {
-                    codeComponent.append(generateComponentCode(node, ECodePart.END, incomingName));
-                }
                 break;
             case END:
                 if (!isIterate) {
                     codeComponent.append(generateComponentCode(node, ECodePart.END, incomingName));
                 }
                 codeComponent.append(generatesTreeCode(subProcess, node, part));
-                // if (isIterate) {
-                // codeComponent.append(generateComponentCode(node, ECodePart.END, incomingName));
-                // }
+                if (isIterate) {
+                    codeComponent.append(generateComponentCode(node, ECodePart.END, incomingName));
+                }
                 break;
             default:
                 // do nothing
@@ -426,17 +418,13 @@ public class CodeGenerator implements ICodeGenerator {
      * @param node the node to check
      * @return true if the node is an iterate node
      */
-    private boolean isIterateNode(INode node, String incomingName) {
-        // it means the first node without any income connection
-        if (incomingName == null) {
-            return false;
-        }
+    private boolean isIterateNode(INode node) {
         boolean result = false;
         if (node != null) {
-            List<? extends IConnection> inComingIterateConnection = node.getIncomingConnections(EConnectionType.ITERATE);
-            if ((inComingIterateConnection != null) && (inComingIterateConnection.size() > 0)) {
-                for (IConnection connection : inComingIterateConnection) {
-                    if (connection.getName().equals(incomingName)) {
+            List<? extends IConnection> outGoingConnections = node.getOutgoingConnections();
+            if ((outGoingConnections != null) && (outGoingConnections.size() > 0)) {
+                for (IConnection connection : outGoingConnections) {
+                    if (connection.getLineStyle() == EConnectionType.ITERATE) {
                         result = true;
                     }
                 }
@@ -475,7 +463,7 @@ public class CodeGenerator implements ICodeGenerator {
                     if (!connection.getLineStyle().hasConnectionCategory(IConnectionCategory.MERGE)) {
                         subTreeArgument.setInputSubtreeConnection(connection);
                         code.append(generateTypedComponentCode(EInternalTemplate.SUBTREE_BEGIN, subTreeArgument));
-                        code.append(generateComponentsCode(subProcess, targetNode, part, connection.getName()));
+                        code.append(generateComponentsCode(subProcess, targetNode, part, null));
                         code.append(generateTypedComponentCode(EInternalTemplate.SUBTREE_END, subTreeArgument));
                     } else if (part == ECodePart.MAIN) {
                         subTreeArgument.setInputSubtreeConnection(connection);
