@@ -28,7 +28,9 @@ import java.util.zip.CheckedInputStream;
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceDescription;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -86,6 +88,17 @@ public final class CodeGeneratorEmittersPoolFactory {
     private CodeGeneratorEmittersPoolFactory() {
     }
 
+    public static void setAutomaticBuild(boolean value) {
+        IWorkspace workspace = ResourcesPlugin.getWorkspace();
+        IWorkspaceDescription description = workspace.getDescription();
+        description.setAutoBuilding(value);
+        try {
+            workspace.setDescription(description);
+        } catch (CoreException e) {
+            // do nothing
+        }
+    }
+
     /**
      * initialization of the pool.
      * 
@@ -101,6 +114,9 @@ public final class CodeGeneratorEmittersPoolFactory {
                     try {
                         jetFilesCompileFail.clear();
                         initInProgress = true;
+
+                        setAutomaticBuild(false);
+
                         IProgressMonitor monitorWrap = null;
                         if (!CorePlugin.getContext().isHeadless()) {
                             monitorWrap = new CodeGeneratorProgressMonitor(monitor);
@@ -164,6 +180,7 @@ public final class CodeGeneratorEmittersPoolFactory {
                         return new Status(IStatus.ERROR, CodeGeneratorActivator.PLUGIN_ID, "Exception during Initialization", e);
                     } finally {
                         initInProgress = false;
+                        setAutomaticBuild(true);
                     }
                     if (jetFilesCompileFail.size() > 0) {
                         StringBuilder message = new StringBuilder();
