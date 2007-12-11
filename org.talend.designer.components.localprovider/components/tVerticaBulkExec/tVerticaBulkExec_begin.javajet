@@ -1,0 +1,56 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser 
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.core.model.metadata.MetadataTalendType    
+    org.talend.core.model.metadata.MappingTypeRetriever     
+    java.util.List
+    java.util.ArrayList    
+" 
+%>
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+
+String field_separator = ElementParameterParser.getValue(node, "__FIELDS_TERMINATED_BY__");
+String null_string = ElementParameterParser.getValue(node, "__NULL_STRING__");
+String file = ElementParameterParser.getValue(node, "__REMOTE_FILENAME__");
+String host = ElementParameterParser.getValue(node, "__HOST__");
+String port = ElementParameterParser.getValue(node, "__PORT__");
+String db = ElementParameterParser.getValue(node, "__DBNAME__");
+String user = ElementParameterParser.getValue(node, "__USER__");
+String pas = ElementParameterParser.getValue(node, "__PASS__");
+String table = ElementParameterParser.getValue(node, "__TABLE__");
+
+    List<IMetadataColumn> columnList = null;
+    List<IMetadataTable> metadatas = node.getMetadataList();
+    if(metadatas !=null && metadatas.size()>0){
+        IMetadataTable metadata = metadatas.get(0);
+        if(metadata != null){
+            columnList = metadata.getListColumns();
+        }
+    }    
+    %>
+    java.lang.Class.forName("com.vertica.Driver").newInstance();
+    String url_<%=cid %> = "jdbc:vertica://"+<%=host%>+":"+<%=port%>+"/"+<%=db%>;
+    
+    java.sql.Connection conn_<%=cid %> = java.sql.DriverManager.getConnection(url_<%=cid %>, <%=user%>, <%=pas%>);
+    <%
+    String tableAction = ElementParameterParser.getValue(node,"__TABLE_ACTION__");
+    String dbmsId = ElementParameterParser.getValue(node,"__MAPPING__");
+    %>
+    java.sql.Statement stmt_<%=cid %> = conn_<%=cid %>.createStatement();
+    stmt_<%=cid %>.execute("COPY " + <%=db%> + "." + <%=table%> + " FROM '" + <%=file%> + "' WITH DELIMITER '" + <%=field_separator%> + "' DIRECT");
+    stmt_<%=cid %>.close();
+    conn_<%=cid %>.close();
+
+
+
+
+
+
+
