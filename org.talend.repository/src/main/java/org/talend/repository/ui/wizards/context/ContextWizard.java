@@ -34,6 +34,7 @@ import org.talend.commons.utils.VersionUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
+import org.talend.core.context.UpdateRunJobComponentContextHelper;
 import org.talend.core.model.context.JobContextManager;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextManager;
@@ -312,6 +313,8 @@ public class ContextWizard extends RepositoryWizard implements INewWizard {
                 }
                 modify = this.findOtherContextName(list, defaultContext, contextList, viewList);
                 if (modified || modify) {
+                    // update tRunJob component reference
+                    updateOpenedRunJobComponentReferenc(processes, item.getProperty().getLabel());
                     try {
                         factory.save(item);
                     } catch (PersistenceException e) {
@@ -353,7 +356,10 @@ public class ContextWizard extends RepositoryWizard implements INewWizard {
                         }
                     }
                     modify = this.findOtherName(contextl, contextList, jobList);
+
                     if (modified || modify) {
+                        // update tRunJob component reference
+                        updateItemRunJobComponentReferenc(item.getProperty().getLabel());
                         factory.save(item);
                     }
                 }
@@ -558,4 +564,39 @@ public class ContextWizard extends RepositoryWizard implements INewWizard {
         return modified;
     }
 
+    /**
+     * 
+     * DOC ggu Comment method "updateItemRunJobComponentReferenc".
+     * 
+     * need optimize
+     * 
+     * @param modifiedItemName
+     */
+    private synchronized void updateItemRunJobComponentReferenc(String modifiedItemName) {
+        if (modifiedItemName == null) {
+            return;
+        }
+        JobContextManager manager = (JobContextManager) contextManager;
+        try {
+            UpdateRunJobComponentContextHelper
+                    .updateItemRunJobComponentReference(factory, manager.getNameMap(), modifiedItemName);
+        } catch (PersistenceException e) {
+            //
+        }
+    }
+
+    /**
+     * 
+     * DOC ggu Comment method "updateOpenedRunJobComponentReferenc".
+     * 
+     * need optimize
+     * 
+     * @param processes
+     * @param modifiedJobName
+     */
+    private synchronized void updateOpenedRunJobComponentReferenc(List<IProcess> processes, String modifiedJobName) {
+        JobContextManager manager = (JobContextManager) contextManager;
+        UpdateRunJobComponentContextHelper.updateOpenedJobRunJobComponentReference(processes, manager.getNameMap(),
+                modifiedJobName);
+    }
 }
