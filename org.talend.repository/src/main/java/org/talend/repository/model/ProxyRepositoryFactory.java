@@ -79,6 +79,9 @@ import org.talend.repository.utils.RepositoryPathProvider;
  * $Id$
  * 
  */
+/**
+ * DOC Administrator  class global comment. Detailled comment
+ */
 public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
 
     private static Logger log = Logger.getLogger(ProxyRepositoryFactory.class);
@@ -473,7 +476,7 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         String str[] = new String[] { objToDelete.toString(), getRepositoryContext().getUser().toString() };
         log.info(Messages.getString("ProxyRepositoryFactory.log.physicalDeletion", str)); //$NON-NLS-1$
 
-        if (objToDelete.getType() == ERepositoryObjectType.PROCESS) {
+        if (objToDelete.getType() == ERepositoryObjectType.PROCESS){
             fireRepositoryPropertyChange(ERepositoryActionName.JOB_DELETE_FOREVER.getName(), null, objToDelete);
         }
     }
@@ -797,8 +800,14 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * @see org.talend.repository.model.IProxyRepositoryFactory#copy(org.talend.core.model.properties.Item,
      * org.eclipse.core.runtime.IPath)
      */
-    public Item copy(Item item, IPath path) throws PersistenceException, BusinessException {
-        return this.repositoryFactoryFromProvider.copy(item, path);
+    public Item copy(Item sourceItem, IPath targetPath) throws PersistenceException, BusinessException {
+        Item targetItem = this.repositoryFactoryFromProvider.copy(sourceItem, targetPath);
+       
+        if(sourceItem instanceof ProcessItem)
+        {
+            fireRepositoryPropertyChange(ERepositoryActionName.JOB_COPY.getName(), sourceItem, targetItem);
+        }
+        return targetItem;
 
     }
 

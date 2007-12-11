@@ -18,6 +18,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.ui.image.ImageProvider;
+import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.i18n.Messages;
@@ -56,6 +57,9 @@ public class EmptyRecycleBinAction extends AContextualAction {
 
         IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         for (RepositoryNode child : node.getChildren()) {
+            if (child.getObjectType() == ERepositoryObjectType.HTML_DOC) {
+                continue;
+            }
             IRepositoryObject objToDelete = child.getObject();
             try {
                 if (objToDelete instanceof ISubRepositoryObject) {

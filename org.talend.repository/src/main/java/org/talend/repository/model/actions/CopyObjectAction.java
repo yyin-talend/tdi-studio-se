@@ -92,13 +92,13 @@ public class CopyObjectAction {
             return;
         }
 
-        IPath targetPath = RepositoryNodeUtilities.getPath(targetNode);
+        IPath path = RepositoryNodeUtilities.getPath(targetNode);
         IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
 
         if (sourceNode.getType().equals(ENodeType.REPOSITORY_ELEMENT)) {
             // Source is an repository element :
             Item originalItem = sourceNode.getObject().getProperty().getItem();
-            factory.copy(originalItem, targetPath);
+            factory.copy(originalItem, path);
         }
     }
 }
