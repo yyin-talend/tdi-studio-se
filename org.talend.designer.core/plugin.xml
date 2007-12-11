@@ -421,5 +421,9 @@
             class="org.talend.designer.core.ui.editor.properties.controllers.generator.LabelGenerator"
             mapping="LABEL"
             name="Label"/>
+      <generator
+            class="org.talend.designer.core.ui.editor.properties.controllers.generator.AS400CheckGenerator"
+            mapping="AS400_CHECK"
+            name="AS400 SqlSyntax"/>
    </extension>
 </plugin>

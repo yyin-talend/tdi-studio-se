@@ -26,7 +26,9 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
@@ -39,12 +41,14 @@ import org.talend.commons.ui.swt.formtools.LabelledFileField;
 import org.talend.commons.ui.swt.formtools.LabelledText;
 import org.talend.commons.ui.swt.formtools.UtilsButton;
 import org.talend.commons.ui.utils.PathUtils;
+import org.talend.core.CorePlugin;
 import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.MetadataTalendType;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.swt.utils.AbstractForm;
 import org.talend.repository.ui.utils.DataStringConnection;
@@ -108,6 +112,10 @@ public class DatabaseForm extends AbstractForm {
 
     private LabelledText additionParamText;
 
+    private Button standardButton;
+
+    private Button systemButton;
+
     /**
      * Anothers Fields.
      */
@@ -155,11 +163,18 @@ public class DatabaseForm extends AbstractForm {
         stringQuoteText.setText(getConnection().getStringQuote());
         nullCharText.setText(getConnection().getNullChar());
         directoryField.setText(getConnection().getDBRootPath());
+        if (getConnection().isStandardSQL() == getConnection().isSystemSQL()) {
+            boolean b = CorePlugin.getDefault().getPreferenceStore().getBoolean(ITalendCorePrefConstants.AS400_SQL_SEG);
+            standardButton.setSelection(b);
+            systemButton.setSelection(!b);
+        } else {
+            standardButton.setSelection(getConnection().isStandardSQL());
+            systemButton.setSelection(getConnection().isSystemSQL());
+        }
 
         // PTODO !StandBy! (use width SQL Editor): to define the values of SQL Syntax (need by SQL Editor)
         getConnection().setSqlSynthax(Messages.getString("DatabaseForm.sqlSyntax")); //$NON-NLS-1$
         sqlSyntaxCombo.select(getSqlSyntaxIndex(getConnection().getSqlSynthax()));
-
         updateStatus(IStatus.OK, ""); //$NON-NLS-1$
     }
 
@@ -184,6 +199,7 @@ public class DatabaseForm extends AbstractForm {
         sqlSyntaxCombo.setReadOnly(isReadOnly());
         stringQuoteText.setReadOnly(isReadOnly());
         nullCharText.setReadOnly(isReadOnly());
+
     }
 
     /**
@@ -299,6 +315,30 @@ public class DatabaseForm extends AbstractForm {
 
         stringQuoteText = new LabelledText(compositeGroupDbProperties, Messages.getString("DatabaseForm.stringQuote"), false); //$NON-NLS-1$
         nullCharText = new LabelledText(compositeGroupDbProperties, Messages.getString("DatabaseForm.nullChar"), false); //$NON-NLS-1$
+        GridData gridData = new GridData();
+        gridData.horizontalSpan = 2;
+        standardButton = new Button(compositeGroupDbProperties, SWT.RADIO);
+        standardButton.setText("Standard SQL Statement");
+        standardButton.setLayoutData(gridData);
+        systemButton = new Button(compositeGroupDbProperties, SWT.RADIO);
+        systemButton.setText("System SQL Statement");
+        systemButton.setLayoutData(gridData);
+        checkDBTypeAS400();
+
+    }
+
+    /**
+     * Check DBType is AS400,set systemButton and stardardButton visible.a
+     */
+    private void checkDBTypeAS400() {
+        if (dbTypeCombo.getSelectionIndex() == 16) {
+            standardButton.setVisible(true);
+            systemButton.setVisible(true);
+        } else {
+            standardButton.setVisible(false);
+            systemButton.setVisible(false);
+        }
+
     }
 
     /**
@@ -395,6 +435,7 @@ public class DatabaseForm extends AbstractForm {
                         getConnection().setSID(s[3]);
                     }
                 }
+                checkDBTypeAS400();
             }
         });
 
@@ -548,7 +589,24 @@ public class DatabaseForm extends AbstractForm {
                 }
             }
         });
+        // standardButton parameters: Event modifyText
+        standardButton.addSelectionListener(new SelectionAdapter() {
 
+            public void widgetSelected(SelectionEvent e) {
+                getConnection().setStandardSQL(standardButton.getSelection());
+                getConnection().setSystemSQL(systemButton.getSelection());
+            }
+
+        });
+        // systemButton parameters: Event modifyText
+        systemButton.addSelectionListener(new SelectionAdapter() {
+
+            public void widgetSelected(SelectionEvent e) {
+                getConnection().setStandardSQL(standardButton.getSelection());
+                getConnection().setSystemSQL(systemButton.getSelection());
+            }
+
+        });
         // Event dbTypeCombo
         dbTypeCombo.addModifyListener(new ModifyListener() {
 

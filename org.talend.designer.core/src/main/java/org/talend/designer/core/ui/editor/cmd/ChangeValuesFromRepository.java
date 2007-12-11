@@ -81,6 +81,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
         // Boolean(true));
 
         boolean allowAutoSwitch = true;
+
         IElementParameter elemParam = elem.getElementParameter(EParameterName.REPOSITORY_ALLOW_AUTO_SWITCH.getName());
         if (elemParam != null) {
             allowAutoSwitch = (Boolean) elemParam.getValue();
@@ -172,22 +173,27 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                 }
             }
         }
-
+        // change AS400 value
+        for (IElementParameter curParam : elem.getElementParameters()) {
+            if (curParam.getField().equals(EParameterFieldType.AS400_CHECK)) {
+                setOtherProperties();
+            }
+        }
         refreshPropertyView();
         refreshStatsAndLogsView();
-        
+
         if (elem instanceof Node) {
             ((Process) ((Node) elem).getProcess()).checkProcess();
         }
     }
-    
+
     /**
      * ftang Comment method "refreshStatsAndLogsView".
      */
     private void refreshStatsAndLogsView() {
         IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-        IViewPart view = page.findView(StatsAndLogsView.ID); 
-       if (view != null) {
+        IViewPart view = page.findView(StatsAndLogsView.ID);
+        if (view != null) {
             StatsAndLogsView statsAndLogsView = (StatsAndLogsView) view;
             statsAndLogsView.refreshView();
         }

@@ -45,7 +45,15 @@
       NUM_ROW="2">
 		<DEFAULT>false</DEFAULT>
      </PARAMETER>
-		
+     
+	 <PARAMETER 
+      NAME="STANDARD_SYNTAX" 
+      FIELD="AS400_CHECK" 
+      NUM_ROW="2"
+      READONLY="true">
+		<DEFAULT>true</DEFAULT>
+     </PARAMETER>	
+     
 	<PARAMETER 
 	  NAME="CONNECTION" 
 	  FIELD="COMPONENT_LIST" 

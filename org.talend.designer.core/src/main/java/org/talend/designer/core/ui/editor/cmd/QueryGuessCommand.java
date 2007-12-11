@@ -16,13 +16,22 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.gef.commands.Command;
+import org.talend.commons.exception.PersistenceException;
+import org.talend.core.CorePlugin;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.QueryUtil;
+import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.utils.TalendTextUtils;
+import org.talend.core.prefs.ITalendCorePrefConstants;
+import org.talend.designer.core.DesignerPlugin;
+import org.talend.designer.core.model.components.EParameterName;
+import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.editor.nodes.Node;
+import org.talend.repository.model.IProxyRepositoryFactory;
 
 /**
  * This class is used for generating new query when "Guess Query" button is selected. <br/>
@@ -117,9 +126,39 @@ public class QueryGuessCommand extends Command {
                 }
             }
         }
+        // about AS400 generation sql query
+        String newQuery = null;
+        if (dbType.equals("AS400")) {
+            String propertyType = (String) node.getPropertyValue(EParameterName.PROPERTY_TYPE.getName());
+            if (propertyType.equals(EmfComponent.REPOSITORY)) {
+                IProxyRepositoryFactory factory = DesignerPlugin.getDefault().getProxyRepositoryFactory();
+                List<ConnectionItem> metadataConnectionsItem = null;
+                try {
+                    metadataConnectionsItem = factory.getMetadataConnectionsItem();
 
-        String newQuery = TalendTextUtils.addSQLQuotes(QueryUtil.generateNewQuery(node, newOutputMetadataTable, dbType, schema,
-                realTableName));
+                } catch (PersistenceException e) {
+                    throw new RuntimeException(e);
+                }
+                boolean standardSyntax = false;
+                if (metadataConnectionsItem != null) {
+                    for (ConnectionItem connectionItem : metadataConnectionsItem) {
+                        String value = connectionItem.getProperty().getId() + ""; //$NON-NLS-1$
+                        if (value.equals(node.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName()))) {
+                            standardSyntax = getConnection(connectionItem).isStandardSQL();
+                            newQuery = TalendTextUtils.addSQLQuotes(QueryUtil.generateNewQuery(node, newOutputMetadataTable,
+                                    dbType, schema, realTableName, standardSyntax));
+                        }
+                    }
+                }
+            } else {
+                boolean b = CorePlugin.getDefault().getPreferenceStore().getBoolean(ITalendCorePrefConstants.AS400_SQL_SEG);
+                newQuery = TalendTextUtils.addSQLQuotes(QueryUtil.generateNewQuery(node, newOutputMetadataTable, dbType, schema,
+                        realTableName, b));
+            }
+        } else {
+            newQuery = TalendTextUtils.addSQLQuotes(QueryUtil.generateNewQuery(node, newOutputMetadataTable, dbType, schema,
+                    realTableName));
+        }
 
         for (IElementParameter param : (List<IElementParameter>) node.getElementParameters()) {
             if (param.getField() == EParameterFieldType.MEMO_SQL) {
@@ -136,6 +175,11 @@ public class QueryGuessCommand extends Command {
 
         refreshPropertyView();
         // Ends
+    }
+
+    // get DatabaseConnection
+    protected DatabaseConnection getConnection(ConnectionItem connectionItem) {
+        return (DatabaseConnection) connectionItem.getConnection();
     }
 
     @Override
