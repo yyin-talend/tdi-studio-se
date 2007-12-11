@@ -17,6 +17,7 @@ import java.util.Map;
 import org.apache.commons.collections.BidiMap;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.swt.widgets.Composite;
+import org.talend.core.model.context.JobContextManager;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IContextParameter;
@@ -284,6 +285,10 @@ public class ContextViewComposite extends ContextComposite {
     }
 
     public void onContextRenameParameter(IContextManager contextManager, String oldName, String newName) {
+        if (contextManager instanceof JobContextManager) {
+            JobContextManager manager = (JobContextManager) contextManager;
+            manager.addNewName(newName, oldName);
+        }
         getCommandStack().execute(new ContextRenameParameterCommand(contextManager, oldName, newName));
     }
 

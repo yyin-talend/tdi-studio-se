@@ -14,6 +14,7 @@ package org.talend.designer.core.ui;
 
 import java.io.ByteArrayInputStream;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
@@ -63,7 +64,9 @@ import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
+import org.talend.core.context.UpdateRunJobComponentContextHelper;
 import org.talend.core.language.ECodeLanguage;
+import org.talend.core.model.context.JobContextManager;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.Property;
 import org.talend.core.ui.IUIRefresher;
@@ -87,6 +90,7 @@ import org.talend.designer.core.ui.editor.process.ProcessPart;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
+import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.job.deletion.JobResourceManager;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
@@ -311,6 +315,7 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
         if (!isDirty()) {
             return;
         }
+        updateRunJobContext();
         getTalendEditor().getProperty().eAdapters().remove(dirtyListener);
         getEditor(0).doSave(monitor);
         getTalendEditor().getProperty().eAdapters().add(dirtyListener);
@@ -319,6 +324,24 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
         propertyIsDirty = false;
         firePropertyChange(IEditorPart.PROP_DIRTY);
 
+    }
+
+    private void updateRunJobContext() {
+        JobContextManager manager = (JobContextManager) getProcess().getContextManager();
+        Map<String, String> nameMap = manager.getNameMap();
+        try {
+            IProxyRepositoryFactory factory = DesignerPlugin.getDefault().getProxyRepositoryFactory();
+            UpdateRunJobComponentContextHelper.updateItemRunJobComponentReference(factory, nameMap, getProcess().getLabel());
+
+            IEditorReference[] reference = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+                    .getEditorReferences();
+            List<IProcess> processes = RepositoryPlugin.getDefault().getDesignerCoreService().getOpenedProcess(reference);
+
+            UpdateRunJobComponentContextHelper.updateOpenedJobRunJobComponentReference(processes, nameMap, oldJobName);
+        } catch (PersistenceException e) {
+            e.printStackTrace();
+        }
+        nameMap.clear();
     }
 
     public void codeSync() {
