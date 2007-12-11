@@ -337,7 +337,8 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
                     .getEditorReferences();
             List<IProcess> processes = RepositoryPlugin.getDefault().getDesignerCoreService().getOpenedProcess(reference);
 
-            UpdateRunJobComponentContextHelper.updateOpenedJobRunJobComponentReference(processes, nameMap, oldJobName);
+            UpdateRunJobComponentContextHelper.updateOpenedJobRunJobComponentReference(processes, nameMap, getProcess()
+                    .getLabel());
         } catch (PersistenceException e) {
             e.printStackTrace();
         }
