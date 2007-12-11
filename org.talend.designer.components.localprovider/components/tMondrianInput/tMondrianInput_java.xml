@@ -313,7 +313,7 @@
        <IMPORT NAME="commons-dbcp"         MODULE="commons-dbcp-1.2.1.jar" REQUIRED="true" />
        <IMPORT NAME="commons-math"         MODULE="commons-math-1.0.jar" REQUIRED="true" />
        <IMPORT NAME="commons-vfs"          MODULE="commons-vfs.jar" REQUIRED="true" />
-       <IMPORT NAME="commons-log"          MODULE="commons-logging-1.0.4.jar" REQUIRED="true" />
+       <IMPORT NAME="commons-log"          MODULE="commons-logging-1.1.jar" REQUIRED="true" />
        <IMPORT NAME="commons-beanutils"    MODULE="commons-beanutils-1.7.jar" REQUIRED="true" />
        <IMPORT NAME="commons-colections"   MODULE="commons-collections-3.2.jar" REQUIRED="true" />
        <IMPORT NAME="commons-fileupload"   MODULE="commons-fileupload-1.0.jar" REQUIRED="true" />
