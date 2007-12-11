@@ -30,7 +30,10 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.draw2d.Cursors;
 import org.eclipse.draw2d.FigureCanvas;
 import org.eclipse.draw2d.Graphics;
@@ -118,6 +121,8 @@ import org.eclipse.ui.part.PageBook;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertySheetPageContributor;
+import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.utils.workbench.preferences.GlobalConstant;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
@@ -670,7 +675,8 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
         IRepositoryService service = DesignerPlugin.getDefault().getRepositoryService();
         IPath filePath = service.getPathFileName(RepositoryConstants.IMG_DIRECTORY_OF_JOB_OUTLINE, "");
         String outlineFileName = process.getName();
-        filePath = filePath.append(outlineFileName + ".jpg");
+        String outlineFileVersion = process.getVersion();
+        filePath = filePath.append(outlineFileName + "_" + outlineFileVersion + ".jpg");
 
         il.save(filePath.toPortableString(), SWT.IMAGE_JPEG);
 
@@ -806,13 +812,38 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
             ((ILibrariesService) GlobalServiceRegister.getDefault().getService(ILibrariesService.class)).resetModulesNeeded();
             monitor.worked(10);
 
-            saveOutlinePicture((ScrollingGraphicalViewer) getGraphicalViewer());
+            savePreviewPictures();
+
         } catch (Exception e) {
             e.printStackTrace();
             monitor.setCanceled(true);
         } finally {
             monitor.done();
         }
+    }
+
+    /**
+     * ftang Comment method "savePreviewPictures".
+     */
+    private void savePreviewPictures() {
+        Job job = new Job("Documentation node save in progress") {
+
+            @Override
+            protected IStatus run(IProgressMonitor monitor) {
+                try {
+                    saveOutlinePicture((ScrollingGraphicalViewer) getGraphicalViewer());
+                } catch (Exception e) {
+                    ExceptionHandler.process(e);
+                    MessageBoxExceptionHandler.process(e);
+                    return Status.CANCEL_STATUS;
+                }
+                return Status.OK_STATUS;
+            }
+        };
+
+        job.setUser(true);
+        job.setPriority(Job.INTERACTIVE);
+        job.schedule();
     }
 
     @Override
@@ -848,7 +879,7 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
             getCommandStack().markSaveLocation();
             setDirty(false);
 
-            saveOutlinePicture((ScrollingGraphicalViewer) getGraphicalViewer());
+           savePreviewPictures();
         } catch (Exception e) {
             e.printStackTrace();
         }
