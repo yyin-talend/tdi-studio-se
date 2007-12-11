@@ -101,7 +101,7 @@
       />
       <IMPORT
         NAME="Java_JAXEN1.1"
-        MODULE="jaxen-1.1-beta-6.jar"
+        MODULE="jaxen-1.1.1.jar"
         REQUIRED="true"
       />
     </IMPORTS>

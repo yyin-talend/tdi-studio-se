@@ -122,7 +122,6 @@
 
   <CODEGENERATION>
    <IMPORTS>
-       <IMPORT NAME="JBOSS-J2EE" MODULE="jboss-j2ee.jar" REQUIRED="true" />
        <IMPORT NAME="JBOSSALL-CLIENT" MODULE="jbossall-client.jar" REQUIRED="true" />
        <IMPORT NAME="JNP-CLIENT" MODULE="jnp-client.jar" REQUIRED="true" />
        <IMPORT NAME="MQ" MODULE="com.ibm.mq.jar" REQUIRED="true" />
