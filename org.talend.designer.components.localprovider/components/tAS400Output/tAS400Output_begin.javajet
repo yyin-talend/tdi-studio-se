@@ -143,7 +143,7 @@ if(columnList != null && columnList.size()>0){
         } else if(tableAction.equals("CLEAR")) {
             %>
             java.sql.Statement stmtClear_<%=cid%> = conn_<%=cid%>.createStatement();
-            deletedCount_<%=cid%> = deletedCount_<%=cid%> + stmtClear_<%=cid%>.executeUpdate("delete from \"" + <%=tableName%> + "\"");
+            deletedCount_<%=cid%> = deletedCount_<%=cid%> + stmtClear_<%=cid%>.executeUpdate("<%=manager.getDeleteTableSQL()%>");
             <%
         }
     }    
@@ -156,54 +156,54 @@ if(columnList != null && columnList.size()>0){
 	if(dataAction.equals("INSERT")){
 	%>	
 	
-	    java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("INSERT INTO "+<%=tableName%>+" (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)");
+	    java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("INSERT INTO \"" + <%=tableName%> + "\" (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)");
 
 	<%
 	}else if (dataAction.equals("UPDATE")){
 	%>
 	
-	    java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("UPDATE "+<%=tableName%>+" SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>");
+	    java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("UPDATE \"" + <%=tableName%> + "\" SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>");
 
 	<%		
 	}else if (dataAction.equals("INSERT_OR_UPDATE")){
 	%>
-	    java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("SELECT COUNT(1) FROM " + <%=tableName%> + " WHERE <%=updateWhereStmt.toString()%>");	
+	    java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("SELECT COUNT(1) FROM \"" + <%=tableName%> + "\" WHERE <%=updateWhereStmt.toString()%>");	
 	
-	    java.sql.PreparedStatement pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement("INSERT INTO "+<%=tableName%>+" (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)");
+	    java.sql.PreparedStatement pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement("INSERT INTO \"" + <%=tableName%> + "\" (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)");
 
-	    java.sql.PreparedStatement pstmtUpdate_<%=cid %> = conn_<%=cid%>.prepareStatement("UPDATE "+<%=tableName%>+" SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>");
+	    java.sql.PreparedStatement pstmtUpdate_<%=cid %> = conn_<%=cid%>.prepareStatement("UPDATE \"" + <%=tableName%> + "\" SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>");
 
 	<%
 	}else if (dataAction.equals("UPDATE_OR_INSERT")){
 	%>
-	    java.sql.PreparedStatement pstmtUpdate_<%=cid %> = conn_<%=cid%>.prepareStatement("UPDATE "+<%=tableName%>+" SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>");
+	    java.sql.PreparedStatement pstmtUpdate_<%=cid %> = conn_<%=cid%>.prepareStatement("UPDATE \"" + <%=tableName%> + "\" SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>");
 
-	    java.sql.PreparedStatement pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement("INSERT INTO "+<%=tableName%>+" (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)");
+	    java.sql.PreparedStatement pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement("INSERT INTO \"" + <%=tableName%> + "\" (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)");
 		
 	<%
 			
 	}else if (dataAction.equals("DELETE")){
 	%>
 	
-	    java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("DELETE  FROM "+<%=tableName%>+"	 WHERE <%=updateWhereStmt.toString()%>");
+	    java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("DELETE FROM \"" + <%=tableName%> + "\" WHERE <%=updateWhereStmt.toString()%>");
 
 	<%		
 	}
 }
 
 if(ElementParameterParser.getValue(node,"__USE_COMMIT_CONTROL__").equals("true")){// if use commit control
-   if(!useExistingConn.equals("true")) {
-    if(!commitEvery.equals("")&&!commitEvery.equals("0")){
-        %>
-    
-        int commitEvery_<%=cid%> = <%=commitEvery%>;
+    if(!useExistingConn.equals("true")) {
+        if(!commitEvery.equals("")&&!commitEvery.equals("0")){
+            %>
         
-        int commitCounter_<%=cid%> = 0;
-        
-        conn_<%=cid%>.setAutoCommit(false);
-        <%
+            int commitEvery_<%=cid%> = <%=commitEvery%>;
+            
+            int commitCounter_<%=cid%> = 0;
+            
+            conn_<%=cid%>.setAutoCommit(false);
+            <%
+        }
     }
-   }
 }
 %>
 

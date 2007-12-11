@@ -131,7 +131,7 @@ if(columnList != null && columnList.size()>0){
         } else if(tableAction.equals("CLEAR")) {
             %>
             java.sql.Statement stmtClear_<%=cid%> = conn_<%=cid%>.createStatement();
-            deletedCount_<%=cid%> = deletedCount_<%=cid%> + stmtClear_<%=cid%>.executeUpdate("delete from [" + <%=tableName%> + "]");
+            deletedCount_<%=cid%> = deletedCount_<%=cid%> + stmtClear_<%=cid%>.executeUpdate("<%=manager.getDeleteTableSQL()%>");
             <%
         }
     }

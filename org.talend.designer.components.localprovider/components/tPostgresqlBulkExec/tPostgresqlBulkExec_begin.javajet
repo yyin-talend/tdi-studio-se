@@ -9,132 +9,34 @@ imports="
     org.talend.core.model.metadata.MappingTypeRetriever    
     java.util.List
     java.util.ArrayList    
-    java.util.Map    
+    java.util.Map
+    java.util.HashMap
 " 
+skeleton="../templates/db_output_bulk.skeleton"
 %>
 <%
-class PostgreManager {
-    public String getCreateTableSQL(String tableName, List<IMetadataColumn> listColumn, String dbmsId) {
-        MappingTypeRetriever mappingType = MetadataTalendType.getMappingTypeRetriever(dbmsId);
-        StringBuilder createTableSQL = new StringBuilder();
-        String newTableName = null;                        
-        createTableSQL.append("CREATE TABLE \" + " + tableName + " + \"(");
-        List<String> pkList = new ArrayList<String>();
-        int count = 0;
-        String ending = ",";
-        for(IMetadataColumn metadataColumn : listColumn) {
-            if(metadataColumn.isKey()) {
-                pkList.add("\\\"" + metadataColumn.getOriginalDbColumnName() + "\\\"");
-            }
-            createTableSQL.append("\\\"" + metadataColumn.getOriginalDbColumnName() + "\\\" ");
-            String dataType = null;
-            if(metadataColumn.getType() == null || metadataColumn.getType().trim().length() == 0) {
-                dataType = mappingType.getDefaultSelectedDbType(metadataColumn.getTalendType());
-            } else {
-                dataType = metadataColumn.getType();
-            }
-            createTableSQL.append(dataType);
-            Integer length = metadataColumn.getLength() == null ? 0 : metadataColumn.getLength();
-            Integer precision = metadataColumn.getPrecision() == null ? 0 : metadataColumn.getPrecision();
-            boolean lengthIgnored = mappingType.isLengthIgnored(dbmsId, dataType);
-            boolean precisionIgnored = mappingType.isPrecisionIgnored(dbmsId, dataType);
-            String prefix = "";
-            String suffix = "";
-            String comma = "";
-            if(mappingType.isPreBeforeLength(dbmsId, dataType)) {
-                if(!precisionIgnored) {
-                    prefix = "(";
-                    suffix = ") ";
-                    createTableSQL.append(prefix + precision);
-                }
-                if(!lengthIgnored) {
-                    prefix = (prefix.equals("") ? "(" : prefix);
-                    suffix = (suffix.equals("") ? ") " : suffix);
-                    if(precisionIgnored) {
-                        createTableSQL.append(prefix);
-                        comma = "";
-                    } else {
-                        comma = ",";
-                    }
-                    createTableSQL.append(comma + length);
-                }
-                createTableSQL.append(suffix);
-            } else {
-                if(!lengthIgnored) {
-                    prefix = "(";
-                    suffix = ") ";
-                    createTableSQL.append(prefix + length);
-                }
-                if(!precisionIgnored) {
-                    prefix = (prefix.equals("") ? "(" : prefix);
-                    suffix = (suffix.equals("") ? ") " : suffix);
-                    if(lengthIgnored) {
-                        createTableSQL.append(prefix);
-                        comma = "";                        
-                    } else {
-                        comma = ",";
-                    }
-                    createTableSQL.append(comma + precision);
-                }
-                createTableSQL.append(suffix);
-            }
-            createTableSQL.append(getDefaultValueSQL(metadataColumn.getDefault()));
-            if(!metadataColumn.isNullable()) {
-                createTableSQL.append("not null");
-            }
-            if(count == listColumn.size() - 1 && pkList.size() == 0) {
-                ending = "";
-            }
-            createTableSQL.append(ending);
-            count++;
-        }
-        if(pkList.size() > 0) {                
-            createTableSQL.append("primary key(");                
-            int i = 0;                
-            for(String pk : pkList) {                    
-                createTableSQL.append(pk);                    
-                if(i != pkList.size() - 1) {                        
-                    createTableSQL.append(",");                        
-                }                    
-                i++;                    
-            }                
-            createTableSQL.append(")");                
-        }
-        createTableSQL.append(")");
-        return createTableSQL.toString();
-    }
-    private String getDefaultValueSQL(String defaultValue) {
-        if(defaultValue == null || defaultValue.equals("\"\"") || defaultValue.equals("")) {
-            return " ";
-        } else if((defaultValue.startsWith("\"") || defaultValue.startsWith("'")) && (defaultValue.endsWith("\"") || defaultValue.endsWith("'"))) {
-            return "default '" + defaultValue.substring(1,defaultValue.length() - 1) + "' ";
-        } else if(defaultValue.equalsIgnoreCase("null")) {
-            return "default null ";
-        } else {
-            return "default " + defaultValue + " ";
-        }            
-    }        
-}
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 String table = ElementParameterParser.getValue(node, "__TABLE__");
 String dbSchema = ElementParameterParser.getValue(node, "__SCHEMA_DB__");
 StringBuilder tableName = new StringBuilder();
+%>
+String tableName_<%=cid%> = null;
+<%
 if(dbSchema == null || dbSchema.equals("") || dbSchema.equals("\"\"")) {
-    tableName.append("\"\\\"\" + " + table + " + \"\\\"\"");
+    tableName.append("\\\"\" + " + table + " + \"\\\"");
+    %>
+    tableName_<%=cid%> = <%=table%>;
+    <%
 } else {
-    tableName.append("\"\\\"\" + " + dbSchema + " + \"\\\"\"" + " + \".\" + " + "\"\\\"\" + " + table + " + \"\\\"\"");
+    tableName.append("\\\"\" + " + dbSchema + " + \"\\\".\\\"\" + " + table + " + \"\\\"");
+    %>
+    tableName_<%=cid%> = <%=dbSchema%> + "\".\"" + <%=table%>;
+    <%
 }
 String file = ElementParameterParser.getValue(node, "__FILENAME__");
-List<IMetadataColumn> columnList = null;
-List<IMetadataTable> metadatas = node.getMetadataList();
-if(metadatas !=null && metadatas.size()>0) {
-    IMetadataTable metadata = metadatas.get(0);
-    if(metadata != null) {
-        columnList = metadata.getListColumns();
-    }
-}
+List<IMetadataColumn> columnList = getColumnList(node);
 StringBuilder copyColumns = new StringBuilder("");
 if(columnList != null && columnList.size() > 0) {
     copyColumns.append(" (");
@@ -166,7 +68,7 @@ if(notNullCols != null && notNullCols.size() > 0) {
     }
 }
 %>
-String bulkSQL_<%=cid%> = "COPY " + <%=tableName.toString()%> + "<%=copyColumns.toString()%>FROM '" + <%=file%> + "' WITH ";
+String bulkSQL_<%=cid%> = "COPY " + "<%=tableName.toString()%>" + "<%=copyColumns.toString()%>FROM '" + <%=file%> + "' WITH ";
 <%
 String fileType = ElementParameterParser.getValue(node, "__FILETYPE__");
 String oids = (ElementParameterParser.getValue(node, "__OIDS__").equals("true") ? "OIDS" : "");
@@ -202,18 +104,19 @@ java.sql.Connection con_<%=cid %> = java.sql.DriverManager.getConnection("jdbc:p
 String tableAction = ElementParameterParser.getValue(node,"__TABLE_ACTION__");
 String dbmsId = ElementParameterParser.getValue(node,"__MAPPING__");
 if(columnList != null && columnList.size() > 0) {
-    PostgreManager manager = new PostgreManager();
+    List<Column> stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, null);
+    Manager manager = getManager(dbmsId, cid);
     if(tableAction.equals("DROP_CREATE")) {
         %>
         java.sql.Statement stmtDrop_<%=cid%> = con_<%=cid%>.createStatement();
-        stmtDrop_<%=cid%>.execute("drop table " + <%=tableName.toString()%>);
+        stmtDrop_<%=cid%>.execute("<%=manager.getDropTableSQL()%>");
         java.sql.Statement stmtCreate_<%=cid%> = con_<%=cid%>.createStatement();
-        stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(tableName.toString(), columnList, dbmsId)%>");
+        stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
         <%
     } else if(tableAction.equals("CREATE")) {
         %>
         java.sql.Statement stmtCreate_<%=cid%> = con_<%=cid%>.createStatement();
-        stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(tableName.toString(), columnList, dbmsId)%>");
+        stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
         <%
     } else if(tableAction.equals("CREATE_IF_NOT_EXISTS")) {
         %>
@@ -222,20 +125,20 @@ if(columnList != null && columnList.size() > 0) {
         boolean whetherExist_<%=cid%> = false;
         while(rsTable_<%=cid%>.next()) {
             String table_<%=cid%> = rsTable_<%=cid%>.getString("TABLE_NAME");
-            if(table_<%=cid%>.equalsIgnoreCase(<%=tableName%>)) {
+            if(table_<%=cid%>.equalsIgnoreCase(<%=table%>)) {
                 whetherExist_<%=cid%> = true;
                 break;
             }
         }
         if(!whetherExist_<%=cid%>) {
             java.sql.Statement stmtCreate_<%=cid%> = con_<%=cid%>.createStatement();
-            stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(tableName.toString(), columnList, dbmsId)%>");            
+            stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");            
         }
         <%
     } else if(tableAction.equals("CLEAR")) {
         %>
         java.sql.Statement stmtClear_<%=cid%> = con_<%=cid%>.createStatement();
-        stmtClear_<%=cid%>.executeUpdate("truncate table " + <%=tableName.toString()%>);
+        stmtClear_<%=cid%>.executeUpdate("<%=manager.getTruncateTableSQL()%>");
         <%
     }    
 }

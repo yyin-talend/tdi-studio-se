@@ -125,6 +125,21 @@ public class CLASS {
         public Manager(String cid) {
             this.cid = cid;
         }
+        public String getSelectionSQL() {
+            StringBuilder selectionSQL = new StringBuilder();
+            selectionSQL.append("SELECT COUNT(1) FROM " + getLProtectedChar() + "\" + tableName_" + cid + " + \"" + getRProtectedChar());
+            return selectionSQL.toString();
+        }
+        public String getDeleteTableSQL() {
+            StringBuilder deleteTableSQL = new StringBuilder();
+            deleteTableSQL.append("DELETE FROM " + getLProtectedChar() + "\" + tableName_" + cid + " + \"" + getRProtectedChar());
+            return deleteTableSQL.toString();
+        }
+        public String getTruncateTableSQL() {
+            StringBuilder truncateTableSQL = new StringBuilder();
+            truncateTableSQL.append("TRUNCATE TABLE " + getLProtectedChar() + "\" + tableName_" + cid + " + \"" + getRProtectedChar());
+            return truncateTableSQL.toString();
+        }
         public String getDropTableSQL() {
             StringBuilder dropTableSQL = new StringBuilder();
             dropTableSQL.append("DROP TABLE " + getLProtectedChar() + "\" + tableName_" + cid + " + \"" + getRProtectedChar());
