@@ -745,10 +745,10 @@ class SybaseManager extends Manager {
         return "sybase_id";
     }
     protected String getLProtectedChar() {
-        return "\\\"";
+        return "";
     }
     protected String getRProtectedChar() {
-        return "\\\"";
+        return "";
     }
 }
 class ODBCManager extends Manager {
