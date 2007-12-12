@@ -1,0 +1,68 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.metadata.IMetadataTable
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.core.model.process.IConnection
+    org.talend.core.model.process.EConnectionType
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+    java.util.Map
+"
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+        int column_number = 0;
+        for (IMetadataColumn column: metadata.getListColumns()) {
+%>
+use constant <%=cid%>__<%=column.getLabel() %> => <%=column_number%>;
+<%
+            column_number++;
+        }
+
+
+
+        List<? extends IConnection> incomingConnections = node.getIncomingConnections();
+        if (incomingConnections != null && !incomingConnections.isEmpty()) {
+            for(IConnection inConn: incomingConnections){
+                EConnectionType connectionType = inConn.getLineStyle();
+                if (connectionType == EConnectionType.FLOW_MAIN) {
+                    IMetadataTable inMetadata = inConn.getMetadataTable();
+                    column_number = 0;
+                    String inConnName = inMetadata.getTableName();
+                    for (IMetadataColumn column: inMetadata.getListColumns()) {
+%>
+use constant <%=inConnName %>__<%=column.getLabel() %> => <%=column_number%>;
+<%
+                        column_number++;
+                    }
+                }
+                else if(connectionType == EConnectionType.FLOW_REF){
+                    IMetadataTable inMetadata = inConn.getMetadataTable();
+                    column_number = 0;
+                    String inConnName = inMetadata.getTableName();
+                    for (IMetadataColumn column: inMetadata.getListColumns()) {
+%>
+use constant <%=inConn.getName() %>__<%=column.getLabel() %> => <%=column_number%>;
+<%
+                        column_number++;
+                    }
+                }
+            }
+        }
+%>
+
+
+<%
+    }
+}
+%>

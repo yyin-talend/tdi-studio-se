@@ -1,0 +1,179 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.IConnection
+    org.talend.core.model.process.EConnectionType
+    org.talend.core.model.process.INode 
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.metadata.IMetadataColumn 
+    org.talend.core.model.process.ElementParameterParser 
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+    java.util.Map
+    java.util.HashMap
+"
+%>
+
+
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    
+    String inConnName = "" ;
+        
+    String useSchemaKey = ElementParameterParser.getValue(
+        node, 
+        "__USE_SCHEMA_KEY__"
+    );
+
+    String useInnerJoin = ElementParameterParser.getValue(
+        node, 
+        "__USE_INNER_JOIN__"
+    );
+
+        
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+        HashMap<String, String> hIsInputCol = new HashMap<String, String>();
+        List<? extends IConnection> inConns = node.getIncomingConnections();
+        IMetadataTable inMetadata = metadatas.get(0);
+        if (inConns != null && !inConns.isEmpty()) {
+            for (IConnection inConn: inConns ){
+                EConnectionType connectionType = inConn.getLineStyle();
+                if (connectionType == EConnectionType.FLOW_MAIN) {
+                    inMetadata = inConn.getMetadataTable();
+                    inConnName = inMetadata.getTableName();
+                    for(IMetadataColumn column: inMetadata.getListColumns()){
+                        String isTrue = "true" ;
+                        hIsInputCol.put(column.getLabel(), isTrue);
+                    }//hIsInputCol
+                    break;
+                }//FLOW_MAIN
+            }//inConn
+                
+        }//inConns
+
+        for (IConnection outConn: node.getOutgoingConnections("FLOW")) {
+%>
+$branch_<%=outConn.getName()%>_is_active = true;
+<%
+        }
+
+        for (IConnection outConn: node.getOutgoingConnections("REJECT")) {
+%>
+$branch_<%=outConn.getName()%>_is_active = false;
+<%
+        }
+%>
+
+my $<%=cid%> = [
+
+<%
+        for (IMetadataColumn column: metadata.getListColumns()) {
+            String isInputCol = hIsInputCol.get(column.getLabel()); 
+            if(isInputCol != null){
+%>
+    $<%=inConnName%>->[<%=inConnName%>__<%=column.getLabel() %>],
+<%
+            }
+            else {
+%>
+    undef,
+<%
+            }
+        }
+%>
+];
+
+my $key_<%=cid%> = join(
+    $;,
+<%
+        if(useSchemaKey.equals("true")){
+            int i = 0;
+            for (IMetadataColumn column: inMetadata.getListColumns()) {
+                if (column.isKey()) {
+%>
+    $<%=inConnName%>->[<%=i%>],
+<% 
+                }
+                i++;
+            }
+        }//useSchemaKey
+        else {
+            List<Map<String, String>> joinKey =
+                (List<Map<String,String>>)ElementParameterParser.getObjectValue(
+                    node,
+                    "__JOIN_KEY__"
+            );
+        
+            for(int i=0; i<joinKey.size(); i++) {
+                Map<String, String> joinColumn = joinKey.get(i);
+%>
+    $<%=inConnName%>->[<%=inConnName%>__<%=joinColumn.get("INPUT_COLUMN")%>],
+<%
+            }
+        }//not useSchemaKey
+%>
+);
+<%
+        if (inConns != null && !inConns.isEmpty()) {
+            for (IConnection inConn: inConns ){
+                EConnectionType connectionType = inConn.getLineStyle();
+                if (connectionType == EConnectionType.FLOW_REF) {
+%>
+
+my $ref_lookup_row_<%=inConn.getName() %> ;
+$ref_lookup_row_<%=inConn.getName() %> ||= $tHash_<%=inConn.getName() %>{
+    $key_<%=cid%>
+};
+# $ref_lookup_row_<%=inConn.getName() %> is defined after dereferencing due to
+# autovivification
+my $has_matching_row_<%=inConn.getName() %> = 
+    defined($ref_lookup_row_<%=inConn.getName() %>);
+
+<%
+            List<Map<String, String>> lookupCols =
+                (List<Map<String,String>>)ElementParameterParser.getObjectValue(
+                    node,
+                    "__LOOKUP_COLS__"
+            );
+        
+            for(int i=0; i<lookupCols.size(); i++) {
+                Map<String, String> column = lookupCols.get(i);
+%>
+    $<%=cid%>->[<%=cid%>__<%=column.get("OUTPUT_COLUMN")%>] = 
+        $ref_lookup_row_<%=inConn.getName() %>->[
+                    <%=inConn.getName() %>__<%=column.get("LOOKUP_COLUMN")%>
+                ],
+<%
+            }
+%>
+
+
+my $useInnerJoin_<%=cid%> = <%=useInnerJoin.equals("true")%> ;
+if(
+       !$has_matching_row_<%=inConn.getName() %> and 
+       $useInnerJoin_<%=cid%> 
+  ){
+<%
+                    for (IConnection outConn: node.getOutgoingConnections("FLOW")) {
+%>
+    $branch_<%=outConn.getName()%>_is_active = false;
+<%
+                    }
+
+                    for (IConnection outConn: node.getOutgoingConnections("REJECT")) {
+%>
+    $branch_<%=outConn.getName()%>_is_active = true;
+<%
+                    }
+                }//FLOW_REF
+            }//inConn
+        }//inConns
+    }//metadata != null
+}//metadatas !=null
+%>
+}# key not matching
