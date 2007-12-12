@@ -15,19 +15,19 @@ INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 String fileName = ElementParameterParser.getValue(node,"__FILENAME__");
 %>
-String fileName_<%=cid%> = (new java.io.File(<%=fileName%>)).getAbsolutePath();
+String fileName_<%=cid%> = (new java.io.File(<%=fileName%>)).getAbsolutePath().replace("\\","/");
 String fullName_<%=cid%> = null;
 String extension_<%=cid%> = null;
 String directory_<%=cid%> = null;
-if(fileName_<%=cid%>.indexOf("\\") != -1) {
-    if(fileName_<%=cid%>.lastIndexOf(".") < fileName_<%=cid%>.lastIndexOf("\\")) {
+if((fileName_<%=cid%>.indexOf("/") != -1)) {
+    if(fileName_<%=cid%>.lastIndexOf(".") < fileName_<%=cid%>.lastIndexOf("/")) {
         fullName_<%=cid%> = fileName_<%=cid%>;
         extension_<%=cid%> = "";
     } else {
         fullName_<%=cid%> = fileName_<%=cid%>.substring(0, fileName_<%=cid%>.lastIndexOf("."));
         extension_<%=cid%> = fileName_<%=cid%>.substring(fileName_<%=cid%>.lastIndexOf("."));
     }           
-    directory_<%=cid%> = fileName_<%=cid%>.substring(0, fileName_<%=cid%>.lastIndexOf("\\"));;              
+    directory_<%=cid%> = fileName_<%=cid%>.substring(0, fileName_<%=cid%>.lastIndexOf("/"));            
 } else {
     if(fileName_<%=cid%>.lastIndexOf(".") != -1) {
         fullName_<%=cid%> = fileName_<%=cid%>.substring(0, fileName_<%=cid%>.lastIndexOf("."));
