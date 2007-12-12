@@ -13,18 +13,19 @@
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
-	List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
+    List<IMetadataColumn> columnList = null;
     List<IMetadataTable> metadatas = node.getMetadataList();
-    if ((metadatas!=null)&&(metadatas.size()>0)) {
-    	IMetadataTable metadata = metadatas.get(0);
-    	if (metadata!=null) {
-    		List<IMetadataColumn> columns=metadata.getListColumns();
-    		if (conns!=null && conns.size()>0) {
-%>
-	}
-	globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
-<%
-			}
-		}
-	}
+    if(metadatas != null && metadatas.size() > 0) {
+        IMetadataTable metadata = metadatas.get(0);
+        if(metadata != null) {
+            columnList = metadata.getListColumns();
+        }
+    }
+    List< ? extends IConnection> outgoingConns = node.getOutgoingSortedConnections();
+    if(columnList != null && columnList.size() > 0 && outgoingConns != null && outgoingConns.size() > 0) {
+        %>
+        }
+        globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
+        <%
+    }
 %>

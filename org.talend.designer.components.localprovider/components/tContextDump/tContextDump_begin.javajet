@@ -5,6 +5,7 @@
 		org.talend.core.model.metadata.IMetadataTable 
         org.talend.core.model.metadata.IMetadataColumn 
         org.talend.core.model.process.IConnection
+        org.talend.core.model.process.IConnectionCategory
 		java.util.List
 		java.util.Enumeration
 	"
@@ -13,28 +14,31 @@
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
-	List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
+    List<IMetadataColumn> columnList = null;
     List<IMetadataTable> metadatas = node.getMetadataList();
-    if ((metadatas!=null)&&(metadatas.size()>0)) {
-    	IMetadataTable metadata = metadatas.get(0);
-    	if (metadata!=null) {
-    		List<IMetadataColumn> columns=metadata.getListColumns();
-    		if (conns!=null && conns.size()>0) {
-    			IConnection conn = conns.get(0);
-%>
-	java.util.List<String> assignList_<%=cid %> = new java.util.ArrayList<String>();
-	int nb_line_<%=cid %> = 0;
-	
-	for( java.util.Enumeration<?> en_<%=cid %> = context.propertyNames();en_<%=cid %>.hasMoreElements();)
-    {
-        nb_line_<%=cid %>++;
-        Object key_<%=cid %> = en_<%=cid %>.nextElement();
-        Object value_<%=cid %> = context.getProperty(key_<%=cid %>.toString());
-    	
-       	<%=conn.getName()%>.<%=columns.get(0).getLabel()%> = key_<%=cid %>.toString();
-       	<%=conn.getName()%>.<%=columns.get(1).getLabel()%> = value_<%=cid %>.toString();
-<%
-			}
-		}
-	}
+    if(metadatas != null && metadatas.size() > 0) {
+        IMetadataTable metadata = metadatas.get(0);
+        if(metadata != null) {
+            columnList = metadata.getListColumns();
+        }
+    }
+    List< ? extends IConnection> outgoingConns = node.getOutgoingSortedConnections();
+    if(columnList != null && columnList.size() > 0 && outgoingConns != null && outgoingConns.size() > 0) {
+        %>
+        int nb_line_<%=cid %> = 0;
+        java.util.List<String> assignList_<%=cid %> = new java.util.ArrayList<String>();
+        for( java.util.Enumeration<?> en_<%=cid %> = context.propertyNames() ; en_<%=cid %>.hasMoreElements() ; ) {        
+            nb_line_<%=cid %>++;
+            Object key_<%=cid %> = en_<%=cid %>.nextElement();
+            Object value_<%=cid %> = context.getProperty(key_<%=cid %>.toString());
+            <%
+            for(IConnection outgoingConn : outgoingConns) {
+                if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+                    %>
+                    <%=outgoingConn.getName()%>.<%=columnList.get(0).getLabel()%> = key_<%=cid %>.toString();
+                    <%=outgoingConn.getName()%>.<%=columnList.get(1).getLabel()%> = value_<%=cid %>.toString();
+                    <%
+                }
+            }
+    }
 %>
