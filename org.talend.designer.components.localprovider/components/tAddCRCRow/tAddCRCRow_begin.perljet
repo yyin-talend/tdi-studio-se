@@ -17,5 +17,15 @@ String crcType = ElementParameterParser.getValue(
     node,
     "__CRC_TYPE__"
 );
+
+if (crcType.startsWith("crc")) {
 %>
 use Digest::CRC qw/<%=crcType%>/;
+<%
+}
+else if (crcType.startsWith("md5")) {
+%>
+use Digest::MD5 qw(<%=crcType%>);
+<%
+}
+%>

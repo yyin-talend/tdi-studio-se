@@ -61,6 +61,8 @@
         <ITEM NAME="CRC8" VALUE="crc8" />
         <ITEM NAME="CRC16" VALUE="crc16" />
         <ITEM NAME="CRC32" VALUE="crc32" />
+        <ITEM NAME="MD5_BASE64" VALUE="md5_base64" />
+        <ITEM NAME="MD5_HEX" VALUE="md5_hex" />
       </ITEMS>
     </PARAMETER>
 
@@ -68,7 +70,8 @@
 
   <CODEGENERATION>
     <IMPORTS>
-      <IMPORT NAME="Digest-CRC" MODULE="Digest::CRC" REQUIRED="true" />
+      <IMPORT NAME="Digest-CRC" MODULE="Digest::CRC" REQUIRED="false" />
+      <IMPORT NAME="Digest-MD5" MODULE="Digest::MD5" REQUIRED="false" />
     </IMPORTS>
   </CODEGENERATION>
 
