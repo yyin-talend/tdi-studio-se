@@ -98,7 +98,7 @@
       NUM_ROW="6"
       REQUIRED="true"
     >
-      <DEFAULT>"employee"</DEFAULT>
+      <DEFAULT>""</DEFAULT>
     </PARAMETER>
 
 
@@ -117,7 +117,7 @@
       NUM_ROW="9"
       REQUIRED="true"
     >
-      <DEFAULT>"C:/mssql_bulk.txt"</DEFAULT>
+      <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/out.csv"</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
@@ -126,7 +126,7 @@
       NUM_ROW="10"
       REQUIRED="true"
     >
-      <DEFAULT>";"</DEFAULT>
+      <DEFAULT>","</DEFAULT>
     </PARAMETER>
     
    <PARAMETER

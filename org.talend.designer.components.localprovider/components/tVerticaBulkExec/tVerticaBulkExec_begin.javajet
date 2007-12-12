@@ -44,7 +44,7 @@ String table = ElementParameterParser.getValue(node, "__TABLE__");
     String dbmsId = ElementParameterParser.getValue(node,"__MAPPING__");
     %>
     java.sql.Statement stmt_<%=cid %> = conn_<%=cid %>.createStatement();
-    stmt_<%=cid %>.execute("COPY " + <%=db%> + "." + <%=table%> + " FROM '" + <%=file%> + "' WITH DELIMITER '" + <%=field_separator%> + "' DIRECT");
+    stmt_<%=cid %>.execute("COPY " + <%=db%> + "." + <%=table%> + " FROM '" + <%=file%> + "' WITH DELIMITER '" + <%=field_separator%> + "' NULL '"+<%=null_string%>+"' DIRECT");
     stmt_<%=cid %>.close();
     conn_<%=cid %>.close();
 

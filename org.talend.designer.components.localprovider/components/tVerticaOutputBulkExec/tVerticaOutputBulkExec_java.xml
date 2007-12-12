@@ -103,7 +103,7 @@
       NUM_ROW="6"
       REQUIRED="true"
     >
-      <DEFAULT>"C:/temp/mssql_data.txt"</DEFAULT>
+      <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/out.csv"</DEFAULT>
     </PARAMETER>
     
     <PARAMETER
