@@ -146,12 +146,12 @@ public class CodeGenerator implements ICodeGenerator {
         // generate Assembly Code for individual Components
         StringBuffer componentsCode = new StringBuffer();
 
-        long startTimer = Calendar.getInstance().getTimeInMillis();
+        long startTimer = System.currentTimeMillis();
         long endTimer = startTimer;
         try {
             while ((!CodeGeneratorEmittersPoolFactory.isInitialized()) && ((endTimer - startTimer) < INIT_TIMEOUT)) {
                 Thread.sleep(INIT_PAUSE);
-                endTimer = Calendar.getInstance().getTimeInMillis();
+                endTimer = System.currentTimeMillis();
             }
         } catch (InterruptedException e) {
             log.error(e.getMessage(), e);
