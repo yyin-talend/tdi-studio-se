@@ -95,8 +95,14 @@ if(sizeOps>0){
                 				if(column.getLabel().equals(funin[1])){
                                     //
                                     //end
-                				    %>
-                				    <%="list".equals(funin[0])?"String":JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable()) %> <%=funin[1] %>_<%=funin[0] %>;
+                				    %>                    				    
+                    				    <% if("distinct".equals(funin[0])) { %> 
+                    				    		java.util.Set <%=funin[1] %>_<%=funin[0] %> = new java.util.HashSet(); 
+                    				    <% } else if("list".equals(funin[0])) {%>
+                    				    		String <%=funin[1] %>_<%=funin[0] %>;
+                    				    <% } else {%> 
+                    				    		<%=JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable()) %> <%=funin[1] %>_<%=funin[0] %>;
+                    				    <% } %>                                   
                                     <%//start
                                     //
     								break;

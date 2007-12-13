@@ -321,6 +321,13 @@ operation_result_<%=cid %>.<%=funin[1] %>_list + "," + <%=conn.getName() %>.<%=f
 <%//start
 //
 			}
+			if(funin[0].equals("distinct")){
+//
+//end%>
+operation_result_<%=cid %>.<%=funin[1] %>_distinct.add(<%=conn.getName() %>.<%=funin[1] %>);
+<%//start
+//
+			}			
 		}
 //
 //end%>	
