@@ -3,8 +3,7 @@ imports="
    org.talend.core.model.process.INode 
    org.talend.core.model.process.ElementParameterParser 
    org.talend.core.model.process.IConnection
-   org.talend.core.model.metadata.IMetadataTable 
-   org.talend.core.model.metadata.IMetadataColumn 
+   org.talend.core.model.process.IConnectionCategory    
    org.talend.designer.codegen.config.CodeGeneratorArgument
    java.util.List
    java.util.Map
@@ -25,22 +24,19 @@ imports="
     );
     
 	List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
-	String firstConnName = "";
-	if (conns!=null) {
-		if (conns.size()>0) {
-			IConnection conn = conns.get(0);
-			firstConnName = conn.getName();
-%>
-
-	globalMap.put("NB_LINE", <%=nbRows%>);
-
-	for (int i_<%=cid%>=0;i_<%=cid%><<%=nbRows%>;i_<%=cid%>++) {
-<%
-			for (Map<String, String> tableValue : tableValues) {
-%>
-        <%=firstConnName%>.<%=tableValue.get("SCHEMA_COLUMN") %> = <%=tableValue.get("VALUE")%>;
-<%
-			}
-		}
+	if(tableValues != null && tableValues.size() > 0 && conns != null && conns.size() > 0) {
+	    %>
+	    globalMap.put("NB_LINE", <%=nbRows%>);
+	    for (int i_<%=cid%> = 0 ; i_<%=cid%> < <%=nbRows%> ; i_<%=cid%>++) {
+	        <%
+    	    for(IConnection conn : conns) {
+    	        if(conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+    	            for(Map<String, String> tableValue : tableValues) {
+        	            %>
+        	            <%=conn.getName()%>.<%=tableValue.get("SCHEMA_COLUMN")%> = <%=tableValue.get("VALUE")%>;
+        	            <%
+    	            }
+    	        }
+    	    }
 	}
 %>
