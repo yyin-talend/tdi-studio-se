@@ -130,9 +130,10 @@ public class NodePerformanceEditPart extends AbstractGraphicalEditPart implement
             Dimension size = label.getPreferredSize();
             nodePerf.setSize(size);
             Point loc = nodePerf.getLocation();
-
-            Rectangle rectangle = new Rectangle(loc, size);
-            ((GraphicalEditPart) getParent()).setLayoutConstraint(this, label, rectangle);
+            if (getParent() != null) {
+                Rectangle rectangle = new Rectangle(loc, size);
+                ((GraphicalEditPart) getParent()).setLayoutConstraint(this, label, rectangle);
+            }
         }
     }
 
