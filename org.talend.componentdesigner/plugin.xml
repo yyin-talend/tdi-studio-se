@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+<extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="org.talend.componentdesigner.ui.Perspective"
+            id="org.talend.componentdesigner.perspective"
+            name="DesignerPerspective">
+      </perspective>
+</extension>   
+ <extension point="org.eclipse.ui.perspectiveExtensions">
+  <perspectiveExtension
+	targetID="org.talend.componentdesigner.perspective">
+    	<view id="org.eclipse.ui.views.ResourceNavigator"
+        	relative="org.eclipse.ui.editorss"
+    		relationship="left"
+    		ratio="0.30"
+    		closeable="true"
+        />	
+  </perspectiveExtension>  
+</extension>
+<extension point="org.eclipse.ui.newWizards"> 
+      <category
+          id="org.talend.componentdesigner.wizard" 
+           name="Component Designer"> 
+      </category> 
+      <wizard
+          id="org.talend.componentdesigner.wizard.componentproject" 
+           name="Component Designer Project" 
+          category="org.talend.componentdesigner.wizard" 
+          icon="./icons/component_wizard.gif" 
+          class="org.talend.componentdesigner.ui.wizard.ComponentProjectWizard"> 
+          <description> 
+              Create a simple component designer project and set initial content
+          </description> 
+           <selection class="org.eclipse.core.resources.IResource"/>          
+      </wizard> 
+   </extension> 
+</plugin>
