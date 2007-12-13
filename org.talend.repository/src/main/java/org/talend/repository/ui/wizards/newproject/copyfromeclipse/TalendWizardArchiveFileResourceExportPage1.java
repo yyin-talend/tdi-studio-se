@@ -22,16 +22,23 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.ide.DialogUtil;
+import org.eclipse.ui.internal.ide.IDEWorkbenchMessages;
 import org.eclipse.ui.internal.ide.dialogs.ResourceTreeAndListGroup;
 import org.eclipse.ui.internal.wizards.datatransfer.DataTransferMessages;
 import org.eclipse.ui.internal.wizards.datatransfer.IDataTransferHelpContextIds;
@@ -50,6 +57,12 @@ public class TalendWizardArchiveFileResourceExportPage1 extends WizardArchiveFil
 
     private ResourceTreeAndListGroup resourceGroup;
 
+    private final static String SELECT_TYPES_TITLE = IDEWorkbenchMessages.WizardTransferPage_selectTypes;
+
+    private final static String SELECT_ALL_TITLE = IDEWorkbenchMessages.WizardTransferPage_selectAll;
+
+    private final static String DESELECT_ALL_TITLE = IDEWorkbenchMessages.WizardTransferPage_deselectAll;
+
     public TalendWizardArchiveFileResourceExportPage1(IStructuredSelection selection) {
         super(selection);
         this.initialResourceSelection = selection;
@@ -67,7 +80,7 @@ public class TalendWizardArchiveFileResourceExportPage1 extends WizardArchiveFil
         composite.setFont(parent.getFont());
 
         myCreateResourcesGroup(composite);
-        createButtonsGroup(composite);
+        myCreateButtonsGroup(composite);
 
         createDestinationGroup(composite);
 
@@ -86,8 +99,7 @@ public class TalendWizardArchiveFileResourceExportPage1 extends WizardArchiveFil
         setControl(composite);
 
         giveFocusToDestination();
-        PlatformUI.getWorkbench().getHelpSystem().setHelp(getControl(),
-                IDataTransferHelpContextIds.ZIP_FILE_EXPORT_WIZARD_PAGE);
+        PlatformUI.getWorkbench().getHelpSystem().setHelp(getControl(), IDataTransferHelpContextIds.ZIP_FILE_EXPORT_WIZARD_PAGE);
     }
 
     protected void myCreateResourcesGroup(Composite parent) {
@@ -105,10 +117,10 @@ public class TalendWizardArchiveFileResourceExportPage1 extends WizardArchiveFil
             }
         }
 
-        this.resourceGroup = new ResourceTreeAndListGroup(parent, input, getResourceProvider(IResource.FOLDER
-                | IResource.PROJECT), WorkbenchLabelProvider.getDecoratingWorkbenchLabelProvider(),
-                getResourceProvider(IResource.FILE), WorkbenchLabelProvider.getDecoratingWorkbenchLabelProvider(),
-                SWT.NONE, DialogUtil.inRegularFontMode(parent));
+        this.resourceGroup = new ResourceTreeAndListGroup(parent, input,
+                getResourceProvider(IResource.FOLDER | IResource.PROJECT), WorkbenchLabelProvider
+                        .getDecoratingWorkbenchLabelProvider(), getResourceProvider(IResource.FILE), WorkbenchLabelProvider
+                        .getDecoratingWorkbenchLabelProvider(), SWT.NONE, DialogUtil.inRegularFontMode(parent));
 
         ICheckStateListener listener = new ICheckStateListener() {
 
@@ -171,6 +183,59 @@ public class TalendWizardArchiveFileResourceExportPage1 extends WizardArchiveFil
                 return new Object[0];
             }
         };
+    }
+
+    protected final void myCreateButtonsGroup(Composite parent) {
+
+        Font font = parent.getFont();
+
+        // top level group
+        Composite buttonComposite = new Composite(parent, SWT.NONE);
+        buttonComposite.setFont(parent.getFont());
+
+        GridLayout layout = new GridLayout();
+        layout.numColumns = 3;
+        layout.makeColumnsEqualWidth = true;
+        buttonComposite.setLayout(layout);
+        buttonComposite.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_FILL | GridData.HORIZONTAL_ALIGN_FILL));
+
+        // types edit button
+        Button selectTypesButton = createButton(buttonComposite, IDialogConstants.SELECT_TYPES_ID, SELECT_TYPES_TITLE, false);
+
+        SelectionListener listener = new SelectionAdapter() {
+
+            public void widgetSelected(SelectionEvent e) {
+                handleTypesEditButtonPressed();
+            }
+        };
+        selectTypesButton.addSelectionListener(listener);
+        selectTypesButton.setFont(font);
+        setButtonLayoutData(selectTypesButton);
+
+        Button selectButton = createButton(buttonComposite, IDialogConstants.SELECT_ALL_ID, SELECT_ALL_TITLE, false);
+
+        listener = new SelectionAdapter() {
+
+            public void widgetSelected(SelectionEvent e) {
+                resourceGroup.setAllSelections(true);
+            }
+        };
+        selectButton.addSelectionListener(listener);
+        selectButton.setFont(font);
+        setButtonLayoutData(selectButton);
+
+        Button deselectButton = createButton(buttonComposite, IDialogConstants.DESELECT_ALL_ID, DESELECT_ALL_TITLE, false);
+
+        listener = new SelectionAdapter() {
+
+            public void widgetSelected(SelectionEvent e) {
+                resourceGroup.setAllSelections(false);
+            }
+        };
+        deselectButton.addSelectionListener(listener);
+        deselectButton.setFont(font);
+        setButtonLayoutData(deselectButton);
+
     }
 
 }
