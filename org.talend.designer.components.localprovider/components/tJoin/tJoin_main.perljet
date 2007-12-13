@@ -170,10 +170,12 @@ if(
     $branch_<%=outConn.getName()%>_is_active = true;
 <%
                     }
+%>
+}# key not matching
+<%
                 }//FLOW_REF
             }//inConn
         }//inConns
     }//metadata != null
 }//metadatas !=null
 %>
-}# key not matching
