@@ -56,6 +56,10 @@ public class DeleteNodeContainerCommand extends Command {
             boolean builtIn = node.getConnectorFromType(EConnectionType.FLOW_MAIN).isBuiltIn()
                     | node.getConnectorFromType(EConnectionType.TABLE).isBuiltIn();
             for (Connection connection : inputList) {
+                // see bug 0002633: "rejects" link disappears at times.
+                connection.getSourceNodeConnector().setCurLinkNbOutput(
+                        connection.getSourceNodeConnector().getCurLinkNbOutput() - 1);
+
                 Node prevNode = (Node) connection.getSource();
                 if (!nodeList.contains(prevNode)) {
                     INodeConnector nodeConnector = prevNode.getConnectorFromType(connection.getLineStyle());
