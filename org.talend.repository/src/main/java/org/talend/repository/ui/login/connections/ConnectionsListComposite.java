@@ -114,6 +114,7 @@ public class ConnectionsListComposite extends Composite {
                 super.setTableViewerCreatorOptions(newTableViewerCreator);
                 newTableViewerCreator.setHeaderVisible(false);
                 newTableViewerCreator.setVerticalScroll(true);
+                newTableViewerCreator.setReadOnly(true);
             }
 
             @Override
