@@ -292,17 +292,17 @@ public class CLASS {
                             if(additionColumn.get("POS").equals("AFTER")) {
                                 Column insertAfter = getColumn("\" + " + additionColumn.get("NAME") + " + \"", "\" + " + additionColumn.get("SQL") + " + \"", true);
                                 insertAfter.setDataType(additionColumn.get("DATATYPE"));
-                                insertAfter.setOperator(additionColumn.get("OPERATOR"));
+                                insertAfter.setOperator("=");
                                 stmtStructure.add(stmtIndex+1, insertAfter);
                             } else if(additionColumn.get("POS").equals("BEFORE")) {
                                 Column insertBefore = getColumn("\" + " + additionColumn.get("NAME") + " + \"", "\" + " + additionColumn.get("SQL") + " + \"", true);
                                 insertBefore.setDataType(additionColumn.get("DATATYPE"));
-                                insertBefore.setOperator(additionColumn.get("OPERATOR"));
+                                insertBefore.setOperator("=");
                                 stmtStructure.add(stmtIndex, insertBefore);
                             } else if(additionColumn.get("POS").equals("REPLACE")) {
                                 Column replacementCol = getColumn("\" + " + additionColumn.get("NAME") + " + \"", "\" + " + additionColumn.get("SQL") + " + \"", true);
                                 replacementCol.setDataType(additionColumn.get("DATATYPE"));
-                                replacementCol.setOperator(additionColumn.get("OPERATOR"));
+                                replacementCol.setOperator("=");
                                 Column replacedCol = (Column) stmtStructure.get(stmtIndex);
                                 replacedCol.replace(replacementCol);
                             }
