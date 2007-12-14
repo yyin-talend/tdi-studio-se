@@ -425,5 +425,9 @@
             class="org.talend.designer.core.ui.editor.properties.controllers.generator.AS400CheckGenerator"
             mapping="AS400_CHECK"
             name="AS400 SqlSyntax"/>
+     <generator
+            class="org.talend.designer.core.ui.editor.properties.controllers.generator.CommandGenerator"
+            mapping="COMMAND"
+            name="Command"/>     
    </extension>
 </plugin>
