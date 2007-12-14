@@ -66,6 +66,15 @@
     >
     	<DEFAULT>"10"</DEFAULT>
     </PARAMETER>
+    
+    <PARAMETER
+      NAME="TIMEOUT"
+      FIELD="TEXT"
+      SHOW="true"
+      NUM_ROW="20" 
+    >
+    	<DEFAULT>"1000"</DEFAULT>
+    </PARAMETER>
 
 	<PARAMETER
       NAME="ROWSEPARATOR"

@@ -78,7 +78,9 @@ java.io.BufferedReader in<%=cid%>;
 java.io.PrintWriter out<%=cid%>;
 
 ss<%=cid%> = new java.net.ServerSocket(<%=port%>);
-ss<%=cid%>.setSoTimeout(<%=timeout%>);
+<%if(!timeout.equals("")){%>
+    ss<%=cid%>.setSoTimeout(<%=timeout%>);
+<%}%>
 boolean done<%=cid%> = true;
 while (done<%=cid%>) {
    socket<%=cid%> = ss<%=cid%>.accept();

@@ -26,6 +26,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         String port = ElementParameterParser.getValue(node,"__PORT__").replace("\"", "");
         String host = ElementParameterParser.getValue(node,"__HOST__");
         String retry = ElementParameterParser.getValue(node,"__RETRY__").replace("\"","");
+        String timeout = ElementParameterParser.getValue(node,"__TIMEOUT__").replace("\"","");
         boolean compress = ElementParameterParser.getValue(node,"__COMPRESS__").equals("true");
         boolean dieOnError = ElementParameterParser.getValue(node,"__DIE_ON_ERROR__").equals("true");
 %>    
@@ -56,7 +57,7 @@ for(int i=0;i<<%=retry%>-1;i++){
             socket<%=cid%> = new java.net.Socket(<%=host%>,<%=port%>);
             retry<%=cid%> = false;
         }catch(java.net.ConnectException e<%=cid%>){
-            
+            Thread.sleep(<%=timeout%>);
         }
     }
 }
