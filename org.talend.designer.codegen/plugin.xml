@@ -27,5 +27,14 @@
       		serviceId="ICodeGeneratorService"
       		class="org.talend.designer.codegen.CodeGeneratorService"/>
    </extension>
+   <extension
+         id="CodeGenInit"
+         point="org.eclipse.core.runtime.applications">
+      <application>
+         <run
+               class="org.talend.designer.codegen.CodeGenInit">
+         </run>
+      </application>
+   </extension>
    
 </plugin>
