@@ -25,6 +25,7 @@ String db = ElementParameterParser.getValue(node, "__DBNAME__");
 String user = ElementParameterParser.getValue(node, "__USER__");
 String pas = ElementParameterParser.getValue(node, "__PASS__");
 String table = ElementParameterParser.getValue(node, "__TABLE__");
+boolean ros = ElementParameterParser.getValue(node, "__ROS__").equals("true");
 
     List<IMetadataColumn> columnList = null;
     List<IMetadataTable> metadatas = node.getMetadataList();
@@ -44,7 +45,7 @@ String table = ElementParameterParser.getValue(node, "__TABLE__");
     String dbmsId = ElementParameterParser.getValue(node,"__MAPPING__");
     %>
     java.sql.Statement stmt_<%=cid %> = conn_<%=cid %>.createStatement();
-    stmt_<%=cid %>.execute("COPY " + <%=db%> + "." + <%=table%> + " FROM '" + <%=file%> + "' WITH DELIMITER '" + <%=field_separator%> + "' NULL '"+<%=null_string%>+"' DIRECT");
+    stmt_<%=cid %>.execute("COPY " + <%=db%> + "." + <%=table%> + " FROM '" + <%=file%> + "' WITH DELIMITER '" + <%=field_separator%> + "' NULL '"+<%=null_string%>+"'"<%if(ros){%>+" DIRECT"<%}%>);
     stmt_<%=cid %>.close();
     conn_<%=cid %>.close();
 

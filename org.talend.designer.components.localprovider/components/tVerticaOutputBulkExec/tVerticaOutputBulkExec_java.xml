@@ -96,6 +96,14 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+    
+    <PARAMETER
+      NAME="ROS"
+      FIELD="CHECK"
+      NUM_ROW="5"
+    >
+      <DEFAULT>true</DEFAULT>
+    </PARAMETER>
 
     <PARAMETER
       NAME="FILENAME"
@@ -121,7 +129,7 @@
       NUM_ROW="7"
       REPOSITORY_VALUE="NULL_STRING"
     >
-      <DEFAULT>"\n"</DEFAULT>
+      <DEFAULT>"null"</DEFAULT>
     </PARAMETER>
     
     <PARAMETER 
@@ -188,6 +196,7 @@
       <TEMPLATE_PARAM SOURCE="self.FIELDSEPARATOR"   TARGET="tMBE.FIELDS_TERMINATED_BY" />
       <TEMPLATE_PARAM SOURCE="self.NULL_STRING"   TARGET="tMBE.MULL_STRING" />
       <TEMPLATE_PARAM SOURCE="self.MAPPING"   TARGET="tMBE.MAPPING" />
+      <TEMPLATE_PARAM SOURCE="self.ROS"   TARGET="tMBE.ROS" />
       
       
 
