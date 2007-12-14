@@ -625,6 +625,13 @@ public class Node extends Element implements INode {
                                         .getLineStyle() == EConnectionType.FLOW_MERGE)) && (inputTable.getListColumns().size() != 0))) {
                             // For the auto propagate.
                             MetadataTool.copyTable(inputTable, targetTable);
+
+                            ChangeMetadataCommand cmc = new ChangeMetadataCommand(this, null, null, targetTable);
+                            CommandStack cmdStack = getCommandStack();
+                            if (cmdStack != null) {
+                                cmdStack.execute(cmc);
+                            }
+
                             ColumnListController.updateColumnList(this, null, true);
                         }
                     }
@@ -767,8 +774,11 @@ public class Node extends Element implements INode {
                                 columnToSave.add(column);
                             }
                         }
-                        originTable.getListColumns().clear();
-                        originTable.getListColumns().addAll(columnToSave);
+
+                        // code commented for major 2635.
+                        //
+                        // originTable.getListColumns().clear();
+                        // originTable.getListColumns().addAll(columnToSave);
                         originTable.sortCustomColumns();
                     }
                 }
@@ -1053,9 +1063,11 @@ public class Node extends Element implements INode {
             for (int j = 0; j < getIncomingConnections().size() && !runIf; j++) {
                 connec = (Connection) getIncomingConnections().get(j);
                 if (connec.isActivate()) {
-                    if ((connec.getLineStyle().equals(EConnectionType.RUN_IF)
-                            || connec.getLineStyle().equals(EConnectionType.RUN_IF_ERROR) || connec.getLineStyle().equals(
-                            EConnectionType.RUN_IF_OK))) {
+                    if ((connec.getLineStyle().equals(EConnectionType.RUN_IF) || connec.getLineStyle().equals(
+                            EConnectionType.ON_COMPONENT_ERROR) /*
+                     * || connec.getLineStyle().equals(
+                     * EConnectionType.RUN_IF_OK)
+                     */)) {
                         runIf = true;
                     }
                     if (!runIf) {
@@ -1445,10 +1457,11 @@ public class Node extends Element implements INode {
         // not a sub process start
         if (!isSubProcessStart() || (!(Boolean) getPropertyValue(EParameterName.STARTABLE.getName()))) {
             if (/*
-                 * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_AFTER) > 0) ||
-                 * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_BEFORE) > 0)||
-                 */
-            (getCurrentActiveLinksNbOutput(EConnectionType.THEN_RUN) > 0)) {
+             * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_AFTER) > 0) ||
+             * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_BEFORE) > 0)||
+             */
+            (getCurrentActiveLinksNbOutput(EConnectionType.ON_SUBJOB_OK) > 0)
+                    || getCurrentActiveLinksNbOutput(EConnectionType.ON_SUBJOB_ERROR) > 0) {
                 String errorMessage = "A component that is not a sub process start can not have any link run after / run before in output.";
                 Problems.add(ProblemStatus.ERROR, this, errorMessage);
             }
@@ -1458,12 +1471,12 @@ public class Node extends Element implements INode {
         // not a sub process start
         if ((!isELTComponent() && !isSubProcessStart()) || (!(Boolean) getPropertyValue(EParameterName.STARTABLE.getName()))) {
             if (/*
-                 * (getCurrentActiveLinksNbInput(EConnectionType.RUN_AFTER) > 0) ||
-                 * (getCurrentActiveLinksNbInput(EConnectionType.RUN_BEFORE) > 0) ||
-                 */(getCurrentActiveLinksNbInput(EConnectionType.THEN_RUN) > 0)
+             * (getCurrentActiveLinksNbInput(EConnectionType.RUN_AFTER) > 0) ||
+             * (getCurrentActiveLinksNbInput(EConnectionType.RUN_BEFORE) > 0) ||
+             */(getCurrentActiveLinksNbInput(EConnectionType.ON_SUBJOB_OK) > 0)
                     || (getCurrentActiveLinksNbInput(EConnectionType.RUN_IF) > 0)
-                    || (getCurrentActiveLinksNbInput(EConnectionType.RUN_IF_OK) > 0)
-                    || (getCurrentActiveLinksNbInput(EConnectionType.RUN_IF_ERROR) > 0)) {
+                    /* || (getCurrentActiveLinksNbInput(EConnectionType.RUN_IF_OK) > 0) */
+                    || (getCurrentActiveLinksNbInput(EConnectionType.ON_COMPONENT_ERROR) > 0)) {
                 String errorMessage = "A component that is not a sub process start can only have a data link or iterate link in input.";
                 Problems.add(ProblemStatus.ERROR, this, errorMessage);
             }
