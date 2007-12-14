@@ -134,6 +134,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>sum_<%=column_op[i][0].getLabel() %>_<%=cid %> = 0;
 <%			}
 %>count_<%=column_op[i][0].getLabel() %>_<%=cid %> = 1;
+<%		}else if(functions[i].equals("distinct")){
+%>set_<%=column_op[i][0].getLabel() %>_<%=cid %> = new java.util.HashSet();
+set_<%=column_op[i][0].getLabel() %>_<%=cid %>.add(<%=connName %>.<%=column_op[i][0].getLabel() %>);
 <%		}else{
 %>list_<%=column_op[i][0].getLabel() %>_<%=cid %> = new StringBuilder();
 list_<%=column_op[i][0].getLabel() %>_<%=cid %>.append(<%=connName %>.<%=column_op[i][0].getLabel() %>);
@@ -284,6 +287,9 @@ if(sameGroup_<%=cid %>){
 <%		}else if(functions[i].equals("list")){
 %><%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>.append(",");
 <%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>.append(<%=connName %>.<%=column_op[i][0].getLabel() %>);
+<%		}else if(functions[i].equals("distinct")){
+%>
+set_<%=column_op[i][0].getLabel() %>_<%=cid %>.add(<%=connName %>.<%=column_op[i][0].getLabel() %>);
 <%		}
 	}
 %>}else{
@@ -430,6 +436,17 @@ if(sameGroup_<%=cid %>){
 <%								}else if(javaType == JavaTypesManager.BYTE_ARRAY) {
 %><%=firstConnName %>.<%=column.getLabel() %> = (""+avg_<%=i %>_<%=cid %>).getBytes();
 <%								}
+							}else if(functions[i].equals("distinct")){
+								if(javaType == JavaTypesManager.BYTE || javaType == JavaTypesManager.CHARACTER 
+									|| javaType == JavaTypesManager.SHORT || javaType == JavaTypesManager.INTEGER 
+									|| javaType == JavaTypesManager.LONG || javaType == JavaTypesManager.FLOAT 
+									|| javaType == JavaTypesManager.DOUBLE){
+%><%=firstConnName %>.<%=column.getLabel() %> = (<%=typeToGenerate %>)set_<%=column_op[i][0].getLabel() %>_<%=cid %>.size();
+<%								}else if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
+%><%=firstConnName %>.<%=column.getLabel() %> = ""+set_<%=column_op[i][0].getLabel() %>_<%=cid %>.size();
+<%								}else if(javaType == JavaTypesManager.BYTE_ARRAY) {
+%><%=firstConnName %>.<%=column.getLabel() %> = (""+set_<%=column_op[i][0].getLabel() %>_<%=cid %>.size()).getBytes();
+<%								}
 							}else{
 %>if(<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>.toString().length() > 0) {
 <%								if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
@@ -517,6 +534,9 @@ if(sameGroup_<%=cid %>){
 %>sum_<%=column_op[i][0].getLabel() %>_<%=cid %> = 0;
 <%			}
 %>count_<%=column_op[i][0].getLabel() %>_<%=cid %> = 1;
+<%		}else if(functions[i].equals("distinct")){
+%>set_<%=column_op[i][0].getLabel() %>_<%=cid %> = new java.util.HashSet();
+set_<%=column_op[i][0].getLabel() %>_<%=cid %>.add(<%=connName %>.<%=column_op[i][0].getLabel() %>);
 <%		}else{
 %>list_<%=column_op[i][0].getLabel() %>_<%=cid %> = new StringBuilder();
 list_<%=column_op[i][0].getLabel() %>_<%=cid %>.append(<%=connName %>.<%=column_op[i][0].getLabel() %>);

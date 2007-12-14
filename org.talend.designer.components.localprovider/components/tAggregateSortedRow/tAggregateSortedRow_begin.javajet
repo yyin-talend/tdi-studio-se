@@ -113,6 +113,8 @@ if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT
 		}else if(functions[i].equals("avg")){
 %>float sum_<%=column_op[i].getLabel() %>_<%=cid %>=0;
 int count_<%=column_op[i].getLabel() %>_<%=cid %>=0;
+<%		}else if(functions[i].equals("distinct")){
+%>java.util.Set set_<%=column_op[i].getLabel() %>_<%=cid %> = null;
 <%		}else{
 %>StringBuilder list_<%=column_op[i].getLabel() %>_<%=cid %>=null;
 <%		}
