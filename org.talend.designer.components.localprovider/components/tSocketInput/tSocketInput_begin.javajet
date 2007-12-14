@@ -46,6 +46,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         String textEnclosure = textEnclosure1.substring(1,textEnclosure1.length()-1);
         if ("".equals(textEnclosure)) textEnclosure = "\0";
         if(textEnclosure.equals("'")) textEnclosure = "\\'";
+        
+        String timeout = ElementParameterParser.getValue(node, "__TIMEOUT__").replace("\"","");
 %>      
 <% if(uncompress){%>
 class Compress{
@@ -76,6 +78,7 @@ java.io.BufferedReader in<%=cid%>;
 java.io.PrintWriter out<%=cid%>;
 
 ss<%=cid%> = new java.net.ServerSocket(<%=port%>);
+ss<%=cid%>.setSoTimeout(<%=timeout%>);
 boolean done<%=cid%> = true;
 while (done<%=cid%>) {
    socket<%=cid%> = ss<%=cid%>.accept();

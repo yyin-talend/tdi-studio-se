@@ -50,6 +50,15 @@
     </PARAMETER>
     
     <PARAMETER
+      NAME="TIMEOUT"
+      FIELD="TEXT"
+      SHOW="true"
+      NUM_ROW="20" 
+    >
+    	<DEFAULT>""</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
       NAME="UNCOMPRESS"
       FIELD="CHECK"
       SHOW="true"

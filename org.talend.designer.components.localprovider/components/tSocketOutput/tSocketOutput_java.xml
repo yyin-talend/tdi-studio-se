@@ -57,6 +57,15 @@
     >
     	<DEFAULT>false</DEFAULT>
     </PARAMETER>
+    
+    <PARAMETER
+      NAME="RETRY"
+      FIELD="TEXT"
+      SHOW="true"
+      NUM_ROW="20" 
+    >
+    	<DEFAULT>"10"</DEFAULT>
+    </PARAMETER>
 
 	<PARAMETER
       NAME="ROWSEPARATOR"

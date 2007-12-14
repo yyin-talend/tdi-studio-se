@@ -25,6 +25,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         String delim = delim1.substring(1,delim1.length()-1);
         String port = ElementParameterParser.getValue(node,"__PORT__").replace("\"", "");
         String host = ElementParameterParser.getValue(node,"__HOST__");
+        String retry = ElementParameterParser.getValue(node,"__RETRY__").replace("\"","");
         boolean compress = ElementParameterParser.getValue(node,"__COMPRESS__").equals("true");
         boolean dieOnError = ElementParameterParser.getValue(node,"__DIE_ON_ERROR__").equals("true");
 %>    
@@ -45,10 +46,21 @@ class Compress{
 Compress com<%=cid%> = new Compress();
 <%}%>
 
+java.net.Socket socket<%=cid%> = null;
 int nb_line_<%=cid%> = 0;
+boolean retry<%=cid%> = true;
 
-java.net.Socket socket<%=cid%> = new java.net.Socket(<%=host%>,<%=port%>);
-
+for(int i=0;i<<%=retry%>-1;i++){
+    if(retry<%=cid%>){
+        try{
+            socket<%=cid%> = new java.net.Socket(<%=host%>,<%=port%>);
+            retry<%=cid%> = false;
+        }catch(java.net.ConnectException e<%=cid%>){
+            
+        }
+    }
+}
+    
 com.csvreader.CsvWriter CsvWriter<%=cid%> = 
    new com.csvreader.CsvWriter(
       new java.io.BufferedWriter(new java.io.OutputStreamWriter(socket<%=cid%>.getOutputStream(),<%=encoding%>)), '<%=delim%>');  
