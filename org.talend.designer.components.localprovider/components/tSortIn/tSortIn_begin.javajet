@@ -5,12 +5,9 @@ imports="
     org.talend.core.model.metadata.IMetadataTable 
     org.talend.core.model.metadata.IMetadataColumn 
     org.talend.designer.codegen.config.CodeGeneratorArgument
-    org.talend.core.model.metadata.types.JavaType
-    org.talend.core.model.metadata.types.JavaTypesManager
     org.talend.core.model.process.IConnection
-    org.talend.core.model.process.IConnectionCategory    
+    org.talend.core.model.process.IConnectionCategory
     java.util.List
-    java.util.Map
 " 
 %>
 
@@ -22,8 +19,8 @@ String cid = node.getUniqueName();
 String rowName = null;
 String origin = ElementParameterParser.getValue(node, "__ORIGIN__");
 
-	for (INode pNode : node.getProcess().getNodesOfType("tArray")) {
-		if (!pNode.getUniqueName().equals(origin + "_Array")) continue; 
+	for (INode pNode : node.getProcess().getNodesOfType("tSortOut")) {
+		if (!pNode.getUniqueName().equals(origin + "_SortOut")) continue;
 		for (IConnection conn : pNode.getIncomingConnections()) {
 			rowName = conn.getName();
 			break;
@@ -45,131 +42,60 @@ if ((node.getOutgoingSortedConnections()!=null)&&(node.getOutgoingSortedConnecti
 	outRowName = "defaultRow";
 }
 
-List<Map<String, String>> criteria = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__CRITERIA__");
-
+String isExternalSort = ElementParameterParser.getValue(node, "__EXTERNAL__");
 %>
+<%
+if(isExternalSort.equals("false")){
+%>
+<%=rowName %>Struct[] array_<%=cid %> = (<%=rowName %>Struct[]) globalMap.get("<%=origin %>");
 
-	class Comparator<%=origin %> implements java.util.Comparator<<%=rowName %>Struct> {
-		public Comparator<%=origin %>() {
-		}
+int nb_line_<%=cid %> = 0;
+
+<%=rowName %>Struct current_<%=cid %> = null;
+
+for(int i_<%=cid %> = 0; i_<%=cid %> < array_<%=cid %>.length; i_<%=cid %>++){
+	current_<%=cid %> = array_<%=cid %>[i_<%=cid %>];
 <%
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
-    IMetadataTable metadata = metadatas.get(0);
-    if (metadata!=null) {
-    	int alphaFlag = 0;
-%>
-		public int compare(<%=rowName%>Struct o1, <%=rowName%>Struct o2) {	
-<%
-	for (int i = 0 ; i < criteria.size() ; i++) {
-		Map<String, String> line = criteria.get(i);
-		String colname = line.get("COLNAME");	
-		JavaType colJavaType = null;
-		
-    	String sort = line.get("SORT");
-    	
-    	String order = line.get("ORDER");
-    	boolean asc = (order.toLowerCase().equals("asc"));
-    	
-
-		//get the Java type of that column
-		boolean result = false;
-		for (IMetadataColumn column : metadata.getListColumns()) {
-			if (column.getLabel().compareTo(colname)==0) {
-				colJavaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
-				result = true;
-				break;
-			}
-		}
-		if (result) {
-			if (colJavaType.isPrimitive()) {
-%>
-    			if (o1.<%=colname %> != o2.<%=colname %>) {
-    				return <%=(asc)?"1":"-1"%> * ((o1.<%=colname %> > o2.<%=colname %>)?1:-1);
-    			} else {
-<%
-			} else {
-				if (sort.compareTo("alpha")==0) {
-					alphaFlag++;
-%>
-        			if(o1.<%=colname %> == null && o2.<%=colname %> != null){
-        				return <%=(asc)?"1":"-1"%> * -1;
-        			}
-        			else if(o1.<%=colname %> != null && o2.<%=colname %> == null){
-        				return <%=(asc)?"1":"-1"%> * 1;
-        			}
-        			else
-        			{
-        				if(o1.<%=colname %> != null && o2.<%=colname %> != null && o1.<%=colname %>.compareTo(o2.<%=colname %>)!=0)
-        				{ 
-        					return <%=(asc)?"1":"-1"%> * (o1.<%=colname %>.compareTo(o2.<%=colname %>));
-        
-        				}
-        				else
-        				{
-<%
-				} else {
-					// try to convert column to int before the sort  
-%>
-					int o1<%=colname %>int = 0, o2<%=colname %>int = 0;
-					if(o1.<%=colname %> != null && o1.<%=colname %>.length() > 0)
-					{
-						o1<%=colname %>int = Integer.parseInt(o1.<%=colname %>);
-					}
-					if(o2.<%=colname %> != null && o2.<%=colname %>.length() > 0)
-					{
-						o2<%=colname %>int = Integer.parseInt(o2.<%=colname %>);
-					}
-					if(o1<%=colname %>int != o2<%=colname %>int)
-					{
-						return <%=(asc)?"1":"-1"%> * ((o1<%=colname %>int > o2<%=colname %>int)?1:-1);
-					}
-					else
-					{
-<%
-				}
-			}
-		} 
-		// end if result should always be true...
-	}
-%>
-								return 0;
-<%
-	for(int i = 0 ; i < alphaFlag ; i++)
-	{
-		%>
-			}
-		}
-		<%
-	}
-%>
-<%
-	for (int i = 0; i < criteria.size() - alphaFlag ; i++) {
-%>
-			}
-<%
-	}
-%>
-		}
-	}
-	
-	java.util.List<<%=rowName %>Struct> row_aref<%=origin %> = (java.util.List<<%=rowName %>Struct>) globalMap.get("<%=origin %>");
-	Comparator<%=origin %> comp<%=cid %> = new Comparator<%=origin %>();
-	<%=rowName %>Struct[] rows<%=cid %> = (<%=rowName %>Struct[]) row_aref<%=origin %>.toArray(new <%=rowName %>Struct[] {});
-	java.util.Arrays.sort(rows<%=cid %>, comp<%=cid %> );
-	int nb_line_<%=cid %> = 0;
-	
-	for (int i<%=cid %>=0; i<%=cid %><rows<%=cid %>.length;i<%=cid %>++ ) {
-<% 
+ 	IMetadataTable metadata = metadatas.get(0);
+	if (metadata!=null) {	
 	for (IMetadataColumn column : metadata.getListColumns()) { 
 %>
-	<%=outRowName %>.<%=column.getLabel() %> = rows<%=cid %>[i<%=cid %>].<%=column.getLabel() %>;
+	<%=outRowName %>.<%=column.getLabel() %> = current_<%=cid %>.<%=column.getLabel() %>;
 <%
 	}
 %>
-		// increase number of line sorted
-    	nb_line_<%=cid %>++;
+	// increase number of line sorted
+	nb_line_<%=cid %>++;
 <%
-    }
+	}
+}
+}else{
+%>
+java.util.Iterator<<%=rowName %>Struct> iterator_<%=cid %> = (java.util.Iterator<<%=rowName %>Struct>) globalMap.get("<%=origin %>");
+int nb_line_<%=cid %> = 0;
+<%=rowName %>Struct current_<%=cid %> = null;
+
+while (iterator_<%=cid %>.hasNext()) {
+	current_<%=cid %> = iterator_<%=cid %>.next();
+<%
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+ 	IMetadataTable metadata = metadatas.get(0);
+	if (metadata!=null) {	
+	for (IMetadataColumn column : metadata.getListColumns()) { 
+%>
+	<%=outRowName %>.<%=column.getLabel() %> = current_<%=cid %>.<%=column.getLabel() %>;
+<%
+	}
+%>	
+	// increase number of line sorted
+	nb_line_<%=cid %>++;
+<%
+}
+%>
+<%
+	}
 }
 %>

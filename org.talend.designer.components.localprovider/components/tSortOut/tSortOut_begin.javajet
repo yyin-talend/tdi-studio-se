@@ -1,0 +1,966 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.metadata.IMetadataColumn 
+    org.talend.core.model.metadata.types.JavaType
+    org.talend.core.model.metadata.types.JavaTypesManager
+    java.util.List
+    java.util.Map
+"
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+String destination = ElementParameterParser.getValue(node, "__DESTINATION__");
+String rowName= "";
+if ((node.getIncomingConnections()!=null)&&(node.getIncomingConnections().size()>0)) {
+	rowName = node.getIncomingConnections().get(0).getName();
+} else {
+	rowName="defaultRow";
+}
+
+List<Map<String, String>> criteria = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__CRITERIA__");
+
+String isExternalSort = ElementParameterParser.getValue(node, "__EXTERNAL__");
+
+%>
+
+<%
+if(isExternalSort.equals("false")){
+//sort in memory begin
+%>
+class Comparable<%=rowName %>Struct extends <%=rowName %>Struct implements Comparable<Comparable<%=rowName %>Struct> {
+
+	
+<%
+	List<IMetadataTable> metadatas = node.getMetadataList();
+	if ((metadatas!=null)&&(metadatas.size()>0)) {
+    	IMetadataTable metadata = metadatas.get(0);
+    	if (metadata!=null) {
+    		int alphaFlag = 0;
+%>	
+	public int compareTo(Comparable<%=rowName %>Struct other) {
+
+<%
+			for (int i = 0 ; i < criteria.size() ; i++) {
+				Map<String, String> line = criteria.get(i);
+				String colname = line.get("COLNAME");	
+				JavaType colJavaType = null;
+				String pattern = null;
+		
+    			String sort = line.get("SORT");
+    			
+    	
+    			String order = line.get("ORDER");
+    			boolean asc = (order.toLowerCase().equals("asc"));
+    			
+				boolean result = false;
+				for (IMetadataColumn column : metadata.getListColumns()) {
+					if (column.getLabel().compareTo(colname)==0) {
+						colJavaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+						pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
+						result = true;
+						break;
+					}
+				}
+				if (result) {
+					if (colJavaType.isPrimitive()) {
+						if(sort.equals("alpha")){
+%>						
+		String thisS<%=colname %> = String.valueOf(this.<%=colname %>);
+		String otherS<%=colname %> = String.valueOf(other.<%=colname %>);
+		if(!thisS<%=colname %>.equals(otherS<%=colname %>)){
+<%
+							if(asc){
+							%>
+			return thisS<%=colname %>.compareTo(otherS<%=colname %>);
+							<%
+							}else{
+							%>
+			return otherS<%=colname %>.compareTo(thisS<%=colname %>);
+							<%
+							}
+%>
+		}
+<%						
+						}else{//if(sort.equals("alpha"))
+%>
+		if (this.<%=colname %> != other.<%=colname %>) {
+<%
+							if(asc){
+								if(colJavaType == JavaTypesManager.BOOLEAN){
+%>
+			return this.<%=colname %> ? 1 : -1;
+<%
+								}else{
+%>
+			return this.<%=colname %> > other.<%=colname %> ? 1 : -1;
+<%
+								}
+							}else{
+
+								if(colJavaType == JavaTypesManager.BOOLEAN){
+%>
+			return this.<%=colname %> ? -1 : 1;
+<%
+								}else{
+%>
+			return other.<%=colname %> > this.<%=colname %> ? 1 : -1;
+<%
+								}
+							}
+%>
+		}
+<%
+						}//end of: if(sort.equals("alpha"))
+					}else{//end of: if(colJavaType.isPrimitive())
+%>
+		if(this.<%=colname %> == null && this.<%=colname %> != null){
+<%
+						if(asc){
+						%>
+			return -1;
+						<%
+						}else{
+						%>
+			return 1;
+						<%
+						}
+%>
+		}else if(this.<%=colname %> != null && this.<%=colname %> == null){
+<%
+						if(asc){
+						%>
+			return 1;
+						<%
+						}else{
+						%>
+			return -1;
+						<%
+						}
+%>
+		}else if(this.<%=colname %> != null && this.<%=colname %> != null){
+<%
+					if(colJavaType == JavaTypesManager.BIGDECIMAL){
+						if(!sort.equals("alpha")){
+						%>
+			if(!this.<%=colname %>.equals(other.<%=colname %>)){
+						<%
+							if(asc){
+							%>
+				return this.<%=colname %> >.compareTo(other.<%=colname %>);
+							<%
+							}else{
+							%>
+				return other.<%=colname %>.compareTo(this.<%=colname %>);
+							<%
+							}
+						%>
+			}
+						<%
+						}else{
+						%>
+			String thisS<%=colname %> = this.<%=colname %>.toString();
+			String otherS<%=colname %> = other.<%=colname %>.toString();
+			if(!thisS<%=colname %>.equals(otherS<%=colname %>)){
+<%
+							if(asc){
+							%>
+				return thisS<%=colname %>.compareTo(otherS<%=colname %>);
+							<%
+							}else{
+							%>
+				return otherS<%=colname %>.compareTo(thisS<%=colname %>);
+							<%
+							}
+%>
+			}
+						<%
+						}
+					}else if(colJavaType == JavaTypesManager.DATE){
+						if(!sort.equals("alpha")){
+						%>
+			long thisL<%=colname %> = this.<%=colname %>.getTime();
+			long otherL<%=colname %> = other.<%=colname %>.getTime();
+			if(thisL<%=colname %> != otherL<%=colname %>){
+						<%
+							if(asc){
+							%>
+				return thisL<%=colname %> > otherL<%=colname %> ? 1 : -1;
+							<%
+							}else{
+							%>
+				return otherL<%=colname %> > thisL<%=colname %> ? 1 : -1;
+							<%
+							}
+						%>
+			}
+						<%
+						}else{
+						%>
+			String thisS<%=colname %> = FormatterUtils.format_Date(this.<%=colname %>, <%=pattern %>);
+			String otherS<%=colname %> = FormatterUtils.format_Date(other.<%=colname %>, <%=pattern %>);
+			if(!thisS<%=colname %>.equals(otherS<%=colname %>)){
+<%
+							if(asc){
+							%>
+				return thisS<%=colname %>.compareTo(otherS<%=colname %>);
+							<%
+							}else{
+							%>
+				return otherS<%=colname %>.compareTo(thisS<%=colname %>);
+							<%
+							}
+%>
+			}
+						<%
+						}
+					}else if(colJavaType == JavaTypesManager.OBJECT){
+						if(!sort.equals("alpha")){
+						%>
+			double thisD<%=colname %> = Double.parseDouble(this.<%=colname %>.toString());
+			double otherD<%=colname %> = Double.parseDouble(other.<%=colname %>.toString());
+			if(thisD<%=colname %> != otherD<%=colname %>){
+						<%
+							if(asc){
+							%>
+				return thisD<%=colname %> > otherD<%=colname %> ? 1 : -1;
+							<%
+							}else{
+							%>
+				return otherD<%=colname %> > thisD<%=colname %> ? 1 : -1;
+							<%
+							}
+						%>
+			}
+						<%
+						}else{
+						%>
+			String thisS<%=colname %> = this.<%=colname %>.toString();
+			String otherS<%=colname %> = other.<%=colname %>.toString();
+			if(!thisS<%=colname %>.equals(otherS<%=colname %>)){
+<%
+							if(asc){
+							%>
+				return thisS<%=colname %>.compareTo(otherS<%=colname %>);
+							<%
+							}else{
+							%>
+				return otherS<%=colname %>.compareTo(thisS<%=colname %>);
+							<%
+							}
+%>
+			}
+						<%
+						}
+					}else if(colJavaType == JavaTypesManager.BYTE_ARRAY){
+						if(!sort.equals("alpha")){
+						%>
+			double thisD<%=colname %> = Double.parseDouble(new String(this.<%=colname %>));
+			double otherD<%=colname %> = Double.parseDouble(new String(other.<%=colname %>));
+			if(thisD<%=colname %> != otherD<%=colname %>){
+						<%
+							if(asc){
+							%>
+				return thisD<%=colname %> > otherD<%=colname %> ? 1 : -1;
+							<%
+							}else{
+							%>
+				return otherD<%=colname %> > thisD<%=colname %> ? 1 : -1;
+							<%
+							}
+						%>
+			}
+						<%
+						}else{
+						%>
+			String thisS<%=colname %> = new String(this.<%=colname %>);
+			String otherS<%=colname %> = new String(other.<%=colname %>);
+			if(!thisS<%=colname %>.equals(otherS<%=colname %>)){
+<%
+							if(asc){
+							%>
+				return thisS<%=colname %>.compareTo(otherS<%=colname %>);
+							<%
+							}else{
+							%>
+				return otherS<%=colname %>.compareTo(thisS<%=colname %>);
+							<%
+							}
+%>
+			}
+						<%
+						}
+					}else if(colJavaType == JavaTypesManager.STRING){
+						if(!sort.equals("alpha")){
+						%>
+			double thisD<%=colname %> = Double.parseDouble(this.<%=colname %>);
+			double otherD<%=colname %> = Double.parseDouble(other.<%=colname %>);
+			if(thisD<%=colname %> != otherD<%=colname %>){
+						<%
+							if(asc){
+							%>
+				return thisD<%=colname %> > otherD<%=colname %> ? 1 : -1;
+							<%
+							}else{
+							%>
+				return otherD<%=colname %> > thisD<%=colname %> ? 1 : -1;
+							<%
+							}
+						%>
+			}
+						<%
+						}else{
+						%>
+			if(!this.<%=colname %>.equals(other.<%=colname %>)){
+<%
+							if(asc){
+							%>
+				return this.<%=colname %>.compareTo(other.<%=colname %>);
+							<%
+							}else{
+							%>
+				return other.<%=colname %>.compareTo(this.<%=colname %>);
+							<%
+							}
+%>
+			}
+						<%
+						}
+					}else{
+					//how to compare the List(as well as others if there have)??????
+					}
+%>
+		}
+<%
+				}//end of: if (result)
+			}//end of: for (int i = 0 ; i < criteria.size() ; i++)
+		}
+%>
+		return 0;
+	}
+<%
+	}
+}
+%>
+}
+
+java.util.List<Comparable<%=rowName %>Struct> list_<%=cid %> = new java.util.ArrayList<Comparable<%=rowName %>Struct>();
+
+<%
+//sort in memory end
+}else{
+	String tempFile = ElementParameterParser.getValue(node, "__TEMPFILE__");
+//sort out of memory begin
+%>
+////////////////////////////////////
+class <%=rowName %>StructILightSerializable extends <%=rowName %>Struct implements
+                        org.talend.designer.components.thash.io.beans.ILightSerializable {
+<%
+	IMetadataTable metadata = null;
+	List<IMetadataTable> metadatas = node.getMetadataList();
+	if ((metadatas!=null)&&(metadatas.size()>0)) {
+    	metadata = metadatas.get(0);
+    	if (metadata!=null) {
+    		int alphaFlag = 0;
+%>	
+	public int compareTo(Object o) {
+		<%=rowName %>StructILightSerializable other = (<%=rowName %>StructILightSerializable) o;
+<%
+			for (int i = 0 ; i < criteria.size() ; i++) {
+				Map<String, String> line = criteria.get(i);
+				String colname = line.get("COLNAME");	
+				JavaType colJavaType = null;
+				String pattern = null;
+		
+    			String sort = line.get("SORT");
+    			
+    	
+    			String order = line.get("ORDER");
+    			boolean asc = (order.toLowerCase().equals("asc"));
+    			
+				boolean result = false;
+				for (IMetadataColumn column : metadata.getListColumns()) {
+					if (column.getLabel().compareTo(colname)==0) {
+						colJavaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+						pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
+						result = true;
+						break;
+					}
+				}
+				if (result) {
+					if (colJavaType.isPrimitive()) {
+						if(sort.equals("alpha")){
+%>						
+		String thisS<%=colname %> = String.valueOf(this.<%=colname %>);
+		String otherS<%=colname %> = String.valueOf(other.<%=colname %>);
+		if(!thisS<%=colname %>.equals(otherS<%=colname %>)){
+<%
+							if(asc){
+							%>
+			return thisS<%=colname %>.compareTo(otherS<%=colname %>);
+							<%
+							}else{
+							%>
+			return otherS<%=colname %>.compareTo(thisS<%=colname %>);
+							<%
+							}
+%>
+		}
+<%						
+						}else{//if(sort.equals("alpha"))
+%>
+		if (this.<%=colname %> != other.<%=colname %>) {
+<%
+							if(asc){
+								if(colJavaType == JavaTypesManager.BOOLEAN){
+%>
+			return this.<%=colname %> ? 1 : -1;
+<%
+								}else{
+%>
+			return this.<%=colname %> > other.<%=colname %> ? 1 : -1;
+<%
+								}
+							}else{
+
+								if(colJavaType == JavaTypesManager.BOOLEAN){
+%>
+			return this.<%=colname %> ? -1 : 1;
+<%
+								}else{
+%>
+			return other.<%=colname %> > this.<%=colname %> ? 1 : -1;
+<%
+								}
+							}
+%>
+		}
+<%
+						}//end of: if(sort.equals("alpha"))
+					}else{//if (colJavaType.isPrimitive())
+%>
+		if(this.<%=colname %> == null && this.<%=colname %> != null){
+<%
+						if(asc){
+						%>
+			return -1;
+						<%
+						}else{
+						%>
+			return 1;
+						<%
+						}
+%>
+		}else if(this.<%=colname %> != null && this.<%=colname %> == null){
+<%
+						if(asc){
+						%>
+			return 1;
+						<%
+						}else{
+						%>
+			return -1;
+						<%
+						}
+%>
+		}else if(this.<%=colname %> != null && this.<%=colname %> != null){
+<%
+					if(colJavaType == JavaTypesManager.BIGDECIMAL){
+						if(!sort.equals("alpha")){
+						%>
+			if(!this.<%=colname %>.equals(other.<%=colname %>)){
+						<%
+							if(asc){
+							%>
+				return this.<%=colname %> >.compareTo(other.<%=colname %>);
+							<%
+							}else{
+							%>
+				return other.<%=colname %>.compareTo(this.<%=colname %>);
+							<%
+							}
+						%>
+			}
+						<%
+						}else{
+						%>
+			String thisS<%=colname %> = this.<%=colname %>.toString();
+			String otherS<%=colname %> = other.<%=colname %>.toString();
+			if(!thisS<%=colname %>.equals(otherS<%=colname %>)){
+<%
+							if(asc){
+							%>
+				return thisS<%=colname %>.compareTo(otherS<%=colname %>);
+							<%
+							}else{
+							%>
+				return otherS<%=colname %>.compareTo(thisS<%=colname %>);
+							<%
+							}
+%>
+			}
+						<%
+						}
+					}else if(colJavaType == JavaTypesManager.DATE){
+						if(!sort.equals("alpha")){
+						%>
+			long thisL<%=colname %> = this.<%=colname %>.getTime();
+			long otherL<%=colname %> = other.<%=colname %>.getTime();
+			if(thisL<%=colname %> != otherL<%=colname %>){
+						<%
+							if(asc){
+							%>
+				return thisL<%=colname %> > otherL<%=colname %> ? 1 : -1;
+							<%
+							}else{
+							%>
+				return otherL<%=colname %> > thisL<%=colname %> ? 1 : -1;
+							<%
+							}
+						%>
+			}
+						<%
+						}else{
+						%>
+			String thisS<%=colname %> = FormatterUtils.format_Date(this.<%=colname %>, <%=pattern %>);
+			String otherS<%=colname %> = FormatterUtils.format_Date(other.<%=colname %>, <%=pattern %>);
+			if(!thisS<%=colname %>.equals(otherS<%=colname %>)){
+<%
+							if(asc){
+							%>
+				return thisS<%=colname %>.compareTo(otherS<%=colname %>);
+							<%
+							}else{
+							%>
+				return otherS<%=colname %>.compareTo(thisS<%=colname %>);
+							<%
+							}
+%>
+			}
+						<%
+						}
+					}else if(colJavaType == JavaTypesManager.OBJECT){
+						if(!sort.equals("alpha")){
+						%>
+			double thisD<%=colname %> = Double.parseDouble(this.<%=colname %>.toString());
+			double otherD<%=colname %> = Double.parseDouble(other.<%=colname %>.toString());
+			if(thisD<%=colname %> != otherD<%=colname %>){
+						<%
+							if(asc){
+							%>
+				return thisD<%=colname %> > otherD<%=colname %> ? 1 : -1;
+							<%
+							}else{
+							%>
+				return otherD<%=colname %> > thisD<%=colname %> ? 1 : -1;
+							<%
+							}
+						%>
+			}
+						<%
+						}else{
+						%>
+			String thisS<%=colname %> = this.<%=colname %>.toString();
+			String otherS<%=colname %> = other.<%=colname %>.toString();
+			if(!thisS<%=colname %>.equals(otherS<%=colname %>)){
+<%
+							if(asc){
+							%>
+				return thisS<%=colname %>.compareTo(otherS<%=colname %>);
+							<%
+							}else{
+							%>
+				return otherS<%=colname %>.compareTo(thisS<%=colname %>);
+							<%
+							}
+%>
+			}
+						<%
+						}
+					}else if(colJavaType == JavaTypesManager.BYTE_ARRAY){
+						if(!sort.equals("alpha")){
+						%>
+			double thisD<%=colname %> = Double.parseDouble(new String(this.<%=colname %>));
+			double otherD<%=colname %> = Double.parseDouble(new String(other.<%=colname %>));
+			if(thisD<%=colname %> != otherD<%=colname %>){
+						<%
+							if(asc){
+							%>
+				return thisD<%=colname %> > otherD<%=colname %> ? 1 : -1;
+							<%
+							}else{
+							%>
+				return otherD<%=colname %> > thisD<%=colname %> ? 1 : -1;
+							<%
+							}
+						%>
+			}
+						<%
+						}else{
+						%>
+			String thisS<%=colname %> = new String(this.<%=colname %>);
+			String otherS<%=colname %> = new String(other.<%=colname %>);
+			if(!thisS<%=colname %>.equals(otherS<%=colname %>)){
+<%
+							if(asc){
+							%>
+				return thisS<%=colname %>.compareTo(otherS<%=colname %>);
+							<%
+							}else{
+							%>
+				return otherS<%=colname %>.compareTo(thisS<%=colname %>);
+							<%
+							}
+%>
+			}
+						<%
+						}
+					}else if(colJavaType == JavaTypesManager.STRING){
+						if(!sort.equals("alpha")){
+						%>
+			double thisD<%=colname %> = Double.parseDouble(this.<%=colname %>);
+			double otherD<%=colname %> = Double.parseDouble(other.<%=colname %>);
+			if(thisD<%=colname %> != otherD<%=colname %>){
+						<%
+							if(asc){
+							%>
+				return thisD<%=colname %> > otherD<%=colname %> ? 1 : -1;
+							<%
+							}else{
+							%>
+				return otherD<%=colname %> > thisD<%=colname %> ? 1 : -1;
+							<%
+							}
+						%>
+			}
+						<%
+						}else{
+						%>
+			if(!this.<%=colname %>.equals(other.<%=colname %>)){
+<%
+							if(asc){
+							%>
+				return this.<%=colname %>.compareTo(other.<%=colname %>);
+							<%
+							}else{
+							%>
+				return other.<%=colname %>.compareTo(this.<%=colname %>);
+							<%
+							}
+%>
+			}
+						<%
+						}
+					}else{
+					//how to compare the List(as well as others if there have)?????
+					}
+%>
+		}
+<%
+				}//end of: if (result)
+			}//end of: for (int i = 0 ; i < criteria.size() ; i++)
+		}
+%>
+		return 0;
+	}
+<%
+	}
+}
+%>
+
+
+	public org.talend.designer.components.thash.io.beans.ILightSerializable createInstance(byte[] byteArray) {
+		<%=rowName %>StructILightSerializable result = new <%=rowName %>StructILightSerializable();
+		java.io.ByteArrayInputStream bai = null;
+		java.io.DataInputStream dis = null;
+
+		try {
+			bai = new java.io.ByteArrayInputStream(byteArray);
+			dis = new java.io.DataInputStream(bai);
+<%
+if(metadata != null){
+	List<IMetadataColumn> columnList = metadata.getListColumns();
+	boolean threeFlag = false;
+	for(int i=0; i < columnList.size(); i++){
+		IMetadataColumn column = columnList.get(i);
+		JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+		String columnName = column.getLabel();
+		if(javaType == JavaTypesManager.BOOLEAN){
+%>
+			result.<%=columnName %> = dis.readBoolean();
+<%
+		}else if(javaType == JavaTypesManager.BYTE){
+%>
+			result.<%=columnName %> = dis.readByte();
+<%
+		}else if(javaType == JavaTypesManager.CHARACTER){
+%>
+			result.<%=columnName %> = dis.readChar();
+<%
+		}else if(javaType == JavaTypesManager.DOUBLE){
+%>
+			result.<%=columnName %> = dis.readDouble();
+<%
+		}else if(javaType == JavaTypesManager.FLOAT){
+%>
+			result.<%=columnName %> = dis.readFloat();
+<%
+		}else if(javaType == JavaTypesManager.INTEGER){
+%>
+			result.<%=columnName %> = dis.readInt();
+<%
+		}else if(javaType == JavaTypesManager.LONG){
+%>
+			result.<%=columnName %> = dis.readLong();
+<%
+		}else if(javaType == JavaTypesManager.SHORT){
+%>
+			result.<%=columnName %> = dis.readShort();
+<%
+		}else{
+			boolean haveSameTypeBefore = false;
+			for(int j=0;j<i;j++){
+				if(JavaTypesManager.getJavaTypeFromId(columnList.get(j).getTalendType()) == javaType){
+					haveSameTypeBefore = true;
+					break;
+				}
+			}
+			if(javaType == JavaTypesManager.BYTE_ARRAY || javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.BIGDECIMAL || javaType == JavaTypesManager.OBJECT){
+				if(!haveSameTypeBefore && !threeFlag){
+%>
+			int length = 0;
+			byte[] bytes = null;
+<%
+					threeFlag = true;
+				}
+			}
+			if(javaType == JavaTypesManager.DATE){
+%>
+			<%=haveSameTypeBefore ? "" : "long" %> time = dis.readLong();
+			if (time == -1) {
+				result.<%=columnName %> = null;
+			} else {
+				result.<%=columnName %> = new java.util.Date(time);
+			}
+<%
+			}else if(javaType == JavaTypesManager.BYTE_ARRAY){
+%>
+			length = dis.readInt();
+			if (length == -1) {
+				result.<%=columnName %> = null;
+   		} else {
+				bytes = new byte[length];
+				dis.read(bytes);
+				result.<%=columnName %> = bytes;
+			}
+<%
+			}else if(javaType == JavaTypesManager.STRING){
+%>
+			length = dis.readInt();
+			if (length == -1) {
+				result.<%=columnName %> = null;
+   		} else {
+				bytes = new byte[length];
+				dis.read(bytes);
+				result.<%=columnName %> = new String(bytes);
+			}
+<%
+			}else if(javaType == JavaTypesManager.BIGDECIMAL){
+%>
+			length = dis.readInt();
+			if (length == -1) {
+				result.<%=columnName %> = null;
+   		} else {
+				bytes = new byte[length];
+				dis.read(bytes);
+				result.<%=columnName %> = new BigDecimal(new String(bytes));
+			}
+<%
+			}else if(javaType == JavaTypesManager.OBJECT){
+%>
+			length = dis.readInt();
+			if (length == -1) {
+				result.<%=columnName %> = null;
+   		} else {
+				bytes = new byte[length];
+				dis.read(bytes);
+				result.<%=columnName %> = new String(bytes);//make object as a String?
+			}
+<%
+			}else{
+				//what to do about the List type?
+			}
+		}
+	}
+}//end of: if(metadata != null)
+%>
+
+		} catch (java.io.IOException e) {
+			e.printStackTrace();
+		} finally {
+			if (dis != null) {
+				try {
+					dis.close();
+            } catch (java.io.IOException e) {
+            	e.printStackTrace();
+         	}
+        	}
+     	}
+
+   	return result;
+   }
+
+	public byte[] toByteArray() {
+ 		java.io.ByteArrayOutputStream bao = null;
+		java.io.DataOutputStream dos = null;
+		byte[] result = null;
+
+ 		try {
+			bao = new java.io.ByteArrayOutputStream();
+			dos = new java.io.DataOutputStream(bao);
+<%
+if(metadata != null){
+	List<IMetadataColumn> columnList = metadata.getListColumns();
+	boolean threeFlag = false;
+	for(int i=0; i < columnList.size(); i++){
+		IMetadataColumn column = columnList.get(i);
+		JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+		String columnName = column.getLabel();
+		if(javaType == JavaTypesManager.BOOLEAN){
+%>
+			dos.writeBoolean(this.<%=columnName %>);
+<%
+		}else if(javaType == JavaTypesManager.BYTE){
+%>
+			dos.writeByte(this.<%=columnName %>);
+<%
+		}else if(javaType == JavaTypesManager.CHARACTER){
+%>
+			dos.writeChar(this.<%=columnName %>);
+<%
+		}else if(javaType == JavaTypesManager.DOUBLE){
+%>
+			dos.writeDouble(this.<%=columnName %>);
+<%
+		}else if(javaType == JavaTypesManager.FLOAT){
+%>
+			dos.writeFloat(this.<%=columnName %>);
+<%
+		}else if(javaType == JavaTypesManager.INTEGER){
+%>
+			dos.writeInt(this.<%=columnName %>);
+<%
+		}else if(javaType == JavaTypesManager.LONG){
+%>
+			dos.writeLong(this.<%=columnName %>);
+<%
+		}else if(javaType == JavaTypesManager.SHORT){
+%>
+			dos.writeShort(this.<%=columnName %>);
+<%
+		}else{
+			boolean haveSameTypeBefore = false;
+			for(int j=0;j<i;j++){
+				if(JavaTypesManager.getJavaTypeFromId(columnList.get(j).getTalendType()) == javaType){
+					haveSameTypeBefore = true;
+					break;
+				}
+			}
+			if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.BIGDECIMAL || javaType == JavaTypesManager.OBJECT){
+				if(!haveSameTypeBefore && !threeFlag){
+%>
+			byte[] bytes = null;
+<%
+					threeFlag = true;
+				}
+			}
+			if(javaType == JavaTypesManager.DATE){
+%>
+			if(this.<%=columnName %> == null){
+				dos.writeLong(-1);
+			}else{
+				dos.writeLong(this.<%=columnName %>.getTime());
+			}
+<%
+			}else if(javaType == JavaTypesManager.BYTE_ARRAY){
+%>
+			if(this.<%=columnName %> == null){
+				dos.writeInt(-1);
+			}else{
+				dos.writeInt(this.<%=columnName %>.length);
+				dos.write(this.<%=columnName %>);
+			}
+<%
+			}else if(javaType == JavaTypesManager.STRING){
+%>
+			if(this.<%=columnName %> == null){
+				dos.writeInt(-1);
+			}else{
+				bytes = this.<%=columnName %>.getBytes();
+				dos.writeInt(bytes.length);
+				dos.write(bytes);
+			}
+<%
+			}else if(javaType == JavaTypesManager.BIGDECIMAL){
+%>
+			if(this.<%=columnName %> == null){
+				dos.writeInt(-1);
+			}else{
+				bytes = this.<%=columnName %>.toString().getBytes();
+				dos.writeInt(bytes.length);
+				dos.write(bytes);
+			}
+<%
+			}else if(javaType == JavaTypesManager.OBJECT){
+%>
+			if(this.<%=columnName %> == null){
+				dos.writeInt(-1);
+			}else{
+				bytes = this.<%=columnName %>.toString().getBytes();
+				dos.writeInt(bytes.length);
+				dos.write(bytes);
+			}
+<%
+			}else{
+				//what to do about the List type?
+			}
+		}
+	}
+}//end of: if(metadata != null)
+%>
+
+    	} catch (java.io.IOException e) {
+     		e.printStackTrace();
+		} finally {
+     		if (dos != null) {
+         	try {
+            		dos.close();
+           	} catch (java.io.IOException e) {
+        			e.printStackTrace();
+          	}
+        	}
+     	}
+     	result = bao.toByteArray();
+    	return result;
+  	}
+
+
+}
+// /////////////////////////////////
+
+org.talend.designer.components.thash.io.hashimpl.FlowSorterIterator<<%=rowName %>StructILightSerializable> iterator_<%=cid %> = new org.talend.designer.components.thash.io.hashimpl.FlowSorterIterator<<%=rowName %>StructILightSerializable>();
+iterator_<%=cid %>.setBufferSize(100000);
+iterator_<%=cid %>.setILightSerializable(new <%=rowName %>StructILightSerializable());
+iterator_<%=cid %>.workDirectory = <%=tempFile %>;
+iterator_<%=cid %>.initPut("");
+
+<%
+//sort out of memory end
+}
+%>
