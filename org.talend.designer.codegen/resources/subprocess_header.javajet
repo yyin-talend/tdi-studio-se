@@ -90,7 +90,7 @@ private class <%=conn.getName() %>Struct<%=templateOrigin %> {
 		if (metadata !=null) {
 			for (IMetadataColumn column: metadata.getListColumns()) {
     %>
-    	private <%= JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable()) %> <%=column.getLabel() %>;
+    	<%= JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable()) %> <%=column.getLabel() %>;
 	<%
 			}
 		}
