@@ -422,6 +422,14 @@
                style="push"
                toolbarPath="Default"
                tooltip="%exportProjectsAction.toolTip"/>
+         <action
+               class="org.talend.repository.ui.actions.importproject.DeleteProjectsAsAction"
+               icon="icons/delete.gif"
+               id="org.talend.repository.deleteProjects"
+               label="%deleteProjectsAction.title"
+               style="push"
+               toolbarPath="Default"
+               tooltip="%deleteProjectsAction.toolTip"/>
       </actionSet>
    </extension>
    <extension
