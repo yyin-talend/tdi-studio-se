@@ -91,7 +91,10 @@ public class GEFPasteAction extends SelectionAction {
         Object o = Clipboard.getDefault().getContents();
 
         org.eclipse.swt.dnd.Clipboard systemClipboard = new org.eclipse.swt.dnd.Clipboard(Display.getCurrent());
-        Object systemObject = systemClipboard.getContents(TextTransfer.getInstance());
+        Object systemObject = null;
+        if (systemClipboard != null) {
+            systemObject = systemClipboard.getContents(TextTransfer.getInstance());
+        }
 
         if (o == null && systemObject != null && systemObject instanceof String) {
             return true;
