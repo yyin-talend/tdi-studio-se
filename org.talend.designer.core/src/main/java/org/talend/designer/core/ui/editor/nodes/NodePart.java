@@ -16,7 +16,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
 
-import org.eclipse.draw2d.ChopboxAnchor;
 import org.eclipse.draw2d.ConnectionAnchor;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Point;
@@ -359,7 +358,7 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
         if (((Connection) connection.getModel()).getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)) {
             ((NodeFigure) getFigure()).addSourceConnection((ConnectionFigure) connection.getFigure());
         }
-        return new ChopboxAnchor(getFigure());
+        return new NodeAnchor(getFigure());
     }
 
     /*
@@ -371,7 +370,7 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
         if (((Connection) connection.getModel()).getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)) {
             ((NodeFigure) getFigure()).setTargetConnection((ConnectionFigure) connection.getFigure());
         }
-        return new ChopboxAnchor(getFigure());
+        return new NodeAnchor(getFigure());
     }
 
     /*
@@ -380,7 +379,7 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
      * @see org.eclipse.gef.NodeEditPart#getSourceConnectionAnchor(org.eclipse.gef.Request)
      */
     public ConnectionAnchor getSourceConnectionAnchor(final Request request) {
-        return new ChopboxAnchor(getFigure());
+        return new NodeAnchor(getFigure());
     }
 
     /*
@@ -389,7 +388,7 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
      * @see org.eclipse.gef.NodeEditPart#getTargetConnectionAnchor(org.eclipse.gef.Request)
      */
     public ConnectionAnchor getTargetConnectionAnchor(final Request request) {
-        return new ChopboxAnchor(getFigure());
+        return new NodeAnchor(getFigure());
     }
 
     @Override

@@ -89,6 +89,7 @@ public class ConnectionCreateCommand extends Command {
     }
 
     public boolean canExecute() {
+
         if (target != null) {
             if (!ConnectionManager.canConnectToTarget(source, null, target, source.getConnectorFromName(connectorName)
                     .getDefaultConnectionType(), connectorName, connectionName)) {

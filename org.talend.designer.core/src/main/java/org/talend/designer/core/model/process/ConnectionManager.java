@@ -34,6 +34,9 @@ public class ConnectionManager {
 
     private static EConnectionType newlineStyle;
 
+    // Only when you want to test issue 2593, change this field to true.
+    public static boolean allowMultiConnection = false;
+
     /**
      * 
      * Will return true if the connection can connect or not between source & target.
@@ -222,6 +225,10 @@ public class ConnectionManager {
         // if the target is the start of the (source) process, then can't connect.
         if (processStartNode.equals(newTarget)) {
             return false;
+        }
+
+        if (allowMultiConnection) {
+            return true;
         }
 
         // Modify Connection Type depending old and new target.
