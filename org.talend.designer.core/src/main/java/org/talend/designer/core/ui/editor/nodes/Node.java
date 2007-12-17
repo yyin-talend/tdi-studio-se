@@ -1063,11 +1063,9 @@ public class Node extends Element implements INode {
             for (int j = 0; j < getIncomingConnections().size() && !runIf; j++) {
                 connec = (Connection) getIncomingConnections().get(j);
                 if (connec.isActivate()) {
-                    if ((connec.getLineStyle().equals(EConnectionType.RUN_IF) || connec.getLineStyle().equals(
-                            EConnectionType.ON_COMPONENT_ERROR) /*
-                     * || connec.getLineStyle().equals(
-                     * EConnectionType.RUN_IF_OK)
-                     */)) {
+                    if ((connec.getLineStyle().equals(EConnectionType.RUN_IF)
+                            || connec.getLineStyle().equals(EConnectionType.RUN_IF_ERROR) || connec.getLineStyle().equals(
+                            EConnectionType.RUN_IF_OK))) {
                         runIf = true;
                     }
                     if (!runIf) {
@@ -1200,7 +1198,7 @@ public class Node extends Element implements INode {
             // {
             // return this;
             // }
-            // PTODO MHI / Modif à revoir avec NRO
+            // PTODO MHI / Modif 脿 revoir avec NRO
             if ((getCurrentActiveLinksNbInput(IConnectionCategory.MAIN) == 0)) {
                 return this;
             }
@@ -1399,7 +1397,7 @@ public class Node extends Element implements INode {
         return nb;
     }
 
-    // PTODO MHIRT: Modif à revoir avec NRO
+    // PTODO MHIRT: Modif 脿 revoir avec NRO
     public int getCurrentActiveLinksNbInput(int connCategory) {
         int nb = 0;
         for (Connection connection : inputs) {
@@ -1460,8 +1458,7 @@ public class Node extends Element implements INode {
              * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_AFTER) > 0) ||
              * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_BEFORE) > 0)||
              */
-            (getCurrentActiveLinksNbOutput(EConnectionType.ON_SUBJOB_OK) > 0)
-                    || getCurrentActiveLinksNbOutput(EConnectionType.ON_SUBJOB_ERROR) > 0) {
+            (getCurrentActiveLinksNbOutput(EConnectionType.THEN_RUN) > 0)) {
                 String errorMessage = "A component that is not a sub process start can not have any link run after / run before in output.";
                 Problems.add(ProblemStatus.ERROR, this, errorMessage);
             }
@@ -1473,10 +1470,10 @@ public class Node extends Element implements INode {
             if (/*
              * (getCurrentActiveLinksNbInput(EConnectionType.RUN_AFTER) > 0) ||
              * (getCurrentActiveLinksNbInput(EConnectionType.RUN_BEFORE) > 0) ||
-             */(getCurrentActiveLinksNbInput(EConnectionType.ON_SUBJOB_OK) > 0)
+             */(getCurrentActiveLinksNbInput(EConnectionType.THEN_RUN) > 0)
                     || (getCurrentActiveLinksNbInput(EConnectionType.RUN_IF) > 0)
-                    /* || (getCurrentActiveLinksNbInput(EConnectionType.RUN_IF_OK) > 0) */
-                    || (getCurrentActiveLinksNbInput(EConnectionType.ON_COMPONENT_ERROR) > 0)) {
+                    || (getCurrentActiveLinksNbInput(EConnectionType.RUN_IF_OK) > 0)
+                    || (getCurrentActiveLinksNbInput(EConnectionType.RUN_IF_ERROR) > 0)) {
                 String errorMessage = "A component that is not a sub process start can only have a data link or iterate link in input.";
                 Problems.add(ProblemStatus.ERROR, this, errorMessage);
             }
