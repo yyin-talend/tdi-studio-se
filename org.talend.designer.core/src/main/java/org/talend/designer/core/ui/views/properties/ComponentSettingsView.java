@@ -163,7 +163,15 @@ public class ComponentSettingsView extends ViewPart {
      */
     @Override
     public void setFocus() {
-
+        if (selectedPrimary) {
+            if (getViewSite() != null) {
+                getViewSite().getShell().setFocus();
+            }
+        } else {
+            if (tabFactory.getTabComposite() != null) {
+                tabFactory.getTabComposite().setFocus();
+            }
+        }
     }
 
     public boolean isCleaned() {
