@@ -10,9 +10,15 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.componentdesigner.ui.wizard;
+package org.talend.componentdesigner.ui.wizard.creatcomponent;
 
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -20,15 +26,17 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Text;
 import org.talend.componentdesigner.PluginConstant;
 import org.talend.componentdesigner.model.enumtype.LanguageType;
+import org.talend.componentdesigner.ui.wizard.PropertyChangeBean;
 
 /**
  * @author rli
  * 
  */
-public class WizardComponentProjectPage extends WizardNewProjectCreationPage {
+public class WizardComponentFolderPage extends WizardPage {
 
     private Button useJavaLangButton;
 
@@ -36,10 +44,12 @@ public class WizardComponentProjectPage extends WizardNewProjectCreationPage {
 
     private PropertyChangeBean propertyChangeBean;
 
+	private Text componentFolderText;
+
     /**
      * @param pageName
      */
-    public WizardComponentProjectPage(String pageName) {
+    public WizardComponentFolderPage(String pageName) {
         super(pageName);
         propertyChangeBean = new PropertyChangeBean();
     }
@@ -53,13 +63,39 @@ public class WizardComponentProjectPage extends WizardNewProjectCreationPage {
      * 
      * @see org.eclipse.ui.dialogs.WizardNewProjectCreationPage#createControl(org.eclipse.swt.widgets.Composite)
      */
-    @Override
     public void createControl(Composite parent) {
-        super.createControl(parent);
-        this.createProjectLangGroup((Composite) this.getControl());
+    	Composite composite = new Composite(parent, SWT.NONE);
+		composite.setLayout(new GridLayout(1, false));
+		GridData data = new GridData(GridData.FILL_BOTH);
+		composite.setLayoutData(data);
+
+		Label label = new Label(composite, SWT.NONE);
+		GridData gridData = new GridData();
+//		gridData.horizontalSpan = 1;
+		label.setLayoutData(gridData);
+		label.setText("Component Name:");
+
+		componentFolderText = new Text(composite, SWT.BORDER | SWT.LEFT);
+		gridData = new GridData(GridData.FILL_HORIZONTAL);
+//		gridData.horizontalSpan = 8;
+		componentFolderText.setLayoutData(gridData);
+		componentFolderText.addModifyListener(new ModifyListener() {
+            
+            /* (non-Javadoc)
+             * @see org.eclipse.swt.events.ModifyListener#modifyText(org.eclipse.swt.events.ModifyEvent)
+             */
+            public void modifyText(ModifyEvent e) {
+                setPageComplete(validatePage());
+                propertyChangeBean.firePropertyChange(PluginConstant.NAME_PROPERTY, null, componentFolderText.getText());
+            }
+
+        });
+		
+        this.createComponentLangGroup(composite);
+        this.setControl(composite);
     }
 
-    private void createProjectLangGroup(Composite parent) {
+    private void createComponentLangGroup(Composite parent) {
         // project specification group
         Composite langCheckGroup = new Composite(parent, SWT.NONE);
         GridLayout layout = new GridLayout();
@@ -93,7 +129,6 @@ public class WizardComponentProjectPage extends WizardNewProjectCreationPage {
      * 
      * @see org.eclipse.ui.dialogs.WizardNewProjectCreationPage#validatePage()
      */
-    @Override
     protected boolean validatePage() {
         if (useJavaLangButton != null && usePerlLangButton != null) {
             if (!(useJavaLangButton.getSelection() || usePerlLangButton.getSelection())) {
@@ -101,8 +136,22 @@ public class WizardComponentProjectPage extends WizardNewProjectCreationPage {
                 return false;
             }
         }
-        return super.validatePage();
+        IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(
+				PluginConstant.PROJECTNAME_DEFAULT);
+		IFolder componentFolder = project.getFolder(componentFolderText
+				.getText());
+		if (componentFolder.exists()) {
+			 setErrorMessage("The component has been exsit");
+             return false;
+		}
+		setErrorMessage(null);
+        return true;
     }
+    
+    public String getComponentFolderName() {
+    	
+       return componentFolderText.getText();
+	}
 
     /* (non-Javadoc)
      * @see org.eclipse.jface.wizard.WizardPage#setPageComplete(boolean)
@@ -111,7 +160,7 @@ public class WizardComponentProjectPage extends WizardNewProjectCreationPage {
     public void setPageComplete(boolean complete) {
         super.setPageComplete(complete);
         if (propertyChangeBean != null) {
-            this.propertyChangeBean.firePropertyChange(PluginConstant.NAME_PROPERTY, null, this.getProjectName());
+            this.propertyChangeBean.firePropertyChange(PluginConstant.NAME_PROPERTY, null, this.getComponentFolderName());
         }
     }
 

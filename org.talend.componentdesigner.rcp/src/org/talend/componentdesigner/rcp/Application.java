@@ -12,11 +12,16 @@
 // ============================================================================
 package org.talend.componentdesigner.rcp;
 
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
+import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
+import org.talend.componentdesigner.ui.ProjectSelectionDialog;
 
 /**
  * This class controls all aspects of the application's execution.
@@ -29,7 +34,7 @@ public class Application implements IApplication {
      * @see org.eclipse.equinox.app.IApplication#start(org.eclipse.equinox.app.IApplicationContext)
      */
     public Object start(IApplicationContext context) {
-        Display display = PlatformUI.createDisplay();
+        Display display = PlatformUI.createDisplay();        
         try {
             int returnCode = PlatformUI.createAndRunWorkbench(display, new ApplicationWorkbenchAdvisor());
             if (returnCode == PlatformUI.RETURN_RESTART) {
@@ -41,7 +46,7 @@ public class Application implements IApplication {
         }
     }
 
-    /*
+	/*
      * (non-Javadoc)
      * 
      * @see org.eclipse.equinox.app.IApplication#stop()

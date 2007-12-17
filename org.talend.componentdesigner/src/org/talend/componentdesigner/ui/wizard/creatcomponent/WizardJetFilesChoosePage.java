@@ -10,7 +10,7 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.componentdesigner.ui.wizard;
+package org.talend.componentdesigner.ui.wizard.creatcomponent;
 
 import java.util.List;
 
@@ -31,6 +31,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.talend.componentdesigner.PluginConstant;
 import org.talend.componentdesigner.model.enumtype.JetFileStamp;
+import org.talend.componentdesigner.ui.wizard.PropertyChangeBean;
 
 /**
  * @author rli
@@ -187,7 +188,7 @@ public class WizardJetFilesChoosePage extends WizardPage {
         GridData buttonGridData = new GridData();
         buttonGridData.horizontalSpan = 1;
         viewImageButton.setLayoutData(buttonGridData);
-        viewImageButton.setText("Browser..");
+        viewImageButton.setText(PluginConstant.BROWSER_LABEL);
         viewImageButton.addSelectionListener(new SelectionAdapter() {
 
             public void widgetSelected(SelectionEvent e) {
@@ -249,7 +250,7 @@ public class WizardJetFilesChoosePage extends WizardPage {
         GridData buttonGridData = new GridData();
         buttonGridData.horizontalSpan = 1;
         viewLibButton.setLayoutData(buttonGridData);
-        viewLibButton.setText("Browser..");
+        viewLibButton.setText(PluginConstant.BROWSER_LABEL);
         viewLibButton.addSelectionListener(new SelectionAdapter() {
 
             public void widgetSelected(SelectionEvent e) {
@@ -287,11 +288,11 @@ public class WizardJetFilesChoosePage extends WizardPage {
             this.setErrorMessage("Need choose which jet files to create");
             return false;
         }
-        if (browserImageButton.getSelection() && imageDirectoryText.getText().equals(PluginConstant.EMPTYSTRING)) {
+        if (browserImageButton.getSelection() && imageDirectoryText.getText().equals(PluginConstant.EMPTY_STRING)) {
             this.setErrorMessage("The image of current component haven't assigned");
             return false;
         }
-        if (addLibCheckButton.getSelection() && libDirectoryText.getText().equals(PluginConstant.EMPTYSTRING)) {
+        if (addLibCheckButton.getSelection() && libDirectoryText.getText().equals(PluginConstant.EMPTY_STRING)) {
             this.setErrorMessage("The lib of current component haven't assigned");
             return false;
         }

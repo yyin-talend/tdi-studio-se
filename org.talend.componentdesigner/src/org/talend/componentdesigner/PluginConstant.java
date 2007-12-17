@@ -18,7 +18,7 @@ package org.talend.componentdesigner;
  */
 public class PluginConstant {
 
-    public static final String EMPTYSTRING = "";
+    public static final String EMPTY_STRING = "";
 
     public static final String NAME_PROPERTY = "NAME_PROPERTY";
 
@@ -41,4 +41,12 @@ public class PluginConstant {
     public static final String JETBEGIN_STAMP = "begin";
 
     public static final String JETEND_STAMP = "end";
+    
+    public static final String BROWSER_LABEL = "Browser..";
+    
+    public static final String PROJECT_URL = "PROJECT_URL";
+
+	public static final String PROJECTCREATED_FLAG = "PROJECTCREATED_FLAG";
+	
+	public static final String PROJECTNAME_DEFAULT = "PROJECTNAME_DEFAULT";
 }

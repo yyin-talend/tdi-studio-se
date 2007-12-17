@@ -31,7 +31,7 @@ public class ImageLib {
 
     private static URL iconURL;
     
-    public static final String LICENSE_WIZ = "license_wiz.png"; //$NON-NLS-1$
+    public static final String COPYCOMPONENT = "copycomponent.gif"; //$NON-NLS-1$
 
     /**
      * get <code>ImageDescriptor</code> with special imageName.

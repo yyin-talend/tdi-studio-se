@@ -12,11 +12,18 @@
 // ============================================================================
 package org.talend.componentdesigner.rcp;
 
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchWindowAdvisor;
+import org.talend.componentdesigner.ComponentDesigenerPlugin;
+import org.talend.componentdesigner.manager.ComponentProjectManager;
+import org.talend.componentdesigner.ui.ProjectSelectionDialog;
 
 /**
  * DOC rli  class global comment. Detailled comment
@@ -42,5 +49,31 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 		configurer.setShowCoolBar(false);
 		configurer.setShowStatusLine(false);
 		configurer.setTitle("RCP Application");
+		chooseProjectLocation();
+	}
+	
+	private void chooseProjectLocation() {
+		boolean isOK = true;
+		if (!ComponentDesigenerPlugin.getDefault().isUsed()) {
+			isOK = popSelectionDiaLog(PlatformUI.getWorkbench().getDisplay()
+					.getActiveShell());
+		}
+		if (!isOK) {
+			Platform.endSplash();
+			System.exit(0);
+		}
+	}
+
+	private boolean popSelectionDiaLog(Shell activeShell) {
+        ProjectSelectionDialog dialog = new ProjectSelectionDialog(activeShell);
+        return IDialogConstants.OK_ID == dialog.open();
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.ui.application.WorkbenchWindowAdvisor#postWindowOpen()
+	 */
+	@Override
+	public void postWindowOpen() {
+		ComponentDesigenerPlugin.getDefault().checkProject();
 	}
 }
