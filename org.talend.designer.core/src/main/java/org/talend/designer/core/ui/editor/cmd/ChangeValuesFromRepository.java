@@ -156,6 +156,8 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                                 IElementParameter paramEncoding = param.getChildParameters().get(
                                         EParameterName.ENCODING_TYPE.getName());
                                 paramEncoding.setValue(EmfComponent.ENCODING_TYPE_CUSTOM);
+                            } else if (repositoryValue.equals("CSV_OPTION")) {
+                                setOtherProperties();
                             }
                             elem.setPropertyValue(param.getName(), objectValue);
                         }

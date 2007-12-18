@@ -69,8 +69,7 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
     private static final String[] ESCAPE_CHAR_DATA = { EMPTY_VALUE,
             TalendTextUtils.addQuotes("\""), TalendTextUtils.addQuotes("\'"), TalendTextUtils.addQuotes("\\\\") }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
-    private static final String[] STRING_NUMBERS_DATA = {
-            "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$ //$NON-NLS-9$ //$NON-NLS-10$ //$NON-NLS-11$ //$NON-NLS-12$ //$NON-NLS-13$
+    private static final String[] STRING_NUMBERS_DATA = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$ //$NON-NLS-9$ //$NON-NLS-10$ //$NON-NLS-11$ //$NON-NLS-12$ //$NON-NLS-13$
             "14", "15", "16", "17", "18", "19", "20" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$
 
     /**
@@ -258,8 +257,7 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
      * @param height
      */
     private void addGroupDelimitedFileSettings(final Composite mainComposite, final int width, final int height) {
-        Group group = Form.createGroup(mainComposite, 2,
-                Messages.getString("FileStep2.groupDelimitedFileSettings"), height); //$NON-NLS-1$
+        Group group = Form.createGroup(mainComposite, 2, Messages.getString("FileStep2.groupDelimitedFileSettings"), height); //$NON-NLS-1$
         Composite compositeFileDelimitor = Form.startNewDimensionnedGridLayout(group, 4, width, height);
 
         EMetadataEncoding[] values = EMetadataEncoding.values();
@@ -276,14 +274,12 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
         // new Label(compositeFileDelimitor, SWT.NONE);
 
         // Field Separator Combo & Text
-        String[] fieldSeparatorData = { FieldSeparator.SEMICOLON_LITERAL.getName(),
-                FieldSeparator.COMMA_LITERAL.getName(), FieldSeparator.TABULATION_LITERAL.getName(),
-                FieldSeparator.SPACE_LITERAL.getName(), FieldSeparator.ALT_65_LITERAL.getName(),
-                FieldSeparator.CUSTOM_ANSI_LITERAL.getName(), FieldSeparator.CUSTOM_UTF8_LITERAL.getName(),
-                FieldSeparator.CUSTOM_REG_EXP_LITERAL.getName() };
-        fieldSeparatorCombo = new LabelledCombo(compositeFileDelimitor,
-                Messages.getString("FileStep2.fieldSeparator"), Messages //$NON-NLS-1$
-                        .getString("FileStep2.fieldSeparatorDelimitedTip"), fieldSeparatorData, 1, true, SWT.READ_ONLY); //$NON-NLS-1$
+        String[] fieldSeparatorData = { FieldSeparator.SEMICOLON_LITERAL.getName(), FieldSeparator.COMMA_LITERAL.getName(),
+                FieldSeparator.TABULATION_LITERAL.getName(), FieldSeparator.SPACE_LITERAL.getName(),
+                FieldSeparator.ALT_65_LITERAL.getName(), FieldSeparator.CUSTOM_ANSI_LITERAL.getName(),
+                FieldSeparator.CUSTOM_UTF8_LITERAL.getName(), FieldSeparator.CUSTOM_REG_EXP_LITERAL.getName() };
+        fieldSeparatorCombo = new LabelledCombo(compositeFileDelimitor, Messages.getString("FileStep2.fieldSeparator"), Messages //$NON-NLS-1$
+                .getString("FileStep2.fieldSeparatorDelimitedTip"), fieldSeparatorData, 1, true, SWT.READ_ONLY); //$NON-NLS-1$
 
         fieldSeparatorText = new LabelledText(compositeFileDelimitor, "", 1, true, SWT.RIGHT); //$NON-NLS-1$
 
@@ -295,9 +291,8 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
         // Row Separator Combo & Text
         String[] rowSeparatorData = { RowSeparator.STANDART_EOL_LITERAL.getLiteral(),
                 RowSeparator.CUSTOM_STRING_LITERAL.getLiteral() };
-        rowSeparatorCombo = new LabelledCombo(compositeFileDelimitor,
-                Messages.getString("FileStep2.rowSeparator"), Messages //$NON-NLS-1$
-                        .getString("FileStep2.rowSeparatorTip"), rowSeparatorData, 1, true, SWT.READ_ONLY); //$NON-NLS-1$
+        rowSeparatorCombo = new LabelledCombo(compositeFileDelimitor, Messages.getString("FileStep2.rowSeparator"), Messages //$NON-NLS-1$
+                .getString("FileStep2.rowSeparatorTip"), rowSeparatorData, 1, true, SWT.READ_ONLY); //$NON-NLS-1$
         rowSeparatorText = new LabelledText(compositeFileDelimitor, "", 1, true, SWT.RIGHT); //$NON-NLS-1$
     }
 
@@ -314,13 +309,11 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
         info.setText(Messages.getString("FileStep2.rowsToSkipTip")); //$NON-NLS-1$
 
         // Header
-        rowsToSkipHeaderCheckboxCombo = new LabelledCheckboxCombo(compositeRowsToSkip, Messages
-                .getString("FileStep2.header"), //$NON-NLS-1$
+        rowsToSkipHeaderCheckboxCombo = new LabelledCheckboxCombo(compositeRowsToSkip, Messages.getString("FileStep2.header"), //$NON-NLS-1$
                 Messages.getString("FileStep2.headerTip"), STRING_NUMBERS_DATA, 1, true, SWT.NONE); //$NON-NLS-1$
 
         // Footer
-        rowsToSkipFooterCheckboxCombo = new LabelledCheckboxCombo(compositeRowsToSkip, Messages
-                .getString("FileStep2.footer"), //$NON-NLS-1$
+        rowsToSkipFooterCheckboxCombo = new LabelledCheckboxCombo(compositeRowsToSkip, Messages.getString("FileStep2.footer"), //$NON-NLS-1$
                 Messages.getString("FileStep2.footerTip"), STRING_NUMBERS_DATA, 1, true, SWT.NONE); //$NON-NLS-1$
 
         // Empty row
@@ -344,12 +337,17 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
     private void addGroupEscapeChar(final Composite mainComposite, final int width, final int height) {
 
         // Composite Escape Char
-        Group group = Form.createGroup(mainComposite, 2,
-                Messages.getString("FileStep2.groupEscapeCharSettings"), height); //$NON-NLS-1$
+        Group group = Form.createGroup(mainComposite, 2, Messages.getString("FileStep2.groupEscapeCharSettings"), height); //$NON-NLS-1$
         Composite compositeEscapeChar = Form.startNewDimensionnedGridLayout(group, 3, width, height);
 
         // CSV or Positionel Radio
         csvRadio = new Button(compositeEscapeChar, SWT.RADIO);
+        csvRadio.addSelectionListener(new SelectionAdapter() {
+
+            public void widgetSelected(SelectionEvent e) {
+                getConnection().setCsvOption(csvRadio.getSelection());
+            }
+        });
         csvRadio.setText(Messages.getString("FileStep2.csv")); //$NON-NLS-1$
         delimitedRadio = new Button(compositeEscapeChar, SWT.RADIO);
         delimitedRadio.setText(Messages.getString("FileStep2.delimited")); //$NON-NLS-1$
@@ -364,9 +362,8 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
         escapeCharFlag.setText("                            "); //$NON-NLS-1$
 
         // Text Enclosure Combo
-        textEnclosureCombo = new LabelledCombo(compositeEscapeChar,
-                Messages.getString("FileStep2.textEnclosure"), Messages //$NON-NLS-1$
-                        .getString("FileStep2.textEnclosureTip"), TEXT_ENCLOSURE_DATA, 1, false, SWT.READ_ONLY); //$NON-NLS-1$
+        textEnclosureCombo = new LabelledCombo(compositeEscapeChar, Messages.getString("FileStep2.textEnclosure"), Messages //$NON-NLS-1$
+                .getString("FileStep2.textEnclosureTip"), TEXT_ENCLOSURE_DATA, 1, false, SWT.READ_ONLY); //$NON-NLS-1$
         textEnclosureFlag = new Label(compositeEscapeChar, SWT.NONE);
         textEnclosureFlag.setText("                            "); //$NON-NLS-1$
 
@@ -393,9 +390,8 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
         info.setText(Messages.getString("FileStep2.groupLimitOfRowsTip")); //$NON-NLS-1$
 
         // Limit
-        rowsToSkipLimitCheckboxCombo = new LabelledCheckboxCombo(compositeLimit,
-                Messages.getString("FileStep2.limit"), Messages //$NON-NLS-1$
-                        .getString("FileStep2.limitTip"), STRING_NUMBERS_DATA, 1, true, SWT.NONE); //$NON-NLS-1$
+        rowsToSkipLimitCheckboxCombo = new LabelledCheckboxCombo(compositeLimit, Messages.getString("FileStep2.limit"), Messages //$NON-NLS-1$
+                .getString("FileStep2.limitTip"), STRING_NUMBERS_DATA, 1, true, SWT.NONE); //$NON-NLS-1$
     }
 
     /**
@@ -453,8 +449,7 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
             // Bottom Button
             Composite compositeBottomButton = Form.startNewGridLayout(this, 2, false, SWT.CENTER, SWT.CENTER);
             // Button Cancel
-            cancelButton = new UtilsButton(compositeBottomButton,
-                    Messages.getString("CommonWizard.cancel"), WIDTH_BUTTON_PIXEL, //$NON-NLS-1$
+            cancelButton = new UtilsButton(compositeBottomButton, Messages.getString("CommonWizard.cancel"), WIDTH_BUTTON_PIXEL, //$NON-NLS-1$
                     HEIGHT_BUTTON_PIXEL);
         }
     }
@@ -703,8 +698,7 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
 
             public void modifyText(final ModifyEvent e) {
                 if (!rowsToSkipHeaderCheckboxCombo.isEmpty()) {
-                    if (!rowsToSkipHeaderCheckboxCombo.isInteger()
-                            || rowsToSkipHeaderCheckboxCombo.getText().trim().equals("0")) { //$NON-NLS-1$
+                    if (!rowsToSkipHeaderCheckboxCombo.isInteger() || rowsToSkipHeaderCheckboxCombo.getText().trim().equals("0")) { //$NON-NLS-1$
                         rowsToSkipHeaderCheckboxCombo.deselectAll();
                         getConnection().setUseHeader(rowsToSkipHeaderCheckboxCombo.isChecked());
                         getConnection().setHeaderValue(0);
@@ -734,8 +728,7 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
 
             public void modifyText(final ModifyEvent e) {
                 if (!rowsToSkipFooterCheckboxCombo.isEmpty()) {
-                    if (!rowsToSkipFooterCheckboxCombo.isInteger()
-                            || rowsToSkipFooterCheckboxCombo.getText().trim().equals("0")) { //$NON-NLS-1$
+                    if (!rowsToSkipFooterCheckboxCombo.isInteger() || rowsToSkipFooterCheckboxCombo.getText().trim().equals("0")) { //$NON-NLS-1$
                         rowsToSkipFooterCheckboxCombo.deselectAll();
                         getConnection().setUseFooter(rowsToSkipFooterCheckboxCombo.isChecked());
                         getConnection().setFooterValue(0);
@@ -757,8 +750,7 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
 
             public void modifyText(final ModifyEvent e) {
                 if (!rowsToSkipLimitCheckboxCombo.isEmpty()) {
-                    if (!rowsToSkipLimitCheckboxCombo.isInteger()
-                            || rowsToSkipLimitCheckboxCombo.getText().trim().equals("0")) { //$NON-NLS-1$
+                    if (!rowsToSkipLimitCheckboxCombo.isInteger() || rowsToSkipLimitCheckboxCombo.getText().trim().equals("0")) { //$NON-NLS-1$
                         rowsToSkipLimitCheckboxCombo.deselectAll();
                         getConnection().setUseLimit(rowsToSkipLimitCheckboxCombo.isChecked());
                         getConnection().setLimitValue(0);
@@ -781,8 +773,7 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
 
             @Override
             public void widgetSelected(final SelectionEvent e) {
-                if ((!rowsToSkipHeaderCheckboxCombo.isChecked())
-                        || rowsToSkipHeaderCheckboxCombo.getText().trim().equals("0")) { //$NON-NLS-1$
+                if ((!rowsToSkipHeaderCheckboxCombo.isChecked()) || rowsToSkipHeaderCheckboxCombo.getText().trim().equals("0")) { //$NON-NLS-1$
                     firstRowIsCaptionCheckbox.setSelection(false);
                     getConnection().setFirstLineCaption(false);
                 }
@@ -966,8 +957,8 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
     @Override
     protected boolean checkFieldsValue() {
         previewInformationLabel.setText("   " + Messages.getString("FileStep2.settingsIncomplete")); //$NON-NLS-1$ //$NON-NLS-2$
-         updateStatus(IStatus.OK, null);
-         previewButton.setEnabled(false);
+        updateStatus(IStatus.OK, null);
+        previewButton.setEnabled(false);
 
         // Separator Combo (field and row)
         if ("".equals(fieldSeparatorText.getText())) { //$NON-NLS-1$

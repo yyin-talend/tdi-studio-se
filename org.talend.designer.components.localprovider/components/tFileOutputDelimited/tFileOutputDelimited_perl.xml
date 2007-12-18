@@ -68,6 +68,7 @@
       NAME="CSV_OPTION"
       FIELD="CHECK"
       REQUIRED="true"
+      REPOSITORY_VALUE="CSV_OPTION"
       NUM_ROW="41"
     >
       <DEFAULT>false</DEFAULT>
