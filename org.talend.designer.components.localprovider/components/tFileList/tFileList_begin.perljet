@@ -33,6 +33,16 @@ String include_subdir = ElementParameterParser.getValue(
     node,
     "__INCLUDE_SUBDIR__"
 );
+
+String matchDirs = ElementParameterParser.getValue(
+    node,
+    "__MATCH_DIRS__"
+);
+
+String matchFiles = ElementParameterParser.getValue(
+    node,
+    "__MATCH_FILES__"
+);
 %>
 
 use File::Spec;
@@ -44,6 +54,8 @@ my @files = getFileList(
     filemask       => filemaskToRegex(<%=filemask%>),
     case_sensitive => <%=case_sensitive%>,
     include_subdir => <%=include_subdir%>,
+    match_dirs     => <%=matchDirs%>,
+    match_files    => <%=matchFiles%>,
 );
 
 for my $filepath (@files) {
