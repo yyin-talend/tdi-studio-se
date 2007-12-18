@@ -12,25 +12,28 @@
 // ============================================================================
 package org.talend.componentdesigner.ui.action;
 
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.wizard.WizardDialog;
+import org.eclipse.jface.viewers.TreeSelection;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.navigator.CommonActionProvider;
 import org.eclipse.ui.navigator.ICommonActionExtensionSite;
 import org.eclipse.ui.navigator.ICommonViewerWorkbenchSite;
 import org.talend.componentdesigner.ImageLib;
-import org.talend.componentdesigner.ui.wizard.copycomponent.CopyComponentWizard;
+import org.talend.componentdesigner.ui.dialog.CopyComponentDialog;
+import org.talend.componentdesigner.ui.dialog.CopyComponentValidator;
 
 /**
  * @author rli
- *
+ * 
  */
-public class CopyComponentActionProvider  extends CommonActionProvider {
-//	private static final String NEW_MENU_NAME = "common.new.menu"; //$NON-NLS-1$
+public class CopyComponentActionProvider extends CommonActionProvider {
 
 	private IAction copyProjectAction;
+
+	private String selectedFolderName;
 
 	public void init(ICommonActionExtensionSite anExtensionSite) {
 
@@ -43,38 +46,36 @@ public class CopyComponentActionProvider  extends CommonActionProvider {
 	 * Adds a submenu to the given menu with the name "New Component".
 	 */
 	public void fillContextMenu(IMenuManager menu) {
-//		IMenuManager submenu = new MenuManager("New", NEW_MENU_NAME);
 		menu.insertBefore("group.edit", copyProjectAction);
-		for (IContributionItem item : menu.getItems()) {
-			if (item == null || item.getId() == null) {
-				continue;
-			}
-			if (item.getId().equals("export") || item.getId().equals("import")) {
-				menu.remove(item);
-			}
+		Object obj = ((TreeSelection) this.getContext().getSelection())
+				.getFirstElement();
+		if (obj instanceof IFolder) {
+			selectedFolderName = ((IFolder) obj).getName();
 		}
-
-		// append the submenu after the GROUP_NEW group.
-//		menu.insertAfter(ICommonMenuConstants.GROUP_NEW, submenu);
 	}
-	
+
 	/**
 	 * @author rli
-	 *
+	 * 
 	 */
 	class CopyComponentAction extends Action {
 
 		public CopyComponentAction() {
-			super("Copy Component");
-			setImageDescriptor(ImageLib.getImageDescriptor(ImageLib.COPYCOMPONENT));
+			super("Copy This Component");
+			setImageDescriptor(ImageLib
+					.getImageDescriptor(ImageLib.COPYCOMPONENT));
 		}
 
 		/*
 		 * (non-Javadoc) Method declared on IAction.
 		 */
 		public void run() {
-			CopyComponentWizard wizard = new CopyComponentWizard();
-			WizardDialog dialog = new WizardDialog(null, wizard);
+			CopyComponentValidator validator = new CopyComponentValidator();
+			CopyComponentDialog dialog = new CopyComponentDialog(PlatformUI
+					.getWorkbench().getActiveWorkbenchWindow().getShell(),
+					"Copy Component", "Input a new component name for '"
+							+ selectedFolderName + "'", selectedFolderName,
+					validator);
 			dialog.open();
 		}
 	}

@@ -14,6 +14,7 @@ package org.talend.componentdesigner.ui.action;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -23,7 +24,6 @@ import org.eclipse.ui.navigator.CommonActionProvider;
 import org.eclipse.ui.navigator.ICommonActionExtensionSite;
 import org.eclipse.ui.navigator.ICommonMenuConstants;
 import org.eclipse.ui.navigator.ICommonViewerWorkbenchSite;
-import org.talend.componentdesigner.ImageLib;
 import org.talend.componentdesigner.ui.wizard.creatcomponent.CreateComponentWizard;
 
 /**
@@ -49,6 +49,14 @@ public class NewActionProvider extends CommonActionProvider {
 	public void fillContextMenu(IMenuManager menu) {
 		IMenuManager submenu = new MenuManager("New", NEW_MENU_NAME);
 		submenu.add(newProjectAction);
+		for (IContributionItem item : menu.getItems()) {
+			if (item == null || item.getId() == null) {
+				continue;
+			}
+			if (item.getId().equals("export") || item.getId().equals("import")) {
+				menu.remove(item);
+			}
+		}
 
 		// append the submenu after the GROUP_NEW group.
 		menu.insertAfter(ICommonMenuConstants.GROUP_NEW, submenu);

@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.componentdesigner.ui.wizard.creatcomponent;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jface.wizard.WizardPage;
@@ -31,6 +32,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.talend.componentdesigner.PluginConstant;
 import org.talend.componentdesigner.model.enumtype.JetFileStamp;
+import org.talend.componentdesigner.model.enumtype.ResourceLanguageType;
 import org.talend.componentdesigner.ui.wizard.PropertyChangeBean;
 
 /**
@@ -88,6 +90,7 @@ public class WizardJetFilesChoosePage extends WizardPage {
         groupsComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
 
         creatFilesSelectionGrp(groupsComposite);
+        creatResourceLangGrp(groupsComposite);
         creatImageSelectionGrp(groupsComposite);
         creatLibSelectionGrp(groupsComposite);
 
@@ -127,6 +130,50 @@ public class WizardJetFilesChoosePage extends WizardPage {
         useEndButton.addSelectionListener(listener);
         List<JetFileStamp> jetFileTypes = JetFileStamp.findFileStamps(true, false, false);
         propertyChangeBean.firePropertyChange(PluginConstant.JETFILETYPE_PROPERTY, null, jetFileTypes);
+    }
+    
+    private void creatResourceLangGrp(Composite groupsComposite) {
+        Group resourceLangGrp = new Group(groupsComposite, SWT.NONE);
+        resourceLangGrp.setText("Choose which resource file are needed"); //$NON-NLS-1$
+        // GridDataFactory.fillDefaults().span(1, 1).grab(true, false).applyTo(
+        // filesSelectionGrp);
+        resourceLangGrp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        GridLayout groupLayout = new GridLayout(3, false);
+        resourceLangGrp.setLayout(groupLayout);
+
+        // create the language selection check button
+        final Button useDefaultResourceButton = new Button(resourceLangGrp,
+				SWT.CHECK | SWT.RIGHT);
+		useDefaultResourceButton.setText(PluginConstant.DEFAULTLANG_RESOURCE);
+		useDefaultResourceButton.setSelection(true);
+        final List<ResourceLanguageType> resourceTypes = new ArrayList<ResourceLanguageType>();
+        resourceTypes.add(ResourceLanguageType.DEFAULTRESOURCETYPE);
+        propertyChangeBean.firePropertyChange(PluginConstant.RESOURCETYPE_PROPERTY, null, resourceTypes);
+		final Button useZHResourceButton = new Button(resourceLangGrp,
+				SWT.CHECK | SWT.RIGHT);
+		useZHResourceButton.setText(PluginConstant.ZHLANG_RESOURCE);
+		final Button useFRResourceButton = new Button(resourceLangGrp,
+				SWT.CHECK | SWT.RIGHT);
+		useFRResourceButton.setText(PluginConstant.FRLANG_RESOURCE);
+
+        SelectionListener listener = new SelectionAdapter() {
+
+            public void widgetSelected(SelectionEvent e) {
+                setPageComplete(validPage());
+                Button button = ((Button) e.getSource());
+				if (button.getSelection()) {
+					resourceTypes.add(ResourceLanguageType.find(button
+							.getText()));
+				} else {
+					resourceTypes.remove(ResourceLanguageType.find(button
+							.getText()));
+				}
+                propertyChangeBean.firePropertyChange(PluginConstant.RESOURCETYPE_PROPERTY, null, resourceTypes);
+            }
+        };
+        useDefaultResourceButton.addSelectionListener(listener);
+        useZHResourceButton.addSelectionListener(listener);
+        useFRResourceButton.addSelectionListener(listener);
     }
 
     private void creatImageSelectionGrp(Composite groupsComposite) {

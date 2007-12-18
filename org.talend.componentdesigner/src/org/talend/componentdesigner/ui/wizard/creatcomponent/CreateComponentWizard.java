@@ -31,6 +31,7 @@ import org.talend.componentdesigner.manager.ComponentFolderManager;
 import org.talend.componentdesigner.model.ComponentProperty;
 import org.talend.componentdesigner.model.enumtype.JetFileStamp;
 import org.talend.componentdesigner.model.enumtype.LanguageType;
+import org.talend.componentdesigner.model.enumtype.ResourceLanguageType;
 
 /**
  * Standard workbench wizard that creates a new component project resource in the workspace. Example:
@@ -91,22 +92,33 @@ public class CreateComponentWizard extends BasicNewResourceWizard implements Pro
      */
     @SuppressWarnings("unchecked")
     public void propertyChange(PropertyChangeEvent event) {
-        if (PluginConstant.NAME_PROPERTY.equals(event.getPropertyName())) {
-            this.componentProperty.setName((String) event.getNewValue());
-        } else if (PluginConstant.LANGUAGE_PROPERTY.equals(event.getPropertyName())) {
-            this.componentProperty.setLanguageType((LanguageType) event.getNewValue());
-        } else if (PluginConstant.JETFILETYPE_PROPERTY.equals(event.getPropertyName())) {
-            this.componentProperty.setJetFileTypes((List<JetFileStamp>) event.getNewValue());
-        } else if (PluginConstant.IMAGE_PROPERTY.equals(event.getPropertyName())) {
-            this.componentProperty.setImageURL((String) event.getNewValue());
-        } else if (PluginConstant.LIBRARY_PROPERTY.equals(event.getPropertyName())) {
-            this.componentProperty.setLibFileURL((String) event.getNewValue());
-        }
-    }
+		if (PluginConstant.NAME_PROPERTY.equals(event.getPropertyName())) {
+			this.componentProperty.setName((String) event.getNewValue());
+		} else if (PluginConstant.LANGUAGE_PROPERTY.equals(event
+				.getPropertyName())) {
+			this.componentProperty.setLanguageType((LanguageType) event
+					.getNewValue());
+		} else if (PluginConstant.RESOURCETYPE_PROPERTY.equals(event
+				.getPropertyName())) {
+			this.componentProperty
+					.setResourceLanguageTypes((List<ResourceLanguageType>) event
+							.getNewValue());
+		} else if (PluginConstant.JETFILETYPE_PROPERTY.equals(event
+				.getPropertyName())) {
+			this.componentProperty.setJetFileTypes((List<JetFileStamp>) event
+					.getNewValue());
+		} else if (PluginConstant.IMAGE_PROPERTY
+				.equals(event.getPropertyName())) {
+			this.componentProperty.setImageURL((String) event.getNewValue());
+		} else if (PluginConstant.LIBRARY_PROPERTY.equals(event
+				.getPropertyName())) {
+			this.componentProperty.setLibFileURL((String) event.getNewValue());
+		}
+	}
 
     /*
-     * (non-Javadoc) Method declared on IWorkbenchWizard.
-     */
+	 * (non-Javadoc) Method declared on IWorkbenchWizard.
+	 */
     public void init(IWorkbench workbench, IStructuredSelection currentSelection) {
         super.init(workbench, currentSelection);
         setNeedsProgressMonitor(true);

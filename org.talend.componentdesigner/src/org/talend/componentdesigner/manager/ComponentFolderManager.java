@@ -19,12 +19,14 @@ import java.io.FileNotFoundException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.talend.componentdesigner.PluginConstant;
 import org.talend.componentdesigner.model.ComponentProperty;
 import org.talend.componentdesigner.model.enumtype.JetFileStamp;
+import org.talend.componentdesigner.model.enumtype.ResourceLanguageType;
 
 /**
  * @author rli
@@ -47,9 +49,53 @@ public class ComponentFolderManager {
 		this.project = project;
 		this.componentFolderName = componentFolderName;
 		this.creatJetFiles();
+		this.creatResourceFiles();
 		this.creatXmlFile();
 		this.addComponentImage();
 		this.addComponentLib();
+	}
+	
+	private void creatResourceFiles() throws CoreException {
+		for (ResourceLanguageType resourceType : this.componentProperty.getResourceLanguageTypes()) {
+			creatResourceFile(resourceType);
+		}
+	}
+
+	private void creatResourceFile(ResourceLanguageType resourceType) throws CoreException {
+		String fileName = componentProperty.getName()
+				+ resourceType.getNameSuffix();
+		creatNewFile(fileName);
+	}
+
+	/**
+	 * Copy the file resources from source component folder to destination
+	 * component folder, but the .jar/.pem file will not copy.
+	 * 
+	 * @param project
+	 * @param srcComponentFolderName
+	 * @param desComponentFolderName
+	 * @throws CoreException
+	 */
+	public void copyComponent(IProject project, String srcComponentFolderName,
+			String desComponentFolderName) throws CoreException {
+		IFolder srcFolder = project.getFolder(srcComponentFolderName);
+		IFolder desFolder = project.getFolder(desComponentFolderName);
+		if (!desFolder.exists()) {
+			desFolder.create(false, true, null);
+		}
+		for (IResource resource : srcFolder.members()) {
+			if (!(resource instanceof IFile)) {
+				continue;
+			}
+			IFile file = (IFile) resource;
+			if (file.getFileExtension().equals("jar")
+					|| file.getFileExtension().equals("pem")) {
+				continue;
+			}
+			if (file.exists()) {
+				file.copy(desFolder.getFile(file.getName()).getFullPath(), false, null);
+			}
+		}
 	}
 
 	/**
@@ -129,10 +175,6 @@ public class ComponentFolderManager {
 		}
 		IFile file = folder.getFile(path.lastSegment());
 		FileInputStream fileStream = new FileInputStream(srcURL);
-		// "c:/MyOtherData/newLogo.png");
 		file.create(fileStream, false, null);
-
-		// IWorkspace workspace = ResourcesPlugin.getWorkspace();
-		// URI uri= workspace.getRoot().getLocationURI();
 	}
 }

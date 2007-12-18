@@ -16,6 +16,7 @@ import java.util.List;
 
 import org.talend.componentdesigner.model.enumtype.JetFileStamp;
 import org.talend.componentdesigner.model.enumtype.LanguageType;
+import org.talend.componentdesigner.model.enumtype.ResourceLanguageType;
 
 /**
  * @author rli
@@ -25,6 +26,8 @@ public class ComponentProperty {
     private String name;
     
     private LanguageType languageType;
+    
+    private List<ResourceLanguageType> resourceLanguageTypes;
     
     private List<JetFileStamp> jetFileTypes;
     
@@ -52,12 +55,28 @@ public class ComponentProperty {
 	public LanguageType getLanguageType() {
 		return languageType;
 	}
+	
 
 	/**
 	 * @param languageType the languageType to set
 	 */
 	public void setLanguageType(LanguageType languageType) {
 		this.languageType = languageType;
+	}
+
+	/**
+	 * @return the resourceLanguageTypes
+	 */
+	public List<ResourceLanguageType> getResourceLanguageTypes() {
+		return resourceLanguageTypes;
+	}
+
+	/**
+	 * @param resourceLanguageTypes the resourceLanguageTypes to set
+	 */
+	public void setResourceLanguageTypes(
+			List<ResourceLanguageType> resourceLanguageTypes) {
+		this.resourceLanguageTypes = resourceLanguageTypes;
 	}
 
 	/**
