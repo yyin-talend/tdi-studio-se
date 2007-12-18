@@ -70,6 +70,9 @@
     
     public static int runJob(String[] args) {
     
+        status = "";
+        errorCode = null;
+    
         String lastStr = "";
         for (String arg : args) {
             if (arg.equalsIgnoreCase("--context_param")) {
