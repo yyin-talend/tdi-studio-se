@@ -1,5 +1,3 @@
-import org.talend.core.model.metadata.IMetadataColumn;
-
 public class CLASS {
     public static final String INSERT_COLUMN_NAME = "insertColName";
     public static final String INSERT_VALUE_STMT = "insertValueStmt";
