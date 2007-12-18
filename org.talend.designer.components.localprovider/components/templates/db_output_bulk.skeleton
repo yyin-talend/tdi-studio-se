@@ -1,4 +1,4 @@
-import java.util.List;
+import org.talend.core.model.metadata.IMetadataColumn;
 
 public class CLASS {
     public static final String INSERT_COLUMN_NAME = "insertColName";
@@ -270,7 +270,41 @@ public class CLASS {
             } else {
                 return "default " + defaultValue + " ";
             }
-        }        
+        }
+        public String getUpdateBulkSQL(List<IMetadataColumn> columnList) {
+            StringBuilder updateBulkSQL = new StringBuilder();
+            updateBulkSQL.append("UPDATE \" +  tableName_" + cid + " + \" AS a, \" + tmpTableName_" + cid + " + \" AS b SET ");
+            boolean firstKeyColumn = true;
+            boolean firstUpdateColumn = true;
+            String keySeparator = null;
+            String updateSeparator = null;
+            for(IMetadataColumn column : columnList) {
+                if(!column.isKey()) {
+                    if(firstUpdateColumn) {
+                        updateSeparator = "";
+                        firstUpdateColumn = false;
+                    } else {
+                        updateSeparator = ",";
+                    }
+                    updateBulkSQL.append(updateSeparator);
+                    updateBulkSQL.append("a." + column.getLabel() + "=b." + column.getLabel());
+                }
+            }
+            updateBulkSQL.append(" WHERE ");
+            for(IMetadataColumn column : columnList) {
+                if(column.isKey()) {
+                    if(firstKeyColumn) {
+                        keySeparator = "";
+                        firstKeyColumn = false;
+                    } else {
+                        keySeparator = " AND ";
+                    }
+                    updateBulkSQL.append(keySeparator);
+                    updateBulkSQL.append("a." + column.getLabel() + "=b." + column.getLabel());
+                }
+            }
+            return updateBulkSQL.toString();
+        }
         public List<Column> createColumnList(List<IMetadataColumn> columnList, List<Map<String, String>> addCols) {
             List<Column> stmtStructure = new ArrayList<Column>();
             for(IMetadataColumn column : columnList) {
@@ -676,7 +710,7 @@ public class CLASS {
     }
     
     public Manager getManager(String dbmsId, String cid) {
-        Manager manager = managerMap.get(dbmsId);
+        Manager manager = managerMap.get(dbmsId + cid);
         if(manager == null) {
             if(dbmsId.equalsIgnoreCase(AS400)) {
                 manager = new AS400Manager(cid);
@@ -714,7 +748,7 @@ public class CLASS {
                 manager = new VerticaManager(cid);
             }
         }
-        managerMap.put(dbmsId, manager);
+        managerMap.put(dbmsId + cid, manager);
         return manager;
     }
     
