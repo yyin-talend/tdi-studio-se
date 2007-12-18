@@ -40,9 +40,9 @@ import org.eclipse.ui.dialogs.SelectionDialog;
 import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.talend.commons.ui.swt.formtools.Form;
-import org.talend.core.i18n.Messages;
 import org.talend.core.prefs.GeneralParametersProvider;
 import org.talend.core.prefs.GeneralParametersProvider.GeneralParameters;
+import org.talend.repository.i18n.Messages;
 
 /**
  * DOC qwei class global comment. Detailled comment
@@ -70,6 +70,7 @@ public class SelectDeleteProjectDialog extends SelectionDialog {
      */
     protected SelectDeleteProjectDialog(Shell parentShell) {
         super(parentShell);
+        super.setShellStyle((SWT.APPLICATION_MODAL | SWT.DIALOG_TRIM | SWT.RESIZE | SWT.RESIZE | SWT.MIN | SWT.MAX));
         // TODO Auto-generated constructor stub
         setTitle(TITILE);
         setMessage(DEFAULTMESAGE);
@@ -93,7 +94,7 @@ public class SelectDeleteProjectDialog extends SelectionDialog {
         Composite composite = (Composite) super.createDialogArea(parent);
         composite.setFont(parent.getFont());
         createMessageArea(composite);
-        Group group = Form.createGroup(composite, 2, null, 200);
+        Group group = Form.createGroup(composite, 10, null, 300);
         Composite inner = new Composite(group, SWT.NONE);
         inner.setFont(composite.getFont());
         inner.setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -144,7 +145,7 @@ public class SelectDeleteProjectDialog extends SelectionDialog {
         });
 
         bDeselectAll = new Button(buttons, SWT.PUSH);
-        bDeselectAll.setText(Messages.getString("SelectRepositoryContextDialog.DeselectAll")); //$NON-NLS-1$
+        bDeselectAll.setText(Messages.getString("SelectDeleteProjectDialog.DeselectAll")); //$NON-NLS-1$
         bDeselectAll.setFont(parent.getFont());
         setButtonLayoutData(bDeselectAll);
         bDeselectAll.addSelectionListener(new SelectionAdapter() {
