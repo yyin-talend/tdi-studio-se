@@ -18,9 +18,13 @@ Boolean print = new Boolean(ElementParameterParser.getValue(node, "__PRINT__"));
 String differMessage = ElementParameterParser.getValue(node, "__DIFFER_MESSAGE__");
 String noDifferMessage = ElementParameterParser.getValue(node, "__NO_DIFFER_MESSAGE__");
 String fileRef = ElementParameterParser.getValue(node, "__FILE_REF__");
+String cmpMode = ElementParameterParser.getValue(node, "__COMPARISON_MODE__");
 %>
 
 boolean result_<%=cid%> = true;
+	<%
+	if(!cmpMode.equals("TEXT_CMP"))
+	{%>
 java.nio.channels.FileChannel fileChannel_<%=cid%> = new java.io.FileInputStream(<%=file%>).getChannel();
 long fileLength_<%=cid%> = fileChannel_<%=cid%>.size();
 fileChannel_<%=cid%>.close();
@@ -30,11 +34,10 @@ fileChannelRef_<%=cid%>.close();
 if(fileLength_<%=cid%> != fileRefLength_<%=cid%>)
 {
 	result_<%=cid%> = false;
-}
-else
+}<%}%>
+if (result_<%=cid%>)
 {
 	<%
-	String cmpMode = ElementParameterParser.getValue(node, "__COMPARISON_MODE__");
 	if(cmpMode.equals("TEXT_CMP"))
 	{
 		%>
