@@ -642,16 +642,7 @@ public class RunProcessContext {
 
             IProcessMessage msg;
             if (is.ready()) {
-                // int sizeBuffer = 1024;
-                // int currentSizeContent = 0;
-                StringBuilder sb = new StringBuilder();
-                // while (is.ready() && (currentSizeContent < sizeBuffer)) {
-                String dataStr = is.readLine();
-                sb.append(dataStr + "\n"); //$NON-NLS-1$
-                // currentSizeContent += dataStr.length();
-                // break;
-                // }
-                msg = new ProcessMessage(type, sb.toString());
+                msg = new ProcessMessage(type, is.readLine() + "\n");
             } else {
                 msg = null;
             }
