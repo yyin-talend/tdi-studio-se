@@ -265,6 +265,9 @@ public class TalendJetEmitter extends JETEmitter {
             progressMonitor.subTask(CodeGenPlugin.getPlugin().getString("_UI_GeneratingJETEmitterFor_message",
                     new Object[] { jetEmitter.templateURI }));
 
+            ByteArrayOutputStream outputStream = null;
+            InputStream contents = null;
+
             try {
                 final JETCompiler jetCompiler = jetEmitter.templateURIPath == null ? new MyBaseJETCompiler(
                         jetEmitter.templateURI, jetEmitter.encoding, jetEmitter.classLoader)
@@ -278,9 +281,9 @@ public class TalendJetEmitter extends JETEmitter {
                 jetCompiler.getSkeleton().setClassName(templateName + codePart + templateLanguage);
                 progressMonitor.worked(1);
 
-                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                outputStream = new ByteArrayOutputStream();
                 jetCompiler.generate(outputStream);
-                final InputStream contents = new ByteArrayInputStream(outputStream.toByteArray());
+                contents = new ByteArrayInputStream(outputStream.toByteArray());
 
                 progressMonitor.subTask(CodeGenPlugin.getPlugin().getString("_UI_JETOpeningJavaProject_message",
                         new Object[] { project.getName() }));
@@ -377,6 +380,18 @@ public class TalendJetEmitter extends JETEmitter {
             } catch (Exception exception) {
                 throw new JETException(exception);
             } finally {
+                try {
+                    contents.close();
+                } catch (Exception e) {
+                    // ignore me even if i'm null
+                }
+
+                try {
+                    outputStream.close();
+                } catch (Exception e) {
+                    // ignore me even if i'm null
+                }
+
                 progressMonitor.done();
             }
         }

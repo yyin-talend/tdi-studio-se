@@ -79,6 +79,17 @@ public class EmfEmittersPersistence {
             saveEmfPoolFactory(persistantFile, out.toByteArray());
         } catch (IOException e) {
             throw new BusinessException(e);
+        } finally {
+            try {
+                out.close();
+            } catch (Exception e) {
+                // ignore me even if i'm null
+            }
+            try {
+                objectOut.close();
+            } catch (Exception e) {
+                // ignore me even if i'm null
+            }
         }
     }
 

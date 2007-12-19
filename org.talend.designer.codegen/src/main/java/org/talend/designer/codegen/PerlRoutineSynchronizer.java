@@ -67,6 +67,7 @@ public class PerlRoutineSynchronizer implements IRoutineSynchronizer {
     }
 
     public IFile syncRoutine(RoutineItem routineItem, boolean copyToTemp) throws SystemException {
+        ByteArrayInputStream byteArrayInputStream = null;
         try {
             IRunProcessService service = CodeGeneratorActivator.getDefault().getRunProcessService();
             Project project = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
@@ -74,12 +75,14 @@ public class PerlRoutineSynchronizer implements IRoutineSynchronizer {
 
             if (!routineItem.isBuiltIn()) {
                 // Copy the routine in external "lib/perl" folder:
-                String librariesPath = CorePlugin.getDefault().getLibrariesService().getLibrariesPath() + IPath.SEPARATOR
-                        + ILibrariesService.SOURCE_PERL_ROUTINES_FOLDER + IPath.SEPARATOR + project.getTechnicalLabel()
-                        + IPath.SEPARATOR + routineItem.getProperty().getLabel() + service.getRoutineFilenameExt();
+                String librariesPath = CorePlugin.getDefault().getLibrariesService().getLibrariesPath()
+                        + IPath.SEPARATOR + ILibrariesService.SOURCE_PERL_ROUTINES_FOLDER + IPath.SEPARATOR
+                        + project.getTechnicalLabel() + IPath.SEPARATOR + routineItem.getProperty().getLabel()
+                        + service.getRoutineFilenameExt();
                 File target = new File(librariesPath);
 
-                FilesUtils.copyFile(new ByteArrayInputStream(routineItem.getContent().getInnerContent()), target);
+                byteArrayInputStream = new ByteArrayInputStream(routineItem.getContent().getInnerContent());
+                FilesUtils.copyFile(byteArrayInputStream, target);
             }
 
             // Create a temp file to return:
@@ -99,6 +102,12 @@ public class PerlRoutineSynchronizer implements IRoutineSynchronizer {
             throw new SystemException(e);
         } catch (IOException e) {
             throw new SystemException(e);
+        } finally {
+            try {
+                byteArrayInputStream.close();
+            } catch (Exception e) {
+                // ignore me even if i'm null
+            }
         }
     }
 

@@ -94,6 +94,7 @@ public class JavaRoutineSynchronizer implements IRoutineSynchronizer {
      * @see org.talend.designer.codegen.IRoutineSynchronizer#syncRoutine(org.talend.core.model.properties.RoutineItem)
      */
     public IFile syncRoutine(RoutineItem routineItem, boolean copyToTemp) throws SystemException {
+        FileOutputStream fos = null;
         try {
             IRunProcessService service = CodeGeneratorActivator.getDefault().getRunProcessService();
             IProject javaProject = service.getProject(ECodeLanguage.JAVA);
@@ -109,7 +110,7 @@ public class JavaRoutineSynchronizer implements IRoutineSynchronizer {
                 if (!label.equals(IRoutineSynchronizer.TEMPLATE)) {
                     routineContent = routineContent.replaceAll(IRoutineSynchronizer.TEMPLATE, label);
                     File f = file.getLocation().toFile();
-                    FileOutputStream fos = new FileOutputStream(f);
+                    fos = new FileOutputStream(f);
                     fos.write(routineContent.getBytes());
                     fos.close();
                 }
@@ -122,6 +123,12 @@ public class JavaRoutineSynchronizer implements IRoutineSynchronizer {
             throw new SystemException(e);
         } catch (IOException e) {
             throw new SystemException(e);
+        } finally {
+            try {
+                fos.close();
+            } catch (Exception e) {
+                // ignore me even if i'm null
+            }
         }
     }
 
