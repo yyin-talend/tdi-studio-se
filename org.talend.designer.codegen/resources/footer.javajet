@@ -70,8 +70,7 @@
     
     public static int runJob(String[] args) {
     
-        status = "";
-        errorCode = null;
+		init();
     
         String lastStr = "";
         for (String arg : args) {
@@ -341,4 +340,38 @@
     	}
     	
 	}
+	
+	private static void init() {
+
+		defaultProps.clear();
+		context.clear();		
+		errorCode = null;		
+<%
+	if(!isRunInMultiThread ){
+%>
+	currentComponent = "";
+<%
+	}else{
+%>	
+	threadLocal = new ThreadLocal();
+	runningThreadCount = new SyncInt();
+<%
+	}
+%>
+		start_Hash.clear();
+		end_Hash.clear();
+		ok_Hash.clear();
+		globalMap.clear();		
+		watch = false;
+		portStats = 3334;
+		portTraces = 4334;
+		clientHost = null;
+		defaultClientHost = "localhost";
+		contextStr = "<%=codeGenArgument.getContextName() %>";
+		pid = "0";
+		rootPid = null;
+		fatherPid = null;
+		context_param.clear();
+		status = "";		
+	}	
 }
