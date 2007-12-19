@@ -157,6 +157,10 @@ public class ShadowProcessPreview {
                 table.getItem(f).setText(xmlRows.get(f));
             }
         }
+        // remove the unused TableItem
+        if (end < existingItemCount) {
+            table.remove(end, existingItemCount - 1);
+        }
 
     }
 
