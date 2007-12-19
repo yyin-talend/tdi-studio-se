@@ -178,7 +178,7 @@
     <PARAMETER
       NAME="DIE_ON_ERROR"
       FIELD="CHECK"
-      NUM_ROW="48"
+      NUM_ROW="46"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
@@ -186,7 +186,7 @@
     <PARAMETER
       NAME="CHECK_FIELDS_NUM"
       FIELD="CHECK"
-      NUM_ROW="49"
+      NUM_ROW="46"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>                
@@ -195,7 +195,7 @@
       NAME="SCHEMA"
       FIELD="SCHEMA_TYPE"
       REQUIRED="true"
-      NUM_ROW="50"
+      NUM_ROW="44"
     >
       <DEFAULT/> 
     </PARAMETER>
@@ -204,7 +204,7 @@
       NAME="SCHEMA_REJECT"
       FIELD="SCHEMA_TYPE"
       REQUIRED="true"
-      NUM_ROW="50"
+      NUM_ROW="44"
       CONTEXT="REJECT"
       SHOW="true">
       <TABLE READONLY="true">
@@ -216,7 +216,7 @@
     <PARAMETER
       NAME="ENCODING"
      FIELD="ENCODING_TYPE"
-      NUM_ROW="70"
+      NUM_ROW="45"
       REQUIRED="true"
       REPOSITORY_VALUE="ENCODING"
     >
