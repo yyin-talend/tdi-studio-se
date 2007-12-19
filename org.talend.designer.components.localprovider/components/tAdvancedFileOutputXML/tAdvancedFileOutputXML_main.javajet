@@ -373,7 +373,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
 					for(XMLNode attr:groupRootNode.attributes)
 					{
-						if( 0!=(attr.special & 4)){
+						if( 0!=(attr.special & 4) && attr.value!=null){
 							if(allowEmpty.equals("true")){
 %>
 		|| !groupRootList_<%=cid%>.get(<%=i-1%>).attribute("<%=attr.name%>").getText().equals(<%=attr.value%>==null?"":<%=attr.value%>.toString())
