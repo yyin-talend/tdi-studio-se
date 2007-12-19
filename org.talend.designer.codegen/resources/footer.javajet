@@ -68,7 +68,7 @@
         System.exit(exitCode);
     }
     
-    public static int runJob(String[] args) {
+    public static synchronized int runJob(String[] args) {
     
 		init();
     
