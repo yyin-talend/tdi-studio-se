@@ -151,11 +151,16 @@
     </PARAMETER>
     
     <PARAMETER
-      NAME="IS_UPDATE"
-      FIELD="CHECK"
+      NAME="DATA_ACTION"
+      FIELD="CLOSED_LIST"
       NUM_ROW="7"
+      REQUIRED="true"
     >
-      <DEFAULT>false</DEFAULT>
+      <ITEMS DEFAULT="INSERT">
+      	<ITEM NAME="INSERT" VALUE="INSERT" />
+        <ITEM NAME="REPLACE" VALUE="REPLACE" />
+        <ITEM NAME="UPDATE" VALUE="UPDATE" />
+      </ITEMS>
     </PARAMETER>
     
     <PARAMETER
