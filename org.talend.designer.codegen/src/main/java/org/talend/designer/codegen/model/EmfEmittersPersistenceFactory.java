@@ -44,7 +44,7 @@ public final class EmfEmittersPersistenceFactory {
     }
 
     public static EmfEmittersPersistence getInstance(ECodeLanguage language) {
-        if (singleton == null) {
+        if (singleton == null || !singleton.getLanguage().equals(language)) {
 
             final IProject project = getJetProject();
             IFile iFile = null;
@@ -53,7 +53,7 @@ public final class EmfEmittersPersistenceFactory {
             }
             File file = iFile.getLocation().toFile();
 
-            singleton = new EmfEmittersPersistence(file);
+            singleton = new EmfEmittersPersistence(language, file);
         }
 
         return singleton;

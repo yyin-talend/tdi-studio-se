@@ -26,6 +26,7 @@ import org.apache.log4j.Logger;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.talend.commons.exception.BusinessException;
+import org.talend.core.language.ECodeLanguage;
 import org.talend.designer.codegen.config.LightJetBean;
 import org.talend.designer.codegen.i18n.Messages;
 import org.talend.designer.codegen.persistence.DocumentRoot;
@@ -45,14 +46,19 @@ public class EmfEmittersPersistence {
 
     private File persistantFile = null;
 
+    private ECodeLanguage language;
+
     private static Logger log = Logger.getLogger(EmfEmittersPersistence.class);
 
     /**
      * DOC mhirt EmfEmittersPersistance constructor comment.
      * 
+     * @param language
+     * 
      * @param persistantFile
      */
-    public EmfEmittersPersistence(File persistantFile) {
+    public EmfEmittersPersistence(ECodeLanguage language, File persistantFile) {
+        this.language = language;
         this.persistantFile = persistantFile;
     }
 
@@ -159,5 +165,9 @@ public class EmfEmittersPersistence {
         } catch (IOException e) {
             log.error(e.getMessage(), e);
         }
+    }
+
+    public ECodeLanguage getLanguage() {
+        return language;
     }
 }
