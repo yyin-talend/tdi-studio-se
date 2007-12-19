@@ -41,8 +41,8 @@ public class ComponentFileChecker {
 
     public static void checkComponentFolder(File currentFolder, String languageSuffix) throws BusinessException {
         checkFiles(currentFolder, languageSuffix);
-        File xmlMainFile = new File(currentFolder, ComponentFilesNaming.getInstance().getMainXMLFileName(currentFolder.getName(),
-                languageSuffix));
+        File xmlMainFile = new File(currentFolder, ComponentFilesNaming.getInstance().getMainXMLFileName(
+                currentFolder.getName(), languageSuffix));
         checkXSD(xmlMainFile);
     }
 
@@ -51,7 +51,18 @@ public class ComponentFileChecker {
         try {
             URL url = FileLocator.toFileURL(FileLocator.find(XSD_CONTAINER_BUNDLE, path, null));
             File schema = new File(url.getPath());
-            XSDValidator.checkXSD(file, schema);
+
+            long lastModified = file.lastModified();
+            File checkFile = new File(file.getParentFile(), file.getName() + ".checked"); //$NON-NLS-1$
+            if (!checkFile.exists() || lastModified > checkFile.lastModified()) {
+                XSDValidator.checkXSD(file, schema);
+                if (checkFile.getParentFile().canWrite()) {
+                    if (checkFile.exists()) {
+                        checkFile.delete();
+                    }
+                    checkFile.createNewFile();
+                }
+            }
         } catch (IOException e) {
             throw new MalformedMainXMLComponentFileException("Cannot find xsd (" + path.lastSegment() + ")", e); //$NON-NLS-1$ //$NON-NLS-2$
         } catch (SAXException e) {
@@ -62,7 +73,8 @@ public class ComponentFileChecker {
     }
 
     private static void checkFiles(File folder, String languageSuffix) throws MissingComponentFileException {
-        String mainXmlFileName = ComponentFilesNaming.getInstance().getMainXMLFileName(folder.getName(), languageSuffix);
+        String mainXmlFileName = ComponentFilesNaming.getInstance()
+                .getMainXMLFileName(folder.getName(), languageSuffix);
         File mainXmlFile = new File(folder, mainXmlFileName);
         if (!mainXmlFile.exists()) {
             throw new MissingMainXMLComponentFileException("Cannot find file \"" + mainXmlFile.getName() + "\""); //$NON-NLS-1$ //$NON-NLS-2$
