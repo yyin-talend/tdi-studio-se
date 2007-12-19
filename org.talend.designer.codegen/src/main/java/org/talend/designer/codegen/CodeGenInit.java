@@ -27,6 +27,7 @@ import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.utils.Timer;
 import org.talend.commons.utils.workbench.resources.ResourceUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
@@ -46,12 +47,15 @@ public class CodeGenInit implements IApplication {
     ProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
 
     public Object start(IApplicationContext context) throws Exception {
+        Timer.getTimer("CodeGenInit").start();
         CorePlugin.getContext().setHeadless(true);
         initLocalRepository();
         init(ECodeLanguage.JAVA);
         init(ECodeLanguage.PERL);
         removeLinkedResources();
         saveWorkspace();
+        Timer.getTimer("CodeGenInit").stop();
+        Timer.getTimer("CodeGenInit").print();
         return EXIT_OK;
     }
 
