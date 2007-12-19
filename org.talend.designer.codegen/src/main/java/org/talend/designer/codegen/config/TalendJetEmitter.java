@@ -38,6 +38,7 @@ import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.emf.codegen.CodeGenPlugin;
@@ -217,6 +218,9 @@ public class TalendJetEmitter extends JETEmitter {
                 javaProject.setRawClasspath(classpathEntryArray, new SubProgressMonitor(progressMonitor, 1));
                 javaProject.setOutputLocation(new Path("/" + project.getName() + "/runtime"), new SubProgressMonitor(
                         progressMonitor, 1));
+
+                javaProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
+
                 javaProject.close();
                 progressMonitor.done();
             } catch (CoreException exception) {
