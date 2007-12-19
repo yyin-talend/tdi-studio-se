@@ -55,6 +55,15 @@
     >
       <DEFAULT>true</DEFAULT>
     </PARAMETER>
+    
+    <PARAMETER
+      NAME="CREATE_EMPTY_ELEMENT"
+      FIELD="CHECK"
+      REQUIRED="false"
+      NUM_ROW="11"
+    >
+      <DEFAULT>true</DEFAULT>
+    </PARAMETER>
 
     <PARAMETER
       NAME="ROOT"
