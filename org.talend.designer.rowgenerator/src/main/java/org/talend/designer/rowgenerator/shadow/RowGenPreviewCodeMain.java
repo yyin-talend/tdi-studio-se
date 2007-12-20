@@ -141,8 +141,9 @@ public class RowGenPreviewCodeMain {
                             if (process == null) {
                                 return;
                             }
+                            process.waitFor();
                             // process = runTempPerlCode();
-                            Thread.sleep(1000);
+                            // Thread.sleep(1000);
                             InputStream is = process.getInputStream();
                             int len = is.available();
                             if (len > 0) {
