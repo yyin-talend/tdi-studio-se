@@ -52,6 +52,16 @@ if (result_<%=cid%>)
 				break;
 			}
 		}
+		
+		// Check if files has a different number of lines:
+		if(content_<%=cid%> == null){
+		    // This step is done in case of the while upper ignore second part:
+		    contentRef_<%=cid%> = fileRef_<%=cid%>.readLine();
+		}
+		if(content_<%=cid%> != null || contentRef_<%=cid%> != null){
+		    result_<%=cid%> = false;
+		}
+		
 		file_<%=cid%>.close();
 		fileRef_<%=cid%>.close();
 		<%
