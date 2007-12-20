@@ -35,6 +35,8 @@ public class ConnectionTrace extends Element {
 
     private Connection connection = null;
 
+    private boolean collapse = false;
+
     private Dimension size;
 
     public ConnectionTrace(Connection connection) {
@@ -50,9 +52,9 @@ public class ConnectionTrace extends Element {
         return trace;
     }
 
-    public Dimension getSize() {
-        return this.size;
-    }
+    // public Dimension getSize() {
+    // return this.size;
+    // }
 
     public void setSize(Dimension size) {
         this.size = size;
@@ -116,6 +118,24 @@ public class ConnectionTrace extends Element {
      */
     public Point getOffset() {
         return offset;
+    }
+
+    /**
+     * Getter for collapse.
+     * 
+     * @return the collapse
+     */
+    public boolean isCollapse() {
+        return this.collapse;
+    }
+
+    /**
+     * Sets the collapse.
+     * 
+     * @param collapse the collapse to set
+     */
+    public void setCollapse(boolean collapse) {
+        this.collapse = collapse;
     }
 
     /*

@@ -12,10 +12,13 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.connections;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
 import org.eclipse.draw2d.AbstractBorder;
+import org.eclipse.draw2d.ActionEvent;
+import org.eclipse.draw2d.ActionListener;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
@@ -52,6 +55,8 @@ public class ConnectionTraceFigure extends Figure {
 
     private ConnectionTraceFigure tooltip = null;
 
+    private CollapseFigure collapseButton;
+
     public ConnectionTraceFigure(Connection connection, boolean maximized) {
         ToolbarLayout layout = new ToolbarLayout();
         setLayoutManager(layout);
@@ -63,6 +68,7 @@ public class ConnectionTraceFigure extends Figure {
             this.setToolTip(tooltip);
             tooltip.setVisible(false);
         }
+
     }
 
     @Override
@@ -80,23 +86,53 @@ public class ConnectionTraceFigure extends Figure {
             childrens.clear();
             boolean noVarNameDefined = false;
 
+            Figure outlineFigure = new Figure();
+            outlineFigure.setLayoutManager(new ToolbarLayout(ToolbarLayout.HORIZONTAL));
+
+            if (tooltip != null) {
+                collapseButton = new CollapseFigure();
+                collapseButton.setCollapsed(connection.getConnectionTrace().isCollapse());
+                collapseButton.addActionListener(new ActionListener() {
+
+                    public void actionPerformed(ActionEvent event) {
+                        connection.getConnectionTrace().setCollapse(!connection.getConnectionTrace().isCollapse());
+                        collapseButton.setCollapsed(connection.getConnectionTrace().isCollapse());
+                        refreshCollapseStatus();
+                    }
+                });
+                outlineFigure.add(collapseButton);
+            }
+            // ImageFigure i = new ImageFigure(DiagramUIPluginImages.get(DiagramUIPluginImages.IMG_HANDLE_EXPAND));
+            // i.addMouseListener(new MouseListener.Stub() {
+            //
+            // public void mousePressed(MouseEvent me) {
+            // List list = new ArrayList(getChildren());
+            // for (int i = 2; i < list.size(); i++) {
+            // remove((IFigure) list.get(i));
+            // }
+            // }
+            // });
+            //
+            // outlineFigure.add(i);
             int sepIndex = data.indexOf(FIELD_SEP); // index separator for row name
 
             String dataWithoutRowName = data.substring(sepIndex + 1);
             sepIndex = dataWithoutRowName.indexOf(FIELD_SEP);
             String lineNumber = dataWithoutRowName.substring(0, sepIndex);
-            SimpleHtmlFigure titleFigure;
-            titleFigure = new SimpleHtmlFigure();
+            SimpleHtmlFigure titleFigure = new SimpleHtmlFigure();
             titleFigure.setText(""); //$NON-NLS-1$
             titleFigure.setText("<font color='#0000FF'> <b> " + connection.getConnectionLabel().getLabelText() //$NON-NLS-1$
                     + "</b></font>            <font color='#808080'>Current row : " + lineNumber + "</font>"); //$NON-NLS-1$ //$NON-NLS-2$
             if (tooltip != null) {
                 titleFigure.setBackgroundColor(ColorConstants.white);
-                titleFigure.setOpaque(true);
+                titleFigure.setOpaque(false);
                 titleFigure.setBorder(new LineBorder(ColorConstants.darkGray, SWT.LEFT | SWT.RIGHT | SWT.TOP | SWT.BOTTOM));
             }
-            titleFigure.getPreferredSize().expand(0, 3);
-            add(titleFigure);
+            titleFigure.getPreferredSize().expand(20, 3);
+            outlineFigure.add(titleFigure);
+
+            add(outlineFigure);
+
             Dimension size = titleFigure.getPreferredSize().getCopy();
 
             int variableWidth = 0;
@@ -239,6 +275,7 @@ public class ConnectionTraceFigure extends Figure {
             size.expand(5, 3);
             setPreferredSize(size);
             setVisible(true);
+
         } else {
             setPreferredSize(0, 0);
             setVisible(false);
@@ -246,6 +283,50 @@ public class ConnectionTraceFigure extends Figure {
         if (tooltip != null) {
             tooltip.setTraceData(data);
         }
+        contents = new ArrayList(getChildren());
+        refreshCollapseStatus();
+    }
+
+    private List contents = null;
+
+    /**
+     * Refresh the collapse status of the content table according to the selection of collapse button.
+     */
+    private void refreshCollapseStatus() {
+        if (collapseButton == null) {
+            return;
+        }
+
+        boolean collapse = connection.getConnectionTrace().isCollapse();
+        if (collapse) {
+            List list = new ArrayList(getChildren());
+            for (int i = 1; i < list.size(); i++) {
+                remove((IFigure) list.get(i));
+            }
+            IFigure figure = (IFigure) contents.get(0);
+            this.getPreferredSize().height = figure.getPreferredSize().height;
+            setPreferredSize(getPreferredSize());
+        } else {
+            removeAll();
+            for (int i = 0; i < contents.size(); i++) {
+                IFigure figure = (IFigure) contents.get(i);
+                add(figure);
+            }
+            IFigure figure = (IFigure) contents.get(0);
+            this.getPreferredSize().height = figure.getPreferredSize().height * contents.size();
+            setPreferredSize(getPreferredSize());
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.draw2d.Figure#getPreferredSize(int, int)
+     */
+    @Override
+    public Dimension getPreferredSize(int hint, int hint2) {
+        // TODO Auto-generated method stub
+        return super.getPreferredSize(hint, hint2);
     }
 
     /**
