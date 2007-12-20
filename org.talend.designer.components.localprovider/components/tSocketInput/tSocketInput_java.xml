@@ -37,7 +37,7 @@
       SHOW="true"
       NUM_ROW="10" 
     >
-    	<DEFAULT>""</DEFAULT>
+    	<DEFAULT>"127.0.0.1"</DEFAULT>
     </PARAMETER>
     
     <PARAMETER
@@ -46,7 +46,7 @@
       SHOW="true"
       NUM_ROW="10" 
     >
-    	<DEFAULT>""</DEFAULT>
+    	<DEFAULT>3456</DEFAULT>
     </PARAMETER>
     
     <PARAMETER
@@ -55,7 +55,7 @@
       SHOW="true"
       NUM_ROW="20" 
     >
-    	<DEFAULT>""</DEFAULT>
+    	<DEFAULT>6000</DEFAULT>
     </PARAMETER>
     
     <PARAMETER

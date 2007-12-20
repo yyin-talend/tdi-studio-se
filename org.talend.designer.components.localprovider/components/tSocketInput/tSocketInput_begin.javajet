@@ -26,7 +26,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     if (metadata!=null) {
         String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
         String hostname = ElementParameterParser.getValue(node,"__HOSTNAME__");
-        String port = ElementParameterParser.getValue(node,"__PORT__").replace("\"", "");
+        String port = ElementParameterParser.getValue(node,"__PORT__");
         boolean uncompress = ElementParameterParser.getValue(node,"__UNCOMPRESS__").equals("true");
         boolean dieOnError = ElementParameterParser.getValue(node,"__DIE_ON_ERROR__").equals("true");
         
@@ -47,7 +47,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         if ("".equals(textEnclosure)) textEnclosure = "\0";
         if(textEnclosure.equals("'")) textEnclosure = "\\'";
         
-        String timeout = ElementParameterParser.getValue(node, "__TIMEOUT__").replace("\"","");
+        String timeout = ElementParameterParser.getValue(node, "__TIMEOUT__");
 %>      
 <% if(uncompress){%>
 class Compress{

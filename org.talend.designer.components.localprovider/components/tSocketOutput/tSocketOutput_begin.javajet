@@ -23,10 +23,10 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     	String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
         String delim1 = ElementParameterParser.getValue(node, "__FIELDSEPARATOR__");
         String delim = delim1.substring(1,delim1.length()-1);
-        String port = ElementParameterParser.getValue(node,"__PORT__").replace("\"", "");
+        String port = ElementParameterParser.getValue(node,"__PORT__");
         String host = ElementParameterParser.getValue(node,"__HOST__");
-        String retry = ElementParameterParser.getValue(node,"__RETRY__").replace("\"","");
-        String timeout = ElementParameterParser.getValue(node,"__TIMEOUT__").replace("\"","");
+        String retry = ElementParameterParser.getValue(node,"__RETRY__");
+        String timeout = ElementParameterParser.getValue(node,"__TIMEOUT__");
         boolean compress = ElementParameterParser.getValue(node,"__COMPRESS__").equals("true");
         boolean dieOnError = ElementParameterParser.getValue(node,"__DIE_ON_ERROR__").equals("true");
 %>    
