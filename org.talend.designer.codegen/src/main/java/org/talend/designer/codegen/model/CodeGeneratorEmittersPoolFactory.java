@@ -141,8 +141,8 @@ public final class CodeGeneratorEmittersPoolFactory {
                         List<TemplateUtil> templates = templatesFactory.getTemplates();
                         List<IComponent> components = componentsFactory.getComponents();
 
-                        monitorWrap.beginTask(Messages.getString("CodeGeneratorEmittersPoolFactory.initMessage"),
-                                (2 * templates.size() + 4 * components.size()));
+                        monitorWrap.beginTask(Messages.getString("CodeGeneratorEmittersPoolFactory.initMessage"), (2 * templates
+                                .size() + 5 * components.size()));
 
                         for (TemplateUtil template : templates) {
                             JetBean jetBean = initializeUtilTemplate(template, codeLanguage);
@@ -308,7 +308,7 @@ public final class CodeGeneratorEmittersPoolFactory {
 
             try {
                 alreadyCompiledEmitters = loadEmfPersistentData(EmfEmittersPersistenceFactory.getInstance(codeLanguage)
-                        .loadEmittersPool(), components);
+                        .loadEmittersPool(), components, monitorWrap);
                 for (JetBean jetBean : alreadyCompiledEmitters) {
                     TalendJetEmitter emitter = new TalendJetEmitter(jetBean.getTemplateFullUri(), jetBean
                             .getClassLoader(), jetBean.getFamily(), jetBean.getClassName(), jetBean.getLanguage(),
@@ -408,33 +408,36 @@ public final class CodeGeneratorEmittersPoolFactory {
         return unitCRC;
     }
 
-    private static List<JetBean> loadEmfPersistentData(List<LightJetBean> datas, List<JetBean> completeJetBeanList)
-            throws BusinessException {
+    private static List<JetBean> loadEmfPersistentData(List<LightJetBean> datas, List<JetBean> completeJetBeanList,
+            IProgressMonitor monitorWrap) throws BusinessException {
         List<JetBean> toReturn = new ArrayList<JetBean>();
         IWorkspace workspace = ResourcesPlugin.getWorkspace();
         IProject project = workspace.getRoot().getProject(".JETEmitters");
         URL url;
         try {
             url = new File(project.getLocation() + "/runtime").toURL();
+            int lightBeanIndex = 0;
+            LightJetBean lightBean = null;
+            LightJetBean myLightJetBean = null;
+            String unitTemplateFullURI = "";
+            long unitTemplateHashCode = 0;
             for (JetBean unit : completeJetBeanList) {
-                String unitTemplateFullURI = unit.getTemplateFullUri();
-                long unitTemplateHashCode = extractTemplateHashCode(unit);
-                for (LightJetBean lightBean : datas) {
-                    if ((lightBean.getTemplateRelativeUri().compareTo(unitTemplateFullURI) == 0)
-                            && (lightBean.getVersion().compareTo(unit.getVersion()) == 0)
-                            && (lightBean.getCrc() == unitTemplateHashCode)) {
-                        unit.setClassName(lightBean.getClassName());
-                        try {
-                            Method method = loadMethod(url, lightBean.getMethodName(), unit);
-                            if (method != null) {
-                                unit.setMethod(method);
-                                toReturn.add(unit);
-                            }
-                        } catch (ClassNotFoundException e) {
-                            log.info(Messages.getString("CodeGeneratorEmittersPoolFactory.Class.NotFound", unit
-                                    .getClassName()));
-                        }
+                monitorWrap.worked(1);
+                unitTemplateFullURI = unit.getTemplateFullUri();
+                unitTemplateHashCode = extractTemplateHashCode(unit);
 
+                myLightJetBean = new LightJetBean(unitTemplateFullURI, unit.getVersion(), unitTemplateHashCode);
+                if ((lightBeanIndex = datas.indexOf(myLightJetBean)) > 0) {
+                    lightBean = datas.get(lightBeanIndex);
+                    unit.setClassName(lightBean.getClassName());
+                    try {
+                        Method method = loadMethod(url, lightBean.getMethodName(), unit);
+                        if (method != null) {
+                            unit.setMethod(method);
+                            toReturn.add(unit);
+                        }
+                    } catch (ClassNotFoundException e) {
+                        log.info(Messages.getString("CodeGeneratorEmittersPoolFactory.Class.NotFound", unit.getClassName()));
                     }
                 }
             }
@@ -454,7 +457,10 @@ public final class CodeGeneratorEmittersPoolFactory {
      * @throws ClassNotFoundException
      */
     private static Method loadMethod(URL url, String methodName, JetBean unit) throws ClassNotFoundException {
-        URLClassLoader theClassLoader = new URLClassLoader(new URL[] { url }, unit.getClassLoader());
+        if (currentClassLoader != unit.getClassLoader()) {
+            currentClassLoader = unit.getClassLoader();
+            theClassLoader = new URLClassLoader(new URL[] { url }, unit.getClassLoader());
+        }
         Class theClass = theClassLoader.loadClass(unit.getClassName());
         Method[] methods = theClass.getDeclaredMethods();
         for (int i = 0; i < methods.length; ++i) {
@@ -464,6 +470,10 @@ public final class CodeGeneratorEmittersPoolFactory {
         }
         return null;
     }
+
+    private static ClassLoader currentClassLoader = null;
+
+    private static URLClassLoader theClassLoader = null;
 
     /**
      * Getter for emitterPool.

@@ -31,9 +31,9 @@ public class LightJetBean implements Serializable {
     private String methodName = "";
 
     private String version = "";
-    
+
     private String language = "";
-    
+
     private long crc = 0;
 
     /**
@@ -50,6 +50,13 @@ public class LightJetBean implements Serializable {
         this.methodName = methodName;
         this.version = version;
         this.language = language;
+        this.crc = crc;
+    }
+
+    public LightJetBean(String templateRelativeUri, String version, long crc) {
+        super();
+        this.templateRelativeUri = templateRelativeUri;
+        this.version = version;
         this.crc = crc;
     }
 
@@ -125,41 +132,79 @@ public class LightJetBean implements Serializable {
         this.version = version;
     }
 
-    
     /**
      * Getter for crc.
+     * 
      * @return the crc
      */
     public long getCrc() {
         return this.crc;
     }
 
-    
     /**
      * Sets the crc.
+     * 
      * @param crc the crc to set
      */
     public void setCrc(long crc) {
         this.crc = crc;
     }
 
-    
     /**
      * Getter for language.
+     * 
      * @return the language
      */
     public String getLanguage() {
         return this.language;
     }
 
-    
     /**
      * Sets the language.
+     * 
      * @param language the language to set
      */
     public void setLanguage(String language) {
         this.language = language;
     }
-    
-    
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final LightJetBean other = (LightJetBean) obj;
+        if (this.templateRelativeUri == null) {
+            if (other.templateRelativeUri != null) {
+                return false;
+            }
+        } else if (!this.templateRelativeUri.equals(other.templateRelativeUri)) {
+            return false;
+        }
+        return true;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = prime + ((this.templateRelativeUri == null) ? 0 : this.templateRelativeUri.hashCode());
+        return result;
+    }
+
 }
