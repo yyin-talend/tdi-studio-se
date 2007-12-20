@@ -17,6 +17,7 @@
 		java.util.Vector
 		org.talend.core.model.process.IContextParameter
 		org.talend.core.model.metadata.types.JavaTypesManager
+		org.talend.core.model.utils.NodeUtil
 	"
 	class="Header" 
 %>
@@ -179,7 +180,7 @@ private class TalendException extends Exception {
 		try {
 			for (java.lang.reflect.Method m : this.getClass().getEnclosingClass().getMethods()) {
 				if (m.getName().compareTo(currentComponent + "_error") == 0) {
-					m.invoke(c, (Object[])null);
+					m.invoke(c, new Object[] {e});
 					break;
 				}
 			}
@@ -197,26 +198,6 @@ private class TalendException extends Exception {
 %>
 			<%=logCatcher.getUniqueName() %>Process();
 		  }
-<%
-				}
-			}
-		}
-%>
-
-<%     
-		if (process.getNodesOfType("tAssertCatcher").size() > 0) {
-			List<INode> assertCatchers = (List<INode>)process.getNodesOfType("tAssertCatcher");
-			for (INode assertCatcher : assertCatchers) {
-				if (ElementParameterParser.getValue(assertCatcher, "__CATCH_JAVA_EXCEPTION__").equals("true")) {
-					// 1) add the message to the stack
-%>
-        if(!(e instanceof TDieException)){
-			<%=assertCatcher.getUniqueName() %>.addMessage(pid, projectName, jobName, "java", null, "Failed", "Job execution error", e.getMessage());
-<%
-					// 2) launch assertCatcher subProcess
-%>
-			<%=assertCatcher.getUniqueName() %>Process();
-        }
 <%
 				}
 			}
@@ -252,13 +233,15 @@ private class TalendException extends Exception {
 			} 
 		}
 		if(needCatchTalendException) {
-%>
-		catch (TalendException e) {
-		// do nothing
+		    if (process.getNodesOfType("tLogCatcher").size() > 0) {
+		        %>
+		        catch (TalendException e) {
+		            // do nothing
+		        }
+		        <%
+		    }
 		}
-<%
-       }
-%>
+		%>
 		}
 	}
 }
@@ -267,53 +250,70 @@ private class TalendException extends Exception {
 <%
 	for (INode node : processNodes) {
 		if (node.isActivate()) {
-%>
-public void <%=node.getUniqueName() %>_error() throws TalendException {
-	end_Hash.put("<%=node.getUniqueName() %>", java.util.Calendar.getInstance().getTimeInMillis());
-<%
-if (!node.getComponent().getName().equals("tDie")) {
-    String statCatcher = ElementParameterParser.getValue(node,"__TSTATCATCHER_STATS__");
-	if (statCatcher.compareTo("true")==0) {
-		for (INode statCatcherNode : node.getProcess().getNodesOfType("tStatCatcher")) {
-%>
-	<%=statCatcherNode.getUniqueName() %>.addMessage("failure","<%=node.getUniqueName() %>", end_Hash.get("<%=node.getUniqueName() %>")-start_Hash.get("<%=node.getUniqueName() %>"));
-	<%=statCatcherNode.getUniqueName() %>Process();
-<%
-		}
-	}
-}
-	List< ? extends IConnection> conns = node.getOutgoingConnections();
-   	for (IConnection conn : conns) {
-   		if (conn.getLineStyle().equals(EConnectionType.RUN_IF_ERROR)) {
-%>
-	try {	    
+		    %>
+            public void <%=node.getUniqueName() %>_error(Exception exception) throws TalendException {
+                end_Hash.put("<%=node.getUniqueName() %>", java.util.Calendar.getInstance().getTimeInMillis());
+                <%
+                boolean ifBeforRunError = NodeUtil.checkConnectionAfterNode(node, EConnectionType.RUN_IF_ERROR);
+                if(!ifBeforRunError) {
+                    if (process.getNodesOfType("tAssertCatcher").size() > 0) {
+                        List<INode> assertCatchers = (List<INode>)process.getNodesOfType("tAssertCatcher");
+                        for (INode assertCatcher : assertCatchers) {
+                            if (ElementParameterParser.getValue(assertCatcher, "__CATCH_JAVA_EXCEPTION__").equals("true")) {
+                                // 1) add the message to the stack
+                                %>
+                                if(!(exception instanceof TDieException)){
+                                    <%=assertCatcher.getUniqueName()%>.addMessage(pid, projectName, jobName, "java", null, "Failed", "Job execution error", exception.getMessage());
+                                    <%=assertCatcher.getUniqueName()%>Process();
+                                }
+                                <%
+                            }
+                        }
+                    }
+                }                
+                if (!node.getComponent().getName().equals("tDie")) {
+                    String statCatcher = ElementParameterParser.getValue(node,"__TSTATCATCHER_STATS__");
+                	if (statCatcher.compareTo("true")==0) {
+                		for (INode statCatcherNode : node.getProcess().getNodesOfType("tStatCatcher")) {
+                		    %>
+                		    <%=statCatcherNode.getUniqueName() %>.addMessage("failure","<%=node.getUniqueName() %>", end_Hash.get("<%=node.getUniqueName() %>")-start_Hash.get("<%=node.getUniqueName() %>"));
+                		    <%=statCatcherNode.getUniqueName() %>Process();
+                		    <%
+                		}
+                	}
+                }
+                List< ? extends IConnection> conns = node.getOutgoingConnections();
+                for (IConnection conn : conns) {
+                    if (conn.getLineStyle().equals(EConnectionType.RUN_IF_ERROR)) {
+                        %>
+                        try {	    
 	
-	<%
-	    if(isRunInMultiThread ){
-	%>
-	    ((java.util.Map)threadLocal.get()).put(errorCode, null); 
-        <%=conn.getTarget().getUniqueName() %>Process();
-        ((java.util.Map)threadLocal.get()).put(status, "end");
-	<%
-	    }else {
-	%>
-        errorCode = null;
-        <%=conn.getTarget().getUniqueName() %>Process();
-        status="end";
-    <%
-	    }
-    %>
+                            <%
+                            if(isRunInMultiThread ){
+                                %>
+                                ((java.util.Map)threadLocal.get()).put(errorCode, null); 
+                                <%=conn.getTarget().getUniqueName() %>Process();
+                                ((java.util.Map)threadLocal.get()).put(status, "end");
+                                <%
+                            }else {
+                                %>
+                                errorCode = null;
+                                <%=conn.getTarget().getUniqueName() %>Process();
+                                status="end";
+                                <%
+                            }
+                            %>
     	
     	
-    } catch (Exception e) {
-    	e.printStackTrace();
-    }
-<%
-		}
-	}
-%>
-}
-<%
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        <%
+                    }
+                }
+                %>
+            }
+            <%
 		}
 	}
 %>
