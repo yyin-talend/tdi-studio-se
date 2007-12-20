@@ -59,6 +59,8 @@ public class ComponentsFactory implements IComponentsFactory {
         long startTime = System.currentTimeMillis();
         componentList = new ArrayList<IComponent>();
 
+        XsdValidationCacheManager.getInstance().load();
+
         // 1. Load system components:
         loadComponentsFromFolder(IComponentsFactory.COMPONENTS_INNER_FOLDER);
         String userPath = IComponentsFactory.COMPONENTS_INNER_FOLDER + File.separatorChar
@@ -69,6 +71,8 @@ public class ComponentsFactory implements IComponentsFactory {
         ComponentsRetriever.retrieveComponents(getComponentsLocation(userPath));
         // 3. Load user components:
         loadComponentsFromFolder(userPath);
+
+        XsdValidationCacheManager.getInstance().save();
 
         TimeMeasure.end("ComponentsFactory.init");
         log.debug(componentList.size() + " components loaded in " + (System.currentTimeMillis() - startTime) + " ms"); //$NON-NLS-1$ //$NON-NLS-2$

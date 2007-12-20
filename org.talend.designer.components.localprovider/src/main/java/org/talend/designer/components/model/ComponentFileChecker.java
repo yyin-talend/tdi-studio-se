@@ -43,7 +43,11 @@ public class ComponentFileChecker {
         checkFiles(currentFolder, languageSuffix);
         File xmlMainFile = new File(currentFolder, ComponentFilesNaming.getInstance().getMainXMLFileName(
                 currentFolder.getName(), languageSuffix));
-        checkXSD(xmlMainFile);
+        XsdValidationCacheManager xsdValidationCacheManager = XsdValidationCacheManager.getInstance();
+        if (xsdValidationCacheManager.needCheck(xmlMainFile)) {
+            checkXSD(xmlMainFile);
+            xsdValidationCacheManager.setChecked(xmlMainFile);
+        }
     }
 
     private static void checkXSD(File file) throws MalformedMainXMLComponentFileException {
@@ -51,18 +55,7 @@ public class ComponentFileChecker {
         try {
             URL url = FileLocator.toFileURL(FileLocator.find(XSD_CONTAINER_BUNDLE, path, null));
             File schema = new File(url.getPath());
-
-            long lastModified = file.lastModified();
-            File checkFile = new File(file.getParentFile(), file.getName() + ".checked"); //$NON-NLS-1$
-            if (!checkFile.exists() || lastModified > checkFile.lastModified()) {
-                XSDValidator.checkXSD(file, schema);
-                if (checkFile.getParentFile().canWrite()) {
-                    if (checkFile.exists()) {
-                        checkFile.delete();
-                    }
-                    checkFile.createNewFile();
-                }
-            }
+            XSDValidator.checkXSD(file, schema);
         } catch (IOException e) {
             throw new MalformedMainXMLComponentFileException("Cannot find xsd (" + path.lastSegment() + ")", e); //$NON-NLS-1$ //$NON-NLS-2$
         } catch (SAXException e) {
