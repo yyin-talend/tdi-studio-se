@@ -75,8 +75,14 @@ public final class ContextParameterExtractor {
                     ContextParameterWizard prmWizard = new ContextParameterWizard(process.getContextManager(), parameter);
                     WizardDialog dlg = new WizardDialog(text.getShell(), prmWizard);
                     if (dlg.open() == WizardDialog.OK) {
-                        String replaceCode = ContextParameterUtils.getScriptCode(parameter, ((RepositoryContext) CorePlugin
-                                .getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject().getLanguage());
+                        ECodeLanguage curLanguage = LanguageManager.getCurrentLanguage();
+                        String replaceCode = "";
+                        if (curLanguage == ECodeLanguage.PERL) {
+                            replaceCode = ContextParameterUtils.getScriptCode(parameter, ((RepositoryContext) CorePlugin
+                                    .getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject().getLanguage());
+                        } else {
+                            replaceCode = parameter.getName();
+                        }
                         if (text instanceof Text) {
                             if (((Text) text).getSelectionCount() == 0) {
                                 ((Text) text).setText(replaceCode);
