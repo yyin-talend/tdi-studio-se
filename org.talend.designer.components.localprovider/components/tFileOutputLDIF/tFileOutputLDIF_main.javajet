@@ -59,7 +59,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 					} else if(javaType == JavaTypesManager.STRING) {
 %>
 		<%=conn.getName() %>.<%=column.getLabel() %>;
-<%				
+<%
+					} else if (javaType == JavaTypesManager.BIGDECIMAL) {
+%>
+		String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>.doubleValue());
+<%
 					} else {
 %>
 		String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>);

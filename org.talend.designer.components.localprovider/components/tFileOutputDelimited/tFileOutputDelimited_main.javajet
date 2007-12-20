@@ -89,7 +89,11 @@ if(ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("false")) {
     			        if (javaType == JavaTypesManager.DATE && pattern != null && pattern.trim().length() != 0) {
     			            %>
     						FormatterUtils.format_Date(<%=conn.getName() %>.<%=column.getLabel() %>, <%= pattern %>)
-    						<%				
+    						<%	
+    					}else if(javaType == JavaTypesManager.BIGDECIMAL){
+    						%>
+    						<%=conn.getName() %>.<%=column.getLabel() %>.doubleValue()
+    						<%
     			        } else {
     			            %>
     						<%=conn.getName() %>.<%=column.getLabel() %>
@@ -286,6 +290,10 @@ if(ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("false")) {
                 			            %>
                 			            row<%=cid%>[<%=i%>] = java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(<%=conn.getName() %>.<%=column.getLabel() %>)).toString();
                 			            <%
+                			        } else if (javaType == JavaTypesManager.BIGDECIMAL) {
+										%>
+										row<%=cid%>[<%=i%>] = String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>.doubleValue())
+										<%
                 			        }else{
                 			            %>
                 			            row<%=cid%>[<%=i%>] = String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>);

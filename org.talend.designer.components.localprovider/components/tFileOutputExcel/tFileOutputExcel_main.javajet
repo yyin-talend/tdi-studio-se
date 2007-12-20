@@ -44,7 +44,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
   									    }else if(javaType == JavaTypesManager.STRING||
   									    		 javaType == JavaTypesManager.CHARACTER||
   									    		 javaType == JavaTypesManager.BYTE_ARRAY||
-  									    		 javaType == JavaTypesManager.OBJECT){
+  									    		 javaType == JavaTypesManager.OBJECT||
+  									    		 javaType == JavaTypesManager.BIGDECIMAL){
   									    	%>Label<%
     									}else{
     										%>Number<%
@@ -67,7 +68,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 					} else if(javaType == JavaTypesManager.BYTE_ARRAY){
 %>					
 								java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(<%=conn.getName() %>.<%=column.getLabel() %>)).toString()
-<%					
+<%
+					} else if (javaType == JavaTypesManager.BIGDECIMAL) {
+%>
+								String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>.doubleValue())
+<%
 					}else {
 %>
 								<%=conn.getName() %>.<%=column.getLabel() %>

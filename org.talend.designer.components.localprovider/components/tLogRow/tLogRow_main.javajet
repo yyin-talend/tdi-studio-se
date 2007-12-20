@@ -100,11 +100,15 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
     				if (javaType == JavaTypesManager.DATE && pattern != null && pattern.trim().length() != 0) {//Date
 %>
 								FormatterUtils.format_Date(<%=conn.getName() %>.<%=column.getLabel() %>, <%= pattern %>)
-<%				
+<%
 					} else if (javaType == JavaTypesManager.BYTE_ARRAY) {//byte[]
 %>
 								java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(<%=conn.getName() %>.<%=column.getLabel() %>)).toString()
-<%				
+<%
+					} else if (javaType == JavaTypesManager.BIGDECIMAL) {
+%>
+								String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>.doubleValue())
+<%
 					} else {//others
 %>
 				                String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>)			
@@ -127,7 +131,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
 					} else if (javaType == JavaTypesManager.BYTE_ARRAY) {//byte[]
 %>
 								java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(<%=conn.getName() %>.<%=column.getLabel() %>)).toString()
-<%				
+<%
+					} else if (javaType == JavaTypesManager.BIGDECIMAL) {
+%>
+								String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>.doubleValue())
+<%
 					} else {//others
 %>
 				                String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>)			
@@ -190,7 +198,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
 					} else if (javaType == JavaTypesManager.BYTE_ARRAY) {//byte[]
 %>
 								java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(<%=conn.getName() %>.<%=column.getLabel() %>)).toString()
-<%				
+<%
+					} else if (javaType == JavaTypesManager.BIGDECIMAL) {
+%>
+								String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>.doubleValue())
+<%
 					} else {//others
 %>    
 				                String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>)			

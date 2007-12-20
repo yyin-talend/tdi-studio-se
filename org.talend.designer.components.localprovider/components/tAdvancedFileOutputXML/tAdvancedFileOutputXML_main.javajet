@@ -166,6 +166,8 @@ class XMLTool{
                         }else{
                             value = connName+"."+map.get("COLUMN");
                         }
+                    }else if (javaType == JavaTypesManager.BIGDECIMAL) {
+                    	value = "String.valueOf("+connName+"."+map.get("COLUMN")+".doubleValue())";
                     }else{
                         value = connName+"."+map.get("COLUMN");
                     }

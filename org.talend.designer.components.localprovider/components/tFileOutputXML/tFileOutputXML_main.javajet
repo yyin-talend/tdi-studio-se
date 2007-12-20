@@ -125,6 +125,7 @@ groupby_new_<%=cid %> = 0;
 			boolean isByteArray = false;
 			String pattern = null;
 			boolean isPrimitive = false;
+			boolean isBigDecimal = false;
 			for(IMetadataColumn column:metadata.getListColumns()) {
 				if(column.getLabel().equals(groupby[i][0])){
 					if(JavaTypesManager.getJavaTypeFromId(column.getTalendType()) == JavaTypesManager.STRING){
@@ -139,6 +140,8 @@ groupby_new_<%=cid %> = 0;
 					}
 					if(JavaTypesManager.getJavaTypeFromId(column.getTalendType()) == JavaTypesManager.BYTE_ARRAY){
 						isByteArray = true;
+					}else if(JavaTypesManager.getJavaTypeFromId(column.getTalendType()) == JavaTypesManager.BIGDECIMAL){
+						isBigDecimal = true;
 					}
 					isPrimitive = JavaTypesManager.isJavaPrimitiveType( column.getTalendType(), column.isNullable());
 					break;
@@ -153,6 +156,8 @@ groupby_new_<%=cid %> = 0;
 									%><%if(needReplace){%>TalendString.replaceSpecialCharForXML(<%}%>FormatterUtils.format_Date(<%=conn.getName() %>.<%=groupby[i][0] %>, <%=pattern %>)<%if(needReplace){%>)<%}%><%
 									}else if(isByteArray){
 									%>TalendString.replaceSpecialCharForXML(java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(<%=conn.getName() %>.<%=groupby[i][0] %>)).toString())<%
+									}else if(isBigDecimal){
+									%>TalendString.replaceSpecialCharForXML(String.valueof(<%=conn.getName() %>.<%=tag[i][0] %>.doublevalue()))<%
 									}else{
 									%><%if(needReplace){%>TalendString.replaceSpecialCharForXML(<%}%><%=conn.getName() %>.<%=groupby[i][0] %><%if(needReplace){%>)<%}%><%
 									}%>))<%
@@ -212,6 +217,7 @@ for(int i = 0; i < attribute.length; i++){
 	boolean isByteArray = false;
 	String pattern = null;
 	boolean isPrimitive = false;
+	boolean isBigDecimal = false;
 	for(IMetadataColumn column:metadata.getListColumns()) {
 		if(column.getLabel().equals(attribute[i][0])){
 			if(JavaTypesManager.getJavaTypeFromId(column.getTalendType()) == JavaTypesManager.STRING){
@@ -226,6 +232,8 @@ for(int i = 0; i < attribute.length; i++){
 			}
 			if(JavaTypesManager.getJavaTypeFromId(column.getTalendType()) == JavaTypesManager.BYTE_ARRAY){
 				isByteArray = true;
+			}else if(JavaTypesManager.getJavaTypeFromId(column.getTalendType()) == JavaTypesManager.BIGDECIMAL){
+				isBigDecimal = true;
 			}
 			isPrimitive = JavaTypesManager.isJavaPrimitiveType( column.getTalendType(), column.isNullable());
 			break;
@@ -240,6 +248,8 @@ for(int i = 0; i < attribute.length; i++){
 									%><%if(needReplace){%>TalendString.replaceSpecialCharForXML(<%}%>FormatterUtils.format_Date(<%=conn.getName() %>.<%=attribute[i][0] %>, <%=pattern %>)<%if(needReplace){%>)<%}%><%
 									}else if(isByteArray){
 									%>TalendString.replaceSpecialCharForXML(java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(<%=conn.getName() %>.<%=attribute[i][0] %>)).toString())<%
+									}else if(isBigDecimal){
+									%>TalendString.replaceSpecialCharForXML(String.valueof(<%=conn.getName() %>.<%=tag[i][0] %>.doublevalue()))<%
 									}else{
 									%><%if(needReplace){%>TalendString.replaceSpecialCharForXML(<%}%><%=conn.getName() %>.<%=attribute[i][0] %><%if(needReplace){%>)<%}%><%
 									}%>))<%
@@ -268,6 +278,7 @@ for(int i = 0; i < tag.length; i++){
 	boolean isByteArray = false;
 	String pattern = null;
 	boolean isPrimitive = false;
+	boolean isBigDecimal = false;
 	for(IMetadataColumn column:metadata.getListColumns()) {
 		if(column.getLabel().equals(tag[i][0])){
 			if(JavaTypesManager.getJavaTypeFromId(column.getTalendType()) == JavaTypesManager.STRING){
@@ -282,6 +293,8 @@ for(int i = 0; i < tag.length; i++){
 			}
 			if(JavaTypesManager.getJavaTypeFromId(column.getTalendType()) == JavaTypesManager.BYTE_ARRAY){
 				isByteArray = true;
+			}else if(JavaTypesManager.getJavaTypeFromId(column.getTalendType()) == JavaTypesManager.BIGDECIMAL){
+				isBigDecimal = true;
 			}
 			isPrimitive = JavaTypesManager.isJavaPrimitiveType( column.getTalendType(), column.isNullable());
 			break;
@@ -296,6 +309,8 @@ for(int i = 0; i < tag.length; i++){
 									%><%if(needReplace){%>TalendString.replaceSpecialCharForXML(<%}%>FormatterUtils.format_Date(<%=conn.getName() %>.<%=tag[i][0] %>, <%=pattern %>)<%if(needReplace){%>)<%}%><%
 									}else if(isByteArray){
 									%>TalendString.replaceSpecialCharForXML(java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(<%=conn.getName() %>.<%=tag[i][0] %>)).toString())<%
+									}else if(isBigDecimal){
+									%>TalendString.replaceSpecialCharForXML(String.valueof(<%=conn.getName() %>.<%=tag[i][0] %>.doublevalue()))<%
 									}else{
 									%><%if(needReplace){%>TalendString.replaceSpecialCharForXML(<%}%><%=conn.getName() %>.<%=tag[i][0] %><%if(needReplace){%>)<%}%><%
 									}%>))<%
