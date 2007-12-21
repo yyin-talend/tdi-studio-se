@@ -1,3 +1,15 @@
+// ============================================================================
+//
+// Copyright (C) 2006-2007 Talend Inc. - www.talend.com
+//
+// This source code is available under agreement available at
+// %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
+//
+// You should have received a copy of the agreement
+// along with this program; if not, write to Talend SA
+// 9 rue Pages 92150 Suresnes, France
+//
+// ============================================================================
 package org.talend.designer.components.model;
 
 import java.io.BufferedInputStream;
@@ -21,6 +33,12 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.talend.designer.components.ComponentsLocalProviderPlugin;
 
+/**
+ * tfeng class global comment. Detailled comment <br/>
+ * 
+ * $Id: talend.epf 1 2006-09-29 17:06:40Z nrousseau $
+ * 
+ */
 public class XsdValidationCacheManager {
 
     private Map<String, Long> alreadyCheckedXsd;
