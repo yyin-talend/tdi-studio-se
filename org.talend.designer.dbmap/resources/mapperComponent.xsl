@@ -20,98 +20,98 @@
 					<br/>
 					<br/>				
 					<xsl:for-each select="table">
-						<TABLE  border="0" width="96%" cellpadding="0" cellspacing="0">
-							<TR>
-								<TD width="15">&#160;&#160;</TD>
-								<TD>
+						<table  border="0" width="96%" cellpadding="0" cellspacing="0">
+							<tr>
+								<td width="15">&#160;&#160;</td>
+								<td>
 									<b class="FONTSTYLE">Mapper table Properties(<xsl:value-of select="@name"/>):</b>
-									<TABLE class="cols" border="1" width="90%" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" frame="box">
-										<TH align="middle" width="30%" class="TABLECOLUMNSTYLE">Properties</TH>
-										<TH align="left" class="TABLECOLUMNSTYLE">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;Values</TH>
-										<TR>
-											<TD class="FONTSTYLE" align="middle">Name</TD>
-											<TD class="FONTSTYLE" align="left">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<xsl:value-of select="@name"/>
-											</TD>
-										</TR>
-										<TR>
-											<TD class="FONTSTYLE" align="middle">Table Name</TD>
-											<TD class="FONTSTYLE" align="left">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<xsl:value-of select="@tableName"/>
-											</TD>
-										</TR>
-										<TR>
-											<TD class="FONTSTYLE" align="middle">Alias</TD>
-											<TD class="FONTSTYLE" align="left">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<xsl:value-of select="@alias"/>
-											</TD>
-										</TR>
-										<TR>
-											<TD class="FONTSTYLE" align="middle">Join Type</TD>
-											<TD class="FONTSTYLE" align="left">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<xsl:value-of select="@joinType"/>
-											</TD>
-										</TR>
+									<table class="cols" border="1" width="90%" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" frame="box">
+										<th align="center" width="30%" class="TABLECOLUMNSTYLE">Properties</th>
+										<th align="left" class="TABLECOLUMNSTYLE">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;Values</th>
+										<tr>
+											<td class="FONTSTYLE" align="center">Name</td>
+											<td class="FONTSTYLE" align="left">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<xsl:value-of select="@name"/>
+											</td>
+										</tr>
+										<tr>
+											<td class="FONTSTYLE" align="center">Table Name</td>
+											<td class="FONTSTYLE" align="left">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<xsl:value-of select="@tableName"/>
+											</td>
+										</tr>
+										<tr>
+											<td class="FONTSTYLE" align="center">Alias</td>
+											<td class="FONTSTYLE" align="left">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<xsl:value-of select="@alias"/>
+											</td>
+										</tr>
+										<tr>
+											<td class="FONTSTYLE" align="center">Join Type</td>
+											<td class="FONTSTYLE" align="left">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<xsl:value-of select="@joinType"/>
+											</td>
+										</tr>
 										
-										<TR>
-											<TD class="FONTSTYLE" align="middle">isMinimized</TD>
-											<TD class="FONTSTYLE" align="left">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<xsl:value-of select="@isMinimized"/>
-											</TD>
-										</TR>
-									</TABLE>
+										<tr>
+											<td class="FONTSTYLE" align="center">isMinimized</td>
+											<td class="FONTSTYLE" align="left">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<xsl:value-of select="@isMinimized"/>
+											</td>
+										</tr>
+									</table>
 									<br/>
 									<br/>
 								<b class="FONTSTYLE">Metadata Table Entries(<xsl:value-of select="@name"/>):</b>
 								<br/>
-									<TABLE class="cols" width="90%" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" frame="box">
-										<TR class="profont">
-											<TH class="TABLECOLUMNSTYLE" width="25%">Name</TH>
-											<TH class="TABLECOLUMNSTYLE" width="25%">Expression</TH>
-											<TH class="TABLECOLUMNSTYLE" width="25%">Operator</TH>
-											<TH class="TABLECOLUMNSTYLE" width="25%">isJoin</TH>
-										</TR>
+									<table class="cols" width="90%" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" frame="box">
+										<tr class="profont">
+											<th class="TABLECOLUMNSTYLE" width="25%">Name</th>
+											<th class="TABLECOLUMNSTYLE" width="25%">Expression</th>
+											<th class="TABLECOLUMNSTYLE" width="25%">Operator</th>
+											<th class="TABLECOLUMNSTYLE" width="25%">isJoin</th>
+										</tr>
 										<xsl:for-each select="metadataTableEntries/entry">
-											<TR class="FONTSTYLE">
-												<TD align="middle">
+											<tr class="FONTSTYLE">
+												<td align="center">
 													<xsl:value-of select="@name"/>
-												</TD>
-												<TD align="middle">
+												</td>
+												<td align="center">
 													<xsl:value-of select="@expression"/>
-												</TD>
-												<TD align="middle">
+												</td>
+												<td align="center">
 													<xsl:value-of select="@operator"/>
-												</TD>
-												<TD align="middle">
+												</td>
+												<td align="center">
 													<xsl:value-of select="@isJoin"/>
-												</TD>
-											</TR>
+												</td>
+											</tr>
 										</xsl:for-each>
-									</TABLE>
+									</table>
 									    <br/>
 										<b class="FONTSTYLE">Custom Conditions Entries(<xsl:value-of select="@name"/>):</b>
-									<TABLE class="cols" width="90%" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" frame="box">
-										<TR class="profont">
-											<TH class="TABLECOLUMNSTYLE" width="25%">Name</TH>
-											<TH class="TABLECOLUMNSTYLE" width="25%">Expression</TH>
-											<TH class="TABLECOLUMNSTYLE" width="25%">Operator</TH>
-											<TH class="TABLECOLUMNSTYLE" width="25%">isJoin</TH>
-										</TR>
+									<table class="cols" width="90%" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" frame="box">
+										<tr class="profont">
+											<th class="TABLECOLUMNSTYLE" width="25%">Name</th>
+											<th class="TABLECOLUMNSTYLE" width="25%">Expression</th>
+											<th class="TABLECOLUMNSTYLE" width="25%">Operator</th>
+											<th class="TABLECOLUMNSTYLE" width="25%">isJoin</th>
+										</tr>
 										<xsl:for-each select="customConditionsEntries/entry">
-											<TR class="FONTSTYLE">
-												<TD align="middle">
+											<tr class="FONTSTYLE">
+												<td align="center">
 													<xsl:value-of select="@name"/>
-												</TD>
-												<TD align="middle">
+												</td>
+												<td align="center">
 													<xsl:value-of select="@expression"/>
-												</TD>
-												<TD align="middle">
+												</td>
+												<td align="center">
 													<xsl:value-of select="@operator"/>
-												</TD>
-												<TD align="middle">
+												</td>
+												<td align="center">
 													<xsl:value-of select="@isJoin"/>
-												</TD>
-											</TR>
+												</td>
+											</tr>
 										</xsl:for-each>
-									</TABLE>
-								</TD>
-							</TR>
-						</TABLE>
+									</table>
+								</td>
+							</tr>
+						</table>
 						<br/>
 					</xsl:for-each>				
 				</xsl:for-each>
