@@ -20,101 +20,101 @@
 					<br/>
 					<br/>				
 					<xsl:for-each select="table">
-						<TABLE  border="0" width="96%" cellpadding="0" cellspacing="0">
-							<TR>
-								<TD width="15">&#160;&#160;</TD>
-								<TD>
+						<table  border="0" width="96%" cellpadding="0" cellspacing="0">
+							<tr>
+								<td width="15">&#160;&#160;</td>
+								<td>
 									<b class="FONTSTYLE">Mapper table Properties(<xsl:value-of select="@name"/>):</b>	
-									<TABLE class="cols" border="1" width="90%" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" frame="box">
-										<TH align="middle" width="30%" class="TABLECOLUMNSTYLE">Properties</TH>
-										<TH align="left" class="TABLECOLUMNSTYLE">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;Values</TH>
-										<TR>
-											<TD class="FONTSTYLE" align="middle">Name</TD>
-											<TD class="FONTSTYLE" align="left">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<xsl:value-of select="@name"/>
-											</TD>
-										</TR>
-										<TR>
-											<TD class="FONTSTYLE" align="middle">Matching-mode</TD>
-											<TD class="FONTSTYLE" align="left">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<xsl:value-of select="@matching-mode"/>
-											</TD>
-										</TR>
-										<TR>
-											<TD class="FONTSTYLE" align="middle">isMinimized</TD>
-											<TD class="FONTSTYLE" align="left">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<xsl:value-of select="@isMinimized"/>
-											</TD>
-										</TR>
-										<TR>
-											<TD class="FONTSTYLE" align="middle">isReject</TD>
-											<TD class="FONTSTYLE" align="left">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<xsl:value-of select="@isReject"/>
-											</TD>
-										</TR>
-										<TR>
-											<TD class="FONTSTYLE" align="middle">isRejectInnerJoin</TD>
-											<TD class="FONTSTYLE" align="left">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<xsl:value-of select="@isRejectInnerJoin"/>
-											</TD>
-										</TR>
-										<TR>
-											<TD class="FONTSTYLE" align="middle">isInnerJoin</TD>
-											<TD class="FONTSTYLE" align="left">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<xsl:value-of select="@isInnerJoin"/>
-											</TD>
-										</TR>
-									</TABLE>
+									<table class="cols" border="1" width="90%" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" frame="box">
+										<th align="center" width="30%" class="TABLECOLUMNSTYLE">Properties</th>
+										<th align="left" class="TABLECOLUMNSTYLE">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;Values</th>
+										<tr>
+											<td class="FONTSTYLE" align="center">Name</td>
+											<td class="FONTSTYLE" align="left">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<xsl:value-of select="@name"/>
+											</td>
+										</tr>
+										<tr>
+											<td class="FONTSTYLE" align="center">Matching-mode</td>
+											<td class="FONTSTYLE" align="left">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<xsl:value-of select="@matching-mode"/>
+											</td>
+										</tr>
+										<tr>
+											<td class="FONTSTYLE" align="center">isMinimized</td>
+											<td class="FONTSTYLE" align="left">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<xsl:value-of select="@isMinimized"/>
+											</td>
+										</tr>
+										<tr>
+											<td class="FONTSTYLE" align="center">isReject</td>
+											<td class="FONTSTYLE" align="left">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<xsl:value-of select="@isReject"/>
+											</td>
+										</tr>
+										<tr>
+											<td class="FONTSTYLE" align="center">isRejectInnerJoin</td>
+											<td class="FONTSTYLE" align="left">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<xsl:value-of select="@isRejectInnerJoin"/>
+											</td>
+										</tr>
+										<tr>
+											<td class="FONTSTYLE" align="center">isInnerJoin</td>
+											<td class="FONTSTYLE" align="left">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<xsl:value-of select="@isInnerJoin"/>
+											</td>
+										</tr>
+									</table>
 									<br/>
 								<b class="FONTSTYLE">Metadata Table Entries(<xsl:value-of select="@name"/>):</b>
 								<br/>
-									<TABLE class="cols" width="90%" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" frame="box">
-										<TR class="profont">
-											<TH class="TABLECOLUMNSTYLE" width="25%">Name</TH>
-											<TH class="TABLECOLUMNSTYLE" width="25%">Type</TH>
-											<TH class="TABLECOLUMNSTYLE" width="25%">Expression</TH>
-											<TH class="TABLECOLUMNSTYLE" width="25%">isNullable</TH>
-										</TR>
+									<table class="cols" width="90%" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" frame="box">
+										<tr class="profont">
+											<th class="TABLECOLUMNSTYLE" width="25%">Name</th>
+											<th class="TABLECOLUMNSTYLE" width="25%">Type</th>
+											<th class="TABLECOLUMNSTYLE" width="25%">Expression</th>
+											<th class="TABLECOLUMNSTYLE" width="25%">isNullable</th>
+										</tr>
 										<xsl:for-each select="metadataTableEntries/entry">
-											<TR class="FONTSTYLE">
-												<TD align="middle">
+											<tr class="FONTSTYLE">
+												<td align="center">
 													<xsl:value-of select="@name"/>
-												</TD>
-												<TD align="middle">
+												</td>
+												<td align="center">
 													<xsl:value-of select="@type"/>
-												</TD>
-												<TD align="middle">
+												</td>
+												<td align="center">
 													<xsl:value-of select="@expression"/>
-												</TD>
-												<TD align="middle">
+												</td>
+												<td align="center">
 													<xsl:value-of select="@isNullable"/>
-												</TD>
-											</TR>
+												</td>
+											</tr>
 										</xsl:for-each>
-									</TABLE>
+									</table>
 									    <br/>
 										<b class="FONTSTYLE">Constraint Table Entries(<xsl:value-of select="@name"/>):</b>
-									<TABLE class="cols" width="90%" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" frame="box">
-										<TR class="profont">
-											<TH class="TABLECOLUMNSTYLE" width="25%">Name</TH>
-											<TH class="TABLECOLUMNSTYLE" width="25%">Type</TH>
-											<TH class="TABLECOLUMNSTYLE" width="25%">Expression</TH>
-											<TH class="TABLECOLUMNSTYLE" width="25%">isNullable</TH>
-										</TR>
+									<table class="cols" width="90%" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" frame="box">
+										<tr class="profont">
+											<th class="TABLECOLUMNSTYLE" width="25%">Name</th>
+											<th class="TABLECOLUMNSTYLE" width="25%">Type</th>
+											<th class="TABLECOLUMNSTYLE" width="25%">Expression</th>
+											<th class="TABLECOLUMNSTYLE" width="25%">isNullable</th>
+										</tr>
 										<xsl:for-each select="constraintTableEntries/entry">
-											<TR class="FONTSTYLE">
-												<TD align="middle">
+											<tr class="FONTSTYLE">
+												<td align="center">
 													<xsl:value-of select="@name"/>
-												</TD>
-												<TD align="middle">
+												</td>
+												<td align="center">
 													<xsl:value-of select="@type"/>
-												</TD>
-												<TD align="middle">
+												</td>
+												<td align="center">
 													<xsl:value-of select="@expression"/>
-												</TD>
-												<TD align="middle">
+												</td>
+												<td align="center">
 													<xsl:value-of select="@isNullable"/>
-												</TD>
-											</TR>
+												</td>
+											</tr>
 										</xsl:for-each>
-									</TABLE>
-								</TD>
-							</TR>
-						</TABLE>
+									</table>
+								</td>
+							</tr>
+						</table>
 						<br/>
 					</xsl:for-each>
 				</xsl:for-each>
