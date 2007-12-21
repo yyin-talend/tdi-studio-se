@@ -340,9 +340,9 @@ public class Connection extends Element implements IConnection, IPerformance {
             }
             updateName = true;
         } /*
-             * else if (getLineStyle().equals(EConnectionType.LOOKUP)) { labelText += " (" + nodeConnector.getLinkName() +
-             * ")"; updateName = true; }
-             */
+         * else if (getLineStyle().equals(EConnectionType.LOOKUP)) { labelText += " (" + nodeConnector.getLinkName() +
+         * ")"; updateName = true; }
+         */
 
         if (updateName) {
 
@@ -638,7 +638,8 @@ public class Connection extends Element implements IConnection, IPerformance {
             if (!sourceNodeConnector.isBuiltIn()) {
                 return -1;
             }
-        case THEN_RUN:
+        case ON_SUBJOB_ERROR:
+        case ON_SUBJOB_OK:
             boolean isExecutionOrder = type.hasConnectionCategory(IConnectionCategory.EXECUTION_ORDER);
             boolean isTestedConnectionExecutionOrder;
             if (source != null) {

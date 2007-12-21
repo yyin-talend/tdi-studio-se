@@ -321,7 +321,8 @@ public class DataProcess {
                     dataConnec.setName("row_" + itemsMap.get(curItem).getUniqueName()); //$NON-NLS-1$
                     break;
                 // case RUN_BEFORE:
-                case THEN_RUN:
+                case ON_SUBJOB_ERROR:
+                case ON_SUBJOB_OK:
                     // case RUN_AFTER:
                     if (nodeSource.equals(dataNode)) {
                         INode dataStartNode = ((DataNode) nodeSource).getSubProcessStartNode(false);
@@ -351,7 +352,7 @@ public class DataProcess {
                             if (linkedMergeInfo.get(linkedMergeInfo.keySet().toArray()[0]) > 1) {
                                 dataConnec.setLineStyle(EConnectionType.RUN_AFTER);
                                 dataConnec.setConnectorName(EConnectionType.RUN_AFTER.getName());
-                                dataConnec.setName(EConnectionType.THEN_RUN.getDefaultLinkName());
+                                dataConnec.setName(EConnectionType.ON_SUBJOB_OK.getDefaultLinkName());
                                 AbstractNode tmp = nodeSource;
                                 nodeSource = nodeTarget;
                                 nodeTarget = tmp;
@@ -361,8 +362,8 @@ public class DataProcess {
                     }
 
                     break;
-                case RUN_IF_OK:
-                case RUN_IF_ERROR:
+                // case RUN_IF_OK:
+                case ON_COMPONENT_ERROR:
                     nodeTarget.setSubProcessStart(true);
                     break;
                 default:
@@ -374,7 +375,7 @@ public class DataProcess {
                 outgoingConnections = (List<IConnection>) nodeSource.getOutgoingConnections();
                 int indexOfFirstThenRun = 0;
                 for (IConnection connection : outgoingConnections) {
-                    if (connection.getLineStyle().equals(EConnectionType.THEN_RUN)) {
+                    if (connection.getLineStyle().equals(EConnectionType.ON_SUBJOB_OK)) {
                         break;
                     }
                     indexOfFirstThenRun++;

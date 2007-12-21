@@ -208,7 +208,13 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
              * action).update(); if (action.isEnabled()) { subMenu.add(action); }
              */
 
-            action = new ConnectionCreateAction(part, EConnectionType.THEN_RUN);
+            action = new ConnectionCreateAction(part, EConnectionType.ON_SUBJOB_OK);
+            ((ConnectionCreateAction) action).update();
+            if (action.isEnabled()) {
+                subMenu.add(action);
+            }
+
+            action = new ConnectionCreateAction(part, EConnectionType.ON_SUBJOB_ERROR);
             ((ConnectionCreateAction) action).update();
             if (action.isEnabled()) {
                 subMenu.add(action);
@@ -232,13 +238,13 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
                 subMenu.add(action);
             }
 
-            action = new ConnectionCreateAction(part, EConnectionType.RUN_IF_OK);
-            ((ConnectionCreateAction) action).update();
-            if (action.isEnabled()) {
-                subMenu.add(action);
-            }
+            // action = new ConnectionCreateAction(part, EConnectionType.RUN_IF_OK);
+            // ((ConnectionCreateAction) action).update();
+            // if (action.isEnabled()) {
+            // subMenu.add(action);
+            // }
 
-            action = new ConnectionCreateAction(part, EConnectionType.RUN_IF_ERROR);
+            action = new ConnectionCreateAction(part, EConnectionType.ON_COMPONENT_ERROR);
             ((ConnectionCreateAction) action).update();
             if (action.isEnabled()) {
                 subMenu.add(action);
