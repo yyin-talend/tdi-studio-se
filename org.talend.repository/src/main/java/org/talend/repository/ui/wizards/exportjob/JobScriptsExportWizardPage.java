@@ -500,7 +500,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
     public ArchiveFileExportOperationFullPath getExporterOperation(List<ExportFileResource> resourcesToExport) {
         ArchiveFileExportOperationFullPath exporterOperation = new ArchiveFileExportOperationFullPath(resourcesToExport,
                 getDestinationValue());
-        
+
         return exporterOperation;
     }
 
@@ -523,7 +523,8 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
     }
 
     /**
-     *  Comment method "setTopFolder".
+     * Comment method "setTopFolder".
+     * 
      * @param resourcesToExport
      * @param topFolder
      */

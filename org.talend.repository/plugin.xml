@@ -630,6 +630,24 @@
             class="org.talend.repository.model.migration.UpdateLookupColumnMigrationTask"
             id="org.talend.repository.migration.changeLookupColumnList"
             name="Change Lookup Column Value"/>
+      <projecttask
+            class="org.talend.repository.model.migration.RenameConnectionRunErrorToComponentErrorTask"
+            description="Change the name of run error connection to on component error connection."
+            id="org.talend.repository.connection.rename.runerror.componenterror"
+            name="Rename run error connection">
+      </projecttask>
+      <projecttask
+            class="org.talend.repository.model.migration.RenameConnectionThenRunToOnSubjobOkTask"
+            description="Rename then run connection to on subjob ok connection."
+            id="org.talend.repository.connection.rename.thenrun.onsubjobok"
+            name="Rename then run connection.">
+      </projecttask>
+      <projecttask
+            class="org.talend.repository.model.migration.ChangeRunIfOkConnectionToOnSubJobOkTask"
+            description="Change run if ok connection to on subjob ok connection."
+            id="org.talend.repository.connection.change.runif.onsubjobok"
+            name="Change run if ok connection.">
+      </projecttask>
    </extension>
    <extension
          point="org.talend.core.librariesNeeded">

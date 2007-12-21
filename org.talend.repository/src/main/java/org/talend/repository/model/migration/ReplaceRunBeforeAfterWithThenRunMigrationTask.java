@@ -78,7 +78,7 @@ public class ReplaceRunBeforeAfterWithThenRunMigrationTask extends AbstractJobMi
             if (currentConnection.getLabel().equals(Messages.getString("ReplaceRunBeforeAfterWithThenRunMigrationTask.RunAfter"))) { //$NON-NLS-1$
 
                 currentConnection.setLabel(Messages.getString("ReplaceRunBeforeAfterWithThenRunMigrationTask.ThenRun")); //$NON-NLS-1$
-                currentConnection.setLineStyle(EConnectionType.THEN_RUN.getId());
+                currentConnection.setLineStyle(EConnectionType.ON_SUBJOB_OK.getId());
 
                 String sourceKey = currentConnection.getSource();
                 if (!runAfterMap.containsKey(sourceKey)) {
