@@ -1058,8 +1058,8 @@ public class Process extends Element implements IProcess {
                             Object objectValue = RepositoryToComponentProperty.getValue(repositoryConnection, repositoryValue);
 
                             if (objectValue != null) {
-                                if (param.getField().equals(EParameterFieldType.CLOSED_LIST)
-                                        && param.getRepositoryValue().equals("TYPE")) { //$NON-NLS-1$
+                                if ((param.getField().equals(EParameterFieldType.CLOSED_LIST) && "TYPE".equals(param
+                                        .getRepositoryValue()))) {
                                     boolean found = false;
                                     String[] list = param.getListRepositoryItems();
                                     for (int i = 0; (i < list.length) && (!found); i++) {
@@ -1069,6 +1069,59 @@ public class Process extends Element implements IProcess {
                                     }
                                     if (!found) {
                                         sameValues = false;
+                                    }
+
+                                } else if ((param.getField().equals(EParameterFieldType.CLOSED_LIST) && "SERVER_NAME"
+                                        .equals(param.getRepositoryValue()))) {
+                                    List<Map<String, Object>> newMaps = RepositoryToComponentProperty.getXMLMappingValue(
+                                            repositoryConnection, node.getMetadataList().get(0));
+                                    if ((param.getValue() instanceof List) && newMaps != null) {
+                                        List<Map<String, Object>> oldMaps = (List<Map<String, Object>>) param.getValue();
+                                        // sameValues = oldMaps.size() == newMaps.size();
+                                        for (int i = 0; i < newMaps.size() && sameValues; i++) {
+                                            Map<String, Object> newmap = newMaps.get(i);
+                                            Map<String, Object> oldmap = null; // oldMaps.get(i);
+                                            if (i < oldMaps.size()) {
+                                                oldmap = oldMaps.get(i);
+                                            }
+                                            if (oldmap != null && sameValues) {
+                                                Object o = newmap.get("QUERY");
+                                                if (o != null) {
+                                                    sameValues = newmap.get("QUERY").equals(oldmap.get("QUERY"));
+                                                } else {
+                                                    sameValues = oldmap.get("QUERY") == null;
+                                                }
+                                            }
+                                        }
+                                        if (oldMaps.size() > newMaps.size()) {
+                                            int size = newMaps.size();
+                                            for (int i = size; i < oldMaps.size(); i++) {
+                                                Map<String, Object> map = new HashMap<String, Object>();
+                                                map.put("QUERY", "");
+                                                newMaps.add(map);
+                                            }
+                                            sameValues = false;
+                                        }
+                                    }
+                                } else if ((param.getField().equals(EParameterFieldType.TEXT) && "SERVER_NAME".equals(param
+                                        .getRepositoryValue()))) {
+                                    if (metadataConnectionsItem != null) {
+                                        for (ConnectionItem connectionItem : metadataConnectionsItem) {
+                                            String value = connectionItem.getProperty().getId() + " "; //$NON-NLS-1$
+                                            String s = ((String) node.getPropertyValue(EParameterName.REPOSITORY_QUERYSTORE_TYPE
+                                                    .getName()));
+                                            String string = s.substring(0, s.lastIndexOf("-"));
+                                            if (value.equals(string)) {
+                                                node.setPropertyValue(param.getName(), objectValue);
+                                                CompoundCommand cc = new CompoundCommand();
+                                                PropertyChangeCommand pcc = new PropertyChangeCommand(node,
+                                                        EParameterName.UPDATE_COMPONENTS.getName(), Boolean.TRUE);
+                                                cc.add(pcc);
+                                                if (!cc.isEmpty()) {
+                                                    getCommandStack().execute(cc);
+                                                }
+                                            }
+                                        }
                                     }
                                 } else {
                                     // check the value
