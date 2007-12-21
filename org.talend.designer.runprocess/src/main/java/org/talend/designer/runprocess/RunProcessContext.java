@@ -291,6 +291,10 @@ public class RunProcessContext {
      * Launch the process.
      */
     public void exec(final Shell shell) {
+        if (process instanceof org.talend.designer.core.ui.editor.process.Process) {
+            org.talend.designer.core.ui.editor.process.Process prs = (org.talend.designer.core.ui.editor.process.Process) process;
+            prs.checkDifferenceWithRepository();
+        }
         setRunning(true);
 
         if (ProcessContextComposite.promptConfirmLauch(shell, getSelectedContext())) {
