@@ -678,6 +678,9 @@ public class ProcessComposite extends Composite {
     boolean debugMode = false;
 
     public void debug() {
+        if ((processContext.getProcess()) instanceof org.talend.designer.core.ui.editor.process.Process) {
+            ((org.talend.designer.core.ui.editor.process.Process) processContext.getProcess()).checkDifferenceWithRepository();
+        }
 
         final IPreferenceStore preferenceStore = DebugUIPlugin.getDefault().getPreferenceStore();
         final boolean oldValueConsoleOnOut = preferenceStore.getBoolean(IDebugPreferenceConstants.CONSOLE_OPEN_ON_OUT);
