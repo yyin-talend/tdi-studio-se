@@ -58,6 +58,8 @@ my @files = getFileList(
     match_files    => <%=matchFiles%>,
 );
 
+$_globals{<%=cid%>}{NB_FILE} = scalar @files;
+
 for my $filepath (@files) {
     $_globals{<%=cid%>}{CURRENT_FILE} = basename($filepath);
     $_globals{<%=cid%>}{CURRENT_FILEPATH} = $filepath;
