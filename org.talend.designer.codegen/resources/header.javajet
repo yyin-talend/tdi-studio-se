@@ -254,7 +254,7 @@ private class TalendException extends Exception {
             public void <%=node.getUniqueName() %>_error(Exception exception) throws TalendException {
                 end_Hash.put("<%=node.getUniqueName() %>", java.util.Calendar.getInstance().getTimeInMillis());
                 <%
-                boolean ifBeforRunError = NodeUtil.checkConnectionAfterNode(node, EConnectionType.RUN_IF_ERROR);
+                boolean ifBeforRunError = NodeUtil.checkConnectionAfterNode(node, EConnectionType.ON_COMPONENT_ERROR);
                 if(!ifBeforRunError) {
                     if (process.getNodesOfType("tAssertCatcher").size() > 0) {
                         List<INode> assertCatchers = (List<INode>)process.getNodesOfType("tAssertCatcher");
@@ -284,7 +284,7 @@ private class TalendException extends Exception {
                 }
                 List< ? extends IConnection> conns = node.getOutgoingConnections();
                 for (IConnection conn : conns) {
-                    if (conn.getLineStyle().equals(EConnectionType.RUN_IF_ERROR)) {
+                    if (conn.getLineStyle().equals(EConnectionType.ON_COMPONENT_ERROR)) {
                         %>
                         try {	    
 	

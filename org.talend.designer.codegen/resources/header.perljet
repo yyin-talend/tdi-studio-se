@@ -258,7 +258,7 @@ sub <%=node.getUniqueName() %>_error() {
                 node.getOutgoingConnections();
 
             for (IConnection conn : conns) {
-                if (conn.getLineStyle().equals(EConnectionType.RUN_IF_ERROR)){
+                if (conn.getLineStyle().equals(EConnectionType.ON_COMPONENT_ERROR)){
 %>
     <%=conn.getTarget().getUniqueName() %>_subprocess();
     $_globals{job_failure} = 0;
