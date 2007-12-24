@@ -147,13 +147,14 @@ $_globals{<%=node.getUniqueName() %>}{OK} = true;
 <%
     for (IConnection outgoingConn : node.getOutgoingConnections()) {
     	if (outgoingConn.getTarget().isActivate()) {
-/*
- * code commented for feature 2450.
- * 
- * if (outgoingConn.getLineStyle().equals(EConnectionType.RUN_IF_OK)) { %>
- * 
- * <%=outgoingConn.getTarget().getUniqueName() %>_subprocess(); <% }
- */
+ 
+    	    if (outgoingConn.getLineStyle().equals(EConnectionType.ON_COMPONENT_OK)) { %>
+  
+<%=outgoingConn.getTarget().getUniqueName() %>_subprocess(); 
+  
+<% 
+    	    }
+ 
         	if (outgoingConn.getLineStyle().equals(EConnectionType.RUN_IF)) {
 %>
 

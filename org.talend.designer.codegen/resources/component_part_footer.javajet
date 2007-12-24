@@ -114,12 +114,13 @@ end_Hash.put("<%=node.getUniqueName() %>", java.util.Calendar.getInstance().getT
   for (IConnection outgoingConn : node.getOutgoingConnections()) {
   	if (outgoingConn.getTarget().isActivate()) {
 		
-  	 /*
-         * code comment for feature 2450.
-         * 
-         * if (outgoingConn.getLineStyle().equals(EConnectionType.RUN_IF_OK)) { %>
-         * <%=outgoingConn.getTarget().getUniqueName() %>Process(); <% }
-         */
+	         
+  	        if (outgoingConn.getLineStyle().equals(EConnectionType.ON_COMPONENT_OK)) { 
+%>
+<%=outgoingConn.getTarget().getUniqueName() %>Process();
+<%  
+  	        }        
+       
 
    		if (outgoingConn.getLineStyle().equals(EConnectionType.RUN_IF)) {
 %>
