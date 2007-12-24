@@ -36,7 +36,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.internal.ide.IDEWorkbenchMessages;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
-import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.repository.documentation.ExportFileResource;
@@ -301,17 +300,9 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
     protected void restoreWidgetValuesForPOJO() {
         IDialogSettings settings = getDialogSettings();
 
-        List<ExportFileResource> exportResource = getExportResources();
-        int sizeOfExportResource = exportResource.size() - 1;
         Property property = null;
-        if (sizeOfExportResource == 1) {
-            for (ExportFileResource exportFileResource : exportResource) {
-                ProcessItem item = exportFileResource.getProcess();
-                if (item != null) {
-                    property = item.getProperty();
-                    break;
-                }
-            }
+        if (process.length == 1) {
+            property = process[0].getProcess().getProperty();
         }
 
         if (settings != null) {
@@ -325,8 +316,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
                         addDestinationItem(directoryNames[i]);
 
                         if (!isFirstValid) {
-
-                            if (sizeOfExportResource == 1) {
+                            if (process.length == 1) {
                                 IPath path = new Path(directoryNames[i]);
                                 String directory = directoryNames[i].substring(0, directoryNames[i].indexOf(path.lastSegment()));
                                 setDestinationValue(directory + property.getLabel() + "_" + property.getVersion() + ".zip");
@@ -550,7 +540,6 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
      */
     public List<ExportFileResource> getExportResources() {
         Map<ExportChoice, Boolean> exportChoiceMap = getExportChoiceMap();
-
         if (exportTypeCombo.getText().equals(EXPORTTYPE_POJO)) {
             return manager.getExportResources(process, exportChoiceMap, contextCombo.getText(), launcherCombo.getText(),
                     IProcessor.NO_STATISTICS, IProcessor.NO_TRACES);
