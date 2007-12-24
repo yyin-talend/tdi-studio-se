@@ -12,13 +12,10 @@
 // ============================================================================
 package org.talend.repository.model.migration;
 
-import java.util.List;
-
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.migration.AbstractJobMigrationTask;
 import org.talend.core.model.process.EConnectionType;
-import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.designer.core.model.utils.emf.talendfile.ConnectionType;
 import org.talend.repository.model.ProxyRepositoryFactory;
@@ -29,9 +26,7 @@ import org.talend.repository.model.ProxyRepositoryFactory;
  * $Id: talend.epf 1 2006-09-29 17:06:40Z nrousseau $
  * 
  */
-public class ChangeRunIfOkConnectionToOnSubJobOkTask extends AbstractJobMigrationTask {
-
-    private static final String TARGET_CONNECTION_NAME = "RUN_OK";
+public class RenameConnectionRunIfOkToOnComponentOkTask extends AbstractJobMigrationTask {
 
     /*
      * (non-Javadoc)
@@ -53,6 +48,7 @@ public class ChangeRunIfOkConnectionToOnSubJobOkTask extends AbstractJobMigratio
      * yzhang Comment method "renameConnections".
      * 
      * @param item
+     * @throws PersistenceException
      */
     private void renameConnections(ProcessItem item) throws PersistenceException {
 
@@ -64,14 +60,11 @@ public class ChangeRunIfOkConnectionToOnSubJobOkTask extends AbstractJobMigratio
 
             ConnectionType currentConnection = (ConnectionType) o;
 
-            if (currentConnection.getConnectorName().equals(TARGET_CONNECTION_NAME)) { //$NON-NLS-1$
+            if (currentConnection.getConnectorName().equals("RUN_OK")) { //$NON-NLS-1$
 
-                setBeginningOfSubjob(currentConnection.getSource(), item);
-
-                currentConnection.setConnectorName(EConnectionType.ON_SUBJOB_OK.getName());
-                currentConnection.setLabel(EConnectionType.ON_SUBJOB_OK.getDefaultLinkName());
-                currentConnection.setLineStyle(EConnectionType.ON_SUBJOB_OK.getDefaultLineStyle());
-                currentConnection.setSource(beginningOfSubJob);
+                currentConnection.setConnectorName(EConnectionType.ON_COMPONENT_OK.getName());
+                currentConnection.setLabel(EConnectionType.ON_COMPONENT_OK.getDefaultLinkName());
+                currentConnection.setLineStyle(EConnectionType.ON_COMPONENT_OK.getDefaultLineStyle());
 
                 modified = true;
             }
@@ -83,25 +76,4 @@ public class ChangeRunIfOkConnectionToOnSubJobOkTask extends AbstractJobMigratio
 
     }
 
-    private String beginningOfSubJob;
-
-    private void setBeginningOfSubjob(String source, ProcessItem item) {
-
-        List<ConnectionType> connections = item.getProcess().getConnection();
-        for (ConnectionType connection : connections) {
-            if (source.equals(connection.getTarget())
-                    && (isMainTypeConnection(connection.getConnectorName()) || connection.getConnectorName().equals(
-                            TARGET_CONNECTION_NAME))) {
-                setBeginningOfSubjob(connection.getSource(), item);
-                return;
-            }
-        }
-        beginningOfSubJob = source;
-
-    }
-
-    private boolean isMainTypeConnection(String connectionName) {
-        EConnectionType connectionType = EConnectionType.getTypeFromName(connectionName);
-        return connectionType.hasConnectionCategory(IConnectionCategory.MAIN);
-    }
 }
