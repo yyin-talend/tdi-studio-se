@@ -52,6 +52,9 @@ skeleton="../templates/db_output_bulk.skeleton"
 	
 	String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
 
+	boolean extendedInsert = ElementParameterParser.getValue(node, "__EXTENDINSERT__").equals("true");
+	    
+	int numPerInsert = Integer.parseInt(ElementParameterParser.getValue(node, "__NB_ROWS_PER_INSERT__"));
 %>
 
 <%
@@ -174,11 +177,63 @@ if(columnList != null && columnList.size()>0){
     StringBuilder updateWhereStmt = actionSQLMap.get(UPDATE_WHERE_STMT);
     
 	if(dataAction.equals("INSERT")){
-	    %>		
-	
-    	java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("INSERT INTO `" + <%=tableName%> + "` (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)");
-
-    	<%
+	    if(!extendedInsert){
+	        %>      	    
+	        java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("INSERT INTO `"+<%=tableName%>+"` (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)");	        
+	        <%
+	    }else{//extended-insert mode(begin)
+	            %>	            
+	            class BufferLine{
+	            <% 
+	            for(IMetadataColumn column:columnList){
+	                String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+	            %>
+	                    <%=typeToGenerate%> <%=column.getLabel()%>;                
+                <%   
+                    }            
+                %>   
+	            
+	                public BufferLine(
+	            <% 
+	            int count =0;
+	            for(IMetadataColumn column:columnList){
+	                String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+	            %>
+                        <%=typeToGenerate%> <%=column.getLabel()%>               
+	            <%   
+	            count++;
+	            if(count!=columnList.size()){%>
+	                ,
+	            <%}
+	                 }            
+	            %> 
+	                ){
+	            <% for(IMetadataColumn column:columnList){%>
+                        this.<%=column.getLabel()%> = <%=column.getLabel()%>;              
+                <%   
+                     }            
+                %>   	                
+	                }
+	            }
+	            
+	            java.util.List<BufferLine> exInsertColValueList<%=cid%> = new java.util.ArrayList();
+	            BufferLine exInsertColValue<%=cid%> = null; 
+	            
+	            <%
+	            StringBuffer extendInsertValueStmt = new StringBuffer();
+                for(int i=0;i<numPerInsert;i++){
+                     extendInsertValueStmt.append("("+insertValueStmt.toString()+")");
+                     if (i!=numPerInsert-1) extendInsertValueStmt.append(",");
+                }
+                %>
+	            java.sql.PreparedStatement pstmt_<%=cid %> = 
+	                conn_<%=cid%>.prepareStatement("INSERT INTO `"+<%=tableName%>+"` (<%=insertColName.toString()%>) VALUES <%=extendInsertValueStmt.toString()%>");
+	            
+	            String insertColName<%=cid%> = "<%=insertColName.toString()%>";
+	            String insertColValue<%=cid%> =  "<%=insertValueStmt.toString()%>"; 
+	            int rowCount<%=cid%> = 0;	            
+	    <%
+	    }//extended-insert mode(end)
 	}else if (dataAction.equals("UPDATE")){
 	    %>
 	

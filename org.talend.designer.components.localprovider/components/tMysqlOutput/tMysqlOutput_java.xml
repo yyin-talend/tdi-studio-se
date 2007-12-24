@@ -153,11 +153,38 @@
         <ITEM NAME="DELETE"           VALUE="DELETE"/>
       </ITEMS>
     </PARAMETER>
+    
+    <PARAMETER
+    	NAME="EXTENDINSERT"
+    	FIELD="CHECK"
+    	NUM_ROW="7"
+    	SHOW_IF="DATA_ACTION == 'INSERT'"
+    >
+    	<DEFAULT>false</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+    	NAME="NOTE"
+    	FIELD="LABEL"
+    	NUM_ROW="7"
+    >
+    	<DEFAULT>(Not compatible with reject links)</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="NB_ROWS_PER_INSERT"
+      FIELD="TEXT"
+      NUM_ROW="7"
+      REQUIRED="true"
+      SHOW_IF="EXTENDINSERT == 'true'"
+    >
+      <DEFAULT>100</DEFAULT>
+    </PARAMETER>
           
     <PARAMETER
       NAME="SCHEMA_FLOW"
       FIELD="SCHEMA_TYPE"
-      NUM_ROW="7"
+      NUM_ROW="8"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -166,7 +193,7 @@
       NAME="SCHEMA_REJECT"
       FIELD="SCHEMA_TYPE"
       REQUIRED="true"
-      NUM_ROW="7"
+      NUM_ROW="8"
       CONTEXT="REJECT"
       SHOW="true">
       <TABLE READONLY="true">
@@ -179,7 +206,7 @@
     <PARAMETER
       NAME="ENCODING"
       FIELD="ENCODING_TYPE"
-      NUM_ROW="8"
+      NUM_ROW="9"
       REQUIRED="true"
     >
       <DEFAULT>"ISO-8859-15"</DEFAULT>
@@ -189,7 +216,7 @@
       NAME="ADD_COLS"
       FIELD="TABLE"
       REQUIRED="false" 
-      NUM_ROW="9"
+      NUM_ROW="10"
       NB_LINES="3"
     >
       <ITEMS>
@@ -214,7 +241,7 @@
     <PARAMETER
       NAME="COMMIT_EVERY"
       FIELD="TEXT"
-      NUM_ROW="8"
+      NUM_ROW="9"
       REQUIRED="true"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
@@ -223,7 +250,7 @@
 	<PARAMETER
       NAME="DIE_ON_ERROR"
       FIELD="CHECK"
-      NUM_ROW="8"
+      NUM_ROW="9"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
@@ -231,7 +258,7 @@
 	<PARAMETER
       NAME="MAPPING"
       FIELD="MAPPING_TYPE"
-      NUM_ROW="10"
+      NUM_ROW="11"
       SHOW="false"
     >       
       <DEFAULT>mysql_id</DEFAULT>
