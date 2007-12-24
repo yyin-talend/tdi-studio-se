@@ -40,6 +40,7 @@ import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.properties.GefEditorLabelProvider;
 import org.talend.designer.core.ui.editor.properties.RepositoryValueUtils;
 import org.talend.designer.core.ui.views.contexts.Contexts;
+import org.talend.designer.core.ui.views.properties.ComponentSettings;
 import org.talend.designer.runprocess.ProcessorUtilities;
 
 /**
@@ -119,6 +120,10 @@ public class DesignerCoreService implements IDesignerCoreService {
 
     public void switchToCurContextsView() {
         Contexts.switchToCurContextsView();
+    }
+
+    public void switchToCurComponentSettingsView() {
+        ComponentSettings.switchToCurComponentSettingsView();
     }
 
     public void saveJobBeforeRun(IProcess activeProcess) {

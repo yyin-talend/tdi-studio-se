@@ -13,8 +13,10 @@
 package org.talend.designer.core.ui;
 
 import java.io.ByteArrayInputStream;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
@@ -67,6 +69,8 @@ import org.talend.core.context.RepositoryContext;
 import org.talend.core.context.UpdateRunJobComponentContextHelper;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.context.JobContextManager;
+import org.talend.core.model.process.IContextManager;
+import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.Property;
 import org.talend.core.ui.IUIRefresher;
@@ -331,18 +335,32 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
         Map<String, String> nameMap = manager.getNameMap();
         try {
             IProxyRepositoryFactory factory = DesignerPlugin.getDefault().getProxyRepositoryFactory();
-            UpdateRunJobComponentContextHelper.updateItemRunJobComponentReference(factory, nameMap, getProcess().getLabel());
+
+            Set<String> curContextVars = getCurrentContextVariables(manager);
+            String jobName = getProcess().getLabel();
+
+            UpdateRunJobComponentContextHelper.updateItemRunJobComponentReference(factory, nameMap, jobName, curContextVars);
 
             IEditorReference[] reference = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
                     .getEditorReferences();
             List<IProcess> processes = RepositoryPlugin.getDefault().getDesignerCoreService().getOpenedProcess(reference);
 
-            UpdateRunJobComponentContextHelper.updateOpenedJobRunJobComponentReference(processes, nameMap, getProcess()
-                    .getLabel());
+            UpdateRunJobComponentContextHelper.updateOpenedJobRunJobComponentReference(processes, nameMap, jobName,
+                    curContextVars);
         } catch (PersistenceException e) {
             e.printStackTrace();
         }
         nameMap.clear();
+    }
+
+    private Set<String> getCurrentContextVariables(IContextManager manager) {
+        Set<String> varNameSet = new HashSet<String>();
+        if (manager != null) {
+            for (IContextParameter param : manager.getDefaultContext().getContextParameterList()) {
+                varNameSet.add(param.getName());
+            }
+        }
+        return varNameSet;
     }
 
     public void codeSync() {
