@@ -362,7 +362,7 @@ public class DataProcess {
                     }
 
                     break;
-                // case RUN_IF_OK:
+                case ON_COMPONENT_OK:
                 case ON_COMPONENT_ERROR:
                     nodeTarget.setSubProcessStart(true);
                     break;

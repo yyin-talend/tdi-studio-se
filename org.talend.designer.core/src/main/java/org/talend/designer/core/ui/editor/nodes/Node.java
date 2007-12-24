@@ -1063,11 +1063,9 @@ public class Node extends Element implements INode {
             for (int j = 0; j < getIncomingConnections().size() && !runIf; j++) {
                 connec = (Connection) getIncomingConnections().get(j);
                 if (connec.isActivate()) {
-                    if ((connec.getLineStyle().equals(EConnectionType.RUN_IF) || connec.getLineStyle().equals(
-                            EConnectionType.ON_COMPONENT_ERROR) /*
-                     * || connec.getLineStyle().equals(
-                     * EConnectionType.RUN_IF_OK)
-                     */)) {
+                    if ((connec.getLineStyle().equals(EConnectionType.RUN_IF)
+                            || connec.getLineStyle().equals(EConnectionType.ON_COMPONENT_ERROR) || connec.getLineStyle().equals(
+                            EConnectionType.ON_COMPONENT_OK))) {
                         runIf = true;
                     }
                     if (!runIf) {
@@ -1475,7 +1473,7 @@ public class Node extends Element implements INode {
              * (getCurrentActiveLinksNbInput(EConnectionType.RUN_BEFORE) > 0) ||
              */(getCurrentActiveLinksNbInput(EConnectionType.ON_SUBJOB_OK) > 0)
                     || (getCurrentActiveLinksNbInput(EConnectionType.RUN_IF) > 0)
-                    /* || (getCurrentActiveLinksNbInput(EConnectionType.RUN_IF_OK) > 0) */
+                    || (getCurrentActiveLinksNbInput(EConnectionType.ON_COMPONENT_OK) > 0)
                     || (getCurrentActiveLinksNbInput(EConnectionType.ON_COMPONENT_ERROR) > 0)) {
                 String errorMessage = "A component that is not a sub process start can only have a data link or iterate link in input.";
                 Problems.add(ProblemStatus.ERROR, this, errorMessage);
