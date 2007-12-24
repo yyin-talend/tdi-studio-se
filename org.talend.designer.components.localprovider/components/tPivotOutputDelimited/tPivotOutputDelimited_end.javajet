@@ -1,0 +1,155 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+    java.util.Map
+"
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+	
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+        
+        List<Map<String, String>> groupbys = 
+            ( List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__GROUPBYS__");
+
+        boolean csvOption = ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("true");
+        
+        String pivotColumn = ElementParameterParser.getValue(node, "__PIVOT_COLUMN__");
+
+        String aggColumn = ElementParameterParser.getValue(node, "__AGGREGATION_COLUMN__");
+        
+        String aggFunction = ElementParameterParser.getValue(node, "__AGGREGATION_FUNCTION__");
+        
+        String rowSeparator = ElementParameterParser.getValue(node,"__ROWSEPARATOR__");
+        
+        String fieldSeparator = ElementParameterParser.getValue(node, "__FIELDSEPARATOR__");
+        
+%>
+////////////////////////////////  Delimited  /////////
+<% if(ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("false")) { %>
+    
+<%  for (int i=0; i<groupbys.size(); i++) {
+        
+        Map<String, String> groupby = groupbys.get(i);
+%>
+    out<%=cid%>.write("<%=groupby.get("INPUT_COLUMN")%>");
+    
+    out<%=cid%>.write(<%=fieldSeparator%>);
+<%
+       }  
+%>
+    
+    out<%=cid%>.write(pivot_Keys);
+    
+    out<%=cid%>.write(<%=rowSeparator%>);
+
+    for(int i = 0;i<group_Keys_Split.length;i++){
+        
+        out<%=cid%>.write(group_Keys_Split[i]);
+        
+        out<%=cid%>.write(<%=fieldSeparator%>);
+        
+        String aggOut = (String)aggregation.get(group_Keys_Split[i]);
+
+        out<%=cid %>.write(aggOut.substring(0,aggOut.lastIndexOf(<%=fieldSeparator%>)));
+        
+        out<%=cid%>.write(<%=rowSeparator%>);
+
+    }
+
+    out<%=cid %>.flush();
+    
+    
+    
+
+    <%}else{%>  ////////////////////////////////   CSV    /////////
+    
+    int rowSize = group_Keys.split(<%=rowSeparator%>).length + <%=groupbys.size()%>;
+    
+    String[] finalStr = new String[rowSize];
+
+<%  for (int i=0; i<groupbys.size(); i++) {
+        
+        Map<String, String> groupby = groupbys.get(i);
+%>
+    
+    finalStr[<%=i%>] = "<%=groupby.get("INPUT_COLUMN")%>";
+
+<%
+       }  
+%>
+
+    for (int i=0; i<pivot_Keys_Split.length; i++) {
+
+        finalStr[i+<%=groupbys.size()%>] = pivot_Keys_Split[i];
+
+   }  
+    
+    
+    CsvWriter<%=cid%>.writeRecord(finalStr);
+    
+    CsvWriter<%=cid%>.flush();
+
+    for(int i = 0;i<group_Keys_Split.length;i++){
+        
+        finalStr = new String[rowSize];
+        
+        String[] gkSplit = group_Keys_Split[i].split(<%=fieldSeparator%>);
+        
+<%  for (int i=0; i<groupbys.size(); i++) {
+            
+        Map<String, String> groupby = groupbys.get(i);
+%>
+        
+        finalStr[<%=i%>] = gkSplit[<%=i%>];
+
+<%  }  %>
+        
+        String aggOut = (String)aggregation.get(group_Keys_Split[i]);
+        
+        String[] aggSplit = aggOut.split(<%=fieldSeparator%>);    
+        
+  for (int j=0; j<aggSplit.length; j++) {
+
+        finalStr[j+<%=groupbys.size()%>] =  aggSplit[j];
+
+  } 
+        
+        CsvWriter<%=cid%>.writeRecord(finalStr);
+        
+        CsvWriter<%=cid%>.flush();
+
+    }
+
+<%
+        }
+    }
+}
+%>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
