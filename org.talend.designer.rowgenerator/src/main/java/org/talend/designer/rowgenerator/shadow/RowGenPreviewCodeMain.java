@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.designer.rowgenerator.shadow;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -141,26 +143,24 @@ public class RowGenPreviewCodeMain {
                             if (process == null) {
                                 return;
                             }
+
+                            StringBuffer out = new StringBuffer();
+                            StringBuffer err = new StringBuffer();
+
+                            createResultThread(process.getErrorStream(), err).start();
+                            createResultThread(process.getInputStream(), out).start();
+
                             process.waitFor();
-                            // process = runTempPerlCode();
-                            // Thread.sleep(1000);
-                            InputStream is = process.getInputStream();
-                            int len = is.available();
-                            if (len > 0) {
-                                byte[] data = new byte[len];
-                                is.read(data);
-                                convert(new String(data));
+
+                            if (out.length() > 0) {
+                                convert(out.toString());
                             }
-                            InputStream es = process.getErrorStream();
-                            len = es.available();
-                            if (len > 0) {
-                                byte[] data = new byte[len];
-                                es.read(data);
+                            if (err.length() > 0) {
                                 String mainMsg = Messages.getString("RowGenPreivewCodeMain.PerlRun.Error"); //$NON-NLS-1$
                                 new ErrorDialogWidthDetailArea(Display.getCurrent().getActiveShell(),
                                         RowGeneratorPlugin.PLUGIN_ID, mainMsg, Messages
                                                 .getString("RowGenPreivewCodeMain.Run.ErrorInfo")
-                                                + "\n" + new String(data));
+                                                + "\n" + err.toString());
                             }
                         } catch (Exception e) {
                             ExceptionHandler.process(e);
@@ -259,5 +259,32 @@ public class RowGenPreviewCodeMain {
         if (this.running != running) {
             this.running = running;
         }
+    }
+
+    private Thread createResultThread(final InputStream input, final StringBuffer result) {
+        final int bufferSize = 1024;
+        Thread thread = new Thread() {
+
+            public void run() {
+                try {
+                    BufferedInputStream outStreamProcess = new BufferedInputStream(input);
+                    byte[] buffer = new byte[bufferSize];
+                    int count = 0;
+                    while ((count = outStreamProcess.read(buffer, 0, buffer.length)) != -1) {
+                        result.append(new String(buffer, 0, count));
+                    }
+                    outStreamProcess.close();
+                } catch (IOException ioe) {
+                    ExceptionHandler.process(ioe);
+                } finally {
+                    try {
+                        input.close();
+                    } catch (IOException e) {
+                        ExceptionHandler.process(e);
+                    }
+                }
+            }
+        };
+        return thread;
     }
 }
