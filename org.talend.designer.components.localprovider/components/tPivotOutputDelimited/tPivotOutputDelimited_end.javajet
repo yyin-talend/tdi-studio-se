@@ -49,19 +49,19 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
        }  
 %>
     
-    out<%=cid%>.write(pivot_Keys);
+    out<%=cid%>.write(pivot_Keys<%=cid%>);
     
     out<%=cid%>.write(<%=rowSeparator%>);
 
-    for(int i = 0;i<group_Keys_Split.length;i++){
+    for(int i = 0;i<group_Keys_Split<%=cid%>.length;i++){
         
-        out<%=cid%>.write(group_Keys_Split[i]);
+        out<%=cid%>.write(group_Keys_Split<%=cid%>[i]);
         
         out<%=cid%>.write(<%=fieldSeparator%>);
         
-        String aggOut = (String)aggregation.get(group_Keys_Split[i]);
+        String aggOut<%=cid%> = (String)aggregation<%=cid%>.get(group_Keys_Split<%=cid%>[i]);
 
-        out<%=cid %>.write(aggOut.substring(0,aggOut.lastIndexOf(<%=fieldSeparator%>)));
+        out<%=cid %>.write(aggOut<%=cid%>.substring(0,aggOut<%=cid%>.lastIndexOf(<%=fieldSeparator%>)));
         
         out<%=cid%>.write(<%=rowSeparator%>);
 
@@ -74,58 +74,58 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 
     <%}else{%>  ////////////////////////////////   CSV    /////////
     
-    int rowSize = group_Keys.split(<%=rowSeparator%>).length + <%=groupbys.size()%>;
+    int rowSize<%=cid%> = group_Keys<%=cid%>.split(<%=rowSeparator%>).length + <%=groupbys.size()%>;
     
-    String[] finalStr = new String[rowSize];
+    String[] finalStr<%=cid%> = new String[rowSize<%=cid%>];
 
 <%  for (int i=0; i<groupbys.size(); i++) {
         
         Map<String, String> groupby = groupbys.get(i);
 %>
     
-    finalStr[<%=i%>] = "<%=groupby.get("INPUT_COLUMN")%>";
+    finalStr<%=cid%>[<%=i%>] = "<%=groupby.get("INPUT_COLUMN")%>";
 
 <%
        }  
 %>
 
-    for (int i=0; i<pivot_Keys_Split.length; i++) {
+    for (int i=0; i<pivot_Keys_Split<%=cid%>.length; i++) {
 
-        finalStr[i+<%=groupbys.size()%>] = pivot_Keys_Split[i];
+        finalStr<%=cid%>[i+<%=groupbys.size()%>] = pivot_Keys_Split<%=cid%>[i];
 
    }  
     
     
-    CsvWriter<%=cid%>.writeRecord(finalStr);
+    CsvWriter<%=cid%>.writeRecord(finalStr<%=cid%>);
     
     CsvWriter<%=cid%>.flush();
 
-    for(int i = 0;i<group_Keys_Split.length;i++){
+    for(int i = 0;i<group_Keys_Split<%=cid%>.length;i++){
         
-        finalStr = new String[rowSize];
+        finalStr<%=cid%> = new String[rowSize<%=cid%>];
         
-        String[] gkSplit = group_Keys_Split[i].split(<%=fieldSeparator%>);
+        String[] gkSplit<%=cid%> = group_Keys_Split<%=cid%>[i].split(<%=fieldSeparator%>);
         
 <%  for (int i=0; i<groupbys.size(); i++) {
             
         Map<String, String> groupby = groupbys.get(i);
 %>
         
-        finalStr[<%=i%>] = gkSplit[<%=i%>];
+        finalStr<%=cid%>[<%=i%>] = gkSplit<%=cid%>[<%=i%>];
 
 <%  }  %>
         
-        String aggOut = (String)aggregation.get(group_Keys_Split[i]);
+        String aggOut<%=cid%> = (String)aggregation<%=cid%>.get(group_Keys_Split<%=cid%>[i]);
         
-        String[] aggSplit = aggOut.split(<%=fieldSeparator%>);    
+        String[] aggSplit<%=cid%> = aggOut<%=cid%>.split(<%=fieldSeparator%>);    
         
-  for (int j=0; j<aggSplit.length; j++) {
+  for (int j=0; j<aggSplit<%=cid%>.length; j++) {
 
-        finalStr[j+<%=groupbys.size()%>] =  aggSplit[j];
+        finalStr<%=cid%>[j+<%=groupbys.size()%>] =  aggSplit<%=cid%>[j];
 
   } 
         
-        CsvWriter<%=cid%>.writeRecord(finalStr);
+        CsvWriter<%=cid%>.writeRecord(finalStr<%=cid%>);
         
         CsvWriter<%=cid%>.flush();
 

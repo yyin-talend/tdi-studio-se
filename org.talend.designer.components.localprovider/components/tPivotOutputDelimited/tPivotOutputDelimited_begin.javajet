@@ -104,27 +104,27 @@ if(escapeChar.equals("\\\\")){
 
 java.io.File file<%=cid%> = new java.io.File(fileName_<%=cid%>);
 
-boolean pivot_Exists = false;
+boolean pivot_Exists<%=cid%> = false;
 
-StringBuilder pivot_Key = new StringBuilder();
+StringBuilder pivot_Key<%=cid%> = new StringBuilder();
 
-String pivot_Keys = new String("");
+String pivot_Keys<%=cid%> = new String("");
 
-String[] pivot_Keys_Split = null;
+String[] pivot_Keys_Split<%=cid%> = null;
 
-boolean group_Exists = false;
+boolean group_Exists<%=cid%> = false;
 
-StringBuilder group_Key = new StringBuilder();
+StringBuilder group_Key<%=cid%> = new StringBuilder();
 
-String gKvalue = new String("");
+String gKvalue<%=cid%> = new String("");
 
-String group_Keys = new String("");
+String group_Keys<%=cid%> = new String("");
 
-String[] group_Keys_Split = null;
+String[] group_Keys_Split<%=cid%> = null;
 
-StringBuilder aggValues = new StringBuilder();
+StringBuilder aggValues<%=cid%> = new StringBuilder();
 
-java.util.Map<String,String> aggregation = new java.util.HashMap<String,String>();
+java.util.Map<String,String> aggregation<%=cid%> = new java.util.HashMap<String,String>();
 
 <%
     }

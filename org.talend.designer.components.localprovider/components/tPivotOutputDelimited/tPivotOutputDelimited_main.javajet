@@ -47,19 +47,19 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                     List<IMetadataColumn> columnList = metadata.getListColumns();
 %>                   
     //pivot key  
-    pivot_Keys_Split = pivot_Keys.split(<%=fieldSeparator%>);
+    pivot_Keys_Split<%=cid%> = pivot_Keys<%=cid%>.split(<%=fieldSeparator%>);
     
-    pivot_Exists = false;
+    pivot_Exists<%=cid%> = false;
     
-    int pivotNum = 0;
+    int pivotNum<%=cid%> = 0;
     
-    for(int i = 0;i<pivot_Keys_Split.length;i++){
+    for(int i = 0;i<pivot_Keys_Split<%=cid%>.length;i++){
         
-        if(pivot_Keys_Split[i].equals(<%=inConnName%>.<%=pivotColumn%>)){
+        if(pivot_Keys_Split<%=cid%>[i].equals(<%=inConnName%>.<%=pivotColumn%>)){
             
-            pivot_Exists = true;
+            pivot_Exists<%=cid%> = true;
             
-            pivotNum = i + 1;
+            pivotNum<%=cid%> = i + 1;
             
             break;
             
@@ -67,28 +67,28 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         
     }
     
-    if(!pivot_Exists){
+    if(!pivot_Exists<%=cid%>){
         
-        pivot_Key.delete(0, pivot_Key.length());
+        pivot_Key<%=cid%>.delete(0, pivot_Key<%=cid%>.length());
         
-        pivot_Keys = pivot_Keys + pivot_Key.append(<%=inConnName%>.<%=pivotColumn%>).toString() + <%=fieldSeparator%>;
+        pivot_Keys<%=cid%> = pivot_Keys<%=cid%> + pivot_Key<%=cid%>.append(<%=inConnName%>.<%=pivotColumn%>).toString() + <%=fieldSeparator%>;
         
-        pivot_Keys_Split = pivot_Keys.split(<%=fieldSeparator%>);
+        pivot_Keys_Split<%=cid%> = pivot_Keys<%=cid%>.split(<%=fieldSeparator%>);
         
-        pivotNum = pivot_Keys_Split.length;
+        pivotNum<%=cid%> = pivot_Keys_Split<%=cid%>.length;
         
     }
 
     
     //group key
 
-    group_Keys_Split = group_Keys.split(<%=rowSeparator%>);
+    group_Keys_Split<%=cid%> = group_Keys<%=cid%>.split(<%=rowSeparator%>);
     
-    group_Exists = false;
+    group_Exists<%=cid%> = false;
     
-    gKvalue = "";
+    gKvalue<%=cid%> = "";
     
-    group_Key.delete(0,group_Key.length());
+    group_Key<%=cid%>.delete(0,group_Key<%=cid%>.length());
         
     <%
     for (int i=0; i<groupbys.size(); i++) {
@@ -96,20 +96,20 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
       Map<String, String> groupby = groupbys.get(i);
     %>
 
-        gKvalue = gKvalue + group_Key.append(<%=inConnName%>.<%=groupby.get("INPUT_COLUMN")%>).toString()<%if(i!=groupbys.size()-1){%>+<%=fieldSeparator%><%}%>; 
+        gKvalue<%=cid%> = gKvalue<%=cid%> + group_Key<%=cid%>.append(<%=inConnName%>.<%=groupby.get("INPUT_COLUMN")%>).toString()<%if(i!=groupbys.size()-1){%>+<%=fieldSeparator%><%}%>; 
         
-        group_Key.delete(0,group_Key.length());
+        group_Key<%=cid%>.delete(0,group_Key<%=cid%>.length());
     <%
 
      }
     
     %>
     
-    for(int i = 0;i<group_Keys_Split.length;i++){
+    for(int i = 0;i<group_Keys_Split<%=cid%>.length;i++){
     
-        if(group_Keys_Split[i].equals(gKvalue)){
+        if(group_Keys_Split<%=cid%>[i].equals(gKvalue<%=cid%>)){
             
-            group_Exists = true;
+            group_Exists<%=cid%> = true;
             
             break;
             
@@ -117,69 +117,69 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         
     }
 
-    if(!group_Exists){
+    if(!group_Exists<%=cid%>){
         
-        group_Key.delete(0, group_Key.length());
+        group_Key<%=cid%>.delete(0, group_Key<%=cid%>.length());
         
-        group_Keys = group_Keys + gKvalue + <%=rowSeparator%>;
+        group_Keys<%=cid%> = group_Keys<%=cid%> + gKvalue<%=cid%> + <%=rowSeparator%>;
         
-        group_Keys_Split = group_Keys.split(<%=rowSeparator%>);
+        group_Keys_Split<%=cid%> = group_Keys<%=cid%>.split(<%=rowSeparator%>);
     
-        aggValues.delete(0, aggValues.length());
+        aggValues<%=cid%>.delete(0, aggValues<%=cid%>.length());
         
-        for(int i = 0; i<pivotNum-1; i++)
+        for(int i = 0; i<pivotNum<%=cid%>-1; i++)
             
-            aggValues.append(<%=fieldSeparator%>);
+            aggValues<%=cid%>.append(<%=fieldSeparator%>);
         
 <%if( aggFunction.equals("count")){%>
 
-        aggregation.put(gKvalue,aggValues.append(1).append(<%=fieldSeparator%>).toString());
+        aggregation<%=cid%>.put(gKvalue<%=cid%>,aggValues<%=cid%>.append(1).append(<%=fieldSeparator%>).toString());
 
 <%}else{%>
         
-        aggregation.put(gKvalue,aggValues.append(<%=inConnName%>.<%=aggColumn%>).append(<%=fieldSeparator%>).toString());
+        aggregation<%=cid%>.put(gKvalue<%=cid%>,aggValues<%=cid%>.append(<%=inConnName%>.<%=aggColumn%>).append(<%=fieldSeparator%>).toString());
   
 <%}%>
 
     }else{
 
-        String aggStr = (String)aggregation.get(gKvalue);
+        String aggStr<%=cid%> = (String)aggregation<%=cid%>.get(gKvalue<%=cid%>);
         
-        String[] aggStrSpli = aggStr.split(<%=fieldSeparator%>);
+        String[] aggStrSpli<%=cid%> = aggStr<%=cid%>.split(<%=fieldSeparator%>);
         
-        if(aggStrSpli.length < pivotNum){
+        if(aggStrSpli<%=cid%>.length < pivotNum<%=cid%>){
             
-            for(int i = 0 ; i<pivot_Keys_Split.length - aggStrSpli.length-1; i++){
+            for(int i = 0 ; i<pivot_Keys_Split<%=cid%>.length - aggStrSpli<%=cid%>.length-1; i++){
                 
-                aggStr = aggStr + <%=fieldSeparator%>;
+                aggStr<%=cid%> = aggStr<%=cid%> + <%=fieldSeparator%>;
             }
             
-            aggValues.delete(0,aggValues.length());
+            aggValues<%=cid%>.delete(0,aggValues<%=cid%>.length());
             
 <%if( aggFunction.equals("count")){%>
 
-            aggStr = aggStr + aggValues.append(1).toString() + <%=fieldSeparator%>;
+            aggStr<%=cid%> = aggStr<%=cid%> + aggValues<%=cid%>.append(1).toString() + <%=fieldSeparator%>;
 
 <%}else{%>
             
-            aggStr = aggStr + aggValues.append(<%=inConnName%>.<%=aggColumn%>).toString() + <%=fieldSeparator%>;
+            aggStr<%=cid%> = aggStr<%=cid%> + aggValues<%=cid%>.append(<%=inConnName%>.<%=aggColumn%>).toString() + <%=fieldSeparator%>;
 
 <%}%>            
             
-            aggregation.remove(gKvalue);
+            aggregation<%=cid%>.remove(gKvalue<%=cid%>);
             
-            aggregation.put(gKvalue,aggStr);
+            aggregation<%=cid%>.put(gKvalue<%=cid%>,aggStr<%=cid%>);
 
         }else{
             
             //step1: get the index of the pivot
-            int pivotIndex = 0 ;
+            int pivotIndex<%=cid%> = 0 ;
             
-            for(int i = 0; i<pivot_Keys_Split.length; i++){
+            for(int i = 0; i<pivot_Keys_Split<%=cid%>.length; i++){
                 
-                if(pivot_Keys_Split[i].equals(<%=inConnName%>.<%=pivotColumn%>)){
+                if(pivot_Keys_Split<%=cid%>[i].equals(<%=inConnName%>.<%=pivotColumn%>)){
                     
-                    pivotIndex = i;
+                    pivotIndex<%=cid%> = i;
                     
                     break;
                     
@@ -189,69 +189,69 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             
             //step2: process the splitted data according to function
             
-            String[] aggStrSplit = aggStr.split(<%=fieldSeparator%>);
+            String[] aggStrSplit<%=cid%> = aggStr<%=cid%>.split(<%=fieldSeparator%>);
             
-            aggValues.delete(0,aggValues.length());
+            aggValues<%=cid%>.delete(0,aggValues<%=cid%>.length());
         
             <%  
             if( aggFunction.equals("sum") ){
             %>
 
-                double sum = 0.0;
+                double sum<%=cid%> = 0.0;
                 
-                if (aggStrSplit[pivotIndex].equals("")){
+                if (aggStrSplit<%=cid%>[pivotIndex<%=cid%>].equals("")){
             
-                    sum = Double.parseDouble(aggStrSplit[pivotIndex]);
+                    sum<%=cid%> = Double.parseDouble(aggStrSplit<%=cid%>[pivotIndex<%=cid%>]);
                     
                 }else{
                     
-                    sum = Double.parseDouble(aggStrSplit[pivotIndex]) + Double.parseDouble(aggValues.append(<%=inConnName%>.<%=aggColumn%>).toString());
+                    sum<%=cid%> = Double.parseDouble(aggStrSplit<%=cid%>[pivotIndex<%=cid%>]) + Double.parseDouble(aggValues<%=cid%>.append(<%=inConnName%>.<%=aggColumn%>).toString());
                     
                 }
                 
-                aggStrSplit[pivotIndex] = String.valueOf(sum);
+                aggStrSplit<%=cid%>[pivotIndex<%=cid%>] = String.valueOf(sum<%=cid%>);
             
             <%
             }else if( aggFunction.equals("count") ){
             %>
-                int count = 1;
+                int count<%=cid%> = 1;
                 
-                if (!aggStrSplit[pivotIndex].equals(""))
+                if (!aggStrSplit<%=cid%>[pivotIndex<%=cid%>].equals(""))
             
-                    count = Integer.parseInt(aggStrSplit[pivotIndex]) + 1;
+                    count<%=cid%> = Integer.parseInt(aggStrSplit<%=cid%>[pivotIndex<%=cid%>]) + 1;
                     
-                aggStrSplit[pivotIndex] = String.valueOf(count);
+                aggStrSplit<%=cid%>[pivotIndex<%=cid%>] = String.valueOf(count<%=cid%>);
             
             <%
             }else if( aggFunction.equals("max") ){
             %>
             
-                if(Float.parseFloat(aggValues.append(<%=inConnName%>.<%=aggColumn%>).toString())>Float.parseFloat(aggStrSplit[pivotIndex]))
+                if(Float.parseFloat(aggValues<%=cid%>.append(<%=inConnName%>.<%=aggColumn%>).toString())>Float.parseFloat(aggStrSplit<%=cid%>[pivotIndex<%=cid%>]))
                     
-                    aggStrSplit[pivotIndex] = aggValues.toString();
+                    aggStrSplit<%=cid%>[pivotIndex<%=cid%>] = aggValues<%=cid%>.toString();
             
             <%
             }else if( aggFunction.equals("min") ){
             %>
                 
 
-                if(Float.parseFloat(aggValues.append(<%=inConnName%>.<%=aggColumn%>).toString())<Float.parseFloat(aggStrSplit[pivotIndex]))
+                if(Float.parseFloat(aggValues<%=cid%>.append(<%=inConnName%>.<%=aggColumn%>).toString())<Float.parseFloat(aggStrSplit<%=cid%>[pivotIndex<%=cid%>]))
                     
-                    aggStrSplit[pivotIndex] = aggValues.toString();
+                    aggStrSplit<%=cid%>[pivotIndex<%=cid%>] = aggValues<%=cid%>.toString();
             
             <%
             }else if( aggFunction.equals("first") ){
             %>
             
-                if (aggStrSplit[pivotIndex].equals(""))
+                if (aggStrSplit<%=cid%>[pivotIndex<%=cid%>].equals(""))
 
-                    aggStrSplit[pivotIndex] = aggValues.append(<%=inConnName%>.<%=aggColumn%>).toString();
+                    aggStrSplit<%=cid%>[pivotIndex<%=cid%>] = aggValues<%=cid%>.append(<%=inConnName%>.<%=aggColumn%>).toString();
             
             <%
             }else if( aggFunction.equals("last") ){
             %>
     
-                    aggStrSplit[pivotIndex] = aggValues.append(<%=inConnName%>.<%=aggColumn%>).toString();
+                    aggStrSplit<%=cid%>[pivotIndex<%=cid%>] = aggValues<%=cid%>.append(<%=inConnName%>.<%=aggColumn%>).toString();
                 
             <%
             }
@@ -259,18 +259,18 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             
             //step3: write new data back to string
             
-            aggValues.delete(0, aggValues.length());
+            aggValues<%=cid%>.delete(0, aggValues<%=cid%>.length());
             
-            for(int i = 0; i<aggStrSplit.length; i++){
+            for(int i = 0; i<aggStrSplit<%=cid%>.length; i++){
                 
-                aggValues.append(aggStrSplit[i]);
-                aggValues.append(<%=fieldSeparator%>);
+                aggValues<%=cid%>.append(aggStrSplit<%=cid%>[i]);
+                aggValues<%=cid%>.append(<%=fieldSeparator%>);
                 
             }
             
-            aggregation.remove(gKvalue);
+            aggregation<%=cid%>.remove(gKvalue<%=cid%>);
           
-            aggregation.put(gKvalue,aggValues.toString());            
+            aggregation<%=cid%>.put(gKvalue<%=cid%>,aggValues<%=cid%>.toString());            
             
         }
         
