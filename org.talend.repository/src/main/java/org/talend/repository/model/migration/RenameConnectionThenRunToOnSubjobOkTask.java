@@ -64,7 +64,7 @@ public class RenameConnectionThenRunToOnSubjobOkTask extends AbstractJobMigratio
 
                 currentConnection.setConnectorName(EConnectionType.ON_SUBJOB_OK.getName());
                 currentConnection.setLabel(EConnectionType.ON_SUBJOB_OK.getDefaultLinkName());
-                currentConnection.setLineStyle(EConnectionType.ON_SUBJOB_OK.getDefaultLineStyle());
+                currentConnection.setLineStyle(EConnectionType.ON_SUBJOB_OK.getId());
 
                 modified = true;
             }

@@ -64,7 +64,7 @@ public class RenameConnectionRunIfOkToOnComponentOkTask extends AbstractJobMigra
 
                 currentConnection.setConnectorName(EConnectionType.ON_COMPONENT_OK.getName());
                 currentConnection.setLabel(EConnectionType.ON_COMPONENT_OK.getDefaultLinkName());
-                currentConnection.setLineStyle(EConnectionType.ON_COMPONENT_OK.getDefaultLineStyle());
+                currentConnection.setLineStyle(EConnectionType.ON_COMPONENT_OK.getId());
 
                 modified = true;
             }

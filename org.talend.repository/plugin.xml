@@ -636,6 +636,18 @@
             id="org.talend.repository.connection.rename.runifok.oncomponentok"
             name="Rename run if ok connection.">
       </projecttask>
+      <projecttask
+            class="org.talend.repository.model.migration.RenameConnectionRunErrorToComponentErrorTask"
+            description="Rename run if error connection to on component error."
+            id="org.talend.repository.connection.rename.runerror.oncomponenterror"
+            name="Rename run if error connection.">
+      </projecttask>
+      <projecttask
+            class="org.talend.repository.model.migration.RenameConnectionThenRunToOnSubjobOkTask"
+            description="Rename then run connection to on sub job ok connection."
+            id="org.talend.repository.connection.rename.thenrun.onsubjobok"
+            name="Rename then run connection.">
+      </projecttask>
    </extension>
    <extension
          point="org.talend.core.librariesNeeded">

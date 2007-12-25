@@ -58,7 +58,7 @@ public class RenameConnectionRunErrorToComponentErrorTask extends AbstractJobMig
 
                 currentConnection.setConnectorName(EConnectionType.ON_COMPONENT_ERROR.getName());
                 currentConnection.setLabel(EConnectionType.ON_COMPONENT_ERROR.getDefaultLinkName());
-                currentConnection.setLineStyle(EConnectionType.ON_COMPONENT_ERROR.getDefaultLineStyle());
+                currentConnection.setLineStyle(EConnectionType.ON_COMPONENT_ERROR.getId());
 
                 modified = true;
             }
