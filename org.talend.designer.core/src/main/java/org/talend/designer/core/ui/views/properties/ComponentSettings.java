@@ -33,11 +33,13 @@ public class ComponentSettings {
                 ExceptionHandler.process(e);
             }
         }
-        if (view instanceof ComponentSettingsView) {
+        if (view != null && view instanceof ComponentSettingsView) {
             ComponentSettingsView settingView = (ComponentSettingsView) view;
             Element element = settingView.getElement();
-            settingView.cleanDisplay();
-            settingView.setElement(element);
+            if (element != null) {
+                settingView.cleanDisplay();
+                settingView.setElement(element);
+            }
         }
 
     }

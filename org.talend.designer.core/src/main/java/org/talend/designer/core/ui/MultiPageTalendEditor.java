@@ -332,6 +332,9 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
 
     private void updateRunJobContext() {
         JobContextManager manager = (JobContextManager) getProcess().getContextManager();
+        if (!manager.isModified()) {
+            return;
+        }
         Map<String, String> nameMap = manager.getNameMap();
         try {
             IProxyRepositoryFactory factory = DesignerPlugin.getDefault().getProxyRepositoryFactory();
@@ -350,7 +353,9 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
         } catch (PersistenceException e) {
             e.printStackTrace();
         }
+        // clear the flags
         nameMap.clear();
+        manager.setModified(false);
     }
 
     private Set<String> getCurrentContextVariables(IContextManager manager) {

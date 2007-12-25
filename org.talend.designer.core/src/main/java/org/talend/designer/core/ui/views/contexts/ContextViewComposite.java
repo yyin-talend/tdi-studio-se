@@ -279,8 +279,6 @@ public class ContextViewComposite extends ContextComposite {
     }
 
     public void onContextChangeDefault(IContextManager contextManager, IContext newDefault) {
-        // contextManager.setDefaultContext(newDefault);
-        // refresh();
         getCommandStack().execute(new ContextChangeDefaultCommand(contextManager, newDefault));
     }
 
@@ -288,11 +286,15 @@ public class ContextViewComposite extends ContextComposite {
         if (contextManager instanceof JobContextManager) {
             JobContextManager manager = (JobContextManager) contextManager;
             manager.addNewName(newName, oldName);
+            // record the modified operation.
+            setModifiedFlag(contextManager);
         }
         getCommandStack().execute(new ContextRenameParameterCommand(contextManager, oldName, newName));
     }
 
     public void onContextModify(IContextManager contextManager, IContextParameter parameter) {
+        // record the modified operation.
+        setModifiedFlag(contextManager);
         getCommandStack().execute(new ContextTemplateModifyCommand(getProcess(), contextManager, parameter));
     }
 
@@ -301,7 +303,16 @@ public class ContextViewComposite extends ContextComposite {
     }
 
     public void onContextRemoveParameter(IContextManager contextManager, String paramName) {
+        // record the modified operation.
+        setModifiedFlag(contextManager);
         getCommandStack().execute(new ContextRemoveParameterCommand(getContextManager(), paramName));
     }
 
+    private void setModifiedFlag(IContextManager contextManager) {
+        if (contextManager != null && contextManager instanceof JobContextManager) {
+            JobContextManager manager = (JobContextManager) contextManager;
+            // record the modified operation.
+            manager.setModified(true);
+        }
+    }
 }
