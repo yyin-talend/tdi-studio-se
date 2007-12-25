@@ -85,6 +85,10 @@ public class ContextRepositoryComposite extends ContextComposite {
         }
         JobContextManager manager = (JobContextManager) contextManager;
         manager.addNewName(newName, oldName);
+
+        // record the modified operation.
+        setModifiedFlag(contextManager);
+
         refresh();
     }
 
@@ -123,6 +127,8 @@ public class ContextRepositoryComposite extends ContextComposite {
                 }
             }
         }
+        // record the modified operation.
+        setModifiedFlag(contextManager);
         refresh();
     }
 
@@ -134,6 +140,8 @@ public class ContextRepositoryComposite extends ContextComposite {
      */
     public void onContextChangeDefault(IContextManager contextManager, IContext newDefault) {
         contextManager.setDefaultContext(newDefault);
+        // record the modified operation.
+        setModifiedFlag(contextManager);
         refresh();
     }
 
@@ -145,6 +153,8 @@ public class ContextRepositoryComposite extends ContextComposite {
      */
     public void onContextModify(IContextManager contextManager, IContextParameter parameter) {
         propagateType(contextManager, parameter);
+        // record the modified operation.
+        setModifiedFlag(contextManager);
         refresh();
     }
 
@@ -215,4 +225,11 @@ public class ContextRepositoryComposite extends ContextComposite {
     // combo.setItems(stringList);
     // contextManager.fireContextsChangedEvent();
     // }
+    private void setModifiedFlag(IContextManager contextManager) {
+        if (contextManager != null && contextManager instanceof JobContextManager) {
+            JobContextManager manager = (JobContextManager) contextManager;
+            // record the modified operation.
+            manager.setModified(true);
+        }
+    }
 }

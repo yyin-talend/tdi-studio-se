@@ -159,8 +159,15 @@ public class ContextWizard extends RepositoryWizard implements INewWizard {
                     contextItem.getContext().clear();
                     contextManager.saveToEmf(contextItem.getContext());
                     contextItem.setDefaultContext(contextManager.getDefaultContext().getName());
-                    // update the job context and tRunJob reference
-                    UpdateContextReferenceHelper.updateJobContextReference((JobContextManager) contextManager, contextItem);
+                    if (contextManager instanceof JobContextManager) {
+                        JobContextManager manager = (JobContextManager) contextManager;
+                        if (manager.isModified()) {
+                            // update the job context and tRunJob reference
+                            UpdateContextReferenceHelper.updateJobContextReference((JobContextManager) contextManager,
+                                    contextItem);
+                        }
+                    }
+
                     factory.save(contextItem);
                     updateRelatedView();
 
