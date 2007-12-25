@@ -12,7 +12,8 @@ Require-Bundle:
  org.talend.libraries,
  org.talend.designer.core,
  org.talend.core,
- org.eclipse.gmf.runtime.common.ui
+ org.eclipse.gmf.runtime.common.ui,
+ org.talend.commons.ui
 Eclipse-LazyStart: true
 Bundle-Vendor: .Talend SA.
 Export-Package: org.talend.designer.components.commons
