@@ -33,7 +33,7 @@ public class ComponentProperty {
     
     private String imageURL;
     
-    private String libFileURL;
+    private ILibEntry[] libEntries;
 
 	/**
 	 * @return the name
@@ -110,14 +110,14 @@ public class ComponentProperty {
 	/**
 	 * @return the libFileURL
 	 */
-	public String getLibFileURL() {
-		return libFileURL;
+	public  ILibEntry[] getLibEntries() {
+		return libEntries;
 	}
 
 	/**
 	 * @param libFileURL the libFileName to set
 	 */
-	public void setLibFileURL(String libFileURL) {
-		this.libFileURL = libFileURL;
+	public void setLibFileURL(ILibEntry[] libEntries) {
+		this.libEntries = libEntries;
 	}
 }

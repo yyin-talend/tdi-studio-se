@@ -93,6 +93,7 @@ public class WizardComponentFolderPage extends WizardPage {
 		
         this.createComponentLangGroup(composite);
         this.setControl(composite);
+        this.setPageComplete(false);
     }
 
     private void createComponentLangGroup(Composite parent) {
@@ -138,8 +139,12 @@ public class WizardComponentFolderPage extends WizardPage {
         }
         IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(
 				PluginConstant.PROJECTNAME_DEFAULT);
-		IFolder componentFolder = project.getFolder(componentFolderText
-				.getText());
+        String componentName = componentFolderText.getText();
+        if (componentName.equals(PluginConstant.EMPTY_STRING)) {
+        	 setErrorMessage("The component name is null");
+			return false;
+		}
+		IFolder componentFolder = project.getFolder(componentName);
 		if (componentFolder.exists()) {
 			 setErrorMessage("The component has been exsit");
              return false;

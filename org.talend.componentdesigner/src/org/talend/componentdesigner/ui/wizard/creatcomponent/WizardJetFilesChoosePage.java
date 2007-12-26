@@ -30,9 +30,11 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.talend.componentdesigner.ImageLib;
 import org.talend.componentdesigner.PluginConstant;
 import org.talend.componentdesigner.model.enumtype.JetFileStamp;
 import org.talend.componentdesigner.model.enumtype.ResourceLanguageType;
+import org.talend.componentdesigner.ui.composite.LibSelectionComposite;
 import org.talend.componentdesigner.ui.wizard.PropertyChangeBean;
 
 /**
@@ -54,10 +56,6 @@ public class WizardJetFilesChoosePage extends WizardPage {
     private Button viewImageButton;
 
     private Button addLibCheckButton;
-
-    private Button viewLibButton;
-
-    private Label libDirectoryLabel;
 
     private Text libDirectoryText;
 
@@ -245,66 +243,21 @@ public class WizardJetFilesChoosePage extends WizardPage {
         });
 
         setImageDirectoryEnable(browserImageButton.getSelection());
-    }
+	}
 
     private void creatLibSelectionGrp(Composite groupsComposite) {
         Group libSelectionGrp = new Group(groupsComposite, SWT.NONE);
         libSelectionGrp.setText("Add library"); //$NON-NLS-1$
-        // GridDataFactory.fillDefaults().span(1, 1).grab(true, false).applyTo(
-        // filesSelectionGrp);
-        libSelectionGrp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        GridLayout groupLayout = new GridLayout(9, false);
-        libSelectionGrp.setLayout(groupLayout);
-
-        addLibCheckButton = new Button(libSelectionGrp, SWT.CHECK | SWT.RIGHT);
-        GridData imageGridData = new GridData();
-        imageGridData.horizontalSpan = 9;
-        addLibCheckButton.setLayoutData(imageGridData);
-        addLibCheckButton.setText("Add library from exist resource");
-        SelectionListener listener = new SelectionAdapter() {
-
-            public void widgetSelected(SelectionEvent e) {
-                setLibDirectoryEnable(addLibCheckButton.getSelection());
-                setPageComplete(validPage());
-            }
-        };
-        addLibCheckButton.addSelectionListener(listener);
-
-        libDirectoryLabel = new Label(libSelectionGrp, SWT.NONE);
-        GridData labelGridData = new GridData();
-        labelGridData.horizontalSpan = 2;
-        libDirectoryLabel.setLayoutData(labelGridData);
-        libDirectoryLabel.setText("Directory:");
-
-        libDirectoryText = new Text(libSelectionGrp, SWT.BORDER);
-        GridData textGridData = new GridData(GridData.FILL_HORIZONTAL);
-        textGridData.horizontalSpan = 6;
-        libDirectoryText.setLayoutData(textGridData);
-
-        libDirectoryText.addModifyListener(new ModifyListener() {
-
-            /* (non-Javadoc)
-             * @see org.eclipse.swt.events.ModifyListener#modifyText(org.eclipse.swt.events.ModifyEvent)
-             */
-            public void modifyText(ModifyEvent e) {
-                setPageComplete(validPage());
-                propertyChangeBean.firePropertyChange(PluginConstant.LIBRARY_PROPERTY, null, libDirectoryText.getText());
-            }
-
-        });
-
-        viewLibButton = new Button(libSelectionGrp, SWT.UP);
-        GridData buttonGridData = new GridData();
-        buttonGridData.horizontalSpan = 1;
-        viewLibButton.setLayoutData(buttonGridData);
-        viewLibButton.setText(PluginConstant.BROWSER_LABEL);
-        viewLibButton.addSelectionListener(new SelectionAdapter() {
-
-            public void widgetSelected(SelectionEvent e) {
-                libDirectoryText.setText(getPathFromDialog(new String[] { "*.*", "*.zip", "*.jar", "*.pm" }));
-            }
-        });
-        setLibDirectoryEnable(false);
+        GridData gd = new GridData(GridData.FILL_BOTH);
+        libSelectionGrp.setLayoutData(gd);
+        GridLayout groupLayout = new GridLayout();
+        libSelectionGrp.setLayout(groupLayout);        
+        LibSelectionComposite libComposite = new LibSelectionComposite(
+				libSelectionGrp, SWT.NONE);
+        gd = new GridData(GridData.FILL_BOTH);
+        
+		libComposite.setLayoutData(gd);
+		libComposite.setPropertyChangeBean(this.propertyChangeBean);
     }
 
     private String getPathFromDialog(String[] extensions) {
@@ -322,12 +275,6 @@ public class WizardJetFilesChoosePage extends WizardPage {
         viewImageButton.setEnabled(enabled);
         imageDirectoryText.setEnabled(enabled);
         imageDirectoryLabel.setEnabled(enabled);
-    }
-
-    private void setLibDirectoryEnable(boolean enabled) {
-        viewLibButton.setEnabled(enabled);
-        libDirectoryText.setEnabled(enabled);
-        libDirectoryLabel.setEnabled(enabled);
     }
 
     protected boolean validPage() {

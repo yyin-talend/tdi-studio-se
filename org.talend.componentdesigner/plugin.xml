@@ -129,7 +129,7 @@
          
         <actionProvider 
       			id="org.talend.componentdesigner.ui.action.CopyComponentActionProvider"
-				class="org.talend.componentdesigner.ui.action.CopyComponentActionProvider">
+				class="org.talend.componentdesigner.ui.action.provider.CopyComponentActionProvider">
 			<enablement>
 				<or>
 					<adapt type="org.eclipse.core.resources.IFolder" /> 	
@@ -175,7 +175,7 @@
       
       <!-- Action Providers -->
         <actionProvider
-            	class="org.talend.componentdesigner.ui.action.NewActionProvider"
+            	class="org.talend.componentdesigner.ui.action.provider.NewActionProvider"
             	id="org.eclipse.ui.navigator.resources.NewActions"> 
         	<enablement> 
         			<or>

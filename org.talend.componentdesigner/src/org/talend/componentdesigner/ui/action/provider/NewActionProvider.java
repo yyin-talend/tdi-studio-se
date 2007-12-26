@@ -10,7 +10,7 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.componentdesigner.ui.action;
+package org.talend.componentdesigner.ui.action.provider;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
@@ -80,6 +80,7 @@ public class NewActionProvider extends CommonActionProvider {
 		 */
 		public void run() {
 			CreateComponentWizard wizard = new CreateComponentWizard();
+			 wizard.init(PlatformUI.getWorkbench(), null);
 			WizardDialog dialog = new WizardDialog(null, wizard);
 			dialog.open();
 		}

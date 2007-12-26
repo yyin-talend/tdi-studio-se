@@ -10,7 +10,7 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.componentdesigner.ui.action;
+package org.talend.componentdesigner.ui.action.provider;
 
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.jface.action.Action;

@@ -31,7 +31,15 @@ public class ImageLib {
 
     private static URL iconURL;
     
+    public static final String COMPONENT_DEFAULT = "component_default.gif"; //$NON-NLS-1$
+    
     public static final String COPYCOMPONENT = "copycomponent.gif"; //$NON-NLS-1$
+    
+    public static final String NEWCOMPONENT_WIZARD = "newcomponent_wiz.png"; //$NON-NLS-1$
+    
+    public static final String JAR_OBJ = "jar_obj.gif"; //$NON-NLS-1$
+    
+    public static final String PM_OBJ = "pm_obj.gif"; //$NON-NLS-1$
 
     /**
      * get <code>ImageDescriptor</code> with special imageName.
@@ -97,6 +105,12 @@ public class ImageLib {
             return null;
         }
     }
+    
+    public static String getImageLocation(String imageName) {
+		return ComponentDesigenerPlugin.getDefault().getBundle().getEntry(
+				"/icons")
+				+ imageName;
+	}
 
     /**
      * store the image with special name(the name with suffix,such as "sample.gif").

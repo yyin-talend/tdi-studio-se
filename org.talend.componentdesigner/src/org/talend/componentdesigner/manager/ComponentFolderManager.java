@@ -25,6 +25,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.talend.componentdesigner.PluginConstant;
 import org.talend.componentdesigner.model.ComponentProperty;
+import org.talend.componentdesigner.model.ILibEntry;
 import org.talend.componentdesigner.model.enumtype.JetFileStamp;
 import org.talend.componentdesigner.model.enumtype.ResourceLanguageType;
 
@@ -156,12 +157,7 @@ public class ComponentFolderManager {
 	private void addComponentImage() throws CoreException,
 			FileNotFoundException {
 		copyFileFromSrc(componentProperty.getImageURL());
-	}
-
-	private void addComponentLib() throws FileNotFoundException, CoreException {
-		copyFileFromSrc(componentProperty.getLibFileURL());
-
-	}
+	}	
 
 	private void copyFileFromSrc(String srcURL) throws FileNotFoundException,
 			CoreException {
@@ -176,5 +172,21 @@ public class ComponentFolderManager {
 		IFile file = folder.getFile(path.lastSegment());
 		FileInputStream fileStream = new FileInputStream(srcURL);
 		file.create(fileStream, false, null);
+	}
+	
+	private void addComponentLib() throws FileNotFoundException, CoreException {
+		addLibEntries(componentProperty.getLibEntries());
+
+	}
+
+	private void addLibEntries(ILibEntry[] libEntries) throws FileNotFoundException, CoreException {
+		for (int i = 0; i < libEntries.length; i++) {
+			if (libEntries[i].isExternal()) {
+				copyFileFromSrc(libEntries[i].getLocation());
+			} else {
+				// TODO: Add the lib configuration to xml file.
+			}
+		}
+		
 	}
 }

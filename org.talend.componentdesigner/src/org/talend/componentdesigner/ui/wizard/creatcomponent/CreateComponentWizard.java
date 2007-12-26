@@ -23,12 +23,13 @@ import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.internal.ide.IDEWorkbenchPlugin;
 import org.eclipse.ui.wizards.newresource.BasicNewResourceWizard;
 import org.talend.componentdesigner.ComponentDesigenerPlugin;
+import org.talend.componentdesigner.ImageLib;
 import org.talend.componentdesigner.PluginConstant;
 import org.talend.componentdesigner.manager.ComponentFolderManager;
 import org.talend.componentdesigner.model.ComponentProperty;
+import org.talend.componentdesigner.model.ILibEntry;
 import org.talend.componentdesigner.model.enumtype.JetFileStamp;
 import org.talend.componentdesigner.model.enumtype.LanguageType;
 import org.talend.componentdesigner.model.enumtype.ResourceLanguageType;
@@ -75,12 +76,12 @@ public class CreateComponentWizard extends BasicNewResourceWizard implements Pro
      */
     public void addPages() {
         creatProjectPage = new WizardComponentFolderPage("componentNewProjectPage"); //$NON-NLS-1$
-        creatProjectPage.setTitle("Component Project");
-        creatProjectPage.setDescription("Create a new component project resource.");
+        creatProjectPage.setTitle("Component");
+        creatProjectPage.setDescription("Create a new component folder resource.");
         creatProjectPage.getPropertyChangeBean().addPropertyChangeListener(this);
         this.addPage(creatProjectPage);
         creatJetFilesPage = new WizardJetFilesChoosePage("creatJetFilesPage");
-        creatJetFilesPage.setTitle("Creat jet files for the component project");
+        creatJetFilesPage.setTitle("Creat jet files for the component");
         creatJetFilesPage.getPropertyChangeBean().addPropertyChangeListener(this);
         this.addPage(creatJetFilesPage);
     }
@@ -112,7 +113,8 @@ public class CreateComponentWizard extends BasicNewResourceWizard implements Pro
 			this.componentProperty.setImageURL((String) event.getNewValue());
 		} else if (PluginConstant.LIBRARY_PROPERTY.equals(event
 				.getPropertyName())) {
-			this.componentProperty.setLibFileURL((String) event.getNewValue());
+			this.componentProperty.setLibFileURL((ILibEntry[]) event
+					.getNewValue());
 		}
 	}
 
@@ -122,14 +124,14 @@ public class CreateComponentWizard extends BasicNewResourceWizard implements Pro
     public void init(IWorkbench workbench, IStructuredSelection currentSelection) {
         super.init(workbench, currentSelection);
         setNeedsProgressMonitor(true);
-        setWindowTitle("New Project");
+        setWindowTitle("New Component");
     }
 
     /*
      * (non-Javadoc) Method declared on BasicNewResourceWizard.
      */
     protected void initializeDefaultPageImageDescriptor() {
-        ImageDescriptor desc = IDEWorkbenchPlugin.getIDEImageDescriptor("wizban/newprj_wiz.png"); //$NON-NLS-1$
+        ImageDescriptor desc = ImageLib.getImageDescriptor(ImageLib.NEWCOMPONENT_WIZARD); //$NON-NLS-1$
         setDefaultPageImageDescriptor(desc);
     }
 

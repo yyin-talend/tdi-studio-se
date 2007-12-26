@@ -6,6 +6,6 @@ Bundle-Version: 1.0.0
 Bundle-Activator: org.talend.componentdesigner.rcp.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- org.eclipse.ui.ide.application,
- org.talend.componentdesigner
+ org.talend.componentdesigner,
+ org.eclipse.ui.ide.application
 Eclipse-LazyStart: true
