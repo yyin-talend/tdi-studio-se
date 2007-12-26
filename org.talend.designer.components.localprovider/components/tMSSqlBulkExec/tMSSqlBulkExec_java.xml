@@ -39,6 +39,7 @@
     >
     	<ITEMS DEFAULT="INSERT" >
     		<ITEM NAME="INSERT" VALUE="INSERT" />
+    		<ITEM NAME="UPDATE" VALUE="UPDATE" />
     		<ITEM NAME="EXPORT" VALUE="EXPORT" />    		
     	</ITEMS>
     </PARAMETER>
@@ -48,7 +49,7 @@
       FIELD="PROPERTY_TYPE"
       SHOW="true"
       NUM_ROW="1"
-      REPOSITORY_VALUE="DATABASE"
+      REPOSITORY_VALUE="DATABASE:SQL_SERVER"
     />  
     
     <PARAMETER
@@ -56,7 +57,7 @@
       FIELD="TEXT"
       NUM_ROW="3"
       REPOSITORY_VALUE="SERVER_NAME"
-      SHOW_IF="ACTION=='INSERT'"          
+      SHOW_IF="(ACTION=='INSERT') or (ACTION=='UPDATE')"          
     >
       <DEFAULT>"localhost"</DEFAULT>
     </PARAMETER>      
@@ -66,7 +67,7 @@
       FIELD="TEXT"
       NUM_ROW="3"
       REPOSITORY_VALUE="PORT"
-      SHOW_IF="ACTION=='INSERT'"
+      SHOW_IF="(ACTION=='INSERT') or (ACTION=='UPDATE')"
     >
       <DEFAULT>"1433"</DEFAULT>
     </PARAMETER>
@@ -96,7 +97,7 @@
       FIELD="TEXT"
       NUM_ROW="3"
       REPOSITORY_VALUE="SID"
-      SHOW_IF="ACTION=='INSERT'"
+      SHOW_IF="(ACTION=='INSERT') or (ACTION=='UPDATE')"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -124,7 +125,7 @@
       FIELD="TEXT"
       NUM_ROW="6"
       REQUIRED="true"
-      SHOW_IF="ACTION=='INSERT'"
+      SHOW_IF="(ACTION=='INSERT') or (ACTION=='UPDATE')"
     >
       <DEFAULT>"employee"</DEFAULT>
     </PARAMETER>
@@ -133,7 +134,7 @@
       NAME="TABLE_ACTION"
       FIELD="CLOSED_LIST"
       NUM_ROW="6"
-      SHOW_IF="ACTION=='INSERT'"
+      SHOW_IF="(ACTION=='INSERT') or (ACTION=='UPDATE')"
     >
       <ITEMS DEFAULT="NONE">
         <ITEM NAME="NONE" VALUE="NONE" />
@@ -148,7 +149,7 @@
       NAME="SCHEMA"
       FIELD="SCHEMA_TYPE"
       NUM_ROW="7"
-      SHOW_IF="ACTION=='INSERT'"
+      SHOW_IF="(ACTION=='INSERT') or (ACTION=='UPDATE')"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -168,7 +169,7 @@
       FIELD="FILE"
       NUM_ROW="9"
       REQUIRED="true"
-      SHOW_IF="ACTION=='INSERT'"
+      SHOW_IF="(ACTION=='INSERT') or (ACTION=='UPDATE')"
     >
       <DEFAULT>"C:/mssql_bulk.txt"</DEFAULT>
     </PARAMETER>
@@ -187,7 +188,7 @@
       FIELD="TEXT"
       NUM_ROW="10"
       REQUIRED="true"
-      SHOW_IF ="ACTION=='INSERT'"
+      SHOW_IF ="(ACTION=='INSERT') or (ACTION=='UPDATE')"
     >
       <DEFAULT>"\n"</DEFAULT>      
     </PARAMETER>
@@ -207,7 +208,7 @@
       FIELD="TEXT"
       NUM_ROW="10"
       REQUIRED="true"
-      SHOW_IF="ACTION=='INSERT'"
+      SHOW_IF="(ACTION=='INSERT') or (ACTION=='UPDATE')"
     >
       <DEFAULT>"1"</DEFAULT>
     </PARAMETER>
@@ -222,7 +223,7 @@
         <ITEM NAME="char"       VALUE="char" />
         <ITEM NAME="native"     VALUE="native"/>
         <ITEM NAME="widechar"  	VALUE="widechar"/>
-        <ITEM NAME="widenative" VALUE="widenative" SHOW_IF="ACTION=='INSERT'"/>        
+        <ITEM NAME="widenative" VALUE="widenative" SHOW_IF="(ACTION=='INSERT') or (ACTION=='UPDATE')"/>        
       </ITEMS>
     </PARAMETER>
     

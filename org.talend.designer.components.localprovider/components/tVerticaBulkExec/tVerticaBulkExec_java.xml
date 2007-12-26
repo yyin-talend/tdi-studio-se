@@ -94,6 +94,20 @@
     </PARAMETER>
 
     <PARAMETER
+      NAME="TABLE_ACTION"
+      FIELD="CLOSED_LIST"
+      NUM_ROW="6"
+    >
+      <ITEMS DEFAULT="NONE">
+        <ITEM NAME="NONE" VALUE="NONE" />
+        <ITEM NAME="DROP_CREATE" VALUE="DROP_CREATE"/>
+        <ITEM NAME="CREATE" VALUE="CREATE"/>
+        <ITEM NAME="CREATE_IF_NOT_EXISTS" VALUE="CREATE_IF_NOT_EXISTS"/>
+        <ITEM NAME="CLEAR" VALUE="CLEAR"/>
+      </ITEMS>
+    </PARAMETER>
+
+    <PARAMETER
       NAME="TABLE"
       FIELD="TEXT"
       NUM_ROW="6"
@@ -102,6 +116,17 @@
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
 
+    <PARAMETER
+      NAME="DATA_ACTION"
+      FIELD="CLOSED_LIST"
+      NUM_ROW="6"
+      SHOW="false"
+    >
+      <ITEMS DEFAULT="INSERT">
+        <ITEM NAME="INSERT"           VALUE="INSERT"/>
+        <ITEM NAME="UPDATE"           VALUE="UPDATE"/>
+      </ITEMS>
+    </PARAMETER>
 
     <PARAMETER
       NAME="SCHEMA"
@@ -153,7 +178,7 @@
       NUM_ROW="13"
       SHOW="false"
     >       
-      <DEFAULT>id_Vertica</DEFAULT>
+      <DEFAULT>vertica_id</DEFAULT>
     </PARAMETER>
     
    </PARAMETERS>

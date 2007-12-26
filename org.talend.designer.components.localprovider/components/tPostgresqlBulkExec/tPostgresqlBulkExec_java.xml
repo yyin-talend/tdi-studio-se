@@ -72,6 +72,17 @@
 			</ITEMS>
 		</PARAMETER>
 
+	    <PARAMETER
+	      NAME="DATA_ACTION"
+	      FIELD="CLOSED_LIST"
+	      NUM_ROW="5"
+	    >
+	      <ITEMS DEFAULT="INSERT">
+	        <ITEM NAME="INSERT"           VALUE="INSERT"/>
+	        <ITEM NAME="UPDATE"           VALUE="UPDATE"/>
+	      </ITEMS>
+	    </PARAMETER>
+
 		<PARAMETER NAME="OIDS" FIELD="CHECK" REQUIRED="true"
 			NUM_ROW="6">
 			<DEFAULT>false</DEFAULT>

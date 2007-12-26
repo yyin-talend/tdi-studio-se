@@ -34,8 +34,113 @@ String pas = ElementParameterParser.getValue(node, "__PASS__");
 String table = ElementParameterParser.getValue(node, "__TABLE__");
 String data_file_type = ElementParameterParser.getValue(node, "__DATA_FILE_TYPE__");
 
-if(action.equals("INSERT")){
-    List<IMetadataColumn> columnList = getColumnList(node);    
+if(action.equals("EXPORT")) {
+    String bcp_utility = ElementParameterParser.getValue(node, "__BCP_UTILITY__");
+    String server = ElementParameterParser.getValue(node, "__SERVER__");
+    String query_statement = ElementParameterParser.getValue(node, "__QUERY__");
+           query_statement = query_statement.replaceAll("\n"," ");
+           query_statement = query_statement.replaceAll("\r"," ");           
+    String output_file_name = ElementParameterParser.getValue(node, "__OUTPUT_FILE_NAME__");
+    String row_terminated_export = ElementParameterParser.getValue(node, "__ROW_TERMINATED_EXPORT__");
+
+    String char_type =  "char type error!";
+    if(data_file_type.equals("char")){
+        char_type = "-c";
+    }else if(data_file_type.equals("native")){
+        char_type = "-n";
+    }else{
+        char_type = "-w";
+    }
+    StringBuffer command =  new StringBuffer();
+    command.append(bcp_utility.replaceAll("\"",""));
+    command.append(" ");
+    command.append(query_statement.replaceAll("\"","\\\\\""));
+    command.append(" queryout ");
+    command.append(output_file_name.replaceAll("\"","\\\\\""));
+    command.append(" ");
+    command.append(char_type);
+    if(!server.equals("")&&!server.equals("\"\"")&&!(server==null)){
+        command.append(" -S");
+        command.append(server.replaceAll("\"",""));
+    }
+    if((user.equals("")||user.equals("\"\"")||user==null)&&(pas.equals("")||pas==null||pas.equals("\"\""))){
+        command.append(" -T");
+    }else{
+        command.append(" -U");
+        command.append(user.replaceAll("\"",""));
+        command.append(" -P");
+        command.append(pas.replaceAll("\"",""));
+    }
+    command.append(" -t");
+    command.append(field_separator.replaceAll("\"",""));
+    command.append(" -r");
+    command.append(row_terminated_export.replaceAll("\"",""));
+
+    %>
+    Runtime runtime_<%=cid%> = Runtime.getRuntime();
+    final Process ps<%=cid %> = runtime_<%=cid%>.exec("<%=command.toString()%>");
+    Thread normal_<%=cid%> = new Thread() {
+        public void run() {
+            try {
+                java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.InputStreamReader(ps<%=cid %>.getInputStream()));
+                String line = "";
+                try {
+                    while((line = reader.readLine()) != null) {
+                        <%
+                        if (outputAction.equals("OUTPUT_TO_CONSOLE")) {
+                            %>
+                            System.out.println(line);
+                            <%
+                        } else if (outputAction.equals("RETRIEVE_OUTPUT")) {
+                            %>
+                            globalMap.put("<%=cid %>_OUTPUT",(String)globalMap.get("<%=cid %>_OUTPUT")+"\n"+line);
+                            <%
+                        }
+                        %>
+                    }
+                } finally {
+                    reader.close();
+                }
+            } catch(java.io.IOException ioe) {
+                ioe.printStackTrace();
+            }
+        }
+    };
+    normal_<%=cid%>.start();
+    Thread error_<%=cid%> = new Thread() {
+        public void run() {
+            try {
+                java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.InputStreamReader(ps<%=cid %>.getErrorStream()));
+                String line = "";
+                try {
+                    while((line = reader.readLine()) != null) {
+                        <%
+                        if (outputAction.equals("OUTPUT_TO_CONSOLE")) {
+                            %>
+                            System.err.println(line);
+                            <%
+                        } else if (outputAction.equals("RETRIEVE_OUTPUT")) {
+                            %>
+                            globalMap.put("<%=cid %>_OUTPUT",(String)globalMap.get("<%=cid %>_OUTPUT")+"\n"+line);
+                            <%
+                        }
+                        %>
+                    }
+                } finally {
+                    reader.close();
+                }
+            } catch(java.io.IOException ioe) {
+                ioe.printStackTrace();
+            }
+        }
+    };
+    error_<%=cid%>.start();
+    ps<%=cid %>.waitFor();
+    normal_<%=cid%>.interrupt();
+    error_<%=cid%>.interrupt();
+    <%    
+} else {
+    List<IMetadataColumn> columnList = getColumnList(node);
     %>
     String tableName_<%=cid%> = <%=table%>;
     java.lang.Class.forName("net.sourceforge.jtds.jdbc.Driver").newInstance();
@@ -44,9 +149,11 @@ if(action.equals("INSERT")){
     <%
     String tableAction = ElementParameterParser.getValue(node,"__TABLE_ACTION__");
     String dbmsId = ElementParameterParser.getValue(node,"__MAPPING__");
+    Manager manager = null;
+    List<Column> stmtStructure = null;
     if(columnList != null && columnList.size() > 0) {
-        List<Column> stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, null);
-        Manager manager = getManager(dbmsId, cid);
+        stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, null);
+        manager = getManager(dbmsId, cid);
         if(tableAction.equals("DROP_CREATE")) {
             %>
             java.sql.Statement stmtDrop_<%=cid%> = conn_<%=cid%>.createStatement();
@@ -82,130 +189,47 @@ if(action.equals("INSERT")){
             stmtClear_<%=cid%>.executeUpdate("<%=manager.getTruncateTableSQL()%>");
             <%
         }        
+    }    
+    if(action.equals("INSERT")) {
+        %>
+        java.sql.Statement stmtBulkInsert_<%=cid %> = conn_<%=cid %>.createStatement();
+        stmtBulkInsert_<%=cid %>.execute("BULK INSERT " + <%=db%> + ".." + <%=table%> + " FROM '" + <%=file%> + "' WITH ( DATAFILETYPE='<%=data_file_type%>',FIELDTERMINATOR='" + <%=field_separator%> + "',FIRSTROW =" + <%=first_row%> + ",ROWTERMINATOR='" + <%=row_separator%>+"')");
+        stmtBulkInsert_<%=cid %>.close();        
+        <%
+    } else if(action.equals("UPDATE")) {
+        if(columnList != null && columnList.size() > 0) {
+            int keyCount = 0;
+            for(IMetadataColumn column : columnList) {
+                if(column.isKey()) {
+                    keyCount++;
+                }
+            }
+            %>
+            int keyCount_<%=cid%> = <%=keyCount%>;
+            if(keyCount_<%=cid%> == 0) {
+                throw new Exception("For bulk update, Schema must have a key at least."); 
+            }
+            tableName_<%=cid%> = "tmp_<%=cid%>";
+            java.sql.Statement stmtCreateTmp_<%=cid%> = conn_<%=cid%>.createStatement();
+            stmtCreateTmp_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
+            stmtCreateTmp_<%=cid%>.close();
+            java.sql.Statement stmtTmpBulk_<%=cid%> = conn_<%=cid%>.createStatement();
+            stmtTmpBulk_<%=cid%>.execute("BULK INSERT " + <%=db%> + ".." + tableName_<%=cid%> + " FROM '" + <%=file%> + "' WITH ( DATAFILETYPE='<%=data_file_type%>',FIELDTERMINATOR='" + <%=field_separator%> + "',FIRSTROW =" + <%=first_row%> + ",ROWTERMINATOR='" + <%=row_separator%>+"')");
+            stmtTmpBulk_<%=cid%>.close();
+            tableName_<%=cid%> = <%=table%>;
+            String tmpTableName_<%=cid%> = "tmp_<%=cid%>";
+            java.sql.Statement stmtUpdateBulk_<%=cid%> = conn_<%=cid%>.createStatement();
+            stmtUpdateBulk_<%=cid%>.executeUpdate("<%=manager.getUpdateBulkSQL(columnList)%>");
+            stmtUpdateBulk_<%=cid%>.close();
+            tableName_<%=cid%> = tmpTableName_<%=cid%>;
+            java.sql.Statement stmtTmpDrop_<%=cid%> = conn_<%=cid%>.createStatement();
+            stmtTmpDrop_<%=cid%>.execute("<%=manager.getDropTableSQL()%>");
+            stmtTmpDrop_<%=cid%>.close();
+            <%
+        }
     }
     %>
-    java.sql.Statement stmt_<%=cid %> = conn_<%=cid %>.createStatement();
-    stmt_<%=cid %>.execute("BULK INSERT " + <%=db%> + ".." + <%=table%> + " FROM '" + <%=file%> + "' WITH ( DATAFILETYPE='<%=data_file_type%>',FIELDTERMINATOR='" + <%=field_separator%> + "',FIRSTROW =" + <%=first_row%> + ",ROWTERMINATOR='" + <%=row_separator%>+"')");
-    stmt_<%=cid %>.close();
     conn_<%=cid %>.close();
     <%
-}else if(action.equals("EXPORT")){
-
-String bcp_utility = ElementParameterParser.getValue(node, "__BCP_UTILITY__");
-String server = ElementParameterParser.getValue(node, "__SERVER__");
-String query_statement = ElementParameterParser.getValue(node, "__QUERY__");
-	   query_statement = query_statement.replaceAll("\n"," ");
-	   query_statement = query_statement.replaceAll("\r"," ");
-	   
-String output_file_name = ElementParameterParser.getValue(node, "__OUTPUT_FILE_NAME__");
-String row_terminated_export = ElementParameterParser.getValue(node, "__ROW_TERMINATED_EXPORT__");
-
-String char_type =  "char type error!";
-if(data_file_type.equals("char")){
-	char_type = "-c";
-}else if(data_file_type.equals("native")){
-	char_type = "-n";
-}else{
-	char_type = "-w";
-}
-
-StringBuffer command =  new StringBuffer();
-command.append(bcp_utility.replaceAll("\"",""));
-command.append(" ");
-command.append(query_statement.replaceAll("\"","\\\\\""));
-command.append(" queryout ");
-command.append(output_file_name.replaceAll("\"","\\\\\""));
-command.append(" ");
-command.append(char_type);
-if(!server.equals("")&&!server.equals("\"\"")&&!(server==null)){
-	command.append(" -S");
-	command.append(server.replaceAll("\"",""));
-}
-if((user.equals("")||user.equals("\"\"")||user==null)&&(pas.equals("")||pas==null||pas.equals("\"\""))){
-	command.append(" -T");
-}else{
-	command.append(" -U");
-	command.append(user.replaceAll("\"",""));
-	command.append(" -P");
-	command.append(pas.replaceAll("\"",""));
-}
-command.append(" -t");
-command.append(field_separator.replaceAll("\"",""));
-command.append(" -r");
-command.append(row_terminated_export.replaceAll("\"",""));
-
-%>
-Runtime runtime_<%=cid%> = Runtime.getRuntime();
-final Process ps<%=cid %> = runtime_<%=cid%>.exec("<%=command.toString()%>");
-Thread normal_<%=cid%> = new Thread() {
-	public void run() {
-		try {
-			java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.InputStreamReader(ps<%=cid %>.getInputStream()));
-			String line = "";
-			try {
-				while((line = reader.readLine()) != null) {
-<%
-	if (outputAction.equals("OUTPUT_TO_CONSOLE")) {
-%>
-					System.out.println(line);
-<%
-	} else if (outputAction.equals("RETRIEVE_OUTPUT")) {
-%>
-					globalMap.put("<%=cid %>_OUTPUT",(String)globalMap.get("<%=cid %>_OUTPUT")+"\n"+line);
-<%
-	}
-%>
-				}
-			} finally {
-				reader.close();
-			}
-		} catch(java.io.IOException ioe) {
-			ioe.printStackTrace();
-		}
-	}
-};
-normal_<%=cid%>.start();
-
-Thread error_<%=cid%> = new Thread() {
-	public void run() {
-		try {
-			java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.InputStreamReader(ps<%=cid %>.getErrorStream()));
-			String line = "";
-			try {
-				while((line = reader.readLine()) != null) {
-<%
-	if (outputAction.equals("OUTPUT_TO_CONSOLE")) {
-%>
-					System.err.println(line);
-<%
-	} else if (outputAction.equals("RETRIEVE_OUTPUT")) {
-%>
-					globalMap.put("<%=cid %>_OUTPUT",(String)globalMap.get("<%=cid %>_OUTPUT")+"\n"+line);
-<%
-	}
-%>
-				}
-			} finally {
-				reader.close();
-			}
-		} catch(java.io.IOException ioe) {
-			ioe.printStackTrace();
-		}
-	}
-};
-error_<%=cid%>.start();
-
-ps<%=cid %>.waitFor();
-normal_<%=cid%>.interrupt();
-error_<%=cid%>.interrupt();
-
-<%
 }
 %>
-
-
-
-
-
-
-

@@ -8,8 +8,11 @@ imports="
     org.talend.core.model.metadata.MetadataTalendType    
     org.talend.core.model.metadata.MappingTypeRetriever     
     java.util.List
-    java.util.ArrayList    
+    java.util.ArrayList
+    java.util.Map
+    java.util.HashMap    
 " 
+skeleton="../templates/db_output_bulk.skeleton"
 %>
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
@@ -24,30 +27,108 @@ String port = ElementParameterParser.getValue(node, "__PORT__");
 String db = ElementParameterParser.getValue(node, "__DBNAME__");
 String user = ElementParameterParser.getValue(node, "__USER__");
 String pas = ElementParameterParser.getValue(node, "__PASS__");
-String table = ElementParameterParser.getValue(node, "__TABLE__");
+String tableName = ElementParameterParser.getValue(node, "__TABLE__");
 boolean ros = ElementParameterParser.getValue(node, "__ROS__").equals("true");
-
-    List<IMetadataColumn> columnList = null;
-    List<IMetadataTable> metadatas = node.getMetadataList();
-    if(metadatas !=null && metadatas.size()>0){
-        IMetadataTable metadata = metadatas.get(0);
-        if(metadata != null){
-            columnList = metadata.getListColumns();
+List<IMetadataColumn> columnList = getColumnList(node);    
+%>
+String tableName_<%=cid%> = <%=tableName%>;
+java.lang.Class.forName("com.vertica.Driver").newInstance();
+String url_<%=cid %> = "jdbc:vertica://" + <%=host%> + ":" + <%=port%> + "/" + <%=db%>;
+java.sql.Connection conn_<%=cid %> = java.sql.DriverManager.getConnection(url_<%=cid %>, <%=user%>, <%=pas%>);
+<%
+String tableAction = ElementParameterParser.getValue(node,"__TABLE_ACTION__");
+String dbmsId = ElementParameterParser.getValue(node,"__MAPPING__");
+List<Column> stmtStructure = null;
+StringBuilder insertColName = null;
+Manager manager = null;
+if(columnList != null && columnList.size()>0) {
+    stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, null);
+    Map<String, StringBuilder> actionSQLMap = getManager(dbmsId, cid).createActionSQL(stmtStructure);
+    insertColName = actionSQLMap.get(INSERT_COLUMN_NAME);
+    manager = getManager(dbmsId, cid);
+    if(!tableAction.equals("NONE")) {
+        if(tableAction.equals("DROP_CREATE")) {
+            %>
+            java.sql.Statement stmtDrop_<%=cid%> = conn_<%=cid%>.createStatement();
+            stmtDrop_<%=cid%>.execute("<%=manager.getDropTableSQL()%>" + " cascade");
+            java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
+            stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
+            stmtCreate_<%=cid%>.execute("CREATE PROJECTION " + <%=tableName%> + "_proj (<%=insertColName.toString()%>) AS SELECT <%=insertColName.toString()%> FROM " + <%=tableName%>);//
+            <%
+        } else if(tableAction.equals("CREATE")) {
+            %>
+            java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
+            stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
+            stmtCreate_<%=cid%>.execute("CREATE PROJECTION " + <%=tableName%> + "_proj (<%=insertColName.toString()%>) AS SELECT <%=insertColName.toString()%> FROM " + <%=tableName%>);//
+            <%
+        } else if(tableAction.equals("CREATE_IF_NOT_EXISTS")) {
+            %>
+            java.sql.DatabaseMetaData dbMetaData_<%=cid%> = conn_<%=cid%>.getMetaData();
+            java.sql.ResultSet rsTable_<%=cid%> = dbMetaData_<%=cid%>.getTables(null, null, null, new String[]{"TABLE"});
+            boolean whetherExist_<%=cid%> = false;
+            while(rsTable_<%=cid%>.next()) {
+                String table_<%=cid%> = rsTable_<%=cid%>.getString("TABLE_NAME");
+                if(table_<%=cid%>.equalsIgnoreCase(<%=tableName%>)) {
+                    whetherExist_<%=cid%> = true;
+                    break;
+                }
+            }
+            if(!whetherExist_<%=cid%>) {
+                java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
+                stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");     
+                stmtCreate_<%=cid%>.execute("CREATE PROJECTION " + <%=tableName%> + "_proj (insertColName.toString()) AS SELECT <%=insertColName.toString()%> FROM " + <%=tableName%>);//
+            }
+            <%
+        } else if(tableAction.equals("CLEAR")) {
+            %>
+            java.sql.Statement stmtClear_<%=cid%> = conn_<%=cid%>.createStatement();
+            deletedCount_<%=cid%> = stmtClear_<%=cid%>.executeUpdate("<%=manager.getDeleteTableSQL()%>");
+            <%
         }
     }    
+}
+String dataAction = ElementParameterParser.getValue(node,"__DATA_ACTION__");
+if(dataAction.equals("UPDATE")) {
+    if(columnList != null && columnList.size() > 0) {
+        int keyCount = 0;
+        for(IMetadataColumn column : columnList) {
+            if(column.isKey()) {
+                keyCount++;
+            }
+        }
+        %>
+        int keyCount_<%=cid%> = <%=keyCount%>;
+        if(keyCount_<%=cid%> == 0) {
+            throw new Exception("For bulk update, Schema must have a key at least."); 
+        }
+        tableName_<%=cid%> = "tmp_<%=cid%>";
+        java.sql.Statement stmtCreateTmp_<%=cid%> = conn_<%=cid%>.createStatement();
+        stmtCreateTmp_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
+        stmtCreateTmp_<%=cid%>.execute("CREATE PROJECTION " + tableName_<%=cid%> + "_proj (<%=insertColName.toString()%>) AS SELECT <%=insertColName.toString()%> FROM " + tableName_<%=cid%>);
+        stmtCreateTmp_<%=cid%>.close();
+        java.sql.Statement stmtTmpBulk_<%=cid%> = conn_<%=cid%>.createStatement();
+        stmtTmpBulk_<%=cid%>.execute("COPY " + <%=db%> + "." + tableName_<%=cid%> + " FROM '" + <%=file%> + "' WITH DELIMITER '" + <%=field_separator%> + "' NULL '" + <%=null_string%> + "'"<%if(ros){%> + " DIRECT"<%}%>);
+        stmtTmpBulk_<%=cid%>.close();
+        tableName_<%=cid%> = <%=tableName%>;
+        String tmpTableName_<%=cid%> = "tmp_<%=cid%>";
+        java.sql.Statement stmtUpdateBulk_<%=cid%> = conn_<%=cid%>.createStatement();
+        stmtUpdateBulk_<%=cid%>.executeUpdate("<%=manager.getUpdateBulkSQL(columnList)%>");
+        stmtUpdateBulk_<%=cid%>.close();
+        tableName_<%=cid%> = tmpTableName_<%=cid%>;
+        java.sql.Statement stmtTmpDrop_<%=cid%> = conn_<%=cid%>.createStatement();
+        stmtTmpDrop_<%=cid%>.execute("<%=manager.getDropTableSQL()%>");
+        stmtTmpDrop_<%=cid%>.close();        
+        <%
+    }
+} else if(dataAction.equals("INSERT")) {
     %>
-    java.lang.Class.forName("com.vertica.Driver").newInstance();
-    String url_<%=cid %> = "jdbc:vertica://"+<%=host%>+":"+<%=port%>+"/"+<%=db%>;
-    
-    java.sql.Connection conn_<%=cid %> = java.sql.DriverManager.getConnection(url_<%=cid %>, <%=user%>, <%=pas%>);
+    java.sql.Statement stmtBulk_<%=cid %> = conn_<%=cid %>.createStatement();
+    stmtBulk_<%=cid %>.execute("COPY " + <%=db%> + "." + <%=tableName%> + " FROM '" + <%=file%> + "' WITH DELIMITER '" + <%=field_separator%> + "' NULL '" + <%=null_string%> + "'"<%if(ros){%> + " DIRECT"<%}%>);
+    stmtBulk_<%=cid %>.close();    
     <%
-    String tableAction = ElementParameterParser.getValue(node,"__TABLE_ACTION__");
-    String dbmsId = ElementParameterParser.getValue(node,"__MAPPING__");
-    %>
-    java.sql.Statement stmt_<%=cid %> = conn_<%=cid %>.createStatement();
-    stmt_<%=cid %>.execute("COPY " + <%=db%> + "." + <%=table%> + " FROM '" + <%=file%> + "' WITH DELIMITER '" + <%=field_separator%> + "' NULL '"+<%=null_string%>+"'"<%if(ros){%>+" DIRECT"<%}%>);
-    stmt_<%=cid %>.close();
-    conn_<%=cid %>.close();
+}
+%>
+conn_<%=cid %>.close();
 
 
 
