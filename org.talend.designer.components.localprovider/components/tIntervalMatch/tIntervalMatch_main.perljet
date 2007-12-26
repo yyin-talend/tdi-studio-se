@@ -40,7 +40,8 @@ my $<%=cid %> = [ @$<%=inputRowName %> ];
 
 
 my $result_<%=cid %> = tIntervalMatch::IntervalMatch::search( 
-        lookup => $a_lookup_<%=cid %>,
+        lookup_inf => $a_lookup_inf_<%=cid %>,
+        lookup_sup => $a_lookup_sup_<%=cid %>,
         value  => $<%=cid%>->[$icolmatch_<%=cid %>], 
     );
 

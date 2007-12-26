@@ -53,7 +53,8 @@ $nb_line_<%=cid %> = 0;
 
 
 my $icolmatch_<%=cid %> = <%=icolmatch%> ;
-my $a_lookup_<%=cid %> = [] ;
+my $a_lookup_inf_<%=cid %> = [] ;
+my $a_lookup_sup_<%=cid %> = [] ;
 my $a_data_<%=cid %> = [] ;
 
 while (my $_<%=cid %> = <$input_FH_<%=cid %>>) {
@@ -62,12 +63,20 @@ while (my $_<%=cid %> = <$input_FH_<%=cid %>>) {
     # increase number of line really splitted
     $nb_line_<%=cid %>++;
 
-    push @$a_lookup_<%=cid %> , (
-        split(
+    my $curr_interval_<%=cid %> = [];
+    
+    @$curr_interval_<%=cid %> = split(
             INPUT_FIELD_SEPARATOR_<%=cid %>,
             $_<%=cid %>
-        )
-    )[<%=ElementParameterParser.getValue(node, "__LOOKUP_INDX__") %>] ;
+    );
+    push @$a_lookup_inf_<%=cid %> , @$curr_interval_<%=cid %>[
+        <%=ElementParameterParser.getValue(node, "__LOOKUP_INDX__") %>
+    ] ;
+
+    push @$a_lookup_sup_<%=cid %> , @$curr_interval_<%=cid %>[
+        1 + <%=ElementParameterParser.getValue(node, "__LOOKUP_INDX__") %>
+    ] ;
+
 
     push @$a_data_<%=cid %>, $_<%=cid %> ;
 }
