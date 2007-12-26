@@ -26,12 +26,14 @@
     <CONNECTOR
       NAME="UNIQUE"
       CTYPE="FLOW"
+      MAX_OUTPUT="1"
       COLOR="086438"
       BASE_SCHEMA="FLOW"
     />
     <CONNECTOR
       NAME="DUPLICATE"
       CTYPE="FLOW"
+      MAX_OUTPUT="1"
       LINE_STYLE="2"
       COLOR="f36300"
       BASE_SCHEMA="FLOW"
