@@ -163,8 +163,21 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
      * yzhang Comment method "setDefaultDestination".
      */
     protected void setDefaultDestination() {
-        if (nodes.length == 1) {
+
+        if (nodes.length >= 1) {
+            String userDir = System.getProperty("user.dir");
+            IPath path = new Path(userDir).append(getDefaultFileName() + getOutputSuffix());
+            setDestinationValue(path.toOSString());
+        }
+    }
+
+    /**
+     * yzhang Comment method "getDefaultFileName".
+     */
+    protected String getDefaultFileName() {
+        if (nodes.length >= 1) {
             String label = null;
+            String version = null;
             RepositoryNode node = nodes[0];
             if (node.getType() == ENodeType.SYSTEM_FOLDER || node.getType() == ENodeType.SIMPLE_FOLDER) {
                 label = node.getProperties(EProperties.LABEL).toString();
@@ -173,13 +186,14 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
                 if (repositoryObject.getProperty().getItem() instanceof ProcessItem) {
                     ProcessItem processItem = (ProcessItem) repositoryObject.getProperty().getItem();
                     label = processItem.getProperty().getLabel();
+                    version = processItem.getProperty().getVersion();
                 }
             }
-            String userDir = System.getProperty("user.dir");
-            IPath path = new Path(userDir).append(label + getOutputSuffix());
 
-            setDestinationValue(path.toOSString());
+            return label + "_" + version;
         }
+        return "";
+
     }
 
     /**
@@ -214,7 +228,6 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         setControl(composite);
         giveFocusToDestination();
 
-        setDefaultDestination();
     }
 
     /*
@@ -613,6 +626,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         FileDialog dialog = new FileDialog(getContainer().getShell(), SWT.SAVE);
         dialog.setFilterExtensions(new String[] { "*.zip", "*.*" }); //$NON-NLS-1$ //$NON-NLS-2$
         dialog.setText(""); //$NON-NLS-1$
+        dialog.setFileName(getDefaultFileName());
         String currentSourceString = getDestinationValue();
         int lastSeparatorIndex = currentSourceString.lastIndexOf(File.separator);
         if (lastSeparatorIndex != -1) {

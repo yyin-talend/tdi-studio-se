@@ -14,8 +14,6 @@ package org.talend.repository.ui.wizards.exportjob;
 
 import java.util.List;
 
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.talend.core.model.properties.ProcessItem;
@@ -132,6 +130,7 @@ public class PerlJobScriptsExportWizardPage extends JobScriptsExportWizardPage {
 
         if (settings != null) {
             String[] directoryNames = settings.getArray(STORE_DESTINATION_NAMES_ID);
+            boolean destinationValid = false;
             if (directoryNames != null) {
                 // destination
                 boolean isFirstValid = false;
@@ -139,18 +138,22 @@ public class PerlJobScriptsExportWizardPage extends JobScriptsExportWizardPage {
                     addDestinationItem(directoryNames[i]);
 
                     if (!isFirstValid) {
-
-                        if (sizeOfExportResource == 1) {
-                            IPath path = new Path(directoryNames[i]);
-                            String directory = directoryNames[i].substring(0, directoryNames[i].indexOf(path
-                                    .lastSegment()));
-                            setDestinationValue(directory + property.getLabel() + "_" + property.getVersion() + ".zip");
-                        } else {
-                            setDestinationValue(directoryNames[i]);
-                        }
+                        // if (sizeOfExportResource == 1) {
+                        // IPath path = new Path(directoryNames[i]);
+                        // String directory = directoryNames[i].substring(0,
+                        // directoryNames[i].indexOf(path.lastSegment()));
+                        // setDestinationValue(directory + property.getLabel() + "_" + property.getVersion() + ".zip");
+                        // } else {
+                        setDestinationValue(directoryNames[i]);
+                        // }
                         isFirstValid = true;
                     }
+                    destinationValid = true;
                 }
+            }
+
+            if (directoryNames == null || !destinationValid) {
+                setDefaultDestination();
             }
             shellLauncherButton.setSelection(settings.getBoolean(STORE_SHELL_LAUNCHER_ID));
             systemRoutineButton.setSelection(settings.getBoolean(STORE_SYSTEM_ROUTINE_ID));

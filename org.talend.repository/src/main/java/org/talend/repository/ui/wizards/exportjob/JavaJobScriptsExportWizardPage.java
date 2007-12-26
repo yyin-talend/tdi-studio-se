@@ -51,7 +51,9 @@ public class JavaJobScriptsExportWizardPage extends JobScriptsExportWizardPage {
 
     public static final String STORE_DESTINATION_NAMES_ID = "JavaJobScriptsExportWizardPage.STORE_DESTINATION_NAMES_ID"; //$NON-NLS-1$
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.repository.ui.wizards.exportjob.JobScriptsExportWizardPage#createJobScriptsManager()
      */
     public JobScriptsManager createJobScriptsManager() {
@@ -72,7 +74,9 @@ public class JavaJobScriptsExportWizardPage extends JobScriptsExportWizardPage {
      * 
      * @return a collection of resources currently selected for export (element type: <code>IResource</code>)
      */
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.repository.ui.wizards.exportjob.JobScriptsExportWizardPage#getExportResources()
      */
     public List<ExportFileResource> getExportResources() {
@@ -119,6 +123,7 @@ public class JavaJobScriptsExportWizardPage extends JobScriptsExportWizardPage {
      */
     protected void restoreWidgetValues() {
         IDialogSettings settings = getDialogSettings();
+        boolean destinationValid = false;
         if (settings != null) {
             String[] directoryNames = settings.getArray(STORE_DESTINATION_NAMES_ID);
             if (directoryNames != null) {
@@ -127,6 +132,11 @@ public class JavaJobScriptsExportWizardPage extends JobScriptsExportWizardPage {
                 for (int i = 0; i < directoryNames.length; i++) {
                     addDestinationItem(directoryNames[i]);
                 }
+                destinationValid = true;
+            }
+
+            if (directoryNames == null || !destinationValid) {
+                setDefaultDestination();
             }
             shellLauncherButton.setSelection(settings.getBoolean(STORE_SHELL_LAUNCHER_ID));
             systemRoutineButton.setSelection(settings.getBoolean(STORE_SYSTEM_ROUTINE_ID));
@@ -152,4 +162,5 @@ public class JavaJobScriptsExportWizardPage extends JobScriptsExportWizardPage {
             }
         }
     }
+
 }

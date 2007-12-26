@@ -144,7 +144,6 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         setControl(pageComposite);
         giveFocusToDestination();
 
-        setDefaultDestination();
     }
 
     protected void createExportTypeGroup(Composite parent) {
@@ -238,6 +237,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             dialog.setFilterExtensions(new String[] { "*.zip", "*.*" }); //$NON-NLS-1$ //$NON-NLS-2$
         }
         dialog.setText(""); //$NON-NLS-1$
+        dialog.setFileName(getDefaultFileName());
         String currentSourceString = getDestinationValue();
         int lastSeparatorIndex = currentSourceString.lastIndexOf(File.separator);
         if (lastSeparatorIndex != -1) {
@@ -255,6 +255,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         IDialogSettings settings = getDialogSettings();
         if (settings != null) {
             String[] directoryNames = settings.getArray(STORE_DESTINATION_NAMES_ID);
+            boolean destinationValid = false;
             if (directoryNames != null) {
                 // destination
                 boolean isFirstValid = false;
@@ -273,9 +274,13 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
                             setDestinationValue(directoryNames[i]);
                             isFirstValid = true;
                         }
+                        destinationValid = true;
                     }
-
                 }
+            }
+
+            if (!destinationValid || directoryNames == null) {
+                setDefaultDestination();
             }
 
             webXMLButton.setSelection(settings.getBoolean(STORE_WEBXML_ID));
@@ -307,6 +312,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
 
         if (settings != null) {
             String[] directoryNames = settings.getArray(STORE_DESTINATION_NAMES_ID);
+            boolean destinationValid = false;
             if (directoryNames != null) {
                 // destination
                 boolean isFirstValid = false;
@@ -325,8 +331,13 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
                             }
                             isFirstValid = true;
                         }
+                        destinationValid = true;
                     }
                 }
+            }
+
+            if (directoryNames == null || !destinationValid) {
+                setDefaultDestination();
             }
             shellLauncherButton.setSelection(settings.getBoolean(STORE_SHELL_LAUNCHER_ID));
             systemRoutineButton.setSelection(settings.getBoolean(STORE_SYSTEM_ROUTINE_ID));
@@ -366,12 +377,12 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             directoryNames = addToHistory(directoryNames, getDestinationValue());
 
             settings.put(STORE_EXPORTTYPE_ID, exportTypeCombo.getText());
+            settings.put(STORE_DESTINATION_NAMES_ID, directoryNames);
 
             if (exportTypeCombo.getText().equals(EXPORTTYPE_POJO)) {
                 settings.put(STORE_SOURCE_ID, sourceButton.getSelection());
                 settings.put(STORE_CONTEXT_ID, contextButton.getSelection());
                 settings.put(APPLY_TO_CHILDREN_ID, applyToChildrenButton.getSelection());
-                settings.put(STORE_DESTINATION_NAMES_ID, directoryNames);
                 settings.put(STORE_SHELL_LAUNCHER_ID, shellLauncherButton.getSelection());
                 settings.put(STORE_SYSTEM_ROUTINE_ID, systemRoutineButton.getSelection());
                 settings.put(STORE_USER_ROUTINE_ID, userRoutineButton.getSelection());
