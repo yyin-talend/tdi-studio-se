@@ -631,6 +631,12 @@
             id="org.talend.repository.migration.changeLookupColumnList"
             name="Change Lookup Column Value"/>
       <projecttask
+            class="org.talend.repository.model.migration.AddConnectorNameInConnections"
+            description="%migrationtask.AddConnectorNameInConnections.title"
+            id="org.talend.repository.model.migration.AddConnectorNameInConnections"
+            name="%migrationtask.AddConnectorNameInConnections.title">
+      </projecttask>
+      <projecttask
             class="org.talend.repository.model.migration.RenameConnectionRunIfOkToOnComponentOkTask"
             description="Rename run if ok connection to on component ok."
             id="org.talend.repository.connection.rename.runifok.oncomponentok"
@@ -647,6 +653,13 @@
             description="Rename then run connection to on sub job ok connection."
             id="org.talend.repository.connection.rename.thenrun.onsubjobok"
             name="Rename then run connection.">
+      </projecttask>
+      <projecttask
+            beforeLogon="false"
+            class="org.talend.repository.model.migration.ReplaceMultiFlowBytReplicateMigrationTask"
+            description="%migrationtask.ReplaceMultiFlowBytReplicate.desc"
+            id="org.talend.repository.model.migration.ReplaceMultiFlowBytReplicateMigrationTask"
+            name="%migrationtask.ReplaceMultiFlowBytReplicate.title">
       </projecttask>
    </extension>
    <extension

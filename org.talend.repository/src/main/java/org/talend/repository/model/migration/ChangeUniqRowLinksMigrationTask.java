@@ -66,8 +66,8 @@ public class ChangeUniqRowLinksMigrationTask extends AbstractJobMigrationTask {
 
             // if no connector name or if the connector is FLOW on the
             // output of the tUniqRow, set the connector name to UNIQUE.
-            if ((currentConnection.getConnectorName() == null)
-                    || STANDARD_CONNECTOR_NAME.equals(currentConnection.getConnectorName())
+            if (((currentConnection.getConnectorName() == null) || STANDARD_CONNECTOR_NAME.equals(currentConnection
+                    .getConnectorName()))
                     && sourceComeFromtUniqRow(item, currentConnection.getSource())) {
                 currentConnection.setConnectorName(NEW_CONNECTOR_NAME);
                 modified = true;
