@@ -14,6 +14,7 @@ package org.talend.designer.core.ui.editor.properties.controllers;
 
 import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.gef.commands.Command;
@@ -33,6 +34,7 @@ import org.talend.core.CorePlugin;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IElementParameterDefaultValue;
 import org.talend.core.model.utils.TalendTextUtils;
+import org.talend.designer.core.model.components.Expression;
 import org.talend.designer.core.ui.editor.cmd.ExecuteSystemCommandCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty;
@@ -170,18 +172,43 @@ public class CommandController extends AbstractElementPropertySectionController 
     private Command createCommand(SelectionEvent event) {
         Control ctrl = (Control) event.getSource();
         if (ctrl instanceof Button) {
-            List<String> commandsList = new ArrayList<String>();
-            List<IElementParameterDefaultValue> values = (List<IElementParameterDefaultValue>) ctrl.getData(VALUES);
-            for (IElementParameterDefaultValue eleParam : values) {
-                String value = TalendTextUtils.removeQuotes((String) eleParam.getDefaultValue());
-                if (!"".equals(value.trim())) {
-                    commandsList.add(value.trim());
-                }
-            }
+            List<String> commandsList = getCurSystemCommandsList((List<IElementParameterDefaultValue>) ctrl.getData(VALUES));
+
             if (!commandsList.isEmpty()) {
                 return new ExecuteSystemCommandCommand(commandsList);
             }
         }
         return null;
+    }
+
+    private List<String> getCurSystemCommandsList(List<IElementParameterDefaultValue> defaultvalues) {
+        if (defaultvalues == null || defaultvalues.isEmpty()) {
+            return Collections.emptyList();
+        }
+        // current os commands
+        List<String> curOSCommandsList = new ArrayList<String>();
+        // default commands
+        List<String> defaultCommandList = new ArrayList<String>();
+
+        for (IElementParameterDefaultValue eleParamValue : defaultvalues) {
+            Object obj = eleParamValue.getDefaultValue();
+            if (obj != null) {
+                String condition = eleParamValue.getIfCondition();
+                String value = TalendTextUtils.removeQuotes((String) obj).trim();
+                if (condition == null) {
+                    // default for all OS
+                    defaultCommandList.add(value);
+                } else {
+                    if (Expression.evaluate(condition, null)) {
+                        curOSCommandsList.add(value);
+                    }
+                }
+            }
+        }
+
+        if (curOSCommandsList.isEmpty()) {
+            return defaultCommandList;
+        }
+        return curOSCommandsList;
     }
 }

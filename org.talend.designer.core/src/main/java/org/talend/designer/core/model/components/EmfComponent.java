@@ -30,6 +30,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.RGB;
 import org.talend.commons.exception.BusinessException;
+import org.talend.commons.utils.system.EnvironmentUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
@@ -545,6 +546,18 @@ public class EmfComponent implements IComponent {
         param.setRequired(false);
         param.setShow(false);
         listParam.add(param);
+
+        param = new ElementParameter(node);
+        param.setName(EParameterName.CURRENT_OS.getName());
+        param.setValue(EnvironmentUtils.getEnvOs());
+        param.setDisplayName(EParameterName.CURRENT_OS.getDisplayName());
+        param.setField(EParameterFieldType.TEXT);
+        param.setCategory(EComponentCategory.MAIN);
+        param.setNumRow(1);
+        param.setReadOnly(true);
+        param.setShow(false);
+        listParam.add(param);
+
     }
 
     private void createSpecificParametersFromType(final List<ElementParameter> listParam, final PARAMETERType xmlParam,

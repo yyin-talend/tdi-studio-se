@@ -12,9 +12,9 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.cmd;
 
-import java.io.BufferedReader;
+import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.InputStream;
 import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -35,6 +35,7 @@ import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.swt.formtools.Form;
 import org.talend.core.ui.images.ECoreImage;
@@ -102,8 +103,6 @@ public class ExecuteSystemCommandCommand extends Command {
 
             Runtime runtime = Runtime.getRuntime();
             try {
-
-                String line = ""; //$NON-NLS-1$
                 for (String command : commansList) {
                     commandsMessage.append(command);
                     commandsMessage.append(RETURN);
@@ -112,45 +111,19 @@ public class ExecuteSystemCommandCommand extends Command {
                     }
                     final Process process = runtime.exec(command);
 
-                    // return message
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+                    createResultThread(process.getErrorStream(), errorMassage).start();
+                    createResultThread(process.getInputStream(), resultMassage).start();
 
-                    try {
-                        while ((line = reader.readLine()) != null) {
-                            resultMassage.append(line);
-                            resultMassage.append(RETURN);
-                        }
-                        resultMassage.append(RETURN);
-                    } finally {
-                        try {
-                            reader.close();
-                            reader = null;
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    // error message
-                    reader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-                    try {
-                        while ((line = reader.readLine()) != null) {
-                            errorMassage.append(line);
-                            errorMassage.append(RETURN);
-                        }
-                        errorMassage.append(RETURN);
-                    } finally {
-                        try {
-                            reader.close();
-                            reader = null;
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
+                    process.waitFor();
                 }
             } catch (IOException e) {
                 e.printStackTrace();
                 errorMassage.append(RETURN);
                 errorMassage.append(e.getMessage());
+            } catch (InterruptedException e) {
+                errorMassage.append(RETURN);
+                errorMassage.append(e.getMessage());
+                e.printStackTrace();
             }
             monitor.done();
             return Status.OK_STATUS;
@@ -264,4 +237,30 @@ public class ExecuteSystemCommandCommand extends Command {
 
     }
 
+    private Thread createResultThread(final InputStream input, final StringBuffer result) {
+        final int bufferSize = 1024;
+        Thread thread = new Thread() {
+
+            public void run() {
+                try {
+                    BufferedInputStream outStreamProcess = new BufferedInputStream(input);
+                    byte[] buffer = new byte[bufferSize];
+                    int count = 0;
+                    while ((count = outStreamProcess.read(buffer, 0, buffer.length)) != -1) {
+                        result.append(new String(buffer, 0, count));
+                    }
+                    outStreamProcess.close();
+                } catch (IOException ioe) {
+                    ExceptionHandler.process(ioe);
+                } finally {
+                    try {
+                        input.close();
+                    } catch (IOException e) {
+                        ExceptionHandler.process(e);
+                    }
+                }
+            }
+        };
+        return thread;
+    }
 }

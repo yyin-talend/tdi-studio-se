@@ -75,6 +75,7 @@ public enum EParameterName {
     DUMMY("DUMMY"), //$NON-NLS-1$ Hidden parameter so no translation needed
     DBTABLE("Table Name"),
     MODULE_LIST("Module List"),
+    CURRENT_OS("Current OS"),
 
     /**
      * For stats & logs parameters.

@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.talend.commons.utils.StringUtils;
+import org.talend.commons.utils.system.EnvironmentUtils;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
@@ -159,9 +160,25 @@ public final class Expression {
                 variableName = string;
             }
         }
+        /*
+         * this is only for Current OS condition.
+         */
+        if (variableName != null && EParameterName.CURRENT_OS.getName().equals(variableName)) {
+            if (variableValue != null) {
+                if (checkCurrentOS(variableValue) && EQUALS.endsWith(test)) {
+                    return true;
+                } else if (NOT_EQUALS.equals(test)) {
+                    return true;
+                }
+            }
+        }
+        if (listParam == null) {
+            return false;
+        }
+
         // 3 levels of variable name accepted maximum (ex: MY_VAR.TABLE.FIELD == 'test')
         String[] varNames;
-        StringTokenizer token = new StringTokenizer(variableName, ".");
+        StringTokenizer token = new StringTokenizer(variableName, "."); //$NON-NLS-1$
         varNames = StringUtils.split(variableName, '.');
 
         if ((variableName != null) && (variableValue != null)) {
@@ -187,12 +204,12 @@ public final class Expression {
                             if (varNames.length == 2) { // simple value
                                 value = currentRow.get(varNames[1]);
                             } else {
-                                if ("TYPE".equals(varNames[2])) {
+                                if ("TYPE".equals(varNames[2])) { //$NON-NLS-1$
                                     IMetadataTable baseTable = null;
                                     IMetadataColumn baseColumn = null;
                                     INode node;
                                     Object obj = currentRow.get(testedParameter.getName());
-                                    String columnName = "";
+                                    String columnName = ""; //$NON-NLS-1$
                                     if (obj instanceof String) {
                                         columnName = (String) obj;
                                     } else if (obj instanceof Integer) {
@@ -229,7 +246,7 @@ public final class Expression {
                                             for (IConnection curConnec : refConnections) {
                                                 IMetadataTable table = curConnec.getMetadataTable();
                                                 for (IMetadataColumn column : table.getListColumns()) {
-                                                    String name = curConnec.getName() + "." + column.getLabel();
+                                                    String name = curConnec.getName() + "." + column.getLabel(); //$NON-NLS-1$
                                                     if (name.equals(columnName)) {
                                                         baseColumn = column;
                                                     }
@@ -410,4 +427,30 @@ public final class Expression {
         // expression.isValid());
         return expression;
     }
+
+    /*
+     * check this OS
+     */
+    private static boolean checkCurrentOS(final String osName) {
+        if (osName == null) {
+            return false;
+        }
+        final String tmpOSName = osName.toLowerCase();
+        // check windows
+        if (EnvironmentUtils.isWindowsSystem() && tmpOSName.startsWith("windows")) { //$NON-NLS-1$
+            return true;
+        }
+        // check MacOS
+        if (EnvironmentUtils.isMacOsSytem() && tmpOSName.startsWith("mac")) { //$NON-NLS-1$
+            return true;
+        }
+        // check linux and unix
+        if (EnvironmentUtils.isLinuxUnixSystem()) {
+            if (tmpOSName.startsWith("unix") || tmpOSName.startsWith("linux")) { //$NON-NLS-1$ //$NON-NLS-2$
+                return true;
+            }
+        }
+        return false;
+    }
+
 }
