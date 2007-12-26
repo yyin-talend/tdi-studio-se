@@ -246,22 +246,28 @@ public class Problems {
      */
     private static void refreshNodeStatus(Node node, List<Problem> problemList) {
 
-        boolean hasStatus = false;
+        boolean hasWarning = false;
+        boolean hasError = false;
+
         for (Problem problem : problemList) {
             if (problem.getElement() == null) {
                 continue;
             } else if (problem.getElement() != null && (!problem.getElement().equals(node))) {
                 continue;
             }
-            hasStatus = true;
             if (problem.getStatus().equals(ProblemStatus.WARNING)) {
+                hasWarning = true;
                 node.addStatus(Process.WARNING_STATUS);
             } else if (problem.getStatus().equals(ProblemStatus.ERROR)) {
+                hasError = true;
                 node.addStatus(Process.ERROR_STATUS);
             }
         }
-        if (!hasStatus) {
+
+        if (!hasWarning) {
             node.removeStatus(Process.WARNING_STATUS);
+        }
+        if (!hasError) {
             node.removeStatus(Process.ERROR_STATUS);
         }
     }
