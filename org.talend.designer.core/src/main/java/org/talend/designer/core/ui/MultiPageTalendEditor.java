@@ -143,14 +143,15 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
 
     private boolean codeSync = false;
 
+    private static boolean needSetPartListener = true;
+
     public MultiPageTalendEditor() {
         super();
 
-        if (CorePlugin.getDefault().getRepositoryService().needSetPartListener()) {
+        if (needSetPartListener) {
 
             PlatformUI.getWorkbench().getActiveWorkbenchWindow().getPartService().addPartListener(
                     CorePlugin.getDefault().getDesignerCoreService().getActiveProcessTracker());
-            CorePlugin.getDefault().getRepositoryService().setPartListener(false);
 
             Display.getDefault().asyncExec(new Runnable() {
 
@@ -162,7 +163,7 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
                     }
                 }
             });
-
+            needSetPartListener = false;
         }
         ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
     }

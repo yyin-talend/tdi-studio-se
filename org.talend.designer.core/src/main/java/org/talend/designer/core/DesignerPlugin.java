@@ -13,17 +13,12 @@
 package org.talend.designer.core;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.ui.IPartService;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 import org.talend.commons.ui.swt.colorstyledtext.jedit.Modes;
-import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.IService;
 import org.talend.designer.codegen.ICodeGeneratorService;
-import org.talend.designer.core.ui.ActiveProcessTracker;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
@@ -67,18 +62,6 @@ public class DesignerPlugin extends AbstractUIPlugin {
     @Override
     public void start(final BundleContext context) throws Exception {
         super.start(context);
-        IWorkbenchWindow activeWorkbenchWindow = null;
-        try {
-            activeWorkbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-            if (activeWorkbenchWindow != null) {
-                IPartService partService = activeWorkbenchWindow.getPartService();
-                partService.addPartListener(new ActiveProcessTracker());
-            } else if (!CorePlugin.getDefault().getRepositoryService().isRCPMode()) {
-                CorePlugin.getDefault().getRepositoryService().setPartListener(true);
-            }
-        } catch (Exception e) {
-            // should occur if we start the platform in headless mode, and should be ignored
-        }
     }
 
     @Override
