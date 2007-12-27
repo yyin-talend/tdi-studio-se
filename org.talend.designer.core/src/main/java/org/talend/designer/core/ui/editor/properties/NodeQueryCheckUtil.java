@@ -39,8 +39,8 @@ public final class NodeQueryCheckUtil {
             : TalendTextUtils.SINGLE_QUOTE;
 
     // reg: "(\s)*(select)(\s)+(.*?)(\s)+(from)(\s)+(.*)"
-    private static final String SQL_REGX = "^" + QUOTE + "(\\s)*(" + SELECT + ")" + NL_REGX_ONE + "(.*?)" + NL_REGX_ONE
-            + "(" + FROM + ")" + NL_REGX_ONE + "(.*)" + QUOTE + "$";
+    private static final String SQL_REGX = "^" + QUOTE + "(\\s)*(" + SELECT + ")" + NL_REGX_ONE + "(.*?)" + NL_REGX_ONE + "("
+            + FROM + ")" + NL_REGX_ONE + "(.*)" + QUOTE + "$";
 
     private static final String NL_REGX = "(\\s)*"; //$NON-NLS-1$   
 
@@ -75,7 +75,8 @@ public final class NodeQueryCheckUtil {
         java.util.regex.Pattern sqlRegex = java.util.regex.Pattern.compile(SQL_REGX, REGX_FLAG);
         Matcher matcher = sqlRegex.matcher(sql);
         if (!matcher.find()) {
-            return false;
+            // it isn't the select query, so not checked.
+            return true;
         }
 
         // get the columns
