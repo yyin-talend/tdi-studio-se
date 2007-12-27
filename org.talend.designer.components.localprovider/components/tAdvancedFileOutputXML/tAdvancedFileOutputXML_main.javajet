@@ -16,6 +16,7 @@ imports="
 	org.talend.core.model.metadata.types.JavaType
 "
 %>
+
 <%
 class XMLNode{
 	public XMLNode(String path, String type, XMLNode parent, String column){
@@ -240,53 +241,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 if(!allowEmpty.equals("true")){
                 	tool.allowEmpty = false;
                 }
-                
-                //mark the main group in groupTable
-                if(loopTable.size() > 0 && groupTable.size()>0){
-                    ArrayList<Map<String, String>> newGroupList = new ArrayList<Map<String, String>>();
-                    String loopPath=loopTable.get(0).get("PATH");
-                    boolean isMainGroupAttribute = false;
-                    for(Map<String, String> map:groupTable){
-                    	if (map.get("ATTRIBUTE").equals("true")) {
-                    		if(isMainGroupAttribute){
-                    			map.put("TYPE","Group");
-                    		}
-                    	}else if(map.get("ATTRIBUTE").equals("false")){
-                    		if( loopPath.startsWith(map.get("PATH"))){
-                    			map.put("TYPE","Main");
-                    			newGroupList.add(map);
-                    			isMainGroupAttribute = true;
-                    		}else{
-                    			isMainGroupAttribute = false;
-                    		}
-                    	}
-                    }
-                    
-                    for (int i = newGroupList.size() - 1; i >= 0; i--) {
-                        boolean isNeedAdd = false;
-                        int index = i;
-                        String checkPath = newGroupList.get(i).get("PATH");
-                        for (Map<String, String> map : groupTable) {
-                            if (map.get("ATTRIBUTE").equals("false")) {
-                                if (map.get("PATH").startsWith(checkPath) && map.get("TYPE") == null) {
-                                    if (!newGroupList.contains(map)) {
-                                        isNeedAdd = true;
-                                        newGroupList.add(++index, map);
-                                    }
-                                } else if (map.get("PATH").equals(checkPath)) {
-                                    isNeedAdd = true;
-                                } else {
-                                    isNeedAdd = false;
-                                }
-                            } else {
-                                if (isNeedAdd) {
-                                    newGroupList.add(++index, map);
-                                }
-                            }
-                        }
-                    }
-                    groupTable = newGroupList;
-                }
 
 //------------change Map to a Tree------------------
 				List<List<Map<String, String>>> tables = new ArrayList<List<Map<String, String>>>();
@@ -303,12 +257,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                     for (Map<String, String> tmpMap : tmpTable) {
                         XMLNode tmpNew = null;
                         Object[] values = tool.getValueString(tmpMap, metadata.getListColumns(), conn.getName());
-                        if (tmpMap.get("ATTRIBUTE").equals("true")) {
+                        if (tmpMap.get("ATTRIBUTE").equals("attri")) {
                             tmpNew = new XMLNode(tmpMap.get("PATH"), "ATTRIBUTE", tmpParent, tmpMap.get("COLUMN"));
                             tmpParent.attributes.add(tmpNew);
-                            if (tmpMap.get("TYPE") != null && tmpMap.get("TYPE").equals("Group")) {
-                                tmpNew.special |= 4;
-                            }
                         } else if (tmpMap.get("ATTRIBUTE").equals("ns")) {
                             tmpNew = new XMLNode(tmpMap.get("PATH"), "NAMESPACE", tmpParent, tmpMap.get("COLUMN"));
                             tmpParent.namespaces.add(tmpNew);
@@ -318,20 +269,20 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                                 tmpNew.special |= 1;
                                 specialList.add(tmpNew);
                             } else {
-                                // search parent
-                                while (tmpParent != null && !tmpMap.get("PATH").startsWith(tmpParent.path)) {
+                                String tmpParentPath = tmpMap.get("PATH").substring(0, tmpMap.get("PATH").lastIndexOf("/"));
+                       		 	while (tmpParent != null && !tmpParentPath.equals(tmpParent.path)) {
                                     tmpParent = tmpParent.parent;
                                 }
                                 tmpNew = new XMLNode(tmpMap.get("PATH"), "ELEMENT", tmpParent, tmpMap.get("COLUMN"));
                                 tmpParent.elements.add(tmpNew);
+                                if (tmpMap.get("ATTRIBUTE").equals("main") && tmpTable != rootTable) {
+                                	tmpNew.special |= 1;
+                                    tmpParent.special |=2;
+                                    specialList.add(tmpNew);
+                                }
                             }
-                            if (mainPath.startsWith(tmpNew.path)) {
+                            if (tmpMap.get("ATTRIBUTE").equals("main")) {
                                 tmpMainNode = tmpNew;
-                            }
-                            if (mainPath.equals(tmpNew.path) || tmpMap.get("TYPE") != null && tmpMap.get("TYPE").equals("Main")) {
-                            	tmpParent.special |=2;
-                                tmpNew.special |= 1;
-                                specialList.add(tmpNew);
                             }
                             tmpParent = tmpNew;
                         }
@@ -375,7 +326,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
 					for(XMLNode attr:groupRootNode.attributes)
 					{
-						if( 0!=(attr.special & 4) && attr.value!=null){
+						if(attr.value!=null){
 							if(allowEmpty.equals("true")){
 %>
 		|| !groupRootList_<%=cid%>.get(<%=i-1%>).attribute("<%=attr.name%>").getText().equals(<%=attr.value%>==null?"":<%=attr.value%>.toString())
