@@ -37,6 +37,8 @@ public abstract class FOXTreeNode {
 
     private boolean isGroupNode = false;
 
+    private boolean isMainNode = false;
+
     public boolean hasLink() {
         return column != null;
     }
@@ -205,6 +207,24 @@ public abstract class FOXTreeNode {
      */
     public void setGroup(boolean b) {
         this.isGroupNode = b;
+    }
+
+    /**
+     * Getter for isMainNode.
+     * 
+     * @return the isMainNode
+     */
+    public boolean isMain() {
+        return this.isMainNode;
+    }
+
+    /**
+     * Sets the isMainNode.
+     * 
+     * @param isMainNode the isMainNode to set
+     */
+    public void setMain(boolean isMainNode) {
+        this.isMainNode = isMainNode;
     }
 
 }

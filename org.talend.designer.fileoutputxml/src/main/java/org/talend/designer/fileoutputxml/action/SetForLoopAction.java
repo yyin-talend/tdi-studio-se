@@ -60,10 +60,13 @@ public class SetForLoopAction extends SelectionProviderAction {
             TreeUtil.clearSubGroupNode((FOXTreeNode) xmlViewer.getTree().getItem(0).getData());
         }
         TreeUtil.clearLoopNode((FOXTreeNode) xmlViewer.getTree().getItem(0).getData());
+        TreeUtil.clearMainNode((FOXTreeNode) xmlViewer.getTree().getItem(0).getData());
+
         if (node.isGroup()) {
             node.setGroup(false);
         }
         node.setLoop(true);
+        TreeUtil.upsetMainNode(node);
         xmlViewer.refresh();
     }
 

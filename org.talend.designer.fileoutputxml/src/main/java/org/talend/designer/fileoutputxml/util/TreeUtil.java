@@ -124,6 +124,39 @@ public class TreeUtil {
     }
 
     /**
+     * DOC xzhang Comment method "clearMainNode".
+     * 
+     * @param root
+     */
+    public static void clearMainNode(FOXTreeNode root) {
+        if (root instanceof Element) {
+            Element e = (Element) root;
+            if (e.isMain()) {
+                e.setMain(false);
+            }
+            for (FOXTreeNode child : e.getElementChildren()) {
+                clearMainNode(child);
+            }
+        }
+    }
+
+    /**
+     * DOC xzhang Comment method "clearMainNode".
+     * 
+     * @param root
+     */
+    public static void upsetMainNode(FOXTreeNode loop) {
+        if (loop instanceof Element) {
+            FOXTreeNode parent = loop;
+            while (parent != null) {
+                parent.setMain(true);
+                parent = parent.getParent();
+            }
+
+        }
+    }
+
+    /**
      * DOC ke Comment method "getLoopNode".
      * 
      * @param root

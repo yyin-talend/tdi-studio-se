@@ -25,7 +25,7 @@ public class Attribute extends FOXTreeNode {
      */
     public Attribute() {
     }
-    
+
     /**
      * Attribute constructor comment.
      */
@@ -62,6 +62,9 @@ public class Attribute extends FOXTreeNode {
     public boolean isLoop() {
         return false;
     }
-    
-    
+
+    @Override
+    public boolean isMain() {
+        return false;
+    }
 }

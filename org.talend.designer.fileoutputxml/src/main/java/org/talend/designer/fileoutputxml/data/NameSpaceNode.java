@@ -58,4 +58,9 @@ public class NameSpaceNode extends FOXTreeNode {
     public boolean isLoop() {
         return false;
     }
+
+    @Override
+    public boolean isMain() {
+        return false;
+    }
 }

@@ -21,6 +21,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.graphics.Image;
 import org.talend.designer.fileoutputxml.data.Attribute;
 import org.talend.designer.fileoutputxml.data.FOXTreeNode;
+import org.talend.designer.fileoutputxml.data.NameSpaceNode;
 import org.talend.designer.fileoutputxml.i18n.Messages;
 import org.talend.designer.fileoutputxml.util.TreeUtil;
 
@@ -107,6 +108,8 @@ public class FOXTargetTreeViewerProvider extends LabelProvider implements ITable
             return treeNode.getColumnLabel();
         case 2:
             if (treeNode instanceof Attribute) {
+                return "-"; //$NON-NLS-1$
+            } else if (treeNode instanceof NameSpaceNode) {
                 return "-"; //$NON-NLS-1$
             } else if (treeNode.isGroup()) {
                 return Messages.getString("FOXTargetTreeViewerProvider.1"); //$NON-NLS-1$
