@@ -23,12 +23,10 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
-import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.migration.IMigrationToolService;
 import org.talend.core.model.properties.Property;
-import org.talend.core.model.properties.User;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.ui.DisableLanguageActions;
 import org.talend.designer.runprocess.IRunProcessService;
@@ -263,25 +261,5 @@ public class RepositoryService implements IRepositoryService {
      */
     public void setRCPMode() {
         rcpMode = true;
-    }
-
-    boolean needSetPartListener;
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.repository.model.IRepositoryService#setPartListener(boolean)
-     */
-    public void setPartListener(boolean isReuqired) {
-        this.needSetPartListener = isReuqired;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.repository.model.IRepositoryService#needSetPartListener()
-     */
-    public boolean needSetPartListener() {
-        return needSetPartListener;
     }
 }
