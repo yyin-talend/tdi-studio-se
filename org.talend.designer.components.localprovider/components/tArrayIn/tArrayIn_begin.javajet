@@ -22,11 +22,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         %>
         
         int nb_line_<%= cid %> = 0;
-        java.util.List<ThenRunStruct<%=origin %>> list_<%=cid%> = (java.util.List<ThenRunStruct<%=origin %>>)globalMap.get("<%=origin %>");
+        java.util.List<OnSubjobOkStruct<%=origin %>> list_<%=cid%> = (java.util.List<OnSubjobOkStruct<%=origin %>>)globalMap.get("<%=origin %>");
         if(list_<%=cid%> == null) {
-            list_<%=cid%> = new java.util.ArrayList<ThenRunStruct<%=origin %>>();
+            list_<%=cid%> = new java.util.ArrayList<OnSubjobOkStruct<%=origin %>>();
         }        
-        for(ThenRunStruct<%=origin %> row_<%=cid %> : list_<%=cid%>){
+        for(OnSubjobOkStruct<%=origin %> row_<%=cid %> : list_<%=cid%>){
         
             <%
             //begin

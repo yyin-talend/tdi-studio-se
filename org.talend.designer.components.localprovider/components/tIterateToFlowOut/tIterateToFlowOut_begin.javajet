@@ -27,7 +27,7 @@ List<Map<String, String>> mapping =
         "__MAPPING__"
     );
 %>
-ThenRunStruct<%=destination%> struct_<%=cid%> = new ThenRunStruct<%=destination%>();
+OnSubjobOkStruct<%=destination%> struct_<%=cid%> = new OnSubjobOkStruct<%=destination%>();
 <%
 for (Map<String, String> mappingColumn : mapping) {
 %>
@@ -36,10 +36,10 @@ struct_<%=cid%>.<%=mappingColumn.get("SCHEMA_COLUMN")%>  = <%=mappingColumn.get(
 }
 %>
 if(globalMap.containsKey("<%=destination %>")){
-	java.util.List<ThenRunStruct<%=destination%>> list_<%=cid%> = (java.util.List<ThenRunStruct<%=destination%>>)globalMap.get("<%=destination %>"); 
+	java.util.List<OnSubjobOkStruct<%=destination%>> list_<%=cid%> = (java.util.List<OnSubjobOkStruct<%=destination%>>)globalMap.get("<%=destination %>"); 
 	list_<%=cid%>.add(struct_<%=cid%>);
 }else{
-	java.util.List<ThenRunStruct<%=destination%>> list_<%=cid%> = new java.util.ArrayList<ThenRunStruct<%=destination%>>();
+	java.util.List<OnSubjobOkStruct<%=destination%>> list_<%=cid%> = new java.util.ArrayList<OnSubjobOkStruct<%=destination%>>();
 	list_<%=cid%>.add(struct_<%=cid%>);
 	globalMap.put("<%=destination %>",list_<%=cid%>);
 }
