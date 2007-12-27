@@ -661,6 +661,12 @@
             id="org.talend.repository.model.migration.ReplaceMultiFlowBytReplicateMigrationTask"
             name="%migrationtask.ReplaceMultiFlowBytReplicate.title">
       </projecttask>
+      <projecttask
+            beforeLogon="false"
+            class="org.talend.repository.model.migration.UpgradeAttributestAdvancedXMLMigrationTask"
+            id="org.talend.repository.migration.upgradeAttributestAdvancedXML"
+            name="Update the Attributes of tAdvancedFileOutputXML"
+            description="Add the main and branch type to attributes."/>
    </extension>
    <extension
          point="org.talend.core.librariesNeeded">
