@@ -63,21 +63,21 @@
             
             public void output(String path, String fileName, java.io.InputStream is) throws Exception
             {
-<%
-	//deal with the path issue and get the outputstream
-	if (extractPath==true) {
-%>          
-               java.io.File f = new java.io.File(path,fileName);
-<%
-  	}else{
-%>            
-                String tempName = fileName.replaceAll("\\\\", "/");
-                int m = tempName.lastIndexOf('/');        
-                String shortName = tempName.substring(m!=-1? m+1 : 0);  
-  				java.io.File f = new java.io.File(path,shortName);  				
-<%
-	}
-%>
+                <%
+                //deal with the path issue and get the outputstream
+                if (extractPath==true) {
+                    %>          
+                    java.io.File f = new java.io.File(path,fileName);
+                    <%
+                }else{
+                    %>            
+                    String tempName = fileName.replaceAll("\\\\", "/");
+                    int m = tempName.lastIndexOf('/');        
+                    String shortName = tempName.substring(m!=-1? m+1 : 0);  
+      				java.io.File f = new java.io.File(path,shortName);  				
+      				<%
+                }
+                %>
 				checkDir(f);
              
                 f.getParentFile().mkdirs();
@@ -93,6 +93,43 @@
                 fos.close();
                 unzippedFiles.add(new UnzippedFile_<%=cid %>(f.getName(), f.getAbsolutePath()));
             }
+            public void output(String path, String fileName, boolean isDirectory, java.io.InputStream is) throws Exception
+            {
+                <%
+                //deal with the path issue and get the outputstream
+                if (extractPath == true) {
+                    %>          
+                    java.io.File f = new java.io.File(path,fileName);
+                    <%
+                }else{
+                    %>            
+                    String tempName = fileName.replaceAll("\\\\", "/");
+                    int m = tempName.lastIndexOf('/');        
+                    String shortName = tempName.substring(m!=-1 ? m+1 : 0);  
+                    java.io.File f = new java.io.File(path, shortName);                 
+                <%
+                }
+                %>
+                if(isDirectory) {
+                    if(!f.exists()) {
+                        f.mkdirs();
+                    }
+                } else {
+                    java.io.File parent = f.getParentFile();
+                    if(parent != null && !parent.exists()) {
+                        parent.mkdirs();
+                    }
+                    f.createNewFile();
+                    java.io.BufferedOutputStream bos = new java.io.BufferedOutputStream(new java.io.FileOutputStream(f));
+                    byte[] buff = new byte[1024];
+                    int data = -1;
+                    while((data = is.read(buff)) != -1) {
+                        bos.write(buff);
+                    }
+                    bos.close();                    
+                }
+                unzippedFiles.add(new UnzippedFile_<%=cid %>(f.getName(), f.getAbsolutePath()));
+            }            
         } 
        
 		Util_<%=cid %> util_<%=cid %> = new Util_<%=cid %>();
@@ -122,31 +159,31 @@
   }
 %>
 
-	if (tmpFileURL_<%=cid %>.endsWith(".tar.gz") || tmpFileURL_<%=cid %>.endsWith(".tgz")){   
-      
-        org.apache.tools.tar.TarInputStream zip_<%=cid %> = new org.apache.tools.tar.TarInputStream(new java.util.zip.GZIPInputStream(new java.io.FileInputStream(zipFileURL_<%=cid %>)));
-        
+	if (tmpFileURL_<%=cid %>.endsWith(".tar.gz") || tmpFileURL_<%=cid %>.endsWith(".tgz")){         
+        org.apache.tools.tar.TarInputStream zip_<%=cid %> = new org.apache.tools.tar.TarInputStream(new java.util.zip.GZIPInputStream(new java.io.FileInputStream(zipFileURL_<%=cid %>)));        
         org.apache.tools.tar.TarEntry entry_<%=cid %> = null;
-        while ((entry_<%=cid %> = zip_<%=cid %>.getNextEntry()) != null) { 
-			if (!entry_<%=cid %>.isDirectory()) {
-                java.io.InputStream is_<%=cid %> = zip_<%=cid %>;
-                String filename_<%=cid %> =  entry_<%=cid %>.getName();
-				util_<%=cid %>.output(outputPath_<%=cid %>, filename_<%=cid %>,is_<%=cid%>);
+        java.io.InputStream is_<%=cid %> = null;
+        while ((entry_<%=cid %> = zip_<%=cid %>.getNextEntry()) != null) {
+            boolean isDirectory_<%=cid%> = entry_<%=cid %>.isDirectory();
+			if (!isDirectory_<%=cid%>) {
+                is_<%=cid %> = zip_<%=cid %>;
 			}
+            String filename_<%=cid %> =  entry_<%=cid %>.getName();
+            util_<%=cid %>.output(outputPath_<%=cid %>, filename_<%=cid %>, isDirectory_<%=cid%>, is_<%=cid%>);			
 		}
 		zip_<%=cid %>.close();
 
 	} else if (tmpFileURL_<%=cid %>.endsWith(".tar")){ 
-
-        org.apache.tools.tar.TarInputStream zip_<%=cid %> = new org.apache.tools.tar.TarInputStream(new java.io.FileInputStream(zipFileURL_<%=cid %>));
-        
+        org.apache.tools.tar.TarInputStream zip_<%=cid %> = new org.apache.tools.tar.TarInputStream(new java.io.FileInputStream(zipFileURL_<%=cid %>));        
         org.apache.tools.tar.TarEntry entry_<%=cid %> = null;
-        while ((entry_<%=cid %> = zip_<%=cid %>.getNextEntry()) != null) {             
-            if (!entry_<%=cid %>.isDirectory()) {
-                java.io.InputStream is_<%=cid %> = zip_<%=cid %>;
-                String filename_<%=cid %> =  entry_<%=cid %>.getName();
-				util_<%=cid %>.output(outputPath_<%=cid %>, filename_<%=cid %>,is_<%=cid%>);
+        java.io.InputStream is_<%=cid %> = null;
+        while ((entry_<%=cid %> = zip_<%=cid %>.getNextEntry()) != null) {
+            boolean isDirectory_<%=cid%> = entry_<%=cid %>.isDirectory(); 
+            if (!isDirectory_<%=cid%>) {
+                is_<%=cid %> = zip_<%=cid %>;
 			}
+            String filename_<%=cid %> =  entry_<%=cid %>.getName();
+            util_<%=cid %>.output(outputPath_<%=cid %>, filename_<%=cid %>, isDirectory_<%=cid%>, is_<%=cid%>);            
 		}
 		zip_<%=cid %>.close();
   	}else if (tmpFileURL_<%=cid %>.endsWith(".gz")){ 
@@ -160,14 +197,16 @@
 		//the others all use the ZIP to decompression
  		org.apache.tools.zip.ZipFile zip_<%=cid %> = new org.apache.tools.zip.ZipFile(zipFileURL_<%=cid %>);
         java.util.Enumeration enuFiles_<%=cid %> = zip_<%=cid %>.getEntries();
+        java.io.InputStream is_<%=cid %> = null;
         while (enuFiles_<%=cid %>.hasMoreElements()) {
-            org.apache.tools.zip.ZipEntry entry_<%=cid %> = (org.apache.tools.zip.ZipEntry) enuFiles_<%=cid %>.nextElement();          
-            if (!entry_<%=cid %>.isDirectory()) {
+            org.apache.tools.zip.ZipEntry entry_<%=cid %> = (org.apache.tools.zip.ZipEntry) enuFiles_<%=cid %>.nextElement();
+            boolean isDirectory_<%=cid%> = entry_<%=cid %>.isDirectory();
+            if (!isDirectory_<%=cid%>) {
                 //get the input stream
-                java.io.InputStream is_<%=cid %> = zip_<%=cid %>.getInputStream(entry_<%=cid %>);
-				String filename_<%=cid %> =  entry_<%=cid %>.getName();
-				util_<%=cid %>.output(outputPath_<%=cid %>, filename_<%=cid %>,is_<%=cid%>);
+                is_<%=cid %> = zip_<%=cid %>.getInputStream(entry_<%=cid %>);
 			}
+            String filename_<%=cid %> =  entry_<%=cid %>.getName();
+            util_<%=cid %>.output(outputPath_<%=cid %>, filename_<%=cid %>, isDirectory_<%=cid%>, is_<%=cid%>);
 		}
 		zip_<%=cid %>.close();
 	}
