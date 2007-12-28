@@ -102,6 +102,7 @@ public final class ContextParameterExtractor {
                                 saveContext(parameterName, elem, ((StyledText) text).getText());
                             }
                         }
+                        process.getEditor().getTalendEditor().setDirty(true);
                     }
                 }
             }

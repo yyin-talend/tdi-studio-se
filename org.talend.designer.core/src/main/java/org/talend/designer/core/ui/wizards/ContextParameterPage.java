@@ -191,9 +191,6 @@ public class ContextParameterPage extends WizardPage {
                     nameStatus = createOkStatus();
                 }
                 parameter.setName(StringUtils.trimToEmpty(nameText.getText()));
-                if ("".equals(parameter.getSource())) {
-                    parameter.setSource("built-in");
-                }
                 updatePageStatus();
             }
         });

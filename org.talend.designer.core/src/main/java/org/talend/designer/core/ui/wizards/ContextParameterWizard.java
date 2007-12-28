@@ -71,6 +71,9 @@ public class ContextParameterWizard extends Wizard {
      */
     @Override
     public boolean performFinish() {
+        // set source to built-in
+        parameter.setSource(IContextParameter.BUILT_IN);
+
         for (IContext context : contextManager.getListContext()) {
             if (parameter.getType().equals(JavaTypesManager.FILE.getId())
                     || parameter.getType().equals(JavaTypesManager.DIRECTORY.getId())) {
