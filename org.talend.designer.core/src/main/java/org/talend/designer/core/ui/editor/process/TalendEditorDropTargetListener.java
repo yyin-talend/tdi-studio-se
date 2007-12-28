@@ -56,6 +56,7 @@ import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
+import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.editor.TalendEditor;
 import org.talend.designer.core.ui.editor.cmd.ChangeValuesFromRepository;
 import org.talend.designer.core.ui.editor.cmd.CreateNodeContainerCommand;
@@ -79,14 +80,14 @@ import org.talend.repository.model.RepositoryNode.EProperties;
  */
 public class TalendEditorDropTargetListener implements TransferDropTargetListener {
 
-    private final TalendEditor editor;
+    private final AbstractTalendEditor editor;
 
     /**
      * TalendEditorDropTargetListener constructor comment.
      * 
      * @param editor
      */
-    public TalendEditorDropTargetListener(TalendEditor editor) {
+    public TalendEditorDropTargetListener(AbstractTalendEditor editor) {
         this.editor = editor;
     }
 
@@ -221,7 +222,7 @@ public class TalendEditorDropTargetListener implements TransferDropTargetListene
             NodeContainer nc = new NodeContainer(node);
 
             // create the node on the design sheet
-            new CreateNodeContainerCommand(editor.getProcess(), nc, draw2dPosition).execute();
+            new CreateNodeContainerCommand((Process) editor.getProcess(), nc, draw2dPosition).execute();
 
             // initialize the propertiesView
 

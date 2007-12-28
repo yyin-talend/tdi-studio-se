@@ -23,7 +23,9 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.talend.core.model.process.EComponentCategory;
+import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
+import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.editor.TalendEditor;
 import org.talend.designer.core.ui.editor.process.Process;
 
@@ -117,8 +119,8 @@ public class StatsAndLogsView extends ViewPart {
      */
     public void createStatsAndLogsView() {
         IEditorPart activeEditor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
-        TalendEditor talendEditor = ((MultiPageTalendEditor) activeEditor).getTalendEditor();
-        createFullPartControl(this.parent, talendEditor.getProcess());
+        AbstractTalendEditor talendEditor = ((AbstractMultiPageTalendEditor) activeEditor).getTalendEditor();
+        createFullPartControl(this.parent, (Process) talendEditor.getProcess());
     }
 
     /*

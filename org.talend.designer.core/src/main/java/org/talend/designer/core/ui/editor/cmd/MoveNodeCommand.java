@@ -12,7 +12,6 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.cmd;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.draw2d.geometry.Point;
@@ -22,7 +21,7 @@ import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.ui.PlatformUI;
 import org.talend.designer.core.i18n.Messages;
-import org.talend.designer.core.ui.MultiPageTalendEditor;
+import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.nodes.Node;
 
 /**
@@ -65,7 +64,7 @@ public class MoveNodeCommand extends Command {
     }
 
     private boolean isSelected(Node currentNode) {
-        MultiPageTalendEditor multiPageTalendEditor = (MultiPageTalendEditor) PlatformUI.getWorkbench()
+        AbstractMultiPageTalendEditor multiPageTalendEditor = (AbstractMultiPageTalendEditor) PlatformUI.getWorkbench()
                 .getActiveWorkbenchWindow().getActivePage().getActiveEditor();
         GraphicalViewer viewer = multiPageTalendEditor.getTalendEditor().getViewer();
         for (EditPart editPart : (List<EditPart>) viewer.getSelectedEditParts()) {

@@ -134,7 +134,7 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
                     } else if (elem instanceof Connection) {
                         process = (Process) ((Connection) elem).getSource().getProcess();
                     }
-                    TalendJavaEditor javaEditor = process.getEditor().getCodeEditor();
+                    TalendJavaEditor javaEditor = (TalendJavaEditor) process.getEditor().getCodeEditor();
 
                     viewer = (TalendJavaSourceViewer) TalendJavaSourceViewer.createViewerForComponent(b, SWT.BORDER | SWT.MULTI
                             | SWT.V_SCROLL | SWT.H_SCROLL | SWT.WRAP, javaEditor, null, elem.getElementName(), context);

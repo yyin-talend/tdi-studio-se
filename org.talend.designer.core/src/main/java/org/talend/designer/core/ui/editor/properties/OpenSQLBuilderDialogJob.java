@@ -104,7 +104,7 @@ public class OpenSQLBuilderDialogJob extends Job {
     @Override
     protected IStatus run(IProgressMonitor monitor) {
         loginProgress = new OpenSQLBuilderDialogProgress(connectionParameters, manager, composite);
-        final Process process = controller.getDynamicProperty().getPart().getTalendEditor().getProcess();
+        final Process process = (Process) controller.getDynamicProperty().getPart().getTalendEditor().getProcess();
         try {
             loginProgress.run(monitor);
             if (connectionParameters.isStatus()) {

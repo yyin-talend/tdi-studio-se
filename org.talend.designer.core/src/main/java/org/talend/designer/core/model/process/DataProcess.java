@@ -529,8 +529,8 @@ public class DataProcess {
                 INode refSource = buildCheckMap.get(graphicalNode);
 
                 // retrieve the starts node of each current nodes to add a before link
-                Node subNodeStartTarget = graphicalNode.getSubProcessStartNode(true);
-                Node subNodeStartSource = ((Node) connection.getTarget()).getSubProcessStartNode(false);
+                INode subNodeStartTarget = graphicalNode.getSubProcessStartNode(true);
+                INode subNodeStartSource = ((Node) connection.getTarget()).getSubProcessStartNode(false);
 
                 AbstractNode subDataNodeStartSource = (AbstractNode) buildCheckMap.get(subNodeStartSource);
                 AbstractNode subDataNodeStartTarget = (AbstractNode) buildCheckMap.get(subNodeStartTarget);
@@ -634,7 +634,9 @@ public class DataProcess {
                     incomingConnections.add(dataConnec);
                 }
             }
-            checkFlowRefLink((Node) connection.getTarget());
+            if (connection.getTarget() instanceof Node) {
+                checkFlowRefLink((Node) connection.getTarget());
+            }
         }
     }
 

@@ -187,6 +187,11 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
             if (action.isEnabled()) {
                 subMenu.add(action);
             }
+            action = new ConnectionCreateAction(part, EConnectionType.JOBLETINPUT);
+            ((ConnectionCreateAction) action).update();
+            if (action.isEnabled()) {
+                subMenu.add(action);
+            }
             subMenu = new MenuManager("Link");
             menu.appendToGroup(GROUP_CONNECTIONS, subMenu);
             action = new ConnectionCreateAction(part, EConnectionType.TABLE);
@@ -200,6 +205,7 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
                     subMenu.add(action);
                 }
             }
+
             subMenu = new MenuManager(Messages.getString("TalendEditorContextMenuProvider.Trigger")); //$NON-NLS-1$
             menu.appendToGroup(GROUP_CONNECTIONS, subMenu);
 

@@ -49,7 +49,7 @@ import org.talend.designer.core.ui.editor.properties.notes.TextNotePropertyCompo
  * nrousseau class global comment. Detailled comment <br/>
  * 
  */
-public class ComponentSettingsView extends ViewPart {
+public class ComponentSettingsView extends ViewPart implements IComponentSettingsView {
 
     public static final String ID = "org.talend.designer.core.ui.views.properties.ComponentSettingsView";
 

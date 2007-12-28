@@ -74,7 +74,7 @@ import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
-import org.talend.core.model.process.IProcess;
+import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.UniqueNodeNameGenerator;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.ProcessItem;
@@ -104,7 +104,7 @@ import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.core.model.utils.emf.talendfile.RequiredType;
 import org.talend.designer.core.model.utils.emf.talendfile.TalendFileFactory;
 import org.talend.designer.core.model.utils.emf.talendfile.util.TalendFileResourceImpl;
-import org.talend.designer.core.ui.MultiPageTalendEditor;
+import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
@@ -113,6 +113,9 @@ import org.talend.designer.core.ui.editor.nodes.Node.Data;
 import org.talend.designer.core.ui.editor.notes.Note;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.core.ui.views.problems.Problems;
+import org.talend.designer.joblet.model.JobletConnection;
+import org.talend.designer.joblet.model.JobletFactory;
+import org.talend.designer.joblet.model.JobletProcess;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.model.ComponentsFactoryProvider;
@@ -125,18 +128,22 @@ import org.talend.repository.model.IProxyRepositoryFactory;
  * $Id$
  * 
  */
-public class Process extends Element implements IProcess {
+public class Process extends Element implements IProcess2 {
 
     // properties
     public static final String NODES = "nodes"; //$NON-NLS-1$
 
     public static final String NOTES = "notes"; //$NON-NLS-1$
 
+    public static final String JOBLETS = "JOBLETS"; //$NON-NLS-1$
+
     public static final String DEFAULT_CONNECTION_NAME = "row"; //$NON-NLS-1$
 
     protected List<Node> nodes = new ArrayList<Node>();
 
     protected List<Element> elem = new ArrayList<Element>();
+
+    protected List<Element> joblets = new ArrayList<Element>();
 
     protected List<Note> notes = new ArrayList<Note>();
 
@@ -168,7 +175,7 @@ public class Process extends Element implements IProcess {
 
     private IProcessor processor;
 
-    private MultiPageTalendEditor editor;
+    private AbstractMultiPageTalendEditor editor;
 
     public Process() {
         contextManager = new JobContextManager();
@@ -409,8 +416,8 @@ public class Process extends Element implements IProcess {
      */
     private void retrieveAttachedViewer() {
         IEditorPart editorPart = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
-        if (editorPart instanceof MultiPageTalendEditor) {
-            viewer = ((MultiPageTalendEditor) editorPart).getTalendEditor().getViewer();
+        if (editorPart instanceof AbstractMultiPageTalendEditor) {
+            viewer = ((AbstractMultiPageTalendEditor) editorPart).getTalendEditor().getViewer();
         }
     }
 
@@ -641,9 +648,9 @@ public class Process extends Element implements IProcess {
      * @throws IOException
      */
     @SuppressWarnings("unchecked")//$NON-NLS-1$
-    public ProcessType saveXmlFile(final IFile file) throws IOException {
+    public ProcessType saveXmlFile(final IFile file, boolean isJoblet) throws IOException {
         String fileName;
-
+        setJoblet(isJoblet);
         init();
         fileName = file.getLocationURI().toString();
         URI uri = URI.createURI(fileName);
@@ -652,8 +659,12 @@ public class Process extends Element implements IProcess {
         TalendFileFactory fileFact = TalendFileFactory.eINSTANCE;
         DocumentRoot xmlDoc;
         xmlDoc = fileFact.createDocumentRoot();
-
         ProcessType process = fileFact.createProcessType();
+
+        if (isJoblet) {
+            process = JobletFactory.eINSTANCE.createJobletProcess();
+            saveJoblets((JobletProcess) process);
+        }
         xmlDoc.setProcess(process);
 
         ParametersType params = fileFact.createParametersType();
@@ -692,6 +703,31 @@ public class Process extends Element implements IProcess {
         options.put(XMLResource.OPTION_XML_VERSION, "1.1"); //$NON-NLS-1$
         res.save(options);
         return process;
+    }
+
+    /**
+     * DOC qzhang Comment method "saveJoblets".
+     * 
+     * @param process
+     */
+    private void saveJoblets(JobletProcess process) {
+        // for (Element element : getJoblets()) {
+        // IJobletNode jobletNode = (IJobletNode) element;
+        // JobletNode input = JobletFactory.eINSTANCE.createJobletNode();
+        // input.setName(jobletNode.getUniqueName());
+        // input.setPosX(jobletNode.getLocation().x);
+        // input.setPosY(jobletNode.getLocation().y);
+        // input.setInput(jobletNode.isInput());
+        // process.getJobletNodes().add(input);
+        // List<AbstractJobletConnection> inputs = jobletNode.getOutputs();
+        // for (AbstractJobletConnection connection : inputs) {
+        // JobletConnection jobletConnection = JobletFactory.eINSTANCE.createJobletConnection();
+        // jobletConnection.setSource(connection.getSource().getUniqueName());
+        // jobletConnection.setTarget(connection.getTarget().getUniqueName());
+        // jobletConnection.setInput(jobletNode.isInput());
+        // process.getJobletLinks().add(jobletConnection);
+        // }
+        // }
     }
 
     private void saveNote(TalendFileFactory fileFact, ProcessType process, Note note) {
@@ -747,7 +783,20 @@ public class Process extends Element implements IProcess {
             listMetaType.add(factory.getMetadataType());
         }
 
-        connList = (List<Connection>) node.getOutgoingConnections();
+        List<? extends IConnection> outgoingConnections = node.getOutgoingConnections();
+        connList = new ArrayList<Connection>();
+        for (IConnection connection : outgoingConnections) {
+            if (connection instanceof Connection) {
+                connList.add((Connection) connection);
+            } else {
+                JobletConnection jcon = JobletFactory.eINSTANCE.createJobletConnection();
+                jcon.setName(connection.getUniqueName());
+                jcon.setSource(connection.getSource().getUniqueName());
+                jcon.setTarget(connection.getTarget().getUniqueName());
+                ((JobletProcess) process).getJobletLinks().add(jcon);
+            }
+        }
+        // connList = (List<Connection>) outgoingConnections;
         for (int j = 0; j < connList.size(); j++) {
             connec = connList.get(j);
             cType = fileFact.createConnectionType();
@@ -1454,7 +1503,7 @@ public class Process extends Element implements IProcess {
 
         for (Node node : nodes) {
             node.setReadOnly(readOnly);
-            for (Connection connec : (List<Connection>) node.getOutgoingConnections()) {
+            for (IConnection connec : (List<IConnection>) node.getOutgoingConnections()) {
                 connec.setReadOnly(readOnly);
             }
         }
@@ -1732,8 +1781,8 @@ public class Process extends Element implements IProcess {
     }
 
     @SuppressWarnings("unchecked")//$NON-NLS-1$
-    private void setActivateSubjob(Node node, boolean active, Node activateNode, boolean oneComponent) {
-        Node mainSubProcess = node.getSubProcessStartNode(false);
+    private void setActivateSubjob(INode node, boolean active, INode activateNode, boolean oneComponent) {
+        INode mainSubProcess = node.getSubProcessStartNode(false);
 
         // if the selected node is the start node, then everything will be
         // desacticated
@@ -1748,7 +1797,7 @@ public class Process extends Element implements IProcess {
                     }
                 }
             }
-            node.setPropertyValue(EParameterName.ACTIVATE.getName(), new Boolean(active));
+            ((Element) node).setPropertyValue(EParameterName.ACTIVATE.getName(), new Boolean(active));
             for (Connection connec : (List<Connection>) node.getOutgoingConnections()) {
                 if (!oneComponent) {
                     if (connec.getTarget().isActivate() != active) {
@@ -1766,7 +1815,7 @@ public class Process extends Element implements IProcess {
 
         } else {
             if (node.getSubProcessStartNode(false).equals(mainSubProcess)) {
-                node.setPropertyValue(EParameterName.ACTIVATE.getName(), new Boolean(active));
+                ((Element) node).setPropertyValue(EParameterName.ACTIVATE.getName(), new Boolean(active));
                 for (Connection connec : (List<Connection>) node.getIncomingConnections()) {
                     if (connec.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
                         if (connec.getSource().isActivate() != active) {
@@ -1782,7 +1831,7 @@ public class Process extends Element implements IProcess {
                     }
                 }
             }
-            node.setPropertyValue(EParameterName.ACTIVATE.getName(), new Boolean(active));
+            ((Element) node).setPropertyValue(EParameterName.ACTIVATE.getName(), new Boolean(active));
         }
     }
 
@@ -2194,21 +2243,23 @@ public class Process extends Element implements IProcess {
             // same children
             // is used
             // several time
-            ProcessItem processItem = (ProcessItem) this.property.getItem();
-            if (processItem.getProcess().getRequired() != null) {
-                EList jobList = processItem.getProcess().getRequired().getJob();
-                for (int j = 0; j < jobList.size(); j++) {
-                    JobType jType = (JobType) jobList.get(j);
-                    if (!childrensList.contains(jType.getName())) {
-                        // check if we already have the libraries of this job
-                        childrensList.add(jType.getName());
-                        ProcessItem childItem = ProcessorUtilities.getProcessItem(jType.getName());
-                        if (childItem == null) {
-                            continue;
+            if (property.getItem() instanceof ProcessItem) {
+                ProcessItem processItem = (ProcessItem) this.property.getItem();
+                if (processItem.getProcess().getRequired() != null) {
+                    EList jobList = processItem.getProcess().getRequired().getJob();
+                    for (int j = 0; j < jobList.size(); j++) {
+                        JobType jType = (JobType) jobList.get(j);
+                        if (!childrensList.contains(jType.getName())) {
+                            // check if we already have the libraries of this job
+                            childrensList.add(jType.getName());
+                            ProcessItem childItem = ProcessorUtilities.getProcessItem(jType.getName());
+                            if (childItem == null) {
+                                continue;
+                            }
+                            Process child = new Process(childItem.getProperty());
+                            child.loadXmlFile(childItem.getProcess());
+                            neededLibraries.addAll(child.getNeededLibraries(true));
                         }
-                        Process child = new Process(childItem.getProperty());
-                        child.loadXmlFile(childItem.getProcess());
-                        neededLibraries.addAll(child.getNeededLibraries(true));
                     }
                 }
             }
@@ -2275,8 +2326,11 @@ public class Process extends Element implements IProcess {
      * 
      * @return the editor
      */
-    public MultiPageTalendEditor getEditor() {
-        return this.editor;
+    public AbstractMultiPageTalendEditor getEditor() {
+        if (this.editor instanceof AbstractMultiPageTalendEditor) {
+            return (AbstractMultiPageTalendEditor) this.editor;
+        }
+        return null;
     }
 
     /**
@@ -2284,7 +2338,7 @@ public class Process extends Element implements IProcess {
      * 
      * @param editor the editor to set
      */
-    public void setEditor(MultiPageTalendEditor editor) {
+    public void setEditor(AbstractMultiPageTalendEditor editor) {
         this.editor = editor;
         if (editor != null) {
             CommandStackEventListener commandStackEventListener = new CommandStackEventListener() {
@@ -2297,4 +2351,46 @@ public class Process extends Element implements IProcess {
             commandStack.addCommandStackEventListener(commandStackEventListener);
         }
     }
+
+    /**
+     * Getter for jobletInputs.
+     * 
+     * @return the jobletInputs
+     */
+    public List<Element> getJoblets() {
+        return this.joblets;
+    }
+
+    private boolean isJoblet = false;
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IProcess2#isJoblet()
+     */
+    public boolean isJoblet() {
+        return isJoblet;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IProcess2#setJoblet(boolean)
+     */
+    public void setJoblet(boolean isJoblet) {
+        this.isJoblet = isJoblet;
+    }
+
+    public void addJoblet(Element element) {
+        elem.add(element);
+        joblets.add(element);
+        fireStructureChange(JOBLETS, elem);
+    }
+
+    public void removeJoblet(Element element) {
+        elem.remove(element);
+        joblets.remove(element);
+        fireStructureChange(JOBLETS, elem);
+    }
+
 }

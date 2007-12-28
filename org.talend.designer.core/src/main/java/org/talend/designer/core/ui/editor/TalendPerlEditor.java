@@ -18,6 +18,7 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.Region;
 import org.epic.perleditor.editors.PerlEditor;
 import org.talend.designer.core.ISyntaxCheckableEditor;
+import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 
 /**
  * Perl editor with read only content. <br/>
@@ -25,7 +26,7 @@ import org.talend.designer.core.ISyntaxCheckableEditor;
  * $Id$
  * 
  */
-public class TalendPerlEditor extends PerlEditor implements ISyntaxCheckableEditor {
+public class TalendPerlEditor extends PerlEditor implements ISyntaxCheckableEditor, ITalendCodeEditor {
 
     private boolean disposed = false;
 
@@ -120,4 +121,12 @@ public class TalendPerlEditor extends PerlEditor implements ISyntaxCheckableEdit
         placeCursorToSelection();
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.core.ui.editor.ITalendCodeEditor#removeEditorPart(org.talend.designer.core.ui.AbstractMultiPageTalendEditor)
+     */
+    public void removeEditorPart(AbstractMultiPageTalendEditor abstractMultiPageTalendEditor) {
+
+    }
 }

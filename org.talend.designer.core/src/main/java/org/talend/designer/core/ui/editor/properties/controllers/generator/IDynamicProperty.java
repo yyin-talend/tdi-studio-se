@@ -22,7 +22,7 @@ import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.properties.ConnectionItem;
-import org.talend.designer.core.ui.MultiPageTalendEditor;
+import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 
 /**
  * DOC nrousseau class global comment. Detailled comment <br/>
@@ -34,7 +34,7 @@ public interface IDynamicProperty {
 
     public Element getElement();
 
-    public MultiPageTalendEditor getPart();
+    public AbstractMultiPageTalendEditor getPart();
 
     public EComponentCategory getSection();
 

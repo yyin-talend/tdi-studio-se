@@ -70,8 +70,7 @@ import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
-import org.talend.designer.core.ui.MultiPageTalendEditor;
-import org.talend.designer.core.ui.editor.TalendEditor;
+import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.cmd.ChangeMetadataCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
@@ -89,7 +88,7 @@ import org.talend.repository.model.IProxyRepositoryFactory;
  */
 public class DynamicComposite extends ScrolledComposite implements IDynamicProperty {
 
-    protected MultiPageTalendEditor part;
+    protected AbstractMultiPageTalendEditor part;
 
     protected Element elem;
 
@@ -1102,7 +1101,7 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
      * 
      * @return the part
      */
-    public MultiPageTalendEditor getPart() {
+    public AbstractMultiPageTalendEditor getPart() {
         return this.part;
     }
 
@@ -1130,8 +1129,7 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
      * @return
      */
     protected CommandStack getCommandStack() {
-        TalendEditor talendEditor = part.getTalendEditor();
-        Object adapter = talendEditor.getAdapter(CommandStack.class);
+        Object adapter = part.getTalendEditor().getAdapter(CommandStack.class);
         return (CommandStack) adapter;
     }
 

@@ -12,7 +12,6 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.process;
 
-import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPolicy;
@@ -87,6 +86,15 @@ public class ProcessLayoutEditPolicy extends XYLayoutEditPolicy {
             MoveNoteCommand locationCommand = new MoveNoteCommand((Note) child.getModel(), ((Rectangle) constraint).getLocation());
             return locationCommand;
         }
+        // if (child.getModel() instanceof IJobletNode) {
+        // if (((IJobletNode) child.getModel()).isReadOnly()) {
+        // return null;
+        // }
+        // JobletNodeMoveCommand command = new JobletNodeMoveCommand((IJobletNode) child.getModel(), ((Rectangle)
+        // constraint)
+        // .getLocation());
+        // return command;
+        // }
         return null;
     }
 
@@ -103,15 +111,20 @@ public class ProcessLayoutEditPolicy extends XYLayoutEditPolicy {
             return null;
         }
         Rectangle constraint = (Rectangle) getConstraintFor(request);
-        
-        Command command; 
+
+        Command command = null;
         if (Note.class.equals(request.getNewObjectType())) {
-            command = new CreateNoteCommand((Process) getHost().getModel(), (Note) request.getNewObject(), constraint.getLocation());;
-        } else {
+            command = new CreateNoteCommand((Process) getHost().getModel(), (Note) request.getNewObject(), constraint
+                    .getLocation());
+        } else if (request.getNewObject() instanceof Node) {
             command = new CreateNodeContainerCommand((Process) getHost().getModel(), new NodeContainer((Node) request
                     .getNewObject()), constraint.getLocation());
         }
-        
+        // else if (IJobletNode.class.equals(request.getNewObjectType())) {
+        // command = new JobletNodeCreateCommand((Process) getHost().getModel(), (IJobletNode) request.getNewObject(),
+        // constraint);
+        // }
+
         return command;
     }
 

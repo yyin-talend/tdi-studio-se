@@ -12,7 +12,6 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor;
 
-import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
 import org.talend.core.language.ECodeLanguage;
 
 /**
@@ -32,7 +31,7 @@ public final class CodeEditorFactory {
         return instance;
     }
 
-    public AbstractDecoratedTextEditor getCodeEditor(ECodeLanguage language) {
+    public ITalendCodeEditor getCodeEditor(ECodeLanguage language) {
         switch (language) {
         case PERL:
             return new TalendPerlEditor();

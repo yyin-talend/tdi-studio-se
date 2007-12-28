@@ -54,7 +54,7 @@ import org.talend.repository.model.RepositoryNode;
  * $Id$
  * 
  */
-public class ProcessPart extends AbstractGraphicalEditPart implements PropertyChangeListener, IAdaptable {
+public class ProcessPart extends AbstractGraphicalEditPart implements PropertyChangeListener, IAdaptable, IProcessPart {
 
     private FreeformLayer fig2;
 
@@ -224,6 +224,9 @@ public class ProcessPart extends AbstractGraphicalEditPart implements PropertyCh
         }
         if (Process.NOTES.equals(prop)) {
             // refreshChildren();
+            refresh();
+        }
+        if (Process.JOBLETS.equals(prop)) {
             refresh();
         }
     }

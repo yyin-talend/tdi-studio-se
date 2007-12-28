@@ -58,6 +58,7 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IExternalData;
 import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.process.INode;
+import org.talend.core.model.process.INode2;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.INodeReturn;
 import org.talend.core.model.process.IProcess;
@@ -66,11 +67,13 @@ import org.talend.core.model.process.Problem.ProblemStatus;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
+import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
-import org.talend.designer.core.ui.editor.TalendEditor;
+import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.editor.cmd.ChangeMetadataCommand;
 import org.talend.designer.core.ui.editor.cmd.ConnectionCreateCommand;
 import org.talend.designer.core.ui.editor.connections.Connection;
+import org.talend.designer.core.ui.editor.connections.IConnection2;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.properties.NodeQueryCheckUtil;
@@ -86,7 +89,7 @@ import org.talend.repository.model.ExternalNodesFactory;
  * $Id$
  * 
  */
-public class Node extends Element implements INode {
+public class Node extends Element implements INode, INode2 {
 
     private static Logger log = Logger.getLogger(Node.class);
 
@@ -121,9 +124,9 @@ public class Node extends Element implements INode {
 
     protected String name, label, componentName;
 
-    private final List<Connection> outputs = new ArrayList<Connection>();
+    private final List<IConnection> outputs = new ArrayList<IConnection>();
 
-    private List<Connection> inputs = new ArrayList<Connection>();
+    private List<IConnection> inputs = new ArrayList<IConnection>();
 
     private NodeLabel nodeLabel;
 
@@ -184,8 +187,8 @@ public class Node extends Element implements INode {
     public Node(IComponent component) {
         this.oldcomponent = component;
         IEditorPart editorPart = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
-        if (editorPart instanceof MultiPageTalendEditor) {
-            Process activeProcess = ((MultiPageTalendEditor) editorPart).getTalendEditor().getProcess();
+        if (editorPart instanceof AbstractMultiPageTalendEditor) {
+            Process activeProcess = (Process) ((AbstractMultiPageTalendEditor) editorPart).getTalendEditor().getProcess();
             process = activeProcess;
         }
         currentStatus = 0;
@@ -570,99 +573,104 @@ public class Node extends Element implements INode {
      * 
      * @param connection
      */
-    public void addInput(final Connection connection) {
-        this.inputs.add(connection);
-        fireStructureChange(INPUTS, connection);
+    public void addInput(final IConnection conn) {
+        this.inputs.add(conn);
+        fireStructureChange(INPUTS, conn);
+        if (conn instanceof Connection) {
+            Connection connection = (Connection) conn;
 
-        if (!ConnectionCreateCommand.isCreatingConnection()) {
-            return;
-        }
-
-        INodeConnector mainConnector;
-        if (isELTComponent()) {
-            mainConnector = this.getConnectorFromType(EConnectionType.TABLE);
-        } else {
-            mainConnector = this.getConnectorFromType(EConnectionType.FLOW_MAIN);
-        }
-        Boolean takeSchema = null;
-        if (!mainConnector.isBuiltIn()
-                && (connection.getLineStyle() == EConnectionType.FLOW_MAIN
-                        || (connection.getLineStyle() == EConnectionType.TABLE) || ((connection.getLineStyle() == EConnectionType.FLOW_MERGE) && (connection
-                        .getInputId() == 1))) && ((Process) getProcess()).isActivate()) {
-
-            boolean repositoryMode = false;
-            IMetadataTable mainTargetTable = this.getMetadataFromConnector(mainConnector.getName());
-            for (IElementParameter param : getElementParameters()) {
-                if ((param.getField().equals(EParameterFieldType.SCHEMA_TYPE))
-                        && (param.getContext().equals(mainConnector.getName()))) {
-                    IElementParameter schemaTypeParam = param.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName());
-                    if (schemaTypeParam.getValue().equals(EmfComponent.REPOSITORY)) {
-                        repositoryMode = true;
-                        break;
-                    }
-                }
+            if (!ConnectionCreateCommand.isCreatingConnection()) {
+                return;
             }
-            IMetadataTable inputTable = connection.getMetadataTable();
 
-            if (component.isSchemaAutoPropagated() && !repositoryMode && (inputTable.getListColumns().size() != 0)) {
-
-                // if the selected connector's schema type is in repository
-                // mode or read only, then don't propagate.
-                for (INodeConnector connector : getListConnector()) {
-                    if (mainConnector.getName().equals(connector.getBaseSchema())) {
-
-                        IMetadataTable targetTable = this.getMetadataFromConnector(connector.getName());
-                        boolean customFound = false;
-                        for (int i = 0; i < targetTable.getListColumns().size(); i++) {
-                            IMetadataColumn column = targetTable.getListColumns().get(i);
-                            if (column.isCustom()) {
-                                customFound = true;
-                                break;
-                            }
-                        }
-                        if (targetTable.getListColumns().size() == 0
-                                && (((customFound && targetTable.isReadOnly()) || (outputs.size() == 0) || (connection
-                                        .getLineStyle() == EConnectionType.FLOW_MERGE)) && (inputTable.getListColumns().size() != 0))) {
-                            // For the auto propagate.
-                            MetadataTool.copyTable(inputTable, targetTable);
-
-                            ChangeMetadataCommand cmc = new ChangeMetadataCommand(this, null, null, targetTable);
-                            CommandStack cmdStack = getCommandStack();
-                            if (cmdStack != null) {
-                                cmdStack.execute(cmc);
-                            }
-
-                            ColumnListController.updateColumnList(this, null, true);
-                        }
-                    }
-                }
+            INodeConnector mainConnector;
+            if (isELTComponent()) {
+                mainConnector = this.getConnectorFromType(EConnectionType.TABLE);
             } else {
-                if ((mainTargetTable == null) || (mainTargetTable.getListColumns().size() == 0)
-                        || mainTargetTable.sameMetadataAs(connection.getMetadataTable())) {
-                    return;
+                mainConnector = this.getConnectorFromType(EConnectionType.FLOW_MAIN);
+            }
+            Boolean takeSchema = null;
+            if (!mainConnector.isBuiltIn()
+                    && (connection.getLineStyle() == EConnectionType.FLOW_MAIN
+                            || (connection.getLineStyle() == EConnectionType.TABLE) || ((connection.getLineStyle() == EConnectionType.FLOW_MERGE) && (connection
+                            .getInputId() == 1))) && ((Process) getProcess()).isActivate()) {
+
+                boolean repositoryMode = false;
+                IMetadataTable mainTargetTable = this.getMetadataFromConnector(mainConnector.getName());
+                for (IElementParameter param : getElementParameters()) {
+                    if ((param.getField().equals(EParameterFieldType.SCHEMA_TYPE))
+                            && (param.getContext().equals(mainConnector.getName()))) {
+                        IElementParameter schemaTypeParam = param.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName());
+                        if (schemaTypeParam.getValue().equals(EmfComponent.REPOSITORY)) {
+                            repositoryMode = true;
+                            break;
+                        }
+                    }
                 }
-                IConnection outputConnection = null;
-                // schema not auto-propagated or in repository mode
-                if ((connection.getSource().getSchemaParameterFromConnector(mainConnector.getName()) != null)) {
+                IMetadataTable inputTable = connection.getMetadataTable();
 
-                    if (connection.getSource().getOutgoingConnections(connection.getConnectorName()).size() == 1) {
-                        outputConnection = connection.getSource().getOutgoingConnections(connection.getConnectorName()).get(0);
-                    }
+                if (component.isSchemaAutoPropagated() && !repositoryMode && (inputTable.getListColumns().size() != 0)) {
 
-                    if (takeSchema == null) {
-                        takeSchema = getTakeSchema();
+                    // if the selected connector's schema type is in repository
+                    // mode or read only, then don't propagate.
+                    for (INodeConnector connector : getListConnector()) {
+                        if (mainConnector.getName().equals(connector.getBaseSchema())) {
+
+                            IMetadataTable targetTable = this.getMetadataFromConnector(connector.getName());
+                            boolean customFound = false;
+                            for (int i = 0; i < targetTable.getListColumns().size(); i++) {
+                                IMetadataColumn column = targetTable.getListColumns().get(i);
+                                if (column.isCustom()) {
+                                    customFound = true;
+                                    break;
+                                }
+                            }
+                            if (targetTable.getListColumns().size() == 0
+                                    && (((customFound && targetTable.isReadOnly()) || (outputs.size() == 0) || (connection
+                                            .getLineStyle() == EConnectionType.FLOW_MERGE)) && (inputTable.getListColumns()
+                                            .size() != 0))) {
+                                // For the auto propagate.
+                                MetadataTool.copyTable(inputTable, targetTable);
+
+                                ChangeMetadataCommand cmc = new ChangeMetadataCommand(this, null, null, targetTable);
+                                CommandStack cmdStack = getCommandStack();
+                                if (cmdStack != null) {
+                                    cmdStack.execute(cmc);
+                                }
+
+                                ColumnListController.updateColumnList(this, null, true);
+                            }
+                        }
                     }
-                    if (takeSchema) {
-                        connection.getSource().takeSchemaFrom(this, mainConnector.getName());
-                    }
-                } else if (connection.getSourceNodeConnector().isBuiltIn()) {
-                    if (takeSchema == null) {
-                        takeSchema = getTakeSchema();
-                    }
-                    MetadataTool.copyTable(mainTargetTable, connection.getMetadataTable());
                 } else {
-                    connection.getSource().checkAndRefreshNode();
-                    checkAndRefreshNode();
+                    if ((mainTargetTable == null) || (mainTargetTable.getListColumns().size() == 0)
+                            || mainTargetTable.sameMetadataAs(connection.getMetadataTable())) {
+                        return;
+                    }
+                    IConnection outputConnection = null;
+                    // schema not auto-propagated or in repository mode
+                    if ((connection.getSource().getSchemaParameterFromConnector(mainConnector.getName()) != null)) {
+
+                        if (connection.getSource().getOutgoingConnections(connection.getConnectorName()).size() == 1) {
+                            outputConnection = connection.getSource().getOutgoingConnections(connection.getConnectorName())
+                                    .get(0);
+                        }
+
+                        if (takeSchema == null) {
+                            takeSchema = getTakeSchema();
+                        }
+                        if (takeSchema) {
+                            connection.getSource().takeSchemaFrom(this, mainConnector.getName());
+                        }
+                    } else if (connection.getSourceNodeConnector().isBuiltIn()) {
+                        if (takeSchema == null) {
+                            takeSchema = getTakeSchema();
+                        }
+                        MetadataTool.copyTable(mainTargetTable, connection.getMetadataTable());
+                    } else {
+                        connection.getSource().checkAndRefreshNode();
+                        checkAndRefreshNode();
+                    }
                 }
             }
         }
@@ -709,7 +717,7 @@ public class Node extends Element implements INode {
 
     private CommandStack getCommandStack() {
         CommandStack cmdStack = null;
-        TalendEditor talendEditor = process.getEditor().getTalendEditor();
+        AbstractTalendEditor talendEditor = process.getEditor().getTalendEditor();
         cmdStack = (CommandStack) talendEditor.getAdapter(CommandStack.class);
         return cmdStack;
     }
@@ -719,9 +727,9 @@ public class Node extends Element implements INode {
      * 
      * @param connection
      */
-    public void addOutput(final Connection connection) {
-        this.outputs.add(connection);
-        fireStructureChange(OUTPUTS, connection);
+    public void addOutput(final IConnection conn) {
+        this.outputs.add(conn);
+        fireStructureChange(OUTPUTS, conn);
     }
 
     /**
@@ -734,7 +742,8 @@ public class Node extends Element implements INode {
     }
 
     public void setIncomingConnections(List<Connection> connections) {
-        this.inputs = connections;
+        this.inputs.clear();
+        this.inputs.addAll(connections);
     }
 
     /**
@@ -751,7 +760,7 @@ public class Node extends Element implements INode {
      * 
      * @param connection
      */
-    public void removeInput(final Connection connection) {
+    public void removeInput(final IConnection connection) {
         this.inputs.remove(connection);
         INodeConnector mainConnector;
         if (isELTComponent()) {
@@ -784,7 +793,6 @@ public class Node extends Element implements INode {
                 }
             }
         }
-
         fireStructureChange(INPUTS, connection);
     }
 
@@ -793,7 +801,7 @@ public class Node extends Element implements INode {
      * 
      * @param connection
      */
-    public void removeOutput(final Connection connection) {
+    public void removeOutput(final IConnection connection) {
         this.outputs.remove(connection);
         fireStructureChange(OUTPUTS, connection);
     }
@@ -1078,11 +1086,11 @@ public class Node extends Element implements INode {
     }
 
     public boolean isSubProcessStart() {
-        Connection connec;
+        IConnection connec;
         if (isActivate()) {
             if (!isELTComponent()) {
                 for (int j = 0; j < getIncomingConnections().size(); j++) {
-                    connec = (Connection) getIncomingConnections().get(j);
+                    connec = (IConnection) getIncomingConnections().get(j);
                     if (connec.isActivate()) {
                         if (connec.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {
                             return false;
@@ -1188,7 +1196,7 @@ public class Node extends Element implements INode {
      * @param withCondition
      * @return Start Node found.
      */
-    public Node getSubProcessStartNode(boolean withConditions) {
+    public INode getSubProcessStartNode(boolean withConditions) {
         if (!withConditions) {
             // if ((getCurrentActiveLinksNbInput(EConnectionType.FLOW_MAIN) ==
             // 0)
@@ -1204,7 +1212,7 @@ public class Node extends Element implements INode {
             }
         } else {
             int nb = 0;
-            for (Connection connection : inputs) {
+            for (IConnection connection : inputs) {
                 if (connection.isActivate()) {
                     nb++;
                 }
@@ -1213,10 +1221,10 @@ public class Node extends Element implements INode {
                 return this;
             }
         }
-        Connection connec;
+        IConnection2 connec;
 
         for (int j = 0; j < getIncomingConnections().size(); j++) {
-            connec = (Connection) getIncomingConnections().get(j);
+            connec = (IConnection2) getIncomingConnections().get(j);
             if (!connec.getLineStyle().hasConnectionCategory(IConnectionCategory.USE_HASH)) {
                 return connec.getSource().getSubProcessStartNode(withConditions);
             }
@@ -1224,11 +1232,11 @@ public class Node extends Element implements INode {
         return null;
     }
 
-    private Node getMainBranch() {
-        Node targetWithRef = null;
+    public INode2 getMainBranch() {
+        INode2 targetWithRef = null;
         for (int i = 0; i < getOutgoingConnections().size() && targetWithRef == null; i++) {
             IConnection connection = getOutgoingConnections().get(i);
-            Node nodeTmp = (Node) connection.getTarget();
+            INode2 nodeTmp = (INode2) connection.getTarget();
             if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.USE_HASH)) {
                 // System.out.println(" ** Ref Link Found in:" + nodeTmp + "
                 // from:" + this);
@@ -1253,19 +1261,19 @@ public class Node extends Element implements INode {
 
     public Node getProcessStartNode(boolean withConditions) {
         // System.out.println(" --- Checking :" + this + " ---");
-        return getMainBranch().getSubProcessStartNode(withConditions);
+        return (Node) getMainBranch().getSubProcessStartNode(withConditions);
     }
 
     public boolean sameProcessAs(Node node, boolean withConditions) {
         // System.out.println("from:" + this + " -- to:" + node);
 
-        Node currentNode = getSubProcessStartNode(withConditions);
+        INode2 currentNode = (INode2) getSubProcessStartNode(withConditions);
         if (!currentNode.isStart()) {
-            currentNode = currentNode.getProcessStartNode(withConditions);
+            currentNode = (INode2) currentNode.getProcessStartNode(withConditions);
         }
-        Node otherNode = node.getSubProcessStartNode(withConditions);
+        INode2 otherNode = (INode2) node.getSubProcessStartNode(withConditions);
         if (!otherNode.isStart()) {
-            otherNode = otherNode.getProcessStartNode(withConditions);
+            otherNode = (INode2) otherNode.getProcessStartNode(withConditions);
         }
         // System.out.println("source start:" + currentNode + " -- target
         // start:" + otherNode);
@@ -1389,7 +1397,7 @@ public class Node extends Element implements INode {
 
     public int getCurrentActiveLinksNbInput(EConnectionType type) {
         int nb = 0;
-        for (Connection connection : inputs) {
+        for (IConnection connection : inputs) {
             if (connection.isActivate() && connection.getLineStyle().equals(type)) {
                 nb++;
             }
@@ -1400,7 +1408,7 @@ public class Node extends Element implements INode {
     // PTODO MHIRT: Modif à revoir avec NRO
     public int getCurrentActiveLinksNbInput(int connCategory) {
         int nb = 0;
-        for (Connection connection : inputs) {
+        for (IConnection connection : inputs) {
             if (connection.isActivate() && connection.getLineStyle().hasConnectionCategory(connCategory)) {
                 nb++;
             }
@@ -1410,7 +1418,7 @@ public class Node extends Element implements INode {
 
     public int getCurrentActiveLinksNbOutput(EConnectionType type) {
         int nb = 0;
-        for (Connection connection : outputs) {
+        for (IConnection connection : outputs) {
             if (connection.isActivate() && connection.getLineStyle().equals(type)) {
                 nb++;
             }
@@ -1588,9 +1596,9 @@ public class Node extends Element implements INode {
 
         // test if the columns can be checked or not
         if (component.isSchemaAutoPropagated() && (getMetadataList().size() != 0)) {
-            Connection inputConnecion = null;
+            IConnection inputConnecion = null;
             IMetadataTable inputMeta = null, outputMeta = getMetadataList().get(0);
-            for (Connection connection : inputs) {
+            for (IConnection connection : inputs) {
                 if (connection.isActivate()
                         && (connection.getLineStyle().equals(EConnectionType.FLOW_MAIN) || connection.getLineStyle().equals(
                                 EConnectionType.TABLE))) {
@@ -1942,7 +1950,7 @@ public class Node extends Element implements INode {
             // is there condition link, then can't set the start.
             boolean isThereConditionLink = false;
             for (int j = 0; j < getIncomingConnections().size() && !isThereConditionLink; j++) {
-                Connection connection = (Connection) getIncomingConnections().get(j);
+                IConnection connection = (IConnection) getIncomingConnections().get(j);
                 if (connection.isActivate() && connection.getLineStyle().hasConnectionCategory(IConnectionCategory.DEPENDENCY)) {
                     isThereConditionLink = true;
                 }
@@ -1952,7 +1960,7 @@ public class Node extends Element implements INode {
             boolean canBeStart = false;
             boolean isActivatedConnection = false;
             for (int j = 0; j < getIncomingConnections().size() && !isActivatedConnection; j++) {
-                Connection connection = (Connection) getIncomingConnections().get(j);
+                IConnection connection = (IConnection) getIncomingConnections().get(j);
                 // connection that will generate a hash file are not
                 // considered as activated for this test.
                 if (connection.isActivate() && !connection.getLineStyle().hasConnectionCategory(IConnectionCategory.USE_HASH)) {

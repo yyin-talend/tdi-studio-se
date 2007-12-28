@@ -39,8 +39,8 @@ public class ActiveProcessTracker implements IPartListener {
     private static IProcess currentProcess;
 
     public IProcess getJobFromActivatedEditor(IWorkbenchPart part) {
-        if (MultiPageTalendEditor.ID.equals(part.getSite().getId())) {
-            MultiPageTalendEditor mpte = (MultiPageTalendEditor) part;
+        if (part instanceof AbstractMultiPageTalendEditor) {
+            AbstractMultiPageTalendEditor mpte = (AbstractMultiPageTalendEditor) part;
             mpte.setName();
 
             IProcess process = mpte.getTalendEditor().getProcess();
@@ -122,8 +122,8 @@ public class ActiveProcessTracker implements IPartListener {
      * @see org.eclipse.ui.IPartListener#partClosed(org.eclipse.ui.IWorkbenchPart)
      */
     public void partClosed(IWorkbenchPart part) {
-        if (MultiPageTalendEditor.ID.equals(part.getSite().getId())) {
-            MultiPageTalendEditor mpte = (MultiPageTalendEditor) part;
+        if (part instanceof AbstractMultiPageTalendEditor) {
+            AbstractMultiPageTalendEditor mpte = (AbstractMultiPageTalendEditor) part;
             if (mpte.isKeepPropertyLocked()) {
                 return;
             }
@@ -155,7 +155,7 @@ public class ActiveProcessTracker implements IPartListener {
     public void partDeactivated(IWorkbenchPart part) {
         IProcess process = getJobFromActivatedEditor(part);
         if (process != null) {
-            MultiPageTalendEditor mpte = (MultiPageTalendEditor) part;
+            AbstractMultiPageTalendEditor mpte = (AbstractMultiPageTalendEditor) part;
             mpte.getTalendEditor().savePaletteState();
         }
     }
@@ -166,16 +166,16 @@ public class ActiveProcessTracker implements IPartListener {
      * @see org.eclipse.ui.IPartListener#partOpened(org.eclipse.ui.IWorkbenchPart)
      */
     public void partOpened(IWorkbenchPart part) {
-        if (MultiPageTalendEditor.ID.equals(part.getSite().getId())) {
-            MultiPageTalendEditor mpte = (MultiPageTalendEditor) part;
+        if (part instanceof AbstractMultiPageTalendEditor) {
+            AbstractMultiPageTalendEditor mpte = (AbstractMultiPageTalendEditor) part;
             if (mpte.isJobAlreadyOpened()) {
                 mpte.updateChildrens();
                 // close the first editor and keep the new one. (so only one will remain)
                 IEditorReference[] ref = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findEditors(
-                        mpte.getEditorInput(), MultiPageTalendEditor.ID, IWorkbenchPage.MATCH_INPUT);
+                        mpte.getEditorInput(), mpte.getEditorId(), IWorkbenchPage.MATCH_INPUT);
                 IEditorPart editorPart = ref[0].getEditor(false);
                 editorPart.doSave(new NullProgressMonitor());
-                ((MultiPageTalendEditor) editorPart).setKeepPropertyLocked(true);
+                ((AbstractMultiPageTalendEditor) editorPart).setKeepPropertyLocked(true);
                 PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().closeEditor(editorPart, false);
             }
         }

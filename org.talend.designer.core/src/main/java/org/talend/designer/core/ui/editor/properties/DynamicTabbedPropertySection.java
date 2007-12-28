@@ -76,8 +76,9 @@ import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
+import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
-import org.talend.designer.core.ui.editor.TalendEditor;
+import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.editor.cmd.ChangeMetadataCommand;
 import org.talend.designer.core.ui.editor.connections.ConnectionLabel;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainerPart;
@@ -100,7 +101,7 @@ import org.talend.repository.model.IProxyRepositoryFactory;
  */
 public class DynamicTabbedPropertySection extends AbstractPropertySection implements IDynamicProperty {
 
-    protected MultiPageTalendEditor part;
+    protected AbstractMultiPageTalendEditor part;
 
     protected Element elem;
 
@@ -1126,7 +1127,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
      * @return the part
      */
     @Override
-    public MultiPageTalendEditor getPart() {
+    public AbstractMultiPageTalendEditor getPart() {
         return this.part;
     }
 
@@ -1154,7 +1155,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
      * @return
      */
     protected CommandStack getCommandStack() {
-        TalendEditor talendEditor = part.getTalendEditor();
+        AbstractTalendEditor talendEditor = part.getTalendEditor();
         Object adapter = talendEditor.getAdapter(CommandStack.class);
         return (CommandStack) adapter;
     }

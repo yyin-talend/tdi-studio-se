@@ -355,8 +355,10 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
      * @see org.eclipse.gef.NodeEditPart#getSourceConnectionAnchor(org.eclipse.gef.ConnectionEditPart)
      */
     public ConnectionAnchor getSourceConnectionAnchor(final ConnectionEditPart connection) {
-        if (((Connection) connection.getModel()).getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)) {
-            ((NodeFigure) getFigure()).addSourceConnection((ConnectionFigure) connection.getFigure());
+        if (connection.getModel() instanceof Connection) {
+            if (((Connection) connection.getModel()).getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)) {
+                ((NodeFigure) getFigure()).addSourceConnection((ConnectionFigure) connection.getFigure());
+            }
         }
         return new NodeAnchor(getFigure());
     }
@@ -367,8 +369,10 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
      * @see org.eclipse.gef.NodeEditPart#getTargetConnectionAnchor(org.eclipse.gef.ConnectionEditPart)
      */
     public ConnectionAnchor getTargetConnectionAnchor(final ConnectionEditPart connection) {
-        if (((Connection) connection.getModel()).getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)) {
-            ((NodeFigure) getFigure()).setTargetConnection((ConnectionFigure) connection.getFigure());
+        if (connection.getModel() instanceof Connection) {
+            if (((Connection) connection.getModel()).getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)) {
+                ((NodeFigure) getFigure()).setTargetConnection((ConnectionFigure) connection.getFigure());
+            }
         }
         return new NodeAnchor(getFigure());
     }

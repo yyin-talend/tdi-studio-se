@@ -25,7 +25,7 @@ import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.widgets.Composite;
 import org.talend.designer.core.ISyntaxCheckableEditor;
-import org.talend.designer.core.ui.MultiPageTalendEditor;
+import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 
 /**
  * DOC yzhang class global comment. Detailled comment <br/>
@@ -33,13 +33,14 @@ import org.talend.designer.core.ui.MultiPageTalendEditor;
  * $Id: TalendJavaEditor.java 1 2007-1-18 下午03:26:08 +0000 (下午03:26:08, 2007-1-18 2007) yzhang $
  * 
  */
-public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCheckableEditor {
+public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCheckableEditor, ITalendJavaEditor,
+        ITalendCodeEditor {
 
     private org.eclipse.jdt.core.ICompilationUnit unit;
 
     private boolean disposed = false;
 
-    private List<MultiPageTalendEditor> editPartListener = new ArrayList<MultiPageTalendEditor>();
+    private List<AbstractMultiPageTalendEditor> editPartListener = new ArrayList<AbstractMultiPageTalendEditor>();
 
     private String currentSelection;
 
@@ -174,13 +175,13 @@ public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCh
      * 
      * @param editPart
      */
-    public void addEditorPart(MultiPageTalendEditor editPart) {
+    public void addEditorPart(AbstractMultiPageTalendEditor editPart) {
         if (!this.editPartListener.contains(editPart)) {
             this.editPartListener.add(editPart);
         }
     }
 
-    public void removeEditorPart(MultiPageTalendEditor editPart) {
+    public void removeEditorPart(AbstractMultiPageTalendEditor editPart) {
         this.editPartListener.remove(editPart);
     }
 

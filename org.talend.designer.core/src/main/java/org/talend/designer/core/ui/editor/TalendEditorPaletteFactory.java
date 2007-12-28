@@ -244,7 +244,7 @@ public final class TalendEditorPaletteFactory {
      * @param root
      * @return
      */
-    static PaletteRoot createPalette(final IComponentsFactory compFac, PaletteRoot root) {
+    public static PaletteRoot createPalette(final IComponentsFactory compFac, PaletteRoot root) {
         palette = root;
         createComponentsDrawer(compFac);
         return palette;
@@ -253,7 +253,7 @@ public final class TalendEditorPaletteFactory {
     /**
      * Return a FlyoutPreferences instance used to save/load the preferences of a flyout palette.
      */
-    static FlyoutPreferences createPalettePreferences() {
+    public static FlyoutPreferences createPalettePreferences() {
         return new FlyoutPreferences() {
 
             private IPreferenceStore getPreferenceStore() {
