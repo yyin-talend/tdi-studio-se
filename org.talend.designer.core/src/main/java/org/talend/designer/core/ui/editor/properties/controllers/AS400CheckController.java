@@ -33,12 +33,12 @@ import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.prefs.ITalendCorePrefConstants;
+import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty;
-import org.talend.designer.core.DesignerPlugin;
 import org.talend.repository.model.IProxyRepositoryFactory;
 
 /**
@@ -127,20 +127,61 @@ public class AS400CheckController extends AbstractElementPropertySectionControll
      * org.talend.core.model.process.IElementParameter)
      */
     @Override
-    public int estimateRowSize(Composite subComposite, IElementParameter param) {
+    public int estimateRowSize(Composite subComposite, final IElementParameter param) {
         // TODO Auto-generated method stub
-        return 0;
+        final DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER, new IControlCreator() {
+
+            public Control createControl(Composite parent, int style) {
+                return getWidgetFactory().createButton(parent, param.getDisplayName(), SWT.CHECK);
+            }
+
+        });
+        Point initialSize = dField.getLayoutControl().computeSize(SWT.DEFAULT, SWT.DEFAULT);
+        dField.getLayoutControl().dispose();
+
+        return initialSize.y + ITabbedPropertyConstants.VSPACE;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#refresh(org.talend.core.model.process.IElementParameter,
-     * boolean)
-     */
     @Override
     public void refresh(IElementParameter param, boolean check) {
         // TODO Auto-generated method stub
+        Button checkBtn = (Button) hashCurControls.get(param.getName());
+        if (checkBtn == null || checkBtn.isDisposed()) {
+            return;
+        }
+        String propertyType = (String) elem.getPropertyValue(EParameterName.PROPERTY_TYPE.getName());
+        if (propertyType.equals(EmfComponent.REPOSITORY)) {
+            IProxyRepositoryFactory factory = DesignerPlugin.getDefault().getProxyRepositoryFactory();
+            List<ConnectionItem> metadataConnectionsItem = null;
+            try {
+                metadataConnectionsItem = factory.getMetadataConnectionsItem();
+
+            } catch (PersistenceException e) {
+                throw new RuntimeException(e);
+            }
+            if (metadataConnectionsItem != null) {
+                for (ConnectionItem connectionItem : metadataConnectionsItem) {
+                    String value = connectionItem.getProperty().getId() + ""; //$NON-NLS-1$
+                    if (value.equals(elem.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName()))) {
+                        boolean b = getConnection(connectionItem).isStandardSQL();
+                        checkBtn.setSelection(b);
+                        if (b) {
+                            param.setValue(Boolean.TRUE);
+                        } else {
+                            param.setValue(Boolean.FALSE);
+                        }
+                    }
+                }
+            }
+        } else {
+            boolean b = CorePlugin.getDefault().getPreferenceStore().getBoolean(ITalendCorePrefConstants.AS400_SQL_SEG);
+            checkBtn.setSelection(b);
+            if (b) {
+                param.setValue(Boolean.TRUE);
+            } else {
+                param.setValue(Boolean.FALSE);
+            }
+        }
 
     }
 
@@ -154,7 +195,6 @@ public class AS400CheckController extends AbstractElementPropertySectionControll
 
     }
 
-    // get DatabaseConnection
     protected DatabaseConnection getConnection(ConnectionItem connectionItem) {
         return (DatabaseConnection) connectionItem.getConnection();
     }

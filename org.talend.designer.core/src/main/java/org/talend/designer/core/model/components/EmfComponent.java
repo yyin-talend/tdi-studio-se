@@ -803,6 +803,9 @@ public class EmfComponent implements IComponent {
             case CHECK:
                 param.setValue(new Boolean(false));
                 break;
+            case AS400_CHECK:
+                param.setValue(new Boolean(false));
+                break;
             case TABLE:
                 param.setValue(new ArrayList<Map<String, Object>>());
                 break;
@@ -978,7 +981,8 @@ public class EmfComponent implements IComponent {
 
                     if (param.isShow(conditionIf, conditionNotIf, listParam)) {
                         isSet = true;
-                        if (param.getField().equals(EParameterFieldType.CHECK)) {
+                        if (param.getField().equals(EParameterFieldType.CHECK)
+                                || param.getField().equals(EParameterFieldType.AS400_CHECK)) {
                             param.setValue(new Boolean(defaultValue.getDefaultValue().toString()));
                         } else {
                             param.setValue(defaultValue.getDefaultValue());
@@ -986,7 +990,8 @@ public class EmfComponent implements IComponent {
                     }
                 }
                 if (!isSet) {
-                    if (param.getField().equals(EParameterFieldType.CHECK)) {
+                    if (param.getField().equals(EParameterFieldType.CHECK)
+                            || param.getField().equals(EParameterFieldType.AS400_CHECK)) {
                         param.setValue(new Boolean(param.getDefaultValues().get(0).getDefaultValue().toString()));
                     } else {
                         param.setValue(param.getDefaultValues().get(0).getDefaultValue());

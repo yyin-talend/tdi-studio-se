@@ -16,9 +16,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.gef.commands.Command;
-import org.eclipse.ui.IViewPart;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.PlatformUI;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
@@ -115,7 +112,8 @@ public class PropertyChangeCommand extends Command {
         elem.setPropertyValue(propName, newValue);
 
         if (currentParam.getField().equals(EParameterFieldType.CLOSED_LIST)
-                || currentParam.getField().equals(EParameterFieldType.CHECK)) {
+                || currentParam.getField().equals(EParameterFieldType.CHECK)
+                || currentParam.getField().equals(EParameterFieldType.AS400_CHECK)) {
             toUpdate = false;
             for (int i = 0; i < elem.getElementParameters().size(); i++) {
                 IElementParameter testedParam = elem.getElementParameters().get(i);
