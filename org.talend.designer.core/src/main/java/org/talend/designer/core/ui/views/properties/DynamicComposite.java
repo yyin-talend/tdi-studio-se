@@ -27,6 +27,8 @@ import org.eclipse.gef.commands.CommandStackEvent;
 import org.eclipse.gef.commands.CommandStackEventListener;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -949,6 +951,13 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
      */
     public DynamicComposite(Composite parentComposite, int styles, final EComponentCategory section, Element element) {
         super(parentComposite, styles);
+
+        FormData d = new FormData();
+        d.left = new FormAttachment(0, 0);
+        d.right = new FormAttachment(100, 0);
+        d.top = new FormAttachment(0, 0);
+        d.bottom = new FormAttachment(100, 0);
+        setLayoutData(d);
 
         setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
 

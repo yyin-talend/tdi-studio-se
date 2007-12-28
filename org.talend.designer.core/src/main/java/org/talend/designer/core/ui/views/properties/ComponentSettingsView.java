@@ -34,6 +34,7 @@ import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
+import org.talend.core.model.process.IElementParameter;
 import org.talend.core.properties.tab.HorizontalTabFactory;
 import org.talend.core.properties.tab.TalendPropertyTabDescriptor;
 import org.talend.designer.core.ui.editor.connections.Connection;
@@ -83,6 +84,10 @@ public class ComponentSettingsView extends ViewPart {
                 IStructuredSelection selection = (IStructuredSelection) event.getSelection();
                 TalendPropertyTabDescriptor descriptor = (TalendPropertyTabDescriptor) selection.getFirstElement();
 
+                if (descriptor == null) {
+                    return;
+                }
+
                 if (currentSelectedTab != null
                         && (!currentSelectedTab.getElement().equals(descriptor.getElement()) || currentSelectedTab.getCategory() != descriptor
                                 .getCategory())) {
@@ -95,7 +100,9 @@ public class ComponentSettingsView extends ViewPart {
                         || currentSelectedTab.getCategory() != descriptor.getCategory() || selectedPrimary) {
                     element = descriptor.getElement();
                     currentSelectedTab = descriptor;
+
                     createDynamicComposite(tabFactory.getTabComposite(), descriptor.getElement(), descriptor.getCategory());
+
                     selectedPrimary = false;
                 }
             }
@@ -131,7 +138,7 @@ public class ComponentSettingsView extends ViewPart {
             scrolled.setMinWidth(600);
             scrolled.setMinHeight(400);
 
-            Composite composite = new WidgetFactory().createComposite(scrolled);
+            Composite composite = tabFactory.getWidgetFactory().createComposite(scrolled);
             scrolled.setContent(composite);
             composite.setLayout(new FormLayout());
             FormData d = new FormData();
@@ -201,6 +208,13 @@ public class ComponentSettingsView extends ViewPart {
             TalendPropertyTabDescriptor d = new TalendPropertyTabDescriptor(category);
             d.setElement(elem);
             descriptors.add(d);
+            if (category.hadSubCategories()) {
+                for (EComponentCategory subCategory : category.getSubCategories()) {
+                    TalendPropertyTabDescriptor subc = new TalendPropertyTabDescriptor(subCategory);
+                    subc.setElement(elem);
+                    d.addSubItem(subc);
+                }
+            }
         }
 
         tabFactory.setInput(descriptors);
@@ -280,7 +294,11 @@ public class ComponentSettingsView extends ViewPart {
         if (elem instanceof Connection) {
             return EElementType.CONNECTION.getCategories();
         } else if (elem instanceof Node) {
-            return EElementType.NODE.getCategories();
+            if (isAdvancedType(elem)) {
+                return EElementType.ADVANCED_NODE.getCategories();
+            } else {
+                return EElementType.NODE.getCategories();
+            }
         } else if (elem instanceof Note) {
             return EElementType.NOTE.getCategories();
         }
@@ -289,5 +307,20 @@ public class ComponentSettingsView extends ViewPart {
 
     public Element getElement() {
         return element;
+    }
+
+    /**
+     * yzhang Comment method "isAdvancedType".
+     * 
+     * @param elem
+     * @return
+     */
+    private boolean isAdvancedType(Element elem) {
+        for (IElementParameter param : elem.getElementParameters()) {
+            if (param.getCategory().equals(EComponentCategory.ADVANCED)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

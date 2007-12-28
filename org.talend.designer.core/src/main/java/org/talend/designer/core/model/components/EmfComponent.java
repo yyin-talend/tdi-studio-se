@@ -124,6 +124,10 @@ public class EmfComponent implements IComponent {
 
     private IMultipleComponentManager multipleComponentManager;
 
+    private static final boolean ADVANCED_PROPERTY = true;
+
+    private static final boolean NORMAL_PROPERTY = false;
+
     private ResourceBundle resourceBundle;
 
     private String pathSource;
@@ -193,7 +197,8 @@ public class EmfComponent implements IComponent {
         List<ElementParameter> listParam;
         listParam = new ArrayList<ElementParameter>();
         addMainParameters(listParam, node);
-        addPropertyParameters(listParam, node);
+        addPropertyParameters(listParam, node, NORMAL_PROPERTY);
+        addPropertyParameters(listParam, node, ADVANCED_PROPERTY);
         initializePropertyParameters(listParam);
         addViewParameters(listParam, node);
         addDocParameters(listParam, node);
@@ -743,14 +748,21 @@ public class EmfComponent implements IComponent {
     }
 
     @SuppressWarnings("unchecked")//$NON-NLS-1$
-    private void addPropertyParameters(final List<ElementParameter> listParam, final INode node) {
+    private void addPropertyParameters(final List<ElementParameter> listParam, final INode node, boolean advanced) {
         EList listXmlParam;
         PARAMETERType xmlParam;
         ElementParameter param;
 
         boolean autoSwitchAdded = false;
 
-        listXmlParam = compType.getPARAMETERS().getPARAMETER();
+        if (advanced) {
+            if (compType.getADVANCEDPARAMETERS() == null) {
+                return;
+            }
+            listXmlParam = compType.getADVANCEDPARAMETERS().getPARAMETER();
+        } else {
+            listXmlParam = compType.getPARAMETERS().getPARAMETER();
+        }
         for (int i = 0; i < listXmlParam.size(); i++) {
             xmlParam = (PARAMETERType) listXmlParam.get(i);
             EParameterFieldType type = EParameterFieldType.getFieldTypeByName(xmlParam.getFIELD());
@@ -879,8 +891,11 @@ public class EmfComponent implements IComponent {
             if (xmlParam.getITEMS() != null) {
                 addItemsPropertyParameters(xmlParam.getNAME(), xmlParam.getITEMS(), param, type, node);
             }
-
-            param.setCategory(EComponentCategory.PROPERTY);
+            if (advanced) {
+                param.setCategory(EComponentCategory.ADVANCED);
+            } else {
+                param.setCategory(EComponentCategory.PROPERTY);
+            }
 
             createSpecificParametersFromType(listParam, xmlParam, node, type, param);
             listParam.add(param);
