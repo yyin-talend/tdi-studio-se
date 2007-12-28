@@ -71,7 +71,7 @@ public class RenameConnectionRunIfOkToOnComponentOkTask extends AbstractJobMigra
 
         }
         if (modified) {
-            factory.save(item);
+            factory.save(item,true);
         }
 
     }

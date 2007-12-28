@@ -80,7 +80,7 @@ import org.talend.repository.utils.RepositoryPathProvider;
  * 
  */
 /**
- * DOC Administrator  class global comment. Detailled comment
+ * DOC Administrator class global comment. Detailled comment
  */
 public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
 
@@ -476,7 +476,7 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         String str[] = new String[] { objToDelete.toString(), getRepositoryContext().getUser().toString() };
         log.info(Messages.getString("ProxyRepositoryFactory.log.physicalDeletion", str)); //$NON-NLS-1$
 
-        if (objToDelete.getType() == ERepositoryObjectType.PROCESS){
+        if (objToDelete.getType() == ERepositoryObjectType.PROCESS) {
             fireRepositoryPropertyChange(ERepositoryActionName.JOB_DELETE_FOREVER.getName(), null, objToDelete);
         }
     }
@@ -775,9 +775,9 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * 
      * @see org.talend.repository.model.IProxyRepositoryFactory#save(org.talend.core.model.properties.Item)
      */
-    public void save(Item item) throws PersistenceException {
+    public void save(Item item, boolean... isMigrationTask) throws PersistenceException {
         this.repositoryFactoryFromProvider.save(item);
-        if (item instanceof ProcessItem) {
+        if (item instanceof ProcessItem && (isMigrationTask == null || isMigrationTask.length == 0)) {
             fireRepositoryPropertyChange(ERepositoryActionName.JOB_SAVE.getName(), null, item);
         }
     }
@@ -802,9 +802,8 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      */
     public Item copy(Item sourceItem, IPath targetPath) throws PersistenceException, BusinessException {
         Item targetItem = this.repositoryFactoryFromProvider.copy(sourceItem, targetPath);
-       
-        if(sourceItem instanceof ProcessItem)
-        {
+
+        if (sourceItem instanceof ProcessItem) {
             fireRepositoryPropertyChange(ERepositoryActionName.JOB_COPY.getName(), sourceItem, targetItem);
         }
         return targetItem;
@@ -1137,4 +1136,5 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
     public List<ModuleNeeded> getModulesNeededForJobs() throws PersistenceException {
         return this.repositoryFactoryFromProvider.getModulesNeededForJobs();
     }
+
 }

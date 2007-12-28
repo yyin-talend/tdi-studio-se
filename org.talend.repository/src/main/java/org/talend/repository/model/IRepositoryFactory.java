@@ -77,7 +77,7 @@ public interface IRepositoryFactory {
     public Project[] readProject() throws PersistenceException, BusinessException;
 
     public Folder createFolder(ERepositoryObjectType type, IPath path, String label) throws PersistenceException;
-
+    
     /**
      * Returns if the name is used by another item of the same type. Type, name and id of item are used to test label
      * availability.
