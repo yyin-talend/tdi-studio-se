@@ -155,6 +155,7 @@ public class NotesPasteCommand extends Command {
             Note pastedNote = new Note();
             pastedNote.setOpaque(copiedNote.isOpaque());
             pastedNote.setText(copiedNote.getText());
+            pastedNote.setSize(copiedNote.getSize());
 
             Point location = null;
             if (getCursorLocation() == null) {
