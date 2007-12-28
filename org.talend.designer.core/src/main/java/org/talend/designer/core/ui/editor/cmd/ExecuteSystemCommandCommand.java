@@ -15,12 +15,10 @@ package org.talend.designer.core.ui.editor.cmd;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -37,6 +35,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.image.ImageProvider;
+import org.talend.commons.ui.swt.dialogs.ProgressDialog;
 import org.talend.commons.ui.swt.formtools.Form;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.designer.core.i18n.Messages;
@@ -62,29 +61,32 @@ public class ExecuteSystemCommandCommand extends Command {
         }
         StringBuffer errorMassage = new StringBuffer();
 
-        CommandJob executeJob = new CommandJob(Messages.getString("ExecuteSystemCommandCommand.Command"), commandsList); //$NON-NLS-1$
-        executeJob.schedule();
+        final Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
+
+        CommandProgressDialog progressDialog = new CommandProgressDialog(shell, commandsList);
 
         try {
-            executeJob.join();
+            progressDialog.executeProcess();
+        } catch (InvocationTargetException e) {
+            errorMassage.append(RETURN);
+            errorMassage.append(e.getMessage());
         } catch (InterruptedException e) {
-            e.printStackTrace();
             errorMassage.append(RETURN);
             errorMassage.append(e.getMessage());
         }
 
-        ShowCommandMessage show = new ShowCommandMessage(PlatformUI.getWorkbench().getDisplay().getActiveShell(), executeJob
-                .getCommands(), executeJob.getResultMessages(), executeJob.getErrorMessages() + errorMassage.toString());
+        ShowCommandMessage show = new ShowCommandMessage(shell, progressDialog.getCommands(), progressDialog.getResultMessages(),
+                progressDialog.getErrorMessages() + errorMassage.toString());
         show.open();
     }
 
     /**
      * 
-     * DOC ggu CommandJob class global comment. Detailled comment
+     * DOC ggu CommandProgressDialog class global comment. Detailled comment
      */
-    class CommandJob extends Job {
+    class CommandProgressDialog extends ProgressDialog {
 
-        private List<String> commansList;
+        private final List<String> commansList;
 
         private StringBuffer resultMassage = new StringBuffer();
 
@@ -92,18 +94,22 @@ public class ExecuteSystemCommandCommand extends Command {
 
         private StringBuffer commandsMessage = new StringBuffer();
 
-        public CommandJob(String name, List<String> commansList) {
-            super(name);
-            this.commansList = commansList;
+        public CommandProgressDialog(Shell parentShell, final List<String> commansList) {
+            super(parentShell);
+            this.commansList = commandsList;
         }
 
         @Override
-        protected IStatus run(IProgressMonitor monitor) {
-            monitor.beginTask(getName(), commansList.size());
+        public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+            if (commansList == null || commansList.isEmpty()) {
+                return;
+            }
+            monitor.beginTask(Messages.getString("ExecuteSystemCommandCommand.Command"), commansList.size()); //$NON-NLS-1$
 
             Runtime runtime = Runtime.getRuntime();
             try {
                 for (String command : commansList) {
+                    monitor.worked(1);
                     commandsMessage.append(command);
                     commandsMessage.append(RETURN);
                     if ("".equals(command.trim())) { //$NON-NLS-1$
@@ -117,16 +123,13 @@ public class ExecuteSystemCommandCommand extends Command {
                     process.waitFor();
                 }
             } catch (IOException e) {
-                e.printStackTrace();
                 errorMassage.append(RETURN);
                 errorMassage.append(e.getMessage());
             } catch (InterruptedException e) {
                 errorMassage.append(RETURN);
                 errorMassage.append(e.getMessage());
-                e.printStackTrace();
             }
             monitor.done();
-            return Status.OK_STATUS;
         }
 
         public String getCommands() {
@@ -140,7 +143,6 @@ public class ExecuteSystemCommandCommand extends Command {
         public String getErrorMessages() {
             return errorMassage.toString();
         }
-
     }
 
     /**
@@ -225,7 +227,7 @@ public class ExecuteSystemCommandCommand extends Command {
         @Override
         protected void configureShell(Shell newShell) {
             super.configureShell(newShell);
-            newShell.setSize(WIDTH, HEIGHT);
+            newShell.setMinimumSize(WIDTH, HEIGHT);
             newShell.setText(Messages.getString("ExecuteSystemCommandCommand.Title")); //$NON-NLS-1$
 
         }

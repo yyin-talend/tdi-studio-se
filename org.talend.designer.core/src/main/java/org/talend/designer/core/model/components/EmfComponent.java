@@ -990,6 +990,11 @@ public class EmfComponent implements IComponent {
         for (ElementParameter param : listParam) {
             if (param.getDefaultValues().size() > 0) {
                 boolean isSet = false;
+                if (param.getField().equals(EParameterFieldType.COMMAND)) {
+                    // convert the values of COMMMAND
+                    param.setValue(MultiDefaultValuesUtils.convertDefaultValues(param));
+                    continue;
+                }
                 for (IElementParameterDefaultValue defaultValue : param.getDefaultValues()) {
                     String conditionIf = defaultValue.getIfCondition();
                     String conditionNotIf = defaultValue.getNotIfCondition();

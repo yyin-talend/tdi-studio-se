@@ -13,13 +13,17 @@
 package org.talend.designer.core.ui.editor.properties.controllers;
 
 import java.beans.PropertyChangeEvent;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.gef.commands.Command;
+import org.eclipse.jface.fieldassist.DecoratedField;
+import org.eclipse.jface.fieldassist.FieldDecoration;
+import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
+import org.eclipse.jface.fieldassist.TextControlCreator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.GC;
@@ -29,22 +33,40 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.process.IElementParameter;
-import org.talend.core.model.process.IElementParameterDefaultValue;
 import org.talend.core.model.utils.TalendTextUtils;
-import org.talend.designer.core.model.components.Expression;
+import org.talend.designer.core.model.components.MultiDefaultValuesUtils;
 import org.talend.designer.core.ui.editor.cmd.ExecuteSystemCommandCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
+import org.talend.designer.core.ui.editor.properties.controllers.creator.SelectAllTextControlCreator;
 import org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty;
 
 /**
- * DOC ggu class global comment. Detailled comment
+ * 
+ * defined Commands in component. for example:<br/>
+ * 
+ * in java:<br/>
+ * 
+ * <PARAMETER NAME="COMMAND" FIELD="COMMAND" NUM_ROW="33">
+ * 
+ * <DEFAULT IF="CURRENT_OS=='WINDOWS'">"cmd /c \"java -version\""</DEFAULT>
+ * 
+ * <DEFAULT IF="(CURRENT_OS=='LINUX') or (CURRENT_OS=='UNIX')">"xterm java -version"</DEFAULT>
+ * 
+ * <DEFAULT >"java -version"</DEFAULT>
+ * 
+ * </PARAMETER>
+ * 
+ * <br/>so, if the OS is MacOS, it will use the last "DEFAULT".<br/>
+ * 
+ * in perl the commands as: 'cmd /c "java -version"' or 'cmd /c echo \'welcome\''.
  */
 public class CommandController extends AbstractElementPropertySectionController {
 
-    private static final String VALUES = "VALUES"; //$NON-NLS-1$
+    private static final String COMMANDS = "COMMANDS"; //$NON-NLS-1$
 
     /**
      * DOC ggu ButtonController constructor comment.
@@ -62,32 +84,56 @@ public class CommandController extends AbstractElementPropertySectionController 
         this.paramFieldType = param.getField();
         FormData data;
         // button
-        Button btnCmd = getWidgetFactory().createButton(subComposite, null, SWT.PUSH);
+        final Button btnCmd = getWidgetFactory().createButton(subComposite, null, SWT.PUSH);
         btnCmd.setImage(CorePlugin.getImageDescriptor(DOTS_BUTTON).createImage());
 
-        int btnWidth = 0;
-        if (btnCmd.getImage() != null) {
-            btnWidth = btnCmd.getImage().getBounds().width + ITabbedPropertyConstants.HSPACE * 2;
-        }
-        if (btnCmd.getText() != null && !"".equals(btnCmd.getText())) { //$NON-NLS-1$
-            GC gc = new GC(btnCmd);
-            Point cmdSize = gc.stringExtent(btnCmd.getText());
-            gc.dispose();
-            btnWidth += (cmdSize.x + ITabbedPropertyConstants.HSPACE * 2);
-        }
-        if (btnWidth < STANDARD_BUTTON_WIDTH) {
-            btnWidth = STANDARD_BUTTON_WIDTH;
-        } else {
-            btnWidth += ITabbedPropertyConstants.HSPACE;
+        data = new FormData();
+        data.left = new FormAttachment(((numInRow * MAX_PERCENT) / nbInRow), -STANDARD_BUTTON_WIDTH);
+        data.right = new FormAttachment(((numInRow * MAX_PERCENT) / nbInRow), 0);
+        data.top = new FormAttachment(0, top);
+        data.height = STANDARD_HEIGHT - 2;
+        btnCmd.setLayoutData(data);
+        btnCmd.setData(PARAMETER_NAME, param.getName());
+        btnCmd.setData(NAME, COMMANDS);
+        btnCmd.setData(COMMANDS, checkQuotes((String) param.getValue()));
+        btnCmd.setEnabled(!param.isReadOnly());
+        btnCmd.addSelectionListener(btnListenerSelection);
+
+        // text
+        DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER, new SelectAllTextControlCreator());
+        if (param.isRequired()) {
+            FieldDecoration decoration = FieldDecorationRegistry.getDefault().getFieldDecoration(
+                    FieldDecorationRegistry.DEC_REQUIRED);
+            dField.addFieldDecoration(decoration, SWT.RIGHT | SWT.TOP, false);
         }
 
-        btnCmd.setData(PARAMETER_NAME, param.getName());
-        btnCmd.setData(VALUES, param.getDefaultValues());
-        btnCmd.setEnabled(!param.isReadOnly());
-        btnCmd.addSelectionListener(listenerSelection);
+        Control cLayout = dField.getLayoutControl();
+        final Text commandText = (Text) dField.getControl();
+        commandText.setData(PARAMETER_NAME, param.getName());
+        cLayout.setBackground(subComposite.getBackground());
+        commandText.setEditable(!param.isReadOnly());
+
+        // init the commands from definded xml
+        commandText.setText(checkQuotes((String) param.getValue()));
+        commandText.addModifyListener(new ModifyListener() {
+
+            public void modifyText(ModifyEvent e) {
+                String string = checkQuotes(commandText.getText());
+                param.setValue(string);
+                btnCmd.setData(COMMANDS, param.getValue());
+
+            }
+        });
+
+        editionControlHelper.register(param.getName(), commandText, true);
+
+        addDragAndDropTarget(commandText);
         if (elem instanceof Node) {
-            btnCmd.setToolTipText(VARIABLE_TOOLTIP + param.getVariableName());
+            commandText.setToolTipText(VARIABLE_TOOLTIP + param.getVariableName());
         }
+
+        hashCurControls.put(param.getName(), commandText);
+
         // label
         CLabel labelLabel = getWidgetFactory().createCLabel(subComposite, param.getDisplayName());
         data = new FormData();
@@ -115,32 +161,29 @@ public class CommandController extends AbstractElementPropertySectionController 
         if (numInRow == 1) {
             if (lastControl != null) {
                 data.left = new FormAttachment(lastControl, currentLabelWidth);
-                data.right = new FormAttachment(lastControl, currentLabelWidth + btnWidth);
             } else {
                 data.left = new FormAttachment(0, currentLabelWidth);
-                data.right = new FormAttachment(0, currentLabelWidth + btnWidth);
             }
         } else {
             data.left = new FormAttachment(labelLabel, 0, SWT.RIGHT);
-            data.right = new FormAttachment(labelLabel, btnWidth, SWT.RIGHT);
         }
-        data.top = new FormAttachment(0, top);
-        data.height = STANDARD_HEIGHT;
-        btnCmd.setLayoutData(data);
-        // **************************
-        hashCurControls.put(param.getName(), btnCmd);
+        data.right = new FormAttachment(btnCmd, 0);
+        data.top = new FormAttachment(btnCmd, 0, SWT.CENTER);
+        cLayout.setLayoutData(data);
 
-        Point initialSize = btnCmd.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+        Point initialSize = dField.getLayoutControl().computeSize(SWT.DEFAULT, SWT.DEFAULT);
+
         dynamicProperty.setCurRowSize(initialSize.y + ITabbedPropertyConstants.VSPACE);
+
         return btnCmd;
     }
 
     @Override
     public int estimateRowSize(Composite subComposite, IElementParameter param) {
-        Button btnEdit = getWidgetFactory().createButton(subComposite, null, SWT.PUSH); //$NON-NLS-1$
-        btnEdit.setImage(CorePlugin.getImageDescriptor(DOTS_BUTTON).createImage());
-        Point initialSize = btnEdit.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-        btnEdit.dispose();
+        DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER, new TextControlCreator());
+        Point initialSize = dField.getLayoutControl().computeSize(SWT.DEFAULT, SWT.DEFAULT);
+        dField.getLayoutControl().dispose();
+
         return initialSize.y + ITabbedPropertyConstants.VSPACE;
     }
 
@@ -153,7 +196,15 @@ public class CommandController extends AbstractElementPropertySectionController 
 
     }
 
-    private SelectionListener listenerSelection = new SelectionListener() {
+    private String checkQuotes(final String str) {
+        if (str == null || "".equals(str)) {
+            return TalendTextUtils.addQuotes(str);
+        }
+
+        return str;
+    }
+
+    private SelectionListener btnListenerSelection = new SelectionListener() {
 
         public void widgetDefaultSelected(SelectionEvent e) {
 
@@ -172,43 +223,16 @@ public class CommandController extends AbstractElementPropertySectionController 
     private Command createCommand(SelectionEvent event) {
         Control ctrl = (Control) event.getSource();
         if (ctrl instanceof Button) {
-            List<String> commandsList = getCurSystemCommandsList((List<IElementParameterDefaultValue>) ctrl.getData(VALUES));
-
-            if (!commandsList.isEmpty()) {
-                return new ExecuteSystemCommandCommand(commandsList);
+            Button btn = (Button) ctrl;
+            Object valueObj = btn.getData(COMMANDS);
+            if (valueObj != null && valueObj instanceof String) {
+                List<String> commandsList = MultiDefaultValuesUtils.paserDefaultValues((String) valueObj);
+                if (!commandsList.isEmpty()) {
+                    return new ExecuteSystemCommandCommand(commandsList);
+                }
             }
         }
         return null;
     }
 
-    private List<String> getCurSystemCommandsList(List<IElementParameterDefaultValue> defaultvalues) {
-        if (defaultvalues == null || defaultvalues.isEmpty()) {
-            return Collections.emptyList();
-        }
-        // current os commands
-        List<String> curOSCommandsList = new ArrayList<String>();
-        // default commands
-        List<String> defaultCommandList = new ArrayList<String>();
-
-        for (IElementParameterDefaultValue eleParamValue : defaultvalues) {
-            Object obj = eleParamValue.getDefaultValue();
-            if (obj != null) {
-                String condition = eleParamValue.getIfCondition();
-                String value = TalendTextUtils.removeQuotes((String) obj).trim();
-                if (condition == null) {
-                    // default for all OS
-                    defaultCommandList.add(value);
-                } else {
-                    if (Expression.evaluate(condition, null)) {
-                        curOSCommandsList.add(value);
-                    }
-                }
-            }
-        }
-
-        if (curOSCommandsList.isEmpty()) {
-            return defaultCommandList;
-        }
-        return curOSCommandsList;
-    }
 }
