@@ -98,7 +98,7 @@ if((codePart.equals(ECodePart.END))&&(stat)&&connSet.size()>0){
 %>
 
 ok_Hash.put("<%=node.getUniqueName() %>", true);
-end_Hash.put("<%=node.getUniqueName() %>", java.util.Calendar.getInstance().getTimeInMillis());
+end_Hash.put("<%=node.getUniqueName() %>", System.currentTimeMillis());
 
 <%
   String statCatcher = ElementParameterParser.getValue(node,"__TSTATCATCHER_STATS__");

@@ -189,7 +189,7 @@
 %>
 
 	long end = 0;
-	long start = java.util.Calendar.getInstance().getTimeInMillis();
+	long start = System.currentTimeMillis();
 <%
 	if(isRunInMultiThread){
 %>
@@ -274,7 +274,7 @@
 <%
 	}// end if(isRunInMultiThread)
 %>	
-		end = java.util.Calendar.getInstance().getTimeInMillis();
+		end = System.currentTimeMillis();
 		if (watch) {
     		System.out.println((end-start)+" milliseconds");
 	    }

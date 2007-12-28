@@ -37,7 +37,7 @@
 
 
 ok_Hash.put("<%=node.getUniqueName() %>", false);
-start_Hash.put("<%=node.getUniqueName() %>", java.util.Calendar.getInstance().getTimeInMillis());
+start_Hash.put("<%=node.getUniqueName() %>", System.currentTimeMillis());
 <%
 		String statCatcher = ElementParameterParser.getValue(node,"__TSTATCATCHER_STATS__");
 		if ((node.getProcess().getNodesOfType("tStatCatcher").size() > 0) && (statCatcher.equals("true"))) {

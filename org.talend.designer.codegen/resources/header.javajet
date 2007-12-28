@@ -252,7 +252,7 @@ private class TalendException extends Exception {
 		if (node.isActivate()) {
 		    %>
             public void <%=node.getUniqueName() %>_error(Exception exception) throws TalendException {
-                end_Hash.put("<%=node.getUniqueName() %>", java.util.Calendar.getInstance().getTimeInMillis());
+                end_Hash.put("<%=node.getUniqueName() %>", System.currentTimeMillis());
                 <%
                 boolean ifBeforRunError = NodeUtil.checkConnectionAfterNode(node, EConnectionType.ON_COMPONENT_ERROR);
                 if(!ifBeforRunError) {
