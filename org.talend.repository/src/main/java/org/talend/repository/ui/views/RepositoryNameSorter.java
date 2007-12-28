@@ -38,53 +38,55 @@ public class RepositoryNameSorter extends ViewerSorter {
         RepositoryNode node = (RepositoryNode) element;
 
         if (node.isBin()) {
-            return 50;
+            return 150;
         }
 
         if (node.getType() == ENodeType.STABLE_SYSTEM_FOLDER || node.getType() == ENodeType.SYSTEM_FOLDER) {
             ERepositoryObjectType contentType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
             if (contentType == null) {
-                return 99;
+                return 199;
             }
 
             switch (contentType) {
             case BUSINESS_PROCESS:
                 return 0;
             case PROCESS:
-                return 1;
-            case CONTEXT:
-                return 2;
-            case ROUTINES:
-                return 3;
-            case METADATA:
-                return 4;
-            case METADATA_CONNECTIONS:
                 return 5;
-            case METADATA_FILE_DELIMITED:
+            case JOBLET:
                 return 6;
-            case METADATA_FILE_POSITIONAL:
-                return 7;
-            case METADATA_FILE_REGEXP:
-                return 8;
-            case METADATA_FILE_XML:
-                return 9;
-            case METADATA_FILE_LDIF:
+            case CONTEXT:
                 return 10;
+            case ROUTINES:
+                return 15;
+            case METADATA:
+                return 20;
+            case METADATA_CONNECTIONS:
+                return 25;
+            case METADATA_FILE_DELIMITED:
+                return 30;
+            case METADATA_FILE_POSITIONAL:
+                return 35;
+            case METADATA_FILE_REGEXP:
+                return 40;
+            case METADATA_FILE_XML:
+                return 45;
+            case METADATA_FILE_LDIF:
+                return 50;
             case METADATA_LDAP_SCHEMA:
-                return 11;
+                return 55;
             case METADATA_GENERIC_SCHEMA:
-                return 12;
+                return 60;
             case DOCUMENTATION:
-                return 13;
+                return 65;
             default:
-                return 99;
+                return 199;
             }
         } else if (node.getType() == ENodeType.SIMPLE_FOLDER) {
-            return 20;
+            return 120;
         } else if (node.getType() == ENodeType.REFERENCED_PROJECT) {
-            return 40;
+            return 140;
         } else {
-            return 30;
+            return 130;
         }
 
     }

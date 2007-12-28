@@ -12,9 +12,11 @@
 // ============================================================================
 package org.talend.repository.ui.views;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
@@ -73,9 +75,12 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
 
     private TreeViewer viewer;
 
+    private List<IRepositoryObject> joblets = new ArrayList<IRepositoryObject>();
     private RepositoryNode businessProcessNode, recBinNode, codeNode, routineNode, snippetsNode, processNode, contextNode,
             docNode, metadataConNode, metadataFileNode, metadataFilePositionalNode, metadataFileRegexpNode, metadataFileXmlNode,
             metadataFileLdifNode, metadataGenericSchemaNode, metadataLDAPSchemaNode;
+
+    private RepositoryNode jobletNode;
 
     public RepositoryContentProvider(IRepositoryView view) {
         super();
@@ -114,6 +119,8 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
                     convert(factory.getBusinessProcess(), businessProcessNode, ERepositoryObjectType.BUSINESS_PROCESS, recBinNode);
                 } else if (parent == processNode) {
                     convert(factory.getProcess(), processNode, ERepositoryObjectType.PROCESS, recBinNode);
+                } else if (parent == jobletNode) {
+                    convert(factory.getJoblets(), jobletNode, ERepositoryObjectType.JOBLET, recBinNode);
                 } else if (parent == routineNode) {
                     convert(factory.getRoutine(), routineNode, ERepositoryObjectType.ROUTINES, recBinNode);
                 } else if (parent == snippetsNode) {
@@ -229,6 +236,14 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
         processNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.PROCESS);
         nodes.add(processNode);
 
+        if (containJoblet()) {
+            // 2.1 Joblet
+            jobletNode = new RepositoryNode(null, root, ENodeType.SYSTEM_FOLDER);
+            jobletNode.setProperties(EProperties.LABEL, ERepositoryObjectType.JOBLET);
+            jobletNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.JOBLET);
+            nodes.add(jobletNode);
+        }
+
         // convert(factory.getProcess2(), processNode, ERepositoryObjectType.PROCESS, recBinNode);
 
         // 3. Context
@@ -315,6 +330,15 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
         metadataGenericSchemaNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_GENERIC_SCHEMA);
         metadataNode.getChildren().add(metadataGenericSchemaNode);
 
+    }
+
+    /**
+     * DOC qzhang Comment method "containJoblet".
+     * 
+     * @return
+     */
+    private boolean containJoblet() {
+        return Platform.getBundle("org.talend.designer.joblet") != null;
     }
 
     /**
@@ -804,6 +828,15 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
      */
     public RepositoryNode getCodeNode() {
         return this.codeNode;
+    }
+
+    
+    /**
+     * Getter for joblets.
+     * @return the joblets
+     */
+    public List<IRepositoryObject> getJoblets() {
+        return this.joblets;
     }
 
 }

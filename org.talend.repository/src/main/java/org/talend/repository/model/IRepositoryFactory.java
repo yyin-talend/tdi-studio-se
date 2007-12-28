@@ -257,4 +257,11 @@ public interface IRepositoryFactory {
 
     public List<ModuleNeeded> getModulesNeededForJobs() throws PersistenceException;
 
+    /**
+     * DOC qzhang Comment method "getJoblets".
+     * 
+     * @return
+     */
+    public RootContainer<String, IRepositoryObject> getJoblets() throws PersistenceException;
+
 }

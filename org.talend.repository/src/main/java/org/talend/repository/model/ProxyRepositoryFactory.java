@@ -1137,4 +1137,7 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         return this.repositoryFactoryFromProvider.getModulesNeededForJobs();
     }
 
+    public RootContainer<String, IRepositoryObject> getJoblets() throws PersistenceException {
+        return this.repositoryFactoryFromProvider.getJoblets();
+    }
 }

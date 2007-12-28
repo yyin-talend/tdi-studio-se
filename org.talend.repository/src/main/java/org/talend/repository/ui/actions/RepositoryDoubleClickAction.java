@@ -26,6 +26,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.swt.actions.ITreeContextualAction;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.repository.model.QueryEMFRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
@@ -104,7 +105,13 @@ public class RepositoryDoubleClickAction extends Action {
                 // end
             } else if (obj.getObject() != null
                     && current.getClassForDoubleClick().isInstance(obj.getObject().getProperty().getItem())) {
-                return current;
+                if (obj.getObject().getProperty().getItem() instanceof JobletProcessItem) {
+                    if (current.getClassForDoubleClick().equals(JobletProcessItem.class)) {
+                        return current;
+                    }
+                } else {
+                    return current;
+                }
             }
         }
         return null;
