@@ -226,7 +226,7 @@ public class CommandController extends AbstractElementPropertySectionController 
             Button btn = (Button) ctrl;
             Object valueObj = btn.getData(COMMANDS);
             if (valueObj != null && valueObj instanceof String) {
-                List<String> commandsList = MultiDefaultValuesUtils.paserDefaultValues((String) valueObj);
+                List<String> commandsList = MultiDefaultValuesUtils.parserDefaultValues((String) valueObj);
                 if (!commandsList.isEmpty()) {
                     return new ExecuteSystemCommandCommand(commandsList);
                 }

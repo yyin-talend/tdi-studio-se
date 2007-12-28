@@ -34,7 +34,7 @@ public final class MultiDefaultValuesUtils {
 
     private static final String REG_VALUE = TalendTextUtils.addQuotes("(.*?[^\\\\])"); //$NON-NLS-1$
 
-    public static List<String> paserDefaultValues(final String valuesStr) {
+    public static List<String> parserDefaultValues(final String valuesStr) {
         if (valuesStr == null) {
             return Collections.emptyList();
         }
