@@ -43,7 +43,7 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.IService;
 import org.talend.core.model.process.INode;
 import org.talend.core.ui.proposal.ProcessProposalProvider;
-import org.talend.designer.core.ui.MultiPageTalendEditor;
+import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.rowgenerator.data.Function;
 import org.talend.designer.rowgenerator.data.ListParameter;
 import org.talend.designer.rowgenerator.data.Parameter;
@@ -123,7 +123,7 @@ public class FunParaTableView2 extends AbstractDataTableEditorView<Parameter> {
                 StringBuffer id = new StringBuffer();
 
                 IEditorPart editor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
-                Object obj = ((MultiPageTalendEditor) editor).getTalendEditor().getViewer().getSelectedEditParts().get(0);
+                Object obj = ((AbstractMultiPageTalendEditor) editor).getTalendEditor().getViewer().getSelectedEditParts().get(0);
                 EditPart editorPart = (EditPart) obj;
                 id.append(((INode) editorPart.getModel()).getLabel() + "=>");
 
@@ -298,7 +298,7 @@ public class FunParaTableView2 extends AbstractDataTableEditorView<Parameter> {
 
         IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
         // create the proposal
-        IContentProposalProvider processProposalProvider = new ProcessProposalProvider(((MultiPageTalendEditor) page
+        IContentProposalProvider processProposalProvider = new ProcessProposalProvider(((AbstractMultiPageTalendEditor) page
                 .getActiveEditor()).getProcess());
         return processProposalProvider;
 
