@@ -25,7 +25,9 @@ Require-Bundle: org.junit,
  org.talend.librariesmanager,
  org.talend.designer.core,
  org.eclipse.gmf.runtime.common.ui,
- org.talend.commons.ui
+ org.talend.commons.ui,
+ org.eclipse.jdt.ui,
+ org.eclipse.ui.editors
 Eclipse-LazyStart: true
 Export-Package: org.talend.designer.runprocess,
  org.talend.designer.runprocess.java,
