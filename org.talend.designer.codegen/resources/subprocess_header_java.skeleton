@@ -28,7 +28,7 @@ public class CLASS
                 if(!conn.getTarget().getComponent().useMerge()) {
                    toReturn += createPrivateClassInstance(conn.getTarget(), parentLastRoot, false, names);
                 }
-            } else if (conn.getLineStyle().equals(EConnectionType.ITERATE)) {
+            } else if (conn.getLineStyle().equals(EConnectionType.ITERATE)||conn.getLineStyle().equals(EConnectionType.ON_ROWS_END)) {
             	toReturn += createPrivateClassInstance(conn.getTarget(), parentLastRoot, true, names);
             }
         }

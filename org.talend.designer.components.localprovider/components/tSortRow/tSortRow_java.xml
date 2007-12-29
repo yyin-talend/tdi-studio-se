@@ -62,7 +62,7 @@
 		<TEMPLATES INPUT="SortOut" OUTPUT="SortIn">
 
 			<TEMPLATE NAME="SortOut" COMPONENT="tSortOut">
-				<LINK_TO NAME="SortIn" CTYPE="SUBJOB_OK" />
+				<LINK_TO NAME="SortIn" CTYPE="ROWS_END" />
 			</TEMPLATE>
 
 			<TEMPLATE NAME="SortIn" COMPONENT="tSortIn" />

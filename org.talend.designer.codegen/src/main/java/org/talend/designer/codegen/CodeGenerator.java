@@ -377,40 +377,56 @@ public class CodeGenerator implements ICodeGenerator {
             throws CodeGeneratorException {
         StringBuffer codeComponent = new StringBuffer();
         Boolean isMarked = subProcess.isMarkedNode(node, part);
-        boolean isIterate = isIterateNode(node, incomingName);
+        boolean isIterate = isSpecifyInputNode(node, incomingName, EConnectionType.ITERATE);
+        boolean isOnRowsEnd = isSpecifyInputNode(node, incomingName, EConnectionType.ON_ROWS_END);
         if ((isMarked != null) && (!isMarked)) {
             switch (part) {
             case BEGIN:
                 // if (isIterate) {
                 // codeComponent.append(generateComponentCode(node, ECodePart.BEGIN, incomingName));
                 // }
-                codeComponent.append(generatesTreeCode(subProcess, node, part));
-                if (!isIterate) {
-                    codeComponent.append(generateComponentCode(node, ECodePart.BEGIN, incomingName));
-                }
+                codeComponent.append(generatesTreeCode(subProcess, node, ECodePart.BEGIN));
+                // if (!isIterate) {
+                codeComponent.append(generateComponentCode(node, ECodePart.BEGIN, incomingName));
+                // }
                 break;
             case MAIN:
                 if (isIterate) {
                     codeComponent.append(generatesTreeCode(subProcess, node, ECodePart.BEGIN));
                     codeComponent.append(generateComponentCode(node, ECodePart.BEGIN, incomingName));
-                }
 
-                codeComponent.append(generateComponentCode(node, ECodePart.MAIN, incomingName));
-                codeComponent.append(generatesTreeCode(subProcess, node, part));
+                    codeComponent.append(generateComponentCode(node, ECodePart.MAIN, incomingName));
+                    codeComponent.append(generatesTreeCode(subProcess, node, ECodePart.MAIN));
 
-                if (isIterate) {
                     codeComponent.append(generateComponentCode(node, ECodePart.END, incomingName));
                     codeComponent.append(generatesTreeCode(subProcess, node, ECodePart.END));
+                } else {
+
+                    codeComponent.append(generateComponentCode(node, ECodePart.MAIN, incomingName));
+                    codeComponent.append(generatesTreeCode(subProcess, node, ECodePart.MAIN));
                 }
                 break;
             case END:
-                if (!isIterate) {
+                if (isOnRowsEnd) {
+
+                    codeComponent.append(generatesTreeCode(subProcess, node, ECodePart.BEGIN));
+                    codeComponent.append(generateComponentCode(node, ECodePart.BEGIN, incomingName));
+
+                    codeComponent.append(generateComponentCode(node, ECodePart.MAIN, incomingName));
+                    codeComponent.append(generatesTreeCode(subProcess, node, ECodePart.MAIN));
+
                     codeComponent.append(generateComponentCode(node, ECodePart.END, incomingName));
+                    codeComponent.append(generatesTreeCode(subProcess, node, ECodePart.END));
+
+                } else {
+                    // if (!isIterate) {
+                    codeComponent.append(generateComponentCode(node, ECodePart.END, incomingName));
+                    // }
+                    codeComponent.append(generatesTreeCode(subProcess, node, part));
+                    // if (isIterate) {
+                    // codeComponent.append(generateComponentCode(node, ECodePart.END, incomingName));
+                    // }
                 }
-                codeComponent.append(generatesTreeCode(subProcess, node, part));
-                // if (isIterate) {
-                // codeComponent.append(generateComponentCode(node, ECodePart.END, incomingName));
-                // }
                 break;
             default:
                 // do nothing
@@ -427,14 +443,14 @@ public class CodeGenerator implements ICodeGenerator {
      * @param node the node to check
      * @return true if the node is an iterate node
      */
-    private boolean isIterateNode(INode node, String incomingName) {
+    private boolean isSpecifyInputNode(INode node, String incomingName, EConnectionType connectionType) {
         // it means the first node without any income connection
         if (incomingName == null) {
             return false;
         }
         boolean result = false;
         if (node != null) {
-            List<? extends IConnection> inComingIterateConnection = node.getIncomingConnections(EConnectionType.ITERATE);
+            List<? extends IConnection> inComingIterateConnection = node.getIncomingConnections(connectionType);
             if ((inComingIterateConnection != null) && (inComingIterateConnection.size() > 0)) {
                 for (IConnection connection : inComingIterateConnection) {
                     if (connection.getName().equals(incomingName)) {
@@ -472,6 +488,10 @@ public class CodeGenerator implements ICodeGenerator {
             for (IConnection connection : node.getOutgoingConnections()) {
 
                 if ((connection.getLineStyle() == EConnectionType.ITERATE) && (part != ECodePart.MAIN)) {
+                    continue;
+                }
+
+                if ((connection.getLineStyle() == EConnectionType.ON_ROWS_END) && (part != ECodePart.END)) {
                     continue;
                 }
 
