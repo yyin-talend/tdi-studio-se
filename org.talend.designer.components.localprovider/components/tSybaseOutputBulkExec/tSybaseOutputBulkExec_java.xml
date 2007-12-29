@@ -215,7 +215,7 @@
     <TEMPLATES INPUT="tSOB" OUTPUT="tSBE">
 
       <TEMPLATE NAME="tSOB" COMPONENT="tSybaseOutputBulk">
-        <LINK_TO NAME="tSBE" CTYPE="SUBJOB_OK"/>
+        <LINK_TO NAME="tSBE" CTYPE="ROWS_END"/>
       </TEMPLATE>
       
       <TEMPLATE NAME="tSBE" COMPONENT="tSybaseBulkExec"/>

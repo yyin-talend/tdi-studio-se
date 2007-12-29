@@ -175,7 +175,7 @@
     <TEMPLATES INPUT="tOOB" OUTPUT="tOBE">
 
       <TEMPLATE NAME="tOOB" COMPONENT="tOracleOutputBulk">
-        <LINK_TO NAME="tOBE" CTYPE="SUBJOB_OK"/>
+        <LINK_TO NAME="tOBE" CTYPE="ROWS_END"/>
       </TEMPLATE>
       
       <TEMPLATE NAME="tOBE" COMPONENT="tOracleBulkExec"/>

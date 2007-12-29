@@ -75,7 +75,7 @@
     <TEMPLATES INPUT="DNO" OUTPUT="AI">
 
       <TEMPLATE NAME="DNO" COMPONENT="tDenormalizeOut">
-        <LINK_TO NAME="AI" CTYPE="SUBJOB_OK"/>
+        <LINK_TO NAME="AI" CTYPE="ROWS_END"/>
       </TEMPLATE>
       
       <TEMPLATE NAME="AI" COMPONENT="tArrayIn"/>

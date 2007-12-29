@@ -200,7 +200,7 @@
     <TEMPLATES INPUT="tVOB" OUTPUT="tVBE">
 
       <TEMPLATE NAME="tVOB" COMPONENT="tVerticaOutputBulk">
-        <LINK_TO NAME="tVBE" CTYPE="RUN_OK"/>
+        <LINK_TO NAME="tVBE" CTYPE="ROWS_END"/>
       </TEMPLATE>
       
       <TEMPLATE NAME="tVBE" COMPONENT="tVerticaBulkExec"/>  

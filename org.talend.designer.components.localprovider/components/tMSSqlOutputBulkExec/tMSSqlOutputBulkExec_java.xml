@@ -214,7 +214,7 @@
     <TEMPLATES INPUT="tMOB" OUTPUT="tMBE">
 
       <TEMPLATE NAME="tMOB" COMPONENT="tMSSqlOutputBulk">
-        <LINK_TO NAME="tMBE" CTYPE="SUBJOB_OK"/>
+        <LINK_TO NAME="tMBE" CTYPE="ROWS_END"/>
       </TEMPLATE>
       
       <TEMPLATE NAME="tMBE" COMPONENT="tMSSqlBulkExec"/>  

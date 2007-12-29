@@ -174,7 +174,7 @@
     <TEMPLATES INPUT="tMOB" OUTPUT="tMUBE">
 
       <TEMPLATE NAME="tMOB" COMPONENT="tMysqlOutputBulk">
-        <LINK_TO NAME="tMUBE" CTYPE="SUBJOB_OK"/>
+        <LINK_TO NAME="tMUBE" CTYPE="ROWS_END"/>
       </TEMPLATE>
       
       <TEMPLATE NAME="tMUBE" COMPONENT="tMysqlUpdateBulkExec"/>

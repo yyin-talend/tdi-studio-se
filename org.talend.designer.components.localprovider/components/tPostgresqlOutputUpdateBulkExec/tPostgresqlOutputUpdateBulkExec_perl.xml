@@ -166,7 +166,7 @@
     <TEMPLATES INPUT="tPOB" OUTPUT="tPUBE">
 
       <TEMPLATE NAME="tPOB" COMPONENT="tPostgresqlOutputBulk">
-        <LINK_TO NAME="tPUBE" CTYPE="SUBJOB_OK"/>
+        <LINK_TO NAME="tPUBE" CTYPE="ROWS_END"/>
       </TEMPLATE>
       
       <TEMPLATE NAME="tPUBE" COMPONENT="tPostgresqlUpdateBulkExec"/>

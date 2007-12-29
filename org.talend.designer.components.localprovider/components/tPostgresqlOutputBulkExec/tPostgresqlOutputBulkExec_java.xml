@@ -244,7 +244,7 @@
     <TEMPLATES INPUT="tPOB" OUTPUT="tPBE">
 
       <TEMPLATE NAME="tPOB" COMPONENT="tPostgresqlOutputBulk">
-        <LINK_TO NAME="tPBE" CTYPE="SUBJOB_OK"/>
+        <LINK_TO NAME="tPBE" CTYPE="ROWS_END"/>
       </TEMPLATE>
       
       <TEMPLATE NAME="tPBE" COMPONENT="tPostgresqlBulkExec"/>

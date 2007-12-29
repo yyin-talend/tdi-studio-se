@@ -120,7 +120,7 @@
     <TEMPLATES INPUT="ESO" OUTPUT="FID">
 
       <TEMPLATE NAME="ESO" COMPONENT="tExternalSortOutput">
-        <LINK_TO NAME="FID" CTYPE="SUBJOB_OK"/>
+        <LINK_TO NAME="FID" CTYPE="ROWS_END"/>
       </TEMPLATE>
       
       <TEMPLATE NAME="FID" COMPONENT="tFileInputDelimited"/>
