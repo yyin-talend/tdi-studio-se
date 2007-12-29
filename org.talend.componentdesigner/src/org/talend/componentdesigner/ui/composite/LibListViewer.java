@@ -13,7 +13,6 @@
 package org.talend.componentdesigner.ui.composite;
  
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -21,10 +20,9 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
-import org.talend.componentdesigner.PluginConstant;
 import org.talend.componentdesigner.model.ILibEntry;
+import org.talend.componentdesigner.model.componentpref.ComponentPref;
 import org.talend.componentdesigner.ui.action.UseResourceAction;
-import org.talend.componentdesigner.ui.wizard.PropertyChangeBean;
 
 /**
  * A viewer that displays and manipulates runtime classpath entries.
@@ -33,7 +31,7 @@ public class LibListViewer extends TableViewer implements ILibListViewer {
 		
 	private List<ILibEntry> existingEntries = new ArrayList<ILibEntry>();
 	
-	private PropertyChangeBean propertyChangeBean;
+	private ComponentPref componentPrefBean;
 //	private ILibEntry fCurrentParent= null;
 		
 	/**
@@ -49,7 +47,16 @@ public class LibListViewer extends TableViewer implements ILibListViewer {
 	 * @see org.eclipse.jdt.internal.debug.ui.launcher.IClasspathViewer#setEntries(org.eclipse.jdt.launching.IRuntimeClasspathEntry[])
 	 */
 	public void setEntries(ILibEntry[] entries) {
-		this.existingEntries = Arrays.asList(entries);
+		if (entries == null) {
+			return;
+		}
+//		this.existingEntries = Arrays.asList(entries);
+		this.existingEntries.clear();
+		for (ILibEntry entry : entries) {
+			if (entry != null) {
+				existingEntries.add(entry);
+			}
+		}
 		notifyChanged();
 	}
 	
@@ -85,7 +92,8 @@ public class LibListViewer extends TableViewer implements ILibListViewer {
 	public void notifyChanged() {
 		this.setInput(this.existingEntries);
 		ILibEntry[] array = new ILibEntry[this.existingEntries.size()];
-		this.propertyChangeBean.firePropertyChange(PluginConstant.LIBRARY_PROPERTY, null, existingEntries.toArray(array));
+		componentPrefBean.setLibEntries(existingEntries.toArray(array));
+//		this.propertyChangeBean.firePropertyChange(PluginConstant.LIBRARY_PROPERTY, null, existingEntries.toArray(array));
 	}
 
 	/* (non-Javadoc)
@@ -143,12 +151,14 @@ public class LibListViewer extends TableViewer implements ILibListViewer {
 	@Override
 	public void removeEntries(ILibEntry[] entries) {
 		for (ILibEntry libEntry : entries) {
-			this.existingEntries.remove(libEntry);
+			if (existingEntries.contains(libEntry)) {
+				this.existingEntries.remove(libEntry);
+			}
 		}
 		this.notifyChanged();
 	}
 
-	public void setPropertyChangeBean(PropertyChangeBean propertyChangeBean) {
-       this.propertyChangeBean = propertyChangeBean;
+	public void setConponentPrfBean(ComponentPref componentPrfBean) {
+       this.componentPrefBean = componentPrfBean;
 	}
 }

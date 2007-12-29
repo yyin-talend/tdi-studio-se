@@ -19,6 +19,14 @@ import org.eclipse.core.runtime.IPath;
  * DOC rli class global comment. Detailled comment
  */
 public class JarLibEntry extends AbstractLibEntry {
+	
+	public JarLibEntry(Object obj) {
+		if (obj instanceof IPath) {
+			this.path = (IPath) obj;
+		} else if (obj instanceof IResource) {
+			this.resource = (IResource) obj;
+		}
+	}
 
 	public JarLibEntry(IResource name) {
 		this.resource = name;

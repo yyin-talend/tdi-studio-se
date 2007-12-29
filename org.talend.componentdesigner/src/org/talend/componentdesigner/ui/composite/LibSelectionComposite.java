@@ -21,12 +21,13 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.talend.componentdesigner.model.IConfiguration;
+import org.talend.componentdesigner.model.ILibEntry;
+import org.talend.componentdesigner.model.componentpref.ComponentPref;
 import org.talend.componentdesigner.ui.action.AddExternalResourceAction;
 import org.talend.componentdesigner.ui.action.AddResourceAction;
 import org.talend.componentdesigner.ui.action.RemoveResourceAction;
 import org.talend.componentdesigner.ui.action.UseResourceAction;
 import org.talend.componentdesigner.ui.composite.provider.LibListProvider;
-import org.talend.componentdesigner.ui.wizard.PropertyChangeBean;
 
 /**
  * DOC rli  class global comment. Detailled comment
@@ -38,7 +39,7 @@ public class LibSelectionComposite extends Composite {
 		this.createControl(parent);
 	}
 
-	protected LibListViewer fClasspathViewer;
+	protected LibListViewer libListViewer;
 
 	protected static final String DIALOG_SETTINGS_PREFIX = "JavaClasspathTab"; //$NON-NLS-1$
 	
@@ -61,17 +62,17 @@ public class LibSelectionComposite extends Composite {
 		gd.horizontalSpan = 2;
 		label.setLayoutData(gd);
 		
-		fClasspathViewer = new LibListViewer(this);
-		fClasspathViewer.getControl().setFont(font);
+		libListViewer = new LibListViewer(this);
+		libListViewer.getControl().setFont(font);
 		gd = new GridData(GridData.FILL_BOTH);
 //		gd.horizontalSpan = 7;
 		gd.heightHint = 100;
 		gd.widthHint = 240;
-		fClasspathViewer.getControl().setLayoutData(gd);
+		libListViewer.getControl().setLayoutData(gd);
 		
 		LibListProvider provider = new LibListProvider();
-		fClasspathViewer.setLabelProvider(provider);
-		fClasspathViewer.setContentProvider(provider);	
+		libListViewer.setLabelProvider(provider);
+		libListViewer.setContentProvider(provider);	
 		Composite pathButtonComp = new Composite(this, SWT.NONE);
 		GridLayout pathButtonLayout = new GridLayout();
 		pathButtonLayout.marginHeight = 0;
@@ -92,9 +93,9 @@ public class LibSelectionComposite extends Composite {
 	 * @since 3.0
 	 */
 	protected void createPathButtons(Composite pathButtonComp) {
-		createButton(pathButtonComp, new AddResourceAction(fClasspathViewer));
-		createButton(pathButtonComp, new AddExternalResourceAction(fClasspathViewer, DIALOG_SETTINGS_PREFIX));
-		createButton(pathButtonComp, new RemoveResourceAction(fClasspathViewer));
+		createButton(pathButtonComp, new AddResourceAction(libListViewer));
+		createButton(pathButtonComp, new AddExternalResourceAction(libListViewer, DIALOG_SETTINGS_PREFIX));
+		createButton(pathButtonComp, new RemoveResourceAction(libListViewer));
 	}
 
 	/**
@@ -172,7 +173,7 @@ public class LibSelectionComposite extends Composite {
 	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#dispose()
 	 */
 	public void dispose() {
-		if (fClasspathViewer != null) {
+		if (libListViewer != null) {
 //			fClasspathViewer.removeEntriesChangedListener(this);
 		}
 		super.dispose();
@@ -194,9 +195,13 @@ public class LibSelectionComposite extends Composite {
 	public boolean isShowBootpath() {
 		return true;
 	}
+	
+	public void setLibEntries(ILibEntry[] entries) {
+		libListViewer.setEntries(entries);
+	}
 
-	public void setPropertyChangeBean(PropertyChangeBean propertyChangeBean) {
-		fClasspathViewer.setPropertyChangeBean(propertyChangeBean);
+	public void setComponentPrefBean(ComponentPref componentPrefBean) {
+		libListViewer.setConponentPrfBean(componentPrefBean);
 		
 	}
 }

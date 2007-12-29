@@ -12,10 +12,7 @@
 // ============================================================================
 package org.talend.componentdesigner.ui.wizard.creatcomponent;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.FileNotFoundException;
-import java.util.List;
 
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -28,11 +25,8 @@ import org.talend.componentdesigner.ComponentDesigenerPlugin;
 import org.talend.componentdesigner.ImageLib;
 import org.talend.componentdesigner.PluginConstant;
 import org.talend.componentdesigner.manager.ComponentFolderManager;
-import org.talend.componentdesigner.model.ComponentProperty;
-import org.talend.componentdesigner.model.ILibEntry;
-import org.talend.componentdesigner.model.enumtype.JetFileStamp;
-import org.talend.componentdesigner.model.enumtype.LanguageType;
-import org.talend.componentdesigner.model.enumtype.ResourceLanguageType;
+import org.talend.componentdesigner.model.componentpref.ComponentPref;
+import org.talend.componentdesigner.model.componentpref.ComponentPrefCollection;
 
 /**
  * Standard workbench wizard that creates a new component project resource in the workspace. Example:
@@ -48,13 +42,13 @@ import org.talend.componentdesigner.model.enumtype.ResourceLanguageType;
  * project resource with the user-specified name is created, the dialog closes, and the call to <code>open</code>
  * returns.
  */
-public class CreateComponentWizard extends BasicNewResourceWizard implements PropertyChangeListener {
+public class CreateComponentWizard extends BasicNewResourceWizard {
 
     private WizardComponentFolderPage creatProjectPage;
 
     private WizardJetFilesChoosePage creatJetFilesPage;
 
-    private ComponentProperty componentProperty;
+    private ComponentPref componentPref;
 
     private ComponentFolderManager manager;
 
@@ -68,55 +62,73 @@ public class CreateComponentWizard extends BasicNewResourceWizard implements Pro
             section = workbenchSettings.addNewSection("BasicNewProjectResourceWizard"); //$NON-NLS-1$
         }
         setDialogSettings(section);
-        componentProperty = new ComponentProperty();
+        componentPref = new ComponentPref();
+    }
+    
+    /**
+     * Creates a wizard for creating a new project resource in the workspace.
+     */
+    public CreateComponentWizard(String selectedComponentName) {
+        IDialogSettings workbenchSettings = ComponentDesigenerPlugin.getDefault().getDialogSettings();
+        IDialogSettings section = workbenchSettings.getSection("BasicNewProjectResourceWizard"); //$NON-NLS-1$
+        if (section == null) {
+            section = workbenchSettings.addNewSection("BasicNewProjectResourceWizard"); //$NON-NLS-1$
+        }
+        setDialogSettings(section);
+        componentPref = ComponentPrefCollection.getInstance().getComponentPref(selectedComponentName);
     }
 
     /*
      * (non-Javadoc) Method declared on IWizard.
      */
     public void addPages() {
-        creatProjectPage = new WizardComponentFolderPage("componentNewProjectPage"); //$NON-NLS-1$
-        creatProjectPage.setTitle("Component");
-        creatProjectPage.setDescription("Create a new component folder resource.");
-        creatProjectPage.getPropertyChangeBean().addPropertyChangeListener(this);
-        this.addPage(creatProjectPage);
-        creatJetFilesPage = new WizardJetFilesChoosePage("creatJetFilesPage");
-        creatJetFilesPage.setTitle("Creat jet files for the component");
-        creatJetFilesPage.getPropertyChangeBean().addPropertyChangeListener(this);
-        this.addPage(creatJetFilesPage);
-    }
+		creatProjectPage = new WizardComponentFolderPage(
+				"componentNewProjectPage", componentPref); //$NON-NLS-1$
+		creatProjectPage.setTitle("Component");
+		creatProjectPage
+				.setDescription("Create a new component folder resource.");
+//		creatProjectPage.getPropertyChangeBean()
+//				.addPropertyChangeListener(this);
+		this.addPage(creatProjectPage);
+		creatJetFilesPage = new WizardJetFilesChoosePage("creatJetFilesPage",   //$NON-NLS-1$
+				componentPref);
+		creatJetFilesPage.setTitle("Creat jet files for the component");
+//		creatJetFilesPage.getPropertyChangeBean().addPropertyChangeListener(
+//				this);
+		this.addPage(creatJetFilesPage);
+	}
 
     /*
-     * (non-Javadoc)
-     * 
-     * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
-     */
+	 * (non-Javadoc)
+	 * 
+	 * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
+	 */
     @SuppressWarnings("unchecked")
-    public void propertyChange(PropertyChangeEvent event) {
-		if (PluginConstant.NAME_PROPERTY.equals(event.getPropertyName())) {
-			this.componentProperty.setName((String) event.getNewValue());
-		} else if (PluginConstant.LANGUAGE_PROPERTY.equals(event
-				.getPropertyName())) {
-			this.componentProperty.setLanguageType((LanguageType) event
-					.getNewValue());
-		} else if (PluginConstant.RESOURCETYPE_PROPERTY.equals(event
-				.getPropertyName())) {
-			this.componentProperty
-					.setResourceLanguageTypes((List<ResourceLanguageType>) event
-							.getNewValue());
-		} else if (PluginConstant.JETFILETYPE_PROPERTY.equals(event
-				.getPropertyName())) {
-			this.componentProperty.setJetFileTypes((List<JetFileStamp>) event
-					.getNewValue());
-		} else if (PluginConstant.IMAGE_PROPERTY
-				.equals(event.getPropertyName())) {
-			this.componentProperty.setImageURL((String) event.getNewValue());
-		} else if (PluginConstant.LIBRARY_PROPERTY.equals(event
-				.getPropertyName())) {
-			this.componentProperty.setLibFileURL((ILibEntry[]) event
-					.getNewValue());
-		}
-	}
+//    public void propertyChange(PropertyChangeEvent event) {
+//		if (PluginConstant.NAME_PROPERTY.equals(event.getPropertyName())) {
+//			this.componentPref.setName((String) event.getNewValue());
+//		} else if (PluginConstant.LANGUAGE_PROPERTY.equals(event
+//				.getPropertyName())) {
+//			this.componentPref.setLanguageType((LanguageType) event
+//					.getNewValue());
+//		} else if (PluginConstant.RESOURCETYPE_PROPERTY.equals(event
+//				.getPropertyName())) {
+//			this.componentPref
+//					.setResourceLanguageTypes((List<ResourceLanguageType>) event
+//							.getNewValue());
+//		} else if (PluginConstant.JETFILETYPE_PROPERTY.equals(event
+//				.getPropertyName())) {
+//			this.componentPref.setJetFileStamps((List<JetFileStamp>) event
+//					.getNewValue());
+//		} else if (PluginConstant.IMAGE_PROPERTY
+//				.equals(event.getPropertyName())) {
+//			this.componentPref.setImageURL((String) event.getNewValue());
+//		} else if (PluginConstant.LIBRARY_PROPERTY.equals(event
+//				.getPropertyName())) {
+//			this.componentPref.setLibEntries((ILibEntry[]) event
+//					.getNewValue());
+//		}
+//	}
 
     /*
 	 * (non-Javadoc) Method declared on IWorkbenchWizard.
@@ -141,9 +153,10 @@ public class CreateComponentWizard extends BasicNewResourceWizard implements Pro
 	public boolean performFinish() {
 		manager = new ComponentFolderManager();
 		try {
-			manager.generateComponentContent(componentProperty, ResourcesPlugin
+			manager.generateComponentContent(componentPref, ResourcesPlugin
 					.getWorkspace().getRoot().getProject(PluginConstant.PROJECTNAME_DEFAULT),
-					this.componentProperty.getName());
+					this.componentPref.getName());
+			ComponentPrefCollection.getInstance().save(componentPref);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (CoreException e) {

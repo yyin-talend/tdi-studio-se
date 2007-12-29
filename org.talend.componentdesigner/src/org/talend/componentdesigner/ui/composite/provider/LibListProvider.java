@@ -20,6 +20,7 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.graphics.Image;
 import org.talend.componentdesigner.ImageLib;
+import org.talend.componentdesigner.PluginConstant;
 import org.talend.componentdesigner.model.ILibEntry;
 
 /**
@@ -27,7 +28,7 @@ import org.talend.componentdesigner.model.ILibEntry;
  * viewer.
  */
 public class LibListProvider extends LabelProvider implements IStructuredContentProvider {
-	
+
 	public LibListProvider() {
 //		fTab = tab;
 	}
@@ -62,7 +63,7 @@ public class LibListProvider extends LabelProvider implements IStructuredContent
 	public String getText(Object element) {
 		String text = null;
 		if (element instanceof ILibEntry) {
-			text = ((ILibEntry) element).getNameAndPath(" - ");
+			text = ((ILibEntry) element).getNameAndPath(PluginConstant.JOINT_MARK);
 		}
 		return text;
 	}

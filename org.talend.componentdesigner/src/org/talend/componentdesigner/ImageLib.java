@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.componentdesigner;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -33,7 +35,9 @@ public class ImageLib {
     
     public static final String COMPONENT_DEFAULT = "component_default.gif"; //$NON-NLS-1$
     
-    public static final String COPYCOMPONENT = "copycomponent.gif"; //$NON-NLS-1$
+    public static final String COPYCOMPONENT_ACTION = "copycomponent_action.gif"; //$NON-NLS-1$
+    
+    public static final String EDITCOMPONENT_ACTION = "editcomponent_action.gif"; //$NON-NLS-1$
     
     public static final String NEWCOMPONENT_WIZARD = "newcomponent_wiz.png"; //$NON-NLS-1$
     
@@ -106,17 +110,23 @@ public class ImageLib {
         }
     }
     
-    public static String getImageLocation(String imageName) {
-		return ComponentDesigenerPlugin.getDefault().getBundle().getEntry(
-				"/icons")
-				+ imageName;
+    public static InputStream getImageInputStream(String imageName) {
+    	InputStream inputStream = null;
+		try {
+			inputStream = ComponentDesigenerPlugin.getDefault().getBundle()
+					.getEntry("/icons/" + imageName).openStream();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return inputStream;
 	}
 
     /**
-     * store the image with special name(the name with suffix,such as "sample.gif").
-     * 
-     * @param iconName
-     */
+	 * store the image with special name(the name with suffix,such as
+	 * "sample.gif").
+	 * 
+	 * @param iconName
+	 */
     public static void addImage(String iconName) {
         try {
             ImageDescriptor descriptor = ImageDescriptor.createFromURL(new URL(iconURL, iconName));

@@ -17,28 +17,34 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.viewers.TreeSelection;
+import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.navigator.CommonActionProvider;
 import org.eclipse.ui.navigator.ICommonActionExtensionSite;
 import org.eclipse.ui.navigator.ICommonViewerWorkbenchSite;
 import org.talend.componentdesigner.ImageLib;
-import org.talend.componentdesigner.ui.dialog.CopyComponentDialog;
-import org.talend.componentdesigner.ui.dialog.CopyComponentValidator;
+import org.talend.componentdesigner.ui.wizard.creatcomponent.CreateComponentWizard;
 
 /**
- * @author rli
- * 
+ * DOC rli  class global comment. Detailled comment
  */
-public class CopyComponentActionProvider extends CommonActionProvider {
+public class EditComponentActionProvider extends CommonActionProvider {
 
-	private IAction copyProjectAction;
+	/**
+	 * DOC rli EditComponentActionProvider constructor comment.
+	 */
+	public EditComponentActionProvider() {
+		// TODO Auto-generated constructor stub
+	}
+	
+	private IAction editComponentAction;
 
 	private String selectedFolderName;
 
 	public void init(ICommonActionExtensionSite anExtensionSite) {
 
 		if (anExtensionSite.getViewSite() instanceof ICommonViewerWorkbenchSite) {
-			copyProjectAction = new CopyComponentAction();
+			editComponentAction = new EditComponentAction();
 		}
 	}
 
@@ -46,7 +52,7 @@ public class CopyComponentActionProvider extends CommonActionProvider {
 	 * Adds a submenu to the given menu with the name "New Component".
 	 */
 	public void fillContextMenu(IMenuManager menu) {
-		menu.insertBefore("group.edit", copyProjectAction);
+		menu.insertBefore("group.edit", editComponentAction);
 		Object obj = ((TreeSelection) this.getContext().getSelection())
 				.getFirstElement();
 		if (obj instanceof IFolder) {
@@ -58,25 +64,23 @@ public class CopyComponentActionProvider extends CommonActionProvider {
 	 * @author rli
 	 * 
 	 */
-	class CopyComponentAction extends Action {
+	class EditComponentAction extends Action {
 
-		public CopyComponentAction() {
-			super("Copy This Component");
+		public EditComponentAction() {
+			super("Edit This Component");
 			setImageDescriptor(ImageLib
-					.getImageDescriptor(ImageLib.COPYCOMPONENT_ACTION));
+					.getImageDescriptor(ImageLib.EDITCOMPONENT_ACTION));
 		}
 
 		/*
 		 * (non-Javadoc) Method declared on IAction.
 		 */
 		public void run() {
-			CopyComponentValidator validator = new CopyComponentValidator();
-			CopyComponentDialog dialog = new CopyComponentDialog(PlatformUI
-					.getWorkbench().getActiveWorkbenchWindow().getShell(),
-					"Copy Component", "Input a new component name for '"
-							+ selectedFolderName + "'", selectedFolderName,
-					validator);
+			CreateComponentWizard wizard = new CreateComponentWizard(selectedFolderName);
+			 wizard.init(PlatformUI.getWorkbench(), null);
+			WizardDialog dialog = new WizardDialog(null, wizard);
 			dialog.open();
 		}
 	}
+
 }

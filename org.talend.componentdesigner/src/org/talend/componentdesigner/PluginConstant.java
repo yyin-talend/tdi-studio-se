@@ -63,4 +63,8 @@ public class PluginConstant {
 	public static final String ZHLANG_RESOURCE = "Zh";
 
 	public static final String FRLANG_RESOURCE = "Fr";
+
+	public static final String BOOKMARKS_PROPERTY = null;
+	
+	public static final String JOINT_MARK = " - ";
 }

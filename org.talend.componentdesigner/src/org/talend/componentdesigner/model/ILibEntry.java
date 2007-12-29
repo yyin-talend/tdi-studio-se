@@ -45,5 +45,7 @@ public interface ILibEntry {
 	public int getType();
 	
 	public boolean isExternal();
+	
+	public String getName();
 
 }

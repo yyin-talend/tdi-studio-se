@@ -14,6 +14,7 @@ package org.talend.componentdesigner.model.libentry;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
+import org.talend.componentdesigner.PluginConstant;
 import org.talend.componentdesigner.model.ILibEntry;
 
 /**
@@ -37,7 +38,7 @@ public abstract class AbstractLibEntry implements ILibEntry {
 	 */
 	public String getLocation() {
 		if (resource != null) {
-			return resource.getLocation().toOSString();
+			return resource.getProjectRelativePath().toString();
 		} else if (path != null) {
 			return path.toOSString();
 		} else {
@@ -76,4 +77,14 @@ public abstract class AbstractLibEntry implements ILibEntry {
 		return this.resource == null;
 	}
 
+	public String getName() {
+		if (resource != null) {
+			return resource.getName();
+		} else if (path != null) {
+			return path.lastSegment();
+		} else {
+			return PluginConstant.EMPTY_STRING;
+		}
+	}
+	
 }

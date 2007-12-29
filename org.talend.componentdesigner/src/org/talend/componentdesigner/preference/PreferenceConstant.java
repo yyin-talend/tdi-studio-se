@@ -10,34 +10,13 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.componentdesigner.model.libentry;
-
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.IPath;
+package org.talend.componentdesigner.preference;
 
 /**
  * DOC rli  class global comment. Detailled comment
  */
-public class PmLibEntry extends AbstractLibEntry {
-	public PmLibEntry(Object obj) {
-		if (obj instanceof IPath) {
-			this.path = (IPath) obj;
-		} else if (obj instanceof IResource) {
-			this.resource = (IResource) obj;
-		}
-	}
+public class PreferenceConstant {
 
-	public PmLibEntry(IResource name) {
-		this.resource = name;
-	}
-	
-	public PmLibEntry(IPath path) {
-		this.path = path;
-	}
-
-	@Override
-	public int getType() {
-		return PM;
-	}
+	public static final String COMPONENTS_PROPERTY = "COMPONENTS_PROPERTY";
 
 }
