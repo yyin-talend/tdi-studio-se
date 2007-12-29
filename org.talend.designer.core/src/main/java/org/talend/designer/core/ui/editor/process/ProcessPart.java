@@ -226,9 +226,6 @@ public class ProcessPart extends AbstractGraphicalEditPart implements PropertyCh
             // refreshChildren();
             refresh();
         }
-        if (Process.JOBLETS.equals(prop)) {
-            refresh();
-        }
     }
 
     /**

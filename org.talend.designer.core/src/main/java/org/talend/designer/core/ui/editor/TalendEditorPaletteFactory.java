@@ -42,6 +42,7 @@ import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.notes.NoteCreationFactory;
 import org.talend.designer.core.ui.editor.palette.TalendPaletteDrawer;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
+import org.talend.designer.joblet.ui.models.JobletComponentsUtils;
 
 /**
  * This class creates the palette in the Gef Editor. <br/>
@@ -78,6 +79,7 @@ public final class TalendEditorPaletteFactory {
 
         componentsDrawer = new PaletteDrawer(Messages.getString("TalendEditorPaletteFactory.Default")); //$NON-NLS-1$
         List<IComponent> componentList = compFac.getComponents();
+
         Collections.sort(componentList, new Comparator<IComponent>() {
 
             public int compare(IComponent component1, IComponent component2) {
@@ -230,6 +232,7 @@ public final class TalendEditorPaletteFactory {
      */
     public static PaletteRoot createPalette(final IComponentsFactory compFac) {
         palette = new PaletteRoot();
+        JobletComponentsUtils.loadComponentsFromJoblets();
         palette.add(createToolsGroup());
         createComponentsDrawer(compFac);
         return palette;

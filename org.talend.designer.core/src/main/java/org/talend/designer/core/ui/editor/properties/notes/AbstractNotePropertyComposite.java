@@ -17,7 +17,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetWidgetFactory;
 import org.talend.core.properties.tab.HorizontalTabFactory;
-import org.talend.designer.core.ui.MultiPageTalendEditor;
+import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.notes.Note;
 
 /**
@@ -30,7 +30,7 @@ public abstract class AbstractNotePropertyComposite {
 
     private HorizontalTabFactory tabFactory;
 
-    private MultiPageTalendEditor multiPageTalendEditor;
+    private AbstractMultiPageTalendEditor multiPageTalendEditor;
 
     public static final int STANDARD_LABEL_WIDTH = 85;
 
@@ -41,8 +41,8 @@ public abstract class AbstractNotePropertyComposite {
      */
     public AbstractNotePropertyComposite(Composite parent, Note note, HorizontalTabFactory tabFactory) {
 
-        multiPageTalendEditor = (MultiPageTalendEditor) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-                .getActiveEditor();
+        multiPageTalendEditor = (AbstractMultiPageTalendEditor) PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+                .getActivePage().getActiveEditor();
         this.note = note;
         this.tabFactory = tabFactory;
         createControl(parent);

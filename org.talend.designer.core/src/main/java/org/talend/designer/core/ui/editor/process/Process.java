@@ -113,9 +113,12 @@ import org.talend.designer.core.ui.editor.nodes.Node.Data;
 import org.talend.designer.core.ui.editor.notes.Note;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.core.ui.views.problems.Problems;
-import org.talend.designer.joblet.model.JobletConnection;
 import org.talend.designer.joblet.model.JobletFactory;
+import org.talend.designer.joblet.model.JobletNode;
 import org.talend.designer.joblet.model.JobletProcess;
+import org.talend.designer.joblet.ui.models.EJobletNodeType;
+import org.talend.designer.joblet.ui.models.IJobletComponent;
+import org.talend.designer.joblet.ui.models.JobletComponentsUtils;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.model.ComponentsFactoryProvider;
@@ -135,15 +138,11 @@ public class Process extends Element implements IProcess2 {
 
     public static final String NOTES = "notes"; //$NON-NLS-1$
 
-    public static final String JOBLETS = "JOBLETS"; //$NON-NLS-1$
-
     public static final String DEFAULT_CONNECTION_NAME = "row"; //$NON-NLS-1$
 
     protected List<Node> nodes = new ArrayList<Node>();
 
     protected List<Element> elem = new ArrayList<Element>();
-
-    protected List<Element> joblets = new ArrayList<Element>();
 
     protected List<Note> notes = new ArrayList<Note>();
 
@@ -663,7 +662,6 @@ public class Process extends Element implements IProcess2 {
 
         if (isJoblet) {
             process = JobletFactory.eINSTANCE.createJobletProcess();
-            saveJoblets((JobletProcess) process);
         }
         xmlDoc.setProcess(process);
 
@@ -705,31 +703,6 @@ public class Process extends Element implements IProcess2 {
         return process;
     }
 
-    /**
-     * DOC qzhang Comment method "saveJoblets".
-     * 
-     * @param process
-     */
-    private void saveJoblets(JobletProcess process) {
-        // for (Element element : getJoblets()) {
-        // IJobletNode jobletNode = (IJobletNode) element;
-        // JobletNode input = JobletFactory.eINSTANCE.createJobletNode();
-        // input.setName(jobletNode.getUniqueName());
-        // input.setPosX(jobletNode.getLocation().x);
-        // input.setPosY(jobletNode.getLocation().y);
-        // input.setInput(jobletNode.isInput());
-        // process.getJobletNodes().add(input);
-        // List<AbstractJobletConnection> inputs = jobletNode.getOutputs();
-        // for (AbstractJobletConnection connection : inputs) {
-        // JobletConnection jobletConnection = JobletFactory.eINSTANCE.createJobletConnection();
-        // jobletConnection.setSource(connection.getSource().getUniqueName());
-        // jobletConnection.setTarget(connection.getTarget().getUniqueName());
-        // jobletConnection.setInput(jobletNode.isInput());
-        // process.getJobletLinks().add(jobletConnection);
-        // }
-        // }
-    }
-
     private void saveNote(TalendFileFactory fileFact, ProcessType process, Note note) {
         NoteType noteType = fileFact.createNoteType();
         noteType.setPosX(note.getLocation().x);
@@ -753,7 +726,17 @@ public class Process extends Element implements IProcess2 {
         EList listParamType;
         EList listMetaType;
         IMetadataTable metaData;
-        nType = fileFact.createNodeType();
+        if (node.getComponent() instanceof IJobletComponent && process instanceof JobletProcess) {
+            JobletProcess jobletProcess = (JobletProcess) process;
+            IJobletComponent component = (IJobletComponent) node.getComponent();
+            JobletNode jNode = JobletFactory.eINSTANCE.createJobletNode();
+            nType = jNode;
+            jNode.setInput(component.getJobletNodeType().equals(EJobletNodeType.INPUT));
+            jobletProcess.getJobletNodes().add(jNode);
+        } else {
+            nType = fileFact.createNodeType();
+            nList.add(nType);
+        }
         nType.setComponentVersion(node.getComponent().getVersion());
         nType.setComponentName(node.getComponent().getName());
         nType.setPosX(node.getLocation().x);
@@ -788,12 +771,6 @@ public class Process extends Element implements IProcess2 {
         for (IConnection connection : outgoingConnections) {
             if (connection instanceof Connection) {
                 connList.add((Connection) connection);
-            } else {
-                JobletConnection jcon = JobletFactory.eINSTANCE.createJobletConnection();
-                jcon.setName(connection.getUniqueName());
-                jcon.setSource(connection.getSource().getUniqueName());
-                jcon.setTarget(connection.getTarget().getUniqueName());
-                ((JobletProcess) process).getJobletLinks().add(jcon);
             }
         }
         // connList = (List<Connection>) outgoingConnections;
@@ -820,7 +797,7 @@ public class Process extends Element implements IProcess2 {
             saveElementParameters(fileFact, paramList, listParamType, process);
             cList.add(cType);
         }
-        nList.add(nType);
+
     }
 
     /**
@@ -896,27 +873,63 @@ public class Process extends Element implements IProcess2 {
                 unloadedNodeNames.add(nType.getComponentName());
                 continue;
             }
-            nc = new Node(component, this);
-            nc.setLocation(new Point(nType.getPosX(), nType.getPosY()));
-            Point offset = new Point(nType.getOffsetLabelX(), nType.getOffsetLabelY());
-            nc.getNodeLabel().setOffset(offset);
-            if (nType.isSetSizeX()) {
-                nc.setSize(new Dimension(nType.getSizeX(), nType.getSizeY()));
-            }
+            nc = loadNode(nType, component, nodesHashtable, listParamType);
 
-            loadElementParameters(nc, listParamType);
-
-            nc.setData(nType.getBinaryData(), nType.getStringData());
-
-            loadSchema(nc, nType);
-
-            addNodeContainer(new NodeContainer(nc));
-            nodesHashtable.put(nc.getUniqueName(), nc);
-            updateAllMappingTypes();
         }
 
+        if (process instanceof JobletProcess) {
+            JobletProcess jobletProcess = (JobletProcess) process;
+            loadJobletNodes(jobletProcess, nodesHashtable);
+        }
         if (!unloadedNodeNames.isEmpty()) {
             throw new PersistenceException(Messages.getString("Process.componentsUnloaded")); //$NON-NLS-1$
+        }
+    }
+
+    /**
+     * DOC qzhang Comment method "loadNode".
+     * 
+     * @param nType
+     * @param component
+     * @return
+     */
+    private Node loadNode(NodeType nType, IComponent component, Hashtable<String, Node> nodesHashtable, EList listParamType) {
+        Node nc;
+        nc = new Node(component, this);
+        nc.setLocation(new Point(nType.getPosX(), nType.getPosY()));
+        Point offset = new Point(nType.getOffsetLabelX(), nType.getOffsetLabelY());
+        nc.getNodeLabel().setOffset(offset);
+        if (nType.isSetSizeX()) {
+            nc.setSize(new Dimension(nType.getSizeX(), nType.getSizeY()));
+        }
+
+        loadElementParameters(nc, listParamType);
+
+        nc.setData(nType.getBinaryData(), nType.getStringData());
+
+        loadSchema(nc, nType);
+
+        addNodeContainer(new NodeContainer(nc));
+        nodesHashtable.put(nc.getUniqueName(), nc);
+        updateAllMappingTypes();
+        return nc;
+    }
+
+    /**
+     * DOC qzhang Comment method "loadJobletNodes".
+     * 
+     * @param jobletProcess
+     */
+    private void loadJobletNodes(JobletProcess jobletProcess, Hashtable<String, Node> nodesHashtable) {
+        EList<JobletNode> jobletNodes = jobletProcess.getJobletNodes();
+        EList listParamType;
+        Node nc;
+        for (JobletNode jobletNode : jobletNodes) {
+            listParamType = jobletNode.getElementParameter();
+            IJobletComponent component = JobletComponentsUtils.createJobletComponent();
+            EJobletNodeType nodeType = jobletNode.isInput() ? EJobletNodeType.INPUT : EJobletNodeType.OUTPUT;
+            component.setJobletNodeType(nodeType);
+            nc = loadNode(jobletNode, component, nodesHashtable, listParamType);
         }
     }
 
@@ -2352,15 +2365,6 @@ public class Process extends Element implements IProcess2 {
         }
     }
 
-    /**
-     * Getter for jobletInputs.
-     * 
-     * @return the jobletInputs
-     */
-    public List<Element> getJoblets() {
-        return this.joblets;
-    }
-
     private boolean isJoblet = false;
 
     /*
@@ -2380,17 +2384,4 @@ public class Process extends Element implements IProcess2 {
     public void setJoblet(boolean isJoblet) {
         this.isJoblet = isJoblet;
     }
-
-    public void addJoblet(Element element) {
-        elem.add(element);
-        joblets.add(element);
-        fireStructureChange(JOBLETS, elem);
-    }
-
-    public void removeJoblet(Element element) {
-        elem.remove(element);
-        joblets.remove(element);
-        fireStructureChange(JOBLETS, elem);
-    }
-
 }

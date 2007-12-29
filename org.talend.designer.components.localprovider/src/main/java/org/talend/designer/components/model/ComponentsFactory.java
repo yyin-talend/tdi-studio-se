@@ -36,6 +36,7 @@ import org.talend.core.language.LanguageManager;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.designer.core.model.components.EmfComponent;
+import org.talend.designer.joblet.ui.models.JobletComponentsUtils;
 
 /**
  * Component factory that look for each component and load their information. <br/>
@@ -71,6 +72,9 @@ public class ComponentsFactory implements IComponentsFactory {
         ComponentsRetriever.retrieveComponents(getComponentsLocation(userPath));
         // 3. Load user components:
         loadComponentsFromFolder(userPath);
+
+        // 4.Load Joblet Component:
+        JobletComponentsUtils.loadComponentsFromJoblets();
 
         XsdValidationCacheManager.getInstance().save();
 
@@ -141,9 +145,8 @@ public class ComponentsFactory implements IComponentsFactory {
                 } catch (MissingMainXMLComponentFileException e) {
                     log.trace(currentFolder.getName() + " is not a " + getCodeLanguageSuffix() + " component", e);
                 } catch (BusinessException e) {
-                    BusinessException ex = new BusinessException(
-                            "Cannot load component \"" + currentFolder.getName() + "\": " //$NON-NLS-1$ //$NON-NLS-2$
-                                    + e.getMessage(), e);
+                    BusinessException ex = new BusinessException("Cannot load component \"" + currentFolder.getName() + "\": " //$NON-NLS-1$ //$NON-NLS-2$
+                            + e.getMessage(), e);
                     ExceptionHandler.process(ex, Level.WARN);
                 }
             }
@@ -267,8 +270,7 @@ public class ComponentsFactory implements IComponentsFactory {
      */
     public URL getComponentPath() throws IOException {
         Bundle b = Platform.getBundle(IComponentsFactory.COMPONENTS_LOCATION);
-        URL url = FileLocator
-                .toFileURL(FileLocator.find(b, new Path(IComponentsFactory.COMPONENTS_INNER_FOLDER), null));
+        URL url = FileLocator.toFileURL(FileLocator.find(b, new Path(IComponentsFactory.COMPONENTS_INNER_FOLDER), null));
         return url;
     }
 }

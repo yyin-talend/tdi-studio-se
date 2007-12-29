@@ -259,7 +259,6 @@ public class TalendEditor extends AbstractTalendEditor {
 
             /** * Components Factory ** */
             components = ComponentsFactoryProvider.getInstance();
-
             paletteRoot = TalendEditorPaletteFactory.createPalette(components);
 
             ComponentUtilities.isComponentPaletteNeedRefresh = false;

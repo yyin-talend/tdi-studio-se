@@ -51,6 +51,7 @@ import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ExternalUtilities;
+import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.ETalendSelectionType;
 import org.talend.designer.core.ui.editor.ProcessEditorInput;
@@ -402,7 +403,7 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
             IExternalNode externalNode = ExternalUtilities.getExternalNodeReadyToOpen(node);
 
             IWorkbenchPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
-            if (externalNode != null && (part instanceof MultiPageTalendEditor)) {
+            if (externalNode != null && (part instanceof AbstractMultiPageTalendEditor)) {
                 int returnValue = externalNode.open(getViewer().getControl().getDisplay());
                 if (!node.isReadOnly()) {
                     if (returnValue == SWT.OK) {
