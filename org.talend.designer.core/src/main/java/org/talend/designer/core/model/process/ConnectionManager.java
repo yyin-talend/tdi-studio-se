@@ -222,9 +222,6 @@ public class ConnectionManager {
             return false;
         }
 
-        if (lineStyle.equals(EConnectionType.JOBLETINPUT)) {
-            return true;
-        }
         INode processStartNode = source.getProcessStartNode(true);
         // if the target is the start of the (source) process, then can't connect.
         if (processStartNode.equals(newTarget)) {

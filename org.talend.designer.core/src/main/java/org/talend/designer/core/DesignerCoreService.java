@@ -51,17 +51,12 @@ import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.components.IComponentsFactory;
-import org.talend.core.model.process.IElement;
-import org.talend.core.model.process.IElementParameter;
-import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
-import org.talend.designer.core.model.components.ElementParameter;
-import org.talend.designer.core.model.components.NodeConnector;
 import org.talend.designer.core.ui.ActiveProcessTracker;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.action.ConnectionSetAsMainRef;
@@ -394,14 +389,6 @@ public class DesignerCoreService implements IDesignerCoreService {
 
     public TransferDropTargetListener createEditorDropTargetListener(AbstractTalendEditor viewer) {
         return new TalendEditorDropTargetListener(viewer);
-    }
-
-    public INodeConnector createNodeConnector() {
-        return new NodeConnector();
-    }
-
-    public IElementParameter createElementParameter(IElement node) {
-        return new ElementParameter(node);
     }
 
 }
