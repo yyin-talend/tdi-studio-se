@@ -13,23 +13,24 @@
 package org.talend.designer.core.ui.action;
 
 import org.talend.commons.ui.swt.actions.AbstractShowViewAction;
+import org.talend.designer.core.ui.views.properties.ComponentSettingsView;
 
 /**
- * DOC smallet class global comment. Detailled comment <br/>
+ * smallet class global comment. Detailled comment <br/>
  * 
  * $Id$
  * 
  */
-public class ShowPropertiesViewAction extends AbstractShowViewAction {
+public class ShowComponentSettingView extends AbstractShowViewAction {
 
     @Override
     public String getDefinitionId() {
-        return "showPropertiesView"; //$NON-NLS-1$
+        return "showComponentSettingView"; //$NON-NLS-1$
     }
 
     @Override
     public String getViewId() {
-        return "org.eclipse.ui.views.PropertySheet"; //$NON-NLS-1$
+        return ComponentSettingsView.ID;
     }
 
 }
