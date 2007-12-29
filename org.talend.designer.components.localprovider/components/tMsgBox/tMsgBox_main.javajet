@@ -62,3 +62,5 @@
 			break;
 	}
 %>
+
+globalMap.put("<%=cid%>_RESULT", result<%=cid %>);
