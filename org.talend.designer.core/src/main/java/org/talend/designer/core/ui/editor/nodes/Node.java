@@ -36,6 +36,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
@@ -875,12 +876,15 @@ public class Node extends Element implements INode, INode2 {
 
         if (id.equals(EParameterName.PROCESS_TYPE_CONTEXT.getName())) {
             if (!CorePlugin.getContext().isHeadless()) {
-                IEditorPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
-                if (part instanceof MultiPageTalendEditor) {
-                    if (process.isActivate() && ((MultiPageTalendEditor) part).getProcess().equals(process)) {
-                        ProcessorUtilities.generateCode((String) getPropertyValue(EParameterName.PROCESS_TYPE_PROCESS.getName()),
-                                (String) value, false, false, ProcessorUtilities.GENERATE_MAIN_ONLY);
-                        ((MultiPageTalendEditor) part).updateChildrens();
+                IWorkbenchWindow activeWorkbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+                if (activeWorkbenchWindow != null) {
+                    IEditorPart part = activeWorkbenchWindow.getActivePage().getActiveEditor();
+                    if (part instanceof MultiPageTalendEditor) {
+                        if (process.isActivate() && ((MultiPageTalendEditor) part).getProcess().equals(process)) {
+                            ProcessorUtilities.generateCode((String) getPropertyValue(EParameterName.PROCESS_TYPE_PROCESS
+                                    .getName()), (String) value, false, false, ProcessorUtilities.GENERATE_MAIN_ONLY);
+                            ((MultiPageTalendEditor) part).updateChildrens();
+                        }
                     }
                 }
             }
