@@ -15,11 +15,24 @@
 	// component id
 	String cid = node.getUniqueName();
 	String message     = ElementParameterParser.getValue(node, "__MESSAGE__");
+	boolean ifSSL = ElementParameterParser.getValue(node, "__SSL__").equals("true");
 %>
 	 String message_<%=cid %> = <%=(message==null || "".equals(message))?"\"\"":message %>;
 	 java.util.Properties props_<%=cid %> = System.getProperties();     
      props_<%=cid %>.put("mail.smtp.host", smtpHost_<%=cid %>);
      props_<%=cid %>.put("mail.smtp.port", smtpPort_<%=cid %>);
+     
+<%
+	if(ifSSL){
+%>	
+	 java.security.Security.addProvider(new com.sun.net.ssl.internal.ssl.Provider());
+	 props_<%=cid %>.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+	 props_<%=cid %>.put("mail.smtp.socketFactory.fallback", "false");
+	 props_<%=cid %>.put("mail.smtp.socketFactory.port", smtpPort_<%=cid %>);
+<%
+	}
+%>     
+     
 <% 
    if ("false".equals(needAuth)) {
 %>  

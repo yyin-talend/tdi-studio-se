@@ -82,6 +82,15 @@ COMPATIBILITY="ALL"
     </PARAMETER>
     
     <PARAMETER
+      NAME="SSL"
+      FIELD="CHECK"
+      REQUIRED="true"
+      NUM_ROW="9"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
       NAME="NEED_AUTH"
       FIELD="CHECK"
       REQUIRED="true"
