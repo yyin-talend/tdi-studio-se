@@ -1,0 +1,96 @@
+<%@ jet 
+package="org.talend.designer.codegen.translators" 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser 
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.metadata.IMetadataColumn 
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.process.IConnection
+    org.talend.core.model.process.IConnectionCategory
+    java.util.List
+" 
+class="SVNLogInputBegin" 
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+
+        String URL = ElementParameterParser.getValue(node,"__URL__");
+
+        String fromRev = ElementParameterParser.getValue(node,"__FROM_REV__");
+
+        boolean singleRev = ElementParameterParser.getValue(node,"__SINGLE_REV__").equals("true");
+
+        String toRev = ElementParameterParser.getValue(node,"__TO_REV__");
+%>
+	
+		int nb_line<%=cid%> = 0;
+
+		String url<%=cid%> = <%=URL%>;
+
+        long startRevision<%=cid%> = <%=fromRev%>;
+
+        org.tmatesoft.svn.core.internal.io.dav.DAVRepositoryFactory.setup();
+        
+        org.tmatesoft.svn.core.internal.io.svn.SVNRepositoryFactoryImpl.setup();
+
+        org.tmatesoft.svn.core.internal.io.fs.FSRepositoryFactory.setup();
+        
+        org.tmatesoft.svn.core.io.SVNRepository repository<%=cid%> = org.tmatesoft.svn.core.io.SVNRepositoryFactory.create(org.tmatesoft.svn.core.SVNURL.parseURIEncoded(url<%=cid%>));
+      
+<%if(singleRev){%>  
+    
+        long endRevision<%=cid%> = startRevision<%=cid%>;  
+             
+<%}else if(toRev.equals("'HEAD'")){%>
+
+        long endRevision<%=cid%> = repository<%=cid%>.getLatestRevision();
+        
+<%}else{%>
+
+	    long endRevision<%=cid%> = <%=toRev%>;
+
+<%}%>
+        java.util.Collection logEntries<%=cid%> = repository<%=cid%>.log(new String[] { "" }, null, startRevision<%=cid%>, endRevision<%=cid%>, true, true);
+
+        for (java.util.Iterator entries<%=cid%> = logEntries<%=cid%>.iterator(); entries<%=cid%>.hasNext();) {
+
+            org.tmatesoft.svn.core.SVNLogEntry logEntry<%=cid%> = (org.tmatesoft.svn.core.SVNLogEntry) entries<%=cid%>.next();
+		   
+<%
+        if(conns!=null){
+            if (conns.size()>0){
+                for(IConnection conn:conns){
+                    if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {                        
+%>
+                    
+                    <%=conn.getName() %>.revision = ((Long)logEntry<%=cid%>.getRevision()).intValue();
+                    
+                    <%=conn.getName() %>.author = logEntry<%=cid%>.getAuthor();
+                    
+                    <%=conn.getName() %>.date = logEntry<%=cid%>.getDate();
+                    
+                    <%=conn.getName() %>.message = logEntry<%=cid%>.getMessage();
+                    
+<%
+                    }
+                }         
+            }
+        }
+%>        
+        
+	nb_line<%=cid%>++;
+        
+<%
+    }
+}
+%>
