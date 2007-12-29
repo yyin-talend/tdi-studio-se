@@ -83,7 +83,7 @@
     <TEMPLATES INPUT="AGGOUT" OUTPUT="AI">
 
       <TEMPLATE NAME="AGGOUT" COMPONENT="tAggregateOut">
-        <LINK_TO NAME="AI" CTYPE="SUBJOB_OK"/>
+        <LINK_TO NAME="AI" CTYPE="ROWS_END"/>
       </TEMPLATE>
       
       <TEMPLATE NAME="AI" COMPONENT="tArrayIn"/>

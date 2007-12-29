@@ -78,7 +78,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         //end
 		%>
         int nb_line_<%=cid %> = 0;
-        java.util.List<OnSubjobOkStruct<%=destination %>> result_list_<%=cid %> = new java.util.ArrayList<OnSubjobOkStruct<%=destination %>>();
+        java.util.List<OnRowsEndStruct<%=destination %>> result_list_<%=cid %> = new java.util.ArrayList<OnRowsEndStruct<%=destination %>>();
         //generate result begin
         <%//start
         //
@@ -117,7 +117,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 
 
                 //in the deepest begin
-                OnSubjobOkStruct<%=destination %> aggregated_row_<%=cid %> = new OnSubjobOkStruct<%=destination %>();
+                OnRowsEndStruct<%=destination %> aggregated_row_<%=cid %> = new OnRowsEndStruct<%=destination %>();
                 <%
     			next_column:
     			for(int c = 0; c < sizeColumns; c++){
