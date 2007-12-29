@@ -13,10 +13,7 @@
 package org.talend.designer.core.ui;
 
 import java.io.ByteArrayInputStream;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -27,7 +24,6 @@ import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -39,14 +35,6 @@ import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.ImageProvider;
-import org.talend.core.CorePlugin;
-import org.talend.core.context.Context;
-import org.talend.core.context.RepositoryContext;
-import org.talend.core.context.UpdateRunJobComponentContextHelper;
-import org.talend.core.language.ECodeLanguage;
-import org.talend.core.model.context.JobContextManager;
-import org.talend.core.model.process.IContextManager;
-import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.designer.core.DesignerPlugin;
@@ -66,7 +54,6 @@ import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.process.ProcessPart;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessorException;
-import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.job.deletion.JobResourceManager;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
@@ -93,7 +80,6 @@ public class MultiPageTalendEditor extends AbstractMultiPageTalendEditor {
         return designerEditor;
     }
 
-
     /**
      * Creates the pages of the multi-page editor.
      */
@@ -101,39 +87,6 @@ public class MultiPageTalendEditor extends AbstractMultiPageTalendEditor {
     protected void createPages() {
         super.createPages();
         setTitleImage(ImageProvider.getImage(ECoreImage.PROCESS_ICON));
-    }
-
-    protected void updateRunJobContext() {
-        JobContextManager manager = (JobContextManager) getProcess().getContextManager();
-        Map<String, String> nameMap = manager.getNameMap();
-        try {
-            IProxyRepositoryFactory factory = DesignerPlugin.getDefault().getProxyRepositoryFactory();
-
-            Set<String> curContextVars = getCurrentContextVariables(manager);
-            String jobName = getProcess().getLabel();
-
-            UpdateRunJobComponentContextHelper.updateItemRunJobComponentReference(factory, nameMap, jobName, curContextVars);
-
-            IEditorReference[] reference = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-                    .getEditorReferences();
-            List<IProcess> processes = RepositoryPlugin.getDefault().getDesignerCoreService().getOpenedProcess(reference);
-
-            UpdateRunJobComponentContextHelper.updateOpenedJobRunJobComponentReference(processes, nameMap, jobName,
-                    curContextVars);
-        } catch (PersistenceException e) {
-            e.printStackTrace();
-        }
-        nameMap.clear();
-    }
-
-    private Set<String> getCurrentContextVariables(IContextManager manager) {
-        Set<String> varNameSet = new HashSet<String>();
-        if (manager != null) {
-            for (IContextParameter param : manager.getDefaultContext().getContextParameterList()) {
-                varNameSet.add(param.getName());
-            }
-        }
-        return varNameSet;
     }
 
     /**
