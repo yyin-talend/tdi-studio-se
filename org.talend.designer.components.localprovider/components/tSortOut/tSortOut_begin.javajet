@@ -51,6 +51,7 @@ class Comparable<%=rowName %>Struct extends <%=rowName %>Struct implements Compa
 				Map<String, String> line = criteria.get(i);
 				String colname = line.get("COLNAME");	
 				JavaType colJavaType = null;
+				boolean nullAble = false;
 				String pattern = null;
 		
     			String sort = line.get("SORT");
@@ -63,6 +64,7 @@ class Comparable<%=rowName %>Struct extends <%=rowName %>Struct implements Compa
 				for (IMetadataColumn column : metadata.getListColumns()) {
 					if (column.getLabel().compareTo(colname)==0) {
 						colJavaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+						nullAble = column.isNullable();
 						pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
 						result = true;
 						break;
@@ -90,17 +92,31 @@ class Comparable<%=rowName %>Struct extends <%=rowName %>Struct implements Compa
 <%						
 						}else{//if(sort.equals("alpha"))
 %>
+<%
+							if(nullAble){
+%>
+		if (!this.<%=colname %>.equals(other.<%=colname %>)) {
+<%
+							}else{
+%>
 		if (this.<%=colname %> != other.<%=colname %>) {
 <%
+							}
 							if(asc){
 								if(colJavaType == JavaTypesManager.BOOLEAN){
 %>
 			return this.<%=colname %> ? 1 : -1;
 <%
 								}else{
+									if(nullAble){
 %>
-			return this.<%=colname %> > other.<%=colname %> ? 1 : -1;
+		return this.<%=colname %>.compareTo(other.<%=colname %>) > 0 ? 1 : -1;
 <%
+									}else{
+%>
+		return this.<%=colname %> > other.<%=colname %> ? 1 : -1;
+<%
+									}
 								}
 							}else{
 
@@ -109,9 +125,15 @@ class Comparable<%=rowName %>Struct extends <%=rowName %>Struct implements Compa
 			return this.<%=colname %> ? -1 : 1;
 <%
 								}else{
+									if(nullAble){
 %>
-			return other.<%=colname %> > this.<%=colname %> ? 1 : -1;
+		return other.<%=colname %>.compareTo(this.<%=colname %>) > 0 ? 1 : -1;
 <%
+									}else{
+%>
+		return other.<%=colname %> > this.<%=colname %> ? 1 : -1;
+<%
+									}
 								}
 							}
 %>
@@ -376,6 +398,7 @@ class <%=rowName %>StructILightSerializable extends <%=rowName %>Struct implemen
 				Map<String, String> line = criteria.get(i);
 				String colname = line.get("COLNAME");	
 				JavaType colJavaType = null;
+				boolean nullAble = false;
 				String pattern = null;
 		
     			String sort = line.get("SORT");
@@ -388,6 +411,7 @@ class <%=rowName %>StructILightSerializable extends <%=rowName %>Struct implemen
 				for (IMetadataColumn column : metadata.getListColumns()) {
 					if (column.getLabel().compareTo(colname)==0) {
 						colJavaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+						nullAble = column.isNullable();
 						pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
 						result = true;
 						break;
@@ -415,17 +439,31 @@ class <%=rowName %>StructILightSerializable extends <%=rowName %>Struct implemen
 <%						
 						}else{//if(sort.equals("alpha"))
 %>
+<%
+							if(nullAble){
+%>
+		if (!this.<%=colname %>.equals(other.<%=colname %>)) {
+<%
+							}else{
+%>
 		if (this.<%=colname %> != other.<%=colname %>) {
 <%
+							}
 							if(asc){
 								if(colJavaType == JavaTypesManager.BOOLEAN){
 %>
 			return this.<%=colname %> ? 1 : -1;
 <%
 								}else{
+									if(nullAble){
 %>
-			return this.<%=colname %> > other.<%=colname %> ? 1 : -1;
+		return this.<%=colname %>.compareTo(other.<%=colname %>) > 0 ? 1 : -1;
 <%
+									}else{
+%>
+		return this.<%=colname %> > other.<%=colname %> ? 1 : -1;
+<%
+									}
 								}
 							}else{
 
@@ -434,9 +472,15 @@ class <%=rowName %>StructILightSerializable extends <%=rowName %>Struct implemen
 			return this.<%=colname %> ? -1 : 1;
 <%
 								}else{
+									if(nullAble){
 %>
-			return other.<%=colname %> > this.<%=colname %> ? 1 : -1;
+		return other.<%=colname %>.compareTo(this.<%=colname %>) > 0 ? 1 : -1;
 <%
+									}else{
+%>
+		return other.<%=colname %> > this.<%=colname %> ? 1 : -1;
+<%
+									}
 								}
 							}
 %>
