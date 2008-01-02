@@ -665,8 +665,6 @@ public class ProcessComposite extends Composite {
      * DOC bqian Comment method "addInHistoryRunningList".
      */
     private void addInHistoryRunningList() {
-        IEditorReference[] editors = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getEditorReferences();
-        
         if (getProcessContext() == null) {
             return;
         }
