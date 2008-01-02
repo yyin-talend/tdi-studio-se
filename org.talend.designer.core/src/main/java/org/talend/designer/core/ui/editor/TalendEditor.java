@@ -228,7 +228,7 @@ public class TalendEditor extends AbstractTalendEditor {
             @Override
             public void execute(final IProgressMonitor monitor) throws CoreException {
                 try {
-                    process.saveXmlFile(file, getRepositoryEditorInput().isJobletItem());
+                    process.saveXmlFile(file);
                     file.refreshLocal(IResource.DEPTH_ONE, monitor);
                 } catch (Exception e) {
                     e.printStackTrace();

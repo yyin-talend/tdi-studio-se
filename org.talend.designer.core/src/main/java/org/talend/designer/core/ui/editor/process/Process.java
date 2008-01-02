@@ -113,12 +113,6 @@ import org.talend.designer.core.ui.editor.nodes.Node.Data;
 import org.talend.designer.core.ui.editor.notes.Note;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.core.ui.views.problems.Problems;
-import org.talend.designer.joblet.model.JobletFactory;
-import org.talend.designer.joblet.model.JobletNode;
-import org.talend.designer.joblet.model.JobletProcess;
-import org.talend.designer.joblet.ui.models.EJobletNodeType;
-import org.talend.designer.joblet.ui.models.IJobletComponent;
-import org.talend.designer.joblet.ui.models.JobletComponentsUtils;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.model.ComponentsFactoryProvider;
@@ -639,6 +633,10 @@ public class Process extends Element implements IProcess2 {
         }
     }
 
+    protected ProcessType createProcessType(TalendFileFactory fileFact) {
+        return fileFact.createProcessType();
+    }
+
     /**
      * Save the diagram in a Xml File.
      * 
@@ -646,10 +644,8 @@ public class Process extends Element implements IProcess2 {
      * @return
      * @throws IOException
      */
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
-    public ProcessType saveXmlFile(final IFile file, boolean isJoblet) throws IOException {
+    public ProcessType saveXmlFile(final IFile file) throws IOException {
         String fileName;
-        setJoblet(isJoblet);
         init();
         fileName = file.getLocationURI().toString();
         URI uri = URI.createURI(fileName);
@@ -658,11 +654,7 @@ public class Process extends Element implements IProcess2 {
         TalendFileFactory fileFact = TalendFileFactory.eINSTANCE;
         DocumentRoot xmlDoc;
         xmlDoc = fileFact.createDocumentRoot();
-        ProcessType process = fileFact.createProcessType();
-
-        if (isJoblet) {
-            process = JobletFactory.eINSTANCE.createJobletProcess();
-        }
+        ProcessType process = createProcessType(fileFact);
         xmlDoc.setProcess(process);
 
         ParametersType params = fileFact.createParametersType();
@@ -726,17 +718,7 @@ public class Process extends Element implements IProcess2 {
         EList listParamType;
         EList listMetaType;
         IMetadataTable metaData;
-        if (node.getComponent() instanceof IJobletComponent && process instanceof JobletProcess) {
-            JobletProcess jobletProcess = (JobletProcess) process;
-            IJobletComponent component = (IJobletComponent) node.getComponent();
-            JobletNode jNode = JobletFactory.eINSTANCE.createJobletNode();
-            nType = jNode;
-            jNode.setInput(component.getJobletNodeType().equals(EJobletNodeType.INPUT));
-            jobletProcess.getJobletNodes().add(jNode);
-        } else {
-            nType = fileFact.createNodeType();
-            nList.add(nType);
-        }
+        nType = createNodeType(fileFact, process, nList, node);
         nType.setComponentVersion(node.getComponent().getVersion());
         nType.setComponentName(node.getComponent().getName());
         nType.setPosX(node.getLocation().x);
@@ -801,6 +783,22 @@ public class Process extends Element implements IProcess2 {
     }
 
     /**
+     * DOC qzhang Comment method "createNodeType".
+     * 
+     * @param fileFact
+     * @param process
+     * @param nList
+     * @param node
+     * @return
+     */
+    protected NodeType createNodeType(TalendFileFactory fileFact, ProcessType process, EList nList, Node node) {
+        NodeType nType;
+        nType = fileFact.createNodeType();
+        nList.add(nType);
+        return nType;
+    }
+
+    /**
      * DOC mhelleboid Comment method "loadXmlFile".
      * 
      * @param process
@@ -857,7 +855,7 @@ public class Process extends Element implements IProcess2 {
 
     private List<String> unloadedNodeNames = null;
 
-    private void loadNodes(ProcessType process, Hashtable<String, Node> nodesHashtable) throws PersistenceException {
+    protected void loadNodes(ProcessType process, Hashtable<String, Node> nodesHashtable) throws PersistenceException {
         EList nodeList;
         NodeType nType;
         nodeList = process.getNode();
@@ -876,11 +874,6 @@ public class Process extends Element implements IProcess2 {
             nc = loadNode(nType, component, nodesHashtable, listParamType);
 
         }
-
-        if (process instanceof JobletProcess) {
-            JobletProcess jobletProcess = (JobletProcess) process;
-            loadJobletNodes(jobletProcess, nodesHashtable);
-        }
         if (!unloadedNodeNames.isEmpty()) {
             throw new PersistenceException(Messages.getString("Process.componentsUnloaded")); //$NON-NLS-1$
         }
@@ -893,7 +886,7 @@ public class Process extends Element implements IProcess2 {
      * @param component
      * @return
      */
-    private Node loadNode(NodeType nType, IComponent component, Hashtable<String, Node> nodesHashtable, EList listParamType) {
+    protected Node loadNode(NodeType nType, IComponent component, Hashtable<String, Node> nodesHashtable, EList listParamType) {
         Node nc;
         nc = new Node(component, this);
         nc.setLocation(new Point(nType.getPosX(), nType.getPosY()));
@@ -913,24 +906,6 @@ public class Process extends Element implements IProcess2 {
         nodesHashtable.put(nc.getUniqueName(), nc);
         updateAllMappingTypes();
         return nc;
-    }
-
-    /**
-     * DOC qzhang Comment method "loadJobletNodes".
-     * 
-     * @param jobletProcess
-     */
-    private void loadJobletNodes(JobletProcess jobletProcess, Hashtable<String, Node> nodesHashtable) {
-        EList<JobletNode> jobletNodes = jobletProcess.getJobletNodes();
-        EList listParamType;
-        Node nc;
-        for (JobletNode jobletNode : jobletNodes) {
-            listParamType = jobletNode.getElementParameter();
-            IJobletComponent component = JobletComponentsUtils.createJobletComponent();
-            EJobletNodeType nodeType = jobletNode.isInput() ? EJobletNodeType.INPUT : EJobletNodeType.OUTPUT;
-            component.setJobletNodeType(nodeType);
-            nc = loadNode(jobletNode, component, nodesHashtable, listParamType);
-        }
     }
 
     /**
@@ -2363,25 +2338,5 @@ public class Process extends Element implements IProcess2 {
             CommandStack commandStack = (CommandStack) editor.getTalendEditor().getAdapter(CommandStack.class);
             commandStack.addCommandStackEventListener(commandStackEventListener);
         }
-    }
-
-    private boolean isJoblet = false;
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.process.IProcess2#isJoblet()
-     */
-    public boolean isJoblet() {
-        return isJoblet;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.process.IProcess2#setJoblet(boolean)
-     */
-    public void setJoblet(boolean isJoblet) {
-        this.isJoblet = isJoblet;
     }
 }

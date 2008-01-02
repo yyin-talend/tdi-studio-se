@@ -86,15 +86,6 @@ public class ProcessLayoutEditPolicy extends XYLayoutEditPolicy {
             MoveNoteCommand locationCommand = new MoveNoteCommand((Note) child.getModel(), ((Rectangle) constraint).getLocation());
             return locationCommand;
         }
-        // if (child.getModel() instanceof IJobletNode) {
-        // if (((IJobletNode) child.getModel()).isReadOnly()) {
-        // return null;
-        // }
-        // JobletNodeMoveCommand command = new JobletNodeMoveCommand((IJobletNode) child.getModel(), ((Rectangle)
-        // constraint)
-        // .getLocation());
-        // return command;
-        // }
         return null;
     }
 
@@ -120,10 +111,6 @@ public class ProcessLayoutEditPolicy extends XYLayoutEditPolicy {
             command = new CreateNodeContainerCommand((Process) getHost().getModel(), new NodeContainer((Node) request
                     .getNewObject()), constraint.getLocation());
         }
-        // else if (IJobletNode.class.equals(request.getNewObjectType())) {
-        // command = new JobletNodeCreateCommand((Process) getHost().getModel(), (IJobletNode) request.getNewObject(),
-        // constraint);
-        // }
 
         return command;
     }
