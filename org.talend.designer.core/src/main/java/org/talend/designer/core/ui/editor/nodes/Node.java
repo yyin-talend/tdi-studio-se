@@ -887,7 +887,13 @@ public class Node extends Element implements INode {
 
         if (id.equals(EParameterName.PROCESS_TYPE_CONTEXT.getName())) {
             if (!CorePlugin.getContext().isHeadless()) {
-                IWorkbenchWindow activeWorkbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+                IWorkbenchWindow activeWorkbenchWindow;
+
+                try {
+                    activeWorkbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+                } catch (IllegalStateException e) {
+                    return;
+                }
                 if (activeWorkbenchWindow != null) {
                     IEditorPart part = activeWorkbenchWindow.getActivePage().getActiveEditor();
                     if (part instanceof MultiPageTalendEditor) {
