@@ -65,7 +65,7 @@ public class RenameConnectionRunErrorToComponentErrorTask extends AbstractJobMig
 
         }
         if (modified) {
-            factory.save(item);
+            factory.save(item,true);
         }
 
     }

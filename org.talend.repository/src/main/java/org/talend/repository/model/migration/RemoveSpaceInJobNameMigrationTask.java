@@ -56,7 +56,7 @@ public class RemoveSpaceInJobNameMigrationTask extends AbstractJobMigrationTask 
 
         if (item.getProperty().getLabel().contains(" ")) { // if the job contain some spaces
             item.getProperty().setLabel(item.getProperty().getLabel().replaceAll(" ", "_"));
-            factory.save(item);
+            factory.save(item,true);
         }
     }
 }

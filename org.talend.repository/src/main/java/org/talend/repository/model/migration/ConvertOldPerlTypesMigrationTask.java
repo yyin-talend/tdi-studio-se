@@ -111,7 +111,7 @@ public class ConvertOldPerlTypesMigrationTask extends AbstractItemMigrationTask 
         PerlItemOldTypesConverter converter = new PerlItemOldTypesConverter(processItem);
 
         if (converter.isModified()) {
-            FACTORY.save(processItem);
+            FACTORY.save(processItem,true);
             changed = true;
         }
     }

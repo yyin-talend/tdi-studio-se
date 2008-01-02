@@ -67,7 +67,7 @@ public class AddConnectorNameInConnections extends AbstractJobMigrationTask {
 
         }
         if (modified) {
-            factory.save(item);
+            factory.save(item,true);
         }
         return modified;
     }

@@ -71,7 +71,7 @@ public class RenameConnectionThenRunToOnSubjobOkTask extends AbstractJobMigratio
 
         }
         if (modified) {
-            factory.save(item);
+            factory.save(item,true);
         }
 
     }

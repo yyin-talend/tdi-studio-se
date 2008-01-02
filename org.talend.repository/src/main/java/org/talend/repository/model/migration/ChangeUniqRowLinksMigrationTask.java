@@ -75,7 +75,7 @@ public class ChangeUniqRowLinksMigrationTask extends AbstractJobMigrationTask {
 
         }
         if (modified) {
-            factory.save(item);
+            factory.save(item,true);
             replaceDone = true;
         }
         return replaceDone;

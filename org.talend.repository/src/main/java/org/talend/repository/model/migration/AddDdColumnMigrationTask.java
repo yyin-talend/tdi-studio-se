@@ -78,7 +78,7 @@ public class AddDdColumnMigrationTask extends AbstractJobMigrationTask {
         }
 
         if (modified) {
-            factory.save(item);
+            factory.save(item,true);
         }
     }
 }
