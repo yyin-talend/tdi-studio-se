@@ -166,7 +166,6 @@ public class ActiveProcessTracker implements IPartListener {
             AbstractMultiPageTalendEditor mpte = (AbstractMultiPageTalendEditor) part;
             mpte.getTalendEditor().savePaletteState();
         }
-        currentProcess = null;
     }
 
     /*
@@ -189,9 +188,18 @@ public class ActiveProcessTracker implements IPartListener {
             }
         }
         IProcess process = getJobFromActivatedEditor(part);
-        if (process != null) {
+        if (process != null && currentProcess != process) {
             currentProcess = process;
             addJobInProblemView(process);
         }
+    }
+
+    /**
+     * Getter for currentProcess.
+     * 
+     * @return the currentProcess
+     */
+    public static Process getCurrentProcess() {
+        return (Process) currentProcess;
     }
 }

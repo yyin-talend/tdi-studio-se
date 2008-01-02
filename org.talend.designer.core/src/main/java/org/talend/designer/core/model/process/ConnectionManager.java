@@ -25,7 +25,6 @@ import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
-import org.talend.designer.joblet.ui.models.IJobletComponent;
 
 /**
  * DOC nrousseau class global comment. Detailled comment <br/>
@@ -273,9 +272,6 @@ public class ConnectionManager {
 
         int maxInput = newTarget.getConnectorFromType(newlineStyle).getMaxLinkInput();
         if (maxInput != -1 && (newTarget.getConnectorFromType(newlineStyle).getCurLinkNbInput() >= maxInput)) {
-            if (source.getComponent() instanceof IJobletComponent) {
-                return true;
-            }
             return false;
         }
 

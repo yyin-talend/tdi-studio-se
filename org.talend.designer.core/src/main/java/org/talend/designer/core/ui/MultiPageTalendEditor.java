@@ -195,18 +195,6 @@ public class MultiPageTalendEditor extends AbstractMultiPageTalendEditor {
         return null;
     }
 
-    @Override
-    public Object getAdapter(final Class adapter) {
-        if (designerEditor.equals(getActiveEditor())) {
-            return this.getActiveEditor().getAdapter(adapter);
-        }
-        /*
-         * if (textEditor.equals(getActiveEditor())) { if (adapter == IPropertySheetPage.class) { return null; } return
-         * this.getActiveEditor().getAdapter(adapter); }
-         */
-        return super.getAdapter(adapter);
-    }
-
     protected FileEditorInput createFileEditorInput() {
 
         IPath codePath = processor.getCodePath();
