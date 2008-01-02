@@ -64,7 +64,41 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 
         for (java.util.Iterator entries<%=cid%> = logEntries<%=cid%>.iterator(); entries<%=cid%>.hasNext();) {
 
-            org.tmatesoft.svn.core.SVNLogEntry logEntry<%=cid%> = (org.tmatesoft.svn.core.SVNLogEntry) entries<%=cid%>.next();
+            org.tmatesoft.svn.core.SVNLogEntry logEntry<%=cid%> = (org.tmatesoft.svn.core.SVNLogEntry) entries<%=cid%>.next();           
+            
+            java.util.Iterator it<%=cid%> = logEntry<%=cid%>.getChangedPaths().keySet().iterator();
+            
+            int nb_file_added = 0;
+            
+            int nb_file_modified = 0;
+            
+            int nb_file_deleted = 0;
+            
+            while (it<%=cid%>.hasNext()) {
+            
+                org.tmatesoft.svn.core.SVNLogEntryPath sp<%=cid%> = (org.tmatesoft.svn.core.SVNLogEntryPath) logEntry<%=cid%>.getChangedPaths().get(it<%=cid%>.next());
+                
+                if(sp<%=cid%>.getType() == sp<%=cid%>.TYPE_ADDED){
+                
+                	nb_file_added++;
+                	
+                }else if(sp<%=cid%>.getType() == sp<%=cid%>.TYPE_MODIFIED){
+                
+                	nb_file_modified++;
+                
+                }else if(sp<%=cid%>.getType() == sp<%=cid%>.TYPE_DELETED){
+                
+                	nb_file_deleted++;
+                
+                }else{
+                
+                }
+
+            }
+            
+            
+            
+            
 		   
 <%
         if(conns!=null){
@@ -80,6 +114,12 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                     <%=conn.getName() %>.date = logEntry<%=cid%>.getDate();
                     
                     <%=conn.getName() %>.message = logEntry<%=cid%>.getMessage();
+                    
+                    <%=conn.getName() %>.nb_file_added = nb_file_added;
+                    
+                    <%=conn.getName() %>.nb_file_modified = nb_file_modified;
+                    
+                    <%=conn.getName() %>.nb_file_deleted = nb_file_deleted;
                     
 <%
                     }
