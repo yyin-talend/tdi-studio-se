@@ -190,16 +190,20 @@
 
 	long end = 0;
 	long start = System.currentTimeMillis();
-<%
-	if(isRunInMultiThread){
-%>
 	final <%=process.getName() %> <%=process.getName() %>Class = new <%=process.getName() %>(); 
 <%
 		for (INode statCatcherNode : process.getNodesOfType("tStatCatcher")) {
 %>
-		<%=process.getName() %>Class.<%=statCatcherNode.getUniqueName() %>.addMessage("begin");	
+		<%=process.getName() %>Class.<%=statCatcherNode.getUniqueName() %>.addMessage("begin");
+		try {
+			<%=process.getName() %>Class.<%=statCatcherNode.getUniqueName() %>Process();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}			
 <%
     	}
+
+	if(isRunInMultiThread){
 		for (INode rootNode : rootNodes) {
 			String componentName = (String) rootNode.getComponent().getName();
             if (!componentName.equals("tLogCatcher") && !componentName.equals("tFlowMeterCatcher") && !componentName.equals("tAssertCatcher") && !componentName.equals("tStatCatcher")) {
@@ -250,14 +254,8 @@
 <%
 	}else{ // isRunInMultiThread
 %>
-	<%=process.getName() %> <%=process.getName() %>Class = new <%=process.getName() %>();
 	try {
 <%
-   		for (INode statCatcherNode : process.getNodesOfType("tStatCatcher")) {
-%>
-		<%=process.getName() %>Class.<%=statCatcherNode.getUniqueName() %>.addMessage("begin");
-<%
-    	}
 		for (INode rootNode : rootNodes) {
 			String componentName = (String) rootNode.getComponent().getName();
             if (!componentName.equals("tLogCatcher") && !componentName.equals("tFlowMeterCatcher") && !componentName.equals("tAssertCatcher") && !componentName.equals("tStatCatcher")) {
@@ -289,6 +287,14 @@
 %>
 		runTrace.stopThreadTrace();
 <%
+	}	
+
+    if(!isRunInMultiThread){
+    // next brace is end of finally.
+%>
+        
+	}
+<%
 	}
 	
 	for (INode statCatcherNode : process.getNodesOfType("tStatCatcher")) {
@@ -300,14 +306,7 @@
 			e.printStackTrace();
 		}
 <%
-    }
-    if(!isRunInMultiThread){
-    // next brace is end of finally.
-%>
-        
-	}
-<%
-	}
+    }	
 %>
     if(errorCode == null) {
          return status != null && status.equals("failure") ? 1 : 0;	
