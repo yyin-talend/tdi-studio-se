@@ -34,19 +34,15 @@
 					width="90%" class="FONTSTYLE">
 					<tr valign="top">
 						<!--<td width="15%" rowspan="2" align="center"></td> -->
-						<td width="26%" rowspan="2" align="center">
+						<td rowspan="2" align="center">
 							<a href="#{project/@link}">
 								<img src="{project/@logo}" border="0"
 									align="absbottom" />
 							</a>
 						</td>
 						<!-- <td width="1%" rowspan="2" align="center"></td> -->
-						<td width="58%">
-							<strong>
-								<font class="TOPTITLESTYLE">
+						<td class="TOPTITLESTYLE">
 									Job&#160;documentation
-								</font>
-							</strong>
 						</td>
 					</tr>
 					<tr valign="top">
