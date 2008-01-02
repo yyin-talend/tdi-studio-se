@@ -19,7 +19,6 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.ConnectionLayer;
-import org.eclipse.draw2d.FanRouter;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.FreeformLayer;
 import org.eclipse.draw2d.FreeformLayout;
@@ -116,7 +115,7 @@ public class ProcessPart extends AbstractGraphicalEditPart implements PropertyCh
         getLayer(TalendScalableFreeformRootEditPart.PROCESS_BACKGROUND_LAYER).add(fig2);
         ajustReadOnly();
         ConnectionLayer connLayer = (ConnectionLayer) getLayer(LayerConstants.CONNECTION_LAYER);
-        connLayer.setConnectionRouter(new FanRouter());
+        // connLayer.setConnectionRouter(new NullRouter());
         return figure;
     }
 

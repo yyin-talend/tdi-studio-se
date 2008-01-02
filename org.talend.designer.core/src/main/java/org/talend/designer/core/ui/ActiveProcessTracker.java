@@ -55,15 +55,15 @@ public class ActiveProcessTracker implements IPartListener {
      * @see org.eclipse.ui.IPartListener#partActivated(org.eclipse.ui.IWorkbenchPart)
      */
     public void partActivated(final IWorkbenchPart part) {
-        IProcess process = getJobFromActivatedEditor(part);
-        if (process != null) {
-            if (process instanceof Process) {
-                Process p = (Process) process;
-                if (!p.isReadOnly() && p.isActivate()) {
-                    p.checkDifferenceWithRepository();
-                }
-            }
-        }
+        // IProcess process = getJobFromActivatedEditor(part);
+        // if (process != null) {
+        // if (process instanceof Process) {
+        // Process p = (Process) process;
+        // if (!p.isReadOnly() && p.isActivate()) {
+        // p.checkDifferenceWithRepository();
+        // }
+        // }
+        // }
     }
 
     /*
@@ -73,10 +73,16 @@ public class ActiveProcessTracker implements IPartListener {
      */
     public void partBroughtToTop(IWorkbenchPart part) {
         IProcess process = getJobFromActivatedEditor(part);
-        if (process != null) {
+        if (process != null && currentProcess != process) {
             currentProcess = process;
             setContextsView(process);
             setStatsAndLogsView(process);
+            if (process instanceof Process) {
+                Process p = (Process) process;
+                if (!p.isReadOnly() && p.isActivate()) {
+                    p.checkDifferenceWithRepository();
+                }
+            }
         }
     }
 
@@ -125,6 +131,7 @@ public class ActiveProcessTracker implements IPartListener {
         if (part instanceof AbstractMultiPageTalendEditor) {
             AbstractMultiPageTalendEditor mpte = (AbstractMultiPageTalendEditor) part;
             if (mpte.isKeepPropertyLocked()) {
+                currentProcess = null;
                 return;
             }
         }
@@ -145,6 +152,7 @@ public class ActiveProcessTracker implements IPartListener {
             }
             UIUtils.closeSqlBuilderDialogs(process.getName());
         }
+        currentProcess = null;
     }
 
     /*
@@ -158,6 +166,7 @@ public class ActiveProcessTracker implements IPartListener {
             AbstractMultiPageTalendEditor mpte = (AbstractMultiPageTalendEditor) part;
             mpte.getTalendEditor().savePaletteState();
         }
+        currentProcess = null;
     }
 
     /*

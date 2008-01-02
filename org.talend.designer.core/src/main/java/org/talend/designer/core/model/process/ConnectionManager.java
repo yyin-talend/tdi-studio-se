@@ -35,9 +35,6 @@ public class ConnectionManager {
 
     private static EConnectionType newlineStyle;
 
-    // Only when you want to test issue 2593, change this field to true.
-    public static boolean allowMultiConnection = false;
-
     /**
      * 
      * Will return true if the connection can connect or not between source & target.
@@ -57,9 +54,24 @@ public class ConnectionManager {
             return false;
         }
 
-        if (source.sameProcessAs(target, false)) {
+        boolean skipSameProcessTest = false;
+        if (connType.equals(EConnectionType.FLOW_MAIN)) {
+            int nbMain = 0;
+            for (IConnection connec : target.getIncomingConnections()) {
+                if (connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
+                    nbMain++;
+                }
+            }
+            int maxFlowInput = target.getConnectorFromName(EConnectionType.FLOW_MAIN.getName()).getMaxLinkInput();
+            if (nbMain <= maxFlowInput) {
+                skipSameProcessTest = true;
+            }
+        }
+
+        if (!skipSameProcessTest && source.sameProcessAs(target, false)) {
             return false;
         }
+
         int nbMerge = countNbMerge(source, target);
         if (nbMerge > 1) {
             return false;
@@ -67,18 +79,19 @@ public class ConnectionManager {
 
         // Check existing connections to avoid to have more than one link
         // no matter the type of the connection and the direction
-        List connections = source.getOutgoingConnections();
-        for (int i = 0; i < connections.size(); i++) {
-            if (((Connection) connections.get(i)).getTarget().equals(target)) {
-                return false;
-            }
-        }
-        connections = source.getIncomingConnections();
-        for (int i = 0; i < connections.size(); i++) {
-            if (((Connection) connections.get(i)).getSource().equals(target)) {
-                return false;
-            }
-        }
+        List connections;
+        // connections = source.getOutgoingConnections();
+        // for (int i = 0; i < connections.size(); i++) {
+        // if (((Connection) connections.get(i)).getTarget().equals(target)) {
+        // return false;
+        // }
+        // }
+        // connections = source.getIncomingConnections();
+        // for (int i = 0; i < connections.size(); i++) {
+        // if (((Connection) connections.get(i)).getSource().equals(target)) {
+        // return false;
+        // }
+        // }
 
         if (connType.hasConnectionCategory(IConnectionCategory.DEPENDENCY)) {
             if (!(Boolean) target.getPropertyValue(EParameterName.STARTABLE.getName())) {
@@ -227,11 +240,6 @@ public class ConnectionManager {
         if (processStartNode.equals(newTarget)) {
             return false;
         }
-
-        if (allowMultiConnection) {
-            return true;
-        }
-
         // Modify Connection Type depending old and new target.
         if (newlineStyle.hasConnectionCategory(IConnectionCategory.FLOW)) {
             // if the connection type is not the default one, then we don't change automatically.
@@ -252,7 +260,8 @@ public class ConnectionManager {
                         nbMain++;
                     }
                 }
-                if (nbMain > 0) {
+                int maxFlowInput = newTarget.getConnectorFromName(EConnectionType.FLOW_MAIN.getName()).getMaxLinkInput();
+                if ((maxFlowInput != -1 && nbMain > maxFlowInput) || (maxFlowInput == -1 && nbMain > 0)) {
                     newlineStyle = EConnectionType.FLOW_REF;
                 } else {
                     newlineStyle = EConnectionType.FLOW_MAIN;

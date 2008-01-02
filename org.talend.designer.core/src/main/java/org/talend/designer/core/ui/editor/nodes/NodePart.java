@@ -16,6 +16,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
 
+import org.eclipse.draw2d.ChopboxAnchor;
 import org.eclipse.draw2d.ConnectionAnchor;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Point;
@@ -283,6 +284,7 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
             refreshTargetConnections();
         } else if (changeEvent.getPropertyName().equals(Node.OUTPUTS)) {
             refreshSourceConnections();
+            refreshTargetConnections();
         } else if (changeEvent.getPropertyName().equals(Node.SIZE)) {
             refreshVisuals();
             if (nodeContainerPart != null) {
@@ -361,7 +363,12 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
                 ((NodeFigure) getFigure()).addSourceConnection((ConnectionFigure) connection.getFigure());
             }
         }
-        return new NodeAnchor(getFigure());
+        Connection conn = (Connection) connection.getModel();
+        // System.out.println("getSource=> connection:" + conn + " / source:" + conn.getSource() + " / target:" +
+        // conn.getTarget());
+        NodeAnchor anchor = new NodeAnchor((NodeFigure) getFigure(), conn.getSource(), conn.getTarget(), false);
+        anchor.setConnection(conn);
+        return anchor;
     }
 
     /*
@@ -375,8 +382,16 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
                 ((NodeFigure) getFigure()).setTargetConnection((ConnectionFigure) connection.getFigure());
             }
         }
-        return new NodeAnchor(getFigure());
+        Connection conn = (Connection) connection.getModel();
+        sourceAnchor = null;
+        // System.out.println("getTarget=> connection:" + conn + " / source:" + conn.getSource() + " / target:" +
+        // conn.getTarget());
+        NodeAnchor anchor = new NodeAnchor((NodeFigure) getFigure(), conn.getSource(), conn.getTarget(), true);
+        anchor.setConnection(conn);
+        return anchor;
     }
+
+    NodeAnchor sourceAnchor = null;
 
     /*
      * (non-Javadoc)
@@ -384,7 +399,16 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
      * @see org.eclipse.gef.NodeEditPart#getSourceConnectionAnchor(org.eclipse.gef.Request)
      */
     public ConnectionAnchor getSourceConnectionAnchor(final Request request) {
-        return new NodeAnchor(getFigure());
+        return new ChopboxAnchor(getFigure());
+        // CreateConnectionRequest connReq = (CreateConnectionRequest) request;
+        // Node source = (Node) ((NodePart) connReq.getSourceEditPart()).getModel();
+        // Node target = (Node) ((NodePart) connReq.getTargetEditPart()).getModel();
+        // // System.out.println("getSource=> location:" + connReq.getLocation() + " / source:" + source.getLocation() +
+        // "
+        // // / target:"
+        // // + target.getLocation());
+        // sourceAnchor = new NodeAnchor((NodeFigure) getFigure(), source, false);
+        // return sourceAnchor;
     }
 
     /*
@@ -393,7 +417,18 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
      * @see org.eclipse.gef.NodeEditPart#getTargetConnectionAnchor(org.eclipse.gef.Request)
      */
     public ConnectionAnchor getTargetConnectionAnchor(final Request request) {
-        return new NodeAnchor(getFigure());
+        return new ChopboxAnchor(getFigure());
+        // CreateConnectionRequest connReq = (CreateConnectionRequest) request;
+        // Node source = (Node) ((NodePart) connReq.getSourceEditPart()).getModel();
+        // Node target = (Node) ((NodePart) connReq.getTargetEditPart()).getModel();
+        // // System.out.println("getTarget=> location:" + connReq.getLocation() + " / source:" + source.getLocation() +
+        // "
+        // // / target:"
+        // // + target.getLocation());
+        // if (sourceAnchor != null) {
+        // sourceAnchor.setTarget(target);
+        // }
+        // return new NodeAnchor((NodeFigure) getFigure(), target, source, true);
     }
 
     @Override
