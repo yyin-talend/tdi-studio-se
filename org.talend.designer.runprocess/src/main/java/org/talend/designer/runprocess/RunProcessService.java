@@ -180,6 +180,5 @@ public class RunProcessService implements IRunProcessService {
 
     public IAction getRunProcessAction() {
         return new RunProcessAction();
-
     }
 }

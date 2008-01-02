@@ -178,6 +178,10 @@ public class ProcessView extends ViewPart {
         addListenerOnChildren(container, fl);
     }
 
+    public ProcessComposite getProcessComposite() {
+        return processComposite;
+    }
+
     private void addListenerOnChildren(Control parent, FocusListener focusListener) {
         parent.addFocusListener(focusListener);
         if (parent instanceof Composite) {

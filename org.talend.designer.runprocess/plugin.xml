@@ -122,5 +122,4 @@
           id="org.talend.designer.runprocess.java.javaCompilationParticipant">
     </compilationParticipant>
  </extension>
-
 </plugin>

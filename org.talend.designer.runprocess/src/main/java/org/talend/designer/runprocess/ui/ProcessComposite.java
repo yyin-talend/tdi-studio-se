@@ -57,6 +57,8 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.progress.IProgressService;
 import org.talend.commons.exception.ExceptionHandler;
@@ -437,20 +439,9 @@ public class ProcessComposite extends Composite {
 
             @Override
             public void widgetSelected(final SelectionEvent e) {
-                if (processContext == null) {
-                    execBtn.setEnabled(false);
-                    return;
-                }
-                if (execBtn.getData().equals(PAUSE_ID)) {
-                    pause(PAUSE_ID);
-                } else if (execBtn.getData().equals(RESUME_ID)) {
-                    pause(RESUME_ID);
-                } else if (execBtn.getData().equals(EXEC_ID)) {
-                    exec();
-                    execBtn.setData(PAUSE_ID);
-                }
-
+                execButtonPressed();
             }
+
         });
 
         killBtn.addSelectionListener(new SelectionAdapter() {
@@ -484,6 +475,25 @@ public class ProcessComposite extends Composite {
                 processContext.setSaveBeforeRun(saveJobBeforeRunButton.getSelection());
             }
         });
+    }
+
+    /**
+     * bqian Comment method "execButtonPressed".
+     */
+    public void execButtonPressed() {
+        if (processContext == null) {
+            execBtn.setEnabled(false);
+            return;
+        }
+        if (execBtn.getData().equals(PAUSE_ID)) {
+            pause(PAUSE_ID);
+        } else if (execBtn.getData().equals(RESUME_ID)) {
+            pause(RESUME_ID);
+        } else if (execBtn.getData().equals(EXEC_ID)) {
+            addInHistoryRunningList();
+            exec();
+            execBtn.setData(PAUSE_ID);
+        }
     }
 
     public void pause(int id) {
@@ -651,10 +661,30 @@ public class ProcessComposite extends Composite {
         consoleText.showSelection();
     }
 
+    /**
+     * DOC bqian Comment method "addInHistoryRunningList".
+     */
+    private void addInHistoryRunningList() {
+        IEditorReference[] editors = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getEditorReferences();
+        
+        if (getProcessContext() == null) {
+            return;
+        }
+        // Add this job to running history list.
+        IEditorPart activeEditor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+        if(activeEditor==null){
+            return;
+        }
+        DebugUIPlugin.getDefault().getLaunchConfigurationManager().getLaunchShortcut(
+                "org.talend.designer.runprocess.debug.JobLaunchShortcut").launch(activeEditor, ILaunchManager.RUN_MODE);
+        
+    }
+
     public void exec() {
         if (getProcessContext() == null) {
             return;
         }
+
         CorePlugin.getDefault().getDesignerCoreService().saveJobBeforeRun(getProcessContext().getProcess());
         if (clearBeforeExec.getSelection()) {
             processContext.clearMessages();
