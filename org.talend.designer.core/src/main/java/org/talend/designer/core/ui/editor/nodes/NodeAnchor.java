@@ -199,10 +199,12 @@ public class NodeAnchor extends ChopboxAnchor {
 
         Rectangle sourceRect = new Rectangle(source.getLocation(), source.getSize());
         Rectangle targetRect = new Rectangle(target.getLocation(), target.getSize());
-        if ((source.getLocation().y >= target.getLocation().y) && (source.getSize().height < target.getSize().height)) {
+        if ((source.getLocation().y >= target.getLocation().y)
+                && ((source.getLocation().y + source.getSize().height) <= (target.getLocation().y + target.getSize().height))) {
             targetRect = new Rectangle(new Point(target.getLocation().x, source.getLocation().y), new Dimension(
                     target.getSize().width, source.getSize().height));
-        } else if ((source.getLocation().x >= target.getLocation().x) && (source.getSize().width < target.getSize().width)) {
+        } else if ((source.getLocation().x >= target.getLocation().x)
+                && ((source.getLocation().x + source.getSize().width) <= (target.getLocation().x + target.getSize().width))) {
             targetRect = new Rectangle(new Point(source.getLocation().x, target.getLocation().y), new Dimension(
                     source.getSize().width, source.getSize().height));
         }
