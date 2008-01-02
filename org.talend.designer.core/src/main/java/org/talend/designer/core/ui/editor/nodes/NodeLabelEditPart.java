@@ -42,7 +42,7 @@ import org.talend.sqlbuilder.util.UIUtils;
  * $Id$
  * 
  */
-public class NodeLabelEditPart extends AbstractGraphicalEditPart implements PropertyChangeListener, INodeLabelEditPart {
+public class NodeLabelEditPart extends AbstractGraphicalEditPart implements PropertyChangeListener {
 
     SimpleHtmlTextEditManager manager = null;
 

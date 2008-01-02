@@ -59,7 +59,6 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IExternalData;
 import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.process.INode;
-import org.talend.core.model.process.INode2;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.INodeReturn;
 import org.talend.core.model.process.IProcess;
@@ -89,7 +88,7 @@ import org.talend.repository.model.ExternalNodesFactory;
  * $Id$
  * 
  */
-public class Node extends Element implements INode, INode2 {
+public class Node extends Element implements INode {
 
     private static Logger log = Logger.getLogger(Node.class);
 
@@ -1235,11 +1234,11 @@ public class Node extends Element implements INode, INode2 {
         return null;
     }
 
-    public INode2 getMainBranch() {
-        INode2 targetWithRef = null;
+    public INode getMainBranch() {
+        Node targetWithRef = null;
         for (int i = 0; i < getOutgoingConnections().size() && targetWithRef == null; i++) {
             IConnection connection = getOutgoingConnections().get(i);
-            INode2 nodeTmp = (INode2) connection.getTarget();
+            Node nodeTmp = (Node) connection.getTarget();
             if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.USE_HASH)) {
                 // System.out.println(" ** Ref Link Found in:" + nodeTmp + "
                 // from:" + this);
@@ -1270,13 +1269,13 @@ public class Node extends Element implements INode, INode2 {
     public boolean sameProcessAs(Node node, boolean withConditions) {
         // System.out.println("from:" + this + " -- to:" + node);
 
-        INode2 currentNode = (INode2) getSubProcessStartNode(withConditions);
+        Node currentNode = (Node) getSubProcessStartNode(withConditions);
         if (!currentNode.isStart()) {
-            currentNode = (INode2) currentNode.getProcessStartNode(withConditions);
+            currentNode = (Node) currentNode.getProcessStartNode(withConditions);
         }
-        INode2 otherNode = (INode2) node.getSubProcessStartNode(withConditions);
+        Node otherNode = (Node) node.getSubProcessStartNode(withConditions);
         if (!otherNode.isStart()) {
-            otherNode = (INode2) otherNode.getProcessStartNode(withConditions);
+            otherNode = (Node) otherNode.getProcessStartNode(withConditions);
         }
         // System.out.println("source start:" + currentNode + " -- target
         // start:" + otherNode);

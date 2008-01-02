@@ -53,7 +53,7 @@ import org.talend.repository.model.RepositoryNode;
  * $Id$
  * 
  */
-public class ProcessPart extends AbstractGraphicalEditPart implements PropertyChangeListener, IAdaptable, IProcessPart {
+public class ProcessPart extends AbstractGraphicalEditPart implements PropertyChangeListener, IAdaptable {
 
     private FreeformLayer fig2;
 

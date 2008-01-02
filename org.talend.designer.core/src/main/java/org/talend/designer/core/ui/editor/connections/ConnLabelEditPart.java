@@ -40,7 +40,7 @@ import org.talend.designer.core.ui.editor.cmd.ConnectionDeleteCommand;
  * $Id$
  * 
  */
-public class ConnLabelEditPart extends AbstractGraphicalEditPart implements PropertyChangeListener, IConnLabelEditPart {
+public class ConnLabelEditPart extends AbstractGraphicalEditPart implements PropertyChangeListener {
 
     NodeLabelEditManager manager = null;
 

@@ -40,7 +40,7 @@ import org.talend.designer.core.ui.views.properties.ComponentSettingsView;
  * $Id$
  * 
  */
-public class ConnectionPart extends AbstractConnectionEditPart implements PropertyChangeListener, IConnectionPart {
+public class ConnectionPart extends AbstractConnectionEditPart implements PropertyChangeListener {
 
     /*
      * (non-Javadoc)

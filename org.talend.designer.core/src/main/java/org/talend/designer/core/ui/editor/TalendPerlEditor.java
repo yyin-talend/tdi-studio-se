@@ -26,7 +26,7 @@ import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
  * $Id$
  * 
  */
-public class TalendPerlEditor extends PerlEditor implements ISyntaxCheckableEditor, ITalendCodeEditor {
+public class TalendPerlEditor extends PerlEditor implements ISyntaxCheckableEditor {
 
     private boolean disposed = false;
 

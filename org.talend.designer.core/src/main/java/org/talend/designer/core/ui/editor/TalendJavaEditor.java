@@ -33,8 +33,7 @@ import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
  * $Id: TalendJavaEditor.java 1 2007-1-18 下午03:26:08 +0000 (下午03:26:08, 2007-1-18 2007) yzhang $
  * 
  */
-public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCheckableEditor, ITalendJavaEditor,
-        ITalendCodeEditor {
+public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCheckableEditor {
 
     private org.eclipse.jdt.core.ICompilationUnit unit;
 
