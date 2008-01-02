@@ -960,9 +960,12 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         EList projectAuthorization = user.getProjectAuthorization();
         for (Object o : projectAuthorization) {
             UserProjectAuthorization userProjectAuthorization = (UserProjectAuthorization) o;
-            if (userProjectAuthorization.getProject() == repositoryContext.getProject()) {
-                UserProjectAuthorizationType type = userProjectAuthorization.getType();
-                return type.getValue() == UserProjectAuthorizationType.READ_ONLY;
+            if (userProjectAuthorization.getProject() != null) {
+                if (userProjectAuthorization.getProject().getTechnicalLabel().equals(
+                        repositoryContext.getProject().getTechnicalLabel())) {
+                    UserProjectAuthorizationType type = userProjectAuthorization.getType();
+                    return type.getValue() == UserProjectAuthorizationType.READ_ONLY;
+                }
             }
         }
 
