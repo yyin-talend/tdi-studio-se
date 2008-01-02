@@ -30,7 +30,7 @@ import org.talend.designer.core.ui.editor.nodes.NodePart;
  * $Id$
  * 
  */
-public class NodeContainerPart extends AbstractGraphicalEditPart implements PropertyChangeListener {
+public class NodeContainerPart extends AbstractGraphicalEditPart implements PropertyChangeListener, INodeContainerPart {
 
     @Override
     public boolean isSelectable() {

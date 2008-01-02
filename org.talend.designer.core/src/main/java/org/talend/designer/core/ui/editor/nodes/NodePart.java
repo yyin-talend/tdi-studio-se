@@ -73,7 +73,7 @@ import org.talend.repository.ui.views.IRepositoryView;
  * $Id$
  * 
  */
-public class NodePart extends AbstractGraphicalEditPart implements PropertyChangeListener, NodeEditPart {
+public class NodePart extends AbstractGraphicalEditPart implements PropertyChangeListener, NodeEditPart, INodeEditPart {
 
     protected DirectEditManager manager;
 

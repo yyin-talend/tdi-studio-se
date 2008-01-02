@@ -31,9 +31,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
-import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
-import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.ui.images.ECoreImage;
@@ -50,13 +48,10 @@ import org.talend.designer.core.ui.editor.nodes.NodeLabel;
 import org.talend.designer.core.ui.editor.nodes.NodeLabelEditPart;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
 import org.talend.designer.core.ui.editor.outline.NodeTreeEditPart;
-import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.process.ProcessPart;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.repository.job.deletion.JobResourceManager;
-import org.talend.repository.model.IProxyRepositoryFactory;
-import org.talend.repository.model.IRepositoryService;
 
 /**
  * This class is the main editor, the differents pages in it are: <br/><b>1)</b> {@link TalendEditor} <br/><b>2)</b>
@@ -98,28 +93,7 @@ public class MultiPageTalendEditor extends AbstractMultiPageTalendEditor {
         if (!(editorInput instanceof IFileEditorInput) && !(editorInput instanceof ProcessEditorInput)) {
             throw new PartInitException(Messages.getString("MultiPageTalendEditor.InvalidInput")); //$NON-NLS-1$
         }
-        setSite(site);
-        setInput(editorInput);
-        site.setSelectionProvider(new MultiPageTalendSelectionProvider(this));
-        getSite().getWorkbenchWindow().getSelectionService().addSelectionListener(this);
-
-        // Lock the process :
-        IRepositoryService service = DesignerPlugin.getDefault().getRepositoryService();
-        IProxyRepositoryFactory repFactory = service.getProxyRepositoryFactory();
-        ProcessEditorInput processEditorInput = (ProcessEditorInput) editorInput;
-        Process currentProcess = (processEditorInput).getLoadedProcess();
-        if (!currentProcess.isReadOnly()) {
-            try {
-                processEditorInput.getItem().getProperty().eAdapters().add(dirtyListener);
-                repFactory.lock(currentProcess);
-            } catch (PersistenceException e) {
-                e.printStackTrace();
-            } catch (BusinessException e) {
-                // Nothing to do
-            }
-        } else {
-            setReadOnly(true);
-        }
+        super.init(site, editorInput);
     }
 
     @Override

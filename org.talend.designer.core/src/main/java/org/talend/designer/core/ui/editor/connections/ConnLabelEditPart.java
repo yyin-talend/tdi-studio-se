@@ -40,7 +40,7 @@ import org.talend.designer.core.ui.editor.cmd.ConnectionDeleteCommand;
  * $Id$
  * 
  */
-public class ConnLabelEditPart extends AbstractGraphicalEditPart implements PropertyChangeListener {
+public class ConnLabelEditPart extends AbstractGraphicalEditPart implements PropertyChangeListener, IConnLabelEditPart {
 
     NodeLabelEditManager manager = null;
 
@@ -114,8 +114,8 @@ public class ConnLabelEditPart extends AbstractGraphicalEditPart implements Prop
                 List<Connection> connectionList = new ArrayList<Connection>();
                 for (int i = 0; i < request.getEditParts().size(); i++) {
                     if (request.getEditParts().get(i) instanceof ConnLabelEditPart) {
-                        connectionList.add(((ConnectionLabel) ((ConnLabelEditPart) request.getEditParts().get(i))
-                                .getModel()).getConnection());
+                        connectionList.add(((ConnectionLabel) ((ConnLabelEditPart) request.getEditParts().get(i)).getModel())
+                                .getConnection());
                     }
                 }
                 return new ConnectionDeleteCommand(connectionList);
@@ -174,8 +174,7 @@ public class ConnLabelEditPart extends AbstractGraphicalEditPart implements Prop
     private void performDirectEdit() {
         ((Label) getFigure()).setText(((Connection) getParent().getModel()).getName());
         if (manager == null) {
-            manager = new NodeLabelEditManager(this, NodeLabelCellEditor.class, new LabelCellEditorLocator(
-                    (Label) getFigure()));
+            manager = new NodeLabelEditManager(this, NodeLabelCellEditor.class, new LabelCellEditorLocator((Label) getFigure()));
         }
         manager.show();
     }
