@@ -43,6 +43,7 @@ try {
 } 
 
 globalMap.put("<%=cid %>_DIFFERENCE", "" + validate<%=cid %>);
+globalMap.put("<%=cid %>_ERROR_MESSAGE", "" + message<%=cid %>);
 
 <%
 if (print) {
