@@ -179,7 +179,7 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
      * @see org.eclipse.ui.part.EditorActionBarContributor#contributeToToolBar(org.eclipse.jface.action.IToolBarManager)
      */
     public void contributeToToolBar(final IToolBarManager toolBarManager) {
-        toolBarManager.add(CorePlugin.getDefault().getRunProcessService().getRunProcessAction());
+//        toolBarManager.add(CorePlugin.getDefault().getRunProcessService().getRunProcessAction());
         toolBarManager.add(getAction(ActionFactory.UNDO.getId()));
         toolBarManager.add(getAction(ActionFactory.REDO.getId()));
         String[] zoomStrings = new String[] { ZoomManager.FIT_ALL, ZoomManager.FIT_HEIGHT, ZoomManager.FIT_WIDTH };
