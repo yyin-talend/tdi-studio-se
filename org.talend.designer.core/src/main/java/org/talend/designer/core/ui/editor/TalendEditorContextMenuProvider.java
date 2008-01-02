@@ -151,6 +151,7 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
                 for (INodeConnector connector : connectors) {
                     if (connector.isBuiltIn()) {
                         MenuManager mainSubMenu = new MenuManager(connector.getMenuName());
+                        subMenu.add(new Separator(connector.getMenuName()));
                         subMenu.appendToGroup(connector.getMenuName(), mainSubMenu);
                         List<String> menuList = ((ConnectionCreateAction) action).getMenuList();
                         for (int i = 0; i < menuList.size(); i++) {

@@ -134,25 +134,25 @@ public class ActiveProcessTracker implements IPartListener {
                 currentProcess = null;
                 return;
             }
-        }
 
-        IProcess process = getJobFromActivatedEditor(part);
-        if (process != null) {
-            Problems.removeProblemsByProcess(process);
-            Problems.removeJob(process);
-            IRunProcessService service = DesignerPlugin.getDefault().getRunProcessService();
-            service.removeProcess(process);
+            IProcess process = getJobFromActivatedEditor(part);
+            if (process != null) {
+                Problems.removeProblemsByProcess(process);
+                Problems.removeJob(process);
+                IRunProcessService service = DesignerPlugin.getDefault().getRunProcessService();
+                service.removeProcess(process);
 
-            if (currentProcess == process) {
-                Problems.clearAll();
-                Contexts.setTitle(""); //$NON-NLS-1$
-                Contexts.clearAll();
-                StatsAndLogs.setTitle("");
-                StatsAndLogs.clearAll();
+                if (currentProcess == process) {
+                    Problems.clearAll();
+                    Contexts.setTitle(""); //$NON-NLS-1$
+                    Contexts.clearAll();
+                    StatsAndLogs.setTitle("");
+                    StatsAndLogs.clearAll();
+                }
+                UIUtils.closeSqlBuilderDialogs(process.getName());
             }
-            UIUtils.closeSqlBuilderDialogs(process.getName());
+            currentProcess = null;
         }
-        currentProcess = null;
     }
 
     /*

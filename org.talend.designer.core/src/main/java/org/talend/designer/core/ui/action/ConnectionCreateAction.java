@@ -133,24 +133,28 @@ public class ConnectionCreateAction extends SelectionAction {
             if (curNodeConnector.isBuiltIn()) {
                 for (int i = 0; i < node.getMetadataList().size(); i++) {
                     IMetadataTable table = (node.getMetadataList().get(i));
-                    String name = table.getTableName();
-                    if (connecType.equals(EConnectionType.TABLE)) {
-                        name = table.getLabel() + " (" + name + ")"; //$NON-NLS-1$ //$NON-NLS-2$
-                    }
-                    boolean nameUsed = false;
-                    for (Connection connec : (List<Connection>) node.getOutgoingConnections()) {
-                        if (connec.getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)) {
-                            if (connec.getMetadataTable().getTableName().equals(table.getTableName())) {
-                                nameUsed = true;
+                    if (table.getAttachedConnector().equals(curNodeConnector.getName())) {
+                        String name = table.getTableName();
+                        if (connecType.equals(EConnectionType.TABLE)) {
+                            name = table.getLabel() + " (" + name + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+                        }
+                        boolean nameUsed = false;
+                        for (Connection connec : (List<Connection>) node.getOutgoingConnections()) {
+                            if (connec.getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)) {
+                                if (connec.getMetadataTable().getTableName().equals(table.getTableName())) {
+                                    nameUsed = true;
+                                }
                             }
                         }
-                    }
-                    // if the name is not already in the process adds to the list
-                    if (!nameUsed) {
-                        menuList.add(name);
+                        // if the name is not already in the process adds to the list
+                        if (!nameUsed) {
+                            menuList.add(name);
+                        }
                     }
                 }
-                menuList.add(getNewOutputMenuName());
+                if (node.getMetadataList().size() < curNodeConnector.getMaxLinkOutput()) {
+                    menuList.add(getNewOutputMenuName());
+                }
             } else {
                 String menuName;
                 if (connecType.equals(EConnectionType.TABLE)) {
@@ -220,7 +224,15 @@ public class ConnectionCreateAction extends SelectionAction {
             if (!node.isActivate()) {
                 return list;
             }
-            return node.getConnectorsFromType(connecType);
+            List<INodeConnector> nodeConnectorList = new ArrayList<INodeConnector>(node.getConnectorsFromType(connecType));
+            List<INodeConnector> toRemove = new ArrayList<INodeConnector>();
+            for (INodeConnector connector : nodeConnectorList) {
+                if ((connector.getMaxLinkOutput() != -1) && (connector.getCurLinkNbOutput() >= connector.getMaxLinkOutput())) {
+                    toRemove.add(connector);
+                }
+            }
+            nodeConnectorList.removeAll(toRemove);
+            return nodeConnectorList;
         }
         return list;
     }
