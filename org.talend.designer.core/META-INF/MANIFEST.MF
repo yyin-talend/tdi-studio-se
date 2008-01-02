@@ -30,7 +30,9 @@ Require-Bundle: org.eclipse.core.expressions,
  org.talend.librariesmanager,
  com.ibm.icu,
  org.talend.repository,
- org.talend.commons.ui
+ org.talend.commons.ui,
+ org.eclipse.debug.core,
+ org.eclipse.debug.ui
 Eclipse-LazyStart: true
 Plugin-Class: org.talend.designer.core.DesignerPlugin
 Export-Package: org.talend.designer.core;
@@ -47,6 +49,7 @@ Export-Package: org.talend.designer.core;
    org.eclipse.jface.viewers,
    org.osgi.framework,
    org.talend.designer.codegen",
+ org.talend.designer.core.debug,
  org.talend.designer.core.model.components,
  org.talend.designer.core.model.metadata,
  org.talend.designer.core.model.process,

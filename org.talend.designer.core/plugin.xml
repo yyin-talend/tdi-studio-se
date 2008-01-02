@@ -227,6 +227,12 @@
             level="10"
             name="Edit process"/>
       <Action
+            class="org.talend.designer.core.ui.action.RunProcess"
+            id="org.talend.designer.core.actions.runprocess"
+            isEditAction="true"
+            level="99"
+            name="Run process"/>
+      <Action
             class="org.talend.designer.core.ui.action.ReadProcess"
             id="org.talend.designer.core.actions.readprocess"
             isReadAction="true"
@@ -440,4 +446,93 @@
             mapping="COMMAND"
             name="Command"/>     
    </extension>
+   
+   <extension
+	         id="org.talend.designer.runprocess.debug"
+	         name="Talend Job Debugger"
+	         point="org.eclipse.debug.core.launchConfigurationTypes">
+	      <launchConfigurationType
+	            name="Perl Local"
+	            delegate="org.talend.designer.core.debug.JobLaunchConfigurationDelegate"
+	            modes="run"
+	            public="true"
+	            id="org.talend.designer.runprocess.jobLaunchConfiguration">
+	      </launchConfigurationType>
+	</extension>
+	
+	<extension
+         point="org.eclipse.debug.ui.launchConfigurationTypeImages">
+      <launchConfigurationTypeImage
+            icon="icons/process_icon.gif"
+            configTypeID="org.talend.designer.runprocess.jobLaunchConfiguration"
+            id="org.talend.designer.runprocess.launchImage">
+      </launchConfigurationTypeImage>
+   </extension>
+
+	<extension
+         point="org.eclipse.debug.ui.launchShortcuts">
+      <shortcut
+            category="org.talend.rcp.perspective"
+            class="org.talend.designer.core.debug.JobLaunchShortcut"
+            icon="platform:/plugin/org.talend.core/icons/process_icon.gif"
+            id="org.talend.designer.runprocess.debug.JobLaunchShortcut"
+            label="Job"
+            modes="run">
+          
+          <contextualLaunch>
+           <enablement>
+             <with variable="selection">
+               <count value="1"/>
+             
+              <!--iterate>
+                 <or>
+                   <test property="org.eclipse.debug.ui.matchesPattern" value="*.pl"/>
+                   <test property="org.eclipse.debug.ui.matchesPattern" value="*.pm"/>
+                 </or>
+               </iterate-->
+               
+             </with>
+           </enablement>
+  		 </contextualLaunch>
+   
+	  </shortcut>
+   </extension>
+    <extension point="org.eclipse.ui.actionSets">
+    <actionSet
+            label="Talend Run History"
+            visible="true"
+            id="org.talend.debug.ui.launchActionSet">
+         <menu
+               label="%RunMenu.label"
+               path="additions"
+               id="org.talend.ui.run">
+            <separator
+                  name="relaunchGroup">
+            </separator>
+            <separator
+                  name="runGroup">
+            </separator>
+            <separator
+                  name="debugGroup">
+            </separator>
+            <separator
+                  name="emptyLaunchGroup">
+            </separator>
+         </menu>
+    
+         <action
+               id="org.eclipse.debug.internal.ui.actions.RunDropDownAction"
+               toolbarPath="debug"
+               hoverIcon="platform:/plugin/org.eclipse.debug.ui/icons/full/etool16/run_exc.gif"
+               class="org.talend.designer.core.debug.TalendLaunchToolbarAction"
+               disabledIcon="platform:/plugin/org.eclipse.debug.ui/icons/full/dtool16/run_exc.gif"
+               icon="platform:/plugin/org.eclipse.debug.ui/icons/full/etool16/run_exc.gif"
+               helpContextId="run_action_context"
+               label="%RunDropDownAction.label"
+               style="pulldown">
+         </action>
+    
+      </actionSet>
+   </extension>
+   
 </plugin>
