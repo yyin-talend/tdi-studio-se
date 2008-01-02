@@ -64,15 +64,29 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
         public void  testDataType(String incomingConnName, IMetadataColumn metadataColumn, String typeSelected, String cid) {
             JavaType javaType = JavaTypesManager.getJavaTypeFromId(metadataColumn.getTalendType());
             if(javaType == JavaTypesManager.OBJECT || javaType == JavaTypesManager.STRING) {
-                %>
+%>
                 try {
+<%
+                if (!javaType.isPrimitive()) {
+%>
+					if (<%=incomingConnName%>.<%=metadataColumn.getLabel()%> != null) {
+<%
+				} 
+%>
                     <%=typeSelected%> tester_<%=cid%> = <%=typeSelected%>.valueOf(<%=incomingConnName%>.<%=metadataColumn.getLabel()%>);
+<%
+                if (!javaType.isPrimitive()) {
+%>
+					}
+<%
+				} 
+%>                
                 } catch(Exception e) {
                     ifPassed_<%=cid%> = false;
                     errorCode_<%=cid%> += 2;
                     errorMessage_<%=cid%> += "|wrong type";
                 }
-                <%
+<%
             }
         }
         public void testDataLength(String incomingConnName, IMetadataColumn metadataColumn, Integer maxLength, String cid) {
@@ -80,7 +94,7 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
             if(javaType == JavaTypesManager.STRING) {
                 if(maxLength != null)
                 {
-                    %>
+%>
                     //validate maxlength
                     if(<%=incomingConnName%>.<%=metadataColumn.getLabel()%> != null) {
                         if(<%=incomingConnName%>.<%=metadataColumn.getLabel()%>.length() > <%=maxLength%>) {
@@ -89,7 +103,7 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
                             errorMessage_<%=cid%> += "|exceed max length";                        
                         }
                     }
-                    <%
+<%
                 }
             }
         }
@@ -97,6 +111,7 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
 			JavaType javaType = JavaTypesManager.getJavaTypeFromId(metadataColumn.getTalendType());
             if(javaType == JavaTypesManager.STRING) {
 %>
+			if(<%=incomingConnName%>.<%=metadataColumn.getLabel()%>!=null){
 				try {
 					java.text.SimpleDateFormat dateFormate_<%=cid%> = new java.text.SimpleDateFormat(<%=pattern%>);
 					dateFormate_<%=cid%>.setLenient(false);
@@ -106,6 +121,7 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
                     errorCode_<%=cid%> += 2;
                     errorMessage_<%=cid%> += "|Date format not valid";
                 }
+			}
 <%
 			}
         }
@@ -141,7 +157,7 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
             	} else {
             		String selectedType = checkedColumn.get("SELECTED_TYPE");
             		if(selectedType.equals("Date")){
-            			checker.testDate(incomingConnName,metadataColumn,"\"yyyy-MM-dd\"",cid);
+            			checker.testDate(incomingConnName,metadataColumn,checkedColumn.get("DATEPATTERN"),cid);
             		}else{
                 		checker.testDataType(incomingConnName,metadataColumn,selectedType,cid);
                 	}

@@ -71,6 +71,7 @@
 						<ITEM NAME="DATE" VALUE="Date" />
 					</ITEMS>
 				</ITEM>
+				<ITEM NAME="DATEPATTERN" FIELD="TEXT"/>
 				<ITEM NAME="NULLABLE" FIELD="CHECK" VALUE="false" />
 				<ITEM NAME="MAX_LENGTH" FIELD="CHECK" VALUE="false" />
 			</ITEMS>
