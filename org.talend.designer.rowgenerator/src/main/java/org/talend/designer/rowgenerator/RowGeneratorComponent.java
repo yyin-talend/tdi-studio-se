@@ -508,7 +508,11 @@ public class RowGeneratorComponent extends AbstractExternalNode {
 
         // Added parameters, preview and functions value.
         for (IMetadataTable table : this.metadataListOut) {
-            this.convert(table);
+            try {
+                this.convert(table);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         componentDocumentation.setMetadataListOut(this.metadataListOut);
@@ -529,16 +533,16 @@ public class RowGeneratorComponent extends AbstractExternalNode {
             if (column instanceof MetadataColumn) {
                 MetadataColumnExt ext = new MetadataColumnExt((MetadataColumn) column);
 
-                FunctionManagerExt functionManager = new FunctionManagerExt();
+                String columnValue = this.getColumnValue(ext, j);
 
-                List<Function> funs = functionManager.getFunctionByName(ext.getTalendType());
-                String[] arrayTalendFunctions2 = new String[funs.size()];
-                for (int i = 0; i < funs.size(); i++) {
-                    arrayTalendFunctions2[i] = funs.get(i).getName();
-                }
-                ext.setArrayFunctions(arrayTalendFunctions2);
-                if (!funs.isEmpty()) {
-                    ext.setFunction(functionManager.getFuntionFromArray(ext, this, j));
+                if (columnValue != null && columnValue.length() > 0)
+
+                {
+                    columnValue = columnValue.replaceAll("\"", "");
+                    columnValue = columnValue.substring(columnValue.lastIndexOf(".") + 1);
+                    Function function = new Function();
+                    function.setName(columnValue);
+                    ext.setFunction(function);
                 }
                 exts.add(ext);
             }
