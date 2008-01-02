@@ -406,14 +406,14 @@
             id="org.talend.repository.actionSet"
             label="Action set"
             visible="true">
-         <action
+         <!--action
                class="org.talend.repository.ui.actions.importproject.ImportProjectsAction"
                icon="icons/import_projects_action.gif"
                id="org.talend.repository.action3"
                label="%importProjectsAction.title"
                style="push"
                toolbarPath="Default"
-               tooltip="%importProjectsAction.toolTip"/>
+               tooltip="%importProjectsAction.toolTip"/-->
          <action
                class="org.talend.repository.ui.actions.importproject.ExportProjectsAsAction"
                icon="icons/export_projects_action.gif"

@@ -15,7 +15,6 @@ package org.talend.repository.ui.actions.importproject;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.runtime.FileLocator;
@@ -126,11 +125,9 @@ public final class ImportDemoProjectAction extends Action {
                     }
 
                     monitorWrap.done();
-                    MessageDialog
-                            .openInformation(shell,
-                                    Messages.getString("ImportDemoProjectAction.messageDialogTitle.demoProject"), //$NON-NLS-1$
-                                    Messages
-                                            .getString("ImportDemoProjectAction.messageDialogContent.demoProjectImportedSuccessfully")); //$NON-NLS-1$
+                    MessageDialog.openInformation(shell, Messages
+                            .getString("ImportDemoProjectAction.messageDialogTitle.demoProject"), //$NON-NLS-1$
+                            Messages.getString("ImportDemoProjectAction.messageDialogContent.demoProjectImportedSuccessfully")); //$NON-NLS-1$
                 }
             };
 

@@ -19,17 +19,26 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
-import org.eclipse.ui.actions.DeleteResourceAction;
+import org.talend.commons.ui.image.ImageProvider;
+import org.talend.repository.ui.ERepositoryImages;
 
 /**
  * DOC qwei class global comment. Detailled comment
  */
 public class DeleteProjectsAsAction extends Action implements IWorkbenchWindowActionDelegate {
 
-    private DeleteResourceAction deleteAction;
+    private boolean login;
 
     public DeleteProjectsAsAction() {
         super();
+        this.setImageDescriptor(ImageProvider.getImageDesc(ERepositoryImages.DELETE_PROJECT_ACTION));
+        this.login = false;
+    }
+
+    public DeleteProjectsAsAction(boolean login) {
+        this();
+        this.login = login;
+
     }
 
     /*
@@ -58,9 +67,13 @@ public class DeleteProjectsAsAction extends Action implements IWorkbenchWindowAc
      * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
      */
     public void run(IAction action) {
+        run();
+    }
+
+    public void run() {
         // TODO Auto-generated method stub
         Shell activeShell = Display.getCurrent().getActiveShell();
-        SelectDeleteProjectDialog dialog = new SelectDeleteProjectDialog(activeShell);
+        SelectDeleteProjectDialog dialog = new SelectDeleteProjectDialog(activeShell, this.login);
         dialog.open();
     }
 

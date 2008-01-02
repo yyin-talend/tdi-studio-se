@@ -69,6 +69,7 @@ import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.RepositoryFactoryProvider;
 import org.talend.repository.ui.ERepositoryImages;
+import org.talend.repository.ui.actions.importproject.DeleteProjectsAsAction;
 import org.talend.repository.ui.actions.importproject.ImportDemoProjectAction;
 import org.talend.repository.ui.actions.importproject.ImportProjectAsAction;
 import org.talend.repository.ui.login.connections.ConnectionsDialog;
@@ -118,6 +119,8 @@ public class LoginComposite extends Composite {
     private Button importProjectsButton;
 
     private Button importDemoProjectButton;
+
+    private Button deleteProjectButton;
 
     private Project[] projects;
 
@@ -272,6 +275,14 @@ public class LoginComposite extends Composite {
         formData.top = new FormAttachment(0);
         formData.bottom = new FormAttachment(100);
         importDemoProjectButton.setLayoutData(formData);
+        // delete
+        deleteProjectButton = toolkit.createButton(group, null, SWT.PUSH);
+        deleteProjectButton.setText(Messages.getString("LoginComposite.buttons.deleteProject"));
+        deleteProjectButton.setImage(ImageProvider.getImage(ERepositoryImages.DELETE_PROJECT_ACTION));
+        data = new FormData();
+        data.left = new FormAttachment(bottomButtons, 0, SWT.LEFT);
+        data.top = new FormAttachment(bottomButtons, VERTICAL_SPACE, SWT.BOTTOM);
+        deleteProjectButton.setLayoutData(data);
 
         fillContents();
         addListeners();
@@ -401,8 +412,7 @@ public class LoginComposite extends Composite {
         projectViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
             public void selectionChanged(SelectionChangedEvent event) {
-                PreferenceManipulator prefManipulator = new PreferenceManipulator(CorePlugin.getDefault()
-                        .getPreferenceStore());
+                PreferenceManipulator prefManipulator = new PreferenceManipulator(CorePlugin.getDefault().getPreferenceStore());
                 prefManipulator.setLastProject(getProject().getLabel());
                 dialog.updateButtons();
                 setRepositoryContextInContext();
@@ -467,6 +477,15 @@ public class LoginComposite extends Composite {
                 }
             }
         });
+        deleteProjectButton.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                DeleteProjectsAsAction deleteProjectAction = new DeleteProjectsAsAction(true);
+                deleteProjectAction.run();
+                populateProjectList();
+            }
+        });
 
     }
 
@@ -492,11 +511,13 @@ public class LoginComposite extends Composite {
             newProjectButton.setVisible(false);
             importProjectsButton.setVisible(false);
             importDemoProjectButton.setVisible(false);
+            deleteProjectButton.setVisible(false);
         } else {
             newProjectLabel.setVisible(true);
             newProjectButton.setVisible(true);
             importProjectsButton.setVisible(true);
             importDemoProjectButton.setVisible(true);
+            deleteProjectButton.setVisible(true);
         }
     }
 
@@ -552,8 +573,7 @@ public class LoginComposite extends Composite {
         } catch (Exception e) {
             projects = new Project[0];
 
-            MessageDialog.openError(getShell(),
-                    "Unable to retrieve projects", "Unable to retrieve projects:\n" + e.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$
+            MessageDialog.openError(getShell(), "Unable to retrieve projects", "Unable to retrieve projects:\n" + e.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
         if (initialized) {
