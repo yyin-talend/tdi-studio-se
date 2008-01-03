@@ -224,7 +224,7 @@ public class NodesPasteCommand extends Command {
             Node copiedNode = (Node) copiedNodePart.getModel();
             IComponent component = ComponentsFactoryProvider.getInstance().get(copiedNode.getComponent().getName());
             if (component == null) {
-                continue;
+                component = copiedNode.getComponent();
             }
             Node pastedNode = new Node(component, process);
 
