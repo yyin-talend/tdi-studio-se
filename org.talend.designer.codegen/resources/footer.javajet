@@ -5,6 +5,8 @@
 		org.talend.core.model.process.INode 
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		org.talend.core.CorePlugin
+        org.talend.core.model.process.EConnectionType
+        org.talend.core.model.process.IConnection	
 		
 		java.util.Vector
 		java.util.List
@@ -14,6 +16,7 @@
 		org.talend.core.model.metadata.types.JavaType
 	" 
 	class="Footer" 
+	skeleton="footer_java.skeleton"	
 %>
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
@@ -217,25 +220,19 @@
                 threadRunResultMap.put(status, "");
                 threadLocal.set(threadRunResultMap);
 	    	    
-	    	    try {
-	            	<%=process.getName() %>Class.<%=rootNode.getUniqueName() %>Process();
-	            } catch (TalendException e) {
-	                ((java.util.Map)threadLocal.get()).put(status, "failure");  
-	            	e.printStackTrace();
-	         	}finally
-	         	{
-	                Integer localErrorCode = (Integer)(((java.util.Map)threadLocal.get()).get(errorCode));
-	                String localStatus = (String)(((java.util.Map)threadLocal.get()).get(status));
-	                if (localErrorCode != null) {
-	                    if (errorCode == null || localErrorCode.compareTo(errorCode) > 0) {
-	                       errorCode = localErrorCode;
-	                    }
-	                }else if(!status.equals("failure")){
-	                        status = localStatus;
-	                }	
-	         	    
-	                runningThreadCount.add(-1);
-	        	}
+				<%=createCallProcess(rootNode, process.getName(), true) %>
+	        	
+                Integer localErrorCode = (Integer)(((java.util.Map)threadLocal.get()).get(errorCode));
+                String localStatus = (String)(((java.util.Map)threadLocal.get()).get(status));
+                if (localErrorCode != null) {
+                    if (errorCode == null || localErrorCode.compareTo(errorCode) > 0) {
+                       errorCode = localErrorCode;
+                    }
+                }else if(!status.equals("failure")){
+                        status = localStatus;
+                }	
+         	    
+                runningThreadCount.add(-1);	        	
 	    	}
 		}.start();
 		
@@ -253,24 +250,14 @@
     }
 <%
 	}else{ // isRunInMultiThread
-%>
-	try {
-<%
 		for (INode rootNode : rootNodes) {
 			String componentName = (String) rootNode.getComponent().getName();
             if (!componentName.equals("tLogCatcher") && !componentName.equals("tFlowMeterCatcher") && !componentName.equals("tAssertCatcher") && !componentName.equals("tStatCatcher")) {
 %>
-		<%=process.getName() %>Class.<%=rootNode.getUniqueName() %>Process();
-<%
-			}
-		}
-%>
-	} catch(TalendException e) {
-		status="failure";
-		e.printStackTrace();
-	} finally {
-<%
-	}// end if(isRunInMultiThread)
+<%=createCallProcess(rootNode, process.getName(), false) %>
+<%	  }
+	}
+}// end if(isRunInMultiThread)
 %>	
 		end = System.currentTimeMillis();
 		if (watch) {
@@ -288,14 +275,6 @@
 		runTrace.stopThreadTrace();
 <%
 	}	
-
-    if(!isRunInMultiThread){
-    // next brace is end of finally.
-%>
-        
-	}
-<%
-	}
 	
 	for (INode statCatcherNode : process.getNodesOfType("tStatCatcher")) {
 %>

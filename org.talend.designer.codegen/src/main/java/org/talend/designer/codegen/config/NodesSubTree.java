@@ -142,8 +142,7 @@ public class NodesSubTree {
                 if (connection.getLineStyle().equals(EConnectionType.RUN_AFTER)) {
                     afterSubProcesses.add(connection.getTarget().getUniqueName());
                 }
-                if (connection.getLineStyle().equals(EConnectionType.ON_SUBJOB_ERROR)
-                        || connection.getLineStyle().equals(EConnectionType.ON_SUBJOB_OK)) {
+                if (connection.getLineStyle().equals(EConnectionType.ON_SUBJOB_OK)) {
                     beforeSubProcesses.add(connection.getTarget().getUniqueName());
                 }
             }
