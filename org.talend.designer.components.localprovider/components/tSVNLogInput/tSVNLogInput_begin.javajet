@@ -68,11 +68,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             
             java.util.Iterator it<%=cid%> = logEntry<%=cid%>.getChangedPaths().keySet().iterator();
             
-            int nb_file_added = 0;
+            int nb_file_added<%=cid%> = 0;
             
-            int nb_file_modified = 0;
+            int nb_file_modified<%=cid%> = 0;
             
-            int nb_file_deleted = 0;
+            int nb_file_deleted<%=cid%> = 0;
             
             while (it<%=cid%>.hasNext()) {
             
@@ -80,15 +80,15 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 
                 if(sp<%=cid%>.getType() == sp<%=cid%>.TYPE_ADDED){
                 
-                	nb_file_added++;
+                	nb_file_added<%=cid%>++;
                 	
                 }else if(sp<%=cid%>.getType() == sp<%=cid%>.TYPE_MODIFIED){
                 
-                	nb_file_modified++;
+                	nb_file_modified<%=cid%>++;
                 
                 }else if(sp<%=cid%>.getType() == sp<%=cid%>.TYPE_DELETED){
                 
-                	nb_file_deleted++;
+                	nb_file_deleted<%=cid%>++;
                 
                 }else{
                 
@@ -115,11 +115,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                     
                     <%=conn.getName() %>.message = logEntry<%=cid%>.getMessage();
                     
-                    <%=conn.getName() %>.nb_file_added = nb_file_added;
+                    <%=conn.getName() %>.nb_file_added = nb_file_added<%=cid%>;
                     
-                    <%=conn.getName() %>.nb_file_modified = nb_file_modified;
+                    <%=conn.getName() %>.nb_file_modified = nb_file_modified<%=cid%>;
                     
-                    <%=conn.getName() %>.nb_file_deleted = nb_file_deleted;
+                    <%=conn.getName() %>.nb_file_deleted = nb_file_deleted<%=cid%>;
                     
 <%
                     }
