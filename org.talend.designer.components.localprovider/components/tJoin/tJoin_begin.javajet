@@ -60,10 +60,10 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
 	
     class Util_<%=cid %>
     {
-        row3Struct lookupValue = null; 
+        <%=lookupConName %>Struct lookupValue = null; 
         final int keyNum = <%=joinKeys.size() %>;
         
-        public boolean isJoined(row1Struct mainRow) {
+        public boolean isJoined(<%=incomingName %>Struct mainRow) {
 <%
 		/* for the key of the input row */
 		
@@ -110,7 +110,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
         	int checkedKeyNum  = 0;
             lookupValue = null;
             
-        	for(row3Struct row : list_tJoin_1){
+        	for(<%=lookupConName %>Struct row : list_tJoin_1){
 <%
 		/* for the key of the lookup row */
 		
