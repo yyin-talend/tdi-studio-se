@@ -33,7 +33,7 @@ public class ImageLib {
 
     private static URL iconURL;
     
-    public static final String COMPONENT_DEFAULT = "component_default.gif"; //$NON-NLS-1$
+    public static final String COMPONENT_DEFAULT = "defaultcomponent_icon32.png"; //$NON-NLS-1$
     
     public static final String COPYCOMPONENT_ACTION = "copycomponent_action.gif"; //$NON-NLS-1$
     

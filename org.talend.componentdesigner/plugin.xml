@@ -240,5 +240,16 @@
       </commonFilter>-->  
       
    </extension>
+   <extension point="org.eclipse.ui.editors"> 
+      <editor 
+         id="org.talend.componentdesigner.jeteditor" 
+         name="ComponentJetEditor" 
+         icon="./icons/JETTemplateFile.gif" 
+         extensions="javajet,perljet" 
+         class="org.eclipse.jet.internal.editor.JETTextEditor" 
+         default="false"> 
+      </editor> 
+   </extension>
+  
        
 </plugin>

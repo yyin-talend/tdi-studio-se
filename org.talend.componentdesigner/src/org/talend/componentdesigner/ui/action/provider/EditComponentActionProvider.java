@@ -23,6 +23,7 @@ import org.eclipse.ui.navigator.CommonActionProvider;
 import org.eclipse.ui.navigator.ICommonActionExtensionSite;
 import org.eclipse.ui.navigator.ICommonViewerWorkbenchSite;
 import org.talend.componentdesigner.ImageLib;
+import org.talend.componentdesigner.model.componentpref.ComponentPrefCollection;
 import org.talend.componentdesigner.ui.wizard.creatcomponent.CreateComponentWizard;
 
 /**
@@ -34,7 +35,6 @@ public class EditComponentActionProvider extends CommonActionProvider {
 	 * DOC rli EditComponentActionProvider constructor comment.
 	 */
 	public EditComponentActionProvider() {
-		// TODO Auto-generated constructor stub
 	}
 	
 	private IAction editComponentAction;
@@ -57,7 +57,10 @@ public class EditComponentActionProvider extends CommonActionProvider {
 				.getFirstElement();
 		if (obj instanceof IFolder) {
 			selectedFolderName = ((IFolder) obj).getName();
-		}
+		}		
+
+		editComponentAction.setEnabled(ComponentPrefCollection.getInstance()
+				.getComponentPref(selectedFolderName) != null);
 	}
 
 	/**

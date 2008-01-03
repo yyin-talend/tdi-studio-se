@@ -19,7 +19,7 @@ import org.talend.componentdesigner.PluginConstant;
  * 
  */
 public enum LanguageType {
-    PERLLANGUAGETYPE(PluginConstant.PERL_LANG, "_perl", ".preljet"),
+    PERLLANGUAGETYPE(PluginConstant.PERL_LANG, "_perl", ".perljet"),
     JAVALANGUAGETYPE(PluginConstant.JAVA_LANG, "_java", ".javajet"),
     BOTHLANGUAGETYPE(PluginConstant.BOTH_LANG, "_perl;_java", ".perljet;.javajet");
 

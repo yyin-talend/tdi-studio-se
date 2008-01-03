@@ -163,7 +163,7 @@ public class ComponentFolderManager {
 		if (componentPref.getImageURL() == null) {
 			copyFileFromSrc((FileInputStream) ImageLib
 					.getImageInputStream(ImageLib.COMPONENT_DEFAULT),
-					ImageLib.COMPONENT_DEFAULT);
+					componentPref.getName() + "_icon32.png");
 		}
 		copyFileFromSrc(componentPref.getImageURL());
 	}	

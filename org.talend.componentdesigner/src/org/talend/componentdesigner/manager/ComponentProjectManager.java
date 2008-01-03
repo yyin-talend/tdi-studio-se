@@ -74,6 +74,8 @@ public class ComponentProjectManager {
 		// get a project handle
 		final IProject newProjectHandle = ResourcesPlugin.getWorkspace()
 				.getRoot().getProject(projectName);
+		
+//		final IJavaProject javaProjHandle  = JavaCore.create(newProjectHandle);
 		// get a project descriptor
 		URI location = null;
 		if (directroy == null || directroy.equals(PluginConstant.EMPTY_STRING)) {
