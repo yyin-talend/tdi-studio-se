@@ -344,26 +344,6 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.gef.ui.parts.GraphicalEditor#getGraphicalViewer()
-     */
-    @Override
-    public GraphicalViewer getGraphicalViewer() {
-        return super.getGraphicalViewer();
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.gef.ui.parts.GraphicalEditor#getSelectionActions()
-     */
-    @Override
-    public List getSelectionActions() {
-        return super.getSelectionActions();
-    }
-
     protected String[] fKeyBindingScopes;
 
     /**
@@ -1303,7 +1283,6 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         // this uses the PartFactory set in configureGraphicalViewer
         // to create an EditPart for the diagram and sets it as the
         // content for the viewer
-        super.initializeGraphicalViewer();
         getGraphicalViewer().setContents(this.process);
         getGraphicalViewer().getControl().addMouseListener(new MouseAdapter() {
 
