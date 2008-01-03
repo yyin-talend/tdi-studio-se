@@ -636,7 +636,7 @@ if (inMetadata != null && metadata != null) {
 	
 	%>
 	SCDSK_<%=cid%> lookupRow_<%=cid%> = new SCDSK_<%=cid%>();
-	SCDStruct_<%=cid%> cacheRow_<%=cid%>;
+	SCDStruct_<%=cid%> cacheRow_<%=cid%> = null;
     <%
 } else {
 	%>

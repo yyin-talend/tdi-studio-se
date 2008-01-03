@@ -284,6 +284,29 @@ if (inMetadata != null && metadata != null) {
     cacheRow_<%=cid%> = cache_<%=cid%>.get(lookupRow_<%=cid%>);
     
     if (cacheRow_<%=cid%> == null) {
+        
+        cacheRow_<%=cid%> = new SCDStruct_<%=cid%>();
+        <%
+        for(IMetadataColumn column : metadata.getListColumns()) {
+            if(typeOfColumn.containsKey(column.getLabel()) && !typeOfColumn.get(column.getLabel()).equals("L3P")) {
+                if(typeOfColumn.get(column.getLabel()).equals("SK")) {
+                    %>
+                    lookupRow_<%=cid%>.<%=column.getLabel()%> = <%=inConnectionName%>.<%=column.getLabel()%>;
+                    <%
+                } else {
+                    %>
+                    cacheRow_<%=cid%>.<%=column.getLabel()%> = <%=inConnectionName%>.<%=column.getLabel()%>;
+                    <%
+                }
+            }
+        }
+        if (useVersion) {
+            %>
+            cacheRow_<%=cid%>.<%=versionField%> = 1;
+            <%
+        }        
+        %>
+        cache_<%=cid%>.put(lookupRow_<%=cid%>, cacheRow_<%=cid%>);
         // Insert new source id
         <%
         int colposition = 1;
