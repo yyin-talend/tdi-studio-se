@@ -22,7 +22,7 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.actions.ActionFactory;
 import org.talend.designer.core.i18n.Messages;
-import org.talend.designer.core.ui.editor.TalendEditor;
+import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.editor.connections.ConnLabelEditPart;
 import org.talend.designer.core.ui.editor.nodes.NodeLabelEditPart;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
@@ -127,8 +127,7 @@ public class GEFCopyAction extends SelectionAction {
                 clipboard.setContents(text.getSelectionText());
 
             } else if (nodeLabelActived) {
-                Text text = (Text) ((NodeLabelEditPart) objects.get(0)).getDirectEditManager().getCellEditor()
-                        .getControl();
+                Text text = (Text) ((NodeLabelEditPart) objects.get(0)).getDirectEditManager().getCellEditor().getControl();
                 clipboard.setContents(text.getSelectionText());
             } else {
                 clipboard.setContents(objects);
@@ -137,8 +136,8 @@ public class GEFCopyAction extends SelectionAction {
 
         // Refreshes the pasteAction's enable status.
         IWorkbenchPart part = getWorkbenchPart();
-        if (part instanceof TalendEditor) {
-            TalendEditor talendEditor = (TalendEditor) part;
+        if (part instanceof AbstractTalendEditor) {
+            AbstractTalendEditor talendEditor = (AbstractTalendEditor) part;
             IAction action = talendEditor.getActionRegistry().getAction(ActionFactory.PASTE.getId());
             action.setEnabled(true);
         }

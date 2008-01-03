@@ -120,7 +120,8 @@ public class JobLaunchShortcut implements ILaunchShortcut {
      * @see org.eclipse.debug.core.ILaunchManager
      */
     public void launch(IEditorPart editor, String mode) {
-        if (editor.getSite().getId().equals(MultiPageTalendEditor.ID)) {
+        if (editor.getSite().getId().equals(MultiPageTalendEditor.ID)
+                || editor.getSite().getId().equals(MultiPageTalendEditor.JOBLET_ID)) {
             RepositoryEditorInput input = (RepositoryEditorInput) editor.getEditorInput();
             launch(input.getItem(), mode);
         }

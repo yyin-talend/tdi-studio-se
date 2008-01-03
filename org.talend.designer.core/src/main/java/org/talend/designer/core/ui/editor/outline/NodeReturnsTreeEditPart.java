@@ -31,7 +31,7 @@ import org.eclipse.ui.PlatformUI;
 import org.talend.core.model.process.ElementParameterParser;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeReturn;
-import org.talend.designer.core.ui.MultiPageTalendEditor;
+import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.nodes.NodeEditPolicy;
 
 /**
@@ -58,8 +58,8 @@ public class NodeReturnsTreeEditPart extends AbstractTreeEditPart {
         IWorkbench workbench = PlatformUI.getWorkbench();
         IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();
         IEditorPart editorPart = page.getActiveEditor();
-        if (editorPart instanceof MultiPageTalendEditor) {
-            MultiPageTalendEditor multiPageTalendEditor = ((MultiPageTalendEditor) editorPart);
+        if (editorPart instanceof AbstractMultiPageTalendEditor) {
+            AbstractMultiPageTalendEditor multiPageTalendEditor = ((AbstractMultiPageTalendEditor) editorPart);
             EditPart editPart = multiPageTalendEditor.getOldSelection();
             if (editPart != null) {
                 ISelection selection = multiPageTalendEditor.getTalendEditor().getViewer().getSelection();
@@ -129,8 +129,8 @@ public class NodeReturnsTreeEditPart extends AbstractTreeEditPart {
      * 
      * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
      *//*
-         * public void propertyChange(PropertyChangeEvent change) { refreshVisuals(); }
-         */
+     * public void propertyChange(PropertyChangeEvent change) { refreshVisuals(); }
+     */
 
     /*
      * (non-Javadoc)

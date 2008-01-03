@@ -77,7 +77,6 @@ import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
-import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.editor.cmd.ChangeMetadataCommand;
 import org.talend.designer.core.ui.editor.connections.ConnectionLabel;
@@ -982,8 +981,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
             elem = ((ConnectionLabel) elem).getConnection();
         }
 
-        if (workbenchPart instanceof MultiPageTalendEditor) {
-            part = (MultiPageTalendEditor) workbenchPart;
+        if (workbenchPart instanceof AbstractMultiPageTalendEditor) {
+            part = (AbstractMultiPageTalendEditor) workbenchPart;
         } else {
             if (elem instanceof Node) {
                 part = ((Process) ((Node) elem).getProcess()).getEditor();
@@ -992,7 +991,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
                 conn = (org.talend.designer.core.ui.editor.connections.Connection) elem;
                 part = ((Process) ((Node) conn.getSource()).getProcess()).getEditor();
             } else {
-                part = (MultiPageTalendEditor) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+                part = (AbstractMultiPageTalendEditor) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
                         .getActiveEditor();
             }
         }

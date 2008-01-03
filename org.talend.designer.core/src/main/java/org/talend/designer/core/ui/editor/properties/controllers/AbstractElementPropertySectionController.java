@@ -67,7 +67,6 @@ import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
-import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
@@ -739,7 +738,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
      * 
      * @param part the part to set
      */
-    protected void setPart(MultiPageTalendEditor part) {
+    protected void setPart(AbstractMultiPageTalendEditor part) {
         this.part = part;
     }
 

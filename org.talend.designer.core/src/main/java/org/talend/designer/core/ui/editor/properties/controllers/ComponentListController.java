@@ -42,8 +42,8 @@ import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.designer.core.model.components.EParameterName;
-import org.talend.designer.core.ui.MultiPageTalendEditor;
-import org.talend.designer.core.ui.editor.TalendEditor;
+import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
+import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty;
@@ -216,8 +216,8 @@ public class ComponentListController extends AbstractElementPropertySectionContr
                     elem.setPropertyValue(param.getName(), componentValueList[0]);
                 } else {
                     IEditorPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
-                    if (part instanceof MultiPageTalendEditor) {
-                        TalendEditor te = ((MultiPageTalendEditor) part).getTalendEditor();
+                    if (part instanceof AbstractMultiPageTalendEditor) {
+                        AbstractTalendEditor te = ((AbstractMultiPageTalendEditor) part).getTalendEditor();
                         CommandStack cmdStack = (CommandStack) te.getAdapter(CommandStack.class);
                         cmdStack.execute(new PropertyChangeCommand(elem, param.getName(), componentValueList[0]));
                     }

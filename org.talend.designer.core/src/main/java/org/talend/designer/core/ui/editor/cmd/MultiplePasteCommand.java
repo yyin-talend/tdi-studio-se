@@ -20,7 +20,7 @@ import org.eclipse.gef.EditPart;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.commands.CompoundCommand;
 import org.eclipse.ui.PlatformUI;
-import org.talend.designer.core.ui.MultiPageTalendEditor;
+import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
 import org.talend.designer.core.ui.editor.notes.Note;
@@ -56,7 +56,7 @@ public class MultiplePasteCommand extends CompoundCommand {
      */
     @Override
     public void execute() {
-        MultiPageTalendEditor multiPageTalendEditor = (MultiPageTalendEditor) PlatformUI.getWorkbench()
+        AbstractMultiPageTalendEditor multiPageTalendEditor = (AbstractMultiPageTalendEditor) PlatformUI.getWorkbench()
                 .getActiveWorkbenchWindow().getActivePage().getActiveEditor();
         GraphicalViewer viewer = multiPageTalendEditor.getTalendEditor().getViewer();
         oldSelection = new ArrayList<EditPart>();
@@ -94,7 +94,7 @@ public class MultiplePasteCommand extends CompoundCommand {
     @Override
     public void undo() {
         // remove the current selection
-        MultiPageTalendEditor multiPageTalendEditor = (MultiPageTalendEditor) PlatformUI.getWorkbench()
+        AbstractMultiPageTalendEditor multiPageTalendEditor = (AbstractMultiPageTalendEditor) PlatformUI.getWorkbench()
                 .getActiveWorkbenchWindow().getActivePage().getActiveEditor();
         GraphicalViewer viewer = multiPageTalendEditor.getTalendEditor().getViewer();
         viewer.deselectAll();

@@ -124,7 +124,8 @@ public class JobLaunchConfigurationDelegate extends org.eclipse.debug.core.model
                         .getEditorReferences();
                 for (IEditorReference editorReference : editors) {
                     IEditorPart editor = editorReference.getEditor(false);
-                    if (editor.getSite().getId().equals(MultiPageTalendEditor.ID)) {
+                    if (editor.getSite().getId().equals(MultiPageTalendEditor.ID)
+                            || editor.getSite().getId().equals(MultiPageTalendEditor.JOBLET_ID)) {
                         RepositoryEditorInput input = (RepositoryEditorInput) editor.getEditorInput();
                         IProcess p = input.getLoadedProcess();
                         if (p.getLabel().equals(jobName)) {

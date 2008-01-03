@@ -27,6 +27,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.core.model.components.IComponent;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.EConnectionType;
@@ -37,7 +38,7 @@ import org.talend.core.model.process.INodeConnector;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
-import org.talend.designer.core.ui.MultiPageTalendEditor;
+import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.TalendEditor;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
@@ -221,7 +222,11 @@ public class NodesPasteCommand extends Command {
         // create the nodes
         for (NodePart copiedNodePart : nodeParts) {
             Node copiedNode = (Node) copiedNodePart.getModel();
-            Node pastedNode = new Node(ComponentsFactoryProvider.getInstance().get(copiedNode.getComponent().getName()), process);
+            IComponent component = ComponentsFactoryProvider.getInstance().get(copiedNode.getComponent().getName());
+            if (component == null) {
+                continue;
+            }
+            Node pastedNode = new Node(component, process);
 
             Point location = null;
             if (getCursorLocation() == null) {
@@ -435,7 +440,7 @@ public class NodesPasteCommand extends Command {
         // create the node container list to paste
         createNodeContainerList();
 
-        MultiPageTalendEditor multiPageTalendEditor = (MultiPageTalendEditor) PlatformUI.getWorkbench()
+        AbstractMultiPageTalendEditor multiPageTalendEditor = (AbstractMultiPageTalendEditor) PlatformUI.getWorkbench()
                 .getActiveWorkbenchWindow().getActivePage().getActiveEditor();
         GraphicalViewer viewer = multiPageTalendEditor.getTalendEditor().getViewer();
 
@@ -484,7 +489,7 @@ public class NodesPasteCommand extends Command {
     @Override
     public void undo() {
         // remove the current selection
-        MultiPageTalendEditor multiPageTalendEditor = (MultiPageTalendEditor) PlatformUI.getWorkbench()
+        AbstractMultiPageTalendEditor multiPageTalendEditor = (AbstractMultiPageTalendEditor) PlatformUI.getWorkbench()
                 .getActiveWorkbenchWindow().getActivePage().getActiveEditor();
         GraphicalViewer viewer = multiPageTalendEditor.getTalendEditor().getViewer();
         if (!multipleCommand) {

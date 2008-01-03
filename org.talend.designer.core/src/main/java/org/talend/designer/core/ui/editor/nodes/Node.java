@@ -67,8 +67,8 @@ import org.talend.core.model.process.Problem.ProblemStatus;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
+import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.ActiveProcessTracker;
-import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.editor.cmd.ChangeMetadataCommand;
 import org.talend.designer.core.ui.editor.cmd.ConnectionCreateCommand;
@@ -896,11 +896,11 @@ public class Node extends Element implements INode {
                 }
                 if (activeWorkbenchWindow != null) {
                     IEditorPart part = activeWorkbenchWindow.getActivePage().getActiveEditor();
-                    if (part instanceof MultiPageTalendEditor) {
-                        if (process.isActivate() && ((MultiPageTalendEditor) part).getProcess().equals(process)) {
+                    if (part instanceof AbstractMultiPageTalendEditor) {
+                        if (process.isActivate() && ((AbstractMultiPageTalendEditor) part).getProcess().equals(process)) {
                             ProcessorUtilities.generateCode((String) getPropertyValue(EParameterName.PROCESS_TYPE_PROCESS
                                     .getName()), (String) value, false, false, ProcessorUtilities.GENERATE_MAIN_ONLY);
-                            ((MultiPageTalendEditor) part).updateChildrens();
+                            ((AbstractMultiPageTalendEditor) part).updateChildrens();
                         }
                     }
                 }
@@ -1483,9 +1483,9 @@ public class Node extends Element implements INode {
         // not a sub process start
         if (!isSubProcessStart() || (!(Boolean) getPropertyValue(EParameterName.STARTABLE.getName()))) {
             if (/*
-                 * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_AFTER) > 0) ||
-                 * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_BEFORE) > 0)||
-                 */
+             * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_AFTER) > 0) ||
+             * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_BEFORE) > 0)||
+             */
             (getCurrentActiveLinksNbOutput(EConnectionType.ON_SUBJOB_OK) > 0)
                     || getCurrentActiveLinksNbOutput(EConnectionType.ON_SUBJOB_ERROR) > 0) {
                 String errorMessage = "A component that is not a sub process start can not have any link run after / run before in output.";
@@ -1497,9 +1497,9 @@ public class Node extends Element implements INode {
         // not a sub process start
         if ((!isELTComponent() && !isSubProcessStart()) || (!(Boolean) getPropertyValue(EParameterName.STARTABLE.getName()))) {
             if (/*
-                 * (getCurrentActiveLinksNbInput(EConnectionType.RUN_AFTER) > 0) ||
-                 * (getCurrentActiveLinksNbInput(EConnectionType.RUN_BEFORE) > 0) ||
-                 */(getCurrentActiveLinksNbInput(EConnectionType.ON_SUBJOB_OK) > 0)
+             * (getCurrentActiveLinksNbInput(EConnectionType.RUN_AFTER) > 0) ||
+             * (getCurrentActiveLinksNbInput(EConnectionType.RUN_BEFORE) > 0) ||
+             */(getCurrentActiveLinksNbInput(EConnectionType.ON_SUBJOB_OK) > 0)
                     || (getCurrentActiveLinksNbInput(EConnectionType.RUN_IF) > 0)
                     || (getCurrentActiveLinksNbInput(EConnectionType.ON_COMPONENT_OK) > 0)
                     || (getCurrentActiveLinksNbInput(EConnectionType.ON_COMPONENT_ERROR) > 0)) {

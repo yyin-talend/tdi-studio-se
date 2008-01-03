@@ -22,6 +22,7 @@ import org.eclipse.gef.commands.Command;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.ui.PlatformUI;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.TalendEditor;
 import org.talend.designer.core.ui.editor.notes.Note;
@@ -182,7 +183,7 @@ public class NotesPasteCommand extends Command {
         // create the note list to paste
         createNoteList();
 
-        MultiPageTalendEditor multiPageTalendEditor = (MultiPageTalendEditor) PlatformUI.getWorkbench()
+        AbstractMultiPageTalendEditor multiPageTalendEditor = (AbstractMultiPageTalendEditor) PlatformUI.getWorkbench()
                 .getActiveWorkbenchWindow().getActivePage().getActiveEditor();
         GraphicalViewer viewer = multiPageTalendEditor.getTalendEditor().getViewer();
 
@@ -222,7 +223,7 @@ public class NotesPasteCommand extends Command {
     @Override
     public void undo() {
         // remove the current selection
-        MultiPageTalendEditor multiPageTalendEditor = (MultiPageTalendEditor) PlatformUI.getWorkbench()
+        AbstractMultiPageTalendEditor multiPageTalendEditor = (AbstractMultiPageTalendEditor) PlatformUI.getWorkbench()
                 .getActiveWorkbenchWindow().getActivePage().getActiveEditor();
         GraphicalViewer viewer = multiPageTalendEditor.getTalendEditor().getViewer();
         if (!multipleCommand) {

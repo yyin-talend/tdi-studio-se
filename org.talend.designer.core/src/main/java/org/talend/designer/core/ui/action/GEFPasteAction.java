@@ -26,7 +26,7 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.actions.ActionFactory;
 import org.talend.designer.core.i18n.Messages;
-import org.talend.designer.core.ui.editor.TalendEditor;
+import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.editor.cmd.MultiplePasteCommand;
 import org.talend.designer.core.ui.editor.cmd.NodesPasteCommand;
 import org.talend.designer.core.ui.editor.cmd.NotesPasteCommand;
@@ -144,17 +144,20 @@ public class GEFPasteAction extends SelectionAction {
                 }
             }
 
-            TalendEditor editor = (TalendEditor) this.getWorkbenchPart();
+            AbstractTalendEditor editor = (AbstractTalendEditor) this.getWorkbenchPart();
             org.eclipse.draw2d.geometry.Point gefPoint = getCursorLocation();
 
             if (nodeParts.size() != 0 && noteParts.size() != 0) {
-                MultiplePasteCommand mpc = new MultiplePasteCommand(nodeParts, noteParts, editor.getProcess(), gefPoint);
+                MultiplePasteCommand mpc = new MultiplePasteCommand(nodeParts, noteParts,
+                        (org.talend.designer.core.ui.editor.process.Process) editor.getProcess(), gefPoint);
                 execute(mpc);
             } else if (nodeParts.size() != 0) {
-                NodesPasteCommand cmd = new NodesPasteCommand(nodeParts, editor.getProcess(), gefPoint);
+                NodesPasteCommand cmd = new NodesPasteCommand(nodeParts,
+                        (org.talend.designer.core.ui.editor.process.Process) editor.getProcess(), gefPoint);
                 execute(cmd);
             } else if (noteParts.size() != 0) {
-                NotesPasteCommand cmd = new NotesPasteCommand(noteParts, editor.getProcess(), gefPoint);
+                NotesPasteCommand cmd = new NotesPasteCommand(noteParts,
+                        (org.talend.designer.core.ui.editor.process.Process) editor.getProcess(), gefPoint);
                 execute(cmd);
             }
             setCursorLocation(null);

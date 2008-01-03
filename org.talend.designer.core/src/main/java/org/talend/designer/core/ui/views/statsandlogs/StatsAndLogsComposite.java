@@ -26,8 +26,8 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
-import org.talend.designer.core.ui.MultiPageTalendEditor;
-import org.talend.designer.core.ui.editor.TalendEditor;
+import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
+import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.views.properties.DynamicComposite;
 
 /**
@@ -98,7 +98,7 @@ public class StatsAndLogsComposite extends DynamicComposite {
                             .getActiveEditor();
 
                     if (activeEditor != null) {
-                        TalendEditor workbenchPart = ((MultiPageTalendEditor) activeEditor).getTalendEditor();
+                        AbstractTalendEditor workbenchPart = ((AbstractMultiPageTalendEditor) activeEditor).getTalendEditor();
                         workbenchPart.setDirty(true);
                     }
                 }

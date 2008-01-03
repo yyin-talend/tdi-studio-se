@@ -26,7 +26,7 @@ import org.eclipse.gef.tools.DirectEditManager;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
-import org.talend.designer.core.ui.MultiPageTalendEditor;
+import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.cmd.ChangeNoteOpacityCommand;
 import org.talend.designer.core.ui.views.properties.ComponentSettingsView;
 
@@ -119,7 +119,7 @@ public class NoteEditPart extends AbstractGraphicalEditPart implements PropertyC
 
         if (request.getType() == RequestConstants.REQ_OPEN) {
             IWorkbenchPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
-            if (part instanceof MultiPageTalendEditor) {
+            if (part instanceof AbstractMultiPageTalendEditor) {
                 CommandStack commandStack = (CommandStack) part.getAdapter(CommandStack.class);
 
                 Command command = new ChangeNoteOpacityCommand(note, !note.isOpaque());

@@ -24,9 +24,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
-import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
-import org.talend.designer.core.ui.editor.TalendEditor;
 import org.talend.designer.core.ui.editor.process.Process;
 
 /**
@@ -138,9 +136,9 @@ public class StatsAndLogsView extends ViewPart {
      */
     private void getCurrentJob() {
         final IEditorPart activeEditor = getSite().getPage().getActiveEditor();
-        if (activeEditor != null && activeEditor instanceof MultiPageTalendEditor) {
-            TalendEditor talendEditor = ((MultiPageTalendEditor) activeEditor).getTalendEditor();
-            Process process = talendEditor.getProcess();
+        if (activeEditor != null && activeEditor instanceof AbstractMultiPageTalendEditor) {
+            AbstractTalendEditor talendEditor = ((AbstractMultiPageTalendEditor) activeEditor).getTalendEditor();
+            Process process = (Process) talendEditor.getProcess();
             if (process != null) {
                 this.process = process;
                 this.title = talendEditor.getTitle();

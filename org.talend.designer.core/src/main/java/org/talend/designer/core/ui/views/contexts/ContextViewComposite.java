@@ -25,7 +25,7 @@ import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.ContextItem;
 import org.talend.core.ui.context.ContextComposite;
 import org.talend.designer.core.DesignerPlugin;
-import org.talend.designer.core.ui.MultiPageTalendEditor;
+import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.cmd.ContextAddParameterCommand;
 import org.talend.designer.core.ui.editor.cmd.ContextChangeDefaultCommand;
 import org.talend.designer.core.ui.editor.cmd.ContextRemoveParameterCommand;
@@ -39,7 +39,7 @@ import org.talend.designer.core.ui.editor.process.Process;
  */
 public class ContextViewComposite extends ContextComposite {
 
-    MultiPageTalendEditor part;
+    AbstractMultiPageTalendEditor part;
 
     // private CCombo typeCombo;
     //
@@ -61,7 +61,7 @@ public class ContextViewComposite extends ContextComposite {
         super(parent, false);
     }
 
-    public void setPart(MultiPageTalendEditor part) {
+    public void setPart(AbstractMultiPageTalendEditor part) {
         this.part = part;
         refresh();
     }

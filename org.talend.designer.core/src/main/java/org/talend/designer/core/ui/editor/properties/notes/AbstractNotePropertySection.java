@@ -21,7 +21,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
-import org.talend.designer.core.ui.MultiPageTalendEditor;
+import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.notes.Note;
 import org.talend.designer.core.ui.editor.notes.NoteEditPart;
 
@@ -31,7 +31,7 @@ public abstract class AbstractNotePropertySection extends AbstractPropertySectio
 
     protected Note note;
 
-    private MultiPageTalendEditor multiPageTalendEditor;
+    private AbstractMultiPageTalendEditor multiPageTalendEditor;
 
     protected CommandStack getCommandStack() {
         return (CommandStack) multiPageTalendEditor.getTalendEditor().getAdapter(CommandStack.class);
@@ -41,10 +41,10 @@ public abstract class AbstractNotePropertySection extends AbstractPropertySectio
     public void setInput(IWorkbenchPart part, ISelection selection) {
         super.setInput(part, selection);
 
-        if (part instanceof MultiPageTalendEditor) {
-            multiPageTalendEditor = (MultiPageTalendEditor) part;
+        if (part instanceof AbstractMultiPageTalendEditor) {
+            multiPageTalendEditor = (AbstractMultiPageTalendEditor) part;
         } else {
-            multiPageTalendEditor = (MultiPageTalendEditor) PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+            multiPageTalendEditor = (AbstractMultiPageTalendEditor) PlatformUI.getWorkbench().getActiveWorkbenchWindow()
                     .getActivePage().getActiveEditor();
         }
 

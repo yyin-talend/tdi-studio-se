@@ -19,7 +19,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.part.ViewPart;
 import org.talend.core.model.process.IContextManager;
-import org.talend.designer.core.ui.MultiPageTalendEditor;
+import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.process.Process;
 
 /**
@@ -30,7 +30,7 @@ public class ContextsView extends ViewPart {
 
     public static final String ID = "org.talend.designer.core.ui.views.ContextsView";
 
-    private MultiPageTalendEditor part;
+    private AbstractMultiPageTalendEditor part;
 
     private Process process;
 
@@ -162,9 +162,9 @@ public class ContextsView extends ViewPart {
 
     private void getPart() {
         final IEditorPart activeEditor = getSite().getPage().getActiveEditor();
-        if (activeEditor instanceof MultiPageTalendEditor) {
-            part = (MultiPageTalendEditor) activeEditor;
-            process = part.getTalendEditor().getProcess();
+        if (activeEditor instanceof AbstractMultiPageTalendEditor) {
+            part = (AbstractMultiPageTalendEditor) activeEditor;
+            process = (Process) part.getTalendEditor().getProcess();
         } else {
             part = null;
         }

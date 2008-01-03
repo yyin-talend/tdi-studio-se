@@ -54,6 +54,7 @@ import org.eclipse.ui.internal.WorkbenchPage;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
+import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.epic.perleditor.PerlEditorPlugin;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.ExceptionHandler;
@@ -72,12 +73,18 @@ import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.Property;
 import org.talend.core.ui.IUIRefresher;
+import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ISyntaxCheckableEditor;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.editor.CodeEditorFactory;
 import org.talend.designer.core.ui.editor.TalendJavaEditor;
+import org.talend.designer.core.ui.editor.TalendPerlEditor;
+import org.talend.designer.core.ui.editor.TalendTabbedPropertySheetPage;
 import org.talend.designer.core.ui.editor.nodes.Node;
+import org.talend.designer.core.ui.editor.nodes.NodeLabel;
+import org.talend.designer.core.ui.editor.nodes.NodeLabelEditPart;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
+import org.talend.designer.core.ui.editor.outline.NodeTreeEditPart;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.process.ProcessPart;
 import org.talend.designer.runprocess.IProcessor;
@@ -152,6 +159,11 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
     }
 
+    @Override
+    public boolean isDirty() {
+        return propertyIsDirty || super.isDirty();
+    }
+
     /**
      * DOC qzhang Comment method "getAbstractTalendEditor".
      * 
@@ -224,14 +236,90 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             IWorkbenchWindow activeWorkbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
             if (activeWorkbenchWindow != null) {
                 if (activeWorkbenchWindow.getActivePage().isPartVisible(this)) {
-                    CorePlugin.getDefault().getDesignerCoreService().getActiveProcessTracker().partBroughtToTop(this);
-                    CorePlugin.getDefault().getRunProcessService().refreshView();
+                    new ActiveProcessTracker().partBroughtToTop(this);
+                    DesignerPlugin.getDefault().getRunProcessService().refreshView();
                 }
             }
 
         } catch (Exception e) {
             MessageBoxExceptionHandler.process(e);
         }
+    }
+
+    /**
+     * DOC bqian Comment method "selectNode".
+     * 
+     * @param node
+     */
+    public void selectNode(Node node) {
+        GraphicalViewer viewer = getTalendEditor().getViewer();
+        Object object = viewer.getRootEditPart().getChildren().get(0);
+        if (object instanceof ProcessPart) {
+            for (EditPart editPart : (List<EditPart>) ((ProcessPart) object).getChildren()) {
+                if (editPart instanceof NodePart) {
+                    if (((NodePart) editPart).getModel().equals(node)) {
+                        viewer.select(editPart);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Calculates the contents of page 2 when the it is activated.
+     */
+    @Override
+    protected void pageChange(final int newPageIndex) {
+        super.pageChange(newPageIndex);
+        setName();
+        if (newPageIndex == 1) {
+            if (codeEditor instanceof ISyntaxCheckableEditor) {
+                moveCursorToSelectedComponent();
+
+                /*
+                 * Belowing method had been called at line 331 within the generateCode method, as soon as code
+                 * generated.
+                 */
+                // ((ISyntaxCheckableEditor) codeEditor).validateSyntax();
+            }
+            codeSync();
+        }
+    }
+
+    /**
+     * Move Cursor to Selected Node.
+     * 
+     * @param processor
+     */
+    private void moveCursorToSelectedComponent() {
+        String nodeName = getSelectedNodeName();
+        if (nodeName != null) {
+            if (codeEditor instanceof TalendJavaEditor) {
+                ((TalendJavaEditor) codeEditor).placeCursorTo(nodeName); //$NON-NLS-1$ //$NON-NLS-2$
+            } else {
+                ((TalendPerlEditor) codeEditor).placeCursorTo(nodeName); //$NON-NLS-1$ //$NON-NLS-2$
+            }
+        }
+    }
+
+    /**
+     * DOC amaumont Comment method "getSelectedNode".
+     * 
+     * @return
+     */
+
+    public EditPart getOldSelection() {
+        IPropertySheetPage propertyPage = (IPropertySheetPage) getTalendEditor().getAdapter(IPropertySheetPage.class);
+        if (propertyPage instanceof TalendTabbedPropertySheetPage) {
+            StructuredSelection selections = ((TalendTabbedPropertySheetPage) propertyPage).getOldSelection();
+            if (selections != null) {
+                Object selection = selections.getFirstElement();
+                if (selection instanceof EditPart) {
+                    return (EditPart) selection;
+                }
+            }
+        }
+        return null;
     }
 
     public void setName() {
@@ -469,7 +557,27 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
      * 
      * @return
      */
-    public abstract Node getSelectedGraphicNode();
+    public Node getSelectedGraphicNode() {
+        Node node = null;
+        List selections = getTalendEditor().getViewer().getSelectedEditParts();
+        if (selections.size() == 1) {
+            Object selection = selections.get(0);
+
+            if (selection instanceof NodeTreeEditPart) {
+                NodeTreeEditPart nTreePart = (NodeTreeEditPart) selection;
+                node = (Node) nTreePart.getModel();
+            } else {
+                if (selection instanceof NodePart) {
+                    NodePart editPart = (NodePart) selection;
+                    node = (Node) editPart.getModel();
+                } else if (selection instanceof NodeLabelEditPart) {
+                    NodeLabelEditPart editPart = (NodeLabelEditPart) selection;
+                    node = ((NodeLabel) editPart.getModel()).getNode();
+                }
+            }
+        }
+        return node;
+    }
 
     /**
      * Closes all project files on project close.

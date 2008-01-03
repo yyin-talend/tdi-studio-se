@@ -182,7 +182,8 @@ public class ProblemsView extends ViewPart implements PropertyChangeListener {
 
         for (IEditorReference reference : editorParts) {
             IEditorPart editor = reference.getEditor(false);
-            if (MultiPageTalendEditor.ID.equals(editor.getSite().getId())) {
+            if (MultiPageTalendEditor.ID.equals(editor.getSite().getId())
+                    || MultiPageTalendEditor.JOBLET_ID.equals(editor.getSite().getId())) {
                 MultiPageTalendEditor mpte = (MultiPageTalendEditor) editor;
                 if (mpte.getTalendEditor().getProcess().equals(node.getProcess())) {
                     page.bringToTop(mpte);

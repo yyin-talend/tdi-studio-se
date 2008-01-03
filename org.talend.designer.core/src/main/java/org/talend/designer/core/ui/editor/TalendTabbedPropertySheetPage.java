@@ -19,7 +19,7 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.views.contentoutline.ContentOutline;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertySheetPageContributor;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
-import org.talend.designer.core.ui.MultiPageTalendEditor;
+import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.outline.NodeTreeEditPart;
 
 /**
@@ -41,8 +41,8 @@ public class TalendTabbedPropertySheetPage extends TabbedPropertySheetPage {
     @Override
     public void selectionChanged(IWorkbenchPart part, ISelection selection) {
         ISelection newSelection;
-        if (part instanceof MultiPageTalendEditor) {
-            MultiPageTalendEditor mpte = (MultiPageTalendEditor) part;
+        if (part instanceof AbstractMultiPageTalendEditor) {
+            AbstractMultiPageTalendEditor mpte = (AbstractMultiPageTalendEditor) part;
             newSelection = mpte.getTalendEditor().getViewer().getSelection();
             if (selection instanceof StructuredSelection) {
                 StructuredSelection structSel = (StructuredSelection) newSelection;
