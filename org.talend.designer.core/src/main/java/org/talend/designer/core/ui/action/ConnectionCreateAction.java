@@ -152,7 +152,8 @@ public class ConnectionCreateAction extends SelectionAction {
                         }
                     }
                 }
-                if (node.getMetadataList().size() < curNodeConnector.getMaxLinkOutput()) {
+                if (curNodeConnector.getMaxLinkOutput() == -1
+                        || node.getMetadataList().size() < curNodeConnector.getMaxLinkOutput()) {
                     menuList.add(getNewOutputMenuName());
                 }
             } else {
