@@ -26,6 +26,7 @@ import org.eclipse.debug.ui.DebugUITools;
 import org.eclipse.debug.ui.ILaunchShortcut;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.model.properties.Item;
@@ -81,16 +82,6 @@ import org.talend.repository.model.RepositoryNode;
 public class JobLaunchShortcut implements ILaunchShortcut {
 
     /**
-     * 
-     */
-    public static final String JOB_NAME = "TALEND_JOB_NAME";
-
-    /*
-     * Identifier for job configuration type
-     */
-    public static final String JOB_DEBUG_LAUNCH_CONFIGURATION_TYPE = "org.talend.designer.runprocess.jobLaunchConfiguration";
-
-    /**
      * Locates a launchable entity in the given selection and launches an application in the specified mode.
      * 
      * @see org.eclipse.debug.ui.ILaunchShortcut#launch(org.eclipse.jface.viewers.ISelection, java.lang.String)
@@ -120,10 +111,10 @@ public class JobLaunchShortcut implements ILaunchShortcut {
      * @see org.eclipse.debug.core.ILaunchManager
      */
     public void launch(IEditorPart editor, String mode) {
-        if (editor.getSite().getId().equals(MultiPageTalendEditor.ID)
-                || editor.getSite().getId().equals(MultiPageTalendEditor.JOBLET_ID)) {
-            RepositoryEditorInput input = (RepositoryEditorInput) editor.getEditorInput();
-            launch(input.getItem(), mode);
+        IEditorInput input = editor.getEditorInput();
+        if (input instanceof RepositoryEditorInput) {
+            RepositoryEditorInput rInput = (RepositoryEditorInput) input;
+            launch(rInput.getItem(), mode);
         }
     }
 
@@ -158,13 +149,10 @@ public class JobLaunchShortcut implements ILaunchShortcut {
             candidateConfigs = new ArrayList(configs.length);
             for (int i = 0; i < configs.length; i++) {
                 ILaunchConfiguration config = configs[i];
-                String projectName = config.getAttribute(JOB_NAME, (String) null);
+                String projectName = config.getAttribute(TalendDebugUIConstants.JOB_NAME, (String) null);
                 if (projectName == null) {
                     continue;
                 }
-                // String programFile = config.getAttribute(PerlLaunchConfigurationConstants.ATTR_STARTUP_FILE, (String)
-                // null);
-                // String name = bin.getName();
                 if (file.getProperty().getLabel().equals(projectName)) {
                     candidateConfigs.add(config);
                 }
@@ -191,15 +179,14 @@ public class JobLaunchShortcut implements ILaunchShortcut {
     private ILaunchConfiguration createConfiguration(ProcessItem file) {
         ILaunchConfiguration config = null;
         String projectName = file.getProperty().getLabel();
-        ILaunchConfigurationType type = getLaunchManager().getLaunchConfigurationType(JOB_DEBUG_LAUNCH_CONFIGURATION_TYPE);
+        ILaunchConfigurationType type = getLaunchManager().getLaunchConfigurationType(
+                TalendDebugUIConstants.JOB_DEBUG_LAUNCH_CONFIGURATION_TYPE);
 
         try {
             if (type != null) {
                 ILaunchConfigurationWorkingCopy wc = type.newInstance(null, getLaunchManager()
                         .generateUniqueLaunchConfigurationNameFrom(projectName));
-                wc.setAttribute(JOB_NAME, projectName);
-                // wc.setAttribute(PerlLaunchConfigurationConstants.ATTR_PROJECT_NAME, file.getProject().getName());
-                // wc.setAttribute(PerlLaunchConfigurationConstants.ATTR_WORKING_DIRECTORY, (String) null);
+                wc.setAttribute(TalendDebugUIConstants.JOB_NAME, projectName);
                 config = wc.doSave();
             }
         } catch (CoreException e) {

@@ -21,6 +21,7 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.PlatformUI;
@@ -59,7 +60,7 @@ public class JobLaunchConfigurationDelegate extends org.eclipse.debug.core.model
 
     public void launch(ILaunchConfiguration configuration, String mode, ILaunch launch, IProgressMonitor monitor)
             throws CoreException {
-        String jobName = configuration.getAttribute(JobLaunchShortcut.JOB_NAME, (String) null);
+        String jobName = configuration.getAttribute(TalendDebugUIConstants.JOB_NAME, (String) null);
         // find process from open editor.
         IProcess process = findProcessFromEditors(jobName);
         // find process from repository
@@ -68,7 +69,7 @@ public class JobLaunchConfigurationDelegate extends org.eclipse.debug.core.model
         }
 
         if (process == null) {
-            ExceptionHandler.log("Job " + jobName + " can not be found.");
+            ExceptionHandler.log("Job " + jobName + " can not be found. Maybe it is removed.");
             return;
         }
 
@@ -124,10 +125,10 @@ public class JobLaunchConfigurationDelegate extends org.eclipse.debug.core.model
                         .getEditorReferences();
                 for (IEditorReference editorReference : editors) {
                     IEditorPart editor = editorReference.getEditor(false);
-                    if (editor.getSite().getId().equals(MultiPageTalendEditor.ID)
-                            || editor.getSite().getId().equals(MultiPageTalendEditor.JOBLET_ID)) {
-                        RepositoryEditorInput input = (RepositoryEditorInput) editor.getEditorInput();
-                        IProcess p = input.getLoadedProcess();
+                    IEditorInput input = editor.getEditorInput();
+                    if (input instanceof RepositoryEditorInput) {
+                        RepositoryEditorInput rInput = (RepositoryEditorInput) input;
+                        IProcess p = rInput.getLoadedProcess();
                         if (p.getLabel().equals(jobName)) {
                             process[0] = p;
                             break;
