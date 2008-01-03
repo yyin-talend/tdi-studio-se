@@ -491,7 +491,7 @@ public class ProcessComposite extends Composite {
             pause(RESUME_ID);
         } else if (execBtn.getData().equals(EXEC_ID)) {
             addInHistoryRunningList();
-            exec();
+            // exec();
             execBtn.setData(PAUSE_ID);
         }
     }
@@ -670,12 +670,13 @@ public class ProcessComposite extends Composite {
         }
         // Add this job to running history list.
         IEditorPart activeEditor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
-        if(activeEditor==null){
-            return;
+        if (activeEditor != null) {
+            DebugUIPlugin.getDefault().getLaunchConfigurationManager().getLaunchShortcut(
+                    "org.talend.designer.runprocess.debug.JobLaunchShortcut").launch(activeEditor, ILaunchManager.RUN_MODE);
+        } else {
+            exec();
         }
-        DebugUIPlugin.getDefault().getLaunchConfigurationManager().getLaunchShortcut(
-                "org.talend.designer.runprocess.debug.JobLaunchShortcut").launch(activeEditor, ILaunchManager.RUN_MODE);
-        
+
     }
 
     public void exec() {
