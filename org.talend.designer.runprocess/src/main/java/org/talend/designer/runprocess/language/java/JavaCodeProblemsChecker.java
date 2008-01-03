@@ -33,7 +33,6 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.ExceptionHandler;
-import org.talend.commons.ui.swt.proposal.ProposalUtils;
 import org.talend.commons.utils.generation.CodeGenerationUtils;
 import org.talend.core.language.CodeProblemsChecker;
 import org.talend.core.model.process.IProcess;
@@ -41,9 +40,9 @@ import org.talend.core.model.process.Problem;
 import org.talend.designer.codegen.IAloneProcessNodeConfigurer;
 import org.talend.designer.codegen.ICodeGenerator;
 import org.talend.designer.codegen.ICodeGeneratorService;
-import org.talend.designer.core.ui.MultiPageTalendEditor;
+import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
+import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.editor.DetailedProblem;
-import org.talend.designer.core.ui.editor.TalendEditor;
 import org.talend.designer.core.ui.editor.TalendJavaEditor;
 import org.talend.designer.runprocess.RunProcessPlugin;
 import org.talend.designer.runprocess.i18n.Messages;
@@ -110,12 +109,11 @@ public class JavaCodeProblemsChecker extends CodeProblemsChecker {
         IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();
         IEditorPart editorPart = page.getActiveEditor();
         //
-        if (editorPart instanceof MultiPageTalendEditor) {
-            MultiPageTalendEditor multiPageTalendEditor = ((MultiPageTalendEditor) editorPart);
-            TalendEditor talendEditor = multiPageTalendEditor.getTalendEditor();
+        if (editorPart instanceof AbstractMultiPageTalendEditor) {
+            AbstractMultiPageTalendEditor multiPageTalendEditor = ((AbstractMultiPageTalendEditor) editorPart);
+            AbstractTalendEditor talendEditor = multiPageTalendEditor.getTalendEditor();
             TalendJavaEditor codeEditor = (TalendJavaEditor) multiPageTalendEditor.getCodeEditor();
-            org.eclipse.jdt.core.ICompilationUnit compilationUnit = (org.eclipse.jdt.core.ICompilationUnit) codeEditor
-                    .getUnit();
+            org.eclipse.jdt.core.ICompilationUnit compilationUnit = (org.eclipse.jdt.core.ICompilationUnit) codeEditor.getUnit();
 
             IProcess process = talendEditor.getProcess();
 
@@ -127,7 +125,7 @@ public class JavaCodeProblemsChecker extends CodeProblemsChecker {
 
             final String code = retrieveCode(process, selectedNodeName, nodeConfigurer);
 
-//             System.out.println(code);
+            // System.out.println(code);
 
             // create requestor for accumulating discovered problems
             MyProblemRequestor problemRequestor = new MyProblemRequestor(code, iproblems);
@@ -138,12 +136,11 @@ public class JavaCodeProblemsChecker extends CodeProblemsChecker {
                 try {
                     WorkingCopyOwner workingCopyOwner = new WorkingCopyOwner() {
                     };
-                    workingCopy = ((org.eclipse.jdt.core.ICompilationUnit) compilationUnit).getWorkingCopy(
-                            workingCopyOwner, problemRequestor, null);
+                    workingCopy = ((org.eclipse.jdt.core.ICompilationUnit) compilationUnit).getWorkingCopy(workingCopyOwner,
+                            problemRequestor, null);
                     problemRequestor.setReportProblems(true);
                     ((IOpenable) workingCopy).getBuffer().setContents(code);
-                    ((org.eclipse.jdt.core.ICompilationUnit) workingCopy).reconcile(ICompilationUnit.NO_AST, true,
-                            null, null);
+                    ((org.eclipse.jdt.core.ICompilationUnit) workingCopy).reconcile(ICompilationUnit.NO_AST, true, null, null);
                     problemRequestor.setReportProblems(false);
                 } finally {
                     if (workingCopy != null) {
@@ -249,8 +246,8 @@ public class JavaCodeProblemsChecker extends CodeProblemsChecker {
 
             for (int i = start + sizeFirstStringToSearch; i < contents.length; i++) {
 
-                boolean parseWithRegExp = String.copyValueOf(contents, i + 1 - sizeFirstStringToSearch,
-                        sizeFirstStringToSearch).equals(firstStringToSearch);
+                boolean parseWithRegExp = String.copyValueOf(contents, i + 1 - sizeFirstStringToSearch, sizeFirstStringToSearch)
+                        .equals(firstStringToSearch);
 
                 if (parseWithRegExp) {
                     String stringToParse = String.copyValueOf(contents, start, i - start + 1);

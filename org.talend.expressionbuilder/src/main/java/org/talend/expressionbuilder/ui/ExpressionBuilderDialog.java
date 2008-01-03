@@ -51,7 +51,7 @@ import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.general.Project;
-import org.talend.designer.core.ui.MultiPageTalendEditor;
+import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.expressionbuilder.ExpressionFileOperation;
 import org.talend.expressionbuilder.ExpressionPersistance;
 import org.talend.expressionbuilder.IExpressionDataBean;
@@ -436,8 +436,8 @@ public class ExpressionBuilderDialog extends TrayDialog implements IExpressionBu
 
         IEditorPart editor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
         String jobName = null;
-        if (editor instanceof MultiPageTalendEditor) {
-            jobName = ((MultiPageTalendEditor) editor).getTalendEditor().getCurrentJobResource().getJobName();
+        if (editor instanceof AbstractMultiPageTalendEditor) {
+            jobName = ((AbstractMultiPageTalendEditor) editor).getTalendEditor().getCurrentJobResource().getJobName();
         }
         IPath path = expressionFolder.getLocation().append(jobName + ".xml");
         return path.toOSString();

@@ -21,7 +21,7 @@ import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.PlatformUI;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
-import org.talend.designer.core.ui.MultiPageTalendEditor;
+import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 
 /**
  * Save the job if it is refered by a tRunJob. <br/>
@@ -52,10 +52,10 @@ public class SaveJobBeforeRunAction extends Action {
                 .getEditorReferences();
         for (int i = 0; i < references.length; i++) {
             IEditorPart part = references[i].getEditor(false);
-            if (!(part instanceof MultiPageTalendEditor)) {
+            if (!(part instanceof AbstractMultiPageTalendEditor)) {
                 continue;
             }
-            MultiPageTalendEditor editor = (MultiPageTalendEditor) part;
+            AbstractMultiPageTalendEditor editor = (AbstractMultiPageTalendEditor) part;
             editor.doSave(new NullProgressMonitor());
         }
     }
