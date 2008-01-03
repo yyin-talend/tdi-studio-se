@@ -331,21 +331,21 @@ public class Node extends Element implements INode {
         if (isExternalNode()) {
             IExternalNode eternalNode = getExternalNode();
             eternalNode.initialize();
-
-            boolean contains;
-            if (getMetadataList().size() != eternalNode.getMetadataList().size()) {
-                for (IMetadataTable table : eternalNode.getMetadataList()) {
-                    contains = false;
-                    for (IMetadataTable t : getMetadataList()) {
-                        if (table.getTableName().equals(t.getTableName())) {
-                            contains = true;
-                        }
-                    }
-                    if (!contains) {
-                        getMetadataList().add(table);
-                    }
-                }
-            }
+            //
+            // boolean contains;
+            // if (getMetadataList().size() != eternalNode.getMetadataList().size()) {
+            // for (IMetadataTable table : eternalNode.getMetadataList()) {
+            // contains = false;
+            // for (IMetadataTable t : getMetadataList()) {
+            // if (table.getTableName().equals(t.getTableName())) {
+            // contains = true;
+            // }
+            // }
+            // if (!contains) {
+            // getMetadataList().add(table);
+            // }
+            // }
+            // }
         }
 
         size = new Dimension();

@@ -38,13 +38,22 @@ public class ActiveProcessTracker implements IPartListener {
 
     private static IProcess currentProcess;
 
+    private static IProcess lastProcessOpened;
+
     public IProcess getJobFromActivatedEditor(IWorkbenchPart part) {
-        if (part instanceof AbstractMultiPageTalendEditor) {
-            AbstractMultiPageTalendEditor mpte = (AbstractMultiPageTalendEditor) part;
+        IWorkbenchPart testedPart = part;
+        if (!(part instanceof AbstractMultiPageTalendEditor)) {
+            testedPart = part.getSite().getWorkbenchWindow().getActivePage().getActiveEditor();
+        }
+
+        if (testedPart instanceof AbstractMultiPageTalendEditor) {
+            AbstractMultiPageTalendEditor mpte = (AbstractMultiPageTalendEditor) testedPart;
             mpte.setName();
 
             IProcess process = mpte.getTalendEditor().getProcess();
             return process;
+        } else {
+            // No editor
         }
         return null;
     }
@@ -55,15 +64,16 @@ public class ActiveProcessTracker implements IPartListener {
      * @see org.eclipse.ui.IPartListener#partActivated(org.eclipse.ui.IWorkbenchPart)
      */
     public void partActivated(final IWorkbenchPart part) {
-        // IProcess process = getJobFromActivatedEditor(part);
-        // if (process != null) {
-        // if (process instanceof Process) {
-        // Process p = (Process) process;
-        // if (!p.isReadOnly() && p.isActivate()) {
-        // p.checkDifferenceWithRepository();
-        // }
-        // }
-        // }
+        IProcess process = getJobFromActivatedEditor(part);
+        if (process != null && currentProcess != process) {
+            currentProcess = process;
+            if (process instanceof Process) {
+                Process p = (Process) process;
+                if (!p.isReadOnly() && p.isActivate()) {
+                    p.checkDifferenceWithRepository();
+                }
+            }
+        }
     }
 
     /*
@@ -128,7 +138,7 @@ public class ActiveProcessTracker implements IPartListener {
      * @see org.eclipse.ui.IPartListener#partClosed(org.eclipse.ui.IWorkbenchPart)
      */
     public void partClosed(IWorkbenchPart part) {
-        if (part instanceof AbstractMultiPageTalendEditor) {
+        if (part instanceof AbstractMultiPageTalendEditor && currentProcess != null) {
             AbstractMultiPageTalendEditor mpte = (AbstractMultiPageTalendEditor) part;
             if (mpte.isKeepPropertyLocked()) {
                 currentProcess = null;
@@ -162,7 +172,7 @@ public class ActiveProcessTracker implements IPartListener {
      */
     public void partDeactivated(IWorkbenchPart part) {
         IProcess process = getJobFromActivatedEditor(part);
-        if (process != null) {
+        if (process != null && (part instanceof AbstractMultiPageTalendEditor)) {
             AbstractMultiPageTalendEditor mpte = (AbstractMultiPageTalendEditor) part;
             mpte.getTalendEditor().savePaletteState();
         }
@@ -188,8 +198,8 @@ public class ActiveProcessTracker implements IPartListener {
             }
         }
         IProcess process = getJobFromActivatedEditor(part);
-        if (process != null && currentProcess != process) {
-            currentProcess = process;
+        if (process != null && currentProcess != process && lastProcessOpened != process) {
+            lastProcessOpened = process;
             addJobInProblemView(process);
         }
     }

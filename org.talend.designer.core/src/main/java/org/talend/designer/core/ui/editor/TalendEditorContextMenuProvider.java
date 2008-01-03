@@ -150,15 +150,16 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
             if (connectors.size() > 1) {
                 for (INodeConnector connector : connectors) {
                     if (connector.isBuiltIn()) {
-                        MenuManager mainSubMenu = new MenuManager(connector.getMenuName());
-                        subMenu.add(new Separator(connector.getMenuName()));
-                        subMenu.appendToGroup(connector.getMenuName(), mainSubMenu);
-                        List<String> menuList = ((ConnectionCreateAction) action).getMenuList();
-                        for (int i = 0; i < menuList.size(); i++) {
-                            action = new ConnectionCreateAction(part, connector);
-                            ((ConnectionCreateAction) action).update();
-                            ((ConnectionCreateAction) action).setText(menuList.get(i));
-                            mainSubMenu.add(action);
+                        action = new ConnectionCreateAction(part, connector);
+                        ((ConnectionCreateAction) action).update();
+                        if (action.isEnabled()) {
+                            List<String> menuList = ((ConnectionCreateAction) action).getMenuList();
+                            for (int i = 0; i < menuList.size(); i++) {
+                                action = new ConnectionCreateAction(part, connector);
+                                ((ConnectionCreateAction) action).update();
+                                ((ConnectionCreateAction) action).setText(menuList.get(i));
+                                subMenu.add(action);
+                            }
                         }
                     } else {
                         action = new ConnectionCreateAction(part, connector);
@@ -171,10 +172,12 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
                 }
             } else {
                 if (connectors.size() == 1) {
+                    action = new ConnectionCreateAction(part, connectors.get(0));
+                    ((ConnectionCreateAction) action).update();
                     if (action.isEnabled()) {
                         List<String> menuList = ((ConnectionCreateAction) action).getMenuList();
                         for (int i = 0; i < menuList.size(); i++) {
-                            action = new ConnectionCreateAction(part, EConnectionType.FLOW_MAIN);
+                            action = new ConnectionCreateAction(part, connectors.get(0));
                             ((ConnectionCreateAction) action).update();
                             ((ConnectionCreateAction) action).setText(menuList.get(i));
                             subMenu.add(action);

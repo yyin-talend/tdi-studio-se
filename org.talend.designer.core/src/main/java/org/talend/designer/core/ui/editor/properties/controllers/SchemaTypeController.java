@@ -654,14 +654,28 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
         if (elem instanceof Node) {
             Node node = (Node) elem;
             boolean flowMainInput = false;
-            for (IConnection connec : node.getIncomingConnections()) {
-                if (connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)
-                        || connec.getLineStyle().equals(EConnectionType.TABLE)
-                        || connec.getLineStyle().equals(EConnectionType.FLOW_MERGE)) {
-                    flowMainInput = true;
+            boolean tableReadOnly = false;
+            IMetadataTable table = node.getMetadataTable(param.getContext());
+            if (table != null) {
+                if (table.isReadOnly()) {
+                    tableReadOnly = true;
+                    for (IMetadataColumn column : table.getListColumns()) {
+                        if (!column.isReadOnly()) {
+                            tableReadOnly = false;
+                        }
+                    }
                 }
             }
-            if (flowMainInput) {
+            if (!tableReadOnly) {
+                for (IConnection connec : node.getIncomingConnections()) {
+                    if (connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)
+                            || connec.getLineStyle().equals(EConnectionType.TABLE)
+                            || connec.getLineStyle().equals(EConnectionType.FLOW_MERGE)) {
+                        flowMainInput = true;
+                    }
+                }
+            }
+            if (flowMainInput && !tableReadOnly) {
                 resetBtn = getWidgetFactory().createButton(subComposite,
                         Messages.getString("SchemaController.syncColumns"), SWT.PUSH); //$NON-NLS-1$
                 resetBtn.setToolTipText(Messages.getString("SchemaController.resetButton.tooltip")); //$NON-NLS-1$

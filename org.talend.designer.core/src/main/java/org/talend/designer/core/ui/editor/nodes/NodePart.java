@@ -42,6 +42,7 @@ import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.CorePlugin;
+import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.IExternalNode;
@@ -435,7 +436,12 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
     public void performRequest(Request req) {
         Node node = (Node) getModel();
         if (req.getType().equals("open")) { //$NON-NLS-1$
-            IExternalNode externalNode = ExternalUtilities.getExternalNodeReadyToOpen(node);
+            IExternalNode externalNode = null;
+            if (node.isExternalNode()) {
+                if (node.getElementParameterFromField(EParameterFieldType.EXTERNAL) != null) {
+                    externalNode = ExternalUtilities.getExternalNodeReadyToOpen(node);
+                }
+            }
 
             IWorkbenchPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
             if (externalNode != null && (part instanceof AbstractMultiPageTalendEditor)) {
