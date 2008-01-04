@@ -66,6 +66,8 @@ import org.talend.designer.core.ui.editor.nodecontainer.NodeContainerPart;
 import org.talend.designer.core.ui.editor.process.ProcessPart;
 import org.talend.designer.core.ui.views.CodeView;
 import org.talend.designer.core.ui.views.properties.ComponentSettingsView;
+import org.talend.designer.joblet.ui.models.EJobletNodeType;
+import org.talend.designer.joblet.ui.models.IJobletComponent;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.ui.views.IRepositoryView;
 
@@ -499,6 +501,10 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
                     } catch (PersistenceException e) {
                         MessageBoxExceptionHandler.process(e);
                     }
+                } else if ((node.getComponent() instanceof IJobletComponent)
+                        && ((IJobletComponent) node.getComponent()).getJobletNodeType().equals(EJobletNodeType.ELEMENT)) {
+                    IJobletComponent jobletComponent = (IJobletComponent) node.getComponent();
+                    jobletComponent.openJobletEditor();
                 } else {
                     try {
                         // modified for feature 2454.

@@ -742,7 +742,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         il.data = new ImageData[] { img.getImageData() };
 
         IRepositoryService service = CorePlugin.getDefault().getRepositoryService();
-        IPath filePath = service.getPathFileName(RepositoryConstants.IMG_DIRECTORY_OF_JOB_OUTLINE, "");
+        IPath filePath = service.getPathFileName(getOutlinePicturePath(), "");
         String outlineFileName = process.getName();
         String outlineFileVersion = process.getVersion();
         filePath = filePath.append(outlineFileName + "_" + outlineFileVersion + ".jpg");
@@ -752,6 +752,15 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         service.getProxyRepositoryFactory().refreshJobPictureFolder();
         GlobalConstant.generatingScreenShoot = false;
 
+    }
+
+    /**
+     * DOC qzhang Comment method "getOutlinePicturePath".
+     * 
+     * @return
+     */
+    protected String getOutlinePicturePath() {
+        return RepositoryConstants.IMG_DIRECTORY_OF_JOB_OUTLINE;
     }
 
     @Override
