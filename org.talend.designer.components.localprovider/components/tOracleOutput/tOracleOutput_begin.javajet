@@ -103,7 +103,7 @@ if(useExistingConn.equals("true"))
 	String conn = "conn_" + connection;
 	String schema = "dbschema_" + connection;
 	%>
-	dbschema_<%=cid%> = (String)globalMap.get("<%=conn%>");
+	dbschema_<%=cid%> = (String)globalMap.get("<%=schema%>");
 	conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
 	<%
 } 
