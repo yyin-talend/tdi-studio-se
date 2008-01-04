@@ -720,6 +720,13 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
     public void setDocumentationStatus(List<Status> list) throws PersistenceException {
         this.repositoryFactoryFromProvider.setDocumentationStatus(list);
     }
+    
+    /* (non-Javadoc)
+     * @see org.talend.repository.model.IProxyRepositoryFactory#forceCreate(org.talend.core.model.properties.Item, org.eclipse.core.runtime.IPath)
+     */
+    public void forceCreate(Item item, IPath path) throws PersistenceException {
+        this.repositoryFactoryFromProvider.create(item, path);
+    }
 
     /*
      * (non-Javadoc)
