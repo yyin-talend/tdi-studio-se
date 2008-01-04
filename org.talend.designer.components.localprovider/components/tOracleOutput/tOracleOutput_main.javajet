@@ -336,11 +336,29 @@ if(isObject){
 		<%=prefix+cid%>.setNull(<%=counter%>,java.sql.Types.DATE);
 		
 	}
-	<%
+<%
 	}else{
-	%>
+		if(column.getColumn().getType().equals("BLOB")){
+%>
+		if(<%=incomingConnName%>.<%=column.getName()%> instanceof java.sql.Blob){
+			<%=prefix+cid%>.setBinaryStream(<%=counter%>,((java.sql.Blob)<%=incomingConnName%>.<%=column.getName()%>).getBinaryStream(), (int)((java.sql.Blob)<%=incomingConnName%>.<%=column.getName()%>).length());
+		}else{
+			<%=prefix+cid%>.set<%=typeToGenerate%>(<%=counter%>,<%=incomingConnName%>.<%=column.getName()%>);
+		}
+<%
+		}else if(column.getColumn().getType().equals("CLOB")){
+%>
+		if(<%=incomingConnName%>.<%=column.getName()%> instanceof java.sql.Clob){
+			<%=prefix+cid%>.setCharacterStream(<%=counter%>,((java.sql.Clob)<%=incomingConnName%>.<%=column.getName()%>).getCharacterStream(), (int)((java.sql.Clob)<%=incomingConnName%>.<%=column.getName()%>).length());
+		}else{
+			<%=prefix+cid%>.set<%=typeToGenerate%>(<%=counter%>,<%=incomingConnName%>.<%=column.getName()%>);
+		}
+<%
+		}else{
+%>
 	<%=prefix+cid%>.set<%=typeToGenerate%>(<%=counter%>,<%=incomingConnName%>.<%=column.getName()%>);
-	<%
+<%
+		}
 	}
 if(isObject){
 	%>
