@@ -68,6 +68,8 @@ public class SelectDeleteProjectDialog extends SelectionDialog {
 
     private List<Object> delItemList = new ArrayList<Object>();
 
+    private Project pro;
+
     private static final String DEFAULTMESAGE = Messages.getString("SelectDeleteProjectDialog.Label"); //$NON-NLS-1$
 
     private static final String TITILE = Messages.getString("SelectDeleteProjectDialog.Title"); //$NON-NLS-1$
@@ -83,6 +85,9 @@ public class SelectDeleteProjectDialog extends SelectionDialog {
         // TODO Auto-generated constructor stub
         setTitle(TITILE);
         setMessage(DEFAULTMESAGE);
+        RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
+                Context.REPOSITORY_CONTEXT_KEY);
+        this.pro = repositoryContext.getProject();
 
     }
 
@@ -95,12 +100,9 @@ public class SelectDeleteProjectDialog extends SelectionDialog {
         List<String> notExportProjects = Arrays.asList(GeneralParametersProvider
                 .getStrings(GeneralParameters.PROJECTS_EXCLUDED_FROM_EXPORT));
         IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
-        RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
-                Context.REPOSITORY_CONTEXT_KEY);
-        Project pro = repositoryContext.getProject();
         for (int i = 0; i < projects.length; i++) {
             if (projects[i].isOpen() && !notExportProjects.contains(projects[i].getName())) {
-                if (!login && pro.getLabel().equals(projects[i].getName().toLowerCase())) {
+                if (!login && pro.getLabel().toLowerCase().equals(projects[i].getName().toLowerCase())) {
 
                 } else {
                     projectItemList.add(projects[i]);
