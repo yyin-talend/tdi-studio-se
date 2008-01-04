@@ -134,6 +134,7 @@ import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.general.ILibrariesService;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.Element;
+import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
@@ -221,9 +222,15 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
             if (obj instanceof PaletteGroup) {
                 continue;
             }
-            getPaletteRoot().remove((PaletteEntry) obj);
+            paletteRoot.remove((PaletteEntry) obj);
         }
         TalendEditorPaletteFactory.createPalette(components, paletteRoot);
+
+        for (INode node : process.getGraphicalNodes()) {
+            IComponent newComponent = components.get(node.getComponent().getName());
+            node.reloadComponent(newComponent);
+        }
+
     }
 
     protected AbstractMultiPageTalendEditor parent;
@@ -851,6 +858,9 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
     @Override
     public void dispose() {
+
+        ProcessorUtilities.editorClosed(this);
+
         if (!getParent().isKeepPropertyLocked()) {
             JobResourceManager manager = JobResourceManager.getInstance();
             manager.removeProtection(this);

@@ -2022,4 +2022,13 @@ public class Node extends Element implements INode {
         return this.connectionName;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.INode#reloadComponent(org.talend.core.model.components.IComponent)
+     */
+    public void reloadComponent(IComponent component) {
+        init(component);
+    }
+
 }
