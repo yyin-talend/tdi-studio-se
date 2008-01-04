@@ -171,7 +171,13 @@ public class RowGeneratorComponentDocumentation implements IComponentDocumentati
                 columnElement.addAttribute("precision", precision);
                 columnElement.addAttribute("default", HTMLDocUtils.checkString(column.getDefault()));
                 columnElement.addAttribute("comment", HTMLDocUtils.checkString(column.getComment()));
-                columnElement.addAttribute("functions", HTMLDocUtils.checkString(column.getFunction().getName()));
+
+                String functionName = "";
+                if (column.getFunction() != null) {
+                    functionName = column.getFunction().getName();
+                }
+
+                columnElement.addAttribute("functions", HTMLDocUtils.checkString(functionName));
                 columnElement.addAttribute("parameters", HTMLDocUtils.checkString(column.getParameter()));
                 // columnElement.addAttribute("preview",
                 // HTMLDocUtils.checkString(column.getPreview()));
