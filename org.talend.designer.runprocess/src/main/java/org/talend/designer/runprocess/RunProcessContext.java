@@ -270,6 +270,8 @@ public class RunProcessContext {
                 setMonitorPerf(false);
             }
 
+        } else {
+            statsPort = IProcessor.NO_STATISTICS;
         }
         if (monitorTrace) {
             try {
@@ -283,6 +285,8 @@ public class RunProcessContext {
                 setMonitorTrace(false);
 
             }
+        } else {
+            tracesPort = IProcessor.NO_TRACES;
         }
 
     }
