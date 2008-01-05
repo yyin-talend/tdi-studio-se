@@ -8,7 +8,9 @@
 			select="'abcdefghijklmnopqrstuvwxyz'" />
 		<html>
 			<head>
-				<style>
+				<title>Generated documentation</title>
+				<style type="text/css">
+					@page {  size: letter; }
 					SPAN.special { font:12pt black; } TABLE.properties {
 					width:95%; } TD.propname { width:30%; font:bold; }
 					TR.profont{ font:bold; }
@@ -30,14 +32,13 @@
 			</head>
 			<body>
 				<br />
-				<table border="0" cellspacing="0" rowspacing="0"
-					width="90%" class="FONTSTYLE">
+				<table border="0" cellspacing="0" width="90%" class="FONTSTYLE" summary="Job&#160;documentation">
 					<tr valign="top">
 						<!--<td width="15%" rowspan="2" align="center"></td> -->
 						<td rowspan="2" align="center">
 							<a href="#{project/@link}">
 								<img src="{project/@logo}" border="0"
-									align="absbottom" />
+									align="bottom" alt=""/>
 							</a>
 						</td>
 						<!-- <td width="1%" rowspan="2" align="center"></td> -->
@@ -56,7 +57,7 @@
 				<br />
 				<table border="1" width="90%" cellpadding="0"
 					cellspacing="0" style="border-collapse: collapse"
-					bordercolor="#111111" class="FONTSTYLE">
+					bordercolor="#111111" class="FONTSTYLE" summary="">
 					<tr valign="top">
 						<td align="center" width="25%"
 							class="TABLECOLUMNSTYLE">
@@ -74,26 +75,26 @@
 							<xsl:value-of
 								select="/project/@generatedDate" />
 						</td>
-						<tr>
-							<td align="center" width="25%"
-								class="TABLECOLUMNSTYLE">
-								AUTHOR
-							</td>
-							<td align="center" width="25%">
-								<xsl:value-of
-									select="/project/job/@author" />
-							</td>
-							<td align="center" width="25%"
-								class="TABLECOLUMNSTYLE">
-								<xsl:value-of
-									select="/project/@versionName" />
-							</td>
-							<td align="center" width="25%"
-								class="FONTSTYLE">
-								<xsl:value-of
-									select="/project/@version" />
-							</td>
-						</tr>
+					</tr>
+					<tr>
+						<td align="center" width="25%"
+							class="TABLECOLUMNSTYLE">
+							AUTHOR
+						</td>
+						<td align="center" width="25%">
+							<xsl:value-of
+								select="/project/job/@author" />
+						</td>
+						<td align="center" width="25%"
+							class="TABLECOLUMNSTYLE">
+							<xsl:value-of
+								select="/project/@versionName" />
+						</td>
+						<td align="center" width="25%"
+							class="FONTSTYLE">
+							<xsl:value-of
+								select="/project/@version" />
+						</td>
 					</tr>
 				</table>
 				<h2 class="FONTSTYLE">Summary</h2>
@@ -133,44 +134,42 @@
 				<!-- Project Description-->
 				<!--HR-->
 				<h2 class="FONTSTYLE">
-					<a id="ProjectDescription"
-						name="#ProjectDescription">
+					<a name="#ProjectDescription">
 						Project Description
 					</a>
 				</h2>
 				<br />
 				<table border="1" width="90%" class="FONTSTYLE"
-					cellpadding="0" cellspacing="0" style="border-collapse: collapse"
-					bordercolor="#111111">
-					<th align="center" width="30%"
-						class="TABLECOLUMNSTYLE">
-						Properties
-					</th>
-					<th align="left" class="TABLECOLUMNSTYLE">
-						&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;Values
-					</th>
+					cellpadding="0" cellspacing="0" style="border-collapse: collapse; padding-left:10mm;"
+					bordercolor="#111111" summary="">
 					<tr>
-						<td class="FONTSTYLE" align="center">Name</td>
+						<th align="left" width="30%"
+							class="TABLECOLUMNSTYLE">
+							Properties
+						</th>
+						<th align="left" class="TABLECOLUMNSTYLE">
+							Values
+						</th>
+					</tr>
+					<tr>
+						<td class="FONTSTYLE" align="left">Name</td>
 						<td class="FONTSTYLE" align="left">
-							&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
 							<xsl:value-of select="/project/@name" />
 						</td>
 					</tr>
 					<tr>
-						<td class="FONTSTYLE" align="center">
+						<td class="FONTSTYLE" align="left">
 							Language
 						</td>
 						<td class="FONTSTYLE" align="left">
-							&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
 							<xsl:value-of select="/project/@language" />
 						</td>
 					</tr>
 					<tr>
-						<td class="FONTSTYLE" align="center">
+						<td class="FONTSTYLE" align="left">
 							Description
 						</td>
 						<td class="FONTSTYLE" align="left">
-							&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
 							<xsl:value-of
 								select="/project/@description" />
 						</td>
@@ -180,84 +179,78 @@
 				<br />
 				<xsl:variable name="job" select="/project/job" />
 				<h2 class="FONTSTYLE">
-					<a id="JobDescription" name="#JobDescription">
+					<a name="#JobDescription">
 						Job Description
 					</a>
 				</h2>
 				<br />
 				<table border="1" width="90%" cellpadding="0"
-					cellspacing="0" style="border-collapse: collapse"
-					bordercolor="#111111" frame="box">
-					<th align="center" width="30%"
-						class="TABLECOLUMNSTYLE">
-						Properties
-					</th>
-					<th align="left" class="TABLECOLUMNSTYLE">
-						&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;Values
-					</th>
+					cellspacing="0" style="border-collapse: collapse; padding-left:10mm;"
+					bordercolor="#111111" frame="box" summary="">
 					<tr>
-						<td class="FONTSTYLE" align="center">Name</td>
+						<th align="left" width="30%"
+							class="TABLECOLUMNSTYLE">
+							Properties
+						</th>
+						<th align="left" class="TABLECOLUMNSTYLE">
+							Values
+						</th>
+					</tr>
+					<tr>
+						<td class="FONTSTYLE" align="left">Name</td>
 						<td class="FONTSTYLE" align="left">
-							&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
 							<xsl:value-of select="$job/@name" />
 						</td>
 					</tr>
 					<tr>
-						<td class="FONTSTYLE" align="center">Author</td>
+						<td class="FONTSTYLE" align="left">Author</td>
 						<td class="FONTSTYLE" align="left">
-							&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
 							<xsl:value-of select="$job/@author" />
 						</td>
 					</tr>
 					<tr>
-						<td class="FONTSTYLE" align="center">
+						<td class="FONTSTYLE" align="left">
 							Version
 						</td>
 						<td class="FONTSTYLE" align="left">
-							&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
 							<xsl:value-of select="$job/@version" />
 						</td>
 					</tr>
 					<tr>
-						<td class="FONTSTYLE" align="center">
+						<td class="FONTSTYLE" align="left">
 							Purpose
 						</td>
 						<td class="FONTSTYLE" align="left">
-							&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
 							<xsl:value-of select="$job/@purpose" />
 						</td>
 					</tr>
 					<tr>
-						<td class="FONTSTYLE" align="center">Status</td>
+						<td class="FONTSTYLE" align="left">Status</td>
 						<td class="FONTSTYLE" align="left">
-							&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
 							<xsl:value-of select="$job/@status" />
 						</td>
 					</tr>
 					<tr>
-						<td class="FONTSTYLE" align="center">
+						<td class="FONTSTYLE" align="left">
 							Description
 						</td>
 						<td class="FONTSTYLE" align="left">
-							&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
 							<xsl:value-of select="$job/@description" />
 						</td>
 					</tr>
 					<tr>
-						<td class="FONTSTYLE" align="center">
+						<td class="FONTSTYLE" align="left">
 							Creation
 						</td>
 						<td class="FONTSTYLE" align="left">
-							&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
 							<xsl:value-of select="$job/@creation" />
 						</td>
 					</tr>
 					<tr>
-						<td class="FONTSTYLE" align="center">
+						<td class="FONTSTYLE" align="left">
 							Modification
 						</td>
 						<td class="FONTSTYLE" align="left">
-							&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
 							<xsl:value-of select="$job/@modification" />
 						</td>
 					</tr>
@@ -269,8 +262,7 @@
 					select="$job/preview/@picture" />
 				<xsl:if test="string-length($jobPreviewPicture)!=0">
 					<h2 class="FONTSTYLE">
-						<a id="JobPreviewPicture"
-							name="#JobPreviewPicture">
+						<a name="#JobPreviewPicture">
 							Job Preview Picture
 						</a>
 					</h2>
@@ -279,31 +271,7 @@
 						<img src="{$jobPreviewPicture}" usemap="#jobmap"
 							alt="No image available" class="bordercolor" />
 					</div>
-				</xsl:if>
-				<br />
-				<br />
-				<!-- Component List-->
-				<!--HR-->
-				<h2 class="FONTSTYLE">
-					<a id="ComponentList" name="#ComponentList">
-						Component List
-					</a>
-				</h2>
-				<table width="90%" border="1" cellpadding="0"
-					cellspacing="0" style="border-collapse: collapse"
-					bordercolor="#111111" frame="box">
-					<tr>
-						<th width="50%" align="center"
-							class="TABLECOLUMNSTYLE">
-							Component Name
-						</th>
-						<th width="50%" align="center"
-							class="TABLECOLUMNSTYLE">
-							&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;Component
-							Type
-						</th>
-					</tr>
-					<map id="jobmap" name="jobmap">
+										<map id="jobmap" name="jobmap">
 						<xsl:for-each
 							select="$job/componentList/componentItem">
 							<area shape="rect"
@@ -311,16 +279,39 @@
 								href="#{@link}" alt="{@name}" />
 						</xsl:for-each>
 					</map>
+				</xsl:if>
+				<br />
+				<br />
+				<!-- Component List-->
+				<!--HR-->
+				<h2 class="FONTSTYLE">
+					<a name="#ComponentList">
+						Component List
+					</a>
+				</h2>
+				<table width="60%" border="1" cellpadding="0"
+					cellspacing="0" style="border-collapse: collapse; padding-left:10mm;"
+					bordercolor="#111111" frame="box" summary="">
+					<tr>
+						<th width="50%" align="left"
+							class="TABLECOLUMNSTYLE">
+							Component Name
+						</th>
+						<th width="50%" align="left"
+							class="TABLECOLUMNSTYLE">
+							Component
+							Type
+						</th>
+					</tr>
 					<xsl:for-each
 						select="$job/componentList/componentItem">
 						<tr>
-							<td class="FONTSTYLE" align="center">
+							<td class="FONTSTYLE" align="left">
 								<a href="#{@link}" class="LINKSTYLE">
 									<xsl:value-of select="@name" />
 								</a>
 							</td>
 							<td class="FONTSTYLE" align="left">
-								&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
 								<xsl:value-of select="@type" />
 							</td>
 						</tr>
@@ -330,8 +321,7 @@
 				<!-- Components Description-->
 				<!--HR-->
 				<h2 class="FONTSTYLE">
-					<a id="ComponentsDescription"
-						name="#ComponentsDescription">
+					<a name="#ComponentsDescription">
 						Components Description
 					</a>
 				</h2>
@@ -340,24 +330,23 @@
 					<a name="{@uniqueName}" />
 					<table border="0" width="90%" class="FONTSTYLE"
 						cellpadding="0" cellspacing="0" style="border-collapse: collapse"
-						bordercolor="#111111">
-						<br />
-						<br />
-						<tr bgcolor="#E6E6E6">
-							<b class="FONTSTYLE">
-								Component:&#160;&#160;
+						bordercolor="#111111" summary="">
+						<tr bgcolor="#E6E6E6" class="FONTSTYLE">
+							<td class="FONTSTYLE">
+								<b>Component:&#160;&#160;
 								<xsl:value-of select="componentType" />
-							</b>
+								</b>
+							</td>
 						</tr>
 					</table>
 					<BR />
 					<table border="1" width="90%" class="FONTSTYLE"
 						cellpadding="0" cellspacing="0" style="border-collapse: collapse"
-						bordercolor="#111111">
+						bordercolor="#111111" summary="">
 						<tr>
 							<td class="cols" align="center" rowspan="2"
 								width="10%">
-								<img src="{@icon}" />
+								<img src="{@icon}" alt=""/>
 								&#160;&#160;&#160;&#160;&#160;
 							</td>
 							<td align="center" class="TABLECOLUMNSTYLE"
@@ -444,27 +433,26 @@
 					<b class="FONTSTYLE">Component Parameters:</b>
 					<br />
 					<table class="cols" width="90%" border="1" cellpadding="0"
-						cellspacing="0" style="border-collapse: collapse"
-						bordercolor="#111111" frame="box">
+						cellspacing="0" style="border-collapse: collapse; padding-left:10mm;"
+						bordercolor="#111111" frame="box" summary="">
 						<tr>
-							<th align="center" width="30%"
+							<th align="left" width="30%"
 								class="TABLECOLUMNSTYLE">
 								Properties
 							</th>
 							<th align="left" width="70%"
 								class="TABLECOLUMNSTYLE">
-								&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;Values
+								Values
 							</th>
 						</tr>
 						<xsl:for-each select="parameters/column">
 							<tr>
-								<td class="FONTSTYLE" align="center">
+								<td class="FONTSTYLE" align="left">
 									<xsl:variable name="propname"
 										select="@name" />
 									<xsl:value-of select="$propname" />
 								</td>
 								<td class="FONTSTYLE" align="left">
-									&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
 									<xsl:value-of select="text()" />
 								</td>
 							</tr>
@@ -478,9 +466,9 @@
 							:
 						</b>
 						<br />
-						<table class="cols" width="90%" cellpadding="0"
+						<table class="cols" width="90%" border="1" cellpadding="0"
 							cellspacing="0" style="border-collapse: collapse"
-							bordercolor="#111111" frame="box">
+							bordercolor="#111111" frame="box" summary="">
 							<tr class="profont">
 								<th class="TABLECOLUMNSTYLE"
 									width="14%">
@@ -547,24 +535,23 @@
 					<a name="{@uniqueName}" />
 					<table border="0" width="90%" class="FONTSTYLE"
 						cellpadding="0" cellspacing="0" style="border-collapse: collapse"
-						bordercolor="#111111">
-						<br />
-						<br />
+						bordercolor="#111111" summary="">
 						<tr bgcolor="#E6E6E6">
-							<b class="FONTSTYLE">
-								Component:&#160;&#160;
+							<td class="FONTSTYLE">
+								<b>Component:&#160;&#160;
 								<xsl:value-of select="componentType" />
-							</b>
+								</b>
+							</td>
 						</tr>
 					</table>
 					<BR />
 					<table border="1" width="90%" class="FONTSTYLE"
 						cellpadding="0" cellspacing="0" style="border-collapse: collapse"
-						bordercolor="#111111">
+						bordercolor="#111111" summary="">
 						<tr>
 							<td class="cols" align="center" rowspan="2"
 								width="10%">
-								<img src="{@icon}" />
+								<img src="{@icon}" alt=""/>
 								&#160;&#160;&#160;&#160;&#160;
 							</td>
 							<td align="center" class="TABLECOLUMNSTYLE"
@@ -650,9 +637,9 @@
 					<br />
 					<b class="FONTSTYLE">Component Parameters:</b>
 					<br />
-					<table width="90%" class="FONTSTYLE" cellpadding="0"
+					<table width="90%" class="FONTSTYLE" border="1" cellpadding="0"
 						cellspacing="0" style="border-collapse: collapse"
-						bordercolor="#111111" frame="box">
+						bordercolor="#111111" frame="box" summary="">
 						<tr>
 							<th align="center" width="30%"
 								class="TABLECOLUMNSTYLE">
@@ -687,7 +674,7 @@
 						<br />
 						<table class="cols" border="1" width="90%"
 							cellpadding="0" cellspacing="0" style="border-collapse: collapse"
-							bordercolor="#111111" frame="box">
+							bordercolor="#111111" frame="box" summary="">
 							<tr class="profont">
 								<th class="TABLECOLUMNSTYLE"
 									width="14%">
