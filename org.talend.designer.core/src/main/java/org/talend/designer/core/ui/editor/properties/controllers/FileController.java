@@ -54,8 +54,6 @@ public class FileController extends AbstractElementPropertySectionController {
 
     private static final String FILE = "FILE"; //$NON-NLS-1$
 
-    private Text filePathText;
-
     /**
      * yzhang FileController constructor comment.
      * 
@@ -81,12 +79,13 @@ public class FileController extends AbstractElementPropertySectionController {
      */
     public Command createCommand(Button button) {
         FileDialog dial = new FileDialog(composite.getShell(), SWT.NONE);
+        String propertyName = (String) button.getData(PARAMETER_NAME);
+        Text filePathText = (Text) hashCurControls.get(propertyName);
         String extractedFilePath = PathExtractor.extractPath(filePathText.getText());
         dial.setFileName(new Path(extractedFilePath).toOSString());
         String file = dial.open();
         if (file != null) {
             if (!file.equals("")) { //$NON-NLS-1$
-                String propertyName = (String) button.getData(PARAMETER_NAME);
                 if (!elem.getPropertyValue(propertyName).equals(file)) {
                     String portableValue = Path.fromOSString(file).toPortableString();
                     filePathText.setText(TalendTextUtils.addQuotes(portableValue));
@@ -137,7 +136,7 @@ public class FileController extends AbstractElementPropertySectionController {
         }
 
         Control cLayout = dField.getLayoutControl();
-        filePathText = (Text) dField.getControl();
+        Text filePathText = (Text) dField.getControl();
         filePathText.setData(PARAMETER_NAME, param.getName());
         cLayout.setBackground(subComposite.getBackground());
         filePathText.setEditable(!param.isReadOnly());

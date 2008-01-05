@@ -78,13 +78,15 @@ public class DirectoryController extends AbstractElementPropertySectionControlle
      */
     private Command createCommand(SelectionEvent event) {
         DirectoryDialog dial = new DirectoryDialog(composite.getShell(), SWT.NONE);
-        String directory = dial.open();
         Button btn = (Button) event.getSource();
+        String propertyName = (String) btn.getData(PARAMETER_NAME);
+        Text dirPathText = (Text) hashCurControls.get(propertyName);
+        String directory = dial.open();
         if (directory != null) {
             if (!directory.equals("")) { //$NON-NLS-1$
-                String propertyName = (String) btn.getData(PARAMETER_NAME);
                 if (!elem.getPropertyValue(propertyName).equals(directory)) {
                     String portableValue = Path.fromOSString(directory).toPortableString();
+                    dirPathText.setText(TalendTextUtils.addQuotes(portableValue));
                     return new PropertyChangeCommand(elem, propertyName, TalendTextUtils.addQuotes(portableValue));
 
                 }
