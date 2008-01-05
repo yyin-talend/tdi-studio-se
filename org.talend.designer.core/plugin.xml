@@ -47,16 +47,6 @@
             name="%statsAndLogs">
       </page>
       <page
-            category="org.talend.designer.core.ui.preferences.StatsAndLogsPreferenceNodePage"
-            class="org.talend.designer.core.ui.preferences.PERLStatsAndLogsPreferencePage"
-            id="org.talend.designer.core.ui.preferences.PERLStatsAndLogsPreferencePage"
-            name="Perl"/>
-      <page
-            category="org.talend.designer.core.ui.preferences.StatsAndLogsPreferenceNodePage"
-            class="org.talend.designer.core.ui.preferences.JAVAStatsAndLogsPreferencePage"
-            id="org.talend.designer.core.ui.preferences.JAVAStatsAndLogsPreferencePage"
-            name="Java"/>
-      <page
             category="org.talend.core.prefs"
             class="org.talend.designer.core.ui.preferences.PropertiesPreferencePage"
             id="org.talend.designer.core.properties.memo.text.font"

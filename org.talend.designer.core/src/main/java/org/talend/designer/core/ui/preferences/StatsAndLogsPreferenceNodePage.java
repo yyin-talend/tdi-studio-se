@@ -12,30 +12,16 @@
 // ============================================================================
 package org.talend.designer.core.ui.preferences;
 
-import org.eclipse.jface.preference.FieldEditorPreferencePage;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchPreferencePage;
-import org.talend.designer.core.DesignerPlugin;
+import org.talend.core.language.LanguageManager;
 
 /**
  * DOC Administrator class global comment. Detailled comment <br/>
  * 
  */
-public class StatsAndLogsPreferenceNodePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
+public class StatsAndLogsPreferenceNodePage extends StatsAndLogsPreferencePage {
 
     public StatsAndLogsPreferenceNodePage() {
-        super(GRID);
-        setPreferenceStore(DesignerPlugin.getDefault().getPreferenceStore());
-    }
-
-    @Override
-    protected void performApply() {
-        super.performApply();
-    }
-
-    public void createFieldEditors() {
-    }
-
-    public void init(IWorkbench workbench) {
+        super(LanguageManager.getCurrentLanguage());
+        this.setTitle(getTitle() + " (" + LanguageManager.getCurrentLanguage().getCaseName() + ")");
     }
 }
