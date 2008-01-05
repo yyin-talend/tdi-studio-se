@@ -2,6 +2,7 @@
 <?eclipse version="3.0"?>
 <plugin>
 	<extension-point id="generators" name="Controller Generators" schema="schema/generators.exsd"/>
+ <extension-point id="process_provider" name="Process Provider" schema="schema/process_provider.exsd"/>
    <extension
          point="org.eclipse.ui.editors">
       <editor

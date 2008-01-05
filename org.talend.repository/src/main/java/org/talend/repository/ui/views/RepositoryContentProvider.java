@@ -48,6 +48,7 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.Folder;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.ui.images.ECoreImage;
+import org.talend.designer.joblet.ui.models.IJobletComponent;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.BinRepositoryNode;
 import org.talend.repository.model.ERepositoryStatus;
@@ -76,6 +77,7 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
     private TreeViewer viewer;
 
     private List<IRepositoryObject> joblets = new ArrayList<IRepositoryObject>();
+
     private RepositoryNode businessProcessNode, recBinNode, codeNode, routineNode, snippetsNode, processNode, contextNode,
             docNode, metadataConNode, metadataFileNode, metadataFilePositionalNode, metadataFileRegexpNode, metadataFileXmlNode,
             metadataFileLdifNode, metadataGenericSchemaNode, metadataLDAPSchemaNode;
@@ -338,7 +340,7 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
      * @return
      */
     private boolean containJoblet() {
-        return Platform.getBundle("org.talend.designer.joblet") != null;
+        return Platform.getBundle(IJobletComponent.PID) != null;
     }
 
     /**
@@ -830,9 +832,9 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
         return this.codeNode;
     }
 
-    
     /**
      * Getter for joblets.
+     * 
      * @return the joblets
      */
     public List<IRepositoryObject> getJoblets() {

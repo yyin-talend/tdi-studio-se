@@ -132,10 +132,6 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
 
     protected boolean needSetPartListener = true;
 
-    public static final String JOBLET_ID = "org.talend.designer.joblet.multieditor";
-
-    public static final String JOB_ID = "org.talend.designer.joblet.multieditor";
-
     public AbstractMultiPageTalendEditor() {
         super();
 

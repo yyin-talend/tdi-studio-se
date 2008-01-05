@@ -31,7 +31,6 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.ActiveProcessTracker;
-import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.action.CreateProcess;
 import org.talend.designer.core.ui.action.SaveJobBeforeRunAction;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
@@ -58,8 +57,7 @@ public class DesignerCoreService implements IDesignerCoreService {
         // PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getEditorReferences();
         for (IEditorReference er : reference) {
             IEditorPart part = er.getEditor(false);
-            if (part.getSite().getId().equals(MultiPageTalendEditor.ID)
-                    || part.getSite().getId().equals(MultiPageTalendEditor.JOBLET_ID)) {
+            if (part instanceof AbstractMultiPageTalendEditor) {
                 AbstractMultiPageTalendEditor editor = (AbstractMultiPageTalendEditor) part;
                 list.add(editor.getProcess());
             }

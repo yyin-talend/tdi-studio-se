@@ -27,7 +27,6 @@ import org.talend.core.model.process.AbstractConnection;
 import org.talend.core.model.process.AbstractNode;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
-import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.IElementParameter;
@@ -36,14 +35,10 @@ import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IProcess;
-import org.talend.core.model.properties.JobletProcessItem;
-import org.talend.core.model.properties.Property;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.process.statsandlogs.StatsAndLogsManager;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
-import org.talend.designer.joblet.model.JobletProcess;
-import org.talend.designer.joblet.ui.models.EJobletNodeType;
 import org.talend.designer.joblet.ui.models.IJobletComponent;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.ExternalNodesFactory;
@@ -93,7 +88,7 @@ public class DataProcess {
 
     // should only be called by a starting node
     @SuppressWarnings("unchecked")//$NON-NLS-1$
-    private INode buildfromNode(final Node graphicalNode) {
+    public INode buildfromNode(final Node graphicalNode) {
         if (buildCheckMap.containsKey(graphicalNode)) {
             return buildCheckMap.get(graphicalNode);
         }
@@ -741,55 +736,11 @@ public class DataProcess {
         for (Node node : graphicalNodeList) {
             IComponent component = node.getComponent();
             if (component instanceof IJobletComponent) {
-                IJobletComponent jobletComponent = (IJobletComponent) component;
-                if (jobletComponent.getJobletNodeType().equals(EJobletNodeType.ELEMENT)) {
-                    Property property = jobletComponent.getProperty();
-                    JobletProcess jobletProcess = ((JobletProcessItem) property.getItem()).getJobletProcess();
-                    Process sProcess = (Process) jobletComponent.getJobletGEFProcess();
-                    sProcess.loadXmlFile(jobletProcess);
-                    List<? extends IConnection> incomingConnections = node.getIncomingConnections();
-                    List<? extends IConnection> outgoingConnections = node.getOutgoingConnections();
-                    for (Element elem : (List<Element>) sProcess.getElements()) {
-                        if (elem instanceof Node) {
-                            Node sNode = (Node) elem;
-                            IComponent jlComponent = sNode.getComponent();
-                            if (jlComponent instanceof IJobletComponent) {
-                                IJobletComponent jlComponent2 = (IJobletComponent) jlComponent;
-                                EJobletNodeType jobletNodeType = jlComponent2.getJobletNodeType();
-
-                                switch (jobletNodeType) {
-                                case INPUT:
-                                    if (incomingConnections.size() == 1) {
-                                        IConnection connection = incomingConnections.get(0);
-                                        INode source = connection.getSource();
-                                        INode node2 = buildCheckMap.get(source);
-                                        DataConnection connection2 = (DataConnection) node2.getOutgoingConnections().get(0);
-                                        sNode.setDummy(true);
-                                        sNode.setStart(false);
-                                        connection2.setTarget(buildfromNode(sNode));
-                                    }
-                                    break;
-                                case OUTPUT:
-                                    for (IConnection connection : outgoingConnections) {
-                                        INode target = connection.getTarget();
-                                        INode node2 = buildCheckMap.get(target);
-                                        List<? extends IConnection> inConn = node2.getIncomingConnections(connection
-                                                .getLineStyle());
-                                        DataConnection connection2 = (DataConnection) inConn.get(0);
-                                        DataNode dataNode = (DataNode) buildfromNode(sNode);
-                                        connection2.setSource(dataNode);
-                                        List<IConnection> list = (List<IConnection>) dataNode.getOutgoingConnections();
-                                        list.add(connection2);
-                                    }
-                                    break;
-                                default:
-                                    break;
-                                }
-                            } else {
-                                nodeList.add(sNode);
-                            }
-                        }
-                    }
+                AbstractProcessProvider processProvider = AbstractProcessProvider
+                        .findProcessProviderFromPID(IJobletComponent.PID);
+                Process sProcess = processProvider.buildNewGraphicProcess(node);
+                if (sProcess != null) {
+                    processProvider.addNewDataProcess(sProcess, node, buildCheckMap, this);
                 }
             }
         }
