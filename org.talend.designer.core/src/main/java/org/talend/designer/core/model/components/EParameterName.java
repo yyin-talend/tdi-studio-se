@@ -76,6 +76,7 @@ public enum EParameterName {
     DBTABLE("Table Name"),
     MODULE_LIST("Module List"),
     CURRENT_OS("Current OS"),
+    IREPORT_PATH("IREPORT_PATH"), //$NON-NLS-1$  Hidden parameter so no translation needed
 
     /**
      * For stats & logs parameters.

@@ -55,6 +55,7 @@ import org.talend.core.model.process.IElementParameterDefaultValue;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.temp.ECodePart;
+import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.designer.components.IComponentsLocalProviderService;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.utils.emf.component.COLUMNType;
@@ -563,6 +564,17 @@ public class EmfComponent implements IComponent {
         param.setShow(false);
         listParam.add(param);
 
+        param = new ElementParameter(node);
+        param.setName(EParameterName.IREPORT_PATH.getName());
+        param.setCategory(EComponentCategory.MAIN);
+        param.setField(EParameterFieldType.DIRECTORY);
+        param.setDisplayName(EParameterName.IREPORT_PATH.getDisplayName());
+        param.setNumRow(99);
+        param.setShow(false);
+        // "cmd /c cd \"C:\Program Files\JasperSoft\iReport-2.0.3\" && iReport.exe"
+        param.setValue(CorePlugin.getDefault().getPluginPreferences().getString(ITalendCorePrefConstants.IREPORT_PATH));
+        param.setReadOnly(true);
+        listParam.add(param);
     }
 
     private void createSpecificParametersFromType(final List<ElementParameter> listParam, final PARAMETERType xmlParam,

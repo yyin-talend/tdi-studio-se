@@ -36,6 +36,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.core.CorePlugin;
+import org.talend.core.model.process.ElementParameterParser;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.model.components.MultiDefaultValuesUtils;
@@ -226,7 +227,8 @@ public class CommandController extends AbstractElementPropertySectionController 
             Button btn = (Button) ctrl;
             Object valueObj = btn.getData(COMMANDS);
             if (valueObj != null && valueObj instanceof String) {
-                List<String> commandsList = MultiDefaultValuesUtils.parserDefaultValues((String) valueObj);
+                List<String> commandsList = MultiDefaultValuesUtils.parserDefaultValues((String) ElementParameterParser.parse(
+                        elem, (String) valueObj));
                 if (!commandsList.isEmpty()) {
                     return new ExecuteSystemCommandCommand(commandsList);
                 }
