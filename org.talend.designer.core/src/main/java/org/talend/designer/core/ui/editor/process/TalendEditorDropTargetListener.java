@@ -170,12 +170,13 @@ public class TalendEditorDropTargetListener implements TransferDropTargetListene
                 }
 
                 Item item = sourceNode.getObject().getProperty().getItem();
+                ERepositoryObjectType type = sourceNode.getObjectType();
                 if (!(item instanceof ConnectionItem) && !(item instanceof ProcessItem)) {
                     continue;
                 }
                 TempStore store = new TempStore();
                 store.seletetedNode = sourceNode;
-                getCorrespondingComponent(item, isInput, store);
+                getCorrespondingComponent(item, isInput, store, type);
                 if (store.component != null) {
                     list.add(store);
                 } else {
@@ -285,7 +286,9 @@ public class TalendEditorDropTargetListener implements TransferDropTargetListene
             tablesMap.put(connectionItem.getProperty().getId(), tableValuesList);
             IElementParameter repositorySchemaTypeParameter = node.getElementParameter(EParameterName.REPOSITORY_SCHEMA_TYPE
                     .getName());
-            repositorySchemaTypeParameter.setListItemsValue(tableValuesList.toArray(new String[0]));
+            if (repositorySchemaTypeParameter != null) {
+                repositorySchemaTypeParameter.setListItemsValue(tableValuesList.toArray(new String[0]));
+            }
             if (connection instanceof DatabaseConnection && !connection.isReadOnly()) {
                 DatabaseConnection dbConnection = (DatabaseConnection) connection;
                 QueriesConnection queriesConnection = dbConnection.getQueries();
@@ -331,7 +334,12 @@ public class TalendEditorDropTargetListener implements TransferDropTargetListene
                 DatabaseConnection connection2 = (DatabaseConnection) connection;
                 String schema = connection2.getSchema();
                 String dbType = connection2.getDatabaseType();
-                QueryGuessCommand queryGuessCommand = new QueryGuessCommand(node, node.getMetadataList().get(0), schema, dbType);
+                QueryGuessCommand queryGuessCommand = null;
+                if (node.getMetadataList().size() == 0) {
+                    queryGuessCommand = new QueryGuessCommand(node, null, schema, dbType);
+                } else {
+                    queryGuessCommand = new QueryGuessCommand(node, node.getMetadataList().get(0), schema, dbType);
+                }
                 list.add(queryGuessCommand);
             }
         } else if (selectedNode.getObject().getProperty().getItem() instanceof ProcessItem) {
@@ -377,8 +385,8 @@ public class TalendEditorDropTargetListener implements TransferDropTargetListene
     public void dropAccept(DropTargetEvent event) {
     }
 
-    private void getCorrespondingComponent(Item item, boolean input, TempStore store) {
-        EDatabaseComponentName name = EDatabaseComponentName.getCorrespondingComponentName(item);
+    private void getCorrespondingComponent(Item item, boolean input, TempStore store, ERepositoryObjectType type) {
+        EDatabaseComponentName name = EDatabaseComponentName.getCorrespondingComponentName(item, type);
         IComponent component = null;
         if (name != null) {
             String componentName = null;
@@ -425,30 +433,32 @@ public class TalendEditorDropTargetListener implements TransferDropTargetListene
      */
     enum EDatabaseComponentName {
         // DATABASES
-        DBMYSQL(DatabaseConnectionItem.class, EDatabaseTypeName.MYSQL, "tMysqlInput", "tMysqlOutput"),
-        DBPSQL(DatabaseConnectionItem.class, EDatabaseTypeName.PSQL, "tPostgresqlInput", "tPostgresqlOutput"),
-        DBORACLEFORSID(DatabaseConnectionItem.class, EDatabaseTypeName.ORACLEFORSID, "tOracleInput", "tOracleOutput"),
+        DBMYSQL(DatabaseConnectionItem.class, EDatabaseTypeName.MYSQL, "tMysqlInput", "tMysqlOutput", true),
+        DBPSQL(DatabaseConnectionItem.class, EDatabaseTypeName.PSQL, "tPostgresqlInput", "tPostgresqlOutput", true),
+        DBORACLEFORSID(DatabaseConnectionItem.class, EDatabaseTypeName.ORACLEFORSID, "tOracleInput", "tOracleOutput", true),
 
-        DBORACLESN(DatabaseConnectionItem.class, EDatabaseTypeName.ORACLESN, "tOracleInput", "tOracleOutput"),
+        DBORACLESN(DatabaseConnectionItem.class, EDatabaseTypeName.ORACLESN, "tOracleInput", "tOracleOutput", true),
 
-        DBGODBC(DatabaseConnectionItem.class, EDatabaseTypeName.GODBC, "tDBInput", "tDBOutput"),
-        MSODBC(DatabaseConnectionItem.class, EDatabaseTypeName.MSODBC, "tDBInput", "tDBOutput"),
-        IBMDB2(DatabaseConnectionItem.class, EDatabaseTypeName.IBMDB2, "tDB2Input", "tDB2Output"),
-        SYBASEASE(DatabaseConnectionItem.class, EDatabaseTypeName.SYBASEASE, "tSybaseInput", "tSybaseOutput"),
-        AS400(DatabaseConnectionItem.class, EDatabaseTypeName.AS400, "tAS400Input", "tAS400Output"),
+        DBGODBC(DatabaseConnectionItem.class, EDatabaseTypeName.GODBC, "tDBInput", "tDBOutput", true),
+        MSODBC(DatabaseConnectionItem.class, EDatabaseTypeName.MSODBC, "tDBInput", "tDBOutput", true),
+        IBMDB2(DatabaseConnectionItem.class, EDatabaseTypeName.IBMDB2, "tDB2Input", "tDB2Output", true),
+        SYBASEASE(DatabaseConnectionItem.class, EDatabaseTypeName.SYBASEASE, "tSybaseInput", "tSybaseOutput", true),
+        AS400(DatabaseConnectionItem.class, EDatabaseTypeName.AS400, "tAS400Input", "tAS400Output", true),
         // this Sybase IQ not used.
         // SYBASEIQ(DatabaseConnectionItem.class,"SYBASE", "Sybase IQ", new Boolean(false), "SYBASE"),
-        MSSQLODBC(DatabaseConnectionItem.class, EDatabaseTypeName.MSSQL, "tMSSqlInput", "tMSSqlOutput"),
+        MSSQLODBC(DatabaseConnectionItem.class, EDatabaseTypeName.MSSQL, "tMSSqlInput", "tMSSqlOutput", true),
         // this don't use in Branch 2.0
-        HSQL(DatabaseConnectionItem.class, EDatabaseTypeName.HSQLDB, "tHSQLDbInput", "tHSQLDbOutput"),
-        JAVADB(DatabaseConnectionItem.class, EDatabaseTypeName.JAVADB, "tJavaDBInput", "tJavaDBOutput"),
-        INGRES(DatabaseConnectionItem.class, EDatabaseTypeName.INGRES, "tIngresInput", "tIngresOutput"), // "INGRES"),
-        INTERBASE(DatabaseConnectionItem.class, EDatabaseTypeName.INTERBASE, "tInterbaseInput", "tInterbaseOutput"), // "INTERBASE"),
-        SQLITE(DatabaseConnectionItem.class, EDatabaseTypeName.SQLITE, "tSQLiteInput", "tSQLiteOutput"), // "SQLITE"),
-        FIREBIRD(DatabaseConnectionItem.class, EDatabaseTypeName.FIREBIRD, "tFirebirdInput", "tFirebirdOutput"), // "FIREBIRD"),
-        INFORMIX(DatabaseConnectionItem.class, EDatabaseTypeName.INFORMIX, "tInformixInput", "tInformixOutput"), // "INFORMIX");
-        ACCESS(DatabaseConnectionItem.class, EDatabaseTypeName.ACCESS, "tAccessInput", "tAccessOutput"), // "ACCESS");
-        TERADATA(DatabaseConnectionItem.class, EDatabaseTypeName.TERADATA, "tTeradataInput", "tTeradataOutput"), // "TERADATA");
+        HSQL(DatabaseConnectionItem.class, EDatabaseTypeName.HSQLDB, "tHSQLDbInput", "tHSQLDbOutput", true),
+        JAVADB(DatabaseConnectionItem.class, EDatabaseTypeName.JAVADB, "tJavaDBInput", "tJavaDBOutput", true),
+        INGRES(DatabaseConnectionItem.class, EDatabaseTypeName.INGRES, "tIngresInput", "tIngresOutput", true), // "INGRES"),
+        INTERBASE(DatabaseConnectionItem.class, EDatabaseTypeName.INTERBASE, "tInterbaseInput", "tInterbaseOutput", true), // "INTERBASE"),
+        SQLITE(DatabaseConnectionItem.class, EDatabaseTypeName.SQLITE, "tSQLiteInput", "tSQLiteOutput", true), // "SQLITE"),
+        FIREBIRD(DatabaseConnectionItem.class, EDatabaseTypeName.FIREBIRD, "tFirebirdInput", "tFirebirdOutput", true), // "FIREBIRD"),
+        INFORMIX(DatabaseConnectionItem.class, EDatabaseTypeName.INFORMIX, "tInformixInput", "tInformixOutput", true), // "INFORMIX");
+        ACCESS(DatabaseConnectionItem.class, EDatabaseTypeName.ACCESS, "tAccessInput", "tAccessOutput", true), // "ACCESS");
+
+        TERADATA(DatabaseConnectionItem.class, EDatabaseTypeName.TERADATA, "tELTTeradataMap", "tELTTeradataMap"), // "TERADATA");
+        TERADATA_TABLE(DatabaseConnectionItem.class, EDatabaseTypeName.TERADATA, "tELTTeradataInput", "tELTTeradataOutput", true), // "TERADATA");
 
         // FILES
         FILEDELIMITED(DelimitedFileConnectionItem.class, "tFileInputDelimited", "tFileOutputDelimited"),
@@ -489,6 +499,12 @@ public class TalendEditorDropTargetListener implements TransferDropTargetListene
         String outPutComponentName;
 
         EDatabaseTypeName dbTypeName;
+
+        boolean forTableItem;
+
+        public boolean isForTableItem() {
+            return this.forTableItem;
+        }
 
         /**
          * Getter for clazz.
@@ -541,6 +557,19 @@ public class TalendEditorDropTargetListener implements TransferDropTargetListene
             this.clazz = clazz;
             this.inputComponentName = inputComponentName;
             this.outPutComponentName = outPutComponentName;
+
+        }
+
+        /**
+         * Contructor for files.
+         * 
+         * @param clazz
+         * @param dbTypeName
+         * @param inputComponentName
+         * @param outPutComponentName
+         */
+        EDatabaseComponentName(Class clazz, EDatabaseTypeName dbTypeName, String inputComponentName, String outPutComponentName) {
+            this(clazz, dbTypeName, inputComponentName, outPutComponentName, false);
         }
 
         /**
@@ -551,12 +580,36 @@ public class TalendEditorDropTargetListener implements TransferDropTargetListene
          * @param inputComponentName
          * @param outPutComponentName
          */
-        EDatabaseComponentName(Class clazz, EDatabaseTypeName dbTypeName, String inputComponentName, String outPutComponentName) {
+        EDatabaseComponentName(Class clazz, EDatabaseTypeName dbTypeName, String inputComponentName, String outPutComponentName,
+                boolean tableItem) {
             this(clazz, inputComponentName, outPutComponentName);
             this.dbTypeName = dbTypeName;
+            this.forTableItem = tableItem;
         }
 
-        public static EDatabaseComponentName getCorrespondingComponentName(Item item) {
+        public static EDatabaseComponentName getCorrespondingComponentName(Item item, ERepositoryObjectType type) {
+            if (type == ERepositoryObjectType.METADATA_CON_TABLE) {
+                for (EDatabaseComponentName typeName : EDatabaseComponentName.values()) {
+                    if (typeName.getMappingKey().isAssignableFrom(item.getClass())) {
+
+                        if (typeName.getMappingKey() == DatabaseConnectionItem.class) {
+                            DatabaseConnectionItem dbItem = (DatabaseConnectionItem) item;
+                            DatabaseConnection dbConnection = (DatabaseConnection) dbItem.getConnection();
+                            if (typeName.getDBType().equals(dbConnection.getDatabaseType()) && typeName.isForTableItem()) {
+                                return typeName;
+                            }
+                        } else {
+                            return typeName;
+                        }
+                    }
+                }
+                return null;
+            } else {
+                return getCorrespondingComponentName(item, true);
+            }
+        }
+
+        private static EDatabaseComponentName getCorrespondingComponentName(Item item, boolean flag) {
 
             for (EDatabaseComponentName typeName : EDatabaseComponentName.values()) {
                 if (typeName.getMappingKey().isAssignableFrom(item.getClass())) {
@@ -564,7 +617,7 @@ public class TalendEditorDropTargetListener implements TransferDropTargetListene
                     if (typeName.getMappingKey() == DatabaseConnectionItem.class) {
                         DatabaseConnectionItem dbItem = (DatabaseConnectionItem) item;
                         DatabaseConnection dbConnection = (DatabaseConnection) dbItem.getConnection();
-                        if (typeName.getDBType().equals(dbConnection.getDatabaseType())) {
+                        if (typeName.getDBType().equals(dbConnection.getDatabaseType()) && flag) {
                             return typeName;
                         }
                     } else {

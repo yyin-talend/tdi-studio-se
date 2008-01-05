@@ -43,7 +43,8 @@ public class RepositoryChangeMetadataCommand extends ChangeMetadataCommand {
     private final Node node;
 
     public RepositoryChangeMetadataCommand(Node node, String propName, Object propValue, IMetadataTable newOutputMetadata) {
-        super(node, node.getElementParameter(propName).getParentParameter(), null, newOutputMetadata);
+        super(node, node.getElementParameter(propName) == null ? null : node.getElementParameter(propName).getParentParameter(),
+                null, newOutputMetadata);
         this.propName = propName;
         oldPropValue = node.getPropertyValue(propName);
         newPropValue = propValue;
