@@ -27,8 +27,10 @@ String row_separator = ElementParameterParser.getValue(node, "__ROW_TERMINATED_B
 String first_row = ElementParameterParser.getValue(node, "__FIRST_ROW__");
 String file = ElementParameterParser.getValue(node, "__REMOTE_FILENAME__");
 String host = ElementParameterParser.getValue(node, "__HOST__");
+String dbinstance = ElementParameterParser.getValue(node, "__INSTANCE__");
 String port = ElementParameterParser.getValue(node, "__PORT__");
 String db = ElementParameterParser.getValue(node, "__DBNAME__");
+String dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
 String user = ElementParameterParser.getValue(node, "__USER__");
 String pas = ElementParameterParser.getValue(node, "__PASS__");
 String table = ElementParameterParser.getValue(node, "__TABLE__");
@@ -144,7 +146,17 @@ if(action.equals("EXPORT")) {
     %>
     String tableName_<%=cid%> = <%=table%>;
     java.lang.Class.forName("net.sourceforge.jtds.jdbc.Driver").newInstance();
-    String url_<%=cid %> = "jdbc:jtds:sqlserver://" + <%=host%> + ":" + <%=port%> + "//" + <%=db%>;
+    <%
+    if(dbinstance == null || dbinstance.equals("\"\"") || dbinstance.equals("")) {
+        %>
+        String url_<%=cid %> = "jdbc:jtds:sqlserver://" + <%=host%> + ":" + <%=port%> + "//" + <%=db%> + ";appName=" + projectName + ";" + <%=dbproperties%>;        
+        <%
+    } else {
+        %>
+        String url_<%=cid %> = "jdbc:jtds:sqlserver://" + <%=host%> + ":" + <%=port%> + "//" + <%=db%> + ";instance=" + <%=dbinstance%> + ";appName=" + projectName + ";" + <%=dbproperties%>;
+        <%
+    }    
+    %>
     java.sql.Connection conn_<%=cid %> = java.sql.DriverManager.getConnection(url_<%=cid %>, <%=user%>, <%=pas%>);
     <%
     String tableAction = ElementParameterParser.getValue(node,"__TABLE_ACTION__");

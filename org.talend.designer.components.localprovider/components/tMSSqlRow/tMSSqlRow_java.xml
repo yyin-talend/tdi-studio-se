@@ -65,6 +65,11 @@
       <DEFAULT>"localhost"</DEFAULT>
     </PARAMETER>
 
+	<PARAMETER NAME="INSTANCE" FIELD="TEXT" NUM_ROW="3"
+		REPOSITORY_VALUE="INSTANCE_NAME" SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
+		<DEFAULT>""</DEFAULT>
+	</PARAMETER>
+
     <PARAMETER
       NAME="PORT"
       FIELD="TEXT"
@@ -78,17 +83,21 @@
     <PARAMETER
       NAME="DBNAME"
       FIELD="TEXT"
-      NUM_ROW="3"
+      NUM_ROW="4"
       REPOSITORY_VALUE="SID"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
 
+	<PARAMETER NAME="PROPERTIES" FIELD="TEXT" NUM_ROW="4" REPOSITORY_VALUE="PROPERTIES_STRING" SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
+		<DEFAULT>""</DEFAULT>
+	</PARAMETER>
+
 	<PARAMETER
       NAME="TYPE"
       FIELD="TEXT"
-      NUM_ROW="3"
+      NUM_ROW="4"
       SHOW="false"
       REPOSITORY_VALUE="TYPE"
     >
@@ -98,7 +107,7 @@
     <PARAMETER
       NAME="USER"
       FIELD="TEXT"
-      NUM_ROW="4"
+      NUM_ROW="5"
       REPOSITORY_VALUE="USERNAME"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
@@ -108,7 +117,7 @@
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
-      NUM_ROW="4"
+      NUM_ROW="5"
       REPOSITORY_VALUE="PASSWORD"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
@@ -118,7 +127,7 @@
     <PARAMETER
       NAME="SCHEMA_FLOW"
       FIELD="SCHEMA_TYPE"
-      NUM_ROW="5"
+      NUM_ROW="6"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -127,7 +136,7 @@
       NAME="SCHEMA_REJECT"
       FIELD="SCHEMA_TYPE"
       REQUIRED="true"
-      NUM_ROW="5"
+      NUM_ROW="6"
       CONTEXT="REJECT"
       SHOW="true">
       <TABLE READONLY="true">
@@ -139,7 +148,7 @@
 	<PARAMETER
       NAME="DBTABLE"
       FIELD="DBTABLE"
-      NUM_ROW="5"
+      NUM_ROW="6"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -147,7 +156,7 @@
     <PARAMETER
       NAME="QUERYSTORE"
       FIELD="QUERYSTORE_TYPE"
-      NUM_ROW="6"
+      NUM_ROW="7"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -155,7 +164,7 @@
     <PARAMETER
       NAME="QUERY"
       FIELD="MEMO_SQL"
-      NUM_ROW="7"
+      NUM_ROW="8"
     >
       <DEFAULT>"select id, name from employee"</DEFAULT>
     </PARAMETER>
@@ -163,7 +172,7 @@
     <PARAMETER
       NAME="ENCODING"
       FIELD="ENCODING_TYPE"
-      NUM_ROW="8"
+      NUM_ROW="9"
       REQUIRED="true"
     >
       <DEFAULT>"ISO-8859-15"</DEFAULT>
@@ -172,7 +181,7 @@
     <PARAMETER
       NAME="COMMIT_EVERY"
       FIELD="TEXT"
-      NUM_ROW="8"
+      NUM_ROW="9"
       REQUIRED="true"
     >
       <DEFAULT>10000</DEFAULT>
@@ -181,7 +190,7 @@
     <PARAMETER
       NAME="DIE_ON_ERROR"
       FIELD="CHECK"
-      NUM_ROW="8"
+      NUM_ROW="9"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>

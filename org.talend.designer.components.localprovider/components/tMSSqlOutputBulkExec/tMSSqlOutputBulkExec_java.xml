@@ -58,6 +58,11 @@
       <DEFAULT>"localhost"</DEFAULT>
     </PARAMETER>
 
+	<PARAMETER NAME="INSTANCE" FIELD="TEXT" NUM_ROW="2"
+		REPOSITORY_VALUE="INSTANCE_NAME">
+		<DEFAULT>""</DEFAULT>
+	</PARAMETER>
+
     <PARAMETER
       NAME="PORT"
       FIELD="TEXT"
@@ -70,16 +75,20 @@
     <PARAMETER
       NAME="DBNAME"
       FIELD="TEXT"
-      NUM_ROW="2"
+      NUM_ROW="3"
       REPOSITORY_VALUE="SID"
     >
       <DEFAULT>"db name"</DEFAULT>
     </PARAMETER>
+
+	<PARAMETER NAME="PROPERTIES" FIELD="TEXT" NUM_ROW="3" REPOSITORY_VALUE="PROPERTIES_STRING">
+		<DEFAULT>""</DEFAULT>
+	</PARAMETER>
     
     <PARAMETER
       NAME="USER"
       FIELD="TEXT"
-      NUM_ROW="3"
+      NUM_ROW="4"
       REPOSITORY_VALUE="USERNAME"
     >
       <DEFAULT>"root"</DEFAULT>
@@ -88,7 +97,7 @@
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
-      NUM_ROW="3"
+      NUM_ROW="4"
       REPOSITORY_VALUE="PASSWORD"
     >
       <DEFAULT>"password"</DEFAULT>
@@ -97,7 +106,7 @@
     <PARAMETER
       NAME="TABLE"
       FIELD="TEXT"
-      NUM_ROW="4"
+      NUM_ROW="5"
     >
       <DEFAULT>"table name"</DEFAULT>
     </PARAMETER>
@@ -105,7 +114,7 @@
     <PARAMETER
       NAME="TABLE_ACTION"
       FIELD="CLOSED_LIST"
-      NUM_ROW="4"
+      NUM_ROW="5"
     >
       <ITEMS DEFAULT="NONE">
         <ITEM NAME="NONE" VALUE="NONE" />
@@ -119,7 +128,7 @@
     <PARAMETER
       NAME="SCHEMA"
       FIELD="SCHEMA_TYPE"
-      NUM_ROW="5"
+      NUM_ROW="6"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -127,7 +136,7 @@
     <PARAMETER
       NAME="FILENAME"
       FIELD="FILE"
-      NUM_ROW="6"
+      NUM_ROW="7"
       REQUIRED="true"
     >
       <DEFAULT>"C:/temp/mssql_data.txt"</DEFAULT>
@@ -136,7 +145,7 @@
     <PARAMETER
       NAME="FIELDSEPARATOR"
       FIELD="TEXT"
-      NUM_ROW="7"
+      NUM_ROW="8"
       REPOSITORY_VALUE="FIELD_SEPARATOR"
     >
       <DEFAULT>";"</DEFAULT>
@@ -145,7 +154,7 @@
     <PARAMETER
       NAME="ROWSEPARATOR"
       FIELD="TEXT"
-      NUM_ROW="7"
+      NUM_ROW="8"
       REPOSITORY_VALUE="ROW_SEPARATOR"
     >
       <DEFAULT>"\n"</DEFAULT>
@@ -155,7 +164,7 @@
     	NAME="APPEND"
         FIELD="CHECK" 
         REQUIRED="true" 
-        NUM_ROW="7" 
+        NUM_ROW="8" 
         REPOSITORY_VALUE="APPEND">
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
@@ -163,7 +172,7 @@
     <PARAMETER
       NAME="FIRST_ROW"
       FIELD="TEXT"
-      NUM_ROW="7"
+      NUM_ROW="8"
       REQUIRED="true"      
     >
       <DEFAULT>"1"</DEFAULT>
@@ -172,14 +181,14 @@
    	<PARAMETER 
    		NAME="INCLUDEHEADER" 
    		FIELD="CHECK" 
-   		NUM_ROW="7">
+   		NUM_ROW="8">
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
  
     <PARAMETER
       NAME="DATA_FILE_TYPE"
       FIELD="CLOSED_LIST"
-      NUM_ROW="8"
+      NUM_ROW="9"
       REQUIRED="true"
     >
       <ITEMS DEFAULT ="char" >
@@ -193,7 +202,7 @@
     <PARAMETER 
     	NAME="ENCODING" 
     	FIELD="ENCODING_TYPE" 
-    	NUM_ROW="8" 
+    	NUM_ROW="9" 
     	REQUIRED="true" 
     	REPOSITORY_VALUE="ENCODING">
       <DEFAULT>"ISO-8859-15"</DEFAULT>
@@ -202,7 +211,7 @@
 	<PARAMETER
       NAME="MAPPING"
       FIELD="MAPPING_TYPE"
-      NUM_ROW="9"
+      NUM_ROW="11"
       SHOW="false"
     >       
       <DEFAULT>id_MSSQL</DEFAULT>
@@ -228,8 +237,10 @@
       <TEMPLATE_PARAM SOURCE="self.ACTION"   TARGET="tMBE.ACTION" />
       <TEMPLATE_PARAM SOURCE="self.BCP_UTILITY"   TARGET="tMBE.BCP_UTILITY" />
       <TEMPLATE_PARAM SOURCE="self.HOST"   TARGET="tMBE.HOST" />
+      <TEMPLATE_PARAM SOURCE="self.INSTANCE"   TARGET="tMBE.INSTANCE" />
       <TEMPLATE_PARAM SOURCE="self.PORT"   TARGET="tMBE.PORT" />
       <TEMPLATE_PARAM SOURCE="self.DBNAME"   TARGET="tMBE.DBNAME" />
+      <TEMPLATE_PARAM SOURCE="self.PROPERTIES"   TARGET="tMBE.PROPERTIES" />
       <TEMPLATE_PARAM SOURCE="self.USER"   TARGET="tMBE.USER" />
       <TEMPLATE_PARAM SOURCE="self.PASS"   TARGET="tMBE.PASS" />
       <TEMPLATE_PARAM SOURCE="self.TABLE"   TARGET="tMBE.TABLE" />
