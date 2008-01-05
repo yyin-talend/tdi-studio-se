@@ -141,6 +141,9 @@ public class TalendLaunchToolbarAction extends AbstractLaunchToolbarAction {
             if (page != null) {
                 if (page.getActivePart() == page.getActiveEditor()) {
                     IEditorPart editor = page.getActiveEditor();
+                    if (editor == null) {
+                        return;
+                    }
                     IEditorInput input = editor.getEditorInput();
                     if (input instanceof RepositoryEditorInput) {
                         RepositoryEditorInput rInput = (RepositoryEditorInput) input;
