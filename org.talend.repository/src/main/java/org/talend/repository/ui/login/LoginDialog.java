@@ -16,9 +16,7 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
@@ -35,10 +33,11 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.internal.dialogs.EventLoopProgressMonitor;
 import org.talend.commons.exception.BusinessException;
-import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
+import org.talend.commons.ui.swt.dialogs.ProgressDialog;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.general.Project;
@@ -61,6 +60,8 @@ public class LoginDialog extends TitleAreaDialog {
 
     /** The login composite. */
     private LoginComposite loginComposite;
+
+    private static final int MAX_TASKS = 30;
 
     /**
      * Construct a new LoginDialog.
@@ -169,30 +170,31 @@ public class LoginDialog extends TitleAreaDialog {
         prefManipulator.setLastConnection(loginComposite.getConnection().getName());
         prefManipulator.setLastProject(project.getLabel());
 
-        try {
-            try {
-                IRunnableWithProgress op = new IRunnableWithProgress() {
+        final Shell shell = this.getShell();
+        final ProgressDialog progressDialog = new ProgressDialog(shell) {
 
-                    public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-                        try {
-                            ProxyRepositoryFactory.getInstance().logOnProject(project);
-                        } catch (Exception e) {
-                            throw new InvocationTargetException(e);
-                        }
-                    }
-                };
-                new ProgressMonitorDialog(getShell()).run(true, false, op);
-            } catch (InvocationTargetException e) {
-                throw (Exception) e.getTargetException();
-            } catch (InterruptedException e) {
-                //
+            private IProgressMonitor monitorWrap;
+
+            @Override
+            public void run(IProgressMonitor monitor) {
+                monitorWrap = new EventLoopProgressMonitor(monitor);
+
+                monitorWrap.beginTask("Migration tasks running in progress...", MAX_TASKS);
+                try {
+                    ProxyRepositoryFactory.getInstance().logOnProject(project, monitorWrap);
+                } catch (Exception e) {
+                    MessageBoxExceptionHandler.process(e);
+                }
+                monitorWrap.done();
             }
-        } catch (LoginException e) {
-            setErrorMessage(e.getMessage());
-            return;
-        } catch (Exception e) {
-            MessageBoxExceptionHandler.process(e, getShell());
-            return;
+        };
+
+        try {
+            progressDialog.executeProcess();
+        } catch (InvocationTargetException e) {
+            MessageBoxExceptionHandler.process(e.getTargetException(), this.getShell());
+        } catch (InterruptedException e) {
+            MessageBoxExceptionHandler.process(e);
         }
 
         super.okPressed();

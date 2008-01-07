@@ -24,6 +24,7 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.util.EList;
 import org.talend.commons.exception.BusinessException;
@@ -726,6 +727,9 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      */
     public void forceCreate(Item item, IPath path) throws PersistenceException {
         this.repositoryFactoryFromProvider.create(item, path);
+//        if (item instanceof ProcessItem) {
+//            fireRepositoryPropertyChange(ERepositoryActionName.JOB_CREATE.getName(), null, item);
+//        }
     }
 
     /*
@@ -1149,5 +1153,38 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
 
     public RootContainer<String, IRepositoryObject> getJoblets() throws PersistenceException {
         return this.repositoryFactoryFromProvider.getJoblets();
+    }
+
+    /**
+     * DOC tang Comment method "logOnProject".
+     * @param project
+     * @param monitorWrap
+     * @throws PersistenceException 
+     * @throws LoginException 
+     */
+    public void logOnProject(Project project, IProgressMonitor monitorWrap) throws LoginException, PersistenceException {
+        IMigrationToolService service = (IMigrationToolService) GlobalServiceRegister.getDefault().getService(
+                IMigrationToolService.class);
+        service.executeProjectTasks(project, true,monitorWrap);
+
+        getRepositoryContext().setProject(project);
+        LanguageManager.reset();
+        this.repositoryFactoryFromProvider.logOnProject(project);
+
+        emptyTempFolder(project);
+
+        // i18n
+        // log.info(getRepositoryContext().getUser() + " logged on " + getRepositoryContext().getProject());
+        String str[] = new String[] { getRepositoryContext().getUser() + "", getRepositoryContext().getProject() + "" }; //$NON-NLS-1$ //$NON-NLS-2$        
+        log.info(Messages.getString("ProxyRepositoryFactory.log.loggedOn", str)); //$NON-NLS-1$
+
+        try {
+            CorePlugin.getDefault().getLibrariesService().syncLibraries();
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
+        }
+
+        service.executeProjectTasks(project, false,monitorWrap);
+        
     }
 }
