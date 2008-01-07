@@ -16,6 +16,7 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.internal.ui.DebugUIPlugin;
 import org.eclipse.debug.internal.ui.launchConfigurations.LaunchConfigurationManager;
+import org.eclipse.debug.internal.ui.launchConfigurations.LaunchHistory;
 import org.eclipse.debug.ui.DebugUITools;
 import org.eclipse.debug.ui.IDebugUIConstants;
 import org.eclipse.debug.ui.actions.AbstractLaunchToolbarAction;
@@ -30,9 +31,9 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.core.CorePlugin;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.designer.core.i18n.Messages;
-import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.model.RepositoryNode;
 
@@ -67,19 +68,7 @@ public class TalendLaunchToolbarAction extends AbstractLaunchToolbarAction {
 
         // Add favorites
         int accelerator = 1;
-        for (int i = 0; i < favoriteList.length; i++) {
-            ILaunchConfiguration launch = favoriteList[i];
-            try {
-                if (launch.getType().getIdentifier().equals(TalendDebugUIConstants.JOB_DEBUG_LAUNCH_CONFIGURATION_TYPE)) {
-                    LaunchAction action = new LaunchAction(launch, getMode());
-                    addToMenu(menu, action, accelerator);
-                    accelerator++;
-                }
-            } catch (Exception e) {
-                ExceptionHandler.process(e);
-                continue;
-            }
-        }
+        accelerator = addToMenu(menu, favoriteList, accelerator);
 
         // Separator between favorites and history
         if (favoriteList.length > 0 && historyList.length > 0) {
@@ -87,10 +76,15 @@ public class TalendLaunchToolbarAction extends AbstractLaunchToolbarAction {
         }
 
         // Add history launches next
-        for (int i = 0; i < historyList.length; i++) {
-            ILaunchConfiguration launch = historyList[i];
+        addToMenu(menu, historyList, accelerator);
+    }
+
+    private int addToMenu(Menu menu, ILaunchConfiguration[] launchList, int accelerator) {
+        for (int i = 0; i < launchList.length; i++) {
+            ILaunchConfiguration launch = launchList[i];
             try {
-                if (launch.getType().getIdentifier().equals(TalendDebugUIConstants.JOB_DEBUG_LAUNCH_CONFIGURATION_TYPE)) {
+                if (launch.getType().getIdentifier().equals(TalendDebugUIConstants.JOB_DEBUG_LAUNCH_CONFIGURATION_TYPE)
+                        && isCurrentProject(launch)) {
                     LaunchAction action = new LaunchAction(launch, getMode());
                     addToMenu(menu, action, accelerator);
                     accelerator++;
@@ -100,6 +94,7 @@ public class TalendLaunchToolbarAction extends AbstractLaunchToolbarAction {
                 continue;
             }
         }
+        return accelerator;
     }
 
     /*
@@ -155,11 +150,34 @@ public class TalendLaunchToolbarAction extends AbstractLaunchToolbarAction {
         }
 
         ILaunchConfiguration configuration = getLastLaunch();
-
-        try {
-            action.setToolTipText(RUN_LABEL + " " + configuration.getAttribute(TalendDebugUIConstants.JOB_NAME, ""));
-        } catch (Exception e) {
+        if (!isCurrentProject(configuration)) {
+            action.setToolTipText(RUN_LABEL);
+        } else {
+            try {
+                action.setToolTipText(RUN_LABEL + " " + configuration.getAttribute(TalendDebugUIConstants.JOB_NAME, ""));
+            } catch (Exception e) {
+            }
         }
+
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.debug.ui.actions.AbstractLaunchHistoryAction#getLastLaunch()
+     */
+    @Override
+    protected ILaunchConfiguration getLastLaunch() {
+        LaunchHistory history = getLaunchConfigurationManager().getLaunchHistory(getLaunchGroupIdentifier());
+        if (history != null) {
+            ILaunchConfiguration[] filterConfigs = history.getCompleteLaunchHistory();
+            for (ILaunchConfiguration launchConfiguration : filterConfigs) {
+                if (isCurrentProject(launchConfiguration)) {
+                    return launchConfiguration;
+                }
+            }
+        }
+        return null;
     }
 
     /**
@@ -198,6 +216,7 @@ public class TalendLaunchToolbarAction extends AbstractLaunchToolbarAction {
         }
 
         ILaunchConfiguration configuration = getLastLaunch();
+
         if (configuration == null) {
             MessageDialog.openInformation(DebugUIPlugin.getShell(), "Infomation", "There is no running item available.");
             // DebugUITools.openLaunchConfigurationDialogOnGroup(DebugUIPlugin.getShell(), new StructuredSelection(),
@@ -205,6 +224,16 @@ public class TalendLaunchToolbarAction extends AbstractLaunchToolbarAction {
         } else {
             DebugUITools.launch(configuration, getMode());
         }
+    }
+
+    private boolean isCurrentProject(ILaunchConfiguration configuration) {
+        try {
+            String projectName = configuration.getAttribute(TalendDebugUIConstants.CURRENT_PROJECT_NAME, (String) null);
+            return projectName.equals(CorePlugin.getCurrentProject().getLabel());
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+        return false;
     }
 
     // }

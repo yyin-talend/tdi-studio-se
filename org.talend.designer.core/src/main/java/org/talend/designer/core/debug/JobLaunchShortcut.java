@@ -29,9 +29,10 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.core.CorePlugin;
+import org.talend.core.language.LanguageManager;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
-import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.model.RepositoryNode;
 
@@ -149,11 +150,19 @@ public class JobLaunchShortcut implements ILaunchShortcut {
             candidateConfigs = new ArrayList(configs.length);
             for (int i = 0; i < configs.length; i++) {
                 ILaunchConfiguration config = configs[i];
-                String projectName = config.getAttribute(TalendDebugUIConstants.JOB_NAME, (String) null);
+                String projectName = config.getAttribute(TalendDebugUIConstants.CURRENT_PROJECT_NAME, (String) null);
                 if (projectName == null) {
                     continue;
                 }
-                if (file.getProperty().getLabel().equals(projectName)) {
+                if (!projectName.equals(CorePlugin.getCurrentProject().getLabel())) {
+                    continue;
+                }
+                String jobName = config.getAttribute(TalendDebugUIConstants.JOB_NAME, (String) null);
+                if (jobName == null) {
+                    continue;
+                }
+
+                if (file.getProperty().getLabel().equals(jobName)) {
                     candidateConfigs.add(config);
                 }
             }
@@ -178,15 +187,17 @@ public class JobLaunchShortcut implements ILaunchShortcut {
      */
     private ILaunchConfiguration createConfiguration(ProcessItem file) {
         ILaunchConfiguration config = null;
-        String projectName = file.getProperty().getLabel();
+        String jobName = file.getProperty().getLabel();
         ILaunchConfigurationType type = getLaunchManager().getLaunchConfigurationType(
                 TalendDebugUIConstants.JOB_DEBUG_LAUNCH_CONFIGURATION_TYPE);
 
         try {
             if (type != null) {
                 ILaunchConfigurationWorkingCopy wc = type.newInstance(null, getLaunchManager()
-                        .generateUniqueLaunchConfigurationNameFrom(projectName));
-                wc.setAttribute(TalendDebugUIConstants.JOB_NAME, projectName);
+                        .generateUniqueLaunchConfigurationNameFrom(jobName));
+                wc.setAttribute(TalendDebugUIConstants.JOB_NAME, jobName);
+                String projectName = CorePlugin.getCurrentProject().getLabel();
+                wc.setAttribute(TalendDebugUIConstants.CURRENT_PROJECT_NAME, projectName);
                 config = wc.doSave();
             }
         } catch (CoreException e) {
