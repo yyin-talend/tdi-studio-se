@@ -47,7 +47,6 @@ if (metadatas != null && metadatas.size() > 0) {
 if (inMetadata != null && metadata != null) {
 	// Database parameters
 	String dbServer = ElementParameterParser.getValue(node, "__SERVER__");
-	String dbinstance = ElementParameterParser.getValue(node, "__INSTANCE__");
 	String dbport = ElementParameterParser.getValue(node, "__PORT__");
 	String dbname = ElementParameterParser.getValue(node, "__DBNAME__");
 	String dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
@@ -60,17 +59,7 @@ if (inMetadata != null && metadata != null) {
 	%>
 	// Create database connection
 	java.lang.Class.forName("net.sourceforge.jtds.jdbc.Driver");
-	<%
-    if(dbinstance == null || dbinstance.equals("\"\"") || dbinstance.equals("")) {
-        %>
-        String connectionString_<%=cid %> = "jdbc:jtds:sqlserver://" + <%=dbServer%> + ":" + <%=dbport%> + "//" + <%=dbname%> + ";appName=" + projectName + ";" + <%=dbproperties%>;        
-        <%
-    } else {
-        %>
-        String connectionString_<%=cid %> = "jdbc:jtds:sqlserver://" + <%=dbServer%> + ":" + <%=dbport%> + "//" + <%=dbname%> + ";instance=" + <%=dbinstance%> + ";appName=" + projectName + ";" + <%=dbproperties%>;
-        <%
-    }	
-	%>
+    String connectionString_<%=cid %> = "jdbc:jtds:sqlserver://" + <%=dbServer%> + ":" + <%=dbport%> + "//" + <%=dbname%> + ";appName=" + projectName + ";" + <%=dbproperties%>;        
 	java.sql.Connection connection_<%=cid%> = java.sql.DriverManager.getConnection(connectionString_<%=cid %>, <%=dbuser%>, <%=dbpwd%>);
 	<%
 	

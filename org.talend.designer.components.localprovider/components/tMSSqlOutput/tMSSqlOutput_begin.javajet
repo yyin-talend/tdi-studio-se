@@ -34,9 +34,7 @@ skeleton="../templates/db_output_bulk.skeleton"
     String dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
     
     String dbhost = ElementParameterParser.getValue(node, "__HOST__");
-    
-    String dbinstance = ElementParameterParser.getValue(node, "__INSTANCE__");
-    
+        
     String dbport = ElementParameterParser.getValue(node, "__PORT__");
     
     String dbuser= ElementParameterParser.getValue(node, "__USER__");
@@ -102,17 +100,7 @@ else
 {
     %>
     java.lang.Class.forName("net.sourceforge.jtds.jdbc.Driver");
-    <%
-    if(dbinstance == null || dbinstance.equals("\"\"") || dbinstance.equals("")) {
-        %>
-        String url_<%=cid %> = "jdbc:jtds:sqlserver://" + <%=dbhost%> + ":" + <%=dbport%> + "//" + <%=dbname%> + ";appName=" + projectName + ";" + <%=dbproperties%>;        
-        <%
-    } else {
-        %>
-        String url_<%=cid %> = "jdbc:jtds:sqlserver://" + <%=dbhost%> + ":" + <%=dbport%> + "//" + <%=dbname%> + ";instance=" + <%=dbinstance%> + ";appName=" + projectName + ";" + <%=dbproperties%>;
-        <%
-    }
-    %>
+    String url_<%=cid %> = "jdbc:jtds:sqlserver://" + <%=dbhost%> + ":" + <%=dbport%> + "//" + <%=dbname%> + ";appName=" + projectName + ";" + <%=dbproperties%>;        
     String dbUser_<%=cid %> = <%=dbuser%>;
     String dbPwd_<%=cid %> = <%=dbpwd%>;
     java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
