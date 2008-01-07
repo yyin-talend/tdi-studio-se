@@ -484,6 +484,7 @@ public class LoginComposite extends Composite {
                 DeleteProjectsAsAction deleteProjectAction = new DeleteProjectsAsAction(true);
                 deleteProjectAction.run();
                 populateProjectList();
+                dialog.updateButtons();
             }
         });
 
