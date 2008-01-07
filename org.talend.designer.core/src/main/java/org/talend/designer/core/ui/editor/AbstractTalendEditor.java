@@ -40,10 +40,12 @@ import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.LightweightSystem;
 import org.eclipse.draw2d.SWTGraphics;
+import org.eclipse.draw2d.Shape;
 import org.eclipse.draw2d.SimpleRaisedBorder;
 import org.eclipse.draw2d.Viewport;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
+import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.draw2d.parts.ScrollableThumbnail;
 import org.eclipse.draw2d.parts.Thumbnail;
 import org.eclipse.gef.ContextMenuProvider;
@@ -59,6 +61,7 @@ import org.eclipse.gef.MouseWheelZoomHandler;
 import org.eclipse.gef.RootEditPart;
 import org.eclipse.gef.SnapToGeometry;
 import org.eclipse.gef.SnapToGrid;
+import org.eclipse.gef.Tool;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.editparts.AbstractEditPart;
 import org.eclipse.gef.editparts.LayerManager;
@@ -83,6 +86,7 @@ import org.eclipse.gef.ui.parts.GraphicalViewerKeyHandler;
 import org.eclipse.gef.ui.parts.ScrollingGraphicalViewer;
 import org.eclipse.gef.ui.parts.TreeViewer;
 import org.eclipse.gef.ui.rulers.RulerComposite;
+import org.eclipse.gmf.runtime.diagram.ui.editparts.ShapeEditPart;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IToolBarManager;
@@ -95,8 +99,10 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.VerifyKeyListener;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.TraverseEvent;
 import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
@@ -148,6 +154,7 @@ import org.talend.designer.core.ui.action.GEFDeleteAction;
 import org.talend.designer.core.ui.action.GEFPasteAction;
 import org.talend.designer.core.ui.action.ModifyMergeOrderAction;
 import org.talend.designer.core.ui.action.TalendConnectionCreationTool;
+import org.talend.designer.core.ui.editor.cmd.MoveNodeCommand;
 import org.talend.designer.core.ui.editor.connections.ConnectionPart;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
@@ -1042,7 +1049,11 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
         private boolean createConnection = false;
 
+        private static final int DEFAULT_MOVE_OFFSET = 2;
+
         private Point startPoint = null;
+
+        private int moveOffset = DEFAULT_MOVE_OFFSET;
 
         /**
          * bqian TalendEditDomain constructor comment.
@@ -1124,6 +1135,69 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
                 getEditor().setCursor(null);
                 processor = null;
             }
+        }
+
+        @Override
+        public void keyDown(org.eclipse.swt.events.KeyEvent keyEvent, EditPartViewer viewer) {
+            int keyCode = keyEvent.keyCode;
+
+            if (keyEvent.stateMask == SWT.CTRL
+                    && (keyCode == SWT.ARROW_UP || keyCode == SWT.ARROW_DOWN || keyCode == SWT.ARROW_LEFT || keyCode == SWT.ARROW_RIGHT)) {
+                List<EditPart> parts = viewer.getSelectedEditParts();
+                if (parts == null) {
+                    return;
+                }
+                for (EditPart part : parts) {
+                    if (part instanceof NodePart) {
+                        Node node = (Node) part.getModel();
+                        moveShape(keyCode, node, moveOffset);
+                    }
+                }
+                moveOffset++;
+            } else {
+                super.keyDown(keyEvent, viewer);
+            }
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.eclipse.gef.EditDomain#keyUp(org.eclipse.swt.events.KeyEvent, org.eclipse.gef.EditPartViewer)
+         */
+        @Override
+        public void keyUp(KeyEvent keyEvent, EditPartViewer viewer) {
+            super.keyUp(keyEvent, viewer);
+            if (moveOffset != DEFAULT_MOVE_OFFSET) {
+                moveOffset = DEFAULT_MOVE_OFFSET;
+            }
+        }
+
+        /**
+         * DOC bqian Comment method "moveShape".
+         * 
+         * @param keyCode
+         * @param shape
+         */
+        private void moveShape(int keyCode, Node node, int offset) {
+            Point location = node.getLocation().getCopy();
+            switch (keyCode) {
+            case SWT.ARROW_UP:
+                location.y = location.y - offset;
+                break;
+            case SWT.ARROW_DOWN:
+                location.y = location.y + offset;
+                break;
+            case SWT.ARROW_LEFT:
+                location.x = location.x - offset;
+                break;
+            case SWT.ARROW_RIGHT:
+                location.x = location.x + offset;
+                break;
+            default:
+                // do nothing
+            }
+            MoveNodeCommand locationCommand = new MoveNodeCommand(node, location);
+            getCommandStack().execute(locationCommand);
         }
 
         public void handleCreateDefaultConnection(Point currentLocation) {
