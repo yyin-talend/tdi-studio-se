@@ -15,13 +15,24 @@ imports="
     String dbhost = ElementParameterParser.getValue(node, "__HOST__");
     String dbport = ElementParameterParser.getValue(node, "__PORT__");
     String dbname = ElementParameterParser.getValue(node, "__DBNAME__");
+    String dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
     String dbuser = ElementParameterParser.getValue(node, "__USER__");
     String dbpass = ElementParameterParser.getValue(node, "__PASS__");
     String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
 %>
 java.lang.Class.forName("<%=javaDbDriver %>");
 
-String url_<%=cid%> = "jdbc:mysql://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%> + "?noDatetimeStringSync=true";
+<%
+if(dbproperties == null || dbproperties.equals("\"\"") || dbproperties.equals("")) {
+    %>
+    String url_<%=cid%> = "jdbc:mysql://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%>;
+    <%
+} else {
+    %>
+    String url_<%=cid%> = "jdbc:mysql://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%> + "?" + <%=dbproperties%>;
+    <%
+}
+%>
 
 String userName_<%=cid%> = <%=dbuser%>;
 

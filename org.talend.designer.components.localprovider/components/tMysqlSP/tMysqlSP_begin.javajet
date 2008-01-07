@@ -16,6 +16,7 @@ String cid = node.getUniqueName();
 String dbhost = ElementParameterParser.getValue(node, "__HOST__");
 String dbport = ElementParameterParser.getValue(node, "__PORT__");
 String dbname = ElementParameterParser.getValue(node, "__DBNAME__");
+String dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
 String dbuser = ElementParameterParser.getValue(node, "__USER__");
 String dbpwd  = ElementParameterParser.getValue(node, "__PASS__");
 String spName = ElementParameterParser.getValue(node, "__SP_NAME__");
@@ -24,7 +25,17 @@ List<Map<String, String>> spArgs = (List<Map<String,String>>) ElementParameterPa
 
 %>
 java.lang.Class.forName("org.gjt.mm.mysql.Driver");
-String connectionString_<%=cid%> = "jdbc:mysql://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%> + "?noDatetimeStringSync=true";
+<%
+if(dbproperties == null || dbproperties.equals("\"\"") || dbproperties.equals("")) {
+    %>
+    String connectionString_<%=cid%> = "jdbc:mysql://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%>;
+    <%
+} else {
+    %>
+    String connectionString_<%=cid%> = "jdbc:mysql://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%> + "?" + <%=dbproperties%>;
+    <%
+}
+%>
 java.sql.Connection connection_<%=cid%> = java.sql.DriverManager.getConnection(connectionString_<%=cid%>, <%=dbuser%>, <%=dbpwd%>);
 
 java.sql.CallableStatement statement_<%=cid%> = connection_<%=cid%>.prepareCall("{<%=isFunction ? "? = " : ""%>call <%=spName%>(

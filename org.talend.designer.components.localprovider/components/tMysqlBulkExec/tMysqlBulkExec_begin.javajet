@@ -38,6 +38,7 @@ if(encoding.equals("\"GBK\"")){
 String host = ElementParameterParser.getValue(node, "__HOST__");
 String port = ElementParameterParser.getValue(node, "__PORT__");
 String dbName = ElementParameterParser.getValue(node, "__DBNAME__");
+String dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
 String tableName = ElementParameterParser.getValue(node, "__TABLE__");
 String userName = ElementParameterParser.getValue(node, "__USER__");
 String password = ElementParameterParser.getValue(node, "__PASS__");
@@ -45,7 +46,18 @@ List<IMetadataColumn> columnList = getColumnList(node);
 %>
 String tableName_<%=cid%> = <%=tableName%>;
 Class.forName("com.mysql.jdbc.Driver").newInstance();
-java.sql.Connection con_<%=cid%> = java.sql.DriverManager.getConnection("jdbc:MySQL://" + <%=host%> + ":" + <%=port%> + "/" + <%=dbName%>, <%=userName%>, <%=password%>);
+<%
+if(dbproperties == null || dbproperties.equals("\"\"") || dbproperties.equals("")) {
+    %>
+    String url_<%=cid%> = "jdbc:mysql://" + <%=host%> + ":" + <%=port%> + "/" + <%=dbName%>;
+    <%
+} else {
+    %>
+    String url_<%=cid%> = "jdbc:mysql://" + <%=host%> + ":" + <%=port%> + "/" + <%=dbName%> + "?" + <%=dbproperties%>;
+    <%
+}
+%>
+java.sql.Connection con_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid%>, <%=userName%>, <%=password%>);
 <%
 String tableAction = ElementParameterParser.getValue(node,"__TABLE_ACTION__");
 String dbmsId = ElementParameterParser.getValue(node,"__MAPPING__");

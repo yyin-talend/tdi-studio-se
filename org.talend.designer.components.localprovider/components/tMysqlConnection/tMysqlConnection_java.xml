@@ -42,7 +42,7 @@
     <PARAMETER
       NAME="HOST"
       FIELD="TEXT"
-      NUM_ROW="3"
+      NUM_ROW="2"
       REPOSITORY_VALUE="SERVER_NAME"
     >
       <DEFAULT>""</DEFAULT>
@@ -61,7 +61,7 @@
     <PARAMETER
       NAME="PORT"
       FIELD="TEXT"
-      NUM_ROW="3"
+      NUM_ROW="2"
       REPOSITORY_VALUE="PORT"
     >
       <DEFAULT>"3306"</DEFAULT>
@@ -76,6 +76,10 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
+	<PARAMETER NAME="PROPERTIES" FIELD="TEXT" NUM_ROW="3" REPOSITORY_VALUE="PROPERTIES_STRING">
+		<DEFAULT>"noDatetimeStringSync=true"</DEFAULT>
+	</PARAMETER>
 
     <PARAMETER
       NAME="USER"
