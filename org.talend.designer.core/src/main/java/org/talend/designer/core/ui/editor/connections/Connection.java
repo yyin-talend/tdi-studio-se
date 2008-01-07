@@ -633,6 +633,8 @@ public class Connection extends Element implements IConnection, IPerformance {
         boolean sameKind;
         switch (type) {
         case FLOW_MAIN:
+            sameKind = false;
+            return caculateOutputId(type, sameKind, totalOutput);
         case FLOW_REF:
         case FLOW_MERGE:
             if (!sourceNodeConnector.isBuiltIn()) {
@@ -640,32 +642,45 @@ public class Connection extends Element implements IConnection, IPerformance {
             }
         case ON_SUBJOB_ERROR:
         case ON_SUBJOB_OK:
-            boolean isExecutionOrder = type.hasConnectionCategory(IConnectionCategory.EXECUTION_ORDER);
-            boolean isTestedConnectionExecutionOrder;
-            if (source != null) {
-                for (int i = 0; i < source.getOutgoingConnections().size(); i++) {
-                    IConnection connection = source.getOutgoingConnections().get(i);
-                    isTestedConnectionExecutionOrder = connection.getLineStyle().hasConnectionCategory(
-                            IConnectionCategory.EXECUTION_ORDER);
-                    sameKind = false;
-                    if ((isExecutionOrder && isTestedConnectionExecutionOrder)
-                            || (!isExecutionOrder && !isTestedConnectionExecutionOrder)) {
-                        sameKind = true;
-                    }
-                    if (sameKind) {
-                        totalOutput++;
-                    }
-                    if (connection.equals(this) && sameKind) {
-                        outputId = totalOutput;
-                    }
-                }
-            }
-            if (totalOutput > 1) {
-                return outputId;
-            }
-            break;
+            sameKind = false;
+            return caculateOutputId(type, sameKind, totalOutput);
         default:
             return -1;
+        }
+    }
+
+    /**
+     * yzhang Comment method "caculateOutputId".
+     * 
+     * @param type
+     * @param sameKind
+     * @param totalOutput
+     * @return
+     */
+    private int caculateOutputId(EConnectionType type, boolean sameKind, int totalOutput) {
+        int outputId = 0;
+        boolean isExecutionOrder = type.hasConnectionCategory(IConnectionCategory.EXECUTION_ORDER);
+        boolean isTestedConnectionExecutionOrder;
+        if (source != null) {
+            for (int i = 0; i < source.getOutgoingConnections().size(); i++) {
+                IConnection connection = source.getOutgoingConnections().get(i);
+                isTestedConnectionExecutionOrder = connection.getLineStyle().hasConnectionCategory(
+                        IConnectionCategory.EXECUTION_ORDER);
+                sameKind = false;
+                if ((isExecutionOrder && isTestedConnectionExecutionOrder)
+                        || (!isExecutionOrder && !isTestedConnectionExecutionOrder)) {
+                    sameKind = true;
+                }
+                if (sameKind) {
+                    totalOutput++;
+                }
+                if (connection.equals(this) && sameKind) {
+                    outputId = totalOutput;
+                }
+            }
+        }
+        if (totalOutput > 1) {
+            return outputId;
         }
         return -1;
     }
