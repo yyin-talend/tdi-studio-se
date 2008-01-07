@@ -354,8 +354,8 @@ public final class CodeGeneratorEmittersPoolFactory {
     private static List<LightJetBean> extractEmfPersistenData(List<JetBean> alreadyCompiledEmitters) {
         List<LightJetBean> toReturn = new ArrayList<LightJetBean>();
         for (JetBean unit : alreadyCompiledEmitters) {
-            long unitCRC = extractTemplateHashCode(unit);
-
+            // long unitCRC = extractTemplateHashCode(unit);
+            long unitCRC = unit.getCrc();
             toReturn.add(new LightJetBean(unit.getTemplateFullUri(), unit.getClassName(), unit.getMethod().getName(), unit
                     .getVersion(), unit.getLanguage(), unitCRC));
         }
@@ -419,6 +419,7 @@ public final class CodeGeneratorEmittersPoolFactory {
                 monitorWrap.worked(1);
                 unitTemplateFullURI = unit.getTemplateFullUri();
                 unitTemplateHashCode = extractTemplateHashCode(unit);
+                unit.setCrc(unitTemplateHashCode);
 
                 myLightJetBean = new LightJetBean(unitTemplateFullURI, unit.getVersion(), unitTemplateHashCode);
                 if ((lightBeanIndex = datas.indexOf(myLightJetBean)) > 0) {

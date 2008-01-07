@@ -47,8 +47,28 @@ public class JetBean {
     private String language = null;
 
     private String codePart = null;
-    
+
     private String family = "common";
+
+    private long crc = 0;
+
+    /**
+     * Getter for crc.
+     * 
+     * @return the crc
+     */
+    public long getCrc() {
+        return this.crc;
+    }
+
+    /**
+     * Sets the crc.
+     * 
+     * @param crc the crc to set
+     */
+    public void setCrc(long crc) {
+        this.crc = crc;
+    }
 
     /**
      * Minimal Constructor.
@@ -64,8 +84,8 @@ public class JetBean {
      * @param classpathParameter
      * @param templateRelativeUri
      */
-    public JetBean(String jetPluginRepository, String templateRelativeUri, String className, String version,
-            String language, String codePart) {
+    public JetBean(String jetPluginRepository, String templateRelativeUri, String className, String version, String language,
+            String codePart) {
         this.classPath = new HashMap<String, String>();
         this.jetPluginRepository = jetPluginRepository;
         this.templateRelativeUri = templateRelativeUri;
@@ -358,9 +378,8 @@ public class JetBean {
         return family;
     }
 
-    
     public void setFamily(String family) {
         this.family = family;
     }
-    
+
 }

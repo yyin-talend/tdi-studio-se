@@ -191,6 +191,8 @@ public class LightJetBean implements Serializable {
             }
         } else if (!this.templateRelativeUri.equals(other.templateRelativeUri)) {
             return false;
+        } else if (this.crc != other.crc) {
+            return false;
         }
         return true;
     }
