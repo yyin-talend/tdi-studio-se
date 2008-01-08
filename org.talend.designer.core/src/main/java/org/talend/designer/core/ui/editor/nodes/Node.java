@@ -2032,10 +2032,13 @@ public class Node extends Element implements INode {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.core.model.process.INode#reloadComponent(org.talend.core.model.components.IComponent)
+     * @see org.talend.core.model.process.INode#reloadComponent(org.talend.core.model.components.IComponent,
+     * java.util.Map)
      */
-    public void reloadComponent(IComponent component) {
+    public void reloadComponent(IComponent component, Map<String, Object> parameters) {
         init(component);
+        this.setMetadataList((List<IMetadataTable>) parameters.get(INode.RELOAD_PARAMETER_KEY_METADATA_LIST));
+
     }
 
 }
