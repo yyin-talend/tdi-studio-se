@@ -217,13 +217,13 @@ class Column{
 if(columnList != null && columnList.size()>0){
 
 
-StringBuffer insertColName = new StringBuffer();
+StringBuilder insertColName = new StringBuilder();
 
-StringBuffer insertValueStmt = new StringBuffer();
+StringBuilder insertValueStmt = new StringBuilder();
 
-StringBuffer updateSetStmt = new StringBuffer();
+StringBuilder updateSetStmt = new StringBuilder();
 
-StringBuffer updateWhereStmt = new StringBuffer();
+StringBuilder updateWhereStmt = new StringBuilder();
 
 List<Column> stmtStructure =  new LinkedList<Column>();
 
@@ -380,13 +380,13 @@ int nb_line_deleted_<%=cid%> = 0;
 		}
 	}
 	
-	StringBuffer insertColName = new StringBuffer();
+	StringBuilder insertColName = new StringBuilder();
 	
-	StringBuffer insertValueStmt = new StringBuffer();
+	StringBuilder insertValueStmt = new StringBuilder();
 	
-	StringBuffer updateSetStmt = new StringBuffer();
+	StringBuilder updateSetStmt = new StringBuilder();
 	
-	StringBuffer updateWhereStmt = new StringBuffer();
+	StringBuilder updateWhereStmt = new StringBuilder();
 	
 	List<Column> stmtStructure =  new LinkedList<Column>();
 	

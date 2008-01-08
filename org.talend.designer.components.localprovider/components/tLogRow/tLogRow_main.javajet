@@ -47,7 +47,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
 %>
 
 
-				StringBuffer strBuffer_<%=cid%> = new StringBuffer();
+				StringBuilder strBuffer_<%=cid%> = new StringBuilder();
 <% 
    if (printUniqueName.equals("true")) {//print the component name.
 %>
@@ -68,7 +68,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
 <% 
    if (useFixedLength.equals("true")) {//fix the column length
 %>
-				java.util.Formatter formatter_<%=column.getLabel() %>_<%=cid%> = new java.util.Formatter(new StringBuffer());
+				java.util.Formatter formatter_<%=column.getLabel() %>_<%=cid%> = new java.util.Formatter(new StringBuilder());
 <%
    }
 %>

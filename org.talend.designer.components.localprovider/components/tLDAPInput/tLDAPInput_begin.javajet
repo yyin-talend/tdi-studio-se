@@ -156,7 +156,7 @@ imports="
 			javax.naming.directory.Attribute attr_<%=column.getLabel()%>_<%=cid%> = attrs_<%=cid%>.get("<%=column.getLabel()%>");
 			if(attr_<%=column.getLabel()%>_<%=cid%> != null)
 			{
-    			StringBuffer attrStr_<%=cid%> = new StringBuffer();
+    			StringBuilder attrStr_<%=cid%> = new StringBuilder();
     			for (javax.naming.NamingEnumeration e_<%=cid%> = attr_<%=column.getLabel()%>_<%=cid%>.getAll(); e_<%=cid%>.hasMore();){
     				if(attrStr_<%=cid%>.length()>0){
     					attrStr_<%=cid%>.append(<%=separator%>);

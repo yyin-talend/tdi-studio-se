@@ -177,10 +177,10 @@ if (metadata != null) {
 			}
 		}
 		
-		StringBuffer insertColName = new StringBuffer();
-		StringBuffer insertValueStmt = new StringBuffer();
-		StringBuffer updateSetStmt = new StringBuffer();
-		StringBuffer updateWhereStmt = new StringBuffer();
+		StringBuilder insertColName = new StringBuilder();
+		StringBuilder insertValueStmt = new StringBuilder();
+		StringBuilder updateSetStmt = new StringBuilder();
+		StringBuilder updateWhereStmt = new StringBuilder();
 		List<Column> stmtStructure =  new LinkedList<Column>();
 		
 		for (IMetadataColumn column : columnList) {

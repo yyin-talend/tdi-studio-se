@@ -105,7 +105,7 @@ encoding= encoding.toUpperCase();
 String outputAction  = ElementParameterParser.getValue(node, "__OUTPUT__");		
 %>
 
-StringBuffer command_<%=cid %> =  new StringBuffer();
+StringBuilder command_<%=cid %> =  new StringBuilder();
 
 command_<%=cid %>.append(<%=bcpUtility%>);
 

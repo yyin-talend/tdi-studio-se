@@ -49,7 +49,7 @@ String xmlfile = ElementParameterParser.getValue(node, "__XMLFILE__");
 		%>
 		
 		java.io.BufferedReader br<%=cid %> = new java.io.BufferedReader(new java.io.InputStreamReader(url<%=cid %>.openStream()));
-		java.lang.StringBuffer sb<%=cid %>=new java.lang.StringBuffer("");
+		java.lang.StringBuilder sb<%=cid %>=new java.lang.StringBuilder("");
 		
 		char[] buffer<%=cid %> = new char[1024];
 		int length<%=cid %> = -1;
@@ -67,7 +67,7 @@ String xmlfile = ElementParameterParser.getValue(node, "__XMLFILE__");
 		dbf<%=cid %> = javax.xml.parsers.DocumentBuilderFactory.newInstance();
 		dbf<%=cid %>.setValidating(false);
 		db<%=cid %> = dbf<%=cid %>.newDocumentBuilder(); 
-		org.w3c.dom.Document doc<%=cid %> = db<%=cid %>.parse(new java.io.StringBufferInputStream(sb<%=cid%>.toString()));
+		org.w3c.dom.Document doc<%=cid %> = db<%=cid %>.parse(new java.io.StringBuilderInputStream(sb<%=cid%>.toString()));
 		String rootnode<%=cid %>=doc<%=cid %>.getDocumentElement().getNodeName();
 		
 		String encoding=null;
@@ -90,7 +90,7 @@ String xmlfile = ElementParameterParser.getValue(node, "__XMLFILE__");
 		
 		int offsetRoot<%=cid %>=sb<%=cid %>.indexOf("<"+rootnode<%=cid %>);
 		sb<%=cid%>.replace(0, offsetRoot<%=cid %>, reference<%=cid %>);		
-		is<%=cid %>=new java.io.StringBufferInputStream(sb<%=cid %>.toString());
+		is<%=cid %>=new java.io.StringBuilderInputStream(sb<%=cid %>.toString());
 		
 		class MyHandler<%=cid %> extends org.xml.sax.helpers.DefaultHandler{
 		    String errorMessage = null;

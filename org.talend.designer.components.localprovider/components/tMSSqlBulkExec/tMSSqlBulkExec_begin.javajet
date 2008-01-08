@@ -52,7 +52,7 @@ if(action.equals("EXPORT")) {
     }else{
         char_type = "-w";
     }
-    StringBuffer command =  new StringBuffer();
+    StringBuilder command =  new StringBuilder();
     command.append(bcp_utility.replaceAll("\"",""));
     command.append(" ");
     command.append(query_statement.replaceAll("\"","\\\\\""));

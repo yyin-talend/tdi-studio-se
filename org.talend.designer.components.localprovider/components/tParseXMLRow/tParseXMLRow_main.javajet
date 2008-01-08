@@ -95,7 +95,7 @@ if (outputConns!=null && outputConns.size()>0) {
         	                        query = "ns:" + query;
         	                    } else {
         	                        String[] s = query.split("/");
-        	                        java.lang.StringBuffer result = new java.lang.StringBuffer();
+        	                        java.lang.StringBuilder result = new java.lang.StringBuilder();
         	                        for (String tmp : s) {
         	                            if (result.length() > 0) {
         	                                result.append("/");

@@ -35,7 +35,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     
     //get the select fields from schema
     List<IMetadataColumn> columnsFields=metadata.getListColumns();
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     for (int i=0;i < columnsFields.size();i++) {//4
 		IMetadataColumn column=columnsFields.get(i);
 		sb.append(column.getLabel());
@@ -50,7 +50,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         
         sforceManagement_<%=cid %>.login(<%=username %>, <%=password %>, <%=endpoint %>);
         
-        StringBuffer sb_<%=cid %> = new StringBuffer();
+        StringBuilder sb_<%=cid %> = new StringBuilder();
         sb_<%=cid %>.append("SELECT ");
         sb_<%=cid %>.append("<%=sb.toString() %>");
         sb_<%=cid %>.append(" From ");

@@ -63,9 +63,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
             this.name = name;
         }
 
-            public StringBuffer format() {
+            public StringBuilder format() {
             
-                StringBuffer sb = new StringBuffer();
+                StringBuilder sb = new StringBuilder();
  
                 <% 
                 if (sizeColumns > 0) { //more than one column
@@ -96,9 +96,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
     
                         String[] row = list.get(i);
     
-                        java.util.Formatter formatter = new java.util.Formatter(new StringBuffer());
+                        java.util.Formatter formatter = new java.util.Formatter(new StringBuilder());
                         
-                        StringBuffer sbformat = new StringBuffer();                                       
+                        StringBuilder sbformat = new StringBuilder();                                       
                         <%
                         for ( int i = 0; i < sizeColumns; i++) {
                             %>      
@@ -123,8 +123,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
                 }
             
 
-            private StringBuffer print(String[] fillChars) {
-                StringBuffer sb = new StringBuffer();
+            private StringBuilder print(String[] fillChars) {
+                StringBuilder sb = new StringBuilder();
                 //first column
                 sb.append(fillChars[0]);
                 <% 
@@ -187,7 +187,7 @@ if (printHeader.equals("true")) {
 %>
                     
                     
-                StringBuffer sbHeader_<%=cid%> = new StringBuffer();
+                StringBuilder sbHeader_<%=cid%> = new StringBuilder();
 <%    			
     			for (int i = 0; i < sizeColumns; i++) {
     			IMetadataColumn column = columns.get(i);

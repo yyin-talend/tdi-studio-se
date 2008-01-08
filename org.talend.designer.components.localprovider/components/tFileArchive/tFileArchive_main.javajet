@@ -43,7 +43,7 @@
 %>        
   		};  
   		
-  		StringBuffer sbf_<%=cid %> = new StringBuffer(); 
+  		StringBuilder sbf_<%=cid %> = new StringBuilder(); 
         sbf_<%=cid %>.append("(");
         for (int i_<%=cid %> = 0; i_<%=cid %> < patterns_<%=cid %>.length; i_<%=cid %>++) {
             sbf_<%=cid %>.append(patterns_<%=cid %>[i_<%=cid %>].replaceAll("\\.", "\\\\.").replaceAll("\\*", ".*"));

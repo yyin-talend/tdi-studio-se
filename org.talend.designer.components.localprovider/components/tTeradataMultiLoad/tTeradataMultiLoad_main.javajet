@@ -8,7 +8,7 @@ imports="
     org.talend.core.model.metadata.MappingTypeRetriever
     org.talend.core.model.metadata.MetadataTalendType
     java.util.List
-    java.lang.StringBuffer
+    java.lang.StringBuilder
     java.util.Map
 " 
 %>
@@ -46,7 +46,7 @@ java.io.FileWriter fw_<%=cid %> = new java.io.FileWriter(<%=mloadPath%>+"mload.s
 
 <%//build script---------------------------------------------------------%>
 
-StringBuffer script_<%=cid%> = new StringBuffer();
+StringBuilder script_<%=cid%> = new StringBuilder();
 fw_<%=cid %>.write(".LOGTABLE inslogtable;\r\n");
 fw_<%=cid %>.write(".LOGON "+<%=dbuser%>+","+<%=dbpwd%>+";\r\n");
 
@@ -76,7 +76,7 @@ fw_<%=cid %>.write("CHECKSUM = DEFAULT\r\n");
 fw_<%=cid %>.write("(");
 <%
 	String keySQL = "";	
-	StringBuffer tableColumnSQL = new StringBuffer();
+	StringBuilder tableColumnSQL = new StringBuilder();
 	if(columnList!=null){
      	for(IMetadataColumn column:columnList){	
     		tableColumnSQL.append(column.getOriginalDbColumnName()).append(" ");
@@ -159,10 +159,10 @@ fw_<%=cid %>.write(".DML LABEL DML_LABEL;\r\n");
 
 <%//SQL statements-------------------------------------------------------%>
 <%
-StringBuffer updateSetSQL = new StringBuffer();
-StringBuffer updateWhereSQL = new StringBuffer();
-StringBuffer insertColSQL = new StringBuffer();
-StringBuffer insertValueSQL = new StringBuffer();
+StringBuilder updateSetSQL = new StringBuilder();
+StringBuilder updateWhereSQL = new StringBuilder();
+StringBuilder insertColSQL = new StringBuilder();
+StringBuilder insertValueSQL = new StringBuilder();
 if(columnList!=null){
 	String columnName = "";
  	for(IMetadataColumn column:columnList){	

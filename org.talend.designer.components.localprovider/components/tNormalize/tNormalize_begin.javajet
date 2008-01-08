@@ -28,7 +28,7 @@ imports="
     if(metadataColumns != null && metadataColumns.size() > 0) {
         %>
         String tmp_<%=cid%> = null;
-        StringBuffer currentRecord_<%=cid%> = null;
+        StringBuilder currentRecord_<%=cid%> = null;
         String [] normalizeRecord_<%=cid%> = null;
         java.util.Set<String> recordSet_<%=cid%> = new java.util.HashSet<String>();    
         <%

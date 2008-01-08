@@ -19,7 +19,7 @@ try {
     try{
         //to check if the file-to-write is an existing-valid ARFF file
        new weka.core.Instances(new java.io.BufferedReader(new java.io.FileReader(fileNewName_<%=cid%>)));
-       StringBuffer sb<%=cid%> = new StringBuffer();
+       StringBuilder sb<%=cid%> = new StringBuilder();
        for (int i = oldInsNum<%=cid%>; i < m_Data<%=cid%>.numInstances(); i++) {
            sb<%=cid%>.append("\n");
            sb<%=cid%>.append(m_Data<%=cid%>.instance(i).toString());

@@ -232,7 +232,7 @@ if(columnList != null && columnList.size()>0){
 	            BufferLine exInsertColValue<%=cid%> = null; 
 	            
 	            <%
-	            StringBuffer extendInsertValueStmt = new StringBuffer();
+	            StringBuilder extendInsertValueStmt = new StringBuilder();
                 for(int i=0;i<numPerInsert;i++){
                      extendInsertValueStmt.append("("+insertValueStmt.toString()+")");
                      if (i!=numPerInsert-1) extendInsertValueStmt.append(",");

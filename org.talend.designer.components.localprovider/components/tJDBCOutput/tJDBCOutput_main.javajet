@@ -155,13 +155,13 @@ class Column{
         return this.value;
     }
 }
-    StringBuffer insertColName = new StringBuffer();
+    StringBuilder insertColName = new StringBuilder();
     
-    StringBuffer insertValueStmt = new StringBuffer();
+    StringBuilder insertValueStmt = new StringBuilder();
     
-    StringBuffer updateSetStmt = new StringBuffer();
+    StringBuilder updateSetStmt = new StringBuilder();
     
-    StringBuffer updateWhereStmt = new StringBuffer();
+    StringBuilder updateWhereStmt = new StringBuilder();
     
     List<Column> stmtStructure =  new LinkedList<Column>();
     

@@ -68,7 +68,7 @@ class NameSpaceTool_<%=cid%> {
     
     public String addDefaultNSPrefix(String path) {
         if (hasDefaultNS) {
-            StringBuffer newPath = new StringBuffer();
+            StringBuilder newPath = new StringBuilder();
             for (String tmp : path.split("/")) {
                 if (newPath.length() > 0) {
                     newPath.append("/");

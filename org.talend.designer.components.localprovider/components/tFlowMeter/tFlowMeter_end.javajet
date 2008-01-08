@@ -8,7 +8,7 @@
 		org.talend.core.model.process.EConnectionType 
 		java.util.List
 		java.util.Map
-		java.lang.StringBuffer
+		java.lang.StringBuilder
 	"
 %>
 
@@ -56,7 +56,7 @@
             (List<Map<String,String>>)ElementParameterParser.getObjectValue(
                 node,"__THRESHLODS__");  
                 
-        StringBuffer shreshlods_str = new StringBuffer();
+        StringBuilder shreshlods_str = new StringBuilder();
         if(shreshlods.size() > 0)
         {
             for(Map<String, String> map : shreshlods)  

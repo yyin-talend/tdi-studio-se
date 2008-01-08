@@ -26,7 +26,7 @@ if(metadataTables != null && metadataTables.size() > 0) {
     IMetadataTable metadataTable = metadataTables.get(0);
     if(metadataTable != null) {
         metadataColumns = metadataTable.getListColumns();
-        StringBuffer paramString = null;
+        StringBuilder paramString = null;
         if(method.equals("addClndr") || method.equals("updateClndr")) {
             %>
             org.talend.vtiger.module.outlook.Clndrdetail clndrdetail_<%=cid%> = new org.talend.vtiger.module.outlook.Clndrdetail();
@@ -45,7 +45,7 @@ if(metadataTables != null && metadataTables.size() > 0) {
             org.talend.vtiger.module.outlook.Emailmsgdetail emailmsgdetail_<%=cid%> = new org.talend.vtiger.module.outlook.Emailmsgdetail();
             <%
         } else {
-            paramString = new StringBuffer();
+            paramString = new StringBuilder();
         }
         for(IMetadataColumn metadataColumn : metadataColumns) {
             if(method.equals("addClndr") || method.equals("updateClndr")) {

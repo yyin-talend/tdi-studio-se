@@ -9,7 +9,7 @@ imports="
     org.talend.designer.codegen.config.CodeGeneratorArgument
     java.util.List
     java.util.ArrayList    
-    java.lang.StringBuffer
+    java.lang.StringBuilder
     java.util.Map
     java.util.HashMap
 " 
@@ -34,8 +34,8 @@ String fields_terminated_by = ElementParameterParser.getValue(node, "__FIELDS_TE
 String fields_enclosed_by = ElementParameterParser.getValue(node, "__FIELDS_ENCLOSED_BY__");
    
 List<Map<String, String>> options = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__OPTIONS__");
-java.lang.StringBuffer optionStr = new java.lang.StringBuffer();
-java.lang.StringBuffer siletModeStr = new java.lang.StringBuffer(); 
+java.lang.StringBuilder optionStr = new java.lang.StringBuilder();
+java.lang.StringBuilder siletModeStr = new java.lang.StringBuilder(); 
 for(java.util.Map<String,String> option :options){
    	String key = option.get("KEY");
     if(key.equals("SILENT")){

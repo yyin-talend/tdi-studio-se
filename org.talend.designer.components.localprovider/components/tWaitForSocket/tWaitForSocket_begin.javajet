@@ -44,7 +44,7 @@ while (ifContinue<%=cid%>) {
         //get data from client
             System.out.println(socket<%=cid%>.getInetAddress()+" input is : ");
             in<%=cid%> = new java.io.BufferedReader(new java.io.InputStreamReader(socket<%=cid%>.getInputStream()));
-            StringBuffer sb<%=cid%> = new StringBuffer();
+            StringBuilder sb<%=cid%> = new StringBuilder();
             char[] target<%=cid%> = new char[1024];
             in<%=cid%>.read(target<%=cid%>);
             sb<%=cid%>.append(target<%=cid%>);

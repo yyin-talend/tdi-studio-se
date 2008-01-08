@@ -101,7 +101,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
                 return null;
             }
             String[] strings = input.split(<%=delimiter %>);
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             java.util.Set<String> set = new java.util.HashSet<String>(java.util.Arrays.asList(strings));
             int i = 0;
             for (String object : set) {
