@@ -32,6 +32,12 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         boolean needAuth = ElementParameterParser.getValue(node,"__NEED_AUTH__").equals("true");
         String username = ElementParameterParser.getValue(node,"__AUTH_USERNAME__");
         String password = ElementParameterParser.getValue(node,"__AUTH_PASSWORD__");
+        
+        boolean useProxy = ElementParameterParser.getValue(node,"__UES_PROXY__").equals("true");
+        String proxuHost = ElementParameterParser.getValue(node,"__PROXY_HOST__");
+        String proxyPort = ElementParameterParser.getValue(node,"__PROXY_PORT__");
+        String proxuUser = ElementParameterParser.getValue(node,"__PROXY_USERNAME__");
+        String proxyPassword = ElementParameterParser.getValue(node,"__PROXY_PASSWORD__");
 %>
 /////////////////////////////////// 
         
@@ -54,7 +60,12 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         org.talend.DynamicInvoker.setAuth(true, <%=username %>, <%=password %>); 		
 <%
   		}
-%> 		
+		if (useProxy) {
+%>  
+		org.talend.DynamicInvoker.setHttpProxy(true, <%=proxuHost %>, <%=proxyPort %>, <%=proxuUser %>, <%=proxyPassword%>); 
+<%
+  		}
+%> 
  		org.talend.DynamicInvoker.main(params_<%=cid %>);
  		java.util.Map result = org.talend.DynamicInvoker.getResult();
         
