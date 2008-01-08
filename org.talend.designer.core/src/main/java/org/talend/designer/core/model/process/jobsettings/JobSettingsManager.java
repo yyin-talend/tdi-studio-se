@@ -49,19 +49,19 @@ public class JobSettingsManager {
 
     public static void createJobSettingsParemeters(IProcess process) {
         // not used, only for hiding the table sql-builder button.
-        ElementParameter param;
-        List<IElementParameter> paramList = (List<IElementParameter>) process.getElementParameters();
-        param = new ElementParameter(process);
-        param.setName("MEMO_SQL"); //$NON-NLS-1$
-        param.setValue(""); //$NON-NLS-1$
-        param.setDisplayName("MEMO_SQL"); //$NON-NLS-1$
-        param.setField(EParameterFieldType.MEMO_SQL);
-        param.setCategory(EComponentCategory.EXTRA);
-        param.setNumRow(1);
-        param.setReadOnly(true);
-        param.setRequired(false);
-        param.setShow(false);
-        paramList.add(param);
+        // ElementParameter param;
+        // List<IElementParameter> paramList = (List<IElementParameter>) process.getElementParameters();
+        // param = new ElementParameter(process);
+        // param.setName("MEMO_SQL"); //$NON-NLS-1$
+        // param.setValue(""); //$NON-NLS-1$
+        // param.setDisplayName("MEMO_SQL"); //$NON-NLS-1$
+        // param.setField(EParameterFieldType.MEMO_SQL);
+        // param.setCategory(EComponentCategory.EXTRA);
+        // param.setNumRow(1);
+        // param.setReadOnly(true);
+        // param.setRequired(false);
+        // param.setShow(false);
+        // paramList.add(param);
 
         // for extra
         createExtraParameters(process);
