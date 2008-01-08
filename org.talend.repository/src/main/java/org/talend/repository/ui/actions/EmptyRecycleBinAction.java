@@ -57,7 +57,7 @@ public class EmptyRecycleBinAction extends AContextualAction {
 
         IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         for (RepositoryNode child : node.getChildren()) {
-            if (child.getObjectType() == ERepositoryObjectType.HTML_DOC) {
+            if (child.getObjectType() == ERepositoryObjectType.JOB_DOC) {
                 continue;
             }
             IRepositoryObject objToDelete = child.getObject();

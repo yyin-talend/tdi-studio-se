@@ -77,12 +77,12 @@ public class MoveObjectAction {
         }
 
         // cannot move html documentation node:
-        if (objectToCopy != null && objectToCopy.getType() == ERepositoryObjectType.HTML_DOC) {
+        if (objectToCopy != null && objectToCopy.getType() == ERepositoryObjectType.JOB_DOC) {
             return false;
         }
 
         // Cannot move folder in documentation node:
-        if (sourceNode.getType() == ENodeType.SIMPLE_FOLDER && sourceNode.getContentType() == ERepositoryObjectType.HTML_DOC) {
+        if (sourceNode.getType() == ENodeType.SIMPLE_FOLDER && sourceNode.getContentType() == ERepositoryObjectType.JOB_DOC) {
             return false;
         }
 

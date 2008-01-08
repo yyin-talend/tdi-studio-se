@@ -86,7 +86,7 @@ public class PasteAction extends AContextualAction {
         TreeSelection selectionInClipboard = (TreeSelection) LocalSelectionTransfer.getTransfer().getSelection();
 
         if (target.getContentType() == ERepositoryObjectType.JOBS || target.getContentType() == ERepositoryObjectType.GENERATED
-                || target.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.HTML_DOC) {
+                || target.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.JOB_DOC) {
             visible = false;
             enabled = false;
         }

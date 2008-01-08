@@ -113,11 +113,11 @@ public class DeleteAction extends AContextualAction {
     private boolean isForbidNode(RepositoryNode node) {
 
         // Avoid to delete all related documentation node by click Key "Delete" from keyboard.
-        if (node.getContentType() == ERepositoryObjectType.HTML_DOC) {
+        if (node.getContentType() == ERepositoryObjectType.JOB_DOC) {
             return true;
         }
 
-        if (node.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.HTML_DOC) {
+        if (node.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.JOB_DOC) {
             return true;
         }
 
@@ -192,7 +192,7 @@ public class DeleteAction extends AContextualAction {
                     visible = false;
                     break;
                 case SIMPLE_FOLDER:
-                    if (node.getContentType() == ERepositoryObjectType.HTML_DOC) {
+                    if (node.getContentType() == ERepositoryObjectType.JOB_DOC) {
                         visible = false;
                     } else {
                         this.setText(DELETE_LOGICAL_TITLE);
@@ -204,7 +204,7 @@ public class DeleteAction extends AContextualAction {
                     }
                     break;
                 case REPOSITORY_ELEMENT:
-                    if (node.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.HTML_DOC) {
+                    if (node.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.JOB_DOC) {
                         visible = false;
                         break;
                     }

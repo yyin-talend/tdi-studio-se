@@ -357,11 +357,18 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
                 ECoreImage.FOLDER_CLOSE_ICON);
         StableRepositoryNode jobsFolder = new StableRepositoryNode(generatedFolder, ERepositoryObjectType.JOBS.toString(),
                 ECoreImage.FOLDER_CLOSE_ICON);
+        
+        StableRepositoryNode jobletsFolder = new StableRepositoryNode(generatedFolder, ERepositoryObjectType.JOBLETS.toString(),
+                ECoreImage.FOLDER_CLOSE_ICON);
 
         jobsFolder.setProperties(EProperties.LABEL, ERepositoryObjectType.JOBS.toString());
         jobsFolder.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.JOBS);
         generatedFolder.getChildren().add(jobsFolder);
-
+        
+        jobletsFolder.setProperties(EProperties.LABEL, ERepositoryObjectType.JOBLETS.toString());
+        jobletsFolder.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.JOBLETS);
+        generatedFolder.getChildren().add(jobletsFolder);
+        
         Container generatedContainer = null;
         for (Object object : fromModel.getSubContainer()) {
             if (((Container) object).getLabel().equalsIgnoreCase(ERepositoryObjectType.GENERATED.toString())) {
@@ -371,15 +378,26 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
         }
 
         Container jobsNode = null;
+        Container jobletsNode = null;
         for (Object object : generatedContainer.getSubContainer()) {
             if (((Container) object).getLabel().equalsIgnoreCase(ERepositoryObjectType.JOBS.toString())) {
                 jobsNode = (Container) object;
                 break;
             }
         }
+        
+        for (Object object : generatedContainer.getSubContainer()) {
+            if (((Container) object).getLabel().equalsIgnoreCase(ERepositoryObjectType.JOBLETS.toString())) {
+                jobletsNode = (Container) object;
+                break;
+            }
+        }
 
         // get the files under generated/nodes.
-        convert(jobsNode, jobsFolder, ERepositoryObjectType.HTML_DOC, recBinNode);
+        convert(jobsNode, jobsFolder, ERepositoryObjectType.JOB_DOC, recBinNode);
+        
+        convert(jobletsNode, jobletsFolder, ERepositoryObjectType.JOBLET_DOC, recBinNode);
+        
         generatedFolder.setProperties(EProperties.LABEL, ERepositoryObjectType.GENERATED.toString());
         generatedFolder.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.GENERATED); // ERepositoryObjectType.FOLDER);
         parent.getChildren().add(generatedFolder);

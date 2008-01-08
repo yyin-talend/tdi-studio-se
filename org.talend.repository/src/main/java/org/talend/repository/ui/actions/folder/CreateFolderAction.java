@@ -108,7 +108,7 @@ public class CreateFolderAction extends AContextualAction {
                 }
                 break;
             case SIMPLE_FOLDER:
-                if (property == ERepositoryObjectType.HTML_DOC) {
+                if (property == ERepositoryObjectType.JOB_DOC) {
                     canWork = false;
                 }
                 break;

@@ -66,7 +66,7 @@ public class CopyAction extends AContextualAction {
                 RepositoryNode sourceNode = (RepositoryNode) obj;
                 if (!CopyObjectAction.getInstance().validateAction(sourceNode, null)) {
                     canWork = false;
-                } else if (node.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.HTML_DOC) {
+                } else if (node.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.JOB_DOC) {
                     canWork = false;
                 }
             }

@@ -55,6 +55,7 @@ import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.properties.FolderItem;
 import org.talend.core.model.properties.FolderType;
 import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.SpagoBiServer;
@@ -287,8 +288,8 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
     public Folder createFolder(ERepositoryObjectType type, IPath path, String label) throws PersistenceException {
         checkFileNameAndPath(label, RepositoryConstants.FOLDER_PATTERN, type, path, true);
         Folder createFolder = this.repositoryFactoryFromProvider.createFolder(type, path, label);
-        if (type == ERepositoryObjectType.PROCESS) {
-            fireRepositoryPropertyChange(ERepositoryActionName.FOLDER_CREATE.getName(), path, createFolder);
+        if (type == ERepositoryObjectType.PROCESS || type == ERepositoryObjectType.JOBLET) {
+            fireRepositoryPropertyChange(ERepositoryActionName.FOLDER_CREATE.getName(), path, new Object[]{createFolder,type});
         }
         return createFolder;
     }
@@ -776,7 +777,7 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
     public void create(Item item, IPath path) throws PersistenceException {
         checkFileNameAndPath(item, RepositoryConstants.getPattern(ERepositoryObjectType.getItemType(item)), path, false);
         this.repositoryFactoryFromProvider.create(item, path);
-        if (item instanceof ProcessItem) {
+        if (item instanceof ProcessItem || item instanceof JobletProcessItem) {
             fireRepositoryPropertyChange(ERepositoryActionName.JOB_CREATE.getName(), null, item);
         }
     }

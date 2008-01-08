@@ -111,7 +111,7 @@ public class RenameFolderAction extends AContextualAction {
             RepositoryNode node = (RepositoryNode) o;
             switch (node.getType()) {
             case SIMPLE_FOLDER:
-                if (node.getContentType() == ERepositoryObjectType.HTML_DOC) {
+                if (node.getContentType() == ERepositoryObjectType.JOB_DOC) {
                     canWork = false;
                 }
                 break;
