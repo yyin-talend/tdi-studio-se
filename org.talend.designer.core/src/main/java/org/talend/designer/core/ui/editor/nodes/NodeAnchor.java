@@ -152,14 +152,26 @@ public class NodeAnchor extends ChopboxAnchor {
                 targetPoint = new Point(sourceRect.getCenter().x, targetRect.getCenter().y);
             }
         }
-
         if (!isTargetAnchor && sourcePoint == null) {
             return super.getLocation(reference);
         }
         if (sourcePoint != null && targetPoint != null) {
-            return calculateLocationFromRef(sourceRect, targetRect, sourcePoint, targetPoint);
+            Point p = calculateLocationFromRef(sourceRect, targetRect, sourcePoint, targetPoint);
+            if (isValid(p)) {
+                return p;
+            }
         }
         return super.getLocation(reference);
+    }
+
+    /**
+     * the location of anchor can not leave the figure.
+     * 
+     * @param p
+     * @return
+     */
+    private boolean isValid(Point p) {
+        return this.getOwner().getBounds().contains(p);
     }
 
     /**
