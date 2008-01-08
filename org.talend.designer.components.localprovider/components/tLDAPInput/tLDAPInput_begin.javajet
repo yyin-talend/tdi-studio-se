@@ -37,6 +37,7 @@ imports="
 	String authen =ElementParameterParser.getValue(node, "__AUTHENTIFICATION__");
 	String user =ElementParameterParser.getValue(node, "__USER__");
 	String passwd =ElementParameterParser.getValue(node, "__PASSWD__");
+	boolean dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__").equals("true");
 %>
 	int <%=cid%>_NB_LINE = 0;
 	java.util.Hashtable env_<%=cid%> = new java.util.Hashtable();
@@ -130,10 +131,23 @@ imports="
     	if(entryCount_<%=cid%> >= <%=limit%>){
     		break;
     	}
+    
+    	
     	<%=cid%>_NB_LINE++;
-        javax.naming.directory.SearchResult sr_<%=cid%>  = (javax.naming.directory.SearchResult) answer_<%=cid%>.next();
-		globalMap.put("<%=cid%>_RESULT_NAME",sr_<%=cid%>.getName());
-        javax.naming.directory.Attributes attrs_<%=cid%> = sr_<%=cid%>.getAttributes();
+    	javax.naming.directory.Attributes attrs_<%=cid%> = null;
+    	try{
+            javax.naming.directory.SearchResult sr_<%=cid%>  = (javax.naming.directory.SearchResult) answer_<%=cid%>.next();
+    		globalMap.put("<%=cid%>_RESULT_NAME",sr_<%=cid%>.getName());
+            attrs_<%=cid%> = sr_<%=cid%>.getAttributes();
+		 } catch (Exception e) {
+<%
+        if (dieOnError) {
+%>
+            throw(e);
+<%
+        }
+%>
+		}
 
      // for output
         <%
@@ -145,11 +159,11 @@ imports="
                     IConnection conn = conns.get(0); //the first connection
                     firstConnName = conn.getName();         
                     if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {//3
-
                         %>
                         
         if (attrs_<%=cid%> != null) {//b
         	entryCount_<%=cid%>++;
+        	try{
 <%
 					for(IMetadataColumn column:columnList){//5		
 %>        	
@@ -170,7 +184,17 @@ imports="
 			
 <%
                 	}//5
-
+%>
+	 } catch (Exception e) {
+<%
+        if (dieOnError) {
+%>
+            throw(e);
+<%
+        }
+%>
+	}
+<%
         }//3
         
         
