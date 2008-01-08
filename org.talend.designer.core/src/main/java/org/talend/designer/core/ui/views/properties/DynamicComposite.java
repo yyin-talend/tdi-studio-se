@@ -616,7 +616,7 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
         checkErrorsWhenViewRefreshed = true;
         int heightSize = 0, maxRowSize = 0, nbInRow, numInRow;
         int maxRow;
-        List<? extends IElementParameter> listParam = elem.getElementParameters();
+        List<? extends IElementParameter> listParam = elem.getElementParametersWithChildrens();
 
         updateMainParameters();
 

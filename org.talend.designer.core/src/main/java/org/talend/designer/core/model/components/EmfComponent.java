@@ -623,6 +623,25 @@ public class EmfComponent implements IComponent {
                 }
             }
 
+            boolean isInputSchema = false;
+            int maxOutput = -1, maxInput = -1;
+            int nbInputs = 0;
+            for (INodeConnector connector : createConnectors()) {
+                if (connector.getBaseSchema().equals("FLOW")) {
+                    if (connector.getMaxLinkInput() >= 1) {
+                        nbInputs += connector.getMaxLinkInput();
+                    }
+                    if (connector.getName().equals(context)) {
+                        maxOutput = connector.getMaxLinkOutput();
+                        maxInput = connector.getMaxLinkInput();
+                    }
+                }
+            }
+
+            if ((maxInput == 1 && maxOutput == 0) && (nbInputs > 1)) {
+                isInputSchema = true;
+            }
+
             String displayName = getTranslatedValue(xmlParam.getNAME() + "." + PROP_NAME);
             if (displayName.startsWith("!!")) { //$NON-NLS-1$ //$NON-NLS-2$
                 displayName = EParameterName.SCHEMA_TYPE.getDisplayName();
@@ -640,12 +659,11 @@ public class EmfComponent implements IComponent {
             newParam.setField(EParameterFieldType.TECHNICAL);
             newParam.setShow(xmlParam.isSHOW());
             newParam.setShowIf(parentParam.getName() + " =='" + REPOSITORY + "'");
-            newParam.setReadOnly(xmlParam.isREADONLY());
+            newParam.setReadOnly(xmlParam.isREADONLY() || isInputSchema);
             newParam.setNotShowIf(xmlParam.getNOTSHOWIF());
 
             newParam.setContext(context);
             newParam.setParentParameter(parentParam);
-            // listParam.add(newParam);
 
             newParam = new ElementParameter(node);
             newParam.setCategory(EComponentCategory.PROPERTY);
@@ -658,12 +676,32 @@ public class EmfComponent implements IComponent {
             newParam.setValue(""); //$NON-NLS-1$
             newParam.setShow(false);
             newParam.setRequired(true);
-            newParam.setReadOnly(xmlParam.isREADONLY());
+            newParam.setReadOnly(xmlParam.isREADONLY() || isInputSchema);
             newParam.setShowIf(xmlParam.getSHOWIF());
             newParam.setNotShowIf(xmlParam.getNOTSHOWIF());
             newParam.setContext(context);
             newParam.setParentParameter(parentParam);
-            // listParam.add(newParam);
+
+            // if (isInputSchema) {
+            // newParam = new ElementParameter(node);
+            // newParam.setCategory(EComponentCategory.PROPERTY);
+            // newParam.setName("CONNECTION");
+            // newParam.setDisplayName("Attached connection");
+            // newParam.setListItemsDisplayName(new String[] {});
+            // newParam.setListItemsValue(new String[] {});
+            // newParam.setNumRow(xmlParam.getNUMROW());
+            // newParam.setField(EParameterFieldType.CONNECTION_LIST);
+            // newParam.setValue(""); //$NON-NLS-1$
+            // newParam.setShow(true);
+            // newParam.setRequired(true);
+            // newParam.setFilter("INPUT:FLOW_MAIN|FLOW_REF|FLOW_MERGE");
+            // newParam.setReadOnly(xmlParam.isREADONLY());
+            // newParam.setShowIf(xmlParam.getSHOWIF());
+            // newParam.setNotShowIf(xmlParam.getNOTSHOWIF());
+            // newParam.setContext(context);
+            // newParam.setParentParameter(parentParam);
+            // parentParam.setReadOnly(true);
+            // }
         }
         if (type == EParameterFieldType.ENCODING_TYPE) {
             ElementParameter newParam = new ElementParameter(node);
@@ -1216,12 +1254,11 @@ public class EmfComponent implements IComponent {
      * @see org.talend.designer.core.model.components.IComponent#createConnectors()
      */
     public List<NodeConnector> createConnectors() {
-        List<NodeConnector> listConnector;
         EList listConnType;
         CONNECTORType connType;
         NodeConnector nodeConnector;
 
-        listConnector = new ArrayList<NodeConnector>();
+        List<NodeConnector> listConnector = new ArrayList<NodeConnector>();
 
         listConnType = compType.getCONNECTORS().getCONNECTOR();
         for (int i = 0; i < listConnType.size(); i++) {
@@ -1418,28 +1455,6 @@ public class EmfComponent implements IComponent {
         }
         return list;
     }
-
-    // public List<String> getInstallCommand(String mouduleName) {
-    // List<String> componentInstallList = new ArrayList<String>();
-    // if (compType.getCODEGENERATION().getIMPORTS() != null) {
-    // EList emfImportList;
-    // emfImportList = compType.getCODEGENERATION().getIMPORTS().getIMPORT();
-    // for (int i = 0; i < emfImportList.size(); i++) {
-    // IMPORTType importType = (IMPORTType) emfImportList.get(i);
-    // if (importType.getMODULE().equals(mouduleName)) {
-    // EList emfInstall = importType.getINSTALL();
-    // for (int j = 0; j < emfInstall.size(); j++) {
-    // INSTALLType installtype = (INSTALLType) emfInstall.get(j);
-    // if ((System.getProperty("os.name").indexOf(installtype.getOS())) >= 0) {
-    // componentInstallList.add(installtype.getCOMMAND());
-    // }
-    // }
-    // }
-    // }
-    // }
-    //
-    // return componentInstallList;
-    // }
 
     public List<InstallModule> getInstallCommand(IMPORTType importType) {
         List<InstallModule> list = new ArrayList<InstallModule>();

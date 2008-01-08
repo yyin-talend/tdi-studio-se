@@ -13,9 +13,15 @@
 package org.talend.designer.core.ui.editor.properties.controllers;
 
 import java.beans.PropertyChangeEvent;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.ArrayUtils;
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.fieldassist.DecoratedField;
 import org.eclipse.jface.fieldassist.FieldDecoration;
@@ -34,13 +40,16 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
+import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
+import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty;
 
 /**
@@ -66,40 +75,24 @@ public class ConnectionListController extends AbstractElementPropertySectionCont
      * @see org.talend.designer.core.ui.editor.properties2.editors.AbstractElementPropertySectionController#createCommand()
      */
     public Command createCommand(SelectionEvent selectionEvent) {
-        Set<String> elementsName;
-        Control ctrl;
-        elementsName = (Set<String>) hashCurControls.keySet();
-        for (String name : elementsName) {
-            Object o = hashCurControls.get(name);
-            if (o instanceof Control) {
-                ctrl = (Control) o;
-                if (ctrl == null) {
-                    hashCurControls.remove(name);
-                    return null;
-                }
+        Assert.isTrue(selectionEvent.getSource() instanceof CCombo);
 
-                if (ctrl.equals(selectionEvent.getSource()) && ctrl instanceof CCombo) {
-                    boolean isDisposed = ((CCombo) ctrl).isDisposed();
-                    if (!isDisposed && (!elem.getPropertyValue(name).equals(((CCombo) ctrl).getText()))) {
+        CCombo combo = (CCombo) selectionEvent.getSource();
+        String paramName = (String) combo.getData(PARAMETER_NAME);
+        IElementParameter param = elem.getElementParameter(paramName);
 
-                        String value = new String(""); //$NON-NLS-1$
-                        for (int i = 0; i < elem.getElementParameters().size(); i++) {
-                            IElementParameter param = elem.getElementParameters().get(i);
-                            if (param.getName().equals(name)) {
-                                value = ((CCombo) ctrl).getText();
-                                break;
-                            }
-                        }
-                        if (value.equals(elem.getPropertyValue(name))) { // same value so no need to do anything
-                            return null;
-                        }
+        String comboValue = new String(""); //$NON-NLS-1$
 
-                        return new PropertyChangeCommand(elem, name, value);
-                    }
-                }
+        for (int j = 0; j < param.getListItemsValue().length; j++) {
+            if (combo.getText().equals(param.getListItemsDisplayName()[j])) {
+                comboValue = (String) param.getListItemsValue()[j];
             }
         }
-        return null;
+        if (comboValue.equals(param.getValue())) { // same value so no need to do anything
+            return null;
+        }
+
+        return new PropertyChangeCommand(elem, paramName, comboValue);
     }
 
     IControlCreator cbCtrl = new IControlCreator() {
@@ -118,7 +111,9 @@ public class ConnectionListController extends AbstractElementPropertySectionCont
     @Override
     public Control createControl(final Composite subComposite, final IElementParameter param, final int numInRow,
             final int nbInRow, final int top, final Control lastControl) {
-        param.setDisplayName(EParameterName.CONNECTION_LIST.getDisplayName());
+        if (param.getDisplayName().startsWith(Messages.KEY_NOT_FOUND_PREFIX)) {
+            param.setDisplayName(EParameterName.CONNECTION_LIST.getDisplayName());
+        }
 
         DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER, cbCtrl);
         if (param.isRequired()) {
@@ -130,6 +125,11 @@ public class ConnectionListController extends AbstractElementPropertySectionCont
         Control cLayout = dField.getLayoutControl();
         CCombo combo = (CCombo) dField.getControl();
         FormData data;
+        if (param.getParentParameter() != null) {
+            combo.setData(PARAMETER_NAME, param.getParentParameter().getName() + ":" + param.getName());
+        } else {
+            combo.setData(PARAMETER_NAME, param.getName());
+        }
         combo.setEditable(false);
         cLayout.setBackground(subComposite.getBackground());
         combo.setEnabled(!param.isReadOnly());
@@ -179,7 +179,13 @@ public class ConnectionListController extends AbstractElementPropertySectionCont
         hashCurControls.put(param.getName(), combo);
 
         dynamicProperty.setCurRowSize(initialSize.y + ITabbedPropertyConstants.VSPACE);
-        updateConnectionList(elem, param, param.getFilter());
+        updateConnectionList(elem, param);
+        combo.setItems(param.getListItemsDisplayName());
+
+        if (param.getValue() != null) {
+            combo.setText((String) param.getValue());
+        }
+
         return cLayout;
     }
 
@@ -220,7 +226,7 @@ public class ConnectionListController extends AbstractElementPropertySectionCont
 
     @Override
     public void refresh(IElementParameter param, boolean check) {
-        updateConnectionList(elem, param, param.getFilter());
+        updateConnectionList(elem, param);
 
         String[] curConnectionNameList = param.getListItemsDisplayName();
         String[] curConnectionValueList = (String[]) param.getListItemsValue();
@@ -250,14 +256,47 @@ public class ConnectionListController extends AbstractElementPropertySectionCont
         }
     }
 
-    public static void updateConnectionList(Element elem, IElementParameter param, String filter) {
+    public static void updateConnectionList(Process process) {
+        for (Node node : (List<Node>) process.getGraphicalNodes()) {
+            for (IElementParameter param : node.getElementParametersWithChildrens()) {
+                if (param.getField().equals(EParameterFieldType.CONNECTION_LIST)) {
+                    updateConnectionList(node, param);
+                }
+            }
+        }
+
+    }
+
+    public static void updateConnectionList(Element elem, IElementParameter param) {
         IConnection[] connections;
+        Node source = null;
         if (elem instanceof Node) {
-            connections = ((Node) elem).getProcess().getAllConnections(filter);
+            source = ((Node) elem);
         } else if (elem instanceof Connection) {
-            connections = ((Connection) elem).getSource().getProcess().getAllConnections(filter);
+            source = ((Connection) elem).getSource();
         } else {
             return;
+        }
+        String filter = param.getFilter();
+
+        if (filter.startsWith("INPUT:")) {
+            Set<IConnection> conns = new HashSet<IConnection>();
+            conns.addAll(source.getIncomingConnections());
+            String[] f = filter.substring("INPUT:".length()).split("\\|"); //$NON-NLS-1$
+            List<String> filterArray = new ArrayList<String>(f.length);
+            for (int i = 0; i < f.length; i++) {
+                filterArray.add(f[i].trim());
+            }
+
+            for (Iterator<IConnection> iter = conns.iterator(); iter.hasNext();) {
+                IConnection con = iter.next();
+                if (!filterArray.contains(con.getLineStyle().toString())) {
+                    iter.remove();
+                }
+            }
+            connections = conns.toArray(new IConnection[conns.size()]);
+        } else {
+            connections = source.getProcess().getAllConnections(filter);
         }
 
         String[] connectionNames = new String[connections.length];
@@ -272,5 +311,9 @@ public class ConnectionListController extends AbstractElementPropertySectionCont
 
         param.setListItemsDisplayName(connectionNameList);
         param.setListItemsValue(connectionValueList);
+
+        if (!ArrayUtils.contains(connectionValueList, param.getValue())) {
+            param.setValue("");
+        }
     }
 }

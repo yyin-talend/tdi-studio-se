@@ -112,6 +112,7 @@ import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.Node.Data;
 import org.talend.designer.core.ui.editor.notes.Note;
+import org.talend.designer.core.ui.editor.properties.controllers.ConnectionListController;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.designer.runprocess.IProcessor;
@@ -1841,6 +1842,7 @@ public class Process extends Element implements IProcess2 {
                 }
             }
         }
+        ConnectionListController.updateConnectionList(this);
     }
 
     public int getMergelinkOrder(final INode node) {
@@ -2130,9 +2132,9 @@ public class Process extends Element implements IProcess2 {
             }
         }
 
-        if (filter != null) {
+        if ((filter != null) && (filter.startsWith("TYPE:"))) {
             // construct filter array
-            String[] f = filter.split("\\|"); //$NON-NLS-1$
+            String[] f = filter.substring("TYPE:".length()).split("\\|"); //$NON-NLS-1$
             List<String> filterArray = new ArrayList<String>(f.length);
             for (int i = 0; i < f.length; i++) {
                 filterArray.add(f[i].trim());

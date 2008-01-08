@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.gef.commands.Command;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.fieldassist.DecoratedField;
 import org.eclipse.jface.fieldassist.FieldDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
@@ -240,6 +241,14 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
 
             IMetadataTable inputMetadata = null, inputMetaCopy = null;
             Connection inputConec = null;
+            String propertyName = (String) inputButton.getData(PARAMETER_NAME);
+            IElementParameter param = node.getElementParameter(propertyName);
+
+            IElementParameter connectionParam = param.getChildParameters().get("CONNECTION");
+            String connectionName = null;
+            if (connectionParam != null) {
+                connectionName = (String) connectionParam.getValue();
+            }
 
             boolean inputReadOnly = false, outputReadOnly = false, inputReadOnlyNode = false, inputReadOnlyParam = false;
             for (Connection connec : (List<Connection>) node.getIncomingConnections()) {
@@ -247,6 +256,9 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
                         && (connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)
                                 || connec.getLineStyle().equals(EConnectionType.TABLE) || connec.getLineStyle().equals(
                                 EConnectionType.FLOW_MERGE))) {
+                    if (connectionName != null && !connec.getName().equals(connectionName)) {
+                        continue;
+                    }
                     inputMetadata = connec.getMetadataTable();
                     inputMetaCopy = inputMetadata.clone();
                     inputConec = connec;
@@ -254,9 +266,9 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
                     if (connec.getSource().isReadOnly()) {
                         inputReadOnlyNode = true;
                     } else {
-                        for (IElementParameter param : connec.getSource().getElementParameters()) {
-                            if (param.getField() == EParameterFieldType.SCHEMA_TYPE) {
-                                if (param.isReadOnly()) {
+                        for (IElementParameter curParam : connec.getSource().getElementParameters()) {
+                            if (curParam.getField() == EParameterFieldType.SCHEMA_TYPE) {
+                                if (curParam.isReadOnly()) {
                                     inputReadOnlyParam = true;
                                 }
                             }
@@ -281,13 +293,14 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
                 }
             }
 
+            if (connectionParam != null && inputMetadata == null) {
+                MessageDialog.openError(button.getShell(), "Input connection not set",
+                        "Connection has not been set or not correctly in the component");
+                return null;
+            }
+
             // check if the outputMetadata is readonly
-            String propertyName = (String) inputButton.getData(PARAMETER_NAME);
-            IElementParameter param = node.getElementParameter(propertyName);
             IMetadataTable originaleOutputTable = node.getMetadataFromConnector(param.getContext());
-            // for (IMetadataColumn column : originaleOutputTable.getListColumns()) {
-            // setColumnLength(node, param, column);
-            // }
 
             IMetadataTable outputMetaCopy = originaleOutputTable.clone();
             for (IMetadataColumn column : originaleOutputTable.getListColumns()) {
@@ -318,7 +331,6 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
                             modified = true;
                         } else {
                             if (inputMetadata != null) {
-
                                 // Notice: the Map inputInfos maybe is modified by the dialog.
                                 Set<INode> inputNodes = inputInfos.keySet();
                                 for (INode inputNode : inputNodes) {
@@ -381,10 +393,14 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
                         inputMetaCopy.setAttachedConnector(mainConnector.getName());
                     }
 
-                    metaDialog = new MetadataDialog(composite.getShell(), inputMetaCopy, inputNode, outputMetaCopy, node,
-                            getCommandStack());
+                    INodeConnector outputConnector = node.getConnectorFromName(param.getContext());
+                    if (outputConnector.getMaxLinkOutput() == 0 && (originaleOutputTable.getListColumns().size() == 0)) {
+                        metaDialog = new MetadataDialog(composite.getShell(), inputMetaCopy, inputNode, getCommandStack());
+                    } else {
+                        metaDialog = new MetadataDialog(composite.getShell(), inputMetaCopy, inputNode, outputMetaCopy, node,
+                                getCommandStack());
+                    }
                 }
-
             } else {
                 metaDialog = new MetadataDialog(composite.getShell(), outputMetaCopy, node, getCommandStack());
             }
@@ -654,6 +670,7 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
         if (elem instanceof Node) {
             Node node = (Node) elem;
             boolean flowMainInput = false;
+            boolean schemaHasInputAndOutput = false;
             boolean tableReadOnly = false;
             IMetadataTable table = node.getMetadataTable(param.getContext());
             if (table != null) {
@@ -674,8 +691,15 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
                         flowMainInput = true;
                     }
                 }
+                if (flowMainInput) {
+                    // int maxInput = node.getConnectorFromName(param.getContext()).getMaxLinkInput();
+                    int maxOutput = node.getConnectorFromName(param.getContext()).getMaxLinkOutput();
+                    if (maxOutput != 0) {
+                        schemaHasInputAndOutput = true;
+                    }
+                }
             }
-            if (flowMainInput && !tableReadOnly) {
+            if (schemaHasInputAndOutput && !tableReadOnly) {
                 resetBtn = getWidgetFactory().createButton(subComposite,
                         Messages.getString("SchemaController.syncColumns"), SWT.PUSH); //$NON-NLS-1$
                 resetBtn.setToolTipText(Messages.getString("SchemaController.resetButton.tooltip")); //$NON-NLS-1$

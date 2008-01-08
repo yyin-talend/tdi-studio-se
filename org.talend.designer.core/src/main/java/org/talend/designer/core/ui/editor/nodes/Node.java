@@ -587,6 +587,7 @@ public class Node extends Element implements INode {
     public void addInput(final IConnection conn) {
         this.inputs.add(conn);
         fireStructureChange(INPUTS, conn);
+
         if (conn instanceof Connection) {
             Connection connection = (Connection) conn;
 
@@ -628,6 +629,9 @@ public class Node extends Element implements INode {
                         if (mainConnector.getName().equals(connector.getBaseSchema())) {
 
                             IMetadataTable targetTable = this.getMetadataFromConnector(connector.getName());
+                            if (targetTable == null) {
+                                continue;
+                            }
                             boolean customFound = false;
                             for (int i = 0; i < targetTable.getListColumns().size(); i++) {
                                 IMetadataColumn column = targetTable.getListColumns().get(i);
@@ -787,7 +791,7 @@ public class Node extends Element implements INode {
                 if (mainConnector.getName().equals(connector.getBaseSchema())) {
                     IElementParameter schemaParam = getSchemaParameterFromConnector(connector.getName());
                     IMetadataTable originTable = getMetadataFromConnector(connector.getName());
-                    if ((schemaParam == null || !schemaParam.isReadOnly()) && originTable.isReadOnly()) {
+                    if ((schemaParam == null || !schemaParam.isReadOnly()) && originTable != null && originTable.isReadOnly()) {
                         List<IMetadataColumn> columnToSave = new ArrayList<IMetadataColumn>();
                         for (IMetadataColumn column : originTable.getListColumns()) {
                             if (column.isCustom()) {
@@ -1345,7 +1349,7 @@ public class Node extends Element implements INode {
 
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     private void checkParameters() {
-        for (IElementParameter param : this.getElementParameters()) {
+        for (IElementParameter param : this.getElementParametersWithChildrens()) {
             // if the parameter is required but empty, an error will be added
             if (param.isRequired() && param.isShow(getElementParameters())) {
                 EParameterFieldType fieldType = param.getField();
@@ -1483,9 +1487,9 @@ public class Node extends Element implements INode {
         // not a sub process start
         if (!isSubProcessStart() || (!(Boolean) getPropertyValue(EParameterName.STARTABLE.getName()))) {
             if (/*
-             * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_AFTER) > 0) ||
-             * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_BEFORE) > 0)||
-             */
+                 * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_AFTER) > 0) ||
+                 * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_BEFORE) > 0)||
+                 */
             (getCurrentActiveLinksNbOutput(EConnectionType.ON_SUBJOB_OK) > 0)
                     || getCurrentActiveLinksNbOutput(EConnectionType.ON_SUBJOB_ERROR) > 0) {
                 String errorMessage = "A component that is not a sub process start can not have any link run after / run before in output.";
@@ -1497,9 +1501,9 @@ public class Node extends Element implements INode {
         // not a sub process start
         if ((!isELTComponent() && !isSubProcessStart()) || (!(Boolean) getPropertyValue(EParameterName.STARTABLE.getName()))) {
             if (/*
-             * (getCurrentActiveLinksNbInput(EConnectionType.RUN_AFTER) > 0) ||
-             * (getCurrentActiveLinksNbInput(EConnectionType.RUN_BEFORE) > 0) ||
-             */(getCurrentActiveLinksNbInput(EConnectionType.ON_SUBJOB_OK) > 0)
+                 * (getCurrentActiveLinksNbInput(EConnectionType.RUN_AFTER) > 0) ||
+                 * (getCurrentActiveLinksNbInput(EConnectionType.RUN_BEFORE) > 0) ||
+                 */(getCurrentActiveLinksNbInput(EConnectionType.ON_SUBJOB_OK) > 0)
                     || (getCurrentActiveLinksNbInput(EConnectionType.RUN_IF) > 0)
                     || (getCurrentActiveLinksNbInput(EConnectionType.ON_COMPONENT_OK) > 0)
                     || (getCurrentActiveLinksNbInput(EConnectionType.ON_COMPONENT_ERROR) > 0)) {
@@ -1628,10 +1632,13 @@ public class Node extends Element implements INode {
             }
 
             if (inputMeta != null) {
-                if (!outputMeta.sameMetadataAs(inputMeta, IMetadataColumn.OPTIONS_IGNORE_KEY
-                        | IMetadataColumn.OPTIONS_IGNORE_NULLABLE | IMetadataColumn.OPTIONS_IGNORE_COMMENT
-                        | IMetadataColumn.OPTIONS_IGNORE_PATTERN | IMetadataColumn.OPTIONS_IGNORE_DBCOLUMNNAME
-                        | IMetadataColumn.OPTIONS_IGNORE_DBTYPE)) {
+                INodeConnector connector = getConnectorFromName(outputMeta.getAttachedConnector());
+                if (connector.getMaxLinkInput() != 0
+                        && connector.getMaxLinkOutput() != 0
+                        && (!outputMeta.sameMetadataAs(inputMeta, IMetadataColumn.OPTIONS_IGNORE_KEY
+                                | IMetadataColumn.OPTIONS_IGNORE_NULLABLE | IMetadataColumn.OPTIONS_IGNORE_COMMENT
+                                | IMetadataColumn.OPTIONS_IGNORE_PATTERN | IMetadataColumn.OPTIONS_IGNORE_DBCOLUMNNAME
+                                | IMetadataColumn.OPTIONS_IGNORE_DBTYPE))) {
                     String errorMessage = "The schema from the input link \"" + inputConnecion.getName()
                             + "\" is different from the schema defined in the component.";
                     Problems.add(ProblemStatus.ERROR, this, errorMessage);

@@ -61,7 +61,7 @@
       FIELD="CONNECTION_LIST"
       NUM_ROW="4"
       SHOW_IF="ABSOLUTE=='Relative'"
-      FILTER="FLOW_MAIN|FLOW_MERGE"
+      FILTER="TYPE:FLOW_MAIN|FLOW_MERGE"
     >
     </PARAMETER>
    

@@ -67,6 +67,7 @@ public class NodeAnchor extends ChopboxAnchor {
     public Point getLocation(Point reference) {
         if (target != null && !target.equals(source)) {
             if (!isTargetAnchor) {
+                // System.out.println("ref:" + reference);
                 Point newRef = reference.getTranslated(-(target.getSize().width / 2), -(target.getSize().height / 2));
                 sourceLocation = source.getLocation();
                 targetLocation = target.getLocation();

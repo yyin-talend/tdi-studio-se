@@ -294,7 +294,7 @@ public class TableController extends AbstractElementPropertySectionController {
                     if (tmpParam.getField() == EParameterFieldType.CONNECTION_LIST) {
                         String[] contextParameterNames = null;
 
-                        ConnectionListController.updateConnectionList(elem, tmpParam, tmpParam.getFilter());
+                        ConnectionListController.updateConnectionList(elem, tmpParam);
                         contextParameterNames = tmpParam.getListItemsDisplayName();
                         tmpParam.setListItemsDisplayCodeName(contextParameterNames);
                         // tmpParam.setListItemsDisplayName(contextParameterNames);
