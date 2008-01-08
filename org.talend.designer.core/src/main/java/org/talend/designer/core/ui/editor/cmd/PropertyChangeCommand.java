@@ -55,6 +55,8 @@ public class PropertyChangeCommand extends Command {
 
     private final String propertyTypeName;
 
+    private final String updataComponentParamName;
+
     /**
      * The property is defined in an element, which can be either a node or a connection.
      * 
@@ -70,10 +72,12 @@ public class PropertyChangeCommand extends Command {
         oldElementValues = new HashMap<IElementParameter, Object>();
         setLabel(Messages.getString("PropertyChangeCommand.Label")); //$NON-NLS-1$
         // for job settings extra (feature 2710)
-        if (JobSettingsConstants.isExtraParameter(propName)) {
+        if (JobSettingsConstants.isExtraParameter(propName) || propName.equals(EParameterName.IMPLICIT_TCONTEXTLOAD.getName())) {
             propertyTypeName = JobSettingsConstants.getExtraParameterName(EParameterName.PROPERTY_TYPE.getName());
+            updataComponentParamName = JobSettingsConstants.getExtraParameterName(EParameterName.UPDATE_COMPONENTS.getName());
         } else {
             propertyTypeName = EParameterName.PROPERTY_TYPE.getName();
+            updataComponentParamName = EParameterName.UPDATE_COMPONENTS.getName();
         }
     }
 
@@ -169,8 +173,14 @@ public class PropertyChangeCommand extends Command {
                 setDefaultValues(currentParam, testedParam);
             }
         }
+        // for job settings extra.(feature 2710)
+        if (!toUpdate) {
+            if (oldValue != null && newValue != null && !newValue.equals(oldValue)) {
+                toUpdate = true;
+            }
+        }
         if (toUpdate) {
-            elem.setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), new Boolean(true));
+            elem.setPropertyValue(updataComponentParamName, new Boolean(true));
         }
         refreshPropertyView();
         CodeView.refreshCodeView(elem);
@@ -273,7 +283,7 @@ public class PropertyChangeCommand extends Command {
         }
 
         if (toUpdate) {
-            elem.setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), new Boolean(true));
+            elem.setPropertyValue(updataComponentParamName, new Boolean(true));
         }
         if (changeMetadataCommand != null) {
             changeMetadataCommand.undo();
@@ -317,7 +327,7 @@ public class PropertyChangeCommand extends Command {
         }
 
         if (toUpdate) {
-            elem.setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), new Boolean(true));
+            elem.setPropertyValue(updataComponentParamName, new Boolean(true));
         }
 
         if (changeMetadataCommand != null) {

@@ -151,6 +151,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
 
     private final String extraRepositoryPropertyTypeName;
 
+    private final String updataComponentParamName;
+
     /**
      * ftang Comment method "showQueryStoreRepositoryList".
      * 
@@ -176,7 +178,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
             if (extra && param.getName().equals(extraRepositoryPropertyTypeName)) {
                 param.setShow(show);
 
-            } else if (param.getName().equals(EParameterName.REPOSITORY_PROPERTY_TYPE.getName())) {
+            } else if (!extra && param.getName().equals(EParameterName.REPOSITORY_PROPERTY_TYPE.getName())) {
                 param.setShow(show);
             }
         }
@@ -954,11 +956,11 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
             }
         }
 
-        Boolean updateNeeded = (Boolean) elem.getPropertyValue(EParameterName.UPDATE_COMPONENTS.getName());
+        Boolean updateNeeded = (Boolean) elem.getPropertyValue(updataComponentParamName);
         if (updateNeeded != null) {
             if (updateNeeded) {
                 addComponents(forceRedraw);
-                elem.setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), new Boolean(false));
+                elem.setPropertyValue(updataComponentParamName, new Boolean(false));
             }
         }
         forceRedraw = false;
@@ -1037,7 +1039,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
 
         if ((currentComponent == null) || (!currentComponent.equals(elem.getElementName()))) {
             forceRedraw = true;
-            elem.setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), Boolean.TRUE);
+            elem.setPropertyValue(updataComponentParamName, Boolean.TRUE);
         }
         currentComponent = elem.getElementName();
     }
@@ -1089,10 +1091,15 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
         repositoryConnectionItemMap = new HashMap<String, ConnectionItem>();
         repositoryTableMap = new HashMap<String, IMetadataTable>();
         hashCurControls = new DualHashBidiMap();
-
+        // for job settings extra (feature 2710)
         extraPropertyTypeName = JobSettingsConstants.getExtraParameterName(EParameterName.PROPERTY_TYPE.getName());
         extraRepositoryPropertyTypeName = JobSettingsConstants.getExtraParameterName(EParameterName.REPOSITORY_PROPERTY_TYPE
                 .getName());
+        if (section == EComponentCategory.EXTRA) {
+            updataComponentParamName = JobSettingsConstants.getExtraParameterName(EParameterName.UPDATE_COMPONENTS.getName());
+        } else {
+            updataComponentParamName = EParameterName.UPDATE_COMPONENTS.getName();
+        }
     }
 
     /**

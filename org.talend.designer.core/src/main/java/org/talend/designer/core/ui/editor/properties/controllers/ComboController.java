@@ -436,7 +436,7 @@ public class ComboController extends AbstractElementPropertySectionController {
                     text.setText(value.toString());
                 }
             }
-            dynamicProperty.refresh();
+            // dynamicProperty.refresh();
 
         }
     };

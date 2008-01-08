@@ -48,6 +48,21 @@ import org.talend.repository.model.ComponentsFactoryProvider;
 public class JobSettingsManager {
 
     public static void createJobSettingsParemeters(IProcess process) {
+        // not used, only for hiding the table sql-builder button.
+        ElementParameter param;
+        List<IElementParameter> paramList = (List<IElementParameter>) process.getElementParameters();
+        param = new ElementParameter(process);
+        param.setName("MEMO_SQL"); //$NON-NLS-1$
+        param.setValue(""); //$NON-NLS-1$
+        param.setDisplayName("MEMO_SQL"); //$NON-NLS-1$
+        param.setField(EParameterFieldType.MEMO_SQL);
+        param.setCategory(EComponentCategory.EXTRA);
+        param.setNumRow(1);
+        param.setReadOnly(true);
+        param.setRequired(false);
+        param.setShow(false);
+        paramList.add(param);
+
         // for extra
         createExtraParameters(process);
         // for stats & logs
@@ -65,6 +80,18 @@ public class JobSettingsManager {
     private static void createExtraParameters(IProcess process) {
         ElementParameter param;
         List<IElementParameter> paramList = (List<IElementParameter>) process.getElementParameters();
+
+        param = new ElementParameter(process);
+        param.setName(JobSettingsConstants.getExtraParameterName(EParameterName.UPDATE_COMPONENTS.getName()));
+        param.setValue(Boolean.FALSE);
+        param.setDisplayName(EParameterName.UPDATE_COMPONENTS.getDisplayName());
+        param.setField(EParameterFieldType.CHECK);
+        param.setCategory(EComponentCategory.EXTRA);
+        param.setNumRow(1);
+        param.setReadOnly(true);
+        param.setRequired(false);
+        param.setShow(false);
+        paramList.add(param);
 
         if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
             IPreferenceStore preferenceStore = CorePlugin.getDefault().getPreferenceStore();

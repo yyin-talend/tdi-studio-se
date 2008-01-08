@@ -2049,7 +2049,13 @@ public class Process extends Element implements IProcess2 {
                 || id.equals(EParameterName.PROPERTY_TYPE.getName())
                 || id.equals(JobSettingsConstants.getExtraParameterName(EParameterName.PROPERTY_TYPE.getName()))
                 || id.equals(EParameterName.PROCESS_TYPE_PROCESS.getName())) {
-            setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), Boolean.TRUE);
+            String updataComponentParamName = null;
+            if (JobSettingsConstants.isExtraParameter(id)) {
+                updataComponentParamName = JobSettingsConstants.getExtraParameterName(EParameterName.UPDATE_COMPONENTS.getName());
+            } else {
+                updataComponentParamName = EParameterName.UPDATE_COMPONENTS.getName();
+            }
+            setPropertyValue(updataComponentParamName, Boolean.TRUE);
         }
 
         super.setPropertyValue(id, value);

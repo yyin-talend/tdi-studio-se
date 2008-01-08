@@ -28,12 +28,13 @@ import org.eclipse.ui.part.ViewPart;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
+import org.talend.core.model.process.IProcess;
 import org.talend.core.properties.tab.HorizontalTabFactory;
 import org.talend.core.properties.tab.TalendPropertyTabDescriptor;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.designer.core.i18n.Messages;
-import org.talend.designer.core.ui.MultiPageTalendEditor;
-import org.talend.designer.core.ui.editor.TalendEditor;
+import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
+import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.views.properties.DynamicComposite;
 import org.talend.designer.core.ui.views.properties.IJobSettingsView;
@@ -49,10 +50,6 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView {
     private HorizontalTabFactory tabFactory = null;
 
     private TalendPropertyTabDescriptor currentSelectedTab;
-
-    private StatsAndLogsComposite statsAndLogsViewComposite;
-
-    private DynamicComposite extraAndContextComposite;
 
     private Element element;
 
@@ -103,17 +100,21 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView {
 
     private void createTabComposite(Composite parent, Element element, EComponentCategory category) {
         final int style = SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS;
-        if (EComponentCategory.STATSANDLOGS.equals(category)) {
-            statsAndLogsViewComposite = new StatsAndLogsComposite(parent, style, category, element);
-            statsAndLogsViewComposite.refresh();
+        DynamicComposite dynamicComposite = null;
 
-        } else if (EComponentCategory.EXTRA.equals(category)) {
-            extraAndContextComposite = new DynamicComposite(parent, style, category, element);
-            extraAndContextComposite.refresh();
+        if (EComponentCategory.EXTRA.equals(category)) {
+            dynamicComposite = new DynamicComposite(parent, style, category, element);
+
+        } else if (EComponentCategory.STATSANDLOGS.equals(category)) {
+            dynamicComposite = new StatsAndLogsComposite(parent, style, category, element);
 
         } else if (EComponentCategory.CONTEXT.equals(category)) {
             // TODO
+            // dynamicComposite = new ContextDynamicComposite(parent, style, category, element);
 
+        }
+        if (dynamicComposite != null) {
+            dynamicComposite.refresh();
         }
     }
 
@@ -218,7 +219,7 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView {
 
         category.add(EComponentCategory.EXTRA);
         category.add(EComponentCategory.STATSANDLOGS);
-        category.add(EComponentCategory.CONTEXT);
+        // category.add(EComponentCategory.CONTEXT);
 
         return category.toArray(new EComponentCategory[0]);
     }
@@ -241,19 +242,18 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView {
             }
         }
         this.currentSelectedTab = null;
-        this.cleaned = true;
-        this.selectedPrimary = true;
+        clearFlags();
     }
 
     public void refresh() {
         final IEditorPart activeEditor = getSite().getPage().getActiveEditor();
-        if (activeEditor != null && activeEditor instanceof MultiPageTalendEditor) {
-            TalendEditor talendEditor = ((MultiPageTalendEditor) activeEditor).getTalendEditor();
-            Process process = talendEditor.getProcess();
-            if (process != null) {
+        if (activeEditor != null && activeEditor instanceof AbstractMultiPageTalendEditor) {
+            AbstractTalendEditor talendEditor = ((AbstractMultiPageTalendEditor) activeEditor).getTalendEditor();
+            IProcess process = talendEditor.getProcess();
+            if (process != null && process instanceof Element) {
                 clearFlags();
-                this.element = process;
-                setElement(process, activeEditor.getTitle());
+                this.element = (Element) process;
+                setElement(element, activeEditor.getTitle());
                 return;
             }
         }

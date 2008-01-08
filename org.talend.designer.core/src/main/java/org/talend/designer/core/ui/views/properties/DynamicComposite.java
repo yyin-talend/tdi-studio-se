@@ -137,6 +137,8 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
 
     private final String extraRepositoryPropertyTypeName;
 
+    private final String updataComponentParamName;
+
     /**
      * ftang Comment method "showQueryStoreRepositoryList".
      * 
@@ -920,11 +922,12 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
             }
         }
 
-        Boolean updateNeeded = (Boolean) elem.getPropertyValue(EParameterName.UPDATE_COMPONENTS.getName());
+        Boolean updateNeeded = (Boolean) elem.getPropertyValue(updataComponentParamName);
+
         if (updateNeeded != null) {
             if (updateNeeded) {
                 addComponents(forceRedraw);
-                elem.setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), new Boolean(false));
+                elem.setPropertyValue(updataComponentParamName, new Boolean(false));
             }
         }
         forceRedraw = false;
@@ -990,7 +993,12 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
      */
     public DynamicComposite(Composite parentComposite, int styles, final EComponentCategory section, Element element) {
         super(parentComposite, styles);
-
+        // for job settings extra (feature 2710)
+        if (section == EComponentCategory.EXTRA) {
+            updataComponentParamName = JobSettingsConstants.getExtraParameterName(EParameterName.UPDATE_COMPONENTS.getName());
+        } else {
+            updataComponentParamName = EParameterName.UPDATE_COMPONENTS.getName();
+        }
         FormData d = new FormData();
         d.left = new FormAttachment(0, 0);
         d.right = new FormAttachment(100, 0);
@@ -1036,7 +1044,8 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
 
         if ((currentComponent == null) || (!currentComponent.equals(elem.getElementName()))) {
             forceRedraw = true;
-            elem.setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), Boolean.TRUE);
+            elem.setPropertyValue(updataComponentParamName, Boolean.TRUE);
+
         }
         currentComponent = elem.getElementName();
 
@@ -1047,6 +1056,7 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
         extraPropertyTypeName = JobSettingsConstants.getExtraParameterName(EParameterName.PROPERTY_TYPE.getName());
         extraRepositoryPropertyTypeName = JobSettingsConstants.getExtraParameterName(EParameterName.REPOSITORY_PROPERTY_TYPE
                 .getName());
+
     }
 
     /*
@@ -1073,7 +1083,7 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
             }
             if (0 != (detail & CommandStack.POST_EXECUTE) || 0 != (detail & CommandStack.POST_UNDO)
                     || 0 != (detail & CommandStack.POST_REDO)) {
-                Boolean updateNeeded = (Boolean) elem.getPropertyValue(EParameterName.UPDATE_COMPONENTS.getName());
+                Boolean updateNeeded = (Boolean) elem.getPropertyValue(updataComponentParamName);
                 // System.out.println("elem:" + elem.getElementName() + "(" + section + ") --- update needed:" +
                 // updateNeeded);
                 if (updateNeeded) {

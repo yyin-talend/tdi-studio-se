@@ -66,6 +66,8 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
 
     private final String repositoryPropertyTypeName;
 
+    private final String updataComponentParamName;
+
     public ChangeValuesFromRepository(Element elem, Connection connection, String propertyName, String value) {
         this.elem = elem;
         this.connection = connection;
@@ -79,17 +81,18 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
             propertyTypeName = JobSettingsConstants.getExtraParameterName(EParameterName.PROPERTY_TYPE.getName());
             repositoryPropertyTypeName = JobSettingsConstants.getExtraParameterName(EParameterName.REPOSITORY_PROPERTY_TYPE
                     .getName());
+            updataComponentParamName = JobSettingsConstants.getExtraParameterName(EParameterName.UPDATE_COMPONENTS.getName());
         } else {
             propertyTypeName = EParameterName.PROPERTY_TYPE.getName();
             repositoryPropertyTypeName = EParameterName.REPOSITORY_PROPERTY_TYPE.getName();
+            updataComponentParamName = EParameterName.UPDATE_COMPONENTS.getName();
         }
     }
 
     @Override
     public void execute() {
         // Force redraw of Commponents propoerties
-        // elem.setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), new
-        // Boolean(true));
+        elem.setPropertyValue(updataComponentParamName, new Boolean(true));
 
         boolean allowAutoSwitch = true;
 
@@ -371,7 +374,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
     @Override
     public void undo() {
         // Force redraw of Commponents propoerties
-        elem.setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), new Boolean(true));
+        elem.setPropertyValue(updataComponentParamName, new Boolean(true));
 
         if (propertyName.equals(propertyTypeName) && (EmfComponent.BUILTIN.equals(value))) {
             for (IElementParameter param : elem.getElementParameters()) {
