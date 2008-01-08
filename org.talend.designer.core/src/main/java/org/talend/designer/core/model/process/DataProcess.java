@@ -36,7 +36,7 @@ import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IProcess;
 import org.talend.designer.core.model.components.EParameterName;
-import org.talend.designer.core.model.process.statsandlogs.StatsAndLogsManager;
+import org.talend.designer.core.model.process.jobsettings.JobSettingsManager;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.joblet.ui.models.IJobletComponent;
@@ -670,7 +670,15 @@ public class DataProcess {
 
     public void buildFromGraphicalProcess(List<Node> graphicalNodeList) {
         initialize();
-
+        // job settings extra (feature 2710)
+        if (JobSettingsManager.isImplicittContextLoadActived(process)) {
+            List<DataNode> contextLoadNodes = JobSettingsManager.createExtraContextLoadNodes(process);
+            for (DataNode node : contextLoadNodes) {
+                buildCheckMap.put(node, node);
+                dataNodeList.add(node);
+                replaceMultipleComponents(node);
+            }
+        }
         for (Node node : graphicalNodeList) {
             if (node.isSubProcessStart() && node.isActivate()) {
                 buildfromNode(node);
@@ -688,8 +696,8 @@ public class DataProcess {
         }
 
         replaceJoblets(graphicalNodeList);
-
-        if (StatsAndLogsManager.isStatsAndLogsActivated(process)) {
+        // job settings stats & logs
+        if (JobSettingsManager.isStatsAndLogsActivated(process)) {
             // will add the Stats & Logs managements
             Boolean realTimeStats = ((Boolean) process.getElementParameter(EParameterName.CATCH_REALTIME_STATS.getName())
                     .getValue())
@@ -705,7 +713,7 @@ public class DataProcess {
                 }
             }
 
-            List<DataNode> statsAndLogsNodeList = StatsAndLogsManager.getStatsAndLogsNodes(process);
+            List<DataNode> statsAndLogsNodeList = JobSettingsManager.createStatsAndLogsNodes(process);
 
             for (DataNode node : statsAndLogsNodeList) {
                 buildCheckMap.put(node, node);

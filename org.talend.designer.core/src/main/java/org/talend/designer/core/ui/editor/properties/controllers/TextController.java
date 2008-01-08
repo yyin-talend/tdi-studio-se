@@ -188,8 +188,9 @@ public class TextController extends AbstractElementPropertySectionController {
             }
         }
 
-        // Only for statsandlogs View.
-        if (param.getCategory() == EComponentCategory.STATSANDLOGS) {
+        // Only for job settings View.
+        // job settings extra (feature 2710)
+        if (param.getCategory() == EComponentCategory.STATSANDLOGS || param.getCategory() == EComponentCategory.EXTRA) {
             Color red = Display.getCurrent().getSystemColor(SWT.COLOR_RED);
             Color white = Display.getCurrent().getSystemColor(SWT.COLOR_WHITE);
 

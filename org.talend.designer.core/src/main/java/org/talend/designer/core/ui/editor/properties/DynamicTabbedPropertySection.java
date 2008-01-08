@@ -75,6 +75,7 @@ import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
+import org.talend.designer.core.model.process.jobsettings.JobSettingsConstants;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
@@ -146,6 +147,10 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
 
     public static final boolean DEBUG_TIME = false;
 
+    private final String extraPropertyTypeName;
+
+    private final String extraRepositoryPropertyTypeName;
+
     /**
      * ftang Comment method "showQueryStoreRepositoryList".
      * 
@@ -165,10 +170,13 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
      * 
      * @param show boolean
      */
-    private void showPropertyRepositoryList(boolean show) {
+    private void showPropertyRepositoryList(boolean show, boolean extra) {
         for (int i = 0; i < elem.getElementParameters().size(); i++) {
             IElementParameter param = elem.getElementParameters().get(i);
-            if (param.getName().equals(EParameterName.REPOSITORY_PROPERTY_TYPE.getName())) {
+            if (extra && param.getName().equals(extraRepositoryPropertyTypeName)) {
+                param.setShow(show);
+
+            } else if (param.getName().equals(EParameterName.REPOSITORY_PROPERTY_TYPE.getName())) {
                 param.setShow(show);
             }
         }
@@ -464,75 +472,90 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
                 }
             }
             if (param.getName().equals(EParameterName.REPOSITORY_PROPERTY_TYPE.getName())) {
-                String repositoryValue = elem.getElementParameter(EParameterName.PROPERTY_TYPE.getName()).getRepositoryValue();
-                if (repositoryValue != null) {
-                    List<String> connectionNamesList = new ArrayList<String>();
-                    List<String> connectionValuesList = new ArrayList<String>();
-                    for (String key : repositoryConnectionItemMap.keySet()) {
-                        ConnectionItem connectionItem = repositoryConnectionItemMap.get(key);
-                        Connection connection = connectionItem.getConnection();
-                        String name = getRepositoryAliasName(connectionItem) + ":" //$NON-NLS-1$
-                                + connectionItem.getProperty().getLabel();
-                        if ((connection instanceof DelimitedFileConnection) && (repositoryValue.equals("DELIMITED"))) { //$NON-NLS-1$
-                            addOrderDisplayNames(connectionValuesList, connectionNamesList, key, name);
-                        }
-                        if ((connection instanceof PositionalFileConnection) && (repositoryValue.equals("POSITIONAL"))) { //$NON-NLS-1$
-                            addOrderDisplayNames(connectionValuesList, connectionNamesList, key, name);
-                        }
-                        if ((connection instanceof RegexpFileConnection) && (repositoryValue.equals("REGEX"))) { //$NON-NLS-1$
-                            addOrderDisplayNames(connectionValuesList, connectionNamesList, key, name);
-                        }
-                        if ((connection instanceof XmlFileConnection) && (repositoryValue.equals("XML"))) { //$NON-NLS-1$
-                            addOrderDisplayNames(connectionValuesList, connectionNamesList, key, name);
-                        }
-                        if ((connection instanceof GenericSchemaConnection) && (repositoryValue.equals("GENERIC"))) { //$NON-NLS-1$
-                            addOrderDisplayNames(connectionValuesList, connectionNamesList, key, name);
-                        }
-                        if ((connection instanceof LDAPSchemaConnection) && (repositoryValue.equals("LDAP"))) { //$NON-NLS-1$
-                            addOrderDisplayNames(connectionValuesList, connectionNamesList, key, name);
-                        }
-
-                        if ((connection instanceof DatabaseConnection) && (repositoryValue.startsWith("DATABASE"))) { //$NON-NLS-1$
-                            String currentDbType = (String) RepositoryToComponentProperty.getValue(connection, "TYPE"); //$NON-NLS-1$
-                            if (repositoryValue.contains(":")) { // database
-                                // is
-                                // specified
-                                // //$NON-NLS-1$
-                                String neededDbType = repositoryValue.substring(repositoryValue.indexOf(":") + 1); //$NON-NLS-1$
-                                if (neededDbType.equals(currentDbType)) {
-                                    addOrderDisplayNames(connectionValuesList, connectionNamesList, key, name);
-                                }
-                            } else {
-                                addOrderDisplayNames(connectionValuesList, connectionNamesList, key, name);
-                            }
-                        }
-                    }
-
-                    repositoryConnectionNameList = connectionNamesList.toArray(new String[0]);
-                    repositoryConnectionValueList = connectionValuesList.toArray(new String[0]);
-                } else {
-                    List<String> connectionValuesList = new ArrayList<String>();
-                    List<String> connectionStringList = new ArrayList<String>();
-                    for (String key : repositoryConnectionItemMap.keySet()) {
-                        ConnectionItem connectionItem = repositoryConnectionItemMap.get(key);
-                        String name = connectionItem.getProperty().getLabel();
-                        addOrderDisplayNames(connectionValuesList, connectionStringList, key, name);
-                    }
-                    repositoryConnectionNameList = connectionStringList.toArray(new String[0]);
-                    repositoryConnectionValueList = connectionValuesList.toArray(new String[0]);
-                }
-                param.setListItemsDisplayName(repositoryConnectionNameList);
-                param.setListItemsValue(repositoryConnectionValueList);
-                if (!repositoryConnectionItemMap.keySet().contains(param.getValue())) {
-                    if (repositoryConnectionNameList.length > 0) {
-                        elem
-                                .setPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName(),
-                                        repositoryConnectionValueList[0]);
-                    }
-                }
+                updateRepositoryListExtra(param, repositoryConnectionNameList, repositoryConnectionValueList, false);
+            }
+            // for job settings extra (feature 2710)
+            if (param.getName().equals(extraRepositoryPropertyTypeName)) {
+                updateRepositoryListExtra(param, repositoryConnectionNameList, repositoryConnectionValueList, true);
             }
         }
         updateQuery();
+    }
+
+    private void updateRepositoryListExtra(IElementParameter param, String[] repositoryConnectionNameList,
+            String[] repositoryConnectionValueList, boolean extra) {
+        String paramName = EParameterName.PROPERTY_TYPE.getName();
+        if (extra) {
+            paramName = extraPropertyTypeName;
+        }
+        String repositoryValue = elem.getElementParameter(paramName).getRepositoryValue();
+        if (repositoryValue != null) {
+            List<String> connectionNamesList = new ArrayList<String>();
+            List<String> connectionValuesList = new ArrayList<String>();
+            for (String key : repositoryConnectionItemMap.keySet()) {
+                ConnectionItem connectionItem = repositoryConnectionItemMap.get(key);
+                Connection connection = connectionItem.getConnection();
+                String name = getRepositoryAliasName(connectionItem) + ":" //$NON-NLS-1$
+                        + connectionItem.getProperty().getLabel();
+                if ((connection instanceof DelimitedFileConnection) && (repositoryValue.equals("DELIMITED"))) { //$NON-NLS-1$
+                    addOrderDisplayNames(connectionValuesList, connectionNamesList, key, name);
+                }
+                if ((connection instanceof PositionalFileConnection) && (repositoryValue.equals("POSITIONAL"))) { //$NON-NLS-1$
+                    addOrderDisplayNames(connectionValuesList, connectionNamesList, key, name);
+                }
+                if ((connection instanceof RegexpFileConnection) && (repositoryValue.equals("REGEX"))) { //$NON-NLS-1$
+                    addOrderDisplayNames(connectionValuesList, connectionNamesList, key, name);
+                }
+                if ((connection instanceof XmlFileConnection) && (repositoryValue.equals("XML"))) { //$NON-NLS-1$
+                    addOrderDisplayNames(connectionValuesList, connectionNamesList, key, name);
+                }
+                if ((connection instanceof GenericSchemaConnection) && (repositoryValue.equals("GENERIC"))) { //$NON-NLS-1$
+                    addOrderDisplayNames(connectionValuesList, connectionNamesList, key, name);
+                }
+                if ((connection instanceof LDAPSchemaConnection) && (repositoryValue.equals("LDAP"))) { //$NON-NLS-1$
+                    addOrderDisplayNames(connectionValuesList, connectionNamesList, key, name);
+                }
+
+                if ((connection instanceof DatabaseConnection) && (repositoryValue.startsWith("DATABASE"))) { //$NON-NLS-1$
+                    String currentDbType = (String) RepositoryToComponentProperty.getValue(connection, "TYPE"); //$NON-NLS-1$
+                    if (repositoryValue.contains(":")) { // database
+                        // is
+                        // specified
+                        // //$NON-NLS-1$
+                        String neededDbType = repositoryValue.substring(repositoryValue.indexOf(":") + 1); //$NON-NLS-1$
+                        if (neededDbType.equals(currentDbType)) {
+                            addOrderDisplayNames(connectionValuesList, connectionNamesList, key, name);
+                        }
+                    } else {
+                        addOrderDisplayNames(connectionValuesList, connectionNamesList, key, name);
+                    }
+                }
+            }
+
+            repositoryConnectionNameList = connectionNamesList.toArray(new String[0]);
+            repositoryConnectionValueList = connectionValuesList.toArray(new String[0]);
+        } else {
+            List<String> connectionValuesList = new ArrayList<String>();
+            List<String> connectionStringList = new ArrayList<String>();
+            for (String key : repositoryConnectionItemMap.keySet()) {
+                ConnectionItem connectionItem = repositoryConnectionItemMap.get(key);
+                String name = connectionItem.getProperty().getLabel();
+                addOrderDisplayNames(connectionValuesList, connectionStringList, key, name);
+            }
+            repositoryConnectionNameList = connectionStringList.toArray(new String[0]);
+            repositoryConnectionValueList = connectionValuesList.toArray(new String[0]);
+        }
+        param.setListItemsDisplayName(repositoryConnectionNameList);
+        param.setListItemsValue(repositoryConnectionValueList);
+        if (!repositoryConnectionItemMap.keySet().contains(param.getValue())) {
+            if (repositoryConnectionNameList.length > 0) {
+                paramName = EParameterName.REPOSITORY_PROPERTY_TYPE.getName();
+                if (extra) {
+                    paramName = extraRepositoryPropertyTypeName;
+                }
+                elem.setPropertyValue(paramName, repositoryConnectionValueList[0]);
+            }
+        }
     }
 
     /**
@@ -604,16 +627,30 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
             oldPropertyType = (String) param.getValue();
             if (param.isShow(elem.getElementParameters())) {
                 if (oldPropertyType.equals(EmfComponent.REPOSITORY)) {
-                    showPropertyRepositoryList(true);
+                    showPropertyRepositoryList(true, false);
                     updateRepositoryList();
                 } else {
-                    showPropertyRepositoryList(false);
+                    showPropertyRepositoryList(false, false);
                 }
             } else {
-                showPropertyRepositoryList(false);
+                showPropertyRepositoryList(false, false);
             }
         }
-
+        // for job settings extra.(feature 2710)
+        param = elem.getElementParameter(extraPropertyTypeName);
+        if (param != null) {
+            oldPropertyType = (String) param.getValue();
+            if (param.isShow(elem.getElementParameters())) {
+                if (oldPropertyType.equals(EmfComponent.REPOSITORY)) {
+                    showPropertyRepositoryList(true, true);
+                    updateRepositoryList();
+                } else {
+                    showPropertyRepositoryList(false, true);
+                }
+            } else {
+                showPropertyRepositoryList(false, true);
+            }
+        }
         oldProcessType = (String) elem.getPropertyValue(EParameterName.PROCESS_TYPE_PROCESS.getName());
         if (oldProcessType != null) {
             String[] list = elem.getElementParameter(EParameterName.PROCESS_TYPE_PROCESS.getName()).getListItemsDisplayName();
@@ -1052,6 +1089,10 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
         repositoryConnectionItemMap = new HashMap<String, ConnectionItem>();
         repositoryTableMap = new HashMap<String, IMetadataTable>();
         hashCurControls = new DualHashBidiMap();
+
+        extraPropertyTypeName = JobSettingsConstants.getExtraParameterName(EParameterName.PROPERTY_TYPE.getName());
+        extraRepositoryPropertyTypeName = JobSettingsConstants.getExtraParameterName(EParameterName.REPOSITORY_PROPERTY_TYPE
+                .getName());
     }
 
     /**

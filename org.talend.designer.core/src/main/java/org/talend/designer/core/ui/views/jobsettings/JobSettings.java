@@ -1,0 +1,66 @@
+// ============================================================================
+//
+// Copyright (C) 2006-2007 Talend Inc. - www.talend.com
+//
+// This source code is available under agreement available at
+// %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
+//
+// You should have received a copy of the agreement
+// along with this program; if not, write to Talend SA
+// 9 rue Pages 92150 Suresnes, France
+//
+// ============================================================================
+package org.talend.designer.core.ui.views.jobsettings;
+
+import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.PlatformUI;
+import org.talend.commons.exception.ExceptionHandler;
+
+/**
+ * DOC ggu class global comment. Detailled comment
+ */
+public class JobSettings {
+
+    /**
+     * 
+     * DOC ggu Comment method "switchToCurJobSettingsView".
+     */
+    public static void switchToCurJobSettingsView() {
+        JobSettingsView jobSettingsView = getView();
+        if (jobSettingsView != null) {
+            jobSettingsView.refresh();
+        }
+    }
+
+    /**
+     * ggu Comment method "refreshView".
+     */
+    private static JobSettingsView getView() {
+        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+        IViewPart view = page.findView(JobSettingsView.ID);
+        if (view == null) {
+            try {
+                view = page.showView(JobSettingsView.ID);
+            } catch (Exception e) {
+                ExceptionHandler.process(e);
+            }
+            return null;
+        } else if (view instanceof JobSettingsView) {
+            return (JobSettingsView) view;
+        }
+        return null;
+
+    }
+
+    /**
+     * ggu Comment method "clearAll".
+     */
+    public static void cleanDisplay() {
+        JobSettingsView jobSettingsView = getView();
+        if (jobSettingsView != null) {
+            jobSettingsView.cleanDisplay();
+        }
+    }
+
+}

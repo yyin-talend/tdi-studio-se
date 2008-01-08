@@ -31,6 +31,7 @@ import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextParameter;
+import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.temp.ECodePart;
@@ -358,7 +359,24 @@ public class CodeGenerator implements ICodeGenerator {
         // and the epic's preferencestore initializer instanciate swt objects !
         // so in headless mode, we'll always use MultiThreading by default
         if (!CorePlugin.getContext().isHeadless()) {
-            return CorePlugin.getDefault().getPreferenceStore().getBoolean(ITalendCorePrefConstants.RUN_IN_MULTI_THREAD);
+            boolean running = false;
+            // check the mutli-thread parameter in Job Settings.
+            if (process != null) {
+                // EParameterName.MULTI_THREAD_EXECATION.getName
+                IElementParameter parameter = process.getElementParameter("MULTI_THREAD_EXECATION"); //$NON-NLS-1$
+                if (parameter != null) {
+                    Object obj = parameter.getValue();
+                    if (obj instanceof Boolean && ((Boolean) obj).booleanValue()) {
+                        running = true;
+                    }
+                }
+            }
+            // when the job setting is false, check the preference settings
+            if (!running) {
+                running = CorePlugin.getDefault().getPreferenceStore().getBoolean(ITalendCorePrefConstants.RUN_IN_MULTI_THREAD);
+
+            }
+            return running;
         } else {
             return false;
         }

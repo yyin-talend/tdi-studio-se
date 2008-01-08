@@ -116,7 +116,7 @@ public class DbTableController extends AbstractElementPropertySectionController 
             final int nbInRow, final int top, final Control lastControl) {
         FormData data;
         this.paramFieldType = param.getField();
-
+        this.curParameter = param;
         Control lastDbControl;
         Button openListTable = addListTablesButton(subComposite, param, top, numInRow, nbInRow);
         lastDbControl = openListTable;
@@ -300,6 +300,7 @@ public class DbTableController extends AbstractElementPropertySectionController 
     protected void createListTablesCommand(Button button) {
         initConnectionParameters();
         openDbTableSelectorJob(button);
+        // this.getDynamicProperty().refresh();
     }
 
     /**

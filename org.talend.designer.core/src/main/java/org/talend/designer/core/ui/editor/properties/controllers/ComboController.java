@@ -55,6 +55,7 @@ import org.talend.core.model.properties.ConnectionItem;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
+import org.talend.designer.core.model.process.jobsettings.JobSettingsConstants;
 import org.talend.designer.core.ui.editor.cmd.ChangeValuesFromRepository;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.cmd.QueryGuessCommand;
@@ -157,8 +158,10 @@ public class ComboController extends AbstractElementPropertySectionController {
 
                         } else {
                             ChangeValuesFromRepository changeValuesFromRepository;
-
-                            if (name.equals(EParameterName.REPOSITORY_PROPERTY_TYPE.getName())) {
+                            // for job settings extra.(feature 2710)
+                            if (name.equals(EParameterName.REPOSITORY_PROPERTY_TYPE.getName())
+                                    || name.equals(JobSettingsConstants
+                                            .getExtraParameterName(EParameterName.REPOSITORY_PROPERTY_TYPE.getName()))) {
                                 if (repositoryConnectionItemMap.containsKey(value)) {
                                     repositoryConnection = repositoryConnectionItemMap.get(value).getConnection();
                                 } else {
@@ -195,8 +198,30 @@ public class ComboController extends AbstractElementPropertySectionController {
                                     return new PropertyChangeCommand(elem, name, value);
                                 }
                             }
+                            // for job settings extra.(feature 2710)
+                            else if (name.equals(JobSettingsConstants.getExtraParameterName(EParameterName.PROPERTY_TYPE
+                                    .getName()))) {
+                                String connectionSelected;
+                                connectionSelected = (String) elem.getPropertyValue(JobSettingsConstants
+                                        .getExtraParameterName(EParameterName.REPOSITORY_PROPERTY_TYPE.getName()));
 
-                            else if (name.equals(EParameterName.QUERYSTORE_TYPE.getName())) {
+                                if (repositoryConnectionItemMap.containsKey(connectionSelected)) {
+                                    repositoryConnection = (org.talend.core.model.metadata.builder.connection.Connection) repositoryConnectionItemMap
+                                            .get(connectionSelected).getConnection();
+                                } else {
+                                    repositoryConnection = null;
+                                }
+
+                                if (repositoryConnection != null) {
+                                    changeValuesFromRepository = new ChangeValuesFromRepository(elem, repositoryConnection, name,
+                                            value);
+
+                                    changeValuesFromRepository.setMaps(tablesmap, queriesmap, repositoryTableMap);
+                                    return changeValuesFromRepository;
+                                } else {
+                                    return new PropertyChangeCommand(elem, name, value);
+                                }
+                            } else if (name.equals(EParameterName.QUERYSTORE_TYPE.getName())) {
                                 if (elem instanceof Node) {
                                     this.dynamicProperty.updateRepositoryList();
                                     String querySelected;
@@ -411,6 +436,7 @@ public class ComboController extends AbstractElementPropertySectionController {
                     text.setText(value.toString());
                 }
             }
+            dynamicProperty.refresh();
 
         }
     };

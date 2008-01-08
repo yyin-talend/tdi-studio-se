@@ -26,6 +26,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
+import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.views.properties.DynamicComposite;
@@ -51,12 +52,12 @@ public class StatsAndLogsComposite extends DynamicComposite {
             topComposite.setLayout(new GridLayout(2, false));
             topComposite.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
             reloadBtn = new Button(topComposite, SWT.PUSH);
-            reloadBtn.setText("&Reload from preferences");
-            reloadBtn.setToolTipText("Reload values from preference page(Shift+R)");
+            reloadBtn.setText(Messages.getString("StatsAndLogsComposite.Reload")); //$NON-NLS-1$
+            reloadBtn.setToolTipText(Messages.getString("StatsAndLogsComposite.ReloadToolTipText")); //$NON-NLS-1$
 
             saveBtn = new Button(topComposite, SWT.PUSH);
-            saveBtn.setText("&Save to preferences");
-            saveBtn.setToolTipText("save values to preference page(Shift+S)");
+            saveBtn.setText(Messages.getString("StatsAndLogsComposite.Save")); //$NON-NLS-1$
+            saveBtn.setToolTipText(Messages.getString("StatsAndLogsComposite.SaveToolTipText")); //$NON-NLS-1$
 
             Point initialSize = topComposite.computeSize(SWT.DEFAULT, SWT.DEFAULT);
 
@@ -89,8 +90,9 @@ public class StatsAndLogsComposite extends DynamicComposite {
                 if (elem == null) {
                     return;
                 }
-                boolean isOK = MessageDialog.openConfirm(Display.getDefault().getActiveShell(), "Stats/Logs View",
-                        "Current setting will be covered, do you want to continue?");
+                boolean isOK = MessageDialog.openConfirm(Display.getDefault().getActiveShell(), Messages
+                        .getString("StatsAndLogsComposite.StatsLogsSettings"), //$NON-NLS-1$
+                        Messages.getString("StatsAndLogsComposite.ReloadMessages")); //$NON-NLS-1$
                 if (isOK) {
                     StatsAndLogsViewHelper.reloadValuesFromPreferencePage(elem);
 
@@ -118,8 +120,9 @@ public class StatsAndLogsComposite extends DynamicComposite {
                 if (elem == null) {
                     return;
                 }
-                boolean isOK = MessageDialog.openConfirm(Display.getDefault().getActiveShell(), "Stats/Logs View",
-                        "Current preference page setting will be covered, do you want to continue?");
+                boolean isOK = MessageDialog.openConfirm(Display.getDefault().getActiveShell(), Messages
+                        .getString("StatsAndLogsComposite.StatsLogsSettings"), //$NON-NLS-1$
+                        Messages.getString("StatsAndLogsComposite.SavePreferenceMessages")); //$NON-NLS-1$
                 if (isOK) {
                     StatsAndLogsViewHelper.saveValuesToPreferencePage(elem);
                 }

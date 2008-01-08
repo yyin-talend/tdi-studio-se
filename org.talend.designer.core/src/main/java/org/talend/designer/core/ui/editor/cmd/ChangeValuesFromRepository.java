@@ -18,9 +18,6 @@ import java.util.Map;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IViewPart;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.PlatformUI;
 import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.builder.connection.Connection;
@@ -34,9 +31,10 @@ import org.talend.core.model.process.INode;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
+import org.talend.designer.core.model.process.jobsettings.JobSettingsConstants;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
-import org.talend.designer.core.ui.views.statsandlogs.StatsAndLogsView;
+import org.talend.designer.core.ui.views.jobsettings.JobSettings;
 
 /**
  * DOC nrousseau class global comment. Detailled comment <br/>
@@ -64,6 +62,10 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
 
     private Map<String, IMetadataTable> repositoryTableMap;
 
+    private final String propertyTypeName;
+
+    private final String repositoryPropertyTypeName;
+
     public ChangeValuesFromRepository(Element elem, Connection connection, String propertyName, String value) {
         this.elem = elem;
         this.connection = connection;
@@ -72,6 +74,15 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
         oldValues = new HashMap<String, Object>();
 
         setLabel(Messages.getString("PropertyChangeCommand.Label")); //$NON-NLS-1$
+        // for job settings extra (feature 2710)
+        if (JobSettingsConstants.isExtraParameter(propertyName)) {
+            propertyTypeName = JobSettingsConstants.getExtraParameterName(EParameterName.PROPERTY_TYPE.getName());
+            repositoryPropertyTypeName = JobSettingsConstants.getExtraParameterName(EParameterName.REPOSITORY_PROPERTY_TYPE
+                    .getName());
+        } else {
+            propertyTypeName = EParameterName.PROPERTY_TYPE.getName();
+            repositoryPropertyTypeName = EParameterName.REPOSITORY_PROPERTY_TYPE.getName();
+        }
     }
 
     @Override
@@ -107,14 +118,14 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                 allowAutoSwitch = true;
             }
         }
-        if (propertyName.equals(EParameterName.PROPERTY_TYPE.getName())) {
-            elem.setPropertyValue(EParameterName.PROPERTY_TYPE.getName(), value);
+        if (propertyName.equals(propertyTypeName)) {
+            elem.setPropertyValue(propertyTypeName, value);
             if (allowAutoSwitch) {
                 setOtherProperties();
             }
         } else {
-            oldMetadata = (String) elem.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
-            elem.setPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), value);
+            oldMetadata = (String) elem.getPropertyValue(repositoryPropertyTypeName);
+            elem.setPropertyValue(repositoryPropertyTypeName, value);
             if (allowAutoSwitch) {
                 setOtherProperties();
             }
@@ -128,16 +139,29 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
         // EmfComponent.BUILTIN.equals(value)) {
         // repositoryModel = false;
         // }
-        if (propertyName.equals(EParameterName.PROPERTY_TYPE.getName()) && (EmfComponent.BUILTIN.equals(value))) {
+        if (propertyName.equals(propertyTypeName) && (EmfComponent.BUILTIN.equals(value))) {
             for (IElementParameter param : elem.getElementParameters()) {
-                param.setRepositoryValueUsed(false);
+                boolean paramFlag = JobSettingsConstants.isExtraParameter(param.getName());
+                boolean extraFlag = JobSettingsConstants.isExtraParameter(propertyTypeName);
+                if (paramFlag == extraFlag) {
+                    // for job settings extra.(feature 2710)
+                    param.setRepositoryValueUsed(false);
+                }
+
             }
         } else {
             oldValues.clear();
             for (IElementParameter param : elem.getElementParameters()) {
                 String repositoryValue = param.getRepositoryValue();
                 if (param.isShow(elem.getElementParameters()) && (repositoryValue != null)
-                        && (!param.getName().equals(EParameterName.PROPERTY_TYPE.getName()))) {
+                        && (!param.getName().equals(propertyTypeName))) {
+                    // for job settings extra.(feature 2710)
+                    boolean paramFlag = JobSettingsConstants.isExtraParameter(param.getName());
+                    boolean extraFlag = JobSettingsConstants.isExtraParameter(propertyTypeName);
+                    if (paramFlag != extraFlag) {
+                        // same
+                        continue;
+                    }
                     Object objectValue = RepositoryToComponentProperty.getValue(connection, repositoryValue);
                     if (objectValue != null) {
                         oldValues.put(param.getName(), param.getValue());
@@ -182,7 +206,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
             }
         }
         refreshPropertyView();
-        refreshStatsAndLogsView();
+        // refreshStatsAndLogsView();
 
         if (elem instanceof Node) {
             ((Process) ((Node) elem).getProcess()).checkProcess();
@@ -192,15 +216,14 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
     /**
      * ftang Comment method "refreshStatsAndLogsView".
      */
-    private void refreshStatsAndLogsView() {
-        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-        IViewPart view = page.findView(StatsAndLogsView.ID);
-        if (view != null) {
-            StatsAndLogsView statsAndLogsView = (StatsAndLogsView) view;
-            statsAndLogsView.refreshView();
-        }
-    }
-
+    // private void refreshStatsAndLogsView() {
+    // IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+    // IViewPart view = page.findView(StatsAndLogsView.ID);
+    // if (view != null) {
+    // StatsAndLogsView statsAndLogsView = (StatsAndLogsView) view;
+    // statsAndLogsView.refreshView();
+    // }
+    // }
     private String getFirstRepositoryTable(IElementParameter schemaParam, String repository) {
         IElementParameter repositorySchemaTypeParameter = schemaParam.getChildParameters().get(
                 EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
@@ -350,12 +373,17 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
         // Force redraw of Commponents propoerties
         elem.setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), new Boolean(true));
 
-        if (propertyName.equals(EParameterName.PROPERTY_TYPE.getName()) && (EmfComponent.BUILTIN.equals(value))) {
+        if (propertyName.equals(propertyTypeName) && (EmfComponent.BUILTIN.equals(value))) {
             for (IElementParameter param : elem.getElementParameters()) {
                 String repositoryValue = param.getRepositoryValue();
                 if (param.isShow(elem.getElementParameters()) && (repositoryValue != null)
-                        && (!param.getName().equals(EParameterName.PROPERTY_TYPE.getName()))) {
-                    param.setRepositoryValueUsed(true);
+                        && (!param.getName().equals(propertyTypeName))) {
+                    boolean paramFlag = JobSettingsConstants.isExtraParameter(param.getName());
+                    boolean extraFlag = JobSettingsConstants.isExtraParameter(propertyTypeName);
+                    if (paramFlag == extraFlag) {
+                        // for job settings extra.(feature 2710)
+                        param.setRepositoryValueUsed(true);
+                    }
                 }
             }
         } else {
@@ -370,19 +398,20 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                 }
             }
         }
-        if (propertyName.equals(EParameterName.PROPERTY_TYPE.getName())) {
+        if (propertyName.equals(propertyTypeName)) {
             if (value.equals(EmfComponent.BUILTIN)) {
-                elem.setPropertyValue(EParameterName.PROPERTY_TYPE.getName(), EmfComponent.REPOSITORY);
+                elem.setPropertyValue(propertyTypeName, EmfComponent.REPOSITORY);
             } else {
-                elem.setPropertyValue(EParameterName.PROPERTY_TYPE.getName(), EmfComponent.BUILTIN);
+                elem.setPropertyValue(propertyTypeName, EmfComponent.BUILTIN);
                 elem.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
                 elem.setPropertyValue(EParameterName.QUERYSTORE_TYPE.getName(), EmfComponent.BUILTIN);
             }
         } else {
-            elem.setPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), oldMetadata);
+            elem.setPropertyValue(repositoryPropertyTypeName, oldMetadata);
         }
 
         refreshPropertyView();
+        JobSettings.switchToCurJobSettingsView();
     }
 
     /**

@@ -164,6 +164,7 @@ import org.talend.designer.core.ui.editor.palette.TalendPaletteViewerProvider;
 import org.talend.designer.core.ui.editor.process.ProcessPart;
 import org.talend.designer.core.ui.editor.process.ProcessTemplateTransferDropTargetListener;
 import org.talend.designer.core.ui.editor.process.TalendEditorDropTargetListener;
+import org.talend.designer.core.ui.views.jobsettings.JobSettings;
 import org.talend.designer.core.ui.views.properties.ComponentSettingsView;
 import org.talend.designer.core.ui.views.properties.IComponentSettingsView;
 import org.talend.designer.runprocess.ProcessorUtilities;
@@ -342,6 +343,8 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
                 viewer.cleanDisplay();
             }
         }
+
+        JobSettings.switchToCurJobSettingsView();
 
         super.setFocus();
 

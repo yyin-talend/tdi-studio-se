@@ -38,7 +38,7 @@ public enum EParameterName {
     ACTIVATE(Messages.getString("EParameterName.Activate")), //$NON-NLS-1$
     LABEL(Messages.getString("EParameterName.LabelFormat")), //$NON-NLS-1$
     HINT(Messages.getString("EParameterName.HintFormat")), //$NON-NLS-1$
-    CONNECTION_FORMAT("Connection format"),
+    CONNECTION_FORMAT(Messages.getString("EParameterName.ConnectionFormat")), //$NON-NLS-1$
     SHOW_HINT(Messages.getString("EParameterName.ShowHint")), //$NON-NLS-1$
     COMMENT(Messages.getString("EParameterName.Comment")), //$NON-NLS-1$
     LOG_FILENAME(Messages.getString("EParameterName.FileName")), //$NON-NLS-1$
@@ -73,23 +73,23 @@ public enum EParameterName {
     COMPONENT_LIST(Messages.getString("EParameterName.componentList")), //$NON-NLS-1$
     MAPPING_TYPE(Messages.getString("EParameterName.mapping")), //$NON-NLS-1$
     DUMMY("DUMMY"), //$NON-NLS-1$ Hidden parameter so no translation needed
-    DBTABLE("Table Name"),
-    MODULE_LIST("Module List"),
-    CURRENT_OS("Current OS"),
+    DBTABLE(Messages.getString("EParameterName.TableName")), //$NON-NLS-1$
+    MODULE_LIST(Messages.getString("EParameterName.ModuleList")), //$NON-NLS-1$
+    CURRENT_OS(Messages.getString("EParameterName.CurrentOS")), //$NON-NLS-1$
     IREPORT_PATH("IREPORT_PATH"), //$NON-NLS-1$  Hidden parameter so no translation needed
 
     /**
      * For stats & logs parameters.
      */
-    ON_STATCATCHER_FLAG("Use statistics (tStatCatcher)"),
-    ON_LOGCATCHER_FLAG("Use logs (tLogCatcher)"),
-    ON_METERCATCHER_FLAG("Use volumetrics (tMeterCatcher)"),
+    ON_STATCATCHER_FLAG(Messages.getString("EParameterName.UseStatistics")), //$NON-NLS-1$
+    ON_LOGCATCHER_FLAG(Messages.getString("EParameterName.UseLogs")), //$NON-NLS-1$
+    ON_METERCATCHER_FLAG(Messages.getString("EParameterName.UseVolumetrics")), //$NON-NLS-1$
     ON_CONSOLE_FLAG(Messages.getString("EParameterName.onConsoleFlag")), //$NON-NLS-1$
     ON_FILES_FLAG(Messages.getString("EParameterName.onFileFlag")), //$NON-NLS-1$
     FILE_PATH(Messages.getString("EParameterName.filePath")), //$NON-NLS-1$
     FILENAME_STATS(Messages.getString("EParameterName.fileNameStats")), //$NON-NLS-1$
     FILENAME_LOGS(Messages.getString("EParameterName.fileNameLogs")), //$NON-NLS-1$
-    FILENAME_METTER("Metter file name"),
+    FILENAME_METTER(Messages.getString("EParameterName.MetterFileName")), //$NON-NLS-1$
     ON_DATABASE_FLAG(Messages.getString("EParameterName.onDatabaseFlag")), //$NON-NLS-1$
     DB_TYPE(Messages.getString("EParameterName.dbType")), //$NON-NLS-1$
     HOST(Messages.getString("EParameterName.host")), //$NON-NLS-1$
@@ -107,6 +107,19 @@ public enum EParameterName {
     CATCH_REALTIME_STATS(Messages.getString("EParameterName.catchRealtimeStats")), //$NON-NLS-1$
     PROPERTIES(Messages.getString("EParameterName.additionParam")), //$NON-NLS-1$
 
+    /**
+     * For Job Settings extra parameters.
+     */
+    MULTI_THREAD_EXECATION(Messages.getString("EParameterName.MultiThread")), //$NON-NLS-1$
+    IMPLICIT_TCONTEXTLOAD(Messages.getString("EParameterName.ImplicitContextLoad")), //$NON-NLS-1$
+    IMPLICIT_TCONTEXTLOAD_FILE(Messages.getString("EParameterName.FromFile")), //$NON-NLS-1$
+    // implict tConextLoad parameters.
+    LOAD_NEW_VARIABLE(Messages.getString("EParameterName.LoadNewVariableLabel")), //$NON-NLS-1$
+    NOT_LOAD_OLD_VARIABLE(Messages.getString("EParameterName.NotLoadOldVariableLabel")), //$NON-NLS-1$
+    PRINT_OPERATIONS(Messages.getString("EParameterName.PrintOperations")), //$NON-NLS-1$
+    DISABLE_ERROR(Messages.getString("EParameterName.DisableErrors")), //$NON-NLS-1$
+    DISABLE_INFO(Messages.getString("EParameterName.DisableInfos")), //$NON-NLS-1$
+    DISABLE_WARNINGS(Messages.getString("EParameterName.DisableWarnings")), //$NON-NLS-1$
     /*
      * PERL_ON_FILES_FLAG(Messages.getString("EParameterName.onFileFlag")), //$NON-NLS-1$
      * PERL_FILE_PATH(Messages.getString("EParameterName.filePath")), //$NON-NLS-1$

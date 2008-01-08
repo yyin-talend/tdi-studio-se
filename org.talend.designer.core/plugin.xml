@@ -196,17 +196,20 @@
                         id="org.talend.designer.core.ui.views.ContextsView"
                         name="%contexts"/>
                   <view
-                        category="org.talend.core.root"
-                        class="org.talend.designer.core.ui.views.statsandlogs.StatsAndLogsView"
-                        icon="platform:/plugin/org.talend.core/icons/context_icon.gif"
-                        id="org.talend.designer.core.ui.views.statsandlogs.statsAndLogsView"
-                        name="%statsAndLogsView">
-                  </view>
-                  <view
+                        allowMultiple="false"
                         category="org.talend.core.root"
                         class="org.talend.designer.core.ui.views.properties.ComponentSettingsView"
+                        icon="platform:/plugin/org.talend.core/icons/process_icon.gif"
                         id="org.talend.designer.core.ui.views.properties.ComponentSettingsView"
                         name="%componentSettingsView">
+                  </view>
+                  <view
+                        allowMultiple="false"
+                        category="org.talend.core.root"
+                        class="org.talend.designer.core.ui.views.jobsettings.JobSettingsView"
+                        icon="platform:/plugin/org.talend.core/icons/context_icon.gif"
+                        id="org.talend.designer.core.ui.views.jobsettings.JobSettingsView"
+                        name="%jobSettingsView">
                   </view>
    </extension>
    <extension

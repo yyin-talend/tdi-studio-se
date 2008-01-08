@@ -66,6 +66,7 @@ import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
+import org.talend.designer.core.model.process.jobsettings.JobSettingsConstants;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -73,8 +74,9 @@ import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.properties.ContextParameterExtractor;
 import org.talend.designer.core.ui.editor.properties.OpenSQLBuilderDialogJob;
 import org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty;
+import org.talend.designer.core.ui.views.jobsettings.JobSettingsView;
+import org.talend.designer.core.ui.views.properties.ComponentSettingsView;
 import org.talend.designer.core.ui.views.properties.WidgetFactory;
-import org.talend.designer.core.ui.views.statsandlogs.StatsAndLogsView;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.sqlbuilder.util.ConnectionParameters;
 import org.talend.sqlbuilder.util.EConnectionParameterName;
@@ -127,6 +129,9 @@ public abstract class AbstractElementPropertySectionController implements Proper
     protected static final String DOTS_BUTTON = "icons/dots_button.gif"; //$NON-NLS-1$s
 
     protected EParameterFieldType paramFieldType;
+
+    // for job settings extra.(feature 2710)
+    protected IElementParameter curParameter;
 
     /**
      * DOC yzhang Comment method "createControl".
@@ -215,7 +220,12 @@ public abstract class AbstractElementPropertySectionController implements Proper
     }
 
     protected String getValueFromRepositoryName(Element elem2, String repositoryName) {
+
         for (IElementParameter param : (List<IElementParameter>) elem2.getElementParameters()) {
+            // for job settings extra.(feature 2710)
+            if (!sameExtraParameter(param)) {
+                continue;
+            }
             if (param.getRepositoryValue() != null) {
                 if (param.getRepositoryValue().equals(repositoryName)) {
                     if (param.getField().equals(EParameterFieldType.CLOSED_LIST)) {
@@ -230,6 +240,10 @@ public abstract class AbstractElementPropertySectionController implements Proper
 
     protected String getParaNameFromRepositoryName(String repositoryName) {
         for (IElementParameter param : (List<IElementParameter>) elem.getElementParameters()) {
+            // for job settings extra.(feature 2710)
+            if (!sameExtraParameter(param)) {
+                continue;
+            }
             if (param.getRepositoryValue() != null) {
                 if (param.getRepositoryValue().equals(repositoryName)) {
                     return param.getName();
@@ -241,6 +255,10 @@ public abstract class AbstractElementPropertySectionController implements Proper
 
     protected String getParaNameFromRepositoryName(Element elem2, String repositoryName) {
         for (IElementParameter param : (List<IElementParameter>) elem2.getElementParameters()) {
+            // for job settings extra.(feature 2710)
+            if (!sameExtraParameter(param)) {
+                continue;
+            }
             if (param.getRepositoryValue() != null) {
                 if (param.getRepositoryValue().equals(repositoryName)) {
                     return param.getName();
@@ -776,7 +794,8 @@ public abstract class AbstractElementPropertySectionController implements Proper
         IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
         IWorkbenchPart workbenchPart = page.getActivePart();
 
-        if ((workbenchPart instanceof PropertySheet) || (workbenchPart instanceof StatsAndLogsView)) {
+        if ((workbenchPart instanceof PropertySheet) || (workbenchPart instanceof JobSettingsView)
+                || (workbenchPart instanceof ComponentSettingsView)) {
             Object control = editionControlHelper.undoRedoHelper.typedTextCommandExecutor.getActiveControl();
             if (param.getName().equals(control) && valueChanged && !param.isRepositoryValueUsed()) {
                 String previousText = editionControlHelper.undoRedoHelper.typedTextCommandExecutor.getPreviousText2();
@@ -973,4 +992,21 @@ public abstract class AbstractElementPropertySectionController implements Proper
         labelText.setToolTipText("Value is invalid");
     }
 
+    /**
+     * 
+     * DOC ggu Comment method "isExtra".
+     * 
+     * for extra db setting.
+     */
+    private boolean sameExtraParameter(IElementParameter param) {
+        // for job settings extra.(feature 2710)
+        if (curParameter != null) {
+            boolean extra = JobSettingsConstants.isExtraParameter(this.curParameter.getName());
+            boolean paramFlag = JobSettingsConstants.isExtraParameter(param.getName());
+            if (extra == paramFlag) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

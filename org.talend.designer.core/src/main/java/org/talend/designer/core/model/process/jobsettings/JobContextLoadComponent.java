@@ -1,0 +1,392 @@
+// ============================================================================
+//
+// Copyright (C) 2006-2007 Talend Inc. - www.talend.com
+//
+// This source code is available under agreement available at
+// %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
+//
+// You should have received a copy of the agreement
+// along with this program; if not, write to Talend SA
+// 9 rue Pages 92150 Suresnes, France
+//
+// ============================================================================
+package org.talend.designer.core.model.process.jobsettings;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.talend.commons.utils.VersionUtils;
+import org.talend.core.model.components.IComponent;
+import org.talend.core.model.components.IMultipleComponentItem;
+import org.talend.core.model.components.IMultipleComponentManager;
+import org.talend.core.model.general.ModuleNeeded;
+import org.talend.core.model.process.EConnectionType;
+import org.talend.core.model.process.EParameterFieldType;
+import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.INode;
+import org.talend.core.model.process.INodeConnector;
+import org.talend.core.model.process.INodeReturn;
+import org.talend.core.model.temp.ECodePart;
+import org.talend.designer.core.model.components.EParameterName;
+import org.talend.designer.core.model.components.ElementParameter;
+import org.talend.designer.core.model.components.MultipleComponentConnection;
+import org.talend.designer.core.model.components.MultipleComponentManager;
+import org.talend.designer.core.model.process.jobsettings.JobSettingsConstants.ContextLoadInfo;
+
+/**
+ * DOC ggu class global comment. Detailled comment <br/>
+ * 
+ * This class will create a virtual component that will create the logs for the job. <br/>
+ * 
+ * It's not used at all in the designer, only during the code generation. <br/>
+ */
+public class JobContextLoadComponent implements IComponent {
+
+    private static final String FILE_INPUT_DELIMITED = "Delimited"; //$NON-NLS-1$
+
+    private static final String FILE_INPUT_COMPONENT = "tFileInputDelimited"; //$NON-NLS-1$
+
+    private static final String CONTEXT_LOAD = "Context"; //$NON-NLS-1$
+
+    public static final String CONTEXTLOAD_COMPONENT = "tContextLoad"; //$NON-NLS-1$
+
+    private static final String DB_INPUT = "Database"; //$NON-NLS-1$
+
+    private final String dbComponent;
+
+    private IMultipleComponentManager multipleComponentManager;
+
+    private boolean isFile;
+
+    public JobContextLoadComponent(boolean isFile, String dbComponent) {
+        this.isFile = isFile;
+        this.dbComponent = dbComponent;
+        loadMultipleComponentManager();
+    }
+
+    protected void loadMultipleComponentManager() {
+
+        // create base items
+        if (isFile) {
+            multipleComponentManager = new MultipleComponentManager(FILE_INPUT_DELIMITED, CONTEXT_LOAD);
+
+            IMultipleComponentItem currentItem = multipleComponentManager.addItem(FILE_INPUT_DELIMITED, FILE_INPUT_COMPONENT);
+            currentItem.getOutputConnections().add(
+                    new MultipleComponentConnection(EConnectionType.FLOW_MAIN.getName(), CONTEXT_LOAD));
+
+            currentItem = multipleComponentManager.addItem(CONTEXT_LOAD, CONTEXTLOAD_COMPONENT);
+
+        } else {
+            if (dbComponent == null) {
+                return;
+            }
+            multipleComponentManager = new MultipleComponentManager(DB_INPUT, CONTEXT_LOAD);
+
+            IMultipleComponentItem currentItem = multipleComponentManager.addItem(DB_INPUT, dbComponent);
+            currentItem.getOutputConnections().add(
+                    new MultipleComponentConnection(EConnectionType.FLOW_MAIN.getName(), CONTEXT_LOAD));
+
+            currentItem = multipleComponentManager.addItem(CONTEXT_LOAD, CONTEXTLOAD_COMPONENT);
+
+        }
+        createMultipleComponentsParameters();
+        multipleComponentManager.validateItems();
+
+    }
+
+    // no use for virtual component
+    public List<? extends INodeConnector> createConnectors() {
+        return null;
+    }
+
+    public List<? extends INodeReturn> createReturns() {
+        return null;
+    }
+
+    public List<ECodePart> getAvailableCodeParts() {
+        return null;
+    }
+
+    public ImageDescriptor getIcon16() {
+        return null;
+    }
+
+    public ImageDescriptor getIcon24() {
+        return null;
+    }
+
+    public ImageDescriptor getIcon32() {
+        return null;
+    }
+
+    public String getLongName() {
+        return null;
+    }
+
+    public List<ModuleNeeded> getModulesNeeded() {
+        return null;
+    }
+
+    public String getPathSource() {
+        return null;
+    }
+
+    public List<String> getPluginDependencies() {
+        return null;
+    }
+
+    public String getPluginFullName() {
+        return null;
+    }
+
+    public String getTranslatedName() {
+        return null;
+    }
+
+    public Boolean hasConditionalOutputs() {
+        return null;
+    }
+
+    public Boolean isMultiplyingOutputs() {
+        return null;
+    }
+
+    public boolean isDataAutoPropagated() {
+        return false;
+    }
+
+    public boolean isLoaded() {
+        return true;
+    }
+
+    public boolean isSchemaAutoPropagated() {
+        return false;
+    }
+
+    public boolean isVisible() {
+        return false;
+    }
+
+    public void setIcon16(ImageDescriptor icon16) {
+    }
+
+    public void setIcon24(ImageDescriptor icon24) {
+    }
+
+    public void setIcon32(ImageDescriptor icon32) {
+    }
+
+    public boolean useMerge() {
+        return false;
+    }
+
+    // set name
+    public String getName() {
+        return this.getClass().getName();
+    }
+
+    public String getFamily() {
+        return "Virtual"; //$NON-NLS-1$
+    }
+
+    public String getVersion() {
+        return VersionUtils.DEFAULT_VERSION;
+    }
+
+    public IMultipleComponentManager getMultipleComponentManager() {
+        return multipleComponentManager;
+    }
+
+    protected void createMultipleComponentsParameters() {
+        final String self = "self."; //$NON-NLS-1$
+        // create parameters
+        if (isFile) {
+            // delimited
+            final String source = self + EParameterName.IMPLICIT_TCONTEXTLOAD_FILE.getName();
+            multipleComponentManager.addParam(source, FILE_INPUT_DELIMITED + ".FILENAME"); //$NON-NLS-1$ 
+        } else {
+            String source = self + JobSettingsConstants.getExtraParameterName(EParameterName.HOST.getName());
+            multipleComponentManager.addParam(source, DB_INPUT + ".HOST"); //$NON-NLS-1$ 
+            multipleComponentManager.addParam(source, DB_INPUT + ".SERVER"); //$NON-NLS-1$
+            multipleComponentManager.addParam(source, DB_INPUT + ".DSN"); //$NON-NLS-1$ 
+
+            source = self + JobSettingsConstants.getExtraParameterName(EParameterName.PORT.getName());
+            multipleComponentManager.addParam(source, DB_INPUT + ".PORT"); //$NON-NLS-1$ 
+
+            source = self + JobSettingsConstants.getExtraParameterName(EParameterName.DBNAME.getName());
+            multipleComponentManager.addParam(source, DB_INPUT + ".DBNAME"); //$NON-NLS-1$ 
+
+            source = self + JobSettingsConstants.getExtraParameterName(EParameterName.PROPERTIES.getName());
+            multipleComponentManager.addParam(source, DB_INPUT + ".PROPERTIES"); //$NON-NLS-1$ 
+
+            source = self + JobSettingsConstants.getExtraParameterName(EParameterName.SCHEMA_DB.getName());
+            multipleComponentManager.addParam(source, DB_INPUT + ".SCHEMA_DB"); //$NON-NLS-1$ 
+
+            source = self + JobSettingsConstants.getExtraParameterName(EParameterName.USER.getName());
+            multipleComponentManager.addParam(source, DB_INPUT + ".USER"); //$NON-NLS-1$ 
+
+            source = self + JobSettingsConstants.getExtraParameterName(EParameterName.PASS.getName());
+            multipleComponentManager.addParam(source, DB_INPUT + ".PASS"); //$NON-NLS-1$ 
+
+            source = self + JobSettingsConstants.getExtraParameterName(EParameterName.DBTABLE.getName());
+            multipleComponentManager.addParam(source, DB_INPUT + ".DBTABLE"); //$NON-NLS-1$ 
+
+            source = self + JobSettingsConstants.QUERY;
+            multipleComponentManager.addParam(source, DB_INPUT + "." + JobSettingsConstants.QUERY); //$NON-NLS-1$ //$NON-NLS-2$
+
+        }
+        // context parameter
+        final String context = CONTEXT_LOAD + "."; //$NON-NLS-1$  
+
+        String source = self + EParameterName.LOAD_NEW_VARIABLE.getName();
+        String target = context + EParameterName.LOAD_NEW_VARIABLE.getName();
+        multipleComponentManager.addParam(source, target);
+
+        source = self + EParameterName.NOT_LOAD_OLD_VARIABLE.getName();
+        target = context + EParameterName.NOT_LOAD_OLD_VARIABLE.getName();
+        multipleComponentManager.addParam(source, target);
+
+        source = self + EParameterName.PRINT_OPERATIONS.getName();
+        target = context + EParameterName.PRINT_OPERATIONS.getName();
+        multipleComponentManager.addParam(source, target);
+
+        source = self + EParameterName.DISABLE_ERROR.getName();
+        target = context + EParameterName.DISABLE_ERROR.getName();
+        multipleComponentManager.addParam(source, target);
+
+        source = self + EParameterName.DISABLE_INFO.getName();
+        target = context + EParameterName.DISABLE_INFO.getName();
+        multipleComponentManager.addParam(source, target);
+
+        source = self + EParameterName.DISABLE_WARNINGS.getName();
+        target = context + EParameterName.DISABLE_WARNINGS.getName();
+        multipleComponentManager.addParam(source, target);
+
+    }
+
+    public List<? extends IElementParameter> createElementParameters(INode node) {
+
+        List<IElementParameter> elemParamList = new ArrayList<IElementParameter>();
+        if (isFile) {
+            // from file
+            addFileInputDelimitedParameters(elemParamList, node);
+        } else {
+            // from database
+            addDatabaseParameter(elemParamList, node);
+        }
+        // contextload
+        addtContextLoadParameter(elemParamList, node);
+
+        return elemParamList;
+    }
+
+    private void addFileInputDelimitedParameters(List<IElementParameter> elemParamList, INode node) {
+
+        IElementParameter newParam = new ElementParameter(node);
+        newParam.setName(EParameterName.IMPLICIT_TCONTEXTLOAD_FILE.getName());
+        newParam.setField(EParameterFieldType.TEXT);
+        newParam.setValue(""); //$NON-NLS-1$
+        elemParamList.add(newParam);
+
+    }
+
+    private void addDatabaseParameter(List<IElementParameter> elemParamList, INode node) {
+        //
+        IElementParameter newParam = new ElementParameter(node);
+        newParam.setName(JobSettingsConstants.getExtraParameterName(EParameterName.HOST.getName()));
+        newParam.setField(EParameterFieldType.TEXT);
+        elemParamList.add(newParam);
+
+        newParam = new ElementParameter(node);
+        newParam.setName("SERVER"); //$NON-NLS-1$
+        newParam.setField(EParameterFieldType.TEXT);
+        elemParamList.add(newParam);
+
+        newParam = new ElementParameter(node);
+        newParam.setName("DSN"); //$NON-NLS-1$
+        newParam.setField(EParameterFieldType.TEXT);
+        elemParamList.add(newParam);
+
+        newParam = new ElementParameter(node);
+        newParam.setName(JobSettingsConstants.getExtraParameterName(EParameterName.PORT.getName())); //$NON-NLS-1$
+        newParam.setField(EParameterFieldType.TEXT);
+        elemParamList.add(newParam);
+
+        newParam = new ElementParameter(node);
+        newParam.setName(JobSettingsConstants.getExtraParameterName(EParameterName.DBNAME.getName()));
+        newParam.setField(EParameterFieldType.TEXT);
+        elemParamList.add(newParam);
+
+        newParam = new ElementParameter(node);
+        newParam.setName(JobSettingsConstants.getExtraParameterName(EParameterName.PROPERTIES.getName()));
+        newParam.setField(EParameterFieldType.TEXT);
+        elemParamList.add(newParam);
+
+        newParam = new ElementParameter(node);
+        newParam.setName(JobSettingsConstants.getExtraParameterName(EParameterName.SCHEMA_DB.getName()));
+        newParam.setField(EParameterFieldType.TEXT);
+        elemParamList.add(newParam);
+
+        newParam = new ElementParameter(node);
+        newParam.setName(JobSettingsConstants.getExtraParameterName(EParameterName.USER.getName()));
+        newParam.setField(EParameterFieldType.TEXT);
+        elemParamList.add(newParam);
+
+        newParam = new ElementParameter(node);
+        newParam.setName(JobSettingsConstants.getExtraParameterName(EParameterName.PASS.getName()));
+        newParam.setField(EParameterFieldType.TEXT);
+        elemParamList.add(newParam);
+
+        newParam = new ElementParameter(node);
+        newParam.setName(JobSettingsConstants.getExtraParameterName(EParameterName.DBTABLE.getName())); //$NON-NLS-1$
+        newParam.setField(EParameterFieldType.TEXT);
+        elemParamList.add(newParam);
+
+        newParam = new ElementParameter(node);
+        newParam.setName(JobSettingsConstants.QUERY);
+        newParam.setField(EParameterFieldType.TEXT);
+        elemParamList.add(newParam);
+
+    }
+
+    private void addtContextLoadParameter(List<IElementParameter> elemParamList, INode node) {
+
+        IElementParameter newParam = new ElementParameter(node);
+        newParam.setName(EParameterName.LOAD_NEW_VARIABLE.getName());
+        newParam.setField(EParameterFieldType.CLOSED_LIST);
+        newParam.setValue(ContextLoadInfo.WARNING);
+        elemParamList.add(newParam);
+
+        newParam = new ElementParameter(node);
+        newParam.setName(EParameterName.NOT_LOAD_OLD_VARIABLE.getName());
+        newParam.setField(EParameterFieldType.CLOSED_LIST);
+        newParam.setValue(ContextLoadInfo.WARNING);
+        elemParamList.add(newParam);
+
+        newParam = new ElementParameter(node);
+        newParam.setName(EParameterName.PRINT_OPERATIONS.getName());
+        newParam.setField(EParameterFieldType.CHECK);
+        newParam.setValue(false);
+        elemParamList.add(newParam);
+
+        newParam = new ElementParameter(node);
+        newParam.setName(EParameterName.DISABLE_ERROR.getName());
+        newParam.setField(EParameterFieldType.CHECK);
+        newParam.setValue(false);
+        elemParamList.add(newParam);
+
+        newParam = new ElementParameter(node);
+        newParam.setName(EParameterName.DISABLE_INFO.getName());
+        newParam.setField(EParameterFieldType.CHECK);
+        newParam.setValue(true);
+        elemParamList.add(newParam);
+
+        newParam = new ElementParameter(node);
+        newParam.setName(EParameterName.DISABLE_WARNINGS.getName());
+        newParam.setField(EParameterFieldType.CHECK);
+        newParam.setValue(true);
+        elemParamList.add(newParam);
+    }
+
+}

@@ -686,7 +686,7 @@ public class StatsAndLogsManager {
                 + EParameterName.TSTATCATCHER_STATS.getDisplayName() + ")");
         param.setField(EParameterFieldType.CHECK);
         param.setCategory(EComponentCategory.STATSANDLOGS);
-        param.setNumRow(90);
+        param.setNumRow(91);
         param.setShowIf("ON_STATCATCHER_FLAG == 'true'");
         paramList.add(param);
     }
@@ -697,7 +697,7 @@ public class StatsAndLogsManager {
      * @param str
      * @return
      */
-    private static String addQuotes(String str) {
+    public static String addQuotes(String str) {
         // function?
         if (str.contains("(") && str.contains(")")) { //$NON-NLS-1$ //$NON-NLS-2$
             return str;

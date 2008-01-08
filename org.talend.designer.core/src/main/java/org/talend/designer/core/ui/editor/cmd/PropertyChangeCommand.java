@@ -24,6 +24,7 @@ import org.talend.core.model.process.IElementParameterDefaultValue;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
+import org.talend.designer.core.model.process.jobsettings.JobSettingsConstants;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.views.CodeView;
 
@@ -52,6 +53,8 @@ public class PropertyChangeCommand extends Command {
 
     private ChangeMetadataCommand changeMetadataCommand;
 
+    private final String propertyTypeName;
+
     /**
      * The property is defined in an element, which can be either a node or a connection.
      * 
@@ -66,6 +69,12 @@ public class PropertyChangeCommand extends Command {
         toUpdate = false;
         oldElementValues = new HashMap<IElementParameter, Object>();
         setLabel(Messages.getString("PropertyChangeCommand.Label")); //$NON-NLS-1$
+        // for job settings extra (feature 2710)
+        if (JobSettingsConstants.isExtraParameter(propName)) {
+            propertyTypeName = JobSettingsConstants.getExtraParameterName(EParameterName.PROPERTY_TYPE.getName());
+        } else {
+            propertyTypeName = EParameterName.PROPERTY_TYPE.getName();
+        }
     }
 
     private void refreshPropertyView() {
@@ -97,9 +106,14 @@ public class PropertyChangeCommand extends Command {
                 elem.setPropertyValue(EParameterName.QUERYSTORE_TYPE.getName(), EmfComponent.BUILTIN);
                 currentParam.setRepositoryValueUsed(false);
             } else {
-                elem.setPropertyValue(EParameterName.PROPERTY_TYPE.getName(), EmfComponent.BUILTIN);
+                elem.setPropertyValue(propertyTypeName, EmfComponent.BUILTIN);
                 for (IElementParameter param : elem.getElementParameters()) {
-                    param.setRepositoryValueUsed(false);
+                    boolean paramFlag = JobSettingsConstants.isExtraParameter(param.getName());
+                    boolean extraFlag = JobSettingsConstants.isExtraParameter(propertyTypeName);
+                    if (paramFlag == extraFlag) {
+                        // for job settings extra.(feature 2710)
+                        param.setRepositoryValueUsed(false);
+                    }
                 }
             }
 
@@ -238,12 +252,17 @@ public class PropertyChangeCommand extends Command {
             if (currentParam.getField() == EParameterFieldType.MEMO_SQL) {
                 elem.setPropertyValue(EParameterName.QUERYSTORE_TYPE.getName(), EmfComponent.REPOSITORY);
             } else {
-                elem.setPropertyValue(EParameterName.PROPERTY_TYPE.getName(), EmfComponent.REPOSITORY);
+                elem.setPropertyValue(propertyTypeName, EmfComponent.REPOSITORY);
             }
             for (IElementParameter param : elem.getElementParameters()) {
                 String repositoryValue = param.getRepositoryValue();
                 if (param.isShow(elem.getElementParameters()) && (repositoryValue != null)) {
-                    param.setRepositoryValueUsed(true);
+                    boolean paramFlag = JobSettingsConstants.isExtraParameter(param.getName());
+                    boolean extraFlag = JobSettingsConstants.isExtraParameter(propertyTypeName);
+                    if (paramFlag == extraFlag) {
+                        // for job settings extra.(feature 2710)
+                        param.setRepositoryValueUsed(true);
+                    }
                 }
             }
         }
@@ -273,11 +292,16 @@ public class PropertyChangeCommand extends Command {
             if (currentParam.getField() == EParameterFieldType.MEMO_SQL) {
                 elem.setPropertyValue(EParameterName.QUERYSTORE_TYPE.getName(), EmfComponent.BUILTIN);
             } else {
-                elem.setPropertyValue(EParameterName.PROPERTY_TYPE.getName(), EmfComponent.BUILTIN);
+                elem.setPropertyValue(propertyTypeName, EmfComponent.BUILTIN);
             }
 
             for (IElementParameter param : elem.getElementParameters()) {
-                param.setRepositoryValueUsed(false);
+                boolean paramFlag = JobSettingsConstants.isExtraParameter(param.getName());
+                boolean extraFlag = JobSettingsConstants.isExtraParameter(propertyTypeName);
+                if (paramFlag == extraFlag) {
+                    // for job settings extra.(feature 2710)
+                    param.setRepositoryValueUsed(false);
+                }
             }
         }
 

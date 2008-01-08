@@ -23,8 +23,8 @@ import org.talend.core.model.process.IProcess;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.views.contexts.Contexts;
+import org.talend.designer.core.ui.views.jobsettings.JobSettings;
 import org.talend.designer.core.ui.views.problems.Problems;
-import org.talend.designer.core.ui.views.statsandlogs.StatsAndLogs;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.sqlbuilder.util.UIUtils;
 
@@ -86,7 +86,9 @@ public class ActiveProcessTracker implements IPartListener {
         if (process != null && currentProcess != process) {
             currentProcess = process;
             setContextsView(process);
-            setStatsAndLogsView(process);
+            // setStatsAndLogsView(process);
+            JobSettings.switchToCurJobSettingsView();
+
             if (process instanceof Process) {
                 Process p = (Process) process;
                 if (!p.isReadOnly() && p.isActivate()) {
@@ -101,11 +103,10 @@ public class ActiveProcessTracker implements IPartListener {
      * 
      * @param process
      */
-    private void setStatsAndLogsView(IProcess process) {
-        StatsAndLogs.setTitle("Job " + process.getProperty().getLabel()); //$NON-NLS-1$
-        StatsAndLogs.switchToCurStatsAndLogsView();
-    }
-
+    // private void setStatsAndLogsView(IProcess process) {
+    // StatsAndLogs.setTitle("Job " + process.getProperty().getLabel()); //$NON-NLS-1$
+    // StatsAndLogs.switchToCurStatsAndLogsView();
+    // }
     /**
      * qzhang Comment method "setProblemsView".
      * 
@@ -156,13 +157,16 @@ public class ActiveProcessTracker implements IPartListener {
                     Problems.clearAll();
                     Contexts.setTitle(""); //$NON-NLS-1$
                     Contexts.clearAll();
-                    StatsAndLogs.setTitle("");
-                    StatsAndLogs.clearAll();
+                    // StatsAndLogs.setTitle("");
+                    // StatsAndLogs.clearAll();
+                    JobSettings.cleanDisplay();
+                    currentProcess = null;
                 }
                 UIUtils.closeSqlBuilderDialogs(process.getName());
             }
-            currentProcess = null;
+
         }
+
     }
 
     /*
@@ -201,6 +205,7 @@ public class ActiveProcessTracker implements IPartListener {
         if (process != null && currentProcess != process && lastProcessOpened != process) {
             lastProcessOpened = process;
             addJobInProblemView(process);
+            // JobSettings.switchToCurJobSettingsView();
         }
     }
 
