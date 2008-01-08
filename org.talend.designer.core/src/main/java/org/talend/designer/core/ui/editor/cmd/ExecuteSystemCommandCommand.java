@@ -16,6 +16,8 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -23,10 +25,14 @@ import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.StyleRange;
+import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
@@ -39,6 +45,8 @@ import org.talend.commons.ui.swt.dialogs.ProgressDialog;
 import org.talend.commons.ui.swt.formtools.Form;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.runprocess.IMsgType;
+import org.talend.designer.runprocess.IProcessMessage;
 
 /**
  * DOC ggu class global comment. Detailled comment
@@ -59,44 +67,41 @@ public class ExecuteSystemCommandCommand extends Command {
         if (commandsList == null || commandsList.isEmpty()) {
             return;
         }
-        StringBuffer errorMassage = new StringBuffer();
+        List<IProcessMessage> consoleMessList = new ArrayList<IProcessMessage>();
 
         final Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
 
-        CommandProgressDialog progressDialog = new CommandProgressDialog(shell, commandsList);
+        CommandProgressDialog progressDialog = new CommandProgressDialog(shell, commandsList, consoleMessList);
 
         try {
             progressDialog.executeProcess();
         } catch (InvocationTargetException e) {
-            errorMassage.append(RETURN);
-            errorMassage.append(e.getMessage());
+            addCommandMessages(consoleMessList, CommandMsgType.CORE_ERR, e.toString());
         } catch (InterruptedException e) {
-            errorMassage.append(RETURN);
-            errorMassage.append(e.getMessage());
+            addCommandMessages(consoleMessList, CommandMsgType.CORE_ERR, e.toString());
         }
-
-        ShowCommandMessage show = new ShowCommandMessage(shell, progressDialog.getCommands(), progressDialog.getResultMessages(),
-                progressDialog.getErrorMessages() + errorMassage.toString());
-        show.open();
+        if (!consoleMessList.isEmpty()) {
+            ShowCommandMessage show = new ShowCommandMessage(shell, progressDialog.getCommands(), consoleMessList);
+            show.open();
+        }
     }
 
     /**
      * 
-     * DOC ggu CommandProgressDialog class global comment. Detailled comment
+     * ggu CommandProgressDialog class global comment. Detailled comment
      */
     class CommandProgressDialog extends ProgressDialog {
 
         private final List<String> commansList;
 
-        private StringBuffer resultMassage = new StringBuffer();
-
-        private StringBuffer errorMassage = new StringBuffer();
-
         private StringBuffer commandsMessage = new StringBuffer();
 
-        public CommandProgressDialog(Shell parentShell, final List<String> commansList) {
+        private Collection<IProcessMessage> messages;
+
+        public CommandProgressDialog(Shell parentShell, final List<String> commansList, Collection<IProcessMessage> messages) {
             super(parentShell);
             this.commansList = commandsList;
+            this.messages = messages;
         }
 
         @Override
@@ -117,17 +122,21 @@ public class ExecuteSystemCommandCommand extends Command {
                     }
                     final Process process = runtime.exec(command);
 
+                    StringBuffer errorMassage = new StringBuffer();
+                    StringBuffer resultMassage = new StringBuffer();
+
                     createResultThread(process.getErrorStream(), errorMassage).start();
                     createResultThread(process.getInputStream(), resultMassage).start();
 
                     process.waitFor();
+
+                    addCommandMessages(messages, CommandMsgType.STD_OUT, resultMassage.toString());
+                    addCommandMessages(messages, CommandMsgType.STD_ERR, errorMassage.toString());
                 }
             } catch (IOException e) {
-                errorMassage.append(RETURN);
-                errorMassage.append(e.getMessage());
+                addCommandMessages(messages, CommandMsgType.CORE_ERR, e.toString());
             } catch (InterruptedException e) {
-                errorMassage.append(RETURN);
-                errorMassage.append(e.getMessage());
+                addCommandMessages(messages, CommandMsgType.CORE_ERR, e.toString());
             }
             monitor.done();
         }
@@ -136,20 +145,17 @@ public class ExecuteSystemCommandCommand extends Command {
             return commandsMessage.toString();
         }
 
-        public String getResultMessages() {
-            return resultMassage.toString();
-        }
-
-        public String getErrorMessages() {
-            return errorMassage.toString();
-        }
     }
 
     /**
      * 
-     * DOC ggu ShowCommandMessage class global comment. Detailled comment
+     * ggu ShowCommandMessage class global comment. Detailled comment
      */
     class ShowCommandMessage extends Dialog {
+
+        private static final int MINIMUM_HEIGHT = 100;
+
+        private static final int MINIMUM_WIDTH = 400;
 
         private static final int WIDTH = 480;
 
@@ -157,15 +163,14 @@ public class ExecuteSystemCommandCommand extends Command {
 
         private String commands;
 
-        private String resultMessage;
+        private Collection<IProcessMessage> messages;
 
-        private String errorMessage;
+        private StyledText consoleText;
 
-        protected ShowCommandMessage(Shell parentShell, String commands, String resultMessage, String errorMessage) {
+        protected ShowCommandMessage(Shell parentShell, String commands, Collection<IProcessMessage> messages) {
             super(parentShell);
             this.commands = commands;
-            this.resultMessage = resultMessage;
-            this.errorMessage = errorMessage;
+            this.messages = messages;
             setDefaultImage(ImageProvider.getImageDesc(ECoreImage.PROCESS_ICON).createImage());
             setShellStyle(getShellStyle() | SWT.RESIZE | SWT.MAX);
             setBlockOnOpen(true);
@@ -193,34 +198,25 @@ public class ExecuteSystemCommandCommand extends Command {
 
             TabFolder messTabFolder = new TabFolder(inner, SWT.NONE);
             gridData = new GridData(GridData.FILL_BOTH);
+            gridData.heightHint = MINIMUM_HEIGHT + 50;
+            gridData.widthHint = MINIMUM_WIDTH + 50;
             messTabFolder.setLayoutData(gridData);
             messTabFolder.setBackground(inner.getBackground());
             // message
             TabItem normalTabItem = new TabItem(messTabFolder, SWT.NONE);
-            normalTabItem.setText(Messages.getString("ExecuteSystemCommandCommand.ResultMessages")); //$NON-NLS-1$
+            normalTabItem.setText(Messages.getString("ExecuteSystemCommandCommand.ConsoleMessages")); //$NON-NLS-1$
 
-            final int style = SWT.H_SCROLL | SWT.V_SCROLL | SWT.READ_ONLY | SWT.BORDER;
-            Text normalText = new Text(messTabFolder, style);
-            normalText.setText(resultMessage);
+            consoleText = new StyledText(messTabFolder, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.READ_ONLY);
             gridData = new GridData(GridData.FILL_BOTH);
-            normalText.setLayoutData(gridData);
-            normalText.setFont(inner.getFont());
-            normalTabItem.setControl(normalText);
+            gridData.minimumHeight = MINIMUM_HEIGHT;
+            gridData.minimumWidth = MINIMUM_WIDTH;
+            consoleText.setLayoutData(gridData);
+            Font font = new Font(parent.getDisplay(), "courier", 8, SWT.NONE); //$NON-NLS-1$
+            consoleText.setFont(font);
 
-            if (errorMessage.length() > 0) {
-                // message
-                TabItem errorTabItem = new TabItem(messTabFolder, SWT.NONE);
-                errorTabItem.setText(Messages.getString("ExecuteSystemCommandCommand.ErrorMessages")); //$NON-NLS-1$
+            fillConsole(messages);
 
-                Text errorText = new Text(messTabFolder, style);
-                errorText.setText(errorMessage);
-                gridData = new GridData(GridData.FILL_BOTH);
-                errorText.setLayoutData(gridData);
-                errorText.setFont(inner.getFont());
-                errorText.setForeground(new Color(null, 230, 0, 0));
-                errorTabItem.setControl(errorText);
-            }
-
+            normalTabItem.setControl(consoleText);
             return composite;
         }
 
@@ -228,6 +224,8 @@ public class ExecuteSystemCommandCommand extends Command {
         protected void configureShell(Shell newShell) {
             super.configureShell(newShell);
             newShell.setMinimumSize(WIDTH, HEIGHT);
+            // newShell.setSize(WIDTH, HEIGHT);
+
             newShell.setText(Messages.getString("ExecuteSystemCommandCommand.Title")); //$NON-NLS-1$
 
         }
@@ -237,8 +235,96 @@ public class ExecuteSystemCommandCommand extends Command {
             createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, true);
         }
 
+        private Display getDisplay() {
+            return Display.getDefault();
+        }
+
+        private void fillConsole(Collection<IProcessMessage> messages) {
+            if (messages == null) {
+                return;
+            }
+            consoleText.setText(""); //$NON-NLS-1$
+            for (IProcessMessage message : messages) {
+                doAppendToConsole(message);
+            }
+            consoleText.setFocus();
+        }
+
+        private void doAppendToConsole(final IProcessMessage message) {
+            StyleRange style = new StyleRange();
+            style.start = consoleText.getText().length();
+            style.length = message.getContent().length();
+            if (message.getType() == CommandMsgType.CORE_ERR) {
+                style.fontStyle = SWT.ITALIC;
+            }
+            Color color;
+            switch ((CommandMsgType) message.getType()) {
+            case CORE_ERR:
+                color = getDisplay().getSystemColor(SWT.COLOR_DARK_RED);
+                break;
+            case STD_ERR:
+                color = getDisplay().getSystemColor(SWT.COLOR_RED);
+                break;
+            case STD_OUT:
+            default:
+                color = getDisplay().getSystemColor(SWT.COLOR_BLACK);
+                break;
+            }
+            style.foreground = color;
+
+            consoleText.append(message.getContent());
+            consoleText.setStyleRange(style);
+        }
+
     }
 
+    /**
+     * 
+     * Type of the message.
+     */
+    enum CommandMsgType implements IMsgType {
+        STD_OUT,
+        STD_ERR,
+        CORE_ERR
+    }
+
+    /**
+     * 
+     * Message about a result.
+     */
+    class CommandMessage implements IProcessMessage {
+
+        private IMsgType type;
+
+        private String content;
+
+        public CommandMessage(IMsgType type, String content) {
+            super();
+
+            if (type == null) {
+                ExceptionHandler.process(new IllegalArgumentException("Type is null"));
+            }
+            if (content == null) {
+                ExceptionHandler.process(new IllegalArgumentException("Content is null"));
+            }
+
+            this.type = type;
+            this.content = content;
+        }
+
+        public String getContent() {
+            return this.content;
+        }
+
+        public IMsgType getType() {
+            return this.type;
+        }
+
+    }
+
+    /**
+     * get the executed command result messages.
+     */
     private Thread createResultThread(final InputStream input, final StringBuffer result) {
         final int bufferSize = 1024;
         Thread thread = new Thread() {
@@ -264,5 +350,16 @@ public class ExecuteSystemCommandCommand extends Command {
             }
         };
         return thread;
+    }
+
+    /**
+     * add messages.
+     */
+    private void addCommandMessages(Collection<IProcessMessage> messages, IMsgType type, final String mess) {
+        if (messages == null || mess == null || type == null || mess.length() < 1 || mess.trim().length() < 1) {
+            return;
+        }
+        CommandMessage cmdMess = new CommandMessage(type, mess + RETURN);
+        messages.add(cmdMess);
     }
 }

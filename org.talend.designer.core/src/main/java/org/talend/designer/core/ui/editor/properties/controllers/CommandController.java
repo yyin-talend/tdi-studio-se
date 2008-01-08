@@ -35,10 +35,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
-import org.talend.core.CorePlugin;
 import org.talend.core.model.process.ElementParameterParser;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.utils.TalendTextUtils;
+import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.MultiDefaultValuesUtils;
 import org.talend.designer.core.ui.editor.cmd.ExecuteSystemCommandCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -69,8 +69,10 @@ public class CommandController extends AbstractElementPropertySectionController 
 
     private static final String COMMANDS = "COMMANDS"; //$NON-NLS-1$
 
+    private static final String LAUNCH = Messages.getString("CommandController.CommandLabel"); //$NON-NLS-1$
+
     /**
-     * DOC ggu ButtonController constructor comment.
+     * DOC ggu CommandController constructor comment.
      * 
      * @param dp
      */
@@ -86,13 +88,22 @@ public class CommandController extends AbstractElementPropertySectionController 
         FormData data;
         // button
         final Button btnCmd = getWidgetFactory().createButton(subComposite, null, SWT.PUSH);
-        btnCmd.setImage(CorePlugin.getImageDescriptor(DOTS_BUTTON).createImage());
+        // btnCmd.setImage(CorePlugin.getImageDescriptor(DOTS_BUTTON).createImage());
+        btnCmd.setText(LAUNCH);
 
         data = new FormData();
-        data.left = new FormAttachment(((numInRow * MAX_PERCENT) / nbInRow), -STANDARD_BUTTON_WIDTH);
+
+        GC gc = new GC(btnCmd);
+        Point labelSize = gc.stringExtent(LAUNCH);
+        gc.dispose();
+        int currentLabelWidth = STANDARD_BUTTON_WIDTH;
+        if ((labelSize.x + ITabbedPropertyConstants.HSPACE * 2) > STANDARD_BUTTON_WIDTH) {
+            currentLabelWidth = labelSize.x + ITabbedPropertyConstants.HSPACE * 2;
+        }
+        data.left = new FormAttachment(((numInRow * MAX_PERCENT) / nbInRow), -currentLabelWidth);
         data.right = new FormAttachment(((numInRow * MAX_PERCENT) / nbInRow), 0);
         data.top = new FormAttachment(0, top);
-        data.height = STANDARD_HEIGHT - 2;
+        data.height = STANDARD_HEIGHT + 2;
         btnCmd.setLayoutData(data);
         btnCmd.setData(PARAMETER_NAME, param.getName());
         btnCmd.setData(NAME, COMMANDS);
@@ -150,9 +161,9 @@ public class CommandController extends AbstractElementPropertySectionController 
         }
         // **************************
         data = new FormData();
-        int currentLabelWidth = STANDARD_LABEL_WIDTH;
-        GC gc = new GC(labelLabel);
-        Point labelSize = gc.stringExtent(param.getDisplayName());
+        currentLabelWidth = STANDARD_LABEL_WIDTH;
+        gc = new GC(labelLabel);
+        labelSize = gc.stringExtent(param.getDisplayName());
         gc.dispose();
 
         if ((labelSize.x + ITabbedPropertyConstants.HSPACE) > currentLabelWidth) {
@@ -198,7 +209,7 @@ public class CommandController extends AbstractElementPropertySectionController 
     }
 
     private String checkQuotes(final String str) {
-        if (str == null || "".equals(str)) {
+        if (str == null || "".equals(str)) { //$NON-NLS-1$
             return TalendTextUtils.addQuotes(str);
         }
 
