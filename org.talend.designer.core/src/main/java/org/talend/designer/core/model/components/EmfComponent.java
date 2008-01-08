@@ -1686,4 +1686,26 @@ public class EmfComponent implements IComponent {
     public Boolean isMultiplyingOutputs() {
         return compType.getHEADER().isISMULTIPLYINGOUTPUTS();
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.components.IComponent#getComponentType()
+     */
+    public String getComponentType() {
+
+        EList listConnType = compType.getCONNECTORS().getCONNECTOR();
+        for (int i = 0; i < listConnType.size(); i++) {
+            CONNECTORType connType = (CONNECTORType) listConnType.get(i);
+            EConnectionType currentType = EConnectionType.getTypeFromName(connType.getCTYPE());
+            if (currentType == EConnectionType.FLOW_MAIN) {
+                if (connType.getMAXINPUT() == 0 && connType.getMAXOUTPUT() == 1) {
+                    return IComponent.MULTIPLE_IN_SINGLE_OUT_TYPE;
+                } else if (connType.getMAXINPUT() == 1 && connType.getMAXOUTPUT() == 0) {
+                    return IComponent.SINGLE_IN_MULTIPLE_OUT_TYPE;
+                }
+            }
+        }
+        return null;
+    }
 }

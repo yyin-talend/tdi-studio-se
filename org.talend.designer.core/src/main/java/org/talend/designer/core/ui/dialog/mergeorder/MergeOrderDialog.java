@@ -36,6 +36,7 @@ import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.LAYOUT_MODE;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
+import org.talend.core.model.components.IComponent;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.connections.Connection;
@@ -71,7 +72,15 @@ public class MergeOrderDialog extends Dialog {
     public MergeOrderDialog(Shell parentShell, Node mergeNode) {
         super(parentShell);
         this.mergeNode = mergeNode;
-        List<Connection> currentList = (List<Connection>) mergeNode.getIncomingConnections();
+        List<Connection> currentList = null;
+        String nodeType = this.mergeNode.getComponent().getComponentType();
+        if (nodeType.equals(IComponent.MULTIPLE_IN_SINGLE_OUT_TYPE)) {
+            currentList = (List<Connection>) mergeNode.getIncomingConnections();
+        } else if (nodeType.equals(IComponent.SINGLE_IN_MULTIPLE_OUT_TYPE)) {
+            currentList = (List<Connection>) mergeNode.getOutgoingConnections();
+        } else {
+            currentList = (List<Connection>) mergeNode.getIncomingConnections();
+        }
         this.connectionList = new ArrayList<Connection>(currentList);
     }
 
@@ -99,8 +108,8 @@ public class MergeOrderDialog extends Dialog {
         tableViewerCreator.setLayoutMode(LAYOUT_MODE.FILL_HORIZONTAL);
 
         Table table = tableViewerCreator.createTable();
-        table.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_FILL | GridData.HORIZONTAL_ALIGN_FILL
-                | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL));
+        table.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_FILL | GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL
+                | GridData.GRAB_VERTICAL));
 
         TableViewerCreatorColumn column = new TableViewerCreatorColumn(tableViewerCreator);
         column.setTitle(Messages.getString("MergeOrderDialog.Order")); //$NON-NLS-1$
@@ -143,8 +152,7 @@ public class MergeOrderDialog extends Dialog {
         moveUp.addListener(SWT.Selection, new Listener() {
 
             public void handleEvent(Event event) {
-                IStructuredSelection selection = (IStructuredSelection) tableViewerCreator.getTableViewer()
-                        .getSelection();
+                IStructuredSelection selection = (IStructuredSelection) tableViewerCreator.getTableViewer().getSelection();
                 Connection connection = (Connection) selection.getFirstElement();
                 int connId = connectionList.indexOf(connection);
                 if (connId > 0) {
@@ -163,8 +171,7 @@ public class MergeOrderDialog extends Dialog {
         moveDown.addListener(SWT.Selection, new Listener() {
 
             public void handleEvent(Event event) {
-                IStructuredSelection selection = (IStructuredSelection) tableViewerCreator.getTableViewer()
-                        .getSelection();
+                IStructuredSelection selection = (IStructuredSelection) tableViewerCreator.getTableViewer().getSelection();
                 Connection connection = (Connection) selection.getFirstElement();
                 int connId = connectionList.indexOf(connection);
                 if (connId < (nbConn - 1)) {

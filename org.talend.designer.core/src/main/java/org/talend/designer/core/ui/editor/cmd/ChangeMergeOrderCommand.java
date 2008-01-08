@@ -15,6 +15,7 @@ package org.talend.designer.core.ui.editor.cmd;
 import java.util.List;
 
 import org.eclipse.gef.commands.Command;
+import org.talend.core.model.components.IComponent;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -28,15 +29,26 @@ public class ChangeMergeOrderCommand extends Command {
 
     private Node mergeNode;
 
-    private List<Connection> newInputConnections;
+    private List<Connection> connectionInNewOrder;
 
-    private List<Connection> oldInputConnections;
+    private List<Connection> connectionInOldOrder;
+
+    private String nodeType;
 
     public ChangeMergeOrderCommand(Node mergeNode, List<Connection> inputConnections) {
         this.mergeNode = mergeNode;
-        this.newInputConnections = inputConnections;
-        this.oldInputConnections = (List<Connection>) mergeNode.getIncomingConnections();
-        if (newInputConnections.size() != oldInputConnections.size()) {
+        this.connectionInNewOrder = inputConnections;
+
+        this.nodeType = this.mergeNode.getComponent().getComponentType();
+        if (nodeType.equals(IComponent.MULTIPLE_IN_SINGLE_OUT_TYPE)) {
+            this.connectionInOldOrder = (List<Connection>) mergeNode.getIncomingConnections();
+        } else if (nodeType.equals(IComponent.SINGLE_IN_MULTIPLE_OUT_TYPE)) {
+            this.connectionInOldOrder = (List<Connection>) mergeNode.getOutgoingConnections();
+        } else {
+            this.connectionInOldOrder = (List<Connection>) mergeNode.getIncomingConnections();
+        }
+
+        if (connectionInNewOrder.size() != connectionInOldOrder.size()) {
             throw new IllegalArgumentException("new connection list should have the same size as the old one"); //$NON-NLS-1$
         }
         this.setLabel(Messages.getString("ChangeMergeOrderCommand.label")); //$NON-NLS-1$
@@ -49,8 +61,16 @@ public class ChangeMergeOrderCommand extends Command {
      */
     @Override
     public void execute() {
-        mergeNode.setIncomingConnections(newInputConnections);
-        newInputConnections.get(0).updateAllId();
+
+        if (nodeType.equals(IComponent.MULTIPLE_IN_SINGLE_OUT_TYPE)) {
+            mergeNode.setIncomingConnections(connectionInNewOrder);
+        } else if (nodeType.equals(IComponent.SINGLE_IN_MULTIPLE_OUT_TYPE)) {
+            mergeNode.setOutgoingConnections(connectionInNewOrder);
+        } else {
+            mergeNode.setIncomingConnections(connectionInNewOrder);
+        }
+
+        connectionInNewOrder.get(0).updateAllId();
         ((Process) mergeNode.getProcess()).checkStartNodes();
     }
 
@@ -61,8 +81,8 @@ public class ChangeMergeOrderCommand extends Command {
      */
     @Override
     public void undo() {
-        mergeNode.setIncomingConnections(oldInputConnections);
-        oldInputConnections.get(0).updateAllId();
+        mergeNode.setIncomingConnections(connectionInOldOrder);
+        connectionInOldOrder.get(0).updateAllId();
         ((Process) mergeNode.getProcess()).checkStartNodes();
     }
 

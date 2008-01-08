@@ -356,4 +356,14 @@ public abstract class AbstractStatsLogsComponent implements IComponent {
         return multipleComponentManager;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.components.IComponent#getComponentType()
+     */
+    public String getComponentType() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }

@@ -761,6 +761,11 @@ public class Node extends Element implements INode {
         this.inputs.addAll(connections);
     }
 
+    public void setOutgoingConnections(List<Connection> connections) {
+        this.outputs.clear();
+        this.outputs.addAll(connections);
+    }
+
     /**
      * Gives all outgoing connections (only).
      * 
