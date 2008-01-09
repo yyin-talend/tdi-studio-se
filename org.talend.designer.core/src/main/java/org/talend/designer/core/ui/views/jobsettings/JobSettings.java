@@ -45,8 +45,8 @@ public class JobSettings {
             } catch (Exception e) {
                 ExceptionHandler.process(e);
             }
-            return null;
-        } else if (view instanceof JobSettingsView) {
+        }
+        if (view != null && view instanceof JobSettingsView) {
             return (JobSettingsView) view;
         }
         return null;
