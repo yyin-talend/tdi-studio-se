@@ -19,10 +19,12 @@
 		
 	String outputAction  = ElementParameterParser.getValue(node, "__OUTPUT__");
 	
+	String errorOuput  = ElementParameterParser.getValue(node, "__ERROROUTPUT__");
+	
 	// To launch an internal command to cmd.exe (XP), you have to call :
 	// cmd.exe /c dir (for example)
 
-	if (outputAction.equals("NORMAL_OUTPUT")) {
+	if (outputAction.equals("NORMAL_OUTPUT")||errorOuput.equals("NORMAL_OUTPUT")) {
 %>
 final java.util.Vector<String> output_<%=cid%> = new java.util.Vector<String>();
 <%
@@ -75,11 +77,11 @@ Thread error_<%=cid %> = new Thread() {
 			try {
 				while((line = reader.readLine()) != null) {
 <%
-	if (outputAction.equals("OUTPUT_TO_CONSOLE")) {
+	if (errorOuput.equals("OUTPUT_TO_CONSOLE")) {
 %>
 					System.err.println(line);
 <%
-	} else if (outputAction.equals("RETRIEVE_OUTPUT")) {
+	} else if (errorOuput.equals("RETRIEVE_OUTPUT")) {
 %>
 					if (globalMap.get("<%=cid %>_OUTPUT") != null) {
 						globalMap.put("<%=cid %>_OUTPUT", (String)globalMap.get("<%=cid %>_OUTPUT")+"\n"+line);
@@ -87,7 +89,7 @@ Thread error_<%=cid %> = new Thread() {
 						globalMap.put("<%=cid %>_OUTPUT", line);
 					}
 <%
-	} else if (outputAction.equals("NORMAL_OUTPUT")) {
+	} else if (errorOuput.equals("NORMAL_OUTPUT")) {
 %>
 					output_<%=cid%>.add(line);
 <%
@@ -109,7 +111,7 @@ normal_<%=cid %>.join(10000);
 error_<%=cid %>.join(10000);
 
 <%
-if(outputAction.equals("NORMAL_OUTPUT")){
+if(outputAction.equals("NORMAL_OUTPUT")||errorOuput.equals("NORMAL_OUTPUT")){
 	List<IMetadataTable> metadatas = node.getMetadataList();
     if ((metadatas!=null)&&(metadatas.size()>0)) {
     	IMetadataTable metadata = metadatas.get(0);
