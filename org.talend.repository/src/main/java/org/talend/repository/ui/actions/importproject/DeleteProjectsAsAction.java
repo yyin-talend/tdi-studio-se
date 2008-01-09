@@ -14,12 +14,14 @@ package org.talend.repository.ui.actions.importproject;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.talend.commons.ui.image.ImageProvider;
+import org.talend.core.CorePlugin;
 import org.talend.repository.ui.ERepositoryImages;
 
 /**
@@ -74,7 +76,9 @@ public class DeleteProjectsAsAction extends Action implements IWorkbenchWindowAc
         // TODO Auto-generated method stub
         Shell activeShell = Display.getCurrent().getActiveShell();
         SelectDeleteProjectDialog dialog = new SelectDeleteProjectDialog(activeShell, this.login);
-        dialog.open();
+        if (dialog.open() == Dialog.OK) {
+            CorePlugin.getDefault().getRepositoryLocalProviderService().resetXmiResourceSet();
+        }
     }
 
     /*
