@@ -531,14 +531,19 @@ public class CLASS {
         public InformixManager(String cid) {
             super(cid);
         }
+        public String getSelectionSQL() {
+            StringBuilder selectionSQL = new StringBuilder();
+            selectionSQL.append("SELECT COUNT(*) FROM " + getLProtectedChar() + "\" + tableName_" + cid + " + \"" + getRProtectedChar());
+            return selectionSQL.toString();
+        }        
         protected String getDBMSId() {
             return INFORMIX;
         }
         protected String getLProtectedChar() {
-            return "\\\"";
+            return "";
         }
         protected String getRProtectedChar() {
-            return "\\\"";
+            return "";
         }        
     }
     

@@ -84,11 +84,15 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>       
+
+	<PARAMETER NAME="PROPERTIES" FIELD="TEXT" NUM_ROW="4" REPOSITORY_VALUE="PROPERTIES_STRING">
+		<DEFAULT>""</DEFAULT>
+	</PARAMETER>
     
     <PARAMETER
       NAME="USER"
       FIELD="TEXT"
-      NUM_ROW="4"
+      NUM_ROW="5"
       REPOSITORY_VALUE="USERNAME"
     >
       <DEFAULT>""</DEFAULT>
@@ -97,7 +101,7 @@
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
-      NUM_ROW="4"
+      NUM_ROW="5"
       REPOSITORY_VALUE="PASSWORD"
     >
       <DEFAULT>""</DEFAULT>
@@ -106,7 +110,7 @@
     <PARAMETER
       NAME="SCHEMA_FLOW"
       FIELD="SCHEMA_TYPE"
-      NUM_ROW="5"
+      NUM_ROW="6"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -115,7 +119,7 @@
       NAME="SCHEMA_REJECT"
       FIELD="SCHEMA_TYPE"
       REQUIRED="true"
-      NUM_ROW="5"
+      NUM_ROW="6"
       CONTEXT="REJECT"
       SHOW="true">
       <TABLE READONLY="true">
@@ -127,7 +131,7 @@
 	<PARAMETER
       NAME="DBTABLE"
       FIELD="DBTABLE"
-      NUM_ROW="5"
+      NUM_ROW="6"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -135,7 +139,7 @@
     <PARAMETER
       NAME="QUERYSTORE"
       FIELD="QUERYSTORE_TYPE"
-      NUM_ROW="6"
+      NUM_ROW="7"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -143,7 +147,7 @@
     <PARAMETER
       NAME="QUERY"
       FIELD="MEMO_SQL"
-      NUM_ROW="7"
+      NUM_ROW="8"
     >
       <DEFAULT>"select * from mytable"</DEFAULT>
     </PARAMETER>
@@ -151,7 +155,7 @@
     <PARAMETER
       NAME="ENCODING"
       FIELD="TEXT"
-      NUM_ROW="8"
+      NUM_ROW="9"
       REQUIRED="true"
     >
       <DEFAULT>"ISO-8859-15"</DEFAULT>
@@ -160,7 +164,7 @@
     <PARAMETER
       NAME="COMMIT_EVERY"
       FIELD="TEXT"
-      NUM_ROW="8"
+      NUM_ROW="9"
       REQUIRED="true"
     >
       <DEFAULT>10000</DEFAULT>
@@ -169,7 +173,7 @@
     <PARAMETER
       NAME="DIE_ON_ERROR"
       FIELD="CHECK"
-      NUM_ROW="8"
+      NUM_ROW="9"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
