@@ -42,6 +42,7 @@ import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.CorePlugin;
+import org.talend.core.model.components.IComponent;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IConnectionCategory;
@@ -67,7 +68,6 @@ import org.talend.designer.core.ui.editor.nodecontainer.NodeContainerPart;
 import org.talend.designer.core.ui.editor.process.ProcessPart;
 import org.talend.designer.core.ui.views.CodeView;
 import org.talend.designer.core.ui.views.properties.ComponentSettingsView;
-import org.talend.designer.joblet.ui.models.IJobletComponent;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.ui.views.IRepositoryView;
 
@@ -501,8 +501,8 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
                     } catch (PersistenceException e) {
                         MessageBoxExceptionHandler.process(e);
                     }
-                } else if (node.getComponent() instanceof IJobletComponent) {
-                    AbstractProcessProvider.findProcessProviderFromPID(IJobletComponent.PID).openNewProcessEditor(node);
+                } else if (node.getComponent().getPluginFullName().equals(IComponent.JOBLET_PID)) {
+                    AbstractProcessProvider.findProcessProviderFromPID(IComponent.JOBLET_PID).openNewProcessEditor(node);
                 } else {
                     try {
                         // modified for feature 2454.

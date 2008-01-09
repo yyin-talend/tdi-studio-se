@@ -12,7 +12,7 @@
 // ============================================================================
 package org.talend.designer.core.model.process;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -21,7 +21,6 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.talend.core.model.process.INode;
 import org.talend.designer.core.ui.editor.nodes.Node;
-import org.talend.designer.core.ui.editor.process.Process;
 
 /**
  * DOC qzhang class global comment. Detailled comment
@@ -34,7 +33,8 @@ public abstract class AbstractProcessProvider {
 
     public static final String ATTR_PID = "pluginId";
 
-    public abstract org.talend.designer.core.ui.editor.process.Process buildNewGraphicProcess(Node node);
+    public abstract List<Node> buildReplaceNodesInDataProcess(Node node, Map<INode, INode> buildCheckMap,
+            DataProcess currDataProcess);
 
     public static AbstractProcessProvider findProcessProviderFromPID(String pid) {
         IConfigurationElement[] elems = Platform.getExtensionRegistry().getConfigurationElementsFor(EXTENSION_ID);
@@ -42,13 +42,30 @@ public abstract class AbstractProcessProvider {
             String attribute = elem.getAttribute(ATTR_PID);
             if (attribute.equals(pid)) {
                 try {
-                    return (AbstractProcessProvider) elem.createExecutableExtension(ATTR_CLASS);
+                    AbstractProcessProvider createExecutableExtension = (AbstractProcessProvider) elem
+                            .createExecutableExtension(ATTR_CLASS);
+                    return createExecutableExtension;
                 } catch (CoreException ex) {
                     ex.printStackTrace();
                 }
             }
         }
         return null;
+    }
+
+    public static List<AbstractProcessProvider> findAllProcessProviders() {
+        List<AbstractProcessProvider> processProviders = new ArrayList<AbstractProcessProvider>();
+        IConfigurationElement[] elems = Platform.getExtensionRegistry().getConfigurationElementsFor(EXTENSION_ID);
+        for (IConfigurationElement elem : elems) {
+            try {
+                AbstractProcessProvider createExecutableExtension = (AbstractProcessProvider) elem
+                        .createExecutableExtension(ATTR_CLASS);
+                processProviders.add(createExecutableExtension);
+            } catch (CoreException ex) {
+                ex.printStackTrace();
+            }
+        }
+        return processProviders;
     }
 
     /**
@@ -58,16 +75,19 @@ public abstract class AbstractProcessProvider {
         // do nothing.
     }
 
-    /**
-     * DOC qzhang Comment method "buildNewDataProcess".
-     * 
-     * @param process
-     * @param node
-     * @param buildCheckMap
-     * @param dataProcess
-     */
-    public List<Node> addNewDataProcess(Process process, Node node, Map<INode, INode> buildCheckMap, DataProcess dataProcess) {
+    public void loadComponentsFromExtensionPoint() {
         // do nothing.
-        return Collections.EMPTY_LIST;
     }
+
+    /**
+     * DOC qzhang Comment method "loadComponentsFromProviders".
+     * 
+     * @return
+     */
+    public static void loadComponentsFromProviders() {
+        for (AbstractProcessProvider processProvider : findAllProcessProviders()) {
+            processProvider.loadComponentsFromExtensionPoint();
+        }
+    }
+
 }

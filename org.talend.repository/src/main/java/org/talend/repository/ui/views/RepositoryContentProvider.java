@@ -25,6 +25,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.exception.RuntimeExceptionHandler;
 import org.talend.commons.utils.data.container.Container;
+import org.talend.core.model.components.IComponent;
 import org.talend.core.model.genhtml.IHTMLDocConstants;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.AbstractMetadataObject;
@@ -48,7 +49,6 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.Folder;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.ui.images.ECoreImage;
-import org.talend.designer.joblet.ui.models.IJobletComponent;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.BinRepositoryNode;
 import org.talend.repository.model.ERepositoryStatus;
@@ -340,7 +340,7 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
      * @return
      */
     private boolean containJoblet() {
-        return Platform.getBundle(IJobletComponent.PID) != null;
+        return Platform.getBundle(IComponent.JOBLET_PID) != null;
     }
 
     /**

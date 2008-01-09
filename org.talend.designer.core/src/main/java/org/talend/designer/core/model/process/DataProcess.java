@@ -39,7 +39,6 @@ import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.process.jobsettings.JobSettingsManager;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
-import org.talend.designer.joblet.ui.models.IJobletComponent;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.ExternalNodesFactory;
 
@@ -695,7 +694,7 @@ public class DataProcess {
             }
         }
 
-        replaceJoblets(graphicalNodeList);
+        replaceNodeFromProviders(graphicalNodeList);
         // job settings stats & logs
         if (JobSettingsManager.isStatsAndLogsActivated(process)) {
             // will add the Stats & Logs managements
@@ -739,20 +738,19 @@ public class DataProcess {
      * @param graphicalNodeList
      * @return
      */
-    private List<Node> replaceJoblets(List<Node> graphicalNodeList) {
-        List<Node> nodeList = new ArrayList<Node>();
+    private void replaceNodeFromProviders(List<Node> graphicalNodeList) {
         for (Node node : graphicalNodeList) {
             IComponent component = node.getComponent();
-            if (component instanceof IJobletComponent) {
-                AbstractProcessProvider processProvider = AbstractProcessProvider
-                        .findProcessProviderFromPID(IJobletComponent.PID);
-                Process sProcess = processProvider.buildNewGraphicProcess(node);
-                if (sProcess != null) {
-                    processProvider.addNewDataProcess(sProcess, node, buildCheckMap, this);
-                }
+            AbstractProcessProvider processProvider = AbstractProcessProvider.findProcessProviderFromPID(component
+                    .getPluginFullName());
+            if (processProvider != null) {
+                processProvider.buildReplaceNodesInDataProcess(node, checkMultipleMap, this);
             }
+            // Process sProcess = processProvider.buildNewGraphicProcess(node);
+            // if (sProcess != null) {
+            // processProvider.addNewDataProcess(sProcess, node, buildCheckMap, this);
+            // }
         }
-        return nodeList;
     }
 
     public List<INode> getNodeList() {

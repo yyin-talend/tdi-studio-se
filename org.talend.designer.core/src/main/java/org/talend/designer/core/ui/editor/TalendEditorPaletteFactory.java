@@ -38,11 +38,11 @@ import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.core.model.process.AbstractProcessProvider;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.notes.NoteCreationFactory;
 import org.talend.designer.core.ui.editor.palette.TalendPaletteDrawer;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
-import org.talend.designer.joblet.ui.models.JobletComponentsUtils;
 
 /**
  * This class creates the palette in the Gef Editor. <br/>
@@ -232,7 +232,7 @@ public final class TalendEditorPaletteFactory {
      */
     public static PaletteRoot createPalette(final IComponentsFactory compFac) {
         palette = new PaletteRoot();
-        JobletComponentsUtils.loadComponentsFromJoblets();
+        AbstractProcessProvider.loadComponentsFromProviders();
         palette.add(createToolsGroup());
         createComponentsDrawer(compFac);
         return palette;

@@ -36,7 +36,7 @@ import org.talend.core.language.LanguageManager;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.designer.core.model.components.EmfComponent;
-import org.talend.designer.joblet.ui.models.JobletComponentsUtils;
+import org.talend.designer.core.model.process.AbstractProcessProvider;
 
 /**
  * Component factory that look for each component and load their information. <br/>
@@ -73,8 +73,8 @@ public class ComponentsFactory implements IComponentsFactory {
         // 3. Load user components:
         loadComponentsFromFolder(userPath);
 
-        // 4.Load Joblet Component:
-        JobletComponentsUtils.loadComponentsFromJoblets();
+        // 4.Load Component from extension point: component_definition
+        loadComponentsFromExtensions();
 
         XsdValidationCacheManager.getInstance().save();
 
@@ -87,6 +87,13 @@ public class ComponentsFactory implements IComponentsFactory {
             ExceptionHandler.process(e);
         }
         TimeMeasure.measureActive = false;
+    }
+
+    /**
+     * DOC qzhang Comment method "loadComponentsFromExtensions".
+     */
+    private void loadComponentsFromExtensions() {
+        AbstractProcessProvider.loadComponentsFromProviders();
     }
 
     private void loadComponentsFromFolder(String pathSource) {
