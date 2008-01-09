@@ -22,8 +22,25 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
        
         String cid = node.getUniqueName();
         String normalizeColumn = ElementParameterParser.getValue(node, "__NORMALIZE_COLUMN__");
-        String separator = ElementParameterParser.getValue(node, "__ITEMSEPARATOR__");
         String deduplicate = ElementParameterParser.getValue(node, "__DEDUPLICATE__");
+        boolean useCSV = ElementParameterParser.getValue(node, "__CSV_OPTION__").equals("true");
+        String escapeMode = ElementParameterParser.getValue(node, "__ESCAPE_CHAR__");
+        
+        String delim = ElementParameterParser.getValue(node, "__ITEMSEPARATOR__");
+        if(useCSV){
+        	delim = delim.substring(1,delim.length()-1);
+        	if(delim.equals("'")){
+        		delim = "\\'";
+        	}
+        }
+        
+    	String textEnclosure1 = ElementParameterParser.getValue(node, "__TEXT_ENCLOSURE__");
+    	String textEnclosure = textEnclosure1.substring(1,textEnclosure1.length()-1);
+    	if ("".equals(textEnclosure)) textEnclosure = "\0";
+    	if(textEnclosure.equals("'")){
+    		textEnclosure = "\\'";
+    	}        
+        
         String incomingConnName = null;
         String outgoingConnName = null;
 
@@ -43,7 +60,20 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
                 metadataColumns != null && !metadataColumns.isEmpty()) {//3
             %>
             if(<%=incomingConnName %>.<%=normalizeColumn%> != null && <%=incomingConnName %>.<%=normalizeColumn%>.trim().length() > 0) {
-                normalizeRecord_<%=cid%> = <%=incomingConnName %>.<%=normalizeColumn%>.split(<%=separator%>);
+                    <%if(useCSV){%> 				
+                        com.csvreader.CsvReader reader_<%=cid%> = new com.csvreader.CsvReader(new java.io.StringReader(<%=incomingConnName %>.<%=normalizeColumn%>), '<%=delim %>');
+                        reader_<%=cid%>.setEscapeMode(com.csvreader.CsvReader.<%=escapeMode %>);
+                        reader_<%=cid%>.setTextQualifier('<%=textEnclosure %>');
+                        if (reader_<%=cid%>.readRecord()) {
+                            normalizeRecord_tNormalize_1 = reader_<%=cid%>.getValues();
+                        } else {
+                            normalizeRecord_tNormalize_1 = new String[1];
+                        }
+                    <% } else { %>
+                        	normalizeRecord_<%=cid%> = <%=incomingConnName %>.<%=normalizeColumn%>.split(<%=delim %>);
+                    <%
+                    }
+                    %>               
             } else {
                 normalizeRecord_<%=cid%> = new String[1];
             }
