@@ -54,7 +54,7 @@ public class CreateTableAction extends AbstractCreateTableAction {
 
     public void run() {
         // RepositoryNode metadataNode = getViewPart().getRoot().getChildren().get(6);
-        RepositoryNode metadataNode = getCurrentRepositoryNode();
+        RepositoryNode metadataNode = getMetadataNode(getCurrentRepositoryNode());
         // Force focus to the repositoryView and open Metadata and DbConnection nodes
         getViewPart().setFocus();
         getViewPart().expand(metadataNode, true);
@@ -102,6 +102,19 @@ public class CreateTableAction extends AbstractCreateTableAction {
             getViewPart().expand(metadataNode.getChildren().get(0), true);
             createLDAPSchemaWizard(selection, false);
         }
+    }
+
+    /**
+     * DOC qzhang Comment method "getMetadataNode".
+     * 
+     * @return
+     */
+    private RepositoryNode getMetadataNode(RepositoryNode node) {
+        RepositoryNode parent = node.getParent();
+        if (parent != null && parent.getParent() == null) {
+            return parent;
+        }
+        return getMetadataNode(parent);
     }
 
     @Override
