@@ -61,7 +61,7 @@ public class LoginDialog extends TitleAreaDialog {
     /** The login composite. */
     private LoginComposite loginComposite;
 
-    private static final int MAX_TASKS = 30;
+    private static final int MAX_TASKS = 60;
 
     /**
      * Construct a new LoginDialog.
@@ -180,6 +180,7 @@ public class LoginDialog extends TitleAreaDialog {
                 monitorWrap = new EventLoopProgressMonitor(monitor);
 
                 monitorWrap.beginTask("Migration tasks running in progress...", MAX_TASKS);
+                monitorWrap.worked(2);
                 try {
                     ProxyRepositoryFactory.getInstance().logOnProject(project, monitorWrap);
                 } catch (Exception e) {
