@@ -77,8 +77,9 @@ public class CreateFileRegexpAction extends AbstractCreateAction {
     }
 
     public void run() {
-        RepositoryNode metadataNode = getViewPart().getRoot().getChildren().get(6);
-        RepositoryNode fileRegexpNode = metadataNode.getChildren().get(3);
+        // RepositoryNode metadataNode = getViewPart().getRoot().getChildren().get(6);
+        // RepositoryNode fileRegexpNode = metadataNode.getChildren().get(3);
+        RepositoryNode fileRegexpNode = getCurrentRepositoryNode();
         ISelection selection = null;
         WizardDialog wizardDialog;
         if (isToolbar()) {

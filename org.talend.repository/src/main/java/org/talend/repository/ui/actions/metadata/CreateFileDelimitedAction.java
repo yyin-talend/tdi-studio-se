@@ -72,8 +72,9 @@ public class CreateFileDelimitedAction extends AbstractCreateAction {
     }
 
     public void run() {
-        RepositoryNode metadataNode = getViewPart().getRoot().getChildren().get(6);
-        RepositoryNode fileDelimitedNode = metadataNode.getChildren().get(1);
+        // RepositoryNode metadataNode = getViewPart().getRoot().getChildren().get(6);
+        // RepositoryNode fileDelimitedNode = metadataNode.getChildren().get(1);
+        RepositoryNode fileDelimitedNode = getCurrentRepositoryNode();
         ISelection selection = null;
         WizardDialog wizardDialog;
         if (isToolbar()) {

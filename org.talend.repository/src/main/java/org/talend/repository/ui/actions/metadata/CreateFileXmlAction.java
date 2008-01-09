@@ -76,8 +76,9 @@ public class CreateFileXmlAction extends AbstractCreateAction {
     }
 
     public void run() {
-        RepositoryNode metadataNode = getViewPart().getRoot().getChildren().get(6);
-        RepositoryNode fileXMLNode = metadataNode.getChildren().get(4);
+        // RepositoryNode metadataNode = getViewPart().getRoot().getChildren().get(6);
+        // RepositoryNode fileXMLNode = metadataNode.getChildren().get(4);
+        RepositoryNode fileXMLNode = getCurrentRepositoryNode();
         ISelection selection = null;
         WizardDialog wizardDialog;
         if (isToolbar()) {

@@ -72,8 +72,9 @@ public class CreateFileLdifAction extends AbstractCreateAction {
     }
 
     public void run() {
-        RepositoryNode metadataNode = getViewPart().getRoot().getChildren().get(6);
-        RepositoryNode fileLdifNode = metadataNode.getChildren().get(5);
+        // RepositoryNode metadataNode = getViewPart().getRoot().getChildren().get(6);
+        // RepositoryNode fileLdifNode = metadataNode.getChildren().get(5);
+        RepositoryNode fileLdifNode = getCurrentRepositoryNode();
         ISelection selection = null;
         WizardDialog wizardDialog;
         if (isToolbar()) {

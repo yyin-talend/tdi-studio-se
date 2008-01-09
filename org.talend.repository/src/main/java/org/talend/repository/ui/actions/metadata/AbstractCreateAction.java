@@ -47,7 +47,7 @@ public abstract class AbstractCreateAction extends AContextualAction {
         }
         init((RepositoryNode) o);
         if (ProxyRepositoryFactory.getInstance().isUserReadOnlyOnCurrentProject()) {
-          //  setEnabled(false);
+            // setEnabled(false);
         }
     }
 
@@ -83,5 +83,4 @@ public abstract class AbstractCreateAction extends AContextualAction {
         names.remove((String) node.getProperties(EProperties.LABEL));
         existingNames = names.toArray(new String[names.size()]);
     }
-
 }

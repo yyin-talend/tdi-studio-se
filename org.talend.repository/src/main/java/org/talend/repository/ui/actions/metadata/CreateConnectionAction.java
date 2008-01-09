@@ -84,9 +84,10 @@ public class CreateConnectionAction extends AbstractCreateAction {
      */
     @Override
     public void run() {
-        RepositoryNode metadataNode = getViewPart().getRoot().getChildren().get(6);
-        RepositoryNode dbConnectionNode = metadataNode.getChildren().get(0);
-
+        // RepositoryNode metadataNode = getViewPart().getRoot().getChildren().get(6);
+        // RepositoryNode dbConnectionNode = metadataNode.getChildren().get(0);
+        RepositoryNode dbConnectionNode = getCurrentRepositoryNode();
+        RepositoryNode metadataNode = dbConnectionNode.getParent();
         // Force focus to the repositoryView and open Metadata and DbConnection nodes
         getViewPart().setFocus();
         getViewPart().expand(metadataNode, true);

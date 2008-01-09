@@ -97,8 +97,9 @@ public class CreateRoutineAction extends AbstractRoutineAction {
      * @see org.eclipse.jface.action.Action#run()
      */
     public void run() {
-        RepositoryNode codeNode = getViewPart().getRoot().getChildren().get(4);
-        RepositoryNode routineNode = codeNode.getChildren().get(0);
+        // RepositoryNode codeNode = getViewPart().getRoot().getChildren().get(4);
+        // RepositoryNode routineNode = codeNode.getChildren().get(0);
+        RepositoryNode routineNode = getCurrentRepositoryNode();
         RepositoryNode node = null;
         IPath path;
         if (isToolbar()) {
