@@ -89,7 +89,7 @@ public enum EParameterName {
     FILE_PATH(Messages.getString("EParameterName.filePath")), //$NON-NLS-1$
     FILENAME_STATS(Messages.getString("EParameterName.fileNameStats")), //$NON-NLS-1$
     FILENAME_LOGS(Messages.getString("EParameterName.fileNameLogs")), //$NON-NLS-1$
-    FILENAME_METTER(Messages.getString("EParameterName.MetterFileName")), //$NON-NLS-1$
+    FILENAME_METTER(Messages.getString("EParameterName.MeterFileName")), //$NON-NLS-1$
     ON_DATABASE_FLAG(Messages.getString("EParameterName.onDatabaseFlag")), //$NON-NLS-1$
     DB_TYPE(Messages.getString("EParameterName.dbType")), //$NON-NLS-1$
     HOST(Messages.getString("EParameterName.host")), //$NON-NLS-1$

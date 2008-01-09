@@ -147,17 +147,19 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
         statsFileNameField = new StringFieldEditor(languagePrefix + EParameterName.FILENAME_STATS.getName(),
                 EParameterName.FILENAME_STATS.getDisplayName(), parent);
 
-        statsFileNameField.getTextControl(parent).setText(TalendTextUtils.addQuotes("stats_file.txt"));
+        statsFileNameField.getTextControl(parent).setText(
+                TalendTextUtils.addQuotes(PreferenceInitializer.DEFAULT_STATS_FILE_NAME));
 
         logsFileNameField = new StringFieldEditor(languagePrefix + EParameterName.FILENAME_LOGS.getName(),
                 EParameterName.FILENAME_LOGS.getDisplayName(), parent);
 
-        logsFileNameField.getTextControl(parent).setText(TalendTextUtils.addQuotes("logs_file.txt"));
+        logsFileNameField.getTextControl(parent).setText(TalendTextUtils.addQuotes(PreferenceInitializer.DEFAULT_LOGS_FILE_NAME));
 
         metterFileNameField = new StringFieldEditor(languagePrefix + EParameterName.FILENAME_METTER.getName(),
                 EParameterName.FILENAME_METTER.getDisplayName(), parent);
 
-        metterFileNameField.getTextControl(parent).setText(TalendTextUtils.addQuotes("metter_file.txt"));
+        metterFileNameField.getTextControl(parent).setText(
+                TalendTextUtils.addQuotes(PreferenceInitializer.DEFAULT_METER_FILE_NAME));
 
         onDatabaseField = new CheckBoxFieldEditor(languagePrefix + EParameterName.ON_DATABASE_FLAG.getName(),
                 EParameterName.ON_DATABASE_FLAG.getDisplayName(), parent);

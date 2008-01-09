@@ -36,11 +36,11 @@ import org.talend.designer.core.ui.editor.TalendEditorPaletteFactory;
  */
 public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
-    private static final String DEFAULT_LOGS_FILE_NAME = "logs_file.txt";
+    public static final String DEFAULT_LOGS_FILE_NAME = "logs_file.txt";
 
-    private static final String DEFAULT_STATS_FILE_NAME = "stats_file.txt";
+    public static final String DEFAULT_STATS_FILE_NAME = "stats_file.txt";
 
-    private static final String DEFAULT_METTER_FILE_NAME = "metter_file.txt";
+    public static final String DEFAULT_METER_FILE_NAME = "meter_file.txt";
 
     /*
      * (non-Javadoc)
@@ -77,9 +77,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
         store.setDefault(ECodeLanguage.JAVA.toString() + "_" + EParameterName.FILE_PATH.getName(), logPath);
         store.setDefault(ECodeLanguage.JAVA.toString() + "_" + EParameterName.FILENAME_LOGS.getName(), DEFAULT_LOGS_FILE_NAME);
         store.setDefault(ECodeLanguage.JAVA.toString() + "_" + EParameterName.FILENAME_STATS.getName(), DEFAULT_STATS_FILE_NAME);
-        store
-                .setDefault(ECodeLanguage.JAVA.toString() + "_" + EParameterName.FILENAME_METTER.getName(),
-                        DEFAULT_METTER_FILE_NAME);
+        store.setDefault(ECodeLanguage.JAVA.toString() + "_" + EParameterName.FILENAME_METTER.getName(), DEFAULT_METER_FILE_NAME);
 
         // defaults for the stats preferences for perl
         store.setDefault(ECodeLanguage.PERL.toString() + "_" + EParameterName.PROPERTY_TYPE.getName(), EmfComponent.BUILTIN);
@@ -90,9 +88,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
         store.setDefault(ECodeLanguage.PERL.toString() + "_" + EParameterName.FILE_PATH.getName(), logPath);
         store.setDefault(ECodeLanguage.PERL.toString() + "_" + EParameterName.FILENAME_LOGS.getName(), DEFAULT_LOGS_FILE_NAME);
         store.setDefault(ECodeLanguage.PERL.toString() + "_" + EParameterName.FILENAME_STATS.getName(), DEFAULT_STATS_FILE_NAME);
-        store
-                .setDefault(ECodeLanguage.PERL.toString() + "_" + EParameterName.FILENAME_METTER.getName(),
-                        DEFAULT_METTER_FILE_NAME);
+        store.setDefault(ECodeLanguage.PERL.toString() + "_" + EParameterName.FILENAME_METTER.getName(), DEFAULT_METER_FILE_NAME);
 
         if (!CorePlugin.getContext().isHeadless()) {
             Font font = new Font(Display.getDefault(), "courier", 10, SWT.NONE);
