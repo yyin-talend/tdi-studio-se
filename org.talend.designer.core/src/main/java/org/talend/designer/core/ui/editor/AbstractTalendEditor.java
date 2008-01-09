@@ -30,22 +30,17 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubProgressMonitor;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.draw2d.Cursors;
 import org.eclipse.draw2d.FigureCanvas;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.LightweightSystem;
 import org.eclipse.draw2d.SWTGraphics;
-import org.eclipse.draw2d.Shape;
 import org.eclipse.draw2d.SimpleRaisedBorder;
 import org.eclipse.draw2d.Viewport;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
-import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.draw2d.parts.ScrollableThumbnail;
 import org.eclipse.draw2d.parts.Thumbnail;
 import org.eclipse.gef.ContextMenuProvider;
@@ -61,7 +56,6 @@ import org.eclipse.gef.MouseWheelZoomHandler;
 import org.eclipse.gef.RootEditPart;
 import org.eclipse.gef.SnapToGeometry;
 import org.eclipse.gef.SnapToGrid;
-import org.eclipse.gef.Tool;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.editparts.AbstractEditPart;
 import org.eclipse.gef.editparts.LayerManager;
@@ -86,7 +80,6 @@ import org.eclipse.gef.ui.parts.GraphicalViewerKeyHandler;
 import org.eclipse.gef.ui.parts.ScrollingGraphicalViewer;
 import org.eclipse.gef.ui.parts.TreeViewer;
 import org.eclipse.gef.ui.rulers.RulerComposite;
-import org.eclipse.gmf.runtime.diagram.ui.editparts.ShapeEditPart;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IToolBarManager;
@@ -102,7 +95,6 @@ import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.TraverseEvent;
 import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
@@ -128,8 +120,6 @@ import org.eclipse.ui.part.PageBook;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertySheetPageContributor;
-import org.talend.commons.exception.ExceptionHandler;
-import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.utils.workbench.preferences.GlobalConstant;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
@@ -814,24 +804,31 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
      * ftang Comment method "savePreviewPictures".
      */
     protected void savePreviewPictures() {
-        Job job = new Job("Documentation node save in progress") {
+        // Job job = new Job("Documentation node save in progress") {
+        //
+        // @Override
+        // protected IStatus run(IProgressMonitor monitor) {
+        // try {
+        // saveOutlinePicture((ScrollingGraphicalViewer) getGraphicalViewer());
+        // } catch (Exception e) {
+        // ExceptionHandler.process(e);
+        // MessageBoxExceptionHandler.process(e);
+        // return Status.CANCEL_STATUS;
+        // }
+        // return Status.OK_STATUS;
+        // }
+        // };
+        //
+        // job.setUser(true);
+        // job.setPriority(Job.INTERACTIVE);
+        // job.schedule();
+        getGraphicalViewer().getControl().getDisplay().asyncExec(new Runnable() {
 
-            @Override
-            protected IStatus run(IProgressMonitor monitor) {
-                try {
-                    saveOutlinePicture((ScrollingGraphicalViewer) getGraphicalViewer());
-                } catch (Exception e) {
-                    ExceptionHandler.process(e);
-                    MessageBoxExceptionHandler.process(e);
-                    return Status.CANCEL_STATUS;
-                }
-                return Status.OK_STATUS;
+            public void run() {
+                saveOutlinePicture((ScrollingGraphicalViewer) getGraphicalViewer());
             }
-        };
 
-        job.setUser(true);
-        job.setPriority(Job.INTERACTIVE);
-        job.schedule();
+        });
     }
 
     protected RepositoryEditorInput getRepositoryEditorInput() {
@@ -1085,6 +1082,14 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
                 processor.y = mouseEvent.y;
             } else if (mouseEvent.button == 3) {
                 startPoint = new Point(mouseEvent.x, mouseEvent.y);
+
+                RootEditPart rep = getGraphicalViewer().getRootEditPart();
+                if (rep instanceof ScalableFreeformRootEditPart) {
+                    ScalableFreeformRootEditPart root = (ScalableFreeformRootEditPart) rep;
+                    Viewport viewport = (Viewport) root.getFigure();
+                    Point viewOriginalPosition = viewport.getViewLocation();
+                    startPoint.translate(viewOriginalPosition);
+                }
                 createConnection = true;
                 super.mouseDown(mouseEvent, viewer);
             } else {

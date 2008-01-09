@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.draw2d.ChopboxAnchor;
+import org.eclipse.draw2d.FreeformViewport;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -67,20 +68,29 @@ public class NodeAnchor extends ChopboxAnchor {
     public Point getLocation(Point reference) {
         if (target != null && !target.equals(source)) {
             if (!isTargetAnchor) {
-                // System.out.println("ref:" + reference);
-                Point newRef = reference.getTranslated(-(target.getSize().width / 2), -(target.getSize().height / 2));
                 sourceLocation = source.getLocation();
                 targetLocation = target.getLocation();
-                Point diff = new Point(newRef.x - targetLocation.x, newRef.y - targetLocation.y);
-                sourceLocation = sourceLocation.getTranslated(diff);
-                targetLocation = targetLocation.getTranslated(diff);
+                if (((reference.y - (target.getSize().height / 2)) != targetLocation.y)
+                        || ((reference.x - (target.getSize().width / 2)) != targetLocation.x)) {
+                    FreeformViewport viewport = getViewport();
+                    int y = viewport.getVerticalRangeModel().getValue();
+                    int x = viewport.getHorizontalRangeModel().getValue();
+                    Point diff = new Point(-x, -y);
+                    sourceLocation = sourceLocation.getTranslated(diff);
+                    targetLocation = targetLocation.getTranslated(diff);
+                }
             } else {
-                Point newRef = reference.getTranslated(-(source.getSize().width / 2), -(source.getSize().height / 2));
                 sourceLocation = source.getLocation();
                 targetLocation = target.getLocation();
-                Point diff = new Point(newRef.x - sourceLocation.x, newRef.y - sourceLocation.y);
-                sourceLocation = sourceLocation.getTranslated(diff);
-                targetLocation = targetLocation.getTranslated(diff);
+                if (((reference.y - (source.getSize().height / 2)) != sourceLocation.y)
+                        || ((reference.x - (source.getSize().width / 2)) != sourceLocation.x)) {
+                    FreeformViewport viewport = getViewport();
+                    int y = viewport.getVerticalRangeModel().getValue();
+                    int x = viewport.getHorizontalRangeModel().getValue();
+                    Point diff = new Point(-x, -y);
+                    sourceLocation = sourceLocation.getTranslated(diff);
+                    targetLocation = targetLocation.getTranslated(diff);
+                }
             }
             int nb = 0;
             int connectionId = 0;
@@ -100,6 +110,15 @@ public class NodeAnchor extends ChopboxAnchor {
         }
 
         return super.getLocation(reference);
+    }
+
+    /**
+     * DOC nrousseau Comment method "getViewport".
+     * 
+     * @return
+     */
+    private FreeformViewport getViewport() {
+        return (FreeformViewport) getOwner().getParent().getParent().getParent().getParent().getParent().getParent();
     }
 
     public Point getLocationForSimpleConnection(Point reference) {
@@ -152,26 +171,14 @@ public class NodeAnchor extends ChopboxAnchor {
                 targetPoint = new Point(sourceRect.getCenter().x, targetRect.getCenter().y);
             }
         }
+
         if (!isTargetAnchor && sourcePoint == null) {
             return super.getLocation(reference);
         }
         if (sourcePoint != null && targetPoint != null) {
-            Point p = calculateLocationFromRef(sourceRect, targetRect, sourcePoint, targetPoint);
-            if (isValid(p)) {
-                return p;
-            }
+            return calculateLocationFromRef(sourceRect, targetRect, sourcePoint, targetPoint);
         }
         return super.getLocation(reference);
-    }
-
-    /**
-     * the location of anchor can not leave the figure.
-     * 
-     * @param p
-     * @return
-     */
-    private boolean isValid(Point p) {
-        return this.getOwner().getBounds().contains(p);
     }
 
     /**
