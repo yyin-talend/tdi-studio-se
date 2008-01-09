@@ -87,7 +87,7 @@ public class DataProcess {
 
     // should only be called by a starting node
     @SuppressWarnings("unchecked")//$NON-NLS-1$
-    public INode buildfromNode(final Node graphicalNode) {
+    public INode buildfromNode(final Node graphicalNode, String prefix) {
         if (buildCheckMap.containsKey(graphicalNode)) {
             return buildCheckMap.get(graphicalNode);
         }
@@ -111,7 +111,11 @@ public class DataProcess {
         dataNode.setPluginFullName(graphicalNode.getPluginFullName());
         dataNode.setElementParameters(graphicalNode.getComponent().createElementParameters(dataNode));
         initializeDataFromGraphical(dataNode, graphicalNode);
-        dataNode.setUniqueName(graphicalNode.getUniqueName());
+        String uniqueName = graphicalNode.getUniqueName();
+        if (prefix != null) {
+            uniqueName = prefix + uniqueName;
+        }
+        dataNode.setUniqueName(uniqueName);
         dataNode.setSubProcessStart(graphicalNode.isSubProcessStart());
         dataNode.setThereLinkWithHash(graphicalNode.isThereLinkWithHash());
         dataNode.setHasConditionalOutputs(graphicalNode.hasConditionalOutputs());
@@ -120,7 +124,7 @@ public class DataProcess {
         dataNode.setComponent(graphicalNode.getComponent());
 
         if (graphicalNode.isDummy()) {
-            dataNode = new DataNode(ComponentsFactoryProvider.getInstance().get("tDummyRow"), graphicalNode.getUniqueName());
+            dataNode = new DataNode(ComponentsFactoryProvider.getInstance().get("tDummyRow"), uniqueName);
             dataNode.setActivate(true);
             dataNode.setStart(graphicalNode.isStart());
             dataNode.setMetadataList(graphicalNode.getMetadataList());
@@ -145,7 +149,7 @@ public class DataProcess {
             IElementParameter monitorParam = connection.getElementParameter("MONITOR_CONNECTION");
             if (monitorParam != null && (!connection.getLineStyle().equals(EConnectionType.FLOW_REF))
                     && ((Boolean) monitorParam.getValue())) {
-                addvFlowMeterBetween(dataNode, buildfromNode((Node) connection.getTarget()), connection, graphicalNode
+                addvFlowMeterBetween(dataNode, buildfromNode((Node) connection.getTarget(), prefix), connection, graphicalNode
                         .getProcess(), connection.getElementParameters());
             } else {
                 dataConnec = new DataConnection();
@@ -157,13 +161,21 @@ public class DataProcess {
                 } else {
                     dataConnec.setMetadataTable(connection.getMetadataTable());
                 }
-                dataConnec.setName(connection.getName());
-                dataConnec.setUniqueName(connection.getUniqueName());
+                String name = connection.getName();
+                if (prefix != null) {
+                    name = prefix + name;
+                }
+                dataConnec.setName(name);
+                String uniqueName2 = connection.getUniqueName();
+                if (prefix != null) {
+                    uniqueName2 = prefix + uniqueName2;
+                }
+                dataConnec.setUniqueName(uniqueName2);
                 dataConnec.setSource(dataNode);
                 dataConnec.setCondition(connection.getCondition());
                 dataConnec.setConnectorName(connection.getConnectorName());
                 dataConnec.setInputId(connection.getInputId());
-                INode target = buildfromNode((Node) connection.getTarget());
+                INode target = buildfromNode((Node) connection.getTarget(), prefix);
                 dataConnec.setTarget(target);
                 incomingConnections = (List<IConnection>) target.getIncomingConnections();
                 if (incomingConnections == null) {
@@ -175,6 +187,10 @@ public class DataProcess {
         }
 
         return dataNode;
+    }
+
+    public INode buildfromNode(final Node graphicalNode) {
+        return buildfromNode(graphicalNode, null);
     }
 
     private INode addvFlowMeterBetween(INode sourceNode, INode targetNode, IConnection connection, IProcess process,
@@ -744,7 +760,8 @@ public class DataProcess {
             AbstractProcessProvider processProvider = AbstractProcessProvider.findProcessProviderFromPID(component
                     .getPluginFullName());
             if (processProvider != null) {
-                processProvider.buildReplaceNodesInDataProcess(node, checkMultipleMap, this);
+                processProvider.buildReplaceNodesInDataProcess(node, buildCheckMap, this);
+                dataNodeList.remove(checkMultipleMap.get(node));
             }
             // Process sProcess = processProvider.buildNewGraphicProcess(node);
             // if (sProcess != null) {
@@ -756,4 +773,5 @@ public class DataProcess {
     public List<INode> getNodeList() {
         return dataNodeList;
     }
+
 }
