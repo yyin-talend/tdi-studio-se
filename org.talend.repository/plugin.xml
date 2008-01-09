@@ -216,12 +216,6 @@
              name="Metadata/Create generic schema from xml">
        </Action>
        <Action
-             class="org.talend.repository.ui.actions.metadata.importing.ImportTablesFromDelimitedAction"
-             id="org.talend.repository.ui.actions.metadata.importing.ImportTablesFromDelimitedAction"
-             level="10"
-             name="Metadata/Import connections from CSV">
-       </Action>
-       <Action
              class="org.talend.repository.ui.actions.GenerateDocAsHTMLAction"
              id="org.talend.repository.ui.actions.GenerateDocAsHTMLAction"
              level="98"
