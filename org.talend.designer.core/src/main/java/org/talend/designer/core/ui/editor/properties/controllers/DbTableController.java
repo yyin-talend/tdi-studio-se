@@ -287,6 +287,7 @@ public class DbTableController extends AbstractElementPropertySectionController 
 
         Button openListTable = getWidgetFactory().createButton(subComposite, "", SWT.PUSH); //$NON-NLS-1$
         openListTable.setImage(CorePlugin.getImageDescriptor(DOTS_BUTTON).createImage());
+        openListTable.setData(PARAMETER_NAME, param.getName());
         return openListTable;
     }
 
@@ -300,7 +301,6 @@ public class DbTableController extends AbstractElementPropertySectionController 
     protected void createListTablesCommand(Button button) {
         initConnectionParameters();
         openDbTableSelectorJob(button);
-        // this.getDynamicProperty().refresh();
     }
 
     /**
@@ -358,6 +358,8 @@ public class DbTableController extends AbstractElementPropertySectionController 
                                             Command dbSelectorCommand = new PropertyChangeCommand(elem, propertyName,
                                                     TalendTextUtils.addQuotes(name));
                                             getCommandStack().execute(dbSelectorCommand);
+                                            Text labelText = (Text) hashCurControls.get(propertyName);
+                                            labelText.setText(TalendTextUtils.addQuotes(name));
                                         }
                                     }
 

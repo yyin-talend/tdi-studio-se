@@ -173,12 +173,12 @@ public class PropertyChangeCommand extends Command {
                 setDefaultValues(currentParam, testedParam);
             }
         }
-        // for job settings extra.(feature 2710)
-        if (!toUpdate) {
-            if (oldValue != null && newValue != null && !newValue.equals(oldValue)) {
-                toUpdate = true;
-            }
-        }
+        // // for job settings extra.(feature 2710)
+        // if (!toUpdate) {
+        // if (oldValue != null && newValue != null && !newValue.equals(oldValue)) {
+        // toUpdate = true;
+        // }
+        // }
         if (toUpdate) {
             elem.setPropertyValue(updataComponentParamName, new Boolean(true));
         }
