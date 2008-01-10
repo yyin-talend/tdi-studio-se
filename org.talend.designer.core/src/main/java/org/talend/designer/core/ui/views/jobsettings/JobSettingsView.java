@@ -125,7 +125,7 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView {
      * @param element
      */
 
-    public void setElement(Element element, final String title) {
+    private void setElement(Element element, final String title) {
 
         if (element != null && element instanceof Process) {
             Process process = (Process) element;
@@ -233,7 +233,7 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView {
     }
 
     public void cleanDisplay() {
-        setPartName(VIEW_NAME);
+        setPartName(null);
         tabFactory.setInput(null);
         tabFactory.setTitle(null, null);
         if (tabFactory.getTabComposite() != null) {
