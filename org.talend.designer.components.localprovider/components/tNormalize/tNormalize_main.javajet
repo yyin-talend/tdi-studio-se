@@ -65,9 +65,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
                         reader_<%=cid%>.setEscapeMode(com.csvreader.CsvReader.<%=escapeMode %>);
                         reader_<%=cid%>.setTextQualifier('<%=textEnclosure %>');
                         if (reader_<%=cid%>.readRecord()) {
-                            normalizeRecord_tNormalize_1 = reader_<%=cid%>.getValues();
+                            normalizeRecord_<%=cid%> = reader_<%=cid%>.getValues();
                         } else {
-                            normalizeRecord_tNormalize_1 = new String[1];
+                            normalizeRecord_<%=cid%> = new String[1];
                         }
                     <% } else { %>
                         	normalizeRecord_<%=cid%> = <%=incomingConnName %>.<%=normalizeColumn%>.split(<%=delim %>);
