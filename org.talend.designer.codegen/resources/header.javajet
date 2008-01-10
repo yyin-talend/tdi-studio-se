@@ -312,8 +312,45 @@ private class TalendException extends Exception {
                     }
                 }
                 %>
+                <%=node.getSubProcessStartNode(false).getUniqueName() %>_onSubJobError(exception);
             }
             <%
+		}
+	}
+	for (INode node : processNodes) {
+		if ((node.isSubProcessStart()) && (node.isActivate())) {
+%>
+			public void <%=node.getUniqueName() %>_onSubJobError(Exception exception) throws TalendException {
+<%
+			List< ? extends IConnection> conns = node.getOutgoingConnections();
+			for (IConnection conn : conns) {
+				if (conn.getLineStyle().equals(EConnectionType.ON_SUBJOB_ERROR)) {
+%>
+				try {	    
+<%
+					if(isRunInMultiThread ){
+%>
+					((java.util.Map)threadLocal.get()).put(errorCode, null); 
+					<%=conn.getTarget().getUniqueName() %>Process();
+					((java.util.Map)threadLocal.get()).put(status, "end");
+<%
+					} else {
+%>
+					errorCode = null;
+					<%=conn.getTarget().getUniqueName() %>Process();
+					status="end";
+<%
+					}
+%>
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+<%
+				}
+			}
+%>
+			}
+<%
 		}
 	}
 %>

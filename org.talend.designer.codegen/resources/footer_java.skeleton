@@ -37,12 +37,12 @@ public class CLASS
         
         toReturn += "\ne_" + rootNode.getUniqueName() + ".printStackTrace();\n";
       
-       List< ? extends IConnection> onSubJobErrorConns = rootNode.getOutgoingConnections(EConnectionType.ON_SUBJOB_ERROR);
-       if(onSubJobErrorConns!=null){
-           for(IConnection conn : onSubJobErrorConns) {               
-               toReturn += createCallProcess(conn.getTarget(),  className, isMultiThread);
-           }
-       }            
+       //List< ? extends IConnection> onSubJobErrorConns = rootNode.getOutgoingConnections(EConnectionType.ON_SUBJOB_ERROR);
+       //if(onSubJobErrorConns!=null){
+       //    for(IConnection conn : onSubJobErrorConns) {               
+       //        toReturn += createCallProcess(conn.getTarget(),  className, isMultiThread);
+       //    }
+       //}            
        toReturn += "\n}finally {\n}"; 
        return toReturn;
     }
