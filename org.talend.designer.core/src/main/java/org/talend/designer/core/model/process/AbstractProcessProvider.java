@@ -90,4 +90,23 @@ public abstract class AbstractProcessProvider {
         }
     }
 
+    /**
+     * DOC qzhang Comment method "canDeleteNode".
+     * 
+     * @param no
+     * 
+     * @return
+     */
+    public boolean canDeleteNode(Node no) {
+        return true;
+    }
+
+    public boolean canCopyNode(Node no) {
+        return true;
+    }
+
+    public boolean canCutNode(Node no) {
+        return true;
+    }
+
 }

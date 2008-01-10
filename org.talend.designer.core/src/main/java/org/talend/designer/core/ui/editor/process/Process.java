@@ -428,7 +428,7 @@ public class Process extends Element implements IProcess2 {
     public boolean isGridEnabled() {
         if (viewer == null) {
             retrieveAttachedViewer();
-            if (viewer == null) {
+            if (viewer != null) {
                 return (Boolean) viewer.getProperty(SnapToGrid.PROPERTY_GRID_ENABLED);
             }
         } else {
@@ -445,7 +445,7 @@ public class Process extends Element implements IProcess2 {
     public boolean isSnapToGeometryEnabled() {
         if (viewer == null) {
             retrieveAttachedViewer();
-            if (viewer == null) {
+            if (viewer != null) {
                 return (Boolean) viewer.getProperty(SnapToGeometry.PROPERTY_SNAP_ENABLED);
             }
         } else {

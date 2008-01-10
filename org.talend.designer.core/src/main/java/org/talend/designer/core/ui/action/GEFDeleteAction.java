@@ -22,7 +22,10 @@ import org.eclipse.gef.commands.CompoundCommand;
 import org.eclipse.gef.requests.GroupRequest;
 import org.eclipse.gef.ui.actions.DeleteAction;
 import org.eclipse.ui.IWorkbenchPart;
+import org.talend.core.model.components.IComponent;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.core.model.process.AbstractProcessProvider;
+import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
 import org.talend.designer.core.ui.editor.notes.NoteEditPart;
 
@@ -44,8 +47,20 @@ public class GEFDeleteAction extends DeleteAction {
         if (objects.isEmpty()) {
             return false;
         }
+
         if (!(objects.get(0) instanceof EditPart)) {
             return false;
+        }
+        AbstractProcessProvider pProvider = AbstractProcessProvider.findProcessProviderFromPID(IComponent.JOBLET_PID);
+        if (pProvider != null) {
+            for (Object o : objects) {
+                if (o instanceof NodePart) {
+                    Node no = (Node) ((NodePart) o).getModel();
+                    if (!pProvider.canDeleteNode(no)) {
+                        return false;
+                    }
+                }
+            }
         }
         return true;
     }

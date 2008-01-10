@@ -21,9 +21,12 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.actions.ActionFactory;
+import org.talend.core.model.components.IComponent;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.core.model.process.AbstractProcessProvider;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.editor.connections.ConnLabelEditPart;
+import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodeLabelEditPart;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
 import org.talend.designer.core.ui.editor.notes.NoteDirectEditManager;
@@ -70,6 +73,10 @@ public class GEFCopyAction extends SelectionAction {
                     return true;
                 }
                 if (!(o instanceof NodePart) && !(o instanceof NoteEditPart)) {
+                    return false;
+                }
+                AbstractProcessProvider pProvider = AbstractProcessProvider.findProcessProviderFromPID(IComponent.JOBLET_PID);
+                if (pProvider != null && !pProvider.canCopyNode((Node) ((NodePart) o).getModel())) {
                     return false;
                 }
             }
