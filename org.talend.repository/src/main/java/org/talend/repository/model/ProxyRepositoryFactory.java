@@ -289,7 +289,7 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         checkFileNameAndPath(label, RepositoryConstants.FOLDER_PATTERN, type, path, true);
         Folder createFolder = this.repositoryFactoryFromProvider.createFolder(type, path, label);
         if (type == ERepositoryObjectType.PROCESS || type == ERepositoryObjectType.JOBLET) {
-            fireRepositoryPropertyChange(ERepositoryActionName.FOLDER_CREATE.getName(), path, new Object[]{createFolder,type});
+            fireRepositoryPropertyChange(ERepositoryActionName.FOLDER_CREATE.getName(), path, new Object[] { createFolder, type });
         }
         return createFolder;
     }
@@ -722,15 +722,18 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
     public void setDocumentationStatus(List<Status> list) throws PersistenceException {
         this.repositoryFactoryFromProvider.setDocumentationStatus(list);
     }
-    
-    /* (non-Javadoc)
-     * @see org.talend.repository.model.IProxyRepositoryFactory#forceCreate(org.talend.core.model.properties.Item, org.eclipse.core.runtime.IPath)
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.model.IProxyRepositoryFactory#forceCreate(org.talend.core.model.properties.Item,
+     * org.eclipse.core.runtime.IPath)
      */
     public void forceCreate(Item item, IPath path) throws PersistenceException {
         this.repositoryFactoryFromProvider.create(item, path);
-//        if (item instanceof ProcessItem) {
-//            fireRepositoryPropertyChange(ERepositoryActionName.JOB_CREATE.getName(), null, item);
-//        }
+        // if (item instanceof ProcessItem) {
+        // fireRepositoryPropertyChange(ERepositoryActionName.JOB_CREATE.getName(), null, item);
+        // }
     }
 
     /*
@@ -774,10 +777,11 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * @see org.talend.repository.model.IProxyRepositoryFactory#create(org.talend.core.model.properties.Item,
      * org.eclipse.core.runtime.IPath)
      */
-    public void create(Item item, IPath path) throws PersistenceException {
+    public void create(Item item, IPath path, boolean... isImportItem) throws PersistenceException {
         checkFileNameAndPath(item, RepositoryConstants.getPattern(ERepositoryObjectType.getItemType(item)), path, false);
         this.repositoryFactoryFromProvider.create(item, path);
-        if (item instanceof ProcessItem || item instanceof JobletProcessItem) {
+        if ((item instanceof ProcessItem || item instanceof JobletProcessItem)
+                && (isImportItem == null || isImportItem.length == 0)) {
             fireRepositoryPropertyChange(ERepositoryActionName.JOB_CREATE.getName(), null, item);
         }
     }
@@ -1158,16 +1162,19 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
 
     /**
      * DOC tang Comment method "logOnProject".
+     * 
      * @param project
      * @param monitorWrap
-     * @throws PersistenceException 
-     * @throws LoginException 
+     * @throws PersistenceException
+     * @throws LoginException
      */
     public void logOnProject(Project project, IProgressMonitor monitorWrap) throws LoginException, PersistenceException {
         IMigrationToolService service = (IMigrationToolService) GlobalServiceRegister.getDefault().getService(
                 IMigrationToolService.class);
-        service.executeProjectTasks(project, true,monitorWrap);
+        service.executeProjectTasks(project, true, monitorWrap);
 
+        monitorWrap.setTaskName(Messages.getString("ProxyRepositoryFactory.logonInProgress")); //$NON-NLS-1$
+        monitorWrap.worked(1);
         getRepositoryContext().setProject(project);
         LanguageManager.reset();
         this.repositoryFactoryFromProvider.logOnProject(project);
@@ -1179,13 +1186,16 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         String str[] = new String[] { getRepositoryContext().getUser() + "", getRepositoryContext().getProject() + "" }; //$NON-NLS-1$ //$NON-NLS-2$        
         log.info(Messages.getString("ProxyRepositoryFactory.log.loggedOn", str)); //$NON-NLS-1$
 
+        monitorWrap.setTaskName(Messages.getString("ProxyRepositoryFactory.synchronizeLibraries")); //$NON-NLS-1$
+        monitorWrap.worked(1);
+
         try {
             CorePlugin.getDefault().getLibrariesService().syncLibraries();
         } catch (Exception e) {
             ExceptionHandler.process(e);
         }
 
-        service.executeProjectTasks(project, false,monitorWrap);
-        
+        service.executeProjectTasks(project, false, monitorWrap);
+
     }
 }

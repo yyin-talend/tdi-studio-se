@@ -179,7 +179,7 @@ public class LoginDialog extends TitleAreaDialog {
             public void run(IProgressMonitor monitor) {
                 monitorWrap = new EventLoopProgressMonitor(monitor);
 
-                monitorWrap.beginTask("Migration tasks running in progress...", MAX_TASKS);
+                monitorWrap.beginTask(Messages.getString("LoginDialog.logonProject"), MAX_TASKS); //$NON-NLS-1$
                 monitorWrap.worked(2);
                 try {
                     ProxyRepositoryFactory.getInstance().logOnProject(project, monitorWrap);
