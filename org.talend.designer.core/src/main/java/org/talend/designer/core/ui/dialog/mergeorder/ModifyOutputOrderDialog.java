@@ -60,7 +60,7 @@ public class ModifyOutputOrderDialog extends MergeOrderDialog {
     @Override
     protected void configureSizeAndTitle(Shell shell) {
         shell.setSize(new Point(300, 400));
-        shell.setText(multipleOutputNode.getUniqueName() + "Modify output orders");
+        shell.setText(multipleOutputNode.getUniqueName() + " Modify output orders");
     }
 
     /*
