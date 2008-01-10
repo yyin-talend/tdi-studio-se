@@ -13,6 +13,7 @@
 		org.talend.core.GlobalServiceRegister
 		java.util.List
 		java.util.Vector
+                java.util.Map
 	"
 	class="Header" 
 %>
@@ -48,11 +49,28 @@ use talend::runstat;
 use talend::trace;
 <%
     }
-%>
 
-<%for (String routine : CodeGeneratorRoutine.getRoutineName()) {%>
+for (INode node : process.getNodesOfType("tLibraryLoad")) {
+    List<Map<String, String>> libraries =
+        (List<Map<String,String>>)ElementParameterParser.getObjectValue(
+            node,
+            "__LIBRARIES__"
+        );
+
+    for (Map<String, String> library : libraries) {
+%>
+use <%=library.get("LIBRARY")%>;
+<%    
+    }
+
+}
+
+for (String routine : CodeGeneratorRoutine.getRoutineName()) {
+%>
 use <%=routine%>;
-<%}%>
+<%
+}
+%>
 
 my $_licence = <<'END_OF_LICENCE';
 
