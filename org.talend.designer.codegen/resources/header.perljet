@@ -20,9 +20,9 @@
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
     Vector v = (Vector) codeGenArgument.getArgument();
-	IProcess process = (IProcess)v.get(0);
+    IProcess process = (IProcess)v.get(0);
     String version = (String)v.get(1);
-	
+
 	List< ? extends INode> processNodes = (List< ? extends INode>)process.getGeneratingNodes();
 	boolean stats = codeGenArgument.isStatistics();
 	boolean trace = codeGenArgument.isTrace();
@@ -266,6 +266,8 @@ sub global_die_catcher {
     }
 }
 <% // Methods for RUN IF Error links %>
+
+# OnComponentError dedicated subs for all components of the job design
 <%
     for (INode node : processNodes) {
         if (node.isActivate()) {
@@ -277,6 +279,36 @@ sub <%=node.getUniqueName() %>_error() {
 
             for (IConnection conn : conns) {
                 if (conn.getLineStyle().equals(EConnectionType.ON_COMPONENT_ERROR)){
+%>
+    <%=conn.getTarget().getUniqueName() %>_subprocess();
+    $_globals{job_failure} = 0;
+<%
+                }
+            }
+    INode subProcessStartNode = node.getSubProcessStartNode(false);
+%>
+
+    # even if the error was "catched" in an OnComponentError, we call the
+    # corresponding OnSubjobError sub
+    <%=subProcessStartNode.getUniqueName()%>_onSubjobError();
+}
+<%
+        }
+    }
+%>
+
+# OnSubjobError dedicated subs for all components responsible (starting) a
+# subjob
+<%
+    for (INode node : processNodes) {
+        if (node.isActivate() && node.isSubProcessStart()) {
+%>
+sub <%=node.getUniqueName()%>_onSubjobError() {
+<%
+            List< ? extends IConnection> conns = node.getOutgoingConnections();
+            for (IConnection conn : conns) {
+                EConnectionType connType = conn.getLineStyle();
+                if (connType.equals(EConnectionType.ON_SUBJOB_ERROR)) {
 %>
     <%=conn.getTarget().getUniqueName() %>_subprocess();
     $_globals{job_failure} = 0;
