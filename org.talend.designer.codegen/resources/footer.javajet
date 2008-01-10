@@ -131,17 +131,22 @@
 			        
 			%>
 			try{
-			<%=ctxParam.getName()%>=(java.util.Date)(new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(context.getProperty("<%=ctxParam.getName()%>")));
+				<%=ctxParam.getName()%>=(java.util.Date)(new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(context.getProperty("<%=ctxParam.getName()%>")));
 			}catch(ParseException e)
 			{
 			    e.printStackTrace();
+			    <%=ctxParam.getName()%>=null;
 			}
 			<%
 			      
 			    }else if(typeToGenerate.equals("Integer"))
 			    {
 			  %> 
-			  <%=ctxParam.getName()%>=Integer.parseInt(context.getProperty("<%=ctxParam.getName()%>"));
+			  try{
+			  	<%=ctxParam.getName()%>=Integer.parseInt(context.getProperty("<%=ctxParam.getName()%>"));
+			  }catch(NumberFormatException e){
+			  	 <%=ctxParam.getName()%>=null;
+			  }
 			  <%
 			    }else if(typeToGenerate.equals("Object")||typeToGenerate.equals("String") )
 			    {
@@ -157,7 +162,11 @@
 			     else
 			    {
 			 %> 
-			 <%=ctxParam.getName()%>=<%=typeToGenerate%>.parse<%=typeToGenerate%> (context.getProperty("<%=ctxParam.getName()%>"));
+			 try{
+			 	<%=ctxParam.getName()%>=<%=typeToGenerate%>.parse<%=typeToGenerate%> (context.getProperty("<%=ctxParam.getName()%>"));
+			 }catch(NumberFormatException e){
+			  	<%=ctxParam.getName()%>=null;
+			  }
 			 <%
 			    }
 			}
