@@ -1013,7 +1013,7 @@ public class Process extends Element implements IProcess2 {
         for (IElementParameter currentParam : node.getElementParameters()) {
             if (currentParam.getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
                 IElementParameter schemaParam = currentParam.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName());
-                if (schemaParam != null && ((ElementParameter) schemaParam).isDisplayedByDefault()) {
+                if (schemaParam != null && ((ElementParameter) currentParam).isDisplayedByDefault()) {
                     if (schemaParam.getValue().equals(EmfComponent.REPOSITORY)) {
                         String metaRepositoryName = (String) currentParam.getChildParameters().get(
                                 EParameterName.REPOSITORY_SCHEMA_TYPE.getName()).getValue();

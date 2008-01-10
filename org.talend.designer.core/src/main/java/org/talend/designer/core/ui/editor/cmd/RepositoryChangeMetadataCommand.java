@@ -42,30 +42,23 @@ public class RepositoryChangeMetadataCommand extends ChangeMetadataCommand {
 
     private final Node node;
 
-    public RepositoryChangeMetadataCommand(Node node, String propName, Object propValue, IMetadataTable newOutputMetadata) {
+    private String newRepositoryIdValue, oldRepositoryIdValue;
+
+    public RepositoryChangeMetadataCommand(Node node, String propName, Object propValue, IMetadataTable newOutputMetadata,
+            String newRepositoryIdValue) {
         super(node, node.getElementParameter(propName) == null ? null : node.getElementParameter(propName).getParentParameter(),
                 null, newOutputMetadata);
         this.propName = propName;
         oldPropValue = node.getPropertyValue(propName);
         newPropValue = propValue;
         this.node = node;
+        this.newRepositoryIdValue = newRepositoryIdValue;
         this.setRepositoryMode(true);
     }
 
     @Override
     public void execute() {
         node.setPropertyValue(propName, newPropValue);
-        // boolean repositoryModel = true;
-        // String propertyTypeModel = (String) node.getElementParameter(
-        // EParameterName.PROPERTY_TYPE.getName()).getValue();
-        //
-        // if (EmfComponent.BUILTIN.equals(newPropValue)
-        // && EmfComponent.BUILTIN.equals(propertyTypeModel)) {
-        // repositoryModel = false;
-        // }
-        // for (IElementParameter p : node.getElementParameters()) {
-        // p.setRepositoryValueUsed(repositoryModel);
-        // }
 
         if (node.isExternalNode() && !node.isELTComponent()) {
             for (IElementParameter parameter : node.getElementParameters()) {
@@ -83,20 +76,28 @@ public class RepositoryChangeMetadataCommand extends ChangeMetadataCommand {
         String schemaType = (String) schemaTypeParameter.getValue();
         if (schemaType != null && schemaType.equals(EmfComponent.REPOSITORY)) {
             repositorySchemaTypeParameter.setShow(true);
+            if (newRepositoryIdValue != null) {
+                oldRepositoryIdValue = (String) repositorySchemaTypeParameter.getValue();
+                repositorySchemaTypeParameter.setValue(newRepositoryIdValue);
+            }
         } else {
             repositorySchemaTypeParameter.setShow(false);
         }
 
         node.getElementParameter(EParameterName.UPDATE_COMPONENTS.getName()).setValue(true);
         setDBTableFieldValue(node, newOutputMetadata.getLabel(), oldOutputMetadata.getTableName());
-        refreshPropertyView();
         super.execute();
     }
 
     @Override
     public void undo() {
         node.setPropertyValue(propName, oldPropValue);
-        refreshPropertyView();
+        IElementParameter repositorySchemaTypeParameter = node.getElementParameter(propName).getParentParameter()
+                .getChildParameters().get(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
+        if (newRepositoryIdValue != null) {
+            repositorySchemaTypeParameter.setValue(oldRepositoryIdValue);
+        }
+        node.getElementParameter(EParameterName.UPDATE_COMPONENTS.getName()).setValue(true);
         super.undo();
     }
 

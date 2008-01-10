@@ -415,6 +415,9 @@ public class ElementParameter implements IElementParameter {
 
     @Override
     public String toString() {
+        if (value == null) {
+            return name + ": null"; //$NON-NLS-1$
+        }
         return name + ": " + value.toString(); //$NON-NLS-1$
     }
 

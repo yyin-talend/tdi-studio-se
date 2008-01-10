@@ -317,7 +317,7 @@ public class TalendEditorDropTargetListener implements TransferDropTargetListene
                 MetadataTable table = (MetadataTable) object.getAdapter(MetadataTable.class);
                 String value = connectionItem.getProperty().getId() + " - " + object.getLabel(); //$NON-NLS-1$
                 RepositoryChangeMetadataCommand command2 = new RepositoryChangeMetadataCommand(node,
-                        EParameterName.REPOSITORY_SCHEMA_TYPE.getName(), value, repositoryTableMap.get(value));
+                        EParameterName.REPOSITORY_SCHEMA_TYPE.getName(), value, repositoryTableMap.get(value), null);
                 list.add(command2);
             }
 

@@ -148,7 +148,7 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
                     switchParam.setValue(Boolean.FALSE);
                 }
                 RepositoryChangeMetadataCommand changeMetadataCommand = new RepositoryChangeMetadataCommand((Node) elem,
-                        fullParamName, value, repositoryMetadata);
+                        fullParamName, value, repositoryMetadata, null);
                 changeMetadataCommand.setConnection(connection);
                 // changeMetadataCommand.setMaps(this.dynamicTabbedPropertySection.getTableIdAndDbTypeMap(),
                 // this.dynamicTabbedPropertySection.getTableIdAndDbSchemaMap(), this.dynamicTabbedPropertySection
@@ -163,6 +163,7 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
             if (elem instanceof Node) {
                 Node node = (Node) elem;
                 boolean isReadOnly = false;
+                String newRepositoryIdValue = null;
                 if (node.getMetadataFromConnector(param.getContext()) != null) {
                     isReadOnly = node.getMetadataFromConnector(param.getContext()).isReadOnly();
                 }
@@ -192,17 +193,18 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
                         connection = dynamicProperty.getRepositoryConnectionItemMap().get(propertySelected).getConnection();
                     }
 
-                    String schemaSelected = (String) param.getParentParameter().getChildParameters().get(
-                            EParameterName.REPOSITORY_SCHEMA_TYPE.getName()).getValue();
+                    IElementParameter repositorySchemaType = param.getParentParameter().getChildParameters().get(
+                            EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
+                    String schemaSelected = (String) repositorySchemaType.getValue();
                     if (repositoryTableMap.containsKey(schemaSelected)) {
                         repositoryMetadata = repositoryTableMap.get(schemaSelected);
                     } else {
                         if (repositoryTableMap.keySet().size() == 0) {
                             repositoryMetadata = new MetadataTable();
                         } else {
+                            newRepositoryIdValue = repositoryTableMap.keySet().iterator().next();
                             // Gets the schema of the first item in repository schema type combo.
-                            repositoryMetadata = repositoryTableMap.get(repositoryTableMap.keySet().iterator().next());
-
+                            repositoryMetadata = repositoryTableMap.get(newRepositoryIdValue);
                         }
                     }
                 }
@@ -211,8 +213,9 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
                 }
 
                 RepositoryChangeMetadataCommand changeMetadataCommand = new RepositoryChangeMetadataCommand((Node) elem,
-                        fullParamName, value, repositoryMetadata);
+                        fullParamName, value, repositoryMetadata, newRepositoryIdValue);
                 changeMetadataCommand.setConnection(connection);
+
                 // changeMetadataCommand.setMaps(this.dynamicTabbedPropertySection.getTableIdAndDbTypeMap(),
                 // this.dynamicTabbedPropertySection.getTableIdAndDbSchemaMap(), this.dynamicTabbedPropertySection
                 // .getRepositoryTableMap());
