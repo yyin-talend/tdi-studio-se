@@ -15,7 +15,6 @@ package org.talend.designer.core.ui.editor.cmd;
 import java.util.List;
 
 import org.eclipse.gef.commands.Command;
-import org.talend.core.model.components.IComponent;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -33,20 +32,10 @@ public class ChangeMergeOrderCommand extends Command {
 
     private List<Connection> connectionInOldOrder;
 
-    private String nodeType;
-
     public ChangeMergeOrderCommand(Node mergeNode, List<Connection> inputConnections) {
         this.mergeNode = mergeNode;
         this.connectionInNewOrder = inputConnections;
-
-        this.nodeType = this.mergeNode.getComponent().getComponentType();
-        if (nodeType.equals(IComponent.MULTIPLE_IN_SINGLE_OUT_TYPE)) {
-            this.connectionInOldOrder = (List<Connection>) mergeNode.getIncomingConnections();
-        } else if (nodeType.equals(IComponent.SINGLE_IN_MULTIPLE_OUT_TYPE)) {
-            this.connectionInOldOrder = (List<Connection>) mergeNode.getOutgoingConnections();
-        } else {
-            this.connectionInOldOrder = (List<Connection>) mergeNode.getIncomingConnections();
-        }
+        this.connectionInOldOrder = (List<Connection>) mergeNode.getIncomingConnections();
 
         if (connectionInNewOrder.size() != connectionInOldOrder.size()) {
             throw new IllegalArgumentException("new connection list should have the same size as the old one"); //$NON-NLS-1$
@@ -62,14 +51,7 @@ public class ChangeMergeOrderCommand extends Command {
     @Override
     public void execute() {
 
-        if (nodeType.equals(IComponent.MULTIPLE_IN_SINGLE_OUT_TYPE)) {
-            mergeNode.setIncomingConnections(connectionInNewOrder);
-        } else if (nodeType.equals(IComponent.SINGLE_IN_MULTIPLE_OUT_TYPE)) {
-            mergeNode.setOutgoingConnections(connectionInNewOrder);
-        } else {
-            mergeNode.setIncomingConnections(connectionInNewOrder);
-        }
-
+        mergeNode.setIncomingConnections(connectionInNewOrder);
         connectionInNewOrder.get(0).updateAllId();
         ((Process) mergeNode.getProcess()).checkStartNodes();
     }

@@ -40,6 +40,7 @@ import org.talend.designer.core.ui.action.ConnectionSetAsMainRef;
 import org.talend.designer.core.ui.action.GEFCopyAction;
 import org.talend.designer.core.ui.action.GEFPasteAction;
 import org.talend.designer.core.ui.action.ModifyMergeOrderAction;
+import org.talend.designer.core.ui.action.ModifyOutputOrderAction;
 import org.talend.designer.core.ui.action.NodeBreakpointAction;
 import org.talend.designer.core.ui.action.SendBackwardAction;
 import org.talend.designer.core.ui.action.SendToBackAction;
@@ -137,6 +138,11 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
             }
 
             action = getAction(ModifyMergeOrderAction.ID);
+            if (action.isEnabled()) {
+                menu.appendToGroup(GEFActionConstants.GROUP_REST, action);
+            }
+
+            action = getAction(ModifyOutputOrderAction.ID);
             if (action.isEnabled()) {
                 menu.appendToGroup(GEFActionConstants.GROUP_REST, action);
             }

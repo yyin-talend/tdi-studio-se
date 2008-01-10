@@ -361,9 +361,9 @@ public abstract class AbstractStatsLogsComponent implements IComponent {
      * 
      * @see org.talend.core.model.components.IComponent#getComponentType()
      */
-    public String getComponentType() {
+    public boolean isMultipleOutput() {
         // TODO Auto-generated method stub
-        return null;
+        return false;
     }
 
 }

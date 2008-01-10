@@ -36,7 +36,6 @@ import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.LAYOUT_MODE;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
-import org.talend.core.model.components.IComponent;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.connections.Connection;
@@ -58,11 +57,27 @@ public class MergeOrderDialog extends Dialog {
     @Override
     protected void configureShell(Shell newShell) {
         super.configureShell(newShell);
-        newShell.setSize(new Point(300, 400));
-        newShell.setText(mergeNode.getUniqueName() + Messages.getString("MergeOrderDialog.ModifyMergeOrder")); //$NON-NLS-1$
+        configureSizeAndTitle(newShell);
     }
 
-    private List<Connection> connectionList;
+    /**
+     * yzhang Comment method "configureSizeAndTitle".
+     * 
+     * @param shell
+     */
+    protected void configureSizeAndTitle(Shell shell) {
+        shell.setSize(new Point(300, 400));
+        shell.setText(mergeNode.getUniqueName() + Messages.getString("MergeOrderDialog.ModifyMergeOrder")); //$NON-NLS-1$
+    }
+
+    protected List<Connection> connectionList;
+
+    /**
+     * yzhang MergeOrderDialog constructor comment.
+     */
+    protected MergeOrderDialog(Shell parentShell) {
+        super(parentShell);
+    }
 
     /**
      * DOC nrousseau MergeOrderDialog constructor comment.
@@ -72,15 +87,8 @@ public class MergeOrderDialog extends Dialog {
     public MergeOrderDialog(Shell parentShell, Node mergeNode) {
         super(parentShell);
         this.mergeNode = mergeNode;
-        List<Connection> currentList = null;
-        String nodeType = this.mergeNode.getComponent().getComponentType();
-        if (nodeType.equals(IComponent.MULTIPLE_IN_SINGLE_OUT_TYPE)) {
-            currentList = (List<Connection>) mergeNode.getIncomingConnections();
-        } else if (nodeType.equals(IComponent.SINGLE_IN_MULTIPLE_OUT_TYPE)) {
-            currentList = (List<Connection>) mergeNode.getOutgoingConnections();
-        } else {
-            currentList = (List<Connection>) mergeNode.getIncomingConnections();
-        }
+        List<Connection> currentList = (List<Connection>) mergeNode.getIncomingConnections();
+
         this.connectionList = new ArrayList<Connection>(currentList);
     }
 
@@ -167,7 +175,8 @@ public class MergeOrderDialog extends Dialog {
         moveDown.setToolTipText(Messages.getString("MergeOrderDialog.MoveDown")); //$NON-NLS-1$
         moveDown.setImage(ImageProvider.getImage(EImage.DOWN_ICON));
 
-        final int nbConn = mergeNode.getIncomingConnections(EConnectionType.FLOW_MERGE).size();
+        final int nbConn = getConnectionQty();
+
         moveDown.addListener(SWT.Selection, new Listener() {
 
             public void handleEvent(Event event) {
@@ -182,6 +191,15 @@ public class MergeOrderDialog extends Dialog {
 
         });
         return composite;
+    }
+
+    /**
+     * yzhang Comment method "getConnectionQty".
+     * 
+     * @return
+     */
+    protected int getConnectionQty() {
+        return mergeNode.getIncomingConnections(EConnectionType.FLOW_MERGE).size();
     }
 
     /**
