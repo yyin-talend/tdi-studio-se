@@ -65,11 +65,11 @@ public class ModifyOutputOrderAction extends SelectionAction {
         if (o instanceof ConnectionPart) {
             ConnectionPart part = (ConnectionPart) o;
             Connection connection = (Connection) part.getModel();
-            node = connection.getTarget();
+            node = connection.getSource();
         } else if (o instanceof ConnLabelEditPart) {
             ConnectionPart part = (ConnectionPart) ((ConnLabelEditPart) o).getParent();
             Connection connection = (Connection) part.getModel();
-            node = connection.getTarget();
+            node = connection.getSource();
         } else if (o instanceof NodePart) {
             node = (Node) ((NodePart) o).getModel();
         }
