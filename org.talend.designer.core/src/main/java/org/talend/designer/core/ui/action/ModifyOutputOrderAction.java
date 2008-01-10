@@ -78,7 +78,7 @@ public class ModifyOutputOrderAction extends SelectionAction {
             return false;
         }
         multipleOutputNode = node;
-        setText("Modify output drder");
+        setText("Modify output links order");
 
         return true;
     }
