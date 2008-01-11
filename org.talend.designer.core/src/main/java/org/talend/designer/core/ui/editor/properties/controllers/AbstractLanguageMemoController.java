@@ -43,6 +43,7 @@ import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.commons.ui.swt.colorstyledtext.ColorManager;
 import org.talend.commons.ui.swt.colorstyledtext.ColorStyledText;
 import org.talend.core.CorePlugin;
+import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.ui.snippet.SnippetDropTargetListener;
 import org.talend.core.ui.viewer.ReconcilerViewer;
@@ -163,10 +164,18 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
                     if (elem instanceof Node) {
                         process = (Process) ((Node) elem).getProcess();
                     } else if (elem instanceof Connection) {
-                        process = (Process) ((Connection) elem).getSource().getProcess();
+                        Connection connection = (Connection) elem;
+                        process = (Process) connection.getSource().getProcess();
+                        //see bug 0001645
+                        if (connection.getLineStyle().equals(EConnectionType.RUN_IF)) {
+                            viewer = (TalendJavaSourceViewer) TalendJavaSourceViewer.createViewerForIfConnection(b);
+                        }
                     }
-                    viewer = (TalendJavaSourceViewer) TalendJavaSourceViewer.createViewer(b, SWT.BORDER | SWT.MULTI
-                            | SWT.V_SCROLL | SWT.H_SCROLL | SWT.WRAP, false);
+                    if (viewer == null) {
+                        viewer = (TalendJavaSourceViewer) TalendJavaSourceViewer.createViewer(b, SWT.BORDER | SWT.MULTI
+                                | SWT.V_SCROLL | SWT.H_SCROLL | SWT.WRAP, false);
+                    }
+
                     text = viewer.getTextWidget();
 
                     if (process != null) {
