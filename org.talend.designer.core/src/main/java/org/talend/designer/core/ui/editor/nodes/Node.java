@@ -2043,6 +2043,8 @@ public class Node extends Element implements INode {
     public void reloadComponent(IComponent component, Map<String, Object> parameters) {
         init(component);
         this.setMetadataList((List<IMetadataTable>) parameters.get(INode.RELOAD_PARAMETER_KEY_METADATA_LIST));
+        this.setElementParameters((List<? extends IElementParameter>) parameters
+                .get(INode.RELAOD_PARAMETER_KEY_ELEMENT_PARAMETERS));
 
     }
 

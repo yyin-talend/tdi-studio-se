@@ -229,6 +229,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
             IComponent newComponent = components.get(node.getComponent().getName());
             Map<String, Object> parameters = new HashMap<String, Object>();
             parameters.put(INode.RELOAD_PARAMETER_KEY_METADATA_LIST, node.getMetadataList());
+            parameters.put(INode.RELAOD_PARAMETER_KEY_ELEMENT_PARAMETERS, node.getElementParameters());
             node.reloadComponent(newComponent, parameters);
         }
 
