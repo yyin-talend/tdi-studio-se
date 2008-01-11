@@ -194,6 +194,9 @@ public class LoginDialog extends TitleAreaDialog {
 
         try {
             progressDialog.executeProcess();
+        } catch (InvocationTargetException e) {
+            MessageBoxExceptionHandler.process(e.getTargetException(), getShell());
+            return;
         } catch (Exception e) {
             MessageBoxExceptionHandler.process(e, getShell());
             return;
