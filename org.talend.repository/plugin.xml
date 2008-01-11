@@ -204,6 +204,14 @@
              name="Metadata/Create LDAP schemas">
        </Action>
        <Action
+             class="org.talend.repository.ui.actions.metadata.CreateWSDLSchemaAction"
+             id="org.talend.repository.actions.createWSDLSchema"
+             isEditAction="true"
+             isReadAction="true"
+             level="10"
+             name="Metadata/Create WSDL schemas">
+       </Action>
+       <Action
              class="org.talend.repository.ui.actions.metadata.CopyToGenericSchemaAction"
              id="org.talend.repository.CopyToGenericSchemaAction"
              level="18"

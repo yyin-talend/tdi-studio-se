@@ -24,7 +24,6 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.talend.commons.ui.utils.PathUtils;
-import org.talend.commons.utils.StringUtils;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataColumn;
@@ -33,18 +32,17 @@ import org.talend.core.model.metadata.builder.connection.FileConnection;
 import org.talend.core.model.metadata.builder.connection.LDAPSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.LdifFileConnection;
 import org.talend.core.model.metadata.builder.connection.SchemaTarget;
+import org.talend.core.model.metadata.builder.connection.WSDLSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
 import org.talend.core.model.metadata.builder.connection.XmlXPathLoopDescriptor;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.utils.CsvArray;
-import org.talend.core.utils.XmlArray;
 import org.talend.repository.i18n.Messages;
-import org.talend.repository.model.EAliasesDereference;
-import org.talend.repository.model.EReferrals;
 import org.talend.repository.preview.AsynchronousPreviewHandler;
 import org.talend.repository.preview.IPreview;
 import org.talend.repository.preview.LDAPSchemaBean;
 import org.talend.repository.preview.ProcessDescription;
+import org.talend.repository.preview.WSDLSchemaBean;
 
 /**
  * Create a ProcessDescription to use in the step2 & step3 of CSV File Wizard on Shadow mode.
@@ -117,10 +115,9 @@ public class ShadowProcessHelper {
      */
     public static ProcessDescription getProcessDescription(final XmlFileConnection connection) {
         ProcessDescription processDescription = new ProcessDescription();
-        processDescription.setFilepath(TalendTextUtils
-                .addQuotes(PathUtils.getPortablePath(connection.getXmlFilePath())));
-        processDescription.setLoopQuery(TalendTextUtils.addQuotes(((XmlXPathLoopDescriptor) connection.getSchema().get(
-                0)).getAbsoluteXPathQuery()));
+        processDescription.setFilepath(TalendTextUtils.addQuotes(PathUtils.getPortablePath(connection.getXmlFilePath())));
+        processDescription.setLoopQuery(TalendTextUtils.addQuotes(((XmlXPathLoopDescriptor) connection.getSchema().get(0))
+                .getAbsoluteXPathQuery()));
         if (((XmlXPathLoopDescriptor) connection.getSchema().get(0)).getLimitBoucle() != null
                 && !("").equals(((XmlXPathLoopDescriptor) connection.getSchema().get(0)).getLimitBoucle()) //$NON-NLS-1$
                 && (((XmlXPathLoopDescriptor) connection.getSchema().get(0)).getLimitBoucle().intValue()) != 0) {
@@ -341,6 +338,63 @@ public class ShadowProcessHelper {
 
         processDescription.setEncoding(TalendTextUtils.addQuotes("UTF-8")); //$NON-NLS-1$
 
+        return processDescription;
+    }
+
+    public static ProcessDescription getProcessDescription(WSDLSchemaConnection connection) {
+        ProcessDescription processDescription = new ProcessDescription();
+        List<IMetadataTable> tableSchema = new ArrayList<IMetadataTable>();
+
+        IMetadataTable table = new MetadataTable();
+
+        List<IMetadataColumn> schema = new ArrayList<IMetadataColumn>();
+
+        if (connection.getValue() != null && !connection.getValue().isEmpty()) {
+            Iterator<String> iterate = connection.getValue().iterator();
+
+            while (iterate.hasNext()) {
+                IMetadataColumn iMetadataColumn = new MetadataColumn();
+                iMetadataColumn.setLabel(iterate.next());
+                iMetadataColumn.setKey(false);
+                iMetadataColumn.setLength(0);
+                iMetadataColumn.setNullable(false);
+                iMetadataColumn.setType("String"); //$NON-NLS-1$
+                iMetadataColumn.setTalendType("id_String"); //$NON-NLS-1$
+
+                schema.add(iMetadataColumn);
+            }
+        } else {
+
+            IMetadataColumn iMetadataDn = new MetadataColumn();
+            iMetadataDn.setLabel(connection.getMethodName()); //$NON-NLS-1$
+            iMetadataDn.setKey(false);
+            iMetadataDn.setLength(0);
+            iMetadataDn.setNullable(false);
+            iMetadataDn.setType("String"); //$NON-NLS-1$
+            iMetadataDn.setTalendType("id_String"); //$NON-NLS-1$
+
+            schema.add(iMetadataDn);
+        }
+
+        table.setTableName("tWebServiceInput"); //$NON-NLS-1$
+        table.setListColumns(schema);
+        tableSchema.add(table);
+        processDescription.setSchema(tableSchema);
+        WSDLSchemaBean bean = new WSDLSchemaBean();
+        // TODO: added properties here...
+        bean.setWslUrl(TalendTextUtils.addQuotes(connection.getWSDL()));
+        bean.setMethod(TalendTextUtils.addQuotes(connection.getMethodName()));
+        bean.setNeedAuth(connection.isNeedAuth());
+        bean.setUserName(TalendTextUtils.addQuotes(connection.getUserName()));
+        bean.setPassword(TalendTextUtils.addQuotes(connection.getPassword()));
+        bean.setParameters(connection.getParameters());
+        bean.setUseProxy(connection.isUseProxy());
+        bean.setProxyHost(TalendTextUtils.addQuotes(connection.getProxyHost()));
+        bean.setProxyPort(TalendTextUtils.addQuotes(connection.getProxyPort()));
+        bean.setProxyUser(TalendTextUtils.addQuotes(connection.getProxyUser()));
+        bean.setProxyPassword(TalendTextUtils.addQuotes(connection.getProxyPassword()));
+        processDescription.setWsdlSchemaBean(bean);
+        processDescription.setEncoding(TalendTextUtils.addQuotes("UTF-8")); //$NON-NLS-1$
         return processDescription;
     }
 }

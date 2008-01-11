@@ -1160,6 +1160,16 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         return this.repositoryFactoryFromProvider.getJoblets();
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.model.IProxyRepositoryFactory#getMetadataWSDLSchema()
+     */
+    public RootContainer<String, IRepositoryObject> getMetadataWSDLSchema() throws PersistenceException {
+        // TODO Auto-generated method stub
+        return this.repositoryFactoryFromProvider.getMetadataWSDLSchema();
+    }
+
     /**
      * DOC tang Comment method "logOnProject".
      * 

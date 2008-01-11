@@ -22,6 +22,26 @@ public class ProcessDescription extends AbstractProcessDescription {
 
     private LDAPSchemaBean ldapSchemaBean;
 
+    private WSDLSchemaBean wsdlSchemaBean;
+
+    /**
+     * Getter for wsdlSchemaBean.
+     * 
+     * @return the wsdlSchemaBean
+     */
+    public WSDLSchemaBean getWsdlSchemaBean() {
+        return this.wsdlSchemaBean;
+    }
+
+    /**
+     * Sets the wsdlSchemaBean.
+     * 
+     * @param wsdlSchemaBean the wsdlSchemaBean to set
+     */
+    public void setWsdlSchemaBean(WSDLSchemaBean wsdlSchemaBean) {
+        this.wsdlSchemaBean = wsdlSchemaBean;
+    }
+
     /**
      * Constructs a new ProcessDescription.
      */

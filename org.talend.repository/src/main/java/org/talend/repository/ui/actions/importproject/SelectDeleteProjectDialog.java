@@ -267,6 +267,10 @@ public class SelectDeleteProjectDialog extends SelectionDialog {
                     if (obj instanceof IProject) {
                         IProject project = (IProject) obj;
                         project.delete(true, null);
+                        // IResourceChangeDescriptionFactory factory =
+                        // ResourceChangeValidator.getValidator().createDeltaFactory();
+                        // factory.delete(project);
+
                     } else if (obj instanceof IFolder) {
                         IFolder folder = (IFolder) obj;
                         folder.delete(false, null);

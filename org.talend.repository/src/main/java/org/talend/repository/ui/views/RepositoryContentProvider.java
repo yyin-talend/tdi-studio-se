@@ -80,7 +80,7 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
 
     private RepositoryNode businessProcessNode, recBinNode, codeNode, routineNode, snippetsNode, processNode, contextNode,
             docNode, metadataConNode, metadataFileNode, metadataFilePositionalNode, metadataFileRegexpNode, metadataFileXmlNode,
-            metadataFileLdifNode, metadataGenericSchemaNode, metadataLDAPSchemaNode;
+            metadataFileLdifNode, metadataGenericSchemaNode, metadataLDAPSchemaNode, metadataWSDLSchemaNode;
 
     private RepositoryNode jobletNode;
 
@@ -157,6 +157,9 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
                 } else if (parent == metadataGenericSchemaNode) {
                     convert(factory.getMetadataGenericSchema(), metadataGenericSchemaNode,
                             ERepositoryObjectType.METADATA_GENERIC_SCHEMA, recBinNode);
+                } else if (parent == metadataWSDLSchemaNode) {
+                    convert(factory.getMetadataWSDLSchema(), metadataWSDLSchemaNode, ERepositoryObjectType.METADATA_WSDL_SCHEMA,
+                            recBinNode);
                 } else if (parent == recBinNode) {
                     List<IRepositoryObject> objects = factory.getRecycleBinItems();
                     for (IRepositoryObject object : objects) {
@@ -331,7 +334,11 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
         metadataGenericSchemaNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_GENERIC_SCHEMA);
         metadataGenericSchemaNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_GENERIC_SCHEMA);
         metadataNode.getChildren().add(metadataGenericSchemaNode);
-
+        // 6.9 WSDL
+        metadataWSDLSchemaNode = new RepositoryNode(null, root, ENodeType.SYSTEM_FOLDER);
+        metadataWSDLSchemaNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_WSDL_SCHEMA);
+        metadataWSDLSchemaNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_WSDL_SCHEMA);
+        metadataNode.getChildren().add(metadataWSDLSchemaNode);
     }
 
     /**

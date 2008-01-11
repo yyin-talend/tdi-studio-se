@@ -135,6 +135,10 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         return getObjectFromFolder(ERepositoryObjectType.METADATA_GENERIC_SCHEMA, true);
     }
 
+    public RootContainer<String, IRepositoryObject> getMetadataWSDLSchema() throws PersistenceException {
+        return getObjectFromFolder(ERepositoryObjectType.METADATA_WSDL_SCHEMA, true);
+    }
+
     /*
      * (non-Javadoc)
      * 
@@ -147,7 +151,8 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
                 ERepositoryObjectType.ROUTINES, ERepositoryObjectType.BUSINESS_PROCESS,
                 ERepositoryObjectType.METADATA_FILE_REGEXP, ERepositoryObjectType.METADATA_FILE_XML,
                 ERepositoryObjectType.METADATA_FILE_LDIF, ERepositoryObjectType.METADATA_LDAP_SCHEMA,
-                ERepositoryObjectType.METADATA_GENERIC_SCHEMA, ERepositoryObjectType.JOBLET };
+                ERepositoryObjectType.METADATA_GENERIC_SCHEMA, ERepositoryObjectType.METADATA_WSDL_SCHEMA,
+                ERepositoryObjectType.JOBLET };
 
         List<IRepositoryObject> deletedItems = new ArrayList<IRepositoryObject>();
         for (int i = 0; i < types.length; i++) {
@@ -185,7 +190,8 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
                 ERepositoryObjectType.METADATA_FILE_REGEXP, ERepositoryObjectType.METADATA_FILE_XML,
                 ERepositoryObjectType.METADATA_FILE_LDIF, ERepositoryObjectType.PROCESS, ERepositoryObjectType.ROUTINES,
                 ERepositoryObjectType.CONTEXT, ERepositoryObjectType.SNIPPETS, ERepositoryObjectType.METADATA_LDAP_SCHEMA,
-                ERepositoryObjectType.METADATA_GENERIC_SCHEMA, ERepositoryObjectType.JOBLET };
+                ERepositoryObjectType.METADATA_GENERIC_SCHEMA, ERepositoryObjectType.METADATA_WSDL_SCHEMA,
+                ERepositoryObjectType.JOBLET };
         for (ERepositoryObjectType repositoryObjectType : repositoryObjectTypeList) {
             Object folder = getFolder(project, repositoryObjectType);
             toReturn.addAll(getSerializableFromFolder(folder, id, repositoryObjectType, allVersion, true, true));

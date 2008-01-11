@@ -49,6 +49,8 @@ public class ShadowProcess<T extends IProcessDescription> {
      */
     private static final String TEMP_LDAP_SCHEMA_FILE_NAME = "TempLDAPSchema";
 
+    private static final String TEMP_WSDL_SCHEMA_FILE_NAME = "TempWSDLSchema";
+
     /**
      * Available Shadow Process Types.
      * 
@@ -62,6 +64,7 @@ public class ShadowProcess<T extends IProcessDescription> {
         FILE_REGEXP,
         FILE_XML,
         FILE_LDIF,
+        WSDL_SCHEMA,
         LDAP_SCHEMA;
 
         private EShadowProcessType() {
@@ -94,11 +97,15 @@ public class ShadowProcess<T extends IProcessDescription> {
         if (filePath != null) {
             this.inPath = new Path(filePath);
             this.outPath = buildTempCSVFilename(this.inPath);
-        } else // Used for LDAP schema only
+        } else if (type.name().equals("LDAP_SCHEMA")) // Used for LDAP schema only
         {
             IPath tempPath = Path.fromOSString(CorePlugin.getDefault().getPreferenceStore().getString(
                     ITalendCorePrefConstants.FILE_PATH_TEMP));
             this.outPath = tempPath.append(TEMP_LDAP_SCHEMA_FILE_NAME + "." + CSV_EXT);
+        } else if (type.name().equals("WSDL_SCHEMA")) {
+            IPath tempPath = Path.fromOSString(CorePlugin.getDefault().getPreferenceStore().getString(
+                    ITalendCorePrefConstants.FILE_PATH_TEMP));
+            this.outPath = tempPath.append(TEMP_WSDL_SCHEMA_FILE_NAME + "." + CSV_EXT);
         }
         this.type = type;
     }
@@ -112,11 +119,11 @@ public class ShadowProcess<T extends IProcessDescription> {
         case FILE_DELIMITED:
 
         case FILE_CSV:
-            FileInputDelimitedNode inDelimitedNode = new FileInputDelimitedNode(PathUtils.getPortablePath(inPath
-                    .toOSString()), description //$NON-NLS-1$ //$NON-NLS-2$
-                    .getRowSeparator(), description.getFieldSeparator(), description.getLimitRows(), description
-                    .getHeaderRow(), description.getFooterRow(), description.getEscapeCharacter(), description
-                    .getTextEnclosure(), description.getRemoveEmptyRowsToSkip(), description.getEncoding(), type);
+            FileInputDelimitedNode inDelimitedNode = new FileInputDelimitedNode(PathUtils.getPortablePath(inPath.toOSString()),
+                    description //$NON-NLS-1$ //$NON-NLS-2$
+                            .getRowSeparator(), description.getFieldSeparator(), description.getLimitRows(), description
+                            .getHeaderRow(), description.getFooterRow(), description.getEscapeCharacter(), description
+                            .getTextEnclosure(), description.getRemoveEmptyRowsToSkip(), description.getEncoding(), type);
             ps = new FileinToDelimitedProcess<FileInputDelimitedNode>(inDelimitedNode, outNode);
             break;
 
@@ -124,8 +131,8 @@ public class ShadowProcess<T extends IProcessDescription> {
             FileInputPositionalNode inPositionalNode = new FileInputPositionalNode(
                     PathUtils.getPortablePath(inPath.toOSString()), //$NON-NLS-1$ //$NON-NLS-2$
                     description.getRowSeparator(), description.getPattern(), description.getHeaderRow(), description
-                            .getFooterRow(), description.getLimitRows(), description.getRemoveEmptyRowsToSkip(),
-                    description.getEncoding());
+                            .getFooterRow(), description.getLimitRows(), description.getRemoveEmptyRowsToSkip(), description
+                            .getEncoding());
             outNode.setColumnNumber(inPositionalNode.getColumnNumber());
             ps = new FileinToDelimitedProcess<FileInputPositionalNode>(inPositionalNode, outNode);
             break;
@@ -133,9 +140,8 @@ public class ShadowProcess<T extends IProcessDescription> {
         case FILE_REGEXP:
             FileInputRegExpNode inRegExpNode = new FileInputRegExpNode(PathUtils.getPortablePath(inPath.toOSString()),
                     description //$NON-NLS-1$ //$NON-NLS-2$
-                            .getRowSeparator(), description.getPattern(), description.getLimitRows(), description
-                            .getHeaderRow(), description.getFooterRow(), description.getRemoveEmptyRowsToSkip(),
-                    description.getEncoding());
+                            .getRowSeparator(), description.getPattern(), description.getLimitRows(), description.getHeaderRow(),
+                    description.getFooterRow(), description.getRemoveEmptyRowsToSkip(), description.getEncoding());
             ps = new FileinToDelimitedProcess<FileInputRegExpNode>(inRegExpNode, outNode);
             break;
         case FILE_XML:
@@ -146,8 +152,8 @@ public class ShadowProcess<T extends IProcessDescription> {
                 map.put("SCHEMA_COLUMN", "row" + i);
                 newmappings.add(map);
             }
-            FileInputXmlNode inXmlNode = new FileInputXmlNode(PathUtils.getPortablePath(inPath.toOSString()),
-                    description.getLoopQuery(), //$NON-NLS-1$ //$NON-NLS-2$
+            FileInputXmlNode inXmlNode = new FileInputXmlNode(PathUtils.getPortablePath(inPath.toOSString()), description
+                    .getLoopQuery(), //$NON-NLS-1$ //$NON-NLS-2$
                     description.getMapping(), description.getLoopLimit(), description.getEncoding());
             ps = new FileinToDelimitedProcess<FileInputXmlNode>(inXmlNode, outNode);
             break;
@@ -155,8 +161,8 @@ public class ShadowProcess<T extends IProcessDescription> {
             outNode = new FileOutputDelimitedForLDIF(TalendTextUtils.addQuotes(""
                     + PathUtils.getPortablePath(outPath.toOSString())), description.getEncoding());
 
-            FileInputLdifNode inLdifNode = new FileInputLdifNode(PathUtils.getPortablePath(inPath.toOSString()),
-                    description.getSchema(), description.getEncoding()); //$NON-NLS-1$ //$NON-NLS-2$
+            FileInputLdifNode inLdifNode = new FileInputLdifNode(PathUtils.getPortablePath(inPath.toOSString()), description
+                    .getSchema(), description.getEncoding()); //$NON-NLS-1$ //$NON-NLS-2$
             outNode.setMetadataList(inLdifNode.getMetadataList());
             ps = new FileinToDelimitedProcess<FileInputLdifNode>(inLdifNode, outNode);
             break;
@@ -165,11 +171,22 @@ public class ShadowProcess<T extends IProcessDescription> {
                     + PathUtils.getPortablePath(outPath.toOSString())), description.getEncoding());
 
             LDAPSchemaInputNode inLDAPSchemaNode = new LDAPSchemaInputNode(TalendTextUtils.addQuotes(""
-                    + PathUtils.getPortablePath(outPath.toOSString())), description.getSchema(), description
-                    .getEncoding(), description.getLdapSchemaBean());
+                    + PathUtils.getPortablePath(outPath.toOSString())), description.getSchema(), description.getEncoding(),
+                    description.getLdapSchemaBean());
 
             outNode.setMetadataList(inLDAPSchemaNode.getMetadataList());
             ps = new FileinToDelimitedProcess<LDAPSchemaInputNode>(inLDAPSchemaNode, outNode);
+            break;
+        case WSDL_SCHEMA:
+            outNode = new FileOutputDelimitedForLDIF(TalendTextUtils.addQuotes(""
+                    + PathUtils.getPortablePath(outPath.toOSString())), description.getEncoding());
+
+            WSDLSchemaInputNode inWSDLSchemaNode = new WSDLSchemaInputNode(TalendTextUtils.addQuotes(""
+                    + PathUtils.getPortablePath(outPath.toOSString())), description.getEncoding(), description.getSchema(),
+                    description.getWsdlSchemaBean(), description.getWsdlSchemaBean().getParameters());
+
+            outNode.setMetadataList(inWSDLSchemaNode.getMetadataList());
+            ps = new FileinToDelimitedProcess<WSDLSchemaInputNode>(inWSDLSchemaNode, outNode);
             break;
         default:
             break;
