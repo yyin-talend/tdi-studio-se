@@ -163,6 +163,7 @@ public class LoginDialog extends TitleAreaDialog {
      * DOC smallet Comment method "logIn".
      * 
      * @param project
+     * @throws Exception
      */
     protected void logIn(final Project project) {
         // Save last used parameters
@@ -176,15 +177,16 @@ public class LoginDialog extends TitleAreaDialog {
             private IProgressMonitor monitorWrap;
 
             @Override
-            public void run(IProgressMonitor monitor) {
+            public void run(IProgressMonitor monitor) throws InvocationTargetException {
                 monitorWrap = new EventLoopProgressMonitor(monitor);
 
-                monitorWrap.beginTask(Messages.getString("LoginDialog.logonProject"), MAX_TASKS); //$NON-NLS-1$
+                monitorWrap.beginTask("Migration tasks running in progress...", MAX_TASKS);
                 monitorWrap.worked(2);
+
                 try {
                     ProxyRepositoryFactory.getInstance().logOnProject(project, monitorWrap);
                 } catch (Exception e) {
-                    MessageBoxExceptionHandler.process(e);
+                    throw new InvocationTargetException(e);
                 }
                 monitorWrap.done();
             }
@@ -192,10 +194,9 @@ public class LoginDialog extends TitleAreaDialog {
 
         try {
             progressDialog.executeProcess();
-        } catch (InvocationTargetException e) {
-            MessageBoxExceptionHandler.process(e.getTargetException(), this.getShell());
-        } catch (InterruptedException e) {
-            MessageBoxExceptionHandler.process(e);
+        } catch (Exception e) {
+            MessageBoxExceptionHandler.process(e, getShell());
+            return;
         }
 
         super.okPressed();
