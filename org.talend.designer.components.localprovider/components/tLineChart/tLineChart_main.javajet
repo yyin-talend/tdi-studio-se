@@ -1,0 +1,33 @@
+<%@ jet 
+	imports="
+		org.talend.core.model.process.ElementParameterParser 
+		org.talend.core.model.process.INode 
+		org.talend.core.model.process.IConnection
+		org.talend.core.model.process.IConnectionCategory
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		java.util.List 
+	" 
+%>
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+%>
+<%
+	List< ? extends IConnection> conns = node.getIncomingConnections();
+	if (conns!=null && !conns.isEmpty()){
+	for (IConnection conn : conns){
+if( conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {%>
+
+  String serieLabel = <%=conn.getName() %>.serie;
+  org.jfree.data.xy.XYSeries serie;
+  if (series.containsKey(serieLabel)){
+    serie=series.get(serieLabel);
+  } else {
+    serie= new org.jfree.data.xy.XYSeries(serieLabel, true, false);
+    series.put(serieLabel, serie);
+  }
+
+  serie.add(<%=conn.getName() %>.x,<%=conn.getName() %>.y);
+<%}
+}
+}%>

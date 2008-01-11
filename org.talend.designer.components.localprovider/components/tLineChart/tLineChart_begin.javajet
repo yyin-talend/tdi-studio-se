@@ -1,0 +1,19 @@
+<%@ jet 
+	imports="
+		org.talend.core.model.process.ElementParameterParser 
+		org.talend.core.model.process.INode 
+		org.talend.core.model.process.IConnection
+		org.talend.core.model.process.IConnectionCategory
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		java.util.List 
+	" 
+%>
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+%>
+//org.jfree.data.category.DefaultCategoryDataset dataset = new org.jfree.data.category.DefaultCategoryDataset();
+org.jfree.data.xy.XYSeriesCollection dataset = new org.jfree.data.xy.XYSeriesCollection();
+
+java.util.Map<String,org.jfree.data.xy.XYSeries> series = new java.util.HashMap<String,org.jfree.data.xy.XYSeries>();
+
