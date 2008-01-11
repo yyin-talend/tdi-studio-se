@@ -114,6 +114,7 @@
                     if(!f.exists()) {
                         f.mkdirs();
                     }
+                    ///
                 } else {
                     java.io.File parent = f.getParentFile();
                     if(parent != null && !parent.exists()) {
@@ -124,7 +125,7 @@
                     byte[] buff = new byte[1024];
                     int data = -1;
                     while((data = is.read(buff)) != -1) {
-                        bos.write(buff);
+                        bos.write(buff, 0, data);
                     }
                     bos.close();                    
                 }
