@@ -277,8 +277,20 @@ if(<%=incomingConnName%>.<%=column.getName()%>==null){
 	isObject = true;
 	%>
 if(<%=incomingConnName%>.<%=column.getName()%>==null){
-	<%=prefix+cid%>.setNull(<%=counter%>,java.sql.Types.OTHER);
+<%
+	if(column.getColumn().getType().equals("BLOB")){
+%>	
+	<%=prefix+cid%>.setNull(<%=counter%>,java.sql.Types.BLOB);
+<%
+	}else if(column.getColumn().getType().equals("CLOB")){
+%>
+		<%=prefix+cid%>.setNull(<%=counter%>,java.sql.Types.CLOB);
+<%
+	}else{
+%>
+		<%=prefix+cid%>.setNull(<%=counter%>,java.sql.Types.OTHER);
 	<%
+	}
 	}else if(typeToGenerate.equals("Boolean")){
 	isObject = true;
 	%>
