@@ -15,9 +15,11 @@ package org.talend.designer.core.ui.views.statsandlogs;
 import java.util.List;
 
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
 
@@ -72,22 +74,26 @@ public class StatsAndLogsViewHelper {
             }
 
             if (name.equals(EParameterName.FILE_PATH.getName())) {
-                elementParameter.setValue(PREFERENCE_STORE.getString(LANGUAGE_PREFIX + EParameterName.FILE_PATH.getName()));
+                elementParameter.setValue(checkAndAddQuote(PREFERENCE_STORE.getString(LANGUAGE_PREFIX
+                        + EParameterName.FILE_PATH.getName())));
                 continue;
             }
 
             if (name.equals(EParameterName.FILENAME_STATS.getName())) {
-                elementParameter.setValue(PREFERENCE_STORE.getString(LANGUAGE_PREFIX + EParameterName.FILENAME_STATS.getName()));
+                elementParameter.setValue(checkAndAddQuote(PREFERENCE_STORE.getString(LANGUAGE_PREFIX
+                        + EParameterName.FILENAME_STATS.getName())));
                 continue;
             }
 
             if (name.equals(EParameterName.FILENAME_LOGS.getName())) {
-                elementParameter.setValue(PREFERENCE_STORE.getString(LANGUAGE_PREFIX + EParameterName.FILENAME_LOGS.getName()));
+                elementParameter.setValue(checkAndAddQuote(PREFERENCE_STORE.getString(LANGUAGE_PREFIX
+                        + EParameterName.FILENAME_LOGS.getName())));
                 continue;
             }
 
             if (name.equals(EParameterName.FILENAME_METTER.getName())) {
-                elementParameter.setValue(PREFERENCE_STORE.getString(LANGUAGE_PREFIX + EParameterName.FILENAME_METTER.getName()));
+                elementParameter.setValue(checkAndAddQuote(PREFERENCE_STORE.getString(LANGUAGE_PREFIX
+                        + EParameterName.FILENAME_METTER.getName())));
                 continue;
             }
 
@@ -98,56 +104,67 @@ public class StatsAndLogsViewHelper {
             }
 
             if (name.equals(EParameterName.DB_TYPE.getName())) {
-                elementParameter.setValue(PREFERENCE_STORE.getString(LANGUAGE_PREFIX + EParameterName.DB_TYPE.getName()));
+                elementParameter.setValue(checkAndAddQuote(PREFERENCE_STORE.getString(LANGUAGE_PREFIX
+                        + EParameterName.DB_TYPE.getName())));
                 continue;
             }
 
             if (name.equals(EParameterName.HOST.getName())) {
-                elementParameter.setValue(PREFERENCE_STORE.getString(LANGUAGE_PREFIX + EParameterName.HOST.getName()));
+                elementParameter.setValue(checkAndAddQuote(PREFERENCE_STORE.getString(LANGUAGE_PREFIX
+                        + EParameterName.HOST.getName())));
                 continue;
             }
 
             if (name.equals(EParameterName.PORT.getName())) {
-                elementParameter.setValue(PREFERENCE_STORE.getString(LANGUAGE_PREFIX + EParameterName.PORT.getName()));
+                elementParameter.setValue(checkAndAddQuote(PREFERENCE_STORE.getString(LANGUAGE_PREFIX
+                        + EParameterName.PORT.getName())));
                 continue;
             }
 
             if (name.equals(EParameterName.DBNAME.getName())) {
-                elementParameter.setValue(PREFERENCE_STORE.getString(LANGUAGE_PREFIX + EParameterName.DBNAME.getName()));
+                elementParameter.setValue(checkAndAddQuote(PREFERENCE_STORE.getString(LANGUAGE_PREFIX
+                        + EParameterName.DBNAME.getName())));
                 continue;
             }
             if (name.equals(EParameterName.PROPERTIES.getName())) {
-                elementParameter.setValue(PREFERENCE_STORE.getString(LANGUAGE_PREFIX + EParameterName.PROPERTIES.getName()));
+                elementParameter.setValue(checkAndAddQuote(PREFERENCE_STORE.getString(LANGUAGE_PREFIX
+                        + EParameterName.PROPERTIES.getName())));
                 continue;
             }
 
             if (name.equals(EParameterName.SCHEMA_DB.getName())) {
-                elementParameter.setValue(PREFERENCE_STORE.getString(LANGUAGE_PREFIX + EParameterName.SCHEMA_DB.getName()));
+                elementParameter.setValue(checkAndAddQuote(PREFERENCE_STORE.getString(LANGUAGE_PREFIX
+                        + EParameterName.SCHEMA_DB.getName())));
                 continue;
             }
 
             if (name.equals(EParameterName.USER.getName())) {
-                elementParameter.setValue(PREFERENCE_STORE.getString(LANGUAGE_PREFIX + EParameterName.USER.getName()));
+                elementParameter.setValue(checkAndAddQuote(PREFERENCE_STORE.getString(LANGUAGE_PREFIX
+                        + EParameterName.USER.getName())));
                 continue;
             }
 
             if (name.equals(EParameterName.PASS.getName())) {
-                elementParameter.setValue(PREFERENCE_STORE.getString(LANGUAGE_PREFIX + EParameterName.PASS.getName()));
+                elementParameter.setValue(checkAndAddQuote(PREFERENCE_STORE.getString(LANGUAGE_PREFIX
+                        + EParameterName.PASS.getName())));
                 continue;
             }
 
             if (name.equals(EParameterName.TABLE_STATS.getName())) {
-                elementParameter.setValue(PREFERENCE_STORE.getString(LANGUAGE_PREFIX + EParameterName.TABLE_STATS.getName()));
+                elementParameter.setValue(checkAndAddQuote(PREFERENCE_STORE.getString(LANGUAGE_PREFIX
+                        + EParameterName.TABLE_STATS.getName())));
                 continue;
             }
 
             if (name.equals(EParameterName.TABLE_LOGS.getName())) {
-                elementParameter.setValue(PREFERENCE_STORE.getString(LANGUAGE_PREFIX + EParameterName.TABLE_LOGS.getName()));
+                elementParameter.setValue(checkAndAddQuote(PREFERENCE_STORE.getString(LANGUAGE_PREFIX
+                        + EParameterName.TABLE_LOGS.getName())));
                 continue;
             }
 
             if (name.equals(EParameterName.TABLE_METER.getName())) {
-                elementParameter.setValue(PREFERENCE_STORE.getString(LANGUAGE_PREFIX + EParameterName.TABLE_METER.getName()));
+                elementParameter.setValue(checkAndAddQuote(PREFERENCE_STORE.getString(LANGUAGE_PREFIX
+                        + EParameterName.TABLE_METER.getName())));
                 continue;
             }
 
@@ -214,22 +231,26 @@ public class StatsAndLogsViewHelper {
             }
 
             if (name.equals(EParameterName.FILE_PATH.getName())) {
-                PREFERENCE_STORE.setValue(LANGUAGE_PREFIX + EParameterName.FILE_PATH.getName(), (String) elementValue);
+                PREFERENCE_STORE.setValue(LANGUAGE_PREFIX + EParameterName.FILE_PATH.getName(),
+                        checkAndRemoveQuote((String) elementValue));
                 continue;
             }
 
             if (name.equals(EParameterName.FILENAME_STATS.getName())) {
-                PREFERENCE_STORE.setValue(LANGUAGE_PREFIX + EParameterName.FILENAME_STATS.getName(), (String) elementValue);
+                PREFERENCE_STORE.setValue(LANGUAGE_PREFIX + EParameterName.FILENAME_STATS.getName(),
+                        checkAndRemoveQuote((String) elementValue));
                 continue;
             }
 
             if (name.equals(EParameterName.FILENAME_LOGS.getName())) {
-                PREFERENCE_STORE.setValue(LANGUAGE_PREFIX + EParameterName.FILENAME_LOGS.getName(), (String) elementValue);
+                PREFERENCE_STORE.setValue(LANGUAGE_PREFIX + EParameterName.FILENAME_LOGS.getName(),
+                        checkAndRemoveQuote((String) elementValue));
                 continue;
             }
 
             if (name.equals(EParameterName.FILENAME_METTER.getName())) {
-                PREFERENCE_STORE.setValue(LANGUAGE_PREFIX + EParameterName.FILENAME_METTER.getName(), (String) elementValue);
+                PREFERENCE_STORE.setValue(LANGUAGE_PREFIX + EParameterName.FILENAME_METTER.getName(),
+                        checkAndRemoveQuote((String) elementValue));
                 continue;
             }
 
@@ -239,55 +260,66 @@ public class StatsAndLogsViewHelper {
             }
 
             if (name.equals(EParameterName.DB_TYPE.getName())) {
-                PREFERENCE_STORE.setValue(LANGUAGE_PREFIX + EParameterName.DB_TYPE.getName(), (String) elementValue);
+                PREFERENCE_STORE.setValue(LANGUAGE_PREFIX + EParameterName.DB_TYPE.getName(),
+                        checkAndRemoveQuote((String) elementValue));
                 continue;
             }
 
             if (name.equals(EParameterName.HOST.getName())) {
-                PREFERENCE_STORE.setValue(LANGUAGE_PREFIX + EParameterName.HOST.getName(), (String) elementValue);
+                PREFERENCE_STORE.setValue(LANGUAGE_PREFIX + EParameterName.HOST.getName(),
+                        checkAndRemoveQuote((String) elementValue));
                 continue;
             }
 
             if (name.equals(EParameterName.PORT.getName())) {
-                PREFERENCE_STORE.setValue(LANGUAGE_PREFIX + EParameterName.PORT.getName(), (String) elementValue);
+                PREFERENCE_STORE.setValue(LANGUAGE_PREFIX + EParameterName.PORT.getName(),
+                        checkAndRemoveQuote((String) elementValue));
                 continue;
             }
 
             if (name.equals(EParameterName.DBNAME.getName())) {
-                PREFERENCE_STORE.setValue(LANGUAGE_PREFIX + EParameterName.DBNAME.getName(), (String) elementValue);
+                PREFERENCE_STORE.setValue(LANGUAGE_PREFIX + EParameterName.DBNAME.getName(),
+                        checkAndRemoveQuote((String) elementValue));
                 continue;
             }
             if (name.equals(EParameterName.PROPERTIES.getName())) {
-                PREFERENCE_STORE.setValue(LANGUAGE_PREFIX + EParameterName.PROPERTIES.getName(), (String) elementValue);
+                PREFERENCE_STORE.setValue(LANGUAGE_PREFIX + EParameterName.PROPERTIES.getName(),
+                        checkAndRemoveQuote((String) elementValue));
                 continue;
             }
             if (name.equals(EParameterName.SCHEMA_DB.getName())) {
-                PREFERENCE_STORE.setValue(LANGUAGE_PREFIX + EParameterName.SCHEMA_DB.getName(), (String) elementValue);
+                PREFERENCE_STORE.setValue(LANGUAGE_PREFIX + EParameterName.SCHEMA_DB.getName(),
+                        checkAndRemoveQuote((String) elementValue));
                 continue;
             }
 
             if (name.equals(EParameterName.USER.getName())) {
-                PREFERENCE_STORE.setValue(LANGUAGE_PREFIX + EParameterName.USER.getName(), (String) elementValue);
+                PREFERENCE_STORE.setValue(LANGUAGE_PREFIX + EParameterName.USER.getName(),
+                        checkAndRemoveQuote((String) elementValue));
                 continue;
             }
 
             if (name.equals(EParameterName.PASS.getName())) {
-                PREFERENCE_STORE.setValue(LANGUAGE_PREFIX + EParameterName.PASS.getName(), (String) elementValue);
+                PREFERENCE_STORE.setValue(LANGUAGE_PREFIX + EParameterName.PASS.getName(),
+                        checkAndRemoveQuote((String) elementValue));
                 continue;
             }
 
             if (name.equals(EParameterName.TABLE_STATS.getName())) {
-                PREFERENCE_STORE.setValue(LANGUAGE_PREFIX + EParameterName.TABLE_STATS.getName(), (String) elementValue);
+                PREFERENCE_STORE.setValue(LANGUAGE_PREFIX + EParameterName.TABLE_STATS.getName(),
+                        checkAndRemoveQuote((String) elementValue));
                 continue;
             }
 
             if (name.equals(EParameterName.TABLE_LOGS.getName())) {
-                PREFERENCE_STORE.setValue(LANGUAGE_PREFIX + EParameterName.TABLE_LOGS.getName(), (String) elementValue);
+                PREFERENCE_STORE.setValue(LANGUAGE_PREFIX + EParameterName.TABLE_LOGS.getName(),
+                        checkAndRemoveQuote((String) elementValue));
                 continue;
             }
 
             if (name.equals(EParameterName.TABLE_METER.getName())) {
-                PREFERENCE_STORE.setValue(LANGUAGE_PREFIX + EParameterName.TABLE_METER.getName(), (String) elementValue);
+                PREFERENCE_STORE.setValue(LANGUAGE_PREFIX + EParameterName.TABLE_METER.getName(),
+                        checkAndRemoveQuote((String) elementValue));
                 continue;
             }
 
@@ -313,5 +345,41 @@ public class StatsAndLogsViewHelper {
                 continue;
             }
         }
+    }
+
+    /*
+     * add quote.
+     */
+    private static String checkAndAddQuote(String value) {
+        if (value == null) {
+            return TalendTextUtils.addQuotes("");
+        }
+        value = value.trim();
+        String mark = TalendTextUtils.QUOTATION_MARK;
+        if (LanguageManager.getCurrentLanguage() == ECodeLanguage.PERL) {
+            mark = TalendTextUtils.SINGLE_QUOTE;
+        }
+        if (!value.startsWith(mark) && !value.endsWith(mark)) {
+            value = TalendTextUtils.addQuotes(value, mark);
+        }
+        return value;
+    }
+
+    /*
+     * remove quote.
+     */
+    private static String checkAndRemoveQuote(String value) {
+        if (value == null) {
+            return "";
+        }
+        value = value.trim();
+        String mark = TalendTextUtils.QUOTATION_MARK;
+        if (LanguageManager.getCurrentLanguage() == ECodeLanguage.PERL) {
+            mark = TalendTextUtils.SINGLE_QUOTE;
+        }
+        if (value.startsWith(mark) && value.endsWith(mark)) {
+            value = TalendTextUtils.removeQuotes(value, mark);
+        }
+        return value;
     }
 }
