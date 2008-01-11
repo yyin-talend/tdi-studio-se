@@ -288,7 +288,7 @@ public class Connection extends Element implements IConnection, IPerformance {
             return;
         }
         String labelText = name;
-        int outputId = getOutputId(getLineStyle());
+        int outputId = getOutputId();
 
         boolean updateName = false;
         if (getLineStyle().equals(EConnectionType.TABLE)) {
@@ -627,62 +627,42 @@ public class Connection extends Element implements IConnection, IPerformance {
         }
     }
 
-    public int getOutputId(EConnectionType type) {
-        int outputId = 0;
-        int totalOutput = 0;
-        boolean sameKind;
-        switch (type) {
-        case FLOW_MAIN:
-            sameKind = false;
-            return calculateOutputId(type, sameKind, totalOutput);
-        case FLOW_REF:
-        case FLOW_MERGE:
-            if (!sourceNodeConnector.isBuiltIn()) {
-                return -1;
-            }
-        case ON_SUBJOB_ERROR:
-        case ON_SUBJOB_OK:
-            sameKind = false;
-            return calculateOutputId(type, sameKind, totalOutput);
-        default:
-            return -1;
-        }
-    }
-
-    /**
-     * yzhang Comment method "caculateOutputId".
-     * 
-     * @param type
-     * @param sameKind
-     * @param totalOutput
-     * @return
-     */
-    private int calculateOutputId(EConnectionType type, boolean sameKind, int totalOutput) {
-        int outputId = 0;
-        boolean isExecutionOrder = type.hasConnectionCategory(IConnectionCategory.EXECUTION_ORDER);
-        boolean isTestedConnectionExecutionOrder;
+    public int getOutputId() {
         if (source != null) {
-            for (int i = 0; i < source.getOutgoingConnections().size(); i++) {
-                IConnection connection = source.getOutgoingConnections().get(i);
-                isTestedConnectionExecutionOrder = connection.getLineStyle().hasConnectionCategory(
-                        IConnectionCategory.EXECUTION_ORDER);
-                sameKind = false;
-                if ((isExecutionOrder && isTestedConnectionExecutionOrder)
-                        || (!isExecutionOrder && !isTestedConnectionExecutionOrder)) {
-                    sameKind = true;
+            switch (lineStyle) {
+            case FLOW_MAIN:
+            case FLOW_REF:
+            case FLOW_MERGE:
+                int total = 0,
+                currentId = -1;
+                for (Connection connection : (List<Connection>) source.getOutgoingConnections()) {
+                    if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)) {
+                        total++;
+                        if (connection.equals(this)) {
+                            currentId = total;
+                        }
+                    }
                 }
-                if (sameKind) {
-                    totalOutput++;
+                if (total > 1) {
+                    return currentId;
                 }
-                if (connection.equals(this) && sameKind) {
-                    outputId = totalOutput;
+                break;
+            default:
+                List<Connection> connList = (List<Connection>) source.getOutgoingConnections(lineStyle);
+                if (connList.size() <= 1) {
+                    return -1;
+                }
+                for (int i = 0; i < connList.size(); i++) {
+                    IConnection connection = connList.get(i);
+                    if (connection.equals(this)) {
+
+                        return i + 1;
+                    }
                 }
             }
-        }
-        if (totalOutput > 1) {
-            return outputId;
         }
         return -1;
+
     }
 
     public int getInputId() {

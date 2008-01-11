@@ -769,7 +769,7 @@ public class Process extends Element implements IProcess2 {
             cType.setOffsetLabelX(connec.getConnectionLabel().getOffset().x); //$NON-NLS-1$
             cType.setOffsetLabelY(connec.getConnectionLabel().getOffset().y); //$NON-NLS-1$
             cType.setMetaname(connec.getMetaName());
-            int id = connec.getOutputId(connec.getLineStyle());
+            int id = connec.getOutputId();
             if (id >= 0) {
                 cType.setOutputId(id);
             }
