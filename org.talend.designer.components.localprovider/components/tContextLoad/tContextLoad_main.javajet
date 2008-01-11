@@ -92,12 +92,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         if(key_<%=cid %>!=null && "<%=ctxParam.getName()%>".equals(key_<%=cid %>))
         {                
            <% if(typeToGenerate.equals("java.util.Date"))
-            {%>
-            try{
-                <%=ctxParam.getName()%>=(java.util.Date)(new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(value_<%=cid %>));
-            }catch(NumberFormatException e){
-                <%=ctxParam.getName()%>=null;
-            }
+            {%>            
+            <%=ctxParam.getName()%>=(java.util.Date)(new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(value_<%=cid %>));
             <%}else if(typeToGenerate.equals("Integer")){%>
             try{
                 <%=ctxParam.getName()%>=Integer.parseInt(value_<%=cid %>);
@@ -135,11 +131,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
            <% if(typeToGenerate.equals("java.util.Date"))
             {
            %>
-           try{
-               <%=ctxParam.getName()%>=(java.util.Date)(new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(value_<%=cid %>));
-           }catch(NumberFormatException e){
-               <%=ctxParam.getName()%>=null;
-           }
+           <%=ctxParam.getName()%>=(java.util.Date)(new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(value_<%=cid %>));
            <%}else if(typeToGenerate.equals("Integer")){%>
            try{
                <%=ctxParam.getName()%>=Integer.parseInt(value_<%=cid %>);
