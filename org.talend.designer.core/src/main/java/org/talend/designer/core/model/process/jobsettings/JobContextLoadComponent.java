@@ -395,7 +395,15 @@ public class JobContextLoadComponent implements IComponent {
      * @see org.talend.core.model.components.IComponent#getComponentType()
      */
     public boolean isMultipleOutput() {
-        // TODO Auto-generated method stub
+        return false;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.components.IComponent#useLookup()
+     */
+    public boolean useLookup() {
         return false;
     }
 }

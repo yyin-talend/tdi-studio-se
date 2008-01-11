@@ -252,20 +252,19 @@ public class ConnectionManager {
                     oldConnectionType = EConnectionType.FLOW_MAIN;
                 }
             }
-            if (!newTarget.getComponent().useMerge()) {
+            if (newTarget.getComponent().useLookup()) {
                 int nbMain = 0;
                 for (IConnection connec : newTarget.getIncomingConnections()) {
                     if (connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
                         nbMain++;
                     }
                 }
-                int maxFlowInput = newTarget.getConnectorFromName(EConnectionType.FLOW_MAIN.getName()).getMaxLinkInput();
-                if ((maxFlowInput != -1 && nbMain > maxFlowInput) || (maxFlowInput == -1 && nbMain > 0)) {
+                if (nbMain >= 1) {
                     newlineStyle = EConnectionType.FLOW_REF;
                 } else {
                     newlineStyle = EConnectionType.FLOW_MAIN;
                 }
-            } else {
+            } else if (newTarget.getComponent().useMerge()) {
                 newlineStyle = EConnectionType.FLOW_MERGE;
             }
         }

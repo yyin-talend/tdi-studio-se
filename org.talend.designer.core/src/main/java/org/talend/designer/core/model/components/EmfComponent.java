@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.util.EList;
@@ -87,6 +88,8 @@ import org.talend.repository.model.ExternalNodesFactory;
  */
 public class EmfComponent implements IComponent {
 
+    private static Logger log = Logger.getLogger(EmfComponent.class);
+
     private static final String DEFAULT_COLOR = "255;255;255"; //$NON-NLS-1$
 
     private final File file;
@@ -134,6 +137,10 @@ public class EmfComponent implements IComponent {
     private String pathSource;
 
     private List<ECodePart> codePartList;
+
+    private Boolean useMerge = null;
+
+    private Boolean useLookup = null;
 
     public EmfComponent(File file, String pathSource) throws BusinessException {
         this.file = file;
@@ -623,24 +630,7 @@ public class EmfComponent implements IComponent {
                 }
             }
 
-            boolean isInputSchema = false;
-            int maxOutput = -1, maxInput = -1;
-            int nbInputs = 0;
-            for (INodeConnector connector : createConnectors()) {
-                if (connector.getBaseSchema().equals("FLOW")) {
-                    if (connector.getMaxLinkInput() >= 1) {
-                        nbInputs += connector.getMaxLinkInput();
-                    }
-                    if (connector.getName().equals(context)) {
-                        maxOutput = connector.getMaxLinkOutput();
-                        maxInput = connector.getMaxLinkInput();
-                    }
-                }
-            }
-
-            if ((maxInput == 1 && maxOutput == 0) && (nbInputs > 1)) {
-                isInputSchema = true;
-            }
+            boolean useInputLinkSelection = connectorUseInputLinkSelection(context);
 
             String displayName = getTranslatedValue(xmlParam.getNAME() + "." + PROP_NAME);
             if (displayName.startsWith("!!")) { //$NON-NLS-1$ //$NON-NLS-2$
@@ -659,7 +649,7 @@ public class EmfComponent implements IComponent {
             newParam.setField(EParameterFieldType.TECHNICAL);
             newParam.setShow(xmlParam.isSHOW());
             newParam.setShowIf(parentParam.getName() + " =='" + REPOSITORY + "'");
-            newParam.setReadOnly(xmlParam.isREADONLY() || isInputSchema);
+            newParam.setReadOnly(xmlParam.isREADONLY() || useInputLinkSelection);
             newParam.setNotShowIf(xmlParam.getNOTSHOWIF());
 
             newParam.setContext(context);
@@ -676,32 +666,32 @@ public class EmfComponent implements IComponent {
             newParam.setValue(""); //$NON-NLS-1$
             newParam.setShow(false);
             newParam.setRequired(true);
-            newParam.setReadOnly(xmlParam.isREADONLY() || isInputSchema);
+            newParam.setReadOnly(xmlParam.isREADONLY() || useInputLinkSelection);
             newParam.setShowIf(xmlParam.getSHOWIF());
             newParam.setNotShowIf(xmlParam.getNOTSHOWIF());
             newParam.setContext(context);
             newParam.setParentParameter(parentParam);
 
-            // if (isInputSchema) {
-            // newParam = new ElementParameter(node);
-            // newParam.setCategory(EComponentCategory.PROPERTY);
-            // newParam.setName("CONNECTION");
-            // newParam.setDisplayName("Attached connection");
-            // newParam.setListItemsDisplayName(new String[] {});
-            // newParam.setListItemsValue(new String[] {});
-            // newParam.setNumRow(xmlParam.getNUMROW());
-            // newParam.setField(EParameterFieldType.CONNECTION_LIST);
-            // newParam.setValue(""); //$NON-NLS-1$
-            // newParam.setShow(true);
-            // newParam.setRequired(true);
-            // newParam.setFilter("INPUT:FLOW_MAIN|FLOW_REF|FLOW_MERGE");
-            // newParam.setReadOnly(xmlParam.isREADONLY());
-            // newParam.setShowIf(xmlParam.getSHOWIF());
-            // newParam.setNotShowIf(xmlParam.getNOTSHOWIF());
-            // newParam.setContext(context);
-            // newParam.setParentParameter(parentParam);
-            // parentParam.setReadOnly(true);
-            // }
+            if (useInputLinkSelection) {
+                newParam = new ElementParameter(node);
+                newParam.setCategory(EComponentCategory.PROPERTY);
+                newParam.setName("CONNECTION");
+                newParam.setDisplayName("Attached connection");
+                newParam.setListItemsDisplayName(new String[] {});
+                newParam.setListItemsValue(new String[] {});
+                newParam.setNumRow(xmlParam.getNUMROW());
+                newParam.setField(EParameterFieldType.CONNECTION_LIST);
+                newParam.setValue(""); //$NON-NLS-1$
+                newParam.setShow(true);
+                newParam.setRequired(true);
+                newParam.setFilter("INPUT:FLOW_MAIN|FLOW_REF|FLOW_MERGE");
+                newParam.setReadOnly(xmlParam.isREADONLY());
+                newParam.setShowIf(xmlParam.getSHOWIF());
+                newParam.setNotShowIf(xmlParam.getNOTSHOWIF());
+                newParam.setContext(context);
+                newParam.setParentParameter(parentParam);
+                parentParam.setReadOnly(true);
+            }
         }
         if (type == EParameterFieldType.ENCODING_TYPE) {
             ElementParameter newParam = new ElementParameter(node);
@@ -1265,6 +1255,10 @@ public class EmfComponent implements IComponent {
             connType = (CONNECTORType) listConnType.get(i);
             EConnectionType currentType = EConnectionType.getTypeFromName(connType.getCTYPE());
             if (currentType == null || connType.getCTYPE().equals("LOOKUP") || connType.getCTYPE().equals("MERGE")) {
+                if (currentType == null) {
+                    log.warn("<Component:" + this.getName() + "> Connector \"" + connType.getCTYPE()
+                            + "\" defined in the xml, but doesn't exist.");
+                }
                 continue;
             }
             nodeConnector = new NodeConnector();
@@ -1680,7 +1674,21 @@ public class EmfComponent implements IComponent {
     }
 
     public boolean useMerge() {
-        return compType.getHEADER().isUSEMERGE();
+        if (useMerge == null) {
+            useMerge = false;
+            EList listConnType;
+            CONNECTORType connType;
+
+            listConnType = compType.getCONNECTORS().getCONNECTOR();
+            for (int i = 0; i < listConnType.size(); i++) {
+                connType = (CONNECTORType) listConnType.get(i);
+                if (connType.getCTYPE().equals(EConnectionType.FLOW_MERGE.getName())) {
+                    useMerge = true;
+                    break;
+                }
+            }
+        }
+        return useMerge;
     }
 
     public Boolean isMultiplyingOutputs() {
@@ -1706,5 +1714,46 @@ public class EmfComponent implements IComponent {
             }
         }
         return false;
+    }
+
+    private boolean connectorUseInputLinkSelection(String name) {
+        EList listConnType;
+        CONNECTORType connType;
+
+        listConnType = compType.getCONNECTORS().getCONNECTOR();
+        for (int i = 0; i < listConnType.size(); i++) {
+            connType = (CONNECTORType) listConnType.get(i);
+            if (connType.getNAME() == null) {
+                if (connType.getCTYPE().equals(name)) {
+                    return connType.isINPUTLINKSELECTION();
+                }
+            } else if (connType.getNAME().equals(name)) {
+                return connType.isINPUTLINKSELECTION();
+            }
+        }
+        return false;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.components.IComponent#useLookup()
+     */
+    public boolean useLookup() {
+        if (useLookup == null) {
+            useLookup = false;
+            EList listConnType;
+            CONNECTORType connType;
+
+            listConnType = compType.getCONNECTORS().getCONNECTOR();
+            for (int i = 0; i < listConnType.size(); i++) {
+                connType = (CONNECTORType) listConnType.get(i);
+                if (connType.getCTYPE().equals(EConnectionType.FLOW_REF.getName())) {
+                    useLookup = true;
+                    break;
+                }
+            }
+        }
+        return useLookup;
     }
 }
