@@ -129,7 +129,7 @@ public class JobLaunchConfigurationDelegate extends org.eclipse.debug.core.model
                     if (input instanceof RepositoryEditorInput) {
                         RepositoryEditorInput rInput = (RepositoryEditorInput) input;
                         IProcess p = rInput.getLoadedProcess();
-                        if (p.getLabel().equals(jobName)) {
+                        if (p != null && p.getLabel().equals(jobName)) {
                             process[0] = p;
                             break;
                         }
