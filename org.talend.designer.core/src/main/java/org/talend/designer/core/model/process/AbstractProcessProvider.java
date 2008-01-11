@@ -20,7 +20,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.talend.core.model.process.INode;
+import org.talend.core.model.properties.Item;
 import org.talend.designer.core.ui.editor.nodes.Node;
+import org.talend.designer.core.ui.editor.process.Process;
 
 /**
  * DOC qzhang class global comment. Detailled comment
@@ -78,6 +80,8 @@ public abstract class AbstractProcessProvider {
     public void loadComponentsFromExtensionPoint() {
         // do nothing.
     }
+
+    public abstract Process buildNewGraphicProcess(Item node);
 
     /**
      * DOC qzhang Comment method "loadComponentsFromProviders".
