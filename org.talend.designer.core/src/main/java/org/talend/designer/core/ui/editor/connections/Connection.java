@@ -14,6 +14,7 @@ package org.talend.designer.core.ui.editor.connections;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
@@ -611,10 +612,61 @@ public class Connection extends Element implements IConnection, IPerformance {
         }
     }
 
+    /**
+     * yzhang Comment method "sortMetadataListByConnectionOrder".
+     */
+    private void sortMetadataListByConnectionOrder() {
+        List<IMetadataTable> tableList = source.getMetadataList();
+
+        final List<IConnection> connectionList = (List<IConnection>) source.getOutgoingConnections();
+
+        Collections.sort(tableList, new Comparator<IMetadataTable>() {
+
+            /*
+             * (non-Javadoc)
+             * 
+             * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+             */
+            public int compare(IMetadataTable o1, IMetadataTable o2) {
+
+                int index1 = 0, index2 = 0;
+                int counter = 0;
+                for (IConnection connection : connectionList) {
+                    if (isConnectionOfMetadataTable(o1, connection)) {
+                        index1 = counter;
+                    }
+
+                    if (isConnectionOfMetadataTable(o2, connection)) {
+                        index2 = counter;
+                    }
+
+                    counter++;
+
+                }
+
+                return index1 - index2;
+            }
+
+            private boolean isConnectionOfMetadataTable(IMetadataTable table, IConnection connection) {
+                if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)
+                        && connection.getMetadataTable().getTableName().equals(table.getTableName())
+                        && connection.getConnectorName().equals(table.getAttachedConnector())) {
+                    return true;
+                } else {
+                    return false;
+                }
+
+            }
+        });
+
+    }
+
     public void updateAllId(boolean needSortByMetadata) {
         if (source != null) {
             if (needSortByMetadata) {
                 orderConnectionsByMetadata();
+            } else {
+                sortMetadataListByConnectionOrder();
             }
             for (int i = 0; i < source.getOutgoingConnections().size(); i++) {
                 Connection connection = (Connection) source.getOutgoingConnections().get(i);
