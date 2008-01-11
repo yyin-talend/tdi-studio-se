@@ -181,11 +181,13 @@ public class MergeOrderDialog extends Dialog {
 
             public void handleEvent(Event event) {
                 IStructuredSelection selection = (IStructuredSelection) tableViewerCreator.getTableViewer().getSelection();
-                Connection connection = (Connection) selection.getFirstElement();
-                int connId = connectionList.indexOf(connection);
-                if (connId < (nbConn - 1)) {
-                    Collections.swap(connectionList, connId + 1, connId);
-                    tableViewerCreator.getTableViewer().refresh();
+                if (selection.size() > 0) {
+                    Connection connection = (Connection) selection.getFirstElement();
+                    int connId = connectionList.indexOf(connection);
+                    if (connId < (nbConn - 1)) {
+                        Collections.swap(connectionList, connId + 1, connId);
+                        tableViewerCreator.getTableViewer().refresh();
+                    }
                 }
             }
 

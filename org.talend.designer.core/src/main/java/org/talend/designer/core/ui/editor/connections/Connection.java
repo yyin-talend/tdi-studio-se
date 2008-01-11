@@ -340,9 +340,9 @@ public class Connection extends Element implements IConnection, IPerformance {
             }
             updateName = true;
         } /*
-             * else if (getLineStyle().equals(EConnectionType.LOOKUP)) { labelText += " (" + nodeConnector.getLinkName() +
-             * ")"; updateName = true; }
-             */
+         * else if (getLineStyle().equals(EConnectionType.LOOKUP)) { labelText += " (" + nodeConnector.getLinkName() +
+         * ")"; updateName = true; }
+         */
 
         if (updateName) {
 
@@ -422,7 +422,7 @@ public class Connection extends Element implements IConnection, IPerformance {
             }
             source.addOutput(this);
             target.addInput(this);
-            updateAllId();
+            updateAllId(true);
             isConnected = true;
         }
     }
@@ -439,7 +439,7 @@ public class Connection extends Element implements IConnection, IPerformance {
             }
             source.removeOutput(this);
             target.removeInput(this);
-            updateAllId();
+            updateAllId(true);
             isConnected = false;
         }
     }
@@ -611,9 +611,11 @@ public class Connection extends Element implements IConnection, IPerformance {
         }
     }
 
-    public void updateAllId() {
+    public void updateAllId(boolean needSortByMetadata) {
         if (source != null) {
-            orderConnectionsByMetadata();
+            if (needSortByMetadata) {
+                orderConnectionsByMetadata();
+            }
             for (int i = 0; i < source.getOutgoingConnections().size(); i++) {
                 Connection connection = (Connection) source.getOutgoingConnections().get(i);
                 connection.updateName();

@@ -56,7 +56,7 @@ public class ChangeOutputConnectionOrderCommand extends Command {
     public void execute() {
 
         multipleOutputNode.setOutgoingConnections(connectionInNewOrder);
-        connectionInNewOrder.get(0).updateAllId();
+        connectionInNewOrder.get(0).updateAllId(false);
         ((Process) multipleOutputNode.getProcess()).checkStartNodes();
 
     }
@@ -69,7 +69,7 @@ public class ChangeOutputConnectionOrderCommand extends Command {
     @Override
     public void undo() {
         multipleOutputNode.setIncomingConnections(connectionInOldOrder);
-        connectionInOldOrder.get(0).updateAllId();
+        connectionInOldOrder.get(0).updateAllId(false);
         ((Process) multipleOutputNode.getProcess()).checkStartNodes();
     }
 }
