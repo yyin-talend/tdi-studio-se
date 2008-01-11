@@ -99,13 +99,18 @@ private static <%=JavaTypesManager.getTypeToGenerate(ctxParam.getType(),true)%> 
 	if(!isRunInMultiThread ){
 %>
 	private static String currentComponent = "";
-<%
-	}
-%>
 	private static final java.util.Map<String, Long> start_Hash = new java.util.HashMap<String, Long>(); 
 	private static final java.util.Map<String, Long> end_Hash = new java.util.HashMap<String, Long>();
 	private static final java.util.Map<String, Boolean> ok_Hash = new java.util.HashMap<String, Boolean>();
-	private static final java.util.Map<String, Object> globalMap = new java.util.HashMap<String, Object>();
+	private static final java.util.Map<String, Object> globalMap = new java.util.HashMap<String, Object>();	
+<%
+	}else {
+%>
+	private static final java.util.Map<String, Long> start_Hash = java.util.Collections.synchronizedMap(new java.util.HashMap<String, Long>());
+	private static final java.util.Map<String, Long> end_Hash = java.util.Collections.synchronizedMap(new java.util.HashMap<String, Long>());
+	private static final java.util.Map<String, Boolean> ok_Hash = java.util.Collections.synchronizedMap(new java.util.HashMap<String, Boolean>());	
+	private static final java.util.Map<String, Object> globalMap = java.util.Collections.synchronizedMap(new java.util.HashMap<String, Object>());
+<% } %>
 
 <%
     if (stats) {
