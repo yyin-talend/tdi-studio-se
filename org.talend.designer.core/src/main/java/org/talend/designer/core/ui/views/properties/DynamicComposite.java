@@ -460,11 +460,19 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
                 }
             }
             if (param.getName().equals(EParameterName.REPOSITORY_PROPERTY_TYPE.getName())) {
-                updateRepositoryListExtra(param, repositoryConnectionNameList, repositoryConnectionValueList, false);
+                List<String> nameList = new ArrayList<String>();
+                List<String> valueList = new ArrayList<String>();
+                updateRepositoryListExtra(param, nameList, valueList, false);
+                repositoryConnectionNameList = nameList.toArray(new String[0]);
+                repositoryConnectionValueList = valueList.toArray(new String[0]);
             }
             // for job settings extra (feature 2710)
             if (param.getName().equals(extraRepositoryPropertyTypeName)) {
-                updateRepositoryListExtra(param, repositoryConnectionNameList, repositoryConnectionValueList, true);
+                List<String> nameList = new ArrayList<String>();
+                List<String> valueList = new ArrayList<String>();
+                updateRepositoryListExtra(param, nameList, valueList, true);
+                repositoryConnectionNameList = nameList.toArray(new String[0]);
+                repositoryConnectionValueList = valueList.toArray(new String[0]);
             }
         }
         updateQuery();
@@ -474,8 +482,9 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
      * for job settings extra (feature 2710).
      * 
      */
-    private void updateRepositoryListExtra(IElementParameter param, String[] repositoryConnectionNameList,
-            String[] repositoryConnectionValueList, boolean extra) {
+    private void updateRepositoryListExtra(IElementParameter param, List<String> repositoryConnectionNameList,
+            List<String> repositoryConnectionValueList, boolean extra) {
+
         String paramName = EParameterName.PROPERTY_TYPE.getName();
         if (extra) {
             paramName = extraPropertyTypeName;
@@ -526,8 +535,8 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
                 }
             }
 
-            repositoryConnectionNameList = connectionNamesList.toArray(new String[0]);
-            repositoryConnectionValueList = connectionValuesList.toArray(new String[0]);
+            repositoryConnectionNameList.addAll(connectionNamesList);
+            repositoryConnectionValueList.addAll(connectionValuesList);
         } else {
             List<String> connectionValuesList = new ArrayList<String>();
             List<String> connectionStringList = new ArrayList<String>();
@@ -536,18 +545,18 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
                 String name = connectionItem.getProperty().getLabel();
                 addOrderDisplayNames(connectionValuesList, connectionStringList, key, name);
             }
-            repositoryConnectionNameList = connectionStringList.toArray(new String[0]);
-            repositoryConnectionValueList = connectionValuesList.toArray(new String[0]);
+            repositoryConnectionNameList.addAll(connectionStringList);
+            repositoryConnectionValueList.addAll(connectionValuesList);
         }
-        param.setListItemsDisplayName(repositoryConnectionNameList);
-        param.setListItemsValue(repositoryConnectionValueList);
+        param.setListItemsDisplayName(repositoryConnectionNameList.toArray(new String[0]));
+        param.setListItemsValue(repositoryConnectionValueList.toArray(new String[0]));
         if (!repositoryConnectionItemMap.keySet().contains(param.getValue())) {
-            if (repositoryConnectionNameList.length > 0) {
+            if (repositoryConnectionNameList.size() > 0) {
                 paramName = EParameterName.REPOSITORY_PROPERTY_TYPE.getName();
                 if (extra) {
                     paramName = extraRepositoryPropertyTypeName;
                 }
-                elem.setPropertyValue(paramName, repositoryConnectionValueList[0]);
+                elem.setPropertyValue(paramName, repositoryConnectionValueList.get(0));
             }
         }
     }
