@@ -289,7 +289,10 @@ public class JobSettingsManager {
             param.setCategory(EComponentCategory.EXTRA);
             param.setNumRow(43);
             param.setRepositoryValue("PROPERTIES_STRING"); //$NON-NLS-1$
-            param.setShowIf(JobSettingsConstants.addBrackets(dbTypeName + " == 'SQL_SERVER'") + " and " + dbCondition); //$NON-NLS-1$ //$NON-NLS-2$
+            String dbCon = dbTypeName + " == 'SQL_SERVER'" + " or " + dbTypeName + " == 'MYSQL'" + " or " + dbTypeName
+                    + " == 'INFORMIX'";
+
+            param.setShowIf(JobSettingsConstants.addBrackets(dbCon) + " and " + dbCondition); //$NON-NLS-1$ //$NON-NLS-2$
             paramList.add(param);
         }
         // schema

@@ -560,7 +560,7 @@ public class StatsAndLogsManager {
         param.setNumRow(53);
         param.setRepositoryValue("PROPERTIES_STRING"); //$NON-NLS-1$
         param
-                .setShowIf("(DB_TYPE=='SQL_SERVER') and (ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')");
+                .setShowIf("(DB_TYPE=='SQL_SERVER' or DB_TYPE=='MYSQL' or DB_TYPE=='INFORMIX') and (ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')");
         paramList.add(param);
         // schema
         param = new ElementParameter(process);

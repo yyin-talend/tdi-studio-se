@@ -309,8 +309,9 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
 
         dbNameField.setEnabled(onDatabase && (onStatCatcher || onLogCatcher || onMetterCatcher), parent);
         if (language == ECodeLanguage.JAVA) {
-            additionParamField.setEnabled(dbValue.equals("tMSSqlOutput") && onDatabase
-                    && (onStatCatcher || onLogCatcher || onMetterCatcher), parent);
+            additionParamField.setEnabled((dbValue.equals("tMSSqlOutput") || dbValue.equals("tInformixOutput") || dbValue
+                    .equals("tMysqlOutput"))
+                    && onDatabase && (onStatCatcher || onLogCatcher || onMetterCatcher), parent);
         }
         schemaField.setEnabled((dbValue.equals("tOracleOutput") || dbValue.equals("tPostgresqlOutput")) && onDatabase
                 && (onStatCatcher || onLogCatcher || onMetterCatcher), parent);

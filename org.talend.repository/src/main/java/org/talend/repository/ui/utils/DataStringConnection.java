@@ -336,7 +336,9 @@ public class DataStringConnection {
         if (selectionIndex < 0) {
             return false;
         }
-        return getStringConnectionTemplate().substring(0, 19).equals("jdbc:jtds:sqlserver"); //$NON-NLS-1$
+        return getStringConnectionTemplate().substring(0, 19).equals("jdbc:jtds:sqlserver")
+                || getStringConnectionTemplate().substring(0, 18).equals("jdbc:informix-sqli")
+                || getStringConnectionTemplate().substring(0, 10).equals("jdbc:mysql"); //$NON-NLS-1$
 
     }
 
