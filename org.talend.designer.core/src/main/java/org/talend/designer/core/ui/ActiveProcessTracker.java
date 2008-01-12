@@ -65,7 +65,7 @@ public class ActiveProcessTracker implements IPartListener {
      */
     public void partActivated(final IWorkbenchPart part) {
         IProcess process = getJobFromActivatedEditor(part);
-        if (process != null && currentProcess != process) {
+        if (process != null) {
             currentProcess = process;
             if (process instanceof Process) {
                 Process p = (Process) process;
