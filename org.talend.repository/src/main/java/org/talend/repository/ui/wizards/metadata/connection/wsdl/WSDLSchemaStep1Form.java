@@ -16,10 +16,8 @@ import java.util.ArrayList;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Plugin;
-import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ICellModifier;
@@ -40,6 +38,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
@@ -264,13 +263,12 @@ public class WSDLSchemaStep1Form extends AbstractForm {
 
             public void widgetSelected(SelectionEvent e) {
                 Plugin plugin = PluginChecker.getWSDLPlugin();
-                if (plugin instanceof IAdaptable) {
-                    IAdaptable adapter = (IAdaptable) plugin;
-                    IAction a = (IAction) adapter.getAdapter(IAction.class);
-                    a.run();
+                if (plugin instanceof IWSDLExplorerAccessor) {
+                    IWSDLExplorerAccessor accessor = (IWSDLExplorerAccessor) plugin;
+//                    Shell shell = new Shell(getParent().getShell().getDisplay());
+                    accessor.openWSExplorer(getShell());
                 }
             }
-
         });
     }
 

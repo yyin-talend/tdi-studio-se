@@ -54,6 +54,7 @@ Export-Package: org.talend.repository,
  org.talend.repository.ui.wizards.metadata.connection.files.xml,
  org.talend.repository.ui.wizards.metadata.connection.files.xml.dnd,
  org.talend.repository.ui.wizards.metadata.connection.files.xml.extraction,
+ org.talend.repository.ui.wizards.metadata.connection.wsdl,
  org.talend.repository.ui.wizards.metadata.table.database,
  org.talend.repository.ui.wizards.register,
  org.talend.repository.utils
