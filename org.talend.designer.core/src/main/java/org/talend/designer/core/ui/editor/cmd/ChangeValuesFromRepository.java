@@ -30,6 +30,7 @@ import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
+import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -205,7 +206,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                         ArrayList parameters = ((WSDLSchemaConnection) connection).getParameters();
                         for (Object object : parameters) {
                             Map<String, Object> map2 = new HashMap<String, Object>();
-                            map2.put("VALUE", object);
+                            map2.put("VALUE", TalendTextUtils.addQuotes(object.toString()));
                             table.add(map2);
                         }
                         param.setRepositoryValueUsed(true);
