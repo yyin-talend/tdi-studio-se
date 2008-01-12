@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.ObjectUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.oro.text.regex.MalformedPatternException;
 import org.apache.oro.text.regex.Pattern;
@@ -98,7 +99,7 @@ public class Node extends Element implements INode {
     // true if this node is activated.
     private boolean activate = true;
 
-    private int currentStatus;
+    private int currentStatus, oldStatus = 0;
 
     // properties
     public static final String LOCATION = "nodeLocation"; //$NON-NLS-1$
@@ -176,6 +177,8 @@ public class Node extends Element implements INode {
     private final IComponent oldcomponent;
 
     private List<? extends IElementParameter> oldElementParameters;
+
+    private List<String> errorList = new ArrayList<String>(), warningList = new ArrayList<String>();
 
     /**
      * This constructor is called when the node is created from the palette the unique name will be determined with the
@@ -1329,7 +1332,42 @@ public class Node extends Element implements INode {
     }
 
     public void updateStatus() {
-        firePropertyChange(UPDATE_STATUS, null, new Integer(this.currentStatus));
+        boolean toUpdate = false;
+        if (oldStatus != currentStatus) {
+            toUpdate = true;
+        } else {
+            List<String> newErrorList = Problems.getStatusList(ProblemStatus.ERROR, nodeContainer.getNode());
+            List<String> newWarningList = Problems.getStatusList(ProblemStatus.WARNING, nodeContainer.getNode());
+
+            if (newErrorList.size() != errorList.size()) {
+                toUpdate = true;
+            } else if (newWarningList.size() != warningList.size()) {
+                toUpdate = true;
+            } else {
+                for (String error : newErrorList) {
+                    if (!errorList.contains(error)) {
+                        toUpdate = true;
+                        break;
+                    }
+                }
+                if (!toUpdate) {
+                    for (String warning : newWarningList) {
+                        if (!warningList.contains(warning)) {
+                            toUpdate = true;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            warningList = newWarningList;
+            errorList = newErrorList;
+        }
+
+        if (toUpdate) {
+            firePropertyChange(UPDATE_STATUS, null, new Integer(this.currentStatus));
+        }
+        oldStatus = currentStatus;
     }
 
     public void addStatus(int status) {
@@ -1626,27 +1664,57 @@ public class Node extends Element implements INode {
         // test if the columns can be checked or not
         if (component.isSchemaAutoPropagated() && (getMetadataList().size() != 0)) {
             IConnection inputConnecion = null;
-            IMetadataTable inputMeta = null, outputMeta = getMetadataList().get(0);
-            for (IConnection connection : inputs) {
-                if (connection.isActivate()
-                        && (connection.getLineStyle().equals(EConnectionType.FLOW_MAIN) || connection.getLineStyle().equals(
-                                EConnectionType.TABLE))) {
-                    inputMeta = connection.getMetadataTable();
-                    inputConnecion = connection;
+            int maxFlowInput = getConnectorFromName(EConnectionType.FLOW_MAIN.getName()).getMaxLinkInput();
+            // if there is one only one input maximum or if the component use a lookup, that means
+            if (maxFlowInput <= 1 || getComponent().useLookup() || isELTComponent()) {
+                IMetadataTable inputMeta = null, outputMeta = getMetadataList().get(0);
+                for (IConnection connection : inputs) {
+                    if (connection.isActivate()
+                            && (connection.getLineStyle().equals(EConnectionType.FLOW_MAIN) || connection.getLineStyle().equals(
+                                    EConnectionType.TABLE))) {
+                        inputMeta = connection.getMetadataTable();
+                        inputConnecion = connection;
+                    }
                 }
-            }
 
-            if (inputMeta != null) {
-                INodeConnector connector = getConnectorFromName(outputMeta.getAttachedConnector());
-                if (connector.getMaxLinkInput() != 0
-                        && connector.getMaxLinkOutput() != 0
-                        && (!outputMeta.sameMetadataAs(inputMeta, IMetadataColumn.OPTIONS_IGNORE_KEY
-                                | IMetadataColumn.OPTIONS_IGNORE_NULLABLE | IMetadataColumn.OPTIONS_IGNORE_COMMENT
-                                | IMetadataColumn.OPTIONS_IGNORE_PATTERN | IMetadataColumn.OPTIONS_IGNORE_DBCOLUMNNAME
-                                | IMetadataColumn.OPTIONS_IGNORE_DBTYPE))) {
-                    String errorMessage = "The schema from the input link \"" + inputConnecion.getName()
-                            + "\" is different from the schema defined in the component.";
-                    Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                if (inputMeta != null) {
+                    INodeConnector connector = getConnectorFromName(outputMeta.getAttachedConnector());
+                    if (connector.getMaxLinkInput() != 0
+                            && connector.getMaxLinkOutput() != 0
+                            && (!outputMeta.sameMetadataAs(inputMeta, IMetadataColumn.OPTIONS_IGNORE_KEY
+                                    | IMetadataColumn.OPTIONS_IGNORE_NULLABLE | IMetadataColumn.OPTIONS_IGNORE_COMMENT
+                                    | IMetadataColumn.OPTIONS_IGNORE_PATTERN | IMetadataColumn.OPTIONS_IGNORE_DBCOLUMNNAME
+                                    | IMetadataColumn.OPTIONS_IGNORE_DBTYPE))) {
+                        String errorMessage = "The schema from the input link \"" + inputConnecion.getName()
+                                + "\" is different from the schema defined in the component.";
+                        Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                    }
+                }
+            } else {
+                // for each schema in the component, check if for the connector there is the option INPUT_LINK_SELECTION
+                // if there is, check that the schema of the link selection is the same
+                for (IElementParameter param : this.getElementParameters()) {
+                    if (param.isShow(getElementParameters()) && param.getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
+                        IMetadataTable table = getMetadataFromConnector(param.getContext());
+                        IElementParameter connParam = param.getChildParameters().get(EParameterName.CONNECTION.getName());
+                        if (table != null && connParam != null && !StringUtils.isEmpty((String) connParam.getValue())) {
+                            for (IConnection connection : inputs) {
+                                if (connection.isActivate() && connection.getName().equals(connParam.getValue())) {
+                                    if (!table
+                                            .sameMetadataAs(connection.getMetadataTable(), IMetadataColumn.OPTIONS_IGNORE_KEY
+                                                    | IMetadataColumn.OPTIONS_IGNORE_NULLABLE
+                                                    | IMetadataColumn.OPTIONS_IGNORE_COMMENT
+                                                    | IMetadataColumn.OPTIONS_IGNORE_PATTERN
+                                                    | IMetadataColumn.OPTIONS_IGNORE_DBCOLUMNNAME
+                                                    | IMetadataColumn.OPTIONS_IGNORE_DBTYPE)) {
+                                        String errorMessage = "The schema from the input link \"" + connection.getName()
+                                                + "\" is different from the schema defined in the component.";
+                                        Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -1944,6 +2012,10 @@ public class Node extends Element implements INode {
         return org.talend.core.model.utils.NodeUtil.getIncomingConnections(this, connectionType);
     }
 
+    public List<? extends IConnection> getIncomingConnections(String connectorName) {
+        return org.talend.core.model.utils.NodeUtil.getIncomingConnections(this, connectorName);
+    }
+
     /**
      * Getter for size.
      * 
@@ -2047,5 +2119,4 @@ public class Node extends Element implements INode {
                 .get(INode.RELAOD_PARAMETER_KEY_ELEMENT_PARAMETERS));
 
     }
-
 }

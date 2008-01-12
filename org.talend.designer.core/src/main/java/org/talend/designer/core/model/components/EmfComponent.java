@@ -675,7 +675,7 @@ public class EmfComponent implements IComponent {
             if (useInputLinkSelection) {
                 newParam = new ElementParameter(node);
                 newParam.setCategory(EComponentCategory.PROPERTY);
-                newParam.setName("CONNECTION");
+                newParam.setName(EParameterName.CONNECTION.getName());
                 newParam.setDisplayName("Attached connection");
                 newParam.setListItemsDisplayName(new String[] {});
                 newParam.setListItemsValue(new String[] {});

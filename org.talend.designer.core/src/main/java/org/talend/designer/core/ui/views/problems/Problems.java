@@ -270,6 +270,8 @@ public class Problems {
         if (!hasError) {
             node.removeStatus(Process.ERROR_STATUS);
         }
+
+        node.updateStatus();
     }
 
     /**

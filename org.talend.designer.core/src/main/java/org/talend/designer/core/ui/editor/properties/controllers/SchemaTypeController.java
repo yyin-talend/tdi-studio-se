@@ -247,7 +247,7 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
             String propertyName = (String) inputButton.getData(PARAMETER_NAME);
             IElementParameter param = node.getElementParameter(propertyName);
 
-            IElementParameter connectionParam = param.getChildParameters().get("CONNECTION");
+            IElementParameter connectionParam = param.getChildParameters().get(EParameterName.CONNECTION.getName());
             String connectionName = null;
             if (connectionParam != null) {
                 connectionName = (String) connectionParam.getValue();

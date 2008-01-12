@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.designer.core.model.process;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -54,7 +55,7 @@ public class ConnectionManager {
         }
 
         boolean skipSameProcessTest = false;
-        if (connType.equals(EConnectionType.FLOW_MAIN)) {
+        if (newlineStyle.equals(EConnectionType.FLOW_MAIN)) {
             int nbMain = 0;
             for (IConnection connec : target.getIncomingConnections()) {
                 if (connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
@@ -62,7 +63,11 @@ public class ConnectionManager {
                 }
             }
             int maxFlowInput = target.getConnectorFromName(EConnectionType.FLOW_MAIN.getName()).getMaxLinkInput();
-            if (nbMain <= maxFlowInput) {
+            if (nbMain >= 1 && (nbMain <= maxFlowInput || maxFlowInput == -1)) {
+                // if the component accept several connections on the input, all inputs must come from the same process
+                if (!source.sameProcessAs(target, false)) {
+                    return false;
+                }
                 skipSameProcessTest = true;
             }
         }
@@ -78,19 +83,27 @@ public class ConnectionManager {
 
         // Check existing connections to avoid to have more than one link
         // no matter the type of the connection and the direction
-        List connections;
+        List<Connection> connections = new ArrayList<Connection>((List<Connection>) source.getOutgoingConnections());
+
+        connections.removeAll((List<Connection>) source.getOutgoingConnections(EConnectionType.FLOW_MAIN));
+
         // connections = source.getOutgoingConnections();
-        // for (int i = 0; i < connections.size(); i++) {
-        // if (((Connection) connections.get(i)).getTarget().equals(target)) {
-        // return false;
-        // }
-        // }
+        for (int i = 0; i < connections.size(); i++) {
+            if (((Connection) connections.get(i)).getTarget().equals(target)) {
+                return false;
+            }
+        }
+
+        connections = new ArrayList<Connection>((List<Connection>) source.getIncomingConnections());
+
+        connections.removeAll((List<Connection>) source.getIncomingConnections(EConnectionType.FLOW_MAIN));
+
         // connections = source.getIncomingConnections();
-        // for (int i = 0; i < connections.size(); i++) {
-        // if (((Connection) connections.get(i)).getSource().equals(target)) {
-        // return false;
-        // }
-        // }
+        for (int i = 0; i < connections.size(); i++) {
+            if (((Connection) connections.get(i)).getSource().equals(target)) {
+                return false;
+            }
+        }
 
         if (connType.hasConnectionCategory(IConnectionCategory.DEPENDENCY)) {
             if (!(Boolean) target.getPropertyValue(EParameterName.STARTABLE.getName())) {
@@ -101,7 +114,7 @@ public class ConnectionManager {
             }
         }
 
-        connections = target.getIncomingConnections();
+        connections = (List<Connection>) target.getIncomingConnections();
         for (int i = 0; i < connections.size(); i++) {
             if (connType.equals(EConnectionType.TABLE)) {
                 if (((Connection) connections.get(i)).isActivate()) {

@@ -974,10 +974,12 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
                 getDisplay().asyncExec(new Runnable() {
 
                     public void run() {
-                        int currentSize = getParent().getClientArea().height;
-                        if (getLastCompositeSize() != currentSize) {
-                            addComponents(true);
-                            refresh();
+                        if (!isDisposed() && !getParent().isDisposed()) {
+                            int currentSize = getParent().getClientArea().height;
+                            if (getLastCompositeSize() != currentSize) {
+                                addComponents(true);
+                                refresh();
+                            }
                         }
                     }
 
