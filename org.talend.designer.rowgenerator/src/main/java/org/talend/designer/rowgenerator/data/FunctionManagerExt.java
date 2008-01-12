@@ -27,6 +27,8 @@ import org.talend.designer.rowgenerator.ui.editor.MetadataColumnExt;
  */
 public class FunctionManagerExt extends FunctionManager {
 
+    private static final String DEFAULT_SELECTED_METHOD = "getAsciiRandomString";
+
     private static boolean addPreSuffix = true;
 
     public FunctionManagerExt() {
@@ -71,7 +73,7 @@ public class FunctionManagerExt extends FunctionManager {
             bean.setArrayFunctions(arrayTalendFunctions2);
         }
         for (Function fun : functions) {
-            if (fun.getName().equals("getAsciiRandomString")) {
+            if (fun.getName().equals(DEFAULT_SELECTED_METHOD)) {
                 currentFun = fun;
                 break;
             }
@@ -94,10 +96,17 @@ public class FunctionManagerExt extends FunctionManager {
                 currentFun.setParameters(new ArrayList<Parameter>());
                 bean.setArrayFunctions(arrayTalendFunctions2);
             } else {
+                int flag = 0;
                 for (int i = 0; i < functions.size(); i++) {
-                    arrayTalendFunctions2[i] = functions.get(i).getName();
+
+                    String funName = functions.get(i).getName();
+                    arrayTalendFunctions2[i] = funName;
+                    if (DEFAULT_SELECTED_METHOD.equals(funName)) {
+                        flag = i;
+                    }
+
                 }
-                currentFun = (Function) functions.get(0).clone();
+                currentFun = (Function) functions.get(flag).clone();
                 bean.setArrayFunctions(arrayTalendFunctions2);
             }
         }
