@@ -18,5 +18,6 @@ boolean generateError = ElementParameterParser.getValue(node, "__ERROR__").equal
 
 globalMap.put("<%=cid%>_NB_FILE", NB_FILE<%=cid%>);
 <%if(generateError){%>
-if(NB_FILE<%=cid%> == 0) throw(new java.io.FileNotFoundException());
+if(NB_FILE<%=cid%> == 0) 
+System.err.println("No file found in "+directory_<%=cid%>+" directory");
 <%}%>
