@@ -44,8 +44,9 @@ public class DataStringConnection {
 
         defaultTable = new String[23];
 
-        dataConnection[0] = new DataConnection("MySQL", "jdbc:mysql://<host>:<port>/<sid>", "jdbc:mysql://" + host + ":" + port //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-                + "/" + sid, "3306"); //$NON-NLS-1$ //$NON-NLS-2$
+        dataConnection[0] = new DataConnection(
+                "MySQL", "jdbc:mysql://<host>:<port>/<sid>;<property>", "jdbc:mysql://" + host + ":" + port //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                        + "/" + sid + ";" + addParam, "3306"); //$NON-NLS-1$ //$NON-NLS-2$
 
         dataConnection[1] = new DataConnection("PostgreSQL", "jdbc:postgresql://<host>:<port>/<sid>", "jdbc:postgresql://" + host //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 + ":" + port + "/" + sid, "5432"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
@@ -88,8 +89,8 @@ public class DataStringConnection {
                 "jdbc:firebirdsql:" + host + ":" + file); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
         dataConnection[13] = new DataConnection("Informix",
-                "jdbc:informix-sqli://<host>:<port>/<sid>:informixserver=<datasource>",
-                "jdbc:informix-sqli://" + host + ":" + port + "/" + sid + ":informixserver=" + word); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                "jdbc:informix-sqli://<host>:<port>/<sid>:informixserver=<datasource>;<property>",
+                "jdbc:informix-sqli://" + host + ":" + port + "/" + sid + ":informixserver=" + word + ";" + addParam); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
         dataConnection[14] = new DataConnection("Access", "jdbc:odbc:Driver={Microsoft Access Driver (*.mdb)};DBQ=<filename>",
                 "jdbc:odbc:Driver={Microsoft Access Driver (*.mdb)};DBQ=" + file); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
@@ -382,7 +383,7 @@ public class DataStringConnection {
         } else {
             string = getStringReplace(string, "<dbRootPath>", sid);
         }
-        if (dbTypeItemIndex == 11) {
+        if (dbTypeItemIndex == 11 || dbTypeItemIndex == 0 || dbTypeItemIndex == 13) {
             string = getStringReplace(string, "<property>", addParams);
         }
         return string;
