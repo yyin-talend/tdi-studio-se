@@ -42,7 +42,6 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.commons.ui.swt.formtools.Form;
@@ -211,9 +210,8 @@ public class WSDLSchemaStep1Form extends AbstractForm {
              */
             public void modify(Object element, String property, Object value) {
                 if (VALUE_PROPERTY.equals(property)) {
-                    Object data2 = ((TableItem) element).getData();
                     ArrayList list = (ArrayList) valueTableViewer.getInput();
-                    int index = list.indexOf(data2);
+                    int index = valueTableViewer.getTable().getSelectionIndex();
                     if (index > -1) {
                         list.set(index, value);
                     }
@@ -326,6 +324,7 @@ public class WSDLSchemaStep1Form extends AbstractForm {
         needAuth.addSelectionListener(new SelectionAdapter() {
 
             public void widgetSelected(SelectionEvent e) {
+                checkFieldsValue();
                 setNeedAuthEnable(needAuth.getSelection());
                 getConnection().setNeedAuth(needAuth.getSelection());
             }
@@ -334,8 +333,9 @@ public class WSDLSchemaStep1Form extends AbstractForm {
         useProxy.addSelectionListener(new SelectionAdapter() {
 
             public void widgetSelected(SelectionEvent e) {
-                setUseProxyEnable(needAuth.getSelection());
-                getConnection().setUseProxy(needAuth.getSelection());
+                checkFieldsValue();
+                setUseProxyEnable(useProxy.getSelection());
+                getConnection().setUseProxy(useProxy.getSelection());
             }
 
         });
@@ -421,7 +421,7 @@ public class WSDLSchemaStep1Form extends AbstractForm {
                 // for (ColumnValue columnValue : input) {
                 // hashmap.put(columnValue, columnValue.getValue());
                 // }
-                // getConnection().setParameters(hashmap);
+                getConnection().setParameters(hashmap);
                 valueTableViewer.setInput(hashmap);
                 valueTableViewer.refresh();
             }
@@ -607,6 +607,10 @@ public class WSDLSchemaStep1Form extends AbstractForm {
             if (!checkFieldsValue()) {
                 previewInformationLabel.setText(" " + Messages.getString("FileStep2.settingsIncomplete")); //$NON-NLS-1$
                 //$NON-NLS-2$
+                if (!previewButton.isDisposed()) {
+                    previewButton.setText(Messages.getString("FileStep2.refreshPreview"));
+                    previewButton.setEnabled(true);
+                }
                 return false;
             }
 

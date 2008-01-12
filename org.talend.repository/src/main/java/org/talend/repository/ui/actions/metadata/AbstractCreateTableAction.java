@@ -35,6 +35,7 @@ import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.PositionalFileConnection;
 import org.talend.core.model.metadata.builder.connection.RegexpFileConnection;
 import org.talend.core.model.metadata.builder.connection.TableHelper;
+import org.talend.core.model.metadata.builder.connection.WSDLSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataFromDataBase;
 import org.talend.core.model.properties.DatabaseConnectionItem;
@@ -44,6 +45,7 @@ import org.talend.core.model.properties.LDAPSchemaConnectionItem;
 import org.talend.core.model.properties.LdifFileConnectionItem;
 import org.talend.core.model.properties.PositionalFileConnectionItem;
 import org.talend.core.model.properties.RegExFileConnectionItem;
+import org.talend.core.model.properties.WSDLSchemaConnectionItem;
 import org.talend.core.model.properties.XmlFileConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.repository.i18n.Messages;
@@ -54,6 +56,7 @@ import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.utils.ManagerConnection;
 import org.talend.repository.ui.wizards.metadata.connection.genericshema.GenericSchemaTableWizard;
 import org.talend.repository.ui.wizards.metadata.connection.ldap.LDAPSchemaTableWizard;
+import org.talend.repository.ui.wizards.metadata.connection.wsdl.WSDLSchemaTableWizard;
 import org.talend.repository.ui.wizards.metadata.table.database.DatabaseTableWizard;
 import org.talend.repository.ui.wizards.metadata.table.files.FileDelimitedTableWizard;
 import org.talend.repository.ui.wizards.metadata.table.files.FileLdifTableWizard;
@@ -178,8 +181,8 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
             default:
                 return;
             }
-            FilePositionalTableWizard filePositionalTableWizard = new FilePositionalTableWizard(PlatformUI
-                    .getWorkbench(), creation, item, metadataTable, forceReadOnly);
+            FilePositionalTableWizard filePositionalTableWizard = new FilePositionalTableWizard(PlatformUI.getWorkbench(),
+                    creation, item, metadataTable, forceReadOnly);
             filePositionalTableWizard.setRepositoryObject(node.getObject());
 
             WizardDialog wizardDialog = new WizardDialog(new Shell(), filePositionalTableWizard);
@@ -227,8 +230,8 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
                 return;
             }
             // set the repositoryObject, lock and set isRepositoryObjectEditable
-            FileRegexpTableWizard fileRegexpTableWizard = new FileRegexpTableWizard(PlatformUI.getWorkbench(),
-                    creation, item, metadataTable, forceReadOnly);
+            FileRegexpTableWizard fileRegexpTableWizard = new FileRegexpTableWizard(PlatformUI.getWorkbench(), creation, item,
+                    metadataTable, forceReadOnly);
             fileRegexpTableWizard.setRepositoryObject(node.getObject());
 
             WizardDialog wizardDialog = new WizardDialog(new Shell(), fileRegexpTableWizard);
@@ -326,8 +329,8 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
             }
 
             // set the repositoryObject, lock and set isRepositoryObjectEditable
-            FileDelimitedTableWizard fileDelimitedTableWizard = new FileDelimitedTableWizard(PlatformUI.getWorkbench(),
-                    creation, item, metadataTable, forceReadOnly);
+            FileDelimitedTableWizard fileDelimitedTableWizard = new FileDelimitedTableWizard(PlatformUI.getWorkbench(), creation,
+                    item, metadataTable, forceReadOnly);
             fileDelimitedTableWizard.setRepositoryObject(node.getObject());
 
             WizardDialog wizardDialog = new WizardDialog(new Shell(), fileDelimitedTableWizard);
@@ -376,8 +379,8 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
             }
 
             // set the repositoryObject, lock and set isRepositoryObjectEditable
-            FileLdifTableWizard fileLdifTableWizard = new FileLdifTableWizard(PlatformUI.getWorkbench(), creation,
-                    item, metadataTable, forceReadOnly);
+            FileLdifTableWizard fileLdifTableWizard = new FileLdifTableWizard(PlatformUI.getWorkbench(), creation, item,
+                    metadataTable, forceReadOnly);
             fileLdifTableWizard.setRepositoryObject(node.getObject());
 
             WizardDialog wizardDialog = new WizardDialog(new Shell(), fileLdifTableWizard);
@@ -419,8 +422,8 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
             }
 
             // set the repositoryObject, lock and set isRepositoryObjectEditable
-            GenericSchemaTableWizard genericSchemaWizard = new GenericSchemaTableWizard(PlatformUI.getWorkbench(),
-                    creation, item, metadataTable, forceReadOnly);
+            GenericSchemaTableWizard genericSchemaWizard = new GenericSchemaTableWizard(PlatformUI.getWorkbench(), creation,
+                    item, metadataTable, forceReadOnly);
             genericSchemaWizard.setRepositoryObject(node.getObject());
 
             WizardDialog wizardDialog = new WizardDialog(new Shell(), genericSchemaWizard);
@@ -468,8 +471,58 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
             }
 
             // set the repositoryObject, lock and set isRepositoryObjectEditable
-            LDAPSchemaTableWizard ldapSchemaWizard = new LDAPSchemaTableWizard(PlatformUI.getWorkbench(), creation,
-                    item, metadataTable, forceReadOnly);
+            LDAPSchemaTableWizard ldapSchemaWizard = new LDAPSchemaTableWizard(PlatformUI.getWorkbench(), creation, item,
+                    metadataTable, forceReadOnly);
+            ldapSchemaWizard.setRepositoryObject(node.getObject());
+
+            WizardDialog wizardDialog = new WizardDialog(new Shell(), ldapSchemaWizard);
+            handleWizard(node, wizardDialog);
+        }
+
+    }
+
+    /**
+     * DOC qzhang Comment method "createWSDLSchemaWizard".
+     * 
+     * @param selection
+     * @param forceReadOnly
+     */
+    public void createWSDLSchemaWizard(IStructuredSelection selection, final boolean forceReadOnly) {
+        Object obj = (selection).getFirstElement();
+        RepositoryNode node = (RepositoryNode) obj;
+        WSDLSchemaConnection connection = null;
+        MetadataTable metadataTable = null;
+
+        boolean creation = false;
+        if (node.getType() == ENodeType.REPOSITORY_ELEMENT) {
+            ERepositoryObjectType nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
+            String tableLabel = (String) node.getProperties(EProperties.LABEL);
+
+            WSDLSchemaConnectionItem item = null;
+            switch (nodeType) {
+            case METADATA_CON_TABLE:
+                item = (WSDLSchemaConnectionItem) node.getParent().getObject().getProperty().getItem();
+                connection = (WSDLSchemaConnection) item.getConnection();
+                metadataTable = TableHelper.findByLabel(connection, tableLabel);
+                creation = false;
+                break;
+            case METADATA_WSDL_SCHEMA:
+                item = (WSDLSchemaConnectionItem) node.getObject().getProperty().getItem();
+                connection = (WSDLSchemaConnection) item.getConnection();
+                metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
+                String nextId = ProxyRepositoryFactory.getInstance().getNextId();
+                metadataTable.setId(nextId);
+                metadataTable.setLabel(getStringIndexed(metadataTable.getLabel()));
+                connection.getTables().add(metadataTable);
+                creation = true;
+                break;
+            default:
+                return;
+            }
+
+            // set the repositoryObject, lock and set isRepositoryObjectEditable
+            WSDLSchemaTableWizard ldapSchemaWizard = new WSDLSchemaTableWizard(PlatformUI.getWorkbench(), creation, item,
+                    metadataTable, forceReadOnly);
             ldapSchemaWizard.setRepositoryObject(node.getObject());
 
             WizardDialog wizardDialog = new WizardDialog(new Shell(), ldapSchemaWizard);
@@ -549,14 +602,13 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
                         Display.getDefault().syncExec(new Runnable() {
 
                             public void run() {
-                                DatabaseTableWizard databaseTableWizard = new DatabaseTableWizard(PlatformUI
-                                        .getWorkbench(), creation, item, metadataTable, getExistingNames(),
-                                        forceReadOnly, managerConnection);
+                                DatabaseTableWizard databaseTableWizard = new DatabaseTableWizard(PlatformUI.getWorkbench(),
+                                        creation, item, metadataTable, getExistingNames(), forceReadOnly, managerConnection);
                                 databaseTableWizard.setSkipStep(skipStep);
                                 databaseTableWizard.setRepositoryObject(node.getObject());
 
-                                WizardDialog wizardDialog = new WizardDialog(PlatformUI.getWorkbench()
-                                        .getActiveWorkbenchWindow().getShell(), databaseTableWizard);
+                                WizardDialog wizardDialog = new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+                                        .getShell(), databaseTableWizard);
                                 wizardDialog.setBlockOnOpen(true);
                                 handleWizard(node, wizardDialog);
                             }

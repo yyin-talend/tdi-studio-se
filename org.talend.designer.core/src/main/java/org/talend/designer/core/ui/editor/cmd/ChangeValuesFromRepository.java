@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.cmd;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +22,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.builder.connection.Connection;
+import org.talend.core.model.metadata.builder.connection.WSDLSchemaConnection;
 import org.talend.core.model.metadata.designerproperties.RepositoryToComponentProperty;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
@@ -196,6 +198,16 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                         IMetadataTable metaTable = ((Node) elem).getMetadataList().get(0);
                         RepositoryToComponentProperty.getTableXmlFileValue(connection, "XML_MAPPING", param, //$NON-NLS-1$
                                 table, metaTable);
+                        param.setRepositoryValueUsed(true);
+                    } else if (param.getField().equals(EParameterFieldType.TABLE)
+                            && param.getRepositoryValue().equals("WSDL_PARAMS")) {
+                        List<Map<String, Object>> table = (List<Map<String, Object>>) elem.getPropertyValue(param.getName());
+                        ArrayList parameters = ((WSDLSchemaConnection) connection).getParameters();
+                        for (Object object : parameters) {
+                            Map<String, Object> map2 = new HashMap<String, Object>();
+                            map2.put("VALUE", object);
+                            table.add(map2);
+                        }
                         param.setRepositoryValueUsed(true);
                     }
 

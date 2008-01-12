@@ -101,6 +101,9 @@ public class CreateTableAction extends AbstractCreateTableAction {
         } else if (ERepositoryObjectType.METADATA_LDAP_SCHEMA.equals(nodeType)) {
             getViewPart().expand(metadataNode.getChildren().get(0), true);
             createLDAPSchemaWizard(selection, false);
+        } else if (ERepositoryObjectType.METADATA_WSDL_SCHEMA.equals(nodeType)) {
+            getViewPart().expand(metadataNode.getChildren().get(0), true);
+            createWSDLSchemaWizard(selection, false);
         }
     }
 

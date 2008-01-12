@@ -41,6 +41,7 @@ import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.metadata.builder.connection.RegexpFileConnection;
 import org.talend.core.model.metadata.builder.connection.SubItemHelper;
 import org.talend.core.model.metadata.builder.connection.TableHelper;
+import org.talend.core.model.metadata.builder.connection.WSDLSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Project;
@@ -554,6 +555,11 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
 
         if (type == ERepositoryObjectType.METADATA_GENERIC_SCHEMA) {
             GenericSchemaConnection genericSchemaConnection = (GenericSchemaConnection) ((ConnectionItem) repositoryObject
+                    .getProperty().getItem()).getConnection();
+            createTables(recBinNode, node, repositoryObject, genericSchemaConnection);
+        }
+        if (type == ERepositoryObjectType.METADATA_WSDL_SCHEMA) {
+            WSDLSchemaConnection genericSchemaConnection = (WSDLSchemaConnection) ((ConnectionItem) repositoryObject
                     .getProperty().getItem()).getConnection();
             createTables(recBinNode, node, repositoryObject, genericSchemaConnection);
         }

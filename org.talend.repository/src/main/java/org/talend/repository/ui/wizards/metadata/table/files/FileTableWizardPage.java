@@ -24,6 +24,7 @@ import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.PositionalFileConnection;
 import org.talend.core.model.metadata.builder.connection.RegexpFileConnection;
 import org.talend.core.model.metadata.builder.connection.TableHelper;
+import org.talend.core.model.metadata.builder.connection.WSDLSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
 import org.talend.core.model.metadata.builder.connection.util.ConnectionSwitch;
 import org.talend.core.model.properties.ConnectionItem;
@@ -35,6 +36,7 @@ import org.talend.repository.ui.wizards.metadata.connection.files.regexp.RegexpF
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.XmlFileStep3Form;
 import org.talend.repository.ui.wizards.metadata.connection.genericshema.GenericSchemaStep2Form;
 import org.talend.repository.ui.wizards.metadata.connection.ldap.LDAPSchemaStep4Form;
+import org.talend.repository.ui.wizards.metadata.connection.wsdl.WSDLSchemaStep2Form;
 
 /**
  * TableWizard present the TableForm width the MetaDataTable. Use to create a new table (need a connection to a DB).
@@ -56,8 +58,7 @@ public class FileTableWizardPage extends WizardPage {
      * 
      * @param ISelection
      */
-    public FileTableWizardPage(ConnectionItem connectionItem, MetadataTable metadataTable,
-            boolean isRepositoryObjectEditable) {
+    public FileTableWizardPage(ConnectionItem connectionItem, MetadataTable metadataTable, boolean isRepositoryObjectEditable) {
         super("wizardPage"); //$NON-NLS-1$
         this.connectionItem = connectionItem;
         this.metadataTable = metadataTable;
@@ -91,8 +92,8 @@ public class FileTableWizardPage extends WizardPage {
 
             @Override
             public Object caseDelimitedFileConnection(final DelimitedFileConnection object) {
-                DelimitedFileStep3Form delimitedFileStep3Form = new DelimitedFileStep3Form(parent, connectionItem,
-                        metadataTable, TableHelper.getTableNames(object, metadataTable.getLabel()));
+                DelimitedFileStep3Form delimitedFileStep3Form = new DelimitedFileStep3Form(parent, connectionItem, metadataTable,
+                        TableHelper.getTableNames(object, metadataTable.getLabel()));
                 delimitedFileStep3Form.setReadOnly(!isRepositoryObjectEditable);
                 delimitedFileStep3Form.setListener(listener);
                 return delimitedFileStep3Form;
@@ -100,8 +101,8 @@ public class FileTableWizardPage extends WizardPage {
 
             @Override
             public Object casePositionalFileConnection(final PositionalFileConnection object) {
-                FileStep3Form fileStep3Form = new FileStep3Form(parent, connectionItem, metadataTable, TableHelper
-                        .getTableNames(object, metadataTable.getLabel()));
+                FileStep3Form fileStep3Form = new FileStep3Form(parent, connectionItem, metadataTable, TableHelper.getTableNames(
+                        object, metadataTable.getLabel()));
                 fileStep3Form.setReadOnly(!isRepositoryObjectEditable);
                 fileStep3Form.setListener(listener);
                 return fileStep3Form;
@@ -109,16 +110,16 @@ public class FileTableWizardPage extends WizardPage {
 
             @Override
             public Object caseRegexpFileConnection(final RegexpFileConnection object) {
-                RegexpFileStep3Form regexpFileStep3Form = new RegexpFileStep3Form(parent, connectionItem,
-                        metadataTable, TableHelper.getTableNames(object, metadataTable.getLabel()));
+                RegexpFileStep3Form regexpFileStep3Form = new RegexpFileStep3Form(parent, connectionItem, metadataTable,
+                        TableHelper.getTableNames(object, metadataTable.getLabel()));
                 regexpFileStep3Form.setReadOnly(!isRepositoryObjectEditable);
                 regexpFileStep3Form.setListener(listener);
                 return regexpFileStep3Form;
             }
 
             public Object caseXmlFileConnection(final XmlFileConnection object) {
-                XmlFileStep3Form xmlFileStep3Form = new XmlFileStep3Form(parent, connectionItem, metadataTable,
-                        TableHelper.getTableNames(object, metadataTable.getLabel()));
+                XmlFileStep3Form xmlFileStep3Form = new XmlFileStep3Form(parent, connectionItem, metadataTable, TableHelper
+                        .getTableNames(object, metadataTable.getLabel()));
                 xmlFileStep3Form.setReadOnly(!isRepositoryObjectEditable);
                 xmlFileStep3Form.setListener(listener);
                 return xmlFileStep3Form;
@@ -126,8 +127,8 @@ public class FileTableWizardPage extends WizardPage {
 
             @Override
             public Object caseLdifFileConnection(final LdifFileConnection object) {
-                LdifFileStep3Form ldifFileStep3Form = new LdifFileStep3Form(parent, connectionItem, metadataTable,
-                        TableHelper.getTableNames(object, metadataTable.getLabel()));
+                LdifFileStep3Form ldifFileStep3Form = new LdifFileStep3Form(parent, connectionItem, metadataTable, TableHelper
+                        .getTableNames(object, metadataTable.getLabel()));
                 ldifFileStep3Form.setReadOnly(!isRepositoryObjectEditable);
                 ldifFileStep3Form.setListener(listener);
                 return ldifFileStep3Form;
@@ -135,16 +136,29 @@ public class FileTableWizardPage extends WizardPage {
 
             @Override
             public Object caseGenericSchemaConnection(final GenericSchemaConnection object) {
-                GenericSchemaStep2Form genericSchemaStep2Form = new GenericSchemaStep2Form(parent, connectionItem,
-                        metadataTable, TableHelper.getTableNames(object, metadataTable.getLabel()));
+                GenericSchemaStep2Form genericSchemaStep2Form = new GenericSchemaStep2Form(parent, connectionItem, metadataTable,
+                        TableHelper.getTableNames(object, metadataTable.getLabel()));
                 genericSchemaStep2Form.setReadOnly(!isRepositoryObjectEditable);
                 genericSchemaStep2Form.setListener(listener);
                 return genericSchemaStep2Form;
             }
-            
+
             @Override
             public Object caseLDAPSchemaConnection(final LDAPSchemaConnection object) {
                 LDAPSchemaStep4Form ldapSchemaStep4Form = new LDAPSchemaStep4Form(parent, connectionItem);
+                ldapSchemaStep4Form.setReadOnly(!isRepositoryObjectEditable);
+                ldapSchemaStep4Form.setListener(listener);
+                return ldapSchemaStep4Form;
+            }
+
+            /*
+             * (non-Javadoc)
+             * 
+             * @see org.talend.core.model.metadata.builder.connection.util.ConnectionSwitch#caseWSDLSchemaConnection(org.talend.core.model.metadata.builder.connection.WSDLSchemaConnection)
+             */
+            @Override
+            public Object caseWSDLSchemaConnection(WSDLSchemaConnection object) {
+                WSDLSchemaStep2Form ldapSchemaStep4Form = new WSDLSchemaStep2Form(parent, connectionItem);
                 ldapSchemaStep4Form.setReadOnly(!isRepositoryObjectEditable);
                 ldapSchemaStep4Form.setListener(listener);
                 return ldapSchemaStep4Form;
