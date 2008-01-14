@@ -58,6 +58,7 @@ import org.talend.core.ui.metadata.dialog.DbTableSelectorDialog;
 import org.talend.core.ui.metadata.dialog.DbTableSelectorObject;
 import org.talend.core.ui.metadata.dialog.DbTableSelectorObject.ObjectType;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.controllers.creator.SelectAllTextControlCreator;
@@ -228,7 +229,9 @@ public class DbTableController extends AbstractElementPropertySectionController 
      */
     protected void createOpenSQLCommand(Button button) {
         initConnectionParameters();
-        openSqlBuilderBuildIn(connParameters, (String) button.getData(PARAMETER_NAME));
+        String repositoryType = (String) elem.getPropertyValue(EParameterName.PROPERTY_TYPE.getName());
+        String propertyName = (String) button.getData(PARAMETER_NAME);
+        openSQLBuilder(repositoryType, propertyName, "");
     }
 
     /**

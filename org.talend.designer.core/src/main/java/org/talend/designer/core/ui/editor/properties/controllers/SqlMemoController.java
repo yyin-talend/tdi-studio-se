@@ -13,17 +13,12 @@
 package org.talend.designer.core.ui.editor.properties.controllers;
 
 import java.beans.PropertyChangeEvent;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import org.eclipse.gef.commands.Command;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.fieldassist.DecoratedField;
 import org.eclipse.jface.fieldassist.FieldDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.jface.fieldassist.IControlCreator;
-import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.events.KeyEvent;
@@ -38,8 +33,6 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IPropertyListener;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.commons.ui.swt.colorstyledtext.ColorManager;
 import org.talend.commons.ui.swt.colorstyledtext.ColorStyledText;
@@ -52,15 +45,10 @@ import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
-import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
-import org.talend.designer.core.ui.editor.properties.ConfigureConnParamDialog;
 import org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
-import org.talend.sqlbuilder.ui.SQLBuilderDialog;
-import org.talend.sqlbuilder.util.TextUtil;
-import org.talend.sqlbuilder.util.UIUtils;
 
 /**
  * DOC yzhang class global comment. Detailled comment <br/>
@@ -107,7 +95,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
         }
     };
 
-    private final Map<String, SQLBuilderDialog> sqlbuilers = new HashMap<String, SQLBuilderDialog>();
+    private ColorStyledText queryText;
 
     private Command createCommand() {
         initConnectionParameters();
@@ -128,82 +116,10 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
             return null;
         }
         query = this.removeStrInQuery(query);
-
-        // boolean status = true;
-        if (repositoryType.equals(EmfComponent.BUILTIN)) {
-            connParameters.setQuery(query);
-            if (connParameters.isShowConfigParamDialog()) {
-                ConfigureConnParamDialog paramDialog = new ConfigureConnParamDialog(composite.getShell(), connParameters, part
-                        .getTalendEditor().getProcess().getContextManager());
-                if (paramDialog.open() == Window.OK) {
-                    openSqlBuilderBuildIn(connParameters, propertyName);
-                }
-            } else {
-                openSqlBuilderBuildIn(connParameters, propertyName);
-            }
-
-            // SQLBuilderRepositoryNodeManager manager = new SQLBuilderRepositoryNodeManager();
-
-            // connParameters.setRepositoryNodeBuiltIn(
-            // manager.getRepositoryNodeByBuildIn(null, connParameters));
-        } else if (repositoryType.equals(EmfComponent.REPOSITORY)) {
-            String repositoryName2 = ""; //$NON-NLS-1$
-            for (IElementParameter param : (List<IElementParameter>) elem.getElementParameters()) {
-                // System.out.println(param.toString());
-                if (param.getName().equals(EParameterName.REPOSITORY_PROPERTY_TYPE.getName())) {
-                    String value = (String) param.getValue();
-                    for (String key : this.dynamicProperty.getRepositoryConnectionItemMap().keySet()) {
-
-                        if (key.equals(value)) {
-                            repositoryName2 = this.dynamicProperty.getRepositoryConnectionItemMap().get(key).getProperty()
-                                    .getLabel();
-
-                        }
-                    }
-                }
-            }
-
-            // When no repository avaiable on "Repository" mode, open a MessageDialog.
-            if (repositoryName2 == null || repositoryName2.length() == 0) {
-                MessageDialog.openError(composite.getShell(), Messages.getString("NoRepositoryDialog.Title"), Messages //$NON-NLS-1$
-                        .getString("NoRepositoryDialog.Text")); //$NON-NLS-1$
-                return null;
-            }
-            String key = this.part.getTalendEditor().getProcess().getName() + ((Node) elem).getUniqueName() + repositoryName2;
-            final SQLBuilderDialog builderDialog = sqlbuilers.get(key);
-            if (!composite.isDisposed() && builderDialog != null && builderDialog.getShell() != null
-                    && !builderDialog.getShell().isDisposed()) {
-                builderDialog.getShell().setActive();
-            } else {
-                connParameters.setRepositoryName(repositoryName2);
-                Shell parentShell = new Shell(composite.getShell().getDisplay());
-                TextUtil.setDialogTitle(this.part.getTalendEditor().getProcess().getName(), (String) ((Node) elem)
-                        .getElementParameter("LABEL").getValue(), elem.getElementName());
-                part.addPropertyListener(new IPropertyListener() {
-
-                    /*
-                     * (non-Javadoc)
-                     * 
-                     * @see org.eclipse.ui.IPropertyListener#propertyChanged(java.lang.Object, int)
-                     */
-                    public void propertyChanged(Object source, int propId) {
-
-                    }
-
-                });
-                SQLBuilderDialog dial = new SQLBuilderDialog(parentShell);
-                UIUtils.addSqlBuilderDialog(part.getTalendEditor().getProcess().getName(), dial);
-                connParameters.setQuery(query);
-                dial.setConnParameters(connParameters);
-                sqlbuilers.put(key, dial);
-                if (Window.OK == dial.open()) {
-                    if (!composite.isDisposed() && !connParameters.isNodeReadOnly()) {
-                        String sql = connParameters.getQuery();
-                        sql = TalendTextUtils.addSQLQuotes(sql);
-                        return new PropertyChangeCommand(elem, propertyName, sql);
-                    }
-                }
-            }
+        String sql = openSQLBuilder(repositoryType, propertyName, query);
+        if (sql != null) {
+            queryText.setText(sql);
+            return new PropertyChangeCommand(elem, propertyName, sql);
         }
         return null;
     }
@@ -296,7 +212,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
             dField.addFieldDecoration(decoration, SWT.RIGHT | SWT.TOP, false);
         }
         Control cLayout = dField.getLayoutControl();
-        ColorStyledText queryText = (ColorStyledText) dField.getControl();
+        queryText = (ColorStyledText) dField.getControl();
         queryText.setData(PARAMETER_NAME, param.getName());
         editionControlHelper.register(param.getName(), queryText, true);
 
