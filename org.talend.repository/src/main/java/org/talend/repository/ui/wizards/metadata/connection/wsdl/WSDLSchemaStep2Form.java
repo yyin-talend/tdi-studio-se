@@ -359,6 +359,9 @@ public class WSDLSchemaStep2Form extends AbstractForm {
         } else {
 
             List<String[]> csvRows = csvArray.getRows();
+            if (csvRows.size() == 0) {
+                return;
+            }
             String[] fields = null;
             try {
                 fields = csvRows.get(0);

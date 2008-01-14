@@ -172,7 +172,7 @@ public class WSDLSchemaWizard extends RepositoryWizard implements INewWizard {
             wsdlSchemaWizardPage2.setDescription(Messages.getString("FileWizardPage.descriptionCreateStep2")); //$NON-NLS-1$
             addPage(wsdlSchemaWizardPage2);
             wsdlSchemaWizardPage0.setPageComplete(false);
-            wsdlSchemaWizardPage1.setPageComplete(isRepositoryObjectEditable());
+            wsdlSchemaWizardPage1.setPageComplete(false);
             wsdlSchemaWizardPage2.setPageComplete(isRepositoryObjectEditable());
 
         } else if (this.isSinglePageOnly == false) {

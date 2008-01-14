@@ -18,7 +18,6 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Plugin;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.ISelection;
@@ -38,7 +37,6 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
@@ -265,7 +263,7 @@ public class WSDLSchemaStep1Form extends AbstractForm {
                 Plugin plugin = PluginChecker.getWSDLPlugin();
                 if (plugin instanceof IWSDLExplorerAccessor) {
                     IWSDLExplorerAccessor accessor = (IWSDLExplorerAccessor) plugin;
-//                    Shell shell = new Shell(getParent().getShell().getDisplay());
+                    // Shell shell = new Shell(getParent().getShell().getDisplay());
                     accessor.openWSExplorer(getShell());
                 }
             }
@@ -342,6 +340,9 @@ public class WSDLSchemaStep1Form extends AbstractForm {
             public void modifyText(ModifyEvent e) {
                 checkFieldsValue();
                 getConnection().setWSDL(wsdlText.getText());
+                if (methodText.getText() != null && !methodText.getText().equals("")) {
+                    updateStatus(IStatus.OK, null);
+                }
             }
 
         });
@@ -385,6 +386,9 @@ public class WSDLSchemaStep1Form extends AbstractForm {
             public void modifyText(ModifyEvent e) {
                 checkFieldsValue();
                 getConnection().setMethodName(methodText.getText());
+                if (wsdlText.getText() != null && !wsdlText.getText().equals("")) {
+                    updateStatus(IStatus.OK, null);
+                }
             }
 
         });
@@ -644,7 +648,8 @@ public class WSDLSchemaStep1Form extends AbstractForm {
             if (csvArray == null || csvArray.getRows() == null || csvArray.getRows().size() == 0) {
                 previewInformationLabel.setText(" " + Messages.getString("FileStep2.previewFailure")); //$NON-NLS-1$
                 //$NON-NLS-2$
-                MessageDialog.openError(getShell(), "Error", "Preview refresh failed, please check attributes and filter.");
+                // MessageDialog.openError(getShell(), "Error", "Preview refresh failed, please check attributes and
+                // filter.");
             } else {
                 previewInformationLabel.setText(" " + Messages.getString("FileStep2.previewIsDone")); //$NON-NLS-1$
                 //$NON-NLS-2$
@@ -653,7 +658,8 @@ public class WSDLSchemaStep1Form extends AbstractForm {
                 try {
                     wsdlPreview.refreshTablePreview(csvArray, false, processDescription);
                 } catch (Exception e) {
-                    MessageDialog.openError(getShell(), "Error", "Preview refresh failed, please check attributes and filter.");
+                    // MessageDialog.openError(getShell(), "Error", "Preview refresh failed, please check attributes and
+                    // filter.");
                 }
                 previewInformationLabel.setText(""); //$NON-NLS-1$
             }
