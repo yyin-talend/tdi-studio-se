@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.oro.text.regex.MalformedPatternException;
 import org.apache.oro.text.regex.Pattern;
 import org.apache.oro.text.regex.Perl5Compiler;
@@ -584,6 +585,18 @@ public class Process extends Element implements IProcess2 {
                         // }
                         // }
                         elemParam.setPropertyValue(pType.getName(), boolean1);
+                    } else if (param.getField().equals(EParameterFieldType.CLOSED_LIST)) {
+                        boolean valueSet = false;
+                        if (!ArrayUtils.contains(param.getListItemsValue(), pType.getValue())) {
+                            if (ArrayUtils.contains(param.getListItemsDisplayName(), pType.getValue())) {
+                                valueSet = true;
+                                int index = ArrayUtils.indexOf(param.getListItemsDisplayName(), pType.getValue());
+                                elemParam.setPropertyValue(pType.getName(), param.getListItemsValue()[index]);
+                            }
+                        }
+                        if (!valueSet) {
+                            elemParam.setPropertyValue(pType.getName(), pType.getValue());
+                        }
                     } else if (param.getField().equals(EParameterFieldType.TABLE)) {
                         List<Map<String, Object>> tableValues = new ArrayList<Map<String, Object>>();
                         String[] codeList = param.getListItemsDisplayCodeName();
