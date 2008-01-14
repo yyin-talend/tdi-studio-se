@@ -21,6 +21,7 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.PositionalFileConnectionItem;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.RegExFileConnectionItem;
+import org.talend.core.model.properties.WSDLSchemaConnectionItem;
 import org.talend.core.model.properties.XmlFileConnectionItem;
 import org.talend.core.model.properties.impl.ConnectionItemImpl;
 import org.talend.core.model.properties.impl.LdifFileConnectionItemImpl;
@@ -69,6 +70,8 @@ public enum EDatabaseComponentName {
     FILEPOSITIONAL(PositionalFileConnectionItem.class, "tFileInputPositional", "tFileOutputPositional"),
     FILEREGEX(RegExFileConnectionItem.class, "tFileInputRegex", null),
     FILEXML(XmlFileConnectionItem.class, "tFileInputXML", "tFileOutputXML"),
+
+    WSDL(WSDLSchemaConnectionItem.class, "tWebServiceInput", null),
 
     // RunJob
     RunJob(ProcessItem.class, "tRunJob", "tRunJob");
