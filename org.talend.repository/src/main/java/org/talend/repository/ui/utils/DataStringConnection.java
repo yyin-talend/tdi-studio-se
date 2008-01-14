@@ -28,6 +28,8 @@ public class DataStringConnection {
 
     private final String[] defaultTable;
 
+    private final String mySQlDefaultValue = "noDatetimeStringSync=true";
+
     // private Combo combo;
 
     private int selectionIndex;
@@ -40,13 +42,14 @@ public class DataStringConnection {
         String fileMdb = "([\\w\\.\\-_]{0,}).mdb"; //$NON-NLS-1$
         String file = "([\\w\\.\\-_]{0,})"; //$NON-NLS-1$
         String addParam = "([\\w\\.\\-_]{0,})"; //$NON-NLS-1$
+
         dataConnection = new DataConnection[23];
 
         defaultTable = new String[23];
 
         dataConnection[0] = new DataConnection(
-                "MySQL", "jdbc:mysql://<host>:<port>/<sid>;<property>", "jdbc:mysql://" + host + ":" + port //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-                        + "/" + sid + ";" + addParam, "3306"); //$NON-NLS-1$ //$NON-NLS-2$
+                "MySQL", "jdbc:mysql://<host>:<port>/<sid>?<property>", "jdbc:mysql://" + host + ":" + port //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                        + "/" + sid + "?" + addParam, "3306"); //$NON-NLS-1$ //$NON-NLS-2$
 
         dataConnection[1] = new DataConnection("PostgreSQL", "jdbc:postgresql://<host>:<port>/<sid>", "jdbc:postgresql://" + host //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 + ":" + port + "/" + sid, "5432"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
@@ -383,8 +386,12 @@ public class DataStringConnection {
         } else {
             string = getStringReplace(string, "<dbRootPath>", sid);
         }
-        if (dbTypeItemIndex == 11 || dbTypeItemIndex == 0 || dbTypeItemIndex == 13) {
+        if (dbTypeItemIndex == 11 || dbTypeItemIndex == 13) {
             string = getStringReplace(string, "<property>", addParams);
+        }
+        if (dbTypeItemIndex == 0) {
+            string = getStringReplace(string, "<property>", addParams);
+            string = string + mySQlDefaultValue;
         }
         return string;
     }
