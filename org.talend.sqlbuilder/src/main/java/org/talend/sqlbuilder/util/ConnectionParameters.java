@@ -135,7 +135,7 @@ public class ConnectionParameters {
 
     private String selectDBTable = "";
 
-    private String jdbcProperties;
+    private String jdbcProperties = "";
 
     /**
      * Sets the connectionComment.
@@ -243,6 +243,9 @@ public class ConnectionParameters {
             this.dbName = path.segment(path.segmentCount() - 1);
             this.datasource = this.dbName;
         }
+        if (!isShowDialog) {
+            isShowDialog = ContextParameterUtils.isContainContextParam(filename);
+        }
     }
 
     /**
@@ -261,6 +264,9 @@ public class ConnectionParameters {
      */
     public void setDatasource(String datasource) {
         this.datasource = TextUtil.removeQuots(datasource);
+        if (!isShowDialog) {
+            isShowDialog = ContextParameterUtils.isContainContextParam(datasource);
+        }
     }
 
     /**
@@ -636,6 +642,9 @@ public class ConnectionParameters {
      */
     public void setDirectory(String directory) {
         this.directory = TextUtil.removeQuots(directory);
+        if (!isShowDialog) {
+            isShowDialog = ContextParameterUtils.isContainContextParam(directory);
+        }
         // if (directory != null && !"".equals(this.directory)) {
         // IPath path = new Path(this.directory);
         // this.dbName = path.segment(path.segmentCount() - 1);
@@ -659,6 +668,9 @@ public class ConnectionParameters {
                 }
             }
         }
+        if (!isShowDialog) {
+            isShowDialog = ContextParameterUtils.isContainContextParam(frameworkType);
+        }
     }
 
     /**
@@ -677,6 +689,9 @@ public class ConnectionParameters {
      */
     public void setJdbcProperties(String jdbcProperties) {
         this.jdbcProperties = TextUtil.removeQuots(jdbcProperties);
+        if (!isShowDialog) {
+            isShowDialog = ContextParameterUtils.isContainContextParam(jdbcProperties);
+        }
     }
 
 }
