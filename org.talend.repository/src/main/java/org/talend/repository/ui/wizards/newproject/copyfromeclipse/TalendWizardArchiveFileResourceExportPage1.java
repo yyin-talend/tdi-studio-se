@@ -218,6 +218,7 @@ public class TalendWizardArchiveFileResourceExportPage1 extends WizardArchiveFil
 
             public void widgetSelected(SelectionEvent e) {
                 resourceGroup.setAllSelections(true);
+                updateWidgetEnablements();
             }
         };
         selectButton.addSelectionListener(listener);
@@ -230,6 +231,7 @@ public class TalendWizardArchiveFileResourceExportPage1 extends WizardArchiveFil
 
             public void widgetSelected(SelectionEvent e) {
                 resourceGroup.setAllSelections(false);
+                updateWidgetEnablements();
             }
         };
         deselectButton.addSelectionListener(listener);
@@ -237,5 +239,4 @@ public class TalendWizardArchiveFileResourceExportPage1 extends WizardArchiveFil
         setButtonLayoutData(deselectButton);
 
     }
-
 }
