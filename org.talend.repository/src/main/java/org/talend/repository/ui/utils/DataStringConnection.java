@@ -391,7 +391,9 @@ public class DataStringConnection {
         }
         if (dbTypeItemIndex == 0) {
             string = getStringReplace(string, "<property>", addParams);
-            string = string + mySQlDefaultValue;
+            if (!addParams.contains(mySQlDefaultValue)) {
+                string = string + mySQlDefaultValue;
+            }
         }
         return string;
     }

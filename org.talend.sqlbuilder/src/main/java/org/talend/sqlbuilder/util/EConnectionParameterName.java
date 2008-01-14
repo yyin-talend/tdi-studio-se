@@ -27,6 +27,7 @@ public enum EConnectionParameterName {
     PASSWORD(Messages.getString("ConnectionParameterName.PasswordLabel")), //$NON-NLS-1$
     FILE(Messages.getString("ConnectionParameterName.DbfileLabel")), //$NON-NLS-1$
     DIRECTORY(Messages.getString("ConnectionParameterName.DbPathLabel")), //$NON-NLS-1$
+    PROPERTIES_STRING("Additional JDBC Parameters"),
     DATASOURCE("DataSource"); //$NON-NLS-1$
 
     private String displayName;

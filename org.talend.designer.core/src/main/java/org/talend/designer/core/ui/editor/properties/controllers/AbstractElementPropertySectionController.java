@@ -885,6 +885,9 @@ public abstract class AbstractElementPropertySectionController implements Proper
         String dir = setConnectionParameter(element, connParameters, EConnectionParameterName.DIRECTORY.getName());
         connParameters.setDirectory(dir);
 
+        String jdbcProps = setConnectionParameter(element, connParameters, EConnectionParameterName.PROPERTIES_STRING.getName());
+        connParameters.setJdbcProperties(jdbcProps);
+
         String realTableName = null;
         if (EmfComponent.REPOSITORY.equals(elem.getPropertyValue(EParameterName.SCHEMA_TYPE.getName()))) {
             final Object propertyValue = elem.getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
@@ -971,6 +974,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
         setConnectionParameterName(element, connParameters, EConnectionParameterName.SID.getName());
         setConnectionParameterName(element, connParameters, EConnectionParameterName.FILE.getName());
         setConnectionParameterName(element, connParameters, EConnectionParameterName.DIRECTORY.getName());
+        setConnectionParameterName(element, connParameters, EConnectionParameterName.PROPERTIES_STRING.getName());
 
     }
 
@@ -1003,10 +1007,8 @@ public abstract class AbstractElementPropertySectionController implements Proper
         if (curParameter != null) {
             boolean extra = JobSettingsConstants.isExtraParameter(this.curParameter.getName());
             boolean paramFlag = JobSettingsConstants.isExtraParameter(param.getName());
-            if (extra == paramFlag) {
-                return true;
-            }
+            return extra == paramFlag;
         }
-        return false;
+        return true;
     }
 }

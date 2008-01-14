@@ -135,6 +135,8 @@ public class ConnectionParameters {
 
     private String selectDBTable = "";
 
+    private String jdbcProperties;
+
     /**
      * Sets the connectionComment.
      * 
@@ -444,8 +446,8 @@ public class ConnectionParameters {
         DataStringConnection urlDataStringConnection = new DataStringConnection();
         int dbIndex = urlDataStringConnection.getIndexOfLabel(dbType);
         urlDataStringConnection.setSelectionIndex(dbIndex);
-        String url = urlDataStringConnection.getString(-1, getHost(), getUserName(), getPassword(), getPort(),
-                getDbName(), getFilename(), getDatasource(), getDirectory());
+        String url = urlDataStringConnection.getString(dbIndex, getHost(), getUserName(), getPassword(), getPort(), getDbName(),
+                getFilename(), getDatasource(), getDirectory(), getJdbcProperties());
         return url;
 
     }
@@ -657,6 +659,24 @@ public class ConnectionParameters {
                 }
             }
         }
+    }
+
+    /**
+     * Getter for jdbcProperties.
+     * 
+     * @return the jdbcProperties
+     */
+    public String getJdbcProperties() {
+        return this.jdbcProperties;
+    }
+
+    /**
+     * Sets the jdbcProperties.
+     * 
+     * @param jdbcProperties the jdbcProperties to set
+     */
+    public void setJdbcProperties(String jdbcProperties) {
+        this.jdbcProperties = TextUtil.removeQuots(jdbcProperties);
     }
 
 }
