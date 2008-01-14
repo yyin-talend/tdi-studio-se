@@ -22,6 +22,7 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
+import org.talend.designer.core.model.components.EmfComponent;
 
 /**
  * ftang class global comment. Detailed comment. <br/>
@@ -104,8 +105,7 @@ public class StatsAndLogsViewHelper {
             }
 
             if (name.equals(EParameterName.DB_TYPE.getName())) {
-                elementParameter.setValue(checkAndAddQuote(PREFERENCE_STORE.getString(LANGUAGE_PREFIX
-                        + EParameterName.DB_TYPE.getName())));
+                elementParameter.setValue(PREFERENCE_STORE.getString(LANGUAGE_PREFIX + EParameterName.DB_TYPE.getName()));
                 continue;
             }
 
@@ -191,7 +191,11 @@ public class StatsAndLogsViewHelper {
                         + EParameterName.CATCH_REALTIME_STATS.getName()));
                 continue;
             }
-
+            if (name.equals(EParameterName.PROPERTY_TYPE.getName())) {
+                elementParameter.setValue(EmfComponent.BUILTIN);
+                elementParameter.toString();
+                continue;
+            }
         }
     }
 
@@ -260,8 +264,7 @@ public class StatsAndLogsViewHelper {
             }
 
             if (name.equals(EParameterName.DB_TYPE.getName())) {
-                PREFERENCE_STORE.setValue(LANGUAGE_PREFIX + EParameterName.DB_TYPE.getName(),
-                        checkAndRemoveQuote((String) elementValue));
+                PREFERENCE_STORE.setValue(LANGUAGE_PREFIX + EParameterName.DB_TYPE.getName(), (String) elementValue);
                 continue;
             }
 
