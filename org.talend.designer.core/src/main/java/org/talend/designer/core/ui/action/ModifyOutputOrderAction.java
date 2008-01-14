@@ -16,7 +16,7 @@ import java.util.List;
 
 import org.eclipse.gef.ui.actions.SelectionAction;
 import org.eclipse.ui.IWorkbenchPart;
-import org.talend.designer.core.ui.dialog.mergeorder.MergeOrderDialog;
+import org.talend.core.model.process.IConnectionCategory;
 import org.talend.designer.core.ui.dialog.mergeorder.ModifyOutputOrderDialog;
 import org.talend.designer.core.ui.editor.cmd.ChangeOutputConnectionOrderCommand;
 import org.talend.designer.core.ui.editor.connections.ConnLabelEditPart;
@@ -74,7 +74,19 @@ public class ModifyOutputOrderAction extends SelectionAction {
             node = (Node) ((NodePart) o).getModel();
         }
 
-        if ((node == null) || (!node.getComponent().isMultipleOutput())) {
+        if (node == null) {
+            return false;
+        }
+        int nb = 0;
+        for (Connection connection : (List<Connection>) node.getOutgoingConnections()) {
+            if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+                nb++;
+            }
+        }
+
+        boolean multipleOutput = nb > 1;
+
+        if (!multipleOutput) {
             return false;
         }
         multipleOutputNode = node;
@@ -94,7 +106,7 @@ public class ModifyOutputOrderAction extends SelectionAction {
         ModifyOutputOrderDialog dialog = new ModifyOutputOrderDialog(this.getWorkbenchPart().getSite().getShell(),
                 multipleOutputNode);
 
-        if (dialog.open() == MergeOrderDialog.OK) {
+        if (dialog.open() == ModifyOutputOrderDialog.OK) {
             ChangeOutputConnectionOrderCommand cmd = new ChangeOutputConnectionOrderCommand(multipleOutputNode, dialog
                     .getConnectionList());
             execute(cmd);

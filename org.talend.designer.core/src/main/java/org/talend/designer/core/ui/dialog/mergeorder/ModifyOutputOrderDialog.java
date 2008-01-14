@@ -17,7 +17,7 @@ import java.util.List;
 
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Shell;
-import org.talend.core.model.process.EConnectionType;
+import org.talend.core.model.process.IConnectionCategory;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
 
@@ -28,6 +28,8 @@ public class ModifyOutputOrderDialog extends MergeOrderDialog {
 
     private Node multipleOutputNode;
 
+    List<Connection> notDataList;
+
     /**
      * yzhang ModifyOutputOrderDialog constructor comment.
      * 
@@ -37,9 +39,16 @@ public class ModifyOutputOrderDialog extends MergeOrderDialog {
     public ModifyOutputOrderDialog(Shell parentShell, Node multipleOutputNode) {
         super(parentShell);
         this.multipleOutputNode = multipleOutputNode;
-        List<Connection> currentList = (List<Connection>) multipleOutputNode.getOutgoingConnections();
-
-        this.connectionList = new ArrayList<Connection>(currentList);
+        List<Connection> fullList = (List<Connection>) multipleOutputNode.getOutgoingConnections();
+        notDataList = new ArrayList<Connection>();
+        this.connectionList = new ArrayList<Connection>();
+        for (Connection connection : fullList) {
+            if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+                connectionList.add(connection);
+            } else {
+                notDataList.add(connection);
+            }
+        }
     }
 
     /*
@@ -70,6 +79,23 @@ public class ModifyOutputOrderDialog extends MergeOrderDialog {
      */
     @Override
     protected int getConnectionQty() {
-        return multipleOutputNode.getOutgoingConnections(EConnectionType.FLOW_MAIN).size();
+        int nb = 0;
+        for (Connection connection : (List<Connection>) multipleOutputNode.getOutgoingConnections()) {
+            if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+                nb++;
+            }
+        }
+        return nb;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.core.ui.dialog.mergeorder.MergeOrderDialog#getConnectionList()
+     */
+    @Override
+    public List<Connection> getConnectionList() {
+        connectionList.addAll(notDataList);
+        return connectionList;
     }
 }

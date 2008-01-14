@@ -12,9 +12,12 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.cmd;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.gef.commands.Command;
+import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.process.IConnectionCategory;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -34,10 +37,10 @@ public class ChangeOutputConnectionOrderCommand extends Command {
     /**
      * yzhang ChangeOutputConnectionOrderCommand constructor comment.
      */
-    public ChangeOutputConnectionOrderCommand(Node multipleOutputNode, List<Connection> inputConnections) {
+    public ChangeOutputConnectionOrderCommand(Node multipleOutputNode, List<Connection> outputConnections) {
 
         this.multipleOutputNode = multipleOutputNode;
-        this.connectionInNewOrder = inputConnections;
+        this.connectionInNewOrder = outputConnections;
         this.connectionInOldOrder = (List<Connection>) multipleOutputNode.getOutgoingConnections();
 
         if (connectionInNewOrder.size() != connectionInOldOrder.size()) {
@@ -54,9 +57,17 @@ public class ChangeOutputConnectionOrderCommand extends Command {
      */
     @Override
     public void execute() {
-
+        List<IMetadataTable> metadataList = new ArrayList<IMetadataTable>();
+        for (Connection connection : connectionInNewOrder) {
+            if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+                if (!metadataList.contains(connection.getMetadataTable())) {
+                    metadataList.add(connection.getMetadataTable());
+                }
+            }
+        }
+        multipleOutputNode.setMetadataList(metadataList);
         multipleOutputNode.setOutgoingConnections(connectionInNewOrder);
-        connectionInNewOrder.get(0).updateAllId(false);
+        connectionInNewOrder.get(0).updateAllId();
         ((Process) multipleOutputNode.getProcess()).checkStartNodes();
 
     }
@@ -68,8 +79,21 @@ public class ChangeOutputConnectionOrderCommand extends Command {
      */
     @Override
     public void undo() {
-        multipleOutputNode.setIncomingConnections(connectionInOldOrder);
-        connectionInOldOrder.get(0).updateAllId(false);
+        List<IMetadataTable> metadataList = new ArrayList<IMetadataTable>();
+        // if (hasBuiltInConnector) {
+        for (Connection connection : connectionInOldOrder) {
+            if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+                if (!metadataList.contains(connection.getMetadataTable())) {
+                    metadataList.add(connection.getMetadataTable());
+                }
+            }
+        }
+        // }
+
+        multipleOutputNode.setMetadataList(metadataList);
+
+        multipleOutputNode.setOutgoingConnections(connectionInOldOrder);
+        connectionInOldOrder.get(0).updateAllId();
         ((Process) multipleOutputNode.getProcess()).checkStartNodes();
     }
 }

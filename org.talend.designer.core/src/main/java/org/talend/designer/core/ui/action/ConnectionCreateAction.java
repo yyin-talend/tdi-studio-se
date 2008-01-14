@@ -133,7 +133,7 @@ public class ConnectionCreateAction extends SelectionAction {
             if (curNodeConnector.isBuiltIn()) {
                 for (int i = 0; i < node.getMetadataList().size(); i++) {
                     IMetadataTable table = (node.getMetadataList().get(i));
-                    if (table.getAttachedConnector().equals(curNodeConnector.getName())) {
+                    if (table.getAttachedConnector() == null || table.getAttachedConnector().equals(curNodeConnector.getName())) {
                         String name = table.getTableName();
                         if (connecType.equals(EConnectionType.TABLE)) {
                             name = table.getLabel() + " (" + name + ")"; //$NON-NLS-1$ //$NON-NLS-2$

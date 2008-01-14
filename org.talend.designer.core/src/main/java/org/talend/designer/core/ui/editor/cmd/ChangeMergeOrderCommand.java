@@ -52,7 +52,7 @@ public class ChangeMergeOrderCommand extends Command {
     public void execute() {
 
         mergeNode.setIncomingConnections(connectionInNewOrder);
-        connectionInNewOrder.get(0).updateAllId(false);
+        connectionInNewOrder.get(0).updateAllId();
         ((Process) mergeNode.getProcess()).checkStartNodes();
     }
 
@@ -64,7 +64,7 @@ public class ChangeMergeOrderCommand extends Command {
     @Override
     public void undo() {
         mergeNode.setIncomingConnections(connectionInOldOrder);
-        connectionInOldOrder.get(0).updateAllId(false);
+        connectionInOldOrder.get(0).updateAllId();
         ((Process) mergeNode.getProcess()).checkStartNodes();
     }
 
