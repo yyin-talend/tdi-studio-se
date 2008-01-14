@@ -470,24 +470,22 @@ if (inMetadata != null && metadata != null) {
     
     // INSERT query generation
     int colposition = 1;
-    List colnames = new ArrayList();
-    List parameters = new ArrayList();
+    List<String> colnames = new ArrayList<String>();
+    List<String> parameters = new ArrayList<String>();
     
     // Surrogate key
-    if (!surrogateKeyCreation.equals("AUTO_INCREMENT") && !surrogateKeyCreation.equals("DB_SEQUENCE")) {
-        for (IMetadataColumn column : metadata.getListColumns()) {
-            String colname = column.getLabel();
-            
-            if (colname.equals(surrogateKeyField)) {
-                colnames.add(surrogateKeyField);
-                if (surrogateKeyCreation.equals("DB_SEQUENCE")) {
-                    parameters.add(skSequence + ".nextval");
-                } else {
-                    parameters.add("?");
-                }
-                colposition++;
-                break;
-            }
+    boolean ifEqualWithSK = false;
+    for(Map<String, String> sourceKeyMap : sourceKeys) {
+        if(surrogateKeyField.equals(sourceKeyMap.get("NAME"))) {
+            ifEqualWithSK = true;
+            break;
+        }
+    }
+    if(!ifEqualWithSK) {
+        if(!surrogateKeyCreation.equals("AUTO_INCREMENT") && !surrogateKeyCreation.equals("DB_SEQUENCE")) {
+            colnames.add(surrogateKeyField);
+            parameters.add("?");
+            colposition++;
         }
     }
     
