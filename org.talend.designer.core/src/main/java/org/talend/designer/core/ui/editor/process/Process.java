@@ -43,6 +43,7 @@ import org.eclipse.emf.ecore.xmi.XMLResource;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.SnapToGeometry;
 import org.eclipse.gef.SnapToGrid;
+import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.commands.CommandStackEvent;
 import org.eclipse.gef.commands.CommandStackEventListener;
@@ -1330,8 +1331,23 @@ public class Process extends Element implements IProcess2 {
     }
 
     protected CommandStack getCommandStack() {
-        Object adapter = getEditor().getTalendEditor().getAdapter(CommandStack.class);
-        return (CommandStack) adapter;
+        if (getEditor() != null) {
+            Object adapter = getEditor().getTalendEditor().getAdapter(CommandStack.class);
+            return (CommandStack) adapter;
+        } else {
+            return new CommandStack() {
+
+                /*
+                 * (non-Javadoc)
+                 * 
+                 * @see org.eclipse.gef.commands.CommandStack#execute(org.eclipse.gef.commands.Command)
+                 */
+                @Override
+                public void execute(Command command) {
+
+                }
+            };
+        }
     }
 
     private void loadConnections(ProcessType process, Hashtable<String, Node> nodesHashtable) {
