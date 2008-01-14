@@ -28,7 +28,7 @@ public class DataStringConnection {
 
     private final String[] defaultTable;
 
-    private final String mySQlDefaultValue = "noDatetimeStringSync=true";
+    public static String mySQlDefaultValue = "noDatetimeStringSync=true";
 
     // private Combo combo;
 
@@ -386,15 +386,10 @@ public class DataStringConnection {
         } else {
             string = getStringReplace(string, "<dbRootPath>", sid);
         }
-        if (dbTypeItemIndex == 11 || dbTypeItemIndex == 13) {
+        if (dbTypeItemIndex == 11 || dbTypeItemIndex == 13 || dbTypeItemIndex == 0) {
             string = getStringReplace(string, "<property>", addParams);
-        }
-        if (dbTypeItemIndex == 0) {
-            string = getStringReplace(string, "<property>", addParams);
-            if (!addParams.contains(mySQlDefaultValue)) {
-                string = string + mySQlDefaultValue;
-            }
         }
         return string;
     }
+
 }

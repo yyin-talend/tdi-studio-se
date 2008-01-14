@@ -620,6 +620,10 @@ public class DatabaseForm extends AbstractForm {
                 getConnection().setProductId(product);
                 final String mapping = MetadataTalendType.getDefaultDbmsFromProduct(product).getId();
                 getConnection().setDbmsId(mapping);
+                if (dbTypeCombo.getSelectionIndex() == 0) {
+                    // additionParamText.setText(DataStringConnection.mySQlDefaultValue);
+                    additionParamText.setText(DataStringConnection.mySQlDefaultValue);
+                }
                 checkFieldsValue();
             }
         });
