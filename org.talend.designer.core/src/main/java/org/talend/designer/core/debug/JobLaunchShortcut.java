@@ -22,15 +22,17 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
+import org.eclipse.debug.internal.ui.DebugUIPlugin;
+import org.eclipse.debug.internal.ui.IInternalDebugUIConstants;
 import org.eclipse.debug.ui.DebugUITools;
 import org.eclipse.debug.ui.ILaunchShortcut;
+import org.eclipse.jface.dialogs.MessageDialogWithToggle;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
-import org.talend.core.language.LanguageManager;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.repository.editor.RepositoryEditorInput;
@@ -81,6 +83,11 @@ import org.talend.repository.model.RepositoryNode;
  * 
  */
 public class JobLaunchShortcut implements ILaunchShortcut {
+
+    public JobLaunchShortcut() {
+        DebugUIPlugin.getDefault().getPreferenceStore().putValue(IInternalDebugUIConstants.PREF_SAVE_DIRTY_EDITORS_BEFORE_LAUNCH,
+                MessageDialogWithToggle.NEVER);
+    }
 
     /**
      * Locates a launchable entity in the given selection and launches an application in the specified mode.
