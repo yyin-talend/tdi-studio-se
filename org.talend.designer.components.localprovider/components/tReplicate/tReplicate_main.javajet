@@ -29,6 +29,8 @@ imports="
   		IConnection incomingConn = inputConns.get(0); 
   		incomingName = incomingConn.getName();
   		preMetadata = incomingConn.getMetadataTable();
+  	}else{
+  		return "";
   	}
 	
 	List<IMetadataColumn> columns = metadata.getListColumns();
