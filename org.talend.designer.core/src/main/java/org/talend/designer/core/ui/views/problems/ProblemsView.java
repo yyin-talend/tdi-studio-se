@@ -65,7 +65,6 @@ import org.talend.designer.codegen.IRoutineSynchronizer;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
-import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.views.problems.Problems.Group;
 import org.talend.repository.documentation.ERepositoryActionName;
@@ -194,7 +193,7 @@ public class ProblemsView extends ViewPart implements PropertyChangeListener {
         for (IEditorReference reference : editorParts) {
             IEditorPart editor = reference.getEditor(false);
             if (editor instanceof AbstractMultiPageTalendEditor) {
-                MultiPageTalendEditor mpte = (MultiPageTalendEditor) editor;
+                AbstractMultiPageTalendEditor mpte = (AbstractMultiPageTalendEditor) editor;
                 if (mpte.getTalendEditor().getProcess().equals(node.getProcess())) {
                     page.bringToTop(mpte);
                     mpte.selectNode(node);
