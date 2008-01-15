@@ -61,7 +61,7 @@
     
     <PARAMETER NAME="IREPORT" FIELD="COMMAND" NUM_ROW="14" >
       <DEFAULT IF="CURRENT_OS=='WINDOWS'">"cmd /c \"start /D \"__IREPORT_PATH__\" iReport\""</DEFAULT>
-      <DEFAULT>"xterm cd __IREPORT_PATH__ | iReport"</DEFAULT>
+      <DEFAULT IF="CURRENT_OS=='Linux'">"xterm -e  nohup __IREPORT_PATH__/iReport.sh"</DEFAULT>
     </PARAMETER>
     
  	
