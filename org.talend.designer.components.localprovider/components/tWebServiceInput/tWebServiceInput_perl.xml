@@ -29,6 +29,8 @@
   </CONNECTORS>
 
   <PARAMETERS>
+  <PARAMETER NAME="PROPERTY" FIELD="PROPERTY_TYPE" SHOW="true"
+			NUM_ROW="1" REPOSITORY_VALUE="WSDL" />
     <PARAMETER
       NAME="SCHEMA"
       FIELD="SCHEMA_TYPE"
@@ -43,6 +45,7 @@
       FIELD="TEXT"
       NUM_ROW="20"
       REQUIRED="true"
+      REPOSITORY_VALUE="WSDLURL"
     >
       <DEFAULT>'http://www.soaplite.com/Temperatures'</DEFAULT>
     </PARAMETER>
@@ -51,6 +54,7 @@
       NAME="ENDPOINT"
       FIELD="TEXT"
       NUM_ROW="30"
+      REPOSITORY_VALUE="ENDPOINT"
     >
       <DEFAULT>'http://services.soaplite.com/temper.cgi'</DEFAULT>
     </PARAMETER>
@@ -59,6 +63,7 @@
       NAME="METHOD"
       FIELD="TEXT"
       NUM_ROW="40"
+      REPOSITORY_VALUE="METHOD"
     >
       <DEFAULT>'f2c'</DEFAULT>
     </PARAMETER>
@@ -68,6 +73,7 @@
       FIELD="TABLE"
       NUM_ROW="50"
       NB_LINES="2"
+      REPOSITORY_VALUE="WSDL_PARAMS"
     >
       <ITEMS>
         <ITEM NAME="VALUE" />
@@ -79,6 +85,7 @@
       FIELD="ENCODING_TYPE"
       NUM_ROW="7"
       REQUIRED="true"
+    REPOSITORY_VALUE="ENCODING"
     >
       <DEFAULT>'ISO-8859-15'</DEFAULT>
     </PARAMETER>

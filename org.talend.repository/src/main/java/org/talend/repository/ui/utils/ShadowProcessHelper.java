@@ -383,6 +383,7 @@ public class ShadowProcessHelper {
         WSDLSchemaBean bean = new WSDLSchemaBean();
         // TODO: added properties here...
         bean.setWslUrl(TalendTextUtils.addQuotes(connection.getWSDL()));
+        bean.setEndpointURI(TalendTextUtils.addQuotes(connection.getEndpointURI()));
         bean.setMethod(TalendTextUtils.addQuotes(connection.getMethodName()));
         bean.setNeedAuth(connection.isNeedAuth());
         bean.setUserName(TalendTextUtils.addQuotes(connection.getUserName()));
@@ -394,7 +395,12 @@ public class ShadowProcessHelper {
         bean.setProxyUser(TalendTextUtils.addQuotes(connection.getProxyUser()));
         bean.setProxyPassword(TalendTextUtils.addQuotes(connection.getProxyPassword()));
         processDescription.setWsdlSchemaBean(bean);
-        processDescription.setEncoding(TalendTextUtils.addQuotes("UTF-8")); //$NON-NLS-1$
+        if (connection.getEncoding() != null && !connection.getEncoding().equals("")) {
+            processDescription.setEncoding(connection.getEncoding()); //$NON-NLS-1$
+        } else {
+            processDescription.setEncoding(TalendTextUtils.addQuotes("UTF-8")); //$NON-NLS-1$
+        }
+
         return processDescription;
     }
 }

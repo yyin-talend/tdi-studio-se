@@ -17,6 +17,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.talend.core.language.ECodeLanguage;
+import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.utils.TalendTextUtils;
@@ -34,6 +36,8 @@ public class WSDLSchemaInputNode extends FileInputNode {
      */
     private List<IMetadataTable> metadatas = null;
 
+    private String encoding = "";
+
     /**
      * Constructs a new WSDLSchemaInputNode.
      * 
@@ -43,7 +47,7 @@ public class WSDLSchemaInputNode extends FileInputNode {
     public WSDLSchemaInputNode(String fileName, String encoding, List<IMetadataTable> metadatas, WSDLSchemaBean schemaBean,
             ArrayList parameters) {
         super("tWebServiceInput"); //$NON-NLS-1$
-
+        this.encoding = encoding;
         addParameters(schemaBean, parameters);
         setMetadataList(metadatas);
     }
@@ -57,11 +61,28 @@ public class WSDLSchemaInputNode extends FileInputNode {
     private void addParameters(WSDLSchemaBean schemaBean, ArrayList parameters) {
         IElementParameter param = new TextElementParameter("ENDPOINT", schemaBean.getWslUrl());
         addParameter(param);
-
-        param = new TextElementParameter("ENDPOINT", schemaBean.getWslUrl());
+        if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.JAVA)) {
+            addJavaParameters(schemaBean);
+        } else if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.PERL)) {
+            addPerlParameters(schemaBean);
+        }
+        param = new TextElementParameter("METHOD", schemaBean.getMethod());
         addParameter(param);
 
-        param = new TextElementParameter("NEED_AUTH", "" + schemaBean.isNeedAuth());
+        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        for (Object string : parameters) {
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("VALUE", TalendTextUtils.addQuotes(string.toString()));
+            list.add(map);
+        }
+        param = new ObjectElementParameter("PARAMS", list);
+        param.setListItemsDisplayCodeName(new String[] { "VALUE" });
+        addParameter(param);
+
+    }
+
+    private void addJavaParameters(WSDLSchemaBean schemaBean) {
+        IElementParameter param = new TextElementParameter("NEED_AUTH", "" + schemaBean.isNeedAuth());
         addParameter(param);
 
         param = new TextElementParameter("AUTH_USERNAME", schemaBean.getUserName());
@@ -84,20 +105,13 @@ public class WSDLSchemaInputNode extends FileInputNode {
 
         param = new TextElementParameter("PROXY_PASSWORD", schemaBean.getProxyPassword());
         addParameter(param);
+    }
 
-        param = new TextElementParameter("METHOD", schemaBean.getMethod());
+    private void addPerlParameters(WSDLSchemaBean schemaBean) {
+        IElementParameter param = new TextElementParameter("WSDL", schemaBean.getEndpointURI());
         addParameter(param);
-
-        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-        for (Object string : parameters) {
-            Map<String, Object> map = new HashMap<String, Object>();
-            map.put("VALUE", TalendTextUtils.addQuotes(string.toString()));
-            list.add(map);
-        }
-        param = new ObjectElementParameter("PARAMS", list);
-        param.setListItemsDisplayCodeName(new String[] { "VALUE" });
+        param = new TextElementParameter("ENCODING", this.encoding);
         addParameter(param);
-
     }
 
     /*

@@ -42,8 +42,12 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.commons.ui.swt.formtools.Form;
+import org.talend.commons.ui.swt.formtools.LabelledCombo;
 import org.talend.commons.ui.swt.thread.SWTUIThreadProcessor;
 import org.talend.core.PluginChecker;
+import org.talend.core.language.ECodeLanguage;
+import org.talend.core.language.LanguageManager;
+import org.talend.core.model.metadata.EMetadataEncoding;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.WSDLSchemaConnection;
 import org.talend.core.model.properties.ConnectionItem;
@@ -63,6 +67,11 @@ public class WSDLSchemaStep1Form extends AbstractForm {
     private ConnectionItem connectionItem;
 
     private MetadataTable metadataTable;
+
+    /** Endpoint URI */
+    private Text endPointURI;
+
+    private LabelledCombo encodingCombo;
 
     /** WSDL text. */
     private Text wsdlText;
@@ -155,21 +164,34 @@ public class WSDLSchemaStep1Form extends AbstractForm {
         // ((GridData) group.getLayoutData()).heightHint = 260;
         BaseWidgetUtils.createLabel(groupComposite, Messages.getString("WSDLSchemaStep1Form.WSDLName"), 1); //$NON-NLS-1$
         wsdlText = BaseWidgetUtils.createText(groupComposite, Messages.getString("WSDLSchemaStep1Form.WSDLURL"), 3);
-        needAuth = BaseWidgetUtils.createCheckbox(groupComposite, Messages.getString("WSDLSchemaStep1Form.NeedAuth"), 4);
-        useLabel = BaseWidgetUtils.createLabel(groupComposite, Messages.getString("WSDLSchemaStep1Form.UserName"), 1);
-        userNameText = BaseWidgetUtils.createText(groupComposite, "", 1);
-        password = BaseWidgetUtils.createLabel(groupComposite, Messages.getString("WSDLSchemaStep1Form.Password"), 1);
-        passWordText = BaseWidgetUtils.createText(groupComposite, "", 1);
-        useProxy = BaseWidgetUtils.createCheckbox(groupComposite, Messages.getString("WSDLSchemaStep1Form.UseProxy"), 4);
-        hostLabel = BaseWidgetUtils.createLabel(groupComposite, Messages.getString("WSDLSchemaStep1Form.ProxyHost"), 1);
-        proxyHost = BaseWidgetUtils.createText(groupComposite, "", 1);
-        portLabel = BaseWidgetUtils.createLabel(groupComposite, Messages.getString("WSDLSchemaStep1Form.ProxyPort"), 1);
-        proxyProt = BaseWidgetUtils.createText(groupComposite, "", 1);
-        userProLabel = BaseWidgetUtils.createLabel(groupComposite, Messages.getString("WSDLSchemaStep1Form.ProxyUser"), 1);
-        proxyUser = BaseWidgetUtils.createText(groupComposite, "", 1);
-        passwordProLabel = BaseWidgetUtils
-                .createLabel(groupComposite, Messages.getString("WSDLSchemaStep1Form.ProxyPassword"), 1);
-        proxyPassword = BaseWidgetUtils.createText(groupComposite, "", 1);
+        if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.JAVA)) {
+            needAuth = BaseWidgetUtils.createCheckbox(groupComposite, Messages.getString("WSDLSchemaStep1Form.NeedAuth"), 4);
+            useLabel = BaseWidgetUtils.createLabel(groupComposite, Messages.getString("WSDLSchemaStep1Form.UserName"), 1);
+            userNameText = BaseWidgetUtils.createText(groupComposite, "", 1);
+            password = BaseWidgetUtils.createLabel(groupComposite, Messages.getString("WSDLSchemaStep1Form.Password"), 1);
+            passWordText = BaseWidgetUtils.createText(groupComposite, "", 1);
+            useProxy = BaseWidgetUtils.createCheckbox(groupComposite, Messages.getString("WSDLSchemaStep1Form.UseProxy"), 4);
+            hostLabel = BaseWidgetUtils.createLabel(groupComposite, Messages.getString("WSDLSchemaStep1Form.ProxyHost"), 1);
+            proxyHost = BaseWidgetUtils.createText(groupComposite, "", 1);
+            portLabel = BaseWidgetUtils.createLabel(groupComposite, Messages.getString("WSDLSchemaStep1Form.ProxyPort"), 1);
+            proxyProt = BaseWidgetUtils.createText(groupComposite, "", 1);
+            userProLabel = BaseWidgetUtils.createLabel(groupComposite, Messages.getString("WSDLSchemaStep1Form.ProxyUser"), 1);
+            proxyUser = BaseWidgetUtils.createText(groupComposite, "", 1);
+            passwordProLabel = BaseWidgetUtils.createLabel(groupComposite, Messages
+                    .getString("WSDLSchemaStep1Form.ProxyPassword"), 1);
+            proxyPassword = BaseWidgetUtils.createText(groupComposite, "", 1);
+        } else if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.PERL)) {
+            BaseWidgetUtils.createLabel(groupComposite, Messages.getString("WSDLSchemaStep1Form.ENDPOINTURI"), 1); //$NON-NLS-1$
+            endPointURI = BaseWidgetUtils.createText(groupComposite, "", 3);
+            EMetadataEncoding[] values = EMetadataEncoding.values();
+            String[] encodingData = new String[values.length];
+            for (int j = 0; j < values.length; j++) {
+                encodingData[j] = values[j].getName();
+            }
+
+            encodingCombo = new LabelledCombo(groupComposite, Messages.getString("FileStep2.encoding"), Messages //$NON-NLS-1$
+                    .getString("FileStep2.encodingTip"), encodingData, 3, true, SWT.NONE); //$NON-NLS-1$
+        }
         BaseWidgetUtils.createLabel(groupComposite, Messages.getString("WSDLSchemaStep1Form.MethodName"), 1);
         methodText = BaseWidgetUtils.createText(groupComposite, "", 3);
         BaseWidgetUtils.createLabel(groupComposite, Messages.getString("WSDLSchemaStep1Form.Parameters"), 4);
@@ -309,20 +331,29 @@ public class WSDLSchemaStep1Form extends AbstractForm {
         wsdlPreview.newTablePreview();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.repository.ui.swt.utils.AbstractForm#addFieldsListeners()
-     */
-    @Override
-    protected void addFieldsListeners() {
-
+    private void addJavaFieldsListeners() {
         needAuth.addSelectionListener(new SelectionAdapter() {
 
             public void widgetSelected(SelectionEvent e) {
                 checkFieldsValue();
                 setNeedAuthEnable(needAuth.getSelection());
                 getConnection().setNeedAuth(needAuth.getSelection());
+            }
+
+        });
+        userNameText.addModifyListener(new ModifyListener() {
+
+            public void modifyText(ModifyEvent e) {
+                checkFieldsValue();
+                getConnection().setUserName(userNameText.getText());
+            }
+
+        });
+        passWordText.addModifyListener(new ModifyListener() {
+
+            public void modifyText(ModifyEvent e) {
+                checkFieldsValue();
+                getConnection().setPassword(passWordText.getText());
             }
 
         });
@@ -335,18 +366,6 @@ public class WSDLSchemaStep1Form extends AbstractForm {
             }
 
         });
-        wsdlText.addModifyListener(new ModifyListener() {
-
-            public void modifyText(ModifyEvent e) {
-                checkFieldsValue();
-                getConnection().setWSDL(wsdlText.getText());
-                if (methodText.getText() != null && !methodText.getText().equals("")) {
-                    updateStatus(IStatus.OK, null);
-                }
-            }
-
-        });
-
         proxyHost.addModifyListener(new ModifyListener() {
 
             public void modifyText(ModifyEvent e) {
@@ -381,6 +400,59 @@ public class WSDLSchemaStep1Form extends AbstractForm {
             }
 
         });
+    }
+
+    private void addPerlFieldsListeners() {
+        endPointURI.addModifyListener(new ModifyListener() {
+
+            public void modifyText(ModifyEvent e) {
+                checkFieldsValue();
+                getConnection().setEndpointURI(endPointURI.getText());
+                if (methodText.getText() != null && !methodText.getText().equals("") && wsdlText.getText() != null
+                        && !wsdlText.getText().equals("")) {
+                    updateStatus(IStatus.OK, null);
+                }
+            }
+
+        });
+        encodingCombo.addModifyListener(new ModifyListener() {
+
+            public void modifyText(final ModifyEvent e) {
+                getConnection().setEncoding(encodingCombo.getText());
+                checkFieldsValue();
+                if (methodText.getText() != null && !methodText.getText().equals("") && wsdlText.getText() != null
+                        && !wsdlText.getText().equals("")) {
+                    updateStatus(IStatus.OK, null);
+                }
+            }
+        });
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.ui.swt.utils.AbstractForm#addFieldsListeners()
+     */
+    @Override
+    protected void addFieldsListeners() {
+
+        if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.JAVA)) {
+            addJavaFieldsListeners();
+        } else if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.PERL)) {
+            addPerlFieldsListeners();
+        }
+
+        wsdlText.addModifyListener(new ModifyListener() {
+
+            public void modifyText(ModifyEvent e) {
+                checkFieldsValue();
+                getConnection().setWSDL(wsdlText.getText());
+                if (methodText.getText() != null && !methodText.getText().equals("")) {
+                    updateStatus(IStatus.OK, null);
+                }
+            }
+
+        });
         methodText.addModifyListener(new ModifyListener() {
 
             public void modifyText(ModifyEvent e) {
@@ -389,22 +461,6 @@ public class WSDLSchemaStep1Form extends AbstractForm {
                 if (wsdlText.getText() != null && !wsdlText.getText().equals("")) {
                     updateStatus(IStatus.OK, null);
                 }
-            }
-
-        });
-        userNameText.addModifyListener(new ModifyListener() {
-
-            public void modifyText(ModifyEvent e) {
-                checkFieldsValue();
-                getConnection().setUserName(userNameText.getText());
-            }
-
-        });
-        passWordText.addModifyListener(new ModifyListener() {
-
-            public void modifyText(ModifyEvent e) {
-                checkFieldsValue();
-                getConnection().setPassword(passWordText.getText());
             }
 
         });
@@ -488,14 +544,25 @@ public class WSDLSchemaStep1Form extends AbstractForm {
     protected void initialize() {
         String wsdlUrl = getConnection().getWSDL();
         this.wsdlText.setText(wsdlUrl == null ? "" : wsdlUrl);
-        boolean needAuth2 = getConnection().isNeedAuth();
-        String userName = getConnection().getUserName();
-        this.userNameText.setText(userName == null ? "" : userName);
-        String password2 = getConnection().getPassword();
-        this.passWordText.setText(password2 == null ? "" : password2);
-        setNeedAuthEnable(needAuth2);
-        boolean useproxy = getConnection().isUseProxy();
-        setUseProxyEnable(useproxy);
+        if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.JAVA)) {
+            boolean needAuth2 = getConnection().isNeedAuth();
+            String userName = getConnection().getUserName();
+            this.userNameText.setText(userName == null ? "" : userName);
+            String password2 = getConnection().getPassword();
+            this.passWordText.setText(password2 == null ? "" : password2);
+            setNeedAuthEnable(needAuth2);
+            boolean useproxy = getConnection().isUseProxy();
+            setUseProxyEnable(useproxy);
+        } else if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.PERL)) {
+            String endPointURI = getConnection().getEndpointURI();
+            this.endPointURI.setText(endPointURI == null ? "" : endPointURI);
+            if (getConnection().getEncoding() != null && !getConnection().getEncoding().equals("")) { //$NON-NLS-1$
+                encodingCombo.setText(getConnection().getEncoding());
+            } else {
+                encodingCombo.select(0);
+            }
+            encodingCombo.clearSelection();
+        }
         String method = getConnection().getMethodName();
         this.methodText.setText(method == null ? "" : method);
         ArrayList hashparameter = getConnection().getParameters();
@@ -557,6 +624,18 @@ public class WSDLSchemaStep1Form extends AbstractForm {
     @Override
     protected boolean checkFieldsValue() {
         // TODO Auto-generated method stub
+        if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.JAVA)) {
+            return checkJavaFieldsValue();
+        } else if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.PERL)) {
+            return checkPerlFieldsValue();
+        } else {
+            updateStatus(IStatus.ERROR, null);
+            return true;
+        }
+
+    }
+
+    private boolean checkJavaFieldsValue() {
         if (wsdlText.getText() == null || wsdlText.getText().equals("")) {
             updateStatus(IStatus.ERROR, "WSDL URL must be specified."); //$NON-NLS-1$
             return false;
@@ -586,6 +665,22 @@ public class WSDLSchemaStep1Form extends AbstractForm {
             return true;
         }
 
+    }
+
+    private boolean checkPerlFieldsValue() {
+        if (wsdlText.getText() == null || wsdlText.getText().equals("")) {
+            updateStatus(IStatus.ERROR, "WSDL URL must be specified."); //$NON-NLS-1$
+            return false;
+        } else if (endPointURI.getText() == null || endPointURI.getText().equals("")) {
+            updateStatus(IStatus.ERROR, "Endpoint URI must be specified."); //$NON-NLS-1$
+            return false;
+        } else if (methodText.getText() == null || methodText.getText().equals("")) {
+            updateStatus(IStatus.ERROR, "Method must be specified."); //$NON-NLS-1$
+            return false;
+        } else {
+            updateStatus(IStatus.ERROR, null);
+            return true;
+        }
     }
 
     /**
