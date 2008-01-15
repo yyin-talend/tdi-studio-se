@@ -58,7 +58,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.progress.IProgressService;
 import org.talend.commons.exception.ExceptionHandler;
@@ -547,25 +546,34 @@ public class ProcessComposite extends Composite {
             processContext.addPropertyChangeListener(pcl);
         }
 
+        boolean disableAll = false;
+        if (processContext != null) {
+            disableAll = processContext.getProcess().disableRunJobView();
+        }
+
         // perfBtn.setSelection(processContext != null && processContext.isMonitorPerf());
         // traceBtn.setSelection(processContext != null && processContext.isMonitorTrace());
         // watchBtn.setSelection(processContext != null && processContext.isWatchAllowed());
         perfBtn.setSelection(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(
-                RunProcessPrefsConstants.ISSTATISTICSRUN));
-        traceBtn
-                .setSelection(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(RunProcessPrefsConstants.ISTRACESRUN));
+                RunProcessPrefsConstants.ISSTATISTICSRUN)
+                && !disableAll);
+        traceBtn.setSelection(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(RunProcessPrefsConstants.ISTRACESRUN)
+                && !disableAll);
         watchBtn.setSelection(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(
-                RunProcessPrefsConstants.ISEXECTIMERUN));
+                RunProcessPrefsConstants.ISEXECTIMERUN)
+                && !disableAll);
         saveJobBeforeRunButton.setSelection(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(
-                RunProcessPrefsConstants.ISSAVEBEFORERUN));
+                RunProcessPrefsConstants.ISSAVEBEFORERUN)
+                && !disableAll);
         clearBeforeExec.setSelection(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(
-                RunProcessPrefsConstants.ISCLEARBEFORERUN));
+                RunProcessPrefsConstants.ISCLEARBEFORERUN)
+                && !disableAll);
 
         // saveJobBeforeRunButton.setSelection(processContext != null && processContext.isSaveBeforeRun());
-        setRunnable(processContext != null && !processContext.isRunning());
-        killBtn.setEnabled(processContext != null && processContext.isRunning());
+        setRunnable(processContext != null && !processContext.isRunning() && !disableAll);
+        killBtn.setEnabled(processContext != null && processContext.isRunning() && !disableAll);
         // clearLogBtn.setEnabled(processContext != null);
-        contextComposite.setProcess(processContext != null ? processContext.getProcess() : null);
+        contextComposite.setProcess(((processContext != null) && !disableAll ? processContext.getProcess() : null));
         fillConsole(processContext != null ? processContext.getMessages() : new ArrayList<IProcessMessage>());
     }
 

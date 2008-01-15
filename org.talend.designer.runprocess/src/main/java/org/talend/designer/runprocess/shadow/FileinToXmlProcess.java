@@ -567,4 +567,14 @@ public class FileinToXmlProcess<K extends FileInputNode> extends RepositoryObjec
         // TODO Auto-generated method stub
         return false;
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IProcess#disableRunJobView()
+     */
+    public boolean disableRunJobView() {
+        // TODO Auto-generated method stub
+        return false;
+    }
 }

@@ -615,4 +615,14 @@ public class RowGenProcess extends Element implements IProcess {
         // TODO Auto-generated method stub
         return false;
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IProcess#disableRunJobView()
+     */
+    public boolean disableRunJobView() {
+        // TODO Auto-generated method stub
+        return false;
+    }
 }

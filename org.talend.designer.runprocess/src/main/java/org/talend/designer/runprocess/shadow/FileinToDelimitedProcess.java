@@ -571,4 +571,14 @@ public class FileinToDelimitedProcess<K extends FileInputNode> extends Repositor
         // TODO Auto-generated method stub
         return false;
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IProcess#disableRunJobView()
+     */
+    public boolean disableRunJobView() {
+        // TODO Auto-generated method stub
+        return false;
+    }
 }

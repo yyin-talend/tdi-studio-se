@@ -500,4 +500,14 @@ public class AnyIntoLogRowProcess<K extends ShadowNode> implements IProcess {
         return false;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IProcess#disableRunJobView()
+     */
+    public boolean disableRunJobView() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
 }

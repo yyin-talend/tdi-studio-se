@@ -2415,4 +2415,13 @@ public class Process extends Element implements IProcess2 {
             commandStack.addCommandStackEventListener(commandStackEventListener);
         }
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IProcess2#disableRunJobView()
+     */
+    public boolean disableRunJobView() {
+        return false;
+    }
 }
