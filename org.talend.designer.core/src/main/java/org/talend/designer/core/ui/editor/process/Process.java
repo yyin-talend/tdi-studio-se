@@ -63,6 +63,7 @@ import org.talend.core.model.general.Project;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTool;
+import org.talend.core.model.metadata.builder.connection.impl.QueryImpl;
 import org.talend.core.model.metadata.designerproperties.RepositoryToComponentProperty;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EConnectionType;
@@ -169,6 +170,8 @@ public class Process extends Element implements IProcess2 {
     private Property property;
 
     private boolean initDone = false;
+
+    // private boolean isOpenEditor = false;
 
     private IProcessor processor;
 
@@ -1128,13 +1131,46 @@ public class Process extends Element implements IProcess2 {
                                         .equals(param.getRepositoryValue()))
                                         || (param.getField().equals(EParameterFieldType.TEXT) && "SERVER_NAME".equals(param
                                                 .getRepositoryValue()))) {
-                                    node.setPropertyValue(param.getName(), objectValue);
-                                    CompoundCommand cc = new CompoundCommand();
-                                    PropertyChangeCommand pcc = new PropertyChangeCommand(node, EParameterName.UPDATE_COMPONENTS
-                                            .getName(), Boolean.TRUE);
-                                    cc.add(pcc);
-                                    if (!cc.isEmpty()) {
-                                        getCommandStack().execute(cc);
+                                    String connectQuery = null;
+                                    boolean flag = false;
+
+                                    for (IElementParameter elementParameter : node.getElementParameters()) {
+                                        if ("QUERYSTORE_TYPE".equals(elementParameter.getName())) {
+                                            if ("BUILT_IN".equals(elementParameter.getValue())) {
+                                                flag = true;
+                                            }
+                                        }
+                                    }
+
+                                    if (!flag) {
+                                        for (IElementParameter elementParameter : node.getElementParameters()) {
+                                            if ("REPOSITORY_QUERYSTORE_TYPE".equals(elementParameter.getName())) {
+                                                for (QueryImpl queryImpl : (EList<QueryImpl>) repositoryConnection.getQueries()
+                                                        .getQuery()) {
+                                                    if (((String) elementParameter.getValue()).indexOf(queryImpl.getLabel()) != -1) {
+                                                        connectQuery = queryImpl.getValue().replaceAll("\\s", " ").replaceAll(
+                                                                " {2,}", " ");
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        for (IElementParameter elementParameter : node.getElementParameters()) {
+                                            if ("QUERY".equals(elementParameter.getName())) {
+                                                if (!(connectQuery.equals(((String) elementParameter.getValue()).substring(1,
+                                                        ((String) elementParameter.getValue()).length() - 1).replaceAll("\\s",
+                                                        " ").replaceAll(" {2,}", " ")))) {
+                                                    node.setPropertyValue(param.getName(), objectValue);
+                                                    CompoundCommand cc = new CompoundCommand();
+                                                    PropertyChangeCommand pcc = new PropertyChangeCommand(node,
+                                                            EParameterName.UPDATE_COMPONENTS.getName(), Boolean.TRUE);
+                                                    cc.add(pcc);
+                                                    if (!cc.isEmpty()) {
+                                                        getCommandStack().execute(cc);
+                                                    }
+                                                }
+                                            }
+                                        }
                                     }
                                 } else {
                                     // check the value
