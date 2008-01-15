@@ -23,7 +23,6 @@ import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
-import org.talend.core.PluginChecker;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.expressionbuilder.ExpressionPersistance;
@@ -121,6 +120,14 @@ public class DeleteAction extends AContextualAction {
             return true;
         }
 
+        if (node.getContentType() == ERepositoryObjectType.JOBLET_DOC) {
+            return true;
+        }
+
+        if (node.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.JOBLET_DOC) {
+            return true;
+        }
+
         if (node.getContentType() == ERepositoryObjectType.JOBS) {
             return true;
         }
@@ -192,7 +199,8 @@ public class DeleteAction extends AContextualAction {
                     visible = false;
                     break;
                 case SIMPLE_FOLDER:
-                    if (node.getContentType() == ERepositoryObjectType.JOB_DOC) {
+                    if (node.getContentType() == ERepositoryObjectType.JOB_DOC
+                            || node.getContentType() == ERepositoryObjectType.JOBLET_DOC) {
                         visible = false;
                     } else {
                         this.setText(DELETE_LOGICAL_TITLE);
@@ -204,7 +212,8 @@ public class DeleteAction extends AContextualAction {
                     }
                     break;
                 case REPOSITORY_ELEMENT:
-                    if (node.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.JOB_DOC) {
+                    if (node.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.JOB_DOC
+                            || node.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.JOBLET_DOC) {
                         visible = false;
                         break;
                     }

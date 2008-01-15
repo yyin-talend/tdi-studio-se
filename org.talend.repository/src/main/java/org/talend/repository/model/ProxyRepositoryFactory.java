@@ -132,8 +132,8 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * 
      * @see org.talend.repository.model.IProxyRepositoryFactory#refreshJobPictureFolder()
      */
-    public void refreshJobPictureFolder() {
-        IFolder folder = RepositoryPathProvider.getFolder(RepositoryConstants.IMG_DIRECTORY_OF_JOB_OUTLINE);
+    public void refreshJobPictureFolder(String picFolder) {
+        IFolder folder = RepositoryPathProvider.getFolder(picFolder);
         try {
             folder.refreshLocal(1, null);
         } catch (Exception e) {
@@ -147,8 +147,8 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * 
      * @see org.talend.repository.model.IProxyRepositoryFactory#refreshJobPictureFolder()
      */
-    public void refreshDocumentationFolder() {
-        IFolder folder = RepositoryPathProvider.getFolder(RepositoryConstants.DOCUMENTATION_PATH);
+    public void refreshDocumentationFolder(String docFolder) {
+        IFolder folder = RepositoryPathProvider.getFolder(docFolder);
         try {
             folder.refreshLocal(IResource.DEPTH_INFINITE, null);
         } catch (Exception e) {
@@ -793,7 +793,8 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      */
     public void save(Item item, boolean... isMigrationTask) throws PersistenceException {
         this.repositoryFactoryFromProvider.save(item);
-        if (item instanceof ProcessItem && (isMigrationTask == null || isMigrationTask.length == 0)) {
+        if ((item instanceof ProcessItem || item instanceof JobletProcessItem)
+                && (isMigrationTask == null || isMigrationTask.length == 0)) {
             fireRepositoryPropertyChange(ERepositoryActionName.JOB_SAVE.getName(), null, item);
         }
     }

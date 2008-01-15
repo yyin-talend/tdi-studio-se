@@ -471,7 +471,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         List<JobResource> jobResources = new ArrayList<JobResource>();
 
         for (int i = 0; i < process.length; i++) {
-            ProcessItem processItem = process[i].getProcess();
+            ProcessItem processItem = (ProcessItem) process[i].getItem();
             String jobName = processItem.getProperty().getLabel();
 
             jobResources.add(new JobResource(projectName, jobName));

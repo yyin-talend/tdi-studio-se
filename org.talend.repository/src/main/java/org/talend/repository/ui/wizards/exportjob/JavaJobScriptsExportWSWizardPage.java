@@ -36,6 +36,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.internal.ide.IDEWorkbenchMessages;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
+import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.repository.documentation.ExportFileResource;
@@ -294,7 +295,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         }
 
         if (process.length > 0) {
-            List<String> contextNames = manager.getJobContexts(process[0].getProcess());
+            List<String> contextNames = manager.getJobContexts((ProcessItem) process[0].getItem());
             contextCombo.setItems(contextNames.toArray(new String[contextNames.size()]));
             if (contextNames.size() > 0) {
                 contextCombo.select(0);
@@ -307,7 +308,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
 
         Property property = null;
         if (process.length == 1) {
-            property = process[0].getProcess().getProperty();
+            property = process[0].getItem().getProperty();
         }
 
         if (settings != null) {
@@ -356,7 +357,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             launcherCombo.select(0);
         }
         if (process.length > 0) {
-            List<String> contextNames = manager.getJobContexts(process[0].getProcess());
+            List<String> contextNames = manager.getJobContexts((ProcessItem) process[0].getItem());
             contextCombo.setItems(contextNames.toArray(new String[contextNames.size()]));
             if (contextNames.size() > 0) {
                 contextCombo.select(0);

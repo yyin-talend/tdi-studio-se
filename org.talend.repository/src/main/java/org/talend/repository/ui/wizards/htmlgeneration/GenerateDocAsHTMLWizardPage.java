@@ -33,9 +33,11 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.ui.internal.wizards.datatransfer.DataTransferMessages;
 import org.eclipse.ui.internal.wizards.datatransfer.WizardFileSystemResourceExportPage1;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.repository.documentation.ArchiveFileExportOperationFullPath;
 import org.talend.repository.documentation.ExportFileResource;
+import org.talend.repository.documentation.generation.HTMLDocGenerator;
 import org.talend.repository.documentation.generation.JobHTMLScriptsManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryNode;
@@ -64,7 +66,7 @@ public class GenerateDocAsHTMLWizardPage extends WizardFileSystemResourceExportP
      */
     protected GenerateDocAsHTMLWizardPage(String name, IStructuredSelection selection) {
         super(name, null);
-        manager = new JobHTMLScriptsManager();
+        manager = new JobHTMLScriptsManager(new HTMLDocGenerator(ERepositoryObjectType.JOBS), true);
 
         RepositoryNode[] nodes = (RepositoryNode[]) selection.toList().toArray(new RepositoryNode[selection.size()]);
 

@@ -17,6 +17,7 @@ import java.util.List;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.custom.BusyIndicator;
+import org.talend.core.model.properties.ProcessItem;
 import org.talend.repository.documentation.ExportFileResource;
 
 /**
@@ -130,7 +131,7 @@ public class JavaPublishOnSpagoExportWizardPage extends PublishOnSpagoExportWiza
         // launcherCombo.select(0);
         // }
         if (process.length > 0) {
-            List<String> contextNames = manager.getJobContexts(process[0].getProcess());
+            List<String> contextNames = manager.getJobContexts((ProcessItem) process[0].getItem());
             contextCombo.setItems(contextNames.toArray(new String[contextNames.size()]));
             if (contextNames.size() > 0) {
                 contextCombo.select(0);

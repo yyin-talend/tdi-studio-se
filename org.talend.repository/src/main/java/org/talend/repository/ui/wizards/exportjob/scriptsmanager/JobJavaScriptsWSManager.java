@@ -82,9 +82,8 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
      * java.lang.String, int, int, java.lang.String[])
      */
     @Override
-    public List<ExportFileResource> getExportResources(ExportFileResource[] process,
-            Map<ExportChoice, Boolean> exportChoice, String contextName, String launcher, int statisticPort,
-            int tracePort, String... codeOptions) {
+    public List<ExportFileResource> getExportResources(ExportFileResource[] process, Map<ExportChoice, Boolean> exportChoice,
+            String contextName, String launcher, int statisticPort, int tracePort, String... codeOptions) {
 
         List<ExportFileResource> list = new ArrayList<ExportFileResource>();
 
@@ -111,23 +110,21 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
         libResource.addResources(talendLibraries);
 
         for (int i = 0; i < process.length; i++) {
-            ProcessItem processItem = process[i].getProcess();
+            ProcessItem processItem = (ProcessItem) process[i].getItem();
             // generate the source files
             String libPath = calculateLibraryPathFromDirectory(process[i].getDirectoryName());
             // use character @ as temporary classpath separator, this one will be replaced during the export.
-            String standardJars = libPath + PATH_SEPARATOR + SYSTEMROUTINE_JAR
-                    + ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR + libPath + PATH_SEPARATOR + USERROUTINE_JAR
-                    + ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR + "."; //$NON-NLS-1$
+            String standardJars = libPath + PATH_SEPARATOR + SYSTEMROUTINE_JAR + ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR
+                    + libPath + PATH_SEPARATOR + USERROUTINE_JAR + ProcessorUtilities.TEMP_JAVA_CLASSPATH_SEPARATOR + "."; //$NON-NLS-1$
             ProcessorUtilities.setExportConfig("java", standardJars, libPath); //$NON-NLS-1$
 
             if (!BooleanUtils.isTrue(exportChoice.get(ExportChoice.doNotCompileCode))) {
                 generateJobFiles(processItem, contextName, statisticPort != IProcessor.NO_STATISTICS,
-                        tracePort != IProcessor.NO_TRACES, BooleanUtils.isTrue(exportChoice
-                                .get(ExportChoice.applyToChildren)));
+                        tracePort != IProcessor.NO_TRACES, BooleanUtils.isTrue(exportChoice.get(ExportChoice.applyToChildren)));
             }
             // generate the WSDL file
-            ExportFileResource wsdlFile = getWSDLFile(processItem, BooleanUtils.isTrue(exportChoice
-                    .get(ExportChoice.needWSDL)), talendLibraries);
+            ExportFileResource wsdlFile = getWSDLFile(processItem, BooleanUtils.isTrue(exportChoice.get(ExportChoice.needWSDL)),
+                    talendLibraries);
             list.add(wsdlFile);
 
             // edit the WSDD file
@@ -158,8 +155,7 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
         list.add(webInfoFolder);
 
         // generate the META-INFO folder
-        ExportFileResource metaInfoFolder = genMetaInfoFolder(BooleanUtils.isTrue(exportChoice
-                .get(ExportChoice.needMetaInfo)));
+        ExportFileResource metaInfoFolder = genMetaInfoFolder(BooleanUtils.isTrue(exportChoice.get(ExportChoice.needMetaInfo)));
         list.add(metaInfoFolder);
 
         // Gets system routines
@@ -187,8 +183,8 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
             String projectName = getCurrentProjectName();
             try {
                 List<ProcessItem> processedJob = new ArrayList<ProcessItem>();
-                getChildrenJobAndContextName(process.getProperty().getLabel(), list, process, projectName,
-                        processedJob, srcResource, exportChoice);
+                getChildrenJobAndContextName(process.getProperty().getLabel(), list, process, projectName, processedJob,
+                        srcResource, exportChoice);
             } catch (Exception e) {
                 ExceptionHandler.process(e);
             }
@@ -273,8 +269,8 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
             String classRoot = getClassRootLocation();
 
             String wsdlFilePath = getTmpFolder() + PATH_SEPARATOR + jobName + ".wsdl"; //$NON-NLS-1$
-            String classFileName = classRoot + PATH_SEPARATOR + projectName + PATH_SEPARATOR + jobFolderName
-                    + PATH_SEPARATOR + jobName + ".class"; //$NON-NLS-1$
+            String classFileName = classRoot + PATH_SEPARATOR + projectName + PATH_SEPARATOR + jobFolderName + PATH_SEPARATOR
+                    + jobName + ".class"; //$NON-NLS-1$
 
             File classFile = new File(classFileName);
             if (!classFile.exists()) {
@@ -366,8 +362,8 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
         String projectName = getCurrentProjectName();
         String jobName = processItem.getProperty().getLabel();
 
-        String deployFileName = getTmpFolder() + PATH_SEPARATOR + projectName + PATH_SEPARATOR + jobName
-                + PATH_SEPARATOR + "deploy.wsdd"; //$NON-NLS-1$
+        String deployFileName = getTmpFolder() + PATH_SEPARATOR + projectName + PATH_SEPARATOR + jobName + PATH_SEPARATOR
+                + "deploy.wsdd"; //$NON-NLS-1$
         String serverConfigFile = getTmpFolder() + PATH_SEPARATOR + "server-config.wsdd"; //$NON-NLS-1$
 
         File deployFile = new File(deployFileName);
@@ -410,8 +406,7 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
                 }
             }
 
-            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(serverConfigFile),
-                    "UTF-8")); //$NON-NLS-1$
+            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(serverConfigFile), "UTF-8")); //$NON-NLS-1$
 
             OutputFormat format = OutputFormat.createPrettyPrint();
             XMLWriter output = new XMLWriter(writer, format);

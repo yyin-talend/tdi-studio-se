@@ -103,12 +103,13 @@ public class CreateFolderAction extends AContextualAction {
                 canWork = false;
                 break;
             case SYSTEM_FOLDER:
-                if (property == ERepositoryObjectType.GENERATED || property == ERepositoryObjectType.JOBS) {
+                if (property == ERepositoryObjectType.GENERATED || property == ERepositoryObjectType.JOBS
+                        || property == ERepositoryObjectType.JOBLETS) {
                     canWork = false;
                 }
                 break;
             case SIMPLE_FOLDER:
-                if (property == ERepositoryObjectType.JOB_DOC) {
+                if (property == ERepositoryObjectType.JOB_DOC || property == ERepositoryObjectType.JOBLET_DOC) {
                     canWork = false;
                 }
                 break;

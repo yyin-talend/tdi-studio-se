@@ -16,13 +16,15 @@ import java.util.List;
 
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.talend.core.model.properties.ProcessItem;
 import org.talend.repository.documentation.ArchiveFileExportOperationFullPath;
 import org.talend.repository.documentation.ExportFileResource;
 
 /**
  * Page of the Job Publish SpagoBI Export Wizard. <br/>
  * 
- * @referto WizardArchiveFileResourceExportPage1 $Id: PerlPublishOnSpagoExportWizardPage.java 1 2007-04-26 14:22:07 cantoine
+ * @referto WizardArchiveFileResourceExportPage1 $Id: PerlPublishOnSpagoExportWizardPage.java 1 2007-04-26 14:22:07
+ * cantoine
  * 
  */
 public class PerlPublishOnSpagoExportWizardPage extends PublishOnSpagoExportWizardPage {
@@ -108,22 +110,22 @@ public class PerlPublishOnSpagoExportWizardPage extends PublishOnSpagoExportWiza
                     addDestinationItem(directoryNames[i]);
                 }
             }
-//            shellLauncherButton.setSelection(settings.getBoolean(STORE_SHELL_LAUNCHER_ID));
-//            systemRoutineButton.setSelection(settings.getBoolean(STORE_SYSTEM_ROUTINE_ID));
-//            userRoutineButton.setSelection(settings.getBoolean(STORE_USER_ROUTINE_ID));
-//            modelButton.setSelection(settings.getBoolean(STORE_MODEL_ID));
-//            jobButton.setSelection(settings.getBoolean(STORE_JOB_ID));
-//            sourceButton.setSelection(settings.getBoolean(STORE_SOURCE_ID));
+            // shellLauncherButton.setSelection(settings.getBoolean(STORE_SHELL_LAUNCHER_ID));
+            // systemRoutineButton.setSelection(settings.getBoolean(STORE_SYSTEM_ROUTINE_ID));
+            // userRoutineButton.setSelection(settings.getBoolean(STORE_USER_ROUTINE_ID));
+            // modelButton.setSelection(settings.getBoolean(STORE_MODEL_ID));
+            // jobButton.setSelection(settings.getBoolean(STORE_JOB_ID));
+            // sourceButton.setSelection(settings.getBoolean(STORE_SOURCE_ID));
             contextButton.setSelection(settings.getBoolean(STORE_CONTEXT_ID));
             // genCodeButton.setSelection(settings.getBoolean(STORE_GENERATECODE_ID));
         }
 
-//        launcherCombo.setItems(manager.getLauncher());
-//        if (manager.getLauncher().length > 0) {
-//            launcherCombo.select(0);
-//        }
+        // launcherCombo.setItems(manager.getLauncher());
+        // if (manager.getLauncher().length > 0) {
+        // launcherCombo.select(0);
+        // }
         if (process.length > 0) {
-            List<String> contextNames = manager.getJobContexts(process[0].getProcess());
+            List<String> contextNames = manager.getJobContexts((ProcessItem) process[0].getItem());
             contextCombo.setItems(contextNames.toArray(new String[contextNames.size()]));
             if (contextNames.size() > 0) {
                 contextCombo.select(0);

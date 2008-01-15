@@ -403,7 +403,7 @@ public abstract class PublishOnSpagoExportWizardPage extends WizardFileSystemRes
 
         ProcessorUtilities.resetExportConfig();
         for (int i = 0; i < process.length; i++) {
-            ProcessItem processItem = process[i].getProcess();
+            ProcessItem processItem = (ProcessItem)process[i].getItem();
             ProcessorUtilities.generateCode(processItem.getProperty().getLabel(), processItem.getProcess().getDefaultContext(),
                     false, false);
 
