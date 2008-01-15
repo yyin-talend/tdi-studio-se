@@ -16,6 +16,7 @@ import java.util.List;
 
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.talend.core.model.properties.ProcessItem;
 import org.talend.repository.documentation.ArchiveFileExportOperationFullPath;
 import org.talend.repository.documentation.ExportFileResource;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager;
@@ -23,8 +24,7 @@ import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManag
 /**
  * Page of the Job Scripts Export Wizard. <br/>
  * 
- * @referto WizardArchiveFileResourceExportPage1 $Id: JobScriptsExportWizardPage.java 1 2006-12-13 涓嬪�?3:09:07
- * bqian
+ * @referto WizardArchiveFileResourceExportPage1 $Id: JobScriptsExportWizardPage.java 1 2006-12-13 涓嬪�?3:09:07 bqian
  * 
  */
 public class PerlSpagicDeployWizardPage extends SpagicDeployWizardPage {
@@ -133,7 +133,7 @@ public class PerlSpagicDeployWizardPage extends SpagicDeployWizardPage {
             launcherCombo.select(0);
         }
         if (process.length > 0) {
-            List<String> contextNames = manager.getJobContexts(process[0].getProcess());
+            List<String> contextNames = manager.getJobContexts((ProcessItem) process[0].getItem());
             contextCombo.setItems(contextNames.toArray(new String[contextNames.size()]));
             if (contextNames.size() > 0) {
                 contextCombo.select(0);

@@ -46,7 +46,7 @@ public class SpagicJavaDeployManager extends org.talend.repository.ui.wizards.ex
             String contextName, String launcher, int statisticPort, int tracePort, String... codeOptions) {
 
         for (int i = 0; i < process.length; i++) {
-            ProcessItem processItem = process[i].getProcess();
+            ProcessItem processItem = (ProcessItem) process[i].getItem();
 
             String libPath = calculateLibraryPathFromDirectory(process[i].getDirectoryName());
             // use character @ as temporary classpath separator, this one will be replaced during the export.

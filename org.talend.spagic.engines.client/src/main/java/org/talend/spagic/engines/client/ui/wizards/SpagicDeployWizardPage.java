@@ -62,8 +62,7 @@ import org.talend.spagic.engines.client.i18n.Messages;
 /**
  * Page of the Job Scripts Export Wizard. <br/>
  * 
- * @referto WizardArchiveFileResourceExportPage1 $Id: JobScriptsExportWizardPage.java 1 2006-12-13 涓嬪�?3:09:07
- * bqian
+ * @referto WizardArchiveFileResourceExportPage1 $Id: JobScriptsExportWizardPage.java 1 2006-12-13 涓嬪�?3:09:07 bqian
  * 
  */
 public abstract class SpagicDeployWizardPage extends WizardFileSystemResourceExportPage1 {
@@ -420,7 +419,7 @@ public abstract class SpagicDeployWizardPage extends WizardFileSystemResourceExp
         List<JobResource> jobResources = new ArrayList<JobResource>();
 
         for (int i = 0; i < process.length; i++) {
-            ProcessItem processItem = process[i].getProcess();
+            ProcessItem processItem = (ProcessItem) process[i].getItem();
             String jobName = processItem.getProperty().getLabel();
 
             jobResources.add(new JobResource(projectName, jobName));

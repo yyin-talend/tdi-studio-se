@@ -77,7 +77,7 @@ public class SpagicPerlDeployManager extends org.talend.repository.ui.wizards.ex
         ProcessorUtilities.setExportConfig("perl", "", LIBRARY_FOLDER_NAME);
 
         for (int i = 0; i < process.length; i++) {
-            ProcessItem processItem = process[i].getProcess();
+            ProcessItem processItem = (ProcessItem) process[i].getItem();
             if (!BooleanUtils.isTrue(exportChoice.get(ExportChoice.doNotCompileCode))) {
                 generateJobFiles(processItem, contextName, statisticPort != IProcessor.NO_STATISTICS,
                         statisticPort != IProcessor.NO_TRACES, exportChoice.get(ExportChoice.applyToChildren));
