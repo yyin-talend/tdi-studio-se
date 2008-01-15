@@ -1155,18 +1155,20 @@ public class Process extends Element implements IProcess2 {
                                             }
                                         }
 
-                                        for (IElementParameter elementParameter : node.getElementParameters()) {
-                                            if ("QUERY".equals(elementParameter.getName())) {
-                                                if (!(connectQuery.equals(((String) elementParameter.getValue()).substring(1,
-                                                        ((String) elementParameter.getValue()).length() - 1).replaceAll("\\s",
-                                                        " ").replaceAll(" {2,}", " ")))) {
-                                                    node.setPropertyValue(param.getName(), objectValue);
-                                                    CompoundCommand cc = new CompoundCommand();
-                                                    PropertyChangeCommand pcc = new PropertyChangeCommand(node,
-                                                            EParameterName.UPDATE_COMPONENTS.getName(), Boolean.TRUE);
-                                                    cc.add(pcc);
-                                                    if (!cc.isEmpty()) {
-                                                        getCommandStack().execute(cc);
+                                        if (connectQuery != null) {
+                                            for (IElementParameter elementParameter : node.getElementParameters()) {
+                                                if ("QUERY".equals(elementParameter.getName())) {
+                                                    if (!(connectQuery.equals(((String) elementParameter.getValue()).substring(1,
+                                                            ((String) elementParameter.getValue()).length() - 1).replaceAll(
+                                                            "\\s", " ").replaceAll(" {2,}", " ")))) {
+                                                        node.setPropertyValue(param.getName(), objectValue);
+                                                        CompoundCommand cc = new CompoundCommand();
+                                                        PropertyChangeCommand pcc = new PropertyChangeCommand(node,
+                                                                EParameterName.UPDATE_COMPONENTS.getName(), Boolean.TRUE);
+                                                        cc.add(pcc);
+                                                        if (!cc.isEmpty()) {
+                                                            getCommandStack().execute(cc);
+                                                        }
                                                     }
                                                 }
                                             }
