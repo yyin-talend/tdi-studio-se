@@ -496,7 +496,11 @@ public class StatsAndLogsManager {
         // dbType
         param = new ElementParameter(process);
         param.setName(EParameterName.DB_TYPE.getName());
-        param.setValue(preferenceStore.getString(languagePrefix + EParameterName.DB_TYPE.getName()));
+        String type = preferenceStore.getString(languagePrefix + EParameterName.DB_TYPE.getName());
+        if (type == null || "".equals(type.trim())) { //$NON-NLS-1$
+            type = StatsAndLogsConstants.DB_COMPONENTS[languageType][0];
+        }
+        param.setValue(type);
         param.setDisplayName(EParameterName.DB_TYPE.getDisplayName());
         param.setField(EParameterFieldType.CLOSED_LIST);
         param.setCategory(EComponentCategory.STATSANDLOGS);
