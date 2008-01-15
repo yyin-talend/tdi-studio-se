@@ -17,7 +17,6 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.SystemException;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
@@ -45,9 +44,9 @@ public abstract class AbstractRoutineAction extends AContextualAction {
      * @throws SystemException
      * @throws PartInitException
      */
-    protected void openRoutineEditor(RoutineItem routineItem, boolean readOnly) throws SystemException, PartInitException {
+    protected IEditorPart openRoutineEditor(RoutineItem routineItem, boolean readOnly) throws SystemException, PartInitException {
         if (routineItem == null) {
-            return;
+            return null;
         }
         ICodeGeneratorService service = (ICodeGeneratorService) GlobalServiceRegister.getDefault().getService(
                 ICodeGeneratorService.class);
@@ -67,11 +66,12 @@ public abstract class AbstractRoutineAction extends AContextualAction {
         }
 
         // check if the related editor is open.
-        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+        IWorkbenchPage page = getActivePage();
 
         IEditorReference[] editorParts = page.getEditorReferences();
         String talendEditorID = "org.talend.designer.core.ui.editor.StandAloneTalend" + lang.getCaseName() + "Editor";
         boolean found = false;
+        IEditorPart talendEditor = null;
         for (IEditorReference reference : editorParts) {
             IEditorPart editor = reference.getEditor(false);
             if (talendEditorID.equals(editor.getSite().getId())) {
@@ -80,6 +80,7 @@ public abstract class AbstractRoutineAction extends AContextualAction {
                 if (editorInput.getItem().equals(routineItem)) {
                     page.bringToTop(editor);
                     found = true;
+                    talendEditor = editor;
                     break;
                 }
             }
@@ -89,7 +90,10 @@ public abstract class AbstractRoutineAction extends AContextualAction {
             IFile file = routineSynchronizer.syncRoutine(routineItem, true);
             RepositoryEditorInput input = new RepositoryEditorInput(file, routineItem);
             input.setReadOnly(readOnly);
-            IEditorPart part = getActivePage().openEditor(input, talendEditorID); //$NON-NLS-1$
+            talendEditor = page.openEditor(input, talendEditorID); //$NON-NLS-1$            
         }
+
+        return talendEditor;
+
     }
 }

@@ -19,30 +19,23 @@ import java.io.StringWriter;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IMarker;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Display;
 import org.epic.perleditor.editors.util.PerlValidator;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.exception.SystemException;
-import org.talend.commons.utils.data.container.Container;
-import org.talend.commons.utils.data.container.RootContainer;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.ECodeLanguage;
-import org.talend.core.language.LanguageManager;
-import org.talend.core.model.process.Problem.ProblemStatus;
 import org.talend.core.model.properties.RoutineItem;
+import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.codegen.IRoutineSynchronizer;
 import org.talend.repository.model.IProxyRepositoryFactory;
-import org.talend.repository.model.RepositoryConstants;
 
 /**
  * DOC xhuang class global comment. Detailled comment
@@ -60,48 +53,38 @@ public class RoutineItemsCheck {
         IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
         language = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject()
                 .getLanguage();
-        if (language != null && !language.getName().equalsIgnoreCase("PERL")) {
+        if (language == null) {
             return;
         }
-        try {
-            RootContainer<String, IRepositoryObject> routineContainer = factory.getRoutine();
-            for (IRepositoryObject ro : routineContainer.getMembers()) {
-                RoutineItem item = (RoutineItem) ro.getProperty().getItem();
+        if (language == ECodeLanguage.PERL) {
+            try {
                 ICodeGeneratorService service = (ICodeGeneratorService) GlobalServiceRegister.getDefault().getService(
                         ICodeGeneratorService.class);
                 routineSynchronizer = service.createPerlRoutineSynchronizer();
-                IFile file = routineSynchronizer.syncRoutine(item, true);
-                addProblems(item, item.getProperty().getLabel(), file);
-            }
 
-            List<Container<String, IRepositoryObject>> subContainer = routineContainer.getSubContainer();
-            if (subContainer.size() <= 1) {
-                return;
-            }
-            for (Container<String, IRepositoryObject> container : subContainer) {
-                if (!RepositoryConstants.SYSTEM_DIRECTORY.equals(container.getLabel())) {
-                    List<IRepositoryObject> members = container.getMembers();
-
-                    for (IRepositoryObject ro : members) {
-                        RoutineItem item = (RoutineItem) ro.getProperty().getItem();
-
-                        ICodeGeneratorService service = (ICodeGeneratorService) GlobalServiceRegister.getDefault().getService(
-                                ICodeGeneratorService.class);
-
-                        routineSynchronizer = service.createPerlRoutineSynchronizer();
-                        IFile file = routineSynchronizer.syncRoutine(item, true);
-                        addProblems(item, item.getProperty().getLabel(), file);
-                    }
+                List<IRepositoryObject> routineObjList = factory.getAll(ERepositoryObjectType.ROUTINES, false);
+                for (IRepositoryObject repositoryObj : routineObjList) {
+                    RoutineItem item = (RoutineItem) repositoryObj.getProperty().getItem();
+                    IFile file = routineSynchronizer.syncRoutine(item, true);
+                    addProblems(item, item.getProperty().getLabel(), file);
                 }
+            } catch (PersistenceException e) {
+                ExceptionHandler.process(e);
+            } catch (SystemException e) {
+                ExceptionHandler.process(e);
             }
+            Display.getDefault().asyncExec(new Runnable() {
 
-        } catch (Exception e1) {
-            ExceptionHandler.process(e1);
+                public void run() {
+                    Problems.refreshProblemTreeView();
+                }
+            });
         }
+
     }
 
     /**
-     * add one routine Item errors into problems view *
+     * add one routine Item errors into problems view.
      * 
      * @param item
      * @param itemLabel
@@ -110,40 +93,16 @@ public class RoutineItemsCheck {
 
     private void addProblems(RoutineItem item, String itemLabel, IFile file) {
 
-        // FileInputStream codeStream = file;
         try {
-            IProject perlProject = CorePlugin.getDefault().getRunProcessService()
-                    .getProject(LanguageManager.getCurrentLanguage());
-            try {
-                String sourceCode = readSourceFile(file.getLocation().makeRelative().toString());
-                PerlValidator.instance().validate(file, sourceCode);
-            } catch (IOException ex) {
-                ExceptionHandler.process(ex);
-            }
-            IMarker[] markers = file.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_ONE);
-            Problems.clearAllComliationError(itemLabel);
-            for (IMarker marker : markers) {
-                Integer lineNr = (Integer) marker.getAttribute(IMarker.LINE_NUMBER);
-                String message = (String) marker.getAttribute(IMarker.MESSAGE);
-                Integer severity = (Integer) marker.getAttribute(IMarker.SEVERITY);
-                if (severity == IMarker.SEVERITY_ERROR) {
-                    Problems.add(ProblemStatus.ERROR, marker, itemLabel, message, lineNr);
-
-                } else if (severity == IMarker.SEVERITY_WARNING) {
-                    Problems.add(ProblemStatus.WARNING, marker, itemLabel, message, lineNr);
-
-                } else if (severity == IMarker.SEVERITY_INFO) {
-                    Problems.add(ProblemStatus.INFO, marker, itemLabel, message, lineNr);
-                }
-            }
-            Display.getDefault().asyncExec(new Runnable() {
-
-                public void run() {
-                    Problems.refreshProblemTreeView();
-                }
-            });
-        } catch (CoreException e) {
+            String sourceCode = readSourceFile(file.getLocation().toOSString());
+            PerlValidator.instance().validate(file, sourceCode);
+        } catch (IOException ex) {
+            ExceptionHandler.process(ex);
+        } catch (CoreException ex) {
+            ExceptionHandler.process(ex);
         }
+        Problems.addRoutineFile(file, itemLabel);
+
     }
 
     /**

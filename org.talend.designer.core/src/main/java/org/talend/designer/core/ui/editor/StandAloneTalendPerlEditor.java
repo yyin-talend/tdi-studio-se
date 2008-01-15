@@ -12,14 +12,13 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor;
 
-import org.eclipse.core.resources.IMarker;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.impl.AdapterImpl;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
@@ -28,7 +27,6 @@ import org.epic.perleditor.editors.PerlEditor;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.GlobalServiceRegister;
-import org.talend.core.model.process.Problem.ProblemStatus;
 import org.talend.core.model.properties.ByteArray;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RoutineItem;
@@ -156,32 +154,17 @@ public class StandAloneTalendPerlEditor extends PerlEditor implements IUIRefresh
     }
 
     /**
-     * add routine compilation errors into problems view
+     * add routine compilation errors into problems view.
      */
     private void addProblems() {
-        IMarker[] markers;
-        try {
-            markers = rEditorInput.getFile().findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_ONE);
-            String routineFileName = item.getProperty().getLabel();
-            Problems.clearAllComliationError(routineFileName);
-            for (IMarker marker : markers) {
-                Integer lineNr = (Integer) marker.getAttribute(IMarker.LINE_NUMBER);
-                String message = (String) marker.getAttribute(IMarker.MESSAGE);
-                Integer severity = (Integer) marker.getAttribute(IMarker.SEVERITY);
-                if (severity == IMarker.SEVERITY_ERROR) {
-                    Problems.add(ProblemStatus.ERROR, marker, routineFileName, message, lineNr);
+        Problems.addRoutineFile(rEditorInput.getFile(), item.getProperty().getLabel());
 
-                } else if (severity == IMarker.SEVERITY_WARNING) {
-                    Problems.add(ProblemStatus.WARNING, marker, routineFileName, message, lineNr);
+        Display.getDefault().asyncExec(new Runnable() {
 
-                } else if (severity == IMarker.SEVERITY_INFO) {
-                    Problems.add(ProblemStatus.INFO, marker, routineFileName, message, lineNr);
-                }
+            public void run() {
+                Problems.refreshProblemTreeView();
             }
-            Problems.refreshProblemTreeView();
-        } catch (CoreException e) {
-            e.printStackTrace();
-        }
+        });
     }
 
     private RoutineItem item;

@@ -17,9 +17,12 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.ui.views.markers.internal.MarkerMessages;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
@@ -156,8 +159,9 @@ public class Problems {
         add(problem);
     }
 
-    public static void add(ProblemStatus status, IMarker marker, String javaUnitName, String markerErrorMessage, Integer lineN) {
-        Problem problem = new RoutineProblem(status, javaUnitName, marker, markerErrorMessage, lineN);
+    public static void add(ProblemStatus status, IMarker marker, String javaUnitName, String markerErrorMessage, Integer lineN,
+            Integer charStart, Integer charEnd) {
+        Problem problem = new RoutineProblem(status, javaUnitName, marker, markerErrorMessage, lineN, charStart, charEnd);
         add(problem);
     }
 
@@ -327,6 +331,72 @@ public class Problems {
      */
     public static void setProblemView(ProblemsView problemView) {
         Problems.problemView = problemView;
+    }
+
+    /**
+     * 
+     * ggu Comment method "addRoutineFile".
+     * 
+     * 
+     */
+    public static void addRoutineFile(IFile file, final String label) {
+        if (file == null || !file.exists()) {
+            return;
+        }
+
+        try {
+            IMarker[] markers = file.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_ONE);
+            String routineFileName = null;
+            if (label == null) {
+                routineFileName = getFileName(file);
+            } else {
+                routineFileName = label;
+            }
+            Problems.clearAllComliationError(routineFileName);
+            for (IMarker marker : markers) {
+                Integer lineNr = (Integer) marker.getAttribute(IMarker.LINE_NUMBER);
+                String message = (String) marker.getAttribute(IMarker.MESSAGE);
+                Integer severity = (Integer) marker.getAttribute(IMarker.SEVERITY);
+                Integer start = (Integer) marker.getAttribute(IMarker.CHAR_START);
+                Integer end = (Integer) marker.getAttribute(IMarker.CHAR_END);
+
+                ProblemStatus status = null;
+                switch (severity) {
+                case IMarker.SEVERITY_ERROR:
+                    status = ProblemStatus.ERROR;
+                    break;
+                case IMarker.SEVERITY_WARNING:
+                    status = ProblemStatus.WARNING;
+                    break;
+                case IMarker.SEVERITY_INFO:
+                    status = ProblemStatus.INFO;
+                    break;
+                default:
+                    break;
+                }
+
+                if (status != null) {
+                    add(status, marker, routineFileName, message, lineNr, start, end);
+                }
+
+            }
+
+        } catch (org.eclipse.core.runtime.CoreException e) {
+            ExceptionHandler.process(e);
+        }
+    }
+
+    private static String getFileName(IFile file) {
+        if (file == null) {
+            return "";
+        }
+        String fileName = file.getName();
+        String ext = file.getFileExtension();
+        if (ext == null || "".equals(ext)) {
+            return fileName;
+        }
+        fileName = fileName.substring(0, fileName.lastIndexOf(ext) - 1);
+        return fileName;
     }
 
 }

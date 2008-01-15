@@ -17,12 +17,16 @@ import java.beans.PropertyChangeListener;
 import java.util.List;
 import java.util.regex.PatternSyntaxException;
 
-import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.internal.ui.javaeditor.JavaEditor;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -30,6 +34,7 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.IActionBars;
@@ -41,10 +46,13 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.views.markers.internal.MarkerMessages;
+import org.epic.perleditor.editors.PerlEditor;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.exception.SystemException;
 import org.talend.core.CorePlugin;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.process.Problem;
@@ -52,6 +60,8 @@ import org.talend.core.model.process.RoutineProblem;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.designer.codegen.ICodeGeneratorService;
+import org.talend.designer.codegen.IRoutineSynchronizer;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
@@ -112,10 +122,10 @@ public class ProblemsView extends ViewPart implements PropertyChangeListener {
                 IStructuredSelection selection = (IStructuredSelection) event.getSelection();
                 Problem problem = (Problem) selection.getFirstElement();
                 if (problem != null && problem.isConcrete()) {
-                    if (problem.getElement() instanceof Node)
+                    if (problem.getElement() instanceof Node) {
                         selectInDesigner((Node) problem.getElement());
-                    else if (problem instanceof RoutineProblem) {
-                        selectInRoutine(((RoutineProblem) problem).getMarker());
+                    } else if (problem instanceof RoutineProblem) {
+                        selectInRoutine((RoutineProblem) problem);
                     }
                 }
             }
@@ -193,8 +203,8 @@ public class ProblemsView extends ViewPart implements PropertyChangeListener {
         }
     }
 
-    private void selectInRoutine(IMarker marker) {
-        OpenRoutineAction openRoutineAction = new OpenRoutineAction(marker);
+    private void selectInRoutine(RoutineProblem problem) {
+        OpenRoutineAction openRoutineAction = new OpenRoutineAction(problem);
         openRoutineAction.run();
 
     }
@@ -268,7 +278,7 @@ public class ProblemsView extends ViewPart implements PropertyChangeListener {
      */
     private class OpenRoutineAction extends AbstractRoutineAction {
 
-        IMarker marker;
+        RoutineProblem problem;
 
         /*
          * (non-Javadoc)
@@ -277,19 +287,48 @@ public class ProblemsView extends ViewPart implements PropertyChangeListener {
          * org.eclipse.jface.viewers.IStructuredSelection)
          * 
          */
-        public OpenRoutineAction(IMarker marker) {
+        public OpenRoutineAction(RoutineProblem problem) {
             super();
-            this.marker = marker;
+            this.problem = problem;
         }
 
         public void run() {
-            try {
-                RoutineItem routine = getRoutineItem();
-                openRoutineEditor(routine, false);
-            } catch (SystemException e) {
-                MessageBoxExceptionHandler.process(e);
-            } catch (PartInitException e) {
-                MessageBoxExceptionHandler.process(e);
+            if (problem != null) {
+                try {
+                    RoutineItem routine = getRoutineItem();
+                    IEditorPart editor = openRoutineEditor(routine, false);
+                    focusMarkerForRoutineEditor(editor);
+                } catch (SystemException e) {
+                    MessageBoxExceptionHandler.process(e);
+                } catch (PartInitException e) {
+                    MessageBoxExceptionHandler.process(e);
+                }
+            }
+        }
+
+        /**
+         * 
+         * ggu Comment method "focusMarkerForRoutineEditor".
+         * 
+         * focus to the marker position.
+         */
+        private void focusMarkerForRoutineEditor(IEditorPart editor) {
+            if (editor != null) {
+                int start = problem.getCharStart();
+                int length = problem.getCharEnd() - start;
+                if (length < 0) {
+                    length = 0;
+                }
+                ISourceViewer sourceViewer = null;
+                if (editor instanceof JavaEditor) {
+                    sourceViewer = ((JavaEditor) editor).getViewer();
+                } else if (editor instanceof PerlEditor) {
+                    sourceViewer = ((PerlEditor) editor).getViewer();
+                }
+                if (sourceViewer != null) {
+                    sourceViewer.setRangeIndication(start, length, true);
+                    sourceViewer.setSelectedRange(start, length);
+                }
             }
         }
 
@@ -300,12 +339,12 @@ public class ProblemsView extends ViewPart implements PropertyChangeListener {
          */
         private RoutineItem getRoutineItem() throws PersistenceException {
             List<IRepositoryObject> list = DesignerPlugin.getDefault().getRepositoryService().getProxyRepositoryFactory().getAll(
-                    ERepositoryObjectType.ROUTINES);
+                    ERepositoryObjectType.ROUTINES, true);
 
             for (IRepositoryObject repositoryObject : list) {
                 String name = repositoryObject.getProperty().getLabel();
                 String id = repositoryObject.getProperty().getId();
-                if (matchRoutine(id, name, marker.getResource().getName())) {
+                if (matchRoutine(id, name, problem.getMarker().getResource().getName())) {
                     return (RoutineItem) repositoryObject.getProperty().getItem();
                 }
             }
@@ -326,7 +365,7 @@ public class ProblemsView extends ViewPart implements PropertyChangeListener {
         public boolean matchRoutine(String routineID, String routineLabel, String resourceName) {
             if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.JAVA)) {
                 try {
-                    Boolean foundMatch = resourceName.matches(routineLabel + "(\\.java");
+                    Boolean foundMatch = resourceName.matches(routineLabel + ".java");
                     return foundMatch.booleanValue();
                 } catch (PatternSyntaxException ex) {
                     // Syntax error in the regular expression
@@ -361,9 +400,6 @@ public class ProblemsView extends ViewPart implements PropertyChangeListener {
      * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
      */
     public void propertyChange(PropertyChangeEvent evt) {
-        if (!evt.getPropertyName().equals(ERepositoryActionName.JOB_DELETE_TO_RECYCLE_BIN.getName())) {
-            return;
-        }
         if (!(evt.getNewValue() instanceof IRepositoryObject)) {
             return;
         }
@@ -371,7 +407,54 @@ public class ProblemsView extends ViewPart implements PropertyChangeListener {
         if (object.getType() != ERepositoryObjectType.ROUTINES) {
             return;
         }
-        String routineLabel = object.getProperty().getLabel();
-        Problems.removeProblemsByRoutine(routineLabel);
+        if (evt.getPropertyName().equals(ERepositoryActionName.JOB_DELETE_TO_RECYCLE_BIN.getName())
+                || evt.getPropertyName().equals(ERepositoryActionName.JOB_DELETE_FOREVER.getName())) {
+            String routineLabel = object.getProperty().getLabel();
+            Problems.removeProblemsByRoutine(routineLabel);
+        }
+        if (evt.getPropertyName().equals(ERepositoryActionName.JOB_RESTORE.getName())) {
+
+            RoutineItem item = (RoutineItem) object.getProperty().getItem();
+
+            restoreProblem(item);
+        }
+    }
+
+    /**
+     * 
+     * ggu Comment method "restoreProblem".
+     * 
+     * when restore the item, check the problem.
+     */
+    private void restoreProblem(RoutineItem item) {
+        ICodeGeneratorService service = (ICodeGeneratorService) GlobalServiceRegister.getDefault().getService(
+                ICodeGeneratorService.class);
+        IRoutineSynchronizer routineSynchronizer = null;
+        switch (LanguageManager.getCurrentLanguage()) {
+        case JAVA:
+            routineSynchronizer = service.createJavaRoutineSynchronizer();
+            break;
+        case PERL:
+            routineSynchronizer = service.createPerlRoutineSynchronizer();
+            break;
+        default:
+        }
+        if (routineSynchronizer != null) {
+            try {
+                IFile file = routineSynchronizer.syncRoutine(item, true);
+                file.refreshLocal(IResource.DEPTH_ONE, null);
+                Problems.addRoutineFile(file, item.getProperty().getLabel());
+            } catch (SystemException e) {
+                ExceptionHandler.process(e);
+            } catch (CoreException e) {
+                ExceptionHandler.process(e);
+            }
+            Display.getDefault().asyncExec(new Runnable() {
+
+                public void run() {
+                    Problems.refreshProblemTreeView();
+                }
+            });
+        }
     }
 }

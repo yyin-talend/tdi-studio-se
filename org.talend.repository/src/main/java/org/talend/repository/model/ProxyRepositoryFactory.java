@@ -478,7 +478,7 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         String str[] = new String[] { objToDelete.toString(), getRepositoryContext().getUser().toString() };
         log.info(Messages.getString("ProxyRepositoryFactory.log.physicalDeletion", str)); //$NON-NLS-1$
 
-        if (objToDelete.getType() == ERepositoryObjectType.PROCESS) {
+        if (objToDelete.getType() == ERepositoryObjectType.PROCESS || objToDelete.getType() == ERepositoryObjectType.ROUTINES) {
             fireRepositoryPropertyChange(ERepositoryActionName.JOB_DELETE_FOREVER.getName(), null, objToDelete);
         }
     }
@@ -500,7 +500,7 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         // "\".");
         String str[] = new String[] { objToRestore + "", getRepositoryContext().getUser() + "", path + "" };//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         log.debug(Messages.getString("ProxyRepositoryFactory.log.Restoration", str)); //$NON-NLS-1$
-        if (objToRestore.getType() == ERepositoryObjectType.PROCESS) {
+        if (objToRestore.getType() == ERepositoryObjectType.PROCESS || objToRestore.getType() == ERepositoryObjectType.ROUTINES) {
             fireRepositoryPropertyChange(ERepositoryActionName.JOB_RESTORE.getName(), null, objToRestore);
         }
 
