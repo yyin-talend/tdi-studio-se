@@ -19,8 +19,8 @@ import java.net.URL;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.SystemException;
-import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
+import org.talend.designer.components.ui.EComponentsImage;
 
 /**
  * DOC smallet class global comment. Detailled comment <br/>
@@ -68,7 +68,6 @@ public class ComponentIconLoading {
             if (file24.exists()) {
                 image24 = getImage(ComponentFilesNaming.getInstance().getIcon24FileName(folder.getName()));
             } else {
-                // image24 = getImage32(); // Temp code
                 image24 = ImageDescriptor.createFromImageData(image32.getImageData().scaledTo(24, 24));
             }
         }
@@ -88,13 +87,15 @@ public class ComponentIconLoading {
     }
 
     private ImageDescriptor getImage(String name) {
-        URL url;
         try {
-            url = new URL(folderUrl + name);
-            return ImageDescriptor.createFromURL(url);
+            if (new File(folder, name).exists()) {
+                return ImageDescriptor.createFromURL(new URL(folderUrl + name));
+            } else {
+                return ImageProvider.getImageDesc(EComponentsImage.DEFAULT_COMPONENT_ICON);
+            }
         } catch (MalformedURLException e) {
             ExceptionHandler.process(new SystemException("Cannot load component icon " + name, e)); //$NON-NLS-1$
-            return ImageProvider.getImageDesc(EImage.DEFAULT_IMAGE);
+            return ImageProvider.getImageDesc(EComponentsImage.DEFAULT_COMPONENT_ICON);
         }
     }
 }
