@@ -132,6 +132,8 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
 
     protected boolean needSetPartListener = true;
 
+    private RepositoryEditorInput processEditorInput;
+
     public AbstractMultiPageTalendEditor() {
         super();
 
@@ -186,8 +188,8 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         // Lock the process :
         IRepositoryService service = CorePlugin.getDefault().getRepositoryService();
         IProxyRepositoryFactory repFactory = service.getProxyRepositoryFactory();
-        RepositoryEditorInput processEditorInput = (RepositoryEditorInput) editorInput;
-        IProcess2 currentProcess = (processEditorInput).getLoadedProcess();
+        processEditorInput = (RepositoryEditorInput) editorInput;
+        IProcess2 currentProcess = processEditorInput.getLoadedProcess();
         if (!currentProcess.isReadOnly()) {
             try {
                 processEditorInput.getItem().getProperty().eAdapters().add(dirtyListener);
@@ -332,6 +334,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
     protected void createPages() {
         createPage0();
         createPage1();
+
     }
 
     protected void createPage0() {
@@ -365,17 +368,22 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         }
 
         try {
-            int index = addPage(codeEditor, createFileEditorInput());
-
+            int index = 0;
+            if (processEditorInput.needCodePage()) {
+                index = addPage(codeEditor, createFileEditorInput());
+            }
             // init Syntax Validation.
             if (getCurrentLang() == ECodeLanguage.PERL) {
                 PerlEditorPlugin.getDefault().setSyntaxValidationPreference(true);
             }
 
-            setPageText(index, "Code");
+            if (processEditorInput.needCodePage()) {
+                setPageText(index, "Code");
+            }
         } catch (PartInitException pie) {
             pie.printStackTrace();
         }
+
         if (process.getGeneratingNodes().size() != 0) {
             Job job = new Job("Generating code") {
 
