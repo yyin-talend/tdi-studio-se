@@ -26,6 +26,7 @@ public enum EElementType {
     NODE_LABEL(EComponentCategory.MAIN, EComponentCategory.PROPERTY, EComponentCategory.VIEW, EComponentCategory.DOC),
     CONNECTION(EComponentCategory.MAIN),
     NOTE(EComponentCategory.MAIN),
+    JOBLET_NODE(EComponentCategory.MAIN, EComponentCategory.PROPERTY),
     ADVANCED_NODE(
                   EComponentCategory.MAIN,
                   EComponentCategory.ADVANCED_PROPERTIES,

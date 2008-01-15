@@ -32,6 +32,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.part.ViewPart;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
+import org.talend.core.model.components.IJobletComponent;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
@@ -294,6 +295,9 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
         if (elem instanceof Connection) {
             return EElementType.CONNECTION.getCategories();
         } else if (elem instanceof Node) {
+            if (((Node) elem).getComponent() instanceof IJobletComponent) {
+                return EElementType.JOBLET_NODE.getCategories();
+            }
             if (isAdvancedType(elem)) {
                 return EElementType.ADVANCED_NODE.getCategories();
             } else {
