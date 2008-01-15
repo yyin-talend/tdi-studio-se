@@ -256,14 +256,11 @@ public class ConnectionManager {
         if (newlineStyle.hasConnectionCategory(IConnectionCategory.FLOW)) {
             // if the connection type is not the default one, then we don't change automatically.
             // && newlineStyle.getName().equals(newConnectionType)) {
-            EConnectionType oldConnectionType = newlineStyle;
-            if (oldTarget != null) {
 
-                if (oldTarget.getComponent().useMerge() && oldConnectionType.equals(EConnectionType.FLOW_MERGE)) {
-                    // if the previous connection was a merge, then we just change it to a main, then the rules below
-                    // will apply the same.
-                    oldConnectionType = EConnectionType.FLOW_MAIN;
-                }
+            if (newlineStyle.equals(EConnectionType.FLOW_MERGE)) {
+                // if the previous connection was a merge, then we just change it to a main, then the rules below
+                // will apply the same.
+                newlineStyle = EConnectionType.FLOW_MAIN;
             }
             if (newTarget.getComponent().useLookup()) {
                 int nbMain = 0;
