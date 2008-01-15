@@ -28,6 +28,7 @@ import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.ActiveProcessTracker;
@@ -80,6 +81,19 @@ public class DesignerCoreService implements IDesignerCoreService {
         Process process = null;
         process = new Process(processItem.getProperty());
         process.loadXmlFile(processItem.getProcess());
+
+        return process;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.core.IDesignerCoreService#getProcessFromJobletProcessItem(org.talend.core.model.properties.JobletProcessItem)
+     */
+    public IProcess getProcessFromJobletProcessItem(JobletProcessItem jobletProcessItem) {
+        Process process = null;
+        process = new Process(jobletProcessItem.getProperty());
+        process.loadXmlFile(jobletProcessItem.getJobletProcess());
 
         return process;
     }

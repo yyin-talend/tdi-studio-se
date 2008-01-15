@@ -750,14 +750,15 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         il.data = new ImageData[] { img.getImageData() };
 
         IRepositoryService service = CorePlugin.getDefault().getRepositoryService();
-        IPath filePath = service.getPathFileName(getOutlinePicturePath(), "");
+        String outlinePicturePath = getOutlinePicturePath();
+        IPath filePath = service.getPathFileName(outlinePicturePath, "");
         String outlineFileName = process.getName();
         String outlineFileVersion = process.getVersion();
         filePath = filePath.append(outlineFileName + "_" + outlineFileVersion + ".jpg");
 
         il.save(filePath.toPortableString(), SWT.IMAGE_JPEG);
 
-        service.getProxyRepositoryFactory().refreshJobPictureFolder();
+        service.getProxyRepositoryFactory().refreshJobPictureFolder(outlinePicturePath);
         GlobalConstant.generatingScreenShoot = false;
 
     }
