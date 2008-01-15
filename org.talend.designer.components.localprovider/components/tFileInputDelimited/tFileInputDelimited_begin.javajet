@@ -60,7 +60,12 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		boolean dieOnError = (dieOnErrorStr!=null&&!dieOnErrorStr.equals(""))?dieOnErrorStr.equals("true"):false; 
 		
 		String checkNumStr = ElementParameterParser.getValue(node, "__CHECK_FIELDS_NUM__");
-		boolean checkNum = (checkNumStr!=null&&!checkNumStr.equals(""))?checkNumStr.equals("true"):false; 		
+		boolean checkNum = (checkNumStr!=null&&!checkNumStr.equals(""))?checkNumStr.equals("true"):false; 
+		
+		String advancedSeparatorStr = ElementParameterParser.getValue(node, "__ADVANCED_SEPARATOR__");
+		boolean advancedSeparator = (advancedSeparatorStr!=null&&!advancedSeparatorStr.equals(""))?advancedSeparatorStr.equals("true"):false;
+		String thousandsSeparator = ElementParameterParser.getValue(node, "__THOUSANDS_SEPARATOR__");
+		String decimalSeparator = ElementParameterParser.getValue(node, "__DECIMAL_SEPARATOR__");
 %>
 org.talend.fileprocess.FileInputDelimited fid_<%=cid %> = new org.talend.fileprocess.FileInputDelimited(<%=filename %>,<%=encoding %>,<%=fieldSeparator %>,<%=rowSeparator %>,<%=removeEmptyRowFlag %>,<%=header %>,<%=footer %>,<%=limit %>,<%=random %>);
 while (fid_<%=cid %>.nextRecord()) {
@@ -135,6 +140,9 @@ if(temp_<%=cid %>.length() > 0) {
 <%
 					}else if(javaType == JavaTypesManager.DATE) { 
 %><%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(temp_<%=cid %>, <%= patternValue %>);
+<%
+					}else if(advancedSeparator && JavaTypesManager.isNumberType(javaType, column.isNullable())) { 
+%><%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(ParserUtils.parseTo_Number(temp_<%=cid %>, <%= thousandsSeparator %>, <%= decimalSeparator %>));
 <%
 					} else { 
 %><%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(temp_<%=cid %>);
@@ -284,6 +292,12 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		
 		String checkNumStr = ElementParameterParser.getValue(node, "__CHECK_FIELDS_NUM__");
 		boolean checkNum = (checkNumStr!=null&&!checkNumStr.equals(""))?checkNumStr.equals("true"):false; 
+		
+		String advancedSeparatorStr = ElementParameterParser.getValue(node, "__ADVANCED_SEPARATOR__");
+		boolean advancedSeparator = (advancedSeparatorStr!=null&&!advancedSeparatorStr.equals(""))?advancedSeparatorStr.equals("true"):false;
+		String thousandsSeparator = ElementParameterParser.getValue(node, "__THOUSANDS_SEPARATOR__");
+		String decimalSeparator = ElementParameterParser.getValue(node, "__DECIMAL_SEPARATOR__");
+		
 %>		
 		int nb_line_<%=cid%> = 0;
 		int footer_<%=cid %> = <%= footer%>;
@@ -478,7 +492,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	%>
 								<%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(row<%=cid %>[<%=i %>]<%=(isTrimAll || (!trimSelects.isEmpty() && trimSelects.get(i).get("TRIM").equals("true")))?".trim()":"" %>, <%= patternValue %>);
 	<%
-							} else if(javaType == JavaTypesManager.BYTE_ARRAY){ 
+							} else if(advancedSeparator && JavaTypesManager.isNumberType(javaType, column.isNullable())) { 
+	%>
+								<%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(ParserUtils.parseTo_Number(row<%=cid %>[<%=i %>]<%=(isTrimAll || (!trimSelects.isEmpty() && trimSelects.get(i).get("TRIM").equals("true")))?".trim()":"" %>, <%= thousandsSeparator %>, <%= decimalSeparator %>));
+	<%
+							}else if(javaType == JavaTypesManager.BYTE_ARRAY){ 
 	%>							
 							    <%=firstConnName %>.<%=column.getLabel() %> = row<%=cid %>[<%=i %>]<%=(isTrimAll || (!trimSelects.isEmpty() && trimSelects.get(i).get("TRIM").equals("true")))?".trim()":"" %>.getBytes(<%=encoding %>);
 	<%

@@ -62,6 +62,11 @@ if(ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("false")) {
             
             boolean flushOnRow = ElementParameterParser.getValue(node, "__FLUSHONROW__").equals("true");
             String flushMod = ElementParameterParser.getValue(node, "__FLUSHONROW_NUM__");
+            
+    		String advancedSeparatorStr = ElementParameterParser.getValue(node, "__ADVANCED_SEPARATOR__");
+    		boolean advancedSeparator = (advancedSeparatorStr!=null&&!advancedSeparatorStr.equals(""))?advancedSeparatorStr.equals("true"):false;
+    		String thousandsSeparator = ElementParameterParser.getValue(node, "__THOUSANDS_SEPARATOR__");
+    		String decimalSeparator = ElementParameterParser.getValue(node, "__DECIMAL_SEPARATOR__"); 
                 
         	List< ? extends IConnection> conns = node.getIncomingConnections();
         	for (IConnection conn : conns) {
@@ -90,7 +95,15 @@ if(ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("false")) {
     			            %>
     						FormatterUtils.format_Date(<%=conn.getName() %>.<%=column.getLabel() %>, <%= pattern %>)
     						<%	
-    					}else if(javaType == JavaTypesManager.BIGDECIMAL){
+    							} else if(advancedSeparator && JavaTypesManager.isNumberType(javaType, column.isNullable())) { 
+							%>
+        							<% if(javaType == JavaTypesManager.BIGDECIMAL) {%>
+        							FormatterUtils.format_Number(String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>.doubleValue()), <%= thousandsSeparator %>, <%= decimalSeparator %>)					
+        							<% } else { %>
+        							FormatterUtils.format_Number(String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>), <%= thousandsSeparator %>, <%= decimalSeparator %>)						
+        							<% } %>
+							<%
+								} else if(javaType == JavaTypesManager.BIGDECIMAL){
     						%>
     						<%=conn.getName() %>.<%=column.getLabel() %>.doubleValue()
     						<%
@@ -230,6 +243,11 @@ if(ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("false")) {
         	boolean flushOnRow = ElementParameterParser.getValue(node, "__FLUSHONROW__").equals("true");
         	String flushMod = ElementParameterParser.getValue(node, "__FLUSHONROW_NUM__");
         	
+    		String advancedSeparatorStr = ElementParameterParser.getValue(node, "__ADVANCED_SEPARATOR__");
+    		boolean advancedSeparator = (advancedSeparatorStr!=null&&!advancedSeparatorStr.equals(""))?advancedSeparatorStr.equals("true"):false;
+    		String thousandsSeparator = ElementParameterParser.getValue(node, "__THOUSANDS_SEPARATOR__");
+    		String decimalSeparator = ElementParameterParser.getValue(node, "__DECIMAL_SEPARATOR__");        	
+        	
         	List< ? extends IConnection> conns = node.getIncomingConnections();
           	if(!rowSeparator.equals("\\n") && !rowSeparator.equals("\\r")){
           	    %>
@@ -290,9 +308,17 @@ if(ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("false")) {
                 			            %>
                 			            row<%=cid%>[<%=i%>] = java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(<%=conn.getName() %>.<%=column.getLabel() %>)).toString();
                 			            <%
-                			        } else if (javaType == JavaTypesManager.BIGDECIMAL) {
+                			        } else if(advancedSeparator && JavaTypesManager.isNumberType(javaType, column.isNullable())) { 
+        							%>
+                							<% if(javaType == JavaTypesManager.BIGDECIMAL) {%>
+                							row<%=cid%>[<%=i%>] = FormatterUtils.format_Number(String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>.doubleValue()), <%= thousandsSeparator %>, <%= decimalSeparator %>);					
+                							<% } else { %>
+                							row<%=cid%>[<%=i%>] = FormatterUtils.format_Number(String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>), <%= thousandsSeparator %>, <%= decimalSeparator %>);						
+                							<% } %>
+        							<%
+        								} else if (javaType == JavaTypesManager.BIGDECIMAL) {
 										%>
-										row<%=cid%>[<%=i%>] = String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>.doubleValue())
+										row<%=cid%>[<%=i%>] = String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>.doubleValue());
 										<%
                 			        }else{
                 			            %>

@@ -27,7 +27,12 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     	String lastColumn = ElementParameterParser.getValue(node, "__LAST_COLUMN__");
     	String dieOnErrorStr = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
 		boolean dieOnError = (dieOnErrorStr!=null&&!dieOnErrorStr.equals(""))?dieOnErrorStr.equals("true"):false;
-		String encoding = ElementParameterParser.getValue(node,"__ENCODING__");    	
+		String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
+		
+		String advancedSeparatorStr = ElementParameterParser.getValue(node, "__ADVANCED_SEPARATOR__");
+		boolean advancedSeparator = (advancedSeparatorStr!=null&&!advancedSeparatorStr.equals(""))?advancedSeparatorStr.equals("true"):false;
+		String thousandsSeparator = ElementParameterParser.getValue(node, "__THOUSANDS_SEPARATOR__");
+		String decimalSeparator = ElementParameterParser.getValue(node, "__DECIMAL_SEPARATOR__");		    	
 %>
 		
 		final jxl.WorkbookSettings workbookSettings_<%= cid %> = new jxl.WorkbookSettings();
@@ -143,7 +148,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			}
 <%
 //start			
-			} else if(javaType == JavaTypesManager.BYTE_ARRAY) { 
+			}else if(advancedSeparator && JavaTypesManager.isNumberType(javaType, column.isNullable())) { 
+%>
+		<%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(ParserUtils.parseTo_Number(temp_row_<%=cid %>[<%=i%>], <%= thousandsSeparator %>, <%= decimalSeparator %>));
+<%
+					} else if(javaType == JavaTypesManager.BYTE_ARRAY) { 
 	%>							
 			<%=firstConnName %>.<%=column.getLabel() %> = temp_row_<%=cid %>[<%=i%>].getBytes(<%=encoding %>);
 	<%

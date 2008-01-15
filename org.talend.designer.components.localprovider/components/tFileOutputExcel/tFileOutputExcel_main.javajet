@@ -8,12 +8,18 @@
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		org.talend.core.model.metadata.types.JavaTypesManager
 		org.talend.core.model.metadata.types.JavaType
+		org.talend.core.model.process.ElementParameterParser		
 		java.util.List
 	"
 %>
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
+
+String advancedSeparatorStr = ElementParameterParser.getValue(node, "__ADVANCED_SEPARATOR__");
+boolean advancedSeparator = (advancedSeparatorStr!=null&&!advancedSeparatorStr.equals(""))?advancedSeparatorStr.equals("true"):false;
+String thousandsSeparator = ElementParameterParser.getValue(node, "__THOUSANDS_SEPARATOR__");
+String decimalSeparator = ElementParameterParser.getValue(node, "__DECIMAL_SEPARATOR__"); 
 
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
@@ -45,7 +51,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
   									    		 javaType == JavaTypesManager.CHARACTER||
   									    		 javaType == JavaTypesManager.BYTE_ARRAY||
   									    		 javaType == JavaTypesManager.OBJECT||
-  									    		 javaType == JavaTypesManager.BIGDECIMAL){
+  									    		 (advancedSeparator && JavaTypesManager.isNumberType(javaType, column.isNullable()))
+  									    		 ){
   									    	%>Label<%
     									}else{
     										%>Number<%
@@ -69,9 +76,17 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>					
 								java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(<%=conn.getName() %>.<%=column.getLabel() %>)).toString()
 <%
-					} else if (javaType == JavaTypesManager.BIGDECIMAL) {
+					} else if(advancedSeparator && JavaTypesManager.isNumberType(javaType, column.isNullable())) { 
 %>
-								String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>.doubleValue())
+							<% if(javaType == JavaTypesManager.BIGDECIMAL) {%>
+							FormatterUtils.format_Number(String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>.doubleValue()), <%= thousandsSeparator %>, <%= decimalSeparator %>)					
+							<% } else { %>
+							FormatterUtils.format_Number(String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>), <%= thousandsSeparator %>, <%= decimalSeparator %>)						
+							<% } %>
+<%
+						}  else if (javaType == JavaTypesManager.BIGDECIMAL) {
+%>
+								<%=conn.getName() %>.<%=column.getLabel() %>.doubleValue()
 <%
 					}else {
 %>

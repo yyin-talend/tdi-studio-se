@@ -60,7 +60,12 @@
     		String removeEmptyRow = ElementParameterParser.getValue(node, "__REMOVE_EMPTY_ROW__");
     		
         	String dieOnErrorStr = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
-    		boolean dieOnError = (dieOnErrorStr!=null&&!dieOnErrorStr.equals(""))?dieOnErrorStr.equals("true"):false;  
+    		boolean dieOnError = (dieOnErrorStr!=null&&!dieOnErrorStr.equals(""))?dieOnErrorStr.equals("true"):false;
+    		
+    		String advancedSeparatorStr = ElementParameterParser.getValue(node, "__ADVANCED_SEPARATOR__");
+    		boolean advancedSeparator = (advancedSeparatorStr!=null&&!advancedSeparatorStr.equals(""))?advancedSeparatorStr.equals("true"):false;
+    		String thousandsSeparator = ElementParameterParser.getValue(node, "__THOUSANDS_SEPARATOR__");
+    		String decimalSeparator = ElementParameterParser.getValue(node, "__DECIMAL_SEPARATOR__");    		  
     		
     		if(header.equals("")){
     			header = "0";
@@ -293,7 +298,11 @@ while (reader_<%=cid %>.readRecord()) {
 %>
 		<%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(column_<%=cid %>, <%= patternValue %>);
 <%
-						}else if(javaType == JavaTypesManager.BYTE_ARRAY) {
+						}else if(advancedSeparator && JavaTypesManager.isNumberType(javaType, column.isNullable())) { 
+%>
+		<%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(ParserUtils.parseTo_Number(column_<%=cid %>, <%= thousandsSeparator %>, <%= decimalSeparator %>));
+<%
+					}else if(javaType == JavaTypesManager.BYTE_ARRAY) {
 %>
 		<%=firstConnName %>.<%=column.getLabel() %> = column_<%=cid %>.getBytes(<%=encoding%>);
 <%
@@ -370,7 +379,11 @@ while (reader_<%=cid %>.readRecord()) {
 %>	
 		<%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(columnValue<%=cid %>[<%=valueN%>], <%= patternValue %>);
 <%
-							}else if(javaType == JavaTypesManager.BYTE_ARRAY) {
+							}else if(advancedSeparator && JavaTypesManager.isNumberType(javaType, column.isNullable())) { 
+%>
+		<%=firstConnName %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(ParserUtils.parseTo_Number(columnValue<%=cid %>[<%=valueN%>], <%= thousandsSeparator %>, <%= decimalSeparator %>));
+<%
+					}else if(javaType == JavaTypesManager.BYTE_ARRAY) {
 %>	
 		<%=firstConnName %>.<%=column.getLabel() %> = columnValue<%=cid %>[<%=valueN%>].getBytes(<%=encoding%>);
 <%
