@@ -305,6 +305,9 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         if (type == ERepositoryObjectType.PROCESS) {
             fireRepositoryPropertyChange(ERepositoryActionName.FOLDER_DELETE.getName(), path, type);
         }
+        if (type == ERepositoryObjectType.JOBLET) {
+            fireRepositoryPropertyChange(ERepositoryActionName.JOBLET_FOLDER_DELETE.getName(), path, type);
+        }
     }
 
     /*
@@ -317,6 +320,9 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         this.repositoryFactoryFromProvider.moveFolder(type, sourcePath, targetPath);
         if (type == ERepositoryObjectType.PROCESS) {
             fireRepositoryPropertyChange(ERepositoryActionName.FOLDER_MOVE.getName(), sourcePath, targetPath);
+        }
+        if (type == ERepositoryObjectType.JOBLET) {
+            fireRepositoryPropertyChange(ERepositoryActionName.JOBLET_FOLDER_MOVE.getName(), sourcePath, targetPath);
         }
     }
 
@@ -438,6 +444,9 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         if (type == ERepositoryObjectType.PROCESS) {
             fireRepositoryPropertyChange(ERepositoryActionName.FOLDER_RENAME.getName(), path, label);
         }
+        if (type == ERepositoryObjectType.JOBLET) {
+            fireRepositoryPropertyChange(ERepositoryActionName.JOBLET_FOLDER_RENAME.getName(), path, label);
+        }
     }
 
     /*
@@ -532,6 +541,12 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         if (objToMove.getType() == ERepositoryObjectType.PROCESS) {
             if (sourcePath != null && sourcePath.length == 1) {
                 fireRepositoryPropertyChange(ERepositoryActionName.JOB_MOVE.getName(), objToMove, new IPath[] { sourcePath[0],
+                        targetPath });
+            }
+        }
+        if (objToMove.getType() == ERepositoryObjectType.JOBLET) {
+            if (sourcePath != null && sourcePath.length == 1) {
+                fireRepositoryPropertyChange(ERepositoryActionName.JOBLET_MOVE.getName(), objToMove, new IPath[] { sourcePath[0],
                         targetPath });
             }
         }

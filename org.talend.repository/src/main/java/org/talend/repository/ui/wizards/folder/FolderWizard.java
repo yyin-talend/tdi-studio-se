@@ -83,7 +83,6 @@ public class FolderWizard extends Wizard {
 
             } else {
                 repositoryFactory.renameFolder(type, path, folderName);
-
             }
             return true;
         } catch (PersistenceException e) {
