@@ -24,6 +24,7 @@ import org.talend.core.model.components.IMultipleComponentManager;
 import org.talend.core.model.components.IMultipleComponentParameter;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.AbstractConnection;
+import org.talend.core.model.process.AbstractExternalNode;
 import org.talend.core.model.process.AbstractNode;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
@@ -183,6 +184,17 @@ public class DataProcess {
                 }
                 outgoingConnections.add(dataConnec);
                 incomingConnections.add(dataConnec);
+
+                if (!connection.getName().equals(name)) {
+                    if (target instanceof AbstractExternalNode) {
+                        // System.out.println("dataProcess: rename input:" + connection.getName() + " to " + name);
+                        ((AbstractExternalNode) target).renameInputConnection(connection.getName(), name);
+                    }
+                    if (dataNode instanceof AbstractExternalNode) {
+                        // System.out.println("dataProcess: rename output:" + connection.getName() + " to " + name);
+                        ((AbstractExternalNode) dataNode).renameOutputConnection(connection.getName(), name);
+                    }
+                }
             }
         }
 
