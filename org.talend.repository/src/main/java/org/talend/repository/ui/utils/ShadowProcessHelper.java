@@ -75,6 +75,8 @@ public class ShadowProcessHelper {
 
         processDescription.setFieldSeparator(connection.getFieldSeparatorValue());
 
+        processDescription.setEncoding(connection.getEncoding());
+
         // we make differences between Pattern in DELIMITED, CSV and REGEX FileConnection
         if (connection.getEscapeChar() != null || connection.getTextEnclosure() != null) {
             processDescription.setPattern(connection.getFieldSeparatorValue());
