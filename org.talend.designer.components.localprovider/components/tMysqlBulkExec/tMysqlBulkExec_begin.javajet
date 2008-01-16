@@ -136,7 +136,7 @@ if(dataAction.equals("UPDATE")) {
         %>
         int keyCount_<%=cid%> = <%=keyCount%>;
         if(keyCount_<%=cid%> == 0) {
-            throw new Exception("For bulk update, Schema must have a key at least."); 
+            throw new RuntimeException("For bulk update, Schema must have a key at least."); 
         }        
         tableName_<%=cid%> = "tmp_<%=cid%>";
         java.sql.Statement stmtTmpCreate_<%=cid%> = con_<%=cid%>.createStatement();

@@ -23,7 +23,7 @@
         java.io.File srcFile_<%=cid %> = new java.io.File(srcFileName_<%=cid %>);
         // here need check first, before mkdirs().
         if (!srcFile_<%=cid %>.exists() || !srcFile_<%=cid %>.isFile()) {
-            throw new Exception("The source File \"" + srcFileName_<%=cid %> + "\" does not exist or is not a file.");
+            throw new RuntimeException("The source File \"" + srcFileName_<%=cid %> + "\" does not exist or is not a file.");
         }
 
         String desDirName_<%=cid %> = <%=destination %>;

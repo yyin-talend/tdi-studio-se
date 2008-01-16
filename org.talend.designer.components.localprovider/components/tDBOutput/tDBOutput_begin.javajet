@@ -120,7 +120,7 @@ if(!dataAction.equals("INSERT"))
     int keyCount_<%=cid%> = <%=keyCount%>;
     if(keyCount_<%=cid%> < 1)
     {
-    	throw new Exception("For update or delete, Schema must have a key");
+    	throw new RuntimeException("For update or delete, Schema must have a key");
     }
 <%
 }

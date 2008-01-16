@@ -41,7 +41,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         						<%=ElementParameterParser.getValue(node,"__FILENAME__")%>)), workbookSettings_<%= cid %>);
         final jxl.Sheet sheet_<%= cid %>  = workbook_<%= cid %>.getSheet(<%= ElementParameterParser.getValue(node, "__SHEETNAME__")%>);
         if(sheet_<%= cid %> == null){
-        	throw new Exception("Sheet \""+<%= ElementParameterParser.getValue(node, "__SHEETNAME__")%>+"\" not exist!");
+        	throw new RuntimeException("Sheet \""+<%= ElementParameterParser.getValue(node, "__SHEETNAME__")%>+"\" not exist!");
         }
         int nb_line_<%= cid %> = 0;            
 
@@ -143,7 +143,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 					java.util.Date dateGMT_<%=cid %> = ((jxl.DateCell)row_<%= cid %>[<%=i%> + start_column_<%= cid %>]).getDate();
 					<%=firstConnName %>.<%=column.getLabel() %> = new java.util.Date(dateGMT_<%=cid %>.getTime() - java.util.TimeZone.getDefault().getRawOffset());
 				}catch(Exception e){
-					throw new Exception("The cell format is not Date in row "+(nb_line_<%= cid %>+1)+" column "+(<%=i%> + start_column_<%= cid %>+1));
+					throw new RuntimeException("The cell format is not Date in row "+(nb_line_<%= cid %>+1)+" column "+(<%=i%> + start_column_<%= cid %>+1));
 				}
 			}
 <%

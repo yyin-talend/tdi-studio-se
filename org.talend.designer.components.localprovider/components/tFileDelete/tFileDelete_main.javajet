@@ -22,7 +22,7 @@ String failon = ElementParameterParser.getValue(node, "__FAILON__");
 	if(failon.equals("true")){
 %>
     else{
-    	throw new Exception();
+    	throw new RuntimeException("File does not exists or is invalid");
     }
 <%
 	}

@@ -182,7 +182,7 @@ if (metadata != null) {
 	
 	mondrian.olap.Axis[] axes_<%=cid%> = result_<%=cid%>.getAxes();
 	if (axes_<%=cid%>.length != 2) {
-		throw new Exception("Only two dimensional results are supported");
+		throw new RuntimeException("Only two dimensional results are supported");
 	}
 	
 	mondrian.olap.Axis columns_<%=cid%> = axes_<%=cid%>[0];

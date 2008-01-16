@@ -161,7 +161,7 @@ if(dataAction.equals("UPDATE")) {
         %>
         int keyCount_<%=cid%> = <%=keyCount%>;
         if(keyCount_<%=cid%> == 0) {
-            throw new Exception("For bulk update, Schema must have a key at least."); 
+            throw new RuntimeException("For bulk update, Schema must have a key at least."); 
         }
         String tmpTableName_<%=cid%> = tableName_<%=cid%>;
         tableName_<%=cid%> = "tmp_<%=cid%>";

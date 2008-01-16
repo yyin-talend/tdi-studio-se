@@ -84,14 +84,14 @@ for (int i=0; i<contextParams.size(); i++) {
         ((java.util.Map)threadLocal.get()).put(errorCode, <%=childJob %>.errorCode); 
 
         if (<%=childJob %>.errorCode != null || <%=childJob %>.status.equals("failure")) {
-            throw new TRunJobException();
+            throw new RuntimeException("Child job running failed");
         }
     <%
         }else {
     %>
         errorCode = <%=childJob %>.errorCode;
         if (<%=childJob %>.errorCode != null || <%=childJob %>.status.equals("failure")) {
-            throw new TRunJobException();
+            throw new RuntimeException("Child job running failed");
         }
     <%
         }

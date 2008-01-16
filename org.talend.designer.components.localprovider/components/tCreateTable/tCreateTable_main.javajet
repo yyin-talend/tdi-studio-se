@@ -1004,17 +1004,7 @@ if(columnList != null && columnList.size() > 0) {
         globalMap.put("<%=cid%>_QUERY", "<%=manager.getCreateTableSQL(columnList)%>");        
     } catch(Exception e) {
         globalMap.put("<%=cid%>_ERROR_MESSAGE",e.getMessage());
-        <%
-        if(isRunInMultiThread ) {
-            %>
-            throw new TalendException(this, e, "tCreateTable");
-            <%
-        } else {
-            %>
-            throw new TalendException(this, e);
-            <%
-        }
-        %>
+        throw new RuntimeException("Creating table failed");
     }
 <%
 }

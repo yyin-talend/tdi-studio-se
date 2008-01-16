@@ -39,12 +39,12 @@
 
     javax.mail.Folder folder_<%=cid %> = store_<%=cid %>.getDefaultFolder();
     if (folder_<%=cid %> == null)
-    throw new Exception("No default folder");
+    throw new RuntimeException("No default folder");
 
     // its INBOX
     folder_<%=cid %> = folder_<%=cid %>.getFolder("INBOX");
     if (folder_<%=cid %> == null)
-        throw new Exception("No POP3 INBOX");
+        throw new RuntimeException("No POP3 INBOX");
 
 <%
    if (deleteFromServer.equals("true")) {
