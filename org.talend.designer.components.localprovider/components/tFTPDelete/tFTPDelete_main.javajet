@@ -13,7 +13,43 @@
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
+	boolean sftp = ElementParameterParser.getValue(node, "__SFTP__").equals("true");
+	String remotedir = ElementParameterParser.getValue(node, "__REMOTEDIR__");
+	
+	if(sftp){
 %>	
+
+for (java.util.Map<String, String> map<%=cid %> : list<%=cid %>) 
+{
+   java.util.Set<String> keySet<%=cid %> = map<%=cid %>.keySet(); 
+   for (String key<%=cid %> : keySet<%=cid %>)
+   {     
+    	String filemask<%=cid %> = key<%=cid %>; 
+    	String dir<%=cid %> = null;
+    	String mask<%=cid %> = filemask<%=cid %>.replaceAll("\\\\", "/") ;
+    	int i<%=cid %> = mask<%=cid %>.lastIndexOf('/');
+		if (i<%=cid %>!=-1)
+		{
+			dir<%=cid %> = mask<%=cid %>.substring(0, i<%=cid %>); 
+			mask<%=cid %> = mask<%=cid %>.substring(i<%=cid %>+1); 
+    	}
+    	mask<%=cid %> = mask<%=cid %>.replaceAll("\\.", "\\\\.").replaceAll("\\*", ".*");
+		java.util.Vector listings<%=cid %> = c<%=cid %>.ls(<%=remotedir %>);
+		for (int m<%=cid %> = 0; m<%=cid %> < listings<%=cid %>.size(); m<%=cid %>++)
+		{ 
+			String filePath<%=cid%> =  ((com.jcraft.jsch.ChannelSftp.LsEntry) listings<%=cid %>.elementAt(m<%=cid %>)).getFilename() ;
+			if ( filePath<%=cid%>.matches(mask<%=cid %>))
+			{
+				 c<%=cid%>.rm( filePath<%=cid%>);
+			}
+		}	     
+   	}  
+ } 
+
+   
+    
+<%}else{%>
+
 String root<%=cid %> = ftp<%=cid %>.pwd();
 for (java.util.Map<String, String> map<%=cid %> : list<%=cid %>) 
 {
@@ -42,4 +78,5 @@ for (java.util.Map<String, String> map<%=cid %> : list<%=cid %>)
    	}  
    ftp<%=cid %>.chdir(root<%=cid %>);   
  } 
-
+ 
+<%}%>

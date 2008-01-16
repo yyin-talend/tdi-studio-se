@@ -48,7 +48,7 @@ COMPATIBILITY="ALL"
     <PARAMETER NAME="REMOTEDIR" FIELD="TEXT" REQUIRED="false" NUM_ROW="4">
       <DEFAULT>"."</DEFAULT>
     </PARAMETER>
-    <PARAMETER NAME="MODE" FIELD="CLOSED_LIST" NUM_ROW="5">
+    <PARAMETER NAME="MODE" FIELD="CLOSED_LIST" NUM_ROW="5" NOT_SHOW_IF="(SFTP=='true')">
       <ITEMS DEFAULT="ascii">
      	<ITEM NAME="ASCII"  VALUE="ascii" />
         <ITEM NAME="BINARY"  VALUE="binary" />        
@@ -57,22 +57,47 @@ COMPATIBILITY="ALL"
     <PARAMETER 
     	NAME="OVERWRITE" 
     	FIELD="CLOSED_LIST" 
-    	NUM_ROW="5" >
+    	NUM_ROW="5" 
+    	NOT_SHOW_IF="(SFTP=='true')">
     	<ITEMS DEFAULT="never">
-     	<ITEM NAME="NEVER" VALUE="never" />
-        <ITEM NAME="ALWAYS"  VALUE="always" />        
-        <ITEM NAME="SIZE_DIFFER"  VALUE="size_differ" />        
+     	<ITEM NAME="NEVER" VALUE="never"/>
+        <ITEM NAME="ALWAYS"  VALUE="always"/>        
+        <ITEM NAME="SIZE_DIFFER"  VALUE="size_differ"/>        
       </ITEMS>
     </PARAMETER>   
+    <PARAMETER 
+    	NAME="SFTPOVERWRITE" 
+    	FIELD="CLOSED_LIST" 
+    	NUM_ROW="5" 
+    	SHOW_IF="(SFTP=='true')">
+    	<ITEMS DEFAULT="overwrite">
+     	<ITEM NAME="OVERWRITE" VALUE="overwrite"/>    
+        <ITEM NAME="RESUME"  VALUE="resume"/>  
+        <ITEM NAME="APPEND"  VALUE="append"/>      
+      </ITEMS>
+    </PARAMETER> 
+    
     <PARAMETER NAME="FILES" FIELD="TABLE" REQUIRED="false" NUM_ROW="6" NB_LINES="5">
       <ITEMS>
         <ITEM NAME="FILEMASK" />
       </ITEMS>
     </PARAMETER>
+    <PARAMETER NAME="SFTP" FIELD="CHECK" REQUIRED="true" NUM_ROW="5">
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+    <PARAMETER
+      NAME="ENCODING"
+      FIELD="ENCODING_TYPE"
+      NUM_ROW="7"
+      SHOW_IF="(SFTP=='true')"
+      REQUIRED="true">
+       <DEFAULT>"ISO-8859-15"</DEFAULT>
+    </PARAMETER>
   </PARAMETERS>
   <CODEGENERATION>
      <IMPORTS>
        <IMPORT NAME="Java-FTP" MODULE="edtftpj-1.5.4.jar" REQUIRED="true" />
+       <IMPORT NAME="Java-SFTP" MODULE="jsch-0.1.36.jar" REQUIRED="true" />
      </IMPORTS>
    </CODEGENERATION>
   <RETURNS/>

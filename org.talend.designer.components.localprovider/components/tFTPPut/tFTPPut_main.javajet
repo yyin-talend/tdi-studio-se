@@ -15,7 +15,71 @@
 	String localdir = ElementParameterParser.getValue(node, "__LOCALDIR__");	
 	String cid = node.getUniqueName();
 	String overwrite=ElementParameterParser.getValue(node, "__OVERWRITE__");
+	String sftpoverwrite=ElementParameterParser.getValue(node, "__SFTPOVERWRITE__");
+	boolean sftp = ElementParameterParser.getValue(node, "__SFTP__").equals("true");
+	String remotedir = ElementParameterParser.getValue(node, "__REMOTEDIR__");
+		
+	if(sftp){
 %>	
+
+    String localdir<%=cid %>  = <%=localdir%>;	
+	for (java.util.Map<String, String> map<%=cid %> : list<%=cid %>) 
+	{
+   		java.util.Set<String> keySet<%=cid %> = map<%=cid %>.keySet();
+      	for (String key<%=cid %> : keySet<%=cid %>)
+   		{     
+			String tempdir<%=cid %> =  localdir<%=cid %>;
+			String filemask<%=cid %> = key<%=cid %>; 
+			String dir<%=cid %> = null;	
+			String mask<%=cid %> = filemask<%=cid %>.replaceAll("\\\\", "/") ;	
+			int i<%=cid %> = mask<%=cid %>.lastIndexOf('/');
+  			if (i<%=cid %>!=-1)
+			{
+				dir<%=cid %> = mask<%=cid %>.substring(0, i<%=cid %>); 
+				mask<%=cid %> = mask<%=cid %>.substring(i<%=cid %>+1);	 
+    		}
+    		if (dir<%=cid %>!=null && !"".equals(dir<%=cid %>)) tempdir<%=cid %> = tempdir<%=cid %> + "/" + dir<%=cid %>;  
+    		mask<%=cid %> = mask<%=cid %>.replaceAll("\\.", "\\\\.").replaceAll("\\*", ".*");
+    		final String finalMask<%=cid %> = mask<%=cid %>;
+    		java.io.File[] listings<%=cid %> = null;       
+        	java.io.File file<%=cid %> = new java.io.File(tempdir<%=cid %>);
+        	if (file<%=cid %>.isDirectory()) {
+            listings<%=cid %> = file<%=cid %>.listFiles(new java.io.FileFilter() {
+                public boolean accept(java.io.File pathname) {
+                    boolean result = false;
+                    if (pathname != null && pathname.isFile()) {                      
+                            result = java.util.regex.Pattern.compile(finalMask<%=cid %>).matcher(pathname.getName()).find(); 
+                    	}
+                    return result;
+                	}
+            	});
+        	} 
+    	if(listings<%=cid %> != null)
+    	{
+    		for (int m<%=cid %> = 0; m<%=cid %> < listings<%=cid %>.length; m<%=cid %>++)
+     		{ 
+     			if (listings<%=cid %>[m<%=cid %>].getName().matches(mask<%=cid %>))
+      				{     
+      				
+      			<%if(sftpoverwrite.equals("overwrite")){%>    			
+    				 int mode<%=cid%> = com.jcraft.jsch.ChannelSftp.OVERWRITE;
+				<%}else if(sftpoverwrite.equals("append")){%>
+					 int mode<%=cid%> = com.jcraft.jsch.ChannelSftp.APPEND;
+				<%}else if(sftpoverwrite.equals("resume")){%>
+					 int mode<%=cid%> = com.jcraft.jsch.ChannelSftp.RESUME;
+				<%}%>
+    				 c<%=cid%>.put(listings<%=cid %>[m<%=cid %>].getAbsolutePath(), <%=remotedir%>, monitor<%=cid%>, mode<%=cid%>);
+
+      				}
+    		}
+    	}     
+    }
+ }
+     
+     
+
+
+<%}else{%>
 <% 
 	if ("binary".equalsIgnoreCase(ElementParameterParser.getValue(node, "__MODE__"))) {
 %>	
@@ -94,3 +158,5 @@
     	}     
     }
  }
+ 
+ <%}%>

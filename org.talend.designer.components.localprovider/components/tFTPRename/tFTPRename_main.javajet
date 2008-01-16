@@ -13,7 +13,23 @@
 	INode node = (INode)codeGenArgument.getArgument();
 	String overwrite=ElementParameterParser.getValue(node, "__OVERWRITE__");
 	String cid = node.getUniqueName();
+	boolean sftp = ElementParameterParser.getValue(node, "__SFTP__").equals("true");
+	
+	if(sftp){
 %>	
+
+	for (java.util.Map<String, String> map<%=cid %> : list<%=cid %>) 
+	{  	
+    	java.util.Set<String> keySet<%=cid %> = map<%=cid %>.keySet();   
+    	for (String key<%=cid %> : keySet<%=cid %>)
+   		{     	
+   			System.out.println("map.get()="+map<%=cid %>.get(key<%=cid %>));
+     		c<%=cid%>.rename(key<%=cid %>, map<%=cid %>.get(key<%=cid %>));
+   		}
+	}
+
+
+<%}else{%>
 	for (java.util.Map<String, String> map<%=cid %> : list<%=cid %>) 
 	{  	
     	java.util.Set<String> keySet<%=cid %> = map<%=cid %>.keySet();   
@@ -47,3 +63,4 @@
    		}
 	}
 
+<%}%>
