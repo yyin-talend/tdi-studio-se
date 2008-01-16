@@ -774,6 +774,7 @@ public class DataProcess {
             if (processProvider != null) {
                 processProvider.buildReplaceNodesInDataProcess(node, buildCheckMap, this);
                 dataNodeList.remove(checkMultipleMap.get(node));
+                checkMultipleMap.remove(node);
             }
             // Process sProcess = processProvider.buildNewGraphicProcess(node);
             // if (sProcess != null) {
