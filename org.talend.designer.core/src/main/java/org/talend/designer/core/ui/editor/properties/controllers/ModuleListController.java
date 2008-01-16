@@ -298,13 +298,15 @@ public class ModuleListController extends AbstractElementPropertySectionControll
 
     @Override
     public void refresh(IElementParameter param, boolean check) {
+        CCombo combo = (CCombo) hashCurControls.get(param.getName());
+        if (combo == null || combo.isDisposed()) {
+            return;
+        }
         updateData();
 
         String[] curNameList = param.getListItemsDisplayName();
 
         Object value = param.getValue();
-
-        CCombo combo = (CCombo) hashCurControls.get(param.getName());
 
         combo.setItems(curNameList);
         if (value instanceof String) {

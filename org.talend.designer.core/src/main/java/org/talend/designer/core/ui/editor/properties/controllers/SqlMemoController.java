@@ -339,11 +339,11 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
     @Override
     public void refresh(IElementParameter param, boolean checkErrorsWhenViewRefreshed) {
         ColorStyledText labelText = (ColorStyledText) hashCurControls.get(param.getName());
-
-        Object value = param.getValue();
-        if (labelText == null) {
+        if (labelText == null || labelText.isDisposed()) {
             return;
         }
+        Object value = param.getValue();
+
         boolean valueChanged = false;
         if (value == null) {
             labelText.setText(""); //$NON-NLS-1$

@@ -235,7 +235,7 @@ public class MappingTypeController extends AbstractElementPropertySectionControl
     public void refresh(IElementParameter param, boolean check) {
         CCombo combo = (CCombo) hashCurControls.get(param.getName());
 
-        if (combo == null) {
+        if (combo == null || combo.isDisposed()) {
             return;
         }
         Object value = param.getValue();

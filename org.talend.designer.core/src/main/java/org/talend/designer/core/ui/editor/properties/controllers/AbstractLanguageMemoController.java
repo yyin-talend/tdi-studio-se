@@ -166,7 +166,7 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
                     } else if (elem instanceof Connection) {
                         Connection connection = (Connection) elem;
                         process = (Process) connection.getSource().getProcess();
-                        //see bug 0001645
+                        // see bug 0001645
                         if (connection.getLineStyle().equals(EConnectionType.RUN_IF)) {
                             viewer = (TalendJavaSourceViewer) TalendJavaSourceViewer.createViewerForIfConnection(b);
                         }
@@ -393,6 +393,9 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
     @Override
     public void refresh(IElementParameter param, boolean checkErrorsWhenViewRefreshed) {
         Object o = hashCurControls.get(param.getName());
+        if (o == null) {
+            return;
+        }
         Object value = param.getValue();
         if (o instanceof StyledText) {
             StyledText text = (StyledText) o;

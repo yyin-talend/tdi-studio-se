@@ -209,7 +209,7 @@ public class ColorController extends AbstractElementPropertySectionController {
     public void refresh(IElementParameter param, boolean checkErrorsWhenViewRefreshed) {
         Button colorBtn = (Button) hashCurControls.get(param.getName());
         Object value = param.getValue();
-        if (colorBtn == null) {
+        if (colorBtn == null || colorBtn.isDisposed()) {
             return;
         }
         if (value != null) {

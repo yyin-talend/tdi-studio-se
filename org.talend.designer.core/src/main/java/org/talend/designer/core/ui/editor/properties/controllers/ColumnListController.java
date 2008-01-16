@@ -275,6 +275,11 @@ public class ColumnListController extends AbstractElementPropertySectionControll
 
     @Override
     public void refresh(IElementParameter param, boolean check) {
+        CCombo combo = (CCombo) hashCurControls.get(param.getName());
+        if (combo == null || combo.isDisposed()) {
+            return;
+        }
+
         updateData();
 
         String[] curColumnNameList = param.getListItemsDisplayName();
@@ -289,8 +294,6 @@ public class ColumnListController extends AbstractElementPropertySectionControll
                 numValue = i;
             }
         }
-
-        CCombo combo = (CCombo) hashCurControls.get(param.getName());
 
         combo.setItems(curColumnNameList);
         if (!listContainValue) {

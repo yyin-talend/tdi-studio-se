@@ -196,6 +196,9 @@ public class MemoController extends AbstractElementPropertySectionController {
     @Override
     public void refresh(IElementParameter param, boolean checkErrorsWhenViewRefreshed) {
         Text text = (Text) hashCurControls.get(param.getName());
+        if (text == null || text.isDisposed()) {
+            return;
+        }
         Object value = param.getValue();
         if (value == null) {
             text.setText(""); //$NON-NLS-1$

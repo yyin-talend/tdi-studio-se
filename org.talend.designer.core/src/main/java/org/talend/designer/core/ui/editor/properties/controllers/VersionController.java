@@ -207,7 +207,7 @@ public class VersionController extends AbstractElementPropertySectionController 
     public void refresh(IElementParameter param, boolean checkErrorsWhenViewRefreshed) {
         Text labelText = (Text) hashCurControls.get(param.getName());
         Object value = param.getValue();
-        if (labelText == null) {
+        if (labelText == null || labelText.isDisposed()) {
             return;
         }
         if (value == null) {

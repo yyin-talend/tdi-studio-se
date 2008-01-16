@@ -226,6 +226,10 @@ public class ConnectionListController extends AbstractElementPropertySectionCont
 
     @Override
     public void refresh(IElementParameter param, boolean check) {
+        CCombo combo = (CCombo) hashCurControls.get(param.getName());
+        if (combo == null || combo.isDisposed()) {
+            return;
+        }
         updateConnectionList(elem, param);
 
         String[] curConnectionNameList = param.getListItemsDisplayName();
@@ -241,19 +245,16 @@ public class ConnectionListController extends AbstractElementPropertySectionCont
             }
         }
 
-        CCombo combo = (CCombo) hashCurControls.get(param.getName());
-
-        if (combo != null) {
-            combo.setItems(curConnectionNameList);
-            if (!listContainValue) {
-                if (curConnectionNameList.length > 0) {
-                    elem.setPropertyValue(param.getName(), curConnectionNameList[0]);
-                    combo.setText(curConnectionNameList[0]);
-                }
-            } else {
-                combo.setText(curConnectionNameList[numValue]);
+        combo.setItems(curConnectionNameList);
+        if (!listContainValue) {
+            if (curConnectionNameList.length > 0) {
+                elem.setPropertyValue(param.getName(), curConnectionNameList[0]);
+                combo.setText(curConnectionNameList[0]);
             }
+        } else {
+            combo.setText(curConnectionNameList[numValue]);
         }
+
     }
 
     public static void updateConnectionList(Process process) {

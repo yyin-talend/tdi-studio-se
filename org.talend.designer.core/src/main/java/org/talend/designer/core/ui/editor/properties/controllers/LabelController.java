@@ -111,6 +111,9 @@ public class LabelController extends AbstractElementPropertySectionController {
         // TODO Auto-generated method stub
         final String name2 = param.getName();
         CLabel labelText = (CLabel) hashCurControls.get(name2);
+        if (labelText == null || labelText.isDisposed()) {
+            return;
+        }
         Object value = param.getValue();
         if (value.equals("")) {
             labelText.setText(param.getDisplayName());
