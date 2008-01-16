@@ -240,6 +240,7 @@ public class ProcessComposite extends Composite {
         execBtn.setText(Messages.getString("ProcessComposite.exec")); //$NON-NLS-1$
         execBtn.setToolTipText(Messages.getString("ProcessComposite.execHint")); //$NON-NLS-1$
         execBtn.setImage(ImageProvider.getImage(ERunprocessImages.RUN_PROCESS_ACTION));
+        execBtn.setData(EXEC_ID);
         execBtn.setEnabled(false);
         formData = new FormData();
         formData.top = new FormAttachment(debugBtn, 0, SWT.TOP);
@@ -490,8 +491,9 @@ public class ProcessComposite extends Composite {
             pause(RESUME_ID);
         } else if (execBtn.getData().equals(EXEC_ID)) {
             addInHistoryRunningList();
-            // exec();
             execBtn.setData(PAUSE_ID);
+            // exec();
+
         }
     }
 
@@ -559,6 +561,10 @@ public class ProcessComposite extends Composite {
                 && !disableAll);
         traceBtn.setSelection(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(RunProcessPrefsConstants.ISTRACESRUN)
                 && !disableAll);
+        if (this.processContext != null) {
+            this.processContext.setMonitorTrace(traceBtn.getSelection());
+        }
+
         watchBtn.setSelection(RunProcessPlugin.getDefault().getPreferenceStore().getBoolean(
                 RunProcessPrefsConstants.ISEXECTIMERUN)
                 && !disableAll);
@@ -604,6 +610,7 @@ public class ProcessComposite extends Composite {
                 execBtn.setImage(ImageProvider.getImage(ERunprocessImages.PAUSE_PROCESS_ACTION));
             } else {
                 execBtn.setText(Messages.getString("ProcessComposite.exec")); //$NON-NLS-1$
+                execBtn.setData(EXEC_ID);
                 execBtn.setToolTipText(Messages.getString("ProcessComposite.execHint")); //$NON-NLS-1$
                 execBtn.setImage(ImageProvider.getImage(ERunprocessImages.RUN_PROCESS_ACTION));
             }
@@ -613,8 +620,9 @@ public class ProcessComposite extends Composite {
             execBtn.setText(Messages.getString("ProcessComposite.exec")); //$NON-NLS-1$
             execBtn.setToolTipText(Messages.getString("ProcessComposite.execHint")); //$NON-NLS-1$
             execBtn.setImage(ImageProvider.getImage(ERunprocessImages.RUN_PROCESS_ACTION));
+            execBtn.setData(EXEC_ID);
         }
-        execBtn.setData(EXEC_ID);
+
     }
 
     private void appendToConsole(final IProcessMessage message) {
