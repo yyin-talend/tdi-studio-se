@@ -105,7 +105,7 @@
     		if (inContext!=null) {
 	    		defaultProps.load(inContext);
     			inContext.close();
-	    		context = new java.util.Properties(defaultProps);
+	    		context = new ContextProperties(defaultProps);
 	    	}
     		
     		if (contextStr.compareTo("Default")!=0) {
@@ -131,11 +131,11 @@
 			        
 			%>
 			try{
-				<%=ctxParam.getName()%>=(java.util.Date)(new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(context.getProperty("<%=ctxParam.getName()%>")));
+			    context.<%=ctxParam.getName()%>=(java.util.Date)(new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(context.getProperty("<%=ctxParam.getName()%>")));
 			}catch(ParseException e)
 			{
 			    e.printStackTrace();
-			    <%=ctxParam.getName()%>=null;
+			    context.<%=ctxParam.getName()%>=null;
 			}
 			<%
 			      
@@ -143,29 +143,29 @@
 			    {
 			  %> 
 			  try{
-			  	<%=ctxParam.getName()%>=Integer.parseInt(context.getProperty("<%=ctxParam.getName()%>"));
+			      context.<%=ctxParam.getName()%>=Integer.parseInt(context.getProperty("<%=ctxParam.getName()%>"));
 			  }catch(NumberFormatException e){
-			  	 <%=ctxParam.getName()%>=null;
+			      context.<%=ctxParam.getName()%>=null;
 			  }
 			  <%
 			    }else if(typeToGenerate.equals("Object")||typeToGenerate.equals("String") )
 			    {
 			    %>
-			    <%=ctxParam.getName()%>=(<%=typeToGenerate%>) context.getProperty("<%=ctxParam.getName()%>");
+			    context.<%=ctxParam.getName()%>=(<%=typeToGenerate%>) context.getProperty("<%=ctxParam.getName()%>");
 			    <%
 			    }else if(typeToGenerate.equals("Character"))
 			    {
 			 %>
-			 <%=ctxParam.getName()%>= context.getProperty("<%=ctxParam.getName()%>");
+			 context.<%=ctxParam.getName()%>= context.getProperty("<%=ctxParam.getName()%>");
 			 <%
 			    }
 			     else
 			    {
 			 %> 
 			 try{
-			 	<%=ctxParam.getName()%>=<%=typeToGenerate%>.parse<%=typeToGenerate%> (context.getProperty("<%=ctxParam.getName()%>"));
+			     context.<%=ctxParam.getName()%>=<%=typeToGenerate%>.parse<%=typeToGenerate%> (context.getProperty("<%=ctxParam.getName()%>"));
 			 }catch(NumberFormatException e){
-			  	<%=ctxParam.getName()%>=null;
+			     context.<%=ctxParam.getName()%>=null;
 			  }
 			 <%
 			    }

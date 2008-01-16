@@ -75,7 +75,14 @@ import java.math.BigDecimal;
     // create and load default properties
 	private static java.util.Properties defaultProps = new java.util.Properties();
 	// create application properties with default
-	private static java.util.Properties context = new java.util.Properties();
+	private static class ContextProperties extends java.util.Properties {
+	    
+	    public ContextProperties(java.util.Properties properties){
+	        super(properties);
+	    }
+	    public ContextProperties(){
+	        super();
+	    }
 <%
     for (IContextParameter ctxParam :params)
      {
@@ -83,15 +90,17 @@ import java.math.BigDecimal;
         if(ctxParam.getType().equals("id_List Of Value") || ctxParam.getType().equals("id_File") || ctxParam.getType().equals("id_Directory") || ctxParam.getType().equals("id_Character"))
         {
      %>
-     private static String <%=ctxParam.getName()%>;
+     public  static String <%=ctxParam.getName()%>;
      <%
         }else
         {
 %>      
-private static <%=JavaTypesManager.getTypeToGenerate(ctxParam.getType(),true)%>  <%=ctxParam.getName()%>;
+ public  static <%=JavaTypesManager.getTypeToGenerate(ctxParam.getType(),true)%>  <%=ctxParam.getName()%>;
   <%    }   
      }
 %>
+	}
+	private static ContextProperties context = new ContextProperties();
 	private static final String jobName = "<%=codeGenArgument.getJobName() %>";
 	private static final String projectName = "<%=codeGenArgument.getCurrentProjectName() %>";
 	public static Integer errorCode = null;

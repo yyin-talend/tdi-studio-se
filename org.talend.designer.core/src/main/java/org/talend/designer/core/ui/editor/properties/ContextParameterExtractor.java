@@ -81,7 +81,7 @@ public final class ContextParameterExtractor {
                             replaceCode = ContextParameterUtils.getScriptCode(parameter, ((RepositoryContext) CorePlugin
                                     .getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject().getLanguage());
                         } else {
-                            replaceCode = parameter.getName();
+                            replaceCode = "context." + parameter.getName();
                         }
                         if (text instanceof Text) {
                             if (((Text) text).getSelectionCount() == 0) {
