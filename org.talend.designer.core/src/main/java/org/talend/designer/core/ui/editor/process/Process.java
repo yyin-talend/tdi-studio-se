@@ -2426,4 +2426,13 @@ public class Process extends Element implements IProcess2 {
     public boolean disableRunJobView() {
         return false;
     }
+
+    /**
+     * Sets the processModified.
+     * 
+     * @param processModified the processModified to set
+     */
+    public void setProcessModified(boolean processModified) {
+        this.processModified = processModified;
+    }
 }
