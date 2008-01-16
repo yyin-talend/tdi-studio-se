@@ -15,12 +15,14 @@ package org.talend.designer.runprocess.ui.actions;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.image.ImageProvider;
+import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.runprocess.i18n.Messages;
 import org.talend.designer.runprocess.ui.ERunprocessImages;
 import org.talend.designer.runprocess.ui.views.ProcessView;
@@ -43,13 +45,17 @@ public class RunProcessAction extends Action implements IWorkbenchWindowActionDe
 
     @Override
     public void run() {
+        IWorkbench workbench = PlatformUI.getWorkbench();
+        IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();
+        IEditorPart activeEditor = page.getActiveEditor();
+        if (!(activeEditor instanceof MultiPageTalendEditor)) {
+            return;
+        }
         // TODO SML Use getInstance
         ShowRunProcessViewAction action = new ShowRunProcessViewAction();
         action.run();
 
         // TODO SML Optimize
-        IWorkbench workbench = PlatformUI.getWorkbench();
-        IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();
         ProcessView view = (ProcessView) page.getActivePart();
         view.runAction.run();
     }
