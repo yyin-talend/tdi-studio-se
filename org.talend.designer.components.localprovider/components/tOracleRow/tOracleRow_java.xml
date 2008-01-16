@@ -8,6 +8,7 @@
     AUTHOR="Talend"
     RELEASE_DATE="20070314A"
     STARTABLE="true"
+    HAS_CONDITIONAL_OUTPUTS="true"
     DATA_AUTO_PROPAGATE="false"
   >
     <SIGNATURE/>
