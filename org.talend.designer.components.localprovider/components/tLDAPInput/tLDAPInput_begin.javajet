@@ -38,6 +38,7 @@ imports="
 	String user =ElementParameterParser.getValue(node, "__USER__");
 	String passwd =ElementParameterParser.getValue(node, "__PASSWD__");
 	boolean dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__").equals("true");
+	boolean breakOnError = ElementParameterParser.getValue(node, "__BREAK_LOOP_ON_ERROR__").equals("true");
 %>
 	int <%=cid%>_NB_LINE = 0;
 	java.util.Hashtable env_<%=cid%> = new java.util.Hashtable();
@@ -145,6 +146,16 @@ imports="
 %>
             throw(e);
 <%
+        }else{
+			if(breakOnError){
+%>
+			break;
+<%
+			}else{
+%>
+			continue;
+<%
+			}
         }
 %>
 		}
@@ -191,6 +202,16 @@ imports="
 %>
             throw(e);
 <%
+        }else{
+			if(breakOnError){
+%>
+			break;
+<%
+			}else{
+%>
+			continue;
+<%
+			}
         }
 %>
 	}
