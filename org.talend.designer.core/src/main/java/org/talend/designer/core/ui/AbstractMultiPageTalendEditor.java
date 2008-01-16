@@ -368,18 +368,13 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         }
 
         try {
-            int index = 0;
-            if (processEditorInput.needCodePage()) {
-                index = addPage(codeEditor, createFileEditorInput());
-            }
+            int index = addPage(codeEditor, createFileEditorInput());
             // init Syntax Validation.
             if (getCurrentLang() == ECodeLanguage.PERL) {
                 PerlEditorPlugin.getDefault().setSyntaxValidationPreference(true);
             }
+            setPageText(index, "Code");
 
-            if (processEditorInput.needCodePage()) {
-                setPageText(index, "Code");
-            }
         } catch (PartInitException pie) {
             pie.printStackTrace();
         }
