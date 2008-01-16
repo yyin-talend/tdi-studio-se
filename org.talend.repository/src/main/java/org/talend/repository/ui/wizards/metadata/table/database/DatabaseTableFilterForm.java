@@ -120,7 +120,9 @@ public class DatabaseTableFilterForm extends AbstractForm {
 
     @Override
     protected void addFields() {
-        Composite composite = new Composite(this, SWT.CENTER);
+
+        Composite composite = new Composite(this, SWT.NONE);
+
         GridLayout gridLayout = new GridLayout();
         gridLayout.numColumns = 1;
         gridLayout.marginBottom = 0;
