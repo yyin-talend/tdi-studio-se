@@ -101,7 +101,8 @@
     	}
     	
     	try {
-    		java.io.InputStream inContext = <%=process.getName() %>.class.getClassLoader().getResourceAsStream("<%=codeGenArgument.getCurrentProjectName().toLowerCase() %>/<%=codeGenArgument.getJobName().toLowerCase() %>/contexts/Default.properties");    		
+    		String charSet=System.getProperty("file.encoding");
+    		java.io.Reader inContext = new java.io.InputStreamReader(<%=process.getName() %>.class.getClassLoader().getResourceAsStream("<%=codeGenArgument.getCurrentProjectName().toLowerCase() %>/<%=codeGenArgument.getJobName().toLowerCase() %>/contexts/Default.properties"),charSet);    		
     		if (inContext!=null) {
 	    		defaultProps.load(inContext);
     			inContext.close();
@@ -109,7 +110,7 @@
 	    	}
     		
     		if (contextStr.compareTo("Default")!=0) {
-    			inContext = <%=process.getName() %>.class.getClassLoader().getResourceAsStream("<%=codeGenArgument.getCurrentProjectName().toLowerCase() %>/<%=codeGenArgument.getJobName().toLowerCase() %>/contexts/"+contextStr+".properties");
+    			inContext = new java.io.InputStreamReader(<%=process.getName() %>.class.getClassLoader().getResourceAsStream("<%=codeGenArgument.getCurrentProjectName().toLowerCase() %>/<%=codeGenArgument.getJobName().toLowerCase() %>/contexts/"+contextStr+".properties"),charSet);
     			if (inContext!=null) {
 					context.load(inContext);
 					inContext.close();
