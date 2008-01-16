@@ -547,7 +547,7 @@ public class DataProcess {
     }
 
     @SuppressWarnings("unchecked")//$NON-NLS-1$
-    private void checkFlowRefLink(final Node graphicalNode) {
+    public void checkFlowRefLink(final Node graphicalNode) {
         if (checkRefList.contains(graphicalNode)) {
             return;
         }
@@ -673,7 +673,7 @@ public class DataProcess {
      * 
      * @param node
      */
-    private INode replaceMultipleComponents(INode graphicalNode) {
+    public INode replaceMultipleComponents(INode graphicalNode) {
         if (checkMultipleMap.containsKey(graphicalNode)) {
             return checkMultipleMap.get(graphicalNode);
         }
