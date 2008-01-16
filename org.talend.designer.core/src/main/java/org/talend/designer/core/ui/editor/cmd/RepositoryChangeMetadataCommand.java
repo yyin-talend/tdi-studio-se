@@ -109,7 +109,7 @@ public class RepositoryChangeMetadataCommand extends ChangeMetadataCommand {
             return;
         }
 
-        if (viewer.getElement().equals(node)) {
+        if (viewer.getElement() != null && viewer.getElement().equals(node)) {
             List<ColumnNameChanged> columnNameChanged = new ArrayList<ColumnNameChanged>();
             for (int j = 0; j < oldTable.getListColumns().size(); j++) {
                 if (newTable.getListColumns().size() > j) {
