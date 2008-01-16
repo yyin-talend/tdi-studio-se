@@ -324,7 +324,10 @@ if (inMetadata != null && metadata != null) {
                     } else if (surrogateKeyCreation.equals("ROUTINE")) {
                         generator.generateSetStatement(cid, "insertQuery_" + cid, skRoutine, colposition++, typeToGenerate);
                     } else if (surrogateKeyCreation.equals("TABLE_MAX")) {
-                        generator.generateSetStatement(cid, "insertQuery_" + cid, "nextSurrogateKey_" + cid + "++", colposition++, typeToGenerate);
+                        generator.generateSetStatement(cid, "insertQuery_" + cid, "nextSurrogateKey_" + cid, colposition++, typeToGenerate);
+                        %>
+                        nextSurrogateKey_<%=cid%>++;
+                        <%
                     }
                 }
             }
@@ -508,7 +511,10 @@ if (inMetadata != null && metadata != null) {
                             } else if (surrogateKeyCreation.equals("ROUTINE")) {
                                 generator.generateSetStatement(cid, "insertQuery_" + cid, skRoutine, colposition++, typeToGenerate);
                             } else if (surrogateKeyCreation.equals("TABLE_MAX")) {
-                                generator.generateSetStatement(cid, "insertQuery_" + cid, "nextSurrogateKey_" + cid + "++", colposition++, typeToGenerate);
+                                generator.generateSetStatement(cid, "insertQuery_" + cid, "nextSurrogateKey_" + cid, colposition++, typeToGenerate);
+                                %>
+                                nextSurrogateKey_<%=cid%>++;
+                                <%
                             }
                         }
                     }
