@@ -263,7 +263,7 @@
       NAME="L2_STARTDATE_INPUT_FIELD"
       FIELD="PREV_COLUMN_LIST"
       NUM_ROW="92"
-      SHOW_IF="L2_STARTDATE_VALUE == 'INPUT_FIELD'"
+      SHOW_IF="(USE_L2 == 'true' and L2_STARTDATE_VALUE == 'INPUT_FIELD')"
     >
     </PARAMETER>
 
@@ -291,7 +291,7 @@
       NAME="L2_ENDDATE_FIXED_VALUE"
       FIELD="TEXT"
       NUM_ROW="93"
-      SHOW_IF="L2_ENDDATE_VALUE == 'FIXED_VALUE'"
+      SHOW_IF="(USE_L2 == 'true' and L2_ENDDATE_VALUE == 'FIXED_VALUE')"
     >
       <DEFAULT>"2500"</DEFAULT>
     </PARAMETER>
@@ -328,6 +328,15 @@
       NUM_ROW="95"
       SHOW_IF="(USE_L2_VERSION == 'true' and USE_L2=='true')"
     >
+    </PARAMETER>
+
+    <PARAMETER
+    	NAME="NOTE"
+    	FIELD="LABEL"
+    	NUM_ROW="95"
+		SHOW_IF="(USE_L2_VERSION == 'true' and USE_L2=='true')"
+    >
+    	<DEFAULT>(Version must be an Integer)</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
