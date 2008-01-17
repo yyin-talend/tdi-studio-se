@@ -82,6 +82,14 @@ public class DataProcess {
                 if (dataNodeParam.getField() == EParameterFieldType.TABLE) {
                     dataNodeParam.setListItemsValue(curParam.getListItemsValue());
                 }
+                for (String name : dataNodeParam.getChildParameters().keySet()) {
+                    IElementParameter childDataParam = dataNodeParam.getChildParameters().get(name);
+                    IElementParameter childGraphicalParam = curParam.getChildParameters().get(name);
+                    childDataParam.setValue(childGraphicalParam.getValue());
+                    if (childDataParam.getField() == EParameterFieldType.TABLE) {
+                        childDataParam.setListItemsValue(childGraphicalParam.getListItemsValue());
+                    }
+                }
             }
         }
     }
