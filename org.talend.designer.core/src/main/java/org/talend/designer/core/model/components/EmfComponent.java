@@ -90,6 +90,8 @@ public class EmfComponent implements IComponent {
 
     private static Logger log = Logger.getLogger(EmfComponent.class);
 
+    private static final String EQUALS = "=="; //$NON-NLS-1$
+
     private static final String DEFAULT_COLOR = "255;255;255"; //$NON-NLS-1$
 
     private final File file;
@@ -1052,15 +1054,60 @@ public class EmfComponent implements IComponent {
                 if (!isSet) {
                     if (param.getField().equals(EParameterFieldType.CHECK)
                             || param.getField().equals(EParameterFieldType.AS400_CHECK)) {
-                        param.setValue(new Boolean(param.getDefaultValues().get(0).getDefaultValue().toString()));
+                        int index = this.computeIndex(listParam, param);
+                        param.setValue(new Boolean(param.getDefaultValues().get(index).getDefaultValue().toString()));
                     } else {
-                        param.setValue(param.getDefaultValues().get(0).getDefaultValue());
+                        int index = this.computeIndex(listParam, param);
+                        param.setValue(param.getDefaultValues().get(index).getDefaultValue());
                     }
                 }
             }
         }
 
         initializePropertyParametersForSchema(listParam);
+    }
+
+    private int computeIndex(List<ElementParameter> listParam, ElementParameter param) {
+        String[] types = null;
+        int index = -1;
+        boolean isDBTYPEANDMYSQL = false;
+        List<IElementParameterDefaultValue> elementParameterDefaultValueList = param.getDefaultValues();
+
+        if (EParameterFieldType.MAPPING_TYPE.equals(param.getField())) {
+            for (IElementParameterDefaultValue elementParameterDefaultValue : elementParameterDefaultValueList) {
+                String ifCondition = ((ElementParameterDefaultValue) elementParameterDefaultValue).ifCondition;
+                if (ifCondition != null) {
+                    types = ifCondition.split(EQUALS);
+                    if (types.length == 2) {
+                        if (types[0] != null && types[1] != null) {
+                            for (ElementParameter elementParameter : listParam) {
+                                if (types[0].equals(elementParameter.getName())
+                                        && types[1].substring(1, types[1].length() - 1).equals(elementParameter.getValue())) {
+                                    isDBTYPEANDMYSQL = true;
+                                    break;
+                                }
+                            }
+                            if (isDBTYPEANDMYSQL) {
+                                index = param.getDefaultValues().indexOf(elementParameterDefaultValue);
+                                isDBTYPEANDMYSQL = false;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (index == -1) {
+                for (IElementParameterDefaultValue elementParameterDefaultValue : elementParameterDefaultValueList) {
+                    String ifCondition = ((ElementParameterDefaultValue) elementParameterDefaultValue).ifCondition;
+                    if (ifCondition == null) {
+                        index = param.getDefaultValues().indexOf(elementParameterDefaultValue);
+                        break;
+                    }
+                }
+            }
+        }
+        return index;
     }
 
     /**
