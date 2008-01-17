@@ -42,6 +42,7 @@ public class FileOutputDelimitedNode extends ShadowNode {
         TextElementParameter param11 = new TextElementParameter("SPLIT", "false");
         TextElementParameter param12 = new TextElementParameter("SPLIT_EVERY", "1000");
 
+        addParameter(param0);
         addParameter(param1);
         addParameter(param2);
         addParameter(param3);
