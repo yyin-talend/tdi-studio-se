@@ -33,7 +33,8 @@ public class RepositoryNodeUtilities {
         if (node.isBin()) {
             return new Path("bin"); //$NON-NLS-1$
         }
-        if ((node.getType() == ENodeType.STABLE_SYSTEM_FOLDER && node.getContentType() != ERepositoryObjectType.JOBS)
+        if ((node.getType() == ENodeType.STABLE_SYSTEM_FOLDER && node.getContentType() != ERepositoryObjectType.JOBS && node
+                .getContentType() != ERepositoryObjectType.JOBLETS)
                 || node.getType() == ENodeType.SYSTEM_FOLDER) {
             return new Path(""); //$NON-NLS-1$
         }
@@ -44,7 +45,8 @@ public class RepositoryNodeUtilities {
 
         String label = node.getLabel();
         // checks if node is under Documentations/Generatated/Jobs
-        if (node.getType() == ENodeType.STABLE_SYSTEM_FOLDER && node.getContentType() == ERepositoryObjectType.JOBS) {
+        if (node.getType() == ENodeType.STABLE_SYSTEM_FOLDER
+                && (node.getContentType() == ERepositoryObjectType.JOBS || node.getContentType() == ERepositoryObjectType.JOBLETS)) {
             String nodeLabel = (String) node.getProperties(EProperties.LABEL);
             if (nodeLabel.equalsIgnoreCase(ERepositoryObjectType.JOBS.toString())) {
                 return new Path("");
@@ -52,13 +54,12 @@ public class RepositoryNodeUtilities {
                 return getPath(node.getParent()).append(label);
             }
         } else {
-            if (!label.equals(ERepositoryObjectType.PROCESS.toString())) {
+            if (!label.equals(ERepositoryObjectType.PROCESS.toString()) && !label.equals(ERepositoryObjectType.JOBLET.toString())) {
                 return getPath(node.getParent()).append(label);
-            }else
-            {
+            } else {
                 return getPath(node.getParent());
             }
         }
-      
+
     }
 }
