@@ -19,7 +19,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -27,13 +26,9 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.ProgressMonitorWrapper;
 import org.eclipse.datatools.enablement.oda.xml.util.ui.ATreeNode;
 import org.eclipse.datatools.enablement.oda.xml.util.ui.XPathPopulationUtil;
-import org.eclipse.jface.dialogs.ProgressMonitorDialog;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.FocusEvent;
@@ -55,8 +50,6 @@ import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
-import org.eclipse.ui.internal.dialogs.EventLoopProgressMonitor;
-import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.command.CommandStackForComposite;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.commons.ui.swt.formtools.Form;
@@ -76,10 +69,8 @@ import org.talend.core.utils.XmlArray;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.preview.AsynchronousPreviewHandler;
 import org.talend.repository.preview.IPreviewHandlerListener;
-import org.talend.repository.preview.PreviewHandlerEvent;
 import org.talend.repository.preview.ProcessDescription;
 import org.talend.repository.preview.StoppablePreviewLoader;
-import org.talend.repository.preview.PreviewHandlerEvent.TYPE;
 import org.talend.repository.ui.swt.preview.ShadowProcessPreview;
 import org.talend.repository.ui.swt.utils.AbstractXmlFileStepForm;
 import org.talend.repository.ui.swt.utils.IRefreshable;
@@ -138,6 +129,8 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefres
 
     private static Boolean firstTimeWizardOpened = null;
 
+    private Text limitText;
+
     /**
      * Constructor to use by RCP Wizard.
      * 
@@ -169,8 +162,11 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefres
                 getConnection().getSchema().add(xmlXPathLoopDescriptor);
             }
         }
+        if (xmlXPathLoopDescriptor.getLimitBoucle() != null && !xmlXPathLoopDescriptor.getLimitBoucle().equals("")) {
+            limitText.setText(xmlXPathLoopDescriptor.getLimitBoucle().toString());
+        }
         loopModel.setXmlXPathLoopDescriptor(xmlXPathLoopDescriptor);
-
+        xmlXPathLoopDescriptor.setLimitBoucle(Integer.parseInt(limitText.getText()));
         fieldsModel.setXmlXPathLoopDescriptor(xmlXPathLoopDescriptor.getSchemaTargets());
         fieldsTableEditorView.getTableViewerCreator().layout();
 
@@ -215,8 +211,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefres
             // Bottom Button
             Composite compositeBottomButton = Form.startNewGridLayout(this, 2, false, SWT.CENTER, SWT.CENTER);
             // Button Cancel
-            cancelButton = new UtilsButton(compositeBottomButton,
-                    Messages.getString("CommonWizard.cancel"), WIDTH_BUTTON_PIXEL, //$NON-NLS-1$
+            cancelButton = new UtilsButton(compositeBottomButton, Messages.getString("CommonWizard.cancel"), WIDTH_BUTTON_PIXEL, //$NON-NLS-1$
                     HEIGHT_BUTTON_PIXEL);
         }
         addUtilsButtonListeners();
@@ -245,8 +240,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefres
 
     private void addGroupSchemaTarget(final Composite mainComposite, final int width, final int height) {
         // Group Schema Viewer
-        final Group group = Form.createGroup(mainComposite, 1,
-                Messages.getString("XmlFileStep1.groupSchemaTarget"), height); //$NON-NLS-1$
+        final Group group = Form.createGroup(mainComposite, 1, Messages.getString("XmlFileStep1.groupSchemaTarget"), height); //$NON-NLS-1$
 
         // ///////////////////////////////////////////
         // to correct graphic bug under Linux-GTK when the wizard is opened the first time
@@ -273,7 +267,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefres
         loopTableEditorView.getExtendedTableViewer().setCommandStack(commandStack);
         GridData data2 = new GridData(GridData.FILL_HORIZONTAL);
         data2.heightHint = 90;
-        
+
         final Composite loopTableEditorComposite = loopTableEditorView.getMainComposite();
         loopTableEditorComposite.setLayoutData(data2);
         loopTableEditorComposite.setBackground(null);
@@ -283,8 +277,8 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefres
             loopTableEditorComposite.addListener(SWT.Paint, new Listener() {
 
                 public void handleEvent(Event event) {
-                    Point offsetPoint = event.display.map(linker.getBgDrawableComposite(), loopTableEditorComposite,
-                            new Point(0, 0));
+                    Point offsetPoint = event.display.map(linker.getBgDrawableComposite(), loopTableEditorComposite, new Point(0,
+                            0));
                     linker.setOffset(offsetPoint);
                     linker.drawBackground(event.gc);
                 }
@@ -306,8 +300,8 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefres
             fieldTableEditorComposite.addListener(SWT.Paint, new Listener() {
 
                 public void handleEvent(Event event) {
-                    Point offsetPoint = event.display.map(linker.getBgDrawableComposite(), fieldTableEditorComposite,
-                            new Point(0, 0));
+                    Point offsetPoint = event.display.map(linker.getBgDrawableComposite(), fieldTableEditorComposite, new Point(
+                            0, 0));
                     linker.setOffset(offsetPoint);
                     linker.drawBackground(event.gc);
                 }
@@ -349,37 +343,11 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefres
         GridData labelGd = new GridData(GridData.FILL_HORIZONTAL);
         limitLabel.setLayoutData(labelGd);
 
-        final Text limitText = new Text(preivewButtonPart, SWT.BORDER | SWT.RIGHT);
+        limitText = new Text(preivewButtonPart, SWT.BORDER | SWT.RIGHT);
         GridData textGd = new GridData(30, SWT.DEFAULT);
         limitText.setLayoutData(textGd);
         XmlArray.setLimitToDefault();
         limitText.setText(String.valueOf(XmlArray.getRowLimit()));
-        limitText.addModifyListener(new ModifyListener() {
-
-            public void modifyText(ModifyEvent e) {
-                String limitValue = limitText.getText();
-                if (!limitValue.matches("\\d+")) {
-                    limitText.setText(String.valueOf(XmlArray.getRowLimit()));
-                } else {
-                    int limit = Integer.valueOf(limitValue);
-                    XmlArray.setRowLimit(limit);
-                }
-            }
-
-        });
-
-        limitText.addFocusListener(new FocusListener() {
-
-            public void focusGained(FocusEvent e) {
-
-            }
-
-            public void focusLost(FocusEvent e) {
-                limitText.setText(String.valueOf(XmlArray.getRowLimit()));
-            }
-
-        });
-
         previewInformationLabel = new Label(previewGroup, SWT.NONE);
         previewInformationLabel.setForeground(getDisplay().getSystemColor(SWT.COLOR_BLUE));
 
@@ -462,8 +430,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefres
             return;
         }
 
-        StoppablePreviewLoader previewLoader = new StoppablePreviewLoader<CsvArray>(previewHandler,
-                previewInformationLabel) {
+        StoppablePreviewLoader previewLoader = new StoppablePreviewLoader<CsvArray>(previewHandler, previewInformationLabel) {
 
             /*
              * (non-Javadoc)
@@ -472,8 +439,8 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefres
              */
             @Override
             protected void previewEnded(CsvArray result) {
-                xmlFilePreview.refreshTablePreview(result, false, ((XmlXPathLoopDescriptor) getConnection().getSchema()
-                        .get(0)).getSchemaTargets());
+                xmlFilePreview.refreshTablePreview(result, false, ((XmlXPathLoopDescriptor) getConnection().getSchema().get(0))
+                        .getSchemaTargets());
             }
 
             @Override
@@ -500,8 +467,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefres
         }
 
         previewInformationLabel.setText("   " + Messages.getString("FileStep2.previewFailure")); //$NON-NLS-1$ //$NON-NLS-2$
-        new ErrorDialogWidthDetailArea(previewInformationLabel.getShell(), PID, Messages
-                .getString("FileStep2.previewFailure"), //$NON-NLS-1$
+        new ErrorDialogWidthDetailArea(previewInformationLabel.getShell(), PID, Messages.getString("FileStep2.previewFailure"), //$NON-NLS-1$
                 errorMessage);
         log.error(Messages.getString("FileStep2.previewFailure") + " " + errorMessage); //$NON-NLS-1$ //$NON-NLS-2$
 
@@ -517,6 +483,34 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefres
             public void handleEvent(ListenableListEvent event) {
                 checkFieldsValue();
             }
+        });
+        limitText.addModifyListener(new ModifyListener() {
+
+            public void modifyText(ModifyEvent e) {
+                String limitValue = limitText.getText();
+                if (!limitValue.matches("\\d+")) {
+                    limitText.setText(String.valueOf(XmlArray.getRowLimit()));
+                } else {
+                    int limit = Integer.valueOf(limitValue);
+                    XmlArray.setRowLimit(limit);
+                }
+                xmlXPathLoopDescriptor.setLimitBoucle(Integer.parseInt(limitText.getText()));
+            }
+
+        });
+
+        limitText.addFocusListener(new FocusListener() {
+
+            public void focusGained(FocusEvent e) {
+
+            }
+
+            public void focusLost(FocusEvent e) {
+                limitText.setText(String.valueOf(XmlArray.getRowLimit()));
+                xmlXPathLoopDescriptor.setLimitBoucle(Integer.parseInt(limitText.getText()));
+
+            }
+
         });
     }
 
@@ -600,15 +594,13 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm implements IRefres
                             && ((XmlXPathLoopDescriptor) getConnection().getSchema().get(0)).getAbsoluteXPathQuery() != null
                             && !("").equals(((XmlXPathLoopDescriptor) getConnection().getSchema().get(0)).getAbsoluteXPathQuery()) //$NON-NLS-1$
                             && ((XmlXPathLoopDescriptor) getConnection().getSchema().get(0)).getSchemaTargets() != null
-                            && !((XmlXPathLoopDescriptor) getConnection().getSchema().get(0)).getSchemaTargets()
-                                    .isEmpty()) {
+                            && !((XmlXPathLoopDescriptor) getConnection().getSchema().get(0)).getSchemaTargets().isEmpty()) {
                         refreshPreview();
                     } else {
                         previewButton.setText(Messages.getString("FileStep2.refreshPreview")); //$NON-NLS-1$
                         if (!previewButton.getEnabled()) {
-                            new ErrorDialogWidthDetailArea(getShell(), PID,
-                                    Messages.getString("FileStep2.noresult"), Messages //$NON-NLS-1$
-                                            .getString("FileStep2.noresultDetailMessage")); //$NON-NLS-1$
+                            new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("FileStep2.noresult"), Messages //$NON-NLS-1$
+                                    .getString("FileStep2.noresultDetailMessage")); //$NON-NLS-1$
                             log.error(Messages.getString("FileStep2.noresult")); //$NON-NLS-1$
                             previewButton.setEnabled(true);
                         } else {
