@@ -47,14 +47,16 @@ import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.utils.PathExtractor;
 import org.talend.designer.core.i18n.Messages;
-import org.talend.sqlbuilder.util.EConnectionParameterName;
 import org.talend.sqlbuilder.util.ConnectionParameters;
+import org.talend.sqlbuilder.util.EConnectionParameterName;
 
 /**
  * qzhang class global comment. Detailled comment <br/>
  * 
  */
 public class ConfigureConnParamDialog extends Dialog {
+
+    private static final String CONTEXT_PREFIX = "context.";
 
     private static final String TEXT_CONTROL = "TEXT";
 
@@ -426,7 +428,8 @@ public class ConfigureConnParamDialog extends Dialog {
         hostText.setEditable(false);
         gridData = new GridData(GridData.FILL_HORIZONTAL);
         hostText.setLayoutData(gridData);
-        hostText.setText(CONTEXT_WITH + ContextParameterUtils.parseScriptContextCode(host.getText(), defaultContext));
+        hostText.setText(CONTEXT_WITH
+                + ContextParameterUtils.parseScriptContextCode(filterContextParamName(host.getText()), defaultContext));
         host.setData(TEXT_CONTROL, hostText);
         host.setData(key);
         allParamText.add(host);
@@ -449,6 +452,17 @@ public class ConfigureConnParamDialog extends Dialog {
                 resetValues(host, hostText);
             }
         });
+    }
+
+    private String filterContextParamName(String param) {
+        if (param == null) {
+            return null;
+
+        }
+        if (param.startsWith(CONTEXT_PREFIX)) {
+            return param.substring(CONTEXT_PREFIX.length());
+        }
+        return param;
     }
 
     /**
@@ -550,7 +564,9 @@ public class ConfigureConnParamDialog extends Dialog {
      */
     private void resetValues(final Text key, final Text value) {
         final IContext context = contextManager.getContext(contextCombo.getItem(contextCombo.getSelectionIndex()));
-        value.setText(CONTEXT_WITH + ContextParameterUtils.parseScriptContextCode(key.getText(), context));
+        value
+                .setText(CONTEXT_WITH
+                        + ContextParameterUtils.parseScriptContextCode(filterContextParamName(key.getText()), context));
     }
 
 }

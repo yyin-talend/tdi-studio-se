@@ -21,11 +21,13 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.gef.commands.Command;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.fieldassist.DecoratedField;
 import org.eclipse.jface.fieldassist.FieldDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.jface.fieldassist.IControlCreator;
 import org.eclipse.jface.fieldassist.TextControlCreator;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.events.SelectionEvent;
@@ -52,6 +54,7 @@ import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.database.ConnectionStatus;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataFromDataBase;
 import org.talend.core.model.process.EParameterFieldType;
+import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.ui.metadata.dialog.DbTableSelectorDialog;
@@ -61,6 +64,7 @@ import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
+import org.talend.designer.core.ui.editor.properties.ConfigureConnParamDialog;
 import org.talend.designer.core.ui.editor.properties.controllers.creator.SelectAllTextControlCreator;
 import org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
@@ -92,7 +96,7 @@ public class DbTableController extends AbstractElementPropertySectionController 
         }
 
         public void widgetSelected(SelectionEvent e) {
-            createListTablesCommand((Button) e.getSource());
+            createListTablesCommand((Button) e.getSource(), part.getTalendEditor().getProcess().getContextManager());
         }
     };
 
@@ -103,7 +107,7 @@ public class DbTableController extends AbstractElementPropertySectionController 
         }
 
         public void widgetSelected(SelectionEvent e) {
-            createOpenSQLCommand((Button) e.getSource());
+            createOpenSQLCommand((Button) e.getSource(), part.getTalendEditor().getProcess().getContextManager());
         }
     };
 
@@ -116,6 +120,7 @@ public class DbTableController extends AbstractElementPropertySectionController 
     public Control createControl(final Composite subComposite, final IElementParameter param, final int numInRow,
             final int nbInRow, final int top, final Control lastControl) {
         FormData data;
+
         this.paramFieldType = param.getField();
         this.curParameter = param;
         Control lastDbControl;
@@ -227,8 +232,25 @@ public class DbTableController extends AbstractElementPropertySectionController 
      * 
      * @param button
      */
-    protected void createOpenSQLCommand(Button button) {
+    protected void createOpenSQLCommand(Button button, IContextManager manager) {
         initConnectionParameters();
+        if (this.connParameters != null) {
+            ConfigureConnParamDialog dialog = new ConfigureConnParamDialog(button.getShell(), connParameters, manager);
+            if (dialog.open() == Window.OK) {
+                openSQLBuilderWithParamer(button);
+            }
+            openSQLBuilderWithParamer(button);
+        } else {
+            MessageDialog.openWarning(button.getShell(), "Connection error", "Please set connection parameters");
+        }
+    }
+
+    /**
+     * DOC yexiaowei Comment method "openSQLBuilderWithParamer".
+     * 
+     * @param button
+     */
+    private void openSQLBuilderWithParamer(Button button) {
         String repositoryType = (String) elem.getPropertyValue(EParameterName.PROPERTY_TYPE.getName());
         String propertyName = (String) button.getData(PARAMETER_NAME);
         openSQLBuilder(repositoryType, propertyName, "");
@@ -301,9 +323,18 @@ public class DbTableController extends AbstractElementPropertySectionController 
      * 
      * @return
      */
-    protected void createListTablesCommand(Button button) {
+    protected void createListTablesCommand(Button button, IContextManager manager) {
         initConnectionParameters();
-        openDbTableSelectorJob(button);
+        if (this.connParameters != null) {
+            ConfigureConnParamDialog dialog = new ConfigureConnParamDialog(button.getShell(), connParameters, manager);
+            if (dialog.open() == Window.OK) {
+                openDbTableSelectorJob(button);
+            }
+            openDbTableSelectorJob(button);
+        } else {
+            MessageDialog.openWarning(button.getShell(), "Connection error", "Please set connection parameters");
+        }
+
     }
 
     /**
