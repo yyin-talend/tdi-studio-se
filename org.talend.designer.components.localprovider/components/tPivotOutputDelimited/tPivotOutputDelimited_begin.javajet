@@ -71,7 +71,7 @@ String fileName_<%=cid%> = <%=filename%>;
 <% if(ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("false")) { %>
     
     java.io.BufferedWriter out<%=cid %> = new java.io.BufferedWriter(new java.io.OutputStreamWriter(
-            new java.io.FileOutputStream(fileName_<%=cid%>, true),<%=encoding%>));
+            new java.io.FileOutputStream(fileName_<%=cid%>, false),<%=encoding%>));
 
 <%}else{%>
     
