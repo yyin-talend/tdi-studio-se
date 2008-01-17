@@ -25,7 +25,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
@@ -472,8 +471,6 @@ public abstract class Processor implements IProcessor {
                 contextFile.setContents(contextStream, true, false, null);
             }
 
-            String charSet = System.getProperty("file.encoding"); //$NON-NLS-1$
-            contextFile.setCharset(charSet, new NullProgressMonitor());
         } catch (CoreException e1) {
             throw new ProcessorException(Messages.getString("Processor.tempFailed"), e1); //$NON-NLS-1$
         }
