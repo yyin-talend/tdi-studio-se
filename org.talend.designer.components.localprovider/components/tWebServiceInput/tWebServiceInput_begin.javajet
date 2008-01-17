@@ -38,6 +38,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         String proxyPort = ElementParameterParser.getValue(node,"__PROXY_PORT__");
         String proxuUser = ElementParameterParser.getValue(node,"__PROXY_USERNAME__");
         String proxyPassword = ElementParameterParser.getValue(node,"__PROXY_PASSWORD__");
+        
+        String timeoutStr = ElementParameterParser.getValue(node,"__TIMEOUT__");
+		String timeout = (timeoutStr!=null&&!timeoutStr.equals(""))?timeoutStr:"20";        
 %>
 /////////////////////////////////// 
         
@@ -66,6 +69,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
   		}
 %> 
+		org.talend.DynamicInvoker.setTimeOut(<%=timeout %>);
+		
  		org.talend.DynamicInvoker.main(params_<%=cid %>);
  		java.util.Map result = org.talend.DynamicInvoker.getResult();
         
