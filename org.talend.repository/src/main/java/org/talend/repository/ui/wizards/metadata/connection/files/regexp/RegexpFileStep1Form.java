@@ -107,8 +107,8 @@ public class RegexpFileStep1Form extends AbstractRegexpFileStepForm {
             serverCombo.setText(getConnection().getServer());
         }
         serverCombo.clearSelection();
-        
-        //Just mask it. 
+
+        // Just mask it.
         serverCombo.setReadOnly(true);
 
         if (getConnection().getFilePath() != null) {
@@ -126,7 +126,7 @@ public class RegexpFileStep1Form extends AbstractRegexpFileStepForm {
      */
     protected void adaptFormToReadOnly() {
         readOnly = isReadOnly();
-//        serverCombo.setReadOnly(isReadOnly());
+        // serverCombo.setReadOnly(isReadOnly());
         fileField.setReadOnly(isReadOnly());
         fileFormatCombo.setReadOnly(isReadOnly());
         updateStatus(IStatus.OK, ""); //$NON-NLS-1$
@@ -162,9 +162,8 @@ public class RegexpFileStep1Form extends AbstractRegexpFileStepForm {
         gridData.minimumWidth = WIDTH_GRIDDATA_PIXEL;
         gridData.minimumHeight = 150;
         fileViewerText.setLayoutData(gridData);
-        fileViewerText
-                .setToolTipText(Messages.getString("FileStep1.fileViewerTip1") + " " + maximumRowsToPreview + " " //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                        + Messages.getString("FileStep1.fileViewerTip2")); //$NON-NLS-1$
+        fileViewerText.setToolTipText(Messages.getString("FileStep1.fileViewerTip1") + " " + maximumRowsToPreview + " " //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                + Messages.getString("FileStep1.fileViewerTip2")); //$NON-NLS-1$
         fileViewerText.setEditable(false);
         fileViewerText.setText(Messages.getString("FileStep1.fileViewerAlert")); //$NON-NLS-1$
 
@@ -173,8 +172,7 @@ public class RegexpFileStep1Form extends AbstractRegexpFileStepForm {
             Composite compositeBottomButton = Form.startNewGridLayout(this, 2, false, SWT.CENTER, SWT.CENTER);
 
             // Button Cancel
-            cancelButton = new UtilsButton(compositeBottomButton,
-                    Messages.getString("CommonWizard.cancel"), WIDTH_BUTTON_PIXEL, //$NON-NLS-1$
+            cancelButton = new UtilsButton(compositeBottomButton, Messages.getString("CommonWizard.cancel"), WIDTH_BUTTON_PIXEL, //$NON-NLS-1$
                     HEIGHT_BUTTON_PIXEL);
             // nextButton = new UtilsButton(compositeBottomButton, Messages.getString("CommonWizard.next"),
             // WIDTH_BUTTON_PIXEL, HEIGHT_BUTTON_PIXEL);
@@ -264,7 +262,7 @@ public class RegexpFileStep1Form extends AbstractRegexpFileStepForm {
 
                 File file = new File(fileField.getText());
                 Charset guessedCharset = CharsetToolkit.guessEncoding(file, 4096);
-                getConnection().setEncoding(guessedCharset.displayName());
+                // getConnection().setEncoding(guessedCharset.displayName());
 
                 String str;
                 int numberLine = 0;
@@ -317,17 +315,17 @@ public class RegexpFileStep1Form extends AbstractRegexpFileStepForm {
      */
     protected boolean checkFieldsValue() {
         // The fields
-//        serverCombo.setEnabled(true);
+        // serverCombo.setEnabled(true);
 
-//        if (serverCombo.getText() == "") { //$NON-NLS-1$
-//            fileField.setEditable(false);
-//            fileFormatCombo.setEnabled(false);
-//            updateStatus(IStatus.ERROR, Messages.getString("FileStep1.serverAlert")); //$NON-NLS-1$
-//            return false;
-//        } else {
-            fileField.setEditable(true);
-            fileFormatCombo.setEnabled(true);
-//        }
+        // if (serverCombo.getText() == "") { //$NON-NLS-1$
+        // fileField.setEditable(false);
+        // fileFormatCombo.setEnabled(false);
+        // updateStatus(IStatus.ERROR, Messages.getString("FileStep1.serverAlert")); //$NON-NLS-1$
+        // return false;
+        // } else {
+        fileField.setEditable(true);
+        fileFormatCombo.setEnabled(true);
+        // }
 
         if (fileField.getText() == "") { //$NON-NLS-1$
             updateStatus(IStatus.ERROR, Messages.getString("FileStep1.filepathAlert")); //$NON-NLS-1$

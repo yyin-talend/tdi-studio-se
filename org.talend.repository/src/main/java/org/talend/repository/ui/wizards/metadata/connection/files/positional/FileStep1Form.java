@@ -484,7 +484,7 @@ public class FileStep1Form extends AbstractPositionalFileStepForm {
 
                 File file = new File(fileField.getText());
                 Charset guessedCharset = CharsetToolkit.guessEncoding(file, 4096);
-                getConnection().setEncoding(guessedCharset.displayName());
+                // getConnection().setEncoding(guessedCharset.displayName());
 
                 String str;
                 int numberLine = 0;
