@@ -13,6 +13,9 @@ imports="
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
+	
+	boolean dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_CHILD_ERROR__").equals("true");
+	
 	boolean isRunInMultiThread = codeGenArgument.getIsRunInMultiThread();
 	
     List<Map<String, String>> contextParams = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__CONTEXTPARAMS__");
@@ -81,20 +84,23 @@ for (int i=0; i<contextParams.size(); i++) {
     <%
         if(isRunInMultiThread ){
     %>
-        ((java.util.Map)threadLocal.get()).put(errorCode, <%=childJob %>.errorCode); 
-
-        if (<%=childJob %>.errorCode != null || <%=childJob %>.status.equals("failure")) {
-            throw new RuntimeException("Child job running failed");
-        }
+        ((java.util.Map)threadLocal.get()).put(errorCode, <%=childJob %>.errorCode);
     <%
         }else {
     %>
         errorCode = <%=childJob %>.errorCode;
-        if (<%=childJob %>.errorCode != null || <%=childJob %>.status.equals("failure")) {
-            throw new RuntimeException("Child job running failed");
-        }
     <%
         }
+    %>
+    
+    <% 
+    	if (dieOnError) {
+    %> 
+            if (<%=childJob %>.errorCode != null || <%=childJob %>.status.equals("failure")) {
+                throw new RuntimeException("Child job running failed");
+            }
+    <%  
+    	}
     %>
 <%
     }
