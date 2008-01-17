@@ -1055,10 +1055,14 @@ public class EmfComponent implements IComponent {
                     if (param.getField().equals(EParameterFieldType.CHECK)
                             || param.getField().equals(EParameterFieldType.AS400_CHECK)) {
                         int index = this.computeIndex(listParam, param);
-                        param.setValue(new Boolean(param.getDefaultValues().get(index).getDefaultValue().toString()));
+                        if (index >= 0) {
+                            param.setValue(new Boolean(param.getDefaultValues().get(index).getDefaultValue().toString()));
+                        }
                     } else {
                         int index = this.computeIndex(listParam, param);
-                        param.setValue(param.getDefaultValues().get(index).getDefaultValue());
+                        if (index >= 0) {
+                            param.setValue(param.getDefaultValues().get(index).getDefaultValue());
+                        }
                     }
                 }
             }
