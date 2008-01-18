@@ -475,29 +475,40 @@ if (inMetadata != null && metadata != null) {
     
     // Surrogate key
     boolean ifEqualWithSK = false;
+    String skAndSourceKey = null;
     for(Map<String, String> sourceKeyMap : sourceKeys) {
         if(surrogateKeyField.equals(sourceKeyMap.get("NAME"))) {
+            skAndSourceKey = sourceKeyMap.get("NAME");
             ifEqualWithSK = true;
             break;
         }
     }
-    if(!ifEqualWithSK) {
-        if(!surrogateKeyCreation.equals("AUTO_INCREMENT") && !surrogateKeyCreation.equals("DB_SEQUENCE")) {
-            colnames.add(surrogateKeyField);
-            parameters.add("?");
-            colposition++;
+    if(!surrogateKeyCreation.equals("AUTO_INCREMENT") && !surrogateKeyCreation.equals("DB_SEQUENCE")) {
+        colnames.add(surrogateKeyField);
+        parameters.add("?");
+        colposition++;
+    }    
+    if(ifEqualWithSK) {
+        for(IMetadataColumn column : metadata.getListColumns()) {
+            if(typeOfColumn.containsKey(column.getLabel())) {
+                if(!column.getLabel().equals(skAndSourceKey)) {
+                    colnames.add(column.getLabel());
+                    parameters.add("?");
+                    colposition++;
+                }
+            }
         }
-    }
-    
-    // First we iterate on the input schema columns...
-    for (IMetadataColumn column : metadata.getListColumns()) {
-        // ... and we add each column only if it was chosen to be in the
-        // output, ie if its type was defined.
-        if (typeOfColumn.containsKey(column.getLabel())) {
-            colnames.add(column.getLabel());
-            parameters.add("?");
-            colposition++;
-        }
+    } else {
+        // First we iterate on the input schema columns...
+        for (IMetadataColumn column : metadata.getListColumns()) {
+            // ... and we add each column only if it was chosen to be in the
+            // output, ie if its type was defined.
+            if (typeOfColumn.containsKey(column.getLabel())) {
+                colnames.add(column.getLabel());
+                parameters.add("?");
+                colposition++;
+            }
+        }        
     }
     
     // Then we add L2 dedicated columns to store historical informations

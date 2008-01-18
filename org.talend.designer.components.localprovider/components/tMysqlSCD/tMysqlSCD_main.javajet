@@ -270,7 +270,16 @@ if (inMetadata != null && metadata != null) {
 	}
 	
 	StatementGenerator generator = new StatementGenerator();
-    
+
+    boolean ifEqualWithSK = false;
+    String skAndSourceKey = null;
+    for(Map<String, String> sourceKeyMap : sourceKeys) {
+        if(surrogateKeyField.equals(sourceKeyMap.get("NAME"))) {
+            skAndSourceKey = sourceKeyMap.get("NAME");
+            ifEqualWithSK = true;
+            break;
+        }
+    }	
     %>
     // Lookup source keys
     <%
@@ -339,22 +348,39 @@ if (inMetadata != null && metadata != null) {
 		    }
 		}
 		
-    	for (IMetadataColumn column : metadata.getListColumns()) {
-	        String colname = column.getLabel();
-			
-	        if (typeOfColumn.containsKey(colname)) {
-	        	String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
-	        	if (!typeOfColumn.get(column.getLabel()).equals("L3P")) {
-					generator.generateSetStatement(cid, "insertQuery_" + cid, inConnectionName + "." + colname, colposition++, typeToGenerate);
-				} else {
-					if (column.isNullable()) {
-						generator.generateSetStatement(cid, "insertQuery_" + cid, "null", colposition++, typeToGenerate);
-					} else {
-						generator.generateSetStatement(cid, "insertQuery_" + cid, "" + column.getDefault(), colposition++, typeToGenerate);
-					}
-				}
-			}
-		}
+        if(ifEqualWithSK) {
+            for(IMetadataColumn column : metadata.getListColumns()) {
+                String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+                if(typeOfColumn.containsKey(column.getLabel())) {
+                    if(!column.getLabel().equals(skAndSourceKey)){
+                        if(!typeOfColumn.get(column.getLabel()).equals("L3P")) {
+                            generator.generateSetStatement(cid, "insertQuery_" + cid, inConnectionName + "." + column.getLabel(), colposition++, typeToGenerate);
+                        } else {
+                            if (column.isNullable()) {
+                                generator.generateSetStatement(cid, "insertQuery_" + cid, "null", colposition++, typeToGenerate);
+                            } else {
+                                generator.generateSetStatement(cid, "insertQuery_" + cid, "" + column.getDefault(), colposition++, typeToGenerate);
+                            }                           
+                        }
+                    }
+                }
+            }
+        } else {
+            for(IMetadataColumn column : metadata.getListColumns()) {
+                String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+                if(typeOfColumn.containsKey(column.getLabel())) {
+                    if(!typeOfColumn.get(column.getLabel()).equals("L3P")) {
+                        generator.generateSetStatement(cid, "insertQuery_" + cid, inConnectionName + "." + column.getLabel(), colposition++, typeToGenerate);
+                    } else {
+                        if (column.isNullable()) {
+                            generator.generateSetStatement(cid, "insertQuery_" + cid, "null", colposition++, typeToGenerate);
+                        } else {
+                            generator.generateSetStatement(cid, "insertQuery_" + cid, "" + column.getDefault(), colposition++, typeToGenerate);
+                        }                           
+                    }
+                }
+            }           
+        }
 		
 		if (useVersion) {
 			generator.generateSetStatement(cid, "insertQuery_" + cid, "1", colposition++, versionType);
@@ -526,18 +552,31 @@ if (inMetadata != null && metadata != null) {
 				    }
 				}
 				
-				for (IMetadataColumn column : metadata.getListColumns()) {
-			        String colname = column.getLabel();
-					
-			        if (typeOfColumn.containsKey(colname)) {
-			        	String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
-			        	if (!typeOfColumn.get(column.getLabel()).equals("L3P")) {
-			        		generator.generateSetStatement(cid, "insertQuery_" + cid, inConnectionName + "." + colname, colposition++, typeToGenerate);
-			        	} else {
-			        		generator.generateSetStatement(cid, "insertQuery_" + cid, "cacheRow_" + cid + "." + colname, colposition++, typeToGenerate);
-			        	}
-			        }
-				}
+                if(ifEqualWithSK) {
+                    for(IMetadataColumn column : metadata.getListColumns()) {
+                        String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+                        if(typeOfColumn.containsKey(column.getLabel())) {
+                            if(!column.getLabel().equals(skAndSourceKey)){
+                                if(!typeOfColumn.get(column.getLabel()).equals("L3P")) {
+                                    generator.generateSetStatement(cid, "insertQuery_" + cid, inConnectionName + "." + column.getLabel(), colposition++, typeToGenerate);
+                                } else {
+                                    generator.generateSetStatement(cid, "insertQuery_" + cid, "cacheRow_" + cid + "." + column.getLabel(), colposition++, typeToGenerate);
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    for(IMetadataColumn column : metadata.getListColumns()) {
+                        String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+                        if(typeOfColumn.containsKey(column.getLabel())) {
+                            if(!typeOfColumn.get(column.getLabel()).equals("L3P")) {
+                                generator.generateSetStatement(cid, "insertQuery_" + cid, inConnectionName + "." + column.getLabel(), colposition++, typeToGenerate);
+                            } else {
+                                generator.generateSetStatement(cid, "insertQuery_" + cid, "cacheRow_" + cid + "." + column.getLabel(), colposition++, typeToGenerate);
+                            }
+                        }
+                    }           
+                }
 				
 				if (useVersion) {
 					generator.generateSetStatement(cid, "insertQuery_" + cid,
