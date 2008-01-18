@@ -67,4 +67,6 @@ public class PluginConstant {
 	public static final String BOOKMARKS_PROPERTY = null;
 	
 	public static final String JOINT_MARK = " - ";
+	
+	public static final String COMPONENT_NODE_NAME = "COMPONENT";
 }

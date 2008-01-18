@@ -148,7 +148,10 @@ public class LibListViewer extends TableViewer implements ILibListViewer {
 		return 0;
 	}
 
-	@Override
+	
+	/* (non-Javadoc)
+	 * @see org.talend.componentdesigner.ui.composite.ILibListViewer#removeEntries(org.talend.componentdesigner.model.ILibEntry[])
+	 */
 	public void removeEntries(ILibEntry[] entries) {
 		for (ILibEntry libEntry : entries) {
 			if (existingEntries.contains(libEntry)) {

@@ -24,6 +24,7 @@ import org.talend.componentdesigner.model.enumtype.LanguageType;
 import org.talend.componentdesigner.model.enumtype.ResourceLanguageType;
 import org.talend.componentdesigner.model.libentry.JarLibEntry;
 import org.talend.componentdesigner.model.libentry.PmLibEntry;
+import org.w3c.dom.Document;
 
 /**
  * @author rli
@@ -48,6 +49,10 @@ public class ComponentPref {
 	private String imageURL;
 
 	private ILibEntry[] libEntries;
+	
+	private String xmlFileName;
+	
+	private Document xmlDocument;
 
 	/**
 	 * @return the name
@@ -266,6 +271,38 @@ public class ComponentPref {
 			}
 		}
 		return fields.toString();
+	}
+
+	/**
+	 * Getter for xmlFileName.
+	 * @return the xmlFileName
+	 */
+	public String getXmlFileName() {
+		return xmlFileName;
+	}
+
+	/**
+	 * Sets the xmlFileName.
+	 * @param xmlFileName the xmlFileName to set
+	 */
+	public void setXmlFileName(String xmlFileName) {
+		this.xmlFileName = xmlFileName;
+	}
+
+	/**
+	 * Getter for xmlDocument.
+	 * @return the xmlDocument
+	 */
+	public Document getXmlDocument() {
+		return xmlDocument;
+	}
+
+	/**
+	 * Sets the xmlDocument.
+	 * @param xmlDocument the xmlDocument to set
+	 */
+	public void setXmlDocument(Document xmlDocument) {
+		this.xmlDocument = xmlDocument;
 	}
 
 }

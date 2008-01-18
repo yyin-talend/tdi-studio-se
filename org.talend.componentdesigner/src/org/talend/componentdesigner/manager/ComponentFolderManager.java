@@ -13,22 +13,29 @@
 package org.talend.componentdesigner.manager;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.talend.componentdesigner.ComponentDesigenerPlugin;
 import org.talend.componentdesigner.ImageLib;
 import org.talend.componentdesigner.PluginConstant;
 import org.talend.componentdesigner.model.ILibEntry;
 import org.talend.componentdesigner.model.componentpref.ComponentPref;
 import org.talend.componentdesigner.model.enumtype.JetFileStamp;
 import org.talend.componentdesigner.model.enumtype.ResourceLanguageType;
+import org.talend.componentdesigner.util.XMLUtil;
 
 /**
  * @author rli
@@ -45,11 +52,11 @@ public class ComponentFolderManager {
 	private String componentFolderName;
 
 	public void generateComponentContent(ComponentPref componentPref,
-			IProject project, String componentFolderName)
+			IProject project)
 			throws FileNotFoundException, CoreException {
 		this.componentPref = componentPref;
 		this.project = project;
-		this.componentFolderName = componentFolderName;
+		this.componentFolderName = componentPref.getName();
 		this.creatJetFiles();
 		this.creatResourceFiles();
 		this.creatXmlFile();
@@ -66,7 +73,7 @@ public class ComponentFolderManager {
 	private void creatResourceFile(ResourceLanguageType resourceType) throws CoreException {
 		String fileName = componentPref.getName()
 				+ resourceType.getNameSuffix();
-		creatNewFile(fileName);
+		creatEmptyFile(fileName);
 	}
 
 	/**
@@ -120,42 +127,69 @@ public class ComponentFolderManager {
 			String[] suffixs = componentPref.getLanguageType()
 					.getFileSuffix().split(";");
 			for (String suffix : suffixs) {
-				creatNewFile(fileName + suffix);
+				creatEmptyFile(fileName + suffix);
 			}
 			break;
 		default:
-			creatNewFile(fileName
+			creatEmptyFile(fileName
 					+ componentPref.getLanguageType().getFileSuffix());
 		}
 	}
 
 	private void creatXmlFile() throws CoreException {
-		String fileName = componentPref.getName();
-		switch (componentPref.getLanguageType()) {
-		case BOTHLANGUAGETYPE:
-			String[] suffixs = componentPref.getLanguageType()
-					.getNameSuffix().split(";");
-			for (String nameSuffix : suffixs) {
-				creatNewFile(fileName + nameSuffix + xmlSUFFIX);
+		// this.project.getFullPath();
+		URL[] folderUrls = FileLocator.findEntries(ComponentDesigenerPlugin
+				.getDefault().getBundle(), project.getProjectRelativePath());
+		String tempXMLFileName = null;
+		FileInputStream in = null;
+		File f = null;
+		try {
+			tempXMLFileName = FileLocator.toFileURL(folderUrls[0]).getFile()
+					+ componentPref.getName() + xmlSUFFIX;
+			XMLUtil.toSave(tempXMLFileName, componentPref.getXmlDocument(),
+					"UTF-8");
+			XMLUtil.formatXMLFile(tempXMLFileName, "UTF-8");
+
+			f = new File(tempXMLFileName);
+			in = new FileInputStream(f);
+			// String fileName = componentPref.getName();
+			switch (componentPref.getLanguageType()) {
+			case BOTHLANGUAGETYPE:
+				String[] suffixs = componentPref.getLanguageType().getNameSuffix()
+						.split(";");
+				for (String nameSuffix : suffixs) {
+					this.copyFileFromSrc(in, this.componentFolderName + nameSuffix
+							+ xmlSUFFIX);
+				}
+				break;
+			default:
+				this.copyFileFromSrc(in, this.componentFolderName
+						+ componentPref.getLanguageType().getNameSuffix()
+						+ xmlSUFFIX);
 			}
-			break;
-		default:
-			creatNewFile(fileName
-					+ componentPref.getLanguageType().getNameSuffix()
-					+ xmlSUFFIX);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				in.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			f.delete();
 		}
+		
 	}
 
-	private void creatNewFile(String fileName) throws CoreException {
+	private void creatEmptyFile(String fileName) throws CoreException {
 		IFolder folder = project.getFolder(this.componentFolderName);
 		if (!folder.exists()) {
 			folder.create(false, true, null);
 		}
-		IFile newLogo = folder.getFile(fileName);
-		if (newLogo.exists()) {
+		IFile newFile = folder.getFile(fileName);
+		if (newFile.exists()) {
 			return;
 		}
-		newLogo.create(new ByteArrayInputStream(new byte[0]), false, null);
+		newFile.create(new ByteArrayInputStream(new byte[0]), false, null);
 	}
 
 	private void addComponentImage() throws CoreException,

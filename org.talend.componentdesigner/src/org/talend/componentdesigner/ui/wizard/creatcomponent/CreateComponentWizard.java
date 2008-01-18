@@ -92,10 +92,15 @@ public class CreateComponentWizard extends BasicNewResourceWizard {
 		this.addPage(creatProjectPage);
 		creatJetFilesPage = new WizardJetFilesChoosePage("creatJetFilesPage",   //$NON-NLS-1$
 				componentPref);
-		creatJetFilesPage.setTitle("Creat jet files for the component");
+		creatJetFilesPage.setTitle("Creat jet files for the component.");
 //		creatJetFilesPage.getPropertyChangeBean().addPropertyChangeListener(
 //				this);
 		this.addPage(creatJetFilesPage);
+		
+		WizardXMLConfigPage xmlConfigPage = new WizardXMLConfigPage(
+				"xmlConfigPage", componentPref);
+		xmlConfigPage.setTitle("Creat the xml configuration file for current component.");
+		this.addPage(xmlConfigPage);		
 	}
 
     /*
@@ -154,8 +159,7 @@ public class CreateComponentWizard extends BasicNewResourceWizard {
 		manager = new ComponentFolderManager();
 		try {
 			manager.generateComponentContent(componentPref, ResourcesPlugin
-					.getWorkspace().getRoot().getProject(PluginConstant.PROJECTNAME_DEFAULT),
-					this.componentPref.getName());
+					.getWorkspace().getRoot().getProject(PluginConstant.PROJECTNAME_DEFAULT));
 			ComponentPrefCollection.getInstance().save(componentPref);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
