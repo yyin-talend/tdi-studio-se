@@ -513,6 +513,10 @@ public class CodeGenerator implements ICodeGenerator {
                     continue;
                 }
 
+                if (connection.getLineStyle().hasConnectionCategory(EConnectionType.DEPENDENCY)) {
+                    continue;
+                }
+
                 INode targetNode = connection.getTarget();
                 if ((targetNode != null) && (subProcess != null)) {
 
@@ -520,6 +524,8 @@ public class CodeGenerator implements ICodeGenerator {
                         subTreeArgument.setInputSubtreeConnection(connection);
                         code.append(generateTypedComponentCode(EInternalTemplate.SUBTREE_BEGIN, subTreeArgument));
                         code.append(generateComponentsCode(subProcess, targetNode, part, connection.getName()));
+                        System.out.println(targetNode.getUniqueName() + ":" + part.getName() + ":"
+                                + subTreeArgument.isMultiplyingOutputComponents());
                         code.append(generateTypedComponentCode(EInternalTemplate.SUBTREE_END, subTreeArgument));
                     } else if (part == ECodePart.MAIN) {
                         subTreeArgument.setInputSubtreeConnection(connection);
