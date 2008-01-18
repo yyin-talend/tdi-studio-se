@@ -96,8 +96,6 @@ public class GraphicRule extends ScrolledComposite {
                         if (i % fontWidth == 0) {
                             if (uniteRAZ == 5) {
                                 String num = "" + unite; //$NON-NLS-1$
-                                if (i > 52440)
-                                    gc.setForeground(new Color(null, 255, 0, 0));
                                 if (num.length() < 2) {
                                     gc.drawText(num, i - 2 + decalTextScreen, 0);
 
