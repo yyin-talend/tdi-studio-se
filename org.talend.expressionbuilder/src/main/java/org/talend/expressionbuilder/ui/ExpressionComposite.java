@@ -110,6 +110,7 @@ public class ExpressionComposite extends Composite {
                 }
                 try {
                     document.replace(sel.x, sel.y, textToInsert);
+                    viewer.setSelectedRange(sel.x + textToInsert.length(), sel.y);
                 } catch (BadLocationException e1) {
                     MessageBoxExceptionHandler.process(e1);
                 }
