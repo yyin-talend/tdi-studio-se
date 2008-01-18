@@ -511,7 +511,8 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         // "\".");
         String str[] = new String[] { objToRestore + "", getRepositoryContext().getUser() + "", path + "" };//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         log.debug(Messages.getString("ProxyRepositoryFactory.log.Restoration", str)); //$NON-NLS-1$
-        if (objToRestore.getType() == ERepositoryObjectType.PROCESS || objToRestore.getType() == ERepositoryObjectType.JOBLET ||objToRestore.getType() == ERepositoryObjectType.ROUTINES) {
+        if (objToRestore.getType() == ERepositoryObjectType.PROCESS || objToRestore.getType() == ERepositoryObjectType.JOBLET
+                || objToRestore.getType() == ERepositoryObjectType.ROUTINES) {
             fireRepositoryPropertyChange(ERepositoryActionName.JOB_RESTORE.getName(), null, objToRestore);
         }
     }
@@ -836,7 +837,7 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
     public Item copy(Item sourceItem, IPath targetPath) throws PersistenceException, BusinessException {
         Item targetItem = this.repositoryFactoryFromProvider.copy(sourceItem, targetPath);
 
-        if (sourceItem instanceof ProcessItem) {
+        if (sourceItem instanceof ProcessItem || sourceItem instanceof JobletProcessItem) {
             fireRepositoryPropertyChange(ERepositoryActionName.JOB_COPY.getName(), sourceItem, targetItem);
         }
         return targetItem;

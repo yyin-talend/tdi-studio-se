@@ -17,8 +17,8 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Shell;
+import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.ui.image.ImageProvider;
-import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.i18n.Messages;
@@ -47,19 +47,17 @@ public class EmptyRecycleBinAction extends AContextualAction {
         ISelection selection = getSelection();
         Object obj = ((IStructuredSelection) selection).getFirstElement();
         RepositoryNode node = (RepositoryNode) obj;
-
-        String title = Messages.getString("EmptyRecycleBinAction.dialog.title"); //$NON-NLS-1$
-        String message = Messages.getString("EmptyRecycleBinAction.dialog.message1") + "\n" //$NON-NLS-1$ //$NON-NLS-2$
-                + Messages.getString("EmptyRecycleBinAction.dialog.message2"); //$NON-NLS-1$
-        if (!(MessageDialog.openQuestion(new Shell(), title, message))) {
-            return;
-        }
+        Boolean confirm = null;
+        // String title = Messages.getString("EmptyRecycleBinAction.dialog.title"); //$NON-NLS-1$
+        // String message = Messages.getString("EmptyRecycleBinAction.dialog.message1") + "\n" //$NON-NLS-1$
+        // //$NON-NLS-2$
+        // + Messages.getString("EmptyRecycleBinAction.dialog.message2"); //$NON-NLS-1$
+        // if (!(MessageDialog.openQuestion(new Shell(), title, message))) {
+        // return;
+        // }
 
         IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         for (RepositoryNode child : node.getChildren()) {
-            if (child.getObjectType() == ERepositoryObjectType.JOB_DOC) {
-                continue;
-            }
             IRepositoryObject objToDelete = child.getObject();
             try {
                 if (objToDelete instanceof ISubRepositoryObject) {
@@ -67,10 +65,16 @@ public class EmptyRecycleBinAction extends AContextualAction {
                     subRepositoryObject.removeFromParent();
                     factory.save(subRepositoryObject.getProperty().getItem());
                 } else {
-                    factory.deleteObjectPhysical(objToDelete);
+                    String title = Messages.getString("DeleteAction.dialog.title"); //$NON-NLS-1$
+                    String message = objToDelete.getLabel() + " " + Messages.getString("DeleteAction.dialog.message1") + "\n" //$NON-NLS-1$ //$NON-NLS-2$
+                            + Messages.getString("DeleteAction.dialog.message2"); //$NON-NLS-1$
+                    confirm = (MessageDialog.openQuestion(new Shell(), title, message));
+                    if (confirm) {
+                        factory.deleteObjectPhysical(objToDelete);
+                    }
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                MessageBoxExceptionHandler.process(e);
             }
         }
 
