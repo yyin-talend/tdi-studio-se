@@ -32,7 +32,6 @@ import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
-import org.talend.repository.i18n.Messages;
 
 /**
  * DOC cantoine. GraphicRule : This Class represent the Graphic rule who represent the Position of the PositionalText in
@@ -58,9 +57,7 @@ public class GraphicRule extends ScrolledComposite {
 
     protected static List<HorizontalMarkerEditor> listHorizontalMarker;
 
-    private static int width = 100000; // = 1000000; // ((Canvas)e.widget).getParent().computeSize(SWT.DEFAULT,
-
-    // SWT.DEFAULT).x;
+    private int width = 60000;// Must a number smaller than 65535 2^16.
 
     public GraphicRule(Composite parent, int style) {
         super(parent, style);
@@ -85,20 +82,31 @@ public class GraphicRule extends ScrolledComposite {
                     GC gc = e.gc;
 
                     gc.drawLine(decalTextScreen, 25, width + decalTextScreen, 25);
+
+                    if (fontWidth <= 0) {
+                        int tmw = gc.getFontMetrics().getAverageCharWidth();
+                        fontWidth = tmw == 0 ? 10 : tmw;
+                    }
+
                     int unite = 0;
                     int uniteRAZ = 0;
+
                     for (int i = 0; i < width; i++) {
+
                         if (i % fontWidth == 0) {
                             if (uniteRAZ == 5) {
                                 String num = "" + unite; //$NON-NLS-1$
+                                if (i > 52440)
+                                    gc.setForeground(new Color(null, 255, 0, 0));
                                 if (num.length() < 2) {
-                                    gc.drawText(num, i - 2 + decalTextScreen, -1);
+                                    gc.drawText(num, i - 2 + decalTextScreen, 0);
+
                                 } else if (num.length() < 3) {
-                                    gc.drawText(num, i - 5 + decalTextScreen, -1);
+                                    gc.drawText(num, i - 5 + decalTextScreen, 0);
                                 } else if (num.length() < 4) {
-                                    gc.drawText(num, i - 8 + decalTextScreen, -1);
+                                    gc.drawText(num, i - 8 + decalTextScreen, 0);
                                 } else {
-                                    gc.drawText(num, i - 11 + decalTextScreen, -1);
+                                    gc.drawText(num, i - 11 + decalTextScreen, 0);
                                 }
                                 gc.drawLine(i + decalTextScreen, 15, i + decalTextScreen, 35);
                                 uniteRAZ = 0;
@@ -201,6 +209,7 @@ public class GraphicRule extends ScrolledComposite {
             addPaintListener(new PaintListener() {
 
                 public void paintControl(PaintEvent e) {
+                    System.out.println("Paint listener positeion");
                     GC gc = e.gc;
                     int posX = Math.round(((Canvas) e.widget).getLocation().x / fontWidth) + 1;
                     // int posX = ((((Canvas) e.widget).getLocation().x) + decalTextScreen) / fontWidth;
@@ -217,7 +226,7 @@ public class GraphicRule extends ScrolledComposite {
                     } else {
                         gc.drawText("...", 0, 0); //$NON-NLS-1$
                     }
-
+                    System.out.println("Paint listener positeion " + position);
                     gc.dispose();
                 }
             });
@@ -311,7 +320,7 @@ public class GraphicRule extends ScrolledComposite {
                     // gc.fillPolygon(new int[] { 5, 0, 0, 5, 5, 10 });
                     // Triangle Droite
                     // gc.fillPolygon(new int[] { 0, 0, 5, 5, 0, 10 });
-
+                    System.out.println("Paint listener positeion " + interval);
                     gc.dispose();
                 }
             });
