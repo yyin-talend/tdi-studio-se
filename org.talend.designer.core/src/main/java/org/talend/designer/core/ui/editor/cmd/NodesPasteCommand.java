@@ -98,7 +98,8 @@ public class NodesPasteCommand extends Command {
 
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     private String createNewConnectionName(String oldName) {
-        String newName = checkExistingNames(oldName);
+        final String copyOf = "copyOf"; //$NON-NLS-1$
+        String newName = checkExistingNames(copyOf + oldName);
         newName = checkNewNames(newName);
         createdNames.add(newName);
         return newName;
@@ -147,24 +148,28 @@ public class NodesPasteCommand extends Command {
         }
     }
 
-    private String checkExistingNames(String oldName) {
-        String newName = new String(oldName);
+    private String checkExistingNames(final String oldName) {
+        final String tmpName = oldName + "_"; //$NON-NLS-1$
+        String newName = oldName;
 
-        // if the connection name is not valid, then check with the name with "copyOf"
-        if (!process.checkValidConnectionName(oldName, true)) {
-            newName = checkExistingNames("copyOf" + newName); //$NON-NLS-1$
+        int index = 0;
+        while (!process.checkValidConnectionName(newName, true)) {
+            newName = tmpName + (index++);
         }
-
         return newName;
     }
 
-    private String checkNewNames(String oldName) {
-        String newName = new String(oldName);
+    private String checkNewNames(final String oldName) {
+        final String tmpName = oldName + "_"; //$NON-NLS-1$
+        String newName = oldName;
 
-        for (String name : createdNames) {
-            if (name.equals(newName)) {
-                newName = checkNewNames("copyOf" + newName); //$NON-NLS-1$
-            }
+        int index = 0;
+        while (createdNames.contains(newName)) {
+            newName = tmpName + index++;
+        }
+        // check the name again in process.
+        while (!process.checkValidConnectionName(newName, true)) {
+            newName = tmpName + (index++);
         }
         return newName;
     }
