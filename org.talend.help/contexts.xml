@@ -1,7 +1,106 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <contexts>
+  <context id="tAS400Commit">
+    <description>Commit all transactions not already commited in selected AS400 connection</description>
+    <topic
+      href="guide/components/tAS400Commit_Prop.html"
+      label="tAS400Commit properties description"
+    />
+    <topic
+      href="guide/components/tAS400Commit_Scenario.html"
+      label="tAS400Commit scenario example"
+    />
+  </context>
+  <context id="tAS400Connection">
+    <description>create a connection to an AS400 database</description>
+    <topic
+      href="guide/components/tAS400Connection_Prop.html"
+      label="tAS400Connection properties description"
+    />
+    <topic
+      href="guide/components/tAS400Connection_Scenario.html"
+      label="tAS400Connection scenario example"
+    />
+  </context>
+  <context id="tAS400Input">
+    <description>reads a table and extracts fields based on an SQL query</description>
+    <topic
+      href="guide/components/tAS400Input_Prop.html"
+      label="tAS400Input properties description"
+    />
+    <topic
+      href="guide/components/tAS400Input_Scenario.html"
+      label="tAS400Input scenario example"
+    />
+  </context>
+  <context id="tAS400Output">
+    <description>inserts or updates lines into a table</description>
+    <topic
+      href="guide/components/tAS400Output_Prop.html"
+      label="tAS400Output properties description"
+    />
+    <topic
+      href="guide/components/tAS400Output_Scenario.html"
+      label="tAS400Output scenario example"
+    />
+  </context>
+  <context id="tAS400Rollback">
+    <description>Rollback all transactions not already commited in selected AS400 Connection</description>
+    <topic
+      href="guide/components/tAS400Rollback_Prop.html"
+      label="tAS400Rollback properties description"
+    />
+    <topic
+      href="guide/components/tAS400Rollback_Scenario.html"
+      label="tAS400Rollback scenario example"
+    />
+  </context>
+  <context id="tAS400Row">
+    <description>loop intermediate component which can not be responsible of the loop. Executes an SQL query at each one of a Talend flow's iterations</description>
+    <topic
+      href="guide/components/tAS400Row_Prop.html"
+      label="tAS400Row properties description"
+    />
+    <topic
+      href="guide/components/tAS400Row_Scenario.html"
+      label="tAS400Row scenario example"
+    />
+  </context>
+  <context id="tAccessInput">
+    <description>reads a Access table and extracts fields based on an SQL query</description>
+    <topic
+      href="guide/components/tAccessInput_Prop.html"
+      label="tAccessInput properties description"
+    />
+    <topic
+      href="guide/components/tAccessInput_Scenario.html"
+      label="tAccessInput scenario example"
+    />
+  </context>
+  <context id="tAccessOutput">
+    <description>inserts or updates lines into an Access table</description>
+    <topic
+      href="guide/components/tAccessOutput_Prop.html"
+      label="tAccessOutput properties description"
+    />
+    <topic
+      href="guide/components/tAccessOutput_Scenario.html"
+      label="tAccessOutput scenario example"
+    />
+  </context>
+  <context id="tAccessRow">
+    <description>loop intermediate component which can not be responsible of the loop. Executes an SQL query at each one of a Talend flow's iterations</description>
+    <topic
+      href="guide/components/tAccessRow_Prop.html"
+      label="tAccessRow properties description"
+    />
+    <topic
+      href="guide/components/tAccessRow_Scenario.html"
+      label="tAccessRow scenario example"
+    />
+  </context>
   <context id="tAddCRCRow">
-    <description>Write lines in standard output</description>
+    <description>Add a CRC column for all rows of flow</description>
     <topic
       href="guide/components/tAddCRCRow_Prop.html"
       label="tAddCRCRow properties description"
@@ -9,6 +108,28 @@
     <topic
       href="guide/components/tAddCRCRow_Scenario.html"
       label="tAddCRCRow scenario example"
+    />
+  </context>
+  <context id="tAdvancedFileOutputXML">
+    <description>creates an XML structure from rows broken down into fields</description>
+    <topic
+      href="guide/components/tAdvancedFileOutputXML_Prop.html"
+      label="tAdvancedFileOutputXML properties description"
+    />
+    <topic
+      href="guide/components/tAdvancedFileOutputXML_Scenario.html"
+      label="tAdvancedFileOutputXML scenario example"
+    />
+  </context>
+  <context id="tAdvancedHash">
+    <description>Fill a hash buffer</description>
+    <topic
+      href="guide/components/tAdvancedHash_Prop.html"
+      label="tAdvancedHash properties description"
+    />
+    <topic
+      href="guide/components/tAdvancedHash_Scenario.html"
+      label="tAdvancedHash scenario example"
     />
   </context>
   <context id="tAggregateOut">
@@ -33,19 +154,30 @@
       label="tAggregateRow scenario example"
     />
   </context>
-  <context id="tArchiveExtract">
-    <description>Extract an archive file</description>
+  <context id="tAggregateSortedRow">
+    <description>matches to SQL GroupBy feature. Receives a sorted flow and aggregates it based on one or more columns. For each output line, are provided the aggregation key and the relevant result of set operations (min, max, sum...)</description>
     <topic
-      href="guide/components/tArchiveExtract_Prop.html"
-      label="tArchiveExtract properties description"
+      href="guide/components/tAggregateSortedRow_Prop.html"
+      label="tAggregateSortedRow properties description"
     />
     <topic
-      href="guide/components/tArchiveExtract_Scenario.html"
-      label="tArchiveExtract scenario example"
+      href="guide/components/tAggregateSortedRow_Scenario.html"
+      label="tAggregateSortedRow scenario example"
+    />
+  </context>
+  <context id="tArrayIn">
+    <description>Read an array</description>
+    <topic
+      href="guide/components/tArrayIn_Prop.html"
+      label="tArrayIn properties description"
+    />
+    <topic
+      href="guide/components/tArrayIn_Scenario.html"
+      label="tArrayIn scenario example"
     />
   </context>
   <context id="tArray">
-    <description>Fill a hash buffer</description>
+    <description>Fill an array</description>
     <topic
       href="guide/components/tArray_Prop.html"
       label="tArray properties description"
@@ -55,15 +187,59 @@
       label="tArray scenario example"
     />
   </context>
-  <context id="tArrayIn">
-    <description>Read a simply delimited file</description>
+  <context id="tAssertCatcher">
+    <description>listens to tAssert or other Die commands in the Job. Then retrieves log information from the message and sends it to a standard Talend output</description>
     <topic
-      href="guide/components/tArrayIn_Prop.html"
-      label="tArrayIn properties description"
+      href="guide/components/tAssertCatcher_Prop.html"
+      label="tAssertCatcher properties description"
     />
     <topic
-      href="guide/components/tArrayIn_Scenario.html"
-      label="tArrayIn scenario example"
+      href="guide/components/tAssertCatcher_Scenario.html"
+      label="tAssertCatcher scenario example"
+    />
+  </context>
+  <context id="tAssert">
+    <description>sends a non-blocking trigger message to tAssertCatcher</description>
+    <topic
+      href="guide/components/tAssert_Prop.html"
+      label="tAssert properties description"
+    />
+    <topic
+      href="guide/components/tAssert_Scenario.html"
+      label="tAssert scenario example"
+    />
+  </context>
+  <context id="tCentricCRMInput">
+    <description>Input from the CentricCRM</description>
+    <topic
+      href="guide/components/tCentricCRMInput_Prop.html"
+      label="tCentricCRMInput properties description"
+    />
+    <topic
+      href="guide/components/tCentricCRMInput_Scenario.html"
+      label="tCentricCRMInput scenario example"
+    />
+  </context>
+  <context id="tCentricCRMOutput">
+    <description>Output to the CentricCRM</description>
+    <topic
+      href="guide/components/tCentricCRMOutput_Prop.html"
+      label="tCentricCRMOutput properties description"
+    />
+    <topic
+      href="guide/components/tCentricCRMOutput_Scenario.html"
+      label="tCentricCRMOutput scenario example"
+    />
+  </context>
+  <context id="tContextDump">
+    <description>Dump current context to schema</description>
+    <topic
+      href="guide/components/tContextDump_Prop.html"
+      label="tContextDump properties description"
+    />
+    <topic
+      href="guide/components/tContextDump_Scenario.html"
+      label="tContextDump scenario example"
     />
   </context>
   <context id="tContextLoad">
@@ -75,6 +251,17 @@
     <topic
       href="guide/components/tContextLoad_Scenario.html"
       label="tContextLoad scenario example"
+    />
+  </context>
+  <context id="tCreateTable">
+    <description>Create a table defined with columns in schema</description>
+    <topic
+      href="guide/components/tCreateTable_Prop.html"
+      label="tCreateTable properties description"
+    />
+    <topic
+      href="guide/components/tCreateTable_Scenario.html"
+      label="tCreateTable scenario example"
     />
   </context>
   <context id="tDB2Input">
@@ -108,6 +295,28 @@
     <topic
       href="guide/components/tDB2Row_Scenario.html"
       label="tDB2Row scenario example"
+    />
+  </context>
+  <context id="tDB2SCD">
+    <description>Slowly Changing Dimension algorithm for DB2</description>
+    <topic
+      href="guide/components/tDB2SCD_Prop.html"
+      label="tDB2SCD properties description"
+    />
+    <topic
+      href="guide/components/tDB2SCD_Scenario.html"
+      label="tDB2SCD scenario example"
+    />
+  </context>
+  <context id="tDB2SP">
+    <description>Call a DB2 Stored Procedure</description>
+    <topic
+      href="guide/components/tDB2SP_Prop.html"
+      label="tDB2SP properties description"
+    />
+    <topic
+      href="guide/components/tDB2SP_Scenario.html"
+      label="tDB2SP scenario example"
     />
   </context>
   <context id="tDBInput">
@@ -154,8 +363,41 @@
       label="tDTDValidator scenario example"
     />
   </context>
+  <context id="tDenormalizeIn">
+    <description>Concatenate different fields into an arry or delimited string</description>
+    <topic
+      href="guide/components/tDenormalizeIn_Prop.html"
+      label="tDenormalizeIn properties description"
+    />
+    <topic
+      href="guide/components/tDenormalizeIn_Scenario.html"
+      label="tDenormalizeIn scenario example"
+    />
+  </context>
+  <context id="tDenormalizeOut">
+    <description>Aggregation component that groups by all input columns, except a denormalization column. Distinct values of the denormalization column are joined with an item separator.</description>
+    <topic
+      href="guide/components/tDenormalizeOut_Prop.html"
+      label="tDenormalizeOut properties description"
+    />
+    <topic
+      href="guide/components/tDenormalizeOut_Scenario.html"
+      label="tDenormalizeOut scenario example"
+    />
+  </context>
+  <context id="tDenormalize">
+    <description>Concatenate different fields into an array or delimited string</description>
+    <topic
+      href="guide/components/tDenormalize_Prop.html"
+      label="tDenormalize properties description"
+    />
+    <topic
+      href="guide/components/tDenormalize_Scenario.html"
+      label="tDenormalize scenario example"
+    />
+  </context>
   <context id="tDie">
-    <description>sends a trigger mail to tCatcher and let the job die once the message is processed by tCatcher</description>
+    <description>sends a trigger message to tCatcher and let the job die once the message is processed by tCatcher</description>
     <topic
       href="guide/components/tDie_Prop.html"
       label="tDie properties description"
@@ -165,8 +407,19 @@
       label="tDie scenario example"
     />
   </context>
+  <context id="tDummyRow">
+    <description>only propagate</description>
+    <topic
+      href="guide/components/tDummyRow_Prop.html"
+      label="tDummyRow properties description"
+    />
+    <topic
+      href="guide/components/tDummyRow_Scenario.html"
+      label="tDummyRow scenario example"
+    />
+  </context>
   <context id="tELTMysqlInput">
-    <description>refrences a table for using in the tELTMysqlMap</description>
+    <description>References a table for using in the tELTMysqlMap</description>
     <topic
       href="guide/components/tELTMysqlInput_Prop.html"
       label="tELTMysqlInput properties description"
@@ -231,6 +484,39 @@
       label="tELTOracleOutput scenario example"
     />
   </context>
+  <context id="tELTTeradataInput">
+    <description>References a table for using in the tELTTeradataMap</description>
+    <topic
+      href="guide/components/tELTTeradataInput_Prop.html"
+      label="tELTTeradataInput properties description"
+    />
+    <topic
+      href="guide/components/tELTTeradataInput_Scenario.html"
+      label="tELTTeradataInput scenario example"
+    />
+  </context>
+  <context id="tELTTeradataMap">
+    <description>create joints between one or more tables from tables referenced by one or more tELTTeradataInput components</description>
+    <topic
+      href="guide/components/tELTTeradataMap_Prop.html"
+      label="tELTTeradataMap properties description"
+    />
+    <topic
+      href="guide/components/tELTTeradataMap_Scenario.html"
+      label="tELTTeradataMap scenario example"
+    />
+  </context>
+  <context id="tELTTeradataOutput">
+    <description>execute insert query from select query built by the tELTTeradataMap</description>
+    <topic
+      href="guide/components/tELTTeradataOutput_Prop.html"
+      label="tELTTeradataOutput properties description"
+    />
+    <topic
+      href="guide/components/tELTTeradataOutput_Scenario.html"
+      label="tELTTeradataOutput scenario example"
+    />
+  </context>
   <context id="tExternalSortOutput">
     <description>Sort the input data with a external command</description>
     <topic
@@ -253,19 +539,8 @@
       label="tExternalSortRow scenario example"
     />
   </context>
-  <context id="tFTP">
-    <description>transfers given files via an FTP connection</description>
-    <topic
-      href="guide/components/tFTP_Prop.html"
-      label="tFTP properties description"
-    />
-    <topic
-      href="guide/components/tFTP_Scenario.html"
-      label="tFTP scenario example"
-    />
-  </context>
   <context id="tFTPDelete">
-    <description>actions with "File Transfert Protocol"</description>
+    <description>delete files with "File Transfert Protocol"</description>
     <topic
       href="guide/components/tFTPDelete_Prop.html"
       label="tFTPDelete properties description"
@@ -276,7 +551,7 @@
     />
   </context>
   <context id="tFTPGet">
-    <description>actions with "File Transfert Protocol"</description>
+    <description>get files with "File Transfert Protocol"</description>
     <topic
       href="guide/components/tFTPGet_Prop.html"
       label="tFTPGet properties description"
@@ -287,7 +562,7 @@
     />
   </context>
   <context id="tFTPPut">
-    <description>actions with "File Transfert Protocol"</description>
+    <description>put files with "File Transfert Protocol"</description>
     <topic
       href="guide/components/tFTPPut_Prop.html"
       label="tFTPPut properties description"
@@ -298,7 +573,7 @@
     />
   </context>
   <context id="tFTPRename">
-    <description>actions with "File Transfert Protocol"</description>
+    <description>rename distant files with "File Transfert Protocol"</description>
     <topic
       href="guide/components/tFTPRename_Prop.html"
       label="tFTPRename properties description"
@@ -306,6 +581,17 @@
     <topic
       href="guide/components/tFTPRename_Scenario.html"
       label="tFTPRename scenario example"
+    />
+  </context>
+  <context id="tFTP">
+    <description>transfers given files via an FTP connection</description>
+    <topic
+      href="guide/components/tFTP_Prop.html"
+      label="tFTP properties description"
+    />
+    <topic
+      href="guide/components/tFTP_Scenario.html"
+      label="tFTP scenario example"
     />
   </context>
   <context id="tFileArchive">
@@ -353,7 +639,7 @@
     />
   </context>
   <context id="tFileFetch">
-    <description>fetches a single file through HTTP or FTP</description>
+    <description>Fetches a single file through HTTP or FTP</description>
     <topic
       href="guide/components/tFileFetch_Prop.html"
       label="tFileFetch properties description"
@@ -363,15 +649,15 @@
       label="tFileFetch scenario example"
     />
   </context>
-  <context id="tFileInputCSV">
-    <description>reads a file row by row with simple separated fields including escape characters and text enclosures</description>
+  <context id="tFileInputARFF">
+    <description>reads a arff file row by row with</description>
     <topic
-      href="guide/components/tFileInputCSV_Prop.html"
-      label="tFileInputCSV properties description"
+      href="guide/components/tFileInputARFF_Prop.html"
+      label="tFileInputARFF properties description"
     />
     <topic
-      href="guide/components/tFileInputCSV_Scenario.html"
-      label="tFileInputCSV scenario example"
+      href="guide/components/tFileInputARFF_Scenario.html"
+      label="tFileInputARFF scenario example"
     />
   </context>
   <context id="tFileInputDelimited">
@@ -462,19 +748,19 @@
       label="tFileList scenario example"
     />
   </context>
-  <context id="tFileOutputCSV">
-    <description>reads a file row by row with simple separated fields including escape characters and text enclosures</description>
+  <context id="tFileOutputARFF">
+    <description>write to a file row by row with simple separated fields including escape characters and text enclosures</description>
     <topic
-      href="guide/components/tFileOutputCSV_Prop.html"
-      label="tFileOutputCSV properties description"
+      href="guide/components/tFileOutputARFF_Prop.html"
+      label="tFileOutputARFF properties description"
     />
     <topic
-      href="guide/components/tFileOutputCSV_Scenario.html"
-      label="tFileOutputCSV scenario example"
+      href="guide/components/tFileOutputARFF_Scenario.html"
+      label="tFileOutputARFF scenario example"
     />
   </context>
   <context id="tFileOutputDelimited">
-    <description>writes a file row by row with simple separated fields</description>
+    <description>writes to a file row by row with simple separated fields</description>
     <topic
       href="guide/components/tFileOutputDelimited_Prop.html"
       label="tFileOutputDelimited properties description"
@@ -539,6 +825,28 @@
       label="tFileOutputXML scenario example"
     />
   </context>
+  <context id="tFileRowCount">
+    <description>Count the number of lines in a file</description>
+    <topic
+      href="guide/components/tFileRowCount_Prop.html"
+      label="tFileRowCount properties description"
+    />
+    <topic
+      href="guide/components/tFileRowCount_Scenario.html"
+      label="tFileRowCount scenario example"
+    />
+  </context>
+  <context id="tFileTouch">
+    <description>Create an empty File</description>
+    <topic
+      href="guide/components/tFileTouch_Prop.html"
+      label="tFileTouch properties description"
+    />
+    <topic
+      href="guide/components/tFileTouch_Scenario.html"
+      label="tFileTouch scenario example"
+    />
+  </context>
   <context id="tFileUnarchive">
     <description>Unarchive the file</description>
     <topic
@@ -548,6 +856,28 @@
     <topic
       href="guide/components/tFileUnarchive_Scenario.html"
       label="tFileUnarchive scenario example"
+    />
+  </context>
+  <context id="tFilterColumns">
+    <description>Maps input columns with output columns. Mapping is based on column names.</description>
+    <topic
+      href="guide/components/tFilterColumns_Prop.html"
+      label="tFilterColumns properties description"
+    />
+    <topic
+      href="guide/components/tFilterColumns_Scenario.html"
+      label="tFilterColumns scenario example"
+    />
+  </context>
+  <context id="tFilterRow">
+    <description>Filters input row by evaluating column conditions.</description>
+    <topic
+      href="guide/components/tFilterRow_Prop.html"
+      label="tFilterRow properties description"
+    />
+    <topic
+      href="guide/components/tFilterRow_Scenario.html"
+      label="tFilterRow scenario example"
     />
   </context>
   <context id="tFirebirdInput">
@@ -583,6 +913,50 @@
       label="tFirebirdRow scenario example"
     />
   </context>
+  <context id="tFixedFlowInput">
+    <description>create a fixed flow from internal variables</description>
+    <topic
+      href="guide/components/tFixedFlowInput_Prop.html"
+      label="tFixedFlowInput properties description"
+    />
+    <topic
+      href="guide/components/tFixedFlowInput_Scenario.html"
+      label="tFixedFlowInput scenario example"
+    />
+  </context>
+  <context id="tFlowMeterCatcher">
+    <description>listens to FlowMeterCatch option if enabled in the Component's properties. Then provides standard log information to the defined output</description>
+    <topic
+      href="guide/components/tFlowMeterCatcher_Prop.html"
+      label="tFlowMeterCatcher properties description"
+    />
+    <topic
+      href="guide/components/tFlowMeterCatcher_Scenario.html"
+      label="tFlowMeterCatcher scenario example"
+    />
+  </context>
+  <context id="tFlowMeter">
+    <description>sends a meter message to tFlowMeterCatcher</description>
+    <topic
+      href="guide/components/tFlowMeter_Prop.html"
+      label="tFlowMeter properties description"
+    />
+    <topic
+      href="guide/components/tFlowMeter_Scenario.html"
+      label="tFlowMeter scenario example"
+    />
+  </context>
+  <context id="tFlowToIterate">
+    <description>Transform a flow input link to an iterate</description>
+    <topic
+      href="guide/components/tFlowToIterate_Prop.html"
+      label="tFlowToIterate properties description"
+    />
+    <topic
+      href="guide/components/tFlowToIterate_Scenario.html"
+      label="tFlowToIterate scenario example"
+    />
+  </context>
   <context id="tFor">
     <description>create a loop over for an iterate link</description>
     <topic
@@ -592,6 +966,17 @@
     <topic
       href="guide/components/tFor_Scenario.html"
       label="tFor scenario example"
+    />
+  </context>
+  <context id="tForeach">
+    <description>create a loop on a list for an iterate link</description>
+    <topic
+      href="guide/components/tForeach_Prop.html"
+      label="tForeach properties description"
+    />
+    <topic
+      href="guide/components/tForeach_Scenario.html"
+      label="tForeach scenario example"
     />
   </context>
   <context id="tFuzzyMatch">
@@ -605,6 +990,94 @@
       label="tFuzzyMatch scenario example"
     />
   </context>
+  <context id="tGPGDecrypt">
+    <description>Decrypt a PGP encrypted file thanks to GPG toolbox</description>
+    <topic
+      href="guide/components/tGPGDecrypt_Prop.html"
+      label="tGPGDecrypt properties description"
+    />
+    <topic
+      href="guide/components/tGPGDecrypt_Scenario.html"
+      label="tGPGDecrypt scenario example"
+    />
+  </context>
+  <context id="tGroovyFile">
+    <description>Execute a Groovy script file</description>
+    <topic
+      href="guide/components/tGroovyFile_Prop.html"
+      label="tGroovyFile properties description"
+    />
+    <topic
+      href="guide/components/tGroovyFile_Scenario.html"
+      label="tGroovyFile scenario example"
+    />
+  </context>
+  <context id="tGroovy">
+    <description>Fill manually groovy script of a component</description>
+    <topic
+      href="guide/components/tGroovy_Prop.html"
+      label="tGroovy properties description"
+    />
+    <topic
+      href="guide/components/tGroovy_Scenario.html"
+      label="tGroovy scenario example"
+    />
+  </context>
+  <context id="tHSQLDbInput">
+    <description>reads a HSQLDb table and extracts fields based on an SQL query</description>
+    <topic
+      href="guide/components/tHSQLDbInput_Prop.html"
+      label="tHSQLDbInput properties description"
+    />
+    <topic
+      href="guide/components/tHSQLDbInput_Scenario.html"
+      label="tHSQLDbInput scenario example"
+    />
+  </context>
+  <context id="tHSQLDbOutput">
+    <description>inserts or updates lines into a HSQLDb table</description>
+    <topic
+      href="guide/components/tHSQLDbOutput_Prop.html"
+      label="tHSQLDbOutput properties description"
+    />
+    <topic
+      href="guide/components/tHSQLDbOutput_Scenario.html"
+      label="tHSQLDbOutput scenario example"
+    />
+  </context>
+  <context id="tHSQLDbRow">
+    <description>loop intermediate component which can not be responsible of the loop. Executes an SQL query at each one of a Talend flow's iterations</description>
+    <topic
+      href="guide/components/tHSQLDbRow_Prop.html"
+      label="tHSQLDbRow properties description"
+    />
+    <topic
+      href="guide/components/tHSQLDbRow_Scenario.html"
+      label="tHSQLDbRow scenario example"
+    />
+  </context>
+  <context id="tHashInput">
+    <description>Fill a hash buffer</description>
+    <topic
+      href="guide/components/tHashInput_Prop.html"
+      label="tHashInput properties description"
+    />
+    <topic
+      href="guide/components/tHashInput_Scenario.html"
+      label="tHashInput scenario example"
+    />
+  </context>
+  <context id="tHashOutput">
+    <description>Fill a hash buffer</description>
+    <topic
+      href="guide/components/tHashOutput_Prop.html"
+      label="tHashOutput properties description"
+    />
+    <topic
+      href="guide/components/tHashOutput_Scenario.html"
+      label="tHashOutput scenario example"
+    />
+  </context>
   <context id="tHash">
     <description>Fill a hash buffer</description>
     <topic
@@ -616,8 +1089,52 @@
       label="tHash scenario example"
     />
   </context>
+  <context id="tInfiniteLoop">
+    <description>create an infinite loop over an iterate link</description>
+    <topic
+      href="guide/components/tInfiniteLoop_Prop.html"
+      label="tInfiniteLoop properties description"
+    />
+    <topic
+      href="guide/components/tInfiniteLoop_Scenario.html"
+      label="tInfiniteLoop scenario example"
+    />
+  </context>
+  <context id="tInformixInput">
+    <description>reads a Informix table and extracts fields based on an SQL query</description>
+    <topic
+      href="guide/components/tInformixInput_Prop.html"
+      label="tInformixInput properties description"
+    />
+    <topic
+      href="guide/components/tInformixInput_Scenario.html"
+      label="tInformixInput scenario example"
+    />
+  </context>
+  <context id="tInformixOutput">
+    <description>inserts or updates lines into a Informix table</description>
+    <topic
+      href="guide/components/tInformixOutput_Prop.html"
+      label="tInformixOutput properties description"
+    />
+    <topic
+      href="guide/components/tInformixOutput_Scenario.html"
+      label="tInformixOutput scenario example"
+    />
+  </context>
+  <context id="tInformixRow">
+    <description>loop intermediate component which can not be responsible of the loop. Executes an SQL query at each one of a Talend flow's iterations</description>
+    <topic
+      href="guide/components/tInformixRow_Prop.html"
+      label="tInformixRow properties description"
+    />
+    <topic
+      href="guide/components/tInformixRow_Scenario.html"
+      label="tInformixRow scenario example"
+    />
+  </context>
   <context id="tIngresInput">
-    <description>Database input</description>
+    <description>reads an Ingres table and extracts fields based on an SQL query</description>
     <topic
       href="guide/components/tIngresInput_Prop.html"
       label="tIngresInput properties description"
@@ -628,7 +1145,7 @@
     />
   </context>
   <context id="tIngresOutput">
-    <description>Database output</description>
+    <description>inserts or updates lines into an Ingres table</description>
     <topic
       href="guide/components/tIngresOutput_Prop.html"
       label="tIngresOutput properties description"
@@ -639,7 +1156,7 @@
     />
   </context>
   <context id="tIngresRow">
-    <description>Database SQL query execution</description>
+    <description>loop intermediate component which can not be responsible of the loop. Executes an SQL query at each one of a Talend flow's iterations</description>
     <topic
       href="guide/components/tIngresRow_Prop.html"
       label="tIngresRow properties description"
@@ -647,6 +1164,50 @@
     <topic
       href="guide/components/tIngresRow_Scenario.html"
       label="tIngresRow scenario example"
+    />
+  </context>
+  <context id="tIngresSCD">
+    <description>Slowly Changing Dimension algorithm for Ingres</description>
+    <topic
+      href="guide/components/tIngresSCD_Prop.html"
+      label="tIngresSCD properties description"
+    />
+    <topic
+      href="guide/components/tIngresSCD_Scenario.html"
+      label="tIngresSCD scenario example"
+    />
+  </context>
+  <context id="tInterbaseInput">
+    <description>reads an Interbase table and extracts fields based on an SQL query</description>
+    <topic
+      href="guide/components/tInterbaseInput_Prop.html"
+      label="tInterbaseInput properties description"
+    />
+    <topic
+      href="guide/components/tInterbaseInput_Scenario.html"
+      label="tInterbaseInput scenario example"
+    />
+  </context>
+  <context id="tInterbaseOutput">
+    <description>inserts or updates lines into an Interbase table</description>
+    <topic
+      href="guide/components/tInterbaseOutput_Prop.html"
+      label="tInterbaseOutput properties description"
+    />
+    <topic
+      href="guide/components/tInterbaseOutput_Scenario.html"
+      label="tInterbaseOutput scenario example"
+    />
+  </context>
+  <context id="tInterbaseRow">
+    <description>loop intermediate component which can not be responsible of the loop. Executes an SQL query at each one of a Talend flow's iterations</description>
+    <topic
+      href="guide/components/tInterbaseRow_Prop.html"
+      label="tInterbaseRow properties description"
+    />
+    <topic
+      href="guide/components/tInterbaseRow_Scenario.html"
+      label="tInterbaseRow scenario example"
     />
   </context>
   <context id="tIntervalMatch">
@@ -660,15 +1221,125 @@
       label="tIntervalMatch scenario example"
     />
   </context>
-  <context id="tJava">
-    <description>Java raw piece of code</description>
+  <context id="tIterateToFlowOut">
+    <description>Store a list of variables coming from an iterate link in an array</description>
     <topic
-      href="guide/components/tJava_Prop.html"
-      label="tJava properties description"
+      href="guide/components/tIterateToFlowOut_Prop.html"
+      label="tIterateToFlowOut properties description"
     />
     <topic
-      href="guide/components/tJava_Scenario.html"
-      label="tJava scenario example"
+      href="guide/components/tIterateToFlowOut_Scenario.html"
+      label="tIterateToFlowOut scenario example"
+    />
+  </context>
+  <context id="tIterateToFlow">
+    <description>Transform an iterate link to a flow input</description>
+    <topic
+      href="guide/components/tIterateToFlow_Prop.html"
+      label="tIterateToFlow properties description"
+    />
+    <topic
+      href="guide/components/tIterateToFlow_Scenario.html"
+      label="tIterateToFlow scenario example"
+    />
+  </context>
+  <context id="tJDBCInput">
+    <description>Reads a DB table and extracts fields based on an SQL query</description>
+    <topic
+      href="guide/components/tJDBCInput_Prop.html"
+      label="tJDBCInput properties description"
+    />
+    <topic
+      href="guide/components/tJDBCInput_Scenario.html"
+      label="tJDBCInput scenario example"
+    />
+  </context>
+  <context id="tJDBCOutput">
+    <description>inserts or updates lines into a DB table</description>
+    <topic
+      href="guide/components/tJDBCOutput_Prop.html"
+      label="tJDBCOutput properties description"
+    />
+    <topic
+      href="guide/components/tJDBCOutput_Scenario.html"
+      label="tJDBCOutput scenario example"
+    />
+  </context>
+  <context id="tJDBCRow">
+    <description>loop intermediate component which can not be responsible of the loop. Executes an SQL query at each one of a Talend flow's iterations</description>
+    <topic
+      href="guide/components/tJDBCRow_Prop.html"
+      label="tJDBCRow properties description"
+    />
+    <topic
+      href="guide/components/tJDBCRow_Scenario.html"
+      label="tJDBCRow scenario example"
+    />
+  </context>
+  <context id="tJDBCSP">
+    <description>Call a DB Stored Procedure</description>
+    <topic
+      href="guide/components/tJDBCSP_Prop.html"
+      label="tJDBCSP properties description"
+    />
+    <topic
+      href="guide/components/tJDBCSP_Scenario.html"
+      label="tJDBCSP scenario example"
+    />
+  </context>
+  <context id="tJasperOutputExec">
+    <description>Out put a report</description>
+    <topic
+      href="guide/components/tJasperOutputExec_Prop.html"
+      label="tJasperOutputExec properties description"
+    />
+    <topic
+      href="guide/components/tJasperOutputExec_Scenario.html"
+      label="tJasperOutputExec scenario example"
+    />
+  </context>
+  <context id="tJasperOutput">
+    <description>Output a report</description>
+    <topic
+      href="guide/components/tJasperOutput_Prop.html"
+      label="tJasperOutput properties description"
+    />
+    <topic
+      href="guide/components/tJasperOutput_Scenario.html"
+      label="tJasperOutput scenario example"
+    />
+  </context>
+  <context id="tJavaDBInput">
+    <description>reads a JavaDB table and extracts fields based on an SQL query</description>
+    <topic
+      href="guide/components/tJavaDBInput_Prop.html"
+      label="tJavaDBInput properties description"
+    />
+    <topic
+      href="guide/components/tJavaDBInput_Scenario.html"
+      label="tJavaDBInput scenario example"
+    />
+  </context>
+  <context id="tJavaDBOutput">
+    <description>inserts or updates lines into a JavaDB table</description>
+    <topic
+      href="guide/components/tJavaDBOutput_Prop.html"
+      label="tJavaDBOutput properties description"
+    />
+    <topic
+      href="guide/components/tJavaDBOutput_Scenario.html"
+      label="tJavaDBOutput scenario example"
+    />
+  </context>
+  <context id="tJavaDBRow">
+    <description>loop intermediate component which can not be responsible of the loop. Executes an SQL query at each one of a Talend flow's iterations</description>
+    <topic
+      href="guide/components/tJavaDBRow_Prop.html"
+      label="tJavaDBRow properties description"
+    />
+    <topic
+      href="guide/components/tJavaDBRow_Scenario.html"
+      label="tJavaDBRow scenario example"
     />
   </context>
   <context id="tJavaFlex">
@@ -693,6 +1364,61 @@
       label="tJavaRow scenario example"
     />
   </context>
+  <context id="tJava">
+    <description>Java raw piece of code</description>
+    <topic
+      href="guide/components/tJava_Prop.html"
+      label="tJava properties description"
+    />
+    <topic
+      href="guide/components/tJava_Scenario.html"
+      label="tJava scenario example"
+    />
+  </context>
+  <context id="tJoin">
+    <description>Perform inner or outer join between the main data flow and a lookup flow</description>
+    <topic
+      href="guide/components/tJoin_Prop.html"
+      label="tJoin properties description"
+    />
+    <topic
+      href="guide/components/tJoin_Scenario.html"
+      label="tJoin scenario example"
+    />
+  </context>
+  <context id="tLDAPInput">
+    <description>Read entries form ldap server</description>
+    <topic
+      href="guide/components/tLDAPInput_Prop.html"
+      label="tLDAPInput properties description"
+    />
+    <topic
+      href="guide/components/tLDAPInput_Scenario.html"
+      label="tLDAPInput scenario example"
+    />
+  </context>
+  <context id="tLDAPOutput">
+    <description>Write message to ldap server</description>
+    <topic
+      href="guide/components/tLDAPOutput_Prop.html"
+      label="tLDAPOutput properties description"
+    />
+    <topic
+      href="guide/components/tLDAPOutput_Scenario.html"
+      label="tLDAPOutput scenario example"
+    />
+  </context>
+  <context id="tLibraryLoad">
+    <description>Load libraries</description>
+    <topic
+      href="guide/components/tLibraryLoad_Prop.html"
+      label="tLibraryLoad properties description"
+    />
+    <topic
+      href="guide/components/tLibraryLoad_Scenario.html"
+      label="tLibraryLoad scenario example"
+    />
+  </context>
   <context id="tLogCatcher">
     <description>listens to tWarn, tDie or other Die commands in the Job. Then retrieves log information from the message and sends it to a standard Talend output</description>
     <topic
@@ -715,6 +1441,28 @@
       label="tLogRow scenario example"
     />
   </context>
+  <context id="tMSAXInput">
+    <description>reads a MS AX server based on an SQL query</description>
+    <topic
+      href="guide/components/tMSAXInput_Prop.html"
+      label="tMSAXInput properties description"
+    />
+    <topic
+      href="guide/components/tMSAXInput_Scenario.html"
+      label="tMSAXInput scenario example"
+    />
+  </context>
+  <context id="tMSAXOutput">
+    <description>write data to MS AX server</description>
+    <topic
+      href="guide/components/tMSAXOutput_Prop.html"
+      label="tMSAXOutput properties description"
+    />
+    <topic
+      href="guide/components/tMSAXOutput_Scenario.html"
+      label="tMSAXOutput scenario example"
+    />
+  </context>
   <context id="tMSSqlBulkExec">
     <description>Load efficiently data from a file</description>
     <topic
@@ -726,8 +1474,30 @@
       label="tMSSqlBulkExec scenario example"
     />
   </context>
+  <context id="tMSSqlCommit">
+    <description>Commit all transactions not already commited in selected MSSQL connection</description>
+    <topic
+      href="guide/components/tMSSqlCommit_Prop.html"
+      label="tMSSqlCommit properties description"
+    />
+    <topic
+      href="guide/components/tMSSqlCommit_Scenario.html"
+      label="tMSSqlCommit scenario example"
+    />
+  </context>
+  <context id="tMSSqlConnection">
+    <description>create a connection to a MSSQL database</description>
+    <topic
+      href="guide/components/tMSSqlConnection_Prop.html"
+      label="tMSSqlConnection properties description"
+    />
+    <topic
+      href="guide/components/tMSSqlConnection_Scenario.html"
+      label="tMSSqlConnection scenario example"
+    />
+  </context>
   <context id="tMSSqlInput">
-    <description>Database input</description>
+    <description>reads a MSSQL table and extracts fields based on an SQL query</description>
     <topic
       href="guide/components/tMSSqlInput_Prop.html"
       label="tMSSqlInput properties description"
@@ -737,15 +1507,15 @@
       label="tMSSqlInput scenario example"
     />
   </context>
-  <context id="tMSSqlOutput">
-    <description>Database output</description>
+  <context id="tMSSqlOutputBulkExec">
+    <description>builds the MSSql format bulk file and asks the database defined to upload bulk file.</description>
     <topic
-      href="guide/components/tMSSqlOutput_Prop.html"
-      label="tMSSqlOutput properties description"
+      href="guide/components/tMSSqlOutputBulkExec_Prop.html"
+      label="tMSSqlOutputBulkExec properties description"
     />
     <topic
-      href="guide/components/tMSSqlOutput_Scenario.html"
-      label="tMSSqlOutput scenario example"
+      href="guide/components/tMSSqlOutputBulkExec_Scenario.html"
+      label="tMSSqlOutputBulkExec scenario example"
     />
   </context>
   <context id="tMSSqlOutputBulk">
@@ -759,8 +1529,30 @@
       label="tMSSqlOutputBulk scenario example"
     />
   </context>
+  <context id="tMSSqlOutput">
+    <description>inserts or updates lines into a MSSQL table</description>
+    <topic
+      href="guide/components/tMSSqlOutput_Prop.html"
+      label="tMSSqlOutput properties description"
+    />
+    <topic
+      href="guide/components/tMSSqlOutput_Scenario.html"
+      label="tMSSqlOutput scenario example"
+    />
+  </context>
+  <context id="tMSSqlRollback">
+    <description>Rollback all transactions not already commited in selected MSSQL Connection</description>
+    <topic
+      href="guide/components/tMSSqlRollback_Prop.html"
+      label="tMSSqlRollback properties description"
+    />
+    <topic
+      href="guide/components/tMSSqlRollback_Scenario.html"
+      label="tMSSqlRollback scenario example"
+    />
+  </context>
   <context id="tMSSqlRow">
-    <description>Database SQL query execution</description>
+    <description>loop intermediate component which can not be responsible of the loop. Executes an SQL query at each one of a Talend flow's iterations</description>
     <topic
       href="guide/components/tMSSqlRow_Prop.html"
       label="tMSSqlRow properties description"
@@ -770,8 +1562,30 @@
       label="tMSSqlRow scenario example"
     />
   </context>
+  <context id="tMSSqlSCD">
+    <description>Slowly Changing Dimension algorithm for MS SQL</description>
+    <topic
+      href="guide/components/tMSSqlSCD_Prop.html"
+      label="tMSSqlSCD properties description"
+    />
+    <topic
+      href="guide/components/tMSSqlSCD_Scenario.html"
+      label="tMSSqlSCD scenario example"
+    />
+  </context>
+  <context id="tMSSqlSP">
+    <description>Call a MS SQL Server Stored Procedure</description>
+    <topic
+      href="guide/components/tMSSqlSP_Prop.html"
+      label="tMSSqlSP properties description"
+    />
+    <topic
+      href="guide/components/tMSSqlSP_Scenario.html"
+      label="tMSSqlSP scenario example"
+    />
+  </context>
   <context id="tMap">
-    <description>allows joins, column or row filtering, transformations, multiple outputs</description>
+    <description>allows joins, column or row filtering, transformations, multiple outputs , \n (Java version: accepts more one row in lookup and can return more one row for one main row)</description>
     <topic
       href="guide/components/tMap_Prop.html"
       label="tMap properties description"
@@ -779,6 +1593,39 @@
     <topic
       href="guide/components/tMap_Scenario.html"
       label="tMap scenario example"
+    />
+  </context>
+  <context id="tMomInput">
+    <description>Read messages from MQ Server</description>
+    <topic
+      href="guide/components/tMomInput_Prop.html"
+      label="tMomInput properties description"
+    />
+    <topic
+      href="guide/components/tMomInput_Scenario.html"
+      label="tMomInput scenario example"
+    />
+  </context>
+  <context id="tMomOutput">
+    <description>Write message into MQ Server</description>
+    <topic
+      href="guide/components/tMomOutput_Prop.html"
+      label="tMomOutput properties description"
+    />
+    <topic
+      href="guide/components/tMomOutput_Scenario.html"
+      label="tMomOutput scenario example"
+    />
+  </context>
+  <context id="tMondrianInput">
+    <description>Execute a MDX query on Mondrian and retrieve flattened data</description>
+    <topic
+      href="guide/components/tMondrianInput_Prop.html"
+      label="tMondrianInput properties description"
+    />
+    <topic
+      href="guide/components/tMondrianInput_Scenario.html"
+      label="tMondrianInput scenario example"
     />
   </context>
   <context id="tMsgBox">
@@ -803,6 +1650,28 @@
       label="tMysqlBulkExec scenario example"
     />
   </context>
+  <context id="tMysqlCommit">
+    <description>Commit all transactions not already commited in selected MySQL connection</description>
+    <topic
+      href="guide/components/tMysqlCommit_Prop.html"
+      label="tMysqlCommit properties description"
+    />
+    <topic
+      href="guide/components/tMysqlCommit_Scenario.html"
+      label="tMysqlCommit scenario example"
+    />
+  </context>
+  <context id="tMysqlConnection">
+    <description>create a connection to a MySQL database</description>
+    <topic
+      href="guide/components/tMysqlConnection_Prop.html"
+      label="tMysqlConnection properties description"
+    />
+    <topic
+      href="guide/components/tMysqlConnection_Scenario.html"
+      label="tMysqlConnection scenario example"
+    />
+  </context>
   <context id="tMysqlInput">
     <description>reads a MySQL table and extracts fields based on an SQL query</description>
     <topic
@@ -812,28 +1681,6 @@
     <topic
       href="guide/components/tMysqlInput_Scenario.html"
       label="tMysqlInput scenario example"
-    />
-  </context>
-  <context id="tMysqlOutput">
-    <description>inserts or updates lines into a MySQL table</description>
-    <topic
-      href="guide/components/tMysqlOutput_Prop.html"
-      label="tMysqlOutput properties description"
-    />
-    <topic
-      href="guide/components/tMysqlOutput_Scenario.html"
-      label="tMysqlOutput scenario example"
-    />
-  </context>
-  <context id="tMysqlOutputBulk">
-    <description>builds the MySQL format bulk file.</description>
-    <topic
-      href="guide/components/tMysqlOutputBulk_Prop.html"
-      label="tMysqlOutputBulk properties description"
-    />
-    <topic
-      href="guide/components/tMysqlOutputBulk_Scenario.html"
-      label="tMysqlOutputBulk scenario example"
     />
   </context>
   <context id="tMysqlOutputBulkExec">
@@ -847,6 +1694,50 @@
       label="tMysqlOutputBulkExec scenario example"
     />
   </context>
+  <context id="tMysqlOutputBulk">
+    <description>builds the MySQL format bulk file.</description>
+    <topic
+      href="guide/components/tMysqlOutputBulk_Prop.html"
+      label="tMysqlOutputBulk properties description"
+    />
+    <topic
+      href="guide/components/tMysqlOutputBulk_Scenario.html"
+      label="tMysqlOutputBulk scenario example"
+    />
+  </context>
+  <context id="tMysqlOutputUpdateBulkExec">
+    <description>bulk load a temporary table from data flow, perform a single update query using an SQL join.</description>
+    <topic
+      href="guide/components/tMysqlOutputUpdateBulkExec_Prop.html"
+      label="tMysqlOutputUpdateBulkExec properties description"
+    />
+    <topic
+      href="guide/components/tMysqlOutputUpdateBulkExec_Scenario.html"
+      label="tMysqlOutputUpdateBulkExec scenario example"
+    />
+  </context>
+  <context id="tMysqlOutput">
+    <description>inserts or updates lines into a MySQL table</description>
+    <topic
+      href="guide/components/tMysqlOutput_Prop.html"
+      label="tMysqlOutput properties description"
+    />
+    <topic
+      href="guide/components/tMysqlOutput_Scenario.html"
+      label="tMysqlOutput scenario example"
+    />
+  </context>
+  <context id="tMysqlRollback">
+    <description>Rollback all transactions not already commited in selected MySQL Connection</description>
+    <topic
+      href="guide/components/tMysqlRollback_Prop.html"
+      label="tMysqlRollback properties description"
+    />
+    <topic
+      href="guide/components/tMysqlRollback_Scenario.html"
+      label="tMysqlRollback scenario example"
+    />
+  </context>
   <context id="tMysqlRow">
     <description>loop intermediate component which can not be responsible of the loop. Executes an SQL query at each one of a Talend flow's iterations</description>
     <topic
@@ -856,6 +1747,50 @@
     <topic
       href="guide/components/tMysqlRow_Scenario.html"
       label="tMysqlRow scenario example"
+    />
+  </context>
+  <context id="tMysqlSCD">
+    <description>Slowly Changing Dimension algorithm for MySQL</description>
+    <topic
+      href="guide/components/tMysqlSCD_Prop.html"
+      label="tMysqlSCD properties description"
+    />
+    <topic
+      href="guide/components/tMysqlSCD_Scenario.html"
+      label="tMysqlSCD scenario example"
+    />
+  </context>
+  <context id="tMysqlSP">
+    <description>Call a MySQL Stored Procedure</description>
+    <topic
+      href="guide/components/tMysqlSP_Prop.html"
+      label="tMysqlSP properties description"
+    />
+    <topic
+      href="guide/components/tMysqlSP_Scenario.html"
+      label="tMysqlSP scenario example"
+    />
+  </context>
+  <context id="tMysqlUpdateBulkExec">
+    <description>bulk load a temporary table from a file, perform a single update query using an SQL join.</description>
+    <topic
+      href="guide/components/tMysqlUpdateBulkExec_Prop.html"
+      label="tMysqlUpdateBulkExec properties description"
+    />
+    <topic
+      href="guide/components/tMysqlUpdateBulkExec_Scenario.html"
+      label="tMysqlUpdateBulkExec scenario example"
+    />
+  </context>
+  <context id="tNormalize">
+    <description>Normalize a 'flat' row with items.</description>
+    <topic
+      href="guide/components/tNormalize_Prop.html"
+      label="tNormalize properties description"
+    />
+    <topic
+      href="guide/components/tNormalize_Scenario.html"
+      label="tNormalize scenario example"
     />
   </context>
   <context id="tOracleBulkExec">
@@ -869,8 +1804,30 @@
       label="tOracleBulkExec scenario example"
     />
   </context>
+  <context id="tOracleCommit">
+    <description>Commit all transactions not already commited in selected Oracle connection</description>
+    <topic
+      href="guide/components/tOracleCommit_Prop.html"
+      label="tOracleCommit properties description"
+    />
+    <topic
+      href="guide/components/tOracleCommit_Scenario.html"
+      label="tOracleCommit scenario example"
+    />
+  </context>
+  <context id="tOracleConnection">
+    <description>Create a Connection to an Oracle DB</description>
+    <topic
+      href="guide/components/tOracleConnection_Prop.html"
+      label="tOracleConnection properties description"
+    />
+    <topic
+      href="guide/components/tOracleConnection_Scenario.html"
+      label="tOracleConnection scenario example"
+    />
+  </context>
   <context id="tOracleInput">
-    <description>reads a Oracle table and extracts fields based on an SQL query</description>
+    <description>reads an Oracle table and extracts fields based on an SQL query</description>
     <topic
       href="guide/components/tOracleInput_Prop.html"
       label="tOracleInput properties description"
@@ -878,28 +1835,6 @@
     <topic
       href="guide/components/tOracleInput_Scenario.html"
       label="tOracleInput scenario example"
-    />
-  </context>
-  <context id="tOracleOutput">
-    <description>inserts or updates lines into a Oracle table</description>
-    <topic
-      href="guide/components/tOracleOutput_Prop.html"
-      label="tOracleOutput properties description"
-    />
-    <topic
-      href="guide/components/tOracleOutput_Scenario.html"
-      label="tOracleOutput scenario example"
-    />
-  </context>
-  <context id="tOracleOutputBulk">
-    <description>Write a prepared file for Oracle bulk load</description>
-    <topic
-      href="guide/components/tOracleOutputBulk_Prop.html"
-      label="tOracleOutputBulk properties description"
-    />
-    <topic
-      href="guide/components/tOracleOutputBulk_Scenario.html"
-      label="tOracleOutputBulk scenario example"
     />
   </context>
   <context id="tOracleOutputBulkExec">
@@ -913,6 +1848,39 @@
       label="tOracleOutputBulkExec scenario example"
     />
   </context>
+  <context id="tOracleOutputBulk">
+    <description>Write a prepared file for Oracle bulk load</description>
+    <topic
+      href="guide/components/tOracleOutputBulk_Prop.html"
+      label="tOracleOutputBulk properties description"
+    />
+    <topic
+      href="guide/components/tOracleOutputBulk_Scenario.html"
+      label="tOracleOutputBulk scenario example"
+    />
+  </context>
+  <context id="tOracleOutput">
+    <description>inserts or updates lines into a Oracle table</description>
+    <topic
+      href="guide/components/tOracleOutput_Prop.html"
+      label="tOracleOutput properties description"
+    />
+    <topic
+      href="guide/components/tOracleOutput_Scenario.html"
+      label="tOracleOutput scenario example"
+    />
+  </context>
+  <context id="tOracleRollback">
+    <description>Rollback all transactions not already commited in selected Oracle connection</description>
+    <topic
+      href="guide/components/tOracleRollback_Prop.html"
+      label="tOracleRollback properties description"
+    />
+    <topic
+      href="guide/components/tOracleRollback_Scenario.html"
+      label="tOracleRollback scenario example"
+    />
+  </context>
   <context id="tOracleRow">
     <description>loop intermediate component which can not be responsible of the loop. Executes an SQL query at each one of a Talend flow's iterations</description>
     <topic
@@ -922,6 +1890,28 @@
     <topic
       href="guide/components/tOracleRow_Scenario.html"
       label="tOracleRow scenario example"
+    />
+  </context>
+  <context id="tOracleSCD">
+    <description>Slowly Changing Dimension algorithm for Oracle</description>
+    <topic
+      href="guide/components/tOracleSCD_Prop.html"
+      label="tOracleSCD properties description"
+    />
+    <topic
+      href="guide/components/tOracleSCD_Scenario.html"
+      label="tOracleSCD scenario example"
+    />
+  </context>
+  <context id="tOracleSP">
+    <description>Call an Oracle Stored Procedure</description>
+    <topic
+      href="guide/components/tOracleSP_Prop.html"
+      label="tOracleSP properties description"
+    />
+    <topic
+      href="guide/components/tOracleSP_Scenario.html"
+      label="tOracleSP scenario example"
     />
   </context>
   <context id="tPOP">
@@ -935,15 +1925,37 @@
       label="tPOP scenario example"
     />
   </context>
-  <context id="tPerl">
-    <description>executes once the Perl code entered</description>
+  <context id="tPaloOutput">
+    <description>Writes data to Jedox Palo</description>
     <topic
-      href="guide/components/tPerl_Prop.html"
-      label="tPerl properties description"
+      href="guide/components/tPaloOutput_Prop.html"
+      label="tPaloOutput properties description"
     />
     <topic
-      href="guide/components/tPerl_Scenario.html"
-      label="tPerl scenario example"
+      href="guide/components/tPaloOutput_Scenario.html"
+      label="tPaloOutput scenario example"
+    />
+  </context>
+  <context id="tParseRecordSet">
+    <description>parse input row field as RecordSet</description>
+    <topic
+      href="guide/components/tParseRecordSet_Prop.html"
+      label="tParseRecordSet properties description"
+    />
+    <topic
+      href="guide/components/tParseRecordSet_Scenario.html"
+      label="tParseRecordSet scenario example"
+    />
+  </context>
+  <context id="tParseXMLRow">
+    <description>parse input row field as tFileInputXML do</description>
+    <topic
+      href="guide/components/tParseXMLRow_Prop.html"
+      label="tParseXMLRow properties description"
+    />
+    <topic
+      href="guide/components/tParseXMLRow_Scenario.html"
+      label="tParseXMLRow scenario example"
     />
   </context>
   <context id="tPerlFlex">
@@ -968,6 +1980,28 @@
       label="tPerlRow scenario example"
     />
   </context>
+  <context id="tPerl">
+    <description>executes once the Perl code entered</description>
+    <topic
+      href="guide/components/tPerl_Prop.html"
+      label="tPerl properties description"
+    />
+    <topic
+      href="guide/components/tPerl_Scenario.html"
+      label="tPerl scenario example"
+    />
+  </context>
+  <context id="tPivotOutputDelimited">
+    <description>writes to a file an aggregated crosstable with simple separated fields</description>
+    <topic
+      href="guide/components/tPivotOutputDelimited_Prop.html"
+      label="tPivotOutputDelimited properties description"
+    />
+    <topic
+      href="guide/components/tPivotOutputDelimited_Scenario.html"
+      label="tPivotOutputDelimited scenario example"
+    />
+  </context>
   <context id="tPostgresqlBulkExec">
     <description>Load efficiently data from a file</description>
     <topic
@@ -977,6 +2011,28 @@
     <topic
       href="guide/components/tPostgresqlBulkExec_Scenario.html"
       label="tPostgresqlBulkExec scenario example"
+    />
+  </context>
+  <context id="tPostgresqlCommit">
+    <description>Commit all transactions not already commited in selected PostgreSQL connection</description>
+    <topic
+      href="guide/components/tPostgresqlCommit_Prop.html"
+      label="tPostgresqlCommit properties description"
+    />
+    <topic
+      href="guide/components/tPostgresqlCommit_Scenario.html"
+      label="tPostgresqlCommit scenario example"
+    />
+  </context>
+  <context id="tPostgresqlConnection">
+    <description>Create a Connection to an PostgreSQL DB</description>
+    <topic
+      href="guide/components/tPostgresqlConnection_Prop.html"
+      label="tPostgresqlConnection properties description"
+    />
+    <topic
+      href="guide/components/tPostgresqlConnection_Scenario.html"
+      label="tPostgresqlConnection scenario example"
     />
   </context>
   <context id="tPostgresqlInput">
@@ -990,15 +2046,15 @@
       label="tPostgresqlInput scenario example"
     />
   </context>
-  <context id="tPostgresqlOutput">
-    <description>inserts or updates lines into a Postgresql table</description>
+  <context id="tPostgresqlOutputBulkExec">
+    <description>Load efficiently data from a flow</description>
     <topic
-      href="guide/components/tPostgresqlOutput_Prop.html"
-      label="tPostgresqlOutput properties description"
+      href="guide/components/tPostgresqlOutputBulkExec_Prop.html"
+      label="tPostgresqlOutputBulkExec properties description"
     />
     <topic
-      href="guide/components/tPostgresqlOutput_Scenario.html"
-      label="tPostgresqlOutput scenario example"
+      href="guide/components/tPostgresqlOutputBulkExec_Scenario.html"
+      label="tPostgresqlOutputBulkExec scenario example"
     />
   </context>
   <context id="tPostgresqlOutputBulk">
@@ -1012,15 +2068,37 @@
       label="tPostgresqlOutputBulk scenario example"
     />
   </context>
-  <context id="tPostgresqlOutputBulkExec">
-    <description>Load efficiently data from a flow</description>
+  <context id="tPostgresqlOutputUpdateBulkExec">
+    <description>bulk load a temporary table from data flow, perform a single update query using an SQL join.</description>
     <topic
-      href="guide/components/tPostgresqlOutputBulkExec_Prop.html"
-      label="tPostgresqlOutputBulkExec properties description"
+      href="guide/components/tPostgresqlOutputUpdateBulkExec_Prop.html"
+      label="tPostgresqlOutputUpdateBulkExec properties description"
     />
     <topic
-      href="guide/components/tPostgresqlOutputBulkExec_Scenario.html"
-      label="tPostgresqlOutputBulkExec scenario example"
+      href="guide/components/tPostgresqlOutputUpdateBulkExec_Scenario.html"
+      label="tPostgresqlOutputUpdateBulkExec scenario example"
+    />
+  </context>
+  <context id="tPostgresqlOutput">
+    <description>inserts or updates lines into a Postgresql table</description>
+    <topic
+      href="guide/components/tPostgresqlOutput_Prop.html"
+      label="tPostgresqlOutput properties description"
+    />
+    <topic
+      href="guide/components/tPostgresqlOutput_Scenario.html"
+      label="tPostgresqlOutput scenario example"
+    />
+  </context>
+  <context id="tPostgresqlRollback">
+    <description>Rollback all transactions not already commited in selected PostgreSQL connection</description>
+    <topic
+      href="guide/components/tPostgresqlRollback_Prop.html"
+      label="tPostgresqlRollback properties description"
+    />
+    <topic
+      href="guide/components/tPostgresqlRollback_Scenario.html"
+      label="tPostgresqlRollback scenario example"
     />
   </context>
   <context id="tPostgresqlRow">
@@ -1034,6 +2112,28 @@
       label="tPostgresqlRow scenario example"
     />
   </context>
+  <context id="tPostgresqlSCD">
+    <description>Slowly Changing Dimension algorithm for Oracle</description>
+    <topic
+      href="guide/components/tPostgresqlSCD_Prop.html"
+      label="tPostgresqlSCD properties description"
+    />
+    <topic
+      href="guide/components/tPostgresqlSCD_Scenario.html"
+      label="tPostgresqlSCD scenario example"
+    />
+  </context>
+  <context id="tPostgresqlUpdateBulkExec">
+    <description>Create a Connection to an PostgreSQL DB</description>
+    <topic
+      href="guide/components/tPostgresqlUpdateBulkExec_Prop.html"
+      label="tPostgresqlUpdateBulkExec properties description"
+    />
+    <topic
+      href="guide/components/tPostgresqlUpdateBulkExec_Scenario.html"
+      label="tPostgresqlUpdateBulkExec scenario example"
+    />
+  </context>
   <context id="tRG">
     <description>Generate rows</description>
     <topic
@@ -1043,6 +2143,61 @@
     <topic
       href="guide/components/tRG_Scenario.html"
       label="tRG scenario example"
+    />
+  </context>
+  <context id="tRSSInput">
+    <description>input Rss</description>
+    <topic
+      href="guide/components/tRSSInput_Prop.html"
+      label="tRSSInput properties description"
+    />
+    <topic
+      href="guide/components/tRSSInput_Scenario.html"
+      label="tRSSInput scenario example"
+    />
+  </context>
+  <context id="tRSSOutput">
+    <description>output Rss xml</description>
+    <topic
+      href="guide/components/tRSSOutput_Prop.html"
+      label="tRSSOutput properties description"
+    />
+    <topic
+      href="guide/components/tRSSOutput_Scenario.html"
+      label="tRSSOutput scenario example"
+    />
+  </context>
+  <context id="tReplaceList">
+    <description>Replace strings with a dynamic replacement list</description>
+    <topic
+      href="guide/components/tReplaceList_Prop.html"
+      label="tReplaceList properties description"
+    />
+    <topic
+      href="guide/components/tReplaceList_Scenario.html"
+      label="tReplaceList scenario example"
+    />
+  </context>
+  <context id="tReplace">
+    <description>Filters input row by evaluating column conditions.</description>
+    <topic
+      href="guide/components/tReplace_Prop.html"
+      label="tReplace properties description"
+    />
+    <topic
+      href="guide/components/tReplace_Scenario.html"
+      label="tReplace scenario example"
+    />
+  </context>
+  <context id="tReplicate">
+    <description>Replicate a row as many times as needed</description>
+    <topic
+      href="guide/components/tReplicate_Prop.html"
+      label="tReplicate properties description"
+    />
+    <topic
+      href="guide/components/tReplicate_Scenario.html"
+      label="tReplicate scenario example"
     />
   </context>
   <context id="tRowGenerator">
@@ -1067,6 +2222,28 @@
       label="tRunJob scenario example"
     />
   </context>
+  <context id="tSCPGet">
+    <description>Copy the files using SCP protocol</description>
+    <topic
+      href="guide/components/tSCPGet_Prop.html"
+      label="tSCPGet properties description"
+    />
+    <topic
+      href="guide/components/tSCPGet_Scenario.html"
+      label="tSCPGet scenario example"
+    />
+  </context>
+  <context id="tSCPPut">
+    <description>Copy the files using SCP protocol</description>
+    <topic
+      href="guide/components/tSCPPut_Prop.html"
+      label="tSCPPut properties description"
+    />
+    <topic
+      href="guide/components/tSCPPut_Scenario.html"
+      label="tSCPPut scenario example"
+    />
+  </context>
   <context id="tSQLiteInput">
     <description>reads a SQLite table and extracts fields based on an SQL query</description>
     <topic
@@ -1079,7 +2256,7 @@
     />
   </context>
   <context id="tSQLiteOutput">
-    <description>inserts or updates lines into a MySQL table</description>
+    <description>inserts or updates lines into a SQLLite table</description>
     <topic
       href="guide/components/tSQLiteOutput_Prop.html"
       label="tSQLiteOutput properties description"
@@ -1111,6 +2288,17 @@
       label="tSSH scenario example"
     />
   </context>
+  <context id="tSVNLogInput">
+    <description>Extract Subversion log from an URL</description>
+    <topic
+      href="guide/components/tSVNLogInput_Prop.html"
+      label="tSVNLogInput properties description"
+    />
+    <topic
+      href="guide/components/tSVNLogInput_Scenario.html"
+      label="tSVNLogInput scenario example"
+    />
+  </context>
   <context id="tSalesforceInput">
     <description>Input from the Salesforce</description>
     <topic
@@ -1133,6 +2321,17 @@
       label="tSalesforceOutput scenario example"
     />
   </context>
+  <context id="tSchemaComplianceCheck">
+    <description>Check columns from schema</description>
+    <topic
+      href="guide/components/tSchemaComplianceCheck_Prop.html"
+      label="tSchemaComplianceCheck properties description"
+    />
+    <topic
+      href="guide/components/tSchemaComplianceCheck_Scenario.html"
+      label="tSchemaComplianceCheck scenario example"
+    />
+  </context>
   <context id="tSendMail">
     <description>sends emails with or without attachments and with or without customized headers</description>
     <topic
@@ -1142,6 +2341,28 @@
     <topic
       href="guide/components/tSendMail_Scenario.html"
       label="tSendMail scenario example"
+    />
+  </context>
+  <context id="tSetEnv">
+    <description>Add variables to system environment</description>
+    <topic
+      href="guide/components/tSetEnv_Prop.html"
+      label="tSetEnv properties description"
+    />
+    <topic
+      href="guide/components/tSetEnv_Scenario.html"
+      label="tSetEnv scenario example"
+    />
+  </context>
+  <context id="tSetGlobalVar">
+    <description>Set a list of global variables</description>
+    <topic
+      href="guide/components/tSetGlobalVar_Prop.html"
+      label="tSetGlobalVar properties description"
+    />
+    <topic
+      href="guide/components/tSetGlobalVar_Scenario.html"
+      label="tSetGlobalVar scenario example"
     />
   </context>
   <context id="tSleep">
@@ -1155,8 +2376,30 @@
       label="tSleep scenario example"
     />
   </context>
+  <context id="tSocketInput">
+    <description>connect to a socket and get data until closing message is received</description>
+    <topic
+      href="guide/components/tSocketInput_Prop.html"
+      label="tSocketInput properties description"
+    />
+    <topic
+      href="guide/components/tSocketInput_Scenario.html"
+      label="tSocketInput scenario example"
+    />
+  </context>
+  <context id="tSocketOutput">
+    <description>reads a file row by row with simple separated fields</description>
+    <topic
+      href="guide/components/tSocketOutput_Prop.html"
+      label="tSocketOutput properties description"
+    />
+    <topic
+      href="guide/components/tSocketOutput_Scenario.html"
+      label="tSocketOutput scenario example"
+    />
+  </context>
   <context id="tSortIn">
-    <description>Read a simply delimited file</description>
+    <description>Read a Sorted array</description>
     <topic
       href="guide/components/tSortIn_Prop.html"
       label="tSortIn properties description"
@@ -1164,6 +2407,17 @@
     <topic
       href="guide/components/tSortIn_Scenario.html"
       label="tSortIn scenario example"
+    />
+  </context>
+  <context id="tSortOut">
+    <description>Sort Rows</description>
+    <topic
+      href="guide/components/tSortOut_Prop.html"
+      label="tSortOut properties description"
+    />
+    <topic
+      href="guide/components/tSortOut_Scenario.html"
+      label="tSortOut scenario example"
     />
   </context>
   <context id="tSortRow">
@@ -1232,15 +2486,15 @@
       label="tSybaseInput scenario example"
     />
   </context>
-  <context id="tSybaseOutput">
-    <description>inserts or updates lines into a Sybase table</description>
+  <context id="tSybaseOutputBulkExec">
+    <description>Load efficiently data from a flow</description>
     <topic
-      href="guide/components/tSybaseOutput_Prop.html"
-      label="tSybaseOutput properties description"
+      href="guide/components/tSybaseOutputBulkExec_Prop.html"
+      label="tSybaseOutputBulkExec properties description"
     />
     <topic
-      href="guide/components/tSybaseOutput_Scenario.html"
-      label="tSybaseOutput scenario example"
+      href="guide/components/tSybaseOutputBulkExec_Scenario.html"
+      label="tSybaseOutputBulkExec scenario example"
     />
   </context>
   <context id="tSybaseOutputBulk">
@@ -1254,15 +2508,15 @@
       label="tSybaseOutputBulk scenario example"
     />
   </context>
-  <context id="tSybaseOutputBulkExec">
-    <description>Load efficiently data from a flow</description>
+  <context id="tSybaseOutput">
+    <description>inserts or updates lines into a Sybase table</description>
     <topic
-      href="guide/components/tSybaseOutputBulkExec_Prop.html"
-      label="tSybaseOutputBulkExec properties description"
+      href="guide/components/tSybaseOutput_Prop.html"
+      label="tSybaseOutput properties description"
     />
     <topic
-      href="guide/components/tSybaseOutputBulkExec_Scenario.html"
-      label="tSybaseOutputBulkExec scenario example"
+      href="guide/components/tSybaseOutput_Scenario.html"
+      label="tSybaseOutput scenario example"
     />
   </context>
   <context id="tSybaseRow">
@@ -1276,6 +2530,39 @@
       label="tSybaseRow scenario example"
     />
   </context>
+  <context id="tSybaseSCD">
+    <description>Slowly Changing Dimension algorithm for Sybase</description>
+    <topic
+      href="guide/components/tSybaseSCD_Prop.html"
+      label="tSybaseSCD properties description"
+    />
+    <topic
+      href="guide/components/tSybaseSCD_Scenario.html"
+      label="tSybaseSCD scenario example"
+    />
+  </context>
+  <context id="tSybaseSP">
+    <description>Call a Sybase Server Stored Procedure</description>
+    <topic
+      href="guide/components/tSybaseSP_Prop.html"
+      label="tSybaseSP properties description"
+    />
+    <topic
+      href="guide/components/tSybaseSP_Scenario.html"
+      label="tSybaseSP scenario example"
+    />
+  </context>
+  <context id="tSystemInput">
+    <description>executes one system command and use its output as a flow</description>
+    <topic
+      href="guide/components/tSystemInput_Prop.html"
+      label="tSystemInput properties description"
+    />
+    <topic
+      href="guide/components/tSystemInput_Scenario.html"
+      label="tSystemInput scenario example"
+    />
+  </context>
   <context id="tSystem">
     <description>executes one system command</description>
     <topic
@@ -1287,15 +2574,59 @@
       label="tSystem scenario example"
     />
   </context>
-  <context id="tTemplate">
-    <description>Template component</description>
+  <context id="tTeradataFastLoad">
+    <description>use the FastLoad protocol</description>
     <topic
-      href="guide/components/tTemplate_Prop.html"
-      label="tTemplate properties description"
+      href="guide/components/tTeradataFastLoad_Prop.html"
+      label="tTeradataFastLoad properties description"
     />
     <topic
-      href="guide/components/tTemplate_Scenario.html"
-      label="tTemplate scenario example"
+      href="guide/components/tTeradataFastLoad_Scenario.html"
+      label="tTeradataFastLoad scenario example"
+    />
+  </context>
+  <context id="tTeradataInput">
+    <description>reads a Teradata table and extracts fields based on an SQL query</description>
+    <topic
+      href="guide/components/tTeradataInput_Prop.html"
+      label="tTeradataInput properties description"
+    />
+    <topic
+      href="guide/components/tTeradataInput_Scenario.html"
+      label="tTeradataInput scenario example"
+    />
+  </context>
+  <context id="tTeradataMultiLoad">
+    <description>use the MultiLoad protocol</description>
+    <topic
+      href="guide/components/tTeradataMultiLoad_Prop.html"
+      label="tTeradataMultiLoad properties description"
+    />
+    <topic
+      href="guide/components/tTeradataMultiLoad_Scenario.html"
+      label="tTeradataMultiLoad scenario example"
+    />
+  </context>
+  <context id="tTeradataOutput">
+    <description>inserts or updates lines into a Teradata table</description>
+    <topic
+      href="guide/components/tTeradataOutput_Prop.html"
+      label="tTeradataOutput properties description"
+    />
+    <topic
+      href="guide/components/tTeradataOutput_Scenario.html"
+      label="tTeradataOutput scenario example"
+    />
+  </context>
+  <context id="tTeradataRow">
+    <description>loop intermediate component which can not be responsible of the loop. Executes an SQL query at each one of a Talend flow's iterations</description>
+    <topic
+      href="guide/components/tTeradataRow_Prop.html"
+      label="tTeradataRow properties description"
+    />
+    <topic
+      href="guide/components/tTeradataRow_Scenario.html"
+      label="tTeradataRow scenario example"
     />
   </context>
   <context id="tUniqRow">
@@ -1307,6 +2638,138 @@
     <topic
       href="guide/components/tUniqRow_Scenario.html"
       label="tUniqRow scenario example"
+    />
+  </context>
+  <context id="tUnite">
+    <description>Merge inputs to the same output</description>
+    <topic
+      href="guide/components/tUnite_Prop.html"
+      label="tUnite properties description"
+    />
+    <topic
+      href="guide/components/tUnite_Scenario.html"
+      label="tUnite scenario example"
+    />
+  </context>
+  <context id="tVerticaBulkExec">
+    <description>Load efficiently data from a file</description>
+    <topic
+      href="guide/components/tVerticaBulkExec_Prop.html"
+      label="tVerticaBulkExec properties description"
+    />
+    <topic
+      href="guide/components/tVerticaBulkExec_Scenario.html"
+      label="tVerticaBulkExec scenario example"
+    />
+  </context>
+  <context id="tVerticaInput">
+    <description>reads a Vertica table and extracts fields based on an SQL query</description>
+    <topic
+      href="guide/components/tVerticaInput_Prop.html"
+      label="tVerticaInput properties description"
+    />
+    <topic
+      href="guide/components/tVerticaInput_Scenario.html"
+      label="tVerticaInput scenario example"
+    />
+  </context>
+  <context id="tVerticaOutputBulkExec">
+    <description>builds the Vertica format bulk file and asks the database defined to upload bulk file.</description>
+    <topic
+      href="guide/components/tVerticaOutputBulkExec_Prop.html"
+      label="tVerticaOutputBulkExec properties description"
+    />
+    <topic
+      href="guide/components/tVerticaOutputBulkExec_Scenario.html"
+      label="tVerticaOutputBulkExec scenario example"
+    />
+  </context>
+  <context id="tVerticaOutputBulk">
+    <description>Write a prepared file for Vertica bulk load</description>
+    <topic
+      href="guide/components/tVerticaOutputBulk_Prop.html"
+      label="tVerticaOutputBulk properties description"
+    />
+    <topic
+      href="guide/components/tVerticaOutputBulk_Scenario.html"
+      label="tVerticaOutputBulk scenario example"
+    />
+  </context>
+  <context id="tVerticaOutput">
+    <description>inserts or updates lines into a Vertica table</description>
+    <topic
+      href="guide/components/tVerticaOutput_Prop.html"
+      label="tVerticaOutput properties description"
+    />
+    <topic
+      href="guide/components/tVerticaOutput_Scenario.html"
+      label="tVerticaOutput scenario example"
+    />
+  </context>
+  <context id="tVerticaRow">
+    <description>loop intermediate component which can not be responsible of the loop. Executes an SQL query at each one of a Talend flow's iterations</description>
+    <topic
+      href="guide/components/tVerticaRow_Prop.html"
+      label="tVerticaRow properties description"
+    />
+    <topic
+      href="guide/components/tVerticaRow_Scenario.html"
+      label="tVerticaRow scenario example"
+    />
+  </context>
+  <context id="tVtigerCRMInput">
+    <description>Input from the VtigerCRM</description>
+    <topic
+      href="guide/components/tVtigerCRMInput_Prop.html"
+      label="tVtigerCRMInput properties description"
+    />
+    <topic
+      href="guide/components/tVtigerCRMInput_Scenario.html"
+      label="tVtigerCRMInput scenario example"
+    />
+  </context>
+  <context id="tVtigerCRMOutput">
+    <description>Output from the VtigerCRM</description>
+    <topic
+      href="guide/components/tVtigerCRMOutput_Prop.html"
+      label="tVtigerCRMOutput properties description"
+    />
+    <topic
+      href="guide/components/tVtigerCRMOutput_Scenario.html"
+      label="tVtigerCRMOutput scenario example"
+    />
+  </context>
+  <context id="tWaitForFile">
+    <description>scan a directory and trigger action when specified files are created or deleted</description>
+    <topic
+      href="guide/components/tWaitForFile_Prop.html"
+      label="tWaitForFile properties description"
+    />
+    <topic
+      href="guide/components/tWaitForFile_Scenario.html"
+      label="tWaitForFile scenario example"
+    />
+  </context>
+  <context id="tWaitForSocket">
+    <description>scan a port and trigger action when a client connection is established</description>
+    <topic
+      href="guide/components/tWaitForSocket_Prop.html"
+      label="tWaitForSocket properties description"
+    />
+    <topic
+      href="guide/components/tWaitForSocket_Scenario.html"
+      label="tWaitForSocket scenario example"
+    />
+  </context>
+  <context id="tWaitForSqlData">
+    <description>scan a table and trigger action when specified condition on row count is true</description>
+    <topic
+      href="guide/components/tWaitForSqlData_Prop.html"
+      label="tWaitForSqlData properties description"
+    />
+    <topic
+      href="guide/components/tWaitForSqlData_Scenario.html"
+      label="tWaitForSqlData scenario example"
     />
   </context>
   <context id="tWarn">
@@ -1331,6 +2794,17 @@
       label="tWebServiceInput scenario example"
     />
   </context>
+  <context id="tXMLRPCInput">
+    <description>Request a Xmlrpcserver and read its result</description>
+    <topic
+      href="guide/components/tXMLRPCInput_Prop.html"
+      label="tXMLRPCInput properties description"
+    />
+    <topic
+      href="guide/components/tXMLRPCInput_Scenario.html"
+      label="tXMLRPCInput scenario example"
+    />
+  </context>
   <context id="tXSDValidator">
     <description>Validate XML with XSD</description>
     <topic
@@ -1351,226 +2825,6 @@
     <topic
       href="guide/components/tXSLT_Scenario.html"
       label="tXSLT scenario example"
-    />
-  </context>
-  <context id="tForeach">
-    <description>create a loop on a list for an iterate link</description>
-    <topic
-      href="guide/components/tForeach_Prop.html"
-      label="tForeach properties description"
-    />
-    <topic
-      href="guide/components/tForeach_Scenario.html"
-      label="tForeach scenario example"
-    />
-  </context>
-  <context id="tJavaDBInput">
-    <description>reads a JavaDB table and extracts fields based on an SQL query</description>
-    <topic
-      href="guide/components/tJavaDBInput_Prop.html"
-      label="tJavaDBInput properties description"
-    />
-    <topic
-      href="guide/components/tJavaDBInput_Scenario.html"
-      label="tJavaDBInput scenario example"
-    />
-  </context>
-  <context id="tJavaDBOutput">
-    <description>inserts or updates lines into a JavaDB table</description>
-    <topic
-      href="guide/components/tJavaDBOutput_Prop.html"
-      label="tJavaDBOutput properties description"
-    />
-    <topic
-      href="guide/components/tJavaDBOutput_Scenario.html"
-      label="tJavaDBOutput scenario example"
-    />
-  </context>
-  <context id="tJavaDBRow">
-    <description>loop intermediate component which can not be responsible of the loop. Executes an SQL query at each one of a Talend flow's iterations</description>
-    <topic
-      href="guide/components/tJavaDBRow_Prop.html"
-      label="tJavaDBRow properties description"
-    />
-    <topic
-      href="guide/components/tJavaDBRow_Scenario.html"
-      label="tJavaDBRow scenario example"
-    />
-  </context>
-  <context id="tSVNLogInput">
-    <description>Extract Subversion log from an URL</description>
-    <topic
-      href="guide/components/tSVNLogInput_Prop.html"
-      label="tSVNLogInput properties description"
-    />
-    <topic
-      href="guide/components/tSVNLogInput_Scenario.html"
-      label="tSVNLogInput scenario example"
-    />
-  </context>
-  <context id="tInformixOutput">
-    <description>inserts or updates lines into a Informix table</description>
-    <topic
-      href="guide/components/tInformixOutput_Prop.html"
-      label="tInformixOutput properties description"
-    />
-    <topic
-      href="guide/components/tInformixOutput_Scenario.html"
-      label="tInformixOutput scenario example"
-    />
-  </context>
-  <context id="tInformixRow">
-    <description>loop intermediate component which can not be responsible of the loop. Executes an SQL query at each one of a Talend flow's iterations</description>
-    <topic
-      href="guide/components/tInformixRow_Prop.html"
-      label="tInformixRow properties description"
-    />
-    <topic
-      href="guide/components/tInformixRow_Scenario.html"
-      label="tInformixRow scenario example"
-    />
-  </context>
-  <context id="tInformixInput">
-    <description>reads a Informix table and extracts fields based on an SQL query</description>
-    <topic
-      href="guide/components/tInformixInput_Prop.html"
-      label="tInformixInput properties description"
-    />
-    <topic
-      href="guide/components/tInformixInput_Scenario.html"
-      label="tInformixInput scenario example"
-    />
-  </context>
-  <context id="tMysqlConnection">
-    <description>reads a MySQL table and extracts fields based on an SQL query</description>
-    <topic
-      href="guide/components/tMysqlConnection_Prop.html"
-      label="tMysqlConnection properties description"
-    />
-    <topic
-      href="guide/components/tMysqlConnection_Scenario.html"
-      label="tMysqlConnection scenario example"
-    />
-  </context>
-  <context id="tNormalizerIn">
-    <description>Normalize a 'flat' row with a list of fields</description>
-    <topic
-      href="guide/components/tNormalizerIn_Prop.html"
-      label="tNormalizerIn properties description"
-    />
-    <topic
-      href="guide/components/tNormalizerIn_Scenario.html"
-      label="tNormalizerIn scenario example"
-    />
-  </context>
-  <context id="tNormalizer">
-    <description>Normalize a 'flat' row with a list of fields</description>
-    <topic
-      href="guide/components/tNormalizer_Prop.html"
-      label="tNormalizer properties description"
-    />
-    <topic
-      href="guide/components/tNormalizer_Scenario.html"
-      label="tNormalizer scenario example"
-    />
-  </context>
-  <context id="tMysqlCommit">
-    <description>inserts or updates lines into a MySQL table</description>
-    <topic
-      href="guide/components/tMysqlCommit_Prop.html"
-      label="tMysqlCommit properties description"
-    />
-    <topic
-      href="guide/components/tMysqlCommit_Scenario.html"
-      label="tMysqlCommit scenario example"
-    />
-  </context>
-  <context id="tMysqlRollback">
-    <description>inserts or updates lines into a MySQL table</description>
-    <topic
-      href="guide/components/tMysqlRollback_Prop.html"
-      label="tMysqlRollback properties description"
-    />
-    <topic
-      href="guide/components/tMysqlRollback_Scenario.html"
-      label="tMysqlRollback scenario example"
-    />
-  </context>
-  <context id="tDenormalize">
-    <description>Concatenate different fields into an arry or delimited string</description>
-    <topic
-      href="guide/components/tDenormalize_Prop.html"
-      label="tDenormalize properties description"
-    />
-    <topic
-      href="guide/components/tDenormalize_Scenario.html"
-      label="tDenormalize scenario example"
-    />
-  </context>
-  <context id="tAccessRow">
-    <description>loop intermediate component which can not be responsible of the loop. Executes an SQL query at each one of a Talend flow's iterations</description>
-    <topic
-      href="guide/components/tAccessRow_Prop.html"
-      label="tAccessRow properties description"
-    />
-    <topic
-      href="guide/components/tAccessRow_Scenario.html"
-      label="tAccessRow scenario example"
-    />
-  </context>
-  <context id="tDenormalizeIn">
-    <description>Concatenate different fields into an arry or delimited string</description>
-    <topic
-      href="guide/components/tDenormalizeIn_Prop.html"
-      label="tDenormalizeIn properties description"
-    />
-    <topic
-      href="guide/components/tDenormalizeIn_Scenario.html"
-      label="tDenormalizeIn scenario example"
-    />
-  </context>
-  <context id="tAccessOutput">
-    <description>inserts or updates lines into a Access table</description>
-    <topic
-      href="guide/components/tAccessOutput_Prop.html"
-      label="tAccessOutput properties description"
-    />
-    <topic
-      href="guide/components/tAccessOutput_Scenario.html"
-      label="tAccessOutput scenario example"
-    />
-  </context>
-  <context id="tAccessInput">
-    <description>reads a Access table and extracts fields based on an SQL query</description>
-    <topic
-      href="guide/components/tAccessInput_Prop.html"
-      label="tAccessInput properties description"
-    />
-    <topic
-      href="guide/components/tAccessInput_Scenario.html"
-      label="tAccessInput scenario example"
-    />
-  </context>
-  <context id="tFileOutputXML2">
-    <description>creates an XML structure from rows broken down into fields</description>
-    <topic
-      href="guide/components/tFileOutputXML2_Prop.html"
-      label="tFileOutputXML2 properties description"
-    />
-    <topic
-      href="guide/components/tFileOutputXML2_Scenario.html"
-      label="tFileOutputXML2 scenario example"
-    />
-  </context>
-  <context id="tOracleSPRow">
-    <description>inserts or updates lines into a Oracle table s</description>
-    <topic
-      href="guide/components/tOracleSPRow_Prop.html"
-      label="tOracleSPRow properties description"
-    />
-    <topic
-      href="guide/components/tOracleSPRow_Scenario.html"
-      label="tOracleSPRow scenario example"
     />
   </context>
 </contexts>
