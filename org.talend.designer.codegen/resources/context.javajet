@@ -4,15 +4,24 @@
 		org.talend.core.model.process.IContextParameter
 		org.talend.designer.codegen.config.CodeGeneratorArgument 
 		java.util.List
+		java.util.Properties
+		java.io.ByteArrayOutputStream
 	" 
 	class="Context" 
 %>
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	List<IContextParameter> parameterList = (List<IContextParameter>) codeGenArgument.getArgument();
+	Properties context = new Properties();
 	for (IContextParameter parameter : parameterList) {
-%>
-<%=parameter.getName() %>=<%=parameter.getValue() %><%="\r\n" %>
-<%
+		context.put(parameter.getName(), parameter.getValue());
 	}
+
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    try {
+        context.store(baos, "");
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
 %>
+<%=baos %>
