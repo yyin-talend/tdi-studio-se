@@ -391,7 +391,8 @@ public class NodesPasteCommand extends Command {
                         String newNameBuiltIn = oldMetaToNewMeta.get(pastedSourceNode.getUniqueName() + ":"
                                 + connection.getMetaName());
                         if (newNameBuiltIn == null) {
-                            newConnectionName = createNewConnectionName(connection.getName());
+                            // newConnectionName = createNewConnectionName(connection.getName());
+                            newConnectionName = process.generateUniqueConnectionName(Process.DEFAULT_CONNECTION_NAME);
                         } else {
                             newConnectionName = newNameBuiltIn;
                         }
