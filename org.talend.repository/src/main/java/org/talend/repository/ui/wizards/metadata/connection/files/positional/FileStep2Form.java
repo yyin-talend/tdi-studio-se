@@ -144,7 +144,7 @@ public class FileStep2Form extends AbstractPositionalFileStepForm implements IRe
             encodingCombo.setText(getConnection().getEncoding());
         } else {
             encodingCombo.select(0);
-            getConnection().setEncoding(encodingCombo.getText());
+
         }
         fieldSeparatorText.setText(getConnection().getFieldSeparatorValue());
         rowSeparatorCombo.setText(getConnection().getRowSeparatorType().getLiteral());

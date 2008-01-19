@@ -153,7 +153,7 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm implem
             encodingCombo.setText(getConnection().getEncoding());
         } else {
             encodingCombo.select(0);
-            getConnection().setEncoding(encodingCombo.getText());
+
         }
 
         fieldSeparatorCombo.setText(getConnection().getFieldSeparatorType().getName());

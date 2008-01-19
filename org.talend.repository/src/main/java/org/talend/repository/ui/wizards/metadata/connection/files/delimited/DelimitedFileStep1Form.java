@@ -258,7 +258,9 @@ public class DelimitedFileStep1Form extends AbstractDelimitedFileStepForm {
 
                 File file = new File(fileField.getText());
                 Charset guessedCharset = CharsetToolkit.guessEncoding(file, 4096);
-                // getConnection().setEncoding(guessedCharset.displayName());
+                if (getConnection().getEncoding() == null || getConnection().getEncoding().equals("")) {
+                    getConnection().setEncoding(guessedCharset.displayName());
+                }
 
                 String str;
                 int numberLine = 0;

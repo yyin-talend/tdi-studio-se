@@ -140,7 +140,6 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm implements I
             encodingCombo.setText(getConnection().getEncoding());
         } else {
             encodingCombo.select(0);
-            getConnection().setEncoding(encodingCombo.getText());
         }
 
         // fieldSeparatorType.setText(getConnection().getFieldSeparatorType().getName());
