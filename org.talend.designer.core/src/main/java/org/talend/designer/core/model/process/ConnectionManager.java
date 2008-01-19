@@ -63,7 +63,7 @@ public class ConnectionManager {
                 }
             }
             int maxFlowInput = target.getConnectorFromName(EConnectionType.FLOW_MAIN.getName()).getMaxLinkInput();
-            if (nbMain > 1 && (nbMain <= maxFlowInput || maxFlowInput == -1)) {
+            if (maxFlowInput > 1 && nbMain >= 1 && (nbMain <= maxFlowInput || maxFlowInput == -1)) {
                 // if the component accept several connections on the input, all inputs must come from the same process
                 if (!source.sameProcessAs(target, false)) {
                     return false;
