@@ -242,6 +242,7 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView {
             }
         }
         this.currentSelectedTab = null;
+        this.element = null;
         clearFlags();
     }
 

@@ -193,6 +193,7 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
                 curControl.dispose();
             }
         }
+        this.element = null;
         cleaned = true;
         selectedPrimary = true;
     }
