@@ -92,14 +92,14 @@ public class CreateComponentWizard extends BasicNewResourceWizard {
 		this.addPage(creatProjectPage);
 		creatJetFilesPage = new WizardJetFilesChoosePage("creatJetFilesPage",   //$NON-NLS-1$
 				componentPref);
-		creatJetFilesPage.setTitle("Creat jet files for the component.");
+		creatJetFilesPage.setTitle("Create jet files for the component.");
 //		creatJetFilesPage.getPropertyChangeBean().addPropertyChangeListener(
 //				this);
 		this.addPage(creatJetFilesPage);
 		
 		WizardXMLConfigPage xmlConfigPage = new WizardXMLConfigPage(
 				"xmlConfigPage", componentPref);
-		xmlConfigPage.setTitle("Creat the xml configuration file for current component.");
+		xmlConfigPage.setTitle("Create the xml configuration file for current component.");
 		this.addPage(xmlConfigPage);		
 	}
 

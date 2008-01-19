@@ -127,11 +127,11 @@ public class ComponentFolderManager {
 			String[] suffixs = componentPref.getLanguageType()
 					.getFileSuffix().split(";");
 			for (String suffix : suffixs) {
-				creatEmptyFile(fileName + suffix);
+				creatTemplateJetFile(fileName + suffix);
 			}
 			break;
 		default:
-			creatEmptyFile(fileName
+			creatTemplateJetFile(fileName
 					+ componentPref.getLanguageType().getFileSuffix());
 		}
 	}
@@ -151,33 +151,51 @@ public class ComponentFolderManager {
 			XMLUtil.formatXMLFile(tempXMLFileName, "UTF-8");
 
 			f = new File(tempXMLFileName);
-			in = new FileInputStream(f);
 			// String fileName = componentPref.getName();
 			switch (componentPref.getLanguageType()) {
 			case BOTHLANGUAGETYPE:
-				String[] suffixs = componentPref.getLanguageType().getNameSuffix()
-						.split(";");
+				String[] suffixs = componentPref.getLanguageType()
+						.getNameSuffix().split(";");
 				for (String nameSuffix : suffixs) {
-					this.copyFileFromSrc(in, this.componentFolderName + nameSuffix
-							+ xmlSUFFIX);
+					in = new FileInputStream(f);
+					this.copyFileFromSrc(in, this.componentFolderName
+							+ nameSuffix + xmlSUFFIX);
+					in.close();
 				}
 				break;
 			default:
+				in = new FileInputStream(f);
 				this.copyFileFromSrc(in, this.componentFolderName
 						+ componentPref.getLanguageType().getNameSuffix()
 						+ xmlSUFFIX);
+				in.close();
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				in.close();
-			} catch (IOException e) {
-				e.printStackTrace();
+			in = null;
+			if (!f.delete()) {
+				f.deleteOnExit();
 			}
-			f.delete();
 		}
 		
+	}
+	
+
+	private void addComponentImage() throws CoreException,
+			FileNotFoundException {
+		if (componentPref.getImageURL() == null) {
+			copyFileFromSrc((FileInputStream) ImageLib
+					.getImageInputStream(ImageLib.COMPONENT_DEFAULT),
+					componentPref.getName() + "_icon32.png");
+		}
+		copyFileFromSrc(componentPref.getImageURL());
+	}
+	
+	private void creatTemplateJetFile(String fileName) throws CoreException {
+		FileInputStream templateFileStream = (FileInputStream) ComponentFolderManager.class
+				.getResourceAsStream("template.javajet");
+		copyFileFromSrc(templateFileStream, fileName);
 	}
 
 	private void creatEmptyFile(String fileName) throws CoreException {
@@ -191,16 +209,7 @@ public class ComponentFolderManager {
 		}
 		newFile.create(new ByteArrayInputStream(new byte[0]), false, null);
 	}
-
-	private void addComponentImage() throws CoreException,
-			FileNotFoundException {
-		if (componentPref.getImageURL() == null) {
-			copyFileFromSrc((FileInputStream) ImageLib
-					.getImageInputStream(ImageLib.COMPONENT_DEFAULT),
-					componentPref.getName() + "_icon32.png");
-		}
-		copyFileFromSrc(componentPref.getImageURL());
-	}	
+	
 
 	private void copyFileFromSrc(String srcURL) throws FileNotFoundException,
 			CoreException {

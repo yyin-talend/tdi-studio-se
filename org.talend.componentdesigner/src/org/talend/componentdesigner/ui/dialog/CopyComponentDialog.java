@@ -25,10 +25,12 @@ import org.talend.componentdesigner.manager.ComponentFolderManager;
  *
  */
 public class CopyComponentDialog extends InputDialog {	
+	String srcFolderName;
 
 	public CopyComponentDialog(Shell parentShell, String dialogTitle,
 			String dialogMessage, String initialValue, IInputValidator validator) {
 		super(parentShell, dialogTitle, dialogMessage, initialValue, validator);
+		srcFolderName = initialValue;
 	}
 
 	/* (non-Javadoc)
@@ -38,7 +40,7 @@ public class CopyComponentDialog extends InputDialog {
 		super.okPressed();
 		try {
 			new ComponentFolderManager().copyComponent(ResourcesPlugin.getWorkspace().getRoot()
-						.getProject(PluginConstant.PROJECTNAME_DEFAULT), "newComponent", this.getValue());
+						.getProject(PluginConstant.PROJECTNAME_DEFAULT), srcFolderName, this.getValue());
 		} catch (CoreException e) {
 			e.printStackTrace();
 		}

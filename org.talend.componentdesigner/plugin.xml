@@ -137,7 +137,7 @@
 			</enablement>
 		</actionProvider> 
 		
-	   <actionProvider 
+	   <!--<actionProvider 
       			id="org.talend.componentdesigner.ui.action.EditComponentActionProvider"
 				class="org.talend.componentdesigner.ui.action.provider.EditComponentActionProvider">
 			<enablement>
@@ -145,7 +145,7 @@
 					<adapt type="org.eclipse.core.resources.IFolder" /> 	
 				</or>
 			</enablement>
-		</actionProvider> 
+		</actionProvider> -->
         <!--<commonSorter
               class="org.eclipse.ui.internal.navigator.resources.workbench.ResourceExtensionSorter"
               id="org.eclipse.ui.navigator.resources.sorters.defaultSorter">

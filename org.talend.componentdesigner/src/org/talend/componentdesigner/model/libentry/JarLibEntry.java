@@ -40,4 +40,9 @@ public class JarLibEntry extends AbstractLibEntry {
 	public int getType() {
 		return JAR;
 	}
+
+	public String getNamePrefix() {
+		int index = this.getName().indexOf(".jar");		
+		return this.getName().substring(0, index);
+	}
 }

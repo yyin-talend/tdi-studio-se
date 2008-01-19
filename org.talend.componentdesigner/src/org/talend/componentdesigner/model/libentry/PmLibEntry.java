@@ -40,4 +40,9 @@ public class PmLibEntry extends AbstractLibEntry {
 		return PM;
 	}
 
+	public String getNamePrefix() {
+		int index = this.getName().indexOf(".pm");		
+		return this.getName().substring(0, index);
+	}
+
 }

@@ -21,6 +21,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.talend.componentdesigner.PluginConstant;
+import org.talend.componentdesigner.ui.composite.xmltree.TreeNodeData;
 import org.w3c.dom.Element;
 
 /**
@@ -42,18 +43,25 @@ public class TreeNodeAttrCompsite extends Composite {
 
 	public void creatPart() {
 		GridData gd = null;
-//		Label label;
-//		Text text;
 		if ((!nodeData.isHasTreeAttr()) && (!nodeData.isHasChildTreeNode())) {
 			Label label = new Label(this, SWT.NONE);
 			label.setText(nodeData.getXMLNode().getNodeName() + MARK);
 			gd = new GridData();
 			gd.horizontalSpan = 2;
 			label.setLayoutData(gd);
-			Text text = new Text(this, SWT.BORDER | SWT.MULTI | SWT.WRAP);
+			final Text nodeText = new Text(this, SWT.BORDER | SWT.MULTI
+					| SWT.WRAP);
 			gd = new GridData(GridData.FILL_BOTH);
 			gd.horizontalSpan = 2;
-			text.setLayoutData(gd);
+			nodeText.setLayoutData(gd);
+			nodeText.setText(nodeData.getBodayText());
+			
+			nodeText.addModifyListener(new ModifyListener() {
+				public void modifyText(ModifyEvent e) {
+					nodeData.getXMLNode().setTextContent(nodeText.getText());
+					nodeData.setBodayText(nodeText.getText());
+				}
+			});
 		} else {
 			for (Object attrName : nodeData.getTreeAttrNames()) {
 				final Label attrLabel = new Label(this, SWT.NONE);

@@ -23,11 +23,13 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
+import org.talend.componentdesigner.model.ILibEntry;
 import org.talend.componentdesigner.model.componentpref.ComponentPref;
-import org.talend.componentdesigner.ui.composite.ATreeNodeUtil;
 import org.talend.componentdesigner.ui.composite.TreeNodeAttrCompsite;
-import org.talend.componentdesigner.ui.composite.TreeNodeData;
-import org.talend.componentdesigner.ui.composite.TreePopulator;
+import org.talend.componentdesigner.ui.composite.xmltree.ATreeNodeUtil;
+import org.talend.componentdesigner.ui.composite.xmltree.TreeNodeData;
+import org.talend.componentdesigner.ui.composite.xmltree.TreePopulator;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 /**
@@ -35,7 +37,23 @@ import org.w3c.dom.Node;
  */
 public class WizardXMLConfigPage extends AbstractComponentPage {
 	
-    private transient Tree availableXmlTree;
+    private static final String IMPORTS = "IMPORTS";
+
+	private static final String IMPORT = "IMPORT";
+
+	private static final String REQUIRED = "REQUIRED";
+
+	private static final String MODULE = "MODULE";
+
+	private static final String NAME = "NAME";
+
+	private static final String CODEGENERATION = "CODEGENERATION";
+    
+    private static final String IMPORTITEMPATH = "COMPONENT/CODEGENERATION/IMPORTS/IMPORT";
+    
+    private static final String IMPORTSITEMPATH = "COMPONENT/CODEGENERATION/IMPORTS";
+
+	private transient Tree availableXmlTree;
     
     private TreePopulator treePopulator;
     
@@ -71,7 +89,7 @@ public class WizardXMLConfigPage extends AbstractComponentPage {
 		
 		rightComposite = new Composite(topComposite, SWT.NONE);
 		GridData rightPanelGd = new GridData(GridData.FILL_BOTH);
-		rightPanelGd.widthHint = 150;
+		rightPanelGd.widthHint = 180;
 		rightComposite.setLayoutData(rightPanelGd);
 		rightComposite.setLayout(new GridLayout());
 		
@@ -164,6 +182,7 @@ public class WizardXMLConfigPage extends AbstractComponentPage {
 			}
 
 		});
+		
 		this.treePopulator = new TreePopulator(availableXmlTree, componentPref.getXmlFileName());
 		treePopulator.populateTree();
 		componentPref.setXmlDocument(treePopulator.getReadDocument());
@@ -172,10 +191,64 @@ public class WizardXMLConfigPage extends AbstractComponentPage {
 	/* (non-Javadoc)
 	 * @see org.talend.componentdesigner.ui.wizard.creatcomponent.AbstractComponentPage#validatePage()
 	 */
-	protected boolean validatePage() {
+	protected boolean validatePage() {		
 		return false;
 	}
 	
+	
+	
+	/* (non-Javadoc)
+	 * @see org.eclipse.jface.dialogs.DialogPage#setVisible(boolean)
+	 */
+	@Override
+	public void setVisible(boolean visible) {
+		if (componentPref.getLibEntries() != null
+				&& componentPref.getLibEntries().length != 0) {
+			fillImportItems();
+		}
+		super.setVisible(visible);
+	}
+
+	private void fillImportItems() {
+		for (int i = 0; i < availableXmlTree.getItems().length; i++) {
+			TreeItem item = availableXmlTree.getItem(i);
+			if (item.getText().equals(CODEGENERATION)) {
+				Node codeGenNode = ((TreeNodeData) item.getData()).getXMLNode();
+				
+				TreeItem importsItem = new TreeItem(item, SWT.CASCADE);
+				importsItem.setText(IMPORTS);
+				Element importsEle = codeGenNode.getOwnerDocument()
+						.createElement(IMPORTS);
+				codeGenNode.appendChild(importsEle);
+				
+				TreeNodeData importsData = new TreeNodeData();
+				importsData.setXMLNode(importsEle);
+				importsData.setTreeNode(ATreeNodeUtil.getTreeNodeByPath(IMPORTSITEMPATH));
+				importsItem.setData(importsData);
+				
+				for (ILibEntry libEntry : componentPref.getLibEntries()) {
+					TreeItem importItem = new TreeItem(importsItem, SWT.CASCADE);
+					importItem.setText(IMPORT);
+					Element importEle = importsEle.getOwnerDocument()
+							.createElement(IMPORT);
+					importsEle.appendChild(importEle);
+					importEle.setAttribute(NAME, libEntry.getNamePrefix());
+					importEle.setAttribute(MODULE, libEntry.getNamePrefix());
+					importEle.setAttribute(REQUIRED, "true");
+					
+					TreeNodeData nodeData = new TreeNodeData();
+					nodeData.putAttrValue(NAME, libEntry.getNamePrefix());
+					nodeData.putAttrValue(MODULE, libEntry.getNamePrefix());
+					nodeData.putAttrValue(REQUIRED, "true");
+					nodeData.setXMLNode(importEle);
+					nodeData.setTreeNode(ATreeNodeUtil.getTreeNodeByPath(IMPORTITEMPATH));
+					importItem.setData(nodeData);
+				}
+
+			}
+		}
+	}
+
 	private void rebuildAttrComposite(TreeNodeData nodeData) {
 		nodeAttrCompsite = new TreeNodeAttrCompsite(
 				rightComposite, SWT.NONE, nodeData);
