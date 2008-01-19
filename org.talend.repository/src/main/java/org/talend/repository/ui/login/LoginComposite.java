@@ -85,7 +85,7 @@ public class LoginComposite extends Composite {
 
     private static int horizontalMerge = 145;
 
-    private static final int HORIZONTAL_SPACE_BUTTONS = 15;
+    private static final int HORIZONTAL_SPACE_BUTTONS = 10;
 
     private static final int VERTICAL_SPACE = 5;
 
@@ -238,15 +238,16 @@ public class LoginComposite extends Composite {
         Composite bottomButtons = toolkit.createComposite(group);
         data = new FormData();
         data.top = new FormAttachment(projectViewer.getControl(), VERTICAL_SPACE, SWT.BOTTOM);
-        data.left = new FormAttachment(projectViewer.getControl(), 0, SWT.LEFT);
+        // data.left = new FormAttachment(projectViewer.getControl(), 0, SWT.LEFT);
+        data.left = new FormAttachment(0, HORIZONTAL_SPACE);
         bottomButtons.setLayoutData(data);
         bottomButtons.setLayout(new FormLayout());
 
-        newProjectLabel = toolkit.createLabel(group, Messages.getString("LoginComposite.new"));
-        data = new FormData();
-        data.left = new FormAttachment(0, HORIZONTAL_SPACE);
-        data.bottom = new FormAttachment(bottomButtons, 0, SWT.CENTER);
-        newProjectLabel.setLayoutData(data);
+        // newProjectLabel = toolkit.createLabel(group, Messages.getString("LoginComposite.new"));
+        // data = new FormData();
+        // data.left = new FormAttachment(0, HORIZONTAL_SPACE);
+        // data.bottom = new FormAttachment(bottomButtons, 0, SWT.CENTER);
+        // newProjectLabel.setLayoutData(data);
 
         newProjectButton = toolkit.createButton(bottomButtons, null, SWT.PUSH);
         newProjectButton.setText(Messages.getString("LoginComposite.buttons.newProject")); //$NON-NLS-1$
@@ -276,12 +277,12 @@ public class LoginComposite extends Composite {
         formData.bottom = new FormAttachment(100);
         importDemoProjectButton.setLayoutData(formData);
         // delete
-        deleteProjectButton = toolkit.createButton(group, null, SWT.PUSH);
+        deleteProjectButton = toolkit.createButton(bottomButtons, null, SWT.PUSH);
         deleteProjectButton.setText(Messages.getString("LoginComposite.buttons.deleteProject"));
         deleteProjectButton.setImage(ImageProvider.getImage(ERepositoryImages.DELETE_PROJECT_ACTION));
         data = new FormData();
-        data.left = new FormAttachment(bottomButtons, 0, SWT.LEFT);
-        data.top = new FormAttachment(bottomButtons, VERTICAL_SPACE, SWT.BOTTOM);
+        data.left = new FormAttachment(importDemoProjectButton, HORIZONTAL_SPACE_BUTTONS);
+        // data.top = new FormAttachment(bottomButtons, VERTICAL_SPACE, SWT.BOTTOM);
         deleteProjectButton.setLayoutData(data);
 
         fillContents();
@@ -508,13 +509,13 @@ public class LoginComposite extends Composite {
 
     private void updateButtons() {
         if (isAuthenticationNeeded() || !validateFields()) {
-            newProjectLabel.setVisible(false);
+            // newProjectLabel.setVisible(false);
             newProjectButton.setVisible(false);
             importProjectsButton.setVisible(false);
             importDemoProjectButton.setVisible(false);
             deleteProjectButton.setVisible(false);
         } else {
-            newProjectLabel.setVisible(true);
+            // newProjectLabel.setVisible(true);
             newProjectButton.setVisible(true);
             importProjectsButton.setVisible(true);
             importDemoProjectButton.setVisible(true);
