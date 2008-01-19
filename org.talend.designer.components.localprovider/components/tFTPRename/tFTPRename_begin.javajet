@@ -24,14 +24,28 @@
 	if(sftp){
 %>	
 
-	final com.jcraft.jsch.UserInfo defaultUserInfo<%=cid%> = new com.jcraft.jsch.UserInfo(){ 
+	class MyUserInfo implements com.jcraft.jsch.UserInfo, com.jcraft.jsch.UIKeyboardInteractive {
         public String getPassphrase() { return null; } 
+        
         public String getPassword() { return null; } 
-        public boolean promptPassword(String arg0) { return false; } 
-        public boolean promptPassphrase(String arg0) { return false; } 
+        
+        public boolean promptPassword(String arg0) { return true; } 
+        
+        public boolean promptPassphrase(String arg0) { return true; } 
+        
         public boolean promptYesNo(String arg0) { return true; } 
+        
         public void showMessage(String arg0) { } 
+        
+        public String[] promptKeyboardInteractive(String destination, String name, String instruction, String[] prompt,
+                boolean[] echo) {
+           String[] password<%=cid%> = {<%=pass%>};
+           return password<%=cid%>;
+        }
     }; 
+    
+    final com.jcraft.jsch.UserInfo defaultUserInfo<%=cid%> = new MyUserInfo();
+    
     
     com.jcraft.jsch.JSch jsch<%=cid%>=new com.jcraft.jsch.JSch(); 
     com.jcraft.jsch.Session session<%=cid%>=jsch<%=cid%>.getSession(<%=user%>, <%=host%>, <%=port%>); 

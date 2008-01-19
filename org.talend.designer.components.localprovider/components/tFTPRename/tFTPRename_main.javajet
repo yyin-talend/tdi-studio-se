@@ -23,8 +23,7 @@
     	java.util.Set<String> keySet<%=cid %> = map<%=cid %>.keySet();   
     	for (String key<%=cid %> : keySet<%=cid %>)
    		{     	
-   			System.out.println("map.get()="+map<%=cid %>.get(key<%=cid %>));
-     		c<%=cid%>.rename(key<%=cid %>, map<%=cid %>.get(key<%=cid %>));
+   			c<%=cid%>.rename(key<%=cid %>, map<%=cid %>.get(key<%=cid %>));
    		}
 	}
 
