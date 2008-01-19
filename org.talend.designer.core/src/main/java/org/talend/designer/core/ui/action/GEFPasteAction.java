@@ -157,7 +157,7 @@ public class GEFPasteAction extends SelectionAction {
                 execute(cmd);
             } else if (noteParts.size() != 0) {
                 NotesPasteCommand cmd = new NotesPasteCommand(noteParts,
-                        (org.talend.designer.core.ui.editor.process.Process) editor.getProcess(), gefPoint);
+                        (org.talend.designer.core.ui.editor.process.Process) editor.getProcess(), gefPoint, false, null);
                 execute(cmd);
             }
             setCursorLocation(null);

@@ -62,6 +62,8 @@ public class NodesPasteCommand extends Command {
 
     private List<EditPart> oldSelection;
 
+    private NodePart nodePart;
+
     private List<NodePart> nodeParts;
 
     private List<String> createdNames;
@@ -90,6 +92,7 @@ public class NodesPasteCommand extends Command {
 
     public NodesPasteCommand(List<NodePart> nodeParts, Process process, Point cursorLocation) {
         this.process = process;
+        nodePart = nodeParts.get(0);
         setCursorLocation(cursorLocation);
         orderNodeParts(nodeParts);
         setLabel(Messages.getString("NodesPasteCommand.label")); //$NON-NLS-1$
@@ -181,9 +184,10 @@ public class NodesPasteCommand extends Command {
      * @param location
      * @return
      */
-    private Point findLocationForNode(final Point location, final Dimension size) {
+    private Point findLocationForNode(final Point location, final Dimension size, int index, int firstIndex,
+            NodePart copiedNodePart) {
         Point newLocation = findLocationForNodeInProcess(location, size);
-        newLocation = findLocationForNodeInContainerList(newLocation, size);
+        newLocation = findLocationForNodeInContainerList(newLocation, size, index, firstIndex, copiedNodePart);
         return newLocation;
     }
 
@@ -202,23 +206,42 @@ public class NodesPasteCommand extends Command {
         return newLocation;
     }
 
-    private Point findLocationForNodeInContainerList(final Point location, Dimension size) {
+    private Point findLocationForNodeInContainerList(final Point location, Dimension size, int index, int firstIndex,
+            NodePart copiedNodePart) {
         Rectangle copiedRect = new Rectangle(location, size);
         Point newLocation = new Point(location);
-        for (NodeContainer nodeContainer : nodeContainerList) {
-            Node node = nodeContainer.getNode();
-            Rectangle currentRect = new Rectangle(node.getLocation(), node.getSize());
-            if (currentRect.intersects(copiedRect)) {
-                newLocation.x += TalendEditor.GRID_SIZE;
-                newLocation.y += TalendEditor.GRID_SIZE;
-                return findLocationForNodeInContainerList(newLocation, size);
-            }
+        // for (NodeContainer nodeContainer : nodeContainerList) {
+        // Node node = nodeContainer.getNode();
+        // Rectangle currentRect = new Rectangle(node.getLocation(), node.getSize());
+        // if (currentRect.intersects(copiedRect)) {
+        // newLocation = computeTheDistance(index, firstIndex, newLocation);
+        // // return findLocationForNodeInContainerList(newLocation, size, index, firstIndex);
+        // }
+        // }
+        if (getCursorLocation() == null) {
+            return newLocation;
+        }
+        if (!nodePart.equals(copiedNodePart)) {
+            newLocation = computeTheDistance(index, firstIndex, newLocation);
         }
         return newLocation;
     }
 
+    private Point computeTheDistance(int index, int firstIndex, Point location) {
+        Point firstNodeLocation = ((Node) nodePart.getModel()).getLocation();
+        Point currentNodeLocation = ((Node) nodeParts.get(index).getModel()).getLocation();
+
+        int distanceX = firstNodeLocation.x - currentNodeLocation.x;
+        int distanceY = firstNodeLocation.y - currentNodeLocation.y;
+        location.x = location.x - distanceX;
+        location.y = location.y - distanceY;
+        return location;
+    }
+
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     private void createNodeContainerList() {
+        int firstIndex = 0;
+        int index = 0;
         nodeContainerList = new ArrayList<NodeContainer>();
         createdNames = new ArrayList<String>();
         Map<String, String> oldNameTonewNameMap = new HashMap<String, String>();
@@ -238,6 +261,7 @@ public class NodesPasteCommand extends Command {
                 location = copiedNode.getLocation();
             } else {
                 location = getCursorLocation();
+                index = nodeParts.indexOf(copiedNodePart);
             }
 
             if (process.isGridEnabled()) {
@@ -247,7 +271,7 @@ public class NodesPasteCommand extends Command {
                 tempVar = location.y / TalendEditor.GRID_SIZE;
                 location.y = tempVar * TalendEditor.GRID_SIZE;
             }
-            pastedNode.setLocation(findLocationForNode(location, copiedNode.getSize()));
+            pastedNode.setLocation(findLocationForNode(location, copiedNode.getSize(), index, firstIndex, copiedNodePart));
             pastedNode.setSize(copiedNode.getSize());
 
             INodeConnector mainConnector;

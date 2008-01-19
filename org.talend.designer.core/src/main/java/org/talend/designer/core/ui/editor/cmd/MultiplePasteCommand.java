@@ -41,10 +41,14 @@ public class MultiplePasteCommand extends CompoundCommand {
     private NotesPasteCommand noteCmd;
 
     public MultiplePasteCommand(List<NodePart> nodeParts, List<NoteEditPart> noteParts, Process process, Point cursorLocation) {
+        // List<NodePart> nodePartList = new ArrayList<NodePart>();
+        // nodePartList.clear();
+        // nodePartList.addAll(nodeParts);
+        Point poit = new Point(((Node) nodeParts.get(0).getModel()).getLocation());
         nodeCmd = new NodesPasteCommand(nodeParts, process, cursorLocation);
         nodeCmd.setMultipleCommand(true);
         add(nodeCmd);
-        noteCmd = new NotesPasteCommand(noteParts, process, cursorLocation);
+        noteCmd = new NotesPasteCommand(noteParts, process, cursorLocation, true, poit);
         noteCmd.setMultipleCommand(true);
         add(noteCmd);
     }

@@ -15,6 +15,7 @@ package org.talend.designer.core.ui.editor.cmd;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.GraphicalViewer;
@@ -23,7 +24,6 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.ui.PlatformUI;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
-import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.TalendEditor;
 import org.talend.designer.core.ui.editor.notes.Note;
 import org.talend.designer.core.ui.editor.notes.NoteEditPart;
@@ -38,18 +38,24 @@ import org.talend.designer.core.ui.editor.process.ProcessPart;
  */
 public class NotesPasteCommand extends Command {
 
+    private boolean isMultiple;
+
     private Process process;
 
     private List<EditPart> oldSelection;
 
     private List<Note> noteList;
 
+    private Point firstNodeLocation;
+
     private List<NoteEditPart> noteParts;
 
     private boolean multipleCommand;
 
-    public NotesPasteCommand(List<NoteEditPart> noteParts, Process process, Point cursorLocation) {
+    public NotesPasteCommand(List<NoteEditPart> noteParts, Process process, Point cursorLocation, boolean isMultiple, Point point) {
         this.process = process;
+        this.isMultiple = isMultiple;
+        this.firstNodeLocation = point;
         orderNoteParts(noteParts);
         setLabel(Messages.getString("NotesPasteCommand.label")); //$NON-NLS-1$
         setCursorLocation(cursorLocation);
@@ -125,29 +131,67 @@ public class NotesPasteCommand extends Command {
      * @param location
      * @return
      */
-    private Point findLocationForNote(final Note note) {
-        Rectangle rect = new Rectangle(note.getLocation().x, note.getLocation().y, note.getSize().width, note.getSize().height);
-        Point newLocation = findLocationForNoteInProcess(rect);
+    private Point findLocationForNote(final Point location, final Dimension size, int index, int firstIndex) {
+        Point newLocation = findLocationForNoteInProcess(location, size);
+        newLocation = findLocationForNoteInContainerList(newLocation, size, index, firstIndex);
         return newLocation;
     }
 
     @SuppressWarnings("unchecked")//$NON-NLS-1$
-    private Point findLocationForNoteInProcess(final Rectangle rectangle) {
-        Point newLocation = new Point(rectangle.x, rectangle.y);
-        for (Note currentNote : (List<Note>) process.getNotes()) {
-            Rectangle currentRect = new Rectangle(currentNote.getLocation().x, currentNote.getLocation().y,
-                    currentNote.getSize().width, currentNote.getSize().height);
-            if (currentRect.intersects(rectangle)) {
-                rectangle.x += currentRect.width;
-                rectangle.y += currentRect.height;
-                return findLocationForNoteInProcess(rectangle);
+    private Point findLocationForNoteInProcess(final Point location, Dimension size) {
+        Rectangle copiedRect = new Rectangle(location.x, location.y, size.width, size.height);
+        Point newLocation = new Point(location);
+        for (Note node : (List<Note>) process.getNotes()) {
+            Rectangle currentRect = new Rectangle(node.getLocation().x, node.getLocation().y, node.getSize().width, node
+                    .getSize().height);
+            if (currentRect.intersects(copiedRect)) {
+                newLocation.x += TalendEditor.GRID_SIZE;
+                newLocation.y += TalendEditor.GRID_SIZE;
+                return findLocationForNoteInProcess(newLocation, size);
             }
         }
         return newLocation;
     }
 
+    private Point findLocationForNoteInContainerList(final Point location, Dimension size, int index, int firstIndex) {
+        Rectangle copiedRect = new Rectangle(location.x, location.y, size.width, size.height);
+        Point newLocation = new Point(location);
+        if (!isMultiple) {
+            for (Note node : noteList) {
+                Rectangle currentRect = new Rectangle(node.getLocation().x, node.getLocation().y, node.getSize().width, node
+                        .getSize().height);
+                if (currentRect.intersects(copiedRect)) {
+                    newLocation = computeTheDistance(index, firstIndex, newLocation);
+                    // return findLocationForNoteInContainerList(newLocation, size, index, firstIndex);
+                }
+            }
+        } else {
+            if (getCursorLocation() == null) {
+                return newLocation;
+            }
+            newLocation = computeTheDistance(index, firstIndex, newLocation);
+        }
+        return newLocation;
+    }
+
+    private Point computeTheDistance(int index, int firstIndex, Point location) {
+        Point currentNodeLocation = null;
+        if (!isMultiple) {
+            firstNodeLocation = ((Note) noteParts.get(firstIndex).getModel()).getLocation();
+        }
+        currentNodeLocation = ((Note) noteParts.get(index).getModel()).getLocation();
+
+        int distanceX = firstNodeLocation.x - currentNodeLocation.x;
+        int distanceY = firstNodeLocation.y - currentNodeLocation.y;
+        location.x = location.x - distanceX;
+        location.y = location.y - distanceY;
+        return location;
+    }
+
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     private void createNoteList() {
+        int firstIndex = 0;
+        int index = 0;
         noteList = new ArrayList<Note>();
 
         // create the notes
@@ -163,6 +207,7 @@ public class NotesPasteCommand extends Command {
                 location = copiedNote.getLocation();
             } else {
                 location = getCursorLocation();
+                index = noteParts.indexOf(copiedNodePart);
             }
             if (process.isGridEnabled()) {
                 // replace the component to set it on the grid if it's enabled
@@ -171,7 +216,7 @@ public class NotesPasteCommand extends Command {
                 tempVar = location.y / TalendEditor.GRID_SIZE;
                 location.y = tempVar * TalendEditor.GRID_SIZE;
             }
-            pastedNote.setLocation(findLocationForNote(copiedNote));
+            pastedNote.setLocation(findLocationForNote(location, copiedNote.getSize(), index, firstIndex));
 
             noteList.add(pastedNote);
         }
