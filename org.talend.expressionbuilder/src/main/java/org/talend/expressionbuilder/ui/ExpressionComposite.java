@@ -287,11 +287,11 @@ public class ExpressionComposite extends Composite {
         eqButton.addMouseListener(buttonListener);
 
         final Button gButton = new Button(lowerOperationButtonBar, SWT.NONE);
-        gButton.setText(">"); //$NON-NLS-1$
+        gButton.setText("<"); //$NON-NLS-1$
         gButton.addMouseListener(buttonListener);
 
         final Button gebutton = new Button(lowerOperationButtonBar, SWT.NONE);
-        gebutton.setText(">="); //$NON-NLS-1$
+        gebutton.setText("<="); //$NON-NLS-1$
         gebutton.addMouseListener(buttonListener);
 
         final Button nebutton = new Button(lowerOperationButtonBar, SWT.NONE);
@@ -299,11 +299,11 @@ public class ExpressionComposite extends Composite {
         nebutton.addMouseListener(buttonListener);
 
         final Button lebutton = new Button(lowerOperationButtonBar, SWT.NONE);
-        lebutton.setText("<="); //$NON-NLS-1$
+        lebutton.setText(">="); //$NON-NLS-1$
         lebutton.addMouseListener(buttonListener);
 
         final Button lButton = new Button(lowerOperationButtonBar, SWT.NONE);
-        lButton.setText("<"); //$NON-NLS-1$
+        lButton.setText(">"); //$NON-NLS-1$
         lButton.addMouseListener(buttonListener);
 
         final Label label1 = new Label(lowerOperationButtonBar, SWT.NONE);
