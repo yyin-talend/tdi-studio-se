@@ -76,7 +76,7 @@ String fileName_<%=cid%> = <%=filename%>;
 <%}else{%>
     
     com.csvreader.CsvWriter CsvWriter<%=cid%> = new com.csvreader.CsvWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(
-            new java.io.FileOutputStream(fileName_<%=cid%>, true), <%=encoding%>)), '<%=delim%>');  
+            new java.io.FileOutputStream(fileName_<%=cid%>, false), <%=encoding%>)), '<%=delim%>');  
     
 <%              if(!rowSeparator.equals("\\n") && !rowSeparator.equals("\\r")){%>
     CsvWriter<%=cid %>.setRecordDelimiter('<%=rowSeparator.substring(1,rowSeparator.length()-1)  %>');
