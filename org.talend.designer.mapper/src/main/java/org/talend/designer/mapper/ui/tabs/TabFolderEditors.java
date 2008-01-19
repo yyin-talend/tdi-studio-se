@@ -121,18 +121,11 @@ public class TabFolderEditors extends CTabFolder {
             ColorManager colorManager = new ColorManager(preferenceStore);
             // styledText = new ColorStyledText(tabFolderEditors, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL,
             // colorManager, language.getName());
-            if (language == ECodeLanguage.PERL) {
-                styledText = TalendPerlSourceViewer.createViewer(tabFolderEditors,
-                        SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL | SWT.WRAP, true).getTextWidget();
-            } else {
-                styledText = TalendJavaSourceViewer.createViewer(tabFolderEditors,
-                        SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL | SWT.WRAP, true).getTextWidget();
-            }
-            // styledText = new UnnotifiableColorStyledText(tabFolderEditors, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL,
-            // colorManager, language.getName());
+            styledText = new UnnotifiableColorStyledText(tabFolderEditors, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL,
+                    colorManager, language.getName());
         }
         styledText.setEnabled(false);
-        item.setControl(styledText.getParent());
+        item.setControl(styledText);
         return styledText;
     }
 

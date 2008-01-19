@@ -110,7 +110,7 @@ public class StyledTextHandler {
         styledText.addExtendedModifyListener(new ExtendedModifyListener() {
 
             public void modifyText(ExtendedModifyEvent event) {
-//                System.out.println("ExtendedModifyListener modify text");
+                // System.out.println("ExtendedModifyListener modify text");
                 updateCellExpression();
 
             }
@@ -154,8 +154,7 @@ public class StyledTextHandler {
         styledText.addVerifyKeyListener(new VerifyKeyListener() {
 
             public void verifyKey(VerifyEvent verifyEvent) {
-                if (verifyEvent.character == '\r' && contentProposalAdapter != null
-                        && contentProposalAdapter.isProposalOpened()) {
+                if (verifyEvent.character == '\r' && contentProposalAdapter != null && contentProposalAdapter.isProposalOpened()) {
                     verifyEvent.doit = false;
                 } else {
                     verifyEvent.doit = true;
@@ -182,8 +181,7 @@ public class StyledTextHandler {
 
     private void updateCellExpression() {
 
-        if (styledText.getText() != null && currentEntry != null
-                && !styledText.getText().equals(currentEntry.getExpression())) {
+        if (styledText.getText() != null && currentEntry != null && !styledText.getText().equals(currentEntry.getExpression())) {
             mapperManager.changeEntryExpression(currentEntry, styledText.getText());
         }
 
@@ -209,8 +207,7 @@ public class StyledTextHandler {
      */
     public void setTextWithoutNotifyListeners(String text) {
         if (!text.equals(this.styledText.getText())) {
-            styledText.getContent().setText(text);
-//            ((UnnotifiableColorStyledText) this.styledText).setTextWithoutNotifyListeners(text);
+            ((UnnotifiableColorStyledText) this.styledText).setTextWithoutNotifyListeners(text);
         }
     }
 
@@ -226,8 +223,7 @@ public class StyledTextHandler {
         Color whiteColor = this.styledText.getDisplay().getSystemColor(SWT.COLOR_WHITE);
         this.styledText.setLineBackground(0, lineCount, whiteColor);
         this.styledText.redraw();
-        this.styledText.setLineBackground(countCR, 1, ColorProviderMapper
-                .getColor(ColorInfo.COLOR_HIGHLIGHTED_TEXT_ROW));
+        this.styledText.setLineBackground(countCR, 1, ColorProviderMapper.getColor(ColorInfo.COLOR_HIGHLIGHTED_TEXT_ROW));
         return countCR;
     }
 
