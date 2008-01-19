@@ -42,7 +42,7 @@ public class ResizeNodeCommand extends Command {
      */
     @Override
     public boolean canExecute() {
-        if (newSize.height == 0 || newSize.width == 0) {
+        if (newSize.height <= 0 || newSize.width <= 0) {
             return false;
         }
         return true;
