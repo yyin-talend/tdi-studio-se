@@ -48,8 +48,10 @@ public final class UpdateContextReferenceHelper {
 
         String curContextName = curContextItem.getProperty().getLabel();
         String curContextId = curContextItem.getProperty().getId();
-        // update the item context.
-        updateProcessItemforVariablesReference(curRepositoryManager, curContextId, repositoryVarsSet, renamedMap);
+        // if rename the context variable naem, update the item context.
+        if (renamedMap != null && !renamedMap.isEmpty()) {
+            updateProcessItemforVariablesReference(curRepositoryManager, curContextId, repositoryVarsSet, renamedMap);
+        }
         // update the opened context.
         updateOpenedJobforVariablesReference(curRepositoryManager, curContextName, repositoryVarsSet, renamedMap);
     }

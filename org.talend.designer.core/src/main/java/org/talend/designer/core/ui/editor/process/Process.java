@@ -80,6 +80,7 @@ import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.UniqueNodeNameGenerator;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.User;
@@ -1522,25 +1523,25 @@ public class Process extends Element implements IProcess2 {
 
     /**
      * 
-     * this method work for the repositoryId existed in process before v2.2.1.
+     * this method work for the repositoryId existed in process before v2.2.
      * 
      */
     private void updateContextBefore(IContextManager contextManager) {
         if (repositoryId != null && !"".equals(repositoryId)) {
             JobContextManager jobContextManager = (JobContextManager) contextManager;
-            String sourceName = jobContextManager.getContextNameFromId(repositoryId);
-            if (sourceName == null) {
-                sourceName = IContextParameter.BUILT_IN;
-            }
+            ContextItem item = jobContextManager.getContextItemFromId(repositoryId);
+
             for (IContext context : contextManager.getListContext()) {
                 for (IContextParameter param : context.getContextParameterList()) {
-                    if (!jobContextManager.isFound(sourceName, param.getName())) {
-                        sourceName = IContextParameter.BUILT_IN;
+                    if (item != null && jobContextManager.updateParameterFromRepository(item, param, context.getName())) {
+                        param.setSource(item.getProperty().getLabel());
+                    } else {
+                        param.setSource(IContextParameter.BUILT_IN);
                     }
-                    param.setSource(sourceName);
                 }
             }
         }
+
     }
 
     public boolean isReadOnly() {
