@@ -209,7 +209,8 @@ public class StyledTextHandler {
      */
     public void setTextWithoutNotifyListeners(String text) {
         if (!text.equals(this.styledText.getText())) {
-            ((UnnotifiableColorStyledText) this.styledText).setTextWithoutNotifyListeners(text);
+            styledText.getContent().setText(text);
+//            ((UnnotifiableColorStyledText) this.styledText).setTextWithoutNotifyListeners(text);
         }
     }
 

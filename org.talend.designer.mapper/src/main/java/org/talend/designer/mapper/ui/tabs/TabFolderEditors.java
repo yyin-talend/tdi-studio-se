@@ -30,6 +30,8 @@ import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.ui.metadata.editor.MetadataTableEditorView;
+import org.talend.core.ui.viewer.java.TalendJavaSourceViewer;
+import org.talend.core.ui.viewer.perl.TalendPerlSourceViewer;
 import org.talend.designer.mapper.MapperMain;
 import org.talend.designer.mapper.i18n.Messages;
 import org.talend.designer.mapper.managers.MapperManager;
@@ -119,11 +121,18 @@ public class TabFolderEditors extends CTabFolder {
             ColorManager colorManager = new ColorManager(preferenceStore);
             // styledText = new ColorStyledText(tabFolderEditors, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL,
             // colorManager, language.getName());
-            styledText = new UnnotifiableColorStyledText(tabFolderEditors, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL,
-                    colorManager, language.getName());
+            if (language == ECodeLanguage.PERL) {
+                styledText = TalendPerlSourceViewer.createViewer(tabFolderEditors,
+                        SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL | SWT.WRAP, true).getTextWidget();
+            } else {
+                styledText = TalendJavaSourceViewer.createViewer(tabFolderEditors,
+                        SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL | SWT.WRAP, true).getTextWidget();
+            }
+            // styledText = new UnnotifiableColorStyledText(tabFolderEditors, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL,
+            // colorManager, language.getName());
         }
         styledText.setEnabled(false);
-        item.setControl(styledText);
+        item.setControl(styledText.getParent());
         return styledText;
     }
 
