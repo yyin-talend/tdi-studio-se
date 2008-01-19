@@ -35,6 +35,7 @@ import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.utils.generation.CodeGenerationUtils;
 import org.talend.core.language.CodeProblemsChecker;
+import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.Problem;
 import org.talend.designer.codegen.IAloneProcessNodeConfigurer;
@@ -120,6 +121,17 @@ public class JavaCodeProblemsChecker extends CodeProblemsChecker {
             String selectedNodeName = multiPageTalendEditor.getSelectedNodeName();
 
             if (selectedNodeName == null) {
+                return null;
+            }
+
+            boolean found = false;
+            for (INode node : process.getGeneratingNodes()) {
+                if (node.getUniqueName().equals(selectedNodeName)) {
+                    found = true;
+                }
+            }
+            if (!found) {
+                // in case the component doesn't exist
                 return null;
             }
 

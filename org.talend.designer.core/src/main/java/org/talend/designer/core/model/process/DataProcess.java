@@ -13,6 +13,7 @@
 package org.talend.designer.core.model.process;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +31,7 @@ import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IConnectionCategory;
+import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IExternalData;
 import org.talend.core.model.process.IExternalNode;
@@ -38,7 +40,10 @@ import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IProcess;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.process.jobsettings.JobSettingsManager;
+import org.talend.designer.core.ui.editor.connections.Connection;
+import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodes.Node;
+import org.talend.designer.core.ui.editor.nodes.Node.Data;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.ExternalNodesFactory;
@@ -63,6 +68,8 @@ public class DataProcess {
 
     private final Process process;
 
+    private Process duplicatedProcess;
+
     public DataProcess(Process process) {
         this.process = process;
     }
@@ -74,20 +81,20 @@ public class DataProcess {
         dataNodeList = new ArrayList<INode>();
     }
 
-    private void initializeDataFromGraphical(INode newNode, INode graphicalNode) {
-        for (IElementParameter curParam : graphicalNode.getElementParameters()) {
-            IElementParameter dataNodeParam = newNode.getElementParameter(curParam.getName());
-            if (dataNodeParam != null) {
-                dataNodeParam.setValue(curParam.getValue());
-                if (dataNodeParam.getField() == EParameterFieldType.TABLE) {
-                    dataNodeParam.setListItemsValue(curParam.getListItemsValue());
+    private void copyElementParametersValue(IElement sourceElement, IElement targetElement) {
+        for (IElementParameter sourceParam : sourceElement.getElementParameters()) {
+            IElementParameter targetParam = targetElement.getElementParameter(sourceParam.getName());
+            if (targetParam != null) {
+                targetParam.setValue(sourceParam.getValue());
+                if (targetParam.getField() == EParameterFieldType.TABLE) {
+                    targetParam.setListItemsValue(sourceParam.getListItemsValue());
                 }
-                for (String name : dataNodeParam.getChildParameters().keySet()) {
-                    IElementParameter childDataParam = dataNodeParam.getChildParameters().get(name);
-                    IElementParameter childGraphicalParam = curParam.getChildParameters().get(name);
-                    childDataParam.setValue(childGraphicalParam.getValue());
-                    if (childDataParam.getField() == EParameterFieldType.TABLE) {
-                        childDataParam.setListItemsValue(childGraphicalParam.getListItemsValue());
+                for (String name : targetParam.getChildParameters().keySet()) {
+                    IElementParameter targetChildParam = targetParam.getChildParameters().get(name);
+                    IElementParameter sourceChildParam = sourceParam.getChildParameters().get(name);
+                    targetChildParam.setValue(sourceChildParam.getValue());
+                    if (targetChildParam.getField() == EParameterFieldType.TABLE) {
+                        targetChildParam.setListItemsValue(sourceChildParam.getListItemsValue());
                     }
                 }
             }
@@ -96,7 +103,7 @@ public class DataProcess {
 
     // should only be called by a starting node
     @SuppressWarnings("unchecked")//$NON-NLS-1$
-    public INode buildfromNode(final Node graphicalNode, String prefix) {
+    public INode buildDataNodeFromNode(final Node graphicalNode, String prefix) {
         if (buildCheckMap.containsKey(graphicalNode)) {
             return buildCheckMap.get(graphicalNode);
         }
@@ -119,7 +126,7 @@ public class DataProcess {
         dataNode.setMetadataList(graphicalNode.getMetadataList());
         dataNode.setPluginFullName(graphicalNode.getPluginFullName());
         dataNode.setElementParameters(graphicalNode.getComponent().createElementParameters(dataNode));
-        initializeDataFromGraphical(dataNode, graphicalNode);
+        copyElementParametersValue(graphicalNode, dataNode);
         String uniqueName = graphicalNode.getUniqueName();
         if (prefix != null) {
             uniqueName = prefix + uniqueName;
@@ -158,8 +165,8 @@ public class DataProcess {
             IElementParameter monitorParam = connection.getElementParameter("MONITOR_CONNECTION");
             if (monitorParam != null && (!connection.getLineStyle().equals(EConnectionType.FLOW_REF))
                     && ((Boolean) monitorParam.getValue())) {
-                addvFlowMeterBetween(dataNode, buildfromNode((Node) connection.getTarget(), prefix), connection, graphicalNode
-                        .getProcess(), connection.getElementParameters());
+                addvFlowMeterBetween(dataNode, buildDataNodeFromNode((Node) connection.getTarget(), prefix), connection,
+                        graphicalNode.getProcess(), connection.getElementParameters());
             } else {
                 dataConnec = new DataConnection();
                 dataConnec.setActivate(connection.isActivate());
@@ -184,7 +191,7 @@ public class DataProcess {
                 dataConnec.setCondition(connection.getCondition());
                 dataConnec.setConnectorName(connection.getConnectorName());
                 dataConnec.setInputId(connection.getInputId());
-                INode target = buildfromNode((Node) connection.getTarget(), prefix);
+                INode target = buildDataNodeFromNode((Node) connection.getTarget(), prefix);
                 dataConnec.setTarget(target);
                 incomingConnections = (List<IConnection>) target.getIncomingConnections();
                 if (incomingConnections == null) {
@@ -209,8 +216,8 @@ public class DataProcess {
         return dataNode;
     }
 
-    public INode buildfromNode(final Node graphicalNode) {
-        return buildfromNode(graphicalNode, null);
+    public INode buildDataNodeFromNode(final Node graphicalNode) {
+        return buildDataNodeFromNode(graphicalNode, null);
     }
 
     private INode addvFlowMeterBetween(INode sourceNode, INode targetNode, IConnection connection, IProcess process,
@@ -571,6 +578,11 @@ public class DataProcess {
                 AbstractNode subDataNodeStartSource = (AbstractNode) buildCheckMap.get(subNodeStartSource);
                 AbstractNode subDataNodeStartTarget = (AbstractNode) buildCheckMap.get(subNodeStartTarget);
 
+                if (subDataNodeStartSource == null) {
+                    // means the graphic process is not complete, so ignore it.
+                    continue;
+                }
+
                 // if (subDataNodeStartSource.getMetadataList().isEmpty()) {
                 // continue;
                 // }
@@ -705,32 +717,27 @@ public class DataProcess {
 
     public void buildFromGraphicalProcess(List<Node> graphicalNodeList) {
         initialize();
-        // job settings extra (feature 2710)
-        if (JobSettingsManager.isImplicittContextLoadActived(process)) {
-            List<DataNode> contextLoadNodes = JobSettingsManager.createExtraContextLoadNodes(process);
-            for (DataNode node : contextLoadNodes) {
-                buildCheckMap.put(node, node);
-                dataNodeList.add(node);
-                replaceMultipleComponents(node);
-            }
-        }
-        for (Node node : graphicalNodeList) {
+
+        List<Node> newGraphicalNodeList = buildCopyOfGraphicalNodeList(graphicalNodeList);
+
+        replaceNodeFromProviders(newGraphicalNodeList);
+
+        for (Node node : newGraphicalNodeList) {
             if (node.isSubProcessStart() && node.isActivate()) {
-                buildfromNode(node);
+                buildDataNodeFromNode(node);
             }
         }
-        for (Node node : graphicalNodeList) {
+        for (Node node : newGraphicalNodeList) {
             if (node.isSubProcessStart() && node.isActivate()) {
                 checkFlowRefLink(node);
             }
         }
-        for (Node node : graphicalNodeList) {
+        for (Node node : newGraphicalNodeList) {
             if (node.isSubProcessStart() && node.isActivate()) {
                 replaceMultipleComponents(node);
             }
         }
 
-        replaceNodeFromProviders(graphicalNodeList);
         // job settings stats & logs
         if (JobSettingsManager.isStatsAndLogsActivated(process)) {
             // will add the Stats & Logs managements
@@ -757,6 +764,16 @@ public class DataProcess {
             }
         }
 
+        // job settings extra (feature 2710)
+        if (JobSettingsManager.isImplicittContextLoadActived(process)) {
+            List<DataNode> contextLoadNodes = JobSettingsManager.createExtraContextLoadNodes(process);
+            for (DataNode node : contextLoadNodes) {
+                buildCheckMap.put(node, node);
+                dataNodeList.add(node);
+                replaceMultipleComponents(node);
+            }
+        }
+
         // calculate the merge info for every node
         for (INode node : dataNodeList) {
             int mergeOrder = process.getMergelinkOrder(node);
@@ -768,6 +785,90 @@ public class DataProcess {
 
     }
 
+    public INode buildNodeFromNode(final Node graphicalNode, final Process process) {
+        if (buildCheckMap.containsKey(graphicalNode)) {
+            return buildCheckMap.get(graphicalNode);
+        }
+
+        Node newGraphicalNode = new Node(graphicalNode.getComponent(), process);
+        newGraphicalNode.setMetadataList(graphicalNode.getMetadataList());
+        if (graphicalNode.getExternalData() != null) {
+            Data data = graphicalNode.getExternalBytesData();
+            newGraphicalNode.setData(data.getBytesData(), data.getStringData());
+        }
+        copyElementParametersValue(graphicalNode, newGraphicalNode);
+
+        process.addNodeContainer(new NodeContainer(newGraphicalNode));
+        buildCheckMap.put(graphicalNode, newGraphicalNode);
+
+        // List<Connection> outgoingConnections = new ArrayList<Connection>();
+        // List<Connection> incomingConnections = new ArrayList<Connection>();
+        // newGraphicalNode.setIncomingConnections(incomingConnections);
+        // newGraphicalNode.setOutgoingConnections(outgoingConnections);
+
+        Connection dataConnec;
+        for (Connection connection : (List<Connection>) graphicalNode.getOutgoingConnections()) {
+            if (!connection.isActivate()) {
+                continue;
+            }
+            INode target = buildNodeFromNode((Node) connection.getTarget(), process);
+
+            dataConnec = new Connection(newGraphicalNode, (Node) target, connection.getLineStyle(),
+                    connection.getConnectorName(), connection.getMetaName(), connection.getName(), connection.getUniqueName());
+            // incomingConnections = (List<Connection>) target.getIncomingConnections();
+            // if (incomingConnections == null) {
+            // incomingConnections = new ArrayList<Connection>();
+            // }
+            // outgoingConnections.add(dataConnec);
+            // incomingConnections.add(dataConnec);
+            copyElementParametersValue(connection, dataConnec);
+        }
+
+        return newGraphicalNode;
+    }
+
+    /**
+     * DOC nrousseau Comment method "buildCopyOfGraphicalNodeList".
+     * 
+     * @param graphicalNodeList
+     * @return
+     */
+    private List<Node> buildCopyOfGraphicalNodeList(List<Node> graphicalNodeList) {
+        if (graphicalNodeList.size() == 0) {
+            return Collections.EMPTY_LIST;
+        }
+
+        duplicatedProcess = new Process(process.getProperty());
+        duplicatedProcess.setActivate(false);
+        duplicatedProcess.setEditor(process.getEditor());
+        duplicatedProcess.setGeneratingProcess(this);
+        duplicatedProcess.setProcessModified(false);
+
+        copyElementParametersValue(graphicalNodeList.get(0).getProcess(), duplicatedProcess);
+
+        // keep the same instance of context manager as it won't be modified
+        duplicatedProcess.setContextManager(process.getContextManager());
+        for (Node node : graphicalNodeList) {
+            if (node.isSubProcessStart() && node.isActivate()) {
+                buildNodeFromNode(node, duplicatedProcess);
+            }
+        }
+
+        List<Node> newBuildNodeList = new ArrayList<Node>();
+        for (INode node : buildCheckMap.values()) {
+            newBuildNodeList.add((Node) node);
+        }
+        for (Node node : newBuildNodeList) {
+            if (node.isExternalNode()) {
+                node.getExternalNode().initialize();
+            }
+        }
+        duplicatedProcess.setActivate(true);
+        duplicatedProcess.checkStartNodes();
+        buildCheckMap.clear();
+        return newBuildNodeList;
+    }
+
     /**
      * DOC qzhang Comment method "replaceJoblets".
      * 
@@ -775,19 +876,14 @@ public class DataProcess {
      * @return
      */
     private void replaceNodeFromProviders(List<Node> graphicalNodeList) {
-        for (Node node : graphicalNodeList) {
+        List<Node> orginalList = new ArrayList<Node>(graphicalNodeList);
+        for (Node node : orginalList) {
             IComponent component = node.getComponent();
             AbstractProcessProvider processProvider = AbstractProcessProvider.findProcessProviderFromPID(component
                     .getPluginFullName());
             if (processProvider != null) {
-                processProvider.buildReplaceNodesInDataProcess(node, buildCheckMap, this);
-                dataNodeList.remove(checkMultipleMap.get(node));
-                checkMultipleMap.remove(node);
+                processProvider.rebuildGraphicProcessFromNode(node, graphicalNodeList);
             }
-            // Process sProcess = processProvider.buildNewGraphicProcess(node);
-            // if (sProcess != null) {
-            // processProvider.addNewDataProcess(sProcess, node, buildCheckMap, this);
-            // }
         }
     }
 

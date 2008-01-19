@@ -868,8 +868,9 @@ public class Node extends Element implements INode {
 
         if (id.equals(EParameterName.CONNECTION_FORMAT.getName())) {
             connectionToParse = (String) value;
-            String newValue = ElementParameterParser.parse(this, connectionToParse);
-            setConnectionName(newValue);
+            // to check
+            // String newValue = ElementParameterParser.parse(this, connectionToParse);
+            // setConnectionName(newValue);
         }
 
         if (id.equals(EParameterName.START.getName())) {
@@ -1536,9 +1537,9 @@ public class Node extends Element implements INode {
         // not a sub process start
         if (!isSubProcessStart() || (!(Boolean) getPropertyValue(EParameterName.STARTABLE.getName()))) {
             if (/*
-                 * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_AFTER) > 0) ||
-                 * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_BEFORE) > 0)||
-                 */
+             * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_AFTER) > 0) ||
+             * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_BEFORE) > 0)||
+             */
             (getCurrentActiveLinksNbOutput(EConnectionType.ON_SUBJOB_OK) > 0)
                     || getCurrentActiveLinksNbOutput(EConnectionType.ON_SUBJOB_ERROR) > 0) {
                 String errorMessage = "A component that is not a sub process start can not have any link run after / run before in output.";
@@ -1550,9 +1551,9 @@ public class Node extends Element implements INode {
         // not a sub process start
         if ((!isELTComponent() && !isSubProcessStart()) || (!(Boolean) getPropertyValue(EParameterName.STARTABLE.getName()))) {
             if (/*
-                 * (getCurrentActiveLinksNbInput(EConnectionType.RUN_AFTER) > 0) ||
-                 * (getCurrentActiveLinksNbInput(EConnectionType.RUN_BEFORE) > 0) ||
-                 */(getCurrentActiveLinksNbInput(EConnectionType.ON_SUBJOB_OK) > 0)
+             * (getCurrentActiveLinksNbInput(EConnectionType.RUN_AFTER) > 0) ||
+             * (getCurrentActiveLinksNbInput(EConnectionType.RUN_BEFORE) > 0) ||
+             */(getCurrentActiveLinksNbInput(EConnectionType.ON_SUBJOB_OK) > 0)
                     || (getCurrentActiveLinksNbInput(EConnectionType.RUN_IF) > 0)
                     || (getCurrentActiveLinksNbInput(EConnectionType.ON_COMPONENT_OK) > 0)
                     || (getCurrentActiveLinksNbInput(EConnectionType.ON_COMPONENT_ERROR) > 0)) {
@@ -2120,9 +2121,14 @@ public class Node extends Element implements INode {
      */
     public void reloadComponent(IComponent component, Map<String, Object> parameters) {
         init(component);
-        this.setMetadataList((List<IMetadataTable>) parameters.get(INode.RELOAD_PARAMETER_KEY_METADATA_LIST));
-        this.setElementParameters((List<? extends IElementParameter>) parameters
-                .get(INode.RELAOD_PARAMETER_KEY_ELEMENT_PARAMETERS));
-
+        setMetadataList((List<IMetadataTable>) parameters.get(INode.RELOAD_PARAMETER_KEY_METADATA_LIST));
+        setElementParameters((List<? extends IElementParameter>) parameters.get(INode.RELAOD_PARAMETER_KEY_ELEMENT_PARAMETERS));
+        if (isExternalNode()) {
+            Data data = (Data) parameters.get(INode.RELOAD_PARAMETER_EXTERNAL_BYTES_DATA);
+            if (data != null) {
+                setData(data.getBytesData(), data.getStringData());
+            }
+            getExternalNode().initialize();
+        }
     }
 }

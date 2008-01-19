@@ -225,12 +225,15 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         }
         TalendEditorPaletteFactory.createPalette(components, paletteRoot);
 
-        for (INode node : process.getGraphicalNodes()) {
+        for (Node node : (List<Node>) process.getGraphicalNodes()) {
             IComponent newComponent = components.get(node.getComponent().getName());
             if (newComponent == null) {
                 continue;
             }
             Map<String, Object> parameters = new HashMap<String, Object>();
+            if (node.getExternalData() != null) {
+                parameters.put(INode.RELOAD_PARAMETER_EXTERNAL_BYTES_DATA, node.getExternalBytesData());
+            }
             parameters.put(INode.RELOAD_PARAMETER_KEY_METADATA_LIST, node.getMetadataList());
             parameters.put(INode.RELAOD_PARAMETER_KEY_ELEMENT_PARAMETERS, node.getElementParameters());
             node.reloadComponent(newComponent, parameters);

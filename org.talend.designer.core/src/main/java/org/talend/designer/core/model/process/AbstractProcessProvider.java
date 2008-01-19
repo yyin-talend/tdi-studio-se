@@ -14,12 +14,10 @@ package org.talend.designer.core.model.process;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
-import org.talend.core.model.process.INode;
 import org.talend.core.model.properties.Item;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
@@ -35,8 +33,8 @@ public abstract class AbstractProcessProvider {
 
     public static final String ATTR_PID = "pluginId";
 
-    public abstract List<Node> buildReplaceNodesInDataProcess(Node node, Map<INode, INode> buildCheckMap,
-            DataProcess currDataProcess);
+    // public abstract List<Node> buildReplaceNodesInDataProcess(Node node, Map<INode, INode> buildCheckMap,
+    // DataProcess currDataProcess);
 
     public static AbstractProcessProvider findProcessProviderFromPID(String pid) {
         IConfigurationElement[] elems = Platform.getExtensionRegistry().getConfigurationElementsFor(EXTENSION_ID);
@@ -112,5 +110,13 @@ public abstract class AbstractProcessProvider {
     public boolean canCutNode(Node no) {
         return true;
     }
+
+    /**
+     * DOC nrousseau Comment method "rebuildGraphicProcessFromNode".
+     * 
+     * @param node
+     * @param graphicalNodeList
+     */
+    public abstract void rebuildGraphicProcessFromNode(Node node, List<Node> graphicalNodeList);
 
 }

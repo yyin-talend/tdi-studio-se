@@ -2436,4 +2436,22 @@ public class Process extends Element implements IProcess2 {
     public void setProcessModified(boolean processModified) {
         this.processModified = processModified;
     }
+
+    /**
+     * Sets the contextManager.
+     * 
+     * @param contextManager the contextManager to set
+     */
+    public void setContextManager(IContextManager contextManager) {
+        this.contextManager = contextManager;
+    }
+
+    /**
+     * Sets the generatingProcess.
+     * 
+     * @param generatingProcess the generatingProcess to set
+     */
+    public void setGeneratingProcess(DataProcess generatingProcess) {
+        this.generatingProcess = generatingProcess;
+    }
 }

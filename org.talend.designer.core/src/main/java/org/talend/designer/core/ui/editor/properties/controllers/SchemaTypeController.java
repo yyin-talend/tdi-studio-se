@@ -396,13 +396,15 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
                         inputMetaCopy.setAttachedConnector(mainConnector.getName());
                     }
 
-                    INodeConnector outputConnector = node.getConnectorFromName(param.getContext());
-                    if (outputConnector.getMaxLinkOutput() == 0 && (originaleOutputTable.getListColumns().size() == 0)) {
-                        metaDialog = new MetadataDialog(composite.getShell(), inputMetaCopy, inputNode, getCommandStack());
-                    } else {
-                        metaDialog = new MetadataDialog(composite.getShell(), inputMetaCopy, inputNode, outputMetaCopy, node,
-                                getCommandStack());
-                    }
+                    // INodeConnector outputConnector = node.getConnectorFromName(param.getContext());
+                    // if (outputConnector.getMaxLinkOutput() == 0 && (originaleOutputTable.getListColumns().size() ==
+                    // 0)) {
+                    // metaDialog = new MetadataDialog(composite.getShell(), inputMetaCopy, inputNode,
+                    // getCommandStack());
+                    // } else {
+                    metaDialog = new MetadataDialog(composite.getShell(), inputMetaCopy, inputNode, outputMetaCopy, node,
+                            getCommandStack());
+                    // }
                 }
             } else {
                 metaDialog = new MetadataDialog(composite.getShell(), outputMetaCopy, node, getCommandStack());
