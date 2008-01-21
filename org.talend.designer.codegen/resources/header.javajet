@@ -334,7 +334,7 @@ private class TalendException extends Exception {
 		}
 	}
 	for (INode node : processNodes) {
-		if ((node.isSubProcessStart()) && (node.isActivate())) {
+		if (node.isDesignSubjobStartNode()) {
 %>
 			public void <%=node.getUniqueName() %>_onSubJobError(Exception exception) throws TalendException {
 <%
