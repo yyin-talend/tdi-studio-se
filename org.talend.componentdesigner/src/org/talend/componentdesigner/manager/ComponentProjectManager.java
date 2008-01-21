@@ -41,14 +41,20 @@ import org.talend.componentdesigner.ui.progress.ProgressUI;
  * @author rli
  *
  */
-public class ComponentProjectManager {
+public final class ComponentProjectManager {
 
 	// cache of newly-created project
 	private IProject newProject;
-	private final Shell shell;
 	
-	public ComponentProjectManager(Shell shell) {
-		this.shell = shell;
+	private String projDir = PluginConstant.EMPTY_STRING;
+	
+	private static ComponentProjectManager manager = new ComponentProjectManager();
+	
+	public static ComponentProjectManager getInstance() {
+		return manager;
+	}
+	
+	private ComponentProjectManager() {
 
 	}
 
@@ -66,10 +72,22 @@ public class ComponentProjectManager {
 	 * 
 	 * @return the created project resource, or <code>null</code> if the project was not created
 	 */
-	public IProject createNewProject(String directroy, String projectName) {
-		if (newProject != null) {
+	public IProject createNewProject(String directroy, String projectName,
+			Shell shell) {
+		if (projDir.equals(directroy)) {
 			return newProject;
+		} else {
+			if (newProject != null) {
+				try {
+					newProject.delete(true, null);
+					projDir = directroy;
+				} catch (CoreException e) {
+					e.printStackTrace();
+				}
+			}
 		}
+		
+		final Shell currentShell = shell; 
 
 		// get a project handle
 		final IProject newProjectHandle = ResourcesPlugin.getWorkspace()
@@ -102,7 +120,7 @@ public class ComponentProjectManager {
 									op,
 									monitor,
 									WorkspaceUndoUtil
-											.getUIInfoAdapter(shell));
+											.getUIInfoAdapter(currentShell));
 				} catch (ExecutionException e) {
 					throw new InvocationTargetException(e);
 				}

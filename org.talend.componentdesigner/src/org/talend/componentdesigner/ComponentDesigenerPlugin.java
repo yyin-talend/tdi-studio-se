@@ -17,6 +17,7 @@ import java.util.Properties;
 
 import org.apache.log4j.PropertyConfigurator;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
@@ -97,11 +98,16 @@ public class ComponentDesigenerPlugin extends AbstractUIPlugin {
 	
 	public void checkProject() {
 		if (!ComponentDesigenerPlugin.getDefault().isUsed()) {
-			ComponentProjectManager manager = new ComponentProjectManager(
-					PlatformUI.getWorkbench().getDisplay().getActiveShell());
-			manager.createNewProject(this.getPreferenceStore().getString(
-							PluginConstant.PROJECT_URL), PluginConstant.PROJECTNAME_DEFAULT);
-			ComponentDesigenerPlugin.getDefault().setUsed(true);
+			this.creatComponentProj();
 		}
+	}
+	
+	public void creatComponentProj() {
+		ComponentProjectManager manager = ComponentProjectManager.getInstance();
+		Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
+		manager.createNewProject(this.getPreferenceStore().getString(
+				PluginConstant.PROJECT_URL),
+				PluginConstant.PROJECTNAME_DEFAULT, shell);
+		ComponentDesigenerPlugin.getDefault().setUsed(true);
 	}
 }

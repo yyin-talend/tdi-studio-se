@@ -250,6 +250,21 @@
          default="false"> 
       </editor> 
    </extension>
+   
+      <extension point="org.eclipse.ui.preferencePages">
+       <page 
+         name="Component Designer"
+         class="org.talend.componentdesigner.ui.preferencepage.ComponentProjectPreferencePage"
+         id="org.talend.componentdesigner.ui.preferencepage.ComponentProjectPreferencePage">
+       </page>       
+   </extension>
+   
+   <extension
+         point="org.talend.core.talendperspectives">
+      <TalendPerspective
+            refPerspectiveId="org.talend.componentdesigner.perspective"
+            talendPerspectiveId="org.talend.componentdesigner.talendperspective"/>
+   </extension>  
   
        
 </plugin>

@@ -100,6 +100,7 @@
       <import plugin="org.eclipse.wst.sse.ui" version="1.0.101" match="equivalent"/>
       <import plugin="org.eclipse.wst.xml.core" version="1.1.0" match="equivalent"/>
       <import plugin="org.eclipse.wst.common.ui" version="1.1.0" match="equivalent"/>
+      <import plugin="org.talend.core"/>
    </requires>
 
    <plugin
@@ -824,6 +825,13 @@
 
    <plugin
          id="org.talend.libraries"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.talend.core"
          download-size="0"
          install-size="0"
          version="0.0.0"
