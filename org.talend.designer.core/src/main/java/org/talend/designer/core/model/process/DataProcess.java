@@ -743,6 +743,14 @@ public class DataProcess {
             }
         }
 
+        // change the design subjob start as the value stored while building process is the graphical node
+        for (INode dataNode : dataNodeList) {
+            if (dataNode instanceof AbstractNode) {
+                INode graphicalNode = ((AbstractNode) dataNode).getDesignSubjobStartNode();
+                ((AbstractNode) dataNode).setDesignSubjobStartNode(buildCheckMap.get(graphicalNode));
+            }
+        }
+
         // job settings stats & logs
         if (JobSettingsManager.isStatsAndLogsActivated(process)) {
             // will add the Stats & Logs managements
