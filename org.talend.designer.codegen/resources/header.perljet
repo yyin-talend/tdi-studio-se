@@ -301,7 +301,7 @@ sub <%=node.getUniqueName() %>_error() {
 # subjob
 <%
     for (INode node : processNodes) {
-        if (node.isActivate() && node.isSubProcessStart()) {
+        if (node.isActivate() && node.isDesignSubjobStartNode()) {
 %>
 sub <%=node.getUniqueName()%>_onSubjobError() {
 <%
