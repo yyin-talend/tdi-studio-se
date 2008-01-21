@@ -293,6 +293,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
     public void doSave(IProgressMonitor monitor) {
         monitor.beginTask("begin save job...", 100); //$NON-NLS-1$
         monitor.worked(10);
+        savePreviewPictures();
 
         try {
             if (getEditorInput() instanceof RepositoryEditorInput) {
@@ -307,14 +308,13 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
             ((ILibrariesService) GlobalServiceRegister.getDefault().getService(ILibrariesService.class)).resetModulesNeeded();
             monitor.worked(10);
 
-            savePreviewPictures();
-
         } catch (Exception e) {
             e.printStackTrace();
             monitor.setCanceled(true);
         } finally {
             monitor.done();
         }
+
     }
 
     @Override
@@ -762,6 +762,8 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         String outlineFileVersion = process.getVersion();
         filePath = filePath.append(outlineFileName + "_" + outlineFileVersion + ".jpg");
 
+        filePath.toFile().deleteOnExit();
+
         il.save(filePath.toPortableString(), SWT.IMAGE_JPEG);
 
         service.getProxyRepositoryFactory().refreshJobPictureFolder(outlinePicturePath);
@@ -817,24 +819,6 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
      * ftang Comment method "savePreviewPictures".
      */
     protected void savePreviewPictures() {
-        // Job job = new Job("Documentation node save in progress") {
-        //
-        // @Override
-        // protected IStatus run(IProgressMonitor monitor) {
-        // try {
-        // saveOutlinePicture((ScrollingGraphicalViewer) getGraphicalViewer());
-        // } catch (Exception e) {
-        // ExceptionHandler.process(e);
-        // MessageBoxExceptionHandler.process(e);
-        // return Status.CANCEL_STATUS;
-        // }
-        // return Status.OK_STATUS;
-        // }
-        // };
-        //
-        // job.setUser(true);
-        // job.setPriority(Job.INTERACTIVE);
-        // job.schedule();
         getGraphicalViewer().getControl().getDisplay().asyncExec(new Runnable() {
 
             public void run() {
@@ -867,6 +851,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
             @Override
             public void execute(final IProgressMonitor monitor) throws CoreException {
                 try {
+                    savePreviewPictures();
                     process.saveXmlFile(file);
                     file.refreshLocal(IResource.DEPTH_ONE, monitor);
                 } catch (Exception e) {
@@ -881,7 +866,6 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
             getCommandStack().markSaveLocation();
             setDirty(false);
 
-            savePreviewPictures();
         } catch (Exception e) {
             e.printStackTrace();
         }
