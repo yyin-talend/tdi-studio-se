@@ -285,7 +285,7 @@ sub <%=node.getUniqueName() %>_error() {
 <%
                 }
             }
-    INode subProcessStartNode = node.getSubProcessStartNode(false);
+    INode subProcessStartNode = node.getDesignSubjobStartNode();
 %>
 
     # even if the error was "catched" in an OnComponentError, we call the

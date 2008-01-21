@@ -326,7 +326,7 @@ private class TalendException extends Exception {
                     }
                 }
                 %>
-                <%=node.getSubProcessStartNode(false).getUniqueName() %>_onSubJobError(exception);
+                <%=node.getDesignSubjobStartNode().getUniqueName() %>_onSubJobError(exception);
             }
             <%
 		}
