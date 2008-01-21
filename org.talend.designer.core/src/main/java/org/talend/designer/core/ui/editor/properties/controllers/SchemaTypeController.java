@@ -675,7 +675,7 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
         if (elem instanceof Node) {
             Node node = (Node) elem;
             boolean flowMainInput = false;
-            boolean schemaHasInputAndOutput = false;
+            boolean multipleInput = false;
             boolean tableReadOnly = false;
             IMetadataTable table = node.getMetadataTable(param.getContext());
             if (table != null) {
@@ -697,14 +697,21 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
                     }
                 }
                 if (flowMainInput) {
-                    // int maxInput = node.getConnectorFromName(param.getContext()).getMaxLinkInput();
-                    int maxOutput = node.getConnectorFromName(param.getContext()).getMaxLinkOutput();
-                    if (maxOutput != 0) {
-                        schemaHasInputAndOutput = true;
+                    int nbMain = 0;
+                    for (IConnection connec : node.getIncomingConnections()) {
+                        if (connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
+                            nbMain++;
+                        }
                     }
+
+                    int maxFlowInput = node.getConnectorFromName(EConnectionType.FLOW_MAIN.getName()).getMaxLinkInput();
+                    if (maxFlowInput > 1 && nbMain >= 1 && (nbMain <= maxFlowInput || maxFlowInput == -1)) {
+                        multipleInput = true;
+                    }
+
                 }
             }
-            if (schemaHasInputAndOutput && !tableReadOnly) {
+            if (flowMainInput && !multipleInput && !tableReadOnly) {
                 resetBtn = getWidgetFactory().createButton(subComposite,
                         Messages.getString("SchemaController.syncColumns"), SWT.PUSH); //$NON-NLS-1$
                 resetBtn.setToolTipText(Messages.getString("SchemaController.resetButton.tooltip")); //$NON-NLS-1$
