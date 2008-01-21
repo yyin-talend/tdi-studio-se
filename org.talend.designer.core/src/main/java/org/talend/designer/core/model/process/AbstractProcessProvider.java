@@ -119,4 +119,6 @@ public abstract class AbstractProcessProvider {
      */
     public abstract void rebuildGraphicProcessFromNode(Node node, List<Node> graphicalNodeList);
 
+    public abstract void updateJobletContext(Node node);
+
 }
