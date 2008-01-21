@@ -1529,7 +1529,8 @@ public class Process extends Element implements IProcess2 {
     private void updateContextBefore(IContextManager contextManager) {
         if (repositoryId != null && !"".equals(repositoryId)) {
             JobContextManager jobContextManager = (JobContextManager) contextManager;
-            ContextItem item = jobContextManager.getContextItemFromId(repositoryId);
+
+            ContextItem item = jobContextManager.getContextItemFromId(jobContextManager.getAllContextItem(), repositoryId);
 
             for (IContext context : contextManager.getListContext()) {
                 for (IContextParameter param : context.getContextParameterList()) {
