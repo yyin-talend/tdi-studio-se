@@ -2131,4 +2131,13 @@ public class Node extends Element implements INode {
             getExternalNode().initialize();
         }
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.INode#getDesignSubjobStartNode()
+     */
+    public INode getDesignSubjobStartNode() {
+        return getProcessStartNode(false);
+    }
 }

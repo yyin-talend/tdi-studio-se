@@ -150,6 +150,8 @@ public class DataProcess {
             dataNode.setIsMultiplyingOutputs(graphicalNode.isMultiplyingOutputs());
             dataNode.setProcess(graphicalNode.getProcess());
         }
+        dataNode.setDesignSubjobStartNode(graphicalNode.getDesignSubjobStartNode());
+
         buildCheckMap.put(graphicalNode, dataNode);
 
         List<IConnection> outgoingConnections = new ArrayList<IConnection>();
@@ -242,6 +244,7 @@ public class DataProcess {
         meterNode.getMetadataList().get(0).setListColumns(connection.getMetadataTable().getListColumns());
         meterNode.setActivate(connection.isActivate());
         meterNode.setProcess(process);
+        meterNode.setDesignSubjobStartNode(sourceNode.getDesignSubjobStartNode());
         for (IElementParameter param : parameters) {
             IElementParameter meterParam = meterNode.getElementParameter(param.getName());
             if (meterParam != null) {
@@ -453,6 +456,7 @@ public class DataProcess {
             curNode.setActivate(graphicalNode.isActivate());
             IMetadataTable newMetadata = graphicalNode.getMetadataList().get(0).clone();
             newMetadata.setTableName(uniqueName);
+            curNode.setDesignSubjobStartNode(graphicalNode.getDesignSubjobStartNode());
             curNode.getMetadataList().remove(0);
             curNode.getMetadataList().add(newMetadata);
             List<IConnection> outgoingConnections = new ArrayList<IConnection>();
@@ -629,6 +633,7 @@ public class DataProcess {
                 DataNode hashNode = new DataNode(component, uniqueName);
                 hashNode.setActivate(connection.isActivate());
                 hashNode.setStart(false);
+                hashNode.setDesignSubjobStartNode(graphicalNode.getDesignSubjobStartNode());
                 IMetadataTable newMetadata = connection.getMetadataTable().clone();
                 newMetadata.setTableName(uniqueName);
                 hashNode.getMetadataList().remove(0);

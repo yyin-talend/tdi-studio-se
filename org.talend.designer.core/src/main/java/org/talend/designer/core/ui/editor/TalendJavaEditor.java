@@ -107,6 +107,9 @@ public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCh
     private void placeCursorToSelection() {
         String mainPart = "[" + currentSelection + " main ] start";
         String assignmentPart = "currentComponent = \"" + currentSelection + "\";";
+        if (getDocumentProvider() == null) {
+            return;
+        }
         IDocument doc = getDocumentProvider().getDocument(getEditorInput());
         FindReplaceDocumentAdapter frda = new FindReplaceDocumentAdapter(doc);
         try {
