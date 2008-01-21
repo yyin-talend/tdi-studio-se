@@ -1360,7 +1360,11 @@ public class Process extends Element implements IProcess2 {
                     if (result.isChecked()) {
                         IMetadataTable newTable = ((IMetadataTable) result.getParameter());
                         // node.getMetadataFromConnector(newTable.getAttachedConnector()).setListColumns(newTable.getListColumns());
-                        MetadataTool.copyTable(newTable, node.getMetadataFromConnector(newTable.getAttachedConnector()));
+                        for (INodeConnector nodeConnector : node.getListConnector()) {
+                            if (nodeConnector.getBaseSchema().equals(newTable.getAttachedConnector())) {
+                                MetadataTool.copyTable(newTable, node.getMetadataFromConnector(nodeConnector.getName()));
+                            }
+                        }
                     } else { // result.isChecked()==false
                         node.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
                     }
