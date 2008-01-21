@@ -118,7 +118,7 @@
             activeByDefault="true"
 			            contentProvider="org.talend.componentdesigner.resources.ResourceExtensionContentProvider"
             			labelProvider="org.talend.componentdesigner.resources.ResourceExtensionLabelProvider"			
-            id="org.eclipse.ui.navigator.resourceContent">         
+            id="org.talend.componentdesigner.resourceContent">         
          <enablement>
 		         <or>         
 		            <adapt type="org.eclipse.core.resources.IProject" /> 
