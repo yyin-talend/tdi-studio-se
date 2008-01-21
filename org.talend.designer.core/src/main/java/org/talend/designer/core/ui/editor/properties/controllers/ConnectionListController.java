@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.ArrayUtils;
@@ -255,6 +256,47 @@ public class ConnectionListController extends AbstractElementPropertySectionCont
             combo.setText(curConnectionNameList[numValue]);
         }
 
+    }
+
+    public static void renameConnection(String oldConnectionName, String newConnectionName, List<Node> nodesToUpdate) {
+        for (Node curNode : nodesToUpdate) {
+            renameConnectionInElement(oldConnectionName, newConnectionName, curNode);
+            for (Connection connection : (List<Connection>) curNode.getOutgoingConnections()) {
+                renameConnectionInElement(oldConnectionName, newConnectionName, connection);
+            }
+        }
+    }
+
+    private static void renameConnectionInElement(String oldConnectionName, String newConnectionName, Element elem) {
+        for (IElementParameter curParam : elem.getElementParameters()) {
+            if (curParam.getField().equals(EParameterFieldType.CONNECTION_LIST)) {
+                if (oldConnectionName.equals(curParam.getValue())) {
+                    curParam.setValue(newConnectionName);
+                }
+            } else if (curParam.getField().equals(EParameterFieldType.TABLE)) {
+                final Object[] itemsValue = curParam.getListItemsValue();
+                for (int i = 0; i < itemsValue.length; i++) {
+                    if (itemsValue[i] instanceof IElementParameter) {
+                        IElementParameter param = (IElementParameter) itemsValue[i];
+                        if (param.getField().equals(EParameterFieldType.CONNECTION_LIST)) {
+                            List<Map<String, Object>> tableValues = (List<Map<String, Object>>) curParam.getValue();
+                            for (Map<String, Object> curLine : tableValues) {
+                                Object value = curLine.get(param.getName());
+                                if (value instanceof Integer) {
+                                    String connectionName = (String) param.getListItemsValue()[(Integer) value];
+                                    if (connectionName.equals(oldConnectionName)) {
+                                        // note: change from "Integer" value stored to "String" value
+                                        curLine.put(param.getName(), newConnectionName);
+                                    }
+                                } else if (value instanceof String) {
+                                    curLine.put(param.getName(), newConnectionName);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public static void updateConnectionList(Process process) {

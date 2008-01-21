@@ -15,6 +15,7 @@ package org.talend.designer.core.ui.editor.properties.controllers;
 import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.gef.commands.Command;
@@ -38,6 +39,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
+import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
@@ -184,6 +186,41 @@ public class ComponentListController extends AbstractElementPropertySectionContr
         dField.getLayoutControl().dispose();
 
         return initialSize.y + ITabbedPropertyConstants.VSPACE;
+    }
+
+    public static void renameComponentUniqueName(String oldConnectionName, String newConnectionName, List<Node> nodesToUpdate) {
+        for (Node curNode : nodesToUpdate) {
+            for (IElementParameter curParam : curNode.getElementParameters()) {
+                if (curParam.getField().equals(EParameterFieldType.COMPONENT_LIST)) {
+                    if (oldConnectionName.equals(curParam.getValue())) {
+                        curParam.setValue(newConnectionName);
+                    }
+                } else if (curParam.getField().equals(EParameterFieldType.TABLE)) {
+                    final Object[] itemsValue = curParam.getListItemsValue();
+                    for (int i = 0; i < itemsValue.length; i++) {
+                        if (itemsValue[i] instanceof IElementParameter) {
+                            IElementParameter param = (IElementParameter) itemsValue[i];
+                            if (param.getField().equals(EParameterFieldType.COMPONENT_LIST)) {
+                                List<Map<String, Object>> tableValues = (List<Map<String, Object>>) curParam.getValue();
+                                for (Map<String, Object> curLine : tableValues) {
+                                    Object value = curLine.get(param.getName());
+                                    if (value instanceof Integer) {
+                                        String connectionName = (String) param.getListItemsValue()[(Integer) value];
+                                        if (connectionName.equals(oldConnectionName)) {
+                                            // note: change from "Integer" value stored to "String" value
+                                            curLine.put(param.getName(), newConnectionName);
+                                        }
+                                    } else if (value instanceof String) {
+                                        curLine.put(param.getName(), newConnectionName);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
     }
 
     public static void updateComponentList(Element elem, IElementParameter param) {
