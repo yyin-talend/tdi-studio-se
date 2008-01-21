@@ -67,11 +67,28 @@
     public static String status= "";
     
     public static void main(String[] args){
-        int exitCode = runJob(args);
+        int exitCode = runJobInTOS(args);
         System.exit(exitCode);
     }
     
-    public static synchronized int runJob(String[] args) {
+    public static String[][] runJob(String[] args) {
+    	runJobInTOS(args);
+    	
+        int firstItemlength = 0;
+        if (globalBuffer.size() > 0) {
+            firstItemlength = globalBuffer.get(0).length;// first one is ok
+        }
+        String[][] bufferValue = new String[globalBuffer.size()][firstItemlength];
+        for (int i = 0; i < globalBuffer.size(); i++) {
+            for (int j = 0; j < firstItemlength; j++) {
+                bufferValue[i][j] = globalBuffer.get(i)[j].toString();
+            }
+        }
+            	
+    	return bufferValue;
+    }
+    
+    public static synchronized int runJobInTOS(String[] args) {
     
 		init();
     
@@ -359,6 +376,7 @@
 		rootPid = null;
 		fatherPid = null;
 		context_param.clear();
-		status = "";		
+		status = "";
+		globalBuffer.clear();		
 	}	
 }

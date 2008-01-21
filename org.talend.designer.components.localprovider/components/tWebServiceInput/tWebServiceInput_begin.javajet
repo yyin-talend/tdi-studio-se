@@ -40,13 +40,17 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         String proxyPassword = ElementParameterParser.getValue(node,"__PROXY_PASSWORD__");
         
         String timeoutStr = ElementParameterParser.getValue(node,"__TIMEOUT__");
-		String timeout = (timeoutStr!=null&&!timeoutStr.equals(""))?timeoutStr:"20";        
+		String timeout = (timeoutStr!=null&&!timeoutStr.equals(""))?timeoutStr:"20";
+		
+        String endpoint = ElementParameterParser.getValue(node,"__ENDPOINT__");
+        String method = ElementParameterParser.getValue(node,"__METHOD__");
+        if(method != null && !method.trim().equals("\"runJob\"")) {
 %>
 /////////////////////////////////// 
         
         Object[] params_<%=cid %> = new Object[] {
-        <%=ElementParameterParser.getValue(node,"__ENDPOINT__") %>, 
-        <%=ElementParameterParser.getValue(node,"__METHOD__") %>,      
+        <%=endpoint %>, 
+        <%=method %>,      
 <%
         for (int i = 0; i < params.size(); i++) {
             Map<String, String> line = params.get(i);
@@ -120,6 +124,25 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             } else {
 			    results_<%=cid %>[0] = String.valueOf(value);
             }
+            
+<%} else { %>
+        String[] results_<%=cid %> = null;
+	    int nb_line_<%=cid %> = 0;
+	    
+        org.talend.TalendJob talendJob = new org.talend.TalendJobProxy(<%=endpoint %>);
+        String[][] runJob = talendJob.runJob(new String[]{
+<%
+        for (int i = 0; i < params.size(); i++) {
+            Map<String, String> line = params.get(i);
+%>
+        <%= line.get("VALUE") %>,
+<%
+        }
+%> 
+        });
+        for (String[] item : runJob) {
+			results_<%=cid %> = item;
+<%}%>            
 	
            nb_line_<%=cid %>++;
 	       
@@ -197,7 +220,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	}//2
 	
 }//1
-
 %>
 ///////////////////////////////////       
 <%

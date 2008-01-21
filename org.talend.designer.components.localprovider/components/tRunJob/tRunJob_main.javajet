@@ -1,5 +1,10 @@
 <%@ jet 
 imports="
+	org.talend.core.model.process.EConnectionType
+	org.talend.core.model.process.IConnection
+	org.talend.core.model.metadata.IMetadataColumn
+	org.talend.core.model.metadata.IMetadataTable
+	org.talend.core.model.metadata.types.JavaTypesManager
     org.talend.core.model.process.INode 
     org.talend.core.model.process.ElementParameterParser
     org.talend.designer.codegen.config.CodeGeneratorArgument
@@ -13,6 +18,17 @@ imports="
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
+
+	List<IMetadataColumn> columns = null;
+	List<IMetadataTable> metadatas = node.getMetadataList();
+	if (metadatas != null && metadatas.size() > 0) {
+	    IMetadataTable metadata = metadatas.get(0);    
+	    if (metadata != null) {
+	        columns = metadata.getListColumns();
+	    }
+	}
+
+    List< ? extends IConnection> outConns = node.getOutgoingConnections(EConnectionType.FLOW_MAIN);
 	
 	boolean dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_CHILD_ERROR__").equals("true");
 	
@@ -105,4 +121,20 @@ for (int i=0; i<contextParams.size(); i++) {
 <%
     }
 %>
-    
+
+        java.util.List <Object[]> list_<%=cid %> = <%=childJob %>.globalBuffer;        
+        for (Object[] item_<%=cid %> : list_<%=cid %>) {
+<% 
+for (IConnection conn : outConns) {
+	if(!conn.isActivate()) continue;
+	String outputConnName = conn.getName(); 
+    		
+	for (int i = 0; i < columns.size(); i++) {//4
+			IMetadataColumn column = columns.get(i);
+			String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), true);			
+%>
+	<%=outputConnName %>.<%=column.getLabel() %> = (<%=typeToGenerate %>)item_<%=cid %>[<%=i %>];
+<% 
+	} 
+}
+%>  
