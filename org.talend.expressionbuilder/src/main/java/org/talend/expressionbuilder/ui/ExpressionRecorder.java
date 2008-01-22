@@ -41,7 +41,6 @@ public class ExpressionRecorder {
      */
     public ExpressionRecorder(Button button) {
         stack = new Stack<String>();
-        stack.push("");
         this.button = button;
     }
 
