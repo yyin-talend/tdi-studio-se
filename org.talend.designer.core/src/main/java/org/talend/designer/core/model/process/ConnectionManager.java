@@ -257,11 +257,7 @@ public class ConnectionManager {
             // if the connection type is not the default one, then we don't change automatically.
             // && newlineStyle.getName().equals(newConnectionType)) {
 
-            if (newlineStyle.equals(EConnectionType.FLOW_MERGE)) {
-                // if the previous connection was a merge, then we just change it to a main, then the rules below
-                // will apply the same.
-                newlineStyle = EConnectionType.FLOW_MAIN;
-            }
+            newlineStyle = EConnectionType.FLOW_MAIN;
             if (newTarget.getComponent().useLookup()) {
                 int nbMain = 0;
                 for (IConnection connec : newTarget.getIncomingConnections()) {
