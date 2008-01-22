@@ -13,6 +13,7 @@
 package org.talend.componentdesigner.ui.wizard.creatcomponent;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -165,7 +166,9 @@ public class CreateComponentWizard extends BasicNewResourceWizard {
 			e.printStackTrace();
 		} catch (CoreException e) {
 			e.printStackTrace();
-		}
+		} catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
 		return true;
 	}
 

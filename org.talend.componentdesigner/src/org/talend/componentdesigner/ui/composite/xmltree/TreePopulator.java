@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.componentdesigner.ui.composite.xmltree;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -60,8 +62,12 @@ public class TreePopulator {
 	public boolean populateTree() {
 		InputStream inputStream = null;
 		if (this.filePath == null) {
-			inputStream = TreePopulator.class
-					.getResourceAsStream("samplecomponent.xml");
+			try {
+                inputStream = ComponentDesigenerPlugin.getDefault().getBundle()
+                .getEntry("/data/samplecomponent.xml").openStream();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 		} else {
 			// TODO  get file inputstream  from  absolute path. 
 		}

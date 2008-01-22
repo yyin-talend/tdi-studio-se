@@ -53,7 +53,7 @@ public class ComponentFolderManager {
 
 	public void generateComponentContent(ComponentPref componentPref,
 			IProject project)
-			throws FileNotFoundException, CoreException {
+			throws CoreException, IOException {
 		this.componentPref = componentPref;
 		this.project = project;
 		this.componentFolderName = componentPref.getName();
@@ -111,15 +111,16 @@ public class ComponentFolderManager {
 	 * creat all the language type jet files, include begin,main or end files.
 	 * 
 	 * @throws CoreException
+	 * @throws IOException 
 	 */
-	private void creatJetFiles() throws CoreException {
+	private void creatJetFiles() throws CoreException, IOException {
 		for (JetFileStamp fileStamp : this.componentPref.getJetFileStamps()) {
 			creatJetLanguageFile(fileStamp);
 		}
 	}
 
 	private void creatJetLanguageFile(JetFileStamp fileStamp)
-			throws CoreException {
+			throws CoreException, IOException {
 		String fileName = componentPref.getName() + "_"
 				+ fileStamp.getFileStampName();
 		switch (componentPref.getLanguageType()) {
@@ -185,16 +186,24 @@ public class ComponentFolderManager {
 	private void addComponentImage() throws CoreException,
 			FileNotFoundException {
 		if (componentPref.getImageURL() == null) {
-			copyFileFromSrc((FileInputStream) ImageLib
+			copyFileFromSrc(ImageLib
 					.getImageInputStream(ImageLib.COMPONENT_DEFAULT),
 					componentPref.getName() + "_icon32.png");
 		}
 		copyFileFromSrc(componentPref.getImageURL());
 	}
 	
-	private void creatTemplateJetFile(String fileName) throws CoreException {
-		FileInputStream templateFileStream = (FileInputStream) ComponentFolderManager.class
-				.getResourceAsStream("template.javajet");
+	private void creatTemplateJetFile(String fileName) throws CoreException, IOException {
+//		FileInputStream templateFileStream = (FileInputStream) ComponentFolderManager.class
+//				.getResourceAsStream("template.javajet");
+		InputStream templateFileStream = null;
+        try {
+            templateFileStream = ComponentDesigenerPlugin.getDefault().getBundle()
+                    .getEntry("/data/template.javajet").openStream();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+//		.getResourceAsStream("template.javajet");
 		copyFileFromSrc(templateFileStream, fileName);
 	}
 
@@ -229,7 +238,7 @@ public class ComponentFolderManager {
 		file.create(fileStream, false, null);
 	}
 	
-	private void copyFileFromSrc(FileInputStream inputStream, String fileName)
+	private void copyFileFromSrc(InputStream inputStream, String fileName)
 			throws CoreException {
 		if (inputStream == null) {
 			return;
