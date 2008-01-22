@@ -1,5 +1,6 @@
 <%@ jet 
 imports="
+	org.talend.core.model.process.EConnectionType
     org.talend.core.model.process.INode 
     org.talend.core.model.process.ElementParameterParser 
     org.talend.core.model.metadata.IMetadataTable 
@@ -44,7 +45,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
         String incomingConnName = null;
         String outgoingConnName = null;
 
-        List< ? extends IConnection> inConns = node.getIncomingConnections();
+        List< ? extends IConnection> outConns = node.getOutgoingConnections(EConnectionType.FLOW_MAIN);
         if (inConns != null && !inConns.isEmpty()) {
             IConnection inConn = inConns.get(0);
             incomingConnName = inConn.getName();
