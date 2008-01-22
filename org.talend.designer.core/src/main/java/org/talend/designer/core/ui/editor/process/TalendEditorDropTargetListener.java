@@ -22,6 +22,7 @@ import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.draw2d.geometry.Translatable;
 import org.eclipse.gef.commands.Command;
+import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.LocalSelectionTransfer;
@@ -217,13 +218,12 @@ public class TalendEditorDropTargetListener implements TransferDropTargetListene
             NodeContainer nc = new NodeContainer(node);
 
             // create the node on the design sheet
-            new CreateNodeContainerCommand((Process) editor.getProcess(), nc, draw2dPosition).execute();
-
+            execCommandStack(new CreateNodeContainerCommand((Process) editor.getProcess(), nc, draw2dPosition));
             // initialize the propertiesView
 
             List<Command> commands = createRefreshingPropertiesCommand(selectedNode, node);
             for (Command command : commands) {
-                command.execute();
+                execCommandStack(command);
             }
             draw2dPosition = draw2dPosition.getCopy();
             draw2dPosition.x += TalendEditor.GRID_SIZE;
@@ -393,6 +393,15 @@ public class TalendEditorDropTargetListener implements TransferDropTargetListene
         }
         store.componentName = name;
         store.component = component;
+    }
+
+    private void execCommandStack(Command command) {
+        CommandStack cs = editor.getCommandStack();
+        if (cs != null) {
+            cs.execute(command);
+        } else {
+            command.execute();
+        }
     }
 
     /**
