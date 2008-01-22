@@ -44,8 +44,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             for (IConnection inConn: inConns ){
                 EConnectionType connectionType = inConn.getLineStyle();
                 if (connectionType == EConnectionType.FLOW_MAIN) {
-                    inMetadata = inConn.getMetadataTable();
-                    inConnName = inMetadata.getTableName();
+                    //inMetadata = inConn.getMetadataTable();
+                    //inConnName = inMetadata.getTableName();
+                    inConnName = inConn.getName();
                     for(IMetadataColumn column: inMetadata.getListColumns()){
                         String isTrue = "true" ;
                         hIsInputCol.put(column.getLabel(), isTrue);
@@ -96,7 +97,7 @@ my $key_<%=cid%> = join(
             for (IMetadataColumn column: inMetadata.getListColumns()) {
                 if (column.isKey()) {
 %>
-    $<%=inConnName%>->[<%=i%>],
+    $<%=inConnName%>->[<%=inConnName %>__<%=column.getLabel()%>],
 <% 
                 }
                 i++;

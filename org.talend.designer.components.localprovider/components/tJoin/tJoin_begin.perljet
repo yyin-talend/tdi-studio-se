@@ -41,7 +41,7 @@ use constant <%=cid%>__<%=column.getLabel() %> => <%=column_number%>;
                     String inConnName = inMetadata.getTableName();
                     for (IMetadataColumn column: inMetadata.getListColumns()) {
 %>
-use constant <%=inConnName %>__<%=column.getLabel() %> => <%=column_number%>;
+use constant <%=inConn.getName() %>__<%=column.getLabel() %> => <%=column_number%>;
 <%
                         column_number++;
                     }
