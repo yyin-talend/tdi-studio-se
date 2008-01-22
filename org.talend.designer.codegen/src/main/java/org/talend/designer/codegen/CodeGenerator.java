@@ -517,6 +517,10 @@ public class CodeGenerator implements ICodeGenerator {
                     continue;
                 }
 
+                if (connection.getLineStyle().hasConnectionCategory(EConnectionType.USE_HASH)) {
+                    continue;
+                }
+
                 INode targetNode = connection.getTarget();
                 if ((targetNode != null) && (subProcess != null)) {
 
