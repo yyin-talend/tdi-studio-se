@@ -363,7 +363,9 @@ public class ExpressionComposite extends Composite {
         modificationRecord.undo();
         setExpression(modificationRecord.popRecored(), false);
         modificationRecord.undoFinished();
-        textControl.setSelection(modificationRecord.getCursorPosition());
+        if (modificationRecord.getCursorPosition() != null) {
+            textControl.setSelection(modificationRecord.getCursorPosition());
+        }
     }
 
     public static final String PERL_FUN_PREFIX = "sub{"; //$NON-NLS-1$
