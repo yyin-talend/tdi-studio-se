@@ -231,13 +231,14 @@ public class ConnectionReconnectCommand extends Command {
             connection.reconnect(newSource, oldTarget, newLineStyle);
             connection.updateName();
 
-            if (newSourceSchemaType != null && connection.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
+            if (newSourceSchemaType != null && connection.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
                 IMetadataTable sourceMetadataTable = newSource.getMetadataFromConnector(connector.getName());
                 // IMetadataTable targetMetadataTable = oldTarget.getMetadataFromConnector(connector.getName());
                 if (oldMetadataTable != null && sourceMetadataTable != null) {
                     boolean sameFlag = oldMetadataTable.sameMetadataAs(sourceMetadataTable, IMetadataColumn.OPTIONS_NONE);
                     // For the auto propagate.
-                    if (!sameFlag && (oldMetadataTable.getListColumns().isEmpty() || getPropagateDialog())) {
+                    if (!sameFlag && oldTarget.getComponent().isSchemaAutoPropagated()
+                            && (oldMetadataTable.getListColumns().isEmpty() || getPropagateDialog())) {
                         ChangeMetadataCommand changeMetadataCmd = new ChangeMetadataCommand(oldTarget, null, null,
                                 sourceMetadataTable);
                         changeMetadataCmd.execute(true);
@@ -259,12 +260,13 @@ public class ConnectionReconnectCommand extends Command {
             connection.updateName();
 
             if (newTargetSchemaType != null) {
-                if (connection.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
+                if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
                     IMetadataTable targetOldMetadataTable = newTarget.getMetadataFromConnector(connector.getName());
                     if (oldMetadataTable != null && targetOldMetadataTable != null) {
                         boolean sameFlag = oldMetadataTable.sameMetadataAs(targetOldMetadataTable, IMetadataColumn.OPTIONS_NONE);
                         // For the auto propagate.
-                        if (!sameFlag && (targetOldMetadataTable.getListColumns().isEmpty() || getPropagateDialog())) {
+                        if (!sameFlag && newTarget.getComponent().isSchemaAutoPropagated()
+                                && (targetOldMetadataTable.getListColumns().isEmpty() || getPropagateDialog())) {
                             ChangeMetadataCommand changeMetadataCmd = new ChangeMetadataCommand(newTarget, null, null,
                                     oldMetadataTable);
                             changeMetadataCmd.execute(true);
