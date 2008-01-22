@@ -122,9 +122,11 @@ for (int i=0; i<contextParams.size(); i++) {
     }
 %>
 
+<% if(outConns!=null && outConns.size() > 0) {%>
         java.util.List <Object[]> list_<%=cid %> = <%=childJob %>.globalBuffer;        
-        for (Object[] item_<%=cid %> : list_<%=cid %>) {
+        for (Object[] item_<%=cid %> : list_<%=cid %>) {        
 <% 
+}
 for (IConnection conn : outConns) {
 	if(!conn.isActivate()) continue;
 	String outputConnName = conn.getName(); 
