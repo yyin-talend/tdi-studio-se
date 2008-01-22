@@ -99,6 +99,7 @@ x_<%=cid%>.setNamespaceURIs(xmlNameSpaceMap_<%=cid%>);
 java.util.List<org.dom4j.tree.AbstractNode> nodeList_<%=cid%> = (java.util.List<org.dom4j.tree.AbstractNode>)x_<%=cid%>.selectNodes(doc_<%=cid%>);	
 
 String str_<%=cid %> = "";
+org.dom4j.Node node_<%=cid%> = null;
 for (org.dom4j.tree.AbstractNode temp_<%=cid%>: nodeList_<%=cid%>) {
 	nb_line_<%=cid%>++;
 <%	
@@ -106,9 +107,9 @@ for (org.dom4j.tree.AbstractNode temp_<%=cid%>: nodeList_<%=cid%>) {
 					String query = mapping.get(i).get("QUERY");
 %>
 	org.dom4j.XPath xTmp<%=i%>_<%=cid%> = temp_<%=cid%>.createXPath(nsTool_<%=cid%>.addDefaultNSPrefix(<%=query%>));
-    xTmp<%=i%>_<%=cid%>.setNamespaceURIs(xmlNameSpaceMap_<%=cid%>);  
+    xTmp<%=i%>_<%=cid%>.setNamespaceURIs(xmlNameSpaceMap_<%=cid%>); 
+    node_<%=cid%> = xTmp<%=i%>_<%=cid%>.selectSingleNode(temp_<%=cid%>);
     str_<%=cid %> = xTmp<%=i%>_<%=cid%>.valueOf(temp_<%=cid%>);
-	if (str_<%=cid %> != null ) {  
 <%
 					for(IMetadataColumn column:columns) {
 						if (mapping.get(i).get("SCHEMA_COLUMN")!=null) {
@@ -116,31 +117,59 @@ for (org.dom4j.tree.AbstractNode temp_<%=cid%>: nodeList_<%=cid%>) {
 								String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
 								JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 								String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
-								if (javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
+								if (javaType == JavaTypesManager.STRING ) {
+%>
+		if(node_<%=cid%> == null){ 
+			//element is missing
+			<%=conn.getName() %>.<%=column.getLabel() %> = <%=column.getDefault().equals("")?null:column.getDefault()%>;
+		}else if(node_<%=cid%>.getText().equals("")){ 
+			//element is empty
+			<%=conn.getName() %>.<%=column.getLabel() %> ="";
+		}else{
+			<%=conn.getName() %>.<%=column.getLabel() %> = str_<%= cid %>;
+		}
+<%
+								} else {
+%>
+		if(node_<%=cid%> == null || node_<%=cid%>.getText().equals("")){ 
+			//element is missing or empty
+<%
+									if(column.isNullable()){
+%>
+			<%=conn.getName() %>.<%=column.getLabel() %> = <%=column.getDefault().equals("")?null:column.getDefault()%>;
+<%
+									}else{
+%>
+			<%=conn.getName() %>.<%=column.getLabel() %> = <%=column.getDefault().equals("")?JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate):column.getDefault()%>;
+<%
+									}
+%>
+		}else{
+<%
+									if ( javaType == JavaTypesManager.OBJECT){
 %>
 		<%=conn.getName() %>.<%=column.getLabel() %> = str_<%= cid %>;
 <%
-								} else {
-									if (javaType == JavaTypesManager.DATE) {
+									} else if (javaType == JavaTypesManager.DATE) {
 %>
 		<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(str_<%= cid %>, <%= patternValue %>);
 <%  
-	} else if(javaType == JavaTypesManager.BYTE_ARRAY){ 
+									} else if(javaType == JavaTypesManager.BYTE_ARRAY){ 
 %>							
 		<%=conn.getName() %>.<%=column.getLabel() %> = str_<%= cid %>.getBytes(<%=encoding %>);
 <%
-			} else {
+									} else {
 %>
 		<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(str_<%= cid %>);
 <%
 									}
+%>
+		}
+<%
 								}
 							}
 						}
 					}
-%>
-	}
-<%
 				}
 			}
 			if (conns.size()>1) {
