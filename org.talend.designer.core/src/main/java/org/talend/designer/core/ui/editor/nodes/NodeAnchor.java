@@ -17,6 +17,7 @@ import java.util.List;
 
 import org.eclipse.draw2d.ChopboxAnchor;
 import org.eclipse.draw2d.FreeformViewport;
+import org.eclipse.draw2d.ScalableFreeformLayeredPane;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -34,6 +35,8 @@ public class NodeAnchor extends ChopboxAnchor {
     Connection connection = null;
 
     boolean isTargetAnchor = false;
+
+    Rectangle sourceRect, targetRect;
 
     Point sourceLocation, targetLocation;
 
@@ -67,31 +70,38 @@ public class NodeAnchor extends ChopboxAnchor {
     @Override
     public Point getLocation(Point reference) {
         if (target != null && !target.equals(source)) {
+            sourceLocation = new Point(source.getLocation());
+            targetLocation = new Point(target.getLocation());
+            Point diff = new Point(0, 0);
             if (!isTargetAnchor) {
-                sourceLocation = source.getLocation();
-                targetLocation = target.getLocation();
                 if (((reference.y - (target.getSize().height / 2)) != targetLocation.y)
                         || ((reference.x - (target.getSize().width / 2)) != targetLocation.x)) {
                     FreeformViewport viewport = getViewport();
                     int y = viewport.getVerticalRangeModel().getValue();
                     int x = viewport.getHorizontalRangeModel().getValue();
-                    Point diff = new Point(-x, -y);
-                    sourceLocation = sourceLocation.getTranslated(diff);
-                    targetLocation = targetLocation.getTranslated(diff);
+                    diff = new Point(-x, -y);
                 }
             } else {
-                sourceLocation = source.getLocation();
-                targetLocation = target.getLocation();
                 if (((reference.y - (source.getSize().height / 2)) != sourceLocation.y)
                         || ((reference.x - (source.getSize().width / 2)) != sourceLocation.x)) {
                     FreeformViewport viewport = getViewport();
                     int y = viewport.getVerticalRangeModel().getValue();
                     int x = viewport.getHorizontalRangeModel().getValue();
-                    Point diff = new Point(-x, -y);
-                    sourceLocation = sourceLocation.getTranslated(diff);
-                    targetLocation = targetLocation.getTranslated(diff);
+                    diff = new Point(-x, -y);
                 }
             }
+            double scale = getScalableFreeform().getScale();
+            sourceRect = new Rectangle(sourceLocation, source.getSize());
+            targetRect = new Rectangle(targetLocation, target.getSize());
+            sourceLocation.performScale(scale);
+            targetLocation.performScale(scale);
+            sourceRect.performScale(scale);
+            targetRect.performScale(scale);
+            sourceLocation = sourceLocation.getTranslated(diff);
+            targetLocation = targetLocation.getTranslated(diff);
+            sourceRect = sourceRect.getTranslated(diff);
+            targetRect = targetRect.getTranslated(diff);
+
             int nb = 0;
             int connectionId = 0;
             for (Connection connection : (List<Connection>) source.getOutgoingConnections()) {
@@ -121,6 +131,10 @@ public class NodeAnchor extends ChopboxAnchor {
         return (FreeformViewport) getOwner().getParent().getParent().getParent().getParent().getParent().getParent();
     }
 
+    private ScalableFreeformLayeredPane getScalableFreeform() {
+        return (ScalableFreeformLayeredPane) getOwner().getParent().getParent().getParent().getParent();
+    }
+
     public Point getLocationForSimpleConnection(Point reference) {
         // if (!isTargetAnchor) {
         // if (connection != null) {
@@ -137,19 +151,15 @@ public class NodeAnchor extends ChopboxAnchor {
         // System.out.println("Simple: refresh target anchor of:" + source + " to:" + target);
         // }
         // }
-        Rectangle sourceRect = new Rectangle(sourceLocation, source.getSize());
-        Rectangle targetRect = new Rectangle(targetLocation, target.getSize());
 
         Point sourcePoint = null, targetPoint = null;
 
-        if ((sourceLocation.y < targetRect.getCenter().y)
-                && (targetRect.getCenter().y < (sourceLocation.y + source.getSize().height))) {
+        if ((sourceLocation.y < targetRect.getCenter().y) && (targetRect.getCenter().y < (sourceLocation.y + sourceRect.height))) {
             // contains
             sourcePoint = new Point(sourceRect.getCenter().x, targetRect.getCenter().y);
         }
 
-        if ((sourceLocation.x < targetRect.getCenter().x)
-                && (targetRect.getCenter().x < (sourceLocation.x + source.getSize().width))) {
+        if ((sourceLocation.x < targetRect.getCenter().x) && (targetRect.getCenter().x < (sourceLocation.x + sourceRect.width))) {
             // contains
             sourcePoint = new Point(targetRect.getCenter().x, sourceRect.getCenter().y);
         }
@@ -158,14 +168,14 @@ public class NodeAnchor extends ChopboxAnchor {
 
         if (sourcePoint == null) {
             if ((targetLocation.y < sourceRect.getCenter().y)
-                    && (sourceRect.getCenter().y < (targetLocation.y + target.getSize().height))) {
+                    && (sourceRect.getCenter().y < (targetLocation.y + targetRect.height))) {
                 // contains
                 sourcePoint = new Point(sourceRect.getCenter().x, sourceRect.getCenter().y);
                 targetPoint = new Point(targetRect.getCenter().x, sourceRect.getCenter().y);
             }
 
             if ((targetLocation.x < sourceRect.getCenter().x)
-                    && (sourceRect.getCenter().x < (targetLocation.x + target.getSize().width))) {
+                    && (sourceRect.getCenter().x < (targetLocation.x + targetRect.width))) {
                 // contains
                 sourcePoint = new Point(sourceRect.getCenter().x, sourceRect.getCenter().y);
                 targetPoint = new Point(sourceRect.getCenter().x, targetRect.getCenter().y);
@@ -176,7 +186,7 @@ public class NodeAnchor extends ChopboxAnchor {
             return super.getLocation(reference);
         }
         if (sourcePoint != null && targetPoint != null) {
-            return calculateLocationFromRef(sourceRect, targetRect, sourcePoint, targetPoint);
+            return calculateLocationFromRef(sourcePoint, targetPoint);
         }
         return super.getLocation(reference);
     }
@@ -189,7 +199,7 @@ public class NodeAnchor extends ChopboxAnchor {
      * @param sourcePoint
      * @param targetPoint
      */
-    private Point calculateLocationFromRef(Rectangle sourceRect, Rectangle targetRect, Point sourcePoint, Point targetPoint) {
+    private Point calculateLocationFromRef(Point sourcePoint, Point targetPoint) {
         LineSeg lineSourceToTarget = new LineSeg(sourcePoint, targetPoint);
         List<LineSeg> lineList = new ArrayList<LineSeg>();
         if (!isTargetAnchor) {
@@ -234,16 +244,14 @@ public class NodeAnchor extends ChopboxAnchor {
         // }
         // }
 
-        Rectangle sourceRect = new Rectangle(sourceLocation, source.getSize());
-        Rectangle targetRect = new Rectangle(targetLocation, target.getSize());
         if ((sourceLocation.y >= targetLocation.y)
-                && ((sourceLocation.y + source.getSize().height) <= (targetLocation.y + target.getSize().height))) {
-            targetRect = new Rectangle(new Point(targetLocation.x, sourceLocation.y), new Dimension(target.getSize().width,
-                    source.getSize().height));
+                && ((sourceLocation.y + sourceRect.height) <= (targetLocation.y + targetRect.height))) {
+            targetRect = new Rectangle(new Point(targetLocation.x, sourceLocation.y), new Dimension(targetRect.width,
+                    sourceRect.height));
         } else if ((sourceLocation.x >= targetLocation.x)
-                && ((sourceLocation.x + source.getSize().width) <= (targetLocation.x + target.getSize().width))) {
-            targetRect = new Rectangle(new Point(sourceLocation.x, targetLocation.y), new Dimension(source.getSize().width,
-                    source.getSize().height));
+                && ((sourceLocation.x + sourceRect.width) <= (targetLocation.x + targetRect.width))) {
+            targetRect = new Rectangle(new Point(sourceLocation.x, targetLocation.y), new Dimension(sourceRect.width,
+                    sourceRect.height));
         }
 
         // will calculate the numerator and denominator for the function to place the points.
@@ -274,8 +282,7 @@ public class NodeAnchor extends ChopboxAnchor {
         }
 
         LineSeg lineSource, lineTarget;
-        if ((sourceLocation.x < targetRect.getCenter().x)
-                && (targetRect.getCenter().x < (sourceLocation.x + source.getSize().width))) {
+        if ((sourceLocation.x < targetRect.getCenter().x) && (targetRect.getCenter().x < (sourceLocation.x + sourceRect.width))) {
             lineSource = new LineSeg(sourceRect.getLeft(), sourceRect.getRight());
             lineTarget = new LineSeg(targetRect.getLeft(), targetRect.getRight());
         } else {
@@ -290,17 +297,17 @@ public class NodeAnchor extends ChopboxAnchor {
         Point pointTarget = new Point();
         lineTarget.pointOn(length.longValue(), KeyPoint.ORIGIN, pointTarget);
 
-        if ((sourceLocation.y < pointTarget.y) && (pointTarget.y < (sourceLocation.y + source.getSize().height))) {
+        if ((sourceLocation.y < pointTarget.y) && (pointTarget.y < (sourceLocation.y + sourceRect.height))) {
             // contains
             pointSource.y = pointTarget.y;
         }
 
-        if ((sourceLocation.x < pointTarget.x) && (pointTarget.x < (sourceLocation.x + source.getSize().width))) {
+        if ((sourceLocation.x < pointTarget.x) && (pointTarget.x < (sourceLocation.x + sourceRect.width))) {
             // contains
             pointSource.x = pointTarget.x;
         }
 
-        return calculateLocationFromRef(sourceRect, targetRect, pointSource, pointTarget);
+        return calculateLocationFromRef(pointSource, pointTarget);
     }
 
     /**
