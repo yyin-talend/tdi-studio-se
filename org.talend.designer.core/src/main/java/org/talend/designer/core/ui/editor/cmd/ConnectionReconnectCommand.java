@@ -12,7 +12,13 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.cmd;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.gef.commands.Command;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.ui.PlatformUI;
+import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.process.EConnectionType;
@@ -55,6 +61,8 @@ public class ConnectionReconnectCommand extends Command {
     private String newTargetSchemaType;
 
     private EConnectionType oldLineStyle;
+
+    private List<ChangeMetadataCommand> metadataChanges = new ArrayList<ChangeMetadataCommand>();
 
     /**
      * Initialisation of the command with the given connection. This will initialize the source and target before change
@@ -166,6 +174,7 @@ public class ConnectionReconnectCommand extends Command {
      * @see org.eclipse.gef.commands.Command#execute()
      */
     public void execute() {
+        metadataChanges.clear();
         if (newSource != null) {
             INodeConnector connector = oldSource.getConnectorFromName(connectorName);
             connector.setCurLinkNbOutput(connector.getCurLinkNbOutput() - 1);
@@ -210,6 +219,7 @@ public class ConnectionReconnectCommand extends Command {
                     }
                 }
                 if (newSourceSchemaType != null) {
+
                     newSource.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
                 }
                 if (oldSourceSchemaType != null) {
@@ -220,18 +230,50 @@ public class ConnectionReconnectCommand extends Command {
             }
             connection.reconnect(newSource, oldTarget, newLineStyle);
             connection.updateName();
+
+            if (newSourceSchemaType != null && connection.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
+                IMetadataTable sourceMetadataTable = newSource.getMetadataFromConnector(connector.getName());
+                // IMetadataTable targetMetadataTable = oldTarget.getMetadataFromConnector(connector.getName());
+                if (oldMetadataTable != null && sourceMetadataTable != null) {
+                    boolean sameFlag = oldMetadataTable.sameMetadataAs(sourceMetadataTable, IMetadataColumn.OPTIONS_NONE);
+                    // For the auto propagate.
+                    if (!sameFlag && (oldMetadataTable.getListColumns().isEmpty() || getPropagateDialog())) {
+                        ChangeMetadataCommand changeMetadataCmd = new ChangeMetadataCommand(oldTarget, null, null,
+                                sourceMetadataTable);
+                        changeMetadataCmd.execute(true);
+                        metadataChanges.add(changeMetadataCmd);
+                    }
+                }
+            }
             ((Process) newSource.getProcess()).checkStartNodes();
             ((Process) newSource.getProcess()).checkProcess();
         } else if (newTarget != null) {
             newTargetSchemaType = (String) newTarget.getPropertyValue(EParameterName.SCHEMA_TYPE.getName());
+
             INodeConnector connector = oldTarget.getConnectorFromType(oldLineStyle);
             connector.setCurLinkNbInput(connector.getCurLinkNbInput() - 1);
             connector = newTarget.getConnectorFromType(newLineStyle);
             connector.setCurLinkNbInput(connector.getCurLinkNbInput() + 1);
+
             connection.reconnect(oldSource, newTarget, newLineStyle);
             connection.updateName();
+
             if (newTargetSchemaType != null) {
+                if (connection.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
+                    IMetadataTable targetOldMetadataTable = newTarget.getMetadataFromConnector(connector.getName());
+                    if (oldMetadataTable != null && targetOldMetadataTable != null) {
+                        boolean sameFlag = oldMetadataTable.sameMetadataAs(targetOldMetadataTable, IMetadataColumn.OPTIONS_NONE);
+                        // For the auto propagate.
+                        if (!sameFlag && (targetOldMetadataTable.getListColumns().isEmpty() || getPropagateDialog())) {
+                            ChangeMetadataCommand changeMetadataCmd = new ChangeMetadataCommand(newTarget, null, null,
+                                    oldMetadataTable);
+                            changeMetadataCmd.execute(true);
+                            metadataChanges.add(changeMetadataCmd);
+                        }
+                    }
+                }
                 newTarget.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
+
             }
             ((Process) oldSource.getProcess()).checkStartNodes();
             ((Process) oldSource.getProcess()).checkProcess();
@@ -282,6 +324,9 @@ public class ConnectionReconnectCommand extends Command {
                     }
                 }
                 if (newSourceSchemaType != null) {
+                    for (ChangeMetadataCommand cmd : metadataChanges) {
+                        cmd.undo();
+                    }
                     newSource.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), newSourceSchemaType);
                 }
                 if (oldSourceSchemaType != null) {
@@ -296,6 +341,9 @@ public class ConnectionReconnectCommand extends Command {
             connector = newTarget.getConnectorFromType(newLineStyle);
             connector.setCurLinkNbInput(connector.getCurLinkNbInput() - 1);
             if (newTargetSchemaType != null) {
+                for (ChangeMetadataCommand cmd : metadataChanges) {
+                    cmd.undo();
+                }
                 newTarget.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), newTargetSchemaType);
             }
         }
@@ -305,4 +353,10 @@ public class ConnectionReconnectCommand extends Command {
         ((Process) oldSource.getProcess()).checkProcess();
     }
 
+    private boolean getPropagateDialog() {
+        return MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), Messages
+                .getString("ChangeMetadataCommand.messageDialog.propagate"), //$NON-NLS-1$
+                Messages.getString("ChangeMetadataCommand.messageDialog.questionMessage")); //$NON-NLS-2$
+
+    }
 }
