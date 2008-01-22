@@ -66,7 +66,7 @@ if (outputConns!=null && outputConns.size()>0) {
 						}else if (javaType == JavaTypesManager.DATE) {
 							String patternValue = column.getPattern();
 %>
-	<%=outputConnName%>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(re_<%=cid%>.getString(<%=tmpMap.get("VALUE")%>).trim(),"<%=patternValue%>");
+	<%=outputConnName%>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(re_<%=cid%>.getString(<%=tmpMap.get("VALUE")%>).trim(),<%=patternValue%>);
 <%
 						}else if (javaType == JavaTypesManager.STRING) {
 %>
