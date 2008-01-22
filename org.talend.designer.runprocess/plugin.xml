@@ -71,7 +71,7 @@
    <extension
          point="org.talend.core.global_actions">
       <GlobalAction
-            class="org.talend.designer.runprocess.ui.actions.RunProcessAction"
+            class="org.talend.designer.runprocess.ui.actions.RunProcessShortcutAction"
             />
       <GlobalAction class="org.talend.designer.runprocess.ui.actions.ShowRunProcessViewAction"/>
    </extension>
