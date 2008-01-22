@@ -26,18 +26,33 @@ java.lang.Class.forName("net.sourceforge.jtds.jdbc.Driver");
 String connectionString_<%=cid %> = "jdbc:jtds:sqlserver://" + <%=dbhost%> + ":" + <%=dbport%> + "//" + <%=dbname%> + ";appName=" + projectName + ";" + <%=dbproperties%>;        
 java.sql.Connection connection_<%=cid%> = java.sql.DriverManager.getConnection(connectionString_<%=cid%>, <%=dbuser%>, <%=dbpwd%>);
 
-java.sql.CallableStatement statement_<%=cid%> = connection_<%=cid%>.prepareCall("{<%=isFunction ? "? = " : ""%>call <%=spName%>(
 <%
+boolean hasOutput = false;
+StringBuilder parameters =new StringBuilder();
 for (int i = 0; i < spArgs.size(); i++) {
+	if(spArgs.get(i).get("TYPE").equals("RECORDSET") 
+		|| spArgs.get(i).get("TYPE").equals("INOUT")
+		|| spArgs.get(i).get("TYPE").equals("OUT")){
+		hasOutput=true;
+	}
     if(!spArgs.get(i).get("TYPE").equals("RECORDSET")){
-        if (i < spArgs.size() - 1) {
-            %>?,<%
+        if (parameters.length()==0) {
+           	parameters.append("?");
         } else {
-            %>?<%
+            parameters.append(",?");
         }
     }
 }
-%>)}");
+%>
+java.sql.CallableStatement statement_<%=cid%> = connection_<%=cid%>.prepareCall("{<%=isFunction ? "? = " : ""%>call <%=spName%>(<%=parameters.toString()%>)}"
+<%
+if(hasOutput){
+%>
+	,java.sql.ResultSet.TYPE_SCROLL_INSENSITIVE, java.sql.ResultSet.CONCUR_READ_ONLY
+<%
+}
+%>
+);
 
 java.sql.Date tmpDate_<%=cid%>;
 String tmpString_<%=cid%>;

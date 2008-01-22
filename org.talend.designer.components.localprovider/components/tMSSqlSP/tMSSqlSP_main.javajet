@@ -133,6 +133,9 @@ if (canGenerate) {
 	if (metadata != null) {
 		List<IMetadataColumn> columnList = metadata.getListColumns();
 		
+		// Note: first argument in JDBC is arg #1, and for functions, arg #1 is return value
+		int argIndex = 1;
+		boolean hasOutput = false;
 		// Iterate over procedure arguments
 		for (int i = 0; i < spArgs.size(); i++) {
 			Map<String, String> spArg = spArgs.get(i);
@@ -154,15 +157,14 @@ if (canGenerate) {
 			if (typeToGenerate == null)
 				continue;
 			
-			// Note: first argument in JDBC is arg #1, and for functions, arg #1 is return value
-			int argIndex = i + 1;
+			
 			
 			// Input argument
 			if (argType.equals("IN") || argType.equals("INOUT")) {
 				if (nullable) {
 					%>
 					if (<%=inConnectionName%>.<%=argName%> == null) {
-						statement_<%=cid%>.setNull(<%=argIndex%>, java.sql.Types.<%=converter.convert(typeToGenerate)%>);
+						statement_<%=cid%>.setNull(<%=argIndex++%>, java.sql.Types.<%=converter.convert(typeToGenerate)%>);
 					} else {
 					<%
 				}
@@ -180,18 +182,18 @@ if (canGenerate) {
 				if (typeToGenerate.equals("char") || typeToGenerate.equals("Character")) {
 					%>
 					if (<%=inConnectionName%>.<%=argName%> == '\0') {
-						statement_<%=cid%>.setString(<%=argIndex%>, "");
+						statement_<%=cid%>.setString(<%=argIndex++%>, "");
 					} else {
-						statement_<%=cid%>.setString(<%=argIndex%>, String.valueOf(<%=inConnectionName%>.<%=argName%>));
+						statement_<%=cid%>.setString(<%=argIndex++%>, String.valueOf(<%=inConnectionName%>.<%=argName%>));
 					}
 					<%
 				} else if (typeToGenerate.equals("java.util.Date")) {
 					%>
-					statement_<%=cid%>.setDate(<%=argIndex%>, new java.sql.Date(<%=inConnectionName%>.<%=argName%>.getTime()));
+					statement_<%=cid%>.setDate(<%=argIndex++%>, new java.sql.Date(<%=inConnectionName%>.<%=argName%>.getTime()));
 					<%
 				} else {
 					%>
-					statement_<%=cid%>.set<%=method%>(<%=argIndex%>, <%=inConnectionName%>.<%=argName%>);
+					statement_<%=cid%>.set<%=method%>(<%=argIndex++%>, <%=inConnectionName%>.<%=argName%>);
 					<%
 				}
 				
@@ -204,15 +206,23 @@ if (canGenerate) {
 			
 			// Output argument
 			if (argType.equals("OUT") || argType.equals("INOUT")) {
+				hasOutput=true;
 				%>
-				statement_<%=cid%>.registerOutParameter(<%=argIndex%>, java.sql.Types.<%=converter.convert(typeToGenerate)%>);
+				statement_<%=cid%>.registerOutParameter(<%=argIndex++%>, java.sql.Types.<%=converter.convert(typeToGenerate)%>);
 	  			<%
 			}
+			if(argType.equals("RECORDSET")){
+				hasOutput=true;
+			}
 		}
-		
-		%>
+%>
 		statement_<%=cid%>.execute();
-		<%
+<%
+		if(hasOutput){ //fixed 2777 issue. it must get ResultSet first.
+%>
+		Object resultSet_<%=cid%> = statement_<%=cid%>.getResultSet();
+<%
+		}
 		
 		List<? extends IConnection> outConnections = node.getOutgoingConnections();
 		IConnection firstOutConnection = null;
@@ -232,6 +242,8 @@ if (canGenerate) {
 			
 			if (firstOutConnection != null) {
 				columns:for (IMetadataColumn column : columnList) {
+					// Note: first argument in JDBC is arg #1, and for functions, arg #1 is return value
+					argIndex = 1;
 					// Retrieve OUT arguments value, and copy IN arguments from input flow
 					for (int i = 0; i < spArgs.size(); i++) {
 						Map<String, String> spArg = spArgs.get(i);
@@ -242,7 +254,6 @@ if (canGenerate) {
 							String typeToGenerate = JavaTypesManager.getTypeToGenerate(
 								column.getTalendType(), column.isNullable());
 							boolean nullable = column.isNullable();
-							int argIndex = i + 1;
 							
 							if (argType.equals("IN")) {
 								// Copy parameter value from input flow
@@ -251,7 +262,7 @@ if (canGenerate) {
 								<%
 							} else if(argType.equals("RECORDSET")){
 %>
-								<%=firstOutConnection.getName()%>.<%=argName%> = statement_<%=cid%>.getResultSet();
+								<%=firstOutConnection.getName()%>.<%=argName%> = resultSet_<%=cid%>;
 <%
 							} else {
 								// Retrieve parameter value (INOUT or OUT)
@@ -268,20 +279,20 @@ if (canGenerate) {
 					  			
 					  			if (method.equalsIgnoreCase("char") || method.equals("Character")) {
 							 		%>
-							 		tmpString_<%=cid%> = statement_<%=cid%>.getString(<%=argIndex%>);
+							 		tmpString_<%=cid%> = statement_<%=cid%>.getString(<%=argIndex++%>);
 						  			if (tmpString_<%=cid%> != null && tmpString_<%=cid%>.length() > 0) {
 						  				<%=firstOutConnection.getName()%>.<%=argName%> = tmpString_<%=cid%>.charAt(0);
 							  		}
 							  		<%
 						  		} else if (method.equals("Date")) {
 									%>
-									tmpDate_<%=cid%> = statement_<%=cid%>.getDate(<%=argIndex%>);
+									tmpDate_<%=cid%> = statement_<%=cid%>.getDate(<%=argIndex++%>);
 									if (tmpDate_<%=cid%> != null)
 										<%=firstOutConnection.getName()%>.<%=argName%> = new java.util.Date(tmpDate_<%=cid%>.getTime());
 									<%
 								} else {
 									%>
-									<%=firstOutConnection.getName()%>.<%=argName%> = statement_<%=cid%>.get<%=method%>(<%=argIndex%>);
+									<%=firstOutConnection.getName()%>.<%=argName%> = statement_<%=cid%>.get<%=method%>(<%=argIndex++%>);
 									<%
 								}
 								
