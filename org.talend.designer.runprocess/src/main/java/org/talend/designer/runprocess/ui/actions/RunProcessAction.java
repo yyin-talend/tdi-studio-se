@@ -40,16 +40,13 @@ public class RunProcessAction extends Action implements IWorkbenchWindowActionDe
         this.setText(Messages.getString("ProcessComposite.exec")); //$NON-NLS-1$
         this.setToolTipText(Messages.getString("ProcessComposite.execHint")); //$NON-NLS-1$
         this.setImageDescriptor(ImageProvider.getImageDesc(ERunprocessImages.RUN_PROCESS_ACTION));
-        this.setActionDefinitionId("showAndRunProcessxx"); //$NON-NLS-1$
+        this.setActionDefinitionId("showAndRunProcessNotForShortcut"); //$NON-NLS-1$
     }
 
     @Override
     public void run() {
         IWorkbench workbench = PlatformUI.getWorkbench();
         IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();
-        if (!canRun()) {
-            return;
-        }
         // TODO SML Use getInstance
         ShowRunProcessViewAction action = new ShowRunProcessViewAction();
         action.run();
@@ -57,10 +54,6 @@ public class RunProcessAction extends Action implements IWorkbenchWindowActionDe
         // TODO SML Optimize
         ProcessView view = (ProcessView) page.getActivePart();
         view.runAction.run();
-    }
-    
-    public boolean canRun(){
-        return true;
     }
 
     public void dispose() {
