@@ -11,7 +11,6 @@
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	SubTreeArgument subTreeArgument = (SubTreeArgument)codeGenArgument.getArgument();
-	IConnection connection = subTreeArgument.getInputSubtreeConnection();
 	
 	if (subTreeArgument.isMultiplyingOutputComponents()) {
 %>
@@ -20,13 +19,17 @@ CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 <%
 	}
 
-    if(subTreeArgument.isSourceComponentHasConditionnalOutputs()
-    	&& connection.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+if(subTreeArgument.isSourceComponentHasConditionnalOutputs()){
+	for(IConnection connection : subTreeArgument.getInputSubtreeConnections()){
+		if(connection.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
 %>
 
 } // End of branch "<%= connection.getName()%>"
 
 <% 
+			break;
+		} 
+	}
 } 
 %>
 

@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.designer.codegen.config;
 
+import java.util.List;
+
 import org.talend.core.model.process.IConnection;
 
 
@@ -25,6 +27,8 @@ import org.talend.core.model.process.IConnection;
 public class SubTreeArgument {
 
     private IConnection inputSubtreeConnection;
+    
+    private List<? extends IConnection> inputSubtreeConnections;
     
     private boolean sourceComponentHasConditionnalOutputs;
     
@@ -80,5 +84,17 @@ public class SubTreeArgument {
      */
     public void setMultiplyingOutputComponents(boolean isMultiplyingOutputComponents) {
         this.isMultiplyingOutputComponents = isMultiplyingOutputComponents;
+    }
+
+
+    
+    public List<? extends IConnection> getInputSubtreeConnections() {
+        return inputSubtreeConnections;
+    }
+
+
+    
+    public void setInputSubtreeConnections(List<? extends IConnection> inputSubtreeConnections) {
+        this.inputSubtreeConnections = inputSubtreeConnections;
     }    
 }

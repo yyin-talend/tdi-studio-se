@@ -12,15 +12,26 @@
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	SubTreeArgument subTreeArgument = (SubTreeArgument)codeGenArgument.getArgument();
-	IConnection connection = subTreeArgument.getInputSubtreeConnection();
-
-    if(subTreeArgument.isSourceComponentHasConditionnalOutputs()
-    	&& connection.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+	boolean flag = false;
+    if(subTreeArgument.isSourceComponentHasConditionnalOutputs()){
+    	for(IConnection connection : subTreeArgument.getInputSubtreeConnections()){
+    		if(connection.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+    			if(!flag){ 
 %>
 
 // Start of branch "<%= connection.getName()%>"
-if(<%= connection.getName()%> != null) {
+if(<%= connection.getName()%> != null
 
 <% 
+					flag=true;
+    			}else{ 
+%> || <%= connection.getName()%> != null<%
+    			} 
+			} 
+		} 
+	} 
+	if(flag){ 
+%>) {
+<%
 	} 
 %>
