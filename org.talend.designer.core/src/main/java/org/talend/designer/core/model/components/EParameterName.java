@@ -78,6 +78,7 @@ public enum EParameterName {
     CURRENT_OS(Messages.getString("EParameterName.CurrentOS")), //$NON-NLS-1$
     IREPORT_PATH("IREPORT_PATH"), //$NON-NLS-1$  Hidden parameter so no translation needed
     CONNECTION("CONNECTION"), //$NON-NLS-1$  Parameter without label displayed so no translation needed
+    NOT_SYNCHRONIZED_SCHEMA("NOT_SYNCHRONIZED_SCHEMA"), //$NON-NLS-1$  not displayed so no translation needed
 
     /**
      * For stats & logs parameters.

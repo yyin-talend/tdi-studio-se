@@ -662,6 +662,14 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
             }
         }
 
+        IElementParameter synchronizeSchemaParam = elem.getElementParameter(EParameterName.NOT_SYNCHRONIZED_SCHEMA.getName());
+
+        if (synchronizeSchemaParam != null) {
+            // if the node don't contains a schema type and accept an input flow and is not synchronized
+            // display a schema on the first line just the type to synchronize the schema
+            synchronizeSchemaParam.setShow(!((Node) elem).isSchemaSynchronized());
+        }
+
         generator.initController(this);
 
         // System.out.println("********************** NEW ADDCOMPONENTS
@@ -691,7 +699,7 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
             additionalHeightSize = estimatePropertyHeightSize(maxRow, listParam);
         }
 
-        long lastTime = TimeMeasure.timeSinceBegin("DTP:refresh:" + getCurrentComponent());
+        long lastTime = TimeMeasure.timeSinceBegin("DC:refresh:" + getCurrentComponent());
 
         for (int curRow = 1; curRow <= maxRow; curRow++) {
             maxRowSize = 0;
@@ -750,6 +758,10 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
             heightSize += maxRowSize;
 
         }
+        if (synchronizeSchemaParam != null) {
+            synchronizeSchemaParam.setShow(false);
+        }
+
         resizeScrolledComposite();
     }
 

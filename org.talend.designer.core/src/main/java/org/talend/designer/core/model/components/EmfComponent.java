@@ -210,9 +210,89 @@ public class EmfComponent implements IComponent {
         addPropertyParameters(listParam, node, NORMAL_PROPERTY);
         addPropertyParameters(listParam, node, ADVANCED_PROPERTY);
         initializePropertyParameters(listParam);
+        checkSchemaParameter(listParam, node);
         addViewParameters(listParam, node);
         addDocParameters(listParam, node);
         return listParam;
+    }
+
+    /**
+     * DOC nrousseau Comment method "checkSchemaParameter".
+     * 
+     * @param listParam
+     */
+    private void checkSchemaParameter(List<ElementParameter> listParam, INode node) {
+        boolean acceptInputFlow = false;
+        List<NodeConnector> connectors = createConnectors();
+        for (NodeConnector connector : connectors) {
+            if (connector.getName().equals(EConnectionType.FLOW_MAIN.getName())) {
+                if (connector.getMaxLinkInput() != 0 && !connector.isBuiltIn()) {
+                    acceptInputFlow = true;
+                }
+                break;
+            }
+        }
+
+        boolean hasSchemaType = false;
+        for (ElementParameter param : listParam) {
+            if (param.getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
+                hasSchemaType = true;
+                break;
+            }
+        }
+
+        // if the
+        if (acceptInputFlow && !hasSchemaType) {
+            // increment the row number for each parameter
+            for (ElementParameter param : listParam) {
+                if (param.getCategory().equals(EComponentCategory.PROPERTY)) {
+                    param.setNumRow(param.getNumRow() + 1);
+                }
+            }
+
+            String context = "FLOW";
+            ElementParameter parentParam = new ElementParameter(node);
+            parentParam.setName(EParameterName.NOT_SYNCHRONIZED_SCHEMA.getName());
+            parentParam.setDisplayName(EParameterName.SCHEMA_TYPE.getDisplayName()); //$NON-NLS-1$
+            parentParam.setField(EParameterFieldType.SCHEMA_TYPE);
+            parentParam.setCategory(EComponentCategory.PROPERTY);
+            parentParam.setNumRow(1);
+            parentParam.setReadOnly(false);
+            parentParam.setShow(false);
+            parentParam.setContext(context);
+            listParam.add(parentParam);
+
+            ElementParameter newParam = new ElementParameter(node);
+            newParam.setCategory(EComponentCategory.PROPERTY);
+            newParam.setName(EParameterName.SCHEMA_TYPE.getName());
+            newParam.setDisplayName(EParameterName.SCHEMA_TYPE.getDisplayName());
+            newParam.setListItemsDisplayName(new String[] { TEXT_BUILTIN, TEXT_REPOSITORY });
+            newParam.setListItemsDisplayCodeName(new String[] { BUILTIN, REPOSITORY });
+            newParam.setListItemsValue(new String[] { BUILTIN, REPOSITORY });
+            newParam.setValue(BUILTIN);
+            newParam.setNumRow(1);
+            newParam.setField(EParameterFieldType.TECHNICAL);
+            newParam.setShow(true);
+            newParam.setReadOnly(true);
+
+            newParam.setContext(context);
+            newParam.setParentParameter(parentParam);
+
+            newParam = new ElementParameter(node);
+            newParam.setCategory(EComponentCategory.PROPERTY);
+            newParam.setName(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
+            newParam.setDisplayName(EParameterName.REPOSITORY_SCHEMA_TYPE.getDisplayName());
+            newParam.setListItemsDisplayName(new String[] {});
+            newParam.setListItemsValue(new String[] {});
+            newParam.setNumRow(1);
+            newParam.setField(EParameterFieldType.TECHNICAL);
+            newParam.setValue(""); //$NON-NLS-1$
+            newParam.setShow(false);
+            newParam.setRequired(true);
+            newParam.setContext(context);
+            newParam.setParentParameter(parentParam);
+        }
+
     }
 
     public List<NodeReturn> createReturns() {

@@ -180,6 +180,8 @@ public class Node extends Element implements INode {
 
     private List<String> errorList = new ArrayList<String>(), warningList = new ArrayList<String>();
 
+    private boolean schemaSynchronized = true;
+
     /**
      * This constructor is called when the node is created from the palette the unique name will be determined with the
      * number of components of this type.
@@ -1537,9 +1539,9 @@ public class Node extends Element implements INode {
         // not a sub process start
         if (!isSubProcessStart() || (!(Boolean) getPropertyValue(EParameterName.STARTABLE.getName()))) {
             if (/*
-                 * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_AFTER) > 0) ||
-                 * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_BEFORE) > 0)||
-                 */
+             * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_AFTER) > 0) ||
+             * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_BEFORE) > 0)||
+             */
             (getCurrentActiveLinksNbOutput(EConnectionType.ON_SUBJOB_OK) > 0)
                     || getCurrentActiveLinksNbOutput(EConnectionType.ON_SUBJOB_ERROR) > 0) {
                 String errorMessage = "A component that is not a sub process start can not have any link run after / run before in output.";
@@ -1551,9 +1553,9 @@ public class Node extends Element implements INode {
         // not a sub process start
         if ((!isELTComponent() && !isSubProcessStart()) || (!(Boolean) getPropertyValue(EParameterName.STARTABLE.getName()))) {
             if (/*
-                 * (getCurrentActiveLinksNbInput(EConnectionType.RUN_AFTER) > 0) ||
-                 * (getCurrentActiveLinksNbInput(EConnectionType.RUN_BEFORE) > 0) ||
-                 */(getCurrentActiveLinksNbInput(EConnectionType.ON_SUBJOB_OK) > 0)
+             * (getCurrentActiveLinksNbInput(EConnectionType.RUN_AFTER) > 0) ||
+             * (getCurrentActiveLinksNbInput(EConnectionType.RUN_BEFORE) > 0) ||
+             */(getCurrentActiveLinksNbInput(EConnectionType.ON_SUBJOB_OK) > 0)
                     || (getCurrentActiveLinksNbInput(EConnectionType.RUN_IF) > 0)
                     || (getCurrentActiveLinksNbInput(EConnectionType.ON_COMPONENT_OK) > 0)
                     || (getCurrentActiveLinksNbInput(EConnectionType.ON_COMPONENT_ERROR) > 0)) {
@@ -1613,6 +1615,10 @@ public class Node extends Element implements INode {
         }
     }
 
+    public boolean isSchemaSynchronized() {
+        return schemaSynchronized;
+    }
+
     private void checkSchema() {
         boolean canEditSchema = false;
         boolean noSchema = false;
@@ -1668,6 +1674,8 @@ public class Node extends Element implements INode {
             }
         }
 
+        schemaSynchronized = true;
+
         // test if the columns can be checked or not
         if (component.isSchemaAutoPropagated() && (getMetadataList().size() != 0)) {
             IConnection inputConnecion = null;
@@ -1692,6 +1700,7 @@ public class Node extends Element implements INode {
                                     | IMetadataColumn.OPTIONS_IGNORE_NULLABLE | IMetadataColumn.OPTIONS_IGNORE_COMMENT
                                     | IMetadataColumn.OPTIONS_IGNORE_PATTERN | IMetadataColumn.OPTIONS_IGNORE_DBCOLUMNNAME
                                     | IMetadataColumn.OPTIONS_IGNORE_DBTYPE))) {
+                        schemaSynchronized = false;
                         String errorMessage = "The schema from the input link \"" + inputConnecion.getName()
                                 + "\" is different from the schema defined in the component.";
                         Problems.add(ProblemStatus.ERROR, this, errorMessage);
@@ -1714,6 +1723,7 @@ public class Node extends Element implements INode {
                                                     | IMetadataColumn.OPTIONS_IGNORE_PATTERN
                                                     | IMetadataColumn.OPTIONS_IGNORE_DBCOLUMNNAME
                                                     | IMetadataColumn.OPTIONS_IGNORE_DBTYPE)) {
+                                        schemaSynchronized = false;
                                         String errorMessage = "The schema from the input link \"" + connection.getName()
                                                 + "\" is different from the schema defined in the component.";
                                         Problems.add(ProblemStatus.ERROR, this, errorMessage);
