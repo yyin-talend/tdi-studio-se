@@ -184,7 +184,8 @@ public class Connection extends Element implements IConnection, IPerformance {
         addElementParameter(param);
         Node meterAttached = new Node(ComponentsFactoryProvider.getInstance().get("tFlowMeter"), process);
         for (IElementParameter curParam : meterAttached.getElementParameters()) {
-            if (curParam.getCategory() == EComponentCategory.PROPERTY) {
+            if (curParam.getCategory() == EComponentCategory.PROPERTY
+                    && !curParam.getName().equals(EParameterName.NOT_SYNCHRONIZED_SCHEMA.getName())) {
                 curParam.setCategory(EComponentCategory.MAIN);
                 curParam.setNumRow(curParam.getNumRow() + 1);
                 if (curParam.getShowIf() == null || curParam.getShowIf().equals("")) {
@@ -195,16 +196,6 @@ public class Connection extends Element implements IConnection, IPerformance {
                 addElementParameter(curParam);
             }
         }
-        param = new ElementParameter(this);
-        param.setName(EParameterName.UPDATE_COMPONENTS.getName());
-        param.setValue(new Boolean(false));
-        param.setDisplayName(EParameterName.UPDATE_COMPONENTS.getDisplayName());
-        param.setField(EParameterFieldType.CHECK);
-        param.setCategory(EComponentCategory.MAIN);
-        param.setReadOnly(true);
-        param.setRequired(false);
-        param.setShow(false);
-        addElementParameter(param);
     }
 
     @Override
@@ -340,9 +331,9 @@ public class Connection extends Element implements IConnection, IPerformance {
             }
             updateName = true;
         } /*
-             * else if (getLineStyle().equals(EConnectionType.LOOKUP)) { labelText += " (" + nodeConnector.getLinkName() +
-             * ")"; updateName = true; }
-             */
+         * else if (getLineStyle().equals(EConnectionType.LOOKUP)) { labelText += " (" + nodeConnector.getLinkName() +
+         * ")"; updateName = true; }
+         */
 
         if (updateName) {
 
