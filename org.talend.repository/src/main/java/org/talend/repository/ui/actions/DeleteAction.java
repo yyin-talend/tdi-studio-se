@@ -12,7 +12,12 @@
 // ============================================================================
 package org.talend.repository.ui.actions;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -24,8 +29,13 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.components.ComponentUtilities;
+import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.JobletProcessItem;
+import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.expressionbuilder.ExpressionPersistance;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ERepositoryStatus;
@@ -113,6 +123,71 @@ public class DeleteAction extends AContextualAction {
     }
 
     /**
+     * DOC qzhang Comment method "checkRepository".
+     * 
+     * @param factory
+     * @param currentJobNode
+     * @return
+     */
+    private List<String> checkRepositoryNodeFromProcess(IProxyRepositoryFactory factory, RepositoryNode currentJobNode) {
+        IRepositoryObject object = currentJobNode.getObject();
+        List<String> list = new ArrayList<String>();
+        if (object != null) {
+            Property property = object.getProperty();
+            if (property != null) {
+                Item item = property.getItem();
+                if (item instanceof JobletProcessItem) {
+                    String label = property.getLabel();
+                    String version = property.getVersion();
+                    try {
+                        List<IRepositoryObject> repositoryObjects = new ArrayList<IRepositoryObject>();
+                        List<IRepositoryObject> all = factory.getAll(ERepositoryObjectType.PROCESS, true);
+                        repositoryObjects.addAll(all);
+                        all = factory.getAll(ERepositoryObjectType.JOBLET, true);
+                        repositoryObjects.addAll(all);
+                        String prefix = "";
+                        for (IRepositoryObject repositoryObject : repositoryObjects) {
+                            Property property2 = repositoryObject.getProperty();
+                            EList node = null;
+                            if (property2.getItem() instanceof ProcessItem) {
+                                ProcessItem item2 = (ProcessItem) property2.getItem();
+                                node = item2.getProcess().getNode();
+                                prefix = ERepositoryObjectType.PROCESS.toString();
+                            } else if (property2.getItem() instanceof JobletProcessItem) {
+                                JobletProcessItem item2 = (JobletProcessItem) property2.getItem();
+                                node = item2.getJobletProcess().getNode();
+                                prefix = ERepositoryObjectType.JOBLET.toString();
+                            }
+                            if (node != null) {
+                                for (Object object2 : node) {
+                                    if (object2 instanceof NodeType) {
+                                        NodeType nodeType = (NodeType) object2;
+                                        nodeType.getElementParameter();
+                                        boolean equals = nodeType.getComponentName().equals(label)
+                                                && nodeType.getComponentVersion().equals(version);
+                                        if (equals) {
+                                            String path = property2.getItem().getState().getPath();
+                                            if (path.length() > 0) {
+                                                path = path + File.separator;
+                                            }
+                                            list.add(prefix + " : " + path + property2.getLabel() + " " + property2.getVersion()
+                                                    + "\n");
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    } catch (PersistenceException ex) {
+                        ex.printStackTrace();
+                    }
+
+                }
+            }
+        }
+        return list;
+    }
+
+    /**
      * ftang Comment method "isForbbidNode".
      * 
      * @param node
@@ -160,6 +235,17 @@ public class DeleteAction extends AContextualAction {
         boolean needReturn = false;
         IRepositoryObject objToDelete = currentJobNode.getObject();
 
+        List<String> checkRepository = checkRepositoryNodeFromProcess(factory, currentJobNode);
+        if (checkRepository.size() > 0) {
+            StringBuffer buffer = new StringBuffer();
+            for (String string : checkRepository) {
+                buffer.append(string);
+            }
+            MessageDialog.openInformation(new Shell(), "Delete the node Failure", "Node : '"
+                    + objToDelete.getProperty().getLabel() + " " + objToDelete.getProperty().getVersion()
+                    + "' is referenced from:\n" + buffer.toString());
+            return true;
+        }
         // To manage case of we have a subitem. This is possible using 'DEL' shortcut:
         ERepositoryObjectType nodeType = (ERepositoryObjectType) currentJobNode.getProperties(EProperties.CONTENT_TYPE);
         if (nodeType.isSubItem()) {
