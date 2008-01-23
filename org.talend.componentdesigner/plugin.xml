@@ -96,7 +96,8 @@
        <viewerContentBinding 
              viewerId="org.talend.componentdesigner.ui.view.ComponentNavigator">
           <includes>
-       	      <contentExtension pattern="org.eclipse.ui.navigator.resourceContent" />		       	      
+       	      <contentExtension pattern="org.eclipse.ui.navigator.resourceContent" />	       	      
+       	      <contentExtension pattern="org.talend.componentdesigner.resourceContent" />		       	      
 	          <contentExtension pattern="org.eclipse.ui.navigator.resources.filters.*"/>
           </includes>         
        </viewerContentBinding>
@@ -111,7 +112,7 @@
 <!-- Resource Content  -->
    <extension  
          point="org.eclipse.ui.navigator.navigatorContent">
-      <navigatorContent
+     <navigatorContent
             name="componentNavigatorContent"
             priority="low"
             icon="$nl$/icons/componentnav_nav.gif"
@@ -122,12 +123,14 @@
          <enablement>
 		         <or>         
 		            <adapt type="org.eclipse.core.resources.IProject" /> 
+		            <adapt type="org.eclipse.core.resources.IFolder" /> 
+		            <adapt type="org.eclipse.core.resources.IFile" /> 
 		            <instanceof 
 		                  	value="org.eclipse.core.resources.IResource" /> 
 		         </or>
          </enablement>
          
-        <actionProvider 
+         <actionProvider 
       			id="org.talend.componentdesigner.ui.action.CopyComponentActionProvider"
 				class="org.talend.componentdesigner.ui.action.provider.CopyComponentActionProvider">
 			<enablement>
@@ -136,8 +139,21 @@
 				</or>
 			</enablement>
 		</actionProvider> 
+      
+        <actionProvider
+            	class="org.talend.componentdesigner.ui.action.provider.NewActionProvider"
+            	id="org.eclipse.ui.navigator.resources.NewActions"> 
+        	<enablement> 
+        			<or>
+						<adapt type="org.eclipse.core.resources.IResource" />	 
+						<adapt type="java.util.Collection"> 
+							<count value="0" />
+						</adapt>
+					</or>
+	         </enablement>
+		</actionProvider> 
 		
-	   <!--<actionProvider 
+	   <!-- <actionProvider 
       			id="org.talend.componentdesigner.ui.action.EditComponentActionProvider"
 				class="org.talend.componentdesigner.ui.action.provider.EditComponentActionProvider">
 			<enablement>
@@ -181,21 +197,12 @@
 					</or>
 		         </enablement>
 			</commonWizard>   -->            
-      </navigatorContent>
+  </navigatorContent>
       
       <!-- Action Providers -->
-        <actionProvider
-            	class="org.talend.componentdesigner.ui.action.provider.NewActionProvider"
-            	id="org.eclipse.ui.navigator.resources.NewActions"> 
-        	<enablement> 
-        			<or>
-						<adapt type="org.eclipse.core.resources.IResource" />	 
-						<adapt type="java.util.Collection"> 
-							<count value="0" />
-						</adapt>
-					</or>
-	         </enablement>
-		</actionProvider> 
+      
+         
+
         
       <!-- Expression Filters 
       <commonFilter

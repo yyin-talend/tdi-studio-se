@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.datatools.enablement.oda.xml.util.ui.ATreeNode;
+import org.talend.componentdesigner.PluginConstant;
 import org.w3c.dom.Node;
 
 /**
@@ -88,7 +89,7 @@ public class TreeNodeData {
 	 * @return the bodayText
 	 */
 	public String getBodayText() {
-		return bodayText;
+		return bodayText == null ? PluginConstant.EMPTY_STRING : bodayText;
 	}
 
 	/**
