@@ -1539,9 +1539,9 @@ public class Node extends Element implements INode {
         // not a sub process start
         if (!isSubProcessStart() || (!(Boolean) getPropertyValue(EParameterName.STARTABLE.getName()))) {
             if (/*
-             * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_AFTER) > 0) ||
-             * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_BEFORE) > 0)||
-             */
+                 * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_AFTER) > 0) ||
+                 * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_BEFORE) > 0)||
+                 */
             (getCurrentActiveLinksNbOutput(EConnectionType.ON_SUBJOB_OK) > 0)
                     || getCurrentActiveLinksNbOutput(EConnectionType.ON_SUBJOB_ERROR) > 0) {
                 String errorMessage = "A component that is not a sub process start can not have any link run after / run before in output.";
@@ -1553,9 +1553,9 @@ public class Node extends Element implements INode {
         // not a sub process start
         if ((!isELTComponent() && !isSubProcessStart()) || (!(Boolean) getPropertyValue(EParameterName.STARTABLE.getName()))) {
             if (/*
-             * (getCurrentActiveLinksNbInput(EConnectionType.RUN_AFTER) > 0) ||
-             * (getCurrentActiveLinksNbInput(EConnectionType.RUN_BEFORE) > 0) ||
-             */(getCurrentActiveLinksNbInput(EConnectionType.ON_SUBJOB_OK) > 0)
+                 * (getCurrentActiveLinksNbInput(EConnectionType.RUN_AFTER) > 0) ||
+                 * (getCurrentActiveLinksNbInput(EConnectionType.RUN_BEFORE) > 0) ||
+                 */(getCurrentActiveLinksNbInput(EConnectionType.ON_SUBJOB_OK) > 0)
                     || (getCurrentActiveLinksNbInput(EConnectionType.RUN_IF) > 0)
                     || (getCurrentActiveLinksNbInput(EConnectionType.ON_COMPONENT_OK) > 0)
                     || (getCurrentActiveLinksNbInput(EConnectionType.ON_COMPONENT_ERROR) > 0)) {
@@ -1699,7 +1699,7 @@ public class Node extends Element implements INode {
                             && (!outputMeta.sameMetadataAs(inputMeta, IMetadataColumn.OPTIONS_IGNORE_KEY
                                     | IMetadataColumn.OPTIONS_IGNORE_NULLABLE | IMetadataColumn.OPTIONS_IGNORE_COMMENT
                                     | IMetadataColumn.OPTIONS_IGNORE_PATTERN | IMetadataColumn.OPTIONS_IGNORE_DBCOLUMNNAME
-                                    | IMetadataColumn.OPTIONS_IGNORE_DBTYPE))) {
+                                    | IMetadataColumn.OPTIONS_IGNORE_DBTYPE | IMetadataColumn.OPTIONS_IGNORE_DEFAULT))) {
                         schemaSynchronized = false;
                         String errorMessage = "The schema from the input link \"" + inputConnecion.getName()
                                 + "\" is different from the schema defined in the component.";
@@ -1716,13 +1716,11 @@ public class Node extends Element implements INode {
                         if (table != null && connParam != null && !StringUtils.isEmpty((String) connParam.getValue())) {
                             for (IConnection connection : inputs) {
                                 if (connection.isActivate() && connection.getName().equals(connParam.getValue())) {
-                                    if (!table
-                                            .sameMetadataAs(connection.getMetadataTable(), IMetadataColumn.OPTIONS_IGNORE_KEY
-                                                    | IMetadataColumn.OPTIONS_IGNORE_NULLABLE
-                                                    | IMetadataColumn.OPTIONS_IGNORE_COMMENT
-                                                    | IMetadataColumn.OPTIONS_IGNORE_PATTERN
-                                                    | IMetadataColumn.OPTIONS_IGNORE_DBCOLUMNNAME
-                                                    | IMetadataColumn.OPTIONS_IGNORE_DBTYPE)) {
+                                    if (!table.sameMetadataAs(connection.getMetadataTable(), IMetadataColumn.OPTIONS_IGNORE_KEY
+                                            | IMetadataColumn.OPTIONS_IGNORE_NULLABLE | IMetadataColumn.OPTIONS_IGNORE_COMMENT
+                                            | IMetadataColumn.OPTIONS_IGNORE_PATTERN
+                                            | IMetadataColumn.OPTIONS_IGNORE_DBCOLUMNNAME | IMetadataColumn.OPTIONS_IGNORE_DBTYPE
+                                            | IMetadataColumn.OPTIONS_IGNORE_DEFAULT)) {
                                         schemaSynchronized = false;
                                         String errorMessage = "The schema from the input link \"" + connection.getName()
                                                 + "\" is different from the schema defined in the component.";
