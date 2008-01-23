@@ -12,11 +12,8 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor;
 
-import org.eclipse.gef.palette.PaletteRoot;
-import org.talend.core.model.components.ComponentUtilities;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.process.Process;
-import org.talend.repository.model.ComponentsFactoryProvider;
 
 /**
  * Main class of the Gef Editor. <br/>
@@ -42,23 +39,6 @@ public class TalendEditor extends AbstractTalendEditor {
     @Override
     public Object getAdapter(final Class type) {
         return super.getAdapter(type);
-    }
-
-    @Override
-    protected PaletteRoot getPaletteRoot() {
-        if (paletteRoot == null || ComponentUtilities.isComponentPaletteNeedRefresh) {
-
-            /** * Components Factory ** */
-            components = ComponentsFactoryProvider.getInstance();
-            paletteRoot = TalendEditorPaletteFactory.createPalette(components);
-
-            ComponentUtilities.isComponentPaletteNeedRefresh = false;
-        }
-        return paletteRoot;
-    }
-
-    public static void resetPaletteRoot() {
-        paletteRoot = null;
     }
 
     public void setParent(MultiPageTalendEditor multiPageTalendEditor) {

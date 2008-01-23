@@ -167,7 +167,7 @@ public final class CodeGeneratorEmittersPoolFactory {
                             Display.getDefault().asyncExec(new Runnable() {
 
                                 public void run() {
-                                    CorePlugin.getDefault().getDesignerCoreService().refreshDesignerPalette();
+                                    CorePlugin.getDefault().getDesignerCoreService().synchronizeDesignerUI();
                                 }
 
                             });

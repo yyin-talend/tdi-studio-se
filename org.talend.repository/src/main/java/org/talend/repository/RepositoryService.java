@@ -23,7 +23,6 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
-import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.migration.IMigrationToolService;
 import org.talend.core.model.properties.Property;
@@ -213,8 +212,7 @@ public class RepositoryService implements IRepositoryService {
             runService.deleteAllJobs(SwitchProjectAction.PLUGIN_MODEL);
 
             CorePlugin.getDefault().getCodeGeneratorService().generationInit();
-            ComponentUtilities.isComponentPaletteNeedRefresh = true;
-            CorePlugin.getDefault().getDesignerCoreService().refreshDesignerPalette();
+            CorePlugin.getDefault().getDesignerCoreService().synchronizeDesignerUI();
 
         }
 

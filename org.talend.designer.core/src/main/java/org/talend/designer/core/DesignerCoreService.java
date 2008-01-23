@@ -24,6 +24,7 @@ import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.MultiPageEditorPart;
+import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.ConnectionItem;
@@ -165,10 +166,11 @@ public class DesignerCoreService implements IDesignerCoreService {
      * 
      * @see org.talend.designer.core.IDesignerCoreService#refreshDesignerPalette()
      */
-    public void refreshDesignerPalette() {
+    public void synchronizeDesignerUI() {
 
+        ComponentUtilities.updatePalette();
         for (IEditorPart editor : ProcessorUtilities.getOpenedEditors()) {
-            ((AbstractTalendEditor) editor).updatePaletteContent();
+            ((AbstractTalendEditor) editor).updateGraphicalNodes();
         }
 
     }
@@ -199,6 +201,16 @@ public class DesignerCoreService implements IDesignerCoreService {
      */
     public PaletteRoot createPalette(IComponentsFactory factory) {
         return TalendEditorPaletteFactory.createPalette(factory);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.core.IDesignerCoreService#createPalette(org.talend.core.model.components.IComponentsFactory,
+     * org.eclipse.gef.palette.PaletteRoot)
+     */
+    public PaletteRoot createPalette(IComponentsFactory compFac, PaletteRoot root) {
+        return TalendEditorPaletteFactory.createPalette(compFac, root);
     }
 
     public IAction getCreateProcessAction(boolean isToolbar) {

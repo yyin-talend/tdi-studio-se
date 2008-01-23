@@ -18,25 +18,21 @@ import java.util.List;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
+import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.metadata.builder.connection.AbstractMetadataObject;
-import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.SubItemHelper;
-import org.talend.core.model.metadata.builder.connection.TableHelper;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.repository.i18n.Messages;
-import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.model.actions.RestoreObjectAction;
 import org.talend.repository.ui.views.RepositoryContentProvider.ISubRepositoryObject;
-import org.talend.repository.ui.views.RepositoryContentProvider.MetadataTableRepositoryObject;
 
 /**
  * Action used to restore obects that had been logically deleted.<br/>
@@ -55,9 +51,10 @@ public class RestoreAction extends AContextualAction {
     }
 
     public void run() {
-        //used to store the database connection object that are used to notify the sqlBuilder.
+        // used to store the database connection object that are used to notify the sqlBuilder.
         List<IRepositoryObject> connections = new ArrayList<IRepositoryObject>();
         ISelection selection = getSelection();
+        boolean needToUpdatePalette = false;
         for (Object obj : ((IStructuredSelection) selection).toArray()) {
             if (obj instanceof RepositoryNode) {
                 try {
@@ -66,7 +63,8 @@ public class RestoreAction extends AContextualAction {
                     if (nodeType.isSubItem()) {
                         IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
                         ConnectionItem item = (ConnectionItem) node.getObject().getProperty().getItem();
-                        AbstractMetadataObject abstractMetadataObject = ((ISubRepositoryObject) node.getObject()).getAbstractMetadataObject();
+                        AbstractMetadataObject abstractMetadataObject = ((ISubRepositoryObject) node.getObject())
+                                .getAbstractMetadataObject();
                         SubItemHelper.setDeleted(abstractMetadataObject, false);
                         factory.save(item);
                         connections.add(node.getObject());
@@ -74,12 +72,19 @@ public class RestoreAction extends AContextualAction {
                         RestoreObjectAction restoreObjectAction = RestoreObjectAction.getInstance();
                         restoreObjectAction.execute(node, null);
                     }
+                    if (nodeType == ERepositoryObjectType.JOBLET) {
+                        needToUpdatePalette = true;
+                    }
                     refresh();
                 } catch (Exception e) {
-//                    ExceptionHandler.process(e);
+                    // ExceptionHandler.process(e);
                     e.printStackTrace();
                 }
             }
+        }
+
+        if (needToUpdatePalette) {
+            ComponentUtilities.updatePalette();
         }
         notifySQLBuilder(connections);
     }
@@ -101,7 +106,7 @@ public class RestoreAction extends AContextualAction {
                 if (o instanceof RepositoryNode) {
                     RepositoryNode node = (RepositoryNode) o;
                     ERepositoryObjectType nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
-                    canWork = restoreObjectAction.validateAction(node, null);    
+                    canWork = restoreObjectAction.validateAction(node, null);
                 }
             }
         }

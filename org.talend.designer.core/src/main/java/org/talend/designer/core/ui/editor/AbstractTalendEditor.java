@@ -61,8 +61,6 @@ import org.eclipse.gef.editparts.AbstractEditPart;
 import org.eclipse.gef.editparts.LayerManager;
 import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
 import org.eclipse.gef.editparts.ZoomManager;
-import org.eclipse.gef.palette.PaletteEntry;
-import org.eclipse.gef.palette.PaletteGroup;
 import org.eclipse.gef.palette.PaletteRoot;
 import org.eclipse.gef.requests.CreationFactory;
 import org.eclipse.gef.ui.actions.ActionRegistry;
@@ -125,6 +123,7 @@ import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
+import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.general.ILibrariesService;
@@ -175,8 +174,6 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
     private OutlinePage outlinePage;
 
-    protected static PaletteRoot paletteRoot;
-
     protected FigureCanvas getEditor() {
         return (FigureCanvas) getGraphicalViewer().getControl();
     }
@@ -186,6 +183,16 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         if (paletteViewer != null) {
             TalendEditorPaletteFactory.saveFamilyState(paletteViewer);
         }
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette#getPaletteRoot()
+     */
+    @Override
+    protected PaletteRoot getPaletteRoot() {
+        return ComponentUtilities.getPaletteRoot();
     }
 
     @Override
@@ -212,20 +219,12 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
     /**
      * yzhang Comment method "updatePaletteContent".
      */
-    public void updatePaletteContent() {
-
-        components = ComponentsFactoryProvider.getInstance();
-
-        List oldRoots = new ArrayList(paletteRoot.getChildren());
-        for (Object obj : oldRoots) {
-            if (obj instanceof PaletteGroup) {
-                continue;
-            }
-            paletteRoot.remove((PaletteEntry) obj);
-        }
-        TalendEditorPaletteFactory.createPalette(components, paletteRoot);
+    public void updateGraphicalNodes() {
 
         for (Node node : (List<Node>) process.getGraphicalNodes()) {
+            if (components == null) {
+                components = ComponentsFactoryProvider.getInstance();
+            }
             IComponent newComponent = components.get(node.getComponent().getName());
             if (newComponent == null) {
                 continue;
@@ -239,6 +238,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
             node.reloadComponent(newComponent, parameters);
         }
         process.setProcessModified(true);
+
     }
 
     protected AbstractMultiPageTalendEditor parent;

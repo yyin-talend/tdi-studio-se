@@ -23,6 +23,7 @@ import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
+import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.expressionbuilder.ExpressionPersistance;
@@ -70,6 +71,8 @@ public class DeleteAction extends AContextualAction {
         ISelection selection = getSelection();
         IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
 
+        boolean needToUpdataPalette = false;
+
         for (Object obj : ((IStructuredSelection) selection).toArray()) {
             if (obj instanceof RepositoryNode) {
                 RepositoryNode node = (RepositoryNode) obj;
@@ -81,6 +84,9 @@ public class DeleteAction extends AContextualAction {
 
                     if (node.getType() == ENodeType.REPOSITORY_ELEMENT) {
                         boolean needReturn = deleteElements(factory, node);
+                        if (node.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.JOBLET) {
+                            needToUpdataPalette = true;
+                        }
                         if (needReturn) {
                             return;
                         }
@@ -99,6 +105,9 @@ public class DeleteAction extends AContextualAction {
                     MessageBoxExceptionHandler.process(e);
                 }
             }
+        }
+        if (needToUpdataPalette) {
+            ComponentUtilities.updatePalette();
         }
         refresh();
     }

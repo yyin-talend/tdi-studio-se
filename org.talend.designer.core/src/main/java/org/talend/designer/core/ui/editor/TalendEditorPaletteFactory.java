@@ -249,6 +249,7 @@ public final class TalendEditorPaletteFactory {
      */
     public static PaletteRoot createPalette(final IComponentsFactory compFac, PaletteRoot root) {
         palette = root;
+        AbstractProcessProvider.loadComponentsFromProviders();
         createComponentsDrawer(compFac);
         return palette;
     }

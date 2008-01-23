@@ -19,9 +19,9 @@ import org.eclipse.jface.preference.RadioGroupFieldEditor;
 import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.talend.core.model.components.ComponentUtilities;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
-import org.talend.designer.core.ui.editor.TalendEditor;
 
 /**
  * This class represents a preference page that is contributed to the Preferences dialog. By subclassing
@@ -61,7 +61,7 @@ public class DesignerPreferencePage extends FieldEditorPreferencePage implements
 
     private void checkPropertyChanged() {
         if (!oldLargeIconsSize.equals(getPreferenceStore().getString(TalendDesignerPrefConstants.LARGE_ICONS_SIZE))) {
-            TalendEditor.resetPaletteRoot();
+            ComponentUtilities.updatePalette();
         }
     }
 
