@@ -72,8 +72,12 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	}
 %>
 	};
+java.io.FileInputStream fileInput<%=cid%>=null;	
+	
+try{
+	fileInput<%=cid%> = new java.io.FileInputStream(<%=filename %>);
 	javax.mail.Session session_<%=cid %> = javax.mail.Session.getDefaultInstance(System.getProperties(), null);
-    javax.mail.internet.MimeMessage msg_<%=cid %> = new javax.mail.internet.MimeMessage(session_<%=cid %>, new java.io.FileInputStream(<%=filename %>));
+    javax.mail.internet.MimeMessage msg_<%=cid %> = new javax.mail.internet.MimeMessage(session_<%=cid %>, fileInput<%=cid%>);
 	java.util.List<String> list_<%=cid %> = new java.util.ArrayList<String>();
 
 	for (int i_<%=cid %> =0;i_<%=cid %> < mailParts_<%=cid %>.length;i_<%=cid %>++)
@@ -201,8 +205,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			
 					<%=conn.getName() %>.<%=column.getLabel() %> = <%=JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate)%>;
 			}
-			
-			
+
 <%			
 			} //4
 		}//3
@@ -225,7 +228,10 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	
 }//1
 
-%> 
+%>
+}finally{
+			fileInput<%=cid%>.close();
+} 
 ////////////////////////////
 <%
   }
