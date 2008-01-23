@@ -36,7 +36,7 @@
 					<tr valign="top">
 						<!--<td width="15%" rowspan="2" align="center"></td> -->
 						<td rowspan="2" align="center">
-							<a href="#{project/@link}">
+							<a href="{project/@link}">
 								<img src="{project/@logo}" border="0"
 									align="bottom" alt=""/>
 							</a>
