@@ -44,9 +44,12 @@ import org.eclipse.swt.widgets.Text;
 import org.talend.commons.ui.utils.PathUtils;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextManager;
+import org.talend.core.model.process.IElement;
+import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.utils.PathExtractor;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController;
 import org.talend.sqlbuilder.util.ConnectionParameters;
 import org.talend.sqlbuilder.util.EConnectionParameterName;
 
@@ -55,8 +58,6 @@ import org.talend.sqlbuilder.util.EConnectionParameterName;
  * 
  */
 public class ConfigureConnParamDialog extends Dialog {
-
-    private static final String CONTEXT_PREFIX = "context.";
 
     private static final String TEXT_CONTROL = "TEXT";
 
@@ -72,6 +73,8 @@ public class ConfigureConnParamDialog extends Dialog {
 
     private final Map<EConnectionParameterName, String> pvValues = new HashMap<EConnectionParameterName, String>();
 
+    private final IElement selctedElement;
+
     /**
      * qzhang ConfigureConnParamDialog constructor comment.
      * 
@@ -79,7 +82,8 @@ public class ConfigureConnParamDialog extends Dialog {
      * @param parameters
      * @param contextManager
      */
-    public ConfigureConnParamDialog(Shell parentShell, ConnectionParameters parameters, IContextManager contextManager) {
+    public ConfigureConnParamDialog(Shell parentShell, ConnectionParameters parameters, IContextManager contextManager,
+            IElement elem) {
         super(parentShell);
         this.parameters = parameters;
         pvValues.put(EConnectionParameterName.PASSWORD, parameters.getPassword());
@@ -94,6 +98,7 @@ public class ConfigureConnParamDialog extends Dialog {
         pvValues.put(EConnectionParameterName.PROPERTIES_STRING, parameters.getJdbcProperties());
         ConfigureConnParamDialog.contextManager = contextManager;
         setShellStyle(SWT.APPLICATION_MODAL | SWT.RESIZE | SWT.DIALOG_TRIM);
+        this.selctedElement = elem;
     }
 
     /*
@@ -105,7 +110,7 @@ public class ConfigureConnParamDialog extends Dialog {
     protected void configureShell(Shell newShell) {
         super.configureShell(newShell);
         newShell.setText(Messages.getString("ConfigureConnParamDialog.DialogLabel")); //$NON-NLS-1$
-        newShell.setSize(350, 440);
+        newShell.setSize(600, 600);
         Rectangle screen = Display.getDefault().getBounds();
         newShell.setLocation(screen.width / 3, screen.height / 3);
     }
@@ -121,22 +126,24 @@ public class ConfigureConnParamDialog extends Dialog {
      */
     @Override
     protected Control createDialogArea(Composite parent) {
+
         mainComposite = (Composite) super.createDialogArea(parent);
+
         GridLayout gridLayout = new GridLayout(1, true);
-        gridLayout.verticalSpacing = 0;
+        // gridLayout.verticalSpacing = 0;
+
         mainComposite.setLayout(gridLayout);
+
         IContext defaultContext = createContextComposite();
+
         Label hLabel = new Label(mainComposite, SWT.SEPARATOR | SWT.HORIZONTAL);
+
         hLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+
         addComponents(defaultContext);
 
         contextCombo.addSelectionListener(new SelectionAdapter() {
 
-            /*
-             * (non-Javadoc)
-             * 
-             * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
-             */
             @Override
             public void widgetSelected(SelectionEvent e) {
                 for (Text text : allParamText) {
@@ -149,7 +156,6 @@ public class ConfigureConnParamDialog extends Dialog {
                 }
             }
         });
-
         return mainComposite;
     }
 
@@ -162,6 +168,7 @@ public class ConfigureConnParamDialog extends Dialog {
      */
     private void addComponents(IContext defaultContext) {
         for (EConnectionParameterName key : EConnectionParameterName.values()) {
+
             if (parameters.getRepositoryNameParaName().get(key.getName()) != null) {
                 if (key.equals(EConnectionParameterName.FILE)) {
                     createFileComponent(key, defaultContext);
@@ -180,7 +187,7 @@ public class ConfigureConnParamDialog extends Dialog {
      * @param key
      * @param defaultContext
      */
-    private void createDirectoryComponent(EConnectionParameterName key, IContext defaultContext) {
+    private void createDirectoryComponent(final EConnectionParameterName key, IContext defaultContext) {
         GridLayout gridLayout;
         GridData gridData;
         Composite hostComposite = new Composite(mainComposite, SWT.NONE);
@@ -272,16 +279,19 @@ public class ConfigureConnParamDialog extends Dialog {
              * @see org.eclipse.swt.events.ModifyListener#modifyText(org.eclipse.swt.events.ModifyEvent)
              */
             public void modifyText(ModifyEvent e) {
-                if (host.getText().trim().length() == 0) {
-                    host.setBackground(ColorConstants.red);
-                    host.redraw();
-                } else {
-                    host.setBackground(ColorConstants.white);
-                    host.redraw();
-                }
-                resetValues(host, hostText);
+                if (isRequriedValue(key.getName())) {
+                    if (host.getText().trim().length() == 0) {
+                        host.setBackground(ColorConstants.red);
+                        host.redraw();
+                    } else {
+                        host.setBackground(ColorConstants.white);
+                        host.redraw();
+                    }
+                    resetValues(host, hostText);
 
+                }
             }
+
         });
     }
 
@@ -291,7 +301,7 @@ public class ConfigureConnParamDialog extends Dialog {
      * @param key
      * @param defaultContext
      */
-    private void createFileComponent(EConnectionParameterName key, IContext defaultContext) {
+    private void createFileComponent(final EConnectionParameterName key, IContext defaultContext) {
         GridLayout gridLayout;
         GridData gridData;
         Composite hostComposite = new Composite(mainComposite, SWT.NONE);
@@ -383,20 +393,33 @@ public class ConfigureConnParamDialog extends Dialog {
              * @see org.eclipse.swt.events.ModifyListener#modifyText(org.eclipse.swt.events.ModifyEvent)
              */
             public void modifyText(ModifyEvent e) {
-                if (host.getText().trim().length() == 0) {
-                    host.setBackground(ColorConstants.red);
-                    host.redraw();
-                } else {
-                    host.setBackground(ColorConstants.white);
-                    host.redraw();
+                if (isRequriedValue(key.getName())) {
+                    if (host.getText().trim().length() == 0) {
+                        host.setBackground(ColorConstants.red);
+                        host.redraw();
+                    } else {
+                        host.setBackground(ColorConstants.white);
+                        host.redraw();
+                    }
+                    resetValues(host, hostText);
+
                 }
-                resetValues(host, hostText);
 
             }
         });
     }
 
-    private void createTextComponent(EConnectionParameterName key, IContext defaultContext) {
+    private boolean isRequriedValue(String key) {
+
+        if (key == null || selctedElement == null) {
+            return false;
+        }
+        IElementParameter param = selctedElement
+                .getElementParameter(AbstractElementPropertySectionController.connKeyMap.get(key));
+        return param != null && param.isRequired();
+    }
+
+    private void createTextComponent(final EConnectionParameterName key, IContext defaultContext) {
         GridLayout gridLayout;
         GridData gridData;
         Composite hostComposite = new Composite(mainComposite, SWT.NONE);
@@ -410,12 +433,18 @@ public class ConfigureConnParamDialog extends Dialog {
         gridLayout.marginRight = 0;
 
         gridData = new GridData(GridData.FILL_HORIZONTAL);
+
         hostComposite.setLayout(gridLayout);
         hostComposite.setLayoutData(gridData);
+
         Label hostLabel = new Label(hostComposite, SWT.NONE);
         hostLabel.setText(key.getDisplayName() + ":");
-        GridDataFactory.swtDefaults().hint(LABEL_DEFAULT_X, DEFAULT_HEIGHT).applyTo(hostLabel);
+        GridData data = new GridData(GridData.FILL_HORIZONTAL);
+        // GridDataFactory.swtDefaults().hint(LABEL_DEFAULT_X, DEFAULT_HEIGHT).applyTo(hostLabel);
+        hostLabel.setLayoutData(data);
+
         final Text host = new Text(hostComposite, SWT.BORDER);
+
         host.setText(pvValues.get(key));
         if (host.getText().trim().length() == 0) {
             host.setBackground(ColorConstants.red);
@@ -428,41 +457,32 @@ public class ConfigureConnParamDialog extends Dialog {
         hostText.setEditable(false);
         gridData = new GridData(GridData.FILL_HORIZONTAL);
         hostText.setLayoutData(gridData);
-        hostText.setText(CONTEXT_WITH
-                + ContextParameterUtils.parseScriptContextCode(filterContextParamName(host.getText()), defaultContext));
+        hostText.setText(CONTEXT_WITH + ContextParameterUtils.parseScriptContextCode(host.getText(), defaultContext));
         host.setData(TEXT_CONTROL, hostText);
         host.setData(key);
         allParamText.add(host);
         host.addKeyListener(new KeyAdapter() {
 
             /*
-             * (non-Javadoc)
+             * c (non-Javadoc)
              * 
              * @see org.eclipse.swt.events.KeyAdapter#keyReleased(org.eclipse.swt.events.KeyEvent)
              */
             @Override
             public void keyReleased(KeyEvent e) {
-                if (host.getText().trim().length() == 0) {
-                    host.setBackground(ColorConstants.red);
-                    host.redraw();
-                } else {
-                    host.setBackground(ColorConstants.white);
-                    host.redraw();
+                if (isRequriedValue(key.getName())) {
+                    if (host.getText().trim().length() == 0) {
+                        host.setBackground(ColorConstants.red);
+                        host.redraw();
+                    } else {
+                        host.setBackground(ColorConstants.white);
+                        host.redraw();
+                    }
+                    resetValues(host, hostText);
                 }
-                resetValues(host, hostText);
             }
+
         });
-    }
-
-    private String filterContextParamName(String param) {
-        if (param == null) {
-            return null;
-
-        }
-        if (param.startsWith(CONTEXT_PREFIX)) {
-            return param.substring(CONTEXT_PREFIX.length());
-        }
-        return param;
     }
 
     /**
@@ -564,9 +584,7 @@ public class ConfigureConnParamDialog extends Dialog {
      */
     private void resetValues(final Text key, final Text value) {
         final IContext context = contextManager.getContext(contextCombo.getItem(contextCombo.getSelectionIndex()));
-        value
-                .setText(CONTEXT_WITH
-                        + ContextParameterUtils.parseScriptContextCode(filterContextParamName(key.getText()), context));
+        value.setText(CONTEXT_WITH + ContextParameterUtils.parseScriptContextCode(key.getText(), context));
     }
 
 }

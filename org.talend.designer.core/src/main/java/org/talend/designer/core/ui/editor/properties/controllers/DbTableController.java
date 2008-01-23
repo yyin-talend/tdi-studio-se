@@ -235,10 +235,7 @@ public class DbTableController extends AbstractElementPropertySectionController 
     protected void createOpenSQLCommand(Button button, IContextManager manager) {
         initConnectionParameters();
         if (this.connParameters != null) {
-            ConfigureConnParamDialog dialog = new ConfigureConnParamDialog(button.getShell(), connParameters, manager);
-            if (dialog.open() == Window.OK) {
-                openSQLBuilderWithParamer(button);
-            }
+            initConnectionParametersWithContext(elem, manager.getDefaultContext());
             openSQLBuilderWithParamer(button);
         } else {
             MessageDialog.openWarning(button.getShell(), "Connection error", "Please set connection parameters");
@@ -326,10 +323,7 @@ public class DbTableController extends AbstractElementPropertySectionController 
     protected void createListTablesCommand(Button button, IContextManager manager) {
         initConnectionParameters();
         if (this.connParameters != null) {
-            ConfigureConnParamDialog dialog = new ConfigureConnParamDialog(button.getShell(), connParameters, manager);
-            if (dialog.open() == Window.OK) {
-                openDbTableSelectorJob(button);
-            }
+            initConnectionParametersWithContext(elem, manager.getDefaultContext());
             openDbTableSelectorJob(button);
         } else {
             MessageDialog.openWarning(button.getShell(), "Connection error", "Please set connection parameters");
@@ -404,9 +398,13 @@ public class DbTableController extends AbstractElementPropertySectionController 
 
                                 public void run() {
                                     String pid = SqlBuilderPlugin.PLUGIN_ID;
-                                    String mainMsg = "Database connection is failed."; //$NON-NLS-1$
-                                    new ErrorDialogWidthDetailArea(composite.getShell(), pid, mainMsg, connParameters
-                                            .getConnectionComment());
+                                    String mainMsg = "Database connection is failed. "; //$NON-NLS-1$
+                                    ErrorDialogWidthDetailArea dialog = new ErrorDialogWidthDetailArea(composite.getShell(), pid,
+                                            mainMsg, connParameters.getConnectionComment());
+                                    if (dialog.getCodeOfButton() == Window.OK) {
+                                        openParamemerDialog(openListTable, part.getTalendEditor().getProcess()
+                                                .getContextManager());
+                                    }
 
                                 }
                             });
@@ -425,6 +423,19 @@ public class DbTableController extends AbstractElementPropertySectionController 
         siteps.showInDialog(composite.getShell(), job);
         job.setUser(true);
         job.schedule();
+    }
+
+    private void openParamemerDialog(Button button, IContextManager manager) {
+        initConnectionParameters();
+        if (connParameters != null) {
+            ConfigureConnParamDialog paramDialog = new ConfigureConnParamDialog(button.getShell(), connParameters, manager, elem);
+            if (paramDialog.open() == Window.OK) {
+                openDbTableSelectorJob(button);
+            }
+        } else {
+            MessageDialog.openWarning(button.getShell(), "Connection error", "Please set connection parameters");
+        }
+
     }
 
     /**

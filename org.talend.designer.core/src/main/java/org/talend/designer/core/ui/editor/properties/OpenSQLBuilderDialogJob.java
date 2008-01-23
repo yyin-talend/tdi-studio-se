@@ -149,9 +149,8 @@ public class OpenSQLBuilderDialogJob extends Job {
                         String mainMsg = Messages.getString("ConnectionError.Message"); //$NON-NLS-1$
                         if (new ErrorDialogWidthDetailArea(composite.getShell(), pid, mainMsg, connectionParameters
                                 .getConnectionComment()).getCodeOfButton() == Dialog.OK) {
-
                             ConfigureConnParamDialog paramDialog = new ConfigureConnParamDialog(composite.getShell(),
-                                    connectionParameters, process.getContextManager());
+                                    connectionParameters, process.getContextManager(), elem);
                             if (paramDialog.open() == Window.OK) {
                                 controller.openSqlBuilderBuildIn(connectionParameters, propertyName);
                             }

@@ -60,11 +60,14 @@ import org.talend.core.model.metadata.QueryUtil;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
+import org.talend.core.model.process.IContext;
+import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.Problem;
 import org.talend.core.model.process.Problem.ProblemStatus;
+import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.ui.proposal.ProcessProposalUtils;
 import org.talend.designer.core.DesignerPlugin;
@@ -76,7 +79,6 @@ import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
-import org.talend.designer.core.ui.editor.properties.ConfigureConnParamDialog;
 import org.talend.designer.core.ui.editor.properties.ContextParameterExtractor;
 import org.talend.designer.core.ui.editor.properties.OpenSQLBuilderDialogJob;
 import org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty;
@@ -143,6 +145,22 @@ public abstract class AbstractElementPropertySectionController implements Proper
 
     // for job settings extra.(feature 2710)
     protected IElementParameter curParameter;
+
+    public static Map<String, String> connKeyMap = null;
+
+    static {
+        connKeyMap = new HashMap<String, String>(10);
+        connKeyMap.put("SERVER_NAME", "HOST");
+        connKeyMap.put("PORT", "PORT");
+        connKeyMap.put("SID", "DBNAME");
+        connKeyMap.put("SCHEMA", "SCHEMA");
+        connKeyMap.put("USERNAME", "USER");
+        connKeyMap.put("PASSWORD", "PASS");
+        connKeyMap.put("PROPERTIES_STRING", "PROPERTIES");
+        connKeyMap.put("DIRECTORY", "DIRECTORY");
+        connKeyMap.put("FILE", "FILE");
+        connKeyMap.put("DATASOURCE", "DATASOURCE");
+    }
 
     /**
      * DOC yzhang Comment method "createControl".
@@ -857,7 +875,6 @@ public abstract class AbstractElementPropertySectionController implements Proper
     public void openSqlBuilderBuildIn(final ConnectionParameters connParameters, final String propertyName) {
         OpenSQLBuilderDialogJob openDialogJob = new OpenSQLBuilderDialogJob(connParameters, composite, elem, propertyName,
                 getCommandStack(), this);
-
         IWorkbenchSiteProgressService siteps = (IWorkbenchSiteProgressService) part.getSite().getAdapter(
                 IWorkbenchSiteProgressService.class);
         siteps.showInDialog(composite.getShell(), openDialogJob);
@@ -912,7 +929,57 @@ public abstract class AbstractElementPropertySectionController implements Proper
 
     }
 
+    protected void initConnectionParametersWithContext(IElement element, IContext context) {
+        connParameters.setDbName(getParameterValueWithContext(element, EConnectionParameterName.SID.getName(), context));
+        connParameters.setPassword(getParameterValueWithContext(element, EConnectionParameterName.PASSWORD.getName(), context));
+        connParameters.setPort(getParameterValueWithContext(element, EConnectionParameterName.PORT.getName(), context));
+        connParameters.setSchema(getParameterValueWithContext(element, EConnectionParameterName.SCHEMA.getName(), context));
+        connParameters.setHost(getParameterValueWithContext(element, EConnectionParameterName.SERVER_NAME.getName(), context));
+        connParameters.setUserName(getParameterValueWithContext(element, EConnectionParameterName.USERNAME.getName(), context));
+        connParameters.setDirectory(getParameterValueWithContext(element, EConnectionParameterName.DIRECTORY.getName(), context));
+        connParameters.setFilename(getParameterValueWithContext(element, EConnectionParameterName.FILE.getName(), context));
+        connParameters.setJdbcProperties(getParameterValueWithContext(element, EConnectionParameterName.PROPERTIES_STRING
+                .getName(), context));
+        connParameters
+                .setDatasource(getParameterValueWithContext(element, EConnectionParameterName.DATASOURCE.getName(), context));
+    }
+
+    private String getParameterValueWithContext(IElement elem, String key, IContext context) {
+        if (elem == null || key == null)
+            return "";
+        String actualKey = connKeyMap.get(key);
+        if (actualKey != null) {
+            return fetchElementParameterValue(elem, context, actualKey);
+        } else {
+            return fetchElementParameterValue(elem, context, key);
+        }
+    }
+
+    /**
+     * DOC yexiaowei Comment method "fetchElementParameterValude".
+     * 
+     * @param elem
+     * @param context
+     * @param actualKey
+     * @return
+     */
+    private String fetchElementParameterValue(IElement elem, IContext context, String actualKey) {
+        IElementParameter elemParam = elem.getElementParameter(actualKey);
+        if (elemParam != null) {
+            String value = (String) elemParam.getValue();
+            if (value != null)
+                return ContextParameterUtils.parseScriptContextCode(value, context);
+            else
+                return "";
+        } else {
+            return "";
+        }
+    }
+
     protected void initConnectionParameters() {
+
+        connParameters = null;
+
         connParameters = new ConnectionParameters();
         String type = getValueFromRepositoryName(elem, "TYPE"); //$NON-NLS-1$
         connParameters.setDbType(type);
@@ -971,6 +1038,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
     }
 
     private void setConnectionParameterNames(Element element, ConnectionParameters connParameters) {
+
         setConnectionParameterName(element, connParameters, EConnectionParameterName.SCHEMA.getName());
 
         setConnectionParameterName(element, connParameters, EConnectionParameterName.USERNAME.getName());
@@ -1035,19 +1103,11 @@ public abstract class AbstractElementPropertySectionController implements Proper
         if (repositoryType.equals(EmfComponent.BUILTIN)) {
             connParameters.setQuery(query);
             if (connParameters.isShowConfigParamDialog()) {
-                ConfigureConnParamDialog paramDialog = new ConfigureConnParamDialog(composite.getShell(), connParameters, part
-                        .getTalendEditor().getProcess().getContextManager());
-                if (paramDialog.open() == Window.OK) {
-                    openSqlBuilderBuildIn(connParameters, propertyName);
-                }
-            } else {
+                initConnectionParametersWithContext(elem, part.getTalendEditor().getProcess().getContextManager()
+                        .getDefaultContext());
                 openSqlBuilderBuildIn(connParameters, propertyName);
             }
 
-            // SQLBuilderRepositoryNodeManager manager = new SQLBuilderRepositoryNodeManager();
-
-            // connParameters.setRepositoryNodeBuiltIn(
-            // manager.getRepositoryNodeByBuildIn(null, connParameters));
         } else if (repositoryType.equals(EmfComponent.REPOSITORY)) {
             String repositoryName2 = ""; //$NON-NLS-1$
             for (IElementParameter param : (List<IElementParameter>) elem.getElementParameters()) {
@@ -1109,4 +1169,5 @@ public abstract class AbstractElementPropertySectionController implements Proper
         }
         return null;
     }
+
 }

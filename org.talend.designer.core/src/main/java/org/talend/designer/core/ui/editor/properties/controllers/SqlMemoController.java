@@ -116,6 +116,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
             return null;
         }
         query = this.removeStrInQuery(query);
+        initConnectionParametersWithContext(elem, part.getTalendEditor().getProcess().getContextManager().getDefaultContext());
         String sql = openSQLBuilder(repositoryType, propertyName, query);
         if (sql != null) {
             queryText.setText(sql);
