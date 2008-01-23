@@ -44,7 +44,7 @@ import org.talend.componentdesigner.ui.progress.ProgressUI;
 public final class ComponentProjectManager {
 
 	// cache of newly-created project
-	private IProject newProject;
+	private IProject project;
 	
 	private String projDir = PluginConstant.EMPTY_STRING;
 	
@@ -75,11 +75,11 @@ public final class ComponentProjectManager {
 	public IProject createNewProject(String directroy, String projectName,
 			Shell shell) {
 		if (projDir.equals(directroy)) {
-			return newProject;
+			return project;
 		} else {
-			if (newProject != null) {
+			if (project != null) {
 				try {
-					newProject.delete(true, null);
+					project.delete(true, null);
 					projDir = directroy;
 				} catch (CoreException e) {
 					e.printStackTrace();
@@ -168,9 +168,9 @@ public final class ComponentProjectManager {
 			return null;
 		}
 
-		newProject = newProjectHandle;
+		project = newProjectHandle;
 
-		return newProject;
+		return project;
 	}
 
 	/**
@@ -178,7 +178,7 @@ public final class ComponentProjectManager {
 	 * 
 	 * @return the created project, or <code>null</code> if project not created
 	 */
-	public IProject getNewProject() {
-		return newProject;
+	public IProject getProject() {
+		return project;
 	}
 }

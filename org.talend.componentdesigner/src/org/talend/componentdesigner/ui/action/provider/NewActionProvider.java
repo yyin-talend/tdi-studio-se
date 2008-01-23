@@ -24,6 +24,8 @@ import org.eclipse.ui.navigator.CommonActionProvider;
 import org.eclipse.ui.navigator.ICommonActionExtensionSite;
 import org.eclipse.ui.navigator.ICommonMenuConstants;
 import org.eclipse.ui.navigator.ICommonViewerWorkbenchSite;
+import org.talend.componentdesigner.ComponentDesigenerPlugin;
+import org.talend.componentdesigner.manager.ComponentProjectManager;
 import org.talend.componentdesigner.ui.wizard.creatcomponent.CreateComponentWizard;
 
 /**
@@ -47,8 +49,6 @@ public class NewActionProvider extends CommonActionProvider {
 	 * Adds a submenu to the given menu with the name "New Component".
 	 */
 	public void fillContextMenu(IMenuManager menu) {
-		IMenuManager submenu = new MenuManager("New", NEW_MENU_NAME);
-		submenu.add(newProjectAction);
 		for (IContributionItem item : menu.getItems()) {
 			if (item == null || item.getId() == null) {
 				continue;
@@ -59,7 +59,11 @@ public class NewActionProvider extends CommonActionProvider {
 		}
 
 		// append the submenu after the GROUP_NEW group.
-		menu.insertAfter(ICommonMenuConstants.GROUP_NEW, submenu);
+		if (ComponentDesigenerPlugin.getDefault().isUsed()) {
+            IMenuManager submenu = new MenuManager("New", NEW_MENU_NAME);
+            submenu.add(newProjectAction);
+            menu.insertAfter(ICommonMenuConstants.GROUP_NEW, submenu);
+        }
 	}
 	
 	/**

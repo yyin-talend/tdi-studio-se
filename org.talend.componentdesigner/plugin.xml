@@ -98,7 +98,7 @@
           <includes>
        	      <contentExtension pattern="org.eclipse.ui.navigator.resourceContent" />		       	      
 	          <contentExtension pattern="org.eclipse.ui.navigator.resources.filters.*"/>
-          </includes>
+          </includes>         
        </viewerContentBinding>
        <viewerActionBinding
             viewerId="org.talend.componentdesigner.ui.view.ComponentNavigator">
@@ -112,7 +112,7 @@
    <extension  
          point="org.eclipse.ui.navigator.navigatorContent">
       <navigatorContent
-            name="%resource.extension.name"
+            name="componentNavigatorContent"
             priority="low"
             icon="$nl$/icons/componentnav_nav.gif"
             activeByDefault="true"
@@ -224,20 +224,22 @@
             	<test property="org.eclipse.core.resources.name" value="*.class"/>	            
 	        </and>
          </filterExpression>
-      </commonFilter> 
+      </commonFilter> -->
       <commonFilter
-            id="org.eclipse.ui.navigator.resources.filters.closedProject"
-            name="%filters.closedProject.name"
-            description="%filters.closedProject.description" 
-            activeByDefault="false"
+            id="org.eclipse.ui.navigator.resources.filters.nonComponentProject"
+            name="nonComponentProject"
+            description="not the component project" 
+            activeByDefault="true"
            >
          <filterExpression>
          	<and>
-	            <instanceof value="org.eclipse.core.resources.IProject"/>
-            	<test property="org.eclipse.core.resources.open" value="false"/>	            
+	            <instanceof value="org.eclipse.core.resources.IProject"/>	
+            	<not>
+            	   <test property="org.eclipse.core.resources.name" value="PROJECTNAME_DEFAULT"/>	
+            	</not>            
 	        </and>
          </filterExpression>
-      </commonFilter>-->  
+      </commonFilter>  
       
    </extension>
    <extension point="org.eclipse.ui.editors"> 
