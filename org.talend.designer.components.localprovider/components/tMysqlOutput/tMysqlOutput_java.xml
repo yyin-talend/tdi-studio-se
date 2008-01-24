@@ -218,6 +218,24 @@
     </PARAMETER>
 
     <PARAMETER
+      NAME="COMMIT_EVERY"
+      FIELD="TEXT"
+      NUM_ROW="10"
+      REQUIRED="true"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
+    >
+      <DEFAULT>10000</DEFAULT>
+    </PARAMETER>
+
+	<PARAMETER
+      NAME="DIE_ON_ERROR"
+      FIELD="CHECK"
+      NUM_ROW="10"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
       NAME="ADD_COLS"
       FIELD="TABLE"
       REQUIRED="false" 
@@ -242,28 +260,35 @@
 
       </ITEMS>
     </PARAMETER>
-    
+
     <PARAMETER
-      NAME="COMMIT_EVERY"
-      FIELD="TEXT"
-      NUM_ROW="10"
-      REQUIRED="true"
-      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
-    >
-      <DEFAULT>10000</DEFAULT>
-    </PARAMETER>
-	<PARAMETER
-      NAME="DIE_ON_ERROR"
+      NAME="USE_FIELD_OPTIONS"
       FIELD="CHECK"
-      NUM_ROW="10"
+      NUM_ROW="12"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
-    
+
+    <PARAMETER
+      NAME="FIELD_OPTIONS"
+      FIELD="TABLE"
+      REQUIRED="true"
+      NUM_ROW="13"
+      NB_LINES="5"
+      SHOW_IF="USE_FIELD_OPTIONS == 'true'"
+    >
+      <ITEMS BASED_ON_SCHEMA="true">
+        <ITEM NAME="UPDATE_KEY" VALUE="false" FIELD="CHECK" />
+        <ITEM NAME="DELETE_KEY" VALUE="false" FIELD="CHECK" />
+        <ITEM NAME="UPDATABLE"  VALUE="true"  FIELD="CHECK" />
+        <ITEM NAME="INSERTABLE" VALUE="true"  FIELD="CHECK" />
+      </ITEMS>
+    </PARAMETER>
+        
 	<PARAMETER
       NAME="MAPPING"
       FIELD="MAPPING_TYPE"
-      NUM_ROW="12"
+      NUM_ROW="18"
       SHOW="false"
     >       
       <DEFAULT>mysql_id</DEFAULT>

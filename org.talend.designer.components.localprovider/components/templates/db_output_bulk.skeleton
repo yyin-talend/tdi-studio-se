@@ -3,6 +3,14 @@ public class CLASS {
     public static final String INSERT_VALUE_STMT = "insertValueStmt";
     public static final String UPDATE_SET_STMT = "updateSetStmt";
     public static final String UPDATE_WHERE_STMT = "updateWhereStmt";
+    public static final String DELETE_WHERE_STMT = "deleteWhereStmt";
+    public static final String FIRST_UPDATE_KEY = "firstUpdateKeyColumn";
+    public static final String FIRST_DELETE_KEY = "firstDeleteKeyColumn";
+    public static final String FIRST_INSERT_COLUMN = "firstInsertColumn";
+    public static final String FIRST_UPDATE_COLUMN = "firstUpdateColumn";
+    public static final int NORMAL_TYPE = 0;
+    public static final int INSERT_TYPE = 1;
+    public static final int UPDATE_TYPE = 2;
     public static final String ACCESS = "access_id";
     public static final String AS400 = "as400_id";
     public static final String DB2 = "ibmdb2_id";
@@ -30,6 +38,11 @@ public class CLASS {
         String sqlStmt;
         String value;
         boolean addCol;
+        boolean isKey;
+        boolean isUpdateKey;
+        boolean isDeleteKey;
+        boolean insertable = true;
+        boolean updatable = true;
         List<Column> replacement = new ArrayList<Column>();
         public Column(String colName, String sqlStmt, boolean addCol) {
             this.column = null;
@@ -42,10 +55,32 @@ public class CLASS {
         public Column(IMetadataColumn column) {
             this.column = column;
             this.name = column.getLabel();
-            this.sqlStmt = "=?";
+            this.sqlStmt = "?";
             this.value = "?";
             this.addCol = false;
             this.DBname = column.getOriginalDbColumnName();
+        }
+        public Column(IMetadataColumn column, boolean isKey, boolean useFieldOptions, Map<String, String> fieldOption) {
+            this(column);
+            this.isKey = isKey;
+            if(useFieldOptions) {
+                this.isUpdateKey = fieldOption.get("UPDATE_KEY").equals("true");
+                this.isDeleteKey = fieldOption.get("DELETE_KEY").equals("true");
+                this.insertable = fieldOption.get("INSERTABLE").equals("true");
+                this.updatable = fieldOption.get("UPDATABLE").equals("true");                
+            } else {
+                this.insertable = true;
+                if (isKey) {
+                    this.isUpdateKey = true;
+                    this.isDeleteKey = true;
+                    this.updatable = false;
+                }
+                else {
+                    this.isUpdateKey = false;
+                    this.isDeleteKey = false;
+                    this.updatable = true;
+                }                
+            }
         }
         public boolean isReplaced() {
             return replacement.size() > 0;
@@ -104,14 +139,48 @@ public class CLASS {
         public String getOperator() {
             return operator;
         }
+        public boolean isKey() {
+            return this.isKey;
+        }
+        public void setKey(boolean isKey) {
+            this.isKey = isKey;
+        }
+        public boolean isUpdateKey() {
+            return this.isUpdateKey;
+        }
+        public void setUpdateKey(boolean isUpdateKey) {
+            this.isUpdateKey = isUpdateKey;
+        }
+        public boolean isDeleteKey() {
+            return this.isDeleteKey;
+        }
+        public void setDeleteKey(boolean isDeleteKey) {
+            this.isDeleteKey = isDeleteKey;
+        }
+        public boolean isInsertable() {
+            return this.insertable;
+        }
+        public void setInsertable(boolean insertable) {
+            this.insertable = insertable;
+        }
+        public boolean isUpdatable() {
+            return this.updatable;
+        }
+        public void setUpdatable(boolean updatable) {
+            this.updatable = updatable;
+        }
     }
-
+        
     public Column getColumn(IMetadataColumn column) {
         return new Column(column);
     }
 
     public Column getColumn(String colName, String sqlStmt, boolean addCol) {
         return new Column(colName, sqlStmt, addCol);
+    }
+    
+    public Column getColumn(IMetadataColumn column, boolean isKey, boolean useFieldsOptions, Map<String, String> fieldOption) {
+        return new Column(column, isKey, useFieldsOptions, fieldOption);
     }
 
     public abstract class Manager {
@@ -344,11 +413,166 @@ public class CLASS {
             }
             return stmtStructure;
         }
+        public List<Column> createColumnList(List<IMetadataColumn> columnList, boolean useFieldOptions, List<Map<String, String>> fieldOptions, List<Map<String, String>> addCols) {
+            List<Column> stmtStructure = new ArrayList<Column>();
+            int count = 0;
+            for(IMetadataColumn column : columnList) {
+                Map<String, String> fieldOption = fieldOptions.get(count);
+                Column skeletonColumn = getColumn(column, column.isKey(), useFieldOptions, fieldOption);
+                skeletonColumn.setOperator("=");
+                stmtStructure.add(skeletonColumn);
+                count++;
+            }
+            if(addCols != null && addCols.size() > 0) {
+                for(IMetadataColumn column : columnList) {
+                    for(Map<String, String> additionColumn : addCols) {
+                        if(additionColumn.get("REFCOL").equals(column.getLabel())) {
+                            int stmtIndex = 0;
+                            for(Column stmtStr : stmtStructure){          
+                                if(stmtStr.getName().equals(additionColumn.get("REFCOL"))) {
+                                    break;
+                                }
+                                stmtIndex++;
+                            }           
+                            if(additionColumn.get("POS").equals("AFTER")) {
+                                Column insertAfter = getColumn("\" + " + additionColumn.get("NAME") + " + \"", "\" + " + additionColumn.get("SQL") + " + \"", true);
+                                insertAfter.setDataType(additionColumn.get("DATATYPE"));
+                                insertAfter.setOperator("=");
+                                stmtStructure.add(stmtIndex+1, insertAfter);
+                            } else if(additionColumn.get("POS").equals("BEFORE")) {
+                                Column insertBefore = getColumn("\" + " + additionColumn.get("NAME") + " + \"", "\" + " + additionColumn.get("SQL") + " + \"", true);
+                                insertBefore.setDataType(additionColumn.get("DATATYPE"));
+                                insertBefore.setOperator("=");
+                                stmtStructure.add(stmtIndex, insertBefore);
+                            } else if(additionColumn.get("POS").equals("REPLACE")) {
+                                Column replacementCol = getColumn("\" + " + additionColumn.get("NAME") + " + \"", "\" + " + additionColumn.get("SQL") + " + \"", true);
+                                replacementCol.setDataType(additionColumn.get("DATATYPE"));
+                                replacementCol.setOperator("=");                                
+                                Column replacedCol = (Column) stmtStructure.get(stmtIndex);
+                                replacementCol.setKey(replacedCol.isKey());
+                                replacementCol.setUpdateKey(replacedCol.isUpdateKey());
+                                replacementCol.setDeleteKey(replacedCol.isDeleteKey());
+                                replacementCol.setUpdatable(replacedCol.isUpdatable());
+                                replacementCol.setInsertable(replacedCol.isInsertable());
+                                replacedCol.replace(replacementCol);
+                            }                            
+                        }
+                    }
+                }
+            }
+            return stmtStructure;
+        }
+        public Map<String, StringBuilder> createProcessSQL(List<Column> stmtStructure) {
+            Map<String, StringBuilder> actionSQLMap = new HashMap<String, StringBuilder>();
+            for(Column column : stmtStructure) {
+                if(column.isReplaced()) {
+                    List<Column> replacedColumns = column.getReplacement();
+                    for(Column replacedColumn : replacedColumns) {
+                        actionSQLMap = processSQLClause(replacedColumn, actionSQLMap);
+                    }
+                } else {
+                    actionSQLMap = processSQLClause(column, actionSQLMap);                    
+                }
+            }
+            return actionSQLMap;
+        }
+        private Map<String, StringBuilder> processSQLClause(Column column, Map<String, StringBuilder> actionSQLMap) {
+            StringBuilder insertColName = actionSQLMap.get(INSERT_COLUMN_NAME);
+            if(insertColName == null) {
+                insertColName = new StringBuilder();
+            }
+            StringBuilder insertValueStmt = actionSQLMap.get(INSERT_VALUE_STMT);
+            if(insertValueStmt == null) {
+                insertValueStmt = new StringBuilder();
+            }
+            StringBuilder updateSetStmt = actionSQLMap.get(UPDATE_SET_STMT);
+            if(updateSetStmt == null) {
+                updateSetStmt = new StringBuilder(); 
+            }
+            StringBuilder updateWhereStmt = actionSQLMap.get(UPDATE_WHERE_STMT);
+            if(updateWhereStmt == null) {
+                updateWhereStmt = new StringBuilder();
+            }
+            StringBuilder deleteWhereStmt = actionSQLMap.get(DELETE_WHERE_STMT);
+            if(deleteWhereStmt == null) {
+                deleteWhereStmt = new StringBuilder();
+            }
+            StringBuilder firstUpdateKeyColumn = actionSQLMap.get(FIRST_UPDATE_KEY);
+            if(firstUpdateKeyColumn == null) {
+                firstUpdateKeyColumn = new StringBuilder("true");
+            }
+            StringBuilder firstDeleteKeyColumn = actionSQLMap.get(FIRST_DELETE_KEY);
+            if(firstDeleteKeyColumn == null) {
+                firstDeleteKeyColumn = new StringBuilder("true");
+            }
+            StringBuilder firstInsertColumn = actionSQLMap.get(FIRST_INSERT_COLUMN);
+            if(firstInsertColumn == null) {
+                firstInsertColumn = new StringBuilder("true");
+            }
+            StringBuilder firstUpdateColumn = actionSQLMap.get(FIRST_UPDATE_COLUMN);
+            if(firstUpdateColumn == null) {
+                firstUpdateColumn = new StringBuilder("true");
+            }
+            String suffix = null;
+            String separate = null;
+            if(column.isInsertable()) {
+                if(firstInsertColumn.toString().equals("true")) {
+                    suffix = "";
+                    firstInsertColumn = new StringBuilder("false");
+                } else {
+                    suffix = ",";
+                }
+                insertColName.append(suffix);
+                insertColName.append(getLProtectedChar() + column.getName() + getRProtectedChar());
+                insertValueStmt.append(suffix);
+                insertValueStmt.append(column.getSqlStmt());
+            }
+            if(column.isUpdatable()) {
+                if(firstUpdateColumn.toString().equals("true")) {
+                    suffix = "";
+                    firstUpdateColumn = new StringBuilder("false");
+                } else {
+                    suffix = ",";
+                }
+                updateSetStmt.append(suffix);
+                updateSetStmt.append(getLProtectedChar() + column.getName() + getRProtectedChar() + " " + column.getOperator() + " " + column.getSqlStmt());
+            }
+            if(column.isDeleteKey()) {
+                if(firstDeleteKeyColumn.toString().equals("true")) {
+                    separate = "";
+                    firstDeleteKeyColumn = new StringBuilder("false");
+                } else {
+                    separate = " AND ";
+                }
+                deleteWhereStmt.append(separate);
+                deleteWhereStmt.append(getLProtectedChar() + column.getName() + getRProtectedChar() + " " + column.getOperator() + " " + column.getSqlStmt());
+            }
+            if(column.isUpdateKey()) {
+                if(firstUpdateKeyColumn.toString().equals("true")) {
+                    separate = "";
+                    firstUpdateKeyColumn = new StringBuilder("false");
+                } else {
+                    separate = " AND ";
+                }
+                updateWhereStmt.append(separate);
+                updateWhereStmt.append(getLProtectedChar() + column.getName() + getRProtectedChar() + " " + column.getOperator() + " " + column.getSqlStmt());                            
+            }
+            actionSQLMap.put(INSERT_COLUMN_NAME, insertColName);
+            actionSQLMap.put(INSERT_VALUE_STMT, insertValueStmt);
+            actionSQLMap.put(UPDATE_SET_STMT, updateSetStmt);
+            actionSQLMap.put(UPDATE_WHERE_STMT, updateWhereStmt);
+            actionSQLMap.put(DELETE_WHERE_STMT, deleteWhereStmt);
+            actionSQLMap.put(FIRST_UPDATE_KEY, firstUpdateKeyColumn);
+            actionSQLMap.put(FIRST_DELETE_KEY, firstDeleteKeyColumn);
+            actionSQLMap.put(FIRST_INSERT_COLUMN, firstInsertColumn);
+            actionSQLMap.put(FIRST_UPDATE_COLUMN, firstUpdateColumn);
+            return actionSQLMap;
+        }
         public Map<String, StringBuilder> createActionSQL(List<Column> stmtStructure) {
-            StringBuilder insertColName = new StringBuilder();        
-            StringBuilder insertValueStmt = new StringBuilder();        
-            StringBuilder updateSetStmt = new StringBuilder();        
-            StringBuilder updateWhereStmt = new StringBuilder();
+            StringBuilder insertColName = new StringBuilder();
+            StringBuilder insertValueStmt = new StringBuilder();
+            StringBuilder updateSetStmt = new StringBuilder();
+            StringBuilder updateWhereStmt = new StringBuilder();            
             String suffix = null;
             String separate = null;
             boolean firstKeyColumn = true;
@@ -449,6 +673,104 @@ public class CLASS {
             actionSQLMap.put(UPDATE_SET_STMT, updateSetStmt);
             actionSQLMap.put(UPDATE_WHERE_STMT, updateWhereStmt);
             return actionSQLMap;
+        }
+        public String getGenerateType(String typeToGenerate) {
+            if(typeToGenerate.equals("byte[]")){
+                typeToGenerate = "Bytes";
+            }else if(typeToGenerate.equals("java.util.Date")){
+                typeToGenerate = "Date";
+            }else if(typeToGenerate.equals("Integer")){
+                typeToGenerate = "Int";
+            }else if(typeToGenerate.equals("List")){  
+                typeToGenerate = "Object";                 
+            }else{
+                typeToGenerate=typeToGenerate.substring(0,1).toUpperCase()+typeToGenerate.substring(1);
+            }
+            return typeToGenerate;
+        }        
+        public String generateSetStmt(String typeToGenerate, Column column, int index, 
+                String incomingConnName, String cid, int actionType) {
+            boolean isObject = false;
+            String prefix = null;
+            if(actionType == NORMAL_TYPE){
+                prefix = "pstmt_";
+            }else if(actionType == INSERT_TYPE){
+                prefix = "pstmtInsert_";
+            }else if(actionType == UPDATE_TYPE){
+                prefix = "pstmtUpdate_";
+            }
+            StringBuilder setStmt = new StringBuilder();
+            if(typeToGenerate.equals("Character")) {
+                isObject = true;
+                setStmt.append("if(" + incomingConnName + "." + column.getName() + " == null) {\r\n");
+                setStmt.append(prefix + cid + ".setNull(" + index + ", java.sql.Types.CHAR);\r\n");                
+            } else if(typeToGenerate.equals("Date")) {
+                isObject = true;
+                setStmt.append("if(" + incomingConnName + "." + column.getName() + " == null) {\r\n");
+                setStmt.append(prefix + cid + ".setNull(" + index + ", java.sql.Types.DATE);\r\n");                
+            } else if(typeToGenerate.equals("byte[]")) {
+                isObject = true;
+                setStmt.append("if(" + incomingConnName + "." + column.getName() + " == null) {\r\n");
+                setStmt.append(prefix + cid + ".setNull(" + index + ", java.sql.Types.ARRAY);\r\n");                
+            } else if(typeToGenerate.equals("Long") || typeToGenerate.equals("Byte") || typeToGenerate.equals("Integer") || typeToGenerate.equals("Short")) {
+                isObject = true;
+                setStmt.append("if(" + incomingConnName + "." + column.getName() + " == null) {\r\n");
+                setStmt.append(prefix + cid + ".setNull(" + index + ", java.sql.Types.INTEGER);\r\n");                
+            } else if(typeToGenerate.equals("String")) {
+                isObject = true;
+                setStmt.append("if(" + incomingConnName + "." + column.getName() + " == null) {\r\n");
+                setStmt.append(prefix + cid + ".setNull(" + index + ", java.sql.Types.VARCHAR);\r\n");                
+            } else if(typeToGenerate.equals("Object")) {
+                isObject = true;
+                setStmt.append("if(" + incomingConnName + "." + column.getName() + " == null) {\r\n");
+                setStmt.append(prefix + cid + ".setNull(" + index + ", java.sql.Types.OTHER);\r\n");                
+            } else if(typeToGenerate.equals("Boolean")) {
+                isObject = true;
+                setStmt.append("if(" + incomingConnName + "." + column.getName() + " == null) {\r\n");
+                setStmt.append(prefix + cid + ".setNull(" + index + ", java.sql.Types.BOOLEAN);\r\n");                
+            } else if(typeToGenerate.equals("Double")) {
+                isObject = true;
+                setStmt.append("if(" + incomingConnName + "." + column.getName() + " == null) {\r\n");
+                setStmt.append(prefix + cid + ".setNull(" + index + ", java.sql.Types.DOUBLE);\r\n");                
+            } else if(typeToGenerate.equals("Float")) {
+                isObject = true;
+                setStmt.append("if(" + incomingConnName + "." + column.getName() + " == null) {\r\n");
+                setStmt.append(prefix + cid + ".setNull(" + index + ", java.sql.Types.FLOAT);\r\n");                
+            }
+            if(isObject) {
+                setStmt.append("} else {");
+            }
+            typeToGenerate = getGenerateType(typeToGenerate);
+            if(typeToGenerate.equals("Char") || typeToGenerate.equals("Character")) {
+                if(isObject) {
+                    setStmt.append("if(" + incomingConnName + "." + column.getName() + " == null) {\r\n"); 
+                } else {
+                    setStmt.append("if(String.valueOf(" + incomingConnName + "." + column.getName() + ").toLowerCase().equals(\"null\")) {\r\n");
+                }
+                setStmt.append(prefix + cid + ".setNull(" + index + ", java.sql.Types.CHAR);\r\n");
+                setStmt.append("} else if(" + incomingConnName + "." + column.getName() + " == '\0'){\r\n");
+                setStmt.append(prefix + cid + ".setString(" + index + ", \"\");\r\n");
+                setStmt.append("} else {\r\n");
+                setStmt.append(prefix + cid + ".setString(" + index + ", String.valueOf(" + incomingConnName + "." + column.getName() + "));\r\n");
+                setStmt.append("}");
+            } else if(typeToGenerate.equals("Date")) {
+                setStmt.append("if(" + incomingConnName + "." + column.getName() + " != null) {\r\n");
+                setStmt.append("date_" + cid + " = " + incomingConnName + "." + column.getName() + ".getTime();\r\n");
+                setStmt.append("if(date_" + cid + " < year1_" + cid + " || date_" + cid + " >= year10000_" + cid + ") {\r\n");
+                setStmt.append(prefix + cid + ".setString(" + index + ", \"0000-00-00 00:00:00\");\r\n");
+                setStmt.append("} else {");
+                setStmt.append(prefix + cid + ".setTimestamp(" + index + ", new java.sql.Timestamp(date_" + cid + "));\r\n");
+                setStmt.append("}\r\n");
+                setStmt.append("} else {\r\n");
+                setStmt.append(prefix + cid + ".setNull(" + index + ", java.sql.Types.DATE);\r\n");
+                setStmt.append("}\r\n");
+            } else {
+                setStmt.append(prefix + cid + ".set" + typeToGenerate + "(" + index + ", " + incomingConnName + "." + column.getName() + ");\r\n");
+            }
+            if(isObject) {
+                setStmt.append("}\r\n");
+            }
+            return setStmt.toString();
         }        
     }
     

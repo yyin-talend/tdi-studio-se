@@ -5,7 +5,6 @@ imports="
 		org.talend.core.model.process.ElementParameterParser  
 		org.talend.core.model.metadata.IMetadataTable 
 		org.talend.core.model.metadata.IMetadataColumn
-		org.talend.core.model.metadata.MetadataTalendType
 		org.talend.core.model.metadata.types.JavaTypesManager
 		org.talend.core.model.metadata.types.JavaType 
 	    org.talend.core.model.metadata.MappingTypeRetriever
@@ -31,6 +30,9 @@ skeleton="../templates/db_output_bulk.skeleton"
             (List<Map<String,String>>)ElementParameterParser.getObjectValue(
                 node,"__ADD_COLS__" );
     
+    boolean useFieldOptions = ElementParameterParser.getValue(node, "__USE_FIELD_OPTIONS__").equals("true");
+    
+    List<Map<String, String>> fieldOptions = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__FIELD_OPTIONS__");
     
     String dbname= ElementParameterParser.getValue(node, "__DBNAME__");
     
@@ -61,26 +63,43 @@ skeleton="../templates/db_output_bulk.skeleton"
 
 <%
 List<IMetadataColumn> columnList = getColumnList(node);
+List<Column> stmtStructure = null;
+if(columnList != null && columnList.size() > 0) {
+    stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, useFieldOptions, fieldOptions, addCols);
+}
 %>
 
 <%
-if(!dataAction.equals("INSERT"))
-{
-    int keyCount = 0;
-    for(IMetadataColumn column:columnList)
-    {
-    	if(column.isKey())
-    	{
-    		keyCount++;
-    	}
+if(dataAction.equals("UPDATE") || dataAction.equals("INSERT_OR_UPDATE") || dataAction.equals("UPDATE_OR_INSERT")) {
+    int updateKeyCount = 0;
+    if(stmtStructure != null) {
+        for(Column column : stmtStructure) {
+            if(column.isUpdateKey()) {
+                updateKeyCount++;
+            }
+        }
+        %>
+        int updateKeyCount_<%=cid%> = <%=updateKeyCount%>;
+        if(updateKeyCount_<%=cid%> < 1) {
+            throw new RuntimeException("For update, Schema must have a key");
+        }
+        <%
     }
-    %>
-    int keyCount_<%=cid%> = <%=keyCount%>;
-    if(keyCount_<%=cid%> < 1)
-    {
-    	throw new RuntimeException("For update or delete, Schema must have a key");
+} else if(dataAction.equals("DELETE")) {
+    int deleteKeyCount = 0;
+    if(stmtStructure != null) {
+        for(Column column : stmtStructure) {
+            if(column.isDeleteKey()) {
+                deleteKeyCount++;
+            }
+        }
+        %>
+        int deleteKeyCount_<%=cid%> = <%=deleteKeyCount%>;
+        if(deleteKeyCount_<%=cid%> < 1) {
+            throw new RuntimeException("For delete, Schema must have a key");
+        }
+        <%
     }
-<%
 }
 %> 
 
@@ -137,8 +156,7 @@ else
 	<%
 }	
 
-if(columnList != null && columnList.size()>0){    
-    List<Column> stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, addCols);
+if(columnList != null && columnList.size() > 0) {
     if(!tableAction.equals("NONE")) {
         Manager manager = getManager(dbmsId, cid);
         if(tableAction.equals("DROP_CREATE")) {
@@ -182,54 +200,65 @@ if(columnList != null && columnList.size()>0){
             <%
         }
     }
-    Map<String, StringBuilder> actionSQLMap = getManager(dbmsId, cid).createActionSQL(stmtStructure);
+    Map<String, StringBuilder> actionSQLMap = getManager(dbmsId, cid).createProcessSQL(stmtStructure);
     StringBuilder insertColName = actionSQLMap.get(INSERT_COLUMN_NAME);   
     StringBuilder insertValueStmt = actionSQLMap.get(INSERT_VALUE_STMT);    
     StringBuilder updateSetStmt = actionSQLMap.get(UPDATE_SET_STMT);    
     StringBuilder updateWhereStmt = actionSQLMap.get(UPDATE_WHERE_STMT);
+    StringBuilder deleteWhereStmt = actionSQLMap.get(DELETE_WHERE_STMT);
     
 	if(dataAction.equals("INSERT")){
 	    if(!extendedInsert){
 	        %>      	    
 	        java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("INSERT INTO `"+<%=tableName%>+"` (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)");	        
 	        <%
-	    }else{//extended-insert mode(begin)
+	    } else {//extended-insert mode(begin)
 	            %>	            
-	            class BufferLine{
-	            <% 
-	            for(IMetadataColumn column:columnList){
-	                String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
-	            %>
-	                    <%=typeToGenerate%> <%=column.getLabel()%>;                
-                <%   
+	            class BufferLine_<%=cid%> {
+    	            <% 
+    	            for(Column column : stmtStructure) {
+    	                if(!column.isReplaced() && !column.isAddCol() && column.isInsertable()) {
+        	                String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
+        	                %>
+                            <%=typeToGenerate%> <%=column.getName()%>;                
+                            <%
+    	                }
                     }            
-                %>   
+                    %>   
 	            
-	                public BufferLine(
-	            <% 
-	            int count =0;
-	            for(IMetadataColumn column:columnList){
-	                String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
-	            %>
-                        <%=typeToGenerate%> <%=column.getLabel()%>               
-	            <%   
-	            count++;
-	            if(count!=columnList.size()){%>
-	                ,
-	            <%}
-	                 }            
-	            %> 
+	                public BufferLine_<%=cid%>(
+                    <% 
+                    int count = 0;
+                    for(Column column : stmtStructure) {
+                        if(!column.isReplaced() && !column.isAddCol() && column.isInsertable()) {
+                            if(count != 0) {
+                                %>
+                                ,
+                                <%
+                            }
+                            String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getColumn().getTalendType(), column.getColumn().isNullable());
+                            %>
+                            <%=typeToGenerate%> <%=column.getName()%>
+                            <%
+                            count++;                        
+                        }
+                    }            
+                    %> 
 	                ){
-	            <% for(IMetadataColumn column:columnList){%>
-                        this.<%=column.getLabel()%> = <%=column.getLabel()%>;              
-                <%   
-                     }            
-                %>   	                
-	                }
+	                    <% 
+                        for(Column column : stmtStructure) {
+                            if(!column.isReplaced() && !column.isAddCol() && column.isInsertable()) {
+                                %>
+                                this.<%=column.getName()%> = <%=column.getName()%>;              
+                                <%   
+                            }
+                        }            
+	                    %>   	                
+                    }
 	            }
 	            
-	            java.util.List<BufferLine> exInsertColValueList<%=cid%> = new java.util.ArrayList();
-	            BufferLine exInsertColValue<%=cid%> = null; 
+	            java.util.List<BufferLine_<%=cid%>> exInsertColValueList<%=cid%> = new java.util.ArrayList();
+	            BufferLine_<%=cid%> exInsertColValue<%=cid%> = null; 
 	            
 	            <%
 	            StringBuilder extendInsertValueStmt = new StringBuilder();
@@ -273,7 +302,7 @@ if(columnList != null && columnList.size()>0){
 	}else if (dataAction.equals("DELETE")){
 	    %>
 	
-	    java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("DELETE  FROM `" + <%=tableName%> + "` WHERE <%=updateWhereStmt.toString()%>");
+	    java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("DELETE  FROM `" + <%=tableName%> + "` WHERE <%=deleteWhereStmt.toString()%>");
 
 	    <%		
 	}
