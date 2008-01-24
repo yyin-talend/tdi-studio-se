@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import org.eclipse.draw2d.AbstractBorder;
 import org.eclipse.draw2d.ActionEvent;
 import org.eclipse.draw2d.ActionListener;
 import org.eclipse.draw2d.ColorConstants;
@@ -25,7 +24,6 @@ import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.ToolbarLayout;
 import org.eclipse.draw2d.geometry.Dimension;
-import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.talend.commons.utils.workbench.gef.SimpleHtmlFigure;
@@ -87,7 +85,7 @@ public class ConnectionTraceFigure extends Figure {
             boolean noVarNameDefined = false;
 
             Figure outlineFigure = new Figure();
-            outlineFigure.setLayoutManager(new ToolbarLayout(ToolbarLayout.HORIZONTAL));
+            outlineFigure.setLayoutManager(new ToolbarLayout(true));
 
             if (tooltip != null) {
                 collapseButton = new CollapseFigure();
@@ -102,18 +100,6 @@ public class ConnectionTraceFigure extends Figure {
                 });
                 outlineFigure.add(collapseButton);
             }
-            // ImageFigure i = new ImageFigure(DiagramUIPluginImages.get(DiagramUIPluginImages.IMG_HANDLE_EXPAND));
-            // i.addMouseListener(new MouseListener.Stub() {
-            //
-            // public void mousePressed(MouseEvent me) {
-            // List list = new ArrayList(getChildren());
-            // for (int i = 2; i < list.size(); i++) {
-            // remove((IFigure) list.get(i));
-            // }
-            // }
-            // });
-            //
-            // outlineFigure.add(i);
             int sepIndex = data.indexOf(FIELD_SEP); // index separator for row name
 
             String dataWithoutRowName = data.substring(sepIndex + 1);
@@ -126,11 +112,10 @@ public class ConnectionTraceFigure extends Figure {
             if (tooltip != null) {
                 titleFigure.setBackgroundColor(ColorConstants.white);
                 titleFigure.setOpaque(false);
-                titleFigure.setBorder(new LineBorder(ColorConstants.darkGray, SWT.LEFT | SWT.RIGHT | SWT.TOP | SWT.BOTTOM));
             }
-            titleFigure.getPreferredSize().expand(20, 3);
+            titleFigure.getPreferredSize().expand(20, 2);
             outlineFigure.add(titleFigure);
-
+            outlineFigure.setBorder(new LineBorder(ColorConstants.darkGray, SWT.LEFT | SWT.RIGHT | SWT.TOP | SWT.BOTTOM));
             add(outlineFigure);
 
             Dimension size = titleFigure.getPreferredSize().getCopy();
@@ -327,84 +312,5 @@ public class ConnectionTraceFigure extends Figure {
     public Dimension getPreferredSize(int hint, int hint2) {
         // TODO Auto-generated method stub
         return super.getPreferredSize(hint, hint2);
-    }
-
-    /**
-     * DOC nrousseau ConnectionTraceFigure class global comment. Detailled comment <br/>
-     * 
-     * $Id$
-     * 
-     */
-    public class LineBorder extends AbstractBorder {
-
-        private Color color;
-
-        private int orientation;
-
-        private int leftOffset;
-
-        private int rightOffset;
-
-        private int topOffset;
-
-        private int bottomOffset;
-
-        public LineBorder(Color color, int orientation) {
-            this.color = color;
-            this.orientation = orientation;
-            rightOffset = -1;
-            bottomOffset = -1;
-        }
-
-        public void setLeftOffset(int leftOffset) {
-            this.leftOffset = leftOffset;
-        }
-
-        public void setRightOffset(int rightOffset) {
-            this.rightOffset = rightOffset;
-        }
-
-        public void setTopOffset(int topOffset) {
-            this.topOffset = topOffset;
-        }
-
-        public void setBottomOffset(int bottomOffset) {
-            this.bottomOffset = bottomOffset;
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.eclipse.draw2d.Border#getInsets(org.eclipse.draw2d.IFigure)
-         */
-        public Insets getInsets(IFigure figure) {
-            return new Insets(0, 0, 0, 0);
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.eclipse.draw2d.Border#paint(org.eclipse.draw2d.IFigure, org.eclipse.draw2d.Graphics,
-         * org.eclipse.draw2d.geometry.Insets)
-         */
-        public void paint(IFigure figure, Graphics graphics, Insets insets) {
-            graphics.setForegroundColor(color);
-            if ((orientation & SWT.TOP) != 0) {
-                graphics.drawLine(getPaintRectangle(figure, insets).getTopLeft().translate(0, topOffset), tempRect.getTopRight()
-                        .translate(0, topOffset));
-            }
-            if ((orientation & SWT.LEFT) != 0) {
-                graphics.drawLine(getPaintRectangle(figure, insets).getTopLeft().translate(leftOffset, 0), tempRect
-                        .getBottomLeft().translate(leftOffset, 0));
-            }
-            if ((orientation & SWT.RIGHT) != 0) {
-                graphics.drawLine(getPaintRectangle(figure, insets).getTopRight().translate(rightOffset, 0), tempRect
-                        .getBottomRight().translate(rightOffset, 0));
-            }
-            if ((orientation & SWT.BOTTOM) != 0) {
-                graphics.drawLine(getPaintRectangle(figure, insets).getBottomLeft().translate(0, bottomOffset), tempRect
-                        .getBottomRight().translate(0, bottomOffset));
-            }
-        }
     }
 }

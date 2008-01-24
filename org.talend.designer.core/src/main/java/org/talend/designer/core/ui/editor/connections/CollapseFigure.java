@@ -12,15 +12,16 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.connections;
 
-import org.eclipse.draw2d.Button;
+import org.eclipse.draw2d.Clickable;
 import org.eclipse.draw2d.Label;
-import org.eclipse.gmf.runtime.diagram.ui.internal.l10n.DiagramUIPluginImages;
 import org.eclipse.swt.graphics.Image;
+import org.talend.commons.ui.image.EImage;
+import org.talend.commons.ui.image.ImageProvider;
 
 /**
  * Figure used to represent a button with expanded and collapsed icon.
  */
-public class CollapseFigure extends Button {
+public class CollapseFigure extends Clickable {
 
     private boolean collapsed;
 
@@ -30,6 +31,8 @@ public class CollapseFigure extends Button {
     public CollapseFigure() {
         super();
         setCollapsed(false);
+        setStyle(STYLE_TOGGLE);
+        // setBorder(new LineBorder(ColorConstants.darkGray, SWT.TOP | SWT.BOTTOM | SWT.LEFT));
     }
 
     /**
@@ -51,9 +54,9 @@ public class CollapseFigure extends Button {
         collapsed = b;
         Image img;
         if (isCollapsed()) {
-            img = DiagramUIPluginImages.get(DiagramUIPluginImages.IMG_HANDLE_EXPAND);
+            img = ImageProvider.getImage(EImage.TRACES_EXPAND);
         } else {
-            img = DiagramUIPluginImages.get(DiagramUIPluginImages.IMG_HANDLE_COLLAPSE);
+            img = ImageProvider.getImage(EImage.TRACES_COLLAPSE);
         }
         setContents(new Label(img));
         // revalidate();
