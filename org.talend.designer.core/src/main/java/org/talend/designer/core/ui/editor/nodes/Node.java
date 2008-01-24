@@ -731,7 +731,6 @@ public class Node extends Element implements INode {
             param.getChildParameters().get(EParameterName.REPOSITORY_SCHEMA_TYPE.getName()).setValue(
                     repositorySchemaParamTarget.getValue());
             this.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.REPOSITORY);
-            cmc.refreshPropertyView();
         }
     }
 
@@ -1694,7 +1693,8 @@ public class Node extends Element implements INode {
 
                 if (inputMeta != null) {
                     INodeConnector connector = getConnectorFromName(outputMeta.getAttachedConnector());
-                    if (connector.getMaxLinkInput() != 0
+                    if (connector != null
+                            && connector.getMaxLinkInput() != 0
                             && connector.getMaxLinkOutput() != 0
                             && (!outputMeta.sameMetadataAs(inputMeta, IMetadataColumn.OPTIONS_IGNORE_KEY
                                     | IMetadataColumn.OPTIONS_IGNORE_NULLABLE | IMetadataColumn.OPTIONS_IGNORE_COMMENT

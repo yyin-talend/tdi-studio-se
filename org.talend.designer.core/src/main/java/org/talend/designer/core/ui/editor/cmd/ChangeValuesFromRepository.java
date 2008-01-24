@@ -222,8 +222,6 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                 setOtherProperties();
             }
         }
-        refreshPropertyView();
-        // refreshStatsAndLogsView();
 
         if (elem instanceof Node) {
             ((Process) ((Node) elem).getProcess()).checkProcess();
@@ -427,7 +425,6 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
             elem.setPropertyValue(repositoryPropertyTypeName, oldMetadata);
         }
 
-        refreshPropertyView();
         JobSettings.switchToCurJobSettingsView();
     }
 

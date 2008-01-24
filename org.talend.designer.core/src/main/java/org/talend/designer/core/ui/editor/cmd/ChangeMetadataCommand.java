@@ -19,13 +19,6 @@ import java.util.Map;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IViewPart;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.internal.views.properties.tabbed.view.Tab;
-import org.eclipse.ui.views.properties.PropertySheet;
-import org.eclipse.ui.views.properties.tabbed.ISection;
-import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.components.IODataComponentContainer;
 import org.talend.core.model.metadata.ColumnNameChanged;
@@ -47,7 +40,6 @@ import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
-import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
 import org.talend.designer.core.ui.editor.properties.controllers.ColumnListController;
 
 /**
@@ -224,26 +216,8 @@ public class ChangeMetadataCommand extends Command {
 
     @SuppressWarnings("unchecked")
     protected void updateColumnList(IMetadataTable oldTable, IMetadataTable newTable) {
-        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-        IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet"); //$NON-NLS-1$
-        PropertySheet sheet = (PropertySheet) view;
         final List<ColumnNameChanged> columnNameChanged = MetadataTool.getColumnNameChanged(oldTable, newTable);
-        if (sheet.getCurrentPage() instanceof TabbedPropertySheetPage) {
-            TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) sheet.getCurrentPage();
-            Tab currentTab = tabbedPropertySheetPage.getCurrentTab();
-            if (currentTab == null) {
-                return;
-            }
-            ISection[] sections = currentTab.getSections();
-            for (int i = 0; i < sections.length; i++) {
-                if (sections[i] instanceof DynamicTabbedPropertySection) {
-                    DynamicTabbedPropertySection currentSection = (DynamicTabbedPropertySection) sections[i];
-                    if (currentSection.getElement().equals(node)) {
-                        currentSection.refresh();
-                    }
-                }
-            }
-        }
+
         if (inputNode != null) {
             List<IElementParameter> eps = (List<IElementParameter>) inputNode.getElementParameters();
             if (eps != null) {
@@ -261,7 +235,9 @@ public class ChangeMetadataCommand extends Command {
                     }
                 }
             }
+            inputNode.setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), Boolean.TRUE);
         }
+        node.setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), Boolean.TRUE);
     }
 
     public void execute(Boolean propagateP) {
@@ -521,22 +497,6 @@ public class ChangeMetadataCommand extends Command {
             updateColumnList(newOutputMetadata, oldOutputMetadata);
             ((Process) node.getProcess()).checkProcess();
         }
-    }
-
-    /**
-     * Refresh property view.
-     */
-    public void refreshPropertyView() {
-        // IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-        // IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet"); //$NON-NLS-1$
-        // PropertySheet sheet = (PropertySheet) view;
-        // if ( sheet!=null && sheet.getCurrentPage()!=null && sheet.getCurrentPage() instanceof
-        // TabbedPropertySheetPage) {
-        // TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) sheet.getCurrentPage();
-        // if (tabbedPropertySheetPage.getCurrentTab() != null) {
-        // tabbedPropertySheetPage.refresh();
-        // }
-        // }
     }
 
     /**
