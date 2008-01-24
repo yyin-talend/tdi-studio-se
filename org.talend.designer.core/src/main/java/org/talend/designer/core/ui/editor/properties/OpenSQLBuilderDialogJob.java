@@ -23,7 +23,7 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
+import org.talend.commons.ui.swt.dialogs.ErrorDialogWithDetailAreaAndContinueButton;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.utils.TalendTextUtils;
@@ -147,8 +147,8 @@ public class OpenSQLBuilderDialogJob extends Job {
                     public void run() {
                         String pid = SqlBuilderPlugin.PLUGIN_ID;
                         String mainMsg = Messages.getString("ConnectionError.Message"); //$NON-NLS-1$
-                        if (new ErrorDialogWidthDetailArea(composite.getShell(), pid, mainMsg, connectionParameters
-                                .getConnectionComment()).getCodeOfButton() == Dialog.OK) {
+                        if (new ErrorDialogWithDetailAreaAndContinueButton(composite.getShell(), pid, mainMsg,
+                                connectionParameters.getConnectionComment()).getCodeOfButton() == Dialog.OK) {
                             ConfigureConnParamDialog paramDialog = new ConfigureConnParamDialog(composite.getShell(),
                                     connectionParameters, process.getContextManager(), elem);
                             if (paramDialog.open() == Window.OK) {

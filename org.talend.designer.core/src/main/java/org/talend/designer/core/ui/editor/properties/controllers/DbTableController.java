@@ -46,7 +46,7 @@ import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
-import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
+import org.talend.commons.ui.swt.dialogs.ErrorDialogWithDetailAreaAndContinueButton;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
@@ -399,8 +399,8 @@ public class DbTableController extends AbstractElementPropertySectionController 
                                 public void run() {
                                     String pid = SqlBuilderPlugin.PLUGIN_ID;
                                     String mainMsg = "Database connection is failed. "; //$NON-NLS-1$
-                                    ErrorDialogWidthDetailArea dialog = new ErrorDialogWidthDetailArea(composite.getShell(), pid,
-                                            mainMsg, connParameters.getConnectionComment());
+                                    ErrorDialogWithDetailAreaAndContinueButton dialog = new ErrorDialogWithDetailAreaAndContinueButton(
+                                            composite.getShell(), pid, mainMsg, connParameters.getConnectionComment());
                                     if (dialog.getCodeOfButton() == Window.OK) {
                                         openParamemerDialog(openListTable, part.getTalendEditor().getProcess()
                                                 .getContextManager());
