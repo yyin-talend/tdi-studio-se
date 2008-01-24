@@ -7,7 +7,8 @@
 		org.talend.core.CorePlugin
         org.talend.core.model.process.EConnectionType
         org.talend.core.model.process.IConnection	
-		
+		org.talend.core.model.metadata.IMetadataTable
+		org.talend.core.model.metadata.IMetadataColumn
 		java.util.Vector
 		java.util.List
 		java.util.ArrayList
@@ -71,17 +72,30 @@
         System.exit(exitCode);
     }
     
+<%	
+int maxRowNum_tBuffer = 0; 
+for (INode tBuffer : process.getNodesOfType("tBuffer")) {
+	List<IMetadataTable> metadatas = tBuffer.getMetadataList();
+	if (metadatas != null && metadatas.size() > 0) {
+	    IMetadataTable metadata = metadatas.get(0);    
+	    if (metadata != null) {
+	        List<IMetadataColumn> columns = metadata.getListColumns();
+	        if(columns.size() > maxRowNum_tBuffer){
+	        	maxRowNum_tBuffer = columns.size();
+	        }
+	    }
+	}
+}
+%>    
     public static String[][] runJob(String[] args) {
-    	runJobInTOS(args);
-    	
-        int firstItemlength = 0;
-        if (globalBuffer.size() > 0) {
-            firstItemlength = globalBuffer.get(0).length;// first one is ok
-        }
-        String[][] bufferValue = new String[globalBuffer.size()][firstItemlength];
+    	runJobInTOS(args);    	
+
+        int maxRowNumOftBuffer = <%=maxRowNum_tBuffer %>;
+        String[][] bufferValue = new String[globalBuffer.size()][maxRowNumOftBuffer];
         for (int i = 0; i < globalBuffer.size(); i++) {
-            for (int j = 0; j < firstItemlength; j++) {
-                bufferValue[i][j] = globalBuffer.get(i)[j].toString();
+        	Object[] item = globalBuffer.get(i); 
+            for (int j = 0; j < item.length; j++) {
+                bufferValue[i][j] = item[j].toString();
             }
         }
             	
