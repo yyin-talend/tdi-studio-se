@@ -31,6 +31,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
+import org.talend.core.model.components.ComponentCompilations;
 import org.talend.designer.components.ComponentsLocalProviderPlugin;
 
 /**
@@ -44,6 +45,8 @@ public class XsdValidationCacheManager {
     private Map<String, Long> alreadyCheckedXsd;
 
     private static XsdValidationCacheManager instance;
+
+    private final boolean forceXSDAlreadyChecked = ComponentCompilations.getMarkers();
 
     private XsdValidationCacheManager() {
     }
@@ -76,13 +79,18 @@ public class XsdValidationCacheManager {
     }
 
     public boolean needCheck(java.io.File file) {
-        long lastModified = file.lastModified();
         String path = file.getAbsolutePath();
-        Long lastChecked = alreadyCheckedXsd.get(path);
-        if (lastChecked == null) {
-            return true;
+        if (forceXSDAlreadyChecked) {
+            alreadyCheckedXsd.put(path, System.currentTimeMillis());
+            return false;
+        } else {
+            Long lastChecked = alreadyCheckedXsd.get(path);
+            long lastModified = file.lastModified();
+            if (lastChecked == null) {
+                return true;
+            }
+            return lastModified > lastChecked;
         }
-        return lastModified > lastChecked;
     }
 
     public void setChecked(File file) {

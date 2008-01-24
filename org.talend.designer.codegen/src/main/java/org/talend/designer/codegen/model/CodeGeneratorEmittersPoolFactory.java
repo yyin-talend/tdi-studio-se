@@ -49,6 +49,7 @@ import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.ECodeLanguage;
+import org.talend.core.model.components.ComponentCompilations;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentFileNaming;
 import org.talend.core.model.components.IComponentsFactory;
@@ -172,9 +173,12 @@ public final class CodeGeneratorEmittersPoolFactory {
 
                             });
                         }
-
                         log.debug("Components compiled in " + (System.currentTimeMillis() - startTime) + " ms");
                         initialized = true;
+
+                        // remove compilations markers
+                        ComponentCompilations.deleteMarkers();
+
                     } catch (Exception e) {
                         log.error("Exception during Initialization", e);
                         return new Status(IStatus.ERROR, CodeGeneratorActivator.PLUGIN_ID, "Exception during Initialization", e);
@@ -298,7 +302,8 @@ public final class CodeGeneratorEmittersPoolFactory {
         List<JetBean> alreadyCompiledEmitters = new ArrayList<JetBean>();
 
         try {
-            TalendJetEmitter dummyEmitter = new TalendJetEmitter(null, null, sub, globalClasspath);
+            TalendJetEmitter dummyEmitter = new TalendJetEmitter(null, null, sub, globalClasspath, !ComponentCompilations
+                    .getMarkers());
 
             try {
                 alreadyCompiledEmitters = loadEmfPersistentData(EmfEmittersPersistenceFactory.getInstance(codeLanguage)
@@ -415,6 +420,15 @@ public final class CodeGeneratorEmittersPoolFactory {
             LightJetBean myLightJetBean = null;
             String unitTemplateFullURI = "";
             long unitTemplateHashCode = 0;
+
+            HashMap<String, LightJetBean> mapOnName = new HashMap<String, LightJetBean>();
+            boolean forceMethodLoad = ComponentCompilations.getMarkers();
+            if (forceMethodLoad) {
+                // init specific map based on component name : mapOnName
+                for (LightJetBean ljb : datas) {
+                    mapOnName.put(ljb.getTemplateRelativeUri().substring(ljb.getTemplateRelativeUri().lastIndexOf("/")), ljb);
+                }
+            }
             for (JetBean unit : completeJetBeanList) {
                 monitorWrap.worked(1);
                 unitTemplateFullURI = unit.getTemplateFullUri();
@@ -422,17 +436,24 @@ public final class CodeGeneratorEmittersPoolFactory {
                 unit.setCrc(unitTemplateHashCode);
 
                 myLightJetBean = new LightJetBean(unitTemplateFullURI, unit.getVersion(), unitTemplateHashCode);
-                if ((lightBeanIndex = datas.indexOf(myLightJetBean)) > 0) {
-                    lightBean = datas.get(lightBeanIndex);
-                    unit.setClassName(lightBean.getClassName());
-                    try {
-                        Method method = loadMethod(url, lightBean.getMethodName(), unit);
-                        if (method != null) {
-                            unit.setMethod(method);
-                            toReturn.add(unit);
+                if (((lightBeanIndex = datas.indexOf(myLightJetBean)) > 0) || forceMethodLoad) {
+                    if (!forceMethodLoad) {
+                        lightBean = datas.get(lightBeanIndex);
+                    } else {
+                        lightBean = mapOnName.get(myLightJetBean.getTemplateRelativeUri().substring(
+                                myLightJetBean.getTemplateRelativeUri().lastIndexOf("/")));
+                    }
+                    if (lightBean != null) {
+                        unit.setClassName(lightBean.getClassName());
+                        try {
+                            Method method = loadMethod(url, lightBean.getMethodName(), unit);
+                            if (method != null) {
+                                unit.setMethod(method);
+                                toReturn.add(unit);
+                            }
+                        } catch (ClassNotFoundException e) {
+                            log.info(Messages.getString("CodeGeneratorEmittersPoolFactory.Class.NotFound", unit.getClassName()));
                         }
-                    } catch (ClassNotFoundException e) {
-                        log.info(Messages.getString("CodeGeneratorEmittersPoolFactory.Class.NotFound", unit.getClassName()));
                     }
                 }
             }

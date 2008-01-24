@@ -35,6 +35,7 @@ import org.talend.core.IService;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.ECodeLanguage;
+import org.talend.core.model.components.ComponentCompilations;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.User;
@@ -54,9 +55,15 @@ public class CodeGenInit implements IApplication {
         init(ECodeLanguage.PERL);
         removeLinkedResources();
         saveWorkspace();
+        addMarkersForTemplatesNextInitialization();
         Timer.getTimer("CodeGenInit").stop();
         Timer.getTimer("CodeGenInit").print();
         return EXIT_OK;
+    }
+
+    private void addMarkersForTemplatesNextInitialization() {
+        info("Adding markers to workspace");
+        ComponentCompilations.addMarkers();
     }
 
     private void saveWorkspace() throws CoreException {
