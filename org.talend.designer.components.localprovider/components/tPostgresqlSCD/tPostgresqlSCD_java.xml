@@ -76,7 +76,7 @@
     <PARAMETER
       NAME="DBNAME"
       FIELD="TEXT"
-      NUM_ROW="40"
+      NUM_ROW="41"
       REPOSITORY_VALUE="SID"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
@@ -86,7 +86,7 @@
      <PARAMETER 
       NAME="SCHEMA_DB"
       FIELD="TEXT"
-      NUM_ROW="40"
+      NUM_ROW="41"
       REPOSITORY_VALUE="SCHEMA"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
@@ -96,7 +96,7 @@
     <PARAMETER
       NAME="TYPE"
       FIELD="TEXT"
-      NUM_ROW="40"
+      NUM_ROW="41"
       SHOW="false"
       REPOSITORY_VALUE="TYPE"
     >
