@@ -56,6 +56,8 @@ public class GenerateDocAsHTMLWizardPage extends WizardFileSystemResourceExportP
 
     private JobHTMLScriptsManager manager;
 
+    private RepositoryNode[] nodes;
+
     // dialog store id constants
     private static final String STORE_DESTINATION_NAMES_ID = "GenerateDocAsHTMLWizardPage.STORE_DESTINATION_NAMES_ID"; //$NON-NLS-1$
 
@@ -68,7 +70,7 @@ public class GenerateDocAsHTMLWizardPage extends WizardFileSystemResourceExportP
         super(name, null);
         manager = new JobHTMLScriptsManager(new HTMLDocGenerator(ERepositoryObjectType.JOBS), true);
 
-        RepositoryNode[] nodes = (RepositoryNode[]) selection.toList().toArray(new RepositoryNode[selection.size()]);
+        nodes = (RepositoryNode[]) selection.toList().toArray(new RepositoryNode[selection.size()]);
 
         List<ExportFileResource> list = new ArrayList<ExportFileResource>();
         for (int i = 0; i < nodes.length; i++) {
@@ -387,17 +389,44 @@ public class GenerateDocAsHTMLWizardPage extends WizardFileSystemResourceExportP
      * Hook method for restoring widget values to the values that they held last time this wizard was used to
      * completion.
      */
+    // protected void restoreWidgetValues() {
+    // IDialogSettings settings = getDialogSettings();
+    // if (settings != null) {
+    // String[] directoryNames = settings.getArray(STORE_DESTINATION_NAMES_ID);
+    // if (directoryNames != null) {
+    // // destination
+    // setDestinationValue(directoryNames[0]);
+    // for (int i = 0; i < directoryNames.length; i++) {
+    // addDestinationItem(directoryNames[i]);
+    // }
+    // }
+    // }
+    // }
     protected void restoreWidgetValues() {
         IDialogSettings settings = getDialogSettings();
         if (settings != null) {
             String[] directoryNames = settings.getArray(STORE_DESTINATION_NAMES_ID);
+            boolean destinationValid = false;
             if (directoryNames != null) {
                 // destination
-                setDestinationValue(directoryNames[0]);
+                boolean isFirstValid = false;
+                String filterName = ".zip"; //$NON-NLS-1$
                 for (int i = 0; i < directoryNames.length; i++) {
-                    addDestinationItem(directoryNames[i]);
+                    if (directoryNames[i].substring(directoryNames[i].indexOf('.')).equalsIgnoreCase(filterName)) {
+                        addDestinationItem(directoryNames[i]);
+                        if (!isFirstValid) {
+                            setDestinationValue(directoryNames[i]);
+                            isFirstValid = true;
+                        }
+                        destinationValid = true;
+                    }
                 }
             }
+
+            if (!destinationValid || directoryNames == null) {
+                setDefaultDestination();
+            }
+
         }
     }
 
@@ -408,5 +437,45 @@ public class GenerateDocAsHTMLWizardPage extends WizardFileSystemResourceExportP
      */
     protected String destinationEmptyMessage() {
         return ""; //$NON-NLS-1$
+    }
+
+    /**
+     * yzhang Comment method "setDefaultDestination".
+     */
+    protected void setDefaultDestination() {
+
+        if (nodes.length >= 1) {
+            String userDir = System.getProperty("user.dir");
+            IPath path = new Path(userDir).append(getDefaultFileName() + getOutputSuffix());
+            setDestinationValue(path.toOSString());
+        }
+    }
+
+    /**
+     * yzhang Comment method "getDefaultFileName".
+     */
+    protected String getDefaultFileName() {
+        if (nodes.length >= 1) {
+            String label = null;
+            String version = null;
+            RepositoryNode node = nodes[0];
+            if (node.getType() == ENodeType.SYSTEM_FOLDER || node.getType() == ENodeType.SIMPLE_FOLDER) {
+                label = node.getProperties(EProperties.LABEL).toString();
+            } else if (node.getType() == ENodeType.REPOSITORY_ELEMENT) {
+                IRepositoryObject repositoryObject = node.getObject();
+                if (repositoryObject.getProperty().getItem() instanceof ProcessItem) {
+                    ProcessItem processItem = (ProcessItem) repositoryObject.getProperty().getItem();
+                    label = processItem.getProperty().getLabel();
+                    version = processItem.getProperty().getVersion();
+                }
+            }
+            if (version != null) {
+                return label + "_" + version;
+            } else {
+                return label;
+            }
+        }
+        return "";
+
     }
 }
