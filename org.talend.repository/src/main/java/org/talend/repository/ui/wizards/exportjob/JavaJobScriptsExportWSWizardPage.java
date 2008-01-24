@@ -106,7 +106,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
                 return settings.get(STORE_EXPORTTYPE_ID);
             }
         }
-        return EXPORTTYPE_WSWAR;
+        return EXPORTTYPE_POJO;
     }
 
     @Override
@@ -170,9 +170,9 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         gd.horizontalSpan = 1;
         exportTypeCombo.setLayoutData(gd);
 
+        exportTypeCombo.add(EXPORTTYPE_POJO);
         exportTypeCombo.add(EXPORTTYPE_WSWAR);
         exportTypeCombo.add(EXPORTTYPE_WSZIP);
-        exportTypeCombo.add(EXPORTTYPE_POJO);
         // exportTypeCombo.add("JBI (JSR 208)");
 
         exportTypeCombo.setText(getCurrentExportType());
