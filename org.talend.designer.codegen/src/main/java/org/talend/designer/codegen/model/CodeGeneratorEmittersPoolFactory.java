@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.designer.codegen.model;
 
+import java.beans.PropertyChangeEvent;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -50,6 +51,7 @@ import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.components.ComponentCompilations;
+import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentFileNaming;
 import org.talend.core.model.components.IComponentsFactory;
@@ -168,7 +170,8 @@ public final class CodeGeneratorEmittersPoolFactory {
                             Display.getDefault().asyncExec(new Runnable() {
 
                                 public void run() {
-                                    CorePlugin.getDefault().getDesignerCoreService().synchronizeDesignerUI();
+                                    CorePlugin.getDefault().getDesignerCoreService().synchronizeDesignerUI(
+                                            new PropertyChangeEvent(this, ComponentUtilities.NORMAL, null, null));
                                 }
 
                             });

@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor;
 
+import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.HashMap;
@@ -219,23 +220,41 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
     /**
      * yzhang Comment method "updatePaletteContent".
      */
-    public void updateGraphicalNodes() {
+    public void updateGraphicalNodes(PropertyChangeEvent evt) {
+        String propertyName = evt.getPropertyName();
+        if (components == null) {
+            components = ComponentsFactoryProvider.getInstance();
+        }
+        if (propertyName.equals(ComponentUtilities.NORMAL)) {
+            for (Node node : (List<Node>) process.getGraphicalNodes()) {
+                IComponent newComponent = components.get(node.getComponent().getName());
+                if (newComponent == null) {
+                    continue;
+                }
+                Map<String, Object> parameters = new HashMap<String, Object>();
+                if (node.getExternalData() != null) {
+                    parameters.put(INode.RELOAD_PARAMETER_EXTERNAL_BYTES_DATA, node.getExternalBytesData());
+                }
+                parameters.put(INode.RELOAD_PARAMETER_KEY_METADATA_LIST, node.getMetadataList());
+                parameters.put(INode.RELAOD_PARAMETER_KEY_ELEMENT_PARAMETERS, node.getElementParameters());
+                node.reloadComponent(newComponent, parameters);
+            }
+        } else if (propertyName.equals(ComponentUtilities.JOBLET_NAME_CHANGED)) {
+            String oldName = (String) evt.getOldValue();
+            String newName = (String) evt.getNewValue();
 
-        for (Node node : (List<Node>) process.getGraphicalNodes()) {
-            if (components == null) {
-                components = ComponentsFactoryProvider.getInstance();
+            for (Node node : (List<Node>) process.getGraphicalNodes()) {
+                if (node.getComponent().getName().equals(oldName) || node.getLabel().contains(oldName)) {
+
+                    IComponent newComponent = components.get(newName);
+                    if (newComponent == null) {
+                        continue;
+                    }
+                    Map<String, Object> parameters = new HashMap<String, Object>();
+                    node.reloadComponent(newComponent, parameters);
+                }
             }
-            IComponent newComponent = components.get(node.getComponent().getName());
-            if (newComponent == null) {
-                continue;
-            }
-            Map<String, Object> parameters = new HashMap<String, Object>();
-            if (node.getExternalData() != null) {
-                parameters.put(INode.RELOAD_PARAMETER_EXTERNAL_BYTES_DATA, node.getExternalBytesData());
-            }
-            parameters.put(INode.RELOAD_PARAMETER_KEY_METADATA_LIST, node.getMetadataList());
-            parameters.put(INode.RELAOD_PARAMETER_KEY_ELEMENT_PARAMETERS, node.getElementParameters());
-            node.reloadComponent(newComponent, parameters);
+
         }
         process.setProcessModified(true);
 

@@ -151,6 +151,7 @@ public class NodeLabelEditPart extends AbstractGraphicalEditPart implements Prop
                 refreshVisuals();
             }
         }
+
     }
 
     /*

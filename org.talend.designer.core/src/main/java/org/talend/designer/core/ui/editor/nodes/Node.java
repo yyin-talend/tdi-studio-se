@@ -234,15 +234,17 @@ public class Node extends Element implements INode {
                 }
             }
         }
-        String uniqueName2 = null;
-        IElementParameter unparam = getElementParameter(EParameterName.UNIQUE_NAME.getName());
-        if (unparam != null) {
-            uniqueName2 = (String) unparam.getValue();
-        }
+
         if (oldElementParameters != null) {
             setElementParameters(oldElementParameters);
         } else {
             setElementParameters(component.createElementParameters(this));
+        }
+
+        String uniqueName2 = null;
+        IElementParameter unparam = getElementParameter(EParameterName.UNIQUE_NAME.getName());
+        if (unparam != null && !"".equals(unparam.getValue())) {
+            uniqueName2 = (String) unparam.getValue();
         }
 
         // if (hasMetadata) {
@@ -270,7 +272,7 @@ public class Node extends Element implements INode {
         // }
 
         listReturn = this.component.createReturns();
-        if (uniqueName2 != null) {
+        if (uniqueName2 != null && !"".equals(uniqueName2)) {
             setPropertyValue(EParameterName.UNIQUE_NAME.getName(), uniqueName2);
         } else {
             uniqueName2 = ((Process) getProcess()).generateUniqueNodeName(this);
@@ -893,6 +895,7 @@ public class Node extends Element implements INode {
         }
         // unique name can only be set when the process is loaded
         if (id.equals(EParameterName.UNIQUE_NAME.getName())) {
+            parameter.setValue(value);
             setUniqueName((String) value);
         }
         if (id.equals(EParameterName.SHOW_HINT.getName())) {
@@ -1538,9 +1541,9 @@ public class Node extends Element implements INode {
         // not a sub process start
         if (!isSubProcessStart() || (!(Boolean) getPropertyValue(EParameterName.STARTABLE.getName()))) {
             if (/*
-                 * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_AFTER) > 0) ||
-                 * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_BEFORE) > 0)||
-                 */
+             * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_AFTER) > 0) ||
+             * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_BEFORE) > 0)||
+             */
             (getCurrentActiveLinksNbOutput(EConnectionType.ON_SUBJOB_OK) > 0)
                     || getCurrentActiveLinksNbOutput(EConnectionType.ON_SUBJOB_ERROR) > 0) {
                 String errorMessage = "A component that is not a sub process start can not have any link run after / run before in output.";
@@ -1552,9 +1555,9 @@ public class Node extends Element implements INode {
         // not a sub process start
         if ((!isELTComponent() && !isSubProcessStart()) || (!(Boolean) getPropertyValue(EParameterName.STARTABLE.getName()))) {
             if (/*
-                 * (getCurrentActiveLinksNbInput(EConnectionType.RUN_AFTER) > 0) ||
-                 * (getCurrentActiveLinksNbInput(EConnectionType.RUN_BEFORE) > 0) ||
-                 */(getCurrentActiveLinksNbInput(EConnectionType.ON_SUBJOB_OK) > 0)
+             * (getCurrentActiveLinksNbInput(EConnectionType.RUN_AFTER) > 0) ||
+             * (getCurrentActiveLinksNbInput(EConnectionType.RUN_BEFORE) > 0) ||
+             */(getCurrentActiveLinksNbInput(EConnectionType.ON_SUBJOB_OK) > 0)
                     || (getCurrentActiveLinksNbInput(EConnectionType.RUN_IF) > 0)
                     || (getCurrentActiveLinksNbInput(EConnectionType.ON_COMPONENT_OK) > 0)
                     || (getCurrentActiveLinksNbInput(EConnectionType.ON_COMPONENT_ERROR) > 0)) {
@@ -2129,15 +2132,26 @@ public class Node extends Element implements INode {
      */
     public void reloadComponent(IComponent component, Map<String, Object> parameters) {
         init(component);
-        setMetadataList((List<IMetadataTable>) parameters.get(INode.RELOAD_PARAMETER_KEY_METADATA_LIST));
-        setElementParameters((List<? extends IElementParameter>) parameters.get(INode.RELAOD_PARAMETER_KEY_ELEMENT_PARAMETERS));
-        if (isExternalNode()) {
-            Data data = (Data) parameters.get(INode.RELOAD_PARAMETER_EXTERNAL_BYTES_DATA);
+
+        Object obj = parameters.get(INode.RELOAD_PARAMETER_KEY_METADATA_LIST);
+        if (obj != null) {
+            setMetadataList((List<IMetadataTable>) obj);
+        }
+
+        obj = parameters.get(INode.RELAOD_PARAMETER_KEY_ELEMENT_PARAMETERS);
+        if (obj != null) {
+            setElementParameters((List<? extends IElementParameter>) obj);
+        }
+
+        obj = parameters.get(INode.RELOAD_PARAMETER_EXTERNAL_BYTES_DATA);
+        if (obj != null && isExternalNode()) {
+            Data data = (Data) obj;
             if (data != null) {
                 setData(data.getBytesData(), data.getStringData());
             }
             getExternalNode().initialize();
         }
+
     }
 
     /*

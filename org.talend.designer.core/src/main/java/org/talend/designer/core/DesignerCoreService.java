@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.designer.core;
 
+import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -166,11 +167,11 @@ public class DesignerCoreService implements IDesignerCoreService {
      * 
      * @see org.talend.designer.core.IDesignerCoreService#refreshDesignerPalette()
      */
-    public void synchronizeDesignerUI() {
+    public void synchronizeDesignerUI(PropertyChangeEvent evt) {
 
         ComponentUtilities.updatePalette();
         for (IEditorPart editor : ProcessorUtilities.getOpenedEditors()) {
-            ((AbstractTalendEditor) editor).updateGraphicalNodes();
+            ((AbstractTalendEditor) editor).updateGraphicalNodes(evt);
         }
 
     }

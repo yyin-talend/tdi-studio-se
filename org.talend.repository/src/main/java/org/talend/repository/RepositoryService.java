@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.repository;
 
+import java.beans.PropertyChangeEvent;
 import java.util.Iterator;
 import java.util.List;
 
@@ -23,6 +24,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
+import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.migration.IMigrationToolService;
 import org.talend.core.model.properties.Property;
@@ -212,7 +214,8 @@ public class RepositoryService implements IRepositoryService {
             runService.deleteAllJobs(SwitchProjectAction.PLUGIN_MODEL);
 
             CorePlugin.getDefault().getCodeGeneratorService().generationInit();
-            CorePlugin.getDefault().getDesignerCoreService().synchronizeDesignerUI();
+            CorePlugin.getDefault().getDesignerCoreService().synchronizeDesignerUI(
+                    new PropertyChangeEvent(this, ComponentUtilities.NORMAL, null, null));
 
         }
 
