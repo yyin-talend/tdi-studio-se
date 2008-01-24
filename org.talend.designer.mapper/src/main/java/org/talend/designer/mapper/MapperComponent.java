@@ -541,11 +541,13 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
         for (ExternalMapperTable inputTable : inputTables) {
             if (inputTable.getName().equals(connectionName)) {
                 List<ExternalMapperTableEntry> metadataTableEntries = inputTable.getMetadataTableEntries();
-                int metadataTableEntriesListSize = metadataTableEntries.size();
-                for (int i = 0; i < metadataTableEntriesListSize; i++) {
-                    ExternalMapperTableEntry entry = metadataTableEntries.get(i);
-                    if (entry.getExpression() != null && !entry.getExpression().trim().equals("")) {
-                        hashableColumns.add(new HashableColumn(entry.getName(), i));
+                if (metadataTableEntries != null) {
+                    int metadataTableEntriesListSize = metadataTableEntries.size();
+                    for (int i = 0; i < metadataTableEntriesListSize; i++) {
+                        ExternalMapperTableEntry entry = metadataTableEntries.get(i);
+                        if (entry.getExpression() != null && !entry.getExpression().trim().equals("")) {
+                            hashableColumns.add(new HashableColumn(entry.getName(), i));
+                        }
                     }
                 }
 
