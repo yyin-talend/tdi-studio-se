@@ -44,72 +44,111 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>
 int nb_line_<%=cid%> = 0;
 
-class NameSpaceTool_<%=cid%> {
+class XML_API_<%=cid%>{
 
-    public java.util.HashMap<String, String> xmlNameSpaceMap = new java.util.HashMap<String, String>();
-
-	private boolean hasDefaultNS = false;
-
-    public void countNSMap(org.dom4j.Element el) {
-
-        for (org.dom4j.Namespace ns : (java.util.List<org.dom4j.Namespace>) el.declaredNamespaces()) {
-            if (ns.getPrefix().trim().length() == 0) {
-                xmlNameSpaceMap.put("pre", ns.getURI());
-                hasDefaultNS = true;
-            } else {
-                xmlNameSpaceMap.put(ns.getPrefix(), ns.getURI());
-            }
-
+	public boolean isDefNull(org.w3c.dom.Node node) throws javax.xml.transform.TransformerException {
+        if (node != null && node.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
+            return ((org.apache.xerces.xs.ElementPSVI) node).getNil();
         }
-        for (org.dom4j.Element e : (java.util.List<org.dom4j.Element>) el.elements()) {
-            countNSMap(e);
-        }
+        return false;
     }
-    
-    public String addDefaultNSPrefix(String path) {
-        if (hasDefaultNS) {
-            StringBuilder newPath = new StringBuilder();
-            for (String tmp : path.split("/")) {
-                if (newPath.length() > 0) {
-                    newPath.append("/");
-                }
-                if (tmp.length() > 0 && tmp.indexOf(":") == -1 && tmp.indexOf(".") == -1 && tmp.indexOf("@") == -1) {
-                    newPath.append("pre:").append(tmp);
-                } else {
-                    newPath.append(tmp);
-                }
-            }
-            return newPath.toString();
+
+    public boolean isMissing(org.w3c.dom.Node node) throws javax.xml.transform.TransformerException {
+        return node == null ? true : false;
+    }
+
+    public boolean isEmpty(org.w3c.dom.Node node) throws javax.xml.transform.TransformerException {
+        if (node != null) {
+            return node.getTextContent().length() == 0;
         }
-        return path;
+        return false;
+    }
+
+    public org.w3c.dom.Node getSingleNode(org.w3c.dom.Node node, String xpath,
+            com.sun.org.apache.xml.internal.utils.PrefixResolver pr) throws javax.xml.transform.TransformerException {
+        com.sun.org.apache.xpath.internal.objects.XObject obj = com.sun.org.apache.xpath.internal.XPathAPI.eval(node, xpath, pr);
+        return obj.nodelist().item(0);
+    }
+
+    public org.w3c.dom.NodeList getNodeList(org.w3c.dom.Node node, String xpath,
+            com.sun.org.apache.xml.internal.utils.PrefixResolver pr) throws javax.xml.transform.TransformerException {
+        com.sun.org.apache.xpath.internal.objects.XObject obj = com.sun.org.apache.xpath.internal.XPathAPI.eval(node, xpath, pr);
+        return obj.nodelist();
     }
 }
 
-org.dom4j.io.SAXReader reader_<%=cid%> = new org.dom4j.io.SAXReader();
-org.dom4j.Document doc_<%=cid%>= reader_<%=cid%>.read(new java.io.FileInputStream(<%=filename %>));
+class TalendPrefixResolver_<%=cid%> implements com.sun.org.apache.xml.internal.utils.PrefixResolver {
 
-NameSpaceTool_<%=cid%> nsTool_<%=cid%> = new NameSpaceTool_<%=cid%>();
-nsTool_<%=cid%>.countNSMap(doc_<%=cid%>.getRootElement());
-java.util.HashMap<String,String> xmlNameSpaceMap_<%=cid%> = nsTool_<%=cid%>.xmlNameSpaceMap;  
+    private java.util.Map<String, String> map = new java.util.HashMap<String, String>();
 
+    public TalendPrefixResolver_<%=cid %>(org.w3c.dom.Node root) {
+        countNSMap(root);
+    }
 
-org.dom4j.XPath x_<%=cid%> = doc_<%=cid%>.createXPath(nsTool_<%=cid%>.addDefaultNSPrefix(<%=loopQuery%>));  
-x_<%=cid%>.setNamespaceURIs(xmlNameSpaceMap_<%=cid%>); 
+    public String getBaseIdentifier() {
+        return null;
+    }
 
-java.util.List<org.dom4j.tree.AbstractNode> nodeList_<%=cid%> = (java.util.List<org.dom4j.tree.AbstractNode>)x_<%=cid%>.selectNodes(doc_<%=cid%>);	
+    public String getNamespaceForPrefix(String prefix) {
+        if (prefix.equals("xml")) {
+            return com.sun.org.apache.xml.internal.utils.Constants.S_XMLNAMESPACEURI;
+        } else {
+            return map.get(prefix);
+        }
+    }
 
-String str_<%=cid %> = "";
-org.dom4j.Node node_<%=cid%> = null;
-for (org.dom4j.tree.AbstractNode temp_<%=cid%>: nodeList_<%=cid%>) {
+    public String getNamespaceForPrefix(String prefix, org.w3c.dom.Node context) {
+        return getNamespaceForPrefix(prefix);
+    }
+
+    public boolean handlesNullPrefixes() {
+        return false;
+    }
+
+    private void countNSMap(org.w3c.dom.Node el) {
+        if (el.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
+            org.w3c.dom.NamedNodeMap attris = el.getAttributes();
+            for (int i = 0; i < attris.getLength(); i++) {
+                org.w3c.dom.Node attr = attris.item(i);
+                String aname = attr.getNodeName();
+                if (aname.startsWith("xmlns")) {
+                    int index = aname.indexOf(":");
+                    aname = index > 0 ? aname.substring(index + 1) : aname;
+                    map.put(aname, attr.getNodeValue());
+                }
+            }
+        }
+        org.w3c.dom.NodeList nodeList = el.getChildNodes();
+        for (int i = 0; i < nodeList.getLength(); i++) {
+            countNSMap(nodeList.item(i));
+        }
+    }
+}
+
+XML_API_<%=cid%> xml_api_<%=cid%> = new XML_API_<%=cid%>();
+org.apache.xerces.parsers.DOMParser parser_<%=cid%> = new org.apache.xerces.parsers.DOMParser();
+parser_<%=cid%>.setProperty("http://apache.org/xml/properties/dom/document-class-name",
+        "org.apache.xerces.dom.PSVIDocumentImpl");
+parser_<%=cid%>.setFeature("http://xml.org/sax/features/validation", true);
+parser_<%=cid%>.setFeature("http://apache.org/xml/features/validation/schema", true);
+parser_<%=cid%>.setFeature("http://apache.org/xml/features/validation/schema-full-checking", true);
+parser_<%=cid%>.setFeature("http://xml.org/sax/features/namespaces", true);
+parser_<%=cid%>.parse(<%=filename%>);
+org.w3c.dom.Document doc_<%=cid%> = parser_<%=cid%>.getDocument();
+
+TalendPrefixResolver_<%=cid%> pr_<%=cid%> = new TalendPrefixResolver_<%=cid%>(doc_<%=cid%>);
+org.w3c.dom.NodeList nodelist_<%=cid %> = xml_api_<%=cid%>.getNodeList(doc_<%=cid %>,<%=loopQuery%>,pr_<%=cid%>);
+
+org.w3c.dom.Node node_<%=cid%>  = null;
+String str_<%=cid%> = null;
+for (int i_<%=cid %> = 0; i_<%=cid %> < nodelist_<%=cid %>.getLength(); i_<%=cid %>++) {
+	org.w3c.dom.Node tmp_<%=cid %> = nodelist_<%=cid %>.item(i_<%=cid %>);
 	nb_line_<%=cid%>++;
-<%	
+<%
 				for (int i=0;i<mapping.size();i++) { 
 					String query = mapping.get(i).get("QUERY");
 %>
-	org.dom4j.XPath xTmp<%=i%>_<%=cid%> = temp_<%=cid%>.createXPath(nsTool_<%=cid%>.addDefaultNSPrefix(<%=query%>));
-    xTmp<%=i%>_<%=cid%>.setNamespaceURIs(xmlNameSpaceMap_<%=cid%>); 
-    node_<%=cid%> = xTmp<%=i%>_<%=cid%>.selectSingleNode(temp_<%=cid%>);
-    str_<%=cid %> = xTmp<%=i%>_<%=cid%>.valueOf(temp_<%=cid%>);
+	node_<%=cid%> = xml_api_<%=cid%>.getSingleNode(tmp_<%=cid %>,<%=query%>,pr_<%=cid%>);
 <%
 					for(IMetadataColumn column:columns) {
 						if (mapping.get(i).get("SCHEMA_COLUMN")!=null) {
@@ -117,56 +156,49 @@ for (org.dom4j.tree.AbstractNode temp_<%=cid%>: nodeList_<%=cid%>) {
 								String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
 								JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 								String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
-								if (javaType == JavaTypesManager.STRING ) {
+								
+								boolean isNotSetDefault = false;
+								if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.DATE){
+									isNotSetDefault = column.getDefault().equals("\"\"");
+								}else{
+									isNotSetDefault = column.getDefault().length()==0;
+								}
+								
+								if(column.isNullable()){
 %>
-		if(node_<%=cid%> == null){ 
-			//element is missing
-			<%=conn.getName() %>.<%=column.getLabel() %> = <%=column.getDefault().equals("")?null:column.getDefault()%>;
-		}else if(node_<%=cid%>.getText().equals("")){ 
-			//element is empty
-			<%=conn.getName() %>.<%=column.getLabel() %> ="";
-		}else{
-			<%=conn.getName() %>.<%=column.getLabel() %> = str_<%= cid %>;
-		}
+	if(xml_api_<%=cid%>.isMissing(node_<%=cid%> ) || xml_api_<%=cid%>.isDefNull(node_<%=cid%>)){ 
+		<%=conn.getName() %>.<%=column.getLabel() %> =null;
+	}else if(xml_api_<%=cid%>.isEmpty(node_<%=cid%>)){
+		<%=conn.getName() %>.<%=column.getLabel() %> =<%=isNotSetDefault?JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate):column.getDefault()%>;
+	}else{
+<%
+								}else{
+%>
+	if(xml_api_<%=cid%>.isMissing(node_<%=cid%>) || xml_api_<%=cid%>.isEmpty(node_<%=cid%>)){
+		<%=conn.getName() %>.<%=column.getLabel() %> =<%=isNotSetDefault?JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate):column.getDefault()%>;
+	}else{
+<%
+								}
+								if (javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
+%>
+		<%=conn.getName() %>.<%=column.getLabel() %> = node_<%=cid%>.getTextContent();
+<%
+								} else if (javaType == JavaTypesManager.DATE) {
+%>
+		<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(node_<%=cid%>.getTextContent(), <%= patternValue %>);
+<%  
+								} else if(javaType == JavaTypesManager.BYTE_ARRAY){ 
+%>							
+		<%=conn.getName() %>.<%=column.getLabel() %> = node_<%=cid%>.getTextContent().getBytes(<%=encoding %>);
 <%
 								} else {
 %>
-		if(node_<%=cid%> == null || node_<%=cid%>.getText().equals("")){ 
-			//element is missing or empty
-<%
-									if(column.isNullable()){
-%>
-			<%=conn.getName() %>.<%=column.getLabel() %> = <%=column.getDefault().equals("")?null:column.getDefault()%>;
-<%
-									}else{
-%>
-			<%=conn.getName() %>.<%=column.getLabel() %> = <%=column.getDefault().equals("")?JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate):column.getDefault()%>;
-<%
-									}
-%>
-		}else{
-<%
-									if ( javaType == JavaTypesManager.OBJECT){
-%>
-		<%=conn.getName() %>.<%=column.getLabel() %> = str_<%= cid %>;
-<%
-									} else if (javaType == JavaTypesManager.DATE) {
-%>
-		<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(str_<%= cid %>, <%= patternValue %>);
-<%  
-									} else if(javaType == JavaTypesManager.BYTE_ARRAY){ 
-%>							
-		<%=conn.getName() %>.<%=column.getLabel() %> = str_<%= cid %>.getBytes(<%=encoding %>);
-<%
-									} else {
-%>
-		<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(str_<%= cid %>);
-<%
-									}
-%>
-		}
+		<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(node_<%=cid%>.getTextContent());
 <%
 								}
+%>
+	}
+<%
 							}
 						}
 					}
