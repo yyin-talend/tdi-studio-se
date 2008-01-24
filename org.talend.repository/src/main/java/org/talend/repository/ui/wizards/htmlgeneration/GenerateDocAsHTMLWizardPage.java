@@ -357,6 +357,7 @@ public class GenerateDocAsHTMLWizardPage extends WizardFileSystemResourceExportP
         FileDialog dialog = new FileDialog(getContainer().getShell(), SWT.SAVE);
         dialog.setFilterExtensions(new String[] { "*.zip", "*.*" }); //$NON-NLS-1$ //$NON-NLS-2$
         dialog.setText(""); //$NON-NLS-1$
+        dialog.setFileName(getDefaultFileName());
         String currentSourceString = getDestinationValue();
         int lastSeparatorIndex = currentSourceString.lastIndexOf(File.separator);
         if (lastSeparatorIndex != -1) {
