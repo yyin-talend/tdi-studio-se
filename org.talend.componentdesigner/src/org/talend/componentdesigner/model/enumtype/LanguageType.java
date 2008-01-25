@@ -19,15 +19,15 @@ import org.talend.componentdesigner.PluginConstant;
  * 
  */
 public enum LanguageType {
-    PERLLANGUAGETYPE(PluginConstant.PERL_LANG, "_perl", ".perljet"),
-    JAVALANGUAGETYPE(PluginConstant.JAVA_LANG, "_java", ".javajet"),
+    PERLLANGUAGETYPE(PluginConstant.PERL_LANG, PluginConstant.PERL_XML_SUFFIX, ".perljet"),
+    JAVALANGUAGETYPE(PluginConstant.JAVA_LANG, PluginConstant.JAVA_XML_SUFFIX, ".javajet"),
     BOTHLANGUAGETYPE(PluginConstant.BOTH_LANG, "_perl;_java", ".perljet;.javajet");
 
     private final String lang;
 
-    private final String fileSuffix;
-
     private final String nameSuffix;
+
+    private final String fileSuffix;
 
     LanguageType(String lang, String nameSuffix, String fileSuffix) {
         this.lang = lang;

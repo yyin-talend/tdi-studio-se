@@ -12,6 +12,9 @@
 // ============================================================================
 package org.talend.componentdesigner.ui.wizard.creatcomponent;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -25,6 +28,7 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.talend.componentdesigner.model.ILibEntry;
 import org.talend.componentdesigner.model.componentpref.ComponentPref;
+import org.talend.componentdesigner.model.libentry.JarLibEntry;
 import org.talend.componentdesigner.ui.composite.TreeNodeAttrCompsite;
 import org.talend.componentdesigner.ui.composite.xmltree.ATreeNodeUtil;
 import org.talend.componentdesigner.ui.composite.xmltree.TreeNodeData;
@@ -226,7 +230,11 @@ public class WizardXMLConfigPage extends AbstractComponentPage {
 				importsData.setTreeNode(ATreeNodeUtil.getTreeNodeByPath(IMPORTSITEMPATH));
 				importsItem.setData(importsData);
 				
-				for (ILibEntry libEntry : componentPref.getLibEntries()) {
+				List<Node> jarImportNodes = new ArrayList<Node>();
+				List<Node> pmImportNodes = new ArrayList<Node>();
+				
+				
+				for (ILibEntry libEntry : componentPref.getLibEntries()) {				   
 					TreeItem importItem = new TreeItem(importsItem, SWT.CASCADE);
 					importItem.setText(IMPORT);
 					Element importEle = importsEle.getOwnerDocument()
@@ -237,13 +245,22 @@ public class WizardXMLConfigPage extends AbstractComponentPage {
 					importEle.setAttribute(REQUIRED, "true");
 					
 					TreeNodeData nodeData = new TreeNodeData();
-					nodeData.putAttrValue(NAME, libEntry.getNamePrefix());
-					nodeData.putAttrValue(MODULE, libEntry.getNamePrefix());
-					nodeData.putAttrValue(REQUIRED, "true");
-					nodeData.setXMLNode(importEle);
-					nodeData.setTreeNode(ATreeNodeUtil.getTreeNodeByPath(IMPORTITEMPATH));
-					importItem.setData(nodeData);
+                    nodeData.putAttrValue(NAME, libEntry.getNamePrefix());
+                    nodeData.putAttrValue(MODULE, libEntry.getNamePrefix());
+                    nodeData.putAttrValue(REQUIRED, "true");
+                    nodeData.setXMLNode(importEle);
+                    nodeData.setTreeNode(ATreeNodeUtil.getTreeNodeByPath(IMPORTITEMPATH));
+                    importItem.setData(nodeData);
+
+                    if (libEntry instanceof JarLibEntry) {
+                        jarImportNodes.add(importEle);
+                    } else {
+                        pmImportNodes.add(importEle);
+                    }
 				}
+				
+				this.componentPref.setJarImportNodes(jarImportNodes.toArray(new Node[jarImportNodes.size()]));
+				this.componentPref.setPerImportNodes(pmImportNodes.toArray(new Node[pmImportNodes.size()]));
 
 			}
 		}

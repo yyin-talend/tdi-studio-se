@@ -17,6 +17,7 @@ import java.util.List;
 
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.datatools.enablement.oda.xml.util.ui.ATreeNode;
 import org.talend.componentdesigner.PluginConstant;
 import org.talend.componentdesigner.model.ILibEntry;
 import org.talend.componentdesigner.model.enumtype.JetFileStamp;
@@ -24,7 +25,9 @@ import org.talend.componentdesigner.model.enumtype.LanguageType;
 import org.talend.componentdesigner.model.enumtype.ResourceLanguageType;
 import org.talend.componentdesigner.model.libentry.JarLibEntry;
 import org.talend.componentdesigner.model.libentry.PmLibEntry;
+import org.talend.componentdesigner.ui.composite.xmltree.ATreeNodeUtil;
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 
 /**
  * @author rli
@@ -53,6 +56,12 @@ public class ComponentPref {
 	private String xmlFileName;
 	
 	private Document xmlDocument;
+	
+	private Node[] jarImportNodes;
+	
+	private Node[] perImportNodes;
+	
+	
 
 	/**
 	 * @return the name
@@ -305,4 +314,76 @@ public class ComponentPref {
 		this.xmlDocument = xmlDocument;
 	}
 
+    
+    /**
+     * Getter for jarImportNodes.
+     * @return the jarImportNodes
+     */
+    public Node[] getJarImportNodes() {
+        return this.jarImportNodes;
+    }
+
+    
+    /**
+     * Sets the jarImportNodes.
+     * @param jarImportNodes the jarImportNodes to set
+     */
+    public void setJarImportNodes(Node[] jarImportNodes) {
+        this.jarImportNodes = jarImportNodes;
+    }
+
+    
+    /**
+     * Getter for perImportNodes.
+     * @return the perImportNodes
+     */
+    public Node[] getPerImportNodes() {
+        return this.perImportNodes;
+    }
+
+    
+    /**
+     * Sets the perImportNodes.
+     * @param perImportNodes the perImportNodes to set
+     */
+    public void setPerImportNodes(Node[] perImportNodes) {
+        this.perImportNodes = perImportNodes;
+    }
+    
+    public Document getJavaXmlDocument() {
+        return removeUnusedNodes(this.getPerImportNodes());
+    }
+
+    public Document getPerlXmlDocument() {
+        return removeUnusedNodes(getJarImportNodes());
+    }
+    
+    public Document getCurrentTypeDocument(String xmlType) {
+        if (xmlType.equals(PluginConstant.JAVA_XML_SUFFIX)) {
+            return this.getJavaXmlDocument();
+        } else {
+            return this.getPerlXmlDocument();
+        }
+    }
+    
+    
+    private Document removeUnusedNodes(Node[] importNodes) {
+        Document documentCopy = null;
+
+        if (importNodes != null && importNodes.length != 0) {
+            Node importsNode = importNodes[0].getParentNode();
+            for (Node node : importNodes) {
+                importsNode.removeChild(node);
+            }
+
+            documentCopy = (Document) this.xmlDocument.cloneNode(true);
+            
+            for (Node node : importNodes) {
+                importsNode.appendChild(node);
+            }
+        } else {
+            documentCopy = this.xmlDocument;
+        }
+        return documentCopy;
+    }
 }

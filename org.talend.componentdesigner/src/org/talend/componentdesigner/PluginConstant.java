@@ -69,4 +69,8 @@ public class PluginConstant {
 	public static final String JOINT_MARK = " - ";
 	
 	public static final String COMPONENT_NODE_NAME = "COMPONENT";
+	
+    public static final String  PERL_XML_SUFFIX = "_perl";
+    
+    public static final String  JAVA_XML_SUFFIX = "_java";
 }
