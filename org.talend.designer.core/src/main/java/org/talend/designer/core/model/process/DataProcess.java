@@ -140,7 +140,7 @@ public class DataProcess {
         dataNode.setComponent(graphicalNode.getComponent());
 
         if (graphicalNode.isDummy()) {
-            dataNode = new DataNode(ComponentsFactoryProvider.getInstance().get("tDummyRow"), uniqueName);
+            dataNode = new DataNode(ComponentsFactoryProvider.getInstance().get("tDummyRow"), uniqueName); //$NON-NLS-1$
             dataNode.setActivate(true);
             dataNode.setStart(graphicalNode.isStart());
             dataNode.setMetadataList(graphicalNode.getMetadataList());
@@ -356,10 +356,9 @@ public class DataProcess {
 
                 DataConnection dataConnec = new DataConnection();
                 dataConnec.setActivate(graphicalNode.isActivate());
-                INodeConnector connector = nodeSource.getConnectorFromName(curConnec.getConnectionType());
-                dataConnec.setLineStyle(connector.getDefaultConnectionType());
+                dataConnec.setLineStyle(EConnectionType.getTypeFromName(curConnec.getConnectionType()));
                 dataConnec.setConnectorName(curConnec.getConnectionType());
-                dataConnec.setMetadataTable(nodeSource.getMetadataFromConnector(curConnec.getConnectionType()));
+                dataConnec.setMetadataTable(nodeSource.getMetadataList().get(0));
 
                 dataConnec.setName(EConnectionType.getTypeFromName(curConnec.getConnectionType()).getDefaultLinkName());
 
