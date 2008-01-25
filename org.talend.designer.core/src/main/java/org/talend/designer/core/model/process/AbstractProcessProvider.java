@@ -121,4 +121,11 @@ public abstract class AbstractProcessProvider {
 
     public abstract void updateJobletContext(Node node);
 
+    /**
+     * DOC qzhang Comment method "updateJobletContext".
+     * 
+     * @param nodes
+     */
+    public abstract boolean updateProcessContexts(Process process);
+
 }
