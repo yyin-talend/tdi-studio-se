@@ -30,6 +30,11 @@ if (limit.equals("")) {
 	limit = "-1";
 }
 
+String advancedSeparatorStr = ElementParameterParser.getValue(node, "__ADVANCED_SEPARATOR__");
+boolean advancedSeparator = (advancedSeparatorStr!=null&&!advancedSeparatorStr.equals(""))?advancedSeparatorStr.equals("true"):false;
+String thousandsSeparator = ElementParameterParser.getValue(node, "__THOUSANDS_SEPARATOR__");
+String decimalSeparator = ElementParameterParser.getValue(node, "__DECIMAL_SEPARATOR__");
+
 List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
 String firstConnName = "";
 List<IMetadataTable> metadatas = node.getMetadataList();
@@ -191,7 +196,11 @@ for (int i_<%=cid %> = 0; i_<%=cid %> < nodelist_<%=cid %>.getLength(); i_<%=cid
 %>							
 		<%=conn.getName() %>.<%=column.getLabel() %> = node_<%=cid%>.getTextContent().getBytes(<%=encoding %>);
 <%
-								} else {
+								} else if(advancedSeparator && JavaTypesManager.isNumberType(javaType, column.isNullable())) { 
+%>
+		<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(ParserUtils.parseTo_Number(node_<%=cid%>.getTextContent(), <%= thousandsSeparator %>, <%= decimalSeparator %>));
+<%
+					} else {
 %>
 		<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(node_<%=cid%>.getTextContent());
 <%

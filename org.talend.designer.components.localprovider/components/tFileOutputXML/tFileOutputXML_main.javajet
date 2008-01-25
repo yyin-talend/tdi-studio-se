@@ -8,6 +8,7 @@ imports="
     java.util.List
     java.util.Map    
     org.talend.core.model.metadata.types.JavaTypesManager
+    org.talend.core.model.metadata.types.JavaType
     org.talend.core.model.process.IConnection
 "
 %>
@@ -41,6 +42,12 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 node,
                 "__GROUP_BY__"
             );
+            
+    String advancedSeparatorStr = ElementParameterParser.getValue(node, "__ADVANCED_SEPARATOR__");
+	boolean advancedSeparator = (advancedSeparatorStr!=null&&!advancedSeparatorStr.equals(""))?advancedSeparatorStr.equals("true"):false;
+	String thousandsSeparator = ElementParameterParser.getValue(node, "__THOUSANDS_SEPARATOR__");
+	String decimalSeparator = ElementParameterParser.getValue(node, "__DECIMAL_SEPARATOR__");
+	
     if (useDynamicGrouping.equals("false")) {
         groupBys.clear();
     }
@@ -126,8 +133,10 @@ groupby_new_<%=cid %> = 0;
 			String pattern = null;
 			boolean isPrimitive = false;
 			boolean isBigDecimal = false;
+			boolean isAdvancedSeparator = false;
 			for(IMetadataColumn column:metadata.getListColumns()) {
 				if(column.getLabel().equals(groupby[i][0])){
+					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 					if(JavaTypesManager.getJavaTypeFromId(column.getTalendType()) == JavaTypesManager.STRING){
 						needReplace = true;
 					}
@@ -144,11 +153,19 @@ groupby_new_<%=cid %> = 0;
 						isBigDecimal = true;
 					}
 					isPrimitive = JavaTypesManager.isJavaPrimitiveType( column.getTalendType(), column.isNullable());
+					
+					isAdvancedSeparator = advancedSeparator && JavaTypesManager.isNumberType(javaType, column.isNullable());
 					break;
 				}
 			}
 %>tempSt_<%=cid %> = "<<%=groupby[i][2] %> <%=groupby[i][1] %>=\""+<%
-							if(isPrimitive){
+							if(isAdvancedSeparator){
+								if(isBigDecimal){
+								%>FormatterUtils.format_Number(String.valueOf(<%=conn.getName() %>.<%=groupby[i][0] %>.doubleValue()), <%= thousandsSeparator %>, <%= decimalSeparator %>)<%
+								}else {
+								%>FormatterUtils.format_Number(String.valueOf(<%=conn.getName() %>.<%=groupby[i][0] %>), <%= thousandsSeparator %>, <%= decimalSeparator %>)<%
+								}
+							}else if(isPrimitive){
 								%><%=conn.getName() %>.<%=groupby[i][0] %><%
 							}else{
 								%>((<%=conn.getName() %>.<%=groupby[i][0] %> == null)?"":(<%
@@ -218,8 +235,10 @@ for(int i = 0; i < attribute.length; i++){
 	String pattern = null;
 	boolean isPrimitive = false;
 	boolean isBigDecimal = false;
+	boolean isAdvancedSeparator = false;
 	for(IMetadataColumn column:metadata.getListColumns()) {
 		if(column.getLabel().equals(attribute[i][0])){
+			JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 			if(JavaTypesManager.getJavaTypeFromId(column.getTalendType()) == JavaTypesManager.STRING){
 				needReplace = true;
 			}
@@ -236,11 +255,19 @@ for(int i = 0; i < attribute.length; i++){
 				isBigDecimal = true;
 			}
 			isPrimitive = JavaTypesManager.isJavaPrimitiveType( column.getTalendType(), column.isNullable());
+			
+			isAdvancedSeparator = advancedSeparator && JavaTypesManager.isNumberType(javaType, column.isNullable());
 			break;
 		}
 	}
 %>tempRes_<%=cid %>.append(" <%=attribute[i][1] %>=\""+<%
-							if(isPrimitive){
+							if(isAdvancedSeparator){
+								if(isBigDecimal){
+								%>FormatterUtils.format_Number(String.valueOf(<%=conn.getName() %>.<%=groupby[i][0] %>.doubleValue()), <%= thousandsSeparator %>, <%= decimalSeparator %>)<%
+								}else {
+								%>FormatterUtils.format_Number(String.valueOf(<%=conn.getName() %>.<%=groupby[i][0] %>), <%= thousandsSeparator %>, <%= decimalSeparator %>)<%
+								}
+							}else if(isPrimitive){
 								%><%=conn.getName() %>.<%=attribute[i][0] %><%
 							}else{
 								%>((<%=conn.getName() %>.<%=attribute[i][0] %> == null)?"":(<%
@@ -279,8 +306,10 @@ for(int i = 0; i < tag.length; i++){
 	String pattern = null;
 	boolean isPrimitive = false;
 	boolean isBigDecimal = false;
+	boolean isAdvancedSeparator = false;
 	for(IMetadataColumn column:metadata.getListColumns()) {
 		if(column.getLabel().equals(tag[i][0])){
+			JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 			if(JavaTypesManager.getJavaTypeFromId(column.getTalendType()) == JavaTypesManager.STRING){
 				needReplace = true;
 			}
@@ -297,11 +326,18 @@ for(int i = 0; i < tag.length; i++){
 				isBigDecimal = true;
 			}
 			isPrimitive = JavaTypesManager.isJavaPrimitiveType( column.getTalendType(), column.isNullable());
+			isAdvancedSeparator = advancedSeparator && JavaTypesManager.isNumberType(javaType, column.isNullable());
 			break;
 		}
 	}
 %>out_<%=cid %>.write("<<%=tag[i][1]%>>"+<%
-							if(isPrimitive){
+							if(isAdvancedSeparator){
+								if(isBigDecimal){
+								%>FormatterUtils.format_Number(String.valueOf(<%=conn.getName() %>.<%=groupby[i][0] %>.doubleValue()), <%= thousandsSeparator %>, <%= decimalSeparator %>)<%
+								}else {
+								%>FormatterUtils.format_Number(String.valueOf(<%=conn.getName() %>.<%=groupby[i][0] %>), <%= thousandsSeparator %>, <%= decimalSeparator %>)<%
+								}
+							}else if(isPrimitive){
 								%><%=conn.getName() %>.<%=tag[i][0] %><%
 							}else{
 								%>((<%=conn.getName() %>.<%=tag[i][0] %> == null)?"":(<%

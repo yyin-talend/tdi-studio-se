@@ -45,6 +45,10 @@ class XMLNode{
 //XMLTool
 class XMLTool{
 	public boolean allowEmpty = true;
+	public boolean advancedSeparator = false;
+	public String thousandsSeparator = null;
+ 	public String decimalSeparator =null;
+	
 	public void generateCode(XMLNode node, String cid, String currEleName, String parentName){
 		if(node.type.equals("ELEMENT")){
 			createElement(cid,currEleName,node,parentName);
@@ -159,7 +163,13 @@ class XMLTool{
            for(IMetadataColumn column:colList) {
                 if(column.getLabel().equals(map.get("COLUMN"))){
                     javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
-                    if(JavaTypesManager.isJavaPrimitiveType( column.getTalendType(), column.isNullable())){
+                    if(advancedSeparator && JavaTypesManager.isNumberType(javaType, column.isNullable())) { 
+                    	if(javaType == JavaTypesManager.BIGDECIMAL) {
+                			value = "FormatterUtils.format_Number(String.valueOf("+connName+"."+column.getLabel()+".doubleValue()), "+ thousandsSeparator +"," +decimalSeparator +")";					
+                		} else {
+                			value = "FormatterUtils.format_Number(String.valueOf("+connName+"."+column.getLabel()+"), "+ thousandsSeparator +"," +decimalSeparator +")";						
+                		}
+                    } else if(JavaTypesManager.isJavaPrimitiveType( column.getTalendType(), column.isNullable())){
                         value = "String.valueOf("+connName+"."+map.get("COLUMN")+")";
                     }else if(javaType == JavaTypesManager.DATE){
                         if( column.getPattern() != null && column.getPattern().trim().length() != 0 ){
@@ -236,11 +246,19 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 String split = ElementParameterParser.getValue(node, "__SPLIT__");
                 String splitEvery = ElementParameterParser.getValue(node, "__SPLIT_EVERY__");
                 
+                String advancedSeparatorStr = ElementParameterParser.getValue(node, "__ADVANCED_SEPARATOR__");
+        		boolean advancedSeparator = (advancedSeparatorStr!=null&&!advancedSeparatorStr.equals(""))?advancedSeparatorStr.equals("true"):false;
+        		String thousandsSeparator = ElementParameterParser.getValue(node, "__THOUSANDS_SEPARATOR__");
+        		String decimalSeparator = ElementParameterParser.getValue(node, "__DECIMAL_SEPARATOR__"); 
+                
                 //XMLTool
                 XMLTool tool = new XMLTool();
                 if(!allowEmpty.equals("true")){
                 	tool.allowEmpty = false;
                 }
+                tool.advancedSeparator=advancedSeparator;
+                tool.thousandsSeparator=thousandsSeparator;
+                tool.decimalSeparator=decimalSeparator;
 
 //------------change Map to a Tree------------------
 				List<List<Map<String, String>>> tables = new ArrayList<List<Map<String, String>>>();
