@@ -57,6 +57,7 @@ import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.components.IComponent;
+import org.talend.core.model.context.ContextUtils;
 import org.talend.core.model.context.JobContextManager;
 import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.general.Project;
@@ -1532,13 +1533,12 @@ public class Process extends Element implements IProcess2 {
      */
     private void updateContextBefore(IContextManager contextManager) {
         if (repositoryId != null && !"".equals(repositoryId)) {
-            JobContextManager jobContextManager = (JobContextManager) contextManager;
 
-            ContextItem item = jobContextManager.getContextItemFromId(jobContextManager.getAllContextItem(), repositoryId);
+            ContextItem item = ContextUtils.getContextItemById(ContextUtils.getAllContextItem(), repositoryId);
 
             for (IContext context : contextManager.getListContext()) {
                 for (IContextParameter param : context.getContextParameterList()) {
-                    if (item != null && jobContextManager.updateParameterFromRepository(item, param, context.getName())) {
+                    if (item != null && ContextUtils.updateParameterFromRepository(item, param, context.getName())) {
                         param.setSource(item.getProperty().getLabel());
                     } else {
                         param.setSource(IContextParameter.BUILT_IN);
