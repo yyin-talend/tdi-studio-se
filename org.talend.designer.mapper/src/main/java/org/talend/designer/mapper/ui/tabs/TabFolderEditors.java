@@ -23,15 +23,12 @@ import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
-import org.talend.commons.ui.swt.colorstyledtext.ColorManager;
 import org.talend.commons.ui.swt.colorstyledtext.UnnotifiableColorStyledText;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.ui.metadata.editor.MetadataTableEditorView;
-import org.talend.core.ui.viewer.java.TalendJavaSourceViewer;
-import org.talend.core.ui.viewer.perl.TalendPerlSourceViewer;
 import org.talend.designer.mapper.MapperMain;
 import org.talend.designer.mapper.i18n.Messages;
 import org.talend.designer.mapper.managers.MapperManager;
@@ -118,11 +115,10 @@ public class TabFolderEditors extends CTabFolder {
                     Context.REPOSITORY_CONTEXT_KEY);
             ECodeLanguage language = repositoryContext.getProject().getLanguage();
             IPreferenceStore preferenceStore = CorePlugin.getDefault().getPreferenceStore();
-            ColorManager colorManager = new ColorManager(preferenceStore);
             // styledText = new ColorStyledText(tabFolderEditors, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL,
             // colorManager, language.getName());
             styledText = new UnnotifiableColorStyledText(tabFolderEditors, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL,
-                    colorManager, language.getName());
+                    preferenceStore, language.getName());
         }
         styledText.setEnabled(false);
         item.setControl(styledText);

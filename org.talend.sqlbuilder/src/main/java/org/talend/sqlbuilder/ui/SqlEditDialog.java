@@ -28,7 +28,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
-import org.talend.commons.ui.swt.colorstyledtext.ColorManager;
 import org.talend.commons.ui.swt.colorstyledtext.ColorStyledText;
 import org.talend.commons.ui.swt.proposal.StyledTextContentAdapter;
 import org.talend.core.CorePlugin;
@@ -103,8 +102,8 @@ public class SqlEditDialog extends Dialog {
         gridLayout.marginTop = 0;
         gridLayout.marginWidth = 0;
         control.setLayout(gridLayout);
-        ColorManager colorManager = new ColorManager(CorePlugin.getDefault().getPreferenceStore());
-        colorText = new ColorStyledText(control, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL, colorManager, language);
+        colorText = new ColorStyledText(control, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL, CorePlugin.getDefault()
+                .getPreferenceStore(), language);
         Font font = new Font(control.getDisplay(), "courier", 10, SWT.NONE); //$NON-NLS-1$
         colorText.setFont(font);
 

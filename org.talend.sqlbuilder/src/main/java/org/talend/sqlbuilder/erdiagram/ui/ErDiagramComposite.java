@@ -28,7 +28,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.talend.commons.ui.swt.colorstyledtext.ColorManager;
 import org.talend.commons.ui.swt.colorstyledtext.ColorStyledText;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
@@ -116,9 +115,8 @@ public class ErDiagramComposite extends SashForm {
         layout.marginWidth = 0;
         gridData = new GridData(GridData.FILL_HORIZONTAL);
         gridData.heightHint = 30;
-        ColorManager colorManager = new ColorManager(CorePlugin.getDefault().getPreferenceStore());
         int textstyle = SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL;
-        sqlText = new ColorStyledText(this, textstyle, colorManager, language);
+        sqlText = new ColorStyledText(this, textstyle, CorePlugin.getDefault().getPreferenceStore(), language);
         sqlText.setLayoutData(gridData);
         sqlText.setText("");
         sqlText.setBackground(getBackground());

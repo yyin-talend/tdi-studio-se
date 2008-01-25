@@ -40,7 +40,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
-import org.talend.commons.ui.swt.colorstyledtext.ColorManager;
 import org.talend.commons.ui.swt.colorstyledtext.ColorStyledText;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.process.EConnectionType;
@@ -98,8 +97,7 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
         IControlCreator txtCtrl = new IControlCreator() {
 
             public Control createControl(final Composite parent, final int style) {
-                ColorManager colorManager = new ColorManager(CorePlugin.getDefault().getPreferenceStore());
-                StyledText control = new ColorStyledText(parent, style, colorManager, language);
+                StyledText control = new ColorStyledText(parent, style, CorePlugin.getDefault().getPreferenceStore(), language);
                 IPreferenceStore preferenceStore = DesignerPlugin.getDefault().getPreferenceStore();
                 String fontType = preferenceStore.getString(TalendDesignerPrefConstants.MEMO_TEXT_FONT);
                 FontData fontData = new FontData(fontType);
@@ -327,8 +325,8 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
             IControlCreator txtCtrl = new IControlCreator() {
 
                 public Control createControl(final Composite parent, final int style) {
-                    ColorManager colorManager = new ColorManager(CorePlugin.getDefault().getPreferenceStore());
-                    ColorStyledText colorText = new ColorStyledText(parent, style, colorManager, language);
+                    ColorStyledText colorText = new ColorStyledText(parent, style, CorePlugin.getDefault().getPreferenceStore(),
+                            language);
 
                     IPreferenceStore preferenceStore = DesignerPlugin.getDefault().getPreferenceStore();
                     String fontType = preferenceStore.getString(TalendDesignerPrefConstants.MEMO_TEXT_FONT);

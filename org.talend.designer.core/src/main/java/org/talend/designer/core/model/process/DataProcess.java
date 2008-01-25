@@ -356,9 +356,10 @@ public class DataProcess {
 
                 DataConnection dataConnec = new DataConnection();
                 dataConnec.setActivate(graphicalNode.isActivate());
-                dataConnec.setLineStyle(EConnectionType.getTypeFromName(curConnec.getConnectionType()));
+                INodeConnector connector = nodeSource.getConnectorFromName(curConnec.getConnectionType());
+                dataConnec.setLineStyle(connector.getDefaultConnectionType());
                 dataConnec.setConnectorName(curConnec.getConnectionType());
-                dataConnec.setMetadataTable(nodeSource.getMetadataList().get(0));
+                dataConnec.setMetadataTable(nodeSource.getMetadataFromConnector(curConnec.getConnectionType()));
 
                 dataConnec.setName(EConnectionType.getTypeFromName(curConnec.getConnectionType()).getDefaultLinkName());
 

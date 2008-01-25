@@ -71,7 +71,6 @@ import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.image.EImage;
-import org.talend.commons.ui.swt.colorstyledtext.ColorManager;
 import org.talend.commons.ui.swt.colorstyledtext.UnnotifiableColorStyledText;
 import org.talend.commons.ui.swt.extended.table.AbstractExtendedTableViewer;
 import org.talend.commons.ui.swt.proposal.ContentProposalAdapterExtended;
@@ -1875,12 +1874,11 @@ public abstract class DataMapTableView extends Composite {
             final AbstractInOutTable table = (AbstractInOutTable) getDataMapTable();
 
             IPreferenceStore preferenceStore = CorePlugin.getDefault().getPreferenceStore();
-            ColorManager colorManager = new ColorManager(preferenceStore);
 
             // expressionFilterText = new Text(scrolledComposite, SWT.MULTI |
             // SWT.WRAP | SWT.BORDER);
             expressionFilterText = new UnnotifiableColorStyledText(getCenterComposite(), SWT.MULTI | SWT.WRAP | SWT.BORDER
-                    | SWT.V_SCROLL, colorManager, LanguageManager.getCurrentLanguage().getName());
+                    | SWT.V_SCROLL, preferenceStore, LanguageManager.getCurrentLanguage().getName());
             GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
             gridData.minimumHeight = 10;
             // gridData.grabExcessVerticalSpace = true;

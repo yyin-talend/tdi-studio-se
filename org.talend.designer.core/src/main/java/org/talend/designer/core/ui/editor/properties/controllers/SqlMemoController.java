@@ -34,7 +34,6 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
-import org.talend.commons.ui.swt.colorstyledtext.ColorManager;
 import org.talend.commons.ui.swt.colorstyledtext.ColorStyledText;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.core.CorePlugin;
@@ -194,8 +193,8 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
         IControlCreator txtCtrl = new IControlCreator() {
 
             public Control createControl(final Composite parent, final int style) {
-                ColorManager colorManager = new ColorManager(CorePlugin.getDefault().getPreferenceStore());
-                ColorStyledText colorText = new ColorStyledText(parent, style, colorManager, "tsql"); //$NON-NLS-1$
+                ColorStyledText colorText = new ColorStyledText(parent, style, CorePlugin.getDefault().getPreferenceStore(),
+                        "tsql"); //$NON-NLS-1$
                 Font font = new Font(parent.getDisplay(), "courier", 8, SWT.NONE); //$NON-NLS-1$
                 colorText.setFont(font);
                 return colorText;
@@ -302,8 +301,8 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
         IControlCreator txtCtrl = new IControlCreator() {
 
             public Control createControl(final Composite parent, final int style) {
-                ColorManager colorManager = new ColorManager(CorePlugin.getDefault().getPreferenceStore());
-                ColorStyledText colorText = new ColorStyledText(parent, style, colorManager, "tsql");
+                ColorStyledText colorText = new ColorStyledText(parent, style, CorePlugin.getDefault().getPreferenceStore(),
+                        "tsql");
                 Font font = new Font(parent.getDisplay(), "courier", 8, SWT.NONE); //$NON-NLS-1$
                 colorText.setFont(font);
                 return colorText;

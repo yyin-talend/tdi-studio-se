@@ -35,7 +35,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
-import org.talend.commons.ui.swt.colorstyledtext.ColorManager;
 import org.talend.commons.ui.swt.colorstyledtext.ColorStyledText;
 import org.talend.commons.ui.swt.proposal.StyledTextContentAdapter;
 import org.talend.core.CorePlugin;
@@ -148,8 +147,8 @@ public class SQLBuilderEditorComposite extends AbstractSQLEditorComposite {
         gid.horizontalAlignment = GridData.FILL;
         gid.verticalAlignment = GridData.FILL;
 
-        ColorManager colorManager = new ColorManager(CorePlugin.getDefault().getPreferenceStore());
-        colorText = new ColorStyledText(parent, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL, colorManager, language);
+        colorText = new ColorStyledText(parent, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL, CorePlugin.getDefault()
+                .getPreferenceStore(), language);
         Font font = new Font(parent.getDisplay(), "courier", 10, SWT.NONE); //$NON-NLS-1$
         colorText.setFont(font);
 
