@@ -54,8 +54,8 @@ public class CodeGenInit implements IApplication {
         init(ECodeLanguage.JAVA);
         init(ECodeLanguage.PERL);
         removeLinkedResources();
-        saveWorkspace();
         addMarkersForTemplatesNextInitialization();
+        saveWorkspace();
         Timer.getTimer("CodeGenInit").stop();
         Timer.getTimer("CodeGenInit").print();
         return EXIT_OK;
