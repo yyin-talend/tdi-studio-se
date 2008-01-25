@@ -75,10 +75,9 @@ public class PerlRoutineSynchronizer implements IRoutineSynchronizer {
 
             if (!routineItem.isBuiltIn()) {
                 // Copy the routine in external "lib/perl" folder:
-                String librariesPath = CorePlugin.getDefault().getLibrariesService().getLibrariesPath()
-                        + IPath.SEPARATOR + ILibrariesService.SOURCE_PERL_ROUTINES_FOLDER + IPath.SEPARATOR
-                        + project.getTechnicalLabel() + IPath.SEPARATOR + routineItem.getProperty().getLabel()
-                        + service.getRoutineFilenameExt();
+                String librariesPath = CorePlugin.getDefault().getLibrariesService().getLibrariesPath() + IPath.SEPARATOR
+                        + ILibrariesService.SOURCE_PERL_ROUTINES_FOLDER + IPath.SEPARATOR + project.getTechnicalLabel()
+                        + IPath.SEPARATOR + routineItem.getProperty().getLabel() + service.getRoutineFilenameExt();
                 File target = new File(librariesPath);
 
                 byteArrayInputStream = new ByteArrayInputStream(routineItem.getContent().getInnerContent());
@@ -93,9 +92,7 @@ public class PerlRoutineSynchronizer implements IRoutineSynchronizer {
             if (copyToTemp) {
                 routineItem.getContent().setInnerContentToFile(tempfile.getLocation().toFile());
             }
-            if (!tempfile.exists()) {
-                tempfile.refreshLocal(1, null);
-            }
+            tempfile.refreshLocal(1, null);
             return tempfile;
 
         } catch (CoreException e) {
