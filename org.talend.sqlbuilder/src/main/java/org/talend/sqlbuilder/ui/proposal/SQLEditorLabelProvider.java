@@ -16,6 +16,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.swt.graphics.Image;
+import org.talend.commons.ui.image.ImageProvider;
 import org.talend.sqlbuilder.util.ImageUtil;
 
 
@@ -49,7 +50,7 @@ public class SQLEditorLabelProvider implements ILabelProvider {
                 return i;
             }
         }
-        return sqlEditor.createImage();
+        return ImageProvider.getImage(sqlEditor);
     }
 
     /* (non-Javadoc)

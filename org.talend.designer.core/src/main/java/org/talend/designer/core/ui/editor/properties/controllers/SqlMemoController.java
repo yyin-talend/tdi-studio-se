@@ -34,6 +34,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
+import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.swt.colorstyledtext.ColorStyledText;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.core.CorePlugin;
@@ -174,7 +175,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
         Control buttonControl = dField1.getLayoutControl();
         openSQLEditorButton = (Button) dField1.getControl();
         openSQLEditorButton.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-        openSQLEditorButton.setImage(CorePlugin.getImageDescriptor(DOTS_BUTTON).createImage());
+        openSQLEditorButton.setImage(ImageProvider.getImage(CorePlugin.getImageDescriptor(DOTS_BUTTON)));
         buttonControl.setBackground(subComposite.getBackground());
         openSQLEditorButton.setEnabled(true);
         openSQLEditorButton.setData(NAME, SQLEDITOR);

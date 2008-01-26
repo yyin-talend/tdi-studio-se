@@ -32,14 +32,11 @@ import org.apache.oro.text.regex.MalformedPatternException;
 import org.apache.oro.text.regex.Pattern;
 import org.apache.oro.text.regex.Perl5Compiler;
 import org.apache.oro.text.regex.Perl5Matcher;
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.xmi.XMLResource;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.SnapToGeometry;
@@ -98,7 +95,6 @@ import org.talend.designer.core.model.process.DataProcess;
 import org.talend.designer.core.model.process.jobsettings.JobSettingsConstants;
 import org.talend.designer.core.model.process.jobsettings.JobSettingsManager;
 import org.talend.designer.core.model.utils.emf.talendfile.ConnectionType;
-import org.talend.designer.core.model.utils.emf.talendfile.DocumentRoot;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementValueType;
 import org.talend.designer.core.model.utils.emf.talendfile.JobType;
@@ -109,7 +105,6 @@ import org.talend.designer.core.model.utils.emf.talendfile.ParametersType;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.core.model.utils.emf.talendfile.RequiredType;
 import org.talend.designer.core.model.utils.emf.talendfile.TalendFileFactory;
-import org.talend.designer.core.model.utils.emf.talendfile.util.TalendFileResourceImpl;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.connections.Connection;
@@ -179,13 +174,9 @@ public class Process extends Element implements IProcess2 {
 
     private AbstractMultiPageTalendEditor editor;
 
-    public Process() {
+    public Process(Property property) {
         contextManager = new JobContextManager();
         createProcessParameters();
-    }
-
-    public Process(Property property) {
-        this();
         this.property = property;
         init();
     }
@@ -665,55 +656,56 @@ public class Process extends Element implements IProcess2 {
      * @return
      * @throws IOException
      */
-    public ProcessType saveXmlFile(final IFile file) throws IOException {
-        String fileName;
+    public ProcessType saveXmlFile() throws IOException {
         init();
-        fileName = file.getLocationURI().toString();
-        URI uri = URI.createURI(fileName);
-        Resource res = new TalendFileResourceImpl(uri);
 
         TalendFileFactory fileFact = TalendFileFactory.eINSTANCE;
-        DocumentRoot xmlDoc;
-        xmlDoc = fileFact.createDocumentRoot();
-        ProcessType process = createProcessType(fileFact);
-        xmlDoc.setProcess(process);
+
+        ProcessType processType = createProcessType(fileFact);
+
+        // Resource res = new TalendFileResourceImpl(uri);
+
+        // DocumentRoot xmlDoc;
+        // xmlDoc = fileFact.createDocumentRoot();
+        // xmlDoc.setProcess(process);
 
         ParametersType params = fileFact.createParametersType();
-        process.setParameters(params);
+        processType.setParameters(params);
 
-        saveElementParameters(fileFact, this.getElementParameters(), process.getParameters().getElementParameter(), process);
+        saveElementParameters(fileFact, this.getElementParameters(), processType.getParameters().getElementParameter(),
+                processType);
 
-        EList nList = process.getNode();
-        EList cList = process.getConnection();
+        EList nList = processType.getNode();
+        EList cList = processType.getConnection();
         MetadataEmfFactory factory = new MetadataEmfFactory();
 
         // save according to elem order to keep zorder (children insertion) in
         // diagram
         for (Element element : elem) {
             if (element instanceof Node) {
-                saveNode(fileFact, process, nList, cList, (Node) element, factory);
+                saveNode(fileFact, processType, nList, cList, (Node) element, factory);
             } else if (element instanceof Note) {
-                saveNote(fileFact, process, (Note) element);
+                saveNote(fileFact, processType, (Note) element);
             }
         }
 
         /**
          * Save the contexts informations
          */
-        process.setDefaultContext(contextManager.getDefaultContext().getName());
+        processType.setDefaultContext(contextManager.getDefaultContext().getName());
         // if (repositoryId != null) {
         // process.setRepositoryContextId(repositoryId);
         // }
 
-        contextManager.saveToEmf(process.getContext());
+        contextManager.saveToEmf(processType.getContext());
 
-        res.getContents().add(xmlDoc);
+        // res.getContents().add(xmlDoc);
 
         HashMap options = new HashMap(2);
         options.put(XMLResource.OPTION_ENCODING, "UTF-8"); //$NON-NLS-1$
         options.put(XMLResource.OPTION_XML_VERSION, "1.1"); //$NON-NLS-1$
-        res.save(options);
-        return process;
+        // res.save(options);
+        return processType;
     }
 
     private void saveNote(TalendFileFactory fileFact, ProcessType process, Note note) {
@@ -824,28 +816,30 @@ public class Process extends Element implements IProcess2 {
      * 
      * @param process
      */
-    public void loadXmlFile(ProcessType process) {
+    public void loadXmlFile() {
         init();
         Hashtable<String, Node> nodesHashtable = new Hashtable<String, Node>();
 
         setActivate(false);
 
-        if (process.getParameters() != null) {
-            loadElementParameters(this, process.getParameters().getElementParameter());
+        ProcessItem item = (ProcessItem) property.getItem();
+        ProcessType processType = item.getProcess();
+        if (processType.getParameters() != null) {
+            loadElementParameters(this, processType.getParameters().getElementParameter());
         }
 
         try {
-            loadNodes(process, nodesHashtable);
+            loadNodes(processType, nodesHashtable);
         } catch (PersistenceException e) {
             // there are some components unloaded.
             return;
         }
 
-        repositoryId = process.getRepositoryContextId();
+        repositoryId = processType.getRepositoryContextId();
 
-        loadConnections(process, nodesHashtable);
-        loadContexts(process);
-        loadNotes(process);
+        loadConnections(processType, nodesHashtable);
+        loadContexts(processType);
+        loadNotes(processType);
         initExternalComponents();
         setActivate(true);
         checkStartNodes();
@@ -2329,7 +2323,7 @@ public class Process extends Element implements IProcess2 {
                                 continue;
                             }
                             Process child = new Process(childItem.getProperty());
-                            child.loadXmlFile(childItem.getProcess());
+                            child.loadXmlFile();
                             neededLibraries.addAll(child.getNeededLibraries(true));
                         }
                     }
@@ -2370,7 +2364,7 @@ public class Process extends Element implements IProcess2 {
                 return;
             }
             currentProcess = new Process(pi.getProperty());
-            currentProcess.loadXmlFile(pi.getProcess());
+            currentProcess.loadXmlFile();
         }
         for (Iterator iter = currentProcess.getGraphicalNodes().iterator(); iter.hasNext();) {
             Node node = (Node) iter.next();

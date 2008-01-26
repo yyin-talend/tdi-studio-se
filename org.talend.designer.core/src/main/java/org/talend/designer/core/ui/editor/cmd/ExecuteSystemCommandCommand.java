@@ -171,7 +171,7 @@ public class ExecuteSystemCommandCommand extends Command {
             super(parentShell);
             this.commands = commands;
             this.messages = messages;
-            setDefaultImage(ImageProvider.getImageDesc(ECoreImage.PROCESS_ICON).createImage());
+            setDefaultImage(ImageProvider.getImage(ECoreImage.PROCESS_ICON));
             setShellStyle(getShellStyle() | SWT.RESIZE | SWT.MAX);
             setBlockOnOpen(true);
         }

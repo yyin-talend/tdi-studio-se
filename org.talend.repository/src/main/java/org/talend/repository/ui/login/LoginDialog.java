@@ -36,6 +36,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.internal.dialogs.EventLoopProgressMonitor;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
+import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.commons.ui.swt.dialogs.ProgressDialog;
 import org.talend.core.CorePlugin;
@@ -74,7 +75,7 @@ public class LoginDialog extends TitleAreaDialog {
                 IBrandingService.class);
         ImageDescriptor imgDesc = brandingService.getLoginHImage();
         if (imgDesc != null) {
-            setTitleImage(imgDesc.createImage());
+            setTitleImage(ImageProvider.getImage(imgDesc));
         }
         // RGB rgb = parentShell.getBackground().getRGB();
         RGB rgb = new RGB(255, 255, 255);

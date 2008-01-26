@@ -16,7 +16,6 @@ import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -46,10 +45,10 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Shell;
+import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.swt.drawing.background.BackgroundRefresher;
 import org.talend.commons.ui.swt.linking.BgDrawableComposite;
 import org.talend.commons.ui.ws.WindowSystem;
-import org.talend.commons.utils.threading.AsynchronousThreading;
 import org.talend.commons.utils.threading.ExecutionLimiter;
 import org.talend.commons.utils.threading.ExecutionLimiterImproved;
 import org.talend.designer.abstractmap.model.table.IDataMapTable;
@@ -247,16 +246,12 @@ public class MapperUI {
         });
 
         MapperComponent component = (MapperComponent) mapperManager.getAbstractMapComponent();
-        ImageDescriptor imageDescriptor = component.getComponent().getIcon32();
-        Image createImage = imageDescriptor.createImage();
-        // Shell shell = new Shell(display);
-        // shell.setImage(ImageProviderMapper.getImage(ImageInfo.MAPPER_ICON));
 
         ExternalMapperUiProperties uiProperties = mapperManager.getUiManager().getUiProperties();
 
-        mapperShell.setImage(createImage);
-        mapperShell.setText(Messages.getString(
-                "MapperMain.title", component.getComponent().getName(), component.getUniqueName())); //$NON-NLS-1$
+        mapperShell.setImage(ImageProvider.getImage(component.getComponent().getIcon32()));
+        mapperShell
+                .setText(Messages.getString("MapperMain.title", component.getComponent().getName(), component.getUniqueName())); //$NON-NLS-1$
         Rectangle boundsMapper = uiProperties.getBoundsMapper();
         if (uiProperties.isShellMaximized()) {
             mapperShell.setMaximized(uiProperties.isShellMaximized());
@@ -435,11 +430,10 @@ public class MapperUI {
     }
 
     private void addBackgroundRefreshLimiters(final Display display) {
-        
+
         int time = 100;
-        
-        backgroundRefreshLimiter = (ExecutionLimiter) new ExecutionLimiterImproved(time,
-                true) {
+
+        backgroundRefreshLimiter = (ExecutionLimiter) new ExecutionLimiterImproved(time, true) {
 
             @Override
             public void execute(final boolean isFinalExecution) {
@@ -461,8 +455,7 @@ public class MapperUI {
 
             }
         };
-        backgroundRefreshLimiterForceRecalculate = (ExecutionLimiter) new ExecutionLimiterImproved(
-                time, true) {
+        backgroundRefreshLimiterForceRecalculate = (ExecutionLimiter) new ExecutionLimiterImproved(time, true) {
 
             @Override
             public void execute(final boolean isFinalExecution) {
@@ -624,8 +617,8 @@ public class MapperUI {
         }
         for (InputTable inputTable : tables) {
 
-            InputDataMapTableView dataMapTableView = new InputDataMapTableView(inputTablesZoneView, SWT.BORDER,
-                    inputTable, mapperManager);
+            InputDataMapTableView dataMapTableView = new InputDataMapTableView(inputTablesZoneView, SWT.BORDER, inputTable,
+                    mapperManager);
             FormData formData = new FormData();
             formData.left = new FormAttachment(0, 0);
             formData.right = new FormAttachment(100, 0);
@@ -700,8 +693,7 @@ public class MapperUI {
         previousControl = null;
         for (VarsTable varsTable : mapperModel.getVarsDataMapTables()) {
 
-            DataMapTableView dataMapTableView = new VarsDataMapTableView(varsTableZoneView, SWT.BORDER, varsTable,
-                    mapperManager);
+            DataMapTableView dataMapTableView = new VarsDataMapTableView(varsTableZoneView, SWT.BORDER, varsTable, mapperManager);
 
             FormData formData = new FormData();
             formData.left = new FormAttachment(0, 0);

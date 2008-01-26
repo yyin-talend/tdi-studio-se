@@ -105,7 +105,7 @@ public class GefEditorLabelProvider extends LabelProvider {
         if (lastNode != node) {
             lastNode = node;
         }
-        return node.getIcon24().createImage();
+        return ImageProvider.getImage(node.getIcon24());
     }
 
     /*
@@ -145,8 +145,7 @@ public class GefEditorLabelProvider extends LabelProvider {
                 return Note.class.getSimpleName();
             }
             if (object instanceof ConnLabelEditPart) {
-                Connection conn = (Connection) ((ConnectionLabel) ((ConnLabelEditPart) object).getModel())
-                        .getConnection();
+                Connection conn = (Connection) ((ConnectionLabel) ((ConnLabelEditPart) object).getModel()).getConnection();
                 return conn.getName();
             }
             if (object instanceof NodeTreeEditPart) {
@@ -168,9 +167,9 @@ public class GefEditorLabelProvider extends LabelProvider {
                 lastNode = node;
             }
             String name = node.getUniqueName();
-//            if (!node.getComponent().getTranslatedName().equals(node.getComponent().getName())) {
-//                name += " (" + node.getComponent().getName() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
-//            }
+            // if (!node.getComponent().getTranslatedName().equals(node.getComponent().getName())) {
+            // name += " (" + node.getComponent().getName() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+            // }
             return name;
         }
     }

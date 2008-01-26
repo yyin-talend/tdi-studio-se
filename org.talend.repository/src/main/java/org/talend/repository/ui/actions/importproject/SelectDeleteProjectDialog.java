@@ -156,18 +156,12 @@ public class SelectDeleteProjectDialog extends SelectionDialog {
             public final Image getImage(Object element) {
                 // obtain the base image by querying the element
 
-                ImageDescriptor descriptor = null;
                 if (element instanceof IProject) {
-                    descriptor = ImageProvider.getImageDesc(ERepositoryImages.PROJECT_ICON);
+                    return ImageProvider.getImage(ERepositoryImages.PROJECT_ICON);
                 } else if (element instanceof IFolder) {
-                    descriptor = ImageProvider.getImageDesc(ERepositoryImages.FOLDER_ICON);
+                    return ImageProvider.getImage(ERepositoryImages.FOLDER_ICON);
                 }
-                Image image = (Image) SWTResourceUtil.getImageTable().get(descriptor);
-                if (image == null) {
-                    image = descriptor.createImage();
-                    SWTResourceUtil.getImageTable().put(descriptor, image);
-                }
-                return image;
+                return null;
             }
         });
         treeViewer.setInput(projectItemList);

@@ -28,11 +28,11 @@ import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
+import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.utils.workbench.gef.SimpleHtmlFigure;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.INodeConnector;
@@ -49,8 +49,6 @@ import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 public class NodeFigure extends Figure {
 
     private final ImageFigure fig;
-
-    private final ImageDescriptor im;
 
     private final SimpleHtmlFigure hint;
 
@@ -83,8 +81,7 @@ public class NodeFigure extends Figure {
     public NodeFigure(Node node) {
         this.node = node;
         fig = new ImageFigure();
-        im = node.getIcon32();
-        fig.setImage(im.createImage());
+        fig.setImage(ImageProvider.getImage(node.getComponent().getIcon32()));
         fig.setSize(new Dimension(Node.DEFAULT_SIZE, Node.DEFAULT_SIZE));
         add(fig);
 
@@ -105,10 +102,6 @@ public class NodeFigure extends Figure {
             hint.setText(hintText);
             setToolTip(hint);
         }
-    }
-
-    public ImageDescriptor getImageDescriptor() {
-        return im;
     }
 
     @Override

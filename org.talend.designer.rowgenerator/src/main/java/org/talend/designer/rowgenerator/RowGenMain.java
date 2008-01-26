@@ -15,18 +15,17 @@ package org.talend.designer.rowgenerator;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.components.IODataComponentContainer;
@@ -120,9 +119,7 @@ public class RowGenMain {
         Shell shell = new Shell(display, SWT.APPLICATION_MODAL | SWT.BORDER | SWT.RESIZE | SWT.CLOSE | SWT.MIN | SWT.MAX
                 | SWT.TITLE);
         IComponent component = connector.getComponent();
-        ImageDescriptor imageDescriptor = component.getIcon32();
-        Image createImage = imageDescriptor.createImage();
-        shell.setImage(createImage);
+        shell.setImage(ImageProvider.getImage(component.getIcon32()));
         shell.setText(Messages.getString("RowGenMain.MainShellText", connector.getUniqueName())); //$NON-NLS-1$
         Rectangle boundsRG = ExternalRowGeneratorUiProperties.getBoundsRowGen();
         if (ExternalRowGeneratorUiProperties.isShellMaximized()) {

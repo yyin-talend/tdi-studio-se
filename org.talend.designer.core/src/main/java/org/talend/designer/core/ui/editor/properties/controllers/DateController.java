@@ -32,6 +32,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
+import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.swt.tableviewer.celleditor.DateDialog;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.process.IElementParameter;
@@ -70,7 +71,7 @@ public class DateController extends AbstractElementPropertySectionController {
         Button btnEdit = getWidgetFactory().createButton(subComposite, "", SWT.PUSH); //$NON-NLS-1$
         FormData data;
 
-        btnEdit.setImage(CorePlugin.getImageDescriptor(DOTS_BUTTON).createImage());
+        btnEdit.setImage(ImageProvider.getImage(CorePlugin.getImageDescriptor(DOTS_BUTTON)));
 
         btnEdit.setData(NAME, DATE);
         btnEdit.setData(PARAMETER_NAME, param.getName());

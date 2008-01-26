@@ -82,7 +82,7 @@ public class DesignerCoreService implements IDesignerCoreService {
     public IProcess getProcessFromProcessItem(ProcessItem processItem) {
         Process process = null;
         process = new Process(processItem.getProperty());
-        process.loadXmlFile(processItem.getProcess());
+        process.loadXmlFile();
 
         return process;
     }
@@ -95,7 +95,7 @@ public class DesignerCoreService implements IDesignerCoreService {
     public IProcess getProcessFromJobletProcessItem(JobletProcessItem jobletProcessItem) {
         Process process = null;
         process = new Process(jobletProcessItem.getProperty());
-        process.loadXmlFile(jobletProcessItem.getJobletProcess());
+        process.loadXmlFile();
 
         return process;
     }

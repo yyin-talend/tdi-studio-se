@@ -16,13 +16,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.components.IODataComponentContainer;
@@ -73,14 +72,12 @@ public class MapperMain {
      * @return the created shell
      */
     public Shell createUI(Display display) {
-        Shell shell = new Shell(display, SWT.APPLICATION_MODAL | SWT.BORDER | SWT.RESIZE | SWT.CLOSE | SWT.MIN
-                | SWT.MAX | SWT.TITLE);
+        Shell shell = new Shell(display, SWT.APPLICATION_MODAL | SWT.BORDER | SWT.RESIZE | SWT.CLOSE | SWT.MIN | SWT.MAX
+                | SWT.TITLE);
 
         if (!MapperMain.isStandAloneMode()) {
             IComponent component = connector.getComponent();
-            ImageDescriptor imageDescriptor = component.getIcon32();
-            Image createImage = imageDescriptor.createImage();
-            shell.setImage(createImage);
+            shell.setImage(ImageProvider.getImage(component.getIcon32()));
         }
         // Shell shell = new Shell(display);
         // shell.setImage(ImageProviderMapper.getImage(ImageInfo.MAPPER_ICON));
@@ -172,8 +169,8 @@ public class MapperMain {
         return Collections.unmodifiableList(ioConnections);
     }
 
-    public void createModelFromExternalData(IODataComponentContainer ioDataContainer,
-            List<IMetadataTable> outputMetadataTables, ExternalDbMapData externalData, boolean checkProblems) {
+    public void createModelFromExternalData(IODataComponentContainer ioDataContainer, List<IMetadataTable> outputMetadataTables,
+            ExternalDbMapData externalData, boolean checkProblems) {
         List<IODataComponent> inputsData = ioDataContainer.getInputs();
         List<IODataComponent> ouputsData = ioDataContainer.getOuputs();
 
@@ -245,16 +242,12 @@ public class MapperMain {
         this.mapperManager.updateEmfParameters(EParameterName.PREVIEW.getName());
     }
 
-    
     public List<IOConnection> getIoInputConnections() {
         return this.ioInputConnections;
     }
 
-    
     public List<IOConnection> getIoOutputConnections() {
         return this.ioOutputConnections;
     }
 
-    
-    
 }

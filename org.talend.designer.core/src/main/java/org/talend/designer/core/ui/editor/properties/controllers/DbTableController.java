@@ -285,7 +285,7 @@ public class DbTableController extends AbstractElementPropertySectionController 
 
         Button openSQLEditorButton = (Button) dField1.getControl();
         openSQLEditorButton.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-        openSQLEditorButton.setImage(ImageProvider.getImageDesc(EImage.READ_ICON).createImage());
+        openSQLEditorButton.setImage(ImageProvider.getImage(ImageProvider.getImageDesc(EImage.READ_ICON)));
         buttonControl.setBackground(subComposite.getBackground());
         openSQLEditorButton.setEnabled(true);
         openSQLEditorButton.setData(NAME, SQLEDITOR);
@@ -308,7 +308,7 @@ public class DbTableController extends AbstractElementPropertySectionController 
             final int nbInRow) {
 
         Button openListTable = getWidgetFactory().createButton(subComposite, "", SWT.PUSH); //$NON-NLS-1$
-        openListTable.setImage(CorePlugin.getImageDescriptor(DOTS_BUTTON).createImage());
+        openListTable.setImage(ImageProvider.getImage(CorePlugin.getImageDescriptor(DOTS_BUTTON)));
         openListTable.setData(PARAMETER_NAME, param.getName());
         return openListTable;
     }

@@ -23,7 +23,6 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Assert;
@@ -119,6 +118,7 @@ import org.eclipse.ui.part.PageBook;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertySheetPageContributor;
+import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.utils.workbench.preferences.GlobalConstant;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
@@ -404,9 +404,9 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
                 process = ((RepositoryEditorInput) input).getLoadedProcess();
                 property = ((RepositoryEditorInput) input).getItem().getProperty();
             }
-        } catch (Exception e) { // if there's an error, create a new diagram
-            e.printStackTrace();
-            process = new org.talend.designer.core.ui.editor.process.Process();
+        } catch (Exception e) {
+            MessageBoxExceptionHandler.process(e);
+            return;
         }
         currentJobResource.setJobName(process.getLabel());
         currentJobResource.setProjectName(projectName);
@@ -871,8 +871,8 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
             public void execute(final IProgressMonitor monitor) throws CoreException {
                 try {
                     savePreviewPictures();
-                    process.saveXmlFile(file);
-                    file.refreshLocal(IResource.DEPTH_ONE, monitor);
+                    process.saveXmlFile();
+                    // file.refreshLocal(IResource.DEPTH_ONE, monitor);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

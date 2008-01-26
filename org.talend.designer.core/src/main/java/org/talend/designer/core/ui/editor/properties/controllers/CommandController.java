@@ -88,7 +88,6 @@ public class CommandController extends AbstractElementPropertySectionController 
         FormData data;
         // button
         final Button btnCmd = getWidgetFactory().createButton(subComposite, null, SWT.PUSH);
-        // btnCmd.setImage(CorePlugin.getImageDescriptor(DOTS_BUTTON).createImage());
         btnCmd.setText(LAUNCH);
 
         data = new FormData();

@@ -39,6 +39,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
+import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
@@ -664,7 +665,7 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
         btn = getWidgetFactory().createButton(subComposite, "", SWT.PUSH); //$NON-NLS-1$
         btnSize = btn.computeSize(SWT.DEFAULT, SWT.DEFAULT);
 
-        btn.setImage(CorePlugin.getImageDescriptor(DOTS_BUTTON).createImage());
+        btn.setImage(ImageProvider.getImage(CorePlugin.getImageDescriptor(DOTS_BUTTON)));
 
         btn.addSelectionListener(listenerSelection);
         btn.setData(NAME, SCHEMA);

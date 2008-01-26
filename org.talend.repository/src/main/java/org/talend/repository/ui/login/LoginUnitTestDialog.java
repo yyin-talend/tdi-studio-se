@@ -39,6 +39,7 @@ import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
@@ -79,7 +80,7 @@ public class LoginUnitTestDialog extends TitleAreaDialog {
                 IBrandingService.class);
         ImageDescriptor imgDesc = brandingService.getLoginHImage();
         if (imgDesc != null) {
-            setTitleImage(imgDesc.createImage());
+            setTitleImage(ImageProvider.getImage(imgDesc));
         }
         // RGB rgb = parentShell.getBackground().getRGB();
         RGB rgb = new RGB(255, 255, 255);

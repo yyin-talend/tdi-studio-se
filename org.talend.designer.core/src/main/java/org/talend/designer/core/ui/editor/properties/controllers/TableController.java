@@ -406,7 +406,7 @@ public class TableController extends AbstractElementPropertySectionController {
         String[] contextParameterNames = null;
         if (processItem != null) {
             process = new Process(processItem.getProperty());
-            process.loadXmlFile(processItem.getProcess());
+            process.loadXmlFile();
             IContext context = process.getContextManager().getContext(contextName);
 
             for (IContextParameter contextParam : context.getContextParameterList()) {

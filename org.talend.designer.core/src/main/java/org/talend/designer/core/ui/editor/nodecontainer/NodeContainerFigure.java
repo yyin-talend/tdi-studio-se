@@ -73,7 +73,7 @@ public class NodeContainerFigure extends Figure {
         // this.setBackgroundColor(new Color(null, new RGB(200, 100, 200)));
 
         breakpointFigure = new ImageFigure();
-        breakpointFigure.setImage(CorePlugin.getImageDescriptor(BREAKPOINT_IMAGE).createImage());
+        breakpointFigure.setImage(ImageProvider.getImage(CorePlugin.getImageDescriptor(BREAKPOINT_IMAGE)));
         breakpointFigure.setVisible(false);
         breakpointFigure.setSize(breakpointFigure.getPreferredSize());
         this.add(breakpointFigure);
@@ -85,16 +85,14 @@ public class NodeContainerFigure extends Figure {
         errorFigure.setVisible(false);
         errorFigure.setSize(errorFigure.getPreferredSize());
         this.add(errorFigure);
-        errorSize = new Dimension(errorFigure.getImage().getImageData().width,
-                errorFigure.getImage().getImageData().height);
+        errorSize = new Dimension(errorFigure.getImage().getImageData().width, errorFigure.getImage().getImageData().height);
 
         warningFigure = new ImageFigure();
         warningFigure.setImage(ImageProvider.getImage(EImage.WARNING_SMALL));
         warningFigure.setVisible(false);
         warningFigure.setSize(warningFigure.getPreferredSize());
         this.add(warningFigure);
-        warningSize = new Dimension(warningFigure.getImage().getImageData().width, warningFigure.getImage()
-                .getImageData().height);
+        warningSize = new Dimension(warningFigure.getImage().getImageData().width, warningFigure.getImage().getImageData().height);
 
         htmlStatusHint = new SimpleHtmlFigure();
     }
