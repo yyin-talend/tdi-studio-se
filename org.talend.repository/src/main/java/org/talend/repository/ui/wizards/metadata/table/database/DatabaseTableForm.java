@@ -293,8 +293,7 @@ public class DatabaseTableForm extends AbstractForm {
         int height = headerCompositeHeight + tableSettingsCompositeHeight + tableCompositeHeight;
 
         // Main Composite : 2 columns
-        Composite mainComposite = Form.startNewDimensionnedGridLayout(this, 2,
-                leftCompositeWidth + rightCompositeWidth, height);
+        Composite mainComposite = Form.startNewDimensionnedGridLayout(this, 2, leftCompositeWidth + rightCompositeWidth, height);
         mainComposite.setLayout(new GridLayout(2, false));
         GridData gridData = new GridData(GridData.FILL_BOTH);
         mainComposite.setLayoutData(gridData);
@@ -309,8 +308,7 @@ public class DatabaseTableForm extends AbstractForm {
         gridData.horizontalSpan = 3;
 
         // Header Fields
-        Composite composite1 = Form.startNewDimensionnedGridLayout(rightComposite, 3, rightCompositeWidth,
-                headerCompositeHeight);
+        Composite composite1 = Form.startNewDimensionnedGridLayout(rightComposite, 3, rightCompositeWidth, headerCompositeHeight);
         nameText = new LabelledText(composite1, Messages.getString("DatabaseTableForm.name"), 2); //$NON-NLS-1$
         commentText = new LabelledText(composite1, Messages.getString("DatabaseTableForm.comment"), 2); //$NON-NLS-1$
 
@@ -340,8 +338,7 @@ public class DatabaseTableForm extends AbstractForm {
         streamDetachCheckbox.setVisible(STREAM_DETACH_IS_VISIBLE);
 
         // Group MetaData
-        Group groupMetaData = Form.createGroup(rightComposite, 1,
-                Messages.getString("DatabaseTableForm.groupMetaData"), //$NON-NLS-1$
+        Group groupMetaData = Form.createGroup(rightComposite, 1, Messages.getString("DatabaseTableForm.groupMetaData"), //$NON-NLS-1$
                 tableCompositeHeight);
         Composite compositeMetaData = Form.startNewGridLayout(groupMetaData, 1);
 
@@ -372,8 +369,7 @@ public class DatabaseTableForm extends AbstractForm {
         Group group = Form.createGroup(parent, 1, Messages.getString("DatabaseTableForm.navigatorTree"), height); //$NON-NLS-1$
 
         // ScrolledComposite
-        ScrolledComposite scrolledCompositeFileViewer = new ScrolledComposite(group, SWT.H_SCROLL | SWT.V_SCROLL
-                | SWT.NONE);
+        ScrolledComposite scrolledCompositeFileViewer = new ScrolledComposite(group, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NONE);
         scrolledCompositeFileViewer.setExpandHorizontal(true);
         scrolledCompositeFileViewer.setExpandVertical(true);
         GridData gridData1 = new GridData(GridData.FILL_BOTH);
@@ -403,8 +399,7 @@ public class DatabaseTableForm extends AbstractForm {
 
         // Button Add metadata Table
         Composite button = Form.startNewGridLayout(group, HEIGHT_BUTTON_PIXEL, false, SWT.CENTER, SWT.CENTER);
-        addTableButton = new UtilsButton(button,
-                Messages.getString("DatabaseTableForm.AddTable"), width, HEIGHT_BUTTON_PIXEL); //$NON-NLS-1$
+        addTableButton = new UtilsButton(button, Messages.getString("DatabaseTableForm.AddTable"), width, HEIGHT_BUTTON_PIXEL); //$NON-NLS-1$
     }
 
     /**
@@ -515,8 +510,7 @@ public class DatabaseTableForm extends AbstractForm {
             parentWizardPage.getWizard().getContainer().run(true, true, new IRunnableWithProgress() {
 
                 public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-                    monitor.beginTask(Messages.getString("CreateTableAction.action.createTitle"),
-                            IProgressMonitor.UNKNOWN);
+                    monitor.beginTask(Messages.getString("CreateTableAction.action.createTitle"), IProgressMonitor.UNKNOWN);
 
                     iMetadataConnection = ConvertionHelper.convert(getConnection());
                     managerConnection.check(iMetadataConnection);
@@ -552,9 +546,7 @@ public class DatabaseTableForm extends AbstractForm {
                                     if (displayMessageBox) {
                                         String msg = Messages.getString("DatabaseTableForm.connectionIsDone"); //$NON-NLS-1$
                                         if (!isReadOnly()) {
-                                            msg = msg
-                                                    + Messages
-                                                            .getString("DatabaseTableForm.retreiveButtonIsAccessible"); //$NON-NLS-1$
+                                            msg = msg + Messages.getString("DatabaseTableForm.retreiveButtonIsAccessible"); //$NON-NLS-1$
                                         }
                                         SelectorTableForm.openInfoDialogInUIThread(getShell(), Messages
                                                 .getString("DatabaseTableForm.checkConnection"), msg, false); //$NON-NLS-1$
@@ -609,7 +601,9 @@ public class DatabaseTableForm extends AbstractForm {
                 String labelText = nameText.getText();
                 changeTableNavigatorStatus(labelText);
                 metadataTable.setLabel(labelText);
-                tableNavigator.getSelection()[0].setText(labelText);
+                if (tableNavigator.getSelection().length > 0) {
+                    tableNavigator.getSelection()[0].setText(labelText);
+                }
                 changeTableNavigatorStatus(checkFieldsValue());
             }
 
@@ -674,16 +668,16 @@ public class DatabaseTableForm extends AbstractForm {
             if (table.getLabel().equals("")) { //$NON-NLS-1$
                 updateStatus(IStatus.ERROR, Messages.getString("DatabaseTableForm.nameAlert")); //$NON-NLS-1$
                 return false;
-                
-                //Comment this condition because table name was allowed including illegal characters such as "&" or "#".
-                /**} else if (!Pattern.matches(RepositoryConstants.REPOSITORY_ITEM_PATTERN, table.getLabel())) {
-                updateStatus(IStatus.ERROR, Messages.getString("DatabaseTableForm.nameAlertIllegalChar") + " \"" //$NON-NLS-1$ //$NON-NLS-2$
-                        + table.getLabel() + "\""); //$NON-NLS-1$
-                return false;
-               **/
+
+                // Comment this condition because table name was allowed including illegal characters such as "&" or
+                // "#".
+                /**
+                 * } else if (!Pattern.matches(RepositoryConstants.REPOSITORY_ITEM_PATTERN, table.getLabel())) {
+                 * updateStatus(IStatus.ERROR, Messages.getString("DatabaseTableForm.nameAlertIllegalChar") + " \""
+                 * //$NON-NLS-1$ //$NON-NLS-2$ + table.getLabel() + "\""); //$NON-NLS-1$ return false;
+                 */
             } else if (existNames.contains(table.getLabel())) {
-                updateStatus(IStatus.ERROR,
-                        Messages.getString("CommonWizard.nameAlreadyExist") + " \"" + table.getLabel() + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                updateStatus(IStatus.ERROR, Messages.getString("CommonWizard.nameAlreadyExist") + " \"" + table.getLabel() + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 return false;
             }
 
@@ -728,16 +722,14 @@ public class DatabaseTableForm extends AbstractForm {
         } else {
             boolean doit = true;
             if (tableEditorView.getMetadataEditor().getBeanCount() > 0) {
-                doit = MessageDialog.openConfirm(getShell(), Messages
-                        .getString("DatabaseTableForm.retreiveButtonConfirmation"), //$NON-NLS-1$
+                doit = MessageDialog.openConfirm(getShell(), Messages.getString("DatabaseTableForm.retreiveButtonConfirmation"), //$NON-NLS-1$
                         Messages.getString("DatabaseTableForm.retreiveButtonConfirmationMessage")); //$NON-NLS-1$
             }
             if (doit) {
                 tableString = tableCombo.getItem(tableCombo.getSelectionIndex());
 
                 List<MetadataColumn> metadataColumns = new ArrayList<MetadataColumn>();
-                metadataColumns = ExtractMetaDataFromDataBase.returnMetadataColumnsFormTable(iMetadataConnection,
-                        tableString);
+                metadataColumns = ExtractMetaDataFromDataBase.returnMetadataColumnsFormTable(iMetadataConnection, tableString);
 
                 tableEditorView.getMetadataEditor().removeAll();
 
@@ -748,8 +740,7 @@ public class DatabaseTableForm extends AbstractForm {
 
                     String columnLabel = metadataColumn.getLabel();
                     // Check the label and add it to the table
-                    metadataColumn
-                            .setLabel(tableEditorView.getMetadataEditor().getNextGeneratedColumnName(columnLabel));
+                    metadataColumn.setLabel(tableEditorView.getMetadataEditor().getNextGeneratedColumnName(columnLabel));
                     metadataColumnsValid.add(metadataColumn);
                 }
                 tableEditorView.getMetadataEditor().addAll(metadataColumnsValid);
