@@ -128,4 +128,13 @@ public abstract class AbstractProcessProvider {
      */
     public abstract boolean updateProcessContexts(Process process);
 
+    /**
+     * DOC qzhang Comment method "canCreate".
+     * 
+     * @param node
+     */
+    public boolean canCreateNode(Node node) {
+        return true;
+    }
+
 }

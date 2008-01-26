@@ -52,6 +52,15 @@ public class CreateNodeContainerCommand extends CreateCommand {
                 return false;
             }
         }
+        AbstractProcessProvider provider = AbstractProcessProvider.findProcessProviderFromPID(nodeContainer.getNode()
+                .getComponent().getPluginFullName());
+        if (provider != null) {
+            if (!provider.canCreateNode(nodeContainer.getNode())) {
+                return false;
+            }
+
+        }
+
         return true;
     }
 
