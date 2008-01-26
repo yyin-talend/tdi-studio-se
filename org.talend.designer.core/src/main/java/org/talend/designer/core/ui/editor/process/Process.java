@@ -37,7 +37,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.ecore.xmi.XMLResource;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.SnapToGeometry;
 import org.eclipse.gef.SnapToGrid;
@@ -699,12 +698,6 @@ public class Process extends Element implements IProcess2 {
 
         contextManager.saveToEmf(processType.getContext());
 
-        // res.getContents().add(xmlDoc);
-
-        HashMap options = new HashMap(2);
-        options.put(XMLResource.OPTION_ENCODING, "UTF-8"); //$NON-NLS-1$
-        options.put(XMLResource.OPTION_XML_VERSION, "1.1"); //$NON-NLS-1$
-        // res.save(options);
         return processType;
     }
 
@@ -811,6 +804,12 @@ public class Process extends Element implements IProcess2 {
         return nType;
     }
 
+    protected ProcessType getProcessType() {
+        ProcessItem item = (ProcessItem) property.getItem();
+        ProcessType processType = item.getProcess();
+        return processType;
+    }
+
     /**
      * DOC mhelleboid Comment method "loadXmlFile".
      * 
@@ -822,8 +821,7 @@ public class Process extends Element implements IProcess2 {
 
         setActivate(false);
 
-        ProcessItem item = (ProcessItem) property.getItem();
-        ProcessType processType = item.getProcess();
+        ProcessType processType = getProcessType();
         if (processType.getParameters() != null) {
             loadElementParameters(this, processType.getParameters().getElementParameter());
         }
