@@ -398,7 +398,7 @@ public class Process extends Element implements IProcess2 {
 
     private boolean isProcessModified() {
         List<INode> generatedNodeList = generatingProcess.getNodeList();
-        if (generatedNodeList == null || generatedNodeList.isEmpty() || this.getEditor() == null) {
+        if (generatedNodeList == null || generatedNodeList.isEmpty() || (this.getEditor() == null && processModified)) {
             return true;
         }
         return processModified;
