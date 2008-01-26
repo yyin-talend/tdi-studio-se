@@ -24,9 +24,6 @@ import org.talend.core.CorePlugin;
 import org.talend.core.model.metadata.builder.connection.SchemaTarget;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.utils.CsvArray;
-import org.talend.core.utils.XmlArray;
-import org.talend.core.utils.XmlField;
-import org.talend.core.utils.XmlRow;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.preview.ProcessDescription;
 
@@ -129,11 +126,11 @@ public class ShadowProcessPreview {
      */
     public void refreshTablePreview(final CsvArray csvArray, final boolean firstRowIsLabel) {
         List<String[]> csvRows = csvArray.getRows();
-        
-        if(csvRows.isEmpty()){
+
+        if (csvRows.isEmpty()) {
             return;
         }
-        
+
         // init the title columns
 
         // XmlRow firstRow = xmlRows.get(0);
@@ -193,10 +190,12 @@ public class ShadowProcessPreview {
      * @param csvArray
      * @param firstRowIsLabel
      */
-    public void refreshTablePreview(final CsvArray csvArray, final boolean firstRowIsLabel,
-            ProcessDescription processDescription) {
+    public void refreshTablePreview(final CsvArray csvArray, final boolean firstRowIsLabel, ProcessDescription processDescription) {
         List<String[]> xmlRows = csvArray.getRows();
 
+        if (xmlRows.isEmpty()) {
+            return;
+        }
         // init the title columns
 
         String[] firstRowFields = xmlRows.get(0);
@@ -254,10 +253,12 @@ public class ShadowProcessPreview {
      * @param csvArray
      * @param firstRowIsLabel
      */
-    public void refreshTablePreview(final CsvArray csvArray, final boolean firstRowIsLabel,
-            List<SchemaTarget> schemaTarget) {
+    public void refreshTablePreview(final CsvArray csvArray, final boolean firstRowIsLabel, List<SchemaTarget> schemaTarget) {
         List<String[]> csvRows = csvArray.getRows();
 
+        if (csvRows.isEmpty()) {
+            return;
+        }
         // init the title columns
 
         String[] firstRowFields = csvRows.get(0);
