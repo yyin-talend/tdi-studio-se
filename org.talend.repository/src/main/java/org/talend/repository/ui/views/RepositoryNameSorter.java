@@ -78,6 +78,10 @@ public class RepositoryNameSorter extends ViewerSorter {
                 return 60;
             case DOCUMENTATION:
                 return 65;
+            case JOBS:
+                return 70;
+            case JOBLETS:
+                return 75;
             default:
                 return 199;
             }
