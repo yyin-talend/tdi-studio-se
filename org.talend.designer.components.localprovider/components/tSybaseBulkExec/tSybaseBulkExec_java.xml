@@ -183,6 +183,9 @@
    </PARAMETERS>
 
    <CODEGENERATION>
+     <IMPORTS>
+       <IMPORT NAME="Driver-Sybase" MODULE="jconn3.jar" REQUIRED="true" />
+     </IMPORTS>   
    </CODEGENERATION>
 
    <RETURNS>
