@@ -6,6 +6,7 @@ imports="
     org.talend.core.model.process.ElementParameterParser
     org.talend.designer.codegen.config.CodeGeneratorArgument
     org.talend.core.model.process.IConnection
+    org.talend.core.model.metadata.types.JavaTypesManager
     java.util.List
     java.util.Map
 "
@@ -45,6 +46,26 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                     String inConnName = incomingConnections.get(0).getName();
                     
                     List<IMetadataColumn> columnList = metadata.getListColumns();
+                    
+                    String columnType = null;
+                    
+                    String columnTypeValue = null;
+                    
+                    String columnTypeFunName = null;
+             		
+             		for(IMetadataColumn column:columnList){
+             			
+             			if(column.getLabel().equals(aggColumn)){
+             			
+							columnType = column.getTalendType().substring(3);
+							
+							columnTypeValue = JavaTypesManager.getShortNameFromJavaType(JavaTypesManager.getJavaTypeFromId(column.getTalendType()));
+							
+							columnTypeFunName = columnTypeValue.substring(0,1).toUpperCase()+columnTypeValue.substring(1);
+
+							break;
+						}
+             		}
 %>                   
     //pivot key  
     pivot_Keys_Split<%=cid%> = pivot_Keys<%=cid%>.split(<%=fieldSeparator%>);
@@ -197,19 +218,40 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             if( aggFunction.equals("sum") ){
             %>
 
-                double sum<%=cid%> = 0.0;
+                <%=columnTypeValue%> sum<%=cid%> ;
                 
                 if (aggStrSplit<%=cid%>[pivotIndex<%=cid%>].equals("")){
-            
-                    sum<%=cid%> = Double.parseDouble(aggStrSplit<%=cid%>[pivotIndex<%=cid%>]);
+                	
+                	<%if(columnType.equals("BigDecimal")){%>
+						
+					  aggStrSplit<%=cid%>[pivotIndex<%=cid%>] = "0";
+					  
+					<%}else{%>
+
+					  sum<%=cid%> = <%=columnType%>.parse<%=columnTypeFunName%>(aggStrSplit<%=cid%>[pivotIndex<%=cid%>]);
+                    
+                      aggStrSplit<%=cid%>[pivotIndex<%=cid%>] = String.valueOf(sum<%=cid%>);
+                      
+					<%}%>
                     
                 }else{
-                    
-                    sum<%=cid%> = Double.parseDouble(aggStrSplit<%=cid%>[pivotIndex<%=cid%>]) + Double.parseDouble(aggValues<%=cid%>.append(<%=inConnName%>.<%=aggColumn%>).toString());
-                    
-                }
-                
-                aggStrSplit<%=cid%>[pivotIndex<%=cid%>] = String.valueOf(sum<%=cid%>);
+               		<%if(columnType.equals("BigDecimal")){%>
+						
+					  aggStrSplit<%=cid%>[pivotIndex<%=cid%>] = (new java.math.BigDecimal(aggStrSplit<%=cid%>[pivotIndex<%=cid%>])).add(new java.math.BigDecimal(aggValues<%=cid%>.append(<%=inConnName%>.<%=aggColumn%>).toString())).toString();
+					  
+					<%}else if(columnType.equals("Double")||columnType.equals("Float")){%>
+
+					  aggStrSplit<%=cid%>[pivotIndex<%=cid%>] = (new java.math.BigDecimal(aggStrSplit<%=cid%>[pivotIndex<%=cid%>])).add(new java.math.BigDecimal(aggValues<%=cid%>.append(<%=inConnName%>.<%=aggColumn%>).toString())).toString();
+					  
+					<%}else{%>
+					  
+					  sum<%=cid%> = (<%=columnTypeValue%>)(<%=columnType%>.parse<%=columnTypeFunName%>(aggStrSplit<%=cid%>[pivotIndex<%=cid%>]) + <%=columnType%>.parse<%=columnTypeFunName%>(aggValues<%=cid%>.append(<%=inConnName%>.<%=aggColumn%>).toString()));
+                	
+                	  aggStrSplit<%=cid%>[pivotIndex<%=cid%>] = String.valueOf(sum<%=cid%>);
+                	  
+					<%}%>
+				
+				}
             
             <%
             }else if( aggFunction.equals("count") ){
@@ -274,12 +316,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             
         }
         
-        
-        
-        
-        
-        
-          
         } 
 
     nb_line_<%=cid%>++;

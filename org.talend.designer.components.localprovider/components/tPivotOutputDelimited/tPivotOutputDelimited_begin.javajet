@@ -37,11 +37,16 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 
         boolean csvOption = ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("true");
         
-        String escapeChar = ElementParameterParser.getValue(node,"__ESCAPE_CHAR__");
+        String escapeChar1 = ElementParameterParser.getValue(node, "__ESCAPE_CHAR__");
+    	
+    	String escapeChar = escapeChar1.substring(1,escapeChar1.length()-1);
+    	
+    	if(escapeChar.equals("'")) escapeChar = "\\'";
         
-        String textEnclosure = ElementParameterParser.getValue(node,"__TEXT_ENCLOSURE__");
-        
-        textEnclosure = textEnclosure.substring(1,textEnclosure.length()-1);
+        String textEnclosure1 = ElementParameterParser.getValue(node, "__TEXT_ENCLOSURE__");
+    	String textEnclosure = textEnclosure1.substring(1,textEnclosure1.length()-1);
+    	if ("".equals(textEnclosure)) textEnclosure = "\0";
+    	if(textEnclosure.equals("'")) textEnclosure = "\\'";
         
         String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
         
@@ -96,7 +101,8 @@ if(escapeChar.equals("\\\\")){
 }else{
     
 }
-%>       
+%>    
+	CsvWriter<%=cid %>.setForceQualifier(true);   
 
 
 <%}%>
