@@ -163,10 +163,15 @@ for (int i_<%=cid %> = 0; i_<%=cid %> < nodelist_<%=cid %>.getLength(); i_<%=cid
 								String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
 								
 								boolean isNotSetDefault = false;
-								if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.DATE){
-									isNotSetDefault = column.getDefault().equals("\"\"");
+								String defaultValue=column.getDefault();
+								if(defaultValue!=null){
+									//if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.DATE){
+									//	isNotSetDefault = defaultValue.length()==0||defaultValue.equals("null");
+									//}else{
+										isNotSetDefault = defaultValue.length()==0;
+									//}
 								}else{
-									isNotSetDefault = column.getDefault().length()==0;
+									isNotSetDefault=true;
 								}
 								
 								if(column.isNullable()){
