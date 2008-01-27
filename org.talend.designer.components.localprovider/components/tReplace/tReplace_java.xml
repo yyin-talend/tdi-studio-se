@@ -61,8 +61,10 @@
         <ITEM NAME="COMMENT" FIELD="String" />
       </ITEMS>
     </PARAMETER>
-
-    <PARAMETER
+   </PARAMETERS>
+   
+   <ADVANCED_PARAMETERS>
+   	    <PARAMETER
       NAME="ADVANCED_MODE"
       FIELD="CHECK"
       REQUIRED="true"
@@ -86,10 +88,7 @@
         <ITEM NAME="COMMENT" FIELD="String" />
       </ITEMS>
     </PARAMETER>
-
-
-
-   </PARAMETERS>
+   </ADVANCED_PARAMETERS>
 
    <CODEGENERATION/>
 

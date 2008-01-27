@@ -74,10 +74,6 @@
     >
       <DEFAULT>"db name"</DEFAULT>
     </PARAMETER>
-
-	<PARAMETER NAME="PROPERTIES" FIELD="TEXT" NUM_ROW="3" REPOSITORY_VALUE="PROPERTIES_STRING">
-		<DEFAULT>""</DEFAULT>
-	</PARAMETER>
     
     <PARAMETER
       NAME="USER"
@@ -136,7 +132,32 @@
       <DEFAULT>"C:/temp/mssql_data.txt"</DEFAULT>
     </PARAMETER>
     
-    <PARAMETER
+    <PARAMETER 
+    	NAME="APPEND"
+        FIELD="CHECK" 
+        REQUIRED="true" 
+        NUM_ROW="8" 
+        REPOSITORY_VALUE="APPEND">
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+
+	<PARAMETER
+      NAME="MAPPING"
+      FIELD="MAPPING_TYPE"
+      NUM_ROW="11"
+      SHOW="false"
+    >       
+      <DEFAULT>id_MSSQL</DEFAULT>
+    </PARAMETER>
+    
+  </PARAMETERS>
+  
+  <ADVANCED_PARAMETERS>
+  	<PARAMETER NAME="PROPERTIES" FIELD="TEXT" NUM_ROW="3" REPOSITORY_VALUE="PROPERTIES_STRING">
+		<DEFAULT>""</DEFAULT>
+	</PARAMETER>
+	
+	<PARAMETER
       NAME="FIELDSEPARATOR"
       FIELD="TEXT"
       NUM_ROW="8"
@@ -152,15 +173,6 @@
       REPOSITORY_VALUE="ROW_SEPARATOR"
     >
       <DEFAULT>"\n"</DEFAULT>
-    </PARAMETER>
-    
-    <PARAMETER 
-    	NAME="APPEND"
-        FIELD="CHECK" 
-        REQUIRED="true" 
-        NUM_ROW="8" 
-        REPOSITORY_VALUE="APPEND">
-      <DEFAULT>false</DEFAULT>
     </PARAMETER>
     
     <PARAMETER
@@ -201,17 +213,7 @@
     	REPOSITORY_VALUE="ENCODING">
       <DEFAULT>"ISO-8859-15"</DEFAULT>
     </PARAMETER>
-
-	<PARAMETER
-      NAME="MAPPING"
-      FIELD="MAPPING_TYPE"
-      NUM_ROW="11"
-      SHOW="false"
-    >       
-      <DEFAULT>id_MSSQL</DEFAULT>
-    </PARAMETER>
-    
-  </PARAMETERS>
+  </ADVANCED_PARAMETERS>
 
   <CODEGENERATION>
     <TEMPLATES INPUT="tMOB" OUTPUT="tMBE">

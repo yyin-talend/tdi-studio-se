@@ -153,7 +153,27 @@
       </TABLE>
     </PARAMETER>    
 
-    <PARAMETER
+	<PARAMETER
+      NAME="DIE_ON_ERROR"
+      FIELD="CHECK"
+      NUM_ROW="6"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>    
+
+	<PARAMETER
+      NAME="MAPPING"
+      FIELD="MAPPING_TYPE"
+      NUM_ROW="10"
+      SHOW="false"
+    >       
+      <DEFAULT>teradata_id</DEFAULT>
+    </PARAMETER>
+
+  </PARAMETERS>
+  
+  <ADVANCED_PARAMETERS>
+  	    <PARAMETER
       NAME="ADD_COLS"
       FIELD="TABLE"
       REQUIRED="false"
@@ -187,25 +207,7 @@
     >
       <DEFAULT>10000</DEFAULT>
     </PARAMETER>
-    
-	<PARAMETER
-      NAME="DIE_ON_ERROR"
-      FIELD="CHECK"
-      NUM_ROW="6"
-    >
-      <DEFAULT>false</DEFAULT>
-    </PARAMETER>    
-
-	<PARAMETER
-      NAME="MAPPING"
-      FIELD="MAPPING_TYPE"
-      NUM_ROW="10"
-      SHOW="false"
-    >       
-      <DEFAULT>teradata_id</DEFAULT>
-    </PARAMETER>
-
-  </PARAMETERS>
+  </ADVANCED_PARAMETERS>
 
   <CODEGENERATION>
     <IMPORTS>

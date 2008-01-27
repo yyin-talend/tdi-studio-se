@@ -59,7 +59,7 @@
       NAME="CRITERIA"
       FIELD="TABLE"
       REQUIRED="false"
-      NUM_ROW="40"
+      NUM_ROW="50"
       NB_LINES="3"
     >
       <ITEMS>
@@ -80,8 +80,18 @@
         </ITEM>
       </ITEMS>
     </PARAMETER>
-
+    
     <PARAMETER
+      NAME="SORT_CMDPATH"
+      FIELD="FILE"
+      NUM_ROW="40"
+      REQUIRED="true"
+    >
+      <DEFAULT></DEFAULT>
+    </PARAMETER>
+  </PARAMETERS>
+  <ADVANCED_PARAMETERS>
+      <PARAMETER
       NAME="MAX_MEMORY"
       FIELD="TEXT"
       NUM_ROW="50"
@@ -98,22 +108,13 @@
     </PARAMETER>
     
     <PARAMETER
-      NAME="SORT_CMDPATH"
-      FIELD="FILE"
-      NUM_ROW="70"
-    >
-      <DEFAULT></DEFAULT>
-    </PARAMETER>
-    
-    <PARAMETER
       NAME="ADD_EOF"
       FIELD="CHECK"
       NUM_ROW="80"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
-    
-  </PARAMETERS>
+  </ADVANCED_PARAMETERS>
 
   <CODEGENERATION>
     <TEMPLATES INPUT="ESO" OUTPUT="FID">

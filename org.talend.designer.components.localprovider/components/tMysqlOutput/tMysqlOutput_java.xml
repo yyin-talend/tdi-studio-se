@@ -96,11 +96,7 @@
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
 
-	<PARAMETER NAME="PROPERTIES" FIELD="TEXT" NUM_ROW="4" REPOSITORY_VALUE="PROPERTIES_STRING" SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
-		<DEFAULT>"noDatetimeStringSync=true"</DEFAULT>
-	</PARAMETER>
-
-    <PARAMETER
+	<PARAMETER
       NAME="USER"
       FIELD="TEXT"
       NUM_ROW="5"
@@ -159,6 +155,51 @@
     </PARAMETER>
     
     <PARAMETER
+      NAME="SCHEMA_FLOW"
+      FIELD="SCHEMA_TYPE"
+      NUM_ROW="9"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="SCHEMA_REJECT"
+      FIELD="SCHEMA_TYPE"
+      REQUIRED="true"
+      NUM_ROW="9"
+      CONTEXT="REJECT"
+      SHOW="true">
+      <TABLE READONLY="true">
+        <COLUMN NAME="errorCode" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
+        <COLUMN NAME="errorMessage" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
+      </TABLE>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="DIE_ON_ERROR"
+      FIELD="CHECK"
+      NUM_ROW="10"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="MAPPING"
+      FIELD="MAPPING_TYPE"
+      NUM_ROW="18"
+      SHOW="false"
+    >       
+      <DEFAULT>mysql_id</DEFAULT>
+    </PARAMETER>
+        
+  </PARAMETERS>
+  
+  <ADVANCED_PARAMETERS>
+  	<PARAMETER NAME="PROPERTIES" FIELD="TEXT" NUM_ROW="4" REPOSITORY_VALUE="PROPERTIES_STRING" SHOW_IF="USE_EXISTING_CONNECTION == 'false'">
+		<DEFAULT>"noDatetimeStringSync=true"</DEFAULT>
+	</PARAMETER>
+	
+	<PARAMETER
     	NAME="EXTENDINSERT"
     	FIELD="CHECK"
     	NUM_ROW="8"
@@ -185,28 +226,6 @@
     >
       <DEFAULT>100</DEFAULT>
     </PARAMETER>
-          
-    <PARAMETER
-      NAME="SCHEMA_FLOW"
-      FIELD="SCHEMA_TYPE"
-      NUM_ROW="9"
-    >
-      <DEFAULT>""</DEFAULT>
-    </PARAMETER>
-    
-    <PARAMETER
-      NAME="SCHEMA_REJECT"
-      FIELD="SCHEMA_TYPE"
-      REQUIRED="true"
-      NUM_ROW="9"
-      CONTEXT="REJECT"
-      SHOW="true">
-      <TABLE READONLY="true">
-        <COLUMN NAME="errorCode" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
-        <COLUMN NAME="errorMessage" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
-      </TABLE>
-    </PARAMETER>
-    
     
     <PARAMETER
       NAME="ENCODING"
@@ -226,15 +245,7 @@
     >
       <DEFAULT>10000</DEFAULT>
     </PARAMETER>
-
-	<PARAMETER
-      NAME="DIE_ON_ERROR"
-      FIELD="CHECK"
-      NUM_ROW="10"
-    >
-      <DEFAULT>false</DEFAULT>
-    </PARAMETER>
-
+    
     <PARAMETER
       NAME="ADD_COLS"
       FIELD="TABLE"
@@ -284,17 +295,7 @@
         <ITEM NAME="INSERTABLE" VALUE="true"  FIELD="CHECK" />
       </ITEMS>
     </PARAMETER>
-        
-	<PARAMETER
-      NAME="MAPPING"
-      FIELD="MAPPING_TYPE"
-      NUM_ROW="18"
-      SHOW="false"
-    >       
-      <DEFAULT>mysql_id</DEFAULT>
-    </PARAMETER>
-        
-  </PARAMETERS>
+  </ADVANCED_PARAMETERS>
 
   <CODEGENERATION>
     <IMPORTS>

@@ -128,7 +128,23 @@
       <DEFAULT>"C:\talend_files\sybase_bulk.txt"</DEFAULT>
     </PARAMETER>
 
-    <PARAMETER
+    <PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" REQUIRED="true" NUM_ROW="11">
+      <DEFAULT/> 
+    </PARAMETER>
+
+	<PARAMETER
+      NAME="MAPPING"
+      FIELD="MAPPING_TYPE"
+      NUM_ROW="10"
+      SHOW="false"
+    >       
+      <DEFAULT>sybase_id</DEFAULT>
+    </PARAMETER>
+
+   </PARAMETERS>
+   
+   <ADVANCED_PARAMETERS>
+   	    <PARAMETER
       NAME="FIELDS_TERMINATOR"
       FIELD="TEXT"
       NUM_ROW="8"
@@ -166,21 +182,7 @@
           <ITEM NAME="RETRIEVE_OUTPUT"   VALUE="RETRIEVE_OUTPUT" />
        </ITEMS>
     </PARAMETER>
-
-    <PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" REQUIRED="true" NUM_ROW="11">
-      <DEFAULT/> 
-    </PARAMETER>
-
-	<PARAMETER
-      NAME="MAPPING"
-      FIELD="MAPPING_TYPE"
-      NUM_ROW="10"
-      SHOW="false"
-    >       
-      <DEFAULT>sybase_id</DEFAULT>
-    </PARAMETER>
-
-   </PARAMETERS>
+   </ADVANCED_PARAMETERS>
 
    <CODEGENERATION>
      <IMPORTS>

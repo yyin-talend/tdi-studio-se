@@ -112,7 +112,38 @@
       </ITEMS>
     </PARAMETER>
 
+	<!-- following property should not be displayed -->
+
     <PARAMETER
+      NAME="FILENAME"
+      FIELD="FILE"
+      NUM_ROW="14"
+      REQUIRED="true"
+    >
+      <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/temp.csv"</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="SCHEMA"
+      FIELD="SCHEMA_TYPE"
+      NUM_ROW="17"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+
+	<PARAMETER
+      NAME="MAPPING"
+      FIELD="MAPPING_TYPE"
+      NUM_ROW="18"
+      SHOW="false"
+    >       
+      <DEFAULT>postgres_id</DEFAULT>
+    </PARAMETER>
+
+  </PARAMETERS>
+  
+  <ADVANCED_PARAMETERS>
+  	<PARAMETER
       NAME="DATA_ACTION"
       FIELD="CLOSED_LIST"
       NUM_ROW="5"
@@ -140,20 +171,9 @@
       SHOW_IF="(FILETYPE=='CSVFILE')"
     >
       <DEFAULT>false</DEFAULT>
-    </PARAMETER>        
-
-<!-- following property should not be displayed -->
-
-    <PARAMETER
-      NAME="FILENAME"
-      FIELD="FILE"
-      NUM_ROW="14"
-      REQUIRED="true"
-    >
-      <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/temp.csv"</DEFAULT>
     </PARAMETER>
-
-    <PARAMETER
+    
+        <PARAMETER
       NAME="FILETYPE"
       FIELD="CLOSED_LIST"
       NUM_ROW="14"
@@ -218,26 +238,8 @@
 	  <ITEMS BASED_ON_SCHEMA="true">	
       	<ITEM NAME="FORCENOTNULL" FIELD="CHECK" VALUE="false"/>
       </ITEMS>
-    </PARAMETER>    
-    
-    <PARAMETER
-      NAME="SCHEMA"
-      FIELD="SCHEMA_TYPE"
-      NUM_ROW="17"
-    >
-      <DEFAULT>""</DEFAULT>
     </PARAMETER>
-
-	<PARAMETER
-      NAME="MAPPING"
-      FIELD="MAPPING_TYPE"
-      NUM_ROW="18"
-      SHOW="false"
-    >       
-      <DEFAULT>postgres_id</DEFAULT>
-    </PARAMETER>
-
-  </PARAMETERS>
+  </ADVANCED_PARAMETERS>
 
   <CODEGENERATION>
     <TEMPLATES INPUT="tPOB" OUTPUT="tPBE">

@@ -122,14 +122,6 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-    
-    <PARAMETER
-      NAME="ROS"
-      FIELD="CHECK"
-      NUM_ROW="5"
-    >
-      <DEFAULT>true</DEFAULT>
-    </PARAMETER>
 
     <PARAMETER
       NAME="FILENAME"
@@ -138,6 +130,35 @@
       REQUIRED="true"
     >
       <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/out.csv"</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER 
+    	NAME="APPEND"
+        FIELD="CHECK" 
+        REQUIRED="true" 
+        NUM_ROW="7" 
+        REPOSITORY_VALUE="APPEND">
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+
+	<PARAMETER
+      NAME="MAPPING"
+      FIELD="MAPPING_TYPE"
+      NUM_ROW="9"
+      SHOW="false"
+    >       
+      <DEFAULT>id_Vertica</DEFAULT>
+    </PARAMETER>
+    
+  </PARAMETERS>
+  
+  <ADVANCED_PARAMETERS>
+  	<PARAMETER
+      NAME="ROS"
+      FIELD="CHECK"
+      NUM_ROW="5"
+    >
+      <DEFAULT>true</DEFAULT>
     </PARAMETER>
     
     <PARAMETER
@@ -158,16 +179,6 @@
       <DEFAULT>"null"</DEFAULT>
     </PARAMETER>
     
-    <PARAMETER 
-    	NAME="APPEND"
-        FIELD="CHECK" 
-        REQUIRED="true" 
-        NUM_ROW="7" 
-        REPOSITORY_VALUE="APPEND">
-      <DEFAULT>false</DEFAULT>
-    </PARAMETER>
-    
-    
    	<PARAMETER 
    		NAME="INCLUDEHEADER" 
    		FIELD="CHECK" 
@@ -183,17 +194,7 @@
     	REPOSITORY_VALUE="ENCODING">
       <DEFAULT>"ISO-8859-15"</DEFAULT>
     </PARAMETER>
-
-	<PARAMETER
-      NAME="MAPPING"
-      FIELD="MAPPING_TYPE"
-      NUM_ROW="9"
-      SHOW="false"
-    >       
-      <DEFAULT>id_Vertica</DEFAULT>
-    </PARAMETER>
-    
-  </PARAMETERS>
+  </ADVANCED_PARAMETERS>
 
   <CODEGENERATION>
     <TEMPLATES INPUT="tVOB" OUTPUT="tVBE">

@@ -139,9 +139,19 @@
         <COLUMN NAME="errorCode" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
         <COLUMN NAME="errorMessage" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
       </TABLE>
-    </PARAMETER>    
-
-  <PARAMETER
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="DIE_ON_ERROR"
+      FIELD="CHECK"
+      NUM_ROW="9"
+    >
+      <DEFAULT>false</DEFAULT>
+	</PARAMETER>
+  </PARAMETERS>
+  
+  <ADVANCED_PARAMETERS>
+  	<PARAMETER
       NAME="ENCODING"
       FIELD="ENCODING_TYPE"
       NUM_ROW="9"
@@ -180,15 +190,7 @@
     >
       <DEFAULT>10000</DEFAULT>
     </PARAMETER>
-    
-    <PARAMETER
-      NAME="DIE_ON_ERROR"
-      FIELD="CHECK"
-      NUM_ROW="9"
-    >
-      <DEFAULT>false</DEFAULT>
-	</PARAMETER>
-  </PARAMETERS>
+  </ADVANCED_PARAMETERS>
 
   <CODEGENERATION></CODEGENERATION>
    

@@ -371,17 +371,17 @@
         <ITEM NAME="PREV_VALUE" FIELD="COLUMN_LIST" />
       </ITEMS>
     </PARAMETER>
-
-    <PARAMETER
+  </PARAMETERS>
+  
+  <ADVANCED_PARAMETERS>
+  	<PARAMETER
       NAME="DEBUG"
       FIELD="CHECK"
       NUM_ROW="120"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
-
-  </PARAMETERS>
-
+  </ADVANCED_PARAMETERS>
   <CODEGENERATION>
     <IMPORTS>
 		<IMPORT NAME="Driver-Oracle" MODULE="ojdbc14.jar" REQUIRED="true" />

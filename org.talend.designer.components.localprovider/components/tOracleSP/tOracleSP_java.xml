@@ -145,15 +145,6 @@
     </PARAMETER>
     
     <PARAMETER
-      NAME="ENCODING"
-      FIELD="ENCODING_TYPE"
-      NUM_ROW="7"
-      REQUIRED="true"
-    >
-      <DEFAULT>"ISO-8859-15"</DEFAULT>
-    </PARAMETER>
-	
-    <PARAMETER
       NAME="SP_NAME"
       FIELD="TEXT"
       NUM_ROW="8"
@@ -199,6 +190,17 @@
       </ITEMS>
     </PARAMETER>
   </PARAMETERS>
+  
+  <ADVANCED_PARAMETERS>
+  	<PARAMETER
+      NAME="ENCODING"
+      FIELD="ENCODING_TYPE"
+      NUM_ROW="7"
+      REQUIRED="true"
+    >
+      <DEFAULT>"ISO-8859-15"</DEFAULT>
+    </PARAMETER>
+  </ADVANCED_PARAMETERS>
 
   <CODEGENERATION>
     <IMPORTS>

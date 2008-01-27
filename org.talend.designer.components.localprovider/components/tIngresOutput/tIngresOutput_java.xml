@@ -154,6 +154,26 @@
     </PARAMETER>    
     
     <PARAMETER
+      NAME="DIE_ON_ERROR"
+      FIELD="CHECK"
+      NUM_ROW="8"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+    
+	<PARAMETER
+      NAME="MAPPING"
+      FIELD="MAPPING_TYPE"
+      NUM_ROW="10"
+      SHOW="false"
+    >       
+      <DEFAULT>ingres_id</DEFAULT>
+    </PARAMETER>    
+    
+  </PARAMETERS>
+  
+  <ADVANCED_PARAMETERS>
+  	<PARAMETER
       NAME="ENCODING"
       FIELD="ENCODING_TYPE"
       NUM_ROW="8"
@@ -195,26 +215,8 @@
       REQUIRED="true"
     >
       <DEFAULT>10000</DEFAULT>
-    </PARAMETER>   
-     
-	<PARAMETER
-      NAME="DIE_ON_ERROR"
-      FIELD="CHECK"
-      NUM_ROW="8"
-    >
-      <DEFAULT>false</DEFAULT>
     </PARAMETER>
-    
-	<PARAMETER
-      NAME="MAPPING"
-      FIELD="MAPPING_TYPE"
-      NUM_ROW="10"
-      SHOW="false"
-    >       
-      <DEFAULT>ingres_id</DEFAULT>
-    </PARAMETER>    
-    
-  </PARAMETERS>
+  </ADVANCED_PARAMETERS>
 
   <CODEGENERATION>
     <IMPORTS>

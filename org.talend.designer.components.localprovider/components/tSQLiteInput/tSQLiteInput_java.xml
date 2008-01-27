@@ -92,17 +92,19 @@
       <DEFAULT>"select id, name from employee"</DEFAULT>
     </PARAMETER>
 
-    <PARAMETER
-      NAME="ENCODING"
-      FIELD="ENCODING_TYPE"
-      NUM_ROW="9"
-      REQUIRED="true"
-    >
-      <DEFAULT>"ISO-8859-15"</DEFAULT>
-    </PARAMETER>
-
    </PARAMETERS>
-
+   
+	<ADVANCED_PARAMETERS>
+		<PARAMETER
+      		NAME="ENCODING"
+      		FIELD="ENCODING_TYPE"
+      		NUM_ROW="9"
+      		REQUIRED="true"
+    	>
+      		<DEFAULT>"ISO-8859-15"</DEFAULT>
+    	</PARAMETER>
+	</ADVANCED_PARAMETERS>
+	
    <CODEGENERATION>
      <IMPORTS>
        <IMPORT NAME="Driver-SQLite" MODULE="sqlitejdbc_v037_nested.jar" REQUIRED="true" />

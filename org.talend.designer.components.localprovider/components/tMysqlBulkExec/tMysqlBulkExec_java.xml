@@ -65,11 +65,7 @@
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
 
-	<PARAMETER NAME="PROPERTIES" FIELD="TEXT" NUM_ROW="3" REPOSITORY_VALUE="PROPERTIES_STRING">
-		<DEFAULT>""</DEFAULT>
-	</PARAMETER>
-    
-    <PARAMETER
+	<PARAMETER
       NAME="USER"
       FIELD="TEXT"
       NUM_ROW="4"
@@ -117,8 +113,32 @@
     >
       <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/mysql_bulk.txt"</DEFAULT>
     </PARAMETER>
+    
+    <PARAMETER
+      NAME="SCHEMA"
+      FIELD="SCHEMA_TYPE"
+      NUM_ROW="9"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>             
 
     <PARAMETER
+      NAME="MAPPING"
+      FIELD="MAPPING_TYPE"
+      NUM_ROW="11"
+      SHOW="false"
+    >       
+      <DEFAULT>mysql_id</DEFAULT>
+    </PARAMETER>
+
+   </PARAMETERS>
+   
+   <ADVANCED_PARAMETERS>
+   	<PARAMETER NAME="PROPERTIES" FIELD="TEXT" NUM_ROW="3" REPOSITORY_VALUE="PROPERTIES_STRING">
+		<DEFAULT>""</DEFAULT>
+	</PARAMETER>
+	
+	<PARAMETER
       NAME="LINES_TERMINATED_BY"
       FIELD="TEXT"
       NUM_ROW="7"
@@ -168,14 +188,6 @@
     </PARAMETER>
     
     <PARAMETER
-      NAME="SCHEMA"
-      FIELD="SCHEMA_TYPE"
-      NUM_ROW="9"
-    >
-      <DEFAULT>""</DEFAULT>
-    </PARAMETER>             
-
-    <PARAMETER
       NAME="ENCODING"
       FIELD="ENCODING_TYPE"
       NUM_ROW="10"
@@ -183,17 +195,7 @@
     >
       <DEFAULT>"UTF-8"</DEFAULT>
     </PARAMETER>
-
-	<PARAMETER
-      NAME="MAPPING"
-      FIELD="MAPPING_TYPE"
-      NUM_ROW="11"
-      SHOW="false"
-    >       
-      <DEFAULT>mysql_id</DEFAULT>
-    </PARAMETER>
-
-   </PARAMETERS>
+   </ADVANCED_PARAMETERS>
 
    <CODEGENERATION>
     <IMPORTS>

@@ -112,7 +112,34 @@
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
     
+<!-- following property should not be displayed -->
+
     <PARAMETER
+      NAME="FILENAME"
+      FIELD="FILE"
+      NUM_ROW="14"
+      REQUIRED="true"
+    >
+      <DEFAULT>"C:/temp/oracle_data.dat"</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" REQUIRED="true" NUM_ROW="18">
+      <DEFAULT/> 
+    </PARAMETER>
+
+	<PARAMETER
+      NAME="MAPPING"
+      FIELD="MAPPING_TYPE"
+      NUM_ROW="19"
+      SHOW="false"
+    >       
+      <DEFAULT>oracle_id</DEFAULT>
+    </PARAMETER>
+
+  </PARAMETERS>
+  
+  <ADVANCED_PARAMETERS>
+  	<PARAMETER
       NAME="DATA_ACTION"
       FIELD="CLOSED_LIST"
       NUM_ROW="6"
@@ -124,17 +151,6 @@
         <ITEM NAME="REPLACE"          VALUE="REPLACE"/>
         <ITEM NAME="TRUNCATE"         VALUE="TRUNCATE"/>
       </ITEMS>
-    </PARAMETER>
-    
-<!-- following property should not be displayed -->
-
-    <PARAMETER
-      NAME="FILENAME"
-      FIELD="FILE"
-      NUM_ROW="14"
-      REQUIRED="true"
-    >
-      <DEFAULT>"C:/temp/oracle_data.dat"</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
@@ -154,21 +170,7 @@
     >
       <DEFAULT>"ISO-8859-15"</DEFAULT>
     </PARAMETER>
-
-    <PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" REQUIRED="true" NUM_ROW="18">
-      <DEFAULT/> 
-    </PARAMETER>
-
-	<PARAMETER
-      NAME="MAPPING"
-      FIELD="MAPPING_TYPE"
-      NUM_ROW="19"
-      SHOW="false"
-    >       
-      <DEFAULT>oracle_id</DEFAULT>
-    </PARAMETER>
-
-  </PARAMETERS>
+  </ADVANCED_PARAMETERS>
 
   <CODEGENERATION>
     <TEMPLATES INPUT="tOOB" OUTPUT="tOBE">

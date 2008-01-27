@@ -91,8 +91,18 @@
     >
       <DEFAULT>"select id, name from employee"</DEFAULT>
     </PARAMETER>
-
+    
     <PARAMETER
+      NAME="DIE_ON_ERROR"
+      FIELD="CHECK"
+      NUM_ROW="10"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+  </PARAMETERS>
+
+  <ADVANCED_PARAMETERS>
+	<PARAMETER
       NAME="ENCODING"
       FIELD="ENCODING_TYPE"
       NUM_ROW="10"
@@ -106,18 +116,11 @@
       FIELD="TEXT"
       NUM_ROW="10"
       REQUIRED="true"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>10000</DEFAULT>
     </PARAMETER>
-    
-    <PARAMETER
-      NAME="DIE_ON_ERROR"
-      FIELD="CHECK"
-      NUM_ROW="10"
-    >
-      <DEFAULT>false</DEFAULT>
-    </PARAMETER>
-  </PARAMETERS>
+  </ADVANCED_PARAMETERS>
 
    <CODEGENERATION>
      <IMPORTS>

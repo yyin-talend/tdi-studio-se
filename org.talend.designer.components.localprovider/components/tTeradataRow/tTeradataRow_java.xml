@@ -143,16 +143,7 @@
       <DEFAULT>"select * from teradata "</DEFAULT>
     </PARAMETER>
     
-     <PARAMETER
-      NAME="COMMIT_EVERY"
-      FIELD="TEXT"
-      NUM_ROW="10"
-      REQUIRED="true"
-    >
-      <DEFAULT>10000</DEFAULT>
-    </PARAMETER>
-
-	<PARAMETER
+    <PARAMETER
       NAME="DIE_ON_ERROR"
       FIELD="CHECK"
       NUM_ROW="10"
@@ -160,6 +151,17 @@
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
    </PARAMETERS>
+   
+   <ADVANCED_PARAMETERS>
+   	<PARAMETER
+      NAME="COMMIT_EVERY"
+      FIELD="TEXT"
+      NUM_ROW="10"
+      REQUIRED="true"
+    >
+      <DEFAULT>10000</DEFAULT>
+    </PARAMETER>
+   </ADVANCED_PARAMETERS>
 
    <CODEGENERATION>
      <IMPORTS>

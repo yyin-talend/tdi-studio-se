@@ -126,8 +126,32 @@
     >
       <DEFAULT>"C:\talend_files\sybase_bulk.txt"</DEFAULT>
     </PARAMETER>
+    
+    <PARAMETER 
+    	NAME="APPEND" 
+    	FIELD="CHECK" 
+    	NUM_ROW="8">
+    	
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+           
+    <PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" REQUIRED="true" NUM_ROW="10">
+      <DEFAULT/> 
+    </PARAMETER>  
 
-    <PARAMETER
+	<PARAMETER
+      NAME="MAPPING"
+      FIELD="MAPPING_TYPE"
+      NUM_ROW="12"
+      SHOW="false"
+    >       
+      <DEFAULT>sybase_id</DEFAULT>
+    </PARAMETER>
+	
+ </PARAMETERS>
+ 
+ <ADVANCED_PARAMETERS>
+ 	<PARAMETER
       NAME="FIELDS_TERMINATOR"
       FIELD="TEXT"
       NUM_ROW="8"
@@ -152,14 +176,6 @@
       REQUIRED="false"
     >
       <DEFAULT>"1"</DEFAULT>
-    </PARAMETER>
-    
-    <PARAMETER 
-    	NAME="APPEND" 
-    	FIELD="CHECK" 
-    	NUM_ROW="8">
-    	
-      <DEFAULT>false</DEFAULT>
     </PARAMETER> 
   
     <PARAMETER
@@ -178,10 +194,6 @@
     	
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
-           
-    <PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" REQUIRED="true" NUM_ROW="10">
-      <DEFAULT/> 
-    </PARAMETER>  
     
     <PARAMETER 
     	NAME="ENCODING"  
@@ -198,17 +210,7 @@
           <ITEM NAME="RETRIEVE_OUTPUT"   VALUE="RETRIEVE_OUTPUT" />
        </ITEMS>
     </PARAMETER>
-
-	<PARAMETER
-      NAME="MAPPING"
-      FIELD="MAPPING_TYPE"
-      NUM_ROW="12"
-      SHOW="false"
-    >       
-      <DEFAULT>sybase_id</DEFAULT>
-    </PARAMETER>
-	
- </PARAMETERS>
+ </ADVANCED_PARAMETERS>
 
   <CODEGENERATION>
     <TEMPLATES INPUT="tSOB" OUTPUT="tSBE">

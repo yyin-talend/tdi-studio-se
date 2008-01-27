@@ -85,11 +85,7 @@
       <DEFAULT>""</DEFAULT>
     </PARAMETER>    
 
-	<PARAMETER NAME="PROPERTIES" FIELD="TEXT" NUM_ROW="4" REPOSITORY_VALUE="PROPERTIES_STRING">
-		<DEFAULT>""</DEFAULT>
-	</PARAMETER>
-
-    <PARAMETER
+	<PARAMETER
       NAME="USER"
       FIELD="TEXT"
       NUM_ROW="5"
@@ -168,6 +164,30 @@
     </PARAMETER>    
     
     <PARAMETER
+      NAME="DIE_ON_ERROR"
+      FIELD="CHECK"
+      NUM_ROW="9"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+    
+	<PARAMETER
+      NAME="MAPPING"
+      FIELD="MAPPING_TYPE"
+      NUM_ROW="11"
+      SHOW="false"
+    >       
+      <DEFAULT>informix_id</DEFAULT>
+    </PARAMETER>    
+    
+  </PARAMETERS>
+  
+  <ADVANCED_PARAMETERS>
+  	<PARAMETER NAME="PROPERTIES" FIELD="TEXT" NUM_ROW="4" REPOSITORY_VALUE="PROPERTIES_STRING">
+		<DEFAULT>""</DEFAULT>
+	</PARAMETER>
+  
+  	<PARAMETER
       NAME="ENCODING"
       FIELD="TEXT"
       NUM_ROW="9"
@@ -210,25 +230,7 @@
     >
       <DEFAULT>10000</DEFAULT>
     </PARAMETER>
-    
-	<PARAMETER
-      NAME="DIE_ON_ERROR"
-      FIELD="CHECK"
-      NUM_ROW="9"
-    >
-      <DEFAULT>false</DEFAULT>
-    </PARAMETER>
-    
-	<PARAMETER
-      NAME="MAPPING"
-      FIELD="MAPPING_TYPE"
-      NUM_ROW="11"
-      SHOW="false"
-    >       
-      <DEFAULT>informix_id</DEFAULT>
-    </PARAMETER>    
-    
-  </PARAMETERS>
+  </ADVANCED_PARAMETERS>
 
   <CODEGENERATION>
      <IMPORTS>

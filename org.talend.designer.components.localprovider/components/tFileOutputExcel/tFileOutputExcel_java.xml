@@ -53,15 +53,6 @@
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
-    
-    <PARAMETER
-      NAME="CREATE"
-      FIELD="CHECK"
-      REQUIRED="true"
-      NUM_ROW="40"
-    >
-      <DEFAULT>true</DEFAULT>
-    </PARAMETER>
 
     <PARAMETER
       NAME="APPEND_FILE"
@@ -81,6 +72,26 @@
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
 
+    <PARAMETER
+      NAME="SCHEMA"
+      FIELD="SCHEMA_TYPE"
+      REQUIRED="true"
+      NUM_ROW="50"
+    >
+      <DEFAULT/> 
+    </PARAMETER>
+  </PARAMETERS>
+  
+  <ADVANCED_PARAMETERS>
+  	<PARAMETER
+      NAME="CREATE"
+      FIELD="CHECK"
+      REQUIRED="true"
+      NUM_ROW="40"
+    >
+      <DEFAULT>true</DEFAULT>
+    </PARAMETER>
+
 	<PARAMETER NAME="ADVANCED_SEPARATOR" FIELD="CHECK" REQUIRED="true" NUM_ROW="46" >
 		<DEFAULT>false</DEFAULT>
 	</PARAMETER>
@@ -94,17 +105,8 @@
 		SHOW_IF="(ADVANCED_SEPARATOR == 'true')">
 		<DEFAULT>'.'</DEFAULT>
 	</PARAMETER>
-
-    <PARAMETER
-      NAME="SCHEMA"
-      FIELD="SCHEMA_TYPE"
-      REQUIRED="true"
-      NUM_ROW="50"
-    >
-      <DEFAULT/> 
-    </PARAMETER>
-
-    <PARAMETER
+	
+	<PARAMETER
       NAME="ENCODING"
       FIELD="ENCODING_TYPE"
       NUM_ROW="60"
@@ -112,8 +114,7 @@
     >
       <DEFAULT>"ISO-8859-15"</DEFAULT>
     </PARAMETER>
-
-  </PARAMETERS>
+  </ADVANCED_PARAMETERS>
 
   <CODEGENERATION>
     <IMPORTS>

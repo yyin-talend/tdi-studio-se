@@ -120,16 +120,18 @@
       <DEFAULT>"select * from sysobjects "</DEFAULT>
     </PARAMETER>
     
-    <PARAMETER
-      NAME="ENCODING"
-      FIELD="ENCODING_TYPE"
-      NUM_ROW="8"
-      REQUIRED="true"
-    >
-      <DEFAULT>"ISO-8859-15"</DEFAULT>
-    </PARAMETER>    
-
    </PARAMETERS>
+
+	<ADVANCED_PARAMETERS>
+		<PARAMETER
+      		NAME="ENCODING"
+      		FIELD="ENCODING_TYPE"
+      		NUM_ROW="8"
+      		REQUIRED="true"
+    	>
+      		<DEFAULT>"ISO-8859-15"</DEFAULT>
+		</PARAMETER>
+	</ADVANCED_PARAMETERS>
 
    <CODEGENERATION>
      <IMPORTS>

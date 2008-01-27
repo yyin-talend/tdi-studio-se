@@ -116,6 +116,35 @@
     </PARAMETER>
 
     <PARAMETER
+      NAME="SCHEMA"
+      FIELD="SCHEMA_TYPE"
+      NUM_ROW="7"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="REMOTE_FILENAME"
+      FIELD="FILE"
+      NUM_ROW="9"
+      REQUIRED="true"
+    >
+      <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/out.csv"</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="MAPPING"
+      FIELD="MAPPING_TYPE"
+      NUM_ROW="13"
+      SHOW="false"
+    >       
+      <DEFAULT>vertica_id</DEFAULT>
+    </PARAMETER>
+    
+   </PARAMETERS>
+   
+   <ADVANCED_PARAMETERS>
+   	<PARAMETER
       NAME="DATA_ACTION"
       FIELD="CLOSED_LIST"
       NUM_ROW="6"
@@ -126,16 +155,8 @@
         <ITEM NAME="UPDATE"           VALUE="UPDATE"/>
       </ITEMS>
     </PARAMETER>
-
-    <PARAMETER
-      NAME="SCHEMA"
-      FIELD="SCHEMA_TYPE"
-      NUM_ROW="7"
-    >
-      <DEFAULT>""</DEFAULT>
-    </PARAMETER>
     
-     <PARAMETER
+    <PARAMETER
       NAME="ROS"
       FIELD="CHECK"
       NUM_ROW="7"
@@ -143,16 +164,6 @@
       <DEFAULT>true</DEFAULT>
     </PARAMETER>
     
-
-    <PARAMETER
-      NAME="REMOTE_FILENAME"
-      FIELD="FILE"
-      NUM_ROW="9"
-      REQUIRED="true"
-    >
-      <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/out.csv"</DEFAULT>
-    </PARAMETER>
-
     <PARAMETER
       NAME="FIELDS_TERMINATED_BY"
       FIELD="TEXT"
@@ -170,17 +181,7 @@
     >
       <DEFAULT>"null"</DEFAULT>      
     </PARAMETER>
-    
-	<PARAMETER
-      NAME="MAPPING"
-      FIELD="MAPPING_TYPE"
-      NUM_ROW="13"
-      SHOW="false"
-    >       
-      <DEFAULT>vertica_id</DEFAULT>
-    </PARAMETER>
-    
-   </PARAMETERS>
+   </ADVANCED_PARAMETERS>
 
    <CODEGENERATION>
     <IMPORTS>

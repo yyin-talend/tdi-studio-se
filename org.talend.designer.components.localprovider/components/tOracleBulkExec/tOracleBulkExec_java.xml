@@ -151,6 +151,31 @@
     </PARAMETER>     
 
     <PARAMETER
+      NAME="DATA"
+      FIELD="FILE"
+      NUM_ROW="10"
+      REQUIRED="true"
+    >
+      <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/out.csv"</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" REQUIRED="true" NUM_ROW="14">
+      <DEFAULT/> 
+    </PARAMETER>
+
+	<PARAMETER
+      NAME="MAPPING"
+      FIELD="MAPPING_TYPE"
+      NUM_ROW="15"
+      SHOW="false"
+    >       
+      <DEFAULT>oracle_id</DEFAULT>
+    </PARAMETER>
+
+   </PARAMETERS>
+   
+   <ADVANCED_PARAMETERS>
+   	<PARAMETER
       NAME="DATA_ACTION"
       FIELD="CLOSED_LIST"
       NUM_ROW="9"
@@ -163,18 +188,7 @@
         <ITEM NAME="TRUNCATE"         VALUE="TRUNCATE"/>
       </ITEMS>
     </PARAMETER>
-
-
-
-    <PARAMETER
-      NAME="DATA"
-      FIELD="FILE"
-      NUM_ROW="10"
-      REQUIRED="true"
-    >
-      <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/out.csv"</DEFAULT>
-    </PARAMETER>
-
+    
     <PARAMETER
       NAME="FIELDS_TERMINATED_BY"
       FIELD="TEXT"
@@ -242,21 +256,7 @@
           <ITEM NAME="RETRIEVE_OUTPUT"   VALUE="RETRIEVE_OUTPUT" />
        </ITEMS>
     </PARAMETER>
-
-    <PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" REQUIRED="true" NUM_ROW="14">
-      <DEFAULT/> 
-    </PARAMETER>
-
-	<PARAMETER
-      NAME="MAPPING"
-      FIELD="MAPPING_TYPE"
-      NUM_ROW="15"
-      SHOW="false"
-    >       
-      <DEFAULT>oracle_id</DEFAULT>
-    </PARAMETER>
-
-   </PARAMETERS>
+   </ADVANCED_PARAMETERS>
 
    <CODEGENERATION>
      <IMPORTS>

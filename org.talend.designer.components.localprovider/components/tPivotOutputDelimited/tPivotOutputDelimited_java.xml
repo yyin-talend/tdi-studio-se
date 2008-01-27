@@ -87,7 +87,10 @@
       <DEFAULT>";"</DEFAULT>
     </PARAMETER>
 
-    <PARAMETER
+   </PARAMETERS>
+   
+   <ADVANCED_PARAMETERS>
+   	    <PARAMETER
       NAME="CSV_OPTION"
       FIELD="CHECK"
       REQUIRED="true"
@@ -125,8 +128,7 @@
 	>
       <DEFAULT>"ISO-8859-15"</DEFAULT>
     </PARAMETER>
-
-   </PARAMETERS>
+   </ADVANCED_PARAMETERS>
 
    <CODEGENERATION>
    	  <IMPORTS>

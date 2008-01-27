@@ -31,19 +31,6 @@
   <PARAMETERS>
   
     <PARAMETER
-    	NAME="ACTION"
-    	FIELD="CLOSED_LIST"
-    	SHOW="true"
-    	NUM_ROW="1"
-    >
-    	<ITEMS DEFAULT="INSERT" >
-    		<ITEM NAME="INSERT" VALUE="INSERT" />
-    		<ITEM NAME="UPDATE" VALUE="UPDATE" />
-    		<ITEM NAME="EXPORT" VALUE="EXPORT" />    		
-    	</ITEMS>
-    </PARAMETER>
-    
-    <PARAMETER
       NAME="PROPERTY"
       FIELD="PROPERTY_TYPE"
       SHOW="true"
@@ -100,10 +87,6 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-
-	<PARAMETER NAME="PROPERTIES" FIELD="TEXT" NUM_ROW="4" REPOSITORY_VALUE="PROPERTIES_STRING" SHOW_IF="(ACTION=='INSERT') or (ACTION=='UPDATE')">
-		<DEFAULT>""</DEFAULT>
-	</PARAMETER>
     
     <PARAMETER
       NAME="USER"
@@ -177,7 +160,46 @@
       <DEFAULT>"C:/mssql_bulk.txt"</DEFAULT>
     </PARAMETER>
 
+    <PARAMETER 
+    	NAME="OUTPUT_FILE_NAME"
+    	FIELD="FILE"
+    	NUM_ROW="11"
+    	REQUIRED="true"
+    	SHOW_IF="ACTION=='EXPORT'"
+    >
+    	<DEFAULT>"C:/mssql_bulk.txt"</DEFAULT>
+    </PARAMETER>
+    
     <PARAMETER
+      NAME="MAPPING"
+      FIELD="MAPPING_TYPE"
+      NUM_ROW="13"
+      SHOW="false"
+    >       
+      <DEFAULT>id_MSSQL</DEFAULT>
+    </PARAMETER>
+    
+   </PARAMETERS>
+   
+   <ADVANCED_PARAMETERS>
+   	<PARAMETER
+    	NAME="ACTION"
+    	FIELD="CLOSED_LIST"
+    	SHOW="true"
+    	NUM_ROW="1"
+    >
+    	<ITEMS DEFAULT="INSERT" >
+    		<ITEM NAME="INSERT" VALUE="INSERT" />
+    		<ITEM NAME="UPDATE" VALUE="UPDATE" />
+    		<ITEM NAME="EXPORT" VALUE="EXPORT" />    		
+    	</ITEMS>
+    </PARAMETER>
+
+	<PARAMETER NAME="PROPERTIES" FIELD="TEXT" NUM_ROW="4" REPOSITORY_VALUE="PROPERTIES_STRING" SHOW_IF="(ACTION=='INSERT') or (ACTION=='UPDATE')">
+		<DEFAULT>""</DEFAULT>
+	</PARAMETER>
+	
+	<PARAMETER
       NAME="FIELDS_TERMINATED_BY"
       FIELD="TEXT"
       NUM_ROW="10"
@@ -230,16 +252,6 @@
       </ITEMS>
     </PARAMETER>
     
-    <PARAMETER 
-    	NAME="OUTPUT_FILE_NAME"
-    	FIELD="FILE"
-    	NUM_ROW="11"
-    	REQUIRED="true"
-    	SHOW_IF="ACTION=='EXPORT'"
-    >
-    	<DEFAULT>"C:/mssql_bulk.txt"</DEFAULT>
-    </PARAMETER>
-    
     <PARAMETER
     	NAME="OUTPUT"
     	FIELD="CLOSED_LIST"
@@ -252,17 +264,8 @@
     		<ITEM NAME="VARIABLE" VALUE="RETRIEVE_OUTPUT" />
     	</ITEMS>
     </PARAMETER>
-    
-	<PARAMETER
-      NAME="MAPPING"
-      FIELD="MAPPING_TYPE"
-      NUM_ROW="13"
-      SHOW="false"
-    >       
-      <DEFAULT>id_MSSQL</DEFAULT>
-    </PARAMETER>
-    
-   </PARAMETERS>
+   </ADVANCED_PARAMETERS>
+   
 
    <CODEGENERATION>
     <IMPORTS>

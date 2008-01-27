@@ -43,15 +43,6 @@
     </PARAMETER>    
 
     <PARAMETER
-      NAME="MERGE"
-      FIELD="CHECK"
-      REQUIRED="true"
-      NUM_ROW="6"
-    >
-      <DEFAULT>false</DEFAULT>
-    </PARAMETER> 
-
-    <PARAMETER
       NAME="GROUPS"
       FIELD="TABLE"
       REQUIRED="false"
@@ -63,6 +54,17 @@
       </ITEMS>
     </PARAMETER>
   </PARAMETERS>
+  
+  <ADVANCED_PARAMETERS>
+  	<PARAMETER
+      NAME="MERGE"
+      FIELD="CHECK"
+      REQUIRED="true"
+      NUM_ROW="6"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>    
+  </ADVANCED_PARAMETERS>
 
   <CODEGENERATION>
     <TEMPLATES INPUT="Array" OUTPUT="DenormalizeIn">
