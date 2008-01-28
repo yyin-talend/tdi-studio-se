@@ -1,5 +1,6 @@
 <%@ jet 
 imports="
+ 	org.talend.core.model.metadata.types.JavaType
 	org.talend.core.model.process.EConnectionType
 	org.talend.core.model.process.IConnection
 	org.talend.core.model.metadata.IMetadataColumn
@@ -71,7 +72,7 @@ for (int i=0; i<contextParams.size(); i++) {
       if(i==0){
           childJob = commandLine[i];
       %>        
-        <%=commandLine[i]%>.runJob(new String[]{
+        String[][] childReturn_<%=cid %> = <%=commandLine[i]%>.runJob(new String[]{
       <%
       }else{
           if (i <= (commandLine.length -2)) {
@@ -122,21 +123,52 @@ for (int i=0; i<contextParams.size(); i++) {
     }
 %>
 
-<% if(outConns!=null && outConns.size() > 0) {%>
-        java.util.List <Object[]> list_<%=cid %> = <%=childJob %>.globalBuffer;        
-        for (Object[] item_<%=cid %> : list_<%=cid %>) {        
-<% 
+<%
+String firstConnName = null; 
+if(outConns != null && outConns.size() > 0) {
+    for (IConnection conn : outConns) {
+    	if(!conn.isActivate()) continue;
+    	firstConnName = conn.getName(); //get the first available flow link
+    	break;
+    }
 }
-for (IConnection conn : outConns) {
-	if(!conn.isActivate()) continue;
-	String outputConnName = conn.getName(); 
-    		
-	for (int i = 0; i < columns.size(); i++) {//4
-			IMetadataColumn column = columns.get(i);
-			String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), true);			
+
+if(firstConnName != null) {//b
 %>
-	<%=outputConnName %>.<%=column.getLabel() %> = (<%=typeToGenerate %>)item_<%=cid %>[<%=i %>];
-<% 
-	} 
-}
-%>  
+ 	for (String[] item_<%=cid %> : childReturn_<%=cid %>) { 
+<%
+	int columnSize = columns.size();
+	for (int i = 0; i < columnSize; i++) {//a
+		IMetadataColumn column = columns.get(i);
+		String label = column.getLabel();
+		String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+		JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+		String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
+%>		
+	if(<%=i %> < item_<%=cid %>.length){				
+<%
+		if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
+%>
+		<%=firstConnName %>.<%=label %> = item_<%=cid %>[<%=i %>];
+<%
+		} else if(javaType == JavaTypesManager.DATE) {
+%>
+		<%=firstConnName %>.<%=label %> = ParserUtils.parseTo_Date(item_<%=cid %>[<%=i %>], <%= patternValue %>);
+<%
+		} else if(javaType == JavaTypesManager.BYTE_ARRAY){
+%>							
+	    <%=firstConnName %>.<%=label %> = item_<%=cid %>[<%=i %>].getBytes();
+<%
+		} else {
+%>
+		<%=firstConnName %>.<%=label %> = ParserUtils.parseTo_<%= typeToGenerate %>(item_<%=cid %>[<%=i %>]);
+<%
+		}
+%>							
+    }else{
+    	<%=firstConnName %>.<%=label %> = <%=JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate)%>;
+    }
+<%
+	}//a
+}//b	
+%>

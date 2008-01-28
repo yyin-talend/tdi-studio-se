@@ -92,12 +92,11 @@ for (INode tBuffer : process.getNodesOfType("tBuffer")) {
 
         int maxRowNumOftBuffer = <%=maxRowNum_tBuffer %>;
         String[][] bufferValue = new String[globalBuffer.size()][maxRowNumOftBuffer];
-        for (int i = 0; i < globalBuffer.size(); i++) {
-        	Object[] item = globalBuffer.get(i); 
-            for (int j = 0; j < item.length; j++) {
-                bufferValue[i][j] = item[j].toString();
-            }
-        }
+		for (int i = 0; i < globalBuffer.size(); i++) {
+			bufferValue[i] = globalBuffer.get(i);
+		}
+		        
+        globalBuffer.clear();
             	
     	return bufferValue;
     }
@@ -231,6 +230,9 @@ for (INode tBuffer : process.getNodesOfType("tBuffer")) {
 		}
 %>
 
+
+	long startFreeMemory = Runtime.getRuntime().freeMemory();
+	long endFreeMemory = 0;
 	long end = 0;
 	long start = System.currentTimeMillis();
 	final <%=process.getName() %> <%=process.getName() %>Class = new <%=process.getName() %>(); 
@@ -303,6 +305,11 @@ for (INode tBuffer : process.getNodesOfType("tBuffer")) {
 		if (watch) {
     		System.out.println((end-start)+" milliseconds");
 	    }
+	
+		endFreeMemory = Runtime.getRuntime().freeMemory();
+		if (true) {
+    		System.out.println((startFreeMemory-endFreeMemory) + " bytes--used by : <%=process.getName() %>");
+	    }		  
 <%
 	if (stats) {
 %>
@@ -327,6 +334,9 @@ for (INode tBuffer : process.getNodesOfType("tBuffer")) {
 <%
     }	
 %>
+	
+	reset();
+	
     if(errorCode == null) {
          return status != null && status.equals("failure") ? 1 : 0;	
     } else {   
@@ -358,12 +368,16 @@ for (INode tBuffer : process.getNodesOfType("tBuffer")) {
     	}
     	
 	}
-	
+
 	private static void init() {
+		errorCode = null;
+		status = "";
+	}
+	
+	private static void reset() {
 
 		defaultProps.clear();
-		context.clear();		
-		errorCode = null;		
+		context.clear();	
 <%
 	if(!isRunInMultiThread ){
 %>
@@ -390,7 +404,6 @@ for (INode tBuffer : process.getNodesOfType("tBuffer")) {
 		rootPid = null;
 		fatherPid = null;
 		context_param.clear();
-		status = "";
-		globalBuffer.clear();		
+		System.gc();		
 	}	
 }
