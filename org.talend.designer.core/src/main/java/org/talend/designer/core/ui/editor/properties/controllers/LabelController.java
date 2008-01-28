@@ -103,6 +103,8 @@ public class LabelController extends AbstractElementPropertySectionController {
         } else {
             data.left = new FormAttachment(labelLabel, 0, SWT.RIGHT);
         }
+        Point initialSize = labelLabel.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+        dynamicProperty.setCurRowSize(initialSize.y + ITabbedPropertyConstants.VSPACE);
         return null;
     }
 
@@ -141,8 +143,14 @@ public class LabelController extends AbstractElementPropertySectionController {
      */
     @Override
     public int estimateRowSize(Composite subComposite, IElementParameter param) {
-        // TODO Auto-generated method stub
-        return 0;
+        CLabel labelLabel;
+        if (param.getValue().equals("")) {
+            labelLabel = getWidgetFactory().createCLabel(subComposite, param.getDisplayName(), SWT.SHADOW_NONE); //$NON-NLS-1$
+        } else {
+            labelLabel = getWidgetFactory().createCLabel(subComposite, (String) param.getValue(), SWT.SHADOW_NONE); //$NON-NLS-1$
+        }
+        Point initialSize = labelLabel.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+        return initialSize.y + ITabbedPropertyConstants.VSPACE;
     }
 
 }
