@@ -266,21 +266,10 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
      * @see org.talend.core.model.process.AbstractExternalNode#setExternalXmlData(java.io.InputStream)
      */
     public void loadDataIn(InputStream in, Reader stringReader) throws IOException, ClassNotFoundException {
-        // if (in.available() > 0) {
-        // ObjectInputStream oin = null;
-        // try {
-        // oin = new ObjectInputStream(in);
-        // externalData = (ExternalMapperData) oin.readObject();
-        //
-        // } finally {
-        // if (oin != null) {
-        // oin.close();
-        // }
-        // }
-        // }
 
         if (stringReader != null) {
             Unmarshaller unmarshaller = new Unmarshaller(ExternalMapperData.class);
+            unmarshaller.setWhitespacePreserve(true);
             try {
                 externalData = (ExternalMapperData) unmarshaller.unmarshal(stringReader);
             } catch (MarshalException e) {
@@ -314,6 +303,7 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
             try {
                 Marshaller marshaller = new Marshaller(writer);
                 marshaller.marshal(externalData);
+
             } catch (MarshalException e) {
                 ExceptionHandler.process(e);
             } catch (ValidationException e) {

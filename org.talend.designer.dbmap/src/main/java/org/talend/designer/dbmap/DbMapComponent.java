@@ -239,21 +239,10 @@ public class DbMapComponent extends AbstractMapComponent {
      * @see org.talend.core.model.process.AbstractExternalNode#setExternalXmlData(java.io.InputStream)
      */
     public void loadDataIn(InputStream in, Reader stringReader) throws IOException, ClassNotFoundException {
-        // if (in.available() > 0) {
-        // ObjectInputStream oin = null;
-        // try {
-        // oin = new ObjectInputStream(in);
-        // externalData = (ExternalMapperData) oin.readObject();
-        //
-        // } finally {
-        // if (oin != null) {
-        // oin.close();
-        // }
-        // }
-        // }
 
         if (stringReader != null) {
             Unmarshaller unmarshaller = new Unmarshaller(ExternalDbMapData.class);
+            unmarshaller.setWhitespacePreserve(true);
             try {
                 externalData = (ExternalDbMapData) unmarshaller.unmarshal(stringReader);
             } catch (MarshalException e) {
