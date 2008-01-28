@@ -21,8 +21,8 @@ import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.properties.DelimitedFileConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.ui.images.OverlayImageProvider;
 import org.talend.core.ui.images.ECoreImage;
+import org.talend.core.ui.images.OverlayImageProvider;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
@@ -75,6 +75,16 @@ public class CreateFileDelimitedAction extends AbstractCreateAction {
         // RepositoryNode metadataNode = getViewPart().getRoot().getChildren().get(6);
         // RepositoryNode fileDelimitedNode = metadataNode.getChildren().get(1);
         RepositoryNode fileDelimitedNode = getCurrentRepositoryNode();
+
+        if (isToolbar()) {
+            if (fileDelimitedNode != null && fileDelimitedNode.getContentType() != ERepositoryObjectType.METADATA_FILE_DELIMITED) {
+                fileDelimitedNode = null;
+            }
+            if (fileDelimitedNode == null) {
+                fileDelimitedNode = getRepositoryNodeForDefault(ERepositoryObjectType.METADATA_FILE_DELIMITED);
+            }
+
+        }
         ISelection selection = null;
         WizardDialog wizardDialog;
         if (isToolbar()) {

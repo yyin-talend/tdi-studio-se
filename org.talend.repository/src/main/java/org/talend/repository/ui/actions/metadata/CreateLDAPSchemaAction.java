@@ -94,6 +94,15 @@ public class CreateLDAPSchemaAction extends AbstractCreateAction {
         // RepositoryNode metadataNode = getViewPart().getRoot().getChildren().get(6);
         // RepositoryNode fileLDAPSchemaNode = metadataNode.getChildren().get(6);
         RepositoryNode fileLDAPSchemaNode = getCurrentRepositoryNode();
+
+        if (isToolbar()) {
+            if (fileLDAPSchemaNode != null && fileLDAPSchemaNode.getContentType() != currentNodeType) {
+                fileLDAPSchemaNode = null;
+            }
+            if (fileLDAPSchemaNode == null) {
+                fileLDAPSchemaNode = getRepositoryNodeForDefault(currentNodeType);
+            }
+        }
         ISelection selection = null;
         WizardDialog wizardDialog;
         if (isToolbar()) {

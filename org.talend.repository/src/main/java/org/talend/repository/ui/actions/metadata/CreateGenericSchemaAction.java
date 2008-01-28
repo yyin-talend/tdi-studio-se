@@ -89,6 +89,15 @@ public class CreateGenericSchemaAction extends AbstractCreateAction {
         // RepositoryNode metadataNode = getViewPart().getRoot().getChildren().get(6);
         // RepositoryNode fileGenericSchemaNode = metadataNode.getChildren().get(7);
         RepositoryNode fileGenericSchemaNode = getCurrentRepositoryNode();
+
+        if (isToolbar()) {
+            if (fileGenericSchemaNode != null && fileGenericSchemaNode.getContentType() != currentNodeType) {
+                fileGenericSchemaNode = null;
+            }
+            if (fileGenericSchemaNode == null) {
+                fileGenericSchemaNode = getRepositoryNodeForDefault(currentNodeType);
+            }
+        }
         WizardDialog wizardDialog;
         ISelection selection = null;
         if (isToolbar()) {

@@ -100,6 +100,15 @@ public class CreateRoutineAction extends AbstractRoutineAction {
         // RepositoryNode codeNode = getViewPart().getRoot().getChildren().get(4);
         // RepositoryNode routineNode = codeNode.getChildren().get(0);
         RepositoryNode routineNode = getCurrentRepositoryNode();
+
+        if (isToolbar()) {
+            if (routineNode != null && routineNode.getContentType() != ERepositoryObjectType.ROUTINES) {
+                routineNode = null;
+            }
+            if (routineNode == null) {
+                routineNode = getRepositoryNodeForDefault(ERepositoryObjectType.ROUTINES);
+            }
+        }
         RepositoryNode node = null;
         IPath path;
         if (isToolbar()) {

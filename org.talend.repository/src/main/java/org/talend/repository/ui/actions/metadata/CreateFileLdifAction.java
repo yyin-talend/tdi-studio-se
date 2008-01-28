@@ -21,8 +21,8 @@ import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.properties.LdifFileConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.ui.images.OverlayImageProvider;
 import org.talend.core.ui.images.ECoreImage;
+import org.talend.core.ui.images.OverlayImageProvider;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
@@ -75,6 +75,15 @@ public class CreateFileLdifAction extends AbstractCreateAction {
         // RepositoryNode metadataNode = getViewPart().getRoot().getChildren().get(6);
         // RepositoryNode fileLdifNode = metadataNode.getChildren().get(5);
         RepositoryNode fileLdifNode = getCurrentRepositoryNode();
+
+        if (isToolbar()) {
+            if (fileLdifNode != null && fileLdifNode.getContentType() != ERepositoryObjectType.METADATA_FILE_LDIF) {
+                fileLdifNode = null;
+            }
+            if (fileLdifNode == null) {
+                fileLdifNode = getRepositoryNodeForDefault(ERepositoryObjectType.METADATA_FILE_LDIF);
+            }
+        }
         ISelection selection = null;
         WizardDialog wizardDialog;
         if (isToolbar()) {

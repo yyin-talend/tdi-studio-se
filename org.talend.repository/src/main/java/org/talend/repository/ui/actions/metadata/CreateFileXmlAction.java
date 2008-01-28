@@ -21,8 +21,8 @@ import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.properties.XmlFileConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.ui.images.OverlayImageProvider;
 import org.talend.core.ui.images.ECoreImage;
+import org.talend.core.ui.images.OverlayImageProvider;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
@@ -79,6 +79,15 @@ public class CreateFileXmlAction extends AbstractCreateAction {
         // RepositoryNode metadataNode = getViewPart().getRoot().getChildren().get(6);
         // RepositoryNode fileXMLNode = metadataNode.getChildren().get(4);
         RepositoryNode fileXMLNode = getCurrentRepositoryNode();
+
+        if (isToolbar()) {
+            if (fileXMLNode != null && fileXMLNode.getContentType() != ERepositoryObjectType.METADATA_FILE_XML) {
+                fileXMLNode = null;
+            }
+            if (fileXMLNode == null) {
+                fileXMLNode = getRepositoryNodeForDefault(ERepositoryObjectType.METADATA_FILE_XML);
+            }
+        }
         ISelection selection = null;
         WizardDialog wizardDialog;
         if (isToolbar()) {

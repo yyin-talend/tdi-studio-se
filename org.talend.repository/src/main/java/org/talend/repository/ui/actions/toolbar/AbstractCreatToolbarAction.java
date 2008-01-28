@@ -25,8 +25,10 @@ import org.eclipse.swt.events.MenuEvent;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowPulldownDelegate2;
+import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
 import org.talend.repository.ui.actions.AContextualAction;
@@ -39,6 +41,7 @@ import org.talend.repository.ui.actions.metadata.CreateFileXmlAction;
 import org.talend.repository.ui.actions.metadata.CreateGenericSchemaAction;
 import org.talend.repository.ui.actions.metadata.CreateLDAPSchemaAction;
 import org.talend.repository.ui.actions.routines.CreateRoutineAction;
+import org.talend.repository.ui.views.IRepositoryView;
 
 /**
  * DOC qwei class global comment. Detailled comment <br/>
@@ -114,16 +117,46 @@ public abstract class AbstractCreatToolbarAction implements IWorkbenchWindowPull
         addSeparator(menu);
         addToMenu(menu, CorePlugin.getDefault().getDiagramModelService().getCreateDiagramAction(true), -1);
         addSeparator(menu);
-        addToMenu(menu, new CreateConnectionAction(true), -1);
-        addToMenu(menu, new CreateFileDelimitedAction(true), -1);
-        addToMenu(menu, new CreateFilePositionalAction(true), -1);
-        addToMenu(menu, new CreateFileRegexpAction(true), -1);
-        addToMenu(menu, new CreateFileXmlAction(true), -1);
-        addToMenu(menu, new CreateFileLdifAction(true), -1);
-        addToMenu(menu, new CreateLDAPSchemaAction(true), -1);
-        addToMenu(menu, new CreateGenericSchemaAction(true), -1);
+
+        IRepositoryView repositoryView = getRepositoryView();
+
+        final CreateConnectionAction createConnectionAction = new CreateConnectionAction(true);
+        createConnectionAction.setWorkbenchPart(repositoryView);
+        addToMenu(menu, createConnectionAction, -1);
+
+        final CreateFileDelimitedAction createFileDelimitedAction = new CreateFileDelimitedAction(true);
+        createFileDelimitedAction.setWorkbenchPart(repositoryView);
+        addToMenu(menu, createFileDelimitedAction, -1);
+
+        final CreateFilePositionalAction createFilePositionalAction = new CreateFilePositionalAction(true);
+        createFilePositionalAction.setWorkbenchPart(repositoryView);
+        addToMenu(menu, createFilePositionalAction, -1);
+
+        final CreateFileRegexpAction createFileRegexpAction = new CreateFileRegexpAction(true);
+        createFileRegexpAction.setWorkbenchPart(repositoryView);
+        addToMenu(menu, createFileRegexpAction, -1);
+
+        final CreateFileXmlAction createFileXmlAction = new CreateFileXmlAction(true);
+        createFileXmlAction.setWorkbenchPart(repositoryView);
+        addToMenu(menu, createFileXmlAction, -1);
+
+        final CreateFileLdifAction createFileLdifAction = new CreateFileLdifAction(true);
+        createFileLdifAction.setWorkbenchPart(repositoryView);
+        addToMenu(menu, createFileLdifAction, -1);
+
+        final CreateLDAPSchemaAction createLDAPSchemaAction = new CreateLDAPSchemaAction(true);
+        createLDAPSchemaAction.setWorkbenchPart(repositoryView);
+        addToMenu(menu, createLDAPSchemaAction, -1);
+
+        final CreateGenericSchemaAction createGenericSchemaAction = new CreateGenericSchemaAction(true);
+        createGenericSchemaAction.setWorkbenchPart(repositoryView);
+        addToMenu(menu, createGenericSchemaAction, -1);
+
         addSeparator(menu);
-        addToMenu(menu, new CreateRoutineAction(true), -1);
+
+        final CreateRoutineAction createRoutineAction = new CreateRoutineAction(true);
+        createRoutineAction.setWorkbenchPart(repositoryView);
+        addToMenu(menu, createRoutineAction, -1);
 
         IExtensionRegistry registry = Platform.getExtensionRegistry();
         IConfigurationElement[] configurationElements = registry
@@ -133,6 +166,7 @@ public abstract class AbstractCreatToolbarAction implements IWorkbenchWindowPull
             try {
                 AContextualAction action = (AContextualAction) element.createExecutableExtension("class"); //$NON-NLS-1$
                 action.setToolbar(true);
+                action.setWorkbenchPart(repositoryView);
                 addToMenu(menu, action, -1);
             } catch (CoreException e) {
                 ExceptionHandler.process(e);
@@ -141,7 +175,7 @@ public abstract class AbstractCreatToolbarAction implements IWorkbenchWindowPull
     }
 
     /**
-     * Adds a separator to the given menu
+     * Adds a separator to the given menu.
      * 
      * @param menu
      */
@@ -178,7 +212,7 @@ public abstract class AbstractCreatToolbarAction implements IWorkbenchWindowPull
     }
 
     /**
-     * Creates the menu for the action
+     * Creates the menu for the action.
      */
     private void initMenu() {
         // Add listener to re-populate the menu each time
@@ -197,6 +231,12 @@ public abstract class AbstractCreatToolbarAction implements IWorkbenchWindowPull
                 }
             }
         });
+    }
+
+    private IRepositoryView getRepositoryView() {
+        IViewPart findView = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(
+                IRepositoryView.VIEW_ID);
+        return (IRepositoryView) findView;
     }
 
 }

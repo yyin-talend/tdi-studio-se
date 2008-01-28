@@ -87,6 +87,15 @@ public class CreateConnectionAction extends AbstractCreateAction {
         // RepositoryNode metadataNode = getViewPart().getRoot().getChildren().get(6);
         // RepositoryNode dbConnectionNode = metadataNode.getChildren().get(0);
         RepositoryNode dbConnectionNode = getCurrentRepositoryNode();
+
+        if (isToolbar()) {
+            if (dbConnectionNode != null && dbConnectionNode.getContentType() != ERepositoryObjectType.METADATA_CONNECTIONS) {
+                dbConnectionNode = null;
+            }
+            if (dbConnectionNode == null) {
+                dbConnectionNode = getRepositoryNodeForDefault(ERepositoryObjectType.METADATA_CONNECTIONS);
+            }
+        }
         RepositoryNode metadataNode = dbConnectionNode.getParent();
         // Force focus to the repositoryView and open Metadata and DbConnection nodes
         getViewPart().setFocus();

@@ -21,8 +21,8 @@ import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.properties.PositionalFileConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.ui.images.OverlayImageProvider;
 import org.talend.core.ui.images.ECoreImage;
+import org.talend.core.ui.images.OverlayImageProvider;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
@@ -80,6 +80,16 @@ public class CreateFilePositionalAction extends AbstractCreateAction {
         // RepositoryNode metadataNode = getViewPart().getRoot().getChildren().get(6);
         // RepositoryNode filePositionalNode = metadataNode.getChildren().get(2);
         RepositoryNode filePositionalNode = getCurrentRepositoryNode();
+
+        if (isToolbar()) {
+            if (filePositionalNode != null
+                    && filePositionalNode.getContentType() != ERepositoryObjectType.METADATA_FILE_POSITIONAL) {
+                filePositionalNode = null;
+            }
+            if (filePositionalNode == null) {
+                filePositionalNode = getRepositoryNodeForDefault(ERepositoryObjectType.METADATA_FILE_POSITIONAL);
+            }
+        }
         ISelection selection = null;
         WizardDialog wizardDialog;
         if (isToolbar()) {
