@@ -75,10 +75,11 @@
 <%
 	}
 %>		
-	}finally{
+	}
 	
 <%
-	//generate the code to free memory for lookup link buffered datas
+	//generate the code to free memory for lookup link and virtual component buffered datas 
+	boolean firstIn = true;
 	boolean needGc = false;
 	List<INode> nodes = subTree.getNodes();
 	for(INode node:nodes){
@@ -91,6 +92,7 @@
 		if(origin != null && !"".equals(origin)){
 			if(!needGc) needGc = true;
 	%>
+				<%if(firstIn){%> finally{ <% firstIn = false;}%>
 				//free memory for "<%=node.getUniqueName() %>"
 				globalMap.put("<%=origin %>", null);
 	<%
@@ -104,6 +106,7 @@
 			if(node.getClass().getName().equals("org.talend.designer.mapper.MapperComponent")){
 				for(IConnection connection:lookupInput){						
      %>
+     			<%if(firstIn){%> finally{ <% firstIn = false;}%>
      			//free memory for "<%=node.getUniqueName() %>"
      			globalMap.put("tHash_Lookup_<%=connection.getName() %>", null); 
      <%
@@ -111,6 +114,7 @@
             }else{
             	for(IConnection connection:lookupInput){
       %>      	
+      			<%if(firstIn){%> finally{ <% firstIn = false;}%>
       			//free memory for "<%=node.getUniqueName() %>"
 				globalMap.put("tHash_<%=connection.getName() %>", null);
       <%      		 
@@ -123,8 +127,8 @@
 	if(needGc) {
 	%>		
 				System.gc();
+		}		
 	<%
 		}
 	%>
-	}
 }
