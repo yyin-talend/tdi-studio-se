@@ -18,8 +18,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         // component id
         String cid = node.getUniqueName();
  %>
-	}//a
-}//b
+	
+}//a
 ctx_<%=cid%>.close();
 globalMap.put("<%=cid%>_NB_LINE", <%=cid%>_NB_LINE);
 
