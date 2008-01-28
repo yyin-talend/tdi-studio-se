@@ -330,7 +330,7 @@ public class LdifFileStep3Form extends AbstractLdifFileStepForm {
         // clear all items
         tableEditorView.getMetadataEditor().removeAll();
 
-        if (csvArray == null) {
+        if (csvArray == null || csvArray.getRows().isEmpty()) {
             return;
         } else {
 

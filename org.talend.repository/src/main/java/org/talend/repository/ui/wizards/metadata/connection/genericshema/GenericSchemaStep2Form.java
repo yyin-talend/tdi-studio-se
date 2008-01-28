@@ -320,8 +320,7 @@ public class GenericSchemaStep2Form extends AbstractForm {
             // Bottom Button
             Composite compositeBottomButton = Form.startNewGridLayout(this, 2, false, SWT.CENTER, SWT.CENTER);
             // Button Cancel
-            cancelButton = new UtilsButton(compositeBottomButton,
-                    Messages.getString("CommonWizard.cancel"), WIDTH_BUTTON_PIXEL, //$NON-NLS-1$
+            cancelButton = new UtilsButton(compositeBottomButton, Messages.getString("CommonWizard.cancel"), WIDTH_BUTTON_PIXEL, //$NON-NLS-1$
                     HEIGHT_BUTTON_PIXEL);
         }
         addUtilsButtonListeners();
@@ -547,7 +546,7 @@ public class GenericSchemaStep2Form extends AbstractForm {
         // clear all items
         tableEditorView.getMetadataEditor().removeAll();
 
-        if (csvArray == null) {
+        if (csvArray == null || csvArray.getRows().isEmpty()) {
             return;
         } else {
 

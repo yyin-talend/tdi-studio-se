@@ -337,7 +337,9 @@ public class FileStep3Form extends AbstractPositionalFileStepForm {
 
         // clear all items
         tableEditorView.getMetadataEditor().removeAll();
-
+        if (csvArray == null || csvArray.getRows().isEmpty()) {
+            return;
+        }
         String[] fieldSeparatorValueArray = null;
         String fieldSeparatorValues = this.getConnection().getFieldSeparatorValue();
 
@@ -347,6 +349,7 @@ public class FileStep3Form extends AbstractPositionalFileStepForm {
         }
 
         List<String[]> csvRows = csvArray.getRows();
+
         String[] fields = csvRows.get(0);
         int numberOfCol = fields.length;
 

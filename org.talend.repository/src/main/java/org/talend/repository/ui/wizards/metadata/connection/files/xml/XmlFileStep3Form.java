@@ -323,7 +323,7 @@ public class XmlFileStep3Form extends AbstractXmlFileStepForm {
         // clear all items
         tableEditorView.getMetadataEditor().removeAll();
 
-        if (csvArray == null) {
+        if (csvArray == null || csvArray.getRows().isEmpty()) {
             return;
         } else {
 

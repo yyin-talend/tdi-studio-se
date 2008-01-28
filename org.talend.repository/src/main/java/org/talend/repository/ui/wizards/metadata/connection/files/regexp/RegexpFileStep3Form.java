@@ -339,7 +339,7 @@ public class RegexpFileStep3Form extends AbstractRegexpFileStepForm {
         // clear all items
         tableEditorView.getMetadataEditor().removeAll();
 
-        if (csvArray == null) {
+        if (csvArray == null || csvArray.getRows().isEmpty()) {
             return;
         } else {
 
