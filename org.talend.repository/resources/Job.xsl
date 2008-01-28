@@ -43,7 +43,7 @@
 						</td>
 						<!-- <td width="1%" rowspan="2" align="center"></td> -->
 						<td class="TOPTITLESTYLE">
-									Job&#160;documentation
+									<xsl:value-of select="/project/@docType" />
 						</td>
 					</tr>
 					<tr valign="top">
