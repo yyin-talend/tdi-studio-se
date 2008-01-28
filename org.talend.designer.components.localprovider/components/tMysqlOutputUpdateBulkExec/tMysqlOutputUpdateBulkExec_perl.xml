@@ -112,15 +112,6 @@
     </PARAMETER>
 
     <PARAMETER
-      NAME="ENCODING"
-      FIELD="ENCODING_TYPE"
-      NUM_ROW="61"
-      REQUIRED="true"
-    >
-      <DEFAULT>'ISO-8859-15'</DEFAULT>
-    </PARAMETER>
-
-    <PARAMETER
       NAME="TABLE"
       FIELD="TEXT"
       NUM_ROW="70"
@@ -149,10 +140,23 @@
       <DEFAULT>'/tmp/mysql_data.txt'</DEFAULT>
     </PARAMETER>
 
+  </PARAMETERS>
+
+  <ADVANCED_PARAMETERS>
+
+    <PARAMETER
+      NAME="ENCODING"
+      FIELD="ENCODING_TYPE"
+      NUM_ROW="10"
+      REQUIRED="true"
+    >
+      <DEFAULT>'ISO-8859-15'</DEFAULT>
+    </PARAMETER>
+
     <PARAMETER
       NAME="ROWSEPARATOR"
       FIELD="TEXT"
-      NUM_ROW="110"
+      NUM_ROW="20"
       REPOSITORY_VALUE="ROW_SEPARATOR"
     >
       <DEFAULT>"\n"</DEFAULT>
@@ -161,13 +165,13 @@
     <PARAMETER
       NAME="FIELDSEPARATOR"
       FIELD="TEXT"
-      NUM_ROW="120"
+      NUM_ROW="30"
       REPOSITORY_VALUE="FIELD_SEPARATOR"
     >
       <DEFAULT>';'</DEFAULT>
     </PARAMETER>
 
-  </PARAMETERS>
+  </ADVANCED_PARAMETERS>
 
   <CODEGENERATION>
     <TEMPLATES INPUT="tMOB" OUTPUT="tMUBE">

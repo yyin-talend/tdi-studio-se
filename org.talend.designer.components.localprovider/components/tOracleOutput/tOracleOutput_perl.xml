@@ -195,10 +195,14 @@
       <DEFAULT>''</DEFAULT>
     </PARAMETER>
 
+  </PARAMETERS>
+
+  <ADVANCED_PARAMETERS>
+
     <PARAMETER
       NAME="ENCODING"
       FIELD="ENCODING_TYPE"
-      NUM_ROW="80"
+      NUM_ROW="10"
       REQUIRED="true"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
@@ -210,7 +214,7 @@
       FIELD="TABLE"
       REQUIRED="false"
       NOT_SHOW_IF="(TABLE_ACTION=='DROP_CREATE' or TABLE_ACTION=='CREATE' or TABLE_ACTION=='CREATE_IF_NOT_EXISTS')"
-      NUM_ROW="90"
+      NUM_ROW="20"
       NB_LINES="3"
     >
       <ITEMS>
@@ -235,14 +239,14 @@
     <PARAMETER
       NAME="COMMIT_EVERY"
       FIELD="TEXT"
-      NUM_ROW="100"
+      NUM_ROW="30"
       REQUIRED="true"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>10000</DEFAULT>
     </PARAMETER>
 
-  </PARAMETERS>
+  </ADVANCED_PARAMETERS>
 
   <CODEGENERATION>
     <IMPORTS>

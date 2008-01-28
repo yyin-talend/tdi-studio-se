@@ -103,24 +103,6 @@
     </PARAMETER>
 
     <PARAMETER
-      NAME="ENCODING"
-      FIELD="ENCODING_TYPE"
-      NUM_ROW="90"
-      REQUIRED="true"
-    >
-      <DEFAULT>'ISO-8859-15'</DEFAULT>
-    </PARAMETER>
-
-    <PARAMETER
-      NAME="COMMIT_EVERY"
-      FIELD="TEXT"
-      NUM_ROW="100"
-      REQUIRED="true"
-    >
-      <DEFAULT>10000</DEFAULT>
-    </PARAMETER>
-
-    <PARAMETER
       NAME="TABLE"
       FIELD="DBTABLE"
       NUM_ROW="110"
@@ -153,6 +135,28 @@
     </PARAMETER>
 
   </PARAMETERS>
+
+  <ADVANCED_PARAMETERS>
+
+    <PARAMETER
+      NAME="ENCODING"
+      FIELD="ENCODING_TYPE"
+      NUM_ROW="10"
+      REQUIRED="true"
+    >
+      <DEFAULT>'ISO-8859-15'</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="COMMIT_EVERY"
+      FIELD="TEXT"
+      NUM_ROW="20"
+      REQUIRED="true"
+    >
+      <DEFAULT>10000</DEFAULT>
+    </PARAMETER>
+
+  </ADVANCED_PARAMETERS>
 
   <CODEGENERATION>
     <IMPORTS>

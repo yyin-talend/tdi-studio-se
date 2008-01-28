@@ -100,15 +100,6 @@
     </PARAMETER>
 
     <PARAMETER
-      NAME="FIELDS_TERMINATED_BY"
-      FIELD="TEXT"
-      NUM_ROW="100"
-      REQUIRED="true"
-    >
-      <DEFAULT>';'</DEFAULT>
-    </PARAMETER>
-
-    <PARAMETER
       NAME="TABLE_ACTION"
       FIELD="CLOSED_LIST"
       NUM_ROW="110"
@@ -150,16 +141,29 @@
       <DEFAULT/> 
     </PARAMETER>
 
+  </PARAMETERS>
+
+  <ADVANCED_PARAMETERS>
+
+    <PARAMETER
+      NAME="FIELDS_TERMINATED_BY"
+      FIELD="TEXT"
+      NUM_ROW="10"
+      REQUIRED="true"
+    >
+      <DEFAULT>';'</DEFAULT>
+    </PARAMETER>
+
     <PARAMETER
       NAME="ENCODING"
       FIELD="ENCODING_TYPE"
-      NUM_ROW="120"
+      NUM_ROW="20"
       REQUIRED="true"
     >
       <DEFAULT>'ISO-8859-15'</DEFAULT>
     </PARAMETER>
 
-   </PARAMETERS>
+  </ADVANCED_PARAMETERS>
 
    <CODEGENERATION>
      <IMPORTS>

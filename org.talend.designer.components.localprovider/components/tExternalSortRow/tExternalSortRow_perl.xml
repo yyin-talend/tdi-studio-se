@@ -81,10 +81,14 @@
       </ITEMS>
     </PARAMETER>
 
+  </PARAMETERS>
+
+  <ADVANCED_PARAMETERS>
+
     <PARAMETER
       NAME="MAX_MEMORY"
       FIELD="TEXT"
-      NUM_ROW="50"
+      NUM_ROW="10"
     >
       <DEFAULT>'200M'</DEFAULT>
     </PARAMETER>
@@ -92,20 +96,30 @@
     <PARAMETER
       NAME="TEMP_DIR"
       FIELD="DIRECTORY"
-      NUM_ROW="60"
+      NUM_ROW="20"
     >
       <DEFAULT></DEFAULT>
     </PARAMETER>
 
     <PARAMETER
+      NAME="ADD_EOF_LABEL"
+      FIELD="LABEL"
+      REQUIRED="true"
+      NUM_ROW="29"
+      CONTEXT="0;0;0"
+    >
+      <DEFAULT>Add a dummy EOF line useful before tAggregateSortedRow</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
       NAME="ADD_EOF"
       FIELD="CHECK"
-      NUM_ROW="70"
+      NUM_ROW="30"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
 
-  </PARAMETERS>
+  </ADVANCED_PARAMETERS>
 
   <CODEGENERATION>
     <TEMPLATES INPUT="ESO" OUTPUT="FID">

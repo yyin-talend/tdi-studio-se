@@ -145,25 +145,16 @@
     </PARAMETER>
 
     <PARAMETER
-      NAME="PREPARED_STATEMENT"
+      NAME="DIE_ON_ERROR"
       FIELD="CHECK"
-      REQUIRED="true"
-      NUM_ROW="8"
+      NUM_ROW="12"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
 
-    <PARAMETER
-      NAME="STATEMENT_PARAMS"
-      FIELD="TABLE"
-      NUM_ROW="9"
-      NB_LINES="2"
-      NOT_SHOW_IF="(PREPARED_STATEMENT=='false')"
-    >
-      <ITEMS>
-        <ITEM NAME="INPUT_COLUMN" FIELD="PREV_COLUMN_LIST" />
-      </ITEMS>
-    </PARAMETER>
+  </PARAMETERS>
+
+  <ADVANCED_PARAMETERS>
 
     <PARAMETER
       NAME="ENCODING"
@@ -177,7 +168,7 @@
     <PARAMETER
       NAME="COMMIT_EVERY"
       FIELD="TEXT"
-      NUM_ROW="11"
+      NUM_ROW="20"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
       REQUIRED="true"
     >
@@ -185,14 +176,27 @@
     </PARAMETER>
 
     <PARAMETER
-      NAME="DIE_ON_ERROR"
+      NAME="PREPARED_STATEMENT"
       FIELD="CHECK"
-      NUM_ROW="12"
+      REQUIRED="true"
+      NUM_ROW="30"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
 
-  </PARAMETERS>
+    <PARAMETER
+      NAME="STATEMENT_PARAMS"
+      FIELD="TABLE"
+      NUM_ROW="31"
+      NB_LINES="2"
+      NOT_SHOW_IF="(PREPARED_STATEMENT=='false')"
+    >
+      <ITEMS>
+        <ITEM NAME="INPUT_COLUMN" FIELD="PREV_COLUMN_LIST" />
+      </ITEMS>
+    </PARAMETER>
+
+  </ADVANCED_PARAMETERS>
 
   <CODEGENERATION>
     <IMPORTS>

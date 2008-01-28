@@ -96,16 +96,6 @@
     </PARAMETER>
 
     <PARAMETER
-      NAME="ENCODING"
-      FIELD="ENCODING_TYPE"
-      NUM_ROW="41"
-      REQUIRED="true"
-      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
-    >
-      <DEFAULT>'ISO-8859-15'</DEFAULT>
-    </PARAMETER>
-
-    <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
       NUM_ROW="40"
@@ -243,15 +233,29 @@
     >
     </PARAMETER>
 
+  </PARAMETERS>
+
+  <ADVANCED_PARAMETERS>
+
+    <PARAMETER
+      NAME="ENCODING"
+      FIELD="ENCODING_TYPE"
+      NUM_ROW="10"
+      REQUIRED="true"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
+    >
+      <DEFAULT>'ISO-8859-15'</DEFAULT>
+    </PARAMETER>
+
     <PARAMETER
       NAME="DEBUG"
       FIELD="CHECK"
-      NUM_ROW="90"
+      NUM_ROW="20"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
 
-  </PARAMETERS>
+  </ADVANCED_PARAMETERS>
 
   <CODEGENERATION>
     <IMPORTS>

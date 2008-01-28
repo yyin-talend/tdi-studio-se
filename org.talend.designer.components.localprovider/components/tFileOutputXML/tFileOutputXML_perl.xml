@@ -38,6 +38,47 @@
     </PARAMETER>
 
     <PARAMETER
+      NAME="ROW_TAG"
+      FIELD="TEXT"
+      REQUIRED="true"
+      NUM_ROW="20"
+    >
+      <DEFAULT>'row'</DEFAULT>
+    </PARAMETER>
+     
+    <PARAMETER
+      NAME="SCHEMA"
+      FIELD="SCHEMA_TYPE"
+      REQUIRED="true"
+      NUM_ROW="30"
+    >
+      <DEFAULT/> 
+    </PARAMETER>
+
+  </PARAMETERS>
+
+  <ADVANCED_PARAMETERS>
+
+    <PARAMETER
+      NAME="SPLIT"
+      FIELD="CHECK"
+      REQUIRED="true"
+      NUM_ROW="10"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="SPLIT_EVERY"
+      FIELD="TEXT"
+      REQUIRED="true"
+      NUM_ROW="10"
+      SHOW_IF="SPLIT == 'true'"
+    >
+      <DEFAULT>1000</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
       NAME="ROOT_TAGS"
       FIELD="TABLE"
       REQUIRED="false"
@@ -50,37 +91,9 @@
     </PARAMETER>
 
     <PARAMETER
-      NAME="ROW_TAG"
-      FIELD="TEXT"
-      REQUIRED="true"
-      NUM_ROW="21"
-    >
-      <DEFAULT>'row'</DEFAULT>
-    </PARAMETER>
-
-    <PARAMETER
-      NAME="SPLIT"
-      FIELD="CHECK"
-      REQUIRED="true"
-      NUM_ROW="40"
-    >
-      <DEFAULT>false</DEFAULT>
-    </PARAMETER>
-
-    <PARAMETER
-      NAME="SPLIT_EVERY"
-      FIELD="TEXT"
-      REQUIRED="true"
-      NUM_ROW="40"
-      SHOW_IF="SPLIT == 'true'"
-    >
-      <DEFAULT>1000</DEFAULT>
-    </PARAMETER>
-
-    <PARAMETER
       NAME="MAPPING"
       FIELD="TABLE"
-      NUM_ROW="41"
+      NUM_ROW="30"
       NB_LINES="5"
     >
       <ITEMS BASED_ON_SCHEMA="true">
@@ -94,7 +107,7 @@
       NAME="USE_DYNAMIC_GROUPING"
       FIELD="CHECK"
       REQUIRED="true"
-      NUM_ROW="50"
+      NUM_ROW="40"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
@@ -103,7 +116,7 @@
       NAME="GROUP_BY"
       FIELD="TABLE"
       REQUIRED="false"
-      NUM_ROW="51"
+      NUM_ROW="41"
       NB_LINES="3"
       SHOW_IF="USE_DYNAMIC_GROUPING == 'true'"
     >
@@ -116,22 +129,13 @@
     <PARAMETER
       NAME="ENCODING"
       FIELD="ENCODING_TYPE"
-      NUM_ROW="60"
+      NUM_ROW="50"
       REQUIRED="true"
     >
       <DEFAULT>'ISO-8859-15'</DEFAULT>
     </PARAMETER>
-     
-    <PARAMETER
-      NAME="SCHEMA"
-      FIELD="SCHEMA_TYPE"
-      REQUIRED="true"
-      NUM_ROW="70"
-    >
-      <DEFAULT/> 
-    </PARAMETER>
 
-  </PARAMETERS>
+  </ADVANCED_PARAMETERS>
 
   <CODEGENERATION/>
 

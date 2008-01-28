@@ -166,47 +166,6 @@
     </PARAMETER>
 
     <PARAMETER
-      NAME="PREPARED_STATEMENT"
-      FIELD="CHECK"
-      REQUIRED="true"
-      NUM_ROW="100"
-    >
-      <DEFAULT>false</DEFAULT>
-    </PARAMETER>
-
-    <PARAMETER
-      NAME="STATEMENT_PARAMS"
-      FIELD="TABLE"
-      NUM_ROW="110"
-      NB_LINES="2"
-      NOT_SHOW_IF="(PREPARED_STATEMENT=='false')"
-    >
-      <ITEMS>
-        <ITEM NAME="INPUT_COLUMN" FIELD="PREV_COLUMN_LIST" />
-      </ITEMS>
-    </PARAMETER>
-
-
-    <PARAMETER
-      NAME="ENCODING"
-      FIELD="ENCODING_TYPE"
-      NUM_ROW="120"
-      REQUIRED="true"
-    >
-      <DEFAULT>'ISO-8859-15'</DEFAULT>
-    </PARAMETER>
-
-    <PARAMETER
-      NAME="COMMIT_EVERY"
-      FIELD="TEXT"
-      NUM_ROW="130"
-      REQUIRED="true"
-      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
-    >
-      <DEFAULT>10000</DEFAULT>
-    </PARAMETER>
-
-    <PARAMETER
       NAME="DIE_ON_ERROR"
       FIELD="CHECK"
       NUM_ROW="140"
@@ -215,6 +174,50 @@
     </PARAMETER>
 
   </PARAMETERS>
+
+  <ADVANCED_PARAMETERS>
+
+    <PARAMETER
+      NAME="PREPARED_STATEMENT"
+      FIELD="CHECK"
+      REQUIRED="true"
+      NUM_ROW="10"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="STATEMENT_PARAMS"
+      FIELD="TABLE"
+      NUM_ROW="20"
+      NB_LINES="2"
+      NOT_SHOW_IF="(PREPARED_STATEMENT=='false')"
+    >
+      <ITEMS>
+        <ITEM NAME="INPUT_COLUMN" FIELD="PREV_COLUMN_LIST" />
+      </ITEMS>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="ENCODING"
+      FIELD="ENCODING_TYPE"
+      NUM_ROW="30"
+      REQUIRED="true"
+    >
+      <DEFAULT>'ISO-8859-15'</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="COMMIT_EVERY"
+      FIELD="TEXT"
+      NUM_ROW="40"
+      REQUIRED="true"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
+    >
+      <DEFAULT>10000</DEFAULT>
+    </PARAMETER>
+
+  </ADVANCED_PARAMETERS>
 
   <CODEGENERATION>
     <IMPORTS>

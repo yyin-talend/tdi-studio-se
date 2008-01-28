@@ -1,4 +1,3 @@
-<!-- $Id$ -->
 <COMPONENT>
   <HEADER
     PLATEFORM="ALL"
@@ -37,7 +36,7 @@
       REPOSITORY_VALUE="DATABASE:ODBC"
     />
 
-	<PARAMETER
+    <PARAMETER
       NAME="TYPE"
       FIELD="TEXT"
       NUM_ROW="3"
@@ -115,24 +114,6 @@
     </PARAMETER>
 
     <PARAMETER
-      NAME="ENCODING"
-      FIELD="ENCODING_TYPE"
-      NUM_ROW="8"
-      REQUIRED="true"
-    >
-       <DEFAULT>'ISO-8859-15'</DEFAULT>
-    </PARAMETER>
-
-    <PARAMETER
-      NAME="COMMIT_EVERY"
-      FIELD="TEXT"
-      NUM_ROW="10"
-      REQUIRED="true"
-    >
-      <DEFAULT>10000</DEFAULT>
-    </PARAMETER>
-
-    <PARAMETER
       NAME="DIE_ON_ERROR"
       FIELD="CHECK"
       NUM_ROW="12"
@@ -141,6 +122,28 @@
     </PARAMETER>
 
   </PARAMETERS>
+
+  <ADVANCED_PARAMETERS>
+
+    <PARAMETER
+      NAME="ENCODING"
+      FIELD="ENCODING_TYPE"
+      NUM_ROW="10"
+      REQUIRED="true"
+    >
+       <DEFAULT>'ISO-8859-15'</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="COMMIT_EVERY"
+      FIELD="TEXT"
+      NUM_ROW="20"
+      REQUIRED="true"
+    >
+      <DEFAULT>10000</DEFAULT>
+    </PARAMETER>
+
+  </ADVANCED_PARAMETERS>
 
   <CODEGENERATION>
      <IMPORTS>

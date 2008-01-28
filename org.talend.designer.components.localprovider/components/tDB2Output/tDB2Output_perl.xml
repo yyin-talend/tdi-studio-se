@@ -44,7 +44,8 @@
     >
       <DEFAULT>''</DEFAULT>
     </PARAMETER>
-	<PARAMETER
+
+    <PARAMETER
       NAME="TYPE"
       FIELD="TEXT"
       NUM_ROW="3"
@@ -152,10 +153,14 @@
       <DEFAULT>''</DEFAULT>
     </PARAMETER>
 
+  </PARAMETERS>
+
+  <ADVANCED_PARAMETERS>
+
     <PARAMETER
       NAME="ENCODING"
       FIELD="TEXT"
-      NUM_ROW="7"
+      NUM_ROW="10"
       REQUIRED="true"
     >
       <DEFAULT>'ISO-8859-15'</DEFAULT>
@@ -166,7 +171,7 @@
       FIELD="TABLE"
       REQUIRED="false"
       NOT_SHOW_IF="(TABLE_ACTION=='DROP_CREATE' or TABLE_ACTION=='CREATE' or TABLE_ACTION=='CREATE_IF_NOT_EXISTS')"
-      NUM_ROW="8"
+      NUM_ROW="20"
       NB_LINES="3"
     >
       <ITEMS>
@@ -191,13 +196,13 @@
     <PARAMETER
       NAME="COMMIT_EVERY"
       FIELD="TEXT"
-      NUM_ROW="9"
+      NUM_ROW="30"
       REQUIRED="true"
     >
       <DEFAULT>10000</DEFAULT>
     </PARAMETER>
 
-  </PARAMETERS>
+  </ADVANCED_PARAMETERS>
 
   <CODEGENERATION>
     <IMPORTS>

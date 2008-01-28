@@ -78,22 +78,6 @@
     </PARAMETER>
 
     <PARAMETER
-      NAME="DATA_ACTION"
-      FIELD="CLOSED_LIST"
-      NUM_ROW="6"
-      REQUIRED="true"
-    >
-      <ITEMS DEFAULT="INSERT">
-        <ITEM NAME="INSERT"           VALUE="INSERT" />
-        <ITEM NAME="APPEND"           VALUE="APPEND" />
-        <ITEM NAME="REPLACE"          VALUE="REPLACE"/>
-        <ITEM NAME="TRUNCATE"         VALUE="TRUNCATE"/>
-      </ITEMS>
-    </PARAMETER>
-
-
-
-    <PARAMETER
       NAME="DATA"
       FIELD="FILE"
       NUM_ROW="7"
@@ -102,42 +86,63 @@
       <DEFAULT>'C:\talend_files\emp_bulk.txt'</DEFAULT>
     </PARAMETER>
 
-    <PARAMETER
-      NAME="FIELDS_TERMINATED_BY"
-      FIELD="TEXT"
-      NUM_ROW="8"
-      REQUIRED="true"
-    >
-      <DEFAULT>';'</DEFAULT>
-    </PARAMETER>
+   </PARAMETERS>
 
-    <PARAMETER
-      NAME="FIELDS_ENCLOSED_BY"
-      FIELD="TEXT"
-      NUM_ROW="8"
-      REQUIRED="false"
-    >
-      <DEFAULT>'"'</DEFAULT>
-    </PARAMETER>
+   <ADVANCED_PARAMETERS>
 
-    <PARAMETER
-      NAME="ENCODING"
-      FIELD="ENCODING_TYPE"
-      NUM_ROW="10"
-      REQUIRED="true"
-    >
-      <DEFAULT>'ISO-8859-15'</DEFAULT>
-    </PARAMETER>
-
-    <PARAMETER NAME="OUTPUT" FIELD="CLOSED_LIST" NUM_ROW="10">
-       <ITEMS DEFAULT="OUTPUT_TO_CONSOLE">
+     <PARAMETER
+       NAME="DATA_ACTION"
+       FIELD="CLOSED_LIST"
+       NUM_ROW="10"
+       REQUIRED="true"
+     >
+       <ITEMS DEFAULT="INSERT">
+         <ITEM NAME="INSERT"           VALUE="INSERT" />
+         <ITEM NAME="APPEND"           VALUE="APPEND" />
+         <ITEM NAME="REPLACE"          VALUE="REPLACE"/>
+         <ITEM NAME="TRUNCATE"         VALUE="TRUNCATE"/>
+       </ITEMS>
+     </PARAMETER>
+     
+     <PARAMETER
+       NAME="FIELDS_TERMINATED_BY"
+       FIELD="TEXT"
+       NUM_ROW="20"
+       REQUIRED="true"
+     >
+       <DEFAULT>';'</DEFAULT>
+     </PARAMETER>
+     
+     <PARAMETER
+       NAME="FIELDS_ENCLOSED_BY"
+       FIELD="TEXT"
+       NUM_ROW="30"
+       REQUIRED="false"
+     >
+       <DEFAULT>'"'</DEFAULT>
+     </PARAMETER>
+     
+     <PARAMETER
+       NAME="ENCODING"
+       FIELD="ENCODING_TYPE"
+       NUM_ROW="40"
+       REQUIRED="true"
+     >
+       <DEFAULT>'ISO-8859-15'</DEFAULT>
+     </PARAMETER>
+     
+     <PARAMETER
+       NAME="OUTPUT"
+       FIELD="CLOSED_LIST"
+       NUM_ROW="50"
+     >
+        <ITEMS DEFAULT="OUTPUT_TO_CONSOLE">
           <ITEM NAME="OUTPUT_TO_CONSOLE" VALUE="OUTPUT_TO_CONSOLE" />
           <ITEM NAME="RETRIEVE_OUTPUT"   VALUE="RETRIEVE_OUTPUT" />
-       </ITEMS>
-    </PARAMETER>
+        </ITEMS>
+     </PARAMETER>
 
-
-   </PARAMETERS>
+   </ADVANCED_PARAMETERS>
 
    <CODEGENERATION>
      <IMPORTS>

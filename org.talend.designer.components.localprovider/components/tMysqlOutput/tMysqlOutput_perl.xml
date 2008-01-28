@@ -124,26 +124,6 @@
     </PARAMETER>
 
     <PARAMETER
-      NAME="ENCODING"
-      FIELD="ENCODING_TYPE"
-      NUM_ROW="71"
-      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
-      REQUIRED="true"
-    >
-      <DEFAULT>'ISO-8859-15'</DEFAULT>
-    </PARAMETER>
-
-    <PARAMETER
-      NAME="COMMIT_EVERY"
-      FIELD="TEXT"
-      NUM_ROW="72"
-      REQUIRED="true"
-      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
-    >
-      <DEFAULT>10000</DEFAULT>
-    </PARAMETER>
-
-    <PARAMETER
       NAME="TABLE"
       FIELD="DBTABLE"
       NUM_ROW="80"
@@ -200,11 +180,44 @@
     </PARAMETER>
     
     <PARAMETER
+      NAME="WARNING"
+      FIELD="LABEL"
+      REQUIRED="true"
+      NUM_ROW="113"
+      CONTEXT="255;0;0">
+      <DEFAULT>Notice: By default, update keys are schema keys and all columns are "insertables". This can be modified with "field options".</DEFAULT>
+    </PARAMETER>
+
+  </PARAMETERS>
+
+  <ADVANCED_PARAMETERS>
+
+    <PARAMETER
+      NAME="ENCODING"
+      FIELD="ENCODING_TYPE"
+      NUM_ROW="10"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
+      REQUIRED="true"
+    >
+      <DEFAULT>'ISO-8859-15'</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="COMMIT_EVERY"
+      FIELD="TEXT"
+      NUM_ROW="20"
+      REQUIRED="true"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
+    >
+      <DEFAULT>10000</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
       NAME="ADD_COLS"
       FIELD="TABLE"
       REQUIRED="false"
       NOT_SHOW_IF="(TABLE_ACTION=='DROP_CREATE' or TABLE_ACTION=='CREATE' or TABLE_ACTION=='CREATE_IF_NOT_EXISTS')"
-      NUM_ROW="110"
+      NUM_ROW="30"
       NB_LINES="3"
     >
       <ITEMS>
@@ -253,21 +266,11 @@
 
       </ITEMS>
     </PARAMETER>
-<!--
-    <PARAMETER
-      NAME="WARNING"
-      FIELD="LABEL"
-      REQUIRED="true"
-      NUM_ROW="113"
-      CONTEXT="255;0;0">
-      <DEFAULT>Notice: By default, update keys are schema keys and all columns are "insertables". This can be modified with "field options".</DEFAULT>
-    </PARAMETER>
--->
 
     <PARAMETER
       NAME="USE_FIELD_OPTIONS"
       FIELD="CHECK"
-      NUM_ROW="114"
+      NUM_ROW="40"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
@@ -276,7 +279,7 @@
       NAME="FIELD_OPTIONS"
       FIELD="TABLE"
       REQUIRED="true"
-      NUM_ROW="115"
+      NUM_ROW="41"
       NB_LINES="5"
       SHOW_IF="USE_FIELD_OPTIONS == 'true'"
     >
@@ -291,7 +294,7 @@
     <PARAMETER
       NAME="USE_EXTENDED_INSERTS"
       FIELD="CHECK"
-      NUM_ROW="120"
+      NUM_ROW="50"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
@@ -299,14 +302,14 @@
     <PARAMETER
       NAME="NB_ROWS_PER_INSERT"
       FIELD="TEXT"
-      NUM_ROW="121"
+      NUM_ROW="51"
       REQUIRED="true"
       SHOW_IF="USE_EXTENDED_INSERTS == 'true'"
     >
       <DEFAULT>100</DEFAULT>
     </PARAMETER>
 
-  </PARAMETERS>
+  </ADVANCED_PARAMETERS>
 
   <CODEGENERATION>
     <IMPORTS>

@@ -45,16 +45,18 @@
       NUM_ROW="5"
     />
 
+  </PARAMETERS>
+
+  <ADVANCED_PARAMETERS>
     <PARAMETER
       NAME="ENCODING"
       FIELD="ENCODING_TYPE"
-      NUM_ROW="6"
+      NUM_ROW="10"
       REQUIRED="true"
     >
       <DEFAULT>'ISO-8859-15'</DEFAULT>
     </PARAMETER>
-
-  </PARAMETERS>
+  </ADVANCED_PARAMETERS>
 
   <CODEGENERATION>
     <IMPORTS>

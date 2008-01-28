@@ -105,15 +105,6 @@
     </PARAMETER>
 
     <PARAMETER
-      NAME="ENCODING"
-      FIELD="ENCODING_TYPE"
-      NUM_ROW="42"
-      REQUIRED="true"
-    >
-      <DEFAULT>'ISO-8859-15'</DEFAULT>
-    </PARAMETER>
-
-    <PARAMETER
       NAME="TABLE"
       FIELD="TEXT"
       NUM_ROW="80"
@@ -128,15 +119,6 @@
       REQUIRED="true"
     >
       <DEFAULT>'__COMP_DEFAULT_FILE_DIR__/postgresql_bulk.txt'</DEFAULT>
-    </PARAMETER>
-
-    <PARAMETER
-      NAME="DELIMITER"
-      FIELD="TEXT"
-      NUM_ROW="100"
-      REQUIRED="true"
-    >
-      <DEFAULT>';'</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
@@ -160,6 +142,28 @@
     </PARAMETER>
 
   </PARAMETERS>
+
+  <ADVANCED_PARAMETERS>
+
+    <PARAMETER
+      NAME="ENCODING"
+      FIELD="ENCODING_TYPE"
+      NUM_ROW="42"
+      REQUIRED="true"
+    >
+      <DEFAULT>'ISO-8859-15'</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="DELIMITER"
+      FIELD="TEXT"
+      NUM_ROW="10"
+      REQUIRED="true"
+    >
+      <DEFAULT>';'</DEFAULT>
+    </PARAMETER>
+
+  </ADVANCED_PARAMETERS>
 
   <CODEGENERATION>
     <TEMPLATES INPUT="tPOB" OUTPUT="tPUBE">

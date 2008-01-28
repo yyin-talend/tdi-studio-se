@@ -71,6 +71,7 @@ if (metadata != null) {
         },
 <%
     }
+}
 %>
     ],
 );
@@ -120,6 +121,3 @@ $sth_<%=cid %>->execute(
 
 $sth_<%=cid %>->finish();
 $dbh_<%=cid %>->disconnect();
-<%
-}
-%>

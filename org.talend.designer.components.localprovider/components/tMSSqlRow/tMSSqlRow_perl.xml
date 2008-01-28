@@ -97,24 +97,6 @@
       <DEFAULT>'select id, name from employee'</DEFAULT>
     </PARAMETER>
 
-
-  <PARAMETER
-      NAME="ENCODING"
-      FIELD="ENCODING_TYPE"
-      NUM_ROW="8"
-      REQUIRED="true">
-       <DEFAULT>'ISO-8859-15'</DEFAULT>
-    </PARAMETER>
-
-    <PARAMETER
-      NAME="COMMIT_EVERY"
-      FIELD="TEXT"
-      NUM_ROW="9"
-      REQUIRED="true"
-    >
-      <DEFAULT>10000</DEFAULT>
-    </PARAMETER>
-
     <PARAMETER
       NAME="DIE_ON_ERROR"
       FIELD="CHECK"
@@ -124,6 +106,28 @@
     </PARAMETER>
 
   </PARAMETERS>
+
+  <ADVANCED_PARAMETERS>
+
+    <PARAMETER
+      NAME="ENCODING"
+      FIELD="ENCODING_TYPE"
+      NUM_ROW="10"
+      REQUIRED="true"
+    >
+       <DEFAULT>'ISO-8859-15'</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="COMMIT_EVERY"
+      FIELD="TEXT"
+      NUM_ROW="20"
+      REQUIRED="true"
+    >
+      <DEFAULT>10000</DEFAULT>
+    </PARAMETER>
+
+  </ADVANCED_PARAMETERS>
 
   <CODEGENERATION>
     <IMPORTS>

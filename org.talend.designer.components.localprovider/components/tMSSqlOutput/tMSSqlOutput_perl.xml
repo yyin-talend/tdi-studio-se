@@ -36,8 +36,7 @@
       REPOSITORY_VALUE="DATABASE:ODBC"
     />
 
-
-	<PARAMETER
+    <PARAMETER
       NAME="TYPE"
       FIELD="TEXT"
       NUM_ROW="3"
@@ -135,11 +134,17 @@
     >
       <DEFAULT>''</DEFAULT>
     </PARAMETER>
-  <PARAMETER
+
+  </PARAMETERS>
+
+  <ADVANCED_PARAMETERS>
+
+    <PARAMETER
       NAME="ENCODING"
       FIELD="ENCODING_TYPE"
-      NUM_ROW="8"
-      REQUIRED="true">
+      NUM_ROW="10"
+      REQUIRED="true"
+    >
        <DEFAULT>'ISO-8859-15'</DEFAULT>
     </PARAMETER>
 
@@ -148,7 +153,7 @@
       FIELD="TABLE"
       REQUIRED="false"
       NOT_SHOW_IF="(ACTION=='DROP_CREATE_TABLE' or ACTION=='CREATE_TABLE')"
-      NUM_ROW="9"
+      NUM_ROW="20"
       NB_LINES="3"
     >
       <ITEMS>
@@ -173,14 +178,13 @@
     <PARAMETER
       NAME="COMMIT_EVERY"
       FIELD="TEXT"
-      NUM_ROW="10"
+      NUM_ROW="30"
       REQUIRED="true"
     >
       <DEFAULT>10000</DEFAULT>
     </PARAMETER>
 
-
-  </PARAMETERS>
+  </ADVANCED_PARAMETERS>
 
   <CODEGENERATION>
     <IMPORTS>
