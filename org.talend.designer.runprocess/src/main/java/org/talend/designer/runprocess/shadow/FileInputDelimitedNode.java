@@ -185,7 +185,7 @@ public class FileInputDelimitedNode extends FileInputNode {
                         + "/column_counter_delimited.pl --conf=" + config + "");
             } else {
                 // String terminal = System.getenv("TERM");
-                String command = "perl" + modulepath + "column_counter_delimited.pl --conf=" + config + "";
+                String command = "perl " + modulepath + "/column_counter_delimited.pl --conf=" + config + "";
                 // process = Runtime.getRuntime().exec(new String[] { terminal, "-e", command + "; $SHELL" });
                 process = Runtime.getRuntime().exec(command);
             }
