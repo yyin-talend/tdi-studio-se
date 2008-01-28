@@ -83,6 +83,10 @@ public class CreateWSDLSchemaAction extends AbstractCreateAction {
         switch (node.getType()) {
         case SIMPLE_FOLDER:
         case SYSTEM_FOLDER:
+            if (ProxyRepositoryFactory.getInstance().isUserReadOnlyOnCurrentProject()) {
+                setEnabled(false);
+                return;
+            }
             this.setText(createLabel);
             collectChildNames(node);
             this.setImageDescriptor(createImage);

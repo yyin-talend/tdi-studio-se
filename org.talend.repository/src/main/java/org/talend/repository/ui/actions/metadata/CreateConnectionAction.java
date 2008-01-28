@@ -27,8 +27,8 @@ import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.ui.images.OverlayImageProvider;
 import org.talend.core.ui.images.ECoreImage;
+import org.talend.core.ui.images.OverlayImageProvider;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -173,6 +173,10 @@ public class CreateConnectionAction extends AbstractCreateAction {
         switch (node.getType()) {
         case SIMPLE_FOLDER:
         case SYSTEM_FOLDER:
+            if (ProxyRepositoryFactory.getInstance().isUserReadOnlyOnCurrentProject()) {
+                setEnabled(false);
+                return;
+            }
             this.setText(CREATE_LABEL);
             this.setImageDescriptor(createImage);
             collectChildNames(node);

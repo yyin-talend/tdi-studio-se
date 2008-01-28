@@ -124,6 +124,10 @@ public class CreateFileRegexpAction extends AbstractCreateAction {
         switch (node.getType()) {
         case SIMPLE_FOLDER:
         case SYSTEM_FOLDER:
+            if (ProxyRepositoryFactory.getInstance().isUserReadOnlyOnCurrentProject()) {
+                setEnabled(false);
+                return;
+            }
             this.setText(CREATE_LABEL);
             collectChildNames(node);
             creation = true;
