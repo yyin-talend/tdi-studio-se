@@ -464,6 +464,7 @@ public class DataProcess {
             curNode.setIncomingConnections(incomingConnections);
             curNode.setOutgoingConnections(outgoingConnections);
             curNode.setProcess(graphicalNode.getProcess());
+            curNode.setVirtualGenerateNode(true);
             dataNodeList.add(curNode);
             itemsMap.put(curItem, curNode);
         }

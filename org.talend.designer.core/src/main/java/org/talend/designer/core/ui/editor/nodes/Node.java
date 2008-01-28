@@ -2171,4 +2171,13 @@ public class Node extends Element implements INode {
     public boolean isDesignSubjobStartNode() {
         return this.equals(getDesignSubjobStartNode());
     }
+
+    /*
+     * return false is ok, becase all nodes generated from virtual component are DataNode.
+     * 
+     * @see org.talend.core.model.process.INode#isVirtualGenerateNode()
+     */
+    public boolean isVirtualGenerateNode() {
+        return false;
+    }
 }

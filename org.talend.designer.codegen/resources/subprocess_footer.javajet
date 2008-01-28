@@ -6,6 +6,7 @@
 		org.talend.core.model.process.INode
 		org.talend.core.model.process.IConnection
 		org.talend.core.model.process.EConnectionType
+		org.talend.core.model.process.ElementParameterParser
 		java.util.List
 		java.util.Iterator
 	" 
@@ -64,39 +65,6 @@
 	} catch(Exception e) {
 	
 <%
-	//generate the code to free memory for lookup link buffered datas
-	StringBuilder freeMemorySb = new StringBuilder();
-	boolean needGc = false;
-	List<INode> nodes = subTree.getNodes();
-	for(INode node:nodes){
-		List<? extends IConnection> lookupInput = node.getIncomingConnections(EConnectionType.FLOW_REF);
-		if(lookupInput!=null && lookupInput.size()>0){
-			if(!needGc) needGc = true;
-			//check the tMap like this, instanceof can't work			
-			if(node.getClass().getName().equals("org.talend.designer.mapper.MapperComponent")){
-				for(IConnection connection:lookupInput){						
-            		
-            		freeMemorySb.append( "globalMap.put(\"tHash_Lookup_" + connection.getName() + "\", null);" + "\n" );
-            		
-            	}
-            }else{
-            	for(IConnection connection:lookupInput){
-            	
-            		freeMemorySb.append( "globalMap.put(\"tHash_" + connection.getName() + "\", null);" + "\n" );
-            		 
-				} 
-			} 
-		}
-	}
-	if(needGc) {
-	
-				freeMemorySb.append( "System.gc();" );
-				
-	}
-%>
-<%=freeMemorySb %>
-	
-<%
 	if(isRunInMultiThread){
 %>
 	throw new TalendException(this, e, currentComponent);
@@ -107,7 +75,56 @@
 <%
 	}
 %>		
-	}
+	}finally{
 	
-<%=freeMemorySb %>
+<%
+	//generate the code to free memory for lookup link buffered datas
+	boolean needGc = false;
+	List<INode> nodes = subTree.getNodes();
+	for(INode node:nodes){
+	
+	boolean isVirtualGenerateNode = node.isVirtualGenerateNode();
+	
+	//check the virtual component generate node
+	if(isVirtualGenerateNode){
+		String origin  = ElementParameterParser.getValue(node, "__ORIGIN__");
+		if(origin != null && !"".equals(origin)){
+			if(!needGc) needGc = true;
+	%>
+				//free memory for "<%=node.getUniqueName() %>"
+				globalMap.put("<%=origin %>", null);
+	<%
+		}
+	}else{
+	//check the Lookup link
+		List<? extends IConnection> lookupInput = node.getIncomingConnections(EConnectionType.FLOW_REF);
+		if(lookupInput!=null && lookupInput.size()>0){
+			if(!needGc) needGc = true;
+			//check the tMap like this, instanceof can't work			
+			if(node.getClass().getName().equals("org.talend.designer.mapper.MapperComponent")){
+				for(IConnection connection:lookupInput){						
+     %>
+     			//free memory for "<%=node.getUniqueName() %>"
+     			globalMap.put("tHash_Lookup_<%=connection.getName() %>", null); 
+     <%
+            	}
+            }else{
+            	for(IConnection connection:lookupInput){
+      %>      	
+      			//free memory for "<%=node.getUniqueName() %>"
+				globalMap.put("tHash_<%=connection.getName() %>", null);
+      <%      		 
+				} 
+			} 
+		}
+	}
+}
+
+	if(needGc) {
+	%>		
+				System.gc();
+	<%
+		}
+	%>
+	}
 }
