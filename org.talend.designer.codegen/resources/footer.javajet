@@ -68,37 +68,23 @@
     public static String status= "";
     
     public static void main(String[] args){
-        int exitCode = runJobInTOS(args);
-        System.exit(exitCode);
-    }
     
-<%	
-int maxRowNum_tBuffer = 0; 
-for (INode tBuffer : process.getNodesOfType("tBuffer")) {
-	List<IMetadataTable> metadatas = tBuffer.getMetadataList();
-	if (metadatas != null && metadatas.size() > 0) {
-	    IMetadataTable metadata = metadatas.get(0);    
-	    if (metadata != null) {
-	        List<IMetadataColumn> columns = metadata.getListColumns();
-	        if(columns.size() > maxRowNum_tBuffer){
-	        	maxRowNum_tBuffer = columns.size();
-	        }
-	    }
-	}
-}
-%>    
-    public static String[][] runJob(String[] args) {
-    	runJobInTOS(args);    	
-
-        int maxRowNumOftBuffer = <%=maxRowNum_tBuffer %>;
-        String[][] bufferValue = new String[globalBuffer.size()][maxRowNumOftBuffer];
-		for (int i = 0; i < globalBuffer.size(); i++) {
-			bufferValue[i] = globalBuffer.get(i);
-		}
-		        
+        int exitCode = runJobInTOS(args);
+        
         globalBuffer.clear();
-            	
-    	return bufferValue;
+        
+        System.exit(exitCode);
+    }    
+   
+    public static String[][] runJob(String[] args) {
+    
+		runJobInTOS(args);
+				
+		String[][] bufferValue = (String[][])globalBuffer.toArray(new String[globalBuffer.size()][]);		
+		
+		globalBuffer.clear();
+		
+		return bufferValue;
     }
     
     public static synchronized int runJobInTOS(String[] args) {
@@ -307,7 +293,7 @@ for (INode tBuffer : process.getNodesOfType("tBuffer")) {
 	    }
 	
 		endFreeMemory = Runtime.getRuntime().freeMemory();
-		if (true) {
+		if (false) {
     		System.out.println((startFreeMemory-endFreeMemory) + " bytes--used by : <%=process.getName() %>");
 	    }		  
 <%
