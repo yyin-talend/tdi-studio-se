@@ -291,8 +291,9 @@ skeleton="../templates/db_output_bulk.skeleton"
                         %>
                         <%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate, column, counter, incomingConnName, cid, NORMAL_TYPE)%>
                         <%
+                        counter++;                        
                     }		
-                    counter++;
+
                 }
                 %>
                 try{
@@ -337,8 +338,8 @@ skeleton="../templates/db_output_bulk.skeleton"
     			    %>
     			    <%=getManager(dbmsId, cid).generateSetStmt(typeToGenerate, column, counterCol, incomingConnName, cid, NORMAL_TYPE)%>
     			    <%
+                    counterCol++;    			    
     			}
-    			counterCol++;
     		}
     
     		for(Column column:colStruct){
