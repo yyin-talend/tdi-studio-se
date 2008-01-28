@@ -263,9 +263,9 @@ for(int i = 0; i < attribute.length; i++){
 %>tempRes_<%=cid %>.append(" <%=attribute[i][1] %>=\""+<%
 							if(isAdvancedSeparator){
 								if(isBigDecimal){
-								%>FormatterUtils.format_Number(String.valueOf(<%=conn.getName() %>.<%=groupby[i][0] %>.doubleValue()), <%= thousandsSeparator %>, <%= decimalSeparator %>)<%
+								%>FormatterUtils.format_Number(String.valueOf(<%=conn.getName() %>.<%=attribute[i][0] %>.doubleValue()), <%= thousandsSeparator %>, <%= decimalSeparator %>)<%
 								}else {
-								%>FormatterUtils.format_Number(String.valueOf(<%=conn.getName() %>.<%=groupby[i][0] %>), <%= thousandsSeparator %>, <%= decimalSeparator %>)<%
+								%>FormatterUtils.format_Number(String.valueOf(<%=conn.getName() %>.<%=attribute[i][0] %>), <%= thousandsSeparator %>, <%= decimalSeparator %>)<%
 								}
 							}else if(isPrimitive){
 								%><%=conn.getName() %>.<%=attribute[i][0] %><%
@@ -333,9 +333,9 @@ for(int i = 0; i < tag.length; i++){
 %>out_<%=cid %>.write("<<%=tag[i][1]%>>"+<%
 							if(isAdvancedSeparator){
 								if(isBigDecimal){
-								%>FormatterUtils.format_Number(String.valueOf(<%=conn.getName() %>.<%=groupby[i][0] %>.doubleValue()), <%= thousandsSeparator %>, <%= decimalSeparator %>)<%
+								%>FormatterUtils.format_Number(String.valueOf(<%=conn.getName() %>.<%=tag[i][0] %>.doubleValue()), <%= thousandsSeparator %>, <%= decimalSeparator %>)<%
 								}else {
-								%>FormatterUtils.format_Number(String.valueOf(<%=conn.getName() %>.<%=groupby[i][0] %>), <%= thousandsSeparator %>, <%= decimalSeparator %>)<%
+								%>FormatterUtils.format_Number(String.valueOf(<%=conn.getName() %>.<%=tag[i][0] %>), <%= thousandsSeparator %>, <%= decimalSeparator %>)<%
 								}
 							}else if(isPrimitive){
 								%><%=conn.getName() %>.<%=tag[i][0] %><%
