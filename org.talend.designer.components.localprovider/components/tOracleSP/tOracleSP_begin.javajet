@@ -53,13 +53,11 @@ java.sql.CallableStatement statement_<%=cid%> = connection_<%=cid%>.prepareCall(
 <%
 boolean isFirstArg = true;
 for (int i = 0; i < spArgs.size(); i++) {
-	if(!spArgs.get(i).get("TYPE").equals("RECORDSET")){
-		if(isFirstArg){
-			%>?<%
-			isFirstArg=false;
-		}else{
-			%>,?<%
-		}
+	if(isFirstArg){
+		%>?<%
+		isFirstArg=false;
+	}else{
+		%>,?<%
 	}
 }
 %>)}");
