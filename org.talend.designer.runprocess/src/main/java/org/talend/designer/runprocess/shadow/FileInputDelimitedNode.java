@@ -25,11 +25,13 @@ import java.io.UnsupportedEncodingException;
 import org.talend.commons.exception.RuntimeExceptionHandler;
 import org.talend.commons.utils.StringUtils;
 import org.talend.core.CorePlugin;
+import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.designer.runprocess.shadow.ShadowProcess.EShadowProcessType;
 import org.talend.fileprocess.delimited.DelimitedDataReader;
 import org.talend.fileprocess.delimited.DelimitedDataReaderFactory;
+import org.talend.librariesmanager.prefs.PreferencesUtilities;
 
 import com.csvreader.CsvReader;
 
@@ -152,10 +154,10 @@ public class FileInputDelimitedNode extends FileInputNode {
             config.delete();
         }
         String path = CorePlugin.getDefault().getPreferenceStore().getString(ITalendCorePrefConstants.PERL_INTERPRETER);
+        String modulepath = PreferencesUtilities.getLibrariesPath(ECodeLanguage.PERL);
         FileWriter filewriter;
         Runtime runTime = Runtime.getRuntime();
         Process process = null;
-        path = path.substring(0, path.lastIndexOf("\\"));
         String str = "0";
         File resultFile = new File(CorePlugin.getDefault().getPreferenceStore()
                 .getString(ITalendCorePrefConstants.FILE_PATH_TEMP)
@@ -177,16 +179,19 @@ public class FileInputDelimitedNode extends FileInputNode {
             filewriter.write("$conf{type} = \'delimited\';");
             filewriter.close();
             if (System.getProperty("os.name").toUpperCase().indexOf("WINDOWS") >= 0) {
-                process = runTime.exec("cmd /c start /D" + path + "\\" + " perl " + path + "/column_counter_delimited.pl --conf="
-                        + config + "");
+                path = path.substring(0, path.lastIndexOf("\\"));
+                modulepath = modulepath.substring(1, modulepath.length());
+                process = runTime.exec("cmd /c start /D" + path + "\\" + " perl " + modulepath
+                        + "/column_counter_delimited.pl --conf=" + config + "");
             } else {
-                String terminal = System.getenv("TERM");
-                String command = "perl -MCPAN -e perl column_counter_delimited.pl --conf=" + config + "";
-                process = Runtime.getRuntime().exec(new String[] { terminal, "-e", command + "; $SHELL" });
+                // String terminal = System.getenv("TERM");
+                String command = "perl" + modulepath + "column_counter_delimited.pl --conf=" + config + "";
+                // process = Runtime.getRuntime().exec(new String[] { terminal, "-e", command + "; $SHELL" });
+                process = Runtime.getRuntime().exec(command);
             }
 
             int counter = 0;
-            while (!resultFile.exists() && counter <= 4) {
+            while (!resultFile.exists() && counter <= 6) {
                 try {
                     Thread.sleep(900);
                     counter++;
