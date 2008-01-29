@@ -60,61 +60,61 @@ public class FileInputDelimitedNode extends FileInputNode {
 
         case FILE_DELIMITED:
             csvoption = false;
-            DelimitedDataReader dr = null;
-            try {
 
-                dr = DelimitedDataReaderFactory.createDelimitedDataReader(trimParameter(filename), trimParameter(encoding),
-                        trimParameter(StringUtils.loadConvert(fieldSep, languageName)), trimParameter(StringUtils.loadConvert(
-                                rowSep, languageName)), true);
-                dr.skipHeaders(0);
-                if (languageName.equals("perl")) {
-                    int max = getColumnCount(filename, rowSep, fieldSep, limitRows, escapeChar, textEnclosure,
-                            EShadowProcessType.FILE_DELIMITED);
-                    this.setColumnNumber(max);
+            if (languageName.equals("perl")) {
+                int max = getColumnCount(filename, rowSep, fieldSep, limitRows, escapeChar, textEnclosure,
+                        EShadowProcessType.FILE_DELIMITED);
+                this.setColumnNumber(max);
 
-                } else {
+            } else {
+                DelimitedDataReader dr = null;
+                try {
+
+                    dr = DelimitedDataReaderFactory.createDelimitedDataReader(trimParameter(filename), trimParameter(encoding),
+                            trimParameter(StringUtils.loadConvert(fieldSep, languageName)), trimParameter(StringUtils
+                                    .loadConvert(rowSep, languageName)), true);
+                    dr.skipHeaders(0);
                     int max = dr.getMaxColumnCount(limitRows);
                     if (max > 0) {
                         this.setColumnNumber(max);
                     }
-                }
-
-            } catch (IOException e) {
-                // e.printStackTrace();
-            } finally {
-                if (dr != null) {
-                    dr.close();
+                } catch (IOException e) {
+                    // e.printStackTrace();
+                } finally {
+                    if (dr != null) {
+                        dr.close();
+                    }
                 }
             }
             break;
 
         case FILE_CSV:
             csvoption = true;
-            CsvReader cr = null;
-            try {
-                cr = new CsvReader(new BufferedReader(new InputStreamReader(new FileInputStream(trimParameter(filename)),
-                        trimParameter(encoding))), trimParameter(StringUtils.loadConvert(fieldSep, languageName)).charAt(0));
-                if (!rowSep.equals("\"\\n\"") && !rowSep.equals("\"\\r\"")) {
-                    cr.setRecordDelimiter(trimParameter(StringUtils.loadConvert(rowSep, languageName)).charAt(0));
-                }
-                cr.setSkipEmptyRecords(true);
-                String en = trimParameter(textEnclosure);
-                if (en.length() > 0) {
-                    cr.setTextQualifier(en.charAt(0));
-                } else {
-                    cr.setUseTextQualifier(false);
-                }
-                if (escapeChar.equals("\"\\\\\"") || escapeChar.equals("\"\"")) {
-                    cr.setEscapeMode(CsvReader.ESCAPE_MODE_BACKSLASH);
-                } else {
-                    cr.setEscapeMode(CsvReader.ESCAPE_MODE_DOUBLED);
-                }
-                if (languageName.equals("perl")) {
-                    int max = getColumnCount(filename, rowSep, fieldSep, limitRows, escapeChar, textEnclosure,
-                            EShadowProcessType.FILE_CSV);
-                    this.setColumnNumber(max);
+            if (languageName.equals("perl")) {
+                int max = getColumnCount(filename, rowSep, fieldSep, limitRows, escapeChar, textEnclosure,
+                        EShadowProcessType.FILE_CSV);
+                this.setColumnNumber(max);
+            } else {
+                CsvReader cr = null;
+                try {
+                    cr = new CsvReader(new BufferedReader(new InputStreamReader(new FileInputStream(trimParameter(filename)),
+                            trimParameter(encoding))), trimParameter(StringUtils.loadConvert(fieldSep, languageName)).charAt(0));
+                    if (!rowSep.equals("\"\\n\"") && !rowSep.equals("\"\\r\"")) {
+                        cr.setRecordDelimiter(trimParameter(StringUtils.loadConvert(rowSep, languageName)).charAt(0));
+                    }
+                    cr.setSkipEmptyRecords(true);
+                    String en = trimParameter(textEnclosure);
+                    if (en.length() > 0) {
+                        cr.setTextQualifier(en.charAt(0));
+                    } else {
+                        cr.setUseTextQualifier(false);
+                    }
+                    if (escapeChar.equals("\"\\\\\"") || escapeChar.equals("\"\"")) {
+                        cr.setEscapeMode(CsvReader.ESCAPE_MODE_BACKSLASH);
+                    } else {
+                        cr.setEscapeMode(CsvReader.ESCAPE_MODE_DOUBLED);
+                    }
 
-                } else {
                     int columnCount = 0;
                     for (int i = 0; i < limitRows && cr.readRecord(); i++) {
                         int temp = cr.getColumnCount();
@@ -125,16 +125,16 @@ public class FileInputDelimitedNode extends FileInputNode {
                     if (columnCount > 0) {
                         this.setColumnNumber(columnCount);
                     }
-                }
-            } catch (UnsupportedEncodingException e) {
-                // e.printStackTrace();
-            } catch (FileNotFoundException e) {
-                // e.printStackTrace();
-            } catch (IOException e) {
-                // e.printStackTrace();
-            } finally {
-                if (cr != null) {
-                    cr.close();
+                } catch (UnsupportedEncodingException e) {
+                    // e.printStackTrace();
+                } catch (FileNotFoundException e) {
+                    // e.printStackTrace();
+                } catch (IOException e) {
+                    // e.printStackTrace();
+                } finally {
+                    if (cr != null) {
+                        cr.close();
+                    }
                 }
             }
             break;
@@ -212,9 +212,8 @@ public class FileInputDelimitedNode extends FileInputNode {
                     + config });
 
             FileReader filereader = new FileReader(resultFile);
-            char[] chars = new char[1];
-            filereader.read(chars);
-            str = new String(chars);
+            BufferedReader reader = new BufferedReader(filereader);
+            str = reader.readLine();
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
