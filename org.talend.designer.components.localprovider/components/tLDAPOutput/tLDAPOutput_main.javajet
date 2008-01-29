@@ -18,10 +18,32 @@ imports="
 	
 	String insertMode =ElementParameterParser.getValue(node, "__INSERT_MODE__");
 	String separatorText=ElementParameterParser.getValue(node, "__MULTI_VALUE_SEPARATOR__");
+	String dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_ERROR__");
 	String separator = separatorText;
 	if(separatorText.equals("\"|\"")){
 		separator="\"\\\\|\"";
 	}
+	
+	String rejectConnName = null;
+	List<? extends IConnection> rejectConns = node.getOutgoingConnections("REJECT");
+	if(rejectConns != null && rejectConns.size() > 0) {
+	    IConnection rejectConn = rejectConns.get(0);
+	    rejectConnName = rejectConn.getName();
+	}
+	List<IMetadataColumn> rejectColumnList = null;
+	IMetadataTable metadataTable = node.getMetadataFromConnector("REJECT");
+	if(metadataTable != null) {
+	    rejectColumnList = metadataTable.getListColumns();	    
+	}
+	
+	List<? extends IConnection> outgoingConns = node.getOutgoingSortedConnections();
+    for(IConnection conn : outgoingConns) {
+        if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+%>
+        <%=conn.getName() %> = null;            
+<%      }
+    }
+    
 	String cid = node.getUniqueName();
 	List<IMetadataTable> metadatas = node.getMetadataList();
 	if ((metadatas!=null)&&(metadatas.size()>0)) {
@@ -35,12 +57,10 @@ imports="
     			if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {	
 %>
 	javax.naming.directory.Attributes entry_<%=cid%> = new javax.naming.directory.BasicAttributes(true);
-
 <%
 					int index = 0;
 					for(IMetadataColumn column:columnList){		
-						if(index == 0)
-						{
+						if(index == 0){
 %> 
 	String dn_<%=cid%> = <%=conn.getName() %>.<%=column.getLabel()%>.trim();
 <%
@@ -61,6 +81,9 @@ imports="
 						}
 						index++;
 					}
+%>
+	try{
+<%
 					if(insertMode.equals("ADD")){
 %>
 	ctx_<%=cid%>.modifyAttributes(dn_<%=cid%>, javax.naming.directory.DirContext.ADD_ATTRIBUTE, entry_<%=cid%>);
@@ -93,6 +116,58 @@ imports="
 	}
 <%
 					}
+%>
+	}catch(Exception e){
+        whetherReject_<%=cid%> = true;
+<%
+        if (dieOnError.equals("true")) {
+%>
+        throw(e);
+<%
+        } else {
+            if(rejectConnName != null && rejectColumnList != null && rejectColumnList.size() > 0) {
+%>
+        <%=rejectConnName %> = new <%=rejectConnName %>Struct();
+<%
+                for(IMetadataColumn column : columnList) {
+%>
+        <%=rejectConnName%>.<%=column.getLabel()%> = <%=firstConnName%>.<%=column.getLabel()%>;
+<%
+                }
+%>
+                <%=rejectConnName%>.errorMessage = e.getMessage();
+<%
+            } else {
+%>
+                System.err.print(e.getMessage());
+<%
+            }
+        }
+%>
+    }
+<%
+    	if(outgoingConns != null && outgoingConns.size() > 0) {
+%>
+        if(!whetherReject_<%=cid%>) {
+<%
+            for(IConnection outgoingConn : outgoingConns) {
+                if(rejectConnName == null || (rejectConnName != null && !outgoingConn.getName().equals(rejectConnName))) {
+                    if(outgoingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+%>
+			<%=outgoingConn.getName()%> = new <%=outgoingConn.getName()%>Struct();
+<%
+                        for(IMetadataColumn column : columnList) {
+%>
+            <%=outgoingConn.getName()%>.<%=column.getLabel()%> = <%=firstConnName%>.<%=column.getLabel()%>;
+<% 
+                        }
+                    }
+                }
+            }
+%>
+        }
+<%
+    }
 				}
 			}
 		}
