@@ -135,13 +135,22 @@
   </PARAMETERS>
   
   <ADVANCED_PARAMETERS>
-  	    <PARAMETER
+    <PARAMETER
       NAME="ENCODING"
       FIELD="ENCODING_TYPE"
       NUM_ROW="9"
       REQUIRED="true"
     >
       <DEFAULT>"ISO-8859-15"</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="COMMIT_EVERY"
+      FIELD="TEXT"
+      NUM_ROW="9"
+      REQUIRED="true"
+    >
+      <DEFAULT>10000</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
@@ -152,11 +161,9 @@
       NB_LINES="3"
     >
       <ITEMS>
-
         <ITEM NAME="NAME" VALUE='"colname"' />
 		<ITEM NAME="DATATYPE" VALUE="VARCHAR(50)" NOT_SHOW_IF="(TABLE_ACTION=='NONE') or (TABLE_ACTION=='CLEAR')"/>
         <ITEM NAME="SQL" VALUE='"now()"' />
-
         <ITEM NAME="POS" FIELD="CLOSED_LIST">
           <ITEMS DEFAULT="BEFORE">
             <ITEM NAME="BEFORE" VALUE="BEFORE"/>
@@ -164,19 +171,32 @@
             <ITEM NAME="REPLACE" VALUE="REPLACE"/>
           </ITEMS>
         </ITEM>
-
         <ITEM NAME="REFCOL" FIELD="COLUMN_LIST" />
-
       </ITEMS>
     </PARAMETER>
 
     <PARAMETER
-      NAME="COMMIT_EVERY"
-      FIELD="TEXT"
-      NUM_ROW="9"
-      REQUIRED="true"
+      NAME="USE_FIELD_OPTIONS"
+      FIELD="CHECK"
+      NUM_ROW="12"
     >
-      <DEFAULT>10000</DEFAULT>
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="FIELD_OPTIONS"
+      FIELD="TABLE"
+      REQUIRED="true"
+      NUM_ROW="13"
+      NB_LINES="5"
+      SHOW_IF="USE_FIELD_OPTIONS == 'true'"
+    >
+      <ITEMS BASED_ON_SCHEMA="true">
+        <ITEM NAME="UPDATE_KEY" VALUE="false" FIELD="CHECK" />
+        <ITEM NAME="DELETE_KEY" VALUE="false" FIELD="CHECK" />
+        <ITEM NAME="UPDATABLE"  VALUE="true"  FIELD="CHECK" />
+        <ITEM NAME="INSERTABLE" VALUE="true"  FIELD="CHECK" />
+      </ITEMS>
     </PARAMETER>
   </ADVANCED_PARAMETERS>
 
