@@ -5,11 +5,10 @@ imports="
 		org.talend.core.model.process.ElementParameterParser  
 		org.talend.core.model.metadata.IMetadataTable 
 		org.talend.core.model.metadata.IMetadataColumn
-		org.talend.core.model.metadata.MetadataTalendType
 		org.talend.core.model.metadata.types.JavaTypesManager
 		org.talend.core.model.metadata.types.JavaType 
 		org.talend.core.model.metadata.MappingTypeRetriever
-		
+        org.talend.core.model.metadata.MetadataTalendType		
 		java.util.List
 		java.util.ArrayList
 		java.util.Map
@@ -28,7 +27,10 @@ skeleton="../templates/db_output_bulk.skeleton"
     List<Map<String, String>> addCols =
             (List<Map<String,String>>)ElementParameterParser.getObjectValue(
                 node,"__ADD_COLS__" );
+
+    boolean useFieldOptions = ElementParameterParser.getValue(node, "__USE_FIELD_OPTIONS__").equals("true");
     
+    List<Map<String, String>> fieldOptions = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__FIELD_OPTIONS__");    
     
     String dbname= ElementParameterParser.getValue(node, "__DBNAME__");
     
@@ -63,50 +65,78 @@ int insertedCount_<%=cid%>=0;
 
 String tableName_<%=cid%> = <%=tableName%>;
 boolean whetherReject_<%=cid%> = false;
-
-java.lang.Class.forName("com.vertica.Driver");
-
-String url_<%=cid %> = "jdbc:vertica://"+<%=dbhost%>+":"+<%=dbport%>+"/"+<%=dbname%>;
-
 <%
 List<IMetadataColumn> columnList = getColumnList(node);
+List<Column> stmtStructure = null;
+if(columnList != null && columnList.size() > 0) {
+    stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, useFieldOptions, fieldOptions, addCols);
+}
 %>
 
 <%
-if(!dataAction.equals("INSERT"))
-{
-    int keyCount = 0;
-    for(IMetadataColumn column:columnList)
-    {
-        if(column.isKey())
-        {
-            keyCount++;
+if(dataAction.equals("UPDATE") || dataAction.equals("INSERT_OR_UPDATE") || dataAction.equals("UPDATE_OR_INSERT")) {
+    int updateKeyCount = 0;
+    if(stmtStructure != null) {
+        for(Column column : stmtStructure) {
+            if(column.isUpdateKey()) {
+                updateKeyCount++;
+            }
         }
+        %>
+        int updateKeyCount_<%=cid%> = <%=updateKeyCount%>;
+        if(updateKeyCount_<%=cid%> < 1) {
+            throw new RuntimeException("For update, Schema must have a key");
+        }
+        <%
     }
-    %>
-    int keyCount_<%=cid%> = <%=keyCount%>;
-    if(keyCount_<%=cid%> < 1)
-    {
-        throw new RuntimeException("For update or delete, Schema must have a key");
+} else if(dataAction.equals("DELETE")) {
+    int deleteKeyCount = 0;
+    if(stmtStructure != null) {
+        for(Column column : stmtStructure) {
+            if(column.isDeleteKey()) {
+                deleteKeyCount++;
+            }
+        }
+        %>
+        int deleteKeyCount_<%=cid%> = <%=deleteKeyCount%>;
+        if(deleteKeyCount_<%=cid%> < 1) {
+            throw new RuntimeException("For delete, Schema must have a key");
+        }
+        <%
     }
-<%
 }
 %> 
-
+java.lang.Class.forName("com.vertica.Driver");
+String url_<%=cid %> = "jdbc:vertica://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%>;
 String dbUser_<%=cid %> = <%=dbuser%>;
 String dbPwd_<%=cid %> = <%=dbpwd%>;
-
 java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
 
 <%
-if(columnList != null && columnList.size()>0){    
-    List<Column> stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, addCols);
-    Map<String, StringBuilder> actionSQLMap = getManager(dbmsId, cid).createActionSQL(stmtStructure);
-    StringBuilder insertColName = actionSQLMap.get(INSERT_COLUMN_NAME);   
-    StringBuilder insertValueStmt = actionSQLMap.get(INSERT_VALUE_STMT);    
-    StringBuilder updateSetStmt = actionSQLMap.get(UPDATE_SET_STMT);    
-    StringBuilder updateWhereStmt = actionSQLMap.get(UPDATE_WHERE_STMT);    
-    if(!tableAction.equals("NONE")) {        
+if(columnList != null && columnList.size() > 0) {
+    if(!tableAction.equals("NONE")) {
+        StringBuilder columnListStr = new StringBuilder();
+        boolean firstColumn = true;
+        for(Column column : stmtStructure) {
+            if(column.isReplaced()) {
+                List<Column> replacedColumns = column.getReplacement();
+                for(Column replacedColumn : replacedColumns) {
+                    if(firstColumn) {
+                        firstColumn = false;
+                    } else {
+                        columnListStr.append(", ");
+                    }
+                    columnListStr.append(replacedColumn.getName());                    
+                }
+            } else {
+                if(firstColumn) {
+                    firstColumn = false;
+                } else {
+                    columnListStr.append(", ");
+                }
+                columnListStr.append(column.getName());                
+            }
+        }
         Manager manager = getManager(dbmsId, cid);
         if(tableAction.equals("DROP_CREATE")) {
             %>
@@ -114,13 +144,13 @@ if(columnList != null && columnList.size()>0){
             stmtDrop_<%=cid%>.execute("<%=manager.getDropTableSQL()%>" + " cascade");
             java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
             stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
-            stmtCreate_<%=cid%>.execute("CREATE PROJECTION " + <%=tableName%> + "_proj (<%=insertColName.toString()%>) AS SELECT <%=insertColName.toString()%> FROM " + <%=tableName%>);//
+            stmtCreate_<%=cid%>.execute("CREATE PROJECTION " + <%=tableName%> + "_proj (<%=columnListStr.toString()%>) AS SELECT <%=columnListStr.toString()%> FROM " + <%=tableName%>);//
             <%
         } else if(tableAction.equals("CREATE")) {
             %>
             java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
             stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
-            stmtCreate_<%=cid%>.execute("CREATE PROJECTION " + <%=tableName%> + "_proj (<%=insertColName.toString()%>) AS SELECT <%=insertColName.toString()%> FROM " + <%=tableName%>);//
+            stmtCreate_<%=cid%>.execute("CREATE PROJECTION " + <%=tableName%> + "_proj (<%=columnListStr.toString()%>) AS SELECT <%=columnListStr.toString()%> FROM " + <%=tableName%>);//
             <%
         } else if(tableAction.equals("CREATE_IF_NOT_EXISTS")) {
             %>
@@ -137,7 +167,7 @@ if(columnList != null && columnList.size()>0){
             if(!whetherExist_<%=cid%>) {
                 java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
                 stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");     
-                stmtCreate_<%=cid%>.execute("CREATE PROJECTION " + <%=tableName%> + "_proj (insertColName.toString()) AS SELECT <%=insertColName.toString()%> FROM " + <%=tableName%>);//
+                stmtCreate_<%=cid%>.execute("CREATE PROJECTION " + <%=tableName%> + "_proj (<%=columnListStr.toString()%>) AS SELECT <%=columnListStr.toString()%> FROM " + <%=tableName%>);//
             }
             <%
         } else if(tableAction.equals("CLEAR")) {
@@ -147,45 +177,37 @@ if(columnList != null && columnList.size()>0){
             <%
         }
     }    
-
-    if(dataAction.equals("INSERT")){
-    %>  
-    
+    Map<String, StringBuilder> actionSQLMap = getManager(dbmsId, cid).createProcessSQL(stmtStructure);
+    StringBuilder insertColName = actionSQLMap.get(INSERT_COLUMN_NAME);   
+    StringBuilder insertValueStmt = actionSQLMap.get(INSERT_VALUE_STMT);    
+    StringBuilder updateSetStmt = actionSQLMap.get(UPDATE_SET_STMT);    
+    StringBuilder updateWhereStmt = actionSQLMap.get(UPDATE_WHERE_STMT);
+    StringBuilder deleteWhereStmt = actionSQLMap.get(DELETE_WHERE_STMT);
+    if(dataAction.equals("INSERT")) {
+        %>      
         java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("INSERT INTO " + <%=tableName%> + " (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)");
-
-    <%
-    }else if (dataAction.equals("UPDATE")){
-    %>
-    
+        <%
+    } else if (dataAction.equals("UPDATE")) {
+        %>    
         java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("UPDATE " + <%=tableName%> + " SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>");
-
-    <%      
-    }else if (dataAction.equals("INSERT_OR_UPDATE")){
-    %>
+        <%      
+    } else if (dataAction.equals("INSERT_OR_UPDATE")) {
+        %>
         java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("SELECT COUNT(1) FROM " + <%=tableName%> + " WHERE <%=updateWhereStmt.toString()%>");   
-
         java.sql.PreparedStatement pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement("INSERT INTO " + <%=tableName%> + " (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)");
-
+        java.sql.PreparedStatement pstmtUpdate_<%=cid %> = conn_<%=cid%>.prepareStatement("UPDATE " + <%=tableName%> + " SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>");    
+        <%
+    } else if (dataAction.equals("UPDATE_OR_INSERT")) {
+        %>
         java.sql.PreparedStatement pstmtUpdate_<%=cid %> = conn_<%=cid%>.prepareStatement("UPDATE " + <%=tableName%> + " SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>");
-    
-    <%
-    }else if (dataAction.equals("UPDATE_OR_INSERT")){
-    %>
-
-        java.sql.PreparedStatement pstmtUpdate_<%=cid %> = conn_<%=cid%>.prepareStatement("UPDATE " + <%=tableName%> + " SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>");
-
-        java.sql.PreparedStatement pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement("INSERT INTO " + <%=tableName%> + " (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)");
-        
-    <%
-            
-    }else if (dataAction.equals("DELETE")){
-    %>
-    
-        java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("DELETE  FROM " + <%=tableName%> + " WHERE <%=updateWhereStmt.toString()%>");
-
-    <%      
+        java.sql.PreparedStatement pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement("INSERT INTO " + <%=tableName%> + " (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)");        
+        <%            
+    } else if (dataAction.equals("DELETE")) {
+        %>    
+        java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("DELETE  FROM " + <%=tableName%> + " WHERE <%=deleteWhereStmt.toString()%>");
+        <%      
     }
-    if(!commitEvery.equals("")&&!commitEvery.equals("0")){
+    if(!commitEvery.equals("") && !commitEvery.equals("0")) {
         %>
         
         int commitEvery_<%=cid%> = <%=commitEvery%>;
