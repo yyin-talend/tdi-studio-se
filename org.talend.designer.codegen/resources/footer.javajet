@@ -76,12 +76,22 @@
         System.exit(exitCode);
     }    
    
+ 
     public static String[][] runJob(String[] args) {
     
-		runJobInTOS(args);
-				
+		int exitCode = runJobInTOS(args);
+    <%	
+        List<INode> tBufferNodes = (List<INode>)process.getNodesOfType("tBuffer");
+        if(tBufferNodes != null && tBufferNodes.size() > 0) {
+    %>  				
 		String[][] bufferValue = (String[][])globalBuffer.toArray(new String[globalBuffer.size()][]);		
-		
+	<%
+		} else {
+	%>
+		String[][] bufferValue = new String[][] { { Integer.toString(exitCode) } };
+	<%
+		}
+	%>	
 		globalBuffer.clear();
 		
 		return bufferValue;
@@ -217,8 +227,8 @@
 %>
 
 
-	long startFreeMemory = Runtime.getRuntime().freeMemory();
-	long endFreeMemory = 0;
+	long startUsedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+	long endUsedMemory = 0;
 	long end = 0;
 	long start = System.currentTimeMillis();
 	final <%=process.getName() %> <%=process.getName() %>Class = new <%=process.getName() %>(); 
@@ -292,9 +302,9 @@
     		System.out.println((end-start)+" milliseconds");
 	    }
 	
-		endFreeMemory = Runtime.getRuntime().freeMemory();
+		endUsedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
 		if (false) {
-    		System.out.println((startFreeMemory-endFreeMemory) + " bytes--used by : <%=process.getName() %>");
+    		System.out.println((endUsedMemory - startUsedMemory) + " bytes memory increase when running : <%=process.getName() %>");
 	    }		  
 <%
 	if (stats) {
