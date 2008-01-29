@@ -137,7 +137,7 @@ public class Connection extends Element implements IConnection, IPerformance {
             default:
                 param.setField(EParameterFieldType.MEMO_PERL);
             }
-            param.setCategory(EComponentCategory.MAIN);
+            param.setCategory(EComponentCategory.BASIC);
             param.setValue(""); //$NON-NLS-1$
             param.setNbLines(5);
             param.setName(EParameterName.CONDITION.getName());
@@ -163,7 +163,7 @@ public class Connection extends Element implements IConnection, IPerformance {
         param.setValue(Boolean.FALSE);
         param.setDisplayName(EParameterName.UPDATE_COMPONENTS.getDisplayName());
         param.setField(EParameterFieldType.CHECK);
-        param.setCategory(EComponentCategory.MAIN);
+        param.setCategory(EComponentCategory.BASIC);
         param.setNumRow(5);
         param.setReadOnly(true);
         param.setRequired(false);
@@ -178,15 +178,15 @@ public class Connection extends Element implements IConnection, IPerformance {
         param.setDisplayName("Monitor this connection");
         param.setField(EParameterFieldType.CHECK);
         param.setValue(Boolean.FALSE);
-        param.setCategory(EComponentCategory.MAIN);
+        param.setCategory(EComponentCategory.ADVANCED);
         param.setShow(true);
         param.setNumRow(1);
         addElementParameter(param);
         Node meterAttached = new Node(ComponentsFactoryProvider.getInstance().get("tFlowMeter"), process);
         for (IElementParameter curParam : meterAttached.getElementParameters()) {
-            if (curParam.getCategory() == EComponentCategory.PROPERTY
+            if (curParam.getCategory() == EComponentCategory.ADVANCED
                     && !curParam.getName().equals(EParameterName.NOT_SYNCHRONIZED_SCHEMA.getName())) {
-                curParam.setCategory(EComponentCategory.MAIN);
+                curParam.setCategory(EComponentCategory.ADVANCED);
                 curParam.setNumRow(curParam.getNumRow() + 1);
                 if (curParam.getShowIf() == null || curParam.getShowIf().equals("")) {
                     curParam.setShowIf("MONITOR_CONNECTION == 'true'");
