@@ -32,6 +32,7 @@ import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.actions.importproject.ImportProjectsUtilities;
+import org.talend.repository.ui.wizards.newproject.copyfromeclipse.TalendWizardProjectsImportPage;
 
 /**
  * Wizard for the creation of a new project. <br/>
@@ -70,7 +71,7 @@ public class ImportProjectAsWizard extends Wizard {
         mainPage = new ImportProjectAsWizardPage();
         addPage(mainPage);
 
-        manyProjectsPage = new WizardProjectsImportPage();
+        manyProjectsPage = new TalendWizardProjectsImportPage();
         addPage(manyProjectsPage);
 
         setWindowTitle(Messages.getString("ImportProjectAsWizard.windowTitle")); //$NON-NLS-1$

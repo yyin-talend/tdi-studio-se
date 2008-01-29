@@ -27,6 +27,7 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.ERepositoryImages;
+import org.talend.repository.ui.wizards.newproject.copyfromeclipse.TalendExternalProjectImportWizard;
 
 /**
  * Action used to refresh a repository view.<br/>
@@ -61,7 +62,7 @@ public final class ImportProjectsAction extends Action implements IWorkbenchWind
     }
 
     public void run() {
-        ExternalProjectImportWizard processWizard = new ExternalProjectImportWizard();
+        ExternalProjectImportWizard processWizard = new TalendExternalProjectImportWizard();
 
         // Set the "Copy projects into workspace" value default as true:
         IDialogSettings dialogSettings = processWizard.getDialogSettings();

@@ -12,6 +12,12 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.ConfigExternalLib;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IWorkbench;
@@ -19,6 +25,8 @@ import org.eclipse.ui.internal.ide.IDEWorkbenchPlugin;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
+import org.talend.core.model.general.ModuleNeeded;
+import org.talend.librariesmanager.model.ModulesNeededProvider;
 import org.talend.repository.i18n.Messages;
 
 /**
@@ -73,6 +81,128 @@ public class ConfigExternalLibWizard extends Wizard {
      * (non-Javadoc) Method declared on IWizard.
      */
     public boolean performFinish() {
-        return mainPage.finish();
+        boolean flag = mainPage.finish();
+        List<String> textList = new ArrayList<String>();
+        List<String> anotherRoutineNameList = new ArrayList<String>();
+        List<String> routineNameList = this.getRoutineName();
+        String path = CorePlugin.getDefault().getLibrariesService().getLibrariesPath();
+        List<String> anotherList = new ArrayList<String>();
+
+        try {
+            Pattern pttn = Pattern.compile("(.*)java$");
+            Matcher mtcr = pttn.matcher(path);
+            Pattern pten = Pattern.compile("(.*)perl$");
+            Matcher mter = pten.matcher(path);
+            if (mtcr.find()) {
+                textList = this.readData("java", textList);
+                anotherList = this.compareName(textList, routineNameList, anotherRoutineNameList, anotherList);
+                this.preferenceStore("java", anotherList);
+            }
+            // } else if (mter.find()) {
+            // textList = this.readData("perl", textList);
+            // anotherList = this.compareName(textList, routineNameList, anotherRoutineNameList, anotherList);
+            // this.preferenceStore("perl", anotherList);
+            // }
+
+            return flag;
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    private List<String> compareName(List<String> textList, List<String> routineNameList, List<String> anotherRoutineNameList,
+            List<String> anotherList) {
+        anotherRoutineNameList.addAll(routineNameList);
+        for (String routineName : routineNameList) {
+            for (String textString : textList) {
+                if (routineName.equals(textString)) {
+                    anotherRoutineNameList.remove(routineName);
+                }
+            }
+        }
+
+        for (String routineName : anotherRoutineNameList) {
+            boolean same = false;
+            boolean other = false;
+            for (String newName : anotherList) {
+                if (routineName.equals(newName)) {
+                    other = true;
+                }
+            }
+            if (other) {
+                continue;
+            }
+            for (String name : anotherRoutineNameList) {
+                if (routineName.equals(name)) {
+                    if (!same) {
+                        anotherList.add(routineName);
+                        same = true;
+                    }
+                }
+            }
+        }
+        return anotherList;
+    }
+
+    private List<String> readData(String name, List<String> textList) {
+        IPreferenceStore preferenceStore = CorePlugin.getDefault().getPreferenceStore();
+        String[] oldName = null;
+
+        if (preferenceStore.contains(name)) {
+            String string = preferenceStore.getString(name);
+            if (null == string || "".equals(string)) {
+                return textList;
+            } else {
+                oldName = string.split(":");
+                for (String s : oldName) {
+                    textList.add(s);
+                }
+                return textList;
+            }
+        } else {
+            return textList;
+        }
+    }
+
+    private void preferenceStore(String name, List<String> anotherList) {
+        IPreferenceStore preferenceStore = CorePlugin.getDefault().getPreferenceStore();
+        String preferenceName = null;
+        StringBuffer sb = null;
+        if (preferenceStore.contains(name)) {
+            String string = preferenceStore.getString(name);
+            if (null == string || "".equals(string)) {
+                sb = new StringBuffer();
+                preferenceName = this.addName(anotherList, sb);
+                preferenceStore.setValue(name, preferenceName);
+            } else {
+                sb = new StringBuffer();
+                sb.append(string);
+                preferenceName = this.addName(anotherList, sb);
+                preferenceStore.setValue(name, preferenceName);
+            }
+        } else {
+            sb = new StringBuffer();
+            preferenceName = this.addName(anotherList, sb);
+            preferenceStore.setValue(name, preferenceName);
+        }
+    }
+
+    private String addName(List<String> anotherList, StringBuffer sb) {
+        for (String str : anotherList) {
+            sb.append(str + ":");
+        }
+        return sb.toString();
+    }
+
+    private List<String> getRoutineName() {
+        List<String> moduleNameList = new ArrayList<String>();
+
+        List<ModuleNeeded> moduleNeededList = ModulesNeededProvider.getModulesNeededForRoutines();
+        for (ModuleNeeded moduleNeeded : moduleNeededList) {
+            moduleNameList.add(moduleNeeded.getModuleName());
+        }
+        return moduleNameList;
     }
 }
