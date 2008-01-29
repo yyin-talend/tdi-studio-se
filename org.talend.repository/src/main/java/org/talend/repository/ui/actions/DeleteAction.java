@@ -251,24 +251,25 @@ public class DeleteAction extends AContextualAction {
         if (nodeType.isSubItem()) {
             new DeleteTableAction().run();
             needReturn = true;
-        }
-
-        if (factory.getStatus(objToDelete) == ERepositoryStatus.DELETED) {
-            if (confirm == null) {
-                String title = Messages.getString("DeleteAction.dialog.title"); //$NON-NLS-1$
-                String message = currentJobNode.getProperties(EProperties.LABEL)
-                        + " " + Messages.getString("DeleteAction.dialog.message1") + "\n" //$NON-NLS-1$ //$NON-NLS-2$
-                        + Messages.getString("DeleteAction.dialog.message2"); //$NON-NLS-1$
-                confirm = (MessageDialog.openQuestion(new Shell(), title, message));
-            }
-            if (confirm) {
-                factory.deleteObjectPhysical(objToDelete);
-                ExpressionPersistance.getInstance().jobDeleted(objToDelete.getLabel());
-
-            }
         } else {
-            factory.deleteObjectLogical(objToDelete);
+            if (factory.getStatus(objToDelete) == ERepositoryStatus.DELETED) {
+                if (confirm == null) {
+                    String title = Messages.getString("DeleteAction.dialog.title"); //$NON-NLS-1$
+                    String message = currentJobNode.getProperties(EProperties.LABEL)
+                            + " " + Messages.getString("DeleteAction.dialog.message1") + "\n" //$NON-NLS-1$ //$NON-NLS-2$
+                            + Messages.getString("DeleteAction.dialog.message2"); //$NON-NLS-1$
+                    confirm = (MessageDialog.openQuestion(new Shell(), title, message));
+                }
+                if (confirm) {
+                    factory.deleteObjectPhysical(objToDelete);
+                    ExpressionPersistance.getInstance().jobDeleted(objToDelete.getLabel());
+
+                }
+            } else {
+                factory.deleteObjectLogical(objToDelete);
+            }
         }
+
         return needReturn;
     }
 

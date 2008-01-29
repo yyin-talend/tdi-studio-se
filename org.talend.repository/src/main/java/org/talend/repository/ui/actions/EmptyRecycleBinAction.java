@@ -23,6 +23,7 @@ import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.BinRepositoryNode;
+import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
@@ -63,7 +64,9 @@ public class EmptyRecycleBinAction extends AContextualAction {
                 if (objToDelete instanceof ISubRepositoryObject) {
                     ISubRepositoryObject subRepositoryObject = (ISubRepositoryObject) objToDelete;
                     subRepositoryObject.removeFromParent();
-                    factory.save(subRepositoryObject.getProperty().getItem());
+                    if (!isRootNodeDeleted(child)) {
+                        factory.save(subRepositoryObject.getProperty().getItem());
+                    }
                 } else {
                     String title = Messages.getString("DeleteAction.dialog.title"); //$NON-NLS-1$
                     String message = objToDelete.getLabel() + " " + Messages.getString("DeleteAction.dialog.message1") + "\n" //$NON-NLS-1$ //$NON-NLS-2$
@@ -77,8 +80,23 @@ public class EmptyRecycleBinAction extends AContextualAction {
                 MessageBoxExceptionHandler.process(e);
             }
         }
-
         refresh();
+    }
+
+    /**
+     * DOC qzhang Comment method "getRootNode".
+     * 
+     * @param child
+     * @return
+     */
+    private boolean isRootNodeDeleted(RepositoryNode child) {
+        boolean isDeleted = false;
+        if (child.getParent() != null && child.getParent().getParent() != null
+                && child.getParent().getParent().getObject() != null) {
+            ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+            isDeleted = factory.getStatus(child.getParent().getParent().getObject()) == ERepositoryStatus.DELETED;
+        }
+        return isDeleted;
     }
 
     /*
