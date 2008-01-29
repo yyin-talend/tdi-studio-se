@@ -63,7 +63,7 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView {
 
     @Override
     public void createPartControl(Composite parent) {
-        tabFactory = new HorizontalTabFactory();
+        // tabFactory = new HorizontalTabFactory();
         tabFactory.initComposite(parent);
         tabFactory.addSelectionChangedListener(new ISelectionChangedListener() {
 
@@ -243,31 +243,28 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView {
         }
         this.currentSelectedTab = null;
         this.element = null;
-        clearFlags();
+        this.cleaned = true;
+        this.selectedPrimary = true;
     }
 
     public void refresh() {
+        refresh(false);
+    }
+
+    public void refresh(boolean force) {
         final IEditorPart activeEditor = getSite().getPage().getActiveEditor();
         if (activeEditor != null && activeEditor instanceof AbstractMultiPageTalendEditor) {
             AbstractTalendEditor talendEditor = ((AbstractMultiPageTalendEditor) activeEditor).getTalendEditor();
             IProcess process = talendEditor.getProcess();
             if (process != null && process instanceof Element) {
-                clearFlags();
+                this.selectedPrimary = true;
+                this.cleaned = force;
                 this.element = (Element) process;
                 setElement(element, activeEditor.getTitle());
                 return;
             }
         }
         cleanDisplay();
-    }
-
-    /*
-     * 
-     * clear the flags
-     */
-    private void clearFlags() {
-        this.cleaned = true;
-        this.selectedPrimary = true;
 
     }
 
