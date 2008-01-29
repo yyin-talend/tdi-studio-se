@@ -144,7 +144,9 @@ public class NodeLabelEditPart extends AbstractGraphicalEditPart implements Prop
             // refresh the title of component setting view.
             ComponentSettingsView viewer = (ComponentSettingsView) PlatformUI.getWorkbench().getActiveWorkbenchWindow()
                     .getActivePage().findView(ComponentSettingsView.ID);
-            viewer.updatePropertiesViewerTitle();
+            if (viewer != null) {
+                viewer.updatePropertiesViewerTitle();
+            }
         }
         if (request.equals(NodeLabel.LOCATION)) { //$NON-NLS-1$
             refreshVisuals();
