@@ -29,6 +29,8 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.part.ViewPart;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
@@ -163,9 +165,48 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
             }
 
         }
+
+        if (parent.getChildren().length == 0) {
+            if (parent.getLayout() instanceof FillLayout) {
+                FillLayout layout = (FillLayout) parent.getLayout();
+                layout.type = SWT.VERTICAL;
+                layout.marginHeight = 0;
+                layout.marginWidth = 0;
+                layout.spacing = 0;
+            }
+
+            Composite composite = tabFactory.getWidgetFactory().createComposite(parent);
+
+            composite.setLayout(new FormLayout());
+            FormData d = new FormData();
+            d.left = new FormAttachment(2, 0);
+            d.right = new FormAttachment(100, 0);
+            d.top = new FormAttachment(5, 0);
+            d.bottom = new FormAttachment(100, 0);
+            composite.setLayoutData(d);
+
+            Label alertText = new Label(composite, SWT.NONE);
+            alertText.setText("No advanced settings.");
+            alertText.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
+            parent.layout();
+        }
         if (dc != null) {
             dc.refresh();
         }
+    }
+
+    /**
+     * Creates a empty composite if no job opened.
+     * 
+     * @param parent
+     */
+    private void createEmptyPartControl(Composite parent) {
+
+        Composite alertComposite = new Composite(parent, SWT.NONE);
+        Text alertText = new Text(alertComposite, SWT.NONE);
+        alertText.setText("A Stats/Logs is not available.");
+        alertText.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
+        parent.layout();
     }
 
     /*

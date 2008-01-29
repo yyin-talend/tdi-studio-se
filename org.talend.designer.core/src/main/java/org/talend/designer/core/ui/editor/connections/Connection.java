@@ -184,7 +184,7 @@ public class Connection extends Element implements IConnection, IPerformance {
         addElementParameter(param);
         Node meterAttached = new Node(ComponentsFactoryProvider.getInstance().get("tFlowMeter"), process);
         for (IElementParameter curParam : meterAttached.getElementParameters()) {
-            if (curParam.getCategory() == EComponentCategory.ADVANCED
+            if (curParam.getCategory() == EComponentCategory.BASIC
                     && !curParam.getName().equals(EParameterName.NOT_SYNCHRONIZED_SCHEMA.getName())) {
                 curParam.setCategory(EComponentCategory.ADVANCED);
                 curParam.setNumRow(curParam.getNumRow() + 1);
@@ -331,9 +331,9 @@ public class Connection extends Element implements IConnection, IPerformance {
             }
             updateName = true;
         } /*
-         * else if (getLineStyle().equals(EConnectionType.LOOKUP)) { labelText += " (" + nodeConnector.getLinkName() +
-         * ")"; updateName = true; }
-         */
+             * else if (getLineStyle().equals(EConnectionType.LOOKUP)) { labelText += " (" + nodeConnector.getLinkName() +
+             * ")"; updateName = true; }
+             */
 
         if (updateName) {
 
