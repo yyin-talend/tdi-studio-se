@@ -18,7 +18,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.core.model.metadata.IMetadataTable;
@@ -61,44 +60,50 @@ public class MainConnectionComposite extends DynamicComposite {
             List<? extends IElementParameter> listParam = ((Connection) elem).getSource().getElementParameters();
 
             generator.initController(this);
+            boolean schemaTypeControllerCreated = false;
             for (IElementParameter cur : listParam) {
-                if ((cur.getField() == EParameterFieldType.SCHEMA_TYPE)
-                        && (cur.getContext().equals(((Connection) elem).getConnectorName()))) {
-                    AbstractElementPropertySectionController contorller = generator.getController(
-                            EParameterFieldType.SCHEMA_TYPE, this);
-                    contorller.createControl(composite, cur, 0, 0, 0, null);
+
+                if (cur.getCategory() == this.section) {
+
+                    if ((cur.getField() == EParameterFieldType.SCHEMA_TYPE)
+                            && (cur.getContext().equals(((Connection) elem).getConnectorName()))) {
+                        AbstractElementPropertySectionController contorller = generator.getController(
+                                EParameterFieldType.SCHEMA_TYPE, this);
+                        contorller.createControl(composite, cur, 0, 0, 0, null);
+                        schemaTypeControllerCreated = true;
+                    }
                 }
             }
+            if (schemaTypeControllerCreated) {
+                FormData data = new FormData();
+                data.left = new FormAttachment(0, ITabbedPropertyConstants.HSPACE);
+                data.right = new FormAttachment(100, -ITabbedPropertyConstants.HSPACE);
+                data.top = new FormAttachment(0, curRowSize + ITabbedPropertyConstants.VSPACE);
+                data.width = 300; // to correct bug of table growing indefinitly
 
-            FormData data = new FormData();
-            data.left = new FormAttachment(0, ITabbedPropertyConstants.HSPACE);
-            data.right = new FormAttachment(100, -ITabbedPropertyConstants.HSPACE);
-            data.top = new FormAttachment(0, curRowSize + ITabbedPropertyConstants.VSPACE);
-            data.width = 300; // to correct bug of table growing indefinitly
+                IMetadataTable outputMetaTable = ((Connection) elem).getMetadataTable();
+                if (outputMetaTable != null) {
+                    // Composite compositeEditorView = new Composite(composite, SWT.BORDER);
+                    // compositeEditorView.setLayoutData(data);
 
-            IMetadataTable outputMetaTable = ((Connection) elem).getMetadataTable();
-            if (outputMetaTable != null) {
-                // Composite compositeEditorView = new Composite(composite, SWT.BORDER);
-                // compositeEditorView.setLayoutData(data);
+                    metadataTableEditor = new MetadataTableEditor(outputMetaTable, "Schema from "
+                            + ((Connection) elem).getSource().getElementName() + " output ");
+                    metadataTableEditorView = new MetadataTableEditorView(composite, SWT.NONE, metadataTableEditor, true, false,
+                            true, false);
+                    MetadataDialog.initializeMetadataTableView(metadataTableEditorView, ((Connection) elem).getSource(),
+                            outputMetaTable);
+                    metadataTableEditorView.initGraphicComponents();
+                    metadataTableEditorView.getExtendedTableViewer().setCommandStack(getCommandStack());
+                    CustomTableManager.addCustomManagementToTable(metadataTableEditorView, true);
+                    Composite compositeEditorView = metadataTableEditorView.getMainComposite();
+                    compositeEditorView.setLayoutData(data);
+                    // compositeEditorView.getParent().layout();
 
-                metadataTableEditor = new MetadataTableEditor(outputMetaTable, "Schema from "
-                        + ((Connection) elem).getSource().getElementName() + " output ");
-                metadataTableEditorView = new MetadataTableEditorView(composite, SWT.NONE, metadataTableEditor, true, false,
-                        true, false);
-                MetadataDialog.initializeMetadataTableView(metadataTableEditorView, ((Connection) elem).getSource(),
-                        outputMetaTable);
-                metadataTableEditorView.initGraphicComponents();
-                metadataTableEditorView.getExtendedTableViewer().setCommandStack(getCommandStack());
-                CustomTableManager.addCustomManagementToTable(metadataTableEditorView, true);
-                Composite compositeEditorView = metadataTableEditorView.getMainComposite();
-                compositeEditorView.setLayoutData(data);
-                // compositeEditorView.getParent().layout();
-
-                Table table = metadataTableEditorView.getTable();
-                int currentHeightEditor = table.getHeaderHeight() + outputMetaTable.getListColumns().size()
-                        * table.getItemHeight() + table.getItemHeight() + 50;
-                curRowSize = currentHeightEditor + ITabbedPropertyConstants.VSPACE + curRowSize;
-
+                    Table table = metadataTableEditorView.getTable();
+                    int currentHeightEditor = table.getHeaderHeight() + outputMetaTable.getListColumns().size()
+                            * table.getItemHeight() + table.getItemHeight() + 50;
+                    curRowSize = currentHeightEditor + ITabbedPropertyConstants.VSPACE + curRowSize;
+                }
             }
             super.addComponents(forceRedraw, false, curRowSize);
         } else if (conIf()) {
