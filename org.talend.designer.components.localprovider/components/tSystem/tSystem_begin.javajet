@@ -25,17 +25,13 @@
 	
 	boolean ifDir = ElementParameterParser.getValue(node, "__ROOTDIR__").equals("true");
 	
-	if(ifDir){
-	
-		String rootDir1  = ElementParameterParser.getValue(node, "__DIRECTORY__").replace("\\","/");
+	String rootDir1  = ElementParameterParser.getValue(node, "__DIRECTORY__").replace("\\","/");
 		
-		String rootDir = rootDir1.substring(1,rootDir1.length()-1);
+	String rootDir = rootDir1.substring(1,rootDir1.length()-1);
 		
-		if(!(rootDir.endsWith("/")||rootDir.endsWith("\\"))) rootDir = rootDir + "/";
+	if(!(rootDir.endsWith("/")||rootDir.endsWith("\\"))) rootDir = rootDir + "/";
 			
-		command = rootDir + command;
-		
-	}
+	if(ifDir) command = rootDir + command;
 	
 	// To launch an internal command to cmd.exe (XP), you have to call :
 	// cmd.exe /c dir (for example)
@@ -47,7 +43,12 @@ final java.util.Vector<String> output_<%=cid%> = new java.util.Vector<String>();
 	}
 %>
 Runtime runtime_<%=cid %> = Runtime.getRuntime();
+
+<%if(ifDir){%>
+final Process ps_<%=cid %> = runtime_<%=cid %>.exec("<%=command %>",null,new java.io.File("<%=rootDir%>"));
+<%}else{%>
 final Process ps_<%=cid %> = runtime_<%=cid %>.exec("<%=command %>");
+<%}%>
 Thread normal_<%=cid %> = new Thread() {
 	public void run() {
 		try {
