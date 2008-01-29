@@ -23,11 +23,9 @@ import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.AutoexposeHelper;
-import org.eclipse.gef.ExposeHelper;
 import org.eclipse.gef.editparts.GridLayer;
 import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
 import org.eclipse.gef.editparts.ViewportAutoexposeHelper;
-import org.eclipse.gef.editparts.ViewportExposeHelper;
 import org.eclipse.gef.editparts.ZoomManager;
 import org.eclipse.gmf.runtime.diagram.ui.internal.editparts.ZoomableEditPart;
 import org.eclipse.gmf.runtime.gef.ui.internal.editparts.AnimatableZoomManager;
@@ -143,5 +141,14 @@ public class TalendScalableFreeformRootEditPart extends ScalableFreeformRootEdit
             return new ViewportAutoexposeHelper(this, new Insets(100));
         }
         return super.getAdapter(key);
+    }
+
+    /**
+     * Sets the editorInput.
+     * 
+     * @param editorInput the editorInput to set
+     */
+    public void setEditorInput(IEditorInput editorInput) {
+        this.editorInput = editorInput;
     }
 }

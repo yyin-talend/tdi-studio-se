@@ -616,10 +616,12 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
     }
 
     protected void disposeChildren() {
-        // Empty the composite before use (kinda refresh) :
-        Control[] ct = composite.getChildren();
-        for (int i = 0; i < ct.length; i++) {
-            ct[i].dispose();
+        if (composite != null && !composite.isDisposed()) {
+            // Empty the composite before use (kinda refresh) :
+            Control[] ct = composite.getChildren();
+            for (int i = 0; i < ct.length; i++) {
+                ct[i].dispose();
+            }
         }
     }
 
@@ -1082,7 +1084,6 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
         extraPropertyTypeName = JobSettingsConstants.getExtraParameterName(EParameterName.PROPERTY_TYPE.getName());
         extraRepositoryPropertyTypeName = JobSettingsConstants.getExtraParameterName(EParameterName.REPOSITORY_PROPERTY_TYPE
                 .getName());
-
     }
 
     /*
@@ -1092,8 +1093,17 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
      */
     @Override
     public void dispose() {
-        getCommandStack().removeCommandStackEventListener(commandStackEventListener);
+        CommandStack cmdStack = getCommandStack();
+        if (cmdStack != null) {
+            cmdStack.removeCommandStackEventListener(commandStackEventListener);
+        }
         super.dispose();
+        process = null;
+        elem = null;
+        part = null;
+        generator.dispose();
+        generator = null;
+        hashCurControls.clear();
     }
 
     CommandStackEventListener commandStackEventListener = new CommandStackEventListener() {
@@ -1209,8 +1219,12 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
      * @return
      */
     protected CommandStack getCommandStack() {
-        Object adapter = part.getTalendEditor().getAdapter(CommandStack.class);
-        return (CommandStack) adapter;
+        if (part != null && part.getTalendEditor() != null) {
+            Object adapter = part.getTalendEditor().getAdapter(CommandStack.class);
+            return (CommandStack) adapter;
+        } else {
+            return null;
+        }
     }
 
     @SuppressWarnings("unchecked")

@@ -723,7 +723,6 @@ public class DataProcess {
 
     public void buildFromGraphicalProcess(List<Node> graphicalNodeList) {
         initialize();
-
         List<Node> newGraphicalNodeList = buildCopyOfGraphicalNodeList(graphicalNodeList);
 
         replaceNodeFromProviders(newGraphicalNodeList);
@@ -796,7 +795,9 @@ public class DataProcess {
                 ((AbstractNode) node).setLinkedMergeInfo(process.getLinkedMergeInfo(node));
             }
         }
-
+        checkRefList = null;
+        checkMultipleMap = null;
+        buildCheckMap = null;
     }
 
     public INode buildNodeFromNode(final Node graphicalNode, final Process process) {
@@ -903,6 +904,15 @@ public class DataProcess {
 
     public List<INode> getNodeList() {
         return dataNodeList;
+    }
+
+    /**
+     * Getter for duplicatedProcess.
+     * 
+     * @return the duplicatedProcess
+     */
+    public Process getDuplicatedProcess() {
+        return this.duplicatedProcess;
     }
 
 }

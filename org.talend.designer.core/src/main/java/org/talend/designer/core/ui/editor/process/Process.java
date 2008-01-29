@@ -697,7 +697,6 @@ public class Process extends Element implements IProcess2 {
         // }
 
         contextManager.saveToEmf(processType.getContext());
-
         return processType;
     }
 
@@ -885,7 +884,6 @@ public class Process extends Element implements IProcess2 {
                 continue;
             }
             nc = loadNode(nType, component, nodesHashtable, listParamType);
-
         }
         if (!unloadedNodeNames.isEmpty()) {
             throw new PersistenceException(Messages.getString("Process.componentsUnloaded")); //$NON-NLS-1$
@@ -2397,23 +2395,60 @@ public class Process extends Element implements IProcess2 {
         return null;
     }
 
+    CommandStackEventListener commandStackEventListener = new CommandStackEventListener() {
+
+        public void stackChanged(CommandStackEvent event) {
+            processModified = true;
+        }
+    };
+
     /**
      * Sets the editor.
      * 
      * @param editor the editor to set
      */
     public void setEditor(AbstractMultiPageTalendEditor editor) {
-        this.editor = editor;
         if (editor != null) {
-            CommandStackEventListener commandStackEventListener = new CommandStackEventListener() {
-
-                public void stackChanged(CommandStackEvent event) {
-                    processModified = true;
-                }
-            };
             CommandStack commandStack = (CommandStack) editor.getTalendEditor().getAdapter(CommandStack.class);
             commandStack.addCommandStackEventListener(commandStackEventListener);
         }
+        this.editor = editor;
+    }
+
+    public void dispose() {
+        for (Node curNode : nodes) {
+            List<Connection> connList = new ArrayList<Connection>((List<Connection>) curNode.getOutgoingConnections());
+            for (Connection curConnection : connList) {
+                curConnection.disconnect();
+                curConnection.setElementParameters(null);
+            }
+        }
+        for (Node curNode : new ArrayList<Node>(nodes)) {
+            removeNodeContainer(curNode.getNodeContainer());
+            curNode.getNodeContainer().setNode(null);
+            curNode.getNodeContainer().setNodeLabel(null);
+            curNode.setProcess(null);
+        }
+
+        // for (Node curNode : nodes) {
+        // curNode.setElementParameters(null);
+        // curNode.setProcess(null);
+        // }
+        nodes = null;
+        elem = null;
+        notes = null;
+        processor = null;
+        contextManager = null;
+        if (this.editor != null) {
+            CommandStack commandStack = (CommandStack) this.editor.getTalendEditor().getAdapter(CommandStack.class);
+            commandStack.removeCommandStackEventListener(commandStackEventListener);
+        }
+        if ((generatingProcess != null) && (generatingProcess.getDuplicatedProcess() != null)
+                && (generatingProcess.getDuplicatedProcess().getGraphicalNodes() != null)) {
+            generatingProcess.getDuplicatedProcess().dispose();
+        }
+        generatingProcess = null;
+        editor = null;
     }
 
     /*

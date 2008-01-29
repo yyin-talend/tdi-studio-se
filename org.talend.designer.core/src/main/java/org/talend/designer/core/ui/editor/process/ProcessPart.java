@@ -99,6 +99,8 @@ public class ProcessPart extends AbstractGraphicalEditPart implements PropertyCh
         }
         super.deactivate();
         ((Process) getModel()).removePropertyChangeListener(this);
+        fig2 = null;
+        node = null;
     }
 
     /*

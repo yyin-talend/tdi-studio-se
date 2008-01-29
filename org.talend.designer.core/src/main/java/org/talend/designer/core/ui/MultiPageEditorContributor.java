@@ -185,4 +185,25 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
         toolBarManager.add(new ZoomComboContributionItem(getPage(), zoomStrings));
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.ui.part.EditorActionBarContributor#dispose()
+     */
+    @Override
+    public void dispose() {
+        super.dispose();
+        IActionBars actionBars = getActionBars();
+        if (actionBars != null) {
+            actionBars.clearGlobalActionHandlers();
+        }
+        for (RetargetAction action : retargetActions) {
+            getPage().removePartListener(action);
+        }
+        activeEditorPart = null;
+        designActionKeys = null;
+        retargetActions = null;
+        registry = null;
+    }
+
 }

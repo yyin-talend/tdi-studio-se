@@ -96,4 +96,14 @@ public class DynamicPropertyGenerator {
         return controller;
     }
 
+    public void dispose() {
+        if (dtpControls != null) {
+            for (AbstractElementPropertySectionController controller : dtpControls.values()) {
+                controller.dispose();
+            }
+            dtpControls.clear();
+            dtpControls = null;
+        }
+    }
+
 }

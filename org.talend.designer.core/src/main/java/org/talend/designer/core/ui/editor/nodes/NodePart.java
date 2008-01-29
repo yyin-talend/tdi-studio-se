@@ -96,7 +96,9 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
         }
         Control ctrl = this.getViewer().getControl();
         String helpLink = (String) ((Node) getModel()).getPropertyValue(EParameterName.HELP.getName());
-        PlatformUI.getWorkbench().getHelpSystem().setHelp(ctrl, helpLink);
+        if (ctrl != null) {
+            PlatformUI.getWorkbench().getHelpSystem().setHelp(ctrl, helpLink);
+        }
         IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
         IViewPart view = page.findView("org.eclipse.help.ui.HelpView"); //$NON-NLS-1$
         if (view != null) {
@@ -172,6 +174,8 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
         if (isActive()) {
             super.deactivate();
             ((Node) getModel()).removePropertyChangeListener(this);
+            nodeContainerPart.setNodePart(null);
+            nodeContainerPart = null;
         }
     }
 
@@ -513,5 +517,4 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
         }
         super.performRequest(req);
     }
-
 }

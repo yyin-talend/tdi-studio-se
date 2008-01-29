@@ -32,7 +32,6 @@ import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.designer.core.DesignerPlugin;
-import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.ProcessEditorInput;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.repository.editor.RepositoryEditorInput;

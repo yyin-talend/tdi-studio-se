@@ -182,6 +182,7 @@ public class Connection extends Element implements IConnection, IPerformance {
         param.setShow(true);
         param.setNumRow(1);
         addElementParameter(param);
+
         Node meterAttached = new Node(ComponentsFactoryProvider.getInstance().get("tFlowMeter"), process);
         for (IElementParameter curParam : meterAttached.getElementParameters()) {
             if (curParam.getCategory() == EComponentCategory.BASIC
@@ -193,9 +194,11 @@ public class Connection extends Element implements IConnection, IPerformance {
                 } else {
                     curParam.setShowIf("(" + curParam.getShowIf() + " and MONITOR_CONNECTION == 'true')");
                 }
+                curParam.setElement(this);
                 addElementParameter(curParam);
             }
         }
+        meterAttached = null;
     }
 
     @Override

@@ -130,7 +130,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
 
     protected boolean codeSync = false;
 
-    protected boolean needSetPartListener = true;
+    private static boolean needSetPartListener = true;
 
     private RepositoryEditorInput processEditorInput;
 
@@ -334,7 +334,6 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
     protected void createPages() {
         createPage0();
         createPage1();
-
     }
 
     protected void createPage0() {
@@ -346,6 +345,13 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             e.printStackTrace();
         }
     }
+
+    CommandStackEventListener commandStackEventListener = new CommandStackEventListener() {
+
+        public void stackChanged(CommandStackEvent event) {
+            codeSync = false;
+        }
+    };
 
     /**
      * Creates page 1 of the multi-page editor, which allows you to change the font used in page 2.
@@ -396,15 +402,8 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             codeSync = true;
         }
 
-        CommandStackEventListener commandStackEventListener = new CommandStackEventListener() {
-
-            public void stackChanged(CommandStackEvent event) {
-                codeSync = false;
-            }
-        };
         CommandStack commandStack = (CommandStack) getTalendEditor().getAdapter(CommandStack.class);
         commandStack.addCommandStackEventListener(commandStackEventListener);
-
     }
 
     /**
@@ -437,7 +436,6 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
 
         propertyIsDirty = false;
         firePropertyChange(IEditorPart.PROP_DIRTY);
-
     }
 
     protected void updateRunJobContext() {
@@ -670,8 +668,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         // just call the method add protection will update new childrens and
         // keep old ones (keep to delete automatically
         // when closing job)
-        JobResourceManager jobResourceManager = JobResourceManager.getInstance();
-        jobResourceManager.addProtection(getTalendEditor());
+        JobResourceManager.getInstance().addProtection(getTalendEditor());
     }
 
     /**
@@ -766,13 +763,23 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
     @Override
     public void dispose() {
         ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
-        if (this.codeEditor instanceof TalendJavaEditor) {
-            ((TalendJavaEditor) codeEditor).removeEditorPart(this);
+
+        if (processor.getProcessorType().equals("javaProcessor")) { //$NON-NLS-1$
+            processor.setProcessorStates(IProcessor.STATES_EDIT);
+            if (codeEditor instanceof ISyntaxCheckableEditor) {
+                processor.setSyntaxCheckableEditor(null);
+            }
         }
 
-        // MultieditPlugin.getDefault().getPreferenceStore().removePropertyChangeListener(
-        // (org.eclipse.jface.util.IPropertyChangeListener) this);
+        getSite().setSelectionProvider(null);
+
+        CommandStack commandStack = (CommandStack) getTalendEditor().getAdapter(CommandStack.class);
+        commandStack.removeCommandStackEventListener(commandStackEventListener);
+
+        getSite().getWorkbenchWindow().getSelectionService().removeSelectionListener(this);
         super.dispose();
+
+        getTalendEditor().setParent(null);
 
         if (isKeepPropertyLocked()) {
             return;
@@ -784,7 +791,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         try {
             getTalendEditor().getProperty().eAdapters().remove(dirtyListener);
             Property property = repFactory.reload(getTalendEditor().getProperty());
-            getTalendEditor().setProperty(property);
+            // getTalendEditor().setProperty(property);
             repFactory.unlock(property.getItem());
         } catch (PersistenceException e) {
             // TODO Auto-generated catch block
@@ -795,8 +802,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         if (viewPart != null) {
             viewPart.refresh();
         }
-        if (process != null) {
-            ((Process) process).setEditor(null);
-        }
+
+        processor = null;
     }
 }

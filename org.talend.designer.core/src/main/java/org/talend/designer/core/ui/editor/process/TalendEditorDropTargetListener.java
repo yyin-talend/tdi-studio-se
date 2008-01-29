@@ -75,7 +75,7 @@ import org.talend.repository.model.RepositoryNode.EProperties;
  */
 public class TalendEditorDropTargetListener implements TransferDropTargetListener {
 
-    private final AbstractTalendEditor editor;
+    private AbstractTalendEditor editor;
 
     /**
      * TalendEditorDropTargetListener constructor comment.
@@ -426,6 +426,15 @@ public class TalendEditorDropTargetListener implements TransferDropTargetListene
         Rectangle bounds = owner.getBounds();
         t.performTranslate(-bounds.x, -bounds.y);
 
+    }
+
+    /**
+     * Sets the editor.
+     * 
+     * @param editor the editor to set
+     */
+    public void setEditor(AbstractTalendEditor editor) {
+        this.editor = editor;
     }
 
 }

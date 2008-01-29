@@ -46,8 +46,6 @@ public class NodeLabelEditPart extends AbstractGraphicalEditPart implements Prop
 
     SimpleHtmlTextEditManager manager = null;
 
-    protected NodePart nodePart;
-
     /*
      * (non-Javadoc)
      * 
@@ -90,6 +88,10 @@ public class NodeLabelEditPart extends AbstractGraphicalEditPart implements Prop
      * @return
      */
     public NodePart getNodePart() {
+        if (getParent() == null) {
+            return null;
+        }
+        NodePart nodePart = ((NodeContainerPart) getParent()).getNodePart();
         return nodePart;
     }
 
@@ -181,9 +183,10 @@ public class NodeLabelEditPart extends AbstractGraphicalEditPart implements Prop
      */
     @Override
     protected void refreshVisuals() {
-        if (nodePart == null) {
-            nodePart = ((NodeContainerPart) getParent()).getNodePart();
+        if (getParent() == null) {
+            return;
         }
+        NodePart nodePart = ((NodeContainerPart) getParent()).getNodePart();
         if (nodePart != null) {
             String text = ((NodeLabel) getModel()).getLabelText();
             SimpleHtmlFigure htmlFig = (SimpleHtmlFigure) this.getFigure();

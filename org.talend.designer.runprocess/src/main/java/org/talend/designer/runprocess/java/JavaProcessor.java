@@ -31,7 +31,6 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IExtension;
@@ -70,6 +69,7 @@ import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.prefs.ITalendCorePrefConstants;
+import org.talend.designer.codegen.ICodeGenerator;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.core.ISyntaxCheckableEditor;
 import org.talend.designer.core.model.utils.emf.talendfile.JobType;
@@ -223,6 +223,7 @@ public class JavaProcessor extends Processor {
                     Context.REPOSITORY_CONTEXT_KEY);
             Project project = repositoryContext.getProject();
 
+            ICodeGenerator codeGen;
             ICodeGeneratorService service = RunProcessPlugin.getDefault().getCodeGeneratorService();
             if (javaProperties) {
                 String javaInterpreter = ""; //$NON-NLS-1$
@@ -235,7 +236,6 @@ public class JavaProcessor extends Processor {
             } else {
                 codeGen = service.createCodeGenerator(process, statistics, trace);
             }
-
             String processCode = ""; //$NON-NLS-1$
             try {
                 processCode = codeGen.generateProcessCode();
@@ -244,7 +244,6 @@ public class JavaProcessor extends Processor {
             } catch (SystemException e) {
                 throw new ProcessorException(Messages.getString("Processor.generationFailed"), e); //$NON-NLS-1$
             }
-
             // Generating files
             IFile codeFile = this.project.getFile(this.codePath);
 
@@ -256,11 +255,11 @@ public class JavaProcessor extends Processor {
                 codeFile.setContents(codeStream, true, false, null);
             }
 
-            updateContextCode();
-
+            processCode = null;
+            updateContextCode(codeGen);
             syntaxCheck();
 
-            javaProject.getResource().getWorkspace().build(IncrementalProjectBuilder.AUTO_BUILD, null);
+            // javaProject.getResource().getWorkspace().build(IncrementalProjectBuilder.AUTO_BUILD, null);
 
             List<INode> breakpointNodes = CorePlugin.getContext().getBreakpointNodes(process);
             if (!breakpointNodes.isEmpty()) {

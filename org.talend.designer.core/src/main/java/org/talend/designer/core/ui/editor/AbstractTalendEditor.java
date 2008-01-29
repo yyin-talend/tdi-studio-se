@@ -785,9 +785,10 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
         il.save(filePath.toPortableString(), SWT.IMAGE_JPEG);
 
+        img.dispose();
+
         service.getProxyRepositoryFactory().refreshJobPictureFolder(outlinePicturePath);
         GlobalConstant.generatingScreenShoot = false;
-
     }
 
     /**
@@ -892,7 +893,8 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
     @Override
     public void dispose() {
-
+        // ((Process) process).dispose();
+        fActivationCodeTrigger.uninstall();
         ProcessorUtilities.editorClosed(this);
 
         if (!getParent().isKeepPropertyLocked()) {
@@ -907,7 +909,38 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         if (viewer != null) {
             viewer.cleanDisplay();
         }
+
+        for (Iterator iterator = getSelectionActions().iterator(); iterator.hasNext();) {
+            String actionID = (String) iterator.next();
+            IAction action = getActionRegistry().getAction(actionID);
+            if (action != null) {
+                getActionRegistry().removeAction(action);
+            }
+        }
+        getSelectionActions().clear();
         super.dispose();
+        getGraphicalViewer().setEditPartFactory(null);
+        if (getGraphicalViewer().getControl() != null && !getGraphicalViewer().getControl().isDisposed()) {
+            getGraphicalViewer().getControl().dispose();
+        }
+        getGraphicalViewer().getSelectionManager().internalUninstall();
+
+        getGraphicalViewer().removeDropTargetListener(processTemplateTransferDropTargetListener);
+        getGraphicalViewer().removeDropTargetListener(talendEditorDropTargetListener);
+
+        processTemplateTransferDropTargetListener = null;
+        talendEditorDropTargetListener.setEditor(null);
+        talendEditorDropTargetListener = null;
+        // TalendScalableFreeformRootEditPart rootEditPart = (TalendScalableFreeformRootEditPart) getGraphicalViewer()
+        // .getRootEditPart();
+        // rootEditPart.setEditorInput(null);
+        // rootEditPart.deactivate();
+        // getGraphicalViewer().setContents(null);
+
+        process = null;
+        if (outlinePage != null) {
+            outlinePage.dispose();
+        }
     }
 
     public void gotoMarker(final IMarker marker) {
@@ -1393,6 +1426,10 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         return sharedKeyHandler;
     }
 
+    ProcessTemplateTransferDropTargetListener processTemplateTransferDropTargetListener = null;
+
+    TalendEditorDropTargetListener talendEditorDropTargetListener = null;
+
     // ------------------------------------------------------------------------
     // Abstract methods from GraphicalEditor
 
@@ -1415,8 +1452,10 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
                 updateActions(getSelectionActions());
             }
         });
-        getGraphicalViewer().addDropTargetListener(new ProcessTemplateTransferDropTargetListener(getGraphicalViewer()));
-        getGraphicalViewer().addDropTargetListener(new TalendEditorDropTargetListener(this));
+        processTemplateTransferDropTargetListener = new ProcessTemplateTransferDropTargetListener(getGraphicalViewer());
+        talendEditorDropTargetListener = new TalendEditorDropTargetListener(this);
+        getGraphicalViewer().addDropTargetListener(processTemplateTransferDropTargetListener);
+        getGraphicalViewer().addDropTargetListener(talendEditorDropTargetListener);
     }
 
     // ------------------------------------------------------------------------

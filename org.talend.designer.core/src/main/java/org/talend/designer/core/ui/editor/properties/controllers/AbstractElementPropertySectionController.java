@@ -103,7 +103,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
 
     protected static final String SQLEDITOR = "SQLEDITOR"; //$NON-NLS-1$
 
-    private final Map<String, SQLBuilderDialog> sqlbuilers = new HashMap<String, SQLBuilderDialog>();
+    private Map<String, SQLBuilderDialog> sqlbuilers = new HashMap<String, SQLBuilderDialog>();
 
     protected IDynamicProperty dynamicProperty;
 
@@ -311,7 +311,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
         composite = dp.getComposite();
 
         editionControlHelper = new EditionControlHelper();
-        elem.addPropertyChangeListener(this);
+        // elem.addPropertyChangeListener(this);
     }
 
     /**
@@ -1168,6 +1168,24 @@ public abstract class AbstractElementPropertySectionController implements Proper
             }
         }
         return null;
+    }
+
+    public void dispose() {
+        if (widgetFactory != null) {
+            widgetFactory.dispose();
+        }
+        widgetFactory = null;
+        sqlbuilers.clear();
+        sqlbuilers = null;
+        dynamicProperty = null;
+        composite = null;
+        hashCurControls = null;
+        elem = null;
+        part = null;
+        section = null;
+        editionControlHelper = null;
+        curParameter = null;
+        connKeyMap = null;
     }
 
 }

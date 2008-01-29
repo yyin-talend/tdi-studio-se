@@ -54,6 +54,7 @@ import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.prefs.ITalendCorePrefConstants;
+import org.talend.designer.codegen.ICodeGenerator;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.core.ISyntaxCheckableEditor;
 import org.talend.designer.runprocess.Processor;
@@ -122,6 +123,7 @@ public class PerlProcessor extends Processor {
                     Context.REPOSITORY_CONTEXT_KEY);
             Project repositoryProject = repositoryContext.getProject();
 
+            ICodeGenerator codeGen;
             ICodeGeneratorService service = RunProcessPlugin.getDefault().getCodeGeneratorService();
             if (perlProperties) {
                 String perlInterpreter = getInterpreter();
@@ -170,7 +172,7 @@ public class PerlProcessor extends Processor {
                 setBreakpoints(codeFile, lineNumbers);
             }
 
-            updateContextCode();
+            updateContextCode(codeGen);
 
             service.createPerlRoutineSynchronizer().syncAllRoutines();
         } catch (CoreException e1) {

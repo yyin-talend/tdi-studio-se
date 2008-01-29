@@ -148,6 +148,7 @@ public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCh
     public void dispose() {
         this.disposed = true;
         super.dispose();
+        editPartListener = null;
     }
 
     /**

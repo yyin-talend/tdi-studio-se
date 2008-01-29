@@ -67,8 +67,6 @@ public abstract class Processor implements IProcessor {
 
     protected IProcess process;
 
-    protected ICodeGenerator codeGen;
-
     protected IProject project;
 
     /** Path to generated context code. */
@@ -449,7 +447,7 @@ public abstract class Processor implements IProcessor {
         this.context = context;
     }
 
-    protected void updateContextCode() throws ProcessorException {
+    protected void updateContextCode(ICodeGenerator codeGen) throws ProcessorException {
         if (codeGen == null) {
             return;
         }
