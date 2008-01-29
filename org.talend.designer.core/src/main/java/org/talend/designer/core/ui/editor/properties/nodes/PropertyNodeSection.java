@@ -24,7 +24,7 @@ import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySectio
 public class PropertyNodeSection extends DynamicTabbedPropertySection {
 
     public PropertyNodeSection() {
-        super(EComponentCategory.PROPERTY);
+        super(EComponentCategory.BASIC);
     }
 
 }

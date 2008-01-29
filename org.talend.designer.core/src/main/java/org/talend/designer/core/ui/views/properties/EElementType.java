@@ -22,15 +22,11 @@ import org.talend.core.model.process.EComponentCategory;
  */
 public enum EElementType {
 
-    NODE(EComponentCategory.MAIN, EComponentCategory.PROPERTY, EComponentCategory.VIEW, EComponentCategory.DOC),
-    NODE_LABEL(EComponentCategory.MAIN, EComponentCategory.PROPERTY, EComponentCategory.VIEW, EComponentCategory.DOC),
-    CONNECTION(EComponentCategory.MAIN),
-    NOTE(EComponentCategory.MAIN),
-    ADVANCED_NODE(
-                  EComponentCategory.MAIN,
-                  EComponentCategory.ADVANCED_PROPERTIES,
-                  EComponentCategory.VIEW,
-                  EComponentCategory.DOC);
+    NODE(EComponentCategory.BASIC, EComponentCategory.ADVANCED, EComponentCategory.VIEW, EComponentCategory.DOC),
+    NODE_LABEL(EComponentCategory.BASIC, EComponentCategory.ADVANCED, EComponentCategory.VIEW, EComponentCategory.DOC),
+    CONNECTION(EComponentCategory.BASIC, EComponentCategory.ADVANCED),
+    NOTE(EComponentCategory.BASIC, EComponentCategory.ADVANCED),
+    ADVANCED_NODE(EComponentCategory.BASIC, EComponentCategory.ADVANCED, EComponentCategory.VIEW, EComponentCategory.DOC);
 
     private EComponentCategory[] categories;
 

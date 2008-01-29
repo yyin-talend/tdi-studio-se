@@ -124,39 +124,44 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
         } else if (element instanceof Connection) {
             dc = new MainConnectionComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS, category, element);
         } else if (element instanceof Note) {
-            if (parent.getLayout() instanceof FillLayout) {
-                FillLayout layout = (FillLayout) parent.getLayout();
-                layout.type = SWT.VERTICAL;
-                layout.marginHeight = 0;
-                layout.marginWidth = 0;
-                layout.spacing = 0;
+
+            if (category == EComponentCategory.BASIC) {
+
+                if (parent.getLayout() instanceof FillLayout) {
+                    FillLayout layout = (FillLayout) parent.getLayout();
+                    layout.type = SWT.VERTICAL;
+                    layout.marginHeight = 0;
+                    layout.marginWidth = 0;
+                    layout.spacing = 0;
+                }
+                ScrolledComposite scrolled = new ScrolledComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL);
+                scrolled.setExpandHorizontal(true);
+                scrolled.setExpandVertical(true);
+
+                scrolled.setMinWidth(600);
+                scrolled.setMinHeight(400);
+
+                Composite composite = tabFactory.getWidgetFactory().createComposite(scrolled);
+                scrolled.setContent(composite);
+                composite.setLayout(new FormLayout());
+                FormData d = new FormData();
+                d.left = new FormAttachment(0, 0);
+                d.right = new FormAttachment(100, 0);
+                d.top = new FormAttachment(0, 0);
+                d.bottom = new FormAttachment(100, 0);
+                composite.setLayoutData(d);
+
+                AbstractNotePropertyComposite c1 = new OpaqueNotePropertyComposite(composite, (Note) element, tabFactory);
+                AbstractNotePropertyComposite c2 = new TextNotePropertyComposite(composite, (Note) element, tabFactory);
+                FormData data = new FormData();
+                data.top = new FormAttachment(c1.getComposite(), 20, SWT.DOWN);
+                data.left = new FormAttachment(0, 0);
+                data.right = new FormAttachment(100, 0);
+                c2.getComposite().setLayoutData(data);
+
+                parent.layout();
             }
-            ScrolledComposite scrolled = new ScrolledComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL);
-            scrolled.setExpandHorizontal(true);
-            scrolled.setExpandVertical(true);
 
-            scrolled.setMinWidth(600);
-            scrolled.setMinHeight(400);
-
-            Composite composite = tabFactory.getWidgetFactory().createComposite(scrolled);
-            scrolled.setContent(composite);
-            composite.setLayout(new FormLayout());
-            FormData d = new FormData();
-            d.left = new FormAttachment(0, 0);
-            d.right = new FormAttachment(100, 0);
-            d.top = new FormAttachment(0, 0);
-            d.bottom = new FormAttachment(100, 0);
-            composite.setLayoutData(d);
-
-            AbstractNotePropertyComposite c1 = new OpaqueNotePropertyComposite(composite, (Note) element, tabFactory);
-            AbstractNotePropertyComposite c2 = new TextNotePropertyComposite(composite, (Note) element, tabFactory);
-            FormData data = new FormData();
-            data.top = new FormAttachment(c1.getComposite(), 20, SWT.DOWN);
-            data.left = new FormAttachment(0, 0);
-            data.right = new FormAttachment(100, 0);
-            c2.getComposite().setLayoutData(data);
-
-            parent.layout();
         }
         if (dc != null) {
             dc.refresh();
@@ -209,13 +214,13 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
             TalendPropertyTabDescriptor d = new TalendPropertyTabDescriptor(category);
             d.setElement(elem);
             descriptors.add(d);
-            if (category.hadSubCategories()) {
-                for (EComponentCategory subCategory : category.getSubCategories()) {
-                    TalendPropertyTabDescriptor subc = new TalendPropertyTabDescriptor(subCategory);
-                    subc.setElement(elem);
-                    d.addSubItem(subc);
-                }
-            }
+            // if (category.hadSubCategories()) {
+            // for (EComponentCategory subCategory : category.getSubCategories()) {
+            // TalendPropertyTabDescriptor subc = new TalendPropertyTabDescriptor(subCategory);
+            // subc.setElement(elem);
+            // d.addSubItem(subc);
+            // }
+            // }
         }
 
         tabFactory.setInput(descriptors);
@@ -295,11 +300,11 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
         if (elem instanceof Connection) {
             return EElementType.CONNECTION.getCategories();
         } else if (elem instanceof Node) {
-            if (isAdvancedType(elem)) {
-                return EElementType.ADVANCED_NODE.getCategories();
-            } else {
-                return EElementType.NODE.getCategories();
-            }
+            // if (isAdvancedType(elem)) {
+            return EElementType.ADVANCED_NODE.getCategories();
+            // } else {
+            // return EElementType.NODE.getCategories();
+            // }
         } else if (elem instanceof Note) {
             return EElementType.NOTE.getCategories();
         }

@@ -804,7 +804,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
      * @param control must be or extends <code>Text</code> or <code>StyledText</code>
      */
     protected void checkErrorsForPropertiesOnly(Control control) {
-        if (this.section == EComponentCategory.PROPERTY) {
+        if (this.section == EComponentCategory.BASIC) {
             editionControlHelper.checkErrors(control);
         }
     }
