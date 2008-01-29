@@ -28,12 +28,14 @@ import org.eclipse.gef.Request;
 import org.eclipse.gef.RequestConstants;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.jface.viewers.TextCellEditor;
+import org.eclipse.ui.PlatformUI;
 import org.talend.commons.utils.workbench.gef.SimpleHtmlCellEditorLocator;
 import org.talend.commons.utils.workbench.gef.SimpleHtmlFigure;
 import org.talend.commons.utils.workbench.gef.SimpleHtmlTextEditManager;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainerLayoutEditPolicy;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainerPart;
+import org.talend.designer.core.ui.views.properties.ComponentSettingsView;
 import org.talend.sqlbuilder.util.UIUtils;
 
 /**
@@ -136,7 +138,13 @@ public class NodeLabelEditPart extends AbstractGraphicalEditPart implements Prop
             NodeLabel label = (NodeLabel) getModel();
             UIUtils.updateSqlBuilderDialogTitle(label.getLabelText(), label.getNode().getProcess().getName(), label.getNode()
                     .getUniqueName());
+
             getParent().refresh();
+
+            // refresh the title of component setting view.
+            ComponentSettingsView viewer = (ComponentSettingsView) PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+                    .getActivePage().findView(ComponentSettingsView.ID);
+            viewer.updatePropertiesViewerTitle();
         }
         if (request.equals(NodeLabel.LOCATION)) { //$NON-NLS-1$
             refreshVisuals();

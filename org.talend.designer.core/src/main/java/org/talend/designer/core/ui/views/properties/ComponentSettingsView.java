@@ -30,7 +30,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.part.ViewPart;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
@@ -195,20 +194,6 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
         }
     }
 
-    /**
-     * Creates a empty composite if no job opened.
-     * 
-     * @param parent
-     */
-    private void createEmptyPartControl(Composite parent) {
-
-        Composite alertComposite = new Composite(parent, SWT.NONE);
-        Text alertText = new Text(alertComposite, SWT.NONE);
-        alertText.setText("A Stats/Logs is not available.");
-        alertText.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
-        parent.layout();
-    }
-
     /*
      * (non-Javadoc)
      * 
@@ -310,6 +295,12 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
 
     }
 
+    public void updatePropertiesViewerTitle() {
+        if (this.element != null) {
+            setPropertiesViewerTitle(this.element);
+        }
+    }
+
     /**
      * yzhang Comment method "setPropertiesViewerTitle".
      * 
@@ -320,6 +311,12 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
         Image image = null;
         if (elem instanceof Node) {
             label = ((Node) elem).getLabel();
+
+            String uniqueName = ((Node) elem).getUniqueName();
+            if (!label.equals(uniqueName)) {
+                label = label + "(" + uniqueName + ")";
+            }
+
             image = new Image(Display.getDefault(), ((Node) elem).getComponent().getIcon24().getImageData());
         } else if (elem instanceof Connection) {
             label = ((Connection) elem).getElementName();
@@ -328,6 +325,7 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
             label = "Note";
             image = ImageProvider.getImage(EImage.PASTE_ICON);
         }
+
         tabFactory.setTitle(label, image);
     }
 
