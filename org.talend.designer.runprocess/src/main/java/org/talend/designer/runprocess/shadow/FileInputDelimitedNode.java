@@ -68,7 +68,8 @@ public class FileInputDelimitedNode extends FileInputNode {
                                 rowSep, languageName)), true);
                 dr.skipHeaders(0);
                 if (languageName.equals("perl")) {
-                    int max = getColumnCount(filename, rowSep, fieldSep, limitRows, escapeChar, textEnclosure);
+                    int max = getColumnCount(filename, rowSep, fieldSep, limitRows, escapeChar, textEnclosure,
+                            EShadowProcessType.FILE_DELIMITED);
                     this.setColumnNumber(max);
 
                 } else {
@@ -108,15 +109,22 @@ public class FileInputDelimitedNode extends FileInputNode {
                 } else {
                     cr.setEscapeMode(CsvReader.ESCAPE_MODE_DOUBLED);
                 }
-                int columnCount = 0;
-                for (int i = 0; i < limitRows && cr.readRecord(); i++) {
-                    int temp = cr.getColumnCount();
-                    if (temp > columnCount) {
-                        columnCount = temp;
+                if (languageName.equals("perl")) {
+                    int max = getColumnCount(filename, rowSep, fieldSep, limitRows, escapeChar, textEnclosure,
+                            EShadowProcessType.FILE_CSV);
+                    this.setColumnNumber(max);
+
+                } else {
+                    int columnCount = 0;
+                    for (int i = 0; i < limitRows && cr.readRecord(); i++) {
+                        int temp = cr.getColumnCount();
+                        if (temp > columnCount) {
+                            columnCount = temp;
+                        }
                     }
-                }
-                if (columnCount > 0) {
-                    this.setColumnNumber(columnCount);
+                    if (columnCount > 0) {
+                        this.setColumnNumber(columnCount);
+                    }
                 }
             } catch (UnsupportedEncodingException e) {
                 // e.printStackTrace();
@@ -150,7 +158,7 @@ public class FileInputDelimitedNode extends FileInputNode {
     }
 
     private int getColumnCount(String filename, String rowSep, String fieldSep, int limitRows, String escapeChar,
-            String textEnclosure) {
+            String textEnclosure, EShadowProcessType fileType) {
 
         File config = new File(CorePlugin.getDefault().getPreferenceStore().getString(ITalendCorePrefConstants.FILE_PATH_TEMP)
                 + "/conf.pl");
@@ -170,14 +178,29 @@ public class FileInputDelimitedNode extends FileInputNode {
 
         try {
             filewriter = new FileWriter(config, true);
-            filewriter.write("$conf{filename} = " + filename + ";");
-            filewriter.write("$conf{row_separator} = " + rowSep + ";");
-            filewriter.write("$conf{field_separator} = " + fieldSep + ";");
-            filewriter.write("$conf{escape_char} = " + escapeChar + ";");
-            filewriter.write("$conf{text_enclosure} = " + textEnclosure + ";");
-            filewriter.write("$conf{limit} = " + limitRows + ";");
-            filewriter.write("$conf{result_file} =\'" + resultFile.toString() + "\';");
-            filewriter.write("$conf{type} = \'delimited\';");
+            switch (fileType) {
+            case FILE_DELIMITED:
+                filewriter.write("$conf{filename} = " + filename + ";");
+                filewriter.write("$conf{row_separator} = " + rowSep + ";");
+                filewriter.write("$conf{field_separator} = " + fieldSep + ";");
+                filewriter.write("$conf{limit} = " + limitRows + ";");
+                filewriter.write("$conf{result_file} =\'" + resultFile.toString() + "\';");
+                filewriter.write("$conf{type} = \'delimited\';");
+                break;
+            case FILE_CSV:
+                filewriter.write("$conf{filename} = " + filename + ";");
+                filewriter.write("$conf{row_separator} = " + rowSep + ";");
+                filewriter.write("$conf{field_separator} = " + fieldSep + ";");
+                filewriter.write("$conf{escape_char} = " + escapeChar + ";");
+                filewriter.write("$conf{text_enclosure} = " + textEnclosure + ";");
+                filewriter.write("$conf{limit} = " + limitRows + ";");
+                filewriter.write("$conf{result_file} =\'" + resultFile.toString() + "\';");
+                filewriter.write("$conf{type} = \'CSV\';");
+                break;
+            default:
+                break;
+            }
+
             filewriter.close();
             modulepath = modulepath + "/column_counter_delimited.pl";
             StringBuffer out = new StringBuffer();
