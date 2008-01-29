@@ -852,7 +852,7 @@ public class Node extends Element implements INode {
      * @see org.talend.designer.core.ui.editor.Element#setPropertyValue(java.lang.Object, java.lang.Object)
      */
     @Override
-    public void setPropertyValue(final String id, final Object value) {
+    public void setPropertyValue(final String id, Object value) {
         IElementParameter parameter = getElementParameter(id);
         if (id.equals(EParameterName.SCHEMA_TYPE.getName()) || id.equals(EParameterName.QUERYSTORE_TYPE.getName())
                 || id.equals(EParameterName.PROPERTY_TYPE.getName()) || id.equals(EParameterName.PROCESS_TYPE_PROCESS.getName())) {
@@ -865,7 +865,11 @@ public class Node extends Element implements INode {
         if (id.equals(EParameterName.LABEL.getName())) {
             labelToParse = (String) value;
             String newValue = ElementParameterParser.parse(this, labelToParse);
-
+            String uniqueName = getUniqueName();
+            if (!newValue.equals(uniqueName)) {
+                newValue = newValue + "(" + uniqueName + ")";
+                labelToParse = newValue;
+            }
             setLabel(newValue);
         }
 

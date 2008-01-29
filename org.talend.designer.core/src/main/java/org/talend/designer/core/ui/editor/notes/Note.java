@@ -26,18 +26,25 @@ public class Note extends Element {
     private Point location;
 
     private Dimension size = new Dimension(TalendEditor.GRID_SIZE * 3, TalendEditor.GRID_SIZE * 2);
-    
+
     private boolean opaque = true;
 
     private String text = Messages.getString("Note.DefaultText"); //$NON-NLS-1$
 
     private boolean readOnly;
 
+    /**
+     * tang Note constructor comment.
+     */
+    public Note() {
+        super();
+    }
+
     @Override
     public String getElementName() {
         return null;
     }
-    
+
     public boolean isReadOnly() {
         return readOnly;
     }
@@ -76,7 +83,7 @@ public class Note extends Element {
     public boolean isOpaque() {
         return opaque;
     }
-    
+
     public void setOpaque(boolean opaque) {
         this.opaque = opaque;
         firePropertyChange("", null, opaque); //$NON-NLS-1$
