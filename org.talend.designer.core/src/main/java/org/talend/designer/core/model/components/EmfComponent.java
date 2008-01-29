@@ -581,19 +581,19 @@ public class EmfComponent implements IComponent {
         param.setRequired(false);
         param.setShow(false);
         listParam.add(param);
-        //
-        // param = new ElementParameter(node);
-        // param.setName(EParameterName.ACTIVATE.getName());
-        // param.setValue(new Boolean(true));
-        // param.setDisplayName(EParameterName.ACTIVATE.getDisplayName());
-        // param.setField(EParameterFieldType.CHECK);
-        // param.setCategory(EComponentCategory.MAIN);
-        // param.setNumRow(5);
-        // param.setReadOnly(false);
-        // param.setRequired(false);
-        // param.setShow(true);
-        // listParam.add(param);
-        //
+
+        param = new ElementParameter(node);
+        param.setName(EParameterName.ACTIVATE.getName());
+        param.setValue(new Boolean(true));
+        param.setDisplayName(EParameterName.ACTIVATE.getDisplayName());
+        param.setField(EParameterFieldType.CHECK);
+        param.setCategory(EComponentCategory.TECHNICAL);
+        param.setNumRow(5);
+        param.setReadOnly(false);
+        param.setRequired(false);
+        param.setShow(true);
+        listParam.add(param);
+
         param = new ElementParameter(node);
         param.setName(EParameterName.DUMMY.getName());
         param.setValue(Boolean.FALSE);
