@@ -44,7 +44,6 @@ import org.talend.commons.ui.swt.colorstyledtext.ColorStyledText;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IElementParameter;
-import org.talend.core.ui.snippet.SnippetDropTargetListener;
 import org.talend.core.ui.viewer.ReconcilerViewer;
 import org.talend.core.ui.viewer.java.TalendJavaSourceViewer;
 import org.talend.core.ui.viewer.perl.TalendPerlSourceViewer;
@@ -301,12 +300,14 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
                 newTransfers[transfers.length] = LocalSelectionTransfer.getTransfer();
                 dropTarget.setTransfer(newTransfers);
             }
-            DropTargetListener dropLisenter = new SnippetDropTargetListener((TextViewer) viewer);
+            DropTargetListener dropLisenter = new SnippetDropTargetListener((TextViewer) viewer, getParameterName(viewer
+                    .getTextWidget()), elem, getCommandStack());
             dropTarget.addDropListener(dropLisenter);
 
         } else {
             int ops = DND.DROP_COPY | DND.DROP_MOVE;
-            DropTargetListener dropLisenter = new SnippetDropTargetListener((TextViewer) viewer);
+            DropTargetListener dropLisenter = new SnippetDropTargetListener((TextViewer) viewer, getParameterName(viewer
+                    .getTextWidget()), elem, getCommandStack());
             ((ReconcilerViewer) viewer)
                     .addDropSupport(ops, new Transfer[] { LocalSelectionTransfer.getTransfer() }, dropLisenter);
         }

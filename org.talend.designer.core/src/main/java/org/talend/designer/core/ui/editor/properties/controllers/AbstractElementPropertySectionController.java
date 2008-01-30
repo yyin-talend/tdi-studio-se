@@ -680,7 +680,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
      * @param control
      * @return
      */
-    private String getParameterName(Control control) {
+    public String getParameterName(Control control) {
 
         String name = (String) control.getData(PARAMETER_NAME);
         if (name == null) { // if the control don't support this property, then take in the list.
