@@ -62,7 +62,7 @@ class XMLTool{
 			int index = 0;
 			for(XMLNode child:node.elements){
 				if(0==(child.special & 1)){
-					generateCode(child,cid,currEleName+index++,currEleName);
+					generateCode(child,cid,currEleName+"_"+index++,currEleName);
 				}
 			}
 			if(!allowEmpty && (node.special & 2)==0 && (node.special & 1)==0){
