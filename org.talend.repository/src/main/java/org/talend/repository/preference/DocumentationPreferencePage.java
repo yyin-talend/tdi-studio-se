@@ -21,14 +21,14 @@ import org.talend.core.PluginChecker;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 
 /**
- * DOC ftang class global comment. Detailed comment <br/>
+ * ftang class global comment. Detailed comment <br/>
  * 
  */
 public class DocumentationPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 
     private BooleanFieldEditor booleanFieldEditor;
-    
-    private boolean isDocumentationPluginLoaded=true;
+
+    private boolean isDocumentationPluginLoaded = true;
 
     /**
      * ftang DocumentationPreferencePage constructor comment.
@@ -46,7 +46,7 @@ public class DocumentationPreferencePage extends FieldEditorPreferencePage imple
     @Override
     protected void createFieldEditors() {
         booleanFieldEditor = new BooleanFieldEditor(ITalendCorePrefConstants.DOC_GENERATION,
-                "Automatic update corresponding documentation if job is saved.", getFieldEditorParent());
+                "Automatic update corresponding documentation if job/joblet is saved.", getFieldEditorParent());
         addField(booleanFieldEditor);
         booleanFieldEditor.setEnabled(isDocumentationPluginLoaded, getFieldEditorParent());
     }
