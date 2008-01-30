@@ -146,10 +146,9 @@ public abstract class AbstractElementPropertySectionController implements Proper
     // for job settings extra.(feature 2710)
     protected IElementParameter curParameter;
 
-    public static Map<String, String> connKeyMap = null;
+    public static Map<String, String> connKeyMap = new HashMap<String, String>(10);
 
     static {
-        connKeyMap = new HashMap<String, String>(10);
         connKeyMap.put("SERVER_NAME", "HOST");
         connKeyMap.put("PORT", "PORT");
         connKeyMap.put("SID", "DBNAME");
@@ -1185,7 +1184,6 @@ public abstract class AbstractElementPropertySectionController implements Proper
         section = null;
         editionControlHelper = null;
         curParameter = null;
-        connKeyMap = null;
     }
 
 }
