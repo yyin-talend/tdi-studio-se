@@ -823,7 +823,7 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      */
     public void save(Property property, String... originalNameAndVersion) throws PersistenceException {
         this.repositoryFactoryFromProvider.save(property);
-        if (property.getItem() instanceof ProcessItem) {
+        if (property.getItem() instanceof ProcessItem || property.getItem() instanceof JobletProcessItem) {
             fireRepositoryPropertyChange(ERepositoryActionName.JOB_PROPERTIES_CHANGE.getName(), originalNameAndVersion, property);
         }
     }
