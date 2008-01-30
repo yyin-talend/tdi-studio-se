@@ -119,14 +119,6 @@
 
 		<PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" REQUIRED="true"
 			NUM_ROW="30">
-			<TABLE>
-				<COLUMN NAME="dc" TYPE="id_String" LENGTH="255" />
-				<COLUMN NAME="ou" TYPE="id_String" LENGTH="255" />
-				<COLUMN NAME="objectClass" TYPE="id_String"
-					LENGTH="255" />
-				<COLUMN NAME="mail" TYPE="id_String" LENGTH="255" />
-				<COLUMN NAME="uid" TYPE="id_String" LENGTH="255" />
-			</TABLE>
 			<!--SHOW_IF="PROPERTY_TYPE=='BUILT_IN'"-->
 		</PARAMETER>
 		
