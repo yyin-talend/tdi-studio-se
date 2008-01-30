@@ -27,6 +27,7 @@
     <CONNECTOR CTYPE="COMPONENT_OK"/>
     <CONNECTOR CTYPE="COMPONENT_ERROR"/>
     <CONNECTOR CTYPE="RUN_IF"/>
+    <CONNECTOR NAME="REJECT" CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="1" COLOR="FF0000" BASE_SCHEMA="FLOW"/>
   </CONNECTORS>
 
    <PARAMETERS>
@@ -35,10 +36,20 @@
     </PARAMETER>
 
     <PARAMETER
+      NAME="SCHEMA_REJECT"
+      FIELD="SCHEMA_TYPE"
+      REQUIRED="true"
+      NUM_ROW="2"
+      CONTEXT="REJECT"
+      SHOW="true">
+    </PARAMETER>
+
+
+    <PARAMETER
       NAME="CONDITIONS"
       FIELD="TABLE"
       REQUIRED="false"
-      NUM_ROW="2"
+      NUM_ROW="3"
       NB_LINES="3"
     >
       <ITEMS>
@@ -83,7 +94,7 @@
       NAME="USE_ADVANCED"
       FIELD="CHECK"
       REQUIRED="true"
-      NUM_ROW="3"
+      NUM_ROW="4"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
@@ -92,7 +103,7 @@
     <PARAMETER
       NAME="ADVANCED_COND"
       FIELD="MEMO"
-      NUM_ROW="4"
+      NUM_ROW="5"
       NB_LINES="4"
       NOT_SHOW_IF="(USE_ADVANCED=='false')"
     >
@@ -107,7 +118,7 @@ $input_row[0] eq $input_row[0]
     <PARAMETER
       NAME="LOGICAL_OP"
       FIELD="CLOSED_LIST"
-      NUM_ROW="5"      
+      NUM_ROW="6"      
       REQUIRED="true"
     >
       <ITEMS DEFAULT="OR">
