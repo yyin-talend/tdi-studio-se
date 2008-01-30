@@ -52,6 +52,8 @@ public class NodeContainerPart extends AbstractGraphicalEditPart implements Prop
             super.deactivate();
             Node node = ((NodeContainer) getModel()).getNode();
             node.removePropertyChangeListener(this);
+            nodePart = null;
+            unregister();
         }
     }
 

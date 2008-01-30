@@ -36,6 +36,15 @@ import org.talend.sqlbuilder.util.UIUtils;
  */
 public class ActiveProcessTracker implements IPartListener {
 
+    private static ActiveProcessTracker apt = null;
+
+    public static void initialize() {
+        if (apt == null) {
+            apt = new ActiveProcessTracker();
+            PlatformUI.getWorkbench().getActiveWorkbenchWindow().getPartService().addPartListener(apt);
+        }
+    }
+
     private static IProcess currentProcess;
 
     private static IProcess lastProcessOpened;
@@ -160,6 +169,9 @@ public class ActiveProcessTracker implements IPartListener {
                     // StatsAndLogs.setTitle("");
                     // StatsAndLogs.clearAll();
                     JobSettings.cleanDisplay();
+                    if (lastProcessOpened == currentProcess) {
+                        lastProcessOpened = null;
+                    }
                     currentProcess = null;
                 }
                 UIUtils.closeSqlBuilderDialogs(process.getName());

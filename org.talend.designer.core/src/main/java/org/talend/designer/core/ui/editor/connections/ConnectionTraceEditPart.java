@@ -66,6 +66,7 @@ public class ConnectionTraceEditPart extends AbstractGraphicalEditPart implement
         if (isActive()) {
             super.deactivate();
             ((Element) getModel()).removePropertyChangeListener(this);
+            unregister();
         }
     }
 

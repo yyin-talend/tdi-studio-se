@@ -65,6 +65,7 @@ import org.eclipse.gef.palette.PaletteRoot;
 import org.eclipse.gef.requests.CreationFactory;
 import org.eclipse.gef.ui.actions.ActionRegistry;
 import org.eclipse.gef.ui.actions.DirectEditAction;
+import org.eclipse.gef.ui.actions.SelectionAction;
 import org.eclipse.gef.ui.actions.ToggleGridAction;
 import org.eclipse.gef.ui.actions.ToggleSnapToGeometryAction;
 import org.eclipse.gef.ui.actions.ZoomInAction;
@@ -152,6 +153,7 @@ import org.talend.designer.core.ui.editor.nodes.NodePart;
 import org.talend.designer.core.ui.editor.outline.NodeTreeEditPart;
 import org.talend.designer.core.ui.editor.outline.ProcessTreePartFactory;
 import org.talend.designer.core.ui.editor.palette.TalendPaletteViewerProvider;
+import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.process.ProcessPart;
 import org.talend.designer.core.ui.editor.process.ProcessTemplateTransferDropTargetListener;
 import org.talend.designer.core.ui.editor.process.TalendEditorDropTargetListener;
@@ -893,9 +895,10 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
     @Override
     public void dispose() {
-        // ((Process) process).dispose();
+        ((Process) process).dispose();
         fActivationCodeTrigger.uninstall();
         ProcessorUtilities.editorClosed(this);
+        talendPaletteViewerProvider = null;
 
         if (!getParent().isKeepPropertyLocked()) {
             JobResourceManager manager = JobResourceManager.getInstance();
@@ -913,20 +916,24 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         for (Iterator iterator = getSelectionActions().iterator(); iterator.hasNext();) {
             String actionID = (String) iterator.next();
             IAction action = getActionRegistry().getAction(actionID);
-            if (action != null) {
+            if (action instanceof SelectionAction) {
+                ((SelectionAction) action).dispose();
                 getActionRegistry().removeAction(action);
             }
         }
         getSelectionActions().clear();
         super.dispose();
         getGraphicalViewer().setEditPartFactory(null);
-        if (getGraphicalViewer().getControl() != null && !getGraphicalViewer().getControl().isDisposed()) {
-            getGraphicalViewer().getControl().dispose();
-        }
+        getGraphicalViewer().setContextMenu(null);
         getGraphicalViewer().getSelectionManager().internalUninstall();
 
         getGraphicalViewer().removeDropTargetListener(processTemplateTransferDropTargetListener);
         getGraphicalViewer().removeDropTargetListener(talendEditorDropTargetListener);
+
+        getGraphicalViewer().setContents(null);
+        if (getGraphicalViewer().getControl() != null && !getGraphicalViewer().getControl().isDisposed()) {
+            getGraphicalViewer().getControl().dispose();
+        }
 
         processTemplateTransferDropTargetListener = null;
         talendEditorDropTargetListener.setEditor(null);
@@ -935,7 +942,6 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         // .getRootEditPart();
         // rootEditPart.setEditorInput(null);
         // rootEditPart.deactivate();
-        // getGraphicalViewer().setContents(null);
 
         process = null;
         if (outlinePage != null) {
@@ -965,9 +971,14 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         return true;
     }
 
+    TalendPaletteViewerProvider talendPaletteViewerProvider;
+
     @Override
     protected PaletteViewerProvider createPaletteViewerProvider() {
-        return new TalendPaletteViewerProvider(getEditDomain());
+        if (talendPaletteViewerProvider == null) {
+            talendPaletteViewerProvider = new TalendPaletteViewerProvider(getEditDomain());
+        }
+        return talendPaletteViewerProvider;
     }
 
     public IComponent getComponent(String name) {

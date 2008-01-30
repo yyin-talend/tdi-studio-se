@@ -174,7 +174,7 @@ public class StatsAndLogsView extends ViewPart {
      */
     public void emptyView() {
         createEmptyPartControl(parent);
-
+        process = null;
     }
 
     /**

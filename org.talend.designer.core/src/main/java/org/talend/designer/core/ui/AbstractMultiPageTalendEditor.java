@@ -54,10 +54,8 @@ import org.eclipse.ui.internal.WorkbenchPage;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
-import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.epic.perleditor.PerlEditorPlugin;
 import org.talend.commons.exception.BusinessException;
-import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.CorePlugin;
@@ -71,7 +69,6 @@ import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
-import org.talend.core.model.properties.Property;
 import org.talend.core.ui.IUIRefresher;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ISyntaxCheckableEditor;
@@ -79,7 +76,6 @@ import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.editor.CodeEditorFactory;
 import org.talend.designer.core.ui.editor.TalendJavaEditor;
 import org.talend.designer.core.ui.editor.TalendPerlEditor;
-import org.talend.designer.core.ui.editor.TalendTabbedPropertySheetPage;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodeLabel;
 import org.talend.designer.core.ui.editor.nodes.NodeLabelEditPart;
@@ -108,9 +104,9 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         public void notifyChanged(Notification notification) {
             if (notification.getEventType() != Notification.REMOVING_ADAPTER) {
                 propertyIsDirty = true;
-                getTalendEditor().getProperty().eAdapters().remove(dirtyListener);
+                designerEditor.getProperty().eAdapters().remove(dirtyListener);
                 process.updateProperties();
-                getTalendEditor().getProperty().eAdapters().add(dirtyListener);
+                designerEditor.getProperty().eAdapters().add(dirtyListener);
                 firePropertyChange(IEditorPart.PROP_DIRTY);
             }
         }
@@ -130,30 +126,26 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
 
     protected boolean codeSync = false;
 
-    private static boolean needSetPartListener = true;
-
     private RepositoryEditorInput processEditorInput;
+
+    protected AbstractTalendEditor designerEditor;
 
     public AbstractMultiPageTalendEditor() {
         super();
 
-        if (needSetPartListener) {
+        ActiveProcessTracker.initialize();
 
-            PlatformUI.getWorkbench().getActiveWorkbenchWindow().getPartService().addPartListener(
-                    CorePlugin.getDefault().getDesignerCoreService().getActiveProcessTracker());
+        // Display.getDefault().asyncExec(new Runnable() {
+        //
+        // public void run() {
+        // try {
+        // CorePlugin.getDefault().getCodeGeneratorService().createRoutineSynchronizer().syncAllRoutines();
+        // } catch (Exception e) {
+        // ExceptionHandler.process(e);
+        // }
+        // }
+        // });
 
-            Display.getDefault().asyncExec(new Runnable() {
-
-                public void run() {
-                    try {
-                        CorePlugin.getDefault().getCodeGeneratorService().createRoutineSynchronizer().syncAllRoutines();
-                    } catch (Exception e) {
-                        ExceptionHandler.process(e);
-                    }
-                }
-            });
-            needSetPartListener = false;
-        }
         ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
     }
 
@@ -162,15 +154,8 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         return propertyIsDirty || super.isDirty();
     }
 
-    /**
-     * DOC qzhang Comment method "getAbstractTalendEditor".
-     * 
-     * @return
-     */
-    public abstract AbstractTalendEditor getTalendEditor();
-
     public void setReadOnly(boolean readonly) {
-        getTalendEditor().setReadOnly(readonly);
+        designerEditor.setReadOnly(readonly);
     }
 
     /*
@@ -212,18 +197,18 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
     public void refreshName() {
         try {
             JobResourceManager jobResourceManager = JobResourceManager.getInstance();
-            jobResourceManager.removeProtection(getTalendEditor());
-            for (String id : getTalendEditor().getProtectedIds()) {
-                if (getTalendEditor().getJobResource(id).getJobName().equalsIgnoreCase(oldJobName)) {
+            jobResourceManager.removeProtection(designerEditor);
+            for (String id : designerEditor.getProtectedIds()) {
+                if (designerEditor.getJobResource(id).getJobName().equalsIgnoreCase(oldJobName)) {
                     // delete only the job renamed
-                    jobResourceManager.deleteResource(getTalendEditor().getJobResource(id));
+                    jobResourceManager.deleteResource(designerEditor.getJobResource(id));
                 }
             }
-            getTalendEditor().resetJobResources();
+            designerEditor.resetJobResources();
 
             setName();
-            getTalendEditor().getCurrentJobResource().setJobName(getEditorInput().getName());
-            jobResourceManager.addProtection(getTalendEditor());
+            designerEditor.getCurrentJobResource().setJobName(getEditorInput().getName());
+            jobResourceManager.addProtection(designerEditor);
 
             processor.initPath();
             processor.setProcessorStates(IProcessor.STATES_EDIT);
@@ -250,7 +235,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
      * @param node
      */
     public void selectNode(Node node) {
-        GraphicalViewer viewer = getTalendEditor().getViewer();
+        GraphicalViewer viewer = designerEditor.getViewer();
         Object object = viewer.getRootEditPart().getChildren().get(0);
         if (object instanceof ProcessPart) {
             for (EditPart editPart : (List<EditPart>) ((ProcessPart) object).getChildren()) {
@@ -300,26 +285,6 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         }
     }
 
-    /**
-     * DOC amaumont Comment method "getSelectedNode".
-     * 
-     * @return
-     */
-
-    public EditPart getOldSelection() {
-        IPropertySheetPage propertyPage = (IPropertySheetPage) getTalendEditor().getAdapter(IPropertySheetPage.class);
-        if (propertyPage instanceof TalendTabbedPropertySheetPage) {
-            StructuredSelection selections = ((TalendTabbedPropertySheetPage) propertyPage).getOldSelection();
-            if (selections != null) {
-                Object selection = selections.getFirstElement();
-                if (selection instanceof EditPart) {
-                    return (EditPart) selection;
-                }
-            }
-        }
-        return null;
-    }
-
     public void setName() {
         String label = getEditorInput().getName();
         oldJobName = label;
@@ -338,9 +303,9 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
 
     protected void createPage0() {
         try {
-            int index = addPage(getTalendEditor(), getEditorInput());
+            int index = addPage(designerEditor, getEditorInput());
             setPageText(index, "Designer");
-            getTalendEditor().setParent(this);
+            designerEditor.setParent(this);
         } catch (PartInitException e) {
             e.printStackTrace();
         }
@@ -358,7 +323,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
      */
     protected void createPage1() {
         codeEditor = CodeEditorFactory.getInstance().getCodeEditor(getCurrentLang());
-        process = getTalendEditor().getProcess();
+        process = designerEditor.getProcess();
         ((Process) process).setEditor(this);
         processor = ProcessorUtilities.getProcessor(process, process.getContextManager().getDefaultContext());
 
@@ -402,7 +367,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             codeSync = true;
         }
 
-        CommandStack commandStack = (CommandStack) getTalendEditor().getAdapter(CommandStack.class);
+        CommandStack commandStack = (CommandStack) designerEditor.getAdapter(CommandStack.class);
         commandStack.addCommandStackEventListener(commandStackEventListener);
     }
 
@@ -429,9 +394,9 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             return;
         }
         updateRunJobContext();
-        getTalendEditor().getProperty().eAdapters().remove(dirtyListener);
+        designerEditor.getProperty().eAdapters().remove(dirtyListener);
         getEditor(0).doSave(monitor);
-        getTalendEditor().getProperty().eAdapters().add(dirtyListener);
+        designerEditor.getProperty().eAdapters().add(dirtyListener);
         codeSync();
 
         propertyIsDirty = false;
@@ -556,7 +521,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
      */
     public Node getSelectedGraphicNode() {
         Node node = null;
-        List selections = getTalendEditor().getViewer().getSelectedEditParts();
+        List selections = designerEditor.getViewer().getSelectedEditParts();
         if (selections.size() == 1) {
             Object selection = selections.get(0);
 
@@ -587,9 +552,9 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                 public void run() {
                     IWorkbenchPage[] pages = getSite().getWorkbenchWindow().getPages();
                     for (int i = 0; i < pages.length; i++) {
-                        if (((FileEditorInput) getTalendEditor().getEditorInput()).getFile().getProject().equals(
-                                event.getResource())) {
-                            IEditorPart editorPart = pages[i].findEditor(getTalendEditor().getEditorInput());
+                        if (((FileEditorInput) designerEditor.getEditorInput()).getFile().getProject()
+                                .equals(event.getResource())) {
+                            IEditorPart editorPart = pages[i].findEditor(designerEditor.getEditorInput());
                             pages[i].closeEditor(editorPart, true);
                         }
                     }
@@ -600,7 +565,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
 
     @Override
     public Object getAdapter(final Class adapter) {
-        if (getTalendEditor().equals(getActiveEditor())) {
+        if (designerEditor.equals(getActiveEditor())) {
             return this.getActiveEditor().getAdapter(adapter);
         }
         /*
@@ -618,8 +583,8 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             if (selection instanceof StructuredSelection) {
                 StructuredSelection structSel = (StructuredSelection) selection;
                 if (structSel.getFirstElement() instanceof EditPart) {
-                    if (getTalendEditor().equals(getActiveEditor())) {
-                        getTalendEditor().selectionChanged(getActiveEditor(), selection);
+                    if (designerEditor.equals(getActiveEditor())) {
+                        designerEditor.selectionChanged(getActiveEditor(), selection);
 
                     }
                 }
@@ -668,7 +633,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         // just call the method add protection will update new childrens and
         // keep old ones (keep to delete automatically
         // when closing job)
-        JobResourceManager.getInstance().addProtection(getTalendEditor());
+        JobResourceManager.getInstance().addProtection(designerEditor);
     }
 
     /**
@@ -677,7 +642,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
      * @param node
      */
     public void selectNode(INode node) {
-        GraphicalViewer viewer = getTalendEditor().getViewer();
+        GraphicalViewer viewer = designerEditor.getViewer();
         Object object = viewer.getRootEditPart().getChildren().get(0);
         if (object instanceof ProcessPart) {
             for (EditPart editPart : (List<EditPart>) ((ProcessPart) object).getChildren()) {
@@ -756,6 +721,10 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         return (TalendJavaEditor) this.codeEditor;
     }
 
+    public AbstractTalendEditor getTalendEditor() {
+        return designerEditor;
+    }
+
     /**
      * The <code>MultiPageEditorPart</code> implementation of this <code>IWorkbenchPart</code> method disposes all
      * nested editors. Subclasses may extend.
@@ -764,22 +733,15 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
     public void dispose() {
         ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
 
-        if (processor.getProcessorType().equals("javaProcessor")) { //$NON-NLS-1$
-            processor.setProcessorStates(IProcessor.STATES_EDIT);
-            if (codeEditor instanceof ISyntaxCheckableEditor) {
-                processor.setSyntaxCheckableEditor(null);
-            }
-        }
-
         getSite().setSelectionProvider(null);
 
-        CommandStack commandStack = (CommandStack) getTalendEditor().getAdapter(CommandStack.class);
+        CommandStack commandStack = (CommandStack) designerEditor.getAdapter(CommandStack.class);
         commandStack.removeCommandStackEventListener(commandStackEventListener);
 
         getSite().getWorkbenchWindow().getSelectionService().removeSelectionListener(this);
         super.dispose();
 
-        getTalendEditor().setParent(null);
+        designerEditor.setParent(null);
 
         if (isKeepPropertyLocked()) {
             return;
@@ -789,10 +751,10 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         IRepositoryService service = CorePlugin.getDefault().getRepositoryService();
         IProxyRepositoryFactory repFactory = service.getProxyRepositoryFactory();
         try {
-            getTalendEditor().getProperty().eAdapters().remove(dirtyListener);
-            Property property = repFactory.reload(getTalendEditor().getProperty());
-            // getTalendEditor().setProperty(property);
-            repFactory.unlock(property.getItem());
+            designerEditor.getProperty().eAdapters().remove(dirtyListener);
+            // Property property = repFactory.reload(designerEditor.getProperty());
+            // designerEditor.setProperty(property);
+            repFactory.unlock(designerEditor.getProperty().getItem());
         } catch (PersistenceException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -803,6 +765,9 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             viewPart.refresh();
         }
 
+        processEditorInput = null;
+        designerEditor = null;
+        codeEditor = null;
         processor = null;
     }
 }

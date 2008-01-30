@@ -19,19 +19,12 @@ import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.editparts.AbstractTreeEditPart;
 import org.eclipse.jface.util.TransferDragSourceListener;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.PlatformUI;
 import org.talend.core.model.process.ElementParameterParser;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeReturn;
-import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.nodes.NodeEditPolicy;
 
 /**
@@ -55,22 +48,22 @@ public class NodeReturnsTreeEditPart extends AbstractTreeEditPart {
 
     @Override
     public void setSelected(int value) {
-        IWorkbench workbench = PlatformUI.getWorkbench();
-        IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();
-        IEditorPart editorPart = page.getActiveEditor();
-        if (editorPart instanceof AbstractMultiPageTalendEditor) {
-            AbstractMultiPageTalendEditor multiPageTalendEditor = ((AbstractMultiPageTalendEditor) editorPart);
-            EditPart editPart = multiPageTalendEditor.getOldSelection();
-            if (editPart != null) {
-                ISelection selection = multiPageTalendEditor.getTalendEditor().getViewer().getSelection();
-                if (selection instanceof StructuredSelection) {
-                    StructuredSelection structSel = (StructuredSelection) selection;
-                    if (!structSel.getFirstElement().equals(editPart)) {
-                        multiPageTalendEditor.getTalendEditor().getViewer().setSelection(selection);
-                    }
-                }
-            }
-        }
+        // IWorkbench workbench = PlatformUI.getWorkbench();
+        // IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();
+        // IEditorPart editorPart = page.getActiveEditor();
+        // if (editorPart instanceof AbstractMultiPageTalendEditor) {
+        // AbstractMultiPageTalendEditor multiPageTalendEditor = ((AbstractMultiPageTalendEditor) editorPart);
+        // EditPart editPart = multiPageTalendEditor.getOldSelection();
+        // if (editPart != null) {
+        // ISelection selection = multiPageTalendEditor.getTalendEditor().getViewer().getSelection();
+        // if (selection instanceof StructuredSelection) {
+        // StructuredSelection structSel = (StructuredSelection) selection;
+        // if (!structSel.getFirstElement().equals(editPart)) {
+        // multiPageTalendEditor.getTalendEditor().getViewer().setSelection(selection);
+        // }
+        // }
+        // }
+        // }
         currentEditPart = this;
         super.setSelected(0);
     }
@@ -129,8 +122,8 @@ public class NodeReturnsTreeEditPart extends AbstractTreeEditPart {
      * 
      * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
      *//*
-     * public void propertyChange(PropertyChangeEvent change) { refreshVisuals(); }
-     */
+         * public void propertyChange(PropertyChangeEvent change) { refreshVisuals(); }
+         */
 
     /*
      * (non-Javadoc)

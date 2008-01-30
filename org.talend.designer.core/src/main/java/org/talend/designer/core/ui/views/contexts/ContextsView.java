@@ -20,7 +20,6 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.part.ViewPart;
 import org.talend.core.model.process.IContextManager;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
-import org.talend.designer.core.ui.editor.process.Process;
 
 /**
  * qzhang class global comment. Detailled comment <br/>
@@ -31,8 +30,6 @@ public class ContextsView extends ViewPart {
     public static final String ID = "org.talend.designer.core.ui.views.ContextsView";
 
     private AbstractMultiPageTalendEditor part;
-
-    private Process process;
 
     public ContextsView() {
     }
@@ -164,9 +161,16 @@ public class ContextsView extends ViewPart {
         final IEditorPart activeEditor = getSite().getPage().getActiveEditor();
         if (activeEditor instanceof AbstractMultiPageTalendEditor) {
             part = (AbstractMultiPageTalendEditor) activeEditor;
-            process = (Process) part.getTalendEditor().getProcess();
         } else {
             part = null;
         }
+    }
+
+    /**
+     * DOC nrousseau Comment method "reset".
+     */
+    public void reset() {
+        part = null;
+        contextComposite.setPart(null);
     }
 }

@@ -2420,6 +2420,9 @@ public class Process extends Element implements IProcess2 {
             List<Connection> connList = new ArrayList<Connection>((List<Connection>) curNode.getOutgoingConnections());
             for (Connection curConnection : connList) {
                 curConnection.disconnect();
+                for (IElementParameter param : curConnection.getElementParametersWithChildrens()) {
+                    param.setElement(null);
+                }
                 curConnection.setElementParameters(null);
             }
         }
@@ -2427,13 +2430,19 @@ public class Process extends Element implements IProcess2 {
             removeNodeContainer(curNode.getNodeContainer());
             curNode.getNodeContainer().setNode(null);
             curNode.getNodeContainer().setNodeLabel(null);
-            curNode.setProcess(null);
         }
 
-        // for (Node curNode : nodes) {
-        // curNode.setElementParameters(null);
-        // curNode.setProcess(null);
-        // }
+        for (Node curNode : nodes) {
+            for (IElementParameter param : curNode.getElementParametersWithChildrens()) {
+                param.setElement(null);
+            }
+            curNode.setElementParameters(null);
+            curNode.setProcess(null);
+        }
+        for (IElementParameter param : getElementParametersWithChildrens()) {
+            param.setElement(null);
+        }
+        setElementParameters(null);
         nodes = null;
         elem = null;
         notes = null;
@@ -2449,6 +2458,7 @@ public class Process extends Element implements IProcess2 {
         }
         generatingProcess = null;
         editor = null;
+        viewer = null;
     }
 
     /*

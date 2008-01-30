@@ -63,6 +63,7 @@ public class ConnectionPart extends AbstractConnectionEditPart implements Proper
         if (isActive()) {
             super.deactivate();
             ((Element) getModel()).removePropertyChangeListener(this);
+            unregister();
         }
     }
 

@@ -35,14 +35,9 @@ public class MultiPageTalendEditor extends AbstractMultiPageTalendEditor {
 
     public static final String ID = "org.talend.designer.core.ui.MultiPageTalendEditor"; //$NON-NLS-1$
 
-    private final TalendEditor designerEditor = new TalendEditor();
-
     public MultiPageTalendEditor() {
         super();
-    }
-
-    public TalendEditor getTalendEditor() {
-        return designerEditor;
+        designerEditor = new TalendEditor();
     }
 
     /**

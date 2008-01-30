@@ -143,12 +143,13 @@ public class TalendScalableFreeformRootEditPart extends ScalableFreeformRootEdit
         return super.getAdapter(key);
     }
 
-    /**
-     * Sets the editorInput.
-     * 
-     * @param editorInput the editorInput to set
+    /* (non-Javadoc)
+     * @see org.eclipse.gef.editparts.ScalableFreeformRootEditPart#unregister()
      */
-    public void setEditorInput(IEditorInput editorInput) {
-        this.editorInput = editorInput;
+    @Override
+    protected void unregister() {
+        super.unregister();
+        editorInput = null;
+        zoomManager = null;
     }
 }

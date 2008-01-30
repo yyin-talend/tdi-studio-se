@@ -58,8 +58,6 @@ public class NodeFigure extends Figure {
 
     private Map<ConnectionFigure, ConnectionFigure> sourceDummyMap;
 
-    private Map<ConnectionFigure, AnchorListener> listenerSourceDummyMap = new HashMap<ConnectionFigure, AnchorListener>();
-
     private boolean dummy;
 
     public static final Color START_COLOR = new Color(null, new RGB(0xB0, 0xE7, 0));
@@ -68,13 +66,7 @@ public class NodeFigure extends Figure {
 
     private ConnectionFigure targetDummy;
 
-    private AnchorListener targetListener;
-
     private List<ConnectionFigure> newSourceConnections = new ArrayList<ConnectionFigure>();
-
-    private boolean newTargetConnection;
-
-    // private List<ConnectionFigure> sourceConnectionList = new ArrayList<ConnectionFigure>();
 
     private Node node;
 
@@ -136,7 +128,6 @@ public class NodeFigure extends Figure {
                     }
 
                     newSourceConnections.clear();
-                    newTargetConnection = false;
 
                     Point figCenter = fig.getBounds().getCenter();
 
@@ -314,6 +305,5 @@ public class NodeFigure extends Figure {
             connection.setVisible(false);
         }
         targetDummy = connection;
-        newTargetConnection = true;
     }
 }

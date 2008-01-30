@@ -22,7 +22,6 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
-import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.talend.core.model.components.ComponentUtilities;
@@ -33,7 +32,6 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
-import org.talend.designer.core.ui.ActiveProcessTracker;
 import org.talend.designer.core.ui.action.CreateProcess;
 import org.talend.designer.core.ui.action.SaveJobBeforeRunAction;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
@@ -174,16 +172,6 @@ public class DesignerCoreService implements IDesignerCoreService {
             ((AbstractTalendEditor) editor).updateGraphicalNodes(evt);
         }
 
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.designer.core.IDesignerCoreService#getActiveProcessTracker()
-     */
-    public IPartListener getActiveProcessTracker() {
-
-        return new ActiveProcessTracker();
     }
 
     /*
