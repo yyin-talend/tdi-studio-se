@@ -43,8 +43,28 @@ StringBuilder insertColName = null;
 Manager manager = null;
 if(columnList != null && columnList.size()>0) {
     stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, null);
-    Map<String, StringBuilder> actionSQLMap = getManager(dbmsId, cid).createActionSQL(stmtStructure);
-    insertColName = actionSQLMap.get(INSERT_COLUMN_NAME);
+    StringBuilder columnListStr = new StringBuilder();
+    boolean firstColumn = true;
+    for(Column column : stmtStructure) {
+        if(column.isReplaced()) {
+            List<Column> replacedColumns = column.getReplacement();
+            for(Column replacedColumn : replacedColumns) {
+                if(firstColumn) {
+                    firstColumn = false;
+                } else {
+                    columnListStr.append(", ");
+                }
+                columnListStr.append(replacedColumn.getName());                    
+            }
+        } else {
+            if(firstColumn) {
+                firstColumn = false;
+            } else {
+                columnListStr.append(", ");
+            }
+            columnListStr.append(column.getName());                
+        }
+    }
     manager = getManager(dbmsId, cid);
     if(!tableAction.equals("NONE")) {
         if(tableAction.equals("DROP_CREATE")) {
@@ -53,13 +73,13 @@ if(columnList != null && columnList.size()>0) {
             stmtDrop_<%=cid%>.execute("<%=manager.getDropTableSQL()%>" + " cascade");
             java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
             stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
-            stmtCreate_<%=cid%>.execute("CREATE PROJECTION " + <%=tableName%> + "_proj (<%=insertColName.toString()%>) AS SELECT <%=insertColName.toString()%> FROM " + <%=tableName%>);//
+            stmtCreate_<%=cid%>.execute("CREATE PROJECTION " + <%=tableName%> + "_proj (<%=columnListStr.toString()%>) AS SELECT <%=columnListStr.toString()%> FROM " + <%=tableName%>);//
             <%
         } else if(tableAction.equals("CREATE")) {
             %>
             java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
             stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
-            stmtCreate_<%=cid%>.execute("CREATE PROJECTION " + <%=tableName%> + "_proj (<%=insertColName.toString()%>) AS SELECT <%=insertColName.toString()%> FROM " + <%=tableName%>);//
+            stmtCreate_<%=cid%>.execute("CREATE PROJECTION " + <%=tableName%> + "_proj (<%=columnListStr.toString()%>) AS SELECT <%=columnListStr.toString()%> FROM " + <%=tableName%>);//
             <%
         } else if(tableAction.equals("CREATE_IF_NOT_EXISTS")) {
             %>
@@ -76,13 +96,13 @@ if(columnList != null && columnList.size()>0) {
             if(!whetherExist_<%=cid%>) {
                 java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
                 stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");     
-                stmtCreate_<%=cid%>.execute("CREATE PROJECTION " + <%=tableName%> + "_proj (insertColName.toString()) AS SELECT <%=insertColName.toString()%> FROM " + <%=tableName%>);//
+                stmtCreate_<%=cid%>.execute("CREATE PROJECTION " + <%=tableName%> + "_proj (<%=columnListStr.toString()%>) AS SELECT <%=columnListStr.toString()%> FROM " + <%=tableName%>);//
             }
             <%
         } else if(tableAction.equals("CLEAR")) {
             %>
             java.sql.Statement stmtClear_<%=cid%> = conn_<%=cid%>.createStatement();
-            deletedCount_<%=cid%> = stmtClear_<%=cid%>.executeUpdate("<%=manager.getDeleteTableSQL()%>");
+            stmtClear_<%=cid%>.executeUpdate("<%=manager.getDeleteTableSQL()%>");
             <%
         }
     }    
