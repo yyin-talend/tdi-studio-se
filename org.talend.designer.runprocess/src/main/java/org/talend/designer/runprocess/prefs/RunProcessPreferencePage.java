@@ -27,6 +27,8 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.designer.runprocess.RunProcessPlugin;
 import org.talend.designer.runprocess.i18n.Messages;
 
@@ -300,6 +302,8 @@ public class RunProcessPreferencePage extends FieldEditorPreferencePage implemen
         // int high = low + 8000;
         // store.setValue(IDebugPreferenceConstants.CONSOLE_HIGH_WATER_MARK, high);
         RunProcessPlugin.getDefault().savePluginPreferences();
+        IRunProcessService service = (IRunProcessService) GlobalServiceRegister.getDefault().getService(IRunProcessService.class);
+        service.refreshView();
         return ok;
     }
 
