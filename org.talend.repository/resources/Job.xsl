@@ -713,7 +713,6 @@
 									<td align="center">
 										<xsl:value-of select="@key" />
 									</td>
-									<!--  -->
 									<td align="center">
 										<xsl:value-of select="@type" />
 									</td>
@@ -731,7 +730,6 @@
 									<td align="center">
 										<xsl:value-of select="@comment" />
 									</td>
-									-->
 								</tr>
 							</xsl:for-each>
 						</table>
