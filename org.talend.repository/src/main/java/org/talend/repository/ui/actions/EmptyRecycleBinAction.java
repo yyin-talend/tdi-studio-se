@@ -63,8 +63,8 @@ public class EmptyRecycleBinAction extends AContextualAction {
             try {
                 if (objToDelete instanceof ISubRepositoryObject) {
                     ISubRepositoryObject subRepositoryObject = (ISubRepositoryObject) objToDelete;
-                    subRepositoryObject.removeFromParent();
                     if (!isRootNodeDeleted(child)) {
+                        subRepositoryObject.removeFromParent();
                         factory.save(subRepositoryObject.getProperty().getItem());
                     }
                 } else {
@@ -91,10 +91,20 @@ public class EmptyRecycleBinAction extends AContextualAction {
      */
     private boolean isRootNodeDeleted(RepositoryNode child) {
         boolean isDeleted = false;
-        if (child.getParent() != null && child.getParent().getParent() != null
-                && child.getParent().getParent().getObject() != null) {
-            ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
-            isDeleted = factory.getStatus(child.getParent().getParent().getObject()) == ERepositoryStatus.DELETED;
+        if (child != null) {
+            RepositoryNode parent = child.getParent();
+            if (parent != null) {
+                IRepositoryObject object = parent.getObject();
+                if (object != null) {
+                    ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+
+                    isDeleted = factory.getStatus(object) == ERepositoryStatus.DELETED;
+                }
+
+                if (!isDeleted) {
+                    isDeleted = isRootNodeDeleted(parent);
+                }
+            }
         }
         return isDeleted;
     }
