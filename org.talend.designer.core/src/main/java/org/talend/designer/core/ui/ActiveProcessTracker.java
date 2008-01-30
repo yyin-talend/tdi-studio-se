@@ -19,6 +19,7 @@ import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
+import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.process.IProcess;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ui.editor.process.Process;
@@ -73,6 +74,11 @@ public class ActiveProcessTracker implements IPartListener {
      * @see org.eclipse.ui.IPartListener#partActivated(org.eclipse.ui.IWorkbenchPart)
      */
     public void partActivated(final IWorkbenchPart part) {
+
+        if (part instanceof AbstractMultiPageTalendEditor) {
+            ComponentUtilities.setExtraEntryVisible(((AbstractMultiPageTalendEditor) part).showExtraPaletteEntry());
+        }
+
         IProcess process = getJobFromActivatedEditor(part);
         if (process != null) {
             currentProcess = process;

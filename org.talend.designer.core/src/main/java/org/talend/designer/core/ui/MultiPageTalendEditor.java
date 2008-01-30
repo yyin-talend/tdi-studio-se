@@ -87,4 +87,14 @@ public class MultiPageTalendEditor extends AbstractMultiPageTalendEditor {
         return ID;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.core.ui.AbstractMultiPageTalendEditor#showExtraPaletteEntry()
+     */
+    @Override
+    public boolean showExtraPaletteEntry() {
+        return false;
+    }
+
 }

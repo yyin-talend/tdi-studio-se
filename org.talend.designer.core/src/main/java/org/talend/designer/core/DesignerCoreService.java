@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.gef.palette.PaletteEntry;
 import org.eclipse.gef.palette.PaletteRoot;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ILabelProvider;
@@ -31,6 +32,7 @@ import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.designer.core.model.process.AbstractProcessProvider;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.action.CreateProcess;
 import org.talend.designer.core.ui.action.SaveJobBeforeRunAction;
@@ -204,5 +206,13 @@ public class DesignerCoreService implements IDesignerCoreService {
 
     public IAction getCreateProcessAction(boolean isToolbar) {
         return new CreateProcess(isToolbar);
+    }
+
+    public List<PaletteEntry> createJobletEtnry() {
+        List<PaletteEntry> list = new ArrayList<PaletteEntry>();
+        for (AbstractProcessProvider provider : AbstractProcessProvider.findAllProcessProviders()) {
+            list.addAll(provider.addJobletEntry());
+        }
+        return list;
     }
 }

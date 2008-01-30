@@ -18,6 +18,7 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.gef.palette.PaletteEntry;
 import org.talend.core.model.properties.Item;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
@@ -87,6 +88,7 @@ public abstract class AbstractProcessProvider {
      * @return
      */
     public static void loadComponentsFromProviders() {
+
         for (AbstractProcessProvider processProvider : findAllProcessProviders()) {
             processProvider.loadComponentsFromExtensionPoint();
         }
@@ -136,5 +138,7 @@ public abstract class AbstractProcessProvider {
     public boolean canCreateNode(Node node) {
         return true;
     }
+
+    public abstract List<PaletteEntry> addJobletEntry();
 
 }

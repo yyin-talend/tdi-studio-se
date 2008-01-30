@@ -112,6 +112,8 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         }
     };
 
+    public abstract boolean showExtraPaletteEntry();
+
     protected boolean propertyIsDirty = false;
 
     protected AbstractDecoratedTextEditor codeEditor;
