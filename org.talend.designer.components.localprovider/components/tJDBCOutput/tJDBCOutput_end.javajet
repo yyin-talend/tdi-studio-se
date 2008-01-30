@@ -22,32 +22,53 @@ if (!commitEvery.equals("") && !commitEvery.equals("0")) {
 }
 
 // Close SQL statements
-if (dataAction.equals("INSERT_OR_UPDATE") || dataAction.equals("UPDATE_OR_INSERT")) {
-	%>
-	if (statementUpdate_<%=cid%> != null) {
-		statementUpdate_<%=cid%>.close();
-	}
-	if (statementInsert_<%=cid%> != null) {
-		statementInsert_<%=cid%>.close();
-	}
-	if (statement_<%=cid%> != null) {
-		statement_<%=cid%>.close();
-	}
-	<%
+if(dataAction.equals("INSERT_OR_UPDATE")) {
+    %>
+    if(pstmtUpdate_<%=cid%> != null){
+
+        pstmtUpdate_<%=cid %>.close();
+        
+    } 
+    if(pstmtInsert_<%=cid %> != null){
+
+        pstmtInsert_<%=cid %>.close();
+        
+    }
+    if(pstmt_<%=cid %> != null) {
+
+        pstmt_<%=cid %>.close();
+        
+    }        
+    <%
+} else if(dataAction.equals("UPDATE_OR_INSERT")) {
+    %>
+    if(pstmtUpdate_<%=cid%> != null){
+
+        pstmtUpdate_<%=cid %>.close();
+        
+    } 
+    if(pstmtInsert_<%=cid %> != null){
+
+        pstmtInsert_<%=cid %>.close();
+        
+    }        
+    <%
 } else {
-	%>
-	statement_<%=cid %>.close();
-	<%
+    %>
+    if(pstmt_<%=cid %> != null) {
+
+        pstmt_<%=cid %>.close();
+        
+    }        
+    <%
 }
 %>
 
 connection_<%=cid%>.close();
 
-	nb_line_deleted_<%=cid%>=nb_line_deleted_<%=cid%>+ deletedCount_<%=cid%>;
-	nb_line_update_<%=cid%>=nb_line_update_<%=cid%> + updatedCount_<%=cid%>;
-	nb_line_inserted_<%=cid%>=nb_line_inserted_<%=cid%> + insertedCount_<%=cid%>;
-
-
+nb_line_deleted_<%=cid%>=nb_line_deleted_<%=cid%> + deletedCount_<%=cid%>;
+nb_line_update_<%=cid%>=nb_line_update_<%=cid%> + updatedCount_<%=cid%>;
+nb_line_inserted_<%=cid%>=nb_line_inserted_<%=cid%> + insertedCount_<%=cid%>;
 
 globalMap.put("<%=cid%>_NB_LINE", nb_line_<%=cid%>);
 globalMap.put("<%=cid%>_NB_LINE_UPDATED", nb_line_update_<%=cid%>);

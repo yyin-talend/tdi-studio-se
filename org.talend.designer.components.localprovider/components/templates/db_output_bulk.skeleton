@@ -28,6 +28,8 @@ public class CLASS {
     public static final String SYBASE = "sybase_id";
     public static final String TERADATA = "teradata_id";
     public static final String VERTICA = "vertica_id";
+    public static final String ODBC = "MSODBC";
+    public static final String JDBC = "JDBC";
     private static Map<String, Manager> managerMap = new HashMap<String, Manager>();
     public class Column {
         IMetadataColumn column;
@@ -1219,6 +1221,36 @@ public class CLASS {
         }        
     }
     
+    public class ODBCManager extends Manager {
+        public ODBCManager(String cid) {
+            super(cid);
+        }
+        protected String getDBMSId() {
+            return ODBC;
+        }
+        protected String getLProtectedChar() {
+            return "";
+        }
+        protected String getRProtectedChar() {
+            return "";
+        }        
+    }
+    
+    public class JDBCManager extends Manager {
+        public JDBCManager(String cid) {
+            super(cid);
+        }
+        protected String getDBMSId() {
+            return JDBC;
+        }
+        protected String getLProtectedChar() {
+            return "";
+        }
+        protected String getRProtectedChar() {
+            return "";
+        }        
+    }    
+    
     public Manager getManager(String dbmsId, String cid) {
         Manager manager = managerMap.get(dbmsId + cid);
         if(manager == null) {
@@ -1256,6 +1288,10 @@ public class CLASS {
                 manager = new TeradataManager(cid);
             } else if(dbmsId.equalsIgnoreCase(VERTICA)) {
                 manager = new VerticaManager(cid);
+            } else if(dbmsId.equalsIgnoreCase(ODBC)) {
+                manager = new ODBCManager(cid);
+            } else if(dbmsId.equalsIgnoreCase(JDBC)) {
+                manager = new JDBCManager(cid);
             }
         }
         managerMap.put(dbmsId + cid, manager);
