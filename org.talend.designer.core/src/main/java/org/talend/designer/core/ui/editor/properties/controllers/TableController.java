@@ -147,7 +147,8 @@ public class TableController extends AbstractElementPropertySectionController {
 
         int currentHeightEditor = table.getHeaderHeight() + ((List) param.getValue()).size() * table.getItemHeight()
                 + table.getItemHeight() + 50;
-        int minHeightEditor = table.getHeaderHeight() + MIN_NUMBER_ROWS * table.getItemHeight() + table.getItemHeight() + 50;
+        int minHeightEditor = table.getHeaderHeight() + getNumberLines(param) * table.getItemHeight() + table.getItemHeight()
+                + 50;
         int ySize2 = Math.max(currentHeightEditor, minHeightEditor);
 
         formData.bottom = new FormAttachment(0, top + ySize2);
@@ -183,12 +184,27 @@ public class TableController extends AbstractElementPropertySectionController {
         final Table table = tableEditorView.getTable();
         int currentHeightEditor = table.getHeaderHeight() + ((List) param.getValue()).size() * table.getItemHeight()
                 + table.getItemHeight() + 50;
-        int minHeightEditor = table.getHeaderHeight() + MIN_NUMBER_ROWS * table.getItemHeight() + table.getItemHeight() + 50;
+        int minHeightEditor = table.getHeaderHeight() + getNumberLines(param) * table.getItemHeight() + table.getItemHeight()
+                + 50;
 
         tableEditorView.getMainComposite().dispose();
 
         int ySize2 = Math.max(currentHeightEditor, minHeightEditor);
         return ySize2 + ITabbedPropertyConstants.VSPACE;
+    }
+
+    /**
+     * ftang Comment method "getNumberRows".
+     * 
+     * @param param
+     * @return
+     */
+    private int getNumberLines(IElementParameter param) {
+        int numlines = param.getNbLines();
+        if (numlines != 0) {
+            return numlines;
+        }
+        return this.MIN_NUMBER_ROWS;
     }
 
     /*
