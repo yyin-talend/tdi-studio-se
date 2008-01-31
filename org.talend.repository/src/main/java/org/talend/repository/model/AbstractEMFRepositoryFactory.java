@@ -18,6 +18,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -27,6 +29,7 @@ import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.data.container.Container;
 import org.talend.commons.utils.data.container.RootContainer;
+import org.talend.commons.utils.workbench.resources.ResourceUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.general.ILibrariesService;
 import org.talend.core.model.general.ModuleNeeded;
@@ -363,5 +366,18 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         }
 
         return importNeedsList;
+    }
+
+    public RootContainer<String, IRepositoryObject> getRoutineFromProject(Project project) throws PersistenceException {
+        RootContainer<String, IRepositoryObject> toReturn = new RootContainer<String, IRepositoryObject>();
+        ERepositoryObjectType type = ERepositoryObjectType.ROUTINES;
+
+        IProject fsProject = ResourceModelUtils.getProject(project);
+
+        IFolder objectFolder = ResourceUtils.getFolder(fsProject, ERepositoryObjectType
+                .getFolderName(ERepositoryObjectType.ROUTINES), true);
+
+        addFolderMembers(type, toReturn, objectFolder, true);
+        return toReturn;
     }
 }
