@@ -75,7 +75,7 @@ $branch_<%=outConn.getName()%>_is_active = true;
 $branch_<%=outConn.getName()%>_is_active = false;
 <%
         }
-if(conditions.size()>0){
+if( (conditions.size()>0) || (use_advanced.equals("true"))){
 %>
 
 
