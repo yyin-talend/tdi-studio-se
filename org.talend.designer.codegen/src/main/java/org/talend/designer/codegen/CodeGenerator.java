@@ -707,10 +707,14 @@ public class CodeGenerator implements ICodeGenerator {
             throw new NullPointerException();
         } else {
             List<? extends INode> allProcessNodes = process.getGeneratingNodes();
-            INode node = extractNodeFromProcess(nodeName);
-            if (node != null) {
+            INode nodeToConfigure = extractNodeFromProcess(nodeName);
+            if (nodeToConfigure != null) {
+
+                if (nodeConfigurer != null) {
+                    nodeConfigurer.configure(nodeToConfigure);
+                }
                 
-                node = node.getSubProcessStartNode(false);
+                INode node = nodeToConfigure.getSubProcessStartNode(false);
                 
                 List<INode> lightProcessNodes = new ArrayList<INode>();
                 lightProcessNodes.add(node);
@@ -727,15 +731,12 @@ public class CodeGenerator implements ICodeGenerator {
                 this.checkingSyntax = true;
 
                 try {
-                    if (nodeConfigurer != null) {
-                        nodeConfigurer.configure(node);
-                    }
                     componentsCode.append(generateTypedComponentCode(EInternalTemplate.HEADER, headerArgument));
                     for (NodesSubTree subTree : processTree.getSubTrees()) {
                         INode subTreeNode = subTree.getNode(node.getUniqueName());
-                        if (subTreeNode != null && nodeConfigurer != null) {
-                            nodeConfigurer.configure(subTreeNode);
-                        }
+//                        if (subTreeNode != null && nodeConfigurer != null) {
+//                            nodeConfigurer.configure(subTreeNode);
+//                        }
                         componentsCode.append(generateTypedComponentCode(EInternalTemplate.SUBPROCESS_HEADER, subTree));
                         if (subTreeNode != null && (lightProcess.getSubTrees().size() > 0)) {
                             componentsCode.append(generateComponentsCode(lightProcess.getSubTrees().get(0), lightProcess
