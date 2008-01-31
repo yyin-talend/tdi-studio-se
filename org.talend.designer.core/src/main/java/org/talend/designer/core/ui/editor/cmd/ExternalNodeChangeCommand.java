@@ -25,6 +25,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.components.IODataComponentContainer;
+import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.process.EConnectionType;
@@ -147,6 +148,7 @@ public class ExternalNodeChangeCommand extends Command {
         for (Connection connection : (List<Connection>) node.getIncomingConnections()) {
             if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
                 IODataComponent currentIO = inAndOut.getDataComponent(connection);
+                currentIO.setColumnOption(IMetadataColumn.OPTIONS_NONE);
                 if (currentIO.hasChanged()) {
                     IMetadataTable metadata = inAndOut.getTable(connection);
                     INode sourceNode = currentIO.getSource();
