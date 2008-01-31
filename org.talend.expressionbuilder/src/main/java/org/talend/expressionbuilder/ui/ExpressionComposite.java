@@ -45,10 +45,10 @@ import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.core.PluginChecker;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
-import org.talend.core.ui.snippet.SnippetDropTargetListener;
 import org.talend.core.ui.viewer.ReconcilerViewer;
 import org.talend.core.ui.viewer.java.TalendJavaSourceViewer;
 import org.talend.core.ui.viewer.perl.TalendPerlSourceViewer;
+import org.talend.designer.core.ui.editor.properties.controllers.SnippetDropTargetListener;
 import org.talend.designer.rowgenerator.data.Function;
 import org.talend.designer.rowgenerator.data.FunctionManager;
 import org.talend.designer.rowgenerator.data.Parameter;
@@ -237,7 +237,7 @@ public class ExpressionComposite extends Composite {
 
         textControl = viewer.getTextWidget();
         int ops = DND.DROP_COPY | DND.DROP_MOVE;
-        DropTargetListener dropLisenter = new SnippetDropTargetListener(viewer);
+        DropTargetListener dropLisenter = new SnippetDropTargetListener(viewer, null, null, null);
         viewer.addDropSupport(ops, new Transfer[] { LocalSelectionTransfer.getTransfer() }, dropLisenter);
 
         document = viewer.getDocument();
