@@ -733,6 +733,8 @@ public class ProcessComposite extends Composite {
         if (watchBtn.getSelection()) {
             processContext.switchTime();
         }
+        processContext.setMonitorPerf(perfBtn.getSelection());
+        processContext.setMonitorTrace(traceBtn.getSelection());
 
         checkSaveBeforeRunSelection();
 
