@@ -40,6 +40,7 @@ if(!max.equals("")){
     java.sql.ResultSet set_<%=cid%> = statement_<%=cid%>.getResultSet();
     set_<%=cid%>.next();
     rowCount_<%=cid%> = set_<%=cid%>.getInt(1);
+    connection_<%=cid%>.commit();
     globalMap.put("<%=cid%>_ROW_COUNT", rowCount_<%=cid%>);
     
     count_<%=cid%>++;
