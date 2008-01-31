@@ -266,4 +266,6 @@ public interface IRepositoryFactory {
      */
     public RootContainer<String, IRepositoryObject> getJoblets() throws PersistenceException;
 
+    public RootContainer<String, IRepositoryObject> getRoutineFromProject(Project project) throws PersistenceException;
+
 }

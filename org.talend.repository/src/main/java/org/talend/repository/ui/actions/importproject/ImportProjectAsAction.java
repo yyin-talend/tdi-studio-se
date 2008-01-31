@@ -12,14 +12,20 @@
 // ============================================================================
 package org.talend.repository.ui.actions.importproject;
 
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Display;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.model.general.Project;
 import org.talend.core.ui.branding.IBrandingService;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.ProxyRepositoryFactory;
+import org.talend.repository.model.ResourceModelUtils;
 import org.talend.repository.ui.ERepositoryImages;
 import org.talend.repository.ui.wizards.newproject.ImportProjectAsWizard;
 import org.talend.repository.ui.wizards.newproject.ImportProjectWizardDialog;
@@ -31,6 +37,8 @@ import org.talend.repository.ui.wizards.newproject.ImportProjectWizardDialog;
  * 
  */
 public final class ImportProjectAsAction extends Action {
+
+    private static final String LIB = "lib";
 
     private static final String ACTION_TITLE = Messages.getString("ImportProjectAsAction.actionTitle"); //$NON-NLS-1$
 
@@ -58,16 +66,36 @@ public final class ImportProjectAsAction extends Action {
     public void run() {
         ImportProjectAsWizard docWizard = new ImportProjectAsWizard();
         WizardDialog dlg = new ImportProjectWizardDialog(Display.getCurrent().getActiveShell(), docWizard);
-        
-        
+
         if (dlg.open() == IDialogConstants.OK_ID) {
-        	
             project = docWizard.getProjectName();
-            
         } else {
             project = null;
         }
 
+        clearExternalLibraries();
+
+    }
+
+    /**
+     * DOC zwang Comment method "clearExternalLibraries".
+     */
+    private void clearExternalLibraries() {
+
+        try {
+            IProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
+            Project[] projects = repositoryFactory.readProject();
+            for (Project project : projects) {
+                IProject fsProject = ResourceModelUtils.getProject(project);
+                IFolder libJavaFolder = fsProject.getFolder(ImportProjectAsAction.LIB);
+                if (!libJavaFolder.exists()) {
+                    continue;
+                }
+                libJavaFolder.delete(true, null);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public String getProjectName() {

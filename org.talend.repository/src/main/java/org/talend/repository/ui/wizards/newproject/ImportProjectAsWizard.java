@@ -122,6 +122,7 @@ public class ImportProjectAsWizard extends Wizard {
                                 throw new InvocationTargetException(e, "Encoutering problems opening archive file");
                             }
                         }
+
                     } finally {
                         monitor.done();
                     }

@@ -406,6 +406,10 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         return this.repositoryFactoryFromProvider.getRoutine();
     }
 
+    public RootContainer<String, IRepositoryObject> getRoutineFromProject(Project project) throws PersistenceException {
+        return this.repositoryFactoryFromProvider.getRoutineFromProject(project);
+    }
+
     /*
      * (non-Javadoc)
      * 

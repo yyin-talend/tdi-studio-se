@@ -90,4 +90,5 @@ public final class ImportProjectsAction extends Action implements IWorkbenchWind
 
     public void selectionChanged(IAction action, ISelection selection) {
     }
+
 }
