@@ -106,10 +106,12 @@ public class SnippetDropTargetListener implements TransferDropTargetListener {
             } catch (BadLocationException ex) {
                 MessageBoxExceptionHandler.process(ex);
             }
-            String text = viewer.getTextWidget().getText();
 
-            Command cmd = new PropertyChangeCommand(elem, propertyName, text);
-            commandStack.execute(cmd);
+            if (commandStack != null) {
+                String text = viewer.getTextWidget().getText();
+                Command cmd = new PropertyChangeCommand(elem, propertyName, text);
+                commandStack.execute(cmd);
+            }
         }
     }
 
