@@ -456,7 +456,11 @@ public class DataProcess {
             curNode.setActivate(graphicalNode.isActivate());
             IMetadataTable newMetadata = graphicalNode.getMetadataList().get(0).clone();
             newMetadata.setTableName(uniqueName);
-            curNode.setDesignSubjobStartNode(graphicalNode.getDesignSubjobStartNode());
+            if (graphicalNode.isDesignSubjobStartNode()) {
+                curNode.setDesignSubjobStartNode(null);
+            } else {
+                curNode.setDesignSubjobStartNode(graphicalNode.getDesignSubjobStartNode());
+            }
             curNode.getMetadataList().remove(0);
             curNode.getMetadataList().add(newMetadata);
             List<IConnection> outgoingConnections = new ArrayList<IConnection>();
@@ -752,12 +756,12 @@ public class DataProcess {
         }
 
         // job settings stats & logs
-        if (JobSettingsManager.isStatsAndLogsActivated(process)) {
+        if (JobSettingsManager.isStatsAndLogsActivated(duplicatedProcess)) {
             // will add the Stats & Logs managements
-            Boolean realTimeStats = ((Boolean) process.getElementParameter(EParameterName.CATCH_REALTIME_STATS.getName())
-                    .getValue())
-                    && process.getElementParameter(EParameterName.CATCH_REALTIME_STATS.getName()).isShow(
-                            process.getElementParameters());
+            Boolean realTimeStats = ((Boolean) duplicatedProcess.getElementParameter(
+                    EParameterName.CATCH_REALTIME_STATS.getName()).getValue())
+                    && duplicatedProcess.getElementParameter(EParameterName.CATCH_REALTIME_STATS.getName()).isShow(
+                            duplicatedProcess.getElementParameters());
 
             if (!realTimeStats) {
                 for (INode node : dataNodeList) {
@@ -768,7 +772,7 @@ public class DataProcess {
                 }
             }
 
-            List<DataNode> statsAndLogsNodeList = JobSettingsManager.createStatsAndLogsNodes(process);
+            List<DataNode> statsAndLogsNodeList = JobSettingsManager.createStatsAndLogsNodes(duplicatedProcess);
 
             for (DataNode node : statsAndLogsNodeList) {
                 buildCheckMap.put(node, node);
@@ -778,8 +782,8 @@ public class DataProcess {
         }
 
         // job settings extra (feature 2710)
-        if (JobSettingsManager.isImplicittContextLoadActived(process)) {
-            List<DataNode> contextLoadNodes = JobSettingsManager.createExtraContextLoadNodes(process);
+        if (JobSettingsManager.isImplicittContextLoadActived(duplicatedProcess)) {
+            List<DataNode> contextLoadNodes = JobSettingsManager.createExtraContextLoadNodes(duplicatedProcess);
             for (DataNode node : contextLoadNodes) {
                 buildCheckMap.put(node, node);
                 dataNodeList.add(node);
@@ -789,10 +793,10 @@ public class DataProcess {
 
         // calculate the merge info for every node
         for (INode node : dataNodeList) {
-            int mergeOrder = process.getMergelinkOrder(node);
+            int mergeOrder = duplicatedProcess.getMergelinkOrder(node);
             if (mergeOrder >= 1) {
                 ((AbstractNode) node).setThereLinkWithMerge(true);
-                ((AbstractNode) node).setLinkedMergeInfo(process.getLinkedMergeInfo(node));
+                ((AbstractNode) node).setLinkedMergeInfo(duplicatedProcess.getLinkedMergeInfo(node));
             }
         }
         checkRefList = null;
