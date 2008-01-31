@@ -665,8 +665,13 @@ public class Node extends Element implements INode {
                         }
                     }
                 } else {
-                    if ((mainTargetTable == null) || (mainTargetTable.getListColumns().size() == 0)
-                            || mainTargetTable.sameMetadataAs(connection.getMetadataTable())) {
+                    if ((mainTargetTable == null)
+                            || (mainTargetTable.getListColumns().size() == 0)
+                            || mainTargetTable.sameMetadataAs(connection.getMetadataTable(), IMetadataColumn.OPTIONS_IGNORE_KEY
+                                    | IMetadataColumn.OPTIONS_IGNORE_NULLABLE | IMetadataColumn.OPTIONS_IGNORE_COMMENT
+                                    | IMetadataColumn.OPTIONS_IGNORE_PATTERN | IMetadataColumn.OPTIONS_IGNORE_DBCOLUMNNAME
+                                    | IMetadataColumn.OPTIONS_IGNORE_DBTYPE | IMetadataColumn.OPTIONS_IGNORE_DEFAULT
+                                    | IMetadataColumn.OPTIONS_IGNORE_BIGGER_SIZE)) {
                         return;
                     }
                     IConnection outputConnection = null;
@@ -1719,11 +1724,15 @@ public class Node extends Element implements INode {
                         if (table != null && connParam != null && !StringUtils.isEmpty((String) connParam.getValue())) {
                             for (IConnection connection : inputs) {
                                 if (connection.isActivate() && connection.getName().equals(connParam.getValue())) {
-                                    if (!table.sameMetadataAs(connection.getMetadataTable(), IMetadataColumn.OPTIONS_IGNORE_KEY
-                                            | IMetadataColumn.OPTIONS_IGNORE_NULLABLE | IMetadataColumn.OPTIONS_IGNORE_COMMENT
-                                            | IMetadataColumn.OPTIONS_IGNORE_PATTERN
-                                            | IMetadataColumn.OPTIONS_IGNORE_DBCOLUMNNAME | IMetadataColumn.OPTIONS_IGNORE_DBTYPE
-                                            | IMetadataColumn.OPTIONS_IGNORE_DEFAULT)) {
+                                    if (!table
+                                            .sameMetadataAs(connection.getMetadataTable(), IMetadataColumn.OPTIONS_IGNORE_KEY
+                                                    | IMetadataColumn.OPTIONS_IGNORE_NULLABLE
+                                                    | IMetadataColumn.OPTIONS_IGNORE_COMMENT
+                                                    | IMetadataColumn.OPTIONS_IGNORE_PATTERN
+                                                    | IMetadataColumn.OPTIONS_IGNORE_DBCOLUMNNAME
+                                                    | IMetadataColumn.OPTIONS_IGNORE_DBTYPE
+                                                    | IMetadataColumn.OPTIONS_IGNORE_DEFAULT
+                                                    | IMetadataColumn.OPTIONS_IGNORE_BIGGER_SIZE)) {
                                         schemaSynchronized = false;
                                         String errorMessage = "The schema from the input link \"" + connection.getName()
                                                 + "\" is different from the schema defined in the component.";
