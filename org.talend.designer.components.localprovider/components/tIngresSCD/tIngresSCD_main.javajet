@@ -52,7 +52,13 @@ if (inMetadata != null && metadata != null) {
 	String skSequence = ElementParameterParser.getValue(node, "__SK_DB_SEQUENCE__");
 	String skInputField = ElementParameterParser.getValue(node, "__SK_INPUT_FIELD__");
 	String skRoutine = ElementParameterParser.getValue(node, "__SK_ROUTINE__");
-	
+    String surrogateKeyFieldType = null;
+    for (IMetadataColumn column : metadata.getListColumns()) {
+        if(column.getLabel().equals(surrogateKeyField)) {
+            surrogateKeyFieldType = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+        }
+    }
+    
     List<Map<String, String>> sourceKeys =
         (List<Map<String, String>>) ElementParameterParser.getObjectValue(node, "__SOURCE_KEYS__");
 	
@@ -331,7 +337,10 @@ if (inMetadata != null && metadata != null) {
 		        	if (surrogateKeyCreation.equals("INPUT_FIELD")) {
 			        	generator.generateSetStatement(cid, "insertQuery_" + cid, inConnectionName + "." + skInputField, colposition++, typeToGenerate);
 			        } else if (surrogateKeyCreation.equals("ROUTINE")) {
-			        	generator.generateSetStatement(cid, "insertQuery_" + cid, skRoutine, colposition++, typeToGenerate);
+			        	%>
+			        	<%=surrogateKeyFieldType%> skRoutine_<%=cid%> = <%=skRoutine%>;
+			        	<%
+			            generator.generateSetStatement(cid, "insertQuery_" + cid, "skRoutine_" + cid, colposition++, typeToGenerate);
 			        } else if (surrogateKeyCreation.equals("TABLE_MAX")) {
 			        	generator.generateSetStatement(cid, "insertQuery_" + cid, "nextSurrogateKey_" + cid, colposition++, typeToGenerate);
 			        	%>
@@ -535,7 +544,10 @@ if (inMetadata != null && metadata != null) {
 				        	if (surrogateKeyCreation.equals("INPUT_FIELD")) {
 					        	generator.generateSetStatement(cid, "insertQuery_" + cid, inConnectionName + "." + skInputField, colposition++, typeToGenerate);
 					        } else if (surrogateKeyCreation.equals("ROUTINE")) {
-					        	generator.generateSetStatement(cid, "insertQuery_" + cid, skRoutine, colposition++, typeToGenerate);
+					        	%>
+					        	<%=surrogateKeyFieldType%> skRoutine_<%=cid%> = <%=skRoutine%>;
+					        	<%
+					            generator.generateSetStatement(cid, "insertQuery_" + cid, "skRoutine_" + cid, colposition++, typeToGenerate);
 					        } else if (surrogateKeyCreation.equals("TABLE_MAX")) {
 					        	generator.generateSetStatement(cid, "insertQuery_" + cid, "nextSurrogateKey_" + cid, colposition++, typeToGenerate);
 					        	%>
