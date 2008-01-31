@@ -108,7 +108,7 @@ public class PropertyChangeCommand extends Command {
         if (currentParam.isRepositoryValueUsed()) {
             if (currentParam.getField() == EParameterFieldType.MEMO_SQL) {
                 Object queryStoreValue = elem.getPropertyValue(EParameterName.QUERYSTORE_TYPE.getName());
-                if (queryStoreValue != EmfComponent.BUILTIN) {
+                if (!EmfComponent.BUILTIN.equals(queryStoreValue)) {
                     elem.setPropertyValue(EParameterName.QUERYSTORE_TYPE.getName(), EmfComponent.BUILTIN);
                 }
                 currentParam.setRepositoryValueUsed(false);
