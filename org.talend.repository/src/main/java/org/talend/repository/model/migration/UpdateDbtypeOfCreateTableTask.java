@@ -13,14 +13,14 @@
 package org.talend.repository.model.migration;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.ModifyComponentsAction;
 import org.talend.core.model.components.conversions.IComponentConversion;
-import org.talend.core.model.components.conversions.UpdatePropertyComponentConversion;
 import org.talend.core.model.components.filters.IComponentFilter;
 import org.talend.core.model.migration.AbstractJobMigrationTask;
 import org.talend.core.model.properties.ProcessItem;
@@ -42,8 +42,22 @@ public class UpdateDbtypeOfCreateTableTask extends AbstractJobMigrationTask {
     @Override
     public ExecutionResult executeOnProcess(ProcessItem item) {
 
-        final String dbtypes[] = { "ACCESS", "AS400", "DB2", "FIREBIRD", "HSQLDB", "INFORMIX", "INGRES", "INTERBASE", "JAVADB",
-                "MSSQL", "DBORACLE", "POSTGRE", "SQLITE", "SYBASE", "ODBC" };
+        final Map<String, String> dbtypes = new HashMap<String, String>();
+        dbtypes.put("Access", "ACCESS");
+        dbtypes.put("AS400", "AS400");
+        dbtypes.put("DB2", "DB2");
+        dbtypes.put("FireBird", "FIREBIRD");
+        dbtypes.put("Hsql", "HSQLDB");
+        dbtypes.put("Informix", "INFORMIX");
+        dbtypes.put("Ingres", "INGRES");
+        dbtypes.put("Interbase", "INTERBASE");
+        dbtypes.put("JavaDb", "JAVADB");
+        dbtypes.put("MSSQLServer", "MSSQL");
+        dbtypes.put("Oracle", "DBORACLE");
+        dbtypes.put("Postgre", "POSTGRE");
+        dbtypes.put("SQLite", "SQLITE");
+        dbtypes.put("Sybase", "SYBASE");
+        dbtypes.put("ODBC", "ODBC");
 
         final String name = "tCreateTable";
         final String property = "DBTYPE";
@@ -55,7 +69,7 @@ public class UpdateDbtypeOfCreateTableTask extends AbstractJobMigrationTask {
                 boolean toReturn = (name == null ? true : acceptS(node));
                 if (toReturn) {
                     String pValue = ComponentUtilities.getNodePropertyValue(node, property);
-                    toReturn = !Arrays.asList(dbtypes).contains(pValue);
+                    toReturn = !dbtypes.values().contains(pValue);
                 }
                 return toReturn;
             }
@@ -66,7 +80,20 @@ public class UpdateDbtypeOfCreateTableTask extends AbstractJobMigrationTask {
 
         };
 
-        IComponentConversion conversion = new UpdatePropertyComponentConversion("DBTYPE", "MYSQL");
+        IComponentConversion conversion = new IComponentConversion() {
+
+            public void transform(NodeType node) {
+                String pValue = ComponentUtilities.getNodePropertyValue(node, property);
+                String value = dbtypes.get(pValue);
+                if (value != null) {
+                    ComponentUtilities.setNodeValue(node, property, value);
+                } else {
+                    ComponentUtilities.setNodeValue(node, property, "MYSQL");
+                }
+            }
+
+        };
+
         List<IComponentConversion> cons = new ArrayList<IComponentConversion>();
         cons.add(conversion);
 
