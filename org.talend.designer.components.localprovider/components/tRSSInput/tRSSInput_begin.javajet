@@ -43,9 +43,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 System.err.print(e<%=cid%>.getMessage());
                 ifInvalid<%=cid%> = true;
         }
-<%}
+<%}%>
 
-      	 if(isAmount){
+	int items<%=cid%> = 0;
+	
+<%      	 if(isAmount){
       	 %>
       	   		if(aMount<%=cid%>< items<%=cid%>)
       	   		{
@@ -58,7 +60,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
       	 
       	if(!ifInvalid<%=cid%>){
           String row<%=cid%>[]=new String [4];
-          int items<%=cid%>=feed<%=cid%>.getItemCount();
+          items<%=cid%>=feed<%=cid%>.getItemCount();
           for (int i_<%=cid%> = 0; i_<%=cid%>< items<%=cid%>; i_<%=cid%>++) {
              it.sauronsoftware.feed4j.bean.FeedItem itm<%=cid%> = feed<%=cid%>.getItem(i_<%=cid%>);
               row<%=cid%>[0]=itm<%=cid%>.getTitle();
