@@ -662,12 +662,11 @@ public abstract class DataMapTableView extends Composite {
                         toolTip = createErrorContentForTooltip(problems);
                     }
 
-                    String tableToolTip = table.getToolTipText();
-                    if (!WindowSystem.isGTK() || WindowSystem.isGTK()
-                            && ((tableToolTip == null || tableToolTip.equals("")) && toolTip != null || tableToolTip != null //$NON-NLS-1$
-                                    && toolTip == null || toolTip != null && !toolTip.equals(tableToolTip))) {
-                        setTableToolTipText(table, tableColumn, tableEntry, toolTip);
+                    if (WindowSystem.isGTK() && toolTip == null) {
+                        toolTip = " ";
                     }
+                    setTableToolTipText(table, tableColumn, tableEntry, toolTip);
+
                     break;
                 default:
                 }

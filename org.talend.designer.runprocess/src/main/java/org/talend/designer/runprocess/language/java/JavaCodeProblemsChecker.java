@@ -125,9 +125,13 @@ public class JavaCodeProblemsChecker extends CodeProblemsChecker {
             }
 
             boolean found = false;
-            for (INode node : process.getGeneratingNodes()) {
+            List<? extends INode> generatingNodes = process.getGeneratingNodes();
+            int generatingNodesListSize = generatingNodes.size();
+            for (int i = 0; i < generatingNodesListSize; i++) {
+                INode node = generatingNodes.get(i);
                 if (node.getUniqueName().equals(selectedNodeName)) {
                     found = true;
+                    break;
                 }
             }
             if (!found) {
