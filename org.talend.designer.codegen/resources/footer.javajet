@@ -235,12 +235,7 @@
 <%
 		for (INode statCatcherNode : process.getNodesOfType("tStatCatcher")) {
 %>
-		<%=process.getName() %>Class.<%=statCatcherNode.getUniqueName() %>.addMessage("begin");
-		try {
-			<%=process.getName() %>Class.<%=statCatcherNode.getUniqueName() %>Process();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}			
+		<%=process.getName() %>Class.<%=statCatcherNode.getUniqueName() %>.addMessage("begin");			
 <%
     	}
 
