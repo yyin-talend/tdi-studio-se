@@ -13,16 +13,18 @@
 package org.talend.repository.model.migration;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.ModifyComponentsAction;
 import org.talend.core.model.components.conversions.IComponentConversion;
 import org.talend.core.model.components.conversions.UpdatePropertyComponentConversion;
 import org.talend.core.model.components.filters.IComponentFilter;
-import org.talend.core.model.components.filters.NameComponentFilter;
 import org.talend.core.model.migration.AbstractJobMigrationTask;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 
 /**
  * yzhang class global comment. Detailled comment <br/>
@@ -40,7 +42,30 @@ public class UpdateDbtypeOfCreateTableTask extends AbstractJobMigrationTask {
     @Override
     public ExecutionResult executeOnProcess(ProcessItem item) {
 
-        IComponentFilter filert = new NameComponentFilter("tCreateTable");
+        final String dbtypes[] = { "ACCESS", "AS400", "DB2", "FIREBIRD", "HSQLDB", "INFORMIX", "INGRES", "INTERBASE", "JAVADB",
+                "MSSQL", "DBORACLE", "POSTGRE", "SQLITE", "SYBASE", "ODBC" };
+
+        final String name = "tCreateTable";
+        final String property = "DBTYPE";
+
+        IComponentFilter filert = new IComponentFilter() {
+
+            public boolean accept(NodeType node) {
+
+                boolean toReturn = (name == null ? true : acceptS(node));
+                if (toReturn) {
+                    String pValue = ComponentUtilities.getNodePropertyValue(node, property);
+                    toReturn = !Arrays.asList(dbtypes).contains(pValue);
+                }
+                return toReturn;
+            }
+
+            public boolean acceptS(NodeType node) {
+                return node.getComponentName().equals(name);
+            }
+
+        };
+
         IComponentConversion conversion = new UpdatePropertyComponentConversion("DBTYPE", "MYSQL");
         List<IComponentConversion> cons = new ArrayList<IComponentConversion>();
         cons.add(conversion);
