@@ -65,271 +65,311 @@ import org.talend.designer.rowgenerator.i18n.Messages;
  */
 public class MetadataToolbarEditorViewExt extends MetadataToolbarEditorView {
 
-    private MetadataTableEditorViewExt genTableEditor2;
+	private MetadataTableEditorViewExt genTableEditor2;
 
-    /**
-     * qzhang MetadataToolbarEditorViewExt constructor comment.
-     * 
-     * @param parent
-     * @param style
-     * @param extendedTableViewer
-     */
-    public MetadataToolbarEditorViewExt(Composite parent, int style, AbstractExtendedTableViewer extendedTableViewer,
-            MetadataTableEditorViewExt editor2) {
-        super(parent, style, extendedTableViewer);
-        this.genTableEditor2 = editor2;
-        initStrings();
-        createColumns();
-        columnsListmenu.getItems();
-        createNumberRows();
-    }
+	/**
+	 * qzhang MetadataToolbarEditorViewExt constructor comment.
+	 * 
+	 * @param parent
+	 * @param style
+	 * @param extendedTableViewer
+	 */
+	public MetadataToolbarEditorViewExt(Composite parent, int style,
+			AbstractExtendedTableViewer extendedTableViewer,
+			MetadataTableEditorViewExt editor2) {
+		super(parent, style, extendedTableViewer);
+		this.genTableEditor2 = editor2;
+		initStrings();
+		createColumns();
+		columnsListmenu.getItems();
+		createNumberRows();
+	}
 
-    /**
-     * qzhang Comment method "initStrings".
-     */
-    private void initStrings() {
-        items = new ArrayList<String>();
-        ids = new ArrayList<String>();
-        List<TableViewerCreatorColumn> columns = genTableEditor2.getTableViewerCreator().getColumns();
-        for (TableViewerCreatorColumn column : columns) {
-            if ((column.getId() != null && !"".equals(column.getId()))
-                    && (column.getTitle() != null && !"".equals(column.getTitle()))) {
-                ids.add(column.getId());
-                items.add(column.getTitle());
-            }
-        }
-    }
+	/**
+	 * qzhang Comment method "initStrings".
+	 */
+	private void initStrings() {
+		items = new ArrayList<String>();
+		ids = new ArrayList<String>();
+		List<TableViewerCreatorColumn> columns = genTableEditor2
+				.getTableViewerCreator().getColumns();
+		for (TableViewerCreatorColumn column : columns) {
+			if ((column.getId() != null && !"".equals(column.getId()))
+					&& (column.getTitle() != null && !"".equals(column
+							.getTitle()))) {
+				ids.add(column.getId());
+				items.add(column.getTitle());
+			}
+		}
+	}
 
-    private Composite numRowComposite;
+	private Composite numRowComposite;
 
-    private Text numRowText;
+	private Text numRowText;
 
-    private void createNumberRows() {
-        numRowComposite = new Composite(toolbar, SWT.NONE);
-        GridLayout layout = new GridLayout();
-        layout.numColumns = 2;
-        layout.horizontalSpacing = 4;
-        layout.marginBottom = 0;
-        layout.marginHeight = 0;
-        layout.marginLeft = 0;
-        layout.marginRight = 0;
-        layout.marginTop = 0;
-        layout.marginWidth = 0;
+	private void createNumberRows() {
+		numRowComposite = new Composite(toolbar, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		layout.numColumns = 2;
+		layout.horizontalSpacing = 4;
+		layout.marginBottom = 0;
+		layout.marginHeight = 0;
+		layout.marginLeft = 0;
+		layout.marginRight = 0;
+		layout.marginTop = 0;
+		layout.marginWidth = 0;
 
-        GridData gridData = new GridData();
-        gridData.verticalAlignment = GridData.CENTER;
-        numRowComposite.setLayout(layout);
-        final Label numRowLabel = new Label(numRowComposite, SWT.NONE);
-        numRowLabel.setText(Messages.getString("MetadataToolbarEditorViewExt.RowNum.LabelText"));
-        numRowText = new Text(numRowComposite, SWT.BORDER);
+		GridData gridData = new GridData();
+		gridData.verticalAlignment = GridData.CENTER;
+		numRowComposite.setLayout(layout);
+		final Label numRowLabel = new Label(numRowComposite, SWT.NONE);
+		numRowLabel.setText(Messages
+				.getString("MetadataToolbarEditorViewExt.RowNum.LabelText"));
+		numRowText = new Text(numRowComposite, SWT.BORDER);
 
-        GridDataFactory.swtDefaults().hint(50, SWT.DEFAULT).applyTo(numRowText);
+		GridDataFactory.swtDefaults().hint(rowNumberWidth(), SWT.DEFAULT)
+				.applyTo(numRowText);
 
-        numRowText.setBackground(ColorConstants.white);
+		numRowText.setBackground(ColorConstants.white);
 
-        IEditorPart editor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
-        IProcess process = ((AbstractMultiPageTalendEditor) editor).getTalendEditor().getProcess();
-        ProcessProposalUtils.installOn(numRowText, process);
-    }
+		IEditorPart editor = PlatformUI.getWorkbench()
+				.getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+		IProcess process = ((AbstractMultiPageTalendEditor) editor)
+				.getTalendEditor().getProcess();
+		ProcessProposalUtils.installOn(numRowText, process);
+	}
 
-    private Menu columnsListmenu;
+	/**
+	 * 
+	 * DOC yexiaowei Comment method "rowNumberWidth".
+	 * 
+	 * @return
+	 */
+	private int rowNumberWidth() {
+		String widthS = Messages
+				.getString("MetadataToolbarEditorViewExt.RowNum.Text.width");
+		if (widthS == null || widthS.equals(""))
+			return 200;
+		else {
+			try {
+				int width = Integer.parseInt(widthS);
+				return width < 200 ? 200 : width;
+			} catch (Exception e) {
+				return 200;
+			}
+		}
+	}
 
-    private ToolBar columnSelector;
+	private Menu columnsListmenu;
 
-    private List<String> items;
+	private ToolBar columnSelector;
 
-    private List<String> ids;
+	private List<String> items;
 
-    /**
-     * qzhang Comment method "createColumns".
-     */
-    private void createColumns() {
-        columnSelector = new ToolBar(toolbar, SWT.HORIZONTAL);
-        final ToolItem columns = new ToolItem(columnSelector, SWT.DROP_DOWN);
-        columns.setText(Messages.getString("MetadataToolbarEditorViewExt.Columns.Text")); //$NON-NLS-1$
-        createMenu(columns);
-        columns.addSelectionListener(new SelectionAdapter() {
+	private List<String> ids;
 
-            /*
-             * (non-Java)
-             * 
-             * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
-             */
-            @Override
-            public void widgetSelected(SelectionEvent event) {
-                // If they clicked the arrow, we show the list
-                // if (event.detail == SWT.ARROW) {
-                // Determine where to put the dropdown list
-                ToolItem item = (ToolItem) event.widget;
-                Rectangle rect = item.getBounds();
-                Point pt = item.getParent().toDisplay(new Point(rect.x, rect.y));
-                columnsListmenu.setLocation(pt.x, pt.y + rect.height);
-                columnsListmenu.setVisible(true);
-                // }
-            }
-        });
-    }
+	/**
+	 * qzhang Comment method "createColumns".
+	 */
+	private void createColumns() {
+		columnSelector = new ToolBar(toolbar, SWT.HORIZONTAL);
+		final ToolItem columns = new ToolItem(columnSelector, SWT.DROP_DOWN);
+		columns.setText(Messages
+				.getString("MetadataToolbarEditorViewExt.Columns.Text")); //$NON-NLS-1$
+		createMenu(columns);
+		columns.addSelectionListener(new SelectionAdapter() {
 
-    /**
-     * qzhang Comment method "notuse".
-     */
-    private void createMenu(final ToolItem columns) {
-        columnsListmenu = new Menu(columns.getParent().getShell());
-        for (int i = 0; i < items.size(); i++) {
-            MenuItem item = new MenuItem(columnsListmenu, SWT.CHECK);
-            item.setText(items.get(i));
-            item.setData(ids.get(i));
-            item.setSelection(true);
-            final int j = i;
-            item.addSelectionListener(new SelectionAdapter() {
+			/*
+			 * (non-Java)
+			 * 
+			 * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
+			 */
+			@Override
+			public void widgetSelected(SelectionEvent event) {
+				// If they clicked the arrow, we show the list
+				// if (event.detail == SWT.ARROW) {
+				// Determine where to put the dropdown list
+				ToolItem item = (ToolItem) event.widget;
+				Rectangle rect = item.getBounds();
+				Point pt = item.getParent()
+						.toDisplay(new Point(rect.x, rect.y));
+				columnsListmenu.setLocation(pt.x, pt.y + rect.height);
+				columnsListmenu.setVisible(true);
+				// }
+			}
+		});
+	}
 
-                public void widgetSelected(SelectionEvent e) {
-                    MenuItem item = (MenuItem) e.widget;
-                    genTableEditor2.updateHeader(ids.get(j), items.get(j), !item.getSelection());
-                }
-            });
-        }
-    }
+	/**
+	 * qzhang Comment method "notuse".
+	 */
+	private void createMenu(final ToolItem columns) {
+		columnsListmenu = new Menu(columns.getParent().getShell());
+		for (int i = 0; i < items.size(); i++) {
+			MenuItem item = new MenuItem(columnsListmenu, SWT.CHECK);
+			item.setText(items.get(i));
+			item.setData(ids.get(i));
+			item.setSelection(true);
+			final int j = i;
+			item.addSelectionListener(new SelectionAdapter() {
 
-    /*
-     * (non-Java)
-     * 
-     * @see org.talend.core.ui.extended.ExtendedToolbarView#createAddPushButton()
-     */
-    @Override
-    protected AddPushButton createAddPushButton() {
-        return new AddPushButtonForExtendedTable(this.toolbar, getExtendedTableViewer()) {
+				public void widgetSelected(SelectionEvent e) {
+					MenuItem item = (MenuItem) e.widget;
+					genTableEditor2.updateHeader(ids.get(j), items.get(j),
+							!item.getSelection());
+				}
+			});
+		}
+	}
 
-            @Override
-            protected Object getObjectToAdd() {
-                MetadataTableEditorExt tableEditorModel = (MetadataTableEditorExt) getExtendedTableViewer()
-                        .getExtendedControlModel();
-                return tableEditorModel.createNewMetadataColumn();
-            }
-        };
-    }
+	/*
+	 * (non-Java)
+	 * 
+	 * @see org.talend.core.ui.extended.ExtendedToolbarView#createAddPushButton()
+	 */
+	@Override
+	protected AddPushButton createAddPushButton() {
+		return new AddPushButtonForExtendedTable(this.toolbar,
+				getExtendedTableViewer()) {
 
-    /*
-     * (non-Java)
-     * 
-     * @see org.talend.commons.ui.swt.advanced.dataeditor.ExtendedToolbarView#createRemovePushButton()
-     */
-    protected RemovePushButton createRemovePushButton() {
-        RemovePushButtonForExtendedTable removeButton2 = new RemovePushButtonForExtendedTable(toolbar, extendedTableViewer);
-        return removeButton2;
-    }
+			@Override
+			protected Object getObjectToAdd() {
+				MetadataTableEditorExt tableEditorModel = (MetadataTableEditorExt) getExtendedTableViewer()
+						.getExtendedControlModel();
+				return tableEditorModel.createNewMetadataColumn();
+			}
+		};
+	}
 
-    /*
-     * (non-Java)
-     * 
-     * @see org.talend.core.ui.extended.ExtendedToolbarView#createPastButton()
-     */
-    @Override
-    public PastePushButton createPastePushButton() {
-        PastePushButton pastePushButton2 = super.createPastePushButton();
-        return pastePushButton2;
-    }
+	/*
+	 * (non-Java)
+	 * 
+	 * @see org.talend.commons.ui.swt.advanced.dataeditor.ExtendedToolbarView#createRemovePushButton()
+	 */
+	protected RemovePushButton createRemovePushButton() {
+		RemovePushButtonForExtendedTable removeButton2 = new RemovePushButtonForExtendedTable(
+				toolbar, extendedTableViewer);
+		return removeButton2;
+	}
 
-    /*
-     * (non-Java)
-     * 
-     * @see org.talend.core.ui.extended.ExtendedToolbarView#createExportPushButton()
-     */
-    @Override
-    protected ExportPushButton createExportPushButton() {
-        return new ExportPushButtonForExtendedTable(toolbar, extendedTableViewer) {
+	/*
+	 * (non-Java)
+	 * 
+	 * @see org.talend.core.ui.extended.ExtendedToolbarView#createPastButton()
+	 */
+	@Override
+	public PastePushButton createPastePushButton() {
+		PastePushButton pastePushButton2 = super.createPastePushButton();
+		return pastePushButton2;
+	}
 
-            @Override
-            protected Command getCommandToExecute(ExtendedTableModel extendedTableModel, File file) {
-                MetadataTableEditorExt tableEditorModel = (MetadataTableEditorExt) getExtendedTableViewer()
-                        .getExtendedControlModel();
-                return new MetadataExportXmlCommandExt(tableEditorModel, file);
-            }
+	/*
+	 * (non-Java)
+	 * 
+	 * @see org.talend.core.ui.extended.ExtendedToolbarView#createExportPushButton()
+	 */
+	@Override
+	protected ExportPushButton createExportPushButton() {
+		return new ExportPushButtonForExtendedTable(toolbar,
+				extendedTableViewer) {
 
-        };
-    }
+			@Override
+			protected Command getCommandToExecute(
+					ExtendedTableModel extendedTableModel, File file) {
+				MetadataTableEditorExt tableEditorModel = (MetadataTableEditorExt) getExtendedTableViewer()
+						.getExtendedControlModel();
+				return new MetadataExportXmlCommandExt(tableEditorModel, file);
+			}
 
-    /*
-     * (non-Java)
-     * 
-     * @see org.talend.core.ui.extended.ExtendedToolbarView#createPastButton()
-     */
-    @Override
-    public ImportPushButton createImportPushButton() {
-        return new ImportPushButtonForExtendedTable(toolbar, extendedTableViewer) {
+		};
+	}
 
-            @Override
-            protected Command getCommandToExecute(ExtendedTableModel extendedTableModel, File file) {
-                MetadataTableEditorExt tableEditorModel = (MetadataTableEditorExt) getExtendedTableViewer()
-                        .getExtendedControlModel();
-                return new MetadataImportXmlCommandExt(tableEditorModel, file);
-            }
+	/*
+	 * (non-Java)
+	 * 
+	 * @see org.talend.core.ui.extended.ExtendedToolbarView#createPastButton()
+	 */
+	@Override
+	public ImportPushButton createImportPushButton() {
+		return new ImportPushButtonForExtendedTable(toolbar,
+				extendedTableViewer) {
 
-        };
-    }
+			@Override
+			protected Command getCommandToExecute(
+					ExtendedTableModel extendedTableModel, File file) {
+				MetadataTableEditorExt tableEditorModel = (MetadataTableEditorExt) getExtendedTableViewer()
+						.getExtendedControlModel();
+				return new MetadataImportXmlCommandExt(tableEditorModel, file);
+			}
 
-    /*
-     * (non-Java)
-     * 
-     * @see org.talend.commons.ui.swt.advanced.dataeditor.ExtendedToolbarView#createMoveDownPushButton()
-     */
-    @Override
-    protected MoveDownPushButton createMoveDownPushButton() {
-        return new MoveDownPushButtonForExtendedTable(toolbar, extendedTableViewer);
-    }
+		};
+	}
 
-    /*
-     * (non-Java)
-     * 
-     * @see org.talend.commons.ui.swt.advanced.dataeditor.ExtendedToolbarView#createMoveUpPushButton()
-     */
-    @Override
-    protected MoveUpPushButton createMoveUpPushButton() {
-        return new MoveUpPushButtonForExtendedTable(toolbar, extendedTableViewer);
-    }
+	/*
+	 * (non-Java)
+	 * 
+	 * @see org.talend.commons.ui.swt.advanced.dataeditor.ExtendedToolbarView#createMoveDownPushButton()
+	 */
+	@Override
+	protected MoveDownPushButton createMoveDownPushButton() {
+		return new MoveDownPushButtonForExtendedTable(toolbar,
+				extendedTableViewer);
+	}
 
-    public Menu getColumnsListmenu() {
-        return this.columnsListmenu;
-    }
+	/*
+	 * (non-Java)
+	 * 
+	 * @see org.talend.commons.ui.swt.advanced.dataeditor.ExtendedToolbarView#createMoveUpPushButton()
+	 */
+	@Override
+	protected MoveUpPushButton createMoveUpPushButton() {
+		return new MoveUpPushButtonForExtendedTable(toolbar,
+				extendedTableViewer);
+	}
 
-    /**
-     * qzhang Comment method "updateColumnsList".
-     * 
-     * @param hideColumnsList
-     */
-    public void updateColumnsList(String[] hideColumnsList) {
-        for (String string : hideColumnsList) {
-            for (MenuItem item : columnsListmenu.getItems()) {
-                if (item.getData().equals(string)) {
-                    item.setSelection(false);
-                }
-            }
-        }
-    }
+	public Menu getColumnsListmenu() {
+		return this.columnsListmenu;
+	}
 
-    public ToolBar getColumnSelector() {
-        return this.columnSelector;
-    }
+	/**
+	 * qzhang Comment method "updateColumnsList".
+	 * 
+	 * @param hideColumnsList
+	 */
+	public void updateColumnsList(String[] hideColumnsList) {
+		for (String string : hideColumnsList) {
+			for (MenuItem item : columnsListmenu.getItems()) {
+				if (item.getData().equals(string)) {
+					item.setSelection(false);
+				}
+			}
+		}
+	}
 
-    public String getNumRows() {
-        return this.numRowText.getText();
-    }
+	public ToolBar getColumnSelector() {
+		return this.columnSelector;
+	}
 
-    /**
-     * qzhang Comment method "updateComponentsSize".
-     */
-    public void updateComponentsSize() {
-        String number = genTableEditor2.getGeneratorUI().getGeneratorManager().getRowGeneratorComponent().getNumber();
-        if (number == null || "".equals(number)) {
-            number = "100";
-        }
-        if (number.startsWith("'")) {
-            number = number.substring(1);
-        }
-        if (number.endsWith("'")) {
-            number = number.substring(0, number.length() - 1);
-        }
-        numRowText.setText(number);
-    }
+	public String getNumRows() {
+		return this.numRowText.getText();
+	}
+
+	/**
+	 * qzhang Comment method "updateComponentsSize".
+	 */
+	public void updateComponentsSize() {
+		String number = genTableEditor2.getGeneratorUI().getGeneratorManager()
+				.getRowGeneratorComponent().getNumber();
+		if (number == null || "".equals(number)) {
+			number = "100";
+		}
+		if (number.startsWith("'")) {
+			number = number.substring(1);
+		}
+		if (number.endsWith("'")) {
+			number = number.substring(0, number.length() - 1);
+		}
+		numRowText.setText(number);
+	}
 
 }
