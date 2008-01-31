@@ -727,6 +727,9 @@ public class DataProcess {
 
     public void buildFromGraphicalProcess(List<Node> graphicalNodeList) {
         initialize();
+        if (graphicalNodeList.size() == 0) {
+            return;
+        }
         List<Node> newGraphicalNodeList = buildCopyOfGraphicalNodeList(graphicalNodeList);
 
         replaceNodeFromProviders(newGraphicalNodeList);
