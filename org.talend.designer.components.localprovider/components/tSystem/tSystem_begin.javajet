@@ -15,24 +15,16 @@
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
 	
-	String command1 = ElementParameterParser.getValue(node, "__COMMAND__");
+	String command = ElementParameterParser.getValue(node, "__COMMAND__");
 	
-	String command = command1.substring(1,command1.length()-1);
-		
 	String outputAction  = ElementParameterParser.getValue(node, "__OUTPUT__");
 	
 	String errorOuput  = ElementParameterParser.getValue(node, "__ERROROUTPUT__");
 	
 	boolean ifDir = ElementParameterParser.getValue(node, "__ROOTDIR__").equals("true");
 	
-	String rootDir1  = ElementParameterParser.getValue(node, "__DIRECTORY__").replace("\\","/");
+	String rootDir  = ElementParameterParser.getValue(node, "__DIRECTORY__").replace("\\","/");
 		
-	String rootDir = rootDir1.substring(1,rootDir1.length()-1);
-		
-	if(!(rootDir.endsWith("/")||rootDir.endsWith("\\"))) rootDir = rootDir + "/";
-			
-	if(ifDir) command = rootDir + command;
-	
 	// To launch an internal command to cmd.exe (XP), you have to call :
 	// cmd.exe /c dir (for example)
 
@@ -45,9 +37,9 @@ final java.util.Vector<String> output_<%=cid%> = new java.util.Vector<String>();
 Runtime runtime_<%=cid %> = Runtime.getRuntime();
 
 <%if(ifDir){%>
-final Process ps_<%=cid %> = runtime_<%=cid %>.exec("<%=command %>",null,new java.io.File("<%=rootDir%>"));
+final Process ps_<%=cid %> = runtime_<%=cid %>.exec(<%=command %>,null,new java.io.File(<%=rootDir%>));
 <%}else{%>
-final Process ps_<%=cid %> = runtime_<%=cid %>.exec("<%=command %>");
+final Process ps_<%=cid %> = runtime_<%=cid %>.exec(<%=command %>);
 <%}%>
 Thread normal_<%=cid %> = new Thread() {
 	public void run() {
