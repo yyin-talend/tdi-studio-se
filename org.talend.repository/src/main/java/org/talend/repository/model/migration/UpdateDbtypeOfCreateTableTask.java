@@ -100,7 +100,7 @@ public class UpdateDbtypeOfCreateTableTask extends AbstractJobMigrationTask {
         try {
 
             ModifyComponentsAction.searchAndModify(filert, cons);
-            return ExecutionResult.SUCCESS_WITH_ALERT;
+            return ExecutionResult.SUCCESS_NO_ALERT;
 
         } catch (Exception e) {
 
