@@ -709,6 +709,9 @@ public class CodeGenerator implements ICodeGenerator {
             List<? extends INode> allProcessNodes = process.getGeneratingNodes();
             INode node = extractNodeFromProcess(nodeName);
             if (node != null) {
+                
+                node = node.getSubProcessStartNode(false);
+                
                 List<INode> lightProcessNodes = new ArrayList<INode>();
                 lightProcessNodes.add(node);
 

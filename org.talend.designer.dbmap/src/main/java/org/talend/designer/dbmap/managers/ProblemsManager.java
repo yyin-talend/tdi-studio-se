@@ -132,7 +132,7 @@ public class ProblemsManager {
                     processExternalNode.setMetadataList(metadataListOut);
 
                 } else {
-                    throw new IllegalArgumentException("Should be the same node..."); //$NON-NLS-1$
+//                    throw new IllegalArgumentException("Should be the same node..."); //$NON-NLS-1$
                 }
 
             }
