@@ -145,10 +145,15 @@ public class TableController extends AbstractElementPropertySectionController {
         formData.right = new FormAttachment((numInRow * MAX_PERCENT) / nbInRow, 0);
         formData.top = new FormAttachment(0, top);
 
+        int toolbarSize = 0;
+        if (!param.isBasedOnSchema()) {
+            Point size = tableEditorView.getExtendedToolbar().getToolbar().computeSize(SWT.DEFAULT, SWT.DEFAULT);
+            toolbarSize = size.y + 5;
+        }
         int currentHeightEditor = table.getHeaderHeight() + ((List) param.getValue()).size() * table.getItemHeight()
-                + table.getItemHeight() + 50;
+                + table.getItemHeight() + toolbarSize;
         int minHeightEditor = table.getHeaderHeight() + getNumberLines(param) * table.getItemHeight() + table.getItemHeight()
-                + 50;
+                + toolbarSize;
         int ySize2 = Math.max(currentHeightEditor, minHeightEditor);
 
         formData.bottom = new FormAttachment(0, top + ySize2);
@@ -180,12 +185,16 @@ public class TableController extends AbstractElementPropertySectionController {
                 subComposite, SWT.NONE, tableEditorModel, !param.isBasedOnSchema(), false);
         tableEditorView.getExtendedTableViewer().setCommandStack(getCommandStack());
         tableEditorView.setReadOnly(param.isReadOnly());
-
         final Table table = tableEditorView.getTable();
+        int toolbarSize = 0;
+        if (!param.isBasedOnSchema()) {
+            Point size = tableEditorView.getExtendedToolbar().getToolbar().computeSize(SWT.DEFAULT, SWT.DEFAULT);
+            toolbarSize = size.y + 5;
+        }
         int currentHeightEditor = table.getHeaderHeight() + ((List) param.getValue()).size() * table.getItemHeight()
-                + table.getItemHeight() + 50;
+                + table.getItemHeight() + toolbarSize;
         int minHeightEditor = table.getHeaderHeight() + getNumberLines(param) * table.getItemHeight() + table.getItemHeight()
-                + 50;
+                + toolbarSize;
 
         tableEditorView.getMainComposite().dispose();
 
