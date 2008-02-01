@@ -80,6 +80,7 @@ import org.talend.designer.runprocess.prefs.RunProcessPrefsConstants;
 import org.talend.designer.runprocess.ui.actions.ClearPerformanceAction;
 import org.talend.designer.runprocess.ui.actions.ClearTraceAction;
 import org.talend.designer.runprocess.ui.actions.SaveJobBeforeRunAction;
+import org.talend.designer.runprocess.ui.views.ProcessView;
 
 /**
  * DOC chuger class global comment. Detailled comment <br/>
@@ -98,11 +99,7 @@ public class ProcessComposite extends Composite {
 
     private static final int MINIMUM_WIDTH = 530;
 
-    private static final int EXEC_ID = 21;
 
-    private static final int PAUSE_ID = 22;
-
-    private static final int RESUME_ID = 23;
 
     private RunProcessContext processContext;
 
@@ -242,7 +239,7 @@ public class ProcessComposite extends Composite {
         execBtn.setText(Messages.getString("ProcessComposite.exec")); //$NON-NLS-1$
         execBtn.setToolTipText(Messages.getString("ProcessComposite.execHint")); //$NON-NLS-1$
         execBtn.setImage(ImageProvider.getImage(ERunprocessImages.RUN_PROCESS_ACTION));
-        execBtn.setData(EXEC_ID);
+        execBtn.setData(ProcessView.EXEC_ID);
         execBtn.setEnabled(false);
         formData = new FormData();
         formData.top = new FormAttachment(debugBtn, 0, SWT.TOP);
@@ -487,31 +484,39 @@ public class ProcessComposite extends Composite {
             execBtn.setEnabled(false);
             return;
         }
-        if (execBtn.getData().equals(PAUSE_ID)) {
-            pause(PAUSE_ID);
-        } else if (execBtn.getData().equals(RESUME_ID)) {
-            pause(RESUME_ID);
-        } else if (execBtn.getData().equals(EXEC_ID)) {
+        if (execBtn.getData().equals(ProcessView.PAUSE_ID)) {
+            pause(ProcessView.PAUSE_ID);
+        } else if (execBtn.getData().equals(ProcessView.RESUME_ID)) {
+            pause(ProcessView.RESUME_ID);
+        } else if (execBtn.getData().equals(ProcessView.EXEC_ID)) {
             addInHistoryRunningList();
-            execBtn.setData(PAUSE_ID);
+            execBtn.setData(ProcessView.PAUSE_ID);
             // exec();
 
         }
     }
 
     public void pause(int id) {
-        boolean isPause = id == PAUSE_ID;
+        boolean isPause = id == ProcessView.PAUSE_ID;
         setExecBtn(isPause);
         if (isPause) {
             execBtn.setText("Resume");
             execBtn.setToolTipText("Resume");
-            execBtn.setData(RESUME_ID);
+            execBtn.setData(ProcessView.RESUME_ID);
         } else {
-            execBtn.setData(PAUSE_ID);
+            execBtn.setData(ProcessView.PAUSE_ID);
         }
         processContext.setTracPause(isPause);
     }
-
+    /**
+     * 
+     * DOC ggu Comment method "setCurRunMode".
+     * 
+     * for the F6 shortcut to run
+     */
+    public void setCurRunMode(int id) {
+        pause(id);
+    }
     /*
      * (non-Javadoc)
      * 
@@ -617,7 +622,7 @@ public class ProcessComposite extends Composite {
                 execBtn.setImage(ImageProvider.getImage(ERunprocessImages.PAUSE_PROCESS_ACTION));
             } else {
                 execBtn.setText(Messages.getString("ProcessComposite.exec")); //$NON-NLS-1$
-                execBtn.setData(EXEC_ID);
+                execBtn.setData(ProcessView.EXEC_ID);
                 execBtn.setToolTipText(Messages.getString("ProcessComposite.execHint")); //$NON-NLS-1$
                 execBtn.setImage(ImageProvider.getImage(ERunprocessImages.RUN_PROCESS_ACTION));
             }
@@ -627,7 +632,7 @@ public class ProcessComposite extends Composite {
             execBtn.setText(Messages.getString("ProcessComposite.exec")); //$NON-NLS-1$
             execBtn.setToolTipText(Messages.getString("ProcessComposite.execHint")); //$NON-NLS-1$
             execBtn.setImage(ImageProvider.getImage(ERunprocessImages.RUN_PROCESS_ACTION));
-            execBtn.setData(EXEC_ID);
+            execBtn.setData(ProcessView.EXEC_ID);
         }
 
     }

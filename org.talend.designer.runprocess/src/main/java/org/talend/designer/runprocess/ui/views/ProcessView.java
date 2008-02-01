@@ -58,6 +58,12 @@ public class ProcessView extends ViewPart {
 
     public static final String ID = RunProcessPlugin.PLUGIN_ID + ".ui.views.processview"; //$NON-NLS-1$
 
+    public static final int EXEC_ID = 21;
+
+    public static final int PAUSE_ID = 22;
+
+    public static final int RESUME_ID = 23;
+
     private static Logger log = Logger.getLogger(ProcessView.class);
 
     private Label processNameLab;
@@ -275,6 +281,7 @@ public class ProcessView extends ViewPart {
             }
 
             if (processComposite.hasProcess()) {
+                processComposite.setCurRunMode(EXEC_ID);
                 processComposite.exec();
             }
         }
