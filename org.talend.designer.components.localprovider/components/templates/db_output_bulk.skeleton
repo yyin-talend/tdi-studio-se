@@ -36,7 +36,7 @@ public class CLASS {
         String name;
         String dataType;
         String operator;
-        String DBname;
+        String columnName;
         String sqlStmt;
         String value;
         boolean addCol;
@@ -49,7 +49,7 @@ public class CLASS {
         public Column(String colName, String sqlStmt, boolean addCol) {
             this.column = null;
             this.name = colName;
-            this.DBname = colName;
+            this.columnName = colName;
             this.sqlStmt = sqlStmt;
             this.value = "?";
             this.addCol = addCol;
@@ -60,7 +60,7 @@ public class CLASS {
             this.sqlStmt = "?";
             this.value = "?";
             this.addCol = false;
-            this.DBname = column.getOriginalDbColumnName();
+            this.columnName = column.getOriginalDbColumnName();
         }
         public Column(IMetadataColumn column, boolean isKey, boolean useFieldOptions, Map<String, String> fieldOption) {
             this(column);
@@ -105,11 +105,11 @@ public class CLASS {
         public String getName() {
             return this.name;
         }
-        public void setDBName(String DBname) {
-            this.DBname = DBname;
+        public void setColumnName(String columnName) {
+            this.columnName = columnName;
         }
-        public String getDBName() {
-            return this.DBname;
+        public String getColumnName() {
+            return this.columnName;
         }
         public void setIsAddCol(boolean isadd) {
             this.addCol = isadd;
@@ -529,7 +529,7 @@ public class CLASS {
                     suffix = ",";
                 }
                 insertColName.append(suffix);
-                insertColName.append(getLProtectedChar() + column.getName() + getRProtectedChar());
+                insertColName.append(getLProtectedChar() + column.getColumnName() + getRProtectedChar());
                 insertValueStmt.append(suffix);
                 insertValueStmt.append(column.getSqlStmt());
             }
@@ -541,7 +541,7 @@ public class CLASS {
                     suffix = ",";
                 }
                 updateSetStmt.append(suffix);
-                updateSetStmt.append(getLProtectedChar() + column.getName() + getRProtectedChar() + " " + column.getOperator() + " " + column.getSqlStmt());
+                updateSetStmt.append(getLProtectedChar() + column.getColumnName() + getRProtectedChar() + " " + column.getOperator() + " " + column.getSqlStmt());
             }
             if(column.isDeleteKey()) {
                 if(firstDeleteKeyColumn.toString().equals("true")) {
@@ -551,7 +551,7 @@ public class CLASS {
                     separate = " AND ";
                 }
                 deleteWhereStmt.append(separate);
-                deleteWhereStmt.append(getLProtectedChar() + column.getName() + getRProtectedChar() + " " + column.getOperator() + " " + column.getSqlStmt());
+                deleteWhereStmt.append(getLProtectedChar() + column.getColumnName() + getRProtectedChar() + " " + column.getOperator() + " " + column.getSqlStmt());
             }
             if(column.isUpdateKey()) {
                 if(firstUpdateKeyColumn.toString().equals("true")) {
@@ -561,7 +561,7 @@ public class CLASS {
                     separate = " AND ";
                 }
                 updateWhereStmt.append(separate);
-                updateWhereStmt.append(getLProtectedChar() + column.getName() + getRProtectedChar() + " " + column.getOperator() + " " + column.getSqlStmt());                            
+                updateWhereStmt.append(getLProtectedChar() + column.getColumnName() + getRProtectedChar() + " " + column.getOperator() + " " + column.getSqlStmt());                            
             }
             actionSQLMap.put(INSERT_COLUMN_NAME, insertColName);
             actionSQLMap.put(INSERT_VALUE_STMT, insertValueStmt);
@@ -575,15 +575,15 @@ public class CLASS {
             return actionSQLMap;
         }
         public String getGenerateType(String typeToGenerate) {
-            if(typeToGenerate.equals("byte[]")){
+            if(typeToGenerate.equals("byte[]")) {
                 typeToGenerate = "Bytes";
-            }else if(typeToGenerate.equals("java.util.Date")){
+            } else if(typeToGenerate.equals("java.util.Date")) {
                 typeToGenerate = "Date";
-            }else if(typeToGenerate.equals("Integer")){
+            } else if(typeToGenerate.equals("Integer")) {
                 typeToGenerate = "Int";
-            }else if(typeToGenerate.equals("List")){  
+            } else if(typeToGenerate.equals("List")) {  
                 typeToGenerate = "Object";                 
-            }else{
+            } else {
                 typeToGenerate=typeToGenerate.substring(0,1).toUpperCase()+typeToGenerate.substring(1);
             }
             return typeToGenerate;
@@ -592,11 +592,11 @@ public class CLASS {
                 String incomingConnName, String cid, int actionType) {
             boolean isObject = false;
             String prefix = null;
-            if(actionType == NORMAL_TYPE){
+            if(actionType == NORMAL_TYPE) {
                 prefix = "pstmt_";
-            }else if(actionType == INSERT_TYPE){
+            } else if(actionType == INSERT_TYPE) {
                 prefix = "pstmtInsert_";
-            }else if(actionType == UPDATE_TYPE){
+            } else if(actionType == UPDATE_TYPE) {
                 prefix = "pstmtUpdate_";
             }
             StringBuilder setStmt = new StringBuilder();
