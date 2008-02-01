@@ -32,6 +32,7 @@ import java.util.jar.Manifest;
 
 import org.apache.axis.wsdl.Java2WSDL;
 import org.apache.commons.lang.BooleanUtils;
+import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.Node;
@@ -382,15 +383,14 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
             SAXReader wsdlsaxReader = new SAXReader();
             Document wsdldoc = wsdlsaxReader.read(wsdlreader);
             Element wsdlroot = wsdldoc.getRootElement();
-            Node node = null;
-            int count = wsdlroot.nodeCount();
-            for (int j = 0; j < count; j++) {
-                Node nodeTemp = wsdlroot.node(j);
-                if (nodeTemp instanceof Element) {
-                    if (nodeTemp.getName().equals("service")) { //$NON-NLS-1$
-                        node = nodeTemp;
-                    }
-                }
+            Element element = wsdlroot.element("service");
+
+            List<Element> elements = element.elements("arrayMapping");
+            for (Element item : elements) {
+                Attribute attribute = item.attribute("qname");
+                item.remove(attribute);
+                attribute.setValue(attribute.getValue().replaceFirst(">", ""));
+                item.add(attribute);
             }
 
             Element root = doc.getRootElement();
@@ -399,7 +399,7 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
                 Node n = content.get(i);
                 if (n instanceof Element) {
                     if (n.getName().equals("transport")) { //$NON-NLS-1$
-                        content.add(i - 1, node);
+                        content.add(i - 1, (Node) element);
                         break;
                     }
                 }
