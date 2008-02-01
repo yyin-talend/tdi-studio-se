@@ -36,6 +36,10 @@ public class MultipleComponentManager implements IMultipleComponentManager {
 
     String outputName;
 
+    String connector = null;
+
+    boolean existsLinkTo = false;
+
     List<IMultipleComponentItem> itemList = new ArrayList<IMultipleComponentItem>();
 
     List<IMultipleComponentParameter> paramList = new ArrayList<IMultipleComponentParameter>();
@@ -43,6 +47,11 @@ public class MultipleComponentManager implements IMultipleComponentManager {
     public MultipleComponentManager(String inputName, String outputName) {
         this.inputName = inputName;
         this.outputName = outputName;
+    }
+
+    public MultipleComponentManager(String inputName, String outputName, String connector) {
+        this(inputName, outputName);
+        this.connector = connector;
     }
 
     public IMultipleComponentItem addItem(String name, String component) {
@@ -120,4 +129,21 @@ public class MultipleComponentManager implements IMultipleComponentManager {
     public List<IMultipleComponentParameter> getParamList() {
         return this.paramList;
     }
+
+    public boolean isSetConnector() {
+        return this.connector != null;
+    }
+
+    public String getConnector() {
+        return this.connector;
+    }
+
+    public boolean existsROWSENDLinkTo() {
+        return this.existsLinkTo;
+    }
+
+    public void setExistsROWSENDLinkTo(boolean flag) {
+        this.existsLinkTo = flag;
+    }
+
 }

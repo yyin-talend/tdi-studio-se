@@ -14,6 +14,7 @@ package org.talend.designer.core.model.process.statsandlogs;
 
 import java.util.List;
 
+import org.talend.core.model.components.IMultipleComponentManager;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
@@ -79,7 +80,7 @@ public class JobLogsComponent extends AbstractStatsLogsComponent {
     @Override
     protected void createMultipleComponentsParameters() {
         super.createMultipleComponentsParameters();
-        
+        IMultipleComponentManager multipleComponentManager = multipleComponentManagers.get(0);
         multipleComponentManager.addParam("self.CATCH_RUNTIME_ERRORS", "LOGS.CATCH_JAVA_EXCEPTION"); //$NON-NLS-1$ //$NON-NLS-2$
         multipleComponentManager.addParam("self.CATCH_RUNTIME_ERRORS", "LOGS.CATCH_PERL_DIE"); //$NON-NLS-1$ //$NON-NLS-2$
         multipleComponentManager.addParam("self.CATCH_USER_ERRORS", "LOGS.CATCH_TDIE"); //$NON-NLS-1$ //$NON-NLS-2$

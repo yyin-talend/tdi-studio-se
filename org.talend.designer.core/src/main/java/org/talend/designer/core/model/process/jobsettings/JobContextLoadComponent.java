@@ -55,7 +55,7 @@ public class JobContextLoadComponent implements IComponent {
 
     private final String dbComponent;
 
-    private IMultipleComponentManager multipleComponentManager;
+    private List<IMultipleComponentManager> multipleComponentManagers = new ArrayList<IMultipleComponentManager>();
 
     private boolean isFile;
 
@@ -66,7 +66,7 @@ public class JobContextLoadComponent implements IComponent {
     }
 
     protected void loadMultipleComponentManager() {
-
+        IMultipleComponentManager multipleComponentManager = null;
         // create base items
         if (isFile) {
             multipleComponentManager = new MultipleComponentManager(FILE_INPUT_DELIMITED, CONTEXT_LOAD);
@@ -92,6 +92,7 @@ public class JobContextLoadComponent implements IComponent {
         }
         createMultipleComponentsParameters();
         multipleComponentManager.validateItems();
+        multipleComponentManagers.add(multipleComponentManager);
 
     }
 
@@ -194,13 +195,14 @@ public class JobContextLoadComponent implements IComponent {
         return VersionUtils.DEFAULT_VERSION;
     }
 
-    public IMultipleComponentManager getMultipleComponentManager() {
-        return multipleComponentManager;
+    public List<IMultipleComponentManager> getMultipleComponentManagers() {
+        return multipleComponentManagers;
     }
 
     protected void createMultipleComponentsParameters() {
         final String self = "self."; //$NON-NLS-1$
         // create parameters
+        IMultipleComponentManager multipleComponentManager = multipleComponentManagers.get(0);
         if (isFile) {
             // delimited
             final String source = self + EParameterName.IMPLICIT_TCONTEXTLOAD_FILE.getName();

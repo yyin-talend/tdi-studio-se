@@ -238,7 +238,7 @@ public class CodeView extends ViewPart {
             } else {
                 generatingNode = selectedNode;
             }
-            if (generatingNode.getComponent().getMultipleComponentManager() != null) {
+            if (generatingNode.getComponent().getMultipleComponentManagers() != null) {
                 document.set(MULTIPLE_COMPONENT_ERROR_MESSAGE);
                 return;
             }

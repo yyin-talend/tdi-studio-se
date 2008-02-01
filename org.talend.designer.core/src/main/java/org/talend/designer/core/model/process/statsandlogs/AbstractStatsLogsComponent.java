@@ -49,7 +49,7 @@ public abstract class AbstractStatsLogsComponent implements IComponent {
 
     protected String subComponent;
 
-    protected IMultipleComponentManager multipleComponentManager;
+    protected List<IMultipleComponentManager> multipleComponentManagers = new ArrayList<IMultipleComponentManager>();
 
     // no use for virtual component
     public List<? extends INodeConnector> createConnectors() {
@@ -299,7 +299,7 @@ public abstract class AbstractStatsLogsComponent implements IComponent {
             lastComponent = "FILE"; //$NON-NLS-1$
         }
         // create base items
-        multipleComponentManager = new MultipleComponentManager(componentId, lastComponent);
+        IMultipleComponentManager multipleComponentManager = new MultipleComponentManager(componentId, lastComponent);
         IMultipleComponentItem currentItem = multipleComponentManager.addItem(componentId, subComponent);
         if (useFile) {
             currentItem.getOutputConnections().add(new MultipleComponentConnection("FLOW", "FILE")); //$NON-NLS-1$ //$NON-NLS-2$
@@ -316,10 +316,12 @@ public abstract class AbstractStatsLogsComponent implements IComponent {
 
         createMultipleComponentsParameters();
         multipleComponentManager.validateItems();
+        multipleComponentManagers.add(multipleComponentManager);
     }
 
     protected void createMultipleComponentsParameters() {
         // create parameters
+        IMultipleComponentManager multipleComponentManager = multipleComponentManagers.get(0);
         if (useFile) {
             multipleComponentManager.addParam("self.FILENAME", "FILE.FILENAME"); //$NON-NLS-1$ //$NON-NLS-2$
             multipleComponentManager.addParam("self.ROWSEPARATOR", "FILE.ROWSEPARATOR"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -352,8 +354,8 @@ public abstract class AbstractStatsLogsComponent implements IComponent {
      * 
      * @see org.talend.core.model.components.IComponent#getMultipleComponentManager()
      */
-    public IMultipleComponentManager getMultipleComponentManager() {
-        return multipleComponentManager;
+    public List<IMultipleComponentManager> getMultipleComponentManagers() {
+        return multipleComponentManagers;
     }
 
     /*

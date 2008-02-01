@@ -283,57 +283,123 @@ public class DataProcess {
      * @return
      */
     @SuppressWarnings("unchecked")//$NON-NLS-1$
-    private AbstractNode addMultipleNode(INode graphicalNode, IMultipleComponentManager multipleComponentManager) {
+    // private AbstractNode addMultipleNode(INode graphicalNode, IMultipleComponentManager multipleComponentManager) {
+    // AbstractNode dataNode;
+    // // prepare all the nodes
+    //
+    // INode previousNode = buildCheckMap.get(graphicalNode);
+    // dataNodeList.remove(previousNode);
+    //
+    // Map<IMultipleComponentItem, AbstractNode> itemsMap = new HashMap<IMultipleComponentItem, AbstractNode>();
+    //
+    // prepareAllMultipleComponentNodes(itemsMap, multipleComponentManager, graphicalNode);
+    // setMultipleComponentParameters(multipleComponentManager, itemsMap, graphicalNode);
+    //
+    // // set the first one (input) with the properties of the graphical node.
+    // dataNode = itemsMap.get(multipleComponentManager.getInput());
+    // dataNode.setStart(graphicalNode.isStart());
+    // dataNode.setSubProcessStart(graphicalNode.isSubProcessStart());
+    // dataNode.setThereLinkWithHash(graphicalNode.isThereLinkWithHash());
+    // List<IConnection> incomingConnections = (List<IConnection>) dataNode.getIncomingConnections();
+    // for (IConnection connection : previousNode.getIncomingConnections()) {
+    // if(){
+    // AbstractConnection asbractConnect = (AbstractConnection) connection;
+    // asbractConnect.setTarget(dataNode);
+    // incomingConnections.add(connection);
+    // }
+    // }
+    // List<IConnection> outgoingConnections = (List<IConnection>) dataNode.getOutgoingConnections();
+    //
+    // // RunBefore / RunAfter Links won't be linked to the output but on the first element of the subprocess.
+    // for (IConnection connection : previousNode.getOutgoingConnections()) {
+    // if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.EXECUTION_ORDER)) {
+    // AbstractConnection asbractConnect = (AbstractConnection) connection;
+    // asbractConnect.setSource(dataNode);
+    // outgoingConnections.add(0, connection);
+    // }
+    // }
+    //
+    // // set informations for the last node, so the outgoing connections.
+    // INode outputNode = itemsMap.get(multipleComponentManager.getOutput());
+    // outgoingConnections = (List<IConnection>) outputNode.getOutgoingConnections();
+    //
+    // // RunBefore / RunAfter Links won't be linked to the output but on the first element of the subprocess.
+    // for (IConnection connection : previousNode.getOutgoingConnections()) {
+    // if (!connection.getLineStyle().hasConnectionCategory(IConnectionCategory.EXECUTION_ORDER)) {
+    // AbstractConnection asbractConnect = (AbstractConnection) connection;
+    // asbractConnect.setSource(outputNode);
+    // outgoingConnections.add(connection);
+    // }
+    // }
+    //
+    // // adds all connections between these nodes
+    // addAllMultipleComponentConnections(itemsMap, multipleComponentManager, graphicalNode, dataNode, previousNode);
+    //
+    // return dataNode;
+    // }
+    private void addMultipleNode(INode graphicalNode, List<IMultipleComponentManager> multipleComponentManagers) {
         AbstractNode dataNode;
         // prepare all the nodes
 
         INode previousNode = buildCheckMap.get(graphicalNode);
         dataNodeList.remove(previousNode);
 
-        Map<IMultipleComponentItem, AbstractNode> itemsMap = new HashMap<IMultipleComponentItem, AbstractNode>();
+        for (IMultipleComponentManager multipleComponentManager : multipleComponentManagers) {
 
-        prepareAllMultipleComponentNodes(itemsMap, multipleComponentManager, graphicalNode);
-        setMultipleComponentParameters(multipleComponentManager, itemsMap, graphicalNode);
+            Map<IMultipleComponentItem, AbstractNode> itemsMap = new HashMap<IMultipleComponentItem, AbstractNode>();
+            prepareAllMultipleComponentNodes(itemsMap, multipleComponentManager, graphicalNode);
+            setMultipleComponentParameters(multipleComponentManager, itemsMap, graphicalNode);
 
-        // set the first one (input) with the properties of the graphical node.
-        dataNode = itemsMap.get(multipleComponentManager.getInput());
-        dataNode.setStart(graphicalNode.isStart());
-        dataNode.setSubProcessStart(graphicalNode.isSubProcessStart());
-        dataNode.setThereLinkWithHash(graphicalNode.isThereLinkWithHash());
-        List<IConnection> incomingConnections = (List<IConnection>) dataNode.getIncomingConnections();
-        for (IConnection connection : previousNode.getIncomingConnections()) {
-            AbstractConnection asbractConnect = (AbstractConnection) connection;
-            asbractConnect.setTarget(dataNode);
-            incomingConnections.add(connection);
-        }
-        List<IConnection> outgoingConnections = (List<IConnection>) dataNode.getOutgoingConnections();
-
-        // RunBefore / RunAfter Links won't be linked to the output but on the first element of the subprocess.
-        for (IConnection connection : previousNode.getOutgoingConnections()) {
-            if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.EXECUTION_ORDER)) {
+            // set the first one (input) with the properties of the graphical node.
+            dataNode = itemsMap.get(multipleComponentManager.getInput());
+            dataNode.setStart(graphicalNode.isStart());
+            dataNode.setSubProcessStart(graphicalNode.isSubProcessStart());
+            dataNode.setThereLinkWithHash(graphicalNode.isThereLinkWithHash());
+            List<IConnection> incomingConnections = (List<IConnection>) dataNode.getIncomingConnections();
+            for (IConnection connection : previousNode.getIncomingConnections()) {
+                if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)) {
+                    if (multipleComponentManager.isSetConnector()) {
+                        String parameterString = "SCHEMA_" + multipleComponentManager.getConnector() + ":CONNECTION";
+                        String tempLinkName = (String) previousNode.getElementParameter(parameterString).getValue();
+                        if (!connection.getName().equals(tempLinkName)) {
+                            continue;
+                        }
+                    }
+                }
                 AbstractConnection asbractConnect = (AbstractConnection) connection;
-                asbractConnect.setSource(dataNode);
-                outgoingConnections.add(0, connection);
+                asbractConnect.setTarget(dataNode);
+                incomingConnections.add(connection);
             }
-        }
+            List<IConnection> outgoingConnections = (List<IConnection>) dataNode.getOutgoingConnections();
 
-        // set informations for the last node, so the outgoing connections.
-        INode outputNode = itemsMap.get(multipleComponentManager.getOutput());
-        outgoingConnections = (List<IConnection>) outputNode.getOutgoingConnections();
-
-        // RunBefore / RunAfter Links won't be linked to the output but on the first element of the subprocess.
-        for (IConnection connection : previousNode.getOutgoingConnections()) {
-            if (!connection.getLineStyle().hasConnectionCategory(IConnectionCategory.EXECUTION_ORDER)) {
-                AbstractConnection asbractConnect = (AbstractConnection) connection;
-                asbractConnect.setSource(outputNode);
-                outgoingConnections.add(connection);
+            // RunBefore / RunAfter Links won't be linked to the output but on the first element of the subprocess.
+            for (IConnection connection : previousNode.getOutgoingConnections()) {
+                if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.EXECUTION_ORDER)) {
+                    AbstractConnection asbractConnect = (AbstractConnection) connection;
+                    asbractConnect.setSource(dataNode);
+                    outgoingConnections.add(0, connection);
+                }
             }
+
+            // set informations for the last node, so the outgoing connections.
+            INode outputNode = itemsMap.get(multipleComponentManager.getOutput());
+            outgoingConnections = (List<IConnection>) outputNode.getOutgoingConnections();
+            if (multipleComponentManager.existsROWSENDLinkTo()) {
+                // RunBefore / RunAfter Links won't be linked to the output but on the first element of the subprocess.
+                for (IConnection connection : previousNode.getOutgoingConnections()) {
+                    if (!connection.getLineStyle().hasConnectionCategory(IConnectionCategory.EXECUTION_ORDER)) {
+                        AbstractConnection asbractConnect = (AbstractConnection) connection;
+                        asbractConnect.setSource(outputNode);
+                        outgoingConnections.add(connection);
+                    }
+                }
+            }
+
+            // adds all connections between these nodes
+            addAllMultipleComponentConnections(itemsMap, multipleComponentManager, graphicalNode, dataNode, previousNode);
+
+            // return dataNode;
         }
-
-        // adds all connections between these nodes
-        addAllMultipleComponentConnections(itemsMap, multipleComponentManager, graphicalNode, dataNode, previousNode);
-
-        return dataNode;
     }
 
     /**
@@ -360,6 +426,10 @@ public class DataProcess {
                 dataConnec.setLineStyle(EConnectionType.getTypeFromName(curConnec.getConnectionType()));
                 dataConnec.setConnectorName(curConnec.getConnectionType());
                 dataConnec.setMetadataTable(nodeSource.getMetadataList().get(0));
+                // INodeConnector connector = nodeSource.getConnectorFromName(curConnec.getConnectionType());
+                // dataConnec.setLineStyle(connector.getDefaultConnectionType());
+                // dataConnec.setConnectorName(curConnec.getConnectionType());
+                // dataConnec.setMetadataTable(nodeSource.getMetadataFromConnector(curConnec.getConnectionType()));
 
                 dataConnec.setName(EConnectionType.getTypeFromName(curConnec.getConnectionType()).getDefaultLinkName());
 
@@ -455,7 +525,12 @@ public class DataProcess {
             }
             DataNode curNode = new DataNode(component, uniqueName);
             curNode.setActivate(graphicalNode.isActivate());
-            IMetadataTable newMetadata = graphicalNode.getMetadataList().get(0).clone();
+            IMetadataTable newMetadata = null;
+            if (multipleComponentManager.isSetConnector()) {
+                newMetadata = graphicalNode.getMetadataFromConnector(multipleComponentManager.getConnector()).clone();
+            } else {
+                newMetadata = graphicalNode.getMetadataList().get(0).clone();
+            }
             newMetadata.setTableName(uniqueName);
             if (graphicalNode.isDesignSubjobStartNode()) {
                 curNode.setDesignSubjobStartNode(null);
@@ -550,7 +625,12 @@ public class DataProcess {
                         paramTarget.setDefaultClosedListValue(paramSource.getDefaultClosedListValue());
                         paramTarget.setListItemsDisplayCodeName(paramSource.getListItemsDisplayCodeName());
                         paramTarget.setListItemsValue(paramSource.getListItemsValue());
-                        paramTarget.setValue(paramSource.getValue());
+                        if (multipleComponentManager.isSetConnector() && param.getSourceComponent().equals("self")
+                                && param.getSourceValue().equals("UNIQUE_NAME")) {
+                            paramTarget.setValue(paramSource.getValue() + multipleComponentManager.getConnector());
+                        } else {
+                            paramTarget.setValue(paramSource.getValue());
+                        }
                     }
                 }
             } else {
@@ -704,26 +784,27 @@ public class DataProcess {
      * 
      * @param node
      */
-    public INode replaceMultipleComponents(INode graphicalNode) {
+    private void replaceMultipleComponents(INode graphicalNode) {
         if (checkMultipleMap.containsKey(graphicalNode)) {
-            return checkMultipleMap.get(graphicalNode);
+            // return checkMultipleMap.get(graphicalNode);
+            return;
         }
         AbstractNode dataNode;
 
-        IMultipleComponentManager multipleComponentManager = graphicalNode.getComponent().getMultipleComponentManager();
+        List<IMultipleComponentManager> multipleComponentManagers = graphicalNode.getComponent().getMultipleComponentManagers();
 
         dataNode = (AbstractNode) buildCheckMap.get(graphicalNode);
         checkMultipleMap.put(graphicalNode, dataNode);
-        if (multipleComponentManager != null) {
-            dataNode = addMultipleNode(graphicalNode, multipleComponentManager);
+        if (multipleComponentManagers.size() > 0) {
+            // dataNode = addMultipleNode(graphicalNode, multipleComponentManagers);
+            addMultipleNode(graphicalNode, multipleComponentManagers);
         }
-
         for (IConnection connection : graphicalNode.getOutgoingConnections()) {
             if (connection.isActivate()) {
                 replaceMultipleComponents(connection.getTarget());
             }
         }
-        return dataNode;
+        // return dataNode;
     }
 
     public void buildFromGraphicalProcess(List<Node> graphicalNodeList) {

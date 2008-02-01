@@ -128,7 +128,7 @@ public class EmfComponent implements IComponent {
 
     private static final String STRING_TYPE = "String"; //$NON-NLS-1$
 
-    private IMultipleComponentManager multipleComponentManager;
+    private List<IMultipleComponentManager> multipleComponentManagers = new ArrayList<IMultipleComponentManager>();
 
     private static final boolean ADVANCED_PROPERTY = true;
 
@@ -1594,72 +1594,84 @@ public class EmfComponent implements IComponent {
         return list;
     }
 
-    public IMultipleComponentManager getMultipleComponentManager() {
-        return this.multipleComponentManager;
+    public List<IMultipleComponentManager> getMultipleComponentManagers() {
+        return this.multipleComponentManagers;
     }
 
     /**
      * DOC nrousseau Comment method "loadMultipleComponentManagerFromTemplates".
      */
     private void loadMultipleComponentManagerFromTemplates() {
-        TEMPLATESType templatesType;
 
-        templatesType = compType.getCODEGENERATION().getTEMPLATES();
-
-        if (templatesType == null) {
-            return;
-        }
-        String input, output;
-
-        input = templatesType.getINPUT();
-        output = templatesType.getOUTPUT();
-
-        if (input == null || output == null) {
+        EList templatesTypes = compType.getCODEGENERATION().getTEMPLATES();
+        if (templatesTypes == null) {
             return;
         }
 
-        multipleComponentManager = new MultipleComponentManager(input, output);
+        for (int ii = 0; ii < templatesTypes.size(); ii++) {
+            TEMPLATESType templatesType = (TEMPLATESType) templatesTypes.get(ii);
+            String input, output, connector;
 
-        EList listTempType = templatesType.getTEMPLATE();
-        for (int i = 0; i < listTempType.size(); i++) {
-            TEMPLATEType templateType = (TEMPLATEType) listTempType.get(i);
+            input = templatesType.getINPUT();
+            output = templatesType.getOUTPUT();
+            connector = templatesType.getCONNECTOR();
 
-            String name, component;
-            name = templateType.getNAME();
-            component = templateType.getCOMPONENT();
-
-            IMultipleComponentItem currentItem = multipleComponentManager.addItem(name, component);
-            EList listLinkTo = templateType.getLINKTO();
-            for (int j = 0; j < listLinkTo.size(); j++) {
-                LINKTOType linkTo = (LINKTOType) listLinkTo.get(j);
-
-                name = linkTo.getNAME();
-                String cType = linkTo.getCTYPE();
-                currentItem.getOutputConnections().add(new MultipleComponentConnection(cType, name));
+            if (input == null || output == null) {
+                continue;
             }
+            IMultipleComponentManager multipleComponentManager = null;
+            if (connector == null || connector.equals("")) {
+                multipleComponentManager = new MultipleComponentManager(input, output);
+            } else {
+                multipleComponentManager = new MultipleComponentManager(input, output, connector);
+            }
+
+            EList listTempType = templatesType.getTEMPLATE();
+            for (int i = 0; i < listTempType.size(); i++) {
+                TEMPLATEType templateType = (TEMPLATEType) listTempType.get(i);
+
+                String name, component;
+                name = templateType.getNAME();
+                component = templateType.getCOMPONENT();
+
+                IMultipleComponentItem currentItem = multipleComponentManager.addItem(name, component);
+                EList listLinkTo = templateType.getLINKTO();
+                
+                for (int j = 0; j < listLinkTo.size(); j++) {
+                    LINKTOType linkTo = (LINKTOType) listLinkTo.get(j);
+
+                    name = linkTo.getNAME();
+                    String cType = linkTo.getCTYPE();
+                    currentItem.getOutputConnections().add(new MultipleComponentConnection(cType, name));
+                    if(cType.equals("ROWS_END")){
+                        multipleComponentManager.setExistsROWSENDLinkTo(true);
+                    }
+                }
+            }
+
+            EList listTempParamType = templatesType.getTEMPLATEPARAM();
+            for (int i = 0; i < listTempParamType.size(); i++) {
+                TEMPLATEPARAMType templateParamType = (TEMPLATEPARAMType) listTempParamType.get(i);
+
+                if ((templateParamType.getSOURCE() != null) && (templateParamType.getTARGET() != null)) {
+                    String source, target;
+                    source = templateParamType.getSOURCE();
+                    target = templateParamType.getTARGET();
+
+                    multipleComponentManager.addParam(source, target);
+                }
+                if ((templateParamType.getTARGET() != null) && (templateParamType.getVALUE() != null)) {
+                    String value, target;
+                    value = templateParamType.getVALUE();
+                    target = templateParamType.getTARGET();
+
+                    multipleComponentManager.addValue(target, value);
+                }
+            }
+
+            multipleComponentManager.validateItems();
+            multipleComponentManagers.add(multipleComponentManager);
         }
-
-        EList listTempParamType = templatesType.getTEMPLATEPARAM();
-        for (int i = 0; i < listTempParamType.size(); i++) {
-            TEMPLATEPARAMType templateParamType = (TEMPLATEPARAMType) listTempParamType.get(i);
-
-            if ((templateParamType.getSOURCE() != null) && (templateParamType.getTARGET() != null)) {
-                String source, target;
-                source = templateParamType.getSOURCE();
-                target = templateParamType.getTARGET();
-
-                multipleComponentManager.addParam(source, target);
-            }
-            if ((templateParamType.getTARGET() != null) && (templateParamType.getVALUE() != null)) {
-                String value, target;
-                value = templateParamType.getVALUE();
-                target = templateParamType.getTARGET();
-
-                multipleComponentManager.addValue(target, value);
-            }
-        }
-
-        multipleComponentManager.validateItems();
     }
 
     /*
