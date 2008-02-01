@@ -730,9 +730,10 @@ public class ProcessComposite extends Composite {
         if (clearBeforeExec.getSelection()) {
             processContext.clearMessages();
         }
-        if (watchBtn.getSelection()) {
-            processContext.switchTime();
-        }
+        // if (watchBtn.getSelection()) {
+        // processContext.switchTime();
+        // }
+        processContext.setWatchAllowed(watchBtn.getSelection());
         processContext.setMonitorPerf(perfBtn.getSelection());
         processContext.setMonitorTrace(traceBtn.getSelection());
 
