@@ -22,6 +22,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.oro.text.regex.MalformedPatternException;
+import org.apache.oro.text.regex.Pattern;
+import org.apache.oro.text.regex.PatternCompiler;
+import org.apache.oro.text.regex.PatternMatcher;
+import org.apache.oro.text.regex.Perl5Compiler;
+import org.apache.oro.text.regex.Perl5Matcher;
+import org.apache.oro.text.regex.Perl5Substitution;
+import org.apache.oro.text.regex.Substitution;
+import org.apache.oro.text.regex.Util;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -551,6 +560,130 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
         }
 
         return hashConfigurationForMapper;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.INode#renameData(java.lang.String, java.lang.String)
+     */
+    public void renameData(String oldName, String newName) {
+        super.renameData(oldName, newName);
+
+        hasOrRenameData(oldName, newName, true);
+
+    }
+
+    /**
+     * 
+     * DOC amaumont Comment method "hasOrRenameData".
+     * 
+     * @param oldName
+     * @param newName can be null if <code>renameAction</code> is false
+     * @param renameAction true to rename in all expressions, false to get boolean if present in one of the expressions
+     * @return
+     */
+    private boolean hasOrRenameData(String oldName, String newName, boolean renameAction) {
+        if (oldName == null || newName == null && renameAction) {
+            throw new NullPointerException();
+        }
+        PatternCompiler compiler = new Perl5Compiler();
+        PatternMatcher matcher = new Perl5Matcher();
+        ((Perl5Matcher) matcher).setMultiline(true);
+        Perl5Substitution substitution = null;
+        Pattern pattern;
+        if (renameAction) {
+            substitution = new Perl5Substitution(newName + "$2", Perl5Substitution.INTERPOLATE_ALL);
+        }
+        try {
+            pattern = compiler.compile("\\b(" + oldName + ")(\\b|\\_)");
+        } catch (MalformedPatternException e) {
+            ExceptionHandler.process(e);
+            return false;
+        }
+        if (externalData != null) {
+            List<ExternalMapperTable> tables = new ArrayList<ExternalMapperTable>(externalData.getInputTables());
+            tables.addAll(externalData.getOutputTables());
+            for (ExternalMapperTable table : tables) {
+
+                List<ExternalMapperTableEntry> metadataTableEntries = table.getMetadataTableEntries();
+
+                if (table.getExpressionFilter() != null) {
+                    if (renameAction) {
+                        String expression = renameDataIntoExpression(pattern, matcher, substitution, table.getExpressionFilter());
+                        table.setExpressionFilter(expression);
+                    } else {
+                        if (hasDataIntoExpression(pattern, matcher, table.getExpressionFilter())) {
+                            return true;
+                        }
+                    }
+                }
+
+                if (metadataTableEntries != null) {
+                    // loop on all entries of current table
+                    for (ExternalMapperTableEntry entry : metadataTableEntries) {
+                        if (entry.getExpression() != null) {
+                            if (renameAction) {
+                                String expression = renameDataIntoExpression(pattern, matcher, substitution, entry
+                                        .getExpression());
+                                entry.setExpression(expression);
+                            } else {
+                                if (hasDataIntoExpression(pattern, matcher, entry.getExpression())) {
+                                    return true;
+                                }
+                            }
+                        }
+                    } // for (ExternalMapperTableEntry entry : metadataTableEntries) {
+                }
+                if (table.getConstraintTableEntries() != null) {
+                    for (ExternalMapperTableEntry entry : table.getConstraintTableEntries()) {
+                        if (entry.getExpression() != null) {
+                            if (renameAction) {
+                                String expression = renameDataIntoExpression(pattern, matcher, substitution, entry
+                                        .getExpression());
+                                entry.setExpression(expression);
+                            } else {
+                                if (hasDataIntoExpression(pattern, matcher, entry.getExpression())) {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+
+            }
+        }
+        return false;
+    }
+
+    private String renameDataIntoExpression(Pattern pattern, PatternMatcher matcher, Substitution substitution, String expression) {
+        String replacedExpression = Util.substitute(matcher, pattern, substitution, expression, Util.SUBSTITUTE_ALL);
+        return replacedExpression;
+    }
+
+    private boolean hasDataIntoExpression(Pattern pattern, PatternMatcher matcher, String expression) {
+        if (expression != null) {
+            if (matcher.contains(expression, pattern)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.INode#useData(java.lang.String)
+     */
+    public boolean useData(String name) {
+        if (super.useData(name)) {
+            return true;
+        }
+        if (hasOrRenameData(name, null, false)) {
+            return true;
+        }
+
+        return false;
     }
 
 }
