@@ -562,18 +562,6 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
         return hashConfigurationForMapper;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.process.INode#renameData(java.lang.String, java.lang.String)
-     */
-    public void renameData(String oldName, String newName) {
-        super.renameData(oldName, newName);
-
-        hasOrRenameData(oldName, newName, true);
-
-    }
-
     /**
      * 
      * DOC amaumont Comment method "hasOrRenameData".
@@ -583,7 +571,7 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
      * @param renameAction true to rename in all expressions, false to get boolean if present in one of the expressions
      * @return
      */
-    private boolean hasOrRenameData(String oldName, String newName, boolean renameAction) {
+    protected boolean hasOrRenameData(String oldName, String newName, boolean renameAction) {
         if (oldName == null || newName == null && renameAction) {
             throw new NullPointerException();
         }
@@ -653,36 +641,6 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
 
             }
         }
-        return false;
-    }
-
-    private String renameDataIntoExpression(Pattern pattern, PatternMatcher matcher, Substitution substitution, String expression) {
-        String replacedExpression = Util.substitute(matcher, pattern, substitution, expression, Util.SUBSTITUTE_ALL);
-        return replacedExpression;
-    }
-
-    private boolean hasDataIntoExpression(Pattern pattern, PatternMatcher matcher, String expression) {
-        if (expression != null) {
-            if (matcher.contains(expression, pattern)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.process.INode#useData(java.lang.String)
-     */
-    public boolean useData(String name) {
-        if (super.useData(name)) {
-            return true;
-        }
-        if (hasOrRenameData(name, null, false)) {
-            return true;
-        }
-
         return false;
     }
 

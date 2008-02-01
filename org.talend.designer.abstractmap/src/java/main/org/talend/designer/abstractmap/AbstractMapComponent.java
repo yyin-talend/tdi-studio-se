@@ -14,6 +14,10 @@ package org.talend.designer.abstractmap;
 
 import java.util.List;
 
+import org.apache.oro.text.regex.Pattern;
+import org.apache.oro.text.regex.PatternMatcher;
+import org.apache.oro.text.regex.Substitution;
+import org.apache.oro.text.regex.Util;
 import org.talend.core.model.process.AbstractExternalNode;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.designer.abstractmap.ui.prefs.MapPrefsConstants;
@@ -60,6 +64,51 @@ public abstract class AbstractMapComponent extends AbstractExternalNode {
         
     }
 
+
+    protected String renameDataIntoExpression(Pattern pattern, PatternMatcher matcher, Substitution substitution, String expression) {
+        String replacedExpression = Util.substitute(matcher, pattern, substitution, expression, Util.SUBSTITUTE_ALL);
+        return replacedExpression;
+    }
+
+    protected boolean hasDataIntoExpression(Pattern pattern, PatternMatcher matcher, String expression) {
+        if (expression != null) {
+            if (matcher.contains(expression, pattern)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.INode#useData(java.lang.String)
+     */
+    public boolean useData(String name) {
+        if (super.useData(name)) {
+            return true;
+        }
+        if (hasOrRenameData(name, null, false)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.INode#renameData(java.lang.String, java.lang.String)
+     */
+    public void renameData(String oldName, String newName) {
+        super.renameData(oldName, newName);
+
+        hasOrRenameData(oldName, newName, true);
+
+    }
+
+
+    protected abstract boolean hasOrRenameData(String oldName, String newName, boolean renameAction);
 
     
 }

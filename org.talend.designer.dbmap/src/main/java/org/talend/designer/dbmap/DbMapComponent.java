@@ -22,6 +22,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.oro.text.regex.MalformedPatternException;
+import org.apache.oro.text.regex.Pattern;
+import org.apache.oro.text.regex.PatternCompiler;
+import org.apache.oro.text.regex.PatternMatcher;
+import org.apache.oro.text.regex.Perl5Compiler;
+import org.apache.oro.text.regex.Perl5Matcher;
+import org.apache.oro.text.regex.Perl5Substitution;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -326,9 +333,8 @@ public class DbMapComponent extends AbstractMapComponent {
         if (externalData != null) {
             List<ExternalDbMapTable> outputTables = externalData.getOutputTables();
             for (ExternalDbMapTable table : outputTables) {
-                if (table.getTableName().equals(oldName)) {
-                    table.setTableName(newName);
-                    break;
+                if (table.getName().equals(oldName)) {
+                    table.setName(newName);
                 }
             }
         }
@@ -472,5 +478,88 @@ public class DbMapComponent extends AbstractMapComponent {
     }
 
     
-    
+    /**
+     * 
+     * DOC amaumont Comment method "hasOrRenameData".
+     * 
+     * @param oldName
+     * @param newName can be null if <code>renameAction</code> is false
+     * @param renameAction true to rename in all expressions, false to get boolean if present in one of the expressions
+     * @return
+     */
+    protected boolean hasOrRenameData(String oldName, String newName, boolean renameAction) {
+        if (oldName == null || newName == null && renameAction) {
+            throw new NullPointerException();
+        }
+        
+        PatternCompiler compiler = new Perl5Compiler();
+        PatternMatcher matcher = new Perl5Matcher();
+        ((Perl5Matcher) matcher).setMultiline(true);
+        Perl5Substitution substitution = null;
+        Pattern pattern;
+        if (renameAction) {
+            substitution = new Perl5Substitution(newName + "$2", Perl5Substitution.INTERPOLATE_ALL);
+        }
+        try {
+            pattern = compiler.compile("\\b(" + oldName + ")(\\b|\\_)");
+        } catch (MalformedPatternException e) {
+            ExceptionHandler.process(e);
+            return false;
+        }
+        if (externalData != null) {
+            List<ExternalDbMapTable> tables = new ArrayList<ExternalDbMapTable>(externalData.getInputTables());
+            tables.addAll(externalData.getOutputTables());
+            for (ExternalDbMapTable table : tables) {
+
+                List<ExternalDbMapEntry> metadataTableEntries = table.getMetadataTableEntries();
+
+//                if (table.getExpressionFilter() != null) {
+//                    if (renameAction) {
+//                        String expression = renameDataIntoExpression(pattern, matcher, substitution, table.getExpressionFilter());
+//                        table.setExpressionFilter(expression);
+//                    } else {
+//                        if (hasDataIntoExpression(pattern, matcher, table.getExpressionFilter())) {
+//                            return true;
+//                        }
+//                    }
+//                }
+
+                if (metadataTableEntries != null) {
+                    // loop on all entries of current table
+                    for (ExternalDbMapEntry entry : metadataTableEntries) {
+                        if (entry.getExpression() != null) {
+                            if (renameAction) {
+                                String expression = renameDataIntoExpression(pattern, matcher, substitution, entry
+                                        .getExpression());
+                                entry.setExpression(expression);
+                            } else {
+                                if (hasDataIntoExpression(pattern, matcher, entry.getExpression())) {
+                                    return true;
+                                }
+                            }
+                        }
+                    } // for (ExternalMapperTableEntry entry : metadataTableEntries) {
+                }
+                if (table.getCustomConditionsEntries() != null) {
+                    for (ExternalDbMapEntry entry : table.getCustomConditionsEntries()) {
+                        if (entry.getExpression() != null) {
+                            if (renameAction) {
+                                String expression = renameDataIntoExpression(pattern, matcher, substitution, entry
+                                        .getExpression());
+                                entry.setExpression(expression);
+                            } else {
+                                if (hasDataIntoExpression(pattern, matcher, entry.getExpression())) {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+
+            }
+        }
+        return false;
+    }
+
+
 }
