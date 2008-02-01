@@ -138,6 +138,7 @@ parser_<%=cid%>.setFeature("http://xml.org/sax/features/validation", true);
 parser_<%=cid%>.setFeature("http://apache.org/xml/features/validation/schema", true);
 parser_<%=cid%>.setFeature("http://apache.org/xml/features/validation/schema-full-checking", true);
 parser_<%=cid%>.setFeature("http://xml.org/sax/features/namespaces", true);
+parser_<%=cid%>.setErrorHandler(null);
 parser_<%=cid%>.parse(<%=filename%>);
 org.w3c.dom.Document doc_<%=cid%> = parser_<%=cid%>.getDocument();
 
