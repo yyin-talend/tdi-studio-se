@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.ModifyComponentsAction;
 import org.talend.core.model.components.conversions.IComponentConversion;
@@ -41,73 +42,69 @@ public class UpdateDbtypeOfCreateTableTask extends AbstractJobMigrationTask {
      */
     @Override
     public ExecutionResult executeOnProcess(ProcessItem item) {
+        if (getProject().getLanguage().equals(ECodeLanguage.JAVA)) {
+            final Map<String, String> dbtypes = new HashMap<String, String>();
+            dbtypes.put("Access", "ACCESS");
+            dbtypes.put("AS400", "AS400");
+            dbtypes.put("DB2", "DB2");
+            dbtypes.put("FireBird", "FIREBIRD");
+            dbtypes.put("Hsql", "HSQLDB");
+            dbtypes.put("Informix", "INFORMIX");
+            dbtypes.put("Ingres", "INGRES");
+            dbtypes.put("Interbase", "INTERBASE");
+            dbtypes.put("JavaDb", "JAVADB");
+            dbtypes.put("MSSQLServer", "MSSQL");
+            dbtypes.put("Oracle", "DBORACLE");
+            dbtypes.put("Postgre", "POSTGRE");
+            dbtypes.put("SQLite", "SQLITE");
+            dbtypes.put("Sybase", "SYBASE");
+            dbtypes.put("ODBC", "ODBC");
 
-        final Map<String, String> dbtypes = new HashMap<String, String>();
-        dbtypes.put("Access", "ACCESS");
-        dbtypes.put("AS400", "AS400");
-        dbtypes.put("DB2", "DB2");
-        dbtypes.put("FireBird", "FIREBIRD");
-        dbtypes.put("Hsql", "HSQLDB");
-        dbtypes.put("Informix", "INFORMIX");
-        dbtypes.put("Ingres", "INGRES");
-        dbtypes.put("Interbase", "INTERBASE");
-        dbtypes.put("JavaDb", "JAVADB");
-        dbtypes.put("MSSQLServer", "MSSQL");
-        dbtypes.put("Oracle", "DBORACLE");
-        dbtypes.put("Postgre", "POSTGRE");
-        dbtypes.put("SQLite", "SQLITE");
-        dbtypes.put("Sybase", "SYBASE");
-        dbtypes.put("ODBC", "ODBC");
+            final String name = "tCreateTable";
+            final String property = "DBTYPE";
 
-        final String name = "tCreateTable";
-        final String property = "DBTYPE";
+            IComponentFilter filert = new IComponentFilter() {
 
-        IComponentFilter filert = new IComponentFilter() {
+                public boolean accept(NodeType node) {
 
-            public boolean accept(NodeType node) {
+                    boolean toReturn = (name == null ? true : acceptS(node));
+                    if (toReturn) {
+                        String pValue = ComponentUtilities.getNodePropertyValue(node, property);
+                        toReturn = !dbtypes.values().contains(pValue);
+                    }
+                    return toReturn;
+                }
 
-                boolean toReturn = (name == null ? true : acceptS(node));
-                if (toReturn) {
+                public boolean acceptS(NodeType node) {
+                    return node.getComponentName().equals(name);
+                }
+            };
+
+            IComponentConversion conversion = new IComponentConversion() {
+
+                public void transform(NodeType node) {
                     String pValue = ComponentUtilities.getNodePropertyValue(node, property);
-                    toReturn = !dbtypes.values().contains(pValue);
+                    String value = dbtypes.get(pValue);
+                    if (value != null) {
+                        ComponentUtilities.setNodeValue(node, property, value);
+                    } else {
+                        ComponentUtilities.setNodeValue(node, property, "MYSQL");
+                    }
                 }
-                return toReturn;
+            };
+            List<IComponentConversion> cons = new ArrayList<IComponentConversion>();
+            cons.add(conversion);
+
+            try {
+                ModifyComponentsAction.searchAndModify(filert, cons);
+                return ExecutionResult.SUCCESS_NO_ALERT;
+            } catch (Exception e) {
+                ExceptionHandler.process(e);
+                return ExecutionResult.FAILURE;
             }
-
-            public boolean acceptS(NodeType node) {
-                return node.getComponentName().equals(name);
-            }
-
-        };
-
-        IComponentConversion conversion = new IComponentConversion() {
-
-            public void transform(NodeType node) {
-                String pValue = ComponentUtilities.getNodePropertyValue(node, property);
-                String value = dbtypes.get(pValue);
-                if (value != null) {
-                    ComponentUtilities.setNodeValue(node, property, value);
-                } else {
-                    ComponentUtilities.setNodeValue(node, property, "MYSQL");
-                }
-            }
-
-        };
-
-        List<IComponentConversion> cons = new ArrayList<IComponentConversion>();
-        cons.add(conversion);
-
-        try {
-
-            ModifyComponentsAction.searchAndModify(filert, cons);
-            return ExecutionResult.SUCCESS_NO_ALERT;
-
-        } catch (Exception e) {
-
-            ExceptionHandler.process(e);
-            return ExecutionResult.FAILURE;
-
+        } else {
+            // do nothing
+            return ExecutionResult.NOTHING_TO_DO;
         }
-
     }
 }
