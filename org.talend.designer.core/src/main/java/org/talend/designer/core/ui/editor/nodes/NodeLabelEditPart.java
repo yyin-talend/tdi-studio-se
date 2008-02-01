@@ -81,7 +81,6 @@ public class NodeLabelEditPart extends AbstractGraphicalEditPart implements Prop
         if (isActive()) {
             super.deactivate();
             ((NodeLabel) getModel()).removePropertyChangeListener(this);
-            this.unregister();
             manager = null;
         }
     }

@@ -103,6 +103,7 @@ public class NoteEditPart extends AbstractGraphicalEditPart implements PropertyC
         if (isActive()) {
             super.deactivate();
             ((Note) getModel()).removePropertyChangeListener(this);
+            directEditManager = null;
         }
     }
 

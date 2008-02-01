@@ -62,7 +62,6 @@ public class NodePerformanceEditPart extends AbstractGraphicalEditPart implement
             super.deactivate();
             ((NodePerformance) getModel()).getNodeContainer().getNode().removePropertyChangeListener(this);
             ((NodePerformance) getModel()).getNodeContainer().getNodeLabel().removePropertyChangeListener(this);
-            unregister();
         }
     }
 

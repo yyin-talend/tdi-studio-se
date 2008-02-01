@@ -176,7 +176,6 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
             ((Node) getModel()).removePropertyChangeListener(this);
             nodeContainerPart.setNodePart(null);
             nodeContainerPart = null;
-            this.unregister();
         }
     }
 

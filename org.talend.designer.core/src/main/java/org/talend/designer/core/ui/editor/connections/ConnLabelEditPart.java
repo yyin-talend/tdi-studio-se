@@ -68,7 +68,6 @@ public class ConnLabelEditPart extends AbstractGraphicalEditPart implements Prop
             super.deactivate();
             ((Element) getModel()).removePropertyChangeListener(this);
             manager = null;
-            unregister();
         }
     }
 

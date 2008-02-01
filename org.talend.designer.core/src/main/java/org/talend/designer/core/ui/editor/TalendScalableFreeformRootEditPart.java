@@ -48,6 +48,10 @@ public class TalendScalableFreeformRootEditPart extends ScalableFreeformRootEdit
 
     private double[] zoomLevels = { .05, .1, .25, .5, .75, 1, 1.25, 1.5, 1.75, 2, 4 };
 
+    private TalendGridLayer gridLayer;
+
+    private FeedbackLayer feedbackLayer;
+
     /*
      * (non-Javadoc)
      * 
@@ -77,7 +81,10 @@ public class TalendScalableFreeformRootEditPart extends ScalableFreeformRootEdit
 
     @Override
     protected GridLayer createGridLayer() {
-        return new TalendGridLayer();
+        if (gridLayer == null) {
+            gridLayer = new TalendGridLayer();
+        }
+        return gridLayer;
     }
 
     protected ScalableFreeformLayeredPane createScaledLayers() {
@@ -86,6 +93,7 @@ public class TalendScalableFreeformRootEditPart extends ScalableFreeformRootEdit
         layers.add(createGridLayer(), GRID_LAYER);
         layers.add(getPrintableLayers(), PRINTABLE_LAYERS);
         layers.add(new FeedbackLayer(), SCALED_FEEDBACK_LAYER);
+        feedbackLayer = new FeedbackLayer();
         return layers;
     }
 
@@ -143,13 +151,17 @@ public class TalendScalableFreeformRootEditPart extends ScalableFreeformRootEdit
         return super.getAdapter(key);
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.gef.editparts.ScalableFreeformRootEditPart#unregister()
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#deactivate()
      */
     @Override
-    protected void unregister() {
-        super.unregister();
+    public void deactivate() {
+        super.deactivate();
         editorInput = null;
         zoomManager = null;
+        feedbackLayer = null;
+        gridLayer = null;
     }
 }

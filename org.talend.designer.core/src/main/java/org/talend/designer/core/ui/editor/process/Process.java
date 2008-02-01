@@ -2450,7 +2450,9 @@ public class Process extends Element implements IProcess2 {
         contextManager = null;
         if (this.editor != null) {
             CommandStack commandStack = (CommandStack) this.editor.getTalendEditor().getAdapter(CommandStack.class);
-            commandStack.removeCommandStackEventListener(commandStackEventListener);
+            if (commandStack != null) {
+                commandStack.removeCommandStackEventListener(commandStackEventListener);
+            }
         }
         if ((generatingProcess != null) && (generatingProcess.getDuplicatedProcess() != null)
                 && (generatingProcess.getDuplicatedProcess().getGraphicalNodes() != null)) {

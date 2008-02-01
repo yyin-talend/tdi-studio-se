@@ -1079,7 +1079,9 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
 
         addListener(SWT.Resize, resizeListener);
 
-        getCommandStack().addCommandStackEventListener(commandStackEventListener);
+        if (getCommandStack() != null) {
+            getCommandStack().addCommandStackEventListener(commandStackEventListener);
+        }
         // for job settings extra (feature 2710)
         extraPropertyTypeName = JobSettingsConstants.getExtraParameterName(EParameterName.PROPERTY_TYPE.getName());
         extraRepositoryPropertyTypeName = JobSettingsConstants.getExtraParameterName(EParameterName.REPOSITORY_PROPERTY_TYPE

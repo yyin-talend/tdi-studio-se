@@ -336,9 +336,9 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                 processor.setSyntaxCheckableEditor((ISyntaxCheckableEditor) codeEditor);
             }
         }
-        if (codeEditor instanceof TalendJavaEditor) {
-            ((TalendJavaEditor) codeEditor).addEditorPart(this);
-        }
+        // if (codeEditor instanceof TalendJavaEditor) {
+        // ((TalendJavaEditor) codeEditor).addEditorPart(this);
+        // }
 
         try {
             int index = addPage(codeEditor, createFileEditorInput());
@@ -667,21 +667,11 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
 
             WorkbenchPage page = (WorkbenchPage) activeWorkbenchWindow.getActivePage();
             if (page != null) {
-                int i = 0;
                 if (editorInput instanceof RepositoryEditorInput) {
                     RepositoryEditorInput curEditorInput = (RepositoryEditorInput) editorInput;
 
                     IEditorReference[] ref = page.findEditors(curEditorInput, getEditorId(), IWorkbenchPage.MATCH_INPUT);
-                    boolean exist = ref.length > 1;
-                    if (exist) {
-                        // MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-                        // "New Editor Error!", " It's not possible to open another editor of current job. ");
-                        IEditorPart activePart = page.getActiveEditor();
-                        // activePart.removePropertyListener(listener);
-                        // page.getEditorPresentation().closeEditor(activePart);
-
-                    }
-                    return exist;
+                    return ref.length > 1;
                 }
             }
 
@@ -733,17 +723,16 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
      */
     @Override
     public void dispose() {
-        ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
-
-        getSite().setSelectionProvider(null);
-
         CommandStack commandStack = (CommandStack) designerEditor.getAdapter(CommandStack.class);
         commandStack.removeCommandStackEventListener(commandStackEventListener);
 
+        getSite().setSelectionProvider(null);
         getSite().getWorkbenchWindow().getSelectionService().removeSelectionListener(this);
+        setInput(null);
+
         super.dispose();
 
-        designerEditor.setParent(null);
+        ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
 
         if (isKeepPropertyLocked()) {
             return;
@@ -754,8 +743,6 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         IProxyRepositoryFactory repFactory = service.getProxyRepositoryFactory();
         try {
             designerEditor.getProperty().eAdapters().remove(dirtyListener);
-            // Property property = repFactory.reload(designerEditor.getProperty());
-            // designerEditor.setProperty(property);
             repFactory.unlock(designerEditor.getProperty().getItem());
         } catch (PersistenceException e) {
             // TODO Auto-generated catch block
@@ -766,6 +753,8 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         if (viewPart != null) {
             viewPart.refresh();
         }
+
+        processEditorInput.setLoadedProcess(null);
 
         processEditorInput = null;
         designerEditor = null;

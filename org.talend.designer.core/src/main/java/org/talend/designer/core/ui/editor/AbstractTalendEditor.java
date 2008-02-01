@@ -45,6 +45,7 @@ import org.eclipse.draw2d.parts.ScrollableThumbnail;
 import org.eclipse.draw2d.parts.Thumbnail;
 import org.eclipse.gef.ContextMenuProvider;
 import org.eclipse.gef.DefaultEditDomain;
+import org.eclipse.gef.Disposable;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPartViewer;
 import org.eclipse.gef.GraphicalViewer;
@@ -65,7 +66,6 @@ import org.eclipse.gef.palette.PaletteRoot;
 import org.eclipse.gef.requests.CreationFactory;
 import org.eclipse.gef.ui.actions.ActionRegistry;
 import org.eclipse.gef.ui.actions.DirectEditAction;
-import org.eclipse.gef.ui.actions.SelectionAction;
 import org.eclipse.gef.ui.actions.ToggleGridAction;
 import org.eclipse.gef.ui.actions.ToggleSnapToGeometryAction;
 import org.eclipse.gef.ui.actions.ZoomInAction;
@@ -895,8 +895,6 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
     @Override
     public void dispose() {
-        ((Process) process).dispose();
-        fActivationCodeTrigger.uninstall();
         ProcessorUtilities.editorClosed(this);
         talendPaletteViewerProvider = null;
 
@@ -916,24 +914,44 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         for (Iterator iterator = getSelectionActions().iterator(); iterator.hasNext();) {
             String actionID = (String) iterator.next();
             IAction action = getActionRegistry().getAction(actionID);
-            if (action instanceof SelectionAction) {
-                ((SelectionAction) action).dispose();
+            if (action != null) {
+                fActivationCodeTrigger.unregisterActionFromKeyActivation(action);
                 getActionRegistry().removeAction(action);
+                if (action instanceof Disposable) {
+                    ((Disposable) action).dispose();
+                }
             }
         }
+        fActivationCodeTrigger.uninstall();
+        fActivationCodeTrigger = null;
         getSelectionActions().clear();
-        super.dispose();
-        getGraphicalViewer().setEditPartFactory(null);
-        getGraphicalViewer().setContextMenu(null);
-        getGraphicalViewer().getSelectionManager().internalUninstall();
 
         getGraphicalViewer().removeDropTargetListener(processTemplateTransferDropTargetListener);
         getGraphicalViewer().removeDropTargetListener(talendEditorDropTargetListener);
 
-        getGraphicalViewer().setContents(null);
-        if (getGraphicalViewer().getControl() != null && !getGraphicalViewer().getControl().isDisposed()) {
-            getGraphicalViewer().getControl().dispose();
+        if (getGraphicalViewer().getContents() != null) {
+            getGraphicalViewer().getContents().deactivate();
+            getGraphicalViewer().getContents().removeNotify();
+            getGraphicalViewer().getRootEditPart().deactivate();
+            getGraphicalViewer().getRootEditPart().removeNotify();
         }
+        getGraphicalViewer().setEditPartFactory(null);
+        getGraphicalViewer().setContextMenu(null);
+        getGraphicalViewer().setContents(null);
+
+        // rulerComp.dispose();
+
+        if (sharedKeyHandler != null) {
+            sharedKeyHandler.remove(KeyStroke.getPressed(SWT.F1, 0));
+            sharedKeyHandler.remove(KeyStroke.getPressed(SWT.DEL, 0));
+        }
+
+        super.setInput(null);
+
+        // getGraphicalViewer().setContents(null);
+        // if (getGraphicalViewer().getControl() != null && !getGraphicalViewer().getControl().isDisposed()) {
+        // getGraphicalViewer().getControl().dispose();
+        // }
 
         processTemplateTransferDropTargetListener = null;
         talendEditorDropTargetListener.setEditor(null);
@@ -943,10 +961,21 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         // rootEditPart.setEditorInput(null);
         // rootEditPart.deactivate();
 
-        process = null;
-        if (outlinePage != null) {
-            outlinePage.dispose();
+        super.dispose();
+        if (!getParent().isKeepPropertyLocked()) {
+            ((Process) process).dispose();
         }
+        process = null;
+        parent = null;
+
+        getEditDomain().getCommandStack().dispose();
+        getEditDomain().setActiveTool(null);
+        getEditDomain().setPaletteRoot(null);
+        getEditDomain().setPaletteViewer(null);
+        getEditDomain().setCommandStack(null);
+        getEditDomain().setDefaultTool(null);
+        getSelectionSynchronizer().removeViewer(getGraphicalViewer());
+        getSite().setSelectionProvider(null);
     }
 
     public void gotoMarker(final IMarker marker) {

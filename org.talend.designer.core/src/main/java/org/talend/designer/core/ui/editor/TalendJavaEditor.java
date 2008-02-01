@@ -12,10 +12,6 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor;
 import org.eclipse.jdt.internal.ui.javaeditor.JavaSourceViewer;
 import org.eclipse.jface.text.BadLocationException;
@@ -25,7 +21,6 @@ import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.widgets.Composite;
 import org.talend.designer.core.ISyntaxCheckableEditor;
-import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 
 /**
  * DOC yzhang class global comment. Detailled comment <br/>
@@ -38,8 +33,6 @@ public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCh
     private org.eclipse.jdt.core.ICompilationUnit unit;
 
     private boolean disposed = false;
-
-    private List<AbstractMultiPageTalendEditor> editPartListener = new ArrayList<AbstractMultiPageTalendEditor>();
 
     private String currentSelection;
 
@@ -148,7 +141,6 @@ public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCh
     public void dispose() {
         this.disposed = true;
         super.dispose();
-        editPartListener = null;
     }
 
     /**
@@ -169,53 +161,6 @@ public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCh
      */
     public org.eclipse.jdt.core.ICompilationUnit getUnit() {
         return unit;
-    }
-
-    /**
-     * Add editor part to this editor.
-     * 
-     * yzhang Comment method "addEditPart".
-     * 
-     * @param editPart
-     */
-    public void addEditorPart(AbstractMultiPageTalendEditor editPart) {
-        if (!this.editPartListener.contains(editPart)) {
-            this.editPartListener.add(editPart);
-        }
-    }
-
-    public void removeEditorPart(AbstractMultiPageTalendEditor editPart) {
-        this.editPartListener.remove(editPart);
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor#doSave(org.eclipse.core.runtime.IProgressMonitor)
-     */
-    @Override
-    public void doSave(IProgressMonitor progressMonitor) {
-        super.doSave(progressMonitor);
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor#rememberSelection()
-     */
-    @Override
-    protected void rememberSelection() {
-        super.rememberSelection();
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor#restoreSelection()
-     */
-    @Override
-    protected void restoreSelection() {
-        super.restoreSelection();
     }
 
     /**
