@@ -581,12 +581,12 @@
       <projecttask
             class="org.talend.repository.model.migration.RenametFileInputCSVMigrationTask"
             id="org.talend.repository.renametFileInputCSV"
-            name="rename tFileInputCSV to tFileInputDelimited">
+            name="Rename tFileInputCSV to tFileInputDelimited">
       </projecttask>
       <projecttask
             class="org.talend.repository.model.migration.RenametFileOutputCSVMigrationTask"
             id="org.talend.repository.renametFileOutputCSV"
-            name="rename tFileOutputCSV to tFileOutputDelimited">
+            name="Rename tFileOutputCSV to tFileOutputDelimited">
       </projecttask>
       <projecttask
             beforeLogon="false"
@@ -597,7 +597,7 @@
       <projecttask
             class="org.talend.repository.model.migration.DieOnErrorDefaultValueMigrationTask"
             id="org.talend.repository.model.migration.DieOnErrorDefaultValueMigrationTask"
-            name="set the Die On Error option default value as false">
+            name="Set the Die On Error option default value as false">
       </projecttask>
       <projecttask
             beforeLogon="false"
