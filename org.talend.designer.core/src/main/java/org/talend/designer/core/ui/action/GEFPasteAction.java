@@ -88,7 +88,12 @@ public class GEFPasteAction extends SelectionAction {
      */
     @Override
     protected boolean calculateEnabled() {
-        Object o = Clipboard.getDefault().getContents();
+        Object o;
+        try {
+            o = Clipboard.getDefault().getContents();
+        } catch (RuntimeException e) {
+            return false;
+        }
 
         org.eclipse.swt.dnd.Clipboard systemClipboard = new org.eclipse.swt.dnd.Clipboard(Display.getCurrent());
         Object systemObject = null;
@@ -122,13 +127,18 @@ public class GEFPasteAction extends SelectionAction {
     @Override
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     public void run() {
-        Object clipBoardContent = Clipboard.getDefault().getContents();
+        Object clipBoardContent;
+        try {
+            clipBoardContent = Clipboard.getDefault().getContents();
+        } catch (RuntimeException e) {
+            return;
+        }
 
         org.eclipse.swt.dnd.Clipboard systemClipboard = new org.eclipse.swt.dnd.Clipboard(Display.getCurrent());
         Object systemObject = systemClipboard.getContents(TextTransfer.getInstance());
 
         if (clipBoardContent instanceof List) {
-            List<EditPart> partsList = (List<EditPart>) Clipboard.getDefault().getContents();
+            List<EditPart> partsList = (List<EditPart>) clipBoardContent;
             if (partsList == null || partsList.isEmpty()) {
                 return;
             }
