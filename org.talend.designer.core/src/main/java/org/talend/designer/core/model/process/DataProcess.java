@@ -126,6 +126,7 @@ public class DataProcess {
         dataNode.setMetadataList(graphicalNode.getMetadataList());
         dataNode.setPluginFullName(graphicalNode.getPluginFullName());
         dataNode.setElementParameters(graphicalNode.getComponent().createElementParameters(dataNode));
+        dataNode.setListConnector(graphicalNode.getListConnector());
         copyElementParametersValue(graphicalNode, dataNode);
         String uniqueName = graphicalNode.getUniqueName();
         if (prefix != null) {

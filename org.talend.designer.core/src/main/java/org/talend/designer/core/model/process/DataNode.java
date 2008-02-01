@@ -39,6 +39,7 @@ public class DataNode extends AbstractNode {
         setMetadataList(metaList);
         setComponent(component);
         setElementParameters(component.createElementParameters(this));
+        setListConnector(component.createConnectors());
         setUniqueName(uniqueName);
     }
 
@@ -61,4 +62,4 @@ public class DataNode extends AbstractNode {
         // TODO Auto-generated method stub
 
     }
- }
+}
