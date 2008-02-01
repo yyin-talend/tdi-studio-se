@@ -49,7 +49,7 @@ public class CreateComponentWizard extends BasicNewResourceWizard {
 
     private WizardJetFilesChoosePage creatJetFilesPage;
 
-    private ComponentPref componentPref;
+    private final ComponentPref componentPref;
 
     private ComponentFolderManager manager;
 
@@ -65,7 +65,7 @@ public class CreateComponentWizard extends BasicNewResourceWizard {
         setDialogSettings(section);
         componentPref = new ComponentPref();
     }
-    
+
     /**
      * Creates a wizard for creating a new project resource in the workspace.
      */
@@ -82,63 +82,72 @@ public class CreateComponentWizard extends BasicNewResourceWizard {
     /*
      * (non-Javadoc) Method declared on IWizard.
      */
+    @Override
     public void addPages() {
-		creatProjectPage = new WizardComponentFolderPage(
-				"componentNewProjectPage", componentPref); //$NON-NLS-1$
-		creatProjectPage.setTitle("Component");
-		creatProjectPage
-				.setDescription("Create a new component folder resource.");
-//		creatProjectPage.getPropertyChangeBean()
-//				.addPropertyChangeListener(this);
-		this.addPage(creatProjectPage);
-		creatJetFilesPage = new WizardJetFilesChoosePage("creatJetFilesPage",   //$NON-NLS-1$
-				componentPref);
-		creatJetFilesPage.setTitle("Create jet files for the component.");
-//		creatJetFilesPage.getPropertyChangeBean().addPropertyChangeListener(
-//				this);
-		this.addPage(creatJetFilesPage);
-		
-		WizardXMLConfigPage xmlConfigPage = new WizardXMLConfigPage(
-				"xmlConfigPage", componentPref);
-		xmlConfigPage.setTitle("Create the xml configuration file for current component.");
-		this.addPage(xmlConfigPage);		
-	}
+        creatProjectPage = new WizardComponentFolderPage("componentNewProjectPage", componentPref); //$NON-NLS-1$
+        creatProjectPage.setTitle("Main Properties");
+        creatProjectPage.setDescription("Fill in component properties");
+        // creatProjectPage.getPropertyChangeBean()
+        // .addPropertyChangeListener(this);
+        this.addPage(creatProjectPage);
+        creatJetFilesPage = new WizardJetFilesChoosePage("creatJetFilesPage", //$NON-NLS-1$
+                componentPref);
+        creatJetFilesPage.setTitle("Specify resources");
+        // creatJetFilesPage.getPropertyChangeBean().addPropertyChangeListener(
+        // this);
+        this.addPage(creatJetFilesPage);
+
+        WizardXMLConfigPage xmlConfigPage = new WizardXMLConfigPage("xmlConfigPage", componentPref);
+        xmlConfigPage.setTitle("Create the XML configuration file");
+        this.addPage(xmlConfigPage);
+    }
+
+    public boolean canFinish = false;
+
+    @Override
+    public boolean canFinish() {
+        if ((getContainer().getCurrentPage() instanceof WizardXMLConfigPage)
+                && (getContainer().getCurrentPage().isPageComplete())) {
+            return true;
+        }
+        return false;
+    }
 
     /*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
-	 */
+     * (non-Javadoc)
+     * 
+     * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
+     */
+    @Override
     @SuppressWarnings("unchecked")
-//    public void propertyChange(PropertyChangeEvent event) {
-//		if (PluginConstant.NAME_PROPERTY.equals(event.getPropertyName())) {
-//			this.componentPref.setName((String) event.getNewValue());
-//		} else if (PluginConstant.LANGUAGE_PROPERTY.equals(event
-//				.getPropertyName())) {
-//			this.componentPref.setLanguageType((LanguageType) event
-//					.getNewValue());
-//		} else if (PluginConstant.RESOURCETYPE_PROPERTY.equals(event
-//				.getPropertyName())) {
-//			this.componentPref
-//					.setResourceLanguageTypes((List<ResourceLanguageType>) event
-//							.getNewValue());
-//		} else if (PluginConstant.JETFILETYPE_PROPERTY.equals(event
-//				.getPropertyName())) {
-//			this.componentPref.setJetFileStamps((List<JetFileStamp>) event
-//					.getNewValue());
-//		} else if (PluginConstant.IMAGE_PROPERTY
-//				.equals(event.getPropertyName())) {
-//			this.componentPref.setImageURL((String) event.getNewValue());
-//		} else if (PluginConstant.LIBRARY_PROPERTY.equals(event
-//				.getPropertyName())) {
-//			this.componentPref.setLibEntries((ILibEntry[]) event
-//					.getNewValue());
-//		}
-//	}
-
+    // public void propertyChange(PropertyChangeEvent event) {
+    // if (PluginConstant.NAME_PROPERTY.equals(event.getPropertyName())) {
+    // this.componentPref.setName((String) event.getNewValue());
+    // } else if (PluginConstant.LANGUAGE_PROPERTY.equals(event
+    // .getPropertyName())) {
+    // this.componentPref.setLanguageType((LanguageType) event
+    // .getNewValue());
+    // } else if (PluginConstant.RESOURCETYPE_PROPERTY.equals(event
+    // .getPropertyName())) {
+    // this.componentPref
+    // .setResourceLanguageTypes((List<ResourceLanguageType>) event
+    // .getNewValue());
+    // } else if (PluginConstant.JETFILETYPE_PROPERTY.equals(event
+    // .getPropertyName())) {
+    // this.componentPref.setJetFileStamps((List<JetFileStamp>) event
+    // .getNewValue());
+    // } else if (PluginConstant.IMAGE_PROPERTY
+    // .equals(event.getPropertyName())) {
+    // this.componentPref.setImageURL((String) event.getNewValue());
+    // } else if (PluginConstant.LIBRARY_PROPERTY.equals(event
+    // .getPropertyName())) {
+    // this.componentPref.setLibEntries((ILibEntry[]) event
+    // .getNewValue());
+    // }
+    // }
     /*
-	 * (non-Javadoc) Method declared on IWorkbenchWizard.
-	 */
+     * (non-Javadoc) Method declared on IWorkbenchWizard.
+     */
     public void init(IWorkbench workbench, IStructuredSelection currentSelection) {
         super.init(workbench, currentSelection);
         setNeedsProgressMonitor(true);
@@ -148,30 +157,33 @@ public class CreateComponentWizard extends BasicNewResourceWizard {
     /*
      * (non-Javadoc) Method declared on BasicNewResourceWizard.
      */
+    @Override
     protected void initializeDefaultPageImageDescriptor() {
         ImageDescriptor desc = ImageLib.getImageDescriptor(ImageLib.NEWCOMPONENT_WIZARD); //$NON-NLS-1$
         setDefaultPageImageDescriptor(desc);
     }
 
     /*
-	 * (non-Javadoc) Method declared on IWizard.
-	 */
-	public boolean performFinish() {
-		manager = new ComponentFolderManager();
-		try {
-			manager.generateComponentContent(componentPref, ResourcesPlugin
-					.getWorkspace().getRoot().getProject(PluginConstant.PROJECTNAME_DEFAULT));
-			ComponentPrefCollection.getInstance().save(componentPref);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (CoreException e) {
-			e.printStackTrace();
-		} catch (IOException ioe) {
+     * (non-Javadoc) Method declared on IWizard.
+     */
+    @Override
+    public boolean performFinish() {
+        manager = new ComponentFolderManager();
+        try {
+            manager.generateComponentContent(componentPref, ResourcesPlugin.getWorkspace().getRoot().getProject(
+                    PluginConstant.PROJECTNAME_DEFAULT));
+            ComponentPrefCollection.getInstance().save(componentPref);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (CoreException e) {
+            e.printStackTrace();
+        } catch (IOException ioe) {
             ioe.printStackTrace();
         }
-		return true;
-	}
+        return true;
+    }
 
+    @Override
     public void dispose() {
 
     }

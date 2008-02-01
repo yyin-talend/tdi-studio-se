@@ -30,6 +30,7 @@ import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.views.navigator.ResourceComparator;
 import org.talend.componentdesigner.ComponentDesigenerPlugin;
+import org.talend.componentdesigner.PluginConstant;
 import org.talend.componentdesigner.model.ILibEntry;
 import org.talend.componentdesigner.model.libentry.JarLibEntry;
 import org.talend.componentdesigner.model.libentry.PmLibEntry;
@@ -40,69 +41,67 @@ import org.talend.componentdesigner.ui.composite.ILibListViewer;
  */
 public class AddResourceAction extends UseResourceAction {
 
-	private ISelectionStatusValidator validator = new ISelectionStatusValidator() {
-		public IStatus validate(Object[] selection) {
-			if (selection.length == 0) {
-				return new Status(IStatus.ERROR,
-						ComponentDesigenerPlugin.PLUGIN_ID, 0, "", null); //$NON-NLS-1$
-			}
-			for (int i = 0; i < selection.length; i++) {
-				if (!(selection[i] instanceof IFile)) {
-					return new Status(IStatus.ERROR,
-							ComponentDesigenerPlugin.PLUGIN_ID, 0, "", null); //$NON-NLS-1$
-				}
-			}
-			return new Status(IStatus.OK, ComponentDesigenerPlugin.PLUGIN_ID,
-					0, "", null); //$NON-NLS-1$
-		}
-	};
+    private final ISelectionStatusValidator validator = new ISelectionStatusValidator() {
 
-	public AddResourceAction(ILibListViewer viewer) {
-		super("Add Libraries...", viewer);
-	}
+        public IStatus validate(Object[] selection) {
+            if (selection.length == 0) {
+                return new Status(IStatus.ERROR, ComponentDesigenerPlugin.PLUGIN_ID, 0, "", null); //$NON-NLS-1$
+            }
+            for (int i = 0; i < selection.length; i++) {
+                if (!(selection[i] instanceof IFile)) {
+                    return new Status(IStatus.ERROR, ComponentDesigenerPlugin.PLUGIN_ID, 0, "", null); //$NON-NLS-1$
+                }
+            }
+            return new Status(IStatus.OK, ComponentDesigenerPlugin.PLUGIN_ID, 0, "", null); //$NON-NLS-1$
+        }
+    };
 
-	/**
-	 * Prompts for a jar to add.
-	 * 
-	 * @see IAction#run()
-	 */
-	public void run() {
+    public AddResourceAction(ILibListViewer viewer) {
+        super("Add Libraries...", viewer);
+    }
 
-//		ViewerFilter filter = new ArchiveFilter(getSelectedJars());
+    /**
+     * Prompts for a jar to add.
+     * 
+     * @see IAction#run()
+     */
+    @Override
+    public void run() {
 
-		ILabelProvider lp = new WorkbenchLabelProvider();
-		ITreeContentProvider cp = new WorkbenchContentProvider();
+        // ViewerFilter filter = new ArchiveFilter(getSelectedJars());
 
-		ElementTreeSelectionDialog dialog = new ElementTreeSelectionDialog(
-				getShell(), lp, cp);
-		dialog.setValidator(validator);
-		dialog.setTitle("JAR Selection");
-		dialog.setMessage("&Choose jars and zips to add:");
-//		dialog.addFilter(filter);
-		dialog.setInput(ResourcesPlugin.getWorkspace().getRoot());
-		dialog.setComparator(new ResourceComparator(ResourceComparator.NAME));
+        ILabelProvider lp = new WorkbenchLabelProvider();
+        ITreeContentProvider cp = new WorkbenchContentProvider();
 
-		if (dialog.open() == Window.OK) {
-			Object[] elements = dialog.getResult();
-			List<ILibEntry> res = new ArrayList<ILibEntry>();
-			for (int i = 0; i < elements.length; i++) {
-				IResource elem = (IResource) elements[i];
-				String name = elem.getName();
-				if (name.matches("(?i).*\\.(jar)\\b")) {
-					res.add(new JarLibEntry(elem));
-				}
-				if (name.matches("(?i).*\\.(pm)\\b")) {
-					res.add(new PmLibEntry(elem));
-				}
-			}
-			if (res.size() > 0) {
-				ILibEntry[] entries = new ILibEntry[res.size()];
-				getViewer().addEntries(res.toArray(entries));
-			}
-		}
-	}
+        ElementTreeSelectionDialog dialog = new ElementTreeSelectionDialog(getShell(), lp, cp);
+        dialog.setValidator(validator);
+        dialog.setTitle("JAR Selection");
+        dialog.setMessage("&Choose jars and zips to add:");
+        dialog.setInput(ResourcesPlugin.getWorkspace().getRoot().getProject(PluginConstant.PROJECTNAME_DEFAULT));
+        dialog.setComparator(new ResourceComparator(ResourceComparator.NAME));
 
-	protected int getActionType() {
-		return ADD;
-	}
+        if (dialog.open() == Window.OK) {
+            Object[] elements = dialog.getResult();
+            List<ILibEntry> res = new ArrayList<ILibEntry>();
+            for (int i = 0; i < elements.length; i++) {
+                IResource elem = (IResource) elements[i];
+                String name = elem.getName();
+                if (name.matches("(?i).*\\.(jar)\\b")) {
+                    res.add(new JarLibEntry(elem));
+                }
+                if (name.matches("(?i).*\\.(pm)\\b")) {
+                    res.add(new PmLibEntry(elem));
+                }
+            }
+            if (res.size() > 0) {
+                ILibEntry[] entries = new ILibEntry[res.size()];
+                getViewer().addEntries(res.toArray(entries));
+            }
+        }
+    }
+
+    @Override
+    protected int getActionType() {
+        return ADD;
+    }
 }

@@ -4,7 +4,7 @@
    <extension
          point="org.eclipse.ui.views">
       <view
-            name="Component Navigator"
+            name="Component Designer"
             icon="$nl$/icons/componentnav_nav.gif"
             category="org.eclipse.ui"
             class="org.talend.componentdesigner.ui.view.ComponentNavigator"
@@ -21,7 +21,7 @@
       <perspective
             class="org.talend.componentdesigner.ui.Perspective"
             id="org.talend.componentdesigner.perspective"
-            name="DesignerPerspective">
+            name="Component's Designer">
       </perspective>
  </extension>   
  <extension point="org.eclipse.ui.perspectiveExtensions">
@@ -47,7 +47,7 @@
           icon="./icons/component_wizard.gif" 
           class="org.talend.componentdesigner.ui.wizard.creatcomponent.CreateComponentWizard"> 
           <description> 
-              Create a simple component designer project and set initial content
+              Component Designer project
           </description> 
            <selection class="org.eclipse.core.resources.IResource"/>          
       </wizard> 

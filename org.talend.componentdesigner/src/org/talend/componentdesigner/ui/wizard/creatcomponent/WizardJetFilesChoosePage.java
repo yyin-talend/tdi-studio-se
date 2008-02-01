@@ -41,7 +41,7 @@ import org.talend.componentdesigner.ui.composite.LibSelectionComposite;
  */
 public class WizardJetFilesChoosePage extends AbstractComponentPage {
 
-	private Button useBeginButton;
+    private Button useBeginButton;
 
     private Button useMainButton;
 
@@ -55,88 +55,84 @@ public class WizardJetFilesChoosePage extends AbstractComponentPage {
 
     private Button browserImageButton;
 
-	private Button defaultImageButton;
+    private Button defaultImageButton;
 
-	private Button useDefaultResourceButton;
+    private Button useDefaultResourceButton;
 
-	private Button useZHResourceButton;
+    private Button useZHResourceButton;
 
-	private Button useFRResourceButton;
+    private Button useFRResourceButton;
 
-	private LibSelectionComposite libComposite;   
+    private LibSelectionComposite libComposite;
 
+    protected WizardJetFilesChoosePage(String pageName, ComponentPref componentPref) {
+        super(pageName, componentPref);
+    }
 
-    protected WizardJetFilesChoosePage(String pageName,
-			ComponentPref componentPref) {
-		super(pageName, componentPref);
-	}    
+    @Override
+    protected void initialize() {
+        if (this.componentPref.getName() == null) {
+            useBeginButton.setSelection(true);
+            componentPref.setJetFileStamps(JetFileStamp.findFileStamps(true, false, false));
+            useDefaultResourceButton.setSelection(true);
+            final List<ResourceLanguageType> resourceTypes = new ArrayList<ResourceLanguageType>();
+            resourceTypes.add(ResourceLanguageType.DEFAULTRESOURCETYPE);
+            componentPref.setResourceLanguageTypes(resourceTypes);
+            defaultImageButton.setSelection(true);
+        } else {
+            // initialize jet file stamp
+            for (JetFileStamp fileStamp : componentPref.getJetFileStamps()) {
+                switch (fileStamp) {
+                case JETBEGINSTAMP:
+                    this.useBeginButton.setSelection(true);
+                    break;
+                case JETMAINSTAMP:
+                    this.useMainButton.setSelection(true);
+                    break;
+                case JETENDSTAMP:
+                    this.useEndButton.setSelection(true);
+                    break;
+                default:
+                }
+            }
 
+            // initialize resource file language
+            for (ResourceLanguageType resourceLangType : componentPref.getResourceLanguageTypes()) {
+                switch (resourceLangType) {
+                case DEFAULTRESOURCETYPE:
+                    this.useDefaultResourceButton.setSelection(true);
+                    break;
+                case ZHRESOURCETYPE:
+                    this.useZHResourceButton.setSelection(true);
+                    break;
+                case FRRESOURCETYPE:
+                    this.useFRResourceButton.setSelection(true);
+                    break;
+                default:
+                }
+            }
 
-	@Override
-	protected void initialize() {
-		if (this.componentPref.getName() == null) {
-			useBeginButton.setSelection(true);
-			componentPref.setJetFileStamps(JetFileStamp.findFileStamps(true,
-					false, false));
-			useDefaultResourceButton.setSelection(true);
-			final List<ResourceLanguageType> resourceTypes = new ArrayList<ResourceLanguageType>();
-			resourceTypes.add(ResourceLanguageType.DEFAULTRESOURCETYPE);
-			componentPref.setResourceLanguageTypes(resourceTypes);
-			defaultImageButton.setSelection(true);
-		} else {
-			//initialize jet file stamp
-			for (JetFileStamp fileStamp : componentPref.getJetFileStamps()) {
-				switch (fileStamp) {
-				case JETBEGINSTAMP:
-					this.useBeginButton.setSelection(true);
-					break;
-				case JETMAINSTAMP:
-					this.useMainButton.setSelection(true);
-					break;
-				case JETENDSTAMP:
-					this.useEndButton.setSelection(true);
-					break;
-				default:
-				}
-			}
-			
-			//initialize resource file language
-			for (ResourceLanguageType resourceLangType : componentPref
-					.getResourceLanguageTypes()) {
-				switch (resourceLangType) {
-				case DEFAULTRESOURCETYPE:
-					this.useDefaultResourceButton.setSelection(true);
-					break;
-				case ZHRESOURCETYPE:
-					this.useZHResourceButton.setSelection(true);
-					break;
-				case FRRESOURCETYPE:
-					this.useFRResourceButton.setSelection(true);
-					break;
-				default:
-				}
-			}
-			
-			//initialize image selection
-			if (this.componentPref.getImageURL() == null) {
-				defaultImageButton.setSelection(true);
-			} else {
-				browserImageButton.setSelection(true);
-				imageDirectoryText.setText(componentPref.getImageURL());
-			}
-			
-			//initialize library list selection
-			libComposite.setLibEntries(componentPref.getLibEntries());
-			
-		}
-		setPageComplete(validatePage());
-	}
+            // initialize image selection
+            if (this.componentPref.getImageURL() == null) {
+                defaultImageButton.setSelection(true);
+            } else {
+                browserImageButton.setSelection(true);
+                imageDirectoryText.setText(componentPref.getImageURL());
+            }
+
+            // initialize library list selection
+            libComposite.setLibEntries(componentPref.getLibEntries());
+
+        }
+        setPageComplete(validatePage());
+    }
 
     /*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
-	 */
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
+     */
+    @Override
     public void createPageContent(Composite parent) {
         Composite groupsComposite = new Composite(parent, SWT.NONE);
         GridLayout layout = new GridLayout();
@@ -155,7 +151,7 @@ public class WizardJetFilesChoosePage extends AbstractComponentPage {
 
     private void creatFilesSelectionGrp(Composite groupsComposite) {
         Group filesSelectionGrp = new Group(groupsComposite, SWT.NONE);
-        filesSelectionGrp.setText("Choose which jet files are needed"); //$NON-NLS-1$
+        filesSelectionGrp.setText("Select required Jet files"); //$NON-NLS-1$
         // GridDataFactory.fillDefaults().span(1, 1).grab(true, false).applyTo(
         // filesSelectionGrp);
         filesSelectionGrp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -172,6 +168,7 @@ public class WizardJetFilesChoosePage extends AbstractComponentPage {
 
         SelectionListener listener = new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 setPageComplete(validatePage());
                 List<JetFileStamp> jetFileTypes = JetFileStamp.findFileStamps(useBeginButton.getSelection(), useMainButton
@@ -183,39 +180,35 @@ public class WizardJetFilesChoosePage extends AbstractComponentPage {
         useMainButton.addSelectionListener(listener);
         useEndButton.addSelectionListener(listener);
     }
-    
+
     private void creatResourceLangGrp(Composite groupsComposite) {
         Group resourceLangGrp = new Group(groupsComposite, SWT.NONE);
-        resourceLangGrp.setText("Choose which resource file are needed"); //$NON-NLS-1$
+        resourceLangGrp.setText("Select language dependent file"); //$NON-NLS-1$
         // GridDataFactory.fillDefaults().span(1, 1).grab(true, false).applyTo(
         // filesSelectionGrp);
         resourceLangGrp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         GridLayout groupLayout = new GridLayout(3, false);
         resourceLangGrp.setLayout(groupLayout);
 
-        useDefaultResourceButton = new Button(resourceLangGrp,
-				SWT.CHECK | SWT.RIGHT);
-		useDefaultResourceButton.setText(PluginConstant.DEFAULTLANG_RESOURCE);      
-		useZHResourceButton = new Button(resourceLangGrp,
-				SWT.CHECK | SWT.RIGHT);
-		useZHResourceButton.setText(PluginConstant.ZHLANG_RESOURCE);
-		useFRResourceButton = new Button(resourceLangGrp,
-				SWT.CHECK | SWT.RIGHT);
-		useFRResourceButton.setText(PluginConstant.FRLANG_RESOURCE);
+        useDefaultResourceButton = new Button(resourceLangGrp, SWT.CHECK | SWT.RIGHT);
+        useDefaultResourceButton.setText(PluginConstant.DEFAULTLANG_RESOURCE);
+        useZHResourceButton = new Button(resourceLangGrp, SWT.CHECK | SWT.RIGHT);
+        useZHResourceButton.setText(PluginConstant.ZHLANG_RESOURCE);
+        useFRResourceButton = new Button(resourceLangGrp, SWT.CHECK | SWT.RIGHT);
+        useFRResourceButton.setText(PluginConstant.FRLANG_RESOURCE);
 
         SelectionListener listener = new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 setPageComplete(validatePage());
                 Button button = ((Button) e.getSource());
-				if (button.getSelection()) {
-					componentPref.getResourceLanguageTypes().add(ResourceLanguageType.find(button
-							.getText()));
-				} else {
-					componentPref.getResourceLanguageTypes().remove(ResourceLanguageType.find(button
-							.getText()));
-				}
-//                propertyChangeBean.firePropertyChange(PluginConstant.RESOURCETYPE_PROPERTY, null, resourceTypes);
+                if (button.getSelection()) {
+                    componentPref.getResourceLanguageTypes().add(ResourceLanguageType.find(button.getText()));
+                } else {
+                    componentPref.getResourceLanguageTypes().remove(ResourceLanguageType.find(button.getText()));
+                }
+                // propertyChangeBean.firePropertyChange(PluginConstant.RESOURCETYPE_PROPERTY, null, resourceTypes);
             }
         };
         useDefaultResourceButton.addSelectionListener(listener);
@@ -225,7 +218,7 @@ public class WizardJetFilesChoosePage extends AbstractComponentPage {
 
     private void creatImageSelectionGrp(Composite groupsComposite) {
         Group imageSelectionGrp = new Group(groupsComposite, SWT.NONE);
-        imageSelectionGrp.setText("Choose Image"); //$NON-NLS-1$
+        imageSelectionGrp.setText("Select Icon"); //$NON-NLS-1$
         // GridDataFactory.fillDefaults().span(1, 1).grab(true, false).applyTo(
         // filesSelectionGrp);
         imageSelectionGrp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -233,18 +226,19 @@ public class WizardJetFilesChoosePage extends AbstractComponentPage {
         imageSelectionGrp.setLayout(groupLayout);
 
         defaultImageButton = new Button(imageSelectionGrp, SWT.RADIO | SWT.RIGHT);
-		GridData imageGridData = new GridData();
+        GridData imageGridData = new GridData();
         imageGridData.horizontalSpan = 9;
         defaultImageButton.setLayoutData(imageGridData);
-        defaultImageButton.setText("Use the default image");
+        defaultImageButton.setText("Use default icon");
         browserImageButton = new Button(imageSelectionGrp, SWT.RADIO | SWT.RIGHT);
-        browserImageButton.setText("Use the image from exist directory");
+        browserImageButton.setText("Use icon from:");
         imageGridData = new GridData();
         imageGridData.horizontalSpan = 9;
         browserImageButton.setLayoutData(imageGridData);
 
         SelectionListener listener = new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 setImageDirectoryEnable(browserImageButton.getSelection());
                 setPageComplete(validatePage());
@@ -265,14 +259,17 @@ public class WizardJetFilesChoosePage extends AbstractComponentPage {
         imageDirectoryText.setLayoutData(textGridData);
 
         imageDirectoryText.addModifyListener(new ModifyListener() {
-            
-            /* (non-Javadoc)
+
+            /*
+             * (non-Javadoc)
+             * 
              * @see org.eclipse.swt.events.ModifyListener#modifyText(org.eclipse.swt.events.ModifyEvent)
              */
             public void modifyText(ModifyEvent e) {
                 setPageComplete(validatePage());
                 componentPref.setImageURL(imageDirectoryText.getText());
-//                propertyChangeBean.firePropertyChange(PluginConstant.IMAGE_PROPERTY, null, imageDirectoryText.getText());
+                // propertyChangeBean.firePropertyChange(PluginConstant.IMAGE_PROPERTY, null,
+                // imageDirectoryText.getText());
             }
 
         });
@@ -284,14 +281,15 @@ public class WizardJetFilesChoosePage extends AbstractComponentPage {
         viewImageButton.setText(PluginConstant.BROWSER_LABEL);
         viewImageButton.addSelectionListener(new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
-                imageDirectoryText.setText(getPathFromDialog(new String[] { "*.*", "*.jpg", "*.gif" }));
+                imageDirectoryText.setText(getPathFromDialog(new String[] { "*.png" }));
                 setPageComplete(validatePage());
             }
         });
 
         setImageDirectoryEnable(browserImageButton.getSelection());
-	}
+    }
 
     private void creatLibSelectionGrp(Composite groupsComposite) {
         Group libSelectionGrp = new Group(groupsComposite, SWT.NONE);
@@ -299,13 +297,12 @@ public class WizardJetFilesChoosePage extends AbstractComponentPage {
         GridData gd = new GridData(GridData.FILL_BOTH);
         libSelectionGrp.setLayoutData(gd);
         GridLayout groupLayout = new GridLayout();
-        libSelectionGrp.setLayout(groupLayout);        
-        libComposite = new LibSelectionComposite(
-				libSelectionGrp, SWT.NONE);
-		gd = new GridData(GridData.FILL_BOTH);
-        
-		libComposite.setLayoutData(gd);
-		libComposite.setComponentPrefBean(this.componentPref);
+        libSelectionGrp.setLayout(groupLayout);
+        libComposite = new LibSelectionComposite(libSelectionGrp, SWT.NONE);
+        gd = new GridData(GridData.FILL_BOTH);
+
+        libComposite.setLayoutData(gd);
+        libComposite.setComponentPrefBean(this.componentPref);
     }
 
     private String getPathFromDialog(String[] extensions) {
@@ -325,13 +322,10 @@ public class WizardJetFilesChoosePage extends AbstractComponentPage {
         imageDirectoryLabel.setEnabled(enabled);
     }
 
+    @Override
     protected boolean validatePage() {
-        if (!(useBeginButton.getSelection() || useMainButton.getSelection() || useEndButton.getSelection())) {
-            this.setErrorMessage("Need choose which jet files to create");
-            return false;
-        }
         if (browserImageButton.getSelection() && imageDirectoryText.getText().equals(PluginConstant.EMPTY_STRING)) {
-            this.setErrorMessage("The image of current component haven't assigned");
+            this.setErrorMessage("Chose an icon");
             return false;
         }
         this.setErrorMessage(null);

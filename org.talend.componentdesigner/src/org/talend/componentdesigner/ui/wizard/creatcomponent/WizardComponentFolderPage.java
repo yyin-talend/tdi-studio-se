@@ -25,6 +25,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.talend.componentdesigner.PluginConstant;
@@ -37,142 +38,222 @@ import org.talend.componentdesigner.model.enumtype.LanguageType;
  */
 public class WizardComponentFolderPage extends AbstractComponentPage {
 
+    private Text componentFamily;
+
+    private Text componentLongName;
+
     private Button useJavaLangButton;
 
     private Button usePerlLangButton;
 
-	private Text componentFolderText;
+    private Text componentFolderText;
 
     /**
      * @param pageName
-     * @param componentPref 
+     * @param componentPref
      */
     public WizardComponentFolderPage(String pageName, ComponentPref componentPref) {
-    	super(pageName, componentPref);
+        super(pageName, componentPref);
     }
-    
 
+    @Override
+    protected void initialize() {
+        if (this.componentPref.getName() == null) {
+            useJavaLangButton.setSelection(true);
+            componentPref.setLanguageType(LanguageType.JAVALANGUAGETYPE);
+            componentFolderText.addModifyListener(new ModifyListener() {
 
-	@Override
-	protected void initialize() {
-		if (this.componentPref.getName() == null) {
-			useJavaLangButton.setSelection(true);
-			componentPref.setLanguageType(LanguageType.JAVALANGUAGETYPE);
-			componentFolderText.addModifyListener(new ModifyListener() {
+                /*
+                 * (non-Javadoc)
+                 * 
+                 * @see org.eclipse.swt.events.ModifyListener#modifyText(org.eclipse.swt.events.ModifyEvent)
+                 */
+                public void modifyText(ModifyEvent e) {
+                    setPageComplete(validatePage());
+                    componentPref.setName(componentFolderText.getText());
+                }
 
-				/*
-				 * (non-Javadoc)
-				 * 
-				 * @see org.eclipse.swt.events.ModifyListener#modifyText(org.eclipse.swt.events.ModifyEvent)
-				 */
-				public void modifyText(ModifyEvent e) {
-					setPageComplete(validatePage());
-					componentPref.setName(componentFolderText.getText());
-				}
+            });
+            componentLongName.addModifyListener(new ModifyListener() {
 
-			});
-			this.setPageComplete(validatePage());
-		} else {
-			this.componentFolderText.setText(componentPref.getName());
-			this.componentFolderText.setEnabled(false);
-			switch (componentPref.getLanguageType()) {
-			case PERLLANGUAGETYPE:
-				this.usePerlLangButton.setSelection(true);
-				this.useJavaLangButton.setSelection(false);
-				break;
-			case JAVALANGUAGETYPE:
-				this.usePerlLangButton.setSelection(false);
-				this.useJavaLangButton.setSelection(true);
-				break;
-			case BOTHLANGUAGETYPE:
-				this.usePerlLangButton.setSelection(true);
-				this.useJavaLangButton.setSelection(true);
-				break;
-			default:
-			}
-			this.setPageComplete(true);
-		}
-	}
+                /*
+                 * (non-Javadoc)
+                 * 
+                 * @see org.eclipse.swt.events.ModifyListener#modifyText(org.eclipse.swt.events.ModifyEvent)
+                 */
+                public void modifyText(ModifyEvent e) {
+                    setPageComplete(validatePage());
+                    componentPref.setLongName(componentLongName.getText());
+                }
+
+            });
+            componentFamily.addModifyListener(new ModifyListener() {
+
+                /*
+                 * (non-Javadoc)
+                 * 
+                 * @see org.eclipse.swt.events.ModifyListener#modifyText(org.eclipse.swt.events.ModifyEvent)
+                 */
+                public void modifyText(ModifyEvent e) {
+                    setPageComplete(validatePage());
+                    componentPref.setFamily(componentFamily.getText());
+                }
+
+            });
+            this.setPageComplete(validatePage());
+        } else {
+            this.componentFolderText.setText(componentPref.getName());
+            this.componentFolderText.setEnabled(false);
+            switch (componentPref.getLanguageType()) {
+            case PERLLANGUAGETYPE:
+                this.usePerlLangButton.setSelection(true);
+                this.useJavaLangButton.setSelection(false);
+                break;
+            case JAVALANGUAGETYPE:
+                this.usePerlLangButton.setSelection(false);
+                this.useJavaLangButton.setSelection(true);
+                break;
+            case BOTHLANGUAGETYPE:
+                this.usePerlLangButton.setSelection(true);
+                this.useJavaLangButton.setSelection(true);
+                break;
+            default:
+            }
+            this.setPageComplete(true);
+        }
+    }
 
     /*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ui.dialogs.WizardNewProjectCreationPage#createControl(org.eclipse.swt.widgets.Composite)
-	 */
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.ui.dialogs.WizardNewProjectCreationPage#createControl(org.eclipse.swt.widgets.Composite)
+     */
+    @Override
     public void createPageContent(Composite parent) {
-    	Composite composite = new Composite(parent, SWT.NONE);
-		composite.setLayout(new GridLayout(1, false));
-		GridData data = new GridData(GridData.FILL_BOTH);
-		composite.setLayoutData(data);
 
-		Label label = new Label(composite, SWT.NONE);
-		GridData gridData = new GridData();
-//		gridData.horizontalSpan = 1;
-		label.setLayoutData(gridData);
-		label.setText("Component Name:");
+        Composite composite = new Composite(parent, SWT.NULL);
+        composite.setLayout(new GridLayout());
+        composite.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_FILL | GridData.HORIZONTAL_ALIGN_FILL));
+        composite.setFont(parent.getFont());
 
-		componentFolderText = new Text(composite, SWT.BORDER | SWT.LEFT);
-		gridData = new GridData(GridData.FILL_HORIZONTAL);
-//		gridData.horizontalSpan = 8;
-		componentFolderText.setLayoutData(gridData);
-		
-        this.createComponentLangGroup(composite);
+        this.createComponentGroup(composite);
         this.setControl(composite);
     }
 
-    private void createComponentLangGroup(Composite parent) {
-        // project specification group
-        Composite langCheckGroup = new Composite(parent, SWT.NONE);
-        GridLayout layout = new GridLayout();
-        layout.numColumns = 2;
-        langCheckGroup.setLayout(layout);
-        langCheckGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+    private void createComponentGroup(Composite parent) {
+        // component specification group
+        Group optionsGroup = new Group(parent, SWT.NONE);
+        GridLayout layout = new GridLayout(2, true);
+        optionsGroup.setLayout(layout);
+        optionsGroup.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL));
+
+        Label nameLabel = new Label(optionsGroup, SWT.NONE);
+        nameLabel.setText("Name");
+        componentFolderText = new Text(optionsGroup, SWT.BORDER | SWT.LEFT);
+        componentFolderText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+
+        Label longNameLabel = new Label(optionsGroup, SWT.NONE);
+        longNameLabel.setText("Long Name (mouseover tooltip)");
+        componentLongName = new Text(optionsGroup, SWT.MULTI | SWT.WRAP | SWT.BORDER | SWT.LEFT);
+        componentLongName.setLayoutData(new GridData(225, 60));
+
+        Label familyLabel = new Label(optionsGroup, SWT.NONE);
+        familyLabel.setText("Family");
+        componentFamily = new Text(optionsGroup, SWT.BORDER | SWT.LEFT);
+        componentFamily.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
         // create the language selection check button
-        useJavaLangButton = new Button(langCheckGroup, SWT.CHECK | SWT.RIGHT);
-        useJavaLangButton.setText("Use JAVA");
-        usePerlLangButton = new Button(langCheckGroup, SWT.CHECK | SWT.RIGHT);
-        usePerlLangButton.setText("Use Perl");
+        Label availability = new Label(optionsGroup, SWT.LEFT);
+        availability.setText("Available in");
+
+        Composite languageGroup = new Composite(optionsGroup, SWT.NONE);
+        languageGroup.setLayout(layout);
+        // languageGroup.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL));
+
+        useJavaLangButton = new Button(languageGroup, SWT.CHECK | SWT.RIGHT);
+        useJavaLangButton.setText("Java");
+        usePerlLangButton = new Button(languageGroup, SWT.CHECK | SWT.RIGHT);
+        usePerlLangButton.setText("Perl");
 
         SelectionListener listener = new SelectionAdapter() {
 
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 setPageComplete(validatePage());
                 LanguageType type = LanguageType.find(useJavaLangButton.getSelection(), usePerlLangButton.getSelection());
                 componentPref.setLanguageType(type);
-//                propertyChangeBean.firePropertyChange(PluginConstant.LANGUAGE_PROPERTY, null, type);
+                // propertyChangeBean.firePropertyChange(PluginConstant.LANGUAGE_PROPERTY, null, type);
             }
         };
         useJavaLangButton.addSelectionListener(listener);
-        usePerlLangButton.addSelectionListener(listener);        
+        usePerlLangButton.addSelectionListener(listener);
     }
 
+    @Override
     protected boolean validatePage() {
         if (useJavaLangButton != null && usePerlLangButton != null) {
             if (!(useJavaLangButton.getSelection() || usePerlLangButton.getSelection())) {
-                setErrorMessage("The component language haven't select");
+                setErrorMessage("The component language have not been selected");
                 return false;
             }
         }
         if (this.componentFolderText.isEnabled()) {
-			IProject project = ResourcesPlugin.getWorkspace().getRoot()
-					.getProject(PluginConstant.PROJECTNAME_DEFAULT);
-			String componentName = componentFolderText.getText();
-			if (componentName.equals(PluginConstant.EMPTY_STRING)) {
-				setErrorMessage("The component name is null");
-				return false;
-			}
-			IFolder componentFolder = project.getFolder(componentName);
-			if (componentFolder.exists()) {
-				setErrorMessage("The component has been exsit");
-				return false;
-			}
-		}
-		setErrorMessage(null);
+            IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(PluginConstant.PROJECTNAME_DEFAULT);
+            String componentName = componentFolderText.getText();
+            if (componentName.equals(PluginConstant.EMPTY_STRING)) {
+                setErrorMessage("The component Name is empty");
+                return false;
+            }
+            IFolder componentFolder = project.getFolder(componentName);
+            if (componentFolder.exists()) {
+                setErrorMessage("This component already exists");
+                return false;
+            }
+        }
+
+        if (this.componentLongName.isEnabled()) {
+            String longName = componentLongName.getText();
+            if (longName.equals(PluginConstant.EMPTY_STRING)) {
+                setErrorMessage("The component Long Name is empty");
+                return false;
+            }
+        }
+
+        if (this.componentFamily.isEnabled()) {
+            String family = componentFamily.getText();
+            if (family.equals(PluginConstant.EMPTY_STRING)) {
+                setErrorMessage("The component Family is empty");
+                return false;
+            }
+        }
+        setErrorMessage(null);
         return true;
     }
-    
-    public String getComponentFolderName() {    	
-       return componentFolderText.getText();
-	}
+
+    /**
+     * Getter for componentName.
+     * 
+     * @return the componentName
+     */
+    public String getComponentFolderName() {
+        return componentFolderText.getText();
+    }
+
+    /**
+     * Getter for componentFamily.
+     * 
+     * @return the componentFamily
+     */
+    public Text getComponentFamily() {
+        return componentFamily;
+    }
+
+    /**
+     * Getter for componentLongName.
+     * 
+     * @return the componentLongName
+     */
+    public Text getComponentLongName() {
+        return componentLongName;
+    }
 }

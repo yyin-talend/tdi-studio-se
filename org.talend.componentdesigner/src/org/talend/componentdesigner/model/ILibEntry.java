@@ -15,39 +15,38 @@ package org.talend.componentdesigner.model;
 import org.eclipse.core.resources.IResource;
 
 /**
- *The library entry model.
+ * The library entry model.
  */
 public interface ILibEntry {
 
-	/**
-	 * Type identifier for jar entries.
-	 */
-	public static final int JAR = 1;
-	/**
-	 * Type identifier for pem entries.
-	 */
-	public static final int PM = 2;
+    /**
+     * Type identifier for jar entries.
+     */
+    public static final int JAR = 1;
 
-	public IResource getResource();
+    /**
+     * Type identifier for pm entries.
+     */
+    public static final int PM = 2;
 
-	/**
-	 * Returns an absolute path in the local file system for this entry, or
-	 * <code>null</code> if none, or if this entry is of type
-	 * <code>CONTAINER</code>.
-	 * 
-	 * @return an absolute path in the local file system for this entry, or
-	 *         <code>null</code> if none
-	 */
-	public  String getLocation();
+    public IResource getResource();
 
-	public String getNameAndPath(String jointMark);
+    /**
+     * Returns an absolute path in the local file system for this entry, or <code>null</code> if none, or if this
+     * entry is of type <code>CONTAINER</code>.
+     * 
+     * @return an absolute path in the local file system for this entry, or <code>null</code> if none
+     */
+    public String getLocation();
 
-	public int getType();
-	
-	public boolean isExternal();
-	
-	public String getName();
-	
-	public String getNamePrefix();
+    public String getNameAndPath(String jointMark);
+
+    public int getType();
+
+    public boolean isExternal();
+
+    public String getName();
+
+    public String getNamePrefix();
 
 }

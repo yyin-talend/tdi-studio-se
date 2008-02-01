@@ -17,7 +17,6 @@ import java.util.List;
 
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.datatools.enablement.oda.xml.util.ui.ATreeNode;
 import org.talend.componentdesigner.PluginConstant;
 import org.talend.componentdesigner.model.ILibEntry;
 import org.talend.componentdesigner.model.enumtype.JetFileStamp;
@@ -25,7 +24,6 @@ import org.talend.componentdesigner.model.enumtype.LanguageType;
 import org.talend.componentdesigner.model.enumtype.ResourceLanguageType;
 import org.talend.componentdesigner.model.libentry.JarLibEntry;
 import org.talend.componentdesigner.model.libentry.PmLibEntry;
-import org.talend.componentdesigner.ui.composite.xmltree.ATreeNodeUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
@@ -35,321 +33,354 @@ import org.w3c.dom.Node;
  */
 public class ComponentPref {
 
-	private static final String FIELDS_SEPARATOR = "#"; //$NON-NLS-1$
+    private static final String FIELDS_SEPARATOR = "#"; //$NON-NLS-1$
 
-	private static final String EQUEL_FIELDS_SEPARATOR = "="; //$NON-NLS-1$
+    private static final String EQUEL_FIELDS_SEPARATOR = "="; //$NON-NLS-1$
 
-	private static final String INTERNAL_FIELDS_SEPARATOR = ";"; //$NON-NLS-1$
+    private static final String INTERNAL_FIELDS_SEPARATOR = ";"; //$NON-NLS-1$
 
-	private String name;
+    private String name;
 
-	private LanguageType languageType;
+    private String longName;
 
-	private List<ResourceLanguageType> resourceLanguageTypes;
+    private String family;
 
-	private List<JetFileStamp> jetFileStamps;
+    private LanguageType languageType;
 
-	private String imageURL;
+    private List<ResourceLanguageType> resourceLanguageTypes;
 
-	private ILibEntry[] libEntries;
-	
-	private String xmlFileName;
-	
-	private Document xmlDocument;
-	
-	private Node[] jarImportNodes;
-	
-	private Node[] perImportNodes;
-	
-	
+    private List<JetFileStamp> jetFileStamps;
 
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return name;
-	}
+    private String imageURL;
 
-	/**
-	 * @param name
-	 *            the name to set
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
+    private ILibEntry[] libEntries;
 
-	/**
-	 * @return the languageType
-	 */
-	public LanguageType getLanguageType() {
-		return languageType;
-	}
+    private String xmlFileName;
 
-	/**
-	 * @param languageType
-	 *            the languageType to set
-	 */
-	public void setLanguageType(LanguageType languageType) {
-		this.languageType = languageType;
-	}
+    private Document xmlDocument;
 
-	/**
-	 * @return the resourceLanguageTypes
-	 */
-	public List<ResourceLanguageType> getResourceLanguageTypes() {
-		return resourceLanguageTypes;
-	}
+    private Node[] jarImportNodes;
 
-	/**
-	 * @param resourceLanguageTypes
-	 *            the resourceLanguageTypes to set
-	 */
-	public void setResourceLanguageTypes(
-			List<ResourceLanguageType> resourceLanguageTypes) {
-		this.resourceLanguageTypes = resourceLanguageTypes;
-	}
+    private Node[] perImportNodes;
 
-	/**
-	 * @return the jetFileTypes
-	 */
-	public List<JetFileStamp> getJetFileStamps() {
-		return jetFileStamps;
-	}
+    /**
+     * @return the name
+     */
+    public String getName() {
+        return name;
+    }
 
-	/**
-	 * @param jetFileStamps
-	 *            the jetFileTypes to set
-	 */
-	public void setJetFileStamps(List<JetFileStamp> jetFileStamps) {
-		this.jetFileStamps = jetFileStamps;
-	}
+    /**
+     * @param name the name to set
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	/**
-	 * @return the imageURL
-	 */
-	public String getImageURL() {
-		return imageURL;
-	}
+    /**
+     * Getter for longName.
+     * 
+     * @return the longName
+     */
+    public String getLongName() {
+        return longName;
+    }
 
-	/**
-	 * @param imageURL
-	 *            the srcImageName to set
-	 */
-	public void setImageURL(String imageURL) {
-		this.imageURL = imageURL;
-	}
+    /**
+     * Sets the longName.
+     * 
+     * @param longName the longName to set
+     */
+    public void setLongName(String longName) {
+        this.longName = longName;
+    }
 
-	/**
-	 * @return the libFileURL
-	 */
-	public ILibEntry[] getLibEntries() {
-		return libEntries;
-	}
+    /**
+     * Getter for family.
+     * 
+     * @return the family
+     */
+    public String getFamily() {
+        return family;
+    }
 
-	/**
-	 * @param libFileURL
-	 *            the libFileName to set
-	 */
-	public void setLibEntries(ILibEntry[] libEntries) {
-		this.libEntries = libEntries;
-	}
+    /**
+     * Sets the family.
+     * 
+     * @param family the family to set
+     */
+    public void setFamily(String family) {
+        this.family = family;
+    }
 
-	public static ComponentPref writeFromString(String s) {
-		ComponentPref toReturn = new ComponentPref();
-		try {
-			String[] st = s.split(FIELDS_SEPARATOR, -1);
-			int i = 0;
-			toReturn.setName(st[i++]);
-			toReturn.setLanguageType(LanguageType.find(st[i++]));
-			String fieldString;
-			String singleString;
-			String[] internalFields;
+    /**
+     * @return the languageType
+     */
+    public LanguageType getLanguageType() {
+        return languageType;
+    }
 
-			// 1. parse to jetFileTypes
-			fieldString = st[i++];
-			internalFields = fieldString.split(INTERNAL_FIELDS_SEPARATOR, 0);
-			List<JetFileStamp> stampList = new ArrayList<JetFileStamp>();
-			for (int j = 0; j < internalFields.length; j++) {
-				singleString = internalFields[j];
-				stampList.add(JetFileStamp.findFileStamp(singleString));
-			}
-			toReturn.setJetFileStamps(stampList);
+    /**
+     * @param languageType the languageType to set
+     */
+    public void setLanguageType(LanguageType languageType) {
+        this.languageType = languageType;
+    }
 
-			// 2. parse to resourceFileTypes
-			fieldString = st[i++];
-			internalFields = fieldString.split(INTERNAL_FIELDS_SEPARATOR, 0);
-			List<ResourceLanguageType> resourceLangList = new ArrayList<ResourceLanguageType>();
-			for (int j = 0; j < internalFields.length; j++) {
-				singleString = internalFields[j];
-				resourceLangList.add(ResourceLanguageType.find(singleString));
-			}
-			toReturn.setResourceLanguageTypes(resourceLangList);
+    /**
+     * @return the resourceLanguageTypes
+     */
+    public List<ResourceLanguageType> getResourceLanguageTypes() {
+        return resourceLanguageTypes;
+    }
 
-			// 3. parse to resourceFileTypes
-			fieldString = st[i++];
-			if (!fieldString.equals(PluginConstant.EMPTY_STRING)) {
-				toReturn.setImageURL(fieldString);
-			}
+    /**
+     * @param resourceLanguageTypes the resourceLanguageTypes to set
+     */
+    public void setResourceLanguageTypes(List<ResourceLanguageType> resourceLanguageTypes) {
+        this.resourceLanguageTypes = resourceLanguageTypes;
+    }
 
-			// 4. parse to library entries
-			fieldString = st[i++];
-			if (fieldString.equals(PluginConstant.EMPTY_STRING)) {
-				return toReturn;
-			}
-			internalFields = fieldString.split(INTERNAL_FIELDS_SEPARATOR, 0);
-			handleLibEntries(internalFields, toReturn);
+    /**
+     * @return the jetFileTypes
+     */
+    public List<JetFileStamp> getJetFileStamps() {
+        return jetFileStamps;
+    }
 
-		} catch (ArrayIndexOutOfBoundsException e) {
-			e.printStackTrace();
-		}
-		return toReturn;
-	}
+    /**
+     * @param jetFileStamps the jetFileTypes to set
+     */
+    public void setJetFileStamps(List<JetFileStamp> jetFileStamps) {
+        this.jetFileStamps = jetFileStamps;
+    }
 
-	private static void handleLibEntries(String[] internalFields,
-			ComponentPref componentBean) {
-		ILibEntry[] libArrays = new ILibEntry[internalFields.length];
-		for (int j = 0; j < internalFields.length; j++) {
-			String[] entryStrings = internalFields[j]
-					.split(EQUEL_FIELDS_SEPARATOR);
-			int k = 0;
-			String libName = entryStrings[k++];
-			String isExternal = entryStrings[k++];
-			String location = entryStrings[k++];
-			Object obj = null;
-			if (Boolean.valueOf(isExternal)) {
-				obj = new Path(location);
-			} else {
-				obj = ResourcesPlugin.getWorkspace().getRoot().getProject(PluginConstant.PROJECTNAME_DEFAULT).findMember(
-						location);
-			}
-			if (libName.matches("(?i).*\\.(jar)\\b")) {
-				libArrays[j] = new JarLibEntry(obj);
-			} else if (libName.matches("(?i).*\\.(pm)\\b")) {
-				libArrays[j] = new PmLibEntry(obj);
-			} else {
-				// Nothing
-			}
+    /**
+     * @return the imageURL
+     */
+    public String getImageURL() {
+        return imageURL;
+    }
 
-		}
-		componentBean.setLibEntries(libArrays);
-	}
+    /**
+     * @param imageURL the srcImageName to set
+     */
+    public void setImageURL(String imageURL) {
+        this.imageURL = imageURL;
+    }
 
-	/**
-	 * Parse fields of current class to string.
-	 * 
-	 * @return
-	 */
-	public String readToString() {
-		StringBuffer fields = new StringBuffer(getName() + FIELDS_SEPARATOR
-				+ getLanguageType().getNameSuffix() + FIELDS_SEPARATOR);
-		// 1. append jetFileTypes
-		if (this.getJetFileStamps().size() > 0) {
-			for (JetFileStamp fileStamp : getJetFileStamps()) {
-				fields.append(fileStamp.getFileStampName());
-				fields.append(INTERNAL_FIELDS_SEPARATOR);
-			}
-		}
-		fields.append(FIELDS_SEPARATOR);
+    /**
+     * @return the libFileURL
+     */
+    public ILibEntry[] getLibEntries() {
+        return libEntries;
+    }
 
-		// 2. append resourceFileTypes.
-		if (this.resourceLanguageTypes.size() > 0) {
-			for (ResourceLanguageType resourceType : resourceLanguageTypes) {
-				fields.append(resourceType.getLang());
-				fields.append(INTERNAL_FIELDS_SEPARATOR);
-			}
-		}
-		fields.append(FIELDS_SEPARATOR);
+    /**
+     * @param libFileURL the libFileName to set
+     */
+    public void setLibEntries(ILibEntry[] libEntries) {
+        this.libEntries = libEntries;
+    }
 
-		// 3. append imageUrl String.
-		if (this.imageURL == null) {
-			fields.append(PluginConstant.EMPTY_STRING);
-		} else {
-			fields.append(imageURL);
-		}
-		fields.append(FIELDS_SEPARATOR);
+    public static ComponentPref writeFromString(String s) {
+        ComponentPref toReturn = new ComponentPref();
+        try {
+            String[] st = s.split(FIELDS_SEPARATOR, -1);
+            int i = 0;
+            toReturn.setName(st[i++]);
+            toReturn.setLanguageType(LanguageType.find(st[i++]));
+            String fieldString;
+            String singleString;
+            String[] internalFields;
 
-		// 4. append library entries string.
-		if (libEntries != null && this.libEntries.length > 0) {
-			for (ILibEntry entry : this.libEntries) {
-				fields.append(entry.getName());
-				fields.append(EQUEL_FIELDS_SEPARATOR);
-				fields.append(entry.isExternal());
-				fields.append(EQUEL_FIELDS_SEPARATOR);
-				fields.append(entry.getLocation());
-				fields.append(INTERNAL_FIELDS_SEPARATOR);
-			}
-		}
-		return fields.toString();
-	}
+            // 1. parse to jetFileTypes
+            fieldString = st[i++];
+            internalFields = fieldString.split(INTERNAL_FIELDS_SEPARATOR, 0);
+            List<JetFileStamp> stampList = new ArrayList<JetFileStamp>();
+            for (int j = 0; j < internalFields.length; j++) {
+                singleString = internalFields[j];
+                stampList.add(JetFileStamp.findFileStamp(singleString));
+            }
+            toReturn.setJetFileStamps(stampList);
 
-	/**
-	 * Getter for xmlFileName.
-	 * @return the xmlFileName
-	 */
-	public String getXmlFileName() {
-		return xmlFileName;
-	}
+            // 2. parse to resourceFileTypes
+            fieldString = st[i++];
+            internalFields = fieldString.split(INTERNAL_FIELDS_SEPARATOR, 0);
+            List<ResourceLanguageType> resourceLangList = new ArrayList<ResourceLanguageType>();
+            for (int j = 0; j < internalFields.length; j++) {
+                singleString = internalFields[j];
+                resourceLangList.add(ResourceLanguageType.find(singleString));
+            }
+            toReturn.setResourceLanguageTypes(resourceLangList);
 
-	/**
-	 * Sets the xmlFileName.
-	 * @param xmlFileName the xmlFileName to set
-	 */
-	public void setXmlFileName(String xmlFileName) {
-		this.xmlFileName = xmlFileName;
-	}
+            // 3. parse to resourceFileTypes
+            fieldString = st[i++];
+            if (!fieldString.equals(PluginConstant.EMPTY_STRING)) {
+                toReturn.setImageURL(fieldString);
+            }
 
-	/**
-	 * Getter for xmlDocument.
-	 * @return the xmlDocument
-	 */
-	public Document getXmlDocument() {
-		return xmlDocument;
-	}
+            // 4. parse to library entries
+            fieldString = st[i++];
+            if (fieldString.equals(PluginConstant.EMPTY_STRING)) {
+                return toReturn;
+            }
+            internalFields = fieldString.split(INTERNAL_FIELDS_SEPARATOR, 0);
+            handleLibEntries(internalFields, toReturn);
 
-	/**
-	 * Sets the xmlDocument.
-	 * @param xmlDocument the xmlDocument to set
-	 */
-	public void setXmlDocument(Document xmlDocument) {
-		this.xmlDocument = xmlDocument;
-	}
+        } catch (ArrayIndexOutOfBoundsException e) {
+            e.printStackTrace();
+        }
+        return toReturn;
+    }
 
-    
+    private static void handleLibEntries(String[] internalFields, ComponentPref componentBean) {
+        ILibEntry[] libArrays = new ILibEntry[internalFields.length];
+        for (int j = 0; j < internalFields.length; j++) {
+            String[] entryStrings = internalFields[j].split(EQUEL_FIELDS_SEPARATOR);
+            int k = 0;
+            String libName = entryStrings[k++];
+            String isExternal = entryStrings[k++];
+            String location = entryStrings[k++];
+            Object obj = null;
+            if (Boolean.valueOf(isExternal)) {
+                obj = new Path(location);
+            } else {
+                obj = ResourcesPlugin.getWorkspace().getRoot().getProject(PluginConstant.PROJECTNAME_DEFAULT)
+                        .findMember(location);
+            }
+            if (libName.matches("(?i).*\\.(jar)\\b")) {
+                libArrays[j] = new JarLibEntry(obj);
+            } else if (libName.matches("(?i).*\\.(pm)\\b")) {
+                libArrays[j] = new PmLibEntry(obj);
+            } else {
+                // Nothing
+            }
+
+        }
+        componentBean.setLibEntries(libArrays);
+    }
+
+    /**
+     * Parse fields of current class to string.
+     * 
+     * @return
+     */
+    public String readToString() {
+        StringBuffer fields = new StringBuffer(getName() + FIELDS_SEPARATOR + getLanguageType().getNameSuffix()
+                + FIELDS_SEPARATOR);
+        // 1. append jetFileTypes
+        if (this.getJetFileStamps().size() > 0) {
+            for (JetFileStamp fileStamp : getJetFileStamps()) {
+                fields.append(fileStamp.getFileStampName());
+                fields.append(INTERNAL_FIELDS_SEPARATOR);
+            }
+        }
+        fields.append(FIELDS_SEPARATOR);
+
+        // 2. append resourceFileTypes.
+        if (this.resourceLanguageTypes.size() > 0) {
+            for (ResourceLanguageType resourceType : resourceLanguageTypes) {
+                fields.append(resourceType.getLang());
+                fields.append(INTERNAL_FIELDS_SEPARATOR);
+            }
+        }
+        fields.append(FIELDS_SEPARATOR);
+
+        // 3. append imageUrl String.
+        if (this.imageURL == null) {
+            fields.append(PluginConstant.EMPTY_STRING);
+        } else {
+            fields.append(imageURL);
+        }
+        fields.append(FIELDS_SEPARATOR);
+
+        // 4. append library entries string.
+        if (libEntries != null && this.libEntries.length > 0) {
+            for (ILibEntry entry : this.libEntries) {
+                fields.append(entry.getName());
+                fields.append(EQUEL_FIELDS_SEPARATOR);
+                fields.append(entry.isExternal());
+                fields.append(EQUEL_FIELDS_SEPARATOR);
+                fields.append(entry.getLocation());
+                fields.append(INTERNAL_FIELDS_SEPARATOR);
+            }
+        }
+        return fields.toString();
+    }
+
+    /**
+     * Getter for xmlFileName.
+     * 
+     * @return the xmlFileName
+     */
+    public String getXmlFileName() {
+        return xmlFileName;
+    }
+
+    /**
+     * Sets the xmlFileName.
+     * 
+     * @param xmlFileName the xmlFileName to set
+     */
+    public void setXmlFileName(String xmlFileName) {
+        this.xmlFileName = xmlFileName;
+    }
+
+    /**
+     * Getter for xmlDocument.
+     * 
+     * @return the xmlDocument
+     */
+    public Document getXmlDocument() {
+        return xmlDocument;
+    }
+
+    /**
+     * Sets the xmlDocument.
+     * 
+     * @param xmlDocument the xmlDocument to set
+     */
+    public void setXmlDocument(Document xmlDocument) {
+        this.xmlDocument = xmlDocument;
+    }
+
     /**
      * Getter for jarImportNodes.
+     * 
      * @return the jarImportNodes
      */
     public Node[] getJarImportNodes() {
         return this.jarImportNodes;
     }
 
-    
     /**
      * Sets the jarImportNodes.
+     * 
      * @param jarImportNodes the jarImportNodes to set
      */
     public void setJarImportNodes(Node[] jarImportNodes) {
         this.jarImportNodes = jarImportNodes;
     }
 
-    
     /**
      * Getter for perImportNodes.
+     * 
      * @return the perImportNodes
      */
     public Node[] getPerImportNodes() {
         return this.perImportNodes;
     }
 
-    
     /**
      * Sets the perImportNodes.
+     * 
      * @param perImportNodes the perImportNodes to set
      */
     public void setPerImportNodes(Node[] perImportNodes) {
         this.perImportNodes = perImportNodes;
     }
-    
+
     public Document getJavaXmlDocument() {
         return removeUnusedNodes(this.getPerImportNodes());
     }
@@ -357,7 +388,7 @@ public class ComponentPref {
     public Document getPerlXmlDocument() {
         return removeUnusedNodes(getJarImportNodes());
     }
-    
+
     public Document getCurrentTypeDocument(String xmlType) {
         if (xmlType.equals(PluginConstant.JAVA_XML_SUFFIX)) {
             return this.getJavaXmlDocument();
@@ -365,8 +396,7 @@ public class ComponentPref {
             return this.getPerlXmlDocument();
         }
     }
-    
-    
+
     private Document removeUnusedNodes(Node[] importNodes) {
         Document documentCopy = null;
 
@@ -377,7 +407,7 @@ public class ComponentPref {
             }
 
             documentCopy = (Document) this.xmlDocument.cloneNode(true);
-            
+
             for (Node node : importNodes) {
                 importsNode.appendChild(node);
             }
