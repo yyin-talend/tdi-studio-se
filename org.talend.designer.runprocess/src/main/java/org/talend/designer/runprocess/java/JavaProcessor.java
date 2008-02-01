@@ -269,8 +269,8 @@ public class JavaProcessor extends Processor {
                 String nodeName;
                 for (INode node : breakpointNodes) {
                     nodeName = node.getUniqueName();
-                    if (node.getComponent().getMultipleComponentManager() != null) {
-                        nodeName += "_" + node.getComponent().getMultipleComponentManager().getInput().getName(); //$NON-NLS-1$
+                    if (node.getComponent().getMultipleComponentManagers().size() > 0) {
+                        nodeName += "_" + node.getComponent().getMultipleComponentManagers().get(0).getInput().getName(); //$NON-NLS-1$
                     }
                     nodeNames[pos++] = "[" + nodeName + " main ] start"; //$NON-NLS-1$ //$NON-NLS-2$
                 }
