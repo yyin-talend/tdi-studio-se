@@ -18,6 +18,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.talend.designer.rowgenerator.data.AbstractFunctionParser;
 import org.talend.designer.rowgenerator.data.Function;
 import org.talend.designer.rowgenerator.data.FunctionManager;
 import org.talend.designer.rowgenerator.data.TalendType;
@@ -30,6 +31,10 @@ import org.talend.expressionbuilder.i18n.Messages;
  * 
  */
 public class CategoryManager {
+
+    private static final String DEFAULT_CATEGORY = "_default_category";
+
+    private Category defaultCategory;
 
     public java.util.List<Category> getInputCategory() {
         FunctionManager functionManager = new FunctionManager();
@@ -51,6 +56,12 @@ public class CategoryManager {
                     userDefined.addFunctions(function);
                 }
             }
+        }
+
+        // remove the default category since it already added into user defined category.
+        if (defaultCategory != null && categories.contains(defaultCategory)) {
+            userDefined.addFunctions(defaultCategory.getFunctions());
+            categories.remove(defaultCategory);
         }
 
         List<Category> input = new ArrayList<Category>();
@@ -78,6 +89,12 @@ public class CategoryManager {
             List functions = type.getFunctions();
             for (int i = 0; i < functions.size(); i++) {
                 Function func = (Function) functions.get(i);
+
+                // if there's no category defination for the funtion set it as default category.
+                if (func.getCategory() == null || AbstractFunctionParser.EMPTY_STRING.equals(func.getCategory())) {
+                    func.setCategory(DEFAULT_CATEGORY);
+                }
+
                 List<Function> funcs = map.get(func.getCategory());
                 if (funcs == null) {
                     funcs = new ArrayList<Function>();
@@ -94,6 +111,9 @@ public class CategoryManager {
             category.setFunctions(map.get(categoryName));
 
             categories.add(category);
+            if (DEFAULT_CATEGORY.equals(category.getName())) {
+                defaultCategory = category;
+            }
         }
 
         return categories;
