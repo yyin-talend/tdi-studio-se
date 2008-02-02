@@ -283,60 +283,6 @@ public class DataProcess {
      * @return
      */
     @SuppressWarnings("unchecked")//$NON-NLS-1$
-    // private AbstractNode addMultipleNode(INode graphicalNode, IMultipleComponentManager multipleComponentManager) {
-    // AbstractNode dataNode;
-    // // prepare all the nodes
-    //
-    // INode previousNode = buildCheckMap.get(graphicalNode);
-    // dataNodeList.remove(previousNode);
-    //
-    // Map<IMultipleComponentItem, AbstractNode> itemsMap = new HashMap<IMultipleComponentItem, AbstractNode>();
-    //
-    // prepareAllMultipleComponentNodes(itemsMap, multipleComponentManager, graphicalNode);
-    // setMultipleComponentParameters(multipleComponentManager, itemsMap, graphicalNode);
-    //
-    // // set the first one (input) with the properties of the graphical node.
-    // dataNode = itemsMap.get(multipleComponentManager.getInput());
-    // dataNode.setStart(graphicalNode.isStart());
-    // dataNode.setSubProcessStart(graphicalNode.isSubProcessStart());
-    // dataNode.setThereLinkWithHash(graphicalNode.isThereLinkWithHash());
-    // List<IConnection> incomingConnections = (List<IConnection>) dataNode.getIncomingConnections();
-    // for (IConnection connection : previousNode.getIncomingConnections()) {
-    // if(){
-    // AbstractConnection asbractConnect = (AbstractConnection) connection;
-    // asbractConnect.setTarget(dataNode);
-    // incomingConnections.add(connection);
-    // }
-    // }
-    // List<IConnection> outgoingConnections = (List<IConnection>) dataNode.getOutgoingConnections();
-    //
-    // // RunBefore / RunAfter Links won't be linked to the output but on the first element of the subprocess.
-    // for (IConnection connection : previousNode.getOutgoingConnections()) {
-    // if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.EXECUTION_ORDER)) {
-    // AbstractConnection asbractConnect = (AbstractConnection) connection;
-    // asbractConnect.setSource(dataNode);
-    // outgoingConnections.add(0, connection);
-    // }
-    // }
-    //
-    // // set informations for the last node, so the outgoing connections.
-    // INode outputNode = itemsMap.get(multipleComponentManager.getOutput());
-    // outgoingConnections = (List<IConnection>) outputNode.getOutgoingConnections();
-    //
-    // // RunBefore / RunAfter Links won't be linked to the output but on the first element of the subprocess.
-    // for (IConnection connection : previousNode.getOutgoingConnections()) {
-    // if (!connection.getLineStyle().hasConnectionCategory(IConnectionCategory.EXECUTION_ORDER)) {
-    // AbstractConnection asbractConnect = (AbstractConnection) connection;
-    // asbractConnect.setSource(outputNode);
-    // outgoingConnections.add(connection);
-    // }
-    // }
-    //
-    // // adds all connections between these nodes
-    // addAllMultipleComponentConnections(itemsMap, multipleComponentManager, graphicalNode, dataNode, previousNode);
-    //
-    // return dataNode;
-    // }
     private void addMultipleNode(INode graphicalNode, List<IMultipleComponentManager> multipleComponentManagers) {
         AbstractNode dataNode;
         // prepare all the nodes
@@ -537,8 +483,26 @@ public class DataProcess {
             } else {
                 curNode.setDesignSubjobStartNode(graphicalNode.getDesignSubjobStartNode());
             }
-            curNode.getMetadataList().remove(0);
-            curNode.getMetadataList().add(newMetadata);
+
+            // propagate metadataLists for output component. only apply to multi-input virtual component
+            if (multipleComponentManager.isSetConnector() && multipleComponentManager.getOutputName().equals(curItem.getName())) {
+                // deactivate dummy component
+                if (curNode.getComponentName().equals("tDummyRow")) {
+                    curNode.setActivate(false);
+                } else {
+                    // propagate all metadataTables
+                    List<IMetadataTable> newMetadataList = new ArrayList<IMetadataTable>();
+                    for (IMetadataTable metadataTable : graphicalNode.getMetadataList()) {
+                        newMetadataList.add(metadataTable.clone());
+                    }
+                    curNode.setMetadataList(newMetadataList);
+                }
+
+            } else {
+                curNode.getMetadataList().remove(0);
+                curNode.getMetadataList().add(newMetadata);
+            }
+
             List<IConnection> outgoingConnections = new ArrayList<IConnection>();
             List<IConnection> incomingConnections = new ArrayList<IConnection>();
             curNode.setIncomingConnections(incomingConnections);
@@ -625,11 +589,20 @@ public class DataProcess {
                         paramTarget.setDefaultClosedListValue(paramSource.getDefaultClosedListValue());
                         paramTarget.setListItemsDisplayCodeName(paramSource.getListItemsDisplayCodeName());
                         paramTarget.setListItemsValue(paramSource.getListItemsValue());
+
+                        // adjust destination value based on the connector name.(only apply to multi-input virtual
+                        // component)
                         if (multipleComponentManager.isSetConnector() && param.getSourceComponent().equals("self")
-                                && param.getSourceValue().equals("UNIQUE_NAME")) {
+                                && param.getSourceValue().equals("UNIQUE_NAME") && param.getTargetValue().equals("DESTINATION")) {
                             paramTarget.setValue(paramSource.getValue() + multipleComponentManager.getConnector());
                         } else {
                             paramTarget.setValue(paramSource.getValue());
+                        }
+                    }
+                    if ((paramSource == null) && (paramTarget != null)) {
+                        // set connection name to paramTarget
+                        if (param.getSourceValue().endsWith(":CONNECTION")) {
+                            paramTarget.setValue(sourceNode.getElementParameter(param.getSourceValue()).getValue());
                         }
                     }
                 }
