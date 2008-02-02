@@ -41,6 +41,7 @@ public class DataNode extends AbstractNode {
         setElementParameters(component.createElementParameters(this));
         setListConnector(component.createConnectors());
         setUniqueName(uniqueName);
+        setHasConditionalOutputs(component.hasConditionalOutputs());
     }
 
     public DataNode() {
