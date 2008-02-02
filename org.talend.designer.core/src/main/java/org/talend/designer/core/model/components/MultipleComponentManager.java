@@ -122,6 +122,15 @@ public class MultipleComponentManager implements IMultipleComponentManager {
         return this.output;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.components.IMultipleComponentManager#getOutputName()
+     */
+    public String getOutputName() {
+        return this.outputName;
+    }
+
     public List<IMultipleComponentItem> getItemList() {
         return this.itemList;
     }
