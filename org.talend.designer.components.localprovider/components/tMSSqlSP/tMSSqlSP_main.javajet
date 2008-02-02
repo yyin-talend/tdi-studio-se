@@ -241,9 +241,9 @@ if (canGenerate) {
 			}
 			
 			if (firstOutConnection != null) {
+				// Note: first argument in JDBC is arg #1, and for functions, arg #1 is return value
+				argIndex = 1;
 				columns:for (IMetadataColumn column : columnList) {
-					// Note: first argument in JDBC is arg #1, and for functions, arg #1 is return value
-					argIndex = 1;
 					// Retrieve OUT arguments value, and copy IN arguments from input flow
 					for (int i = 0; i < spArgs.size(); i++) {
 						Map<String, String> spArg = spArgs.get(i);
