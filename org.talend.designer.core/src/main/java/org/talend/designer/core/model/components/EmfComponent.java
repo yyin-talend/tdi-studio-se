@@ -1636,16 +1636,15 @@ public class EmfComponent implements IComponent {
 
                 IMultipleComponentItem currentItem = multipleComponentManager.addItem(name, component);
                 EList listLinkTo = templateType.getLINKTO();
-                
+                if (listLinkTo.size() > 0 && !multipleComponentManager.existsLinkTo()) {
+                    multipleComponentManager.setExistsLinkTo(true);
+                }
                 for (int j = 0; j < listLinkTo.size(); j++) {
                     LINKTOType linkTo = (LINKTOType) listLinkTo.get(j);
 
                     name = linkTo.getNAME();
                     String cType = linkTo.getCTYPE();
                     currentItem.getOutputConnections().add(new MultipleComponentConnection(cType, name));
-                    if(cType.equals("ROWS_END")){
-                        multipleComponentManager.setExistsROWSENDLinkTo(true);
-                    }
                 }
             }
 

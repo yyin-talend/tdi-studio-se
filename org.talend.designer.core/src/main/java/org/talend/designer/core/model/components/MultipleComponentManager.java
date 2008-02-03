@@ -147,11 +147,11 @@ public class MultipleComponentManager implements IMultipleComponentManager {
         return this.connector;
     }
 
-    public boolean existsROWSENDLinkTo() {
+    public boolean existsLinkTo() {
         return this.existsLinkTo;
     }
 
-    public void setExistsROWSENDLinkTo(boolean flag) {
+    public void setExistsLinkTo(boolean flag) {
         this.existsLinkTo = flag;
     }
 

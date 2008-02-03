@@ -330,7 +330,7 @@ public class DataProcess {
             // set informations for the last node, so the outgoing connections.
             INode outputNode = itemsMap.get(multipleComponentManager.getOutput());
             outgoingConnections = (List<IConnection>) outputNode.getOutgoingConnections();
-            if (multipleComponentManager.existsROWSENDLinkTo()) {
+            if (multipleComponentManager.existsLinkTo()) {
                 // RunBefore / RunAfter Links won't be linked to the output but on the first element of the subprocess.
                 for (IConnection connection : previousNode.getOutgoingConnections()) {
                     if (!connection.getLineStyle().hasConnectionCategory(IConnectionCategory.EXECUTION_ORDER)) {
@@ -487,7 +487,7 @@ public class DataProcess {
             // propagate metadataLists for output component. only apply to multi-input virtual component
             if (multipleComponentManager.isSetConnector() && multipleComponentManager.getOutputName().equals(curItem.getName())) {
                 // deactivate dummy component
-                if (curNode.getComponentName().equals("tDummyRow")) {
+                if (curNode.getComponentName().equals("tDummyRow")) {//or use "!multipleComponentManager.existsLinkTo()" 
                     curNode.setActivate(false);
                 } else {
                     // propagate all metadataTables
