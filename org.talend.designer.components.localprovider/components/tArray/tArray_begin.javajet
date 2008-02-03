@@ -23,3 +23,4 @@ java.util.Arrays array<%=cid %>;
 int nb_fields_<%=cid %> = 0;
 
 java.util.List<<%=rowName %>Struct> <%=destination %> = new java.util.ArrayList<<%=rowName %>Struct>();
+globalMap.put("<%=destination %>",<%=destination %>);
