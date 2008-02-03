@@ -35,7 +35,6 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.temp.ECodePart;
-import org.talend.core.model.utils.NodeUtil;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.designer.codegen.config.CloseBlocksCodeArgument;
 import org.talend.designer.codegen.config.CodeGeneratorArgument;
@@ -504,12 +503,7 @@ public class CodeGenerator implements ICodeGenerator {
                 subTreeArgument.setMultiplyingOutputComponents(node.isMultiplyingOutputs());
             }
 
-            List<IConnection> processedConnectionList = new ArrayList<IConnection>();
-            List<IConnection> sameTargetConnectioList = null;
             for (IConnection connection : node.getOutgoingConnections()) {
-                if (language == ECodeLanguage.JAVA && processedConnectionList.contains(connection)) {
-                    continue;
-                }
 
                 if ((connection.getLineStyle() == EConnectionType.ITERATE) && (part != ECodePart.MAIN)) {
                     continue;
@@ -528,36 +522,21 @@ public class CodeGenerator implements ICodeGenerator {
                 }
 
                 INode targetNode = connection.getTarget();
-                if (language == ECodeLanguage.JAVA) {
-                    sameTargetConnectioList = NodeUtil.getSameTargetConnectionsList(node, connection);
-                }
                 if ((targetNode != null) && (subProcess != null)) {
 
                     if (!connection.getLineStyle().hasConnectionCategory(IConnectionCategory.MERGE)) {
-                        if (language == ECodeLanguage.JAVA) {
-                            subTreeArgument.setInputSubtreeConnections(sameTargetConnectioList);
-                        } else {
-                            subTreeArgument.setInputSubtreeConnection(connection);
-                        }
+                        subTreeArgument.setInputSubtreeConnection(connection);
                         code.append(generateTypedComponentCode(EInternalTemplate.SUBTREE_BEGIN, subTreeArgument));
                         code.append(generateComponentsCode(subProcess, targetNode, part, connection.getName()));
                         code.append(generateTypedComponentCode(EInternalTemplate.SUBTREE_END, subTreeArgument));
                     } else if (part == ECodePart.MAIN) {
-                        if (language == ECodeLanguage.JAVA) {
-                            subTreeArgument.setInputSubtreeConnections(sameTargetConnectioList);
-                        } else {
-                            subTreeArgument.setInputSubtreeConnection(connection);
-                        }
-                        subTreeArgument.setInputSubtreeConnections(sameTargetConnectioList);
+                        subTreeArgument.setInputSubtreeConnection(connection);
                         code.append(generateTypedComponentCode(EInternalTemplate.SUBTREE_BEGIN, subTreeArgument));
                         code.append(generateComponentsCode(subProcess, targetNode, ECodePart.MAIN, getIncomingNameForMerge(node,
                                 targetNode)));
                         code.append(generateTypedComponentCode(EInternalTemplate.SUBTREE_END, subTreeArgument));
                     }
 
-                }
-                if (language == ECodeLanguage.JAVA) {
-                    processedConnectionList.addAll(sameTargetConnectioList);
                 }
             }
 
@@ -713,9 +692,9 @@ public class CodeGenerator implements ICodeGenerator {
                 if (nodeConfigurer != null) {
                     nodeConfigurer.configure(nodeToConfigure);
                 }
-                
+
                 INode node = nodeToConfigure.getSubProcessStartNode(false);
-                
+
                 List<INode> lightProcessNodes = new ArrayList<INode>();
                 lightProcessNodes.add(node);
 
@@ -734,9 +713,9 @@ public class CodeGenerator implements ICodeGenerator {
                     componentsCode.append(generateTypedComponentCode(EInternalTemplate.HEADER, headerArgument));
                     for (NodesSubTree subTree : processTree.getSubTrees()) {
                         INode subTreeNode = subTree.getNode(node.getUniqueName());
-//                        if (subTreeNode != null && nodeConfigurer != null) {
-//                            nodeConfigurer.configure(subTreeNode);
-//                        }
+                        // if (subTreeNode != null && nodeConfigurer != null) {
+                        // nodeConfigurer.configure(subTreeNode);
+                        // }
                         componentsCode.append(generateTypedComponentCode(EInternalTemplate.SUBPROCESS_HEADER, subTree));
                         if (subTreeNode != null && (lightProcess.getSubTrees().size() > 0)) {
                             componentsCode.append(generateComponentsCode(lightProcess.getSubTrees().get(0), lightProcess
