@@ -122,6 +122,8 @@ import org.talend.designer.dbmap.ui.visualmap.zone.Zone;
  */
 public abstract class DataMapTableView extends Composite {
 
+    private final Point realToolbarSize = new Point(0, 0);
+
     private Table tableForEntries;
 
     private final ResizeHelper resizeHelper = new ResizeHelper();
@@ -180,6 +182,8 @@ public abstract class DataMapTableView extends Composite {
 
     private static int constraintCounter = 0;
 
+    private static final int MINIMUM_HEIGHT = WindowSystem.isGTK() ? 28 : 24;
+
     protected static final int TIME_BEFORE_NEW_REFRESH_BACKGROUND = 150;
 
     protected static final int OFFSET_HEIGHT_TRIGGER = 15;
@@ -228,9 +232,15 @@ public abstract class DataMapTableView extends Composite {
 
         final Display display = this.getDisplay();
         // final Color listForeground = display.getSystemColor(SWT.COLOR_WIDGET_FOREGROUND);
-        final Color listBackground = display.getSystemColor(SWT.COLOR_WIDGET_LIGHT_SHADOW);
 
-        this.setBackground(listBackground);
+        if (WindowSystem.isGTK()) {
+            Color systemColor = display.getSystemColor(SWT.COLOR_WIDGET_BACKGROUND);
+            setBackground(new Color(display, systemColor.getRed(), systemColor.getGreen(), systemColor.getBlue() + 1));
+            setBackgroundMode(SWT.INHERIT_NONE);
+        } else {
+            Color listBackground = display.getSystemColor(SWT.COLOR_WIDGET_LIGHT_SHADOW);
+            this.setBackground(listBackground);
+        }
 
         GridLayout mainLayout = new GridLayout();
         int marginMainLayout = 0;
@@ -277,15 +287,33 @@ public abstract class DataMapTableView extends Composite {
         }
 
         minimizeButton = new ToolItem(toolBarActions, SWT.PUSH);
+        realToolbarSize.x += 45;
+
+        Point sizeToolBar = toolBarActions.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+
+        // System.out.println(getDataMapTable().getName());
+        // System.out.println("sizeToolBar:" + sizeToolBar);
+
+        GridData gridDataToolbar = new GridData();
+
+        // gridData.grabExcessHorizontalSpace = true;
+        // gridData.horizontalAlignment = SWT.END;
+        gridDataToolbar.heightHint = sizeToolBar.y;
+        if (toolbarNeedToHaveRightStyle() && WindowSystem.isWIN32()) {
+            if (realToolbarSize != null) {
+                gridDataToolbar.widthHint = realToolbarSize.x;
+                // System.out.println("realToolbarSize:" + realToolbarSize);
+            }
+            // to correct invalid margin when SWT.RIGHT style set in ToolBar
+            // gridData.widthHint -= 48;
+        }
+        if (WindowSystem.isGTK()) {
+            gridDataToolbar.heightHint = 26;
+        }
+        toolBarActions.setLayoutData(gridDataToolbar);
+        // gridData.widthHint = 50;
 
         headerLayout.numColumns = headerComposite.getChildren().length;
-
-        GridData gridData = new GridData(GridData.HORIZONTAL_ALIGN_END);
-        if (WindowSystem.isGTK()) {
-            gridData.heightHint = 26;
-        }
-        toolBarActions.setLayoutData(gridData);
-        toolBarActions.getParent().layout();
 
         centerComposite = new Composite(this, SWT.NONE);
         GridData centerData = new GridData(GridData.FILL_BOTH);
@@ -316,6 +344,13 @@ public abstract class DataMapTableView extends Composite {
 
         headerComposite.moveAbove(nameLabel);
 
+
+        if (WindowSystem.isGTK()) {
+            sizeToolBar = toolBarActions.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+            gridDataToolbar.widthHint = sizeToolBar.x + 20;
+            headerComposite.layout();
+        }
+
     }
 
     /**
@@ -330,11 +365,11 @@ public abstract class DataMapTableView extends Composite {
     /**
      * DOC amaumont Comment method "addToolItemSeparator".
      */
-    protected ToolItem addToolItemSeparator() {
+    protected void addToolItemSeparator() {
         ToolItem separator = new ToolItem(toolBarActions, SWT.SEPARATOR);
         separator.setWidth(10);
+        getRealToolbarSize().x += separator.getWidth();
         // separator.setControl(headerComposite);
-        return separator;
     }
 
     /**
@@ -803,10 +838,10 @@ public abstract class DataMapTableView extends Composite {
                                 + diff.y
                                 : rect.height;
 
-                        if (newHeight < getHeaderHeight() + OFFSET_HEIGHT_TRIGGER && diff.y < 0) {
+                        if (newHeight < MINIMUM_HEIGHT + OFFSET_HEIGHT_TRIGGER && diff.y < 0) {
                             changeMinimizeState(true);
-                            newHeight = getHeaderHeight();
-                        } else if (newHeight > getHeaderHeight() + OFFSET_HEIGHT_TRIGGER && diff.y > 0) {
+                            newHeight = MINIMUM_HEIGHT;
+                        } else if (newHeight > MINIMUM_HEIGHT + OFFSET_HEIGHT_TRIGGER && diff.y > 0) {
                             changeMinimizeState(false);
                         }
                         changeSize(new Point(newWidth, newHeight), false, true);
@@ -1708,6 +1743,19 @@ public abstract class DataMapTableView extends Composite {
         return this.extendedTableViewerForFilters;
     }
 
+    public int getHeaderHeight() {
+        if (WindowSystem.isGTK()) {
+            return HEADER_HEIGHT + (hasDropDownToolBarItem() ? 10 : 2);
+        } else {
+            return HEADER_HEIGHT + (hasDropDownToolBarItem() ? 8 : 0);
+        }
+    }
+
+    public Point getRealToolbarSize() {
+        return realToolbarSize;
+    }
+
+
     /*
      * (non-Javadoc)
      * 
@@ -1726,10 +1774,6 @@ public abstract class DataMapTableView extends Composite {
     @Override
     public void setLayoutData(Object layoutData) {
         super.setLayoutData(layoutData);
-    }
-
-    public int getHeaderHeight() {
-        return HEADER_HEIGHT + (hasDropDownToolBarItem() ? 8 : 0);
     }
 
 }
