@@ -154,6 +154,8 @@ public abstract class DataMapTableView extends Composite {
 
     protected Point expressionEditorTextSelectionBeforeFocusLost;
 
+    protected Text lastExpressionEditorTextWhichLostFocus;
+
     protected Composite centerComposite;
 
     private Text columnExpressionTextEditor;
@@ -1353,7 +1355,7 @@ public abstract class DataMapTableView extends Composite {
 
             public void editorValueChanged(boolean oldValidState, boolean newValidState) {
 
-                if (expressionTextEditor.isFocusControl()) {
+                if (expressionTextEditor.isFocusControl() || lastExpressionEditorTextWhichLostFocus == expressionTextEditor) {
                     ModifiedObjectInfo modifiedObjectInfo = tableViewerCreator.getModifiedObjectInfo();
                     ITableEntry tableEntry = (ITableEntry) (modifiedObjectInfo.getCurrentModifiedBean() != null ? modifiedObjectInfo
                             .getCurrentModifiedBean()
@@ -1414,18 +1416,7 @@ public abstract class DataMapTableView extends Composite {
 
             public void focusLost(FocusEvent e) {
                 expressionEditorTextSelectionBeforeFocusLost = expressionTextEditor.getSelection();
-                if (WindowSystem.isGTK()) {
-
-                    new AsynchronousThreading(50, false, expressionTextEditor.getDisplay(), new Runnable() {
-
-                        public void run() {
-
-                            tableViewerCreator.layout();
-
-                        }
-                    }).start();
-
-                }
+                lastExpressionEditorTextWhichLostFocus = expressionTextEditor;
             }
 
         });
