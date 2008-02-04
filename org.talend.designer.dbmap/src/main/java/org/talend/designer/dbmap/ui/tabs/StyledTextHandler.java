@@ -154,7 +154,7 @@ public class StyledTextHandler {
         styledText.addVerifyKeyListener(new VerifyKeyListener() {
 
             public void verifyKey(VerifyEvent verifyEvent) {
-                if (verifyEvent.character == '\r' && contentProposalAdapter.isProposalOpened()) {
+                if (verifyEvent.character == '\r' && contentProposalAdapter != null && contentProposalAdapter.isProposalOpened()) {
                     verifyEvent.doit = false;
                 } else {
                     verifyEvent.doit = true;
@@ -181,7 +181,7 @@ public class StyledTextHandler {
 
     private void updateCellExpression() {
 
-        if (!styledText.getText().equals(currentEntry.getExpression())) {
+        if (styledText.getText() != null && currentEntry != null && !styledText.getText().equals(currentEntry.getExpression())) {
             mapperManager.changeEntryExpression(currentEntry, styledText.getText());
         }
 
@@ -229,11 +229,13 @@ public class StyledTextHandler {
     }
 
     private void refreshProposalSize() {
+        if (contentProposalAdapter != null) {
         Rectangle maxSize = new Rectangle(0, 0, MAX_WIDTH_PROPOSAL_STYLED_TEXT, MAX_HEIGHT_PROPOSAL_STYLED_TEXT);
         Rectangle boundsStyledText = StyledTextHandler.this.getStyledText().getBounds();
         Rectangle intersect = boundsStyledText.intersection(maxSize);
         Point sizeProposal = new Point(intersect.width, intersect.height);
         contentProposalAdapter.setPopupSize(sizeProposal);
+        }
     }
 
     public ContentProposalAdapterExtended getContentProposalAdapter() {

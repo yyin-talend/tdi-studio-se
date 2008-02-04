@@ -1445,7 +1445,7 @@ public abstract class DataMapTableView extends Composite {
                 StyledTextHandler styledTextHandler = mapperManager.getUiManager().getTabFolderEditors()
                         .getStyledTextHandler();
                 styledTextHandler.setCurrentEntry(currentModifiedEntry);
-                styledTextHandler.getStyledText().setText(
+                styledTextHandler.setTextWithoutNotifyListeners(
                         currentModifiedEntry.getExpression() == null ? "" : currentModifiedEntry.getExpression()); //$NON-NLS-1$
             }
 
