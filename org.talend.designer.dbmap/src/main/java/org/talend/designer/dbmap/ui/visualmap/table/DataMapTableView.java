@@ -1378,7 +1378,7 @@ public abstract class DataMapTableView extends Composite {
                         @Override
                         public void execute(boolean isFinalExecution) {
 
-                            if (isFinalExecution) {
+                            if (isFinalExecution && !expressionTextEditor.isDisposed()) {
                                 expressionTextEditor.getDisplay().syncExec(new Runnable() {
 
                                     public void run() {

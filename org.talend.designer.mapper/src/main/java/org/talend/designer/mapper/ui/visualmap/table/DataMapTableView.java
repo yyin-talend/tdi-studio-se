@@ -1461,16 +1461,14 @@ public abstract class DataMapTableView extends Composite {
         IService expressionBuilderDialogService = GlobalServiceRegister.getDefault().getService(
                 IExpressionBuilderDialogService.class);
 
+        CellEditorDialogBehavior behavior = new CellEditorDialogBehavior();
         final ExtendedTextCellEditorWithProposal cellEditor = new ExtendedTextCellEditorWithProposal(tableViewerCreator
-                .getTable(), SWT.MULTI | SWT.BORDER, column);
+                .getTable(), SWT.MULTI | SWT.BORDER, column, behavior);
 
         dialog = ((IExpressionBuilderDialogService) expressionBuilderDialogService).getExpressionBuilderInstance(
                 tableViewerCreator.getCompositeParent(), cellEditor);
 
-        CellEditorDialogBehavior behavior = new CellEditorDialogBehavior(cellEditor);
         behavior.setCellEditorDialog(dialog);
-        cellEditor.setCellEditorBehavior(behavior);
-        cellEditor.init();
 
         final Text expressionTextEditor = cellEditor.getTextControl();
 
@@ -1581,7 +1579,7 @@ public abstract class DataMapTableView extends Composite {
                     public void run() {
                         checkChangementsAfterEntryModifiedOrAdded(false);
                     }
-                }).start();
+                });// .start();
             }
 
         });

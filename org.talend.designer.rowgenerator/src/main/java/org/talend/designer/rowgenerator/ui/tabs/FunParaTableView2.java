@@ -115,7 +115,8 @@ public class FunParaTableView2 extends AbstractDataTableEditorView<Parameter> {
         column.setTitle(Messages.getString("FunParaTableView2.Value"));
         column.setId(VALUE_PROPERTY);
 
-        cellEditor = new ExtendedTextCellEditorWithProposal(tableViewerCreator.getTable(), SWT.MULTI | SWT.BORDER, column);
+        CellEditorDialogBehavior behavior = new CellEditorDialogBehavior();
+        cellEditor = new ExtendedTextCellEditorWithProposal(tableViewerCreator.getTable(), SWT.MULTI | SWT.BORDER, column, behavior);
 
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<Parameter, Object>() {
 
@@ -159,12 +160,8 @@ public class FunParaTableView2 extends AbstractDataTableEditorView<Parameter> {
 
         dialog = ((IExpressionBuilderDialogService) expressionBuilderDialogService).getExpressionBuilderInstance(mainComposite,
                 cellEditor);
-
-        CellEditorDialogBehavior behavior = new CellEditorDialogBehavior(cellEditor);
         behavior.setCellEditorDialog(dialog);
-        cellEditor.setCellEditorBehavior(behavior);
 
-        cellEditor.init();
         cellEditor.setContentProposalProvider(getProcessProposals());
         cellEditor.setExpressionType("String");
         column.setCellEditor(cellEditor);
