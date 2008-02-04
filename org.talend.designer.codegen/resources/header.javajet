@@ -120,7 +120,7 @@ import java.math.BigDecimal;
 	private static final java.util.Map<String, Long> end_Hash = java.util.Collections.synchronizedMap(new java.util.HashMap<String, Long>());
 	private static final java.util.Map<String, Boolean> ok_Hash = java.util.Collections.synchronizedMap(new java.util.HashMap<String, Boolean>());	
 	private static final java.util.Map<String, Object> globalMap = java.util.Collections.synchronizedMap(new java.util.HashMap<String, Object>());
-	public static final java.util.List<String[]> globalBuffer = java.util.Collections.synchronizedMap(new java.util.ArrayList<String[]>());
+	public static final java.util.List<String[]> globalBuffer = java.util.Collections.synchronizedList(new java.util.ArrayList<String[]>());
 <% } %>
 
 <%
