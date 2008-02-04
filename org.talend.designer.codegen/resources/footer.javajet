@@ -81,7 +81,7 @@
     
 		int exitCode = runJobInTOS(args);
     <%	
-        List<INode> tBufferNodes = (List<INode>)process.getNodesOfType("tBuffer");
+        List<INode> tBufferNodes = (List<INode>)process.getNodesOfType("tBufferOutput");
         if(tBufferNodes != null && tBufferNodes.size() > 0) {
     %>  				
 		String[][] bufferValue = (String[][])globalBuffer.toArray(new String[globalBuffer.size()][]);		
