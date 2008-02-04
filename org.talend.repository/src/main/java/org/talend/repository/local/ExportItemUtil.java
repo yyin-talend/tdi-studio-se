@@ -46,10 +46,12 @@ import org.talend.core.model.properties.PropertiesPackage;
 import org.talend.core.model.properties.User;
 import org.talend.core.model.properties.helper.ByteArrayResource;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.repository.constants.FileConstants;
 import org.talend.repository.documentation.IFileExporterFullPath;
 import org.talend.repository.documentation.TarFileExporterFullPath;
 import org.talend.repository.documentation.ZipFileExporterFullPath;
+import org.talend.repository.model.ProxyRepositoryFactory;
 
 /***/
 public class ExportItemUtil {
@@ -79,6 +81,20 @@ public class ExportItemUtil {
         File tmpDirectory = null;
         Map<File, IPath> toExport;
 
+        boolean allVersions = true;
+        Collection<Item> itemsVersions = new ArrayList<Item>();
+        if (allVersions) {
+            for (Item item : items) {
+                List<IRepositoryObject> allVersion = ProxyRepositoryFactory.getInstance().getAllVersion(
+                        item.getProperty().getId());
+                for (IRepositoryObject repositoryObject : allVersion) {
+                    itemsVersions.add(repositoryObject.getProperty().getItem());
+                }
+            }
+        } else {
+            itemsVersions.addAll(items);
+        }
+
         if (destination.getName().endsWith(".tar")) {
             createFolder(destination.getParentFile());
             exporter = new TarFileExporterFullPath(destination.getAbsolutePath(), false);
@@ -99,7 +115,7 @@ public class ExportItemUtil {
 
             try {
                 if (exporter != null) {
-                    toExport = exportItems(items, tmpDirectory, true);
+                    toExport = exportItems(itemsVersions, tmpDirectory, true);
 
                     // in case of .tar.gz we remove extension twice
                     IPath rootPath = new Path(destination.getName()).removeFileExtension().removeFileExtension();
@@ -108,7 +124,7 @@ public class ExportItemUtil {
                         exporter.write(file.getAbsolutePath(), rootPath.append(path).toString());
                     }
                 } else {
-                    toExport = exportItems(items, destination, true);
+                    toExport = exportItems(itemsVersions, destination, true);
                 }
             } catch (Exception e) {
                 throw e;
