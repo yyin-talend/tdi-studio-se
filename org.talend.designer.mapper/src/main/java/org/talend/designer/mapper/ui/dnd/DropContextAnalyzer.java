@@ -104,8 +104,7 @@ public class DropContextAnalyzer {
         } else if (controlTarget instanceof StyledText) {
             currentStyledTextTarget = (StyledText) dropTarget.getControl();
         } else {
-            throw new IllegalArgumentException("This type of Control is unsupported for DND :"
-                    + controlTarget.toString());
+            throw new IllegalArgumentException("This type of Control is unsupported for DND :" + controlTarget.toString());
         }
         zoneTarget = dataMapTableViewTarget.getZone();
         draggedData = TableEntriesTransfer.getInstance().getDraggedData();
@@ -134,8 +133,7 @@ public class DropContextAnalyzer {
         isInputToInput = false;
         mapOneToOneAuthorized = true;
 
-        if (targetIsExpressionFilterText()
-                || (targetTableIsFiltersTable() || draggedData.getTransferableEntryList().size() <= 1)) {
+        if (targetIsExpressionFilterText() || (targetTableIsFiltersTable() || draggedData.getTransferableEntryList().size() <= 1)) {
             mapOneToOneAuthorized = false;
         }
 
@@ -210,8 +208,8 @@ public class DropContextAnalyzer {
             }
         }
 
-        if (zoneSource == Zone.VARS && zoneTarget == Zone.INPUTS || zoneSource == Zone.OUTPUTS
-                && zoneTarget == Zone.INPUTS || zoneSource == Zone.OUTPUTS && zoneTarget == Zone.VARS) {
+        if (zoneSource == Zone.VARS && zoneTarget == Zone.INPUTS || zoneSource == Zone.OUTPUTS && zoneTarget == Zone.INPUTS
+                || zoneSource == Zone.OUTPUTS && zoneTarget == Zone.VARS) {
             /*
              * VAR => INPUT OUTPUT => OUTPUT OUTPUT => INPUT OUTPUT => VAR
              */
@@ -251,7 +249,8 @@ public class DropContextAnalyzer {
             return;
         }
         if (pointCursor.y < currentTableTarget.getHeaderHeight()
-                || pointCursor.y >= currentTableTarget.getHeaderHeight() + currentTableTarget.getItemCount()
+                || pointCursor.y >= currentTableTarget.getHeaderHeight()
+                        + (currentTableTarget.getItemCount() + (WindowSystem.isGTK() ? 0.5 : 0))
                         * currentTableTarget.getItemHeight()) {
             isCursorOverExpressionCell = false;
             return;
@@ -307,8 +306,7 @@ public class DropContextAnalyzer {
 
                 if (isCursorOverExpressionCell) {
                     insertionEntryMode = false;
-                    if (mapperManager.getUiManager().isShiftPressed()
-                            && draggedData.getTransferableEntryList().size() > 1) {
+                    if (mapperManager.getUiManager().isShiftPressed() && draggedData.getTransferableEntryList().size() > 1) {
                         mapOneToOneMode = true;
                     } else {
                         dropFeedback |= DND.FEEDBACK_SELECT;
@@ -408,8 +406,7 @@ public class DropContextAnalyzer {
     @Override
     public String toString() {
         return "\nDropContextAnalyzer instance:" + "\n isTargetEntryValid=" + isDropValid + "\n insertionIndicatorVisible=" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                + insertionEntryMode
-                + "\n mapOneToOne=" + mapOneToOneMode + "\n overwriteExpression=" + overwriteExpression //$NON-NLS-1$ //$NON-NLS-2$
+                + insertionEntryMode + "\n mapOneToOne=" + mapOneToOneMode + "\n overwriteExpression=" + overwriteExpression //$NON-NLS-1$ //$NON-NLS-2$
                 + "\n isCursorOverExpressionColumn=" + isCursorOverExpressionCell; //$NON-NLS-1$
     }
 

@@ -74,13 +74,13 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
     public void dragOver(DropTargetEvent event) {
 
         super.dragOver(event);
+        UIManager uiManager = mapperManager.getUiManager();
+        DraggingInfosPopup draggingInfosPopup = uiManager.getDraggingInfosPopup();
 
         // System.out.println("\n>>dragOver");
 
         DraggedData draggedData = TableEntriesTransfer.getInstance().getDraggedData();
         DropContextAnalyzer analyzer = analyzeDropTarget(event, draggedData);
-        UIManager uiManager = mapperManager.getUiManager();
-        DraggingInfosPopup draggingInfosPopup = uiManager.getDraggingInfosPopup();
 
         fillEvent(event, analyzer);
         InsertionIndicator insertionIndicator = retrieveInsertionIndicator();
@@ -100,7 +100,8 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
             }
 
             draggingInfosPopup.setMapOneToOneMode(analyzer.isMapOneToOneMode(), analyzer.isMapOneToOneAuthorized());
-            Integer itemIndexWhereInsertFromPosition = getItemIndexFromPosition(new Point(event.x, event.y));
+            Point cursorPosition = new Point(event.x, event.y);
+            Integer itemIndexWhereInsertFromPosition = getItemIndexFromPosition(cursorPosition);
             if (analyzer.isMapOneToOneMode() && analyzer.isMapOneToOneAuthorized()) {
                 int size = draggedData.getTransferableEntryList().size();
                 if (itemIndexWhereInsertFromPosition != null) {
@@ -649,7 +650,8 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
      */
     private Integer getItemIndexFromPosition(Point cursorPosition) {
         TableItem[] tableItems = draggableTable.getItems();
-        TableItem tableItemBehindCursor = getTableItemFromPosition(cursorPosition);
+        Point point = new Point(cursorPosition.x, cursorPosition.y);
+        TableItem tableItemBehindCursor = getTableItemFromPosition(point);
         if (tableItemBehindCursor != null) {
             for (int i = 0; i < tableItems.length; i++) {
                 if (tableItems[i] == tableItemBehindCursor) {
@@ -668,10 +670,8 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
      * @return
      */
     private TableItem getTableItemFromPosition(Point cursorPosition) {
-        Point pointCursor = draggableTable.toControl(cursorPosition.x, cursorPosition.y);
-        if (WindowSystem.isGTK()) {
-            pointCursor.y -= draggableTable.getHeaderHeight();
-        }
+        Point point = new Point(cursorPosition.x, cursorPosition.y);
+        Point pointCursor = draggableTable.toControl(point.x, point.y);
         return draggableTable.getItem(pointCursor);
     }
 

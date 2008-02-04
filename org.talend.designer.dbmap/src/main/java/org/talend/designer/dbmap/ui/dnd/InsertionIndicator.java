@@ -219,7 +219,7 @@ public class InsertionIndicator {
             }
             indicYPositionRefZone = indicYPositionRefTable + tablePositionRefZone.y + formLayout.marginTop
                     - HEIGHT_INDICATOR / 2;
-            indicYPositionRefZone -= currentTable.getItemHeight() - 3;
+            indicYPositionRefZone -= currentTable.getItemHeight() + 1;
         } else {
             if (itemIndexTarget == 0) {
                 indicYPositionRefTable = 0 + offsetVerticalBar;

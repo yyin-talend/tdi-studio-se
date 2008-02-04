@@ -197,15 +197,17 @@ public class DropContextAnalyzer {
      */
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     private void analyzeCursorOverExpressionCell() {
-        Point pointCursor = currentTableTarget.toControl(event.x, event.y);
         DataMapTableView dataMapTableView = mapperManager.retrieveDataMapTableView(currentTableTarget);
         TableViewerCreator tableViewerCreatorForColumns = dataMapTableView.getTableViewerCreatorForColumns();
+        Point pointCursor = currentTableTarget.toControl(event.x, event.y
+                + (WindowSystem.isGTK() ? tableViewerCreatorForColumns.getTable().getItemHeight() : 0));
         if (tableViewerCreatorForColumns.getTable() != currentTableTarget) {
             isCursorOverExpressionCell = false;
             return;
         }
         if (pointCursor.y < currentTableTarget.getHeaderHeight()
-                || pointCursor.y >= currentTableTarget.getHeaderHeight() + currentTableTarget.getItemCount()
+                || pointCursor.y >= currentTableTarget.getHeaderHeight()
+                        + (currentTableTarget.getItemCount() + (WindowSystem.isGTK() ? 0.5 : 0))
                         * currentTableTarget.getItemHeight()) {
             isCursorOverExpressionCell = false;
             return;
@@ -259,8 +261,7 @@ public class DropContextAnalyzer {
 
                 if (isCursorOverExpressionCell) {
                     insertionEntryMode = false;
-                    if (mapperManager.getUiManager().isShiftPressed()
-                            && draggedData.getTransferableEntryList().size() > 1) {
+                    if (mapperManager.getUiManager().isShiftPressed() && draggedData.getTransferableEntryList().size() > 1) {
                         mapOneToOneMode = true;
                     } else {
                         dropFeedback |= DND.FEEDBACK_SELECT;
@@ -350,8 +351,7 @@ public class DropContextAnalyzer {
     @Override
     public String toString() {
         return "\nDropContextAnalyzer instance:" + "\n isTargetEntryValid=" + isDropValid + "\n insertionIndicatorVisible=" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                + insertionEntryMode
-                + "\n mapOneToOne=" + mapOneToOneMode + "\n overwriteExpression=" + overwriteExpression //$NON-NLS-1$ //$NON-NLS-2$
+                + insertionEntryMode + "\n mapOneToOne=" + mapOneToOneMode + "\n overwriteExpression=" + overwriteExpression //$NON-NLS-1$ //$NON-NLS-2$
                 + "\n isCursorOverExpressionColumn=" + isCursorOverExpressionCell; //$NON-NLS-1$
     }
 
