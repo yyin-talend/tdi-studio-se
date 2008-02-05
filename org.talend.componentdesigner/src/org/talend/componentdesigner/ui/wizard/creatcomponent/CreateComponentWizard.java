@@ -171,7 +171,7 @@ public class CreateComponentWizard extends BasicNewResourceWizard {
         manager = new ComponentFolderManager();
         try {
             manager.generateComponentContent(componentPref, ResourcesPlugin.getWorkspace().getRoot().getProject(
-                    PluginConstant.PROJECTNAME_DEFAULT));
+                    PluginConstant.COMPONENT_PROJECT));
             ComponentPrefCollection.getInstance().save(componentPref);
         } catch (FileNotFoundException e) {
             e.printStackTrace();

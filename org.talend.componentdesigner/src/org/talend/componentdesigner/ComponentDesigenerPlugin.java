@@ -107,7 +107,7 @@ public class ComponentDesigenerPlugin extends AbstractUIPlugin {
 		Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
 		manager.createNewProject(this.getPreferenceStore().getString(
 				PluginConstant.PROJECT_URL),
-				PluginConstant.PROJECTNAME_DEFAULT, shell);
+				PluginConstant.COMPONENT_PROJECT, shell);
 		ComponentDesigenerPlugin.getDefault().setUsed(true);
 	}
 }

@@ -153,7 +153,7 @@ public final class ComponentPrefCollection {
     
     private void checkAllRmoveComponents() {
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(
-				PluginConstant.PROJECTNAME_DEFAULT);
+				PluginConstant.COMPONENT_PROJECT);
 		Iterator<ComponentPref> it = componentPrefSet.iterator();
         while (it.hasNext()) {
         	ComponentPref cf = it.next();

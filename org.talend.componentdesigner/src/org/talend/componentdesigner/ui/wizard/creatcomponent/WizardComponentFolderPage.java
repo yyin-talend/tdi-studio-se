@@ -198,7 +198,7 @@ public class WizardComponentFolderPage extends AbstractComponentPage {
             }
         }
         if (this.componentFolderText.isEnabled()) {
-            IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(PluginConstant.PROJECTNAME_DEFAULT);
+            IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(PluginConstant.COMPONENT_PROJECT);
             String componentName = componentFolderText.getText();
             if (componentName.equals(PluginConstant.EMPTY_STRING)) {
                 setErrorMessage("The component Name is empty");

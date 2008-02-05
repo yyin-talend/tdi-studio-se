@@ -246,7 +246,7 @@ public class ComponentPref {
             if (Boolean.valueOf(isExternal)) {
                 obj = new Path(location);
             } else {
-                obj = ResourcesPlugin.getWorkspace().getRoot().getProject(PluginConstant.PROJECTNAME_DEFAULT)
+                obj = ResourcesPlugin.getWorkspace().getRoot().getProject(PluginConstant.COMPONENT_PROJECT)
                         .findMember(location);
             }
             if (libName.matches("(?i).*\\.(jar)\\b")) {

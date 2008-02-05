@@ -77,7 +77,7 @@ public class AddResourceAction extends UseResourceAction {
         dialog.setValidator(validator);
         dialog.setTitle("JAR Selection");
         dialog.setMessage("&Choose jars and zips to add:");
-        dialog.setInput(ResourcesPlugin.getWorkspace().getRoot().getProject(PluginConstant.PROJECTNAME_DEFAULT));
+        dialog.setInput(ResourcesPlugin.getWorkspace().getRoot().getProject(PluginConstant.COMPONENT_PROJECT));
         dialog.setComparator(new ResourceComparator(ResourceComparator.NAME));
 
         if (dialog.open() == Window.OK) {

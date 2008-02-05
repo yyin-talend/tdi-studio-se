@@ -39,146 +39,117 @@ import org.talend.componentdesigner.ui.progress.ProgressUI;
 
 /**
  * @author rli
- *
+ * 
  */
 public final class ComponentProjectManager {
 
-	// cache of newly-created project
-	private IProject project;
-	
-	private String projDir = PluginConstant.EMPTY_STRING;
-	
-	private static ComponentProjectManager manager = new ComponentProjectManager();
-	
-	public static ComponentProjectManager getInstance() {
-		return manager;
-	}
-	
-	private ComponentProjectManager() {
+    // cache of newly-created project
+    private IProject project;
 
-	}
+    private final String projDir = PluginConstant.EMPTY_STRING;
 
-	
-	/**
-	 * Creates a new project resource with the selected name.
-	 * <p>
-	 * In normal usage, this method is invoked after the user has pressed Finish on the wizard; the enablement of the
-	 * Finish button implies that all controls on the pages currently contain valid values.
-	 * </p>
-	 * <p>
-	 * Note that this wizard caches the new project once it has been successfully created; subsequent invocations of
-	 * this method will answer the same project resource without attempting to create it again.
-	 * </p>
-	 * 
-	 * @return the created project resource, or <code>null</code> if the project was not created
-	 */
-	public IProject createNewProject(String directroy, String projectName,
-			Shell shell) {
-		if (projDir.equals(directroy)) {
-			return project;
-		} else {
-			if (project != null) {
-				try {
-					project.delete(true, null);
-					projDir = directroy;
-				} catch (CoreException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		
-		final Shell currentShell = shell; 
+    private static ComponentProjectManager manager = new ComponentProjectManager();
 
-		// get a project handle
-		final IProject newProjectHandle = ResourcesPlugin.getWorkspace()
-				.getRoot().getProject(projectName);
-		
-//		final IJavaProject javaProjHandle  = JavaCore.create(newProjectHandle);
-		// get a project descriptor
-		URI location = null;
-		if (directroy == null || directroy.equals(PluginConstant.EMPTY_STRING)) {
-			return null;
-		} else {
-			location = new File(directroy).toURI();
-		}
+    public static ComponentProjectManager getInstance() {
+        return manager;
+    }
 
-		IWorkspace workspace = ResourcesPlugin.getWorkspace();
-		final IProjectDescription description = workspace
-				.newProjectDescription(newProjectHandle.getName());
-		description.setLocationURI(location);
+    private ComponentProjectManager() {
 
-		// create the new project operation
-		IRunnableWithProgress op = new IRunnableWithProgress() {
+    }
 
-			public void run(IProgressMonitor monitor)
-					throws InvocationTargetException {
-				CreateProjectOperation op = new CreateProjectOperation(
-						description, "New Component Project");
-				try {
-					PlatformUI.getWorkbench().getOperationSupport()
-							.getOperationHistory().execute(
-									op,
-									monitor,
-									WorkspaceUndoUtil
-											.getUIInfoAdapter(currentShell));
-				} catch (ExecutionException e) {
-					throw new InvocationTargetException(e);
-				}
-			}
-		};
+    /**
+     * Creates a new project resource with the selected name.
+     * <p>
+     * In normal usage, this method is invoked after the user has pressed Finish on the wizard; the enablement of the
+     * Finish button implies that all controls on the pages currently contain valid values.
+     * </p>
+     * <p>
+     * Note that this wizard caches the new project once it has been successfully created; subsequent invocations of
+     * this method will answer the same project resource without attempting to create it again.
+     * </p>
+     * 
+     * @return the created project resource, or <code>null</code> if the project was not created
+     */
+    public IProject createNewProject(String directroy, String projectName, Shell shell) {
+        if (projDir.equals(directroy)) {
+            return project;
+        }
 
-		// run the new project creation o`peration
-		try {
-			ProgressUI.popProgressDialog(op, shell);
-		} catch (InterruptedException e) {
-			return null;
-		} catch (InvocationTargetException e) {
-			Throwable t = e.getTargetException();
-			if (t instanceof ExecutionException
-					&& t.getCause() instanceof CoreException) {
-				CoreException cause = (CoreException) t.getCause();
-				StatusAdapter status;
-				if (cause.getStatus().getCode() == IResourceStatus.CASE_VARIANT_EXISTS) {
-					status = new StatusAdapter(
+        final Shell currentShell = shell;
 
-							new Status(
-									IStatus.WARNING,
-									ComponentDesigenerPlugin.PLUGIN_ID,
-									IStatus.WARNING,
-									"The underlying file system is case insensitive. There is an existing project which conflicts with"
-											+ newProjectHandle.getName(), cause));
-				} else {
-					status = new StatusAdapter(new Status(cause.getStatus()
-							.getSeverity(), ComponentDesigenerPlugin.PLUGIN_ID,
-							cause.getStatus().getSeverity(),
-							"Creation Problems", cause));
-				}
-				status.setProperty(StatusAdapter.TITLE_PROPERTY,
-						"Creation Problems");
-				StatusManager.getManager().handle(status, StatusManager.BLOCK);
-			} else {
-				StatusAdapter status = new StatusAdapter(new Status(
-						IStatus.WARNING, ComponentDesigenerPlugin.PLUGIN_ID, 0,
-						"Internal error:" + t.getMessage(), t));
-				status.setProperty(StatusAdapter.TITLE_PROPERTY,
-						"Creation Problems");
-				StatusManager.getManager().handle(status,
-						StatusManager.LOG | StatusManager.BLOCK);
-			}
-			return null;
-		}
+        // get a project handle
+        final IProject newProjectHandle = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
 
-		project = newProjectHandle;
+        // final IJavaProject javaProjHandle = JavaCore.create(newProjectHandle);
+        // get a project descriptor
+        URI location = null;
+        if (directroy == null || directroy.equals(PluginConstant.EMPTY_STRING)) {
+            return null;
+        } else {
+            location = new File(directroy).toURI();
+        }
 
-		return project;
-	}
+        IWorkspace workspace = ResourcesPlugin.getWorkspace();
+        final IProjectDescription description = workspace.newProjectDescription(newProjectHandle.getName());
+        description.setLocationURI(location);
 
-	/**
-	 * Returns the newly created project.
-	 * 
-	 * @return the created project, or <code>null</code> if project not created
-	 */
-	public IProject getProject() {
-		return project;
-	}
+        // create the new project operation
+        IRunnableWithProgress op = new IRunnableWithProgress() {
+
+            public void run(IProgressMonitor monitor) throws InvocationTargetException {
+                CreateProjectOperation op = new CreateProjectOperation(description, "New Component Project");
+                try {
+                    PlatformUI.getWorkbench().getOperationSupport().getOperationHistory().execute(op, monitor,
+                            WorkspaceUndoUtil.getUIInfoAdapter(currentShell));
+                } catch (ExecutionException e) {
+                    throw new InvocationTargetException(e);
+                }
+            }
+        };
+
+        // run the new project creation o`peration
+        try {
+            ProgressUI.popProgressDialog(op, shell);
+        } catch (InterruptedException e) {
+            return null;
+        } catch (InvocationTargetException e) {
+            Throwable t = e.getTargetException();
+            if (t instanceof ExecutionException && t.getCause() instanceof CoreException) {
+                CoreException cause = (CoreException) t.getCause();
+                StatusAdapter status;
+                if (cause.getStatus().getCode() == IResourceStatus.CASE_VARIANT_EXISTS) {
+                    status = new StatusAdapter(
+
+                    new Status(IStatus.WARNING, ComponentDesigenerPlugin.PLUGIN_ID, IStatus.WARNING,
+                            "The underlying file system is case insensitive. There is an existing project which conflicts with"
+                                    + newProjectHandle.getName(), cause));
+                } else {
+                    status = new StatusAdapter(new Status(cause.getStatus().getSeverity(), ComponentDesigenerPlugin.PLUGIN_ID,
+                            cause.getStatus().getSeverity(), "Creation Problems", cause));
+                }
+                status.setProperty(StatusAdapter.TITLE_PROPERTY, "Creation Problems");
+                StatusManager.getManager().handle(status, StatusManager.BLOCK);
+            } else {
+                StatusAdapter status = new StatusAdapter(new Status(IStatus.WARNING, ComponentDesigenerPlugin.PLUGIN_ID, 0,
+                        "Internal error:" + t.getMessage(), t));
+                status.setProperty(StatusAdapter.TITLE_PROPERTY, "Creation Problems");
+                StatusManager.getManager().handle(status, StatusManager.LOG | StatusManager.BLOCK);
+            }
+            return null;
+        }
+
+        project = newProjectHandle;
+
+        return project;
+    }
+
+    /**
+     * Returns the newly created project.
+     * 
+     * @return the created project, or <code>null</code> if project not created
+     */
+    public IProject getProject() {
+        return project;
+    }
 }

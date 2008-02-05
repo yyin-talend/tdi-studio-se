@@ -29,7 +29,7 @@ public class CopyComponentValidator implements IInputValidator {
 
 	public String isValid(String componentName) {
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(
-				PluginConstant.PROJECTNAME_DEFAULT);
+				PluginConstant.COMPONENT_PROJECT);
 		IFolder componentFolder = project.getFolder(componentName);
 		if (componentFolder.exists()) {
 			return "The component has been exsit";

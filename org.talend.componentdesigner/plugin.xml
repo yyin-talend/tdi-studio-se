@@ -242,7 +242,7 @@
          	<and>
 	            <instanceof value="org.eclipse.core.resources.IProject"/>	
             	<not>
-            	   <test property="org.eclipse.core.resources.name" value="PROJECTNAME_DEFAULT"/>	
+            	   <test property="org.eclipse.core.resources.name" value="COMPONENT_PROJECT"/>	
             	</not>            
 	        </and>
          </filterExpression>

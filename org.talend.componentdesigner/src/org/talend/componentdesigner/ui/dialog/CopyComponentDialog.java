@@ -40,7 +40,7 @@ public class CopyComponentDialog extends InputDialog {
 		super.okPressed();
 		try {
 			new ComponentFolderManager().copyComponent(ResourcesPlugin.getWorkspace().getRoot()
-						.getProject(PluginConstant.PROJECTNAME_DEFAULT), srcFolderName, this.getValue());
+						.getProject(PluginConstant.COMPONENT_PROJECT), srcFolderName, this.getValue());
 		} catch (CoreException e) {
 			e.printStackTrace();
 		}
