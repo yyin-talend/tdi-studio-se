@@ -713,8 +713,8 @@
 	                    }
 	                }
 
-	                if (!currentIsReject && !currentIsRejectInnerJoin || currentIsReject || currentIsRejectInnerJoin
-	                        && atLeastOneInputTableWithInnerJoin || checkingSyntax) {
+	                if (outputTableEntries != null && (!currentIsReject && !currentIsRejectInnerJoin || currentIsReject || currentIsRejectInnerJoin
+	                        && atLeastOneInputTableWithInnerJoin || checkingSyntax)) {
 	                    for (ExternalMapperTableEntry outputTableEntry : outputTableEntries) {
 	                        String outputColumnName = outputTableEntry.getName();
 	                        IMetadataColumn metadataColumn = null;
