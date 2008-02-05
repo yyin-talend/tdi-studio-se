@@ -105,14 +105,16 @@ public class JobSettingsManager {
             param.setNumRow(2);
             paramList.add(param);
         }
-        param = new ElementParameter(process);
-        param.setName(EParameterName.IMPLICIT_TCONTEXTLOAD.getName());
-        param.setValue(false);
-        param.setDisplayName(EParameterName.IMPLICIT_TCONTEXTLOAD.getDisplayName());
-        param.setField(EParameterFieldType.CHECK);
-        param.setCategory(EComponentCategory.EXTRA);
-        param.setNumRow(3);
-        paramList.add(param);
+
+        // Temporary deactivate "Implicit context load" feature (cf bugtracker 2710)
+        // param = new ElementParameter(process);
+        // param.setName(EParameterName.IMPLICIT_TCONTEXTLOAD.getName());
+        // param.setValue(false);
+        // param.setDisplayName(EParameterName.IMPLICIT_TCONTEXTLOAD.getDisplayName());
+        // param.setField(EParameterFieldType.CHECK);
+        // param.setCategory(EComponentCategory.EXTRA);
+        // param.setNumRow(3);
+        // paramList.add(param);
 
         // on file
         createExtraOnFileParameters(process);
@@ -463,6 +465,9 @@ public class JobSettingsManager {
      * for implictit tContextLoad in extra settings
      */
     public static boolean isImplicittContextLoadActived(IProcess process) {
+        // Temporary deactivate "Implicit context load" feature (cf bugtracker 2710)
+        if (true)
+            return false;
 
         String paramName = EParameterName.IMPLICIT_TCONTEXTLOAD.getName();
         boolean useContextLoad = ((Boolean) process.getElementParameter(paramName).getValue())
