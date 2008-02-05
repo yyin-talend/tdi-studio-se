@@ -262,7 +262,7 @@
    
       <extension point="org.eclipse.ui.preferencePages">
        <page 
-         name="Component Designer"
+         name="Talend Component Designer"
          class="org.talend.componentdesigner.ui.preferencepage.ComponentProjectPreferencePage"
          id="org.talend.componentdesigner.ui.preferencepage.ComponentProjectPreferencePage">
        </page>       
