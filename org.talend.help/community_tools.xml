@@ -2,10 +2,14 @@
 <?NLS TYPE="org.eclipse.help.toc"?>
 
 <toc label="Talend communities Online tools">
+    	<topic label="Ecosystem" href="http://talendforge.org/ext/" />
     	<topic label="Forum" href="http://talendforge.org/forum/" />
-    	<topic label="Bugtracker" href="http://talendforge.org/bugs/my_view_page.php" />
+    	<topic label="Components" href="http://talendforge.org/components/" />
+    	<topic label="Tutorials" href="http://talendforge.org/tutorials/menu.php" />
      	<topic label="Wiki" href="http://talendforge.org/wiki/doku.php" />
-    	<topic label="Main Blog" href="http://www.talendforge.org/blog/" />
+     	<topic label="Sources" href="http://talendforge.org/trac/tos/" />
+    	<topic label="Corporate Blog" href="http://www.talendforge.org/blog/" />
     	<topic label="Technical Blog" href="http://talendforge.org/teamblog/" />
+    	<topic label="Bugtracker" href="http://talendforge.org/bugs/my_view_page.php" />
     	<topic label="Register now" href="http://www.talend.com/communities-talend/communities-talend.htm" /> 
 </toc>

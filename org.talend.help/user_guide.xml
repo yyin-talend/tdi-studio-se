@@ -89,6 +89,10 @@
             <topic label="Properties" href="guide/components/tAssert_Prop.html"/>
             <topic label="Scenario" href="guide/components/tAssert_Scenario.html"/>
         </topic>
+        <topic label="tBufferOutput">
+            <topic label="Properties" href="guide/components/tBufferOutput_Prop.html"/>
+            <topic label="Scenario" href="guide/components/tBufferOutput_Scenario.html"/>
+        </topic>
         <topic label="tCentricCRMInput">
             <topic label="Properties" href="guide/components/tCentricCRMInput_Prop.html"/>
             <topic label="Scenario" href="guide/components/tCentricCRMInput_Scenario.html"/>

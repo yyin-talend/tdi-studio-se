@@ -209,6 +209,17 @@
       label="tAssert scenario example"
     />
   </context>
+  <context id="tBufferOutput">
+    <description>Bufferize data to return it to parent job or to WebService Client after export</description>
+    <topic
+      href="guide/components/tBufferOutput_Prop.html"
+      label="tBufferOutput properties description"
+    />
+    <topic
+      href="guide/components/tBufferOutput_Scenario.html"
+      label="tBufferOutput scenario example"
+    />
+  </context>
   <context id="tCentricCRMInput">
     <description>Input from the CentricCRM</description>
     <topic
@@ -1442,7 +1453,7 @@
     />
   </context>
   <context id="tMSAXInput">
-    <description>reads a MS AX server based on an SQL query</description>
+    <description>reads a Microsoft AX server based on an SQL query</description>
     <topic
       href="guide/components/tMSAXInput_Prop.html"
       label="tMSAXInput properties description"
@@ -1453,7 +1464,7 @@
     />
   </context>
   <context id="tMSAXOutput">
-    <description>write data to MS AX server</description>
+    <description>write data to Microsoft AX server</description>
     <topic
       href="guide/components/tMSAXOutput_Prop.html"
       label="tMSAXOutput properties description"
