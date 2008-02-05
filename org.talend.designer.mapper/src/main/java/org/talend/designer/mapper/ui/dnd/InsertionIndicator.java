@@ -151,23 +151,25 @@ public class InsertionIndicator {
 
                 // //////////////////////////////////////////////////////////
                 // draw left arrow
-                int yCenter = bounds.height / 2 + (WindowSystem.isWIN32() ? 4 : 0);
+                int yCenter = bounds.height / 2;
                 int widthExternalArrow = 10;
                 gc.setBackground(colorIndicator);
                 gc.setForeground(colorIndicator);
 
+                int adjustY = (WindowSystem.isWIN32() ? 4 : 0);
+                
                 if (composite == leftArrowDraggingIndicator) {
                     // external left arrow
                     Point leftCrossPoint = new Point(widthExternalArrow, yCenter);
                     gc.fillPolygon(new int[] { 0, 0, leftCrossPoint.x, leftCrossPoint.y, 0, bounds.height, });
-                    gc.drawLine(leftCrossPoint.x, leftCrossPoint.y, bounds.width, leftCrossPoint.y);
+                    gc.drawLine(leftCrossPoint.x, leftCrossPoint.y + adjustY, bounds.width, leftCrossPoint.y + adjustY);
 
                 } else {
                     // external right arrow
                     Point rightCrossPoint = new Point(bounds.width - widthExternalArrow, yCenter);
                     gc.fillPolygon(new int[] { bounds.width, 0, rightCrossPoint.x, rightCrossPoint.y, bounds.width,
                             bounds.height, });
-                    gc.drawLine(rightCrossPoint.x, rightCrossPoint.y, -bounds.width, rightCrossPoint.y);
+                    gc.drawLine(rightCrossPoint.x, rightCrossPoint.y + adjustY, -bounds.width, rightCrossPoint.y + adjustY);
                 }
             }
         };
