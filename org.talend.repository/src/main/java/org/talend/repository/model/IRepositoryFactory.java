@@ -268,4 +268,6 @@ public interface IRepositoryFactory {
 
     public RootContainer<String, IRepositoryObject> getRoutineFromProject(Project project) throws PersistenceException;
 
+    public void updateItemsPath(ERepositoryObjectType type, IPath targetPath) throws PersistenceException;
+
 }

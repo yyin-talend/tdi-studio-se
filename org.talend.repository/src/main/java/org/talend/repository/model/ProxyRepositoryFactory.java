@@ -328,6 +328,7 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         if (type == ERepositoryObjectType.JOBLET) {
             fireRepositoryPropertyChange(ERepositoryActionName.JOBLET_FOLDER_MOVE.getName(), sourcePath, targetPath);
         }
+        this.repositoryFactoryFromProvider.updateItemsPath(type, targetPath.append(sourcePath.lastSegment()));
     }
 
     /*
@@ -456,6 +457,7 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         if (type == ERepositoryObjectType.JOBLET) {
             fireRepositoryPropertyChange(ERepositoryActionName.JOBLET_FOLDER_RENAME.getName(), path, label);
         }
+        this.repositoryFactoryFromProvider.updateItemsPath(type, path.removeLastSegments(1).append(label));
     }
 
     /*
