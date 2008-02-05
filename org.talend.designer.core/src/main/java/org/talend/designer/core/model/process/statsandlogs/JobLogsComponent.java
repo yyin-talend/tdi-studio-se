@@ -82,7 +82,7 @@ public class JobLogsComponent extends AbstractStatsLogsComponent {
     @Override
     protected void createMultipleComponentsParameters() {
         super.createMultipleComponentsParameters();
-        if (multipleComponentManagers.size() > 0) {
+        if ((multipleComponentManagers != null) && (multipleComponentManagers.size() > 0)) {
             IMultipleComponentManager multipleComponentManager = multipleComponentManagers.get(0);
             multipleComponentManager.addParam("self.CATCH_RUNTIME_ERRORS", "LOGS.CATCH_JAVA_EXCEPTION"); //$NON-NLS-1$ //$NON-NLS-2$
             multipleComponentManager.addParam("self.CATCH_RUNTIME_ERRORS", "LOGS.CATCH_PERL_DIE"); //$NON-NLS-1$ //$NON-NLS-2$

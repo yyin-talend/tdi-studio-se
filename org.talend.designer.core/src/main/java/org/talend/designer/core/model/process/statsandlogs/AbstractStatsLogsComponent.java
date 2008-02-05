@@ -321,7 +321,7 @@ public abstract class AbstractStatsLogsComponent implements IComponent {
 
     protected void createMultipleComponentsParameters() {
         // create parameters
-        if (multipleComponentManagers.size() > 0) {
+        if ((multipleComponentManagers != null) && (multipleComponentManagers.size() > 0)) {
             IMultipleComponentManager multipleComponentManager = multipleComponentManagers.get(0);
             if (useFile) {
                 multipleComponentManager.addParam("self.FILENAME", "FILE.FILENAME"); //$NON-NLS-1$ //$NON-NLS-2$

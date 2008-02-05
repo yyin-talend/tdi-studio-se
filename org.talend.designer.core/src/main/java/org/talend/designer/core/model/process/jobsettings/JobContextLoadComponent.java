@@ -55,9 +55,9 @@ public class JobContextLoadComponent implements IComponent {
 
     private final String dbComponent;
 
-    private List<IMultipleComponentManager> multipleComponentManagers = new ArrayList<IMultipleComponentManager>();
+    private final List<IMultipleComponentManager> multipleComponentManagers = new ArrayList<IMultipleComponentManager>();
 
-    private boolean isFile;
+    private final boolean isFile;
 
     public JobContextLoadComponent(boolean isFile, String dbComponent) {
         this.isFile = isFile;
@@ -202,68 +202,70 @@ public class JobContextLoadComponent implements IComponent {
     protected void createMultipleComponentsParameters() {
         final String self = "self."; //$NON-NLS-1$
         // create parameters
-        IMultipleComponentManager multipleComponentManager = multipleComponentManagers.get(0);
-        if (isFile) {
-            // delimited
-            final String source = self + EParameterName.IMPLICIT_TCONTEXTLOAD_FILE.getName();
-            multipleComponentManager.addParam(source, FILE_INPUT_DELIMITED + ".FILENAME"); //$NON-NLS-1$ 
-        } else {
-            String source = self + JobSettingsConstants.getExtraParameterName(EParameterName.HOST.getName());
-            multipleComponentManager.addParam(source, DB_INPUT + ".HOST"); //$NON-NLS-1$ 
-            multipleComponentManager.addParam(source, DB_INPUT + ".SERVER"); //$NON-NLS-1$
-            multipleComponentManager.addParam(source, DB_INPUT + ".DSN"); //$NON-NLS-1$ 
+        if ((multipleComponentManagers != null) && (multipleComponentManagers.size() > 0)) {
+            IMultipleComponentManager multipleComponentManager = multipleComponentManagers.get(0);
+            if (isFile) {
+                // delimited
+                final String source = self + EParameterName.IMPLICIT_TCONTEXTLOAD_FILE.getName();
+                multipleComponentManager.addParam(source, FILE_INPUT_DELIMITED + ".FILENAME"); //$NON-NLS-1$ 
+            } else {
+                String source = self + JobSettingsConstants.getExtraParameterName(EParameterName.HOST.getName());
+                multipleComponentManager.addParam(source, DB_INPUT + ".HOST"); //$NON-NLS-1$ 
+                multipleComponentManager.addParam(source, DB_INPUT + ".SERVER"); //$NON-NLS-1$
+                multipleComponentManager.addParam(source, DB_INPUT + ".DSN"); //$NON-NLS-1$ 
 
-            source = self + JobSettingsConstants.getExtraParameterName(EParameterName.PORT.getName());
-            multipleComponentManager.addParam(source, DB_INPUT + ".PORT"); //$NON-NLS-1$ 
+                source = self + JobSettingsConstants.getExtraParameterName(EParameterName.PORT.getName());
+                multipleComponentManager.addParam(source, DB_INPUT + ".PORT"); //$NON-NLS-1$ 
 
-            source = self + JobSettingsConstants.getExtraParameterName(EParameterName.DBNAME.getName());
-            multipleComponentManager.addParam(source, DB_INPUT + ".DBNAME"); //$NON-NLS-1$ 
+                source = self + JobSettingsConstants.getExtraParameterName(EParameterName.DBNAME.getName());
+                multipleComponentManager.addParam(source, DB_INPUT + ".DBNAME"); //$NON-NLS-1$ 
 
-            source = self + JobSettingsConstants.getExtraParameterName(EParameterName.PROPERTIES.getName());
-            multipleComponentManager.addParam(source, DB_INPUT + ".PROPERTIES"); //$NON-NLS-1$ 
+                source = self + JobSettingsConstants.getExtraParameterName(EParameterName.PROPERTIES.getName());
+                multipleComponentManager.addParam(source, DB_INPUT + ".PROPERTIES"); //$NON-NLS-1$ 
 
-            source = self + JobSettingsConstants.getExtraParameterName(EParameterName.SCHEMA_DB.getName());
-            multipleComponentManager.addParam(source, DB_INPUT + ".SCHEMA_DB"); //$NON-NLS-1$ 
+                source = self + JobSettingsConstants.getExtraParameterName(EParameterName.SCHEMA_DB.getName());
+                multipleComponentManager.addParam(source, DB_INPUT + ".SCHEMA_DB"); //$NON-NLS-1$ 
 
-            source = self + JobSettingsConstants.getExtraParameterName(EParameterName.USER.getName());
-            multipleComponentManager.addParam(source, DB_INPUT + ".USER"); //$NON-NLS-1$ 
+                source = self + JobSettingsConstants.getExtraParameterName(EParameterName.USER.getName());
+                multipleComponentManager.addParam(source, DB_INPUT + ".USER"); //$NON-NLS-1$ 
 
-            source = self + JobSettingsConstants.getExtraParameterName(EParameterName.PASS.getName());
-            multipleComponentManager.addParam(source, DB_INPUT + ".PASS"); //$NON-NLS-1$ 
+                source = self + JobSettingsConstants.getExtraParameterName(EParameterName.PASS.getName());
+                multipleComponentManager.addParam(source, DB_INPUT + ".PASS"); //$NON-NLS-1$ 
 
-            source = self + JobSettingsConstants.getExtraParameterName(EParameterName.DBTABLE.getName());
-            multipleComponentManager.addParam(source, DB_INPUT + ".DBTABLE"); //$NON-NLS-1$ 
+                source = self + JobSettingsConstants.getExtraParameterName(EParameterName.DBTABLE.getName());
+                multipleComponentManager.addParam(source, DB_INPUT + ".DBTABLE"); //$NON-NLS-1$ 
 
-            source = self + JobSettingsConstants.QUERY;
-            multipleComponentManager.addParam(source, DB_INPUT + "." + JobSettingsConstants.QUERY); //$NON-NLS-1$ //$NON-NLS-2$
+                source = self + JobSettingsConstants.QUERY;
+                multipleComponentManager.addParam(source, DB_INPUT + "." + JobSettingsConstants.QUERY); //$NON-NLS-1$ //$NON-NLS-2$
 
+            }
+            // context parameter
+            final String context = CONTEXT_LOAD + "."; //$NON-NLS-1$  
+
+            String source = self + EParameterName.LOAD_NEW_VARIABLE.getName();
+            String target = context + EParameterName.LOAD_NEW_VARIABLE.getName();
+            multipleComponentManager.addParam(source, target);
+
+            source = self + EParameterName.NOT_LOAD_OLD_VARIABLE.getName();
+            target = context + EParameterName.NOT_LOAD_OLD_VARIABLE.getName();
+            multipleComponentManager.addParam(source, target);
+
+            source = self + EParameterName.PRINT_OPERATIONS.getName();
+            target = context + EParameterName.PRINT_OPERATIONS.getName();
+            multipleComponentManager.addParam(source, target);
+
+            source = self + EParameterName.DISABLE_ERROR.getName();
+            target = context + EParameterName.DISABLE_ERROR.getName();
+            multipleComponentManager.addParam(source, target);
+
+            source = self + EParameterName.DISABLE_INFO.getName();
+            target = context + EParameterName.DISABLE_INFO.getName();
+            multipleComponentManager.addParam(source, target);
+
+            source = self + EParameterName.DISABLE_WARNINGS.getName();
+            target = context + EParameterName.DISABLE_WARNINGS.getName();
+            multipleComponentManager.addParam(source, target);
         }
-        // context parameter
-        final String context = CONTEXT_LOAD + "."; //$NON-NLS-1$  
-
-        String source = self + EParameterName.LOAD_NEW_VARIABLE.getName();
-        String target = context + EParameterName.LOAD_NEW_VARIABLE.getName();
-        multipleComponentManager.addParam(source, target);
-
-        source = self + EParameterName.NOT_LOAD_OLD_VARIABLE.getName();
-        target = context + EParameterName.NOT_LOAD_OLD_VARIABLE.getName();
-        multipleComponentManager.addParam(source, target);
-
-        source = self + EParameterName.PRINT_OPERATIONS.getName();
-        target = context + EParameterName.PRINT_OPERATIONS.getName();
-        multipleComponentManager.addParam(source, target);
-
-        source = self + EParameterName.DISABLE_ERROR.getName();
-        target = context + EParameterName.DISABLE_ERROR.getName();
-        multipleComponentManager.addParam(source, target);
-
-        source = self + EParameterName.DISABLE_INFO.getName();
-        target = context + EParameterName.DISABLE_INFO.getName();
-        multipleComponentManager.addParam(source, target);
-
-        source = self + EParameterName.DISABLE_WARNINGS.getName();
-        target = context + EParameterName.DISABLE_WARNINGS.getName();
-        multipleComponentManager.addParam(source, target);
 
     }
 
