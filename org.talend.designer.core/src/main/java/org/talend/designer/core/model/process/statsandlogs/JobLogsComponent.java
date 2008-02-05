@@ -20,7 +20,6 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.designer.core.model.components.ElementParameter;
 
-
 /**
  * This class will create a virtual component that will create the logs for the job. It's not used at all in the
  * designer, only during the code generation. <br/>
@@ -44,46 +43,51 @@ public class JobLogsComponent extends AbstractStatsLogsComponent {
     public String getVersion() {
         return "0.1"; //$NON-NLS-1$
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.designer.core.model.process.statsandlogs.AbstractStatsLogsComponent#createElementParameters(org.talend.core.model.process.INode)
      */
     @Override
     public List<? extends IElementParameter> createElementParameters(INode node) {
         List<IElementParameter> paramList = (List<IElementParameter>) super.createElementParameters(node);
-        
+
         IElementParameter newParam = new ElementParameter(node);
         newParam.setName("CATCH_RUNTIME_ERRORS"); //$NON-NLS-1$
         newParam.setField(EParameterFieldType.TEXT);
         newParam.setValue(Boolean.TRUE);
         paramList.add(newParam);
-        
+
         newParam = new ElementParameter(node);
         newParam.setName("CATCH_USER_ERRORS"); //$NON-NLS-1$
         newParam.setField(EParameterFieldType.TEXT);
         newParam.setValue(Boolean.TRUE);
         paramList.add(newParam);
-        
+
         newParam = new ElementParameter(node);
         newParam.setName("CATCH_USER_WARNING"); //$NON-NLS-1$
         newParam.setField(EParameterFieldType.TEXT);
         newParam.setValue(Boolean.FALSE);
         paramList.add(newParam);
-        
+
         return paramList;
     }
-    
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.designer.core.model.process.statsandlogs.AbstractStatsLogsComponent#createMultipleComponentsParameters()
      */
     @Override
     protected void createMultipleComponentsParameters() {
         super.createMultipleComponentsParameters();
-        IMultipleComponentManager multipleComponentManager = multipleComponentManagers.get(0);
-        multipleComponentManager.addParam("self.CATCH_RUNTIME_ERRORS", "LOGS.CATCH_JAVA_EXCEPTION"); //$NON-NLS-1$ //$NON-NLS-2$
-        multipleComponentManager.addParam("self.CATCH_RUNTIME_ERRORS", "LOGS.CATCH_PERL_DIE"); //$NON-NLS-1$ //$NON-NLS-2$
-        multipleComponentManager.addParam("self.CATCH_USER_ERRORS", "LOGS.CATCH_TDIE"); //$NON-NLS-1$ //$NON-NLS-2$
-        multipleComponentManager.addParam("self.CATCH_USER_WARNING", "LOGS.CATCH_TWARN"); //$NON-NLS-1$ //$NON-NLS-2$
+        if (multipleComponentManagers.size() > 0) {
+            IMultipleComponentManager multipleComponentManager = multipleComponentManagers.get(0);
+            multipleComponentManager.addParam("self.CATCH_RUNTIME_ERRORS", "LOGS.CATCH_JAVA_EXCEPTION"); //$NON-NLS-1$ //$NON-NLS-2$
+            multipleComponentManager.addParam("self.CATCH_RUNTIME_ERRORS", "LOGS.CATCH_PERL_DIE"); //$NON-NLS-1$ //$NON-NLS-2$
+            multipleComponentManager.addParam("self.CATCH_USER_ERRORS", "LOGS.CATCH_TDIE"); //$NON-NLS-1$ //$NON-NLS-2$
+            multipleComponentManager.addParam("self.CATCH_USER_WARNING", "LOGS.CATCH_TWARN"); //$NON-NLS-1$ //$NON-NLS-2$
+        }
     }
 }

@@ -127,7 +127,7 @@ public abstract class AbstractStatsLogsComponent implements IComponent {
 
     // no use for virtual component
     public Boolean hasConditionalOutputs() {
-        return null;
+        return false;
     }
 
     // no use for virtual component
@@ -321,32 +321,33 @@ public abstract class AbstractStatsLogsComponent implements IComponent {
 
     protected void createMultipleComponentsParameters() {
         // create parameters
-        IMultipleComponentManager multipleComponentManager = multipleComponentManagers.get(0);
-        if (useFile) {
-            multipleComponentManager.addParam("self.FILENAME", "FILE.FILENAME"); //$NON-NLS-1$ //$NON-NLS-2$
-            multipleComponentManager.addParam("self.ROWSEPARATOR", "FILE.ROWSEPARATOR"); //$NON-NLS-1$ //$NON-NLS-2$
-            multipleComponentManager.addParam("self.FIELDSEPARATOR", "FILE.FIELDSEPARATOR"); //$NON-NLS-1$ //$NON-NLS-2$
-            multipleComponentManager.addParam("self.APPEND", "FILE.APPEND"); //$NON-NLS-1$ //$NON-NLS-2$
-            multipleComponentManager.addParam("self.INCLUDEHEADER", "FILE.INCLUDEHEADER"); //$NON-NLS-1$ //$NON-NLS-2$
-            multipleComponentManager.addParam("self.ENCODING", "FILE.ENCODING"); //$NON-NLS-1$ //$NON-NLS-2$
-        }
+        if (multipleComponentManagers.size() > 0) {
+            IMultipleComponentManager multipleComponentManager = multipleComponentManagers.get(0);
+            if (useFile) {
+                multipleComponentManager.addParam("self.FILENAME", "FILE.FILENAME"); //$NON-NLS-1$ //$NON-NLS-2$
+                multipleComponentManager.addParam("self.ROWSEPARATOR", "FILE.ROWSEPARATOR"); //$NON-NLS-1$ //$NON-NLS-2$
+                multipleComponentManager.addParam("self.FIELDSEPARATOR", "FILE.FIELDSEPARATOR"); //$NON-NLS-1$ //$NON-NLS-2$
+                multipleComponentManager.addParam("self.APPEND", "FILE.APPEND"); //$NON-NLS-1$ //$NON-NLS-2$
+                multipleComponentManager.addParam("self.INCLUDEHEADER", "FILE.INCLUDEHEADER"); //$NON-NLS-1$ //$NON-NLS-2$
+                multipleComponentManager.addParam("self.ENCODING", "FILE.ENCODING"); //$NON-NLS-1$ //$NON-NLS-2$
+            }
 
-        if (useDb) {
-            multipleComponentManager.addParam("self.HOST", "DB.HOST"); //$NON-NLS-1$ //$NON-NLS-2$
-            multipleComponentManager.addParam("self.HOST", "DB.SERVER"); //$NON-NLS-1$ //$NON-NLS-2$
-            multipleComponentManager.addParam("self.HOST", "DB.DSN"); //$NON-NLS-1$ //$NON-NLS-2$
-            multipleComponentManager.addParam("self.PORT", "DB.PORT"); //$NON-NLS-1$ //$NON-NLS-2$
-            multipleComponentManager.addParam("self.DBNAME", "DB.DBNAME"); //$NON-NLS-1$ //$NON-NLS-2$
-            multipleComponentManager.addParam("self.PROPERTIES", "DB.PROPERTIES");
-            multipleComponentManager.addParam("self.USER", "DB.USER"); //$NON-NLS-1$ //$NON-NLS-2$
-            multipleComponentManager.addParam("self.PASS", "DB.PASS"); //$NON-NLS-1$ //$NON-NLS-2$
-            multipleComponentManager.addParam("self.TABLE", "DB.TABLE"); //$NON-NLS-1$ //$NON-NLS-2$
-            multipleComponentManager.addParam("self.TABLE_ACTION", "DB.TABLE_ACTION"); //$NON-NLS-1$ //$NON-NLS-2$
-            multipleComponentManager.addParam("self.DATA_ACTION", "DB.DATA_ACTION"); //$NON-NLS-1$ //$NON-NLS-2$
-            multipleComponentManager.addParam("self.COMMIT_EVERY", "DB.COMMIT_EVERY"); //$NON-NLS-1$ //$NON-NLS-2$
-            multipleComponentManager.addParam("self.SCHEMA_DB", "DB.SCHEMA_DB"); //$NON-NLS-1$ //$NON-NLS-2$
+            if (useDb) {
+                multipleComponentManager.addParam("self.HOST", "DB.HOST"); //$NON-NLS-1$ //$NON-NLS-2$
+                multipleComponentManager.addParam("self.HOST", "DB.SERVER"); //$NON-NLS-1$ //$NON-NLS-2$
+                multipleComponentManager.addParam("self.HOST", "DB.DSN"); //$NON-NLS-1$ //$NON-NLS-2$
+                multipleComponentManager.addParam("self.PORT", "DB.PORT"); //$NON-NLS-1$ //$NON-NLS-2$
+                multipleComponentManager.addParam("self.DBNAME", "DB.DBNAME"); //$NON-NLS-1$ //$NON-NLS-2$
+                multipleComponentManager.addParam("self.PROPERTIES", "DB.PROPERTIES");
+                multipleComponentManager.addParam("self.USER", "DB.USER"); //$NON-NLS-1$ //$NON-NLS-2$
+                multipleComponentManager.addParam("self.PASS", "DB.PASS"); //$NON-NLS-1$ //$NON-NLS-2$
+                multipleComponentManager.addParam("self.TABLE", "DB.TABLE"); //$NON-NLS-1$ //$NON-NLS-2$
+                multipleComponentManager.addParam("self.TABLE_ACTION", "DB.TABLE_ACTION"); //$NON-NLS-1$ //$NON-NLS-2$
+                multipleComponentManager.addParam("self.DATA_ACTION", "DB.DATA_ACTION"); //$NON-NLS-1$ //$NON-NLS-2$
+                multipleComponentManager.addParam("self.COMMIT_EVERY", "DB.COMMIT_EVERY"); //$NON-NLS-1$ //$NON-NLS-2$
+                multipleComponentManager.addParam("self.SCHEMA_DB", "DB.SCHEMA_DB"); //$NON-NLS-1$ //$NON-NLS-2$
+            }
         }
-
     }
 
     /*
