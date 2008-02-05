@@ -151,7 +151,7 @@ public class InsertionIndicator {
 
                 // //////////////////////////////////////////////////////////
                 // draw left arrow
-                int yCenter = bounds.height / 2;
+                int yCenter = bounds.height / 2 + (WindowSystem.isWIN32() ? 4 : 0);
                 int widthExternalArrow = 10;
                 gc.setBackground(colorIndicator);
                 gc.setForeground(colorIndicator);
