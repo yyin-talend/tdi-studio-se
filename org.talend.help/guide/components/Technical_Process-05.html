@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Simple HTML">
-    <meta name="LASTUPDATED" content="07/16/07 18:20:38">
+    <meta name="LASTUPDATED" content="02/05/08 13:06:56">
     <title>Connecting components together</title>
   </head>
 
@@ -60,10 +60,10 @@ Select a component on the workspace, and right-click to display the pop-up menu.
 Row connection
 </b></font></h4>
 <dl><dl><a name="wp1012356"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-The <b>Row</b> connection handles actual data transfer. The Row links can be <b>main</b>, <b>lookup</b> or <b>output</b> according to the nature of the flow processed.
+The <b>Row</b> connection handles the actual data. The Row links can be <b>main</b>, <b>lookup</b>, <b>reject</b> or <b>output</b> according to the nature of the flow processed.
 </font></dd>
 </dl></dl><a name="wp1012363"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
-Main row
+Main
 </b></font></h4>
 <dl><dl><dl><a name="wp1012369"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 The <b>Main</b> row is the most commonly used connection. It passes on data flows from one component to the other, iterating on each row and reading input data according to the component properties setting (schema).
@@ -71,25 +71,31 @@ The <b>Main</b> row is the most commonly used connection. It passes on data flow
 <a name="wp1012373"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 Data transferred through main rows are characterized by a schema definition which describes the data structure in the input file.
 </font></dd>
-<a name="wp1012384"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1442220"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 Note:	Note that you cannot connect two Input components together using a <b>main Row</b> connection.
 </font></p>
-<a name="wp1012542"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-Note:	Note also that only <i>one</i>  incoming Row connection is possible per component. You will not be able to link twice the same target component using a main Row connection.
+<a name="wp1442228"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Note:	Note also that only <i>one</i>  incoming Row connection is possible per component. You will not be able to link twice the same target component using a main Row connection. The second row linking a component will be called <b>Lookup</b> row.
 </font></p>
-</dl></dl></dl><a name="wp1013774"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</dl></dl></dl><a name="wp1442236"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 </font></div>
 <div align="center"><img src="images/Row_Forbidden.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 
 </font></div>
-<dl><dl><dl><a name="wp1013777"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-To be able to use multiple Row connections, see <a href="Technical_Process-05.html#wp1078769"><i>Multiple Input/Output job</i></a>.
+<a name="wp1442244"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+·	Right-click on the input component and select <b>Row &gt; Main</b> on the connection list.
+</font></div>
+<a name="wp1444123"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+·	Alternatively click on the component to hightlight it, then while you right-click, drag the cursor towards the destination component. This will automatically create a <b>Row&gt;Main</b> type of connection. 
+</font></div>
+<dl><dl><dl><a name="wp1444096"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+To be able to use multiple Row connections, see <a href="Technical_Process-05.html#wp1078769"><i>Multiple Input/Output</i></a>.
 </font></dd>
 </dl></dl></dl><a name="wp1012396"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
-Lookup row
+Lookup
 </b></font></h4>
 <dl><dl><dl><a name="wp1012405"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-The <b>Lookup</b> row is a Row connecting a sub-flow component to a main flow component. This connection is used only in the case of multiple input flows.
+The <b>Lookup</b> row is a Row connecting a sub-flow component to a main flow component (which should be allowed to receive more than one incoming flow). This connection is used only in the case of multiple input flows.
 </font></dd>
 </dl></dl></dl><a name="wp1013574"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 </font></div>
@@ -97,22 +103,46 @@ The <b>Lookup</b> row is a Row connecting a sub-flow component to a main flow co
 
 </font></div>
 <dl><dl><dl><a name="wp1013582"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-A <b>Lookup</b> row can be changed into a main row at any time (and in reverse, a main row can be changed to a lookup row). To do so, right-click on the row to be changed, and on the pop-up menu, click on <b>Set this connection as Main</b>.
+A <b>Lookup</b> row can be changed into a main row at any time (and reversely, a main row can be changed to a lookup row). To do so, right-click on the row to be changed, and on the pop-up menu, click on <b>Set this connection as Main</b>.
 </font></dd>
 <a name="wp1012557"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-Related topic: <a href="Technical_Process-05.html#wp1078769"><i>Multiple Input/Output job</i></a>.
+Related topic: <a href="Technical_Process-05.html#wp1078769"><i>Multiple Input/Output</i></a>.
 </font></dd>
 </dl></dl></dl><a name="wp1012787"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
-Output row
+Filter
+</b></font></h4>
+<dl><dl><dl><a name="wp1450335"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The <b>Filter</b> link connect specifically a tFilterRow component to an output component. This row link gathers the data matching the filtering criteria. This particular component offers also a Reject link to fetch the non-matching data flow.
+</font></dd>
+</dl></dl></dl><a name="wp1450322"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Rejects
+</b></font></h4>
+<dl><dl><dl><a name="wp1442263"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The <b>Rejects</b> link connects a processing component to an output component. This row link gathers the data that does NOT match the filter or are not valid for the expected output. This link allows you to track the data that could not be processed for any reason (wrong type, undefined null value...). 
+</font></dd>
+</dl></dl></dl><a name="wp1442177"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Output
 </b></font></h4>
 <dl><dl><dl><a name="wp1012795"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-The <b>Output</b> row is a Row connecting a component to the final output component. As the job output can be multiple, you get prompted to give a name for each output row created. 
+The <b>Output</b> row is a Row connecting a tMap component to one or several output components. As the job output can be multiple, you get prompted to give a name for each output row created. 
 </font></dd>
 <a name="wp1013870"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 Note:	Note that the system remembers also deleted output link names (and properties if they were defined) to avoid you to fill in again name and property data in case you want to reuse them.
 </font></p>
 <a name="wp1012847"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-Related topic: <a href="Technical_Process-05.html#wp1078769"><i>Multiple Input/Output job</i></a>.
+Related topic: <a href="Technical_Process-05.html#wp1078769"><i>Multiple Input/Output</i></a>.
+</font></dd>
+</dl></dl></dl><a name="wp1450384"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Uniques/Duplicates
+</b></font></h4>
+<dl><dl><dl><a name="wp1450399"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The <b>Uniques</b> and <b>Duplicates</b> links connect a tUniqRow to output components.
+</font></dd>
+<a name="wp1450429"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The <b>Uniques</b> link gathers the rows that are found first in the incoming flow. This flow of unique data is directed to the relevant output component or else to another processing subjob.
+</font></dd>
+<a name="wp1450474"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The <b>Duplicates</b> link gathers the possible duplicates of the first encountered rows. This reject flow is directed to the relevant output component, for analysis for example.
 </font></dd>
 </dl></dl></dl><a name="wp1012432"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
 Iterate connection
@@ -143,24 +173,34 @@ The connection in use will create a dependency between jobs or sub-jobs which th
 <div align="center"><img src="images/ConnectTrigger_Popup.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 
 </font></div>
-<dl><dl><a name="wp1094589"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-There are two kinds of triggers: chronological trigger and contextual triggers.
+<dl><dl><a name="wp1442863"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+There are various kinds of triggers: subjob triggers, and component triggers. These links are used to orchestrate and troubleshoot easily the subjobs forming the job or handle inexpected errors. 
 </font></dd>
-<a name="wp1088557"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-<b>ThenRun</b>  (previously Run Before and Run after) is a chronological trigger, in the way, that you run the first component and then run the next component. This connection is to be used only with Start components. 
+</dl></dl><a name="wp1442871"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/ConnectTriggerAll.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<a name="wp1442881"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>OnSubjobOK</b>  (previously Then Run):  This link is used to trigger the next subjob on the condition that the main subjob completed without error.  This connection is to be used only from the Start component of the job. 
 </font></p>
-<a name="wp1084975"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1442888"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>OnSubjobError</b>: This link is used to trigger the next subjob in case the first (main) subjob didn&#39;t complete correctly. This &quot;on error&quot; subjob helps flag the bottleneck or handle the error if possible.
+</font></p>
+<dl><dl><a name="wp1442896"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 Related topic: <a href="Technical_Process-07.html"><i>Defining the Start component</i></a>.
 </font></dd>
-<a name="wp1013551"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-<b>Run if</b>, <b>Run if OK</b> and <b>Run if Error</b> are contextual triggers. They can be used with any source component but are to be connected to Start component of a main or secondary job flow.
-</font></p>
+<a name="wp1013551"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+ <b>OnComponentOK</b> and <b>OnComponentError</b> are component triggers. They can be used with any source component on the subjob.
+</font></dd>
 <ul>
-<a name="wp1013712"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>Run if OK</b> will only trigger the target component once the execution of the source component is complete. Its main use could be to trigger notification sub-jobs for example. </font></li>
-<a name="wp1013724"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>Run if Error</b> will trigger the sub-job or component as soon as an error is encountered in the primary job.</font></li>
-<a name="wp1014200"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>Run if </b>triggers a sub-job or component in case the condition defined is met. Click on the connection to display the <b>If </b>trigger <b>Properties</b> panel and set the condition in Perl or in Java according to the generation language you selected. The <b>Ctrl+Space bar</b> allows to access all global and contect variables.</font></li>
+<a name="wp1013712"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>OnComponentOK</b> will only trigger the target component once the execution of the source component is complete without error. Its main use could be to trigger notification subjob for example. </font></li>
+<a name="wp1013724"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>OnComponentError</b> will trigger the sub-job or component as soon as an error is encountered in the primary job.</font></li>
+<a name="wp1443018"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Run if </b>triggers a sub-job or component in case the condition defined is met. Click on the connection to display the <b>If </b>trigger <b>Properties</b> panel and set the condition in Perl or in Java according to the generation language you selected. The <b>Ctrl+Space bar</b> allows to access all global and context variables.
+</font></p>
 </ul>
-</dl></dl><a name="wp1088567"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</dl></dl><a name="wp1443031"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 </font></div>
 <div align="center"><img src="images/ConnectTrigger_RunIf.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 
@@ -187,16 +227,19 @@ WARNING-Be aware that the name you provide to the link MUST reflect the actual t
 In fact, the link name will be used in the SQL statement generated through the ETL Mapper, therefore the same name should never be used twice.
 </font></dd>
 </dl></dl><a name="wp1078769"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
-Multiple Input/Output job
+Multiple Input/Output
 </b></font></h3>
 <dl><a name="wp1065158"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-For the time being, if you need to handle data through multiple input points and/or multiple outputs  and integrate a transformation in one flow, you want to use the <b>tMap</b> component, which is dedicated to this use.
+Some components help handle data through multiple inputs and/or multiple outputs. These are often processing-type components such as the tMap.
+</font></dd>
+<a name="wp1443179"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+If this requires a join or some transformation in one flow, you want to use the <b>tMap</b> component, which is dedicated to this use.
 </font></dd>
 <a name="wp1065170"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-For further information regarding data mapping <a href="Technical_Process-10.html">, see&#160;<i>Mapping data flows in a job.</i></a>
+For further information regarding data mapping <a href="Technical_Process-11.html">, see&#160;<i>Mapping data flows in a job.</i></a>
 </font></dd>
 <a name="wp1065176"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-For properties regarding the tMap component as well as use case scenarios, see <a href="tMap_Prop.html"><i>tMap</i></a>.
+For properties regarding the tMap component as well as use case scenarios, see <a href="tMap_Scenario.html"><i>tMap</i></a>.
 </font></dd>
 </dl>
     </blockquote>

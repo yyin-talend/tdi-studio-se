@@ -4,8 +4,8 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Simple HTML">
-    <meta name="LASTUPDATED" content="07/16/07 18:20:38">
-    <title>Creating queries using SQLBuilder</title>
+    <meta name="LASTUPDATED" content="02/05/08 13:06:56">
+    <title>Setting up a LDAP schema</title>
   </head>
 
   <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
@@ -22,141 +22,249 @@
     <hr align="left"-->
 
     <blockquote>
-<a name="wp1040548"> </a><h2><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="4"><b>
-Creating queries using SQLBuilder
-</b></font></h2>
-<a name="wp1037965"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-SQLBuilder helps you build your SQL queries and monitor the changes between DB tables and metadata tables. This editor is available in all DBInput and DBSQLRow components (specific or generic).
+<a name="wp1099269"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
 </font></p>
-<a name="wp1037969"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-You can build a query using SQLbuilder whether your database table schema is stored in the repository or built-in directly in the job component.
-</font></p>
-<a name="wp1037974"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-Fill in the DB connection details and select the appropriate repository entry if you defined it. 
-</font></p>
-<a name="wp1037980"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-Remove the default query statement  in the <b>Query</b> field of the component <b>Properties</b> panel. Then click on the three-dot button to open the SQL Builder.
-</font></p>
-<a name="wp1037988"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1100045"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+Setting up a LDAP schema
+</b></font></h3>
+<dl><a name="wp1099275"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+On the <b>Repository</b>, right-click on <b>LDAP</b> tree node, and select <b>Create LDAP schema</b> on the pop-up menu.
+</font></dd>
+</dl><a name="wp1099283"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 </font></div>
-<div align="center"><img src="images/SQLBuilder1.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<div align="center"><img src="images/Repository-LDAP.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 
 </font></div>
-<a name="wp1037996"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-The SQL Builder editor is made of the following panels:
+<dl><a name="wp1099286"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Unlike the DB connection wizard, the LDAP wizard gathers both file connection and schema definition in a four-step procedure.
+</font></dd>
+</dl><a name="wp1098753"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Step 1: general properties
+</b></font></h4>
+<dl><dl><a name="wp1098766"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+On the first step, fill in the schema generic information, such as Schema <b>Name</b> and <b>Description</b>.
+</font></dd>
+<a name="wp1098776"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+For further information, see <a href="Technical_Process-08.html#wp1037181"><i>Step 1: general properties</i></a>.
+</font></dd>
+</dl></dl><a name="wp1100100"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Step 2: server connection
+</b></font></h4>
+<dl><dl><a name="wp1100107"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Fill the connection details.
+</font></dd>
+</dl></dl><a name="wp1100166"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Repo-LDAPStep2.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><dl><a name="wp1100128"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Then check your connection using <b>Check Network Parameter</b> to verify the connection and activate the <b>Next</b> button. 
+</font></dd>
+<a name="wp1100146"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<div align="center">
+<table border="1">
+  <caption></caption>
+  <tr align="center">    <th><a name="wp1100112"> </a><div><div align="center"><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Field
+</b></font></div></div>
+</th>
+    <th><a name="wp1100114"> </a><div><div align="center"><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Description
+</b></font></div></div>
+</th>
+</tr>
+  <tr align="left">    <td><a name="wp1100116"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Host</b>
+</font></div>
+</td>
+    <td><a name="wp1100118"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+LDAP Server IP address
+</font></div>
+</td>
+</tr>
+  <tr align="left">    <td><a name="wp1100120"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Port</b>
+</font></div>
+</td>
+    <td><a name="wp1100122"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Listening port to the LDAP directory
+</font></div>
+</td>
+</tr>
+  <tr align="left">    <td><a name="wp1100124"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Encryption method</b>
+</font></div>
+</td>
+    <td><a name="wp1427233"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>LDAP</b> : no encryption is used<br><b>LDAPS</b>: secured LDAP<br><b>TLS</b>: certificate is used 
+</font></div>
+</td>
+</tr>
+</table>
+</div>
+
 </font></p>
+<a name="wp1100132"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Click <b>Next</b> to validate this step and continue.
+</font></dd>
+</dl></dl><a name="wp1427295"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Step 3: authentication and DN fetching
+</b></font></h4>
+<dl><dl><a name="wp1098850"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+In this view, set the authentication and data access mode. 
+</font></dd>
+</dl></dl><a name="wp1098872"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Repo-LDAPStep3.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><dl><a name="wp1427481"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Click <b>Check authentication</b> to verify your access rights.
+</font></dd>
+<a name="wp1427625"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<div align="center">
+<table border="1">
+  <caption></caption>
+  <tr align="center">    <th><a name="wp1428064"> </a><div><div align="center"><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Field
+</b></font></div></div>
+</th>
+    <th><a name="wp1428067"> </a><div><div align="center"><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Description
+</b></font></div></div>
+</th>
+</tr>
+  <tr align="left">    <td><a name="wp1428075"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Authentication method</b>
+</font></div>
+</td>
+    <td><a name="wp1428247"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Simple authentication</b>: requires <b>Authentication Parameters</b> field to be filled in <br><b>Anonymous authentication</b>: does not require authentication parameters
+</font></div>
+</td>
+</tr>
+  <tr align="left">    <td><a name="wp1428086"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Authentication Parameters</b>
+</font></div>
+</td>
+    <td><a name="wp1428089"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Bind DN or User</b>: login as expected by the LDAP authentication method<br><b>Bind password</b>: expected password<br><b>Save password</b>: remembers the login details.
+</font></div>
+</td>
+</tr>
+  <tr align="left">    <td><a name="wp1428093"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Get Base DN from Root DSE</b> / <b>Base DN</b>
+</font></div>
+</td>
+    <td><a name="wp1428096"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Path to user&#39;s authorised tree leaf<br><b>Fetch Base DNs</b> button retrieves the DN automatically from Root.
+</font></div>
+</td>
+</tr>
+  <tr align="left">    <td><a name="wp1428100"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Alias Dereferencing</b>
+</font></div>
+</td>
+    <td><a name="wp1428754"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Never </b>allows to improve search performance if you are sure that no aliases is to be dereferenced. By default, <b>Always</b> is to be used.<br><b>Always</b>: Always dereference aliases<br><b>Never</b>: Never dereferences aliases.<br><b>Searching</b>:Dereferences aliases only after name resolution.<br><b>Finding</b>: Dereferences aliases only during name resolution
+</font></div>
+</td>
+</tr>
+  <tr align="left">    <td><a name="wp1428107"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Referral Handling</b>
+</font></div>
+</td>
+    <td><a name="wp1428110"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Redirection of user request:<br><b>Ignore</b>: does not handle request redirections <br><b>Follow</b>:does handle request redirections
+</font></div>
+</td>
+</tr>
+  <tr align="left">    <td><a name="wp1428114"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Limit</b>
+</font></div>
+</td>
+    <td><a name="wp1428117"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Limited number of records to be read
+</font></div>
+</td>
+</tr>
+</table>
+</div>
+
+</font></p>
+<a name="wp1428800"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Click <b>Fetch Base DNs</b> to retrieve the DN and click the <b>Next</b> button to continue.
+</font></dd>
+</dl></dl><a name="wp1427506"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Step 4: schema definition
+</b></font></h4>
+<dl><dl><a name="wp1428875"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Select the attributes to be included in the schema structure. 
+</font></dd>
+<a name="wp1429004"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Add a filter if you want selected data only.
+</font></dd>
+</dl></dl><a name="wp1428883"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Repo-LDAPStep4.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><dl><a name="wp1429042"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Click <b>Refresh Preview</b> to display the selected column and a sample of the data. 
+</font></dd>
+<a name="wp1429079"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Then click <b>Next</b> to continue.
+</font></dd>
+</dl></dl><a name="wp1427538"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Step 5: final schema
+</b></font></h4>
+<dl><dl><a name="wp1098973"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The last step shows the LDAP schema generated. You can customize the schema using the toolbar underneath the table.
+</font></dd>
+</dl></dl><a name="wp1098983"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Repo-LDAPStep5.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><dl><a name="wp1098991"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+If the LDAP directory which the schema is based on has changed, use the <b>Guess</b> button to generate again the schema. Note that if you customized the schema, your changes won&#39;t be retained after the <b>Guess</b> operation.
+</font></dd>
+<a name="wp1429740"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Click <b>Finish</b>. The new schema displays on the <b>Repository</b>, under the relevant LDAP connection node.
+</font></dd>
+</dl></dl><a name="wp1429748"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+Setting up a Generic schema
+</b></font></h3>
+<dl><a name="wp1429751"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Talend Open Studio</b> allows you to create any schema from scratch if none of the specific metadata wizards matchs your need or if you don&#39;t have any source to take the schema from. The creation procedure is made of two steps.
+</font></dd>
+<a name="wp1429942"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+First right-click on <b>Generic Schema</b> on the Repository and select <b>Create generic schema</b>.
+</font></dd>
+</dl><a name="wp1429765"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Step 1: general properties
+</b></font></h4>
+<dl><dl><a name="wp1429771"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+A connection wizard opens up. Fill in the generic Schema properties such as Schema <b>Name</b> and <b>Description</b>. The <b>Status</b> field is a customized field you can define in <i>Window &gt; Preferences</i>. 
+</font></dd>
+<a name="wp1429796"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Click <b>Next</b> when completed. 
+</font></dd>
+</dl></dl><a name="wp1429661"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Step 2: schema definition
+</b></font></h4>
+<dl><dl><a name="wp1429664"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+There is no default schema displaying as there is no source to take it from.
+</font></dd>
 <ul>
-<a name="wp1038002"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Database structure</font></li>
-<a name="wp1038006"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Query editor made of editor and designer tabs</font></li>
-<a name="wp1038010"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Query execution view</font></li>
-<a name="wp1038015"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Schema view</font></li>
+<a name="wp1430000"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">You can give a name to the schema or use the default name (metadata) and add a comment if you feel like. </font></li>
+<a name="wp1430049"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then, customize the schema structure in the schema panel, based on your needs. </font></li>
+<a name="wp1429668"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Indeed, the tool bar allows you add, remove or move columns in your schema. Also, you can load an xml schema or export the current schema as xml. </font></li>
+<a name="wp1438367"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click <b>Finish</b> to complete the generic schema creation. All created schemas display under the relevant <b>Generic Schemas</b> connection node. </font></li>
 </ul>
-<a name="wp1038018"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-The Database structure shows the tables for which a schema was defined either in the repository database entry or in your built-in connection.
-</font></p>
-<a name="wp1038023"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-The schema view, in the bottom right corner of the editor, shows the column description.
-</font></p>
-<a name="wp1038029"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
-Database structure comparison
-</b></font></h3>
-<dl><a name="wp1038032"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-On the database structure panel, are shown all the tables stored in the DB connection metadata entry (Repository) or in case of built-in schema, the tables of the database itself.
-</font></dd>
-<a name="wp1038036"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-Note:	the connection to the database, in case of built-in schema or in case of refreshing operation of a repository schema, might take quite some time. 
-</font></p>
-<a name="wp1038040"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-Click the refresh icon to display the differences found between the DB metadata tables and the actual DB tables. 
-</font></dd>
-</dl><a name="wp1038048"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/SQLBuilder_dbstruct.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-
-</font></div>
-<dl><a name="wp1038054"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-The <b>Diff</b> icons point out that the table contains differences or gaps. Develop the table node to show the exact column containing the differences. 
-</font></dd>
-<a name="wp1038058"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-The red highlight shows that the content of the column contains differences or that the column is missing from the actual database table.
-</font></dd>
-<a name="wp1038064"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-The blue highlight shows that the column is missing from the table stored in the repository metadata.
-</font></dd>
-</dl><a name="wp1038070"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
-Building a query
-</b></font></h3>
-<dl><a name="wp1038074"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-The Query editor is a multiple-tab system allowing you to write or graphically design as many queries as you want. 
-</font></dd>
-<a name="wp1038419"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-To create a new query, right-click on the table or on the table column and select <b>Generate Select Statement</b> on the pop-up list.
-</font></dd>
-<a name="wp1077579"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-Click on the empty tab showing by default and type in your SQL query or press <b>Ctrl+Space </b>to access the autocompletion list. The tooltip bubble shows the whole path to the table or table section you want to search in.  
-</font></dd>
-</dl><a name="wp1038352"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/SQLBuilder_query.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-
-</font></div>
-<dl><a name="wp1038360"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-Alternatively the graphical query <b>designer</b> allows you to handle tables easily and have real-time generation of  the corresponding query in the <b>edit</b> tab.
-</font></dd>
-<a name="wp1077675"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-Click on <b>Designer</b> tab to switch from manual <b>Edit</b> mode to graphical mode.
-</font></dd>
-<a name="wp1077616"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-Note:	You may get a message while switching from one view to the other, as some SQL statements cannot be interpreted graphically.
-</font></p>
-<a name="wp1077722"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-If you selected a table, all columns are selected by default. Uncheck the box facing the relevant columns to exclude them from the selection. 
-</font></dd>
-<a name="wp1077806"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-Add more tables in a simple right-click. On the <b>designer</b> tab, right-click and select <b>Add tables</b> in the pop-up list then select the relevant table to be added.
-</font></dd>
-<a name="wp1078166"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-If joins between these tables already exist, these joins are automatically set up graphically in the editor.
-</font></dd>
-<a name="wp1077755"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-You can also very easily create a join between tables. Right-click on the first table columns to be linked and select <b>Equal</b> on the pop-up list, to join it with the relevant field of the second table. 
-</font></dd>
-</dl><a name="wp1077860"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/SQLBuilder_query2.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-
-</font></div>
-<dl><a name="wp1077896"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-The SQL statement corresponding to your graphical handlings is also displayed on the viewer part of the editor or click on the <b>edit </b>tab to switch back to manual <b>Edit</b> mode. 
-</font></dd>
-<a name="wp1077736"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-Note:	In <b>Designer</b> mode, you cannot include graphically filter criteria.These need to be added in <b>Edit</b> mode.
-</font></p>
-<a name="wp1078178"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-Once your query is complete, execute it by clicking on the running man button.
-</font></dd>
-<a name="wp1038472"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-The toolbar above the query editor allows you to access quickly usual commands such as: execute, open, save and clear.
-</font></dd>
-<a name="wp1038460"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-On the Query results view, are displayed the results of the active tab&#39;s query. 
-</font></dd>
-<a name="wp1038495"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-The status bar at the bottom of this panel provides information about execution time and number of rows retrieved.
-</font></dd>
-</dl><a name="wp1077270"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
-Storing a query in the Repository
-</b></font></h3>
-<dl><a name="wp1077283"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-To be able to retrieve and reuse queries, we recommend you to store them in the <b>Repository</b>.
-</font></dd>
-<a name="wp1078084"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-In the SQL Builder editor, click on <b>Save</b> (floppy disk icon on the tool bar) to bind the query with the DB connection and schema in case these are also stored in the <b>Repository</b>.
-</font></dd>
-<a name="wp1078133"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-The query can then be accessed from the <b>Database structure</b> view, on the left-hand side of the editor.
-</font></dd>
-</dl>
+</dl></dl>
     </blockquote>
     <hr>
 

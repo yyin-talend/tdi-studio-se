@@ -1,0 +1,142 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Simple HTML">
+    <meta name="LASTUPDATED" content="02/05/08 13:30:49">
+    <title>Scenario: Validating dates against schema (java)</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tSchemaComplianceCheck_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tSendMail_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp1501321"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<a name="wp1503182"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+Scenario: Validating dates against schema (java)
+</b></font></h3>
+<dl><a name="wp1503305"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+This very basic scenario shows how to check the type, null value and length of an incoming flow against a defined reference schema. The incoming flow comes from a simple csv file which contains heterogeneous data including wrong data type, data exceeding max length, wrong id and null values in non-nullable columns.
+</font></dd>
+</dl><a name="wp1502591"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tSchemaComplianceCheck5.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><a name="wp1502599"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The output is double as the valid data are gathered into a dedicated delimited file, whereas the rejected data are displayed on the console. 
+</font></dd>
+</dl><a name="wp1501351"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tSchemaComplianceCheck1.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1501368"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click and drop the following components: <b>tFileInputDelimited</b>, <b>tSchemaComplianceCheck</b>, <b>tFileOutputDelimited</b>,<b> tLogRow</b>.</font></li>
+<a name="wp1501433"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Right-click on the <b>tFileInputDelimited</b> to connect it to the <b>tSchemaComplianceCheck</b> using a row main link.</font></li>
+<a name="wp1501442"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then right-click on  the <b>tSchemaComplianceCheck</b> component and select <b>Row &gt; Main</b> to connect it to the <b>tFileOutputDelimited</b>. This output flow will gather the valid data.</font></li>
+<a name="wp1501469"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Right-click again on the <b>tSchemaComplianceCheck</b> component and, this time, select  <b>Row &gt; Rejects</b> link to connect it to the <b>tLogRow</b> component. This second output flow will gather the non-compliant data. </font></li>
+<a name="wp1501541"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Select the <b>Rejects</b> link that you just connected, and notice that the schema passed through to the <b>tLogRow</b> contains already two columns: <i>ErrorCode</i> and <i>ErrorMessage</i>. These two column are read-only and provides information about the rejected data, easing the error handling and troubleshooting if need be.</font></li>
+<a name="wp1501625"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Now define the properties of each component.</font></li>
+</ul>
+</ul>
+<a name="wp1501644"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tSchemaComplianceCheck2.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1501778"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">On the <b>Component</b> view of the <b>tFileInputDelimited</b> component, leave the default parameters for a delimited file, and fill in the <b>File Name</b> browsing to the input file. In this example: <i>in.csv</i> </font></li>
+<a name="wp1501791"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click <b>Edit Schema</b> to describe the data structure of this input file. The schema is made of six columns: <i>id</i>, <i>Col2Label</i>, <i>Col3Label</i>, <i>Date</i>, <i>Val</i> and <i>Str_Nullable</i>.</font></li>
+</ul>
+</ul>
+<a name="wp1501972"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tSchemaComplianceCheck3.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1501991"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Leave the Type field as permissive as possible (especially in Java). You will define the actual type of the data on the <b>tSchemaComplianceCheck</b> Component view.</font></li>
+<a name="wp1502073"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The <i>Str_nullable</i> column is the only nullable data. So check the relevant box. <i>Col2Label</i> and <i>Col3Label</i> are length-limited to respectively <i>30</i> and <i>40</i> characters. </font></li>
+<a name="wp1502146"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then double-click on <b>tSchemaComplianceCheck</b> component to set the validation parameters.</font></li>
+</ul>
+</ul>
+<a name="wp1502173"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tSchemaComplianceCheck4.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1502215"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The <b>Base schema</b> should be automatically propagated from the input component. If not, click on the <b>Sync columns</b> button.</font></li>
+<a name="wp1502264"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In this example, we use the <b>Checked columns</b> table to set the validation parameters. But you could also check the <b>Use another schema for compliance check</b> and define the schema description of the expected data.</font></li>
+<a name="wp1502313"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Tick the <b>Check all columns from schema</b> if you want to check all the columns against all parameters (type, null values and length).</font></li>
+<a name="wp1502342"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">On the <b>Checked Columns</b> table, set the checks to be performed. Below is the setting for a job designed in <b>Talend Open Studio</b> with Java generation language:<br>- The <i>Id</i> type should be <b>Int</b>.<br>- The <i>Col2Label</i> and <i>Col3Label</i> should be checked for their <b>Length</b><br>- The <i>Date</i> should of type <b>Date</b><br>- The <i>Val</i> column should be checked for <b>null</b> values (as it should not be null).<br>- The <i>Str_nullable</i> should be checked for <b>null</b> values also (but it can be null).</font></li>
+<a name="wp1503049"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In Perl, check the relevant <b>Type</b> boxes for the columns which the type needs to be checked (Date). Also, define the <b>Date format</b> and <b>Date language</b>.</font></li>
+<a name="wp1502466"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then set the output components parameters.</font></li>
+<a name="wp1502481"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The schema is propagated automatically from the <b>tSchemaComplianceCheck</b> to the output components.</font></li>
+<a name="wp1502504"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Define the output file path on the <b>tFileOutputDelimited</b> properties.</font></li>
+<a name="wp1502542"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then on the <b>Run Job </b>tab, check the <b>Statistics</b> box to display the flow dispatching rates before launching the execution.</font></li>
+</ul>
+</ul>
+<a name="wp1502754"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tSchemaComplianceCheck6.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1502796"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">You can notice that three rows from the input flow were validated and therefore were directed to the <b>tFileOutputDelimited</b>. </font></li>
+<a name="wp1502813"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Also seven rows were not compliant with the reference schema, and therefore were directed to the console.</font></li>
+</ul>
+</ul>
+<a name="wp1502824"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tSchemaComplianceCheck7.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><a name="wp1502873"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+You can notice that the extra output columns in the <b>Rejects</b> link provide the <b>error code</b> as well as an <b>error message</b> such as: <i>2|Date:Date format not valid</i> or <i>2|id:wrong type</i> in order to ease the identification of the error.
+</font></dd>
+</dl>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tSchemaComplianceCheck_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tSendMail_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

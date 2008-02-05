@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Simple HTML">
-    <meta name="LASTUPDATED" content="10/05/07 18:38:02">
+    <meta name="LASTUPDATED" content="02/05/08 13:30:49">
     <title>Scenario: Displaying LDAP directory&#39;s filtered content</title>
   </head>
 
@@ -28,14 +28,14 @@
 <a name="wp1431029"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
 Scenario: Displaying LDAP directory&#39;s filtered content
 </b></font></h3>
-<a name="wp1431021"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<dl><a name="wp1431021"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 The job described below simply filters the LDAP directory and displays the result on the console.
-</font></p>
-<a name="wp1427133"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></p>
-<div align="center"><img src="images/Use_Case_tLDAPInput1.png" border="0" hspace="0" vspace="0"></div><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></dd>
+</dl><a name="wp1427133"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tLDAPInput1.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 
-</font></p>
+</font></div>
 <ul>
 <ul>
 <a name="wp1427150"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click and drop the <b>tLDAPInput</b> component along with a <b>tLogRow</b>.</font></li>
@@ -43,11 +43,15 @@ The job described below simply filters the LDAP directory and displays the resul
 <a name="wp1429122"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Set the <b>Property type </b>on <b>Repository</b> if you stored the LDAP connection details in the <b>Metadata Manager </b>in the <b>Repository</b>. Then select the relevant entry on the list. </font></li>
 <a name="wp1429167"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In <b>Built-In</b> mode, fill in the <b>Host</b> and <b>Port</b> information manually. Host can be the IP address of the LDAP directory server or its DNS name.</font></li>
 <a name="wp1429185"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">No particular <b>Base DN </b>is to be set.</font></li>
-<a name="wp1427224"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-<br>
-<img src="images/Use_Case_tLDAPInput2.png" border="0" hspace="0" vspace="0"><br>
+</ul>
+</ul>
+<a name="wp1427224"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tLDAPInput2.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 
-</font></p>
+</font></div>
+<ul>
+<ul>
 <a name="wp1427257"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then select the relevant <b>Protocol</b> on the list. In this example: a simple <b>LDAP</b> protocol is used.</font></li>
 <a name="wp1427311"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Check the <b>Authentication</b> box and fill in the login information if required to read the directory. In this use case, no authentication is needed.</font></li>
 <a name="wp1427395"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the <b>Filter</b> area, type in the command, the data selection is based on. In this example, the filter is: <code>(&amp;(objectClass=inetorgperson)&amp;(uid=PIERRE DUPONT))</code>. </font></li>
@@ -55,23 +59,28 @@ The job described below simply filters the LDAP directory and displays the resul
 <a name="wp1429204"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">As we don&#39;t know if some aliases are used in the LDAP directory, select <b>Always </b>on the list.</font></li>
 <a name="wp1429241"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Set <b>Ignore</b> as <b>Referral handling</b>.</font></li>
 <a name="wp1427478"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Set the limit to <b>100</b> for this use case.</font></li>
-<a name="wp1427530"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-<br>
-<img src="images/Use_Case_tLDAPInput3.png" border="0" hspace="0" vspace="0"><br>
+</ul>
+</ul>
+<a name="wp1427530"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tLDAPInput3.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 
-</font></p>
+</font></div>
+<ul>
+<ul>
 <a name="wp1427564"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Set the <b>Schema</b> as required by your LDAP directory. In this example, the schema is made of 6 columns including the <code>objectClass</code> and <code>uid</code> columns which get filtered on.</font></li>
 <a name="wp1427556"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the <b>tLogRow</b> component, no particular setting is required.</font></li>
-<a name="wp1427693"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-<br>
-<img src="images/Use_Case_tLDAPInput4.png" border="0" hspace="0" vspace="0"><br>
+</ul>
+</ul>
+<a name="wp1427693"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tLDAPInput4.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 
-</font></p>
-<a name="wp1427711"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<dl><a name="wp1427711"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 Only one entry of the directory corresponds to the filter criteria given in the <b>tLDAPInput</b> component.
-</font></p>
-</ul>
-</ul>
+</font></dd>
+</dl>
     </blockquote>
     <hr>
 

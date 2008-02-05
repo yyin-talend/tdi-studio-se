@@ -4,8 +4,8 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Simple HTML">
-    <meta name="LASTUPDATED" content="07/16/07 18:20:38">
-    <title>Defining job Properties</title>
+    <meta name="LASTUPDATED" content="02/05/08 13:06:56">
+    <title>Defining component&#39;s properties</title>
   </head>
 
   <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
@@ -23,100 +23,130 @@
 
     <blockquote>
 <a name="wp1065182"> </a><h2><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="4"><b>
-Defining job Properties
+Defining component&#39;s properties
 </b></font></h2>
 <a name="wp1014542"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-The <b>Properties</b> information shows detailed data. The <b>Main</b> tab thus recalls information relative to the author and job name as filled in at creation stage as well as other general information. And the other tabs show more specific information about the job or the component selected.
+The properties information for each component forming a <b>Job</b> allows to set the actual technical implementation of the active Job.
 </font></p>
-<a name="wp1014549"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
-Main
+<a name="wp1448724"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Each component is defined by basic and advanced properties shown respectively on the <b>Basic Settings</b> tab and the <b>Advanced Settings </b>tab of the <b>Component</b> view. The <b>Component</b> view gathers also other collateral information related to the component in use, including <b>View</b> and <b>Documentation </b>tabs. 
+</font></p>
+<a name="wp1448730"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+Basic Settings
 </b></font></h3>
-<dl><a name="wp1014555"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-The properties panel shows the <b>Main</b> properties of the selected component. The values of information data are filled in automatically by the component itself and will be used in the code. Therefore all fields are read-only, but the <b>Activate</b> box.
+<dl><a name="wp1448751"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The <b>Basic Settings</b> tab is part of the <b>Component</b> view, which is located on the lower part of the designing editor of <b>Talend Open Studio</b>.
 </font></dd>
-</dl><a name="wp1014566"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</dl><a name="wp1448878"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 </font></div>
-<div align="center"><img src="images/Component_Main_prop.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<div align="center"><img src="images/Component_BasicSettings.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 
 </font></div>
-<a name="wp1014591"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<dl><a name="wp1448865"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Each component has specific basic settings according to its function requirements within the Job. For a detailed description of each component properties and use, see the chapter <a href="Component_intro.html"><i>Components</i></a>.
+</font></dd>
+<a name="wp1449433"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Note:	Some components require code to be input or functions to be set. Where relevant, make sure you use the correct code, i.e. Perl code in perl properties and java code in Java properties.
 </font></p>
-<div align="center">
-<table border="1">
-  <caption></caption>
-  <tr align="center">    <th><a name="wp1014571"> </a><div><div align="center"><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
-Field
-</b></font></div></div>
-</th>
-    <th><a name="wp1014573"> </a><div><div align="center"><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
-Description
-</b></font></div></div>
-</th>
-</tr>
-  <tr align="left">    <td><a name="wp1014575"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-Unique Name
+<a name="wp1449437"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+For <b>File</b> and <b>Database</b> components you can centralize properties in metadata files located in the <b>Metadata </b>directory of the <b>Repository</b>. This means that on the <b>Basic Settings</b> tab you can set properties on the spot, using the <b>Built-In</b> <b>Property</b> type or use the properties you stored in the <b>Metadata Manager</b> using the <b>Repository</b> <b>Property</b> type. The latter option helps you save time when the configuration is often .
+</font></dd>
+<a name="wp1449239"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Select <b>Repository</b> as <b>Property type</b> and choose the metadata file holding the relevant information. Related topic: <a href="Technical_Process-08.html"><i>Defining Metadata items</i></a>.
+</font></dd>
+<a name="wp1449126"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+For all components that handle a data flow (most components), you can define a <b>Talend</b> schema in order to describe and possibly select the data to be processed. Like the <b>Properties</b> data, this schema is either <b>Built-in</b> or stored remotely in the <b>Repository</b> in a metadata file that you created. A detailed description of the Schema setting is provided in the next sections.
+</font></dd>
+</dl><a name="wp1448918"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Setting a built-in schema
+</b></font></h4>
+<dl><dl><a name="wp1448327"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+A schema created as  <i>built in</i> the job is meant for a single use in a job, hence cannot be reused in another job nor station.
+</font></dd>
+<a name="wp1448335"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Select Built-in in the list, and click on <b>Edit Schema</b> and create your built-in schema by adding columns and describing their content, according to the input file definition.
+</font></dd>
+</dl></dl><a name="wp1448343"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 </font></div>
-</td>
-    <td><a name="wp1014577"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-Unique identifier, allocated automatically by the system in order for it to be reused in the code.
-</font></div>
-</td>
-</tr>
-  <tr align="left">    <td><a name="wp1014579"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-Version
-</font></div>
-</td>
-    <td><a name="wp1014581"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-Component version, independant from the version of the whole product version.
-</font></div>
-</td>
-</tr>
-  <tr align="left">    <td><a name="wp1014583"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-Family
-</font></div>
-</td>
-    <td><a name="wp1014585"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-Group of components relative to the same function. This field is read-write and new family can be created here.
-</font></div>
-</td>
-</tr>
-  <tr align="left">    <td><a name="wp1014587"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-Activate
-</font></div>
-</td>
-    <td><a name="wp1014589"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-Check this box to activate the selected component and the directly linked job.
-</font></div>
-</td>
-</tr>
-  <tr align="left">    <td><a name="wp1071138"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-tStatCatcher Statistics
-</font></div>
-</td>
-    <td><a name="wp1071141"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-Check this box to allow the tStatCatcher component to aggregate processing data  as defined in the properties of <a href="tStatCatcher_Prop.html"><i>tStatCatcher</i></a>
-</font></div>
-</td>
-</tr>
-</table>
-</div>
-<p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<div align="center"><img src="images/Schema_defining.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 
+</font></div>
+<dl><dl><a name="wp1448346"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+In all Output Properties also, you also have to define the schema of the output. To retrieve the schema defined in the Input schema, click on <b>Sync columns</b> button.
+</font></dd>
+<a name="wp1448354"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Note:	<a href="http://java.sun.com/j2se/1.5.0/docs/api/index.html">In Java, some extra information is required. For more information about Date pattern for example, check out: http://java.sun.com/j2se/1.5.0/docs/api/index.html </a>
 </font></p>
-<dl><a name="wp1014598"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-The <b>Activate</b> box enables the component function in the job or the sub-job it belongs to, hence code related to its properties will be generated. 
+</dl></dl><a name="wp1448364"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Setting a repository schema
+</b></font></h4>
+<dl><dl><a name="wp1448367"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+You can avoid redundancy of schema metadata and hold them together in a central place, by creating metadata files and store them in the Repository Metadata directory. 
 </font></dd>
-<a name="wp1014608"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-If the <b>Activate</b> box is unchecked, obviously no code will be generated for the component itself but also for all directly related branches in the job. 
+<a name="wp1448374"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+To recall a metadata file into your current job, select the Schema type <b>Repository</b> and select the  relevant metadata file in the list. Then click on <b>Edit Schema</b> to check the data are appropriate. 
 </font></dd>
-<a name="wp1015802"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-For further information regarding the enabling/disabling job feature, see <a href="Technical_Process-11.html"><i>Activating/Disabling a job or sub-job</i></a>.
+</dl></dl><a name="wp1448385"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Prop_from_Repo.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><dl><a name="wp1448388"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+You are free to edit a repository schema used for a job. However, note that the schema hence becomes <b>built-in</b> to the current job. 
 </font></dd>
-</dl><a name="wp1014619"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+<a name="wp1448397"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+You cannot change the remotely stored schema from this window.
+</font></dd>
+<a name="wp1448405"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Related topics: <a href="Technical_Process-08.html"><i>Defining Metadata items</i></a>
+</font></dd>
+</dl></dl><a name="wp1448411"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Setting a field dynamically (Ctrl+Space bar)
+</b></font></h4>
+<dl><dl><a name="wp1448420"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+On any field of your job/component <b>Properties</b> view, you can use <b>Ctrl+Space bar</b> to  access the global and context variable list and set the relevant field value dynamically.
+</font></dd>
+<ul>
+<a name="wp1448430"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Place the cursor on any field of the <b>Properties</b> view.</font></li>
+<a name="wp1448437"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Press <b>Ctrl+Space bar</b> to access the proposal list. </font></li>
+<a name="wp1448440"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Select on the list the relevant parameters you need. Appended to the Variable list, a information panel provides details about the selected parameter.</font></li>
+</ul>
+</dl></dl><a name="wp1448449"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/CtrlSpace.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><dl><a name="wp1448452"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+This can be any parameter including: error messages, number of lines processed, or else... The list varies according to the component in selection or the context you&#39;re working in.
+</font></dd>
+<a name="wp1448462"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Related topic: <a href="Technical_Process-14.html"><i>Defining Contexts and variables</i></a>
+</font></dd>
+</dl></dl><a name="wp1448465"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+Advanced settings
+</b></font></h3>
+<dl><a name="wp1449638"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Some components, especially <b>File</b> and <b>Database</b> components, provides numerous advanced use possibilities.
+</font></dd>
+</dl><a name="wp1449646"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Component_AdvancedSettings.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><a name="wp1449652"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The content of the <b>Advanced Settings</b> tab changes according to the selected component. 
+</font></dd>
+<a name="wp1449698"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Generally you will find on this tab the parameters that are not required for a basic or usual use of the component but may be required for a use out of the standard scope.
+</font></dd>
+<a name="wp1449683"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+On this tab is also present the options you can set, including the StatCatcher statistics. For more information regarding the stats &amp; log features<a href="Technical_Process-18.html#wp1450040">, see&#160;<i>Automating statistics &amp; logs use.</i></a>
+</font></dd>
+</dl><a name="wp1449499"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
 View
 </b></font></h3>
 <dl><a name="wp1014628"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-The <b>View</b> tab of the <b>Properties</b> panel allows you to change the default display format of components on the workspace. 
+The <b>View</b> tab of the <b>Component</b> view allows you to change the default display format of components on the workspace. 
 </font></dd>
 <a name="wp1014650"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 <div align="center">
@@ -136,7 +166,7 @@ Label format
 </font></div>
 </td>
     <td><a name="wp1014640"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-Free label showing on the workspace. Variables can be set to retrieve and display values from other fields. The field tooltip usually shows the corresponding variable where the field value is stored. 
+Free text label showing on the workspace. Variables can be set to retrieve and display values from other fields. The field tooltip usually shows the corresponding variable where the field value is stored. 
 </font></div>
 </td>
 </tr>
@@ -150,11 +180,11 @@ Hidden tooltip, showing only when you mouse over the component.
 </td>
 </tr>
   <tr align="left">    <td><a name="wp1014646"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-Show hint
+Connection format
 </font></div>
 </td>
     <td><a name="wp1014648"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-Check this box to enable the tooltip feature.
+Indicates the type of connection accepted by the component.
 </font></div>
 </td>
 </tr>
@@ -172,7 +202,7 @@ You can graphically highlight both <b>Label</b> and <b>Hint</b> text with HTML f
 <a name="wp1014679"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Color: &lt;Font color= `#RGBcolor&#39;&gt; YourLabelOrHint &lt;/Font&gt;</font></li>
 </ul>
 <a name="wp1014684"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-To change your preferences of this View panel, click Window&gt;Preferences&gt;Talend&gt;Designer. 
+To change your preferences of this View panel, click <b>Window&gt;Preferences&gt;Talend&gt;Designer</b>. 
 </font></dd>
 </dl><a name="wp1014690"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
 Documentation
@@ -194,70 +224,7 @@ You can show the Documentation in your hint tooltip using the associated variabl
 <a name="wp1015893"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 For advanced use of Documentations, you can use the Repository Documentation area in order to store and reuse any type of documentation.
 </font></dd>
-</dl><a name="wp1014722"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
-Properties
-</b></font></h3>
-<dl><a name="wp1014731"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-Each component has specific properties shown on the <b>Properties</b> tab of the <b>Properties</b> panel. See <a href="Component_intro.html"><i>Components</i></a> for details about how to fill in the fields. 
-</font></dd>
-</dl><a name="wp1014738"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/warning_iconee.gif" align="left" border="0" hspace="0" vspace="0"></table></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-
-</font></div>
-<dl><a name="wp1094723"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-Make sure you use the relevant code, i.e. Perl code in perl properties and java code in Java properties.
-</font></dd>
-<a name="wp1094732"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-For all components you can centralize Properties information in metadata files located in the Repository Metadata directory. Select <b>Repository</b> as <b>Property type</b> and choose the metadata file holding the relevant information. Related topic: <a href="Technical_Process-08.html"><i>Defining Metadata items</i></a>.
-</font></dd>
-<a name="wp1014754"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-For all <b>Input</b>-type components, you can define the schema to follow in order to select data to be processed. Like the Properties data, this schema is either built-in or stored remotely in the Repository in a metadata file that you created. 
-</font></dd>
-</dl><a name="wp1014762"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
-Setting a built-in schema
-</b></font></h4>
-<dl><dl><a name="wp1014768"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-A schema created as  <i>built in</i> the job is meant for a single use in a job, hence cannot be reused in another job nor station.
-</font></dd>
-<a name="wp1015967"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-Select Built-in in the list, and click on <b>Edit Schema</b> and create your built-in schema by adding columns and describing their content, according to the input file definition.
-</font></dd>
-</dl></dl><a name="wp1014780"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Schema_defining.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-
-</font></div>
-<dl><dl><a name="wp1015975"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-In all Output Properties also, you also have to define the schema of the output. To retrieve the schema defined in the Input schema, click on <b>Sync columns</b> button.
-</font></dd>
-<a name="wp1093761"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-Note:	<a href="http://java.sun.com/j2se/1.5.0/docs/api/index.html">In Java, some extra information is required. For more information about Date pattern for example, check out: http://java.sun.com/j2se/1.5.0/docs/api/index.html </a>
-</font></p>
-</dl></dl><a name="wp1014787"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
-Setting a repository schema
-</b></font></h4>
-<dl><dl><a name="wp1014790"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-You can avoid redundancy of schema metadata and hold them together in a central place, by creating metadata files and store them in the Repository Metadata directory. 
-</font></dd>
-<a name="wp1014804"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-To recall a metadata file into your current job, select the Schema type <b>Repository</b> and select the  relevant metadata file in the list. Then click on <b>Edit Schema</b> to check the data are appropriate. 
-</font></dd>
-</dl></dl><a name="wp1014811"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-</font></div>
-<div align="center"><img src="images/Prop_from_Repo.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-
-</font></div>
-<dl><dl><a name="wp1016022"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-You are free to edit a repository schema used for a job. However, note that the schema hence becomes <b>built-in</b> to the current job. 
-</font></dd>
-<a name="wp1016042"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-You cannot change the remotely stored schema from this window.
-</font></dd>
-<a name="wp1016072"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-Related topics: <a href="Technical_Process-08.html"><i>Defining Metadata items</i></a>
-</font></dd>
-</dl></dl>
+</dl>
     </blockquote>
     <hr>
 

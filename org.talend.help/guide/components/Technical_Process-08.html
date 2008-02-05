@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
     <meta name="TEMPLATEBASE" content="Simple HTML">
-    <meta name="LASTUPDATED" content="07/16/07 18:20:38">
+    <meta name="LASTUPDATED" content="02/05/08 13:06:56">
     <title>Defining Metadata items</title>
   </head>
 
@@ -26,7 +26,7 @@
 Defining Metadata items
 </b></font></h2>
 <a name="wp1037125"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-<b>Talend Open Studio</b> is a metadata-driven solution, and can therefore help you ensure the whole job consistency and quality, through a centralized metadata warehouse. 
+<b>Talend Open Studio</b> is a metadata-driven solution, and can therefore help you ensure the whole job consistency and quality, through a centralized metadata manager. 
 </font></p>
 <a name="wp1074391"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 Use the Repository to store, in the Metadata area, the recurrent information on files used to build your job and retrieve them easily from the Properties panel of any component. These metadata generally include: DB connections, File path and schemas. 
@@ -43,10 +43,7 @@ First step is to setup a connection to the File or to the DB. Then second step i
 
 </font></div>
 <a name="wp1037144"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-This procedure differs slightly depending on the type of connection chosen. Below are the respective procedures to setup various connections and define multiple schemas.
-</font></p>
-<a name="wp1037148"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-Note that in any case, the connection to a file or DB serves only the purpose of copying the metadata,  the schema will be based on, to your Repository (likely on your filesystem).
+This procedure differs slightly depending on the type of connection chosen. Below are the respective procedures to set up various connections and define multiple schemas.
 </font></p>
 <a name="wp1037153"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 Click on Metadata in the Repository to expand the folder tree.
@@ -54,7 +51,7 @@ Click on Metadata in the Repository to expand the folder tree.
 <a name="wp1037156"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 Each of the connection nodes will gather the various connections you setup. 
 </font></p>
-<a name="wp1037163"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+<a name="wp1099656"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
 Setting up a DB schema
 </b></font></h3>
 <dl><a name="wp1037166"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
@@ -258,7 +255,7 @@ Click Finish. The new schema displays on the Repository, under the relevant File
 Setting up a File Positional schema
 </b></font></h3>
 <dl><a name="wp1037551"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-On the Repository, right-click on File Delimited tree node, and select <b>Create file positional</b> on the pop-up menu. 
+On the Repository, right-click on File Positional tree node, and select <b>Create file positional</b> on the pop-up menu. 
 </font></dd>
 </dl><a name="wp1037559"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 </font></div>
@@ -375,23 +372,23 @@ Step 3: schema definition
 <dl><dl><a name="wp1037767"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 This step opens the schema setting window. As for the other File schemas, you can refine the schema definition by precising the field and row separators, the header message number of lines and else...
 </font></dd>
-<a name="wp1037775"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1437673"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 In the <b>Regular Expression settings</b> panel, enter the regular expression to be used to delimit the file. 
 </font></dd>
-</dl></dl><a name="wp1037783"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</dl></dl><a name="wp1437681"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 </font></div>
 <div align="center"><img src="images/Repo-RegexSchemaStep3a.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 
 </font></div>
-<a name="wp1037792"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1437688"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 </font></div>
-<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/warning_iconee.gif" align="left" border="0" hspace="0" vspace="0"></table></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<div><table border="0" cellpadding="0" cellspacing="0" align="left"><img src="images/warning_iconhk.gif" align="left" border="0" hspace="0" vspace="0"></table></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 
 </font></div>
-<dl><dl><a name="wp1093897"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-In Java: Regular expressions syntax is different in Java/Perl. Make sure you use the relevant syntax according to the generation language used.  
-</font></dd>
-<a name="wp1093887"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1437691"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Take care to use the correct Regex syntax according to the generation language in use as the syntax is different in Java/Perl, and to include the regexp in single or double quotes accordingly</b>.
+</font></p>
+<dl><dl><a name="wp1437701"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 Then click <b>Refresh preview</b> to take into account the changes. The button changes to <b>Wait</b> until the preview is refreshed.
 </font></dd>
 </dl></dl><a name="wp1037800"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
@@ -415,7 +412,7 @@ You can also retrieve or update the Regex File schema by clicking on <b>Guess</b
 Click <b>Finish</b>. The new schema displays on the Repository, under the relevant File regex connection node.
 </font></dd>
 </dl></dl><a name="wp1037837"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
-Setting up a FileLDIF schema
+Setting up a FileLDIF schema  
 </b></font></h3>
 <dl><a name="wp1037840"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 LDIF files are directory files described by attributes. FileLDIF metadata centralize these LDIF type files and their attribute description.
@@ -481,7 +478,7 @@ The schema generated shows the columns of the description file. You can customiz
 Click <b>Finish</b>. The new schema displays on the Repository, under the relevant File LDif connection node. 
 </font></dd>
 </dl></dl><a name="wp1037950"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
-Setting up a FileXML schema
+Setting up a FileXML schema  
 </b></font></h3>
 <dl><a name="wp1037956"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 Centralize your XPath query statements over a defined XML file and gather the values fetched from it.
@@ -558,7 +555,7 @@ Then define the fields to extract. Simply drag and drop the relevant node to the
 
 </font></div>
 <dl><dl><a name="wp1040872"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
-Use the plus sign to add rows to the table and select as many fields to extract, as you need.  Press the Ctrl or the Shift keys for multiple selection of grouped or ungrouped nodes, and drag &amp; drop them to the table.
+Use the plus sign to add rows to the table and select as many fields to extract, as you need.  Press the Ctrl or the Shift keys for multiple selection of grouped or separate nodes, and drag &amp; drop them to the table.
 </font></dd>
 </dl></dl><a name="wp1040953"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 </font></div>
@@ -585,7 +582,7 @@ Step 4: final schema
 <dl><dl><a name="wp1041186"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 The schema generated shows the selected columns of the XML file. You can customize it upon your needs or reload the original schema using the <b>Guess</b> button. 
 </font></dd>
-<a name="wp1041199"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<a name="wp1099261"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
 Click <b>Finish</b>. The new schema displays on the Repository, under the relevant File XML connection node. 
 </font></dd>
 </dl></dl>

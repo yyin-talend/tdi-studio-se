@@ -1,0 +1,213 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Simple HTML">
+    <meta name="LASTUPDATED" content="02/05/08 13:30:49">
+    <title>tBufferOutput</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tAS400Row_Scenario.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tCentricCRMInput_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp1462696"> </a><h2><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="4"><b>
+tBufferOutput
+</b></font></h2>
+<a name="wp1529389"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="left"><img src="images/tUndefTalendStar.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<a name="wp1529410"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+tBufferOutput properties
+</b></font></h3>
+<a name="wp1531535"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></p>
+<div align="center">
+<table border="1">
+  <caption></caption>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1531376"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Component family</b>
+</font></div>
+</td>
+    <td><a name="wp1531379"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Misc
+</font></div>
+</td>
+    <td><a name="wp1531391"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<img src="images/java_icon.png" border="0" hspace="0" vspace="0">
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1531399"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Function</b>
+</font></div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp1531406"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+This component bufferizes data in order to access them later via webservice for example.
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1531417"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Purpose</b>
+</font></div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp1531420"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+This component allows a Webservice access to data. Indeed it had been designed to be exported as Webservice in order to access data on the web application server directly. For more information<a href="ManageProjects-06.html#wp1099226">, see&#160;<i>Exporting Jobs as Webservice.</i></a>
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1531431"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Basic settings</b>
+</font></div>
+</td>
+    <td colspan="1" rowspan="3"><a name="wp1531438"> </a><div><div align="center"><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Schema type and Edit Schema
+</b></font></div></div>
+</td>
+    <td><a name="wp1531445"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+A schema is a row description, i.e., it defines the number of fields that will be processed and passed on to the next component.  The schema is either built-in or remote in the Repository.  <br>In the case of the <b>tBufferOutput</b>, the column position is more important than the column label as this will be taken into account. 
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1531453"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1531463"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Built-in</b>: The schema will be created and stored locally for this component only. Related topic: <a href="Technical_Process-06.html#wp1448918"><i>Setting a built-in schema</i></a>
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#FFFFFF">    <td><a name="wp1531471"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+&#160;
+</font></div>
+</td>
+    <td><a name="wp1531481"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Repository</b>: The schema already  exists and is stored in  the Repository, hence can be reused in various  projects and job designs. Related topic: <a href="Technical_Process-06.html#wp1448364"><i>Setting a repository schema</i></a>
+</font></div>
+</td>
+</tr>
+  <tr align="left" bgcolor="#CCCCCC">    <td><a name="wp1531525"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<b>Usage</b>
+</font></div>
+</td>
+    <td colspan="2" rowspan="1"><a name="wp1531528"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+This component is not startable (green background) and it requires an output component.
+</font></div>
+</td>
+</tr>
+</table>
+</div>
+<p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></p>
+<a name="wp1531269"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+Scenario: Buffering data (Java)
+</b></font></h3>
+<dl><a name="wp1531302"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+This scenario describes an intentionally basic job that bufferizes data in a child job while a parent job simply displays the bufferized data onto the standard output console. A more typical job using a tBufferOutput would include an export step as Webservice in order to access the data via the Web application server directly.  
+</font></dd>
+</dl><a name="wp1531287"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tBufferOutput1.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1531635"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Create two jobs: a first job (<i>BufferFatherJob</i>) runs the second job and displays its content onto the <b>Run Job </b>console . The second job (<i>BufferChildJob</i>)  stores the defined data into a buffer memory.</font></li>
+<a name="wp1531649"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">On the first job, click and drop the following components: <b>tRunJob</b> and <b>tLogRow</b>.</font></li>
+<a name="wp1531657"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">On the second job, click and drop the following components: <b>tFileInputDelimited</b> and <b>tBufferOutput</b>.</font></li>
+<a name="wp1531667"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Let&#39;s set the parameters of the second job first... </font></li>
+<a name="wp1531683"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Select the <b>tFileInputDelimited</b> and on the <b>Basic Settings</b> tab of the <b>Component</b> view, set the access parameters to the input file.</font></li>
+</ul>
+</ul>
+<a name="wp1531784"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tBufferOutput2.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1531806"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In <b>File Name</b>, browse to the delimited file whose data are to be bufferized. </font></li>
+<a name="wp1531824"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Define the <b>Row</b> and <b>Field separators</b>, as well as the <b>Header</b>. </font></li>
+</ul>
+</ul>
+<a name="wp1531862"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tBufferOutput3.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1531895"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Describe the <b>Schema </b>of the data to be passed on to the <b>tBufferOutput </b>component.</font></li>
+<a name="wp1531874"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Select the <b>tBufferOutput</b> component and set the parameters on the <b>Basic Settings </b>tab of the <b>Component</b> view. </font></li>
+</ul>
+</ul>
+<a name="wp1531912"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tBufferOutput4.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1531929"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Generally the schema is propagated from the input component and automatically fed into the tBufferOutput schema. But you could also set part of the schema to be bufferized if you want to.</font></li>
+<a name="wp1532014"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Now on the other Job (<i>BufferFatherJob</i>) Design, define the parameters of the <b>tRunJob </b>component.</font></li>
+</ul>
+</ul>
+<a name="wp1532049"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tBufferOutput5.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1532066"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Edit the Schema if relevant and select the column to be displayed. The schema can be identical to the bufferized schema or different.</font></li>
+<a name="wp1532078"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">You could also define context parameters to be used for this particular execution. To keep it simple, the default context with no particular setting is used for this use case. </font></li>
+</ul>
+</ul>
+<dl><a name="wp1532091"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Press F6 to execute the parent job. The tRunJob looks after executing the child job and returns the data onto the standard console: 
+</font></dd>
+</dl><a name="wp1532107"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tBufferOutput6.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tAS400Row_Scenario.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tCentricCRMInput_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

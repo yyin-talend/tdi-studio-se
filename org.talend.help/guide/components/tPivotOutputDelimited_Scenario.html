@@ -1,0 +1,116 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Simple HTML">
+    <meta name="LASTUPDATED" content="02/05/08 13:30:49">
+    <title>Scenario: Using a pivot column to aggregate data</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tPivotOutputDelimited_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tPostgresqlBulkExec_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp1526216"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<a name="wp1526267"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+Scenario: Using a pivot column to aggregate data
+</b></font></h3>
+<dl><a name="wp1527148"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The following scenario describes a job that aggregates data from a delimited input file, using a defined pivot column.
+</font></dd>
+</dl><a name="wp1526285"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tPivotOutputFile1.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1526302"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click on the following component and drop them on the Design editor: <b>tFileInputDelimited</b>, <b>tPivotOutputDelimited</b>.</font></li>
+<a name="wp1526384"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The file to use as input file is made of 3 columns, including: <i>ID</i>, <i>Question</i> and the corresponding <i>Answer</i></font></li>
+</ul>
+</ul>
+<a name="wp1526367"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tPivotOutputFile2.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1526460"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">On your Job Design, select the <b>tFileInputDelimited</b> component</font></li>
+<a name="wp1526506"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Define the basic settings, on the <b>Component</b> view.</font></li>
+</ul>
+</ul>
+<a name="wp1526525"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tPivotOutputFile3.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1526548"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Browse to the input file to fill out the<b> File Name</b> field.</font></li>
+<a name="wp1526569"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Define the <b>Row</b> and <b>Field </b>separators, in this example, respectively: carriage return and semi-colon</font></li>
+<a name="wp1526598"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">As the file contains a header line, define it also.</font></li>
+<a name="wp1526610"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Set the schema describing the three columns: <i>ID</i>, <i>Questions</i>, <i>Answers</i>. </font></li>
+<a name="wp1526856"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then select the <b>tPivotOutputDelimited</b> and set its properties on the <b>Basic Settings</b> tab of the <b>Component </b>view.</font></li>
+</ul>
+</ul>
+<a name="wp1526868"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tPivotOutputFile4.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1526876"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the <b>Pivot column</b> field, select the pivot column from the input schema. this is often the column presenting most duplicates (pivot aggregation values).</font></li>
+<a name="wp1526962"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the<b> Aggregation column</b> field, select the column from the input schema that should gets aggregated.</font></li>
+<a name="wp1526990"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the <b>Aggregation function </b>field, select the function to be used in case duplicates are found out.</font></li>
+<a name="wp1527010"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the <b>Group by </b>table, add an Input column, that will be used to group by the aggregation column.</font></li>
+<a name="wp1527038"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In the <b>File Name </b>field, browse to the output file path. And on the <b>Row</b> and <b>Field separator</b> fields, set the separators for the aggregated output rows and data.</font></li>
+</ul>
+</ul>
+<dl><a name="wp1527105"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Then, press <b>F6 </b>to execute the job. The output file shows the newly aggregated data.
+</font></dd>
+</dl><a name="wp1527136"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tPivotOutputFile5.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tPivotOutputDelimited_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tPostgresqlBulkExec_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

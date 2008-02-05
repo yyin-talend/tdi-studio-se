@@ -1,0 +1,117 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Simple HTML">
+    <meta name="LASTUPDATED" content="02/05/08 13:30:49">
+    <title>Scenario: Cross-join tables</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tMondrianInput_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tMSSqlBulkExec_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp1503944"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<a name="wp1505812"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+Scenario: Cross-join tables
+</b></font></h3>
+<dl><a name="wp1505827"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+This job extracts multi-dimensional datasets from relational database tables stored in a MySql base. The data are retrieved using a multidimensional expression (MDX query). Obviously you need to have to know the structure of your data, or at least have a structure description (catalog) as a reference for the dataset to be retrieved in the various dimensions.
+</font></dd>
+</dl><a name="wp1504578"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tMondrianInput1.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1504609"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Click and drop a <b>tMondrianInput</b> component from the <b>Business Intelligence</b> directory as well as a <b>tLogRow</b> component from the <b>Error &amp; Log</b> family in the palette.</font></li>
+<a name="wp1504647"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Link the Mondrian connector to the output component using a <b>Row Main</b> connection. </font></li>
+<a name="wp1504677"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Select the <b>tMondrianInput</b> component and select the <b>Component </b>view.</font></li>
+</ul>
+</ul>
+<a name="wp1504697"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tMondrianInput2.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1504721"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">In <b>DB type</b> field, select the relational database you are using with Mondrian.</font></li>
+<a name="wp1504759"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Select the relevant Repository entry as <b>Property type</b>, if you store your DB connection details centrally. In this example the properties are built-in.</font></li>
+<a name="wp1504789"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Fill out the details of connection to your DB: <b>Host</b>, <b>Port</b>, <b>Database </b>name, <b>User Name </b>and <b>Password</b>.</font></li>
+<a name="wp1504893"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Select the relevant <b>Schema</b> in the Repository if you store it centrally. In this example, the schema is to be set (built-in).</font></li>
+</ul>
+</ul>
+<a name="wp1504916"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tMondrianInput3.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1504943"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The relational database we want to query contains five columns: <i>media</i>, <i>drink</i>, <i>unit_sales</i>, <i>store_cost</i> and <i>store_sales</i>.</font></li>
+<a name="wp1504989"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">The query aims at retrieving the <i>unit_sales</i>, <i>store_cost</i> and <i>store_sales</i> figures for various <i>media </i>/ <i>drink</i> using an MDX query such as in the example below:</font></li>
+</ul>
+</ul>
+<a name="wp1505362"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tMondrianInput4.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1505385"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Back on the <b>Basic settings</b> tab of the <b>tMondrianInput</b> component, set the  <b>Catalog </b>path to the data warehouse. This catalog describes the structure of the warehouse. </font></li>
+<a name="wp1505366"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then type in the MDX query such as:<br><code>&quot;select<br>	  {[Measures].[Unit Sales], [Measures].[Store Cost], [Measures].[Store Sales]} on columns,<br>	  CrossJoin(<br>	    { [Promotion Media].[All Media].[Radio],<br>	      [Promotion Media].[All Media].[TV],<br>	      [Promotion Media].[All Media].[Sunday Paper],<br>	      [Promotion Media].[All Media].[Street Handout] },<br>	    [Product].[All Products].[Drink].children) on rows<br>	from Sales<br>	where ([Time].[1997])&quot;</code></font></li>
+<a name="wp1505343"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Eventually, select the <b>Encoding</b> type on the list.</font></li>
+<a name="wp1505458"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Select the <b>tLogRow</b> component and check the Print header option to display the column names on the console. </font></li>
+<a name="wp1505484"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then press F6 to run the job.</font></li>
+</ul>
+</ul>
+<a name="wp1505520"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/Use_Case_tMondrianInput5.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><a name="wp1505611"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The console shows the result of the <i>unit_sales</i>, <i>store_cost</i> and <i>store_sales</i> for each type of <i>Drink</i> (<i>Beverages</i>, <i>Dairy</i>, <i>Alcoholic beverages</i>) crossed with each  media (<i>TV</i>, <i>Sunday Paper</i>, <i>Street handout</i>) as shown previously in a table form.
+</font></dd>
+</dl>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="tMondrianInput_Prop.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="tMSSqlBulkExec_Prop.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>

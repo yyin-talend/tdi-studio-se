@@ -1,0 +1,311 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN" "http://www.w3.org/MarkUp/Wilbur/HTML32.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Quadralay WebWorks Publisher Standard Edition 8.0.5337.0">
+    <meta name="TEMPLATEBASE" content="Simple HTML">
+    <meta name="LASTUPDATED" content="02/05/08 13:11:44">
+    <title>Exporting job scripts</title>
+  </head>
+
+  <body link="#3366CC" vlink="#9999CC" text="#000000" alink="#0000CC" bgcolor="#FFFFFF">
+
+    <!--table width="220" border="0" align="right" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="ManageProjects-05.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="ManageProjects-07.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+
+    <!--img src="images/wwplogo.gif" width="122" height="63" alt="Put your logo here!">
+    <hr align="left"-->
+
+    <blockquote>
+<a name="wp1101048"> </a><h2><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="4"><b>
+Exporting job scripts
+</b></font></h2>
+<a name="wp1101054"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The <b>Export Job Scripts</b> feature allows you to deploy and execute a job on any server, regardless <b>Talend Open Studio</b>. 
+</font></p>
+<a name="wp1101061"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The job scripts export adds to an archive all the files required to execute the job, including the .bat and .sh along with the possible context-parameter files or relative files.
+</font></p>
+<a name="wp1101066"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+To export any job scripts:
+</font></p>
+<ul>
+<a name="wp1099151"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Right-click on the relevant job in the Repository.</font></li>
+<a name="wp1099158"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">And select <b>Export Job Scripts</b>.</font></li>
+<a name="wp1099163"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Give a path where to create the archive file.</font></li>
+</ul>
+<a name="wp1099167"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The Export Job scripts dialog differs whether you work on a Java or a Perl version of the product.
+</font></p>
+<a name="wp1099668"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+Exporting jobs in Java
+</b></font></h3>
+<a name="wp1099675"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/ExportJob.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1099691"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Select the <b>Export Type </b>in the list including <b>POJO</b>, <b>Axis Webservice (WAR)</b> and <b>Axis Webservice (Zip)</b></font></li>
+<a name="wp1099696"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Then select the type of files you want to add to your archive. The list of files differ according to the type of export you chose.</font></li>
+</ul>
+</ul>
+<dl><a name="wp1101518"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Click <b>Finish </b>when complete.
+</font></dd>
+</dl><a name="wp1101521"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Exporting jobs as POJO
+</b></font></h4>
+<dl><dl><a name="wp1099735"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+In the case of a Plain Old Java Object export, if you want to reuse the job in <b>Talend Open Studio</b> installed on another machine, make sure you checked the <b>Source files</b> box. These source files (.item and .properties) are only needed within <b>Talend Open Studio</b>.
+</font></dd>
+<a name="wp1099747"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Note:	Note that you cannot import job script into a different version of <b>Talend Open Studio</b> than the one the jobs were created in. To be able to reuse previous jobs in a later version of <b>Talend Open Studio</b>, use the Import Project function. See <a href="ManageProjects-02.html"><i>Importing projects</i></a>. 
+</font></p>
+<a name="wp1099758"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Select a context in the list when offered. The .bat/.sh file will thus include this context setting as default for the execution. But note that all contexts parameter files are exported along in addition to the one selected in the list. You will thus be able to edit the .bat/.sh file to change manually the context selection if you want to.
+</font></dd>
+<a name="wp1099762"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+If you want to change the context selection, simply edit the .bat/.sh file and change the following setting: <code>--context=Prod</code> to the relevant context.
+</font></dd>
+<a name="wp1099774"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+If you want to change the context settings, then edit the relevant context <b>.properties</b> file.
+</font></dd>
+</dl></dl><a name="wp1099226"> </a><h4><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Exporting Jobs as Webservice
+</b></font></h4>
+<dl><dl><a name="wp1099244"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+On the <b>Export Job</b> dialog box, you can change the type of Export in order to export the job selection as Webservice archive.
+</font></dd>
+</dl></dl><a name="wp1099202"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/ExportJob2.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<dl><dl><a name="wp1101121"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Select the type of archive you want to use in your Web application.
+</font></dd>
+<a name="wp1101138"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<div align="center">
+<table border="1">
+  <caption></caption>
+  <tr align="center">    <th><a name="wp1101126"> </a><div><div align="center"><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Archive type
+</b></font></div></div>
+</th>
+    <th><a name="wp1101128"> </a><div><div align="center"><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Description
+</b></font></div></div>
+</th>
+</tr>
+  <tr align="left">    <td><a name="wp1101130"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+WAR
+</font></div>
+</td>
+    <td><a name="wp1101132"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The options are read-only. Indeed, the WAR archive generated includes all configuration files  necessary for the execution or deployment from the Web application.
+</font></div>
+</td>
+</tr>
+  <tr align="left">    <td><a name="wp1101134"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+ZIP
+</font></div>
+</td>
+    <td><a name="wp1101136"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+All options are available. In the case the files of your Web appplication config are all set, you have the possibility to only set the Context parameters if relevant and export only the Classes into the archive.
+</font></div>
+</td>
+</tr>
+</table>
+</div>
+
+</font></p>
+<a name="wp1101141"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Once the archive is produced, place the WAR or the relevant Class from the ZIP (or unzipped files) into the relevant location, of your Web application server.
+</font></dd>
+<a name="wp1101225"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The URL to be used to deploy the jobn, typically reads as follow:   <code>http://localhost:8080/Webappname/services/JobName?method=runJob&amp;args=null </code>
+</font></dd>
+<a name="wp1101233"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+where the parameters stand as follow:
+</font></dd>
+<a name="wp1101316"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<div align="center">
+<table border="1">
+  <caption></caption>
+  <tr align="center">    <th><a name="wp1101286"> </a><div><div align="center"><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+URL parameters
+</b></font></div></div>
+</th>
+    <th><a name="wp1101288"> </a><div><div align="center"><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Description
+</b></font></div></div>
+</th>
+</tr>
+  <tr align="left">    <td><a name="wp1101290"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+http://localhost:8080/
+</font></div>
+</td>
+    <td><a name="wp1101292"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Type in the Web app host and port 
+</font></div>
+</td>
+</tr>
+  <tr align="left">    <td><a name="wp1101298"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+/Webappname/
+</font></div>
+</td>
+    <td><a name="wp1101436"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Type in the actual name of your web application
+</font></div>
+</td>
+</tr>
+  <tr align="left">    <td><a name="wp1101443"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+/services/
+</font></div>
+</td>
+    <td><a name="wp1101446"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Type in &quot;services&quot; as the standard call term for web services
+</font></div>
+</td>
+</tr>
+  <tr align="left">    <td><a name="wp1101454"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+/JobName
+</font></div>
+</td>
+    <td><a name="wp1101457"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Type in the exact name of the job you want to execute
+</font></div>
+</td>
+</tr>
+  <tr align="left">    <td><a name="wp1101486"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+?method=runJob&amp;args=null
+</font></div>
+</td>
+    <td><a name="wp1101483"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The method is RunJob to execute the job.
+</font></div>
+</td>
+</tr>
+</table>
+</div>
+
+</font></p>
+<a name="wp1101493"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+The call return from the Web application is 0 when no error and different from 0 in case of error.
+</font></dd>
+</dl></dl><a name="wp1101244"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+Exporting jobs in Perl
+</b></font></h3>
+<a name="wp1099252"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+</font></div>
+<div align="center"><img src="images/ExportJobPerl.png" border="0" hspace="0" vspace="0"></div><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+
+</font></div>
+<ul>
+<ul>
+<a name="wp1099269"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Select the type of files you want to add to your archive.  </font></li>
+<a name="wp1099892"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">If you want to reuse the job in <b>Talend Open Studio</b> installed on another machine, make sure you checked the <b>Source files</b> box. These source files (.item and .properties) are only needed within <b>Talend Open Studio</b>.</font></li>
+<a name="wp1099940"> </a><li><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">Select a context in the list when offered. The .bat/.sh file will thus include this context setting as default for the execution. But note that all contexts parameter files are exported along in addition to the one selected in the list. You will thus be able to edit the .bat/.sh file to change manually the context selection if you want to.</font></li>
+<a name="wp1099961"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Note:	If you want to change the context selection, simply edit the .bat/.sh file and change the following setting: <code>--context=Prod</code> to the relevant context.
+</font></p>
+<a name="wp1099990"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Note:	If you want to change the context settings, then edit the relevant context <b>.properties</b> file.
+</font></p>
+</ul>
+</ul>
+<dl><a name="wp1099994"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+Click <b>Finish </b>to complete the export operation.
+</font></dd>
+<a name="wp1100013"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+WARNING-Note that you cannot import job script into a different version of <b>Talend Open Studio</b> than the one the jobs were created in. To be able to reuse previous jobs in a later version of <b>Talend Open Studio</b>, use the Import Project function. See <a href="ManageProjects-02.html"><i>Importing projects</i></a>. 
+</font></p>
+</dl><a name="wp1441978"> </a><h3><font color="#666666" face="Arial, Verdana, Helvetica, sans-serif" size="3"><b>
+Changing context parameters in job scripts
+</b></font></h3>
+<dl><a name="wp1442014"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+As explained in sections <a href="ManageProjects-06.html#wp1099668"><i>Exporting jobs in Java</i></a> and <a href="ManageProjects-06.html#wp1101244"><i>Exporting jobs in Perl</i></a>, you can edit the context parameters:
+</font></dd>
+<a name="wp1442054"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+If you want to change the context selection, simply edit the .bat/.sh file and change the following setting: <code>--context=Prod</code> to the relevant context.
+</font></dd>
+<a name="wp1442081"> </a><dd><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+If you want to change individual parameters in the context selection, edit the .bat/.sh file and add the following setting according to your need:  
+</font></dd>
+<a name="wp1442126"> </a><p><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<div align="center">
+<table border="1">
+  <caption></caption>
+  <tr align="center">    <th><a name="wp1442096"> </a><div><div align="center"><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Operations
+</b></font></div></div>
+</th>
+    <th><a name="wp1442098"> </a><div><div align="center"><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2"><b>
+Setting
+</b></font></div></div>
+</th>
+</tr>
+  <tr align="left">    <td><a name="wp1442100"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+to change <i>value1</i> for parameter <i>key1</i>
+</font></div>
+</td>
+    <td><a name="wp1442102"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<code>--context_param key1=value1</code> 
+</font></div>
+</td>
+</tr>
+  <tr align="left">    <td><a name="wp1442104"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+to change <i>value1</i> and <i>value2</i> for respective parameters <i>key1</i> and <i>key2</i>
+</font></div>
+</td>
+    <td><a name="wp1442268"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<code>--context_param key1=value1</code> <code>--context_param key2=value2</code> 
+</font></div>
+</td>
+</tr>
+  <tr align="left">    <td><a name="wp1442108"> </a><div><font color="Black" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+to change a value containing space characters such as in a file path
+</font></div>
+</td>
+    <td><a name="wp1442289"> </a><div><font color="#000000" face="Arial, Verdana, Helvetica, sans-serif" size="2">
+<code>--context_param key1=&quot;path to file&quot;</code>
+</font></div>
+</td>
+</tr>
+</table>
+</div>
+
+</font></p>
+</dl>
+    </blockquote>
+    <hr>
+
+    <!--table align="right" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td align="right"><font size="1">
+          <a href="http://www.webworks.com"><img src="images/webworks.gif" width="150" height="20" border="0"></a><br>
+            Quadralay Corporation<br>
+            http://www.webworks.com<br>
+            Voice: (512) 719-3399<br>
+            Fax: (512) 719-3606<br>
+          <a href="mailto:sales@webworks.com">sales@webworks.com</a><br>
+        </font></td>
+      </tr>
+    </table-->
+
+    <!--table width="220" border="0" cellpadding="0" cellspacing="0">
+      <tr> 
+        <td>
+<a href="ManageProjects-05.html"><img src="images/sprev.gif" border="0" alt="Previous"></a><a href="ManageProjects-07.html"><img src="images/snext.gif" border="0" alt="Next"></a>
+        </td>
+      </tr>
+    </table-->
+  </body>
+</html>
