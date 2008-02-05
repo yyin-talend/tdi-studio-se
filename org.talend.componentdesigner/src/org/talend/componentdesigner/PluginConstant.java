@@ -50,7 +50,7 @@ public class PluginConstant {
 
     public static final String PROJECTCREATED_FLAG = "PROJECTCREATED_FLAG";
 
-    public static final String PROJECTNAME_DEFAULT = "PROJECTNAME_DEFAULT";
+    public static final String PROJECTNAME_DEFAULT = "COMPONENT_PROJECT";
 
     public static final String RESOURCELANGUAGE_DEFAULT = "_messages.properties";
 
