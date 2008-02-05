@@ -59,8 +59,8 @@ public class CreateGenericSchemaAction extends AbstractCreateAction {
         editLabel = "Edit generic schema";
         openLabel = "Open generic schema";
 
-        defaultImage = ImageProvider.getImageDesc(ECoreImage.METADATA_FILE_LDIF_ICON);
-        createImage = OverlayImageProvider.getImageWithNew(ImageProvider.getImage(ECoreImage.METADATA_FILE_LDIF_ICON));
+        defaultImage = ImageProvider.getImageDesc(ECoreImage.METADATA_GENERIC_ICON);
+        createImage = OverlayImageProvider.getImageWithNew(ImageProvider.getImage(ECoreImage.METADATA_GENERIC_ICON));
 
         setText(createLabel);
         setToolTipText(createLabel);
@@ -70,19 +70,8 @@ public class CreateGenericSchemaAction extends AbstractCreateAction {
     }
 
     public CreateGenericSchemaAction(boolean isToolbar) {
-        super();
-        createLabel = "Create generic schema";
-        editLabel = "Edit generic schema";
-        openLabel = "Open generic schema";
-
-        defaultImage = ImageProvider.getImageDesc(ECoreImage.METADATA_FILE_LDIF_ICON);
-        createImage = OverlayImageProvider.getImageWithNew(ImageProvider.getImage(ECoreImage.METADATA_FILE_LDIF_ICON));
+        this();
         setToolbar(isToolbar);
-        setText(createLabel);
-        setToolTipText(createLabel);
-        setImageDescriptor(defaultImage);
-
-        currentNodeType = ERepositoryObjectType.METADATA_GENERIC_SCHEMA;
     }
 
     public void run() {

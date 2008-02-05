@@ -58,8 +58,8 @@ public class CreateWSDLSchemaAction extends AbstractCreateAction {
         editLabel = "Edit WSDL schema";
         openLabel = "Open WSDL schema";
         // TODO: should change to another icon.
-        defaultImage = ImageProvider.getImageDesc(ECoreImage.METADATA_FILE_LDIF_ICON);
-        createImage = OverlayImageProvider.getImageWithNew(ImageProvider.getImage(ECoreImage.METADATA_FILE_LDIF_ICON));
+        defaultImage = ImageProvider.getImageDesc(ECoreImage.METADATA_WSDL_SCHEMA_ICON);
+        createImage = OverlayImageProvider.getImageWithNew(ImageProvider.getImage(ECoreImage.METADATA_WSDL_SCHEMA_ICON));
 
         setText(createLabel);
         setToolTipText(createLabel);

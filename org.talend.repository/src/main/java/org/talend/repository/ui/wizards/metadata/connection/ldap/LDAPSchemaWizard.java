@@ -91,7 +91,7 @@ public class LDAPSchemaWizard extends RepositoryWizard implements INewWizard {
         setNeedsProgressMonitor(true);
 
         // TODO: should to changed icon.
-        setDefaultPageImageDescriptor(ImageProvider.getImageDesc(ECoreImage.METADATA_FILE_DELIMITED_WIZ));
+        setDefaultPageImageDescriptor(ImageProvider.getImageDesc(ECoreImage.DEFAULT_WIZ));
 
         if (selection == null || existingNames == null) {
             connectionProperty = PropertiesFactory.eINSTANCE.createProperty();
@@ -159,7 +159,7 @@ public class LDAPSchemaWizard extends RepositoryWizard implements INewWizard {
         setNeedsProgressMonitor(true);
 
         // TODO: should to changed icon.
-        setDefaultPageImageDescriptor(ImageProvider.getImageDesc(ECoreImage.METADATA_FILE_DELIMITED_WIZ));
+        setDefaultPageImageDescriptor(ImageProvider.getImageDesc(ECoreImage.DEFAULT_WIZ));
         switch (node.getType()) {
         case SIMPLE_FOLDER:
         case REPOSITORY_ELEMENT:

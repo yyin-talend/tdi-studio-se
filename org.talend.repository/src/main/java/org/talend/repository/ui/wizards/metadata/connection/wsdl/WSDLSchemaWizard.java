@@ -84,7 +84,7 @@ public class WSDLSchemaWizard extends RepositoryWizard implements INewWizard {
         setNeedsProgressMonitor(true);
 
         // TODO: should to changed icon.
-        setDefaultPageImageDescriptor(ImageProvider.getImageDesc(ECoreImage.METADATA_FILE_DELIMITED_WIZ));
+        setDefaultPageImageDescriptor(ImageProvider.getImageDesc(ECoreImage.DEFAULT_WIZ));
 
         if (selection == null || existingNames == null) {
             connectionProperty = PropertiesFactory.eINSTANCE.createProperty();

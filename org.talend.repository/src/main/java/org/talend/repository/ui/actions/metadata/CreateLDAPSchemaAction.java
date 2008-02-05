@@ -61,8 +61,8 @@ public class CreateLDAPSchemaAction extends AbstractCreateAction {
         openLabel = "Open LDAP schema";
 
         // TODO: should change to another icon.
-        defaultImage = ImageProvider.getImageDesc(ECoreImage.METADATA_FILE_LDIF_ICON);
-        createImage = OverlayImageProvider.getImageWithNew(ImageProvider.getImage(ECoreImage.METADATA_FILE_LDIF_ICON));
+        defaultImage = ImageProvider.getImageDesc(ECoreImage.METADATA_LDAP_SCHEMA_ICON);
+        createImage = OverlayImageProvider.getImageWithNew(ImageProvider.getImage(ECoreImage.METADATA_LDAP_SCHEMA_ICON));
 
         setText(createLabel);
         setToolTipText(createLabel);
@@ -72,22 +72,8 @@ public class CreateLDAPSchemaAction extends AbstractCreateAction {
     }
 
     public CreateLDAPSchemaAction(boolean isToolbar) {
-        super();
-
-        // TODO: should to fix the I18N issue.
-        createLabel = "Create LDAP schema";
-        editLabel = "Edit LDAP schema";
-        openLabel = "Open LDAP schema";
-
-        // TODO: should change to another icon.
-        defaultImage = ImageProvider.getImageDesc(ECoreImage.METADATA_FILE_LDIF_ICON);
-        createImage = OverlayImageProvider.getImageWithNew(ImageProvider.getImage(ECoreImage.METADATA_FILE_LDIF_ICON));
+        this();
         setToolbar(isToolbar);
-        setText(createLabel);
-        setToolTipText(createLabel);
-        setImageDescriptor(defaultImage);
-
-        currentNodeType = ERepositoryObjectType.METADATA_LDAP_SCHEMA;
     }
 
     public void run() {

@@ -46,8 +46,7 @@ public class ImportSchemaFileAction extends CreateGenericSchemaAction {
     public ImportSchemaFileAction() {
         this.setText(LABEL);
         this.setToolTipText(LABEL);
-        this.setImageDescriptor(OverlayImageProvider.getImageWithNew(ImageProvider
-                .getImage(ECoreImage.METADATA_FILE_LDIF_ICON)));
+        this.setImageDescriptor(OverlayImageProvider.getImageWithNew(ImageProvider.getImage(ECoreImage.METADATA_GENERIC_ICON)));
 
     }
 
@@ -117,8 +116,7 @@ public class ImportSchemaFileAction extends CreateGenericSchemaAction {
 
     private void openImportWizard() {
         ISelection selection = getSelection();
-        ImportSchemaFileWizard wizard = new ImportSchemaFileWizard(PlatformUI.getWorkbench(), selection,
-                getExistingNames(), file);
+        ImportSchemaFileWizard wizard = new ImportSchemaFileWizard(PlatformUI.getWorkbench(), selection, getExistingNames(), file);
         if (!wizard.isInitOK()) {
             wizard.dispose();
             return;

@@ -79,7 +79,7 @@ public class GenericSchemaWizard extends RepositoryWizard implements INewWizard 
         this.existingNames = existingNames;
         this.isSinglePageOnly = isSinglePageOnly;
         setNeedsProgressMonitor(true);
-        setDefaultPageImageDescriptor(ImageProvider.getImageDesc(ECoreImage.METADATA_FILE_DELIMITED_WIZ));
+        setDefaultPageImageDescriptor(ImageProvider.getImageDesc(ECoreImage.DEFAULT_WIZ));
 
         if (selection == null || existingNames == null) {
             connectionProperty = PropertiesFactory.eINSTANCE.createProperty();
@@ -144,7 +144,7 @@ public class GenericSchemaWizard extends RepositoryWizard implements INewWizard 
         this.existingNames = existingNames;
         this.isSinglePageOnly = isSinglePageOnly;
         setNeedsProgressMonitor(true);
-        setDefaultPageImageDescriptor(ImageProvider.getImageDesc(ECoreImage.METADATA_FILE_DELIMITED_WIZ));
+        setDefaultPageImageDescriptor(ImageProvider.getImageDesc(ECoreImage.DEFAULT_WIZ));
         switch (node.getType()) {
         case SIMPLE_FOLDER:
         case REPOSITORY_ELEMENT:
