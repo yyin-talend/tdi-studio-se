@@ -651,16 +651,21 @@ public abstract class DataMapTableView extends Composite {
 
                     // System.out.println("ToolTipText:" + table.getToolTipText());
 
+                    String defaultToolTip = null;
+                    if (WindowSystem.isGTK() && table.getToolTipText() != null) {
+                        defaultToolTip = " ";
+                    }
+
                     Point cursorPositionFromTableOrigin = TableUtils.getCursorPositionFromTableOrigin(table, event);
                     TableColumn tableColumn = TableUtils.getTableColumn(table, cursorPositionFromTableOrigin);
                     if (tableColumn == null) {
-                        setTableToolTipText(table, null, null, null);
+                        setTableToolTipText(table, null, null, defaultToolTip);
                         return;
                     }
                     TableItem tableItem = TableUtils.getTableItem(table, cursorPositionFromTableOrigin);
 
                     if (tableItem == null) {
-                        setTableToolTipText(table, tableColumn, null, null);
+                        setTableToolTipText(table, tableColumn, null, defaultToolTip);
                         return;
                     }
                     ITableEntry tableEntry = (ITableEntry) tableItem.getData();
@@ -674,13 +679,14 @@ public abstract class DataMapTableView extends Composite {
                         }
                     }
 
-                    String tableToolTip = table.getToolTipText();
-                    if (!WindowSystem.isGTK()
-                            || WindowSystem.isGTK()
-                            && ((tableToolTip == null || tableToolTip.equals("")) && toolTip != null || tableToolTip != null //$NON-NLS-1$
-                                    && toolTip == null || toolTip != null && !toolTip.equals(tableToolTip))) {
-                        setTableToolTipText(table, tableColumn, tableEntry, toolTip);
+                    if (WindowSystem.isGTK() && toolTip == null && table.getToolTipText() != null) {
+                        toolTip = defaultToolTip;
                     }
+                    setTableToolTipText(table, tableColumn, tableEntry, toolTip);
+                    
+//                    System.out.println("toolTip="+toolTip);
+//                    System.out.println("table.getToolTipText()="+table.getToolTipText());
+                    
                     break;
                 default:
                 }

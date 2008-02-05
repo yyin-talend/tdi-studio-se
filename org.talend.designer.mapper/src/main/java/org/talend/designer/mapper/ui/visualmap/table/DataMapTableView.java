@@ -640,19 +640,21 @@ public abstract class DataMapTableView extends Composite {
                 switch (event.type) {
                 case SWT.MouseMove:
 
-                    // System.out.println("ToolTipText:" +
-                    // table.getToolTipText());
+                    String defaultToolTip = null;
+                    if (WindowSystem.isGTK() && table.getToolTipText() != null) {
+                        defaultToolTip = " ";
+                    }
 
                     Point cursorPositionFromTableOrigin = TableUtils.getCursorPositionFromTableOrigin(table, event);
                     TableColumn tableColumn = TableUtils.getTableColumn(table, cursorPositionFromTableOrigin);
                     if (tableColumn == null) {
-                        setTableToolTipText(table, null, null, null);
+                        setTableToolTipText(table, null, null, defaultToolTip);
                         return;
                     }
                     TableItem tableItem = TableUtils.getTableItem(table, cursorPositionFromTableOrigin);
 
                     if (tableItem == null) {
-                        setTableToolTipText(table, tableColumn, null, null);
+                        setTableToolTipText(table, tableColumn, null, defaultToolTip);
                         return;
                     }
                     ITableEntry tableEntry = (ITableEntry) tableItem.getData();
@@ -662,11 +664,15 @@ public abstract class DataMapTableView extends Composite {
                         toolTip = createErrorContentForTooltip(problems);
                     }
 
-                    if (WindowSystem.isGTK() && toolTip == null) {
-                        toolTip = " ";
+                    if (WindowSystem.isGTK() && toolTip == null && table.getToolTipText() != null) {
+                        toolTip = defaultToolTip;
                     }
+//                    System.out.println("toolTip="+toolTip);
+//                    System.out.println("table.getToolTipText()="+table.getToolTipText());
                     setTableToolTipText(table, tableColumn, tableEntry, toolTip);
 
+
+                    
                     break;
                 default:
                 }
