@@ -50,13 +50,13 @@ import org.talend.designer.dbmap.ui.visualmap.zone.scrollable.TablesZoneView;
  */
 public class InsertionIndicator {
 
-    private TablesZoneView tablesZoneViewParent;
+    private final TablesZoneView tablesZoneViewParent;
 
     private Composite leftArrowDraggingIndicator;
 
     private Composite rightArrowDraggingIndicator;
 
-    private MapperManager mapperManager;
+    private final MapperManager mapperManager;
 
     /**
      * current y of the indicator.
@@ -151,25 +151,23 @@ public class InsertionIndicator {
 
                 // //////////////////////////////////////////////////////////
                 // draw left arrow
-                int yCenter = bounds.height / 2 + (WindowSystem.isWIN32() ? 4 : 0);
+                int yCenter = bounds.height / 2;
                 int widthExternalArrow = 10;
                 gc.setBackground(colorIndicator);
                 gc.setForeground(colorIndicator);
 
-                int adjustY = (WindowSystem.isWIN32() ? 4 : 0);
-                
                 if (composite == leftArrowDraggingIndicator) {
                     // external left arrow
                     Point leftCrossPoint = new Point(widthExternalArrow, yCenter);
                     gc.fillPolygon(new int[] { 0, 0, leftCrossPoint.x, leftCrossPoint.y, 0, bounds.height, });
-                    gc.drawLine(leftCrossPoint.x, leftCrossPoint.y + adjustY, bounds.width, leftCrossPoint.y + adjustY);
+                    gc.drawLine(leftCrossPoint.x, leftCrossPoint.y, bounds.width, leftCrossPoint.y);
 
                 } else {
                     // external right arrow
                     Point rightCrossPoint = new Point(bounds.width - widthExternalArrow, yCenter);
                     gc.fillPolygon(new int[] { bounds.width, 0, rightCrossPoint.x, rightCrossPoint.y, bounds.width,
                             bounds.height, });
-                    gc.drawLine(rightCrossPoint.x, rightCrossPoint.y + adjustY, -bounds.width, rightCrossPoint.y + adjustY);
+                    gc.drawLine(rightCrossPoint.x, rightCrossPoint.y, -bounds.width, rightCrossPoint.y);
                 }
             }
         };
@@ -201,7 +199,7 @@ public class InsertionIndicator {
 
             };
         }
-        FormLayout formLayout = (FormLayout) tablesZoneViewParent.getLayout();
+        FormLayout formLayout = tablesZoneViewParent.getLayout();
 
         UIManager uiManager = mapperManager.getUiManager();
         TablesZoneView tablesZoneViewOutputs = uiManager.getTablesZoneViewOutputs();
@@ -219,8 +217,7 @@ public class InsertionIndicator {
             } else {
                 indicYPositionRefTable = itemIndexTarget * (currentTable.getItemHeight() + 2) + offsetVerticalBar;
             }
-            indicYPositionRefZone = indicYPositionRefTable + tablePositionRefZone.y + formLayout.marginTop
-                    - HEIGHT_INDICATOR / 2;
+            indicYPositionRefZone = indicYPositionRefTable + tablePositionRefZone.y + formLayout.marginTop - HEIGHT_INDICATOR / 2;
             indicYPositionRefZone -= currentTable.getItemHeight() + 1;
         } else {
             if (itemIndexTarget == 0) {
@@ -228,8 +225,8 @@ public class InsertionIndicator {
             } else {
                 indicYPositionRefTable = itemIndexTarget * currentTable.getItemHeight() - 1 + offsetVerticalBar;
             }
-            indicYPositionRefZone = indicYPositionRefTable + tablePositionRefZone.y + formLayout.marginTop
-                    - HEIGHT_INDICATOR / 2;
+            indicYPositionRefZone = indicYPositionRefTable + tablePositionRefZone.y + formLayout.marginTop - HEIGHT_INDICATOR / 2
+                    + 4;
         }
 
         DataMapTableView dataMapTableView = mapperManager.retrieveDataMapTableView(currentTable);
