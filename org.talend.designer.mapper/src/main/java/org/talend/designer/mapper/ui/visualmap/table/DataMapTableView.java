@@ -1580,6 +1580,7 @@ public abstract class DataMapTableView extends Composite {
             public void focusLost(FocusEvent e) {
                 expressionEditorTextSelectionBeforeFocusLost = expressionTextEditor.getSelection();
                 lastExpressionEditorTextWhichLostFocus = expressionTextEditor;
+                checkChangementsAfterEntryModifiedOrAdded(false);
             }
 
         });
