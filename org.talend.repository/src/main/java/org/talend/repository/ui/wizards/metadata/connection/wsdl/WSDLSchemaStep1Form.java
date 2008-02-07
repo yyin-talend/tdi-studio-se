@@ -277,7 +277,7 @@ public class WSDLSchemaStep1Form extends AbstractForm {
         }
 
         Button wsdlButton = new Button(parent, SWT.NONE);
-        wsdlButton.setText("Open Web Services Explorer");
+        wsdlButton.setText("Web Service Explorer");
         wsdlButton.setAlignment(SWT.RIGHT);
         wsdlButton.addSelectionListener(new SelectionAdapter() {
 
