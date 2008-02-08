@@ -128,7 +128,8 @@ public class LoginDialog extends TitleAreaDialog {
                 }
             }
         } catch (BusinessException e) {
-            ErrorDialogWidthDetailArea errorDialog = new ErrorDialogWidthDetailArea(getShell(), RepositoryPlugin.PLUGIN_ID,
+            ErrorDialogWidthDetailArea errorDialog = new ErrorDialogWidthDetailArea(getShell(),
+                    RepositoryPlugin.PLUGIN_ID,
                     Messages.getString("RegisterWizardPage.serverCommunicationProblem"), e.getMessage()); //$NON-NLS-1$
         }
 
@@ -196,9 +197,11 @@ public class LoginDialog extends TitleAreaDialog {
         try {
             progressDialog.executeProcess();
         } catch (InvocationTargetException e) {
+            loginComposite.populateProjectList();
             MessageBoxExceptionHandler.process(e.getTargetException(), getShell());
             return;
         } catch (Exception e) {
+            loginComposite.populateProjectList();
             MessageBoxExceptionHandler.process(e, getShell());
             return;
         }
