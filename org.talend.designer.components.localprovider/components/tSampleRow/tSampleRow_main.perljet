@@ -1,0 +1,45 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.IConnection
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+    java.util.Map
+"
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+%>
+$line_number_<%=cid%>++;
+my $active_<%=cid%> = 1;
+
+if (not $range_<%=cid%>->inrange($line_number_<%=cid%>)) {
+    $active_<%=cid%> = 0;
+}
+
+if ($active_<%=cid%>) {
+<%
+for (IConnection outConn: node.getOutgoingConnections()) {
+    String connName = outConn.getName();
+%>
+    $branch_<%=connName%>_is_active = true;
+<%
+}
+%>
+}
+else {
+<%
+for (IConnection outConn: node.getOutgoingConnections()) {
+    String connName = outConn.getName();
+%>
+    $branch_<%=connName%>_is_active = false;
+<%
+}
+%>
+}
