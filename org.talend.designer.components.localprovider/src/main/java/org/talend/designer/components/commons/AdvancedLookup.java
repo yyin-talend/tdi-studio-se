@@ -116,6 +116,10 @@ public class AdvancedLookup<V> {
         }
     }
 
+    public AdvancedLookup() {
+        // TODO Auto-generated constructor stub
+    }
+
     public static <V> AdvancedLookup<V> getLookup(MATCHING_MODE matchingMode) {
         return new AdvancedLookup<V>(matchingMode, false, false);
     }
@@ -208,11 +212,12 @@ public class AdvancedLookup<V> {
      * @param previousValue
      */
     private void incrementCountValues(V value, V previousValue) {
-        if (countValuesForEachKey && previousValue != null) {
-            Integer count = counterHash.get(value);
-            if (count == null) {
+        if (countValuesForEachKey) {
+            Integer count;
+            if (previousValue == null) {
                 count = ONE;
             } else {
+                count = counterHash.get(value);
                 count++;
             }
             counterHash.put(value, count);
