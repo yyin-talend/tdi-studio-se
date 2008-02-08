@@ -26,66 +26,31 @@ String rowSeparator = ElementParameterParser.getValue(
     "__ROWSEPARATOR__"
 );
 
-String headerString = ElementParameterParser.getValue(
+String header = ElementParameterParser.getValue(
     node,
     "__HEADER__"
 );
-boolean hasHeader;
-int header = 0;
-try {
-    header = Integer.parseInt(headerString);
-
-    if (header > 0) {
-        hasHeader = true;
-    }
-    else {
-        hasHeader = false;
-    }
-}
-catch (NumberFormatException e) {
-    hasHeader = false;
+boolean hasHeader = header.equals("") ? false : true;
+if (!hasHeader) {
+    header = "undef";
 }
 
-String footerString = ElementParameterParser.getValue(
+String footer = ElementParameterParser.getValue(
     node,
     "__FOOTER__"
 );
-boolean hasFooter;
-int footer = 0;
-
-try {
-    footer = Integer.parseInt(footerString);
-
-    if (footer > 0) {
-        hasFooter = true;
-    }
-    else {
-        hasFooter = false;
-    }
-}
-catch (NumberFormatException e) {
-    hasFooter = false;
+boolean hasFooter = footer.equals("") ? false : true;
+if (!hasFooter) {
+    footer = "undef";
 }
 
-String limitString = ElementParameterParser.getValue(
+String limit = ElementParameterParser.getValue(
     node,
     "__LIMIT__"
 );
-boolean hasLimit;
-int limit = 0;
-
-try {
-    limit = Integer.parseInt(limitString);
-
-    if (limit > 0) {
-        hasLimit = true;
-    }
-    else {
-        hasLimit = false;
-    }
-}
-catch (NumberFormatException e) {
-    hasLimit = false;
+boolean hasLimit = limit.equals("") ? false : true;
+if (!hasLimit) {
+    limit = "undef";
 }
 
 boolean isRandom = ElementParameterParser.getValue(
