@@ -24,7 +24,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         String destination = ElementParameterParser.getValue(node, "__DESTINATION__");
 
 %>
-our @<%=destination%>;
+our @<%=destination%> = ();
 
 <%
         String indent = new String();
