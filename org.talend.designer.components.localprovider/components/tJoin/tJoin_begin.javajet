@@ -2,13 +2,10 @@
 imports="
     	org.talend.core.model.process.INode 
     	org.talend.core.model.process.ElementParameterParser 
-		org.talend.core.model.metadata.IMetadataTable 
-		org.talend.core.model.metadata.IMetadataColumn
+		org.talend.core.model.metadata.IMetadataTable
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		org.talend.core.model.process.IConnection
-		org.talend.core.model.process.EConnectionType
-		org.talend.core.model.metadata.types.JavaTypesManager
-		org.talend.core.model.metadata.types.JavaType			
+		org.talend.core.model.process.EConnectionType			
 		java.util.List
 		java.util.Map
 " 
@@ -44,131 +41,34 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
         
         String lookupConName = inRefCon.getName();
         String incomingName = inMainCon.getName();
-        IMetadataTable preMetadata = inMainCon.getMetadataTable(); 
-        IMetadataTable lookupMetadata = inRefCon.getMetadataTable(); 
-        
-    	List<IMetadataColumn> columns = metadata.getListColumns();
-    	int columnSize = columns.size();
-    	List<IMetadataColumn> preColumns = preMetadata.getListColumns();
-    	int preColumnSize = preColumns.size();
-    	List<IMetadataColumn> lookupColumns = lookupMetadata.getListColumns();
-    	int lookupColumnSize = lookupColumns.size();
         
         List<Map<String, String>> joinKeys = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__JOIN_KEY__");
 %>
-    final java.util.List<<%=lookupConName %>Struct> list_<%=cid %> = new java.util.ArrayList(((java.util.Map<<%=lookupConName %>Struct, <%=lookupConName %>Struct>) globalMap.get("tHash_<%=lookupConName %>")).keySet());
-	
+    final java.util.Map<<%=lookupConName %>Struct, <%=lookupConName %>Struct> tHash_<%=cid %> = (java.util.Map<<%=lookupConName %>Struct, <%=lookupConName %>Struct>) globalMap.get("tHash_<%=lookupConName %>");
+    
     class Util_<%=cid %>
     {
-        <%=lookupConName %>Struct lookupValue = null; 
-        final int keyNum = <%=joinKeys.size() %>;
+        <%=lookupConName %>Struct lookupValue = null;
+        <%=lookupConName %>Struct <%=lookupConName %>HashKey = new <%=lookupConName %>Struct(); 
         
-        public boolean isJoined(<%=incomingName %>Struct mainRow) {
-<%
-		/* for the key of the input row */
-		
+        public boolean isJoined(<%=incomingName %>Struct mainRow) {            
+<%            
 		for(Map<String, String> joinKeyLine : joinKeys){
 			String inputKey = joinKeyLine.get("INPUT_COLUMN");
-			
-			//find the key column info
-			IMetadataColumn keyColumn = null;
-			for(IMetadataColumn column : preColumns){
-				if(column.getLabel().equals(inputKey)){
-					keyColumn = column;
-					break;
-				}
-			}
-			
-    		JavaType javaType = JavaTypesManager.getJavaTypeFromId(keyColumn.getTalendType());    		
-    		boolean isPrimitive = JavaTypesManager.isJavaPrimitiveType(javaType, keyColumn.isNullable());
-    		String pattern = keyColumn.getPattern();
-    		if(isPrimitive) {
-%>    	    
-        	String mainRow_<%=inputKey %>_str = String.valueOf(mainRow.<%=inputKey %>);
+			String lookupKey = joinKeyLine.get("LOOKUP_COLUMN");            
+%>            
+           <%=lookupConName %>HashKey.<%=lookupKey %> = mainRow.<%=inputKey %>;
 <%
- 			} else {
+		}
 %>
-			String mainRow_<%=inputKey %>_str = null;
-			if(mainRow.<%=joinKeyLine.get("INPUT_COLUMN") %> != null){
-				<%if (javaType == JavaTypesManager.DATE && pattern != null && pattern.trim().length() != 0) {%>	
-					mainRow_<%=inputKey %>_str = FormatterUtils.format_Date(mainRow.<%=inputKey %>), <%= pattern %>);
-				<%} else if(javaType == JavaTypesManager.BIGDECIMAL) {%>
-				    mainRow_<%=inputKey %>_str = mainRow.<%=inputKey %>).doubleValue();
-				<%} else if(javaType == JavaTypesManager.BYTE_ARRAY) {%>
-					mainRow_<%=inputKey %>_str = java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(mainRow.<%=inputKey %>))).toString()
-				<%} else if(javaType == JavaTypesManager.STRING) {%>	
-					mainRow_<%=inputKey %>_str = mainRow.<%=inputKey %>;
-				<%} else {%>
-					mainRow_<%=inputKey %>_str = String.valueOf(mainRow.<%=inputKey %>);
-				<% } %>			
-			}
-<%		
- 			}
- 		}
-%>
-     	
-        	int checkedKeyNum  = 0;
-            lookupValue = null;
-            
-        	for(<%=lookupConName %>Struct row : list_tJoin_1){
-<%
-		/* for the key of the lookup row */
-		
-		for(Map<String, String> joinKeyLine : joinKeys){
-			String inputKey = joinKeyLine.get("INPUT_COLUMN");
-			String lookupKey = joinKeyLine.get("LOOKUP_COLUMN");
-			
-			//find the key column info
-			IMetadataColumn keyColumn = null;
-			for(IMetadataColumn column : lookupColumns){
-				if(column.getLabel().equals(lookupKey)){
-					keyColumn = column;
-					break;
-				}
-			}
-			
-    		JavaType javaType = JavaTypesManager.getJavaTypeFromId(keyColumn.getTalendType());    		
-    		boolean isPrimitive = JavaTypesManager.isJavaPrimitiveType(javaType, keyColumn.isNullable());
-    		String pattern = keyColumn.getPattern();		
-    		if(isPrimitive) {
-%>    	    
-        	String row_<%=lookupKey %>_str = String.valueOf(row.<%=lookupKey %>);
-<%
- 			} else {
-%>
-			String row_<%=lookupKey %>_str = null;
-			if(mainRow.<%=joinKeyLine.get("INPUT_COLUMN") %> != null){
-				<%if (javaType == JavaTypesManager.DATE && pattern != null && pattern.trim().length() != 0) {%>	
-					row_<%=lookupKey %>_str = FormatterUtils.format_Date(row.<%=lookupKey %>), <%= pattern %>);
-				<%} else if(javaType == JavaTypesManager.BIGDECIMAL) {%>
-				    row_<%=lookupKey %>_str = row.<%=lookupKey %>).doubleValue();
-				<%} else if(javaType == JavaTypesManager.BYTE_ARRAY) {%>
-					row_<%=lookupKey %>_str = java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(row.<%=lookupKey %>))).toString()
-				<%} else if(javaType == JavaTypesManager.STRING) {%>	
-					row_<%=lookupKey %>_str = row.<%=lookupKey %>;
-				<%} else {%>
-					row_<%=lookupKey %>_str = String.valueOf(row.<%=lookupKey %>);
-				<% } %>			
-			}
-<%		
- 			}
-%>
-			if(mainRow_<%=inputKey %>_str != null && mainRow_<%=inputKey %>_str.equals(row_<%=lookupKey %>_str)){
-				checkedKeyNum++;
-			}else if(mainRow_<%=inputKey %>_str == null && row_<%=lookupKey %>_str == null){
-				checkedKeyNum++;
-			}			
-<%
- 		}
-%>    
-			 if(checkedKeyNum == keyNum){
-				    lookupValue = row;
-        	        return true;
-			 }        	
-           }
-           return false;
+			<%=lookupConName %>HashKey.hashCodeDirty = true;             
+            lookupValue = tHash_<%=cid %>.get(<%=lookupConName %>HashKey);            
+            if(lookupValue != null){
+            	return true;
+            }  
+            return false;
         }
-    } 
+    }
         
 	Util_<%=cid %> util_<%=cid %> = new Util_<%=cid %>();
         
