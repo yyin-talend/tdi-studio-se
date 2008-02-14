@@ -6,6 +6,8 @@
 		java.util.List
 		java.util.HashSet
 		java.util.Set
+		java.util.Map
+		org.talend.core.model.process.IProcess
 		org.talend.core.model.process.EConnectionType
 		org.talend.core.model.process.IConnection
 		org.talend.core.model.metadata.IMetadataTable 
@@ -62,7 +64,24 @@
 								}
 							}
 						} else {
-							if (metadata!=null) { 
+						
+							//only for the lookup branch of the tJoin
+							boolean isLookOftJoin = false;
+							if(conn.getLineStyle().equals(EConnectionType.FLOW_REF)){
+    							IProcess process = conn.getTarget().getProcess();
+    							for (INode tjoinNode : process.getNodesOfType("tJoin")) {
+    								if(conn.getTarget().getUniqueName().equals(tjoinNode.getUniqueName())){
+    									List<Map<String, String>> joinKeys = (List<Map<String,String>>)ElementParameterParser.getObjectValue(conn.getTarget(), "__JOIN_KEY__");
+    									for(Map<String, String> joinKeyLine : joinKeys){       
+                                			String lookupKey = joinKeyLine.get("LOOKUP_COLUMN");
+                                			hashableColumnsNames.add(lookupKey);
+    									}
+    									isLookOftJoin = true;
+    								}
+    							}
+							}
+													
+							if (!isLookOftJoin && metadata!=null) { 
 								for (IMetadataColumn column: metadata.getListColumns()) {
 									if (column.isKey()) {
 										hashableColumnsNames.add(column.getLabel());

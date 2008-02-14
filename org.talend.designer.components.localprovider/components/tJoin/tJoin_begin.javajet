@@ -61,7 +61,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
 <%
 		}
 %>
-			<%=lookupConName %>HashKey.hashCodeDirty = true;             
+			//<%=lookupConName %>HashKey.hashCodeDirty = true;             
             lookupValue = tHash_<%=cid %>.get(<%=lookupConName %>HashKey);            
             if(lookupValue != null){
             	return true;
