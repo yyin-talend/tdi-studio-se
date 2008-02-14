@@ -53,15 +53,22 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
         
         public boolean isJoined(<%=incomingName %>Struct mainRow) {            
 <%            
+		boolean hasHashableKey = false;
 		for(Map<String, String> joinKeyLine : joinKeys){
 			String inputKey = joinKeyLine.get("INPUT_COLUMN");
-			String lookupKey = joinKeyLine.get("LOOKUP_COLUMN");            
+			String lookupKey = joinKeyLine.get("LOOKUP_COLUMN");
+			hasHashableKey = true;            
 %>            
            <%=lookupConName %>HashKey.<%=lookupKey %> = mainRow.<%=inputKey %>;
 <%
 		}
+		
+		if(hasHashableKey) {
 %>
-			//<%=lookupConName %>HashKey.hashCodeDirty = true;             
+			<%=lookupConName %>HashKey.hashCodeDirty = true;
+<%
+		}
+%>			             
             lookupValue = tHash_<%=cid %>.get(<%=lookupConName %>HashKey);            
             if(lookupValue != null){
             	return true;
