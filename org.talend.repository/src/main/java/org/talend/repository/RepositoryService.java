@@ -31,6 +31,7 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.ui.DisableLanguageActions;
 import org.talend.designer.runprocess.IRunProcessService;
+import org.talend.repository.model.BinRepositoryNode;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
@@ -262,5 +263,14 @@ public class RepositoryService implements IRepositoryService {
      */
     public void setRCPMode() {
         rcpMode = true;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.model.IRepositoryService#isFromRecycleBin(org.talend.repository.model.RepositoryNode)
+     */
+    public boolean isFromRecycleBin(RepositoryNode node) {
+        return node instanceof BinRepositoryNode;
     }
 }
