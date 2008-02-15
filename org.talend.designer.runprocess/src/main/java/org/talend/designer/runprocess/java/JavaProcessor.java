@@ -260,7 +260,8 @@ public class JavaProcessor extends Processor {
             updateContextCode(codeGen);
             syntaxCheck();
 
-            javaProject.getResource().getWorkspace().build(IncrementalProjectBuilder.AUTO_BUILD, null);
+            // javaProject.getResource().getWorkspace().build(IncrementalProjectBuilder.AUTO_BUILD, null);
+            javaProject.getProject().build(IncrementalProjectBuilder.AUTO_BUILD, null);
 
             List<INode> breakpointNodes = CorePlugin.getContext().getBreakpointNodes(process);
             if (!breakpointNodes.isEmpty()) {
