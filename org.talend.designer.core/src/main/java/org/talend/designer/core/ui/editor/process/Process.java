@@ -1508,10 +1508,11 @@ public class Process extends Element implements IProcess2 {
         String defaultContextToLoad;
         defaultContextToLoad = process.getDefaultContext();
 
-        if (process.getContext() == null) {
+        EList contextList = process.getContext();
+        if (contextList == null || contextList.isEmpty()) {
             contextManager = new JobContextManager();
         } else {
-            contextManager = new JobContextManager(process.getContext(), defaultContextToLoad);
+            contextManager = new JobContextManager(contextList, defaultContextToLoad);
         }
         updateContextBefore(contextManager);
     }
