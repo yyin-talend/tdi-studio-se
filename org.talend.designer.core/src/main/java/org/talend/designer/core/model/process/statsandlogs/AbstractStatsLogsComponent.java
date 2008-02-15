@@ -314,9 +314,9 @@ public abstract class AbstractStatsLogsComponent implements IComponent {
             currentItem = multipleComponentManager.addItem("CONSOLE", "tLogRow"); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
-        createMultipleComponentsParameters();
         multipleComponentManager.validateItems();
         multipleComponentManagers.add(multipleComponentManager);
+        createMultipleComponentsParameters();
     }
 
     protected void createMultipleComponentsParameters() {
