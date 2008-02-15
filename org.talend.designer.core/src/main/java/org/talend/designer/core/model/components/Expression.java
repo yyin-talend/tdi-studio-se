@@ -147,7 +147,13 @@ public final class Expression {
                 test = NOT_EQUALS;
             }
         }
-        String[] strings = simpleExpression.split(test);
+
+        String[] strings = null;
+        if (test != null) {
+            strings = simpleExpression.split(test);
+        } else {
+            strings = new String[] { simpleExpression };
+        }
 
         String variableName = null, variableValue = null;
 
