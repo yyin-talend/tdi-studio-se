@@ -37,6 +37,8 @@ import org.talend.designer.core.ui.editor.properties.controllers.generator.IDyna
  */
 public class LabelController extends AbstractElementPropertySectionController {
 
+    private CLabel labelLabel;
+
     /**
      * DOC qwei LabelController constructor comment.
      * 
@@ -57,12 +59,14 @@ public class LabelController extends AbstractElementPropertySectionController {
             Control lastControl) {
         // TODO Auto-generated method stub
         FormData data;
-        CLabel labelLabel;
-        if (param.getValue().equals("")) {
-            labelLabel = getWidgetFactory().createCLabel(subComposite, param.getDisplayName(), SWT.SHADOW_NONE); //$NON-NLS-1$
-        } else {
-            labelLabel = getWidgetFactory().createCLabel(subComposite, (String) param.getValue(), SWT.SHADOW_NONE); //$NON-NLS-1$
-        }
+        // CLabel labelLabel;
+        // if (param.getValue().equals("")) {
+        // labelLabel = getWidgetFactory().createCLabel(subComposite, param.getDisplayName(), SWT.SHADOW_NONE);
+        // //$NON-NLS-1$
+        // } else {
+        // labelLabel = getWidgetFactory().createCLabel(subComposite, (String) param.getValue(), SWT.SHADOW_NONE);
+        // //$NON-NLS-1$
+        // }
 
         labelLabel.setData(PARAMETER_NAME, param.getName());
         if (param.getContext() != null) {
@@ -143,7 +147,7 @@ public class LabelController extends AbstractElementPropertySectionController {
      */
     @Override
     public int estimateRowSize(Composite subComposite, IElementParameter param) {
-        CLabel labelLabel;
+        // CLabel labelLabel;
         if (param.getValue().equals("")) {
             labelLabel = getWidgetFactory().createCLabel(subComposite, param.getDisplayName(), SWT.SHADOW_NONE); //$NON-NLS-1$
         } else {
