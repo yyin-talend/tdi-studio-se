@@ -36,7 +36,7 @@
       NUM_ROW="1"
       REQUIRED="true"
     >
-      <DEFAULT>"https://na5-api.salesforce.com/services/Soap/u/10.0"</DEFAULT>
+      <DEFAULT>"https://www.salesforce.com/services/Soap/u/10.0"</DEFAULT>
     </PARAMETER>
     
     <PARAMETER
