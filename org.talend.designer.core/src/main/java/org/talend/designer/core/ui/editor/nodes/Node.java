@@ -270,10 +270,12 @@ public class Node extends Element implements INode {
             metadataList.add(table);
         }
         // }
-
+        int index = process.getGraphicalNodes().indexOf(this);
         listReturn = this.component.createReturns();
         if (uniqueName2 != null && !"".equals(uniqueName2)) {
             setPropertyValue(EParameterName.UNIQUE_NAME.getName(), uniqueName2);
+        } else if (index != -1) {
+            uniqueName2 = process.getGeneratingNodes().get(index).getUniqueName();
         } else {
             uniqueName2 = ((Process) getProcess()).generateUniqueNodeName(this);
             ((Process) getProcess()).addUniqueNodeName(uniqueName2);
