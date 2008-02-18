@@ -156,6 +156,7 @@ public class VersionSection extends AbstractSection implements ISelectionProvide
                 RepositoryNode repositoryNode = new RepositoryNode(repositoryObjectVersion, parentRepositoryNode,
                         ENodeType.REPOSITORY_ELEMENT);
                 repositoryNode.setProperties(EProperties.CONTENT_TYPE, itemType);
+                repositoryNode.setProperties(EProperties.LABEL,repositoryObjectVersion.getLabel() );
                 return repositoryNode;
             }
 
