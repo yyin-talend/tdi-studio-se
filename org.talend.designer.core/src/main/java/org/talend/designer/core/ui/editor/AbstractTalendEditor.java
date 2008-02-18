@@ -129,8 +129,12 @@ import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.general.ILibrariesService;
+import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.EConnectionType;
+import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
+import org.talend.core.model.process.IConnection;
+import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IProcess;
@@ -146,6 +150,7 @@ import org.talend.designer.core.ui.action.GEFPasteAction;
 import org.talend.designer.core.ui.action.ModifyMergeOrderAction;
 import org.talend.designer.core.ui.action.ModifyOutputOrderAction;
 import org.talend.designer.core.ui.action.TalendConnectionCreationTool;
+import org.talend.designer.core.ui.editor.cmd.ChangeMetadataCommand;
 import org.talend.designer.core.ui.editor.cmd.MoveNodeCommand;
 import org.talend.designer.core.ui.editor.connections.ConnectionPart;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -257,6 +262,65 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
                 }
             }
 
+        } else if (propertyName.equals(ComponentUtilities.JOBLET_SCHEMA_CHANGED)) {
+            String oldName = ((IProcess) evt.getSource()).getName();
+            IMetadataTable oldInputMetadataTable = (IMetadataTable) evt.getOldValue();
+            IMetadataTable newInputMetadataTable = (IMetadataTable) evt.getNewValue();
+            if (oldInputMetadataTable.sameMetadataAs(newInputMetadataTable)) {
+                return;
+            }
+            for (Node node : (List<Node>) process.getGraphicalNodes()) {
+                if (node.getComponent().getName().equals(oldName) || node.getLabel().contains(oldName)) {
+                    IComponent newComponent = components.get(oldName);
+                    if (newComponent == null) {
+                        continue;
+                    }
+                    // Map<String, Object> parameters = new HashMap<String, Object>();
+                    // node.reloadComponent(newComponent, parameters);
+                    IElementParameter inputElemParam = null;
+
+                    List<? extends IElementParameter> elementParameters = node.getElementParameters();
+                    for (IElementParameter elementParameter : elementParameters) {
+                        if (EParameterFieldType.SCHEMA_TYPE.equals(elementParameter.getField())) {
+                            if (EConnectionType.FLOW_MAIN.getName().equals(elementParameter.getContext())) {
+                                inputElemParam = elementParameter;
+                            }
+                        }
+                    }
+                    ChangeMetadataCommand command;
+                    List<? extends IConnection> incomingConnections = node.getIncomingConnections();
+                    if (incomingConnections.size() == 1) {
+                        IConnection connection = incomingConnections.get(0);
+                        Node source = (Node) connection.getSource();
+                        IMetadataTable metadataTable = connection.getMetadataTable();
+                        if (newInputMetadataTable != null && inputElemParam != null
+                                && !metadataTable.sameMetadataAs(newInputMetadataTable)) {
+                            IElementParameter elementParam = source.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
+                            command = new ChangeMetadataCommand(source, elementParam, metadataTable, newInputMetadataTable);
+                            // command = new ChangeMetadataCommand(node, inputElemParam, source, oldInputMetadataTable,
+                            // newInputMetadataTable, oldInputMetadataTable, newInputMetadataTable);
+                            // command.execute(false);
+                            // getCommandStack().execute(new Command() {
+                            // });
+                            getCommandStack().execute(command);
+                        }
+                    }
+                    List<? extends IConnection> outgoingConnections = node.getOutgoingConnections();
+                    if (outgoingConnections.size() > 0) {
+                        for (IConnection connection : outgoingConnections) {
+                            Node target = (Node) connection.getTarget();
+                            IMetadataTable metadataTable = target.getMetadataList().get(0);
+                            IMetadataTable metadataFromConnector = node.getMetadataFromConnector(connection.getConnectorName());
+                            if (metadataFromConnector != null && !metadataTable.sameMetadataAs(metadataFromConnector)) {
+                                command = new ChangeMetadataCommand(target, target
+                                        .getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE), metadataTable,
+                                        metadataFromConnector);
+                                getCommandStack().execute(command);
+                            }
+                        }
+                    }
+                }
+            }
         }
         process.setProcessModified(true);
 
