@@ -487,7 +487,8 @@ public class DataProcess {
             // propagate metadataLists for output component. only apply to multi-input virtual component
             if (multipleComponentManager.isSetConnector() && multipleComponentManager.getOutputName().equals(curItem.getName())) {
                 // deactivate dummy component
-                if (curNode.getComponentName().equals("tDummyRow")) {//or use "!multipleComponentManager.existsLinkTo()" 
+                if (curNode.getComponentName().equals("tDummyRow")) {// or use
+                                                                        // "!multipleComponentManager.existsLinkTo()"
                     curNode.setActivate(false);
                 } else {
                     // propagate all metadataTables
@@ -874,6 +875,7 @@ public class DataProcess {
             newGraphicalNode.setData(data.getBytesData(), data.getStringData());
         }
         copyElementParametersValue(graphicalNode, newGraphicalNode);
+        newGraphicalNode.setDummy(graphicalNode.isDummy());
 
         process.addNodeContainer(new NodeContainer(newGraphicalNode));
         buildCheckMap.put(graphicalNode, newGraphicalNode);
