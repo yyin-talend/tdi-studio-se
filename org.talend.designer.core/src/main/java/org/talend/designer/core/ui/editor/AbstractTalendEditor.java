@@ -783,7 +783,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         String outlineFileVersion = process.getVersion();
         filePath = filePath.append(outlineFileName + "_" + outlineFileVersion + ".jpg");
 
-        filePath.toFile().deleteOnExit();
+        // filePath.toFile().deleteOnExit();
 
         il.save(filePath.toPortableString(), SWT.IMAGE_JPEG);
 
