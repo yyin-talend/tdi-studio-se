@@ -120,7 +120,6 @@ public class DataProcess {
                 ((IExternalNode) dataNode).setExternalData(externalData);
             }
         }
-        dataNodeList.add(dataNode);
         dataNode.setActivate(graphicalNode.isActivate());
         dataNode.setStart(graphicalNode.isStart());
         dataNode.setMetadataList(graphicalNode.getMetadataList());
@@ -153,6 +152,7 @@ public class DataProcess {
         }
         dataNode.setDesignSubjobStartNode(graphicalNode.getDesignSubjobStartNode());
 
+        dataNodeList.add(dataNode);
         buildCheckMap.put(graphicalNode, dataNode);
 
         List<IConnection> outgoingConnections = new ArrayList<IConnection>();
@@ -488,7 +488,7 @@ public class DataProcess {
             if (multipleComponentManager.isSetConnector() && multipleComponentManager.getOutputName().equals(curItem.getName())) {
                 // deactivate dummy component
                 if (curNode.getComponentName().equals("tDummyRow")) {// or use
-                                                                        // "!multipleComponentManager.existsLinkTo()"
+                    // "!multipleComponentManager.existsLinkTo()"
                     curNode.setActivate(false);
                 } else {
                     // propagate all metadataTables
@@ -761,6 +761,10 @@ public class DataProcess {
     private void replaceMultipleComponents(INode graphicalNode) {
         if (checkMultipleMap.containsKey(graphicalNode)) {
             // return checkMultipleMap.get(graphicalNode);
+            return;
+        }
+        // if the original component is in dummy state, no need to replace it
+        if ((graphicalNode instanceof Node) && ((Node) graphicalNode).isDummy()) {
             return;
         }
         AbstractNode dataNode;
