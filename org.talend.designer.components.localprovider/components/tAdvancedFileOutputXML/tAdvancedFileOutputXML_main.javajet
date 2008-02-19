@@ -34,6 +34,7 @@ class XMLNode{
 	public String path = null;
 	public String type = null;
 	public String column = null;
+	public IMetadataColumn relatedColumn=null;
 	public String value = null;
 	public int special = 0;  //1 is subtree root, 2 is subtree root parent, 4 is groupby, 8 nest XML
 	public XMLNode parent = null;
@@ -44,15 +45,16 @@ class XMLNode{
 
 //XMLTool
 class XMLTool{
-	public boolean allowEmpty = true;
+	public boolean outputAsXSD = false;
 	public boolean advancedSeparator = false;
 	public String thousandsSeparator = null;
  	public String decimalSeparator =null;
+	public String connName = null;
 	
 	public void generateCode(XMLNode node, String cid, String currEleName, String parentName){
 		if(node.type.equals("ELEMENT")){
 			createElement(cid,currEleName,node,parentName);
-			setText(cid,currEleName,node,null);
+			setText(cid,currEleName,node);
 			for(XMLNode ns:node.namespaces){
 				addNameSpace(cid,currEleName,ns);
 			}
@@ -65,7 +67,7 @@ class XMLTool{
 					generateCode(child,cid,currEleName+"_"+index++,currEleName);
 				}
 			}
-			if(!allowEmpty && (node.special & 2)==0 && (node.special & 1)==0){
+			if(node.relatedColumn != null && !outputAsXSD && (node.special & 2)==0 && (node.special & 1)==0){
 %>
 			if (<%=currEleName%>_<%=cid%>.content().size() == 0 
 				&& <%=currEleName%>_<%=cid%>.attributes().size() == 0 
@@ -87,31 +89,34 @@ class XMLTool{
 <%
 		}
 	}
-	private void setText(String cid, String currEleName, XMLNode node, JavaType javaType){
-		if(node.value!=null){
-			if(0!=(node.special & 8)){
+	private void setText(String cid, String currEleName, XMLNode node){
+		if(node.relatedColumn!=null){
+			JavaType javaType = JavaTypesManager.getJavaTypeFromId(node.relatedColumn.getTalendType());
+			if(javaType == JavaTypesManager.OBJECT){
 %>
-		if(<%=node.value%>!=null){
-			nestXMLTool_<%=cid%> .parseAndAdd(<%=currEleName%>_<%=cid%>,<%=node.value%>.toString());
+		if(<%getValue(cid, node);%>!=null){
+			nestXMLTool_<%=cid%> .parseAndAdd(<%=currEleName%>_<%=cid%>,<%getValue(cid, node);%>);
 		}
 <%
-				if(allowEmpty){
+				if(outputAsXSD){
 %>
 		else{
 			nestXMLTool_<%=cid%> .parseAndAdd(<%=currEleName%>_<%=cid%>,"");
+			<%=currEleName%>_<%=cid%>.addAttribute("xsi:nil","true");
 		}
 <%
 				}
 			}else{
 %>
-		if(<%=node.value%>!=null){
-			<%=currEleName%>_<%=cid%>.setText(<%=node.value%>.toString());
+		if(<%getValue(cid, node);%>!=null){
+			<%=currEleName%>_<%=cid%>.setText(<%getValue(cid, node);%>);
 		}
 <%
-				if(allowEmpty){
+				if(outputAsXSD){
 %>
 		else{
 			<%=currEleName%>_<%=cid%>.setText("");
+			<%=currEleName%>_<%=cid%>.addAttribute("xsi:nil","true");
 		}
 <%
 				}
@@ -119,35 +124,24 @@ class XMLTool{
 		}
 	}
 	private void addAttribute(String cid, String currEleName, XMLNode node){
-		if(node.value!=null){
+		if(node.relatedColumn!=null){
 %>
-		if(<%=node.value%>!=null){
-			<%=currEleName%>_<%=cid%>.addAttribute("<%=node.path%>",<%=node.value%>.toString());
+		if(<%getValue(cid, node);%>!=null){
+			<%=currEleName%>_<%=cid%>.addAttribute("<%=node.path%>",<%getValue(cid, node);%>);
 		}
-<%
-			if(allowEmpty){
-%>
-		else{
-			<%=currEleName%>_<%=cid%>.addAttribute("<%=node.path%>","");
-		}
-<%	
-			}
-		}else if(allowEmpty){
-%>
-		<%=currEleName%>_<%=cid%>.addAttribute("<%=node.path%>","");
 <%
 		}
 	}
 	private void addNameSpace(String cid, String currEleName, XMLNode node){
-		if(node.value!=null){
+		if(node.relatedColumn!=null){
 %>
-		if(<%=node.value%>!=null){
-			<%=currEleName%>_<%=cid%>.addNamespace("<%=node.path%>",<%=node.value%>.toString());
+		if(<%getValue(cid, node);%>!=null){
+			<%=currEleName%>_<%=cid%>.addNamespace("<%=node.path%>",<%getValue(cid, node);%>);
 <%
 			if(node.path ==null || node.path.length()==0){
 %>
         	<%=currEleName%>_<%=cid%>.setQName(org.dom4j.DocumentHelper.createQName(<%=currEleName%>_<%=cid%>.getName(),
-        	org.dom4j.DocumentHelper.createNamespace("",<%=node.value%>.toString())));
+        	org.dom4j.DocumentHelper.createNamespace("",<%getValue(cid, node);%>)));
 <%
 			}
 %>
@@ -156,38 +150,81 @@ class XMLTool{
 		}
 	}
 
-	public Object[] getValueString(Map<String,String> map, List<IMetadataColumn> colList, String connName){
+	private void getValue(String cid, XMLNode node){
+		IMetadataColumn column = node.relatedColumn;
+		JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+		String defaultValue=column.getDefault();
+		boolean isNotSetDefault = false;
+		if(defaultValue!=null){
+			isNotSetDefault = defaultValue.length()==0;
+		}else{
+			isNotSetDefault=true;
+		}
+%>
+	(
+<%
+		if(column.isNullable()){
+%>
+		<%=connName%>.<%=column.getLabel()%> != null?
+<%
+		}
+		
+        if(advancedSeparator && JavaTypesManager.isNumberType(javaType, column.isNullable())) { 
+        	if(javaType == JavaTypesManager.BIGDECIMAL) {
+%>
+    		FormatterUtils.format_Number(String.valueOf(<%=connName%>.<%=column.getLabel()%>.doubleValue()), <%= thousandsSeparator%>,<%=decimalSeparator %>)					
+<%
+    		} else {
+%>
+    		FormatterUtils.format_Number(String.valueOf(<%=connName%>.<%=column.getLabel()%>), <%= thousandsSeparator %>,<%=decimalSeparator %>)						
+<%
+	   		}
+        } else if(JavaTypesManager.isJavaPrimitiveType( column.getTalendType(), column.isNullable())){
+%>
+            String.valueOf(<%=connName%>.<%=column.getLabel()%>)
+<%
+        }else if(javaType == JavaTypesManager.DATE){
+            if( column.getPattern() != null && column.getPattern().trim().length() != 0 ){
+%>
+            FormatterUtils.format_Date(<%=connName%>.<%=column.getLabel()%>,<%=column.getPattern()%>)
+<%
+            }else{
+%>
+			<%=connName%>.<%=column.getLabel()%>
+<%
+           }
+        }else if (javaType == JavaTypesManager.BIGDECIMAL) {
+%>
+			String.valueOf(<%=connName%>.<%=column.getLabel()%>.doubleValue())
+<%
+        }else{
+%>
+            <%=connName%>.<%=column.getLabel()%>.toString()
+<%
+		}
+		if(column.isNullable()){
+			%>:<% 
+			if(isNotSetDefault == false){
+				%><%=column.getDefault()%><%
+			}else{
+				%>null<%
+			}
+		}
+%>
+		)
+<%
+	}
+
+	public void setIMetadataColumn(XMLNode node, List<IMetadataColumn> colList){
         String value = null;
         JavaType javaType=null;
-     	if( map.get("COLUMN")!=null && map.get("COLUMN").length()>0){
+     	if( node.column!=null && node.column.length()>0){
            for(IMetadataColumn column:colList) {
-                if(column.getLabel().equals(map.get("COLUMN"))){
-                    javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
-                    if(advancedSeparator && JavaTypesManager.isNumberType(javaType, column.isNullable())) { 
-                    	if(javaType == JavaTypesManager.BIGDECIMAL) {
-                			value = "FormatterUtils.format_Number(String.valueOf("+connName+"."+column.getLabel()+".doubleValue()), "+ thousandsSeparator +"," +decimalSeparator +")";					
-                		} else {
-                			value = "FormatterUtils.format_Number(String.valueOf("+connName+"."+column.getLabel()+"), "+ thousandsSeparator +"," +decimalSeparator +")";						
-                		}
-                    } else if(JavaTypesManager.isJavaPrimitiveType( column.getTalendType(), column.isNullable())){
-                        value = "String.valueOf("+connName+"."+map.get("COLUMN")+")";
-                    }else if(javaType == JavaTypesManager.DATE){
-                        if( column.getPattern() != null && column.getPattern().trim().length() != 0 ){
-                            value ="FormatterUtils.format_Date(" + connName + "." +column.getLabel()+ "," +column.getPattern()+")";
-                        }else{
-                            value = connName+"."+map.get("COLUMN");
-                        }
-                    }else if (javaType == JavaTypesManager.BIGDECIMAL) {
-                    	value = "String.valueOf("+connName+"."+map.get("COLUMN")+".doubleValue())";
-                    }else{
-                        value = connName+"."+map.get("COLUMN");
-                    }
+                if(column.getLabel().equals(node.column)){
+                    node.relatedColumn = column;
                 }
             }
-        }else if(map.get("VALUE") != null && map.get("VALUE").length()>0){
-            value = map.get("VALUE");
         }
-        return new Object[]{value,javaType};
     }
     
     public XMLNode removeEmptyElement(XMLNode root) {
@@ -243,6 +280,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 	(List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__LOOP__");
                 
                 String allowEmpty = ElementParameterParser.getValue(node, "__CREATE_EMPTY_ELEMENT__");
+                String outputAsXSD = ElementParameterParser.getValue(node, "__OUTPUT_AS_XSD__");
+                
                 String split = ElementParameterParser.getValue(node, "__SPLIT__");
                 String splitEvery = ElementParameterParser.getValue(node, "__SPLIT_EVERY__");
                 
@@ -253,9 +292,10 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 
                 //XMLTool
                 XMLTool tool = new XMLTool();
-                if(!allowEmpty.equals("true")){
-                	tool.allowEmpty = false;
+                if(outputAsXSD.equals("true")){
+                	tool.outputAsXSD = true;
                 }
+                tool.connName = conn.getName();
                 tool.advancedSeparator=advancedSeparator;
                 tool.thousandsSeparator=thousandsSeparator;
                 tool.decimalSeparator=decimalSeparator;
@@ -277,7 +317,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                     tmpParent = tmpMainNode;
                     for (Map<String, String> tmpMap : tmpTable) {
                         XMLNode tmpNew = null;
-                        Object[] values = tool.getValueString(tmpMap, metadata.getListColumns(), conn.getName());
                         if (tmpMap.get("ATTRIBUTE").equals("attri")) {
                             tmpNew = new XMLNode(tmpMap.get("PATH"), "ATTRIBUTE", tmpParent, tmpMap.get("COLUMN"));
                             tmpParent.attributes.add(tmpNew);
@@ -307,10 +346,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                             }
                             tmpParent = tmpNew;
                         }
-                        tmpNew.value=(String)values[0];
-                        if(values[1] == JavaTypesManager.OBJECT){
-                        	tmpNew.special |=8;
-                        }
+                        tool.setIMetadataColumn(tmpNew, metadata.getListColumns());
                     }
                 }
                 
@@ -320,6 +356,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 //------------start generate code-------------------
 %>
 	nb_line_<%=cid%>++;
+	String value_<%=cid%>=null;
 	org.dom4j.Element subTreeRootParent_<%=cid%> = null;
 	// build root xml tree 
 	if (needRoot_<%=cid%>) {
@@ -347,19 +384,13 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
 					for(XMLNode attr:groupRootNode.attributes)
 					{
-						if(attr.value!=null){
-							if(allowEmpty.equals("true")){
+						if(attr.relatedColumn!=null){
 %>
-		|| !groupRootList_<%=cid%>.get(<%=i-1%>).attribute("<%=attr.name%>").getText().equals(<%=attr.value%>==null?"":<%=attr.value%>.toString())
+		|| (groupRootList_<%=cid%>.get(<%=i-1%>).attribute("<%=attr.name%>")!=null && <%tool.getValue(cid, attr);%>==null) 
+		|| (groupRootList_<%=cid%>.get(<%=i-1%>).attribute("<%=attr.name%>")==null && <%tool.getValue(cid, attr);%>!=null) 
+		|| ((groupRootList_<%=cid%>.get(<%=i-1%>).attribute("<%=attr.name%>")!=null && <%tool.getValue(cid, attr);%>!=null)
+		&& !groupRootList_<%=cid%>.get(<%=i-1%>).attribute("<%=attr.name%>").getText().equals(<%tool.getValue(cid, attr);%>))
 <%
-							}else{
-%>
-		|| (groupRootList_<%=cid%>.get(<%=i-1%>).attribute("<%=attr.name%>")!=null && <%=attr.value%>==null) 
-		|| (groupRootList_<%=cid%>.get(<%=i-1%>).attribute("<%=attr.name%>")==null && <%=attr.value%>!=null) 
-		|| ((groupRootList_<%=cid%>.get(<%=i-1%>).attribute("<%=attr.name%>")!=null && <%=attr.value%>!=null)
-		&& !groupRootList_<%=cid%>.get(<%=i-1%>).attribute("<%=attr.name%>").getText().equals(<%=attr.value%>.toString()))
-<%
-							}
 						}
 					}
 %>
@@ -393,6 +424,14 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     if(currentRowCount_<%=cid %> == <%= splitEvery%>){
     	java.io.FileOutputStream stream_<%=cid%> = new java.io.FileOutputStream(fileName_<%=cid%>);
         org.dom4j.io.XMLWriter output_<%=cid%> = new org.dom4j.io.XMLWriter(stream_<%=cid%>, format_<%=cid%>);
+<%
+					if(outputAsXSD.equals("true")){
+%>
+		doc_<%=cid%>.getRootElement().addAttribute("xsi:noNamespaceSchemaLocation", file_<%=cid%>.substring(file_<%=cid%>.lastIndexOf("/")));
+        doc_<%=cid%>.getRootElement().addNamespace("xsi", "http://www.w3.org/2001/XMLSchema-instance");
+<%
+					}
+%>        
         nestXMLTool_<%=cid%>.replaceDefaultNameSpace(doc_<%=cid%>.getRootElement());
         output_<%=cid%>.write(doc_<%=cid%>);
         output_<%=cid%>.close();

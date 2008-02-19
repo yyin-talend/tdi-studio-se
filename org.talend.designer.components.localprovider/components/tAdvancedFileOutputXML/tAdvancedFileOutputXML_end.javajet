@@ -4,14 +4,124 @@ imports="
     org.talend.designer.codegen.config.CodeGeneratorArgument
     org.talend.core.model.process.ElementParameterParser
     java.util.List
+    java.util.ArrayList
+    java.util.LinkedList
     java.util.Map
+    java.util.HashMap
     org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.metadata.types.JavaTypesManager
+	org.talend.core.model.metadata.types.JavaType
 "
 %>
 
 <%
+class XMLNode{
+	public XMLNode(String path, String type, XMLNode parent, String column){
+		this.path = path;
+		this.parent = parent;
+		this.type = type;
+		this.column = column;
+		if (type.equals("ELEMENT")) {
+            this.name = path.substring(path.lastIndexOf("/") + 1);
+        } else {
+            this.name = path;
+        }
+	}
+	public String name = null;
+	public String path = null;
+	public String type = null;
+	public String column = null;
+	public String value = null;
+	public int special = 0;  //1 is subtree root, 2 is subtree root parent, 4 is groupby, 8 nest XML
+	public XMLNode parent = null;
+	public List<XMLNode> attributes = new LinkedList<XMLNode>();
+	public List<XMLNode> namespaces = new LinkedList<XMLNode>();
+	public List<XMLNode> elements = new LinkedList<XMLNode>();
+}
+
+//XMLTool
+class XMLTool{
+	public XMLNode removeEmptyElement(XMLNode root) {
+        List<XMLNode> removeNodes = new LinkedList<XMLNode>();
+        for (XMLNode attri : root.attributes) {
+            if (attri.column == null || attri.column.length() == 0) {
+                attri.parent = null;
+                removeNodes.add(attri);
+            }
+        }
+        root.attributes.removeAll(removeNodes);
+
+        removeNodes.clear();
+        for (XMLNode ns : root.namespaces) {
+            if (ns.column == null || ns.column.length() == 0) {
+                ns.parent = null;
+                removeNodes.add(ns);
+            }
+        }
+        root.namespaces.removeAll(removeNodes);
+
+        removeNodes.clear();
+        for (XMLNode child : root.elements) {
+            removeNodes.add(removeEmptyElement(child));
+        }
+        root.elements.removeAll(removeNodes);
+
+        if (root.attributes.size() == 0 && root.namespaces.size() == 0 && root.elements.size() == 0
+                && (root.column == null || root.column.length() == 0)) {
+            return root;
+        } else {
+            return null;
+        }
+    }
+    
+    public void generateXSD(String cid, String parent, String currEleName, XMLNode root){
+    	if(root.type.equals("ELEMENT")){
+    		createElement(cid,parent,currEleName,root);
+			
+			if(root.elements!=null && root.elements.size()>0
+			  || root.attributes!=null && root.attributes.size()>0){
+%>
+		org.dom4j.Element <%=currEleName%>_c_<%=cid%> = <%=currEleName%>_<%=cid%>.addElement("xsd:complexType");
+		org.dom4j.Element <%=currEleName%>_s_<%=cid%> = <%=currEleName%>_c_<%=cid%>.addElement("xsd:sequence");
+<%
+        		int index = 0;
+        		for(XMLNode child:root.elements){
+        			generateXSD(cid, currEleName+"_s", currEleName+"_"+index++, child);
+        		}
+        		
+        		for(XMLNode attri:root.attributes){
+        			createAttribute(cid,currEleName+"_c",attri);
+        		}
+			}
+    	}
+    }
+    
+    private void createElement(String cid, String parent, String currEleName, XMLNode node){
+%>
+		org.dom4j.Element <%=currEleName%>_<%=cid%> = <%=parent%>_<%=cid%>.addElement("xsd:element");
+		<%=currEleName%>_<%=cid%>.addAttribute("name","<%=node.name%>");
+		<%=currEleName%>_<%=cid%>.addAttribute("nillable","true");
+<%
+    }
+    
+    private void createAttribute(String cid, String parent, XMLNode node){
+%>
+		<%=parent%>_<%=cid%>.addElement("xsd:attribute").addAttribute("name","<%=node.name%>");
+<%
+    }
+}
+
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
+String allowEmpty = ElementParameterParser.getValue(node, "__CREATE_EMPTY_ELEMENT__");
+String outputAsXSD = ElementParameterParser.getValue(node, "__OUTPUT_AS_XSD__");
+List<Map<String, String>> rootTable = 
+	(List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__ROOT__");
+List<Map<String, String>> groupTable = 
+	(List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__GROUP__");
+List<Map<String, String>> loopTable = 
+	(List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__LOOP__");
+
 String cid = node.getUniqueName();
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
@@ -24,6 +134,14 @@ if(currentRowCount_<%=cid %> > 0){
 %>
 	java.io.FileOutputStream stream_<%=cid%> = new java.io.FileOutputStream(fileName_<%=cid%>);
     org.dom4j.io.XMLWriter output_<%=cid%> = new org.dom4j.io.XMLWriter(stream_<%=cid%>, format_<%=cid%>);
+<%
+	if(outputAsXSD.equals("true")){
+%>
+	doc_<%=cid%>.getRootElement().addAttribute("xsi:noNamespaceSchemaLocation", file_<%=cid%>.substring(file_<%=cid%>.lastIndexOf("/")+1)+".xsd");
+    doc_<%=cid%>.getRootElement().addNamespace("xsi", "http://www.w3.org/2001/XMLSchema-instance");
+<%
+	}
+%>  
     nestXMLTool_<%=cid%>.replaceDefaultNameSpace(doc_<%=cid%>.getRootElement());
     output_<%=cid%>.write(doc_<%=cid%>);
     output_<%=cid%>.close();
@@ -36,5 +154,76 @@ if(currentRowCount_<%=cid %> > 0){
 %>
 globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
 <%
+//-------Map to tree---------------------
+	if(outputAsXSD.equals("true")){
+    	XMLTool tool= new XMLTool();
+    	List<List<Map<String, String>>> tables = new ArrayList<List<Map<String, String>>>();
+        tables.add(rootTable);
+        tables.add(groupTable);
+        tables.add(loopTable);
+    
+        List<XMLNode> specialList = new ArrayList<XMLNode>();
+        XMLNode tmpParent = null;
+        XMLNode tmpMainNode = null;
+        if(loopTable==null || loopTable.size()==0){
+        	return "";
+        }
+        String mainPath = loopTable.get(0).get("PATH");
+        for (List<Map<String, String>> tmpTable : tables) {
+            tmpParent = tmpMainNode;
+            for (Map<String, String> tmpMap : tmpTable) {
+                XMLNode tmpNew = null;
+                if (tmpMap.get("ATTRIBUTE").equals("attri")) {
+                    tmpNew = new XMLNode(tmpMap.get("PATH"), "ATTRIBUTE", tmpParent, tmpMap.get("COLUMN"));
+                    tmpParent.attributes.add(tmpNew);
+                } else if (tmpMap.get("ATTRIBUTE").equals("ns")) {
+                    tmpNew = new XMLNode(tmpMap.get("PATH"), "NAMESPACE", tmpParent, tmpMap.get("COLUMN"));
+                    tmpParent.namespaces.add(tmpNew);
+                } else {
+                    if (tmpParent == null) {
+                        tmpNew = new XMLNode(tmpMap.get("PATH"), "ELEMENT", tmpParent, tmpMap.get("COLUMN"));
+                        tmpNew.special |= 1;
+                        specialList.add(tmpNew);
+                    } else {
+                        String tmpParentPath = tmpMap.get("PATH").substring(0, tmpMap.get("PATH").lastIndexOf("/"));
+               		 	while (tmpParent != null && !tmpParentPath.equals(tmpParent.path)) {
+                            tmpParent = tmpParent.parent;
+                        }
+                        tmpNew = new XMLNode(tmpMap.get("PATH"), "ELEMENT", tmpParent, tmpMap.get("COLUMN"));
+                        tmpParent.elements.add(tmpNew);
+                        if (tmpMap.get("ATTRIBUTE").equals("main") && tmpTable != rootTable) {
+                        	tmpNew.special |= 1;
+                            tmpParent.special |=2;
+                            specialList.add(tmpNew);
+                        }
+                    }
+                    if (tmpMap.get("ATTRIBUTE").equals("main")) {
+                        tmpMainNode = tmpNew;
+                    }
+                    tmpParent = tmpNew;
+                }
+            }
+        }
+        
+        XMLNode root = specialList.get(0);
+        if(!allowEmpty.equals("true")){
+        	tool.removeEmptyElement(root);
+        }
+
+//-------generate XSD file---------------------
+%>
+	org.dom4j.Document doc_xsd_<%=cid%>  = org.dom4j.DocumentHelper.createDocument();
+	
+	org.dom4j.Element root_xsd_<%=cid%> = doc_xsd_<%=cid%>.addElement("xsd:schema");
+    root_xsd_<%=cid%>.addNamespace("xsd", "http://www.w3.org/2001/XMLSchema");
+<%
+	tool.generateXSD(cid,"root_xsd","ele_xsd",root);
+%>
+	java.io.FileOutputStream stream_xsd_<%=cid%> = new java.io.FileOutputStream(file_<%=cid%>+".xsd");
+    org.dom4j.io.XMLWriter output_xsd_<%=cid%> = new org.dom4j.io.XMLWriter(stream_xsd_<%=cid%>, format_<%=cid%>);
+    output_xsd_<%=cid%>.write(doc_xsd_<%=cid%> );
+    output_xsd_<%=cid%>.close();
+<%
+    }
 }
 %>
