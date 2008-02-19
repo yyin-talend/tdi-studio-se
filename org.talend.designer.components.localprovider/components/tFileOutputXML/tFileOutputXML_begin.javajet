@@ -6,6 +6,7 @@ imports="
     org.talend.core.model.metadata.IMetadataTable 
     java.util.List
     java.util.Map
+    java.util.HashMap
 "
 %>
 
@@ -19,6 +20,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     if (metadata!=null) {
     String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
     List<Map<String, String>> rootTags = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__ROOT_TAGS__");
+    if (rootTags.size()==0) {
+    	Map<String, String> defaultRootNode = new HashMap<String, String>();
+    	defaultRootNode.put("TAG","\"root\"");
+    	rootTags.add(defaultRootNode);
+    }
     int headers = rootTags.size() + 1;
     String split = ElementParameterParser.getValue(node, "__SPLIT__");
     String fileName = ElementParameterParser.getValue(node, "__FILENAME__");
