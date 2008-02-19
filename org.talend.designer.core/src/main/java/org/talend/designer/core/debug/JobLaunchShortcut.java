@@ -165,11 +165,12 @@ public class JobLaunchShortcut implements ILaunchShortcut {
                     continue;
                 }
                 String jobName = config.getAttribute(TalendDebugUIConstants.JOB_NAME, (String) null);
+                String jobVersion = config.getAttribute(TalendDebugUIConstants.JOB_VERSION, (String) null);
                 if (jobName == null) {
                     continue;
                 }
 
-                if (file.getProperty().getLabel().equals(jobName)) {
+                if (file.getProperty().getLabel().equals(jobName) && file.getProperty().getVersion().equals(jobVersion)) {
                     candidateConfigs.add(config);
                 }
             }
@@ -195,14 +196,17 @@ public class JobLaunchShortcut implements ILaunchShortcut {
     private ILaunchConfiguration createConfiguration(ProcessItem file) {
         ILaunchConfiguration config = null;
         String jobName = file.getProperty().getLabel();
+        String jobVersion = file.getProperty().getVersion();
         ILaunchConfigurationType type = getLaunchManager().getLaunchConfigurationType(
                 TalendDebugUIConstants.JOB_DEBUG_LAUNCH_CONFIGURATION_TYPE);
+        String displayName = jobName + " " + jobVersion;
 
         try {
             if (type != null) {
                 ILaunchConfigurationWorkingCopy wc = type.newInstance(null, getLaunchManager()
-                        .generateUniqueLaunchConfigurationNameFrom(jobName));
+                        .generateUniqueLaunchConfigurationNameFrom(displayName));
                 wc.setAttribute(TalendDebugUIConstants.JOB_NAME, jobName);
+                wc.setAttribute(TalendDebugUIConstants.JOB_VERSION, jobVersion);
                 String projectName = CorePlugin.getCurrentProject().getLabel();
                 wc.setAttribute(TalendDebugUIConstants.CURRENT_PROJECT_NAME, projectName);
                 config = wc.doSave();

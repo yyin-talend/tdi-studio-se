@@ -60,8 +60,9 @@ public class JobLaunchConfigurationDelegate extends org.eclipse.debug.core.model
     public void launch(ILaunchConfiguration configuration, String mode, ILaunch launch, IProgressMonitor monitor)
             throws CoreException {
         String jobName = configuration.getAttribute(TalendDebugUIConstants.JOB_NAME, (String) null);
+        String jobVersion = configuration.getAttribute(TalendDebugUIConstants.JOB_VERSION, (String) null);
         // find process from open editor.
-        IProcess process = findProcessFromEditors(jobName);
+        IProcess process = findProcessFromEditors(jobName,jobVersion);
         // find process from repository
         if (process == null) {
             process = findProcessFromRepository(jobName);
@@ -113,8 +114,9 @@ public class JobLaunchConfigurationDelegate extends org.eclipse.debug.core.model
      * DOC bqian Comment method "findProcessFromEditors".
      * 
      * @param jobName
+     * @param jobVersion 
      */
-    private IProcess findProcessFromEditors(final String jobName) {
+    private IProcess findProcessFromEditors(final String jobName, final String jobVersion) {
         final IProcess[] process = new IProcess[1];
 
         Display.getDefault().syncExec(new Runnable() {
@@ -128,7 +130,7 @@ public class JobLaunchConfigurationDelegate extends org.eclipse.debug.core.model
                     if (input instanceof RepositoryEditorInput) {
                         RepositoryEditorInput rInput = (RepositoryEditorInput) input;
                         IProcess p = rInput.getLoadedProcess();
-                        if (p != null && p.getLabel().equals(jobName)) {
+                        if (p != null && p.getLabel().equals(jobName) && p.getVersion().equals(jobVersion)) {
                             process[0] = p;
                             break;
                         }

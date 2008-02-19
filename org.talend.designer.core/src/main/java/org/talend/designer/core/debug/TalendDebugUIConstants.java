@@ -27,6 +27,8 @@ public class TalendDebugUIConstants {
      */
     public static final String JOB_NAME = "TALEND_JOB_NAME";
 
+    public static final String JOB_VERSION = "TALEND_JOB_VERSION";
+
     public static final String CURRENT_PROJECT_NAME = "CURRENT_PROJECT_NAME";
 
     public static final String TALEND_JOB_LAUNCH_SHORTCUT_ID = "org.talend.designer.runprocess.debug.JobLaunchShortcut";

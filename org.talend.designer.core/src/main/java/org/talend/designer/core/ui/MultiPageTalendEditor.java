@@ -69,8 +69,9 @@ public class MultiPageTalendEditor extends AbstractMultiPageTalendEditor {
     public void setName() {
         super.setName();
         String label = getEditorInput().getName();
+        String jobVersion=this.getProcess().getVersion();
         // if (getActivePage() == 1) {
-        setPartName(Messages.getString("MultiPageTalendEditor.Job", label)); //$NON-NLS-1$
+        setPartName(Messages.getString("MultiPageTalendEditor.Job", label,jobVersion)); //$NON-NLS-1$
         // } else {
         // setPartName(Messages.getString("other Label??", label));
         // //$NON-NLS-1$
