@@ -60,7 +60,6 @@ public class MainConnectionComposite extends DynamicComposite {
             List<? extends IElementParameter> listParam = ((Connection) elem).getSource().getElementParameters();
 
             generator.initController(this);
-            boolean schemaTypeControllerCreated = false;
             for (IElementParameter cur : listParam) {
 
                 if (cur.getCategory() == this.section) {
@@ -70,11 +69,10 @@ public class MainConnectionComposite extends DynamicComposite {
                         AbstractElementPropertySectionController contorller = generator.getController(
                                 EParameterFieldType.SCHEMA_TYPE, this);
                         contorller.createControl(composite, cur, 0, 0, 0, null);
-                        schemaTypeControllerCreated = true;
                     }
                 }
             }
-            if (schemaTypeControllerCreated) {
+            if (((Connection) elem).getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
                 FormData data = new FormData();
                 data.left = new FormAttachment(0, ITabbedPropertyConstants.HSPACE);
                 data.right = new FormAttachment(100, -ITabbedPropertyConstants.HSPACE);
