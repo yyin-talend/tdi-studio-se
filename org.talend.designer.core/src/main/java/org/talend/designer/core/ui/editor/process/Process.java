@@ -1843,7 +1843,8 @@ public class Process extends Element implements IProcess2 {
         if (activateNode.isStart()) {
             for (Connection connec : (List<Connection>) node.getIncomingConnections()) {
                 if (connec.getSource().isActivate() != active) {
-                    if (connec.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+                    if (connec.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)
+                            || connec.getLineStyle().hasConnectionCategory(IConnectionCategory.USE_ITERATE)) {
                         if (connec.getSource().getSubProcessStartNode(false).isActivate() != active) {
                             setActivateSubjob(connec.getSource().getSubProcessStartNode(false), active, activateNode,
                                     oneComponent);
@@ -1858,7 +1859,8 @@ public class Process extends Element implements IProcess2 {
                         setActivateSubjob(connec.getTarget(), active, activateNode, oneComponent);
                     }
                 } else {
-                    if (connec.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+                    if (connec.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)
+                            || connec.getLineStyle().hasConnectionCategory(IConnectionCategory.USE_ITERATE)) {
                         if (connec.getTarget().isActivate() != active) {
                             setActivateSubjob(connec.getTarget(), active, activateNode, oneComponent);
                         }
@@ -1871,14 +1873,16 @@ public class Process extends Element implements IProcess2 {
             if (node.getSubProcessStartNode(false).equals(mainSubProcess)) {
                 ((Element) node).setPropertyValue(EParameterName.ACTIVATE.getName(), new Boolean(active));
                 for (Connection connec : (List<Connection>) node.getIncomingConnections()) {
-                    if (connec.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+                    if (connec.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)
+                            || connec.getLineStyle().hasConnectionCategory(IConnectionCategory.USE_ITERATE)) {
                         if (connec.getSource().isActivate() != active) {
                             setActivateSubjob(connec.getSource(), active, activateNode, oneComponent);
                         }
                     }
                 }
                 for (Connection connec : (List<Connection>) node.getOutgoingConnections()) {
-                    if (connec.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+                    if (connec.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)
+                            || connec.getLineStyle().hasConnectionCategory(IConnectionCategory.USE_ITERATE)) {
                         if (connec.getTarget().isActivate() != active) {
                             setActivateSubjob(connec.getTarget(), active, activateNode, oneComponent);
                         }
