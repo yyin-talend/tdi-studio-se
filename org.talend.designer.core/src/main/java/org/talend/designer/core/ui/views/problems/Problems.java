@@ -14,8 +14,10 @@ package org.talend.designer.core.ui.views.problems;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
@@ -58,6 +60,8 @@ public class Problems {
     private static ProblemsView problemView;
 
     private static List<IProcess> openJobs = new ArrayList<IProcess>();
+
+    private static Map<String, Boolean> routineCompileInfo = new HashMap<String, Boolean>();
 
     private static String currentTitle = ""; //$NON-NLS-1$
 
@@ -344,14 +348,18 @@ public class Problems {
             return;
         }
 
+        boolean hasError = false;
+
+        String routineFileName = null;
+        if (label == null) {
+            routineFileName = getFileName(file);
+        } else {
+            routineFileName = label;
+        }
+
         try {
             IMarker[] markers = file.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_ONE);
-            String routineFileName = null;
-            if (label == null) {
-                routineFileName = getFileName(file);
-            } else {
-                routineFileName = label;
-            }
+
             Problems.clearAllComliationError(routineFileName);
             for (IMarker marker : markers) {
                 Integer lineNr = (Integer) marker.getAttribute(IMarker.LINE_NUMBER);
@@ -364,6 +372,7 @@ public class Problems {
                 switch (severity) {
                 case IMarker.SEVERITY_ERROR:
                     status = ProblemStatus.ERROR;
+                    hasError = true;
                     break;
                 case IMarker.SEVERITY_WARNING:
                     status = ProblemStatus.WARNING;
@@ -384,6 +393,8 @@ public class Problems {
         } catch (org.eclipse.core.runtime.CoreException e) {
             ExceptionHandler.process(e);
         }
+
+        routineCompileInfo.put(routineFileName, !hasError);
     }
 
     private static String getFileName(IFile file) {
@@ -399,4 +410,8 @@ public class Problems {
         return fileName;
     }
 
+    public static Boolean isRoutineCompilePass(String routineName) {
+        Boolean compilePass = routineCompileInfo.get(routineName);
+        return compilePass;
+    }
 }
