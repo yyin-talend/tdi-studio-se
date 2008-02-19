@@ -105,6 +105,9 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
         rEditorInput.getFile().refreshLocal(IResource.DEPTH_ONE, null);
         super.doSetInput(rEditorInput);
         setName();
+
+        IRepositoryView viewPart = (IRepositoryView) getSite().getPage().findView(IRepositoryView.VIEW_ID);
+        viewPart.refresh();
     }
 
     private void setName() {
