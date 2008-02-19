@@ -18,6 +18,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.IService;
+import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.repository.model.IRepositoryService;
 
@@ -88,6 +89,16 @@ public class CodeGeneratorActivator extends AbstractUIPlugin {
     public IRepositoryService getRepositoryService() {
         IService service = GlobalServiceRegister.getDefault().getService(IRepositoryService.class);
         return (IRepositoryService) service;
+    }
+
+    /**
+     * DOC Gets the DesignerCoreService.
+     * 
+     * @return IDesignerCoreService
+     */
+    public IDesignerCoreService getDesignerCoreService() {
+        IService service = GlobalServiceRegister.getDefault().getService(IDesignerCoreService.class);
+        return (IDesignerCoreService) service;
     }
 
 }

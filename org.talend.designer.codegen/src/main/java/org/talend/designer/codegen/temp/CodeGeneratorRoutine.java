@@ -27,6 +27,7 @@ import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.designer.codegen.CodeGeneratorActivator;
+import org.talend.designer.core.IDesignerCoreService;
 import org.talend.repository.model.IProxyRepositoryFactory;
 
 /**
@@ -56,12 +57,20 @@ public final class CodeGeneratorRoutine {
         IProxyRepositoryFactory repositoryFactory = CodeGeneratorActivator.getDefault().getRepositoryService()
                 .getProxyRepositoryFactory();
 
+        IDesignerCoreService designerCoreService = CodeGeneratorActivator.getDefault().getDesignerCoreService();
+
         String builtInPath = ILibrariesService.SOURCE_PERL_ROUTINES_FOLDER + "::" + "system" + "::";
         String userPath = ILibrariesService.SOURCE_PERL_ROUTINES_FOLDER + "::" + project.getTechnicalLabel() + "::";
 
         try {
             List<IRepositoryObject> routines = repositoryFactory.getAll(ERepositoryObjectType.ROUTINES);
             for (IRepositoryObject routine : routines) {
+
+                Boolean routineCompilePass = designerCoreService.isRoutineCompilePass(routine.getLabel());
+                if (routineCompilePass == null || !routineCompilePass) {
+                    continue;
+                }
+
                 if (currentLanguage.equals(ECodeLanguage.JAVA)) {
                     toReturn.add(routine.getLabel());
                 } else {
