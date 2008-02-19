@@ -82,11 +82,11 @@ currentComponent="<%=node.getUniqueName() %>";
 	connSet =  new HashSet<IConnection>();
 	connSet.addAll(node.getIncomingConnections(EConnectionType.FLOW_MAIN));
 	connSet.addAll(node.getIncomingConnections(EConnectionType.FLOW_MERGE));
-	
+
 	if ((codePart.equals(ECodePart.BEGIN))&&(stat)&&connSet.size()>0) {
 		for(IConnection con:connSet){
 %>
-	runStat.updateStatOnConnection("<%=con.getUniqueName() %>",0, 0); 
+	runStat.updateStatOnConnection("<%=con.getUniqueName() %>",RunStat.BEGIN, 0); 
 <%		}
 	}
 	
@@ -99,11 +99,11 @@ currentComponent="<%=node.getUniqueName() %>";
 
 
 <%if (!node.getComponent().useMerge()) {%>
-  runStat.updateStatOnConnection("<%=con.getUniqueName() %>",1, 1);
+  runStat.updateStatOnConnection("<%=con.getUniqueName() %>",RunStat.RUNNING, 1);
 <%
 	} else if(con.getUniqueName().equals((String)codeGenArgument.getIncomingName())){
 %>
- runStat.updateStatOnConnection("<%=con.getUniqueName() %>",1, 1);
+ runStat.updateStatOnConnection("<%=con.getUniqueName() %>",RunStat.RUNNING, 1);
 <%}%>
 
 <%
