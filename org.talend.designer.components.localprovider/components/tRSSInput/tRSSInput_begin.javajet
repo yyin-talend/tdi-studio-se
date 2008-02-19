@@ -45,7 +45,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         }
 <%}%>
 
-	int items<%=cid%> = 0;
+	int items<%=cid%> = feed<%=cid%>.getItemCount();
 	
 <%      	 if(isAmount){
       	 %>
@@ -60,7 +60,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
       	 
       	if(!ifInvalid<%=cid%>){
           String row<%=cid%>[]=new String [4];
-          items<%=cid%>=feed<%=cid%>.getItemCount();
+
           for (int i_<%=cid%> = 0; i_<%=cid%>< items<%=cid%>; i_<%=cid%>++) {
              it.sauronsoftware.feed4j.bean.FeedItem itm<%=cid%> = feed<%=cid%>.getItem(i_<%=cid%>);
               row<%=cid%>[0]=itm<%=cid%>.getTitle();
@@ -69,7 +69,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
               row<%=cid%>[3]=(itm<%=cid%>.getLink()==null ? "" :itm<%=cid%>.getLink().toString());
       <%        if(isDate)
               {
-      %>       	
+      %>  
+        if(!row<%=cid%>[2].equals("")){     	
               	java.util.Date d<%=cid%>=new java.util.Date();
               	java.text.SimpleDateFormat formatterDate<%=cid%>=new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
               	d<%=cid%>=formatterDate<%=cid%>.parse(<%=dateTime%>);
@@ -79,6 +80,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
              	 {
              	 	continue;
              	 }
+        }
       <%       	
               }
       %>        
