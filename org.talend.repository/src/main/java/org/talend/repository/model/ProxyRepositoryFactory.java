@@ -302,7 +302,7 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * @see org.talend.repository.model.IProxyRepositoryFactory#deleteFolder(org.talend.core.model.repository.ERepositoryObjectType,
      * org.eclipse.core.runtime.IPath)
      */
-    public void deleteFolder(ERepositoryObjectType type, IPath path) throws PersistenceException {
+    public synchronized void deleteFolder(ERepositoryObjectType type, IPath path) throws PersistenceException {
         this.repositoryFactoryFromProvider.deleteFolder(type, path);
         if (type == ERepositoryObjectType.PROCESS) {
             fireRepositoryPropertyChange(ERepositoryActionName.FOLDER_DELETE.getName(), path, type);
