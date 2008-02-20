@@ -34,6 +34,7 @@ import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.designer.core.model.process.AbstractProcessProvider;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
+import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.action.CreateProcess;
 import org.talend.designer.core.ui.action.SaveJobBeforeRunAction;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
@@ -225,5 +226,13 @@ public class DesignerCoreService implements IDesignerCoreService {
     public Boolean isRoutineCompilePass(String routineName) {
         Boolean compilePass = Problems.isRoutineCompilePass(routineName);
         return compilePass;
+    }
+
+    public boolean isTalendEditor(IEditorPart activeEditor) {
+        if (activeEditor == null) {
+            return false;
+        }
+        return activeEditor.getSite().getId().equals(MultiPageTalendEditor.ID);
+
     }
 }
