@@ -27,8 +27,11 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.oro.text.regex.MalformedPatternException;
 import org.apache.oro.text.regex.Pattern;
+import org.apache.oro.text.regex.PatternCompiler;
 import org.apache.oro.text.regex.Perl5Compiler;
 import org.apache.oro.text.regex.Perl5Matcher;
+import org.apache.oro.text.regex.Perl5Substitution;
+import org.apache.oro.text.regex.Util;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.gef.commands.CommandStack;
@@ -1961,7 +1964,11 @@ public class Node extends Element implements INode {
             if (param.getValue() instanceof String) { // for TEXT / MEMO etc..
                 String value = (String) param.getValue();
                 if (value.contains(oldName)) {
-                    param.setValue(value.replaceAll(oldName, newName));
+                    // param.setValue(value.replaceAll(oldName, newName));
+                    String newValue = renameValues(value, oldName, newName);
+                    if (!value.equals(newValue)) {
+                        param.setValue(newValue);
+                    }
                 }
             } else if (param.getValue() instanceof List) { // for TABLE
                 List<Map<String, Object>> tableValues = (List<Map<String, Object>>) param.getValue();
@@ -1973,13 +1980,50 @@ public class Node extends Element implements INode {
                             // needed
                             String value = (String) cellValue;
                             if (value.contains(oldName)) {
-                                line.put(key, value.replaceAll(oldName, newName));
+                                // line.put(key, value.replaceAll(oldName, newName));
+                                String newValue = renameValues(value, oldName, newName);
+                                if (!value.equals(newValue)) {
+                                    line.put(key, newValue);
+                                }
                             }
                         }
                     }
                 }
             }
         }
+    }
+
+    /**
+     * 
+     * DOC ggu Comment method "renameValues".
+     * 
+     */
+    private String renameValues(final String value, final String oldName, final String newName) {
+        if (value == null || oldName == null || newName == null) {
+            return value; // keep original value
+        }
+
+        PatternCompiler compiler = new Perl5Compiler();
+        Perl5Matcher matcher = new Perl5Matcher();
+        matcher.setMultiline(true);
+        Perl5Substitution substitution = new Perl5Substitution(newName + "$2", Perl5Substitution.INTERPOLATE_ALL);
+
+        Pattern pattern;
+        try {
+            pattern = compiler.compile("(" + oldName + ")([^0-9]+.*)");
+        } catch (MalformedPatternException e) {
+            return value; // keep original value
+        }
+
+        if (matcher.contains(value, pattern)) {
+            // replace
+            String returnValue = Util.substitute(matcher, pattern, substitution, value, Util.SUBSTITUTE_ALL);
+            // ?? re-replace some unreplaced value
+            // return returnValue;
+            return Util.substitute(matcher, pattern, substitution, returnValue, Util.SUBSTITUTE_ALL);
+        }
+        return value; // keep original value
+
     }
 
     private boolean valueContains(String value, String toTest) {
