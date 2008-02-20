@@ -102,6 +102,12 @@ class XMLTool{
 		<%=currEleName%>_<%=cid%>.addAttribute("name","<%=node.name%>");
 		<%=currEleName%>_<%=cid%>.addAttribute("nillable","true");
 <%
+		if(node.parent != null){
+%>
+		<%=currEleName%>_<%=cid%>.addAttribute("minOccurs","0");
+		<%=currEleName%>_<%=cid%>.addAttribute("maxOccurs","unbounded");
+<%
+		}
     }
     
     private void createAttribute(String cid, String parent, XMLNode node){

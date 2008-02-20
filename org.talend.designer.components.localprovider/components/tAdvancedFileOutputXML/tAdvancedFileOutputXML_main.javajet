@@ -356,7 +356,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 //------------start generate code-------------------
 %>
 	nb_line_<%=cid%>++;
-	String value_<%=cid%>=null;
 	org.dom4j.Element subTreeRootParent_<%=cid%> = null;
 	// build root xml tree 
 	if (needRoot_<%=cid%>) {
