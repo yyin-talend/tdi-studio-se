@@ -715,7 +715,7 @@ public class ProcessComposite extends Composite {
         }
         // Add this job to running history list.
         IEditorPart activeEditor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
-        if (activeEditor != null) {
+        if (CorePlugin.getDefault().getDesignerCoreService().isTalendEditor(activeEditor)) {
             DebugUIPlugin.getDefault().getLaunchConfigurationManager().getLaunchShortcut(
                     "org.talend.designer.runprocess.debug.JobLaunchShortcut").launch(activeEditor, ILaunchManager.RUN_MODE);
         } else {
