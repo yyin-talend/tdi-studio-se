@@ -84,8 +84,20 @@ public class ExternalDbMapData implements IExternalData {
         ExternalDbMapData cloned = (ExternalDbMapData) super.clone();
         cloned.uiProperties = (ExternalDbMapUiProperties) uiProperties.clone();
         cloned.inputTables = (List<ExternalDbMapTable>) ((ArrayList) inputTables).clone();
+        int inputTablesListSize = inputTables.size();
+        for (int i = 0; i < inputTablesListSize; i++) {
+            cloned.inputTables.set(i, (ExternalDbMapTable) cloned.inputTables.get(i).clone());
+        }
         cloned.outputTables = (List<ExternalDbMapTable>) ((ArrayList) outputTables).clone();
+        int listSizeoutputTables = outputTables.size();
+        for (int i = 0; i < listSizeoutputTables; i++) {
+            cloned.outputTables.set(i, (ExternalDbMapTable) cloned.outputTables.get(i).clone());
+        }
         cloned.varsTables = (List<ExternalDbMapTable>) ((ArrayList) varsTables).clone();
+        int listSizevarsTables = varsTables.size();
+        for (int i = 0; i < listSizevarsTables; i++) {
+            cloned.varsTables.set(i, (ExternalDbMapTable) cloned.varsTables.get(i).clone());
+        }
         return cloned;
     }
 
