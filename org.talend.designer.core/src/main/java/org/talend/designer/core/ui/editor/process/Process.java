@@ -133,7 +133,9 @@ public class Process extends Element implements IProcess2 {
 
     public static final String NOTES = "notes"; //$NON-NLS-1$
 
-    public static final String DEFAULT_CONNECTION_NAME = "row"; //$NON-NLS-1$
+    public static final String DEFAULT_ROW_CONNECTION_NAME = "row"; //$NON-NLS-1$
+
+    public static final String DEFAULT_TABLE_CONNECTION_NAME = "table"; //$NON-NLS-1$
 
     protected List<Node> nodes = new ArrayList<Node>();
 

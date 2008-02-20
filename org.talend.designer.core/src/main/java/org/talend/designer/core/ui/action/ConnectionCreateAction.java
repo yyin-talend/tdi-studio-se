@@ -358,7 +358,7 @@ public class ConnectionCreateAction extends SelectionAction {
                 connectionName = askForConnectionName(node.getLabel());
             } else {
                 if (connecType.hasConnectionCategory(IConnectionCategory.FLOW)) {
-                    connectionName = node.getProcess().generateUniqueConnectionName(Process.DEFAULT_CONNECTION_NAME);
+                    connectionName = node.getProcess().generateUniqueConnectionName(Process.DEFAULT_ROW_CONNECTION_NAME);
                 } else {
                     connectionName = curNodeConnector.getLinkName();
                 }

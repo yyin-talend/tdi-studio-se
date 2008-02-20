@@ -334,9 +334,9 @@ public class Connection extends Element implements IConnection, IPerformance {
             }
             updateName = true;
         } /*
-             * else if (getLineStyle().equals(EConnectionType.LOOKUP)) { labelText += " (" + nodeConnector.getLinkName() +
-             * ")"; updateName = true; }
-             */
+         * else if (getLineStyle().equals(EConnectionType.LOOKUP)) { labelText += " (" + nodeConnector.getLinkName() +
+         * ")"; updateName = true; }
+         */
 
         if (updateName) {
 
@@ -397,7 +397,7 @@ public class Connection extends Element implements IConnection, IPerformance {
         if (!isConnected) {
             if (lineStyle.equals(EConnectionType.TABLE)) {
                 if (uniqueName == null) {
-                    uniqueName = source.getProcess().generateUniqueConnectionName("table");
+                    uniqueName = source.getProcess().generateUniqueConnectionName(Process.DEFAULT_TABLE_CONNECTION_NAME);
                 }
                 // if (source.getConnectorFromType(lineStyle).isBuiltIn()) {
                 IMetadataTable table = getMetadataTable();

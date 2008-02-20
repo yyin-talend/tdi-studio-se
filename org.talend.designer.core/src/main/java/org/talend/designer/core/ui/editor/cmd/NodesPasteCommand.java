@@ -100,10 +100,25 @@ public class NodesPasteCommand extends Command {
     }
 
     @SuppressWarnings("unchecked")//$NON-NLS-1$
-    private String createNewConnectionName(String oldName) {
-        final String copyOf = "copyOf"; //$NON-NLS-1$
-        String newName = checkExistingNames(copyOf + oldName);
-        newName = checkNewNames(newName);
+    private String createNewConnectionName(String oldName, String baseName) {
+        String newName;
+        if (baseName != null) {
+            for (String uniqueConnectionName : createdNames) {
+                if (process.checkValidConnectionName(uniqueConnectionName, true)) {
+                    process.addUniqueConnectionName(uniqueConnectionName);
+                }
+            }
+            newName = process.generateUniqueConnectionName(baseName);
+
+            for (String uniqueConnectionName : createdNames) {
+                if (!process.checkValidConnectionName(uniqueConnectionName, true)) {
+                    process.removeUniqueConnectionName(uniqueConnectionName);
+                }
+            }
+        } else {
+            newName = checkExistingNames("copyOf" + oldName);
+            newName = checkNewNames(newName, baseName);
+        }
         createdNames.add(newName);
         return newName;
     }
@@ -152,7 +167,7 @@ public class NodesPasteCommand extends Command {
     }
 
     private String checkExistingNames(final String oldName) {
-        final String tmpName = oldName + "_"; //$NON-NLS-1$
+        String tmpName = oldName + "_"; //$NON-NLS-1$
         String newName = oldName;
 
         int index = 0;
@@ -162,8 +177,11 @@ public class NodesPasteCommand extends Command {
         return newName;
     }
 
-    private String checkNewNames(final String oldName) {
-        final String tmpName = oldName + "_"; //$NON-NLS-1$
+    private String checkNewNames(final String oldName, String baseName) {
+        String tmpName = oldName + "_"; //$NON-NLS-1$
+        if (baseName != null) {
+            tmpName = baseName;
+        }
         String newName = oldName;
 
         int index = 0;
@@ -303,7 +321,12 @@ public class NodesPasteCommand extends Command {
                 List<IMetadataTable> copyOfMetadataList = new ArrayList<IMetadataTable>();
                 for (IMetadataTable metaTable : copiedNode.getMetadataList()) {
                     IMetadataTable newTable = metaTable.clone();
-                    newTable.setTableName(createNewConnectionName(metaTable.getTableName()));
+                    if (copiedNode.isELTComponent()) {
+                        newTable.setTableName(createNewConnectionName(metaTable.getTableName(),
+                                Process.DEFAULT_TABLE_CONNECTION_NAME));
+                    } else {
+                        newTable.setTableName(createNewConnectionName(metaTable.getTableName(), null));
+                    }
                     oldMetaToNewMeta.put(pastedNode.getUniqueName() + ":" + metaTable.getTableName(), newTable.getTableName());
 
                     for (IMetadataColumn column : metaTable.getListColumns()) {
@@ -391,8 +414,7 @@ public class NodesPasteCommand extends Command {
                         String newNameBuiltIn = oldMetaToNewMeta.get(pastedSourceNode.getUniqueName() + ":"
                                 + connection.getMetaName());
                         if (newNameBuiltIn == null) {
-                            // newConnectionName = createNewConnectionName(connection.getName());
-                            newConnectionName = process.generateUniqueConnectionName(Process.DEFAULT_CONNECTION_NAME);
+                            newConnectionName = createNewConnectionName(connection.getName(), Process.DEFAULT_ROW_CONNECTION_NAME);
                         } else {
                             newConnectionName = newNameBuiltIn;
                         }
@@ -414,8 +436,14 @@ public class NodesPasteCommand extends Command {
                             metaTableName = pastedSourceNode.getUniqueName(); // connection.getMetaName();
                         }
                     }
-                    Connection pastedConnection = new Connection(pastedSourceNode, pastedTargetNode, connection.getLineStyle(),
-                            connection.getConnectorName(), metaTableName, newConnectionName);
+                    Connection pastedConnection;
+                    if (!pastedTargetNode.isELTComponent()) {
+                        pastedConnection = new Connection(pastedSourceNode, pastedTargetNode, connection.getLineStyle(),
+                                connection.getConnectorName(), metaTableName, newConnectionName);
+                    } else {
+                        pastedConnection = new Connection(pastedSourceNode, pastedTargetNode, connection.getLineStyle(),
+                                connection.getConnectorName(), metaTableName, newConnectionName, metaTableName);
+                    }
                     // pastedConnection.setActivate(pastedSourceNode.isActivate());
                     for (ElementParameter param : (List<ElementParameter>) connection.getElementParameters()) {
                         // pastedConnection.getElementParameter(param.getName())
