@@ -300,6 +300,10 @@
          schemeId="org.talend.designer.core.delete.binding.textEditor"
          sequence="F2">
    </key>
+   <key
+         schemeId="org.talend.designer.core.delete.binding.window"
+         sequence="CTRL+F3">
+   </key>
    </extension>
    <extension
          point="org.talend.core.global_actions">
