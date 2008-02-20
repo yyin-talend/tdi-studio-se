@@ -23,6 +23,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.markers.internal.MarkerMessages;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.model.process.Element;
@@ -36,6 +37,7 @@ import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
+import org.talend.repository.ui.views.IRepositoryView;
 
 import com.ibm.icu.text.MessageFormat;
 
@@ -244,6 +246,15 @@ public class Problems {
         if (getProblemView() != null) {
             getProblemView().refresh();
         }
+    }
+
+    /**
+     * DOC xtan Comment method "refreshRepositoryView".
+     */
+    public static void refreshRepositoryView() {
+        IRepositoryView viewPart = (IRepositoryView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+                .findView(IRepositoryView.VIEW_ID);
+        viewPart.refresh();
     }
 
     /**
