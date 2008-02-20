@@ -20,6 +20,10 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.talend.commons.ui.image.ImageProvider;
+import org.talend.core.CorePlugin;
+import org.talend.core.context.Context;
+import org.talend.core.context.RepositoryContext;
+import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.properties.DocumentationItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -27,6 +31,8 @@ import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.core.ui.images.OverlayImageProvider;
+import org.talend.designer.core.IDesignerCoreService;
+import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
@@ -118,6 +124,19 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
         if (itemType == ERepositoryObjectType.DOCUMENTATION) {
             DocumentationItem item = (DocumentationItem) property.getItem();
             img = OverlayImageProvider.getImageWithDocExt(item.getExtension());
+        }
+
+        // add the error info in the icon only for routine (only for java, because the perl auto build problem.)
+        if (itemType == ERepositoryObjectType.ROUTINES) {
+            ECodeLanguage lang = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
+                    .getProject().getLanguage();
+            if (lang == ECodeLanguage.JAVA) {
+                IDesignerCoreService designerCoreService = RepositoryPlugin.getDefault().getDesignerCoreService();
+                Boolean isCompilePass = designerCoreService.isRoutineCompilePass(property.getLabel());
+                if (isCompilePass != null && !isCompilePass) {
+                    img = OverlayImageProvider.getImageWithError(img).createImage();
+                }
+            }
         }
 
         // Manage master job case:
