@@ -12,8 +12,6 @@
 // ============================================================================
 package org.talend.repository.ui.views;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
@@ -112,7 +110,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
 
     private static Logger log = Logger.getLogger(RepositoryView.class);
 
-    private TreeViewer viewer;
+    private RepositoryTreeViewer viewer;
 
     private static RepositoryNode root = new RepositoryNode(null, null, ENodeType.STABLE_SYSTEM_FOLDER);
 
@@ -149,10 +147,12 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
     }
 
     public static IRepositoryView show() {
-        IViewPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(IRepositoryView.VIEW_ID);
+        IViewPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(
+                IRepositoryView.VIEW_ID);
         if (part == null) {
             try {
-                part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(IRepositoryView.VIEW_ID);
+                part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(
+                        IRepositoryView.VIEW_ID);
             } catch (Exception e) {
                 ExceptionHandler.process(e);
             }
@@ -163,7 +163,8 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
 
     @Override
     public void createPartControl(Composite parent) {
-        viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
+        viewer = new RepositoryTreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
+        viewer.addTreeListener(viewer);
         viewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
         viewer.setContentProvider(new RepositoryContentProvider(this));
         viewer.setLabelProvider(new RepositoryLabelProvider(this));
@@ -209,16 +210,16 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
 
             public void focusGained(FocusEvent e) {
                 log.trace("Repository gain focus"); //$NON-NLS-1$
-                IContextService contextService = (IContextService) RepositoryPlugin.getDefault().getWorkbench().getAdapter(
-                        IContextService.class);
+                IContextService contextService = (IContextService) RepositoryPlugin.getDefault().getWorkbench()
+                        .getAdapter(IContextService.class);
                 ca = contextService.activateContext("talend.repository"); //$NON-NLS-1$
             }
 
             public void focusLost(FocusEvent e) {
                 log.trace("Repository lost focus"); //$NON-NLS-1$
                 if (ca != null) {
-                    IContextService contextService = (IContextService) RepositoryPlugin.getDefault().getWorkbench().getAdapter(
-                            IContextService.class);
+                    IContextService contextService = (IContextService) RepositoryPlugin.getDefault().getWorkbench()
+                            .getAdapter(IContextService.class);
                     contextService.deactivateContext(ca);
                 }
             }
