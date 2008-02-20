@@ -67,7 +67,7 @@ public final class CodeGeneratorRoutine {
             for (IRepositoryObject routine : routines) {
 
                 Boolean routineCompilePass = designerCoreService.isRoutineCompilePass(routine.getLabel());
-                if (routineCompilePass == null || !routineCompilePass) {
+                if (routineCompilePass != null && !routineCompilePass) {
                     continue;
                 }
 
