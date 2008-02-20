@@ -34,18 +34,6 @@ String advancedSeparatorStr = ElementParameterParser.getValue(node, "__ADVANCED_
 boolean advancedSeparator = (advancedSeparatorStr!=null&&!advancedSeparatorStr.equals(""))?advancedSeparatorStr.equals("true"):false;
 String thousandsSeparator = ElementParameterParser.getValue(node, "__THOUSANDS_SEPARATOR__");
 String decimalSeparator = ElementParameterParser.getValue(node, "__DECIMAL_SEPARATOR__");
-
-List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
-String firstConnName = "";
-List<IMetadataTable> metadatas = node.getMetadataList();
-if ((metadatas!=null)&&(metadatas.size()>0)) {
-	IMetadataTable metadata = metadatas.get(0);
-	if (metadata!=null) {
-		List<IMetadataColumn> columns=metadata.getListColumns();
-		if (conns!=null) {
-			if (conns.size()>0) {
-				IConnection conn = conns.get(0);
-				firstConnName = conn.getName();        
 %>
 int nb_line_<%=cid%> = 0;
 
@@ -151,6 +139,17 @@ for (int i_<%=cid %> = 0; i_<%=cid %> < nodelist_<%=cid %>.getLength(); i_<%=cid
 	org.w3c.dom.Node tmp_<%=cid %> = nodelist_<%=cid %>.item(i_<%=cid %>);
 	nb_line_<%=cid%>++;
 <%
+List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
+String firstConnName = "";
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+	IMetadataTable metadata = metadatas.get(0);
+	if (metadata!=null) {
+		List<IMetadataColumn> columns=metadata.getListColumns();
+		if (conns!=null) {
+			if (conns.size()>0) {
+				IConnection conn = conns.get(0);
+				firstConnName = conn.getName();
 				for (int i=0;i<mapping.size();i++) { 
 					String query = mapping.get(i).get("QUERY");
 %>
