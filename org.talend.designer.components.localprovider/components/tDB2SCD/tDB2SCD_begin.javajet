@@ -66,6 +66,13 @@ if (inMetadata != null && metadata != null) {
 	String skSequence = ElementParameterParser.getValue(node, "__SK_DB_SEQUENCE__");
 	String skInputField = ElementParameterParser.getValue(node, "__SK_INPUT_FIELD__");
 	String skRoutine = ElementParameterParser.getValue(node, "__SK_ROUTINE__");
+	String surrogateKeyDBField = null;
+	for(IMetadataColumn column : metadata.getListColumns()) {
+	    if(column.getLabel().equals(surrogateKeyField)) {
+	        surrogateKeyDBField = column.getOriginalDbColumnName();
+	        break;
+	    }
+	}
 	
     List<Map<String, String>> sourceKeys =
         (List<Map<String, String>>) ElementParameterParser.getObjectValue(node, "__SOURCE_KEYS__");
@@ -88,9 +95,30 @@ if (inMetadata != null && metadata != null) {
     String enddateField = ElementParameterParser.getValue(node, "__L2_ENDDATE_FIELD__");
     String enddateValue = ElementParameterParser.getValue(node, "__L2_ENDDATE_VALUE__");
     String enddateYear = ElementParameterParser.getValue(node, "__L2_ENDDATE_FIXED_VALUE__");
+    String startDateDBField = null;
+    String endDateDBField = null;
+    for(IMetadataColumn column : metadata.getListColumns()) {
+        if(column.getLabel().equals(startdateField)) {
+            startDateDBField = column.getOriginalDbColumnName();
+            break;
+        }
+    }
+    for(IMetadataColumn column : metadata.getListColumns()) {
+        if(column.getLabel().equals(enddateField)) {
+            endDateDBField = column.getOriginalDbColumnName();
+            break;
+        }
+    }
     
     boolean useActive = ElementParameterParser.getValue(node, "__USE_L2_ACTIVE__").equals("true");
     String activeField = ElementParameterParser.getValue(node, "__L2_ACTIVE_FIELD__");
+    String activeDBField = null;
+    for(IMetadataColumn column : metadata.getListColumns()) {
+        if(column.getLabel().equals(activeField)) {
+            activeDBField = column.getOriginalDbColumnName();
+            break;
+        }
+    }    
     
     JavaType activeFieldType = null;
     for (IMetadataColumn column : metadata.getListColumns()) {
@@ -102,7 +130,14 @@ if (inMetadata != null && metadata != null) {
     
     boolean useVersion = ElementParameterParser.getValue(node, "__USE_L2_VERSION__").equals("true");
     String versionField = ElementParameterParser.getValue(node, "__L2_VERSION_FIELD__");
-	
+    String versionDBField = null;
+    for(IMetadataColumn column : metadata.getListColumns()) {
+        if(column.getLabel().equals(versionField)) {
+            versionDBField = column.getOriginalDbColumnName();
+            break;
+        }
+    }
+    
 	boolean useL3 = ElementParameterParser.getValue(node, "__USE_L3__").equals("true");
 	List<Map<String, String>> l3fields = new ArrayList<Map<String, String>>();
     if (useL3) {
@@ -111,25 +146,39 @@ if (inMetadata != null && metadata != null) {
     
 	// Build map with type (sk, L1, L2) of each column
     Map<String, String> typeOfColumn = new HashMap<String, String>();
-    for (Map<String, String> sk : sourceKeys) {
-        typeOfColumn.put(sk.get("NAME"), "SK");
-    }
-    for (Map<String, String> l1field : l1fields) {
-        typeOfColumn.put(l1field.get("NAME"), "L1");
-    }
-    for (Map<String, String> l2field : l2fields) {
-        typeOfColumn.put(l2field.get("NAME"), "L2");
-    }
-    for (Map<String, String> l3field : l3fields) {
-        typeOfColumn.put(l3field.get("CURRENT_VALUE"), "L3C"); // L3 current
-        typeOfColumn.put(l3field.get("PREV_VALUE"), "L3P"); // L3 previous
-        
-        if (l3field.get("CURRENT_VALUE").equals(l3field.get("PREV_VALUE"))) {
-        	%>
-        	// Error: same column defined for current and previous value (field <%=l3field.get("CURRENT_VALUE")%>)
-        	<%
+    for(Map<String, String> sk : sourceKeys) {
+        for(IMetadataColumn column : inMetadata.getListColumns()) {
+            if(sk.get("NAME").equals(column.getLabel())) {
+                typeOfColumn.put(column.getOriginalDbColumnName(), "SK");
+                break;
+            }
         }
     }
+    for(Map<String, String> l1field : l1fields) {
+        for(IMetadataColumn column : inMetadata.getListColumns()) {
+            if(l1field.get("NAME").equals(column.getLabel())) {
+                typeOfColumn.put(column.getOriginalDbColumnName(), "L1");
+                break;
+            }
+        }
+    }
+    for(Map<String, String> l2field : l2fields) {
+        for(IMetadataColumn column : inMetadata.getListColumns()) {
+            if(l2field.get("NAME").equals(column.getLabel())) {
+                typeOfColumn.put(column.getOriginalDbColumnName(), "L2");
+                break;
+            }
+        }
+    }
+    for(Map<String, String> l3field : l3fields) {
+        for(IMetadataColumn column : metadata.getListColumns()) {
+            if(l3field.get("CURRENT_VALUE").equals(column.getLabel())) {
+                typeOfColumn.put(column.getOriginalDbColumnName(), "L3C");
+            } else if(l3field.get("PREV_VALUE").equals(column.getLabel())) {
+                typeOfColumn.put(column.getOriginalDbColumnName(), "L3P");
+            }
+        }
+    }    
 	
 	// Debug mode
 	boolean debug = ElementParameterParser.getValue(node, "__DEBUG__").equals("true");
@@ -143,13 +192,11 @@ if (inMetadata != null && metadata != null) {
     	private int hashCode;
     	public boolean hashCodeDirty = true;
     	<%
-		for (IMetadataColumn column : inMetadata.getListColumns()) {
-	        String colname = column.getLabel();
-			
-	        if (typeOfColumn.containsKey(colname)) {
-		    	if (typeOfColumn.get(colname).equals("SK")) {
+		for (IMetadataColumn column : inMetadata.getListColumns()) {			
+	        if (typeOfColumn.containsKey(column.getOriginalDbColumnName())) {
+		    	if (typeOfColumn.get(column.getOriginalDbColumnName()).equals("SK")) {
 		        	%>
-		        	private <%=JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable())%> <%=colname%>;
+		        	private <%=JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable())%> <%=column.getOriginalDbColumnName()%>;
 		        	<%
 		        }
 	        }
@@ -165,11 +212,9 @@ if (inMetadata != null && metadata != null) {
 	    	
 	    	return <%
 			boolean isFirstSK = true;
-	    	for (IMetadataColumn column : inMetadata.getListColumns()) {
-		        String colname = column.getLabel();
-				
-		        if (typeOfColumn.containsKey(colname)) {
-			    	if (typeOfColumn.get(colname).equals("SK")) {
+	    	for (IMetadataColumn column : inMetadata.getListColumns()) {				
+		        if (typeOfColumn.containsKey(column.getOriginalDbColumnName())) {
+			    	if (typeOfColumn.get(column.getOriginalDbColumnName()).equals("SK")) {
 		                JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 			        	String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
 			            
@@ -183,9 +228,9 @@ if (inMetadata != null && metadata != null) {
 		                	javaType == JavaTypesManager.OBJECT ||
 		                	javaType == JavaTypesManager.STRING ||
 	                		column.isNullable()) {
-							%><%=colname%>.equals(sk.<%=colname%>)<%
+							%><%=column.getOriginalDbColumnName()%>.equals(sk.<%=column.getOriginalDbColumnName()%>)<%
 		                } else {
-		                	%><%=colname%> == sk.<%=colname%><%
+		                	%><%=column.getOriginalDbColumnName()%> == sk.<%=column.getOriginalDbColumnName()%><%
 		                }
 			        }
 		        }
@@ -198,29 +243,26 @@ if (inMetadata != null && metadata != null) {
 		    	int prime = 31;
 		    	hashCode = 0;
 		    	<%
-		    	for (IMetadataColumn column : inMetadata.getListColumns()) {
-			        String colname = column.getLabel();
-					
-			        if (typeOfColumn.containsKey(colname)) {
-				    	if (typeOfColumn.get(colname).equals("SK")) {
-			                JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
-			                
+		    	for (IMetadataColumn column : inMetadata.getListColumns()) {					
+			        if (typeOfColumn.containsKey(column.getOriginalDbColumnName())) {
+				    	if (typeOfColumn.get(column.getOriginalDbColumnName()).equals("SK")) {
+			                JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());			                
 			                if (javaType == JavaTypesManager.DATE ||
 			                	javaType == JavaTypesManager.OBJECT ||
 			                	javaType == JavaTypesManager.STRING ||
 			                	column.isNullable()) {
 					    		%>
-					    		hashCode = prime * hashCode + (<%=colname%> == null ? 0 : <%=colname%>.hashCode());
+					    		hashCode = prime * hashCode + (<%=column.getOriginalDbColumnName()%> == null ? 0 : <%=column.getOriginalDbColumnName()%>.hashCode());
 					    		<%
 				    		} else {
 				    			if (javaType == JavaTypesManager.LONG) {
-                            %>
-                                hashCode = prime * hashCode + (new Long(<%=colname%>)).hashCode();
-                            <%
+				    			    %>
+				    			    hashCode = prime * hashCode + (new Long(<%=column.getOriginalDbColumnName()%>)).hashCode();
+				    			    <%
                                 } else {
-					    	%>
-					    		hashCode = prime * hashCode + <%=colname%>;
-					    	<%
+                                    %>
+                                    hashCode = prime * hashCode + <%=column.getOriginalDbColumnName()%>;
+                                    <%
 					    		}
 				    		}
 				    	}
@@ -238,13 +280,11 @@ if (inMetadata != null && metadata != null) {
 	class SCDStruct_<%=cid%> {
 		<%
 		// L1, L2, L3 fields
-		for (IMetadataColumn column : metadata.getListColumns()) {
-	        String colname = column.getLabel();
-			
-	        if (typeOfColumn.containsKey(colname)) {
-		    	if (!typeOfColumn.get(colname).equals("SK")) {
+		for (IMetadataColumn column : metadata.getListColumns()) {			
+	        if (typeOfColumn.containsKey(column.getOriginalDbColumnName())) {
+		    	if (!typeOfColumn.get(column.getOriginalDbColumnName()).equals("SK")) {
 		        	%>
-		        	private <%=JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable())%> <%=colname%>;
+		        	private <%=JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable())%> <%=column.getOriginalDbColumnName()%>;
 		        	<%
 		        }
 	        }
@@ -252,12 +292,10 @@ if (inMetadata != null && metadata != null) {
 		
 	    // Version field
 	    if (useVersion) {
-		    for (IMetadataColumn column : metadata.getListColumns()) {
-		        String colname = column.getLabel();
-				
-		        if (colname.equals(versionField)) {
+		    for (IMetadataColumn column : metadata.getListColumns()) {				
+		        if (column.getLabel().equals(versionField)) {
 			    	%>
-					private <%=JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable())%> <%=colname%>;
+					private <%=JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable())%> <%=column.getOriginalDbColumnName()%>;
 					<%
 					break;
 		        }
@@ -272,21 +310,17 @@ if (inMetadata != null && metadata != null) {
     List<String> javaTypeColumns = new ArrayList<String>();
 	
     // First we iterate on the input schema columns...
-    for (IMetadataColumn column : metadata.getListColumns()) {
-        String colname = column.getLabel();
-		
-        if (typeOfColumn.containsKey(colname)) {
-            selectColumns.add(colname);
+    for (IMetadataColumn column : metadata.getListColumns()) {		
+        if (typeOfColumn.containsKey(column.getOriginalDbColumnName())) {
+            selectColumns.add(column.getOriginalDbColumnName());
             javaTypeColumns.add(JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable()));
         }
     }
     
     if (useVersion) {
-    	for (IMetadataColumn column : metadata.getListColumns()) {
-	        String colname = column.getLabel();
-			
-	        if (colname.equals(versionField)) {
-		        selectColumns.add(colname);
+    	for (IMetadataColumn column : metadata.getListColumns()) {			
+	        if (column.getOriginalDbColumnName().equals(versionDBField)) {
+		        selectColumns.add(column.getOriginalDbColumnName());
 				javaTypeColumns.add(JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable()));
 				break;
 	        }
@@ -303,11 +337,11 @@ if (inMetadata != null && metadata != null) {
     if (useL2) {
     	if (enddateValue.equals("NULL_VALUE")) {
 	    	%>
-			+ " WHERE <%=enddateField%> IS NULL"
+			+ " WHERE <%=endDateDBField%> IS NULL"
 			<%
 		} else {
 	    	%>
-			+ " WHERE YEAR(<%=enddateField%>) = " + <%=enddateYear%>
+			+ " WHERE YEAR(<%=endDateDBField%>) = " + <%=enddateYear%>
 			<%
 		}
     }
@@ -322,16 +356,13 @@ if (inMetadata != null && metadata != null) {
 		SCDSK_<%=cid%> sk_<%=cid%> = new SCDSK_<%=cid%>();
 		SCDStruct_<%=cid%> row_<%=cid%> = new SCDStruct_<%=cid%>();
 		<%
-		int colPosition = 1;
-		
+		int colPosition = 1;		
 		for (int i = 0; i < selectColumns.size(); i++) {
-			String colname = selectColumns.get(i);
-			
-	        if (typeOfColumn.containsKey(colname) || colname.equals(versionField)) {
+			String colname = selectColumns.get(i);			
+	        if (typeOfColumn.containsKey(colname) || colname.equals(versionDBField)) {
 	            // Search Java type in order to call fitted method getXxx on ResultSet
 	            String typeToGenerate = javaTypeColumns.get(i);
-	            String struct = (!colname.equals(versionField) && typeOfColumn.get(colname).equals("SK") ? "sk_" : "row_") + cid;
-	            
+	            String struct = (!colname.equals(versionDBField) && typeOfColumn.get(colname).equals("SK") ? "sk_" : "row_") + cid;	            
 	            if (typeToGenerate.equals("byte[]")) {
  	  	   			typeToGenerate = "Bytes";
 				} else if (typeToGenerate.equals("java.util.Date")) {
@@ -340,8 +371,7 @@ if (inMetadata != null && metadata != null) {
 					typeToGenerate = "Int";
 				} else {
 					typeToGenerate = typeToGenerate.substring(0, 1).toUpperCase() + typeToGenerate.substring(1);
-				}
-		  		
+				}		  		
 				if (typeToGenerate.equals("Char") || typeToGenerate.equals("Character")) {
 					%>
 					value_<%=cid%> = resultSet_<%=cid%>.getString(<%=colPosition%>);
@@ -399,8 +429,7 @@ if (inMetadata != null && metadata != null) {
 	<%
 	if (surrogateKeyCreation.equals("TABLE_MAX")) {
 		for (IMetadataColumn column : metadata.getListColumns()) {
-	        String colname = column.getLabel();
-			
+	        String colname = column.getLabel();			
 	        if (colname.equals(surrogateKeyField)) {
 	            %>
 	            <%=JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable())%> nextSurrogateKey_<%=cid%> = 1;
@@ -410,7 +439,7 @@ if (inMetadata != null && metadata != null) {
 		%>
 		if (cache_<%=cid%>.size() > 0) {
 			// Get table max value for surrogate key
-			dbquery_<%=cid%> = "SELECT MAX(<%=surrogateKeyField%>) FROM " + <%=dbtable%>;
+			dbquery_<%=cid%> = "SELECT MAX(<%=surrogateKeyDBField%>) FROM " + <%=dbtable%>;
 			statement_<%=cid%> = connection_<%=cid%>.createStatement();
 			resultSet_<%=cid%> = statement_<%=cid%>.executeQuery(dbquery_<%=cid%>);
 			<%
@@ -457,21 +486,21 @@ if (inMetadata != null && metadata != null) {
     String skAndSourceKey = null;
     for(Map<String, String> sourceKeyMap : sourceKeys) {
         if(surrogateKeyField.equals(sourceKeyMap.get("NAME"))) {
-            skAndSourceKey = sourceKeyMap.get("NAME");
+            skAndSourceKey = surrogateKeyDBField;
             ifEqualWithSK = true;
             break;
         }
     }
     if(!surrogateKeyCreation.equals("AUTO_INCREMENT") && !surrogateKeyCreation.equals("DB_SEQUENCE")) {
-        colnames.add(surrogateKeyField);
+        colnames.add(surrogateKeyDBField);
         parameters.add("?");
         colposition++;
     }    
     if(ifEqualWithSK) {
         for(IMetadataColumn column : metadata.getListColumns()) {
-            if(typeOfColumn.containsKey(column.getLabel())) {
-                if(!column.getLabel().equals(skAndSourceKey)) {
-                    colnames.add(column.getLabel());
+            if(typeOfColumn.containsKey(column.getOriginalDbColumnName())) {
+                if(!column.getOriginalDbColumnName().equals(skAndSourceKey)) {
+                    colnames.add(column.getOriginalDbColumnName());
                     parameters.add("?");
                     colposition++;
                 }
@@ -482,8 +511,8 @@ if (inMetadata != null && metadata != null) {
         for (IMetadataColumn column : metadata.getListColumns()) {
             // ... and we add each column only if it was chosen to be in the
             // output, ie if its type was defined.
-            if (typeOfColumn.containsKey(column.getLabel())) {
-                colnames.add(column.getLabel());
+            if (typeOfColumn.containsKey(column.getOriginalDbColumnName())) {
+                colnames.add(column.getOriginalDbColumnName());
                 parameters.add("?");
                 colposition++;
             }
@@ -493,7 +522,7 @@ if (inMetadata != null && metadata != null) {
     // Then we add L2 dedicated columns to store historical informations
     if (useL2) {
         if (useActive) {
-        	colnames.add(activeField);
+        	colnames.add(activeDBField);
             if (activeFieldType == JavaTypesManager.STRING ||
             		activeFieldType == JavaTypesManager.BOOLEAN) {
 	            parameters.add("'true'");
@@ -503,17 +532,17 @@ if (inMetadata != null && metadata != null) {
         }
 		
         if (useVersion) {
-            colnames.add(versionField);
+            colnames.add(versionDBField);
             parameters.add("?");
             colposition++;
         }
         
-        colnames.add(startdateField);
+        colnames.add(startDateDBField);
         parameters.add("?");
 		colposition++;
 		
-        colnames.add(enddateField);
-        parameters.add(enddateValue.equals("NULL_VALUE") ? "NULL" : "'\" + " + enddateYear + "+ \"-01-01'");
+        colnames.add(endDateDBField);
+        parameters.add(enddateValue.equals("NULL_VALUE") ? "NULL" : "'\" + " + enddateYear + " + \"-01-01'");
     }
 	
     String colnamesString = StringUtils.join(colnames.toArray(), ", ");
@@ -521,7 +550,7 @@ if (inMetadata != null && metadata != null) {
     
     %>
     // Build prepared statements
-    String insertQueryString_<%=cid%> = "INSERT INTO " + <%=dbtable%> + " (<%=surrogateKeyCreation.equals("DB_SEQUENCE") ? surrogateKeyField + ", " : ""%><%=colnamesString%>) " +
+    String insertQueryString_<%=cid%> = "INSERT INTO " + <%=dbtable%> + " (<%=surrogateKeyCreation.equals("DB_SEQUENCE") ? surrogateKeyDBField + ", " : ""%><%=colnamesString%>) " +
     	"VALUES (<%=surrogateKeyCreation.equals("DB_SEQUENCE") ? "nextval for \" + " + skSequence + " + \", " : ""%><%=parametersString%>)";
     java.sql.PreparedStatement insertQuery_<%=cid%> = connection_<%=cid%>.prepareStatement(insertQueryString_<%=cid%>);
     <%
@@ -537,8 +566,7 @@ if (inMetadata != null && metadata != null) {
 	List l1fieldClauses = new ArrayList();
 	
     for (IMetadataColumn column : metadata.getListColumns()) {
-        String colname = column.getLabel();
-		
+        String colname = column.getOriginalDbColumnName();		
         if (typeOfColumn.containsKey(colname)) {
             if (typeOfColumn.get(colname).equals("SK")) {
                 keyClauses.add(colname + " = ?");
@@ -562,10 +590,10 @@ if (inMetadata != null && metadata != null) {
     if (useL2) {
 		%>
 		String l2QueryString_<%=cid%> = "UPDATE " + <%=dbtable%> + " " +
-			"SET <%=enddateField%> = ? " +<%
+			"SET <%=endDateDBField%> = ? " +<%
 		if (useActive) {
 			%>
- 			", <%=activeField%> = <%
+ 			", <%=activeDBField%> = <%
  			if (activeFieldType == JavaTypesManager.STRING ||
             		activeFieldType == JavaTypesManager.BOOLEAN) {
 	            %>'false'<%
@@ -579,11 +607,11 @@ if (inMetadata != null && metadata != null) {
 		<%
 		if (enddateValue.equals("NULL_VALUE")) {
 	    	%>
-			" AND <%=enddateField%> IS NULL";
+			" AND <%=endDateDBField%> IS NULL";
 			<%
 		} else {
 	    	%>
-			" AND YEAR(<%=enddateField%>) = " + <%=enddateYear%>;
+			" AND YEAR(<%=endDateDBField%>) = " + <%=enddateYear%>;
 			<%
 		}
 		%>
@@ -599,21 +627,26 @@ if (inMetadata != null && metadata != null) {
 	// L3 query generation
 	if (useL3) {
 		List l3fieldClauses = new ArrayList();
-		
+		String prevLabel = null;
 	    for (IMetadataColumn column : metadata.getListColumns()) {
-	        String colname = column.getLabel();
-			
+	        String colname = column.getOriginalDbColumnName();			
 	        if (typeOfColumn.containsKey(colname)) {
 	            if (typeOfColumn.get(colname).equals("L3C")) {
 	            	l3fieldClauses.add(colname + " = ?");
 	            	
 	            	// Search previous value field matching current value field
 					for (Map<String, String> l3field : l3fields) {
-						if (l3field.get("CURRENT_VALUE").equals(colname)) {
-			            	l3fieldClauses.add(
-			            		l3field.get("PREV_VALUE") + " = ?");
-							break;
+						if (l3field.get("CURRENT_VALUE").equals(column.getLabel())) {
+						    prevLabel = l3field.get("PREV_VALUE");
+						    break;
 						}
+					}
+					for(IMetadataColumn tmpColumn : metadata.getListColumns()) {
+					    if(tmpColumn.getLabel().equals(prevLabel)) {
+                            l3fieldClauses.add(
+                                    tmpColumn.getOriginalDbColumnName() + " = ?");
+                                break;					        
+					    }
 					}
 	            }
 	        }
@@ -628,11 +661,11 @@ if (inMetadata != null && metadata != null) {
 	    if (useL2) {
 	    	if (enddateValue.equals("NULL_VALUE")) {
 		    	%>
-				+ " AND <%=enddateField%> IS NULL";
+				+ " AND <%=endDateDBField%> IS NULL";
 				<%
 			} else {
 		    	%>
-				+ " AND YEAR(<%=enddateField%>) = " + <%=enddateYear%>;
+				+ " AND YEAR(<%=endDateDBField%>) = " + <%=enddateYear%>;
 				<%
 			}
 		}

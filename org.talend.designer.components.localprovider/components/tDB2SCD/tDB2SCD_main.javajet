@@ -58,6 +58,13 @@ if (inMetadata != null && metadata != null) {
 	        surrogateKeyFieldType = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
 	    }
 	}
+	String surrogateKeyDBField = null;
+    for(IMetadataColumn column : metadata.getListColumns()) {
+        if(column.getLabel().equals(surrogateKeyField)) {
+            surrogateKeyDBField = column.getOriginalDbColumnName();
+            break;
+        }
+    }	
 	
     List<Map<String, String>> sourceKeys =
         (List<Map<String, String>>) ElementParameterParser.getObjectValue(node, "__SOURCE_KEYS__");
@@ -76,6 +83,13 @@ if (inMetadata != null && metadata != null) {
 	
     boolean useVersion = ElementParameterParser.getValue(node, "__USE_L2_VERSION__").equals("true");
     String versionField = ElementParameterParser.getValue(node, "__L2_VERSION_FIELD__");
+    String versionDBField = null;
+    for(IMetadataColumn column : metadata.getListColumns()) {
+        if(column.getLabel().equals(versionField)) {
+            versionDBField = column.getOriginalDbColumnName();
+            break;
+        }
+    }    
     String versionType = null;
 	if (useVersion) {
 		// Search java type for version field
@@ -100,18 +114,38 @@ if (inMetadata != null && metadata != null) {
     
 	// Build map with type (sk, L1, L2) of each column
     Map<String, String> typeOfColumn = new HashMap<String, String>();
-    for (Map<String, String> sk : sourceKeys) {
-        typeOfColumn.put(sk.get("NAME"), "SK");
+    for(Map<String, String> sk : sourceKeys) {
+        for(IMetadataColumn column : inMetadata.getListColumns()) {
+            if(sk.get("NAME").equals(column.getLabel())) {
+                typeOfColumn.put(column.getOriginalDbColumnName(), "SK");
+                break;
+            }
+        }
     }
-    for (Map<String, String> l1field : l1fields) {
-        typeOfColumn.put(l1field.get("NAME"), "L1");
+    for(Map<String, String> l1field : l1fields) {
+        for(IMetadataColumn column : inMetadata.getListColumns()) {
+            if(l1field.get("NAME").equals(column.getLabel())) {
+                typeOfColumn.put(column.getOriginalDbColumnName(), "L1");
+                break;
+            }
+        }
     }
-    for (Map<String, String> l2field : l2fields) {
-        typeOfColumn.put(l2field.get("NAME"), "L2");
+    for(Map<String, String> l2field : l2fields) {
+        for(IMetadataColumn column : inMetadata.getListColumns()) {
+            if(l2field.get("NAME").equals(column.getLabel())) {
+                typeOfColumn.put(column.getOriginalDbColumnName(), "L2");
+                break;
+            }
+        }
     }
-    for (Map<String, String> l3field : l3fields) {
-        typeOfColumn.put(l3field.get("CURRENT_VALUE"), "L3C"); // L3 current
-        typeOfColumn.put(l3field.get("PREV_VALUE"), "L3P"); // L3 previous
+    for(Map<String, String> l3field : l3fields) {
+        for(IMetadataColumn column : metadata.getListColumns()) {
+            if(l3field.get("CURRENT_VALUE").equals(column.getLabel())) {
+                typeOfColumn.put(column.getOriginalDbColumnName(), "L3C");
+            } else if(l3field.get("PREV_VALUE").equals(column.getLabel())) {
+                typeOfColumn.put(column.getOriginalDbColumnName(), "L3P");
+            }
+        }
     }
 	
 	// Debug mode
@@ -275,7 +309,7 @@ if (inMetadata != null && metadata != null) {
     String skAndSourceKey = null;
     for(Map<String, String> sourceKeyMap : sourceKeys) {
         if(surrogateKeyField.equals(sourceKeyMap.get("NAME"))) {
-            skAndSourceKey = sourceKeyMap.get("NAME");
+            skAndSourceKey = surrogateKeyDBField;
             ifEqualWithSK = true;
             break;
         }
@@ -284,12 +318,11 @@ if (inMetadata != null && metadata != null) {
     // Lookup source keys
     <%
 	for (IMetadataColumn column : inMetadata.getListColumns()) {
-        String colname = column.getLabel();
-		
+        String colname = column.getOriginalDbColumnName();		
         if (typeOfColumn.containsKey(colname)) {
 	    	if (typeOfColumn.get(colname).equals("SK")) {
 	    		%>
-	    		lookupRow_<%=cid%>.<%=colname%> = <%=inConnectionName%>.<%=colname%>;
+	    		lookupRow_<%=cid%>.<%=colname%> = <%=inConnectionName%>.<%=column.getLabel()%>;
 	    		<%
 	        }
         }
@@ -303,21 +336,31 @@ if (inMetadata != null && metadata != null) {
 	    cacheRow_<%=cid%> = new SCDStruct_<%=cid%>();
 	    <%
         for(IMetadataColumn column : metadata.getListColumns()) {
-            if(typeOfColumn.containsKey(column.getLabel()) && !typeOfColumn.get(column.getLabel()).equals("L3P")) {
-                if(typeOfColumn.get(column.getLabel()).equals("SK")) {
+            if(typeOfColumn.containsKey(column.getOriginalDbColumnName())) {
+                if(typeOfColumn.get(column.getOriginalDbColumnName()).equals("SK")) {
                     %>
-                    lookupRow_<%=cid%>.<%=column.getLabel()%> = <%=inConnectionName%>.<%=column.getLabel()%>;
+                    lookupRow_<%=cid%>.<%=column.getOriginalDbColumnName()%> = <%=inConnectionName%>.<%=column.getLabel()%>;
                     <%
                 } else {
-                    %>
-                    cacheRow_<%=cid%>.<%=column.getLabel()%> = <%=inConnectionName%>.<%=column.getLabel()%>;
-                    <%
+                    if(typeOfColumn.get(column.getOriginalDbColumnName()).equals("L3P")) {
+                        for(IMetadataColumn tmpColumn : metadata.getListColumns()) {
+                            if(typeOfColumn.containsKey(tmpColumn.getOriginalDbColumnName()) && typeOfColumn.get(tmpColumn.getOriginalDbColumnName()).equals("L3C")) {
+                                %>
+                                cacheRow_<%=cid%>.<%=column.getOriginalDbColumnName()%> = <%=inConnectionName%>.<%=tmpColumn.getLabel()%>;
+                                <%
+                            }
+                        }
+                    } else {
+                        %>
+                        cacheRow_<%=cid%>.<%=column.getOriginalDbColumnName()%> = <%=inConnectionName%>.<%=column.getLabel()%>;
+                        <%                        
+                    }
                 }
             }
         }
         if (useVersion) {
             %>
-            cacheRow_<%=cid%>.<%=versionField%> = 1;
+            cacheRow_<%=cid%>.<%=versionDBField%> = 1;
             <%
         }	    
 	    %>
@@ -328,12 +371,9 @@ if (inMetadata != null && metadata != null) {
 		
 		// Surrogate key
 		if (!surrogateKeyCreation.equals("AUTO_INCREMENT") && !surrogateKeyCreation.equals("DB_SEQUENCE")) {
-			for (IMetadataColumn column : metadata.getListColumns()) {
-		        String colname = column.getLabel();
-				
-		        if (colname.equals(surrogateKeyField)) {
-		        	String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
-		        	
+			for (IMetadataColumn column : metadata.getListColumns()) {				
+		        if (column.getOriginalDbColumnName().equals(surrogateKeyDBField)) {
+		        	String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());		        	
 		        	if (surrogateKeyCreation.equals("INPUT_FIELD")) {
 			        	generator.generateSetStatement(cid, "insertQuery_" + cid, inConnectionName + "." + skInputField, colposition++, typeToGenerate);
 			        } else if (surrogateKeyCreation.equals("ROUTINE")) {
@@ -353,9 +393,9 @@ if (inMetadata != null && metadata != null) {
 		if(ifEqualWithSK) {
 		    for(IMetadataColumn column : metadata.getListColumns()) {
 		        String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
-		        if(typeOfColumn.containsKey(column.getLabel())) {
-    		        if(!column.getLabel().equals(skAndSourceKey)){
-    		            if(!typeOfColumn.get(column.getLabel()).equals("L3P")) {
+		        if(typeOfColumn.containsKey(column.getOriginalDbColumnName())) {
+    		        if(!column.getOriginalDbColumnName().equals(skAndSourceKey)){
+    		            if(!typeOfColumn.get(column.getOriginalDbColumnName()).equals("L3P")) {
     		                generator.generateSetStatement(cid, "insertQuery_" + cid, inConnectionName + "." + column.getLabel(), colposition++, typeToGenerate);
         		        } else {
                             if (column.isNullable()) {
@@ -370,8 +410,8 @@ if (inMetadata != null && metadata != null) {
 		} else {
             for(IMetadataColumn column : metadata.getListColumns()) {
                 String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
-                if(typeOfColumn.containsKey(column.getLabel())) {
-                    if(!typeOfColumn.get(column.getLabel()).equals("L3P")) {
+                if(typeOfColumn.containsKey(column.getOriginalDbColumnName())) {
+                    if(!typeOfColumn.get(column.getOriginalDbColumnName()).equals("L3P")) {
                         generator.generateSetStatement(cid, "insertQuery_" + cid, inConnectionName + "." + column.getLabel(), colposition++, typeToGenerate);
                     } else {
                         if (column.isNullable()) {
@@ -410,11 +450,9 @@ if (inMetadata != null && metadata != null) {
 			%>
 			// L1 fields
 			if (<%
-				for (IMetadataColumn column : metadata.getListColumns()) {
-					String colname = column.getLabel();
-					
-		            if (typeOfColumn.containsKey(colname)) {
-		                if (typeOfColumn.get(colname).equals("L1")) {
+				for (IMetadataColumn column : metadata.getListColumns()) {					
+		            if (typeOfColumn.containsKey(column.getOriginalDbColumnName())) {
+		                if (typeOfColumn.get(column.getOriginalDbColumnName()).equals("L1")) {
 		                    if (isFirstL1) {
 		                        isFirstL1 = false;
 		                    } else {
@@ -428,10 +466,10 @@ if (inMetadata != null && metadata != null) {
 			                	javaType == JavaTypesManager.OBJECT ||
 			                	javaType == JavaTypesManager.STRING ||
 			                	column.isNullable()) {
-								%>((cacheRow_<%=cid%>.<%=colname%> == null && <%=inConnectionName%>.<%=colname%> != null) ||
-								   (cacheRow_<%=cid%>.<%=colname%> != null && !cacheRow_<%=cid%>.<%=colname%>.equals(<%=inConnectionName%>.<%=colname%>)))<%
+								%>((cacheRow_<%=cid%>.<%=column.getOriginalDbColumnName()%> == null && <%=inConnectionName%>.<%=column.getLabel()%> != null) ||
+								   (cacheRow_<%=cid%>.<%=column.getOriginalDbColumnName()%> != null && !cacheRow_<%=cid%>.<%=column.getOriginalDbColumnName()%>.equals(<%=inConnectionName%>.<%=column.getLabel()%>)))<%
 			                } else {
-			                	%>cacheRow_<%=cid%>.<%=colname%> != <%=inConnectionName%>.<%=colname%><%
+			                	%>cacheRow_<%=cid%>.<%=column.getOriginalDbColumnName()%> != <%=inConnectionName%>.<%=column.getLabel()%><%
 			                }
 						}
 					}
@@ -440,25 +478,21 @@ if (inMetadata != null && metadata != null) {
 				<%
 				// Bind L1 fields to SQL request
 				colposition = 1;
-				for (IMetadataColumn column : metadata.getListColumns()) {
-			        String colname = column.getLabel();
-					
-			        if (typeOfColumn.containsKey(colname)) {
-			            if (typeOfColumn.get(colname).equals("L1")) {
+				for (IMetadataColumn column : metadata.getListColumns()) {					
+			        if (typeOfColumn.containsKey(column.getOriginalDbColumnName())) {
+			            if (typeOfColumn.get(column.getOriginalDbColumnName()).equals("L1")) {
 				        	String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
-							generator.generateSetStatement(cid, "l1Query_" + cid, inConnectionName + "." + colname, colposition++, typeToGenerate);
+							generator.generateSetStatement(cid, "l1Query_" + cid, inConnectionName + "." + column.getLabel(), colposition++, typeToGenerate);
 			            }
 			        }
 			    }
 			    
 				// Bind SK fields to SQL request
-				for (IMetadataColumn column : metadata.getListColumns()) {
-			        String colname = column.getLabel();
-					
-			        if (typeOfColumn.containsKey(colname)) {
-			            if (typeOfColumn.get(colname).equals("SK")) {
+				for (IMetadataColumn column : metadata.getListColumns()) {					
+			        if (typeOfColumn.containsKey(column.getOriginalDbColumnName())) {
+			            if (typeOfColumn.get(column.getOriginalDbColumnName()).equals("SK")) {
 				        	String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
-							generator.generateSetStatement(cid, "l1Query_" + cid, inConnectionName + "." + colname, colposition++, typeToGenerate);
+							generator.generateSetStatement(cid, "l1Query_" + cid, inConnectionName + "." + column.getLabel(), colposition++, typeToGenerate);
 			            }
 			        }
 			    }
@@ -483,11 +517,9 @@ if (inMetadata != null && metadata != null) {
 			%>
 			// L2 fields
 			if (<%
-		        for (IMetadataColumn column : metadata.getListColumns()) {
-					String colname = column.getLabel();
-					
-		            if (typeOfColumn.containsKey(colname)) {
-		                if (typeOfColumn.get(colname).equals("L2")) {
+		        for (IMetadataColumn column : metadata.getListColumns()) {					
+		            if (typeOfColumn.containsKey(column.getOriginalDbColumnName())) {
+		                if (typeOfColumn.get(column.getOriginalDbColumnName()).equals("L2")) {
 		                    if (isFirstL2) {
 		                        isFirstL2 = false;
 		                    } else {
@@ -501,10 +533,10 @@ if (inMetadata != null && metadata != null) {
 			                	javaType == JavaTypesManager.OBJECT ||
 			                	javaType == JavaTypesManager.STRING ||
 			                	column.isNullable()) {
-								%>((cacheRow_<%=cid%>.<%=colname%> == null && <%=inConnectionName%>.<%=colname%> != null) ||
-								   (cacheRow_<%=cid%>.<%=colname%> != null && !cacheRow_<%=cid%>.<%=colname%>.equals(<%=inConnectionName%>.<%=colname%>)))<%
+								%>((cacheRow_<%=cid%>.<%=column.getOriginalDbColumnName()%> == null && <%=inConnectionName%>.<%=column.getLabel()%> != null) ||
+								   (cacheRow_<%=cid%>.<%=column.getOriginalDbColumnName()%> != null && !cacheRow_<%=cid%>.<%=column.getOriginalDbColumnName()%>.equals(<%=inConnectionName%>.<%=column.getLabel()%>)))<%
 			                } else {
-			                	%>cacheRow_<%=cid%>.<%=colname%> != <%=inConnectionName%>.<%=colname%><%
+			                	%>cacheRow_<%=cid%>.<%=column.getOriginalDbColumnName()%> != <%=inConnectionName%>.<%=column.getLabel()%><%
 			                }
 						}
 					}
@@ -516,13 +548,11 @@ if (inMetadata != null && metadata != null) {
 				}
 				
 				colposition = 2; // Note: parameter #1 is end date (defined in _start)
-				for (IMetadataColumn column : metadata.getListColumns()) {
-			        String colname = column.getLabel();
-					
-			        if (typeOfColumn.containsKey(colname)) {
-			            if (typeOfColumn.get(colname).equals("SK")) {
+				for (IMetadataColumn column : metadata.getListColumns()) {					
+			        if (typeOfColumn.containsKey(column.getOriginalDbColumnName())) {
+			            if (typeOfColumn.get(column.getOriginalDbColumnName()).equals("SK")) {
 				        	String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
-							generator.generateSetStatement(cid, "l2Query_" + cid, inConnectionName + "." + colname, colposition++, typeToGenerate);
+							generator.generateSetStatement(cid, "l2Query_" + cid, inConnectionName + "." + column.getLabel(), colposition++, typeToGenerate);
 			            }
 			        }
 			    }
@@ -534,12 +564,9 @@ if (inMetadata != null && metadata != null) {
 				
 				// Surrogate key
 				if (!surrogateKeyCreation.equals("AUTO_INCREMENT") && !surrogateKeyCreation.equals("DB_SEQUENCE")) {
-					for (IMetadataColumn column : metadata.getListColumns()) {
-				        String colname = column.getLabel();
-						
-				        if (colname.equals(surrogateKeyField)) {
-				        	String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
-				        	
+					for (IMetadataColumn column : metadata.getListColumns()) {						
+				        if (column.getOriginalDbColumnName().equals(surrogateKeyDBField)) {
+				        	String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());				        	
 				        	if (surrogateKeyCreation.equals("INPUT_FIELD")) {
 					        	generator.generateSetStatement(cid, "insertQuery_" + cid, inConnectionName + "." + skInputField, colposition++, typeToGenerate);
 					        } else if (surrogateKeyCreation.equals("ROUTINE")) {
@@ -560,12 +587,12 @@ if (inMetadata != null && metadata != null) {
 		        if(ifEqualWithSK) {
 		            for(IMetadataColumn column : metadata.getListColumns()) {
 		                String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
-		                if(typeOfColumn.containsKey(column.getLabel())) {
-		                    if(!column.getLabel().equals(skAndSourceKey)){
-		                        if(!typeOfColumn.get(column.getLabel()).equals("L3P")) {
+		                if(typeOfColumn.containsKey(column.getOriginalDbColumnName())) {
+		                    if(!column.getOriginalDbColumnName().equals(skAndSourceKey)){
+		                        if(!typeOfColumn.get(column.getOriginalDbColumnName()).equals("L3P")) {
 		                            generator.generateSetStatement(cid, "insertQuery_" + cid, inConnectionName + "." + column.getLabel(), colposition++, typeToGenerate);
 		                        } else {
-		                            generator.generateSetStatement(cid, "insertQuery_" + cid, "cacheRow_" + cid + "." + column.getLabel(), colposition++, typeToGenerate);
+		                            generator.generateSetStatement(cid, "insertQuery_" + cid, "cacheRow_" + cid + "." + column.getOriginalDbColumnName(), colposition++, typeToGenerate);
 		                        }
 		                    }
 		                }
@@ -573,11 +600,11 @@ if (inMetadata != null && metadata != null) {
 		        } else {
 		            for(IMetadataColumn column : metadata.getListColumns()) {
 		                String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
-		                if(typeOfColumn.containsKey(column.getLabel())) {
-		                    if(!typeOfColumn.get(column.getLabel()).equals("L3P")) {
+		                if(typeOfColumn.containsKey(column.getOriginalDbColumnName())) {
+		                    if(!typeOfColumn.get(column.getOriginalDbColumnName()).equals("L3P")) {
 		                        generator.generateSetStatement(cid, "insertQuery_" + cid, inConnectionName + "." + column.getLabel(), colposition++, typeToGenerate);
 		                    } else {
-		                        generator.generateSetStatement(cid, "insertQuery_" + cid, "cacheRow_" + cid + "." + column.getLabel(), colposition++, typeToGenerate);
+		                        generator.generateSetStatement(cid, "insertQuery_" + cid, "cacheRow_" + cid + "." + column.getOriginalDbColumnName(), colposition++, typeToGenerate);
 		                    }
 		                }
 		            }           
@@ -585,7 +612,7 @@ if (inMetadata != null && metadata != null) {
 				
 				if (useVersion) {
 					generator.generateSetStatement(cid, "insertQuery_" + cid,
-						"cacheRow_" + cid + "." + versionField + " + 1", colposition++, versionType);
+						"cacheRow_" + cid + "." + versionDBField + " + 1", colposition++, versionType);
 				}
 				
 			    if (startdateValue.equals("INPUT_FIELD")) {
@@ -615,18 +642,23 @@ if (inMetadata != null && metadata != null) {
 			
 			// Search L3 fields with a modified value
 			colposition = 1;
-			for (IMetadataColumn column : metadata.getListColumns()) {
-				String colname = column.getLabel();
-				
-				if (typeOfColumn.containsKey(colname) &&
-						typeOfColumn.get(colname).equals("L3C")) {
+			for (IMetadataColumn column : metadata.getListColumns()) {				
+				if (typeOfColumn.containsKey(column.getOriginalDbColumnName()) &&
+						typeOfColumn.get(column.getOriginalDbColumnName()).equals("L3C")) {
 					// Search previous value field matching current value field
+				    String prevLabel = null;
 					String prevColname = "";
 					for (Map<String, String> l3field : l3fields) {
-						if (l3field.get("CURRENT_VALUE").equals(colname)) {
-							prevColname = l3field.get("PREV_VALUE");
+						if (l3field.get("CURRENT_VALUE").equals(column.getLabel())) {
+						    prevLabel = l3field.get("PREV_VALUE");
 							break;
 						}
+					}
+					for(IMetadataColumn tmpColumn : metadata.getListColumns()) {
+					    if(tmpColumn.getLabel().equals(prevLabel)) {
+					        prevColname = tmpColumn.getOriginalDbColumnName();
+					        break;
+					    }
 					}
 					
 					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
@@ -637,19 +669,19 @@ if (inMetadata != null && metadata != null) {
 	                	javaType == JavaTypesManager.STRING ||
 	                	column.isNullable()) {
 						%>
-						if ((cacheRow_<%=cid%>.<%=colname%> == null && <%=inConnectionName%>.<%=colname%> != null) ||
-						   (cacheRow_<%=cid%>.<%=colname%> != null && !cacheRow_<%=cid%>.<%=colname%>.equals(<%=inConnectionName%>.<%=colname%>))) {
+						if ((cacheRow_<%=cid%>.<%=column.getOriginalDbColumnName()%> == null && <%=inConnectionName%>.<%=column.getLabel()%> != null) ||
+						   (cacheRow_<%=cid%>.<%=column.getOriginalDbColumnName()%> != null && !cacheRow_<%=cid%>.<%=column.getOriginalDbColumnName()%>.equals(<%=inConnectionName%>.<%=column.getLabel()%>))) {
 						<%
 	                } else {
 	                	%>
-	                	if (cacheRow_<%=cid%>.<%=colname%> != <%=inConnectionName%>.<%=colname%>) {
+	                	if (cacheRow_<%=cid%>.<%=column.getOriginalDbColumnName()%> != <%=inConnectionName%>.<%=column.getLabel()%>) {
 	                	<%
 	                }
 	                
 	                generator.generateSetStatement(cid, "l3Query_" + cid,
-	                	inConnectionName + "." + colname, colposition, typeToGenerate);
+	                	inConnectionName + "." + column.getLabel(), colposition, typeToGenerate);
 	                generator.generateSetStatement(cid, "l3Query_" + cid,
-	                	"cacheRow_" + cid + "." + colname, colposition + 1, typeToGenerate);
+	                	"cacheRow_" + cid + "." + column.getOriginalDbColumnName(), colposition + 1, typeToGenerate);
 	                
 	                %>
 	                	l3Change_<%=cid%> = true;
@@ -665,19 +697,24 @@ if (inMetadata != null && metadata != null) {
 				<%
 				// Unmodified fields
 				colposition = 1;
-				for (IMetadataColumn column : metadata.getListColumns()) {
-					String colname = column.getLabel();
-					
-					if (typeOfColumn.containsKey(colname) &&
-							typeOfColumn.get(colname).equals("L3C")) {
+				for (IMetadataColumn column : metadata.getListColumns()) {					
+					if (typeOfColumn.containsKey(column.getOriginalDbColumnName()) &&
+							typeOfColumn.get(column.getOriginalDbColumnName()).equals("L3C")) {
 						// Search previous value field matching current value field
-						String prevColname = "";
+					    String prevLabel = null;
+					    String prevColname = "";
 						for (Map<String, String> l3field : l3fields) {
-							if (l3field.get("CURRENT_VALUE").equals(colname)) {
-								prevColname = l3field.get("PREV_VALUE");
+							if (l3field.get("CURRENT_VALUE").equals(column.getLabel())) {
+							    prevLabel = l3field.get("PREV_VALUE");
 								break;
 							}
 						}
+	                    for(IMetadataColumn tmpColumn : metadata.getListColumns()) {
+	                        if(tmpColumn.getLabel().equals(prevLabel)) {
+	                            prevColname = tmpColumn.getOriginalDbColumnName();
+	                            break;
+	                        }
+	                    }
 						
 						JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 			        	String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
@@ -687,17 +724,17 @@ if (inMetadata != null && metadata != null) {
 		                	javaType == JavaTypesManager.STRING ||
 		                	column.isNullable()) {
 							%>
-							if (!((cacheRow_<%=cid%>.<%=colname%> == null && <%=inConnectionName%>.<%=colname%> != null) ||
-							   (cacheRow_<%=cid%>.<%=colname%> != null && !cacheRow_<%=cid%>.<%=colname%>.equals(<%=inConnectionName%>.<%=colname%>)))) {
+							if (!((cacheRow_<%=cid%>.<%=column.getOriginalDbColumnName()%> == null && <%=inConnectionName%>.<%=column.getLabel()%> != null) ||
+							   (cacheRow_<%=cid%>.<%=column.getOriginalDbColumnName()%> != null && !cacheRow_<%=cid%>.<%=column.getOriginalDbColumnName()%>.equals(<%=inConnectionName%>.<%=column.getLabel()%>)))) {
 							<%
 		                } else {
 		                	%>
-		                	if (cacheRow_<%=cid%>.<%=colname%> == <%=inConnectionName%>.<%=colname%>) {
+		                	if (cacheRow_<%=cid%>.<%=column.getOriginalDbColumnName()%> == <%=inConnectionName%>.<%=column.getLabel()%>) {
 		                	<%
 		                }
 		                
 		                generator.generateSetStatement(cid, "l3Query_" + cid,
-		                	"cacheRow_" + cid + "." + colname, colposition, typeToGenerate);
+		                	"cacheRow_" + cid + "." + column.getOriginalDbColumnName(), colposition, typeToGenerate);
 		                generator.generateSetStatement(cid, "l3Query_" + cid,
 		                	"cacheRow_" + cid + "." + prevColname, colposition + 1, typeToGenerate);
 	                	%>
@@ -708,13 +745,11 @@ if (inMetadata != null && metadata != null) {
 				}
 				
 				// Bind SK fields to SQL request
-				for (IMetadataColumn column : metadata.getListColumns()) {
-			        String colname = column.getLabel();
-					
-			        if (typeOfColumn.containsKey(colname)) {
-			            if (typeOfColumn.get(colname).equals("SK")) {
+				for (IMetadataColumn column : metadata.getListColumns()) {					
+			        if (typeOfColumn.containsKey(column.getOriginalDbColumnName())) {
+			            if (typeOfColumn.get(column.getOriginalDbColumnName()).equals("SK")) {
 				        	String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
-							generator.generateSetStatement(cid, "l3Query_" + cid, inConnectionName + "." + colname, colposition++, typeToGenerate);
+							generator.generateSetStatement(cid, "l3Query_" + cid, inConnectionName + "." + column.getLabel(), colposition++, typeToGenerate);
 			            }
 			        }
 			    }
