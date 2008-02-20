@@ -12,8 +12,6 @@
 // ============================================================================
 package org.talend.repository.ui.views;
 
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -45,7 +43,7 @@ public class RepositoryTreeViewer extends TreeViewer implements ITreeViewerListe
 
     protected boolean getExpanded(Item item) {
         RepositoryNode repositoryNode = getRepositoryNode(item);
-        if (repositoryNode != null) {
+        if (repositoryNode != null && repositoryNode.getId() != null) {
             Boolean result = expanded.get(repositoryNode.getId());
             if (result != null) {
                 if (item instanceof TreeItem) {
@@ -61,7 +59,7 @@ public class RepositoryTreeViewer extends TreeViewer implements ITreeViewerListe
         Object element = event.getElement();
         if (element instanceof RepositoryNode) {
             RepositoryNode repositoryNode = (RepositoryNode) element;
-            if (!repositoryNode.getId().equals(RepositoryNode.NO_ID)) {
+            if (idIsValid(repositoryNode)) {
                 expanded.put(repositoryNode.getId(), false);
             }
             emptyExpandedChildren(repositoryNode);
@@ -72,7 +70,7 @@ public class RepositoryTreeViewer extends TreeViewer implements ITreeViewerListe
         Object element = event.getElement();
         if (element instanceof RepositoryNode) {
             RepositoryNode repositoryNode = (RepositoryNode) element;
-            if (!repositoryNode.getId().equals(RepositoryNode.NO_ID)) {
+            if (idIsValid(repositoryNode)) {
                 expanded.put(repositoryNode.getId(), true);
             }
         }
@@ -80,11 +78,15 @@ public class RepositoryTreeViewer extends TreeViewer implements ITreeViewerListe
 
     private void emptyExpandedChildren(RepositoryNode repositoryNode) {
         for (RepositoryNode children : repositoryNode.getChildren()) {
-            if (!children.getId().equals(RepositoryNode.NO_ID)) {
+            if (idIsValid(children)) {
                 expanded.remove(children.getId());
             }
             emptyExpandedChildren(children);
         }
     }
 
+    private boolean idIsValid(RepositoryNode repositoryNode) {
+        String id = repositoryNode.getId();
+        return id != null && !RepositoryNode.NO_ID.equals(id);
+    }
 }
