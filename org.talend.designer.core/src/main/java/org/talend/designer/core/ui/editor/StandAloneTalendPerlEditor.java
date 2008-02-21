@@ -89,6 +89,11 @@ public class StandAloneTalendPerlEditor extends PerlEditor implements IUIRefresh
         }
 
         setName();
+
+        IRepositoryView viewPart = (IRepositoryView) getSite().getPage().findView(IRepositoryView.VIEW_ID);
+        viewPart.refresh();
+
+        addProblems();
     }
 
     private void setName() {
