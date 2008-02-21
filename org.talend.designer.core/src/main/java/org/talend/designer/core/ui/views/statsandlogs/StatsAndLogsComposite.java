@@ -26,6 +26,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
+import org.talend.core.model.process.IProcess;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
@@ -134,6 +135,22 @@ public class StatsAndLogsComposite extends DynamicComposite {
 
         });
 
+    }
+
+    @Override
+    public void refresh() {
+        super.refresh();
+
+        Element element = getElement();
+        if (element != null && element instanceof IProcess) {
+            IProcess process = (IProcess) element;
+            if (reloadBtn != null && !reloadBtn.isDisposed()) {
+                reloadBtn.setEnabled(!process.isReadOnly());
+            }
+            if (saveBtn != null && !saveBtn.isDisposed()) {
+                saveBtn.setEnabled(!process.isReadOnly());
+            }
+        }
     }
 
 }

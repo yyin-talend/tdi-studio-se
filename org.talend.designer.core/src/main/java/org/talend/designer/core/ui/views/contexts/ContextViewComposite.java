@@ -258,6 +258,10 @@ public class ContextViewComposite extends ContextComposite {
      */
     @Override
     public void refresh() {
+        IProcess process = getProcess();
+        if (process != null) {
+            setReadOnly(process.isReadOnly());
+        }
         super.refresh();
         DesignerPlugin.getDefault().getRunProcessService().refreshView();
     }
