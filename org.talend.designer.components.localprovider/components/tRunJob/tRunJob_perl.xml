@@ -54,7 +54,7 @@
       NAME="CONTEXTPARAMS"
       FIELD="TABLE"
       NUM_ROW="30"
-      NB_LINES="2"
+      NB_LINES="8"
     >
       <ITEMS>
         <ITEM NAME="PARAM_NAME_COLUMN" FIELD="CONTEXT_PARAM_NAME_LIST" />
