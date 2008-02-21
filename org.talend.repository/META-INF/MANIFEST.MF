@@ -6,7 +6,7 @@ Bundle-Version: 2.2.0.qualifier
 Bundle-Localization: plugin
 Eclipse-LazyStart: true
 Bundle-Vendor: .Talend SA.
-Require-Bundle: org.eclipse.core.resources,
+Require-Bundle: org.talend.libraries.logging, org.eclipse.core.resources,
  org.eclipse.core.runtime,
  org.eclipse.ui.views.properties.tabbed,
  org.talend.commons,

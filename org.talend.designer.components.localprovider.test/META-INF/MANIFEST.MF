@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.talend.designer.components.localprovider.test;singleton
 Bundle-Version: 1.0.0
 Bundle-Activator: org.talend.designer.components.localprovider.test.TestComponentsPlugin
 Bundle-Localization: plugin
-Require-Bundle: org.eclipse.ui,
+Require-Bundle: org.talend.libraries.logging, org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.emf.common,
  org.eclipse.core.resources,

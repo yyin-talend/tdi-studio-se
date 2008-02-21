@@ -12,7 +12,7 @@ Export-Package: org.talend.designer.rowgenerator,
  org.talend.designer.rowgenerator.managers,
  org.talend.designer.rowgenerator.shadow,
  org.talend.designer.rowgenerator.ui.editor
-Require-Bundle: org.eclipse.gef,
+Require-Bundle: org.talend.libraries.logging, org.eclipse.gef,
  org.eclipse.ui,
  org.eclipse.core.runtime,
  org.talend.libraries,
