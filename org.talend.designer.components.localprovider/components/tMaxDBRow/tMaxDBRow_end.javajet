@@ -1,0 +1,29 @@
+<%@ jet 
+imports="
+			org.talend.core.model.process.INode 
+			org.talend.designer.codegen.config.CodeGeneratorArgument
+			org.talend.core.model.process.ElementParameterParser 
+" 
+%>
+
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	String cid = node.getUniqueName();
+	
+	String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
+
+if(!commitEvery.equals("")&&!commitEvery.equals("0")){
+%>
+if(commitEvery_<%=cid%>>commitCounter_<%=cid%>){
+
+	conn_<%=cid%>.commit();
+	
+	commitCounter_<%=cid%>=0;
+	
+}
+<%
+}
+%>
+pstmt_<%=cid %>.close();
+conn_<%=cid %> .close();
