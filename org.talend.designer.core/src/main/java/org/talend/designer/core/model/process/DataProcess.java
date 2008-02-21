@@ -139,7 +139,7 @@ public class DataProcess {
         dataNode.setProcess(graphicalNode.getProcess());
         dataNode.setComponent(graphicalNode.getComponent());
 
-        if (graphicalNode.isDummy()) {
+        if (graphicalNode.isDummy() && !graphicalNode.isActivate()) {
             dataNode = new DataNode(ComponentsFactoryProvider.getInstance().get("tDummyRow"), uniqueName); //$NON-NLS-1$
             dataNode.setActivate(true);
             dataNode.setStart(graphicalNode.isStart());
@@ -764,7 +764,7 @@ public class DataProcess {
             return;
         }
         // if the original component is in dummy state, no need to replace it
-        if ((graphicalNode instanceof Node) && ((Node) graphicalNode).isDummy()) {
+        if ((graphicalNode instanceof Node) && ((Node) graphicalNode).isDummy() && !graphicalNode.isActivate()) {
             return;
         }
         AbstractNode dataNode;
