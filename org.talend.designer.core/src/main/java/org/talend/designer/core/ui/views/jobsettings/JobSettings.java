@@ -41,7 +41,7 @@ public class JobSettings {
         IViewPart view = page.findView(JobSettingsView.ID);
         if (view == null) {
             try {
-                view = page.showView(JobSettingsView.ID);
+                // view = page.showView(JobSettingsView.ID);
             } catch (Exception e) {
                 ExceptionHandler.process(e);
             }
