@@ -76,13 +76,23 @@ public class MoveObjectAction {
             return !item.isBuiltIn();
         }
 
-        // cannot move html documentation node:
+        // cannot move job html documentation node:
         if (objectToCopy != null && objectToCopy.getType() == ERepositoryObjectType.JOB_DOC) {
             return false;
         }
 
-        // Cannot move folder in documentation node:
+        // Cannot move folder in job documentation node:
         if (sourceNode.getType() == ENodeType.SIMPLE_FOLDER && sourceNode.getContentType() == ERepositoryObjectType.JOB_DOC) {
+            return false;
+        }
+
+        // cannot move html in joblet documentation node:
+        if (objectToCopy != null && objectToCopy.getType() == ERepositoryObjectType.JOBLET_DOC) {
+            return false;
+        }
+
+        // Cannot move folder in joblet documentation node:
+        if (sourceNode.getType() == ENodeType.SIMPLE_FOLDER && sourceNode.getContentType() == ERepositoryObjectType.JOBLET_DOC) {
             return false;
         }
 

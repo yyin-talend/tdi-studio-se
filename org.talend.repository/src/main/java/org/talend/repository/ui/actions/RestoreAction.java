@@ -105,7 +105,6 @@ public class RestoreAction extends AContextualAction {
             if (canWork) {
                 if (o instanceof RepositoryNode) {
                     RepositoryNode node = (RepositoryNode) o;
-                    ERepositoryObjectType nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
                     canWork = restoreObjectAction.validateAction(node, null);
                 }
             }
