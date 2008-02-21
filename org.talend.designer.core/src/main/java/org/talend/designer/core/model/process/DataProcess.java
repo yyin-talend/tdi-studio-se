@@ -906,6 +906,7 @@ public class DataProcess {
             // incomingConnections.add(dataConnec);
             copyElementParametersValue(connection, dataConnec);
         }
+        newGraphicalNode.setActivate(graphicalNode.isActivate());
 
         return newGraphicalNode;
     }
