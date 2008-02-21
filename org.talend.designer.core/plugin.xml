@@ -301,6 +301,7 @@
          sequence="F2">
    </key>
    <key
+         contextId="org.eclipse.jdt.ui.javaEditorScope"
          schemeId="org.talend.designer.core.delete.binding.window"
          sequence="CTRL+F3">
    </key>
