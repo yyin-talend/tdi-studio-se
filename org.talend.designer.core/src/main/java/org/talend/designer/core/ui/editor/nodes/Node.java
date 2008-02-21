@@ -2010,7 +2010,7 @@ public class Node extends Element implements INode {
 
         Pattern pattern;
         try {
-            pattern = compiler.compile("(" + oldName + ")([^0-9]+.*)");
+            pattern = compiler.compile("\\b(" + oldName + ")(\\b|\\_)");
         } catch (MalformedPatternException e) {
             return value; // keep original value
         }
@@ -2018,9 +2018,8 @@ public class Node extends Element implements INode {
         if (matcher.contains(value, pattern)) {
             // replace
             String returnValue = Util.substitute(matcher, pattern, substitution, value, Util.SUBSTITUTE_ALL);
-            // ?? re-replace some unreplaced value
-            // return returnValue;
-            return Util.substitute(matcher, pattern, substitution, returnValue, Util.SUBSTITUTE_ALL);
+            return returnValue;
+
         }
         return value; // keep original value
 
