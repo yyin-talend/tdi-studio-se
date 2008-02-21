@@ -66,6 +66,7 @@ import org.talend.core.CorePlugin;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.process.IContext;
 import org.talend.designer.core.DesignerPlugin;
+import org.talend.designer.core.debug.TalendDebugUIConstants;
 import org.talend.designer.runprocess.IProcessMessage;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessMessage;
@@ -98,8 +99,6 @@ public class ProcessComposite extends Composite {
     private static final int MINIMUM_HEIGHT = 65;
 
     private static final int MINIMUM_WIDTH = 530;
-
-
 
     private RunProcessContext processContext;
 
@@ -508,6 +507,7 @@ public class ProcessComposite extends Composite {
         }
         processContext.setTracPause(isPause);
     }
+
     /**
      * 
      * DOC ggu Comment method "setCurRunMode".
@@ -517,6 +517,7 @@ public class ProcessComposite extends Composite {
     public void setCurRunMode(int id) {
         pause(id);
     }
+
     /*
      * (non-Javadoc)
      * 
@@ -717,7 +718,7 @@ public class ProcessComposite extends Composite {
         IEditorPart activeEditor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
         if (CorePlugin.getDefault().getDesignerCoreService().isTalendEditor(activeEditor)) {
             DebugUIPlugin.getDefault().getLaunchConfigurationManager().getLaunchShortcut(
-                    "org.talend.designer.runprocess.debug.JobLaunchShortcut").launch(activeEditor, ILaunchManager.RUN_MODE);
+                    TalendDebugUIConstants.TALEND_JOB_LAUNCH_SHORTCUT_ID).launch(activeEditor, ILaunchManager.RUN_MODE);
         } else {
             exec();
         }

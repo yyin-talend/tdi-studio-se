@@ -22,6 +22,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
+import org.talend.core.CorePlugin;
 import org.talend.designer.core.debug.TalendDebugUIConstants;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 
@@ -43,9 +44,11 @@ public class RunProcessShortcutAction extends RunProcessAction {
         IWorkbench workbench = PlatformUI.getWorkbench();
         IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();
         IEditorPart activeEditor = page.getActiveEditor();
-        if (activeEditor instanceof MultiPageTalendEditor) {
+        if (CorePlugin.getDefault().getDesignerCoreService().isTalendEditor(activeEditor)) {
             getLaunchConfigurationManager().getLaunchShortcut(TalendDebugUIConstants.TALEND_JOB_LAUNCH_SHORTCUT_ID).launch(
                     activeEditor, ILaunchManager.RUN_MODE);
+        } else {
+            new RunProcessAction().run();
         }
     }
 
