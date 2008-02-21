@@ -114,6 +114,7 @@ String password_<%=cid %> = <%=password%>;
 
 java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,userName_<%=cid %>,password_<%=cid %>);
 
+conn_<%=cid%>.setAutoCommit(false);
 <%
 if(columnList != null && columnList.size()>0) {     
     if(!tableAction.equals("NONE")) {        
@@ -204,7 +205,6 @@ if(columnList != null && columnList.size()>0) {
 
 	    int commitCounter_<%=cid%> = 0;
 
-	    conn_<%=cid%>.setAutoCommit(false);
 	    <%
 	}
 	%>
