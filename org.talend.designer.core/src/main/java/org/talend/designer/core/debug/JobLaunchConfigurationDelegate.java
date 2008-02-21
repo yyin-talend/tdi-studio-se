@@ -95,7 +95,7 @@ public class JobLaunchConfigurationDelegate extends org.eclipse.debug.core.model
     private IProcess findProcessFromRepository(String jobName) {
         try {
             List<IRepositoryObject> list = CorePlugin.getDefault().getRepositoryService().getProxyRepositoryFactory().getAll(
-                    ERepositoryObjectType.PROCESS, false);
+                    ERepositoryObjectType.PROCESS, true);
             for (IRepositoryObject repositoryObject : list) {
                 if (repositoryObject.getProperty().getLabel().equals(jobName)) {
                     ProcessEditorInput fileEditorInput = new ProcessEditorInput((ProcessItem) repositoryObject.getProperty()
