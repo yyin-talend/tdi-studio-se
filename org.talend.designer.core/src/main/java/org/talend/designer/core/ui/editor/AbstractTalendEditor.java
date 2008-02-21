@@ -130,6 +130,7 @@ import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.general.ILibrariesService;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
@@ -297,28 +298,30 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
                                 && !metadataTable.sameMetadataAs(newInputMetadataTable)) {
                             IElementParameter elementParam = source.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
                             command = new ChangeMetadataCommand(source, elementParam, metadataTable, newInputMetadataTable);
-                            // command = new ChangeMetadataCommand(node, inputElemParam, source, oldInputMetadataTable,
-                            // newInputMetadataTable, oldInputMetadataTable, newInputMetadataTable);
-                            // command.execute(false);
-                            // getCommandStack().execute(new Command() {
-                            // });
                             getCommandStack().execute(command);
                         }
+                    } else {
+                        command = new ChangeMetadataCommand(node, inputElemParam, (IMetadataTable) inputElemParam.getValue(),
+                                newInputMetadataTable);
+                        getCommandStack().execute(command);
+                        IMetadataTable metadataFromConnector = node.getMetadataFromConnector(inputElemParam.getContext());
+                        MetadataTool.copyTable(newInputMetadataTable, metadataFromConnector);
                     }
-                    List<? extends IConnection> outgoingConnections = node.getOutgoingConnections();
-                    if (outgoingConnections.size() > 0) {
-                        for (IConnection connection : outgoingConnections) {
-                            Node target = (Node) connection.getTarget();
-                            IMetadataTable metadataTable = target.getMetadataList().get(0);
-                            IMetadataTable metadataFromConnector = node.getMetadataFromConnector(connection.getConnectorName());
-                            if (metadataFromConnector != null && !metadataTable.sameMetadataAs(metadataFromConnector)) {
-                                command = new ChangeMetadataCommand(target, target
-                                        .getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE), metadataTable,
-                                        metadataFromConnector);
-                                getCommandStack().execute(command);
-                            }
-                        }
-                    }
+                    // List<? extends IConnection> outgoingConnections = node.getOutgoingConnections();
+                    // if (outgoingConnections.size() > 0) {
+                    // for (IConnection connection : outgoingConnections) {
+                    // Node target = (Node) connection.getTarget();
+                    // IMetadataTable metadataTable = target.getMetadataList().get(0);
+                    // IMetadataTable metadataFromConnector =
+                    // node.getMetadataFromConnector(connection.getConnectorName());
+                    // if (metadataFromConnector != null && !metadataTable.sameMetadataAs(metadataFromConnector)) {
+                    // command = new ChangeMetadataCommand(target, target
+                    // .getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE), metadataTable,
+                    // metadataFromConnector);
+                    // getCommandStack().execute(command);
+                    // }
+                    // }
+                    // }
                 }
             }
         }
