@@ -37,46 +37,9 @@ String decimalSeparator = ElementParameterParser.getValue(node, "__DECIMAL_SEPAR
 %>
 int nb_line_<%=cid%> = 0;
 
-class XML_API_<%=cid%>{
-
-	public boolean isDefNull(org.w3c.dom.Node node) throws javax.xml.transform.TransformerException {
-        if (node != null && node.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
-            return ((org.apache.xerces.xs.ElementPSVI) node).getNil();
-        }
-        return false;
-    }
-
-    public boolean isMissing(org.w3c.dom.Node node) throws javax.xml.transform.TransformerException {
-        return node == null ? true : false;
-    }
-
-    public boolean isEmpty(org.w3c.dom.Node node) throws javax.xml.transform.TransformerException {
-        if (node != null) {
-            return node.getTextContent().length() == 0;
-        }
-        return false;
-    }
-
-    public org.w3c.dom.Node getSingleNode(org.w3c.dom.Node node, String xpath,
-            com.sun.org.apache.xml.internal.utils.PrefixResolver pr) throws javax.xml.transform.TransformerException {
-        com.sun.org.apache.xpath.internal.objects.XObject obj = com.sun.org.apache.xpath.internal.XPathAPI.eval(node, xpath, pr);
-        return obj.nodelist().item(0);
-    }
-
-    public org.w3c.dom.NodeList getNodeList(org.w3c.dom.Node node, String xpath,
-            com.sun.org.apache.xml.internal.utils.PrefixResolver pr) throws javax.xml.transform.TransformerException {
-        com.sun.org.apache.xpath.internal.objects.XObject obj = com.sun.org.apache.xpath.internal.XPathAPI.eval(node, xpath, pr);
-        return obj.nodelist();
-    }
-}
-
 class TalendPrefixResolver_<%=cid%> implements com.sun.org.apache.xml.internal.utils.PrefixResolver {
 
     private java.util.Map<String, String> map = new java.util.HashMap<String, String>();
-
-    public TalendPrefixResolver_<%=cid %>(org.w3c.dom.Node root) {
-        countNSMap(root);
-    }
 
     public String getBaseIdentifier() {
         return null;
@@ -98,7 +61,8 @@ class TalendPrefixResolver_<%=cid%> implements com.sun.org.apache.xml.internal.u
         return false;
     }
 
-    private void countNSMap(org.w3c.dom.Node el) {
+    public boolean countNSMap(org.w3c.dom.Node el) {
+    	boolean hasDefaultPrefix = false;
         if (el.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
             org.w3c.dom.NamedNodeMap attris = el.getAttributes();
             for (int i = 0; i < attris.getLength(); i++) {
@@ -106,15 +70,78 @@ class TalendPrefixResolver_<%=cid%> implements com.sun.org.apache.xml.internal.u
                 String aname = attr.getNodeName();
                 if (aname.startsWith("xmlns")) {
                     int index = aname.indexOf(":");
-                    aname = index > 0 ? aname.substring(index + 1) : aname;
+                    if(index > 0){
+                    	aname = aname.substring(index + 1);
+                    }else{
+                    	aname = "pre";
+                    	hasDefaultPrefix = true;
+                    }
                     map.put(aname, attr.getNodeValue());
                 }
             }
         }
         org.w3c.dom.NodeList nodeList = el.getChildNodes();
         for (int i = 0; i < nodeList.getLength(); i++) {
-            countNSMap(nodeList.item(i));
+            hasDefaultPrefix = hasDefaultPrefix | countNSMap(nodeList.item(i));
         }
+        return hasDefaultPrefix;
+    }
+}
+
+class XML_API_<%=cid%>{
+
+	boolean hasDefaultNS = false;
+	TalendPrefixResolver_<%=cid%> pr = null;
+	
+	public boolean isDefNull(org.w3c.dom.Node node) throws javax.xml.transform.TransformerException {
+        if (node != null && node.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
+            return ((org.apache.xerces.xs.ElementPSVI) node).getNil();
+        }
+        return false;
+    }
+
+    public boolean isMissing(org.w3c.dom.Node node) throws javax.xml.transform.TransformerException {
+        return node == null ? true : false;
+    }
+
+    public boolean isEmpty(org.w3c.dom.Node node) throws javax.xml.transform.TransformerException {
+        if (node != null) {
+            return node.getTextContent().length() == 0;
+        }
+        return false;
+    }
+
+	public void initXPath(org.w3c.dom.Node root){
+		pr= new TalendPrefixResolver_<%=cid%>();
+    	hasDefaultNS = pr.countNSMap(root);
+	}
+
+    public org.w3c.dom.Node getSingleNode(org.w3c.dom.Node node, String xpath) throws javax.xml.transform.TransformerException {
+        com.sun.org.apache.xpath.internal.objects.XObject obj = com.sun.org.apache.xpath.internal.XPathAPI.eval(node, addDefaultNSPrefix(xpath), pr);
+        return obj.nodelist().item(0);
+    }
+
+    public org.w3c.dom.NodeList getNodeList(org.w3c.dom.Node node, String xpath) throws javax.xml.transform.TransformerException {
+        com.sun.org.apache.xpath.internal.objects.XObject obj = com.sun.org.apache.xpath.internal.XPathAPI.eval(node, addDefaultNSPrefix(xpath), pr);
+        return obj.nodelist();
+    }
+    
+    private String addDefaultNSPrefix(String path) {
+        if (hasDefaultNS) {
+            StringBuffer newPath = new StringBuffer();
+            for (String tmp : path.split("/")) {
+                if (newPath.length() > 0) {
+                    newPath.append("/");
+                }
+                if (tmp.length() > 0 && tmp.indexOf(":") == -1 && tmp.indexOf(".") == -1 && tmp.indexOf("@") == -1) {
+                    newPath.append("pre:").append(tmp);
+                } else {
+                    newPath.append(tmp);
+                }
+            }
+            return newPath.toString();
+        }
+        return path;
     }
 }
 
@@ -130,8 +157,8 @@ parser_<%=cid%>.setErrorHandler(null);
 parser_<%=cid%>.parse(<%=filename%>);
 org.w3c.dom.Document doc_<%=cid%> = parser_<%=cid%>.getDocument();
 
-TalendPrefixResolver_<%=cid%> pr_<%=cid%> = new TalendPrefixResolver_<%=cid%>(doc_<%=cid%>);
-org.w3c.dom.NodeList nodelist_<%=cid %> = xml_api_<%=cid%>.getNodeList(doc_<%=cid %>,<%=loopQuery%>,pr_<%=cid%>);
+xml_api_<%=cid%>.initXPath(doc_<%=cid%>);
+org.w3c.dom.NodeList nodelist_<%=cid %> = xml_api_<%=cid%>.getNodeList(doc_<%=cid %>,<%=loopQuery%>);
 
 org.w3c.dom.Node node_<%=cid%>  = null;
 String str_<%=cid%> = null;
@@ -153,7 +180,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				for (int i=0;i<mapping.size();i++) { 
 					String query = mapping.get(i).get("QUERY");
 %>
-	node_<%=cid%> = xml_api_<%=cid%>.getSingleNode(tmp_<%=cid %>,<%=query%>,pr_<%=cid%>);
+	node_<%=cid%> = xml_api_<%=cid%>.getSingleNode(tmp_<%=cid %>,<%=query%>);
 <%
 					for(IMetadataColumn column:columns) {
 						if (mapping.get(i).get("SCHEMA_COLUMN")!=null) {
