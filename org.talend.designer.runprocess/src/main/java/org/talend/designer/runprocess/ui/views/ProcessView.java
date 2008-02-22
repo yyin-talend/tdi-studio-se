@@ -280,7 +280,7 @@ public class ProcessView extends ViewPart {
                 e.printStackTrace();
             }
 
-            if (processComposite.hasProcess()) {
+            if (processComposite.hasProcess() && !processComposite.getProcess().disableRunJobView()) {
                 processComposite.setCurRunMode(EXEC_ID);
                 processComposite.exec();
             }

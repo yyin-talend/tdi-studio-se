@@ -395,6 +395,10 @@ public class ProcessComposite extends Composite {
         return processContext != null;
     }
 
+    public org.talend.core.model.process.IProcess getProcess() {
+        return processContext.getProcess();
+    }
+
     protected void addListeners() {
         perfBtn.addSelectionListener(new SelectionAdapter() {
 
