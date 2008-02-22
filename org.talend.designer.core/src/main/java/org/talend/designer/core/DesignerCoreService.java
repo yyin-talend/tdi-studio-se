@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.gef.palette.PaletteEntry;
 import org.eclipse.gef.palette.PaletteRoot;
 import org.eclipse.jface.action.IAction;
@@ -25,14 +26,23 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.MultiPageEditorPart;
+import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.IComponentsFactory;
+import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.designer.core.model.process.AbstractProcessProvider;
+import org.talend.designer.core.model.utils.emf.talendfile.MetadataType;
+import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.action.CreateProcess;
@@ -47,6 +57,7 @@ import org.talend.designer.core.ui.views.contexts.Contexts;
 import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.designer.core.ui.views.properties.ComponentSettings;
 import org.talend.designer.runprocess.ProcessorUtilities;
+import org.talend.repository.model.ProxyRepositoryFactory;
 
 /**
  * Detailled comment <br/>.
@@ -170,12 +181,45 @@ public class DesignerCoreService implements IDesignerCoreService {
      * @see org.talend.designer.core.IDesignerCoreService#refreshDesignerPalette()
      */
     public void synchronizeDesignerUI(PropertyChangeEvent evt) {
-
         ComponentUtilities.updatePalette();
+        List<String> openJobs = new ArrayList<String>();
         for (IEditorPart editor : ProcessorUtilities.getOpenedEditors()) {
-            ((AbstractTalendEditor) editor).updateGraphicalNodes(evt);
+            AbstractTalendEditor abstractTalendEditor = ((AbstractTalendEditor) editor);
+            abstractTalendEditor.updateGraphicalNodes(evt);
+            IProcess2 process = abstractTalendEditor.getProcess();
+            openJobs.add(process.getName() + process.getVersion());
         }
-
+        if (ComponentUtilities.JOBLET_SCHEMA_CHANGED.equals(evt.getPropertyName())) {
+            try {
+                String oldName = ((IProcess) evt.getSource()).getName();
+                IMetadataTable newInputMetadataTable = (IMetadataTable) evt.getNewValue();
+                ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+                List<IRepositoryObject> allJobs = factory.getAll(ERepositoryObjectType.PROCESS, true);
+                for (IRepositoryObject repositoryObject : allJobs) {
+                    String keyId = repositoryObject.getProperty().getLabel() + repositoryObject.getProperty().getVersion();
+                    if (!openJobs.contains(keyId)) {
+                        ProcessItem item = (ProcessItem) repositoryObject.getProperty().getItem();
+                        boolean isModify = false;
+                        for (Object o : item.getProcess().getNode()) {
+                            NodeType currentNode = (NodeType) o;
+                            if (currentNode.getComponentName().equals(oldName)) {
+                                EList metadata = currentNode.getMetadata();
+                                for (Object object : metadata) {
+                                    MetadataType metadataTable = (MetadataType) object;
+                                    MetadataTool.copyTable(newInputMetadataTable, metadataTable);
+                                    isModify = true;
+                                }
+                            }
+                        }
+                        if (isModify) {
+                            factory.save(item, true);
+                        }
+                    }
+                }
+            } catch (PersistenceException e) {
+                ExceptionHandler.process(e);
+            }
+        }
     }
 
     /*
