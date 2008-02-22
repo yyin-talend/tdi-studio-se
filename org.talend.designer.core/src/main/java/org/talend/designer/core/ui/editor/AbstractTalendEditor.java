@@ -908,13 +908,13 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
      * ftang Comment method "savePreviewPictures".
      */
     protected void savePreviewPictures() {
-        getGraphicalViewer().getControl().getDisplay().asyncExec(new Runnable() {
-
-            public void run() {
-                saveOutlinePicture((ScrollingGraphicalViewer) getGraphicalViewer());
-            }
-
-        });
+        // getGraphicalViewer().getControl().getDisplay().asyncExec(new Runnable() {
+        //
+        // public void run() {
+        saveOutlinePicture((ScrollingGraphicalViewer) getGraphicalViewer());
+        // }
+        //
+        // });
     }
 
     protected RepositoryEditorInput getRepositoryEditorInput() {
