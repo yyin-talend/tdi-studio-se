@@ -63,7 +63,6 @@ public class AddConnectorNameInConnections extends AbstractJobMigrationTask {
             if (currentConnection.getConnectorName() == null) {
                 EConnectionType connectionType = EConnectionType.getTypeFromId(currentConnection.getLineStyle());
                 currentConnection.setConnectorName(connectionType.getName());
-                currentConnection.setLabel(connectionType.getDefaultLinkName());
                 modified = true;
             }
 
