@@ -65,26 +65,31 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%		
 	int ii = 0;
 	for(Map<String, String> keyColumn:keyColumns){
-	ii++;	
+		ii++;	
 %>	
-		<%=ii==1? "":logical %>
-<% if(!keyColumn.get("FUNCTION").equals("")) {%>		
+		<%=ii==1? "":logical %>(
+<% 
+		if(!keyColumn.get("FUNCTION").equals("")) {
+%>		
 		<%=keyColumn.get("FUNCTION").replace("$source", connName + "." + keyColumn.get("INPUT_COLUMN")).replace("$target", keyColumn.get("RVALUE")).replace("$operator", keyColumn.get("OPERATOR")) %>
 <%
-	}else {	
-	IMetadataColumn rightColumn = metadata.getColumn(keyColumn.get("INPUT_COLUMN"));
-	JavaType javaType = JavaTypesManager.getJavaTypeFromId(rightColumn.getTalendType()); 
-	if (!javaType.isPrimitive()) {	
+		}else {	
+        	IMetadataColumn rightColumn = metadata.getColumn(keyColumn.get("INPUT_COLUMN"));
+        	JavaType javaType = JavaTypesManager.getJavaTypeFromId(rightColumn.getTalendType()); 
+        	if (!javaType.isPrimitive()) {	
 %>	
 	<%="$source == null? false : $source.compareTo($target) $operator 0".replace("$source", connName + "." + keyColumn.get("INPUT_COLUMN")).replace("$target", keyColumn.get("RVALUE")).replace("$operator", keyColumn.get("OPERATOR")) %>
 <%
-	} else {
+			} else {
 %>	
 	<%="$source $operator $target".replace("$source", connName + "." + keyColumn.get("INPUT_COLUMN")).replace("$target", keyColumn.get("RVALUE")).replace("$operator", keyColumn.get("OPERATOR")) %>
 <%
+			}
 		}
-	 }
-   }	 	
+%>
+	)
+<%
+   	}
 %>
 		<%=use_advanced? (keyColumns.size()<1 ? "":logical) + advancedCondition.replace("input_row", connName) : ""%>
 <% 
