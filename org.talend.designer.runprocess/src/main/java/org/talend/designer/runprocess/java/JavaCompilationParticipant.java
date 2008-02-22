@@ -38,6 +38,7 @@ public class JavaCompilationParticipant extends CompilationParticipant {
      */
     @Override
     public void processAnnotations(BuildContext[] files) {
+        boolean recordRoutineFileModified = false;
         super.processAnnotations(files);
         for (BuildContext context : files) {
             String filePath = (context.getFile().getProjectRelativePath()).toString();
@@ -45,14 +46,18 @@ public class JavaCompilationParticipant extends CompilationParticipant {
                 continue;
             }
             Problems.addRoutineFile(context.getFile(), null);
+            recordRoutineFileModified =true;
         }
-        Display.getDefault().asyncExec(new Runnable() {
+        if (recordRoutineFileModified) {
+            Display.getDefault().asyncExec(new Runnable() {
 
-            public void run() {
-                Problems.refreshRepositoryView();
-                Problems.refreshProblemTreeView();
-            }
-        });
+                public void run() {
+
+                    Problems.refreshRepositoryView();
+                    Problems.refreshProblemTreeView();
+                }
+            });
+        }
     }
 
     private boolean isRoutineFile(String filePath) {
