@@ -65,13 +65,11 @@ public final class CodeGeneratorRoutine {
         try {
             List<IRepositoryObject> routines = repositoryFactory.getAll(ERepositoryObjectType.ROUTINES);
             for (IRepositoryObject routine : routines) {
-
-                Boolean routineCompilePass = designerCoreService.isRoutineCompilePass(routine.getLabel());
-                if (routineCompilePass != null && !routineCompilePass) {
-                    continue;
-                }
-
                 if (currentLanguage.equals(ECodeLanguage.JAVA)) {
+                    Boolean routineCompilePass = designerCoreService.isRoutineCompilePass(routine.getLabel());
+                    if (routineCompilePass != null && !routineCompilePass) {
+                        continue;
+                    }
                     toReturn.add(routine.getLabel());
                 } else {
                     RoutineItem item = (RoutineItem) routine.getProperty().getItem();
