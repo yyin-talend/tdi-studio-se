@@ -25,6 +25,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.exception.RuntimeExceptionHandler;
 import org.talend.commons.utils.data.container.Container;
+import org.talend.core.PluginChecker;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.genhtml.IHTMLDocConstants;
 import org.talend.core.model.metadata.MetadataTable;
@@ -271,10 +272,12 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
         codeNode.getChildren().add(routineNode);
 
         // 4.2. Snippets
-        snippetsNode = new RepositoryNode(null, codeNode, ENodeType.SYSTEM_FOLDER);
-        snippetsNode.setProperties(EProperties.LABEL, ERepositoryObjectType.SNIPPETS);
-        snippetsNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.SNIPPETS);
-        codeNode.getChildren().add(snippetsNode);
+        if (PluginChecker.isSnippetsPluginLoaded()) {
+            snippetsNode = new RepositoryNode(null, codeNode, ENodeType.SYSTEM_FOLDER);
+            snippetsNode.setProperties(EProperties.LABEL, ERepositoryObjectType.SNIPPETS);
+            snippetsNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.SNIPPETS);
+            codeNode.getChildren().add(snippetsNode);
+        }
 
         // 5. Documentation
         docNode = new RepositoryNode(null, root, ENodeType.SYSTEM_FOLDER);
