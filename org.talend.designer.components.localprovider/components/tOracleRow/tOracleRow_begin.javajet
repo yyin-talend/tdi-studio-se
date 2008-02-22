@@ -61,7 +61,7 @@ else
 	<%
 }
 %>
-java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(<%=dbquery%>);
+java.sql.PreparedStatement pstmt_<%=cid %> = null;
 
 boolean whetherReject_<%=cid%> = false;
 

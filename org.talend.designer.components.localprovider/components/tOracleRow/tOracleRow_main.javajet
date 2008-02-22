@@ -61,6 +61,8 @@ commitCounter_<%=cid%>++;
 %>
 
 whetherReject_<%=cid%> = false;
+
+pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(<%=dbquery%>);
 <%
 int counter = 0;
 int index=dbquery.indexOf("?");
