@@ -25,6 +25,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.util.EList;
 import org.talend.commons.exception.BusinessException;
@@ -150,13 +151,12 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * @see org.talend.repository.model.IProxyRepositoryFactory#refreshJobPictureFolder()
      */
     public void refreshDocumentationFolder(String docFolder) {
-        IFolder folder = RepositoryPathProvider.getFolder(docFolder);
         try {
-            folder.refreshLocal(IResource.DEPTH_INFINITE, null);
+            IProject project = ResourceModelUtils.getProject(getRepositoryContext().getProject());
+            project.refreshLocal(IResource.DEPTH_INFINITE, new NullProgressMonitor());
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     /*
