@@ -31,7 +31,7 @@ connSet.addAll(node.getOutgoingConnections(EConnectionType.FLOW_MERGE));
 if((codePart.equals(ECodePart.END))&&(stat)&&connSet.size()>0){
   for(IConnection con:connSet){
 %>
- runStat.updateStatOnConnection("<%=con.getUniqueName() %>",RunStat.END, 0); 
+ runStat.updateStatOnConnection("<%=con.getUniqueName() %>",2, 0); 
 <%
   }
 }
