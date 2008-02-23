@@ -191,12 +191,15 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         if (!Pattern.matches(pattern, fileName)) {
             // i18n
             // throw new IllegalArgumentException("Label " + fileName + " does not match pattern " + pattern);
-            throw new IllegalArgumentException(Messages.getString(
-                    "ProxyRepositoryFactory.illegalArgumentException.labelNotMatchPattern", new String[] { fileName, pattern })); //$NON-NLS-1$
+            throw new IllegalArgumentException(
+                    Messages
+                            .getString(
+                                    "ProxyRepositoryFactory.illegalArgumentException.labelNotMatchPattern", new String[] { fileName, pattern })); //$NON-NLS-1$
         }
     }
 
-    private void checkFileNameAndPath(Item item, String pattern, IPath path, boolean folder) throws PersistenceException {
+    private void checkFileNameAndPath(Item item, String pattern, IPath path, boolean folder)
+            throws PersistenceException {
         String fileName = item.getProperty().getLabel();
         checkFileName(fileName, pattern);
         if (!this.repositoryFactoryFromProvider.isNameAvailable(item, null)) {
@@ -207,8 +210,8 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         }
     }
 
-    private void checkFileNameAndPath(String label, String pattern, ERepositoryObjectType type, IPath path, boolean folder)
-            throws PersistenceException {
+    private void checkFileNameAndPath(String label, String pattern, ERepositoryObjectType type, IPath path,
+            boolean folder) throws PersistenceException {
         String fileName = label;
         checkFileName(fileName, pattern);
         if (!this.repositoryFactoryFromProvider.isPathValid(type, path, label)) {
@@ -291,7 +294,8 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         checkFileNameAndPath(label, RepositoryConstants.FOLDER_PATTERN, type, path, true);
         Folder createFolder = this.repositoryFactoryFromProvider.createFolder(type, path, label);
         if (type == ERepositoryObjectType.PROCESS || type == ERepositoryObjectType.JOBLET) {
-            fireRepositoryPropertyChange(ERepositoryActionName.FOLDER_CREATE.getName(), path, new Object[] { createFolder, type });
+            fireRepositoryPropertyChange(ERepositoryActionName.FOLDER_CREATE.getName(), path, new Object[] {
+                    createFolder, type });
         }
         return createFolder;
     }
@@ -353,7 +357,8 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * @see org.talend.repository.model.IProxyRepositoryFactory#getMetadataConnection()
      */
     public RootContainer<String, IRepositoryObject> getMetadataConnection() throws PersistenceException {
-        RootContainer<String, IRepositoryObject> metadataConnection = this.repositoryFactoryFromProvider.getMetadataConnection();
+        RootContainer<String, IRepositoryObject> metadataConnection = this.repositoryFactoryFromProvider
+                .getMetadataConnection();
 
         return metadataConnection;
     }
@@ -478,7 +483,8 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         log.debug(Messages.getString("ProxyRepositoryFactory.log.logicalDeletion", str)); //$NON-NLS-1$
 
         // TODO this need to be refactered after M2.
-        if (objToDelete.getType() == ERepositoryObjectType.PROCESS || objToDelete.getType() == ERepositoryObjectType.JOBLET
+        if (objToDelete.getType() == ERepositoryObjectType.PROCESS
+                || objToDelete.getType() == ERepositoryObjectType.JOBLET
                 || objToDelete.getType() == ERepositoryObjectType.ROUTINES) {
             fireRepositoryPropertyChange(ERepositoryActionName.JOB_DELETE_TO_RECYCLE_BIN.getName(), null, objToDelete);
         }
@@ -496,7 +502,8 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         String str[] = new String[] { objToDelete.toString(), getRepositoryContext().getUser().toString() };
         log.info(Messages.getString("ProxyRepositoryFactory.log.physicalDeletion", str)); //$NON-NLS-1$
 
-        if (objToDelete.getType() == ERepositoryObjectType.PROCESS || objToDelete.getType() == ERepositoryObjectType.JOBLET
+        if (objToDelete.getType() == ERepositoryObjectType.PROCESS
+                || objToDelete.getType() == ERepositoryObjectType.JOBLET
                 || objToDelete.getType() == ERepositoryObjectType.ROUTINES) {
             fireRepositoryPropertyChange(ERepositoryActionName.JOB_DELETE_FOREVER.getName(), null, objToDelete);
         }
@@ -508,9 +515,11 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * @see org.talend.repository.model.IProxyRepositoryFactory#restoreObject(org.talend.core.model.repository.IRepositoryObject,
      * org.eclipse.core.runtime.IPath)
      */
-    public void restoreObject(IRepositoryObject objToRestore, IPath path) throws PersistenceException, BusinessException {
+    public void restoreObject(IRepositoryObject objToRestore, IPath path) throws PersistenceException,
+            BusinessException {
         if (ProxyRepositoryFactory.getInstance().isUserReadOnlyOnCurrentProject()) {
-            throw new BusinessException(Messages.getString("ProxyRepositoryFactory.bussinessException.itemNonModifiable")); //$NON-NLS-1$
+            throw new BusinessException(Messages
+                    .getString("ProxyRepositoryFactory.bussinessException.itemNonModifiable")); //$NON-NLS-1$
         }
         this.repositoryFactoryFromProvider.restoreObject(objToRestore, path);
         unlock(objToRestore);
@@ -519,7 +528,8 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         // "\".");
         String str[] = new String[] { objToRestore + "", getRepositoryContext().getUser() + "", path + "" };//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         log.debug(Messages.getString("ProxyRepositoryFactory.log.Restoration", str)); //$NON-NLS-1$
-        if (objToRestore.getType() == ERepositoryObjectType.PROCESS || objToRestore.getType() == ERepositoryObjectType.JOBLET
+        if (objToRestore.getType() == ERepositoryObjectType.PROCESS
+                || objToRestore.getType() == ERepositoryObjectType.JOBLET
                 || objToRestore.getType() == ERepositoryObjectType.ROUTINES) {
             fireRepositoryPropertyChange(ERepositoryActionName.JOB_RESTORE.getName(), null, objToRestore);
         }
@@ -537,11 +547,11 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * @see org.talend.repository.model.IProxyRepositoryFactory#moveObject(org.talend.core.model.repository.IRepositoryObject,
      * org.eclipse.core.runtime.IPath)
      */
-    public void moveObject(IRepositoryObject objToMove, IPath targetPath, IPath... sourcePath) throws PersistenceException,
-            BusinessException {
+    public void moveObject(IRepositoryObject objToMove, IPath targetPath, IPath... sourcePath)
+            throws PersistenceException, BusinessException {
         checkAvailability(objToMove);
-        checkFileNameAndPath(objToMove.getProperty().getItem(), RepositoryConstants.getPattern(objToMove.getType()), targetPath,
-                false);
+        checkFileNameAndPath(objToMove.getProperty().getItem(), RepositoryConstants.getPattern(objToMove.getType()),
+                targetPath, false);
         this.repositoryFactoryFromProvider.moveObject(objToMove, targetPath);
         // i18n
         // log.debug("Move [" + objToMove + "] to \"" + path + "\".");
@@ -550,14 +560,14 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         unlock(getItem(objToMove));
         if (objToMove.getType() == ERepositoryObjectType.PROCESS) {
             if (sourcePath != null && sourcePath.length == 1) {
-                fireRepositoryPropertyChange(ERepositoryActionName.JOB_MOVE.getName(), objToMove, new IPath[] { sourcePath[0],
-                        targetPath });
+                fireRepositoryPropertyChange(ERepositoryActionName.JOB_MOVE.getName(), objToMove, new IPath[] {
+                        sourcePath[0], targetPath });
             }
         }
         if (objToMove.getType() == ERepositoryObjectType.JOBLET) {
             if (sourcePath != null && sourcePath.length == 1) {
-                fireRepositoryPropertyChange(ERepositoryActionName.JOBLET_MOVE.getName(), objToMove, new IPath[] { sourcePath[0],
-                        targetPath });
+                fireRepositoryPropertyChange(ERepositoryActionName.JOBLET_MOVE.getName(), objToMove, new IPath[] {
+                        sourcePath[0], targetPath });
             }
         }
 
@@ -565,8 +575,10 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
 
     // TODO SML Renommer et finir la m�thode et la plugger dans toutes les m�thodes
     private void checkAvailability(IRepositoryObject objToMove) throws BusinessException {
-        if (!isEditableAndLockIfPossible(objToMove) || ProxyRepositoryFactory.getInstance().isUserReadOnlyOnCurrentProject()) {
-            throw new BusinessException(Messages.getString("ProxyRepositoryFactory.bussinessException.itemNonModifiable")); //$NON-NLS-1$
+        if (!isEditableAndLockIfPossible(objToMove)
+                || ProxyRepositoryFactory.getInstance().isUserReadOnlyOnCurrentProject()) {
+            throw new BusinessException(Messages
+                    .getString("ProxyRepositoryFactory.bussinessException.itemNonModifiable")); //$NON-NLS-1$
         }
     }
 
@@ -696,7 +708,8 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
             }
         }
 
-        if (source.getType() == FolderType.SYSTEM_FOLDER_LITERAL || source.getType() == FolderType.STABLE_SYSTEM_FOLDER_LITERAL) {
+        if (source.getType() == FolderType.SYSTEM_FOLDER_LITERAL
+                || source.getType() == FolderType.STABLE_SYSTEM_FOLDER_LITERAL) {
             boolean match = source.getProperty().getLabel().equals(type);
 
             for (Object current : source.getChildren()) {
@@ -759,6 +772,21 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         // if (item instanceof ProcessItem) {
         // fireRepositoryPropertyChange(ERepositoryActionName.JOB_CREATE.getName(), null, item);
         // }
+    }
+
+    public void createParentFoldersRecursively(Item item, IPath path) throws PersistenceException {
+        ERepositoryObjectType itemType = ERepositoryObjectType.getItemType(item);
+        List<String> folders = getFolders(itemType);
+
+        for (int i = 0; i < path.segmentCount(); i++) {
+            IPath parentPath = path.removeLastSegments(path.segmentCount() - i);
+            String folderLabel = path.segment(i);
+
+            String folderName = parentPath.append(folderLabel).toString();
+            if (!folders.contains(folderName)) {
+                createFolder(itemType, parentPath, folderLabel);
+            }
+        }
     }
 
     /*
@@ -832,7 +860,8 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
     public void save(Property property, String... originalNameAndVersion) throws PersistenceException {
         this.repositoryFactoryFromProvider.save(property);
         if (property.getItem() instanceof ProcessItem || property.getItem() instanceof JobletProcessItem) {
-            fireRepositoryPropertyChange(ERepositoryActionName.JOB_PROPERTIES_CHANGE.getName(), originalNameAndVersion, property);
+            fireRepositoryPropertyChange(ERepositoryActionName.JOB_PROPERTIES_CHANGE.getName(), originalNameAndVersion,
+                    property);
         }
     }
 
@@ -1149,9 +1178,10 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         switch (((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject()
                 .getLanguage()) {
         case JAVA:
-            IPath path = new Path(JavaUtils.JAVA_SRC_DIRECTORY).append(JavaResourcesHelper.getCurrentProjectName()).append(
-                    JavaResourcesHelper.getJobFolderName(process.getName())).append(JobJavaScriptsManager.JOB_CONTEXT_FOLDER)
-                    .append(context.getName() + JavaUtils.JAVA_CONTEXT_EXTENSION);
+            IPath path = new Path(JavaUtils.JAVA_SRC_DIRECTORY).append(JavaResourcesHelper.getCurrentProjectName())
+                    .append(JavaResourcesHelper.getJobFolderName(process.getName())).append(
+                            JobJavaScriptsManager.JOB_CONTEXT_FOLDER).append(
+                            context.getName() + JavaUtils.JAVA_CONTEXT_EXTENSION);
             return JavaResourcesHelper.getSpecificResourceInJavaProject(path);
         case PERL:
             String contextFullName = PerlResourcesHelper.getCurrentProjectName()
