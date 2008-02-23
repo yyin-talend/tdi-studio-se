@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.componentdesigner.ui.dialog;
 
+import java.io.IOException;
+
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.IInputValidator;
@@ -22,28 +24,33 @@ import org.talend.componentdesigner.manager.ComponentFolderManager;
 
 /**
  * @author rli
- *
+ * 
  */
-public class CopyComponentDialog extends InputDialog {	
-	String srcFolderName;
+public class CopyComponentDialog extends InputDialog {
 
-	public CopyComponentDialog(Shell parentShell, String dialogTitle,
-			String dialogMessage, String initialValue, IInputValidator validator) {
-		super(parentShell, dialogTitle, dialogMessage, initialValue, validator);
-		srcFolderName = initialValue;
-	}
+    String srcFolderName;
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.dialogs.Dialog#okPressed()
-	 */
-	protected void okPressed() {
-		super.okPressed();
-		try {
-			new ComponentFolderManager().copyComponent(ResourcesPlugin.getWorkspace().getRoot()
-						.getProject(PluginConstant.COMPONENT_PROJECT), srcFolderName, this.getValue());
-		} catch (CoreException e) {
-			e.printStackTrace();
-		}
-	}
+    public CopyComponentDialog(Shell parentShell, String dialogTitle, String dialogMessage, String initialValue,
+            IInputValidator validator) {
+        super(parentShell, dialogTitle, dialogMessage, initialValue, validator);
+        srcFolderName = initialValue;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jface.dialogs.Dialog#okPressed()
+     */
+    protected void okPressed() {
+        super.okPressed();
+        try {
+            new ComponentFolderManager().copyComponent(ResourcesPlugin.getWorkspace().getRoot().getProject(
+                    PluginConstant.COMPONENT_PROJECT), srcFolderName, this.getValue());
+        } catch (CoreException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 }

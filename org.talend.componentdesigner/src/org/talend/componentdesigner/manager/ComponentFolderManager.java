@@ -13,12 +13,14 @@
 package org.talend.componentdesigner.manager;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Properties;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -122,9 +124,10 @@ public class ComponentFolderManager {
      * @param srcComponentFolderName
      * @param desComponentFolderName
      * @throws CoreException
+     * @throws IOException TODO
      */
     public void copyComponent(IProject project, String srcComponentFolderName, String desComponentFolderName)
-            throws CoreException {
+            throws CoreException, IOException {
         IFolder srcFolder = project.getFolder(srcComponentFolderName);
         IFolder desFolder = project.getFolder(desComponentFolderName);
         String newDestinationFileName;
@@ -144,6 +147,27 @@ public class ComponentFolderManager {
                         + file.getName().substring(
                                 file.getName().indexOf(srcComponentFolderName) + srcComponentFolderName.length());
                 file.copy(desFolder.getFile(newDestinationFileName).getFullPath(), false, null);
+
+                // modify NAME's value in properties file.
+                if (file.getFileExtension().equals("properties")) {
+
+                    Properties properties = new Properties();
+                    InputStream propertiesInputStream = desFolder.getFile(newDestinationFileName).getContents();
+                    properties.load(propertiesInputStream);
+                    propertiesInputStream.close();
+
+                    properties.setProperty("NAME", desComponentFolderName);
+
+                    ByteArrayOutputStream propertiesOutputStream = new ByteArrayOutputStream();
+                    properties.store(propertiesOutputStream, "");
+                    propertiesOutputStream.close();
+
+                    InputStream inputStream = new ByteArrayInputStream(propertiesOutputStream.toByteArray());
+
+                    desFolder.getFile(newDestinationFileName).setContents(inputStream, true, false, null);
+                    inputStream.close();
+
+                }
             }
         }
     }
