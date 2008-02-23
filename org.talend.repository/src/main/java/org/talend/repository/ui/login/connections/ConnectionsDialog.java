@@ -37,7 +37,7 @@ import org.talend.repository.i18n.Messages;
  */
 public class ConnectionsDialog extends TitleAreaDialog {
 
-    private static final int FORM_COMPOSITE_HEIGHT = 300;
+    private static final int FORM_COMPOSITE_HEIGHT = 350;
 
     private static final int FORM_COMPOSITE_WIDTH = 420;
 
