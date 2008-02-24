@@ -83,6 +83,9 @@ public class ComponentFolderManager {
         s += "LONG_NAME=" + componentPref.getLongName() + "\n";
         s += "FAMILY=" + componentPref.getFamily() + "\n";
 
+        // add property for HELP
+        s += "HELP=org.talend.help." + componentPref.getName() + "\n";
+
         // add properties for each PARAMETER of component file
         s = extractNodes(s, "PARAMETER");
         // add properties for each RETURN of component
@@ -157,6 +160,8 @@ public class ComponentFolderManager {
                     propertiesInputStream.close();
 
                     properties.setProperty("NAME", desComponentFolderName);
+                    String help = properties.getProperty("HELP");
+                    properties.setProperty("HELP", help.substring(0, help.lastIndexOf(".") + 1) + desComponentFolderName);
 
                     ByteArrayOutputStream propertiesOutputStream = new ByteArrayOutputStream();
                     properties.store(propertiesOutputStream, "");
