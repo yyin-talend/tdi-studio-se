@@ -939,8 +939,13 @@ public class DataProcess {
         }
 
         List<Node> newBuildNodeList = new ArrayList<Node>();
-        for (INode node : buildCheckMap.values()) {
-            newBuildNodeList.add((Node) node);
+
+        for (INode gnode : graphicalNodeList) {
+            INode newNode = buildCheckMap.get(gnode);
+            if (newNode != null) {
+                newBuildNodeList.add((Node) newNode);
+            }
+
         }
         for (Node node : newBuildNodeList) {
             if (node.isExternalNode()) {

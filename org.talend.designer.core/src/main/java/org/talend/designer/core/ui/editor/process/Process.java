@@ -388,11 +388,58 @@ public class Process extends Element implements IProcess2 {
         }
         List<INode> generatedNodeList = generatingProcess.getNodeList();
         if (isProcessModified()) {
-            generatingProcess.buildFromGraphicalProcess(nodes);
+            List<Node> sortedFlow = sortNodes(nodes);
+            if (sortedFlow.size() != nodes.size()) {
+                sortedFlow = nodes;
+            }
+            generatingProcess.buildFromGraphicalProcess(sortedFlow);
             generatedNodeList = generatingProcess.getNodeList();
             processModified = false;
         }
         return generatedNodeList;
+    }
+
+    /**
+     * 
+     * DOC yexiaowei Comment method "sortNodes".
+     * 
+     * @param nodes
+     * @return
+     */
+    private List<Node> sortNodes(List<Node> nodes) {
+
+        if (nodes == null || nodes.size() <= 1)
+            return nodes;
+
+        List<Node> res = new ArrayList<Node>();
+
+        for (Node node : nodes) {
+            if (node.getIncomingConnections() == null || node.getIncomingConnections().size() <= 0) {
+                // start node in a job flow
+                res.add(node);
+                findTargetAll(res, node);
+            }
+        }
+
+        return res;
+    }
+
+    private void findTargetAll(List<Node> res, Node current) {
+
+        List conns = current.getOutgoingConnections();
+
+        if (conns == null || conns.size() == 0) {
+            return;
+        } else {
+            for (Object obj : conns) {
+                IConnection con = (IConnection) obj;
+                Node target = (Node) con.getTarget();
+                if (!res.contains(target)) {
+                    res.add(target);
+                    findTargetAll(res, target);
+                }
+            }
+        }
     }
 
     boolean processModified = true;
