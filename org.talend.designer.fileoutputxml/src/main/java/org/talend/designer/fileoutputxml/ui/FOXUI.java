@@ -309,20 +309,22 @@ public class FOXUI {
      * @param manager
      */
     protected void fillContextMenu(IMenuManager manager) {
-        manager.add(createAction);
-        manager.add(createAttributeAction);
-        manager.add(createNamespaceAction);
-        // manager.add(editAction);
-        manager.add(new Separator());
-        manager.add(deleteAction);
-        manager.add(disconnectAction);
-        manager.add(new Separator());
-        // manager.add(guessLoopAction);
-        manager.add(setLoopAction);
-        manager.add(new Separator());
-        manager.add(setGroupAction);
-        manager.add(removeGroupAction);
-        manager.add(new Separator());
+        if (!xmlViewer.getSelection().isEmpty()) {
+            manager.add(createAction);
+            manager.add(createAttributeAction);
+            manager.add(createNamespaceAction);
+            // manager.add(editAction);
+            manager.add(new Separator());
+            manager.add(deleteAction);
+            manager.add(disconnectAction);
+            manager.add(new Separator());
+            // manager.add(guessLoopAction);
+            manager.add(setLoopAction);
+            manager.add(new Separator());
+            manager.add(setGroupAction);
+            manager.add(removeGroupAction);
+            manager.add(new Separator());
+        }
         manager.add(importFromXMLAction);
     }
 
