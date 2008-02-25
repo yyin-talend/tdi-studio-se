@@ -687,6 +687,13 @@
             class="org.talend.repository.model.migration.RenametBufferOutputMigrationTask"
             id="org.talend.repository.migration.renametBufferOutput"
             name="Rename tBuffer"/>
+      <projecttask
+            beforeLogon="false"
+            class="org.talend.repository.model.migration.ReplaceOldContextScriptCodeMigrationTask"
+            description="Replace old syntax of script code to new one for context variables"
+            id="org.talend.repository.migration.ReplaceOldContextScriptCodeMigrationTask"
+            name="Replace old syntax of script code for context variables">
+      </projecttask>
    </extension>
    <extension
          point="org.talend.core.librariesNeeded">
