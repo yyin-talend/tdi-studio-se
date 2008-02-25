@@ -82,6 +82,10 @@ public class PasteAction extends AContextualAction {
 
     public void init(TreeViewer viewer, IStructuredSelection selection) {
         boolean enabled = true;
+        if (selection.isEmpty()) {
+            setEnabled(false);
+            return;
+        }
         RepositoryNode target = (RepositoryNode) selection.getFirstElement();
         TreeSelection selectionInClipboard = (TreeSelection) LocalSelectionTransfer.getTransfer().getSelection();
 
@@ -91,9 +95,7 @@ public class PasteAction extends AContextualAction {
                 || target.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.JOBLET_DOC) {
             visible = false;
             enabled = false;
-        }
-
-        else if (selectionInClipboard != null) {
+        } else if (selectionInClipboard != null) {
             for (Object obj : ((StructuredSelection) selectionInClipboard).toArray()) {
                 if (enabled) {
                     RepositoryNode sourceNode = (RepositoryNode) obj;

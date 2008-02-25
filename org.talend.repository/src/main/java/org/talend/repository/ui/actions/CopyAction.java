@@ -58,9 +58,14 @@ public class CopyAction extends AContextualAction {
     public void init(TreeViewer viewer, IStructuredSelection selection) {
         boolean canWork = true;
         RepositoryNode node = (RepositoryNode) selection.getFirstElement();
+        if (selection.isEmpty()) {
+            setEnabled(false);
+            return;
+        }
         if (ProxyRepositoryFactory.getInstance().isUserReadOnlyOnCurrentProject()) {
             canWork = false;
         }
+
         for (Object obj : ((StructuredSelection) selection).toArray()) {
             if (canWork) {
                 RepositoryNode sourceNode = (RepositoryNode) obj;

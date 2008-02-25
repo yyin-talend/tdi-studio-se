@@ -283,6 +283,11 @@ public class DeleteAction extends AContextualAction {
      */
     public void init(TreeViewer viewer, IStructuredSelection selection) {
         visible = !selection.isEmpty();
+        if (selection.isEmpty()) {
+            setEnabled(false);
+            return;
+        }
+
         boolean enabled = true;
         this.setText(null);
         if (ProxyRepositoryFactory.getInstance().isUserReadOnlyOnCurrentProject()) {
