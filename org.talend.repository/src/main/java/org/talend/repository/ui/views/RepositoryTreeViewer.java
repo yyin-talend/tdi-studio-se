@@ -55,8 +55,26 @@ public class RepositoryTreeViewer extends TreeViewer implements ITreeViewerListe
         return super.getExpanded(item);
     }
 
+    public void setExpandedState(Object elementOrTreePath, boolean expanded) {
+        if (expanded) {
+            internalExpand(elementOrTreePath);
+        } else {
+            internalCollapse(elementOrTreePath);
+        }
+        super.setExpandedState(elementOrTreePath, expanded);
+    }
+
     public void treeCollapsed(TreeExpansionEvent event) {
         Object element = event.getElement();
+        internalCollapse(element);
+    }
+
+    public void treeExpanded(TreeExpansionEvent event) {
+        Object element = event.getElement();
+        internalExpand(element);
+    }
+
+    private void internalCollapse(Object element) {
         if (element instanceof RepositoryNode) {
             RepositoryNode repositoryNode = (RepositoryNode) element;
             if (idIsValid(repositoryNode)) {
@@ -66,8 +84,7 @@ public class RepositoryTreeViewer extends TreeViewer implements ITreeViewerListe
         }
     }
 
-    public void treeExpanded(TreeExpansionEvent event) {
-        Object element = event.getElement();
+    private void internalExpand(Object element) {
         if (element instanceof RepositoryNode) {
             RepositoryNode repositoryNode = (RepositoryNode) element;
             if (idIsValid(repositoryNode)) {

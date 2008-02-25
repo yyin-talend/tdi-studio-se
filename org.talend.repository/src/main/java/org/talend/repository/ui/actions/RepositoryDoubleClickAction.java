@@ -78,6 +78,7 @@ public class RepositoryDoubleClickAction extends Action {
         if (node.getType() == ENodeType.SIMPLE_FOLDER || node.getType() == ENodeType.STABLE_SYSTEM_FOLDER
                 || node.getType() == ENodeType.SYSTEM_FOLDER) {
             view.expand(node);
+            view.getViewer().refresh();
         } else {
             ITreeContextualAction actionToRun = getAction(node);
             if (!(actionToRun == null)) {
