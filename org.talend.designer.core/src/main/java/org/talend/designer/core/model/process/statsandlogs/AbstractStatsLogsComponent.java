@@ -378,4 +378,14 @@ public abstract class AbstractStatsLogsComponent implements IComponent {
         // TODO Auto-generated method stub
         return false;
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.components.IComponent#useImport()
+     */
+    public boolean useImport() {
+        // TODO Auto-generated method stub
+        return false;
+    }
 }

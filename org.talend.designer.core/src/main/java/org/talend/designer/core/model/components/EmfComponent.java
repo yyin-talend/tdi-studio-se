@@ -144,6 +144,8 @@ public class EmfComponent implements IComponent {
 
     private Boolean useLookup = null;
 
+    private Boolean useImport = null;
+
     public EmfComponent(File file, String pathSource) throws BusinessException {
         this.file = file;
         this.pathSource = pathSource;
@@ -1899,5 +1901,28 @@ public class EmfComponent implements IComponent {
             }
         }
         return useLookup;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.components.IComponent#useImportPart()
+     */
+    public boolean useImport() {
+        if (useImport == null) {
+            useImport = false;
+            EList listParameterType;
+            PARAMETERType parameterType;
+
+            listParameterType = compType.getPARAMETERS().getPARAMETER();
+            for (int i = 0; i < listParameterType.size(); i++) {
+                parameterType = (PARAMETERType) listParameterType.get(i);
+                if (parameterType.getFIELD().equals(EParameterFieldType.MEMO_IMPORT.getName())) {
+                    useImport = true;
+                    break;
+                }
+            }
+        }
+        return useImport;
     }
 }

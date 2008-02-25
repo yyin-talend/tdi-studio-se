@@ -443,7 +443,12 @@
      <generator
             class="org.talend.designer.core.ui.editor.properties.controllers.generator.CommandGenerator"
             mapping="COMMAND"
-            name="Command"/>     
+            name="Command"/>
+     <generator
+           class="org.talend.designer.core.ui.editor.properties.controllers.generator.JavaMemoGenerator"
+           mapping="MEMO_IMPORT"
+           name="Java Import Memo">
+     </generator>     
    </extension>
    
    <extension

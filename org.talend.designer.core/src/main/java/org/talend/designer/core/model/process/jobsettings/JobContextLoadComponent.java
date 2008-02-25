@@ -410,4 +410,13 @@ public class JobContextLoadComponent implements IComponent {
     public boolean useLookup() {
         return false;
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.components.IComponent#useImport()
+     */
+    public boolean useImport() {
+        return false;
+    }
 }
