@@ -50,6 +50,11 @@ public final class PublishOnSpagoAction extends AContextualAction {
      */
     public void init(TreeViewer viewer, IStructuredSelection selection) {
         boolean canWork = true;
+        if (selection.isEmpty()) {
+            setEnabled(false);
+            return;
+        }
+
         List<RepositoryNode> nodes = (List<RepositoryNode>) selection.toList();
         for (RepositoryNode node : nodes) {
             if (node.getType() != ENodeType.REPOSITORY_ELEMENT
