@@ -35,7 +35,7 @@ import org.talend.spagic.engines.client.ui.wizards.SpagicDeployWizard;
 /**
  * Action used to export job scripts. <br/>
  * 
- * $Id: ExportJobScriptAction.java 1 2006-12-13 涓嬪�?3:12:05 bqian
+ * $Id: ExportJobScriptAction.java 1 2006-12-13 涓嬪�?3:12:05 bqian
  * 
  */
 public class DeployOnSpagicAction extends AContextualAction {
@@ -50,6 +50,11 @@ public class DeployOnSpagicAction extends AContextualAction {
      */
     public void init(TreeViewer viewer, IStructuredSelection selection) {
         boolean canWork = true;
+        if (selection.isEmpty()) {
+            setEnabled(false);
+            return;
+        }
+
         List<RepositoryNode> nodes = (List<RepositoryNode>) selection.toList();
         for (RepositoryNode node : nodes) {
             if (node.getType() != ENodeType.REPOSITORY_ELEMENT
