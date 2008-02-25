@@ -35,12 +35,16 @@
       REQUIRED="true"
       NUM_ROW="1"
     />
+    
+   	<PARAMETER NAME="IMPORT" FIELD="MEMO_IMPORT" REQUIRED="false" NUM_ROW="2" NB_LINES="9" CONTEXT="begin">
+      <DEFAULT>//import java.util.List;</DEFAULT>
+    </PARAMETER>    
 
     <PARAMETER
       NAME="CODE_START"
       FIELD="MEMO_JAVA"
       REQUIRED="false"
-      NUM_ROW="2"
+      NUM_ROW="3"
       NB_LINES="9"
       CONTEXT="begin"
     >
@@ -52,7 +56,7 @@
       NAME="CODE_MAIN"
       FIELD="MEMO_JAVA"
       REQUIRED="false"
-      NUM_ROW="3"
+      NUM_ROW="4"
       NB_LINES="9"
       CONTEXT="main"
     >
@@ -66,7 +70,7 @@
       NAME="CODE_END"
       FIELD="MEMO_JAVA"
       REQUIRED="false"
-      NUM_ROW="4"
+      NUM_ROW="5"
       NB_LINES="9"
       CONTEXT="end"
     >

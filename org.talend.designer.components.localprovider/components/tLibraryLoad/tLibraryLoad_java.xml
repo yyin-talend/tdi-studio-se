@@ -35,6 +35,10 @@
       REQUIRED="true"
     >
       <DEFAULT></DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER NAME="IMPORT" FIELD="MEMO_IMPORT" REQUIRED="false" NUM_ROW="2" NB_LINES="9" CONTEXT="begin">
+      <DEFAULT>//import java.util.List;</DEFAULT>
     </PARAMETER>	
    </PARAMETERS>
 

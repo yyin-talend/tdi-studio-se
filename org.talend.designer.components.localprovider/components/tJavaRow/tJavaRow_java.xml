@@ -34,8 +34,12 @@
     <PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" REQUIRED="true" NUM_ROW="1">
       <DEFAULT/>
     </PARAMETER>
+    
+   	<PARAMETER NAME="IMPORT" FIELD="MEMO_IMPORT" REQUIRED="false" NUM_ROW="2" NB_LINES="9" CONTEXT="begin">
+      <DEFAULT>//import java.util.List;</DEFAULT>
+    </PARAMETER>    
 
-    <PARAMETER NAME="CODE" FIELD="MEMO_JAVA" NUM_ROW="2" NB_LINES="10">
+    <PARAMETER NAME="CODE" FIELD="MEMO_JAVA" NUM_ROW="3" NB_LINES="10">
       <DEFAULT>// code sample:
 //
 // multiply by 2 the row identifier
