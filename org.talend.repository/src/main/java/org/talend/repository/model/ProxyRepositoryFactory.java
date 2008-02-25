@@ -774,8 +774,7 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         // }
     }
 
-    public void createParentFoldersRecursively(Item item, IPath path) throws PersistenceException {
-        ERepositoryObjectType itemType = ERepositoryObjectType.getItemType(item);
+    public void createParentFoldersRecursively(ERepositoryObjectType itemType, IPath path) throws PersistenceException {
         List<String> folders = getFolders(itemType);
 
         for (int i = 0; i < path.segmentCount(); i++) {
