@@ -1157,7 +1157,7 @@ public class EmfComponent implements IComponent {
 
     private int computeIndex(List<ElementParameter> listParam, ElementParameter param) {
         String[] types = null;
-        int index = -1;
+        int index = 0;
         boolean isDBTYPEANDMYSQL = false;
         List<IElementParameterDefaultValue> elementParameterDefaultValueList = param.getDefaultValues();
 
@@ -1181,16 +1181,6 @@ public class EmfComponent implements IComponent {
                                 break;
                             }
                         }
-                    }
-                }
-            }
-
-            if (index == -1) {
-                for (IElementParameterDefaultValue elementParameterDefaultValue : elementParameterDefaultValueList) {
-                    String ifCondition = ((ElementParameterDefaultValue) elementParameterDefaultValue).ifCondition;
-                    if (ifCondition == null) {
-                        index = param.getDefaultValues().indexOf(elementParameterDefaultValue);
-                        break;
                     }
                 }
             }

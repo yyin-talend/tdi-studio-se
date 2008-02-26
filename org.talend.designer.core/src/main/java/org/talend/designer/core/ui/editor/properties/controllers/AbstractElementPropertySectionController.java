@@ -152,7 +152,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
         connKeyMap.put("SERVER_NAME", "HOST");
         connKeyMap.put("PORT", "PORT");
         connKeyMap.put("SID", "DBNAME");
-        connKeyMap.put("SCHEMA", "SCHEMA");
+        connKeyMap.put("SCHEMA", "SCHEMA_DB");
         connKeyMap.put("USERNAME", "USER");
         connKeyMap.put("PASSWORD", "PASS");
         connKeyMap.put("PROPERTIES_STRING", "PROPERTIES");
