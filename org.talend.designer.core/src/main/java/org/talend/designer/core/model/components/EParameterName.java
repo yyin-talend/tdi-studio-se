@@ -115,6 +115,8 @@ public enum EParameterName {
     MULTI_THREAD_EXECATION(Messages.getString("EParameterName.MultiThread")), //$NON-NLS-1$
     IMPLICIT_TCONTEXTLOAD(Messages.getString("EParameterName.ImplicitContextLoad")), //$NON-NLS-1$
     IMPLICIT_TCONTEXTLOAD_FILE(Messages.getString("EParameterName.FromFile")), //$NON-NLS-1$
+    FROM_FILE_FLAG(Messages.getString("EParameterName.fromFileFlag")), //$NON-NLS-1$
+    FROM_DATABASE_FLAG(Messages.getString("EParameterName.fromDatabaseFlag")), //$NON-NLS-1$
     // implict tConextLoad parameters.
     LOAD_NEW_VARIABLE(Messages.getString("EParameterName.LoadNewVariableLabel")), //$NON-NLS-1$
     NOT_LOAD_OLD_VARIABLE(Messages.getString("EParameterName.NotLoadOldVariableLabel")), //$NON-NLS-1$

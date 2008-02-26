@@ -106,15 +106,14 @@ public class JobSettingsManager {
             paramList.add(param);
         }
 
-        // Temporary deactivate "Implicit context load" feature (cf bugtracker 2710)
-        // param = new ElementParameter(process);
-        // param.setName(EParameterName.IMPLICIT_TCONTEXTLOAD.getName());
-        // param.setValue(false);
-        // param.setDisplayName(EParameterName.IMPLICIT_TCONTEXTLOAD.getDisplayName());
-        // param.setField(EParameterFieldType.CHECK);
-        // param.setCategory(EComponentCategory.EXTRA);
-        // param.setNumRow(3);
-        // paramList.add(param);
+        param = new ElementParameter(process);
+        param.setName(EParameterName.IMPLICIT_TCONTEXTLOAD.getName());
+        param.setValue(false);
+        param.setDisplayName(EParameterName.IMPLICIT_TCONTEXTLOAD.getDisplayName());
+        param.setField(EParameterFieldType.CHECK);
+        param.setCategory(EComponentCategory.EXTRA);
+        param.setNumRow(3);
+        paramList.add(param);
 
         // on file
         createExtraOnFileParameters(process);
@@ -130,15 +129,15 @@ public class JobSettingsManager {
         List<IElementParameter> paramList = (List<IElementParameter>) process.getElementParameters();
         // on files
         param = new ElementParameter(process);
-        param.setName(JobSettingsConstants.getExtraParameterName(EParameterName.ON_FILES_FLAG.getName()));
+        param.setName(JobSettingsConstants.getExtraParameterName(EParameterName.FROM_FILE_FLAG.getName()));
         param.setValue(false);
-        param.setDisplayName(EParameterName.ON_FILES_FLAG.getDisplayName());
+        param.setDisplayName(EParameterName.FROM_FILE_FLAG.getDisplayName());
         param.setField(EParameterFieldType.CHECK);
         param.setCategory(EComponentCategory.EXTRA);
         param.setNumRow(30);
         param.setShowIf(JobSettingsConstants.addBrackets(CONTEXTLOAD_CONDITION)
                 + " and "
-                + JobSettingsConstants.addBrackets(JobSettingsConstants.getExtraParameterName(EParameterName.ON_DATABASE_FLAG
+                + JobSettingsConstants.addBrackets(JobSettingsConstants.getExtraParameterName(EParameterName.FROM_DATABASE_FLAG
                         .getName())
                         + " == 'false'"));
         paramList.add(param);
@@ -157,7 +156,7 @@ public class JobSettingsManager {
         param.setNumRow(31);
         final String condition = JobSettingsConstants.addBrackets(CONTEXTLOAD_CONDITION)
                 + " and " //$NON-NLS-1$ 
-                + JobSettingsConstants.addBrackets(JobSettingsConstants.getExtraParameterName(EParameterName.ON_FILES_FLAG
+                + JobSettingsConstants.addBrackets(JobSettingsConstants.getExtraParameterName(EParameterName.FROM_FILE_FLAG
                         .getName())
                         + " == 'true'"); //$NON-NLS-1$
 
@@ -178,20 +177,20 @@ public class JobSettingsManager {
 
         // on database
         param = new ElementParameter(process);
-        param.setName(JobSettingsConstants.getExtraParameterName(EParameterName.ON_DATABASE_FLAG.getName()));
+        param.setName(JobSettingsConstants.getExtraParameterName(EParameterName.FROM_DATABASE_FLAG.getName()));
         param.setValue(false);
-        param.setDisplayName(EParameterName.ON_DATABASE_FLAG.getDisplayName());
+        param.setDisplayName(EParameterName.FROM_DATABASE_FLAG.getDisplayName());
         param.setField(EParameterFieldType.CHECK);
         param.setCategory(EComponentCategory.EXTRA);
         param.setNumRow(40);
         param.setShowIf(JobSettingsConstants.addBrackets(CONTEXTLOAD_CONDITION)
                 + " and "
-                + JobSettingsConstants.addBrackets(JobSettingsConstants.getExtraParameterName(EParameterName.ON_FILES_FLAG
+                + JobSettingsConstants.addBrackets(JobSettingsConstants.getExtraParameterName(EParameterName.FROM_FILE_FLAG
                         .getName())
                         + " == 'false'"));
         paramList.add(param);
 
-        final String onDBCondition = JobSettingsConstants.getExtraParameterName(EParameterName.ON_DATABASE_FLAG.getName())
+        final String onDBCondition = JobSettingsConstants.getExtraParameterName(EParameterName.FROM_DATABASE_FLAG.getName())
                 + " == 'true'"; //$NON-NLS-1$
         final String dbCondition = JobSettingsConstants.addBrackets(CONTEXTLOAD_CONDITION)
                 + " and " + JobSettingsConstants.addBrackets(onDBCondition); //$NON-NLS-1$
@@ -465,10 +464,6 @@ public class JobSettingsManager {
      * for implictit tContextLoad in extra settings
      */
     public static boolean isImplicittContextLoadActived(IProcess process) {
-        // Temporary deactivate "Implicit context load" feature (cf bugtracker 2710)
-        if (true)
-            return false;
-
         String paramName = EParameterName.IMPLICIT_TCONTEXTLOAD.getName();
         boolean useContextLoad = ((Boolean) process.getElementParameter(paramName).getValue())
                 && process.getElementParameter(paramName).isShow(process.getElementParameters());
@@ -478,13 +473,13 @@ public class JobSettingsManager {
         }
 
         // file
-        paramName = JobSettingsConstants.getExtraParameterName(EParameterName.ON_FILES_FLAG.getName());
+        paramName = JobSettingsConstants.getExtraParameterName(EParameterName.FROM_FILE_FLAG.getName());
         boolean fileFlag = ((Boolean) process.getElementParameter(paramName).getValue())
                 && process.getElementParameter(paramName).isShow(process.getElementParameters());
 
         // db
         String dbInput = null;
-        paramName = JobSettingsConstants.getExtraParameterName(EParameterName.ON_DATABASE_FLAG.getName());
+        paramName = JobSettingsConstants.getExtraParameterName(EParameterName.FROM_DATABASE_FLAG.getName());
         boolean dbFlag = ((Boolean) process.getElementParameter(paramName).getValue())
                 && process.getElementParameter(paramName).isShow(process.getElementParameters());
         if (!dbFlag) {
@@ -518,13 +513,13 @@ public class JobSettingsManager {
         }
 
         // file
-        paramName = JobSettingsConstants.getExtraParameterName(EParameterName.ON_FILES_FLAG.getName());
+        paramName = JobSettingsConstants.getExtraParameterName(EParameterName.FROM_FILE_FLAG.getName());
         boolean fileFlag = ((Boolean) process.getElementParameter(paramName).getValue())
                 && process.getElementParameter(paramName).isShow(process.getElementParameters());
 
         // db
         String dbInput = null;
-        paramName = JobSettingsConstants.getExtraParameterName(EParameterName.ON_DATABASE_FLAG.getName());
+        paramName = JobSettingsConstants.getExtraParameterName(EParameterName.FROM_DATABASE_FLAG.getName());
         boolean dbFlag = ((Boolean) process.getElementParameter(paramName).getValue())
                 && process.getElementParameter(paramName).isShow(process.getElementParameters());
         if (!dbFlag) {

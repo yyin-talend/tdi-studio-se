@@ -90,10 +90,9 @@ public class JobContextLoadComponent implements IComponent {
             currentItem = multipleComponentManager.addItem(CONTEXT_LOAD, CONTEXTLOAD_COMPONENT);
 
         }
-        createMultipleComponentsParameters();
         multipleComponentManager.validateItems();
         multipleComponentManagers.add(multipleComponentManager);
-
+        createMultipleComponentsParameters();
     }
 
     // no use for virtual component
@@ -146,7 +145,7 @@ public class JobContextLoadComponent implements IComponent {
     }
 
     public Boolean hasConditionalOutputs() {
-        return null;
+        return false;
     }
 
     public Boolean isMultiplyingOutputs() {

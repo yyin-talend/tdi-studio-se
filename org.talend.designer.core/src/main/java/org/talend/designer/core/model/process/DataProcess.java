@@ -794,6 +794,16 @@ public class DataProcess {
 
         replaceNodeFromProviders(newGraphicalNodeList);
 
+        // job settings extra (feature 2710)
+        if (JobSettingsManager.isImplicittContextLoadActived(duplicatedProcess)) {
+            List<DataNode> contextLoadNodes = JobSettingsManager.createExtraContextLoadNodes(duplicatedProcess);
+            for (DataNode node : contextLoadNodes) {
+                buildCheckMap.put(node, node);
+                dataNodeList.add(node);
+                replaceMultipleComponents(node);
+            }
+        }
+
         for (Node node : newGraphicalNodeList) {
             if (node.isSubProcessStart() && node.isActivate()) {
                 buildDataNodeFromNode(node);
@@ -838,16 +848,6 @@ public class DataProcess {
             List<DataNode> statsAndLogsNodeList = JobSettingsManager.createStatsAndLogsNodes(duplicatedProcess);
 
             for (DataNode node : statsAndLogsNodeList) {
-                buildCheckMap.put(node, node);
-                dataNodeList.add(node);
-                replaceMultipleComponents(node);
-            }
-        }
-
-        // job settings extra (feature 2710)
-        if (JobSettingsManager.isImplicittContextLoadActived(duplicatedProcess)) {
-            List<DataNode> contextLoadNodes = JobSettingsManager.createExtraContextLoadNodes(duplicatedProcess);
-            for (DataNode node : contextLoadNodes) {
                 buildCheckMap.put(node, node);
                 dataNodeList.add(node);
                 replaceMultipleComponents(node);
