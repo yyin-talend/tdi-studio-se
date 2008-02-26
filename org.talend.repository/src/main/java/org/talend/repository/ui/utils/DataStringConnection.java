@@ -43,9 +43,9 @@ public class DataStringConnection {
         String file = "([\\w\\.\\-_]{0,})"; //$NON-NLS-1$
         String addParam = "([\\w\\.\\-_]{0,})"; //$NON-NLS-1$
 
-        dataConnection = new DataConnection[23];
+        dataConnection = new DataConnection[24];
 
-        defaultTable = new String[23];
+        defaultTable = new String[24];
 
         dataConnection[0] = new DataConnection(
                 "MySQL", "jdbc:mysql://<host>:<port>/<sid>?<property>", "jdbc:mysql://" + host + ":" + port //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
@@ -120,6 +120,9 @@ public class DataStringConnection {
 
         dataConnection[22] = new DataConnection("HSQLDB In-Process", "jdbc:hsqldb:file:<dbRootPath>/<sid>;ifexists=true",
                 "jdbc:hsqldb:file:" + file + "/" + sid + ";ifexists=true"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+
+        dataConnection[23] = new DataConnection("MaxDB", "jdbc:sapdb://<host>:<port>/<sid>",
+                "jdbc:sapdb://" + host + ":" + port + "/" + sid, "7210"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
         // dataConnection[8] = new DataConnection("Sybase IQ", "jdbc:sybase:Tds:<host>:<port>/<sid>", "jdbc:sybase:Tds:"
         // + host + ":" + port //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
