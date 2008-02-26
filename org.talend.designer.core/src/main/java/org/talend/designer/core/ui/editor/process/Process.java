@@ -2552,4 +2552,19 @@ public class Process extends Element implements IProcess2 {
     public void setGeneratingProcess(DataProcess generatingProcess) {
         this.generatingProcess = generatingProcess;
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IProcess#getNodesWithImport()
+     */
+    public List<INode> getNodesWithImport() {
+        List<INode> nodesWithImport = new ArrayList<INode>();
+        for (INode node : nodes) {
+            if (node.getComponent().useImport()) {
+                nodesWithImport.add(node);
+            }
+        }
+        return nodesWithImport;
+    }
 }
