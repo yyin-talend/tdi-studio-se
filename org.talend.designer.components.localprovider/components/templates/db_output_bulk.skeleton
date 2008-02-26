@@ -20,6 +20,7 @@ public class CLASS {
     public static final String INGRES = "ingres_id";
     public static final String INTERBASE = "interbase_id";
     public static final String JAVADB = "javadb_id";
+    public static final String MAXDB = "maxdb_id";
     public static final String MSSQL = "id_MSSQL";
     public static final String MYSQL = "mysql_id";
     public static final String ORACLE = "oracle_id";
@@ -807,6 +808,21 @@ public class CLASS {
         protected String getRProtectedChar() {
             return "\\\"";
         }        
+    }
+    
+    public class MaxDBManager extends Manager {
+        public MaxDBManager(String cid) {
+            super(cid);
+        }
+        protected String getDBMSId() {
+            return MAXDB;
+        }
+        protected String getLProtectedChar() {
+            return "";
+        }
+        protected String getRProtectedChar() {
+            return "";
+        }
     }
     
     public class MSSQLManager extends Manager {

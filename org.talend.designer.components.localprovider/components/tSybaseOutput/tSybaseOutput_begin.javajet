@@ -113,7 +113,7 @@ if(dataAction.equals("UPDATE") || dataAction.equals("INSERT_OR_UPDATE") || dataA
 String dbUser_<%=cid %> = <%=dbuser%>;
 String dbPwd_<%=cid %> = <%=dbpwd%>;
 java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
-
+conn_<%=cid%>.setAutoCommit(false);
 <%
 if(columnList != null && columnList.size()>0) {    
     if(!tableAction.equals("NONE")) {
@@ -130,7 +130,7 @@ if(columnList != null && columnList.size()>0) {
             java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
             stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
             <%
-        } else if(tableAction.equals("CREATE_IF_NOT_EXISTS")) {
+        } else if(tableAction.equals("CREATE_IF_NOT_EXISTS") || tableAction.equals("DROP_IF_EXISTS_AND_CREATE")) {
             %>
             java.sql.DatabaseMetaData dbMetaData_<%=cid%> = conn_<%=cid%>.getMetaData();
             java.sql.ResultSet rsTable_<%=cid%> = dbMetaData_<%=cid%>.getTables(null, null, null, new String[]{"TABLE"});
@@ -142,11 +142,24 @@ if(columnList != null && columnList.size()>0) {
                     break;
                 }
             }
-            if(!whetherExist_<%=cid%>) {
-                java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
-                stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");            
-            }
             <%
+            if(tableAction.equals("CREATE_IF_NOT_EXISTS")) {
+                %>
+                if(!whetherExist_<%=cid%>) {
+                    java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
+                    stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");            
+                }                
+                <%
+            } else {
+                %>
+                if(whetherExist_<%=cid%>) {
+                    java.sql.Statement stmtDrop_<%=cid%> = conn_<%=cid%>.createStatement();
+                    stmtDrop_<%=cid%>.execute("<%=manager.getDropTableSQL()%>");
+                }
+                java.sql.Statement stmtCreate_<%=cid%> = conn_<%=cid%>.createStatement();
+                stmtCreate_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");                
+            <%
+            }
         } else if(tableAction.equals("CLEAR")) {
             %>
             java.sql.Statement stmtClearCount_<%=cid%> = conn_<%=cid%>.createStatement();
@@ -197,7 +210,6 @@ if(columnList != null && columnList.size()>0) {
         
         int commitCounter_<%=cid%> = 0;
         
-        conn_<%=cid%>.setAutoCommit(false);
         <%
 	}
 }
