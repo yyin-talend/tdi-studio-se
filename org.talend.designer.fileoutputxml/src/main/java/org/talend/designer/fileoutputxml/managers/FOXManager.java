@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.designer.fileoutputxml.FileOutputXMLComponent;
@@ -279,6 +280,10 @@ public class FOXManager {
 
     public List<FOXTreeNode> getTreeData() {
         return treeData;
+    }
+
+    public List<IMetadataColumn> getSchemaData() {
+        return foxComponent.getMetadataTable().getListColumns();
     }
 
     public void setTreeData(List<FOXTreeNode> treeData) {

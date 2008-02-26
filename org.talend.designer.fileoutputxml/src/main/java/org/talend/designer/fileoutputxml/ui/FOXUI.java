@@ -195,6 +195,10 @@ public class FOXUI {
         }
     }
 
+    public void refreshXMLViewer(FOXTreeNode targetNode) {
+        this.xmlViewer.refresh(targetNode);
+    }
+
     protected void initSchemaTable() {
         IMetadataTable metadataTable = this.externalNode.getMetadataTable();
         if (metadataTable != null) {

@@ -12,9 +12,15 @@
 // ============================================================================
 package org.talend.designer.fileoutputxml.managers;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
+import org.talend.core.model.metadata.IMetadataColumn;
+import org.talend.designer.fileoutputxml.data.Element;
+import org.talend.designer.fileoutputxml.data.FOXTreeNode;
 import org.talend.designer.fileoutputxml.ui.FOXUI;
 
 /**
@@ -117,6 +123,44 @@ public class UIManager {
             ((Shell) parent).close();
         }
 
+    }
+
+    /**
+     * 
+     * DOC xzhang Comment method "autoMap".
+     */
+    public void autoMap() {
+        FOXTreeNode root = this.foxManager.getTreeData().get(0);
+        List<FOXTreeNode> mappableNodes = new ArrayList<FOXTreeNode>();
+        getMappableNode((Element) root, mappableNodes);
+        List<IMetadataColumn> schemaData = this.foxManager.getSchemaData();
+
+        for (IMetadataColumn column : schemaData) {
+            for (FOXTreeNode node : mappableNodes) {
+                if (node.getLabel().equals(column.getLabel())) {
+                    node.setColumn(column);
+                    break;
+                }
+            }
+        }
+        this.foxUI.refreshXMLViewer(root);
+        this.foxUI.redrawLinkers();
+    }
+
+    private void getMappableNode(Element node, List<FOXTreeNode> mappableNodes) {
+        if (node.getElementChildren().size() == 0) {
+            if (node.getColumn() == null) {
+                mappableNodes.add(node);
+            }
+        }
+        for (FOXTreeNode attri : node.getAttributeChildren()) {
+            if (attri.getColumn() == null) {
+                mappableNodes.add(attri);
+            }
+        }
+        for (FOXTreeNode elem : node.getElementChildren()) {
+            getMappableNode((Element) elem, mappableNodes);
+        }
     }
 
     /**
