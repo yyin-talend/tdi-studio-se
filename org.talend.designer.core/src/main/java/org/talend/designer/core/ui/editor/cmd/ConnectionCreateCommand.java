@@ -78,9 +78,9 @@ public class ConnectionCreateCommand extends Command {
         this.target = targetNode;
     }
 
-    private String askForConnectionName(String nodeLabel) {
+    private String askForConnectionName(String nodeLabel, String oldName) {
         InputDialog id = new InputDialog(null, nodeLabel + Messages.getString("ConnectionCreateAction.dialogTitle"), //$NON-NLS-1$
-                Messages.getString("ConnectionCreateAction.dialogMessage"), "", null); //$NON-NLS-1$ //$NON-NLS-2$
+                Messages.getString("ConnectionCreateAction.dialogMessage"), oldName, null); //$NON-NLS-1$ //$NON-NLS-2$
         id.open();
         if (id.getReturnCode() == InputDialog.CANCEL) {
             return ""; //$NON-NLS-1$
@@ -119,7 +119,7 @@ public class ConnectionCreateCommand extends Command {
             if (source.getConnectorFromName(connectorName).isBuiltIn()) {
                 boolean connectionOk = false;
                 while (!connectionOk) {
-                    connectionName = askForConnectionName(source.getLabel());
+                    connectionName = askForConnectionName(source.getLabel(), connectionName);
                     if (connectionName.equals("")) {
                         creatingConnection = false;
                         dispose();

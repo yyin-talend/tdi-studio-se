@@ -251,10 +251,10 @@ public class ConnectionCreateAction extends SelectionAction {
         this.menuList = menuList;
     }
 
-    private String askForConnectionName(String nodeLabel) {
+    private String askForConnectionName(String nodeLabel, String oldName) {
         InputDialog id = new InputDialog(getWorkbenchPart().getSite().getShell(), nodeLabel
                 + Messages.getString("ConnectionCreateAction.dialogTitle"), //$NON-NLS-1$
-                Messages.getString("ConnectionCreateAction.dialogMessage"), "", null); //$NON-NLS-1$ //$NON-NLS-2$
+                Messages.getString("ConnectionCreateAction.dialogMessage"), oldName, null); //$NON-NLS-1$ //$NON-NLS-2$
         id.open();
         if (id.getReturnCode() == InputDialog.CANCEL) {
             return ""; //$NON-NLS-1$
@@ -293,7 +293,7 @@ public class ConnectionCreateAction extends SelectionAction {
                 boolean nameOk = false;
                 while (!nameOk) {
 
-                    connectionName = askForConnectionName(node.getLabel());
+                    connectionName = askForConnectionName(node.getLabel(), connectionName);
                     if (connectionName.equals("")) { //$NON-NLS-1$
                         return;
                     }
@@ -355,7 +355,7 @@ public class ConnectionCreateAction extends SelectionAction {
             meta.setAttachedConnector(curNodeConnector.getName());
         } else {
             if (connecType.equals(EConnectionType.TABLE)) {
-                connectionName = askForConnectionName(node.getLabel());
+                connectionName = askForConnectionName(node.getLabel(), null);
             } else {
                 if (connecType.hasConnectionCategory(IConnectionCategory.FLOW)) {
                     connectionName = node.getProcess().generateUniqueConnectionName(Process.DEFAULT_ROW_CONNECTION_NAME);
