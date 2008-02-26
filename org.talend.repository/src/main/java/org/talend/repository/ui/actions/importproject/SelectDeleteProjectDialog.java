@@ -22,7 +22,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.ITreeContentProvider;
@@ -40,7 +39,6 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.ContainerCheckedTreeViewer;
 import org.eclipse.ui.dialogs.SelectionDialog;
-import org.eclipse.ui.internal.util.SWTResourceUtil;
 import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.swt.formtools.Form;
@@ -61,6 +59,8 @@ public class SelectDeleteProjectDialog extends SelectionDialog {
     private Button bSelectAll;
 
     private Button bDeselectAll;
+
+    private Button chkButton;
 
     private ContainerCheckedTreeViewer treeViewer;
 
@@ -117,7 +117,7 @@ public class SelectDeleteProjectDialog extends SelectionDialog {
         Composite composite = (Composite) super.createDialogArea(parent);
         ((GridData) composite.getLayoutData()).widthHint = 390;
         composite.setFont(parent.getFont());
-        createMessageArea(composite);
+        createTitleArea(composite);
         Group group = Form.createGroup(composite, 10, null, 300);
         Composite inner = new Composite(group, SWT.NONE);
         inner.setFont(composite.getFont());
@@ -132,6 +132,25 @@ public class SelectDeleteProjectDialog extends SelectionDialog {
         createTreeViewer(inner);
         createButtons(inner);
         return composite;
+    }
+
+    private void createTitleArea(Composite parent) {
+        Composite titleComposite = new Composite(parent, SWT.NONE);
+        titleComposite.setFont(parent.getFont());
+        GridData data = new GridData(GridData.FILL_VERTICAL);
+        titleComposite.setLayoutData(data);
+        GridLayout layout = new GridLayout(2, false);
+        titleComposite.setLayout(layout);
+        createMessageArea(titleComposite);
+        chkButton = new Button(titleComposite, SWT.CHECK);
+        chkButton.setText("Do not delete contents");
+        chkButton.setSelection(false);
+        chkButton.addSelectionListener(new SelectionAdapter() {
+
+            public void widgetSelected(SelectionEvent e) {
+                chkButton.setSelection(chkButton.getSelection());
+            }
+        });
     }
 
     private void createTreeViewer(Composite parent) {
@@ -247,9 +266,16 @@ public class SelectDeleteProjectDialog extends SelectionDialog {
 
             public void checkStateChanged(CheckStateChangedEvent event) {
                 Object obj = event.getElement();
-                delItemList.add(obj);
-            }
+                if (event.getChecked()) {
+                    delItemList.add(obj);
+                } else {
+                    if (delItemList.contains(obj)) {
+                        delItemList.remove(obj);
+                    }
 
+                }
+
+            }
         });
     }
 
@@ -260,11 +286,11 @@ public class SelectDeleteProjectDialog extends SelectionDialog {
                 for (Object obj : delItemList) {
                     if (obj instanceof IProject) {
                         IProject project = (IProject) obj;
-                        project.delete(true, null);
+                        // project.delete(true, null);
+                        project.delete(!chkButton.getSelection(), true, null);
                         // IResourceChangeDescriptionFactory factory =
                         // ResourceChangeValidator.getValidator().createDeltaFactory();
                         // factory.delete(project);
-
                     } else if (obj instanceof IFolder) {
                         IFolder folder = (IFolder) obj;
                         folder.delete(false, null);
