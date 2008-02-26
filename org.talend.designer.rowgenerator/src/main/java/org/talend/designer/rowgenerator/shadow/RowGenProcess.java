@@ -625,4 +625,14 @@ public class RowGenProcess extends Element implements IProcess {
         // TODO Auto-generated method stub
         return false;
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IProcess#getNodesWithImport()
+     */
+    public List<INode> getNodesWithImport() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }
