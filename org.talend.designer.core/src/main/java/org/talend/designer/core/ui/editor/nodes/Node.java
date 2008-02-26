@@ -698,7 +698,9 @@ public class Node extends Element implements INode {
                         if (takeSchema == null) {
                             takeSchema = getTakeSchema();
                         }
-                        MetadataTool.copyTable(mainTargetTable, connection.getMetadataTable());
+                        if (takeSchema.booleanValue()) {
+                            MetadataTool.copyTable(mainTargetTable, connection.getMetadataTable());
+                        }
                     } else {
                         connection.getSource().checkAndRefreshNode();
                         checkAndRefreshNode();
