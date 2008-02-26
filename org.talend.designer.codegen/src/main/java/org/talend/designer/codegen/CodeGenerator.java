@@ -132,6 +132,7 @@ public class CodeGenerator implements ICodeGenerator {
         RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
                 Context.REPOSITORY_CONTEXT_KEY);
         language = repositoryContext.getProject().getLanguage();
+
     }
 
     /**
@@ -166,9 +167,7 @@ public class CodeGenerator implements ICodeGenerator {
                 headerArgument.add(process);
                 headerArgument.add(CodeGeneratorActivator.getDefault().getBundle().getHeaders().get(
                         org.osgi.framework.Constants.BUNDLE_VERSION));
-                headerArgument.add(getNodesWithImport());
                 componentsCode.append(generateTypedComponentCode(EInternalTemplate.HEADER, headerArgument));
-
                 for (NodesSubTree subTree : processTree.getSubTrees()) {
                     if (!subTree.isMergeSubTree()) {
                         componentsCode.append(generateTypedComponentCode(EInternalTemplate.SUBPROCESS_HEADER, subTree));
@@ -760,26 +759,5 @@ public class CodeGenerator implements ICodeGenerator {
             }
         }
         return null;
-    }
-
-    /**
-     * DOC xtan Comment method "getNodesWithImport".
-     * <p>
-     * this function only for the java version (not for perl)
-     * </p>
-     * 
-     * @return
-     */
-    private List<INode> getNodesWithImport() {
-        List<INode> nodesWithImport = new ArrayList<INode>();
-        if (language.equals(ECodeLanguage.PERL)) {
-            return null;
-        }
-        for (INode node : nodes) {
-            if (node.getComponent().useImport()) {
-                nodesWithImport.add(node);
-            }
-        }
-        return nodesWithImport;
     }
 }
