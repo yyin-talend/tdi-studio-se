@@ -13,6 +13,7 @@
 package org.talend.repository.ui.wizards.context;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +24,7 @@ import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.context.UpdateRunJobComponentContextHelper;
 import org.talend.core.model.context.JobContextManager;
+import org.talend.core.model.context.UpdateContextVariablesHelper;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IContextParameter;
@@ -71,6 +73,11 @@ public final class UpdateContextReferenceHelper {
             IContextManager openedContextManager = process.getContextManager();
 
             boolean modified = false; // checked the done again flag.
+
+            // update paramters reference for context. for 2608
+            Map<String, String> realRenamedVarMap = new HashMap<String, String>();
+            boolean recordFlag = false;
+
             for (IContext context : openedContextManager.getListContext()) {
                 for (IContextParameter contextParameter : context.getContextParameterList()) {
                     if (!contextParameter.isBuiltIn()) {
@@ -79,6 +86,11 @@ public final class UpdateContextReferenceHelper {
                             // check variable reference of current repository context
                             String newName = getRenamedVarName(contextParameter.getName(), renamedMap);
                             if (newName != null) {
+                                // for 2608
+                                if (!recordFlag && !realRenamedVarMap.containsKey(newName)) {
+                                    realRenamedVarMap.put(newName, contextParameter.getName());
+                                }
+
                                 // have renamed this variable.
                                 contextParameter.setName(newName);
                                 updateVariableAttributions(curRepositoryManager, contextParameter, context.getName());
@@ -95,6 +107,7 @@ public final class UpdateContextReferenceHelper {
                         }
                     }
                 }
+                recordFlag = true;
                 if (!modified) {
                     // not existed current source variables.
                     break;
@@ -102,8 +115,10 @@ public final class UpdateContextReferenceHelper {
             }
             if (modified) {
                 // update tRunJob component reference
-                UpdateRunJobComponentContextHelper.updateOpenedJobRunJobComponentReference(processes, renamedMap, process
+                UpdateRunJobComponentContextHelper.updateOpenedJobRunJobComponentReference(processes, realRenamedVarMap, process
                         .getLabel(), null);
+                // update parameter for current job and nodes in it. for 2608
+                UpdateContextVariablesHelper.updateProcessForRenamed(process, realRenamedVarMap);
             }
         }
 
@@ -212,6 +227,10 @@ public final class UpdateContextReferenceHelper {
                     if (item != null) {
                         boolean modified = false; // checked the done again flag.
 
+                        // update paramters reference for context. for 2608
+                        Map<String, String> realRenamedVarMap = new HashMap<String, String>();
+                        boolean recordFlag = false;
+
                         for (ContextType contextType : (List<ContextType>) item.getProcess().getContext()) {
                             for (ContextParameterType parameterType : (List<ContextParameterType>) contextType
                                     .getContextParameter()) {
@@ -220,29 +239,37 @@ public final class UpdateContextReferenceHelper {
                                     // found the current reference variable
                                     String newName = getRenamedVarName(parameterType.getName(), renamedMap);
                                     if (newName != null) {
+                                        // for 2608
+                                        if (!recordFlag && !realRenamedVarMap.containsKey(newName)) {
+                                            realRenamedVarMap.put(newName, parameterType.getName());
+                                        }
+
                                         // have renamed this variable.
                                         parameterType.setName(newName);
                                         updateVariableAttributions(curRepositoryManager, parameterType, contextType.getName());
-
                                     } else if (!isExistedVarInCurRepositoryContext(parameterType.getName(), repositoryVarsSet)) {
                                         // check the nonexistent variable and set to built-in.
                                         parameterType.setRepositoryContextId(null);
                                     } else {
                                         // update other variable value.
                                         updateVariableAttributions(curRepositoryManager, parameterType, contextType.getName());
-
                                     }
                                     modified = true;
                                 }
                             }
+                            recordFlag = true;
                             if (!modified) {
                                 break;
                             }
                         }
                         if (modified) {
                             // update tRunJob component reference
-                            UpdateRunJobComponentContextHelper.updateItemRunJobComponentReference(factory, renamedMap, item
-                                    .getProperty().getLabel(), null);
+                            UpdateRunJobComponentContextHelper.updateItemRunJobComponentReference(factory, realRenamedVarMap,
+                                    item.getProperty().getLabel(), null);
+
+                            // update parameter reference for current item and nodes. for 2608
+                            UpdateContextVariablesHelper.updateProcessForRenamed(item.getProcess(), realRenamedVarMap);
+
                             factory.save(item);
                         }
                     }
