@@ -18,6 +18,7 @@ import org.apache.commons.collections.BidiMap;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.swt.widgets.Composite;
 import org.talend.core.model.context.JobContextManager;
+import org.talend.core.model.context.UpdateContextVariablesHelper;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IContextParameter;
@@ -32,6 +33,8 @@ import org.talend.designer.core.ui.editor.cmd.ContextRemoveParameterCommand;
 import org.talend.designer.core.ui.editor.cmd.ContextRenameParameterCommand;
 import org.talend.designer.core.ui.editor.cmd.ContextTemplateModifyCommand;
 import org.talend.designer.core.ui.editor.process.Process;
+import org.talend.designer.core.ui.views.jobsettings.JobSettings;
+import org.talend.designer.core.ui.views.properties.ComponentSettings;
 
 /**
  * A concrete class of ContextComposite for the context view. <br/>
@@ -294,6 +297,11 @@ public class ContextViewComposite extends ContextComposite {
             setModifiedFlag(contextManager);
         }
         getCommandStack().execute(new ContextRenameParameterCommand(contextManager, oldName, newName));
+        // update variable reference for current job, for 2608
+        if (UpdateContextVariablesHelper.updateProcessForRenamed(getProcess(), oldName, newName)) {
+            JobSettings.switchToCurJobSettingsView();
+            ComponentSettings.switchToCurComponentSettingsView();
+        }
     }
 
     public void onContextModify(IContextManager contextManager, IContextParameter parameter) {
