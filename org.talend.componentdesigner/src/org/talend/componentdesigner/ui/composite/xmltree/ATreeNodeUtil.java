@@ -12,62 +12,64 @@
 // ============================================================================
 package org.talend.componentdesigner.ui.composite.xmltree;
 
+import java.io.File;
 import java.net.URL;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.datatools.enablement.oda.xml.util.ui.ATreeNode;
 import org.eclipse.datatools.enablement.oda.xml.util.ui.SchemaPopulationUtil;
+import org.talend.core.model.ModelPlugin;
 
 /**
- * DOC rli  class global comment. Detailled comment
+ * DOC rli class global comment. Detailled comment
  */
 public class ATreeNodeUtil {
-	
-	private static ATreeNode rootTreeNode = null;
-	
-	static {
-		try {
-			URL url = FileLocator.toFileURL(TreePopulator.class.getResource("Component.xsd"));
-			rootTreeNode = SchemaPopulationUtil.getSchemaTree(url.getFile(), true, 10);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public static ATreeNode getTreeNodeByPath(String xPath) {
-		String[] nodeNameSeq = xPath.split("/");
-		
-		
-		ATreeNode resultNode = rootTreeNode;
-		for (String nodeName : nodeNameSeq) {
-			resultNode = findTreeNode(nodeName, resultNode);
-			if (resultNode == null) {
-				break;
-			}
-		}
-		return resultNode;
-	}
-	
-	
-	private static ATreeNode findTreeNode(String nodeName,
-			ATreeNode rootTreeNode) {
-		Object[] childNodes = rootTreeNode.getChildren();
 
-		ATreeNode aTreeNode = null;
-		for (Object node : childNodes) {
-			if (nodeName.equals(((ATreeNode) node).getValue())) {
-				aTreeNode = (ATreeNode) node;
-			} else {
-				continue;
-			}
-		}
-		return aTreeNode;
+    private static ATreeNode rootTreeNode = null;
 
-	}
+    static {
+        try {
+            URL url = FileLocator.toFileURL(ModelPlugin.class.getResource("/"));
+            String fileString = url.getFile();
+            File file = new File(fileString);
+            fileString = file.getParent() + "/model/Component.xsd";
 
+            rootTreeNode = SchemaPopulationUtil.getSchemaTree(fileString, true, 10);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-	public static String[] getChildNodeNames(ATreeNode aTreeNode){
-		return null;
-	}
+    public static ATreeNode getTreeNodeByPath(String xPath) {
+        String[] nodeNameSeq = xPath.split("/");
+
+        ATreeNode resultNode = rootTreeNode;
+        for (String nodeName : nodeNameSeq) {
+            resultNode = findTreeNode(nodeName, resultNode);
+            if (resultNode == null) {
+                break;
+            }
+        }
+        return resultNode;
+    }
+
+    private static ATreeNode findTreeNode(String nodeName, ATreeNode rootTreeNode) {
+        Object[] childNodes = rootTreeNode.getChildren();
+
+        ATreeNode aTreeNode = null;
+        for (Object node : childNodes) {
+            if (nodeName.equals(((ATreeNode) node).getValue())) {
+                aTreeNode = (ATreeNode) node;
+            } else {
+                continue;
+            }
+        }
+        return aTreeNode;
+
+    }
+
+    public static String[] getChildNodeNames(ATreeNode aTreeNode) {
+        return null;
+    }
 
 }
