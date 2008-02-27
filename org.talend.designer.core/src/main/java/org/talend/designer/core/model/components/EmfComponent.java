@@ -1904,7 +1904,7 @@ public class EmfComponent implements IComponent {
             EList listParameterType;
             PARAMETERType parameterType;
 
-            listParameterType = compType.getPARAMETERS().getPARAMETER();
+            listParameterType = compType.getADVANCEDPARAMETERS().getPARAMETER();
             for (int i = 0; i < listParameterType.size(); i++) {
                 parameterType = (PARAMETERType) listParameterType.get(i);
                 if (parameterType.getFIELD().equals(EParameterFieldType.MEMO_IMPORT.getName())) {
