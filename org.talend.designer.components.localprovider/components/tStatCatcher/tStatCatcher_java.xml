@@ -40,7 +40,7 @@
         <COLUMN NAME="pid" TYPE="id_String" LENGTH="20"/>
         <COLUMN NAME="father_pid" TYPE="id_String" LENGTH="20"/>
         <COLUMN NAME="root_pid" TYPE="id_String" LENGTH="20"/>
-        <COLUMN NAME="system_pid" TYPE="id_Long"/>
+        <COLUMN NAME="system_pid" TYPE="id_Long" LENGTH="8"/>
         <COLUMN NAME="project" TYPE="id_String" LENGTH="50"/>
         <COLUMN NAME="job" TYPE="id_String" LENGTH="50"/>
         <COLUMN NAME="job_repository_id" TYPE="id_String" LENGTH="255"/>
@@ -49,7 +49,7 @@
         <COLUMN NAME="origin" TYPE="id_String" LENGTH="255"/>
         <COLUMN NAME="message_type" TYPE="id_String" LENGTH="255"/>
         <COLUMN NAME="message" TYPE="id_String" LENGTH="255"/>
-        <COLUMN NAME="duration" TYPE="id_Long"/>
+        <COLUMN NAME="duration" TYPE="id_Long" LENGTH="8"/>
       </TABLE>
     </PARAMETER>
    </PARAMETERS>
