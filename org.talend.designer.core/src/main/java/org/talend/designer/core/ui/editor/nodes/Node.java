@@ -129,7 +129,7 @@ public class Node extends Element implements INode {
 
     private final List<IConnection> outputs = new ArrayList<IConnection>();
 
-    private List<IConnection> inputs = new ArrayList<IConnection>();
+    private final List<IConnection> inputs = new ArrayList<IConnection>();
 
     private NodeLabel nodeLabel;
 
@@ -645,14 +645,16 @@ public class Node extends Element implements INode {
                                 continue;
                             }
                             boolean customFound = false;
+                            int customColNumber = 0;
                             for (int i = 0; i < targetTable.getListColumns().size(); i++) {
                                 IMetadataColumn column = targetTable.getListColumns().get(i);
                                 if (column.isCustom()) {
-                                    customFound = true;
-                                    break;
+                                    customColNumber++;
                                 }
                             }
-                            if (targetTable.getListColumns().size() == 0
+                            customFound = customColNumber > 0;
+                            int nonCustomColNumber = targetTable.getListColumns().size() - customColNumber;
+                            if (nonCustomColNumber == 0
                                     && (((customFound && targetTable.isReadOnly()) || (outputs.size() == 0) || (connection
                                             .getLineStyle() == EConnectionType.FLOW_MERGE)) && (inputTable.getListColumns()
                                             .size() != 0))) {
@@ -824,8 +826,8 @@ public class Node extends Element implements INode {
 
                         // code commented for major 2635.
                         //
-                        // originTable.getListColumns().clear();
-                        // originTable.getListColumns().addAll(columnToSave);
+                         originTable.getListColumns().clear();
+                         originTable.getListColumns().addAll(columnToSave);
                         originTable.sortCustomColumns();
                     }
                 }
@@ -1138,7 +1140,7 @@ public class Node extends Element implements INode {
         if (isActivate()) {
             if (!isELTComponent()) {
                 for (int j = 0; j < getIncomingConnections().size(); j++) {
-                    connec = (IConnection) getIncomingConnections().get(j);
+                    connec = getIncomingConnections().get(j);
                     if (connec.isActivate()) {
                         if (connec.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {
                             return false;
@@ -1272,7 +1274,7 @@ public class Node extends Element implements INode {
         IConnection connec;
 
         for (int j = 0; j < getIncomingConnections().size(); j++) {
-            connec = (IConnection) getIncomingConnections().get(j);
+            connec = getIncomingConnections().get(j);
             if (!connec.getLineStyle().hasConnectionCategory(IConnectionCategory.USE_HASH)) {
                 return connec.getSource().getSubProcessStartNode(withConditions);
             }
@@ -1323,11 +1325,11 @@ public class Node extends Element implements INode {
 
         Node currentNode = (Node) getSubProcessStartNode(withConditions);
         if (!currentNode.isStart()) {
-            currentNode = (Node) currentNode.getProcessStartNode(withConditions);
+            currentNode = currentNode.getProcessStartNode(withConditions);
         }
         Node otherNode = (Node) node.getSubProcessStartNode(withConditions);
         if (!otherNode.isStart()) {
-            otherNode = (Node) otherNode.getProcessStartNode(withConditions);
+            otherNode = otherNode.getProcessStartNode(withConditions);
         }
         // System.out.println("source start:" + currentNode + " -- target
         // start:" + otherNode);
@@ -2128,7 +2130,7 @@ public class Node extends Element implements INode {
             // is there condition link, then can't set the start.
             boolean isThereConditionLink = false;
             for (int j = 0; j < getIncomingConnections().size() && !isThereConditionLink; j++) {
-                IConnection connection = (IConnection) getIncomingConnections().get(j);
+                IConnection connection = getIncomingConnections().get(j);
                 if (connection.isActivate() && connection.getLineStyle().hasConnectionCategory(IConnectionCategory.DEPENDENCY)) {
                     isThereConditionLink = true;
                 }
@@ -2138,7 +2140,7 @@ public class Node extends Element implements INode {
             boolean canBeStart = false;
             boolean isActivatedConnection = false;
             for (int j = 0; j < getIncomingConnections().size() && !isActivatedConnection; j++) {
-                IConnection connection = (IConnection) getIncomingConnections().get(j);
+                IConnection connection = getIncomingConnections().get(j);
                 // connection that will generate a hash file are not
                 // considered as activated for this test.
                 if (connection.isActivate() && !connection.getLineStyle().hasConnectionCategory(IConnectionCategory.USE_HASH)) {
