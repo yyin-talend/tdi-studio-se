@@ -203,9 +203,15 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView {
         }
         if (!title.equals("")) { //$NON-NLS-1$
             viewName = viewName + "(" + title + ")"; //$NON-NLS-1$ //$NON-NLS-2$            
+            super.setTitleToolTip(title);
         }
         if (tabFactory != null) {
             Image image = ImageProvider.getImage(ECoreImage.PROCESS_ICON);
+            if (this.element != null && this.element instanceof IProcess) {
+                if (((IProcess) this.element).disableRunJobView()) { // ?? joblet
+                    image = ImageProvider.getImage(ECoreImage.JOBLET_ICON);
+                }
+            }
             tabFactory.setTitle(title, image);
         }
         super.setPartName(viewName);
@@ -252,6 +258,9 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView {
     }
 
     public void refresh(boolean force) {
+        if (force) {
+            cleanDisplay();
+        }
         final IEditorPart activeEditor = getSite().getPage().getActiveEditor();
         if (activeEditor != null && activeEditor instanceof AbstractMultiPageTalendEditor) {
             AbstractTalendEditor talendEditor = ((AbstractMultiPageTalendEditor) activeEditor).getTalendEditor();

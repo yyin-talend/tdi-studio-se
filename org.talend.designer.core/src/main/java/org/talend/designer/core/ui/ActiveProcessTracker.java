@@ -59,7 +59,7 @@ public class ActiveProcessTracker implements IPartListener {
         if (testedPart instanceof AbstractMultiPageTalendEditor) {
             AbstractMultiPageTalendEditor mpte = (AbstractMultiPageTalendEditor) testedPart;
             mpte.setName();
-
+            Contexts.setTitle(mpte.getTitle());
             IProcess process = mpte.getTalendEditor().getProcess();
             return process;
         } else {
@@ -144,7 +144,7 @@ public class ActiveProcessTracker implements IPartListener {
         IRunProcessService service = DesignerPlugin.getDefault().getRunProcessService();
         service.setActiveProcess(process);
 
-        Contexts.setTitle("Job " + process.getProperty().getLabel()); //$NON-NLS-1$
+        // Contexts.setTitle("Job " + process.getProperty().getLabel()); //$NON-NLS-1$
         Contexts.switchToCurContextsView();
     }
 

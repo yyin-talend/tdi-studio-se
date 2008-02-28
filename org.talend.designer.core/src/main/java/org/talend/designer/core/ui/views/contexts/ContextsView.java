@@ -153,6 +153,7 @@ public class ContextsView extends ViewPart {
 
         if (!title.equals("")) { //$NON-NLS-1$
             viewName = viewName + "(" + title + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+            super.setTitleToolTip(title);
         }
         super.setPartName(viewName);
     }
