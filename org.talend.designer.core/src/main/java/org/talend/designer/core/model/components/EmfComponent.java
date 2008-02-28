@@ -59,6 +59,7 @@ import org.talend.core.model.temp.ECodePart;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.designer.components.IComponentsLocalProviderService;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.core.model.utils.emf.component.ADVANCEDPARAMETERSType;
 import org.talend.designer.core.model.utils.emf.component.COLUMNType;
 import org.talend.designer.core.model.utils.emf.component.COMPONENTType;
 import org.talend.designer.core.model.utils.emf.component.CONNECTORType;
@@ -1893,24 +1894,27 @@ public class EmfComponent implements IComponent {
         return useLookup;
     }
 
-    /*
-     * (non-Javadoc)
+    /**
+     * there only search in the <ADVANCEDPARAMETERS/> node, it can be a little faster.
      * 
-     * @see org.talend.core.model.components.IComponent#useImportPart()
+     * @see org.talend.core.model.components.IComponent#useImport()
      */
     public boolean useImport() {
         if (useImport == null) {
             useImport = false;
             EList listParameterType;
             PARAMETERType parameterType;
-
-            listParameterType = compType.getADVANCEDPARAMETERS().getPARAMETER();
-            for (int i = 0; i < listParameterType.size(); i++) {
-                parameterType = (PARAMETERType) listParameterType.get(i);
-                if (parameterType.getFIELD().equals(EParameterFieldType.MEMO_IMPORT.getName())) {
-                    useImport = true;
-                    break;
+            ADVANCEDPARAMETERSType advancedparameters = compType.getADVANCEDPARAMETERS();
+            if (advancedparameters != null && advancedparameters.getPARAMETER() != null) {
+                listParameterType = advancedparameters.getPARAMETER();
+                for (int i = 0; i < listParameterType.size(); i++) {
+                    parameterType = (PARAMETERType) listParameterType.get(i);
+                    if (parameterType.getFIELD().equals(EParameterFieldType.MEMO_IMPORT.getName())) {
+                        useImport = true;
+                        break;
+                    }
                 }
+
             }
         }
         return useImport;
