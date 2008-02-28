@@ -3,13 +3,13 @@
     PLATEFORM="ALL"
     SERIAL=""
     VERSION="0.102"
-    STATUS="ALPHA"
-    
+    STATUS="ALPHA"    
     COMPATIBILITY="ALL"
     AUTHOR="Talend"
     RELEASE_DATE="20080211A"
     STARTABLE="false"
     DATA_AUTO_PROPAGATE="false"
+    HAS_CONDITIONAL_OUTPUTS="true"
   >
     <SIGNATURE/>
   </HEADER>
@@ -46,6 +46,16 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
+	<PARAMETER
+      NAME="PORT"
+      FIELD="TEXT"
+      NUM_ROW="2"
+      REPOSITORY_VALUE="PORT"
+      REQUIRED="true"
+    >
+      <DEFAULT>"7210"</DEFAULT>
+    </PARAMETER>
 	
     <PARAMETER
       NAME="TYPE"
@@ -56,16 +66,6 @@
     >
       <DEFAULT>MAXDB</DEFAULT>
     </PARAMETER>   
-
-<PARAMETER
-      NAME="PORT"
-      FIELD="TEXT"
-      NUM_ROW="2"
-      REPOSITORY_VALUE="PORT"
-      REQUIRED="true"
-    >
-      <DEFAULT>"7210"</DEFAULT>
-    </PARAMETER>
 
     <PARAMETER
       NAME="DBNAME"
@@ -107,6 +107,21 @@
     </PARAMETER>
 
     <PARAMETER
+      NAME="TABLE_ACTION"
+      FIELD="CLOSED_LIST"
+      NUM_ROW="6"
+    >
+      <ITEMS DEFAULT="NONE">
+        <ITEM NAME="NONE" VALUE="NONE" />
+        <ITEM NAME="DROP_CREATE" VALUE="DROP_CREATE"/>
+        <ITEM NAME="CREATE" VALUE="CREATE"/>
+        <ITEM NAME="CREATE_IF_NOT_EXISTS" VALUE="CREATE_IF_NOT_EXISTS"/>
+        <ITEM NAME="DROP_IF_EXISTS_AND_CREATE" VALUE="DROP_IF_EXISTS_AND_CREATE" />
+        <ITEM NAME="CLEAR" VALUE="CLEAR"/>
+      </ITEMS>
+    </PARAMETER>
+
+    <PARAMETER
       NAME="DATA_ACTION"
       FIELD="CLOSED_LIST"
       NUM_ROW="6"
@@ -120,14 +135,6 @@
       </ITEMS>
     </PARAMETER>
     
-    <PARAMETER
-      NAME="CLEAR_TABLE"
-      FIELD="CHECK"
-      NUM_ROW="6"
-    >
-      <DEFAULT>false</DEFAULT>
-    </PARAMETER>     
-
     <PARAMETER
       NAME="SCHEMA_FLOW"
       FIELD="SCHEMA_TYPE"
@@ -148,7 +155,25 @@
         <COLUMN NAME="errorMessage" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
       </TABLE>
     </PARAMETER>    
+
+	<PARAMETER
+      NAME="DIE_ON_ERROR"
+      FIELD="CHECK"
+      NUM_ROW="8"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
     
+	<PARAMETER
+      NAME="MAPPING"
+      FIELD="MAPPING_TYPE"
+      NUM_ROW="10"
+      SHOW="false"
+    >       
+      <DEFAULT>maxdb_id</DEFAULT>
+    </PARAMETER>    
+  </PARAMETERS>
+  <ADVANCED_PARAMETERS>
     <PARAMETER
       NAME="ENCODING"
       FIELD="TEXT"
@@ -157,34 +182,7 @@
     >
       <DEFAULT>"ISO-8859-15"</DEFAULT>
     </PARAMETER>
-
-    <PARAMETER
-      NAME="ADD_COLS"
-      FIELD="TABLE"
-      REQUIRED="false"
-      NOT_SHOW_IF="(TABLE_ACTION=='DROP_CREATE' or TABLE_ACTION=='CREATE' or TABLE_ACTION=='CREATE_IF_NOT_EXISTS')"
-      NUM_ROW="9"
-      NB_LINES="3"
-    >
-      <ITEMS>
-
-        <ITEM NAME="NAME" VALUE='"colname"' />
-
-        <ITEM NAME="SQL" VALUE='"now()"' />
-
-        <ITEM NAME="POS" FIELD="CLOSED_LIST">
-          <ITEMS DEFAULT="BEFORE">
-            <ITEM NAME="BEFORE" VALUE="BEFORE"/>
-            <ITEM NAME="AFTER" VALUE="AFTER"/>
-            <ITEM NAME="REPLACE" VALUE="REPLACE"/>
-          </ITEMS>
-        </ITEM>
-
-        <ITEM NAME="REFCOL" FIELD="COLUMN_LIST" />
-
-      </ITEMS>
-    </PARAMETER>
-
+    
     <PARAMETER
       NAME="COMMIT_EVERY"
       FIELD="TEXT"
@@ -194,18 +192,56 @@
       <DEFAULT>10000</DEFAULT>
     </PARAMETER>
     
-	<PARAMETER
-      NAME="DIE_ON_ERROR"
+    <PARAMETER
+      NAME="ADD_COLS"
+      FIELD="TABLE"
+      REQUIRED="false"
+      NUM_ROW="9"
+      NB_LINES="3"
+    >
+      <ITEMS>
+        <ITEM NAME="NAME" VALUE='"colname"' />
+        <ITEM NAME="DATATYPE" VALUE="VARCHAR(50)" NOT_SHOW_IF="(TABLE_ACTION=='NONE') or (TABLE_ACTION=='CLEAR')"/>
+        <ITEM NAME="SQL" VALUE='"now()"' />
+        <ITEM NAME="POS" FIELD="CLOSED_LIST">
+          <ITEMS DEFAULT="BEFORE">
+            <ITEM NAME="BEFORE" VALUE="BEFORE"/>
+            <ITEM NAME="AFTER" VALUE="AFTER"/>
+            <ITEM NAME="REPLACE" VALUE="REPLACE"/>
+          </ITEMS>
+        </ITEM>
+        <ITEM NAME="REFCOL" FIELD="COLUMN_LIST" />
+      </ITEMS>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="USE_FIELD_OPTIONS"
       FIELD="CHECK"
-      NUM_ROW="8"
+      NUM_ROW="12"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
-  </PARAMETERS>
 
+    <PARAMETER
+      NAME="FIELD_OPTIONS"
+      FIELD="TABLE"
+      REQUIRED="true"
+      NUM_ROW="13"
+      NB_LINES="5"
+      SHOW_IF="USE_FIELD_OPTIONS == 'true'"
+    >
+      <ITEMS BASED_ON_SCHEMA="true">
+        <ITEM NAME="UPDATE_KEY" VALUE="false" FIELD="CHECK" />
+        <ITEM NAME="DELETE_KEY" VALUE="false" FIELD="CHECK" />
+        <ITEM NAME="UPDATABLE"  VALUE="true"  FIELD="CHECK" />
+        <ITEM NAME="INSERTABLE" VALUE="true"  FIELD="CHECK" />
+      </ITEMS>
+    </PARAMETER>              
+  </ADVANCED_PARAMETERS> 
+    
   <CODEGENERATION>
      <IMPORTS>
-	<IMPORT NAME="MaxDB_Driver" MODULE="sapdbc.jar" REQUIRED="true" />
+		<IMPORT NAME="MaxDB_Driver" MODULE="sapdbc.jar" REQUIRED="true" />
      </IMPORTS>
   </CODEGENERATION>
    

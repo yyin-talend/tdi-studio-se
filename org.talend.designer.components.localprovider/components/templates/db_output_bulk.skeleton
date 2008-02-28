@@ -1182,6 +1182,8 @@ public class CLASS {
                 manager = new InterbaseManager(cid);
             } else if(dbmsId.equalsIgnoreCase(JAVADB)) {
                 manager = new JavaDBManager(cid);
+            } else if(dbmsId.equalsIgnoreCase(MAXDB)) {
+                manager = new MaxDBManager(cid);
             } else if(dbmsId.equalsIgnoreCase(MSSQL)) {
                 manager = new MSSQLManager(cid);
             } else if(dbmsId.equalsIgnoreCase(MYSQL)) {
