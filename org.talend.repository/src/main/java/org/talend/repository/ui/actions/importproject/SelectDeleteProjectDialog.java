@@ -143,7 +143,7 @@ public class SelectDeleteProjectDialog extends SelectionDialog {
         titleComposite.setLayout(layout);
         createMessageArea(titleComposite);
         chkButton = new Button(titleComposite, SWT.CHECK);
-        chkButton.setText("Do not delete contents");
+        chkButton.setText("Do not delete projects physically");
         chkButton.setSelection(false);
         chkButton.addSelectionListener(new SelectionAdapter() {
 
