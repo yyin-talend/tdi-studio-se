@@ -1026,13 +1026,13 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
 
     public boolean isUserReadOnlyOnCurrentProject() {
         RepositoryContext repositoryContext = getRepositoryContext();
-        User user = repositoryContext.getUser();
-        EList projectAuthorization = user.getProjectAuthorization();
-        for (Object o : projectAuthorization) {
+        Project project = repositoryContext.getProject();
+
+        EList userAuthorizations = project.getEmfProject().getUserAuthorization();
+        for (Object o : userAuthorizations.toArray()) {
             UserProjectAuthorization userProjectAuthorization = (UserProjectAuthorization) o;
-            if (userProjectAuthorization.getProject() != null) {
-                if (userProjectAuthorization.getProject().getTechnicalLabel().equals(
-                        repositoryContext.getProject().getTechnicalLabel())) {
+            if (userProjectAuthorization.getUser() != null) {
+                if (userProjectAuthorization.getUser().getLogin().equals(repositoryContext.getUser().getLogin())) {
                     UserProjectAuthorizationType type = userProjectAuthorization.getType();
                     return type.getValue() == UserProjectAuthorizationType.READ_ONLY;
                 }
