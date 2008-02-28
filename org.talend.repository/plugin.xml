@@ -694,6 +694,12 @@
             id="org.talend.repository.migration.ReplaceOldContextScriptCodeMigrationTask"
             name="Replace old syntax of script code for context variables">
       </projecttask>
+      <projecttask
+            class="org.talend.repository.model.migration.RenametFor"
+            description="Rename tFor to tLoop"
+            id="org.talend.repository.migration.RenametFor"
+            name="Rename tFor to tLoop">
+      </projecttask>
    </extension>
    <extension
          point="org.talend.core.librariesNeeded">
