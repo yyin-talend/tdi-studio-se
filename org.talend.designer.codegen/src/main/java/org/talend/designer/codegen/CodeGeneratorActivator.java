@@ -14,6 +14,10 @@ package org.talend.designer.codegen;
 
 import org.eclipse.core.runtime.Preferences;
 import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.internal.corext.fix.CleanUpConstants;
+import org.eclipse.jdt.internal.corext.fix.CleanUpPreferenceUtil;
+import org.eclipse.jdt.internal.ui.JavaPlugin;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 import org.talend.core.GlobalServiceRegister;
@@ -62,6 +66,23 @@ public class CodeGeneratorActivator extends AbstractUIPlugin {
         if (!isRequiredJREVersion(preferences.getString(JavaCore.COMPILER_SOURCE))) {
             preferences.setValue(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_1_5);
         }
+
+        initializeOrganizeImports();
+    }
+
+    /**
+     * DOC xtan Comment method "initializeOrganizeImports".
+     * <p>
+     * add the function "Organize import" in the TOS "Window-->Preferences-->Java-->Editor-->Save Actions-->Organize
+     * imports".
+     * </p>
+     */
+    private static void initializeOrganizeImports() {
+        // IEclipsePreferences nodeScheduler = new DefaultScope().getNode("org.eclipse.jdt.ui");
+        IPreferenceStore preferenceStore = JavaPlugin.getDefault().getPreferenceStore();
+        preferenceStore.setValue("editor_save_participant_org.eclipse.jdt.ui.postsavelistener.cleanup", true);
+        preferenceStore.setValue(CleanUpPreferenceUtil.SAVE_PARTICIPANT_KEY_PREFIX + CleanUpConstants.ORGANIZE_IMPORTS, true);
+        preferenceStore.setValue(CleanUpPreferenceUtil.SAVE_PARTICIPANT_KEY_PREFIX + CleanUpConstants.FORMAT_SOURCE_CODE, true);
     }
 
     private boolean isRequiredJREVersion(String version) {
