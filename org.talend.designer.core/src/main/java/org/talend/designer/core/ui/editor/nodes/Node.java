@@ -826,11 +826,10 @@ public class Node extends Element implements INode {
                                 columnToSave.add(column);
                             }
                         }
-
-                        // code commented for major 2635.
-                        //
-                        originTable.getListColumns().clear();
-                        originTable.getListColumns().addAll(columnToSave);
+                        if (!originTable.getTableName().equals("REJECT")) {
+                            originTable.getListColumns().clear();
+                            originTable.getListColumns().addAll(columnToSave);
+                        }
                         originTable.sortCustomColumns();
                     }
                 }
