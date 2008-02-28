@@ -448,6 +448,16 @@
            class="org.talend.designer.core.ui.editor.properties.controllers.generator.JavaMemoGenerator"
            mapping="MEMO_IMPORT"
            name="Java Import Memo">
+     </generator>
+     <generator
+           class="org.talend.designer.core.ui.editor.properties.controllers.generator.RadioGenerator"
+           mapping="RADIO"
+           name="Radio">
+     </generator>
+     <generator
+           class="org.talend.designer.core.ui.editor.properties.controllers.generator.GroupGenerator"
+           mapping="GROUP"
+           name="Group">
      </generator>     
    </extension>
    
