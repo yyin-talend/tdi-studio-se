@@ -826,6 +826,7 @@ public class Node extends Element implements INode {
                                 columnToSave.add(column);
                             }
                         }
+                        // statement cause added for major 2635.
                         if (!originTable.getTableName().equals("REJECT")) {
                             originTable.getListColumns().clear();
                             originTable.getListColumns().addAll(columnToSave);
