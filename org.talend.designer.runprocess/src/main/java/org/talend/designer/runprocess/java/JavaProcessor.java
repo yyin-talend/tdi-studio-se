@@ -54,8 +54,15 @@ import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.debug.core.JDIDebugModel;
+import org.eclipse.jdt.internal.ui.JavaPlugin;
+import org.eclipse.jdt.internal.ui.javaeditor.ICompilationUnitDocumentProvider;
 import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.source.AnnotationModel;
+import org.eclipse.jface.text.source.IAnnotationModel;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.part.FileEditorInput;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.SystemException;
 import org.talend.commons.utils.generation.JavaUtils;
@@ -259,6 +266,8 @@ public class JavaProcessor extends Processor {
             processCode = null;
             updateContextCode(codeGen);
             syntaxCheck();
+
+            organizeImport(codeFile);
 
             // javaProject.getResource().getWorkspace().build(IncrementalProjectBuilder.AUTO_BUILD, null);
             javaProject.getProject().build(IncrementalProjectBuilder.AUTO_BUILD, null);
@@ -869,5 +878,51 @@ public class JavaProcessor extends Processor {
 
     public static IJavaProject getJavaProject() {
         return javaProject;
+    }
+
+    /**
+     * DOC xtan Comment method "organizeImport".
+     * <p>
+     * <li>This method only are for export TOS job.</li>
+     * <li>This use the jdt "Organize Import" function. See TOS "Window-->Preferences-->Java-->Editor-->Save
+     * Actions-->Organize imports".</li>
+     * <li>See another method: initializeOrganizeImports().</li>
+     * </p>
+     * 
+     * @param codeFile
+     */
+    private void organizeImport(final IFile codeFile) {
+        if (checkableEditor == null) {
+
+            Display.getDefault().syncExec(new Runnable() {
+
+                public void run() {
+                    FileEditorInput input = new FileEditorInput(codeFile);
+
+                    ICompilationUnitDocumentProvider provider = JavaPlugin.getDefault().getCompilationUnitDocumentProvider();
+
+                    try {
+                        provider.connect(input);
+
+                        IAnnotationModel annotationModel = provider.getAnnotationModel(input);
+                        IDocument document = provider.getDocument(input);
+
+                        AnnotationModel fVisualAnnotationModel = new AnnotationModel();
+                        fVisualAnnotationModel.addAnnotationModel(new Object(), annotationModel);
+
+                        fVisualAnnotationModel.connect(document);
+
+                        provider.aboutToChange(input);
+
+                        provider.saveDocument(null, input, provider.getDocument(input), true);
+
+                        provider.disconnect(input);
+
+                    } catch (CoreException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
     }
 }
