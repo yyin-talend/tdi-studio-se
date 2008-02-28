@@ -242,6 +242,7 @@ public class Node extends Element implements INode {
             setElementParameters(oldElementParameters);
         } else {
             setElementParameters(component.createElementParameters(this));
+            oldElementParameters = this.getElementParameters();
         }
 
         String uniqueName2 = null;
@@ -278,7 +279,9 @@ public class Node extends Element implements INode {
         if (uniqueName2 != null && !"".equals(uniqueName2)) {
             setPropertyValue(EParameterName.UNIQUE_NAME.getName(), uniqueName2);
         } else if (index != -1) {
-            uniqueName2 = process.getGeneratingNodes().get(index).getUniqueName();
+            // uniqueName2 = process.getGeneratingNodes().get(index).getUniqueName();
+            uniqueName2 = process.getGraphicalNodes().get(index).getUniqueName();
+
         } else {
             uniqueName2 = ((Process) getProcess()).generateUniqueNodeName(this);
             ((Process) getProcess()).addUniqueNodeName(uniqueName2);
@@ -2192,6 +2195,7 @@ public class Node extends Element implements INode {
      * java.util.Map)
      */
     public void reloadComponent(IComponent component, Map<String, Object> parameters) {
+        init(component);
         Object obj = parameters.get(INode.RELOAD_PARAMETER_KEY_METADATA_LIST);
         if (obj != null) {
             setMetadataList((List<IMetadataTable>) obj);
@@ -2209,7 +2213,7 @@ public class Node extends Element implements INode {
             }
             getExternalNode().initialize();
         }
-        init(component);
+
     }
 
     /*
