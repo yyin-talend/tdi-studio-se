@@ -244,8 +244,14 @@ public class ProcessView extends ViewPart {
         processComposite.setProcessContext(activeContext);
 
         if (activeContext != null) {
-            setPartName(Messages.getString("ProcessView.title", activeContext.getProcess().getLabel())); //$NON-NLS-1$
-            processNameLab.setText(Messages.getString("ProcessView.subtitle", activeContext.getProcess().getLabel())); //$NON-NLS-1$
+            String jobName = Messages.getString("ProcessView.jobName"); //$NON-NLS-1$
+            if (activeContext.getProcess().disableRunJobView()) { // ?? joblet
+                jobName = "Joblet"; //$NON-NLS-1$
+            }
+            jobName = jobName + " " + activeContext.getProcess().getLabel(); //$NON-NLS-1$
+            setTitleToolTip(jobName);
+            setPartName(Messages.getString("ProcessView.title", jobName)); //$NON-NLS-1$
+            processNameLab.setText(jobName);
         } else {
             setPartName(Messages.getString("ProcessView.titleEmpty")); //$NON-NLS-1$
             processNameLab.setText(Messages.getString("ProcessView.subtitleEmpty")); //$NON-NLS-1$
