@@ -35,6 +35,7 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.RepositoryObject;
 import org.talend.core.ui.images.ECoreImage;
+import org.talend.designer.core.IDesignerCoreService;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ProxyRepositoryFactory;
@@ -191,9 +192,13 @@ public class ContextWizard extends RepositoryWizard implements INewWizard {
      * DOC bqian Comment method "updateProcessContextManager".
      */
     private void updateRelatedView() {
-        RepositoryPlugin.getDefault().getDesignerCoreService().switchToCurContextsView();
+        IDesignerCoreService designerCoreService = RepositoryPlugin.getDefault().getDesignerCoreService();
+
+        designerCoreService.switchToCurContextsView();
         // for tRunJob component
-        RepositoryPlugin.getDefault().getDesignerCoreService().switchToCurComponentSettingsView();
+        designerCoreService.switchToCurComponentSettingsView();
+        // for 2608
+        designerCoreService.switchToCurJobSettingsView();
     }
 
     /**
