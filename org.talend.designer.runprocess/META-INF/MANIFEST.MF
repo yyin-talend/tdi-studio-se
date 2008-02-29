@@ -6,8 +6,7 @@ Bundle-Version: 2.2.0.qualifier
 Bundle-Activator: org.talend.designer.runprocess.RunProcessPlugin
 Bundle-Vendor: .Talend SA.
 Bundle-Localization: plugin
-Require-Bundle: org.talend.libraries.logging,
- org.junit,
+Require-Bundle: org.talend.libraries.logging, org.junit,
  org.eclipse.ui,
  org.epic.debug,
  org.eclipse.debug.ui,
@@ -28,8 +27,7 @@ Require-Bundle: org.talend.libraries.logging,
  org.eclipse.gmf.runtime.common.ui,
  org.talend.commons.ui,
  org.eclipse.jdt.ui,
- org.eclipse.ui.editors,
- org.eclipse.ui.ide
+ org.eclipse.ui.editors
 Eclipse-LazyStart: true
 Export-Package: org.talend.designer.runprocess,
  org.talend.designer.runprocess.java,
