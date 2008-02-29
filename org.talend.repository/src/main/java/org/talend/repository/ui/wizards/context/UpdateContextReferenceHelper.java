@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.gef.commands.Command;
+import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.PersistenceException;
@@ -29,6 +31,7 @@ import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -119,6 +122,15 @@ public final class UpdateContextReferenceHelper {
                         .getLabel(), null);
                 // update parameter for current job and nodes in it. for 2608
                 UpdateContextVariablesHelper.updateProcessForRenamed(process, realRenamedVarMap);
+
+                // update the job state
+                if (process instanceof IProcess2) {
+                    CommandStack commandStack = ((IProcess2) process).getCommandStack();
+                    if (commandStack != null) {
+                        commandStack.execute(new Command() {
+                        });
+                    }
+                }
             }
         }
 
