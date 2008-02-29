@@ -160,6 +160,11 @@
     <IMPORTS>
       <IMPORT NAME="DBI" MODULE="DBI" REQUIRED="true" />
       <IMPORT NAME="DBD-Pg" MODULE="DBD::Pg" REQUIRED="true" />
+      <IMPORT
+        NAME="PostgresqlOutput"
+        MODULE="tPostgresqlOutput::Postgresql"
+        REQUIRED="true"
+      />
     </IMPORTS>
   </CODEGENERATION>
   

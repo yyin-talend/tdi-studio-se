@@ -69,7 +69,6 @@ if (metadatas != null && metadatas.size() > 0) {
 
 use DBI;
 use talend::dbOp;
-use tMysqlOutput::Mysql;
 
 my %desc_<%=cid %> = (
     filename  => <%=filename%>,
