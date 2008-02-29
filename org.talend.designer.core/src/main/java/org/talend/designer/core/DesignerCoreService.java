@@ -197,7 +197,8 @@ public class DesignerCoreService implements IDesignerCoreService {
         if (ComponentUtilities.JOBLET_SCHEMA_CHANGED.equals(evt.getPropertyName())) {
             try {
                 String oldName = ((IProcess) evt.getSource()).getName();
-                IMetadataTable newInputMetadataTable = (IMetadataTable) evt.getNewValue();
+                IMetadataTable newInputMetadataTable = ((IMetadataTable[]) evt.getNewValue())[0];
+                IMetadataTable newOutputMetadataTable = ((IMetadataTable[]) evt.getNewValue())[1];
                 ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
                 List<IRepositoryObject> allJobs = factory.getAll(ERepositoryObjectType.PROCESS, true);
                 for (IRepositoryObject repositoryObject : allJobs) {
@@ -211,7 +212,11 @@ public class DesignerCoreService implements IDesignerCoreService {
                                 EList metadata = currentNode.getMetadata();
                                 for (Object object : metadata) {
                                     MetadataType metadataTable = (MetadataType) object;
-                                    MetadataTool.copyTable(newInputMetadataTable, metadataTable);
+                                    if (newInputMetadataTable.getAttachedConnector().equals(metadataTable.getConnector())) {
+                                        MetadataTool.copyTable(newInputMetadataTable, metadataTable);
+                                    } else if (newOutputMetadataTable.getTableName().equals(metadataTable.getName())) {
+                                        MetadataTool.copyTable(newOutputMetadataTable, metadataTable);
+                                    }
                                     isModify = true;
                                 }
                             }

@@ -57,6 +57,7 @@ import org.eclipse.gef.MouseWheelZoomHandler;
 import org.eclipse.gef.RootEditPart;
 import org.eclipse.gef.SnapToGeometry;
 import org.eclipse.gef.SnapToGrid;
+import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.editparts.AbstractEditPart;
 import org.eclipse.gef.editparts.LayerManager;
@@ -265,9 +266,19 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
         } else if (propertyName.equals(ComponentUtilities.JOBLET_SCHEMA_CHANGED)) {
             String oldName = ((IProcess) evt.getSource()).getName();
-            IMetadataTable oldInputMetadataTable = (IMetadataTable) evt.getOldValue();
-            IMetadataTable newInputMetadataTable = (IMetadataTable) evt.getNewValue();
-            if (oldInputMetadataTable.sameMetadataAs(newInputMetadataTable)) {
+            IMetadataTable[] oldMetadataTables = (IMetadataTable[]) evt.getOldValue();
+            IMetadataTable[] newMetadataTables = (IMetadataTable[]) evt.getNewValue();
+            if (oldMetadataTables.length != 2 || oldMetadataTables.length != 2) {
+                return;
+            }
+            IMetadataTable oldInputMetadataTable = oldMetadataTables[0];
+            IMetadataTable newInputMetadataTable = newMetadataTables[0];
+
+            IMetadataTable oldOutputMetadataTable = oldMetadataTables[1];
+            IMetadataTable newOutputMetadataTable = newMetadataTables[1];
+
+            if (newInputMetadataTable.sameMetadataAs(oldInputMetadataTable)
+                    && newOutputMetadataTable.sameMetadataAs(oldOutputMetadataTable)) {
                 return;
             }
             for (Node node : (List<Node>) process.getGraphicalNodes()) {
@@ -279,12 +290,15 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
                     // Map<String, Object> parameters = new HashMap<String, Object>();
                     // node.reloadComponent(newComponent, parameters);
                     IElementParameter inputElemParam = null;
+                    IElementParameter outputElemParam = null;
 
                     List<? extends IElementParameter> elementParameters = node.getElementParameters();
                     for (IElementParameter elementParameter : elementParameters) {
                         if (EParameterFieldType.SCHEMA_TYPE.equals(elementParameter.getField())) {
                             if (EConnectionType.FLOW_MAIN.getName().equals(elementParameter.getContext())) {
                                 inputElemParam = elementParameter;
+                            } else {
+                                outputElemParam = elementParameter;
                             }
                         }
                     }
@@ -298,30 +312,36 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
                                 && !metadataTable.sameMetadataAs(newInputMetadataTable)) {
                             IElementParameter elementParam = source.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
                             command = new ChangeMetadataCommand(source, elementParam, metadataTable, newInputMetadataTable);
-                            getCommandStack().execute(command);
+                            command.execute(Boolean.FALSE);
                         }
-                    } else {
-                        command = new ChangeMetadataCommand(node, inputElemParam, (IMetadataTable) inputElemParam.getValue(),
-                                newInputMetadataTable);
-                        getCommandStack().execute(command);
-                        IMetadataTable metadataFromConnector = node.getMetadataFromConnector(inputElemParam.getContext());
-                        MetadataTool.copyTable(newInputMetadataTable, metadataFromConnector);
                     }
-                    // List<? extends IConnection> outgoingConnections = node.getOutgoingConnections();
-                    // if (outgoingConnections.size() > 0) {
-                    // for (IConnection connection : outgoingConnections) {
-                    // Node target = (Node) connection.getTarget();
-                    // IMetadataTable metadataTable = target.getMetadataList().get(0);
-                    // IMetadataTable metadataFromConnector =
-                    // node.getMetadataFromConnector(connection.getConnectorName());
-                    // if (metadataFromConnector != null && !metadataTable.sameMetadataAs(metadataFromConnector)) {
-                    // command = new ChangeMetadataCommand(target, target
-                    // .getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE), metadataTable,
-                    // metadataFromConnector);
-                    // getCommandStack().execute(command);
-                    // }
-                    // }
-                    // }
+                    command = new ChangeMetadataCommand(node, inputElemParam, (IMetadataTable) inputElemParam.getValue(),
+                            newInputMetadataTable);
+                    command.execute(Boolean.FALSE);
+                    IMetadataTable metadataFromConnector = node.getMetadataFromConnector(inputElemParam.getContext());
+                    MetadataTool.copyTable(newInputMetadataTable, metadataFromConnector);
+
+                    List<? extends IConnection> outgoingConnections = node.getOutgoingConnections();
+                    if (outgoingConnections.size() == 1) {
+                        IConnection connection = outgoingConnections.get(0);
+                        Node target = (Node) connection.getTarget();
+                        IMetadataTable metadataTable = connection.getMetadataTable();
+                        if (newOutputMetadataTable != null && !metadataTable.sameMetadataAs(newOutputMetadataTable)) {
+                            IElementParameter elementParam = target.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
+                            command = new ChangeMetadataCommand(target, elementParam, target
+                                    .getMetadataFromConnector(metadataTable.getAttachedConnector()), newOutputMetadataTable);
+                            command.execute(Boolean.FALSE);
+                        }
+                    }
+
+                    command = new ChangeMetadataCommand(node, outputElemParam, (IMetadataTable) outputElemParam.getValue(),
+                            newOutputMetadataTable);
+                    command.execute(Boolean.FALSE);
+                    metadataFromConnector = node.getMetadataFromConnector(outputElemParam.getContext());
+                    MetadataTool.copyTable(newOutputMetadataTable, metadataFromConnector);
+
+                    getCommandStack().execute(new Command() {
+                    });
                 }
             }
         }
