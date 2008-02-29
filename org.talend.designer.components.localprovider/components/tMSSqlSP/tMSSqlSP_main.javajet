@@ -164,7 +164,7 @@ if (canGenerate) {
 				if (nullable) {
 					%>
 					if (<%=inConnectionName%>.<%=argName%> == null) {
-						statement_<%=cid%>.setNull(<%=argIndex++%>, java.sql.Types.<%=converter.convert(typeToGenerate)%>);
+						statement_<%=cid%>.setNull(<%=argIndex%>, java.sql.Types.<%=converter.convert(typeToGenerate)%>);
 					} else {
 					<%
 				}
@@ -182,18 +182,18 @@ if (canGenerate) {
 				if (typeToGenerate.equals("char") || typeToGenerate.equals("Character")) {
 					%>
 					if (<%=inConnectionName%>.<%=argName%> == '\0') {
-						statement_<%=cid%>.setString(<%=argIndex++%>, "");
+						statement_<%=cid%>.setString(<%=argIndex%>, "");
 					} else {
-						statement_<%=cid%>.setString(<%=argIndex++%>, String.valueOf(<%=inConnectionName%>.<%=argName%>));
+						statement_<%=cid%>.setString(<%=argIndex%>, String.valueOf(<%=inConnectionName%>.<%=argName%>));
 					}
 					<%
 				} else if (typeToGenerate.equals("java.util.Date")) {
 					%>
-					statement_<%=cid%>.setDate(<%=argIndex++%>, new java.sql.Date(<%=inConnectionName%>.<%=argName%>.getTime()));
+					statement_<%=cid%>.setDate(<%=argIndex%>, new java.sql.Date(<%=inConnectionName%>.<%=argName%>.getTime()));
 					<%
 				} else {
 					%>
-					statement_<%=cid%>.set<%=method%>(<%=argIndex++%>, <%=inConnectionName%>.<%=argName%>);
+					statement_<%=cid%>.set<%=method%>(<%=argIndex%>, <%=inConnectionName%>.<%=argName%>);
 					<%
 				}
 				
@@ -201,16 +201,16 @@ if (canGenerate) {
 					%>
 					}
 					<%
-				}
-			}
-			
+				}				
+			}			
 			// Output argument
 			if (argType.equals("OUT") || argType.equals("INOUT")) {
 				hasOutput=true;
 				%>
-				statement_<%=cid%>.registerOutParameter(<%=argIndex++%>, java.sql.Types.<%=converter.convert(typeToGenerate)%>);
+				statement_<%=cid%>.registerOutParameter(<%=argIndex%>, java.sql.Types.<%=converter.convert(typeToGenerate)%>);
 	  			<%
 			}
+            argIndex++;			
 			if(argType.equals("RECORDSET")){
 				hasOutput=true;
 			}
@@ -279,20 +279,20 @@ if (canGenerate) {
 					  			
 					  			if (method.equalsIgnoreCase("char") || method.equals("Character")) {
 							 		%>
-							 		tmpString_<%=cid%> = statement_<%=cid%>.getString(<%=argIndex++%>);
+							 		tmpString_<%=cid%> = statement_<%=cid%>.getString(<%=argIndex%>);
 						  			if (tmpString_<%=cid%> != null && tmpString_<%=cid%>.length() > 0) {
 						  				<%=firstOutConnection.getName()%>.<%=argName%> = tmpString_<%=cid%>.charAt(0);
 							  		}
 							  		<%
 						  		} else if (method.equals("Date")) {
 									%>
-									tmpDate_<%=cid%> = statement_<%=cid%>.getDate(<%=argIndex++%>);
+									tmpDate_<%=cid%> = statement_<%=cid%>.getDate(<%=argIndex%>);
 									if (tmpDate_<%=cid%> != null)
 										<%=firstOutConnection.getName()%>.<%=argName%> = new java.util.Date(tmpDate_<%=cid%>.getTime());
 									<%
 								} else {
 									%>
-									<%=firstOutConnection.getName()%>.<%=argName%> = statement_<%=cid%>.get<%=method%>(<%=argIndex++%>);
+									<%=firstOutConnection.getName()%>.<%=argName%> = statement_<%=cid%>.get<%=method%>(<%=argIndex%>);
 									<%
 								}
 								
@@ -303,6 +303,7 @@ if (canGenerate) {
 									}
 									<%
 								}
+								argIndex++;
 							}
 							
 							for (int j = connectionIndex + 1; j < outConnections.size(); j++) {
