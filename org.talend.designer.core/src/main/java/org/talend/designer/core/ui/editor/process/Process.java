@@ -1426,7 +1426,7 @@ public class Process extends Element implements IProcess2 {
         }
     }
 
-    protected CommandStack getCommandStack() {
+    public CommandStack getCommandStack() {
         if (getEditor() != null) {
             Object adapter = getEditor().getTalendEditor().getAdapter(CommandStack.class);
             return (CommandStack) adapter;
