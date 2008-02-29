@@ -31,18 +31,27 @@ String rowSeparator = ElementParameterParser.getValue(
         int index_<%=cid %> = 0;
 
         int oneChar_<%=cid %> = 0;
+        boolean eol_<%=cid %>=false;
+        int emptyLineCount_<%=cid %>=1;
 		
 		if(bytes_<%=cid %>.length > 0) {
             while ((oneChar_<%=cid %> = br_<%=cid %>.read()) != -1) {
-    
+            	
+    			if(lineCount_<%=cid%>==0) lineCount_<%=cid%> = 1;
                 if (oneChar_<%=cid %> == bytes_<%=cid %>[index_<%=cid %>]) {
                     if (index_<%=cid %> == bytes_<%=cid %>.length - 1) {
                         lineCount_<%=cid %>++;
+                        if(eol_<%=cid%>) emptyLineCount_<%=cid %>++;
+                        eol_<%=cid %>=true;
                         index_<%=cid %> = 0;
                     } else {
                         index_<%=cid %>++;
                     }
+                }else{
+                	eol_<%=cid %> = false;
+                	emptyLineCount_<%=cid %>=1;
                 }
             }
+            if(eol_<%=cid %>) lineCount_<%=cid %>=lineCount_<%=cid %>-emptyLineCount_<%=cid %>;
         }
         globalMap.put("<%=cid %>_COUNT",lineCount_<%=cid %>);    
