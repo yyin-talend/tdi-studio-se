@@ -29,12 +29,10 @@ public class ATreeNodeUtil {
 
     static {
         try {
-            URL url = FileLocator.toFileURL(ModelPlugin.class.getResource("/"));
-            String fileString = url.getFile();
-            File file = new File(fileString);
-            fileString = file.getParent() + "/model/Component.xsd";
-
-            rootTreeNode = SchemaPopulationUtil.getSchemaTree(fileString, true, 10);
+            URL url = ModelPlugin.getDefault().getBundle().getResource("/model/Component.xsd");
+            url = FileLocator.toFileURL(url);
+            String fileAbsolutePath = url.getFile();
+            rootTreeNode = SchemaPopulationUtil.getSchemaTree(fileAbsolutePath, true, 10);
         } catch (Exception e) {
             e.printStackTrace();
         }
