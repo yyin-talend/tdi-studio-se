@@ -115,10 +115,10 @@ public class SelectDeleteProjectDialog extends SelectionDialog {
     @Override
     protected Control createDialogArea(Composite parent) {
         Composite composite = (Composite) super.createDialogArea(parent);
-        ((GridData) composite.getLayoutData()).widthHint = 390;
-        composite.setFont(parent.getFont());
-        createTitleArea(composite);
-        Group group = Form.createGroup(composite, 10, null, 300);
+        composite.setLayout(new GridLayout());
+        composite.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL));
+        createMessageArea(composite);
+        Group group = Form.createGroup(composite, 20, null, 250);
         Composite inner = new Composite(group, SWT.NONE);
         inner.setFont(composite.getFont());
         inner.setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -130,21 +130,18 @@ public class SelectDeleteProjectDialog extends SelectionDialog {
         layout.makeColumnsEqualWidth = false;
         inner.setLayout(layout);
         createTreeViewer(inner);
-        createButtons(inner);
+        createOptionsArea(inner);
         return composite;
     }
 
-    private void createTitleArea(Composite parent) {
-        Composite titleComposite = new Composite(parent, SWT.NONE);
-        titleComposite.setFont(parent.getFont());
-        GridData data = new GridData(GridData.FILL_VERTICAL);
-        titleComposite.setLayoutData(data);
-        GridLayout layout = new GridLayout(2, false);
-        titleComposite.setLayout(layout);
-        createMessageArea(titleComposite);
-        chkButton = new Button(titleComposite, SWT.CHECK);
+    private void createOptionsArea(Composite parent) {
+        Composite optionsGroup = new Composite(parent, SWT.NONE);
+        optionsGroup.setLayout(new GridLayout());
+        optionsGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+
+        chkButton = new Button(optionsGroup, SWT.CHECK);
         chkButton.setText("Do not delete projects physically");
-        chkButton.setSelection(false);
+        chkButton.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         chkButton.addSelectionListener(new SelectionAdapter() {
 
             public void widgetSelected(SelectionEvent e) {
@@ -154,8 +151,17 @@ public class SelectDeleteProjectDialog extends SelectionDialog {
     }
 
     private void createTreeViewer(Composite parent) {
+        GridLayout layout = new GridLayout();
+        layout.numColumns = 2;
+        layout.marginWidth = 0;
+        layout.makeColumnsEqualWidth = false;
+        parent.setLayout(layout);
+        parent.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL | GridData.FILL_BOTH));
+        GridData listData = new GridData(GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL | GridData.FILL_BOTH);
         treeViewer = new ContainerCheckedTreeViewer(parent);
-        treeViewer.setContentProvider(getResourceProvider(IResource.FOLDER | IResource.PROJECT));
+        treeViewer.getControl().setLayoutData(listData);
+        // treeViewer.setContentProvider(getResourceProvider(IResource.FOLDER | IResource.PROJECT));
+        treeViewer.setContentProvider(getResourceProvider(IResource.PROJECT));
         // treeViewer.setLabelProvider(WorkbenchLabelProvider.getDecoratingWorkbenchLabelProvider());
         treeViewer.setLabelProvider(new LabelProvider() {
 
@@ -186,22 +192,18 @@ public class SelectDeleteProjectDialog extends SelectionDialog {
         treeViewer.setInput(projectItemList);
         treeViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
         addTreeListener();
+        createButtons(parent);
 
     }
 
     private void createButtons(Composite parent) {
 
         Composite buttons = new Composite(parent, SWT.NONE);
-        buttons.setFont(parent.getFont());
-        GridData data = new GridData(GridData.FILL_VERTICAL);
-        buttons.setLayoutData(data);
-
         GridLayout layout = new GridLayout();
-        layout.marginHeight = 10;
         layout.marginWidth = 0;
-        layout.marginRight = 0;
-
+        layout.marginHeight = 0;
         buttons.setLayout(layout);
+        buttons.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
         bSelectAll = new Button(buttons, SWT.PUSH);
         bSelectAll.setText(Messages.getString("SelectDeleteProjectDialog.SelectAll")); //$NON-NLS-1$
         bSelectAll.setFont(parent.getFont());
