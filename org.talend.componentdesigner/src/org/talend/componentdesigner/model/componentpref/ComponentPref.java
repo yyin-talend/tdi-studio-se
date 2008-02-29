@@ -55,13 +55,17 @@ public class ComponentPref {
 
     private ILibEntry[] libEntries;
 
-    private String xmlFileName;
+    private String javaXMLFileName;
 
-    private Document xmlDocument;
+    private String perlXMLFileName;
 
-    private Node[] jarImportNodes;
+    private Document javaXMLDocument;
 
-    private Node[] perImportNodes;
+    private Document perlXMLDocument;
+
+    private Node[] javaImportNodes;
+
+    private Node[] perlImportNodes;
 
     /**
      * @return the name
@@ -246,8 +250,7 @@ public class ComponentPref {
             if (Boolean.valueOf(isExternal)) {
                 obj = new Path(location);
             } else {
-                obj = ResourcesPlugin.getWorkspace().getRoot().getProject(PluginConstant.COMPONENT_PROJECT)
-                        .findMember(location);
+                obj = ResourcesPlugin.getWorkspace().getRoot().getProject(PluginConstant.COMPONENT_PROJECT).findMember(location);
             }
             if (libName.matches("(?i).*\\.(jar)\\b")) {
                 libArrays[j] = new JarLibEntry(obj);
@@ -310,57 +313,93 @@ public class ComponentPref {
     }
 
     /**
-     * Getter for xmlFileName.
+     * Getter for javaXMLFileName.
      * 
-     * @return the xmlFileName
+     * @return the javaXMLFileName
      */
-    public String getXmlFileName() {
-        return xmlFileName;
+    public String getJavaXMLFileName() {
+        return javaXMLFileName;
     }
 
     /**
-     * Sets the xmlFileName.
+     * Sets the javaXMLFileName.
      * 
-     * @param xmlFileName the xmlFileName to set
+     * @param xmlFileName the javaXMLFileName to set
      */
-    public void setXmlFileName(String xmlFileName) {
-        this.xmlFileName = xmlFileName;
+    public void setJavaXMLFileName(String xmlFileName) {
+        this.javaXMLFileName = xmlFileName;
     }
 
     /**
-     * Getter for xmlDocument.
+     * Getter for perlXMLFileName.
      * 
-     * @return the xmlDocument
+     * @return the perlXMLFileName
      */
-    public Document getXmlDocument() {
-        return xmlDocument;
+    public String getPerlXMLFileName() {
+        return perlXMLFileName;
     }
 
     /**
-     * Sets the xmlDocument.
+     * Sets the perlXMLFileName.
      * 
-     * @param xmlDocument the xmlDocument to set
+     * @param xmlFileName the perlXMLFileName to set
      */
-    public void setXmlDocument(Document xmlDocument) {
-        this.xmlDocument = xmlDocument;
+    public void setPerlXMLFileName(String xmlFileName) {
+        this.perlXMLFileName = xmlFileName;
     }
 
     /**
-     * Getter for jarImportNodes.
+     * Getter for javaXMLDocument.
      * 
-     * @return the jarImportNodes
+     * @return the javaXMLDocument
      */
-    public Node[] getJarImportNodes() {
-        return this.jarImportNodes;
+    public Document getJavaXMLDocument() {
+        return javaXMLDocument;
     }
 
     /**
-     * Sets the jarImportNodes.
+     * Sets the javaXMLDocument.
      * 
-     * @param jarImportNodes the jarImportNodes to set
+     * @param xmlDocument the javaXMLDocument to set
      */
-    public void setJarImportNodes(Node[] jarImportNodes) {
-        this.jarImportNodes = jarImportNodes;
+    public void setJavaXMLDocument(Document xmlDocument) {
+        this.javaXMLDocument = xmlDocument;
+    }
+
+    /**
+     * Getter for perlXMLDocument.
+     * 
+     * @return the perlXMLDocument
+     */
+    public Document getPerlXMLDocument() {
+        return perlXMLDocument;
+    }
+
+    /**
+     * Sets the perlXMLDocument.
+     * 
+     * @param xmlDocument the perlXMLDocument to set
+     */
+    public void setPerlXMLDocument(Document xmlDocument) {
+        this.perlXMLDocument = xmlDocument;
+    }
+
+    /**
+     * Getter for javaImportNodes.
+     * 
+     * @return the javaImportNodes
+     */
+    public Node[] getJavaImportNodes() {
+        return this.javaImportNodes;
+    }
+
+    /**
+     * Sets the javaImportNodes.
+     * 
+     * @param javaImportNodes the javaImportNodes to set
+     */
+    public void setJavaImportNodes(Node[] javaImportNodes) {
+        this.javaImportNodes = javaImportNodes;
     }
 
     /**
@@ -368,25 +407,63 @@ public class ComponentPref {
      * 
      * @return the perImportNodes
      */
-    public Node[] getPerImportNodes() {
-        return this.perImportNodes;
+    public Node[] getPerlImportNodes() {
+        return this.perlImportNodes;
     }
 
     /**
-     * Sets the perImportNodes.
+     * Sets the perlImportNodes.
      * 
-     * @param perImportNodes the perImportNodes to set
+     * @param perlImportNodes the perlImportNodes to set
      */
-    public void setPerImportNodes(Node[] perImportNodes) {
-        this.perImportNodes = perImportNodes;
+    public void setPerlImportNodes(Node[] perlImportNodes) {
+        this.perlImportNodes = perlImportNodes;
     }
 
     public Document getJavaXmlDocument() {
-        return removeUnusedNodes(this.getPerImportNodes());
+        Node[] importNodes = this.getJavaImportNodes();
+
+        Document documentCopy = null;
+
+        if (importNodes != null && importNodes.length != 0) {
+            Node importsNode = importNodes[0].getParentNode();
+            for (Node node : importNodes) {
+                importsNode.removeChild(node);
+            }
+
+            documentCopy = (Document) this.javaXMLDocument.cloneNode(true);
+
+            for (Node node : importNodes) {
+                importsNode.appendChild(node);
+            }
+        } else {
+            documentCopy = this.javaXMLDocument;
+        }
+        return documentCopy;
+
     }
 
     public Document getPerlXmlDocument() {
-        return removeUnusedNodes(getJarImportNodes());
+        Node[] importNodes = this.getPerlImportNodes();
+
+        Document documentCopy = null;
+
+        if (importNodes != null && importNodes.length != 0) {
+            Node importsNode = importNodes[0].getParentNode();
+            for (Node node : importNodes) {
+                importsNode.removeChild(node);
+            }
+
+            documentCopy = (Document) this.perlXMLDocument.cloneNode(true);
+
+            for (Node node : importNodes) {
+                importsNode.appendChild(node);
+            }
+        } else {
+            documentCopy = this.perlXMLDocument;
+        }
+        return documentCopy;
+
     }
 
     public Document getCurrentTypeDocument(String xmlType) {
@@ -397,23 +474,4 @@ public class ComponentPref {
         }
     }
 
-    private Document removeUnusedNodes(Node[] importNodes) {
-        Document documentCopy = null;
-
-        if (importNodes != null && importNodes.length != 0) {
-            Node importsNode = importNodes[0].getParentNode();
-            for (Node node : importNodes) {
-                importsNode.removeChild(node);
-            }
-
-            documentCopy = (Document) this.xmlDocument.cloneNode(true);
-
-            for (Node node : importNodes) {
-                importsNode.appendChild(node);
-            }
-        } else {
-            documentCopy = this.xmlDocument;
-        }
-        return documentCopy;
-    }
 }

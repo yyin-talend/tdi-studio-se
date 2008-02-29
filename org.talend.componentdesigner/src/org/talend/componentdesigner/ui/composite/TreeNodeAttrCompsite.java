@@ -12,7 +12,6 @@
 // ============================================================================
 package org.talend.componentdesigner.ui.composite;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.swt.SWT;
@@ -37,65 +36,6 @@ public class TreeNodeAttrCompsite extends Composite {
 
     private final TreeNodeData nodeData;
 
-    private static Map<String, String[]> attrValuesMap = new HashMap<String, String[]>();
-
-    private static Map<String, String> attrToolTipsMap = new HashMap<String, String>();
-
-    static {
-        // attrValuesMap
-        String[] booleanAttrNameArray = { "SHOW", "REQUIRED", "READONLY", "BASED_ON_SCHEMA", "KEY", "NULLABLE", "CUSTOM",
-                "BUILTIN", "STARTABLE", "SCHEMA_AUTO_PROPAGATE", "DATA_AUTO_PROPAGATE", "HAS_CONDITIONAL_OUTPUTS",
-                "IS_MULTIPLYING_OUTPUTS", "VISIBLE", "TSTATCATCHER_STATS", "USE_MERGE" };
-        String[] booleanArray = { "true", "false" };
-
-        for (String attrName : booleanAttrNameArray) {
-            attrValuesMap.put(attrName, booleanArray);
-        }
-
-        // reference: org.talend.core.model.process.EConnectionType
-        String[] connectionTypeArray = { "FLOW", "SUBJOB_OK", "AFTER", "COMPONENT_OK", "SUBJOB_ERROR", "COMPONENT_ERROR",
-                "RUN_IF", "ITERATE", "LOOKUP", "TABLE", "MERGE", "ROWS_END" };
-        attrValuesMap.put("CTYPE", connectionTypeArray);
-
-        // reference: org.talend.core.model.process.EParameterFieldType
-        String[] fieldTypeArray = { "TEXT", "MEMO_SQL", "MEMO_PERL", "MEMO_JAVA", "CLOSED_LIST", "CHECK", "MEMO", "SCHEMA_TYPE",
-                "QUERYSTORE_TYPE", "PROPERTY_TYPE", "EXTERNAL", "FILE", "VERSION", "TABLE", "DIRECTORY", "PROCESS_TYPE", "IMAGE",
-                "COLUMN_LIST", "CONNECTION_LIST", "PREV_COLUMN_LIST", "CONTEXT_PARAM_NAME_LIST", "LOOKUP_COLUMN_LIST",
-                "TECHNICAL", "ENCODING_TYPE", "COMPONENT_LIST", "MAPPING_TYPE", "COLOR", "DBTABLE", "DATE", "DBTYPE_LIST",
-                "LABEL", "AS400_CHECK", "MODULE_LIST", "COMMAND", "PALO_DIM_SELECTION" };
-        attrValuesMap.put("FIELD", fieldTypeArray);
-
-        attrValuesMap.put("AUTHOR", new String[] { "Talend" });
-        attrValuesMap.put("AVAILABILITY", new String[] { "AFTER" });
-        attrValuesMap.put("TYPE", new String[] { "id_Integer" });
-        attrValuesMap.put("PLATEFORM", new String[] { "ALL" });
-        attrValuesMap.put("COMPATIBILITY", new String[] { "ALL" });
-        attrValuesMap.put("STATUS", new String[] { "ALPHA" });
-        attrValuesMap.put("MAX_INPUT", new String[] { "0", "1" });
-        attrValuesMap.put("MIN_INPUT", new String[] { "0", "1" });
-        attrValuesMap.put("MAX_OUTPUT", new String[] { "0", "1" });
-        attrValuesMap.put("MIN_OUTPUT", new String[] { "0", "1" });
-
-        // attrToolTipsMap
-        attrToolTipsMap.put("MAX_INPUT", "Integer value.");
-        attrToolTipsMap.put("MIN_INPUT", "Integer value.");
-        attrToolTipsMap.put("MAX_OUTPUT", "Integer value.");
-        attrToolTipsMap.put("MIN_OUTPUT", "Integer value.");
-        attrToolTipsMap.put("LINE_STYLE", "Integer value.");
-        attrToolTipsMap.put("LENGTH", "Integer value.");
-        attrToolTipsMap.put("PRECISION", "Integer value.");
-        attrToolTipsMap.put("NB_LINES", "Integer value.");
-        attrToolTipsMap.put("NUM_ROW", "Integer value.");
-        attrToolTipsMap.put("VERSION", "A decimal value to indicate the version of your new component.");
-
-        attrToolTipsMap.put("COLOR", "Hex value of RGB. For example: \"00FF00\"");
-
-        for (String attrName : booleanAttrNameArray) {
-            attrToolTipsMap.put(attrName, "Boolean value(true or false).");
-        }
-
-    }
-
     public TreeNodeAttrCompsite(Composite parent, int style, TreeNodeData nodeData) {
         super(parent, style);
         this.nodeData = nodeData;
@@ -103,7 +43,8 @@ public class TreeNodeAttrCompsite extends Composite {
         setLayout(layout);
     }
 
-    public void creatPart() {
+    public void creatPart(Map<String, String[]> attrsValuesAvailableMap, Map<String, String> attrsToolTipsMap) {
+
         GridData gd = null;
         if ((!nodeData.isHasTreeAttr()) && (!nodeData.isHasChildTreeNode())) {
             Label label = new Label(this, SWT.NONE);
@@ -129,8 +70,8 @@ public class TreeNodeAttrCompsite extends Composite {
                 final Label attrLabel = new Label(this, SWT.NONE);
                 attrLabel.setText(attrName + MARK);
                 attrLabel.setLayoutData(new GridData());
-                String[] valuesArray = attrValuesMap.get(attrName);
-                String tooTipsText = attrToolTipsMap.get(attrName);
+                String[] valuesArray = attrsValuesAvailableMap.get(attrName);
+                String tooTipsText = attrsToolTipsMap.get(attrName);
 
                 if (valuesArray == null) {
                     final Text attrText = new Text(this, SWT.BORDER);

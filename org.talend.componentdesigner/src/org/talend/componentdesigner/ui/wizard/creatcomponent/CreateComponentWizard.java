@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.wizards.newresource.BasicNewResourceWizard;
 import org.talend.componentdesigner.ComponentDesigenerPlugin;
@@ -28,6 +29,7 @@ import org.talend.componentdesigner.PluginConstant;
 import org.talend.componentdesigner.manager.ComponentFolderManager;
 import org.talend.componentdesigner.model.componentpref.ComponentPref;
 import org.talend.componentdesigner.model.componentpref.ComponentPrefCollection;
+import org.talend.componentdesigner.model.enumtype.LanguageType;
 
 /**
  * Standard workbench wizard that creates a new component project resource in the workspace. Example:
@@ -52,6 +54,10 @@ public class CreateComponentWizard extends BasicNewResourceWizard {
     private final ComponentPref componentPref;
 
     private ComponentFolderManager manager;
+
+    private static final String JAVAWIZARD = "JAVAWIZARD";
+
+    private static final String PERLWIZARD = "PERLWIZARD";
 
     /**
      * Creates a wizard for creating a new project resource in the workspace.
@@ -87,64 +93,34 @@ public class CreateComponentWizard extends BasicNewResourceWizard {
         creatProjectPage = new WizardComponentFolderPage("componentNewProjectPage", componentPref); //$NON-NLS-1$
         creatProjectPage.setTitle("Main Properties");
         creatProjectPage.setDescription("Fill in component properties");
-        // creatProjectPage.getPropertyChangeBean()
-        // .addPropertyChangeListener(this);
         this.addPage(creatProjectPage);
+
         creatJetFilesPage = new WizardJetFilesChoosePage("creatJetFilesPage", //$NON-NLS-1$
                 componentPref);
         creatJetFilesPage.setTitle("Specify resources");
-        // creatJetFilesPage.getPropertyChangeBean().addPropertyChangeListener(
-        // this);
         this.addPage(creatJetFilesPage);
 
-        WizardXMLConfigPage xmlConfigPage = new WizardXMLConfigPage("xmlConfigPage", componentPref);
-        xmlConfigPage.setTitle("Create the XML configuration file");
-        this.addPage(xmlConfigPage);
-    }
+        JavaXMLConfigWizardPage javaXMLConfigPage = new JavaXMLConfigWizardPage(JAVAWIZARD, componentPref);
+        javaXMLConfigPage.setTitle("Create the XML configuration file for JAVA Component");
+        this.addPage(javaXMLConfigPage);
 
-    public boolean canFinish = false;
+        PerlXMLConfigWizardPage perlXMLConfigPage = new PerlXMLConfigWizardPage(PERLWIZARD, componentPref);
+        perlXMLConfigPage.setTitle("Create the XML configuration file for PERL Component");
+        this.addPage(perlXMLConfigPage);
+    }
 
     @Override
     public boolean canFinish() {
-        if ((getContainer().getCurrentPage() instanceof WizardXMLConfigPage)
-                && (getContainer().getCurrentPage().isPageComplete())) {
+        IWizardPage currentPage = this.getContainer().getCurrentPage();
+        if (currentPage.getName().equals(PERLWIZARD)) {
+            return true;
+        }
+        if (currentPage.getName().equals(JAVAWIZARD) && (componentPref.getLanguageType() == LanguageType.JAVALANGUAGETYPE)) {
             return true;
         }
         return false;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
-     */
-    @Override
-    @SuppressWarnings("unchecked")
-    // public void propertyChange(PropertyChangeEvent event) {
-    // if (PluginConstant.NAME_PROPERTY.equals(event.getPropertyName())) {
-    // this.componentPref.setName((String) event.getNewValue());
-    // } else if (PluginConstant.LANGUAGE_PROPERTY.equals(event
-    // .getPropertyName())) {
-    // this.componentPref.setLanguageType((LanguageType) event
-    // .getNewValue());
-    // } else if (PluginConstant.RESOURCETYPE_PROPERTY.equals(event
-    // .getPropertyName())) {
-    // this.componentPref
-    // .setResourceLanguageTypes((List<ResourceLanguageType>) event
-    // .getNewValue());
-    // } else if (PluginConstant.JETFILETYPE_PROPERTY.equals(event
-    // .getPropertyName())) {
-    // this.componentPref.setJetFileStamps((List<JetFileStamp>) event
-    // .getNewValue());
-    // } else if (PluginConstant.IMAGE_PROPERTY
-    // .equals(event.getPropertyName())) {
-    // this.componentPref.setImageURL((String) event.getNewValue());
-    // } else if (PluginConstant.LIBRARY_PROPERTY.equals(event
-    // .getPropertyName())) {
-    // this.componentPref.setLibEntries((ILibEntry[]) event
-    // .getNewValue());
-    // }
-    // }
     /*
      * (non-Javadoc) Method declared on IWorkbenchWizard.
      */
@@ -186,5 +162,23 @@ public class CreateComponentWizard extends BasicNewResourceWizard {
     @Override
     public void dispose() {
 
+    }
+
+    @Override
+    public IWizardPage getNextPage(IWizardPage page) {
+        if (page.getName().equals(JAVAWIZARD)) {
+            if (componentPref.getLanguageType() == LanguageType.JAVALANGUAGETYPE) {
+                return null;
+            }
+        }
+        IWizardPage tempPage = super.getNextPage(page);
+        if (tempPage != null) {
+            if (tempPage.getName().equals(JAVAWIZARD)) {
+                if (componentPref.getLanguageType() == LanguageType.PERLLANGUAGETYPE) {
+                    return this.getPage(PERLWIZARD);
+                }
+            }
+        }
+        return tempPage;
     }
 }

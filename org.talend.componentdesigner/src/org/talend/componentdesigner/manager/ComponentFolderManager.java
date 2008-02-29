@@ -14,20 +14,31 @@ package org.talend.componentdesigner.manager;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.Properties;
 
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
+import org.dom4j.DocumentException;
+import org.dom4j.io.OutputFormat;
+import org.dom4j.io.SAXReader;
+import org.dom4j.io.XMLWriter;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.talend.componentdesigner.ComponentDesigenerPlugin;
@@ -37,7 +48,7 @@ import org.talend.componentdesigner.model.ILibEntry;
 import org.talend.componentdesigner.model.componentpref.ComponentPref;
 import org.talend.componentdesigner.model.enumtype.JetFileStamp;
 import org.talend.componentdesigner.model.enumtype.ResourceLanguageType;
-import org.talend.componentdesigner.util.XMLUtil;
+import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -73,26 +84,55 @@ public class ComponentFolderManager {
         }
     }
 
+    /**
+     * DOC slanglois Comment method "creatResourceFile".
+     * 
+     * @param resourceType
+     * @throws CoreException
+     */
     private void creatResourceFile(ResourceLanguageType resourceType) throws CoreException {
-        String s = "";
+        Properties properties = new Properties();
+
+        // String s = "";
         String fileName = componentPref.getName() + resourceType.getNameSuffix();
         IFile f = creatEmptyFile(fileName);
 
         // add property for NAME, LONG NAME AND FAMILY
-        s = "NAME=" + componentPref.getName() + "\n";
-        s += "LONG_NAME=" + componentPref.getLongName() + "\n";
-        s += "FAMILY=" + componentPref.getFamily() + "\n";
+        properties.setProperty("NAME", componentPref.getName());
+        properties.setProperty("LONG_NAME", componentPref.getLongName());
+        properties.setProperty("FAMILY", componentPref.getFamily());
 
         // add property for HELP
-        s += "HELP=org.talend.help." + componentPref.getName() + "\n";
+        properties.setProperty("HELP", "org.talend.help." + componentPref.getName());
 
         // add properties for each PARAMETER of component file
-        s = extractNodes(s, "PARAMETER");
+        extractNodes("PARAMETER", properties);
         // add properties for each RETURN of component
-        s = extractNodes(s, "RETURN");
+        extractNodes("RETURN", properties);
 
-        InputStream propertyStream = new ByteArrayInputStream(s.getBytes());
-        f.setContents(propertyStream, true, false, null);
+        ByteArrayOutputStream propertiesOutputStream = null;
+        InputStream inputStream = null;
+        try {
+            propertiesOutputStream = new ByteArrayOutputStream();
+            properties.store(propertiesOutputStream, "");
+            propertiesOutputStream.flush();
+            propertiesOutputStream.close();
+            inputStream = new ByteArrayInputStream(propertiesOutputStream.toByteArray());
+            f.setContents(inputStream, true, false, null);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (propertiesOutputStream != null) {
+                    propertiesOutputStream.close();
+                }
+                if (inputStream != null) {
+                    inputStream.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     /**
@@ -102,8 +142,8 @@ public class ComponentFolderManager {
      * @param tagToFind
      * @return
      */
-    private String extractNodes(String stringToReturn, String tagToFind) {
-        NodeList nl = componentPref.getXmlDocument().getElementsByTagName(tagToFind);
+    private void extractNodes(String tagToFind, Properties properties) {
+        NodeList nl = componentPref.getJavaXMLDocument().getElementsByTagName(tagToFind);
         if (nl != null) {
             for (int i = 0; i < nl.getLength(); i++) {
                 Node n = nl.item(i);
@@ -111,12 +151,25 @@ public class ComponentFolderManager {
                     NamedNodeMap attributes = n.getAttributes();
                     n = attributes.getNamedItem("NAME");
                     if ((n != null) && (n.getNodeValue() != null) && (n.getNodeValue().compareTo("") != 0)) {
-                        stringToReturn += n.getNodeValue().toUpperCase() + ".NAME=" + n.getNodeValue() + "\n";
+                        properties.setProperty(n.getNodeValue().toUpperCase() + ".NAME", n.getNodeValue());
                     }
                 }
             }
         }
-        return stringToReturn;
+        nl = null;
+        nl = componentPref.getPerlXMLDocument().getElementsByTagName(tagToFind);
+        if (nl != null) {
+            for (int i = 0; i < nl.getLength(); i++) {
+                Node n = nl.item(i);
+                if (n != null) {
+                    NamedNodeMap attributes = n.getAttributes();
+                    n = attributes.getNamedItem("NAME");
+                    if ((n != null) && (n.getNodeValue() != null) && (n.getNodeValue().compareTo("") != 0)) {
+                        properties.setProperty(n.getNodeValue().toUpperCase() + ".NAME", n.getNodeValue());
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -126,8 +179,7 @@ public class ComponentFolderManager {
      * @param project
      * @param srcComponentFolderName
      * @param desComponentFolderName
-     * @throws CoreException
-     * @throws IOException TODO
+     * @throws CoreException, IOException
      */
     public void copyComponent(IProject project, String srcComponentFolderName, String desComponentFolderName)
             throws CoreException, IOException {
@@ -151,7 +203,7 @@ public class ComponentFolderManager {
                                 file.getName().indexOf(srcComponentFolderName) + srcComponentFolderName.length());
                 file.copy(desFolder.getFile(newDestinationFileName).getFullPath(), false, null);
 
-                // modify NAME's value in properties file.
+                // modify NAME's value and HELP's value in properties file.
                 if (file.getFileExtension().equals("properties")) {
 
                     Properties properties = new Properties();
@@ -204,53 +256,27 @@ public class ComponentFolderManager {
     }
 
     private void creatXmlFile() throws CoreException {
-        // this.project.getFullPath();
-        URL[] folderUrls = FileLocator.findEntries(ComponentDesigenerPlugin.getDefault().getBundle(), project
-                .getProjectRelativePath());
-        String tempXMLFileName = null;
-        InputStream in = null;
-        File f = null;
-        try {
-            tempXMLFileName = FileLocator.toFileURL(folderUrls[0]).getFile() + componentPref.getName() + xmlSUFFIX;
 
-            // String fileName = componentPref.getName();
-            switch (componentPref.getLanguageType()) {
-            case BOTHLANGUAGETYPE:
-                String[] suffixs = componentPref.getLanguageType().getNameSuffix().split(";");
-                for (String nameSuffix : suffixs) {
-                    f = getTempXMLFile(tempXMLFileName, nameSuffix);
-                    in = new FileInputStream(f);
-                    this.copyFileFromSrc(in, this.componentFolderName + nameSuffix + xmlSUFFIX);
-                    in.close();
-                    in = null;
-                    if (!f.delete()) {
-                        f.deleteOnExit();
-                    }
-                }
-                break;
-            default:
-                f = getTempXMLFile(tempXMLFileName, componentPref.getLanguageType().getNameSuffix());
-                in = new FileInputStream(f);
-                this.copyFileFromSrc(in, this.componentFolderName + componentPref.getLanguageType().getNameSuffix() + xmlSUFFIX);
-                in.close();
-                in = null;
-                if (!f.delete()) {
-                    f.deleteOnExit();
-                }
+        // String fileName = componentPref.getName();
+        switch (componentPref.getLanguageType()) {
+        case BOTHLANGUAGETYPE:
+            String[] suffixs = componentPref.getLanguageType().getNameSuffix().split(";");
+            for (String nameSuffix : suffixs) {
+                String xmlFileName = this.componentFolderName + nameSuffix + xmlSUFFIX;
+                IFile file = creatEmptyFile(xmlFileName);
+                Document document = componentPref.getCurrentTypeDocument(nameSuffix);
+                writeXMLContent(file, document, "UTF-8");
+
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+            break;
+        default:
+            String nameSuffix = componentPref.getLanguageType().getNameSuffix();
+            String xmlFileName = this.componentFolderName + nameSuffix + xmlSUFFIX;
+            IFile file = creatEmptyFile(xmlFileName);
+            Document document = componentPref.getCurrentTypeDocument(nameSuffix);
+            writeXMLContent(file, document, "UTF-8");
         }
 
-    }
-
-    private File getTempXMLFile(String tempXMLFileName, String xmlType) throws FileNotFoundException {
-        File f = null;
-        XMLUtil.toSave(tempXMLFileName, componentPref.getCurrentTypeDocument(xmlType), "UTF-8");
-        XMLUtil.formatXMLFile(tempXMLFileName, "UTF-8");
-
-        f = new File(tempXMLFileName);
-        return f;
     }
 
     private void addComponentImage() throws CoreException, FileNotFoundException {
@@ -351,5 +377,96 @@ public class ComponentFolderManager {
                 }
             }
         }
+    }
+
+    /**
+     * DOC slanglois Comment method "writeXMLContent".
+     * 
+     * @param iFile
+     * @param document
+     * @param enCode
+     * @throws CoreException
+     */
+    private void writeXMLContent(IFile iFile, Document document, String enCode) throws CoreException {
+        PrintWriter pw = null;
+        XMLWriter writer = null;
+        byte[] byteArray = null;
+
+        // get xml content as inputstream
+        TransformerFactory tf = TransformerFactory.newInstance();
+        Transformer transformer = null;
+        try {
+            transformer = tf.newTransformer();
+        } catch (TransformerConfigurationException e1) {
+            e1.printStackTrace();
+        }
+        DOMSource source = new DOMSource(document);
+        transformer.setOutputProperty(OutputKeys.ENCODING, enCode);
+        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+
+        ByteArrayOutputStream sw = new ByteArrayOutputStream();
+        pw = new PrintWriter(sw);
+        StreamResult result = new StreamResult(pw);
+        try {
+            transformer.transform(source, result);
+        } catch (TransformerException e1) {
+            e1.printStackTrace();
+        }
+        try {
+            sw.flush();
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        } finally {
+            if (pw != null) {
+                pw.close();
+            }
+        }
+        byteArray = sw.toByteArray();
+
+        // format the xml content
+        SAXReader saxReader = new SAXReader();
+
+        org.dom4j.Document dom4jDocument = null;
+        try {
+            dom4jDocument = saxReader.read(new ByteArrayInputStream(byteArray));
+        } catch (DocumentException e1) {
+            e1.printStackTrace();
+        }
+
+        /** format the output like the webBrowser */
+
+        OutputFormat format = OutputFormat.createPrettyPrint();
+
+        /** give the xml encoding */
+
+        format.setEncoding(enCode);
+
+        sw = new ByteArrayOutputStream();
+
+        try {
+            writer = new XMLWriter(sw, format);
+        } catch (UnsupportedEncodingException e1) {
+            e1.printStackTrace();
+        }
+
+        try {
+            writer.write(dom4jDocument);
+            writer.flush();
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        } finally {
+            if (writer != null) {
+                try {
+                    writer.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        byteArray = sw.toByteArray();
+
+        // write content
+        iFile.setContents(new ByteArrayInputStream(byteArray), true, false, null);
+
     }
 }

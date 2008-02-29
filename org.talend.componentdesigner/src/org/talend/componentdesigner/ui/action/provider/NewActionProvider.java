@@ -25,7 +25,6 @@ import org.eclipse.ui.navigator.ICommonActionExtensionSite;
 import org.eclipse.ui.navigator.ICommonMenuConstants;
 import org.eclipse.ui.navigator.ICommonViewerWorkbenchSite;
 import org.talend.componentdesigner.ComponentDesigenerPlugin;
-import org.talend.componentdesigner.manager.ComponentProjectManager;
 import org.talend.componentdesigner.ui.wizard.creatcomponent.CreateComponentWizard;
 
 /**
@@ -34,61 +33,61 @@ import org.talend.componentdesigner.ui.wizard.creatcomponent.CreateComponentWiza
  * 
  */
 public class NewActionProvider extends CommonActionProvider {
-	private static final String NEW_MENU_NAME = "common.new.menu"; //$NON-NLS-1$
 
-	private IAction newProjectAction;
+    private static final String NEW_MENU_NAME = "common.new.menu"; //$NON-NLS-1$
 
-	public void init(ICommonActionExtensionSite anExtensionSite) {
+    private IAction newProjectAction;
 
-		if (anExtensionSite.getViewSite() instanceof ICommonViewerWorkbenchSite) {
-			newProjectAction = new NewComponentAction();
-		}
-	}
+    public void init(ICommonActionExtensionSite anExtensionSite) {
 
-	/**
-	 * Adds a submenu to the given menu with the name "New Component".
-	 */
-	public void fillContextMenu(IMenuManager menu) {
-		for (IContributionItem item : menu.getItems()) {
-			if (item == null || item.getId() == null) {
-				continue;
-			}
-			if (item.getId().equals("export") || item.getId().equals("import")) {
-				menu.remove(item);
-			}
-		}
+        if (anExtensionSite.getViewSite() instanceof ICommonViewerWorkbenchSite) {
+            newProjectAction = new NewComponentAction();
+        }
+    }
 
-		// append the submenu after the GROUP_NEW group.
-		if (ComponentDesigenerPlugin.getDefault().isUsed()) {
+    /**
+     * Adds a submenu to the given menu with the name "New Component".
+     */
+    public void fillContextMenu(IMenuManager menu) {
+        for (IContributionItem item : menu.getItems()) {
+            if (item == null || item.getId() == null) {
+                continue;
+            }
+            if (item.getId().equals("export") || item.getId().equals("import")) {
+                menu.remove(item);
+            }
+        }
+
+        // append the submenu after the GROUP_NEW group.
+        if (ComponentDesigenerPlugin.getDefault().isUsed()) {
             IMenuManager submenu = new MenuManager("New", NEW_MENU_NAME);
             submenu.add(newProjectAction);
             menu.insertAfter(ICommonMenuConstants.GROUP_NEW, submenu);
         }
-	}
-	
-	/**
-	 * @author rli
-	 *
-	 */
-	class NewComponentAction extends Action {
+    }
 
-		public NewComponentAction() {
-			super("New Component");
-	        ISharedImages images = PlatformUI.getWorkbench().getSharedImages();
-	        setImageDescriptor(images
-	                .getImageDescriptor(ISharedImages.IMG_TOOL_NEW_WIZARD));
-		}
+    /**
+     * @author rli
+     * 
+     */
+    class NewComponentAction extends Action {
 
-		/*
-		 * (non-Javadoc) Method declared on IAction.
-		 */
-		public void run() {
-			CreateComponentWizard wizard = new CreateComponentWizard();
-			 wizard.init(PlatformUI.getWorkbench(), null);
-			WizardDialog dialog = new WizardDialog(null, wizard);
-			dialog.open();
-		}
-	}
+        public NewComponentAction() {
+            super("New Component");
+            ISharedImages images = PlatformUI.getWorkbench().getSharedImages();
+            setImageDescriptor(images.getImageDescriptor(ISharedImages.IMG_TOOL_NEW_WIZARD));
+        }
 
+        /*
+         * (non-Javadoc) Method declared on IAction.
+         */
+        public void run() {
+            CreateComponentWizard wizard = new CreateComponentWizard();
+            wizard.init(PlatformUI.getWorkbench(), null);
+            final WizardDialog dialog = new WizardDialog(null, wizard);
+            dialog.setPageSize(520, 440);
+            dialog.open();
+        }
+    }
 
 }
