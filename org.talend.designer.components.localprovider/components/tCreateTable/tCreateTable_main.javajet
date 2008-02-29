@@ -480,6 +480,30 @@ class JavaDBManager extends Manager {
         return "\\\"";
     }
 }
+class MaxDBManager extends Manager {
+    private String host;
+    private String port;
+    public MaxDBManager(String host, String port, String dbName, String tableName, String userName, String password, String cid) {
+        super(dbName, tableName, userName, password, cid);
+        this.host = host;
+        this.port = port;
+    }
+    protected String getDriver() {
+        return "com.sap.dbtech.jdbc.DriverSapDB";
+    }
+    public String getConnectionURL() {
+        return "\"jdbc:sapdb://\" + " + host + " + \":\" + " + port + " + \"/\" + " + dbName;
+    }
+    protected String getDBMSId() {
+        return "maxdb_id";
+    }
+    protected String getLProtectedChar() {
+        return "";
+    }
+    protected String getRProtectedChar() {
+        return "";
+    }
+}
 class MSSQLManager extends Manager {
     private String host;
     private String port;
@@ -816,31 +840,31 @@ class ManagerFactory {
         Manager manager = null;
         String cid = node.getUniqueName();
         String tableName = ElementParameterParser.getValue(node,"__TABLE__");
-        if(dbType.equals("ACCESS")){
+        if(dbType.equals("ACCESS")) {
             String dbName = ElementParameterParser.getValue(node, "__DBFILE_ACCESS__");
             String userName = ElementParameterParser.getValue(node, "__USER__");
             String password = ElementParameterParser.getValue(node, "__PASS__");
             manager = new AccessManager(dbName, tableName, userName, password, cid);
-        }else if(dbType.equals("AS400")){
+        } else if(dbType.equals("AS400")) {
             String host = ElementParameterParser.getValue(node, "__HOST__");
             String dbName = ElementParameterParser.getValue(node, "__DBNAME__");
             String userName = ElementParameterParser.getValue(node, "__USER__");
             String password = ElementParameterParser.getValue(node, "__PASS__");
             manager = new AS400Manager(host, dbName, tableName, userName, password, cid);
-        }else if(dbType.equals("DB2")){
+        } else if(dbType.equals("DB2")) {
             String host = ElementParameterParser.getValue(node, "__HOST__");
             String port = ElementParameterParser.getValue(node, "__PORT__");
             String dbName = ElementParameterParser.getValue(node, "__DBNAME__");
             String userName = ElementParameterParser.getValue(node, "__USER__");
             String password = ElementParameterParser.getValue(node, "__PASS__");
             manager = new DB2Manager(host, port, dbName, tableName, userName, password, cid);
-        }else if(dbType.equals("FIREBIRD")){
+        } else if(dbType.equals("FIREBIRD")) {
             String host = ElementParameterParser.getValue(node, "__HOST__");
             String dbName = ElementParameterParser.getValue(node, "__DBFILE_FIREBIRD__");
             String userName = ElementParameterParser.getValue(node, "__USER__");
             String password = ElementParameterParser.getValue(node, "__PASS__");
             manager = new FirebirdManager(host, dbName, tableName, userName, password, cid);
-        }else if(dbType.equals("HSQLDB")){
+        } else if(dbType.equals("HSQLDB")) {
             String host = ElementParameterParser.getValue(node, "__HOST__");
             String port = ElementParameterParser.getValue(node, "__PORT__");
             String dbPath = ElementParameterParser.getValue(node, "__DBPATH_HSQL__");
@@ -851,7 +875,7 @@ class ManagerFactory {
             String runningMode = ElementParameterParser.getValue(node, "__RUNNING_MODE__");
             boolean tls = ElementParameterParser.getValue(node, "__TLS__").equals("true");
             manager = new HSQLDBManager(host, port, dbPath, dbName, tableName, dbAlias, userName, password, runningMode, tls, cid);
-        }else if(dbType.equals("INFORMIX")){
+        } else if(dbType.equals("INFORMIX")) {
             String host = ElementParameterParser.getValue(node, "__HOST__");
             String port = ElementParameterParser.getValue(node, "__PORT__");
             String dbName = ElementParameterParser.getValue(node, "__DBNAME__");
@@ -859,20 +883,20 @@ class ManagerFactory {
             String userName = ElementParameterParser.getValue(node, "__USER__");
             String password = ElementParameterParser.getValue(node, "__PASS__");
             manager = new InformixManager(host, port, dbName, tableName, dbServer, userName, password, cid);
-        }else if(dbType.equals("INGRES")){
+        } else if(dbType.equals("INGRES")) {
             String host = ElementParameterParser.getValue(node, "__HOST__");
             String port = ElementParameterParser.getValue(node, "__PORT__");
             String dbName = ElementParameterParser.getValue(node, "__DBNAME__");
             String userName = ElementParameterParser.getValue(node, "__USER__");
             String password = ElementParameterParser.getValue(node, "__PASS__");
             manager = new IngresManager(host, port, dbName, tableName, userName, password, cid);
-        }else if(dbType.equals("INTERBASE")){
+        } else if(dbType.equals("INTERBASE")) {
             String host = ElementParameterParser.getValue(node, "__HOST__");
             String dbName = ElementParameterParser.getValue(node, "__DBFILE_INTERBASE__");
             String userName = ElementParameterParser.getValue(node, "__USER__");
             String password = ElementParameterParser.getValue(node, "__PASS__");
             manager = new InterbaseManager(host, dbName, tableName, userName, password, cid);
-        }else if(dbType.equals("JAVADB")){
+        } else if(dbType.equals("JAVADB")) {
             String host = ElementParameterParser.getValue(node, "__HOST__");
             String port = ElementParameterParser.getValue(node, "__PORT__");
             String dbRootPath = ElementParameterParser.getValue(node, "__DBROOTPATH__");
@@ -882,7 +906,14 @@ class ManagerFactory {
             String frameworkType = ElementParameterParser.getValue(node, "__FRAMEWORK_TYPE__");
             boolean connectionFlag = ElementParameterParser.getValue(node, "__CONNECTION_FLAG__").equals("true");
             manager = new JavaDBManager(host, port, dbRootPath, dbName, tableName, userName, password, frameworkType, connectionFlag, cid);
-        }else if(dbType.equals("MSSQL")){
+        } else if(dbType.equals("MAXDB")) {
+            String host = ElementParameterParser.getValue(node, "__HOST__");
+            String port = ElementParameterParser.getValue(node, "__PORT__");
+            String dbName = ElementParameterParser.getValue(node, "__DBNAME__");
+            String userName = ElementParameterParser.getValue(node, "__USER__");
+            String password = ElementParameterParser.getValue(node, "__PASS__");
+            manager = new MaxDBManager(host, port, dbName, tableName, userName, password, cid);
+        } else if(dbType.equals("MSSQL")) {
             String host = ElementParameterParser.getValue(node, "__HOST__");
             String port = ElementParameterParser.getValue(node, "__PORT__");
             String dbName = ElementParameterParser.getValue(node, "__DBNAME__");
@@ -891,7 +922,7 @@ class ManagerFactory {
             boolean useExistingConnection = ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__").equals("true");
             String connection = stringUtil.getString(ElementParameterParser.getValue(node, "__CONNECTION_MSSQL__"));
             manager = new MSSQLManager(host, port, dbName, tableName, userName, password, useExistingConnection, connection, cid);
-        }else if(dbType.equals("MYSQL")){
+        } else if(dbType.equals("MYSQL")) {
             String host = ElementParameterParser.getValue(node, "__HOST__");
             String port = ElementParameterParser.getValue(node, "__PORT__");
             String dbName = ElementParameterParser.getValue(node, "__DBNAME__");
@@ -901,7 +932,7 @@ class ManagerFactory {
             String connection = stringUtil.getString(ElementParameterParser.getValue(node, "__CONNECTION_MYSQL__"));
             boolean temporary = ElementParameterParser.getValue(node, "__TEMPTABLE__").equals("true");
             manager = new MysqlManager(host, port, dbName, tableName, userName, password, useExistingConnection, connection, temporary, cid);
-        }else if(dbType.equals("DBORACLE")){
+        } else if(dbType.equals("DBORACLE")) {
             String host = ElementParameterParser.getValue(node, "__HOST__");
             String port = ElementParameterParser.getValue(node, "__PORT__");
             String dbSchema = ElementParameterParser.getValue(node, "__SCHEMA_DB__");
@@ -912,7 +943,7 @@ class ManagerFactory {
             boolean useExistingConnection = ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__").equals("true");
             String connection = stringUtil.getString(ElementParameterParser.getValue(node, "__CONNECTION_ORACLE__"));
             manager = new OracleManager(host, port, dbName, tableName, dbSchema, userName, password, connectionType, useExistingConnection, connection, cid);
-        }else if(dbType.equals("POSTGRE")){
+        } else if(dbType.equals("POSTGRE")) {
             String host = ElementParameterParser.getValue(node, "__HOST__");
             String port = ElementParameterParser.getValue(node, "__PORT__");
             String dbSchema = ElementParameterParser.getValue(node, "__SCHEMA_DB__");
@@ -922,19 +953,19 @@ class ManagerFactory {
             boolean useExistingConnection = ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__").equals("true");
             String connection = stringUtil.getString(ElementParameterParser.getValue(node, "__CONNECTION_POSTGRE__"));
             manager = new PostgreManager(host, port, dbName, tableName, dbSchema, userName, password, useExistingConnection, connection, cid);
-        }else if(dbType.equals("SQLITE")){
+        } else if(dbType.equals("SQLITE")) {
             String dbName = ElementParameterParser.getValue(node, "__DBFILE_SQLITE__");
             String userName = ElementParameterParser.getValue(node, "__USER__");
             String password = ElementParameterParser.getValue(node, "__PASS__");
             manager = new SQLiteManager(dbName, tableName, userName, password, cid);
-        }else if(dbType.equals("SYBASE")){
+        } else if(dbType.equals("SYBASE")) {
             String host = ElementParameterParser.getValue(node, "__HOST__");
             String port = ElementParameterParser.getValue(node, "__PORT__");
             String dbName = ElementParameterParser.getValue(node, "__DBNAME__");
             String userName = ElementParameterParser.getValue(node, "__USER__");
             String password = ElementParameterParser.getValue(node, "__PASS__");
             manager = new SybaseManager(host, port, dbName, tableName, userName, password, cid);
-        }else if(dbType.equals("ODBC")){
+        } else if(dbType.equals("ODBC")) {
             String odbcName = ElementParameterParser.getValue(node, "__ODBCNAME__");
             String userName = ElementParameterParser.getValue(node, "__USER__");
             String password = ElementParameterParser.getValue(node, "__PASS__");
@@ -1004,7 +1035,7 @@ if(columnList != null && columnList.size() > 0) {
         globalMap.put("<%=cid%>_QUERY", "<%=manager.getCreateTableSQL(columnList)%>");        
     } catch(Exception e) {
         globalMap.put("<%=cid%>_ERROR_MESSAGE",e.getMessage());
-        throw new RuntimeException("Creating table failed");
+        throw new RuntimeException("Creating table failed", e);
     }
 <%
 }

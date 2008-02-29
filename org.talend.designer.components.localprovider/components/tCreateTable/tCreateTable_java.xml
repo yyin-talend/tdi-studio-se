@@ -3,8 +3,7 @@
     PLATEFORM="ALL"
     SERIAL=""
     VERSION="0.102"
-    STATUS="ALPHA"
-    
+    STATUS="ALPHA"   
     COMPATIBILITY="ALL"
     AUTHOR="Talend"
     RELEASE_DATE="20070627A"
@@ -55,6 +54,7 @@
         <ITEM NAME="INGRES"      VALUE="INGRES"/>
         <ITEM NAME="INTERBASE"      VALUE="INTERBASE"/>
         <ITEM NAME="JAVADB"      VALUE="JAVADB"/>
+        <ITEM NAME="MAXDB" 		   VALUE="MAXDB"/>
         <ITEM NAME="MSSQL" 		   VALUE="MSSQL"/>
         <ITEM NAME="MYSQL"         VALUE="MYSQL"/>
         <ITEM NAME="DBORACLE"      VALUE="DBORACLE"/>
@@ -341,6 +341,7 @@
       <DEFAULT IF="DBTYPE=='INGRES'">ingres_id</DEFAULT>
       <DEFAULT IF="DBTYPE=='INTERBASE'">interbase_id</DEFAULT>
       <DEFAULT IF="DBTYPE=='JAVADB'">javadb_id</DEFAULT>
+      <DEFAULT IF="DBTYPE=='MAXDB'">maxdb_id</DEFAULT>
       <DEFAULT IF="DBTYPE=='MSSQL'">id_MSSQL</DEFAULT>
       <DEFAULT IF="DBTYPE=='MYSQL'">mysql_id</DEFAULT>
       <DEFAULT IF="DBTYPE=='DBORACLE'">oracle_id</DEFAULT>
@@ -369,6 +370,7 @@
 		<IMPORT NAME="Driver-DB2" MODULE="db2jcc.jar" REQUIRED="true" />
 		<IMPORT NAME="Driver-DB2-LICENSE-CISUZ" MODULE="db2jcc_license_cisuz.jar" REQUIRED="true" />
 		<IMPORT NAME="Driver-DB2-LICENSE-CU" MODULE="db2jcc_license_cu.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver_MaxDB" MODULE="sapdbc.jar" REQUIRED="true" />
 		<IMPORT NAME="Driver-MSSQL" MODULE="jtds-1.2.jar" REQUIRED="true" />
 		<IMPORT NAME="Driver-MYSQL" MODULE="mysql-connector-java-5.1.0-bin.jar" REQUIRED="true" />
 		<IMPORT NAME="Driver-ORACLE" MODULE="ojdbc14.jar" REQUIRED="true" />
