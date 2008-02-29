@@ -882,6 +882,22 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
     /*
      * (non-Javadoc)
      * 
+     * @see org.talend.repository.model.IProxyRepositoryFactory#copy(org.talend.core.model.properties.Item,
+     * org.eclipse.core.runtime.IPath)
+     */
+    public Item copy(Item sourceItem, IPath targetPath, String newName) throws PersistenceException, BusinessException {
+        Item targetItem = this.repositoryFactoryFromProvider.copy(sourceItem, targetPath, newName);
+
+        if (sourceItem instanceof ProcessItem || sourceItem instanceof JobletProcessItem) {
+            fireRepositoryPropertyChange(ERepositoryActionName.JOB_COPY.getName(), sourceItem, targetItem);
+        }
+        return targetItem;
+
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.repository.model.IProxyRepositoryFactory#reload(org.talend.core.model.properties.Property)
      */
     public Property reload(Property property) throws PersistenceException {
