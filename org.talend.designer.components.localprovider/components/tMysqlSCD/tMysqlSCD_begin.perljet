@@ -163,6 +163,7 @@ if (inMetadata != null && metadata != null) {
 %>
 
 use DBI;
+use Digest::MD5 qw/md5_hex/;
 
 <%
     int column_number = 0;
@@ -209,7 +210,9 @@ if (<%=encoding%> =~ m/utf-?8/i) {
 <%
     // building the cache comparison load query
     List selectColumns = new ArrayList();
-    List keyColPositions = new ArrayList();
+    List<Integer> l1Positions = new ArrayList<Integer>();
+    List<Integer> l2Positions = new ArrayList<Integer>();
+    List<Integer> keyColPositions = new ArrayList<Integer>();
     int colPosition = 0;
 
     // first we iterate on the input schema columns...
@@ -226,6 +229,14 @@ use constant <%=cid%>_cache_<%=colname%> => <%=colPosition%>;
 
             if (typeOfColumn.get(colname).equals("SK")) {
                 keyColPositions.add(colPosition);
+            }
+
+            if (typeOfColumn.get(colname).equals("L1")) {
+                l1Positions.add(colPosition);
+            }
+
+            if (typeOfColumn.get(colname).equals("L2")) {
+                l2Positions.add(colPosition);
             }
 
             colPosition++;
@@ -251,7 +262,19 @@ use constant <%=cid%>_cache_<%=versionField%> => <%=colPosition%>;
         keyColPositions.toArray(),
         ", "
     );
+
+    String l1PositionsString = StringUtils.join(
+        l1Positions.toArray(),
+        ", "
+    );
+
+    String l2PositionsString = StringUtils.join(
+        l2Positions.toArray(),
+        ", "
+    );
 %>
+
+my $before_cache_<%=cid%> = [gettimeofday];
 
 my $query = "
 SELECT <%=selectColumnsString%>
@@ -266,19 +289,87 @@ SELECT <%=selectColumnsString%>
 ";
 
 my %cache_<%=cid %> = ();
+my $key = undef;
 
 $sth_<%=cid %> = $<%=dbh%>->prepare($query);
 $sth_<%=cid %>->execute()
     or die "[<%=cid%>] cannot load comparison cache";
 
-while (my @row = $sth_<%=cid %>->fetchrow_array()) {
-    $cache_<%=cid %>{join $;, @row[<%=keyColPositionsString%>]} = \@row;
+while (my $row_aref = $sth_<%=cid %>->fetchrow_arrayref()) {
+<%
+    if  (keyColPositions.size() > 1) {
+%>
+    $key = join(
+        $;,
+<%
+        for (Integer keyColPosition : keyColPositions) {
+%>
+        $row_aref->[<%=keyColPosition%>],
+<%
+        }
+%>
+    );
+<%
+    }
+    else {
+%>
+    $key = $row_aref->[<%=keyColPositionsString%>];
+<%
+    }
+%>
+
+    $cache_<%=cid %>{$key} = join(
+        ',',
+<%
+    if (l1Positions.size() > 0) {
+%>
+        md5_hex(
+            join(
+                $;,
+<%
+    for (Integer l1Position : l1Positions) {
+%>
+                $row_aref->[<%=l1Position%>],
+<%
+    }
+%>
+            )
+        ),
+<%
+    }
+    if (l2Positions.size() > 0) {
+%>
+        md5_hex(
+            join(
+                $;,
+<%
+    for (Integer l2Position : l2Positions) {
+%>
+                $row_aref->[<%=l2Position%>],
+<%
+    }
+%>
+            )
+        ),
+<%
+    }
+    if (useVersion.equals("true")) {
+%>
+        $row_aref->[<%=cid%>_cache_<%=versionField%>],
+<%
+    }
+%>
+    );
 }
 
 <%
     if (debug) {
 %>
-print "[<%=cid%>] comparison cache loaded\n";
+printf(
+    "[<%=cid%>] comparison cache loaded in %.1f seconds with %u keys\n",
+    tv_interval($before_cache_<%=cid%>, [gettimeofday]),
+    scalar keys %cache_<%=cid %>
+);
 <%
     }
 %>
@@ -337,14 +428,21 @@ INSERT
 my $isth_<%=cid %> = $<%=dbh%>->prepare($query);
 
 <%
+    List l1Clauses = new ArrayList();
+
     List keyClauses = new ArrayList();
 
     for (IMetadataColumn column: metadata.getListColumns()) {
         String colname = column.getLabel();
+        String clause =
+            StringUtils.getMysqlProtectedColumnName(colname) + " = ?";
 
         if (typeOfColumn.containsKey(colname)) {
             if (typeOfColumn.get(colname).equals("SK")) {
-                keyClauses.add("`" + colname + "` = ?");
+                keyClauses.add(clause);
+            }
+            if (typeOfColumn.get(colname).equals("L1")) {
+                l1Clauses.add(clause);
             }
         }
     }
@@ -353,13 +451,19 @@ my $isth_<%=cid %> = $<%=dbh%>->prepare($query);
         keyClauses.toArray(),
         "\n    AND "
     );
+
+    String l1ClausesString = StringUtils.join(
+        l1Clauses.toArray(),
+        "\n    , "
+    );
 %>
 
 $l1_query = '
 UPDATE '.<%=dbtable%>.'
-  SET `%s` = ?
+  SET <%=l1ClausesString%>
   WHERE <%=keyClausesString%>
 ';
+my $l1sth_<%=cid%> = $<%=dbh%>->prepare($l1_query);
 
 <%
     if (useL2.equals("true")) {
