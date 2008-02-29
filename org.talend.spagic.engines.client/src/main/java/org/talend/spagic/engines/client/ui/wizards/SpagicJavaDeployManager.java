@@ -12,8 +12,10 @@
 // ============================================================================
 package org.talend.spagic.engines.client.ui.wizards;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.PrintStream;
 import java.net.URL;
 import java.util.ArrayList;
@@ -24,6 +26,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.apache.commons.lang.BooleanUtils;
+import org.eclipse.core.runtime.IPath;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.genhtml.HTMLDocUtils;
@@ -134,8 +137,27 @@ public class SpagicJavaDeployManager extends org.talend.repository.ui.wizards.ex
         List<URL> list = new ArrayList<URL>();
         Properties p = new Properties();
         FileOutputStream out = null;
+        String projectName = getCurrentProjectName();
+        String jobName = processItem.getProperty().getLabel();
+        String jobFolderName = JavaResourcesHelper.getJobFolderName(escapeFileNameSpace(processItem));
         try {
+            // List<SpagoBiServer> listServerSapgo = null;
+            // listServerSapgo = SpagicServerHelper.parse(new SpagicPreferencePage().getPreferenceStore().getString(
+            // SpagoBiServer.SPAGOBI_SERVER));
+            // if (listServerSapgo != null && !listServerSapgo.isEmpty()) {
+            // Iterator<SpagoBiServer> iterator = listServerSapgo.iterator();
+            // while (iterator.hasNext()) {
+            // SpagoBiServer spagoBiServer = iterator.next();
+            // }
+            // }
+            IPath path = getSrcRootLocation();
             File file = new File(getTmpFolder() + PATH_SEPARATOR + "spagic.properties");
+            path = path.append(projectName).append(jobFolderName).append(jobName + ".java");
+            BufferedReader buff = new BufferedReader(new FileReader(path.toPortableString()));
+            int nbLine = 0;
+            while (buff.readLine() != null) {
+                nbLine++;
+            }
             out = new FileOutputStream(file);
             PrintStream ps = new PrintStream(out);
             IDesignerCoreService service = CorePlugin.getDefault().getDesignerCoreService();
@@ -148,6 +170,8 @@ public class SpagicJavaDeployManager extends org.talend.repository.ui.wizards.ex
                     + JavaResourcesHelper.getJobFolderName(processItem.getProperty().getLabel()) + "."
                     + processItem.getProperty().getLabel());
             p.put("talendJobClassDescription", HTMLDocUtils.checkString(processItem.getProperty().getDescription()));
+            p.put("rowNumber", Integer.toString(nbLine));
+            p.put("host", "localhost");
             p.list(ps);
             ps.flush();
             list.add(file.toURI().toURL());

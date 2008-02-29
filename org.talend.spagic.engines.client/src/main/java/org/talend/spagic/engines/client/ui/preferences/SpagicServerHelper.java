@@ -66,7 +66,7 @@ public final class SpagicServerHelper {
             spagoBiServer.setPort(getPort(spagoBiServerStr));
             spagoBiServer.setLogin(getLogin(spagoBiServerStr));
             spagoBiServer.setPassword(getPassword(spagoBiServerStr));
-            spagoBiServer.setApplicationContext(getApplicationContext(spagoBiServerStr));
+            // spagoBiServer.setApplicationContext(getApplicationContext(spagoBiServerStr));
             result.add(spagoBiServer);
         }
         return Collections.unmodifiableList(result);
