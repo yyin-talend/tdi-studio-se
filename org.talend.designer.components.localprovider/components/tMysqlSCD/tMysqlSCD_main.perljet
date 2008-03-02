@@ -278,10 +278,10 @@ if (inMetadata != null && metadata != null) {
             print "[<%=cid%>] new history line\n";
 <%
         }
+    } // if l2 fields
 %>
     }
 }
 <%
-    }
-}
+} // if metadata
 %>

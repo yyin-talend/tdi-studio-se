@@ -337,6 +337,14 @@ while (my $row_aref = $sth_<%=cid %>->fetchrow_arrayref()) {
         ),
 <%
     }
+    else {
+        // even if we don't use Type 1 fields, we need to give something so
+        // that $cache_line[0] matches the Type1 concatenation md5sum
+%>
+        '',
+<%
+    }
+
     if (l2Positions.size() > 0) {
 %>
         md5_hex(
@@ -353,6 +361,14 @@ while (my $row_aref = $sth_<%=cid %>->fetchrow_arrayref()) {
         ),
 <%
     }
+    else {
+        // even if we don't use Type 2 fields, we need to give something so
+        // that $cache_line[0] matches the Type2 concatenation md5sum
+%>
+        '',
+<%
+    }
+
     if (useVersion.equals("true")) {
 %>
         $row_aref->[<%=cid%>_cache_<%=versionField%>],
@@ -432,7 +448,7 @@ my $isth_<%=cid %> = $<%=dbh%>->prepare($query);
 
     List keyClauses = new ArrayList();
 
-    for (IMetadataColumn column: metadata.getListColumns()) {
+    for (IMetadataColumn column: inMetadata.getListColumns()) {
         String colname = column.getLabel();
         String clause =
             StringUtils.getMysqlProtectedColumnName(colname) + " = ?";
