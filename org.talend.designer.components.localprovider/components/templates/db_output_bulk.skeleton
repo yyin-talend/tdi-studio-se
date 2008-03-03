@@ -417,18 +417,20 @@ public class CLASS {
             return stmtStructure;
         }
         public List<Column> createColumnList(List<IMetadataColumn> columnList, boolean useFieldOptions, List<Map<String, String>> fieldOptions, List<Map<String, String>> addCols) {
-            List<Column> stmtStructure = new ArrayList<Column>();
-            int count = 0;
-            
+            List<Column> stmtStructure = new ArrayList<Column>();            
             for(IMetadataColumn column : columnList) {
                 Map<String, String> fieldOption = null;
                 if(fieldOptions != null && fieldOptions.size() > 0) {
-                    fieldOption = fieldOptions.get(count);
+                    for(Map<String, String> tmpFieldOption : fieldOptions) {
+                        if(column.getLabel().equals(tmpFieldOption.get("SCHEMA_COLUMN"))) {
+                            fieldOption = tmpFieldOption;
+                            break;
+                        }
+                    }
                 }
                 Column skeletonColumn = getColumn(column, column.isKey(), useFieldOptions, fieldOption);
                 skeletonColumn.setOperator("=");
                 stmtStructure.add(skeletonColumn);
-                count++;
             }
             if(addCols != null && addCols.size() > 0) {
                 for(IMetadataColumn column : columnList) {
