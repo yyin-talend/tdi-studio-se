@@ -492,7 +492,7 @@ public class TextElementParameter implements IElementParameter {
 
     public void setFilter(String filter) {
         // TODO Auto-generated method stub
-        
+
     }
 
     public boolean isNoCheck() {
@@ -502,7 +502,7 @@ public class TextElementParameter implements IElementParameter {
 
     public void setNoCheck(boolean noCheck) {
         // TODO Auto-generated method stub
-        
+
     }
 
     public String getContext() {
@@ -512,7 +512,7 @@ public class TextElementParameter implements IElementParameter {
 
     public void setContext(String context) {
         // TODO Auto-generated method stub
-        
+
     }
 
     public Map<String, IElementParameter> getChildParameters() {
@@ -527,6 +527,46 @@ public class TextElementParameter implements IElementParameter {
 
     public void setParentParameter(IElementParameter parentParameter) {
         // TODO Auto-generated method stub
-        
+
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IElementParameter#getGroup()
+     */
+    public String getGroup() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IElementParameter#setGroup(java.lang.String)
+     */
+    public void setGroup(String groupName) {
+        // TODO Auto-generated method stub
+
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IElementParameter#getGroupDisplayName()
+     */
+    public String getGroupDisplayName() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IElementParameter#setGroupDisplayName(java.lang.String)
+     */
+    public void setGroupDisplayName(String groupDisplayName) {
+        // TODO Auto-generated method stub
+
     }
 }
