@@ -13,7 +13,9 @@
 package org.talend.repository.ui.actions;
 
 import java.util.Map;
+import java.util.regex.Pattern;
 
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -36,7 +38,10 @@ import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.model.ProxyRepositoryFactory;
+import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.model.RepositoryNodeUtilities;
+import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.model.actions.CopyObjectAction;
 import org.talend.repository.ui.dialog.DuplicateDialog;
@@ -57,6 +62,12 @@ public class DuplicateAction extends AContextualAction {
     private Map<String, String> names = null;
 
     private boolean isError = false;
+
+    private boolean isEmptyName = false;
+
+    private boolean isErrorName = false;
+
+    private boolean isExistName = false;
 
     public DuplicateAction() {
         super();
@@ -90,7 +101,7 @@ public class DuplicateAction extends AContextualAction {
                 return;
             }
             String newName = rename;
-            boolean valid = isValid(newName);
+            boolean valid = isValid(newName, selectionInClipboard);
             if (!valid) {
                 openErrorDialog();
                 isError = true;
@@ -108,17 +119,26 @@ public class DuplicateAction extends AContextualAction {
      */
     private void createOperation(RepositoryNode target, CopyObjectAction copyObjectAction, TreeSelection selectionInClipboard) {
         // TODO Auto-generated method stub
+        Item item = null;
+
         if (names != null && names.size() == 1 && selectionInClipboard != null && selectionInClipboard.toArray().length == 1) {
-            for (String name : names.keySet()) {
-                for (Object currentSource : selectionInClipboard.toArray()) {
-                    if (name.trim().equals(((RepositoryNode) currentSource).getObject().getProperty().getLabel().trim())) {
-                        try {
-                            copyObjectAction.execute((RepositoryNode) currentSource, null, names.get(name), target);
-                        } catch (Exception e) {
-                            // TODO Auto-generated catch block
-                            ExceptionHandler.process(e);
-                        }
+            String name = (String) names.keySet().toArray()[0];
+            Object currentSource = selectionInClipboard.toArray()[0];
+            if (name.trim().equals(((RepositoryNode) currentSource).getObject().getProperty().getLabel().trim())) {
+                try {
+                    IPath path = RepositoryNodeUtilities.getPath(target);
+                    IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+
+                    if (((RepositoryNode) currentSource).getType().equals(ENodeType.REPOSITORY_ELEMENT)) {
+                        // Source is an repository element :
+                        Item originalItem = ((RepositoryNode) currentSource).getObject().getProperty().getItem();
+                        item = factory.copy(originalItem, path);
+                        item.getProperty().setLabel(names.get(name));
+                        // refresh();
                     }
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    ExceptionHandler.process(e);
                 }
             }
         }
@@ -132,11 +152,26 @@ public class DuplicateAction extends AContextualAction {
     }
 
     // validate if the new name is existent.
-    public boolean isValid(String itemName) {
+    public boolean isValid(String itemName, TreeSelection selectionInClipboard) {
         IRepositoryService service = (IRepositoryService) GlobalServiceRegister.getDefault().getService(IRepositoryService.class);
         IProxyRepositoryFactory repositoryFactory = service.getProxyRepositoryFactory();
+
         try {
-            return repositoryFactory.isNameAvailable(createNewItem(), itemName);
+            if (itemName.length() == 0) {
+                isEmptyName = true;
+                return false;
+            } else if (!Pattern.matches(RepositoryConstants.getPattern(((RepositoryNode) selectionInClipboard.toArray()[0])
+                    .getObject().getType()), itemName)) {
+                isErrorName = true;
+                return false;
+            } else {
+                if (repositoryFactory.isNameAvailable(createNewItem(), itemName)) {
+                    return true;
+                } else {
+                    isExistName = true;
+                    return false;
+                }
+            }
         } catch (PersistenceException e) {
             ExceptionHandler.process(e);
             return false;
@@ -173,7 +208,15 @@ public class DuplicateAction extends AContextualAction {
         // TODO Auto-generated method stub
         MessageBox box = new MessageBox(Display.getCurrent().getActiveShell(), SWT.ICON_ERROR | SWT.OK);
         box.setText(Messages.getString("DuplicateDialog.warn.title"));
-        box.setMessage(Messages.getString("DuplicateDialog.warn.message"));
+
+        if (isEmptyName) {
+            isEmptyName = false;
+            box.setMessage(Messages.getString("DuplicateDialog.warn.message.emptyName"));
+        } else if (isErrorName) {
+            box.setMessage(Messages.getString("DuplicateDialog.warn.message.errorName"));
+        } else if (isExistName) {
+            box.setMessage(Messages.getString("DuplicateDialog.warn.message"));
+        }
         box.open();
     }
 
