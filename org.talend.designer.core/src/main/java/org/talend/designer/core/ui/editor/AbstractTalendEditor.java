@@ -315,12 +315,13 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
                             command.execute(Boolean.FALSE);
                         }
                     }
-                    command = new ChangeMetadataCommand(node, inputElemParam, (IMetadataTable) inputElemParam.getValue(),
-                            newInputMetadataTable);
-                    command.execute(Boolean.FALSE);
-                    IMetadataTable metadataFromConnector = node.getMetadataFromConnector(inputElemParam.getContext());
-                    MetadataTool.copyTable(newInputMetadataTable, metadataFromConnector);
-
+                    if (inputElemParam != null) {
+                        command = new ChangeMetadataCommand(node, inputElemParam, (IMetadataTable) inputElemParam.getValue(),
+                                newInputMetadataTable);
+                        command.execute(Boolean.FALSE);
+                        IMetadataTable metadataFromConnector = node.getMetadataFromConnector(inputElemParam.getContext());
+                        MetadataTool.copyTable(newInputMetadataTable, metadataFromConnector);
+                    }
                     List<? extends IConnection> outgoingConnections = node.getOutgoingConnections();
                     if (outgoingConnections.size() == 1) {
                         IConnection connection = outgoingConnections.get(0);
@@ -333,13 +334,13 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
                             command.execute(Boolean.FALSE);
                         }
                     }
-
-                    command = new ChangeMetadataCommand(node, outputElemParam, (IMetadataTable) outputElemParam.getValue(),
-                            newOutputMetadataTable);
-                    command.execute(Boolean.FALSE);
-                    metadataFromConnector = node.getMetadataFromConnector(outputElemParam.getContext());
-                    MetadataTool.copyTable(newOutputMetadataTable, metadataFromConnector);
-
+                    if (outputElemParam != null) {
+                        command = new ChangeMetadataCommand(node, outputElemParam, (IMetadataTable) outputElemParam.getValue(),
+                                newOutputMetadataTable);
+                        command.execute(Boolean.FALSE);
+                        IMetadataTable metadataFromConnector = node.getMetadataFromConnector(outputElemParam.getContext());
+                        MetadataTool.copyTable(newOutputMetadataTable, metadataFromConnector);
+                    }
                     getCommandStack().execute(new Command() {
                     });
                 }
