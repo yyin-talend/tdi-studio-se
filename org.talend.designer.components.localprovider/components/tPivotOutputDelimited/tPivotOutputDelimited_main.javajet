@@ -170,10 +170,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         
         if(aggStrSpli<%=cid%>.length < pivotNum<%=cid%>){
             
-            for(int i = 0 ; i<pivot_Keys_Split<%=cid%>.length - aggStrSpli<%=cid%>.length-1; i++){
-                
-                aggStr<%=cid%> = aggStr<%=cid%> + <%=fieldSeparator%>;
-            }
+
             
             aggValues<%=cid%>.delete(0,aggValues<%=cid%>.length());
             
@@ -185,7 +182,13 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             
             aggStr<%=cid%> = aggStr<%=cid%> + aggValues<%=cid%>.append(<%=inConnName%>.<%=aggColumn%>).toString() + <%=fieldSeparator%>;
 
-<%}%>            
+<%}%>     
+
+		for(int i = 0 ; i<pivot_Keys_Split<%=cid%>.length - aggStrSpli<%=cid%>.length-2; i++){
+                
+            aggStr<%=cid%> = aggStr<%=cid%> + <%=fieldSeparator%>;
+        
+        }       
             
             aggregation<%=cid%>.remove(gKvalue<%=cid%>);
             
