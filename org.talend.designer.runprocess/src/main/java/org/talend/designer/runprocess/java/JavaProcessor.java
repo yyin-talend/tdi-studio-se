@@ -313,6 +313,11 @@ public class JavaProcessor extends Processor {
     private String formatCode(String processCode) {
         IDocument document = new Document(processCode);
 
+		// we cannot make calls to Ui in headless mode
+        if (CorePlugin.getContext().isHeadless()) {
+            return document.get();
+        }
+
         JavaTextTools tools = JavaPlugin.getDefault().getJavaTextTools();
         tools.setupJavaDocumentPartitioner(document, IJavaPartitions.JAVA_PARTITIONING);
 
