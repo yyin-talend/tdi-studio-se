@@ -19,9 +19,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
@@ -54,8 +56,22 @@ import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.debug.core.JDIDebugModel;
+import org.eclipse.jdt.internal.ui.JavaPlugin;
+import org.eclipse.jdt.internal.ui.text.comment.CommentFormattingContext;
+import org.eclipse.jdt.internal.ui.text.comment.CommentFormattingStrategy;
+import org.eclipse.jdt.internal.ui.text.java.JavaFormattingStrategy;
 import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
+import org.eclipse.jdt.ui.text.IJavaPartitions;
+import org.eclipse.jdt.ui.text.JavaTextTools;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.text.Document;
+import org.eclipse.jface.text.DocumentRewriteSession;
+import org.eclipse.jface.text.DocumentRewriteSessionType;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IDocumentExtension4;
+import org.eclipse.jface.text.formatter.FormattingContextProperties;
+import org.eclipse.jface.text.formatter.IFormattingContext;
+import org.eclipse.jface.text.formatter.MultiPassContentFormatter;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.SystemException;
 import org.talend.commons.utils.generation.JavaUtils;
@@ -248,6 +264,8 @@ public class JavaProcessor extends Processor {
             // Generating files
             IFile codeFile = this.project.getFile(this.codePath);
 
+            // format the code before save the file.
+            processCode = formatCode(processCode);
             InputStream codeStream = new ByteArrayInputStream(processCode.getBytes());
 
             if (!codeFile.exists()) {
@@ -284,6 +302,60 @@ public class JavaProcessor extends Processor {
             }
             throw new ProcessorException(Messages.getString("Processor.tempFailed"), e1); //$NON-NLS-1$
         }
+    }
+
+    /**
+     * DOC nrousseau Comment method "formatCode".
+     * 
+     * @param processCode
+     * @return
+     */
+    private String formatCode(String processCode) {
+        IDocument document = new Document(processCode);
+
+        JavaTextTools tools = JavaPlugin.getDefault().getJavaTextTools();
+        tools.setupJavaDocumentPartitioner(document, IJavaPartitions.JAVA_PARTITIONING);
+
+        IFormattingContext context = null;
+        DocumentRewriteSession rewriteSession = null;
+
+        IDocumentExtension4 extension = (IDocumentExtension4) document;
+        DocumentRewriteSessionType type = DocumentRewriteSessionType.SEQUENTIAL;
+        rewriteSession = extension.startRewriteSession(type);
+
+        try {
+
+            final String rememberedContents = document.get();
+
+            try {
+                final MultiPassContentFormatter formatter = new MultiPassContentFormatter(IJavaPartitions.JAVA_PARTITIONING,
+                        IDocument.DEFAULT_CONTENT_TYPE);
+
+                formatter.setMasterStrategy(new JavaFormattingStrategy());
+                formatter.setSlaveStrategy(new CommentFormattingStrategy(), IJavaPartitions.JAVA_DOC);
+                formatter.setSlaveStrategy(new CommentFormattingStrategy(), IJavaPartitions.JAVA_SINGLE_LINE_COMMENT);
+                formatter.setSlaveStrategy(new CommentFormattingStrategy(), IJavaPartitions.JAVA_MULTI_LINE_COMMENT);
+
+                context = new CommentFormattingContext();
+                context.setProperty(FormattingContextProperties.CONTEXT_DOCUMENT, Boolean.TRUE);
+                Map map = new HashMap(JavaCore.getOptions());
+                context.setProperty(FormattingContextProperties.CONTEXT_PREFERENCES, map);
+                formatter.format(document, context);
+            } catch (RuntimeException x) {
+                // fire wall for https://bugs.eclipse.org/bugs/show_bug.cgi?id=47472
+                // if something went wrong we undo the changes we just did
+                // TODO to be removed after 3.0 M8
+                document.set(rememberedContents);
+                throw x;
+            }
+
+        } finally {
+            extension.stopRewriteSession(rewriteSession);
+            if (context != null) {
+                context.dispose();
+            }
+        }
+        return document.get();
     }
 
     @Override

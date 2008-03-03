@@ -85,12 +85,12 @@ public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCh
             this.getSourceViewer().getTextWidget().getDisplay().asyncExec(new Runnable() {
 
                 public void run() {
-                    selectAndReveal(0, 0);
-                    JavaSourceViewer javaSourceViewer = (JavaSourceViewer) getSourceViewer();
-                    if (javaSourceViewer != null) {
-                        javaSourceViewer.doOperation(ISourceViewer.FORMAT);
-                    }
-                    doSave(null);
+                    // selectAndReveal(0, 0);
+                    // JavaSourceViewer javaSourceViewer = (JavaSourceViewer) getSourceViewer();
+                    // if (javaSourceViewer != null) {
+                    // javaSourceViewer.doOperation(ISourceViewer.FORMAT);
+                    // }
+                    // doSave(null);
                     placeCursorToSelection();
                 }
             });
