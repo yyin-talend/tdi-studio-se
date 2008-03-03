@@ -359,7 +359,9 @@ public class TextElementParameter implements IElementParameter {
     public void setShowIf(String showIf) {
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.core.model.process.IElementParameter#getShowIf()
      */
     public String getShowIf() {
@@ -374,21 +376,27 @@ public class TextElementParameter implements IElementParameter {
     public void setNotShowIf(String notShowIf) {
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.core.model.process.IElementParameter#getNotShowIf()
      */
     public String getNotShowIf() {
         return null;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.core.model.process.IElementParameter#testIfShow(java.util.List)
      */
     public boolean isShow(List<? extends IElementParameter> listParam) {
         return false;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.core.model.process.IElementParameter#getListItemsDisplayCodeName(org.talend.core.model.temp.ECodeLanguage)
      */
     public String[] getListItemsDisplayCodeName() {
@@ -406,39 +414,51 @@ public class TextElementParameter implements IElementParameter {
         return null;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.core.model.process.IElementParameter#isShow(java.lang.String, java.lang.String, java.util.List)
      */
     public boolean isShow(String conditionShowIf, String conditionNotShowIf, List<? extends IElementParameter> listParam) {
         return false;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.core.model.process.IElementParameter#setListItemsNotShowIf(java.lang.String[])
      */
     public void setListItemsNotShowIf(String[] list) {
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.core.model.process.IElementParameter#setListItemsShowIf(java.lang.String[])
      */
     public void setListItemsShowIf(String[] list) {
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.core.model.process.IElementParameter#getDefaultValues()
      */
     public List<IElementParameterDefaultValue> getDefaultValues() {
         return null;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.core.model.process.IElementParameter#setDefaultValues(java.util.List)
      */
     public void setDefaultValues(List<IElementParameterDefaultValue> defaultValues) {
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.core.model.process.IElementParameter#setValueToDefault(java.util.List)
      */
     public void setValueToDefault(List<? extends IElementParameter> listParam) {
@@ -462,7 +482,7 @@ public class TextElementParameter implements IElementParameter {
 
     public void setBasedOnSchema(boolean basedOnSchema) {
         // TODO Auto-generated method stub
-        
+
     }
 
     public String getFilter() {
@@ -472,7 +492,7 @@ public class TextElementParameter implements IElementParameter {
 
     public void setFilter(String filter) {
         // TODO Auto-generated method stub
-        
+
     }
 
     public boolean isNoCheck() {
@@ -482,7 +502,7 @@ public class TextElementParameter implements IElementParameter {
 
     public void setNoCheck(boolean noCheck) {
         // TODO Auto-generated method stub
-        
+
     }
 
     public String getContext() {
@@ -492,7 +512,7 @@ public class TextElementParameter implements IElementParameter {
 
     public void setContext(String context) {
         // TODO Auto-generated method stub
-        
+
     }
 
     public Map<String, IElementParameter> getChildParameters() {
@@ -507,6 +527,46 @@ public class TextElementParameter implements IElementParameter {
 
     public void setParentParameter(IElementParameter parentParameter) {
         // TODO Auto-generated method stub
-        
+
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IElementParameter#getGroup()
+     */
+    public String getGroup() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IElementParameter#setGroup(java.lang.String)
+     */
+    public void setGroup(String groupName) {
+        // TODO Auto-generated method stub
+
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IElementParameter#getGroupDisplayName()
+     */
+    public String getGroupDisplayName() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IElementParameter#setGroupDisplayName(java.lang.String)
+     */
+    public void setGroupDisplayName(String groupDisplayName) {
+        // TODO Auto-generated method stub
+
     }
 }
