@@ -256,27 +256,6 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         return newItem;
     }
 
-    protected Item copyFromResource(Resource createResource, String newName) throws PersistenceException, BusinessException {
-        Item newItem = (Item) EcoreUtil.getObjectByType(createResource.getContents(), PropertiesPackage.eINSTANCE.getItem());
-        Property property = newItem.getProperty();
-        property.setId(getNextId());
-        property.setAuthor(getRepositoryContext().getUser());
-        setPropNewName(property, newName);
-        EcoreUtil.resolveAll(createResource);
-        return newItem;
-    }
-
-    /**
-     * DOC zwang Comment method "setPropNewName".
-     * 
-     * @param property
-     * @param newName
-     */
-    private void setPropNewName(Property copiedProperty, String initialTry) throws PersistenceException, BusinessException {
-        // TODO Auto-generated method stub
-        copiedProperty.setLabel(initialTry);
-    }
-
     /**
      * DOC smallet Comment method "getCopiedLabel".
      * 

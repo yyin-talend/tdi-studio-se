@@ -13,7 +13,6 @@
 package org.talend.repository.model.actions;
 
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.properties.Item;
@@ -100,25 +99,6 @@ public class CopyObjectAction {
             // Source is an repository element :
             Item originalItem = sourceNode.getObject().getProperty().getItem();
             factory.copy(originalItem, path);
-        }
-    }
-
-    public void execute(RepositoryNode sourceNode, RepositoryNode target, String newName, RepositoryNode targetNode)
-            throws Exception {
-        if (!validateAction(sourceNode, target)) {
-            return;
-        }
-
-        IPath path = RepositoryNodeUtilities.getPath(targetNode);
-        if (path.isAbsolute()) {
-            path = new Path("");
-        }
-        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
-
-        if (sourceNode.getType().equals(ENodeType.REPOSITORY_ELEMENT)) {
-            // Source is an repository element :
-            Item originalItem = sourceNode.getObject().getProperty().getItem();
-            factory.copy(originalItem, path, newName);
         }
     }
 }

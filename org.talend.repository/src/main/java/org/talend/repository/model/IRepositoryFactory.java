@@ -196,8 +196,6 @@ public interface IRepositoryFactory {
 
     public Item copy(Item item, IPath path) throws PersistenceException, BusinessException;
 
-    public Item copy(Item item, IPath path, String newName) throws PersistenceException, BusinessException;
-
     /**
      * DOC mhelleboid Comment method "cancel".
      * 
