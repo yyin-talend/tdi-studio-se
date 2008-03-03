@@ -914,6 +914,7 @@ public class EmfComponent implements IComponent {
             param = new ElementParameter(node);
             param.setName(xmlParam.getNAME());
             param.setDisplayName(getTranslatedValue(xmlParam.getNAME() + "." + PROP_NAME)); //$NON-NLS-1$
+            param.setGroupDisplayName(getTranslatedValue(xmlParam.getGROUP() + "." + PROP_NAME));//$NON-NLS-1$
             param.setField(type);
             param.setNumRow(xmlParam.getNUMROW());
             if (xmlParam.isSetREADONLY()) {
@@ -933,6 +934,7 @@ public class EmfComponent implements IComponent {
             param.setShowIf(xmlParam.getSHOWIF());
             param.setNotShowIf(xmlParam.getNOTSHOWIF());
             param.setRepositoryValue(xmlParam.getREPOSITORYVALUE());
+            param.setGroup(xmlParam.getGROUP());
             param.setContext(xmlParam.getCONTEXT());
 
             switch (type) {

@@ -78,6 +78,7 @@ import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
 import org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController;
+import org.talend.designer.core.ui.editor.properties.controllers.GroupController;
 import org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -625,6 +626,8 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
         }
     }
 
+    private static final int DEFAULT_GROUP_HEIGHT = 20;
+
     /**
      * Initialize all components for the defined section for this node.
      */
@@ -632,6 +635,8 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
         checkErrorsWhenViewRefreshed = true;
         int heightSize = 0, maxRowSize = 0, nbInRow, numInRow;
         int maxRow;
+
+        Map<String, Integer> groupPosition = new HashMap<String, Integer>();
         List<? extends IElementParameter> listParam = elem.getElementParametersWithChildrens();
 
         updateMainParameters();
@@ -702,7 +707,6 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
         }
 
         long lastTime = TimeMeasure.timeSinceBegin("DC:refresh:" + getCurrentComponent());
-
         for (int curRow = 1; curRow <= maxRow; curRow++) {
             maxRowSize = 0;
             nbInRow = 0;
@@ -738,8 +742,27 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
                                 controller.setAdditionalHeightSize(additionalHeightSize);
                             }
 
-                            lastControl = controller.createControl(composite, curParam, numInRow, nbInRow, heightSize,
-                                    lastControl);
+                            String groupName = curParam.getGroup();
+                            Composite subComposite = null;
+
+                            if (groupName != null) {
+                                if (!hashCurControls.containsKey(groupName)) {
+                                    if (groupPosition.size() > 0) {
+                                        heightSize += DEFAULT_GROUP_HEIGHT;
+                                    }
+                                    new GroupController(this).createControl(composite, curParam, numInRow, nbInRow, heightSize,
+                                            lastControl);
+                                    groupPosition.put(groupName, heightSize);
+                                }
+                                subComposite = (Composite) hashCurControls.get(groupName);
+                                int h2 = heightSize - groupPosition.get(groupName);
+                                lastControl = controller
+                                        .createControl(subComposite, curParam, numInRow, nbInRow, h2, lastControl);
+
+                            } else {
+                                int h3 = DEFAULT_GROUP_HEIGHT * (groupPosition.size() > 0 ? 1 : 0) + heightSize;
+                                lastControl = controller.createControl(composite, curParam, numInRow, nbInRow, h3, lastControl);
+                            }
 
                             lastTime = TimeMeasure.timeSinceBegin("DC:refresh:" + getCurrentComponent()) - lastTime;
                             if (DynamicTabbedPropertySection.DEBUG_TIME) {

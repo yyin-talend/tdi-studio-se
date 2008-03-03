@@ -88,7 +88,7 @@ public class ElementParameter implements IElementParameter {
 
     private boolean noCheck = false;
 
-    private String context;
+    private String context, groupName, groupDisplayName;
 
     private Map<String, IElementParameter> childParameters;
 
@@ -517,5 +517,41 @@ public class ElementParameter implements IElementParameter {
      */
     public void setCurrentRow(int currentRow) {
         this.currentRow = currentRow;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IElementParameter#getGroup()
+     */
+    public String getGroup() {
+        return this.groupName;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IElementParameter#setGroup(java.lang.String)
+     */
+    public void setGroup(String groupName) {
+        this.groupName = groupName;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IElementParameter#getGroupDisplayName()
+     */
+    public String getGroupDisplayName() {
+        return this.groupDisplayName;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IElementParameter#setGroupDisplayName(java.lang.String)
+     */
+    public void setGroupDisplayName(String groupDisplayName) {
+        this.groupDisplayName = groupDisplayName;
     }
 }

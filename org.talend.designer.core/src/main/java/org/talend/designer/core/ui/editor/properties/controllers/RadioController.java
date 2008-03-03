@@ -18,11 +18,15 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.gef.commands.Command;
+import org.eclipse.jface.fieldassist.DecoratedField;
+import org.eclipse.jface.fieldassist.IControlCreator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -81,11 +85,13 @@ public class RadioController extends AbstractElementPropertySectionController {
                                 }
                             } else {
                                 cmd = new PropertyChangeCommand(elem, name, value);
-                                String groupName = elem.getElementParameter(name).getContext();
-                                Command cmd2 = new PropertyChangeCommand(elem, groupName, name);
-
                                 commands.add(cmd);
-                                commands.add(cmd2);
+
+                                String groupName = elem.getElementParameter(name).getGroup();
+                                if (groupName != null) {
+                                    Command cmd2 = new PropertyChangeCommand(elem, groupName, name);
+                                    commands.add(cmd2);
+                                }
                             }
                             return commands;
                         }
@@ -106,18 +112,19 @@ public class RadioController extends AbstractElementPropertySectionController {
     public Control createControl(Composite subComposite, final IElementParameter param, int numInRow, int nbInRow, int top,
             Control lastControl) {
 
-        boolean withinGroup = false;
-        String groupName = param.getContext();
-
-        if (groupName != null && hashCurControls.get(groupName) != null) {
-            subComposite = (Composite) hashCurControls.get(groupName);
-            withinGroup = true;
-        }
-
         Button buttonRadio = new Button(subComposite, SWT.RADIO);
         buttonRadio.setText(param.getDisplayName());
 
         buttonRadio.setBackground(subComposite.getBackground());
+
+        FormData data = new FormData();
+        data.top = new FormAttachment(0, top);
+        if (lastControl != null) {
+            data.left = new FormAttachment(lastControl, 0);
+        } else {
+            data.left = new FormAttachment((((numInRow - 1) * MAX_PERCENT) / nbInRow), 0);
+        }
+        buttonRadio.setLayoutData(data);
 
         hashCurControls.put(param.getName(), buttonRadio);
         buttonRadio.setEnabled(!param.isReadOnly());
@@ -126,15 +133,10 @@ public class RadioController extends AbstractElementPropertySectionController {
             buttonRadio.setToolTipText(VARIABLE_TOOLTIP + param.getVariableName());
         }
 
-        Point initialSize = null;
-        if (!withinGroup) {
-            initialSize = buttonRadio.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-        } else {
-            initialSize = subComposite.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-        }
+        Point initialSize = buttonRadio.computeSize(SWT.DEFAULT, SWT.DEFAULT);
         dynamicProperty.setCurRowSize(initialSize.y + ITabbedPropertyConstants.VSPACE);
+        return buttonRadio;
 
-        return null;
     }
 
     SelectionListener listenerSelection = new SelectionAdapter() {
@@ -158,7 +160,17 @@ public class RadioController extends AbstractElementPropertySectionController {
      */
     @Override
     public int estimateRowSize(Composite subComposite, final IElementParameter param) {
-        return 0;
+        final DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER, new IControlCreator() {
+
+            public Control createControl(Composite parent, int style) {
+                return getWidgetFactory().createButton(parent, param.getDisplayName(), SWT.RADIO);
+            }
+
+        });
+        Point initialSize = dField.getLayoutControl().computeSize(SWT.DEFAULT, SWT.DEFAULT);
+        dField.getLayoutControl().dispose();
+
+        return initialSize.y + ITabbedPropertyConstants.VSPACE;
     }
 
     /*

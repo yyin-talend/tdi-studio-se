@@ -20,7 +20,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
-import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
@@ -55,7 +55,7 @@ public class GroupController extends AbstractElementPropertySectionController {
         final DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER, new IControlCreator() {
 
             public Control createControl(Composite parent, int style) {
-                return getWidgetFactory().createGroup(parent, param.getDisplayName());
+                return getWidgetFactory().createGroup(parent, param.getGroupDisplayName());
             }
 
         });
@@ -73,19 +73,11 @@ public class GroupController extends AbstractElementPropertySectionController {
         groupLayout.setLayoutData(data);
 
         Group group = (Group) dField.getControl();
+        group.setLayout(new FormLayout());
 
-        if (param.getContext() != null && param.getContext().equals("VERTICAL")) {
-            group.setLayout(new RowLayout(SWT.VERTICAL));
-        } else {
-            group.setLayout(new RowLayout(SWT.HORIZONTAL));
-        }
+        hashCurControls.put(param.getGroup(), group);
 
-        hashCurControls.put(param.getName(), group);
-
-        Point initialSize = group.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-        dynamicProperty.setCurRowSize(initialSize.y + ITabbedPropertyConstants.VSPACE);
-
-        return groupLayout;
+        return group;
     }
 
     /*
