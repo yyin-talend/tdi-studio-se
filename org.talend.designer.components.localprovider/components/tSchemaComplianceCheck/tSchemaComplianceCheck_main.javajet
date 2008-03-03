@@ -127,7 +127,7 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
         }
         
         public void testNull(String incomingConnName, IMetadataColumn metadataColumn, String cid){
-        	if(metadataColumn.isNullable()){
+        	if(!metadataColumn.isNullable()){
 %>
 			// validate nullable
 			if(<%=incomingConnName%>.<%=metadataColumn.getLabel()%> == null) {
@@ -174,7 +174,7 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
                 } else {
                     String checkNullable = checkedColumn.get("NULLABLE");
                     String checkMaxLength = checkedColumn.get("MAX_LENGTH");
-                    if(checkAll.equals("true") || checkNullable.equals("true")) { // if the column we test is nullable, no need
+                    if(checkAll.equals("true") || !checkNullable.equals("true")) { // if the column we test is nullable, no need
                         checker.testNull(incomingConnName,metadataColumn,cid);
                     }
                     if(checkAll.equals("true") || checkMaxLength.equals("true")) {
