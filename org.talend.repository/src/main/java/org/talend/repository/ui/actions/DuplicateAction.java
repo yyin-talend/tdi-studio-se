@@ -186,11 +186,11 @@ public class DuplicateAction extends AContextualAction {
         boolean isOk = false;
         if (isError) {
             dlg = new DuplicateDialog(Display.getCurrent().getActiveShell(), selection, Messages
-                    .getString("DuplicateDialog.warn.title"), Messages.getString("DuplicateDialog.rename"), rename, null);
+                    .getString("DuplicateDialog.title"), Messages.getString("DuplicateDialog.rename"), rename, null);
             isError = false;
         } else {
             dlg = new DuplicateDialog(Display.getCurrent().getActiveShell(), selection, Messages
-                    .getString("DuplicateDialog.warn.title"), Messages.getString("DuplicateDialog.rename"), "", null);
+                    .getString("DuplicateDialog.title"), Messages.getString("DuplicateDialog.rename"), "", null);
         }
 
         if (dlg.open() == Dialog.OK) {
@@ -214,8 +214,10 @@ public class DuplicateAction extends AContextualAction {
             box.setMessage(Messages.getString("DuplicateDialog.warn.message.emptyName"));
         } else if (isErrorName) {
             box.setMessage(Messages.getString("DuplicateDialog.warn.message.errorName"));
+            isErrorName = false;
         } else if (isExistName) {
             box.setMessage(Messages.getString("DuplicateDialog.warn.message"));
+            isExistName = false;
         }
         box.open();
     }
