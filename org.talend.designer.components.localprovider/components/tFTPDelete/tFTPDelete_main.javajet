@@ -41,6 +41,7 @@ for (java.util.Map<String, String> map<%=cid %> : list<%=cid %>)
 			if ( filePath<%=cid%>.matches(mask<%=cid %>))
 			{
 				 c<%=cid%>.rm( filePath<%=cid%>);
+				 nb_file_<%=cid%>++;
 			}
 		}	     
    	}  
@@ -73,6 +74,7 @@ for (java.util.Map<String, String> map<%=cid %> : list<%=cid %>)
 			if (listings<%=cid %>[m<%=cid %>].matches(mask<%=cid %>))
 			{
 				ftp<%=cid %>.delete(listings<%=cid %>[m<%=cid %>]);
+				nb_file_<%=cid%>++;
 			}
 		}	     
    	}  

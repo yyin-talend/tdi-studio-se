@@ -15,7 +15,7 @@
 	String cid = node.getUniqueName();
 	boolean sftp = ElementParameterParser.getValue(node, "__SFTP__").equals("true");
 	
-	if(sftp){
+	if(sftp){//sftp support
 %>	
 
 	for (java.util.Map<String, String> map<%=cid %> : list<%=cid %>) 
@@ -24,23 +24,29 @@
     	for (String key<%=cid %> : keySet<%=cid %>)
    		{     	
    			c<%=cid%>.rename(key<%=cid %>, map<%=cid %>.get(key<%=cid %>));
+   			nb_file_<%=cid%>++;
    		}
 	}
 
 
-<%}else{%>
+<%}else{%>//normal ftp
 	for (java.util.Map<String, String> map<%=cid %> : list<%=cid %>) 
 	{  	
     	java.util.Set<String> keySet<%=cid %> = map<%=cid %>.keySet();   
     	for (String key<%=cid %> : keySet<%=cid %>)
    		{     
      		<%if(overwrite.equals("always")){%>
-     		ftp<%=cid %>.rename(key<%=cid %>, map<%=cid %>.get(key<%=cid %>));
+     		    if(ftp<%=cid%>.exists(key<%=cid %>))
+     			{
+     			ftp<%=cid %>.rename(key<%=cid %>, map<%=cid %>.get(key<%=cid %>));
+     			nb_file_<%=cid%>++;
+     			}
      		<%}%>
      		<%if(overwrite.equals("never")){%>
      			if(!(ftp<%=cid%>.exists(map<%=cid %>.get(key<%=cid %>))))
      			{
      			ftp<%=cid %>.rename(key<%=cid %>, map<%=cid %>.get(key<%=cid %>));
+     			nb_file_<%=cid%>++;
      			}
      		<%}%>
      		<%if(overwrite.equals("size_differ")){%>
@@ -53,10 +59,12 @@
 					if(!(newNameSize<%=cid%>==origNameSize<%=cid%>))
 					{
 						ftp<%=cid %>.rename(key<%=cid %>, map<%=cid %>.get(key<%=cid %>));
+						nb_file_<%=cid%>++;
 					}
 				}else
 				{
 					ftp<%=cid %>.rename(key<%=cid %>, map<%=cid %>.get(key<%=cid %>));
+					nb_file_<%=cid%>++;
 				}
      		<%}%>
    		}

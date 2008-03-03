@@ -24,3 +24,5 @@
 	ftp<%=cid %>.quit();
 	
 <%}%>
+
+globalMap.put("<%=cid %>_NB_FILE",nb_file_<%=cid%>);

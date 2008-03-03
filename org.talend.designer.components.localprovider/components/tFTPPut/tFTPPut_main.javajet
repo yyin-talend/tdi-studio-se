@@ -69,7 +69,7 @@
 					 int mode<%=cid%> = com.jcraft.jsch.ChannelSftp.RESUME;
 				<%}%>
     				 c<%=cid%>.put(listings<%=cid %>[m<%=cid %>].getAbsolutePath(), <%=remotedir%>, monitor<%=cid%>, mode<%=cid%>);
-
+					 nb_file_<%=cid%>++;
       				}
     		}
     	}     
@@ -153,6 +153,7 @@
             					ftp<%=cid %>.put(tempdir<%=cid %> + "/" + listings<%=cid %>[m<%=cid %>].getName(),listings<%=cid %>[m<%=cid %>].getName());
             				}
             			<%}%>
+            			nb_file_<%=cid%>++;
       				}
     		}
     	}     

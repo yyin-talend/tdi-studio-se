@@ -21,7 +21,10 @@
 	boolean sftp = ElementParameterParser.getValue(node, "__SFTP__").equals("true");
 	List<Map<String, String>> files = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__FILES__");	
 	String cid = node.getUniqueName();
-	
+
+%>
+	int nb_file_<%=cid%> = 0;
+<%		
 	if(sftp){
 %>	
 	class MyUserInfo implements com.jcraft.jsch.UserInfo, com.jcraft.jsch.UIKeyboardInteractive {

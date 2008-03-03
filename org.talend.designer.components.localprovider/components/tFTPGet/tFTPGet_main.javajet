@@ -19,6 +19,7 @@
 	boolean sftp = ElementParameterParser.getValue(node, "__SFTP__").equals("true");
 	String remotedir = ElementParameterParser.getValue(node, "__REMOTEDIR__");
 	if(sftp){
+	//sftp support
 %>	
 
     for (java.util.Map<String, String> map<%=cid %> : list<%=cid %>) 
@@ -50,12 +51,13 @@
 					 int mode<%=cid%> = com.jcraft.jsch.ChannelSftp.RESUME;
 		<%}%>
     				 c<%=cid%>.get(filePath<%=cid%>, <%=localdir%>, monitor<%=cid%>, mode<%=cid%>);
+    				 nb_file_<%=cid%>++;
     			}
     		}	     
        	}  
      } 
      
-<%}else{%>
+<%}else{%> //normal ftp
 
 <% 
 	if ("binary".equalsIgnoreCase(ElementParameterParser.getValue(node, "__MODE__"))) {
@@ -123,6 +125,8 @@
         		ftp<%=cid %>.get(localdir<%=cid %> + "/" + listings<%=cid %>[m<%=cid %>] ,listings<%=cid %>[m<%=cid %>]);
         	}
         <%}%>
+        
+        nb_file_<%=cid%>++;
        }
     }
    }

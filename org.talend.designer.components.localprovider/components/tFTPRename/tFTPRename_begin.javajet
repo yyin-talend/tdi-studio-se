@@ -20,7 +20,9 @@
 	String cid = node.getUniqueName();
 	String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
 	boolean sftp = ElementParameterParser.getValue(node, "__SFTP__").equals("true");
-	
+%>
+	int nb_file_<%=cid%> = 0;
+<%		
 	if(sftp){
 %>	
 
