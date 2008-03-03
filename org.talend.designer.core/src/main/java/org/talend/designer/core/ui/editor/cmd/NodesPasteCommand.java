@@ -116,7 +116,7 @@ public class NodesPasteCommand extends Command {
                 }
             }
         } else {
-            newName = checkExistingNames("copyOf" + oldName);
+            newName = checkExistingNames("copyOf" + oldName); //$NON-NLS-1$
             newName = checkNewNames(newName, baseName);
         }
         createdNames.add(newName);
@@ -327,7 +327,7 @@ public class NodesPasteCommand extends Command {
                     } else {
                         newTable.setTableName(createNewConnectionName(metaTable.getTableName(), null));
                     }
-                    oldMetaToNewMeta.put(pastedNode.getUniqueName() + ":" + metaTable.getTableName(), newTable.getTableName());
+                    oldMetaToNewMeta.put(pastedNode.getUniqueName() + ":" + metaTable.getTableName(), newTable.getTableName()); //$NON-NLS-1$
 
                     for (IMetadataColumn column : metaTable.getListColumns()) {
                         if (column.isCustom()) {
@@ -351,7 +351,7 @@ public class NodesPasteCommand extends Command {
                 }
                 for (IMetadataTable metaTable : copiedNode.getMetadataList()) {
                     String oldName = metaTable.getTableName();
-                    String newName = oldMetaToNewMeta.get(pastedNode.getUniqueName() + ":" + metaTable.getTableName());
+                    String newName = oldMetaToNewMeta.get(pastedNode.getUniqueName() + ":" + metaTable.getTableName()); //$NON-NLS-1$
                     externalNode.renameOutputConnection(oldName, newName);
                 }
             }
@@ -377,6 +377,8 @@ public class NodesPasteCommand extends Command {
             }
             nodeContainerList.add(new NodeContainer(pastedNode));
         }
+
+        Map<String, String> oldToNewConnVarMap = new HashMap<String, String>();
 
         // add the connections
         for (NodePart copiedNodePart : nodeParts) {
@@ -411,7 +413,7 @@ public class NodesPasteCommand extends Command {
                     String metaTableName;
 
                     if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.UNIQUE_NAME)) {
-                        String newNameBuiltIn = oldMetaToNewMeta.get(pastedSourceNode.getUniqueName() + ":"
+                        String newNameBuiltIn = oldMetaToNewMeta.get(pastedSourceNode.getUniqueName() + ":" //$NON-NLS-1$
                                 + connection.getMetaName());
                         if (newNameBuiltIn == null) {
                             newConnectionName = createNewConnectionName(connection.getName(), Process.DEFAULT_ROW_CONNECTION_NAME);
@@ -422,7 +424,7 @@ public class NodesPasteCommand extends Command {
                         newConnectionName = connection.getName();
                     }
 
-                    String meta = oldMetaToNewMeta.get(pastedSourceNode.getUniqueName() + ":" + connection.getMetaName());
+                    String meta = oldMetaToNewMeta.get(pastedSourceNode.getUniqueName() + ":" + connection.getMetaName()); //$NON-NLS-1$
                     if (meta != null) {
                         if (pastedSourceNode.getConnectorFromType(connection.getLineStyle()).isBuiltIn()
                                 && !connection.getLineStyle().equals(EConnectionType.TABLE)) {
@@ -459,8 +461,31 @@ public class NodesPasteCommand extends Command {
                     if (externalNode != null) {
                         externalNode.renameInputConnection(connection.getName(), newConnectionName);
                     }
+
+                    // (feature 2962)
+                    // for (IMetadataColumn column : pastedConnection.getMetadataTable().getListColumns()) {
+                    // String oldConnVar = connection.getName() + "." + column.getLabel(); //$NON-NLS-1$
+                    // String newConnVar = newConnectionName + "." + column.getLabel(); //$NON-NLS-1$
+                    String oldConnVar = connection.getName();
+                    String newConnVar = newConnectionName;
+                    if (!oldToNewConnVarMap.containsKey(oldConnVar)) {
+                        oldToNewConnVarMap.put(oldConnVar, newConnVar);
+                    }
+                    // }
                 }
             }
+        }
+
+        // rename the connection data for node parameters. (feature 2962)
+        for (NodeContainer nodeContainer : nodeContainerList) {
+            Node node = nodeContainer.getNode();
+            for (String oldConnVar : oldToNewConnVarMap.keySet()) {
+                String newConnVar = oldToNewConnVarMap.get(oldConnVar);
+                if (newConnVar != null) {
+                    node.renameData(oldConnVar, newConnVar);
+                }
+            }
+
         }
 
         // check if the new components use the old components name.
@@ -480,7 +505,7 @@ public class NodesPasteCommand extends Command {
         if (useOldComponentsName) {
             MessageBox msgBox = new MessageBox(PlatformUI.getWorkbench().getDisplay().getActiveShell(), SWT.YES | SWT.NO
                     | SWT.ICON_WARNING);
-            msgBox.setMessage("Components variable are used in the copied elements, do you want to rename them automatically?");
+            msgBox.setMessage(Messages.getString("NodesPasteCommand.renameMessages")); //$NON-NLS-1$
             if (msgBox.open() == SWT.YES) {
                 for (NodeContainer nodeContainer : nodeContainerList) {
                     Node currentNode = nodeContainer.getNode();

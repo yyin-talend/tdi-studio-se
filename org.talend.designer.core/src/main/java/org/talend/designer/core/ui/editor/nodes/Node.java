@@ -47,6 +47,7 @@ import org.talend.core.CorePlugin;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.components.IODataComponent;
+import org.talend.core.model.context.UpdateContextVariablesHelper;
 import org.talend.core.model.general.ILibrariesService;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
@@ -1560,9 +1561,9 @@ public class Node extends Element implements INode {
         // not a sub process start
         if (!isSubProcessStart() || (!(Boolean) getPropertyValue(EParameterName.STARTABLE.getName()))) {
             if (/*
-             * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_AFTER) > 0) ||
-             * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_BEFORE) > 0)||
-             */
+                 * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_AFTER) > 0) ||
+                 * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_BEFORE) > 0)||
+                 */
             (getCurrentActiveLinksNbOutput(EConnectionType.ON_SUBJOB_OK) > 0)
                     || getCurrentActiveLinksNbOutput(EConnectionType.ON_SUBJOB_ERROR) > 0) {
                 String errorMessage = "A component that is not a sub process start can not have any link run after / run before in output.";
@@ -1574,9 +1575,9 @@ public class Node extends Element implements INode {
         // not a sub process start
         if ((!isELTComponent() && !isSubProcessStart()) || (!(Boolean) getPropertyValue(EParameterName.STARTABLE.getName()))) {
             if (/*
-             * (getCurrentActiveLinksNbInput(EConnectionType.RUN_AFTER) > 0) ||
-             * (getCurrentActiveLinksNbInput(EConnectionType.RUN_BEFORE) > 0) ||
-             */(getCurrentActiveLinksNbInput(EConnectionType.ON_SUBJOB_OK) > 0)
+                 * (getCurrentActiveLinksNbInput(EConnectionType.RUN_AFTER) > 0) ||
+                 * (getCurrentActiveLinksNbInput(EConnectionType.RUN_BEFORE) > 0) ||
+                 */(getCurrentActiveLinksNbInput(EConnectionType.ON_SUBJOB_OK) > 0)
                     || (getCurrentActiveLinksNbInput(EConnectionType.RUN_IF) > 0)
                     || (getCurrentActiveLinksNbInput(EConnectionType.ON_COMPONENT_OK) > 0)
                     || (getCurrentActiveLinksNbInput(EConnectionType.ON_COMPONENT_ERROR) > 0)) {
@@ -2020,7 +2021,7 @@ public class Node extends Element implements INode {
 
         Pattern pattern;
         try {
-            pattern = compiler.compile("\\b(" + oldName + ")(\\b|\\_)");
+            pattern = compiler.compile("\\b(" + UpdateContextVariablesHelper.replaceSpecialChar(oldName) + ")(\\b|\\_)");
         } catch (MalformedPatternException e) {
             return value; // keep original value
         }
@@ -2042,7 +2043,7 @@ public class Node extends Element implements INode {
             Pattern pattern;
 
             try {
-                pattern = compiler.compile("\\b(" + toTest + ")(\\b|\\_)"); //$NON-NLS-1$
+                pattern = compiler.compile("\\b(" + UpdateContextVariablesHelper.replaceSpecialChar(toTest) + ")(\\b|\\_)"); //$NON-NLS-1$
                 if (matcher.contains(value, pattern)) {
                     return true;
                 }
