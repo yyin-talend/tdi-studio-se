@@ -1545,6 +1545,7 @@ public class EmfComponent implements IComponent {
     }
 
     public List<ModuleNeeded> getModulesNeeded() {
+        List<String> moduleNames = new ArrayList<String>();
         List<ModuleNeeded> componentImportNeedsList = new ArrayList<ModuleNeeded>();
         if (compType.getCODEGENERATION().getIMPORTS() != null) {
             EList emfImportList;
@@ -1559,8 +1560,21 @@ public class EmfComponent implements IComponent {
                 List<String> list = getInstallURL(importType);
                 ModuleNeeded componentImportNeeds = new ModuleNeeded(this.getName(), importType.getMODULE(), msg, importType
                         .isREQUIRED(), list);
+                moduleNames.add(importType.getMODULE());
                 componentImportNeeds.setShow(importType.isSHOW());
                 componentImportNeedsList.add(componentImportNeeds);
+            }
+        }
+        for (IMultipleComponentManager multipleComponentManager : multipleComponentManagers) {
+            for (IMultipleComponentItem multipleComponentItem : multipleComponentManager.getItemList()) {
+                IComponent component = ComponentsFactoryProvider.getInstance().get(multipleComponentItem.getComponent());
+                for (ModuleNeeded moduleNeeded : component.getModulesNeeded()) {
+                    if (!moduleNames.contains(moduleNeeded.getModuleName())) {
+                        ModuleNeeded componentImportNeeds = new ModuleNeeded(this.getName(), moduleNeeded.getModuleName(),
+                                moduleNeeded.getInformationMsg(), moduleNeeded.isRequired(), moduleNeeded.getInstallURL());
+                        componentImportNeedsList.add(componentImportNeeds);
+                    }
+                }
             }
         }
         return componentImportNeedsList;
