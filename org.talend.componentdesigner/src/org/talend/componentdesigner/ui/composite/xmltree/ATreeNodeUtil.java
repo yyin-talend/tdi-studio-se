@@ -12,7 +12,6 @@
 // ============================================================================
 package org.talend.componentdesigner.ui.composite.xmltree;
 
-import java.io.File;
 import java.net.URL;
 
 import org.eclipse.core.runtime.FileLocator;
@@ -42,7 +41,10 @@ public class ATreeNodeUtil {
         String[] nodeNameSeq = xPath.split("/");
 
         ATreeNode resultNode = rootTreeNode;
-        for (String nodeName : nodeNameSeq) {
+        
+        //root node is COMPONENT in our model.
+        for (int i = 1; i < nodeNameSeq.length; i++) {
+            String nodeName = nodeNameSeq[i];
             resultNode = findTreeNode(nodeName, resultNode);
             if (resultNode == null) {
                 break;
@@ -57,7 +59,7 @@ public class ATreeNodeUtil {
         ATreeNode aTreeNode = null;
         for (Object node : childNodes) {
             if (nodeName.equals(((ATreeNode) node).getValue())) {
-                aTreeNode = (ATreeNode) node;
+                return (ATreeNode) node;
             } else {
                 continue;
             }
