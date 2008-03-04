@@ -30,6 +30,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.talend.componentdesigner.PluginConstant;
+import org.talend.componentdesigner.i18n.internal.Messages;
 import org.talend.componentdesigner.model.componentpref.ComponentPref;
 import org.talend.componentdesigner.model.enumtype.JetFileStamp;
 import org.talend.componentdesigner.model.enumtype.ResourceLanguageType;
@@ -160,11 +161,11 @@ public class WizardJetFilesChoosePage extends AbstractComponentPage {
 
         // create the language selection check button
         useBeginButton = new Button(filesSelectionGrp, SWT.CHECK | SWT.RIGHT);
-        useBeginButton.setText("Begin File");
+        useBeginButton.setText(Messages.getString("WizardJetFilesChoosePage.BeginFile")); //$NON-NLS-1$
         useMainButton = new Button(filesSelectionGrp, SWT.CHECK | SWT.RIGHT);
-        useMainButton.setText("Main File");
+        useMainButton.setText(Messages.getString("WizardJetFilesChoosePage.MainFile")); //$NON-NLS-1$
         useEndButton = new Button(filesSelectionGrp, SWT.CHECK | SWT.RIGHT);
-        useEndButton.setText("End File");
+        useEndButton.setText(Messages.getString("WizardJetFilesChoosePage.EndFile")); //$NON-NLS-1$
 
         SelectionListener listener = new SelectionAdapter() {
 
@@ -229,9 +230,9 @@ public class WizardJetFilesChoosePage extends AbstractComponentPage {
         GridData imageGridData = new GridData();
         imageGridData.horizontalSpan = 9;
         defaultImageButton.setLayoutData(imageGridData);
-        defaultImageButton.setText("Use default icon");
+        defaultImageButton.setText(Messages.getString("WizardJetFilesChoosePage.UseDefaultIcon")); //$NON-NLS-1$
         browserImageButton = new Button(imageSelectionGrp, SWT.RADIO | SWT.RIGHT);
-        browserImageButton.setText("Use icon from:");
+        browserImageButton.setText(Messages.getString("WizardJetFilesChoosePage.UseIconFrom")); //$NON-NLS-1$
         imageGridData = new GridData();
         imageGridData.horizontalSpan = 9;
         browserImageButton.setLayoutData(imageGridData);
@@ -251,7 +252,7 @@ public class WizardJetFilesChoosePage extends AbstractComponentPage {
         GridData labelGridData = new GridData();
         labelGridData.horizontalSpan = 2;
         imageDirectoryLabel.setLayoutData(labelGridData);
-        imageDirectoryLabel.setText("Directory:");
+        imageDirectoryLabel.setText(Messages.getString("WizardJetFilesChoosePage.Directory")); //$NON-NLS-1$
 
         imageDirectoryText = new Text(imageSelectionGrp, SWT.BORDER);
         GridData textGridData = new GridData(GridData.FILL_HORIZONTAL);
@@ -283,7 +284,7 @@ public class WizardJetFilesChoosePage extends AbstractComponentPage {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
-                imageDirectoryText.setText(getPathFromDialog(new String[] { "*.png" }));
+                imageDirectoryText.setText(getPathFromDialog(new String[] { "*.png" })); //$NON-NLS-1$
                 setPageComplete(validatePage());
             }
         });
@@ -325,7 +326,7 @@ public class WizardJetFilesChoosePage extends AbstractComponentPage {
     @Override
     protected boolean validatePage() {
         if (browserImageButton.getSelection() && imageDirectoryText.getText().equals(PluginConstant.EMPTY_STRING)) {
-            this.setErrorMessage("Chose an icon");
+            this.setErrorMessage(Messages.getString("WizardJetFilesChoosePage.ChoseAIcon")); //$NON-NLS-1$
             return false;
         }
         this.setErrorMessage(null);

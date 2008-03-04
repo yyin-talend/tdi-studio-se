@@ -71,7 +71,7 @@ public class LibListProvider extends LabelProvider implements IStructuredContent
 	/**
 	 * @see IStructuredContentProvider#getElements(Object)
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked") //$NON-NLS-1$
 	public Object[] getElements(Object inputElement) {
 		if (inputElement != null && inputElement instanceof List) {
 			List entryList = (List) inputElement;

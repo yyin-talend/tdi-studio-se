@@ -17,6 +17,6 @@ package org.talend.componentdesigner.preference;
  */
 public class PreferenceConstant {
 
-	public static final String COMPONENTS_PROPERTY = "COMPONENTS_PROPERTY";
+	public static final String COMPONENTS_PROPERTY = "COMPONENTS_PROPERTY"; //$NON-NLS-1$
 
 }

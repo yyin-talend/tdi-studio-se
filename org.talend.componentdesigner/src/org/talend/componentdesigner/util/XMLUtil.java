@@ -45,7 +45,7 @@ public class XMLUtil {
 			Transformer transformer = tf.newTransformer();
 			DOMSource source = new DOMSource(document);
 			transformer.setOutputProperty(OutputKeys.ENCODING, enCode);
-			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+			transformer.setOutputProperty(OutputKeys.INDENT, "yes"); //$NON-NLS-1$
 			PrintWriter pw = new PrintWriter(new FileOutputStream(fileName));
 			StreamResult result = new StreamResult(pw);
 			transformer.transform(source, result);

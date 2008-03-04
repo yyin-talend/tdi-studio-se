@@ -29,7 +29,7 @@ import org.talend.componentdesigner.manager.ComponentProjectManager;
 public class ComponentDesigenerPlugin extends AbstractUIPlugin {
 
     // The plug-in ID
-    public static final String PLUGIN_ID = "org.talend.componentdesigner";
+    public static final String PLUGIN_ID = "org.talend.componentdesigner"; //$NON-NLS-1$
 
     // The shared instance
     private static ComponentDesigenerPlugin plugin;
@@ -50,7 +50,7 @@ public class ComponentDesigenerPlugin extends AbstractUIPlugin {
         plugin = this;
         Properties prop = new Properties();
         try {
-            prop.load(ComponentDesigenerPlugin.class.getResourceAsStream("log4j.properties"));
+            prop.load(ComponentDesigenerPlugin.class.getResourceAsStream("log4j.properties")); //$NON-NLS-1$
         } catch (IOException e) {
             e.printStackTrace();
         }

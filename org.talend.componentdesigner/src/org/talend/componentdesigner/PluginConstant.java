@@ -12,65 +12,67 @@
 // ============================================================================
 package org.talend.componentdesigner;
 
+import org.talend.componentdesigner.i18n.internal.Messages;
+
 /**
  * @author rli
  * 
  */
 public class PluginConstant {
 
-    public static final String EMPTY_STRING = "";
+    public static final String EMPTY_STRING = ""; //$NON-NLS-1$
 
-    public static final String NAME_PROPERTY = "NAME_PROPERTY";
+    public static final String NAME_PROPERTY = "NAME_PROPERTY"; //$NON-NLS-1$
 
-    public static final String LANGUAGE_PROPERTY = "LANGUAGE_PROPERTY";
+    public static final String LANGUAGE_PROPERTY = "LANGUAGE_PROPERTY"; //$NON-NLS-1$
 
-    public static final String RESOURCETYPE_PROPERTY = "RESOURCETYPE_PROPERTY";
+    public static final String RESOURCETYPE_PROPERTY = "RESOURCETYPE_PROPERTY"; //$NON-NLS-1$
 
-    public static final String JETFILETYPE_PROPERTY = "JETFILETYPE_PROPERTY";
+    public static final String JETFILETYPE_PROPERTY = "JETFILETYPE_PROPERTY"; //$NON-NLS-1$
 
-    public static final String IMAGE_PROPERTY = "IMAGE_PROPERTY";
+    public static final String IMAGE_PROPERTY = "IMAGE_PROPERTY"; //$NON-NLS-1$
 
-    public static final String LIBRARY_PROPERTY = "LIBRARY_PROPERTY";
+    public static final String LIBRARY_PROPERTY = "LIBRARY_PROPERTY"; //$NON-NLS-1$
 
-    public static final String PERL_LANG = "PERL_LANG";
+    public static final String PERL_LANG = "PERL_LANG"; //$NON-NLS-1$
 
-    public static final String JAVA_LANG = "JAVA_LANG";
+    public static final String JAVA_LANG = "JAVA_LANG"; //$NON-NLS-1$
 
-    public static final String BOTH_LANG = "BOTH_LANG";
+    public static final String BOTH_LANG = "BOTH_LANG"; //$NON-NLS-1$
 
-    public static final String JETMAIN_STAMP = "main";
+    public static final String JETMAIN_STAMP = "main"; //$NON-NLS-1$
 
-    public static final String JETBEGIN_STAMP = "begin";
+    public static final String JETBEGIN_STAMP = "begin"; //$NON-NLS-1$
 
-    public static final String JETEND_STAMP = "end";
+    public static final String JETEND_STAMP = "end"; //$NON-NLS-1$
 
-    public static final String BROWSER_LABEL = "Browser..";
+    public static final String BROWSER_LABEL = Messages.getString("PluginConstant.Borwser"); //$NON-NLS-1$
 
-    public static final String PROJECT_URL = "PROJECT_URL";
+    public static final String PROJECT_URL = "PROJECT_URL"; //$NON-NLS-1$
 
-    public static final String PROJECTCREATED_FLAG = "PROJECTCREATED_FLAG";
+    public static final String PROJECTCREATED_FLAG = "PROJECTCREATED_FLAG"; //$NON-NLS-1$
 
-    public static final String COMPONENT_PROJECT = "COMPONENT_PROJECT";
+    public static final String COMPONENT_PROJECT = "COMPONENT_PROJECT"; //$NON-NLS-1$
 
-    public static final String RESOURCELANGUAGE_DEFAULT = "_messages.properties";
+    public static final String RESOURCELANGUAGE_DEFAULT = "_messages.properties"; //$NON-NLS-1$
 
-    public static final String RESOURCELANGUAGE_FR = "_messages_fr.properties";
+    public static final String RESOURCELANGUAGE_FR = "_messages_fr.properties"; //$NON-NLS-1$
 
-    public static final String RESOURCELANGUAGE_ZH = "_messages_zh.properties";
+    public static final String RESOURCELANGUAGE_ZH = "_messages_zh.properties"; //$NON-NLS-1$
 
-    public static final String DEFAULTLANG_RESOURCE = "Default";
+    public static final String DEFAULTLANG_RESOURCE = "Default"; //$NON-NLS-1$
 
-    public static final String ZHLANG_RESOURCE = "Zh";
+    public static final String ZHLANG_RESOURCE = "Zh"; //$NON-NLS-1$
 
-    public static final String FRLANG_RESOURCE = "Fr";
+    public static final String FRLANG_RESOURCE = "Fr"; //$NON-NLS-1$
 
     public static final String BOOKMARKS_PROPERTY = null;
 
-    public static final String JOINT_MARK = " - ";
+    public static final String JOINT_MARK = " - "; //$NON-NLS-1$
 
-    public static final String COMPONENT_NODE_NAME = "COMPONENT";
+    public static final String COMPONENT_NODE_NAME = "COMPONENT"; //$NON-NLS-1$
 
-    public static final String PERL_XML_SUFFIX = "_perl";
+    public static final String PERL_XML_SUFFIX = "_perl"; //$NON-NLS-1$
 
-    public static final String JAVA_XML_SUFFIX = "_java";
+    public static final String JAVA_XML_SUFFIX = "_java"; //$NON-NLS-1$
 }

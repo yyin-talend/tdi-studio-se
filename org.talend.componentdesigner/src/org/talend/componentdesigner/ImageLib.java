@@ -114,7 +114,7 @@ public class ImageLib {
     	InputStream inputStream = null;
 		try {
 			inputStream = ComponentDesigenerPlugin.getDefault().getBundle()
-					.getEntry("/icons/" + imageName).openStream();
+					.getEntry("/icons/" + imageName).openStream(); //$NON-NLS-1$
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

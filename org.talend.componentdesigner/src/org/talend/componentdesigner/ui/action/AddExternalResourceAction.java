@@ -21,6 +21,7 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.FileDialog;
+import org.talend.componentdesigner.i18n.internal.Messages;
 import org.talend.componentdesigner.model.ILibEntry;
 import org.talend.componentdesigner.model.libentry.JarLibEntry;
 import org.talend.componentdesigner.model.libentry.PmLibEntry;
@@ -32,7 +33,7 @@ import org.talend.componentdesigner.ui.composite.ILibListViewer;
 public class AddExternalResourceAction extends OpenDialogAction {
 
     public AddExternalResourceAction(ILibListViewer viewer, String dialogSettingsPrefix) {
-        super("Add External Libraries...", viewer, dialogSettingsPrefix);
+        super(Messages.getString("AddExternalResourceAction.AddELibs"), viewer, dialogSettingsPrefix); //$NON-NLS-1$
     }
 
     /**
@@ -49,8 +50,8 @@ public class AddExternalResourceAction extends OpenDialogAction {
             lastUsedPath = ""; //$NON-NLS-1$
         }
         FileDialog dialog = new FileDialog(getShell(), SWT.MULTI);
-        dialog.setText("Jar Selection");
-        dialog.setFilterExtensions(new String[] { "*.*", "*.jar", "*.zip", "*.pm" }); //$NON-NLS-1$
+        dialog.setText(Messages.getString("AddExternalResourceAction.JarSelection")); //$NON-NLS-1$
+        dialog.setFilterExtensions(new String[] { "*.*", "*.jar", "*.zip", "*.pm" }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
         dialog.setFilterPath(lastUsedPath);
         String res = dialog.open();
         if (res == null) {
@@ -65,15 +66,15 @@ public class AddExternalResourceAction extends OpenDialogAction {
         for (int i = 0; i < nChosen; i++) {
             path = filterPath.append(fileNames[i]).makeAbsolute();
             if (path.toFile().exists()) {
-                if (path.lastSegment().matches("(?i).*\\.(jar)\\b")) {
+                if (path.lastSegment().matches("(?i).*\\.(jar)\\b")) { //$NON-NLS-1$
                     list.add(new JarLibEntry(path));
                 }
-                if (path.lastSegment().matches("(?i).*\\.(pm)\\b")) {
+                if (path.lastSegment().matches("(?i).*\\.(pm)\\b")) { //$NON-NLS-1$
                     list.add(new PmLibEntry(path));
                 }
             } else {
-                MessageDialog.openError(getShell(), "External Archive Error",
-                        "The selected external archive is unavailable or does not exist.");
+                MessageDialog.openError(getShell(), Messages.getString("AddExternalResourceAction.ErrorTitle"), //$NON-NLS-1$
+                        Messages.getString("AddExternalResourceAction.ErrorMsg")); //$NON-NLS-1$
             }
         }
         if (list.size() > 0) {

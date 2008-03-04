@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.componentdesigner.ui.action;
 
+import org.talend.componentdesigner.i18n.internal.Messages;
 import org.talend.componentdesigner.model.ILibEntry;
 import org.talend.componentdesigner.ui.composite.ILibListViewer;
 
@@ -21,7 +22,7 @@ import org.talend.componentdesigner.ui.composite.ILibListViewer;
 public class RemoveResourceAction extends UseResourceAction {
 
 	public RemoveResourceAction(ILibListViewer viewer) {
-		super("Remove", viewer);
+		super(Messages.getString("RemoveResourceAction.Remove"), viewer); //$NON-NLS-1$
 	}
 	
 	protected int getActionType() {

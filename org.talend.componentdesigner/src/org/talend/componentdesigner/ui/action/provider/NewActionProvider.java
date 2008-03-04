@@ -25,6 +25,7 @@ import org.eclipse.ui.navigator.ICommonActionExtensionSite;
 import org.eclipse.ui.navigator.ICommonMenuConstants;
 import org.eclipse.ui.navigator.ICommonViewerWorkbenchSite;
 import org.talend.componentdesigner.ComponentDesigenerPlugin;
+import org.talend.componentdesigner.i18n.internal.Messages;
 import org.talend.componentdesigner.ui.wizard.creatcomponent.CreateComponentWizard;
 
 /**
@@ -53,14 +54,14 @@ public class NewActionProvider extends CommonActionProvider {
             if (item == null || item.getId() == null) {
                 continue;
             }
-            if (item.getId().equals("export") || item.getId().equals("import")) {
+            if (item.getId().equals("export") || item.getId().equals("import")) { //$NON-NLS-1$ //$NON-NLS-2$
                 menu.remove(item);
             }
         }
 
         // append the submenu after the GROUP_NEW group.
         if (ComponentDesigenerPlugin.getDefault().isUsed()) {
-            IMenuManager submenu = new MenuManager("New", NEW_MENU_NAME);
+            IMenuManager submenu = new MenuManager(Messages.getString("NewActionProvider.New"), NEW_MENU_NAME); //$NON-NLS-1$
             submenu.add(newProjectAction);
             menu.insertAfter(ICommonMenuConstants.GROUP_NEW, submenu);
         }
@@ -73,7 +74,7 @@ public class NewActionProvider extends CommonActionProvider {
     class NewComponentAction extends Action {
 
         public NewComponentAction() {
-            super("New Component");
+            super(Messages.getString("NewActionProvider.NewComponent")); //$NON-NLS-1$
             ISharedImages images = PlatformUI.getWorkbench().getSharedImages();
             setImageDescriptor(images.getImageDescriptor(ISharedImages.IMG_TOOL_NEW_WIZARD));
         }
@@ -85,7 +86,8 @@ public class NewActionProvider extends CommonActionProvider {
             CreateComponentWizard wizard = new CreateComponentWizard();
             wizard.init(PlatformUI.getWorkbench(), null);
             final WizardDialog dialog = new WizardDialog(null, wizard);
-            dialog.setPageSize(520, 440);
+            // dialog.setPageSize(520, 440); //Right size for windows XP
+            dialog.setPageSize(520, 490);
             dialog.open();
         }
     }

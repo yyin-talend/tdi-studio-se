@@ -59,7 +59,7 @@ public class PerlXMLConfigWizardPage extends AbstractXMLConfigPage {
             URL url = null;
             try {
                 url = FileLocator.toFileURL(ComponentDesigenerPlugin.getDefault().getBundle().getResource(
-                        "/data/sampleperlcomponent.xml"));
+                        "/data/sampleperlcomponent.xml")); //$NON-NLS-1$
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -102,12 +102,12 @@ public class PerlXMLConfigWizardPage extends AbstractXMLConfigPage {
                     importsEle.appendChild(importEle);
                     importEle.setAttribute(NAME, libEntry.getNamePrefix());
                     importEle.setAttribute(MODULE, libEntry.getNamePrefix());
-                    importEle.setAttribute(REQUIRED, "true");
+                    importEle.setAttribute(REQUIRED, "true"); //$NON-NLS-1$
 
                     TreeNodeData nodeData = new TreeNodeData();
                     nodeData.putAttrValue(NAME, libEntry.getNamePrefix());
                     nodeData.putAttrValue(MODULE, libEntry.getNamePrefix());
-                    nodeData.putAttrValue(REQUIRED, "true");
+                    nodeData.putAttrValue(REQUIRED, "true"); //$NON-NLS-1$
                     nodeData.setXMLNode(importEle);
                     nodeData.setTreeNode(ATreeNodeUtil.getTreeNodeByPath(IMPORTITEMPATH));
                     importItem.setData(nodeData);
@@ -135,6 +135,6 @@ public class PerlXMLConfigWizardPage extends AbstractXMLConfigPage {
         super.loadAttrsInfo();
 
         // available TYPE values are different between LANGUAGES
-        attrsAvailableValuesMap.put("TYPE", new String[] { "boolean", "date", "datetime", "int", "decimal", "string" });
+        attrsAvailableValuesMap.put("TYPE", new String[] { "boolean", "date", "datetime", "int", "decimal", "string" }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$
     }
 }

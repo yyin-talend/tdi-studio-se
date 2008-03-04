@@ -42,7 +42,7 @@ public class JarLibEntry extends AbstractLibEntry {
 	}
 
 	public String getNamePrefix() {
-		int index = this.getName().indexOf(".jar");		
+		int index = this.getName().indexOf(".jar");		 //$NON-NLS-1$
 		return this.getName().substring(0, index);
 	}
 }

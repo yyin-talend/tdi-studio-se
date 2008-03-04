@@ -31,6 +31,7 @@ import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.views.navigator.ResourceComparator;
 import org.talend.componentdesigner.ComponentDesigenerPlugin;
 import org.talend.componentdesigner.PluginConstant;
+import org.talend.componentdesigner.i18n.internal.Messages;
 import org.talend.componentdesigner.model.ILibEntry;
 import org.talend.componentdesigner.model.libentry.JarLibEntry;
 import org.talend.componentdesigner.model.libentry.PmLibEntry;
@@ -57,7 +58,7 @@ public class AddResourceAction extends UseResourceAction {
     };
 
     public AddResourceAction(ILibListViewer viewer) {
-        super("Add Libraries...", viewer);
+        super(Messages.getString("AddResourceAction.AddLib"), viewer); //$NON-NLS-1$
     }
 
     /**
@@ -75,8 +76,8 @@ public class AddResourceAction extends UseResourceAction {
 
         ElementTreeSelectionDialog dialog = new ElementTreeSelectionDialog(getShell(), lp, cp);
         dialog.setValidator(validator);
-        dialog.setTitle("JAR Selection");
-        dialog.setMessage("&Choose jars and zips to add:");
+        dialog.setTitle(Messages.getString("AddResourceAction.JARSecection")); //$NON-NLS-1$
+        dialog.setMessage(Messages.getString("AddResourceAction.ChooseResource")); //$NON-NLS-1$
         dialog.setInput(ResourcesPlugin.getWorkspace().getRoot().getProject(PluginConstant.COMPONENT_PROJECT));
         dialog.setComparator(new ResourceComparator(ResourceComparator.NAME));
 
@@ -86,10 +87,10 @@ public class AddResourceAction extends UseResourceAction {
             for (int i = 0; i < elements.length; i++) {
                 IResource elem = (IResource) elements[i];
                 String name = elem.getName();
-                if (name.matches("(?i).*\\.(jar)\\b")) {
+                if (name.matches("(?i).*\\.(jar)\\b")) { //$NON-NLS-1$
                     res.add(new JarLibEntry(elem));
                 }
-                if (name.matches("(?i).*\\.(pm)\\b")) {
+                if (name.matches("(?i).*\\.(pm)\\b")) { //$NON-NLS-1$
                     res.add(new PmLibEntry(elem));
                 }
             }

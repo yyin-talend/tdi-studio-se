@@ -32,7 +32,7 @@ import org.w3c.dom.Element;
  */
 public class TreeNodeAttrCompsite extends Composite {
 
-    private static final String MARK = ":";
+    private static final String MARK = ":"; //$NON-NLS-1$
 
     private final TreeNodeData nodeData;
 

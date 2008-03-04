@@ -59,7 +59,7 @@ import org.w3c.dom.NodeList;
  */
 public class ComponentFolderManager {
 
-    private static String xmlSUFFIX = ".xml";
+    private static String xmlSUFFIX = ".xml"; //$NON-NLS-1$
 
     private ComponentPref componentPref;
 
@@ -98,23 +98,23 @@ public class ComponentFolderManager {
         IFile f = creatEmptyFile(fileName);
 
         // add property for NAME, LONG NAME AND FAMILY
-        properties.setProperty("NAME", componentPref.getName());
-        properties.setProperty("LONG_NAME", componentPref.getLongName());
-        properties.setProperty("FAMILY", componentPref.getFamily());
+        properties.setProperty("NAME", componentPref.getName()); //$NON-NLS-1$
+        properties.setProperty("LONG_NAME", componentPref.getLongName()); //$NON-NLS-1$
+        properties.setProperty("FAMILY", componentPref.getFamily()); //$NON-NLS-1$
 
         // add property for HELP
-        properties.setProperty("HELP", "org.talend.help." + componentPref.getName());
+        properties.setProperty("HELP", "org.talend.help." + componentPref.getName()); //$NON-NLS-1$ //$NON-NLS-2$
 
         // add properties for each PARAMETER of component file
-        extractNodes("PARAMETER", properties);
+        extractNodes("PARAMETER", properties); //$NON-NLS-1$
         // add properties for each RETURN of component
-        extractNodes("RETURN", properties);
+        extractNodes("RETURN", properties); //$NON-NLS-1$
 
         ByteArrayOutputStream propertiesOutputStream = null;
         InputStream inputStream = null;
         try {
             propertiesOutputStream = new ByteArrayOutputStream();
-            properties.store(propertiesOutputStream, "");
+            properties.store(propertiesOutputStream, ""); //$NON-NLS-1$
             propertiesOutputStream.flush();
             propertiesOutputStream.close();
             inputStream = new ByteArrayInputStream(propertiesOutputStream.toByteArray());
@@ -149,9 +149,9 @@ public class ComponentFolderManager {
                 Node n = nl.item(i);
                 if (n != null) {
                     NamedNodeMap attributes = n.getAttributes();
-                    n = attributes.getNamedItem("NAME");
-                    if ((n != null) && (n.getNodeValue() != null) && (n.getNodeValue().compareTo("") != 0)) {
-                        properties.setProperty(n.getNodeValue().toUpperCase() + ".NAME", n.getNodeValue());
+                    n = attributes.getNamedItem("NAME"); //$NON-NLS-1$
+                    if ((n != null) && (n.getNodeValue() != null) && (n.getNodeValue().compareTo("") != 0)) { //$NON-NLS-1$
+                        properties.setProperty(n.getNodeValue().toUpperCase() + ".NAME", n.getNodeValue()); //$NON-NLS-1$
                     }
                 }
             }
@@ -163,9 +163,9 @@ public class ComponentFolderManager {
                 Node n = nl.item(i);
                 if (n != null) {
                     NamedNodeMap attributes = n.getAttributes();
-                    n = attributes.getNamedItem("NAME");
-                    if ((n != null) && (n.getNodeValue() != null) && (n.getNodeValue().compareTo("") != 0)) {
-                        properties.setProperty(n.getNodeValue().toUpperCase() + ".NAME", n.getNodeValue());
+                    n = attributes.getNamedItem("NAME"); //$NON-NLS-1$
+                    if ((n != null) && (n.getNodeValue() != null) && (n.getNodeValue().compareTo("") != 0)) { //$NON-NLS-1$
+                        properties.setProperty(n.getNodeValue().toUpperCase() + ".NAME", n.getNodeValue()); //$NON-NLS-1$
                     }
                 }
             }
@@ -194,7 +194,7 @@ public class ComponentFolderManager {
                 continue;
             }
             IFile file = (IFile) resource;
-            if (file.getFileExtension().equals("jar") || file.getFileExtension().equals("pm")) {
+            if (file.getFileExtension().equals("jar") || file.getFileExtension().equals("pm")) { //$NON-NLS-1$ //$NON-NLS-2$
                 continue;
             }
             if (file.exists()) {
@@ -204,19 +204,19 @@ public class ComponentFolderManager {
                 file.copy(desFolder.getFile(newDestinationFileName).getFullPath(), false, null);
 
                 // modify NAME's value and HELP's value in properties file.
-                if (file.getFileExtension().equals("properties")) {
+                if (file.getFileExtension().equals("properties")) { //$NON-NLS-1$
 
                     Properties properties = new Properties();
                     InputStream propertiesInputStream = desFolder.getFile(newDestinationFileName).getContents();
                     properties.load(propertiesInputStream);
                     propertiesInputStream.close();
 
-                    properties.setProperty("NAME", desComponentFolderName);
-                    String help = properties.getProperty("HELP");
-                    properties.setProperty("HELP", help.substring(0, help.lastIndexOf(".") + 1) + desComponentFolderName);
+                    properties.setProperty("NAME", desComponentFolderName); //$NON-NLS-1$
+                    String help = properties.getProperty("HELP"); //$NON-NLS-1$
+                    properties.setProperty("HELP", help.substring(0, help.lastIndexOf(".") + 1) + desComponentFolderName); //$NON-NLS-1$ //$NON-NLS-2$
 
                     ByteArrayOutputStream propertiesOutputStream = new ByteArrayOutputStream();
-                    properties.store(propertiesOutputStream, "");
+                    properties.store(propertiesOutputStream, ""); //$NON-NLS-1$
                     propertiesOutputStream.close();
 
                     InputStream inputStream = new ByteArrayInputStream(propertiesOutputStream.toByteArray());
@@ -242,10 +242,10 @@ public class ComponentFolderManager {
     }
 
     private void creatJetLanguageFile(JetFileStamp fileStamp) throws CoreException, IOException {
-        String fileName = componentPref.getName() + "_" + fileStamp.getFileStampName();
+        String fileName = componentPref.getName() + "_" + fileStamp.getFileStampName(); //$NON-NLS-1$
         switch (componentPref.getLanguageType()) {
         case BOTHLANGUAGETYPE:
-            String[] suffixs = componentPref.getLanguageType().getFileSuffix().split(";");
+            String[] suffixs = componentPref.getLanguageType().getFileSuffix().split(";"); //$NON-NLS-1$
             for (String suffix : suffixs) {
                 creatTemplateJetFile(fileName + suffix);
             }
@@ -260,12 +260,12 @@ public class ComponentFolderManager {
         // String fileName = componentPref.getName();
         switch (componentPref.getLanguageType()) {
         case BOTHLANGUAGETYPE:
-            String[] suffixs = componentPref.getLanguageType().getNameSuffix().split(";");
+            String[] suffixs = componentPref.getLanguageType().getNameSuffix().split(";"); //$NON-NLS-1$
             for (String nameSuffix : suffixs) {
                 String xmlFileName = this.componentFolderName + nameSuffix + xmlSUFFIX;
                 IFile file = creatEmptyFile(xmlFileName);
                 Document document = componentPref.getCurrentTypeDocument(nameSuffix);
-                writeXMLContent(file, document, "UTF-8");
+                writeXMLContent(file, document, "UTF-8"); //$NON-NLS-1$
 
             }
             break;
@@ -274,14 +274,14 @@ public class ComponentFolderManager {
             String xmlFileName = this.componentFolderName + nameSuffix + xmlSUFFIX;
             IFile file = creatEmptyFile(xmlFileName);
             Document document = componentPref.getCurrentTypeDocument(nameSuffix);
-            writeXMLContent(file, document, "UTF-8");
+            writeXMLContent(file, document, "UTF-8"); //$NON-NLS-1$
         }
 
     }
 
     private void addComponentImage() throws CoreException, FileNotFoundException {
         if (componentPref.getImageURL() == null) {
-            copyFileFromSrc(ImageLib.getImageInputStream(ImageLib.COMPONENT_DEFAULT), componentPref.getName() + "_icon32.png");
+            copyFileFromSrc(ImageLib.getImageInputStream(ImageLib.COMPONENT_DEFAULT), componentPref.getName() + "_icon32.png"); //$NON-NLS-1$
         }
         copyFileFromSrc(componentPref.getImageURL());
     }
@@ -291,7 +291,7 @@ public class ComponentFolderManager {
         // .getResourceAsStream("template.javajet");
         InputStream templateFileStream = null;
         try {
-            templateFileStream = ComponentDesigenerPlugin.getDefault().getBundle().getEntry("/data/template.javajet")
+            templateFileStream = ComponentDesigenerPlugin.getDefault().getBundle().getEntry("/data/template.javajet") //$NON-NLS-1$
                     .openStream();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -326,7 +326,7 @@ public class ComponentFolderManager {
         String projectFolder = this.componentFolderName;
         if (particularPath != null) {
             for (String mParticularPath : particularPath) {
-                projectFolder += "/" + mParticularPath;
+                projectFolder += "/" + mParticularPath; //$NON-NLS-1$
                 folder = project.getFolder(projectFolder);
                 if (!folder.exists()) {
                     folder.create(false, true, null);
@@ -371,7 +371,7 @@ public class ComponentFolderManager {
         for (int i = 0; i < libEntries.length; i++) {
             if (libEntries[i].isExternal()) {
                 if (libEntries[i].getType() == ILibEntry.PM) {
-                    copyFileFromSrc(libEntries[i].getLocation(), "modules", this.componentFolderName);
+                    copyFileFromSrc(libEntries[i].getLocation(), "modules", this.componentFolderName); //$NON-NLS-1$
                 } else {
                     copyFileFromSrc(libEntries[i].getLocation());
                 }
@@ -402,7 +402,7 @@ public class ComponentFolderManager {
         }
         DOMSource source = new DOMSource(document);
         transformer.setOutputProperty(OutputKeys.ENCODING, enCode);
-        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+        transformer.setOutputProperty(OutputKeys.INDENT, "yes"); //$NON-NLS-1$
 
         ByteArrayOutputStream sw = new ByteArrayOutputStream();
         pw = new PrintWriter(sw);

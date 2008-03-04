@@ -61,7 +61,7 @@ public class JavaXMLConfigWizardPage extends AbstractXMLConfigPage {
             URL url = null;
             try {
                 url = FileLocator.toFileURL(ComponentDesigenerPlugin.getDefault().getBundle().getResource(
-                        "/data/samplejavacomponent.xml"));
+                        "/data/samplejavacomponent.xml")); //$NON-NLS-1$
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -104,12 +104,12 @@ public class JavaXMLConfigWizardPage extends AbstractXMLConfigPage {
                     importsEle.appendChild(importEle);
                     importEle.setAttribute(NAME, libEntry.getNamePrefix());
                     importEle.setAttribute(MODULE, libEntry.getNamePrefix());
-                    importEle.setAttribute(REQUIRED, "true");
+                    importEle.setAttribute(REQUIRED, "true"); //$NON-NLS-1$
 
                     TreeNodeData nodeData = new TreeNodeData();
                     nodeData.putAttrValue(NAME, libEntry.getNamePrefix());
                     nodeData.putAttrValue(MODULE, libEntry.getNamePrefix());
-                    nodeData.putAttrValue(REQUIRED, "true");
+                    nodeData.putAttrValue(REQUIRED, "true"); //$NON-NLS-1$
                     nodeData.setXMLNode(importEle);
                     nodeData.setTreeNode(ATreeNodeUtil.getTreeNodeByPath(IMPORTITEMPATH));
                     importItem.setData(nodeData);
@@ -143,7 +143,7 @@ public class JavaXMLConfigWizardPage extends AbstractXMLConfigPage {
             javaTypesArray.add(javaType.getId());
         }
         valuesArray = javaTypesArray.toArray(new String[0]);
-        attrsAvailableValuesMap.put("TYPE", valuesArray);
+        attrsAvailableValuesMap.put("TYPE", valuesArray); //$NON-NLS-1$
 
     }
 

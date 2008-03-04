@@ -18,7 +18,6 @@ import java.util.ResourceBundle;
 
 import org.apache.log4j.Logger;
 
-
 /**
  * Core of i18n management.<br/>
  * 
@@ -39,6 +38,10 @@ import org.apache.log4j.Logger;
  */
 public abstract class MessagesCore {
 
+    private static final String BUNDLE_NAME = "messages"; //$NON-NLS-1$
+
+    private static ResourceBundle resourceBundle = ResourceBundle.getBundle(BUNDLE_NAME);
+
     private static Logger log = Logger.getLogger(MessagesCore.class);
 
     public static final String KEY_NOT_FOUND_PREFIX = "!!!"; //$NON-NLS-1$
@@ -56,7 +59,7 @@ public abstract class MessagesCore {
         if (resourceBundle == null) {
             return KEY_NOT_FOUND_PREFIX + key + KEY_NOT_FOUND_SUFFIX;
         }
-        log.debug("Getting key " + key + "in" + resourceBundle.toString());
+        log.debug("Getting key" + key + "in" + resourceBundle.toString()); //$NON-NLS-1$ //$NON-NLS-2$
         try {
             return resourceBundle.getString(key);
         } catch (MissingResourceException e) {

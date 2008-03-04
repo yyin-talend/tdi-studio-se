@@ -17,6 +17,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import org.talend.componentdesigner.i18n.internal.Messages;
+
 /**
  * DOC rli class global comment. Detailled comment <br/>
  * 
@@ -30,11 +32,11 @@ public class FileCopy {
             java.io.File srcFile = new java.io.File(srcFileName);
             // here need check first, before mkdirs().
             if (!srcFile.exists() || !srcFile.isFile()) {
-                throw new Exception("The source File \"" + srcFileName + "\" does not exist or is not a file.");
+                throw new Exception(Messages.getString("FileCopy.ExceptionMSG", srcFileName)); //$NON-NLS-1$
             }
             String desFileName = srcFile.getName();
-            if (desFileName != null && desFileName.trim().equals("")) {
-                desFileName = "NewName.temp";
+            if (desFileName != null && desFileName.trim().equals("")) { //$NON-NLS-1$
+                desFileName = "NewName.temp"; //$NON-NLS-1$
             }
 
             java.io.File desFile = new java.io.File(desDirectory, desFileName);
@@ -54,7 +56,7 @@ public class FileCopy {
 
     public static void main(String[] args) {
         FileCopy tttClass = new FileCopy();
-        tttClass.copyFile("E:/temp/launch_conf.png", "E:/two");
+        tttClass.copyFile("E:/temp/launch_conf.png", "E:/two"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     private void copy(String srcFileName, String desFileName, boolean delSrc) throws IOException {

@@ -29,6 +29,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.talend.componentdesigner.ComponentDesigenerPlugin;
 import org.talend.componentdesigner.PluginConstant;
+import org.talend.componentdesigner.i18n.internal.Messages;
 
 /**
  * DOC rli class global comment. Detailled comment
@@ -44,7 +45,7 @@ public class ComponentProjectPreferencePage extends PreferencePage implements IW
     @Override
     protected Control createContents(Composite parent) {
         Label settingsLabel = new Label(parent, SWT.None);
-        settingsLabel.setText("Choose a project folder for this component designer"); //$NON-NLS-1$
+        settingsLabel.setText(Messages.getString("ComponentProjectPreferencePage.ChooseProject")); //$NON-NLS-1$
         GridDataFactory.fillDefaults().span(2, 1).applyTo(settingsLabel);
         Composite projSelComposite = new Composite(parent, SWT.NONE);
         projSelComposite.setLayout(new GridLayout(9, false));
@@ -56,7 +57,7 @@ public class ComponentProjectPreferencePage extends PreferencePage implements IW
         GridData gridData = new GridData();
         gridData.horizontalSpan = 2;
         label.setLayoutData(gridData);
-        label.setText("Component Project:");
+        label.setText(Messages.getString("ComponentProjectPreferencePage.ComponentProject")); //$NON-NLS-1$
 
         directoryText = new Text(projSelComposite, SWT.BORDER);
         gridData = new GridData(GridData.FILL_HORIZONTAL);
@@ -83,7 +84,7 @@ public class ComponentProjectPreferencePage extends PreferencePage implements IW
 
     private String getPathFromDialog() {
         DirectoryDialog dialog = new DirectoryDialog(this.getShell());
-        dialog.setMessage("Select Component Project Path");
+        dialog.setMessage(Messages.getString("ComponentProjectPreferencePage.SelectPath")); //$NON-NLS-1$
         String path = dialog.open();
         return path == null ? PluginConstant.EMPTY_STRING : path;
     }

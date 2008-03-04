@@ -17,6 +17,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.talend.componentdesigner.PluginConstant;
+import org.talend.componentdesigner.i18n.internal.Messages;
 
 /**
  * @author rli
@@ -32,7 +33,7 @@ public class CopyComponentValidator implements IInputValidator {
 				PluginConstant.COMPONENT_PROJECT);
 		IFolder componentFolder = project.getFolder(componentName);
 		if (componentFolder.exists()) {
-			return "The component has been exsit";
+			return Messages.getString("CopyComponentValidator.ComponentExist"); //$NON-NLS-1$
 		}
 		return null;
 	}

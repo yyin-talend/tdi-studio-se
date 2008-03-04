@@ -28,6 +28,7 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
+import org.talend.componentdesigner.i18n.internal.Messages;
 import org.talend.componentdesigner.model.componentpref.ComponentPref;
 import org.talend.componentdesigner.ui.composite.TreeNodeAttrCompsite;
 import org.talend.componentdesigner.ui.composite.xmltree.ATreeNodeUtil;
@@ -42,21 +43,21 @@ import org.w3c.dom.Node;
  */
 public abstract class AbstractXMLConfigPage extends AbstractComponentPage {
 
-    protected static final String IMPORTS = "IMPORTS";
+    protected static final String IMPORTS = "IMPORTS"; //$NON-NLS-1$
 
-    protected static final String IMPORT = "IMPORT";
+    protected static final String IMPORT = "IMPORT"; //$NON-NLS-1$
 
-    protected static final String REQUIRED = "REQUIRED";
+    protected static final String REQUIRED = "REQUIRED"; //$NON-NLS-1$
 
-    protected static final String MODULE = "MODULE";
+    protected static final String MODULE = "MODULE"; //$NON-NLS-1$
 
-    protected static final String NAME = "NAME";
+    protected static final String NAME = "NAME"; //$NON-NLS-1$
 
-    protected static final String CODEGENERATION = "CODEGENERATION";
+    protected static final String CODEGENERATION = "CODEGENERATION"; //$NON-NLS-1$
 
-    protected static final String IMPORTITEMPATH = "COMPONENT/CODEGENERATION/IMPORTS/IMPORT";
+    protected static final String IMPORTITEMPATH = "COMPONENT/CODEGENERATION/IMPORTS/IMPORT"; //$NON-NLS-1$
 
-    protected static final String IMPORTSITEMPATH = "COMPONENT/CODEGENERATION/IMPORTS";
+    protected static final String IMPORTSITEMPATH = "COMPONENT/CODEGENERATION/IMPORTS"; //$NON-NLS-1$
 
     protected transient Tree availableXmlTree;
 
@@ -106,7 +107,7 @@ public abstract class AbstractXMLConfigPage extends AbstractComponentPage {
         rightComposite.setLayout(new GridLayout());
 
         Label label = new Label(rightComposite, SWT.NONE);
-        label.setText("Set the properties for selected element.");
+        label.setText(Messages.getString("AbstractXMLConfigPage.SetProperties")); //$NON-NLS-1$
         GridData labelGd = new GridData(GridData.FILL_HORIZONTAL);
         label.setLayoutData(labelGd);
 
@@ -131,9 +132,9 @@ public abstract class AbstractXMLConfigPage extends AbstractComponentPage {
 
                 Menu popMenu = new Menu(availableXmlTree);
                 MenuItem itemNew = new MenuItem(popMenu, SWT.CASCADE);
-                itemNew.setText("New");
+                itemNew.setText(Messages.getString("AbstractXMLConfigPage.New")); //$NON-NLS-1$
                 MenuItem itemDel = new MenuItem(popMenu, SWT.CASCADE);
-                itemDel.setText("Delete");
+                itemDel.setText(Messages.getString("AbstractXMLConfigPage.Delete")); //$NON-NLS-1$
                 itemDel.addSelectionListener(new SelectionAdapter() {
 
                     public void widgetSelected(SelectionEvent e) {
@@ -163,7 +164,7 @@ public abstract class AbstractXMLConfigPage extends AbstractComponentPage {
                                 Node parentNode = treeNodeData.getXMLNode();
                                 newNodeData.setXMLNode(parentNode.appendChild(parentNode.getOwnerDocument().createElement(
                                         itemName)));
-                                newNodeData.setTreePath(treeNodeData.getTreePath() + "/" + itemName);
+                                newNodeData.setTreePath(treeNodeData.getTreePath() + "/" + itemName); //$NON-NLS-1$
                                 newNodeData.setTreeNode(ATreeNodeUtil.getTreeNodeByPath(newNodeData.getTreePath()));
                                 newItem.setData(newNodeData);
                             }
@@ -216,7 +217,7 @@ public abstract class AbstractXMLConfigPage extends AbstractComponentPage {
         nodeAttrCompsite.creatPart(attrsAvailableValuesMap, attrsToolTipsMap);
     }
 
-    protected void loadAttrsInfo(){
+    protected void loadAttrsInfo() {
 
         attrsAvailableValuesMap = new HashMap<String, String[]>();
 
@@ -228,7 +229,7 @@ public abstract class AbstractXMLConfigPage extends AbstractComponentPage {
         for (int i = 0; i < eConnectionTypes.length; i++) {
             valuesArray[i] = eConnectionTypes[i].getName();
         }
-        attrsAvailableValuesMap.put("CTYPE", valuesArray);
+        attrsAvailableValuesMap.put("CTYPE", valuesArray); //$NON-NLS-1$
 
         // FIELD
         EParameterFieldType[] eParameterFieldType = EParameterFieldType.values();
@@ -236,79 +237,78 @@ public abstract class AbstractXMLConfigPage extends AbstractComponentPage {
         for (int i = 0; i < eParameterFieldType.length; i++) {
             valuesArray[i] = eParameterFieldType[i].getName();
         }
-        attrsAvailableValuesMap.put("FIELD", valuesArray);
+        attrsAvailableValuesMap.put("FIELD", valuesArray); //$NON-NLS-1$
 
         // PLATFORM
-        attrsAvailableValuesMap.put("PLATEFORM", new String[] { "ALL", "WINDOWS", "LINUX" });
+        attrsAvailableValuesMap.put("PLATEFORM", new String[] { "ALL", "WINDOWS", "LINUX" }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
         // COMPATIBILITY
-        attrsAvailableValuesMap.put("COMPATIBILITY", new String[] { "ALL", "WINDOWS", "LINUX" });
+        attrsAvailableValuesMap.put("COMPATIBILITY", new String[] { "ALL", "WINDOWS", "LINUX" }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
         // STATUS
-        attrsAvailableValuesMap.put("STATUS", new String[] { "ALPHA", "BETA", "RELEASE" });
+        attrsAvailableValuesMap.put("STATUS", new String[] { "ALPHA", "BETA", "RELEASE" }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
         // LINE_STYLE
-        attrsAvailableValuesMap.put("LINE_STYLE", new String[] { "1", "2", "3", "4" });
+        attrsAvailableValuesMap.put("LINE_STYLE", new String[] { "1", "2", "3", "4" }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
 
         // NB_LINES
-        attrsAvailableValuesMap.put("NB_LINES", new String[] { "1", "2", "3", "4", "5" });
+        attrsAvailableValuesMap.put("NB_LINES", new String[] { "1", "2", "3", "4", "5" }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
 
         // MAX_INPUT MIN_INPUT MAX_OUTPUT MIN_OUTPUT
-        valuesArray = new String[] { "0", "1", "2", "3", "4", "5" };
-        attrsAvailableValuesMap.put("MAX_INPUT", valuesArray);
-        attrsAvailableValuesMap.put("MIN_INPUT", valuesArray);
-        attrsAvailableValuesMap.put("MAX_OUTPUT", valuesArray);
-        attrsAvailableValuesMap.put("MIN_OUTPUT", valuesArray);
+        valuesArray = new String[] { "0", "1", "2", "3", "4", "5" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+        attrsAvailableValuesMap.put("MAX_INPUT", valuesArray); //$NON-NLS-1$
+        attrsAvailableValuesMap.put("MIN_INPUT", valuesArray); //$NON-NLS-1$
+        attrsAvailableValuesMap.put("MAX_OUTPUT", valuesArray); //$NON-NLS-1$
+        attrsAvailableValuesMap.put("MIN_OUTPUT", valuesArray); //$NON-NLS-1$
 
         // PROPERTY_TYPE
         List<String> valuesList = new ArrayList<String>();
-        valuesList.add("DELIMITED");
-        valuesList.add("POSITIONAL");
-        valuesList.add("REGEX");
-        valuesList.add("XML");
-        valuesList.add("LDAP");
-        valuesList.add("WSDL");
-        valuesList.add("GENERIC");
-        valuesList.add("DATABASE");
+        valuesList.add("DELIMITED"); //$NON-NLS-1$
+        valuesList.add("POSITIONAL"); //$NON-NLS-1$
+        valuesList.add("REGEX"); //$NON-NLS-1$
+        valuesList.add("XML"); //$NON-NLS-1$
+        valuesList.add("LDAP"); //$NON-NLS-1$
+        valuesList.add("WSDL"); //$NON-NLS-1$
+        valuesList.add("GENERIC"); //$NON-NLS-1$
+        valuesList.add("DATABASE"); //$NON-NLS-1$
         for (EDatabaseTypeName eDatabaseTypeName : EDatabaseTypeName.values()) {
-            valuesList.add("DATABASE:" + eDatabaseTypeName.getProduct());
+            valuesList.add("DATABASE:" + eDatabaseTypeName.getProduct()); //$NON-NLS-1$
         }
-        attrsAvailableValuesMap.put("REPOSITORY_VALUE", valuesList.toArray(new String[0]));
+        attrsAvailableValuesMap.put("REPOSITORY_VALUE", valuesList.toArray(new String[0])); //$NON-NLS-1$
 
         // attributes with boolean value
-        String[] booleanAttrNameArray = { "SHOW", "REQUIRED", "READONLY", "BASED_ON_SCHEMA", "KEY", "NULLABLE", "CUSTOM",
-                "BUILTIN", "STARTABLE", "SCHEMA_AUTO_PROPAGATE", "DATA_AUTO_PROPAGATE", "HAS_CONDITIONAL_OUTPUTS",
-                "IS_MULTIPLYING_OUTPUTS", "VISIBLE", "TSTATCATCHER_STATS", "USE_MERGE" };
-        String[] booleanArray = { "true", "false" };
+        String[] booleanAttrNameArray = { "SHOW", "REQUIRED", "READONLY", "BASED_ON_SCHEMA", "KEY", "NULLABLE", "CUSTOM", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$
+                "BUILTIN", "STARTABLE", "SCHEMA_AUTO_PROPAGATE", "DATA_AUTO_PROPAGATE", "HAS_CONDITIONAL_OUTPUTS", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+                "IS_MULTIPLYING_OUTPUTS", "VISIBLE", "TSTATCATCHER_STATS", "USE_MERGE" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+        String[] booleanArray = { "true", "false" }; //$NON-NLS-1$ //$NON-NLS-2$
         for (String attrName : booleanAttrNameArray) {
             attrsAvailableValuesMap.put(attrName, booleanArray);
         }
 
         // init maps for TooTipsText
         attrsToolTipsMap = new HashMap<String, String>();
-        attrsToolTipsMap.put("MAX_INPUT", "Integer value. Maximum input connection for this connection");
-        attrsToolTipsMap.put("MIN_INPUT", "Integer value. Minimum input connection for this connection");
-        attrsToolTipsMap.put("MAX_OUTPUT", "Integer value. Maximum output connection for this connection");
-        attrsToolTipsMap.put("MIN_OUTPUT", "Integer value. Minimum output connection for this connection");
-        attrsToolTipsMap.put("LINE_STYLE",
-                "Integer value. Line style of the connetion.(1: Solid Line, 2: Dash Line, 3: Dot Line, 4: Dashdot Line)");
-        attrsToolTipsMap.put("LENGTH", "Integer value.");
-        attrsToolTipsMap.put("PRECISION", "Integer value.");
-        attrsToolTipsMap.put("NB_LINES", "Integer value. Lines spans of this parameter in the component's properties view");
-        attrsToolTipsMap.put("NUM_ROW", "Integer value. Row position of this parameter in the component's properties view");
-        attrsToolTipsMap.put("VERSION", "A decimal value to indicate the version of your new component.");
-        attrsToolTipsMap.put("REPOSITORY_VALUE", "Metadata repository to select.");
-        attrsToolTipsMap.put("EXTENSION", "String value of plugin name. This option is for external componet.");
-        attrsToolTipsMap.put("CTYPE", "Connector type.");
-        attrsToolTipsMap.put("TYPE", "Data type.");
+        attrsToolTipsMap.put("MAX_INPUT", Messages.getString("AbstractXMLConfigPage.MAXINPUTTip")); //$NON-NLS-1$ //$NON-NLS-2$
+        attrsToolTipsMap.put("MIN_INPUT", Messages.getString("AbstractXMLConfigPage.MININPUTTip")); //$NON-NLS-1$ //$NON-NLS-2$
+        attrsToolTipsMap.put("MAX_OUTPUT", Messages.getString("AbstractXMLConfigPage.MAXOUTPUTTip")); //$NON-NLS-1$ //$NON-NLS-2$
+        attrsToolTipsMap.put("MIN_OUTPUT", Messages.getString("AbstractXMLConfigPage.MINOUTPUTTip")); //$NON-NLS-1$ //$NON-NLS-2$
+        attrsToolTipsMap.put("LINE_STYLE", //$NON-NLS-1$
+                Messages.getString("AbstractXMLConfigPage.LINESTYLETip")); //$NON-NLS-1$
+        attrsToolTipsMap.put("LENGTH", Messages.getString("AbstractXMLConfigPage.IntValue")); //$NON-NLS-1$ //$NON-NLS-2$
+        attrsToolTipsMap.put("PRECISION", Messages.getString("AbstractXMLConfigPage.IntValue")); //$NON-NLS-1$ //$NON-NLS-2$
+        attrsToolTipsMap.put("NB_LINES", Messages.getString("AbstractXMLConfigPage.NBLINESTip")); //$NON-NLS-1$ //$NON-NLS-2$
+        attrsToolTipsMap.put("NUM_ROW", Messages.getString("AbstractXMLConfigPage.NUMROWTip")); //$NON-NLS-1$ //$NON-NLS-2$
+        attrsToolTipsMap.put("VERSION", Messages.getString("AbstractXMLConfigPage.VERSIONTip")); //$NON-NLS-1$ //$NON-NLS-2$
+        attrsToolTipsMap.put("REPOSITORY_VALUE", Messages.getString("AbstractXMLConfigPage.REPOSITORYVALUETip")); //$NON-NLS-1$ //$NON-NLS-2$
+        attrsToolTipsMap.put("EXTENSION", Messages.getString("AbstractXMLConfigPage.EXTENSIONTip")); //$NON-NLS-1$ //$NON-NLS-2$
+        attrsToolTipsMap.put("CTYPE", Messages.getString("AbstractXMLConfigPage.CTYPETip")); //$NON-NLS-1$ //$NON-NLS-2$
+        attrsToolTipsMap.put("TYPE", Messages.getString("AbstractXMLConfigPage.TYPETip")); //$NON-NLS-1$ //$NON-NLS-2$
 
-        attrsToolTipsMap.put("COLOR", "Hex value of RGB. For example: \"00FF00\"");
+        attrsToolTipsMap.put("COLOR", Messages.getString("AbstractXMLConfigPage.COLORTip")); //$NON-NLS-1$ //$NON-NLS-2$
 
         for (String attrName : booleanAttrNameArray) {
-            attrsToolTipsMap.put(attrName, "Boolean value(true or false).");
+            attrsToolTipsMap.put(attrName, Messages.getString("AbstractXMLConfigPage.BooleanTip")); //$NON-NLS-1$
         }
 
-    
     }
 
 }

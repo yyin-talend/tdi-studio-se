@@ -41,7 +41,7 @@ public class PmLibEntry extends AbstractLibEntry {
 	}
 
 	public String getNamePrefix() {
-		int index = this.getName().indexOf(".pm");		
+		int index = this.getName().indexOf(".pm");		 //$NON-NLS-1$
 		return this.getName().substring(0, index);
 	}
 

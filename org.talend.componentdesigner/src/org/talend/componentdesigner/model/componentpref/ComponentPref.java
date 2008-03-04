@@ -252,9 +252,9 @@ public class ComponentPref {
             } else {
                 obj = ResourcesPlugin.getWorkspace().getRoot().getProject(PluginConstant.COMPONENT_PROJECT).findMember(location);
             }
-            if (libName.matches("(?i).*\\.(jar)\\b")) {
+            if (libName.matches("(?i).*\\.(jar)\\b")) { //$NON-NLS-1$
                 libArrays[j] = new JarLibEntry(obj);
-            } else if (libName.matches("(?i).*\\.(pm)\\b")) {
+            } else if (libName.matches("(?i).*\\.(pm)\\b")) { //$NON-NLS-1$
                 libArrays[j] = new PmLibEntry(obj);
             } else {
                 // Nothing

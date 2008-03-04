@@ -128,7 +128,7 @@ public class LibListViewer extends TableViewer implements ILibListViewer {
 	 * 
 	 * @see org.eclipse.jdt.internal.debug.ui.launcher.IClasspathViewer#getSelectedEntries()
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked") //$NON-NLS-1$
 	public ILibEntry[] getSelectedEntries() {
 		IStructuredSelection selection = (IStructuredSelection) getSelection();
 		List<ILibEntry> entries = new ArrayList<ILibEntry>(selection.size() * 2);

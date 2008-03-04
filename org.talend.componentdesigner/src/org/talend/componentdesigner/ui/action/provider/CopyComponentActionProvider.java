@@ -22,6 +22,7 @@ import org.eclipse.ui.navigator.CommonActionProvider;
 import org.eclipse.ui.navigator.ICommonActionExtensionSite;
 import org.eclipse.ui.navigator.ICommonViewerWorkbenchSite;
 import org.talend.componentdesigner.ImageLib;
+import org.talend.componentdesigner.i18n.internal.Messages;
 import org.talend.componentdesigner.ui.dialog.CopyComponentDialog;
 import org.talend.componentdesigner.ui.dialog.CopyComponentValidator;
 
@@ -46,7 +47,7 @@ public class CopyComponentActionProvider extends CommonActionProvider {
 	 * Adds a submenu to the given menu with the name "New Component".
 	 */
 	public void fillContextMenu(IMenuManager menu) {
-		menu.insertBefore("group.edit", copyProjectAction);
+		menu.insertBefore("group.edit", copyProjectAction); //$NON-NLS-1$
 		Object obj = ((TreeSelection) this.getContext().getSelection())
 				.getFirstElement();
 		if (obj instanceof IFolder) {
@@ -61,7 +62,7 @@ public class CopyComponentActionProvider extends CommonActionProvider {
 	class CopyComponentAction extends Action {
 
 		public CopyComponentAction() {
-			super("Copy This Component");
+			super(Messages.getString("CopyComponentActionProvider.CopyComponent")); //$NON-NLS-1$
 			setImageDescriptor(ImageLib
 					.getImageDescriptor(ImageLib.COPYCOMPONENT_ACTION));
 		}
@@ -73,8 +74,8 @@ public class CopyComponentActionProvider extends CommonActionProvider {
 			CopyComponentValidator validator = new CopyComponentValidator();
 			CopyComponentDialog dialog = new CopyComponentDialog(PlatformUI
 					.getWorkbench().getActiveWorkbenchWindow().getShell(),
-					"Copy Component", "Input a new component name for '"
-							+ selectedFolderName + "'", selectedFolderName,
+					Messages.getString("CopyComponentActionProvider.CopyComponent2"), Messages.getString("CopyComponentActionProvider.InputName", selectedFolderName) //$NON-NLS-1$ //$NON-NLS-2$
+							, selectedFolderName, //$NON-NLS-1$
 					validator);
 			dialog.open();
 		}

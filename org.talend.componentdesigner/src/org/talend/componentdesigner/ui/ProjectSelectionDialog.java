@@ -28,6 +28,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.talend.componentdesigner.ComponentDesigenerPlugin;
 import org.talend.componentdesigner.PluginConstant;
+import org.talend.componentdesigner.i18n.internal.Messages;
 
 /**
  * Login dialog. <br/>
@@ -94,7 +95,7 @@ public class ProjectSelectionDialog extends TitleAreaDialog {
 		GridData gridData = new GridData();
 		gridData.horizontalSpan = 2;
 		label.setLayoutData(gridData);
-		label.setText("Component Project:");
+		label.setText(Messages.getString("ProjectSelectionDialog.ComponentProject")); //$NON-NLS-1$
 
 		directoryText = new Text(loginComposite, SWT.BORDER);
 		gridData = new GridData(GridData.FILL_HORIZONTAL);
@@ -113,14 +114,14 @@ public class ProjectSelectionDialog extends TitleAreaDialog {
 			}
 		});
 
-		this.setTitle("Choose a project folder for this session");
+		this.setTitle(Messages.getString("ProjectSelectionDialog.ChooseFolder")); //$NON-NLS-1$
 
 		return loginComposite;
 	}
 
 	private String getPathFromDialog() {
 		DirectoryDialog dialog = new DirectoryDialog(this.getShell());
-		dialog.setMessage("Select Project Path");
+		dialog.setMessage(Messages.getString("ProjectSelectionDialog.SelectPath")); //$NON-NLS-1$
 
 		//		dialog.setFilterPath(dirName);
 		String path = dialog.open();

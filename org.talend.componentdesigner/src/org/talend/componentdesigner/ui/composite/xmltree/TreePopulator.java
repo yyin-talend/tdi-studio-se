@@ -34,7 +34,7 @@ import org.w3c.dom.NodeList;
  */
 public class TreePopulator {
 
-    private static final String TEXT_CONST = "#text";
+    private static final String TEXT_CONST = "#text"; //$NON-NLS-1$
 
     private final Tree availableXmlTree;
 
@@ -109,7 +109,7 @@ public class TreePopulator {
                 treeItem.setData(treeNodeData);
                 treeItem.setText(subNode.getNodeName());
 
-                String currentTreePath = parentXPath + "/" + treeItem.getText();
+                String currentTreePath = parentXPath + "/" + treeItem.getText(); //$NON-NLS-1$
                 treeNodeData.setTreePath(currentTreePath);
                 treeNodeData.setTreeNode(ATreeNodeUtil.getTreeNodeByPath(currentTreePath));
 

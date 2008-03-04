@@ -28,7 +28,7 @@ public class ATreeNodeUtil {
 
     static {
         try {
-            URL url = ModelPlugin.getDefault().getBundle().getResource("/model/Component.xsd");
+            URL url = ModelPlugin.getDefault().getBundle().getResource("/model/Component.xsd"); //$NON-NLS-1$
             url = FileLocator.toFileURL(url);
             String fileAbsolutePath = url.getFile();
             rootTreeNode = SchemaPopulationUtil.getSchemaTree(fileAbsolutePath, true, 10);
@@ -38,7 +38,7 @@ public class ATreeNodeUtil {
     }
 
     public static ATreeNode getTreeNodeByPath(String xPath) {
-        String[] nodeNameSeq = xPath.split("/");
+        String[] nodeNameSeq = xPath.split("/"); //$NON-NLS-1$
 
         ATreeNode resultNode = rootTreeNode;
         

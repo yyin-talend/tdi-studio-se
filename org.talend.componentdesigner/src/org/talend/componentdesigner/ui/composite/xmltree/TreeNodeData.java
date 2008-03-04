@@ -26,7 +26,7 @@ import org.w3c.dom.Node;
  */
 public class TreeNodeData {	
 
-	private static final String TEXT_CONST = "#text";
+	private static final String TEXT_CONST = "#text"; //$NON-NLS-1$
 	
 	private String bodayText;
 

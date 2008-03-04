@@ -35,6 +35,7 @@ import org.eclipse.ui.statushandlers.StatusAdapter;
 import org.eclipse.ui.statushandlers.StatusManager;
 import org.talend.componentdesigner.ComponentDesigenerPlugin;
 import org.talend.componentdesigner.PluginConstant;
+import org.talend.componentdesigner.i18n.internal.Messages;
 import org.talend.componentdesigner.ui.progress.ProgressUI;
 
 /**
@@ -98,7 +99,8 @@ public final class ComponentProjectManager {
         IRunnableWithProgress op = new IRunnableWithProgress() {
 
             public void run(IProgressMonitor monitor) throws InvocationTargetException {
-                CreateProjectOperation op = new CreateProjectOperation(description, "New Component Project");
+                CreateProjectOperation op = new CreateProjectOperation(description, Messages
+                        .getString("ComponentProjectManager.NewProject")); //$NON-NLS-1$
                 try {
                     PlatformUI.getWorkbench().getOperationSupport().getOperationHistory().execute(op, monitor,
                             WorkspaceUndoUtil.getUIInfoAdapter(currentShell));
@@ -121,19 +123,20 @@ public final class ComponentProjectManager {
                 if (cause.getStatus().getCode() == IResourceStatus.CASE_VARIANT_EXISTS) {
                     status = new StatusAdapter(
 
-                    new Status(IStatus.WARNING, ComponentDesigenerPlugin.PLUGIN_ID, IStatus.WARNING,
-                            "The underlying file system is case insensitive. There is an existing project which conflicts with"
-                                    + newProjectHandle.getName(), cause));
+                    new Status(IStatus.WARNING, ComponentDesigenerPlugin.PLUGIN_ID, IStatus.WARNING, Messages.getString(
+                            "ComponentProjectManager.WarningMsg", newProjectHandle.getName()) //$NON-NLS-1$
+                            , cause));
                 } else {
                     status = new StatusAdapter(new Status(cause.getStatus().getSeverity(), ComponentDesigenerPlugin.PLUGIN_ID,
-                            cause.getStatus().getSeverity(), "Creation Problems", cause));
+                            cause.getStatus().getSeverity(),
+                            Messages.getString("ComponentProjectManager.CreationProblems"), cause)); //$NON-NLS-1$
                 }
-                status.setProperty(StatusAdapter.TITLE_PROPERTY, "Creation Problems");
+                status.setProperty(StatusAdapter.TITLE_PROPERTY, Messages.getString("ComponentProjectManager.CreationProblems")); //$NON-NLS-1$
                 StatusManager.getManager().handle(status, StatusManager.BLOCK);
             } else {
                 StatusAdapter status = new StatusAdapter(new Status(IStatus.WARNING, ComponentDesigenerPlugin.PLUGIN_ID, 0,
-                        "Internal error:" + t.getMessage(), t));
-                status.setProperty(StatusAdapter.TITLE_PROPERTY, "Creation Problems");
+                        Messages.getString("ComponentProjectManager.InternalErrorMsg", t.getMessage()), t)); //$NON-NLS-1$
+                status.setProperty(StatusAdapter.TITLE_PROPERTY, Messages.getString("ComponentProjectManager.CreationProblems")); //$NON-NLS-1$
                 StatusManager.getManager().handle(status, StatusManager.LOG | StatusManager.BLOCK);
             }
             return null;

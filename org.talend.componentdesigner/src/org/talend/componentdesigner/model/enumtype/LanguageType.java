@@ -19,9 +19,9 @@ import org.talend.componentdesigner.PluginConstant;
  * 
  */
 public enum LanguageType {
-    PERLLANGUAGETYPE(PluginConstant.PERL_LANG, PluginConstant.PERL_XML_SUFFIX, ".perljet"),
-    JAVALANGUAGETYPE(PluginConstant.JAVA_LANG, PluginConstant.JAVA_XML_SUFFIX, ".javajet"),
-    BOTHLANGUAGETYPE(PluginConstant.BOTH_LANG, "_perl;_java", ".perljet;.javajet");
+    PERLLANGUAGETYPE(PluginConstant.PERL_LANG, PluginConstant.PERL_XML_SUFFIX, ".perljet"), //$NON-NLS-1$
+    JAVALANGUAGETYPE(PluginConstant.JAVA_LANG, PluginConstant.JAVA_XML_SUFFIX, ".javajet"), //$NON-NLS-1$
+    BOTHLANGUAGETYPE(PluginConstant.BOTH_LANG, "_perl;_java", ".perljet;.javajet"); //$NON-NLS-1$ //$NON-NLS-2$
 
     private final String lang;
 

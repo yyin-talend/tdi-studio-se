@@ -23,6 +23,7 @@ import org.eclipse.ui.navigator.CommonActionProvider;
 import org.eclipse.ui.navigator.ICommonActionExtensionSite;
 import org.eclipse.ui.navigator.ICommonViewerWorkbenchSite;
 import org.talend.componentdesigner.ImageLib;
+import org.talend.componentdesigner.i18n.internal.Messages;
 import org.talend.componentdesigner.model.componentpref.ComponentPrefCollection;
 import org.talend.componentdesigner.ui.wizard.creatcomponent.CreateComponentWizard;
 
@@ -52,7 +53,7 @@ public class EditComponentActionProvider extends CommonActionProvider {
 	 * Adds a submenu to the given menu with the name "New Component".
 	 */
 	public void fillContextMenu(IMenuManager menu) {
-		menu.insertBefore("group.edit", editComponentAction);
+		menu.insertBefore(Messages.getString("EditComponentActionProvider.GroupEdit"), editComponentAction); //$NON-NLS-1$
 		Object obj = ((TreeSelection) this.getContext().getSelection())
 				.getFirstElement();
 		if (obj instanceof IFolder) {
@@ -70,7 +71,7 @@ public class EditComponentActionProvider extends CommonActionProvider {
 	class EditComponentAction extends Action {
 
 		public EditComponentAction() {
-			super("Edit This Component");
+			super(Messages.getString("EditComponentActionProvider.Edit")); //$NON-NLS-1$
 			setImageDescriptor(ImageLib
 					.getImageDescriptor(ImageLib.EDITCOMPONENT_ACTION));
 		}

@@ -26,6 +26,7 @@ import org.eclipse.ui.wizards.newresource.BasicNewResourceWizard;
 import org.talend.componentdesigner.ComponentDesigenerPlugin;
 import org.talend.componentdesigner.ImageLib;
 import org.talend.componentdesigner.PluginConstant;
+import org.talend.componentdesigner.i18n.internal.Messages;
 import org.talend.componentdesigner.manager.ComponentFolderManager;
 import org.talend.componentdesigner.model.componentpref.ComponentPref;
 import org.talend.componentdesigner.model.componentpref.ComponentPrefCollection;
@@ -55,9 +56,9 @@ public class CreateComponentWizard extends BasicNewResourceWizard {
 
     private ComponentFolderManager manager;
 
-    private static final String JAVAWIZARD = "JAVAWIZARD";
+    private static final String JAVAWIZARD = "JAVAWIZARD"; //$NON-NLS-1$
 
-    private static final String PERLWIZARD = "PERLWIZARD";
+    private static final String PERLWIZARD = "PERLWIZARD"; //$NON-NLS-1$
 
     /**
      * Creates a wizard for creating a new project resource in the workspace.
@@ -91,21 +92,21 @@ public class CreateComponentWizard extends BasicNewResourceWizard {
     @Override
     public void addPages() {
         creatProjectPage = new WizardComponentFolderPage("componentNewProjectPage", componentPref); //$NON-NLS-1$
-        creatProjectPage.setTitle("Main Properties");
-        creatProjectPage.setDescription("Fill in component properties");
+        creatProjectPage.setTitle(Messages.getString("CreateComponentWizard.MainProperties")); //$NON-NLS-1$
+        creatProjectPage.setDescription(Messages.getString("CreateComponentWizard.FillIn")); //$NON-NLS-1$
         this.addPage(creatProjectPage);
 
         creatJetFilesPage = new WizardJetFilesChoosePage("creatJetFilesPage", //$NON-NLS-1$
                 componentPref);
-        creatJetFilesPage.setTitle("Specify resources");
+        creatJetFilesPage.setTitle(Messages.getString("CreateComponentWizard.SpecifyRes")); //$NON-NLS-1$
         this.addPage(creatJetFilesPage);
 
         JavaXMLConfigWizardPage javaXMLConfigPage = new JavaXMLConfigWizardPage(JAVAWIZARD, componentPref);
-        javaXMLConfigPage.setTitle("Create the XML configuration file for JAVA Component");
+        javaXMLConfigPage.setTitle(Messages.getString("CreateComponentWizard.CreateXMLJava")); //$NON-NLS-1$
         this.addPage(javaXMLConfigPage);
 
         PerlXMLConfigWizardPage perlXMLConfigPage = new PerlXMLConfigWizardPage(PERLWIZARD, componentPref);
-        perlXMLConfigPage.setTitle("Create the XML configuration file for PERL Component");
+        perlXMLConfigPage.setTitle(Messages.getString("CreateComponentWizard.CreateXMLPerl")); //$NON-NLS-1$
         this.addPage(perlXMLConfigPage);
     }
 
@@ -127,7 +128,7 @@ public class CreateComponentWizard extends BasicNewResourceWizard {
     public void init(IWorkbench workbench, IStructuredSelection currentSelection) {
         super.init(workbench, currentSelection);
         setNeedsProgressMonitor(true);
-        setWindowTitle("New Component");
+        setWindowTitle(Messages.getString("CreateComponentWizard.NewComponent")); //$NON-NLS-1$
     }
 
     /*
