@@ -11,10 +11,8 @@ imports="
     org.talend.designer.codegen.config.CodeGeneratorArgument
     org.talend.designer.runprocess.ProcessorUtilities
     org.talend.designer.runprocess.ProcessorException
-    org.talend.core.model.process.IContextParameter
     java.util.Map
     java.util.List
-    java.util.ArrayList
 "
 %>
 <%
@@ -42,7 +40,7 @@ imports="
     List<Map<String, String>> contextParams = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__CONTEXTPARAMS__");
     String process = ElementParameterParser.getValue(node,"__PROCESS_TYPE_PROCESS__");
     String context = ElementParameterParser.getValue(node,"__PROCESS_TYPE_CONTEXT__");
-    String[] codeOptions = new String[] {"--father_pid=\"+pid+\"", "--root_pid=\"+rootPid+\""};
+    String[] codeOptions = new String[] {"\"--father_pid=\"+pid", "\"--root_pid=\"+rootPid"};
     String[] commandLineWindows = new String[] {"<command>"};
     String[] commandLineUnix = new String[] {"<command>"};
     String[] commandLine = new String[] {"<command>"};
@@ -57,60 +55,44 @@ imports="
     } catch (ProcessorException e) {
     }
     
-    
-StringBuilder contextStr = new StringBuilder();
+String childJob = null;
+if(commandLine.length > 0) { 
+	childJob = commandLine[0];
+}    
+%>
+java.util.List<String> paraList_<%=cid %> = new java.util.ArrayList<String>();
+
+<%
+for (int i=1; i<commandLine.length; i++) {
+ 	if(commandLine[i].startsWith("--context=")){%>
+		paraList_<%=cid %>.add("<%=commandLine[i] %>");
+	<%}else{%>
+		paraList_<%=cid %>.add(<%=commandLine[i] %>);
+	<%}
+}
 
 if(transmitWholeContext){
-	List<IContextParameter> params = new ArrayList<IContextParameter>();
-	params = node.getProcess().getContextManager().getDefaultContext().getContextParameterList();
-    for (IContextParameter ctxParam :params)
-    {    
-        contextStr.append(",\"--context_param ");
-        contextStr.append(ctxParam.getName());
-    
-        contextStr.append("=\"+");
-        contextStr.append("context.getProperty(\""+ctxParam.getName()+"\")");
+%> 
+    java.util.Enumeration<?> propertyNames_<%=cid %> = context.propertyNames();
+    while (propertyNames_<%=cid %>.hasMoreElements()) {
+        String key_<%=cid %> = (String) propertyNames_<%=cid %>.nextElement();
+        String value_<%=cid %> = (String) context.getProperty(key_<%=cid %>);       
+        paraList_<%=cid %>.add("--context_param " + key_<%=cid %> + "=" + value_<%=cid %>); 
     }
+<%
 }
 
 for (int i=0; i<contextParams.size(); i++) {
     Map<String, String> contextParam = contextParams.get(i);
     String name = contextParam.get("PARAM_NAME_COLUMN");
-    String value = contextParam.get("PARAM_VALUE_COLUMN");    
-    contextStr.append(",\"--context_param ");
-    contextStr.append(name);
-
-    contextStr.append("=\"+");
-    contextStr.append(value);
-  }
-
-   String childJob = null;
-
-   for (int i=0; i<commandLine.length; i++) {
-      if(i==0){
-          childJob = commandLine[i];
-      %>        
-        String[][] childReturn_<%=cid %> = <%=commandLine[i]%>.runJob(new String[]{
-      <%
-      }else{
-          if (i <= (commandLine.length -2)) {
-          %>
-          "<%=commandLine[i] %>",
-          <%
-          }else{
-          %>
-          "<%=commandLine[i] %>"
-          <%
-          }
-      }
-   }
-   if(commandLine.length>0){
-   %>   
-          <%=contextStr.toString() %> 
-          });
-    <%
-    }
-    %>
+    String value = contextParam.get("PARAM_VALUE_COLUMN");
+%>        
+    paraList_<%=cid %>.add("--context_param <%=name %>=" + <%=value %>);
+<% 
+}
+%>
+       
+	String[][] childReturn_<%=cid %> = <%=childJob %>.runJob((String[]) paraList_<%=cid %>.toArray(new String[paraList_<%=cid %>.size()]));
 
 <%
     if (childJob!=null) {
