@@ -308,6 +308,11 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                                     return new Boolean((String) value);
                                 }
                                 return value;
+                            case RADIO:
+                                if (value instanceof String) {
+                                    return new Boolean((String) value);
+                                }
+                                return value;
                             case COLOR:
                                 if (value instanceof String) {
                                     return TalendTextUtils.stringToRGB((String) value);

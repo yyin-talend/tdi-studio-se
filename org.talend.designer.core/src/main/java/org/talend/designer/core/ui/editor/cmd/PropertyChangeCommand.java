@@ -132,7 +132,8 @@ public class PropertyChangeCommand extends Command {
         oldValue = elem.getPropertyValue(propName);
         elem.setPropertyValue(propName, newValue);
 
-        if (currentParam.getField().equals(EParameterFieldType.CLOSED_LIST)
+        if (currentParam.getField().equals(EParameterFieldType.RADIO)
+                || currentParam.getField().equals(EParameterFieldType.CLOSED_LIST)
                 || currentParam.getField().equals(EParameterFieldType.CHECK)
                 || currentParam.getField().equals(EParameterFieldType.AS400_CHECK)) {
             toUpdate = false;
@@ -223,7 +224,8 @@ public class PropertyChangeCommand extends Command {
             // if the field is not a schema type, then use standard "set value".
             if (!testedParam.getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
                 String oldMapping = "";
-                if (!testedParam.getField().equals(EParameterFieldType.CHECK)) {
+                if (!testedParam.getField().equals(EParameterFieldType.CHECK)
+                        && !testedParam.getField().equals(EParameterFieldType.RADIO)) {
                     oldMapping = (String) testedParam.getValue();
                 }
                 testedParam.setValueToDefault(elem.getElementParameters());

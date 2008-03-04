@@ -388,7 +388,7 @@ public class ElementParameter implements IElementParameter {
                 }
             }
             if (setDefaultValue) {
-                if (this.field.equals(EParameterFieldType.CHECK)) {
+                if (this.field.equals(EParameterFieldType.CHECK) || this.field.equals(EParameterFieldType.RADIO)) {
                     setValue(new Boolean(defaultValue.getDefaultValue().toString()));
                 } else {
                     setValue(defaultValue.getDefaultValue());

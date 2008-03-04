@@ -621,7 +621,7 @@ public class Process extends Element implements IProcess2 {
                         // it (this will prevent to overwrite the
                         // value)
                     }
-                    if (param.getField().equals(EParameterFieldType.CHECK)) {
+                    if (param.getField().equals(EParameterFieldType.CHECK) || param.getField().equals(EParameterFieldType.RADIO)) {
                         Boolean boolean1 = new Boolean(pType.getValue());
                         // if (EParameterName.ACTIVATE.getName().equals(param.getName())) {
                         // if ((elemParam instanceof Node) && !boolean1) {

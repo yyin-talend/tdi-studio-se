@@ -944,6 +944,9 @@ public class EmfComponent implements IComponent {
             case CHECK:
                 param.setValue(new Boolean(false));
                 break;
+            case RADIO:
+                param.setValue(new Boolean(false));
+                break;
             case AS400_CHECK:
                 param.setValue(new Boolean(false));
                 break;
@@ -1130,7 +1133,8 @@ public class EmfComponent implements IComponent {
 
                     if (param.isShow(conditionIf, conditionNotIf, listParam)) {
                         isSet = true;
-                        if (param.getField().equals(EParameterFieldType.CHECK)
+                        if (param.getField().equals(EParameterFieldType.RADIO)
+                                || param.getField().equals(EParameterFieldType.CHECK)
                                 || param.getField().equals(EParameterFieldType.AS400_CHECK)) {
                             param.setValue(new Boolean(defaultValue.getDefaultValue().toString()));
                         } else {
@@ -1298,6 +1302,9 @@ public class EmfComponent implements IComponent {
                     break;
                 case COLOR:
                     newParam.setValue(DEFAULT_COLOR);
+                    break;
+                case RADIO:
+                    newParam.setValue(new Boolean(item.getVALUE()));
                     break;
                 default: // TEXT by default
                     newParam.setField(EParameterFieldType.TEXT);

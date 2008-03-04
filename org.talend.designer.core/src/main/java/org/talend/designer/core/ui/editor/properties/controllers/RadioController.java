@@ -181,16 +181,12 @@ public class RadioController extends AbstractElementPropertySectionController {
      */
     @Override
     public void refresh(IElementParameter param, boolean check) {
-        Button checkBtn = (Button) hashCurControls.get(param.getName());
+        Button radioButton = (Button) hashCurControls.get(param.getName());
         Object value = param.getValue();
-        if (checkBtn == null || checkBtn.isDisposed()) {
+        if (radioButton == null || radioButton.isDisposed()) {
             return;
         }
-        if (value instanceof String) {
-            checkBtn.setSelection(Boolean.valueOf((String) value));
-        } else if (value instanceof Boolean) {
-            checkBtn.setSelection((Boolean) value);
-        }
+        radioButton.setSelection((Boolean) value);
     }
 
     /*
