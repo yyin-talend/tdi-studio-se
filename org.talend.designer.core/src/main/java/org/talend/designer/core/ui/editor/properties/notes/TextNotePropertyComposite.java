@@ -16,6 +16,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Composite;
@@ -82,6 +83,23 @@ public class TextNotePropertyComposite extends AbstractNotePropertyComposite {
                     getCommandStack().execute(command);
                 }
             }
+        });
+
+        text.addKeyListener(new KeyListener() {
+
+            public void keyPressed(org.eclipse.swt.events.KeyEvent e) {
+                // TODO Auto-generated method stub
+
+            }
+
+            public void keyReleased(org.eclipse.swt.events.KeyEvent e) {
+                // TODO Auto-generated method stub
+                if (!text.getText().equals(note.getText())) {
+                    ChangeNoteTextCommand command = new ChangeNoteTextCommand(note, text.getText());
+                    getCommandStack().execute(command);
+                }
+            }
+
         });
     }
 
