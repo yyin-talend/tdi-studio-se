@@ -11,8 +11,10 @@ imports="
     org.talend.designer.codegen.config.CodeGeneratorArgument
     org.talend.designer.runprocess.ProcessorUtilities
     org.talend.designer.runprocess.ProcessorException
+    org.talend.core.model.process.IContextParameter
     java.util.Map
     java.util.List
+    java.util.ArrayList
 "
 %>
 <%
@@ -35,6 +37,8 @@ imports="
 	
 	boolean isRunInMultiThread = codeGenArgument.getIsRunInMultiThread();
 	
+	boolean transmitWholeContext = ElementParameterParser.getValue(node, "__TRANSMIT_WHOLE_CONTEXT__").equals("true");
+	
     List<Map<String, String>> contextParams = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__CONTEXTPARAMS__");
     String process = ElementParameterParser.getValue(node,"__PROCESS_TYPE_PROCESS__");
     String context = ElementParameterParser.getValue(node,"__PROCESS_TYPE_CONTEXT__");
@@ -55,6 +59,20 @@ imports="
     
     
 StringBuilder contextStr = new StringBuilder();
+
+if(transmitWholeContext){
+	List<IContextParameter> params = new ArrayList<IContextParameter>();
+	params = node.getProcess().getContextManager().getDefaultContext().getContextParameterList();
+    for (IContextParameter ctxParam :params)
+    {    
+        contextStr.append(",\"--context_param ");
+        contextStr.append(ctxParam.getName());
+    
+        contextStr.append("=\"+");
+        contextStr.append("context.getProperty(\""+ctxParam.getName()+"\")");
+    }
+}
+
 for (int i=0; i<contextParams.size(); i++) {
     Map<String, String> contextParam = contextParams.get(i);
     String name = contextParam.get("PARAM_NAME_COLUMN");
