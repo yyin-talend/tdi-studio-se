@@ -57,6 +57,7 @@ public class JavaJobScriptsExportWizardPage extends JobScriptsExportWizardPage {
      * 
      * @see org.talend.repository.ui.wizards.exportjob.JobScriptsExportWizardPage#createJobScriptsManager()
      */
+    @Override
     public JobScriptsManager createJobScriptsManager() {
         return new JobJavaScriptsManager();
     }
@@ -80,6 +81,7 @@ public class JavaJobScriptsExportWizardPage extends JobScriptsExportWizardPage {
      * 
      * @see org.talend.repository.ui.wizards.exportjob.JobScriptsExportWizardPage#getExportResources()
      */
+    @Override
     public List<ExportFileResource> getExportResources() {
         final List<ExportFileResource>[] resourcesToExportxx = new List[1];
 
@@ -95,6 +97,7 @@ public class JavaJobScriptsExportWizardPage extends JobScriptsExportWizardPage {
     /**
      * Hook method for saving widget values for restoration by the next instance of this class.
      */
+    @Override
     protected void internalSaveWidgetValues() {
         // update directory names history
         IDialogSettings settings = getDialogSettings();
@@ -122,23 +125,20 @@ public class JavaJobScriptsExportWizardPage extends JobScriptsExportWizardPage {
      * Hook method for restoring widget values to the values that they held last time this wizard was used to
      * completion.
      */
+    @Override
     protected void restoreWidgetValues() {
         IDialogSettings settings = getDialogSettings();
-        boolean destinationValid = false;
         if (settings != null) {
             String[] directoryNames = settings.getArray(STORE_DESTINATION_NAMES_ID);
-            if (directoryNames != null) {
-                // destination
+            if (directoryNames != null && directoryNames.length > 0) {
                 setDestinationValue(directoryNames[0]);
                 for (int i = 0; i < directoryNames.length; i++) {
                     addDestinationItem(directoryNames[i]);
                 }
-                destinationValid = true;
-            }
-
-            if (directoryNames == null || !destinationValid) {
+            }else{
                 setDefaultDestination();
             }
+
             shellLauncherButton.setSelection(settings.getBoolean(STORE_SHELL_LAUNCHER_ID));
             systemRoutineButton.setSelection(settings.getBoolean(STORE_SYSTEM_ROUTINE_ID));
             userRoutineButton.setSelection(settings.getBoolean(STORE_USER_ROUTINE_ID));
