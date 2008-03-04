@@ -107,6 +107,7 @@ public class OpenDocumentationAction extends AContextualAction {
             }
         } else {
             ExtractDocumentationAction extractAction = new ExtractDocumentationAction();
+            extractAction.setWorkbenchPart(getWorkbenchPart());
             extractAction.run();
         }
     }
