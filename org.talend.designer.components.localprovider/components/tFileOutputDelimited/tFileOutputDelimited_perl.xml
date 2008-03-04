@@ -95,6 +95,15 @@
   
   <ADVANCED_PARAMETERS>
     <PARAMETER
+      NAME="ENCODING"
+      FIELD="ENCODING_TYPE"
+      NUM_ROW="1"
+      REPOSITORY_VALUE="ENCODING"
+    >
+      <DEFAULT/>
+    </PARAMETER>
+
+    <PARAMETER
       NAME="CSV_OPTION"
       FIELD="CHECK"
       REQUIRED="true"

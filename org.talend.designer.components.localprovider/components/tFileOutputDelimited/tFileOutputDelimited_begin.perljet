@@ -54,6 +54,11 @@ String textEnclosure = ElementParameterParser.getValue(
     "__TEXT_ENCLOSURE__"
 );
 
+String encoding = ElementParameterParser.getValue(
+    node,
+    "__ENCODING__"
+);
+
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
     IMetadataTable metadata = metadatas.get(0);
@@ -111,8 +116,17 @@ my $output_FH_<%=cid %> = new FileHandle;
         if (append) {
             writeMode = ">>";
         }
+
+        String encodingMode = "";
+        if (!encoding.equals("")) {
+            encodingMode = ":encoding('." + encoding + ".')";
+        }
 %>
-open($output_FH_<%=cid %>, '<%=writeMode%>', $desc_<%=cid %>{filename})
+open(
+    $output_FH_<%=cid %>,
+    '<%=writeMode%><%=encodingMode%>',
+    $desc_<%=cid %>{filename}
+)
     or die '[<%=cid%>] cannot open file "'.$desc_<%=cid %>{filename}.'"';
 
 <%

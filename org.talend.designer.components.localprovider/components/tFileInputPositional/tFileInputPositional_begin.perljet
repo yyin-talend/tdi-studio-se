@@ -1,29 +1,86 @@
 <%@ jet 
-	imports="
-		org.talend.core.model.process.INode 
-		org.talend.core.model.process.ElementParameterParser 
-		org.talend.core.model.metadata.IMetadataTable 
-		org.talend.core.model.metadata.IMetadataColumn 
-		org.talend.designer.codegen.config.CodeGeneratorArgument
-		java.util.List
-	" 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser 
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.metadata.IMetadataColumn 
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+" 
 %>
 
 <%
-	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
-	INode node = (INode)codeGenArgument.getArgument();
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 
 boolean trimAll = ElementParameterParser.getValue(
     node,
     "__TRIMALL__"
 ).equals("true");
+
+String encoding = ElementParameterParser.getValue(
+    node,
+    "__ENCODING__"
+);
+
+String filename = ElementParameterParser.getValue(
+    node,
+    "__FILENAME__"
+);
+
+String rowSeparator = ElementParameterParser.getValue(
+    node,
+    "__ROWSEPARATOR__"
+);
+
+String header = ElementParameterParser.getValue(
+    node,
+    "__HEADER__"
+);
+// we want to know if the user has set an header.
+//
+// because of backward compatibility, we compare the value with the empty
+// string and with 0. It was the default value until branch 2.3.
+boolean hasHeader = header.equals("") || header.equals("0") ? false : true;
+if (!hasHeader) {
+    header = "undef";
+}
+
+String footer = ElementParameterParser.getValue(
+    node,
+    "__FOOTER__"
+);
+// we want to know if the user has set a footer.
+//
+// because of backward compatibility, we compare the value with the empty
+// string and with 0. It was the default value until branch 2.3.
+boolean hasFooter = footer.equals("") || footer.equals("0") ? false : true;
+if (!hasFooter) {
+    footer = "undef";
+}
+
+String limit = ElementParameterParser.getValue(
+    node,
+    "__LIMIT__"
+);
+boolean hasLimit = limit.equals("") ? false : true;
+if (!hasLimit) {
+    limit = "undef";
+}
+
+boolean removeEmptyRow = ElementParameterParser.getValue(
+    node,
+    "__REMOVE_EMPTY_ROW__"
+).equals("true");
+
+String pattern = ElementParameterParser.getValue(node, "__PATTERN__");
 	
-	List<IMetadataTable> metadatas = node.getMetadataList();
-	if ((metadatas!=null)&&(metadatas.size()>0)) {
-		IMetadataTable metadata = metadatas.get(0);
-		if (metadata!=null) {
-            %>
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+%>
 
 use FileHandle;
 use List::Util qw/min/;
@@ -36,62 +93,53 @@ use Text::Trim;
   }
 %>
 
+my @lengths_<%=cid%> = split ',', <%=pattern%>;
+
 my %desc_<%=cid%> = (
-    filename      => <%=ElementParameterParser.getValue(node, "__FILENAME__") %>,
-    row_separator => <%=ElementParameterParser.getValue(node, "__ROWSEPARATOR__") %>,
-    header        => <%=ElementParameterParser.getValue(node, "__HEADER__") %>,
-    footer        => <% String myFooter = ElementParameterParser.getValue(node, "__FOOTER__"); if (myFooter.equals("")) myFooter = null; %><%=myFooter%>,
-    limit         => <% String myLimit = ElementParameterParser.getValue(node, "__LIMIT__"); if (myLimit.equals("")) myLimit = null; %><%=myLimit%>,
+    filename      => <%=filename %>,
     schema        => [
-    <%
-		for (IMetadataColumn column: metadata.getListColumns()) {
-    %>
+<%
+        for (IMetadataColumn column: metadata.getListColumns()) {
+%>
     	{
             name    => '<%=column.getLabel() %>',
-            key     => <%=column.isKey() %>,
-            type    => '<%=column.getType() %>',
-            len     => <%=column.getLength() %>,
-            null    => <%=column.isNullable() %>,
-            default => '<%=column.getDefault() %>',
-            comment => '<%=column.getComment() %>',
-		},
-	<%
-		}
-    %>
+	},
+<%
+	}
+%>
     ]
 );
 
-<%
-String pattern = ElementParameterParser.getValue(node, "__PATTERN__");
-%>
-
-my $pattern_<%=cid%> = join(
-    ' ',
-    map {'A'.$_} split(
-        /,/,
-        <%=pattern%>
-    )
-);
-
-$/ = $desc_<%=cid%>{row_separator};
+$/ = <%=rowSeparator%>;
 
 my $input_FH_<%=cid%> = new FileHandle;
-open($input_FH_<%=cid%>, '<', $desc_<%=cid%>{filename})
-    or die 'cannot open file "' . $desc_<%=cid%>{filename} . '"';
+
+open(
+    $input_FH_<%=cid %>,
+<%
+        if (!encoding.equals("")) {
+%>
+    '<:encoding('.<%=encoding%>.')',
+<%
+        }
+        else {
+%>
+    '<',
+<%
+        }
+%>
+    $desc_<%=cid %>{filename}
+)
+    or die 'cannot open file "' . $desc_<%=cid %>{filename} . '"';
 
 <%
-  if ((!ElementParameterParser.getValue(node, "__HEADER__").equals(""))
-      && (!ElementParameterParser.getValue(node, "__HEADER__").equals("0")))
-  {
+        if (hasHeader) {
 %>
 
 # move to the first useful line
-if ($desc_<%=cid%>{header} > 0) {
-    for (1..$desc_<%=cid%>{header}) {
-        my $useless_line_<%=cid%> = <$input_FH_<%=cid%>>;
-    }
+for (1..<%=header%>) {
+    my $useless_line_<%=cid %> = <$input_FH_<%=cid %>>;
 }
-
 <%
   }
 %>
@@ -99,45 +147,46 @@ if ($desc_<%=cid%>{header} > 0) {
 $nb_line_<%=cid%> = 0;
 
 <%
-  if (((!ElementParameterParser.getValue(node, "__FOOTER__").equals(""))
-        && (!ElementParameterParser.getValue(node, "__FOOTER__").equals("0")))
-      || (!ElementParameterParser.getValue(node, "__LIMIT__").equals("")))
-  {
+        if (hasFooter || hasLimit) {
 %>
 
 # as we have a limit and/or a footer, we need to know the number of rows in
 # the input file
-my $total_line_<%=cid%> = tFileRowCount(
-    filename => $desc_<%=cid%>{filename},
-    rowseparator => $desc_<%=cid%>{row_separator},
+my $total_line_<%=cid %> = tFileRowCount(
+    filename => $desc_<%=cid %>{filename},
+    rowseparator => <%=rowSeparator%>,
     buffersize => 4096,
 );
 
 my ($first_row_<%=cid%>, $last_row_<%=cid%>) = getFirstAndLastRowNumber(
-    header  => $desc_<%=cid%>{header},
-    footer  => $desc_<%=cid%>{footer},
-    limit   => $desc_<%=cid%>{limit},
+    header  => <%=header%>,
+    footer  => <%=footer%>,
+<%
+            if (hasLimit) {
+%>
+    limit   => <%=limit%>,
+<%
+            }
+%>
     total   => $total_line_<%=cid%>,
 );
 
-for ($first_row_<%=cid%> .. $last_row_<%=cid%>) {
-    my $_<%=cid%> = <$input_FH_<%=cid%>>;
+for ($first_row_<%=cid %> .. $last_row_<%=cid %>) {
+    my $_<%=cid %> = <$input_FH_<%=cid %>>;
 <%
-  }
-  else
-  {
+        }
+        else {
 %>
 
-while (my $_<%=cid%> = <$input_FH_<%=cid%>>) {
+while (my $_<%=cid %> = <$input_FH_<%=cid %>>) {
 
 <%
-  }
+        }
 %>
-
     chomp $_<%=cid%>;
 
 <%
-    if (ElementParameterParser.getValue(node, "__REMOVE_EMPTY_ROW__").equals("true")) {
+    if (removeEmptyRow) {
 %>
     next if ($_<%=cid%> eq '');
 <%
@@ -147,10 +196,15 @@ while (my $_<%=cid%> = <$input_FH_<%=cid%>>) {
     # increase number of line really splitted
     $nb_line_<%=cid%>++;
 
-    my @<%=cid%> = unpack(
-        $pattern_<%=cid%>,
-        $_<%=cid%>
-    );
+    my @<%=cid%>;
+    {
+        my $pos = 0;
+
+        foreach my $len (@lengths_<%=cid%>) {
+            push @<%=cid%>, substr($_<%=cid%>, $pos, $len);
+            $pos+= $len;
+        }
+    }
 <%
       if (trimAll) {
 %>

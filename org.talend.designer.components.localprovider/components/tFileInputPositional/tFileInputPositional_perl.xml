@@ -70,7 +70,7 @@
       NUM_ROW="4"
       REPOSITORY_VALUE="HEADER"
     >
-      <DEFAULT>0</DEFAULT>
+      <DEFAULT/>
     </PARAMETER>
     
     <PARAMETER
@@ -79,7 +79,7 @@
       NUM_ROW="4"
       REPOSITORY_VALUE="FOOTER"
     >
-      <DEFAULT>0</DEFAULT>
+      <DEFAULT/>
     </PARAMETER>
     
     <PARAMETER
@@ -126,10 +126,9 @@
       NAME="ENCODING"
       FIELD="ENCODING_TYPE"
       NUM_ROW="6"
-      REQUIRED="true"
       REPOSITORY_VALUE="ENCODING"
     >
-      <DEFAULT>'ISO-8859-15'</DEFAULT>
+      <DEFAULT/>
     </PARAMETER>
 
   </ADVANCED_PARAMETERS>
