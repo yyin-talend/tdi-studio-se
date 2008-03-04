@@ -151,7 +151,7 @@ public class DocumentationPage extends PropertiesWizardPage {
         originalFilenameText.setText(getDocumentation().getDocOriginalName());
         // if (nameText.getText().compareTo("") == 0) {
         if (!isNameModifiedByUser() && !isUpdate()) {
-            nameText.setText(getDocumentation().getDocOriginalName());
+            nameText.setText(checkSpaceName(getDocumentation().getDocOriginalName()));
             if (!isUpdate()) {
                 setNameModifiedByUser(false);
             }
@@ -196,5 +196,19 @@ public class DocumentationPage extends PropertiesWizardPage {
 
     public ERepositoryObjectType getRepositoryObjectType() {
         return ERepositoryObjectType.DOCUMENTATION;
+    }
+
+    /**
+     * 
+     * ggu Comment method "checkSpaceName".
+     * 
+     * replace the "space" character
+     */
+    private String checkSpaceName(final String name) {
+        if (name == null) {
+            return ""; //$NON-NLS-1$
+        }
+        return name.trim().replaceAll(" ", "_"); //$NON-NLS-1$ //$NON-NLS-2$
+
     }
 }

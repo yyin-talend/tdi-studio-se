@@ -706,6 +706,13 @@
             id="org.talend.repository.migration.RenametFor"
             name="Rename tFor to tLoop">
       </projecttask>
+      <projecttask
+            beforeLogon="false"
+            class="org.talend.repository.model.migration.ReplaceSpaceCharForItemNameMigrationTask"
+            description="Replace space character for repository items name"
+            id="org.talend.repository.migration.ReplaceSpaceCharForItemNameMigrationTask"
+            name="Replace space character for repository items name">
+      </projecttask>
    </extension>
    <extension
          point="org.talend.core.librariesNeeded">
