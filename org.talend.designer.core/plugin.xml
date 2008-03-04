@@ -454,6 +454,11 @@
            mapping="RADIO"
            name="Radio">
      </generator>
+     <generator
+           class="org.talend.designer.core.ui.editor.properties.controllers.generator.GuessSchemaGenerator"
+           mapping="GUESS_SCHEMA"
+           name="Guess Schema">
+     </generator>
    </extension>
    
    <extension
