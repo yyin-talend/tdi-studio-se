@@ -13,6 +13,7 @@
 package org.talend.repository.ui.views;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -80,6 +81,8 @@ import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.migration.IMigrationToolService;
+import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.repository.IRepositoryChangedListener;
@@ -89,6 +92,7 @@ import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
+import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.model.actions.MoveObjectAction;
 import org.talend.repository.plugin.integration.SwitchProjectAction;
 import org.talend.repository.ui.actions.ActionsHelper;
@@ -147,12 +151,10 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
     }
 
     public static IRepositoryView show() {
-        IViewPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(
-                IRepositoryView.VIEW_ID);
+        IViewPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(IRepositoryView.VIEW_ID);
         if (part == null) {
             try {
-                part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(
-                        IRepositoryView.VIEW_ID);
+                part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(IRepositoryView.VIEW_ID);
             } catch (Exception e) {
                 ExceptionHandler.process(e);
             }
@@ -210,16 +212,16 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
 
             public void focusGained(FocusEvent e) {
                 log.trace("Repository gain focus"); //$NON-NLS-1$
-                IContextService contextService = (IContextService) RepositoryPlugin.getDefault().getWorkbench()
-                        .getAdapter(IContextService.class);
+                IContextService contextService = (IContextService) RepositoryPlugin.getDefault().getWorkbench().getAdapter(
+                        IContextService.class);
                 ca = contextService.activateContext("talend.repository"); //$NON-NLS-1$
             }
 
             public void focusLost(FocusEvent e) {
                 log.trace("Repository lost focus"); //$NON-NLS-1$
                 if (ca != null) {
-                    IContextService contextService = (IContextService) RepositoryPlugin.getDefault().getWorkbench()
-                            .getAdapter(IContextService.class);
+                    IContextService contextService = (IContextService) RepositoryPlugin.getDefault().getWorkbench().getAdapter(
+                            IContextService.class);
                     contextService.deactivateContext(ca);
                 }
             }
@@ -528,6 +530,47 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
      */
     public RepositoryNode getRoot() {
         return root;
+    }
+
+    public List<IRepositoryObject> getAll(ERepositoryObjectType type) {
+        // find the system folder
+        RepositoryNode container = findContainer(root,type);
+       
+        if (container == null) {
+            throw new IllegalArgumentException(type + " not found");
+        }
+
+        List<IRepositoryObject> result = new ArrayList<IRepositoryObject>();
+        addElement(result, type, container);
+        return result;
+    }
+
+    // see RepositoryContentProvider.initialize();
+    private RepositoryNode findContainer(RepositoryNode node, ERepositoryObjectType type) {
+        if (node.getType() == ENodeType.SYSTEM_FOLDER||node.getType() == ENodeType.STABLE_SYSTEM_FOLDER) {
+            if (type == node.getProperties(EProperties.CONTENT_TYPE)) {
+                return node;
+            }
+            for (RepositoryNode repositoryNode : node.getChildren()) {
+                RepositoryNode result = findContainer(repositoryNode, type);
+                if (result != null) {
+                    return result;
+                }
+            }
+        }
+        return null;
+
+    }
+
+    private void addElement(List<IRepositoryObject> result, ERepositoryObjectType type, RepositoryNode node) {
+        if (node.getType() == ENodeType.REPOSITORY_ELEMENT && node.getProperties(EProperties.CONTENT_TYPE) == type) {
+            result.add(node.getObject());
+        } else {
+            for (RepositoryNode child : node.getChildren()) {
+                addElement(result, type, child);
+            }
+        }
+
     }
 
     /*
