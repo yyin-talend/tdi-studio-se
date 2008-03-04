@@ -26,9 +26,10 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         		String split = ElementParameterParser.getValue(node, "__SPLIT__");
         		String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
         		String fileName = ElementParameterParser.getValue(node, "__FILENAME__");
+        		
+        		String mode = ElementParameterParser.getValue(node, "__GENERATION_MODE__");
 %>
 int nb_line_<%=cid%> = 0;
-org.dom4j.Document doc_<%=cid%>  = org.dom4j.DocumentHelper.createDocument();
 boolean needRoot_<%=cid%>  = true;
 String fileName_<%=cid%> = <%=fileName%>;
 String file_<%=cid%> = fileName_<%=cid%>.substring(0,fileName_<%=cid%>.lastIndexOf(".xml"));
@@ -48,6 +49,12 @@ int currentFileCount_<%=cid%> = 0;
 fileName_<%=cid%> = file_<%=cid%>+"0.xml";
 <%
 				}
+%>
+java.util.List<java.util.List<String>> groupbyList_<%=cid%> = new java.util.ArrayList<java.util.List<String>>();
+java.util.Map<String,String> valueMap_<%=cid%> = new java.util.HashMap<String,String>();
+<%
+// *** generation mode init ***
+				if(mode.equals("Dom4j")){
 %>
 
 class NestXMLTool_<%=cid%>{
@@ -75,13 +82,21 @@ class NestXMLTool_<%=cid%>{
 NestXMLTool_<%=cid%> nestXMLTool_<%=cid%> = new NestXMLTool_<%=cid%>();
 
 // sort group root element for judgement of group
-java.util.List<org.dom4j.Element> groupRootList_<%=cid%> = new java.util.ArrayList<org.dom4j.Element>();
-
+java.util.List<org.dom4j.Element> groupElementList_<%=cid%> = new java.util.ArrayList<org.dom4j.Element>();
 org.dom4j.Element root4Group_<%=cid%> = null;
+org.dom4j.Document doc_<%=cid%>  = org.dom4j.DocumentHelper.createDocument();
 
 org.dom4j.io.OutputFormat format_<%=cid%> = org.dom4j.io.OutputFormat.createPrettyPrint();
 format_<%=cid%>.setEncoding(<%=encoding%>);
 <%
+				}else if(mode.equals("Null")){
+%>
+java.io.BufferedWriter out_<%=cid%> = new java.io.BufferedWriter(
+	new java.io.OutputStreamWriter(new java.io.FileOutputStream(fileName_<%=cid%>), <%=encoding%>));
+out_<%=cid%>.write("<?xml version=\"1.0\" encoding=\""+<%=encoding%>+"\"?>");
+out_<%=cid%>.newLine();
+<%
+				}
 			}
 		}
 	}
