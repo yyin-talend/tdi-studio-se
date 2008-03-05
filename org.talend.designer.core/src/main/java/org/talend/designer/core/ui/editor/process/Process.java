@@ -1878,7 +1878,7 @@ public class Process extends Element implements IProcess2 {
     }
 
     public void removeUniqueNodeName(final String uniqueName) {
-        if (!uniqueName.equals("")) { //$NON-NLS-1$
+        if (uniqueName != null && !uniqueName.equals("")) { //$NON-NLS-1$
             uniqueNodeNameList.remove(uniqueName);
         }
     }

@@ -196,7 +196,7 @@ public class Node extends Element implements INode {
         this.oldcomponent = component;
         process = ActiveProcessTracker.getCurrentProcess();
         currentStatus = 0;
-        init(component);
+        init(component, false);
         IElementParameter param = getElementParameter(EParameterName.REPOSITORY_ALLOW_AUTO_SWITCH.getName());
         if (param != null) {
             param.setValue(Boolean.TRUE);
@@ -206,10 +206,10 @@ public class Node extends Element implements INode {
     public Node(IComponent component, Process process) {
         this.oldcomponent = component;
         this.process = process;
-        init(component);
+        init(component, false);
     }
 
-    private void init(IComponent newComponent) {
+    private void init(IComponent newComponent, boolean isReload) {
         this.component = newComponent;
         this.label = component.getTranslatedName();
         this.componentName = this.label;
@@ -243,7 +243,6 @@ public class Node extends Element implements INode {
             setElementParameters(oldElementParameters);
         } else {
             setElementParameters(component.createElementParameters(this));
-            oldElementParameters = this.getElementParameters();
         }
 
         String uniqueName2 = null;
@@ -275,15 +274,10 @@ public class Node extends Element implements INode {
             metadataList.add(table);
         }
         // }
-        int index = process.getGraphicalNodes().indexOf(this);
         listReturn = this.component.createReturns();
         if (uniqueName2 != null && !"".equals(uniqueName2)) {
             setPropertyValue(EParameterName.UNIQUE_NAME.getName(), uniqueName2);
-        } else if (index != -1) {
-            // uniqueName2 = process.getGeneratingNodes().get(index).getUniqueName();
-            uniqueName2 = process.getGraphicalNodes().get(index).getUniqueName();
-
-        } else {
+        } else if (!isReload) {
             uniqueName2 = ((Process) getProcess()).generateUniqueNodeName(this);
             ((Process) getProcess()).addUniqueNodeName(uniqueName2);
         }
@@ -2191,6 +2185,8 @@ public class Node extends Element implements INode {
         return this.connectionName;
     }
 
+    private String oldUniqueName;
+
     /*
      * (non-Javadoc)
      * 
@@ -2198,14 +2194,16 @@ public class Node extends Element implements INode {
      * java.util.Map)
      */
     public void reloadComponent(IComponent component, Map<String, Object> parameters) {
-        init(component);
-        Object obj = parameters.get(INode.RELOAD_PARAMETER_KEY_METADATA_LIST);
+        Object obj = parameters.get(INode.RELAOD_PARAMETER_ELEMENT_PARAMETERS);
+        if (obj != null) {
+            oldElementParameters = (List<? extends IElementParameter>) obj;
+        }
+
+        init(component, true);
+
+        obj = parameters.get(INode.RELOAD_PARAMETER_METADATA_LIST);
         if (obj != null) {
             setMetadataList((List<IMetadataTable>) obj);
-        }
-        obj = parameters.get(INode.RELAOD_PARAMETER_KEY_ELEMENT_PARAMETERS);
-        if (obj != null) {
-            setElementParameters((List<? extends IElementParameter>) obj);
         }
 
         obj = parameters.get(INode.RELOAD_PARAMETER_EXTERNAL_BYTES_DATA);

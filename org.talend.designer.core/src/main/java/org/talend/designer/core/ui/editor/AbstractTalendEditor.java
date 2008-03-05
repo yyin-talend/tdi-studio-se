@@ -244,8 +244,8 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
                 if (node.getExternalData() != null) {
                     parameters.put(INode.RELOAD_PARAMETER_EXTERNAL_BYTES_DATA, node.getExternalBytesData());
                 }
-                parameters.put(INode.RELOAD_PARAMETER_KEY_METADATA_LIST, node.getMetadataList());
-                parameters.put(INode.RELAOD_PARAMETER_KEY_ELEMENT_PARAMETERS, node.getElementParameters());
+                parameters.put(INode.RELOAD_PARAMETER_METADATA_LIST, node.getMetadataList());
+                parameters.put(INode.RELAOD_PARAMETER_ELEMENT_PARAMETERS, node.getElementParameters());
                 node.reloadComponent(newComponent, parameters);
             }
         } else if (propertyName.equals(ComponentUtilities.JOBLET_NAME_CHANGED)) {
