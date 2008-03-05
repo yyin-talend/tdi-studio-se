@@ -14,10 +14,10 @@ CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 
-String range = ElementParameterParser.getValue(node,"__RANGE__").replaceAll("\n",",");
+String range = ElementParameterParser.getValue(node,"__RANGE__").replaceAll("\n",",").replaceAll("'","");
 
 %>
-String[] range<%=cid%> = <%=range%>.split(",");
+String[] range<%=cid%> = "<%=range%>".split(",");
 
 java.util.Set rangeSet<%=cid%> = new java.util.HashSet();
 
