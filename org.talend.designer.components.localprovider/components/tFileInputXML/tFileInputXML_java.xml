@@ -68,6 +68,13 @@
 			<DEFAULT>'.'</DEFAULT>
 		</PARAMETER>
 		
+		<PARAMETER NAME="GENERATION_MODE" FIELD="CLOSED_LIST" NUM_ROW="40">
+	      <ITEMS DEFAULT="DOM4J">
+	        <ITEM NAME="DOM4J" VALUE="Dom4j" />
+	        <ITEM NAME="XERCES" VALUE="Xerces"/>
+	      </ITEMS>
+	    </PARAMETER>  
+		
 		<PARAMETER NAME="ENCODING" FIELD="ENCODING_TYPE" NUM_ROW="30"
 			REQUIRED="true" REPOSITORY_VALUE="ENCODING">
 			<DEFAULT>"ISO-8859-15"</DEFAULT>
@@ -76,6 +83,10 @@
 
 	<CODEGENERATION>
 		<IMPORTS>
+			<IMPORT NAME="Java_DOM4J1.6" MODULE="dom4j-1.6.1.jar"
+				REQUIRED="true" />
+			<IMPORT NAME="Java_JAXEN1.1" MODULE="jaxen-1.1.1.jar"
+				REQUIRED="true" />
 			<IMPORT NAME="Java_xercesImpl" MODULE="xercesImpl.jar"
 				REQUIRED="true" />
 		</IMPORTS>

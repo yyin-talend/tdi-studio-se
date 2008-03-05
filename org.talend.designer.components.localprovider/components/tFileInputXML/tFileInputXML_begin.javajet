@@ -34,9 +34,14 @@ String advancedSeparatorStr = ElementParameterParser.getValue(node, "__ADVANCED_
 boolean advancedSeparator = (advancedSeparatorStr!=null&&!advancedSeparatorStr.equals(""))?advancedSeparatorStr.equals("true"):false;
 String thousandsSeparator = ElementParameterParser.getValue(node, "__THOUSANDS_SEPARATOR__");
 String decimalSeparator = ElementParameterParser.getValue(node, "__DECIMAL_SEPARATOR__");
+
+String mode = ElementParameterParser.getValue(node, "__GENERATION_MODE__");
 %>
 int nb_line_<%=cid%> = 0;
-
+<%
+// *** Xerces *** //
+if(mode.equals("Xerces")){
+%>
 class TalendPrefixResolver_<%=cid%> implements com.sun.org.apache.xml.internal.utils.PrefixResolver {
 
     private java.util.Map<String, String> map = new java.util.HashMap<String, String>();
@@ -164,6 +169,93 @@ org.w3c.dom.Node node_<%=cid%>  = null;
 String str_<%=cid%> = null;
 for (int i_<%=cid %> = 0; i_<%=cid %> < nodelist_<%=cid %>.getLength(); i_<%=cid %>++) {
 	org.w3c.dom.Node tmp_<%=cid %> = nodelist_<%=cid %>.item(i_<%=cid %>);
+<%
+// *** Dom4j *** //
+}else if(mode.equals("Dom4j")){
+%>
+class NameSpaceTool_<%=cid%> {
+
+    public java.util.HashMap<String, String> xmlNameSpaceMap = new java.util.HashMap<String, String>();
+
+	private boolean hasDefaultNS = false;
+
+    public void countNSMap(org.dom4j.Element el) {
+
+        for (org.dom4j.Namespace ns : (java.util.List<org.dom4j.Namespace>) el.declaredNamespaces()) {
+            if (ns.getPrefix().trim().length() == 0) {
+                xmlNameSpaceMap.put("pre", ns.getURI());
+                hasDefaultNS = true;
+            } else {
+                xmlNameSpaceMap.put(ns.getPrefix(), ns.getURI());
+            }
+
+        }
+        for (org.dom4j.Element e : (java.util.List<org.dom4j.Element>) el.elements()) {
+            countNSMap(e);
+        }
+    }
+    
+    public String addDefaultNSPrefix(String path) {
+        if (hasDefaultNS) {
+            StringBuilder newPath = new StringBuilder();
+            for (String tmp : path.split("/")) {
+                if (newPath.length() > 0) {
+                    newPath.append("/");
+                }
+                if (tmp.length() > 0 && tmp.indexOf(":") == -1 && tmp.indexOf(".") == -1 && tmp.indexOf("@") == -1) {
+                    newPath.append("pre:").append(tmp);
+                } else {
+                    newPath.append(tmp);
+                }
+            }
+            return newPath.toString();
+        }
+        return path;
+    }
+}
+
+class XML_API_<%=cid%>{
+	public boolean isDefNull(org.dom4j.Node node) throws javax.xml.transform.TransformerException {
+        if (node != null && node instanceof org.dom4j.Element) {
+        	org.dom4j.Attribute attri = ((org.dom4j.Element)node).attribute("xsi:nil");
+        	if(attri != null && attri.getText().equals("true")){
+            	return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isMissing(org.dom4j.Node node) throws javax.xml.transform.TransformerException {
+        return node == null ? true : false;
+    }
+
+    public boolean isEmpty(org.dom4j.Node node) throws javax.xml.transform.TransformerException {
+        if (node != null) {
+            return node.getText().length() == 0;
+        }
+        return false;
+    }
+}
+
+org.dom4j.io.SAXReader reader_<%=cid%> = new org.dom4j.io.SAXReader();
+org.dom4j.Document doc_<%=cid%>= reader_<%=cid%>.read(new java.io.FileInputStream(<%=filename %>));
+
+NameSpaceTool_<%=cid%> nsTool_<%=cid%> = new NameSpaceTool_<%=cid%>();
+nsTool_<%=cid%>.countNSMap(doc_<%=cid%>.getRootElement());
+java.util.HashMap<String,String> xmlNameSpaceMap_<%=cid%> = nsTool_<%=cid%>.xmlNameSpaceMap;  
+
+
+org.dom4j.XPath x_<%=cid%> = doc_<%=cid%>.createXPath(nsTool_<%=cid%>.addDefaultNSPrefix(<%=loopQuery%>));  
+x_<%=cid%>.setNamespaceURIs(xmlNameSpaceMap_<%=cid%>); 
+
+java.util.List<org.dom4j.tree.AbstractNode> nodeList_<%=cid%> = (java.util.List<org.dom4j.tree.AbstractNode>)x_<%=cid%>.selectNodes(doc_<%=cid%>);	
+XML_API_<%=cid%> xml_api_<%=cid%> = new XML_API_<%=cid%>();
+String str_<%=cid %> = "";
+org.dom4j.Node node_<%=cid%> = null;
+for (org.dom4j.tree.AbstractNode temp_<%=cid%>: nodeList_<%=cid%>) {
+<%
+}
+%>
 	nb_line_<%=cid%>++;
 <%
 List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
@@ -179,9 +271,19 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				firstConnName = conn.getName();
 				for (int i=0;i<mapping.size();i++) { 
 					String query = mapping.get(i).get("QUERY");
+					if(mode.equals("Xerces")){
 %>
 	node_<%=cid%> = xml_api_<%=cid%>.getSingleNode(tmp_<%=cid %>,<%=query%>);
+	str_<%=cid %> = node_<%=cid%>.getTextContent();
 <%
+					}else if(mode.equals("Dom4j")){
+%>
+	org.dom4j.XPath xTmp<%=i%>_<%=cid%> = temp_<%=cid%>.createXPath(nsTool_<%=cid%>.addDefaultNSPrefix(<%=query%>));
+    xTmp<%=i%>_<%=cid%>.setNamespaceURIs(xmlNameSpaceMap_<%=cid%>); 
+    node_<%=cid%> = xTmp<%=i%>_<%=cid%>.selectSingleNode(temp_<%=cid%>);
+    str_<%=cid %> = xTmp<%=i%>_<%=cid%>.valueOf(temp_<%=cid%>);
+<%
+					}
 					for(IMetadataColumn column:columns) {
 						if (mapping.get(i).get("SCHEMA_COLUMN")!=null) {
 							if (column.getLabel().compareTo(mapping.get(i).get("SCHEMA_COLUMN"))==0) {
@@ -192,11 +294,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 								boolean isNotSetDefault = false;
 								String defaultValue=column.getDefault();
 								if(defaultValue!=null){
-									//if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.DATE){
-									//	isNotSetDefault = defaultValue.length()==0||defaultValue.equals("null");
-									//}else{
-										isNotSetDefault = defaultValue.length()==0;
-									//}
+									isNotSetDefault = defaultValue.length()==0;
 								}else{
 									isNotSetDefault=true;
 								}
@@ -218,23 +316,23 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 								}
 								if (javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
 %>
-		<%=conn.getName() %>.<%=column.getLabel() %> = node_<%=cid%>.getTextContent();
+		<%=conn.getName() %>.<%=column.getLabel() %> = str_<%=cid %>;
 <%
 								} else if (javaType == JavaTypesManager.DATE) {
 %>
-		<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(node_<%=cid%>.getTextContent(), <%= patternValue %>);
+		<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(str_<%=cid %>, <%= patternValue %>);
 <%  
 								} else if(javaType == JavaTypesManager.BYTE_ARRAY){ 
 %>							
-		<%=conn.getName() %>.<%=column.getLabel() %> = node_<%=cid%>.getTextContent().getBytes(<%=encoding %>);
+		<%=conn.getName() %>.<%=column.getLabel() %> = str_<%=cid %>.getBytes(<%=encoding %>);
 <%
 								} else if(advancedSeparator && JavaTypesManager.isNumberType(javaType, column.isNullable())) { 
 %>
-		<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(ParserUtils.parseTo_Number(node_<%=cid%>.getTextContent(), <%= thousandsSeparator %>, <%= decimalSeparator %>));
+		<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(ParserUtils.parseTo_Number(str_<%=cid %>, <%= thousandsSeparator %>, <%= decimalSeparator %>));
 <%
 					} else {
 %>
-		<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(node_<%=cid%>.getTextContent());
+		<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(str_<%=cid %>);
 <%
 								}
 %>
