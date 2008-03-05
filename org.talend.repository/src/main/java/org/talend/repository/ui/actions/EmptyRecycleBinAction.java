@@ -17,6 +17,9 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IEditorReference;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.repository.IRepositoryObject;
@@ -73,6 +76,15 @@ public class EmptyRecycleBinAction extends AContextualAction {
                             + Messages.getString("DeleteAction.dialog.message2"); //$NON-NLS-1$
                     confirm = (MessageDialog.openQuestion(new Shell(), title, message));
                     if (confirm) {
+
+                        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+                        for (IEditorReference editors : page.getEditorReferences()) {
+                            String nameInEditor = editors.getName();
+                            if (objToDelete.getLabel().equals(nameInEditor.substring(nameInEditor.indexOf(" ") + 1))) {
+                                page.closeEditor(editors.getEditor(false), false);
+                            }
+                        }
+
                         factory.deleteObjectPhysical(objToDelete);
                     }
                 }
