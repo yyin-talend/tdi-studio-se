@@ -70,6 +70,7 @@ import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.ui.IUIRefresher;
+import org.talend.core.utils.AccessingEmfJob;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ISyntaxCheckableEditor;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
@@ -353,10 +354,10 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         }
 
         if (process.getGeneratingNodes().size() != 0) {
-            Job job = new Job("Generating code") {
+            Job job = new AccessingEmfJob("Generating code") {
 
                 @Override
-                protected IStatus run(IProgressMonitor monitor) {
+                protected IStatus doRun(IProgressMonitor monitor) {
                     ProcessorUtilities.generateCode(process, process.getContextManager().getDefaultContext(), false, false, true,
                             ProcessorUtilities.GENERATE_WITH_FIRST_CHILD);
 

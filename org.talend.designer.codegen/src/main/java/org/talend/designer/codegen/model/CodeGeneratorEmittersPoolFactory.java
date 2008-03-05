@@ -56,6 +56,7 @@ import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentFileNaming;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.temp.ECodePart;
+import org.talend.core.utils.AccessingEmfJob;
 import org.talend.designer.codegen.CodeGeneratorActivator;
 import org.talend.designer.codegen.config.CodeGeneratorProgressMonitor;
 import org.talend.designer.codegen.config.JetBean;
@@ -110,10 +111,10 @@ public final class CodeGeneratorEmittersPoolFactory {
     public static Job initialize() {
         if (!initInProgress) {
             // Code Generator initialisation with Progress Bar
-            Job job = new Job(Messages.getString("CodeGeneratorEmittersPoolFactory.initMessage")) {
+            Job job = new AccessingEmfJob(Messages.getString("CodeGeneratorEmittersPoolFactory.initMessage")) {
 
                 @Override
-                protected IStatus run(IProgressMonitor monitor) {
+                protected IStatus doRun(IProgressMonitor monitor) {
                     try {
                         jetFilesCompileFail.clear();
                         initInProgress = true;
