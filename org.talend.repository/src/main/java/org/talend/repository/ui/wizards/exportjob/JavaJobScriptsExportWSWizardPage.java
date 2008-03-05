@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Font;
@@ -78,6 +79,8 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
     protected Button wsddButton;
 
     protected Button wsdlButton;
+
+    protected Button chkButton;
 
     public static final String STORE_EXPORTTYPE_ID = "JavaJobScriptsExportWizardPage.STORE_EXPORTTYPE_ID"; //$NON-NLS-1$
 
@@ -160,7 +163,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
 
         Composite left = new Composite(optionsGroup, SWT.NONE);
         left.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, true, false));
-        left.setLayout(new GridLayout(2, false));
+        left.setLayout(new GridLayout(3, false));
 
         Label label = new Label(left, SWT.NONE);
         label.setText(Messages.getString("JavaJobScriptsExportWSWizardPage.ExportyLabel")); //$NON-NLS-1$
@@ -176,7 +179,23 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         // exportTypeCombo.add("JBI (JSR 208)");
 
         exportTypeCombo.setText(getCurrentExportType());
+        chkButton = new Button(left, SWT.CHECK);
+        chkButton.setText("Extract the zip file");
+        if (exportTypeCombo.getText().equals(EXPORTTYPE_WSWAR)) {
+            chkButton.setVisible(false);
+            zipOption = null;
 
+        } else {
+            chkButton.setVisible(true);
+            zipOption = String.valueOf(chkButton.getSelection());
+        }
+        chkButton.addSelectionListener(new SelectionAdapter() {
+
+            public void widgetSelected(SelectionEvent e) {
+                chkButton.setSelection(chkButton.getSelection());
+                zipOption = String.valueOf(chkButton.getSelection());
+            }
+        });
         exportTypeCombo.addSelectionListener(new SelectionListener() {
 
             public void widgetDefaultSelected(SelectionEvent e) {
@@ -184,7 +203,6 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             }
 
             public void widgetSelected(SelectionEvent e) {
-
                 destinationNameFieldInnerComposite.dispose();
                 GridLayout layout = new GridLayout();
                 destinationNameFieldInnerComposite = new Composite(destinationNameFieldComposite, SWT.NONE);
@@ -199,6 +217,13 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
                 createOptionsGroupButtons(pageComposite);
 
                 pageComposite.layout();
+                if (exportTypeCombo.getText().equals(EXPORTTYPE_WSWAR)) {
+                    chkButton.setVisible(false);
+                    zipOption = null;
+                } else {
+                    chkButton.setVisible(true);
+                    zipOption = String.valueOf(chkButton.getSelection());
+                }
 
             }
         });
@@ -292,6 +317,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             sourceButton.setSelection(settings.getBoolean(STORE_SOURCE_ID));
             contextButton.setSelection(settings.getBoolean(STORE_CONTEXT_ID));
             applyToChildrenButton.setSelection(settings.getBoolean(APPLY_TO_CHILDREN_ID));
+
         }
 
         if (process.length > 0) {
@@ -363,6 +389,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
                 contextCombo.select(0);
             }
         }
+
     }
 
     @Override
@@ -574,6 +601,14 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
         for (ExportFileResource fileResource : resourcesToExport) {
             String directory = fileResource.getDirectoryName();
             fileResource.setDirectoryName(topFolder + "/" + directory); //$NON-NLS-1$
+        }
+    }
+
+    public String getExtractOption() {
+        if (chkButton != null) {
+            return String.valueOf(chkButton.getSelection());
+        } else {
+            return null;
         }
     }
 }

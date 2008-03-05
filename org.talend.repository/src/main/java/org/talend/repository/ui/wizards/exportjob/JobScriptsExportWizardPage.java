@@ -13,15 +13,22 @@
 package org.talend.repository.ui.wizards.exportjob;
 
 import java.io.File;
+import java.io.FileFilter;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
@@ -29,6 +36,8 @@ import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -50,6 +59,7 @@ import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.documentation.ArchiveFileExportOperationFullPath;
 import org.talend.repository.documentation.ExportFileResource;
+import org.talend.repository.documentation.FileSystemExporterFullPath;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.job.deletion.JobResource;
 import org.talend.repository.job.deletion.JobResourceManager;
@@ -96,6 +106,8 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
     private RepositoryNode[] nodes;
 
+    protected String zipOption;
+
     /**
      * Create an instance of this class.
      * 
@@ -125,6 +137,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         }
 
         process = list.toArray(new ExportFileResource[list.size()]);
+
     }
 
     private void addTreeNode(RepositoryNode node, String path, List<ExportFileResource> list) {
@@ -215,7 +228,7 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         // createButtonsGroup(composite);
 
         createDestinationGroup(composite);
-
+        createUnzipOptionGroup(composite);
         createOptionsGroup(composite);
 
         restoreResourceSpecificationWidgetValues(); // ie.- local
@@ -228,6 +241,29 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         setControl(composite);
         giveFocusToDestination();
 
+    }
+
+    protected void createUnzipOptionGroup(Composite parent) {
+        // options group
+        Group optionsGroup = new Group(parent, SWT.NONE);
+        GridLayout layout = new GridLayout();
+        optionsGroup.setLayout(layout);
+        optionsGroup.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL));
+        optionsGroup.setText("Extract zip file"); //$NON-NLS-1$
+        optionsGroup.setFont(parent.getFont());
+        optionsGroup.setLayout(new GridLayout(1, true));
+        Composite left = new Composite(optionsGroup, SWT.NONE);
+        left.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, true, false));
+        left.setLayout(new GridLayout(3, false));
+        final Button chkButton = new Button(left, SWT.CHECK);
+        chkButton.setText("Extract the zip file");
+        chkButton.addSelectionListener(new SelectionAdapter() {
+
+            public void widgetSelected(SelectionEvent e) {
+                chkButton.setSelection(chkButton.getSelection());
+                zipOption = String.valueOf(chkButton.getSelection());
+            }
+        });
     }
 
     /*
@@ -424,7 +460,6 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
      * @returns boolean
      */
     public boolean finish() {
-
         manager = createJobScriptsManager();
 
         Map<ExportChoice, Boolean> exportChoiceMap = getExportChoiceMap();
@@ -460,6 +495,12 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         // boolean ok =executeExportOperation(new ArchiveFileExportOperationFullPath(process));
         ArchiveFileExportOperationFullPath exporterOperation = getExporterOperation(resourcesToExport);
         boolean ok = executeExportOperation(exporterOperation);
+
+        // if zip optin is true,create unzip file.
+        if (zipOption != null && zipOption.equals("true")) {
+            createUnzipFile(resourcesToExport, exporterOperation.getRegEx());
+
+        }
 
         // path can like name/name
         manager.deleteTempFiles();
@@ -660,6 +701,91 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
      */
     protected String destinationEmptyMessage() {
         return ""; //$NON-NLS-1$
+    }
+
+    private void createUnzipFile(List<ExportFileResource> resourcesToExport, String regex) {
+        String currentUnzipFile = getDestinationValue().replace("/", "\\");
+        currentUnzipFile = currentUnzipFile.substring(0, currentUnzipFile.lastIndexOf("\\"));
+        FileSystemExporterFullPath exporter = null;
+        try {
+            exporter = new FileSystemExporterFullPath(currentUnzipFile);
+        } catch (IOException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
+        for (ExportFileResource fileResource : resourcesToExport) {
+            String rootName = fileResource.getDirectoryName();
+            Set<String> paths = fileResource.getRelativePathList();
+            for (Iterator iter = paths.iterator(); iter.hasNext();) {
+                String relativePath = (String) iter.next();
+                Set<URL> resource = fileResource.getResourcesByRelativePath(relativePath);
+                for (URL url : resource) {
+                    String currentResource = url.getPath();
+                    try {
+                        exportResource(exporter, rootName, relativePath, currentResource, 1, regex);
+                    } catch (InterruptedException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+    }
+
+    public void exportResource(FileSystemExporterFullPath exporter, String rootName, String directory, String exportResource,
+            int leadupDepth, final String regex) throws InterruptedException {
+        final String separator = "/";
+        File file = new File(exportResource);
+        if (file.isFile()) {
+            String destinationName = file.getName();
+            if (!"".equals(directory)) { //$NON-NLS-1$
+                if (directory.endsWith(separator)) {
+                    destinationName = directory + file.getName();
+                } else {
+                    destinationName = directory + separator + file.getName();
+                }
+            }
+            if (rootName != null && !"".equals(destinationName)) { //$NON-NLS-1$
+                destinationName = rootName + separator + destinationName;
+            }
+            try {
+                exporter.write(exportResource, destinationName);
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (CoreException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+
+        } else if (file.isDirectory()) {
+            File[] children = null;
+            try {
+                children = file.listFiles(new FileFilter() {
+
+                    public boolean accept(File pathname) {
+
+                        boolean result = true;
+                        if (pathname != null && pathname.isFile()) {
+                            try {
+
+                                result = Pattern.compile(regex).matcher(pathname.getName()).find();
+                            } catch (PatternSyntaxException e) {
+                                // here do nothing
+                            }
+                        }
+                        return result;
+                    }
+                });
+            } catch (Exception e) {
+                // this should never happen because an #isAccessible check is done before #members is invoked
+            }
+            for (int i = 0; i < children.length; i++) {
+                exportResource(exporter, rootName, directory + file.getName() + separator, children[i].getPath(),
+                        leadupDepth + 1, regex);
+            }
+
+        }
     }
 
 }
