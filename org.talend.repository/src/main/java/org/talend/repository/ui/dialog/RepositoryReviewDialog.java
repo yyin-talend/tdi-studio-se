@@ -13,20 +13,25 @@
 package org.talend.repository.ui.dialog;
 
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.AbstractTreeViewer;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PartInitException;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.views.IRepositoryView;
+import org.talend.repository.ui.views.RepositoryContentProvider;
 import org.talend.repository.ui.views.RepositoryView;
 
 /**
@@ -37,15 +42,33 @@ import org.talend.repository.ui.views.RepositoryView;
  */
 public class RepositoryReviewDialog extends Dialog {
 
+    ERepositoryObjectType type;
+
+    private FakeRepositoryView repositoryView;
+
+    private RepositoryNode result;
+
     /**
      * DOC bqian RepositoryReviewDialog constructor comment.
      * 
      * @param parentShell
+     * @param type support ERepositoryObjectType.PROCESS<br>
+     * ERepositoryObjectType.METADATA_CON_TABLE<br>
+     * ERepositoryObjectType.METADATA_CON_QUERY <br>
+     * ERepositoryObjectType.METADATA_FILE_DELIMITED<br>
+     * ERepositoryObjectType.METADATA_FILE_LDIF<br>
+     * ERepositoryObjectType.METADATA_FILE_POSITIONAL<br>
+     * ERepositoryObjectType.METADATA_FILE_REGEXP<br>
+     * ERepositoryObjectType.METADATA_FILE_XML<br>
+     * ERepositoryObjectType.METADATA_GENERIC_SCHEMA<br>
+     * ERepositoryObjectType.METADATA_LDAP_SCHEMA<br>
+     * ERepositoryObjectType.METADATA_WSDL_SCHEMA)<br>
+     * 
      */
-    public RepositoryReviewDialog(Shell parentShell) {
+    public RepositoryReviewDialog(Shell parentShell, ERepositoryObjectType type) {
         super(parentShell);
         setShellStyle(SWT.SHELL_TRIM | SWT.APPLICATION_MODAL | getDefaultOrientation());
-
+        this.type = type;
     }
 
     /**
@@ -71,8 +94,7 @@ public class RepositoryReviewDialog extends Dialog {
         Composite content = (Composite) super.createDialogArea(parent);
 
         IRepositoryView view = RepositoryView.show();
-        // TreeViewer viewer = (TreeViewer) view.getViewer();
-        final FakeRepositoryView repositoryView = new FakeRepositoryView();
+        repositoryView = new FakeRepositoryView(type);
         try {
             repositoryView.init(view.getViewSite());
         } catch (PartInitException e) {
@@ -81,10 +103,62 @@ public class RepositoryReviewDialog extends Dialog {
 
         repositoryView.createPartControl(content);
         repositoryView.refresh();
+        repositoryView.getViewer().addSelectionChangedListener(new ISelectionChangedListener() {
 
+            public void selectionChanged(SelectionChangedEvent event) {
+                boolean highlightOKButton = true;
+                IStructuredSelection selection = (IStructuredSelection) event.getSelection();
+                if (selection == null || selection.size() != 1) {
+                    highlightOKButton = false;
+                }
+                RepositoryNode node = (RepositoryNode) selection.getFirstElement();
+                ERepositoryObjectType t = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
+                if (node.getType() != ENodeType.REPOSITORY_ELEMENT) {
+                    highlightOKButton = false;
+                }
+                if (type == ERepositoryObjectType.PROCESS || type == ERepositoryObjectType.METADATA_CON_TABLE
+                        || type == ERepositoryObjectType.METADATA_CON_QUERY) {
+                    if (node.getProperties(EProperties.CONTENT_TYPE) != type) {
+                        highlightOKButton = false;
+                    }
+                } else {
+                    if (node.getProperties(EProperties.CONTENT_TYPE) != ERepositoryObjectType.METADATA_CON_TABLE) {
+                        highlightOKButton = false;
+                    }
+                }
+
+                getButton(IDialogConstants.OK_ID).setEnabled(highlightOKButton);
+            }
+        });
         return content;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jface.dialogs.Dialog#createButtonsForButtonBar(org.eclipse.swt.widgets.Composite)
+     */
+    @Override
+    protected void createButtonsForButtonBar(Composite parent) {
+        super.createButtonsForButtonBar(parent);
+        getButton(IDialogConstants.OK_ID).setEnabled(false);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jface.dialogs.Dialog#okPressed()
+     */
+    @Override
+    protected void okPressed() {
+        IStructuredSelection selection = (IStructuredSelection) repositoryView.getViewer().getSelection();
+        result = (RepositoryNode) selection.getFirstElement();
+        super.okPressed();
+    }
+
+    public RepositoryNode getResult() {
+        return result;
+    }
 }
 
 /**
@@ -95,42 +169,17 @@ public class RepositoryReviewDialog extends Dialog {
  */
 class FakeRepositoryView extends RepositoryView {
 
-    private IEditorPart editorPart;
-
-    ViewerFilter filter = new ViewerFilter() {
-
-        @Override
-        public boolean isFilterProperty(Object element, String property) {
-            return false;
-        }
-
-        /**
-         * Returns whether the given element makes it through this filter.
-         * 
-         * @param viewer the viewer
-         * @param parentElement the parent element
-         * @param element the element
-         * @return <code>true</code> if element is included in the filtered set, and <code>false</code> if excluded
-         */
-        @Override
-        public boolean select(Viewer viewer, Object parentElement, Object element) {
-            RepositoryNode node = (RepositoryNode) element;
-            if (node.getProperties(EProperties.CONTENT_TYPE) != null) {
-                if (node.getProperties(EProperties.CONTENT_TYPE).equals(ERepositoryObjectType.SNIPPETS)) {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-    };
+    ERepositoryObjectType type;
 
     /**
      * DOC bqian SnippetsDialogTrayView constructor comment.
+     * 
+     * @param type
+     * @param type
      */
-    public FakeRepositoryView() {
+    public FakeRepositoryView(ERepositoryObjectType type) {
         super();
+        this.type = type;
     }
 
     /*
@@ -141,7 +190,7 @@ class FakeRepositoryView extends RepositoryView {
     @Override
     public void createPartControl(Composite parent) {
         super.createPartControl(parent);
-        // getViewer().addFilter(filter);
+        // getViewer().addFilter(makeFilter());
     }
 
     /*
@@ -167,16 +216,104 @@ class FakeRepositoryView extends RepositoryView {
     @Override
     public void refresh() {
         super.refresh();
-        // getViewer().setInput(this.getViewSite());
-        // RepositoryContentProvider contentProvider = (RepositoryContentProvider) getViewer().getContentProvider();
-        // RepositoryNode snippetNode = contentProvider.getCodeNode();
-        // getViewer().setInput(snippetNode);
+        getViewer().setInput(this.getViewSite());
+        getViewer().setInput(getInput());
 
+    }
+
+    private RepositoryNode getInput() {
+        RepositoryContentProvider contentProvider = (RepositoryContentProvider) getViewer().getContentProvider();
+        if (type == ERepositoryObjectType.PROCESS) {
+            return contentProvider.getProcessNode();
+        }
+        if (type == ERepositoryObjectType.METADATA_CON_TABLE || type == ERepositoryObjectType.METADATA_CON_QUERY) {
+            return contentProvider.getMetadataConNode();
+        }
+        if (type == ERepositoryObjectType.METADATA_FILE_DELIMITED) {
+            return contentProvider.getMetadataFileNode();
+        }
+        if (type == ERepositoryObjectType.METADATA_FILE_LDIF) {
+            return contentProvider.getMetadataFileLdifNode();
+        }
+        if (type == ERepositoryObjectType.METADATA_FILE_POSITIONAL) {
+            return contentProvider.getMetadataFilePositionalNode();
+        }
+        if (type == ERepositoryObjectType.METADATA_FILE_REGEXP) {
+            return contentProvider.getMetadataFileRegexpNode();
+        }
+        if (type == ERepositoryObjectType.METADATA_FILE_XML) {
+            return contentProvider.getMetadataFileXmlNode();
+        }
+
+        if (type == ERepositoryObjectType.METADATA_GENERIC_SCHEMA) {
+            return contentProvider.getMetadataGenericSchemaNode();
+        }
+        if (type == ERepositoryObjectType.METADATA_LDAP_SCHEMA) {
+            return contentProvider.getMetadataLDAPSchemaNode();
+        }
+        if (type == ERepositoryObjectType.METADATA_WSDL_SCHEMA) {
+            return contentProvider.getMetadataWSDLSchemaNode();
+        }
+
+        return null;
+    }
+
+    // @Override
+    // public void dragFinished() {
+    // LocalSelectionTransfer.getTransfer().setSelection(null);
+    // LocalSelectionTransfer.getTransfer().setSelectionSetTime(0);
+    // }
+
+    /**
+     * DOC bqian Comment method "makeFilter".
+     * 
+     * @return
+     */
+    private ViewerFilter makeFilter() throws IllegalArgumentException {
+        if (type == ERepositoryObjectType.PROCESS || type == ERepositoryObjectType.METADATA_CON_TABLE
+                || type == ERepositoryObjectType.METADATA_CON_QUERY) {
+            return createProcessFilter(type);
+        }
+        throw new IllegalArgumentException("invalid type: " + type);
     }
 
     @Override
-    public void dragFinished() {
-        LocalSelectionTransfer.getTransfer().setSelection(null);
-        LocalSelectionTransfer.getTransfer().setSelectionSetTime(0);
+    protected void makeActions() {
     }
+
+    @Override
+    protected void hookContextMenu() {
+    }
+
+    @Override
+    protected void contributeToActionBars() {
+    }
+
+    @Override
+    protected void initDragAndDrop() {
+    }
+
+    @Override
+    protected void hookDoubleClickAction() {
+    }
+
+    /**
+     * DOC bqian Comment method "createProcessFilter".
+     */
+    private ViewerFilter createProcessFilter(final ERepositoryObjectType type) {
+        return new ViewerFilter() {
+
+            @Override
+            public boolean select(Viewer viewer, Object parentElement, Object element) {
+                RepositoryNode node = (RepositoryNode) element;
+                if (node.getProperties(EProperties.CONTENT_TYPE) != null) {
+                    if (node.getProperties(EProperties.CONTENT_TYPE).equals(type)) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        };
+    }
+
 }

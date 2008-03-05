@@ -369,7 +369,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
         LocalSelectionTransfer.getTransfer().setSelectionSetTime(0);
     }
 
-    private void makeActions() {
+    protected void makeActions() {
         IHandlerService handlerService = (IHandlerService) getSite().getService(IHandlerService.class);
 
         refreshAction = new RefreshAction(this);
@@ -392,7 +392,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
         textActionHandler.setDeleteAction(DeleteAction.getInstance());
     }
 
-    private void hookDoubleClickAction() {
+    protected void hookDoubleClickAction() {
         viewer.addDoubleClickListener(new IDoubleClickListener() {
 
             public void doubleClick(DoubleClickEvent event) {
@@ -401,7 +401,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
         });
     }
 
-    private void hookContextMenu() {
+    protected void hookContextMenu() {
         MenuManager menuMgr = new MenuManager("#PopupMenu"); //$NON-NLS-1$
         menuMgr.setRemoveAllWhenShown(true);
 
@@ -417,7 +417,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
         getSite().registerContextMenu(menuMgr, viewer);
     }
 
-    private void contributeToActionBars() {
+    protected void contributeToActionBars() {
         IActionBars bars = getViewSite().getActionBars();
         fillLocalPullDown(bars.getMenuManager());
         fillLocalToolBar(bars.getToolBarManager());

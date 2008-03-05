@@ -70,15 +70,15 @@ import org.talend.repository.model.RepositoryNode.EProperties;
  */
 public class RepositoryContentProvider implements IStructuredContentProvider, ITreeContentProvider {
 
-    private IRepositoryView view;
+    private final IRepositoryView view;
 
     private RepositoryNode root;
 
-    private IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+    private final IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
 
     private TreeViewer viewer;
 
-    private List<IRepositoryObject> joblets = new ArrayList<IRepositoryObject>();
+    private final List<IRepositoryObject> joblets = new ArrayList<IRepositoryObject>();
 
     private RepositoryNode businessProcessNode, recBinNode, codeNode, routineNode, snippetsNode, processNode, contextNode,
             docNode, metadataConNode, metadataFileNode, metadataFilePositionalNode, metadataFileRegexpNode, metadataFileXmlNode,
@@ -682,7 +682,7 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
             RepositoryNode queriesNode = new StableRepositoryNode(node, Messages
                     .getString("RepositoryContentProvider.repositoryLabel.Queries"), ECoreImage.FOLDER_CLOSE_ICON);
             node.getChildren().add(queriesNode);
-            QueriesConnection queriesConnection = ((Connection) metadataConnection).getQueries();
+            QueriesConnection queriesConnection = (metadataConnection).getQueries();
             if (queriesConnection != null) {
                 createTables(recBinNode, queriesNode, repObj, queriesConnection.getQuery(),
                         ERepositoryObjectType.METADATA_CON_TABLE);
@@ -745,9 +745,9 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
      */
     public static class MetadataTableRepositoryObject extends MetadataTable implements ISubRepositoryObject {
 
-        private IRepositoryObject repObj;
+        private final IRepositoryObject repObj;
 
-        private org.talend.core.model.metadata.builder.connection.MetadataTable table;
+        private final org.talend.core.model.metadata.builder.connection.MetadataTable table;
 
         public MetadataTableRepositoryObject(IRepositoryObject repObj,
                 org.talend.core.model.metadata.builder.connection.MetadataTable table) {
@@ -755,6 +755,7 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
             this.table = table;
         }
 
+        @Override
         public Object getAdapter(Class adapter) {
             if (adapter == MetadataTable.class) {
                 return table;
@@ -762,22 +763,27 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
             return null;
         }
 
+        @Override
         public Property getProperty() {
             return repObj.getProperty();
         }
 
+        @Override
         public void setProperty(Property property) {
             repObj.setProperty(property);
         }
 
+        @Override
         public String getVersion() {
             return repObj.getVersion();
         }
 
+        @Override
         public String getLabel() {
             return table.getLabel();
         }
 
+        @Override
         public String getId() {
             return table.getId();
         }
@@ -803,10 +809,11 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
      */
     public static class QueryRepositoryObject extends org.talend.core.model.metadata.Query implements ISubRepositoryObject {
 
-        private IRepositoryObject repObj;
+        private final IRepositoryObject repObj;
 
-        private Query query;
+        private final Query query;
 
+        @Override
         public Object getAdapter(Class adapter) {
             if (adapter == Query.class) {
                 return query;
@@ -819,22 +826,27 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
             this.query = table;
         }
 
+        @Override
         public Property getProperty() {
             return repObj.getProperty();
         }
 
+        @Override
         public void setProperty(Property property) {
             repObj.setProperty(property);
         }
 
+        @Override
         public String getVersion() {
             return repObj.getVersion();
         }
 
+        @Override
         public String getLabel() {
             return query.getLabel();
         }
 
+        @Override
         public String getId() {
             return query.getId();
         }
@@ -861,6 +873,24 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
         return this.snippetsNode;
     }
 
+    
+    /**
+     * Getter for processNode.
+     * @return the processNode
+     */
+    public RepositoryNode getProcessNode() {
+        return this.processNode;
+    }
+
+    
+    /**
+     * Getter for metadataConNode.
+     * @return the metadataConNode
+     */
+    public RepositoryNode getMetadataConNode() {
+        return this.metadataConNode;
+    }
+
     /**
      * Getter for codeNode.
      * 
@@ -868,6 +898,78 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
      */
     public RepositoryNode getCodeNode() {
         return this.codeNode;
+    }
+
+    
+    /**
+     * Getter for metadataFileNode.
+     * @return the metadataFileNode
+     */
+    public RepositoryNode getMetadataFileNode() {
+        return this.metadataFileNode;
+    }
+
+    
+    /**
+     * Getter for metadataFilePositionalNode.
+     * @return the metadataFilePositionalNode
+     */
+    public RepositoryNode getMetadataFilePositionalNode() {
+        return this.metadataFilePositionalNode;
+    }
+
+    
+    /**
+     * Getter for metadataFileRegexpNode.
+     * @return the metadataFileRegexpNode
+     */
+    public RepositoryNode getMetadataFileRegexpNode() {
+        return this.metadataFileRegexpNode;
+    }
+
+    
+    /**
+     * Getter for metadataFileXmlNode.
+     * @return the metadataFileXmlNode
+     */
+    public RepositoryNode getMetadataFileXmlNode() {
+        return this.metadataFileXmlNode;
+    }
+
+    
+    /**
+     * Getter for metadataFileLdifNode.
+     * @return the metadataFileLdifNode
+     */
+    public RepositoryNode getMetadataFileLdifNode() {
+        return this.metadataFileLdifNode;
+    }
+
+    
+    /**
+     * Getter for metadataGenericSchemaNode.
+     * @return the metadataGenericSchemaNode
+     */
+    public RepositoryNode getMetadataGenericSchemaNode() {
+        return this.metadataGenericSchemaNode;
+    }
+
+    
+    /**
+     * Getter for metadataLDAPSchemaNode.
+     * @return the metadataLDAPSchemaNode
+     */
+    public RepositoryNode getMetadataLDAPSchemaNode() {
+        return this.metadataLDAPSchemaNode;
+    }
+
+    
+    /**
+     * Getter for metadataWSDLSchemaNode.
+     * @return the metadataWSDLSchemaNode
+     */
+    public RepositoryNode getMetadataWSDLSchemaNode() {
+        return this.metadataWSDLSchemaNode;
     }
 
     /**
