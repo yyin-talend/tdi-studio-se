@@ -196,7 +196,7 @@ public class Node extends Element implements INode {
         this.oldcomponent = component;
         process = ActiveProcessTracker.getCurrentProcess();
         currentStatus = 0;
-        init(component, false);
+        init(component);
         IElementParameter param = getElementParameter(EParameterName.REPOSITORY_ALLOW_AUTO_SWITCH.getName());
         if (param != null) {
             param.setValue(Boolean.TRUE);
@@ -206,10 +206,10 @@ public class Node extends Element implements INode {
     public Node(IComponent component, Process process) {
         this.oldcomponent = component;
         this.process = process;
-        init(component, false);
+        init(component);
     }
 
-    private void init(IComponent newComponent, boolean isReload) {
+    private void init(IComponent newComponent) {
         this.component = newComponent;
         this.label = component.getTranslatedName();
         this.componentName = this.label;
@@ -275,9 +275,8 @@ public class Node extends Element implements INode {
         }
         // }
         listReturn = this.component.createReturns();
-        if (uniqueName2 != null && !"".equals(uniqueName2)) {
-            setPropertyValue(EParameterName.UNIQUE_NAME.getName(), uniqueName2);
-        } else if (!isReload) {
+
+        if (uniqueName2 == null || "".equals(uniqueName2)) {
             uniqueName2 = ((Process) getProcess()).generateUniqueNodeName(this);
             ((Process) getProcess()).addUniqueNodeName(uniqueName2);
         }
@@ -2199,7 +2198,7 @@ public class Node extends Element implements INode {
             oldElementParameters = (List<? extends IElementParameter>) obj;
         }
 
-        init(component, true);
+        init(component);
 
         obj = parameters.get(INode.RELOAD_PARAMETER_METADATA_LIST);
         if (obj != null) {
