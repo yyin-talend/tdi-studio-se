@@ -140,6 +140,14 @@
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
 
+ 	<PARAMETER
+      NAME="GUESS_SCHEMA"
+      FIELD="GUESS_SCHEMA"
+      NUM_ROW="7"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>  
+
     <PARAMETER
       NAME="QUERY"
       FIELD="MEMO_SQL"
@@ -147,14 +155,6 @@
       REQUIRED="true"
     >
       <DEFAULT>"select id, name from employee"</DEFAULT>
-    </PARAMETER>
-
- 	<PARAMETER
-      NAME="GUESS_SCHEMA"
-      FIELD="GUESS_SCHEMA"
-      NUM_ROW="7"
-    >
-      <DEFAULT>""</DEFAULT>
     </PARAMETER>
     
    </PARAMETERS>

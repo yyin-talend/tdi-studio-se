@@ -162,6 +162,14 @@
       <DEFAULT>''</DEFAULT>
     </PARAMETER>
 
+ 	<PARAMETER
+      NAME="GUESS_SCHEMA"
+      FIELD="GUESS_SCHEMA"
+      NUM_ROW="80"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+
     <PARAMETER
       NAME="QUERY"
       FIELD="MEMO_SQL"

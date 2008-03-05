@@ -129,6 +129,14 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+    
+  	<PARAMETER
+      NAME="GUESS_SCHEMA"
+      FIELD="GUESS_SCHEMA"
+      NUM_ROW="8"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>   
 
     <PARAMETER
       NAME="QUERY"
