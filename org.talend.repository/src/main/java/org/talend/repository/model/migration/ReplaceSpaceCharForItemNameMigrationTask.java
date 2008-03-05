@@ -71,7 +71,7 @@ public class ReplaceSpaceCharForItemNameMigrationTask extends AbstractItemMigrat
                 name = name.replaceAll(space, "_"); //$NON-NLS-1$
                 property.setLabel(name);
 
-                fakeFuntion(item);
+                fakeFunction(item);
                 FACTORY.save(item);
                 return ExecutionResult.SUCCESS_WITH_ALERT;
             }
@@ -85,11 +85,11 @@ public class ReplaceSpaceCharForItemNameMigrationTask extends AbstractItemMigrat
 
     /**
      * 
-     * ggu Comment method "fakeFuntion".
+     * ggu Comment method "fakeFunction".
      * 
      * nothing to do, but if there is nothing to do, the item will be empty.
      */
-    private void fakeFuntion(Item item) {
+    private void fakeFunction(Item item) {
         ERepositoryObjectType itemType = ERepositoryObjectType.getItemType(item);
         switch (itemType) {
         case CONTEXT:
