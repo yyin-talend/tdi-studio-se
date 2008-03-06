@@ -22,11 +22,13 @@ final class SchemaColumn {
     private boolean isDeleteKey = false;
     private boolean insertable = true;
     private boolean updatable = true;
+    private boolean isAdditional = false;
 
     public SchemaColumn(
         String name,
         String sql,
         boolean isKey,
+        boolean isAdditional,
         boolean useFieldOptions,
         Map<String, String> fieldOptions
         ) {
@@ -34,6 +36,7 @@ final class SchemaColumn {
         this.name = name;
         this.sql = sql;
         this.isKey = isKey;
+        this.isAdditional = isAdditional;
 
         if (useFieldOptions) {
             this.isUpdateKey = fieldOptions.get("UPDATE_KEY").equals("true");
@@ -79,6 +82,10 @@ final class SchemaColumn {
 
     public boolean updatable() {
         return this.updatable;
+    }
+
+    public boolean isAdditional() {
+        return this.isAdditional;
     }
 }
 
@@ -225,6 +232,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                                 addCol.get("NAME"),
                                 addCol.get("SQL"),
                                 false, // isKey
+                                true,  // isAdditional
                                 useFieldOptions,
                                 addCol
                             )
@@ -237,6 +245,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 "'`" + column.getLabel() + "`'",
                 "'?'",
                 column.isKey(),
+                false,  // isAdditional
                 useFieldOptions,
                 fieldOptions
             );
@@ -252,6 +261,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                              addCol.get("NAME"),
                              addCol.get("SQL"),
                              column.isKey(),
+                             false, // isAdditional
                              useFieldOptions,
                              addCol // fieldOptions
                          );
@@ -273,6 +283,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                                 addCol.get("NAME"),
                                 addCol.get("SQL"),
                                 false, // isKey
+                                true,  // isAdditional
                                 useFieldOptions,
                                 addCol
                             )
@@ -288,16 +299,18 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 
         i = 0;
         for (SchemaColumn schemaColumn : schema) {
-            if (schemaColumn.updatable()) {
-                updatePositions.add(i);
+            if (!schemaColumn.isAdditional()) {
+                if (schemaColumn.updatable()) {
+                    updatePositions.add(i);
+                }
+                if (schemaColumn.insertable()) {
+                    insertPositions.add(i);
+                }
+                if (schemaColumn.isDeleteKey()) {
+                    deletePositions.add(i);
+                }
+                i++;
             }
-            if (schemaColumn.insertable()) {
-                insertPositions.add(i);
-            }
-            if (schemaColumn.isDeleteKey()) {
-                deletePositions.add(i);
-            }
-            i++;
         }
         i = 0;
         for (SchemaColumn schemaColumn : schema) {
