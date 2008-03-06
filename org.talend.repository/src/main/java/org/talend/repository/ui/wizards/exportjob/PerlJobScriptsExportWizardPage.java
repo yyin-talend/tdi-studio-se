@@ -19,6 +19,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.repository.documentation.ArchiveFileExportOperationFullPath;
 import org.talend.repository.documentation.ExportFileResource;
+import org.talend.repository.documentation.FileSystemExporterFullPath;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobPerlScriptsManager;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobScriptsManager;
 
@@ -78,6 +79,19 @@ public class PerlJobScriptsExportWizardPage extends JobScriptsExportWizardPage {
         return operation;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.ui.wizards.exportjob.JobScriptsExportWizardPage#getExporterOperation(java.util.List)
+     */
+    @Override
+    public FileSystemExporterFullPath getUnzipExporterOperation(List<ExportFileResource> resourcesToExport) {
+
+        FileSystemExporterFullPath exporterOperation = super.getUnzipExporterOperation(resourcesToExport);
+        exporterOperation.setRegEx(".*.pl$|.*.pm$|.*.bat$|.*.sh$");
+        return exporterOperation;
+    }
+
     /**
      * Hook method for saving widget values for restoration by the next instance of this class.
      */
@@ -120,10 +134,10 @@ public class PerlJobScriptsExportWizardPage extends JobScriptsExportWizardPage {
                 for (int i = 0; i < directoryNames.length; i++) {
                     addDestinationItem(directoryNames[i]);
                 }
-            }else{
+            } else {
                 setDefaultDestination();
             }
-            
+
             shellLauncherButton.setSelection(settings.getBoolean(STORE_SHELL_LAUNCHER_ID));
             systemRoutineButton.setSelection(settings.getBoolean(STORE_SYSTEM_ROUTINE_ID));
             userRoutineButton.setSelection(settings.getBoolean(STORE_USER_ROUTINE_ID));

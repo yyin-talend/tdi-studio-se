@@ -13,22 +13,16 @@
 package org.talend.repository.ui.wizards.exportjob;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.EnumMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
 
 import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
@@ -498,10 +492,14 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
         // if zip optin is true,create unzip file.
         if (zipOption != null && zipOption.equals("true")) {
-            createUnzipFile(resourcesToExport, exporterOperation.getRegEx());
-
+            FileSystemExporterFullPath exporter = getUnzipExporterOperation(resourcesToExport);
+            try {
+                exporter.exportSpecifiedResources();
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         }
-
         // path can like name/name
         manager.deleteTempFiles();
         ProcessorUtilities.resetExportConfig();
@@ -555,6 +553,25 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         ArchiveFileExportOperationFullPath exporterOperation = new ArchiveFileExportOperationFullPath(resourcesToExport,
                 getDestinationValue());
 
+        return exporterOperation;
+    }
+
+    /**
+     * Get the export operation.
+     * 
+     * @param resourcesToExport
+     * @return
+     */
+    public FileSystemExporterFullPath getUnzipExporterOperation(List<ExportFileResource> resourcesToExport) {
+        String currentUnzipFile = getDestinationValue().replace("/", "\\");
+        currentUnzipFile = currentUnzipFile.substring(0, currentUnzipFile.lastIndexOf("\\"));
+        FileSystemExporterFullPath exporterOperation = null;
+        try {
+            exporterOperation = new FileSystemExporterFullPath(resourcesToExport, currentUnzipFile);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         return exporterOperation;
     }
 
@@ -702,90 +719,4 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
     protected String destinationEmptyMessage() {
         return ""; //$NON-NLS-1$
     }
-
-    private void createUnzipFile(List<ExportFileResource> resourcesToExport, String regex) {
-        String currentUnzipFile = getDestinationValue().replace("/", "\\");
-        currentUnzipFile = currentUnzipFile.substring(0, currentUnzipFile.lastIndexOf("\\"));
-        FileSystemExporterFullPath exporter = null;
-        try {
-            exporter = new FileSystemExporterFullPath(currentUnzipFile);
-        } catch (IOException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
-        }
-        for (ExportFileResource fileResource : resourcesToExport) {
-            String rootName = fileResource.getDirectoryName();
-            Set<String> paths = fileResource.getRelativePathList();
-            for (Iterator iter = paths.iterator(); iter.hasNext();) {
-                String relativePath = (String) iter.next();
-                Set<URL> resource = fileResource.getResourcesByRelativePath(relativePath);
-                for (URL url : resource) {
-                    String currentResource = url.getPath();
-                    try {
-                        exportResource(exporter, rootName, relativePath, currentResource, 1, regex);
-                    } catch (InterruptedException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
-    }
-
-    public void exportResource(FileSystemExporterFullPath exporter, String rootName, String directory, String exportResource,
-            int leadupDepth, final String regex) throws InterruptedException {
-        final String separator = "/";
-        File file = new File(exportResource);
-        if (file.isFile()) {
-            String destinationName = file.getName();
-            if (!"".equals(directory)) { //$NON-NLS-1$
-                if (directory.endsWith(separator)) {
-                    destinationName = directory + file.getName();
-                } else {
-                    destinationName = directory + separator + file.getName();
-                }
-            }
-            if (rootName != null && !"".equals(destinationName)) { //$NON-NLS-1$
-                destinationName = rootName + separator + destinationName;
-            }
-            try {
-                exporter.write(exportResource, destinationName);
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            } catch (CoreException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-
-        } else if (file.isDirectory()) {
-            File[] children = null;
-            try {
-                children = file.listFiles(new FileFilter() {
-
-                    public boolean accept(File pathname) {
-
-                        boolean result = true;
-                        if (pathname != null && pathname.isFile()) {
-                            try {
-
-                                result = Pattern.compile(regex).matcher(pathname.getName()).find();
-                            } catch (PatternSyntaxException e) {
-                                // here do nothing
-                            }
-                        }
-                        return result;
-                    }
-                });
-            } catch (Exception e) {
-                // this should never happen because an #isAccessible check is done before #members is invoked
-            }
-            for (int i = 0; i < children.length; i++) {
-                exportResource(exporter, rootName, directory + file.getName() + separator, children[i].getPath(),
-                        leadupDepth + 1, regex);
-            }
-
-        }
-    }
-
 }
