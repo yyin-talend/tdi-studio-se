@@ -413,14 +413,64 @@ public class Process extends Element implements IProcess2 {
 
         List<Node> res = new ArrayList<Node>();
 
+        List<List<Node>> mainStart = new ArrayList<List<Node>>();
+
+        List<List<Node>> notMainStart = new ArrayList<List<Node>>();
+
+        List<Node> starts = new ArrayList<Node>();
+
         for (Node node : nodes) {
-            if (node.getIncomingConnections() == null || node.getIncomingConnections().size() <= 0) {
-                // start node in a job flow
-                res.add(node);
-                findTargetAll(res, node);
+            if (node.isStart() || node.isSubProcessStart()) {
+                starts.add(node);
             }
         }
 
+        for (Node node : starts) {
+            List<Node> branch = new ArrayList<Node>();
+            branch.add(node);
+            findTargetAll(branch, node);
+            if (node.isStart() && node.isSubProcessStart()) {
+                mainStart.add(branch);
+            } else {
+                notMainStart.add(branch);
+            }
+
+        }
+
+        // Must sort the mainStart first...
+        List<List<Node>> tempStart = new ArrayList<List<Node>>();
+        tempStart.addAll(mainStart);
+        for (List<Node> preview : mainStart) {
+            for (List<Node> now : mainStart) {
+                if (!preview.equals(now) && now.contains(preview.get(0))) {
+                    tempStart.remove(preview);
+                    tempStart.add(tempStart.indexOf(now) + 1, preview);
+                }
+            }
+        }
+
+        for (List<Node> branch : tempStart) {
+            for (Node n : branch) {
+                if (!res.contains(n)) {
+                    res.add(n);
+                }
+            }
+
+            for (List<Node> ns : notMainStart) {
+
+                for (Node node : ns) {
+                    if (branch.contains(node)) {
+                        for (Node nodeadd : ns) {
+                            if (!res.contains(nodeadd)) {
+                                res.add(nodeadd);
+                            }
+                            break;
+                        }
+                    }
+                }
+
+            }
+        }
         return res;
     }
 
