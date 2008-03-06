@@ -17,6 +17,7 @@ import java.util.List;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.talend.commons.utils.VersionUtils;
+import org.talend.core.model.components.EComponentType;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IMultipleComponentItem;
 import org.talend.core.model.components.IMultipleComponentManager;
@@ -417,5 +418,14 @@ public class JobContextLoadComponent implements IComponent {
      */
     public boolean useImport() {
         return false;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.components.IComponent#getComponentType()
+     */
+    public EComponentType getComponentType() {
+        return EComponentType.JOB_CONTEXT_LOAD;
     }
 }

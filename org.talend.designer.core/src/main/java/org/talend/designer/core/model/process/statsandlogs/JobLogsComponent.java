@@ -14,6 +14,7 @@ package org.talend.designer.core.model.process.statsandlogs;
 
 import java.util.List;
 
+import org.talend.core.model.components.EComponentType;
 import org.talend.core.model.components.IMultipleComponentManager;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElementParameter;
@@ -89,5 +90,14 @@ public class JobLogsComponent extends AbstractStatsLogsComponent {
             multipleComponentManager.addParam("self.CATCH_USER_ERRORS", "LOGS.CATCH_TDIE"); //$NON-NLS-1$ //$NON-NLS-2$
             multipleComponentManager.addParam("self.CATCH_USER_WARNING", "LOGS.CATCH_TWARN"); //$NON-NLS-1$ //$NON-NLS-2$
         }
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.components.IComponent#getComponentType()
+     */
+    public EComponentType getComponentType() {
+        return EComponentType.JOB_LOGS;
     }
 }

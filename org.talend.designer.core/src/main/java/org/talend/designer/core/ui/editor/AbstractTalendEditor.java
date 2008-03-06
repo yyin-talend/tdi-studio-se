@@ -127,6 +127,7 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.components.ComponentUtilities;
+import org.talend.core.model.components.EComponentType;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.general.ILibrariesService;
@@ -234,6 +235,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         if (components == null) {
             components = ComponentsFactoryProvider.getInstance();
         }
+        boolean needCheckAndRefresh = false;
         if (propertyName.equals(ComponentUtilities.NORMAL)) {
             for (Node node : (List<Node>) process.getGraphicalNodes()) {
                 IComponent newComponent = components.get(node.getComponent().getName());
@@ -241,12 +243,23 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
                     continue;
                 }
                 Map<String, Object> parameters = new HashMap<String, Object>();
-                if (node.getExternalData() != null) {
-                    parameters.put(INode.RELOAD_PARAMETER_EXTERNAL_BYTES_DATA, node.getExternalBytesData());
+
+                if (node.getComponent().getComponentType() != EComponentType.JOBLET) {
+                    if (node.getExternalData() != null) {
+                        parameters.put(INode.RELOAD_PARAMETER_EXTERNAL_BYTES_DATA, node.getExternalBytesData());
+                    }
+                    parameters.put(INode.RELOAD_PARAMETER_METADATA_LIST, node.getMetadataList());
+                    parameters.put(INode.RELAOD_PARAMETER_ELEMENT_PARAMETERS, node.getElementParameters());
+                } else {
+                    parameters.put(INode.RELOAD_NEW, true);
+                    needCheckAndRefresh = true;
                 }
-                parameters.put(INode.RELOAD_PARAMETER_METADATA_LIST, node.getMetadataList());
-                parameters.put(INode.RELAOD_PARAMETER_ELEMENT_PARAMETERS, node.getElementParameters());
                 node.reloadComponent(newComponent, parameters);
+            }
+            if (needCheckAndRefresh) {
+                for (Node node : (List<Node>) process.getGraphicalNodes()) {
+                    node.checkAndRefreshNode();
+                }
             }
         } else if (propertyName.equals(ComponentUtilities.JOBLET_NAME_CHANGED)) {
             String oldName = (String) evt.getOldValue();

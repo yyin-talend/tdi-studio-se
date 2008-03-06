@@ -37,6 +37,7 @@ import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
+import org.talend.core.model.components.EComponentType;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.components.IMultipleComponentItem;
@@ -1941,5 +1942,14 @@ public class EmfComponent implements IComponent {
             }
         }
         return useImport;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.components.IComponent#getComponentType()
+     */
+    public EComponentType getComponentType() {
+        return EComponentType.EMF;
     }
 }

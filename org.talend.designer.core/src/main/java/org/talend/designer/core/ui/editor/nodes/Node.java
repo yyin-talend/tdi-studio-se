@@ -2193,7 +2193,19 @@ public class Node extends Element implements INode {
      * java.util.Map)
      */
     public void reloadComponent(IComponent component, Map<String, Object> parameters) {
-        Object obj = parameters.get(INode.RELAOD_PARAMETER_ELEMENT_PARAMETERS);
+        Object obj = parameters.get(INode.RELOAD_NEW);
+        if (obj != null && (Boolean) obj) {
+            process = ActiveProcessTracker.getCurrentProcess();
+            currentStatus = 0;
+            init(component);
+            IElementParameter param = getElementParameter(EParameterName.REPOSITORY_ALLOW_AUTO_SWITCH.getName());
+            if (param != null) {
+                param.setValue(Boolean.TRUE);
+            }
+            return;
+        }
+
+        obj = parameters.get(INode.RELAOD_PARAMETER_ELEMENT_PARAMETERS);
         if (obj != null) {
             oldElementParameters = (List<? extends IElementParameter>) obj;
         }
