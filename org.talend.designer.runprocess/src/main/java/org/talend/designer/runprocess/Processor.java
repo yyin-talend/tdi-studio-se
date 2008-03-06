@@ -508,4 +508,8 @@ public abstract class Processor implements IProcessor {
         return sp.convertSnippet(processCode);
     }
 
+    public boolean checkKillAllowed() {
+        return true;
+    }
+    
 }

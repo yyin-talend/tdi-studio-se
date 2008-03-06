@@ -479,6 +479,10 @@ public class ProcessComposite extends Composite {
         });
     }
 
+    protected boolean checkKillAllowed() {
+        return true;
+    }
+
     /**
      * bqian Comment method "execButtonPressed".
      */

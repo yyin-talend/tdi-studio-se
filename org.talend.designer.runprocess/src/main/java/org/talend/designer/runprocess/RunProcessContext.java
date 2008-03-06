@@ -123,6 +123,8 @@ public class RunProcessContext {
 
     private boolean isTracPause = false;
 
+    private boolean startingMessageWritten;
+
     /**
      * Constrcuts a new RunProcessContext.
      * 
@@ -248,7 +250,7 @@ public class RunProcessContext {
         selectedContext = context;
     }
 
-    Thread thread;
+    Thread processMonitorThread;
 
     private void showErrorMassage(String category) {
         String title = Messages.getString("RunProcessContext.PortErrorTitle", category); //$NON-NLS-1$
@@ -327,18 +329,18 @@ public class RunProcessContext {
                         try {
                             testPort();
                             // findNewStatsPort();
+                            final IContext context = getSelectedContext();
                             if (monitorPerf) {
                                 perfMonitor = new PerformanceMonitor();
-                                new Thread(perfMonitor).start();
+                                new Thread(perfMonitor, "PerfMonitor_" + process.getLabel()).start();
                             }
                             // findNewTracesPort();
                             if (monitorTrace) {
                                 traceMonitor = new TraceMonitor();
-                                new Thread(traceMonitor).start();
+                                new Thread(traceMonitor, "TraceMonitor_" + process.getLabel()).start();
                             }
 
                             final String watchParam = RunProcessContext.this.isWatchAllowed() ? WATCH_PARAM : null;
-                            final IContext context = getSelectedContext();
                             processor.setContext(context);
                             processor.setTargetExecutionConfig(getSelectedTargetExecutionConfig());
                             final boolean[] refreshUiAndWait = new boolean[1];
@@ -351,6 +353,8 @@ public class RunProcessContext {
 
                                         public void run() {
                                             try {
+                                                startingMessageWritten = false;
+
                                                 ProcessorUtilities.generateCode(process, context,
                                                         getStatisticsPort() != IProcessor.NO_STATISTICS,
                                                         getTracesPort() != IProcessor.NO_TRACES, true);
@@ -361,6 +365,8 @@ public class RunProcessContext {
 
                                                     psMonitor = createProcessMonitor(ps);
 
+                                                    startingMessageWritten = true;
+                                                    
                                                     final String startingPattern = Messages
                                                             .getString("ProcessComposite.startPattern"); //$NON-NLS-1$
                                                     MessageFormat mf = new MessageFormat(startingPattern);
@@ -368,8 +374,8 @@ public class RunProcessContext {
                                                             .format(new Object[] { process.getLabel(), new Date() });
                                                     processMessageManager.addMessage(new ProcessMessage(MsgType.CORE_OUT,
                                                             welcomeMsg));
-                                                    thread = new Thread(psMonitor);
-                                                    thread.start();
+                                                    processMonitorThread = new Thread(psMonitor);
+                                                    processMonitorThread.start();
                                                 } else {
                                                     setRunning(false);
                                                 }
@@ -389,7 +395,7 @@ public class RunProcessContext {
                                         }
                                     });
                                 }
-                            }).start();
+                            }, "RunProcess_" + process.getLabel()).start();
                             while (refreshUiAndWait[0] && !progressMonitor.isCanceled()) {
                                 if (!display.readAndDispatch()) {
                                     display.sleep();
@@ -444,7 +450,9 @@ public class RunProcessContext {
             killing = true;
             try {
                 exitCode = killProcess();
-                displayJobEndMessage(exitCode);
+                if (startingMessageWritten) {
+                    displayJobEndMessage(exitCode);
+                }
             } finally {
                 killing = false;
             }
@@ -606,6 +614,8 @@ public class RunProcessContext {
 
                 } catch (IllegalThreadStateException itse) {
                     ended = false;
+                } catch (Exception e) {
+                    ended = false;
                 }
 
                 if (!dataPiped && !ended) {
@@ -634,13 +644,13 @@ public class RunProcessContext {
             IProcessMessage messageOut = null;
             IProcessMessage messageErr = null;
             try {
-                messageOut = extractMessage(outIs, MsgType.STD_OUT, flush);
-                if (messageOut != null) {
-                    processMessageManager.addMessage(messageOut);
-                }
                 messageErr = extractMessage(errIs, MsgType.STD_ERR, flush);
                 if (messageErr != null) {
                     processMessageManager.addMessage(messageErr);
+                }
+                messageOut = extractMessage(outIs, MsgType.STD_OUT, flush);
+                if (messageOut != null) {
+                    processMessageManager.addMessage(messageOut);
                 }
             } catch (IOException ioe) {
                 addErrorMessage(ioe);
@@ -662,15 +672,27 @@ public class RunProcessContext {
 
             IProcessMessage msg;
             if (is.ready()) {
-                msg = new ProcessMessage(type, is.readLine() + "\n");
+
+                StringBuilder sb = new StringBuilder();
+
+                String data = null;
+                long timeStart = System.currentTimeMillis();
+                while (is.ready()) {
+                    data = is.readLine();
+                    if (data == null) {
+                        break;
+                    }
+                    sb.append(data).append("\n");
+                    if (sb.length() > 1024 || System.currentTimeMillis() - timeStart > 100) {
+                        break;
+                    }
+                }
+
+                msg = new ProcessMessage(type, sb.toString());
             } else {
                 msg = null;
             }
             return msg;
-        }
-
-        protected Process getProcess() {
-            return this.process;
         }
 
     }
@@ -979,6 +1001,10 @@ public class RunProcessContext {
      */
     public void setTracPause(boolean isTracPause) {
         this.isTracPause = isTracPause;
+    }
+
+    public Process getSystemProcess() {
+        return ps;
     }
 
 }
