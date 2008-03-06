@@ -146,7 +146,7 @@ public class DataProcess {
             dataNode.setMetadataList(graphicalNode.getMetadataList());
             dataNode.setSubProcessStart(graphicalNode.isSubProcessStart());
             dataNode.setThereLinkWithHash(graphicalNode.isThereLinkWithHash());
-            dataNode.setHasConditionalOutputs(graphicalNode.hasConditionalOutputs());
+            dataNode.setHasConditionalOutputs(false);
             dataNode.setIsMultiplyingOutputs(graphicalNode.isMultiplyingOutputs());
             dataNode.setProcess(graphicalNode.getProcess());
         }
