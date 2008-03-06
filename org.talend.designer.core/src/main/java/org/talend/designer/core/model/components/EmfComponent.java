@@ -682,15 +682,15 @@ public class EmfComponent implements IComponent {
             newParam.setListItemsValue(new String[] { BUILTIN, REPOSITORY });
             newParam.setValue(BUILTIN);
             newParam.setNumRow(xmlParam.getNUMROW());
-            newParam.setField(EParameterFieldType.CLOSED_LIST);
+            newParam.setField(EParameterFieldType.TECHNICAL);
             newParam.setRepositoryValue(xmlParam.getREPOSITORYVALUE());
             if (xmlParam.isSetSHOW()) {
                 newParam.setShow(xmlParam.isSHOW());
             }
             newParam.setShowIf(xmlParam.getSHOWIF());
             newParam.setNotShowIf(xmlParam.getNOTSHOWIF());
-            // newParam.setParentParameter(parentParam);
-            listParam.add(newParam);
+            newParam.setParentParameter(parentParam);
+            // listParam.add(newParam);
 
             newParam = new ElementParameter(node);
             newParam.setCategory(EComponentCategory.BASIC);
@@ -699,12 +699,12 @@ public class EmfComponent implements IComponent {
             newParam.setListItemsDisplayName(new String[] {});
             newParam.setListItemsValue(new String[] {});
             newParam.setNumRow(xmlParam.getNUMROW());
-            newParam.setField(EParameterFieldType.CLOSED_LIST);
+            newParam.setField(EParameterFieldType.TECHNICAL);
             newParam.setValue(""); //$NON-NLS-1$
             newParam.setShow(false);
             newParam.setRequired(true);
-            // newParam.setParentParameter(parentParam);
-            listParam.add(newParam);
+            newParam.setParentParameter(parentParam);
+            // listParam.add(newParam);
         }
         if (type == EParameterFieldType.SCHEMA_TYPE) {
             String context = xmlParam.getCONTEXT();
@@ -808,14 +808,14 @@ public class EmfComponent implements IComponent {
             newParam.setListItemsValue(new String[] { BUILTIN, REPOSITORY });
             newParam.setValue(BUILTIN);
             newParam.setNumRow(xmlParam.getNUMROW());
-            newParam.setField(EParameterFieldType.CLOSED_LIST);
+            newParam.setField(EParameterFieldType.TECHNICAL);
             if (xmlParam.isSetSHOW()) {
                 newParam.setShow(xmlParam.isSHOW());
             }
             newParam.setShowIf(xmlParam.getSHOWIF());
             newParam.setNotShowIf(xmlParam.getNOTSHOWIF());
-            // newParam.setParentParameter(parentParam);
-            listParam.add(newParam);
+            newParam.setParentParameter(parentParam);
+            // listParam.add(newParam);
 
             newParam = new ElementParameter(node);
             newParam.setCategory(EComponentCategory.BASIC);
@@ -824,14 +824,14 @@ public class EmfComponent implements IComponent {
             newParam.setListItemsDisplayName(new String[] {});
             newParam.setListItemsValue(new String[] {});
             newParam.setNumRow(xmlParam.getNUMROW());
-            newParam.setField(EParameterFieldType.CLOSED_LIST);
+            newParam.setField(EParameterFieldType.TECHNICAL);
             newParam.setValue(""); //$NON-NLS-1$
             newParam.setShow(false);
             newParam.setRequired(true);
             newParam.setShowIf(xmlParam.getSHOWIF());
             newParam.setNotShowIf(xmlParam.getNOTSHOWIF());
-            // newParam.setParentParameter(parentParam);
-            listParam.add(newParam);
+            newParam.setParentParameter(parentParam);
+            // listParam.add(newParam);
         }
 
         if (type == EParameterFieldType.PROCESS_TYPE) {
@@ -847,13 +847,13 @@ public class EmfComponent implements IComponent {
             newParam.setListItemsValue(new String[] {});
             newParam.setValue(""); //$NON-NLS-1$
             newParam.setNumRow(xmlParam.getNUMROW());
-            newParam.setField(EParameterFieldType.CLOSED_LIST);
+            newParam.setField(EParameterFieldType.TECHNICAL);
             if (xmlParam.isSetSHOW()) {
                 newParam.setShow(xmlParam.isSHOW());
             }
             newParam.setRequired(true);
-            // newParam.setParentParameter(parentParam);
-            listParam.add(newParam);
+            newParam.setParentParameter(parentParam);
+            // listParam.add(newParam);
 
             newParam = new ElementParameter(node);
             newParam.setCategory(EComponentCategory.BASIC);
@@ -862,14 +862,13 @@ public class EmfComponent implements IComponent {
             newParam.setListItemsDisplayName(new String[] {});
             newParam.setListItemsValue(new String[] {});
             newParam.setNumRow(xmlParam.getNUMROW());
-            newParam.setField(EParameterFieldType.CLOSED_LIST);
+            newParam.setField(EParameterFieldType.TECHNICAL);
             newParam.setValue(""); //$NON-NLS-1$
             if (xmlParam.isSetSHOW()) {
                 newParam.setShow(xmlParam.isSHOW());
             }
             newParam.setRequired(true);
-            // newParam.setParentParameter(parentParam);
-            listParam.add(newParam);
+            newParam.setParentParameter(parentParam);
         }
     }
 
@@ -984,7 +983,6 @@ public class EmfComponent implements IComponent {
                 }
                 break;
             case PROCESS_TYPE:
-                param.setShow(false);
                 param.setRequired(false);
                 if (getTranslatedValue(xmlParam.getNAME() + "." + PROP_NAME).startsWith("!!")) { //$NON-NLS-1$ //$NON-NLS-2$
                     param.setDisplayName(EParameterName.PROCESS_TYPE.getDisplayName());
@@ -992,7 +990,6 @@ public class EmfComponent implements IComponent {
                 param.setValue(""); // TODO to change ? //$NON-NLS-1$
                 break;
             case PROPERTY_TYPE:
-                param.setShow(false);
                 param.setValue(""); //$NON-NLS-1$
                 break;
             default:
@@ -1074,6 +1071,7 @@ public class EmfComponent implements IComponent {
                 isReadOnly = param.isReadOnly();
             }
 
+            int nbCustom = 0;
             for (int i = 0; i < xmlColumnList.size(); i++) {
                 xmlColumn = (COLUMNType) xmlColumnList.get(i);
                 talendColumn = new MetadataColumn();
@@ -1095,8 +1093,10 @@ public class EmfComponent implements IComponent {
                 }
                 if (xmlColumn.isSetCUSTOM()) {
                     talendColumn.setCustom(xmlColumn.isCUSTOM());
+                    talendColumn.setCustomId(nbCustom++);
+                } else {
+                    talendColumn.setCustomId(-1);
                 }
-                talendColumn.setCustomId(i);
                 talendColumnList.add(talendColumn);
             }
 
