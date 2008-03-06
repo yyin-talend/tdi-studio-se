@@ -197,8 +197,17 @@ public class DesignerCoreService implements IDesignerCoreService {
         if (ComponentUtilities.JOBLET_SCHEMA_CHANGED.equals(evt.getPropertyName())) {
             try {
                 String oldName = ((IProcess) evt.getSource()).getName();
-                IMetadataTable newInputMetadataTable = ((IMetadataTable[]) evt.getNewValue())[0];
-                IMetadataTable newOutputMetadataTable = ((IMetadataTable[]) evt.getNewValue())[1];
+
+                Object[] oldMetadataTables = (Object[]) evt.getOldValue();
+                Object[] newMetadataTables = (Object[]) evt.getNewValue();
+                List<IMetadataTable> oldInputTableList = (List<IMetadataTable>) oldMetadataTables[0];
+                List<IMetadataTable> newInputTableList = (List<IMetadataTable>) newMetadataTables[0];
+
+                List<IMetadataTable> oldOutputTableList = (List<IMetadataTable>) oldMetadataTables[1];
+                List<IMetadataTable> newOutputTableList = (List<IMetadataTable>) newMetadataTables[1];
+                IMetadataTable newInputMetadataTable = null;
+                IMetadataTable newOutputMetadataTable = null;
+
                 ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
                 List<IRepositoryObject> allJobs = factory.getAll(ERepositoryObjectType.PROCESS, true);
                 for (IRepositoryObject repositoryObject : allJobs) {
@@ -212,9 +221,13 @@ public class DesignerCoreService implements IDesignerCoreService {
                                 EList metadata = currentNode.getMetadata();
                                 for (Object object : metadata) {
                                     MetadataType metadataTable = (MetadataType) object;
-                                    if (newInputMetadataTable.getAttachedConnector().equals(metadataTable.getConnector())) {
+                                    newInputMetadataTable = getNewInputTableForConnection(newInputTableList, metadataTable
+                                            .getConnector());
+                                    newOutputMetadataTable = getNewOutputTableForConnection(newOutputTableList, metadataTable
+                                            .getName());
+                                    if (newInputMetadataTable != null) {
                                         MetadataTool.copyTable(newInputMetadataTable, metadataTable);
-                                    } else if (newOutputMetadataTable.getTableName().equals(metadataTable.getName())) {
+                                    } else if (newOutputMetadataTable != null) {
                                         MetadataTool.copyTable(newOutputMetadataTable, metadataTable);
                                     }
                                     isModify = true;
@@ -230,6 +243,39 @@ public class DesignerCoreService implements IDesignerCoreService {
                 ExceptionHandler.process(e);
             }
         }
+    }
+
+    /**
+     * DOC qzhang Comment method "getNewInputTableForConnection".
+     * 
+     * @param newInputTableList
+     * @param connector
+     * 
+     * @return
+     */
+    private IMetadataTable getNewInputTableForConnection(List<IMetadataTable> newInputTableList, String connector) {
+        for (IMetadataTable metadataTable : newInputTableList) {
+            if (connector != null && connector.equals(metadataTable.getAttachedConnector())) {
+                return metadataTable;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * DOC qzhang Comment method "getNewOutputTableForConnection".
+     * 
+     * @param newOutputTableList
+     * @param attachedConnector
+     * @return
+     */
+    private IMetadataTable getNewOutputTableForConnection(List<IMetadataTable> newOutputTableList, String tableName) {
+        for (IMetadataTable metadataTable : newOutputTableList) {
+            if (tableName != null && tableName.equals(metadataTable.getTableName())) {
+                return metadataTable;
+            }
+        }
+        return null;
     }
 
     /*
