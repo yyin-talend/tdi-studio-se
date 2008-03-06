@@ -32,7 +32,7 @@ class XMLNode{
 	public String type = null;
 	public String column = null;
 	public String value = null;
-	public int special = 0;  //1 is subtree root, 2 is subtree root parent, 4 is groupby, 8 nest XML
+	public int special = 0;  //1 is subtree root, 2 is subtree root parent, 4 is main, 8 nest XML
 	public XMLNode parent = null;
 	public List<XMLNode> attributes = new LinkedList<XMLNode>();
 	public List<XMLNode> namespaces = new LinkedList<XMLNode>();
@@ -134,8 +134,16 @@ class XSDToolByNull{
 		out_xsd_<%=cid%>.write("<%=emptyspace%>    <xsd:sequence>");
 		out_xsd_<%=cid%>.newLine();
 <%
+				XMLNode mainNode = null;
         		for(XMLNode child:root.elements){
-        			generateXSD(emptyspace+"      ", child);
+        			if( 1==(child.special & 4)){
+        				mainNode = child;
+        			}else{
+        				generateXSD(emptyspace+"      ", child);
+        			}
+        		}
+        		if(mainNode!= null){
+        			generateXSD(emptyspace+"      ", mainNode);
         		}
 %>
 		out_xsd_<%=cid%>.write("<%=emptyspace%>    </xsd:sequence>");
@@ -277,14 +285,11 @@ globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
                             tmpParent = tmpParent.parent;
                         }
                         tmpNew = new XMLNode(tmpMap.get("PATH"), "ELEMENT", tmpParent, tmpMap.get("COLUMN"));
-                         if (tmpMap.get("ATTRIBUTE").equals("main")) {
-                            tmpParent.elements.add(tmpNew);
-                        }else{
-                        	tmpParent.elements.add(0,tmpNew);
-                        }
+                        tmpParent.elements.add(tmpNew);
                     }
                     if (tmpMap.get("ATTRIBUTE").equals("main")) {
                         tmpMainNode = tmpNew;
+                        tmpNew.special |= 4;
                     }
                     tmpParent = tmpNew;
                 }

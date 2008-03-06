@@ -147,6 +147,15 @@ class XMLTool{
     			list.add(attri);
     		}
     	}
+    	if(group.relatedColumn != null){
+    		list.add(group);
+    	}else{
+    		for(XMLNode element: group.elements){
+    			if( 0== (element.special & 4)){
+    				list.addAll( getGroupByNodeList(element));
+    			}
+    		}
+    	}
     	return list;
     }
     
@@ -309,11 +318,20 @@ class GenerateToolByNull{
 			}
 			startElement(node,emptySpace);
 			setText(node);
+			XMLNode mainNode = null;
 			for(XMLNode child:node.elements){
-				if(0==(child.special & 1)){
-					generateCode(child,emptySpace+"  ");
+				if(0==(child.special & 1)){ 
+					if(1 == (child.special & 4)){ //make the main node output last
+						mainNode = child;
+					}else{
+						generateCode(child,emptySpace+"  ");
+					}
 				}
 			}
+			if(mainNode!=null){
+				generateCode(mainNode,emptySpace+"  ");
+			}
+			
 			if(0 == (node.special & 4) ){ // is not main node
 				endElement(node,emptySpace);
 			}
@@ -504,8 +522,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                                     tmpParent = tmpParent.parent;
                                 }
                                 tmpNew = new XMLNode(tmpMap.get("PATH"), "ELEMENT", tmpParent, tmpMap.get("COLUMN"));
+                                tmpParent.elements.add(tmpNew);
                                 if (tmpMap.get("ATTRIBUTE").equals("main")) {
-                                    tmpParent.elements.add(tmpNew);
                                     if(tmpTable == groupTable){
                                     	tmpNew.special |= 1;
                                     	tmpParent.special |=2;
@@ -515,8 +533,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                                     	tmpParent.special |=2;
                                     	loop = tmpNew;
                                     }
-                                }else{
-                                	tmpParent.elements.add(0,tmpNew);
                                 }
                             }
                             if (tmpMap.get("ATTRIBUTE").equals("main")) {
