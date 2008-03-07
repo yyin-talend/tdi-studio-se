@@ -22,6 +22,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.ui.image.ImageProvider;
+import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.i18n.Messages;
@@ -84,8 +85,9 @@ public class EmptyRecycleBinAction extends AContextualAction {
                                 page.closeEditor(editors.getEditor(false), false);
                             }
                         }
-
-                        factory.deleteObjectPhysical(objToDelete);
+                        if (objToDelete.getType() != ERepositoryObjectType.JOB_DOC
+                                && objToDelete.getType() != ERepositoryObjectType.JOBLET_DOC)
+                            factory.deleteObjectPhysical(objToDelete);
                     }
                 }
             } catch (Exception e) {
