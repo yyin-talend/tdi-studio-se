@@ -28,6 +28,8 @@ import org.eclipse.gef.Request;
 import org.eclipse.gef.RequestConstants;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.jface.viewers.TextCellEditor;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.utils.workbench.gef.SimpleHtmlCellEditorLocator;
 import org.talend.commons.utils.workbench.gef.SimpleHtmlFigure;
@@ -108,7 +110,13 @@ public class NodeLabelEditPart extends AbstractGraphicalEditPart implements Prop
         String text = ((NodeLabel) getModel()).getLabelText();
 
         SimpleHtmlFigure htmlFig = new SimpleHtmlFigure();
-        htmlFig.setText(text);
+
+        RGB fColor = ((NodeLabel) getModel()).getForegroundColor();
+        if (fColor == null) {
+            htmlFig.setText(text);
+        } else {
+            htmlFig.setText(text, new Color(null, fColor));
+        }
 
         if (((NodeLabel) getModel()).isActivate()) {
             (htmlFig).setAlpha(-1);
@@ -148,6 +156,9 @@ public class NodeLabelEditPart extends AbstractGraphicalEditPart implements Prop
             if (viewer != null) {
                 viewer.updatePropertiesViewerTitle();
             }
+        }
+        if (request.equals(NodeLabel.FOREGROUND_COLOR_CHANGE)) {
+            refreshVisuals();
         }
         if (request.equals(NodeLabel.LOCATION)) { //$NON-NLS-1$
             refreshVisuals();
@@ -200,8 +211,13 @@ public class NodeLabelEditPart extends AbstractGraphicalEditPart implements Prop
         NodePart nodePart = ((NodeContainerPart) getParent()).getNodePart();
         if (nodePart != null) {
             String text = ((NodeLabel) getModel()).getLabelText();
+            RGB fColor = ((NodeLabel) getModel()).getForegroundColor();
             SimpleHtmlFigure htmlFig = (SimpleHtmlFigure) this.getFigure();
-            htmlFig.setText(text);
+            if (fColor == null) {
+                htmlFig.setText(text);
+            } else {
+                htmlFig.setText(text, new Color(null, fColor));
+            }
             Node node = (Node) nodePart.getModel();
             Point loc = node.getLocation().getCopy();
             Point offset = ((NodeLabel) getModel()).getOffset();

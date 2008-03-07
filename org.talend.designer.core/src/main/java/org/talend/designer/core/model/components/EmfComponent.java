@@ -1952,4 +1952,20 @@ public class EmfComponent implements IComponent {
     public EComponentType getComponentType() {
         return EComponentType.EMF;
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.components.IComponent#getLableForegroundColor()
+     */
+    public RGB getLableForegroundColor() {
+        String colorCode = compType.getLABELCOLOR();
+        if (colorCode == null) {
+            return null;
+        }
+        int r = Integer.parseInt(colorCode.substring(0, 2), 16);
+        int g = Integer.parseInt(colorCode.substring(2, 4), 16);
+        int b = Integer.parseInt(colorCode.substring(4, 6), 16);
+        return new RGB(r, g, b);
+    }
 }
