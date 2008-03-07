@@ -56,6 +56,18 @@
 
 	</PARAMETERS>
 
+	<ADVANCED_PARAMETERS>
+            <PARAMETER
+              NAME="ENCODING"
+              FIELD="ENCODING_TYPE"
+              NUM_ROW="10"
+              REQUIRED="true"
+              REPOSITORY_VALUE="ENCODING"
+            >
+              <DEFAULT/>
+            </PARAMETER>
+	</ADVANCED_PARAMETERS>
+
 	<CODEGENERATION>
 		<IMPORTS>
 			<IMPORT NAME="Text-ASCIITable" MODULE="Text::ASCIITable"

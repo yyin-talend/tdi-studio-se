@@ -34,6 +34,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             node,
             "__TABLE_PRINT__"
         );
+
+        String encoding = ElementParameterParser.getValue(
+            node,
+            "__ENCODING__"
+        );
 %>
 
 my %desc_<%=cid %> = (
@@ -60,6 +65,14 @@ my %desc_<%=cid %> = (
 
 my @colnames_<%=cid%> = map {$_->{name}} @{ $desc_<%=cid%>{schema} };
 my @collengths_<%=cid%> = map {$_->{printLength}} @{ $desc_<%=cid%>{schema} };
+
+<%
+        if (!encoding.equals("")) {
+%>
+binmode(STDOUT, ':encoding('.<%=encoding%>.')');
+<%
+        }
+%>
 
 <%
         if (tablePrint.equals("true")) {
