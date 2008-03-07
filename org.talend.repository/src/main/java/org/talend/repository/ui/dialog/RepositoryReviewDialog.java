@@ -12,6 +12,9 @@
 // ============================================================================
 package org.talend.repository.ui.dialog;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.AbstractTreeViewer;
@@ -26,6 +29,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PartInitException;
 import org.talend.core.model.metadata.MetadataTable;
+import org.talend.core.model.metadata.Query;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.designerproperties.RepositoryToComponentProperty;
 import org.talend.core.model.properties.ConnectionItem;
@@ -91,7 +95,14 @@ public class RepositoryReviewDialog extends Dialog {
         if (type == ERepositoryObjectType.METADATA) {
             return new RepositoryTypeProcessor(repositoryType);
         }
-        return null;
+
+        if (type == ERepositoryObjectType.METADATA_CON_TABLE) {
+            return new SchemaTypeProcessor(repositoryType);
+        }
+        if (type == ERepositoryObjectType.METADATA_CON_QUERY) {
+            return new QueryTypeProcessor(repositoryType);
+        }
+        throw new IllegalArgumentException("illegal argument:" + type);
     }
 
     /**
@@ -213,8 +224,8 @@ class FakeRepositoryView extends RepositoryView {
     @Override
     public void createPartControl(Composite parent) {
         super.createPartControl(parent);
-        ViewerFilter filter=typeProcessor.makeFilter();
-        if(filter!=null){
+        ViewerFilter filter = typeProcessor.makeFilter();
+        if (filter != null) {
             getViewer().addFilter(filter);
         }
     }
@@ -409,6 +420,111 @@ class RepositoryTypeProcessor implements ITypeProcessor {
                             return false;
                         }
                     }
+                }
+                return true;
+            }
+        };
+    }
+}
+
+/**
+ * bqian TypeProcessor for Schema. <br/>
+ * 
+ * $Id: talend.epf 1 2006-09-29 17:06:40 +0000 (ææäº, 29 ä¹æ 2006) nrousseau $
+ * 
+ */
+class SchemaTypeProcessor implements ITypeProcessor {
+
+    String repositoryType;
+
+    /**
+     * DOC bqian RepositoryTypeProcessor constructor comment.
+     * 
+     * @param repositoryType
+     */
+    public SchemaTypeProcessor(String repositoryType) {
+        this.repositoryType = repositoryType;
+    }
+
+    public RepositoryNode getInputRoot(RepositoryContentProvider contentProvider) {
+        List<RepositoryNode> container = new ArrayList<RepositoryNode>();
+        container.add(contentProvider.getMetadataFileNode());
+        container.add(contentProvider.getMetadataFilePositionalNode());
+        container.add(contentProvider.getMetadataFileRegexpNode());
+        container.add(contentProvider.getMetadataFileXmlNode());
+        container.add(contentProvider.getMetadataFileLdifNode());
+        container.add(contentProvider.getMetadataGenericSchemaNode());
+        container.add(contentProvider.getMetadataLDAPSchemaNode());
+        container.add(contentProvider.getMetadataWSDLSchemaNode());
+        container.add(contentProvider.getMetadataConNode());
+
+        RepositoryNode node = new RepositoryNode(null, null, null);
+        node.getChildren().addAll(container);
+        return node;
+    }
+
+    public boolean isSelectionValid(RepositoryNode node) {
+        if (node.getObject() instanceof MetadataTable) {
+            return true;
+        }
+        return false;
+    }
+
+    public ViewerFilter makeFilter() {
+        return new ViewerFilter() {
+
+            @Override
+            public boolean select(Viewer viewer, Object parentElement, Object element) {
+                // if (repositoryType.startsWith("DATABASE") && repositoryType.contains(":")) {
+                RepositoryNode node = (RepositoryNode) element;
+                if (node.getObject() != null && (node.getObject() instanceof Query)) {
+                    return false;
+                }
+                return true;
+            }
+        };
+    }
+}
+
+/**
+ * bqian TypeProcessor for Query. <br/>
+ * 
+ * $Id: talend.epf 1 2006-09-29 17:06:40 +0000 (ææäº, 29 ä¹æ 2006) nrousseau $
+ * 
+ */
+class QueryTypeProcessor implements ITypeProcessor {
+
+    String repositoryType;
+
+    /**
+     * bqian RepositoryTypeProcessor constructor comment.
+     * 
+     * @param repositoryType
+     */
+    public QueryTypeProcessor(String repositoryType) {
+        this.repositoryType = repositoryType;
+    }
+
+    public RepositoryNode getInputRoot(RepositoryContentProvider contentProvider) {
+        return contentProvider.getMetadataConNode();
+    }
+
+    public boolean isSelectionValid(RepositoryNode node) {
+        if (node.getObject() instanceof Query) {
+            return true;
+        }
+        return false;
+    }
+
+    public ViewerFilter makeFilter() {
+        return new ViewerFilter() {
+
+            @Override
+            public boolean select(Viewer viewer, Object parentElement, Object element) {
+                // if (repositoryType.startsWith("DATABASE") && repositoryType.contains(":")) {
+                RepositoryNode node = (RepositoryNode) element;
+                if (node.getObject() != null && (node.getObject() instanceof MetadataTable)) {
+                    return false;
                 }
                 return true;
             }
