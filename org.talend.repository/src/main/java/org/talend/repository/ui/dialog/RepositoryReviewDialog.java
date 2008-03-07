@@ -28,6 +28,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PartInitException;
+import org.talend.core.CorePlugin;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.Query;
 import org.talend.core.model.metadata.builder.connection.Connection;
@@ -82,7 +83,9 @@ public class RepositoryReviewDialog extends Dialog {
         this.repositoryType = repositoryType;
         typeProcessor = createTypeProcessor();
     }
-
+    public RepositoryReviewDialog(Shell parentShell, ERepositoryObjectType type) {
+        this(parentShell, type, null);
+    }
     /**
      * bqian create the correct TypeProcessor according to the type.
      * 
@@ -228,6 +231,7 @@ class FakeRepositoryView extends RepositoryView {
         if (filter != null) {
             getViewer().addFilter(filter);
         }
+        CorePlugin.getDefault().getRepositoryService().removeRepositoryChangedListener(this);
     }
 
     /*
