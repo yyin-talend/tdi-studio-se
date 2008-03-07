@@ -291,43 +291,11 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
      */
     private void updateGraphicalNodesSchema(PropertyChangeEvent evt) {
         String oldName = ((IProcess) evt.getSource()).getName();
-        Object[] oldMetadataTables = (Object[]) evt.getOldValue();
         Object[] newMetadataTables = (Object[]) evt.getNewValue();
-        List<IMetadataTable> oldInputTableList = (List<IMetadataTable>) oldMetadataTables[0];
         List<IMetadataTable> newInputTableList = (List<IMetadataTable>) newMetadataTables[0];
 
-        List<IMetadataTable> oldOutputTableList = (List<IMetadataTable>) oldMetadataTables[1];
         List<IMetadataTable> newOutputTableList = (List<IMetadataTable>) newMetadataTables[1];
 
-        boolean isChanged = false;
-        if (!isChanged) {
-            for (int i = 0; i < newInputTableList.size(); i++) {
-                IMetadataTable newTable = newInputTableList.get(i);
-                IMetadataTable oldTable = oldInputTableList.get(i);
-                if (newTable != null && !newTable.sameMetadataAs(oldTable)) {
-                    isChanged = true;
-                    break;
-                }
-            }
-        }
-        if (!isChanged) {
-            for (int i = 0; i < newOutputTableList.size(); i++) {
-                IMetadataTable newTable = newOutputTableList.get(i);
-                IMetadataTable oldTable = oldOutputTableList.get(i);
-                if (newTable != null && !newTable.sameMetadataAs(oldTable)) {
-                    isChanged = true;
-                    break;
-                }
-            }
-        }
-        if (!isChanged) {
-            return;
-        }
-
-        // if (newInputMetadataTable.sameMetadataAs(oldInputMetadataTable)
-        // && newOutputMetadataTable.sameMetadataAs(oldOutputMetadataTable)) {
-        // return;
-        // }
         for (Node node : (List<Node>) process.getGraphicalNodes()) {
             if (node.getComponent().getName().equals(oldName) || node.getLabel().contains(oldName)) {
                 IComponent newComponent = components.get(oldName);
