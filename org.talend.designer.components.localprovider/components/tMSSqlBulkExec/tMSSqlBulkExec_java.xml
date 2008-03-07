@@ -87,6 +87,16 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+
+    <PARAMETER
+      NAME="DB_SCHEMA"
+      FIELD="TEXT"
+      NUM_ROW="4"
+      REPOSITORY_VALUE="SCHEMA"
+      SHOW_IF="(ACTION=='INSERT') or (ACTION=='UPDATE')"
+    >
+      <DEFAULT>"dbo"</DEFAULT>
+    </PARAMETER>
     
     <PARAMETER
       NAME="USER"

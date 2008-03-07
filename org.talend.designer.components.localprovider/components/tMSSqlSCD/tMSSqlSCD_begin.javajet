@@ -49,6 +49,7 @@ if (inMetadata != null && metadata != null) {
 	String dbServer = ElementParameterParser.getValue(node, "__SERVER__");
 	String dbport = ElementParameterParser.getValue(node, "__PORT__");
 	String dbname = ElementParameterParser.getValue(node, "__DBNAME__");
+	String dbschema = ElementParameterParser.getValue(node, "__DB_SCHEMA__");
 	String dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
 	String dbuser = ElementParameterParser.getValue(node, "__USER__");
 	String dbpwd = ElementParameterParser.getValue(node, "__PASS__");
@@ -57,6 +58,13 @@ if (inMetadata != null && metadata != null) {
 	boolean useExistingConnection = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__").equals("true");
 	
 	%>
+	String dbschema_<%=cid%> = <%=dbschema%>;
+	String tableName_<%=cid%> = null;
+	if(dbschema_<%=cid%> == null || dbschema_<%=cid%>.trim().length() == 0) {
+	    tableName_<%=cid%> = <%=dbtable%>;
+	} else {
+	    tableName_<%=cid%> = dbschema_<%=cid%> + "." + <%=dbtable%>;
+	}
 	// Create database connection
 	java.lang.Class.forName("net.sourceforge.jtds.jdbc.Driver");
     String connectionString_<%=cid %> = "jdbc:jtds:sqlserver://" + <%=dbServer%> + ":" + <%=dbport%> + "//" + <%=dbname%> + ";appName=" + projectName + ";" + <%=dbproperties%>;        
@@ -351,7 +359,7 @@ if (inMetadata != null && metadata != null) {
     
     %>
     // Retrieve active records
-    String dbquery_<%=cid %> = "SELECT <%=selectColumnsString%> FROM " + <%=dbtable%>
+    String dbquery_<%=cid %> = "SELECT <%=selectColumnsString%> FROM " + tableName_<%=cid%>
     <%
     if (useL2) {
     	if (enddateValue.equals("NULL_VALUE")) {
@@ -458,7 +466,7 @@ if (inMetadata != null && metadata != null) {
 		%>
 		if (cache_<%=cid%>.size() > 0) {
 			// Get table max value for surrogate key
-			dbquery_<%=cid%> = "SELECT MAX(<%=surrogateKeyDBField%>) FROM " + <%=dbtable%>;
+			dbquery_<%=cid%> = "SELECT MAX(<%=surrogateKeyDBField%>) FROM " + tableName_<%=cid%>;
 			statement_<%=cid%> = connection_<%=cid%>.createStatement();
 			resultSet_<%=cid%> = statement_<%=cid%>.executeQuery(dbquery_<%=cid%>);
 			<%
@@ -569,7 +577,7 @@ if (inMetadata != null && metadata != null) {
     
     %>
     // Build prepared statements
-    String insertQueryString_<%=cid%> = "INSERT INTO " + <%=dbtable%> + " (<%=surrogateKeyCreation.equals("DB_SEQUENCE") ? surrogateKeyDBField + ", " : ""%><%=colnamesString%>) " +
+    String insertQueryString_<%=cid%> = "INSERT INTO " + tableName_<%=cid%> + " (<%=surrogateKeyCreation.equals("DB_SEQUENCE") ? surrogateKeyDBField + ", " : ""%><%=colnamesString%>) " +
     	"VALUES (<%=surrogateKeyCreation.equals("DB_SEQUENCE") ? "\" + " + skSequence + " + \".nextval, " : ""%><%=parametersString%>)";
     java.sql.PreparedStatement insertQuery_<%=cid%> = connection_<%=cid%>.prepareStatement(insertQueryString_<%=cid%>);
     <%
@@ -600,7 +608,7 @@ if (inMetadata != null && metadata != null) {
     
     if (useL1) {
 	    %>
-	    String l1QueryString_<%=cid%> = "UPDATE " + <%=dbtable%> + " SET <%=l1fieldClausesString%> WHERE <%=keyClausesString%>";
+	    String l1QueryString_<%=cid%> = "UPDATE " + tableName_<%=cid%> + " SET <%=l1fieldClausesString%> WHERE <%=keyClausesString%>";
 	    java.sql.PreparedStatement l1Query_<%=cid%> = connection_<%=cid%>.prepareStatement(l1QueryString_<%=cid%>);
         <%
     }
@@ -608,7 +616,7 @@ if (inMetadata != null && metadata != null) {
     // L2 query generation
     if (useL2) {
 		%>
-		String l2QueryString_<%=cid%> = "UPDATE " + <%=dbtable%> + " " +
+		String l2QueryString_<%=cid%> = "UPDATE " + tableName_<%=cid%> + " " +
 			"SET <%=endDateDBField%> = ? " +<%
 		if (useActive) {
 			%>
@@ -674,7 +682,7 @@ if (inMetadata != null && metadata != null) {
 	    String l3fieldClausesString = StringUtils.join(l3fieldClauses.toArray(), ", ");
 	    
 	    %>
-	    String l3QueryString_<%=cid%> = "UPDATE " + <%=dbtable%> + " " +
+	    String l3QueryString_<%=cid%> = "UPDATE " + tableName_<%=cid%> + " " +
 	    	"SET <%=l3fieldClausesString%> " +
 	    	"WHERE <%=keyClausesString%>"<%
 	    if (useL2) {

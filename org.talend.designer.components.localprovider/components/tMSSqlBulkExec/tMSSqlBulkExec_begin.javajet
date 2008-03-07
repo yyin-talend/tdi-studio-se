@@ -29,6 +29,7 @@ String file = ElementParameterParser.getValue(node, "__REMOTE_FILENAME__");
 String host = ElementParameterParser.getValue(node, "__HOST__");
 String port = ElementParameterParser.getValue(node, "__PORT__");
 String db = ElementParameterParser.getValue(node, "__DBNAME__");
+String dbschema = ElementParameterParser.getValue(node, "__DB_SCHEMA__");
 String dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
 String user = ElementParameterParser.getValue(node, "__USER__");
 String pas = ElementParameterParser.getValue(node, "__PASS__");
@@ -143,7 +144,13 @@ if(action.equals("EXPORT")) {
 } else {
     List<IMetadataColumn> columnList = getColumnList(node);
     %>
-    String tableName_<%=cid%> = <%=table%>;
+    String dbschema_<%=cid%> = <%=dbschema%>;
+    String tableName_<%=cid%> = null;
+    if(dbschema_<%=cid%> == null || dbschema_<%=cid%>.trim().length() == 0) {
+        tableName_<%=cid%> = <%=table%>;
+    } else {
+        tableName_<%=cid%> = dbschema_<%=cid%> + "].[" + <%=table%>;
+    }
     java.lang.Class.forName("net.sourceforge.jtds.jdbc.Driver").newInstance();
     String url_<%=cid %> = "jdbc:jtds:sqlserver://" + <%=host%> + ":" + <%=port%> + "//" + <%=db%> + ";appName=" + projectName + ";" + <%=dbproperties%>;
     java.sql.Connection conn_<%=cid %> = java.sql.DriverManager.getConnection(url_<%=cid %>, <%=user%>, <%=pas%>);
@@ -170,7 +177,12 @@ if(action.equals("EXPORT")) {
         } else if(tableAction.equals("CREATE_IF_NOT_EXISTS")) {
             %>
             java.sql.DatabaseMetaData dbMetaData_<%=cid%> = conn_<%=cid%>.getMetaData();
-            java.sql.ResultSet rsTable_<%=cid%> = dbMetaData_<%=cid%>.getTables(null, null, null, new String[]{"TABLE"});
+            java.sql.ResultSet rsTable_<%=cid%> = null;
+            if(dbschema_<%=cid%> != null && dbschema_<%=cid%>.trim().length() > 0) {
+                rsTable_<%=cid%> = dbMetaData_<%=cid%>.getTables(null, dbschema_<%=cid%>, <%=table%>, new String[]{"TABLE"});
+            } else {
+                rsTable_<%=cid%> = dbMetaData_<%=cid%>.getTables(null, "dbo", <%=table%>, new String[]{"TABLE"});
+            }
             boolean whetherExist_<%=cid%> = false;
             while(rsTable_<%=cid%>.next()) {
                 String table_<%=cid%> = rsTable_<%=cid%>.getString("TABLE_NAME");
@@ -194,7 +206,7 @@ if(action.equals("EXPORT")) {
     if(action.equals("INSERT")) {
         %>
         java.sql.Statement stmtBulkInsert_<%=cid %> = conn_<%=cid %>.createStatement();
-        stmtBulkInsert_<%=cid %>.execute("BULK INSERT " + <%=db%> + ".." + <%=table%> + " FROM '" + <%=file%> + "' WITH ( DATAFILETYPE='<%=data_file_type%>',FIELDTERMINATOR='" + <%=field_separator%> + "',FIRSTROW =" + <%=first_row%> + ",ROWTERMINATOR='" + <%=row_separator%>+"')");
+        stmtBulkInsert_<%=cid %>.execute("BULK INSERT [" + tableName_<%=cid%> + "] FROM '" + <%=file%> + "' WITH ( DATAFILETYPE='<%=data_file_type%>',FIELDTERMINATOR='" + <%=field_separator%> + "',FIRSTROW =" + <%=first_row%> + ",ROWTERMINATOR='" + <%=row_separator%>+"')");
         stmtBulkInsert_<%=cid %>.close();        
         <%
     } else if(action.equals("UPDATE")) {
@@ -210,19 +222,20 @@ if(action.equals("EXPORT")) {
             if(keyCount_<%=cid%> == 0) {
                 throw new RuntimeException("For bulk update, Schema must have a key at least."); 
             }
+            String tmpTableName_<%=cid%> = tableName_<%=cid%>;
             tableName_<%=cid%> = "tmp_<%=cid%>";
             java.sql.Statement stmtCreateTmp_<%=cid%> = conn_<%=cid%>.createStatement();
             stmtCreateTmp_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
             stmtCreateTmp_<%=cid%>.close();
             java.sql.Statement stmtTmpBulk_<%=cid%> = conn_<%=cid%>.createStatement();
-            stmtTmpBulk_<%=cid%>.execute("BULK INSERT " + <%=db%> + ".." + tableName_<%=cid%> + " FROM '" + <%=file%> + "' WITH ( DATAFILETYPE='<%=data_file_type%>',FIELDTERMINATOR='" + <%=field_separator%> + "',FIRSTROW =" + <%=first_row%> + ",ROWTERMINATOR='" + <%=row_separator%>+"')");
+            stmtTmpBulk_<%=cid%>.execute("BULK INSERT [" + tableName_<%=cid%> + "] FROM '" + <%=file%> + "' WITH ( DATAFILETYPE='<%=data_file_type%>',FIELDTERMINATOR='" + <%=field_separator%> + "',FIRSTROW =" + <%=first_row%> + ",ROWTERMINATOR='" + <%=row_separator%>+"')");
             stmtTmpBulk_<%=cid%>.close();
-            tableName_<%=cid%> = <%=table%>;
-            String tmpTableName_<%=cid%> = "tmp_<%=cid%>";
+            tableName_<%=cid%> = tmpTableName_<%=cid%>;
+            tmpTableName_<%=cid%> = "tmp_<%=cid%>";
             java.sql.Statement stmtUpdateBulk_<%=cid%> = conn_<%=cid%>.createStatement();
             stmtUpdateBulk_<%=cid%>.executeUpdate("<%=manager.getUpdateBulkSQL(columnList)%>");
             stmtUpdateBulk_<%=cid%>.close();
-            tableName_<%=cid%> = tmpTableName_<%=cid%>;
+            tableName_<%=cid%> = "tmp_<%=cid%>";
             java.sql.Statement stmtTmpDrop_<%=cid%> = conn_<%=cid%>.createStatement();
             stmtTmpDrop_<%=cid%>.execute("<%=manager.getDropTableSQL()%>");
             stmtTmpDrop_<%=cid%>.close();
