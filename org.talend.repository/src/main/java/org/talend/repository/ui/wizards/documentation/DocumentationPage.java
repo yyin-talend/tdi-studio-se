@@ -12,18 +12,19 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.documentation;
 
-import java.io.File;
-
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -31,10 +32,15 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.LinkDocumentationItem;
+import org.talend.core.model.properties.LinkType;
+import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.wizards.PropertiesWizardPage;
+import org.talend.repository.ui.wizards.documentation.LinkUtils.LinkInfo;
 
 /**
  * Wizard page collecting informations to create a new IDocumentation. <br/>
@@ -55,6 +61,10 @@ public class DocumentationPage extends PropertiesWizardPage {
 
     private IStatus filenameStatus;
 
+    private Button checkLinkBtn;
+
+    private Item documentationItem;
+
     /**
      * Constructs a new DocumentationCreatePage.
      */
@@ -63,6 +73,7 @@ public class DocumentationPage extends PropertiesWizardPage {
 
         setTitle(Messages.getString("DocumentationPage.thisTitle.document")); //$NON-NLS-1$
         this.filenameStatus = createOkStatus();
+        documentationItem = property.getItem();
     }
 
     /*
@@ -76,6 +87,14 @@ public class DocumentationPage extends PropertiesWizardPage {
         container.setLayout(layout);
 
         GridData data;
+        // check link
+        checkLinkBtn = new Button(container, SWT.CHECK);
+        checkLinkBtn.setText(Messages.getString("DocumentationPage.LinkLabel")); //$NON-NLS-1$
+        data = new GridData(GridData.FILL_HORIZONTAL);
+        data.horizontalSpan = 2;
+        data.horizontalIndent = 20;
+        checkLinkBtn.setLayoutData(data);
+        evaluateCheckLinkDoc();
 
         // Source file
         Label filenameLab = new Label(container, SWT.NONE);
@@ -108,13 +127,27 @@ public class DocumentationPage extends PropertiesWizardPage {
         originalFilenameText.setEnabled(false);
 
         browseBtn = new Button(filenameContainer, SWT.PUSH);
-        browseBtn.setText(Messages.getString("DocumentationPage.browseBtnText.browse")); //$NON-NLS-1$
-
+        switchCheck(false);
         setControl(container);
         updateContent();
         evaluateFields();
         addListeners();
         updatePageComplete();
+    }
+
+    private void evaluateCheckLinkDoc() {
+        if (isUpdate() && checkLinkBtn != null && !checkLinkBtn.isDisposed()) {
+            checkLinkBtn.setEnabled(false);
+            if (LinkUtils.isLinkDocumentationItem(documentationItem)) {
+                checkLinkBtn.setSelection(true);
+            } else {
+                checkLinkBtn.setSelection(false);
+            }
+        } else {
+            // set the default
+            documentationItem = PropertiesFactory.eINSTANCE.createDocumentationItem();
+            documentationItem.setProperty(property);
+        }
     }
 
     protected void evaluateFields() {
@@ -132,13 +165,18 @@ public class DocumentationPage extends PropertiesWizardPage {
                 filenameStatus = createStatus(IStatus.ERROR, Messages.getString("DocumentationPage.sourceDocIsNotSet")); //$NON-NLS-1$
             }
         } else {
-            filePath = new Path(filenameText.getText());
-            File file = filePath.toFile();
-            if (!file.exists() || !file.isFile()) {
-                filenameStatus = createStatus(IStatus.ERROR, Messages.getString("DocumentationPage.sourceDocDoNotExist")); //$NON-NLS-1$
-                filePath = null;
-            } else {
-                filenameStatus = createOkStatus();
+            if (LinkUtils.isRemoteFile(filenameText.getText())) {
+                switchCheck(true);
+                // testRemoteFile();
+            } else { // local file
+                switchCheck(false);
+                filePath = new Path(filenameText.getText());
+                if (!LinkUtils.existedFile(filePath)) {
+                    filenameStatus = createStatus(IStatus.ERROR, Messages.getString("DocumentationPage.sourceDocDoNotExist")); //$NON-NLS-1$
+                    filePath = null;
+                } else {
+                    filenameStatus = createOkStatus();
+                }
             }
         }
 
@@ -162,20 +200,54 @@ public class DocumentationPage extends PropertiesWizardPage {
 
     protected void addListeners() {
         super.addListeners();
+        checkLinkBtn.addSelectionListener(new SelectionListener() {
+
+            public void widgetDefaultSelected(SelectionEvent e) {
+                //                
+            }
+
+            public void widgetSelected(SelectionEvent e) {
+                if (isLinkDocumentation()) {
+                    documentationItem = PropertiesFactory.eINSTANCE.createLinkDocumentationItem();
+                } else {
+                    documentationItem = PropertiesFactory.eINSTANCE.createDocumentationItem();
+                }
+                documentationItem.setProperty(property);
+                evaluateFields();
+                testRemoteFile();
+            }
+        });
         filenameText.addModifyListener(new ModifyListener() {
 
             public void modifyText(ModifyEvent e) {
                 evaluateFileNameField();
             }
         });
+        filenameText.addFocusListener(new FocusListener() {
 
+            public void focusGained(FocusEvent e) {
+                // 
+            }
+
+            public void focusLost(FocusEvent e) {
+                testRemoteFile();
+
+            }
+        });
         browseBtn.addSelectionListener(new SelectionAdapter() {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
-                FileDialog dlg = new FileDialog(getShell(), SWT.OPEN);
-                String filename = dlg.open();
-                filenameText.setText((filename != null ? filename : "")); //$NON-NLS-1$
+                if (LinkUtils.isRemoteFile(filenameText.getText())) {
+                    testRemoteFile();
+                } else {
+                    FileDialog dlg = new FileDialog(getShell(), SWT.OPEN);
+                    String filename = dlg.open();
+                    if (filename != null) {
+                        filenameText.setText(filename);
+                        evaluateFileNameField();
+                    }
+                }
             }
         });
     }
@@ -183,6 +255,13 @@ public class DocumentationPage extends PropertiesWizardPage {
     protected void updateContent() {
         super.updateContent();
         originalFilenameText.setText(StringUtils.trimToEmpty(getDocumentation().getDocOriginalName()));
+        if (isUpdate() && LinkUtils.isLinkDocumentationItem(documentationItem)) {
+            LinkType link = ((LinkDocumentationItem) documentationItem).getLink();
+            if (link != null) {
+                filenameText.setText(StringUtils.trimToEmpty(link.getURI()));
+                testRemoteFile();
+            }
+        }
     }
 
     private IDocumentationContext getDocumentation() {
@@ -210,5 +289,46 @@ public class DocumentationPage extends PropertiesWizardPage {
         }
         return name.trim().replaceAll(" ", "_"); //$NON-NLS-1$ //$NON-NLS-2$
 
+    }
+
+    public boolean isLinkDocumentation() {
+        if (checkLinkBtn != null && !checkLinkBtn.isDisposed()) {
+            return checkLinkBtn.getSelection();
+        }
+        return false;
+    }
+
+    private void switchCheck(boolean check) {
+        if (check) {
+            browseBtn.setText(Messages.getString("DocumentationPage.checkLabel")); //$NON-NLS-1$
+            browseBtn.setToolTipText(Messages.getString("DocumentationPage.checkTipText")); //$NON-NLS-1$
+        } else {
+            browseBtn.setText(Messages.getString("DocumentationPage.browseBtnText.browse")); //$NON-NLS-1$
+            browseBtn.setToolTipText(""); //$NON-NLS-1$
+        }
+    }
+
+    private void testRemoteFile() {
+        if (LinkUtils.isRemoteFile(filenameText.getText())) {
+            LinkInfo info = LinkUtils.testRemoteFile(filenameText.getText());
+            switch (info) {
+            case FILE_NOT_FOUND:
+            case URL_ERROR:
+            case NET_ERROR:
+                filenameStatus = createStatus(IStatus.ERROR, Messages.getString("DocumentationPage.sourceDocDoNotExist")); //$NON-NLS-1$
+                break;
+            case LINK_OK:
+                filenameStatus = createOkStatus();
+                break;
+            default:
+                break;
+            }
+            getDocumentation().setDocFilePath(new Path(filenameText.getText().trim()));
+            updatePageStatus();
+            if (!isUpdate()) {
+                nameText.setText(checkSpaceName(getDocumentation().getDocOriginalName()));
+            }
+
+        }
     }
 }

@@ -15,6 +15,7 @@ package org.talend.repository.ui.actions.documentation;
 import java.io.File;
 import java.io.IOException;
 
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
@@ -22,13 +23,18 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.ui.image.ImageProvider;
+import org.talend.core.model.properties.ByteArray;
 import org.talend.core.model.properties.DocumentationItem;
+import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.LinkDocumentationItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.ui.actions.AContextualAction;
+import org.talend.repository.ui.wizards.documentation.LinkDocumentationHelper;
+import org.talend.repository.ui.wizards.documentation.LinkUtils;
 
 /**
  * Saves the content of a document on the local file system. <br/>
@@ -72,21 +78,59 @@ public class ExtractDocumentationAction extends AContextualAction {
      */
     public void run() {
         RepositoryNode node = (RepositoryNode) ((IStructuredSelection) getSelection()).getFirstElement();
-        DocumentationItem documentationItem = (DocumentationItem) node.getObject().getProperty().getItem();
 
-        FileDialog fileDlg = new FileDialog(Display.getCurrent().getActiveShell(), SWT.SAVE);
-        String initialFileName = documentationItem.getName();
-        if (documentationItem.getExtension() != null) {
-            initialFileName = initialFileName + "." + documentationItem.getExtension(); //$NON-NLS-1$
+        Item item = node.getObject().getProperty().getItem();
+        if (item == null) {
+            return;
         }
-        fileDlg.setFileName(initialFileName);
-        String filename = fileDlg.open();
-        if (filename != null) {
-            File file = new File(filename);
-            try {
-                documentationItem.getContent().setInnerContentToFile(file);
-            } catch (IOException ioe) {
-                MessageBoxExceptionHandler.process(ioe);
+        String initialFileName = null;
+        String initialExtension = null;
+        if (item instanceof DocumentationItem) {
+            DocumentationItem documentationItem = (DocumentationItem) item;
+            initialFileName = documentationItem.getName();
+            if (documentationItem.getExtension() != null) {
+                initialExtension = documentationItem.getExtension();
+            }
+        } else if (item instanceof LinkDocumentationItem) { // link documenation
+            LinkDocumentationItem linkDocItem = (LinkDocumentationItem) item;
+
+            if (!LinkUtils.validateLink(linkDocItem.getLink())) {
+                MessageDialog.openError(Display.getCurrent().getActiveShell(), Messages
+                        .getString("ExtractDocumentationAction.fileErrorTitle"), //$NON-NLS-1$
+                        Messages.getString("ExtractDocumentationAction.fileErrorMessages")); //$NON-NLS-1$
+                return;
+            }
+
+            initialFileName = linkDocItem.getName();
+            if (linkDocItem.getExtension() != null) {
+                initialExtension = linkDocItem.getExtension();
+            }
+        }
+        if (initialFileName != null) {
+            FileDialog fileDlg = new FileDialog(Display.getCurrent().getActiveShell(), SWT.SAVE);
+
+            if (initialExtension != null) {
+                initialFileName = initialFileName + LinkUtils.DOT + initialExtension; //$NON-NLS-1$
+                fileDlg.setFilterExtensions(new String[] { "*." + initialExtension, "*.*" }); //$NON-NLS-1$ //$NON-NLS-2$
+            }
+            fileDlg.setFileName(initialFileName);
+            String filename = fileDlg.open();
+            if (filename != null) {
+                File file = new File(filename);
+                try {
+                    if (item instanceof DocumentationItem) {
+                        DocumentationItem documentationItem = (DocumentationItem) item;
+                        documentationItem.getContent().setInnerContentToFile(file);
+                    } else if (item instanceof LinkDocumentationItem) { // link documenation
+                        LinkDocumentationItem linkDocItem = (LinkDocumentationItem) item;
+                        ByteArray byteArray = LinkDocumentationHelper.getLinkItemContent(linkDocItem);
+                        if (byteArray != null) {
+                            byteArray.setInnerContentToFile(file);
+                        }
+                    }
+                } catch (IOException ioe) {
+                    MessageBoxExceptionHandler.process(ioe);
+                }
             }
         }
     }

@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.documentation;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.eclipse.core.runtime.IPath;
@@ -25,6 +26,9 @@ import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.properties.ByteArray;
 import org.talend.core.model.properties.DocumentationItem;
+import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.LinkDocumentationItem;
+import org.talend.core.model.properties.LinkType;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.ui.images.ECoreImage;
@@ -32,6 +36,7 @@ import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.ui.wizards.RepositoryWizard;
+import org.talend.repository.ui.wizards.documentation.LinkUtils.LinkInfo;
 
 /**
  * Wizard to create a new IDocumentation. <br/>
@@ -52,8 +57,6 @@ public class DocumentationCreateWizard extends RepositoryWizard implements IDocu
 
     private Property property;
 
-    private DocumentationItem documentationItem;
-
     /**
      * Constructs a new DocumentationCreateWizard.
      * 
@@ -61,7 +64,6 @@ public class DocumentationCreateWizard extends RepositoryWizard implements IDocu
      */
     public DocumentationCreateWizard(IWorkbench workbench, IPath destinationPath) {
         super(workbench, true);
-
         pathToSave = destinationPath;
 
         setWindowTitle(Messages.getString("DocumentationCreateWizard.windowTitle")); //$NON-NLS-1$
@@ -71,10 +73,7 @@ public class DocumentationCreateWizard extends RepositoryWizard implements IDocu
         property = PropertiesFactory.eINSTANCE.createProperty();
         property.setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getUser());
         property.setVersion(VersionUtils.DEFAULT_VERSION);
-        property.setStatusCode(""); //$NON-NLS-1$
-
-        documentationItem = PropertiesFactory.eINSTANCE.createDocumentationItem();
-        documentationItem.setProperty(property);
+        property.setStatusCode(""); //$NON-NLS-1$        
     }
 
     /*
@@ -104,20 +103,51 @@ public class DocumentationCreateWizard extends RepositoryWizard implements IDocu
 
         try {
             property.setId(repositoryFactory.getNextId());
+            Item item = property.getItem();
+            if (item != null) {
+                String fileStr = getDocFilePath().toString();
+                if (item instanceof LinkDocumentationItem) {
+                    LinkDocumentationItem linkDocumentationItem = (LinkDocumentationItem) item;
 
-            ByteArray byteArray = PropertiesFactory.eINSTANCE.createByteArray();
-            byteArray.setInnerContentFromFile(getDocFilePath().toFile());
+                    LinkType link = PropertiesFactory.eINSTANCE.createLinkType();
+                    linkDocumentationItem.setLink(link);
+                    if (LinkUtils.isRemoteFile(fileStr)) {
+                        if (LinkUtils.testRemoteFile(fileStr) != LinkInfo.LINK_OK) {
+                            if (!LinkDocumentationHelper.continueAddDocumentation()) {
+                                return false;
+                            }
+                        }
+                        link.setURI(fileStr);
+                    } else {
+                        link.setURI(getDocFilePath().toOSString());
+                    }
+                    link.setState(true);
+                    linkDocumentationItem.setName(getDocFilePath().removeFileExtension().lastSegment());
+                    linkDocumentationItem.setExtension(getDocFilePath().getFileExtension());
 
-            documentationItem.setName(getDocFilePath().removeFileExtension().lastSegment());
-            documentationItem.setExtension(getDocFilePath().getFileExtension());
-            documentationItem.setContent(byteArray);
+                } else if (item instanceof DocumentationItem) {
+                    DocumentationItem docItem = (DocumentationItem) item;
+                    ByteArray byteArray = PropertiesFactory.eINSTANCE.createByteArray();
+                    if (LinkUtils.isRemoteFile(fileStr)) {
+                        File tmpFile = LinkDocumentationHelper.createContentFromRemote(fileStr);
+                        if (tmpFile != null) {
+                            byteArray.setInnerContentFromFile(tmpFile);
+                        } else {
+                            if (!LinkDocumentationHelper.continueAddDocumentation()) {
+                                return false;
+                            }
+                        }
+                    } else {
+                        byteArray.setInnerContentFromFile(getDocFilePath().toFile());
+                    }
+                    docItem.setContent(byteArray);
+                    docItem.setName(getDocFilePath().removeFileExtension().lastSegment());
+                    docItem.setExtension(getDocFilePath().getFileExtension());
+                }
 
-            // PTODO mhelleboid
-            // doc.setOriginalDocPath(getDocFilePath());
-
-            repositoryFactory.create(documentationItem, mainPage.getDestinationPath());
-
-            created = true;
+                repositoryFactory.create(item, mainPage.getDestinationPath());
+                created = true;
+            }
         } catch (PersistenceException e) {
             MessageBoxExceptionHandler.process(e);
         } catch (IOException ioe) {
@@ -162,7 +192,7 @@ public class DocumentationCreateWizard extends RepositoryWizard implements IDocu
         } else {
             this.docOriginalExtension = DEFAULT_FILENAME_EXT;
         }
-        return "." + this.docOriginalExtension; //$NON-NLS-1$
+        return LinkUtils.DOT + this.docOriginalExtension;
     }
 
     /**
@@ -209,4 +239,5 @@ public class DocumentationCreateWizard extends RepositoryWizard implements IDocu
     public boolean isDocVersionEditable() {
         return true;
     }
+
 }

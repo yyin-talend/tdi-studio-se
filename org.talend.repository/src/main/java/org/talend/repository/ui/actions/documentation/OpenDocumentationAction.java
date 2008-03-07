@@ -12,32 +12,28 @@
 // ============================================================================
 package org.talend.repository.ui.actions.documentation;
 
-import java.io.File;
 import java.io.IOException;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.program.Program;
+import org.eclipse.swt.widgets.Display;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
-import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.ImageProvider;
-import org.talend.commons.utils.workbench.resources.ResourceUtils;
-import org.talend.core.CorePlugin;
-import org.talend.core.context.Context;
-import org.talend.core.context.RepositoryContext;
-import org.talend.core.model.general.Project;
+import org.talend.core.model.properties.ByteArray;
 import org.talend.core.model.properties.DocumentationItem;
+import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.LinkDocumentationItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.i18n.Messages;
-import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.model.ResourceModelUtils;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.ui.actions.AContextualAction;
+import org.talend.repository.ui.wizards.documentation.LinkDocumentationHelper;
+import org.talend.repository.ui.wizards.documentation.LinkUtils;
 
 /**
  * Action opening a IDocumentation with the associated OS program. <br/>
@@ -81,35 +77,68 @@ public class OpenDocumentationAction extends AContextualAction {
      */
     public void run() {
         RepositoryNode node = (RepositoryNode) ((IStructuredSelection) getSelection()).getFirstElement();
-        DocumentationItem documentationItem = (DocumentationItem) node.getObject().getProperty().getItem();
-
-        Program program = null;
-        if (documentationItem.getExtension() != null) {
-            program = Program.findProgram(documentationItem.getExtension());
+        Item item = node.getObject().getProperty().getItem();
+        if (item == null) {
+            return;
         }
-        if (program != null) {
-            // Save data to a temporary file
-            Project project = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
-                    .getProject();
-            try {
-                IProject fsProject = ResourceModelUtils.getProject(project);
-                IFolder tmpFolder = ResourceUtils.getFolder(fsProject, RepositoryConstants.TEMP_DIRECTORY, true);
-                String tmpFilename = "DOC" + documentationItem.getProperty().getId(); //$NON-NLS-1$
-                IFile fileTmp = tmpFolder.getFile(tmpFilename);
-                File file = fileTmp.getLocation().toFile();
-                documentationItem.getContent().setInnerContentToFile(file);
-
-                program.execute(fileTmp.getLocation().toOSString());
-            } catch (PersistenceException e) {
-                MessageBoxExceptionHandler.process(e);
-            } catch (IOException e) {
-                MessageBoxExceptionHandler.process(e);
+        String extension = null;
+        if (item instanceof DocumentationItem) {
+            DocumentationItem documentationItem = (DocumentationItem) item;
+            if (documentationItem.getExtension() != null) {
+                extension = documentationItem.getExtension();
             }
-        } else {
+        } else if (item instanceof LinkDocumentationItem) { // link documenation
+            LinkDocumentationItem linkDocItem = (LinkDocumentationItem) item;
+            if (!LinkUtils.validateLink(linkDocItem.getLink())) {
+                MessageDialog.openError(Display.getCurrent().getActiveShell(), Messages
+                        .getString("ExtractDocumentationAction.fileErrorTitle"), //$NON-NLS-1$
+                        Messages.getString("ExtractDocumentationAction.fileErrorMessages")); //$NON-NLS-1$
+                return;
+            }
+
+            if (linkDocItem.getExtension() != null) {
+                extension = linkDocItem.getExtension();
+            }
+        }
+        // use the system program to open the documentation by extension.
+        Program program = null;
+        if (extension != null) {
+            program = Program.findProgram(extension);
+        }
+        boolean opened = false;
+        if (program != null) {
+            IFile file = LinkDocumentationHelper.getTempFile(item.getProperty().getId());
+            if (file != null) {
+                try {
+                    boolean canExec = false;
+                    if (item instanceof DocumentationItem) {
+                        DocumentationItem documentationItem = (DocumentationItem) item;
+                        documentationItem.getContent().setInnerContentToFile(file.getLocation().toFile());
+                        canExec = true;
+                    } else if (item instanceof LinkDocumentationItem) { // link documenation
+                        LinkDocumentationItem linkDocItem = (LinkDocumentationItem) item;
+                        ByteArray byteArray = LinkDocumentationHelper.getLinkItemContent(linkDocItem);
+                        if (byteArray != null) {
+                            byteArray.setInnerContentToFile(file.getLocation().toFile());
+                            canExec = true;
+                        }
+                    }
+                    if (canExec) {
+                        program.execute(file.getLocation().toOSString());
+                        opened = true;
+                    }
+                } catch (IOException e) {
+                    MessageBoxExceptionHandler.process(e);
+                }
+            }
+        }
+        // if not opened, extract the content.
+        if (!opened) {
             ExtractDocumentationAction extractAction = new ExtractDocumentationAction();
             extractAction.setWorkbenchPart(getWorkbenchPart());
             extractAction.run();
         }
+
     }
 
     /*
@@ -119,7 +148,7 @@ public class OpenDocumentationAction extends AContextualAction {
      */
     @Override
     public Class getClassForDoubleClick() {
-        return DocumentationItem.class;
+        return OpenDocumentationAction.class;
     }
 
 }

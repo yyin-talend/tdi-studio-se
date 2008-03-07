@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.documentation;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -21,12 +22,16 @@ import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.properties.DocumentationItem;
+import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.LinkDocumentationItem;
+import org.talend.core.model.properties.LinkType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.ui.wizards.RepositoryWizard;
+import org.talend.repository.ui.wizards.documentation.LinkUtils.LinkInfo;
 
 /**
  * Wizard to update a IDocumentation. <br/>
@@ -39,7 +44,7 @@ public class DocumentationUpdateWizard extends RepositoryWizard implements IDocu
     /** Main wizard page. */
     private DocumentationPage mainPage;
 
-    private DocumentationItem documentationItem;
+    private Item docItem;
 
     private IPath docFilePath;
 
@@ -49,7 +54,7 @@ public class DocumentationUpdateWizard extends RepositoryWizard implements IDocu
     public DocumentationUpdateWizard(IWorkbench workbench, IRepositoryObject object, IPath destinationPath) {
         super(workbench, false);
         this.pathToSave = destinationPath;
-        this.documentationItem = (DocumentationItem) object.getProperty().getItem();
+        this.docItem = object.getProperty().getItem();
 
         this.repositoryObject = object;
 
@@ -66,7 +71,7 @@ public class DocumentationUpdateWizard extends RepositoryWizard implements IDocu
      */
     @Override
     public void addPages() {
-        mainPage = new DocumentationPage(documentationItem.getProperty(), pathToSave);
+        mainPage = new DocumentationPage(docItem.getProperty(), pathToSave);
         mainPage.setDescription(Messages.getString("DocumentationUpdateWizard.mainPageDescription")); //$NON-NLS-1$
         mainPage.setUpdate(true);
         mainPage.setEditPath(false);
@@ -85,12 +90,44 @@ public class DocumentationUpdateWizard extends RepositoryWizard implements IDocu
         IProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
         try {
             if (getDocFilePath() != null && getDocFilePath().segmentCount() != 0) {
-                documentationItem.getContent().setInnerContentFromFile(getDocFilePath().toFile());
-                documentationItem.setName(getDocFilePath().removeFileExtension().lastSegment());
-                documentationItem.setExtension(getDocFilePath().getFileExtension());
+                String fileStr = getDocFilePath().toString();
+                if (LinkUtils.isDocumentationItem(docItem)) {
+                    DocumentationItem documentationItem = (DocumentationItem) docItem;
+                    if (LinkUtils.isRemoteFile(fileStr)) {
+                        File tmpFile = LinkDocumentationHelper.createContentFromRemote(fileStr);
+                        if (tmpFile != null) {
+                            documentationItem.getContent().setInnerContentFromFile(tmpFile);
+                        } else {
+                            if (!LinkDocumentationHelper.continueAddDocumentation()) {
+                                return false;
+                            }
+                        }
+                    } else {
+                        documentationItem.getContent().setInnerContentFromFile(getDocFilePath().toFile());
+                    }
+                    documentationItem.setName(getDocFilePath().removeFileExtension().lastSegment());
+                    documentationItem.setExtension(getDocFilePath().getFileExtension());
+
+                } else if (LinkUtils.isLinkDocumentationItem(docItem)) {
+                    LinkDocumentationItem linkDocumentationItem = (LinkDocumentationItem) docItem;
+                    LinkType link = linkDocumentationItem.getLink();
+                    if (LinkUtils.isRemoteFile(fileStr)) {
+                        if (LinkUtils.testRemoteFile(fileStr) != LinkInfo.LINK_OK) {
+                            if (!LinkDocumentationHelper.continueAddDocumentation()) {
+                                return false;
+                            }
+                        }
+                        link.setURI(fileStr);
+                    } else {
+                        link.setURI(getDocFilePath().toOSString());
+                    }
+                    link.setState(true);
+                    linkDocumentationItem.setName(getDocFilePath().removeFileExtension().lastSegment());
+                    linkDocumentationItem.setExtension(getDocFilePath().getFileExtension());
+                }
             }
 
-            repositoryFactory.save(documentationItem);
+            repositoryFactory.save(docItem);
             closeLockStrategy();
             updated = true;
         } catch (PersistenceException e) {
@@ -152,10 +189,15 @@ public class DocumentationUpdateWizard extends RepositoryWizard implements IDocu
      */
     public String getDocOriginalExtension() {
         if (getDocFilePath() != null) {
-            return "." + getDocFilePath().getFileExtension(); //$NON-NLS-1$
+            return LinkUtils.DOT + getDocFilePath().getFileExtension();
         } else {
-            return "." + documentationItem.getExtension(); //$NON-NLS-1$
+            if (LinkUtils.isDocumentationItem(docItem)) {
+                return LinkUtils.DOT + ((DocumentationItem) docItem).getExtension();
+            } else if (LinkUtils.isLinkDocumentationItem(docItem)) {
+                return LinkUtils.DOT + ((LinkDocumentationItem) docItem).getExtension();
+            }
         }
+        return ""; //$NON-NLS-1$
     }
 
     /**
@@ -164,7 +206,11 @@ public class DocumentationUpdateWizard extends RepositoryWizard implements IDocu
      * @param docOriginalExtension the docOriginalExtension to set
      */
     public void setDocOriginalExtension(String docOriginalExtension) {
-        documentationItem.setExtension(docOriginalExtension);
+        if (LinkUtils.isDocumentationItem(docItem)) {
+            ((DocumentationItem) docItem).setExtension(docOriginalExtension);
+        } else if (LinkUtils.isLinkDocumentationItem(docItem)) {
+            ((LinkDocumentationItem) docItem).setExtension(docOriginalExtension);
+        }
     }
 
     /**
@@ -176,8 +222,15 @@ public class DocumentationUpdateWizard extends RepositoryWizard implements IDocu
         if (getDocFilePath() != null) {
             return getDocFilePath().lastSegment();
         } else {
-            return documentationItem.getName() + "." + documentationItem.getExtension(); //$NON-NLS-1$
+            if (LinkUtils.isDocumentationItem(docItem)) {
+                DocumentationItem documentationItem = (DocumentationItem) docItem;
+                return documentationItem.getName() + LinkUtils.DOT + documentationItem.getExtension();
+            } else if (LinkUtils.isLinkDocumentationItem(docItem)) {
+                LinkDocumentationItem linkDocumentationItem = (LinkDocumentationItem) docItem;
+                return linkDocumentationItem.getName() + LinkUtils.DOT + linkDocumentationItem.getExtension();
+            }
         }
+        return docItem.getProperty().getLabel();
     }
 
     /**
@@ -186,6 +239,10 @@ public class DocumentationUpdateWizard extends RepositoryWizard implements IDocu
      * @param docOriginalName the docOriginalName to set
      */
     public void setDocOriginalName(String docOriginalName) {
-        documentationItem.setName(docOriginalName);
+        if (LinkUtils.isDocumentationItem(docItem)) {
+            ((DocumentationItem) docItem).setName(docOriginalName);
+        } else if (LinkUtils.isLinkDocumentationItem(docItem)) {
+            ((LinkDocumentationItem) docItem).setName(docOriginalName);
+        }
     }
 }
