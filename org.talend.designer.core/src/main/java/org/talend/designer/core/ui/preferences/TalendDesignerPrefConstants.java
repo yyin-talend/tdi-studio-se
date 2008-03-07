@@ -50,4 +50,6 @@ public class TalendDesignerPrefConstants {
     public static final String EDITOR_ANTIALIASING = "editorAntialiasing "; //$NON-NLS-1$
 
     public static final String EDITOR_INTERPOLATION = "editorInterpolation "; //$NON-NLS-1$
+
+    public static final String SCHEMA_OPTIONS = "schemaOptions";
 }

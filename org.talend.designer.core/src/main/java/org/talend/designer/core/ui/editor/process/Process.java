@@ -340,6 +340,17 @@ public class Process extends Element implements IProcess2 {
         param.setShow(false);
         param.setReadOnly(false);
         addElementParameter(param);
+
+        param = new ElementParameter(this);
+        param.setName(EParameterName.SCHEMA_OPTIONS.getName());
+        param.setCategory(EComponentCategory.MAIN);
+        param.setField(EParameterFieldType.TEXT);
+        param.setDisplayName(EParameterName.SCHEMA_OPTIONS.getDisplayName());
+        param.setShow(false);
+        param.setValue(DesignerPlugin.getDefault().getPluginPreferences().getString(TalendDesignerPrefConstants.SCHEMA_OPTIONS));
+        param.setReadOnly(true);
+        addElementParameter(param);
+
     }
 
     /**
