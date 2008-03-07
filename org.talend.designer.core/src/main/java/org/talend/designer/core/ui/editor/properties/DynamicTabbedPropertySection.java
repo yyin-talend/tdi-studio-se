@@ -75,7 +75,6 @@ import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
-import org.talend.designer.core.model.process.jobsettings.JobSettingsConstants;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
@@ -147,10 +146,10 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
 
     public static final boolean DEBUG_TIME = false;
 
-    private final String extraPropertyTypeName;
+    // private final String extraPropertyTypeName;
 
-    private final String extraRepositoryPropertyTypeName;
-
+    // private final String extraRepositoryPropertyTypeName;
+    //
     private final String updataComponentParamName;
 
     /**
@@ -173,15 +172,15 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
      * @param show boolean
      */
     private void showPropertyRepositoryList(boolean show, boolean extra) {
-        for (int i = 0; i < elem.getElementParameters().size(); i++) {
-            IElementParameter param = elem.getElementParameters().get(i);
-            if (extra && param.getName().equals(extraRepositoryPropertyTypeName)) {
-                param.setShow(show);
-
-            } else if (!extra && param.getName().equals(EParameterName.REPOSITORY_PROPERTY_TYPE.getName())) {
-                param.setShow(show);
-            }
-        }
+        // for (int i = 0; i < elem.getElementParameters().size(); i++) {
+        // IElementParameter param = elem.getElementParameters().get(i);
+        // if (extra && param.getName().equals(extraRepositoryPropertyTypeName)) {
+        // param.setShow(show);
+        //
+        // } else if (!extra && param.getName().equals(EParameterName.REPOSITORY_PROPERTY_TYPE.getName())) {
+        // param.setShow(show);
+        // }
+        // }
     }
 
     /**
@@ -476,10 +475,10 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
             if (param.getName().equals(EParameterName.REPOSITORY_PROPERTY_TYPE.getName())) {
                 updateRepositoryListExtra(param, repositoryConnectionNameList, repositoryConnectionValueList, false);
             }
-            // for job settings extra (feature 2710)
-            if (param.getName().equals(extraRepositoryPropertyTypeName)) {
-                updateRepositoryListExtra(param, repositoryConnectionNameList, repositoryConnectionValueList, true);
-            }
+            // // for job settings extra (feature 2710)
+            // if (param.getName().equals(extraRepositoryPropertyTypeName)) {
+            // updateRepositoryListExtra(param, repositoryConnectionNameList, repositoryConnectionValueList, true);
+            // }
         }
         updateQuery();
     }
@@ -487,9 +486,9 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
     private void updateRepositoryListExtra(IElementParameter param, String[] repositoryConnectionNameList,
             String[] repositoryConnectionValueList, boolean extra) {
         String paramName = EParameterName.PROPERTY_TYPE.getName();
-        if (extra) {
-            paramName = extraPropertyTypeName;
-        }
+        // if (extra) {
+        // paramName = extraPropertyTypeName;
+        // }
         String repositoryValue = elem.getElementParameter(paramName).getRepositoryValue();
         if (repositoryValue != null) {
             List<String> connectionNamesList = new ArrayList<String>();
@@ -551,10 +550,10 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
         param.setListItemsValue(repositoryConnectionValueList);
         if (!repositoryConnectionItemMap.keySet().contains(param.getValue())) {
             if (repositoryConnectionNameList.length > 0) {
-                paramName = EParameterName.REPOSITORY_PROPERTY_TYPE.getName();
-                if (extra) {
-                    paramName = extraRepositoryPropertyTypeName;
-                }
+                // paramName = EParameterName.REPOSITORY_PROPERTY_TYPE.getName();
+                // if (extra) {
+                // paramName = extraRepositoryPropertyTypeName;
+                // }
                 elem.setPropertyValue(paramName, repositoryConnectionValueList[0]);
             }
         }
@@ -639,7 +638,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
             }
         }
         // for job settings extra.(feature 2710)
-        param = elem.getElementParameter(extraPropertyTypeName);
+        // param = elem.getElementParameter(extraPropertyTypeName);
         if (param != null) {
             oldPropertyType = (String) param.getValue();
             if (param.isShow(elem.getElementParameters())) {
@@ -1091,15 +1090,17 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
         repositoryConnectionItemMap = new HashMap<String, ConnectionItem>();
         repositoryTableMap = new HashMap<String, IMetadataTable>();
         hashCurControls = new DualHashBidiMap();
-        // for job settings extra (feature 2710)
-        extraPropertyTypeName = JobSettingsConstants.getExtraParameterName(EParameterName.PROPERTY_TYPE.getName());
-        extraRepositoryPropertyTypeName = JobSettingsConstants.getExtraParameterName(EParameterName.REPOSITORY_PROPERTY_TYPE
-                .getName());
-        if (section == EComponentCategory.EXTRA) {
-            updataComponentParamName = JobSettingsConstants.getExtraParameterName(EParameterName.UPDATE_COMPONENTS.getName());
-        } else {
-            updataComponentParamName = EParameterName.UPDATE_COMPONENTS.getName();
-        }
+        // // for job settings extra (feature 2710)
+        // extraPropertyTypeName = JobSettingsConstants.getExtraParameterName(EParameterName.PROPERTY_TYPE.getName());
+        // extraRepositoryPropertyTypeName =
+        // JobSettingsConstants.getExtraParameterName(EParameterName.REPOSITORY_PROPERTY_TYPE
+        // .getName());
+        // if (section == EComponentCategory.EXTRA) {
+        // updataComponentParamName =
+        // JobSettingsConstants.getExtraParameterName(EParameterName.UPDATE_COMPONENTS.getName());
+        // } else {
+        updataComponentParamName = EParameterName.UPDATE_COMPONENTS.getName();
+        // }
     }
 
     /**

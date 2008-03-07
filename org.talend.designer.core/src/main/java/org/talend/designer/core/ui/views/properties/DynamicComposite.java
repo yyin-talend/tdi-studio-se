@@ -21,7 +21,6 @@ import java.util.Map;
 
 import org.apache.commons.collections.BidiMap;
 import org.apache.commons.collections.bidimap.DualHashBidiMap;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.commands.CommandStackEvent;
 import org.eclipse.gef.commands.CommandStackEventListener;
@@ -36,11 +35,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
-import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
-import org.talend.commons.utils.data.container.Content;
-import org.talend.commons.utils.data.container.ContentList;
-import org.talend.commons.utils.data.container.RootContainer;
 import org.talend.commons.utils.threading.ExecutionLimiter;
 import org.talend.commons.utils.time.TimeMeasure;
 import org.talend.core.model.metadata.IMetadataTable;
@@ -70,7 +65,6 @@ import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
-import org.talend.designer.core.model.process.jobsettings.JobSettingsConstants;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.cmd.ChangeMetadataCommand;
@@ -80,6 +74,7 @@ import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySectio
 import org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController;
 import org.talend.designer.core.ui.editor.properties.controllers.GroupController;
 import org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty;
+import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 
@@ -107,19 +102,13 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
 
     protected DynamicPropertyGenerator generator;
 
-    private String oldProcessType;
-
     private final Map<String, IMetadataTable> repositoryTableMap;
 
     private final Map<String, ConnectionItem> repositoryConnectionItemMap;
 
     private Map<String, IRepositoryObject> processMap;
 
-    private String oldPropertyType;
-
     private final Map<String, Query> repositoryQueryStoreMap;
-
-    private String oldQueryStoreType;
 
     private Map<String, String> tableIdAndDbTypeMap;
 
@@ -135,112 +124,82 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
 
     protected Composite composite;
 
-    private final String extraPropertyTypeName;
-
-    private final String extraRepositoryPropertyTypeName;
+    // private final String extraPropertyTypeName;
+    //
+    // private final String extraRepositoryPropertyTypeName;
 
     private final String updataComponentParamName;
 
-    /**
-     * ftang Comment method "showQueryStoreRepositoryList".
-     * 
-     * @param show
-     */
-    private void showQueryStoreRepositoryList(boolean show) {
-        for (int i = 0; i < elem.getElementParameters().size(); i++) {
-            IElementParameter param = elem.getElementParameters().get(i);
-            if (param.getName().equals(EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName())) {
-                param.setShow(show);
-            }
-        }
-    }
-
-    /**
-     * ftang Comment method "showPropertyRepositoryList".
-     * 
-     * @param show boolean
-     */
-    private void showPropertyRepositoryList(boolean show, boolean extra) {
-        for (int i = 0; i < elem.getElementParameters().size(); i++) {
-            IElementParameter param = elem.getElementParameters().get(i);
-            if (extra && param.getName().equals(extraRepositoryPropertyTypeName)) {
-                param.setShow(show);
-            } else if (!extra && param.getName().equals(EParameterName.REPOSITORY_PROPERTY_TYPE.getName())) {
-                param.setShow(show);
-            }
-        }
-    }
-
-    /**
-     * ftang Comment method "updateProcessList".
-     */
-    private void updateProcessList() {
-        List<String> processNameList = new ArrayList<String>();
-        List<String> processValueList = new ArrayList<String>();
-        processMap = new HashMap<String, IRepositoryObject>();
-
-        IProxyRepositoryFactory factory = DesignerPlugin.getDefault().getProxyRepositoryFactory();
-        try {
-            RootContainer<String, IRepositoryObject> processContainer = factory.getProcess();
-            ContentList<String, IRepositoryObject> processAbsoluteMembers = processContainer.getAbsoluteMembers();
-
-            String currentProcess = process.getLabel();
-            for (Content<String, IRepositoryObject> object : processAbsoluteMembers.values()) {
-                IRepositoryObject process = object.getContent();
-                if (factory.getStatus(process) != ERepositoryStatus.DELETED && !currentProcess.equals(process.getLabel())) {
-                    String path = object.getParent().getPath().toString();
-                    String name;
-                    if (path.equals("")) { //$NON-NLS-1$
-                        name = IPath.SEPARATOR + process.getLabel();
-                    } else {
-                        name = IPath.SEPARATOR + path + IPath.SEPARATOR + process.getLabel();
-                    }
-                    processNameList.add(name);
-                    processMap.put(name, process);
-                }
-            }
-        } catch (PersistenceException e) {
-            e.printStackTrace();
-        }
-
-        List<String> tempFolderList = new ArrayList<String>();
-        List<String> tempProcessNameList = new ArrayList<String>();
-        tempProcessNameList.addAll(processNameList);
-
-        for (String string : tempProcessNameList) {
-            // Put jobs which in a folder into a new list.s
-            if (string.lastIndexOf("/") != 0) {
-                tempFolderList.add(string);
-                processNameList.remove(string);
-            }
-        }
-
-        sortList(processNameList);
-        sortList(tempFolderList);
-
-        // Always put the jobs which in a folder on the top of the job list
-        tempFolderList.addAll(processNameList);
-
-        processNameList = tempFolderList;
-
-        for (String name : processNameList) {
-            IRepositoryObject process = processMap.get(name);
-            processValueList.add(process.getLabel()); //$NON-NLS-1$ //$NON-NLS-2$
-        }
-        String[] processTableNameList = processNameList.toArray(new String[0]);
-        String[] processTableValueList = processValueList.toArray(new String[0]);
-
-        for (int i = 0; i < elem.getElementParameters().size(); i++) {
-            IElementParameter param = elem.getElementParameters().get(i);
-            if (param.getName().equals(EParameterName.PROCESS_TYPE_PROCESS.getName())) {
-                param.setListItemsDisplayName(processTableNameList);
-                param.setListItemsValue(processTableValueList);
-                if (elem instanceof Node) {
-                    ((Node) elem).checkAndRefreshNode();
-                }
-            }
-        }
-    }
+    // /**
+    // * ftang Comment method "updateProcessList".
+    // */
+    // private void updateProcessList_renamed() {
+    // List<String> processNameList = new ArrayList<String>();
+    // List<String> processValueList = new ArrayList<String>();
+    // processMap = new HashMap<String, IRepositoryObject>();
+    //
+    // IProxyRepositoryFactory factory = DesignerPlugin.getDefault().getProxyRepositoryFactory();
+    // try {
+    // RootContainer<String, IRepositoryObject> processContainer = factory.getProcess();
+    // ContentList<String, IRepositoryObject> processAbsoluteMembers = processContainer.getAbsoluteMembers();
+    //
+    // String currentProcess = process.getLabel();
+    // for (Content<String, IRepositoryObject> object : processAbsoluteMembers.values()) {
+    // IRepositoryObject process = object.getContent();
+    // if (factory.getStatus(process) != ERepositoryStatus.DELETED && !currentProcess.equals(process.getLabel())) {
+    // String path = object.getParent().getPath().toString();
+    // String name;
+    // if (path.equals("")) { //$NON-NLS-1$
+    // name = IPath.SEPARATOR + process.getLabel();
+    // } else {
+    // name = IPath.SEPARATOR + path + IPath.SEPARATOR + process.getLabel();
+    // }
+    // processNameList.add(name);
+    // processMap.put(name, process);
+    // }
+    // }
+    // } catch (PersistenceException e) {
+    // e.printStackTrace();
+    // }
+    //
+    // List<String> tempFolderList = new ArrayList<String>();
+    // List<String> tempProcessNameList = new ArrayList<String>();
+    // tempProcessNameList.addAll(processNameList);
+    //
+    // for (String string : tempProcessNameList) {
+    // // Put jobs which in a folder into a new list.s
+    // if (string.lastIndexOf("/") != 0) {
+    // tempFolderList.add(string);
+    // processNameList.remove(string);
+    // }
+    // }
+    //
+    // sortList(processNameList);
+    // sortList(tempFolderList);
+    //
+    // // Always put the jobs which in a folder on the top of the job list
+    // tempFolderList.addAll(processNameList);
+    //
+    // processNameList = tempFolderList;
+    //
+    // for (String name : processNameList) {
+    // IRepositoryObject process = processMap.get(name);
+    // processValueList.add(process.getLabel()); //$NON-NLS-1$ //$NON-NLS-2$
+    // }
+    // String[] processTableNameList = processNameList.toArray(new String[0]);
+    // String[] processTableValueList = processValueList.toArray(new String[0]);
+    //
+    // for (int i = 0; i < elem.getElementParameters().size(); i++) {
+    // IElementParameter param = elem.getElementParameters().get(i);
+    // if (param.getName().equals(EParameterName.PROCESS_TYPE_PROCESS.getName())) {
+    // param.setListItemsDisplayName(processTableNameList);
+    // param.setListItemsValue(processTableValueList);
+    // if (elem instanceof Node) {
+    // ((Node) elem).checkAndRefreshNode();
+    // }
+    // }
+    // }
+    // }
 
     /**
      * Sort the element order of the inputed list.
@@ -264,66 +223,56 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
     /**
      * ftang Comment method "updateContextList".
      */
-    private void updateContextList() {
+    private void updateContextList(IElementParameter jobParam) {
         List<String> contextNameList = new ArrayList<String>();
         List<String> contextValueList = new ArrayList<String>();
-        IProxyRepositoryFactory factory = DesignerPlugin.getDefault().getProxyRepositoryFactory();
 
-        String selectedProcess = null;
+        IElementParameter jobNameParam = jobParam.getChildParameters().get(EParameterName.PROCESS_TYPE_PROCESS.getName());
 
-        for (int i = 0; (i < elem.getElementParameters().size()) && (selectedProcess == null); i++) {
-            IElementParameter param = elem.getElementParameters().get(i);
-            if (param.getName().equals(EParameterName.PROCESS_TYPE_PROCESS.getName())) {
-                selectedProcess = (String) param.getValue();
-            }
-        }
-
-        if (selectedProcess == null) {
-            return;
-        }
-
-        try {
-            List<IRepositoryObject> list = factory.getAll(ERepositoryObjectType.PROCESS);
-
-            for (IRepositoryObject process : list) {
-                String id = process.getLabel();
-                if (selectedProcess.equals(id)) {
-                    if (process.getProperty().getItem() instanceof ProcessItem) {
-                        ProcessItem processItem = (ProcessItem) process.getProperty().getItem();
-
-                        for (Object o : processItem.getProcess().getContext()) {
-                            if (o instanceof ContextType) {
-                                ContextType context = (ContextType) o;
-                                contextNameList.add(context.getName());
-                                contextValueList.add(context.getName()); //$NON-NLS-1$ //$NON-NLS-2$
-                            }
-                        }
-                    }
+        ProcessItem processItem = ProcessorUtilities.getProcessItem((String) jobNameParam.getValue());
+        if (processItem != null) {
+            for (Object o : processItem.getProcess().getContext()) {
+                if (o instanceof ContextType) {
+                    ContextType context = (ContextType) o;
+                    contextNameList.add(context.getName());
+                    contextValueList.add(context.getName());
                 }
             }
-        } catch (PersistenceException e) {
-            ExceptionHandler.process(e);
         }
+        jobNameParam.setLinkedRepositoryItem(processItem);
 
         String[] contextTableNameList = contextNameList.toArray(new String[0]);
         String[] contextTableValueList = contextValueList.toArray(new String[0]);
 
-        for (int i = 0; i < elem.getElementParameters().size(); i++) {
-            IElementParameter param = elem.getElementParameters().get(i);
-            if (param.getName().equals(EParameterName.PROCESS_TYPE_CONTEXT.getName())) {
-                param.setListItemsDisplayName(contextTableNameList);
-                param.setListItemsValue(contextTableValueList);
-                if (!contextValueList.contains(param.getValue())) {
-                    if (contextTableNameList.length > 0) {
-                        elem.setPropertyValue(EParameterName.PROCESS_TYPE_CONTEXT.getName(), contextTableValueList[0]);
-                    }
-                } else {
-                    // force to store the value again to activate the code
-                    // generation in Node.setPropertyValue
-                    elem.setPropertyValue(EParameterName.PROCESS_TYPE_CONTEXT.getName(), param.getValue());
-                }
+        IElementParameter contextParam = jobParam.getChildParameters().get(EParameterName.PROCESS_TYPE_CONTEXT.getName());
+        contextParam.setListItemsDisplayName(contextTableNameList);
+        contextParam.setListItemsValue(contextTableValueList);
+        if (!contextValueList.contains(contextParam.getValue())) {
+            if (contextTableNameList.length > 0) {
+                elem.setPropertyValue(EParameterName.PROCESS_TYPE_CONTEXT.getName(), contextTableValueList[0]);
             }
+        } else {
+            // force to store the value again to activate the code
+            // generation in Node.setPropertyValue
+            elem.setPropertyValue(EParameterName.PROCESS_TYPE_CONTEXT.getName(), contextParam.getValue());
         }
+
+        // for (int i = 0; i < elem.getElementParametersWithChildrens().size(); i++) {
+        // IElementParameter param = elem.getElementParameters().get(i);
+        // if (param.getName().equals(EParameterName.PROCESS_TYPE_CONTEXT.getName())) {
+        // param.setListItemsDisplayName(contextTableNameList);
+        // param.setListItemsValue(contextTableValueList);
+        // if (!contextValueList.contains(param.getValue())) {
+        // if (contextTableNameList.length > 0) {
+        // elem.setPropertyValue(EParameterName.PROCESS_TYPE_CONTEXT.getName(), contextTableValueList[0]);
+        // }
+        // } else {
+        // // force to store the value again to activate the code
+        // // generation in Node.setPropertyValue
+        // elem.setPropertyValue(EParameterName.PROCESS_TYPE_CONTEXT.getName(), param.getValue());
+        // }
+        // }
+        // }
 
     }
 
@@ -346,7 +295,7 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
      * ftang Comment method "updateRepositoryList".
      */
     @SuppressWarnings("unchecked")//$NON-NLS-1$
-    public void updateRepositoryList() {
+    private void updateRepositoryList() {
         IProxyRepositoryFactory factory = DesignerPlugin.getDefault().getProxyRepositoryFactory();
         tableIdAndDbTypeMap = new HashMap<String, String>();
         tableIdAndDbSchemaMap = new HashMap<String, String>();
@@ -432,49 +381,53 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
         for (int i = 0; i < elem.getElementParameters().size(); i++) {
             IElementParameter param = elem.getElementParameters().get(i);
             if (param.getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
-                IElementParameter repositorySchemaType = param.getChildParameters().get(
-                        EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
-                repositorySchemaType.setListItemsDisplayName(repositoryTableNameList);
-                repositorySchemaType.setListItemsValue(repositoryTableValueList);
-                if (!repositoryTableMap.keySet().contains(repositorySchemaType.getValue())) {
+                IElementParameter repositoryType = param.getChildParameters()
+                        .get(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
+                repositoryType.setListItemsDisplayName(repositoryTableNameList);
+                repositoryType.setListItemsValue(repositoryTableValueList);
+                if (!repositoryTableMap.keySet().contains(repositoryType.getValue())) {
                     List<String> list2 = tablesMap.get(elem.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName()));
                     boolean isNeeded = list2 != null && !list2.isEmpty();
                     if (repositoryTableNameList.length > 0 && repositoryConnectionValueList.length > 0 && isNeeded) {
-                        repositorySchemaType.setValue(getDefaultRepository(param, true, repositoryConnectionValueList[0]));
+                        repositoryType.setValue(getDefaultRepository(param, true, repositoryConnectionValueList[0]));
                         // elem.setPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName(),
                         // getDefaultRepository(
                         // true, repositoryConnectionValueList[0]));
                     }
                 }
             }
-            if (param.getName().equals(EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName())) {
-                param.setListItemsDisplayName(repositoryQueryNameList);
-                param.setListItemsValue(repositoryQueryValueList);
-                if (!repositoryQueryStoreMap.keySet().contains(param.getValue())) {
+            if (param.getField().equals(EParameterFieldType.QUERYSTORE_TYPE)) {
+                IElementParameter repositoryType = param.getChildParameters().get(
+                        EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName());
+                repositoryType.setListItemsDisplayName(repositoryQueryNameList);
+                repositoryType.setListItemsValue(repositoryQueryValueList);
+                if (!repositoryQueryStoreMap.keySet().contains(repositoryType.getValue())) {
                     List<String> list2 = queriesMap.get(elem.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName()));
                     boolean isNeeded = list2 != null && !list2.isEmpty();
                     if (repositoryQueryNameList.length > 0 && repositoryConnectionValueList.length > 0 && isNeeded) {
-                        elem.setPropertyValue(EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName(), getDefaultRepository(elem
+                        repositoryType.setValue(getDefaultRepository(elem
                                 .getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE), false,
                                 repositoryConnectionValueList[0]));
                     }
                 }
             }
-            if (param.getName().equals(EParameterName.REPOSITORY_PROPERTY_TYPE.getName())) {
+            if (param.getField().equals(EParameterFieldType.PROPERTY_TYPE)) {
+                IElementParameter repositoryType = param.getChildParameters().get(
+                        EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
                 List<String> nameList = new ArrayList<String>();
                 List<String> valueList = new ArrayList<String>();
-                updateRepositoryListExtra(param, nameList, valueList, false);
+                updateRepositoryListExtra(repositoryType, nameList, valueList, false);
                 repositoryConnectionNameList = nameList.toArray(new String[0]);
                 repositoryConnectionValueList = valueList.toArray(new String[0]);
             }
-            // for job settings extra (feature 2710)
-            if (param.getName().equals(extraRepositoryPropertyTypeName)) {
-                List<String> nameList = new ArrayList<String>();
-                List<String> valueList = new ArrayList<String>();
-                updateRepositoryListExtra(param, nameList, valueList, true);
-                repositoryConnectionNameList = nameList.toArray(new String[0]);
-                repositoryConnectionValueList = valueList.toArray(new String[0]);
-            }
+            // // for job settings extra (feature 2710)
+            // if (param.getName().equals(extraRepositoryPropertyTypeName)) {
+            // List<String> nameList = new ArrayList<String>();
+            // List<String> valueList = new ArrayList<String>();
+            // updateRepositoryListExtra(param, nameList, valueList, true);
+            // repositoryConnectionNameList = nameList.toArray(new String[0]);
+            // repositoryConnectionValueList = valueList.toArray(new String[0]);
+            // }
         }
         updateQuery();
     }
@@ -486,11 +439,7 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
     private void updateRepositoryListExtra(IElementParameter param, List<String> repositoryConnectionNameList,
             List<String> repositoryConnectionValueList, boolean extra) {
 
-        String paramName = EParameterName.PROPERTY_TYPE.getName();
-        if (extra) {
-            paramName = extraPropertyTypeName;
-        }
-        String repositoryValue = elem.getElementParameter(paramName).getRepositoryValue();
+        String repositoryValue = param.getParentParameter().getRepositoryValue();
         if (repositoryValue != null) {
             List<String> connectionNamesList = new ArrayList<String>();
             List<String> connectionValuesList = new ArrayList<String>();
@@ -553,11 +502,7 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
         param.setListItemsValue(repositoryConnectionValueList.toArray(new String[0]));
         if (!repositoryConnectionItemMap.keySet().contains(param.getValue())) {
             if (repositoryConnectionNameList.size() > 0) {
-                paramName = EParameterName.REPOSITORY_PROPERTY_TYPE.getName();
-                if (extra) {
-                    paramName = extraRepositoryPropertyTypeName;
-                }
-                elem.setPropertyValue(paramName, repositoryConnectionValueList.get(0));
+                param.setValue(repositoryConnectionValueList.get(0));
             }
         }
     }
@@ -639,7 +584,7 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
         Map<String, Integer> groupPosition = new HashMap<String, Integer>();
         List<? extends IElementParameter> listParam = elem.getElementParametersWithChildrens();
 
-        updateMainParameters();
+        // updateMainParameters();
 
         if (!forceRedraw) {
             boolean needRedraw = isNeedRedraw();
@@ -790,61 +735,62 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
         resizeScrolledComposite();
     }
 
-    /**
-     * DOC Administrator Comment method "updateMainParameters".
-     */
-    protected void updateMainParameters() {
-        oldQueryStoreType = (String) elem.getPropertyValue(EParameterName.QUERYSTORE_TYPE.getName());
-        if (oldQueryStoreType != null) {
-            if (oldQueryStoreType.equals(EmfComponent.REPOSITORY)) {
-                showQueryStoreRepositoryList(true);
-                updateRepositoryList();
-            } else {
-                showQueryStoreRepositoryList(false);
-            }
-        }
-
-        IElementParameter param = elem.getElementParameter(EParameterName.PROPERTY_TYPE.getName());
-        if (param != null) {
-            oldPropertyType = (String) param.getValue();
-            if (param.isShow(elem.getElementParameters())) {
-                if (oldPropertyType.equals(EmfComponent.REPOSITORY)) {
-                    showPropertyRepositoryList(true, false);
-                    updateRepositoryList();
-                } else {
-                    showPropertyRepositoryList(false, false);
-                }
-            } else {
-                showPropertyRepositoryList(false, false);
-            }
-        }
-        // for job settings extra (feature 2710)
-        param = elem.getElementParameter(extraPropertyTypeName);
-        if (param != null) {
-            oldPropertyType = (String) param.getValue();
-            if (param.isShow(elem.getElementParameters())) {
-                if (oldPropertyType.equals(EmfComponent.REPOSITORY)) {
-                    showPropertyRepositoryList(true, true);
-                    updateRepositoryList();
-                } else {
-                    showPropertyRepositoryList(false, true);
-                }
-            } else {
-                showPropertyRepositoryList(false, true);
-            }
-        }
-        oldProcessType = (String) elem.getPropertyValue(EParameterName.PROCESS_TYPE_PROCESS.getName());
-        if (oldProcessType != null) {
-            String[] list = elem.getElementParameter(EParameterName.PROCESS_TYPE_PROCESS.getName()).getListItemsDisplayName();
-            if ((oldProcessType.equals("NO_PROCESS") || (list.length == 0))) { //$NON-NLS-1$
-                updateProcessList();
-                updateContextList();
-                if (elem instanceof Node) {
-                    ((Node) elem).checkAndRefreshNode();
-                }
-            }
-        }
-    }
+    // /**
+    // * DOC Administrator Comment method "updateMainParameters".
+    // */
+    // protected void updateMainParameters() {
+    // oldQueryStoreType = (String) elem.getPropertyValue(EParameterName.QUERYSTORE_TYPE.getName());
+    // if (oldQueryStoreType != null) {
+    // if (oldQueryStoreType.equals(EmfComponent.REPOSITORY)) {
+    // showQueryStoreRepositoryList(true);
+    // updateRepositoryList();
+    // } else {
+    // showQueryStoreRepositoryList(false);
+    // }
+    // }
+    //
+    // IElementParameter param = elem.getElementParameter(EParameterName.PROPERTY_TYPE.getName());
+    // if (param != null) {
+    // oldPropertyType = (String) param.getValue();
+    // if (param.isShow(elem.getElementParameters())) {
+    // if (oldPropertyType.equals(EmfComponent.REPOSITORY)) {
+    // showPropertyRepositoryList(true, false);
+    // updateRepositoryList();
+    // } else {
+    // showPropertyRepositoryList(false, false);
+    // }
+    // } else {
+    // showPropertyRepositoryList(false, false);
+    // }
+    // }
+    // // for job settings extra (feature 2710)
+    // param = elem.getElementParameter(extraPropertyTypeName);
+    // if (param != null) {
+    // oldPropertyType = (String) param.getValue();
+    // if (param.isShow(elem.getElementParameters())) {
+    // if (oldPropertyType.equals(EmfComponent.REPOSITORY)) {
+    // showPropertyRepositoryList(true, true);
+    // updateRepositoryList();
+    // } else {
+    // showPropertyRepositoryList(false, true);
+    // }
+    // } else {
+    // showPropertyRepositoryList(false, true);
+    // }
+    // }
+    // oldProcessType = (String) elem.getPropertyValue(EParameterName.PROCESS_TYPE_PROCESS.getName());
+    // if (oldProcessType != null) {
+    // String[] list =
+    // elem.getElementParameter(EParameterName.PROCESS_TYPE_PROCESS.getName()).getListItemsDisplayName();
+    // if ((oldProcessType.equals("NO_PROCESS") || (list.length == 0))) { //$NON-NLS-1$
+    // updateProcessList();
+    // updateContextList();
+    // if (elem instanceof Node) {
+    // ((Node) elem).checkAndRefreshNode();
+    // }
+    // }
+    // }
+    // }
 
     /**
      * DOC Administrator Comment method "isNeedRedraw".
@@ -960,14 +906,12 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
         }
         List<? extends IElementParameter> listParam = elem.getElementParameters();
 
-        if (oldProcessType != null) {
-            String newProcessType = (String) elem.getPropertyValue(EParameterName.PROCESS_TYPE_PROCESS.getName());
-            if (!oldProcessType.equals(newProcessType)) {
-                updateProcessList();
-                updateContextList();
-                if (elem instanceof Node) {
-                    ((Node) elem).checkAndRefreshNode();
-                }
+        IElementParameter jobParam = elem.getElementParameterFromField(EParameterFieldType.PROCESS_TYPE);
+        if (jobParam != null) {
+            // updateProcessList();
+            updateContextList(jobParam);
+            if (elem instanceof Node) {
+                ((Node) elem).checkAndRefreshNode();
             }
         }
 
@@ -1045,11 +989,12 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
     public DynamicComposite(Composite parentComposite, int styles, final EComponentCategory section, Element element) {
         super(parentComposite, styles);
         // for job settings extra (feature 2710)
-        if (section == EComponentCategory.EXTRA) {
-            updataComponentParamName = JobSettingsConstants.getExtraParameterName(EParameterName.UPDATE_COMPONENTS.getName());
-        } else {
-            updataComponentParamName = EParameterName.UPDATE_COMPONENTS.getName();
-        }
+        // if (section == EComponentCategory.EXTRA) {
+        // updataComponentParamName =
+        // JobSettingsConstants.getExtraParameterName(EParameterName.UPDATE_COMPONENTS.getName());
+        // } else {
+        updataComponentParamName = EParameterName.UPDATE_COMPONENTS.getName();
+        // }
         FormData d = new FormData();
         d.left = new FormAttachment(0, 0);
         d.right = new FormAttachment(100, 0);
@@ -1101,14 +1046,25 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
         currentComponent = elem.getElementName();
 
         addListener(SWT.Resize, resizeListener);
+        addListener(SWT.FocusOut, new Listener() {
+
+            public void handleEvent(Event event) {
+                // if the focus is lost reinitialise all information from repository
+                repositoryTableMap.clear();
+                repositoryQueryStoreMap.clear();
+                repositoryConnectionItemMap.clear();
+            }
+
+        });
 
         if (getCommandStack() != null) {
             getCommandStack().addCommandStackEventListener(commandStackEventListener);
         }
         // for job settings extra (feature 2710)
-        extraPropertyTypeName = JobSettingsConstants.getExtraParameterName(EParameterName.PROPERTY_TYPE.getName());
-        extraRepositoryPropertyTypeName = JobSettingsConstants.getExtraParameterName(EParameterName.REPOSITORY_PROPERTY_TYPE
-                .getName());
+        // extraPropertyTypeName = JobSettingsConstants.getExtraParameterName(EParameterName.PROPERTY_TYPE.getName());
+        // extraRepositoryPropertyTypeName =
+        // JobSettingsConstants.getExtraParameterName(EParameterName.REPOSITORY_PROPERTY_TYPE
+        // .getName());
     }
 
     /*
@@ -1181,6 +1137,9 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
      * @return Map
      */
     public Map<String, ConnectionItem> getRepositoryConnectionItemMap() {
+        if (this.repositoryConnectionItemMap.keySet().isEmpty()) {
+            updateRepositoryList();
+        }
         return this.repositoryConnectionItemMap;
     }
 
@@ -1235,6 +1194,9 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
      * @return the repositoryQueryStoreMap
      */
     public Map<String, Query> getRepositoryQueryStoreMap() {
+        if (this.repositoryQueryStoreMap.keySet().isEmpty()) {
+            updateRepositoryList();
+        }
         return repositoryQueryStoreMap;
     }
 

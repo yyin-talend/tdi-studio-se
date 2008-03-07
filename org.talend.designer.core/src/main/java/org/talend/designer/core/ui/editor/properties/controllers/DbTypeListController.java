@@ -229,7 +229,7 @@ public class DbTypeListController extends AbstractElementPropertySectionControll
 
         public void widgetSelected(SelectionEvent event) {
             // updateRepositoryList();
-            dynamicProperty.updateRepositoryList();
+            // dynamicProperty.updateRepositoryList();
             Command cmd = createCommand(event);
             if (cmd != null) {
                 getCommandStack().execute(cmd);

@@ -459,6 +459,16 @@
            mapping="GUESS_SCHEMA"
            name="Guess Schema">
      </generator>
+     <generator
+           class="org.talend.designer.core.ui.editor.properties.controllers.generator.PropertyTypeControllerGenerator"
+           mapping="PROPERTY_TYPE"
+           name="Property Type">
+     </generator>
+     <generator
+           class="org.talend.designer.core.ui.editor.properties.controllers.generator.QueryTypeControllerGenerator"
+           mapping="QUERYSTORE_TYPE"
+           name="Query Type">
+     </generator>
    </extension>
    
    <extension

@@ -46,7 +46,6 @@ public class StatsAndLogsComposite extends DynamicComposite {
 
     @Override
     public void addComponents(boolean forceRedraw, boolean reInitialize, int height) {
-        updateMainParameters();
         if (forceRedraw || isNeedRedraw()) {
             disposeChildren();
             Composite topComposite = new Composite(getComposite(), SWT.NONE);

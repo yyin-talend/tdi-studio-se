@@ -24,6 +24,7 @@ import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IElementParameterDefaultValue;
 import org.talend.core.model.process.INode;
+import org.talend.core.model.properties.Item;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 
@@ -95,6 +96,8 @@ public class ElementParameter implements IElementParameter {
     private IElementParameter parentParameter;
 
     private int currentRow; // for Table only
+
+    private Item linkedRepositoryItem;
 
     public ElementParameter(final IElement element) {
         this.element = element;
@@ -248,11 +251,13 @@ public class ElementParameter implements IElementParameter {
     public int getIndexOfItemFromList(String item) {
         int index = 0;
         boolean found = false;
-        for (int i = 0; i < itemsDisplayCodeName.length && !found; i++) {
-            String string = itemsDisplayCodeName[i];
-            if (string.equals(item)) {
-                found = true;
-                index = i;
+        if (itemsDisplayCodeName != null) {
+            for (int i = 0; i < itemsDisplayCodeName.length && !found; i++) {
+                String string = itemsDisplayCodeName[i];
+                if (string.equals(item)) {
+                    found = true;
+                    index = i;
+                }
             }
         }
         for (int i = 0; i < itemsValue.length && !found; i++) {
@@ -553,5 +558,23 @@ public class ElementParameter implements IElementParameter {
      */
     public void setGroupDisplayName(String groupDisplayName) {
         this.groupDisplayName = groupDisplayName;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IElementParameter#getLinkedRepositoryItem()
+     */
+    public Item getLinkedRepositoryItem() {
+        return linkedRepositoryItem;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IElementParameter#setLinkedRepositoryItem(org.talend.core.model.properties.Item)
+     */
+    public void setLinkedRepositoryItem(Item item) {
+        this.linkedRepositoryItem = item;
     }
 }

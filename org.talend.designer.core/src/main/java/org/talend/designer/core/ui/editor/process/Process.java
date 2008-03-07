@@ -91,7 +91,6 @@ import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.metadata.MetadataEmfFactory;
 import org.talend.designer.core.model.process.DataProcess;
-import org.talend.designer.core.model.process.jobsettings.JobSettingsConstants;
 import org.talend.designer.core.model.process.jobsettings.JobSettingsManager;
 import org.talend.designer.core.model.utils.emf.talendfile.ConnectionType;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
@@ -2225,14 +2224,15 @@ public class Process extends Element implements IProcess2 {
     public void setPropertyValue(String id, Object value) {
         if (id.equals(EParameterName.SCHEMA_TYPE.getName()) || id.equals(EParameterName.QUERYSTORE_TYPE.getName())
                 || id.equals(EParameterName.PROPERTY_TYPE.getName())
-                || id.equals(JobSettingsConstants.getExtraParameterName(EParameterName.PROPERTY_TYPE.getName()))
+                // || id.equals(JobSettingsConstants.getExtraParameterName(EParameterName.PROPERTY_TYPE.getName()))
                 || id.equals(EParameterName.PROCESS_TYPE_PROCESS.getName())) {
             String updataComponentParamName = null;
-            if (JobSettingsConstants.isExtraParameter(id)) {
-                updataComponentParamName = JobSettingsConstants.getExtraParameterName(EParameterName.UPDATE_COMPONENTS.getName());
-            } else {
-                updataComponentParamName = EParameterName.UPDATE_COMPONENTS.getName();
-            }
+            // if (JobSettingsConstants.isExtraParameter(id)) {
+            // updataComponentParamName =
+            // JobSettingsConstants.getExtraParameterName(EParameterName.UPDATE_COMPONENTS.getName());
+            // } else {
+            updataComponentParamName = EParameterName.UPDATE_COMPONENTS.getName();
+            // }
             setPropertyValue(updataComponentParamName, Boolean.TRUE);
         }
 

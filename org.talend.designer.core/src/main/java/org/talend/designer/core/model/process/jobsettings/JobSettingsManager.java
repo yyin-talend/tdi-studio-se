@@ -81,17 +81,17 @@ public class JobSettingsManager {
         ElementParameter param;
         List<IElementParameter> paramList = (List<IElementParameter>) process.getElementParameters();
 
-        param = new ElementParameter(process);
-        param.setName(JobSettingsConstants.getExtraParameterName(EParameterName.UPDATE_COMPONENTS.getName()));
-        param.setValue(Boolean.FALSE);
-        param.setDisplayName(EParameterName.UPDATE_COMPONENTS.getDisplayName());
-        param.setField(EParameterFieldType.CHECK);
-        param.setCategory(EComponentCategory.EXTRA);
-        param.setNumRow(1);
-        param.setReadOnly(true);
-        param.setRequired(false);
-        param.setShow(false);
-        paramList.add(param);
+        // param = new ElementParameter(process);
+        // param.setName(JobSettingsConstants.getExtraParameterName(EParameterName.UPDATE_COMPONENTS.getName()));
+        // param.setValue(Boolean.FALSE);
+        // param.setDisplayName(EParameterName.UPDATE_COMPONENTS.getDisplayName());
+        // param.setField(EParameterFieldType.CHECK);
+        // param.setCategory(EComponentCategory.EXTRA);
+        // param.setNumRow(1);
+        // param.setReadOnly(true);
+        // param.setRequired(false);
+        // param.setShow(false);
+        // paramList.add(param);
 
         if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
             IPreferenceStore preferenceStore = CorePlugin.getDefault().getPreferenceStore();
@@ -196,34 +196,46 @@ public class JobSettingsManager {
                 + " and " + JobSettingsConstants.addBrackets(onDBCondition); //$NON-NLS-1$
 
         // property type
+        ElementParameter parentPropertyType = new ElementParameter(process);
+        parentPropertyType.setName(JobSettingsConstants.getExtraParameterName(EParameterName.PROPERTY_TYPE.getName()));
+        parentPropertyType.setDisplayName(EParameterName.PROPERTY_TYPE.getDisplayName());
+        parentPropertyType.setValue("");
+        parentPropertyType.setCategory(EComponentCategory.EXTRA);
+        parentPropertyType.setField(EParameterFieldType.PROPERTY_TYPE);
+        parentPropertyType.setRepositoryValue("DATABASE"); //$NON-NLS-1$
+        parentPropertyType.setNumRow(41);
+        parentPropertyType.setShowIf(dbCondition);
+        paramList.add(parentPropertyType);
+
         param = new ElementParameter(process);
-        param.setName(JobSettingsConstants.getExtraParameterName(EParameterName.PROPERTY_TYPE.getName()));
+        param.setName(EParameterName.PROPERTY_TYPE.getName());
         param.setDisplayName(EParameterName.PROPERTY_TYPE.getDisplayName());
         param.setListItemsDisplayName(new String[] { EmfComponent.TEXT_BUILTIN, EmfComponent.TEXT_REPOSITORY });
         param.setListItemsDisplayCodeName(new String[] { EmfComponent.BUILTIN, EmfComponent.REPOSITORY });
         param.setListItemsValue(new String[] { EmfComponent.BUILTIN, EmfComponent.REPOSITORY });
         param.setValue(EmfComponent.BUILTIN);
         param.setCategory(EComponentCategory.EXTRA);
-        param.setField(EParameterFieldType.CLOSED_LIST);
+        param.setField(EParameterFieldType.TECHNICAL);
         param.setRepositoryValue("DATABASE"); //$NON-NLS-1$
         param.setNumRow(41);
         param.setShowIf(dbCondition);
-        paramList.add(param);
+        param.setParentParameter(parentPropertyType);
+        // paramList.add(param);
 
         // repository property type
         param = new ElementParameter(process);
-        param.setName(JobSettingsConstants.getExtraParameterName(EParameterName.REPOSITORY_PROPERTY_TYPE.getName()));
+        param.setName(EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
         param.setDisplayName(EParameterName.REPOSITORY_PROPERTY_TYPE.getDisplayName());
         param.setListItemsDisplayName(new String[] {});
         param.setListItemsValue(new String[] {});
         // param.setValue(""); //$NON-NLS-1$
         param.setCategory(EComponentCategory.EXTRA);
-        param.setField(EParameterFieldType.CLOSED_LIST);
+        param.setField(EParameterFieldType.TECHNICAL);
         param.setShow(false);
         param.setRequired(true);
         param.setNumRow(41);
-        param.setShowIf(dbCondition);
-        paramList.add(param);
+        param.setParentParameter(parentPropertyType);
+        // paramList.add(param);
 
         // dbType
         final String dbTypeName = JobSettingsConstants.getExtraParameterName(EParameterName.DB_TYPE.getName());

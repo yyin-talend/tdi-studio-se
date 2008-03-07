@@ -53,7 +53,7 @@ public class PropertyChangeCommand extends Command {
 
     private ChangeMetadataCommand changeMetadataCommand;
 
-    private final String propertyTypeName;
+    private String propertyTypeName;
 
     private final String updataComponentParamName;
 
@@ -72,27 +72,23 @@ public class PropertyChangeCommand extends Command {
         oldElementValues = new HashMap<IElementParameter, Object>();
         setLabel(Messages.getString("PropertyChangeCommand.Label")); //$NON-NLS-1$
         // for job settings extra (feature 2710)
-        if (JobSettingsConstants.isExtraParameter(propName) || propName.equals(EParameterName.IMPLICIT_TCONTEXTLOAD.getName())) {
-            propertyTypeName = JobSettingsConstants.getExtraParameterName(EParameterName.PROPERTY_TYPE.getName());
-            updataComponentParamName = JobSettingsConstants.getExtraParameterName(EParameterName.UPDATE_COMPONENTS.getName());
-        } else {
-            propertyTypeName = EParameterName.PROPERTY_TYPE.getName();
-            updataComponentParamName = EParameterName.UPDATE_COMPONENTS.getName();
-        }
-    }
+        // if (JobSettingsConstants.isExtraParameter(propName) ||
+        // propName.equals(EParameterName.IMPLICIT_TCONTEXTLOAD.getName())) {
+        // propertyTypeName = JobSettingsConstants.getExtraParameterName(EParameterName.PROPERTY_TYPE.getName());
+        // updataComponentParamName =
+        // JobSettingsConstants.getExtraParameterName(EParameterName.UPDATE_COMPONENTS.getName());
+        // } else {
 
-    private void refreshPropertyView() {
-        // if (!elem.getElementParameter(propName).getCategory().equals(EComponentCategory.STATSANDLOGS)) {
-        // IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-        // IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet"); //$NON-NLS-1$
-        // PropertySheet sheet = (PropertySheet) view;
-        // if (sheet != null && sheet.getCurrentPage() != null && sheet.getCurrentPage() instanceof
-        // TabbedPropertySheetPage) {
-        // TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) sheet.getCurrentPage();
-        // if (tabbedPropertySheetPage.getCurrentTab() != null) {
-        // tabbedPropertySheetPage.refresh();
-        // }
-        // }
+        IElementParameter currentParam = elem.getElementParameter(propName);
+        propertyTypeName = EParameterName.PROPERTY_TYPE.getName();
+        for (IElementParameter param : elem.getElementParameters()) {
+            if (param.getField().equals(EParameterFieldType.PROPERTY_TYPE)
+                    && param.getCategory().equals(currentParam.getCategory())) {
+                propertyTypeName = param.getName() + ":" + EParameterName.PROPERTY_TYPE.getName();
+                break;
+            }
+        }
+        updataComponentParamName = EParameterName.UPDATE_COMPONENTS.getName();
         // }
     }
 
@@ -113,12 +109,10 @@ public class PropertyChangeCommand extends Command {
                 }
                 currentParam.setRepositoryValueUsed(false);
             } else {
+                toUpdate = true;
                 elem.setPropertyValue(propertyTypeName, EmfComponent.BUILTIN);
                 for (IElementParameter param : elem.getElementParameters()) {
-                    boolean paramFlag = JobSettingsConstants.isExtraParameter(param.getName());
-                    boolean extraFlag = JobSettingsConstants.isExtraParameter(propertyTypeName);
-                    if (paramFlag == extraFlag) {
-                        // for job settings extra.(feature 2710)
+                    if (param.getCategory().equals(currentParam.getCategory())) {
                         param.setRepositoryValueUsed(false);
                     }
                 }
@@ -132,10 +126,11 @@ public class PropertyChangeCommand extends Command {
         oldValue = elem.getPropertyValue(propName);
         elem.setPropertyValue(propName, newValue);
 
-        if (currentParam.getField().equals(EParameterFieldType.RADIO)
-                || currentParam.getField().equals(EParameterFieldType.CLOSED_LIST)
-                || currentParam.getField().equals(EParameterFieldType.CHECK)
-                || currentParam.getField().equals(EParameterFieldType.AS400_CHECK)) {
+        if (!toUpdate
+                && (currentParam.getField().equals(EParameterFieldType.RADIO)
+                        || currentParam.getField().equals(EParameterFieldType.CLOSED_LIST)
+                        || currentParam.getField().equals(EParameterFieldType.CHECK) || currentParam.getField().equals(
+                        EParameterFieldType.AS400_CHECK))) {
             toUpdate = false;
             for (int i = 0; i < elem.getElementParameters().size(); i++) {
                 IElementParameter testedParam = elem.getElementParameters().get(i);
@@ -186,7 +181,6 @@ public class PropertyChangeCommand extends Command {
         if (toUpdate) {
             elem.setPropertyValue(updataComponentParamName, new Boolean(true));
         }
-        refreshPropertyView();
         CodeView.refreshCodeView(elem);
 
         if (elem instanceof Node) {
@@ -271,13 +265,9 @@ public class PropertyChangeCommand extends Command {
             }
             for (IElementParameter param : elem.getElementParameters()) {
                 String repositoryValue = param.getRepositoryValue();
-                if (param.isShow(elem.getElementParameters()) && (repositoryValue != null)) {
-                    boolean paramFlag = JobSettingsConstants.isExtraParameter(param.getName());
-                    boolean extraFlag = JobSettingsConstants.isExtraParameter(propertyTypeName);
-                    if (paramFlag == extraFlag) {
-                        // for job settings extra.(feature 2710)
-                        param.setRepositoryValueUsed(true);
-                    }
+                if (param.isShow(elem.getElementParameters()) && (repositoryValue != null)
+                        && param.getCategory().equals(currentParam.getCategory())) {
+                    param.setRepositoryValueUsed(true);
                 }
             }
         }
@@ -293,7 +283,6 @@ public class PropertyChangeCommand extends Command {
         if (changeMetadataCommand != null) {
             changeMetadataCommand.undo();
         }
-        refreshPropertyView();
         CodeView.refreshCodeView(elem);
         if (elem instanceof Node) {
             ((Node) elem).checkAndRefreshNode();
@@ -338,7 +327,6 @@ public class PropertyChangeCommand extends Command {
         if (changeMetadataCommand != null) {
             changeMetadataCommand.redo();
         }
-        refreshPropertyView();
         CodeView.refreshCodeView(elem);
         if (elem instanceof Node) {
             ((Node) elem).checkAndRefreshNode();

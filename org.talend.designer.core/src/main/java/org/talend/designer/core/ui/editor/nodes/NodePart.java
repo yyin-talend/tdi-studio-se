@@ -48,9 +48,6 @@ import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.properties.ProcessItem;
-import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
-import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ExternalUtilities;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
@@ -66,7 +63,7 @@ import org.talend.designer.core.ui.editor.nodecontainer.NodeContainerPart;
 import org.talend.designer.core.ui.editor.process.ProcessPart;
 import org.talend.designer.core.ui.views.CodeView;
 import org.talend.designer.core.ui.views.properties.ComponentSettingsView;
-import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.ui.views.IRepositoryView;
 
 /**
@@ -466,23 +463,10 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
                 boolean isAvoidShowJobAfterDoubleClick = CorePlugin.getDefault().getComponentsLocalProviderService()
                         .isAvoidToShowJobAfterDoubleClick();
 
-                if (processName != null && !isAvoidShowJobAfterDoubleClick) {
+                if (processName != null && !"".equals(processName) && !isAvoidShowJobAfterDoubleClick) {
                     try {
-                        IProxyRepositoryFactory factory = DesignerPlugin.getDefault().getProxyRepositoryFactory();
-                        IRepositoryObject selectedProcess = null;
-
-                        List<IRepositoryObject> list = factory.getAll(ERepositoryObjectType.PROCESS);
-
-                        for (IRepositoryObject process : list) {
-                            if (processName.equals(process.getLabel())) {
-                                if (process.getProperty().getItem() instanceof ProcessItem) {
-                                    selectedProcess = process;
-                                    break;
-                                }
-                            }
-                        }
-                        if (selectedProcess != null) {
-                            ProcessItem processItem = (ProcessItem) selectedProcess.getProperty().getItem();
+                        ProcessItem processItem = ProcessorUtilities.getProcessItem(processName);
+                        if (processItem != null) {
                             ProcessEditorInput fileEditorInput = new ProcessEditorInput(processItem, true);
 
                             IEditorPart editorPart = page.findEditor(fileEditorInput);

@@ -461,6 +461,18 @@ public class StatsAndLogsManager {
         param.setShowIf("(ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')");
         paramList.add(param);
 
+        ElementParameter parentPropertyType = new ElementParameter(process);
+        parentPropertyType.setName(EParameterName.PROPERTY_TYPE.getName());
+        parentPropertyType.setDisplayName(EParameterName.PROPERTY_TYPE.getDisplayName());
+        parentPropertyType.setValue("");
+        parentPropertyType.setCategory(EComponentCategory.STATSANDLOGS);
+        parentPropertyType.setField(EParameterFieldType.PROPERTY_TYPE);
+        parentPropertyType.setRepositoryValue("DATABASE"); //$NON-NLS-1$
+        parentPropertyType.setNumRow(51);
+        parentPropertyType
+                .setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')");
+        paramList.add(parentPropertyType);
+
         param = new ElementParameter(process);
         param.setCategory(EComponentCategory.STATSANDLOGS);
         param.setName(EParameterName.PROPERTY_TYPE.getName());
@@ -470,12 +482,13 @@ public class StatsAndLogsManager {
         param.setListItemsValue(new String[] { EmfComponent.BUILTIN, EmfComponent.REPOSITORY });
         param.setValue(preferenceStore.getString(languagePrefix + EParameterName.PROPERTY_TYPE.getName()));
         param.setNumRow(51);
-        param.setField(EParameterFieldType.CLOSED_LIST);
+        param.setField(EParameterFieldType.TECHNICAL);
         param.setRepositoryValue("DATABASE"); //$NON-NLS-1$
         param
                 .setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')");
 
-        paramList.add(param);
+        param.setParentParameter(parentPropertyType);
+        // paramList.add(param);
 
         param = new ElementParameter(process);
         param.setCategory(EComponentCategory.STATSANDLOGS);
@@ -484,14 +497,12 @@ public class StatsAndLogsManager {
         param.setListItemsDisplayName(new String[] {});
         param.setListItemsValue(new String[] {});
         param.setNumRow(51);
-        param.setField(EParameterFieldType.CLOSED_LIST);
+        param.setField(EParameterFieldType.TECHNICAL);
         param.setValue(preferenceStore.getString(languagePrefix + EParameterName.REPOSITORY_PROPERTY_TYPE.getName())); //$NON-NLS-1$
         param.setShow(false);
         param.setRequired(true);
-        param
-                .setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')");
-
-        paramList.add(param);
+        // paramList.add(param);
+        param.setParentParameter(parentPropertyType);
 
         // dbType
         param = new ElementParameter(process);

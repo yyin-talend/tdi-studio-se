@@ -234,7 +234,7 @@ public class TableController extends AbstractElementPropertySectionController {
         }
         Object value = param.getValue();
         if (value instanceof List) {
-            updateTableValues(param);
+            // updateTableValues(param);
             if (tableViewerCreator != null) {
                 if (!tableViewerCreator.getInputList().equals(value)) {
                     tableViewerCreator.init((List) value);
@@ -415,9 +415,16 @@ public class TableController extends AbstractElementPropertySectionController {
     private void updateContextList(IElementParameter param) {
         List<String> contextParameterNamesList = new ArrayList<String>();
 
+        IElementParameter processTypeParam = elem.getElementParameterFromField(EParameterFieldType.PROCESS_TYPE);
+        if (processTypeParam == null) {
+            return;
+        }
+        IElementParameter jobElemParam = processTypeParam.getChildParameters().get(EParameterName.PROCESS_TYPE_PROCESS.getName());
+        IElementParameter contextElemParam = processTypeParam.getChildParameters().get(
+                EParameterName.PROCESS_TYPE_CONTEXT.getName());
         // get context list
-        String processName = (String) elem.getPropertyValue(EParameterName.PROCESS_TYPE_PROCESS.getName());
-        String contextName = (String) elem.getPropertyValue(EParameterName.PROCESS_TYPE_CONTEXT.getName());
+        String processName = (String) jobElemParam.getValue();
+        String contextName = (String) contextElemParam.getValue();
 
         if (processName == null || contextName == null) {
             return;
@@ -426,7 +433,10 @@ public class TableController extends AbstractElementPropertySectionController {
         processName = processName.replaceAll("'", "");
         contextName = contextName.replaceAll("'", "");
 
-        ProcessItem processItem = ProcessorUtilities.getProcessItem(processName);
+        ProcessItem processItem = (ProcessItem) jobElemParam.getLinkedRepositoryItem();
+        if (processItem == null) {
+            processItem = ProcessorUtilities.getProcessItem(processName);
+        }
         Process process = null;
         String[] contextParameterNames = null;
         if (processItem != null) {

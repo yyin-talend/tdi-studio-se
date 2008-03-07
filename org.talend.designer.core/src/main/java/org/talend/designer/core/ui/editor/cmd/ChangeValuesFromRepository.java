@@ -24,6 +24,7 @@ import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.WSDLSchemaConnection;
 import org.talend.core.model.metadata.designerproperties.RepositoryToComponentProperty;
+import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
@@ -80,16 +81,18 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
 
         setLabel(Messages.getString("PropertyChangeCommand.Label")); //$NON-NLS-1$
         // for job settings extra (feature 2710)
-        if (JobSettingsConstants.isExtraParameter(propertyName)) {
-            propertyTypeName = JobSettingsConstants.getExtraParameterName(EParameterName.PROPERTY_TYPE.getName());
-            repositoryPropertyTypeName = JobSettingsConstants.getExtraParameterName(EParameterName.REPOSITORY_PROPERTY_TYPE
-                    .getName());
-            updataComponentParamName = JobSettingsConstants.getExtraParameterName(EParameterName.UPDATE_COMPONENTS.getName());
-        } else {
-            propertyTypeName = EParameterName.PROPERTY_TYPE.getName();
-            repositoryPropertyTypeName = EParameterName.REPOSITORY_PROPERTY_TYPE.getName();
-            updataComponentParamName = EParameterName.UPDATE_COMPONENTS.getName();
-        }
+        // if (JobSettingsConstants.isExtraParameter(propertyName)) {
+        // propertyTypeName = JobSettingsConstants.getExtraParameterName(EParameterName.PROPERTY_TYPE.getName());
+        // repositoryPropertyTypeName =
+        // JobSettingsConstants.getExtraParameterName(EParameterName.REPOSITORY_PROPERTY_TYPE
+        // .getName());
+        // updataComponentParamName =
+        // JobSettingsConstants.getExtraParameterName(EParameterName.UPDATE_COMPONENTS.getName());
+        // } else {
+        propertyTypeName = EParameterName.PROPERTY_TYPE.getName();
+        repositoryPropertyTypeName = EParameterName.REPOSITORY_PROPERTY_TYPE.getName();
+        updataComponentParamName = EParameterName.UPDATE_COMPONENTS.getName();
+        // }
     }
 
     @Override
@@ -124,14 +127,15 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                 allowAutoSwitch = true;
             }
         }
-        if (propertyName.equals(propertyTypeName)) {
-            elem.setPropertyValue(propertyTypeName, value);
+
+        if (propertyName.split(":")[1].equals(propertyTypeName)) {
+            elem.setPropertyValue(propertyName, value);
             if (allowAutoSwitch) {
                 setOtherProperties();
             }
         } else {
-            oldMetadata = (String) elem.getPropertyValue(repositoryPropertyTypeName);
-            elem.setPropertyValue(repositoryPropertyTypeName, value);
+            oldMetadata = (String) elem.getPropertyValue(propertyName);
+            elem.setPropertyValue(propertyName, value);
             if (allowAutoSwitch) {
                 setOtherProperties();
             }
@@ -145,7 +149,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
         // EmfComponent.BUILTIN.equals(value)) {
         // repositoryModel = false;
         // }
-        if (propertyName.equals(propertyTypeName) && (EmfComponent.BUILTIN.equals(value))) {
+        if (propertyName.split(":")[1].equals(propertyTypeName) && (EmfComponent.BUILTIN.equals(value))) {
             for (IElementParameter param : elem.getElementParameters()) {
                 boolean paramFlag = JobSettingsConstants.isExtraParameter(param.getName());
                 boolean extraFlag = JobSettingsConstants.isExtraParameter(propertyTypeName);
@@ -157,17 +161,12 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
             }
         } else {
             oldValues.clear();
+            IElementParameter propertyParam = elem.getElementParameter(propertyName);
+            EComponentCategory currentCategory = propertyParam.getCategory();
             for (IElementParameter param : elem.getElementParameters()) {
                 String repositoryValue = param.getRepositoryValue();
-                if (param.isShow(elem.getElementParameters()) && (repositoryValue != null)
-                        && (!param.getName().equals(propertyTypeName))) {
-                    // for job settings extra.(feature 2710)
-                    boolean paramFlag = JobSettingsConstants.isExtraParameter(param.getName());
-                    boolean extraFlag = JobSettingsConstants.isExtraParameter(propertyTypeName);
-                    if (paramFlag != extraFlag) {
-                        // same
-                        continue;
-                    }
+                if (param.getCategory().equals(currentCategory) && param.isShow(elem.getElementParameters())
+                        && (repositoryValue != null) && (!param.getName().equals(propertyTypeName))) {
                     Object objectValue = RepositoryToComponentProperty.getValue(connection, repositoryValue);
                     if (objectValue != null) {
                         oldValues.put(param.getName(), param.getValue());
@@ -278,7 +277,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                                 IElementParameter repositorySchemaTypeParameter = param.getChildParameters().get(
                                         EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
                                 String repositoryTable;
-                                if (propertyName.equals(EParameterName.PROPERTY_TYPE.getName())) {
+                                if (propertyName.split(":")[1].equals(EParameterName.PROPERTY_TYPE.getName())) {
                                     repositoryTable = (String) repositorySchemaTypeParameter.getValue();
                                 } else {
                                     repositoryTable = getFirstRepositoryTable(param, value);
@@ -323,7 +322,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                     }
                 }
             }
-            if (propertyName.equals(EParameterName.PROPERTY_TYPE.getName())) {
+            if (propertyName.split(":")[1].equals(EParameterName.PROPERTY_TYPE.getName())) {
                 if (queriesmap != null
                         && !queriesmap.get(elem.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName())).isEmpty()) {
                     elem.setPropertyValue(EParameterName.QUERYSTORE_TYPE.getName(), value);
@@ -388,7 +387,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
         // Force redraw of Commponents propoerties
         elem.setPropertyValue(updataComponentParamName, new Boolean(true));
 
-        if (propertyName.equals(propertyTypeName) && (EmfComponent.BUILTIN.equals(value))) {
+        if (propertyName.split(":")[1].equals(propertyTypeName) && (EmfComponent.BUILTIN.equals(value))) {
             for (IElementParameter param : elem.getElementParameters()) {
                 String repositoryValue = param.getRepositoryValue();
                 if (param.isShow(elem.getElementParameters()) && (repositoryValue != null)
@@ -413,7 +412,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                 }
             }
         }
-        if (propertyName.equals(propertyTypeName)) {
+        if (propertyName.split(":")[1].equals(propertyTypeName)) {
             if (value.equals(EmfComponent.BUILTIN)) {
                 elem.setPropertyValue(propertyTypeName, EmfComponent.REPOSITORY);
             } else {

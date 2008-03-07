@@ -261,8 +261,7 @@ public class ColumnListController extends AbstractElementPropertySectionControll
 
         @Override
         public void widgetSelected(SelectionEvent event) {
-            // updateRepositoryList();
-            dynamicProperty.updateRepositoryList();
+            // dynamicProperty.updateRepositoryList();
             Command cmd = createCommand(event);
             if (cmd != null) {
                 getCommandStack().execute(cmd);

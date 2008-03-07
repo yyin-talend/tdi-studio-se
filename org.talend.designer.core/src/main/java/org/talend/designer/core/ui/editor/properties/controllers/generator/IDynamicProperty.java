@@ -52,8 +52,6 @@ public interface IDynamicProperty {
 
     public Map<String, List<String>> getQueriesMap();
 
-    public void updateRepositoryList();
-
     public Map<String, Query> getRepositoryQueryStoreMap();
 
     public Map<String, String> getTableIdAndDbTypeMap();

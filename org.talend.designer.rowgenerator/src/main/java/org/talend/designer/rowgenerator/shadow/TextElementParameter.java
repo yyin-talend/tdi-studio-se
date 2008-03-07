@@ -20,6 +20,7 @@ import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IElementParameterDefaultValue;
+import org.talend.core.model.properties.Item;
 
 /**
  * Simple Text implementation of IElementParameter. <br/>
@@ -566,6 +567,26 @@ public class TextElementParameter implements IElementParameter {
      * @see org.talend.core.model.process.IElementParameter#setGroupDisplayName(java.lang.String)
      */
     public void setGroupDisplayName(String groupDisplayName) {
+        // TODO Auto-generated method stub
+
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IElementParameter#getLinkedRepositoryItem()
+     */
+    public Item getLinkedRepositoryItem() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IElementParameter#setLinkedRepositoryItem(org.talend.core.model.properties.Item)
+     */
+    public void setLinkedRepositoryItem(Item item) {
         // TODO Auto-generated method stub
 
     }

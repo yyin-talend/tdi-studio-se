@@ -14,7 +14,6 @@ package org.talend.designer.core.ui.editor.properties.controllers;
 
 import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,16 +21,9 @@ import java.util.Set;
 
 import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.fieldassist.DecoratedField;
-import org.eclipse.jface.fieldassist.FieldDecoration;
-import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
-import org.eclipse.jface.fieldassist.IControlCreator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.custom.CLabel;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
@@ -51,6 +43,7 @@ import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
+import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.metadata.dialog.MetadataDialog;
 import org.talend.core.ui.metadata.dialog.MetadataDialogForMerge;
 import org.talend.designer.core.i18n.Messages;
@@ -61,6 +54,7 @@ import org.talend.designer.core.ui.editor.cmd.RepositoryChangeMetadataCommand;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty;
+import org.talend.repository.ui.dialog.RepositoryReviewDialog;
 
 /**
  * DOC nrousseau class global comment. Detailled comment <br/>
@@ -68,7 +62,7 @@ import org.talend.designer.core.ui.editor.properties.controllers.generator.IDyna
  * $Id: talend-code-templates.xml 1 2006-09-29 17:06:40 +0000 (ven., 29 sept. 2006) nrousseau $
  * 
  */
-public class SchemaTypeController extends AbstractElementPropertySectionController {
+public class SchemaTypeController extends AbstractRepositoryController {
 
     private static final String RESET_COLUMNS = "RESET_COLUMNS"; //$NON-NLS-1$
 
@@ -78,157 +72,367 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
         super(dp);
     }
 
+    /**
+     * DOC bqian Comment method "setColumnLength".
+     * 
+     * @param node
+     * @param param
+     * @param columnCopied
+     */
+    private void setColumnLength(Node node, IElementParameter param, IMetadataColumn columnCopied) {
+        for (int i = 0; i < node.getElementParameters().size(); i++) {
+            IElementParameter parameter = node.getElementParameters().get(i);
+            if (parameter.getField() == EParameterFieldType.TABLE) {
+                if (parameter.isBasedOnSchema()) {
+                    List<Map<String, Object>> paramValues = (List<Map<String, Object>>) parameter.getValue();
+                    for (Map<String, Object> columnInfo : paramValues) {
+                        if (columnInfo.get("SCHEMA_COLUMN").equals(columnCopied.getLabel())) {
+                            if (!ColumnListController.needSynchronizeSize(parameter)) {
+                                return;
+                            }
+                            // codes[1] is SIZE;
+                            String size = (String) columnInfo.get("SIZE");
+                            int tmpSize = 0;
+                            if (size == null || size.equals("")) {
+                                tmpSize = -1;
+                            } else {
+                                tmpSize = Integer.parseInt(size);
+                            }
+                            columnCopied.setLength(tmpSize);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private boolean prepareReadOnlyTable(IMetadataTable table, boolean readOnlyParam, boolean readOnlyElement) {
+        boolean isCustom = false;
+        for (IMetadataColumn column : table.getListColumns()) {
+            if (column.isCustom() && !column.isReadOnly()) {
+                isCustom = true;
+            }
+        }
+        if (!isCustom) {
+            return readOnlyParam || readOnlyElement;
+        }
+        for (IMetadataColumn column : table.getListColumns()) {
+            if (!column.isCustom()) {
+                column.setReadOnly(table.isReadOnly());
+            }
+        }
+        return readOnlyElement;
+    }
+
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#createCommand()
+     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#createControl(org.eclipse.swt.widgets.Composite,
+     * org.talend.core.model.process.IElementParameter, int, int, int, org.eclipse.swt.widgets.Control)
      */
-    private Command createCommand(SelectionEvent selectionEvent) {
-        if (selectionEvent.getSource() instanceof Button) {
-            return createButtonCommand((Button) selectionEvent.getSource());
-        }
-        if (selectionEvent.getSource() instanceof CCombo) {
-            return createComboCommand((CCombo) selectionEvent.getSource());
-        }
-        return null;
-    }
-
-    private Command createComboCommand(CCombo combo) {
-        IMetadataTable repositoryMetadata;
-        Map<String, IMetadataTable> repositoryTableMap = dynamicProperty.getRepositoryTableMap();
-
-        // String paramName;
-
-        // IElementParameter repositorySchemaTypeParameter = elem
-        // .getElementParameter(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
-        // Object repositoryControl = hashCurControls.get(repositorySchemaTypeParameter.getName());
-
-        String fullParamName = (String) combo.getData(PARAMETER_NAME);
-        // if (combo.equals(repositoryControl)) {
-        // paramName = EParameterName.REPOSITORY_SCHEMA_TYPE.getName();
+    @Override
+    public Control createControl(Composite subComposite, IElementParameter param, int numInRow, int nbInRow, int top,
+            Control lastControl) {
+        // CCombo combo;
+        //
+        // Control lastControlUsed = lastControl;
+        //
+        // if (elem instanceof Node) {
+        // combo = new CCombo(subComposite, SWT.BORDER);
+        // IElementParameter schemaTypeParameter = param.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName());
+        // // elem.getElementParameter(EParameterName.SCHEMA_TYPE.getName());
+        // FormData data;
+        // String[] originalList = schemaTypeParameter.getListItemsDisplayName();
+        // List<String> stringToDisplay = new ArrayList<String>();
+        // for (int i = 0; i < originalList.length; i++) {
+        // stringToDisplay.add(originalList[i]);
+        // }
+        // combo.setItems(stringToDisplay.toArray(new String[0]));
+        // combo.setEditable(false);
+        // combo.setEnabled(!schemaTypeParameter.isReadOnly());
+        // // combo.addSelectionListener(listenerSelection);
+        // if (elem instanceof Node) {
+        // combo.setToolTipText(VARIABLE_TOOLTIP + schemaTypeParameter.getVariableName());
+        // }
+        //
+        // CLabel labelLabel = getWidgetFactory().createCLabel(subComposite, schemaTypeParameter.getDisplayName());
+        // data = new FormData();
+        // if (lastControl != null) {
+        // data.left = new FormAttachment(lastControl, 0);
         // } else {
-        // paramName = EParameterName.SCHEMA_TYPE.getName();
+        // data.left = new FormAttachment((((numInRow - 1) * MAX_PERCENT) / nbInRow), 0);
         // }
-        IElementParameter switchParam = elem.getElementParameter(EParameterName.REPOSITORY_ALLOW_AUTO_SWITCH.getName());
-
-        String value = new String(""); //$NON-NLS-1$
-
-        IElementParameter param = elem.getElementParameter(fullParamName);
-        for (int j = 0; j < param.getListItemsValue().length; j++) {
-            if (combo.getText().equals(param.getListItemsDisplayName()[j])) {
-                value = (String) param.getListItemsValue()[j];
-            }
-        }
-
-        // for (int i = 0; i < elem.getElementParameters().size(); i++) {
-        // IElementParameter param = elem.getElementParameters().get(i);
-        // if (param.getName().equals(paramName)) {
-        // for (int j = 0; j < param.getListItemsValue().length; j++) {
-        // if (combo.getText().equals(param.getListItemsDisplayName()[j])) {
-        // value = (String) param.getListItemsValue()[j];
+        // data.top = new FormAttachment(0, top);
+        // labelLabel.setLayoutData(data);
+        // if (numInRow != 1) {
+        // labelLabel.setAlignment(SWT.RIGHT);
         // }
+        // // *********************
+        // data = new FormData();
+        // int currentLabelWidth = STANDARD_LABEL_WIDTH;
+        // GC gc = new GC(labelLabel);
+        // Point labelSize = gc.stringExtent(schemaTypeParameter.getDisplayName());
+        // gc.dispose();
+        //
+        // if ((labelSize.x + ITabbedPropertyConstants.HSPACE) > currentLabelWidth) {
+        // currentLabelWidth = labelSize.x + ITabbedPropertyConstants.HSPACE;
         // }
+        //
+        // if (numInRow == 1) {
+        // if (lastControl != null) {
+        // data.left = new FormAttachment(lastControl, currentLabelWidth);
+        // } else {
+        // data.left = new FormAttachment(0, currentLabelWidth);
         // }
+        //
+        // } else {
+        // data.left = new FormAttachment(labelLabel, 0, SWT.RIGHT);
         // }
-        org.talend.core.model.metadata.builder.connection.Connection connection = null;
-        if (fullParamName.contains(EParameterName.REPOSITORY_SCHEMA_TYPE.getName())) {
-            if (elem instanceof Node) {
-                this.dynamicProperty.updateRepositoryList();
-                if (repositoryTableMap.containsKey(value)) {
-                    repositoryMetadata = repositoryTableMap.get(value);
-                    IElementParameter property = ((Node) elem).getElementParameter(EParameterName.PROPERTY_TYPE.getName());
-                    if ((property != null) && EmfComponent.REPOSITORY.equals(property.getValue())) {
-                        String propertySelected = (String) ((Node) elem).getElementParameter(
-                                EParameterName.REPOSITORY_PROPERTY_TYPE.getName()).getValue();
-                        connection = dynamicProperty.getRepositoryConnectionItemMap().get(propertySelected).getConnection();
-                    }
-                } else {
-                    repositoryMetadata = new MetadataTable();
-                }
-                if (switchParam != null) {
-                    switchParam.setValue(Boolean.FALSE);
-                }
-                RepositoryChangeMetadataCommand changeMetadataCommand = new RepositoryChangeMetadataCommand((Node) elem,
-                        fullParamName, value, repositoryMetadata, null);
-                changeMetadataCommand.setConnection(connection);
-                // changeMetadataCommand.setMaps(this.dynamicTabbedPropertySection.getTableIdAndDbTypeMap(),
-                // this.dynamicTabbedPropertySection.getTableIdAndDbSchemaMap(), this.dynamicTabbedPropertySection
-                // .getRepositoryTableMap());
-
-                return changeMetadataCommand;
-
-            }
-        }
-        // Schema Type combo was selected.
-        else {
-            if (elem instanceof Node) {
-                Node node = (Node) elem;
-                boolean isReadOnly = false;
-                String newRepositoryIdValue = null;
-                if (node.getMetadataFromConnector(param.getContext()) != null) {
-                    isReadOnly = node.getMetadataFromConnector(param.getContext()).isReadOnly();
-                }
-                if (value.equals(EmfComponent.BUILTIN) && isReadOnly) {
-                    boolean hasMetadataInput = false;
-                    if (node.getCurrentActiveLinksNbInput(EConnectionType.FLOW_MAIN) > 0
-                            || node.getCurrentActiveLinksNbInput(EConnectionType.TABLE) > 0) {
-                        hasMetadataInput = true;
-                    }
-                    repositoryMetadata = new MetadataTable();
-                    if (hasMetadataInput) {
-                        for (Connection connec : (List<Connection>) node.getIncomingConnections()) {
-                            if (connec.isActivate()
-                                    && (connec.getLineStyle().equals(EConnectionType.FLOW_MAIN) || connec.getLineStyle().equals(
-                                            EConnectionType.TABLE))) {
-                                repositoryMetadata = connec.getMetadataTable().clone();
-                            }
-                        }
-
-                    }
-                } else {
-                    this.dynamicProperty.updateRepositoryList();
-                    IElementParameter property = ((Node) elem).getElementParameter(EParameterName.PROPERTY_TYPE.getName());
-                    if ((property != null) && EmfComponent.REPOSITORY.equals(property.getValue())) {
-                        String propertySelected = (String) ((Node) elem).getElementParameter(
-                                EParameterName.REPOSITORY_PROPERTY_TYPE.getName()).getValue();
-                        connection = dynamicProperty.getRepositoryConnectionItemMap().get(propertySelected).getConnection();
-                    }
-
-                    IElementParameter repositorySchemaType = param.getParentParameter().getChildParameters().get(
-                            EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
-                    String schemaSelected = (String) repositorySchemaType.getValue();
-                    if (repositoryTableMap.containsKey(schemaSelected)) {
-                        repositoryMetadata = repositoryTableMap.get(schemaSelected);
-                    } else {
-                        if (repositoryTableMap.keySet().size() == 0) {
-                            repositoryMetadata = new MetadataTable();
-                        } else {
-                            newRepositoryIdValue = repositoryTableMap.keySet().iterator().next();
-                            // Gets the schema of the first item in repository schema type combo.
-                            repositoryMetadata = repositoryTableMap.get(newRepositoryIdValue);
-                        }
-                    }
-                }
-                if (switchParam != null) {
-                    switchParam.setValue(Boolean.FALSE);
-                }
-
-                RepositoryChangeMetadataCommand changeMetadataCommand = new RepositoryChangeMetadataCommand((Node) elem,
-                        fullParamName, value, repositoryMetadata, newRepositoryIdValue);
-                changeMetadataCommand.setConnection(connection);
-
-                // changeMetadataCommand.setMaps(this.dynamicTabbedPropertySection.getTableIdAndDbTypeMap(),
-                // this.dynamicTabbedPropertySection.getTableIdAndDbSchemaMap(), this.dynamicTabbedPropertySection
-                // .getRepositoryTableMap());
-
-                return changeMetadataCommand;
-            }
-        }
-
-        return null;
+        // data.top = new FormAttachment(0, top);
+        // combo.setLayoutData(data);
+        // combo.addSelectionListener(listenerSelection);
+        // combo.setData(PARAMETER_NAME, param.getName() + ":" + schemaTypeParameter.getName());
+        // lastControlUsed = combo;
+        //
+        // String schemaType = (String) schemaTypeParameter.getValue();
+        // if (schemaType != null && schemaType.equals(EmfComponent.REPOSITORY)) {
+        // lastControlUsed = addRepositoryChoice(subComposite, lastControlUsed, numInRow, nbInRow, top, param);
+        // }
+        //
+        // // **********************
+        // hashCurControls.put(param.getName() + ":" + schemaTypeParameter.getName(), combo);
+        //
+        // Point initialSize = combo.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+        // dynamicProperty.setCurRowSize(initialSize.y + ITabbedPropertyConstants.VSPACE);
+        // }
+        Control lastControlUsed = super.createControl(subComposite, param, numInRow, nbInRow, top, lastControl);
+        lastControlUsed = addButton(subComposite, param, lastControlUsed, numInRow, top);
+        return lastControlUsed;
     }
 
-    private Command createButtonCommand(Button button) {
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize(org.eclipse.swt.widgets.Composite,
+     * org.talend.core.model.process.IElementParameter)
+     */
+    @Override
+    public int estimateRowSize(Composite subComposite, IElementParameter param) {
+        int comboSize, buttonSize;
+
+        CCombo combo = new CCombo(subComposite, SWT.BORDER);
+        IElementParameter schemaTypeParameter = param.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName());
+        // elem.getElementParameter(EParameterName.SCHEMA_TYPE.getName());
+        String[] originalList = schemaTypeParameter.getListItemsDisplayName();
+        combo.setItems(originalList);
+        comboSize = combo.computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
+        combo.dispose();
+
+        Button btn = getWidgetFactory().createButton(subComposite, "", SWT.PUSH); //$NON-NLS-1$
+        buttonSize = btn.computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
+        btn.dispose();
+        return Math.max(comboSize, buttonSize) + ITabbedPropertyConstants.VSPACE;
+    }
+
+    private Control addButton(Composite subComposite, IElementParameter param, Control lastControl, int numInRow, int top) {
+        Button btn;
+        Button resetBtn = null;
+        Control lastControlUsed = lastControl;
+        Point btnSize;
+        FormData data;
+
+        btn = getWidgetFactory().createButton(subComposite, "", SWT.PUSH); //$NON-NLS-1$
+        btnSize = btn.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+
+        btn.setImage(ImageProvider.getImage(CorePlugin.getImageDescriptor(DOTS_BUTTON)));
+
+        btn.addSelectionListener(listenerSelection);
+        btn.setData(NAME, SCHEMA);
+        btn.setData(PARAMETER_NAME, param.getName());
+
+        lastControlUsed = btn;
+
+        if (elem instanceof Node) {
+            Node node = (Node) elem;
+            boolean flowMainInput = false;
+            boolean multipleInput = false;
+            boolean tableReadOnly = false;
+            IMetadataTable table = node.getMetadataTable(param.getContext());
+            if (table != null) {
+                if (table.isReadOnly()) {
+                    tableReadOnly = true;
+                    for (IMetadataColumn column : table.getListColumns()) {
+                        if (!column.isReadOnly()) {
+                            tableReadOnly = false;
+                        }
+                    }
+                }
+            }
+            if (!tableReadOnly) {
+                for (IConnection connec : node.getIncomingConnections()) {
+                    if (connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)
+                            || connec.getLineStyle().equals(EConnectionType.TABLE)
+                            || connec.getLineStyle().equals(EConnectionType.FLOW_MERGE)) {
+                        flowMainInput = true;
+                    }
+                }
+                if (flowMainInput) {
+                    int nbMain = 0;
+                    for (IConnection connec : node.getIncomingConnections()) {
+                        if (connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
+                            nbMain++;
+                        }
+                    }
+
+                    int maxFlowInput = node.getConnectorFromName(EConnectionType.FLOW_MAIN.getName()).getMaxLinkInput();
+                    if (maxFlowInput > 1 && nbMain >= 1 && (nbMain <= maxFlowInput || maxFlowInput == -1)) {
+                        multipleInput = true;
+                    }
+
+                }
+            }
+            if (flowMainInput && !multipleInput && !tableReadOnly) {
+                resetBtn = getWidgetFactory().createButton(subComposite,
+                        Messages.getString("SchemaController.syncColumns"), SWT.PUSH); //$NON-NLS-1$
+                resetBtn.setToolTipText(Messages.getString("SchemaController.resetButton.tooltip")); //$NON-NLS-1$
+
+                Point resetBtnSize = resetBtn.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+
+                resetBtn.addSelectionListener(listenerSelection);
+                data = new FormData();
+                data.left = new FormAttachment(btn, 0);
+                data.right = new FormAttachment(btn, resetBtnSize.x + ITabbedPropertyConstants.HSPACE, SWT.RIGHT);
+                data.top = new FormAttachment(0, top);
+                data.height = resetBtnSize.y;
+                resetBtn.setLayoutData(data);
+                resetBtn.setData(NAME, RESET_COLUMNS);
+                resetBtn.setData(PARAMETER_NAME, param.getName());
+                resetBtn.setEnabled(!param.isReadOnly());
+
+                if (resetBtnSize.y > btnSize.y) {
+                    btnSize.y = resetBtnSize.y;
+                }
+
+                lastControlUsed = resetBtn;
+            }
+        }
+
+        CLabel labelLabel = getWidgetFactory().createCLabel(subComposite, Messages.getString("SchemaController.editSchema")); //$NON-NLS-1$
+        data = new FormData();
+        data.left = new FormAttachment(lastControl, 0);
+        data.right = new FormAttachment(lastControl, labelLabel.computeSize(SWT.DEFAULT, SWT.DEFAULT).x
+                + (ITabbedPropertyConstants.HSPACE * 2), SWT.RIGHT);
+        if (resetBtn != null) {
+            data.top = new FormAttachment(resetBtn, 0, SWT.CENTER);
+        } else {
+            data.top = new FormAttachment(0, top);
+        }
+        labelLabel.setLayoutData(data);
+        if (numInRow != 1) {
+            labelLabel.setAlignment(SWT.RIGHT);
+        }
+
+        data = new FormData();
+        data.left = new FormAttachment(labelLabel, 0);
+        data.right = new FormAttachment(labelLabel, STANDARD_BUTTON_WIDTH, SWT.RIGHT);
+        if (resetBtn != null) {
+            data.top = new FormAttachment(resetBtn, 0, SWT.CENTER);
+        } else {
+            data.top = new FormAttachment(0, top);
+        }
+        data.height = STANDARD_HEIGHT - 2;
+        btn.setLayoutData(data);
+
+        // curRowSize = btnSize.y + ITabbedPropertyConstants.VSPACE;
+        dynamicProperty.setCurRowSize(btnSize.y + ITabbedPropertyConstants.VSPACE);
+        return lastControlUsed;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#refresh(org.talend.core.model.process.IElementParameter,
+     * boolean)
+     */
+    @Override
+    public void refresh(IElementParameter param, boolean check) {
+        super.refresh(param, check);
+        // IElementParameter schemaTypeParameter = param.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName());
+        // // elem.getElementParameter(EParameterName.SCHEMA_TYPE.getName());
+        // CCombo combo = (CCombo) hashCurControls.get(param.getName() + ":" + schemaTypeParameter.getName());
+        //
+        // if (combo == null || combo.isDisposed()) {
+        // return;
+        // }
+        // Object value = schemaTypeParameter.getValue();
+        //
+        // if (value instanceof String) {
+        // String strValue = ""; //$NON-NLS-1$
+        // int nbInList = 0, nbMax = schemaTypeParameter.getListItemsValue().length;
+        // String name = (String) value;
+        // while (strValue.equals(new String("")) && nbInList < nbMax) { //$NON-NLS-1$
+        // if (name.equals(schemaTypeParameter.getListItemsValue()[nbInList])) {
+        // strValue = schemaTypeParameter.getListItemsDisplayName()[nbInList];
+        // }
+        // nbInList++;
+        // }
+        // String[] paramItems = schemaTypeParameter.getListItemsDisplayName();
+        // String[] comboItems = combo.getItems();
+        // if (!paramItems.equals(comboItems)) {
+        // combo.setItems(paramItems);
+        // }
+        // combo.setText(strValue);
+        // }
+        //
+        // IElementParameter repositorySchemaTypeParameter = param.getChildParameters().get(
+        // EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
+        // Text text = (Text) hashCurControls.get(param.getName() + ":" + repositorySchemaTypeParameter.getName());
+        //
+        // if (text == null || text.isDisposed()) {
+        // return;
+        // }
+        // value = repositorySchemaTypeParameter.getValue();
+        //
+        // if (value instanceof String) {
+        // // dynamicProperty.updateRepositoryList();
+        // // String strValue = ""; //$NON-NLS-1$
+        // // int nbInList = 0, nbMax = repositorySchemaTypeParameter.getListItemsValue().length;
+        // // String name = (String) value;
+        // // while (strValue.equals(new String("")) && nbInList < nbMax) { //$NON-NLS-1$
+        // // if (name.equals(repositorySchemaTypeParameter.getListItemsValue()[nbInList])) {
+        // // strValue = repositorySchemaTypeParameter.getListItemsDisplayName()[nbInList];
+        // // }
+        // // nbInList++;
+        // // }
+        // // String[] paramItems = repositorySchemaTypeParameter.getListItemsDisplayName();
+        // // String[] comboItems = combo.getItems();
+        // // if (!Arrays.equals(paramItems, comboItems)) {
+        // // combo.setItems(paramItems);
+        // // // ControlUtils.setSortedValuesForCombo(combo, paramItems);
+        // // }
+        // // combo.setText(strValue);
+        // text.setText((String) value);
+        // }
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
+     */
+    public void propertyChange(PropertyChangeEvent arg0) {
+        // TODO Auto-generated method stub
+
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractRepositoryController#createButtonCommand(org.eclipse.swt.widgets.Button)
+     */
+    @Override
+    protected Command createButtonCommand(Button button) {
         Button inputButton = button;
         IElementParameter switchParam = elem.getElementParameter(EParameterName.REPOSITORY_ALLOW_AUTO_SWITCH.getName());
 
@@ -489,413 +693,215 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
             }
 
             return new ChangeMetadataCommand(node, param, meta, metaCopy);
+        } else if (button.getData(NAME).equals(REPOSITORY_CHOICE)) {
+            RepositoryReviewDialog dialog = new RepositoryReviewDialog(button.getShell(),
+                    ERepositoryObjectType.METADATA_CON_TABLE, null);
+            if (dialog.open() == RepositoryReviewDialog.OK) {
+                String id = dialog.getResult().getParent().getParent().getObject().getId();
+                // take the parent id instead of the table id as the current list contain this information
+                // String id = dialog.getResult().getObject().getId();
+                String name = dialog.getResult().getObject().getLabel();
+                String paramName = (String) button.getData(PARAMETER_NAME);
+                String value = id + " - " + name;
+                // IElementParameter param = elem.getElementParameter(paramName).getChildParameters().get(
+                // getRepositoryChoiceParamName());
+                // param.setValue(id + " - " + name);
+                // Text text = (Text) hashCurControls.get(paramName + ":" + getRepositoryChoiceParamName());
+                // text.setText(getDisplayNameFromValue(param, id + " - " + name));
+
+                String fullParamName = paramName + ":" + getRepositoryChoiceParamName();
+                org.talend.core.model.metadata.builder.connection.Connection connection = null;
+                Map<String, IMetadataTable> repositoryTableMap = dynamicProperty.getRepositoryTableMap();
+                if (elem instanceof Node) {
+                    IMetadataTable repositoryMetadata;
+                    if (repositoryTableMap.containsKey(value)) {
+                        repositoryMetadata = repositoryTableMap.get(value);
+                        IElementParameter property = ((Node) elem).getElementParameter(EParameterName.PROPERTY_TYPE.getName());
+                        if ((property != null) && EmfComponent.REPOSITORY.equals(property.getValue())) {
+                            String propertySelected = (String) ((Node) elem).getElementParameter(
+                                    EParameterName.REPOSITORY_PROPERTY_TYPE.getName()).getValue();
+                            connection = dynamicProperty.getRepositoryConnectionItemMap().get(propertySelected).getConnection();
+                        }
+                    } else {
+                        repositoryMetadata = new MetadataTable();
+                    }
+                    if (switchParam != null) {
+                        switchParam.setValue(Boolean.FALSE);
+                    }
+                    RepositoryChangeMetadataCommand changeMetadataCommand = new RepositoryChangeMetadataCommand((Node) elem,
+                            fullParamName, value, repositoryMetadata, null);
+                    changeMetadataCommand.setConnection(connection);
+                    // changeMetadataCommand.setMaps(this.dynamicTabbedPropertySection.getTableIdAndDbTypeMap(),
+                    // this.dynamicTabbedPropertySection.getTableIdAndDbSchemaMap(), this.dynamicTabbedPropertySection
+                    // .getRepositoryTableMap());
+
+                    return changeMetadataCommand;
+
+                }
+
+            }
         }
+
         return null;
     }
 
-    /**
-     * DOC bqian Comment method "setColumnLength".
-     * 
-     * @param node
-     * @param param
-     * @param columnCopied
-     */
-    private void setColumnLength(Node node, IElementParameter param, IMetadataColumn columnCopied) {
-        for (int i = 0; i < node.getElementParameters().size(); i++) {
-            IElementParameter parameter = node.getElementParameters().get(i);
-            if (parameter.getField() == EParameterFieldType.TABLE) {
-                if (parameter.isBasedOnSchema()) {
-                    List<Map<String, Object>> paramValues = (List<Map<String, Object>>) parameter.getValue();
-                    for (Map<String, Object> columnInfo : paramValues) {
-                        if (columnInfo.get("SCHEMA_COLUMN").equals(columnCopied.getLabel())) {
-                            if (!ColumnListController.needSynchronizeSize(parameter)) {
-                                return;
-                            }
-                            // codes[1] is SIZE;
-                            String size = (String) columnInfo.get("SIZE");
-                            int tmpSize = 0;
-                            if (size == null || size.equals("")) {
-                                tmpSize = -1;
-                            } else {
-                                tmpSize = Integer.parseInt(size);
-                            }
-                            columnCopied.setLength(tmpSize);
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    private boolean prepareReadOnlyTable(IMetadataTable table, boolean readOnlyParam, boolean readOnlyElement) {
-        boolean isCustom = false;
-        for (IMetadataColumn column : table.getListColumns()) {
-            if (column.isCustom() && !column.isReadOnly()) {
-                isCustom = true;
-            }
-        }
-        if (!isCustom) {
-            return readOnlyParam || readOnlyElement;
-        }
-        for (IMetadataColumn column : table.getListColumns()) {
-            if (!column.isCustom()) {
-                column.setReadOnly(table.isReadOnly());
-            }
-        }
-        return readOnlyElement;
-    }
-
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#createControl(org.eclipse.swt.widgets.Composite,
-     * org.talend.core.model.process.IElementParameter, int, int, int, org.eclipse.swt.widgets.Control)
+     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractRepositoryController#createComboCommand(org.eclipse.swt.custom.CCombo)
      */
     @Override
-    public Control createControl(Composite subComposite, IElementParameter param, int numInRow, int nbInRow, int top,
-            Control lastControl) {
-        CCombo combo;
+    protected Command createComboCommand(CCombo combo) {
+        IMetadataTable repositoryMetadata;
+        Map<String, IMetadataTable> repositoryTableMap = dynamicProperty.getRepositoryTableMap();
 
-        Control lastControlUsed = lastControl;
+        // String paramName;
 
-        if (elem instanceof Node) {
-            combo = new CCombo(subComposite, SWT.BORDER);
-            IElementParameter schemaTypeParameter = param.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName());
-            // elem.getElementParameter(EParameterName.SCHEMA_TYPE.getName());
-            FormData data;
-            String[] originalList = schemaTypeParameter.getListItemsDisplayName();
-            List<String> stringToDisplay = new ArrayList<String>();
-            for (int i = 0; i < originalList.length; i++) {
-                stringToDisplay.add(originalList[i]);
+        // IElementParameter repositorySchemaTypeParameter = elem
+        // .getElementParameter(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
+        // Object repositoryControl = hashCurControls.get(repositorySchemaTypeParameter.getName());
+
+        String fullParamName = (String) combo.getData(PARAMETER_NAME);
+        // if (combo.equals(repositoryControl)) {
+        // paramName = EParameterName.REPOSITORY_SCHEMA_TYPE.getName();
+        // } else {
+        // paramName = EParameterName.SCHEMA_TYPE.getName();
+        // }
+        IElementParameter switchParam = elem.getElementParameter(EParameterName.REPOSITORY_ALLOW_AUTO_SWITCH.getName());
+
+        String value = new String(""); //$NON-NLS-1$
+
+        IElementParameter param = elem.getElementParameter(fullParamName);
+        for (int j = 0; j < param.getListItemsValue().length; j++) {
+            if (combo.getText().equals(param.getListItemsDisplayName()[j])) {
+                value = (String) param.getListItemsValue()[j];
             }
-            combo.setItems(stringToDisplay.toArray(new String[0]));
-            combo.setEditable(false);
-            combo.setEnabled(!schemaTypeParameter.isReadOnly());
-            // combo.addSelectionListener(listenerSelection);
-            if (elem instanceof Node) {
-                combo.setToolTipText(VARIABLE_TOOLTIP + schemaTypeParameter.getVariableName());
-            }
-
-            CLabel labelLabel = getWidgetFactory().createCLabel(subComposite, schemaTypeParameter.getDisplayName());
-            data = new FormData();
-            if (lastControl != null) {
-                data.left = new FormAttachment(lastControl, 0);
-            } else {
-                data.left = new FormAttachment((((numInRow - 1) * MAX_PERCENT) / nbInRow), 0);
-            }
-            data.top = new FormAttachment(0, top);
-            labelLabel.setLayoutData(data);
-            if (numInRow != 1) {
-                labelLabel.setAlignment(SWT.RIGHT);
-            }
-            // *********************
-            data = new FormData();
-            int currentLabelWidth = STANDARD_LABEL_WIDTH;
-            GC gc = new GC(labelLabel);
-            Point labelSize = gc.stringExtent(schemaTypeParameter.getDisplayName());
-            gc.dispose();
-
-            if ((labelSize.x + ITabbedPropertyConstants.HSPACE) > currentLabelWidth) {
-                currentLabelWidth = labelSize.x + ITabbedPropertyConstants.HSPACE;
-            }
-
-            if (numInRow == 1) {
-                if (lastControl != null) {
-                    data.left = new FormAttachment(lastControl, currentLabelWidth);
-                } else {
-                    data.left = new FormAttachment(0, currentLabelWidth);
-                }
-
-            } else {
-                data.left = new FormAttachment(labelLabel, 0, SWT.RIGHT);
-            }
-            data.top = new FormAttachment(0, top);
-            combo.setLayoutData(data);
-            combo.addSelectionListener(listenerSelection);
-            combo.setData(PARAMETER_NAME, param.getName() + ":" + schemaTypeParameter.getName());
-            lastControlUsed = combo;
-
-            String schemaType = (String) schemaTypeParameter.getValue();
-            if (schemaType != null && schemaType.equals(EmfComponent.REPOSITORY)) {
-                lastControlUsed = addRepositoryCombo(subComposite, lastControlUsed, numInRow, top, param);
-            }
-
-            // **********************
-            hashCurControls.put(param.getName() + ":" + schemaTypeParameter.getName(), combo);
-
-            Point initialSize = combo.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-            dynamicProperty.setCurRowSize(initialSize.y + ITabbedPropertyConstants.VSPACE);
         }
-        lastControlUsed = addButton(subComposite, param, lastControlUsed, numInRow, top);
-        return lastControlUsed;
-    }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#estimateRowSize(org.eclipse.swt.widgets.Composite,
-     * org.talend.core.model.process.IElementParameter)
-     */
-    @Override
-    public int estimateRowSize(Composite subComposite, IElementParameter param) {
-        int comboSize, buttonSize;
-
-        CCombo combo = new CCombo(subComposite, SWT.BORDER);
-        IElementParameter schemaTypeParameter = param.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName());
-        // elem.getElementParameter(EParameterName.SCHEMA_TYPE.getName());
-        String[] originalList = schemaTypeParameter.getListItemsDisplayName();
-        combo.setItems(originalList);
-        comboSize = combo.computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
-        combo.dispose();
-
-        Button btn = getWidgetFactory().createButton(subComposite, "", SWT.PUSH); //$NON-NLS-1$
-        buttonSize = btn.computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
-        btn.dispose();
-        return Math.max(comboSize, buttonSize) + ITabbedPropertyConstants.VSPACE;
-    }
-
-    private Control addButton(Composite subComposite, IElementParameter param, Control lastControl, int numInRow, int top) {
-        Button btn;
-        Button resetBtn = null;
-        Control lastControlUsed = lastControl;
-        Point btnSize;
-        FormData data;
-
-        btn = getWidgetFactory().createButton(subComposite, "", SWT.PUSH); //$NON-NLS-1$
-        btnSize = btn.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-
-        btn.setImage(ImageProvider.getImage(CorePlugin.getImageDescriptor(DOTS_BUTTON)));
-
-        btn.addSelectionListener(listenerSelection);
-        btn.setData(NAME, SCHEMA);
-        btn.setData(PARAMETER_NAME, param.getName());
-
-        lastControlUsed = btn;
-
+        // for (int i = 0; i < elem.getElementParameters().size(); i++) {
+        // IElementParameter param = elem.getElementParameters().get(i);
+        // if (param.getName().equals(paramName)) {
+        // for (int j = 0; j < param.getListItemsValue().length; j++) {
+        // if (combo.getText().equals(param.getListItemsDisplayName()[j])) {
+        // value = (String) param.getListItemsValue()[j];
+        // }
+        // }
+        // }
+        // }
+        org.talend.core.model.metadata.builder.connection.Connection connection = null;
+        // if (fullParamName.contains(EParameterName.REPOSITORY_SCHEMA_TYPE.getName())) {
+        // if (elem instanceof Node) {
+        // if (repositoryTableMap.containsKey(value)) {
+        // repositoryMetadata = repositoryTableMap.get(value);
+        // IElementParameter property = ((Node) elem).getElementParameter(EParameterName.PROPERTY_TYPE.getName());
+        // if ((property != null) && EmfComponent.REPOSITORY.equals(property.getValue())) {
+        // String propertySelected = (String) ((Node) elem).getElementParameter(
+        // EParameterName.REPOSITORY_PROPERTY_TYPE.getName()).getValue();
+        // connection = dynamicProperty.getRepositoryConnectionItemMap().get(propertySelected).getConnection();
+        // }
+        // } else {
+        // repositoryMetadata = new MetadataTable();
+        // }
+        // if (switchParam != null) {
+        // switchParam.setValue(Boolean.FALSE);
+        // }
+        // RepositoryChangeMetadataCommand changeMetadataCommand = new RepositoryChangeMetadataCommand((Node) elem,
+        // fullParamName, value, repositoryMetadata, null);
+        // changeMetadataCommand.setConnection(connection);
+        // // changeMetadataCommand.setMaps(this.dynamicTabbedPropertySection.getTableIdAndDbTypeMap(),
+        // // this.dynamicTabbedPropertySection.getTableIdAndDbSchemaMap(), this.dynamicTabbedPropertySection
+        // // .getRepositoryTableMap());
+        //
+        // return changeMetadataCommand;
+        //
+        // }
+        // }
+        // // Schema Type combo was selected.
+        // else {
         if (elem instanceof Node) {
             Node node = (Node) elem;
-            boolean flowMainInput = false;
-            boolean multipleInput = false;
-            boolean tableReadOnly = false;
-            IMetadataTable table = node.getMetadataTable(param.getContext());
-            if (table != null) {
-                if (table.isReadOnly()) {
-                    tableReadOnly = true;
-                    for (IMetadataColumn column : table.getListColumns()) {
-                        if (!column.isReadOnly()) {
-                            tableReadOnly = false;
-                        }
-                    }
-                }
+            boolean isReadOnly = false;
+            String newRepositoryIdValue = null;
+            if (node.getMetadataFromConnector(param.getContext()) != null) {
+                isReadOnly = node.getMetadataFromConnector(param.getContext()).isReadOnly();
             }
-            if (!tableReadOnly) {
-                for (IConnection connec : node.getIncomingConnections()) {
-                    if (connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)
-                            || connec.getLineStyle().equals(EConnectionType.TABLE)
-                            || connec.getLineStyle().equals(EConnectionType.FLOW_MERGE)) {
-                        flowMainInput = true;
-                    }
+            if (value.equals(EmfComponent.BUILTIN) && isReadOnly) {
+                boolean hasMetadataInput = false;
+                if (node.getCurrentActiveLinksNbInput(EConnectionType.FLOW_MAIN) > 0
+                        || node.getCurrentActiveLinksNbInput(EConnectionType.TABLE) > 0) {
+                    hasMetadataInput = true;
                 }
-                if (flowMainInput) {
-                    int nbMain = 0;
-                    for (IConnection connec : node.getIncomingConnections()) {
-                        if (connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
-                            nbMain++;
+                repositoryMetadata = new MetadataTable();
+                if (hasMetadataInput) {
+                    for (Connection connec : (List<Connection>) node.getIncomingConnections()) {
+                        if (connec.isActivate()
+                                && (connec.getLineStyle().equals(EConnectionType.FLOW_MAIN) || connec.getLineStyle().equals(
+                                        EConnectionType.TABLE))) {
+                            repositoryMetadata = connec.getMetadataTable().clone();
                         }
                     }
 
-                    int maxFlowInput = node.getConnectorFromName(EConnectionType.FLOW_MAIN.getName()).getMaxLinkInput();
-                    if (maxFlowInput > 1 && nbMain >= 1 && (nbMain <= maxFlowInput || maxFlowInput == -1)) {
-                        multipleInput = true;
+                }
+            } else {
+                IElementParameter property = ((Node) elem).getElementParameter(EParameterName.PROPERTY_TYPE.getName());
+                if ((property != null) && EmfComponent.REPOSITORY.equals(property.getValue())) {
+                    String propertySelected = (String) ((Node) elem).getElementParameter(
+                            EParameterName.REPOSITORY_PROPERTY_TYPE.getName()).getValue();
+                    connection = dynamicProperty.getRepositoryConnectionItemMap().get(propertySelected).getConnection();
+                }
+
+                IElementParameter repositorySchemaType = param.getParentParameter().getChildParameters().get(
+                        EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
+                String schemaSelected = (String) repositorySchemaType.getValue();
+                if (repositoryTableMap.containsKey(schemaSelected)) {
+                    repositoryMetadata = repositoryTableMap.get(schemaSelected);
+                } else {
+                    if (repositoryTableMap.keySet().size() == 0) {
+                        repositoryMetadata = new MetadataTable();
+                    } else {
+                        newRepositoryIdValue = repositoryTableMap.keySet().iterator().next();
+                        // Gets the schema of the first item in repository schema type combo.
+                        repositoryMetadata = repositoryTableMap.get(newRepositoryIdValue);
                     }
-
                 }
             }
-            if (flowMainInput && !multipleInput && !tableReadOnly) {
-                resetBtn = getWidgetFactory().createButton(subComposite,
-                        Messages.getString("SchemaController.syncColumns"), SWT.PUSH); //$NON-NLS-1$
-                resetBtn.setToolTipText(Messages.getString("SchemaController.resetButton.tooltip")); //$NON-NLS-1$
-
-                Point resetBtnSize = resetBtn.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-
-                resetBtn.addSelectionListener(listenerSelection);
-                data = new FormData();
-                data.left = new FormAttachment(btn, 0);
-                data.right = new FormAttachment(btn, resetBtnSize.x + ITabbedPropertyConstants.HSPACE, SWT.RIGHT);
-                data.top = new FormAttachment(0, top);
-                data.height = resetBtnSize.y;
-                resetBtn.setLayoutData(data);
-                resetBtn.setData(NAME, RESET_COLUMNS);
-                resetBtn.setData(PARAMETER_NAME, param.getName());
-                resetBtn.setEnabled(!param.isReadOnly());
-
-                if (resetBtnSize.y > btnSize.y) {
-                    btnSize.y = resetBtnSize.y;
-                }
-
-                lastControlUsed = resetBtn;
+            if (switchParam != null) {
+                switchParam.setValue(Boolean.FALSE);
             }
-        }
 
-        CLabel labelLabel = getWidgetFactory().createCLabel(subComposite, Messages.getString("SchemaController.editSchema")); //$NON-NLS-1$
-        data = new FormData();
-        data.left = new FormAttachment(lastControl, 0);
-        data.right = new FormAttachment(lastControl, labelLabel.computeSize(SWT.DEFAULT, SWT.DEFAULT).x
-                + (ITabbedPropertyConstants.HSPACE * 2), SWT.RIGHT);
-        if (resetBtn != null) {
-            data.top = new FormAttachment(resetBtn, 0, SWT.CENTER);
-        } else {
-            data.top = new FormAttachment(0, top);
-        }
-        labelLabel.setLayoutData(data);
-        if (numInRow != 1) {
-            labelLabel.setAlignment(SWT.RIGHT);
-        }
+            RepositoryChangeMetadataCommand changeMetadataCommand = new RepositoryChangeMetadataCommand((Node) elem,
+                    fullParamName, value, repositoryMetadata, newRepositoryIdValue);
+            changeMetadataCommand.setConnection(connection);
 
-        data = new FormData();
-        data.left = new FormAttachment(labelLabel, 0);
-        data.right = new FormAttachment(labelLabel, STANDARD_BUTTON_WIDTH, SWT.RIGHT);
-        if (resetBtn != null) {
-            data.top = new FormAttachment(resetBtn, 0, SWT.CENTER);
-        } else {
-            data.top = new FormAttachment(0, top);
-        }
-        data.height = STANDARD_HEIGHT - 2;
-        btn.setLayoutData(data);
+            // changeMetadataCommand.setMaps(this.dynamicTabbedPropertySection.getTableIdAndDbTypeMap(),
+            // this.dynamicTabbedPropertySection.getTableIdAndDbSchemaMap(), this.dynamicTabbedPropertySection
+            // .getRepositoryTableMap());
 
-        // curRowSize = btnSize.y + ITabbedPropertyConstants.VSPACE;
-        dynamicProperty.setCurRowSize(btnSize.y + ITabbedPropertyConstants.VSPACE);
-        return lastControlUsed;
+            return changeMetadataCommand;
+        }
+        // }
+
+        return null;
     }
-
-    private Control addRepositoryCombo(Composite subComposite, Control lastControl, int numInRow, int top, IElementParameter param) {
-        IControlCreator cbCtrl;
-        DecoratedField dField;
-        Control cLayout;
-
-        cbCtrl = new IControlCreator() {
-
-            public Control createControl(final Composite parent, final int style) {
-                CCombo cb = new CCombo(parent, style);
-                return cb;
-            }
-        };
-        FieldDecoration decoration = FieldDecorationRegistry.getDefault()
-                .getFieldDecoration(FieldDecorationRegistry.DEC_REQUIRED);
-        dField = new DecoratedField(subComposite, SWT.BORDER, cbCtrl);
-        dField.addFieldDecoration(decoration, SWT.RIGHT | SWT.TOP, false);
-        cLayout = dField.getLayoutControl();
-        ((CCombo) dField.getControl()).addSelectionListener(listenerSelection);
-        ((CCombo) dField.getControl()).setEditable(false);
-        cLayout.setBackground(subComposite.getBackground());
-
-        FormData data = new FormData();
-        data.left = new FormAttachment(lastControl, 0);
-        data.top = new FormAttachment(0, top);
-        cLayout.setLayoutData(data);
-        CCombo combo = (CCombo) dField.getControl();
-        IElementParameter repositorySchemaTypeParameter = param.getChildParameters().get(
-                EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
-        // elem.getElementParameter(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
-        combo.setData(PARAMETER_NAME, param.getName() + ":" + repositorySchemaTypeParameter.getName());
-        hashCurControls.put(param.getName() + ":" + repositorySchemaTypeParameter.getName(), dField.getControl());
-        dynamicProperty.updateRepositoryList();
-        String[] paramItems = repositorySchemaTypeParameter.getListItemsDisplayName();
-        // ControlUtils.setSortedValuesForCombo(combo, paramItems);
-        combo.setItems(paramItems);
-
-        return cLayout;
-    }
-
-    SelectionListener listenerSelection = new SelectionListener() {
-
-        public void widgetDefaultSelected(SelectionEvent e) {
-            // do nothing.
-        }
-
-        public void widgetSelected(SelectionEvent e) {
-            Command cmd = createCommand(e);
-            if (cmd != null) {
-                getCommandStack().execute(cmd);
-            }
-        }
-    };
 
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#refresh(org.talend.core.model.process.IElementParameter,
-     * boolean)
+     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractRepositoryController#getRepositoryChoiceParamName()
      */
     @Override
-    public void refresh(IElementParameter param, boolean check) {
-        IElementParameter schemaTypeParameter = param.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName());
-        // elem.getElementParameter(EParameterName.SCHEMA_TYPE.getName());
-        CCombo combo = (CCombo) hashCurControls.get(param.getName() + ":" + schemaTypeParameter.getName());
-
-        if (combo == null || combo.isDisposed()) {
-            return;
-        }
-        Object value = schemaTypeParameter.getValue();
-
-        if (value instanceof String) {
-            String strValue = ""; //$NON-NLS-1$
-            int nbInList = 0, nbMax = schemaTypeParameter.getListItemsValue().length;
-            String name = (String) value;
-            while (strValue.equals(new String("")) && nbInList < nbMax) { //$NON-NLS-1$
-                if (name.equals(schemaTypeParameter.getListItemsValue()[nbInList])) {
-                    strValue = schemaTypeParameter.getListItemsDisplayName()[nbInList];
-                }
-                nbInList++;
-            }
-            String[] paramItems = schemaTypeParameter.getListItemsDisplayName();
-            String[] comboItems = combo.getItems();
-            if (!paramItems.equals(comboItems)) {
-                combo.setItems(paramItems);
-            }
-            combo.setText(strValue);
-        }
-
-        IElementParameter repositorySchemaTypeParameter = param.getChildParameters().get(
-                EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
-        // elem.getElementParameter(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
-        combo = (CCombo) hashCurControls.get(param.getName() + ":" + repositorySchemaTypeParameter.getName());
-
-        if (combo == null) {
-            return;
-        }
-        value = repositorySchemaTypeParameter.getValue();
-
-        if (value instanceof String) {
-            dynamicProperty.updateRepositoryList();
-            String strValue = ""; //$NON-NLS-1$
-            int nbInList = 0, nbMax = repositorySchemaTypeParameter.getListItemsValue().length;
-            String name = (String) value;
-            while (strValue.equals(new String("")) && nbInList < nbMax) { //$NON-NLS-1$
-                if (name.equals(repositorySchemaTypeParameter.getListItemsValue()[nbInList])) {
-                    strValue = repositorySchemaTypeParameter.getListItemsDisplayName()[nbInList];
-                }
-                nbInList++;
-            }
-            String[] paramItems = repositorySchemaTypeParameter.getListItemsDisplayName();
-            String[] comboItems = combo.getItems();
-            if (!Arrays.equals(paramItems, comboItems)) {
-                combo.setItems(paramItems);
-                // ControlUtils.setSortedValuesForCombo(combo, paramItems);
-            }
-            combo.setText(strValue);
-        }
+    protected String getRepositoryChoiceParamName() {
+        return EParameterName.REPOSITORY_SCHEMA_TYPE.getName();
     }
 
     /*
      * (non-Javadoc)
      * 
-     * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
+     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractRepositoryController#getRepositoryTypeParamName()
      */
-    public void propertyChange(PropertyChangeEvent arg0) {
-        // TODO Auto-generated method stub
-
+    @Override
+    protected String getRepositoryTypeParamName() {
+        return EParameterName.SCHEMA_TYPE.getName();
     }
 
 }
