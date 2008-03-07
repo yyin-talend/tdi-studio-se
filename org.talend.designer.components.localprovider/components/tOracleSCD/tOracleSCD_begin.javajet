@@ -231,8 +231,10 @@ if (inMetadata != null && metadata != null) {
 	    	
 	    	SCDSK_<%=cid%> sk = (SCDSK_<%=cid%>) o;
 	    	
-	    	return <%
+	    	 <%
 			boolean isFirstSK = true;
+			boolean hasSourceKey = false;
+            boolean returned =  false;
 	    	for (IMetadataColumn column : inMetadata.getListColumns()) {				
 		        if (typeOfColumn.containsKey(column.getOriginalDbColumnName())) {
 			    	if (typeOfColumn.get(column.getOriginalDbColumnName()).equals("SK")) {
@@ -249,14 +251,28 @@ if (inMetadata != null && metadata != null) {
 		                	javaType == JavaTypesManager.OBJECT ||
 		                	javaType == JavaTypesManager.STRING ||
 	                		column.isNullable()) {
+	                		 if(!returned){
+	                            returned =  true;
+	                             %>return <%
+	                            }
 							%><%=column.getOriginalDbColumnName()%>.equals(sk.<%=column.getOriginalDbColumnName()%>)<%
 		                } else {
+		                 if(!returned){
+	                            returned =  true;
+	                             %>return <%
+	                            }
 		                	%><%=column.getOriginalDbColumnName()%> == sk.<%=column.getOriginalDbColumnName()%><%
 		                }
+		                 hasSourceKey =  true;
 			        }
 		        }
 		    }
-		    %>;
+		   	if(!hasSourceKey){
+                %>return false;<%
+            }else{
+                %>;<%
+            }
+            %>
 	    }
 	    
 	    public int hashCode() {
