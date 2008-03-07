@@ -36,6 +36,7 @@ import org.talend.commons.ui.swt.tableviewer.behavior.DefaultCellModifier;
 import org.talend.commons.ui.swt.tableviewer.behavior.IColumnColorProvider;
 import org.talend.commons.ui.swt.tableviewer.data.ModifiedObjectInfo;
 import org.talend.commons.ui.swt.tableviewer.tableeditor.CheckboxTableEditorContent;
+import org.talend.commons.ui.ws.WindowSystem;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
 import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
 import org.talend.designer.dbmap.i18n.Messages;
@@ -249,7 +250,9 @@ public class InputDataMapTableView extends DataMapTableView {
 
         // DROP DOWN
         dropDownItem = new ToolItem(toolBarActions, SWT.DROP_DOWN | SWT.BORDER);
-        refreshLabelForJoinDropDown();
+        if(WindowSystem.isGTK()) {
+            refreshLabelForJoinDropDown();
+        }
         dropDownItem.addSelectionListener(new DropDownSelectionListener());
 
         return true;
