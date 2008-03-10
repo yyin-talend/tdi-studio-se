@@ -115,9 +115,8 @@ public class JavaRoutineSynchronizer implements IRoutineSynchronizer {
                     fos.close();
                 }
             }
-            if (!file.exists()) {
-                file.refreshLocal(1, null);
-            }
+            file.refreshLocal(1, null);
+
             return file;
         } catch (CoreException e) {
             throw new SystemException(e);
