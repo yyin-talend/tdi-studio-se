@@ -1,0 +1,71 @@
+// ============================================================================
+//
+// Copyright (C) 2006-2007 Talend Inc. - www.talend.com
+//
+// This source code is available under agreement available at
+// %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
+//
+// You should have received a copy of the agreement
+// along with this program; if not, write to Talend SA
+// 9 rue Pages 92150 Suresnes, France
+//
+// ============================================================================
+package org.talend.designer.fileoutputxml.ui.edit;
+
+import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.preference.RadioGroupFieldEditor;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Shell;
+import org.talend.designer.fileoutputxml.i18n.Messages;
+
+/**
+ * DOC s class global comment. Detailled comment
+ * 
+ * $Id: DragAndDrogDialog.java,v 1.1 2008/03/10 09:52:38 xzhang Exp $
+ * 
+ */
+public class DragAndDrogDialog extends Dialog {
+
+    public static final String CREATE_AS_SUBELEMENT = "sub-element";
+
+    public static final String CREATE_AS_ATTRIBUTE = "attribute";
+
+    public static final String CREATE_AS_TEXT = "text";
+
+    private String value = CREATE_AS_SUBELEMENT;
+
+    public DragAndDrogDialog(Shell parentShell) {
+        super(parentShell);
+    }
+
+    public String getSelectValue() {
+        return value;
+    }
+
+    /*
+     * (non-Javadoc) Method declared on Dialog.
+     */
+    protected Control createDialogArea(Composite parent) {
+        // create composite
+        Composite composite = (Composite) super.createDialogArea(parent);
+        composite.setLayout(new GridLayout());
+        String[][] namevalues = new String[][] {
+                { Messages.getString("DragAndDrogDialog.AddSubElements"), CREATE_AS_SUBELEMENT },
+                { Messages.getString("DragAndDrogDialog.AddAttributes"), CREATE_AS_ATTRIBUTE } };
+
+        RadioGroupFieldEditor rgfe = new RadioGroupFieldEditor("", Messages.getString("DragAndDrogDialog.GroupTitle"), 1,
+                namevalues, composite, true);
+        rgfe.setPropertyChangeListener(new IPropertyChangeListener() {
+
+            public void propertyChange(PropertyChangeEvent event) {
+                value = event.getNewValue().toString();
+            }
+        });
+        applyDialogFont(composite);
+        return composite;
+    }
+}

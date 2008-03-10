@@ -14,6 +14,7 @@ package org.talend.designer.fileoutputxml.ui.edit;
 
 import java.util.List;
 
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.util.TransferDragSourceListener;
 import org.eclipse.jface.util.TransferDropTargetListener;
 import org.eclipse.swt.SWT;
@@ -33,8 +34,10 @@ import org.eclipse.swt.widgets.TableItem;
 import org.talend.commons.ui.swt.dnd.LocalDataTransfer;
 import org.talend.commons.ui.swt.dnd.LocalDraggedData;
 import org.talend.core.model.metadata.IMetadataColumn;
+import org.talend.designer.fileoutputxml.data.Attribute;
 import org.talend.designer.fileoutputxml.data.Element;
 import org.talend.designer.fileoutputxml.data.FOXTreeNode;
+import org.talend.designer.fileoutputxml.i18n.Messages;
 
 /**
  * amaumont class global comment. Detailled comment <br/>
@@ -81,8 +84,7 @@ public class Schema2XMLDragAndDropHandler {
             dragSource.dispose();
         }
 
-        dragSource = new DragSource(linker.getSource(), DND.DROP_DEFAULT | DND.DROP_MOVE | DND.DROP_COPY
-                | DND.DROP_LINK);
+        dragSource = new DragSource(linker.getSource(), DND.DROP_DEFAULT | DND.DROP_MOVE | DND.DROP_COPY | DND.DROP_LINK);
         dragSource.setTransfer(new Transfer[] { LocalDataTransfer.getInstance() });
 
         DragSourceListener sourceListener = new TreeDragSourceListener();
@@ -98,8 +100,7 @@ public class Schema2XMLDragAndDropHandler {
         if (loopDropTarget != null) {
             loopDropTarget.dispose();
         }
-        loopDropTarget = new DropTarget(linker.getTarget(), DND.DROP_DEFAULT | DND.DROP_MOVE | DND.DROP_COPY
-                | DND.DROP_LINK);
+        loopDropTarget = new DropTarget(linker.getTarget(), DND.DROP_DEFAULT | DND.DROP_MOVE | DND.DROP_COPY | DND.DROP_LINK);
         loopDropTarget.setTransfer(new Transfer[] { LocalDataTransfer.getInstance() });
         DropTargetListener targetListener = new TableDropTargetListener();
         loopDropTarget.addDropListener(targetListener);
@@ -180,6 +181,7 @@ public class Schema2XMLDragAndDropHandler {
 
         public void dragOver(DropTargetEvent event) {
             // System.out.println("\n>>drop");
+            DropTarget dropTarget = (DropTarget) event.getSource();
             Item targetItem = (Item) event.item;
             if (targetItem == null) {
                 event.detail = DND.DROP_NONE;
@@ -187,15 +189,24 @@ public class Schema2XMLDragAndDropHandler {
             }
 
             FOXTreeNode targetNode = (FOXTreeNode) (targetItem.getData());
-            if (targetNode instanceof Element) {
-                Element element = (Element) targetNode;
-                if (!element.getElementChildren().isEmpty() || element.getParent() == null) {
-                    event.detail = DND.DROP_NONE;
-                    return;
+            LocalDraggedData draggedData = LocalDataTransfer.getInstance().getDraggedData();
+            List<Object> dragdedData = draggedData.getTransferableEntryList();
+            if (dragdedData.size() == 1) {
+                if (targetNode instanceof Element) {
+                    Element element = (Element) targetNode;
+                    if (!element.getElementChildren().isEmpty() || element.getParent() == null) {
+                        event.detail = DND.DROP_NONE;
+                        return;
+                    }
+                } else {
+                    FOXTreeNode parent = targetNode.getParent();
+                    if (parent == null) {
+                        event.detail = DND.DROP_NONE;
+                        return;
+                    }
                 }
-            } else {
-                FOXTreeNode parent = targetNode.getParent();
-                if (parent == null) {
+            } else if (dragdedData.size() > 1) {
+                if (!(targetNode instanceof Element)) {
                     event.detail = DND.DROP_NONE;
                     return;
                 }
@@ -219,13 +230,64 @@ public class Schema2XMLDragAndDropHandler {
             Control control = dropTarget.getControl();
             LocalDraggedData draggedData = LocalDataTransfer.getInstance().getDraggedData();
 
-            List dragdedData = draggedData.getTransferableEntryList();
+            List<Object> dragdedData = draggedData.getTransferableEntryList();
             FOXTreeNode targetNode = (FOXTreeNode) (targetItem.getData());
 
             if (dragdedData.size() > 0) {
-                IMetadataColumn metaColumn = (IMetadataColumn) dragdedData.get(0);
-                targetNode.setColumn(metaColumn);
+                // add by xzhang
+                if (dragdedData.size() == 1) {
+                    IMetadataColumn metaColumn = (IMetadataColumn) dragdedData.get(0);
+                    targetNode.setColumn(metaColumn);
+                } else { // select multiple source nodes.
+                    DragAndDrogDialog dialog = new DragAndDrogDialog(null);
+                    dialog.open();
+
+                    if (dialog.getSelectValue().equals(DragAndDrogDialog.CREATE_AS_SUBELEMENT)) {
+                        if (targetNode.getColumn() != null) {
+                            if (!MessageDialog.openConfirm(control.getShell(), Messages.getString("CreateElementAction.0"), //$NON-NLS-1$
+                                    Messages.getString("CreateElementAction.1") //$NON-NLS-1$
+                                            + targetNode.getLabel() + "\"?")) { //$NON-NLS-1$
+                                return;
+                            }
+                            targetNode.setColumn(null);
+                        }
+                        for (Object obj : dragdedData) {
+                            IMetadataColumn metaColumn = (IMetadataColumn) obj;
+                            boolean isContain = false;
+                            for (FOXTreeNode node : ((Element) targetNode).getElementChildren()) {
+                                if (node.getLabel().equals(metaColumn.getLabel())) {
+                                    node.setColumn(metaColumn);
+                                    isContain = true;
+                                }
+                            }
+                            if (!isContain) {
+                                FOXTreeNode child = new Element(metaColumn.getLabel());
+                                child.setColumn(metaColumn);
+                                targetNode.addChild(child);
+                            }
+                        }
+                    } else if (dialog.getSelectValue().equals(DragAndDrogDialog.CREATE_AS_ATTRIBUTE)) {
+                        for (Object obj : dragdedData) {
+                            IMetadataColumn metaColumn = (IMetadataColumn) obj;
+                            boolean isContain = false;
+                            for (FOXTreeNode node : ((Element) targetNode).getAttributeChildren()) {
+                                if (node.getLabel().equals(metaColumn.getLabel())) {
+                                    node.setColumn(metaColumn);
+                                    isContain = true;
+                                }
+                            }
+                            if (!isContain) {
+                                FOXTreeNode child = new Attribute(metaColumn.getLabel());
+                                child.setColumn(metaColumn);
+                                targetNode.addChild(child);
+                            }
+                        }
+                    }
+                }
+
                 linker.getXMLViewer().refresh(targetNode);
+                linker.getXMLViewer().expandAll();
+
                 Display display = linker.getSource().getDisplay();
                 Cursor cursor = new Cursor(display, SWT.CURSOR_WAIT);
                 linker.getSource().getShell().setCursor(cursor);
