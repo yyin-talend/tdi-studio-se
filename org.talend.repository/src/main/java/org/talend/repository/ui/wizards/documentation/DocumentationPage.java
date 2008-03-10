@@ -92,7 +92,6 @@ public class DocumentationPage extends PropertiesWizardPage {
         checkLinkBtn.setText(Messages.getString("DocumentationPage.LinkLabel")); //$NON-NLS-1$
         data = new GridData(GridData.FILL_HORIZONTAL);
         data.horizontalSpan = 2;
-        data.horizontalIndent = 20;
         checkLinkBtn.setLayoutData(data);
         evaluateCheckLinkDoc();
 
