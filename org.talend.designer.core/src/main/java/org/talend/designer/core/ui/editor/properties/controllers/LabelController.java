@@ -64,10 +64,19 @@ public class LabelController extends AbstractElementPropertySectionController {
             labelLabel = getWidgetFactory().createCLabel(subComposite, (String) param.getValue(), SWT.SHADOW_NONE);
         }
 
-        labelLabel.setData(PARAMETER_NAME, param.getName());
-        if (param.getContext() != null) {
-            labelLabel.setForeground(new Color(null, TalendTextUtils.stringToRGB(param.getContext())));
+        String context = param.getContext();
+        if (context != null && context.contains(";")) {
+            String rgb[] = context.split(";");
+            if (rgb.length != 3) {
+                throw new RuntimeException("RGB defination in label controller not correct, component " + param.getDisplayName()
+                        + ".");
+            } else {
+                labelLabel.setForeground(new Color(null, TalendTextUtils.stringToRGB(context)));
+            }
         }
+
+        labelLabel.setData(PARAMETER_NAME, param.getName());
+
         if (elem instanceof Node) {
             labelLabel.setToolTipText(VARIABLE_TOOLTIP + param.getVariableName());
         }
