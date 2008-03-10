@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.swt.graphics.RGB;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IMultipleComponentItem;
 import org.talend.core.model.components.IMultipleComponentManager;
@@ -390,13 +389,4 @@ public abstract class AbstractStatsLogsComponent implements IComponent {
         return false;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.components.IComponent#getLableForegroundColro()
-     */
-    public RGB getLableForegroundColor() {
-        // TODO Auto-generated method stub
-        return null;
-    }
 }

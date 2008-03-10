@@ -28,8 +28,6 @@ import org.eclipse.gef.Request;
 import org.eclipse.gef.RequestConstants;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.jface.viewers.TextCellEditor;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.utils.workbench.gef.SimpleHtmlCellEditorLocator;
 import org.talend.commons.utils.workbench.gef.SimpleHtmlFigure;
@@ -107,16 +105,10 @@ public class NodeLabelEditPart extends AbstractGraphicalEditPart implements Prop
      */
     @Override
     public IFigure createFigure() {
+
         String text = ((NodeLabel) getModel()).getLabelText();
-
         SimpleHtmlFigure htmlFig = new SimpleHtmlFigure();
-
-        RGB fColor = ((NodeLabel) getModel()).getForegroundColor();
-        if (fColor == null) {
-            htmlFig.setText(text);
-        } else {
-            htmlFig.setText(text, new Color(null, fColor));
-        }
+        htmlFig.setText(text);
 
         if (((NodeLabel) getModel()).isActivate()) {
             (htmlFig).setAlpha(-1);
@@ -157,9 +149,7 @@ public class NodeLabelEditPart extends AbstractGraphicalEditPart implements Prop
                 viewer.updatePropertiesViewerTitle();
             }
         }
-        if (request.equals(NodeLabel.FOREGROUND_COLOR_CHANGE)) {
-            refreshVisuals();
-        }
+
         if (request.equals(NodeLabel.LOCATION)) { //$NON-NLS-1$
             refreshVisuals();
             getParent().refresh();
@@ -210,14 +200,11 @@ public class NodeLabelEditPart extends AbstractGraphicalEditPart implements Prop
         }
         NodePart nodePart = ((NodeContainerPart) getParent()).getNodePart();
         if (nodePart != null) {
+
             String text = ((NodeLabel) getModel()).getLabelText();
-            RGB fColor = ((NodeLabel) getModel()).getForegroundColor();
             SimpleHtmlFigure htmlFig = (SimpleHtmlFigure) this.getFigure();
-            if (fColor == null) {
-                htmlFig.setText(text);
-            } else {
-                htmlFig.setText(text, new Color(null, fColor));
-            }
+            htmlFig.setText(text);
+
             Node node = (Node) nodePart.getModel();
             Point loc = node.getLocation().getCopy();
             Point offset = ((NodeLabel) getModel()).getOffset();

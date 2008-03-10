@@ -223,7 +223,6 @@ public class Node extends Element implements INode {
 
         if (nodeLabel == null) {
             nodeLabel = new NodeLabel(label, this);
-            nodeLabel.setForegroundColor(component.getLableForegroundColor());
         }
 
         listConnector = this.component.createConnectors();

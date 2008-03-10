@@ -16,7 +16,6 @@ import java.util.List;
 
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
-import org.eclipse.swt.graphics.RGB;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.designer.core.model.components.EParameterName;
@@ -34,8 +33,6 @@ public class NodeLabel extends Element {
     public static final String OFFSET_CHANGE = "offsetChange"; //$NON-NLS-1$
 
     public static final String TEXT_CHANGE = "textChange"; //$NON-NLS-1$
-
-    public static final String FOREGROUND_COLOR_CHANGE = "colorChange"; //$NON-NLS-1$
 
     private static final long serialVersionUID = 1L;
 
@@ -57,8 +54,6 @@ public class NodeLabel extends Element {
 
     // true if this node is activated.
     private boolean activate = true;
-
-    private RGB foregroundColor;
 
     /**
      * Create a new label for a node with a given label and node.
@@ -88,25 +83,6 @@ public class NodeLabel extends Element {
      */
     public String getLabelText() {
         return labelText;
-    }
-
-    /**
-     * Getter for foregroundColor.
-     * 
-     * @return the foregroundColor
-     */
-    public RGB getForegroundColor() {
-        return this.foregroundColor;
-    }
-
-    /**
-     * Sets the foregroundColor.
-     * 
-     * @param foregroundColor the foregroundColor to set
-     */
-    public void setForegroundColor(RGB foregroundColor) {
-        this.foregroundColor = foregroundColor;
-        firePropertyChange(FOREGROUND_COLOR_CHANGE, null, null);
     }
 
     /**

@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.swt.graphics.RGB;
 import org.talend.commons.utils.VersionUtils;
 import org.talend.core.model.components.EComponentType;
 import org.talend.core.model.components.IComponent;
@@ -428,15 +427,5 @@ public class JobContextLoadComponent implements IComponent {
      */
     public EComponentType getComponentType() {
         return EComponentType.JOB_CONTEXT_LOAD;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.components.IComponent#getLableForegroundColor()
-     */
-    public RGB getLableForegroundColor() {
-        // TODO Auto-generated method stub
-        return null;
     }
 }
