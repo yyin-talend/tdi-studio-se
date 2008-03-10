@@ -68,7 +68,7 @@ public class MainConnectionComposite extends DynamicComposite {
                             && (cur.getContext().equals(((Connection) elem).getConnectorName()))) {
                         AbstractElementPropertySectionController contorller = generator.getController(
                                 EParameterFieldType.SCHEMA_TYPE, this);
-                        contorller.createControl(composite, cur, 0, 0, 0, null);
+                        contorller.createControl(composite, cur, 0, 1, 0, null);
                     }
                 }
             }
