@@ -102,6 +102,8 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
     protected String zipOption;
 
+    protected Button chkButton;
+
     /**
      * Create an instance of this class.
      * 
@@ -249,8 +251,9 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
         Composite left = new Composite(optionsGroup, SWT.NONE);
         left.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, true, false));
         left.setLayout(new GridLayout(3, false));
-        final Button chkButton = new Button(left, SWT.CHECK);
+        chkButton = new Button(left, SWT.CHECK);
         chkButton.setText("Extract the zip file");
+        chkButton.setSelection(false);
         chkButton.addSelectionListener(new SelectionAdapter() {
 
             public void widgetSelected(SelectionEvent e) {

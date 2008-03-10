@@ -94,6 +94,8 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
 
     public static final String STORE_WSDL_ID = "JavaJobScriptsExportWizardPage.STORE_WSDL_ID"; //$NON-NLS-1$
 
+    public static final String EXTRACT_ZIP_FILE = "JavaJobScriptsExportWizardPage.EXTRACT_ZIP_FILE"; //$NON-NLS-1$
+
     public JavaJobScriptsExportWSWizardPage(IStructuredSelection selection) {
         super(selection);
         // there assign the manager again
@@ -317,7 +319,8 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             sourceButton.setSelection(settings.getBoolean(STORE_SOURCE_ID));
             contextButton.setSelection(settings.getBoolean(STORE_CONTEXT_ID));
             applyToChildrenButton.setSelection(settings.getBoolean(APPLY_TO_CHILDREN_ID));
-
+            chkButton.setSelection(settings.getBoolean(EXTRACT_ZIP_FILE));
+            zipOption = String.valueOf(chkButton.getSelection());
         }
 
         if (process.length > 0) {
@@ -374,7 +377,8 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
             sourceButton.setSelection(settings.getBoolean(STORE_SOURCE_ID));
             contextButton.setSelection(settings.getBoolean(STORE_CONTEXT_ID));
             applyToChildrenButton.setSelection(settings.getBoolean(APPLY_TO_CHILDREN_ID));
-
+            chkButton.setSelection(settings.getBoolean(EXTRACT_ZIP_FILE));
+            zipOption = String.valueOf(chkButton.getSelection());
             // genCodeButton.setSelection(settings.getBoolean(STORE_GENERATECODE_ID));
         }
 
@@ -416,6 +420,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
                 settings.put(STORE_USER_ROUTINE_ID, userRoutineButton.getSelection());
                 settings.put(STORE_MODEL_ID, modelButton.getSelection());
                 settings.put(STORE_JOB_ID, jobButton.getSelection());
+                settings.put(EXTRACT_ZIP_FILE, chkButton.getSelection());
                 return;
             } else if (exportTypeCombo.getText().equals(EXPORTTYPE_WSZIP)) {
                 settings.put(STORE_SOURCE_ID, sourceButton.getSelection());
@@ -426,6 +431,7 @@ public class JavaJobScriptsExportWSWizardPage extends JavaJobScriptsExportWizard
                 settings.put(STORE_AXISLIB_ID, axisLibButton.getSelection());
                 settings.put(STORE_WSDD_ID, wsddButton.getSelection());
                 settings.put(STORE_WSDL_ID, wsdlButton.getSelection());
+                settings.put(EXTRACT_ZIP_FILE, chkButton.getSelection());
             }
 
         }

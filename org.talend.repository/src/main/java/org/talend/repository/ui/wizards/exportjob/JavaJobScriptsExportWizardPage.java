@@ -52,6 +52,8 @@ public class JavaJobScriptsExportWizardPage extends JobScriptsExportWizardPage {
 
     public static final String STORE_DESTINATION_NAMES_ID = "JavaJobScriptsExportWizardPage.STORE_DESTINATION_NAMES_ID"; //$NON-NLS-1$
 
+    public static final String EXTRACT_ZIP_FILE = "JavaJobScriptsExportWizardPage.EXTRACT_ZIP_FILE"; //$NON-NLS-1$
+
     /*
      * (non-Javadoc)
      * 
@@ -117,6 +119,7 @@ public class JavaJobScriptsExportWizardPage extends JobScriptsExportWizardPage {
             settings.put(STORE_SOURCE_ID, sourceButton.getSelection());
             settings.put(STORE_CONTEXT_ID, contextButton.getSelection());
             settings.put(APPLY_TO_CHILDREN_ID, applyToChildrenButton.getSelection());
+            settings.put(EXTRACT_ZIP_FILE, chkButton.getSelection());
             // settings.put(STORE_GENERATECODE_ID, genCodeButton.getSelection());
         }
     }
@@ -135,7 +138,7 @@ public class JavaJobScriptsExportWizardPage extends JobScriptsExportWizardPage {
                 for (int i = 0; i < directoryNames.length; i++) {
                     addDestinationItem(directoryNames[i]);
                 }
-            }else{
+            } else {
                 setDefaultDestination();
             }
 
@@ -147,7 +150,7 @@ public class JavaJobScriptsExportWizardPage extends JobScriptsExportWizardPage {
             sourceButton.setSelection(settings.getBoolean(STORE_SOURCE_ID));
             contextButton.setSelection(settings.getBoolean(STORE_CONTEXT_ID));
             applyToChildrenButton.setSelection(settings.getBoolean(APPLY_TO_CHILDREN_ID));
-
+            chkButton.setSelection(settings.getBoolean(EXTRACT_ZIP_FILE));
             // genCodeButton.setSelection(settings.getBoolean(STORE_GENERATECODE_ID));
         }
 

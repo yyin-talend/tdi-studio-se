@@ -53,6 +53,8 @@ public class PerlJobScriptsExportWizardPage extends JobScriptsExportWizardPage {
 
     private static final String STORE_DESTINATION_NAMES_ID = "PerlJobScriptsExportWizardPage.STORE_DESTINATION_NAMES_ID"; //$NON-NLS-1$
 
+    public static final String EXTRACT_ZIP_FILE = "PerlJobScriptsExportWizardPage.EXTRACT_ZIP_FILE"; //$NON-NLS-1$
+
     @Override
     public JobScriptsManager createJobScriptsManager() {
         return new JobPerlScriptsManager();
@@ -115,6 +117,7 @@ public class PerlJobScriptsExportWizardPage extends JobScriptsExportWizardPage {
             settings.put(STORE_SOURCE_ID, sourceButton.getSelection());
             settings.put(STORE_CONTEXT_ID, contextButton.getSelection());
             settings.put(APPLY_TO_CHILDREN_ID, applyToChildrenButton.getSelection());
+            settings.put(EXTRACT_ZIP_FILE, chkButton.getSelection());
             // settings.put(STORE_GENERATECODE_ID, genCodeButton.getSelection());
         }
     }
@@ -146,6 +149,8 @@ public class PerlJobScriptsExportWizardPage extends JobScriptsExportWizardPage {
             sourceButton.setSelection(settings.getBoolean(STORE_SOURCE_ID));
             contextButton.setSelection(settings.getBoolean(STORE_CONTEXT_ID));
             applyToChildrenButton.setSelection(settings.getBoolean(APPLY_TO_CHILDREN_ID));
+            chkButton.setSelection(settings.getBoolean(EXTRACT_ZIP_FILE));
+            zipOption = String.valueOf(chkButton.getSelection());
             // genCodeButton.setSelection(settings.getBoolean(STORE_GENERATECODE_ID));
         }
 
