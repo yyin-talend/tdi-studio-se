@@ -59,11 +59,23 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				}
 			}
 		}
+		conns = null;
+		conns = node.getOutgoingSortedConnections();
+		if (conns!=null) {
+			if (conns.size()>0) {
+				IConnection conn = conns.get(0);
+%>final <%=conn.getName() %>Struct[] emmitArray_<%=cid %> = new <%=conn.getName() %>Struct[2];
+emmitArray_<%=cid %>[0] = new <%=conn.getName() %>Struct();
+emmitArray_<%=cid %>[1] = new <%=conn.getName() %>Struct();
+<%
+			}
+		}
 %>int nb_line_<%=cid%> = 0;
-<%	if(column_gr.length > 0){
-%>boolean  flag_<%=cid%> = true;
-boolean  flag2_<%=cid%> = true;
-<%	}
+int currentRowIndex_<%=cid%> = 0;
+
+<%	//if(column_gr.length > 0){
+%>boolean  flag_<%=cid%> = true;//flag for the encounter of first row.
+<%	//}
 	//gen groups variable
 	for(int i = 0; i < column_gr.length; i++){
 		JavaType javaType = JavaTypesManager.getJavaTypeFromId(column_gr[i].getTalendType());
