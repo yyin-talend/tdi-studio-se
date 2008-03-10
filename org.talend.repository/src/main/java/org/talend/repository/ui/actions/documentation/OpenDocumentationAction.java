@@ -121,20 +121,14 @@ public class OpenDocumentationAction extends AContextualAction {
         } catch (Exception e) {
             //
         }
-        if (node == null) { // default, when init the double click action
-            return DocumentationItem.class;
+        if (node != null) {
+            Item item = node.getObject().getProperty().getItem();
+            if (item != null && item instanceof LinkDocumentationItem) {
+                return LinkDocumentationItem.class;
+            }
         }
-        Item item = node.getObject().getProperty().getItem();
-        if (item == null) {
-            return null;
-        }
-        if (item instanceof DocumentationItem) {
-            return DocumentationItem.class;
-        }
-        if (item instanceof LinkDocumentationItem) {
-            return LinkDocumentationItem.class;
-        }
-        return null;
+        // default, when init the double click action
+        return DocumentationItem.class;
     }
 
     private void progress(final Item item, final String extension) {
