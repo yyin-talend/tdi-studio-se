@@ -14,15 +14,19 @@ package org.talend.repository.ui.actions.documentation;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.ui.image.ImageProvider;
+import org.talend.commons.ui.swt.dialogs.ProgressDialog;
 import org.talend.core.model.properties.ByteArray;
 import org.talend.core.model.properties.DocumentationItem;
 import org.talend.core.model.properties.Item;
@@ -79,7 +83,7 @@ public class ExtractDocumentationAction extends AContextualAction {
     public void run() {
         RepositoryNode node = (RepositoryNode) ((IStructuredSelection) getSelection()).getFirstElement();
 
-        Item item = node.getObject().getProperty().getItem();
+        final Item item = node.getObject().getProperty().getItem();
         if (item == null) {
             return;
         }
@@ -116,21 +120,37 @@ public class ExtractDocumentationAction extends AContextualAction {
             fileDlg.setFileName(initialFileName);
             String filename = fileDlg.open();
             if (filename != null) {
-                File file = new File(filename);
-                try {
-                    if (item instanceof DocumentationItem) {
-                        DocumentationItem documentationItem = (DocumentationItem) item;
-                        documentationItem.getContent().setInnerContentToFile(file);
-                    } else if (item instanceof LinkDocumentationItem) { // link documenation
-                        LinkDocumentationItem linkDocItem = (LinkDocumentationItem) item;
-                        ByteArray byteArray = LinkDocumentationHelper.getLinkItemContent(linkDocItem);
-                        if (byteArray != null) {
-                            byteArray.setInnerContentToFile(file);
+                final File file = new File(filename);
+
+                ProgressDialog progressDialog = new ProgressDialog(Display.getCurrent().getActiveShell()) {
+
+                    @Override
+                    public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+                        try {
+                            if (item instanceof DocumentationItem) {
+                                DocumentationItem documentationItem = (DocumentationItem) item;
+                                documentationItem.getContent().setInnerContentToFile(file);
+                            } else if (item instanceof LinkDocumentationItem) { // link documenation
+                                LinkDocumentationItem linkDocItem = (LinkDocumentationItem) item;
+                                ByteArray byteArray = LinkDocumentationHelper.getLinkItemContent(linkDocItem);
+                                if (byteArray != null) {
+                                    byteArray.setInnerContentToFile(file);
+                                }
+                            }
+
+                        } catch (IOException ioe) {
+                            MessageBoxExceptionHandler.process(ioe);
                         }
                     }
-                } catch (IOException ioe) {
-                    MessageBoxExceptionHandler.process(ioe);
+                };
+                try {
+                    progressDialog.executeProcess();
+                } catch (InvocationTargetException e) {
+                    ExceptionHandler.process(e);
+                } catch (InterruptedException e) {
+                    // Nothing to do
                 }
+
             }
         }
     }

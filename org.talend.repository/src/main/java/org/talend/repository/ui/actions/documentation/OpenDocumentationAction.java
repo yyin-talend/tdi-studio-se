@@ -13,15 +13,19 @@
 package org.talend.repository.ui.actions.documentation;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.Display;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.ui.image.ImageProvider;
+import org.talend.commons.ui.swt.dialogs.ProgressDialog;
 import org.talend.core.model.properties.ByteArray;
 import org.talend.core.model.properties.DocumentationItem;
 import org.talend.core.model.properties.Item;
@@ -100,44 +104,7 @@ public class OpenDocumentationAction extends AContextualAction {
                 extension = linkDocItem.getExtension();
             }
         }
-        // use the system program to open the documentation by extension.
-        Program program = null;
-        if (extension != null) {
-            program = Program.findProgram(extension);
-        }
-        boolean opened = false;
-        if (program != null) {
-            IFile file = LinkDocumentationHelper.getTempFile(item.getProperty().getId());
-            if (file != null) {
-                try {
-                    boolean canExec = false;
-                    if (item instanceof DocumentationItem) {
-                        DocumentationItem documentationItem = (DocumentationItem) item;
-                        documentationItem.getContent().setInnerContentToFile(file.getLocation().toFile());
-                        canExec = true;
-                    } else if (item instanceof LinkDocumentationItem) { // link documenation
-                        LinkDocumentationItem linkDocItem = (LinkDocumentationItem) item;
-                        ByteArray byteArray = LinkDocumentationHelper.getLinkItemContent(linkDocItem);
-                        if (byteArray != null) {
-                            byteArray.setInnerContentToFile(file.getLocation().toFile());
-                            canExec = true;
-                        }
-                    }
-                    if (canExec) {
-                        program.execute(file.getLocation().toOSString());
-                        opened = true;
-                    }
-                } catch (IOException e) {
-                    MessageBoxExceptionHandler.process(e);
-                }
-            }
-        }
-        // if not opened, extract the content.
-        if (!opened) {
-            ExtractDocumentationAction extractAction = new ExtractDocumentationAction();
-            extractAction.setWorkbenchPart(getWorkbenchPart());
-            extractAction.run();
-        }
+        progress(item, extension);
 
     }
 
@@ -148,7 +115,84 @@ public class OpenDocumentationAction extends AContextualAction {
      */
     @Override
     public Class getClassForDoubleClick() {
-        return OpenDocumentationAction.class;
+        RepositoryNode node = null;
+        try {
+            node = getCurrentRepositoryNode();
+        } catch (Exception e) {
+            //
+        }
+        if (node == null) { // default, when init the double click action
+            return DocumentationItem.class;
+        }
+        Item item = node.getObject().getProperty().getItem();
+        if (item == null) {
+            return null;
+        }
+        if (item instanceof DocumentationItem) {
+            return DocumentationItem.class;
+        }
+        if (item instanceof LinkDocumentationItem) {
+            return LinkDocumentationItem.class;
+        }
+        return null;
     }
 
+    private void progress(final Item item, final String extension) {
+        if (item == null) {
+            return;
+        }
+        ProgressDialog progressDialog = new ProgressDialog(Display.getCurrent().getActiveShell()) {
+
+            @Override
+            public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+
+                // use the system program to open the documentation by extension.
+                Program program = null;
+                if (extension != null) {
+                    program = Program.findProgram(extension);
+                }
+                boolean opened = false;
+                if (program != null) {
+                    IFile file = LinkDocumentationHelper.getTempFile(item.getProperty().getId());
+                    if (file != null) {
+                        try {
+                            boolean canExec = false;
+                            if (item instanceof DocumentationItem) {
+                                DocumentationItem documentationItem = (DocumentationItem) item;
+                                documentationItem.getContent().setInnerContentToFile(file.getLocation().toFile());
+                                canExec = true;
+                            } else if (item instanceof LinkDocumentationItem) { // link documenation
+                                LinkDocumentationItem linkDocItem = (LinkDocumentationItem) item;
+                                ByteArray byteArray = LinkDocumentationHelper.getLinkItemContent(linkDocItem);
+                                if (byteArray != null) {
+                                    byteArray.setInnerContentToFile(file.getLocation().toFile());
+                                    canExec = true;
+                                }
+                            }
+                            if (canExec) {
+                                program.execute(file.getLocation().toOSString());
+                                opened = true;
+                            }
+                        } catch (IOException e) {
+                            MessageBoxExceptionHandler.process(e);
+                        }
+                    }
+                }
+                // if not opened, extract the content.
+                if (!opened) {
+                    ExtractDocumentationAction extractAction = new ExtractDocumentationAction();
+                    extractAction.setWorkbenchPart(getWorkbenchPart());
+                    extractAction.run();
+                }
+            }
+
+        };
+        try {
+            progressDialog.executeProcess();
+        } catch (InvocationTargetException e) {
+            ExceptionHandler.process(e);
+        } catch (InterruptedException e) {
+            // Nothing to do
+        }
+    }
 }
