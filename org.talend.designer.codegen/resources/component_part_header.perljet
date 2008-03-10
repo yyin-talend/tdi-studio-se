@@ -37,8 +37,30 @@ if (codePart.equals(ECodePart.BEGIN)) {
 =cut
 
 $_globals{<%=node.getUniqueName() %>}{OK} = false;
+$_globals{<%=node.getUniqueName() %>}{start} = [gettimeofday];
 
 <%
+    if (stat) {
+        for (IConnection conn : node.getIncomingConnections()) {
+            EConnectionType lineStyle = conn.getLineStyle();
+
+            if (EConnectionType.FLOW_MAIN == lineStyle
+                || (EConnectionType.FLOW_MERGE == lineStyle
+                    && conn.getName().equals(currentIncomingName))) {
+%>
+$count_<%=conn.getName() %> = 0;
+$last_stat_update_of_<%=conn.getName() %> = time();
+SendStat(
+    '<%=conn.getName() %>',
+    $count_<%=conn.getName() %>,
+    0,
+    'start'
+);
+<%
+            }
+        }
+    }
+
     String statCatcherEnabled = ElementParameterParser.getValue(
         node,
         "__TSTATCATCHER_STATS__"
@@ -51,8 +73,6 @@ $_globals{<%=node.getUniqueName() %>}{OK} = false;
     message_type => 'begin',
     origin  => '<%=node.getUniqueName() %>',
 );
-
-$_globals{<%=node.getUniqueName() %>}{start} = [gettimeofday];
 
 $current_component="<%=node.getUniqueName() %>";
 <%
@@ -83,7 +103,22 @@ $_globals{count_<%=conn.getName()%>}++;
                 || (EConnectionType.FLOW_MERGE == lineStyle
                     && conn.getName().equals(currentIncomingName))) {
 %>
-UpdateStat('<%=conn.getName() %>', 1);
+$now = time();
+$count_<%=conn.getName() %>++;
+if ($now - $last_stat_update_of_<%=conn.getName() %> >= 2) {
+    $last_stat_update_of_<%=conn.getName() %> = $now;
+    my $duration = int(
+        1000 * tv_interval(
+            $_globals{<%=node.getUniqueName() %>}{start},
+            [gettimeofday]
+        )
+    );
+    SendStat(
+        '<%=conn.getName() %>',
+        $count_<%=conn.getName() %>,
+        $duration
+    );
+}
 
 <%
             }
@@ -115,7 +150,18 @@ if (codePart.equals(ECodePart.END)) {
         for (IConnection conn : node.getIncomingConnections()) {
             if (EConnectionType.FLOW_MAIN == conn.getLineStyle()) {
 %>
-UpdateStat('<%=conn.getName() %>', 0, 2);
+    $duration = int(
+        1000 * tv_interval(
+            $_globals{<%=node.getUniqueName() %>}{start},
+            [gettimeofday]
+        )
+    );
+SendStat(
+    '<%=conn.getName() %>',
+    $count_<%=conn.getName() %>,
+    $duration,
+    'stop'
+);
 
 <%
             }

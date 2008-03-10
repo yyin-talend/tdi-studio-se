@@ -1,22 +1,24 @@
 <%@ jet 
-	package="org.talend.designer.codegen.translators" 
-	imports="
-		org.talend.core.model.process.IProcess
-		org.talend.core.model.process.INode 
-		org.talend.designer.codegen.config.CodeGeneratorArgument
-		java.util.Vector
-		java.util.List
-	" 
-	class="Footer" 
+package="org.talend.designer.codegen.translators" 
+imports="
+    org.talend.core.model.process.IProcess
+    org.talend.core.model.process.INode 
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.Vector
+    java.util.List
+    java.util.ArrayList
+" 
+class="Footer" 
 %>
 <%
-	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
-    Vector v = (Vector) codeGenArgument.getArgument();
-    IProcess process = (IProcess)v.get(0);
-    List<INode> rootNodes = (List<INode>)v.get(1);
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+Vector v = (Vector) codeGenArgument.getArgument();
+IProcess process = (IProcess)v.get(0);
+List<INode> rootNodes = (List<INode>)v.get(1);
 
-	boolean stats = codeGenArgument.isStatistics();
-	boolean trace = codeGenArgument.isTrace();
+boolean stats = codeGenArgument.isStatistics();
+boolean trace = codeGenArgument.isTrace();
+boolean isRunInMultiThread = codeGenArgument.getIsRunInMultiThread();
 %>
 
 # +-------------------------------------------------------------------------+
@@ -24,37 +26,64 @@
 # +-------------------------------------------------------------------------+ 
 
 <%
-		
-        if (stats) {
+if (stats) {
 %>
-StartThreadStat($opt{stat_port}, $clientHost) if defined $opt{stat_port};
+StartStat($opt{stat_port}, $clientHost) if defined $opt{stat_port};
 <%
-       }
+}
 %>
 
-<%
-	for (INode rootNode : rootNodes) {
-            String componentName =
-                (String) rootNode.getComponent().getName();
+my $pid = undef;
 
-            if (!componentName.equals("tLogCatcher")
-                && !componentName.equals("tFlowMeterCatcher")
-                && !componentName.equals("tAssertCatcher")
-                && !componentName.equals("tStatCatcher")
-                && !componentName.equals("tLibraryLoad")) {
-%>
-<%=rootNode.getUniqueName() %>_subprocess();
 <%
+List<String> subjobs = new ArrayList<String>();
+boolean isFirstSubjob = true;
+
+for (INode rootNode : rootNodes) {
+    String componentName = (String) rootNode.getComponent().getName();
+
+    if (!componentName.equals("tLogCatcher")
+        && !componentName.equals("tFlowMeterCatcher")
+        && !componentName.equals("tAssertCatcher")
+        && !componentName.equals("tStatCatcher")
+        && !componentName.equals("tLibraryLoad")) {
+        subjobs.add(rootNode.getUniqueName() + "_subprocess()");
+    }
+}
+
+if (subjobs.size() == 1) {
+%>
+<%=subjobs.get(0)%>;
+<%
+}
+else {
+    for (String subjob : subjobs) {
+        if (isRunInMultiThread) {
+            String operator = "elsif";
+            if (isFirstSubjob) {
+                operator = "if";
+                isFirstSubjob = false;
             }
-	}
 %>
-
-<%
-        if (stats) {
-%>
-StopThreadStat() if defined $opt{stat_port};
-<%
+<%=operator%> (not ($pid = fork)) {
+    <%=subjob%>;
+    exit();
+}
+<%            
         }
+        else {
+%>
+<%=subjob%>;
+<%
+        }        
+    }
+}
+
+if (isRunInMultiThread && subjobs.size() > 1) {
+%>
+1 while wait_for_a_kid();
+<%
+}
 %>
 
 $_globals{stop} = [gettimeofday];
@@ -69,7 +98,7 @@ $_globals{duration} = int(
 
 
 <%
-        for (INode statCatcher : process.getNodesOfType("tStatCatcher")) {
+for (INode statCatcher : process.getNodesOfType("tStatCatcher")) {
 %>
 <%=statCatcher.getUniqueName()%>_subprocess(
     message_type => 'end',
@@ -77,7 +106,7 @@ $_globals{duration} = int(
     duration => $_globals{duration}
 );
 <%
-        }
+}
 %>
 
 if (defined $opt{watch}) {
@@ -85,6 +114,13 @@ if (defined $opt{watch}) {
         "===\nexecution time: %u milliseconds\n===\n",
         $_globals{duration}
     );
+}
+
+sub wait_for_a_kid
+{
+  my $pid = wait;
+  return 0 if $pid < 0;
+  1;
 }
 
 # +-------------------------------------------------------------------------+
