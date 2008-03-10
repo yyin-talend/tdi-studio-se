@@ -24,6 +24,7 @@ import org.apache.commons.collections.bidimap.DualHashBidiMap;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.commands.CommandStackEvent;
 import org.eclipse.gef.commands.CommandStackEventListener;
+import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.layout.FormAttachment;
@@ -34,6 +35,10 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.threading.ExecutionLimiter;
@@ -58,6 +63,8 @@ import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.properties.FolderItem;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
@@ -77,6 +84,9 @@ import org.talend.designer.core.ui.editor.properties.controllers.generator.IDyna
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.ui.views.IRepositoryView;
+import org.talend.repository.ui.views.RepositoryContentProvider;
 
 /**
  * yzhang class global comment. Detailled comment <br/>
@@ -307,7 +317,7 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
         String[] repositoryQueryNameList = new String[] {};
         String[] repositoryQueryValueList = new String[] {};
         try {
-            metadataConnectionsItem = factory.getMetadataConnectionsItem();
+            metadataConnectionsItem = getConnectionItems();
         } catch (PersistenceException e) {
             throw new RuntimeException(e);
         }
@@ -430,6 +440,55 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
             // }
         }
         updateQuery();
+    }
+
+    /**
+     * DOC qzhang Comment method "getConnectionItems".
+     * 
+     * @return
+     * @throws PersistenceException
+     */
+    private List<ConnectionItem> getConnectionItems() throws PersistenceException {
+        List<ConnectionItem> list = new ArrayList<ConnectionItem>();
+        IWorkbenchWindow activeWorkbench = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+        if (activeWorkbench != null) {
+            IWorkbenchPage activePage = activeWorkbench.getActivePage();
+            if (activePage != null) {
+                IViewPart findView = activePage.findView(IRepositoryView.VIEW_ID);
+                if (findView instanceof IRepositoryView) {
+                    IRepositoryView repositoryView = (IRepositoryView) findView;
+                    IContentProvider contentProvider = repositoryView.getViewer().getContentProvider();
+                    if (contentProvider instanceof RepositoryContentProvider) {
+                        RepositoryContentProvider provider = (RepositoryContentProvider) contentProvider;
+                        RepositoryNode metadataConNode = provider.getMetadataConNode();
+                        for (RepositoryNode node : metadataConNode.getChildren()) {
+                            addConnectionItem(list, node);
+                        }
+                    }
+                }
+            }
+        }
+        return list;
+    }
+
+    /**
+     * DOC qzhang Comment method "addConnectionItem".
+     * 
+     * @param list
+     * @param repositoryNode3
+     */
+    private void addConnectionItem(List<ConnectionItem> list, RepositoryNode repositoryNode3) {
+        IRepositoryObject object = repositoryNode3.getObject();
+        if (object != null) {
+            Item item = object.getProperty().getItem();
+            if (item instanceof ConnectionItem) {
+                list.add((ConnectionItem) item);
+            } else if (item instanceof FolderItem) {
+                for (RepositoryNode node : repositoryNode3.getChildren()) {
+                    addConnectionItem(list, node);
+                }
+            }
+        }
     }
 
     /**
