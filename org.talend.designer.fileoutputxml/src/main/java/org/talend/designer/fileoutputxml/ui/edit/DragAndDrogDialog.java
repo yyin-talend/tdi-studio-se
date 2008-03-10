@@ -34,8 +34,6 @@ public class DragAndDrogDialog extends Dialog {
 
     public static final String CREATE_AS_ATTRIBUTE = "attribute";
 
-    public static final String CREATE_AS_TEXT = "text";
-
     private String value = CREATE_AS_SUBELEMENT;
 
     public DragAndDrogDialog(Shell parentShell) {
@@ -52,20 +50,30 @@ public class DragAndDrogDialog extends Dialog {
     protected Control createDialogArea(Composite parent) {
         // create composite
         Composite composite = (Composite) super.createDialogArea(parent);
-        composite.setLayout(new GridLayout());
+        // composite.setLayout(new GridLayout());
         String[][] namevalues = new String[][] {
                 { Messages.getString("DragAndDrogDialog.AddSubElements"), CREATE_AS_SUBELEMENT },
                 { Messages.getString("DragAndDrogDialog.AddAttributes"), CREATE_AS_ATTRIBUTE } };
 
         RadioGroupFieldEditor rgfe = new RadioGroupFieldEditor("", Messages.getString("DragAndDrogDialog.GroupTitle"), 1,
                 namevalues, composite, true);
+        GridLayout layout = new GridLayout();
+        layout.marginWidth = 12;
+        composite.setLayout(layout);
+
         rgfe.setPropertyChangeListener(new IPropertyChangeListener() {
 
             public void propertyChange(PropertyChangeEvent event) {
                 value = event.getNewValue().toString();
             }
         });
+
         applyDialogFont(composite);
         return composite;
+    }
+
+    protected void configureShell(Shell newShell) {
+        super.configureShell(newShell);
+        newShell.setText(Messages.getString("DragAndDrogDialog.DialogTitle"));
     }
 }

@@ -14,6 +14,7 @@ package org.talend.designer.fileoutputxml.ui.edit;
 
 import java.util.List;
 
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.util.TransferDragSourceListener;
 import org.eclipse.jface.util.TransferDropTargetListener;
@@ -241,7 +242,9 @@ public class Schema2XMLDragAndDropHandler {
                 } else { // select multiple source nodes.
                     DragAndDrogDialog dialog = new DragAndDrogDialog(null);
                     dialog.open();
-
+                    if (dialog.getReturnCode() == IDialogConstants.CANCEL_ID) {
+                        return;
+                    }
                     if (dialog.getSelectValue().equals(DragAndDrogDialog.CREATE_AS_SUBELEMENT)) {
                         if (targetNode.getColumn() != null) {
                             if (!MessageDialog.openConfirm(control.getShell(), Messages.getString("CreateElementAction.0"), //$NON-NLS-1$
