@@ -13,14 +13,18 @@
 package org.talend.designer.core.ui.views.properties;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.FormAttachment;
@@ -52,6 +56,10 @@ import org.talend.designer.core.ui.editor.properties.notes.TextNotePropertyCompo
  */
 public class ComponentSettingsView extends ViewPart implements IComponentSettingsView {
 
+    private static final String PARENT = "parent";
+
+    private static final String CATEGORY = "category";
+
     public static final String ID = "org.talend.designer.core.ui.views.properties.ComponentSettingsView";
 
     private HorizontalTabFactory tabFactory = null;
@@ -60,15 +68,41 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
 
     private Element element;
 
+    private DynamicComposite dc = null;
+
     private boolean cleaned;
 
     private boolean selectedPrimary;
+
+    private Map<String, Composite> parentMap = null;
+
+    private Map<String, EComponentCategory> categoryMap = null;
+
+    /**
+     * Getter for parentMap.
+     * 
+     * @return the parentMap
+     */
+    public Map<String, Composite> getParentMap() {
+        return this.parentMap;
+    }
+
+    /**
+     * Getter for categoryMap.
+     * 
+     * @return the categoryMap
+     */
+    public Map<String, EComponentCategory> getCategoryMap() {
+        return this.categoryMap;
+    }
 
     /**
      * nrousseau ComponentSettings constructor comment.
      */
     public ComponentSettingsView() {
         tabFactory = new HorizontalTabFactory();
+        parentMap = new HashMap<String, Composite>();
+        categoryMap = new HashMap<String, EComponentCategory>();
     }
 
     /*
@@ -118,10 +152,22 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
      * @param category
      */
     private void createDynamicComposite(Composite parent, Element element, EComponentCategory category) {
-        DynamicComposite dc = null;
+        // DynamicComposite dc = null;
 
         if (element instanceof Node) {
-            dc = new DynamicComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS, category, element);
+            // dc = new DynamicComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS, category, element);
+            if (category == EComponentCategory.BASIC) {
+                getParentMap().put(ComponentSettingsView.PARENT, parent);
+                getCategoryMap().put(ComponentSettingsView.CATEGORY, category);
+                createButtonListener();
+                // tabFactory.getTabbedPropertyComposite().setVisible(true);
+                dc = new DynamicComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS, category, element, tabFactory
+                        .getTabbedPropertyComposite().isCompactView());
+            } else {
+                tabFactory.getTabbedPropertyComposite().getCompactButton().setVisible(false);
+                tabFactory.getTabbedPropertyComposite().getTableButton().setVisible(false);
+                dc = new DynamicComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS, category, element, true);
+            }
         } else if (element instanceof Connection) {
             dc = new MainConnectionComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS, category, element);
         } else if (element instanceof Note) {
@@ -194,6 +240,74 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
         }
     }
 
+    /**
+     * DOC Administrator Comment method "createButtons".
+     */
+    private void createButtonListener() {
+        // TODO Auto-generated method stub
+        // tabFactory.getTabbedPropertyComposite().getComposite().setBackground(
+        // ImageProvider.getImage(EImage.COMPOSITE_BACKGROUND).getBackground());
+        tabFactory.getTabbedPropertyComposite().getCompactButton().setVisible(true);
+        tabFactory.getTabbedPropertyComposite().getTableButton().setVisible(true);
+
+        tabFactory.getTabbedPropertyComposite().getCompactButton().addMouseListener(new MouseAdapter() {
+
+            /*
+             * (non-Javadoc)
+             * 
+             * @see org.eclipse.swt.events.MouseAdapter#mouseUp(org.eclipse.swt.events.MouseEvent)
+             */
+            @Override
+            public void mouseUp(MouseEvent e) {
+                // TODO Auto-generated method stub
+                tabFactory.getTabbedPropertyComposite().setCompactView(true);
+                tabFactory.getTabbedPropertyComposite().getCompactButton().setImage(ImageProvider.getImage(EImage.COMPACT_VIEW));
+                tabFactory.getTabbedPropertyComposite().getTableButton().setImage(ImageProvider.getImage(EImage.NO_TABLE_VIEW));
+
+                if (getDc() != null) {
+                    // getDc().setCompactView(false);
+                    getDc().dispose();
+                    if (getParentMap().get(ComponentSettingsView.PARENT) != null
+                            && getCategoryMap().get(ComponentSettingsView.CATEGORY) != null) {
+                        dc = new DynamicComposite(getParentMap().get(ComponentSettingsView.PARENT), SWT.H_SCROLL | SWT.V_SCROLL
+                                | SWT.NO_FOCUS, getCategoryMap().get(ComponentSettingsView.CATEGORY), element, tabFactory
+                                .getTabbedPropertyComposite().isCompactView());
+                        dc.refresh();
+                    }
+                }
+            }
+        });
+
+        tabFactory.getTabbedPropertyComposite().getTableButton().addMouseListener(new MouseAdapter() {
+
+            /*
+             * (non-Javadoc)
+             * 
+             * @see org.eclipse.swt.events.MouseAdapter#mouseUp(org.eclipse.swt.events.MouseEvent)
+             */
+            @Override
+            public void mouseUp(MouseEvent e) {
+                // TODO Auto-generated method stub
+                tabFactory.getTabbedPropertyComposite().setCompactView(false);
+                tabFactory.getTabbedPropertyComposite().getCompactButton().setImage(
+                        ImageProvider.getImage(EImage.NO_COMPACT_VIEW));
+                tabFactory.getTabbedPropertyComposite().getTableButton().setImage(ImageProvider.getImage(EImage.TABLE_VIEW));
+
+                if (getDc() != null) {
+                    // getDc().setCompactView(false);
+                    getDc().dispose();
+                    if (getParentMap().get(ComponentSettingsView.PARENT) != null
+                            && getCategoryMap().get(ComponentSettingsView.CATEGORY) != null) {
+                        dc = new DynamicComposite(getParentMap().get(ComponentSettingsView.PARENT), SWT.H_SCROLL | SWT.V_SCROLL
+                                | SWT.NO_FOCUS, getCategoryMap().get(ComponentSettingsView.CATEGORY), element, tabFactory
+                                .getTabbedPropertyComposite().isCompactView());
+                        dc.refresh();
+                    }
+                }
+            }
+        });
+    }
+
     /*
      * (non-Javadoc)
      * 
@@ -219,6 +333,10 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
     public void cleanDisplay() {
         tabFactory.setInput(null);
         tabFactory.setTitle(null, null);
+        tabFactory.getTabbedPropertyComposite().getComposite()
+                .setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
+        tabFactory.getTabbedPropertyComposite().getCompactButton().setVisible(false);
+        tabFactory.getTabbedPropertyComposite().getTableButton().setVisible(false);
         if (tabFactory.getTabComposite() != null) {
             for (Control curControl : tabFactory.getTabComposite().getChildren()) {
                 curControl.dispose();
@@ -367,5 +485,14 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
             }
         }
         return false;
+    }
+
+    /**
+     * Getter for dc.
+     * 
+     * @return the dc
+     */
+    public DynamicComposite getDc() {
+        return this.dc;
     }
 }

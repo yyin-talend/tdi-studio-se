@@ -48,7 +48,7 @@ public class MainConnectionComposite extends DynamicComposite {
     private MetadataTableEditor metadataTableEditor;
 
     public MainConnectionComposite(Composite parentComposite, int styles, EComponentCategory section, Element element) {
-        super(parentComposite, styles, section, element);
+        super(parentComposite, styles, section, element, true);
     }
 
     @Override

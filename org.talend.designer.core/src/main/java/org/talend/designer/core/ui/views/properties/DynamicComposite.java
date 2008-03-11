@@ -134,6 +134,8 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
 
     protected Composite composite;
 
+    private boolean isCompactView;
+
     // private final String extraPropertyTypeName;
     //
     // private final String extraRepositoryPropertyTypeName;
@@ -639,6 +641,7 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
         checkErrorsWhenViewRefreshed = true;
         int heightSize = 0, maxRowSize = 0, nbInRow, numInRow;
         int maxRow;
+        boolean isCompute = false;
 
         Map<String, Integer> groupPosition = new HashMap<String, Integer>();
         List<? extends IElementParameter> listParam = elem.getElementParametersWithChildrens();
@@ -712,7 +715,6 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
 
         long lastTime = TimeMeasure.timeSinceBegin("DC:refresh:" + getCurrentComponent());
         for (int curRow = 1; curRow <= maxRow; curRow++) {
-            maxRowSize = 0;
             nbInRow = 0;
             for (int i = 0; i < listParam.size(); i++) {
                 IElementParameter curParam = listParam.get(i);
@@ -764,8 +766,17 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
                                         .createControl(subComposite, curParam, numInRow, nbInRow, h2, lastControl);
 
                             } else {
-                                int h3 = DEFAULT_GROUP_HEIGHT * (groupPosition.size() > 0 ? 1 : 0) + heightSize;
-                                lastControl = controller.createControl(composite, curParam, numInRow, nbInRow, h3, lastControl);
+                                if (isCompactView()) {
+                                    int h3 = DEFAULT_GROUP_HEIGHT * (groupPosition.size() > 0 ? 1 : 0) + heightSize;
+                                    lastControl = controller.createControl(composite, curParam, numInRow, nbInRow, h3,
+                                            lastControl);
+                                } else {
+                                    if (numInRow > 1 && nbInRow > 1) {
+                                        heightSize += maxRowSize;
+                                    }
+                                    int h3 = DEFAULT_GROUP_HEIGHT * (groupPosition.size() > 0 ? 1 : 0) + heightSize;
+                                    lastControl = controller.createControl(composite, curParam, 1, 1, h3, null);
+                                }
                             }
 
                             lastTime = TimeMeasure.timeSinceBegin("DC:refresh:" + getCurrentComponent()) - lastTime;
@@ -777,14 +788,19 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
                             // System.out.println("param:" + curParam.getName()
                             // + " - curRowSize:" + curRowSize);
 
+                            maxRowSize = 0;
                             if (curRowSize > maxRowSize) {
                                 maxRowSize = curRowSize;
+                                isCompute = true;
                             }
                         }
                     }
                 }
             }
-            heightSize += maxRowSize;
+            if (isCompute) {
+                heightSize += maxRowSize;
+                isCompute = false;
+            }
 
         }
         if (synchronizeSchemaParam != null) {
@@ -1045,8 +1061,10 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
      * 
      * @param section
      */
-    public DynamicComposite(Composite parentComposite, int styles, final EComponentCategory section, Element element) {
+    public DynamicComposite(Composite parentComposite, int styles, final EComponentCategory section, Element element,
+            boolean isCompactView) {
         super(parentComposite, styles);
+        setCompactView(isCompactView);
         // for job settings extra (feature 2710)
         // if (section == EComponentCategory.EXTRA) {
         // updataComponentParamName =
@@ -1419,5 +1437,23 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
      */
     public Composite getComposite() {
         return composite;
+    }
+
+    /**
+     * Getter for isCompactView.
+     * 
+     * @return the isCompactView
+     */
+    public boolean isCompactView() {
+        return this.isCompactView;
+    }
+
+    /**
+     * Sets the isCompactView.
+     * 
+     * @param isCompactView the isCompactView to set
+     */
+    public void setCompactView(boolean isCompactView) {
+        this.isCompactView = isCompactView;
     }
 }

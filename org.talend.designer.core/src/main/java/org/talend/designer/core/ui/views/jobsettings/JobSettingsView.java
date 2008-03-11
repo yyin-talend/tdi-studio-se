@@ -103,7 +103,7 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView {
         DynamicComposite dynamicComposite = null;
 
         if (EComponentCategory.EXTRA.equals(category)) {
-            dynamicComposite = new DynamicComposite(parent, style, category, element);
+            dynamicComposite = new DynamicComposite(parent, style, category, element, true);
 
         } else if (EComponentCategory.STATSANDLOGS.equals(category)) {
             dynamicComposite = new StatsAndLogsComposite(parent, style, category, element);

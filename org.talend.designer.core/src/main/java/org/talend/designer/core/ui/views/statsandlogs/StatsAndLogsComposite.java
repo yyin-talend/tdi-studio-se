@@ -76,7 +76,7 @@ public class StatsAndLogsComposite extends DynamicComposite {
      * @param element
      */
     public StatsAndLogsComposite(Composite parentComposite, int styles, EComponentCategory section, Element element) {
-        super(parentComposite, styles, section, element);
+        super(parentComposite, styles, section, element, true);
     }
 
     /**
