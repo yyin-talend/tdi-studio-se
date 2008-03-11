@@ -99,7 +99,7 @@ import org.talend.repository.ui.views.IRepositoryView;
 public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart implements IResourceChangeListener,
         ISelectionListener, IUIRefresher {
 
-    protected final AdapterImpl dirtyListener = new AdapterImpl() {
+    protected AdapterImpl dirtyListener = new AdapterImpl() {
 
         @Override
         public void notifyChanged(Notification notification) {
@@ -731,9 +731,9 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         getSite().getWorkbenchWindow().getSelectionService().removeSelectionListener(this);
         setInput(null);
 
-        super.dispose();
-
         ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
+
+        super.dispose();
 
         if (isKeepPropertyLocked()) {
             return;
@@ -761,5 +761,8 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         designerEditor = null;
         codeEditor = null;
         processor = null;
+        process = null;
+        commandStackEventListener = null;
+        dirtyListener = null;
     }
 }
