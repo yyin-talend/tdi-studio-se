@@ -22,67 +22,90 @@
 
 	<PARAMETERS>
 		<PARAMETER NAME="PROPERTY" FIELD="PROPERTY_TYPE" SHOW="true"
-			NUM_ROW="1" REPOSITORY_VALUE="WSDL" />
+			NUM_ROW="10" REPOSITORY_VALUE="WSDL" />
+			
 		<PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" REQUIRED="true"
-			NUM_ROW="10">
+			NUM_ROW="20">
 			<DEFAULT />
 		</PARAMETER>
-		<PARAMETER NAME="ENDPOINT" FIELD="TEXT" REQUIRED="true" NUM_ROW="30" REPOSITORY_VALUE="ENDPOINT">
+		
+		<PARAMETER NAME="ENDPOINT" FIELD="FILE" REQUIRED="true" NUM_ROW="30" REPOSITORY_VALUE="ENDPOINT">
 			<DEFAULT>"http://www.deeptraining.com/webservices/weather.asmx?WSDL"</DEFAULT>
-		</PARAMETER>
-
-		<PARAMETER NAME="NEED_AUTH" FIELD="CHECK" REQUIRED="true"
-			NUM_ROW="50" REPOSITORY_VALUE="NEED_AUTH">
-			<DEFAULT>false</DEFAULT>
-		</PARAMETER>
-
-		<PARAMETER NAME="AUTH_USERNAME" FIELD="TEXT" REQUIRED="true"
-			NUM_ROW="50" SHOW_IF="NEED_AUTH == 'true'" REPOSITORY_VALUE="AUTH_USERNAME">
-			<DEFAULT>"username"</DEFAULT>
-		</PARAMETER>
-		<PARAMETER NAME="AUTH_PASSWORD" FIELD="TEXT" REQUIRED="true"
-			NUM_ROW="50" SHOW_IF="NEED_AUTH == 'true'" REPOSITORY_VALUE="AUTH_PASSWORD">
-			<DEFAULT>"password"</DEFAULT>
+		</PARAMETER>	
+		
+		<PARAMETER NAME="WSDL2Java" FIELD="WSDL2JAVA" REQUIRED="false" NUM_ROW="40" REPOSITORY_VALUE="ENDPOINT">
+			<DEFAULT>false</DEFAULT>			
 		</PARAMETER>
 		
-		<PARAMETER NAME="UES_PROXY" FIELD="CHECK" REQUIRED="true"
-			NUM_ROW="55" REPOSITORY_VALUE="UES_PROXY">
-			<DEFAULT>false</DEFAULT>
-		</PARAMETER>
+		<PARAMETER NAME="CODE" FIELD="MEMO_JAVA" REQUIRED="false" NUM_ROW="50" NB_LINES="9" CONTEXT="begin">
+		    <DEFAULT>
+//==============================================================================		    
+//example code for : http://www.deeptraining.com/webservices/weather.asmx?WSDL
+//==============================================================================
+/*		    
+routines.WeatherSoap_PortType weatherSoap = new routines.WeatherLocator().getWeatherSoap();
 
-		<PARAMETER NAME="PROXY_HOST" FIELD="TEXT" 
-			NUM_ROW="56" SHOW_IF="UES_PROXY == 'true'" REPOSITORY_VALUE="PROXY_HOST">
-			<DEFAULT>"61.163.92.4"</DEFAULT>
-		</PARAMETER>
-		<PARAMETER NAME="PROXY_PORT" FIELD="TEXT"
-			NUM_ROW="57" SHOW_IF="UES_PROXY == 'true'" REPOSITORY_VALUE="PROXY_PORT">
-			<DEFAULT>"8080"</DEFAULT>
+routines.WeatherSoap_BindingStub stub = (routines.WeatherSoap_BindingStub)weatherSoap;
+
+//stub.setUsername(String username);
+//stub.setPassword(String password);
+
+//stub.setTimeout(int timeout);
+
+//AxisProperties.setProperty("http.proxyHost", proxyHost);
+//AxisProperties.setProperty("http.proxyPort", proxyPort);
+//AxisProperties.setProperty("http.proxyUser", proxyUser);
+//AxisProperties.setProperty("http.proxyPassword", proxyPassword);
+
+String city = "Paris";
+String result = weatherSoap.getWeather(city);	
+
+output_row.weather = result;
+*/
+
+//==============================================================================
+//example code for : http://localhost:8080/talendJob_0.1/services/talendJob?wsdl
+//==============================================================================
+/*		    
+routines.TalendJob_PortType talendJob = new routines.TalendJobServiceLocator().getTalendJob();
+
+routines.TalendJobSoapBindingStub stub = (routines.TalendJobSoapBindingStub)talendJob;
+
+//stub.setUsername(String username);
+//stub.setPassword(String password);
+
+//stub.setTimeout(int timeout);
+
+//AxisProperties.setProperty("http.proxyHost", proxyHost);
+//AxisProperties.setProperty("http.proxyPort", proxyPort);
+//AxisProperties.setProperty("http.proxyUser", proxyUser);
+//AxisProperties.setProperty("http.proxyPassword", proxyPassword);
+
+String[] args = new String[]{};
+String[][] result = talendJob.runJob(args);
+
+for(int i = 0; i &lt; result.length; i++){
+	
+	// output_row.name = result[i][0];
+	// output_row.address = result[i][1];
+	// output_row.phone = result[i][2];
+*/
+		    </DEFAULT>
 		</PARAMETER>
 		
-		<PARAMETER NAME="PROXY_USERNAME" FIELD="TEXT" 
-			NUM_ROW="58" SHOW_IF="UES_PROXY == 'true'" REPOSITORY_VALUE="PROXY_USERNAME">
-			<DEFAULT>""</DEFAULT>
-		</PARAMETER>
-		<PARAMETER NAME="PROXY_PASSWORD" FIELD="TEXT"
-			NUM_ROW="59" SHOW_IF="UES_PROXY == 'true'" REPOSITORY_VALUE="PROXY_PASSWORD">
-			<DEFAULT>""</DEFAULT>
-		</PARAMETER>
-
-		<PARAMETER NAME="METHOD" FIELD="TEXT" REQUIRED="true" NUM_ROW="60" REPOSITORY_VALUE="METHOD">
-			<DEFAULT>"GetWeather"</DEFAULT>
-		</PARAMETER>
+	    <PARAMETER
+	      NAME="MATCHBRACKETS"
+	      FIELD="CLOSED_LIST"
+	      NUM_ROW="60"
+	    >
+	      <ITEMS DEFAULT="NONE">
+	      	<ITEM NAME="NONE"   VALUE="" />
+	        <ITEM NAME="ONE"   VALUE="}" />
+	        <ITEM NAME="TWO"   VALUE="}}" />
+	        <ITEM NAME="THREE"    VALUE="}}}" />
+	      </ITEMS>
+	    </PARAMETER>				
 		
-		<PARAMETER NAME="TIMEOUT" FIELD="TEXT" REQUIRED="true" NUM_ROW="60">
-			<DEFAULT>20</DEFAULT>
-		</PARAMETER>		
-
-		<PARAMETER NAME="PARAMS" FIELD="TABLE" NUM_ROW="80"
-			NB_LINES="2" REPOSITORY_VALUE="WSDL_PARAMS" >
-			<ITEMS>
-				<!--    <ITEM NAME="NAME"/> -->
-				<ITEM NAME="VALUE"/>
-			</ITEMS>
-		</PARAMETER>
 	</PARAMETERS>
 
 	<CODEGENERATION>
