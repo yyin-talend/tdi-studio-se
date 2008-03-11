@@ -118,7 +118,7 @@ if(useExistingConn.equals("true")) {
 } else {
     %>
     java.lang.Class.forName("com.ibm.as400.access.AS400JDBCDriver");
-    String url_<%=cid %> = "jdbc:as400://" + <%=dbhost%> + "/" + <%=dbname%> + ";prompt=false"; 
+    String url_<%=cid %> = "jdbc:as400://" + <%=dbhost%> + "/" + <%=dbname%> + ";prompt=false"+";translate binary=true"; 
     String dbUser_<%=cid %> = <%=dbuser%>;
     String dbPwd_<%=cid %> = <%=dbpwd%>;
     java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
