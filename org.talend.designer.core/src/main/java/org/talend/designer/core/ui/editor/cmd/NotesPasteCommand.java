@@ -20,6 +20,7 @@ import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.commands.Command;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.ui.PlatformUI;
 import org.talend.designer.core.i18n.Messages;
@@ -250,14 +251,17 @@ public class NotesPasteCommand extends Command {
         if (!multipleCommand) {
             EditPart processPart = (EditPart) viewer.getRootEditPart().getChildren().get(0);
             if (processPart instanceof ProcessPart) { // can only be ProcessPart but still test
+                List<EditPart> sel=new ArrayList<EditPart>();
                 for (EditPart editPart : (List<EditPart>) processPart.getChildren()) {
                     if (editPart instanceof NoteEditPart) {
                         Note currentNode = (Note) editPart.getModel();
                         if (noteList.contains(currentNode)) {
-                            viewer.appendSelection(editPart);
+                            sel.add(editPart);
                         }
                     }
                 }
+                StructuredSelection s=new StructuredSelection(sel);
+                viewer.setSelection(s);
             }
         }
         process.checkStartNodes();
@@ -281,9 +285,8 @@ public class NotesPasteCommand extends Command {
 
         // set the old selection active
         if (!multipleCommand) {
-            for (EditPart editPart : oldSelection) {
-                viewer.appendSelection(editPart);
-            }
+            StructuredSelection s=new StructuredSelection(oldSelection);
+            viewer.setSelection(s);
         }
 
         process.checkStartNodes();

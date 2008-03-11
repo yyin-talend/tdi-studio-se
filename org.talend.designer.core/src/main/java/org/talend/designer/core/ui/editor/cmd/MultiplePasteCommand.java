@@ -19,6 +19,7 @@ import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.commands.CompoundCommand;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.PlatformUI;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -74,19 +75,22 @@ public class MultiplePasteCommand extends CompoundCommand {
 
         EditPart processPart = (EditPart) viewer.getRootEditPart().getChildren().get(0);
         if (processPart instanceof ProcessPart) { // can only be ProcessPart but still test
+            List<EditPart> sel = new ArrayList<EditPart>();
             for (EditPart editPart : (List<EditPart>) processPart.getChildren()) {
                 if (editPart instanceof NodePart) {
                     Node currentNode = (Node) editPart.getModel();
                     if (nodeCmd.getNodeContainerList().contains(currentNode.getNodeContainer())) {
-                        viewer.appendSelection(editPart);
+                        sel.add(editPart);
                     }
                 } else if (editPart instanceof NoteEditPart) {
                     Note currentNode = (Note) editPart.getModel();
                     if (noteCmd.getNoteList().contains(currentNode)) {
-                        viewer.appendSelection(editPart);
+                        sel.add(editPart);
                     }
                 }
             }
+            StructuredSelection s = new StructuredSelection(sel);
+            viewer.setSelection(s);
         }
     }
 
@@ -106,9 +110,8 @@ public class MultiplePasteCommand extends CompoundCommand {
         super.undo();
 
         // set the old selection active
-        for (EditPart editPart : oldSelection) {
-            viewer.appendSelection(editPart);
-        }
+        StructuredSelection s = new StructuredSelection(oldSelection);
+        viewer.setSelection(s);
     }
 
 }

@@ -23,10 +23,12 @@ import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.commands.Command;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.utils.time.TimeMeasure;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
@@ -522,11 +524,9 @@ public class NodesPasteCommand extends Command {
     public void execute() {
         // create the node container list to paste
         createNodeContainerList();
-
         AbstractMultiPageTalendEditor multiPageTalendEditor = (AbstractMultiPageTalendEditor) PlatformUI.getWorkbench()
                 .getActiveWorkbenchWindow().getActivePage().getActiveEditor();
         GraphicalViewer viewer = multiPageTalendEditor.getTalendEditor().getViewer();
-
         // save old selection
         if (!multipleCommand) {
             oldSelection = new ArrayList<EditPart>();
@@ -536,7 +536,6 @@ public class NodesPasteCommand extends Command {
             // remove the old selection
             viewer.deselectAll();
         }
-
         // creates the different nodes
         for (NodeContainer nodeContainer : nodeContainerList) {
             process.addNodeContainer(nodeContainer);
@@ -547,17 +546,19 @@ public class NodesPasteCommand extends Command {
             if (processPart instanceof ProcessPart) { // can only be
                 // ProcessPart but still
                 // test
+                List<EditPart> sel=new ArrayList<EditPart>();
                 for (EditPart editPart : (List<EditPart>) processPart.getChildren()) {
                     if (editPart instanceof NodePart) {
                         Node currentNode = (Node) editPart.getModel();
                         if (nodeContainerList.contains(currentNode.getNodeContainer())) {
-                            viewer.appendSelection(editPart);
+                            sel.add(editPart);
                         }
                     }
                 }
+                StructuredSelection s=new StructuredSelection(sel);
+                viewer.setSelection(s);
             }
         }
-
         // check that the created connections exists now, or create them if needed
         for (String newConnectionName : createdNames) {
             if (process.checkValidConnectionName(newConnectionName, true)) {
@@ -589,12 +590,8 @@ public class NodesPasteCommand extends Command {
 
         // set the old selection active
         if (!multipleCommand) {
-            for (EditPart editPart : oldSelection) {
-                /*
-                 * if (editPart instanceof NodePart) { Node node = (Node) editPart.getModel(); }
-                 */
-                viewer.appendSelection(editPart);
-            }
+            StructuredSelection s=new StructuredSelection(oldSelection);
+            viewer.setSelection(s);
         }
         // check that the created connections are removed, remove them if not
         for (String newConnectionName : createdNames) {
