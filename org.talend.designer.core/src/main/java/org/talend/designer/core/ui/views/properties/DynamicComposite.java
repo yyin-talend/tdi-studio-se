@@ -463,8 +463,11 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
                     if (contentProvider instanceof RepositoryContentProvider) {
                         RepositoryContentProvider provider = (RepositoryContentProvider) contentProvider;
                         RepositoryNode metadataConNode = provider.getMetadataConNode();
-                        for (RepositoryNode node : metadataConNode.getChildren()) {
-                            addConnectionItem(list, node);
+                        RepositoryNode parent2 = metadataConNode.getParent();
+                        for (RepositoryNode connectionItem : parent2.getChildren()) {
+                            for (RepositoryNode node : connectionItem.getChildren()) {
+                                addConnectionItem(list, node);
+                            }
                         }
                     }
                 }
@@ -489,6 +492,10 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
                 for (RepositoryNode node : repositoryNode3.getChildren()) {
                     addConnectionItem(list, node);
                 }
+            }
+        } else {
+            for (RepositoryNode node : repositoryNode3.getChildren()) {
+                addConnectionItem(list, node);
             }
         }
     }
