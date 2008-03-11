@@ -6,7 +6,8 @@ Bundle-Version: 2.2.0.qualifier
 Bundle-Localization: plugin
 Bundle-ClassPath: .
 Bundle-Activator: org.talend.designer.core.DesignerPlugin
-Require-Bundle: org.talend.libraries.logging, org.eclipse.core.expressions,
+Require-Bundle: org.talend.libraries.logging,
+ org.eclipse.core.expressions,
  org.eclipse.core.resources,
  org.eclipse.core.runtime.compatibility,
  org.eclipse.jface.text,
@@ -32,7 +33,8 @@ Require-Bundle: org.talend.libraries.logging, org.eclipse.core.expressions,
  org.talend.repository,
  org.talend.commons.ui,
  org.eclipse.debug.core,
- org.eclipse.debug.ui
+ org.eclipse.debug.ui,
+ org.apache.axis
 Eclipse-LazyStart: true
 Plugin-Class: org.talend.designer.core.DesignerPlugin
 Export-Package: org.talend.designer.core;

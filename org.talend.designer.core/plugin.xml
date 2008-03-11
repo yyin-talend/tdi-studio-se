@@ -469,6 +469,11 @@
            mapping="QUERYSTORE_TYPE"
            name="Query Type">
      </generator>
+     <generator
+           class="org.talend.designer.core.ui.editor.properties.controllers.generator.WSDL2JAVAGenerator"
+           mapping="WSDL2JAVA"
+           name="WSDL2Java launcher">
+     </generator>     
    </extension>
    
    <extension
