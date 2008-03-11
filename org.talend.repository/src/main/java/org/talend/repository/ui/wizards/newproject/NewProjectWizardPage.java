@@ -12,7 +12,9 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.newproject;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import org.eclipse.core.runtime.IStatus;
@@ -29,6 +31,9 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.talend.commons.ui.swt.colorstyledtext.jedit.KeywordMap;
+import org.talend.commons.ui.swt.colorstyledtext.jedit.Mode;
+import org.talend.commons.ui.swt.colorstyledtext.jedit.Modes;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.general.Project;
 import org.talend.core.prefs.GeneralParametersProvider;
@@ -66,6 +71,8 @@ public class NewProjectWizardPage extends WizardPage {
 
     private Button languageJavaRadio;
 
+    private List<String> keywords = new ArrayList<String>();
+
     /**
      * Constructs a new NewProjectWizardPage.
      * 
@@ -78,6 +85,7 @@ public class NewProjectWizardPage extends WizardPage {
 
         setTitle(Messages.getString("NewProjectWizardPage.title")); //$NON-NLS-1$
         setDescription(Messages.getString("NewProjectWizardPage.description")); //$NON-NLS-1$
+        initKeyWords();
 
         nameStatus = createOkStatus();
         descriptionStatus = createOkStatus();
@@ -206,7 +214,8 @@ public class NewProjectWizardPage extends WizardPage {
                     .getString("NewProjectWizardPage.nameEmpty"), null); //$NON-NLS-1$
         } else {
             technicalNameText.setText(Project.createTechnicalName(nameText.getText()));
-            if (!Pattern.matches(RepositoryConstants.PROJECT_PATTERN, nameText.getText())) {
+            if (!Pattern.matches(RepositoryConstants.PROJECT_PATTERN, nameText.getText())
+                    || isKeywords(nameText.getText().toLowerCase())) {
                 nameStatus = new Status(IStatus.ERROR, RepositoryPlugin.PLUGIN_ID, IStatus.OK, Messages
                         .getString("NewProjectWizardPage.illegalCharacter"), null); //$NON-NLS-1$
             } else {
@@ -300,5 +309,44 @@ public class NewProjectWizardPage extends WizardPage {
 
     private static IStatus createOkStatus() {
         return new Status(IStatus.OK, RepositoryPlugin.PLUGIN_ID, IStatus.OK, "", null); //$NON-NLS-1$
+    }
+
+    /**
+     * 
+     * ggu Comment method "initKeyWords".
+     * 
+     * initialize the java key words
+     */
+    private void initKeyWords() {
+        if (keywords == null) {
+            keywords = new ArrayList<String>();
+        }
+        keywords.clear();
+        Mode mode = Modes.getMode("java.xml"); //$NON-NLS-1$
+        KeywordMap keywordMap = mode.getDefaultRuleSet().getKeywords();
+        keywords.addAll(Arrays.asList(keywordMap.get("KEYWORD1"))); //$NON-NLS-1$
+        keywords.addAll(Arrays.asList(keywordMap.get("KEYWORD2"))); //$NON-NLS-1$
+        keywords.addAll(Arrays.asList(keywordMap.get("KEYWORD3"))); //$NON-NLS-1$
+        keywords.addAll(Arrays.asList(keywordMap.get("LITERAL2"))); //$NON-NLS-1$
+        keywords.addAll(Arrays.asList(keywordMap.get("INVALID"))); //$NON-NLS-1$
+    }
+
+    /**
+     * 
+     * DOC ggu Comment method "isKeywords".
+     * 
+     * @param itemName
+     * @return
+     */
+    private boolean isKeywords(String itemName) {
+
+        if (keywords == null || keywords.isEmpty()) {
+            initKeyWords();
+        }
+        if (keywords.contains(itemName.trim())) {
+            return true;
+        }
+
+        return false;
     }
 }
