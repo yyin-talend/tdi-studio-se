@@ -148,7 +148,7 @@ my $has_matching_row_<%=inConn.getName() %> =
     $<%=cid%>->[<%=cid%>__<%=column.get("OUTPUT_COLUMN")%>] = 
         $ref_lookup_row_<%=inConn.getName() %>->[
                     <%=inConn.getName() %>__<%=column.get("LOOKUP_COLUMN")%>
-                ],
+                ];
 <%
             }
 %>

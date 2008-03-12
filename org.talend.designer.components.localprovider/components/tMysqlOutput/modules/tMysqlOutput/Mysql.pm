@@ -203,6 +203,7 @@ sub performTableAction {
             );
     }
 
+    return $query ;
 }
 
 1;
