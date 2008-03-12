@@ -55,7 +55,14 @@ my $parser_<%=cid%> = XML::RSS::Parser->new;
 
 my $feed_<%=cid%> = $parser_<%=cid%>->parse_uri(
     <%=RSS%>
-);
+)
+    or die(
+        sprintf(
+            '[<%=cid%>] cannot parse URI "%s", %s',
+            <%=RSS%>,
+            $parser_<%=cid%>->errstr
+        )
+    );
 
 <%
         if (limit) {
