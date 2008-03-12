@@ -25,6 +25,7 @@ import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.commands.CommandStackEvent;
 import org.eclipse.gef.commands.CommandStackEventListener;
 import org.eclipse.jface.viewers.IContentProvider;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.layout.FormAttachment;
@@ -450,14 +451,17 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
                 IViewPart findView = activePage.findView(IRepositoryView.VIEW_ID);
                 if (findView instanceof IRepositoryView) {
                     IRepositoryView repositoryView = (IRepositoryView) findView;
-                    IContentProvider contentProvider = repositoryView.getViewer().getContentProvider();
+                    TreeViewer viewer = (TreeViewer) repositoryView.getViewer();
+                    IContentProvider contentProvider = viewer.getContentProvider();
                     if (contentProvider instanceof RepositoryContentProvider) {
                         RepositoryContentProvider provider = (RepositoryContentProvider) contentProvider;
-                        RepositoryNode metadataConNode = provider.getMetadataConNode();
-                        RepositoryNode parent2 = metadataConNode.getParent();
-                        for (RepositoryNode connectionItem : parent2.getChildren()) {
+                        RepositoryNode metadataConNode = provider.getMetadataNode();
+                        for (RepositoryNode connectionItem : metadataConNode.getChildren()) {
+                            if (viewer.isExpandable(connectionItem)) {
+                                provider.getChildren(connectionItem);
+                            }
                             for (RepositoryNode node : connectionItem.getChildren()) {
-                                addConnectionItem(list, node);
+                                addConnectionItem(viewer, provider, list, node);
                             }
                         }
                     }
@@ -470,10 +474,14 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
     /**
      * DOC qzhang Comment method "addConnectionItem".
      * 
+     * @param provider
+     * @param viewer
+     * 
      * @param list
      * @param repositoryNode3
      */
-    private void addConnectionItem(List<ConnectionItem> list, RepositoryNode repositoryNode3) {
+    private void addConnectionItem(TreeViewer viewer, RepositoryContentProvider provider, List<ConnectionItem> list,
+            RepositoryNode repositoryNode3) {
         IRepositoryObject object = repositoryNode3.getObject();
         if (object != null) {
             Item item = object.getProperty().getItem();
@@ -481,12 +489,15 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
                 list.add((ConnectionItem) item);
             } else if (item instanceof FolderItem) {
                 for (RepositoryNode node : repositoryNode3.getChildren()) {
-                    addConnectionItem(list, node);
+                    addConnectionItem(viewer, provider, list, node);
                 }
             }
         } else {
+            if (viewer.isExpandable(repositoryNode3)) {
+                provider.getChildren(repositoryNode3);
+            }
             for (RepositoryNode node : repositoryNode3.getChildren()) {
-                addConnectionItem(list, node);
+                addConnectionItem(viewer, provider, list, node);
             }
         }
     }
