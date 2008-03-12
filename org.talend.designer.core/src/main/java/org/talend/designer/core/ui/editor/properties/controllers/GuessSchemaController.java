@@ -99,7 +99,6 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
      */
     public GuessSchemaController(IDynamicProperty dp) {
         super(dp);
-        // TODO Auto-generated constructor stub
     }
 
     /*
@@ -127,7 +126,7 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
             currentLabelWidth = labelSize.x + ITabbedPropertyConstants.HSPACE * 2;
         }
 
-        data.left = new FormAttachment(lastControl, currentLabelWidth + 30);
+        data.left = new FormAttachment(lastControl, 0);
         data.top = new FormAttachment(0, top);
         data.height = STANDARD_HEIGHT + 2;
         btnCmd.setLayoutData(data);

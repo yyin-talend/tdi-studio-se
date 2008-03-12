@@ -1109,17 +1109,19 @@ public abstract class AbstractElementPropertySectionController implements Proper
 
         } else if (repositoryType.equals(EmfComponent.REPOSITORY)) {
             String repositoryName2 = ""; //$NON-NLS-1$
-            for (IElementParameter param : (List<IElementParameter>) elem.getElementParameters()) {
-                // System.out.println(param.toString());
-                if (param.getName().equals(EParameterName.REPOSITORY_PROPERTY_TYPE.getName())) {
-                    String value = (String) param.getValue();
-                    for (String key : this.dynamicProperty.getRepositoryConnectionItemMap().keySet()) {
+            IElementParameter memoParam = elem.getElementParameter(propertyName);
 
-                        if (key.equals(value)) {
-                            repositoryName2 = this.dynamicProperty.getRepositoryConnectionItemMap().get(key).getProperty()
-                                    .getLabel();
+            IElementParameter repositoryParam = elem.getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE, memoParam
+                    .getCategory());
+            if (repositoryParam != null) {
+                IElementParameter itemFromRepository = repositoryParam.getChildParameters().get(
+                        EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
+                String value = (String) itemFromRepository.getValue();
+                for (String key : this.dynamicProperty.getRepositoryConnectionItemMap().keySet()) {
 
-                        }
+                    if (key.equals(value)) {
+                        repositoryName2 = this.dynamicProperty.getRepositoryConnectionItemMap().get(key).getProperty().getLabel();
+
                     }
                 }
             }

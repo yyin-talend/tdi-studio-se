@@ -19,6 +19,7 @@ import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -55,16 +56,6 @@ public class RepositoryChangeQueryCommand extends Command {
         setLabel(Messages.getString("PropertyChangeCommand.Label")); //$NON-NLS-1$
     }
 
-    private void refreshPropertyView() {
-        // IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-        // IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet"); //$NON-NLS-1$
-        // PropertySheet sheet = (PropertySheet) view;
-        // TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) sheet.getCurrentPage();
-        // if (tabbedPropertySheetPage.getCurrentTab() != null) {
-        // tabbedPropertySheetPage.refresh();
-        // }
-    }
-
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     @Override
     public void execute() {
@@ -78,7 +69,7 @@ public class RepositoryChangeQueryCommand extends Command {
             for (IElementParameter param : (List<IElementParameter>) elem.getElementParameters()) {
                 if (param.getField() == EParameterFieldType.MEMO_SQL) {
                     oldValue = elem.getPropertyValue(param.getName());
-                    elem.setPropertyValue(param.getName(), convertSQL(query.getValue()));
+                    elem.setPropertyValue(param.getName(), TalendTextUtils.addSQLQuotes(query.getValue()));
                     param.setRepositoryValueUsed(true);
                 }
             }
@@ -89,7 +80,6 @@ public class RepositoryChangeQueryCommand extends Command {
             oldMetadata = elem.getPropertyValue(EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName());
             elem.setPropertyValue(EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName(), value);
         }
-        refreshPropertyView();
     }
 
     @SuppressWarnings("unchecked")//$NON-NLS-1$
@@ -123,19 +113,5 @@ public class RepositoryChangeQueryCommand extends Command {
         } else {
             elem.setPropertyValue(EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName(), oldMetadata);
         }
-        refreshPropertyView();
-    }
-
-    /**
-     * DOC admin Comment method "convertSQL".
-     * 
-     * @param sql
-     * @return
-     */
-    private String convertSQL(String sql) {
-        if (sql.startsWith("'")) { //$NON-NLS-1$
-            return sql;
-        }
-        return "'" + sql + "'"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 }

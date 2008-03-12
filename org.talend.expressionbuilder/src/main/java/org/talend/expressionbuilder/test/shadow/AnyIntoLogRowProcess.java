@@ -520,4 +520,8 @@ public class AnyIntoLogRowProcess<K extends ShadowNode> implements IProcess {
         return null;
     }
 
+	public List<? extends IElementParameter> getElementParametersWithChildrens() {
+		return getElementParameters();
+	}
+
 }

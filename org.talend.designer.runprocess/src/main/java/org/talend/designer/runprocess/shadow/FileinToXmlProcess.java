@@ -587,4 +587,8 @@ public class FileinToXmlProcess<K extends FileInputNode> extends RepositoryObjec
         // TODO Auto-generated method stub
         return null;
     }
+
+	public List<? extends IElementParameter> getElementParametersWithChildrens() {
+		return getElementParameters();
+	}
 }

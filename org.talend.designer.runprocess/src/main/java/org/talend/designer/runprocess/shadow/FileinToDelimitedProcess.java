@@ -591,4 +591,8 @@ public class FileinToDelimitedProcess<K extends FileInputNode> extends Repositor
         // TODO Auto-generated method stub
         return null;
     }
+
+	public List<? extends IElementParameter> getElementParametersWithChildrens() {
+		return getElementParameters();
+	}
 }

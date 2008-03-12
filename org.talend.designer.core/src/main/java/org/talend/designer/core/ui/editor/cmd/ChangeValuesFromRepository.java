@@ -22,6 +22,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.builder.connection.Connection;
+import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.metadata.builder.connection.WSDLSchemaConnection;
 import org.talend.core.model.metadata.designerproperties.RepositoryToComponentProperty;
 import org.talend.core.model.process.EComponentCategory;
@@ -65,6 +66,8 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
     private Map<String, List<String>> queriesmap;
 
     private Map<String, IMetadataTable> repositoryTableMap;
+
+    private Map<String, Query> queryStoreMap;
 
     private final String propertyTypeName;
 
@@ -141,14 +144,6 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
             }
         }
 
-        // Node node = (Node) elem;
-        // String schemTypeModel = (String) node.getElementParameter(
-        // EParameterName.SCHEMA_TYPE.getName()).getValue();
-        // boolean repositoryModel = true;
-        // if (EmfComponent.BUILTIN.equals(schemTypeModel) &&
-        // EmfComponent.BUILTIN.equals(value)) {
-        // repositoryModel = false;
-        // }
         if (propertyName.split(":")[1].equals(propertyTypeName) && (EmfComponent.BUILTIN.equals(value))) {
             for (IElementParameter param : elem.getElementParameters()) {
                 boolean paramFlag = JobSettingsConstants.isExtraParameter(param.getName());
@@ -165,8 +160,13 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
             EComponentCategory currentCategory = propertyParam.getCategory();
             for (IElementParameter param : elem.getElementParameters()) {
                 String repositoryValue = param.getRepositoryValue();
-                if (param.getCategory().equals(currentCategory) && param.isShow(elem.getElementParameters())
-                        && (repositoryValue != null) && (!param.getName().equals(propertyTypeName))) {
+                if (param.isShow(elem.getElementParameters()) && (repositoryValue != null)
+                        && (!param.getName().equals(propertyTypeName))) {
+                    IElementParameter relatedPropertyParam = elem.getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE,
+                            param.getCategory());
+                    if (!relatedPropertyParam.getCategory().equals(currentCategory)) {
+                        continue;
+                    }
                     Object objectValue = RepositoryToComponentProperty.getValue(connection, repositoryValue);
                     if (objectValue != null) {
                         oldValues.put(param.getName(), param.getValue());
@@ -227,17 +227,6 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
         }
     }
 
-    /**
-     * ftang Comment method "refreshStatsAndLogsView".
-     */
-    // private void refreshStatsAndLogsView() {
-    // IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-    // IViewPart view = page.findView(StatsAndLogsView.ID);
-    // if (view != null) {
-    // StatsAndLogsView statsAndLogsView = (StatsAndLogsView) view;
-    // statsAndLogsView.refreshView();
-    // }
-    // }
     private String getFirstRepositoryTable(IElementParameter schemaParam, String repository) {
         IElementParameter repositorySchemaTypeParameter = schemaParam.getChildParameters().get(
                 EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
@@ -255,6 +244,8 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
      */
     private void setOtherProperties() {
         boolean metadataInput = false;
+        IElementParameter currentParam = elem.getElementParameter(propertyName);
+
         if (elem instanceof Node) {
             Node node = (Node) elem;
             if (node.getCurrentActiveLinksNbInput(EConnectionType.FLOW_MAIN) > 0
@@ -322,21 +313,59 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                     }
                 }
             }
+            IElementParameter queryParam = elem.getElementParameterFromField(EParameterFieldType.QUERYSTORE_TYPE, currentParam
+                    .getCategory());
+            IElementParameter queryStoreType = null;
+            if (queryParam != null) {
+                queryStoreType = queryParam.getChildParameters().get(EParameterName.QUERYSTORE_TYPE.getName());
+            }
+            IElementParameter repositoryPropertyType = currentParam.getParentParameter().getChildParameters().get(
+                    EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
             if (propertyName.split(":")[1].equals(EParameterName.PROPERTY_TYPE.getName())) {
-                if (queriesmap != null
-                        && !queriesmap.get(elem.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName())).isEmpty()) {
-                    elem.setPropertyValue(EParameterName.QUERYSTORE_TYPE.getName(), value);
+                if (queriesmap != null && !queriesmap.get(repositoryPropertyType.getValue()).isEmpty()) {
+                    if (queryParam != null) {
+                        queryStoreType.setValue(value);
+                        if (value.equals(EmfComponent.REPOSITORY)) {
+                            setQueryToRepositoryMode(queryParam, repositoryPropertyType);
+                        }
+                    }
+                    // query change
                 }
             } else {
-                elem.setPropertyValue(EParameterName.QUERYSTORE_TYPE.getName(), EmfComponent.REPOSITORY);
-                if (queriesmap == null || queriesmap.get(value).isEmpty()) {
-                    elem.setPropertyValue(EParameterName.QUERYSTORE_TYPE.getName(), EmfComponent.BUILTIN);
+                if (queryParam != null) {
+                    if (queriesmap == null || queriesmap.get(value).isEmpty()) {
+                        queryStoreType.setValue(EmfComponent.BUILTIN);
+                    } else {
+                        queryStoreType.setValue(EmfComponent.REPOSITORY);
+                        setQueryToRepositoryMode(queryParam, repositoryPropertyType);
+                    }
                 }
                 if (tablesmap == null || tablesmap.get(value).isEmpty()) {
                     elem.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
                 }
             }
 
+        }
+    }
+
+    private void setQueryToRepositoryMode(IElementParameter queryParam, IElementParameter repositoryPropertyType) {
+        if (queryStoreMap == null) {
+            return;
+        }
+        IElementParameter repositoryParam = queryParam.getChildParameters().get(
+                EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName());
+        Query query = queryStoreMap.get(repositoryParam.getValue());
+        if (query == null) {
+            List<String> queryIds = queriesmap.get(repositoryPropertyType.getValue());
+            repositoryParam.setValue(queryIds.get(0));
+            queryStoreMap.get(queryIds.get(0));
+        }
+
+        if (query != null) {
+            IElementParameter memoSqlParam = elem.getElementParameterFromField(EParameterFieldType.MEMO_SQL, queryParam
+                    .getCategory());
+            memoSqlParam.setValue(TalendTextUtils.addSQLQuotes(query.getValue()));
+            memoSqlParam.setRepositoryValueUsed(true);
         }
     }
 
@@ -412,16 +441,29 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                 }
             }
         }
+        IElementParameter currentParam = elem.getElementParameter(propertyName);
         if (propertyName.split(":")[1].equals(propertyTypeName)) {
             if (value.equals(EmfComponent.BUILTIN)) {
-                elem.setPropertyValue(propertyTypeName, EmfComponent.REPOSITORY);
+                currentParam.setValue(EmfComponent.REPOSITORY);
             } else {
-                elem.setPropertyValue(propertyTypeName, EmfComponent.BUILTIN);
-                elem.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
-                elem.setPropertyValue(EParameterName.QUERYSTORE_TYPE.getName(), EmfComponent.BUILTIN);
+                currentParam.setValue(EmfComponent.BUILTIN);
+                IElementParameter schemaParam = elem.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE, currentParam
+                        .getCategory());
+                if (schemaParam != null) {
+                    IElementParameter schemaType = schemaParam.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName());
+                    schemaType.setValue(EmfComponent.BUILTIN);
+                }
+
+                IElementParameter queryParam = elem.getElementParameterFromField(EParameterFieldType.QUERYSTORE_TYPE,
+                        currentParam.getCategory());
+                if (queryParam != null) {
+                    IElementParameter queryStoreType = queryParam.getChildParameters().get(
+                            EParameterName.QUERYSTORE_TYPE.getName());
+                    queryStoreType.setValue(EmfComponent.BUILTIN);
+                }
             }
         } else {
-            elem.setPropertyValue(repositoryPropertyTypeName, oldMetadata);
+            elem.setPropertyValue(propertyName, oldMetadata);
         }
 
         JobSettings.switchToCurJobSettingsView();
@@ -435,9 +477,19 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
      * @param repositoryTableMap
      */
     public void setMaps(Map<String, List<String>> tablesmap, Map<String, List<String>> queriesmap,
+            Map<String, IMetadataTable> repositoryTableMap, Map<String, Query> queryStoreMap) {
+        this.tablesmap = tablesmap;
+        this.queriesmap = queriesmap;
+        this.repositoryTableMap = repositoryTableMap;
+        this.queryStoreMap = queryStoreMap;
+    }
+
+    public void setMaps(Map<String, List<String>> tablesmap, Map<String, List<String>> queriesmap,
             Map<String, IMetadataTable> repositoryTableMap) {
         this.tablesmap = tablesmap;
         this.queriesmap = queriesmap;
         this.repositoryTableMap = repositoryTableMap;
+        this.queryStoreMap = null;
     }
+
 }

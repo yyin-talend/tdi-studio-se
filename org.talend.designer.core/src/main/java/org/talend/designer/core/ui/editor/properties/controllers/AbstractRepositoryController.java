@@ -49,7 +49,7 @@ public abstract class AbstractRepositoryController extends AbstractElementProper
 
     protected static final String REPOSITORY_CHOICE = "REPOSITORY_CHOICE";
 
-    private static final int STANDARD_REPOSITORY_WIDTH = 150;
+    private static final int STANDARD_REPOSITORY_WIDTH = 250;
 
     /**
      * DOC nrousseau AbstractRepositoryController constructor comment.
@@ -247,6 +247,9 @@ public abstract class AbstractRepositoryController extends AbstractElementProper
     }
 
     protected String getDisplayNameFromValue(IElementParameter param, String value) {
+        // to load informations from repository only if needed.
+        dynamicProperty.getRepositoryConnectionItemMap();
+        
         int index = param.getIndexOfItemFromList(value);
         return param.getListItemsDisplayName()[index];
     }

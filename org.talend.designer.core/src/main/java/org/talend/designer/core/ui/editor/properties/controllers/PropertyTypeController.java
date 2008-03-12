@@ -75,7 +75,8 @@ public class PropertyTypeController extends AbstractRepositoryController {
                 if (repositoryConnection != null) {
                     ChangeValuesFromRepository changeValuesFromRepository = new ChangeValuesFromRepository(elem,
                             repositoryConnection, fullParamName, id);
-                    changeValuesFromRepository.setMaps(tablesmap, queriesmap, repositoryTableMap);
+                    changeValuesFromRepository.setMaps(tablesmap, queriesmap, repositoryTableMap, dynamicProperty
+                            .getRepositoryQueryStoreMap());
                     return changeValuesFromRepository;
                 }
 
@@ -141,7 +142,8 @@ public class PropertyTypeController extends AbstractRepositoryController {
             ChangeValuesFromRepository changeValuesFromRepository = new ChangeValuesFromRepository(elem, repositoryConnection,
                     paramName, value);
 
-            changeValuesFromRepository.setMaps(tablesmap, queriesmap, repositoryTableMap);
+            changeValuesFromRepository.setMaps(tablesmap, queriesmap, repositoryTableMap, dynamicProperty
+                    .getRepositoryQueryStoreMap());
             return changeValuesFromRepository;
         } else {
             return new PropertyChangeCommand(elem, paramName, value);

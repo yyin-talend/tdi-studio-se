@@ -41,6 +41,7 @@ import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.QueriesConnection;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.metadata.designerproperties.RepositoryToComponentProperty;
+import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Item;
@@ -242,9 +243,10 @@ public class TalendEditorDropTargetListener implements TransferDropTargetListene
     private List<Command> createRefreshingPropertiesCommand(RepositoryNode selectedNode, Node node) {
         List<Command> list = new ArrayList<Command>();
         if (selectedNode.getObject().getProperty().getItem() instanceof ConnectionItem) {
-            node.setPropertyValue(EParameterName.PROPERTY_TYPE.getName(), EmfComponent.REPOSITORY);
-            node.setPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), selectedNode.getObject().getProperty()
-                    .getId());
+            IElementParameter propertyParam = node.getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE);
+            propertyParam.getChildParameters().get(EParameterName.PROPERTY_TYPE.getName()).setValue(EmfComponent.REPOSITORY);
+            propertyParam.getChildParameters().get(EParameterName.REPOSITORY_PROPERTY_TYPE.getName()).setValue(
+                    selectedNode.getObject().getProperty().getId());
 
             ConnectionItem connectionItem = (ConnectionItem) selectedNode.getObject().getProperty().getItem();
 
@@ -278,8 +280,9 @@ public class TalendEditorDropTargetListener implements TransferDropTargetListene
                 }
             }
             tablesMap.put(connectionItem.getProperty().getId(), tableValuesList);
-            IElementParameter repositorySchemaTypeParameter = node.getElementParameter(EParameterName.REPOSITORY_SCHEMA_TYPE
-                    .getName());
+            IElementParameter schemaParam = node.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
+            IElementParameter repositorySchemaTypeParameter = schemaParam.getChildParameters().get(
+                    EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
             if (repositorySchemaTypeParameter != null) {
                 repositorySchemaTypeParameter.setListItemsValue(tableValuesList.toArray(new String[0]));
             }
@@ -300,7 +303,8 @@ public class TalendEditorDropTargetListener implements TransferDropTargetListene
 
             // command used to set property type
             ChangeValuesFromRepository command1 = new ChangeValuesFromRepository(node, connectionItem.getConnection(),
-                    EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), selectedNode.getObject().getProperty().getId());
+                    propertyParam.getName() + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), selectedNode.getObject()
+                            .getProperty().getId());
 
             command1.setMaps(tablesMap, queriesMap, repositoryTableMap);
             list.add(command1);
@@ -310,18 +314,20 @@ public class TalendEditorDropTargetListener implements TransferDropTargetListene
                 RepositoryObject object = (RepositoryObject) selectedNode.getObject();
                 MetadataTable table = (MetadataTable) object.getAdapter(MetadataTable.class);
                 String value = connectionItem.getProperty().getId() + " - " + object.getLabel(); //$NON-NLS-1$
-                RepositoryChangeMetadataCommand command2 = new RepositoryChangeMetadataCommand(node,
-                        EParameterName.REPOSITORY_SCHEMA_TYPE.getName(), value, repositoryTableMap.get(value), null);
+                RepositoryChangeMetadataCommand command2 = new RepositoryChangeMetadataCommand(node, schemaParam.getName() + ":"
+                        + EParameterName.REPOSITORY_SCHEMA_TYPE.getName(), value, repositoryTableMap.get(value), null);
                 list.add(command2);
             }
 
             // command used to set query
             if (selectedNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_CON_QUERY) {
+                IElementParameter queryParam = node.getElementParameterFromField(EParameterFieldType.QUERYSTORE_TYPE);
+
                 RepositoryObject object = (RepositoryObject) selectedNode.getObject();
                 Query query = (Query) object.getAdapter(Query.class);
                 String value = connectionItem.getProperty().getId() + " - " + object.getLabel(); //$NON-NLS-1$
-                RepositoryChangeQueryCommand command3 = new RepositoryChangeQueryCommand(node, query,
-                        EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName(), value);
+                RepositoryChangeQueryCommand command3 = new RepositoryChangeQueryCommand(node, query, queryParam.getName() + ":"
+                        + EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName(), value);
                 list.add(command3);
             }
             if (connection instanceof DatabaseConnection) {

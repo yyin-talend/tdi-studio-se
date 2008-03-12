@@ -68,10 +68,8 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
-import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
-import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.cmd.ChangeMetadataCommand;
@@ -115,8 +113,6 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
     private final Map<String, IMetadataTable> repositoryTableMap;
 
     private final Map<String, ConnectionItem> repositoryConnectionItemMap;
-
-    private Map<String, IRepositoryObject> processMap;
 
     private final Map<String, Query> repositoryQueryStoreMap;
 
@@ -398,13 +394,13 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
                 repositoryType.setListItemsDisplayName(repositoryTableNameList);
                 repositoryType.setListItemsValue(repositoryTableValueList);
                 if (!repositoryTableMap.keySet().contains(repositoryType.getValue())) {
-                    List<String> list2 = tablesMap.get(elem.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName()));
+                    IElementParameter repositoryPropertyType = elem.getElementParameterFromField(
+                            EParameterFieldType.PROPERTY_TYPE, param.getCategory());
+                    List<String> list2 = tablesMap.get(repositoryPropertyType.getChildParameters().get(
+                            EParameterName.REPOSITORY_PROPERTY_TYPE.getName()).getValue());
                     boolean isNeeded = list2 != null && !list2.isEmpty();
                     if (repositoryTableNameList.length > 0 && repositoryConnectionValueList.length > 0 && isNeeded) {
                         repositoryType.setValue(getDefaultRepository(param, true, repositoryConnectionValueList[0]));
-                        // elem.setPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName(),
-                        // getDefaultRepository(
-                        // true, repositoryConnectionValueList[0]));
                     }
                 }
             }
@@ -414,7 +410,10 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
                 repositoryType.setListItemsDisplayName(repositoryQueryNameList);
                 repositoryType.setListItemsValue(repositoryQueryValueList);
                 if (!repositoryQueryStoreMap.keySet().contains(repositoryType.getValue())) {
-                    List<String> list2 = queriesMap.get(elem.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName()));
+                    IElementParameter repositoryPropertyType = elem.getElementParameterFromField(
+                            EParameterFieldType.PROPERTY_TYPE, param.getCategory());
+                    List<String> list2 = queriesMap.get(repositoryPropertyType.getChildParameters().get(
+                            EParameterName.REPOSITORY_PROPERTY_TYPE.getName()).getValue());
                     boolean isNeeded = list2 != null && !list2.isEmpty();
                     if (repositoryQueryNameList.length > 0 && repositoryConnectionValueList.length > 0 && isNeeded) {
                         repositoryType.setValue(getDefaultRepository(elem
@@ -432,16 +431,8 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
                 repositoryConnectionNameList = nameList.toArray(new String[0]);
                 repositoryConnectionValueList = valueList.toArray(new String[0]);
             }
-            // // for job settings extra (feature 2710)
-            // if (param.getName().equals(extraRepositoryPropertyTypeName)) {
-            // List<String> nameList = new ArrayList<String>();
-            // List<String> valueList = new ArrayList<String>();
-            // updateRepositoryListExtra(param, nameList, valueList, true);
-            // repositoryConnectionNameList = nameList.toArray(new String[0]);
-            // repositoryConnectionValueList = valueList.toArray(new String[0]);
-            // }
         }
-        updateQuery();
+        // updateQuery();
     }
 
     /**
@@ -1296,32 +1287,6 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
         } else {
             return null;
         }
-    }
-
-    @SuppressWarnings("unchecked")
-    private void updateQuery() {
-        Object propertyValue = elem.getPropertyValue(EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName());
-        if (propertyValue == null || !(propertyValue instanceof String) || "".equals(propertyValue)
-                || elem.getPropertyValue(EParameterName.QUERYSTORE_TYPE.getName()).equals(EmfComponent.BUILTIN)) {
-            return;
-        }
-        if (repositoryQueryStoreMap.containsKey(propertyValue)) {
-            Query query = repositoryQueryStoreMap.get(propertyValue);
-            for (IElementParameter param : (List<IElementParameter>) elem.getElementParameters()) {
-                if (param.getField() == EParameterFieldType.MEMO_SQL) {
-                    elem.setPropertyValue(param.getName(), convertSQL(query.getValue()));
-                    param.setRepositoryValueUsed(true);
-                }
-            }
-        }
-    }
-
-    private String convertSQL(String sql) {
-
-        if (sql.startsWith("'") || sql.startsWith("\"")) { //$NON-NLS-1$
-            return sql;
-        }
-        return TalendTextUtils.addQuotes(sql); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /**

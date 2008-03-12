@@ -133,13 +133,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
      */
     private String removeStrInQuery(String input) {
         String out = removeSlash(input);
-        if (out.startsWith("'")) { //$NON-NLS-1$
-            out = out.substring(1, out.length());
-        }
-        if (out.endsWith("'")) { //$NON-NLS-1$
-            out = out.substring(0, out.length() - 1);
-        }
-        return out;
+        return TalendTextUtils.removeQuotes(out);
     }
 
     /**
