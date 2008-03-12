@@ -72,8 +72,7 @@ public class QueryTypeController extends AbstractRepositoryController {
         IElementParameter queryStoreTypeParameter = param.getChildParameters().get(EParameterName.QUERYSTORE_TYPE.getName());
         if (queryStoreTypeParameter != null) {
             String queryStoreType = (String) queryStoreTypeParameter.getValue();
-            if (param.getName().equals(EParameterName.QUERYSTORE_TYPE.getName()) && queryStoreType != null
-                    && queryStoreType.equals(EmfComponent.BUILTIN)) {
+            if (queryStoreType != null && queryStoreType.equals(EmfComponent.BUILTIN)) {
                 lastControlUsed = addGuessQueryButton(subComposite, param, lastControlUsed, numInRow, top);
             }
         }
@@ -100,8 +99,9 @@ public class QueryTypeController extends AbstractRepositoryController {
         guessQueryButton.setText(GUESS_QUERY_NAME);
 
         FormData data1 = new FormData();
-        data1.left = new FormAttachment(lastControl, 210);
+        data1.left = new FormAttachment(lastControl, 0);
         data1.top = new FormAttachment(0, top);
+        data1.height = STANDARD_HEIGHT + 2;
 
         buttonControl.setLayoutData(data1);
         guessQueryButton.addSelectionListener(listenerSelection);
