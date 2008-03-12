@@ -120,12 +120,16 @@ if(useExistingConn.equals("true")) {
 } else {
     %>
     java.lang.Class.forName("com.ibm.as400.access.AS400JDBCDriver");
+    <%
     if(dbproperties == null || dbproperties.equals("\"\"") || dbproperties.equals("")) {
+        %>
         String url_<%=cid %> = "jdbc:as400://" + <%=dbhost%> + "/" + <%=dbname%>;
-    }else
+   <% }else
     {
+       %>
+       
         String url_<%=cid %> = "jdbc:as400://" + <%=dbhost%> + "/" + <%=dbname%>+ ";" + <%=dbproperties%>;
-    }
+   <% }%>
     
     String dbUser_<%=cid %> = <%=dbuser%>;
     String dbPwd_<%=cid %> = <%=dbpwd%>;
