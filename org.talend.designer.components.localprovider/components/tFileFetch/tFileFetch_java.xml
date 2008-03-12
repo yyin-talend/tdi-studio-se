@@ -51,7 +51,7 @@ COMPATIBILITY="ALL"
       REQUIRED="false"
       NUM_ROW="3"
     >
-      <DEFAULT></DEFAULT>
+      <DEFAULT>""</DEFAULT>
     </PARAMETER>
   </PARAMETERS>
 

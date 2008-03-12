@@ -19,7 +19,7 @@ String uri = ElementParameterParser.getValue(node, "__URI__");
 String filename = ElementParameterParser.getValue(node, "__FILENAME__");
 
 %>
-	String fileName<%=cid %> = <%=(filename.compareTo("")!=0)?filename:"\"\""%>;
+	String fileName<%=cid %> = <%=filename%>;
 	
 	//open directory
 	java.io.File dir<%=cid %> = new java.io.File(<%=directory %>);
