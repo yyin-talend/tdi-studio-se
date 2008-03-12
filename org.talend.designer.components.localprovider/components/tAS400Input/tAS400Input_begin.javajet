@@ -20,6 +20,7 @@ imports="
 	
 	String dbhost = ElementParameterParser.getValue(node, "__HOST__");
 	String dbname= ElementParameterParser.getValue(node, "__DBNAME__");
+	String dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
 	String dbuser= ElementParameterParser.getValue(node, "__USER__");
 	String dbpwd= ElementParameterParser.getValue(node, "__PASS__");
 	String dbencoding= ElementParameterParser.getValue(node, "__ENCODING__");
@@ -46,8 +47,12 @@ java.sql.Connection conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%
 }else{
 %>
 java.lang.Class.forName("com.ibm.as400.access.AS400JDBCDriver");
-
-String url_<%=cid %> = "jdbc:as400://" + <%=dbhost%> + "/" + <%=dbname%> + ";prompt=false"+";translate binary=true"; 
+    if(dbproperties == null || dbproperties.equals("\"\"") || dbproperties.equals("")) {
+        String url_<%=cid %> = "jdbc:as400://" + <%=dbhost%> + "/" + <%=dbname%>; 
+    }else
+    {
+        String url_<%=cid %> = "jdbc:as400://" + <%=dbhost%> + "/" + <%=dbname%> + ";" + <%=dbproperties%>;
+    }
 
 String dbUser_<%=cid %> = <%=dbuser%>;
 String dbPwd_<%=cid %> = <%=dbpwd%>;

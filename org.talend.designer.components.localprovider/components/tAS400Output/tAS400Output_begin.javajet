@@ -35,6 +35,8 @@ skeleton="../templates/db_output_bulk.skeleton"
     String dbname= ElementParameterParser.getValue(node, "__DBNAME__");
         
     String dbhost = ElementParameterParser.getValue(node, "__HOST__");
+    
+    String dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
     	
 	String dbuser= ElementParameterParser.getValue(node, "__USER__");
 	
@@ -118,7 +120,13 @@ if(useExistingConn.equals("true")) {
 } else {
     %>
     java.lang.Class.forName("com.ibm.as400.access.AS400JDBCDriver");
-    String url_<%=cid %> = "jdbc:as400://" + <%=dbhost%> + "/" + <%=dbname%> + ";prompt=false"+";translate binary=true"; 
+    if(dbproperties == null || dbproperties.equals("\"\"") || dbproperties.equals("")) {
+        String url_<%=cid %> = "jdbc:as400://" + <%=dbhost%> + "/" + <%=dbname%>;
+    }else
+    {
+        String url_<%=cid %> = "jdbc:as400://" + <%=dbhost%> + "/" + <%=dbname%>+ ";" + <%=dbproperties%>;
+    }
+    
     String dbUser_<%=cid %> = <%=dbuser%>;
     String dbPwd_<%=cid %> = <%=dbpwd%>;
     java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
