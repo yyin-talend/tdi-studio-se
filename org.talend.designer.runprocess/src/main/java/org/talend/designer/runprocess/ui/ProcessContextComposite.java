@@ -13,7 +13,9 @@
 package org.talend.designer.runprocess.ui;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -64,6 +66,12 @@ public class ProcessContextComposite extends Composite {
     /** Context table viewer. */
     private static TableViewer contextTableViewer;
 
+    private String jobName = null;
+
+    // map the job name and it's context name
+    // see bug 3307
+    Map<String, String> jobContextMap = null;
+
     /**
      * Constructs a new ProcessContextComposite.
      * 
@@ -72,6 +80,8 @@ public class ProcessContextComposite extends Composite {
      */
     public ProcessContextComposite(Composite parent, int style) {
         super(parent, style);
+
+        jobContextMap = new HashMap<String, String>();
 
         GridLayout layout = new GridLayout();
         layout.marginHeight = 0;
@@ -118,6 +128,7 @@ public class ProcessContextComposite extends Composite {
                 if (!event.getSelection().isEmpty()) {
                     IContext selectedContext = (IContext) ((IStructuredSelection) event.getSelection()).getFirstElement();
                     input = selectedContext.getContextParameterList();
+                    jobContextMap.put(jobName, selectedContext.getName());
                 }
                 contextTableViewer.setInput(input);
             }
@@ -132,6 +143,8 @@ public class ProcessContextComposite extends Composite {
     public void setProcess(final IProcess process) {
         // Select the first context
         if (process != null) {
+            jobName = process.getProperty().getLabel();
+
             contextComboViewer.getControl().setEnabled(true);
 
             getInformationsFromContextManager(process.getContextManager());
@@ -154,20 +167,44 @@ public class ProcessContextComposite extends Composite {
     protected void getInformationsFromContextManager(IContextManager contextManager) {
         List<IContext> internalContextList = new ArrayList<IContext>();
         IContext newSelectedCopiedContext = null;
+        boolean hasJobName = false;
 
         // if (!contextComboViewer.getSelection().isEmpty()) {
         // oldSelectedCopiedContext = (IContext) ((StructuredSelection)
         // contextComboViewer.getSelection()).getFirstElement();
         // }
 
-        for (IContext context : contextManager.getListContext()) {
-            IContext copiedContext = context.clone();
-            internalContextList.add(copiedContext);
-            if (contextManager.getDefaultContext().equals(context)) {
-                newSelectedCopiedContext = copiedContext;
+        for (String name : jobContextMap.keySet()) {
+            if (jobName != null) {
+                if (jobName.equals(name)) {
+                    hasJobName = true;
+                    break;
+                }
+            } else {
+                break;
             }
-
         }
+
+        if (hasJobName && jobContextMap.get(jobName) != null) {
+            for (IContext context : contextManager.getListContext()) {
+                IContext copiedContext = context.clone();
+                internalContextList.add(copiedContext);
+                if (jobContextMap.get(jobName).equals(context.getName())) {
+                    newSelectedCopiedContext = copiedContext;
+                }
+
+            }
+        } else {
+            for (IContext context : contextManager.getListContext()) {
+                IContext copiedContext = context.clone();
+                internalContextList.add(copiedContext);
+                if (contextManager.getDefaultContext().equals(context)) {
+                    newSelectedCopiedContext = copiedContext;
+                }
+
+            }
+        }
+
         contextComboViewer.setInput(internalContextList);
 
         if (newSelectedCopiedContext != null) {
