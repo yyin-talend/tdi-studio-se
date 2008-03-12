@@ -29,33 +29,37 @@ COMPATIBILITY="ALL"
   </CONNECTORS>
 
   <PARAMETERS>
-    <PARAMETER NAME="TO" FIELD="TEXT" REQUIRED="true" NUM_ROW="1">
+    <PARAMETER NAME="TO" FIELD="TEXT" REQUIRED="true" NUM_ROW="10">
       <DEFAULT>"receiver@example.com"</DEFAULT>
     </PARAMETER>
 
-    <PARAMETER NAME="FROM" FIELD="TEXT" REQUIRED="true" NUM_ROW="2">
+    <PARAMETER NAME="FROM" FIELD="TEXT" REQUIRED="true" NUM_ROW="20">
       <DEFAULT>"send@example.com"</DEFAULT>
     </PARAMETER>
 
-    <PARAMETER NAME="CC" FIELD="TEXT" REQUIRED="false" NUM_ROW="3">
+    <PARAMETER NAME="CC" FIELD="TEXT" REQUIRED="false" NUM_ROW="30">
       <DEFAULT>"carbon@example.com"</DEFAULT>
     </PARAMETER>
     
-    <PARAMETER NAME="BCC" FIELD="TEXT" REQUIRED="false" NUM_ROW="4">
+    <PARAMETER NAME="BCC" FIELD="TEXT" REQUIRED="false" NUM_ROW="40">
       <DEFAULT>"blindcarbon@example.com"</DEFAULT>
     </PARAMETER>
 
-    <PARAMETER NAME="SUBJECT" FIELD="TEXT" REQUIRED="true" NUM_ROW="5">
+    <PARAMETER NAME="SUBJECT" FIELD="TEXT" REQUIRED="true" NUM_ROW="50">
       <DEFAULT>"Talend Open Studio notification"</DEFAULT>
     </PARAMETER>
 
-    <PARAMETER NAME="MESSAGE" FIELD="MEMO" REQUIRED="false" NUM_ROW="6">
+    <PARAMETER NAME="MESSAGE" FIELD="MEMO" REQUIRED="false" NUM_ROW="60">
       <DEFAULT>"Hello"</DEFAULT>
     </PARAMETER>
+    
+    <PARAMETER NAME="CHECK_ATTACHMENT" FIELD="CHECK" REQUIRED="true" NUM_ROW="65">
+      <DEFAULT>true</DEFAULT>
+    </PARAMETER>    
 
-    <PARAMETER NAME="ATTACHMENTS" FIELD="TABLE" REQUIRED="false" NUM_ROW="7" NB_LINES="3">
+    <PARAMETER NAME="ATTACHMENTS" FIELD="TABLE" REQUIRED="false" NUM_ROW="70" NB_LINES="3">
       <ITEMS>
-        <ITEM NAME="FILE" />
+        <ITEM NAME="FILE" FIELD="FILE"/>
       </ITEMS>
     </PARAMETER>
 
@@ -63,7 +67,7 @@ COMPATIBILITY="ALL"
       NAME="HEADERS"
       FIELD="TABLE"
       REQUIRED="false"
-      NUM_ROW="8"
+      NUM_ROW="80"
       NB_LINES="3"
     >
       <ITEMS>
@@ -72,11 +76,11 @@ COMPATIBILITY="ALL"
       </ITEMS>
     </PARAMETER>
 
-    <PARAMETER NAME="SMTP_HOST" FIELD="TEXT" REQUIRED="true" NUM_ROW="9">
+    <PARAMETER NAME="SMTP_HOST" FIELD="TEXT" REQUIRED="true" NUM_ROW="90">
       <DEFAULT>"smtp.provider.com"</DEFAULT>
     </PARAMETER>
 
-    <PARAMETER NAME="SMTP_PORT" FIELD="TEXT" REQUIRED="true" NUM_ROW="9">
+    <PARAMETER NAME="SMTP_PORT" FIELD="TEXT" REQUIRED="true" NUM_ROW="90">
       <DEFAULT>25</DEFAULT>
     </PARAMETER>
     
@@ -84,7 +88,7 @@ COMPATIBILITY="ALL"
       NAME="SSL"
       FIELD="CHECK"
       REQUIRED="true"
-      NUM_ROW="9"
+      NUM_ROW="90"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
@@ -93,7 +97,7 @@ COMPATIBILITY="ALL"
       NAME="NEED_AUTH"
       FIELD="CHECK"
       REQUIRED="true"
-      NUM_ROW="9"
+      NUM_ROW="90"
     >
       <DEFAULT>true</DEFAULT>
     </PARAMETER>
@@ -102,7 +106,7 @@ COMPATIBILITY="ALL"
       NAME="AUTH_USERNAME"
       FIELD="TEXT"
       REQUIRED="true"
-      NUM_ROW="10"
+      NUM_ROW="100"
       SHOW_IF="NEED_AUTH == 'true'"
     >
       <DEFAULT>"username"</DEFAULT>
@@ -111,7 +115,7 @@ COMPATIBILITY="ALL"
       NAME="AUTH_PASSWORD"
       FIELD="TEXT"
       REQUIRED="true"
-      NUM_ROW="10"
+      NUM_ROW="100"
       SHOW_IF="NEED_AUTH == 'true'"
     >
       <DEFAULT>"password"</DEFAULT>

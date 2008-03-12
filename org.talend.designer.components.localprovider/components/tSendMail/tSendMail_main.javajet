@@ -16,6 +16,7 @@
 	String cid = node.getUniqueName();
 	String message     = ElementParameterParser.getValue(node, "__MESSAGE__");
 	boolean ifSSL = ElementParameterParser.getValue(node, "__SSL__").equals("true");
+	boolean checkAttachementOnSend = ElementParameterParser.getValue(node, "__CHECK_ATTACHMENT__").equals("true");
 %>
 	 String message_<%=cid %> = <%=(message==null || "".equals(message))?"\"\"":message %>;
 	 java.util.Properties props_<%=cid %> = System.getProperties();     
@@ -74,8 +75,16 @@
 	 	
      for(int i_<%=cid %> = 0; i_<%=cid %> < attachments_<%=cid %>.size(); i_<%=cid %>++)
      {
-       javax.mail.internet.MimeBodyPart mbpFile_<%=cid %> = new javax.mail.internet.MimeBodyPart();
-       String filename_<%=cid %> = attachments_<%=cid %>.get(i_<%=cid %>);        
+       String filename_<%=cid %> = attachments_<%=cid %>.get(i_<%=cid %>);
+       javax.mail.internet.MimeBodyPart mbpFile_<%=cid %> = new javax.mail.internet.MimeBodyPart(); 
+             
+    <%if (!checkAttachementOnSend) {%>       
+       java.io.File file_<%=cid %> = new java.io.File(filename_<%=cid %>);
+       if(!file_<%=cid %>.exists() || file_<%=cid %>.isDirectory()){
+       		continue;
+       }
+    <%}%>
+               
        javax.activation.FileDataSource fds_<%=cid %> = new javax.activation.FileDataSource(filename_<%=cid %> );
        mbpFile_<%=cid %>.setDataHandler(new javax.activation.DataHandler(fds_<%=cid %>));
        mbpFile_<%=cid %>.setFileName(fds_<%=cid %>.getName());
