@@ -42,6 +42,10 @@ public class TalendSelectionManager extends SelectionManager {
      */
     @Override
     public void appendSelection(EditPart arg0) {
+        // judge whether the refresh operation is executed.
+        // see bug 3315.
+        boolean needRefresh = false;
+
         if (getSelection() instanceof StructuredSelection) {
             StructuredSelection selection = (StructuredSelection) getSelection();
             Object selected = null;
@@ -50,9 +54,8 @@ public class TalendSelectionManager extends SelectionManager {
             }
             if (getSelection().isEmpty() || (selected instanceof ProcessPart)) {
                 this.selectionType = ETalendSelectionType.SINGLE;
-                super.appendSelection(arg0);
+                needRefresh = true;
             }
-
             if (!(arg0 instanceof NodeLabelEditPart) && !(arg0 instanceof ConnLabelEditPart) && !(arg0 instanceof ConnectionPart)) {
                 // removes old selections of labels by calling setSelection
                 for (Object element : selection.toArray()) {
@@ -64,8 +67,12 @@ public class TalendSelectionManager extends SelectionManager {
                         this.deselect(((AbstractConnectionEditPart) element));
                     }
                 }
+                needRefresh = true;
+            }
 
+            if (needRefresh) {
                 super.appendSelection(arg0);
+                needRefresh = false;
             }
         }
     }
