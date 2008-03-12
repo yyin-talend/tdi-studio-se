@@ -30,6 +30,8 @@ public class DataStringConnection {
 
     public static String mySQlDefaultValue = "noDatetimeStringSync=true";
 
+    public static String as400DefaultValue = "prompt=false";
+
     // private Combo combo;
 
     private int selectionIndex;
@@ -100,8 +102,10 @@ public class DataStringConnection {
 
         dataConnection[15] = new DataConnection("Teradata", "jdbc:teradata://<host>/<sid>", "jdbc:teradata://" + host + "/" + sid); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
-        dataConnection[16] = new DataConnection("AS400", "jdbc:as400://<host>/<sid>;prompt=false;libraries=<sid>",
-                "jdbc:as400://" + host + "/" + sid + ";prompt=false;libraries=" + sid);
+        // dataConnection[16] = new DataConnection("AS400", "jdbc:as400://<host>/<sid>;prompt=false;libraries=<sid>",
+        // "jdbc:as400://" + host + "/" + sid + ";prompt=false;libraries=" + sid);
+        dataConnection[16] = new DataConnection("AS400", "jdbc:as400://<host>/<sid>;<property>;libraries=<sid>", "jdbc:as400://"
+                + host + "/" + sid + ";" + addParam + ";libraries=" + sid);
 
         dataConnection[17] = new DataConnection("JavaDB Embeded", "jdbc:derby:<dbRootPath>", "jdbc:derby:" + word);
         //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
@@ -345,7 +349,8 @@ public class DataStringConnection {
         }
         return getStringConnectionTemplate().substring(0, 19).equals("jdbc:jtds:sqlserver")
                 || getStringConnectionTemplate().substring(0, 18).equals("jdbc:informix-sqli")
-                || getStringConnectionTemplate().substring(0, 10).equals("jdbc:mysql"); //$NON-NLS-1$
+                || getStringConnectionTemplate().substring(0, 10).equals("jdbc:mysql")
+                || getStringConnectionTemplate().substring(0, 10).equals("jdbc:as400"); //$NON-NLS-1$
 
     }
 
@@ -389,7 +394,7 @@ public class DataStringConnection {
         } else {
             string = getStringReplace(string, "<dbRootPath>", sid);
         }
-        if (dbTypeItemIndex == 11 || dbTypeItemIndex == 13 || dbTypeItemIndex == 0) {
+        if (dbTypeItemIndex == 11 || dbTypeItemIndex == 13 || dbTypeItemIndex == 0 || dbTypeItemIndex == 16) {
             string = getStringReplace(string, "<property>", addParams);
         }
         return string;

@@ -624,6 +624,9 @@ public class DatabaseForm extends AbstractForm {
                     // additionParamText.setText(DataStringConnection.mySQlDefaultValue);
                     additionParamText.setText(DataStringConnection.mySQlDefaultValue);
                 }
+                if (dbTypeCombo.getSelectionIndex() == 16) {
+                    additionParamText.setText(DataStringConnection.as400DefaultValue);
+                }
                 checkFieldsValue();
             }
         });
