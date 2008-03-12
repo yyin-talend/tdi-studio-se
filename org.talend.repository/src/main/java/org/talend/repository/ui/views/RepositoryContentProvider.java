@@ -86,6 +86,8 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
 
     private RepositoryNode jobletNode;
 
+    private RepositoryNode metadataNode;
+
     public RepositoryContentProvider(IRepositoryView view) {
         super();
         this.view = view;
@@ -286,7 +288,7 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
         nodes.add(docNode);
 
         // 6. Metadata
-        RepositoryNode metadataNode = new RepositoryNode(null, root, ENodeType.STABLE_SYSTEM_FOLDER);
+        metadataNode = new RepositoryNode(null, root, ENodeType.STABLE_SYSTEM_FOLDER);
         metadataNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA);
         metadataNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA);
         nodes.add(metadataNode);
@@ -873,18 +875,18 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
         return this.snippetsNode;
     }
 
-    
     /**
      * Getter for processNode.
+     * 
      * @return the processNode
      */
     public RepositoryNode getProcessNode() {
         return this.processNode;
     }
 
-    
     /**
      * Getter for metadataConNode.
+     * 
      * @return the metadataConNode
      */
     public RepositoryNode getMetadataConNode() {
@@ -900,72 +902,72 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
         return this.codeNode;
     }
 
-    
     /**
      * Getter for metadataFileNode.
+     * 
      * @return the metadataFileNode
      */
     public RepositoryNode getMetadataFileNode() {
         return this.metadataFileNode;
     }
 
-    
     /**
      * Getter for metadataFilePositionalNode.
+     * 
      * @return the metadataFilePositionalNode
      */
     public RepositoryNode getMetadataFilePositionalNode() {
         return this.metadataFilePositionalNode;
     }
 
-    
     /**
      * Getter for metadataFileRegexpNode.
+     * 
      * @return the metadataFileRegexpNode
      */
     public RepositoryNode getMetadataFileRegexpNode() {
         return this.metadataFileRegexpNode;
     }
 
-    
     /**
      * Getter for metadataFileXmlNode.
+     * 
      * @return the metadataFileXmlNode
      */
     public RepositoryNode getMetadataFileXmlNode() {
         return this.metadataFileXmlNode;
     }
 
-    
     /**
      * Getter for metadataFileLdifNode.
+     * 
      * @return the metadataFileLdifNode
      */
     public RepositoryNode getMetadataFileLdifNode() {
         return this.metadataFileLdifNode;
     }
 
-    
     /**
      * Getter for metadataGenericSchemaNode.
+     * 
      * @return the metadataGenericSchemaNode
      */
     public RepositoryNode getMetadataGenericSchemaNode() {
         return this.metadataGenericSchemaNode;
     }
 
-    
     /**
      * Getter for metadataLDAPSchemaNode.
+     * 
      * @return the metadataLDAPSchemaNode
      */
     public RepositoryNode getMetadataLDAPSchemaNode() {
         return this.metadataLDAPSchemaNode;
     }
 
-    
     /**
      * Getter for metadataWSDLSchemaNode.
+     * 
      * @return the metadataWSDLSchemaNode
      */
     public RepositoryNode getMetadataWSDLSchemaNode() {
@@ -979,6 +981,15 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
      */
     public List<IRepositoryObject> getJoblets() {
         return this.joblets;
+    }
+
+    /**
+     * Getter for metadataNode.
+     * 
+     * @return the metadataNode
+     */
+    public RepositoryNode getMetadataNode() {
+        return this.metadataNode;
     }
 
 }
