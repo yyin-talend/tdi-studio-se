@@ -33,9 +33,6 @@ import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.impl.AdapterImpl;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.GraphicalViewer;
-import org.eclipse.gef.commands.CommandStack;
-import org.eclipse.gef.commands.CommandStackEvent;
-import org.eclipse.gef.commands.CommandStackEventListener;
 import org.eclipse.gmf.runtime.diagram.ui.editparts.INodeEditPart;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -126,8 +123,6 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
     protected String oldJobName;
 
     protected boolean keepPropertyLocked; // used only if the user try to open more than one editor at a time.
-
-    protected boolean codeSync = false;
 
     private RepositoryEditorInput processEditorInput;
 
@@ -314,13 +309,6 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         }
     }
 
-    CommandStackEventListener commandStackEventListener = new CommandStackEventListener() {
-
-        public void stackChanged(CommandStackEvent event) {
-            codeSync = false;
-        }
-    };
-
     /**
      * Creates page 1 of the multi-page editor, which allows you to change the font used in page 2.
      */
@@ -367,11 +355,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             job.setUser(true);
             job.setPriority(Job.BUILD);
             job.schedule(); // start as soon as possible
-            codeSync = true;
         }
-
-        CommandStack commandStack = (CommandStack) designerEditor.getAdapter(CommandStack.class);
-        commandStack.addCommandStackEventListener(commandStackEventListener);
     }
 
     /**
@@ -443,14 +427,13 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
     }
 
     public void codeSync() {
-        if (!codeSync && process.getGeneratingNodes().size() != 0) {
+        if (process.isProcessModified() && process.getGeneratingNodes().size() != 0) {
             try {
                 processor.generateCode(false, false, true);
 
             } catch (ProcessorException pe) {
                 MessageBoxExceptionHandler.process(pe);
             }
-            codeSync = true;
         }
     }
 
@@ -724,9 +707,6 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
      */
     @Override
     public void dispose() {
-        CommandStack commandStack = (CommandStack) designerEditor.getAdapter(CommandStack.class);
-        commandStack.removeCommandStackEventListener(commandStackEventListener);
-
         getSite().setSelectionProvider(null);
         getSite().getWorkbenchWindow().getSelectionService().removeSelectionListener(this);
         setInput(null);
@@ -762,7 +742,6 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         codeEditor = null;
         processor = null;
         process = null;
-        commandStackEventListener = null;
         dirtyListener = null;
     }
 }
