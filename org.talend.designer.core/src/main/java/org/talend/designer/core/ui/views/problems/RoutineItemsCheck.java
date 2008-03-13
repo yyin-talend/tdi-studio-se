@@ -65,7 +65,8 @@ public class RoutineItemsCheck {
                 List<IRepositoryObject> routineObjList = factory.getAll(ERepositoryObjectType.ROUTINES, false);
                 for (IRepositoryObject repositoryObj : routineObjList) {
                     RoutineItem item = (RoutineItem) repositoryObj.getProperty().getItem();
-                    IFile file = routineSynchronizer.syncRoutine(item, true);
+                    routineSynchronizer.syncRoutine(item, true);
+                    IFile file = routineSynchronizer.getRoutineFile(item);
                     addProblems(item, item.getProperty().getLabel(), file);
                 }
             } catch (PersistenceException e) {

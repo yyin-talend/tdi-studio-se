@@ -20,9 +20,9 @@ import java.util.List;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.exception.SystemException;
 import org.talend.commons.utils.io.FilesUtils;
 import org.talend.commons.utils.workbench.resources.ResourceUtils;
@@ -32,10 +32,8 @@ import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.general.ILibrariesService;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.RoutineItem;
-import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.designer.runprocess.IRunProcessService;
-import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.ResourceModelUtils;
 
@@ -45,20 +43,10 @@ import org.talend.repository.model.ResourceModelUtils;
  * $Id: talend.epf 1 2006-09-29 17:06:40 +0000 (ven., 29 sept. 2006) nrousseau $
  * 
  */
-public class PerlRoutineSynchronizer implements IRoutineSynchronizer {
+public class PerlRoutineSynchronizer extends AbstractRoutineSynchronizer {
 
     public void syncAllRoutines() throws SystemException {
-        IProxyRepositoryFactory repositoryFactory = CodeGeneratorActivator.getDefault().getRepositoryService()
-                .getProxyRepositoryFactory();
-
-        List<IRepositoryObject> routines;
-        try {
-            routines = repositoryFactory.getAll(ERepositoryObjectType.ROUTINES);
-        } catch (PersistenceException e) {
-            throw new SystemException(e);
-        }
-
-        for (IRepositoryObject routine : routines) {
+        for (IRepositoryObject routine : getRoutines()) {
             RoutineItem routineItem = (RoutineItem) routine.getProperty().getItem();
             if (!routineItem.isBuiltIn()) {
                 syncRoutine(routineItem, false);
@@ -66,7 +54,7 @@ public class PerlRoutineSynchronizer implements IRoutineSynchronizer {
         }
     }
 
-    public IFile syncRoutine(RoutineItem routineItem, boolean copyToTemp) throws SystemException {
+    protected void doSyncRoutine(RoutineItem routineItem, boolean copyToTemp) throws SystemException {
         ByteArrayInputStream byteArrayInputStream = null;
         try {
             IRunProcessService service = CodeGeneratorActivator.getDefault().getRunProcessService();
@@ -84,17 +72,12 @@ public class PerlRoutineSynchronizer implements IRoutineSynchronizer {
                 FilesUtils.copyFile(byteArrayInputStream, target);
             }
 
-            // Create a temp file to return:
-            IProject fsProject = ResourceModelUtils.getProject(project);
-            IFolder folder = ResourceUtils.getFolder(fsProject, RepositoryConstants.TEMP_DIRECTORY, true);
-            IFile tempfile = ResourceUtils.getFile(folder, "tempRoutine" + routineItem.getProperty().getId(), false); //$NON-NLS-1$
-
-            if (copyToTemp) {
+            IResource tempfile = getRoutineFile(routineItem);
+            
+			if (copyToTemp) {
                 routineItem.getContent().setInnerContentToFile(tempfile.getLocation().toFile());
             }
             tempfile.refreshLocal(1, null);
-            return tempfile;
-
         } catch (CoreException e) {
             throw new SystemException(e);
         } catch (IOException e) {
@@ -108,4 +91,16 @@ public class PerlRoutineSynchronizer implements IRoutineSynchronizer {
         }
     }
 
+	public IFile getRoutineFile(RoutineItem routineItem) throws SystemException {
+        IRunProcessService service = CodeGeneratorActivator.getDefault().getRunProcessService();
+        Project project = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
+                .getProject();
+
+        IProject fsProject = ResourceModelUtils.getProject(project);
+        IFolder folder = ResourceUtils.getFolder(fsProject, RepositoryConstants.TEMP_DIRECTORY, true);
+        IFile tempfile = ResourceUtils.getFile(folder, "tempRoutine" + routineItem.getProperty().getId(), false); //$NON-NLS-1$
+
+        return null;
+	}
+	
 }

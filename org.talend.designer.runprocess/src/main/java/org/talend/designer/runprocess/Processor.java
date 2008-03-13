@@ -33,6 +33,7 @@ import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.ITargetExecutionConfig;
 import org.talend.designer.codegen.ICodeGenerator;
+import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ISyntaxCheckableEditor;
 import org.talend.designer.runprocess.i18n.Messages;
 
@@ -358,6 +359,13 @@ public abstract class Processor implements IProcessor {
         if (context == null) {
             throw new IllegalStateException("Context is empty, context must be set before call"); //$NON-NLS-1$
         }
+
+        try {
+            DesignerPlugin.getDefault().getCodeGeneratorService().createRoutineSynchronizer().syncAllRoutines();
+        } catch (SystemException e) {
+            throw new ProcessorException(e);
+        }
+
         codeGenerated = true; // set the flag to true to tell the code has been generated at least once.
     }
 

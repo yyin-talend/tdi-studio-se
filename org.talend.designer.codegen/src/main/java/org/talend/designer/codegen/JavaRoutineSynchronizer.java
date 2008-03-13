@@ -24,7 +24,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
-import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.exception.SystemException;
 import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.core.CorePlugin;
@@ -34,10 +33,8 @@ import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.general.ILibrariesService;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.RoutineItem;
-import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.designer.runprocess.IRunProcessService;
-import org.talend.repository.model.IProxyRepositoryFactory;
 
 /**
  * Routine synchronizer of java project.
@@ -48,7 +45,7 @@ import org.talend.repository.model.IProxyRepositoryFactory;
  * yzhang $
  * 
  */
-public class JavaRoutineSynchronizer implements IRoutineSynchronizer {
+public class JavaRoutineSynchronizer extends AbstractRoutineSynchronizer {
 
     /*
      * (non-Javadoc)
@@ -56,17 +53,7 @@ public class JavaRoutineSynchronizer implements IRoutineSynchronizer {
      * @see org.talend.designer.codegen.IRoutineSynchronizer#syncAllRoutines()
      */
     public void syncAllRoutines() throws SystemException {
-        IProxyRepositoryFactory repositoryFactory = CodeGeneratorActivator.getDefault().getRepositoryService()
-                .getProxyRepositoryFactory();
-
-        List<IRepositoryObject> routines;
-        try {
-            routines = repositoryFactory.getAll(ERepositoryObjectType.ROUTINES);
-        } catch (PersistenceException e) {
-            throw new SystemException(e);
-        }
-
-        for (IRepositoryObject routine : routines) {
+        for (IRepositoryObject routine : getRoutines()) {
             RoutineItem routineItem = (RoutineItem) routine.getProperty().getItem();
             syncRoutine(routineItem, true);
         }
@@ -88,21 +75,15 @@ public class JavaRoutineSynchronizer implements IRoutineSynchronizer {
         }
     }
 
-    /*
+	/*
      * (non-Javadoc)
      * 
      * @see org.talend.designer.codegen.IRoutineSynchronizer#syncRoutine(org.talend.core.model.properties.RoutineItem)
      */
-    public IFile syncRoutine(RoutineItem routineItem, boolean copyToTemp) throws SystemException {
+    protected void doSyncRoutine(RoutineItem routineItem, boolean copyToTemp) throws SystemException {
         FileOutputStream fos = null;
         try {
-            IRunProcessService service = CodeGeneratorActivator.getDefault().getRunProcessService();
-            IProject javaProject = service.getProject(ECodeLanguage.JAVA);
-            Project project = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
-                    .getProject();
-            initRoutineFolder(javaProject, project);
-            IFile file = javaProject.getFile(JavaUtils.JAVA_SRC_DIRECTORY + "/" + JavaUtils.JAVA_ROUTINES_DIRECTORY
-                    + "/" + routineItem.getProperty().getLabel() + JavaUtils.JAVA_EXTENSION);
+            IFile file = getRoutineFile(routineItem);
 
             if (copyToTemp) {
                 String routineContent = new String(routineItem.getContent().getInnerContent());
@@ -116,8 +97,6 @@ public class JavaRoutineSynchronizer implements IRoutineSynchronizer {
                 }
             }
             file.refreshLocal(1, null);
-
-            return file;
         } catch (CoreException e) {
             throw new SystemException(e);
         } catch (IOException e) {
@@ -130,6 +109,21 @@ public class JavaRoutineSynchronizer implements IRoutineSynchronizer {
             }
         }
     }
+
+	public IFile getRoutineFile(RoutineItem routineItem) throws SystemException {
+		try {
+			IRunProcessService service = CodeGeneratorActivator.getDefault().getRunProcessService();
+			IProject javaProject = service.getProject(ECodeLanguage.JAVA);
+			Project project = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
+			        .getProject();
+			initRoutineFolder(javaProject, project);
+			IFile file = javaProject.getFile(JavaUtils.JAVA_SRC_DIRECTORY + "/" + JavaUtils.JAVA_ROUTINES_DIRECTORY
+			        + "/" + routineItem.getProperty().getLabel() + JavaUtils.JAVA_EXTENSION);
+			return file;
+		} catch (CoreException e) {
+            throw new SystemException(e);
+		}
+	}
 
     /**
      * DOC mhirt Comment method "initRoutineFolder".

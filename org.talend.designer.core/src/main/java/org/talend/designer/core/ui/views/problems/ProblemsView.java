@@ -440,7 +440,8 @@ public class ProblemsView extends ViewPart implements PropertyChangeListener {
         }
         if (routineSynchronizer != null) {
             try {
-                IFile file = routineSynchronizer.syncRoutine(item, true);
+                routineSynchronizer.syncRoutine(item, true);
+                IFile file = routineSynchronizer.getRoutineFile(item);
                 file.refreshLocal(IResource.DEPTH_ONE, null);
                 Problems.addRoutineFile(file, item.getProperty().getLabel());
             } catch (SystemException e) {
