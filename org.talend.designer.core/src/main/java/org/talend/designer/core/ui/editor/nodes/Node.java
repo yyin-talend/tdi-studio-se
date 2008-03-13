@@ -1279,7 +1279,7 @@ public class Node extends Element implements INode {
         return null;
     }
 
-    public INode getMainBranch() {
+    private INode getMainBranch() {
         Node targetWithRef = null;
         for (int i = 0; i < getOutgoingConnections().size() && targetWithRef == null; i++) {
             IConnection connection = getOutgoingConnections().get(i);
@@ -1314,7 +1314,14 @@ public class Node extends Element implements INode {
 
     public Node getProcessStartNode(boolean withConditions) {
         // System.out.println(" --- Checking :" + this + " ---");
-        return (Node) getMainBranch().getSubProcessStartNode(withConditions);
+
+        // First getMainBranch is in case there is a merge
+        // Then take the first component of the subjob (in case there is a lookup)
+        // Then if there is a lookup, get the main branch
+        // Then take the first component of the main branch.
+        // >> Can be optimized for simple cases.
+        return (Node) ((Node) getMainBranch().getSubProcessStartNode(false)).getMainBranch().getSubProcessStartNode(
+                withConditions);
     }
 
     public boolean sameProcessAs(Node node, boolean withConditions) {
@@ -1556,9 +1563,9 @@ public class Node extends Element implements INode {
         // not a sub process start
         if (!isSubProcessStart() || (!(Boolean) getPropertyValue(EParameterName.STARTABLE.getName()))) {
             if (/*
-             * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_AFTER) > 0) ||
-             * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_BEFORE) > 0)||
-             */
+                 * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_AFTER) > 0) ||
+                 * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_BEFORE) > 0)||
+                 */
             (getCurrentActiveLinksNbOutput(EConnectionType.ON_SUBJOB_OK) > 0)
                     || getCurrentActiveLinksNbOutput(EConnectionType.ON_SUBJOB_ERROR) > 0) {
                 String errorMessage = "A component that is not a sub process start can not have any link run after / run before in output.";
@@ -1570,9 +1577,9 @@ public class Node extends Element implements INode {
         // not a sub process start
         if ((!isELTComponent() && !isSubProcessStart()) || (!(Boolean) getPropertyValue(EParameterName.STARTABLE.getName()))) {
             if (/*
-             * (getCurrentActiveLinksNbInput(EConnectionType.RUN_AFTER) > 0) ||
-             * (getCurrentActiveLinksNbInput(EConnectionType.RUN_BEFORE) > 0) ||
-             */(getCurrentActiveLinksNbInput(EConnectionType.ON_SUBJOB_OK) > 0)
+                 * (getCurrentActiveLinksNbInput(EConnectionType.RUN_AFTER) > 0) ||
+                 * (getCurrentActiveLinksNbInput(EConnectionType.RUN_BEFORE) > 0) ||
+                 */(getCurrentActiveLinksNbInput(EConnectionType.ON_SUBJOB_OK) > 0)
                     || (getCurrentActiveLinksNbInput(EConnectionType.RUN_IF) > 0)
                     || (getCurrentActiveLinksNbInput(EConnectionType.ON_COMPONENT_OK) > 0)
                     || (getCurrentActiveLinksNbInput(EConnectionType.ON_COMPONENT_ERROR) > 0)) {
