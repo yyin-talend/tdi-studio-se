@@ -192,26 +192,26 @@ public class Schema2XMLDragAndDropHandler {
             FOXTreeNode targetNode = (FOXTreeNode) (targetItem.getData());
             LocalDraggedData draggedData = LocalDataTransfer.getInstance().getDraggedData();
             List<Object> dragdedData = draggedData.getTransferableEntryList();
-            if (dragdedData.size() == 1) {
-                if (targetNode instanceof Element) {
-                    Element element = (Element) targetNode;
-                    if (!element.getElementChildren().isEmpty() || element.getParent() == null) {
-                        event.detail = DND.DROP_NONE;
-                        return;
-                    }
-                } else {
-                    FOXTreeNode parent = targetNode.getParent();
-                    if (parent == null) {
-                        event.detail = DND.DROP_NONE;
-                        return;
-                    }
-                }
-            } else if (dragdedData.size() > 1) {
-                if (!(targetNode instanceof Element)) {
-                    event.detail = DND.DROP_NONE;
-                    return;
-                }
-            }
+            // if (dragdedData.size() == 1) {
+            // if (targetNode instanceof Element) {
+            // Element element = (Element) targetNode;
+            // if (!element.getElementChildren().isEmpty() || element.getParent() == null) {
+            // event.detail = DND.DROP_NONE;
+            // return;
+            // }
+            // } else {
+            // FOXTreeNode parent = targetNode.getParent();
+            // if (parent == null) {
+            // event.detail = DND.DROP_NONE;
+            // return;
+            // }
+            // }
+            // } else if (dragdedData.size() > 1) {
+            // if (!(targetNode instanceof Element)) {
+            // event.detail = DND.DROP_NONE;
+            // return;
+            // }
+            // }
             event.detail = DND.DROP_LINK;
         }
 
@@ -235,55 +235,72 @@ public class Schema2XMLDragAndDropHandler {
             FOXTreeNode targetNode = (FOXTreeNode) (targetItem.getData());
 
             if (dragdedData.size() > 0) {
+                DragAndDrogDialog dialog = new DragAndDrogDialog(null);
+                dialog.open();
+                if (dialog.getReturnCode() == IDialogConstants.CANCEL_ID) {
+                    return;
+                }
                 // add by xzhang
-                if (dragdedData.size() == 1) {
-                    IMetadataColumn metaColumn = (IMetadataColumn) dragdedData.get(0);
-                    targetNode.setColumn(metaColumn);
-                } else { // select multiple source nodes.
-                    DragAndDrogDialog dialog = new DragAndDrogDialog(null);
-                    dialog.open();
-                    if (dialog.getReturnCode() == IDialogConstants.CANCEL_ID) {
+                if (dialog.getSelectValue().equals(DragAndDrogDialog.CREATE_AS_TEXT)) {
+                    if (targetNode.hasChildren()) {
+                        MessageDialog.openConfirm(control.getShell(), Messages.getString("CreateElementAction.0"), //$NON-NLS-1$
+                                "\"" + targetNode.getLabel() + "\" "
+                                        + Messages.getString("Schema2XMLDragAndDropHandler.HasChildrenWarning")); //$NON-NLS-1$
+                        return;
+
+                    } else if (targetNode.getParent() == null) {
+                        MessageDialog.openConfirm(control.getShell(), Messages.getString("CreateElementAction.0"), //$NON-NLS-1$
+                                "\"" + targetNode.getLabel() + "\" "
+                                        + Messages.getString("Schema2XMLDragAndDropHandler.IsRootWarning")); //$NON-NLS-1$
                         return;
                     }
-                    if (dialog.getSelectValue().equals(DragAndDrogDialog.CREATE_AS_SUBELEMENT)) {
-                        if (targetNode.getColumn() != null) {
-                            if (!MessageDialog.openConfirm(control.getShell(), Messages.getString("CreateElementAction.0"), //$NON-NLS-1$
-                                    Messages.getString("CreateElementAction.1") //$NON-NLS-1$
-                                            + targetNode.getLabel() + "\"?")) { //$NON-NLS-1$
-                                return;
-                            }
-                            targetNode.setColumn(null);
+                    IMetadataColumn metaColumn = (IMetadataColumn) dragdedData.get(0);
+                    targetNode.setColumn(metaColumn);
+                } else if (dialog.getSelectValue().equals(DragAndDrogDialog.CREATE_AS_SUBELEMENT)) {
+
+                    if (targetNode.getColumn() != null) {
+                        if (!MessageDialog.openConfirm(control.getShell(), Messages.getString("CreateElementAction.0"), //$NON-NLS-1$
+                                Messages.getString("CreateElementAction.1") //$NON-NLS-1$
+                                        + targetNode.getLabel() + "\"?")) { //$NON-NLS-1$
+                            return;
                         }
-                        for (Object obj : dragdedData) {
-                            IMetadataColumn metaColumn = (IMetadataColumn) obj;
-                            boolean isContain = false;
-                            for (FOXTreeNode node : ((Element) targetNode).getElementChildren()) {
-                                if (node.getLabel().equals(metaColumn.getLabel())) {
-                                    node.setColumn(metaColumn);
-                                    isContain = true;
-                                }
-                            }
-                            if (!isContain) {
-                                FOXTreeNode child = new Element(metaColumn.getLabel());
-                                child.setColumn(metaColumn);
-                                targetNode.addChild(child);
+                        targetNode.setColumn(null);
+                    }
+                    for (Object obj : dragdedData) {
+                        IMetadataColumn metaColumn = (IMetadataColumn) obj;
+                        boolean isContain = false;
+                        for (FOXTreeNode node : ((Element) targetNode).getElementChildren()) {
+                            if (node.getLabel().equals(metaColumn.getLabel())) {
+                                node.setColumn(metaColumn);
+                                isContain = true;
                             }
                         }
-                    } else if (dialog.getSelectValue().equals(DragAndDrogDialog.CREATE_AS_ATTRIBUTE)) {
-                        for (Object obj : dragdedData) {
-                            IMetadataColumn metaColumn = (IMetadataColumn) obj;
-                            boolean isContain = false;
-                            for (FOXTreeNode node : ((Element) targetNode).getAttributeChildren()) {
-                                if (node.getLabel().equals(metaColumn.getLabel())) {
-                                    node.setColumn(metaColumn);
-                                    isContain = true;
-                                }
+                        if (!isContain) {
+                            FOXTreeNode child = new Element(metaColumn.getLabel());
+                            child.setColumn(metaColumn);
+                            targetNode.addChild(child);
+                        }
+                    }
+                } else if (dialog.getSelectValue().equals(DragAndDrogDialog.CREATE_AS_ATTRIBUTE)) {
+                    if (!(targetNode instanceof Element)) {
+                        MessageDialog.openConfirm(control.getShell(), Messages.getString("CreateElementAction.0"), //$NON-NLS-1$
+                                "\"" + targetNode.getLabel() + "\" "
+                                        + Messages.getString("Schema2XMLDragAndDropHandler.IsNotElementWarning")); //$NON-NLS-1$
+                        return;
+                    }
+                    for (Object obj : dragdedData) {
+                        IMetadataColumn metaColumn = (IMetadataColumn) obj;
+                        boolean isContain = false;
+                        for (FOXTreeNode node : ((Element) targetNode).getAttributeChildren()) {
+                            if (node.getLabel().equals(metaColumn.getLabel())) {
+                                node.setColumn(metaColumn);
+                                isContain = true;
                             }
-                            if (!isContain) {
-                                FOXTreeNode child = new Attribute(metaColumn.getLabel());
-                                child.setColumn(metaColumn);
-                                targetNode.addChild(child);
-                            }
+                        }
+                        if (!isContain) {
+                            FOXTreeNode child = new Attribute(metaColumn.getLabel());
+                            child.setColumn(metaColumn);
+                            targetNode.addChild(child);
                         }
                     }
                 }
