@@ -85,8 +85,6 @@ public class TableController extends AbstractElementPropertySectionController {
 
         PropertiesTableEditorModel<Map<String, Object>> tableEditorModel = new PropertiesTableEditorModel<Map<String, Object>>();
 
-        updateTableValues(param);
-
         tableEditorModel.setData(elem, param, (Process) part.getTalendEditor().getProcess());
         PropertiesTableEditorView<Map<String, Object>> tableEditorView = new PropertiesTableEditorView<Map<String, Object>>(
                 parentComposite, SWT.NONE, tableEditorModel, !param.isBasedOnSchema(), false);
@@ -160,6 +158,8 @@ public class TableController extends AbstractElementPropertySectionController {
         mainComposite.setLayoutData(formData);
 
         hashCurControls.put(param.getName(), tableEditorView.getExtendedTableViewer().getTableViewerCreator());
+
+        updateTableValues(param);
 
         this.dynamicProperty.setCurRowSize(ySize2 + ITabbedPropertyConstants.VSPACE);
 

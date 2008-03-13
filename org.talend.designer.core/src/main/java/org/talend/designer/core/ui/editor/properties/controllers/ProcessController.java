@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.fieldassist.DecoratedField;
 import org.eclipse.jface.fieldassist.FieldDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
@@ -41,10 +42,10 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
+import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.controllers.creator.SelectAllTextControlCreator;
 import org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty;
-import org.talend.designer.core.ui.views.properties.ComponentSettings;
 import org.talend.repository.ui.dialog.RepositoryReviewDialog;
 
 /**
@@ -254,25 +255,64 @@ public class ProcessController extends AbstractElementPropertySectionController 
         }
 
         public void widgetSelected(SelectionEvent e) {
-            RepositoryReviewDialog dialog = new RepositoryReviewDialog(((Button) e.getSource()).getShell(),
-                    ERepositoryObjectType.PROCESS, null);
-            if (dialog.open() == RepositoryReviewDialog.OK) {
-                // String id = dialog.getResult().getObject().getId();
-                String jobName = dialog.getResult().getObject().getLabel();
-                Button button = (Button) e.getSource();
-                String paramName = (String) button.getData(PARAMETER_NAME);
-                IElementParameter processTypeParameter = elem.getElementParameter(paramName);
-                processTypeParameter.setValue(jobName);
-                ComponentSettings.switchToCurComponentSettingsView();
-                // processTypeParameter.getParentParameter().setValue(id);
+            Command cmd = createCommand(e);
+            if (cmd != null) {
+                getCommandStack().execute(cmd);
             }
-
-            // Command cmd = createCommand(e);
-            // if (cmd != null) {
-            // getCommandStack().execute(cmd);
-            // }
         }
     };
+
+    private Command createCommand(SelectionEvent selectionEvent) {
+        if (selectionEvent.getSource() instanceof Button) {
+            return createButtonCommand((Button) selectionEvent.getSource());
+        }
+        if (selectionEvent.getSource() instanceof CCombo) {
+            return createComboCommand((CCombo) selectionEvent.getSource());
+        }
+        return null;
+    }
+
+    /**
+     * DOC nrousseau Comment method "createComboCommand".
+     * 
+     * @param source
+     * @return
+     */
+    private Command createComboCommand(CCombo combo) {
+        String paramName = (String) combo.getData(PARAMETER_NAME);
+
+        IElementParameter param = elem.getElementParameter(paramName);
+
+        String value = combo.getText();
+
+        for (int j = 0; j < param.getListItemsValue().length; j++) {
+            if (combo.getText().equals(param.getListItemsDisplayName()[j])) {
+                value = (String) param.getListItemsValue()[j];
+            }
+        }
+        if (value.equals(param.getValue())) {
+            return null;
+        }
+
+        return new PropertyChangeCommand(elem, paramName, value);
+    }
+
+    /**
+     * DOC nrousseau Comment method "createButtonCommand".
+     * 
+     * @param source
+     * @return
+     */
+    private Command createButtonCommand(Button button) {
+        RepositoryReviewDialog dialog = new RepositoryReviewDialog((button).getShell(), ERepositoryObjectType.PROCESS, null);
+        if (dialog.open() == RepositoryReviewDialog.OK) {
+            // String id = dialog.getResult().getObject().getId();
+            String jobName = dialog.getResult().getObject().getLabel();
+            String paramName = (String) button.getData(PARAMETER_NAME);
+            return new PropertyChangeCommand(elem, paramName, jobName);
+        }
+        return null;
+    }
 
     /*
      * (non-Javadoc)
