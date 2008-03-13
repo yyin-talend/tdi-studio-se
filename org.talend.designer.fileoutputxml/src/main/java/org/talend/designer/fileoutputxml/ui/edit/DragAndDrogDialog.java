@@ -34,6 +34,8 @@ public class DragAndDrogDialog extends Dialog {
 
     public static final String CREATE_AS_ATTRIBUTE = "attribute";
 
+    public static final String CREATE_AS_TEXT = "text";
+
     private String value = CREATE_AS_SUBELEMENT;
 
     public DragAndDrogDialog(Shell parentShell) {
@@ -53,8 +55,8 @@ public class DragAndDrogDialog extends Dialog {
         // composite.setLayout(new GridLayout());
         String[][] namevalues = new String[][] {
                 { Messages.getString("DragAndDrogDialog.AddSubElements"), CREATE_AS_SUBELEMENT },
-                { Messages.getString("DragAndDrogDialog.AddAttributes"), CREATE_AS_ATTRIBUTE } };
-
+                { Messages.getString("DragAndDrogDialog.AddAttributes"), CREATE_AS_ATTRIBUTE },
+                { Messages.getString("DragAndDrogDialog.AddText"), CREATE_AS_TEXT } };
         RadioGroupFieldEditor rgfe = new RadioGroupFieldEditor("", Messages.getString("DragAndDrogDialog.GroupTitle"), 1,
                 namevalues, composite, true);
         GridLayout layout = new GridLayout();
