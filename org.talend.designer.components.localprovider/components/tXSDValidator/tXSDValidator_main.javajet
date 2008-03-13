@@ -44,7 +44,8 @@ try {
 } 
 
 globalMap.put("<%=cid %>_DIFFERENCE", "" + validate<%=cid %>);
-globalMap.put("<%=cid %>_ERROR_MESSAGE", xsdErrorMessage_<%=cid%>);
+globalMap.put("<%=cid %>_ERROR_MESSAGE", "" + message<%=cid %>);
+globalMap.put("<%=cid %>_XSD_ERROR_MESSAGE", "" + xsdErrorMessage_<%=cid%>);
 
 <%
 if (print) {
