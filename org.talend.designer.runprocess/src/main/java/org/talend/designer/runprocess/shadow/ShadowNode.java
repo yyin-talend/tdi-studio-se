@@ -50,13 +50,9 @@ public abstract class ShadowNode extends AbstractNode {
 
     private IConnection outCnx;
 
-    private List<IElementParameter> parameters;
-
     private String pluginFullName;
 
     private IProcess process;
-
-    private List<IMetadataTable> metadatas;
 
     private int columnNumber = 256;
 
@@ -67,8 +63,8 @@ public abstract class ShadowNode extends AbstractNode {
         super();
 
         this.componentName = componentName;
-        parameters = new ArrayList<IElementParameter>();
 
+        this.setElementParameters(new ArrayList<IElementParameter>());
         IComponentsFactory compFac = RunProcessPlugin.getDefault().getRepositoryService().getComponentsFactory();
         setComponent(compFac.get(componentName));
     }
@@ -77,8 +73,8 @@ public abstract class ShadowNode extends AbstractNode {
         super();
 
         this.componentName = componentName;
-        parameters = new ArrayList<IElementParameter>();
 
+        this.setElementParameters(new ArrayList<IElementParameter>());
         IComponentsFactory compFac = RunProcessPlugin.getDefault().getRepositoryService().getComponentsFactory();
         setComponent(compFac.get(componentName));
 
@@ -94,27 +90,8 @@ public abstract class ShadowNode extends AbstractNode {
         return componentName;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.process.INode#getElementParameters()
-     */
-    public List<? extends IElementParameter> getElementParameters() {
-        return parameters;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.process.INode#setElementParameters(java.util.List)
-     */
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
-    public void setElementParameters(List<? extends IElementParameter> newParameters) {
-        this.parameters = (List<IElementParameter>) newParameters;
-    }
-
     protected void addParameter(IElementParameter param) {
-        parameters.add(param);
+        ((List<IElementParameter>) getElementParameters()).add(param);
     }
 
     /*
@@ -262,15 +239,6 @@ public abstract class ShadowNode extends AbstractNode {
      */
     public void setOutCnx(IConnection outCnx) {
         this.outCnx = outCnx;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.process.INode#setMetadataList(java.util.List)
-     */
-    public void setMetadataList(List<IMetadataTable> metadataList) {
-        this.metadatas = metadataList;
     }
 
     /*
