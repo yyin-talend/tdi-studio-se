@@ -472,14 +472,14 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
                     public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                         try {
                             ProxyRepositoryFactory.getInstance().initialize();
-                        } catch (PersistenceException e) {
+                        } catch (Exception e) {
                             throw new InvocationTargetException(e);
                         }
                     }
                 };
                 new ProgressMonitorDialog(Display.getCurrent().getActiveShell()).run(true, false, op);
             } catch (InvocationTargetException e) {
-                throw (PersistenceException) e.getTargetException();
+                throw e.getTargetException();
             } catch (InterruptedException e) {
                 //
             }
@@ -488,7 +488,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
             viewer.refresh();
             // unsetting the selection will prevent the propertyView from displaying dirty data
             viewer.setSelection(new TreeSelection());
-        } catch (PersistenceException exception) {
+        } catch (Throwable exception) {
             MessageBoxExceptionHandler.process(exception);
         }
 
