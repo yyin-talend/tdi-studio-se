@@ -32,6 +32,8 @@ import org.talend.commons.ui.swt.tableviewer.celleditor.ExtendedTextCellEditor;
 import org.talend.commons.ui.ws.WindowSystem;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
 import org.talend.designer.mapper.i18n.Messages;
+import org.talend.designer.mapper.language.LanguageProvider;
+import org.talend.designer.mapper.language.perl.PerlLanguage;
 import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.model.table.ILookupType;
 import org.talend.designer.mapper.model.table.InputTable;
@@ -101,8 +103,8 @@ public class InputDataMapTableView extends DataMapTableView {
             column = new TableViewerCreatorColumn(tableViewerCreatorForColumns);
             column.setTitle(Messages.getString("InputDataMapTableView.columnTitle.Expr")); //$NON-NLS-1$
             column.setId(DataMapTableView.ID_EXPRESSION_COLUMN);
-            expressionCellEditor = createExpressionCellEditor(tableViewerCreatorForColumns, column,
-                    new Zone[] { Zone.INPUTS }, false);
+            expressionCellEditor = createExpressionCellEditor(tableViewerCreatorForColumns, column, new Zone[] { Zone.INPUTS },
+                    false);
             column.setBeanPropertyAccessors(new IBeanPropertyAccessors<InputColumnTableEntry, String>() {
 
                 public String get(InputColumnTableEntry bean) {
@@ -110,7 +112,7 @@ public class InputDataMapTableView extends DataMapTableView {
                 }
 
                 public void set(InputColumnTableEntry bean, String value) {
-//                    System.out.println("value='" + value + "'");
+                    // System.out.println("value='" + value + "'");
                     bean.setExpression(value);
                     mapperManager.getProblemsManager().checkProblemsForTableEntry(bean, true);
                 }
@@ -494,14 +496,18 @@ public class InputDataMapTableView extends DataMapTableView {
      * DOC amaumont Comment method "updateViewAfterChangeInnerJoinCheck".
      */
     private void updateViewAfterChangeInnerJoinCheck() {
-//        if (innerJoinCheck.getSelection() || getInputTable().getMatchingMode() == TMAP_MATCHING_MODE.ALL_ROWS) {
-//            getActivateFilterCheck().setSelection(isPreviousStateCheckFilter());
-//            getActivateFilterCheck().setEnabled(true);
-//        } else {
-//            getActivateFilterCheck().setSelection(false);
-//            getActivateFilterCheck().setEnabled(false);
-//        }
+
+        if (LanguageProvider.getCurrentLanguage() instanceof PerlLanguage) {
+            if (innerJoinCheck.getSelection() || getInputTable().getMatchingMode() == TMAP_MATCHING_MODE.ALL_ROWS) {
+                getActivateFilterCheck().setSelection(isPreviousStateCheckFilter());
+                getActivateFilterCheck().setEnabled(true);
+            } else {
+                getActivateFilterCheck().setSelection(false);
+                getActivateFilterCheck().setEnabled(false);
+            }
+        }
         updateExepressionFilterTextAndLayout(false);
+
     }
 
     /**
@@ -513,10 +519,8 @@ public class InputDataMapTableView extends DataMapTableView {
      */
     private void enableMenuItemMatchingMode(MenuItem menuItem) {
         ILookupType lookupType = (ILookupType) menuItem.getData();
-        if (lookupType == TMAP_MATCHING_MODE.ALL_ROWS
-                && getInputTable().getMatchingMode() != TMAP_MATCHING_MODE.ALL_ROWS
-                || lookupType != TMAP_MATCHING_MODE.ALL_ROWS
-                && getInputTable().getMatchingMode() == TMAP_MATCHING_MODE.ALL_ROWS) {
+        if (lookupType == TMAP_MATCHING_MODE.ALL_ROWS && getInputTable().getMatchingMode() != TMAP_MATCHING_MODE.ALL_ROWS
+                || lookupType != TMAP_MATCHING_MODE.ALL_ROWS && getInputTable().getMatchingMode() == TMAP_MATCHING_MODE.ALL_ROWS) {
             menuItem.setEnabled(false);
         } else {
             menuItem.setEnabled(true);
