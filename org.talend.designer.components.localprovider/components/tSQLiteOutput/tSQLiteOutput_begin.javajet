@@ -31,7 +31,9 @@ skeleton="../templates/db_output_bulk.skeleton"
     List<Map<String, String>> fieldOptions = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__FIELD_OPTIONS__");
     
     String dbname= ElementParameterParser.getValue(node, "__DBNAME__");
-    			
+
+    String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");    
+    
 	String tableName = ElementParameterParser.getValue(node,"__TABLE__");
 	
 	String dbmsId = ElementParameterParser.getValue(node,"__MAPPING__");
@@ -57,7 +59,6 @@ int insertedCount_<%=cid%>=0;
 
 String tableName_<%=cid%> = <%=tableName%>;
 boolean whetherReject_<%=cid%> = false;
-String url_<%=cid %> = "jdbc:sqlite:"+ "/" + <%=dbname%>.toLowerCase();
 
 <%
 List<IMetadataColumn> columnList = getColumnList(node);
@@ -99,10 +100,25 @@ if(dataAction.equals("UPDATE") || dataAction.equals("INSERT_OR_UPDATE") || dataA
         <%
     }
 }
-%> 
-java.lang.Class.forName("<%=javaDbDriver %>");
-java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>);
-conn_<%=cid%>.setAutoCommit(false);
+%>
+java.sql.Connection conn_<%=cid%> = null;
+<%
+if(useExistingConn.equals("true")) {
+    String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
+    String conn = "conn_" + connection;
+    %>
+    conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
+    <%
+} else {
+    %>
+    java.lang.Class.forName("<%=javaDbDriver %>");
+    String url_<%=cid %> = "jdbc:sqlite:"+ "/" + <%=dbname%>.toLowerCase();
+    conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>);
+    conn_<%=cid%>.setAutoCommit(false);
+    <%
+}
+%>
+
 <%
 if(columnList != null && columnList.size() > 0) {
     if(!tableAction.equals("NONE")) {
