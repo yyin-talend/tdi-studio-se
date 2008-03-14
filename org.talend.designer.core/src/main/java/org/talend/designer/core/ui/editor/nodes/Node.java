@@ -2233,6 +2233,22 @@ public class Node extends Element implements INode {
             getExternalNode().initialize();
         }
 
+        obj = parameters.get(INode.RELOAD_PARAMETER_CONNECTORS);
+        if (obj != null) {
+            List<? extends INodeConnector> oldConnectors = (List<? extends INodeConnector>) obj;
+            for (INodeConnector currentConnector : listConnector) {
+                for (INodeConnector oldConnector : oldConnectors) {
+                    if (currentConnector.getName().equals(oldConnector.getName())) {
+                        currentConnector.setCurLinkNbInput(oldConnector.getCurLinkNbInput());
+                        currentConnector.setCurLinkNbOutput(oldConnector.getCurLinkNbOutput());
+                        break;
+                    }
+
+                }
+            }
+
+        }
+
     }
 
     /*
