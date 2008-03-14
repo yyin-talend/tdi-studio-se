@@ -26,6 +26,8 @@ imports="
 	String dbuser= ElementParameterParser.getValue(node, "__USER__");
 	String dbpwd= ElementParameterParser.getValue(node, "__PASS__");
 	String dbencoding= ElementParameterParser.getValue(node, "__ENCODING__");
+	String useCursor= ElementParameterParser.getValue(node, "__USE_CURSOR__");
+	String cursorSize= ElementParameterParser.getValue(node, "__CURSOR_SIZE__");
 	String dbquery= ElementParameterParser.getValue(node, "__QUERY__");
 	       dbquery = dbquery.replaceAll("\n"," ");
     	   dbquery = dbquery.replaceAll("\r"," ");
@@ -77,6 +79,12 @@ else
 %>
 
 java.sql.Statement stmt_<%=cid %> = conn_<%=cid%>.createStatement();
+<%
+if(useCursor.equals("true")){
+%>stmt_<%=cid %>.setFetchSize(<%=cursorSize %>);
+<%
+}
+%>
 java.sql.ResultSet rs_<%=cid %> = stmt_<%=cid %>.executeQuery(<%=dbquery%>);
 java.sql.ResultSetMetaData rsmd_<%=cid %> = rs_<%=cid %>.getMetaData();
 int colQtyInRs_<%=cid%> = rsmd_<%=cid %>.getColumnCount();
