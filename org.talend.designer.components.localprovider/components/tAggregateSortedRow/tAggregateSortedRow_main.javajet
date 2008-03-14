@@ -82,10 +82,9 @@ if(column_gr.length > 0){
 boolean sameGroup_<%=cid %> = true;
 <%
 }
-	//if(column_gr.length > 0){
 %>if(flag_<%=cid%>){
 	flag_<%=cid%> = false;
-<%	//}
+<%
 	for(int i = 0; i < column_gr.length; i++){
 %>group_<%=column_gr[i][0].getLabel() %>_<%=cid %> = <%=connName %>.<%=column_gr[i][0].getLabel() %>;
 <%	}
@@ -150,7 +149,7 @@ set_<%=column_op[i][0].getLabel() %>_<%=cid %>.add(<%=connName %>.<%=column_op[i
 list_<%=column_op[i][0].getLabel() %>_<%=cid %>.append(<%=connName %>.<%=column_op[i][0].getLabel() %>);
 <%		}
 	}
-%>flag2_<%=cid %> = false;
+%>
 }else{
 <%
 if(column_gr.length > 0){//while loop
