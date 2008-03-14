@@ -551,7 +551,7 @@ select
 <%
     if (useVersion.equals("true")) {
 %>
-    , 0
+    , 1
 <%
     }
 %>
