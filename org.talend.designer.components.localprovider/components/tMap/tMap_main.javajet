@@ -348,8 +348,7 @@
                     		  	    
                     		  	  	   <%
                     		  	  	   if(
-                    		  	  	   		(externalTable.isInnerJoin() || matchingMode.equals("ALL_ROWS"))
-                    		  	  	   		&& externalTable.isActivateExpressionFilter() 
+                    		  	  	   		externalTable.isActivateExpressionFilter() 
                     		  	  	   		&& externalTable.getExpressionFilter() != null 
                     		  	  	   		&& !externalTable.getExpressionFilter().trim().equals("")
                     		  	  	   ) { // 12 
@@ -370,16 +369,13 @@
 						  	  		  			) { // G 16
                     		  	  		  
   		                    		  	    	fromLookup_<%= tableName %> = null;
+			  									<%= tableName %> = <%= tableName %>Default;
                     		  	  		  		
 	  												<%
 				  									if(externalTable.isInnerJoin() && aKeysValues.length > 0) {
 				  									%>
 		         	            		  	  			<%= rejectedInnerJoin %> = true;
 													<%
-				  									} else if(externalTable.isInnerJoin() && aKeysValues.length > 0){
-				  									%>
-					  									<%= tableName %> = <%= tableName %>Default;
-				  									<%
 				  									} else if(externalTable.isInnerJoin() && aKeysValues.length == 0){
 				  									%>
 					                    		  	   	if(sizeResultsFromLookup_<%= tableName %> != -1 

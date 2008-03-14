@@ -494,13 +494,13 @@ public class InputDataMapTableView extends DataMapTableView {
      * DOC amaumont Comment method "updateViewAfterChangeInnerJoinCheck".
      */
     private void updateViewAfterChangeInnerJoinCheck() {
-        if (innerJoinCheck.getSelection() || getInputTable().getMatchingMode() == TMAP_MATCHING_MODE.ALL_ROWS) {
-            getActivateFilterCheck().setSelection(isPreviousStateCheckFilter());
-            getActivateFilterCheck().setEnabled(true);
-        } else {
-            getActivateFilterCheck().setSelection(false);
-            getActivateFilterCheck().setEnabled(false);
-        }
+//        if (innerJoinCheck.getSelection() || getInputTable().getMatchingMode() == TMAP_MATCHING_MODE.ALL_ROWS) {
+//            getActivateFilterCheck().setSelection(isPreviousStateCheckFilter());
+//            getActivateFilterCheck().setEnabled(true);
+//        } else {
+//            getActivateFilterCheck().setSelection(false);
+//            getActivateFilterCheck().setEnabled(false);
+//        }
         updateExepressionFilterTextAndLayout(false);
     }
 
