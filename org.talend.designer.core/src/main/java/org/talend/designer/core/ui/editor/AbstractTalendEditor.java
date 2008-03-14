@@ -235,7 +235,6 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         if (components == null) {
             components = ComponentsFactoryProvider.getInstance();
         }
-        boolean needCheckAndRefresh = false;
         if (propertyName.equals(ComponentUtilities.NORMAL)) {
             for (Node node : (List<Node>) process.getGraphicalNodes()) {
                 IComponent newComponent = components.get(node.getComponent().getName());
@@ -252,15 +251,18 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
                     parameters.put(INode.RELAOD_PARAMETER_ELEMENT_PARAMETERS, node.getElementParameters());
                 } else {
                     parameters.put(INode.RELOAD_NEW, true);
-                    needCheckAndRefresh = true;
                 }
+
+                parameters.put(INode.RELOAD_PARAMETER_CONNECTORS, node.getListConnector());
+
+                node.getListConnector();
                 node.reloadComponent(newComponent, parameters);
             }
-            if (needCheckAndRefresh) {
-                for (Node node : (List<Node>) process.getGraphicalNodes()) {
-                    node.checkAndRefreshNode();
-                }
+
+            for (Node node : (List<Node>) process.getGraphicalNodes()) {
+                node.checkAndRefreshNode();
             }
+
         } else if (propertyName.equals(ComponentUtilities.JOBLET_NAME_CHANGED)) {
             String oldName = (String) evt.getOldValue();
             String newName = (String) evt.getNewValue();
