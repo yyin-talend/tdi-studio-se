@@ -46,6 +46,7 @@ import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.notes.Note;
 import org.talend.designer.core.ui.editor.properties.connections.MainConnectionComposite;
+import org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty;
 import org.talend.designer.core.ui.editor.properties.notes.AbstractNotePropertyComposite;
 import org.talend.designer.core.ui.editor.properties.notes.OpaqueNotePropertyComposite;
 import org.talend.designer.core.ui.editor.properties.notes.TextNotePropertyComposite;
@@ -68,7 +69,7 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
 
     private Element element;
 
-    private DynamicComposite dc = null;
+    private IDynamicProperty dc = null;
 
     private boolean cleaned;
 
@@ -161,8 +162,8 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
                 getCategoryMap().put(ComponentSettingsView.CATEGORY, category);
                 createButtonListener();
                 // tabFactory.getTabbedPropertyComposite().setVisible(true);
-                dc = new DynamicComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS, category, element, tabFactory
-                        .getTabbedPropertyComposite().isCompactView());
+                dc = new MultipleThreadDynamicComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS, category, element,
+                        tabFactory.getTabbedPropertyComposite().isCompactView());
             } else {
                 tabFactory.getTabbedPropertyComposite().getCompactButton().setVisible(false);
                 tabFactory.getTabbedPropertyComposite().getTableButton().setVisible(false);
@@ -492,7 +493,7 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
      * 
      * @return the dc
      */
-    public DynamicComposite getDc() {
-        return this.dc;
+    public Composite getDc() {
+        return (Composite) this.dc;
     }
 }
