@@ -375,7 +375,7 @@ public class DelimitedFileStep3Form extends AbstractDelimitedFileStepForm {
             // the first rows is used to define the label of any metadata
             String[] label = new String[numberOfCol.intValue()];
             for (int i = 0; i < numberOfCol; i++) {
-                label[i] = Messages.getString("FileStep3.column") + i; //$NON-NLS-1$
+                label[i] = DEFAULT_LABEL + i; //$NON-NLS-1$
                 if (firstRowToExtractMetadata == 1) {
                     // String value = fields.get(i).getValue();
                     // if (!value.equals("")) {
@@ -387,18 +387,17 @@ public class DelimitedFileStep3Form extends AbstractDelimitedFileStepForm {
                             label[i] = fields[i].trim().replaceAll(" ", "_"); //$NON-NLS-1$ //$NON-NLS-2$
                             label[i] = ColumnNameValidator.validateColumnNameFormat(label[i], i);
                         } else {
-                            // label[i] = Messages.getString("FileStep3.column") + " " + i; //$NON-NLS-1$ //$NON-NLS-2$
-                            label[i] = Messages.getString("FileStep3.column") + i;
+                            label[i] = DEFAULT_LABEL + i;
                         }
                     } else {// current field size is less than bigest column size
                         if (i < fields.length) {
                             if (fields[i] != null && !("").equals(fields[i])) { //$NON-NLS-1$
                                 label[i] = fields[i].trim().replaceAll(" ", "_"); //$NON-NLS-1$ //$NON-NLS-2$
                             } else {
-                                label[i] = Messages.getString("FileStep3.column") + " " + i; //$NON-NLS-1$ //$NON-NLS-2$
+                                label[i] = DEFAULT_LABEL + " " + i; //$NON-NLS-1$ //$NON-NLS-2$
                             }
                         } else {
-                            label[i] = Messages.getString("FileStep3.column") + " " + i; //$NON-NLS-1$ //$NON-NLS-2$
+                            label[i] = DEFAULT_LABEL + " " + i; //$NON-NLS-1$ //$NON-NLS-2$
                         }
                     }
                 }

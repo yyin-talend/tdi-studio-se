@@ -337,7 +337,7 @@ public class XmlFileStep3Form extends AbstractXmlFileStepForm {
             // the first rows is used to define the label of any metadata
             String[] label = new String[numberOfCol];
             for (int i = 0; i < numberOfCol; i++) {
-                label[i] = Messages.getString("FileStep3.column") + i; //$NON-NLS-1$
+                label[i] = DEFAULT_LABEL + i; //$NON-NLS-1$
 
                 if (firstRowToExtractMetadata == 0) {
                     if (schemaTarget.get(i).getTagName() != null && !schemaTarget.get(i).getTagName().equals("")) { //$NON-NLS-1$

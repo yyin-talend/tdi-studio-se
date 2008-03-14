@@ -70,6 +70,8 @@ public abstract class AbstractForm extends Composite {
      */
     protected List<String> existingNames;
 
+    protected static final String DEFAULT_LABEL = "Column"; //$NON-NLS-1$
+
     /**
      * DOC ocarbone AbstractForm constructor comment.
      * 

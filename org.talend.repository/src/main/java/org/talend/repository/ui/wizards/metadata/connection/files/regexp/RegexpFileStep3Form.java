@@ -356,7 +356,7 @@ public class RegexpFileStep3Form extends AbstractRegexpFileStepForm {
             // the first rows is used to define the label of any metadata
             String[] label = new String[numberOfCol];
             for (int i = 0; i < numberOfCol; i++) {
-                label[i] = Messages.getString("FileStep3.column") + i; //$NON-NLS-1$
+                label[i] = DEFAULT_LABEL + i; //$NON-NLS-1$
                 if (firstRowToExtractMetadata == 1) {
                     String value = fields[i];
                     if (value != null && !value.equals("")) { //$NON-NLS-1$

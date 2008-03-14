@@ -379,7 +379,7 @@ public class WSDLSchemaStep2Form extends AbstractForm {
             // the first rows is used to define the label of any metadata
             String[] label = new String[numberOfCol.intValue()];
             for (int i = 0; i < numberOfCol; i++) {
-                label[i] = Messages.getString("FileStep3.column") + i; //$NON-NLS-1$
+                label[i] = DEFAULT_LABEL + i; //$NON-NLS-1$
                 if (firstRowToExtractMetadata == 0) {
                     label[i] = "" + processDescription.getSchema().get(0).getListColumns().get(i); //$NON-NLS-1$
                 }
