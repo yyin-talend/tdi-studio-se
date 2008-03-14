@@ -178,6 +178,11 @@ public class PropertyChangeCommand extends Command {
         // toUpdate = true;
         // }
         // }
+
+        if (currentParam.getName().equals(EParameterName.PROCESS_TYPE_PROCESS.getName())) {
+            toUpdate = true;
+        }
+
         if (toUpdate) {
             elem.setPropertyValue(updataComponentParamName, new Boolean(true));
         }
