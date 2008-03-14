@@ -50,6 +50,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
+import org.talend.commons.emf.EmfHelper;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.components.IComponent;
@@ -930,6 +931,7 @@ public class Process extends Element implements IProcess2 {
         setActivate(false);
 
         ProcessType processType = getProcessType();
+        EmfHelper.visitChilds(processType);
         if (processType.getParameters() != null) {
             loadElementParameters(this, processType.getParameters().getElementParameter());
         }
