@@ -100,7 +100,7 @@ public class PerlRoutineSynchronizer extends AbstractRoutineSynchronizer {
         IFolder folder = ResourceUtils.getFolder(fsProject, RepositoryConstants.TEMP_DIRECTORY, true);
         IFile tempfile = ResourceUtils.getFile(folder, "tempRoutine" + routineItem.getProperty().getId(), false); //$NON-NLS-1$
 
-        return null;
+        return tempfile;
 	}
 	
 }
