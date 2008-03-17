@@ -203,14 +203,13 @@ if(columnList != null && columnList.size() > 0) {
 	    java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("DELETE FROM \"" + <%=tableName%> + "\" WHERE <%=deleteWhereStmt.toString()%>");
 	    <%		
 	}
-	if(!commitEvery.equals("") && !commitEvery.equals("0")) {
-        %>
-        
-        int commitEvery_<%=cid%> = <%=commitEvery%>;
-        
-        int commitCounter_<%=cid%> = 0;
-        
-        <%
+	if(!useExistingConn.equals("true")) {
+    	if(!commitEvery.equals("") && !commitEvery.equals("0")) {
+            %>            
+            int commitEvery_<%=cid%> = <%=commitEvery%>;            
+            int commitCounter_<%=cid%> = 0;            
+            <%
+    	}
 	}
 }
 %>

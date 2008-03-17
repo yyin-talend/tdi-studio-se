@@ -44,12 +44,13 @@ boolean whetherReject_<%=cid%> = false;
 
 globalMap.put("<%=cid %>_QUERY",<%=dbquery%>);
 <%
-if(!commitEvery.equals("") && !commitEvery.equals("0")) {
-    %>
-    int commitEvery_<%=cid%> = <%=commitEvery%>;
-
-    int commitCounter_<%=cid%> = 0;
-    <%
+if(!useExistingConn.equals("true")) {
+    if(!commitEvery.equals("") && !commitEvery.equals("0")) {
+        %>
+        int commitEvery_<%=cid%> = <%=commitEvery%>;    
+        int commitCounter_<%=cid%> = 0;
+        <%
+    }
 }
 %>
 
