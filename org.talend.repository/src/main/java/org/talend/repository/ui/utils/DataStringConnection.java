@@ -104,8 +104,8 @@ public class DataStringConnection {
 
         // dataConnection[16] = new DataConnection("AS400", "jdbc:as400://<host>/<sid>;prompt=false;libraries=<sid>",
         // "jdbc:as400://" + host + "/" + sid + ";prompt=false;libraries=" + sid);
-        dataConnection[16] = new DataConnection("AS400", "jdbc:as400://<host>/<sid>;<property>;libraries=<sid>", "jdbc:as400://"
-                + host + "/" + sid + ";" + addParam + ";libraries=" + sid);
+        dataConnection[16] = new DataConnection("AS400", "jdbc:as400://<host>/<sid>;libraries=<sid>;<property>", "jdbc:as400://"
+                + host + "/" + sid + ";libraries=" + sid + ";" + addParam);
 
         dataConnection[17] = new DataConnection("JavaDB Embeded", "jdbc:derby:<dbRootPath>", "jdbc:derby:" + word);
         //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
