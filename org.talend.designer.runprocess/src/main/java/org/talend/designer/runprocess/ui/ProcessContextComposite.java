@@ -65,13 +65,7 @@ public class ProcessContextComposite extends Composite {
 
     /** Context table viewer. */
     private static TableViewer contextTableViewer;
-
-    private String jobName = null;
-
-    // map the job name and it's context name
-    // see bug 3307
-    Map<String, String> jobContextMap = null;
-
+    private IProcess process;
     /**
      * Constructs a new ProcessContextComposite.
      * 
@@ -80,8 +74,6 @@ public class ProcessContextComposite extends Composite {
      */
     public ProcessContextComposite(Composite parent, int style) {
         super(parent, style);
-
-        jobContextMap = new HashMap<String, String>();
 
         GridLayout layout = new GridLayout();
         layout.marginHeight = 0;
@@ -128,7 +120,7 @@ public class ProcessContextComposite extends Composite {
                 if (!event.getSelection().isEmpty()) {
                     IContext selectedContext = (IContext) ((IStructuredSelection) event.getSelection()).getFirstElement();
                     input = selectedContext.getContextParameterList();
-                    jobContextMap.put(jobName, selectedContext.getName());
+                    process.setLastRunContext(selectedContext);
                 }
                 contextTableViewer.setInput(input);
             }
@@ -143,8 +135,7 @@ public class ProcessContextComposite extends Composite {
     public void setProcess(final IProcess process) {
         // Select the first context
         if (process != null) {
-            jobName = process.getProperty().getLabel();
-
+            this.process = process;
             contextComboViewer.getControl().setEnabled(true);
 
             getInformationsFromContextManager(process.getContextManager());
@@ -167,29 +158,17 @@ public class ProcessContextComposite extends Composite {
     protected void getInformationsFromContextManager(IContextManager contextManager) {
         List<IContext> internalContextList = new ArrayList<IContext>();
         IContext newSelectedCopiedContext = null;
-        boolean hasJobName = false;
 
         // if (!contextComboViewer.getSelection().isEmpty()) {
         // oldSelectedCopiedContext = (IContext) ((StructuredSelection)
         // contextComboViewer.getSelection()).getFirstElement();
         // }
 
-        for (String name : jobContextMap.keySet()) {
-            if (jobName != null) {
-                if (jobName.equals(name)) {
-                    hasJobName = true;
-                    break;
-                }
-            } else {
-                break;
-            }
-        }
-
-        if (hasJobName && jobContextMap.get(jobName) != null) {
+        if ( process.getLastRunContext() != null) {
             for (IContext context : contextManager.getListContext()) {
                 IContext copiedContext = context.clone();
                 internalContextList.add(copiedContext);
-                if (jobContextMap.get(jobName).equals(context.getName())) {
+                if (process.getLastRunContext().getName().equals(context.getName())) {
                     newSelectedCopiedContext = copiedContext;
                 }
 
@@ -204,12 +183,18 @@ public class ProcessContextComposite extends Composite {
 
             }
         }
-
         contextComboViewer.setInput(internalContextList);
 
         if (newSelectedCopiedContext != null) {
-            contextComboViewer.setSelection(new StructuredSelection(newSelectedCopiedContext));
-            contextTableViewer.setInput(newSelectedCopiedContext.getContextParameterList());
+            contextComboViewer.setSelection(new StructuredSelection(
+                    newSelectedCopiedContext));
+            contextTableViewer.setInput(newSelectedCopiedContext
+                    .getContextParameterList());
+        } else {
+            contextComboViewer.setSelection(new StructuredSelection(
+                    internalContextList.get(0)));
+            contextTableViewer.setInput(internalContextList.get(0)
+                    .getContextParameterList());
         }
 
     }

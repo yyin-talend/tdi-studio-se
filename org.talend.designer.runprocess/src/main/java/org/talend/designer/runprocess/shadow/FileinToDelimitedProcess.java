@@ -595,4 +595,20 @@ public class FileinToDelimitedProcess<K extends FileInputNode> extends Repositor
 	public List<? extends IElementParameter> getElementParametersWithChildrens() {
 		return getElementParameters();
 	}
+
+    /* (non-Javadoc)
+     * @see org.talend.core.model.process.IProcess#getLastRunContext()
+     */
+    public IContext getLastRunContext() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see org.talend.core.model.process.IProcess#setLastRunContext(org.talend.core.model.process.IContext)
+     */
+    public void setLastRunContext(IContext context) {
+        // TODO Auto-generated method stub
+        
+    }
 }
