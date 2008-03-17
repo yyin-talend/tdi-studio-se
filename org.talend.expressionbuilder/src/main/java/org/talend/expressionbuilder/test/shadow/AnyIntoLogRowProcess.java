@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.talend.core.model.process.IConnection;
+import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
@@ -523,5 +524,21 @@ public class AnyIntoLogRowProcess<K extends ShadowNode> implements IProcess {
 	public List<? extends IElementParameter> getElementParametersWithChildrens() {
 		return getElementParameters();
 	}
+
+    /* (non-Javadoc)
+     * @see org.talend.core.model.process.IProcess#getLastRunContext()
+     */
+    public IContext getLastRunContext() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see org.talend.core.model.process.IProcess#setLastRunContext(org.talend.core.model.process.IContext)
+     */
+    public void setLastRunContext(IContext context) {
+        // TODO Auto-generated method stub
+        
+    }
 
 }
