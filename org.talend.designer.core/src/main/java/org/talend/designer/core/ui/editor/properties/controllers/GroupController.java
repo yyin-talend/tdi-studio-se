@@ -70,6 +70,7 @@ public class GroupController extends AbstractElementPropertySectionController {
         } else {
             data.left = new FormAttachment((((numInRow - 1) * MAX_PERCENT) / nbInRow), 0);
         }
+        data.right = new FormAttachment(MAX_PERCENT, 0);
         groupLayout.setLayoutData(data);
 
         Group group = (Group) dField.getControl();
