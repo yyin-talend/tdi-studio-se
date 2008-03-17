@@ -160,7 +160,6 @@
 			    context.<%=ctxParam.getName()%>=(java.util.Date)(new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(context.getProperty("<%=ctxParam.getName()%>")));
 			}catch(ParseException e)
 			{
-			    e.printStackTrace();
 			    context.<%=ctxParam.getName()%>=null;
 			}
 			<%
