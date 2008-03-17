@@ -2519,6 +2519,8 @@ public class Process extends Element implements IProcess2 {
         }
     };
 
+    private IContext lastRunContext;
+
     /**
      * Sets the editor.
      * 
@@ -2629,5 +2631,24 @@ public class Process extends Element implements IProcess2 {
             }
         }
         return nodesWithImport;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IProcess#getLastRunContext()
+     */
+    public IContext getLastRunContext() {
+        return lastRunContext;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IProcess#setLastRunContext(org.talend.core.model.process.IContext)
+     */
+    public void setLastRunContext(IContext context) {
+        this.lastRunContext = context;
+
     }
 }
