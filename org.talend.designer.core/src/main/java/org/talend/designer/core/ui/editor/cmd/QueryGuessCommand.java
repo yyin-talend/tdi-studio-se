@@ -45,15 +45,11 @@ public class QueryGuessCommand extends Command {
 
     private Object oldValue;
 
-    private final IMetadataTable newOutputMetadataTable;
-
-    private IMetadataTable newOutputMetadata;
+    private IMetadataTable newOutputMetadataTable;
 
     private Map<String, String> dbNameAndDbTypeMap;
 
     private Map<String, String> dbNameAndSchemaMap;
-
-    private Map<String, IMetadataTable> repositoryTableMap;
 
     private String realTableId;
 
@@ -89,16 +85,6 @@ public class QueryGuessCommand extends Command {
         this(node2, metadataTable);
         this.schema = schema;
         this.dbType = dbType;
-    }
-
-    private void refreshPropertyView() {
-        // IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-        // IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet"); //$NON-NLS-1$
-        // PropertySheet sheet = (PropertySheet) view;
-        // TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) sheet.getCurrentPage();
-        // if (tabbedPropertySheetPage.getCurrentTab() != null) {
-        // tabbedPropertySheetPage.refresh();
-        // }
     }
 
     @Override
@@ -169,11 +155,12 @@ public class QueryGuessCommand extends Command {
             }
         }
 
+        node.setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), Boolean.TRUE);
+
         if (this.node instanceof Node) {
             ((Node) this.node).checkAndRefreshNode();
         }
 
-        refreshPropertyView();
         // Ends
     }
 
@@ -184,96 +171,14 @@ public class QueryGuessCommand extends Command {
 
     @Override
     public void undo() {
+        node.setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), Boolean.TRUE);
         node.setPropertyValue(this.propName, oldValue);
-        refreshPropertyView();
     }
 
     @Override
     public void redo() {
         this.execute();
     }
-
-    // /**
-    // * //* Generates new Query.
-    // *
-    // * @param repositoryMetadata
-    // * @param dbType
-    // * @param schema
-    // * @return *
-    // * @deprecated use {@link QueryUtil#generateNewQuery()} method instead.
-    // */
-    // public String generateNewQuery(IMetadataTable repositoryMetadata,
-    // String dbType, String schema) {
-    // return QueryUtil.generateNewQuery(node, repositoryMetadata, dbType,
-    // schema, realTableName);
-    // // List<IMetadataColumn> metaDataColumnList =
-    // // repositoryMetadata.getListColumns();
-    // // int index = metaDataColumnList.size();
-    // // if (index == 0) {
-    // // return "";
-    // // }
-    // //
-    // // StringBuffer query = new StringBuffer();
-    // // String enter = "\n";
-    // // String space = " ";
-    // // query.append("SELECT").append(space);
-    // //
-    // // String tableNameForColumnSuffix =
-    // // TalendTextUtils.addQuotesWithSpaceField(
-    // // getTableName(repositoryMetadata, schema, dbType), dbType)
-    // // + ".";
-    // //
-    // // for (int i = 0; i < metaDataColumnList.size(); i++) {
-    // // IMetadataColumn metaDataColumn = metaDataColumnList.get(i);
-    // // String columnName =
-    // //
-    // TalendTextUtils.addQuotesWithSpaceField(getColumnName(metaDataColumn.getOriginalDbColumnName(),
-    // // dbType), dbType);
-    // // if (i != index - 1) {
-    // //
-    // query.append(tableNameForColumnSuffix).append(columnName).append(",").append(space);
-    // // } else {
-    // //
-    // query.append(tableNameForColumnSuffix).append(columnName).append(space);
-    // // }
-    // // }
-    // //
-    // query.append(enter).append("FROM").append(space).append(getTableName(repositoryMetadata,
-    // // schema, dbType));
-    // //
-    // // return query.toString();
-    // }
-
-    // /**
-    // * Gets the table name.
-    // *
-    // * @param tableName
-    // * @param schema
-    // * @return
-    // * @deprecated use {@link MetadataTool#getTableName()} method instead.
-    // */
-    // private String getTableName(IMetadataTable repositoryMetadata,
-    // String schema, String dbType) {
-    // return MetadataTool.getTableName(node, repositoryMetadata, schema,
-    // dbType, this.realTableName);
-    // }
-    //
-    // /**
-    // * Checks if database type is Postgres, add quoutes around column name.
-    // *
-    // * @param name
-    // * @param dbType
-    // * @return
-    // */
-    // private String getColumnName(String name, String dbType) {
-    // String nameAfterChanged;
-    // if (!dbType.equalsIgnoreCase("PostgreSQL")) {
-    // nameAfterChanged = name;
-    // } else {
-    // nameAfterChanged = "\"" + name + "\"";
-    // }
-    // return nameAfterChanged;
-    // }
 
     /**
      * Sets a set of maps what used for generating new Query.
@@ -286,8 +191,6 @@ public class QueryGuessCommand extends Command {
             Map<String, IMetadataTable> repositoryTableMap) {
         this.dbNameAndDbTypeMap = dbNameAndDbTypeMap;
         this.dbNameAndSchemaMap = dbNameAndSchemaMap;
-        this.repositoryTableMap = repositoryTableMap;
-
     }
 
     /**

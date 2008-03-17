@@ -166,13 +166,14 @@ public class QueryTypeController extends AbstractRepositoryController {
      * @return
      */
     private QueryGuessCommand getGuessQueryCommand() {
-        Map<String, IMetadataTable> repositoryTableMap = dynamicProperty.getRepositoryTableMap();
+        Map<String, IMetadataTable> repositoryTableMap = null;
         IMetadataTable newRepositoryMetadata = null;
         String realTableName = null;
         String realTableId = null;
 
         // Only for getting the real table name.
         if (elem.getPropertyValue(EParameterName.SCHEMA_TYPE.getName()).equals(EmfComponent.REPOSITORY)) {
+            repositoryTableMap = dynamicProperty.getRepositoryTableMap();
             String paramName;
             IElementParameter repositorySchemaTypeParameter = elem.getElementParameter(EParameterName.REPOSITORY_SCHEMA_TYPE
                     .getName());
@@ -265,9 +266,9 @@ public class QueryTypeController extends AbstractRepositoryController {
                 if (repositoryQueryStoreMap.containsKey(querySelected)) {
                     repositoryQuery = repositoryQueryStoreMap.get(querySelected);
                 }/*
-                 * else if (dynamicProperty.getRepositoryQueryStoreMap().size() > 0) { repositoryQuery = (Query)
-                 * dynamicProperty.getRepositoryQueryStoreMap().values().toArray()[0]; }
-                 */
+                     * else if (dynamicProperty.getRepositoryQueryStoreMap().size() > 0) { repositoryQuery = (Query)
+                     * dynamicProperty.getRepositoryQueryStoreMap().values().toArray()[0]; }
+                     */
 
                 if (switchParam != null) {
                     switchParam.setValue(Boolean.FALSE);
