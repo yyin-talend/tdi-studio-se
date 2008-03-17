@@ -255,7 +255,6 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
                 parameters.put(INode.RELOAD_PARAMETER_CONNECTORS, node.getListConnector());
 
-                node.getListConnector();
                 node.reloadComponent(newComponent, parameters);
             }
 
