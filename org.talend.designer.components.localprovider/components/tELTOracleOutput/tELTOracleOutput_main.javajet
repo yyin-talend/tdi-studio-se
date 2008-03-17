@@ -55,6 +55,7 @@ imports="
         String dbuser = null;
         String dbpwd = null;
         String encoding = null;
+	    String connectionType = null;
         
         if(previousNode != null) {
 	        dbhost = ElementParameterParser.getValue(previousNode, "__HOST__");
@@ -66,6 +67,7 @@ imports="
 	            previousNode,
 	            "__ENCODING__"
 	        );
+	    	connectionType = ElementParameterParser.getValue(previousNode, "__CONNECTION_TYPE__");
         }
 
 //        String tableAction = ElementParameterParser.getValue(
@@ -79,9 +81,21 @@ imports="
         );
 
 %>
+
 java.lang.Class.forName("oracle.jdbc.driver.OracleDriver");
 
-String url_<%=cid %> = "jdbc:oracle:thin:@"+<%=dbhost%>+":"+<%=dbport%>+":"+<%=dbname%>;
+String url_<%=cid%> = null;
+<%
+if(connectionType.equals("ORACLE_SID")) {
+%>
+	url_<%=cid %> = "jdbc:oracle:thin:@" + <%=dbhost%> + ":" + <%=dbport%> + ":" + <%=dbname%>;
+<%
+} else if(connectionType.equals("ORACLE_SERVICE_NAME")) {
+%>
+	url_<%=cid %> = "jdbc:oracle:thin:@(description=(address=(protocol=tcp)(host=" + <%=dbhost%> + ")(port=" + <%=dbport%> + "))(connect_data=(service_name=" + <%=dbname%> + ")))";
+<%
+}
+%>
 
 <%
 List<IMetadataColumn> columnList = null;
