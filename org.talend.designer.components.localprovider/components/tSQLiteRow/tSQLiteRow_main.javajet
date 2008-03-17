@@ -39,15 +39,18 @@ if(metadataTable != null) {
 List<? extends IConnection> outgoingConns = node.getOutgoingSortedConnections();
 
 for(IConnection conn : outgoingConns) {
-    if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {%>
-    
-    <%=conn.getName() %> = null;            
-<%      }
+    if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+        %>   
+        <%=conn.getName() %> = null;            
+        <%      
+    }
 }
-if(!commitEvery.equals("")&&!commitEvery.equals("0")){
-    %>
-    commitCounter_<%=cid%>++;
-    <%
+if(!useExistingConn.equals("true")) {
+    if(!commitEvery.equals("") && !commitEvery.equals("0")) {
+        %>
+        commitCounter_<%=cid%>++;
+        <%
+    }
 }
 String dbquery= ElementParameterParser.getValue(node, "__QUERY__");
 	       dbquery = dbquery.replaceAll("\n"," ");
