@@ -30,6 +30,10 @@ imports="
 	}
 
     List< ? extends IConnection> outConns = node.getOutgoingConnections(EConnectionType.FLOW_MAIN);
+    
+    //if tRunJob is the first node, it can get the return values of the child job.
+    //if tRunJob is middle node of the FLOW link, it will be data_auto_propagate=true 
+    List< ? extends IConnection> inConns = node.getIncomingConnections(EConnectionType.FLOW_MAIN);    
 	
 	boolean dieOnError = ElementParameterParser.getValue(node, "__DIE_ON_CHILD_ERROR__").equals("true");
 	
@@ -134,6 +138,7 @@ if(outConns != null && outConns.size() > 0) {
 }
 
 if(firstConnName != null) {//b
+	if(inConns == null || inConns.size() == 0){//c
 %>
  	for (String[] item_<%=cid %> : childReturn_<%=cid %>) { 
 <%
@@ -170,5 +175,13 @@ if(firstConnName != null) {//b
     }
 <%
 	}//a
+	
+    }else{//c
+    //in order to match the "}" about IS_MULTIPLYING_OUTPUTS="true"
+    %>
+    	{
+    <%
+    }
+    	
 }//b	
 %>
