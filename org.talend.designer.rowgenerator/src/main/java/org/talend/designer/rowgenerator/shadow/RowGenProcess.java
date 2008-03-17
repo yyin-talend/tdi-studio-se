@@ -23,6 +23,7 @@ import org.eclipse.gef.SnapToGrid;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IConnection;
+import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
@@ -634,5 +635,21 @@ public class RowGenProcess extends Element implements IProcess {
     public List<INode> getNodesWithImport() {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    /* (non-Javadoc)
+     * @see org.talend.core.model.process.IProcess#getLastRunContext()
+     */
+    public IContext getLastRunContext() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /* (non-Javadoc)
+     * @see org.talend.core.model.process.IProcess#setLastRunContext(org.talend.core.model.process.IContext)
+     */
+    public void setLastRunContext(IContext context) {
+        // TODO Auto-generated method stub
+        
     }
 }
