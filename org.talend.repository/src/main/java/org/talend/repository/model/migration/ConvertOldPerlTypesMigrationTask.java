@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.repository.model.migration;
 
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -159,5 +161,9 @@ public class ConvertOldPerlTypesMigrationTask extends AbstractItemMigrationTask 
             FACTORY.save(connectionItem);
             changed = true;
         }
+    }
+    public Date getOrder() {
+        GregorianCalendar gc = new GregorianCalendar(2008, 2, 17, 12, 0, 0);
+        return gc.getTime();
     }
 }

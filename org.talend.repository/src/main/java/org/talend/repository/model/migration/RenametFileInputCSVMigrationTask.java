@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.repository.model.migration;
 
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Arrays;
 
 import org.talend.commons.exception.ExceptionHandler;
@@ -47,4 +49,8 @@ public class RenametFileInputCSVMigrationTask extends AbstractJobMigrationTask {
         }
     }
 
+    public Date getOrder() {
+        GregorianCalendar gc = new GregorianCalendar(2008, 2, 17, 12, 0, 0);
+        return gc.getTime();
+    }
 }

@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.repository.model.migration;
 
+import java.util.Date;
+import java.util.GregorianCalendar;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.model.components.ModifyComponentsAction;
 import org.talend.core.model.migration.AbstractJobMigrationTask;
@@ -30,5 +32,9 @@ public class RenametFlowMeterCatcherMigrationTask extends AbstractJobMigrationTa
             ExceptionHandler.process(e);
             return ExecutionResult.FAILURE;
         }
+    }
+    public Date getOrder() {
+        GregorianCalendar gc = new GregorianCalendar(2008, 2, 17, 12, 0, 0);
+        return gc.getTime();
     }
 }

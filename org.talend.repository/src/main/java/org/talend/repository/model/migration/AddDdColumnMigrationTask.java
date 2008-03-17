@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.repository.model.migration;
 
+import java.util.Date;
+import java.util.GregorianCalendar;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.migration.AbstractJobMigrationTask;
@@ -80,5 +82,9 @@ public class AddDdColumnMigrationTask extends AbstractJobMigrationTask {
         if (modified) {
             factory.save(item,true);
         }
+    }
+    public Date getOrder() {
+        GregorianCalendar gc = new GregorianCalendar(2008, 2, 17, 12, 0, 0);
+        return gc.getTime();
     }
 }

@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.repository.model.migration;
 
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -138,5 +140,9 @@ public class AddQuoteMarkMigrationTask extends AbstractItemMigrationTask {
      */
     private String surroundDQuote(String old) {
         return "\"" + old + "\"";
+    }
+    public Date getOrder() {
+        GregorianCalendar gc = new GregorianCalendar(2008, 2, 17, 12, 0, 0);
+        return gc.getTime();
     }
 }
