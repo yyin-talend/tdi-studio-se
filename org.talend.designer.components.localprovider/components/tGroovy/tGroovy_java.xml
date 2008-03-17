@@ -40,6 +40,13 @@
       <DEFAULT>// your Groovy Code
       </DEFAULT>
     </PARAMETER>
+    
+    <PARAMETER NAME="VARIABLES" FIELD="TABLE" NUM_ROW="30" NB_LINES="5">
+			<ITEMS>
+				<ITEM NAME="NAME"/>
+				<ITEM NAME="VALUE" />
+			</ITEMS>
+	</PARAMETER>
 
    </PARAMETERS>
 
