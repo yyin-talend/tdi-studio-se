@@ -16,6 +16,7 @@ import java.lang.management.ManagementFactory;
 import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
@@ -170,15 +171,14 @@ public class LoginUnitTestDialog extends TitleAreaDialog {
                 RegisterManagement.register(registerWizard.getEmail(), registerWizard.getCountry(), registerWizard
                         .isProxyEnabled(), registerWizard.getProxyHost(), registerWizard.getProxyPort(),
                         org.talend.core.CorePlugin.getDefault().getBundle().getHeaders().get(
-                                org.osgi.framework.Constants.BUNDLE_VERSION).toString(), projectLanguage, osName,
-                        osVersion, javaVersion, totalMemory, memRAM, nbProc);
+                                org.osgi.framework.Constants.BUNDLE_VERSION).toString(), projectLanguage, osName, osVersion,
+                        javaVersion, totalMemory, memRAM, nbProc);
                 // } else {
                 // RegisterManagement.decrementTry();
                 // }
             }
         } catch (BusinessException e) {
-            ErrorDialogWidthDetailArea errorDialog = new ErrorDialogWidthDetailArea(getShell(),
-                    RepositoryPlugin.PLUGIN_ID,
+            ErrorDialogWidthDetailArea errorDialog = new ErrorDialogWidthDetailArea(getShell(), RepositoryPlugin.PLUGIN_ID,
                     Messages.getString("RegisterWizardPage.serverCommunicationProblem"), e.getMessage()); //$NON-NLS-1$
         }
 
@@ -227,7 +227,7 @@ public class LoginUnitTestDialog extends TitleAreaDialog {
 
                     public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                         try {
-                            ProxyRepositoryFactory.getInstance().logOnProject(project);
+                            ProxyRepositoryFactory.getInstance().logOnProject(project, new NullProgressMonitor());
                         } catch (PersistenceException e) {
                             throw new InvocationTargetException(e);
                         } catch (LoginException e) {

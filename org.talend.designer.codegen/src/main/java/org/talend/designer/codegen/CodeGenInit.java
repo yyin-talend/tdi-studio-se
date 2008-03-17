@@ -116,7 +116,7 @@ public class CodeGenInit implements IApplication {
         if (project == null) {
             project = repositoryFactory.createProject(getProjectName(language), "", language, createUser());
         }
-        repositoryFactory.logOnProject(project);
+        repositoryFactory.logOnProject(project, new NullProgressMonitor());
     }
 
     private void deleteProject(ECodeLanguage language) throws Exception {

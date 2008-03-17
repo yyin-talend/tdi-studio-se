@@ -950,37 +950,6 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
     }
 
     /**
-     * @param project
-     * @throws PersistenceException
-     * @throws LoginException
-     * @see org.talend.repository.model.IRepositoryFactory#logOnProject(org.talend.core.model.general.Project)
-     */
-    public void logOnProject(Project project) throws PersistenceException, LoginException {
-        IMigrationToolService service = (IMigrationToolService) GlobalServiceRegister.getDefault().getService(
-                IMigrationToolService.class);
-        service.executeProjectTasks(project, true);
-
-        getRepositoryContext().setProject(project);
-        LanguageManager.reset();
-        this.repositoryFactoryFromProvider.logOnProject(project);
-
-        emptyTempFolder(project);
-
-        // i18n
-        // log.info(getRepositoryContext().getUser() + " logged on " + getRepositoryContext().getProject());
-        String str[] = new String[] { getRepositoryContext().getUser() + "", getRepositoryContext().getProject() + "" }; //$NON-NLS-1$ //$NON-NLS-2$        
-        log.info(Messages.getString("ProxyRepositoryFactory.log.loggedOn", str)); //$NON-NLS-1$
-
-        try {
-            CorePlugin.getDefault().getLibrariesService().syncLibraries();
-        } catch (Exception e) {
-            ExceptionHandler.process(e);
-        }
-
-        service.executeProjectTasks(project, false);
-    }
-
-    /**
      * DOC smallet Comment method "emptyTempFolder".
      * 
      * @param project
