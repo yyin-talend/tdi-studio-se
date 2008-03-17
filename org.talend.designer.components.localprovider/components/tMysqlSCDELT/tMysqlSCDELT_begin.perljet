@@ -343,7 +343,6 @@ $l1sth_<%=cid%>->execute();
 %>
 
 <%  
-    if( useL2.equals("true") ) {
         List setcols = new ArrayList();
         List joinclause = new ArrayList();
         List whereclause = new ArrayList();
@@ -432,6 +431,7 @@ $l1sth_<%=cid%>->execute();
     
         String colnamesString = StringUtils.join(colnames.toArray(), "\n, ");
 
+    if( useL2.equals("true") ) {
 %>	
 
 # SCD TYPE 2 : EXPIRATION DATE
@@ -532,13 +532,21 @@ $l2_new_active_sth_<%=cid%>->execute();
     }
 %>
 
-# SCD TYPE 2 : NEW ACTIVE ROW
-my $l2_new_rows_query = "
+<%
+    }
+%>
+
+
+# NEW ROWS ( TYPE 1 or 2 )
+my $new_rows_query = "
 INSERT INTO ".<%=dbtable%>."(
 <%=colnamesString%>
 )
 select
   t.<%=l2SelectString%>
+<%
+    if( useL2.equals("true") ){
+%>
 , '$_globals{job_execution_datetime}'
 , NULL
 <%
@@ -555,6 +563,12 @@ select
 <%
     }
 %>
+
+<%
+    }//l2 fields are defined
+%>
+
+
 FROM ".
 <%=dbtablesrc%>." t LEFT JOIN ".
 <%=dbtable%>." d
@@ -566,16 +580,16 @@ WHERE (
 "
 ;
 
-my $l2_new_rows_sth_<%=cid%> = $<%=dbh%>->prepare($l2_new_rows_query);
-$l2_new_rows_sth_<%=cid%>->execute();
+my $new_rows_sth_<%=cid%> = $<%=dbh%>->prepare($new_rows_query);
+$new_rows_sth_<%=cid%>->execute();
 
 <%
     if (debug) {
 %>
             print "[<%=cid%>] l2 new rows sql\n", 
-                  $l2_new_rows_query, "\n";
+                  $new_rows_query, "\n";
             print( 
-                      "[<%=cid%>] l2 new rows done\n",
+                      "[<%=cid%>] new rows done\n",
                       "[<%=cid%>] ", 
                       tv_interval(
                           $before_l1_update_<%=cid%>, 
@@ -588,9 +602,6 @@ $l2_new_rows_sth_<%=cid%>->execute();
 %>
 
 
-<%
-    }
-%>
 
 
 <%
