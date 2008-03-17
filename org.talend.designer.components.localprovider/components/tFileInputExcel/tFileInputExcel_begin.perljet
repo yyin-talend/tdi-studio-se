@@ -61,10 +61,25 @@ my $book_<%=cid%> =  Spreadsheet::ParseExcel::Workbook->Parse($desc_<%=cid%>{fil
 
 my @worksheets = map { $_->{Name} } @{$book_<%=cid%>->{Worksheet}};
 
-if (not grep /^$desc_<%=cid%>{sheetname}$/, @worksheets) {
+# user can also provide a sheet position
+if ($desc_<%=cid%>{sheetname} =~ m/^\d+$/) {
+    my $position = $desc_<%=cid%>{sheetname};
+    if ($position >= scalar @worksheets) {
+        die(
+            sprintf(
+                '[<%=cid%>] select a worksheet position among {%s}',
+                join(
+                    ',',
+                    map {$i++} @worksheets
+                )
+            )
+        );
+    }
+}
+elsif (not grep /^$desc_<%=cid%>{sheetname}$/, @worksheets) {
     die(
         sprintf(
-            'The worksheet "%s" does not exist in this Excel book, existing worksheets are {%s}',
+            '[<%=cid%>] worksheet "%s" does not exists, existing worksheets {%s}',
             $desc_<%=cid%>{sheetname},
             join(
                 ',',
