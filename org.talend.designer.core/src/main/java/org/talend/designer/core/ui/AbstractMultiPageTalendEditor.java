@@ -424,14 +424,16 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
     }
 
     public void codeSync() {
-        if (process.isProcessModified() && process.getGeneratingNodes().size() != 0) {
-            try {
-                processor.generateCode(false, false, true);
+        // force the code sync each time, need to add another feature to enhance this later.
 
-            } catch (ProcessorException pe) {
-                MessageBoxExceptionHandler.process(pe);
-            }
+        // if (process.isProcessModified() && process.getGeneratingNodes().size() != 0) {
+        try {
+            processor.generateCode(false, false, true);
+
+        } catch (ProcessorException pe) {
+            MessageBoxExceptionHandler.process(pe);
         }
+        // }
     }
 
     /**
