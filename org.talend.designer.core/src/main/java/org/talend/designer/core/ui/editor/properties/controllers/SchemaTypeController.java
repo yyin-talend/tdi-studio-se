@@ -43,6 +43,7 @@ import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
+import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.metadata.dialog.MetadataDialog;
 import org.talend.core.ui.metadata.dialog.MetadataDialogForMerge;
@@ -50,10 +51,12 @@ import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.editor.cmd.ChangeMetadataCommand;
+import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.cmd.RepositoryChangeMetadataCommand;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty;
+import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.dialog.RepositoryReviewDialog;
 
 /**
@@ -70,41 +73,6 @@ public class SchemaTypeController extends AbstractRepositoryController {
 
     public SchemaTypeController(IDynamicProperty dp) {
         super(dp);
-    }
-
-    /**
-     * DOC bqian Comment method "setColumnLength".
-     * 
-     * @param node
-     * @param param
-     * @param columnCopied
-     */
-    private void setColumnLength(Node node, IElementParameter param, IMetadataColumn columnCopied) {
-        for (int i = 0; i < node.getElementParameters().size(); i++) {
-            IElementParameter parameter = node.getElementParameters().get(i);
-            if (parameter.getField() == EParameterFieldType.TABLE) {
-                if (parameter.isBasedOnSchema()) {
-                    List<Map<String, Object>> paramValues = (List<Map<String, Object>>) parameter.getValue();
-                    for (Map<String, Object> columnInfo : paramValues) {
-                        if (columnInfo.get("SCHEMA_COLUMN").equals(columnCopied.getLabel())) {
-                            if (!ColumnListController.needSynchronizeSize(parameter)) {
-                                return;
-                            }
-                            // codes[1] is SIZE;
-                            String size = (String) columnInfo.get("SIZE");
-                            int tmpSize = 0;
-                            if (size == null || size.equals("")) {
-                                tmpSize = -1;
-                            } else {
-                                tmpSize = Integer.parseInt(size);
-                            }
-                            columnCopied.setLength(tmpSize);
-                            break;
-                        }
-                    }
-                }
-            }
-        }
     }
 
     private boolean prepareReadOnlyTable(IMetadataTable table, boolean readOnlyParam, boolean readOnlyElement) {
@@ -134,79 +102,10 @@ public class SchemaTypeController extends AbstractRepositoryController {
     @Override
     public Control createControl(Composite subComposite, IElementParameter param, int numInRow, int nbInRow, int top,
             Control lastControl) {
-        // CCombo combo;
-        //
-        // Control lastControlUsed = lastControl;
-        //
-        // if (elem instanceof Node) {
-        // combo = new CCombo(subComposite, SWT.BORDER);
-        // IElementParameter schemaTypeParameter = param.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName());
-        // // elem.getElementParameter(EParameterName.SCHEMA_TYPE.getName());
-        // FormData data;
-        // String[] originalList = schemaTypeParameter.getListItemsDisplayName();
-        // List<String> stringToDisplay = new ArrayList<String>();
-        // for (int i = 0; i < originalList.length; i++) {
-        // stringToDisplay.add(originalList[i]);
-        // }
-        // combo.setItems(stringToDisplay.toArray(new String[0]));
-        // combo.setEditable(false);
-        // combo.setEnabled(!schemaTypeParameter.isReadOnly());
-        // // combo.addSelectionListener(listenerSelection);
-        // if (elem instanceof Node) {
-        // combo.setToolTipText(VARIABLE_TOOLTIP + schemaTypeParameter.getVariableName());
-        // }
-        //
-        // CLabel labelLabel = getWidgetFactory().createCLabel(subComposite, schemaTypeParameter.getDisplayName());
-        // data = new FormData();
-        // if (lastControl != null) {
-        // data.left = new FormAttachment(lastControl, 0);
-        // } else {
-        // data.left = new FormAttachment((((numInRow - 1) * MAX_PERCENT) / nbInRow), 0);
-        // }
-        // data.top = new FormAttachment(0, top);
-        // labelLabel.setLayoutData(data);
-        // if (numInRow != 1) {
-        // labelLabel.setAlignment(SWT.RIGHT);
-        // }
-        // // *********************
-        // data = new FormData();
-        // int currentLabelWidth = STANDARD_LABEL_WIDTH;
-        // GC gc = new GC(labelLabel);
-        // Point labelSize = gc.stringExtent(schemaTypeParameter.getDisplayName());
-        // gc.dispose();
-        //
-        // if ((labelSize.x + ITabbedPropertyConstants.HSPACE) > currentLabelWidth) {
-        // currentLabelWidth = labelSize.x + ITabbedPropertyConstants.HSPACE;
-        // }
-        //
-        // if (numInRow == 1) {
-        // if (lastControl != null) {
-        // data.left = new FormAttachment(lastControl, currentLabelWidth);
-        // } else {
-        // data.left = new FormAttachment(0, currentLabelWidth);
-        // }
-        //
-        // } else {
-        // data.left = new FormAttachment(labelLabel, 0, SWT.RIGHT);
-        // }
-        // data.top = new FormAttachment(0, top);
-        // combo.setLayoutData(data);
-        // combo.addSelectionListener(listenerSelection);
-        // combo.setData(PARAMETER_NAME, param.getName() + ":" + schemaTypeParameter.getName());
-        // lastControlUsed = combo;
-        //
-        // String schemaType = (String) schemaTypeParameter.getValue();
-        // if (schemaType != null && schemaType.equals(EmfComponent.REPOSITORY)) {
-        // lastControlUsed = addRepositoryChoice(subComposite, lastControlUsed, numInRow, nbInRow, top, param);
-        // }
-        //
-        // // **********************
-        // hashCurControls.put(param.getName() + ":" + schemaTypeParameter.getName(), combo);
-        //
-        // Point initialSize = combo.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-        // dynamicProperty.setCurRowSize(initialSize.y + ITabbedPropertyConstants.VSPACE);
-        // }
-        Control lastControlUsed = super.createControl(subComposite, param, numInRow, nbInRow, top, lastControl);
+        Control lastControlUsed = lastControl;
+        if (elem instanceof Node) {
+            lastControlUsed = super.createControl(subComposite, param, numInRow, nbInRow, top, lastControl);
+        }
         lastControlUsed = addButton(subComposite, param, lastControlUsed, numInRow, top);
         return lastControlUsed;
     }
@@ -697,17 +596,15 @@ public class SchemaTypeController extends AbstractRepositoryController {
             RepositoryReviewDialog dialog = new RepositoryReviewDialog(button.getShell(),
                     ERepositoryObjectType.METADATA_CON_TABLE, null);
             if (dialog.open() == RepositoryReviewDialog.OK) {
-                String id = dialog.getResult().getParent().getParent().getObject().getId();
-                // take the parent id instead of the table id as the current list contain this information
-                // String id = dialog.getResult().getObject().getId();
+                RepositoryNode node = dialog.getResult();
+                while (node.getObject().getProperty().getItem() == null
+                        || (!(node.getObject().getProperty().getItem() instanceof ConnectionItem))) {
+                    node = node.getParent();
+                }
+                String id = node.getObject().getProperty().getId();
                 String name = dialog.getResult().getObject().getLabel();
                 String paramName = (String) button.getData(PARAMETER_NAME);
                 String value = id + " - " + name;
-                // IElementParameter param = elem.getElementParameter(paramName).getChildParameters().get(
-                // getRepositoryChoiceParamName());
-                // param.setValue(id + " - " + name);
-                // Text text = (Text) hashCurControls.get(paramName + ":" + getRepositoryChoiceParamName());
-                // text.setText(getDisplayNameFromValue(param, id + " - " + name));
 
                 String fullParamName = paramName + ":" + getRepositoryChoiceParamName();
                 org.talend.core.model.metadata.builder.connection.Connection connection = null;
@@ -753,20 +650,8 @@ public class SchemaTypeController extends AbstractRepositoryController {
     @Override
     protected Command createComboCommand(CCombo combo) {
         IMetadataTable repositoryMetadata;
-        Map<String, IMetadataTable> repositoryTableMap = dynamicProperty.getRepositoryTableMap();
-
-        // String paramName;
-
-        // IElementParameter repositorySchemaTypeParameter = elem
-        // .getElementParameter(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
-        // Object repositoryControl = hashCurControls.get(repositorySchemaTypeParameter.getName());
 
         String fullParamName = (String) combo.getData(PARAMETER_NAME);
-        // if (combo.equals(repositoryControl)) {
-        // paramName = EParameterName.REPOSITORY_SCHEMA_TYPE.getName();
-        // } else {
-        // paramName = EParameterName.SCHEMA_TYPE.getName();
-        // }
         IElementParameter switchParam = elem.getElementParameter(EParameterName.REPOSITORY_ALLOW_AUTO_SWITCH.getName());
 
         String value = new String(""); //$NON-NLS-1$
@@ -778,46 +663,8 @@ public class SchemaTypeController extends AbstractRepositoryController {
             }
         }
 
-        // for (int i = 0; i < elem.getElementParameters().size(); i++) {
-        // IElementParameter param = elem.getElementParameters().get(i);
-        // if (param.getName().equals(paramName)) {
-        // for (int j = 0; j < param.getListItemsValue().length; j++) {
-        // if (combo.getText().equals(param.getListItemsDisplayName()[j])) {
-        // value = (String) param.getListItemsValue()[j];
-        // }
-        // }
-        // }
-        // }
         org.talend.core.model.metadata.builder.connection.Connection connection = null;
-        // if (fullParamName.contains(EParameterName.REPOSITORY_SCHEMA_TYPE.getName())) {
-        // if (elem instanceof Node) {
-        // if (repositoryTableMap.containsKey(value)) {
-        // repositoryMetadata = repositoryTableMap.get(value);
-        // IElementParameter property = ((Node) elem).getElementParameter(EParameterName.PROPERTY_TYPE.getName());
-        // if ((property != null) && EmfComponent.REPOSITORY.equals(property.getValue())) {
-        // String propertySelected = (String) ((Node) elem).getElementParameter(
-        // EParameterName.REPOSITORY_PROPERTY_TYPE.getName()).getValue();
-        // connection = dynamicProperty.getRepositoryConnectionItemMap().get(propertySelected).getConnection();
-        // }
-        // } else {
-        // repositoryMetadata = new MetadataTable();
-        // }
-        // if (switchParam != null) {
-        // switchParam.setValue(Boolean.FALSE);
-        // }
-        // RepositoryChangeMetadataCommand changeMetadataCommand = new RepositoryChangeMetadataCommand((Node) elem,
-        // fullParamName, value, repositoryMetadata, null);
-        // changeMetadataCommand.setConnection(connection);
-        // // changeMetadataCommand.setMaps(this.dynamicTabbedPropertySection.getTableIdAndDbTypeMap(),
-        // // this.dynamicTabbedPropertySection.getTableIdAndDbSchemaMap(), this.dynamicTabbedPropertySection
-        // // .getRepositoryTableMap());
-        //
-        // return changeMetadataCommand;
-        //
-        // }
-        // }
-        // // Schema Type combo was selected.
-        // else {
+
         if (elem instanceof Node) {
             Node node = (Node) elem;
             boolean isReadOnly = false;
@@ -842,7 +689,8 @@ public class SchemaTypeController extends AbstractRepositoryController {
                     }
 
                 }
-            } else {
+            } else if (value.equals(EmfComponent.REPOSITORY)) {
+                Map<String, IMetadataTable> repositoryTableMap = dynamicProperty.getRepositoryTableMap();
                 IElementParameter property = ((Node) elem).getElementParameter(EParameterName.PROPERTY_TYPE.getName());
                 if ((property != null) && EmfComponent.REPOSITORY.equals(property.getValue())) {
                     String propertySelected = (String) ((Node) elem).getElementParameter(
@@ -864,6 +712,8 @@ public class SchemaTypeController extends AbstractRepositoryController {
                         repositoryMetadata = repositoryTableMap.get(newRepositoryIdValue);
                     }
                 }
+            } else {
+                return new PropertyChangeCommand(elem, fullParamName, value);
             }
             if (switchParam != null) {
                 switchParam.setValue(Boolean.FALSE);
@@ -873,13 +723,8 @@ public class SchemaTypeController extends AbstractRepositoryController {
                     fullParamName, value, repositoryMetadata, newRepositoryIdValue);
             changeMetadataCommand.setConnection(connection);
 
-            // changeMetadataCommand.setMaps(this.dynamicTabbedPropertySection.getTableIdAndDbTypeMap(),
-            // this.dynamicTabbedPropertySection.getTableIdAndDbSchemaMap(), this.dynamicTabbedPropertySection
-            // .getRepositoryTableMap());
-
             return changeMetadataCommand;
         }
-        // }
 
         return null;
     }

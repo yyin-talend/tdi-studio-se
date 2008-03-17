@@ -32,6 +32,7 @@ import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -40,6 +41,7 @@ import org.talend.designer.core.ui.editor.cmd.QueryGuessCommand;
 import org.talend.designer.core.ui.editor.cmd.RepositoryChangeQueryCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty;
+import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.dialog.RepositoryReviewDialog;
 
 /**
@@ -131,8 +133,12 @@ public class QueryTypeController extends AbstractRepositoryController {
             RepositoryReviewDialog dialog = new RepositoryReviewDialog(button.getShell(),
                     ERepositoryObjectType.METADATA_CON_QUERY, null);
             if (dialog.open() == RepositoryReviewDialog.OK) {
-                String id = dialog.getResult().getParent().getParent().getObject().getId();
-                // String id = dialog.getResult().getObject().getId();
+                RepositoryNode node = dialog.getResult();
+                while (node.getObject().getProperty().getItem() == null
+                        || (!(node.getObject().getProperty().getItem() instanceof ConnectionItem))) {
+                    node = node.getParent();
+                }
+                String id = node.getObject().getProperty().getId();
                 String name = dialog.getResult().getObject().getLabel();
                 String paramName = (String) button.getData(PARAMETER_NAME);
                 IElementParameter param = elem.getElementParameter(paramName);
@@ -259,9 +265,9 @@ public class QueryTypeController extends AbstractRepositoryController {
                 if (repositoryQueryStoreMap.containsKey(querySelected)) {
                     repositoryQuery = repositoryQueryStoreMap.get(querySelected);
                 }/*
-                     * else if (dynamicProperty.getRepositoryQueryStoreMap().size() > 0) { repositoryQuery = (Query)
-                     * dynamicProperty.getRepositoryQueryStoreMap().values().toArray()[0]; }
-                     */
+                 * else if (dynamicProperty.getRepositoryQueryStoreMap().size() > 0) { repositoryQuery = (Query)
+                 * dynamicProperty.getRepositoryQueryStoreMap().values().toArray()[0]; }
+                 */
 
                 if (switchParam != null) {
                     switchParam.setValue(Boolean.FALSE);

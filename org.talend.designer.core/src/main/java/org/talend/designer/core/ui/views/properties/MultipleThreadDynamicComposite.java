@@ -13,8 +13,6 @@
 package org.talend.designer.core.ui.views.properties;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +22,7 @@ import org.apache.commons.collections.bidimap.DualHashBidiMap;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.commands.CommandStackEvent;
 import org.eclipse.gef.commands.CommandStackEventListener;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.layout.FormAttachment;
@@ -61,10 +60,8 @@ import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
-import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
-import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.cmd.ChangeMetadataCommand;
@@ -106,8 +103,6 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
 
     private final Map<String, ConnectionItem> repositoryConnectionItemMap;
 
-    private Map<String, IRepositoryObject> processMap;
-
     private final Map<String, Query> repositoryQueryStoreMap;
 
     private Map<String, String> tableIdAndDbTypeMap;
@@ -124,103 +119,9 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
 
     protected Composite composite;
 
-    // private final String extraPropertyTypeName;
-    //
-    // private final String extraRepositoryPropertyTypeName;
-
     private final String updataComponentParamName;
 
     private boolean isCompactView;
-
-    // /**
-    // * ftang Comment method "updateProcessList".
-    // */
-    // private void updateProcessList_renamed() {
-    // List<String> processNameList = new ArrayList<String>();
-    // List<String> processValueList = new ArrayList<String>();
-    // processMap = new HashMap<String, IRepositoryObject>();
-    //
-    // IProxyRepositoryFactory factory = DesignerPlugin.getDefault().getProxyRepositoryFactory();
-    // try {
-    // RootContainer<String, IRepositoryObject> processContainer = factory.getProcess();
-    // ContentList<String, IRepositoryObject> processAbsoluteMembers = processContainer.getAbsoluteMembers();
-    //
-    // String currentProcess = process.getLabel();
-    // for (Content<String, IRepositoryObject> object : processAbsoluteMembers.values()) {
-    // IRepositoryObject process = object.getContent();
-    // if (factory.getStatus(process) != ERepositoryStatus.DELETED && !currentProcess.equals(process.getLabel())) {
-    // String path = object.getParent().getPath().toString();
-    // String name;
-    // if (path.equals("")) { //$NON-NLS-1$
-    // name = IPath.SEPARATOR + process.getLabel();
-    // } else {
-    // name = IPath.SEPARATOR + path + IPath.SEPARATOR + process.getLabel();
-    // }
-    // processNameList.add(name);
-    // processMap.put(name, process);
-    // }
-    // }
-    // } catch (PersistenceException e) {
-    // e.printStackTrace();
-    // }
-    //
-    // List<String> tempFolderList = new ArrayList<String>();
-    // List<String> tempProcessNameList = new ArrayList<String>();
-    // tempProcessNameList.addAll(processNameList);
-    //
-    // for (String string : tempProcessNameList) {
-    // // Put jobs which in a folder into a new list.s
-    // if (string.lastIndexOf("/") != 0) {
-    // tempFolderList.add(string);
-    // processNameList.remove(string);
-    // }
-    // }
-    //
-    // sortList(processNameList);
-    // sortList(tempFolderList);
-    //
-    // // Always put the jobs which in a folder on the top of the job list
-    // tempFolderList.addAll(processNameList);
-    //
-    // processNameList = tempFolderList;
-    //
-    // for (String name : processNameList) {
-    // IRepositoryObject process = processMap.get(name);
-    // processValueList.add(process.getLabel()); //$NON-NLS-1$ //$NON-NLS-2$
-    // }
-    // String[] processTableNameList = processNameList.toArray(new String[0]);
-    // String[] processTableValueList = processValueList.toArray(new String[0]);
-    //
-    // for (int i = 0; i < elem.getElementParameters().size(); i++) {
-    // IElementParameter param = elem.getElementParameters().get(i);
-    // if (param.getName().equals(EParameterName.PROCESS_TYPE_PROCESS.getName())) {
-    // param.setListItemsDisplayName(processTableNameList);
-    // param.setListItemsValue(processTableValueList);
-    // if (elem instanceof Node) {
-    // ((Node) elem).checkAndRefreshNode();
-    // }
-    // }
-    // }
-    // }
-
-    /**
-     * Sort the element order of the inputed list.
-     * 
-     * @param compareList
-     */
-    private void sortList(List<String> compareList) {
-        Collections.sort(compareList, new Comparator<String>() {
-
-            public int compare(String str1, String str2) {
-
-                // For example: avoid job name "a_b_c" before "a_b" in the job
-                // list.
-                String newStr1 = str1.replaceAll("_", " ");
-                String newStr2 = str2.replaceAll("_", " ");
-                return newStr1.compareToIgnoreCase(newStr2);
-            }
-        });
-    }
 
     /**
      * ftang Comment method "updateContextList".
@@ -258,27 +159,9 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
             // generation in Node.setPropertyValue
             elem.setPropertyValue(EParameterName.PROCESS_TYPE_CONTEXT.getName(), contextParam.getValue());
         }
-
-        // for (int i = 0; i < elem.getElementParametersWithChildrens().size(); i++) {
-        // IElementParameter param = elem.getElementParameters().get(i);
-        // if (param.getName().equals(EParameterName.PROCESS_TYPE_CONTEXT.getName())) {
-        // param.setListItemsDisplayName(contextTableNameList);
-        // param.setListItemsValue(contextTableValueList);
-        // if (!contextValueList.contains(param.getValue())) {
-        // if (contextTableNameList.length > 0) {
-        // elem.setPropertyValue(EParameterName.PROCESS_TYPE_CONTEXT.getName(), contextTableValueList[0]);
-        // }
-        // } else {
-        // // force to store the value again to activate the code
-        // // generation in Node.setPropertyValue
-        // elem.setPropertyValue(EParameterName.PROCESS_TYPE_CONTEXT.getName(), param.getValue());
-        // }
-        // }
-        // }
-
     }
 
-    private String getRepositoryAliasName(ConnectionItem connectionItem) {
+    public String getRepositoryAliasName(ConnectionItem connectionItem) {
         ERepositoryObjectType repositoryObjectType = ERepositoryObjectType.getItemType(connectionItem);
         String aliasName = repositoryObjectType.getAlias();
         Connection connection = connectionItem.getConnection();
@@ -298,22 +181,28 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
      */
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     private void updateRepositoryList() {
+        ProgressMonitorDialog monitor = new ProgressMonitorDialog(this.getShell());
+        monitor.create();
+        monitor.open();
         IProxyRepositoryFactory factory = DesignerPlugin.getDefault().getProxyRepositoryFactory();
         tableIdAndDbTypeMap = new HashMap<String, String>();
         tableIdAndDbSchemaMap = new HashMap<String, String>();
-        List<ConnectionItem> metadataConnectionsItem = null;
         String[] repositoryTableNameList = new String[] {};
         String[] repositoryTableValueList = new String[] {};
         String[] repositoryConnectionNameList = new String[] {};
         String[] repositoryConnectionValueList = new String[] {};
         String[] repositoryQueryNameList = new String[] {};
         String[] repositoryQueryValueList = new String[] {};
+        List<IRepositoryObject> repositoryObjects;
         try {
-            metadataConnectionsItem = factory.getMetadataConnectionsItem();
+            repositoryObjects = factory.getAll(ERepositoryObjectType.METADATA);
         } catch (PersistenceException e) {
             throw new RuntimeException(e);
         }
-        if (metadataConnectionsItem != null) {
+        int total = repositoryObjects.size() + elem.getElementParameters().size();
+        monitor.getProgressMonitor().beginTask("Gathering informations from repository", total);
+        int nbDone = 0;
+        if (repositoryObjects != null && (repositoryObjects.size() != 0)) {
             repositoryTableMap.clear();
             repositoryQueryStoreMap.clear();
             repositoryConnectionItemMap.clear();
@@ -324,60 +213,114 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
             List<String> tableValuesList = new ArrayList<String>();
             List<String> queryStoreNameList = new ArrayList<String>();
             List<String> queryStoreValuesList = new ArrayList<String>();
-            for (ConnectionItem connectionItem : metadataConnectionsItem) {
+            List<String> connectionNamesList = new ArrayList<String>();
+            List<String> connectionValuesList = new ArrayList<String>();
+            IElementParameter propertyParam = elem.getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE, section);
+            String repositoryValue = null;
+
+            if (propertyParam != null) {
+                repositoryValue = propertyParam.getRepositoryValue();
+            }
+            for (IRepositoryObject curObject : repositoryObjects) {
+                ConnectionItem connectionItem = (ConnectionItem) curObject.getProperty().getItem();
                 Connection connection = connectionItem.getConnection();
-                if (!connection.isReadOnly()) {
-                    repositoryConnectionItemMap.put(connectionItem.getProperty().getId() + "", connectionItem); //$NON-NLS-1$
-                    for (Object tableObj : connection.getTables()) {
-                        org.talend.core.model.metadata.builder.connection.MetadataTable table;
+                if (connection.isReadOnly()) {
+                    continue;
+                }
 
-                        table = (org.talend.core.model.metadata.builder.connection.MetadataTable) tableObj;
+                String repositoryAliasName = getRepositoryAliasName(connectionItem);
+                repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem); //$NON-NLS-1$
+                for (Object tableObj : connection.getTables()) {
+                    org.talend.core.model.metadata.builder.connection.MetadataTable table;
 
-                        if (factory.getStatus(connectionItem) != ERepositoryStatus.DELETED) {
-                            if (!factory.isDeleted(table)) {
-                                String name = getRepositoryAliasName(connectionItem) + ":" //$NON-NLS-1$
-                                        + connectionItem.getProperty().getLabel() + " - " + table.getLabel(); //$NON-NLS-1$
-                                String value = connectionItem.getProperty().getId() + " - " + table.getLabel(); //$NON-NLS-1$
-                                IMetadataTable newTable = ConvertionHelper.convert(table);
-                                repositoryTableMap.put(value, newTable);
-                                if (connection instanceof DatabaseConnection) {
-                                    String dbType = ((DatabaseConnection) connection).getDatabaseType();
-                                    String schema = ((DatabaseConnection) connection).getSchema();
-                                    tableIdAndDbTypeMap.put(newTable.getId(), dbType);
-                                    if (schema != null && !schema.equals("")) {
-                                        tableIdAndDbSchemaMap.put(newTable.getId(), schema);
-                                    }
+                    table = (org.talend.core.model.metadata.builder.connection.MetadataTable) tableObj;
+
+                    if (factory.getStatus(connectionItem) != ERepositoryStatus.DELETED) {
+                        if (!factory.isDeleted(table)) {
+                            String name = repositoryAliasName + ":" //$NON-NLS-1$
+                                    + connectionItem.getProperty().getLabel() + " - " + table.getLabel(); //$NON-NLS-1$
+                            String value = connectionItem.getProperty().getId() + " - " + table.getLabel(); //$NON-NLS-1$
+                            IMetadataTable newTable = ConvertionHelper.convert(table);
+                            repositoryTableMap.put(value, newTable);
+                            if (connection instanceof DatabaseConnection) {
+                                String dbType = ((DatabaseConnection) connection).getDatabaseType();
+                                String schema = ((DatabaseConnection) connection).getSchema();
+                                tableIdAndDbTypeMap.put(newTable.getId(), dbType);
+                                if (schema != null && !schema.equals("")) {
+                                    tableIdAndDbSchemaMap.put(newTable.getId(), schema);
                                 }
-                                addOrderDisplayNames(tableValuesList, tableNamesList, value, name);
-                                // tableNamesList.add(name);
-                                // tableValuesList.add(value);
                             }
+                            addOrderDisplayNames(tableValuesList, tableNamesList, value, name);
+                            // tableNamesList.add(name);
+                            // tableValuesList.add(value);
                         }
                     }
                 }
+                String key = connectionItem.getProperty().getId();
+                String name = repositoryAliasName + ":" //$NON-NLS-1$
+                        + connectionItem.getProperty().getLabel();
+                if (repositoryValue != null) {
+                    if ((connection instanceof DelimitedFileConnection) && (repositoryValue.equals("DELIMITED"))) { //$NON-NLS-1$
+                        addOrderDisplayNames(connectionValuesList, connectionNamesList, key, name);
+                    }
+                    if ((connection instanceof PositionalFileConnection) && (repositoryValue.equals("POSITIONAL"))) { //$NON-NLS-1$
+                        addOrderDisplayNames(connectionValuesList, connectionNamesList, key, name);
+                    }
+                    if ((connection instanceof RegexpFileConnection) && (repositoryValue.equals("REGEX"))) { //$NON-NLS-1$
+                        addOrderDisplayNames(connectionValuesList, connectionNamesList, key, name);
+                    }
+                    if ((connection instanceof XmlFileConnection) && (repositoryValue.equals("XML"))) { //$NON-NLS-1$
+                        addOrderDisplayNames(connectionValuesList, connectionNamesList, key, name);
+                    }
+                    if ((connection instanceof GenericSchemaConnection) && (repositoryValue.equals("GENERIC"))) { //$NON-NLS-1$
+                        addOrderDisplayNames(connectionValuesList, connectionNamesList, key, name);
+                    }
+                    if ((connection instanceof LDAPSchemaConnection) && (repositoryValue.equals("LDAP"))) { //$NON-NLS-1$
+                        addOrderDisplayNames(connectionValuesList, connectionNamesList, key, name);
+                    }
+                    if ((connection instanceof WSDLSchemaConnection) && (repositoryValue.equals("WSDL"))) { //$NON-NLS-1$
+                        addOrderDisplayNames(connectionValuesList, connectionNamesList, key, name);
+                    }
+                    if ((connection instanceof DatabaseConnection) && (repositoryValue.startsWith("DATABASE"))) { //$NON-NLS-1$
+                        String currentDbType = (String) RepositoryToComponentProperty.getValue(connection, "TYPE"); //$NON-NLS-1$
+                        if (repositoryValue.contains(":")) { // database is specified //$NON-NLS-1$
+                            String neededDbType = repositoryValue.substring(repositoryValue.indexOf(":") + 1); //$NON-NLS-1$
+                            if (neededDbType.equals(currentDbType)) {
+                                addOrderDisplayNames(connectionValuesList, connectionNamesList, key, name);
+                            }
+                        } else {
+                            addOrderDisplayNames(connectionValuesList, connectionNamesList, key, name);
+                        }
+                    }
+                } else {
+                    addOrderDisplayNames(connectionValuesList, connectionNamesList, key, name);
+                }
+
                 tablesMap.put(connectionItem.getProperty().getId(), tableValuesList);
-                if (connection instanceof DatabaseConnection && !connection.isReadOnly()) {
+                if (connection instanceof DatabaseConnection) {
                     DatabaseConnection dbConnection = (DatabaseConnection) connection;
                     QueriesConnection queriesConnection = dbConnection.getQueries();
                     if (queriesConnection != null) {
                         List<Query> qs = queriesConnection.getQuery();
                         for (Query query : qs) {
-                            String name = getRepositoryAliasName(connectionItem) + ":" //$NON-NLS-1$
+                            name = repositoryAliasName + ":" //$NON-NLS-1$
                                     + connectionItem.getProperty().getLabel() + " - " + query.getLabel(); //$NON-NLS-1$
                             String value = connectionItem.getProperty().getId() + " - " + query.getLabel(); //$NON-NLS-1$
                             repositoryQueryStoreMap.put(value, query);
                             addOrderDisplayNames(queryStoreValuesList, queryStoreNameList, value, name);
-                            // queryStoreNameList.add(name);
-                            // queryStoreValuesList.add(value);
                         }
                     }
                 }
                 queriesMap.put(connectionItem.getProperty().getId(), queryStoreValuesList);
+                nbDone++;
+                monitor.getProgressMonitor().worked(nbDone);
             }
             repositoryTableNameList = tableNamesList.toArray(new String[0]);
             repositoryTableValueList = tableValuesList.toArray(new String[0]);
             repositoryQueryNameList = queryStoreNameList.toArray(new String[0]);
             repositoryQueryValueList = queryStoreValuesList.toArray(new String[0]);
+            repositoryConnectionNameList = connectionNamesList.toArray(new String[0]);
+            repositoryConnectionValueList = connectionValuesList.toArray(new String[0]);
         }
         initMaps();
         for (int i = 0; i < elem.getElementParameters().size(); i++) {
@@ -388,13 +331,15 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
                 repositoryType.setListItemsDisplayName(repositoryTableNameList);
                 repositoryType.setListItemsValue(repositoryTableValueList);
                 if (!repositoryTableMap.keySet().contains(repositoryType.getValue())) {
-                    List<String> list2 = tablesMap.get(elem.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName()));
-                    boolean isNeeded = list2 != null && !list2.isEmpty();
-                    if (repositoryTableNameList.length > 0 && repositoryConnectionValueList.length > 0 && isNeeded) {
-                        repositoryType.setValue(getDefaultRepository(param, true, repositoryConnectionValueList[0]));
-                        // elem.setPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName(),
-                        // getDefaultRepository(
-                        // true, repositoryConnectionValueList[0]));
+                    IElementParameter repositoryPropertyType = elem.getElementParameterFromField(
+                            EParameterFieldType.PROPERTY_TYPE, param.getCategory());
+                    if (repositoryPropertyType != null) {
+                        List<String> list2 = tablesMap.get(repositoryPropertyType.getChildParameters().get(
+                                EParameterName.REPOSITORY_PROPERTY_TYPE.getName()).getValue());
+                        boolean isNeeded = list2 != null && !list2.isEmpty();
+                        if (repositoryTableNameList.length > 0 && repositoryConnectionValueList.length > 0 && isNeeded) {
+                            repositoryType.setValue(getDefaultRepository(param, true, repositoryConnectionValueList[0]));
+                        }
                     }
                 }
             }
@@ -404,109 +349,38 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
                 repositoryType.setListItemsDisplayName(repositoryQueryNameList);
                 repositoryType.setListItemsValue(repositoryQueryValueList);
                 if (!repositoryQueryStoreMap.keySet().contains(repositoryType.getValue())) {
-                    List<String> list2 = queriesMap.get(elem.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName()));
-                    boolean isNeeded = list2 != null && !list2.isEmpty();
-                    if (repositoryQueryNameList.length > 0 && repositoryConnectionValueList.length > 0 && isNeeded) {
-                        repositoryType.setValue(getDefaultRepository(elem
-                                .getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE), false,
-                                repositoryConnectionValueList[0]));
+                    IElementParameter repositoryPropertyType = elem.getElementParameterFromField(
+                            EParameterFieldType.PROPERTY_TYPE, param.getCategory());
+                    if (repositoryPropertyType != null) {
+                        List<String> list2 = queriesMap.get(repositoryPropertyType.getChildParameters().get(
+                                EParameterName.REPOSITORY_PROPERTY_TYPE.getName()).getValue());
+                        boolean isNeeded = list2 != null && !list2.isEmpty();
+                        if (repositoryQueryNameList.length > 0 && repositoryConnectionValueList.length > 0 && isNeeded) {
+                            repositoryType.setValue(getDefaultRepository(elem
+                                    .getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE), false,
+                                    repositoryConnectionValueList[0]));
+                        }
                     }
+
                 }
             }
             if (param.getField().equals(EParameterFieldType.PROPERTY_TYPE)) {
                 IElementParameter repositoryType = param.getChildParameters().get(
                         EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
-                List<String> nameList = new ArrayList<String>();
-                List<String> valueList = new ArrayList<String>();
-                updateRepositoryListExtra(repositoryType, nameList, valueList, false);
-                repositoryConnectionNameList = nameList.toArray(new String[0]);
-                repositoryConnectionValueList = valueList.toArray(new String[0]);
-            }
-            // // for job settings extra (feature 2710)
-            // if (param.getName().equals(extraRepositoryPropertyTypeName)) {
-            // List<String> nameList = new ArrayList<String>();
-            // List<String> valueList = new ArrayList<String>();
-            // updateRepositoryListExtra(param, nameList, valueList, true);
-            // repositoryConnectionNameList = nameList.toArray(new String[0]);
-            // repositoryConnectionValueList = valueList.toArray(new String[0]);
-            // }
-        }
-        updateQuery();
-    }
 
-    /**
-     * for job settings extra (feature 2710).
-     * 
-     */
-    private void updateRepositoryListExtra(IElementParameter param, List<String> repositoryConnectionNameList,
-            List<String> repositoryConnectionValueList, boolean extra) {
-
-        String repositoryValue = param.getParentParameter().getRepositoryValue();
-        if (repositoryValue != null) {
-            List<String> connectionNamesList = new ArrayList<String>();
-            List<String> connectionValuesList = new ArrayList<String>();
-            for (String key : repositoryConnectionItemMap.keySet()) {
-                ConnectionItem connectionItem = repositoryConnectionItemMap.get(key);
-                Connection connection = connectionItem.getConnection();
-                String name = getRepositoryAliasName(connectionItem) + ":" //$NON-NLS-1$
-                        + connectionItem.getProperty().getLabel();
-                if ((connection instanceof DelimitedFileConnection) && (repositoryValue.equals("DELIMITED"))) { //$NON-NLS-1$
-                    addOrderDisplayNames(connectionValuesList, connectionNamesList, key, name);
-                }
-                if ((connection instanceof PositionalFileConnection) && (repositoryValue.equals("POSITIONAL"))) { //$NON-NLS-1$
-                    addOrderDisplayNames(connectionValuesList, connectionNamesList, key, name);
-                }
-                if ((connection instanceof RegexpFileConnection) && (repositoryValue.equals("REGEX"))) { //$NON-NLS-1$
-                    addOrderDisplayNames(connectionValuesList, connectionNamesList, key, name);
-                }
-                if ((connection instanceof XmlFileConnection) && (repositoryValue.equals("XML"))) { //$NON-NLS-1$
-                    addOrderDisplayNames(connectionValuesList, connectionNamesList, key, name);
-                }
-                if ((connection instanceof GenericSchemaConnection) && (repositoryValue.equals("GENERIC"))) { //$NON-NLS-1$
-                    addOrderDisplayNames(connectionValuesList, connectionNamesList, key, name);
-                }
-                if ((connection instanceof LDAPSchemaConnection) && (repositoryValue.equals("LDAP"))) { //$NON-NLS-1$
-                    addOrderDisplayNames(connectionValuesList, connectionNamesList, key, name);
-                }
-                if ((connection instanceof WSDLSchemaConnection) && (repositoryValue.equals("WSDL"))) { //$NON-NLS-1$
-                    addOrderDisplayNames(connectionValuesList, connectionNamesList, key, name);
-                }
-                if ((connection instanceof DatabaseConnection) && (repositoryValue.startsWith("DATABASE"))) { //$NON-NLS-1$
-                    String currentDbType = (String) RepositoryToComponentProperty.getValue(connection, "TYPE"); //$NON-NLS-1$
-                    if (repositoryValue.contains(":")) { // database
-                        // is
-                        // specified
-                        // //$NON-NLS-1$
-                        String neededDbType = repositoryValue.substring(repositoryValue.indexOf(":") + 1); //$NON-NLS-1$
-                        if (neededDbType.equals(currentDbType)) {
-                            addOrderDisplayNames(connectionValuesList, connectionNamesList, key, name);
-                        }
-                    } else {
-                        addOrderDisplayNames(connectionValuesList, connectionNamesList, key, name);
+                repositoryType.setListItemsDisplayName(repositoryConnectionNameList);
+                repositoryType.setListItemsValue(repositoryConnectionValueList);
+                if (!repositoryConnectionItemMap.keySet().contains(repositoryType.getValue())) {
+                    if (repositoryConnectionNameList.length > 0) {
+                        repositoryType.setValue(repositoryConnectionValueList[0]);
                     }
                 }
-            }
-
-            repositoryConnectionNameList.addAll(connectionNamesList);
-            repositoryConnectionValueList.addAll(connectionValuesList);
-        } else {
-            List<String> connectionValuesList = new ArrayList<String>();
-            List<String> connectionStringList = new ArrayList<String>();
-            for (String key : repositoryConnectionItemMap.keySet()) {
-                ConnectionItem connectionItem = repositoryConnectionItemMap.get(key);
-                String name = connectionItem.getProperty().getLabel();
-                addOrderDisplayNames(connectionValuesList, connectionStringList, key, name);
-            }
-            repositoryConnectionNameList.addAll(connectionStringList);
-            repositoryConnectionValueList.addAll(connectionValuesList);
-        }
-        param.setListItemsDisplayName(repositoryConnectionNameList.toArray(new String[0]));
-        param.setListItemsValue(repositoryConnectionValueList.toArray(new String[0]));
-        if (!repositoryConnectionItemMap.keySet().contains(param.getValue())) {
-            if (repositoryConnectionNameList.size() > 0) {
-                param.setValue(repositoryConnectionValueList.get(0));
+                nbDone++;
+                monitor.getProgressMonitor().worked(nbDone);
             }
         }
+        monitor.getProgressMonitor().done();
+        monitor.close();
     }
 
     /**
@@ -590,8 +464,6 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
 
         Map<String, Integer> groupPosition = new HashMap<String, Integer>();
         List<? extends IElementParameter> listParam = elem.getElementParametersWithChildrens();
-
-        // updateMainParameters();
 
         if (!forceRedraw) {
             boolean needRedraw = isNeedRedraw();
@@ -1263,9 +1135,6 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
      * @return the repositoryQueryStoreMap
      */
     public Map<String, Query> getRepositoryQueryStoreMap() {
-        if (this.repositoryQueryStoreMap.keySet().isEmpty()) {
-            updateRepositoryList();
-        }
         return repositoryQueryStoreMap;
     }
 
@@ -1281,32 +1150,6 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
         } else {
             return null;
         }
-    }
-
-    @SuppressWarnings("unchecked")
-    private void updateQuery() {
-        Object propertyValue = elem.getPropertyValue(EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName());
-        if (propertyValue == null || !(propertyValue instanceof String) || "".equals(propertyValue)
-                || elem.getPropertyValue(EParameterName.QUERYSTORE_TYPE.getName()).equals(EmfComponent.BUILTIN)) {
-            return;
-        }
-        if (repositoryQueryStoreMap.containsKey(propertyValue)) {
-            Query query = repositoryQueryStoreMap.get(propertyValue);
-            for (IElementParameter param : (List<IElementParameter>) elem.getElementParameters()) {
-                if (param.getField() == EParameterFieldType.MEMO_SQL) {
-                    elem.setPropertyValue(param.getName(), convertSQL(query.getValue()));
-                    param.setRepositoryValueUsed(true);
-                }
-            }
-        }
-    }
-
-    private String convertSQL(String sql) {
-
-        if (sql.startsWith("'") || sql.startsWith("\"")) { //$NON-NLS-1$
-            return sql;
-        }
-        return TalendTextUtils.addQuotes(sql); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /**

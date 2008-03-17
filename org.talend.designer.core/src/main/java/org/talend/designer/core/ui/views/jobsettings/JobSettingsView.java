@@ -36,8 +36,9 @@ import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.editor.process.Process;
-import org.talend.designer.core.ui.views.properties.DynamicComposite;
+import org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty;
 import org.talend.designer.core.ui.views.properties.IJobSettingsView;
+import org.talend.designer.core.ui.views.properties.MultipleThreadDynamicComposite;
 import org.talend.designer.core.ui.views.statsandlogs.StatsAndLogsComposite;
 
 /**
@@ -100,10 +101,10 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView {
 
     private void createTabComposite(Composite parent, Element element, EComponentCategory category) {
         final int style = SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS;
-        DynamicComposite dynamicComposite = null;
+        IDynamicProperty dynamicComposite = null;
 
         if (EComponentCategory.EXTRA.equals(category)) {
-            dynamicComposite = new DynamicComposite(parent, style, category, element, true);
+            dynamicComposite = new MultipleThreadDynamicComposite(parent, style, category, element, true);
 
         } else if (EComponentCategory.STATSANDLOGS.equals(category)) {
             dynamicComposite = new StatsAndLogsComposite(parent, style, category, element);

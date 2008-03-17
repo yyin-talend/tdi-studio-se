@@ -33,7 +33,7 @@ import org.talend.core.ui.metadata.dialog.MetadataDialog;
 import org.talend.core.ui.metadata.editor.MetadataTableEditorView;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController;
-import org.talend.designer.core.ui.views.properties.DynamicComposite;
+import org.talend.designer.core.ui.views.properties.MultipleThreadDynamicComposite;
 
 /**
  * DOC yzhang class global comment. Detailled comment <br/>
@@ -41,7 +41,7 @@ import org.talend.designer.core.ui.views.properties.DynamicComposite;
  * $Id: talend.epf 1 2006-09-29 17:06:40Z nrousseau $
  * 
  */
-public class MainConnectionComposite extends DynamicComposite {
+public class MainConnectionComposite extends MultipleThreadDynamicComposite {
 
     private MetadataTableEditorView metadataTableEditorView;
 
@@ -68,7 +68,7 @@ public class MainConnectionComposite extends DynamicComposite {
                             && (cur.getContext().equals(((Connection) elem).getConnectorName()))) {
                         AbstractElementPropertySectionController contorller = generator.getController(
                                 EParameterFieldType.SCHEMA_TYPE, this);
-                        contorller.createControl(composite, cur, 0, 1, 0, null);
+                        contorller.createControl(composite, cur, 1, 1, 0, null);
                     }
                 }
             }

@@ -325,9 +325,6 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                 processor.setSyntaxCheckableEditor((ISyntaxCheckableEditor) codeEditor);
             }
         }
-        // if (codeEditor instanceof TalendJavaEditor) {
-        // ((TalendJavaEditor) codeEditor).addEditorPart(this);
-        // }
 
         try {
             int index = addPage(codeEditor, createFileEditorInput());

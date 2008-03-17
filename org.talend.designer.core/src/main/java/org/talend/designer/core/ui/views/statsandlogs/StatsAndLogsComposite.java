@@ -30,7 +30,7 @@ import org.talend.core.model.process.IProcess;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
-import org.talend.designer.core.ui.views.properties.DynamicComposite;
+import org.talend.designer.core.ui.views.properties.MultipleThreadDynamicComposite;
 
 /**
  * ftang class global comment. Detailled comment <br/>
@@ -38,7 +38,7 @@ import org.talend.designer.core.ui.views.properties.DynamicComposite;
  * $Id: talend.epf 1 2006-09-29 17:06:40 +0000 (ææäº, 29 ä¹æ 2006) nrousseau $
  * 
  */
-public class StatsAndLogsComposite extends DynamicComposite {
+public class StatsAndLogsComposite extends MultipleThreadDynamicComposite {
 
     Button reloadBtn;
 

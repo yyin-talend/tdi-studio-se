@@ -16,6 +16,8 @@ import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.runtime.Assert;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.fieldassist.DecoratedField;
 import org.eclipse.jface.fieldassist.FieldDecoration;
@@ -34,13 +36,26 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
+import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.CorePlugin;
+import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
+import org.talend.core.model.metadata.builder.connection.QueriesConnection;
+import org.talend.core.model.metadata.builder.connection.Query;
+import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.properties.DatabaseConnectionItem;
+import org.talend.core.model.properties.Item;
+import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.designer.core.DesignerPlugin;
+import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.controllers.creator.SelectAllTextControlCreator;
 import org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty;
+import org.talend.repository.model.IProxyRepositoryFactory;
 
 /**
  * DOC nrousseau class global comment. Detailled comment
@@ -246,10 +261,166 @@ public abstract class AbstractRepositoryController extends AbstractElementProper
         return initialSize.y + ITabbedPropertyConstants.VSPACE;
     }
 
+    private ConnectionItem lastItemUsed;
+
+    private void fastRepositoryUpdateProperty() {
+        IElementParameter param = elem.getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE, dynamicProperty
+                .getSection());
+
+        if (param == null) {
+            return;
+        }
+
+        param = param.getChildParameters().get(EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
+
+        if (param != null && param.getValue() != null) {
+            IProxyRepositoryFactory factory = DesignerPlugin.getDefault().getProxyRepositoryFactory();
+            String linkedRepository = (String) param.getValue();
+            // value stored is the id, so we can get this item directly
+            Item item;
+            try {
+                IRepositoryObject object = factory.getLastVersion(linkedRepository);
+                if (object == null) {
+                    return;
+                }
+                item = object.getProperty().getItem();
+                Assert.isTrue(item instanceof ConnectionItem);
+                lastItemUsed = (ConnectionItem) item;
+            } catch (PersistenceException e) {
+                ExceptionHandler.process(e);
+            }
+            String displayName = dynamicProperty.getRepositoryAliasName(lastItemUsed) + ":" //$NON-NLS-1$
+                    + lastItemUsed.getProperty().getLabel();
+
+            param.setListItemsDisplayName(new String[] { displayName });
+            param.setListItemsValue(new String[] { (String) param.getValue() });
+        }
+
+    }
+
+    private void fastRepositoryUpdateSchema(IElementParameter schemaParam) {
+        IElementParameter param = schemaParam.getChildParameters().get(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
+        if (param != null && param.getValue() != null) {
+            String[] names = ((String) param.getValue()).split(" - ");
+            if (names.length != 2) {
+                return;
+            }
+            String linkedRepository = names[0];
+            if (lastItemUsed != null) {
+                if (!linkedRepository.equals(lastItemUsed.getProperty().getId())) {
+                    lastItemUsed = null;
+                }
+            }
+            if (lastItemUsed == null) {
+                IProxyRepositoryFactory factory = DesignerPlugin.getDefault().getProxyRepositoryFactory();
+                Item item;
+                try {
+                    IRepositoryObject object = factory.getLastVersion(linkedRepository);
+                    if (object == null) {
+                        return;
+                    }
+                    item = object.getProperty().getItem();
+                    Assert.isTrue(item instanceof ConnectionItem);
+                    lastItemUsed = (ConnectionItem) item;
+                } catch (PersistenceException e) {
+                    ExceptionHandler.process(e);
+                }
+            }
+            String tableName = names[1];
+            // EList<MetadataTable> tableList = lastItemUsed.getConnection().getTables();
+            // for (MetadataTable table )
+
+            String displayName = dynamicProperty.getRepositoryAliasName(lastItemUsed) + ":" //$NON-NLS-1$
+                    + lastItemUsed.getProperty().getLabel() + " - " + tableName; //$NON-NLS-1$
+
+            param.setListItemsDisplayName(new String[] { displayName });
+            param.setListItemsValue(new String[] { (String) param.getValue() });
+        }
+    }
+
+    private void fastRepositoryUpdateQuery() {
+        IElementParameter param = elem.getElementParameterFromField(EParameterFieldType.QUERYSTORE_TYPE, dynamicProperty
+                .getSection());
+        if (param == null) {
+            return;
+        }
+        param = param.getChildParameters().get(EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName());
+        if (param != null && param.getValue() != null) {
+            String[] names = ((String) param.getValue()).split(" - ");
+            if (names.length != 2) {
+                return;
+            }
+            String linkedRepository = names[0];
+            String queryName = names[1];
+            if (lastItemUsed != null) {
+                if (!linkedRepository.equals(lastItemUsed.getProperty().getId())) {
+                    lastItemUsed = null;
+                }
+            }
+            if (lastItemUsed == null) {
+                IProxyRepositoryFactory factory = DesignerPlugin.getDefault().getProxyRepositoryFactory();
+                Item item;
+                try {
+                    IRepositoryObject object = factory.getLastVersion(linkedRepository);
+                    if (object == null) {
+                        return;
+                    }
+                    item = object.getProperty().getItem();
+                    lastItemUsed = (ConnectionItem) item;
+                } catch (PersistenceException e) {
+                    ExceptionHandler.process(e);
+                }
+            }
+            Assert.isTrue(lastItemUsed instanceof DatabaseConnectionItem);
+            QueriesConnection queriesConnection = ((DatabaseConnection) lastItemUsed.getConnection()).getQueries();
+            EList<Query> queries = queriesConnection.getQuery();
+
+            String repositoryAliasName = dynamicProperty.getRepositoryAliasName(lastItemUsed);
+            for (Query currentQuery : queries) {
+                if (currentQuery.getLabel().equals(queryName)) {
+                    String displayName = repositoryAliasName + ":" //$NON-NLS-1$
+                            + lastItemUsed.getProperty().getLabel() + " - " + currentQuery.getLabel(); //$NON-NLS-1$
+
+                    param.setListItemsDisplayName(new String[] { displayName });
+                    param.setListItemsValue(new String[] { (String) param.getValue() });
+
+                    dynamicProperty.getRepositoryQueryStoreMap().clear();
+                    dynamicProperty.getRepositoryQueryStoreMap().put((String) param.getValue(), currentQuery);
+                }
+            }
+        }
+    }
+
+    private void fastInitializeRepositoryNames() {
+        lastItemUsed = null;
+
+        fastRepositoryUpdateProperty();
+        for (IElementParameter curParam : elem.getElementParameters()) {
+            if (curParam.getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
+                String value = (String) curParam.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName()).getValue();
+                if (curParam.isShow(elem.getElementParameters())) {
+                    if (value.equals(EmfComponent.REPOSITORY)) {
+                        // load repository connections only if needed
+                        fastRepositoryUpdateSchema(curParam);
+                    }
+                }
+            }
+        }
+        fastRepositoryUpdateQuery();
+    }
+
     protected String getDisplayNameFromValue(IElementParameter param, String value) {
         // to load informations from repository only if needed.
-        dynamicProperty.getRepositoryConnectionItemMap();
-        
+
+        if (param.getListItemsDisplayName().length == 0) {
+
+            fastInitializeRepositoryNames();
+            // if even after the initialize there is nothing, just return an empty string
+            if (param.getListItemsDisplayName().length == 0) {
+                return "";
+            }
+        }
+
         int index = param.getIndexOfItemFromList(value);
         return param.getListItemsDisplayName()[index];
     }

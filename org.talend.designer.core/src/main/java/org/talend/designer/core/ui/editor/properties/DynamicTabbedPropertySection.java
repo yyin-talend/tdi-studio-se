@@ -97,6 +97,7 @@ import org.talend.repository.model.IProxyRepositoryFactory;
  * 
  * $Id$
  * 
+ * @deprecated use MultipleThreadDynamicComposite instead.
  */
 public class DynamicTabbedPropertySection extends AbstractPropertySection implements IDynamicProperty {
 
@@ -339,7 +340,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
 
     }
 
-    private String getRepositoryAliasName(ConnectionItem connectionItem) {
+    public String getRepositoryAliasName(ConnectionItem connectionItem) {
         ERepositoryObjectType repositoryObjectType = ERepositoryObjectType.getItemType(connectionItem);
         String aliasName = repositoryObjectType.getAlias();
         Connection connection = connectionItem.getConnection();

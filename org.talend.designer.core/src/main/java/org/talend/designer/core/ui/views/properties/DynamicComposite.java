@@ -90,8 +90,9 @@ import org.talend.repository.ui.views.RepositoryContentProvider;
 /**
  * yzhang class global comment. Detailled comment <br/>
  * 
- * $Id: DynamicTabbedPropertySection.java 6579 2007-10-26 10:33:01Z ftang $
+ * $Id: DynamicComposite.java 6579 2007-10-26 10:33:01Z ftang $
  * 
+ * @deprecated use MultipleThreadDynamicComposite instead.
  */
 public class DynamicComposite extends ScrolledComposite implements IDynamicProperty {
 
@@ -285,7 +286,7 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
 
     }
 
-    private String getRepositoryAliasName(ConnectionItem connectionItem) {
+    public String getRepositoryAliasName(ConnectionItem connectionItem) {
         ERepositoryObjectType repositoryObjectType = ERepositoryObjectType.getItemType(connectionItem);
         String aliasName = repositoryObjectType.getAlias();
         Connection connection = connectionItem.getConnection();
@@ -397,11 +398,13 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
                 if (!repositoryTableMap.keySet().contains(repositoryType.getValue())) {
                     IElementParameter repositoryPropertyType = elem.getElementParameterFromField(
                             EParameterFieldType.PROPERTY_TYPE, param.getCategory());
-                    List<String> list2 = tablesMap.get(repositoryPropertyType.getChildParameters().get(
-                            EParameterName.REPOSITORY_PROPERTY_TYPE.getName()).getValue());
-                    boolean isNeeded = list2 != null && !list2.isEmpty();
-                    if (repositoryTableNameList.length > 0 && repositoryConnectionValueList.length > 0 && isNeeded) {
-                        repositoryType.setValue(getDefaultRepository(param, true, repositoryConnectionValueList[0]));
+                    if (repositoryPropertyType != null) {
+                        List<String> list2 = tablesMap.get(repositoryPropertyType.getChildParameters().get(
+                                EParameterName.REPOSITORY_PROPERTY_TYPE.getName()).getValue());
+                        boolean isNeeded = list2 != null && !list2.isEmpty();
+                        if (repositoryTableNameList.length > 0 && repositoryConnectionValueList.length > 0 && isNeeded) {
+                            repositoryType.setValue(getDefaultRepository(param, true, repositoryConnectionValueList[0]));
+                        }
                     }
                 }
             }
@@ -413,13 +416,15 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
                 if (!repositoryQueryStoreMap.keySet().contains(repositoryType.getValue())) {
                     IElementParameter repositoryPropertyType = elem.getElementParameterFromField(
                             EParameterFieldType.PROPERTY_TYPE, param.getCategory());
-                    List<String> list2 = queriesMap.get(repositoryPropertyType.getChildParameters().get(
-                            EParameterName.REPOSITORY_PROPERTY_TYPE.getName()).getValue());
-                    boolean isNeeded = list2 != null && !list2.isEmpty();
-                    if (repositoryQueryNameList.length > 0 && repositoryConnectionValueList.length > 0 && isNeeded) {
-                        repositoryType.setValue(getDefaultRepository(elem
-                                .getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE), false,
-                                repositoryConnectionValueList[0]));
+                    if (repositoryPropertyType != null) {
+                        List<String> list2 = queriesMap.get(repositoryPropertyType.getChildParameters().get(
+                                EParameterName.REPOSITORY_PROPERTY_TYPE.getName()).getValue());
+                        boolean isNeeded = list2 != null && !list2.isEmpty();
+                        if (repositoryQueryNameList.length > 0 && repositoryConnectionValueList.length > 0 && isNeeded) {
+                            repositoryType.setValue(getDefaultRepository(elem
+                                    .getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE), false,
+                                    repositoryConnectionValueList[0]));
+                        }
                     }
                 }
             }
@@ -433,7 +438,6 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
                 repositoryConnectionValueList = valueList.toArray(new String[0]);
             }
         }
-        // updateQuery();
     }
 
     /**

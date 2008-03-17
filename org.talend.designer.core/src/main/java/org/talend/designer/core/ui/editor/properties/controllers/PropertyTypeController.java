@@ -20,12 +20,13 @@ import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.widgets.Button;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.builder.connection.Connection;
+import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.designer.core.model.components.EParameterName;
+import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.editor.cmd.ChangeValuesFromRepository;
-import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty;
 import org.talend.repository.ui.dialog.RepositoryReviewDialog;
 
@@ -108,47 +109,37 @@ public class PropertyTypeController extends AbstractRepositoryController {
         if (value.equals(param.getValue())) {
             return null;
         }
-        Map<String, IMetadataTable> repositoryTableMap = dynamicProperty.getRepositoryTableMap();
-        Map<String, ConnectionItem> repositoryConnectionItemMap = dynamicProperty.getRepositoryConnectionItemMap();
-        Map<String, List<String>> tablesmap = dynamicProperty.getTablesMap();
-        Map<String, List<String>> queriesmap = dynamicProperty.getQueriesMap();
+        Map<String, IMetadataTable> repositoryTableMap = null;
+        Map<String, ConnectionItem> repositoryConnectionItemMap = null;
+        Map<String, List<String>> tablesMap = null;
+        Map<String, List<String>> queriesMap = null;
+        Map<String, Query> queryStoreMap = null;
 
-        // if (name.equals(EParameterName.REPOSITORY_PROPERTY_TYPE.getName())) {
-        // if (repositoryConnectionItemMap.containsKey(value)) {
-        // repositoryConnection = repositoryConnectionItemMap.get(value).getConnection();
-        // } else {
-        // repositoryConnection = null;
-        // }
-        //
-        // if (repositoryConnection != null) {
-        // ChangeValuesFromRepository changeValuesFromRepository = new ChangeValuesFromRepository(elem,
-        // repositoryConnection, name, value);
-        // changeValuesFromRepository.setMaps(tablesmap, queriesmap, repositoryTableMap);
-        // return changeValuesFromRepository;
-        // }
-        // } else if (name.equals(EParameterName.PROPERTY_TYPE.getName())) {
-        IElementParameter repositoryParam = param.getParentParameter().getChildParameters().get(
-                EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
-        String connectionSelected = (String) repositoryParam.getValue();
+        if (value.equals(EmfComponent.REPOSITORY)) {
+            repositoryTableMap = dynamicProperty.getRepositoryTableMap();
+            repositoryConnectionItemMap = dynamicProperty.getRepositoryConnectionItemMap();
+            tablesMap = dynamicProperty.getTablesMap();
+            queriesMap = dynamicProperty.getQueriesMap();
+            queryStoreMap = dynamicProperty.getRepositoryQueryStoreMap();
 
-        if (repositoryConnectionItemMap.containsKey(connectionSelected)) {
-            repositoryConnection = (org.talend.core.model.metadata.builder.connection.Connection) repositoryConnectionItemMap
-                    .get(connectionSelected).getConnection();
-        } else {
-            repositoryConnection = null;
+            IElementParameter repositoryParam = param.getParentParameter().getChildParameters().get(
+                    EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
+            String connectionSelected = (String) repositoryParam.getValue();
+
+            if (repositoryConnectionItemMap.containsKey(connectionSelected)) {
+                repositoryConnection = (org.talend.core.model.metadata.builder.connection.Connection) repositoryConnectionItemMap
+                        .get(connectionSelected).getConnection();
+            } else {
+                repositoryConnection = null;
+            }
         }
 
-        if (repositoryConnection != null) {
-            ChangeValuesFromRepository changeValuesFromRepository = new ChangeValuesFromRepository(elem, repositoryConnection,
-                    paramName, value);
+        ChangeValuesFromRepository changeValuesFromRepository = new ChangeValuesFromRepository(elem, repositoryConnection,
+                paramName, value);
 
-            changeValuesFromRepository.setMaps(tablesmap, queriesmap, repositoryTableMap, dynamicProperty
-                    .getRepositoryQueryStoreMap());
-            return changeValuesFromRepository;
-        } else {
-            return new PropertyChangeCommand(elem, paramName, value);
-        }
-        // }
+        changeValuesFromRepository.setMaps(tablesMap, queriesMap, repositoryTableMap, queryStoreMap);
+        return changeValuesFromRepository;
+
     }
 
     /*

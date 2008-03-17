@@ -59,4 +59,6 @@ public interface IDynamicProperty {
     public Map<String, String> getTableIdAndDbSchemaMap();
 
     public void refresh();
+
+    public String getRepositoryAliasName(ConnectionItem connectionItem);
 }
