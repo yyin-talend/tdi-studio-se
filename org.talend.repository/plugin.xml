@@ -713,6 +713,13 @@
             id="org.talend.repository.migration.ReplaceSpaceCharForItemNameMigrationTask"
             name="Replace space character for repository items name">
       </projecttask>
+      <projecttask
+            beforeLogon="false"
+            class="org.talend.repository.model.migration.ReplaceJavaKeywordsNameForContextMigrationTask"
+            description="Replace the context variables name with java keywords.(only for JAVA)"
+            id="org.talend.repository.migration.ReplaceJavaKeywordsNameForContext"
+            name="Replace the context variables name">
+      </projecttask>
    </extension>
    <extension
          point="org.talend.core.librariesNeeded">
