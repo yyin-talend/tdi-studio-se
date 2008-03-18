@@ -44,6 +44,7 @@ imports="
     List<Map<String, String>> contextParams = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__CONTEXTPARAMS__");
     String process = ElementParameterParser.getValue(node,"__PROCESS_TYPE_PROCESS__");
     String context = ElementParameterParser.getValue(node,"__PROCESS_TYPE_CONTEXT__");
+    String version = ElementParameterParser.getValue(node,"__PROCESS_TYPE_VERSION__");
     String[] codeOptions = new String[] {"\"--father_pid=\"+pid", "\"--root_pid=\"+rootPid"};
     String[] commandLineWindows = new String[] {"<command>"};
     String[] commandLineUnix = new String[] {"<command>"};
@@ -55,7 +56,7 @@ imports="
         //commandLineUnix = ProcessorUtilities.getCommandLine("linux", true, process, context,org.talend.designer.runprocess.IProcessor.NO_STATISTICS,org.talend.designer.runprocess.IProcessor.NO_TRACES, codeOptions);
         // for current OS
        	//commandLine = ProcessorUtilities.getCommandLine(true, process, context,org.talend.designer.runprocess.IProcessor.NO_STATISTICS,org.talend.designer.runprocess.IProcessor.NO_TRACES, codeOptions);
-    	commandLine = ProcessorUtilities.getMainCommand(process, context,org.talend.designer.runprocess.IProcessor.NO_STATISTICS,org.talend.designer.runprocess.IProcessor.NO_TRACES, codeOptions);
+    	commandLine = ProcessorUtilities.getMainCommand(process,version, context,org.talend.designer.runprocess.IProcessor.NO_STATISTICS,org.talend.designer.runprocess.IProcessor.NO_TRACES, codeOptions);
     } catch (ProcessorException e) {
     }
     
