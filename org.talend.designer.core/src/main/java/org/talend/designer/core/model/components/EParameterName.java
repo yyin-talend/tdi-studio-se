@@ -60,6 +60,7 @@ public enum EParameterName {
     UPDATE_COMPONENTS("Update components"), //$NON-NLS-1$  Hidden parameter so no translation needed
     PROCESS_TYPE(Messages.getString("EParameterName.generateCode")), //$NON-NLS-1$
     PROCESS_TYPE_PROCESS(Messages.getString("EParameterName.process")), //$NON-NLS-1$
+    PROCESS_TYPE_VERSION(Messages.getString("EParameterName.Version")),
     PROCESS_TYPE_CONTEXT(Messages.getString("EParameterName.context")), //$NON-NLS-1$
     PREVIEW(Messages.getString("EParameterName.preview")), //$NON-NLS-1$
     COLUMN_LIST(Messages.getString("EParameterName.columnList")), //$NON-NLS-1$

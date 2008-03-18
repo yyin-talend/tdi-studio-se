@@ -858,6 +858,21 @@ public class EmfComponent implements IComponent {
 
             newParam = new ElementParameter(node);
             newParam.setCategory(EComponentCategory.BASIC);
+            newParam.setName(EParameterName.PROCESS_TYPE_VERSION.getName());
+            newParam.setDisplayName(EParameterName.PROCESS_TYPE_VERSION.getDisplayName());
+            newParam.setListItemsDisplayName(new String[] {});
+            newParam.setListItemsValue(new String[] {});
+            newParam.setValue(""); //$NON-NLS-1$
+            newParam.setNumRow(xmlParam.getNUMROW());
+            newParam.setField(EParameterFieldType.TECHNICAL);
+            if (xmlParam.isSetSHOW()) {
+                newParam.setShow(xmlParam.isSHOW());
+            }
+            newParam.setRequired(true);
+            newParam.setParentParameter(parentParam);
+
+            newParam = new ElementParameter(node);
+            newParam.setCategory(EComponentCategory.BASIC);
             newParam.setName(EParameterName.PROCESS_TYPE_CONTEXT.getName());
             newParam.setDisplayName(EParameterName.PROCESS_TYPE_CONTEXT.getDisplayName());
             newParam.setListItemsDisplayName(new String[] {});

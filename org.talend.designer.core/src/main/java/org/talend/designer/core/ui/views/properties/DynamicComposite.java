@@ -41,6 +41,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.threading.ExecutionLimiter;
 import org.talend.commons.utils.time.TimeMeasure;
@@ -83,6 +84,7 @@ import org.talend.designer.core.ui.editor.properties.controllers.generator.IDyna
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.views.IRepositoryView;
 import org.talend.repository.ui.views.RepositoryContentProvider;
@@ -265,6 +267,74 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
             // force to store the value again to activate the code
             // generation in Node.setPropertyValue
             elem.setPropertyValue(EParameterName.PROCESS_TYPE_CONTEXT.getName(), contextParam.getValue());
+        }
+
+        // for (int i = 0; i < elem.getElementParametersWithChildrens().size(); i++) {
+        // IElementParameter param = elem.getElementParameters().get(i);
+        // if (param.getName().equals(EParameterName.PROCESS_TYPE_CONTEXT.getName())) {
+        // param.setListItemsDisplayName(contextTableNameList);
+        // param.setListItemsValue(contextTableValueList);
+        // if (!contextValueList.contains(param.getValue())) {
+        // if (contextTableNameList.length > 0) {
+        // elem.setPropertyValue(EParameterName.PROCESS_TYPE_CONTEXT.getName(), contextTableValueList[0]);
+        // }
+        // } else {
+        // // force to store the value again to activate the code
+        // // generation in Node.setPropertyValue
+        // elem.setPropertyValue(EParameterName.PROCESS_TYPE_CONTEXT.getName(), param.getValue());
+        // }
+        // }
+        // }
+
+    }
+
+    /**
+     * ftang Comment method "updateContextList".
+     */
+    private void updateVersionList(IElementParameter jobParam) {
+        List<String> versionNameList = new ArrayList<String>();
+        List<String> versionValueList = new ArrayList<String>();
+
+        IElementParameter jobNameParam = jobParam.getChildParameters().get(EParameterName.PROCESS_TYPE_PROCESS.getName());
+
+        ProcessItem processItem = ProcessorUtilities.getProcessItem((String) jobNameParam.getValue());
+        if (processItem != null) {
+            String id = processItem.getProperty().getId();
+            List<IRepositoryObject> allVersion = null;
+            try {
+                allVersion = ProxyRepositoryFactory.getInstance().getAllVersion(id);
+            } catch (PersistenceException e) {
+                ExceptionHandler.process(e);
+                return;
+            }
+            for (IRepositoryObject obj : allVersion) {
+                String version = obj.getVersion();
+                versionNameList.add(version);
+                versionValueList.add(version);
+            }
+
+        }
+
+        jobNameParam.setLinkedRepositoryItem(processItem);
+
+        String[] versionTableNameList = versionNameList.toArray(new String[0]);
+        String[] versionTableValueList = versionValueList.toArray(new String[0]);
+
+        IElementParameter versionParam = jobParam.getChildParameters().get(EParameterName.PROCESS_TYPE_VERSION.getName());
+        versionParam.setListItemsDisplayName(versionTableNameList);
+        versionParam.setListItemsValue(versionTableValueList);
+
+        // elem.setPropertyValue(EParameterName.PROCESS_TYPE_VERSION.getName(),
+        // versionTableValueList[versionTableValueList.length - 1]);
+        if (!versionValueList.contains(versionParam.getValue())) {
+            if (versionTableNameList.length > 0) {
+                elem.setPropertyValue(EParameterName.PROCESS_TYPE_VERSION.getName(),
+                        versionTableValueList[versionTableValueList.length - 1]);
+            }
+        } else {
+            // force to store the value again to activate the code
+            // generation in Node.setPropertyValue
+            elem.setPropertyValue(EParameterName.PROCESS_TYPE_VERSION.getName(), versionParam.getValue());
         }
 
         // for (int i = 0; i < elem.getElementParametersWithChildrens().size(); i++) {
@@ -998,6 +1068,7 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
         if (jobParam != null) {
             // updateProcessList();
             updateContextList(jobParam);
+            updateVersionList(jobParam);
             if (elem instanceof Node) {
                 ((Node) elem).checkAndRefreshNode();
             }

@@ -40,6 +40,7 @@ import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
@@ -55,6 +56,8 @@ import org.talend.repository.ui.dialog.RepositoryReviewDialog;
  * 
  */
 public class ProcessController extends AbstractElementPropertySectionController {
+
+    private IRepositoryObject repositoryObject;
 
     public ProcessController(IDynamicProperty dp) {
         super(dp);
@@ -145,8 +148,11 @@ public class ProcessController extends AbstractElementPropertySectionController 
 
         Point initialSize = dField.getLayoutControl().computeSize(SWT.DEFAULT, SWT.DEFAULT);
 
-        addContextCombo(subComposite, param.getChildParameters().get(EParameterName.PROCESS_TYPE_CONTEXT.getName()), btn,
-                numInRow + 1, nbInRow, top);
+        Control versionCombo = addJobVersionCombo(subComposite, param.getChildParameters().get(
+                EParameterName.PROCESS_TYPE_VERSION.getName()), btn, numInRow + 1, nbInRow, top);
+
+        addContextCombo(subComposite, param.getChildParameters().get(EParameterName.PROCESS_TYPE_CONTEXT.getName()),
+                versionCombo, numInRow + 1, nbInRow, top);
         dynamicProperty.setCurRowSize(Math.max(initialSize.y, btnSize.y) + ITabbedPropertyConstants.VSPACE);
         return btn;
     }
@@ -158,6 +164,87 @@ public class ProcessController extends AbstractElementPropertySectionController 
             return cb;
         }
     };
+
+    /**
+     * ftang Comment method "addContextCombo".
+     * 
+     * @param subComposite
+     * @param param
+     * @param lastControl
+     * @param numInRow
+     * @param nbInRow
+     * @param top
+     * @return
+     */
+    private Control addJobVersionCombo(Composite subComposite, IElementParameter param, Control lastControl, int numInRow,
+            int nbInRow, int top) {
+        DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER, cbCtrl);
+        if (param.isRequired()) {
+            FieldDecoration decoration = FieldDecorationRegistry.getDefault().getFieldDecoration(
+                    FieldDecorationRegistry.DEC_REQUIRED);
+            dField.addFieldDecoration(decoration, SWT.RIGHT | SWT.TOP, false);
+        }
+        if (param.isRepositoryValueUsed()) {
+            FieldDecoration decoration = FieldDecorationRegistry.getDefault().getFieldDecoration(
+                    FieldDecorationRegistry.DEC_CONTENT_PROPOSAL);
+            decoration.setDescription(Messages.getString("ComboController.valueFromRepository")); //$NON-NLS-1$
+            dField.addFieldDecoration(decoration, SWT.RIGHT | SWT.BOTTOM, false);
+        }
+
+        Control cLayout = dField.getLayoutControl();
+        CCombo combo = (CCombo) dField.getControl();
+        FormData data;
+        combo.setItems(getListToDisplay(param));
+        combo.setEditable(false);
+        cLayout.setBackground(subComposite.getBackground());
+        combo.setEnabled(!param.isReadOnly());
+        combo.addSelectionListener(listenerSelection);
+        combo.setData(PARAMETER_NAME, param.getName());
+        if (elem instanceof Node) {
+            combo.setToolTipText(VARIABLE_TOOLTIP + param.getVariableName());
+        }
+
+        CLabel labelLabel = getWidgetFactory().createCLabel(subComposite, param.getDisplayName());
+        data = new FormData();
+        if (lastControl != null) {
+            data.left = new FormAttachment(lastControl, 0);
+        } else {
+            data.left = new FormAttachment((((numInRow - 1) * MAX_PERCENT) / nbInRow), 0);
+        }
+
+        data.top = new FormAttachment(0, top);
+        labelLabel.setLayoutData(data);
+        if (numInRow != 1) {
+            labelLabel.setAlignment(SWT.RIGHT);
+        }
+        // *********************
+        data = new FormData();
+        int currentLabelWidth = STANDARD_LABEL_WIDTH;
+        GC gc = new GC(labelLabel);
+        Point labelSize = gc.stringExtent(param.getDisplayName());
+        gc.dispose();
+
+        if ((labelSize.x + ITabbedPropertyConstants.HSPACE) > currentLabelWidth) {
+            currentLabelWidth = labelSize.x + ITabbedPropertyConstants.HSPACE;
+        }
+
+        if (numInRow == 1) {
+            if (lastControl != null) {
+                data.left = new FormAttachment(lastControl, currentLabelWidth);
+            } else {
+                data.left = new FormAttachment(0, currentLabelWidth);
+            }
+
+        } else {
+            data.left = new FormAttachment(labelLabel, 0, SWT.RIGHT);
+        }
+        data.top = new FormAttachment(0, top);
+        cLayout.setLayoutData(data);
+        // **********************
+        hashCurControls.put(param.getName(), combo);
+
+        return cLayout;
+    }
 
     private Control addContextCombo(Composite subComposite, IElementParameter param, Control lastControl, int numInRow,
             int nbInRow, int top) {
@@ -307,7 +394,8 @@ public class ProcessController extends AbstractElementPropertySectionController 
         RepositoryReviewDialog dialog = new RepositoryReviewDialog((button).getShell(), ERepositoryObjectType.PROCESS, null);
         if (dialog.open() == RepositoryReviewDialog.OK) {
             // String id = dialog.getResult().getObject().getId();
-            String jobName = dialog.getResult().getObject().getLabel();
+            repositoryObject = dialog.getResult().getObject();
+            String jobName = repositoryObject.getLabel();
             String paramName = (String) button.getData(PARAMETER_NAME);
             return new PropertyChangeCommand(elem, paramName, jobName);
         }
@@ -375,6 +463,43 @@ public class ProcessController extends AbstractElementPropertySectionController 
             combo.setText(strValue);
             combo.setVisible(true);
         }
+
+        refreshVersionCombo(param);
+    }
+
+    /**
+     * ftang Comment method "refreshVersionCombo".
+     */
+    private void refreshVersionCombo(IElementParameter param) {
+
+        IElementParameter versionParameter = param.getChildParameters().get(EParameterName.PROCESS_TYPE_VERSION.getName());
+
+        CCombo combo = (CCombo) hashCurControls.get(versionParameter.getName());
+
+        if (combo == null || combo.isDisposed()) {
+            return;
+        }
+        Object value = versionParameter.getValue();
+        if (value instanceof String) {
+            String strValue = ""; //$NON-NLS-1$
+            int nbInList = 0, nbMax = versionParameter.getListItemsValue().length;
+            String name = (String) value;
+            while (strValue.equals(new String("")) && nbInList < nbMax) { //$NON-NLS-1$
+                if (name.equals(versionParameter.getListItemsValue()[nbInList])) {
+                    strValue = versionParameter.getListItemsDisplayName()[nbInList];
+                }
+                nbInList++;
+            }
+            String[] paramItems = getListToDisplay(versionParameter);
+            String[] comboItems = combo.getItems();
+
+            if (!Arrays.equals(paramItems, comboItems)) {
+                combo.setItems(paramItems);
+            }
+            combo.setText(strValue);
+            combo.setVisible(true);
+        }
+
     }
 
 }
