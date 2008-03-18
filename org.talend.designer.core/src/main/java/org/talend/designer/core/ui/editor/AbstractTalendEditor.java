@@ -303,22 +303,14 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
                 if (newComponent == null) {
                     continue;
                 }
-                // Map<String, Object> parameters = new HashMap<String, Object>();
-                // node.reloadComponent(newComponent, parameters);
-                List<IElementParameter> inputElemParams = new ArrayList<IElementParameter>();
                 List<IElementParameter> outputElemParams = new ArrayList<IElementParameter>();
 
-                IElementParameter inputElemParam = null;
                 IElementParameter outputElemParam = null;
 
                 List<? extends IElementParameter> elementParameters = node.getElementParameters();
                 for (IElementParameter elementParameter : elementParameters) {
                     if (EParameterFieldType.SCHEMA_TYPE.equals(elementParameter.getField())) {
-                        if (EConnectionType.FLOW_MAIN.getName().equals(elementParameter.getContext())) {
-                            inputElemParams.add(elementParameter);
-                        } else {
-                            outputElemParams.add(elementParameter);
-                        }
+                        outputElemParams.add(elementParameter);
                     }
                 }
                 ChangeMetadataCommand command;
@@ -334,16 +326,6 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
                         command = new ChangeMetadataCommand(source, elementParam, metadataTable, newInputMetadataTable);
                         command.execute(Boolean.FALSE);
                     }
-                    // inputElemParam = getElemParam(inputElemParams, metadataTable.getAttachedConnector());
-                    // if (inputElemParam != null && newInputMetadataTable != null) {
-                    // command = new ChangeMetadataCommand(node, inputElemParam, (IMetadataTable)
-                    // inputElemParam.getValue(),
-                    // newInputMetadataTable);
-                    // command.execute(Boolean.FALSE);
-                    // IMetadataTable metadataFromConnector =
-                    // node.getMetadataFromConnector(inputElemParam.getContext());
-                    // MetadataTool.copyTable(newInputMetadataTable, metadataFromConnector);
-                    // }
                 }
                 List<? extends IConnection> outgoingConnections = node.getOutgoingConnections();
                 for (int i = 0; i < outgoingConnections.size(); i++) {
@@ -358,32 +340,21 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
                                 .getAttachedConnector()), newOutputMetadataTable);
                         command.execute(Boolean.FALSE);
                     }
-                    // outputElemParam = getElemParam(outputElemParams, metadataTable.getAttachedConnector());
-                    // if (outputElemParam != null && newOutputMetadataTable != null) {
-                    // command = new ChangeMetadataCommand(node, outputElemParam, (IMetadataTable)
-                    // outputElemParam.getValue(),
-                    // newOutputMetadataTable);
-                    // command.execute(Boolean.FALSE);
-                    // IMetadataTable metadataFromConnector =
-                    // node.getMetadataFromConnector(outputElemParam.getContext());
-                    // MetadataTool.copyTable(newOutputMetadataTable, metadataFromConnector);
-                    // }
                 }
 
                 List<IMetadataTable> metadataList = node.getMetadataList();
                 for (IMetadataTable metadataTable : metadataList) {
                     IMetadataTable newInputMetadataTable = getNewInputTableForConnection(newInputTableList, metadataTable
                             .getAttachedConnector());
-                    inputElemParam = getElemParam(inputElemParams, metadataTable.getAttachedConnector());
                     IMetadataTable newOutputMetadataTable = getNewOutputTableForConnection(newOutputTableList, metadataTable
                             .getAttachedConnector());
                     outputElemParam = getElemParam(outputElemParams, metadataTable.getAttachedConnector());
 
-                    if (inputElemParam != null && newInputMetadataTable != null) {
-                        command = new ChangeMetadataCommand(node, inputElemParam, (IMetadataTable) inputElemParam.getValue(),
+                    if (outputElemParam != null && newInputMetadataTable != null) {
+                        command = new ChangeMetadataCommand(node, outputElemParam, (IMetadataTable) outputElemParam.getValue(),
                                 newInputMetadataTable);
                         command.execute(Boolean.FALSE);
-                        IMetadataTable metadataFromConnector = node.getMetadataFromConnector(inputElemParam.getContext());
+                        IMetadataTable metadataFromConnector = node.getMetadataFromConnector(outputElemParam.getContext());
                         MetadataTool.copyTable(newInputMetadataTable, metadataFromConnector);
                     } else if (outputElemParam != null && newOutputMetadataTable != null) {
                         command = new ChangeMetadataCommand(node, outputElemParam, (IMetadataTable) outputElemParam.getValue(),
@@ -409,7 +380,8 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
      */
     private IMetadataTable getNewOutputTableForConnection(List<IMetadataTable> newOutputTableList, String tableName) {
         for (IMetadataTable metadataTable : newOutputTableList) {
-            if (tableName != null && tableName.equals(metadataTable.getTableName())) {
+            if (tableName != null && tableName.equals(metadataTable.getTableName())
+                    || tableName.equals(metadataTable.getTableName())) {
                 return metadataTable;
             }
         }
@@ -443,7 +415,8 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
      */
     private IMetadataTable getNewInputTableForConnection(List<IMetadataTable> newInputTableList, String connector) {
         for (IMetadataTable metadataTable : newInputTableList) {
-            if (connector != null && connector.equals(metadataTable.getAttachedConnector())) {
+            if (connector != null
+                    && (connector.equals(metadataTable.getAttachedConnector()) || connector.equals(metadataTable.getTableName()))) {
                 return metadataTable;
             }
         }
