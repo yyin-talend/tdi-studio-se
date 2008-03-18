@@ -33,6 +33,7 @@
 	boolean isRunInMultiThread = codeGenArgument.getIsRunInMultiThread();
 	List<IContextParameter> params = new ArrayList<IContextParameter>();
 	params=process.getContextManager().getDefaultContext().getContextParameterList();
+	String jobVersion = process.getVersion().replace(".","_");	
 %>
 // ============================================================================
 //
@@ -80,10 +81,10 @@ import java.math.BigDecimal;
  * Job: <%=process.getName() %> Purpose: <%=ElementParameterParser.getValue(process, "__PURPOSE__") %><br>
  * Description: <%=ElementParameterParser.getValue(process, "__DESCRIPTION__") %> <br>
  * @author <%=ElementParameterParser.getValue(process, "__AUTHOR__") %>
- * @version <%=ElementParameterParser.getValue(process, "__VERSION__") %>
+ * @version <%=jobVersion %>
  * @status <%=ElementParameterParser.getValue(process, "__STATUS__") %> 
- */
- public class <%=process.getName() %> {    
+ */                                
+ public class <%=process.getName()+jobVersion%> {    
     // create and load default properties
 	private static java.util.Properties defaultProps = new java.util.Properties();
 	// create application properties with default
@@ -177,17 +178,17 @@ private static RunTrace runTrace = new RunTrace();
 %>
 private class TalendException extends Exception {
 	private Exception e = null;
-	private <%=process.getName() %> c = null;
+	private <%=process.getName()+jobVersion %> c = null;
 <%
 	if(isRunInMultiThread ){
 %>	
 	private String currentComponent = null;
-	private TalendException(<%=process.getName() %> c, Exception e,String errorComponent) {
+	private TalendException(<%=process.getName()+jobVersion %> c, Exception e,String errorComponent) {
 		this.currentComponent= errorComponent;
 <%
 	}else{
 %>
-	private TalendException(<%=process.getName() %> c, Exception e) {
+	private TalendException(<%=process.getName()+jobVersion %> c, Exception e) {
 <%
 	}
 %>

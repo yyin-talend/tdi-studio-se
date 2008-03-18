@@ -30,6 +30,7 @@
 	boolean isRunInMultiThread = codeGenArgument.getIsRunInMultiThread();
 	List<IContextParameter> params = new ArrayList<IContextParameter>();
     params=process.getContextManager().getDefaultContext().getContextParameterList();
+    String jobVersion = process.getVersion().replace(".","_");
 %>
     public static boolean watch = false;
     public static int portStats = 3334;
@@ -40,6 +41,7 @@
     public static String pid = "0";
     public static String rootPid = null;
     public static String fatherPid = null;
+    
 <%
 	if(isRunInMultiThread){
 %>
@@ -127,7 +129,7 @@
     	}
     	
     	try {
-    		java.io.InputStream inContext = <%=process.getName() %>.class.getClassLoader().getResourceAsStream("<%=codeGenArgument.getCurrentProjectName().toLowerCase() %>/<%=codeGenArgument.getJobName().toLowerCase() %>/contexts/Default.properties");    		
+    		java.io.InputStream inContext = <%=process.getName()+jobVersion %>.class.getClassLoader().getResourceAsStream("<%=codeGenArgument.getCurrentProjectName().toLowerCase() %>/<%=codeGenArgument.getJobName().toLowerCase() %>/contexts/Default.properties");    		
     		if (inContext!=null) {
 	    		defaultProps.load(inContext);
     			inContext.close();
@@ -135,7 +137,7 @@
 	    	}
     		
     		if (contextStr.compareTo("Default")!=0) {
-    			inContext = <%=process.getName() %>.class.getClassLoader().getResourceAsStream("<%=codeGenArgument.getCurrentProjectName().toLowerCase() %>/<%=codeGenArgument.getJobName().toLowerCase() %>/contexts/"+contextStr+".properties");
+    			inContext = <%=process.getName()+jobVersion %>.class.getClassLoader().getResourceAsStream("<%=codeGenArgument.getCurrentProjectName().toLowerCase() %>/<%=codeGenArgument.getJobName().toLowerCase() %>/contexts/"+contextStr+".properties");
     			if (inContext!=null) {
 					context.load(inContext);
 					inContext.close();
@@ -230,7 +232,7 @@
 	long endUsedMemory = 0;
 	long end = 0;
 	long start = System.currentTimeMillis();
-	final <%=process.getName() %> <%=process.getName() %>Class = new <%=process.getName() %>(); 
+	final <%=process.getName()+jobVersion %> <%=process.getName() %>Class = new <%=process.getName()+jobVersion %>(); 
 <%
 		for (INode statCatcherNode : process.getNodesOfType("tStatCatcher")) {
 %>

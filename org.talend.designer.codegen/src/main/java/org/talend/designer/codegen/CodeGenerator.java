@@ -76,6 +76,8 @@ public class CodeGenerator implements ICodeGenerator {
 
     private String jobName;
 
+    private String jobVersion;
+
     private boolean checkingSyntax = false;
 
     private String contextName;
@@ -104,7 +106,9 @@ public class CodeGenerator implements ICodeGenerator {
             this.process = process;
             this.statistics = statistics;
             this.trace = trace;
+            this.jobVersion = process.getProperty().getVersion().replace(".", "_");
             this.jobName = process.getLabel();
+
             this.contextName = process.getContextManager().getDefaultContext().getName();
             this.checkingSyntax = false;
 
@@ -165,25 +169,22 @@ public class CodeGenerator implements ICodeGenerator {
 
                 Vector headerArgument = new Vector(2);
                 headerArgument.add(process);
+
                 headerArgument.add(CodeGeneratorActivator.getDefault().getBundle().getHeaders().get(
                         org.osgi.framework.Constants.BUNDLE_VERSION));
+
                 componentsCode.append(generateTypedComponentCode(EInternalTemplate.HEADER, headerArgument));
                 for (NodesSubTree subTree : processTree.getSubTrees()) {
                     if (!subTree.isMergeSubTree()) {
                         componentsCode.append(generateTypedComponentCode(EInternalTemplate.SUBPROCESS_HEADER, subTree));
-                        componentsCode.append(generateComponentsCode(subTree, subTree.getRootNode(), ECodePart.BEGIN,
-                                null));
-                        componentsCode.append(generateComponentsCode(subTree, subTree.getRootNode(), ECodePart.MAIN,
-                                null));
-                        componentsCode.append(generateTypedComponentCode(EInternalTemplate.PART_ENDMAIN, subTree
-                                .getRootNode()));
-                        componentsCode.append(generateComponentsCode(subTree, subTree.getRootNode(), ECodePart.END,
-                                null));
+                        componentsCode.append(generateComponentsCode(subTree, subTree.getRootNode(), ECodePart.BEGIN, null));
+                        componentsCode.append(generateComponentsCode(subTree, subTree.getRootNode(), ECodePart.MAIN, null));
+                        componentsCode.append(generateTypedComponentCode(EInternalTemplate.PART_ENDMAIN, subTree.getRootNode()));
+                        componentsCode.append(generateComponentsCode(subTree, subTree.getRootNode(), ECodePart.END, null));
                         componentsCode.append(generateTypedComponentCode(EInternalTemplate.SUBPROCESS_FOOTER, subTree));
                     } else {
                         componentsCode.append(generateTypedComponentCode(EInternalTemplate.SUBPROCESS_HEADER, subTree));
-                        componentsCode.append(generateComponentsCode(subTree, subTree.getMergeNode(), ECodePart.BEGIN,
-                                null));
+                        componentsCode.append(generateComponentsCode(subTree, subTree.getMergeNode(), ECodePart.BEGIN, null));
 
                         List<INode> sortedMergeBranchStarts = subTree.getSortedMergeBranchStarts();
                         for (INode startNode : sortedMergeBranchStarts) {
@@ -193,11 +194,9 @@ public class CodeGenerator implements ICodeGenerator {
                             componentsCode.append(generateComponentsCode(subTree, startNode, ECodePart.END, null));
                         }
 
-                        componentsCode.append(generateTypedComponentCode(EInternalTemplate.PART_ENDMAIN, subTree
-                                .getRootNode()));
+                        componentsCode.append(generateTypedComponentCode(EInternalTemplate.PART_ENDMAIN, subTree.getRootNode()));
 
-                        componentsCode.append(generateComponentsCode(subTree, subTree.getMergeNode(), ECodePart.END,
-                                null));
+                        componentsCode.append(generateComponentsCode(subTree, subTree.getMergeNode(), ECodePart.END, null));
 
                         componentsCode.append(generateTypedComponentCode(EInternalTemplate.SUBPROCESS_FOOTER, subTree));
                     }
@@ -207,8 +206,7 @@ public class CodeGenerator implements ICodeGenerator {
                 footerArgument.add(process);
                 footerArgument.add(processTree.getRootNodes());
                 componentsCode.append(generateTypedComponentCode(EInternalTemplate.FOOTER, footerArgument));
-                componentsCode
-                        .append(generateTypedComponentCode(EInternalTemplate.PROCESSINFO, componentsCode.length()));
+                componentsCode.append(generateTypedComponentCode(EInternalTemplate.PROCESSINFO, componentsCode.length()));
             }
 
             return componentsCode.toString();
@@ -267,14 +265,16 @@ public class CodeGenerator implements ICodeGenerator {
                 codeGenArgument.setContextName(designerContext.getName());
                 codeGenArgument.setCurrentProjectName(currentProjectName);
                 codeGenArgument.setJobName(jobName);
+
+                codeGenArgument.setJobVersion(jobVersion);
+
                 codeGenArgument.setIsRunInMultiThread(getRunInMultiThread());
                 codeGenArgument.setPauseTime(CorePlugin.getDefault().getRunProcessService().getPauseTime());
 
                 JetBean jetBean = initializeJetBean(codeGenArgument);
 
                 jetBean.setTemplateRelativeUri(TemplateUtil.RESOURCES_DIRECTORY + TemplateUtil.DIR_SEP
-                        + EInternalTemplate.CONTEXT + TemplateUtil.EXT_SEP + language.getExtension()
-                        + TemplateUtil.TEMPLATE_EXT);
+                        + EInternalTemplate.CONTEXT + TemplateUtil.EXT_SEP + language.getExtension() + TemplateUtil.TEMPLATE_EXT);
 
                 JetProxy proxy = new JetProxy(jetBean);
                 String content;
@@ -301,8 +301,7 @@ public class CodeGenerator implements ICodeGenerator {
      * @return the generated code
      * @throws CodeGeneratorException if an error occurs during Code Generation
      */
-    private StringBuffer generateTypedComponentCode(EInternalTemplate type, Object argument)
-            throws CodeGeneratorException {
+    private StringBuffer generateTypedComponentCode(EInternalTemplate type, Object argument) throws CodeGeneratorException {
         return generateTypedComponentCode(type, argument, null);
     }
 
@@ -329,8 +328,8 @@ public class CodeGenerator implements ICodeGenerator {
      * @return the genrated code
      * @throws CodeGeneratorException if an error occurs during Code Generation
      */
-    private StringBuffer generateTypedComponentCode(EInternalTemplate type, Object argument, ECodePart part,
-            String incomingName) throws CodeGeneratorException {
+    private StringBuffer generateTypedComponentCode(EInternalTemplate type, Object argument, ECodePart part, String incomingName)
+            throws CodeGeneratorException {
         CodeGeneratorArgument codeGenArgument = new CodeGeneratorArgument();
         codeGenArgument.setNode(argument);
         codeGenArgument.setCodePart(part);
@@ -342,14 +341,17 @@ public class CodeGenerator implements ICodeGenerator {
         codeGenArgument.setCurrentProjectName(currentProjectName);
         codeGenArgument.setContextName(contextName);
         codeGenArgument.setJobName(jobName);
+
+        codeGenArgument.setJobVersion(jobVersion);
+
         codeGenArgument.setCheckingSyntax(checkingSyntax);
         codeGenArgument.setIncomingName(incomingName);
         codeGenArgument.setIsRunInMultiThread(getRunInMultiThread());
         codeGenArgument.setPauseTime(CorePlugin.getDefault().getRunProcessService().getPauseTime());
         JetBean jetBean = initializeJetBean(codeGenArgument);
 
-        jetBean.setTemplateRelativeUri(TemplateUtil.RESOURCES_DIRECTORY + TemplateUtil.DIR_SEP + type
-                + TemplateUtil.EXT_SEP + language.getExtension() + TemplateUtil.TEMPLATE_EXT);
+        jetBean.setTemplateRelativeUri(TemplateUtil.RESOURCES_DIRECTORY + TemplateUtil.DIR_SEP + type + TemplateUtil.EXT_SEP
+                + language.getExtension() + TemplateUtil.TEMPLATE_EXT);
 
         JetProxy proxy = new JetProxy(jetBean);
         StringBuffer content = new StringBuffer();
@@ -385,8 +387,7 @@ public class CodeGenerator implements ICodeGenerator {
             // and the epic's preferencestore initializer instanciate swt objects !
             // so in headless mode, we'll always use MultiThreading by default
             if (!CorePlugin.getContext().isHeadless()) {
-                running = CorePlugin.getDefault().getPreferenceStore().getBoolean(
-                        ITalendCorePrefConstants.RUN_IN_MULTI_THREAD);
+                running = CorePlugin.getDefault().getPreferenceStore().getBoolean(ITalendCorePrefConstants.RUN_IN_MULTI_THREAD);
             }
         }
 
@@ -500,8 +501,7 @@ public class CodeGenerator implements ICodeGenerator {
      * @return the generated code
      * @throws CodeGeneratorException if an error occurs during Code Generation
      */
-    private StringBuffer generatesTreeCode(NodesSubTree subProcess, INode node, ECodePart part)
-            throws CodeGeneratorException {
+    private StringBuffer generatesTreeCode(NodesSubTree subProcess, INode node, ECodePart part) throws CodeGeneratorException {
         StringBuffer code = new StringBuffer();
         if (node != null) {
             SubTreeArgument subTreeArgument = new SubTreeArgument();
@@ -544,8 +544,8 @@ public class CodeGenerator implements ICodeGenerator {
                     } else if (part == ECodePart.MAIN) {
                         subTreeArgument.setInputSubtreeConnection(connection);
                         code.append(generateTypedComponentCode(EInternalTemplate.SUBTREE_BEGIN, subTreeArgument));
-                        code.append(generateComponentsCode(subProcess, targetNode, ECodePart.MAIN,
-                                getIncomingNameForMerge(node, targetNode)));
+                        code.append(generateComponentsCode(subProcess, targetNode, ECodePart.MAIN, getIncomingNameForMerge(node,
+                                targetNode)));
                         code.append(generateTypedComponentCode(EInternalTemplate.SUBTREE_END, subTreeArgument));
                     }
 
@@ -581,6 +581,8 @@ public class CodeGenerator implements ICodeGenerator {
         argument.setCurrentProjectName(currentProjectName);
         argument.setContextName(contextName);
         argument.setJobName(jobName);
+        argument.setJobVersion(jobVersion);
+
         argument.setCheckingSyntax(checkingSyntax);
         argument.setIncomingName(incomingName);
         argument.setIsRunInMultiThread(getRunInMultiThread());
@@ -593,8 +595,8 @@ public class CodeGenerator implements ICodeGenerator {
             content.append(generateTypedComponentCode(EInternalTemplate.PART_HEADER, node, part, incomingName));
 
             IComponentFileNaming componentFileNaming = ComponentsFactoryProvider.getFileNamingInstance();
-            String templateURI = node.getComponent().getPathSource() + TemplateUtil.DIR_SEP
-                    + node.getComponent().getName() + TemplateUtil.DIR_SEP
+            String templateURI = node.getComponent().getPathSource() + TemplateUtil.DIR_SEP + node.getComponent().getName()
+                    + TemplateUtil.DIR_SEP
                     + componentFileNaming.getJetFileName(node.getComponent(), language.getExtension(), part);
 
             jetBean.setTemplateRelativeUri(templateURI);
@@ -631,6 +633,9 @@ public class CodeGenerator implements ICodeGenerator {
         argument.setCurrentProjectName(currentProjectName);
         argument.setContextName(contextName);
         argument.setJobName(jobName);
+
+        argument.setJobVersion(jobVersion);
+
         argument.setCheckingSyntax(checkingSyntax);
         argument.setIsRunInMultiThread(getRunInMultiThread());
         argument.setPauseTime(CorePlugin.getDefault().getRunProcessService().getPauseTime());
@@ -641,8 +646,8 @@ public class CodeGenerator implements ICodeGenerator {
             content.append(generateTypedComponentCode(EInternalTemplate.PART_HEADER, node, part));
 
             IComponentFileNaming componentFileNaming = ComponentsFactoryProvider.getFileNamingInstance();
-            String templateURI = node.getComponent().getPathSource() + TemplateUtil.DIR_SEP
-                    + node.getComponent().getName() + TemplateUtil.DIR_SEP
+            String templateURI = node.getComponent().getPathSource() + TemplateUtil.DIR_SEP + node.getComponent().getName()
+                    + TemplateUtil.DIR_SEP
                     + componentFileNaming.getJetFileName(node.getComponent(), language.getExtension(), part);
 
             jetBean.setTemplateRelativeUri(templateURI);
@@ -730,13 +735,13 @@ public class CodeGenerator implements ICodeGenerator {
                         // }
                         componentsCode.append(generateTypedComponentCode(EInternalTemplate.SUBPROCESS_HEADER, subTree));
                         if (subTreeNode != null && (lightProcess.getSubTrees().size() > 0)) {
-                            componentsCode.append(generateComponentsCode(lightProcess.getSubTrees().get(0),
-                                    lightProcess.getSubTrees().get(0).getRootNode(), ECodePart.BEGIN, null));
-                            componentsCode.append(generateComponentsCode(lightProcess.getSubTrees().get(0),
-                                    lightProcess.getSubTrees().get(0).getRootNode(), ECodePart.MAIN, null));
+                            componentsCode.append(generateComponentsCode(lightProcess.getSubTrees().get(0), lightProcess
+                                    .getSubTrees().get(0).getRootNode(), ECodePart.BEGIN, null));
+                            componentsCode.append(generateComponentsCode(lightProcess.getSubTrees().get(0), lightProcess
+                                    .getSubTrees().get(0).getRootNode(), ECodePart.MAIN, null));
                             componentsCode.append(generateTypedComponentCode(EInternalTemplate.PART_ENDMAIN, null));
-                            componentsCode.append(generateComponentsCode(lightProcess.getSubTrees().get(0),
-                                    lightProcess.getSubTrees().get(0).getRootNode(), ECodePart.END, null));
+                            componentsCode.append(generateComponentsCode(lightProcess.getSubTrees().get(0), lightProcess
+                                    .getSubTrees().get(0).getRootNode(), ECodePart.END, null));
                         }
                         componentsCode.append(generateTypedComponentCode(EInternalTemplate.SUBPROCESS_FOOTER, subTree));
                     }
@@ -744,8 +749,7 @@ public class CodeGenerator implements ICodeGenerator {
                     footerArgument.add(process);
                     footerArgument.add(processTree.getRootNodes());
                     componentsCode.append(generateTypedComponentCode(EInternalTemplate.FOOTER, footerArgument));
-                    componentsCode.append(generateTypedComponentCode(EInternalTemplate.PROCESSINFO, componentsCode
-                            .length()));
+                    componentsCode.append(generateTypedComponentCode(EInternalTemplate.PROCESSINFO, componentsCode.length()));
                 } catch (CodeGeneratorException ce) {
                     ce.printStackTrace();
                     componentsCode = new StringBuffer();

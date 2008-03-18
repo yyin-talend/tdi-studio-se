@@ -40,6 +40,8 @@ public class CodeGeneratorArgument {
 
     String jobName;
 
+    String jobVersion;
+
     String contextName;
 
     private ECodePart codePart;
@@ -216,5 +218,13 @@ public class CodeGeneratorArgument {
      */
     public void setPauseTime(int pauseTime) {
         this.pauseTime = pauseTime;
+    }
+
+    public String getJobVersion() {
+        return this.jobVersion;
+    }
+
+    public void setJobVersion(String jobVersion) {
+        this.jobVersion = jobVersion;
     }
 }
