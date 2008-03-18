@@ -76,7 +76,7 @@ skeleton="../templates/db_output_bulk.skeleton"
         }
     }
 
-    if(incomingConnName != null && columnList != null) {
+    if(incomingConnName != null && columnList != null && columnList.size() > 0) {
         %>
         whetherReject_<%=cid%> = false;
         <%    
