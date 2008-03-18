@@ -461,6 +461,7 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
         checkErrorsWhenViewRefreshed = true;
         int heightSize = 0, maxRowSize = 0, nbInRow, numInRow;
         int maxRow;
+        boolean isCompute = false;
 
         Map<String, Integer> groupPosition = new HashMap<String, Integer>();
         List<? extends IElementParameter> listParam = elem.getElementParametersWithChildrens();
@@ -584,8 +585,17 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
                                         .createControl(subComposite, curParam, numInRow, nbInRow, h2, lastControl);
 
                             } else {
-                                int h3 = DEFAULT_GROUP_HEIGHT * (groupPosition.size() > 0 ? 1 : 0) + heightSize;
-                                lastControl = controller.createControl(composite, curParam, numInRow, nbInRow, h3, lastControl);
+                                if (isCompactView()) {
+                                    int h3 = DEFAULT_GROUP_HEIGHT * (groupPosition.size() > 0 ? 1 : 0) + heightSize;
+                                    lastControl = controller.createControl(composite, curParam, numInRow, nbInRow, h3,
+                                            lastControl);
+                                } else {
+                                    if (numInRow > 1 && nbInRow > 1) {
+                                        heightSize += maxRowSize;
+                                    }
+                                    int h3 = DEFAULT_GROUP_HEIGHT * (groupPosition.size() > 0 ? 1 : 0) + heightSize;
+                                    lastControl = controller.createControl(composite, curParam, 1, 1, h3, null);
+                                }
                             }
 
                             lastTime = TimeMeasure.timeSinceBegin("DC:refresh:" + getCurrentComponent()) - lastTime;
@@ -597,14 +607,19 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
                             // System.out.println("param:" + curParam.getName()
                             // + " - curRowSize:" + curRowSize);
 
+                            maxRowSize = 0;
                             if (curRowSize > maxRowSize) {
                                 maxRowSize = curRowSize;
+                                isCompute = true;
                             }
                         }
                     }
                 }
             }
-            heightSize += maxRowSize;
+            if (isCompute) {
+                heightSize += maxRowSize;
+                isCompute = false;
+            }
 
         }
         if (synchronizeSchemaParam != null) {

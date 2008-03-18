@@ -186,6 +186,8 @@ public class Node extends Element implements INode {
 
     private boolean schemaSynchronized = true;
 
+    private boolean isCompactLayout;
+
     /**
      * This constructor is called when the node is created from the palette the unique name will be determined with the
      * number of components of this type.
@@ -196,6 +198,7 @@ public class Node extends Element implements INode {
         this.oldcomponent = component;
         process = ActiveProcessTracker.getCurrentProcess();
         currentStatus = 0;
+
         init(component);
         IElementParameter param = getElementParameter(EParameterName.REPOSITORY_ALLOW_AUTO_SWITCH.getName());
         if (param != null) {
@@ -210,6 +213,7 @@ public class Node extends Element implements INode {
     }
 
     private void init(IComponent newComponent) {
+        isCompactLayout = true;
         this.component = newComponent;
         this.label = component.getTranslatedName();
         this.componentName = this.label;
@@ -1564,9 +1568,9 @@ public class Node extends Element implements INode {
         // not a sub process start
         if (!isSubProcessStart() || (!(Boolean) getPropertyValue(EParameterName.STARTABLE.getName()))) {
             if (/*
-             * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_AFTER) > 0) ||
-             * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_BEFORE) > 0)||
-             */
+                 * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_AFTER) > 0) ||
+                 * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_BEFORE) > 0)||
+                 */
             (getCurrentActiveLinksNbOutput(EConnectionType.ON_SUBJOB_OK) > 0)
                     || getCurrentActiveLinksNbOutput(EConnectionType.ON_SUBJOB_ERROR) > 0) {
                 String errorMessage = "A component that is not a sub process start can not have any link run after / run before in output.";
@@ -1578,9 +1582,9 @@ public class Node extends Element implements INode {
         // not a sub process start
         if ((!isELTComponent() && !isSubProcessStart()) || (!(Boolean) getPropertyValue(EParameterName.STARTABLE.getName()))) {
             if (/*
-             * (getCurrentActiveLinksNbInput(EConnectionType.RUN_AFTER) > 0) ||
-             * (getCurrentActiveLinksNbInput(EConnectionType.RUN_BEFORE) > 0) ||
-             */(getCurrentActiveLinksNbInput(EConnectionType.ON_SUBJOB_OK) > 0)
+                 * (getCurrentActiveLinksNbInput(EConnectionType.RUN_AFTER) > 0) ||
+                 * (getCurrentActiveLinksNbInput(EConnectionType.RUN_BEFORE) > 0) ||
+                 */(getCurrentActiveLinksNbInput(EConnectionType.ON_SUBJOB_OK) > 0)
                     || (getCurrentActiveLinksNbInput(EConnectionType.RUN_IF) > 0)
                     || (getCurrentActiveLinksNbInput(EConnectionType.ON_COMPONENT_OK) > 0)
                     || (getCurrentActiveLinksNbInput(EConnectionType.ON_COMPONENT_ERROR) > 0)) {
@@ -2278,4 +2282,23 @@ public class Node extends Element implements INode {
     public boolean isVirtualGenerateNode() {
         return false;
     }
+
+    /**
+     * Getter for isCompactLayout.
+     * 
+     * @return the isCompactLayout
+     */
+    public boolean isCompactLayout() {
+        return this.isCompactLayout;
+    }
+
+    /**
+     * Sets the isCompactLayout.
+     * 
+     * @param isCompactLayout the isCompactLayout to set
+     */
+    public void setCompactLayout(boolean isCompactLayout) {
+        this.isCompactLayout = isCompactLayout;
+    }
+
 }
