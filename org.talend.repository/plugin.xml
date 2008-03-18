@@ -676,6 +676,13 @@
             name="Update the Attributes of tAdvancedFileOutputXML"
             description="Add the main and branch type to attributes."/>
       <projecttask
+            beforeLogon="false"
+            class="org.talend.repository.model.migration.UpgradeAttributestFilterRow"
+            description="Upgrade the Attributes of tFilterRow"
+            id="org.talend.repository.migration.upgradeAttributestFilterRow"
+            name="Upgrade the Attributes of tFilterRow">
+      </projecttask>
+      <projecttask
             class="org.talend.repository.model.migration.UpdateDbtypeOfCreateTableTask"
             description="Upper case the value of Db type for tCreateTable component."
             id="org.talend.repository.migration.upperCaseDbtypeOfCreateTable"
@@ -712,11 +719,6 @@
             description="Replace the context variables name with java keywords.(only for JAVA)"
             id="org.talend.repository.migration.ReplaceJavaKeywordsNameForContext"
             name="Replace the context variables name">
-      </projecttask>
-      <projecttask
-            class="org.talend.repository.model.migration.RewritetFilterRowMigrationTask"
-            id="org.talend.repository.model.migration.RewritetFilterRowMigrationTask"
-            name="rewrite the tFilterRow">
       </projecttask>
    </extension>
    <extension

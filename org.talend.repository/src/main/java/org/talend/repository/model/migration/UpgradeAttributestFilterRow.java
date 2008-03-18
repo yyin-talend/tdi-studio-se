@@ -30,12 +30,9 @@ import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
 
 /**
- * DOC xtan when feature:2214, there rewrite the tFilterRow in java, and add a migrationTask. <br>
- * 
- * $Id: talend.epf 1 2006-09-29 17:06:40Z nrousseau $
- * 
+ * DOC xtan when feature:2214, there rewrite the tFilterRow in java, and add a migrationTask. 
  */
-public class RewritetFilterRowMigrationTask extends AbstractJobMigrationTask {
+public class UpgradeAttributestFilterRow extends AbstractJobMigrationTask {
 
     /*
      * (non-Javadoc)
@@ -44,6 +41,7 @@ public class RewritetFilterRowMigrationTask extends AbstractJobMigrationTask {
      */
     @Override
     public ExecutionResult executeOnProcess(ProcessItem item) {
+
 
         if (getProject().getLanguage() == ECodeLanguage.PERL) {
 
@@ -149,6 +147,7 @@ public class RewritetFilterRowMigrationTask extends AbstractJobMigrationTask {
 
             return ExecutionResult.SUCCESS_NO_ALERT;
         }
+    
     }
     
     public Date getOrder() {
