@@ -17,8 +17,8 @@ String cid = node.getUniqueName();
 		IMetadataTable metadata = metadatas.get(0);
 		if (metadata!=null) {
 %>
-
-}
+    } # current line
+} # current sheet
 
 
 $_globals{<%=cid%>}{NB_LINE} = $nb_line_<%=cid%>;

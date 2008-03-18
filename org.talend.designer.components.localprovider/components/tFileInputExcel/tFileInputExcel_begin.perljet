@@ -1,27 +1,44 @@
 <%@ jet 
-	imports="
-		org.talend.core.model.process.INode 
-		org.talend.core.model.process.ElementParameterParser 
-		org.talend.core.model.metadata.IMetadataTable 
-		org.talend.core.model.metadata.IMetadataColumn 
-		org.talend.designer.codegen.config.CodeGeneratorArgument
-		java.util.List
-	" 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser 
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.metadata.IMetadataColumn 
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+    java.util.Map
+" 
 %>
 
 <%
-	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
-	INode node = (INode)codeGenArgument.getArgument();
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 
-	List<IMetadataTable> metadatas = node.getMetadataList();
-	if ((metadatas!=null)&&(metadatas.size()>0)) {
-		IMetadataTable metadata = metadatas.get(0);
-		if (metadata!=null) {
-                        int nbFields = metadata.getListColumns().size();
-                        Boolean withformat = new Boolean(
-                            ElementParameterParser.getValue(node, "__WITH_FORMAT__")
-                        );
+List<Map<String, String>> sheetlist =
+    (List<Map<String,String>>)ElementParameterParser.getObjectValue(
+        node,
+        "__SHEETLIST__"
+    );
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+        int nbFields = metadata.getListColumns().size();
+
+        Boolean withformat = new Boolean(
+            ElementParameterParser.getValue(node, "__WITH_FORMAT__")
+        );
+
+        String filename = ElementParameterParser.getValue(
+            node,
+            "__FILENAME__"
+        );
+
+        Boolean allSheets = new Boolean(
+            ElementParameterParser.getValue(node, "__ALL_SHEETS__")
+        );
 %>
 
 use FileHandle;
@@ -30,8 +47,7 @@ use Spreadsheet::ParseExcel;
 use talend::filesOp;
 
 my %desc_<%=cid%> = (
-    filename      => <%=ElementParameterParser.getValue(node, "__FILENAME__") %>,
-    sheetname     => <%=ElementParameterParser.getValue(node, "__SHEETNAME__") %>,
+    filename      => <%=filename %>,
     header        => <%=ElementParameterParser.getValue(node, "__HEADER__") %>,
     footer        => <% String myFooter = ElementParameterParser.getValue(node, "__FOOTER__"); if (myFooter.equals("")) myFooter = null; %><%=myFooter%>,
     limit         => <% String myLimit = ElementParameterParser.getValue(node, "__LIMIT__"); if (myLimit.equals("")) myLimit = null; %><%=myLimit%>,
@@ -57,94 +73,121 @@ my %desc_<%=cid%> = (
 );
 
 
-my $book_<%=cid%> =  Spreadsheet::ParseExcel::Workbook->Parse($desc_<%=cid%>{filename});
+my $book_<%=cid%> =  Spreadsheet::ParseExcel::Workbook->Parse(
+    $desc_<%=cid%>{filename}
+);
 
-my @worksheets = map { $_->{Name} } @{$book_<%=cid%>->{Worksheet}};
+my @book_worksheets = map { $_->{Name} } @{$book_<%=cid%>->{Worksheet}};
 
-# user can also provide a sheet position
-if ($desc_<%=cid%>{sheetname} =~ m/^\d+$/) {
-    my $position = $desc_<%=cid%>{sheetname};
-    if ($position >= scalar @worksheets) {
+<%
+        if (allSheets) {
+%>
+my @sheetlist = @book_worksheets;
+<%
+        }
+        else {
+%>
+my @sheetlist = (
+<%
+        for (Map<String, String> sheet : sheetlist) {
+%>
+    <%=sheet.get("SHEETNAME")%>,
+<%
+        }
+%>
+);
+
+foreach my $sheet (@sheetlist) {
+    # user can also provide a sheet position
+    if ($sheet =~ m/^\d+$/) {
+        my $position = $sheet;
+        if ($position >= scalar @book_worksheets) {
+            die(
+                sprintf(
+                    '[<%=cid%>] worksheet position "%s" does exist, existing worksheet position {%s}',
+                    $sheet,
+                    join(
+                        ',',
+                        map {$i++} @book_worksheets
+                    )
+                )
+            );
+        }
+    }
+    elsif (not grep /^$sheet$/, @book_worksheets) {
         die(
             sprintf(
-                '[<%=cid%>] select a worksheet position among {%s}',
+                '[<%=cid%>] worksheet "%s" does not exists, existing worksheets {%s}',
+                $sheet,
                 join(
                     ',',
-                    map {$i++} @worksheets
+                    @book_worksheets
                 )
-            )
+            ),
+            "\n"
         );
     }
 }
-elsif (not grep /^$desc_<%=cid%>{sheetname}$/, @worksheets) {
-    die(
-        sprintf(
-            '[<%=cid%>] worksheet "%s" does not exists, existing worksheets {%s}',
-            $desc_<%=cid%>{sheetname},
-            join(
-                ',',
-                @worksheets
-            )
-        ),
-        "\n"
-    );
-}
-
-my $worksheet_<%=cid%> = $book_<%=cid%>->Worksheet($desc_<%=cid%>{sheetname});
-
+<%
+        }
+%>
 $nb_line_<%=cid%> = 0;
 
-my $total_line_<%=cid%> = $worksheet_<%=cid%>->{MaxRow} - $worksheet_<%=cid%>->{MinRow} + 1;
+foreach my $sheet (@sheetlist) {
+    my $worksheet_<%=cid%> = $book_<%=cid%>->Worksheet($sheet);
 
-my ($first_row_<%=cid%>, $last_row_<%=cid%>) = getFirstAndLastRowNumber(
-    header  => $worksheet_<%=cid%>->{MinRow} + $desc_<%=cid%>{header},
-    footer  => $desc_<%=cid%>{footer},
-    limit   => $desc_<%=cid%>{limit},
-    total   => $total_line_<%=cid%>,
-);
+    my $total_line_<%=cid%> =
+        $worksheet_<%=cid%>->{MaxRow} - $worksheet_<%=cid%>->{MinRow} + 1;
 
-my ($first_column_<%=cid%>, $last_column_<%=cid%>) =
-    ($worksheet_<%=cid%>->{MinCol}, $worksheet_<%=cid%>->{MaxCol});
-
-if (defined $desc_<%=cid%>{first_column}
-    and $desc_<%=cid%>{first_column} >= 1) {
-    $first_column_<%=cid%> = $desc_<%=cid%>{first_column} - 1;
-}
-
-if (defined $desc_<%=cid%>{last_column}
-    and $desc_<%=cid%>{last_column} < $worksheet_<%=cid%>->{MaxCol} + 1) {
-    $last_column_<%=cid%> = $desc_<%=cid%>{last_column} - 1;
-}
-
-for ($first_row_<%=cid%> .. $last_row_<%=cid%>) {
-    my $current_row = $_ - 1;
-    my $<%=cid%> = [];
-    $nb_line_<%=cid%>++;
-
-    for (my $current_column = $first_column_<%=cid%>;
-         $current_column <= $last_column_<%=cid%>;
-         $current_column++) {
-         my $current_cell = $worksheet_<%=cid%>->{Cells}[$current_row][$current_column];
-         push(@$<%=cid%>, $current_cell ? 
-    <%
-    if(withformat){
-    %>          
-             $current_cell->Value 
-    <%
-    } 
-    else {
-    %>
-             $current_cell->{Val} 
-    <%
+    my ($first_row_<%=cid%>, $last_row_<%=cid%>) = getFirstAndLastRowNumber(
+        header  => $worksheet_<%=cid%>->{MinRow} + $desc_<%=cid%>{header},
+        footer  => $desc_<%=cid%>{footer},
+        limit   => $desc_<%=cid%>{limit},
+        total   => $total_line_<%=cid%>,
+    );
+    
+    my ($first_column_<%=cid%>, $last_column_<%=cid%>) =
+        ($worksheet_<%=cid%>->{MinCol}, $worksheet_<%=cid%>->{MaxCol});
+    
+    if (defined $desc_<%=cid%>{first_column}
+        and $desc_<%=cid%>{first_column} >= 1) {
+        $first_column_<%=cid%> = $desc_<%=cid%>{first_column} - 1;
     }
-    %>
-             : undef );
+    
+    if (defined $desc_<%=cid%>{last_column}
+        and $desc_<%=cid%>{last_column} < $worksheet_<%=cid%>->{MaxCol} + 1) {
+        $last_column_<%=cid%> = $desc_<%=cid%>{last_column} - 1;
     }
-    $current_row++;
-
-    if( <%=nbFields%> != scalar(@$<%=cid%>)){
-        @$<%=cid%> = (@$<%=cid%>)<% if ( nbFields > 0) { %>[0 .. <%=nbFields -1%>]<% } %>;
-    }
+    
+    for ($first_row_<%=cid%> .. $last_row_<%=cid%>) {
+        my $current_row = $_ - 1;
+        my $<%=cid%> = [];
+        $nb_line_<%=cid%>++;
+    
+        for (my $current_column = $first_column_<%=cid%>;
+             $current_column <= $last_column_<%=cid%>;
+             $current_column++) {
+             my $current_cell = $worksheet_<%=cid%>->{Cells}[$current_row][$current_column];
+             push(@$<%=cid%>, $current_cell ? 
+<%
+        if (withformat) {
+%>          
+                 $current_cell->Value 
+<%
+        } 
+        else {
+%>
+                 $current_cell->{Val} 
+<%
+        }
+%>
+                 : undef );
+        }
+        $current_row++;
+    
+        if (<%=nbFields%> != scalar(@$<%=cid%>)) {
+            @$<%=cid%> = (@$<%=cid%>)<% if ( nbFields > 0) { %>[0 .. <%=nbFields -1%>]<% } %>;
+        }
 <%
 		}
 	}

@@ -31,25 +31,38 @@
     <PARAMETER
       NAME="FILENAME"
       FIELD="FILE"
-      NUM_ROW="2"
+      NUM_ROW="10"
       REQUIRED="true"
     >
       <DEFAULT>'__COMP_DEFAULT_FILE_DIR__/in.xls'</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
-      NAME="SHEETNAME"
-      FIELD="TEXT"
-      NUM_ROW="3"
+      NAME="ALL_SHEETS"
+      FIELD="CHECK"
       REQUIRED="true"
+      NUM_ROW="20"
     >
-      <DEFAULT>'first sheet'</DEFAULT>
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="SHEETLIST"
+      FIELD="TABLE"
+      REQUIRED="true"
+      NUM_ROW="30"
+      NB_LINES="5"
+      SHOW_IF="ALL_SHEETS == 'false'"
+    >
+      <ITEMS>
+        <ITEM NAME="SHEETNAME" VALUE="'first sheet'"/>
+      </ITEMS>
     </PARAMETER>
 
     <PARAMETER
       NAME="HEADER"
       FIELD="TEXT"
-      NUM_ROW="4"
+      NUM_ROW="40"
     >
       <DEFAULT>0</DEFAULT>
     </PARAMETER>
@@ -57,7 +70,7 @@
     <PARAMETER
       NAME="FOOTER"
       FIELD="TEXT"
-      NUM_ROW="4"
+      NUM_ROW="40"
     >
       <DEFAULT>0</DEFAULT>
     </PARAMETER>
@@ -65,7 +78,7 @@
     <PARAMETER
       NAME="LIMIT"
       FIELD="TEXT"
-      NUM_ROW="4"
+      NUM_ROW="40"
     >
       <DEFAULT />
     </PARAMETER>
@@ -73,7 +86,7 @@
     <PARAMETER
       NAME="FIRST_COLUMN"
       FIELD="TEXT"
-      NUM_ROW="5"
+      NUM_ROW="50"
     >
       <DEFAULT>'1'</DEFAULT>
     </PARAMETER>
@@ -81,7 +94,7 @@
     <PARAMETER
       NAME="LAST_COLUMN"
       FIELD="TEXT"
-      NUM_ROW="5"
+      NUM_ROW="50"
     >
       <DEFAULT/>
     </PARAMETER>
@@ -90,7 +103,7 @@
       NAME="SCHEMA"
       FIELD="SCHEMA_TYPE"
       REQUIRED="true"
-      NUM_ROW="7"
+      NUM_ROW="60"
     />
 
   </PARAMETERS>
