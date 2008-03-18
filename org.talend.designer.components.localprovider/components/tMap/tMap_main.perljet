@@ -273,43 +273,40 @@
                     <%
                     }
                     %>                                             
-            $<%= tableName %> = $ref_<%= tableName %>FromLookup;
+            @$<%= tableName %> = @$ref_<%= tableName %>FromLookup;
                                                <%
                                                    String expressionFilter = externalTable.getExpressionFilter();
                                                if(
-                                                     ( externalTable.isInnerJoin() || matchingModeStr.equals("ALL_ROWS") )
-                                                     && externalTable.isActivateExpressionFilter() 
+                                                     externalTable.isActivateExpressionFilter() 
                                                      && expressionFilter != null 
                                                      && !expressionFilter.trim().equals("")
                                                ) { // 12 
 								          String expressionFilterWithPrefixs = gm.prefixEntryLocationsForOutputExpression(uniqueNameComponent, expressionFilter, expressionParser,
 		    			       			          new TableType[] { TableType.INPUT});
                                                %>
-            if( !$<%= rejectedInnerJoin %> && !(<%= expressionFilterWithPrefixs%>)) { # 16
-                                                          <%
-                                                          if(externalTable.isInnerJoin() && aKeysValues.length > 0) {
-                                                          %>
-                $<%= rejectedInnerJoin %> = true;
-                #$<%= tableName %> = [];    
-                                                          <%
-                                                          } else if(externalTable.isInnerJoin() && aKeysValues.length == 0){
-                                                          %>
-                if( $i<%= tableName %> == size<%= tableName %>ArrayFromLookup - 1 
-                && !$hasAtLeastOneValidLookup_<%= tableName %>) 
-                { # 15
+            
+            if( !$<%= rejectedInnerJoin %> && !(<%= expressionFilterWithPrefixs%>)) { # G 16
+
+            	@$<%= tableName %> = ();
+
+                <%
+                if(externalTable.isInnerJoin() && aKeysValues.length > 0) { // T 120
+                %>
+                	$<%= rejectedInnerJoin %> = true;
+                <%
+                } else if(externalTable.isInnerJoin() && aKeysValues.length == 0) { // T 120
+				%>
+                  if( $i<%= tableName %> == size<%= tableName %>ArrayFromLookup - 1 
+                  && !$hasAtLeastOneValidLookup_<%= tableName %>) 
+                  { # G 15
                     $<%= rejectedInnerJoin %> = true;
-                } # 15
-                                                            <%
-                                                          }
-                                                          else{
-                                                          %>
-                next;
-                                                          <%
-                                                          }
-                                                          %>
-            } # 16
+                  } # G 15
+                <%
+                } // T 120
+                %>
+            } # G 16
                                                   <%
-                                                 if(aKeysValues.length == 0){
+                                                 if(aKeysValues.length == 0){ // ALL ROWS
                                                   %>
                 if(@$ref_<%= tableName %>FromLookup == 0 && !$<%= rejectedInnerJoin %>) 
                 { # 17
@@ -629,4 +626,8 @@
 
 %>
 <%= sb.toString()%>
+    
+
+$<%= rejectedInnerJoin %> = false;
+    
     
