@@ -200,6 +200,11 @@ public class JavaProcessor extends Processor {
         jobFolderName = jobFolderName.toLowerCase();
         String fileName = filenameFromLabel ? escapeFilename(process.getLabel()) : process.getId();
 
+        String version = process.getProperty().getVersion();
+        version = version.replace(".", "_");
+
+        fileName = fileName + version;
+
         try {
             IPackageFragment projectPackage = getProjectPackage(projectFolderName);
             IPackageFragment jobPackage = getProjectPackage(projectPackage, jobFolderName);
@@ -313,7 +318,7 @@ public class JavaProcessor extends Processor {
     private String formatCode(String processCode) {
         IDocument document = new Document(processCode);
 
-		// we cannot make calls to Ui in headless mode
+        // we cannot make calls to Ui in headless mode
         if (CorePlugin.getContext().isHeadless()) {
             return document.get();
         }
