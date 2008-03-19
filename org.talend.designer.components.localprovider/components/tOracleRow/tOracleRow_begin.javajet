@@ -61,7 +61,7 @@ else
 	<%
 }
 %>
-java.sql.PreparedStatement pstmt_<%=cid %> = null;
+java.sql.Statement stmt_<%=cid %> = conn_<%=cid %>.createStatement();;
 
 boolean whetherReject_<%=cid%> = false;
 
@@ -81,6 +81,8 @@ if(conn_<%=cid%>.getAutoCommit())
 <%
 }
 %>
+
+String query_<%=cid %> = <%=dbquery%>;
 
 
 

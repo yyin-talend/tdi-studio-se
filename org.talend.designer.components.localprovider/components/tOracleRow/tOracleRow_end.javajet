@@ -14,8 +14,8 @@ imports="
 	
 	String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
 %>
-if(pstmt_<%=cid %>!=null){
-pstmt_<%=cid %>.close();
+if(stmt_<%=cid %>!=null){
+stmt_<%=cid %>.close();
 }
 	
 <%
