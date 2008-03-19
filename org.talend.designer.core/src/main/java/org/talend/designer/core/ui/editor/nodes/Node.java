@@ -186,8 +186,6 @@ public class Node extends Element implements INode {
 
     private boolean schemaSynchronized = true;
 
-    private boolean isCompactLayout;
-
     /**
      * This constructor is called when the node is created from the palette the unique name will be determined with the
      * number of components of this type.
@@ -213,7 +211,6 @@ public class Node extends Element implements INode {
     }
 
     private void init(IComponent newComponent) {
-        isCompactLayout = true;
         this.component = newComponent;
         this.label = component.getTranslatedName();
         this.componentName = this.label;
@@ -2281,24 +2278,6 @@ public class Node extends Element implements INode {
      */
     public boolean isVirtualGenerateNode() {
         return false;
-    }
-
-    /**
-     * Getter for isCompactLayout.
-     * 
-     * @return the isCompactLayout
-     */
-    public boolean isCompactLayout() {
-        return this.isCompactLayout;
-    }
-
-    /**
-     * Sets the isCompactLayout.
-     * 
-     * @param isCompactLayout the isCompactLayout to set
-     */
-    public void setCompactLayout(boolean isCompactLayout) {
-        this.isCompactLayout = isCompactLayout;
     }
 
 }

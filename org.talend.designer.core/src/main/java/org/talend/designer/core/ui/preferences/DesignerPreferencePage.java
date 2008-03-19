@@ -127,5 +127,10 @@ public class DesignerPreferencePage extends FieldEditorPreferencePage implements
                 { "warn", "warn" }, { "enlarge or truncate row", "default" } }, getFieldEditorParent(), true); //$NON-NLS-1$ //$NON-NLS-2$
         addField(schemaOptions);
 
+        RadioGroupFieldEditor viewOptions = new RadioGroupFieldEditor(TalendDesignerPrefConstants.VIEW_OPTIONS, Messages
+                .getString("DesignerPreferencePage.viewOptions"), 2, new String[][] { { "compact view", "default" }, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                { "table view", "table view" } }, getFieldEditorParent(), true); //$NON-NLS-1$ //$NON-NLS-2$
+        addField(viewOptions);
+
     }
 }

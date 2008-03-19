@@ -67,6 +67,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
         store.setDefault(TalendDesignerPrefConstants.PROPERTY_CODE_CHECK, false);
         store.setDefault(TalendDesignerPrefConstants.LARGE_ICONS_SIZE, "24");
         store.setDefault(TalendDesignerPrefConstants.SCHEMA_OPTIONS, "default");
+        store.setDefault(TalendDesignerPrefConstants.VIEW_OPTIONS, "default");
 
         // defaults for the stats preferences for java
         store.setDefault(ECodeLanguage.JAVA.toString() + "_" + EParameterName.PROPERTY_TYPE.getName(), EmfComponent.BUILTIN);

@@ -18,6 +18,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -42,6 +43,7 @@ import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.properties.tab.HorizontalTabFactory;
 import org.talend.core.properties.tab.TalendPropertyTabDescriptor;
+import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.notes.Note;
@@ -50,6 +52,7 @@ import org.talend.designer.core.ui.editor.properties.controllers.generator.IDyna
 import org.talend.designer.core.ui.editor.properties.notes.AbstractNotePropertyComposite;
 import org.talend.designer.core.ui.editor.properties.notes.OpaqueNotePropertyComposite;
 import org.talend.designer.core.ui.editor.properties.notes.TextNotePropertyComposite;
+import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 
 /**
  * nrousseau class global comment. Detailled comment <br/>
@@ -61,7 +64,9 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
 
     private static final String CATEGORY = "category";
 
-    // private static final String ELEMENT = "element";
+    private static final String DEFAULT = "default";
+
+    private static final String TABLEVIEW = "table view";
 
     public static final String ID = "org.talend.designer.core.ui.views.properties.ComponentSettingsView";
 
@@ -80,8 +85,6 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
     private Map<String, Composite> parentMap = null;
 
     private Map<String, EComponentCategory> categoryMap = null;
-
-    // private Map<String, Element> elementMap = null;
 
     /**
      * Getter for parentMap.
@@ -108,7 +111,16 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
         tabFactory = new HorizontalTabFactory();
         parentMap = new HashMap<String, Composite>();
         categoryMap = new HashMap<String, EComponentCategory>();
-        // elementMap = new HashMap<String, Element>();
+    }
+
+    /**
+     * DOC zwang Comment method "getPreference".
+     * 
+     * @return
+     */
+    private IPreferenceStore getPreference() {
+        // TODO Auto-generated method stub
+        return DesignerPlugin.getDefault().getPreferenceStore();
     }
 
     /*
@@ -168,19 +180,23 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
                 // getElementMap().put(ComponentSettingsView.ELEMENT, element);
                 createButtonListener();
                 // tabFactory.getTabbedPropertyComposite().setVisible(true);
-                tabFactory.getTabbedPropertyComposite().setCompactView(((Node) element).isCompactLayout());
-                if (((Node) element).isCompactLayout()) {
+                if (ComponentSettingsView.DEFAULT.equals(getPreference().getString(TalendDesignerPrefConstants.VIEW_OPTIONS))) {
+                    tabFactory.getTabbedPropertyComposite().setCompactView(true);
                     tabFactory.getTabbedPropertyComposite().getCompactButton().setImage(
                             ImageProvider.getImage(EImage.COMPACT_VIEW));
                     tabFactory.getTabbedPropertyComposite().getTableButton().setImage(
                             ImageProvider.getImage(EImage.NO_TABLE_VIEW));
-                } else {
+                    dc = new MultipleThreadDynamicComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS, category,
+                            element, true);
+                } else if (ComponentSettingsView.TABLEVIEW.equals(getPreference().getString(
+                        TalendDesignerPrefConstants.VIEW_OPTIONS))) {
+                    tabFactory.getTabbedPropertyComposite().setCompactView(false);
                     tabFactory.getTabbedPropertyComposite().getCompactButton().setImage(
                             ImageProvider.getImage(EImage.NO_COMPACT_VIEW));
                     tabFactory.getTabbedPropertyComposite().getTableButton().setImage(ImageProvider.getImage(EImage.TABLE_VIEW));
+                    dc = new MultipleThreadDynamicComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS, category,
+                            element, false);
                 }
-                dc = new MultipleThreadDynamicComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS, category, element,
-                        ((Node) element).isCompactLayout());
             } else {
                 tabFactory.getTabbedPropertyComposite().getCompactButton().setVisible(false);
                 tabFactory.getTabbedPropertyComposite().getTableButton().setVisible(false);
@@ -278,7 +294,7 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
             public void widgetSelected(SelectionEvent e) {
                 // TODO Auto-generated method stub
                 tabFactory.getTabbedPropertyComposite().setCompactView(true);
-                ((Node) element).setCompactLayout(true);
+                getPreference().setValue(TalendDesignerPrefConstants.VIEW_OPTIONS, ComponentSettingsView.DEFAULT);
                 tabFactory.getTabbedPropertyComposite().getCompactButton().setImage(ImageProvider.getImage(EImage.COMPACT_VIEW));
                 tabFactory.getTabbedPropertyComposite().getTableButton().setImage(ImageProvider.getImage(EImage.NO_TABLE_VIEW));
 
@@ -289,7 +305,7 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
                             && getCategoryMap().get(ComponentSettingsView.CATEGORY) != null) {
                         dc = new MultipleThreadDynamicComposite(getParentMap().get(ComponentSettingsView.PARENT), SWT.H_SCROLL
                                 | SWT.V_SCROLL | SWT.NO_FOCUS, getCategoryMap().get(ComponentSettingsView.CATEGORY), element,
-                                ((Node) element).isCompactLayout());
+                                true);
                         dc.refresh();
                     }
                 }
@@ -305,7 +321,7 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
             public void widgetSelected(SelectionEvent e) {
                 // TODO Auto-generated method stub
                 tabFactory.getTabbedPropertyComposite().setCompactView(false);
-                ((Node) element).setCompactLayout(false);
+                getPreference().setValue(TalendDesignerPrefConstants.VIEW_OPTIONS, ComponentSettingsView.TABLEVIEW);
                 tabFactory.getTabbedPropertyComposite().getCompactButton().setImage(
                         ImageProvider.getImage(EImage.NO_COMPACT_VIEW));
                 tabFactory.getTabbedPropertyComposite().getTableButton().setImage(ImageProvider.getImage(EImage.TABLE_VIEW));
@@ -317,7 +333,7 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
                             && getCategoryMap().get(ComponentSettingsView.CATEGORY) != null) {
                         dc = new MultipleThreadDynamicComposite(getParentMap().get(ComponentSettingsView.PARENT), SWT.H_SCROLL
                                 | SWT.V_SCROLL | SWT.NO_FOCUS, getCategoryMap().get(ComponentSettingsView.CATEGORY), element,
-                                ((Node) element).isCompactLayout());
+                                false);
                         dc.refresh();
                     }
                 }
@@ -460,7 +476,6 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
             label = "Note";
             image = ImageProvider.getImage(EImage.PASTE_ICON);
         }
-
         tabFactory.setTitle(label, image);
     }
 
