@@ -32,6 +32,8 @@ skeleton="../templates/db_output_bulk.skeleton"
     
     String dbname= ElementParameterParser.getValue(node, "__DBNAME__");
     
+    String tableSchema = ElementParameterParser.getValue(node, "__TABLESCHEMA__");
+    
     String dbhost = ElementParameterParser.getValue(node, "__HOST__");
     
 	String dbport = ElementParameterParser.getValue(node, "__PORT__");
@@ -61,7 +63,18 @@ int deletedCount_<%=cid%>=0;
 int updatedCount_<%=cid%>=0;
 int insertedCount_<%=cid%>=0;
 
-String tableName_<%=cid%> = <%=tableName%>;
+<%
+if(tableSchema == null || tableSchema.equals("\"\"") || tableSchema.equals("")) {
+    %>
+    String tableName_<%=cid%> = <%=tableName%>;
+    <%
+} else {
+    %>
+    String tableName_<%=cid%> = <%=tableSchema%> + "\".\"" + <%=tableName%>;
+    <%
+}
+%>
+
 boolean whetherReject_<%=cid%> = false;
 
 java.lang.Class.forName("com.ibm.db2.jcc.DB2Driver");
@@ -175,26 +188,26 @@ if(columnList != null && columnList.size() > 0) {
     
 	if(dataAction.equals("INSERT")) {
 	    %>		
-	    java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("INSERT INTO \"" + <%=tableName%> + "\" (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)");
+	    java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("INSERT INTO \"" + tableName_<%=cid%> + "\" (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)");
 	    <%
 	} else if (dataAction.equals("UPDATE")) {
 	    %>	
-	    java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("UPDATE \"" + <%=tableName%> + "\" SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>");
+	    java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("UPDATE \"" + tableName_<%=cid%> + "\" SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>");
 	    <%		
 	} else if (dataAction.equals("INSERT_OR_UPDATE")) {
 	    %>
-	    java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("SELECT COUNT(1) FROM \"" + <%=tableName%> + "\" WHERE <%=updateWhereStmt.toString()%>");		
-	    java.sql.PreparedStatement pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement("INSERT INTO \"" + <%=tableName%> + "\" (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)");
-	    java.sql.PreparedStatement pstmtUpdate_<%=cid %> = conn_<%=cid%>.prepareStatement("UPDATE \"" + <%=tableName%> + "\" SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>");
+	    java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("SELECT COUNT(1) FROM \"" + tableName_<%=cid%> + "\" WHERE <%=updateWhereStmt.toString()%>");		
+	    java.sql.PreparedStatement pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement("INSERT INTO \"" + tableName_<%=cid%> + "\" (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)");
+	    java.sql.PreparedStatement pstmtUpdate_<%=cid %> = conn_<%=cid%>.prepareStatement("UPDATE \"" + tableName_<%=cid%> + "\" SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>");
 	    <%
 	} else if (dataAction.equals("UPDATE_OR_INSERT")) {
 	    %>
-	    java.sql.PreparedStatement pstmtUpdate_<%=cid %> = conn_<%=cid%>.prepareStatement("UPDATE \"" + <%=tableName%> + "\" SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>");
-	    java.sql.PreparedStatement pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement("INSERT INTO \"" + <%=tableName%> + "\" (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)");		
+	    java.sql.PreparedStatement pstmtUpdate_<%=cid %> = conn_<%=cid%>.prepareStatement("UPDATE \"" + tableName_<%=cid%> + "\" SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>");
+	    java.sql.PreparedStatement pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement("INSERT INTO \"" + tableName_<%=cid%> + "\" (<%=insertColName.toString()%>) VALUES (<%=insertValueStmt.toString()%>)");		
 	    <%			
 	} else if (dataAction.equals("DELETE")) {
 	    %>	
-	    java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("DELETE  FROM \"" + <%=tableName%> + "\" WHERE <%=deleteWhereStmt.toString()%>");
+	    java.sql.PreparedStatement pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("DELETE  FROM \"" + tableName_<%=cid%> + "\" WHERE <%=deleteWhereStmt.toString()%>");
 	    <%		
 	}
 }
