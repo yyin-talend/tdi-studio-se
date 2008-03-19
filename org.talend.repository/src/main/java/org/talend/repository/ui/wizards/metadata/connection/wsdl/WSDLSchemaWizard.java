@@ -144,6 +144,58 @@ public class WSDLSchemaWizard extends RepositoryWizard implements INewWizard {
 
     }
 
+    public WSDLSchemaWizard(IWorkbench workbench, boolean creation, RepositoryNode node, String[] existingNames,
+            boolean isSinglePageOnly) {
+        super(workbench, creation);
+        this.existingNames = existingNames;
+        this.isSinglePageOnly = isSinglePageOnly;
+        setNeedsProgressMonitor(true);
+
+        // TODO: should to changed icon.
+        setDefaultPageImageDescriptor(ImageProvider.getImageDesc(ECoreImage.DEFAULT_WIZ));
+        switch (node.getType()) {
+        case SIMPLE_FOLDER:
+        case REPOSITORY_ELEMENT:
+            pathToSave = RepositoryNodeUtilities.getPath(node);
+            break;
+        case SYSTEM_FOLDER:
+            pathToSave = new Path(""); //$NON-NLS-1$
+            break;
+        }
+
+        switch (node.getType()) {
+        case SIMPLE_FOLDER:
+        case SYSTEM_FOLDER:
+            connection = ConnectionFactory.eINSTANCE.createWSDLSchemaConnection();
+            MetadataTable metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
+            IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+            metadataTable.setId(factory.getNextId());
+            connection.getTables().add(metadataTable);
+            connectionProperty = PropertiesFactory.eINSTANCE.createProperty();
+            connectionProperty
+                    .setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
+                            .getUser());
+            connectionProperty.setVersion(VersionUtils.DEFAULT_VERSION);
+            connectionProperty.setStatusCode(""); //$NON-NLS-1$
+
+            connectionItem = PropertiesFactory.eINSTANCE.createLDAPSchemaConnectionItem();
+            connectionItem.setProperty(connectionProperty);
+            connectionItem.setConnection(connection);
+            break;
+
+        case REPOSITORY_ELEMENT:
+            connection = (WSDLSchemaConnection) ((ConnectionItem) node.getObject().getProperty().getItem()).getConnection();
+            connectionProperty = node.getObject().getProperty();
+            connectionItem = (ConnectionItem) node.getObject().getProperty().getItem();
+            // set the repositoryObject, lock and set isRepositoryObjectEditable
+            setRepositoryObject(node.getObject());
+            isRepositoryObjectEditable();
+            initLockStrategy();
+            break;
+        }
+
+    }
+
     /**
      * Adding the page to the wizard.
      */

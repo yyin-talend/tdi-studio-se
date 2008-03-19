@@ -97,10 +97,12 @@ public class CreateConnectionAction extends AbstractCreateAction {
             }
         }
         RepositoryNode metadataNode = dbConnectionNode.getParent();
-        // Force focus to the repositoryView and open Metadata and DbConnection nodes
-        getViewPart().setFocus();
-        getViewPart().expand(metadataNode, true);
-        getViewPart().expand(dbConnectionNode, true);
+        if (metadataNode != null) {
+            // Force focus to the repositoryView and open Metadata and DbConnection nodes
+            getViewPart().setFocus();
+            getViewPart().expand(metadataNode, true);
+            getViewPart().expand(dbConnectionNode, true);
+        }
 
         DatabaseConnection connection = null;
         IPath pathToSave = null;

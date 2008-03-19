@@ -18,7 +18,9 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.WizardDialog;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
@@ -28,6 +30,7 @@ import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.migration.IMigrationToolService;
 import org.talend.core.model.properties.Property;
+import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.ui.DisableLanguageActions;
 import org.talend.designer.runprocess.IRunProcessService;
@@ -42,8 +45,18 @@ import org.talend.repository.plugin.integration.BindingActions;
 import org.talend.repository.plugin.integration.SwitchProjectAction;
 import org.talend.repository.ui.login.LoginDialog;
 import org.talend.repository.ui.utils.ColumnNameValidator;
+import org.talend.repository.ui.views.IRepositoryView;
+import org.talend.repository.ui.views.RepositoryContentProvider;
 import org.talend.repository.ui.views.RepositoryView;
+import org.talend.repository.ui.wizards.metadata.connection.database.DatabaseWizard;
+import org.talend.repository.ui.wizards.metadata.connection.files.delimited.DelimitedFileWizard;
+import org.talend.repository.ui.wizards.metadata.connection.files.ldif.LdifFileWizard;
+import org.talend.repository.ui.wizards.metadata.connection.files.positional.FilePositionalWizard;
+import org.talend.repository.ui.wizards.metadata.connection.files.regexp.RegexpFileWizard;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.XmlFileWizard;
 import org.talend.repository.ui.wizards.metadata.connection.genericshema.GenericSchemaWizard;
+import org.talend.repository.ui.wizards.metadata.connection.ldap.LDAPSchemaWizard;
+import org.talend.repository.ui.wizards.metadata.connection.wsdl.WSDLSchemaWizard;
 import org.talend.repository.utils.RepositoryPathProvider;
 
 ;
@@ -272,5 +285,73 @@ public class RepositoryService implements IRepositoryService {
      */
     public boolean isFromRecycleBin(RepositoryNode node) {
         return node instanceof BinRepositoryNode;
+    }
+
+    public void openMetadataConnection(IRepositoryObject o) {
+
+        IRepositoryView view = RepositoryView.show();
+        RepositoryContentProvider provider = (RepositoryContentProvider) view.getViewer().getContentProvider();
+
+        final RepositoryNode realNode = getRepositoryNode(view.getRoot(), o);
+
+        // if (realNode != null) {
+        // CreateConnectionAction action = new CreateConnectionAction() {
+        //
+        // public RepositoryNode getCurrentRepositoryNode() {
+        // return realNode;
+        // }
+        //
+        // public ISelection getSelection() {
+        // return new StructuredSelection(realNode);
+        // }
+        // };
+        //
+        // action.run();
+        // }
+
+        if (realNode != null) {
+
+            IWizard relatedWizard = null;
+            if (realNode.getObjectType().equals(ERepositoryObjectType.METADATA_CONNECTIONS)) {
+                relatedWizard = new DatabaseWizard(PlatformUI.getWorkbench(), false, realNode, null);
+            } else if (realNode.getObjectType().equals(ERepositoryObjectType.METADATA_FILE_DELIMITED)) {
+                relatedWizard = new DelimitedFileWizard(PlatformUI.getWorkbench(), false, realNode, null);
+            } else if (realNode.getObjectType().equals(ERepositoryObjectType.METADATA_FILE_LDIF)) {
+                relatedWizard = new LdifFileWizard(PlatformUI.getWorkbench(), false, realNode, null);
+            } else if (realNode.getObjectType().equals(ERepositoryObjectType.METADATA_FILE_POSITIONAL)) {
+                relatedWizard = new FilePositionalWizard(PlatformUI.getWorkbench(), false, realNode, null);
+            } else if (realNode.getObjectType().equals(ERepositoryObjectType.METADATA_FILE_REGEXP)) {
+                relatedWizard = new RegexpFileWizard(PlatformUI.getWorkbench(), false, realNode, null);
+            } else if (realNode.getObjectType().equals(ERepositoryObjectType.METADATA_FILE_XML)) {
+                relatedWizard = new XmlFileWizard(PlatformUI.getWorkbench(), false, realNode, null);
+            } else if (realNode.getObjectType().equals(ERepositoryObjectType.METADATA_GENERIC_SCHEMA)) {
+                relatedWizard = new GenericSchemaWizard(PlatformUI.getWorkbench(), false, realNode, null, true);
+            } else if (realNode.getObjectType().equals(ERepositoryObjectType.METADATA_WSDL_SCHEMA)) {
+                relatedWizard = new WSDLSchemaWizard(PlatformUI.getWorkbench(), false, realNode, null, false);
+            } else if (realNode.getObjectType().equals(ERepositoryObjectType.METADATA_LDAP_SCHEMA)) {
+                relatedWizard = new LDAPSchemaWizard(PlatformUI.getWorkbench(), false, realNode, null, false);
+            }
+            // Open the Wizard
+            WizardDialog wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), relatedWizard);
+            wizardDialog.setPageSize(600, 500);
+            wizardDialog.create();
+            wizardDialog.open();
+        }
+
+    }
+
+    private RepositoryNode getRepositoryNode(RepositoryNode node, IRepositoryObject aNode) {
+
+        for (RepositoryNode rootNode : node.getChildren()) {
+            for (RepositoryNode fatherNode : rootNode.getChildren()) {
+                for (RepositoryNode sonNode : fatherNode.getChildren()) {
+                    if (sonNode.getId().equals(aNode.getId())) {
+                        return sonNode;
+                    }
+                }
+            }
+        }
+
+        return null;
     }
 }

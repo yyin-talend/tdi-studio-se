@@ -60,7 +60,7 @@ public abstract class AbstractCreateAction extends AContextualAction {
      */
     protected String[] getExistingNames() {
         if (existingNames == null) {
-            init((RepositoryNode) ((IStructuredSelection) getSelection()).getFirstElement());
+            init(getCurrentRepositoryNode());
         }
         return existingNames;
     }
