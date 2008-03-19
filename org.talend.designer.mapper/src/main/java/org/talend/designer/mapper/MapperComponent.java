@@ -170,7 +170,7 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
     }
 
     /**
-     * DOC amaumont Comment method "refreshMapperConnectorData".
+     * Restore mapper model from internal stored data.
      */
     public void refreshMapperConnectorData() {
         super.refreshMapperConnectorData();
