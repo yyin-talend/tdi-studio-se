@@ -44,11 +44,19 @@
       NUM_ROW="2"
     />
 
+    <PARAMETER 
+      NAME="ATTACHMENT_PATH" 
+      FIELD="DIRECTORY" 
+      NUM_ROW="3"
+    >
+    </PARAMETER>
+
+
     <PARAMETER
       NAME="MAIL_PARTS"
       FIELD="TABLE"
       REQUIRED="true"
-      NUM_ROW="3"
+      NUM_ROW="4"
       NB_LINES="5"
     >
       <ITEMS BASED_ON_SCHEMA="true">
@@ -60,8 +68,11 @@
   <CODEGENERATION>
     <IMPORTS>
       <IMPORT NAME="Email-Filter" MODULE="Email::Filter" REQUIRED="true" />
+      <IMPORT NAME="MIME-Tools" MODULE="MIME::Tools" REQUIRED="true" />
     </IMPORTS>
   </CODEGENERATION>
 
-  <RETURNS />
+  <RETURNS>
+      <RETURN NAME="ATTACHMENT_OUTPUT_PATH" TYPE="STRING" AVAILABILITY="FLOW"/>
+  </RETURNS>
 </COMPONENT>

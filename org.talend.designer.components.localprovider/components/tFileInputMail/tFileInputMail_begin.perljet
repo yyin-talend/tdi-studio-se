@@ -26,6 +26,12 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             "__FILENAME__"
         );
 
+        String attachmentpath = ElementParameterParser.getValue(
+            node,
+            "__ATTACHMENT_PATH__"
+        );
+
+
         List<Map<String, String>> mailParts =
             (List<Map<String,String>>)ElementParameterParser.getObjectValue(
                 node,
@@ -35,6 +41,14 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 
 use FileHandle;
 use Email::Filter;
+<%
+if(attachmentpath != null && attachmentpath.length() > 0){
+%>
+use File::Path;
+use MIME::Parser;
+<%
+}
+%>
 
 my %desc_<%=cid%> = (
     filename      => <%=filename %>,
@@ -70,6 +84,51 @@ my %desc_<%=cid%> = (
 
 my $nb_fields_<%=cid%> = scalar @{ $desc_<%=cid%>{schema} };
 
+<%
+if(attachmentpath != null && attachmentpath.length() > 0){
+%>
+
+my $parser_<%=cid%> = new MIME::Parser;
+
+$parser_<%=cid%>->output_under(<%=attachmentpath%>);
+
+my $entity_<%=cid%> = eval { 
+    $parser_<%=cid%>->parse_open($desc_<%=cid %>{filename}); 
+} ;
+
+if(!$entity_<%=cid%>){
+    # parse failed, we clean-up directory
+    rmtree($parser_<%=cid%>->output_dir);
+    die "[<%=cid%>] parse failed: $@";} 
+else {
+    $_globals{<%=cid %>}{ATTACHMENT_OUTPUT_PATH} = $parser_<%=cid%>->output_dir;
+}		          
+
+my @<%=cid%> = ();
+my $col_num = 0;
+
+foreach my $mail_part (@{ $desc_<%=cid%>{mail_parts} }) {
+
+    if ($mail_part eq 'body') {
+        $<%=cid%>[$col_num] = $entity_<%=cid%>->print_body();
+    }
+    else {
+        $<%=cid%>[$col_num] = $entity_<%=cid%>->head->get($mail_part);
+    }
+    chomp $<%=cid%>[$col_num];
+    $<%=cid%>[$col_num] =~ s/\n//g;
+    
+    $col_num++;
+}
+
+
+<%
+} 
+else
+{
+%>
+
+
 my $input_FH_<%=cid %> = new FileHandle;
 open($input_FH_<%=cid %>, '<', $desc_<%=cid %>{filename})
     or die 'cannot open file "' . $desc_<%=cid %>{filename} . '"';
@@ -93,6 +152,11 @@ foreach my $mail_part (@{ $desc_<%=cid%>{mail_parts} }) {
 
     $col_num++;
 }
+
+<%
+} 
+%>
+
 
 my $<%=cid%> = \@<%=cid%>;
 
