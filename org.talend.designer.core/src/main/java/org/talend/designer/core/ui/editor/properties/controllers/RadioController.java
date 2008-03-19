@@ -88,7 +88,7 @@ public class RadioController extends AbstractElementPropertySectionController {
                                 commands.add(cmd);
 
                                 String groupName = elem.getElementParameter(name).getGroup();
-                                if (groupName != null) {
+                                if (groupName != null && elem.getElementParameter(groupName) != null) {
                                     Command cmd2 = new PropertyChangeCommand(elem, groupName, name);
                                     commands.add(cmd2);
                                 }

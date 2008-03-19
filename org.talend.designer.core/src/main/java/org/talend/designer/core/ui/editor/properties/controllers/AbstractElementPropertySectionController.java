@@ -1098,7 +1098,6 @@ public abstract class AbstractElementPropertySectionController implements Proper
      * @param query
      */
     protected String openSQLBuilder(String repositoryType, String propertyName, String query) {
-        // boolean status = true;
         if (repositoryType.equals(EmfComponent.BUILTIN)) {
             connParameters.setQuery(query);
             if (connParameters.isShowConfigParamDialog()) {

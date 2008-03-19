@@ -47,6 +47,8 @@ import org.talend.repository.model.ComponentsFactoryProvider;
  */
 public class JobSettingsManager {
 
+    private static final String IMPLICIT_GROUP = "IMPLICIT_GROUP";
+
     public static void createJobSettingsParemeters(IProcess process) {
         // not used, only for hiding the table sql-builder button.
         // ElementParameter param;
@@ -109,10 +111,36 @@ public class JobSettingsManager {
         param = new ElementParameter(process);
         param.setName(EParameterName.IMPLICIT_TCONTEXTLOAD.getName());
         param.setValue(false);
+        param.setGroupDisplayName("Implicit Context load");
         param.setDisplayName(EParameterName.IMPLICIT_TCONTEXTLOAD.getDisplayName());
         param.setField(EParameterFieldType.CHECK);
         param.setCategory(EComponentCategory.EXTRA);
+        param.setGroup(IMPLICIT_GROUP);
         param.setNumRow(3);
+        paramList.add(param);
+
+        // on files
+        param = new ElementParameter(process);
+        param.setName(JobSettingsConstants.getExtraParameterName(EParameterName.FROM_FILE_FLAG.getName()));
+        param.setValue(false);
+        param.setDisplayName(EParameterName.FROM_FILE_FLAG.getDisplayName());
+        param.setField(EParameterFieldType.RADIO);
+        param.setCategory(EComponentCategory.EXTRA);
+        param.setNumRow(4);
+        param.setShowIf(JobSettingsConstants.addBrackets(CONTEXTLOAD_CONDITION));
+        param.setGroup(IMPLICIT_GROUP);
+        paramList.add(param);
+
+        // on database
+        param = new ElementParameter(process);
+        param.setName(JobSettingsConstants.getExtraParameterName(EParameterName.FROM_DATABASE_FLAG.getName()));
+        param.setValue(false);
+        param.setDisplayName(EParameterName.FROM_DATABASE_FLAG.getDisplayName());
+        param.setField(EParameterFieldType.RADIO);
+        param.setCategory(EComponentCategory.EXTRA);
+        param.setNumRow(5);
+        param.setShowIf(JobSettingsConstants.addBrackets(CONTEXTLOAD_CONDITION));
+        param.setGroup(IMPLICIT_GROUP);
         paramList.add(param);
 
         // on file
@@ -127,21 +155,6 @@ public class JobSettingsManager {
     private static void createExtraOnFileParameters(IProcess process) {
         ElementParameter param;
         List<IElementParameter> paramList = (List<IElementParameter>) process.getElementParameters();
-        // on files
-        param = new ElementParameter(process);
-        param.setName(JobSettingsConstants.getExtraParameterName(EParameterName.FROM_FILE_FLAG.getName()));
-        param.setValue(false);
-        param.setDisplayName(EParameterName.FROM_FILE_FLAG.getDisplayName());
-        param.setField(EParameterFieldType.CHECK);
-        param.setCategory(EComponentCategory.EXTRA);
-        param.setNumRow(30);
-        param.setShowIf(JobSettingsConstants.addBrackets(CONTEXTLOAD_CONDITION)
-                + " and "
-                + JobSettingsConstants.addBrackets(JobSettingsConstants.getExtraParameterName(EParameterName.FROM_DATABASE_FLAG
-                        .getName())
-                        + " == 'false'"));
-        paramList.add(param);
-
         // set Implicit tContextLoad file
         String fileName = ElementParameterParser.parse(process, "__COMP_DEFAULT_FILE_DIR__/in.csv"); //$NON-NLS-1$
         IPath path = Path.fromOSString(fileName);
@@ -153,6 +166,7 @@ public class JobSettingsManager {
         param.setDisplayName(EParameterName.IMPLICIT_TCONTEXTLOAD_FILE.getDisplayName());
         param.setField(EParameterFieldType.FILE);
         param.setCategory(EComponentCategory.EXTRA);
+        param.setGroup(IMPLICIT_GROUP);
         param.setNumRow(31);
         final String condition = JobSettingsConstants.addBrackets(CONTEXTLOAD_CONDITION)
                 + " and " //$NON-NLS-1$ 
@@ -174,22 +188,6 @@ public class JobSettingsManager {
         if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.JAVA)) {
             languageType = 1;
         }
-
-        // on database
-        param = new ElementParameter(process);
-        param.setName(JobSettingsConstants.getExtraParameterName(EParameterName.FROM_DATABASE_FLAG.getName()));
-        param.setValue(false);
-        param.setDisplayName(EParameterName.FROM_DATABASE_FLAG.getDisplayName());
-        param.setField(EParameterFieldType.CHECK);
-        param.setCategory(EComponentCategory.EXTRA);
-        param.setNumRow(40);
-        param.setShowIf(JobSettingsConstants.addBrackets(CONTEXTLOAD_CONDITION)
-                + " and "
-                + JobSettingsConstants.addBrackets(JobSettingsConstants.getExtraParameterName(EParameterName.FROM_FILE_FLAG
-                        .getName())
-                        + " == 'false'"));
-        paramList.add(param);
-
         final String onDBCondition = JobSettingsConstants.getExtraParameterName(EParameterName.FROM_DATABASE_FLAG.getName())
                 + " == 'true'"; //$NON-NLS-1$
         final String dbCondition = JobSettingsConstants.addBrackets(CONTEXTLOAD_CONDITION)
@@ -205,6 +203,7 @@ public class JobSettingsManager {
         parentPropertyType.setRepositoryValue("DATABASE"); //$NON-NLS-1$
         parentPropertyType.setNumRow(41);
         parentPropertyType.setShowIf(dbCondition);
+        parentPropertyType.setGroup(IMPLICIT_GROUP);
         paramList.add(parentPropertyType);
 
         param = new ElementParameter(process);
@@ -219,6 +218,7 @@ public class JobSettingsManager {
         param.setRepositoryValue("DATABASE"); //$NON-NLS-1$
         param.setNumRow(41);
         param.setShowIf(dbCondition);
+        param.setGroup(IMPLICIT_GROUP);
         param.setParentParameter(parentPropertyType);
         // paramList.add(param);
 
@@ -234,6 +234,7 @@ public class JobSettingsManager {
         param.setShow(false);
         param.setRequired(true);
         param.setNumRow(41);
+        param.setGroup(IMPLICIT_GROUP);
         param.setParentParameter(parentPropertyType);
         // paramList.add(param);
 
@@ -253,6 +254,7 @@ public class JobSettingsManager {
         param.setRepositoryValue("TYPE"); //$NON-NLS-1$
         param.setRequired(true);
         param.setShowIf(dbCondition);
+        param.setGroup(IMPLICIT_GROUP);
         paramList.add(param);
 
         // host
@@ -265,6 +267,7 @@ public class JobSettingsManager {
         param.setNumRow(42);
         param.setRepositoryValue("SERVER_NAME"); //$NON-NLS-1$
         param.setShowIf(dbCondition);
+        param.setGroup(IMPLICIT_GROUP);
         paramList.add(param);
 
         // port
@@ -277,6 +280,7 @@ public class JobSettingsManager {
         param.setNumRow(42);
         param.setRepositoryValue("PORT"); //$NON-NLS-1$
         param.setShowIf(dbCondition);
+        param.setGroup(IMPLICIT_GROUP);
         paramList.add(param);
 
         // dbName
@@ -289,6 +293,7 @@ public class JobSettingsManager {
         param.setNumRow(43);
         param.setRepositoryValue("SID"); //$NON-NLS-1$
         param.setShowIf(dbCondition);
+        param.setGroup(IMPLICIT_GROUP);
         paramList.add(param);
 
         if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.JAVA)) {
@@ -306,6 +311,7 @@ public class JobSettingsManager {
                     + " == 'INFORMIX'";
 
             param.setShowIf(JobSettingsConstants.addBrackets(dbCon) + " and " + dbCondition); //$NON-NLS-1$ //$NON-NLS-2$
+            param.setGroup(IMPLICIT_GROUP);
             paramList.add(param);
         }
         // schema
@@ -320,6 +326,7 @@ public class JobSettingsManager {
         final String schemaCondition = JobSettingsConstants.addBrackets(dbTypeName + " =='OCLE' or " + dbTypeName
                 + " =='POSTGRESQL'");
         param.setShowIf(schemaCondition + " and " + dbCondition);
+        param.setGroup(IMPLICIT_GROUP);
         paramList.add(param);
 
         // username
@@ -333,6 +340,7 @@ public class JobSettingsManager {
         param.setRequired(true);
         param.setRepositoryValue("USERNAME"); //$NON-NLS-1$
         param.setShowIf(dbCondition);
+        param.setGroup(IMPLICIT_GROUP);
         paramList.add(param);
 
         // password
@@ -346,6 +354,7 @@ public class JobSettingsManager {
         param.setRequired(true);
         param.setRepositoryValue("PASSWORD"); //$NON-NLS-1$
         param.setShowIf(dbCondition);
+        param.setGroup(IMPLICIT_GROUP);
         paramList.add(param);
 
         // table
@@ -357,6 +366,7 @@ public class JobSettingsManager {
         param.setCategory(EComponentCategory.EXTRA);
         param.setNumRow(45);
         param.setShowIf(dbCondition);
+        param.setGroup(IMPLICIT_GROUP);
         paramList.add(param);
     }
 
@@ -379,6 +389,7 @@ public class JobSettingsManager {
             param.setCategory(EComponentCategory.EXTRA);
             param.setNumRow(80);
             param.setShowIf(CONTEXTLOAD_CONDITION);
+            param.setGroup(IMPLICIT_GROUP);
             paramList.add(param);
             //
             param = new ElementParameter(process);
@@ -391,6 +402,7 @@ public class JobSettingsManager {
             param.setCategory(EComponentCategory.EXTRA);
             param.setNumRow(81);
             param.setShowIf(CONTEXTLOAD_CONDITION);
+            param.setGroup(IMPLICIT_GROUP);
             paramList.add(param);
         }
         // print operations
@@ -403,6 +415,7 @@ public class JobSettingsManager {
         param.setNumRow(82);
         param.setRequired(true);
         param.setShowIf(CONTEXTLOAD_CONDITION);
+        param.setGroup(IMPLICIT_GROUP);
         paramList.add(param);
 
         if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.JAVA)) {
@@ -416,6 +429,7 @@ public class JobSettingsManager {
             param.setNumRow(83);
             param.setRequired(true);
             param.setShowIf(CONTEXTLOAD_CONDITION);
+            param.setGroup(IMPLICIT_GROUP);
             paramList.add(param);
         }
 
@@ -429,6 +443,7 @@ public class JobSettingsManager {
         param.setNumRow(83);
         param.setRequired(true);
         param.setShowIf(CONTEXTLOAD_CONDITION);
+        param.setGroup(IMPLICIT_GROUP);
         paramList.add(param);
 
         if (LanguageManager.getCurrentLanguage().equals(ECodeLanguage.JAVA)) {
@@ -442,6 +457,7 @@ public class JobSettingsManager {
             param.setNumRow(83);
             param.setRequired(true);
             param.setShowIf(CONTEXTLOAD_CONDITION);
+            param.setGroup(IMPLICIT_GROUP);
             paramList.add(param);
         }
 
