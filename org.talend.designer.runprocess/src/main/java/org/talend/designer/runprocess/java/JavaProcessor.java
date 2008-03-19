@@ -200,8 +200,11 @@ public class JavaProcessor extends Processor {
         jobFolderName = jobFolderName.toLowerCase();
         String fileName = filenameFromLabel ? escapeFilename(process.getLabel()) : process.getId();
 
-        String version = process.getProperty().getVersion();
-        version = version.replace(".", "_");
+        String version = "";
+        if (process.getProperty() != null && process.getProperty().getVersion() != null) {
+            version = process.getProperty().getVersion();
+            version = version.replace(".", "_");
+        }
 
         fileName = fileName + version;
 
