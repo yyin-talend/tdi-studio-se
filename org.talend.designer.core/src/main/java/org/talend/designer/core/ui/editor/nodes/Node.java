@@ -1670,7 +1670,12 @@ public class Node extends Element implements INode {
                     }
                 }
             } else {
-                if (getCurrentActiveLinksNbInput(EConnectionType.FLOW_MAIN) == 0) {
+                if ((mainConnector.getMaxLinkInput() != 0) && (mainConnector.getMaxLinkOutput() != 0)) {
+                    if (getMetadataFromConnector(mainConnector.getName()).getListColumns().size() == 0) {
+                        noSchema = true;
+                    }
+                }
+                if (getCurrentActiveLinksNbInput(EConnectionType.FLOW_MAIN) == 0 && noSchema) {
                     if ((getCurrentActiveLinksNbOutput(EConnectionType.FLOW_MAIN) > 0)
                             || (getCurrentActiveLinksNbOutput(EConnectionType.FLOW_REF) > 0)) {
                         String errorMessage = "If this component has output, there must be an input link to propagate the data.";
