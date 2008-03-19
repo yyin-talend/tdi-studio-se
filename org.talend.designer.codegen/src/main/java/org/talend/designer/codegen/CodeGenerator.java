@@ -106,8 +106,11 @@ public class CodeGenerator implements ICodeGenerator {
             this.process = process;
             this.statistics = statistics;
             this.trace = trace;
-            this.jobVersion = process.getProperty().getVersion().replace(".", "_");
             this.jobName = process.getLabel();
+            this.jobVersion = "";
+            if (process.getProperty() != null && process.getProperty().getVersion() != null) {
+                this.jobVersion = process.getProperty().getVersion().replace(".", "_");
+            }
 
             this.contextName = process.getContextManager().getDefaultContext().getName();
             this.checkingSyntax = false;

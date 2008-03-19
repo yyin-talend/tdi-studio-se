@@ -30,7 +30,11 @@
 	boolean isRunInMultiThread = codeGenArgument.getIsRunInMultiThread();
 	List<IContextParameter> params = new ArrayList<IContextParameter>();
     params=process.getContextManager().getDefaultContext().getContextParameterList();
-    String jobVersion = process.getVersion().replace(".","_");
+    String jobVersion = "";
+    if(process.getVersion()!=null)
+    {
+        jobVersion = process.getVersion().replace(".","_");
+    }
 %>
     public static boolean watch = false;
     public static int portStats = 3334;
