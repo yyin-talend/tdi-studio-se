@@ -29,8 +29,10 @@
 		case 1:
 		// 1) OK and Cancel
 %>
-		javax.swing.JOptionPane.showOptionDialog(null, message<%=cid %>, title<%=cid %>, javax.swing.JOptionPane.YES_NO_OPTION, messageIcon<%=cid %>, null, new String[] { "OK", "Cancel" }, null);
-		result<%=cid %> = 1;
+		//javax.swing.JOptionPane.showOptionDialog(null, message<%=cid %>, title<%=cid %>, javax.swing.JOptionPane.YES_NO_OPTION, messageIcon<%=cid %>, null, new String[] { "OK", "Cancel" }, null);
+		//result<%=cid %> = 1;
+		
+		result<%=cid %> = javax.swing.JOptionPane.showOptionDialog(null, message<%=cid %>, title<%=cid %>, javax.swing.JOptionPane.OK_CANCEL_OPTION, messageIcon<%=cid %>, null, new String[] { "OK", "Cancel" }, null);
 <%
 			break;
 		case 2:
