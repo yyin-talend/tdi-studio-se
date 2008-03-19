@@ -100,6 +100,19 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
 
     @Override
     public void execute() {
+
+        // set readonly
+        // for (IElementParameter param : elem.getElementParameters()) {
+        //
+        // param.setReadOnly(true);
+        // Collection<IElementParameter> subparams = param.getChildParameters().values();
+        // Iterator<IElementParameter> it = subparams.iterator();
+        //            
+        // while (it.hasNext()) {
+        // it.next().setReadOnly(true);
+        // }
+        // }
+
         // Force redraw of Commponents propoerties
         elem.setPropertyValue(updataComponentParamName, new Boolean(true));
 
@@ -146,6 +159,9 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
 
         if (propertyName.split(":")[1].equals(propertyTypeName) && (EmfComponent.BUILTIN.equals(value))) {
             for (IElementParameter param : elem.getElementParameters()) {
+
+                param.setReadOnly(false);
+
                 boolean paramFlag = JobSettingsConstants.isExtraParameter(param.getName());
                 boolean extraFlag = JobSettingsConstants.isExtraParameter(propertyTypeName);
                 if (paramFlag == extraFlag) {
@@ -159,6 +175,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
             IElementParameter propertyParam = elem.getElementParameter(propertyName);
             EComponentCategory currentCategory = propertyParam.getCategory();
             for (IElementParameter param : elem.getElementParameters()) {
+
                 String repositoryValue = param.getRepositoryValue();
                 if (param.isShow(elem.getElementParameters()) && (repositoryValue != null)
                         && (!param.getName().equals(propertyTypeName))) {
@@ -212,6 +229,9 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                         param.setRepositoryValueUsed(true);
                     }
 
+                    if (param.isRepositoryValueUsed()) {
+                        param.setReadOnly(true);
+                    }
                 }
             }
         }

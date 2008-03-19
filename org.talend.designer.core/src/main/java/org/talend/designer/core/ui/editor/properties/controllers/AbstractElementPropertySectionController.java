@@ -37,6 +37,9 @@ import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -48,6 +51,8 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.progress.IWorkbenchSiteProgressService;
 import org.eclipse.ui.views.properties.PropertySheet;
+import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.ui.swt.dialogs.ModelSelectionDialog;
 import org.talend.commons.ui.swt.proposal.ContentProposalAdapterExtended;
 import org.talend.commons.ui.utils.ControlUtils;
 import org.talend.commons.ui.utils.TypedTextCommandExecutor;
@@ -67,6 +72,7 @@ import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.Problem;
 import org.talend.core.model.process.Problem.ProblemStatus;
+import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.ui.proposal.ProcessProposalUtils;
@@ -76,6 +82,7 @@ import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.process.jobsettings.JobSettingsConstants;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
+import org.talend.designer.core.ui.editor.cmd.ChangeValuesFromRepository;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
@@ -86,6 +93,7 @@ import org.talend.designer.core.ui.views.jobsettings.JobSettingsView;
 import org.talend.designer.core.ui.views.properties.ComponentSettingsView;
 import org.talend.designer.core.ui.views.properties.WidgetFactory;
 import org.talend.designer.runprocess.IRunProcessService;
+import org.talend.repository.RepositoryPlugin;
 import org.talend.sqlbuilder.ui.SQLBuilderDialog;
 import org.talend.sqlbuilder.util.ConnectionParameters;
 import org.talend.sqlbuilder.util.EConnectionParameterName;
@@ -1187,4 +1195,48 @@ public abstract class AbstractElementPropertySectionController implements Proper
         curParameter = null;
     }
 
+    public void addRepositoryPropertyListener(Control control) {
+        control.addMouseListener(listenerSelection);
+    }
+
+    MouseListener listenerSelection = new MouseAdapter() {
+
+        public void mouseDown(MouseEvent e) {
+
+            ModelSelectionDialog modelSelect = new ModelSelectionDialog(((Control) e.getSource()).getShell());
+
+            if (modelSelect.open() == ModelSelectionDialog.OK) {
+                if (modelSelect.getOptionValue() == 0) {
+
+                    getCommandStack().execute(changeToBuildInCommand((Control) e.getSource()));
+                }
+                if (modelSelect.getOptionValue() == 1) {
+
+                    getCommandStack().execute(refreshConnectionCommand((Control) e.getSource()));
+                }
+            }
+        }
+    };
+
+    private Command changeToBuildInCommand(Control control) {
+
+        return new ChangeValuesFromRepository(elem, null, "PROPERTY:PROPERTY_TYPE", "BUILT_IN");
+    }
+
+    private Command refreshConnectionCommand(Control control) {
+
+        Object connectionParam = (Object) elem.getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE)
+                .getChildParameters().values().toArray()[1];
+        IElementParameter parameter = (IElementParameter) connectionParam;
+
+        try {
+            IRepositoryObject o = RepositoryPlugin.getDefault().getRepositoryService().getProxyRepositoryFactory()
+                    .getLastVersion((String) parameter.getValue());
+            RepositoryPlugin.getDefault().getRepositoryService().openMetadataConnection(o);
+
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
+        }
+        return null;
+    }
 }

@@ -95,6 +95,11 @@ public class TextController extends AbstractElementPropertySectionController {
         if (elem instanceof Node) {
             labelText.setToolTipText(VARIABLE_TOOLTIP + param.getVariableName());
         }
+
+        if (param.isReadOnly() && param.isRepositoryValueUsed()) {
+            addRepositoryPropertyListener(labelText);
+        }
+
         addDragAndDropTarget(labelText);
 
         CLabel labelLabel = getWidgetFactory().createCLabel(subComposite, param.getDisplayName());

@@ -23,6 +23,9 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Font;
@@ -37,6 +40,7 @@ import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.swt.colorstyledtext.ColorStyledText;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
+import org.talend.commons.ui.swt.dialogs.ModelSelectionDialog;
 import org.talend.core.CorePlugin;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
@@ -46,6 +50,7 @@ import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
+import org.talend.designer.core.ui.editor.cmd.RepositoryChangeQueryCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
@@ -115,6 +120,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
             new ErrorDialogWidthDetailArea(composite.getShell(), pid, mainMsg, infoMsg);
             return null;
         }
+
         query = this.removeStrInQuery(query);
         initConnectionParametersWithContext(elem, part.getTalendEditor().getProcess().getContextManager().getDefaultContext());
         String sql = openSQLBuilder(repositoryType, propertyName, query);
@@ -237,6 +243,9 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
 
         });
 
+        if (param.isReadOnly() && param.isRepositoryValueUsed()) {
+            cLayout.addMouseListener(listenerClick);
+        }
         addDragAndDropTarget(queryText);
 
         CLabel labelLabel = getWidgetFactory().createCLabel(subComposite, param.getDisplayName());
@@ -352,5 +361,35 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
             checkErrorsForPropertiesOnly(labelText);
         }
         fixedCursorPosition(param, labelText, value, valueChanged);
+    }
+
+    MouseListener listenerClick = new MouseAdapter() {
+
+        public void mouseDown(MouseEvent e) {
+
+            ModelSelectionDialog modelSelect = new ModelSelectionDialog(((Control) e.getSource()).getShell());
+
+            if (modelSelect.open() == ModelSelectionDialog.OK) {
+                if (modelSelect.getOptionValue() == 0) {
+
+                    getCommandStack().execute(changeToBuildInCommand());
+                }
+                if (modelSelect.getOptionValue() == 1) {
+
+                    getCommandStack().execute(refreshConnectionCommand());
+                }
+            }
+        }
+    };
+
+    private Command changeToBuildInCommand() {
+
+        return new RepositoryChangeQueryCommand(this.elem, null, "QUERYSTORE_TYPE", "BUILT_IN");
+
+    }
+
+    private Command refreshConnectionCommand() {
+
+        return createCommand();
     }
 }

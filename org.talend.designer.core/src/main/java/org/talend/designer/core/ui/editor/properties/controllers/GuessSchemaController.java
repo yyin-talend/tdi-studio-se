@@ -309,16 +309,16 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
                                     }
                                 });
                             }
-                        } catch (SQLException e) {
+                        } catch (Exception e) {
                             ExtractMetaDataUtils.closeConnection();
+
+                            final String strExcepton = e.getMessage();
                             Display.getDefault().asyncExec(new Runnable() {
 
                                 public void run() {
-                                    MessageDialog.openWarning(composite.getShell(), "Connection error",
-                                            "Please set connection parameters and input right sql segment!");
+                                    MessageDialog.openWarning(composite.getShell(), "Connection error", strExcepton);
                                 }
                             });
-                            ExceptionHandler.process(e);
                         }
                     }
 

@@ -144,6 +144,9 @@ public class FileController extends AbstractElementPropertySectionController {
 
         editionControlHelper.register(param.getName(), filePathText, true);
 
+        if (param.isReadOnly() && param.isRepositoryValueUsed()) {
+            addRepositoryPropertyListener(filePathText);
+        }
         addDragAndDropTarget(filePathText);
         if (elem instanceof Node) {
             filePathText.setToolTipText(VARIABLE_TOOLTIP + param.getVariableName());
