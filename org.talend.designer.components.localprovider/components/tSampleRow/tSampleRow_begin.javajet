@@ -14,7 +14,7 @@ CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 
-String range = ElementParameterParser.getValue(node,"__RANGE__").replaceAll("\n",",").replaceAll("'","");
+String range = ElementParameterParser.getValue(node,"__RANGE__").replaceAll("\n",",").replaceAll("\"","");
 
 %>
 String[] range<%=cid%> = "<%=range%>".split(",");

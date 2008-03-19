@@ -46,10 +46,10 @@
      >
       <DEFAULT>Range let you choose a list of line numbers and/or a list of ranges.
 
-- '1,5' : line 1 and 5
-- '10..20' : lines 10 to 20
-- '23..45,48,50..54' : lines 23 to 45, line 48 and lines 50 to 54
-- '1..10' : 10 first lines
+- "1,5" : line 1 and 5
+- "10..20" : lines 10 to 20
+- "23..45,48,50..54" : lines 23 to 45, line 48 and lines 50 to 54
+- "1..10" : 10 first lines
 
 	  </DEFAULT>
     </PARAMETER>
@@ -61,7 +61,7 @@
       NUM_ROW="20"
       NB_LINES="5"
     >
-      <DEFAULT>'1,5,10..20'</DEFAULT>
+      <DEFAULT>"1,5,10..20"</DEFAULT>
     </PARAMETER>
     
   </PARAMETERS>
