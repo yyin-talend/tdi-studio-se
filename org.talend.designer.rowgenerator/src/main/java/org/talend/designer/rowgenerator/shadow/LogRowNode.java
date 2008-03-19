@@ -50,8 +50,6 @@ public class LogRowNode extends AbstractNode {
 
     private IConnection outCnx;
 
-    private List<IElementParameter> parameters;
-
     private String pluginFullName;
 
     private IProcess process;
@@ -65,7 +63,7 @@ public class LogRowNode extends AbstractNode {
         super();
         this.metadataTable = list;
         this.componentName = componentName;
-        parameters = new ArrayList<IElementParameter>();
+        this.setElementParameters(new ArrayList<IElementParameter>());
 
         IComponentsFactory compFac = RowGeneratorPlugin.getDefault().getRepositoryService().getComponentsFactory();
         setComponent(compFac.get(componentName));
@@ -86,12 +84,12 @@ public class LogRowNode extends AbstractNode {
         param5 = new TextElementParameter("PRINT_COLNAMES", "false");
         param6 = new TextElementParameter("USE_FIXED_LENGTH", "false");
 
-        this.addParameter(param);
-        this.addParameter(param2);
-        this.addParameter(param3);
-        this.addParameter(param4);
-        this.addParameter(param5);
-        this.addParameter(param6);
+        ((List<IElementParameter>) getElementParameters()).add(param);
+        ((List<IElementParameter>) getElementParameters()).add(param2);
+        ((List<IElementParameter>) getElementParameters()).add(param3);
+        ((List<IElementParameter>) getElementParameters()).add(param4);
+        ((List<IElementParameter>) getElementParameters()).add(param5);
+        ((List<IElementParameter>) getElementParameters()).add(param6);
     }
 
     /*
@@ -100,8 +98,7 @@ public class LogRowNode extends AbstractNode {
      * @see org.talend.core.model.process.INode#getIncomingConnections()
      */
     public List<? extends IConnection> getIncomingConnections() {
-        return (List<? extends IConnection>) Arrays.asList(inCnx != null ? new IConnection[] { inCnx }
-                : new IConnection[0]);
+        return (List<? extends IConnection>) Arrays.asList(inCnx != null ? new IConnection[] { inCnx } : new IConnection[0]);
     }
 
     /*
@@ -128,8 +125,7 @@ public class LogRowNode extends AbstractNode {
      * @see org.talend.core.model.process.INode#getOutgoingConnections()
      */
     public List<? extends IConnection> getOutgoingConnections() {
-        return (List<? extends IConnection>) Arrays.asList(outCnx != null ? new IConnection[] { outCnx }
-                : new IConnection[0]);
+        return (List<? extends IConnection>) Arrays.asList(outCnx != null ? new IConnection[] { outCnx } : new IConnection[0]);
     }
 
     /*
@@ -184,29 +180,6 @@ public class LogRowNode extends AbstractNode {
      */
     public boolean isSubProcessStart() {
         return true;
-    }
-
-    /*
-     * (non-Java)
-     * 
-     * @see org.talend.core.model.process.IElement#getElementParameters()
-     */
-    public List<? extends IElementParameter> getElementParameters() {
-        return parameters;
-    }
-
-    /*
-     * (non-Java)
-     * 
-     * @see org.talend.core.model.process.IElement#setElementParameters(java.util.List)
-     */
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
-    public void setElementParameters(List<? extends IElementParameter> elementsParameters) {
-        this.parameters = (List<IElementParameter>) elementsParameters;
-    }
-
-    protected void addParameter(IElementParameter param) {
-        parameters.add(param);
     }
 
     /*
@@ -307,14 +280,14 @@ public class LogRowNode extends AbstractNode {
     public void setOutCnx(IConnection outCnx) {
         this.outCnx = outCnx;
     }
-    
+
     public boolean isThereLinkWithMerge() {
         // TODO Auto-generated method stub
         return false;
     }
-    
+
     public Map<INode, Integer> getLinkedMergeInfo() {
-        //TODO Auto-generated method stub
+        // TODO Auto-generated method stub
         return null;
     }
 }
