@@ -16,6 +16,7 @@ imports="
 	String dbhost = ElementParameterParser.getValue(node, "__HOST__");
 	String dbport = ElementParameterParser.getValue(node, "__PORT__");
 	String dbname= ElementParameterParser.getValue(node, "__DBNAME__");
+	String dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
 	String dbserver = ElementParameterParser.getValue(node, "__DBSERVER__");
 	String dbuser= ElementParameterParser.getValue(node, "__USER__");
 	String dbpwd= ElementParameterParser.getValue(node, "__PASS__");
@@ -36,9 +37,17 @@ imports="
 %>
 
     java.lang.Class.forName("com.ibm.as400.access.AS400JDBCDriver");
-    
-    String url_<%=cid %> = "jdbc:as400://" + <%=dbhost%> + "/" + <%=dbname%> + ";prompt=false";
-    
+    <%
+    if(dbproperties == null || dbproperties.equals("\"\"") || dbproperties.equals("")) {
+        %>
+        String url_<%=cid %> = "jdbc:as400://" + <%=dbhost%> + "/" + <%=dbname%>;
+    <%
+    } else {
+        %>
+        String url_<%=cid %> = "jdbc:as400://" + <%=dbhost%> + "/" + <%=dbname%>+ ";" + <%=dbproperties%>;
+        <%
+    }       
+    %>
     String dbUser_<%=cid %> = <%=dbuser%>;
     String dbPwd_<%=cid %> = <%=dbpwd%>;
     

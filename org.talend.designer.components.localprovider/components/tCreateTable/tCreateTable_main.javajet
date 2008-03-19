@@ -175,15 +175,21 @@ abstract class  Manager {
 }
 class AS400Manager extends Manager {
     private String host;
-    public AS400Manager(String host, String dbName, String tableName, String userName, String password, String cid) {
+    private String dbproperty;
+    public AS400Manager(String host, String dbName, String tableName, String userName, String password, String cid,String dbproperties) {
         super(dbName, tableName, userName, password, cid);
         this.host = host;
+        this.dbproperty = dbproperties;
     }
     protected String getDriver() {
         return "com.ibm.as400.access.AS400JDBCDriver";
     }
     public String getConnectionURL() {
-        return "\"jdbc:as400://\" + " + host + " + \"/\" + "+ dbName + " + \";prompt=false\"";
+        if(dbproperty == null || dbproperty.equals("\"\"") || dbproperty.equals("")){
+            return "\"jdbc:as400://\" + " + host + " + \"/\" + "+ dbName;
+        }else{
+            return "\"jdbc:as400://\" + " + host + " + \"/\" + "+ dbName + "+\";\"+"+ dbproperty;
+        }
     }
     protected String getDBMSId() {
         return "as400_id";
@@ -850,7 +856,8 @@ class ManagerFactory {
             String dbName = ElementParameterParser.getValue(node, "__DBNAME__");
             String userName = ElementParameterParser.getValue(node, "__USER__");
             String password = ElementParameterParser.getValue(node, "__PASS__");
-            manager = new AS400Manager(host, dbName, tableName, userName, password, cid);
+            String dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
+            manager = new AS400Manager(host, dbName, tableName, userName, password, cid,dbproperties);
         } else if(dbType.equals("DB2")) {
             String host = ElementParameterParser.getValue(node, "__HOST__");
             String port = ElementParameterParser.getValue(node, "__PORT__");
