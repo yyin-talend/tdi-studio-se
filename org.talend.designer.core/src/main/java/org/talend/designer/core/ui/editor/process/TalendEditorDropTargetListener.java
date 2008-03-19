@@ -244,9 +244,11 @@ public class TalendEditorDropTargetListener implements TransferDropTargetListene
         List<Command> list = new ArrayList<Command>();
         if (selectedNode.getObject().getProperty().getItem() instanceof ConnectionItem) {
             IElementParameter propertyParam = node.getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE);
-            propertyParam.getChildParameters().get(EParameterName.PROPERTY_TYPE.getName()).setValue(EmfComponent.REPOSITORY);
-            propertyParam.getChildParameters().get(EParameterName.REPOSITORY_PROPERTY_TYPE.getName()).setValue(
-                    selectedNode.getObject().getProperty().getId());
+            if (propertyParam != null) {
+                propertyParam.getChildParameters().get(EParameterName.PROPERTY_TYPE.getName()).setValue(EmfComponent.REPOSITORY);
+                propertyParam.getChildParameters().get(EParameterName.REPOSITORY_PROPERTY_TYPE.getName()).setValue(
+                        selectedNode.getObject().getProperty().getId());
+            }
 
             ConnectionItem connectionItem = (ConnectionItem) selectedNode.getObject().getProperty().getItem();
 
@@ -281,10 +283,12 @@ public class TalendEditorDropTargetListener implements TransferDropTargetListene
             }
             tablesMap.put(connectionItem.getProperty().getId(), tableValuesList);
             IElementParameter schemaParam = node.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
-            IElementParameter repositorySchemaTypeParameter = schemaParam.getChildParameters().get(
-                    EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
-            if (repositorySchemaTypeParameter != null) {
-                repositorySchemaTypeParameter.setListItemsValue(tableValuesList.toArray(new String[0]));
+            if (schemaParam != null) {
+                IElementParameter repositorySchemaTypeParameter = schemaParam.getChildParameters().get(
+                        EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
+                if (repositorySchemaTypeParameter != null) {
+                    repositorySchemaTypeParameter.setListItemsValue(tableValuesList.toArray(new String[0]));
+                }
             }
             if (connection instanceof DatabaseConnection && !connection.isReadOnly()) {
                 DatabaseConnection dbConnection = (DatabaseConnection) connection;
@@ -301,13 +305,15 @@ public class TalendEditorDropTargetListener implements TransferDropTargetListene
             }
             queriesMap.put(connectionItem.getProperty().getId(), queryStoreValuesList);
 
-            // command used to set property type
-            ChangeValuesFromRepository command1 = new ChangeValuesFromRepository(node, connectionItem.getConnection(),
-                    propertyParam.getName() + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), selectedNode.getObject()
-                            .getProperty().getId());
+            if (propertyParam != null) {
+                // command used to set property type
+                ChangeValuesFromRepository command1 = new ChangeValuesFromRepository(node, connectionItem.getConnection(),
+                        propertyParam.getName() + ":" + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), selectedNode
+                                .getObject().getProperty().getId());
 
-            command1.setMaps(tablesMap, queriesMap, repositoryTableMap);
-            list.add(command1);
+                command1.setMaps(tablesMap, queriesMap, repositoryTableMap);
+                list.add(command1);
+            }
 
             // command used to set metadata
             if (selectedNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_CON_TABLE) {
