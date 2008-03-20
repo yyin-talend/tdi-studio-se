@@ -65,12 +65,24 @@ if (inMetadata != null && metadata != null) {
 	} else {
 	    tableName_<%=cid%> = dbschema_<%=cid%> + "." + <%=dbtable%>;
 	}
+	
+<%
+if(useExistingConnection){
+	String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
+	String conn = "conn_" + connection;
+%>
+java.sql.Connection connection_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
+<%
+}
+else{ 
+%>
 	// Create database connection
 	java.lang.Class.forName("net.sourceforge.jtds.jdbc.Driver");
     String connectionString_<%=cid %> = "jdbc:jtds:sqlserver://" + <%=dbServer%> + ":" + <%=dbport%> + "//" + <%=dbname%> + ";appName=" + projectName + ";" + <%=dbproperties%>;        
 	java.sql.Connection connection_<%=cid%> = java.sql.DriverManager.getConnection(connectionString_<%=cid %>, <%=dbuser%>, <%=dbpwd%>);
-	<%
-	
+<%
+}
+
 	// SCD parameters
 	String surrogateKeyField = ElementParameterParser.getValue(node, "__SURROGATE_KEY__");
 	String surrogateKeyCreation = ElementParameterParser.getValue(node, "__SK_CREATION__");

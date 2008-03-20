@@ -143,6 +143,7 @@ if(action.equals("EXPORT")) {
     <%    
 } else {
     List<IMetadataColumn> columnList = getColumnList(node);
+    boolean useExistingConnection = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__").equals("true");
     %>
     String dbschema_<%=cid%> = <%=dbschema%>;
     String tableName_<%=cid%> = null;
@@ -151,10 +152,22 @@ if(action.equals("EXPORT")) {
     } else {
         tableName_<%=cid%> = dbschema_<%=cid%> + "].[" + <%=table%>;
     }
+
+<%
+if(useExistingConnection){
+	String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
+	String conn = "conn_" + connection;
+%>
+java.sql.Connection conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
+<%
+}
+else{ 
+%>
     java.lang.Class.forName("net.sourceforge.jtds.jdbc.Driver").newInstance();
     String url_<%=cid %> = "jdbc:jtds:sqlserver://" + <%=host%> + ":" + <%=port%> + "//" + <%=db%> + ";appName=" + projectName + ";" + <%=dbproperties%>;
     java.sql.Connection conn_<%=cid %> = java.sql.DriverManager.getConnection(url_<%=cid %>, <%=user%>, <%=pas%>);
-    <%
+<%
+}
     String tableAction = ElementParameterParser.getValue(node,"__TABLE_ACTION__");
     String dbmsId = ElementParameterParser.getValue(node,"__MAPPING__");
     Manager manager = null;
