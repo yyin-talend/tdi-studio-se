@@ -63,6 +63,7 @@ public class ShadowProcess<T extends IProcessDescription> {
         FILE_CSV,
         FILE_REGEXP,
         FILE_XML,
+        FILE_EXCEL,
         FILE_LDIF,
         WSDL_SCHEMA,
         LDAP_SCHEMA;
@@ -156,6 +157,16 @@ public class ShadowProcess<T extends IProcessDescription> {
                     .getLoopQuery(), //$NON-NLS-1$ //$NON-NLS-2$
                     description.getMapping(), description.getLoopLimit(), description.getEncoding());
             ps = new FileinToDelimitedProcess<FileInputXmlNode>(inXmlNode, outNode);
+            break;
+        case FILE_EXCEL:
+            outNode = new FileOutputDelimitedForLDIF(TalendTextUtils.addQuotes(""
+                    + PathUtils.getPortablePath(outPath.toOSString())), description.getEncoding());
+
+            FileInputExcelNode excelNode = new FileInputExcelNode(PathUtils.getPortablePath(inPath.toOSString()), description
+                    .getSchema(), description.getEncoding()); //$NON-NLS-1$ //$NON-NLS-2$
+
+            outNode.setMetadataList(excelNode.getMetadataList());
+            ps = new FileinToDelimitedProcess<FileInputExcelNode>(excelNode, outNode);
             break;
         case FILE_LDIF:
             outNode = new FileOutputDelimitedForLDIF(TalendTextUtils.addQuotes(""
