@@ -145,6 +145,15 @@
       </ITEMS>
     </PARAMETER>
 
+    <PARAMETER
+      NAME="KEEP_LEADING_ZEROS"
+      FIELD="CHECK"
+      NUM_ROW="30"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+
+
   </ADVANCED_PARAMETERS>
 
   <CODEGENERATION>

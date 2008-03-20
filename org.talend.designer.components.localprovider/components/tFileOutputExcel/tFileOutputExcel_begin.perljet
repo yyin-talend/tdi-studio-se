@@ -35,6 +35,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             "__INCLUDEHEADER__"
         );
 
+        String keepleadingzeros = ElementParameterParser.getValue(
+            node,
+            "__KEEP_LEADING_ZEROS__"
+        );
+
         List<Map<String, String>> columnformats = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__COLUMNFORMATS__");
 %>
 
@@ -79,6 +84,16 @@ my $nb_line_<%=cid %> = 0;
 
 my $workbook_<%=cid%>  = Spreadsheet::WriteExcel->new(<%=filename%>);
 my $worksheet_<%=cid%> = $workbook_<%=cid%>->add_worksheet(<%=sheetname%>);
+
+<%
+if (keepleadingzeros.equals("true")) {
+%>
+$worksheet_<%=cid%>->keep_leading_zeros();
+<%
+}
+%>
+
+
 
 my $curr_column_<%=cid%> = 0;
 for (1 .. scalar @{ $desc_<%=cid%>{schema} }) {
