@@ -203,9 +203,10 @@ public class JavaProcessor extends Processor {
         String version = "";
         if (process.getProperty() != null && process.getProperty().getVersion() != null) {
             version = process.getProperty().getVersion();
-            version = version.replace(".", "_");
+        } else if (process.getVersion() != null) {
+            version = process.getVersion();
         }
-
+        version = version.replace(".", "_");
         fileName = fileName + version;
 
         try {
