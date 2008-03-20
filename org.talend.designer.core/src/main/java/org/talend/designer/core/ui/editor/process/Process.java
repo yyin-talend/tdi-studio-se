@@ -1106,8 +1106,9 @@ public class Process extends Element implements IProcess2 {
                 // if there is any new connector, then add the table to the
                 // list.
                 String baseSchema = nc.getConnectorFromName(table.getAttachedConnector()).getBaseSchema();
-                if (!table.getAttachedConnector().equals(baseSchema)) {
-                    MetadataTool.copyTable(nc.getMetadataFromConnector(baseSchema), table);
+                IMetadataTable metadataFromConnector = nc.getMetadataFromConnector(baseSchema);
+                if (!table.getAttachedConnector().equals(baseSchema) && metadataFromConnector != null) {
+                    MetadataTool.copyTable(metadataFromConnector, table);
                 }
                 nc.getMetadataList().add(table);
             }
