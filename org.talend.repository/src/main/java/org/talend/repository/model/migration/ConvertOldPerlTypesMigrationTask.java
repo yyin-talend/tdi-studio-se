@@ -70,6 +70,7 @@ public class ConvertOldPerlTypesMigrationTask extends AbstractItemMigrationTask 
         toReturn.add(ERepositoryObjectType.METADATA_FILE_POSITIONAL);
         toReturn.add(ERepositoryObjectType.METADATA_FILE_REGEXP);
         toReturn.add(ERepositoryObjectType.METADATA_FILE_XML);
+        toReturn.add(ERepositoryObjectType.METADATA_FILE_EXCEL);
         toReturn.add(ERepositoryObjectType.METADATA_FILE_LDIF);
         toReturn.add(ERepositoryObjectType.METADATA_GENERIC_SCHEMA);
         return toReturn;
@@ -92,6 +93,7 @@ public class ConvertOldPerlTypesMigrationTask extends AbstractItemMigrationTask 
         case METADATA_FILE_POSITIONAL:
         case METADATA_FILE_REGEXP:
         case METADATA_FILE_XML:
+        case METADATA_FILE_EXCEL:
         case METADATA_FILE_LDIF:
         case METADATA_GENERIC_SCHEMA:
             changeMetadataConnections((ConnectionItem) item);
@@ -113,7 +115,7 @@ public class ConvertOldPerlTypesMigrationTask extends AbstractItemMigrationTask 
         PerlItemOldTypesConverter converter = new PerlItemOldTypesConverter(processItem);
 
         if (converter.isModified()) {
-            FACTORY.save(processItem,true);
+            FACTORY.save(processItem, true);
             changed = true;
         }
     }
@@ -162,6 +164,7 @@ public class ConvertOldPerlTypesMigrationTask extends AbstractItemMigrationTask 
             changed = true;
         }
     }
+
     public Date getOrder() {
         GregorianCalendar gc = new GregorianCalendar(2008, 2, 17, 12, 0, 0);
         return gc.getTime();

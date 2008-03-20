@@ -28,6 +28,7 @@ import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.DelimitedFileConnection;
+import org.talend.core.model.metadata.builder.connection.FileExcelConnection;
 import org.talend.core.model.metadata.builder.connection.GenericSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.LDAPSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.LdifFileConnection;
@@ -40,6 +41,7 @@ import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataFromDataBase;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.DelimitedFileConnectionItem;
+import org.talend.core.model.properties.ExcelFileConnectionItem;
 import org.talend.core.model.properties.GenericSchemaConnectionItem;
 import org.talend.core.model.properties.LDAPSchemaConnectionItem;
 import org.talend.core.model.properties.LdifFileConnectionItem;
@@ -59,6 +61,7 @@ import org.talend.repository.ui.wizards.metadata.connection.ldap.LDAPSchemaTable
 import org.talend.repository.ui.wizards.metadata.connection.wsdl.WSDLSchemaTableWizard;
 import org.talend.repository.ui.wizards.metadata.table.database.DatabaseTableWizard;
 import org.talend.repository.ui.wizards.metadata.table.files.FileDelimitedTableWizard;
+import org.talend.repository.ui.wizards.metadata.table.files.FileExcelTableWizard;
 import org.talend.repository.ui.wizards.metadata.table.files.FileLdifTableWizard;
 import org.talend.repository.ui.wizards.metadata.table.files.FilePositionalTableWizard;
 import org.talend.repository.ui.wizards.metadata.table.files.FileRegexpTableWizard;
@@ -384,6 +387,57 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
             fileLdifTableWizard.setRepositoryObject(node.getObject());
 
             WizardDialog wizardDialog = new WizardDialog(new Shell(), fileLdifTableWizard);
+            handleWizard(node, wizardDialog);
+        }
+    }
+
+    /**
+     * 
+     * DOC yexiaowei Comment method "createFileExcelTableWizard".
+     * 
+     * @param selection
+     * @param forceReadOnly
+     */
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    protected void createFileExcelTableWizard(IStructuredSelection selection, boolean forceReadOnly) {
+        Object obj = (selection).getFirstElement();
+        RepositoryNode node = (RepositoryNode) obj;
+        FileExcelConnection connection = null;
+        MetadataTable metadataTable = null;
+
+        boolean creation = false;
+        if (node.getType() == ENodeType.REPOSITORY_ELEMENT) {
+            ERepositoryObjectType nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
+            String tableLabel = (String) node.getProperties(EProperties.LABEL);
+
+            ExcelFileConnectionItem item = null;
+            switch (nodeType) {
+            case METADATA_CON_TABLE:
+                item = (ExcelFileConnectionItem) node.getParent().getObject().getProperty().getItem();
+                connection = (FileExcelConnection) item.getConnection();
+                metadataTable = TableHelper.findByLabel(connection, tableLabel);
+                creation = false;
+                break;
+            case METADATA_FILE_EXCEL:
+                item = (ExcelFileConnectionItem) node.getObject().getProperty().getItem();
+                connection = (FileExcelConnection) item.getConnection();
+                metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
+                String nextId = ProxyRepositoryFactory.getInstance().getNextId();
+                metadataTable.setId(nextId);
+                metadataTable.setLabel(getStringIndexed(metadataTable.getLabel()));
+                connection.getTables().add(metadataTable);
+                creation = true;
+                break;
+            default:
+                return;
+            }
+
+            // set the repositoryObject, lock and set isRepositoryObjectEditable
+            FileExcelTableWizard fileExcelTableWizard = new FileExcelTableWizard(PlatformUI.getWorkbench(), creation, item,
+                    metadataTable, forceReadOnly);
+            fileExcelTableWizard.setRepositoryObject(node.getObject());
+
+            WizardDialog wizardDialog = new WizardDialog(new Shell(), fileExcelTableWizard);
             handleWizard(node, wizardDialog);
         }
     }

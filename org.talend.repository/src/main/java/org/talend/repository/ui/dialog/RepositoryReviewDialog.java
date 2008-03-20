@@ -83,9 +83,11 @@ public class RepositoryReviewDialog extends Dialog {
         this.repositoryType = repositoryType;
         typeProcessor = createTypeProcessor();
     }
+
     public RepositoryReviewDialog(Shell parentShell, ERepositoryObjectType type) {
         this(parentShell, type, null);
     }
+
     /**
      * bqian create the correct TypeProcessor according to the type.
      * 
@@ -370,6 +372,9 @@ class RepositoryTypeProcessor implements ITypeProcessor {
         if (repositoryType.equals("LDIF")) {
             return contentProvider.getMetadataFileLdifNode();
         }
+        if (repositoryType.equals("EXCEL")) {
+            return contentProvider.getMetadataFileExcelNode();
+        }
         if (repositoryType.equals("GENERIC")) {
             return contentProvider.getMetadataGenericSchemaNode();
         }
@@ -457,6 +462,7 @@ class SchemaTypeProcessor implements ITypeProcessor {
         container.add(contentProvider.getMetadataFileRegexpNode());
         container.add(contentProvider.getMetadataFileXmlNode());
         container.add(contentProvider.getMetadataFileLdifNode());
+        container.add(contentProvider.getMetadataFileExcelNode());
         container.add(contentProvider.getMetadataGenericSchemaNode());
         container.add(contentProvider.getMetadataLDAPSchemaNode());
         container.add(contentProvider.getMetadataWSDLSchemaNode());

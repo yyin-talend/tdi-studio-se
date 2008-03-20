@@ -130,6 +130,10 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         return getObjectFromFolder(ERepositoryObjectType.METADATA_FILE_LDIF, true);
     }
 
+    public RootContainer<String, IRepositoryObject> getMetadataFileExcel() throws PersistenceException {
+        return getObjectFromFolder(ERepositoryObjectType.METADATA_FILE_EXCEL, true);
+    }
+
     public RootContainer<String, IRepositoryObject> getMetadataLDAPSchema() throws PersistenceException {
         return getObjectFromFolder(ERepositoryObjectType.METADATA_LDAP_SCHEMA, true);
     }
@@ -153,9 +157,9 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
                 ERepositoryObjectType.PROCESS, ERepositoryObjectType.CONTEXT, ERepositoryObjectType.SNIPPETS,
                 ERepositoryObjectType.ROUTINES, ERepositoryObjectType.BUSINESS_PROCESS,
                 ERepositoryObjectType.METADATA_FILE_REGEXP, ERepositoryObjectType.METADATA_FILE_XML,
-                ERepositoryObjectType.METADATA_FILE_LDIF, ERepositoryObjectType.METADATA_LDAP_SCHEMA,
-                ERepositoryObjectType.METADATA_GENERIC_SCHEMA, ERepositoryObjectType.METADATA_WSDL_SCHEMA,
-                ERepositoryObjectType.JOBLET };
+                ERepositoryObjectType.METADATA_FILE_LDIF, ERepositoryObjectType.METADATA_FILE_EXCEL,
+                ERepositoryObjectType.METADATA_LDAP_SCHEMA, ERepositoryObjectType.METADATA_GENERIC_SCHEMA,
+                ERepositoryObjectType.METADATA_WSDL_SCHEMA, ERepositoryObjectType.JOBLET };
 
         List<IRepositoryObject> deletedItems = new ArrayList<IRepositoryObject>();
         for (int i = 0; i < types.length; i++) {
@@ -191,8 +195,9 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
                 ERepositoryObjectType.DOCUMENTATION, ERepositoryObjectType.METADATA_CONNECTIONS,
                 ERepositoryObjectType.METADATA_FILE_DELIMITED, ERepositoryObjectType.METADATA_FILE_POSITIONAL,
                 ERepositoryObjectType.METADATA_FILE_REGEXP, ERepositoryObjectType.METADATA_FILE_XML,
-                ERepositoryObjectType.METADATA_FILE_LDIF, ERepositoryObjectType.PROCESS, ERepositoryObjectType.ROUTINES,
-                ERepositoryObjectType.CONTEXT, ERepositoryObjectType.SNIPPETS, ERepositoryObjectType.METADATA_LDAP_SCHEMA,
+                ERepositoryObjectType.METADATA_FILE_EXCEL, ERepositoryObjectType.METADATA_FILE_LDIF,
+                ERepositoryObjectType.PROCESS, ERepositoryObjectType.ROUTINES, ERepositoryObjectType.CONTEXT,
+                ERepositoryObjectType.SNIPPETS, ERepositoryObjectType.METADATA_LDAP_SCHEMA,
                 ERepositoryObjectType.METADATA_GENERIC_SCHEMA, ERepositoryObjectType.METADATA_WSDL_SCHEMA,
                 ERepositoryObjectType.JOBLET };
         for (ERepositoryObjectType repositoryObjectType : repositoryObjectTypeList) {

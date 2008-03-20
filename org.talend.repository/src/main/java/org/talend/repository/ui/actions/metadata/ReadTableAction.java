@@ -99,6 +99,10 @@ public class ReadTableAction extends AbstractCreateTableAction {
             getViewPart().expand(metadataNode.getChildren().get(0), true);
             createFileXmlTableWizard(selection, true);
 
+        } else if (ERepositoryObjectType.METADATA_FILE_EXCEL.equals(nodeType)) {
+            getViewPart().expand(metadataNode.getChildren().get(0), true);
+            createFileExcelTableWizard(selection, true);
+
         } else if (ERepositoryObjectType.METADATA_FILE_LDIF.equals(nodeType)) {
             getViewPart().expand(metadataNode.getChildren().get(0), true);
             createFileLdifTableWizard(selection, true);

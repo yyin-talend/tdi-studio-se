@@ -33,6 +33,7 @@ import org.talend.core.model.metadata.builder.connection.AbstractMetadataObject;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.DelimitedFileConnection;
+import org.talend.core.model.metadata.builder.connection.FileExcelConnection;
 import org.talend.core.model.metadata.builder.connection.GenericSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.LDAPSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.LdifFileConnection;
@@ -82,7 +83,8 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
 
     private RepositoryNode businessProcessNode, recBinNode, codeNode, routineNode, snippetsNode, processNode, contextNode,
             docNode, metadataConNode, metadataFileNode, metadataFilePositionalNode, metadataFileRegexpNode, metadataFileXmlNode,
-            metadataFileLdifNode, metadataGenericSchemaNode, metadataLDAPSchemaNode, metadataWSDLSchemaNode;
+            metadataFileLdifNode, metadataGenericSchemaNode, metadataLDAPSchemaNode, metadataWSDLSchemaNode,
+            metadataFileExcelNode;
 
     private RepositoryNode jobletNode;
 
@@ -154,6 +156,9 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
                             recBinNode);
                 } else if (parent == metadataFileLdifNode) {
                     convert(factory.getMetadataFileLdif(), metadataFileLdifNode, ERepositoryObjectType.METADATA_FILE_LDIF,
+                            recBinNode);
+                } else if (parent == metadataFileExcelNode) {
+                    convert(factory.getMetadataFileExcel(), metadataFileExcelNode, ERepositoryObjectType.METADATA_FILE_EXCEL,
                             recBinNode);
                 } else if (parent == metadataLDAPSchemaNode) {
                     convert(factory.getMetadataLDAPSchema(), metadataLDAPSchemaNode, ERepositoryObjectType.METADATA_LDAP_SCHEMA,
@@ -329,22 +334,29 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
         metadataFileLdifNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_FILE_LDIF);
         metadataNode.getChildren().add(metadataFileLdifNode);
 
-        // 6.7. LDAP schemas
+        // 6.7. Metadata file Excel
+        metadataFileExcelNode = new RepositoryNode(null, root, ENodeType.SYSTEM_FOLDER);
+        metadataFileExcelNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_FILE_EXCEL);
+        metadataFileExcelNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_FILE_EXCEL);
+        metadataNode.getChildren().add(metadataFileExcelNode);
+
+        // 6.8. LDAP schemas
         metadataLDAPSchemaNode = new RepositoryNode(null, root, ENodeType.SYSTEM_FOLDER);
         metadataLDAPSchemaNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_LDAP_SCHEMA);
         metadataLDAPSchemaNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_LDAP_SCHEMA);
         metadataNode.getChildren().add(metadataLDAPSchemaNode);
 
-        // 6.8. Generic schemas
+        // 6.9. Generic schemas
         metadataGenericSchemaNode = new RepositoryNode(null, root, ENodeType.SYSTEM_FOLDER);
         metadataGenericSchemaNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_GENERIC_SCHEMA);
         metadataGenericSchemaNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_GENERIC_SCHEMA);
         metadataNode.getChildren().add(metadataGenericSchemaNode);
-        // 6.9 WSDL
+        // 6.10 WSDL
         metadataWSDLSchemaNode = new RepositoryNode(null, root, ENodeType.SYSTEM_FOLDER);
         metadataWSDLSchemaNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_WSDL_SCHEMA);
         metadataWSDLSchemaNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_WSDL_SCHEMA);
         metadataNode.getChildren().add(metadataWSDLSchemaNode);
+
     }
 
     /**
@@ -546,6 +558,13 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
                     .getConnection();
             createTables(recBinNode, node, repositoryObject, metadataConnection);
         }
+
+        if (type == ERepositoryObjectType.METADATA_FILE_EXCEL) {
+            FileExcelConnection metadataConnection = (FileExcelConnection) ((ConnectionItem) repositoryObject.getProperty()
+                    .getItem()).getConnection();
+            createTables(recBinNode, node, repositoryObject, metadataConnection);
+        }
+
         if (type == ERepositoryObjectType.METADATA_FILE_LDIF) {
             LdifFileConnection metadataConnection = (LdifFileConnection) ((ConnectionItem) repositoryObject.getProperty()
                     .getItem()).getConnection();
@@ -990,6 +1009,24 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
      */
     public RepositoryNode getMetadataNode() {
         return this.metadataNode;
+    }
+
+    /**
+     * Getter for metadataFileExcelNode.
+     * 
+     * @return the metadataFileExcelNode
+     */
+    public RepositoryNode getMetadataFileExcelNode() {
+        return this.metadataFileExcelNode;
+    }
+
+    /**
+     * Sets the metadataFileExcelNode.
+     * 
+     * @param metadataFileExcelNode the metadataFileExcelNode to set
+     */
+    public void setMetadataFileExcelNode(RepositoryNode metadataFileExcelNode) {
+        this.metadataFileExcelNode = metadataFileExcelNode;
     }
 
 }

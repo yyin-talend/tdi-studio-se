@@ -29,6 +29,7 @@ import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataColumn;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.FileConnection;
+import org.talend.core.model.metadata.builder.connection.FileExcelConnection;
 import org.talend.core.model.metadata.builder.connection.LDAPSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.LdifFileConnection;
 import org.talend.core.model.metadata.builder.connection.SchemaTarget;
@@ -145,6 +146,55 @@ public class ShadowProcessHelper {
         } else {
             processDescription.setEncoding(TalendTextUtils.addQuotes("UTF-8")); //$NON-NLS-1$
         }
+
+        return processDescription;
+    }
+
+    public static ProcessDescription getProcessDescription(final FileExcelConnection connection) {
+
+        ProcessDescription processDescription = new ProcessDescription();
+
+        processDescription.setFilepath(TalendTextUtils.addQuotes(PathUtils.getPortablePath(connection.getFilePath())));
+        List<IMetadataTable> tableSchema = new ArrayList<IMetadataTable>();
+
+        IMetadataTable table = new MetadataTable();
+
+        List<IMetadataColumn> schema = new ArrayList<IMetadataColumn>();
+
+        if (connection.getSheetColumns() != null && !connection.getSheetColumns().isEmpty()) {
+            Iterator<String> iterate = connection.getSheetColumns().iterator();
+            int i = 0;
+            while (iterate.hasNext()) {
+                i++;
+                IMetadataColumn iMetadataColumn = new MetadataColumn();
+                iMetadataColumn.setLabel(iterate.next());
+                iMetadataColumn.setKey(false);
+                iMetadataColumn.setLength(0);
+                iMetadataColumn.setNullable(false);
+                iMetadataColumn.setType("String"); //$NON-NLS-1$
+                iMetadataColumn.setTalendType("id_String"); //$NON-NLS-1$
+
+                schema.add(iMetadataColumn);
+            }
+        } else {
+
+            IMetadataColumn iMetadataDn = new MetadataColumn();
+            iMetadataDn.setLabel("A"); //$NON-NLS-1$
+            iMetadataDn.setKey(false);
+            iMetadataDn.setLength(0);
+            iMetadataDn.setNullable(false);
+            iMetadataDn.setType("String"); //$NON-NLS-1$
+            iMetadataDn.setTalendType("id_String"); //$NON-NLS-1$
+
+            schema.add(iMetadataDn);
+        }
+
+        table.setTableName("tFileInputExcel"); //$NON-NLS-1$
+        table.setListColumns(schema);
+        tableSchema.add(table);
+        processDescription.setSchema(tableSchema);
+
+        processDescription.setEncoding(TalendTextUtils.addQuotes("ISO-8859-15")); //$NON-NLS-1$
 
         return processDescription;
     }

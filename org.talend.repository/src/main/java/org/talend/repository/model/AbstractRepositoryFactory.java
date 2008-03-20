@@ -142,17 +142,20 @@ public abstract class AbstractRepositoryFactory implements IRepositoryFactory {
 
     // gather all the metadata connections (file / db / etc ...)
     public List<ConnectionItem> getMetadataConnectionsItem() throws PersistenceException {
+
         List<ConnectionItem> result = new ArrayList<ConnectionItem>();
 
         collect(getMetadataFileDelimited(), result);
         collect(getMetadataFilePositional(), result);
         collect(getMetadataFileRegexp(), result);
         collect(getMetadataFileXml(), result);
+        collect(getMetadataFileExcel(), result);
         collect(getMetadataFileLdif(), result);
         collect(getMetadataConnection(), result);
         collect(getMetadataLDAPSchema(), result);
         collect(getMetadataGenericSchema(), result);
-        collect(getMetadataWSDLSchema(),result);
+        collect(getMetadataWSDLSchema(), result);
+
         return result;
     }
 

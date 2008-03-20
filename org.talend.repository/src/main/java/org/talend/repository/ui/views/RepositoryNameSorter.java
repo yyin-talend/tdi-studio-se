@@ -70,6 +70,8 @@ public class RepositoryNameSorter extends ViewerSorter {
                 return 40;
             case METADATA_FILE_XML:
                 return 45;
+            case METADATA_FILE_EXCEL:
+                return 46;
             case METADATA_FILE_LDIF:
                 return 50;
             case METADATA_LDAP_SCHEMA:

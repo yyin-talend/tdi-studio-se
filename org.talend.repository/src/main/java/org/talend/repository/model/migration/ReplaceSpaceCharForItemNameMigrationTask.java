@@ -47,6 +47,7 @@ public class ReplaceSpaceCharForItemNameMigrationTask extends AbstractItemMigrat
         toReturn.add(ERepositoryObjectType.METADATA_FILE_POSITIONAL);
         toReturn.add(ERepositoryObjectType.METADATA_FILE_REGEXP);
         toReturn.add(ERepositoryObjectType.METADATA_FILE_XML);
+        toReturn.add(ERepositoryObjectType.METADATA_FILE_EXCEL);
         toReturn.add(ERepositoryObjectType.METADATA_FILE_LDIF);
         toReturn.add(ERepositoryObjectType.METADATA_GENERIC_SCHEMA);
         toReturn.add(ERepositoryObjectType.METADATA_LDAP_SCHEMA);
@@ -105,6 +106,7 @@ public class ReplaceSpaceCharForItemNameMigrationTask extends AbstractItemMigrat
         case METADATA_FILE_POSITIONAL:
         case METADATA_FILE_REGEXP:
         case METADATA_FILE_XML:
+        case METADATA_FILE_EXCEL:
         case METADATA_FILE_LDIF:
         case METADATA_GENERIC_SCHEMA:
         case METADATA_LDAP_SCHEMA:

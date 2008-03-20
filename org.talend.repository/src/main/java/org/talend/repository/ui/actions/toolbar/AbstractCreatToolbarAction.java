@@ -34,6 +34,7 @@ import org.talend.core.CorePlugin;
 import org.talend.repository.ui.actions.AContextualAction;
 import org.talend.repository.ui.actions.metadata.CreateConnectionAction;
 import org.talend.repository.ui.actions.metadata.CreateFileDelimitedAction;
+import org.talend.repository.ui.actions.metadata.CreateFileExcelAction;
 import org.talend.repository.ui.actions.metadata.CreateFileLdifAction;
 import org.talend.repository.ui.actions.metadata.CreateFilePositionalAction;
 import org.talend.repository.ui.actions.metadata.CreateFileRegexpAction;
@@ -142,6 +143,10 @@ public abstract class AbstractCreatToolbarAction implements IWorkbenchWindowPull
 
         final CreateFileLdifAction createFileLdifAction = new CreateFileLdifAction(true);
         createFileLdifAction.setWorkbenchPart(repositoryView);
+        addToMenu(menu, createFileLdifAction, -1);
+
+        final CreateFileExcelAction createFileExcelAction = new CreateFileExcelAction(true);
+        createFileExcelAction.setWorkbenchPart(repositoryView);
         addToMenu(menu, createFileLdifAction, -1);
 
         final CreateLDAPSchemaAction createLDAPSchemaAction = new CreateLDAPSchemaAction(true);

@@ -17,6 +17,7 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.widgets.Composite;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DelimitedFileConnection;
+import org.talend.core.model.metadata.builder.connection.FileExcelConnection;
 import org.talend.core.model.metadata.builder.connection.GenericSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.LDAPSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.LdifFileConnection;
@@ -30,6 +31,7 @@ import org.talend.core.model.metadata.builder.connection.util.ConnectionSwitch;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.repository.ui.swt.utils.AbstractForm;
 import org.talend.repository.ui.wizards.metadata.connection.files.delimited.DelimitedFileStep3Form;
+import org.talend.repository.ui.wizards.metadata.connection.files.excel.ExcelFileStep2Form;
 import org.talend.repository.ui.wizards.metadata.connection.files.ldif.LdifFileStep3Form;
 import org.talend.repository.ui.wizards.metadata.connection.files.positional.FileStep3Form;
 import org.talend.repository.ui.wizards.metadata.connection.files.regexp.RegexpFileStep3Form;
@@ -132,6 +134,15 @@ public class FileTableWizardPage extends WizardPage {
                 ldifFileStep3Form.setReadOnly(!isRepositoryObjectEditable);
                 ldifFileStep3Form.setListener(listener);
                 return ldifFileStep3Form;
+            }
+
+            @Override
+            public Object caseFileExcelConnection(final FileExcelConnection object) {
+                ExcelFileStep2Form excelStep2Form = new ExcelFileStep2Form(parent, connectionItem, metadataTable, TableHelper
+                        .getTableNames(object, metadataTable.getLabel()));
+                excelStep2Form.setReadOnly(!isRepositoryObjectEditable);
+                excelStep2Form.setListener(listener);
+                return excelStep2Form;
             }
 
             @Override

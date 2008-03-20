@@ -622,6 +622,15 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
     /*
      * (non-Javadoc)
      * 
+     * @see org.talend.repository.model.IProxyRepositoryFactory#getMetadataFileExcel()
+     */
+    public RootContainer<String, IRepositoryObject> getMetadataFileExcel() throws PersistenceException {
+        return this.repositoryFactoryFromProvider.getMetadataFileExcel();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.repository.model.IProxyRepositoryFactory#lock(org.talend.core.model.repository.IRepositoryObject)
      */
     public void lock(IRepositoryObject obj) throws PersistenceException, BusinessException {
@@ -1231,4 +1240,5 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         service.executeProjectTasks(project, false, monitorWrap);
 
     }
+
 }

@@ -78,6 +78,7 @@ public class CopyToGenericSchemaAction extends AContextualAction {
         case METADATA_FILE_POSITIONAL:
         case METADATA_FILE_REGEXP:
         case METADATA_FILE_XML:
+        case METADATA_FILE_EXCEL:
         case METADATA_LDAP_SCHEMA:
         case METADATA_FILE_LDIF:
             break;

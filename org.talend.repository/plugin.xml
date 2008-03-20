@@ -84,6 +84,13 @@
             level="10"
             name="Metadata/Create file ldif"/>
       <Action
+            class="org.talend.repository.ui.actions.metadata.CreateFileExcelAction"
+            id="org.talend.repository.actions.createfileexcel"
+            isEditAction="true"
+            isReadAction="true"
+            level="10"
+            name="Metadata/Create file Excel"/>
+      <Action
             class="org.talend.repository.ui.actions.DeleteAction"
             id="org.talend.repository.actions.delete"
             level="40"

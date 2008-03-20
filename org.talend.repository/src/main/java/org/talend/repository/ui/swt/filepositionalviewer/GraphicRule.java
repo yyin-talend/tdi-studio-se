@@ -207,7 +207,6 @@ public class GraphicRule extends ScrolledComposite {
             addPaintListener(new PaintListener() {
 
                 public void paintControl(PaintEvent e) {
-                    System.out.println("Paint listener positeion");
                     GC gc = e.gc;
                     int posX = Math.round(((Canvas) e.widget).getLocation().x / fontWidth) + 1;
                     // int posX = ((((Canvas) e.widget).getLocation().x) + decalTextScreen) / fontWidth;
@@ -224,7 +223,6 @@ public class GraphicRule extends ScrolledComposite {
                     } else {
                         gc.drawText("...", 0, 0); //$NON-NLS-1$
                     }
-                    System.out.println("Paint listener positeion " + position);
                     gc.dispose();
                 }
             });
@@ -314,11 +312,6 @@ public class GraphicRule extends ScrolledComposite {
 
                     gc.drawLine(posIntInitial - posIntInitial, 11, posInt - posIntInitial, 11);
 
-                    // Triangle Gauche
-                    // gc.fillPolygon(new int[] { 5, 0, 0, 5, 5, 10 });
-                    // Triangle Droite
-                    // gc.fillPolygon(new int[] { 0, 0, 5, 5, 0, 10 });
-                    System.out.println("Paint listener positeion " + interval);
                     gc.dispose();
                 }
             });

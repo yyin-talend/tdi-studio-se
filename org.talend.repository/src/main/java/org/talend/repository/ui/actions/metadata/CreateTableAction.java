@@ -95,6 +95,9 @@ public class CreateTableAction extends AbstractCreateTableAction {
         } else if (ERepositoryObjectType.METADATA_FILE_LDIF.equals(nodeType)) {
             getViewPart().expand(metadataNode.getChildren().get(0), true);
             createFileLdifTableWizard(selection, false);
+        } else if (ERepositoryObjectType.METADATA_FILE_EXCEL.equals(nodeType)) {
+            getViewPart().expand(metadataNode.getChildren().get(0), true);
+            createFileExcelTableWizard(selection, false);
         } else if (ERepositoryObjectType.METADATA_GENERIC_SCHEMA.equals(nodeType)) {
             getViewPart().expand(metadataNode.getChildren().get(0), true);
             createGenericSchemaWizard(selection, false);
@@ -157,6 +160,7 @@ public class CreateTableAction extends AbstractCreateTableAction {
                         || ERepositoryObjectType.METADATA_FILE_REGEXP.equals(nodeType)
                         || ERepositoryObjectType.METADATA_FILE_XML.equals(nodeType)
                         || ERepositoryObjectType.METADATA_FILE_LDIF.equals(nodeType)
+                        || ERepositoryObjectType.METADATA_FILE_EXCEL.equals(nodeType)
                         || ERepositoryObjectType.METADATA_GENERIC_SCHEMA.equals(nodeType)
                         || ERepositoryObjectType.METADATA_LDAP_SCHEMA.equals(nodeType)) {
                     setText(CREATE_LABEL);
