@@ -72,6 +72,7 @@
 	      <ITEMS DEFAULT="DOM4J">
 	        <ITEM NAME="DOM4J" VALUE="Dom4j" />
 	        <ITEM NAME="XERCES" VALUE="Xerces"/>
+	        <ITEM NAME="SAX" VALUE="SAX"/>
 	      </ITEMS>
 	    </PARAMETER>  
 		
@@ -88,6 +89,8 @@
 			<IMPORT NAME="Java_JAXEN1.1" MODULE="jaxen-1.1.1.jar"
 				REQUIRED="true" />
 			<IMPORT NAME="Java_xercesImpl" MODULE="xercesImpl.jar"
+				REQUIRED="true" />
+			<IMPORT NAME="Java_talendSAX" MODULE="TalendSAX.jar"
 				REQUIRED="true" />
 		</IMPORTS>
 	</CODEGENERATION>

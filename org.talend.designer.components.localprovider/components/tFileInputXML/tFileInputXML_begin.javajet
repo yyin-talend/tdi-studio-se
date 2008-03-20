@@ -254,6 +254,56 @@ String str_<%=cid %> = "";
 org.dom4j.Node node_<%=cid%> = null;
 for (org.dom4j.tree.AbstractNode temp_<%=cid%>: nodeList_<%=cid%>) {
 <%
+// *** SAX *** //
+}else if(mode.equals("SAX")){
+%>
+class XML_API_<%=cid%>{
+	public boolean isDefNull(String[] node) throws javax.xml.transform.TransformerException {
+        if(node[0] != null && node[1]!=null && node[1].equals("true")){
+        	return true;
+        }
+        return false;
+    }
+
+    public boolean isMissing(String[] node) throws javax.xml.transform.TransformerException {
+        return node[0] == null ? true : false;
+    }
+
+    public boolean isEmpty(String[] node) throws javax.xml.transform.TransformerException {
+        if(node[0]!=null ){
+        	return node[0].length() == 0;
+        }
+        return false;
+    }
+}
+XML_API_<%=cid%> xml_api_<%=cid%> = new XML_API_<%=cid%>();
+
+String[] queryPaths_<%=cid%> = new String[]{
+<%
+	boolean first = true;
+	for(Map<String,String> path:mapping){
+%>	
+	<%=first?"":","%><%=path.get("QUERY")%>
+<%
+		String query = path.get("QUERY");
+		if(query!=null && query.indexOf("@")<0){
+%>		
+	,<%=query%>+"/@xsi:nil"
+<%
+		}
+		first=false;
+	}
+%>
+};
+
+String str_<%=cid %> = "";
+String[] node_<%=cid%> = null;
+org.talend.xml.sax.SAXLooper looper_<%=cid%> = new org.talend.xml.sax.SAXLooper(<%=loopQuery%>,queryPaths_<%=cid%>);
+looper_<%=cid%>.parse(<%=filename %>);
+java.util.Iterator<java.util.Map<String, String>> it_<%=cid%>  = looper_<%=cid%>.iterator();
+while (it_<%=cid%>.hasNext()) {
+	java.util.Map<String, String> row_<%=cid%> = it_<%=cid%>.next();
+<%
 }
 %>
 	nb_line_<%=cid%>++;
@@ -283,6 +333,19 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     node_<%=cid%> = xTmp<%=i%>_<%=cid%>.selectSingleNode(temp_<%=cid%>);
     str_<%=cid %> = xTmp<%=i%>_<%=cid%>.valueOf(temp_<%=cid%>);
 <%
+					}else if(mode.equals("SAX")){
+%>
+	str_<%=cid %> = row_<%=cid%>.get(<%=query%>);
+<%
+						if(query!=null && query.indexOf("@")<0){
+%>
+	node_<%=cid%> = new String[]{str_<%=cid %>,row_<%=cid%>.get(<%=query%>+"/@xsi:nil")};
+<%
+						}else{
+%>
+	node_<%=cid%> = new String[]{str_<%=cid %>,null};
+<%
+						}
 					}
 					for(IMetadataColumn column:columns) {
 						if (mapping.get(i).get("SCHEMA_COLUMN")!=null) {
