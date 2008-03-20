@@ -17,6 +17,7 @@ import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.DelimitedFileConnectionItem;
+import org.talend.core.model.properties.ExcelFileConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.PositionalFileConnectionItem;
 import org.talend.core.model.properties.ProcessItem;
@@ -67,7 +68,7 @@ public enum EDatabaseComponentName {
     // FILES
     FILEARFF(FakeFileConnectionItem.class, "tFileInputARFF", "tFileOutputARFF"),
     FILEDELIMITED(DelimitedFileConnectionItem.class, "tFileInputDelimited", "tFileOutputDelimited"),
-    FILEEXCEL(FakeFileConnectionItem.class, "tFileInputExcel", "tFileOutputExcel"),
+    FILEEXCEL(ExcelFileConnectionItem.class, "tFileInputExcel", "tFileOutputExcel"),
     FILELDIF(LdifFileConnectionItemImpl.class, "tFileInputLDIF", "tFileOutputLDIF"),
     FILEPOSITIONAL(PositionalFileConnectionItem.class, "tFileInputPositional", "tFileOutputPositional"),
     FILEREGEX(RegExFileConnectionItem.class, "tFileInputRegex", null),

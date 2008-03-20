@@ -50,6 +50,7 @@ import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.DelimitedFileConnection;
+import org.talend.core.model.metadata.builder.connection.FileExcelConnection;
 import org.talend.core.model.metadata.builder.connection.GenericSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.LDAPSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.PositionalFileConnection;
@@ -602,6 +603,9 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
                     addOrderDisplayNames(connectionValuesList, connectionNamesList, key, name);
                 }
                 if ((connection instanceof XmlFileConnection) && (repositoryValue.equals("XML"))) { //$NON-NLS-1$
+                    addOrderDisplayNames(connectionValuesList, connectionNamesList, key, name);
+                }
+                if ((connection instanceof FileExcelConnection) && (repositoryValue.equals("EXCEL"))) { //$NON-NLS-1$
                     addOrderDisplayNames(connectionValuesList, connectionNamesList, key, name);
                 }
                 if ((connection instanceof GenericSchemaConnection) && (repositoryValue.equals("GENERIC"))) { //$NON-NLS-1$
