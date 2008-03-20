@@ -13,27 +13,32 @@
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
     boolean incldSubdir = ElementParameterParser.getValue(node, "__INCLUDSUBDIR__").equals("true");
+    boolean ifexclude = ElementParameterParser.getValue(node, "__IFEXCLUDE__").equals("true");
     String filelistType = ElementParameterParser.getValue(node, "__LIST_MODE__");
 %>
 
     String directory_<%=cid%> = <%=ElementParameterParser.getValue(node, "__DIRECTORY__") %>;
     String filemask_<%=cid%> = <%=ElementParameterParser.getValue(node, "__FILEMASK__")%> + "$";
-    String excludefilemask_<%=cid%> = <%=ElementParameterParser.getValue(node, "__EXCLUDEFILEMASK__")%> + "$";
     if(filemask_<%=cid%>.indexOf("^") == -1) 
         filemask_<%=cid%> = "^" + filemask_<%=cid%>;
-        
+     filemask_<%=cid%> = java.util.regex.Pattern.compile("[*]").matcher(filemask_<%=cid%>).replaceAll(".*");
+            
+<%if(ifexclude){%>   
+    String excludefilemask_<%=cid%> = <%=ElementParameterParser.getValue(node, "__EXCLUDEFILEMASK__")%> + "$";    
 	if(excludefilemask_<%=cid%>.indexOf("^") == -1) 
         excludefilemask_<%=cid%> = "^" + excludefilemask_<%=cid%>;
+     excludefilemask_<%=cid%> = java.util.regex.Pattern.compile("[*]").matcher(excludefilemask_<%=cid%>).replaceAll(".*");
+	java.util.regex.Pattern excludefileNamePattern_<%=cid%> = java.util.regex.Pattern.compile(excludefilemask_<%=cid%>);
         
-    filemask_<%=cid%> = java.util.regex.Pattern.compile("[*]").matcher(filemask_<%=cid%>).replaceAll(".*");
-    excludefilemask_<%=cid%> = java.util.regex.Pattern.compile("[*]").matcher(excludefilemask_<%=cid%>).replaceAll(".*");
-   
+<%}%>        
+  
     boolean case_sensitive_<%=cid%> = <%=ElementParameterParser.getValue(node, "__CASE_SENSITIVE__").equals("YES") %>;
 	java.util.regex.Pattern fileNamePattern_<%=cid%> = java.util.regex.Pattern.compile(filemask_<%=cid%>);
-	java.util.regex.Pattern excludefileNamePattern_<%=cid%> = java.util.regex.Pattern.compile(excludefilemask_<%=cid%>);
 	if(!case_sensitive_<%=cid%>){
     	fileNamePattern_<%=cid%> = java.util.regex.Pattern.compile(filemask_<%=cid%>, java.util.regex.Pattern.CASE_INSENSITIVE);
+<%if(ifexclude){%> 
     	excludefileNamePattern_<%=cid%> = java.util.regex.Pattern.compile(excludefilemask_<%=cid%>, java.util.regex.Pattern.CASE_INSENSITIVE);
+<%}%> 
 	}       
 	java.io.File file_<%=cid%> = new java.io.File(directory_<%=cid%>);
     final java.util.List<java.io.File> list_<%=cid%> = new java.util.ArrayList<java.io.File>(); 
@@ -112,11 +117,16 @@
         
         java.io.File files_<%=cid%> =list_<%=cid%>.get(i_<%=cid%>);
         String fileName_<%=cid%> = files_<%=cid%>.getName();
-
+<%if(ifexclude){%> 
         if(!fileNamePattern_<%=cid%>.matcher(fileName_<%=cid%>).find()||excludefileNamePattern_<%=cid%>.matcher(fileName_<%=cid%>).find()){
             continue;
         }
-       
+ <%}else{%>       
+ 		if(!fileNamePattern_<%=cid%>.matcher(fileName_<%=cid%>).find()){
+            continue;
+        }
+ <%}%> 
+ 
         String currentFileName_<%=cid%> = files_<%=cid%>.getName(); 
         String currentFilePath_<%=cid%> = files_<%=cid%>.getAbsolutePath();
         NB_FILE<%=cid%>++;
