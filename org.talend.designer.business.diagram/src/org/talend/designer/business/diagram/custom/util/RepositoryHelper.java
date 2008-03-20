@@ -57,8 +57,7 @@ public class RepositoryHelper {
             RepositoryNode repositoryNode = (RepositoryNode) object;
             if (repositoryNode.getType() == RepositoryNode.ENodeType.REPOSITORY_ELEMENT) {
                 IRepositoryObject repositoryObject = repositoryNode.getObject();
-                ERepositoryObjectType nodeType = (ERepositoryObjectType) repositoryNode
-                        .getProperties(EProperties.CONTENT_TYPE);
+                ERepositoryObjectType nodeType = (ERepositoryObjectType) repositoryNode.getProperties(EProperties.CONTENT_TYPE);
 
                 result = (TalendItem) BusinessFactory.eINSTANCE.create(getEClass(nodeType));
 
@@ -106,6 +105,8 @@ public class RepositoryHelper {
             return BusinessPackage.eINSTANCE.getFileRegexpMetadata();
         } else if (type == ERepositoryObjectType.METADATA_FILE_XML) {
             return BusinessPackage.eINSTANCE.getFileXmlMetadata();
+        } else if (type == ERepositoryObjectType.METADATA_FILE_EXCEL) {
+            return BusinessPackage.eINSTANCE.getFileExcelMetadata();
         } else if (type == ERepositoryObjectType.METADATA_FILE_LDIF) {
             return BusinessPackage.eINSTANCE.getFileLdifMetadata();
         } else if (type == ERepositoryObjectType.CONTEXT) {
