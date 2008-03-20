@@ -44,6 +44,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 use FileHandle;
 use List::Util qw/min/;
 use Spreadsheet::ParseExcel;
+use List::MoreUtils qw/first_index/;
 use talend::filesOp;
 
 my %desc_<%=cid%> = (
@@ -134,6 +135,22 @@ foreach my $sheet (@sheetlist) {
 $nb_line_<%=cid%> = 0;
 
 foreach my $sheet (@sheetlist) {
+    my $sheet_position = undef;
+    my $sheet_name = undef;
+
+    if ($sheet =~ m/^\d+$/) {
+        $sheet_position = $sheet;
+        $sheet_name = $book_worksheets[$sheet_position];
+    }
+    else {
+        $sheet_position = first_index { $_ eq $sheet } @book_worksheets;
+        $sheet_name = $sheet;
+    }
+
+    $_globals{<%=cid%>}{CURRENT_SHEET} = $sheet;
+    $_globals{<%=cid%>}{CURRENT_SHEET_POSITION} = $sheet_position;
+    $_globals{<%=cid%>}{CURRENT_SHEET_NAME} = $sheet_name;
+
     my $worksheet_<%=cid%> = $book_<%=cid%>->Worksheet($sheet);
 
     my $total_line_<%=cid%> =
