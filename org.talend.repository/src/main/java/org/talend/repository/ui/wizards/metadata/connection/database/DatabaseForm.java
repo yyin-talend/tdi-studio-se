@@ -839,7 +839,7 @@ public class DatabaseForm extends AbstractForm {
         sidOrDatabaseText.setEditable(false);
         datasourceText.setEditable(false);
         additionParamText.setEditable(false);
-        schemaText.setEditable(false);
+        schemaText.setEditable(true);
         fileField.setEditable(false);
         directoryField.setEditable(false);
 
