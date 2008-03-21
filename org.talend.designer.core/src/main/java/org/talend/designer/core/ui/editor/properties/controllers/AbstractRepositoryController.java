@@ -130,6 +130,10 @@ public abstract class AbstractRepositoryController extends AbstractElementProper
             currentLabelWidth = labelSize.x + ITabbedPropertyConstants.HSPACE;
         }
 
+        if (param.isRepositoryValueUsed()) {
+            param.setReadOnly(true);
+        }
+
         if (numInRow == 1) {
             if (lastControl != null) {
                 data.left = new FormAttachment(lastControl, currentLabelWidth);
@@ -468,10 +472,10 @@ public abstract class AbstractRepositoryController extends AbstractElementProper
         value = repositoryChoiceParameter.getValue();
 
         if (value instanceof String) {
-            if ("".equals(value)) {
+            String toDisplay = getDisplayNameFromValue(repositoryChoiceParameter, (String) value);
+            if (toDisplay == null || "".equals(value)) {
                 text.setText("");
             } else {
-                String toDisplay = getDisplayNameFromValue(repositoryChoiceParameter, (String) value);
                 text.setText(toDisplay);
             }
         }

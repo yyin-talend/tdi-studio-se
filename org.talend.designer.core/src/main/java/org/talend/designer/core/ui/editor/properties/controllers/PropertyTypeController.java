@@ -12,22 +12,22 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.properties.controllers;
 
-import java.util.List;
 import java.util.Map;
 
 import org.eclipse.gef.commands.Command;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.widgets.Button;
-import org.talend.core.model.metadata.IMetadataTable;
+import org.eclipse.swt.widgets.Display;
 import org.talend.core.model.metadata.builder.connection.Connection;
-import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.editor.cmd.ChangeValuesFromRepository;
 import org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty;
+import org.talend.repository.UpdateRepositoryUtils;
 import org.talend.repository.ui.dialog.RepositoryReviewDialog;
 
 /**
@@ -50,22 +50,20 @@ public class PropertyTypeController extends AbstractRepositoryController {
         if (button.getData(NAME).equals(REPOSITORY_CHOICE)) {
             String paramName = (String) button.getData(PARAMETER_NAME);
             IElementParameter param = elem.getElementParameter(paramName);
-            RepositoryReviewDialog dialog = new RepositoryReviewDialog(button.getShell(), ERepositoryObjectType.METADATA, param
-                    .getRepositoryValue());
+            RepositoryReviewDialog dialog = new RepositoryReviewDialog(Display.getCurrent().getActiveShell(),
+                    ERepositoryObjectType.METADATA, param.getRepositoryValue());
             if (dialog.open() == RepositoryReviewDialog.OK) {
                 String id = dialog.getResult().getObject().getId();
-                // String name = dialog.getResult().getObject().getLabel();
-                // IElementParameter repositoryChoiceParameter =
-                // param.getChildParameters().get(getRepositoryChoiceParamName());
-                // repositoryChoiceParameter.setValue(id);
-                String fullParamName = paramName + ":" + getRepositoryChoiceParamName();
-                // Text text = (Text) hashCurControls.get(fullParamName);
-                // text.setText(getDisplayNameFromValue(repositoryChoiceParameter, id));
+
+                IElementParameter repositoryParam = param.getChildParameters().get(
+                        EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
+                if (repositoryParam != null) {
+                    repositoryParam.setLinkedRepositoryItem(dialog.getResult().getObject().getProperty().getItem());
+                }
+                String fullParamName = paramName + ":" + getRepositoryChoiceParamName(); //$NON-NLS-1$
+
                 Connection repositoryConnection = null;
                 Map<String, ConnectionItem> repositoryConnectionItemMap = dynamicProperty.getRepositoryConnectionItemMap();
-                Map<String, IMetadataTable> repositoryTableMap = dynamicProperty.getRepositoryTableMap();
-                Map<String, List<String>> tablesmap = dynamicProperty.getTablesMap();
-                Map<String, List<String>> queriesmap = dynamicProperty.getQueriesMap();
 
                 if (repositoryConnectionItemMap.containsKey(id)) {
                     repositoryConnection = repositoryConnectionItemMap.get(id).getConnection();
@@ -76,8 +74,7 @@ public class PropertyTypeController extends AbstractRepositoryController {
                 if (repositoryConnection != null) {
                     ChangeValuesFromRepository changeValuesFromRepository = new ChangeValuesFromRepository(elem,
                             repositoryConnection, fullParamName, id);
-                    changeValuesFromRepository.setMaps(tablesmap, queriesmap, repositoryTableMap, dynamicProperty
-                            .getRepositoryQueryStoreMap());
+                    changeValuesFromRepository.setMaps(dynamicProperty.getRepositoryTableMap());
                     return changeValuesFromRepository;
                 }
 
@@ -109,18 +106,10 @@ public class PropertyTypeController extends AbstractRepositoryController {
         if (value.equals(param.getValue())) {
             return null;
         }
-        Map<String, IMetadataTable> repositoryTableMap = null;
         Map<String, ConnectionItem> repositoryConnectionItemMap = null;
-        Map<String, List<String>> tablesMap = null;
-        Map<String, List<String>> queriesMap = null;
-        Map<String, Query> queryStoreMap = null;
 
         if (value.equals(EmfComponent.REPOSITORY)) {
-            repositoryTableMap = dynamicProperty.getRepositoryTableMap();
             repositoryConnectionItemMap = dynamicProperty.getRepositoryConnectionItemMap();
-            tablesMap = dynamicProperty.getTablesMap();
-            queriesMap = dynamicProperty.getQueriesMap();
-            queryStoreMap = dynamicProperty.getRepositoryQueryStoreMap();
 
             IElementParameter repositoryParam = param.getParentParameter().getChildParameters().get(
                     EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
@@ -133,11 +122,10 @@ public class PropertyTypeController extends AbstractRepositoryController {
                 repositoryConnection = null;
             }
         }
-
         ChangeValuesFromRepository changeValuesFromRepository = new ChangeValuesFromRepository(elem, repositoryConnection,
                 paramName, value);
 
-        changeValuesFromRepository.setMaps(tablesMap, queriesMap, repositoryTableMap, queryStoreMap);
+        changeValuesFromRepository.setMaps(dynamicProperty.getRepositoryTableMap());
         return changeValuesFromRepository;
 
     }
@@ -160,6 +148,32 @@ public class PropertyTypeController extends AbstractRepositoryController {
     @Override
     protected String getRepositoryTypeParamName() {
         return EParameterName.PROPERTY_TYPE.getName();
+    }
+
+    @Override
+    protected String getDisplayNameFromValue(IElementParameter param, String value) {
+        if (param == null || value == null || value.equals("")) { //$NON-NLS-1$
+            return null;
+        }
+        if (!param.getName().equals(getRepositoryChoiceParamName())) {
+            return null;
+        }
+        Item item = param.getLinkedRepositoryItem();
+        if (item == null || (item != null && !item.getProperty().getId().equals(value))) {
+            Map<String, ConnectionItem> itemMap = dynamicProperty.getRepositoryConnectionItemMap();
+            item = itemMap.get(value);
+            if (item == null) {
+                item = UpdateRepositoryUtils.getConnectionItemByItemId(value);
+                if (item != null) {
+                    // set in map
+                    itemMap.put(value, (ConnectionItem) item);
+                }
+            }
+        }
+        if (item != null && item instanceof ConnectionItem) {
+            return dynamicProperty.getRepositoryAliasName((ConnectionItem) item) + ":" + item.getProperty().getLabel(); //$NON-NLS-1$
+        }
+        return null;
     }
 
 }

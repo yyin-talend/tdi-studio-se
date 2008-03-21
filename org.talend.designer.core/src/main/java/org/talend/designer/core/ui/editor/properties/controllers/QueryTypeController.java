@@ -33,7 +33,9 @@ import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
@@ -41,6 +43,7 @@ import org.talend.designer.core.ui.editor.cmd.QueryGuessCommand;
 import org.talend.designer.core.ui.editor.cmd.RepositoryChangeQueryCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty;
+import org.talend.repository.UpdateRepositoryUtils;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.dialog.RepositoryReviewDialog;
 
@@ -49,7 +52,7 @@ import org.talend.repository.ui.dialog.RepositoryReviewDialog;
  */
 public class QueryTypeController extends AbstractRepositoryController {
 
-    private static final String GUESS_QUERY_NAME = "Guess Query";
+    private static final String GUESS_QUERY_NAME = "Guess Query"; //$NON-NLS-1$
 
     /**
      * DOC nrousseau QueryTypeController constructor comment.
@@ -134,24 +137,25 @@ public class QueryTypeController extends AbstractRepositoryController {
                     ERepositoryObjectType.METADATA_CON_QUERY, null);
             if (dialog.open() == RepositoryReviewDialog.OK) {
                 RepositoryNode node = dialog.getResult();
-                while (node.getObject().getProperty().getItem() == null
-                        || (!(node.getObject().getProperty().getItem() instanceof ConnectionItem))) {
-                    node = node.getParent();
-                }
-                String id = node.getObject().getProperty().getId();
-                String name = dialog.getResult().getObject().getLabel();
+                String id = node.getObject().getId();
+
                 String paramName = (String) button.getData(PARAMETER_NAME);
                 IElementParameter param = elem.getElementParameter(paramName);
+                IElementParameter repositroyParam = param.getChildParameters().get(
+                        EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName());
+                final Item item = node.getObject().getProperty().getItem();
 
-                String value = id + " - " + name;
-                param.setValue(value);
+                if (repositroyParam != null) {
+                    // repositroyParam.setValue(id);
+                    repositroyParam.setLinkedRepositoryItem(item);
+                }
 
-                Map<String, Query> repositoryQueryStoreMap = this.dynamicProperty.getRepositoryQueryStoreMap();
-                if (repositoryQueryStoreMap.containsKey(value)) {
-                    Query query = repositoryQueryStoreMap.get(value);
+                Query query = UpdateRepositoryUtils.getQueryById(item, id);
+                if (query != null) {
                     IElementParameter queryText = getQueryTextElementParameter(elem);
                     if (queryText != null) {
-                        return new RepositoryChangeQueryCommand(elem, query, name, value);
+                        return new RepositoryChangeQueryCommand(elem, query, EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName(),
+                                id);
                     }
                 }
 
@@ -205,7 +209,7 @@ public class QueryTypeController extends AbstractRepositoryController {
                     }
                 }
             }
-        }// Ends
+        } // Ends
 
         QueryGuessCommand cmd = null;
         Node node = null;
@@ -229,7 +233,7 @@ public class QueryTypeController extends AbstractRepositoryController {
         cmd = new QueryGuessCommand(node, newRepositoryMetadata);
 
         cmd.setMaps(dynamicProperty.getTableIdAndDbTypeMap(), dynamicProperty.getTableIdAndDbSchemaMap(), repositoryTableMap);
-        String type = getValueFromRepositoryName("TYPE");
+        String type = getValueFromRepositoryName("TYPE"); //$NON-NLS-1$
         cmd.setParameters(realTableId, realTableName, type);
         return cmd;
     }
@@ -304,4 +308,50 @@ public class QueryTypeController extends AbstractRepositoryController {
     protected String getRepositoryTypeParamName() {
         return EParameterName.QUERYSTORE_TYPE.getName();
     }
+
+    @Override
+    protected String getDisplayNameFromValue(IElementParameter param, String value) {
+        if (param == null || value == null || value.equals("")) { //$NON-NLS-1$
+            return null;
+        }
+        if (!param.getName().equals(getRepositoryChoiceParamName())) {
+            return null;
+        }
+        Item item = param.getLinkedRepositoryItem();
+        Query query = null;
+        if (item != null) {
+            // item not match
+            query = UpdateRepositoryUtils.getQueryById(item, value);
+        }
+        if (item == null || query == null) {
+            // research
+            item = UpdateRepositoryUtils.getConnectionItemByChildId(dynamicProperty.getRepositoryConnectionItemMap(), value);
+            if (item != null) {
+                query = UpdateRepositoryUtils.getQueryById(item, value);
+            }
+        }
+
+        if (query != null && item != null && item instanceof ConnectionItem) {
+            final IElementParameter parentParameter = param.getParentParameter();
+            if (parentParameter != null) {
+                IElementParameter typeParam = parentParameter.getChildParameters().get(EParameterName.QUERYSTORE_TYPE.getName());
+                final IElementParameter memoSqlParam = elem.getElementParameterFromField(EParameterFieldType.MEMO_SQL, param
+                        .getCategory());
+                if (memoSqlParam != null) {
+                    if (typeParam != null && EmfComponent.REPOSITORY.equals(typeParam.getValue())) {
+                        memoSqlParam.setValue(TalendTextUtils.addSQLQuotes(query.getValue()));
+                        memoSqlParam.setRepositoryValueUsed(true);
+                        memoSqlParam.setReadOnly(true);
+                    } else {
+                        memoSqlParam.setRepositoryValueUsed(false);
+                        memoSqlParam.setReadOnly(false);
+                    }
+                }
+            }
+            return dynamicProperty.getRepositoryAliasName((ConnectionItem) item) + ":" //$NON-NLS-1$
+                    + item.getProperty().getLabel() + " - " + query.getLabel(); //$NON-NLS-1$
+        }
+        return null;
+    }
+
 }

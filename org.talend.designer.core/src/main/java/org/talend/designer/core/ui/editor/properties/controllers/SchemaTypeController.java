@@ -44,6 +44,7 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.metadata.dialog.MetadataDialog;
 import org.talend.core.ui.metadata.dialog.MetadataDialogForMerge;
@@ -56,6 +57,7 @@ import org.talend.designer.core.ui.editor.cmd.RepositoryChangeMetadataCommand;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty;
+import org.talend.repository.UpdateRepositoryUtils;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.dialog.RepositoryReviewDialog;
 
@@ -601,23 +603,33 @@ public class SchemaTypeController extends AbstractRepositoryController {
                         || (!(node.getObject().getProperty().getItem() instanceof ConnectionItem))) {
                     node = node.getParent();
                 }
-                String id = node.getObject().getProperty().getId();
-                String name = dialog.getResult().getObject().getLabel();
+                String id = dialog.getResult().getObject().getId();
                 String paramName = (String) button.getData(PARAMETER_NAME);
-                String value = id + " - " + name;
 
-                String fullParamName = paramName + ":" + getRepositoryChoiceParamName();
+                String fullParamName = paramName + ":" + getRepositoryChoiceParamName(); //$NON-NLS-1$
+                IElementParameter repostoryParam = elem.getElementParameter(fullParamName);
+
+                final Item item = node.getObject().getProperty().getItem();
+                if (repostoryParam != null) {
+                    // repostoryParam.setValue(id);
+                    repostoryParam.setLinkedRepositoryItem(item);
+                }
+
                 org.talend.core.model.metadata.builder.connection.Connection connection = null;
                 Map<String, IMetadataTable> repositoryTableMap = dynamicProperty.getRepositoryTableMap();
                 if (elem instanceof Node) {
                     IMetadataTable repositoryMetadata;
-                    if (repositoryTableMap.containsKey(value)) {
-                        repositoryMetadata = repositoryTableMap.get(value);
+                    if (repositoryTableMap.containsKey(id)) {
+                        repositoryMetadata = repositoryTableMap.get(id);
                         IElementParameter property = ((Node) elem).getElementParameter(EParameterName.PROPERTY_TYPE.getName());
                         if ((property != null) && EmfComponent.REPOSITORY.equals(property.getValue())) {
                             String propertySelected = (String) ((Node) elem).getElementParameter(
                                     EParameterName.REPOSITORY_PROPERTY_TYPE.getName()).getValue();
-                            connection = dynamicProperty.getRepositoryConnectionItemMap().get(propertySelected).getConnection();
+                            final ConnectionItem connectionItem = dynamicProperty.getRepositoryConnectionItemMap().get(
+                                    propertySelected);
+                            if (connectionItem != null) {
+                                connection = connectionItem.getConnection();
+                            }
                         }
                     } else {
                         repositoryMetadata = new MetadataTable();
@@ -626,11 +638,8 @@ public class SchemaTypeController extends AbstractRepositoryController {
                         switchParam.setValue(Boolean.FALSE);
                     }
                     RepositoryChangeMetadataCommand changeMetadataCommand = new RepositoryChangeMetadataCommand((Node) elem,
-                            fullParamName, value, repositoryMetadata, null);
+                            fullParamName, id, repositoryMetadata, null);
                     changeMetadataCommand.setConnection(connection);
-                    // changeMetadataCommand.setMaps(this.dynamicTabbedPropertySection.getTableIdAndDbTypeMap(),
-                    // this.dynamicTabbedPropertySection.getTableIdAndDbSchemaMap(), this.dynamicTabbedPropertySection
-                    // .getRepositoryTableMap());
 
                     return changeMetadataCommand;
 
@@ -695,7 +704,10 @@ public class SchemaTypeController extends AbstractRepositoryController {
                 if ((property != null) && EmfComponent.REPOSITORY.equals(property.getValue())) {
                     String propertySelected = (String) ((Node) elem).getElementParameter(
                             EParameterName.REPOSITORY_PROPERTY_TYPE.getName()).getValue();
-                    connection = dynamicProperty.getRepositoryConnectionItemMap().get(propertySelected).getConnection();
+                    final ConnectionItem connectionItem = dynamicProperty.getRepositoryConnectionItemMap().get(propertySelected);
+                    if (connectionItem != null) {
+                        connection = connectionItem.getConnection();
+                    }
                 }
 
                 IElementParameter repositorySchemaType = param.getParentParameter().getChildParameters().get(
@@ -747,6 +759,50 @@ public class SchemaTypeController extends AbstractRepositoryController {
     @Override
     protected String getRepositoryTypeParamName() {
         return EParameterName.SCHEMA_TYPE.getName();
+    }
+
+    @Override
+    protected String getDisplayNameFromValue(IElementParameter param, String value) {
+        if (value == null || "".equals(value)) { //$NON-NLS-1$
+            return null;
+        }
+        Item item = param.getLinkedRepositoryItem();
+        org.talend.core.model.metadata.builder.connection.MetadataTable table = null;
+        if (item != null) {
+            // item not match
+            table = UpdateRepositoryUtils.getTableById(item, value);
+        }
+        if (item == null || table == null) {
+            // research
+            item = UpdateRepositoryUtils.getConnectionItemByChildId(dynamicProperty.getRepositoryConnectionItemMap(), value);
+            if (item != null) {
+                table = UpdateRepositoryUtils.getTableById(item, value);
+            }
+        }
+
+        if (table != null && item != null) {
+            final IElementParameter parentParameter = param.getParentParameter();
+            if (parentParameter != null) {
+                IElementParameter typeParam = parentParameter.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName());
+                final IElementParameter dbTableParam = elem.getElementParameterFromField(EParameterFieldType.DBTABLE, param
+                        .getCategory());
+                if (dbTableParam != null) {
+                    if (typeParam != null && EmfComponent.REPOSITORY.equals(typeParam.getValue())) {
+                        dbTableParam.setValue(table.getLabel());
+                        dbTableParam.setReadOnly(true);
+                        dbTableParam.setRepositoryValueUsed(true);
+                    } else {
+                        dbTableParam.setReadOnly(false);
+                        dbTableParam.setRepositoryValueUsed(false);
+                    }
+                }
+            }
+
+            return dynamicProperty.getRepositoryAliasName((ConnectionItem) item) + ":" + item.getProperty().getLabel() + " - " //$NON-NLS-1$ //$NON-NLS-2$
+                    + table.getLabel();
+        }
+
+        return null;
     }
 
 }

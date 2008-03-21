@@ -12,7 +12,6 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.properties.controllers.generator;
 
-import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections.BidiMap;
@@ -21,6 +20,7 @@ import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
+import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 
@@ -48,10 +48,6 @@ public interface IDynamicProperty {
 
     public Map<String, ConnectionItem> getRepositoryConnectionItemMap();
 
-    public Map<String, List<String>> getTablesMap();
-
-    public Map<String, List<String>> getQueriesMap();
-
     public Map<String, Query> getRepositoryQueryStoreMap();
 
     public Map<String, String> getTableIdAndDbTypeMap();
@@ -61,4 +57,6 @@ public interface IDynamicProperty {
     public void refresh();
 
     public String getRepositoryAliasName(ConnectionItem connectionItem);
+
+    public void updateContextList(IElementParameter param);
 }

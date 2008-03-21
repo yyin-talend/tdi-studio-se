@@ -1225,18 +1225,23 @@ public abstract class AbstractElementPropertySectionController implements Proper
 
     private Command refreshConnectionCommand(Control control) {
 
-        Object connectionParam = (Object) elem.getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE)
-                .getChildParameters().values().toArray()[1];
-        IElementParameter parameter = (IElementParameter) connectionParam;
-
-        try {
-            IRepositoryObject o = RepositoryPlugin.getDefault().getRepositoryService().getProxyRepositoryFactory()
-                    .getLastVersion((String) parameter.getValue());
-            RepositoryPlugin.getDefault().getRepositoryService().openMetadataConnection(o);
-
-        } catch (Exception e) {
-            ExceptionHandler.process(e);
+        final IElementParameter propertyParam = elem.getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE);
+        if (propertyParam != null) {
+            final IElementParameter repositoryParam = propertyParam.getChildParameters().get(
+                    EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
+            if (repositoryParam != null) {
+                try {
+                    IRepositoryObject o = RepositoryPlugin.getDefault().getRepositoryService().getProxyRepositoryFactory()
+                            .getLastVersion((String) repositoryParam.getValue());
+                    if (o != null) {
+                        RepositoryPlugin.getDefault().getRepositoryService().openMetadataConnection(o);
+                    }
+                } catch (Exception e) {
+                    ExceptionHandler.process(e);
+                }
+            }
         }
+
         return null;
     }
 }

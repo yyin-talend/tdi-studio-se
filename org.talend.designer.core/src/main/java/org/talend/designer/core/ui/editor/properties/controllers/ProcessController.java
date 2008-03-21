@@ -39,6 +39,7 @@ import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.designer.core.i18n.Messages;
@@ -67,6 +68,7 @@ public class ProcessController extends AbstractElementPropertySectionController 
     public Control createControl(final Composite subComposite, final IElementParameter param, final int numInRow,
             final int nbInRow, final int top, final Control lastControl) {
         FormData data;
+        this.curParameter = param;
 
         IElementParameter processTypeParameter = param.getChildParameters().get(EParameterName.PROCESS_TYPE_PROCESS.getName());
         Text labelText;
@@ -133,7 +135,7 @@ public class ProcessController extends AbstractElementPropertySectionController 
         btn.setImage(ImageProvider.getImage(CorePlugin.getImageDescriptor(DOTS_BUTTON)));
 
         btn.addSelectionListener(listenerSelection);
-        btn.setData(PARAMETER_NAME, param.getName() + ":" + processTypeParameter.getName());
+        btn.setData(PARAMETER_NAME, param.getName() + ":" + processTypeParameter.getName()); //$NON-NLS-1$
 
         data = new FormData();
         data.left = new FormAttachment(cLayout, 0);
@@ -144,7 +146,7 @@ public class ProcessController extends AbstractElementPropertySectionController 
 
         // **********************
 
-        hashCurControls.put(param.getName() + ":" + processTypeParameter.getName(), labelText);
+        hashCurControls.put(param.getName() + ":" + processTypeParameter.getName(), labelText); //$NON-NLS-1$
 
         Point initialSize = dField.getLayoutControl().computeSize(SWT.DEFAULT, SWT.DEFAULT);
 
@@ -393,11 +395,20 @@ public class ProcessController extends AbstractElementPropertySectionController 
     private Command createButtonCommand(Button button) {
         RepositoryReviewDialog dialog = new RepositoryReviewDialog((button).getShell(), ERepositoryObjectType.PROCESS, null);
         if (dialog.open() == RepositoryReviewDialog.OK) {
-            // String id = dialog.getResult().getObject().getId();
             repositoryObject = dialog.getResult().getObject();
-            String jobName = repositoryObject.getLabel();
+            final Item item = repositoryObject.getProperty().getItem();
+            String id = item.getProperty().getId();
+
+            if (curParameter != null) {
+                IElementParameter jobNameParam = curParameter.getChildParameters().get(
+                        EParameterName.PROCESS_TYPE_PROCESS.getName());
+                if (jobNameParam != null) {
+                    jobNameParam.setLinkedRepositoryItem(item);
+                }
+            }
+            // String jobName = item.getProperty().getLabel();
             String paramName = (String) button.getData(PARAMETER_NAME);
-            return new PropertyChangeCommand(elem, paramName, jobName);
+            return new PropertyChangeCommand(elem, paramName, id);
         }
         return null;
     }
@@ -430,67 +441,58 @@ public class ProcessController extends AbstractElementPropertySectionController 
 
     @Override
     public void refresh(IElementParameter param, boolean check) {
+        if (dynamicProperty != null) {
+            dynamicProperty.updateContextList(param);
+        }
         IElementParameter processTypeParameter = param.getChildParameters().get(EParameterName.PROCESS_TYPE_PROCESS.getName());
 
-        Text jobName = (Text) hashCurControls.get(param.getName() + ":" + processTypeParameter.getName());
+        Text jobName = (Text) hashCurControls.get(param.getName() + ":" + processTypeParameter.getName()); //$NON-NLS-1$
         if (jobName != null && !jobName.isDisposed()) {
-            jobName.setText((String) processTypeParameter.getValue());
-        }
-        IElementParameter contextParameter = param.getChildParameters().get(EParameterName.PROCESS_TYPE_CONTEXT.getName());
-
-        CCombo combo = (CCombo) hashCurControls.get(contextParameter.getName());
-
-        if (combo == null || combo.isDisposed()) {
-            return;
-        }
-        Object value = contextParameter.getValue();
-        if (value instanceof String) {
-            String strValue = ""; //$NON-NLS-1$
-            int nbInList = 0, nbMax = contextParameter.getListItemsValue().length;
-            String name = (String) value;
-            while (strValue.equals(new String("")) && nbInList < nbMax) { //$NON-NLS-1$
-                if (name.equals(contextParameter.getListItemsValue()[nbInList])) {
-                    strValue = contextParameter.getListItemsDisplayName()[nbInList];
-                }
-                nbInList++;
+            final String labelFromRepository = processTypeParameter.getLabelFromRepository();
+            if (labelFromRepository == null) {
+                jobName.setText(""); //$NON-NLS-1$
+            } else {
+                jobName.setText(labelFromRepository);
             }
-            String[] paramItems = getListToDisplay(contextParameter);
-            String[] comboItems = combo.getItems();
-
-            if (!Arrays.equals(paramItems, comboItems)) {
-                combo.setItems(paramItems);
-            }
-            combo.setText(strValue);
-            combo.setVisible(true);
         }
+        // context
+        refreshCombo(param, EParameterName.PROCESS_TYPE_CONTEXT.getName());
+        // version
+        refreshCombo(param, EParameterName.PROCESS_TYPE_VERSION.getName());
 
-        refreshVersionCombo(param);
+        if (elem != null && elem instanceof Node) {
+            ((Node) elem).checkAndRefreshNode();
+        }
     }
 
     /**
-     * ftang Comment method "refreshVersionCombo".
+     * 
+     * ggu Comment method "refreshCombo".
+     * 
      */
-    private void refreshVersionCombo(IElementParameter param) {
+    private void refreshCombo(IElementParameter parentParam, final String childParamName) {
+        if (parentParam == null || childParamName == null) {
+            return;
+        }
+        IElementParameter childParameter = parentParam.getChildParameters().get(childParamName);
 
-        IElementParameter versionParameter = param.getChildParameters().get(EParameterName.PROCESS_TYPE_VERSION.getName());
-
-        CCombo combo = (CCombo) hashCurControls.get(versionParameter.getName());
+        CCombo combo = (CCombo) hashCurControls.get(childParameter.getName());
 
         if (combo == null || combo.isDisposed()) {
             return;
         }
-        Object value = versionParameter.getValue();
+        Object value = childParameter.getValue();
         if (value instanceof String) {
             String strValue = ""; //$NON-NLS-1$
-            int nbInList = 0, nbMax = versionParameter.getListItemsValue().length;
+            int nbInList = 0, nbMax = childParameter.getListItemsValue().length;
             String name = (String) value;
             while (strValue.equals(new String("")) && nbInList < nbMax) { //$NON-NLS-1$
-                if (name.equals(versionParameter.getListItemsValue()[nbInList])) {
-                    strValue = versionParameter.getListItemsDisplayName()[nbInList];
+                if (name.equals(childParameter.getListItemsValue()[nbInList])) {
+                    strValue = childParameter.getListItemsDisplayName()[nbInList];
                 }
                 nbInList++;
             }
-            String[] paramItems = getListToDisplay(versionParameter);
+            String[] paramItems = getListToDisplay(childParameter);
             String[] comboItems = combo.getItems();
 
             if (!Arrays.equals(paramItems, comboItems)) {

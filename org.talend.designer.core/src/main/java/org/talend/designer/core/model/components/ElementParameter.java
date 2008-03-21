@@ -101,6 +101,8 @@ public class ElementParameter implements IElementParameter {
 
     private boolean contextMode;
 
+    private String labelFromRepository;
+
     public ElementParameter(final IElement element) {
         this.element = element;
     }
@@ -596,5 +598,24 @@ public class ElementParameter implements IElementParameter {
      */
     public void setContextMode(boolean mode) {
         this.contextMode = mode;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IElementParameter#getLabelFromRepository()
+     */
+    public String getLabelFromRepository() {
+        return this.labelFromRepository;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IElementParameter#setLabelFromRepository(java.lang.String)
+     */
+    public void setLabelFromRepository(String label) {
+        this.labelFromRepository = label;
+
     }
 }

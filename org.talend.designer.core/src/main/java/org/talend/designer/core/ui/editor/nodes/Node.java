@@ -69,6 +69,7 @@ import org.talend.core.model.process.INodeReturn;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.Problem;
 import org.talend.core.model.process.Problem.ProblemStatus;
+import org.talend.core.model.properties.Item;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -914,7 +915,8 @@ public class Node extends Element implements INode {
             setShowHint((Boolean) value);
         }
 
-        if (id.equals(EParameterName.PROCESS_TYPE_CONTEXT.getName())) {
+        final String processPrefix = "PROCESS:";
+        if (id.equals(processPrefix + EParameterName.PROCESS_TYPE_CONTEXT.getName())) { // is child
             if (!CorePlugin.getContext().isHeadless()) {
                 IWorkbenchWindow activeWorkbenchWindow;
 
@@ -927,9 +929,14 @@ public class Node extends Element implements INode {
                     IEditorPart part = activeWorkbenchWindow.getActivePage().getActiveEditor();
                     if (part instanceof AbstractMultiPageTalendEditor) {
                         if (process.isActivate() && ((AbstractMultiPageTalendEditor) part).getProcess().equals(process)) {
-                            ProcessorUtilities.generateCode((String) getPropertyValue(EParameterName.PROCESS_TYPE_PROCESS
-                                    .getName()), (String) value, false, false, ProcessorUtilities.GENERATE_MAIN_ONLY);
-                            ((AbstractMultiPageTalendEditor) part).updateChildrens();
+                            final String propertyValue = (String) getPropertyValue(processPrefix
+                                    + EParameterName.PROCESS_TYPE_PROCESS.getName());
+                            Item item = ProcessorUtilities.getProcessItemById(propertyValue);
+                            if (item != null) {
+                                ProcessorUtilities.generateCode(item.getProperty().getLabel(), (String) value, false, false,
+                                        ProcessorUtilities.GENERATE_MAIN_ONLY);
+                                ((AbstractMultiPageTalendEditor) part).updateChildrens();
+                            }
                         }
                     }
                 }
@@ -1565,9 +1572,9 @@ public class Node extends Element implements INode {
         // not a sub process start
         if (!isSubProcessStart() || (!(Boolean) getPropertyValue(EParameterName.STARTABLE.getName()))) {
             if (/*
-                 * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_AFTER) > 0) ||
-                 * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_BEFORE) > 0)||
-                 */
+             * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_AFTER) > 0) ||
+             * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_BEFORE) > 0)||
+             */
             (getCurrentActiveLinksNbOutput(EConnectionType.ON_SUBJOB_OK) > 0)
                     || getCurrentActiveLinksNbOutput(EConnectionType.ON_SUBJOB_ERROR) > 0) {
                 String errorMessage = "A component that is not a sub process start can not have any link run after / run before in output.";
@@ -1579,9 +1586,9 @@ public class Node extends Element implements INode {
         // not a sub process start
         if ((!isELTComponent() && !isSubProcessStart()) || (!(Boolean) getPropertyValue(EParameterName.STARTABLE.getName()))) {
             if (/*
-                 * (getCurrentActiveLinksNbInput(EConnectionType.RUN_AFTER) > 0) ||
-                 * (getCurrentActiveLinksNbInput(EConnectionType.RUN_BEFORE) > 0) ||
-                 */(getCurrentActiveLinksNbInput(EConnectionType.ON_SUBJOB_OK) > 0)
+             * (getCurrentActiveLinksNbInput(EConnectionType.RUN_AFTER) > 0) ||
+             * (getCurrentActiveLinksNbInput(EConnectionType.RUN_BEFORE) > 0) ||
+             */(getCurrentActiveLinksNbInput(EConnectionType.ON_SUBJOB_OK) > 0)
                     || (getCurrentActiveLinksNbInput(EConnectionType.RUN_IF) > 0)
                     || (getCurrentActiveLinksNbInput(EConnectionType.ON_COMPONENT_OK) > 0)
                     || (getCurrentActiveLinksNbInput(EConnectionType.ON_COMPONENT_ERROR) > 0)) {

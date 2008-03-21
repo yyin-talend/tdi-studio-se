@@ -645,4 +645,14 @@ public class AdvancedContextComposite extends ScrolledComposite implements IDyna
 
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty#updateContextList(org.talend.core.model.process.IElementParameter)
+     */
+    public void updateContextList(IElementParameter param) {
+        // TODO Auto-generated method stub
+
+    }
+
 }
