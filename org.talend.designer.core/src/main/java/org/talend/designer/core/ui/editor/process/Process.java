@@ -618,7 +618,7 @@ public class Process extends Element implements IProcess2 {
             pType.setName(param.getName());
         }
         pType.setField(param.getField().getName());
-            pType.setContextMode(param.isContextMode());
+        pType.setContextMode(param.isContextMode());
         Object value = param.getValue();
         if (param.getField().equals(EParameterFieldType.TABLE)) {
             List<Map<String, Object>> tableValues = (List<Map<String, Object>>) value;
@@ -673,8 +673,8 @@ public class Process extends Element implements IProcess2 {
 
             if (pType != null) {
                 IElementParameter param = elemParam.getElementParameter(pType.getName());
-                param.setContextMode(pType.isContextMode());
                 if (param != null) {
+                    param.setContextMode(pType.isContextMode());
                     if (param.isReadOnly()
                             && !(param.getName().equals(EParameterName.UNIQUE_NAME.getName()) || param.getName().equals(
                                     EParameterName.VERSION.getName()))) {
