@@ -197,6 +197,8 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
                     dc = new MultipleThreadDynamicComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS, category,
                             element, false);
                 }
+            } else if (category == EComponentCategory.ADVANCED_CONTEXT) {
+                dc = new AdvancedContextComposite(parent, SWT.NONE, element);
             } else {
                 tabFactory.getTabbedPropertyComposite().getCompactButton().setVisible(false);
                 tabFactory.getTabbedPropertyComposite().getTableButton().setVisible(false);

@@ -26,7 +26,12 @@ public enum EElementType {
     NODE_LABEL(EComponentCategory.BASIC, EComponentCategory.ADVANCED, EComponentCategory.VIEW, EComponentCategory.DOC),
     CONNECTION(EComponentCategory.BASIC, EComponentCategory.ADVANCED),
     NOTE(EComponentCategory.BASIC, EComponentCategory.ADVANCED),
-    ADVANCED_NODE(EComponentCategory.BASIC, EComponentCategory.ADVANCED, EComponentCategory.VIEW, EComponentCategory.DOC);
+    ADVANCED_NODE(
+                  EComponentCategory.BASIC,
+                  EComponentCategory.ADVANCED,
+                  EComponentCategory.ADVANCED_CONTEXT,
+                  EComponentCategory.VIEW,
+                  EComponentCategory.DOC);
 
     private EComponentCategory[] categories;
 

@@ -893,7 +893,7 @@ public class Node extends Element implements INode {
         }
 
         if (id.equals(EParameterName.ACTIVATE.getName())) {
-            setActivate((Boolean) value);
+            setActivate(Boolean.valueOf(value.toString()));
         }
 
         if (id.equals(EParameterName.DUMMY.getName())) {

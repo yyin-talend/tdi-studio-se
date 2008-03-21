@@ -618,6 +618,7 @@ public class Process extends Element implements IProcess2 {
             pType.setName(param.getName());
         }
         pType.setField(param.getField().getName());
+            pType.setContextMode(param.isContextMode());
         Object value = param.getValue();
         if (param.getField().equals(EParameterFieldType.TABLE)) {
             List<Map<String, Object>> tableValues = (List<Map<String, Object>>) value;
@@ -672,6 +673,7 @@ public class Process extends Element implements IProcess2 {
 
             if (pType != null) {
                 IElementParameter param = elemParam.getElementParameter(pType.getName());
+                param.setContextMode(pType.isContextMode());
                 if (param != null) {
                     if (param.isReadOnly()
                             && !(param.getName().equals(EParameterName.UNIQUE_NAME.getName()) || param.getName().equals(
@@ -680,25 +682,30 @@ public class Process extends Element implements IProcess2 {
                         // it (this will prevent to overwrite the
                         // value)
                     }
+                    String value = pType.getValue();
                     if (param.getField().equals(EParameterFieldType.CHECK) || param.getField().equals(EParameterFieldType.RADIO)) {
-                        Boolean boolean1 = new Boolean(pType.getValue());
+                        if ("false".equalsIgnoreCase(value) || "true".equalsIgnoreCase(value) || !pType.isContextMode()) {
+                            Boolean boolean1 = new Boolean(value);
+                            elemParam.setPropertyValue(pType.getName(), boolean1);
+                        } else {
+                            elemParam.setPropertyValue(pType.getName(), value);
+                        }
                         // if (EParameterName.ACTIVATE.getName().equals(param.getName())) {
                         // if ((elemParam instanceof Node) && !boolean1) {
                         // ((Node) elemParam).setDummy(!boolean1);
                         // }
                         // }
-                        elemParam.setPropertyValue(pType.getName(), boolean1);
                     } else if (param.getField().equals(EParameterFieldType.CLOSED_LIST)) {
                         boolean valueSet = false;
-                        if (!ArrayUtils.contains(param.getListItemsValue(), pType.getValue())) {
-                            if (ArrayUtils.contains(param.getListItemsDisplayName(), pType.getValue())) {
+                        if (!ArrayUtils.contains(param.getListItemsValue(), value)) {
+                            if (ArrayUtils.contains(param.getListItemsDisplayName(), value)) {
                                 valueSet = true;
-                                int index = ArrayUtils.indexOf(param.getListItemsDisplayName(), pType.getValue());
+                                int index = ArrayUtils.indexOf(param.getListItemsDisplayName(), value);
                                 elemParam.setPropertyValue(pType.getName(), param.getListItemsValue()[index]);
                             }
                         }
                         if (!valueSet) {
-                            elemParam.setPropertyValue(pType.getName(), pType.getValue());
+                            elemParam.setPropertyValue(pType.getName(), value);
                         }
                     } else if (param.getField().equals(EParameterFieldType.TABLE)) {
                         List<Map<String, Object>> tableValues = new ArrayList<Map<String, Object>>();
@@ -733,7 +740,7 @@ public class Process extends Element implements IProcess2 {
                             tempValue = tempValue.replaceAll("'", "");
                             tempValue = tempValue.replaceAll("\"", "");
                             tempValue = TalendTextUtils.addQuotes(tempValue);
-                            if (!tempValue.equals(pType.getValue())) {
+                            if (!tempValue.equals(value)) {
                                 setToCustom = true;
                             }
                         }
@@ -742,10 +749,10 @@ public class Process extends Element implements IProcess2 {
                             param.getChildParameters().get(EParameterName.ENCODING_TYPE.getName()).setValue(
                                     EmfComponent.ENCODING_TYPE_CUSTOM);
                         }
-                        elemParam.setPropertyValue(pType.getName(), pType.getValue());
+                        elemParam.setPropertyValue(pType.getName(), value);
                         // end of fix for bug 2193
                     } else if (!param.getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
-                        elemParam.setPropertyValue(pType.getName(), pType.getValue());
+                        elemParam.setPropertyValue(pType.getName(), value);
                     }
                 }
             }

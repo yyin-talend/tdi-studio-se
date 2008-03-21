@@ -99,6 +99,8 @@ public class ElementParameter implements IElementParameter {
 
     private Item linkedRepositoryItem;
 
+    private boolean contextMode;
+
     public ElementParameter(final IElement element) {
         this.element = element;
     }
@@ -576,5 +578,23 @@ public class ElementParameter implements IElementParameter {
      */
     public void setLinkedRepositoryItem(Item item) {
         this.linkedRepositoryItem = item;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IElementParameter#getContextMode()
+     */
+    public boolean isContextMode() {
+        return this.contextMode;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IElementParameter#setContextMode(java.lang.String)
+     */
+    public void setContextMode(boolean mode) {
+        this.contextMode = mode;
     }
 }

@@ -951,6 +951,7 @@ public class EmfComponent implements IComponent {
             param.setRepositoryValue(xmlParam.getREPOSITORYVALUE());
             param.setGroup(xmlParam.getGROUP());
             param.setContext(xmlParam.getCONTEXT());
+            param.setContextMode(xmlParam.isCONTEXTMODE());
 
             switch (type) {
             case COLOR:

@@ -32,6 +32,7 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.designer.core.i18n.Messages;
@@ -197,6 +198,16 @@ public class CheckController extends AbstractElementPropertySectionController {
         if (checkBtn == null || checkBtn.isDisposed()) {
             return;
         }
-        checkBtn.setSelection((Boolean) value);
+        if (!param.isContextMode()) {
+            if (value instanceof String) {
+                checkBtn.setSelection(Boolean.valueOf((String) value));
+            } else {
+                checkBtn.setSelection((Boolean) value);
+            }
+        } else {
+            checkBtn.setSelection(true);
+            checkBtn.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_RED));
+            checkBtn.setEnabled(false);
+        }
     }
 }
