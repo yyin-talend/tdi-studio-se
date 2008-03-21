@@ -470,7 +470,7 @@ public class PerlProcessor extends Processor {
     private static String[] getCommandLineByCondition(String perlInterpreter, IPath absCodePath, String perlInterpreterLibOption,
             String perlModuleDirectoryOption) throws ProcessorException {
         assert (absCodePath != null);
-        String[] cmd = new String[] { setStringPath(perlInterpreter) };
+        String[] cmd = new String[] { perlInterpreter };
         if (perlInterpreterLibOption != null && perlInterpreterLibOption.length() > 0) {
             cmd = (String[]) ArrayUtils.add(cmd, perlInterpreterLibOption);
         }
@@ -478,7 +478,7 @@ public class PerlProcessor extends Processor {
             cmd = (String[]) ArrayUtils.add(cmd, perlModuleDirectoryOption);
         }
         if (absCodePath != null) {
-            cmd = (String[]) ArrayUtils.add(cmd, setStringPath(absCodePath.toOSString()));
+            cmd = (String[]) ArrayUtils.add(cmd, absCodePath.toOSString());
         }
         return cmd;
     }
@@ -521,7 +521,7 @@ public class PerlProcessor extends Processor {
         String perlInterpreterLibOption = null;
         String perlModuleDirectoryOption = null;
         String perlLib = getLibraryPath();
-        perlInterpreterLibOption = perlLib != null && perlLib.length() > 0 ? "-I" + setStringPath(perlLib) : ""; //$NON-NLS-1$ //$NON-NLS-2$
+        perlInterpreterLibOption = perlLib != null && perlLib.length() > 0 ? "-I" + perlLib : ""; //$NON-NLS-1$ //$NON-NLS-2$
 
         IPath absCodePath = Path.fromOSString(getCodeLocation()).append(this.getCodePath());
         String[] cmd = getCommandLineByCondition(interpreter, absCodePath, perlInterpreterLibOption, perlModuleDirectoryOption);

@@ -285,14 +285,6 @@ public abstract class Processor implements IProcessor {
         Processor.externalUse = externalUse;
     }
 
-    protected static String setStringPath(String path) {
-        if (externalUse) {
-            return "\"" + path.replace("\\", "/") + "\"";
-        } else {
-            return path;
-        }
-    }
-
     /*
      * (non-Javadoc)
      * 
