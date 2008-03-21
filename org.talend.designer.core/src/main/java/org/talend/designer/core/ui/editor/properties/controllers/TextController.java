@@ -91,12 +91,12 @@ public class TextController extends AbstractElementPropertySectionController {
         editionControlHelper.register(param.getName(), labelText, true);
 
         cLayout.setBackground(subComposite.getBackground());
-        labelText.setEditable(!param.isReadOnly());
+        labelText.setEditable(!param.isRepositoryValueUsed());
         if (elem instanceof Node) {
             labelText.setToolTipText(VARIABLE_TOOLTIP + param.getVariableName());
         }
 
-        if (param.isReadOnly() && param.isRepositoryValueUsed()) {
+        if (param.isRepositoryValueUsed()) {
             addRepositoryPropertyListener(labelText);
         }
 

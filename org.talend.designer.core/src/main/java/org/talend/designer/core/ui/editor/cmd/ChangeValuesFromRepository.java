@@ -101,18 +101,6 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
     @Override
     public void execute() {
 
-        // set readonly
-        // for (IElementParameter param : elem.getElementParameters()) {
-        //
-        // param.setReadOnly(true);
-        // Collection<IElementParameter> subparams = param.getChildParameters().values();
-        // Iterator<IElementParameter> it = subparams.iterator();
-        //            
-        // while (it.hasNext()) {
-        // it.next().setReadOnly(true);
-        // }
-        // }
-
         // Force redraw of Commponents propoerties
         elem.setPropertyValue(updataComponentParamName, new Boolean(true));
 
@@ -161,7 +149,6 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
             for (IElementParameter param : elem.getElementParameters()) {
 
                 param.setReadOnly(false);
-
                 boolean paramFlag = JobSettingsConstants.isExtraParameter(param.getName());
                 boolean extraFlag = JobSettingsConstants.isExtraParameter(propertyTypeName);
                 if (paramFlag == extraFlag) {

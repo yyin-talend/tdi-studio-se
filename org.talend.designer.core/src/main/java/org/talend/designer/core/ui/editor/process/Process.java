@@ -610,59 +610,57 @@ public class Process extends Element implements IProcess2 {
                 rType.getJob().add(jType);
             }
         }
-        if ((!param.isReadOnly()) || param.getName().equals(EParameterName.UNIQUE_NAME.getName())
-                || param.getName().equals(EParameterName.VERSION.getName())) {
-            pType = fileFact.createElementParameterType();
-            if (param.getParentParameter() != null) {
-                pType.setName(param.getParentParameter().getName() + ":" + param.getName());
-            } else {
-                pType.setName(param.getName());
-            }
-            pType.setField(param.getField().getName());
-            Object value = param.getValue();
-            if (param.getField().equals(EParameterFieldType.TABLE)) {
-                List<Map<String, Object>> tableValues = (List<Map<String, Object>>) value;
-                for (Map<String, Object> currentLine : tableValues) {
-                    for (int i = 0; i < currentLine.size(); i++) {
-                        ElementValueType elementValue = fileFact.createElementValueType();
-                        elementValue.setElementRef(param.getListItemsDisplayCodeName()[i]);
-                        Object o = currentLine.get(param.getListItemsDisplayCodeName()[i]);
-                        String strValue = ""; //$NON-NLS-1$
-                        if (o instanceof Integer) {
-                            IElementParameter tmpParam = (IElementParameter) param.getListItemsValue()[i];
-                            if (tmpParam.getListItemsValue().length == 0) {
-                                strValue = ""; //$NON-NLS-1$
-                            } else {
-                                strValue = (String) tmpParam.getListItemsValue()[(Integer) o];
-                            }
-                        } else {
-                            if (o instanceof String) {
-                                strValue = (String) o;
-                            } else {
-                                if (o instanceof Boolean) {
-                                    strValue = ((Boolean) o).toString();
-                                }
-                            }
-                        }
-                        elementValue.setValue(strValue);
-                        pType.getElementValue().add(elementValue);
-                    }
-                }
-            } else {
-                if (value == null) {
-                    pType.setValue(""); //$NON-NLS-1$
-                } else {
-                    if (value instanceof Boolean) {
-                        pType.setValue(((Boolean) value).toString());
-                    } else {
-                        if (value instanceof String) {
-                            pType.setValue((String) value);
-                        }
-                    }
-                }
-            }
-            listParamType.add(pType);
+
+        pType = fileFact.createElementParameterType();
+        if (param.getParentParameter() != null) {
+            pType.setName(param.getParentParameter().getName() + ":" + param.getName());
+        } else {
+            pType.setName(param.getName());
         }
+        pType.setField(param.getField().getName());
+        Object value = param.getValue();
+        if (param.getField().equals(EParameterFieldType.TABLE)) {
+            List<Map<String, Object>> tableValues = (List<Map<String, Object>>) value;
+            for (Map<String, Object> currentLine : tableValues) {
+                for (int i = 0; i < currentLine.size(); i++) {
+                    ElementValueType elementValue = fileFact.createElementValueType();
+                    elementValue.setElementRef(param.getListItemsDisplayCodeName()[i]);
+                    Object o = currentLine.get(param.getListItemsDisplayCodeName()[i]);
+                    String strValue = ""; //$NON-NLS-1$
+                    if (o instanceof Integer) {
+                        IElementParameter tmpParam = (IElementParameter) param.getListItemsValue()[i];
+                        if (tmpParam.getListItemsValue().length == 0) {
+                            strValue = ""; //$NON-NLS-1$
+                        } else {
+                            strValue = (String) tmpParam.getListItemsValue()[(Integer) o];
+                        }
+                    } else {
+                        if (o instanceof String) {
+                            strValue = (String) o;
+                        } else {
+                            if (o instanceof Boolean) {
+                                strValue = ((Boolean) o).toString();
+                            }
+                        }
+                    }
+                    elementValue.setValue(strValue);
+                    pType.getElementValue().add(elementValue);
+                }
+            }
+        } else {
+            if (value == null) {
+                pType.setValue(""); //$NON-NLS-1$
+            } else {
+                if (value instanceof Boolean) {
+                    pType.setValue(((Boolean) value).toString());
+                } else {
+                    if (value instanceof String) {
+                        pType.setValue((String) value);
+                    }
+                }
+            }
+        }
+        listParamType.add(pType);
     }
 
     @SuppressWarnings("unchecked")//$NON-NLS-1$
