@@ -34,6 +34,8 @@ public class TextElementParameter implements IElementParameter {
 
     private String value;
 
+    private boolean contextMode;
+
     /**
      * Constructs a new TextElementParameter.
      */
@@ -589,5 +591,23 @@ public class TextElementParameter implements IElementParameter {
     public void setLinkedRepositoryItem(Item item) {
         // TODO Auto-generated method stub
 
+    }
+
+    /**
+     * Getter for contextMode.
+     * 
+     * @return the contextMode
+     */
+    public boolean isContextMode() {
+        return this.contextMode;
+    }
+
+    /**
+     * Sets the contextMode.
+     * 
+     * @param contextMode the contextMode to set
+     */
+    public void setContextMode(boolean contextMode) {
+        this.contextMode = contextMode;
     }
 }
