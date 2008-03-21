@@ -8,6 +8,8 @@ imports="
     org.talend.core.model.metadata.IMetadataTable 
     org.talend.core.model.metadata.IMetadataColumn 
     org.talend.designer.codegen.config.CodeGeneratorArgument
+	org.talend.core.model.metadata.types.JavaTypesManager
+	org.talend.core.model.metadata.types.JavaType    
     java.util.List
 "
 %>
@@ -53,6 +55,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             inRefCon = connection;
         }
     }
+    
+    if(inRefCon==null) return "";
+    
 	conns = null;
 
 	conns = node.getOutgoingSortedConnections();
@@ -72,28 +77,55 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				<%				
 				}
 				%>
-                if(<%=conn.getName() %>.VALUE != null){
-                
-                	<%=conn.getName() %>.VALUE = null;
-                }
-                if(<%=conn.getName() %>.MATCHING != null){
+				
+<%
+	//get the VALUE column type ( int or String ), the purpose is to handle this case: 
+	//when "Levenshtein" and "Unique matching" and "user assign the VALUE column is int type"
+	boolean isIntType = false;
+	boolean isPrimitive = false;
+	String defaultValue_VALUE = null;
+	String defaultValue_MATCHING = null;
+    for (IMetadataColumn column: metadata.getListColumns()) {
+    	if(column.getLabel().equals("VALUE")) {
+    		JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+            String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+            defaultValue_VALUE = JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate, column.getDefault());
+            
+    		//it can check the Integer and int
+    		if(javaType == JavaTypesManager.INTEGER){
+        		isIntType = true;
+        		if(JavaTypesManager.isJavaPrimitiveType(column.getTalendType(), column.isNullable())){
+        			isPrimitive = true;
+        		}
+    		}
+    	}else if(column.getLabel().equals("MATCHING")){    	
+            String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+            defaultValue_MATCHING = JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate, column.getDefault());    	
+    	}
+    }
+%>            
+
+        	<%if(defaultValue_VALUE != null){ %>                 
+                <%=conn.getName() %>.VALUE = <%=defaultValue_VALUE %>;
+        	<%}else if(isIntType){ %>
+        		<%=conn.getName() %>.VALUE = -1;        		
+        	<%}else{ %>
+        		<%=conn.getName() %>.VALUE = null;
+        	<%}%>
                 	
-                <%=conn.getName() %>.MATCHING = null;
-                
-                }				
+                <%=conn.getName() %>.MATCHING = <%=defaultValue_MATCHING %>;			
 							
 				java.util.Iterator<<%=inRefCon.getName() %>Struct> tItr_<%=inRefCon.getName() %>_<%=cid %> = tSet_<%=inRefCon.getName() %>_<%=cid %>.iterator();
 
                 <%
                 if(matchingType.equals("matchLevenshteinDistance")){
-                %>
-                    int value_<%=cid %> = invalid_dis_<%=cid %>;
-                    
+                %>  
                     String tomatch_<%=cid %> = ("" + <%=inMainCon.getName() %>.<%=colName%>)<%if(!caseSens){%>.toLowerCase()<%}%>;
                 
                 <%
                 	if(unique){
                 %>
+                		int closeValue_<%=cid %> = -1;
                         String matching_<%=cid %> = null;
                         
                         while(tItr_<%=inRefCon.getName() %>_<%=cid %>.hasNext()){
@@ -102,28 +134,25 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                         	
                         	int distance_<%=cid%> = org.apache.commons.lang.StringUtils.getLevenshteinDistance(tomatch_<%=cid %>, lookUpValue_<%=cid%><%if(!caseSens){%>.toLowerCase()<%}%>);
                         	
-                        	if(distance_<%=cid%> < value_<%=cid%>){
+                        	if(<%=min%> <= distance_<%=cid%> && distance_<%=cid%> <= <%=max%>){
+                        		//it will get the close value to the min 
+                        		if(closeValue_<%=cid %> == -1 || distance_<%=cid%> < closeValue_<%=cid %>){
                         		
-                        		if(distance_<%=cid%> >= <%=min%>){
-                        		
-                        			value_<%=cid %> = distance_<%=cid%>;
+                        			closeValue_<%=cid %> = distance_<%=cid%>;
                         			
-                        			matching_<%=cid %> = lookUpValue_<%=cid%>;		
+                        			matching_<%=cid %> = lookUpValue_<%=cid%>;	
                         			
-                        		}
-                        		
-                        		if(value_<%=cid %> == <%=min%>){
-                        		
-                        			break;
-                        							
+                            		if(closeValue_<%=cid %> == <%=min%>){                            		
+                            			break;                            							
+                            		}
                         		}
                         	}
                         	
                         }
                         
-                        if(value_<%=cid%> >= <%=min%> && value_<%=cid%> <= <%=max%>){
-                        
-                        	<%=conn.getName() %>.VALUE = value_<%=cid %> + "";
+                        if(closeValue_<%=cid %> != -1){                        
+                    
+                        	<%=conn.getName() %>.VALUE = closeValue_<%=cid %><%if(!isIntType){%> + ""<%}%>;
                         
                         	<%=conn.getName() %>.MATCHING = matching_<%=cid %>;
                         	
@@ -132,7 +161,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 <%
                 	}else{
                 %>
-                		StringBuilder matching_<%=cid %> = new StringBuilder();
+                		StringBuilder matching_<%=cid %> = null;
+                		StringBuilder value_<%=cid %> = null;
                 
                         while(tItr_<%=inRefCon.getName() %>_<%=cid %>.hasNext()){
                         
@@ -140,27 +170,27 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                         	
                         	int distance_<%=cid%> = org.apache.commons.lang.StringUtils.getLevenshteinDistance(tomatch_<%=cid %>, lookUpValue_<%=cid%><%if(!caseSens){%>.toLowerCase()<%}%>);
                         	
-                        	if(distance_<%=cid%> < value_<%=cid%>){
+                        	if(<%=min%> <= distance_<%=cid%> && distance_<%=cid%> <= <%=max%>){
+                        	                        		 
+                        		if(matching_<%=cid %> == null){
                         		
-                        		if(distance_<%=cid%> >= <%=min%>){
+                        			value_<%=cid %> = new StringBuilder(distance_<%=cid%> + "");
+                        			                        		                        		
+									matching_<%=cid %> = new StringBuilder(lookUpValue_<%=cid%>);									
+                        		}else{
                         		
-                        			value_<%=cid %> = distance_<%=cid%>;
-                        			
-                        			matching_<%=cid %>.append(lookUpValue_<%=cid%>);		
-                        			
+     								value_<%=cid %>.append(<%=separator%>).append(distance_<%=cid%>);
+
+                        			matching_<%=cid %>.append(<%=separator%>).append(lookUpValue_<%=cid%>);
+                        			                        		
                         		}
-                        		
-                        	}else if(distance_<%=cid%> == value_<%=cid%> && value_<%=cid%> <= <%=max%>){
-                        
-                        		matching_<%=cid %>.append(<%=separator%>).append(lookUpValue_<%=cid%>);
-                        
                         	}
                         	
                         }
                         
-                        if(value_<%=cid %> >= <%=min%> && value_<%=cid %> <= <%=max%>){
+                        if(matching_<%=cid %> != null){
                         
-                        	<%=conn.getName() %>.VALUE = value_<%=cid %> + "";
+                        	<%=conn.getName() %>.VALUE = value_<%=cid %>.toString();
                         
                         	<%=conn.getName() %>.MATCHING = matching_<%=cid %>.toString();
                         	
