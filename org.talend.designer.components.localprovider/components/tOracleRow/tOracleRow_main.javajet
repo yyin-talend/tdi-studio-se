@@ -6,8 +6,6 @@ imports="
 		org.talend.core.model.metadata.IMetadataColumn
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		org.talend.core.model.process.IConnection
-		org.talend.core.model.metadata.types.JavaTypesManager
-		org.talend.core.model.metadata.types.JavaType
         org.talend.core.model.process.IConnectionCategory		
 		java.util.List	
 "
@@ -56,8 +54,6 @@ commitCounter_<%=cid%>++;
 <%
 	}
 }
-
-
 %>
 
 whetherReject_<%=cid%> = false;
@@ -76,28 +72,30 @@ while (index>=0) {
 			if (metadata!=null) {
 				List< ? extends IConnection> conns = node.getIncomingConnections();
 				columnList = metadata.getListColumns();
-			
-				if(conns != null && conns.size()>0 && counter > 0){
-    				IConnection conn = conns.get(0);
-    				incomingConnName = conn.getName();
-    				int parameterIndex = 1;
 				%>
-String newQuery_<%=cid %> = query_<%=cid %>;
+query_<%=cid %> = <%=dbquery%>;
 <%
-					for(IMetadataColumn column:columnList){
-		  				if(parameterIndex<=counter){
+				if(conns != null && conns.size()>0){
+        			IConnection conn = conns.get(0);
+        			incomingConnName = conn.getName();
+    				if(counter > 0){
+        				int parameterIndex = 1;
+    					for(IMetadataColumn column:columnList){
+    		  				if(parameterIndex <= counter){
 %>
-newQuery_<%=cid %> = newQuery_<%=cid %>.replaceFirst("\\?", ""+<%=conn.getName()%>.<%=column.getLabel()%>);
+query_<%=cid %> = query_<%=cid %>.replaceFirst("\\?", ""+<%=conn.getName()%>.<%=column.getLabel()%>);
 <%
-						}
-						parameterIndex++;
-					}
+    						}
+    						parameterIndex++;
+    					}
+    				}
 				}//end of connection size.
 			}//end of metadatas
 	}
 	%>
+    globalMap.put("<%=cid %>_QUERY",query_<%=cid %>);
     try {
-    	stmt_<%=cid %>.execute(<%=(counter>0)?"newQ":"q" %>uery_<%=cid %>);
+    	stmt_<%=cid %>.execute(query_<%=cid %>);
     } catch (Exception e) {
         whetherReject_<%=cid%> = true;
         <%
@@ -107,7 +105,6 @@ newQuery_<%=cid %> = newQuery_<%=cid %>.replaceFirst("\\?", ""+<%=conn.getName()
             <%
         } else {
             if(rejectConnName != null && rejectColumnList != null && rejectColumnList.size() > 0) {
-
                 %>
                     <%=rejectConnName %> = new <%=rejectConnName %>Struct();
                 <%

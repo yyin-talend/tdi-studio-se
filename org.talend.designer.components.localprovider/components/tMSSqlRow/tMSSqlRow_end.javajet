@@ -29,7 +29,7 @@ if(commitEvery_<%=cid%>>commitCounter_<%=cid%>){
 }
 %>
 
-pstmt_<%=cid%>.close();
+stmt_<%=cid%>.close();
 <%
     if(!useExistingConn.equals("true")){
 %>

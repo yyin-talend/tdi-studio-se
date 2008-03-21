@@ -16,7 +16,7 @@ imports="
 	if(!useExistingConn.equals("true")){	
 	    if(!commitEvery.equals("")&&!commitEvery.equals("0")){
 %>
-if(commitEvery_<%=cid%>>commitCounter_<%=cid%>){
+if(commitEvery_<%=cid%> > commitCounter_<%=cid%>){
 
 	conn_<%=cid%>.commit();
 	
@@ -27,9 +27,7 @@ if(commitEvery_<%=cid%>>commitCounter_<%=cid%>){
 	    }
 	}
 %>
-if(pstmt_<%=cid %>!=null){
-pstmt_<%=cid %>.close();
-}
+stmt_<%=cid %>.close();
 <%
 if(!useExistingConn.equals("true")){
 %>

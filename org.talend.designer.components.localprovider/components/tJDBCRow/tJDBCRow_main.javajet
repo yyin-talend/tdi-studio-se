@@ -6,8 +6,6 @@ imports="
     org.talend.core.model.metadata.IMetadataColumn
     org.talend.designer.codegen.config.CodeGeneratorArgument
     org.talend.core.model.process.IConnection
-    org.talend.core.model.metadata.types.JavaTypesManager
-    org.talend.core.model.metadata.types.JavaType
     org.talend.core.model.process.IConnectionCategory
     java.util.List
 "
@@ -49,9 +47,6 @@ String dbquery= ElementParameterParser.getValue(node, "__QUERY__");
 	       dbquery = dbquery.replaceAll("\n"," ");
     	   dbquery = dbquery.replaceAll("\r"," ");
 %>
-
-statement_<%=cid%> = connection_<%=cid%>.prepareStatement(<%=dbquery%>);
-
 whetherReject_<%=cid%> = false;
 <%
 if (!commitEvery.equals("") && !commitEvery.equals("0")) {
@@ -73,59 +68,31 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
     if (metadata != null) {
         List<? extends IConnection> inConnections = node.getIncomingConnections();
         columnList = metadata.getListColumns();
-        
-        if (inConnections != null && inConnections.size() > 0){
-            IConnection inConnection = inConnections.get(0);
-            incomingConnName = inConnection.getName();
-            int parameterIndex = 1;
-            
-            for (IMetadataColumn column : columnList) {
-                String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
-                
-                String method;
-                if (typeToGenerate.equals("byte[]")) {
-                    method = "Bytes";
-                } else if (typeToGenerate.equals("Char") || typeToGenerate.equals("Character")) {
-                    method = "String";
-                } else if (typeToGenerate.equals("java.util.Date")) {
-                    method = "Date";
-                } else if (typeToGenerate.equals("Integer")) {
-                    method = "Int";
-                } else {
-                    method = typeToGenerate.substring(0, 1).toUpperCase() + typeToGenerate.substring(1);
-                }
-                
-                // Bind parameter to SQL statement
-                if (parameterIndex <= parametersCount) {
-                    if (typeToGenerate.equals("Char") || typeToGenerate.equals("Character")) {
-                        %>
-                        statement_<%=cid%>.setString(<%=parameterIndex%>, String.valueOf(<%=inConnection.getName()%>.<%=column.getLabel()%>));
-                        <%
-                    } else if (typeToGenerate.equals("java.util.Date")) {
-                        %>
-                        if (<%=inConnection.getName()%>.<%=column.getLabel()%> != null) {
-                            statement_<%=cid%>.setDate(<%=parameterIndex%>, new java.sql.Date(<%=inConnection.getName()%>.<%=column.getLabel()%>.getTime()));
-                        } else {
-                            statement_<%=cid%>.setDate(<%=parameterIndex%>, null);
-                        }
-                        <%
-                    } else {
-                        %>
-                        statement_<%=cid%>.set<%=method%>(<%=parameterIndex%>, <%=inConnection.getName()%>.<%=column.getLabel()%>);
-                        <%
-                    }
-                }
-                
-                parameterIndex++;
-            }
-        }
-    }
-}
-
+				%>
+query_<%=cid %> = <%=dbquery%>;
+<%
+				if(inConnections != null && inConnections.size()>0){
+        			IConnection conn = inConnections.get(0);
+        			incomingConnName = conn.getName();
+    				if(parametersCount > 0){
+        				int parameterIndex = 1;
+    					for(IMetadataColumn column:columnList){
+    		  				if(parameterIndex <= parametersCount){
 %>
-try {
-    statement_<%=cid%>.execute();
-} catch (Exception e) {
+query_<%=cid %> = query_<%=cid %>.replaceFirst("\\?", ""+<%=conn.getName()%>.<%=column.getLabel()%>);
+<%
+    						}
+    						parameterIndex++;
+    					}
+					}
+				}//end of connection size.
+			}//end of metadatas
+	}
+	%>
+    globalMap.put("<%=cid %>_QUERY",query_<%=cid %>);
+    try {
+    	stmt_<%=cid %>.execute(query_<%=cid %>);
+    } catch (Exception e) {
     whetherReject_<%=cid%> = true;
     <%
     if (dieOnError.equals("true")) {

@@ -25,8 +25,5 @@ if(!commitEvery.equals("")&&!commitEvery.equals("0")){
 <%
 }
 %>
-if(pstmt_<%=cid %>!=null){
-pstmt_<%=cid %>.close();
-}
-
+stmt_<%=cid %>.close();
 conn_<%=cid %> .close();

@@ -3,8 +3,6 @@ imports="
 			org.talend.core.model.process.INode 
 			org.talend.core.model.process.ElementParameterParser 
 			org.talend.designer.codegen.config.CodeGeneratorArgument
-		
-			java.util.List
 " 
 %>
 
@@ -31,10 +29,6 @@ imports="
 	
 	String dbencoding= ElementParameterParser.getValue(node, "__ENCODING__");
 	
-	String dbquery= ElementParameterParser.getValue(node, "__QUERY__");
-		   dbquery = dbquery.replaceAll("\n"," ");
-    	   dbquery = dbquery.replaceAll("\r"," ");
-    	      
     String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
 %>
 
@@ -119,11 +113,9 @@ java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=
 
 int nb_line_<%=cid%> = 0;
 
-java.sql.PreparedStatement pstmt_<%=cid %> = null;
+java.sql.Statement stmt_<%=cid %> = conn_<%=cid %>.createStatement();
 
 boolean whetherReject_<%=cid%> = false;
-
-globalMap.put("<%=cid %>_QUERY",<%=dbquery%>);
 
 <%
 if(!commitEvery.equals("")&&!commitEvery.equals("0")){
@@ -137,4 +129,4 @@ conn_<%=cid%>.setAutoCommit(false);
 <%
 }
 %>
-
+String query_<%=cid %> = "";

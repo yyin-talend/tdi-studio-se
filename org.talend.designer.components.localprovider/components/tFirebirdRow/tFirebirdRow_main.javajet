@@ -6,8 +6,6 @@ imports="
 		org.talend.core.model.metadata.IMetadataColumn
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		org.talend.core.model.process.IConnection
-		org.talend.core.model.metadata.types.JavaTypesManager
-		org.talend.core.model.metadata.types.JavaType
         org.talend.core.model.process.IConnectionCategory		
 		java.util.List	
 	"
@@ -53,10 +51,8 @@ String dbquery= ElementParameterParser.getValue(node, "__QUERY__");
     	   dbquery = dbquery.replaceAll("\r"," ");
 
 %>
-
-pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement(<%=dbquery%>);
-
 whetherReject_<%=cid%> = false;
+
 <%
 int counter = 0;
 int index=dbquery.indexOf("?");
@@ -71,50 +67,30 @@ while (index>=0) {
 			if (metadata!=null) {
 				List< ? extends IConnection> conns = node.getIncomingConnections();
 				columnList = metadata.getListColumns();
-			
+				%>
+query_<%=cid %> = <%=dbquery%>;
+<%
 				if(conns != null && conns.size()>0){
-				IConnection conn = conns.get(0);
-				incomingConnName = conn.getName();
-				int parameterIndex = 1;
-					for(IMetadataColumn column:columnList){
-					String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
-					if(typeToGenerate.equals("byte[]")){
-	 	  	   			typeToGenerate = "Bytes";
- 	   	  			}else if(typeToGenerate.equals("java.util.Date")){
-	 	   	  			typeToGenerate = "Date";
- 	   	  			}else if(typeToGenerate.equals("Integer")){
- 	   	  				typeToGenerate = "Int";
- 	   	 			}else{
-						typeToGenerate=typeToGenerate.substring(0,1).toUpperCase()+typeToGenerate.substring(1);
-		  			}
-		  				if(parameterIndex<=counter){
-							if(typeToGenerate.equals("Char")||typeToGenerate.equals("Character")){
-							%>						
-							    pstmt_<%=cid %>.setString(<%=parameterIndex%>,String.valueOf(<%=conn.getName()%>.<%=column.getLabel()%>));					
-							<%
-							}else if(typeToGenerate.equals("Date")){
-							%>
-                                if(<%=conn.getName()%>.<%=column.getLabel()%>!=null){													
-                                	pstmt_<%=cid %>.set<%=typeToGenerate %>(<%=parameterIndex%>,new java.sql.Date(<%=conn.getName()%>.<%=column.getLabel()%>.getTime()));
-                                }else{
-                                	pstmt_<%=cid %>.set<%=typeToGenerate %>(<%=parameterIndex%>,null);
-                                }				
-							<%
-							}else{
-							%>						
-							    pstmt_<%=cid %>.set<%=typeToGenerate %>(<%=parameterIndex%>,<%=conn.getName()%>.<%=column.getLabel()%>);					
-							<%
-							}
-						}
-						parameterIndex++;
+        			IConnection conn = conns.get(0);
+        			incomingConnName = conn.getName();
+    				if(counter > 0){
+        				int parameterIndex = 1;
+    					for(IMetadataColumn column:columnList){
+    		  				if(parameterIndex<=counter){
+%>
+query_<%=cid %> = query_<%=cid %>.replaceFirst("\\?", ""+<%=conn.getName()%>.<%=column.getLabel()%>);
+<%
+    						}
+    						parameterIndex++;
+    					}
 					}
-
 				}//end of connection size.
 			}//end of metadatas
 	}
 	%>
+    globalMap.put("<%=cid %>_QUERY",query_<%=cid %>);
     try {
-    	pstmt_<%=cid %>.execute();
+    	stmt_<%=cid %>.execute(query_<%=cid %>);
     } catch (Exception e) {
         whetherReject_<%=cid%> = true;
         <%
