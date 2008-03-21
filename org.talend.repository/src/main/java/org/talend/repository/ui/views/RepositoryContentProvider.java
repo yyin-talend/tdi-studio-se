@@ -778,7 +778,7 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
 
         @Override
         public Object getAdapter(Class adapter) {
-            if (adapter == MetadataTable.class) {
+            if (adapter == org.talend.core.model.metadata.builder.connection.MetadataTable.class) {
                 return table;
             }
             return null;
