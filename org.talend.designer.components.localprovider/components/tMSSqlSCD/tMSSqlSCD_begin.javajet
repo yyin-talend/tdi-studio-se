@@ -57,21 +57,13 @@ if (inMetadata != null && metadata != null) {
 	String dbencoding = ElementParameterParser.getValue(node, "__ENCODING__");
 	boolean useExistingConnection = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__").equals("true");
 	
-	%>
-	String dbschema_<%=cid%> = <%=dbschema%>;
-	String tableName_<%=cid%> = null;
-	if(dbschema_<%=cid%> == null || dbschema_<%=cid%>.trim().length() == 0) {
-	    tableName_<%=cid%> = <%=dbtable%>;
-	} else {
-	    tableName_<%=cid%> = dbschema_<%=cid%> + "." + <%=dbtable%>;
-	}
-	
-<%
 if(useExistingConnection){
 	String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
 	String conn = "conn_" + connection;
+	String schema = "dbschema_" + connection;
 %>
 java.sql.Connection connection_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
+String dbschema_<%=cid%> = (String)globalMap.get("<%=schema %>");
 <%
 }
 else{ 
@@ -80,8 +72,17 @@ else{
 	java.lang.Class.forName("net.sourceforge.jtds.jdbc.Driver");
     String connectionString_<%=cid %> = "jdbc:jtds:sqlserver://" + <%=dbServer%> + ":" + <%=dbport%> + "//" + <%=dbname%> + ";appName=" + projectName + ";" + <%=dbproperties%>;        
 	java.sql.Connection connection_<%=cid%> = java.sql.DriverManager.getConnection(connectionString_<%=cid %>, <%=dbuser%>, <%=dbpwd%>);
+	String dbschema_<%=cid%> = <%=dbschema%>;
 <%
 }
+%>
+	String tableName_<%=cid%> = null;
+	if(dbschema_<%=cid%> == null || dbschema_<%=cid%>.trim().length() == 0) {
+	    tableName_<%=cid%> = <%=dbtable%>;
+	} else {
+	    tableName_<%=cid%> = dbschema_<%=cid%> + "." + <%=dbtable%>;
+	}
+<%
 
 	// SCD parameters
 	String surrogateKeyField = ElementParameterParser.getValue(node, "__SURROGATE_KEY__");

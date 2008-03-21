@@ -110,7 +110,7 @@
       FIELD="TEXT"
       NUM_ROW="4"
       REPOSITORY_VALUE="SCHEMA"
-      SHOW_IF="(ACTION=='INSERT') or (ACTION=='UPDATE')"
+      SHOW_IF="((ACTION=='INSERT') or (ACTION=='UPDATE')) and (USE_EXISTING_CONNECTION == 'false')"          
     >
       <DEFAULT>"dbo"</DEFAULT>
     </PARAMETER>

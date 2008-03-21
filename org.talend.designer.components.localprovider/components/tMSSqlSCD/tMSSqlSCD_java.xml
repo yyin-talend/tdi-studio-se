@@ -33,7 +33,7 @@
       NAME="PROPERTY"
       FIELD="PROPERTY_TYPE"
       SHOW="true"
-      NUM_ROW="10"
+      NUM_ROW="1"
       REPOSITORY_VALUE="DATABASE:SQL_SERVER"
     />
 	
@@ -88,6 +88,7 @@
       FIELD="TEXT"
       NUM_ROW="4"
       REPOSITORY_VALUE="SCHEMA"
+	  SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>"dbo"</DEFAULT>
     </PARAMETER>
