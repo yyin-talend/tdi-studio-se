@@ -15,6 +15,7 @@ package org.talend.designer.core.ui.preferences;
 import org.eclipse.gmf.runtime.common.ui.preferences.CheckBoxFieldEditor;
 import org.eclipse.jface.preference.DirectoryFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
+import org.eclipse.jface.preference.FileFieldEditor;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.swt.SWT;
@@ -65,6 +66,8 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
     private StringFieldEditor hostField;
 
     private StringFieldEditor additionParamField;
+
+    private FileFieldEditor dabasePathField;
 
     private StringFieldEditor portField;
 
@@ -207,6 +210,9 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
         passwordField = new StringFieldEditor(languagePrefix + EParameterName.PASS.getName(), EParameterName.PASS
                 .getDisplayName(), parent);
 
+        dabasePathField = new FileFieldEditor(languagePrefix + EParameterName.DBFILE.getName(), EParameterName.DBFILE
+                .getDisplayName(), parent);
+
         statsTableField = new StringFieldEditor(languagePrefix + EParameterName.TABLE_STATS.getName(), EParameterName.TABLE_STATS
                 .getDisplayName(), parent);
 
@@ -259,7 +265,7 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
         addField(schemaField);
         addField(userField);
         addField(passwordField);
-
+        addField(dabasePathField);
         addField(statsTableField);
         addField(logsTableField);
         addField(metterTableField);
@@ -304,10 +310,15 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
         dbTypeField.getComboBoxControl(dbTypeComposite).setEnabled(
                 onDatabase && (onStatCatcher || onLogCatcher || onMetterCatcher));
         dbTypeField.setEnabled(onDatabase && (onStatCatcher || onLogCatcher || onMetterCatcher), dbTypeComposite);
-        hostField.setEnabled(onDatabase && (onStatCatcher || onLogCatcher || onMetterCatcher), parent);
-        portField.setEnabled(onDatabase && (onStatCatcher || onLogCatcher || onMetterCatcher), parent);
+        hostField.setEnabled((!dbValue.equals("tAccessOutput") && !dbValue.equals("tSQLiteOutput")) && onDatabase
+                && (onStatCatcher || onLogCatcher || onMetterCatcher), parent);
+        portField.setEnabled((!dbValue.equals("tAccessOutput") && !dbValue.equals("tSQLiteOutput") && !dbValue
+                .equals("tFirebirdOutput"))
+                && onDatabase && (onStatCatcher || onLogCatcher || onMetterCatcher), parent);
 
-        dbNameField.setEnabled(onDatabase && (onStatCatcher || onLogCatcher || onMetterCatcher), parent);
+        dbNameField.setEnabled((!dbValue.equals("tAccessOutput") && !dbValue.equals("tSQLiteOutput") && !dbValue
+                .equals("tFirebirdOutput"))
+                && onDatabase && (onStatCatcher || onLogCatcher || onMetterCatcher), parent);
         if (language == ECodeLanguage.JAVA) {
             additionParamField.setEnabled((dbValue.equals("tMSSqlOutput") || dbValue.equals("tInformixOutput") || dbValue
                     .equals("tMysqlOutput"))
@@ -315,8 +326,13 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
         }
         schemaField.setEnabled((dbValue.equals("tOracleOutput") || dbValue.equals("tPostgresqlOutput")) && onDatabase
                 && (onStatCatcher || onLogCatcher || onMetterCatcher), parent);
-        userField.setEnabled(onDatabase && (onStatCatcher || onLogCatcher || onMetterCatcher), parent);
-        passwordField.setEnabled(onDatabase && (onStatCatcher || onLogCatcher || onMetterCatcher), parent);
+        userField.setEnabled((!dbValue.equals("tSQLiteOutput")) && onDatabase
+                && (onStatCatcher || onLogCatcher || onMetterCatcher), parent);
+        passwordField.setEnabled((!dbValue.equals("tSQLiteOutput")) && onDatabase
+                && (onStatCatcher || onLogCatcher || onMetterCatcher), parent);
+        dabasePathField.setEnabled((dbValue.equals("tAccessOutput") || dbValue.equals("tSQLiteOutput") || dbValue
+                .equals("tFirebirdOutput"))
+                && onDatabase && (onStatCatcher || onLogCatcher || onMetterCatcher), parent);
         statsTableField.setEnabled(onDatabase && onStatCatcher, parent);
         logsTableField.setEnabled(onDatabase && onLogCatcher, parent);
         metterTableField.setEnabled(onDatabase && onMetterCatcher, parent);

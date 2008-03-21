@@ -110,7 +110,7 @@ public enum EParameterName {
     CATCH_USER_WARNING(Messages.getString("EParameterName.catchUserWarning")), //$NON-NLS-1$
     CATCH_REALTIME_STATS(Messages.getString("EParameterName.catchRealtimeStats")), //$NON-NLS-1$
     PROPERTIES(Messages.getString("EParameterName.additionParam")), //$NON-NLS-1$
-
+    DBFILE(Messages.getString("EParameterName.database")), //$NON-NLS-1$
     /**
      * For Job Settings extra parameters.
      */

@@ -536,7 +536,7 @@ public class StatsAndLogsManager {
         param.setNumRow(52);
         param.setRepositoryValue("SERVER_NAME"); //$NON-NLS-1$
         param
-                .setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')");
+                .setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true') and (DB_TYPE!='SQLITE' and DB_TYPE!='ACCESS')");
         paramList.add(param);
 
         // port
@@ -549,7 +549,7 @@ public class StatsAndLogsManager {
         param.setNumRow(52);
         param.setRepositoryValue("PORT"); //$NON-NLS-1$
         param
-                .setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')");
+                .setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true') and (DB_TYPE!='SQLITE' and DB_TYPE!='ACCESS' and DB_TYPE!='FIREBIRD')");
         paramList.add(param);
 
         // dbName
@@ -562,7 +562,7 @@ public class StatsAndLogsManager {
         param.setNumRow(53);
         param.setRepositoryValue("SID"); //$NON-NLS-1$
         param
-                .setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')");
+                .setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true') and (DB_TYPE!='SQLITE' and DB_TYPE!='ACCESS' and DB_TYPE!='FIREBIRD')");
         paramList.add(param);
 
         // additional parameters
@@ -601,7 +601,7 @@ public class StatsAndLogsManager {
         param.setRequired(true);
         param.setRepositoryValue("USERNAME"); //$NON-NLS-1$
         param
-                .setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')");
+                .setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')and (DB_TYPE!='SQLITE')");
         paramList.add(param);
 
         // password
@@ -615,9 +615,20 @@ public class StatsAndLogsManager {
         param.setRequired(true);
         param.setRepositoryValue("PASSWORD"); //$NON-NLS-1$
         param
-                .setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')");
+                .setShowIf("(ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true') and (DB_TYPE!='SQLITE')");
         paramList.add(param);
-
+        // databse file path
+        param = new ElementParameter(process);
+        param.setName(EParameterName.DBFILE.getName());
+        param.setValue(addQuotes(preferenceStore.getString(languagePrefix + EParameterName.DBFILE.getName())));
+        param.setDisplayName(EParameterName.DBFILE.getDisplayName());
+        param.setField(EParameterFieldType.FILE);
+        param.setCategory(EComponentCategory.STATSANDLOGS);
+        param.setNumRow(55);
+        param.setRepositoryValue("FILE"); //$NON-NLS-1$
+        param
+                .setShowIf("(DB_TYPE=='SQLITE' or DB_TYPE=='ACCESS' or DB_TYPE=='FIREBIRD') and (ON_DATABASE_FLAG == 'true') and (ON_STATCATCHER_FLAG == 'true' or ON_LOGCATCHER_FLAG == 'true' or ON_METERCATCHER_FLAG == 'true')");
+        paramList.add(param);
         // Stats table
         param = new ElementParameter(process);
         param.setName(EParameterName.TABLE_STATS.getName());
@@ -625,7 +636,7 @@ public class StatsAndLogsManager {
         param.setDisplayName(EParameterName.TABLE_STATS.getDisplayName());
         param.setField(EParameterFieldType.DBTABLE);
         param.setCategory(EComponentCategory.STATSANDLOGS);
-        param.setNumRow(55);
+        param.setNumRow(56);
         param.setShowIf("(ON_DATABASE_FLAG == 'true' and ON_STATCATCHER_FLAG == 'true')");
         paramList.add(param);
 
@@ -636,7 +647,7 @@ public class StatsAndLogsManager {
         param.setDisplayName(EParameterName.TABLE_LOGS.getDisplayName());
         param.setField(EParameterFieldType.DBTABLE);
         param.setCategory(EComponentCategory.STATSANDLOGS);
-        param.setNumRow(56);
+        param.setNumRow(57);
         param.setShowIf("(ON_DATABASE_FLAG == 'true' and ON_LOGCATCHER_FLAG == 'true')");
         paramList.add(param);
 
@@ -647,7 +658,7 @@ public class StatsAndLogsManager {
         param.setDisplayName(EParameterName.TABLE_METER.getDisplayName());
         param.setField(EParameterFieldType.DBTABLE);
         param.setCategory(EComponentCategory.STATSANDLOGS);
-        param.setNumRow(57);
+        param.setNumRow(58);
         param.setShowIf("(ON_DATABASE_FLAG == 'true' and ON_METERCATCHER_FLAG == 'true')");
         paramList.add(param);
     }

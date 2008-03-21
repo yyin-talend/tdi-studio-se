@@ -132,6 +132,11 @@ public class StatsAndLogsViewHelper {
                 continue;
             }
 
+            if (name.equals(EParameterName.DBFILE.getName())) {
+                elementParameter.setValue(checkAndAddQuote(PREFERENCE_STORE.getString(LANGUAGE_PREFIX
+                        + EParameterName.DBFILE.getName())));
+                continue;
+            }
             if (name.equals(EParameterName.SCHEMA_DB.getName())) {
                 elementParameter.setValue(checkAndAddQuote(PREFERENCE_STORE.getString(LANGUAGE_PREFIX
                         + EParameterName.SCHEMA_DB.getName())));
@@ -287,6 +292,11 @@ public class StatsAndLogsViewHelper {
             }
             if (name.equals(EParameterName.PROPERTIES.getName())) {
                 PREFERENCE_STORE.setValue(LANGUAGE_PREFIX + EParameterName.PROPERTIES.getName(),
+                        checkAndRemoveQuote((String) elementValue));
+                continue;
+            }
+            if (name.equals(EParameterName.DBFILE.getName())) {
+                PREFERENCE_STORE.setValue(LANGUAGE_PREFIX + EParameterName.DBFILE.getName(),
                         checkAndRemoveQuote((String) elementValue));
                 continue;
             }
