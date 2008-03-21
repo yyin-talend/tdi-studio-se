@@ -610,4 +610,24 @@ public class TextElementParameter implements IElementParameter {
     public void setContextMode(boolean contextMode) {
         this.contextMode = contextMode;
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IElementParameter#getLabelFromRepository()
+     */
+    public String getLabelFromRepository() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IElementParameter#setLabelFromRepository(java.lang.String)
+     */
+    public void setLabelFromRepository(String label) {
+        // TODO Auto-generated method stub
+
+    }
 }
