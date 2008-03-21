@@ -839,7 +839,7 @@ public class DatabaseForm extends AbstractForm {
         sidOrDatabaseText.setEditable(false);
         datasourceText.setEditable(false);
         additionParamText.setEditable(false);
-        schemaText.setEditable(true);
+        schemaText.setEditable(false);
         fileField.setEditable(false);
         directoryField.setEditable(false);
 
@@ -848,6 +848,14 @@ public class DatabaseForm extends AbstractForm {
         } else {
             String s = urlDataStringConnection.getStringConnectionTemplate();
             urlConnectionStringText.setEditable(!visible);
+
+            if (s != null && s.startsWith("jdbc:jtds:sqlserver:")) {
+                schemaText.setEditable(true);
+                if (schemaText.getText().equals("")) {
+                    schemaText.setText("dbo");
+                }
+            }
+
             if (s.contains("<host>")) { //$NON-NLS-1$
                 serverText.setEditable(visible);
             }
