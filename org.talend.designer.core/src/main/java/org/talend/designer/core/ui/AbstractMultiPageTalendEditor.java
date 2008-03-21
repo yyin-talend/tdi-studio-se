@@ -338,6 +338,13 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             pie.printStackTrace();
         }
 
+        generateCode();
+    }
+
+    /**
+     * DOC bqian Comment method "generateCode".
+     */
+    private void generateCode() {
         if (process.getGeneratingNodes().size() != 0) {
             Job job = new AccessingEmfJob("Generating code") {
 
