@@ -35,8 +35,11 @@ use File::Stat::ModeString;
 <%
         }
 %>
+use Cwd qw/abs_path/;
+use File::Basename;
 
 my %desc_<%=cid %> = (
+    filename => <%=filename%>,
     schema => [
 <%
         for (IMetadataColumn column: metadata.getListColumns()) {
@@ -50,9 +53,22 @@ my %desc_<%=cid %> = (
     ]
 );
 
-my @stat_<%=cid%> = stat(<%=filename%>);
+<%
+        int column_number = 0;
+        for (IMetadataColumn column: metadata.getListColumns()) {
+%>
+use constant <%=cid%>__<%=column.getLabel()%> => <%=column_number%>;
+<%
+            column_number++;
+        }
+%>
+
+my @stat_<%=cid%> = stat($desc_<%=cid%>{filename});
 
 my @<%=cid%> = (
+    abs_path($desc_<%=cid%>{filename}),
+    dirname($desc_<%=cid%>{filename}),
+    basename($desc_<%=cid%>{filename}),
     $stat_<%=cid%>[2], # mode
 <%
         if (fillModeString) {

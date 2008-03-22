@@ -35,6 +35,9 @@
       NUM_ROW="10"
     >
       <TABLE READONLY="true">
+      	<COLUMN NAME="abs_path"     TYPE="string" LENGTH="255" />
+      	<COLUMN NAME="dirname"      TYPE="string" LENGTH="255" />
+      	<COLUMN NAME="basename"     TYPE="string" LENGTH="255" />
         <COLUMN NAME="mode"         TYPE="int"    LENGTH="10" />
       	<COLUMN NAME="mode_string"  TYPE="string" LENGTH="10" />
        	<COLUMN NAME="uid"          TYPE="int"    LENGTH="10" />
