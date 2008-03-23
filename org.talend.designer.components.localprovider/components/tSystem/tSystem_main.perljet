@@ -19,8 +19,22 @@ String cid = node.getUniqueName();
 
 LocationUtils locationUtils = new LocationUtils();
 
+boolean rootdir = ElementParameterParser.getValue(
+    node,
+    "__ROOTDIR__"
+).equals("true");
+
+String directory     = ElementParameterParser.getValue(node, "__DIRECTORY__");
 String command       = ElementParameterParser.getValue(node, "__COMMAND__");
 String outputAction  = ElementParameterParser.getValue(node, "__OUTPUT__");
+
+if (rootdir) {
+%>
+use Cwd;
+my $cwd_<%=cid%> = getcwd;
+chdir(<%=directory%>);
+<%
+}
 %>
 
 my $command = <%=command%>;
@@ -64,3 +78,11 @@ else {
         );
     }
 }
+
+<%
+if (rootdir) {
+%>
+chdir($cwd_<%=cid%>);
+<%
+}
+%>
