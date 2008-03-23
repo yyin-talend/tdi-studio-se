@@ -54,13 +54,6 @@ String dbquery= ElementParameterParser.getValue(node, "__QUERY__");
 whetherReject_<%=cid%> = false;
 
 <%
-int counter = 0;
-int index=dbquery.indexOf("?");
-while (index>=0) {
-	counter++;
-	index=dbquery.indexOf("?",index+1);
-} 
-
 	List<IMetadataTable> metadatas = node.getMetadataList();
 	if ((metadatas!=null)&&(metadatas.size()>0)) {
 		IMetadataTable metadata = metadatas.get(0);
@@ -73,17 +66,6 @@ query_<%=cid %> = <%=dbquery%>;
 				if(conns != null && conns.size()>0){
         			IConnection conn = conns.get(0);
         			incomingConnName = conn.getName();
-    				if(counter > 0){
-        				int parameterIndex = 1;
-    					for(IMetadataColumn column:columnList){
-    		  				if(parameterIndex<=counter){
-%>
-query_<%=cid %> = query_<%=cid %>.replaceFirst("\\?", ""+<%=conn.getName()%>.<%=column.getLabel()%>);
-<%
-    						}
-    						parameterIndex++;
-    					}
-					}
 				}//end of connection size.
 			}//end of metadatas
 	}
