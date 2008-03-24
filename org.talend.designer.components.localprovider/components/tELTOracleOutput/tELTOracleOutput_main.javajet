@@ -86,7 +86,7 @@ java.lang.Class.forName("oracle.jdbc.driver.OracleDriver");
 
 String url_<%=cid%> = null;
 <%
-if(connectionType.equals("ORACLE_SID")) {
+if(connectionType == null || connectionType.equals("ORACLE_SID")) {
 %>
 	url_<%=cid %> = "jdbc:oracle:thin:@" + <%=dbhost%> + ":" + <%=dbport%> + ":" + <%=dbname%>;
 <%
