@@ -43,6 +43,16 @@ String matchFiles = ElementParameterParser.getValue(
     node,
     "__MATCH_FILES__"
 );
+
+boolean ifExclude = ElementParameterParser.getValue(
+    node,
+    "__IFEXCLUDE__"
+).equals("true");
+
+String excludeFilemask = ElementParameterParser.getValue(
+    node,
+    "__EXCLUDEFILEMASK__"
+);
 %>
 
 use File::Spec;
@@ -56,6 +66,13 @@ my @files = getFileList(
     include_subdir => <%=include_subdir%>,
     match_dirs     => <%=matchDirs%>,
     match_files    => <%=matchFiles%>,
+<%
+if (ifExclude) {
+%>
+    exclude_filemask => filemaskToRegex(<%=excludeFilemask%>),
+<%
+}
+%>
 );
 
 $_globals{<%=cid%>}{NB_FILE} = scalar @files;
