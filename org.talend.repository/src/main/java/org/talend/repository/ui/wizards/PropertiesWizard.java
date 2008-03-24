@@ -12,9 +12,6 @@
 // ============================================================================
 package org.talend.repository.ui.wizards;
 
-import java.util.Arrays;
-
-import org.apache.log4j.Level;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.jface.wizard.Wizard;
@@ -31,18 +28,9 @@ import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.CorePlugin;
 import org.talend.core.i18n.Messages;
-import org.talend.core.model.components.ModifyComponentsAction;
-import org.talend.core.model.components.conversions.IComponentConversion;
-import org.talend.core.model.components.conversions.UpdatePropertyComponentConversion;
-import org.talend.core.model.components.filters.IComponentFilter;
-import org.talend.core.model.components.filters.PropertyComponentFilter;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
-import org.talend.designer.core.model.utils.emf.talendfile.JobType;
-import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
-import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
-import org.talend.designer.core.model.utils.emf.talendfile.RequiredType;
 import org.talend.expressionbuilder.ExpressionPersistance;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -156,9 +144,9 @@ public class PropertiesWizard extends Wizard {
         IProxyRepositoryFactory repositoryFactory = CorePlugin.getDefault().getRepositoryService().getProxyRepositoryFactory();
         try {
             repositoryFactory.save(object.getProperty(), this.originaleObjectLabel, this.originalVersion);
-            if (!object.getLabel().equals(originaleObjectLabel)) {
-                manageRunJobRenaming(object.getLabel(), originaleObjectLabel);
-            }
+            // if (!object.getLabel().equals(originaleObjectLabel)) {
+            // manageRunJobRenaming(object.getLabel(), originaleObjectLabel);
+            // }
             ExpressionPersistance.getInstance().jobNameChanged(originaleObjectLabel, object.getLabel());
             return true;
         } catch (PersistenceException e) {
@@ -170,55 +158,55 @@ public class PropertiesWizard extends Wizard {
     /**
      * Use to replace in all tRunJob, the old job name by the new one.
      */
-    private void manageRunJobRenaming(String newName, String oldName) {
-        System.out.println("Rename " + oldName + "->" + newName); //$NON-NLS-1$ //$NON-NLS-2$
-
-        IComponentFilter filter1 = new PropertyComponentFilter("tRunJob", "PROCESS_TYPE_PROCESS", oldName); //$NON-NLS-1$ //$NON-NLS-2$
-
-        IComponentConversion updateCompProperty = new UpdatePropertyComponentConversion("PROCESS_TYPE_PROCESS", newName); //$NON-NLS-1$
-        IComponentConversion updateRequiredProperty = new UpdateRequiredProperty(oldName, newName);
-
-        try {
-            ModifyComponentsAction.searchAndModify(filter1, Arrays.<IComponentConversion> asList(updateCompProperty,
-                    updateRequiredProperty));
-        } catch (Exception e) {
-            ExceptionHandler.process(e, Level.ERROR);
-        }
-    }
-
+    // private void manageRunJobRenaming(String newName, String oldName) {
+    // System.out.println("Rename " + oldName + "->" + newName); //$NON-NLS-1$ //$NON-NLS-2$
+    //
+    // IComponentFilter filter1 = new PropertyComponentFilter("tRunJob", "PROCESS_TYPE_PROCESS", oldName); //$NON-NLS-1$
+    // //$NON-NLS-2$
+    //
+    // IComponentConversion updateCompProperty = new UpdatePropertyComponentConversion("PROCESS_TYPE_PROCESS", newName);
+    // //$NON-NLS-1$
+    // IComponentConversion updateRequiredProperty = new UpdateRequiredProperty(oldName, newName);
+    //
+    // try {
+    // ModifyComponentsAction.searchAndModify(filter1, Arrays.<IComponentConversion> asList(updateCompProperty,
+    // updateRequiredProperty));
+    // } catch (Exception e) {
+    // ExceptionHandler.process(e, Level.ERROR);
+    // }
+    // }
     /**
      * Update the "required" property.
      * 
      * <required> <job context="Default" name="newJobName"/> </required>
      */
-    private class UpdateRequiredProperty implements IComponentConversion {
-
-        private final String oldJobName;
-
-        private final String newJobName;
-
-        public UpdateRequiredProperty(String oldJobName, String newJobName) {
-            super();
-            this.oldJobName = oldJobName;
-            this.newJobName = newJobName;
-        }
-
-        public void transform(NodeType node) {
-            ProcessType item = (ProcessType) node.eContainer();
-            renameJobInRequiredProperty(item, newJobName);
-        }
-
-        private void renameJobInRequiredProperty(ProcessType item, String newJobName) {
-            RequiredType required = item.getRequired();
-            for (Object o : required.getJob()) {
-                JobType job = (JobType) o;
-                if (job.getName().equals(oldJobName)) {
-                    job.setName(newJobName);
-                }
-            }
-        }
-    }
-
+    // private class UpdateRequiredProperty implements IComponentConversion {
+    //
+    // private final String oldJobName;
+    //
+    // private final String newJobName;
+    //
+    // public UpdateRequiredProperty(String oldJobName, String newJobName) {
+    // super();
+    // this.oldJobName = oldJobName;
+    // this.newJobName = newJobName;
+    // }
+    //
+    // public void transform(NodeType node) {
+    // ProcessType item = (ProcessType) node.eContainer();
+    // renameJobInRequiredProperty(item, newJobName);
+    // }
+    //
+    // private void renameJobInRequiredProperty(ProcessType item, String newJobName) {
+    // RequiredType required = item.getRequired();
+    // for (Object o : required.getJob()) {
+    // JobType job = (JobType) o;
+    // if (job.getName().equals(oldJobName)) {
+    // job.setName(newJobName);
+    // }
+    // }
+    // }
+    // }
     @Override
     public boolean performCancel() {
         if (!alreadyLockedByUser) {
