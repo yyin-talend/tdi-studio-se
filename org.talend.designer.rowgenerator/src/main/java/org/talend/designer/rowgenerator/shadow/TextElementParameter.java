@@ -15,6 +15,7 @@ package org.talend.designer.rowgenerator.shadow;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.swt.graphics.Color;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElement;
@@ -35,6 +36,10 @@ public class TextElementParameter implements IElementParameter {
     private String value;
 
     private boolean contextMode;
+
+    private Color color;
+
+    private Color backgroundColor;
 
     /**
      * Constructs a new TextElementParameter.
@@ -629,5 +634,41 @@ public class TextElementParameter implements IElementParameter {
     public void setLabelFromRepository(String label) {
         // TODO Auto-generated method stub
 
+    }
+
+    /**
+     * Getter for color.
+     * 
+     * @return the color
+     */
+    public Color getColor() {
+        return this.color;
+    }
+
+    /**
+     * Sets the color.
+     * 
+     * @param color the color to set
+     */
+    public void setColor(Color color) {
+        this.color = color;
+    }
+
+    /**
+     * Getter for backgroundColor.
+     * 
+     * @return the backgroundColor
+     */
+    public Color getBackgroundColor() {
+        return this.backgroundColor;
+    }
+
+    /**
+     * Sets the backgroundColor.
+     * 
+     * @param backgroundColor the backgroundColor to set
+     */
+    public void setBackgroundColor(Color backgroundColor) {
+        this.backgroundColor = backgroundColor;
     }
 }
