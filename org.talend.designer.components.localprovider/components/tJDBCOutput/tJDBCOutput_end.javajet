@@ -64,7 +64,14 @@ if(dataAction.equals("INSERT_OR_UPDATE")) {
 }
 %>
 
+<%
+	String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
+	if(useExistingConn.equals("false")){
+%>
 connection_<%=cid%>.close();
+<%
+	}
+%>
 
 nb_line_deleted_<%=cid%>=nb_line_deleted_<%=cid%> + deletedCount_<%=cid%>;
 nb_line_update_<%=cid%>=nb_line_update_<%=cid%> + updatedCount_<%=cid%>;

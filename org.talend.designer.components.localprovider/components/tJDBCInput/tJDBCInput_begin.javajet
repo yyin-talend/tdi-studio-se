@@ -39,10 +39,22 @@ if (metadata != null) {
 	%>
 	int nb_line_<%=cid%> = 0;
 	
-	java.lang.Class.forName(<%=driverClass%>);
-	String connectionString_<%=cid%> = <%=jdbcUrl%>;
-	java.sql.Connection connection_<%=cid%> =
-		java.sql.DriverManager.getConnection(connectionString_<%=cid%>, <%=dbuser%>, <%=dbpwd%>);
+<%
+	boolean useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__").equals("true");
+	if(useExistingConn){
+		String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
+		String conn = "conn_" + connection;
+%>
+java.sql.Connection connection_<%=cid %> = (java.sql.Connection)globalMap.get("<%=conn %>");
+<%
+	}else{       
+%>
+java.lang.Class.forName(<%=driverClass %>);
+String connectionString_<%=cid %> = <%=jdbcUrl %>;
+java.sql.Connection connection_<%=cid %> = java.sql.DriverManager.getConnection(connectionString_<%=cid %>, <%=dbuser %>, <%=dbpwd %>);
+<%
+	}
+%>
 	
 	java.sql.Statement statement_<%=cid%> = connection_<%=cid%>.createStatement();
 	java.sql.ResultSet resultSet_<%=cid%> = statement_<%=cid%>.executeQuery(<%=dbquery%>);

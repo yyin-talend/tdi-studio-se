@@ -23,10 +23,22 @@ boolean isFunction = ElementParameterParser.getValue(node, "__IS_FUNCTION__").eq
 List<Map<String, String>> spArgs = (List<Map<String,String>>) ElementParameterParser.getObjectValue(node, "__SP_ARGS__");
 
 %>
-java.lang.Class.forName(<%=driverClass%>);
-String connectionString_<%=cid%> = <%=jdbcUrl%>;
-java.sql.Connection connection_<%=cid%> =
-	java.sql.DriverManager.getConnection(connectionString_<%=cid%>, <%=dbuser%>, <%=dbpwd%>);
+<%
+	String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
+	if(useExistingConn.equals("true")){
+		String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
+		String conn = "conn_" + connection;
+%>
+java.sql.Connection connection_<%=cid %> = (java.sql.Connection)globalMap.get("<%=conn %>");
+<%
+	}else{       
+%>
+java.lang.Class.forName(<%=driverClass %>);
+String connectionString_<%=cid %> = <%=jdbcUrl %>;
+java.sql.Connection connection_<%=cid %> = java.sql.DriverManager.getConnection(connectionString_<%=cid %>, <%=dbuser %>, <%=dbpwd %>);
+<%
+	}
+%>
 
 java.sql.CallableStatement statement_<%=cid%> = connection_<%=cid%>.prepareCall("{<%=isFunction ? "? = " : ""%>call <%=spName%>(
 <%

@@ -28,20 +28,39 @@
   </CONNECTORS>
 
   <PARAMETERS>
+
     <PARAMETER
       NAME="PROPERTY"
       FIELD="PROPERTY_TYPE"
       SHOW="false"
       NUM_ROW="1"
       REPOSITORY_VALUE="DATABASE:JDBC"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
+    />
+    
+    <PARAMETER
+      NAME="USE_EXISTING_CONNECTION"
+      FIELD="CHECK"
+      NUM_ROW="10"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>    
+
+    <PARAMETER
+      NAME="CONNECTION"
+      FIELD="COMPONENT_LIST"
+      FILTER="tJDBCConnection"
+      NUM_ROW="10"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
     />
 	
     <PARAMETER
       NAME="URL"
       FIELD="TEXT"
-      NUM_ROW="2"
+      NUM_ROW="20"
       REPOSITORY_VALUE="URL"
       REQUIRED="true"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>"jdbc:"</DEFAULT>
     </PARAMETER>
@@ -49,9 +68,10 @@
     <PARAMETER
       NAME="DRIVER_JAR"
       FIELD="MODULE_LIST"
-      NUM_ROW="3"
+      NUM_ROW="30"
       REPOSITORY_VALUE="DRIVER_JAR"
       REQUIRED="true"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT></DEFAULT>
     </PARAMETER>
@@ -59,9 +79,10 @@
     <PARAMETER
       NAME="DRIVER_CLASS"
       FIELD="TEXT"
-      NUM_ROW="4"
+      NUM_ROW="40"
       REPOSITORY_VALUE="DRIVER_CLASS"
       REQUIRED="true"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -69,9 +90,10 @@
     <PARAMETER
       NAME="USER"
       FIELD="TEXT"
-      NUM_ROW="5"
+      NUM_ROW="50"
       REPOSITORY_VALUE="USERNAME"
       REQUIRED="true"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -79,9 +101,10 @@
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
-      NUM_ROW="5"
+      NUM_ROW="50"
       REPOSITORY_VALUE="PASSWORD"
       REQUIRED="true"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -89,21 +112,21 @@
     <PARAMETER
       NAME="SCHEMA"
       FIELD="SCHEMA_TYPE"
-      NUM_ROW="6"
+      NUM_ROW="60"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
 	<PARAMETER
       NAME="DBTABLE"
       FIELD="TEXT"
-      NUM_ROW="7"
+      NUM_ROW="70"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
  	<PARAMETER
       NAME="QUERYSTORE"
       FIELD="QUERYSTORE_TYPE"
-      NUM_ROW="8"
+      NUM_ROW="80"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -111,7 +134,7 @@
  	<PARAMETER
       NAME="GUESS_SCHEMA"
       FIELD="GUESS_SCHEMA"
-      NUM_ROW="8"
+      NUM_ROW="80"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -119,7 +142,7 @@
     <PARAMETER
       NAME="QUERY"
       FIELD="MEMO_SQL"
-      NUM_ROW="9"
+      NUM_ROW="90"
       REQUIRED="true"
     >
       <DEFAULT>"select id, name from employee"</DEFAULT>
