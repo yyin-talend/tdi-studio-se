@@ -598,14 +598,15 @@ public class Process extends Element implements IProcess2 {
                 JobType jType = fileFact.createJobType();
                 jType.setName(jobName);
                 String contextName = ""; //$NON-NLS-1$
-                boolean found = false;
-                for (int i = 0; i < paramList.size() && !found; i++) {
-                    IElementParameter contextParam = paramList.get(i);
-                    if (contextParam.getName().equals(EParameterName.PROCESS_TYPE_CONTEXT.getName())) {
+
+                if (param.getParentParameter() != null) {
+                    final IElementParameter contextParam = param.getParentParameter().getChildParameters().get(
+                            EParameterName.PROCESS_TYPE_CONTEXT.getName());
+                    if (contextParam != null) {
                         contextName = ((String) contextParam.getValue());
-                        found = true;
                     }
                 }
+
                 jType.setContext(contextName);
                 rType.getJob().add(jType);
             }
@@ -2434,16 +2435,16 @@ public class Process extends Element implements IProcess2 {
                     EList jobList = processItem.getProcess().getRequired().getJob();
                     for (int j = 0; j < jobList.size(); j++) {
                         JobType jType = (JobType) jobList.get(j);
-                        if (!childrensList.contains(jType.getName())) {
-                            // check if we already have the libraries of this job
-                            childrensList.add(jType.getName());
-                            ProcessItem childItem = ProcessorUtilities.getProcessItem(jType.getName());
-                            if (childItem == null) {
-                                continue;
+                        final ProcessItem item = ProcessorUtilities.getProcessItemById(jType.getName());
+                        if (item != null) {
+                            final String jobName = item.getProperty().getLabel();
+                            if (!childrensList.contains(jobName)) {
+                                // check if we already have the libraries of this job
+                                childrensList.add(jobName);
+                                Process child = new Process(item.getProperty());
+                                child.loadXmlFile();
+                                neededLibraries.addAll(child.getNeededLibraries(true));
                             }
-                            Process child = new Process(childItem.getProperty());
-                            child.loadXmlFile();
-                            neededLibraries.addAll(child.getNeededLibraries(true));
                         }
                     }
                 }
