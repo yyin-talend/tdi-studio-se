@@ -1,69 +1,54 @@
 <%@ jet 
 imports="
-    org.talend.core.model.process.IConnection
     org.talend.core.model.process.INode 
-    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.metadata.IMetadataColumn
     org.talend.core.model.process.ElementParameterParser
-    java.util.List
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.process.IConnection
     org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.metadata.types.JavaTypesManager
+    org.talend.core.model.metadata.types.JavaType
+    org.talend.core.model.process.IConnectionCategory
+    java.util.List
+    java.util.ArrayList
+    java.util.Map
+    java.util.HashMap
 " 
+skeleton="../templates/slowly_change_dimension.skeleton"
 %>
 
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode) codeGenArgument.getArgument();
 String cid = node.getUniqueName();
-
-// Search incoming schema
-IMetadataTable inMetadata = null;
-
-List<? extends IConnection> incomingConnections = node.getIncomingConnections();
-if (incomingConnections != null && !incomingConnections.isEmpty()) {
-    inMetadata = incomingConnections.get(0).getMetadataTable();
-}
-
-// Search outgoing schema
-IMetadataTable metadata = null;
-
-List<IMetadataTable> metadatas = node.getMetadataList();
-if (metadatas != null && metadatas.size() > 0) {
-    metadata = metadatas.get(0);
-}
-
-// We only generate output if incoming and outgoing schema are defined
-if (inMetadata != null && metadata != null) {
+List<IMetadataColumn> inputSchema = getInputSchema(node);
+List<IMetadataColumn> outputSchema = getOutputSchema(node);
+if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outputSchema.size() > 0) {
     boolean useExistingConnection = ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__").equals("true");
-    boolean useL1 = ElementParameterParser.getValue(node, "__USE_L1__").equals("true");
-    boolean useL2 = ElementParameterParser.getValue(node, "__USE_L2__").equals("true");
-    boolean useL3 = ElementParameterParser.getValue(node, "__USE_L3__").equals("true");
-    
+    SCDConfiger scdConfiger = getSCDConfiger(node);
     %>
-    insertQuery_<%=cid%>.close();
+    insertionStatement_<%=cid%>.close();
     <%
-    if (useL1) {
+    if(scdConfiger.isEnableType1()) {
         %>
-        l1Query_<%=cid%>.close();
+        updateForType1_<%=cid%>.close();
         <%
     }
-    
-    if (useL2) {
+    if(scdConfiger.isEnableType2()) {
         %>
-        l2Query_<%=cid%>.close();
+        updateForType2_<%=cid%>.close();
         <%
     }
-    
-    if (useL3) {
+    if(scdConfiger.isEnableType3()) {
         %>
-        l3Query_<%=cid%>.close();
+        updateForType3_<%=cid%>.close();
         <%
     }
-    
     if (!useExistingConnection) {
         %>
-        if (!connection_<%=cid%>.getAutoCommit()) {
-            connection_<%=cid%>.commit();
+        if(connection_<%=cid%> != null && !connection_<%=cid%>.isClosed()) {
+            connection_<%=cid%>.close();
         }
-        connection_<%=cid%>.close();
         <%
     }
 }

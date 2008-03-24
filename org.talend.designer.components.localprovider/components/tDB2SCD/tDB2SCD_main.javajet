@@ -25,6 +25,7 @@ List<IMetadataColumn> inputSchema = getInputSchema(node);
 List<IMetadataColumn> outputSchema = getOutputSchema(node);
 if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outputSchema.size() > 0) {
     boolean debug = ElementParameterParser.getValue(node, "__DEBUG__").equals("true");
+    String dbType = DB2;
     String inConnectionName = null;
     List<? extends IConnection> incomingConnections = node.getIncomingConnections();
     if (incomingConnections != null && !incomingConnections.isEmpty()) {
@@ -36,45 +37,24 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
         }
     }
     SCDConfiger scdConfiger = getSCDConfiger(node);
-    SCDManager scdManager = getSCDManager();
+    SCDManager scdManager = getSCDManager(cid, dbType);
     List<Column> sourceKeys = scdConfiger.getSourceKeys();
     List<Column> insertionColumnList = getInsertionColumnList(scdConfiger);
     String surrogateKeyField = scdConfiger.getSurrogateKeyField();
-    boolean isEqualWithSK = isEqualWithSK(surrogateKeyField, sourceKeys);
+    %>
+    lookUpKey_<%=cid%> = new SCDSK_<%=cid%>();
+    <%
     for(Column sourceKey : sourceKeys) {
         %>
         lookUpKey_<%=cid%>.<%=sourceKey.getColumnName()%> = <%=inConnectionName%>.<%=sourceKey.getLabelName()%>;
         <%
     }
     %>
+    lookUpKey_<%=cid%>.hashCodeDirty = true;
     lookUpValue_<%=cid%> = cache_<%=cid%>.get(lookUpKey_<%=cid%>);
     if(lookUpValue_<%=cid%> == null) {
         lookUpValue_<%=cid%> = new SCDStruct_<%=cid%>();
         <%
-        if(scdConfiger.isEnableType1()) {
-            List<Column> type1Attributes = scdConfiger.getDimensionType1Configer().getDimensionAttributes();
-            for(Column type1Attribute : type1Attributes) {
-                %>
-                lookUpValue_<%=cid%>.<%=type1Attribute.getColumnName()%> = <%=inConnectionName%>.<%=type1Attribute.getLabelName()%>;
-                <%
-            }
-        }
-        if(scdConfiger.isEnableType2()) {
-            List<Column> type2Attributes = scdConfiger.getDimensionType2Configer().getDimensionAttributes();
-            for(Column type2Attribute : type2Attributes) {
-                %>
-                lookUpValue_<%=cid%>.<%=type2Attribute.getColumnName()%> = <%=inConnectionName%>.<%=type2Attribute.getLabelName()%>;
-                <%
-            }
-        }
-        if(scdConfiger.isEnableType3()) {
-            List<DimensionType3Attribute> type3Attributes = scdConfiger.getDimensionType3Configer().getDimensionAttributes();
-            for(DimensionType3Attribute type3Attribute : type3Attributes) {
-                %>
-                lookUpValue_<%=cid%>.<%=type3Attribute.getCurrentColumn().getColumnName()%> = <%=inConnectionName%>.<%=type3Attribute.getCurrentColumn().getLabelName()%>;
-                <%
-            }
-        }
         if(scdConfiger.isEnableType2() && scdConfiger.getDimensionType2Configer().isEnableVersion()) {
             String versionField = scdConfiger.getDimensionType2Configer().getVersionField();
             %>
@@ -82,7 +62,7 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
             <%
         }
         %>
-        cache_<%=cid%>.put(lookUpKey_<%=cid%>, lookUpValue_<%=cid%>);
+        
         <%
         int paramIndex = 1;
         for(Column insertionColumn : insertionColumnList) {
@@ -110,8 +90,8 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
                 }
             } else if(insertionColumn.getColumnName().equals(scdConfiger.getDimensionType2Configer().getVersionField())) {
                 %>
-                <%=insertionColumn.getJavaType()%> version_<%=cid%> = 1;
-                <%=scdManager.genSetStatement("insertionStatement_" + cid, "version_" + cid, paramIndex, insertionColumn.getJavaType())%>
+                <%=scdConfiger.getDimensionType2Configer().getVersionFieldType()%> version_<%=cid%> = 1;
+                <%=scdManager.genSetStatement("insertionStatement_" + cid, "version_" + cid, paramIndex, scdConfiger.getDimensionType2Configer().getVersionFieldType())%>
                 <%
             } else {
                 %>
@@ -242,8 +222,9 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
                         }
                     } else if(insertionColumn.getColumnName().equals(scdConfiger.getDimensionType2Configer().getVersionField())) {
                         %>
-                        <%=insertionColumn.getJavaType()%> maxVersion_<%=cid%> = lookUpValue_<%=cid%>.<%=scdConfiger.getDimensionType2Configer().getVersionField()%> + 1;
-                        <%=scdManager.genSetStatement("insertionStatement_" + cid, "maxVersion_" + cid, paramIndex, insertionColumn.getJavaType())%>
+                        <%=scdConfiger.getDimensionType2Configer().getVersionFieldType()%> maxVersion_<%=cid%> = lookUpValue_<%=cid%>.<%=scdConfiger.getDimensionType2Configer().getVersionField()%> + 1;
+                        lookUpValue_<%=cid%>.<%=scdConfiger.getDimensionType2Configer().getVersionField()%> = lookUpValue_<%=cid%>.<%=scdConfiger.getDimensionType2Configer().getVersionField()%> + 1;
+                        <%=scdManager.genSetStatement("insertionStatement_" + cid, "maxVersion_" + cid, paramIndex, scdConfiger.getDimensionType2Configer().getVersionFieldType())%>
                         <%
                     } else {
                         %>
@@ -316,6 +297,33 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
         }
         %>
     }
+    <%
+    if(scdConfiger.isEnableType1()) {
+        List<Column> type1Attributes = scdConfiger.getDimensionType1Configer().getDimensionAttributes();
+        for(Column type1Attribute : type1Attributes) {
+            %>
+            lookUpValue_<%=cid%>.<%=type1Attribute.getColumnName()%> = <%=inConnectionName%>.<%=type1Attribute.getLabelName()%>;
+            <%
+        }
+    }
+    if(scdConfiger.isEnableType2()) {
+        List<Column> type2Attributes = scdConfiger.getDimensionType2Configer().getDimensionAttributes();
+        for(Column type2Attribute : type2Attributes) {
+            %>
+            lookUpValue_<%=cid%>.<%=type2Attribute.getColumnName()%> = <%=inConnectionName%>.<%=type2Attribute.getLabelName()%>;
+            <%
+        }
+    }
+    if(scdConfiger.isEnableType3()) {
+        List<DimensionType3Attribute> type3Attributes = scdConfiger.getDimensionType3Configer().getDimensionAttributes();
+        for(DimensionType3Attribute type3Attribute : type3Attributes) {
+            %>
+            lookUpValue_<%=cid%>.<%=type3Attribute.getCurrentColumn().getColumnName()%> = <%=inConnectionName%>.<%=type3Attribute.getCurrentColumn().getLabelName()%>;
+            <%
+        }
+    }
+    %>
+    cache_<%=cid%>.put(lookUpKey_<%=cid%>, lookUpValue_<%=cid%>);
     <%
 }
 %>

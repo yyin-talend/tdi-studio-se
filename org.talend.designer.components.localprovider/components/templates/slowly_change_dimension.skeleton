@@ -3,6 +3,14 @@ import java.util.List;
 import org.talend.core.model.metadata.IMetadataColumn;
 
 public class CLASS {
+    public static final String DB2 = "DB2";
+    public static final String INGRES = "INGRES";    
+    public static final String MSSQL = "MSSQL";
+    public static final String MYSQL = "MYSQL";
+    public static final String ORACLE = "ORACLE";
+    public static final String POSTGRESQL = "POSTGRESQL";
+    public static final String SYBASE = "SYBASE";
+	private static Map<String, SCDManager> managerMap = new HashMap<String, SCDManager>();
     public class Column {
         private String labelName;
         private String columnName;
@@ -287,12 +295,14 @@ public class CLASS {
         if(inputSchema != null && inputSchema.size() > 0) {
             List<Map<String, String>> dimensionType1s = (List<Map<String, String>>)ElementParameterParser.getObjectValue(node, "__L1_FIELDS__");
             List<Column> dimensionAttrbites = new ArrayList<Column>();
-            for(Map<String, String> dimensionType1 : dimensionType1s) {
-                for(IMetadataColumn metadataColumn : inputSchema) {
-                    if(dimensionType1.get("NAME").equals(metadataColumn.getLabel())) {
-                        Column column = getColumn(metadataColumn);
-                        dimensionAttrbites.add(column);
-                        break;
+            if(dimensionType1s != null && dimensionType1s.size() > 0) {
+                for(Map<String, String> dimensionType1 : dimensionType1s) {
+                    for(IMetadataColumn metadataColumn : inputSchema) {
+                        if(dimensionType1.get("NAME").equals(metadataColumn.getLabel())) {
+                            Column column = getColumn(metadataColumn);
+                            dimensionAttrbites.add(column);
+                            break;
+                        }
                     }
                 }
             }
@@ -301,7 +311,7 @@ public class CLASS {
         return dimensionType1Configer;
     }
     public String getColumnNameByLabel(String labelName, List<IMetadataColumn> schema) {
-        String columnName = null;
+        String columnName = "";
         for(IMetadataColumn metadataColumn : schema) {
             if(labelName.equals(metadataColumn.getLabel())) {
                 columnName = metadataColumn.getOriginalDbColumnName();
@@ -321,7 +331,7 @@ public class CLASS {
         return javaType;
     }
     public String getGeneratedType(String labelName, List<IMetadataColumn> schema) {
-        String generatedType = null;
+        String generatedType = "";
         for(IMetadataColumn metadataColumn : schema) {
             if(labelName.equals(metadataColumn.getLabel())) {
                 generatedType = JavaTypesManager.getTypeToGenerate(metadataColumn.getTalendType(), metadataColumn.isNullable());
@@ -347,12 +357,14 @@ public class CLASS {
         if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outputSchema.size() > 0) {
             List<Map<String, String>> dimensionType2s = (List<Map<String, String>>)ElementParameterParser.getObjectValue(node, "__L2_FIELDS__");
             List<Column> dimensionAttrbites = new ArrayList<Column>();
-            for(Map<String, String> dimensionType2 : dimensionType2s) {
-                for(IMetadataColumn metadataColumn : inputSchema) {
-                    if(dimensionType2.get("NAME").equals(metadataColumn.getLabel())) {
-                        Column column = getColumn(metadataColumn);
-                        dimensionAttrbites.add(column);
-                        break;
+            if(dimensionType2s != null && dimensionType2s.size() > 0) {
+                for(Map<String, String> dimensionType2 : dimensionType2s) {
+                    for(IMetadataColumn metadataColumn : inputSchema) {
+                        if(dimensionType2.get("NAME").equals(metadataColumn.getLabel())) {
+                            Column column = getColumn(metadataColumn);
+                            dimensionAttrbites.add(column);
+                            break;
+                        }
                     }
                 }
             }
@@ -391,23 +403,25 @@ public class CLASS {
         if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outputSchema.size() > 0) {
             List<Map<String, String>> dimensionType3s = (List<Map<String, String>>) ElementParameterParser.getObjectValue(node, "__L3_FIELDS__");
             List<DimensionType3Attribute> dimensionAttrbites = new ArrayList<DimensionType3Attribute>();
-            Column currentColumn = null;
-            Column prevColumn = null;
-            for(Map<String, String> dimensionType3 : dimensionType3s) {
-                for(IMetadataColumn metadataColumn : inputSchema) {
-                    if(dimensionType3.get("CURRENT_VALUE").equals(metadataColumn.getLabel())) {
-                        currentColumn = getColumn(metadataColumn);
-                        break;
+            if(dimensionType3s != null && dimensionType3s.size() > 0) {
+                Column currentColumn = null;
+                Column prevColumn = null;
+                for(Map<String, String> dimensionType3 : dimensionType3s) {
+                    for(IMetadataColumn metadataColumn : inputSchema) {
+                        if(dimensionType3.get("CURRENT_VALUE").equals(metadataColumn.getLabel())) {
+                            currentColumn = getColumn(metadataColumn);
+                            break;
+                        }
                     }
-                }
-                for(IMetadataColumn metadataColumn : outputSchema) {
-                    if(dimensionType3.get("PREV_VALUE").equals(metadataColumn.getLabel())) {
-                        prevColumn = getColumn(metadataColumn);
-                        break;
+                    for(IMetadataColumn metadataColumn : outputSchema) {
+                        if(dimensionType3.get("PREV_VALUE").equals(metadataColumn.getLabel())) {
+                            prevColumn = getColumn(metadataColumn);
+                            break;
+                        }
                     }
+                    DimensionType3Attribute dimensionType3Attribute = new DimensionType3Attribute(currentColumn, prevColumn);
+                    dimensionAttrbites.add(dimensionType3Attribute);
                 }
-                DimensionType3Attribute dimensionType3Attribute = new DimensionType3Attribute(currentColumn, prevColumn);
-                dimensionAttrbites.add(dimensionType3Attribute);
             }
             dimensionType3Configer = new DimensionType3Configer(dimensionAttrbites);
         }
@@ -420,12 +434,14 @@ public class CLASS {
         if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outputSchema.size() > 0) {
             List<Map<String, String>> sourceKeyMaps = (List<Map<String, String>>)ElementParameterParser.getObjectValue(node, "__SOURCE_KEYS__");
             List<Column> sourceKeys = new ArrayList<Column>();
-            for(Map<String, String> sourceKeyMap : sourceKeyMaps) {
-                for(IMetadataColumn metadataColumn : inputSchema) {
-                    if(sourceKeyMap.get("NAME").equals(metadataColumn.getLabel())) {
-                        Column column = getColumn(metadataColumn);
-                        sourceKeys.add(column);
-                        break;
+            if(sourceKeyMaps != null && sourceKeyMaps.size() > 0) {
+                for(Map<String, String> sourceKeyMap : sourceKeyMaps) {
+                    for(IMetadataColumn metadataColumn : inputSchema) {
+                        if(sourceKeyMap.get("NAME").equals(metadataColumn.getLabel())) {
+                            Column column = getColumn(metadataColumn);
+                            sourceKeys.add(column);
+                            break;
+                        }
                     }
                 }
             }
@@ -501,23 +517,6 @@ public class CLASS {
         sourceKeyClass.append("hashCodeDirty = false;\r\n");
         sourceKeyClass.append("}\r\n");
         sourceKeyClass.append("return hashCode;\r\n");
-        sourceKeyClass.append("}\r\n");
-        sourceKeyClass.append("public String toString() {\r\n");
-        sourceKeyClass.append("return ");
-        isFirstSK = true;
-        for(Column sourceKey : sourceKeys) {
-            if(isFirstSK) {
-                isFirstSK = false; 
-            } else {
-                sourceKeyClass.append(" + ");
-            }
-            if(sourceKey.getJavaType().equals("java.util.Date") || sourceKey.getJavaType().equals("String") || sourceKey.getJavaType().equals("Object") || sourceKey.isNullable()) {
-                sourceKeyClass.append(sourceKey.getColumnName() + ".toString()");
-            } else {
-                sourceKeyClass.append("\"\" + " + sourceKey.getColumnName());
-            }
-        }
-        sourceKeyClass.append(";\r\n");
         sourceKeyClass.append("}\r\n");
         sourceKeyClass.append("}\r\n");
         return sourceKeyClass.toString();
@@ -632,11 +631,16 @@ public class CLASS {
         return columnList;
     }
     public abstract class SCDManager {
+        protected String cid;
+        public SCDManager(String cid) {
+            this.cid = cid;
+        }
         protected abstract String getLProtectedChar();
         protected abstract String getRProtectedChar();
         protected abstract String getSequence(String surrogateKeySequence);
+        protected abstract String getDate(String endDateValue);
         protected abstract String getYear(String endDateField);
-        public String createSelectionSQL(SCDConfiger scdConfiger, String cid) {
+        public String createSelectionSQL(SCDConfiger scdConfiger) {
             StringBuilder selectionSQL = new StringBuilder();
             selectionSQL.append("SELECT ");
             List<Column> sourceKeys = scdConfiger.getSourceKeys();
@@ -691,7 +695,7 @@ public class CLASS {
             selectionSQL.append(" FROM " + getLProtectedChar() + "\" + tableName_" + cid + " + \"" + getRProtectedChar());
             return selectionSQL.toString();
         }
-        public String createInsertionSQL(SCDConfiger scdConfiger, String cid) {
+        public String createInsertionSQL(SCDConfiger scdConfiger) {
             StringBuilder insertionSQL = new StringBuilder();
             insertionSQL.append("INSERT INTO "  + getLProtectedChar() + "\" + tableName_" + cid + " + \"" + getRProtectedChar());
             String insertColumns = null;
@@ -756,7 +760,7 @@ public class CLASS {
                 if(scdConfiger.getDimensionType2Configer().getEndDateValueType().equals("NULL_VALUE")) {
                     insertValues += "NULL";
                 } else {
-                    insertValues += "'\" + " + scdConfiger.getDimensionType2Configer().getEndDateValue() + " + \"-01-01'";
+                    insertValues += getDate(scdConfiger.getDimensionType2Configer().getEndDateValue());
                 }
             }
             if(scdConfiger.isEnableType3()) {
@@ -769,7 +773,7 @@ public class CLASS {
             insertionSQL.append("(" + insertColumns + ") VALUES(" + insertValues + ")");
             return insertionSQL.toString();
         }
-        public String createUpdateSQLForType1(SCDConfiger scdConfiger, String cid) {
+        public String createUpdateSQLForType1(SCDConfiger scdConfiger) {
             StringBuilder updateSQL = new StringBuilder();
             if(scdConfiger.isEnableType1()) {
                 updateSQL.append("UPDATE " + getLProtectedChar() + "\" + tableName_" + cid + " + \"" + getRProtectedChar());
@@ -801,7 +805,7 @@ public class CLASS {
             }
             return updateSQL.toString();
         }
-        public String createUpdateSQLForType2(SCDConfiger scdConfiger, String cid) {
+        public String createUpdateSQLForType2(SCDConfiger scdConfiger) {
             StringBuilder updateSQL = new StringBuilder();
             if(scdConfiger.isEnableType2()) {
                 updateSQL.append("UPDATE " + getLProtectedChar() + "\" + tableName_" + cid + " + \"" + getRProtectedChar());
@@ -841,7 +845,7 @@ public class CLASS {
             }
             return updateSQL.toString();
         }
-        public String createUpdateSQLForType3(SCDConfiger scdConfiger, String cid) {
+        public String createUpdateSQLForType3(SCDConfiger scdConfiger) {
             StringBuilder updateSQL = new StringBuilder();
             if(scdConfiger.isEnableType3()) {
                 updateSQL.append("UPDATE " + getLProtectedChar() + "\" + tableName_" + cid + " + \"" + getRProtectedChar());
@@ -952,7 +956,9 @@ public class CLASS {
                 } else if(generatedType.equals("Integer")) {
                     generatedType = "Int";
                 } else {
-                    generatedType = generatedType.substring(0, 1).toUpperCase() + generatedType.substring(1);
+                    if(generatedType.length() >= 1) {
+                        generatedType = generatedType.substring(0, 1).toUpperCase() + generatedType.substring(1);
+                    }
                 }
                 if(generatedType.equals("Char") || generatedType.equals("Character")) {
                     if(isObject) {
@@ -983,6 +989,9 @@ public class CLASS {
         }
     }
     public class DB2SCDManager extends SCDManager {
+        public DB2SCDManager(String cid) {
+            super(cid);
+        }
         protected String getLProtectedChar() {
             return "\\\"";
         }
@@ -992,12 +1001,259 @@ public class CLASS {
         protected String getSequence(String surrogateKeySequence) {
             return "nextval for\" + " + surrogateKeySequence + " + \"";
         }
+        protected String getDate(String endDateValue) {
+            return "'\" + " + endDateValue + " + \"-01-01'";
+        }
         protected String getYear(String endDateField) {
             return "YEAR(" + getLProtectedChar() + endDateField + getRProtectedChar() + ")";
         }
     }
-    public SCDManager getSCDManager() {
-        return new DB2SCDManager();
+    public class IngresSCDManager extends SCDManager {
+        public IngresSCDManager(String cid) {
+            super(cid);
+        }        
+        protected String getLProtectedChar() {
+            return "\\\"";
+        }
+        protected String getRProtectedChar() {
+            return "\\\"";
+        }
+        protected String getSequence(String surrogateKeySequence) {
+            return "\" + " + surrogateKeySequence + " + \".nextval";
+        }
+        protected String getDate(String endDateValue) {
+            return "'\" + " + endDateValue + " + \"-01-01'";
+        }        
+        protected String getYear(String endDateField) {
+            return "DATE_PART('year', " + getLProtectedChar() + endDateField + getRProtectedChar() + ")";
+        }
+    }
+    public class MSSQLSCDManager extends SCDManager {
+        public MSSQLSCDManager(String cid) {
+            super(cid);
+        }        
+        protected String getLProtectedChar() {
+            return "[";
+        }
+        protected String getRProtectedChar() {
+            return "]";
+        }
+        protected String getSequence(String surrogateKeySequence) {
+            return "\" + " + surrogateKeySequence + " + \".nextval";
+        }
+        protected String getDate(String endDateValue) {
+            return "'\" + " + endDateValue + " + \"-01-01'";
+        }        
+        protected String getYear(String endDateField) {
+            return "YEAR(" + getLProtectedChar() + endDateField + getRProtectedChar() + ")";
+        }
+    }
+    public class MysqlSCDManager extends SCDManager {
+        public MysqlSCDManager(String cid) {
+            super(cid);
+        }        
+        protected String getLProtectedChar() {
+            return "`";
+        }
+        protected String getRProtectedChar() {
+            return "`";
+        }
+        protected String getSequence(String surrogateKeySequence) {
+            return "\" + " + surrogateKeySequence + " + \".nextval";
+        }
+        protected String getDate(String endDateValue) {
+            return "'\" + " + endDateValue + " + \"-01-01'";
+        }        
+        protected String getYear(String endDateField) {
+            return "YEAR(" + getLProtectedChar() + endDateField + getRProtectedChar() + ")";
+        }
+        public String genSetStatement(String pstmt, String variable, int paramIndex, String generatedType) {
+            StringBuilder setStatement = new StringBuilder();
+            boolean isObject = false;
+            if(generatedType.equals("Character")) {
+                isObject = true;
+                if(!variable.equals("null")) {
+                    setStatement.append("if(" + variable + " == null) {\r\n");
+                }
+                setStatement.append(pstmt + ".setNull(" + paramIndex + ", java.sql.Types.CHAR);\r\n");
+            } else if(generatedType.equals("java.util.Date")) {
+                isObject = true;
+                if(!variable.equals("null")) {
+                    setStatement.append("if(" + variable + " == null) {\r\n");
+                }
+                setStatement.append(pstmt + ".setNull(" + paramIndex + ", java.sql.Types.DATE);\r\n");
+            } else if(generatedType.equals("byte[]")) {
+                isObject = true;
+                if(!variable.equals("null")) {
+                    setStatement.append("if(" + variable + " == null) {\r\n");
+                }
+                setStatement.append(pstmt + ".setNull(" + paramIndex + ", java.sql.Types.ARRAY);\r\n");
+            } else if(generatedType.equals("Long") || generatedType.equals("Byte") || generatedType.equals("Integer") || generatedType.equals("Short")) {
+                isObject = true;
+                if(!variable.equals("null")) {
+                    setStatement.append("if(" + variable + " == null) {\r\n");
+                }
+                setStatement.append(pstmt + ".setNull(" + paramIndex + ", java.sql.Types.INTEGER);\r\n");
+            } else if(generatedType.equals("String")) {
+                isObject = true;
+                if(!variable.equals("null")) {
+                    setStatement.append("if(" + variable + " == null) {\r\n");
+                }
+                setStatement.append(pstmt + ".setNull(" + paramIndex + ", java.sql.Types.VARCHAR);\r\n");
+            } else if(generatedType.equals("Object")) {
+                isObject = true;
+                if(!variable.equals("null")) {
+                    setStatement.append("if(" + variable + " == null) {\r\n");
+                }
+                setStatement.append(pstmt + ".setNull(" + paramIndex + ", java.sql.Types.OTHER);\r\n");
+            } else if(generatedType.equals("Boolean")) {
+                isObject = true;
+                if(!variable.equals("null")) {
+                    setStatement.append("if(" + variable + " == null) {\r\n");
+                }
+                setStatement.append(pstmt + ".setNull(" + paramIndex + ", java.sql.Types.BOOLEAN);\r\n");
+            } else if(generatedType.equals("Double")) {
+                isObject = true;
+                if(!variable.equals("null")) {
+                    setStatement.append("if(" + variable + " == null) {\r\n");
+                }
+                setStatement.append(pstmt + ".setNull(" + paramIndex + ", java.sql.Types.DOUBLE);\r\n");
+            } else if(generatedType.equals("Float")) {
+                isObject = true;
+                if(!variable.equals("null")) {
+                    setStatement.append("if(" + variable + " == null) {\r\n");
+                }
+                setStatement.append(pstmt + ".setNull(" + paramIndex + ", java.sql.Types.FLOAT);\r\n");
+            }
+            if(!variable.equals("null")) {
+                if(isObject) {
+                    setStatement.append("} else {\r\n");
+                }
+                if(generatedType.equals("byte[]")) {
+                    generatedType = "Bytes";
+                } else if(generatedType.equals("java.util.Date")) {
+                    generatedType = "Date";
+                } else if(generatedType.equals("Integer")) {
+                    generatedType = "Int";
+                } else {
+                    if(generatedType.length() >= 1) {
+                        generatedType = generatedType.substring(0, 1).toUpperCase() + generatedType.substring(1);
+                    }
+                }
+                if(generatedType.equals("Char") || generatedType.equals("Character")) {
+                    if(isObject) {
+                        setStatement.append("if(" + variable + " == null) {\r\n");
+                    } else {
+                        setStatement.append("if(String.valueOf(" + variable + ").toLowerCase().equals(\"null\")) {\r\n");
+                    }
+                    setStatement.append(pstmt + ".setNull(" + paramIndex + ", java.sql.Types.CHAR);\r\n");
+                    setStatement.append("} else if(" + variable + " == '\\0') {\r\n");
+                    setStatement.append(pstmt + ".setString(" + paramIndex + ", \"\");\r\n");
+                    setStatement.append("} else {\r\n");
+                    setStatement.append(pstmt + ".setString(" + paramIndex + ", String.valueOf(" + variable + "));\r\n");
+                    setStatement.append("}\r\n");
+                } else if(generatedType.equals("Date")) {
+                    setStatement.append("if(" + variable + " != null) {\r\n");
+                    setStatement.append("date_" + cid + " = " + variable + ".getTime();\r\n");
+                    setStatement.append("if(date_" + cid + " < year1_" + cid + " || date_" + cid + " >= year10000_" + cid + ") {\r\n");
+                    setStatement.append(pstmt + ".setString(" + paramIndex + ", \"0000-00-00 00:00:00\");\r\n");
+                    setStatement.append("} else {\r\n");
+                    setStatement.append(pstmt + ".setTimestamp(" + paramIndex + ", new java.sql.Timestamp(date_" + cid + "));\r\n");                    
+                    setStatement.append("}\r\n");
+                    setStatement.append("} else {\r\n");
+                    setStatement.append(pstmt + ".setNull(" + paramIndex + ", java.sql.Types.DATE);\r\n");
+                    setStatement.append("}\r\n");
+                } else {
+                    setStatement.append(pstmt + ".set" + generatedType + "(" + paramIndex + ", " + variable + ");\r\n");
+                }
+                if(isObject) {
+                    setStatement.append("}\r\n");
+                }
+            }
+            return setStatement.toString();
+        }
+    }
+    public class OracleSCDManager extends SCDManager {
+        public OracleSCDManager(String cid) {
+            super(cid);
+        }        
+        protected String getLProtectedChar() {
+            return "";
+        }
+        protected String getRProtectedChar() {
+            return "";
+        }
+        protected String getSequence(String surrogateKeySequence) {
+            return "\" + " + surrogateKeySequence + " + \".nextval";
+        }
+        protected String getDate(String endDateValue) {
+            return "TO_DATE('\" + " + endDateValue + " + \"-01-01', 'yyyy-mm-dd')";
+        }        
+        protected String getYear(String endDateField) {
+            return "EXTRACT(YEAR FROM " + getLProtectedChar() + endDateField + getRProtectedChar() + ")";
+        }
+    }
+    public class PostgresqlSCDManager extends SCDManager {
+        public PostgresqlSCDManager(String cid) {
+            super(cid);
+        }        
+        protected String getLProtectedChar() {
+            return "\\\"";
+        }
+        protected String getRProtectedChar() {
+            return "\\\"";
+        }
+        protected String getSequence(String surrogateKeySequence) {
+            return "\" + " + surrogateKeySequence + " + \".nextval";
+        }
+        protected String getDate(String endDateValue) {
+            return "'\" + " + endDateValue + " + \"-01-01'";
+        }        
+        protected String getYear(String endDateField) {
+            return "EXTRACT(YEAR FROM " + getLProtectedChar() + endDateField + getRProtectedChar() + ")";
+        }
+    }
+    public class SybaseSCDManager extends SCDManager {
+        public SybaseSCDManager(String cid) {
+            super(cid);
+        }        
+        protected String getLProtectedChar() {
+            return "";
+        }
+        protected String getRProtectedChar() {
+            return "";
+        }
+        protected String getSequence(String surrogateKeySequence) {
+            return "\" + " + surrogateKeySequence + " + \".nextval";
+        }
+        protected String getDate(String endDateValue) {
+            return "'\" + " + endDateValue + " + \"-01-01'";
+        }        
+        protected String getYear(String endDateField) {
+            return "YEAR(" + getLProtectedChar() + endDateField + getRProtectedChar() + ")";
+        }
+    }
+    public SCDManager getSCDManager(String cid, String dbType) {
+        SCDManager manager = managerMap.get(cid);
+        if(manager == null) {
+            if(dbType.equals(DB2)) {
+                manager = new DB2SCDManager(cid);
+            } else if(dbType.equals(INGRES)) {
+                manager = new IngresSCDManager(cid);
+            } else if(dbType.equals(MSSQL)) {
+                manager = new MSSQLSCDManager(cid);
+            } else if(dbType.equals(MYSQL)) {
+                manager = new MysqlSCDManager(cid);
+            } else if(dbType.equals(ORACLE)) {
+                manager = new OracleSCDManager(cid);
+            } else if(dbType.equals(POSTGRESQL)) {
+                manager = new PostgresqlSCDManager(cid);
+            } else if(dbType.equals(SYBASE)) {
+                manager = new SybaseSCDManager(cid);
+            }
+            managerMap.put(cid, manager);
+        }
+        return manager;
     }
     public String generate(Object argument) {
         

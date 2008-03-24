@@ -58,8 +58,18 @@
     <PARAMETER
       NAME="DBNAME"
       FIELD="TEXT"
-      NUM_ROW="30"
+      NUM_ROW="31"
       REPOSITORY_VALUE="SID"
+      REQUIRED="true"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="TABLESCHEMA"
+      FIELD="TEXT"
+      NUM_ROW="31"
+      REPOSITORY_VALUE="SCHEMA"
       REQUIRED="true"
     >
       <DEFAULT>""</DEFAULT>
