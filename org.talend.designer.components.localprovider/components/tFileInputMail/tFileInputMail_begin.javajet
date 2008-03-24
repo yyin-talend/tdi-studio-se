@@ -87,18 +87,21 @@ try{
 		String part_<%=cid %> = mailParts_<%=cid %>[i_<%=cid %>];
        	String sep_<%=cid%>= mailSeparator_<%=cid %>[i_<%=cid %>];
         if(part_<%=cid %>.equalsIgnoreCase("body"))
-        { 
-           java.io.InputStream in_<%=cid %> = msg_<%=cid %>.getInputStream();
-           byte[] buffer_<%=cid %> = new byte[1024];
-           int length_<%=cid %> = 0;
-           java.io.ByteArrayOutputStream baos_<%=cid %> =  new java.io.ByteArrayOutputStream();              
-           while ((length_<%=cid %> = in_<%=cid %>.read(buffer_<%=cid %>, 0, 1024)) != -1) {               
-               baos_<%=cid %>.write(buffer_<%=cid %>, 0, length_<%=cid %>);                                       
-           }
-           list_<%=cid %>.add(baos_<%=cid %>.toString());
-           in_<%=cid %>.close();
-           baos_<%=cid %>.close();      
- 
+        {        
+             if(msg_<%=cid %>.isMimeType("multipart/*")){
+     	      javax.mail.Multipart mp<%=cid%> = (javax.mail.Multipart) msg_<%=cid %>.getContent();
+     	      String attachfileName<%=cid%> = "";
+     	      String path<%=cid%> = "";
+     	      java.io.BufferedOutputStream out<%=cid%> = null;
+     	      java.io.BufferedInputStream in<%=cid%> = null;
+                for (int i = 0; i < mp<%=cid%>.getCount(); i++) {
+                    javax.mail.BodyPart mpart<%=cid%> = mp<%=cid%>.getBodyPart(i);
+                    String disposition<%=cid%> = mpart<%=cid%>.getDisposition();
+                    if (!((dispositiontFileInputMail_1 != null) && ((dispositiontFileInputMail_1
+                                .equals(javax.mail.Part.ATTACHMENT)) || (dispositiontFileInputMail_1.equals(javax.mail.Part.INLINE)))))                    
+                        list_<%=cid %>.add(mpart<%=cid%>.getContent().toString());
+               }
+     		 }  
         }else if(part_<%=cid %>.equalsIgnoreCase("header")){
             java.util.Enumeration em = msg_<%=cid %>.getAllHeaderLines();
             int em_count=0;
