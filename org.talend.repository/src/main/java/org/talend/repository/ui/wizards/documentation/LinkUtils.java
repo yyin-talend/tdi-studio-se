@@ -37,6 +37,33 @@ public final class LinkUtils {
 
     public static final String DOT = "."; //$NON-NLS-1$
 
+    public static final String NETWORK_PAGE_PATTERN = "(html|htm|php|asp|jsp|shtml)";
+
+    public static final String COMPRESSION_FILE_PATTERN = "(rar|zip|jar|arj|arc|cab)|(tar|Z|tgz|gz|bz2|bz|deb|rpm|lha)";
+
+    public static final String EXEC_FILE_PATTERN = "(exe|com)";
+
+    /*
+     * match "/file.html" or "/file"
+     */
+    public static final String NET_FILE_PATTERN = "(/\\w+(\\.(" + NETWORK_PAGE_PATTERN + "|" + COMPRESSION_FILE_PATTERN + "|"
+            + EXEC_FILE_PATTERN + "))?)$";
+
+    /*
+     * such as: "http://www.talend.com/..." or "http://193.189.143.143/..."
+     */
+    public static final String HTTP_PATTERN = "^(http://([\\w-]+\\.)+[\\w-]+)(/\\S*)?"; //$NON-NLS-1$
+
+    /**
+     * 
+     */
+    public enum LinkInfo {
+        FILE_NOT_FOUND,
+        URL_ERROR,
+        NET_ERROR,
+        LINK_OK,
+    }
+
     /**
      * 
      * ggu Comment method "existedLink".
@@ -209,21 +236,6 @@ public final class LinkUtils {
         return path.removeFileExtension().addFileExtension(FileConstants.ITEM_EXTENSION);
     }
 
-    /*
-     * such as: "http://www.talend.com/..." or "http://193.189.143.143/..."
-     */
-    public static final String HTTP_FILE_PATTERN = "^(http://([\\w-]+\\.)+[\\w-]+/)(\\S+)"; //$NON-NLS-1$
-
-    /**
-     * 
-     */
-    public enum LinkInfo {
-        FILE_NOT_FOUND,
-        URL_ERROR,
-        NET_ERROR,
-        LINK_OK,
-    }
-
     /**
      * 
      * ggu Comment method "getPropertiesPath".
@@ -246,7 +258,7 @@ public final class LinkUtils {
         Pattern pattern;
 
         try {
-            pattern = compiler.compile(HTTP_FILE_PATTERN);
+            pattern = compiler.compile(HTTP_PATTERN);
             if (matcher.contains(remoteFile, pattern)) {
                 return true;
             }
@@ -282,9 +294,9 @@ public final class LinkUtils {
             httpConn = (HttpURLConnection) url.openConnection();
             httpConn.connect();
             httpConn.getContent();
-            if (!httpConn.getURL().equals(url)) {
-                return LinkInfo.FILE_NOT_FOUND;
-            }
+            // if (!httpConn.getURL().equals(url)) {
+            // return LinkInfo.FILE_NOT_FOUND;
+            // }
         } catch (FileNotFoundException e) {
             return LinkInfo.FILE_NOT_FOUND;
         } catch (IOException e) {
@@ -297,4 +309,52 @@ public final class LinkUtils {
         return LinkInfo.LINK_OK;
     }
 
+    /**
+     * 
+     * ggu Comment method "checkLinkFile".
+     * 
+     * @param uri
+     * @return
+     */
+    public static boolean checkLinkFile(final String uri) {
+        if (uri == null) {
+            return false;
+        }
+        if (!isRemoteFile(uri)) {
+            return false;
+        }
+        try {
+
+            URL url = new URL(uri);
+            final String file = url.getFile();
+            if (file != null) {
+                if (file.equals(url.getPath())) {
+                    // match "http://xx.xx.xx"
+                    if ("".equals(file)) {
+                        return true;
+                    }
+                    // match "http://xx.xx.xx/" or "http://xx.xx.xx/yy/"
+                    if (file.endsWith("/")) {
+                        return true;
+                    }
+                    Perl5Matcher matcher = new Perl5Matcher();
+                    Perl5Compiler compiler = new Perl5Compiler();
+                    Pattern pattern;
+
+                    pattern = compiler.compile(NET_FILE_PATTERN);
+                    // match "http://xx.xx.xx/yy/zz" or "http://xx.xx.xx/yy/zz/abc.htm"
+                    if (matcher.contains(file, pattern)) {
+                        return true;
+                    }
+                } else { // match the "http://xxxx.xx/a.php?a=b"
+                    return true;
+                }
+            }
+        } catch (MalformedPatternException e) {
+            //
+        } catch (MalformedURLException e) {
+            //
+        }
+        return false;
+    }
 }

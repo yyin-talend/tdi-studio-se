@@ -51,9 +51,14 @@ public final class LinkDocumentationHelper {
      * 
      * 
      */
-    public static IFile getTempFile(final String id) {
+    public static IFile getTempFile(String id, String extension) {
         if (id == null) {
             return null;
+        }
+        if (extension == null) {
+            extension = ""; //$NON-NLS-1$ 
+        } else {
+            extension = "." + extension; //$NON-NLS-1$ 
         }
         // Save data to a temporary file
         Project project = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject();
@@ -61,12 +66,16 @@ public final class LinkDocumentationHelper {
         try {
             fsProject = ResourceModelUtils.getProject(project);
             IFolder tmpFolder = ResourceUtils.getFolder(fsProject, RepositoryConstants.TEMP_DIRECTORY, true);
-            return tmpFolder.getFile("DOC" + id); //$NON-NLS-1$
+            return tmpFolder.getFile(id + extension);
 
         } catch (PersistenceException e) {
             //
         }
         return null;
+    }
+
+    public static IFile getTempFile(final String id) {
+        return getTempFile(id, null);
     }
 
     /**

@@ -12,21 +12,18 @@
 // ============================================================================
 package org.talend.repository.ui.actions.documentation;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.Display;
-import org.talend.commons.exception.ExceptionHandler;
-import org.talend.commons.exception.MessageBoxExceptionHandler;
+import org.eclipse.ui.internal.browser.WebBrowserEditor;
+import org.eclipse.ui.internal.browser.WebBrowserEditorInput;
 import org.talend.commons.ui.image.ImageProvider;
-import org.talend.commons.ui.swt.dialogs.ProgressDialog;
-import org.talend.core.model.properties.ByteArray;
 import org.talend.core.model.properties.DocumentationItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.LinkDocumentationItem;
@@ -85,27 +82,56 @@ public class OpenDocumentationAction extends AContextualAction {
         if (item == null) {
             return;
         }
-        String extension = null;
+        URL url = null;
+        // String extension = null;
         if (item instanceof DocumentationItem) {
             DocumentationItem documentationItem = (DocumentationItem) item;
-            if (documentationItem.getExtension() != null) {
-                extension = documentationItem.getExtension();
-            }
-        } else if (item instanceof LinkDocumentationItem) { // link documenation
-            LinkDocumentationItem linkDocItem = (LinkDocumentationItem) item;
-            if (!LinkUtils.validateLink(linkDocItem.getLink())) {
-                MessageDialog.openError(Display.getCurrent().getActiveShell(), Messages
-                        .getString("ExtractDocumentationAction.fileErrorTitle"), //$NON-NLS-1$
-                        Messages.getString("ExtractDocumentationAction.fileErrorMessages")); //$NON-NLS-1$
+            // if (documentationItem.getExtension() != null) {
+            // extension = documentationItem.getExtension();
+            // }
+            IFile file = LinkDocumentationHelper.getTempFile(documentationItem.getName(), documentationItem.getExtension());
+            try {
+                documentationItem.getContent().setInnerContentToFile(file.getLocation().toFile());
+                url = file.getLocationURI().toURL();
+            } catch (Exception e) {
+                showErrorMessage();
                 return;
             }
 
-            if (linkDocItem.getExtension() != null) {
-                extension = linkDocItem.getExtension();
+        } else if (item instanceof LinkDocumentationItem) { // link documenation
+            LinkDocumentationItem linkDocItem = (LinkDocumentationItem) item;
+            if (!LinkUtils.validateLink(linkDocItem.getLink())) {
+                showErrorMessage();
+                return;
+            }
+            // if (linkDocItem.getExtension() != null) {
+            // extension = linkDocItem.getExtension();
+            // }
+            String uri = linkDocItem.getLink().getURI();
+
+            if (LinkUtils.isRemoteFile(uri)) {
+                try {
+                    url = new URL(uri);
+                } catch (MalformedURLException e) {
+                    //
+                }
+            } else if (LinkUtils.existedFile(uri)) {
+                try {
+                    url = new File(uri).toURL();
+                } catch (MalformedURLException e) {
+                    //
+                }
             }
         }
-        progress(item, extension);
+        openedByBrowser(item, url);
+        // progress(item, extension);
 
+    }
+
+    private void showErrorMessage() {
+        MessageDialog.openError(Display.getCurrent().getActiveShell(), Messages
+                .getString("ExtractDocumentationAction.fileErrorTitle"), //$NON-NLS-1$
+                Messages.getString("ExtractDocumentationAction.fileErrorMessages")); //$NON-NLS-1$
     }
 
     /*
@@ -131,62 +157,78 @@ public class OpenDocumentationAction extends AContextualAction {
         return DocumentationItem.class;
     }
 
-    private void progress(final Item item, final String extension) {
-        if (item == null) {
+    //
+    // private void progress(final Item item, final String extension) {
+    // if (item == null) {
+    // return;
+    // }
+    //
+    // ProgressDialog progressDialog = new ProgressDialog(Display.getCurrent().getActiveShell()) {
+    //
+    // @Override
+    // public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+    //
+    // // use the system program to open the documentation by extension.
+    // Program program = null;
+    // if (extension != null) {
+    // program = Program.findProgram(extension);
+    // }
+    // boolean opened = false;
+    // if (program != null) {
+    // IFile file = LinkDocumentationHelper.getTempFile(item.getProperty().getId());
+    // if (file != null) {
+    // try {
+    // boolean canExec = false;
+    // if (item instanceof DocumentationItem) {
+    // DocumentationItem documentationItem = (DocumentationItem) item;
+    // documentationItem.getContent().setInnerContentToFile(file.getLocation().toFile());
+    // canExec = true;
+    // } else if (item instanceof LinkDocumentationItem) { // link documenation
+    // LinkDocumentationItem linkDocItem = (LinkDocumentationItem) item;
+    // ByteArray byteArray = LinkDocumentationHelper.getLinkItemContent(linkDocItem);
+    // if (byteArray != null) {
+    // byteArray.setInnerContentToFile(file.getLocation().toFile());
+    // canExec = true;
+    // }
+    // }
+    // if (canExec) {
+    // program.execute(file.getLocation().toOSString());
+    // opened = true;
+    // }
+    // } catch (IOException e) {
+    // MessageBoxExceptionHandler.process(e);
+    // }
+    // }
+    // }
+    // // if not opened, extract the content.
+    // if (!opened) {
+    // ExtractDocumentationAction extractAction = new ExtractDocumentationAction();
+    // extractAction.setWorkbenchPart(getWorkbenchPart());
+    // extractAction.run();
+    // }
+    // }
+    //
+    // };
+    // try {
+    // progressDialog.executeProcess();
+    // } catch (InvocationTargetException e) {
+    // ExceptionHandler.process(e);
+    // } catch (InterruptedException e) {
+    // // Nothing to do
+    // }
+    // }
+
+    private void openedByBrowser(Item item, URL url) {
+        if (url == null || item == null) {
             return;
         }
-        ProgressDialog progressDialog = new ProgressDialog(Display.getCurrent().getActiveShell()) {
 
-            @Override
-            public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+        WebBrowserEditor browser = new WebBrowserEditor();
 
-                // use the system program to open the documentation by extension.
-                Program program = null;
-                if (extension != null) {
-                    program = Program.findProgram(extension);
-                }
-                boolean opened = false;
-                if (program != null) {
-                    IFile file = LinkDocumentationHelper.getTempFile(item.getProperty().getId());
-                    if (file != null) {
-                        try {
-                            boolean canExec = false;
-                            if (item instanceof DocumentationItem) {
-                                DocumentationItem documentationItem = (DocumentationItem) item;
-                                documentationItem.getContent().setInnerContentToFile(file.getLocation().toFile());
-                                canExec = true;
-                            } else if (item instanceof LinkDocumentationItem) { // link documenation
-                                LinkDocumentationItem linkDocItem = (LinkDocumentationItem) item;
-                                ByteArray byteArray = LinkDocumentationHelper.getLinkItemContent(linkDocItem);
-                                if (byteArray != null) {
-                                    byteArray.setInnerContentToFile(file.getLocation().toFile());
-                                    canExec = true;
-                                }
-                            }
-                            if (canExec) {
-                                program.execute(file.getLocation().toOSString());
-                                opened = true;
-                            }
-                        } catch (IOException e) {
-                            MessageBoxExceptionHandler.process(e);
-                        }
-                    }
-                }
-                // if not opened, extract the content.
-                if (!opened) {
-                    ExtractDocumentationAction extractAction = new ExtractDocumentationAction();
-                    extractAction.setWorkbenchPart(getWorkbenchPart());
-                    extractAction.run();
-                }
-            }
+        WebBrowserEditorInput input = new WebBrowserEditorInput(url);
 
-        };
-        try {
-            progressDialog.executeProcess();
-        } catch (InvocationTargetException e) {
-            ExceptionHandler.process(e);
-        } catch (InterruptedException e) {
-            // Nothing to do
-        }
+        input.setName(item.getProperty().getLabel());
+        input.setToolTipText(item.getProperty().getLabel() + " " + item.getProperty().getVersion());
+        browser.open(input);
     }
 }

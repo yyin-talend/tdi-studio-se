@@ -138,11 +138,12 @@ public class DocumentationPage extends PropertiesWizardPage {
         if (isUpdate() && checkLinkBtn != null && !checkLinkBtn.isDisposed()) {
             checkLinkBtn.setEnabled(false);
             if (LinkUtils.isLinkDocumentationItem(documentationItem)) {
-                checkLinkBtn.setSelection(true);
-            } else {
                 checkLinkBtn.setSelection(false);
+            } else {
+                checkLinkBtn.setSelection(true);
             }
         } else {
+            checkLinkBtn.setSelection(true); // by default
             // set the default
             documentationItem = PropertiesFactory.eINSTANCE.createDocumentationItem();
             documentationItem.setProperty(property);
@@ -151,6 +152,7 @@ public class DocumentationPage extends PropertiesWizardPage {
 
     protected void evaluateFields() {
         super.evaluateFields();
+        enabledLinkMode(filenameText.getText());
         evaluateFileNameField();
     }
 
@@ -166,7 +168,6 @@ public class DocumentationPage extends PropertiesWizardPage {
         } else {
             if (LinkUtils.isRemoteFile(filenameText.getText())) {
                 switchCheck(true);
-                // testRemoteFile();
             } else { // local file
                 switchCheck(false);
                 filePath = new Path(filenameText.getText());
@@ -206,12 +207,6 @@ public class DocumentationPage extends PropertiesWizardPage {
             }
 
             public void widgetSelected(SelectionEvent e) {
-                if (isLinkDocumentation()) {
-                    documentationItem = PropertiesFactory.eINSTANCE.createLinkDocumentationItem();
-                } else {
-                    documentationItem = PropertiesFactory.eINSTANCE.createDocumentationItem();
-                }
-                documentationItem.setProperty(property);
                 evaluateFields();
                 testRemoteFile();
             }
@@ -219,7 +214,7 @@ public class DocumentationPage extends PropertiesWizardPage {
         filenameText.addModifyListener(new ModifyListener() {
 
             public void modifyText(ModifyEvent e) {
-                evaluateFileNameField();
+                evaluateFields();
             }
         });
         filenameText.addFocusListener(new FocusListener() {
@@ -229,6 +224,7 @@ public class DocumentationPage extends PropertiesWizardPage {
             }
 
             public void focusLost(FocusEvent e) {
+                enabledLinkMode(filenameText.getText());
                 testRemoteFile();
 
             }
@@ -292,13 +288,13 @@ public class DocumentationPage extends PropertiesWizardPage {
 
     public boolean isLinkDocumentation() {
         if (checkLinkBtn != null && !checkLinkBtn.isDisposed()) {
-            return checkLinkBtn.getSelection();
+            return !checkLinkBtn.getSelection();
         }
         return false;
     }
 
-    private void switchCheck(boolean check) {
-        if (check) {
+    private void switchCheck(boolean link) {
+        if (link) {
             browseBtn.setText(Messages.getString("DocumentationPage.checkLabel")); //$NON-NLS-1$
             browseBtn.setToolTipText(Messages.getString("DocumentationPage.checkTipText")); //$NON-NLS-1$
         } else {
@@ -309,7 +305,9 @@ public class DocumentationPage extends PropertiesWizardPage {
 
     private void testRemoteFile() {
         if (LinkUtils.isRemoteFile(filenameText.getText())) {
+
             LinkInfo info = LinkUtils.testRemoteFile(filenameText.getText());
+
             switch (info) {
             case FILE_NOT_FOUND:
             case URL_ERROR:
@@ -322,6 +320,7 @@ public class DocumentationPage extends PropertiesWizardPage {
             default:
                 break;
             }
+
             getDocumentation().setDocFilePath(new Path(filenameText.getText().trim()));
             updatePageStatus();
             if (!isUpdate()) {
@@ -330,4 +329,35 @@ public class DocumentationPage extends PropertiesWizardPage {
 
         }
     }
+
+    private void switchLinkMode() {
+        if (isLinkDocumentation()) {
+            documentationItem = PropertiesFactory.eINSTANCE.createLinkDocumentationItem();
+        } else {
+            documentationItem = PropertiesFactory.eINSTANCE.createDocumentationItem();
+        }
+        documentationItem.setProperty(property);
+    }
+
+    /**
+     * 
+     * ggu Comment method "enabledLinkMode".
+     * 
+     * auto switch to the link mode
+     */
+    private void enabledLinkMode(final String uri) {
+        if (uri == null) {
+            return;
+        }
+        if (!isUpdate() && checkLinkBtn != null && !checkLinkBtn.isDisposed()) {
+            if (LinkUtils.checkLinkFile(uri)) {
+                checkLinkBtn.setEnabled(false);
+                checkLinkBtn.setSelection(false);
+            } else {
+                checkLinkBtn.setEnabled(true);
+            }
+            switchLinkMode();
+        }
+    }
+
 }

@@ -27,7 +27,6 @@ import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.properties.DocumentationItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.LinkDocumentationItem;
-import org.talend.core.model.properties.LinkType;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
@@ -41,7 +40,6 @@ import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
-import org.talend.repository.ui.wizards.documentation.LinkUtils;
 
 /**
  * Label provider for the repository view. <code>DEBUG</code> boolean field specify if details (such as objects ids)
@@ -131,10 +129,13 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
                 img = OverlayImageProvider.getImageWithDocExt(((DocumentationItem) item).getExtension());
             } else if (item instanceof LinkDocumentationItem) {
                 img = OverlayImageProvider.getImageWithSpecial(img).createImage();
-                LinkType link = ((LinkDocumentationItem) item).getLink();
-                if (!LinkUtils.validateLink(link)) {
-                    img = OverlayImageProvider.getImageWithError(img).createImage();
-                }
+                /*
+                 * It's slowly, so disable it.
+                 */
+                // LinkType link = ((LinkDocumentationItem) item).getLink();
+                // if (!LinkUtils.validateLink(link)) {
+                // img = OverlayImageProvider.getImageWithError(img).createImage();
+                // }
             }
         }
 
