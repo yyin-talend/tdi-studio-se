@@ -25,7 +25,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.core.model.process.IElementParameter;
-import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty;
 
@@ -64,15 +63,14 @@ public class LabelController extends AbstractElementPropertySectionController {
             labelLabel = getWidgetFactory().createCLabel(subComposite, (String) param.getValue(), SWT.SHADOW_NONE);
         }
 
-        String context = param.getContext();
-        if (context != null && context.contains(";")) {
-            String rgb[] = context.split(";");
-            if (rgb.length != 3) {
-                throw new RuntimeException("RGB defination in label controller not correct, component " + param.getDisplayName()
-                        + ".");
-            } else {
-                labelLabel.setForeground(new Color(null, TalendTextUtils.stringToRGB(context)));
-            }
+        Color color = param.getColor();
+        if (color != null) {
+            labelLabel.setForeground(color);
+        }
+
+        Color bgColor = param.getBackgroundColor();
+        if (bgColor != null) {
+            labelLabel.setBackground(bgColor);
         }
 
         labelLabel.setData(PARAMETER_NAME, param.getName());

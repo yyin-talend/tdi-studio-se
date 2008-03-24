@@ -29,6 +29,7 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.utils.system.EnvironmentUtils;
@@ -57,6 +58,7 @@ import org.talend.core.model.process.IElementParameterDefaultValue;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.temp.ECodePart;
+import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.designer.components.IComponentsLocalProviderService;
 import org.talend.designer.core.i18n.Messages;
@@ -951,6 +953,8 @@ public class EmfComponent implements IComponent {
             param.setRepositoryValue(xmlParam.getREPOSITORYVALUE());
             param.setGroup(xmlParam.getGROUP());
             param.setContext(xmlParam.getCONTEXT());
+            param.setBackgroundColor(getColor(param, xmlParam.getBACKGROUND()));
+            param.setColor(getColor(param, xmlParam.getCOLOR()));
             param.setContextMode(xmlParam.isCONTEXTMODE());
 
             switch (type) {
@@ -1046,6 +1050,24 @@ public class EmfComponent implements IComponent {
             createSpecificParametersFromType(listParam, xmlParam, node, type, param);
             listParam.add(param);
         }
+    }
+
+    /**
+     * yzhang Comment method "getColor".
+     * 
+     * @param param
+     * @param color
+     */
+    private Color getColor(ElementParameter param, String color) {
+        if (color != null && color.contains(";")) {
+            String rgb[] = color.split(";");
+            if (rgb.length != 3) {
+                throw new RuntimeException("RGB defination in label controller not correct, component " + param.getDisplayName()
+                        + ".");
+            }
+            return new Color(null, TalendTextUtils.stringToRGB(color));
+        }
+        return null;
     }
 
     private void initializeTableFromXml(PARAMETERType xmlParam, ElementParameter param) {
