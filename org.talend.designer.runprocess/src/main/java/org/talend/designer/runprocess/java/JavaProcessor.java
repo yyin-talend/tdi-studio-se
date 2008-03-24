@@ -884,10 +884,13 @@ public class JavaProcessor extends Processor {
             EList jobList = processItem.getProcess().getRequired().getJob();
             for (int j = 0; j < jobList.size(); j++) {
                 JobType jType = (JobType) jobList.get(j);
-                if (!childrenList.contains(jType.getName())) {
-                    childrenList.add(jType.getName());
-                    ProcessItem childItem = ProcessorUtilities.getProcessItem(jType.getName());
-                    childrenList.addAll(getChildren(childItem));
+                final ProcessItem item = ProcessorUtilities.getProcessItemById(jType.getName());
+                if (item != null) {
+                    final String name = item.getProperty().getLabel();
+                    if (!childrenList.contains(name)) {
+                        childrenList.add(name);
+                        childrenList.addAll(getChildren(item));
+                    }
                 }
             }
         }
