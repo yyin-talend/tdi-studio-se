@@ -49,7 +49,7 @@ public class NoteEditPart extends AbstractGraphicalEditPart implements PropertyC
     @Override
     public void setSelected(int value) {
         super.setSelected(value);
-        if (value == SELECTED) {
+        if (value == SELECTED_PRIMARY) {
             ComponentSettingsView viewer = (ComponentSettingsView) PlatformUI.getWorkbench().getActiveWorkbenchWindow()
                     .getActivePage().findView(ComponentSettingsView.ID);
 
