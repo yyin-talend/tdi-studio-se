@@ -12,76 +12,95 @@
 // ============================================================================
 package org.talend.designer.codegen.config;
 
-import java.util.List;
-
 import org.talend.core.model.process.IConnection;
 
-
 /**
- * DOC amaumont  class global comment. Detailled comment
- * <br/>
- *
+ * DOC amaumont class global comment. Detailled comment <br/>
+ * 
  * $Id$
- *
+ * 
  */
 public class SubTreeArgument {
 
     private IConnection inputSubtreeConnection;
-    
+
     private boolean sourceComponentHasConditionnalOutputs;
-    
+
     private boolean isMultiplyingOutputComponents = false;
 
-    
+    // fixed the bug 3127
+    private boolean isSubtreeWithLoop = false;
+
     /**
      * Getter for inputSubtreeConnection.
+     * 
      * @return the inputSubtreeConnection
      */
     public IConnection getInputSubtreeConnection() {
         return this.inputSubtreeConnection;
     }
 
-    
     /**
      * Sets the inputSubtreeConnection.
+     * 
      * @param inputSubtreeConnection the inputSubtreeConnection to set
      */
     public void setInputSubtreeConnection(IConnection inputSubtreeConnection) {
         this.inputSubtreeConnection = inputSubtreeConnection;
     }
 
-    
     /**
      * Getter for sourceComponentHasConditionnalOutputs.
+     * 
      * @return the sourceComponentHasConditionnalOutputs
      */
     public boolean isSourceComponentHasConditionnalOutputs() {
         return this.sourceComponentHasConditionnalOutputs;
     }
 
-    
     /**
      * Sets the sourceComponentHasConditionnalOutputs.
+     * 
      * @param sourceComponentHasConditionnalOutputs the sourceComponentHasConditionnalOutputs to set
      */
     public void setSourceComponentHasConditionnalOutputs(boolean sourceComponentHasConditionnalOutputs) {
         this.sourceComponentHasConditionnalOutputs = sourceComponentHasConditionnalOutputs;
     }
-    
+
     /**
      * Getter for isMultiplyingOutputComponents.
+     * 
      * @return the isMultiplyingOutputComponents
      */
     public boolean isMultiplyingOutputComponents() {
         return isMultiplyingOutputComponents;
     }
-    
+
     /**
      * Sets the isMultiplyingOutputComponents.
+     * 
      * @param isMultiplyingOutputComponents the isMultiplyingOutputComponents to set
      */
     public void setMultiplyingOutputComponents(boolean isMultiplyingOutputComponents) {
         this.isMultiplyingOutputComponents = isMultiplyingOutputComponents;
+    }
+
+    /**
+     * Getter for addLoop2SubTree.
+     * 
+     * @return the addLoop2SubTree
+     */
+    public boolean isSubtreeWithLoop() {
+        return this.isSubtreeWithLoop;
+    }
+
+    /**
+     * Sets the addLoop2SubTree.
+     * 
+     * @param isSubtreeWithLoop the addLoop2SubTree to set
+     */
+    public void setSubtreeWithLoop(boolean isSubtreeWithLoop) {
+        this.isSubtreeWithLoop = isSubtreeWithLoop;
     }
 
 }

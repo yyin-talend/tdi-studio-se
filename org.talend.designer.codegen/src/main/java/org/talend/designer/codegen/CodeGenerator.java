@@ -518,6 +518,7 @@ public class CodeGenerator implements ICodeGenerator {
             // Multiplying Output Rows
             if (part == ECodePart.MAIN) {
                 subTreeArgument.setMultiplyingOutputComponents(node.isMultiplyingOutputs());
+                subTreeArgument.setSubtreeWithLoop(node.isSubtreeWithLoop());
             }
 
             for (IConnection connection : node.getOutgoingConnections()) {
