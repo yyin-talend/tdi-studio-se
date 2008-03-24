@@ -21,7 +21,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.eclipse.core.runtime.IPath;
+import org.talend.core.model.properties.ProcessItem;
 import org.talend.designer.core.model.utils.emf.talendfile.JobType;
+import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.job.deletion.IJobResourceProtection;
 import org.talend.repository.job.deletion.JobResource;
 import org.talend.scheduler.i18n.Messages;
@@ -106,8 +108,12 @@ public class ScheduleTask implements IJobResourceProtection {
         idAndResource.put(protectionId, currentResource);
         if (subJobs != null) {
             for (JobType subJob : subJobs) {
-                String subJobId = "sub_job_of_" + absJobName + taskNo + "_" + project + "_" + subJob.getName();
-                idAndResource.put(subJobId, new JobResource(project, subJob.getName()));
+                final ProcessItem item = ProcessorUtilities.getProcessItemById(subJob.getName());
+                if (item != null) {
+                    final String name = item.getProperty().getLabel();
+                    String subJobId = "sub_job_of_" + absJobName + taskNo + "_" + project + "_" + name;
+                    idAndResource.put(subJobId, new JobResource(project, name));
+                }
             }
         }
     }
@@ -398,8 +404,8 @@ public class ScheduleTask implements IJobResourceProtection {
     public String getPlainCommand() {
         String space = SPACE;
         StringBuilder sb = new StringBuilder();
-        sb.append(getMinute()).append(space).append(getHour()).append(space).append(getMonth()).append(space).append(
-                getDay()).append(space).append(getWeekly()).append(space).append(getCommand());
+        sb.append(getMinute()).append(space).append(getHour()).append(space).append(getMonth()).append(space).append(getDay())
+                .append(space).append(getWeekly()).append(space).append(getCommand());
 
         return sb.toString();
     }
