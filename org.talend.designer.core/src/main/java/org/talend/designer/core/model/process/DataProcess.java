@@ -136,6 +136,7 @@ public class DataProcess {
         dataNode.setThereLinkWithHash(graphicalNode.isThereLinkWithHash());
         dataNode.setHasConditionalOutputs(graphicalNode.hasConditionalOutputs());
         dataNode.setIsMultiplyingOutputs(graphicalNode.isMultiplyingOutputs());
+        dataNode.setIsSubtreeWithLoop(graphicalNode.isSubtreeWithLoop());
         dataNode.setProcess(graphicalNode.getProcess());
         dataNode.setComponent(graphicalNode.getComponent());
 
@@ -148,6 +149,7 @@ public class DataProcess {
             dataNode.setThereLinkWithHash(graphicalNode.isThereLinkWithHash());
             dataNode.setHasConditionalOutputs(false);
             dataNode.setIsMultiplyingOutputs(graphicalNode.isMultiplyingOutputs());
+            dataNode.setIsSubtreeWithLoop(graphicalNode.isSubtreeWithLoop());
             dataNode.setProcess(graphicalNode.getProcess());
         }
         dataNode.setDesignSubjobStartNode(graphicalNode.getDesignSubjobStartNode());
@@ -359,7 +361,7 @@ public class DataProcess {
     private void addAllMultipleComponentConnections(Map<IMultipleComponentItem, AbstractNode> itemsMap,
             IMultipleComponentManager multipleComponentManager, INode graphicalNode, AbstractNode dataNode, INode previousNode) {
         List<IConnection> incomingConnections, outgoingConnections;
-
+        int inputID = 0;
         for (IMultipleComponentItem curItem : multipleComponentManager.getItemList()) {
             for (IMultipleComponentConnection curConnec : curItem.getOutputConnections()) {
                 AbstractNode nodeSource = itemsMap.get(curItem);
@@ -382,6 +384,14 @@ public class DataProcess {
                 switch (dataConnec.getLineStyle()) {
                 case FLOW_MAIN:
                     dataConnec.setName("row_" + itemsMap.get(curItem).getUniqueName()); //$NON-NLS-1$
+                    break;
+                case FLOW_MERGE:
+                    if (curConnec.equals(multipleComponentManager.getInput())) {
+                        dataConnec.setInputId(1);
+                    } else {
+                        dataConnec.setInputId(1 + inputID++);
+                    }
+                    dataConnec.setName("merge_" + itemsMap.get(curItem).getUniqueName()); //$NON-NLS-1$
                     break;
                 // case RUN_BEFORE:
                 case ON_SUBJOB_ERROR:
