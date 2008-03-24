@@ -300,7 +300,11 @@ public class SpagicPerlDeployManager extends org.talend.repository.ui.wizards.ex
         EList jobList = process.getProcess().getRequired().getJob();
         for (int j = 0; j < jobList.size(); j++) {
             JobType jType = (JobType) jobList.get(j);
-            String processLabel = jType.getName();
+            ProcessItem item = ProcessorUtilities.getProcessItemById(jType.getName());
+            if (item == null) {
+                continue;
+            }
+            String processLabel = item.getProperty().getLabel();
             if (processLabel.equals(rootName)) {
                 continue;
             }
