@@ -24,6 +24,7 @@ String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
 	if(useExistingConn.equals("true")){
 		String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
 		String conn = "conn_" + connection;
+		commitEvery = "0";
 %>
 java.sql.Connection connection_<%=cid %> = (java.sql.Connection)globalMap.get("<%=conn %>");
 <%
