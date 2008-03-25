@@ -25,7 +25,9 @@ import org.talend.designer.core.ui.editor.connections.ConnLabelEditPart;
 import org.talend.designer.core.ui.editor.connections.ConnectionPart;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainerPart;
 import org.talend.designer.core.ui.editor.nodes.NodeLabelEditPart;
+import org.talend.designer.core.ui.editor.nodes.NodePart;
 import org.talend.designer.core.ui.editor.process.ProcessPart;
+import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainerPart;
 
 /**
  * DOC nrousseau class global comment. Detailled comment <br/>
@@ -104,10 +106,17 @@ public class TalendSelectionManager extends SelectionManager {
     private StructuredSelection filterSelection(StructuredSelection selection) {
         List newSelection = new ArrayList(selection.toList());
         for (Object element : selection.toArray()) {
-            if (element instanceof NodeLabelEditPart) {
+            if (element instanceof SubjobContainerPart) {
+                // childrens are NodeContainer part
                 newSelection.remove(element);
-            } else if (element instanceof NodeContainerPart) {
-                newSelection.remove(element);
+                List<NodeContainerPart> nodeContainerParts = ((SubjobContainerPart) element).getChildren();
+                for (NodeContainerPart nodeContainerPart : nodeContainerParts) {
+                    for (Object object : nodeContainerPart.getChildren()) {
+                        if (object instanceof NodePart) {
+                            newSelection.add(object);
+                        }
+                    }
+                }
             }
         }
         StructuredSelection newList = new StructuredSelection(newSelection);

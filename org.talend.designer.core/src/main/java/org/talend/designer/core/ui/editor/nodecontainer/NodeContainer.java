@@ -66,14 +66,15 @@ public class NodeContainer extends Element {
         elements.add(nodeLabel);
         nodePerformance = new NodePerformance(this);
         elements.add(nodePerformance);
-        Image image = ImageProvider.getImage(CorePlugin.getImageDescriptor(NodeContainerFigure.BREAKPOINT_IMAGE));
-        breakpointSize = new Dimension(image.getImageData().width, image.getImageData().height);
 
-        image = ImageProvider.getImage(EImage.ERROR_SMALL);
-        errorSize = new Dimension(image.getImageData().width, image.getImageData().height);
-        image = ImageProvider.getImage(EImage.WARNING_SMALL);
-        warningSize = new Dimension(image.getImageData().width, image.getImageData().height);
-
+        if (!CorePlugin.getContext().isHeadless()) {
+            Image image = ImageProvider.getImage(CorePlugin.getImageDescriptor(NodeContainerFigure.BREAKPOINT_IMAGE));
+            breakpointSize = new Dimension(image.getImageData().width, image.getImageData().height);
+            image = ImageProvider.getImage(EImage.ERROR_SMALL);
+            errorSize = new Dimension(image.getImageData().width, image.getImageData().height);
+            image = ImageProvider.getImage(EImage.WARNING_SMALL);
+            warningSize = new Dimension(image.getImageData().width, image.getImageData().height);
+        }
     }
 
     private Rectangle prepareStatus(Point nodeLocation, Dimension nodeSize) {
