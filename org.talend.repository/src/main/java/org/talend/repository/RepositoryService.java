@@ -46,7 +46,6 @@ import org.talend.repository.plugin.integration.SwitchProjectAction;
 import org.talend.repository.ui.login.LoginDialog;
 import org.talend.repository.ui.utils.ColumnNameValidator;
 import org.talend.repository.ui.views.IRepositoryView;
-import org.talend.repository.ui.views.RepositoryContentProvider;
 import org.talend.repository.ui.views.RepositoryView;
 import org.talend.repository.ui.wizards.metadata.connection.database.DatabaseWizard;
 import org.talend.repository.ui.wizards.metadata.connection.files.delimited.DelimitedFileWizard;
@@ -290,7 +289,7 @@ public class RepositoryService implements IRepositoryService {
     public void openMetadataConnection(IRepositoryObject o) {
 
         IRepositoryView view = RepositoryView.show();
-        RepositoryContentProvider provider = (RepositoryContentProvider) view.getViewer().getContentProvider();
+        // RepositoryContentProvider provider = (RepositoryContentProvider) view.getViewer().getContentProvider();
 
         final RepositoryNode realNode = getRepositoryNode(view.getRoot(), o);
 
@@ -341,16 +340,34 @@ public class RepositoryService implements IRepositoryService {
     }
 
     private RepositoryNode getRepositoryNode(RepositoryNode node, IRepositoryObject aNode) {
+        if (node == null || aNode == null) {
+            return null;
+        }
+        final List<RepositoryNode> children = node.getChildren();
 
-        for (RepositoryNode rootNode : node.getChildren()) {
-            for (RepositoryNode fatherNode : rootNode.getChildren()) {
-                for (RepositoryNode sonNode : fatherNode.getChildren()) {
-                    if (sonNode.getId().equals(aNode.getId())) {
-                        return sonNode;
+        if (children != null) {
+            for (RepositoryNode childNode : children) {
+                if (childNode.getId().equals(aNode.getId())) {
+                    return childNode;
+                } else {
+                    final RepositoryNode repositoryNode = getRepositoryNode(childNode, aNode);
+                    if (repositoryNode != null) {
+                        return repositoryNode;
                     }
                 }
+
             }
         }
+
+        // for (RepositoryNode rootNode : children) {
+        // for (RepositoryNode fatherNode : rootNode.getChildren()) {
+        // for (RepositoryNode sonNode : fatherNode.getChildren()) {
+        // if (sonNode.getId().equals(aNode.getId())) {
+        // return sonNode;
+        // }
+        // }
+        // }
+        // }
 
         return null;
     }
