@@ -80,6 +80,11 @@ public class RepositoryReviewDialog extends Dialog {
         super(parentShell);
         setShellStyle(SWT.SHELL_TRIM | SWT.APPLICATION_MODAL | getDefaultOrientation());
         this.type = type;
+        /*
+         * avoid select self repository node for Process Type.
+         * 
+         * borrow the repositoryType to set the current process id here.
+         */
         this.repositoryType = repositoryType;
         typeProcessor = createTypeProcessor();
     }
@@ -95,7 +100,7 @@ public class RepositoryReviewDialog extends Dialog {
      */
     private ITypeProcessor createTypeProcessor() {
         if (type == ERepositoryObjectType.PROCESS) {
-            return new JobTypeProcessor();
+            return new JobTypeProcessor(repositoryType);
         }
         if (type == ERepositoryObjectType.METADATA) {
             return new RepositoryTypeProcessor(repositoryType);
@@ -190,6 +195,7 @@ public class RepositoryReviewDialog extends Dialog {
     public RepositoryNode getResult() {
         return result;
     }
+
 }
 
 /**
@@ -315,6 +321,15 @@ interface ITypeProcessor {
  */
 class JobTypeProcessor implements ITypeProcessor {
 
+    private String curJobId;
+
+    /**
+     * ggu JobTypeProcessor constructor comment.
+     */
+    public JobTypeProcessor(String curJobId) {
+        this.curJobId = curJobId;
+    }
+
     public RepositoryNode getInputRoot(RepositoryContentProvider contentProvider) {
         return contentProvider.getProcessNode();
     }
@@ -333,7 +348,19 @@ class JobTypeProcessor implements ITypeProcessor {
     }
 
     public ViewerFilter makeFilter() {
-        return null;
+        return new ViewerFilter() {
+
+            @Override
+            public boolean select(Viewer viewer, Object parentElement, Object element) {
+                RepositoryNode node = (RepositoryNode) element;
+                if (curJobId != null && node.getObject() != null) {
+                    if (node.getObject().getId().equals(curJobId)) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        };
     }
 }
 
