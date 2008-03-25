@@ -30,9 +30,11 @@ import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.utils.io.FilesUtils;
 import org.talend.commons.utils.time.TimeMeasure;
 import org.talend.core.CorePlugin;
 import org.talend.core.language.LanguageManager;
+import org.talend.core.model.components.AbstractComponentsProvider;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -45,9 +47,9 @@ import org.talend.designer.core.model.process.AbstractProcessProvider;
  */
 public class ComponentsFactory implements IComponentsFactory {
 
-    private static Logger log = Logger.getLogger(ComponentsFactory.class);
+    private static final String OLD_COMPONENTS_USER_INNER_FOLDER = "user";
 
-    private static final String COMPONENTS_FOLDER_NAME = "components" + File.separatorChar;//$NON-NLS-1$
+    private static Logger log = Logger.getLogger(ComponentsFactory.class);
 
     private static List<IComponent> componentList = null;
 
@@ -55,6 +57,8 @@ public class ComponentsFactory implements IComponentsFactory {
     }
 
     public void init() {
+        removeOldComponentsUserFolder(); // not used anymore
+
         TimeMeasure.measureActive = false;
         TimeMeasure.begin("ComponentsFactory.init");
         long startTime = System.currentTimeMillis();
@@ -64,16 +68,12 @@ public class ComponentsFactory implements IComponentsFactory {
 
         // 1. Load system components:
         loadComponentsFromFolder(IComponentsFactory.COMPONENTS_INNER_FOLDER);
-        String userPath = IComponentsFactory.COMPONENTS_INNER_FOLDER + File.separatorChar
-                + IComponentsFactory.COMPONENTS_USER_INNER_FOLDER;
         TimeMeasure.step("ComponentsFactory.init", "after system component");
 
-        // 2. Retrieve user components from file system:
-        ComponentsRetriever.retrieveComponents(getComponentsLocation(userPath));
-        // 3. Load user components:
-        loadComponentsFromFolder(userPath);
+        // 3.Load Component from extension point: components_provider
+        loadComponentsFromComponentsProviderExtension();
 
-        // 4.Load Component from extension point: component_definition
+        // 3.Load Component from extension point: component_definition
         loadComponentsFromExtensions();
 
         XsdValidationCacheManager.getInstance().save();
@@ -87,6 +87,29 @@ public class ComponentsFactory implements IComponentsFactory {
             ExceptionHandler.process(e);
         }
         TimeMeasure.measureActive = false;
+    }
+
+    private void loadComponentsFromComponentsProviderExtension() {
+        ComponentsProviderManager componentsProviderManager = ComponentsProviderManager.getInstance();
+        for (AbstractComponentsProvider componentsProvider : componentsProviderManager.getProviders()) {
+            try {
+                componentsProvider.preComponentsLoad();
+                if (componentsProvider.getInstallationFolder().exists()) {
+                    loadComponentsFromFolder(componentsProvider.getComponentsLocation());
+                }
+            } catch (IOException e) {
+                ExceptionHandler.process(e);
+            }
+        }
+    }
+
+    private void removeOldComponentsUserFolder() {
+        String userPath = IComponentsFactory.COMPONENTS_INNER_FOLDER + File.separatorChar
+                + OLD_COMPONENTS_USER_INNER_FOLDER;
+        File componentsLocation = getComponentsLocation(userPath);
+        if (componentsLocation != null && componentsLocation.exists()) {
+            FilesUtils.removeFolder(componentsLocation, true);
+        }
     }
 
     /**
@@ -120,7 +143,7 @@ public class ComponentsFactory implements IComponentsFactory {
 
             public boolean accept(final File file) {
                 return file.isDirectory() && file.getName().charAt(0) != '.'
-                        && !file.getName().equals(IComponentsFactory.COMPONENTS_USER_INNER_FOLDER);
+                        && !file.getName().equals(IComponentsFactory.EXTERNAL_COMPONENTS_INNER_FOLDER);
             }
 
         };
@@ -152,8 +175,9 @@ public class ComponentsFactory implements IComponentsFactory {
                 } catch (MissingMainXMLComponentFileException e) {
                     log.trace(currentFolder.getName() + " is not a " + getCodeLanguageSuffix() + " component", e);
                 } catch (BusinessException e) {
-                    BusinessException ex = new BusinessException("Cannot load component \"" + currentFolder.getName() + "\": " //$NON-NLS-1$ //$NON-NLS-2$
-                            + e.getMessage(), e);
+                    BusinessException ex = new BusinessException(
+                            "Cannot load component \"" + currentFolder.getName() + "\": " //$NON-NLS-1$ //$NON-NLS-2$
+                                    + e.getMessage(), e);
                     ExceptionHandler.process(ex, Level.WARN);
                 }
             }
@@ -177,15 +201,19 @@ public class ComponentsFactory implements IComponentsFactory {
     private File getComponentsLocation(String folder) {
         Bundle b = Platform.getBundle(IComponentsFactory.COMPONENTS_LOCATION);
 
-        URL url = null;
+        File file = null;
         try {
-            url = FileLocator.toFileURL(FileLocator.find(b, new Path(folder), null));
-        } catch (IOException e) {
+            URL url = FileLocator.find(b, new Path(folder), null);
+            if (url == null) {
+                return null;
+            }
+            URL fileUrl = FileLocator.toFileURL(url);
+            file = new File(fileUrl.getPath());
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
-        File dir = new File(url.getPath());
-        return dir;
+        return file;
     }
 
     /**
@@ -277,7 +305,8 @@ public class ComponentsFactory implements IComponentsFactory {
      */
     public URL getComponentPath() throws IOException {
         Bundle b = Platform.getBundle(IComponentsFactory.COMPONENTS_LOCATION);
-        URL url = FileLocator.toFileURL(FileLocator.find(b, new Path(IComponentsFactory.COMPONENTS_INNER_FOLDER), null));
+        URL url = FileLocator
+                .toFileURL(FileLocator.find(b, new Path(IComponentsFactory.COMPONENTS_INNER_FOLDER), null));
         return url;
     }
 }

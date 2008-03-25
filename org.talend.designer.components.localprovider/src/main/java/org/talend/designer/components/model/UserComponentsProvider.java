@@ -15,32 +15,47 @@ package org.talend.designer.components.model;
 import java.io.File;
 import java.io.IOException;
 
+import org.apache.log4j.Logger;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.utils.io.FilesUtils;
+import org.talend.core.model.components.AbstractComponentsProvider;
 import org.talend.designer.components.ComponentsLocalProviderPlugin;
 import org.talend.designer.components.ui.ComponentsPreferencePage;
 
-/**
- * This class aim is to retrieve components from a file system folder to the location they must be for loading.<br/>
- * 
- * $Id: talend.epf 1 2006-09-29 17:06:40 +0000 (ven., 29 sept. 2006) nrousseau $
- * 
- */
-public class ComponentsRetriever {
+/***/
+public class UserComponentsProvider extends AbstractComponentsProvider {
 
-    public static void retrieveComponents(File target) {
+    private static Logger logger = Logger.getLogger(UserComponentsProvider.class);
+
+    /***/
+    public UserComponentsProvider() {
+    }
+
+    public void preComponentsLoad() throws IOException {
+        File installationFolder = getInstallationFolder();
+
+        // clean folder
+        if (installationFolder.exists()) {
+            FilesUtils.removeFolder(installationFolder, true);
+        }
+        FilesUtils.createFoldersIfNotExists(installationFolder.getAbsolutePath(), false);
+
         File externalComponentsLocation = getExternalComponentsLocation();
         if (externalComponentsLocation != null) {
-            try {
-                FilesUtils.copyFolder(externalComponentsLocation, target, true, null, null, true);
-            } catch (IOException e) {
-                ExceptionHandler.process(e);
+            if (externalComponentsLocation.exists()) {
+                try {
+                    FilesUtils.copyFolder(externalComponentsLocation, installationFolder, false, null, null, true);
+                } catch (IOException e) {
+                    ExceptionHandler.process(e);
+                }
+            } else {
+                logger.warn("Folder " + externalComponentsLocation.toString() + " does not exist.");
             }
         }
     }
 
-    private static File getExternalComponentsLocation() {
+    private File getExternalComponentsLocation() {
         IPreferenceStore prefStore = ComponentsLocalProviderPlugin.getDefault().getPreferenceStore();
         String path = prefStore.getString(ComponentsPreferencePage.USER_COMPONENTS_FOLDER);
         return (path == null || path.length() == 0 ? null : new File(path));

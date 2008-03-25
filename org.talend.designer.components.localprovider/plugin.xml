@@ -29,5 +29,13 @@
             name="Format">
       </page>
    </extension>
+   <extension
+         point="org.talend.core.components_provider">
+      <ComponentsProvider
+            class="org.talend.designer.components.model.UserComponentsProvider"
+            folderName="user"
+            id="org.talend.designer.components.model.UserComponentsProvider">
+      </ComponentsProvider>
+   </extension>
 
 </plugin>
