@@ -105,7 +105,7 @@ public class JobPerlScriptsManager extends JobScriptsManager {
             resources.addAll(getJobScripts(processItem, exportChoice.get(ExportChoice.needJob)));
             resources.addAll(getContextScripts(processItem, exportChoice.get(ExportChoice.needContext)));
             boolean needChildren = exportChoice.get(ExportChoice.needJob) && exportChoice.get(ExportChoice.needContext);
-            addChildrenResources(processItem, needChildren, process[i], exportChoice);
+            addChildrenResources(processItem, needChildren, process[i], exportChoice,contextName);
             process[i].addResources(resources);
         }
         return Arrays.asList(process);
@@ -292,14 +292,14 @@ public class JobPerlScriptsManager extends JobScriptsManager {
     }
 
     private void addChildrenResources(ProcessItem process, boolean needChildren, ExportFileResource resource,
-            Map<ExportChoice, Boolean> exportChoice) {
+            Map<ExportChoice, Boolean> exportChoice, String contextName) {
         List<String> list = new ArrayList<String>();
         if (needChildren) {
             String projectName = getCurrentProjectName();
             try {
                 List<ProcessItem> processedJob = new ArrayList<ProcessItem>();
                 getChildrenJobAndContextName(process.getProperty().getLabel(), list, process, projectName, processedJob,
-                        resource, exportChoice);
+                        resource, exportChoice,contextName);
             } catch (Exception e) {
                 ExceptionHandler.process(e);
             }
@@ -311,7 +311,7 @@ public class JobPerlScriptsManager extends JobScriptsManager {
     }
 
     private void getChildrenJobAndContextName(String rootName, List<String> list, ProcessItem process, String projectName,
-            List<ProcessItem> processedJob, ExportFileResource resource, Map<ExportChoice, Boolean> exportChoice) {
+            List<ProcessItem> processedJob, ExportFileResource resource, Map<ExportChoice, Boolean> exportChoice, String fatherContext) {
         if (processedJob.contains(process)) {
             // prevent circle
             return;
@@ -337,7 +337,13 @@ public class JobPerlScriptsManager extends JobScriptsManager {
 
             String processName = escapeSpace(processLabel);
             String jobScriptName = projectName + ".job_" + processName + PerlResourcesHelper.CONTEXT_FILE_SUFFIX; //$NON-NLS-1$
-            String contextName = escapeSpace(jType.getContext());
+            String contextName = null;
+            if (exportChoice.get(ExportChoice.applyToChildren)) { 
+                contextName = fatherContext; 
+            } else {    
+                contextName = escapeSpace(jType.getContext()); 
+            }  
+                
             String contextFullName = projectName
                     + ".job_" + processName + "_" + contextName + PerlResourcesHelper.CONTEXT_FILE_SUFFIX; //$NON-NLS-1$ 
 
@@ -348,7 +354,7 @@ public class JobPerlScriptsManager extends JobScriptsManager {
             if (childProcess == null) {
                 return;
             }
-            getChildrenJobAndContextName(rootName, list, childProcess, projectName, processedJob, resource, exportChoice);
+            getChildrenJobAndContextName(rootName, list, childProcess, projectName, processedJob, resource, exportChoice,fatherContext);
         }
     }
 
