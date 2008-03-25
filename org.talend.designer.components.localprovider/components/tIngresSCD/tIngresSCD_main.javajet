@@ -101,7 +101,7 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
             paramIndex++;
         }
         %>
-        insertionStatement_<%=cid%>.executeUpdate();
+        nb_line_inserted_<%=cid%> += insertionStatement_<%=cid%>.executeUpdate();
         <%
         if(debug) {
             %>
@@ -146,7 +146,7 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
                     index++;
                 }
                 %>
-                updateForType1_<%=cid%>.executeUpdate();
+                nb_line_update_<%=cid%> += updateForType1_<%=cid%>.executeUpdate();
                 <%
                 if(debug) {
                     %>
@@ -194,7 +194,7 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
                     index++;
                 }
                 %>
-                updateForType2_<%=cid%>.executeUpdate();
+                nb_line_update_<%=cid%> += updateForType2_<%=cid%>.executeUpdate();
                 <%
                 paramIndex = 1;
                 for(Column insertionColumn : insertionColumnList) {
@@ -234,7 +234,7 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
                     paramIndex++;
                 }                
                 %>
-                insertionStatement_<%=cid%>.executeUpdate();
+                nb_line_inserted_<%=cid%> += insertionStatement_<%=cid%>.executeUpdate();
                 <%
                 if(debug) {
                     %>
@@ -284,7 +284,7 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
                     index++;
                 }
                 %>
-                updateForType3_<%=cid%>.executeUpdate();
+                nb_line_update_<%=cid%> += updateForType3_<%=cid%>.executeUpdate();
                 <%
                 if(debug) {
                     %>
