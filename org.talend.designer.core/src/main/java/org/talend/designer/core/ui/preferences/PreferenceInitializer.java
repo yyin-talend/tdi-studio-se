@@ -66,7 +66,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
         store.setDefault(TalendDesignerPrefConstants.COMP_DEFAULT_FILE_DIR, Platform.getLocation().toOSString());
         store.setDefault(TalendDesignerPrefConstants.PROPERTY_CODE_CHECK, false);
         store.setDefault(TalendDesignerPrefConstants.LARGE_ICONS_SIZE, "24");
-        store.setDefault(TalendDesignerPrefConstants.SCHEMA_OPTIONS, "default");
+        store.setDefault(TalendDesignerPrefConstants.SCHEMA_OPTIONS, "none");
         store.setDefault(TalendDesignerPrefConstants.VIEW_OPTIONS, "default");
         store.setDefault(TalendDesignerPrefConstants.DISPLAY_SUBJOBS, true);
 

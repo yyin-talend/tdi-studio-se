@@ -122,9 +122,10 @@ public class DesignerPreferencePage extends FieldEditorPreferencePage implements
         // "interpolation in the Job Designer", getFieldEditorParent());
         // addField(interpolation);
 
-        RadioGroupFieldEditor schemaOptions = new RadioGroupFieldEditor(TalendDesignerPrefConstants.SCHEMA_OPTIONS, Messages
-                .getString("DesignerPreferencePage.schemaOptions"), 3, new String[][] { { "die", "die" }, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                { "warn", "warn" }, { "enlarge or truncate row", "default" } }, getFieldEditorParent(), true); //$NON-NLS-1$ //$NON-NLS-2$
+        RadioGroupFieldEditor schemaOptions = new RadioGroupFieldEditor(
+                TalendDesignerPrefConstants.SCHEMA_OPTIONS,
+                Messages.getString("DesignerPreferencePage.schemaOptions"), 4, new String[][] { { "do nothing", "nothing" }, { "die", "die" }, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                        { "warn", "warn" }, { "enlarge or truncate row", "adapt" } }, getFieldEditorParent(), true); //$NON-NLS-1$ //$NON-NLS-2$
         addField(schemaOptions);
 
         RadioGroupFieldEditor viewOptions = new RadioGroupFieldEditor(TalendDesignerPrefConstants.VIEW_OPTIONS, Messages
