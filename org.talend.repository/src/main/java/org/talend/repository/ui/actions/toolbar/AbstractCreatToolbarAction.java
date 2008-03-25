@@ -41,6 +41,7 @@ import org.talend.repository.ui.actions.metadata.CreateFileRegexpAction;
 import org.talend.repository.ui.actions.metadata.CreateFileXmlAction;
 import org.talend.repository.ui.actions.metadata.CreateGenericSchemaAction;
 import org.talend.repository.ui.actions.metadata.CreateLDAPSchemaAction;
+import org.talend.repository.ui.actions.metadata.CreateWSDLSchemaAction;
 import org.talend.repository.ui.actions.routines.CreateRoutineAction;
 import org.talend.repository.ui.views.IRepositoryView;
 
@@ -141,12 +142,12 @@ public abstract class AbstractCreatToolbarAction implements IWorkbenchWindowPull
         createFileXmlAction.setWorkbenchPart(repositoryView);
         addToMenu(menu, createFileXmlAction, -1);
 
-        final CreateFileLdifAction createFileLdifAction = new CreateFileLdifAction(true);
-        createFileLdifAction.setWorkbenchPart(repositoryView);
-        addToMenu(menu, createFileLdifAction, -1);
-
         final CreateFileExcelAction createFileExcelAction = new CreateFileExcelAction(true);
         createFileExcelAction.setWorkbenchPart(repositoryView);
+        addToMenu(menu, createFileExcelAction, -1);
+
+        final CreateFileLdifAction createFileLdifAction = new CreateFileLdifAction(true);
+        createFileLdifAction.setWorkbenchPart(repositoryView);
         addToMenu(menu, createFileLdifAction, -1);
 
         final CreateLDAPSchemaAction createLDAPSchemaAction = new CreateLDAPSchemaAction(true);
@@ -156,6 +157,10 @@ public abstract class AbstractCreatToolbarAction implements IWorkbenchWindowPull
         final CreateGenericSchemaAction createGenericSchemaAction = new CreateGenericSchemaAction(true);
         createGenericSchemaAction.setWorkbenchPart(repositoryView);
         addToMenu(menu, createGenericSchemaAction, -1);
+
+        final CreateWSDLSchemaAction createWSDLSchemaAction = new CreateWSDLSchemaAction(true);
+        createWSDLSchemaAction.setWorkbenchPart(repositoryView);
+        addToMenu(menu, createWSDLSchemaAction, -1);
 
         addSeparator(menu);
 

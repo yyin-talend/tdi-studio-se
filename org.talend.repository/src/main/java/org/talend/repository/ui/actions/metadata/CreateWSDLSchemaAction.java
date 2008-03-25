@@ -14,7 +14,6 @@ package org.talend.repository.ui.actions.metadata;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
@@ -68,6 +67,11 @@ public class CreateWSDLSchemaAction extends AbstractCreateAction {
         currentNodeType = ERepositoryObjectType.METADATA_WSDL_SCHEMA;
     }
 
+    public CreateWSDLSchemaAction(boolean isToolbar) {
+        this();
+        setToolbar(isToolbar);
+    }
+
     /*
      * (non-Javadoc)
      * 
@@ -116,17 +120,36 @@ public class CreateWSDLSchemaAction extends AbstractCreateAction {
     }
 
     public void run() {
-        ISelection selection = null;
+        RepositoryNode wsdlSchemaNode = getCurrentRepositoryNode();
+        if (isToolbar()) {
+            if (wsdlSchemaNode != null && wsdlSchemaNode.getContentType() != currentNodeType) {
+                wsdlSchemaNode = null;
+            }
+            if (wsdlSchemaNode == null) {
+                wsdlSchemaNode = getRepositoryNodeForDefault(currentNodeType);
+            }
+        }
         WizardDialog wizardDialog;
-        selection = getSelection();
-        wizardDialog = new WizardDialog(new Shell(), new WSDLSchemaWizard(PlatformUI.getWorkbench(), creation, selection,
-                getExistingNames(), false));
+        ISelection selection = null;
+        if (isToolbar()) {
+            init(wsdlSchemaNode);
+            wizardDialog = new WizardDialog(new Shell(), new WSDLSchemaWizard(PlatformUI.getWorkbench(), creation,
+                    wsdlSchemaNode, getExistingNames(), false));
+        } else {
+            selection = getSelection();
+            wizardDialog = new WizardDialog(new Shell(), new WSDLSchemaWizard(PlatformUI.getWorkbench(), creation, selection,
+                    getExistingNames(), false));
+        }
 
         wizardDialog.setPageSize(WIZARD_WIDTH, WIZARD_HEIGHT);
         wizardDialog.create();
 
         wizardDialog.open();
-        refresh(((IStructuredSelection) selection).getFirstElement());
+        if (isToolbar()) {
+            refresh(wsdlSchemaNode);
+        } else {
+            refresh(getCurrentRepositoryNode());
+        }
 
     }
 }
