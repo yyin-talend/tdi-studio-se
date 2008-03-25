@@ -33,24 +33,33 @@
       NAME="PROPERTY"
       FIELD="PROPERTY_TYPE"
       SHOW="true"
-      NUM_ROW="2"
-      REPOSITORY_VALUE="DATABASE"
+      NUM_ROW="1"
+      REPOSITORY_VALUE="DATABASE:SYBASE"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     />
-
-	<PARAMETER
-      NAME="BCP_UTILITY"
-      FIELD="FILE"
-      NUM_ROW="3"
-      REQUIRED="true"
+    
+    <PARAMETER
+      NAME="USE_EXISTING_CONNECTION"
+      FIELD="CHECK"
+      NUM_ROW="2"
     >
-      <DEFAULT>"C:\sybase\OCS-12_5\bin\bcp.exe"</DEFAULT>
+      <DEFAULT>false</DEFAULT>
     </PARAMETER>
+    
+    <PARAMETER
+      NAME="CONNECTION"
+      FIELD="COMPONENT_LIST"
+      FILTER="tSybaseConnection"
+      NUM_ROW="2"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
+    />
 
     <PARAMETER
       NAME="SERVER"
       FIELD="TEXT"
-      NUM_ROW="4"
+      NUM_ROW="3"
       REQUIRED="false"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>"SYBASE"</DEFAULT>
     </PARAMETER>
@@ -58,8 +67,9 @@
    <PARAMETER
       NAME="PORT"
       FIELD="TEXT"
-      NUM_ROW="4"
+      NUM_ROW="3"
       REPOSITORY_VALUE="PORT"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>"2648"</DEFAULT>
    </PARAMETER>
@@ -67,9 +77,10 @@
     <PARAMETER
       NAME="DBNAME"
       FIELD="TEXT"
-      NUM_ROW="4"
+      NUM_ROW="3"
       REQUIRED="false"
       REPOSITORY_VALUE="SID"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -77,9 +88,10 @@
     <PARAMETER
       NAME="USER"
       FIELD="TEXT"
-      NUM_ROW="5"
+      NUM_ROW="4"
       REQUIRED="true"
       REPOSITORY_VALUE="USERNAME"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>"sa"</DEFAULT>
     </PARAMETER>
@@ -87,13 +99,22 @@
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
-      NUM_ROW="5"
+      NUM_ROW="4"
       REQUIRED="true"
       REPOSITORY_VALUE="PASSWORD"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
 
+	<PARAMETER
+      NAME="BCP_UTILITY"
+      FIELD="FILE"
+      NUM_ROW="5"
+      REQUIRED="true"
+    >
+      <DEFAULT>"C:\sybase\OCS-12_5\bin\bcp.exe"</DEFAULT>
+    </PARAMETER>
 
     <PARAMETER
       NAME="TABLE"
@@ -222,6 +243,8 @@
       <TEMPLATE NAME="tSBE" COMPONENT="tSybaseBulkExec"/>
         
       <TEMPLATE_PARAM SOURCE="self.BCP_UTILITY" TARGET="tSBE.BCP_UTILITY" />
+      <TEMPLATE_PARAM SOURCE="self.USE_EXISTING_CONNECTION" TARGET="tSBE.USE_EXISTING_CONNECTION" />
+	  <TEMPLATE_PARAM SOURCE="self.TABLE_ACTION" TARGET="tSBE.TABLE_ACTION" />
       <TEMPLATE_PARAM SOURCE="self.SERVER" TARGET="tSBE.SERVER" />
       <TEMPLATE_PARAM SOURCE="self.PORT" TARGET="tSBE.PORT" />
       <TEMPLATE_PARAM SOURCE="self.DBNAME" TARGET="tSBE.DBNAME" />

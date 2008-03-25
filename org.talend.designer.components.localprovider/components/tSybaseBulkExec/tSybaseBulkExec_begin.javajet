@@ -31,15 +31,29 @@ String dataFile  = ElementParameterParser.getValue(node, "__FILENAME__");
 String fieldTerminator = ElementParameterParser.getValue(node, "__FIELDS_TERMINATOR__");
 String rowTerminator =  ElementParameterParser.getValue(node, "__ROW_TERMINATOR__");
 String headRow =  ElementParameterParser.getValue(node, "__HEAD__");
-%>
-String tableName_<%=cid%> = <%=table%>;
-String url_<%=cid %> = "jdbc:sybase:Tds:" + <%=server%> + ":" + <%=port%> + "/" + <%=database%>;
-java.lang.Class.forName("com.sybase.jdbc3.jdbc.SybDriver");
-java.sql.Connection con_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>, <%=user%>, <%=pwd%>);
-<%
+String dbtable = ElementParameterParser.getValue(node, "__TABLE__");
+boolean useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__").equals("true");
 List<IMetadataColumn> columnList = getColumnList(node);
 String tableAction = ElementParameterParser.getValue(node,"__TABLE_ACTION__");
 String dbmsId = ElementParameterParser.getValue(node,"__MAPPING__");
+if(!tableAction.equals("NONE")){
+%>
+String tableName_<%=cid%> = <%=dbtable%>;
+<%
+	if(useExistingConn){
+		String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
+		String conn = "conn_" + connection;
+%>
+java.sql.Connection con_<%=cid %> = (java.sql.Connection)globalMap.get("<%=conn %>");
+<%
+	}else{       
+%>
+String url_<%=cid %> = "jdbc:sybase:Tds:" + <%=server%> + ":" + <%=port%> + "/" + <%=database%>;
+java.lang.Class.forName("com.sybase.jdbc3.jdbc.SybDriver");
+java.sql.Connection con_<%=cid %> = java.sql.DriverManager.getConnection(url_<%=cid %>, <%=user%>, <%=pwd%>);
+<%
+	}
+}
 if(columnList != null && columnList.size() > 0) {
     List<Column> stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, null);
     Manager manager = getManager(dbmsId, cid);
@@ -79,12 +93,13 @@ if(columnList != null && columnList.size() > 0) {
         <%
     }    
 }
+if(!tableAction.equals("NONE") && !useExistingConn){
 %>
 if(con_<%=cid%> != null && !con_<%=cid%>.isClosed()) {
     con_<%=cid%>.close();
 }
 <%
-
+}
 String encoding  = ElementParameterParser.getValue(node, "__ENCODING__");
 encoding= encoding.toUpperCase();
  if(encoding.equals("\"UTF-8\"")){

@@ -52,6 +52,8 @@ skeleton="../templates/db_output_bulk.skeleton"
 	String tableAction = ElementParameterParser.getValue(node,"__TABLE_ACTION__");
 	
 	String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
+	
+	boolean useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__").equals("true");
 
 %>
 
@@ -64,10 +66,7 @@ int deletedCount_<%=cid%>=0;
 int updatedCount_<%=cid%>=0;
 int insertedCount_<%=cid%>=0;
 
-String tableName_<%=cid%> = <%=tableName%>;
 boolean whetherReject_<%=cid%> = false;
-java.lang.Class.forName("com.sybase.jdbc3.jdbc.SybDriver");
-String url_<%=cid %> = "jdbc:sybase:Tds:" + <%=dbServer%> + ":" + <%=dbport%> + "/" + <%=dbname%>; 
 
 <%
 List<IMetadataColumn> columnList = getColumnList(node);
@@ -109,12 +108,24 @@ if(dataAction.equals("UPDATE") || dataAction.equals("INSERT_OR_UPDATE") || dataA
         <%
     }
 }
-%> 
-String dbUser_<%=cid %> = <%=dbuser%>;
-String dbPwd_<%=cid %> = <%=dbpwd%>;
-java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
-conn_<%=cid%>.setAutoCommit(false);
+%><%	
+	if(useExistingConn){
+		String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
+		String conn = "conn_" + connection;
+		commitEvery = "0";
+%>
+java.sql.Connection conn_<%=cid %> = (java.sql.Connection)globalMap.get("<%=conn %>");
 <%
+	}else{
+%> 
+String dbUser_<%=cid %> = <%=dbuser %>;
+String dbPwd_<%=cid %> = <%=dbpwd %>;
+java.lang.Class.forName("com.sybase.jdbc3.jdbc.SybDriver");
+String url_<%=cid %> = "jdbc:sybase:Tds:" + <%=dbServer%> + ":" + <%=dbport%> + "/" + <%=dbname%>; 
+java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
+<%
+	}
+%><%
 if(columnList != null && columnList.size()>0) {    
     if(!tableAction.equals("NONE")) {
         Manager manager = getManager(dbmsId, cid);
@@ -209,6 +220,8 @@ if(columnList != null && columnList.size()>0) {
         int commitEvery_<%=cid%> = <%=commitEvery%>;
         
         int commitCounter_<%=cid%> = 0;
+        
+        conn_<%=cid%>.setAutoCommit(false);
         
         <%
 	}

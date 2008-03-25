@@ -32,11 +32,24 @@ imports="
     	   dbquery = dbquery.replaceAll("\r"," ");
 	
 	List<IMetadataTable> metadatas = node.getMetadataList();
+	
+	boolean useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__").equals("true");
+	
 	if ((metadatas!=null)&&(metadatas.size()>0)) {
 		IMetadataTable metadata = metadatas.get(0);
 		if (metadata!=null) {
 %>
 int nb_line_<%=cid%> = 0;
+
+<%	
+	if(useExistingConn){
+		String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
+		String conn = "conn_" + connection;
+%>
+java.sql.Connection conn_<%=cid %> = (java.sql.Connection)globalMap.get("<%=conn %>");
+<%
+	}else{       
+%>
 java.lang.Class.forName("com.sybase.jdbc3.jdbc.SybDriver");
 
 String url_<%=cid %> = "jdbc:sybase:Tds:"+<%=dbServer%>+":"+<%=dbport%>+"/"+<%=dbname%>;
@@ -46,6 +59,10 @@ String dbUser_<%=cid %> = <%=dbuser%>;
 String dbPwd_<%=cid %> = <%=dbpwd%>;
 
 java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
+
+<%
+	}
+%>
 
 java.sql.Statement stmt_<%=cid %> = conn_<%=cid%>.createStatement();
 

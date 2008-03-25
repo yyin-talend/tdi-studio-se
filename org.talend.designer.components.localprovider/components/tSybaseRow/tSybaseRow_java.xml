@@ -38,6 +38,23 @@
       SHOW="true"
       NUM_ROW="1"
       REPOSITORY_VALUE="DATABASE:SYBASE"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
+    />
+    
+    <PARAMETER
+      NAME="USE_EXISTING_CONNECTION"
+      FIELD="CHECK"
+      NUM_ROW="2"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="CONNECTION"
+      FIELD="COMPONENT_LIST"
+      FILTER="tSybaseConnection"
+      NUM_ROW="2"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
     />
 
 	<PARAMETER
@@ -55,6 +72,7 @@
       FIELD="TEXT"
       NUM_ROW="3"
       REPOSITORY_VALUE="SERVER_NAME"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>"SYBASE"</DEFAULT>
     </PARAMETER>
@@ -64,6 +82,7 @@
       FIELD="TEXT"
       NUM_ROW="3"
       REPOSITORY_VALUE="PORT"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>"2648"</DEFAULT>
    </PARAMETER>
@@ -74,6 +93,7 @@
       NUM_ROW="3"
       REPOSITORY_VALUE="SID"
       REQUIRED="true"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -84,6 +104,7 @@
       NUM_ROW="4"
       REPOSITORY_VALUE="USERNAME"
       REQUIRED="true"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>"sa"</DEFAULT>
     </PARAMETER>
@@ -94,30 +115,10 @@
       NUM_ROW="4"
       REPOSITORY_VALUE="PASSWORD"
       REQUIRED="true"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
-
-    <PARAMETER
-      NAME="SCHEMA_FLOW"
-      FIELD="SCHEMA_TYPE"
-      NUM_ROW="5"
-    >
-      <DEFAULT>""</DEFAULT>
-    </PARAMETER>
-    
-    <PARAMETER
-      NAME="SCHEMA_REJECT"
-      FIELD="SCHEMA_TYPE"
-      REQUIRED="true"
-      NUM_ROW="5"
-      CONTEXT="REJECT"
-      SHOW="true">
-      <TABLE READONLY="true">
-        <COLUMN NAME="errorCode" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
-        <COLUMN NAME="errorMessage" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
-      </TABLE>
-    </PARAMETER>    
     
     <PARAMETER
       NAME="DBTABLE"
@@ -143,6 +144,28 @@
       <DEFAULT>"select * from sysobjects "</DEFAULT>
     </PARAMETER>
     
+    
+    <PARAMETER
+      NAME="SCHEMA_FLOW"
+      FIELD="SCHEMA_TYPE"
+      NUM_ROW="8"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="SCHEMA_REJECT"
+      FIELD="SCHEMA_TYPE"
+      REQUIRED="true"
+      NUM_ROW="8"
+      CONTEXT="REJECT"
+      SHOW="true">
+      <TABLE READONLY="true">
+        <COLUMN NAME="errorCode" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
+        <COLUMN NAME="errorMessage" TYPE="id_String" LENGTH="255" READONLY="false" CUSTOM="true"/>
+      </TABLE>
+    </PARAMETER>    
+    
      <PARAMETER
       NAME="DIE_ON_ERROR"
       FIELD="CHECK"
@@ -158,6 +181,7 @@
       FIELD="TEXT"
       NUM_ROW="10"
       REQUIRED="true"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>10000</DEFAULT>
     </PARAMETER>

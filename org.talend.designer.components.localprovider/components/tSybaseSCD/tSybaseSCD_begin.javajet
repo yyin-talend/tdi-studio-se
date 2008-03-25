@@ -32,6 +32,7 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
     String dbpwd= ElementParameterParser.getValue(node, "__PASS__");
     String dbtable = ElementParameterParser.getValue(node, "__TABLE__");
     boolean debug = ElementParameterParser.getValue(node, "__DEBUG__").equals("true");
+    boolean useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__").equals("true");
     String dbType = SYBASE;
     SCDConfiger scdConfiger = getSCDConfiger(node);
     SCDManager scdManager = getSCDManager(cid, dbType);
@@ -45,9 +46,21 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
     List<Column> sourceKeys = scdConfiger.getSourceKeys();
     %>
     String tableName_<%=cid%> = <%=dbtable%>;
-    java.lang.Class.forName("com.sybase.jdbc3.jdbc.SybDriver");
-    String connectionString_<%=cid %> = "jdbc:sybase:Tds:" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%>;
-    java.sql.Connection connection_<%=cid%> = java.sql.DriverManager.getConnection(connectionString_<%=cid %>, <%=dbuser%>, <%=dbpwd%>);    
+<%
+    if(useExistingConn){
+		String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
+		String conn = "conn_" + connection;
+%>
+java.sql.Connection connection_<%=cid %> = (java.sql.Connection)globalMap.get("<%=conn %>");
+<%
+	}else{
+%>
+java.lang.Class.forName("com.sybase.jdbc3.jdbc.SybDriver");
+String connectionString_<%=cid %> = "jdbc:sybase:Tds:" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%>;
+java.sql.Connection connection_<%=cid%> = java.sql.DriverManager.getConnection(connectionString_<%=cid %>, <%=dbuser%>, <%=dbpwd%>);    
+<%
+	}
+%>
     String search_<%=cid%> = "<%=scdManager.createSelectionSQL(scdConfiger)%>";
     java.sql.Statement statement_<%=cid%> = connection_<%=cid%>.createStatement();
     java.sql.ResultSet resultSet_<%=cid%> = statement_<%=cid%>.executeQuery(search_<%=cid %>);

@@ -16,12 +16,8 @@ imports="
 	
 	String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
 	
-    if(!commitEvery.equals("")&&!commitEvery.equals("0")){
-        %>
-        conn_<%=cid%>.commit();
-        <%
-    }
-    
+	boolean useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__").equals("true");
+	
     if(dataAction.equals("INSERT_OR_UPDATE")) {
         %>
         if(pstmtUpdate_<%=cid%> != null){
@@ -62,8 +58,17 @@ imports="
         }        
         <%
     }   
-    %>
-    conn_<%=cid%> .close();
+	if(!useExistingConn){
+		if(!commitEvery.equals("") && !commitEvery.equals("0")){
+%>
+conn_<%=cid%>.commit();
+<%
+		}
+%>
+conn_<%=cid %> .close();
+<%
+	}
+%>
 
 	nb_line_deleted_<%=cid%>=nb_line_deleted_<%=cid%>+ deletedCount_<%=cid%>;
 	nb_line_update_<%=cid%>=nb_line_update_<%=cid%> + updatedCount_<%=cid%>;
