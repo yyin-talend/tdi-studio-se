@@ -162,6 +162,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
     @Override
     public Control createControl(Composite subComposite, IElementParameter param, int numInRow, int nbInRow, int top,
             Control lastControl) {
+        this.curParameter = param;
         this.paramFieldType = param.getField();
         switchParam = elem.getElementParameter(EParameterName.REPOSITORY_ALLOW_AUTO_SWITCH.getName());
 

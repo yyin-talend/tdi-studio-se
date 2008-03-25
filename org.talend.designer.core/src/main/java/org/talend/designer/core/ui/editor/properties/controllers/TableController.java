@@ -80,7 +80,8 @@ public class TableController extends AbstractElementPropertySectionController {
     @Override
     public Control createControl(final Composite parentComposite, final IElementParameter param, final int numInRow,
             final int nbInRow, int top, final Control lastControlPrm) {
-
+        this.curParameter = param;
+        this.paramFieldType = param.getField();
         final Composite container = parentComposite;
 
         PropertiesTableEditorModel<Map<String, Object>> tableEditorModel = new PropertiesTableEditorModel<Map<String, Object>>();

@@ -72,8 +72,9 @@ public class ProcessController extends AbstractElementPropertySectionController 
     @Override
     public Control createControl(final Composite subComposite, final IElementParameter param, final int numInRow,
             final int nbInRow, final int top, final Control lastControl) {
-        FormData data;
         this.curParameter = param;
+        this.paramFieldType = param.getField();
+        FormData data;
 
         IElementParameter processTypeParameter = param.getChildParameters().get(EParameterName.PROCESS_TYPE_PROCESS.getName());
         Text labelText;

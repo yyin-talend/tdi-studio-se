@@ -69,6 +69,8 @@ public class MemoController extends AbstractElementPropertySectionController {
     @Override
     public Control createControl(final Composite subComposite, final IElementParameter param, final int numInRow,
             final int nbInRow, final int top, final Control lastControl) {
+        this.curParameter = param;
+        this.paramFieldType = param.getField();
         int nbLines = param.getNbLines();
 
         DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL | SWT.WRAP,

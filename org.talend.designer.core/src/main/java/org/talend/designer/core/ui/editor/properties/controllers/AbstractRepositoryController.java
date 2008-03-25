@@ -88,6 +88,8 @@ public abstract class AbstractRepositoryController extends AbstractElementProper
     @Override
     public Control createControl(Composite subComposite, IElementParameter param, int numInRow, int nbInRow, int top,
             Control lastControl) {
+        this.curParameter = param;
+        this.paramFieldType = param.getField();
         CCombo combo;
 
         Control lastControlUsed = lastControl;

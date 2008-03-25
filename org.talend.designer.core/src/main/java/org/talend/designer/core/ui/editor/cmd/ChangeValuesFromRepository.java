@@ -147,10 +147,10 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
         if (propertyName.split(":")[1].equals(propertyTypeName) && (EmfComponent.BUILTIN.equals(value))) {
             for (IElementParameter param : elem.getElementParameters()) {
 
-                param.setReadOnly(false);
                 boolean paramFlag = JobSettingsConstants.isExtraParameter(param.getName());
-                boolean extraFlag = JobSettingsConstants.isExtraParameter(propertyTypeName);
+                boolean extraFlag = JobSettingsConstants.isExtraParameter(propertyName.split(":")[0]);
                 if (paramFlag == extraFlag) {
+                    param.setReadOnly(false);
                     // for job settings extra.(feature 2710)
                     param.setRepositoryValueUsed(false);
                 }

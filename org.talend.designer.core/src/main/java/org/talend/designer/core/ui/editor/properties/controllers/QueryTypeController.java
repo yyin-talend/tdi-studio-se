@@ -178,37 +178,40 @@ public class QueryTypeController extends AbstractRepositoryController {
         // Only for getting the real table name.
         if (elem.getPropertyValue(EParameterName.SCHEMA_TYPE.getName()).equals(EmfComponent.REPOSITORY)) {
             repositoryTableMap = dynamicProperty.getRepositoryTableMap();
-            String paramName;
+            // String paramName;
             IElementParameter repositorySchemaTypeParameter = elem.getElementParameter(EParameterName.REPOSITORY_SCHEMA_TYPE
                     .getName());
-            Object repositoryControl = hashCurControls.get(repositorySchemaTypeParameter.getName());
-
-            paramName = EParameterName.REPOSITORY_SCHEMA_TYPE.getName();
-
-            if (repositoryControl != null) {
-
-                String selectedComboItem = ((CCombo) repositoryControl).getText();
-                if (selectedComboItem != null && selectedComboItem.length() > 0) {
-                    String value = new String(""); //$NON-NLS-1$
-                    for (int i = 0; i < elem.getElementParameters().size(); i++) {
-                        IElementParameter param = elem.getElementParameters().get(i);
-                        if (param.getName().equals(paramName)) {
-                            for (int j = 0; j < param.getListItemsValue().length; j++) {
-                                if (selectedComboItem.equals(param.getListItemsDisplayName()[j])) {
-                                    value = (String) param.getListItemsValue()[j];
-                                }
-                            }
-                        }
-                    }
-                    if (elem instanceof Node) {
-                        if (repositoryTableMap.containsKey(value)) {
-                            IMetadataTable repositoryMetadata = repositoryTableMap.get(value);
-                            realTableName = repositoryMetadata.getTableName();
-                            realTableId = repositoryMetadata.getId();
-                        }
+            // Object repositoryControl = hashCurControls.get(repositorySchemaTypeParameter.getName());
+            //
+            // paramName = EParameterName.REPOSITORY_SCHEMA_TYPE.getName();
+            //
+            // if (repositoryControl != null) {
+            //
+            // String selectedComboItem = ((CCombo) repositoryControl).getText();
+            // if (selectedComboItem != null && selectedComboItem.length() > 0) {
+            // String value = new String(""); //$NON-NLS-1$
+            // for (int i = 0; i < elem.getElementParameters().size(); i++) {
+            // IElementParameter param = elem.getElementParameters().get(i);
+            // if (param.getName().equals(paramName)) {
+            // for (int j = 0; j < param.getListItemsValue().length; j++) {
+            // if (selectedComboItem.equals(param.getListItemsDisplayName()[j])) {
+            // value = (String) param.getListItemsValue()[j];
+            // }
+            // }
+            // }
+            // }
+            if (repositorySchemaTypeParameter != null) {
+                final Object value = repositorySchemaTypeParameter.getValue();
+                if (elem instanceof Node) {
+                    if (repositoryTableMap.containsKey(value)) {
+                        IMetadataTable repositoryMetadata = repositoryTableMap.get(value);
+                        realTableName = repositoryMetadata.getTableName();
+                        realTableId = repositoryMetadata.getId();
                     }
                 }
             }
+            // }
+            // }
         } // Ends
 
         QueryGuessCommand cmd = null;
@@ -270,9 +273,9 @@ public class QueryTypeController extends AbstractRepositoryController {
                 if (repositoryQueryStoreMap.containsKey(querySelected)) {
                     repositoryQuery = repositoryQueryStoreMap.get(querySelected);
                 }/*
-                     * else if (dynamicProperty.getRepositoryQueryStoreMap().size() > 0) { repositoryQuery = (Query)
-                     * dynamicProperty.getRepositoryQueryStoreMap().values().toArray()[0]; }
-                     */
+                 * else if (dynamicProperty.getRepositoryQueryStoreMap().size() > 0) { repositoryQuery = (Query)
+                 * dynamicProperty.getRepositoryQueryStoreMap().values().toArray()[0]; }
+                 */
 
                 if (switchParam != null) {
                     switchParam.setValue(Boolean.FALSE);

@@ -84,6 +84,7 @@ public class CommandController extends AbstractElementPropertySectionController 
     @Override
     public Control createControl(Composite subComposite, final IElementParameter param, int numInRow, int nbInRow, int top,
             Control lastControl) {
+        this.curParameter = param;
         this.paramFieldType = param.getField();
         FormData data;
         // button

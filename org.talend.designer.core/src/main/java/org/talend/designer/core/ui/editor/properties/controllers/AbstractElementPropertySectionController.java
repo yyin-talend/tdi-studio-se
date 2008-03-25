@@ -92,6 +92,7 @@ import org.talend.designer.core.ui.editor.properties.controllers.generator.IDyna
 import org.talend.designer.core.ui.views.jobsettings.JobSettingsView;
 import org.talend.designer.core.ui.views.properties.ComponentSettingsView;
 import org.talend.designer.core.ui.views.properties.WidgetFactory;
+import org.talend.designer.core.utils.UpgradeParameterHelper;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.sqlbuilder.ui.SQLBuilderDialog;
@@ -1219,8 +1220,20 @@ public abstract class AbstractElementPropertySectionController implements Proper
     };
 
     private Command changeToBuildInCommand(Control control) {
+        final String typeName = ":" + EParameterName.PROPERTY_TYPE.getName();
 
-        return new ChangeValuesFromRepository(elem, null, "PROPERTY:PROPERTY_TYPE", "BUILT_IN");
+        if (curParameter != null) {
+            String parentName = null;
+            if (curParameter.getCategory() == EComponentCategory.EXTRA) {
+                parentName = JobSettingsConstants.getExtraParameterName(EParameterName.PROPERTY_TYPE.getName());
+            } else if (curParameter.getCategory() == EComponentCategory.STATSANDLOGS) {
+                parentName = EParameterName.PROPERTY_TYPE.getName();
+            }
+            if (parentName != null) {
+                return new ChangeValuesFromRepository(elem, null, parentName + typeName, EmfComponent.BUILTIN);
+            }
+        }
+        return new ChangeValuesFromRepository(elem, null, UpgradeParameterHelper.PROPERTY + typeName, EmfComponent.BUILTIN);
     }
 
     private Command refreshConnectionCommand(Control control) {
