@@ -30,6 +30,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.talend.core.model.properties.Item;
@@ -87,13 +88,6 @@ public class DocumentationPage extends PropertiesWizardPage {
         container.setLayout(layout);
 
         GridData data;
-        // check link
-        checkLinkBtn = new Button(container, SWT.CHECK);
-        checkLinkBtn.setText(Messages.getString("DocumentationPage.LinkLabel")); //$NON-NLS-1$
-        data = new GridData(GridData.FILL_HORIZONTAL);
-        data.horizontalSpan = 2;
-        checkLinkBtn.setLayoutData(data);
-        evaluateCheckLinkDoc();
 
         // Source file
         Label filenameLab = new Label(container, SWT.NONE);
@@ -124,6 +118,19 @@ public class DocumentationPage extends PropertiesWizardPage {
         originalFilenameText.setLayoutData(data);
         originalFilenameText.setEditable(false);
         originalFilenameText.setEnabled(false);
+
+        // option
+        Group option = new Group(container, SWT.NONE);
+        option.setText(Messages.getString("DocumentationPage.option")); //$NON-NLS-1$
+        layout = new GridLayout();
+        option.setLayout(layout);
+        data = new GridData(GridData.FILL_HORIZONTAL);
+        data.horizontalSpan = 2;
+        option.setLayoutData(data);
+        // check link
+        checkLinkBtn = new Button(option, SWT.CHECK);
+        checkLinkBtn.setText(Messages.getString("DocumentationPage.LinkLabel")); //$NON-NLS-1$
+        evaluateCheckLinkDoc();
 
         browseBtn = new Button(filenameContainer, SWT.PUSH);
         switchCheck(false);
