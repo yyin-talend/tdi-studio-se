@@ -698,8 +698,8 @@ public class CLASS {
         public String createInsertionSQL(SCDConfiger scdConfiger) {
             StringBuilder insertionSQL = new StringBuilder();
             insertionSQL.append("INSERT INTO "  + getLProtectedChar() + "\" + tableName_" + cid + " + \"" + getRProtectedChar());
-            String insertColumns = null;
-            String insertValues = null;
+            String insertColumns = "";
+            String insertValues = "";
             String separator = ", ";
             String surrogateKeyField = scdConfiger.getSurrogateKeyField();
             List<Column> sourceKeys = scdConfiger.getSourceKeys();
@@ -768,6 +768,14 @@ public class CLASS {
                 for(DimensionType3Attribute dimensionType3Attribute : dimensionAttributes) {
                     insertColumns += separator + getLProtectedChar() + dimensionType3Attribute.getCurrentColumn().getColumnName() + getRProtectedChar();
                     insertValues += separator + "?";
+                }
+            }
+            if(scdConfiger.getSurrogateKeyValueType().equals("AUTO_INCREMENT")) {
+                if(insertColumns.length() > separator.length()) {
+                    insertColumns = insertColumns.substring(separator.length());
+                }
+                if(insertValues.length() > separator.length()) {
+                    insertValues = insertValues.substring(separator.length());
                 }
             }
             insertionSQL.append("(" + insertColumns + ") VALUES(" + insertValues + ")");
