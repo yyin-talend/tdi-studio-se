@@ -37,13 +37,28 @@
       NUM_ROW="1"
       REPOSITORY_VALUE="DATABASE:SQLITE"
     />
-    
+    <PARAMETER
+      NAME="USE_EXISTING_CONNECTION"
+      FIELD="CHECK"
+      NUM_ROW="2"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="CONNECTION"
+      FIELD="COMPONENT_LIST"
+      FILTER="tSQLiteConnection"
+      NUM_ROW="2"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
+    />    
     <PARAMETER
       NAME="DBNAME"
       FIELD="FILE"
       NUM_ROW="3"
       REPOSITORY_VALUE="FILE"
       REQUIRED="true"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>'__COMP_DEFAULT_FILE_DIR__/database.dat'</DEFAULT>
     </PARAMETER>
@@ -52,7 +67,7 @@
     <PARAMETER
       NAME="SCHEMA"
       FIELD="SCHEMA_TYPE"
-      NUM_ROW="5"
+      NUM_ROW="4"
     >
       <DEFAULT>''</DEFAULT>
     </PARAMETER>

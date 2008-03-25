@@ -54,6 +54,25 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             || tableAction.equals("CREATE_IF_NOT_EXISTS")) {
             addCols.clear();
         }
+
+        String useExistingConnection = ElementParameterParser.getValue(
+            node,
+            "__USE_EXISTING_CONNECTION__"
+        );
+
+        String connection = ElementParameterParser.getValue(
+            node,
+            "__CONNECTION__"
+        );
+
+        String dbh = "dbh_";
+        if (useExistingConnection.equals("true")) {
+            dbh+= connection;
+        }
+        else {
+            dbh+= cid;
+        }
+
 %>
 
 use DBI;
@@ -84,7 +103,11 @@ my %desc_<%=cid %> = (
     ],
 );
 
-my $dbh_<%=cid %> = DBI->connect(
+<%
+    if (useExistingConnection.equals("false")) {
+%>
+
+my $<%=dbh%> = DBI->connect(
     sprintf(
         'DBI:SQLite:dbname=%s',
         <%=dbname %>,
@@ -102,7 +125,11 @@ my $dbh_<%=cid %> = DBI->connect(
 %>
     }
 )
-    or die "can't connect to database";
+    or die "[<%=cid%>] can't connect to database";
+
+<%
+    }
+%>
 
 my $query;
 
@@ -115,7 +142,7 @@ my $query;
 # relevant
 my $schema = '%';
 my $catalog = undef;
-my $tabsth = $dbh_<%=cid %>->table_info($catalog, $schema);
+my $tabsth = $<%=dbh%>->table_info($catalog, $schema);
 my @tables = ();
 
 while (my $entity = $tabsth->fetchrow_hashref()) {
@@ -142,7 +169,7 @@ if ($table_exists) {
     $query = '
 DROP TABLE '.<%=dbtable%>.'
 ';
-    my $drop_sth_<%=cid %> = $dbh_<%=cid %>->prepare($query);
+    my $drop_sth_<%=cid %> = $<%=dbh%>->prepare($query);
 
     $drop_sth_<%=cid %>->execute()
         or die "can't drop table";
@@ -170,7 +197,7 @@ $query = tSQLiteOutput::SQLite::getTableCreationQuery(
     schema     => $desc_<%=cid %>{schema},
 );
 
-my $cre_sth_<%=cid %> = $dbh_<%=cid %>->prepare(
+my $cre_sth_<%=cid %> = $<%=dbh%>->prepare(
     $query
 );
 
@@ -192,7 +219,7 @@ DELETE
   FROM '.<%=dbtable%>.'
 ';
 
-my $del_sth_<%=cid %> = $dbh_<%=cid %>->prepare($query);
+my $del_sth_<%=cid %> = $<%=dbh%>->prepare($query);
 $del_sth_<%=cid %>->execute()
     or die "can't clear table";
 undef $del_sth_<%=cid %> ;
@@ -288,7 +315,7 @@ UPDATE '.<%=dbtable%>.'
   WHERE <%=keyString%>
 ';
 
-my $usth_<%=cid %> = $dbh_<%=cid %>->prepare($query);
+my $usth_<%=cid %> = $<%=dbh%>->prepare($query);
 
 <%
     }
@@ -301,7 +328,7 @@ DELETE FROM '.<%=dbtable%>.'
   WHERE <%=keyString%>
 ';
 
-my $dsth_<%=cid %> = $dbh_<%=cid %>->prepare($query);
+my $dsth_<%=cid %> = $<%=dbh%>->prepare($query);
 
 <%
     }
@@ -362,7 +389,7 @@ INSERT
   (<%=parametersString%>)
 ';
 
-my $isth_<%=cid %> = $dbh_<%=cid %>->prepare($query);
+my $isth_<%=cid %> = $<%=dbh%>->prepare($query);
 
 <%
 }

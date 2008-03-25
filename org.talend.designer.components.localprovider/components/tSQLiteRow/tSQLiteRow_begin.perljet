@@ -35,6 +35,25 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             node,
             "__DIE_ON_ERROR__"
         );
+
+        String useExistingConnection = ElementParameterParser.getValue(
+            node,
+            "__USE_EXISTING_CONNECTION__"
+        );
+
+        String connection = ElementParameterParser.getValue(
+            node,
+            "__CONNECTION__"
+        );
+
+        String dbh = "dbh_";
+        if (useExistingConnection.equals("true")) {
+            dbh+= connection;
+        }
+        else {
+            dbh+= cid;
+        }
+
 %>
 
 use DBI;
@@ -64,6 +83,10 @@ my %desc_<%=cid %> = (
 
 my $nb_line_<%=cid%> = 0;
 
+<%
+    if (useExistingConnection.equals("false")) {
+%>
+
 my $dbh_<%=cid %> = DBI->connect(
     sprintf(
         'DBI:SQLite:dbname=%s',
@@ -75,7 +98,11 @@ my $dbh_<%=cid %> = DBI->connect(
         AutoCommit => 0,
     }
 )
-    or die "can't connect to database";
+    or die "[<%=cid%>] can't connect to database";
+
+<%
+    }
+%>
 
 my $nb_line_current_commit_<%=cid%> = 0;
 

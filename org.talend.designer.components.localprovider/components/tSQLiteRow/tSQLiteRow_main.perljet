@@ -39,13 +39,30 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             );
 
         StringBuffer paramValues = new StringBuffer();
+        String useExistingConnection = ElementParameterParser.getValue(
+            node,
+            "__USE_EXISTING_CONNECTION__"
+        );
+
+        String connection = ElementParameterParser.getValue(
+            node,
+            "__CONNECTION__"
+        );
+
+        String dbh = "dbh_";
+        if (useExistingConnection.equals("true")) {
+            dbh+= connection;
+        }
+        else {
+            dbh+= cid;
+        }
 %>
 
 
 <%
 if(preparedStatement.equals("false")){
 %>
-    my $sth_<%=cid %> = $dbh_<%=cid %>->prepare(
+    my $sth_<%=cid %> = $<%=dbh %>->prepare(
         <%=query %>
     )
     <%
@@ -93,13 +110,17 @@ if ($_context{StoreSQLQuery}) {
     $_globals{<%=cid %>}{QUERY} = <%=query%>;
 }
 
+<%
+        if (useExistingConnection.equals("false")) {
+%>
 if (++$nb_line_current_commit_<%=cid%> >= <%=commitEvery %>) {
     $nb_line_current_commit_<%=cid%> = 0;
-    $dbh_<%=cid %>->commit;
+    $<%=dbh %>->commit;
 }
 
 
 <%
+        }
     }
 }
 %>

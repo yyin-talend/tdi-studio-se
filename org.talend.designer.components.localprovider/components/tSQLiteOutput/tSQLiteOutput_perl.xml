@@ -36,6 +36,21 @@
       REPOSITORY_VALUE="DATABASE:SQLITE"
     />
     <PARAMETER
+      NAME="USE_EXISTING_CONNECTION"
+      FIELD="CHECK"
+      NUM_ROW="2"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="CONNECTION"
+      FIELD="COMPONENT_LIST"
+      FILTER="tSQLiteConnection"
+      NUM_ROW="2"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
+    />
+    <PARAMETER
       NAME="TYPE"
       FIELD="TEXT"
       NUM_ROW="3"
@@ -50,6 +65,7 @@
       NUM_ROW="3"
       REPOSITORY_VALUE="FILE"
       REQUIRED="true"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>''</DEFAULT>
     </PARAMETER>
