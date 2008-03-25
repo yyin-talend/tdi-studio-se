@@ -38,6 +38,7 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.commons.ui.swt.colorstyledtext.ColorStyledText;
@@ -414,6 +415,12 @@ public class ComboController extends AbstractElementPropertySectionController {
             combo.setText(strValue);
             combo.setVisible(true);
         }
+
+        if (param.isContextMode()) {
+            combo.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_RED));
+            combo.setEnabled(false);
+        }
+
     }
 
     private String[] getListToDisplay(IElementParameter param) {

@@ -113,7 +113,7 @@ public class AdvancedContextComposite extends ScrolledComposite implements IDyna
         tableLayoutData.left = new FormAttachment(10, 0);
         tableLayoutData.right = new FormAttachment(90, 0);
         tableLayoutData.top = new FormAttachment(10, 0);
-        tableLayoutData.bottom = new FormAttachment(90, 0);
+        tableLayoutData.bottom = new FormAttachment(50, 0);
 
         final Table table = tableViewer.getTable();
 
@@ -159,7 +159,7 @@ public class AdvancedContextComposite extends ScrolledComposite implements IDyna
         final List<IElementParameter> legalParameters = new ArrayList<IElementParameter>();
         for (IElementParameter parameter : element.getElementParameters()) {
             if (parameter.isShow(element.getElementParameters())
-                    && parameter.getField() != EParameterFieldType.TECHNICAL
+                    && parameter.getCategory() != EComponentCategory.TECHNICAL
                     && (parameter.getField() == EParameterFieldType.CHECK || parameter.getField() == EParameterFieldType.CLOSED_LIST)
                     || parameter.getField() == EParameterFieldType.MODULE_LIST) {
                 legalParameters.add(parameter);
@@ -238,6 +238,10 @@ public class AdvancedContextComposite extends ScrolledComposite implements IDyna
         dynamicComboBoxCellEditor = new DynamicComboBoxCellEditor(table, comboContent, comboboxCellEditorLabelProvider);
         tableViewer.setCellEditors(new CellEditor[] { dynamicComboBoxCellEditor, new TextCellEditor(table) });
         tableViewer.setColumnProperties(new String[] { NAME_PROPERTY, CODE_PROPERTY });
+
+        if (tableContent.size() == legalParameters.size()) {
+            buttonAdd.setEnabled(false);
+        }
 
         buttonAdd.addSelectionListener(new SelectionListener() {
 

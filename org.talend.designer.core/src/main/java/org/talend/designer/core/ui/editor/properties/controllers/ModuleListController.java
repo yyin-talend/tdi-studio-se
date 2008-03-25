@@ -36,6 +36,7 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.commons.exception.ExceptionHandler;
@@ -60,6 +61,8 @@ import org.talend.librariesmanager.model.ModulesNeededProvider;
 public class ModuleListController extends AbstractElementPropertySectionController {
 
     private static final String MODULE = "MODULE"; //$NON-NLS-1$
+
+    private static final String BUTTON_EDIT = "buttonEdit";
 
     /**
      * DOC dev ColumnListController constructor comment.
@@ -225,6 +228,7 @@ public class ModuleListController extends AbstractElementPropertySectionControll
 
         // **********************
         hashCurControls.put(param.getName(), combo);
+        hashCurControls.put(param.getName() + BUTTON_EDIT, btnEdit);
         updateData();
         // this.dynamicTabbedPropertySection.updateColumnList(null);
 
@@ -312,6 +316,13 @@ public class ModuleListController extends AbstractElementPropertySectionControll
         combo.setItems(curNameList);
         if (value instanceof String) {
             combo.setText((String) value);
+        }
+
+        if (param.isContextMode()) {
+            Button buttonEdit = (Button) hashCurControls.get(param.getName() + BUTTON_EDIT);
+            combo.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_RED));
+            combo.setEnabled(false);
+            buttonEdit.setEnabled(false);
         }
     }
 }
