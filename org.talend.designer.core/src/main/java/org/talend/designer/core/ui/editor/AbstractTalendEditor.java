@@ -142,6 +142,7 @@ import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
+import org.talend.core.model.process.ISubjobContainer;
 import org.talend.core.model.properties.Property;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
@@ -1641,6 +1642,11 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         // to create an EditPart for the diagram and sets it as the
         // content for the viewer
         getGraphicalViewer().setContents(this.process);
+
+        // containers are not correctly updated by default, so update them after all nodes have been added
+        for (ISubjobContainer subjobContainer : process.getSubjobContainers()) {
+            subjobContainer.updateSubjobContainer();
+        }
         getGraphicalViewer().getControl().addMouseListener(new MouseAdapter() {
 
             /*

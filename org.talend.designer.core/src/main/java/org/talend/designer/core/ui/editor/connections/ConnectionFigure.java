@@ -17,6 +17,7 @@ import org.eclipse.draw2d.PolygonDecoration;
 import org.eclipse.draw2d.PolylineConnection;
 import org.eclipse.swt.graphics.Color;
 import org.talend.core.model.process.IConnectionProperty;
+import org.talend.designer.core.ui.editor.nodes.Node;
 
 /**
  * Figure corresponding the the connection. <br/>
@@ -30,13 +31,19 @@ public class ConnectionFigure extends PolylineConnection {
 
     private IConnectionProperty connectionProperty;
 
-    public ConnectionFigure(IConnectionProperty connectionProperty) {
+    private Node linkedNode;
+
+    public ConnectionFigure(IConnectionProperty connectionProperty, Node node) {
+        linkedNode = node;
         setTargetDecoration(new PolygonDecoration());
         setConnectionProperty(connectionProperty);
     }
 
     @Override
     public void paint(Graphics graphics) {
+        if (linkedNode.getNodeContainer().getSubjobContainer().isCollapsed()) {
+            return;
+        }
         if (alpha != -1) {
             graphics.setAlpha(alpha);
         }

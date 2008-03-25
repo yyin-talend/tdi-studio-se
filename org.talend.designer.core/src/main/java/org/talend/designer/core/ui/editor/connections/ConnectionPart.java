@@ -132,7 +132,7 @@ public class ConnectionPart extends AbstractConnectionEditPart implements Proper
      */
     protected IFigure createFigure() {
         ConnectionFigure connection = new ConnectionFigure(((Connection) getModel()).getSourceNodeConnector()
-                .getConnectionProperty(((Connection) getModel()).getLineStyle()));
+                .getConnectionProperty(((Connection) getModel()).getLineStyle()), ((Connection) getModel()).getSource());
 
         if (((Connection) getModel()).isActivate()) {
             ((ConnectionFigure) connection).setAlpha(-1);

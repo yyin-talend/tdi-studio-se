@@ -81,6 +81,10 @@ public enum EParameterName {
     CONNECTION("CONNECTION"), //$NON-NLS-1$  Parameter without label displayed so no translation needed
     NOT_SYNCHRONIZED_SCHEMA("NOT_SYNCHRONIZED_SCHEMA"), //$NON-NLS-1$  not displayed so no translation needed
     SCHEMA_OPTIONS(Messages.getString("EParameterName.schemaOptions")),
+    COLLAPSED("COLLAPSED"), //$NON-NLS-1$  Hidden parameter so no translation needed
+    SHOW_SUBJOB_TITLE("Show subjob title"),
+    SUBJOB_TITLE("Title"),
+    SUBJOB_COLOR("Subjob color"),
 
     /**
      * For stats & logs parameters.

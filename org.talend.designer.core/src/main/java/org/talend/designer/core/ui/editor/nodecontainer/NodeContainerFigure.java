@@ -18,17 +18,11 @@ import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.FreeformLayout;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.ImageFigure;
-import org.eclipse.draw2d.geometry.Dimension;
-import org.eclipse.draw2d.geometry.Point;
-import org.eclipse.draw2d.geometry.Rectangle;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.utils.workbench.gef.SimpleHtmlFigure;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.process.Problem.ProblemStatus;
-import org.talend.designer.core.ui.editor.nodes.Node;
-import org.talend.designer.core.ui.editor.nodes.NodeLabel;
-import org.talend.designer.core.ui.editor.nodes.NodePerformance;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.views.problems.Problems;
 
@@ -46,25 +40,13 @@ public class NodeContainerFigure extends Figure {
 
     private ImageFigure breakpointFigure;
 
-    private Dimension breakpointSize;
-
     private ImageFigure errorFigure;
-
-    private Dimension errorSize;
 
     private ImageFigure warningFigure;
 
-    private Dimension warningSize;
-
     private SimpleHtmlFigure htmlStatusHint;
 
-    private Point breakpointLocation = new Point();
-
-    private Point warningLocation = new Point();
-
-    private Point errorLocation = new Point();
-
-    private static final String BREAKPOINT_IMAGE = "icons/breakpoint.png"; //$NON-NLS-1$
+    public static final String BREAKPOINT_IMAGE = "icons/breakpoint.png"; //$NON-NLS-1$
 
     public NodeContainerFigure(NodeContainer nodeContainer) {
         this.nodeContainer = nodeContainer;
@@ -77,28 +59,20 @@ public class NodeContainerFigure extends Figure {
         breakpointFigure.setVisible(false);
         breakpointFigure.setSize(breakpointFigure.getPreferredSize());
         this.add(breakpointFigure);
-        breakpointSize = new Dimension(breakpointFigure.getImage().getImageData().width, breakpointFigure.getImage()
-                .getImageData().height);
 
         errorFigure = new ImageFigure();
         errorFigure.setImage(ImageProvider.getImage(EImage.ERROR_SMALL));
         errorFigure.setVisible(false);
         errorFigure.setSize(errorFigure.getPreferredSize());
         this.add(errorFigure);
-        errorSize = new Dimension(errorFigure.getImage().getImageData().width, errorFigure.getImage().getImageData().height);
 
         warningFigure = new ImageFigure();
         warningFigure.setImage(ImageProvider.getImage(EImage.WARNING_SMALL));
         warningFigure.setVisible(false);
         warningFigure.setSize(warningFigure.getPreferredSize());
         this.add(warningFigure);
-        warningSize = new Dimension(warningFigure.getImage().getImageData().width, warningFigure.getImage().getImageData().height);
 
         htmlStatusHint = new SimpleHtmlFigure();
-    }
-
-    public void setBounds(final Rectangle rect) {
-        super.setBounds(rect);
     }
 
     public void updateStatus(int status) {
@@ -154,71 +128,16 @@ public class NodeContainerFigure extends Figure {
         }
     }
 
-    private Rectangle prepareStatus(Point nodeLocation, Dimension nodeSize) {
-        Rectangle statusRectangle = new Rectangle();
-        Rectangle breakpointRectangle, warningRectangle, errorRectangle;
-
-        breakpointLocation.x = nodeLocation.x - breakpointSize.width;
-        breakpointLocation.y = nodeLocation.y - breakpointSize.height;
-        breakpointRectangle = new Rectangle(breakpointLocation, breakpointSize);
-        statusRectangle = breakpointRectangle;
-
-        errorLocation.x = nodeLocation.x + nodeSize.width;
-        errorLocation.y = nodeLocation.y - errorSize.height;
-        errorRectangle = new Rectangle(errorLocation, errorSize);
-        statusRectangle.union(errorRectangle);
-
-        warningLocation.x = nodeLocation.x + nodeSize.width;
-        warningLocation.y = nodeLocation.y - warningSize.height;
-        warningRectangle = new Rectangle(warningLocation, warningSize);
-        statusRectangle.union(warningRectangle);
-
-        return statusRectangle;
-    }
-
-    public Rectangle getNodeContainerRectangle() {
-        Point nodeLocation;
-        Node node = nodeContainer.getNode();
-        nodeLocation = node.getLocation();
-
-        Dimension nodeSize;
-        Dimension labelSize;
-        nodeSize = node.getSize();
-        Rectangle nodeRectangle = new Rectangle(nodeLocation, nodeSize);
-
-        Rectangle statusRectangle = prepareStatus(nodeLocation, nodeSize);
-
-        NodeLabel nodeLabel = node.getNodeLabel();
-        Point labelLocation = nodeLabel.getLocation().getCopy();
-        Point offset = nodeLabel.getOffset();
-        Point textOffset = new Point();
-        labelSize = nodeLabel.getLabelSize();
-        textOffset.y = nodeSize.height;
-        textOffset.x = (nodeSize.width - labelSize.width) / 2;
-        nodeLabel.setTextOffset(textOffset);
-        labelLocation.translate(offset);
-        labelLocation.translate(textOffset);
-        Rectangle labelRectangle = new Rectangle(labelLocation, labelSize);
-
-        NodePerformance nodePerf = nodeContainer.getNodePerformance();
-        Dimension perfSize = nodePerf.getSize();
-        Point perfLocation = nodePerf.getLocation();
-
-        Rectangle perfRectangle = new Rectangle(perfLocation, perfSize);
-
-        Rectangle finalRect;
-        finalRect = nodeRectangle.getUnion(labelRectangle).getUnion(perfRectangle).getUnion(statusRectangle);
-        return finalRect;
-    }
-
     @Override
     public void paint(Graphics graphics) {
         if (alpha != -1) {
             graphics.setAlpha(alpha);
+        } else {
+            graphics.setAlpha(255);
         }
-        breakpointFigure.setLocation(breakpointLocation);
-        errorFigure.setLocation(errorLocation);
-        warningFigure.setLocation(warningLocation);
+        breakpointFigure.setLocation(nodeContainer.getBreakpointLocation());
+        errorFigure.setLocation(nodeContainer.getErrorLocation());
+        warningFigure.setLocation(nodeContainer.getWarningLocation());
 
         super.paint(graphics);
     }

@@ -33,8 +33,10 @@ import org.talend.commons.utils.workbench.gef.SimpleHtmlCellEditorLocator;
 import org.talend.commons.utils.workbench.gef.SimpleHtmlFigure;
 import org.talend.commons.utils.workbench.gef.SimpleHtmlTextEditManager;
 import org.talend.designer.core.model.components.EParameterName;
-import org.talend.designer.core.ui.editor.nodecontainer.NodeContainerLayoutEditPolicy;
+import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainerPart;
+import org.talend.designer.core.ui.editor.process.ProcessPart;
+import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainerPart;
 import org.talend.designer.core.ui.views.properties.ComponentSettingsView;
 import org.talend.sqlbuilder.util.UIUtils;
 
@@ -85,19 +87,6 @@ public class NodeLabelEditPart extends AbstractGraphicalEditPart implements Prop
         }
     }
 
-    /**
-     * Gives the EditPart of the node where is attached the label.
-     * 
-     * @return
-     */
-    public NodePart getNodePart() {
-        if (getParent() == null) {
-            return null;
-        }
-        NodePart nodePart = ((NodeContainerPart) getParent()).getNodePart();
-        return nodePart;
-    }
-
     /*
      * (non-Javadoc)
      * 
@@ -116,7 +105,6 @@ public class NodeLabelEditPart extends AbstractGraphicalEditPart implements Prop
             (htmlFig).setAlpha(NodeLabel.ALPHA_VALUE);
         }
         ((NodeLabel) getModel()).setLabelSize(htmlFig.getPreferredSize());
-        getParent().refresh();
         return htmlFig;
     }
 
@@ -165,7 +153,15 @@ public class NodeLabelEditPart extends AbstractGraphicalEditPart implements Prop
                 refreshVisuals();
             }
         }
-
+        EditPart editPart = getParent();
+        if (editPart != null) {
+            while ((!(editPart instanceof ProcessPart)) && (!(editPart instanceof SubjobContainerPart))) {
+                editPart = editPart.getParent();
+            }
+            if (editPart instanceof SubjobContainerPart) {
+                editPart.refresh();
+            }
+        }
     }
 
     /*
@@ -195,30 +191,24 @@ public class NodeLabelEditPart extends AbstractGraphicalEditPart implements Prop
      */
     @Override
     protected void refreshVisuals() {
-        if (getParent() == null) {
-            return;
-        }
-        NodePart nodePart = ((NodeContainerPart) getParent()).getNodePart();
-        if (nodePart != null) {
+        Node node = ((NodeContainer) ((NodeContainerPart) getParent()).getModel()).getNode();
 
-            String text = ((NodeLabel) getModel()).getLabelText();
-            SimpleHtmlFigure htmlFig = (SimpleHtmlFigure) this.getFigure();
-            htmlFig.setText(text);
+        String text = ((NodeLabel) getModel()).getLabelText();
+        SimpleHtmlFigure htmlFig = (SimpleHtmlFigure) this.getFigure();
+        htmlFig.setText(text);
 
-            Node node = (Node) nodePart.getModel();
-            Point loc = node.getLocation().getCopy();
-            Point offset = ((NodeLabel) getModel()).getOffset();
-            Point textOffset = new Point();
+        Point loc = node.getLocation().getCopy();
+        Point offset = ((NodeLabel) getModel()).getOffset();
+        Point textOffset = new Point();
 
-            Dimension size = htmlFig.getPreferredSize();
+        Dimension size = htmlFig.getPreferredSize();
 
-            textOffset.y = node.getSize().height;
-            textOffset.x = (node.getSize().width - size.width) / 2;
-            ((NodeLabel) getModel()).setTextOffset(textOffset);
-            loc.translate(textOffset.x + offset.x, textOffset.y + offset.y);
-            Rectangle rectangle = new Rectangle(loc, size);
-            ((GraphicalEditPart) getParent()).setLayoutConstraint(this, getFigure(), rectangle);
-        }
+        textOffset.y = node.getSize().height;
+        textOffset.x = (node.getSize().width - size.width) / 2;
+        ((NodeLabel) getModel()).setTextOffset(textOffset);
+        loc.translate(textOffset.x + offset.x, textOffset.y + offset.y);
+        Rectangle rectangle = new Rectangle(loc, size);
+        ((GraphicalEditPart) getParent()).setLayoutConstraint(this, getFigure(), rectangle);
     }
 
     /*
@@ -266,12 +256,9 @@ public class NodeLabelEditPart extends AbstractGraphicalEditPart implements Prop
         if (value != SELECTED_NONE) {
             List<EditPart> listEditParts = this.getViewer().getSelectedEditParts();
             if (listEditParts.size() != 1) {
-                getParent().removeEditPolicy(EditPolicy.LAYOUT_ROLE);
-                // super.setSelected(SELECTED_NONE);
-                // this.getViewer().deselect(this);
-                // fireSelectionChanged();
+                // getParent().removeEditPolicy(EditPolicy.LAYOUT_ROLE);
             } else {
-                getParent().installEditPolicy(EditPolicy.LAYOUT_ROLE, new NodeContainerLayoutEditPolicy());
+                // getParent().installEditPolicy(EditPolicy.LAYOUT_ROLE, new NodeContainerLayoutEditPolicy());
                 super.setSelected(value);
             }
         } else {

@@ -17,6 +17,7 @@ import java.util.List;
 
 import org.eclipse.draw2d.ChopboxAnchor;
 import org.eclipse.draw2d.FreeformViewport;
+import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.ScalableFreeformLayeredPane;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
@@ -128,11 +129,19 @@ public class NodeAnchor extends ChopboxAnchor {
      * @return
      */
     private FreeformViewport getViewport() {
-        return (FreeformViewport) getOwner().getParent().getParent().getParent().getParent().getParent().getParent();
+        IFigure figure = getOwner();
+        while (!(figure instanceof FreeformViewport)) {
+            figure = figure.getParent();
+        }
+        return (FreeformViewport) figure;
     }
 
     private ScalableFreeformLayeredPane getScalableFreeform() {
-        return (ScalableFreeformLayeredPane) getOwner().getParent().getParent().getParent().getParent();
+        IFigure figure = getOwner();
+        while (!(figure instanceof ScalableFreeformLayeredPane)) {
+            figure = figure.getParent();
+        }
+        return (ScalableFreeformLayeredPane) figure;
     }
 
     public Point getLocationForSimpleConnection(Point reference) {

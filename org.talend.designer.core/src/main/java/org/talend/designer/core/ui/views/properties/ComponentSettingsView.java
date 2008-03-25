@@ -52,6 +52,7 @@ import org.talend.designer.core.ui.editor.properties.controllers.generator.IDyna
 import org.talend.designer.core.ui.editor.properties.notes.AbstractNotePropertyComposite;
 import org.talend.designer.core.ui.editor.properties.notes.OpaqueNotePropertyComposite;
 import org.talend.designer.core.ui.editor.properties.notes.TextNotePropertyComposite;
+import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainer;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 
 /**
@@ -202,7 +203,8 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
             } else {
                 tabFactory.getTabbedPropertyComposite().getCompactButton().setVisible(false);
                 tabFactory.getTabbedPropertyComposite().getTableButton().setVisible(false);
-                dc = new DynamicComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS, category, element, true);
+                dc = new MultipleThreadDynamicComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS, category, element,
+                        true);
             }
         } else if (element instanceof Connection) {
             dc = new MainConnectionComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS, category, element);
@@ -244,7 +246,10 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
 
                 parent.layout();
             }
-
+        } else {
+            tabFactory.getTabbedPropertyComposite().getCompactButton().setVisible(false);
+            tabFactory.getTabbedPropertyComposite().getTableButton().setVisible(false);
+            dc = new MultipleThreadDynamicComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS, category, element, true);
         }
 
         if (parent.getChildren().length == 0) {
@@ -477,6 +482,9 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
         } else if (elem instanceof Note) {
             label = "Note";
             image = ImageProvider.getImage(EImage.PASTE_ICON);
+        } else if (elem instanceof SubjobContainer) {
+            label = "Subjob";
+            image = ImageProvider.getImage(EImage.PASTE_ICON);
         }
         tabFactory.setTitle(label, image);
     }
@@ -497,6 +505,8 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
             // return EElementType.NODE.getCategories();
             // }
         } else if (elem instanceof Note) {
+            return EElementType.NOTE.getCategories();
+        } else if (elem instanceof SubjobContainer) {
             return EElementType.NOTE.getCategories();
         }
         return null;

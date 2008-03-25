@@ -34,6 +34,8 @@ import org.talend.designer.core.ui.editor.notes.Note;
 import org.talend.designer.core.ui.editor.notes.NoteEditPart;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.process.ProcessPart;
+import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainer;
+import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainerPart;
 
 /**
  * The PartFactory will create an EditPart factory for each model object that is created in the diagram. <br/>
@@ -51,7 +53,9 @@ public class PartFactory implements EditPartFactory {
     public EditPart createEditPart(EditPart context, Object model) {
         EditPart part = null;
 
-        if (model instanceof Process) {
+        if (model instanceof SubjobContainer) {
+            part = new SubjobContainerPart();
+        } else if (model instanceof Process) {
             part = new ProcessPart();
         } else if (model instanceof Node) {
             part = new NodePart();

@@ -19,6 +19,7 @@ import org.eclipse.gef.ui.actions.SelectionAction;
 import org.eclipse.ui.IWorkbenchPart;
 import org.talend.designer.core.ui.editor.cmd.ZorderCommand;
 import org.talend.designer.core.ui.editor.notes.NoteEditPart;
+import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainerPart;
 
 /**
  */
@@ -36,7 +37,7 @@ public abstract class ZorderAction extends SelectionAction {
     protected boolean calculateEnabled() {
         List editparts = getSelectedObjects();
         if (editparts.size() == 1) {
-            if (editparts.get(0) instanceof NoteEditPart) {
+            if (editparts.get(0) instanceof NoteEditPart || editparts.get(0) instanceof SubjobContainerPart) {
                 editPart = (EditPart) editparts.get(0);
                 createZOrderCommand();
                 return zorderCommand.canExecute();

@@ -933,6 +933,7 @@ public class DataProcess {
         }
 
         duplicatedProcess = new Process(process.getProperty());
+        duplicatedProcess.setDuplicate(true);
         duplicatedProcess.setActivate(false);
         duplicatedProcess.setEditor(process.getEditor());
         duplicatedProcess.setGeneratingProcess(this);

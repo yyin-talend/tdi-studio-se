@@ -45,10 +45,6 @@ public class NodeEditPolicy extends ComponentEditPolicy {
      * @see org.eclipse.gef.editpolicies.ComponentEditPolicy#createDeleteCommand(org.eclipse.gef.requests.GroupRequest)
      */
     protected Command createDeleteCommand(GroupRequest request) {
-        Object parent = getHost().getParent().getModel();
-        if (!(parent instanceof Process)) {
-            return null;
-        }
         if (((Node) getHost().getModel()).isReadOnly()) {
             return null;
         }
@@ -59,7 +55,8 @@ public class NodeEditPolicy extends ComponentEditPolicy {
             }
         }
 
-        DeleteNodeContainerCommand deleteCommand = new DeleteNodeContainerCommand((Process) parent, nodeList);
+        DeleteNodeContainerCommand deleteCommand = new DeleteNodeContainerCommand((Process) nodeList.get(0).getProcess(),
+                nodeList);
         return deleteCommand;
     }
 }

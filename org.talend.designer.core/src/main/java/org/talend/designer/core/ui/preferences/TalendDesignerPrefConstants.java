@@ -54,4 +54,6 @@ public class TalendDesignerPrefConstants {
     public static final String SCHEMA_OPTIONS = "schemaOptions";
 
     public static final String VIEW_OPTIONS = "viewOptions";
+
+    public static final String DISPLAY_SUBJOBS = "displaySubjobs";
 }

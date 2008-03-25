@@ -13,6 +13,7 @@
 package org.talend.designer.core.ui.editor.connections;
 
 import org.eclipse.draw2d.Clickable;
+import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.Label;
 import org.eclipse.swt.graphics.Image;
 import org.talend.commons.ui.image.EImage;
@@ -61,5 +62,18 @@ public class CollapseFigure extends Clickable {
         setContents(new Label(img));
         // revalidate();
         // repaint();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.draw2d.Clickable#paintClientArea(org.eclipse.draw2d.Graphics)
+     */
+    @Override
+    protected void paintClientArea(Graphics graphics) {
+        int oldAlpha = graphics.getAlpha();
+        graphics.setAlpha(255);
+        super.paintClientArea(graphics);
+        graphics.setAlpha(oldAlpha);
     }
 }

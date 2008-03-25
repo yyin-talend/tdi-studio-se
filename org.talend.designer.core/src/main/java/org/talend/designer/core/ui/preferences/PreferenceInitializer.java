@@ -57,7 +57,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
         store.setDefault(TalendDesignerPrefConstants.DEFAULT_LABEL, "__UNIQUE_NAME__"); //$NON-NLS-1$
         store.setDefault(TalendDesignerPrefConstants.DEFAULT_HINT, "<b>__UNIQUE_NAME__</b><br>__COMMENT__"); //$NON-NLS-1$
-        store.setDefault(TalendDesignerPrefConstants.DEFAULT_CONNECTION_FORMAT, "row");//$NON-NLS-1$
+        store.setDefault(TalendDesignerPrefConstants.DEFAULT_CONNECTION_FORMAT, "row"); //$NON-NLS-1$
         store.setDefault(TalendDesignerPrefConstants.DEFAULT_HINT_USED, false);
         store.setDefault(TalendDesignerPrefConstants.DEFAULT_DISPLAY, false);
         store.setDefault(TalendDesignerPrefConstants.USE_REPOSITORY_NAME, true);
@@ -68,6 +68,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
         store.setDefault(TalendDesignerPrefConstants.LARGE_ICONS_SIZE, "24");
         store.setDefault(TalendDesignerPrefConstants.SCHEMA_OPTIONS, "default");
         store.setDefault(TalendDesignerPrefConstants.VIEW_OPTIONS, "default");
+        store.setDefault(TalendDesignerPrefConstants.DISPLAY_SUBJOBS, true);
 
         // defaults for the stats preferences for java
         store.setDefault(ECodeLanguage.JAVA.toString() + "_" + EParameterName.PROPERTY_TYPE.getName(), EmfComponent.BUILTIN);

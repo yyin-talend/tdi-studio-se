@@ -26,6 +26,7 @@ public enum EElementType {
     NODE_LABEL(EComponentCategory.BASIC, EComponentCategory.ADVANCED, EComponentCategory.VIEW, EComponentCategory.DOC),
     CONNECTION(EComponentCategory.BASIC, EComponentCategory.ADVANCED),
     NOTE(EComponentCategory.BASIC, EComponentCategory.ADVANCED),
+    SUBJOB(EComponentCategory.BASIC, EComponentCategory.ADVANCED),
     ADVANCED_NODE(
                   EComponentCategory.BASIC,
                   EComponentCategory.ADVANCED,

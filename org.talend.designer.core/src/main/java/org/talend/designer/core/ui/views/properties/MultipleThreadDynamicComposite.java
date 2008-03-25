@@ -66,6 +66,7 @@ import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySectio
 import org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController;
 import org.talend.designer.core.ui.editor.properties.controllers.GroupController;
 import org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty;
+import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainer;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -732,7 +733,9 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
                 Display.getDefault().syncExec(new Runnable() {
 
                     public void run() {
-                        addComponents(forceRedraw);
+                        if (elem != null) {
+                            addComponents(forceRedraw);
+                        }
                     }
                 });
 
@@ -872,6 +875,8 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
         this.elem = element;
         if (elem instanceof Node) {
             process = (Process) ((Node) elem).getProcess();
+        } else if (elem instanceof SubjobContainer) {
+            process = (Process) ((SubjobContainer) elem).getProcess();
         }
         if (elem instanceof org.talend.designer.core.ui.editor.connections.Connection) {
             org.talend.designer.core.ui.editor.connections.Connection connection;

@@ -166,7 +166,7 @@ public class NodeFigure extends Figure {
                 } else {
                     INodeConnector mainNodeConnector = node.getConnectorFromType(EConnectionType.FLOW_MAIN);
                     ConnectionFigure connection = new ConnectionFigure(mainNodeConnector
-                            .getConnectionProperty(EConnectionType.FLOW_MAIN));
+                            .getConnectionProperty(EConnectionType.FLOW_MAIN), node);
                     connection.setTargetDecoration(null);
                     connection.setStart(new Point(figBounds.x, figBounds.y + figBounds.height / 2));
                     connection.setEnd(new Point(figBounds.x + figBounds.width, figBounds.y + figBounds.height / 2));
@@ -184,6 +184,8 @@ public class NodeFigure extends Figure {
     public void paint(Graphics graphics) {
         if (alpha != -1) {
             graphics.setAlpha(alpha);
+        } else {
+            graphics.setAlpha(255);
         }
         if (DesignerPlugin.getDefault().getPreferenceStore().getBoolean(TalendDesignerPrefConstants.EDITOR_ANTIALIASING)) {
             graphics.setInterpolation(SWT.HIGH);
@@ -274,7 +276,7 @@ public class NodeFigure extends Figure {
      */
     public void addSourceConnection(ConnectionFigure sourceConnection) {
         if (!sourceDummyMap.keySet().contains(sourceConnection)) {
-            ConnectionFigure connection = new ConnectionFigure(sourceConnection.getConnectionProperty());
+            ConnectionFigure connection = new ConnectionFigure(sourceConnection.getConnectionProperty(), node);
             connection.setTargetDecoration(null);
             add(connection);
             if (dummy) {
@@ -295,7 +297,7 @@ public class NodeFigure extends Figure {
      */
     public void setTargetConnection(ConnectionFigure targetConnection) {
         this.targetConnection = targetConnection;
-        ConnectionFigure connection = new ConnectionFigure(targetConnection.getConnectionProperty());
+        ConnectionFigure connection = new ConnectionFigure(targetConnection.getConnectionProperty(), node);
         connection.setTargetDecoration(null);
         add(connection);
         if (dummy) {

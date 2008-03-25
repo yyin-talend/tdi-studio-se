@@ -15,7 +15,6 @@ package org.talend.designer.core.ui.editor.properties.controllers;
 import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.fieldassist.DecoratedField;
@@ -66,42 +65,24 @@ public class CheckController extends AbstractElementPropertySectionController {
      * @see org.talend.designer.core.ui.editor.properties2.editors.AbstractElementPropertySectionController#createCommand()
      */
     private Command createCommand(SelectionEvent event) {
-        Set<String> elementsName;
         Control ctrl = (Control) event.getSource();
+        String paramName = (String) ctrl.getData(PARAMETER_NAME);
 
-        elementsName = hashCurControls.keySet();
-        for (String name : elementsName) {
-            Object o = hashCurControls.get(name);
-            if (o instanceof Control) {
-                ctrl = (Control) o;
-                if (ctrl == null) {
-                    hashCurControls.remove(name);
-                    return null;
-                }
-                if (ctrl.equals(event.getSource())) {
-                    if (ctrl instanceof Button) {
-                        // only for checkbox, other buttons must be checked
-                        // before
-                        if (!elem.getPropertyValue(name).equals(new Boolean(((Button) ctrl).getSelection()))) {
-                            Command cmd = null;
-                            Boolean value = new Boolean(((Button) ctrl).getSelection());
-                            if (name.equals(EParameterName.ACTIVATE.getName())) {
-                                if (elem instanceof Node) {
-                                    List<Node> nodeList = new ArrayList<Node>();
-                                    nodeList.add((Node) elem);
-                                    List<Connection> connList = new ArrayList<Connection>();
-                                    cmd = new ChangeActivateStatusElementCommand(value, nodeList, connList);
-                                }
-                            } else {
-                                cmd = new PropertyChangeCommand(elem, name, value);
-                            }
-                            return cmd;
-                        }
-                    }
-                }
+        // only for checkbox, other buttons must be checked
+        // before
+        Command cmd = null;
+        Boolean value = new Boolean(((Button) ctrl).getSelection());
+        if (paramName.equals(EParameterName.ACTIVATE.getName())) {
+            if (elem instanceof Node) {
+                List<Node> nodeList = new ArrayList<Node>();
+                nodeList.add((Node) elem);
+                List<Connection> connList = new ArrayList<Connection>();
+                cmd = new ChangeActivateStatusElementCommand(value, nodeList, connList);
             }
+        } else {
+            cmd = new PropertyChangeCommand(elem, paramName, value);
         }
-        return null;
+        return cmd;
     }
 
     /*
@@ -138,6 +119,7 @@ public class CheckController extends AbstractElementPropertySectionController {
             data.left = new FormAttachment((((numInRow - 1) * MAX_PERCENT) / nbInRow), 0);
         }
         cLayout.setLayoutData(data);
+        checkBtn.setData(PARAMETER_NAME, param.getName());
         hashCurControls.put(param.getName(), checkBtn);
         checkBtn.setEnabled(!param.isReadOnly());
         checkBtn.addSelectionListener(listenerSelection);

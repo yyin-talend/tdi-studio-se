@@ -76,6 +76,7 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IProcess2;
+import org.talend.core.model.process.ISubjobContainer;
 import org.talend.core.model.process.UniqueNodeNameGenerator;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.ContextItem;
@@ -103,6 +104,7 @@ import org.talend.designer.core.model.utils.emf.talendfile.NoteType;
 import org.talend.designer.core.model.utils.emf.talendfile.ParametersType;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.core.model.utils.emf.talendfile.RequiredType;
+import org.talend.designer.core.model.utils.emf.talendfile.SubjobType;
 import org.talend.designer.core.model.utils.emf.talendfile.TalendFileFactory;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
@@ -112,6 +114,7 @@ import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.Node.Data;
 import org.talend.designer.core.ui.editor.notes.Note;
 import org.talend.designer.core.ui.editor.properties.controllers.ConnectionListController;
+import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainer;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.designer.runprocess.IProcessor;
@@ -129,9 +132,7 @@ import org.talend.repository.model.IProxyRepositoryFactory;
 public class Process extends Element implements IProcess2 {
 
     // properties
-    public static final String NODES = "nodes"; //$NON-NLS-1$
-
-    public static final String NOTES = "notes"; //$NON-NLS-1$
+    public static final String NEED_UPDATE_JOB = "NEED_UPDATE_JOB"; //$NON-NLS-1$
 
     public static final String DEFAULT_ROW_CONNECTION_NAME = "row"; //$NON-NLS-1$
 
@@ -140,6 +141,8 @@ public class Process extends Element implements IProcess2 {
     protected List<Node> nodes = new ArrayList<Node>();
 
     protected List<Element> elem = new ArrayList<Element>();
+
+    protected List<SubjobContainer> subjobContainers = new ArrayList<SubjobContainer>();
 
     protected List<Note> notes = new ArrayList<Note>();
 
@@ -169,11 +172,13 @@ public class Process extends Element implements IProcess2 {
 
     private boolean initDone = false;
 
-    // private boolean isOpenEditor = false;
-
     private IProcessor processor;
 
     private AbstractMultiPageTalendEditor editor;
+
+    private Map<Node, SubjobContainer> mapSubjobStarts = new HashMap<Node, SubjobContainer>();
+
+    private boolean duplicate = false;
 
     public Process(Property property) {
         contextManager = new JobContextManager();
@@ -272,6 +277,19 @@ public class Process extends Element implements IProcess2 {
         addElementParameter(param);
 
         param = new ElementParameter(this);
+        param.setName(TalendDesignerPrefConstants.DISPLAY_SUBJOBS);
+        param.setCategory(EComponentCategory.TECHNICAL);
+        param.setField(EParameterFieldType.CHECK);
+        param.setDisplayName(TalendDesignerPrefConstants.DISPLAY_SUBJOBS);
+        param.setNumRow(99);
+        param.setShow(false);
+        param
+                .setValue(DesignerPlugin.getDefault().getPluginPreferences().getBoolean(
+                        TalendDesignerPrefConstants.DISPLAY_SUBJOBS));
+        param.setReadOnly(true);
+        addElementParameter(param);
+
+        param = new ElementParameter(this);
         param.setName(EParameterName.AUTHOR.getName());
         param.setCategory(EComponentCategory.TECHNICAL);
         param.setField(EParameterFieldType.TEXT);
@@ -360,9 +378,9 @@ public class Process extends Element implements IProcess2 {
      */
     public void addNodeContainer(final NodeContainer nodeContainer) {
         elem.add(nodeContainer);
-        elem.add(nodeContainer.getNode());
         nodes.add(nodeContainer.getNode());
-        fireStructureChange(NODES, elem);
+
+        // fireStructureChange(NEED_UPDATE_JOB, elem);
     }
 
     /**
@@ -373,9 +391,26 @@ public class Process extends Element implements IProcess2 {
     public void removeNodeContainer(final NodeContainer nodeContainer) {
         removeUniqueNodeName(nodeContainer.getNode().getUniqueName());
         nodes.remove(nodeContainer.getNode());
-        elem.remove(nodeContainer.getNode());
-        elem.remove(nodeContainer);
-        fireStructureChange(NODES, elem);
+        Element toRemove = nodeContainer;
+        List<Element> toAdd = new ArrayList<Element>();
+        for (Object o : elem) {
+            if (o instanceof SubjobContainer) {
+                SubjobContainer sjc = (SubjobContainer) o;
+                if (sjc.getNodeContainers().contains(nodeContainer)) {
+                    sjc.getNodeContainers().remove(nodeContainer);
+                    if (nodeContainer.getNode().isDesignSubjobStartNode()) {
+                        subjobContainers.remove(sjc);
+                        toAdd.addAll(sjc.getNodeContainers());
+                        toRemove = sjc;
+                        break;
+                    }
+                }
+            }
+        }
+        elem.remove(toRemove);
+        elem.addAll(toAdd);
+
+        // fireStructureChange(NEED_UPDATE_JOB, elem);
     }
 
     /**
@@ -797,8 +832,14 @@ public class Process extends Element implements IProcess2 {
         // save according to elem order to keep zorder (children insertion) in
         // diagram
         for (Element element : elem) {
-            if (element instanceof Node) {
-                saveNode(fileFact, processType, nList, cList, (Node) element, factory);
+            if (element instanceof SubjobContainer) {
+                saveSubjob(fileFact, processType, (SubjobContainer) element);
+                for (NodeContainer container : ((SubjobContainer) element).getNodeContainers()) {
+                    saveNode(fileFact, processType, nList, cList, container.getNode(), factory);
+                }
+            }
+            if (element instanceof NodeContainer) {
+                saveNode(fileFact, processType, nList, cList, ((NodeContainer) element).getNode(), factory);
             } else if (element instanceof Note) {
                 saveNote(fileFact, processType, (Note) element);
             }
@@ -808,12 +849,18 @@ public class Process extends Element implements IProcess2 {
          * Save the contexts informations
          */
         processType.setDefaultContext(contextManager.getDefaultContext().getName());
-        // if (repositoryId != null) {
-        // process.setRepositoryContextId(repositoryId);
-        // }
 
         contextManager.saveToEmf(processType.getContext());
         return processType;
+    }
+
+    private void saveSubjob(TalendFileFactory fileFact, ProcessType process, SubjobContainer subjobContainer) {
+        SubjobType sj = fileFact.createSubjobType();
+
+        process.getSubjob().add(sj);
+
+        List<? extends IElementParameter> paramList = subjobContainer.getElementParameters();
+        saveElementParameters(fileFact, paramList, sj.getElementParameter(), process);
     }
 
     private void saveNote(TalendFileFactory fileFact, ProcessType process, Note note) {
@@ -954,10 +1001,34 @@ public class Process extends Element implements IProcess2 {
         loadConnections(processType, nodesHashtable);
         loadContexts(processType);
         loadNotes(processType);
+        loadSubjobs(processType);
         initExternalComponents();
         setActivate(true);
         checkStartNodes();
         // checkProcess();
+    }
+
+    /**
+     * DOC nrousseau Comment method "loadSubjobs".
+     * 
+     * @param processType
+     */
+    private void loadSubjobs(ProcessType processType) {
+        for (Iterator iter = processType.getSubjob().iterator(); iter.hasNext();) {
+            SubjobType subjobType = (SubjobType) iter.next();
+
+            SubjobContainer subjobContainer = new SubjobContainer(this);
+            loadElementParameters(subjobContainer, subjobType.getElementParameter());
+            // look for the related node
+            Node subjobStartNode = subjobContainer.getSubjobStartNode();
+            if (subjobStartNode != null) {
+                subjobContainer.addNodeContainer(subjobStartNode.getNodeContainer());
+                subjobContainers.add(subjobContainer);
+                elem.remove(subjobStartNode.getNodeContainer());
+                elem.add(subjobContainer);
+                mapSubjobStarts.put(subjobStartNode, subjobContainer);
+            }
+        }
     }
 
     private void loadNotes(ProcessType process) {
@@ -2028,7 +2099,10 @@ public class Process extends Element implements IProcess2 {
                 }
             }
         }
-        ConnectionListController.updateConnectionList(this);
+        if (!isDuplicate()) {
+            ConnectionListController.updateConnectionList(this);
+            updateSubjobContainers();
+        }
     }
 
     public int getMergelinkOrder(final INode node) {
@@ -2380,13 +2454,13 @@ public class Process extends Element implements IProcess2 {
     public void addNote(Note note) {
         elem.add(note);
         notes.add(note);
-        fireStructureChange(NOTES, elem);
+        fireStructureChange(NEED_UPDATE_JOB, elem);
     }
 
     public void removeNote(Note note) {
         elem.remove(note);
         notes.remove(note);
-        fireStructureChange(NOTES, elem);
+        fireStructureChange(NEED_UPDATE_JOB, elem);
     }
 
     /**
@@ -2640,6 +2714,75 @@ public class Process extends Element implements IProcess2 {
         return nodesWithImport;
     }
 
+    public void updateSubjobContainers() {
+        // check all old subjobStart to see if their status changed (to remove the subjob if needed)
+        Set<SubjobContainer> updatedSubjobContainers = new HashSet<SubjobContainer>();
+        for (SubjobContainer sjc : new ArrayList<SubjobContainer>(subjobContainers)) {
+            Node node = sjc.getSubjobStartNode();
+            // if this node is not anymore a subjob start, then set it back to the element list.
+            // this one will be reaffected to a new subjob after
+            if (!node.isDesignSubjobStartNode()) {
+                elem.addAll(sjc.getNodeContainers());
+                sjc.getNodeContainers().clear();
+                elem.remove(sjc);
+                subjobContainers.remove(sjc);
+                // subjob are never removed from the map, so if the user do any "undo"
+                // the name of the subjob or configuration will be kept.
+            } else {
+                for (NodeContainer nodeContainer : new ArrayList<NodeContainer>(sjc.getNodeContainers())) {
+                    if (!nodeContainer.getNode().getDesignSubjobStartNode().equals(node)) {
+                        sjc.getNodeContainers().remove(nodeContainer);
+                        elem.add(nodeContainer);
+                        updatedSubjobContainers.add(sjc);
+                    }
+                }
+            }
+        }
+
+        // make one loop first for the subjob starts
+        // once all the subjobs are created, make another loop for the other nodes
+        for (Element element : new ArrayList<Element>(elem)) {
+            // if there is any NodeContainer, need to reaffect them to a new subjob
+            if (element instanceof NodeContainer) {
+                Node node = ((NodeContainer) element).getNode();
+                if (node.isDesignSubjobStartNode()) {
+                    // if the subjob already exist in the list take it, or if not exist create a new one.
+                    SubjobContainer sjc = mapSubjobStarts.get(node);
+                    if (sjc == null) {
+                        sjc = new SubjobContainer(this);
+                        sjc.setSubjobStartNode(node);
+                        mapSubjobStarts.put(node, sjc);
+                    }
+                    sjc.addNodeContainer(node.getNodeContainer());
+                    subjobContainers.add(sjc);
+                    updatedSubjobContainers.add(sjc);
+                    elem.remove(node.getNodeContainer());
+                    elem.add(sjc);
+                }
+            }
+        }
+
+        // if there is any NodeContainer, need to reaffect them to an existing subjob
+        for (Element element : new ArrayList<Element>(elem)) {
+            if (element instanceof NodeContainer) {
+                Node node = ((NodeContainer) element).getNode();
+                SubjobContainer sjc = mapSubjobStarts.get(node.getDesignSubjobStartNode());
+                sjc.addNodeContainer(node.getNodeContainer());
+                elem.remove(node.getNodeContainer());
+                updatedSubjobContainers.add(sjc);
+            }
+        }
+
+        fireStructureChange(NEED_UPDATE_JOB, elem);
+
+        // update modified subjobs
+        for (SubjobContainer sjc : updatedSubjobContainers) {
+            sjc.updateSubjobContainer();
+        }
+
+        // at the end, there should be no Node / NodeContainer without SubjobContainer
+    }
+
     /*
      * (non-Javadoc)
      * 
@@ -2657,5 +2800,32 @@ public class Process extends Element implements IProcess2 {
     public void setLastRunContext(IContext context) {
         this.lastRunContext = context;
 
+    }
+
+    /**
+     * Getter for duplicate.
+     * 
+     * @return the duplicate
+     */
+    public boolean isDuplicate() {
+        return this.duplicate;
+    }
+
+    /**
+     * Sets the duplicate.
+     * 
+     * @param duplicate the duplicate to set
+     */
+    public void setDuplicate(boolean duplicate) {
+        this.duplicate = duplicate;
+    }
+
+    /**
+     * Getter for subjobContainers.
+     * 
+     * @return the subjobContainers
+     */
+    public List<? extends ISubjobContainer> getSubjobContainers() {
+        return this.subjobContainers;
     }
 }

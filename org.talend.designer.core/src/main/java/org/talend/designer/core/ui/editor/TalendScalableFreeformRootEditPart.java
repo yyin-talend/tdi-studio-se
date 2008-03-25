@@ -42,6 +42,8 @@ public class TalendScalableFreeformRootEditPart extends ScalableFreeformRootEdit
 
     public static final String PROCESS_BACKGROUND_LAYER = "processBackgroundLayer"; //$NON-NLS-1$
 
+    public static final String SUBJOB_BACKGROUND_LAYER = "processBackgroundLayer"; //$NON-NLS-1$
+
     private IEditorInput editorInput;
 
     private AnimatableZoomManager zoomManager;
@@ -89,6 +91,7 @@ public class TalendScalableFreeformRootEditPart extends ScalableFreeformRootEdit
 
     protected ScalableFreeformLayeredPane createScaledLayers() {
         ScalableFreeformLayeredPane layers = new ScalableFreeformLayeredPane();
+        layers.add(new FreeformLayer(), SUBJOB_BACKGROUND_LAYER);
         layers.add(new FreeformLayer(), PROCESS_BACKGROUND_LAYER);
         layers.add(createGridLayer(), GRID_LAYER);
         layers.add(getPrintableLayers(), PRINTABLE_LAYERS);

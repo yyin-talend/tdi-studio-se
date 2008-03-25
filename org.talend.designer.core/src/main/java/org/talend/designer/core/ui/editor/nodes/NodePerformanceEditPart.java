@@ -24,7 +24,6 @@ import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.talend.commons.utils.workbench.gef.SimpleHtmlFigure;
 import org.talend.commons.utils.workbench.preferences.GlobalConstant;
-import org.talend.designer.core.ui.editor.nodecontainer.NodeContainerPart;
 
 /**
  * EditPart of the NodePerformance.
@@ -115,21 +114,15 @@ public class NodePerformanceEditPart extends AbstractGraphicalEditPart implement
      */
     @Override
     protected void refreshVisuals() {
-        if (getParent() == null) {
-            return;
-        }
-        NodePart nodePart = ((NodeContainerPart) getParent()).getNodePart();
-        if (nodePart != null) {
-            SimpleHtmlFigure label = (SimpleHtmlFigure) getFigure();
+        SimpleHtmlFigure label = (SimpleHtmlFigure) getFigure();
 
-            NodePerformance nodePerf = (NodePerformance) getModel();
-            label.setText(nodePerf.getLabel());
-            Dimension size = label.getPreferredSize();
-            nodePerf.setSize(size);
-            Point loc = nodePerf.getLocation();
-            Rectangle rectangle = new Rectangle(loc, size);
-            ((GraphicalEditPart) getParent()).setLayoutConstraint(this, label, rectangle);
-        }
+        NodePerformance nodePerf = (NodePerformance) getModel();
+        label.setText(nodePerf.getLabel());
+        Dimension size = label.getPreferredSize();
+        nodePerf.setSize(size);
+        Point loc = nodePerf.getLocation();
+        Rectangle rectangle = new Rectangle(loc, size);
+        ((GraphicalEditPart) getParent()).setLayoutConstraint(this, label, rectangle);
     }
 
     /*

@@ -12,11 +12,13 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.process;
 
+import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.commands.Command;
+import org.eclipse.gef.commands.CompoundCommand;
 import org.eclipse.gef.editpolicies.XYLayoutEditPolicy;
 import org.eclipse.gef.requests.CreateRequest;
 import org.talend.designer.core.ui.editor.cmd.CreateNodeContainerCommand;
@@ -28,6 +30,8 @@ import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
 import org.talend.designer.core.ui.editor.notes.Note;
 import org.talend.designer.core.ui.editor.notes.NoteEditPart;
+import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainer;
+import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainerPart;
 
 /**
  * Edit policy of the Diagram that will allow to move the objects on it and create nodes. <br/>
@@ -61,7 +65,18 @@ public class ProcessLayoutEditPolicy extends XYLayoutEditPolicy {
      * java.lang.Object)
      */
     protected Command createAddCommand(final EditPart child, final Object constraint) {
-        return null; // no support for adding
+        if (child instanceof NodePart) {
+            if (((Node) child.getModel()).isReadOnly()) {
+                return null;
+            }
+            MoveNodeCommand locationCommand = new MoveNodeCommand((Node) child.getModel(), ((Rectangle) constraint).getLocation());
+            return locationCommand;
+        }
+
+        return null;
+
+        // Command moveContainer = new Command("test");
+        // return moveContainer; // no support for adding
     }
 
     /*
@@ -85,6 +100,23 @@ public class ProcessLayoutEditPolicy extends XYLayoutEditPolicy {
             }
             MoveNoteCommand locationCommand = new MoveNoteCommand((Note) child.getModel(), ((Rectangle) constraint).getLocation());
             return locationCommand;
+        }
+        if (child instanceof SubjobContainerPart) {
+            SubjobContainer sjc = (SubjobContainer) child.getModel();
+            Point sjcLocation = sjc.getSubjobContainerRectangle().getLocation();
+            Point translationNeeded = new Point(((Rectangle) constraint).getLocation().x - sjcLocation.x,
+                    ((Rectangle) constraint).getLocation().y - sjcLocation.y);
+            CompoundCommand cc = new CompoundCommand();
+            for (NodeContainer nc : sjc.getNodeContainers()) {
+                if (nc.isReadOnly()) {
+                    return null;
+                }
+                Node node = nc.getNode();
+                Point nodeLocation = node.getLocation();
+                MoveNodeCommand locationCommand = new MoveNodeCommand(nc.getNode(), nodeLocation.getTranslated(translationNeeded));
+                cc.add(locationCommand);
+            }
+            return cc;
         }
         return null;
     }

@@ -20,8 +20,11 @@ import org.eclipse.draw2d.RectangleFigure;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.LayerConstants;
+import org.eclipse.gef.Request;
+import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.editpolicies.ResizableEditPolicy;
 import org.talend.designer.core.ui.editor.nodes.Node;
+import org.talend.designer.core.ui.editor.nodes.NodeFigure;
 
 /**
  * This class describes the figures that will be used for drag and drop each objects on the diagram. <br/>
@@ -81,7 +84,13 @@ public class NodeContainerResizableEditPolicy extends ResizableEditPolicy {
         IFigure figure;
 
         if (modelPart instanceof Node) {
-            return null;
+            Node node = (Node) modelPart;
+            figure = new NodeFigure(node);
+            if (node.isStart()) {
+                figure.setBackgroundColor(NodeFigure.START_COLOR);
+            } else {
+                figure.setOpaque(false);
+            }
         } else {
             figure = new RectangleFigure();
             ((RectangleFigure) figure).setXOR(true);
@@ -109,5 +118,23 @@ public class NodeContainerResizableEditPolicy extends ResizableEditPolicy {
      */
     protected Rectangle getInitialFeedbackBounds() {
         return getHostFigure().getBounds();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.gef.editpolicies.NonResizableEditPolicy#getOrphanCommand(org.eclipse.gef.Request)
+     */
+    @Override
+    protected Command getOrphanCommand(Request req) {
+        // if (req instanceof ChangeBoundsRequest) {
+        // ChangeBoundsRequest cbr = (ChangeBoundsRequest) req;
+        // EditPart editPart = (EditPart) cbr.getEditParts().get(0);
+        // if (editPart instanceof NodePart) {
+        // MoveNodeCommand locationCommand = new MoveNodeCommand((Node) editPart.getModel(), cbr.getLocation());
+        // return locationCommand;
+        // }
+        // }
+        return super.getOrphanCommand(req);
     }
 }

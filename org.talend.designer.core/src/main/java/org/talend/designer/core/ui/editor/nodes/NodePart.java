@@ -57,10 +57,8 @@ import org.talend.designer.core.ui.editor.ProcessEditorInput;
 import org.talend.designer.core.ui.editor.TalendSelectionManager;
 import org.talend.designer.core.ui.editor.cmd.ExternalNodeChangeCommand;
 import org.talend.designer.core.ui.editor.connections.Connection;
-import org.talend.designer.core.ui.editor.connections.ConnectionFigure;
-import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
-import org.talend.designer.core.ui.editor.nodecontainer.NodeContainerPart;
 import org.talend.designer.core.ui.editor.process.ProcessPart;
+import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainerPart;
 import org.talend.designer.core.ui.views.CodeView;
 import org.talend.designer.core.ui.views.properties.ComponentSettingsView;
 import org.talend.designer.runprocess.ProcessorUtilities;
@@ -75,8 +73,6 @@ import org.talend.repository.ui.views.IRepositoryView;
 public class NodePart extends AbstractGraphicalEditPart implements PropertyChangeListener, NodeEditPart {
 
     protected DirectEditManager manager;
-
-    protected NodeContainerPart nodeContainerPart;
 
     /*
      * (non-Javadoc)
@@ -129,25 +125,6 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
 
     }
 
-    protected boolean findNodeContainerPart() {
-        boolean found = false;
-        EditPart diagramPart = this.getParent();
-        List listPart = diagramPart.getChildren();
-        INode node = ((Node) getModel());
-        EditPart editPart;
-
-        for (int i = 0; i < listPart.size() && !found; i++) {
-            editPart = (EditPart) listPart.get(i);
-            if (editPart instanceof NodeContainerPart) {
-                if (node.equals(((NodeContainer) editPart.getModel()).getNode())) {
-                    found = true;
-                    nodeContainerPart = (NodeContainerPart) editPart;
-                }
-            }
-        }
-        return found;
-    }
-
     /*
      * (non-Javadoc)
      * 
@@ -171,8 +148,6 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
         if (isActive()) {
             super.deactivate();
             ((Node) getModel()).removePropertyChangeListener(this);
-            nodeContainerPart.setNodePart(null);
-            nodeContainerPart = null;
         }
     }
 
@@ -204,13 +179,6 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
     @Override
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     protected void refreshVisuals() {
-        if (nodeContainerPart == null) {
-            findNodeContainerPart();
-            nodeContainerPart.setNodePart(this);
-            for (EditPart editPart : (List<EditPart>) nodeContainerPart.getChildren()) {
-                editPart.refresh();
-            }
-        }
         Node node = (Node) this.getModel();
         Point loc = node.getLocation();
         Rectangle rectangle = new Rectangle(loc, node.getSize());
@@ -275,9 +243,6 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
      */
     public void propertyChange(final PropertyChangeEvent changeEvent) {
         if (changeEvent.getPropertyName().equals(Node.LOCATION)) {
-            if (nodeContainerPart != null) {
-                nodeContainerPart.refresh();
-            }
             refreshVisuals();
         } else if (changeEvent.getPropertyName().equals(Node.PERFORMANCE_DATA)) {
             refreshVisuals();
@@ -289,13 +254,6 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
             refreshTargetConnections();
         } else if (changeEvent.getPropertyName().equals(Node.SIZE)) {
             refreshVisuals();
-            if (nodeContainerPart != null) {
-                nodeContainerPart.refresh();
-                for (EditPart editPart : (List<EditPart>) nodeContainerPart.getChildren()) {
-                    editPart.refresh();
-                }
-            }
-
             getParent().refresh();
         } else if (changeEvent.getPropertyName().equals(EParameterName.ACTIVATE.getName())) {
             if (((INode) getModel()).isActivate()) {
@@ -347,7 +305,15 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
                 }
 
             }
-
+        }
+        EditPart editPart = getParent();
+        if (editPart != null) {
+            while ((!(editPart instanceof ProcessPart)) && (!(editPart instanceof SubjobContainerPart))) {
+                editPart = editPart.getParent();
+            }
+            if (editPart instanceof SubjobContainerPart) {
+                editPart.refresh();
+            }
         }
     }
 
@@ -360,17 +326,18 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
      * @see org.eclipse.gef.NodeEditPart#getSourceConnectionAnchor(org.eclipse.gef.ConnectionEditPart)
      */
     public ConnectionAnchor getSourceConnectionAnchor(final ConnectionEditPart connection) {
-        if (connection.getModel() instanceof Connection) {
-            if (((Connection) connection.getModel()).getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)) {
-                ((NodeFigure) getFigure()).addSourceConnection((ConnectionFigure) connection.getFigure());
-            }
-        }
-        Connection conn = (Connection) connection.getModel();
-        // System.out.println("getSource=> connection:" + conn + " / source:" + conn.getSource() + " / target:" +
-        // conn.getTarget());
-        NodeAnchor anchor = new NodeAnchor((NodeFigure) getFigure(), conn.getSource(), conn.getTarget(), false);
-        anchor.setConnection(conn);
-        return anchor;
+        return new ChopboxAnchor(getFigure());
+        // if (connection.getModel() instanceof Connection) {
+        // if (((Connection) connection.getModel()).getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)) {
+        // ((NodeFigure) getFigure()).addSourceConnection((ConnectionFigure) connection.getFigure());
+        // }
+        // }
+        // Connection conn = (Connection) connection.getModel();
+        // // System.out.println("getSource=> connection:" + conn + " / source:" + conn.getSource() + " / target:" +
+        // // conn.getTarget());
+        // NodeAnchor anchor = new NodeAnchor((NodeFigure) getFigure(), conn.getSource(), conn.getTarget(), false);
+        // anchor.setConnection(conn);
+        // return anchor;
     }
 
     /*
@@ -379,18 +346,20 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
      * @see org.eclipse.gef.NodeEditPart#getTargetConnectionAnchor(org.eclipse.gef.ConnectionEditPart)
      */
     public ConnectionAnchor getTargetConnectionAnchor(final ConnectionEditPart connection) {
-        if (connection.getModel() instanceof Connection) {
-            if (((Connection) connection.getModel()).getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)) {
-                ((NodeFigure) getFigure()).setTargetConnection((ConnectionFigure) connection.getFigure());
-            }
-        }
-        Connection conn = (Connection) connection.getModel();
-        sourceAnchor = null;
-        // System.out.println("getTarget=> connection:" + conn + " / source:" + conn.getSource() + " / target:" +
-        // conn.getTarget());
-        NodeAnchor anchor = new NodeAnchor((NodeFigure) getFigure(), conn.getSource(), conn.getTarget(), true);
-        anchor.setConnection(conn);
-        return anchor;
+        return new ChopboxAnchor(getFigure());
+
+        // if (connection.getModel() instanceof Connection) {
+        // if (((Connection) connection.getModel()).getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)) {
+        // ((NodeFigure) getFigure()).setTargetConnection((ConnectionFigure) connection.getFigure());
+        // }
+        // }
+        // Connection conn = (Connection) connection.getModel();
+        // sourceAnchor = null;
+        // // System.out.println("getTarget=> connection:" + conn + " / source:" + conn.getSource() + " / target:" +
+        // // conn.getTarget());
+        // NodeAnchor anchor = new NodeAnchor((NodeFigure) getFigure(), conn.getSource(), conn.getTarget(), true);
+        // anchor.setConnection(conn);
+        // return anchor;
     }
 
     NodeAnchor sourceAnchor = null;

@@ -14,15 +14,22 @@ package org.talend.designer.core.ui.editor.nodecontainer;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.gef.CompoundSnapToHelper;
+import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.GraphicalEditPart;
+import org.eclipse.gef.SnapToGrid;
+import org.eclipse.gef.SnapToHelper;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
+import org.eclipse.gef.rulers.RulerProvider;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.nodes.Node;
-import org.talend.designer.core.ui.editor.nodes.NodePart;
+import org.talend.designer.core.ui.editor.process.NodeSnapToGeometry;
 
 /**
  * EditPart linked to the NodeContainer.
@@ -30,14 +37,12 @@ import org.talend.designer.core.ui.editor.nodes.NodePart;
  * $Id$
  * 
  */
-public class NodeContainerPart extends AbstractGraphicalEditPart implements PropertyChangeListener {
+public class NodeContainerPart extends AbstractGraphicalEditPart implements PropertyChangeListener, IAdaptable {
 
     @Override
     public boolean isSelectable() {
         return false;
     }
-
-    protected NodePart nodePart = null;
 
     public void activate() {
         if (!isActive()) {
@@ -52,21 +57,12 @@ public class NodeContainerPart extends AbstractGraphicalEditPart implements Prop
             super.deactivate();
             Node node = ((NodeContainer) getModel()).getNode();
             node.removePropertyChangeListener(this);
-            nodePart = null;
         }
     }
 
     @Override
     public void setSelected(int value) {
         super.setSelected(SELECTED_NONE);
-    }
-
-    public void setNodePart(NodePart nodePart) {
-        this.nodePart = nodePart;
-    }
-
-    public NodePart getNodePart() {
-        return nodePart;
     }
 
     /*
@@ -94,10 +90,11 @@ public class NodeContainerPart extends AbstractGraphicalEditPart implements Prop
      */
     @Override
     protected void createEditPolicies() {
+        installEditPolicy(EditPolicy.LAYOUT_ROLE, new NodeContainerLayoutEditPolicy());
     }
 
     protected void refreshVisuals() {
-        Rectangle rectangle = ((NodeContainerFigure) this.getFigure()).getNodeContainerRectangle();
+        Rectangle rectangle = ((NodeContainer) this.getModel()).getNodeContainerRectangle();
         ((GraphicalEditPart) getParent()).setLayoutConstraint(this, getFigure(), rectangle);
     }
 
@@ -131,5 +128,43 @@ public class NodeContainerPart extends AbstractGraphicalEditPart implements Prop
         if (changeEvent.getPropertyName().equals(Node.PERFORMANCE_DATA)) {
             refreshVisuals();
         }
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#getAdapter(java.lang.Class)
+     */
+    @Override
+    public Object getAdapter(Class key) {
+        if (key == SnapToHelper.class) {
+            List<Object> snapStrategies = new ArrayList<Object>();
+            Boolean val = (Boolean) getViewer().getProperty(RulerProvider.PROPERTY_RULER_VISIBILITY);
+
+            val = (Boolean) getViewer().getProperty(NodeSnapToGeometry.PROPERTY_SNAP_ENABLED);
+            if (val != null && val.booleanValue()) {
+                snapStrategies.add(new NodeSnapToGeometry(this));
+            }
+
+            val = (Boolean) getViewer().getProperty(SnapToGrid.PROPERTY_GRID_ENABLED);
+            if (val != null && val.booleanValue()) {
+                snapStrategies.add(new SnapToGrid(this));
+            }
+
+            if (snapStrategies.size() == 0) {
+                return null;
+            }
+            if (snapStrategies.size() == 1) {
+                return snapStrategies.get(0);
+            }
+
+            SnapToHelper[] ss = new SnapToHelper[snapStrategies.size()];
+            for (int i = 0; i < snapStrategies.size(); i++) {
+                ss[i] = (SnapToHelper) snapStrategies.get(i);
+            }
+            return new CompoundSnapToHelper(ss);
+        }
+
+        return super.getAdapter(key);
     }
 }

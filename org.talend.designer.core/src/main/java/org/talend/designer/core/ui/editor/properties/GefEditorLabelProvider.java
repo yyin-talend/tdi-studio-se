@@ -27,6 +27,7 @@ import org.talend.designer.core.ui.editor.connections.ConnLabelEditPart;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.connections.ConnectionLabel;
 import org.talend.designer.core.ui.editor.connections.ConnectionPart;
+import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainerPart;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodeLabelEditPart;
@@ -62,7 +63,7 @@ public class GefEditorLabelProvider extends LabelProvider {
      * @see org.eclipse.jface.viewers.LabelProvider#getImage(java.lang.Object)
      */
     public Image getImage(Object objects) {
-        Node node;
+        Node node = null;
         if (objects == null || objects.equals(StructuredSelection.EMPTY)) {
             return null;
         }
@@ -94,12 +95,14 @@ public class GefEditorLabelProvider extends LabelProvider {
                     return ImageProvider.getImage(EImage.RIGHT_ICON);
                 }
                 if ((object instanceof NodeLabelEditPart)) {
-                    object = ((NodeLabelEditPart) object).getNodePart();
+                    node = ((NodeContainer) ((NodeLabelEditPart) object).getParent().getModel()).getNode();
                 }
                 if (!(object instanceof NodePart)) {
                     return null;
                 }
-                node = (Node) ((NodePart) object).getModel();
+                if (node == null) {
+                    node = (Node) ((NodePart) object).getModel();
+                }
             }
         }
         if (lastNode != node) {
@@ -114,7 +117,7 @@ public class GefEditorLabelProvider extends LabelProvider {
      * @see org.eclipse.jface.viewers.LabelProvider#getText(java.lang.Object)
      */
     public String getText(Object objects) {
-        Node node;
+        Node node = null;
         if (objects == null || objects.equals(StructuredSelection.EMPTY)) {
             return "No items selected"; //$NON-NLS-1$
         }
@@ -155,12 +158,14 @@ public class GefEditorLabelProvider extends LabelProvider {
                     node = lastNode;
                 } else {
                     if (object instanceof NodeLabelEditPart) {
-                        object = ((NodeLabelEditPart) object).getNodePart();
+                        node = ((NodeContainer) ((NodeLabelEditPart) object).getParent().getModel()).getNode();
                     }
                     if (!(object instanceof NodePart)) {
                         return null;
                     }
-                    node = (Node) ((NodePart) object).getModel();
+                    if (node == null) {
+                        node = (Node) ((NodePart) object).getModel();
+                    }
                 }
             }
             if (lastNode != node) {

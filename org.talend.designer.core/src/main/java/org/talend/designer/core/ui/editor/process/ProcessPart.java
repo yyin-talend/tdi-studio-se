@@ -24,11 +24,9 @@ import org.eclipse.draw2d.FreeformLayer;
 import org.eclipse.draw2d.FreeformLayout;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.gef.CompoundSnapToHelper;
-import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.LayerConstants;
 import org.eclipse.gef.RootEditPart;
-import org.eclipse.gef.SnapToGeometry;
 import org.eclipse.gef.SnapToGrid;
 import org.eclipse.gef.SnapToHelper;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
@@ -43,7 +41,6 @@ import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ui.editor.ProcessEditorInput;
 import org.talend.designer.core.ui.editor.TalendScalableFreeformRootEditPart;
 import org.talend.designer.core.ui.editor.nodes.Node;
-import org.talend.designer.core.ui.editor.nodes.NodePart;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.repository.model.RepositoryNode;
 
@@ -116,7 +113,7 @@ public class ProcessPart extends AbstractGraphicalEditPart implements PropertyCh
         fig2 = new FreeformLayer();
         getLayer(TalendScalableFreeformRootEditPart.PROCESS_BACKGROUND_LAYER).add(fig2);
         ajustReadOnly();
-        ConnectionLayer connLayer = (ConnectionLayer) getLayer(LayerConstants.CONNECTION_LAYER);
+        // ConnectionLayer connLayer = (ConnectionLayer) getLayer(LayerConstants.CONNECTION_LAYER);
         // connLayer.setConnectionRouter(new NullRouter());
         return figure;
     }
@@ -160,9 +157,9 @@ public class ProcessPart extends AbstractGraphicalEditPart implements PropertyCh
             List<Object> snapStrategies = new ArrayList<Object>();
             Boolean val = (Boolean) getViewer().getProperty(RulerProvider.PROPERTY_RULER_VISIBILITY);
 
-            val = (Boolean) getViewer().getProperty(ProcessSnapToGeometry.PROPERTY_SNAP_ENABLED);
+            val = (Boolean) getViewer().getProperty(NodeSnapToGeometry.PROPERTY_SNAP_ENABLED);
             if (val != null && val.booleanValue()) {
-                snapStrategies.add(new ProcessSnapToGeometry(this));
+                snapStrategies.add(new NodeSnapToGeometry(this));
             }
 
             val = (Boolean) getViewer().getProperty(SnapToGrid.PROPERTY_GRID_ENABLED);
@@ -219,37 +216,9 @@ public class ProcessPart extends AbstractGraphicalEditPart implements PropertyCh
      */
     public void propertyChange(final PropertyChangeEvent evt) {
         String prop = evt.getPropertyName();
-        if (Process.NODES.equals(prop)) {
-            // refreshChildren();
+        if (Process.NEED_UPDATE_JOB.equals(prop)) {
             refresh();
         }
-        if (Process.NOTES.equals(prop)) {
-            // refreshChildren();
-            refresh();
-        }
-    }
-
-    /**
-     * Class that allows to use SnapToGeometry on NodePart only, not on NodeLabelEditPart. <br/>
-     * 
-     * $Id$
-     * 
-     */
-    public class ProcessSnapToGeometry extends SnapToGeometry {
-
-        public ProcessSnapToGeometry(ProcessPart container) {
-            super(container);
-            List<EditPart> exl = new ArrayList<EditPart>();
-            List children = container.getChildren();
-            // List<EditPart> nodePartList = new ArrayList<EditPart>();
-            for (int i = 0; i < children.size(); i++) {
-                if (!(children.get(i) instanceof NodePart)) {
-                    exl.add((EditPart) children.get(i));
-                }
-            }
-            populateRowsAndCols(generateSnapPartsList(exl));
-        }
-
     }
 
     @Override
