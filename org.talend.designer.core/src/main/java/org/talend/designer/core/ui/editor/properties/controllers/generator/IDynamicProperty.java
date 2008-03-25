@@ -20,7 +20,6 @@ import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
-import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 
@@ -58,5 +57,4 @@ public interface IDynamicProperty {
 
     public String getRepositoryAliasName(ConnectionItem connectionItem);
 
-    public void updateContextList(IElementParameter param);
 }

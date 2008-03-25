@@ -67,12 +67,10 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.FolderItem;
 import org.talend.core.model.properties.Item;
-import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
-import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.cmd.ChangeMetadataCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -81,7 +79,6 @@ import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySectio
 import org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController;
 import org.talend.designer.core.ui.editor.properties.controllers.GroupController;
 import org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty;
-import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
@@ -231,105 +228,109 @@ public class DynamicComposite extends ScrolledComposite implements IDynamicPrope
         });
     }
 
-    /**
-     * ftang Comment method "updateContextList".
-     */
-    public void updateContextList(IElementParameter jobParam) {
-        if (jobParam == null || jobParam.getField() != EParameterFieldType.PROCESS_TYPE) {
-            return;
-        }
-        // for context type
-        List<String> contextNameList = new ArrayList<String>();
-        List<String> contextValueList = new ArrayList<String>();
-
-        IElementParameter jobNameParam = jobParam.getChildParameters().get(EParameterName.PROCESS_TYPE_PROCESS.getName());
-
-        Item item = jobNameParam.getLinkedRepositoryItem();
-        final String jobValue = (String) jobNameParam.getValue();
-        if (jobValue != null) {
-            if (item == null || (item != null && !item.getProperty().getId().equals(jobValue))) {
-                item = ProcessorUtilities.getProcessItemById(jobValue);
-            }
-        } else {
-            item = null;
-        }
-        if (item != null) {
-            if (item instanceof ProcessItem) {
-                for (Object o : ((ProcessItem) item).getProcess().getContext()) {
-                    if (o instanceof ContextType) {
-                        ContextType context = (ContextType) o;
-                        contextNameList.add(context.getName());
-                        contextValueList.add(context.getName());
-                    }
-                }
-            }
-            jobNameParam.setLabelFromRepository(item.getProperty().getLabel());
-        }
-        jobNameParam.setLinkedRepositoryItem(item);
-        // set default context
-        String defalutValue = null;
-        if (item != null && item instanceof ProcessItem) {
-            defalutValue = ((ProcessItem) item).getProcess().getDefaultContext();
-        }
-        setProcessTypeRelatedValues(jobParam, contextNameList, contextValueList, EParameterName.PROCESS_TYPE_CONTEXT.getName(),
-                defalutValue);
-
-        // for version type
-        List<String> versionNameList = new ArrayList<String>();
-        List<String> versionValueList = new ArrayList<String>();
-
-        if (item != null) { // existed item
-            List<IRepositoryObject> allVersion = ProcessorUtilities.getAllRepositoryObjectById(item.getProperty().getId());
-            for (IRepositoryObject obj : allVersion) {
-                String version = obj.getVersion();
-                versionNameList.add(version);
-                versionValueList.add(version);
-            }
-        }
-        setProcessTypeRelatedValues(jobParam, versionNameList, versionValueList, EParameterName.PROCESS_TYPE_VERSION.getName(),
-                null);
-
-    }
-
-    /**
-     * 
-     * ggu Comment method "setProcessTypeRelatedValues".
-     * 
-     * 
-     */
-    private void setProcessTypeRelatedValues(IElementParameter parentParam, List<String> nameList, List<String> valueList,
-            final String childName, final String defaultValue) {
-        if (parentParam == null || childName == null) {
-            return;
-        }
-        final String fullChildName = parentParam.getName() + ":" + childName;
-        IElementParameter childParam = parentParam.getChildParameters().get(childName);
-        if (nameList == null) {
-            childParam.setListItemsDisplayName(new String[0]);
-        } else {
-            childParam.setListItemsDisplayName(nameList.toArray(new String[0]));
-        }
-        if (valueList == null) {
-            childParam.setListItemsValue(new String[0]);
-        } else {
-            childParam.setListItemsValue(valueList.toArray(new String[0]));
-        }
-        // set default value
-        if (defaultValue != null) {
-            childParam.setValue(defaultValue);
-        }
-        if (elem != null) {
-            if (valueList != null && !valueList.contains(childParam.getValue())) {
-                if (nameList != null && nameList.size() > 0) {
-                    elem.setPropertyValue(fullChildName, valueList.get(valueList.size() - 1));
-                }
-            } else {
-                // force to store the value again to activate the code
-                // generation in Node.setPropertyValue
-                elem.setPropertyValue(fullChildName, childParam.getValue());
-            }
-        }
-    }
+    // /**
+    // * ftang Comment method "updateContextList".
+    // */
+    // public void updateContextList(IElementParameter jobParam) {
+    // if (jobParam == null || jobParam.getField() != EParameterFieldType.PROCESS_TYPE) {
+    // return;
+    // }
+    // // for context type
+    // List<String> contextNameList = new ArrayList<String>();
+    // List<String> contextValueList = new ArrayList<String>();
+    //
+    // IElementParameter jobNameParam =
+    // jobParam.getChildParameters().get(EParameterName.PROCESS_TYPE_PROCESS.getName());
+    //
+    // Item item = jobNameParam.getLinkedRepositoryItem();
+    // final String jobValue = (String) jobNameParam.getValue();
+    // if (jobValue != null) {
+    // if (item == null || (item != null && !item.getProperty().getId().equals(jobValue))) {
+    // item = ProcessorUtilities.getProcessItemById(jobValue);
+    // }
+    // } else {
+    // item = null;
+    // }
+    // if (item != null) {
+    // if (item instanceof ProcessItem) {
+    // for (Object o : ((ProcessItem) item).getProcess().getContext()) {
+    // if (o instanceof ContextType) {
+    // ContextType context = (ContextType) o;
+    // contextNameList.add(context.getName());
+    // contextValueList.add(context.getName());
+    // }
+    // }
+    // }
+    // jobNameParam.setLabelFromRepository(item.getProperty().getLabel());
+    // }
+    // jobNameParam.setLinkedRepositoryItem(item);
+    // // set default context
+    // String defalutValue = null;
+    // if (item != null && item instanceof ProcessItem) {
+    // defalutValue = ((ProcessItem) item).getProcess().getDefaultContext();
+    // }
+    // setProcessTypeRelatedValues(jobParam, contextNameList, contextValueList,
+    // EParameterName.PROCESS_TYPE_CONTEXT.getName(),
+    // defalutValue);
+    //
+    // // for version type
+    // List<String> versionNameList = new ArrayList<String>();
+    // List<String> versionValueList = new ArrayList<String>();
+    //
+    // if (item != null) { // existed item
+    // List<IRepositoryObject> allVersion = ProcessorUtilities.getAllRepositoryObjectById(item.getProperty().getId());
+    // for (IRepositoryObject obj : allVersion) {
+    // String version = obj.getVersion();
+    // versionNameList.add(version);
+    // versionValueList.add(version);
+    // }
+    // }
+    // setProcessTypeRelatedValues(jobParam, versionNameList, versionValueList,
+    // EParameterName.PROCESS_TYPE_VERSION.getName(),
+    // null);
+    //
+    // }
+    //
+    // /**
+    // *
+    // * ggu Comment method "setProcessTypeRelatedValues".
+    // *
+    // *
+    // */
+    // private void setProcessTypeRelatedValues(IElementParameter parentParam, List<String> nameList, List<String>
+    // valueList,
+    // final String childName, final String defaultValue) {
+    // if (parentParam == null || childName == null) {
+    // return;
+    // }
+    // final String fullChildName = parentParam.getName() + ":" + childName;
+    // IElementParameter childParam = parentParam.getChildParameters().get(childName);
+    // if (nameList == null) {
+    // childParam.setListItemsDisplayName(new String[0]);
+    // } else {
+    // childParam.setListItemsDisplayName(nameList.toArray(new String[0]));
+    // }
+    // if (valueList == null) {
+    // childParam.setListItemsValue(new String[0]);
+    // } else {
+    // childParam.setListItemsValue(valueList.toArray(new String[0]));
+    // }
+    // // set default value
+    // if (defaultValue != null) {
+    // childParam.setValue(defaultValue);
+    // }
+    // if (elem != null) {
+    // if (valueList != null && !valueList.contains(childParam.getValue())) {
+    // if (nameList != null && nameList.size() > 0) {
+    // elem.setPropertyValue(fullChildName, valueList.get(valueList.size() - 1));
+    // }
+    // } else {
+    // // force to store the value again to activate the code
+    // // generation in Node.setPropertyValue
+    // elem.setPropertyValue(fullChildName, childParam.getValue());
+    // }
+    // }
+    // }
 
     public String getRepositoryAliasName(ConnectionItem connectionItem) {
         ERepositoryObjectType repositoryObjectType = ERepositoryObjectType.getItemType(connectionItem);

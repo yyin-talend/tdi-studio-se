@@ -2564,9 +2564,13 @@ public class Process extends Element implements IProcess2 {
             Node node = (Node) iter.next();
             if ((node != null) && node.getComponent().getName().equals("tRunJob")) {
                 String curProcessName = (String) node.getPropertyValue(EParameterName.PROCESS_TYPE_PROCESS.getName());
-                if (!curSubJobs.contains(curProcessName)) {
-                    curSubJobs.add(curProcessName);
-                    calculateSubJobs(curProcessName, curSubJobs);
+                final ProcessItem item = ProcessorUtilities.getProcessItemById(curProcessName);
+                if (item != null) {
+                    final String label = item.getProperty().getLabel();
+                    if (!curSubJobs.contains(label)) {
+                        curSubJobs.add(label);
+                        calculateSubJobs(label, curSubJobs);
+                    }
                 }
             }
         }

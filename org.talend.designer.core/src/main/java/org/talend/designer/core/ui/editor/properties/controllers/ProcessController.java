@@ -37,17 +37,22 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.commons.ui.image.ImageProvider;
+import org.talend.commons.utils.VersionUtils;
 import org.talend.core.CorePlugin;
+import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
+import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.controllers.creator.SelectAllTextControlCreator;
 import org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty;
+import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.ui.dialog.RepositoryReviewDialog;
 
 /**
@@ -393,7 +398,12 @@ public class ProcessController extends AbstractElementPropertySectionController 
      * @return
      */
     private Command createButtonCommand(Button button) {
-        RepositoryReviewDialog dialog = new RepositoryReviewDialog((button).getShell(), ERepositoryObjectType.PROCESS, null);
+        String procssId = null;
+        if (elem != null && elem instanceof Node) {
+            Node runJobNode = (Node) elem;
+            procssId = runJobNode.getProcess().getId();
+        }
+        RepositoryReviewDialog dialog = new RepositoryReviewDialog((button).getShell(), ERepositoryObjectType.PROCESS, procssId);
         if (dialog.open() == RepositoryReviewDialog.OK) {
             repositoryObject = dialog.getResult().getObject();
             final Item item = repositoryObject.getProperty().getItem();
@@ -406,6 +416,12 @@ public class ProcessController extends AbstractElementPropertySectionController 
                     jobNameParam.setLinkedRepositoryItem(item);
                 }
             }
+            // record
+            List<IRepositoryObject> allVersion = ProcessorUtilities.getAllRepositoryObjectById(id);
+            if (allVersion != null) {
+                ProcessorUtilities.setAllVersionProcessList(id, allVersion);
+            }
+
             // String jobName = item.getProperty().getLabel();
             String paramName = (String) button.getData(PARAMETER_NAME);
             return new PropertyChangeCommand(elem, paramName, id);
@@ -441,11 +457,11 @@ public class ProcessController extends AbstractElementPropertySectionController 
 
     @Override
     public void refresh(IElementParameter param, boolean check) {
-        if (dynamicProperty != null) {
-            dynamicProperty.updateContextList(param);
+        updateContextList(param);
+        if (hashCurControls == null) {
+            return;
         }
         IElementParameter processTypeParameter = param.getChildParameters().get(EParameterName.PROCESS_TYPE_PROCESS.getName());
-
         Text jobName = (Text) hashCurControls.get(param.getName() + ":" + processTypeParameter.getName()); //$NON-NLS-1$
         if (jobName != null && !jobName.isDisposed()) {
             final String labelFromRepository = processTypeParameter.getLabelFromRepository();
@@ -504,4 +520,114 @@ public class ProcessController extends AbstractElementPropertySectionController 
 
     }
 
+    /**
+     * 
+     * ggu Comment method "updateContextList".
+     * 
+     * @param processParam
+     */
+    private void updateContextList(IElementParameter processParam) {
+        if (processParam == null || processParam.getField() != EParameterFieldType.PROCESS_TYPE) {
+            return;
+        }
+        // for context type
+        List<String> contextNameList = new ArrayList<String>();
+        List<String> contextValueList = new ArrayList<String>();
+        // for version type
+        List<String> versionNameList = new ArrayList<String>();
+        List<String> versionValueList = new ArrayList<String>();
+
+        IElementParameter jobNameParam = processParam.getChildParameters().get(EParameterName.PROCESS_TYPE_PROCESS.getName());
+
+        final String jobId = (String) jobNameParam.getValue();
+        Item item = null;
+        List<IRepositoryObject> allVersion = null;
+
+        if (jobId != null && !"".equals(jobId)) {
+            allVersion = ProcessorUtilities.getAllVersionProcessList(jobId);
+        }
+
+        if (allVersion != null) {
+            String oldVersion = null;
+            for (IRepositoryObject obj : allVersion) {
+                String version = obj.getVersion();
+                if (oldVersion == null) {
+                    oldVersion = version;
+                }
+                if (VersionUtils.compareTo(version, oldVersion) >= 0) {
+                    item = obj.getProperty().getItem();
+                }
+                oldVersion = version;
+                versionNameList.add(version);
+                versionValueList.add(version);
+            }
+        }
+        if (item != null) {
+            jobNameParam.setLabelFromRepository(item.getProperty().getLabel());
+            if (item instanceof ProcessItem) {
+                for (Object o : ((ProcessItem) item).getProcess().getContext()) {
+                    if (o instanceof ContextType) {
+                        ContextType context = (ContextType) o;
+                        contextNameList.add(context.getName());
+                        contextValueList.add(context.getName());
+                    }
+                }
+            }
+            // set default context
+            String defalutValue = null;
+            if (item != null && item instanceof ProcessItem) {
+                defalutValue = ((ProcessItem) item).getProcess().getDefaultContext();
+            }
+            setProcessTypeRelatedValues(processParam, contextNameList, contextValueList, EParameterName.PROCESS_TYPE_CONTEXT
+                    .getName(), defalutValue);
+
+            setProcessTypeRelatedValues(processParam, versionNameList, versionValueList, EParameterName.PROCESS_TYPE_VERSION
+                    .getName(), null);
+
+        }
+        jobNameParam.setLinkedRepositoryItem(item);
+
+    }
+
+    /**
+     * 
+     * ggu Comment method "setProcessTypeRelatedValues".
+     * 
+     * 
+     */
+    private void setProcessTypeRelatedValues(IElementParameter parentParam, List<String> nameList, List<String> valueList,
+            final String childName, final String defaultValue) {
+        if (parentParam == null || childName == null) {
+            return;
+        }
+        final String fullChildName = parentParam.getName() + ":" + childName;
+        IElementParameter childParam = parentParam.getChildParameters().get(childName);
+        if (nameList == null) {
+            childParam.setListItemsDisplayName(new String[0]);
+        } else {
+            childParam.setListItemsDisplayName(nameList.toArray(new String[0]));
+        }
+        if (valueList == null) {
+            childParam.setListItemsValue(new String[0]);
+        } else {
+            childParam.setListItemsValue(valueList.toArray(new String[0]));
+        }
+
+        if (elem != null) {
+            if (valueList != null && !valueList.contains(childParam.getValue())) {
+                if (nameList != null && nameList.size() > 0) {
+                    // set default value
+                    if (defaultValue != null) {
+                        childParam.setValue(defaultValue);
+                    } else {
+                        elem.setPropertyValue(fullChildName, valueList.get(valueList.size() - 1));
+                    }
+                }
+            } else {
+                // force to store the value again to activate the code
+                // generation in Node.setPropertyValue
+                elem.setPropertyValue(fullChildName, childParam.getValue());
+            }
+        }
+    }
 }
