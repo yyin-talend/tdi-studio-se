@@ -32,6 +32,7 @@ String table    = ElementParameterParser.getValue(node, "__TABLE__");
 String data_action = ElementParameterParser.getValue(node, "__DATA_ACTION__");
 String fields_terminated_by = ElementParameterParser.getValue(node, "__FIELDS_TERMINATED_BY__");
 String fields_enclosed_by = ElementParameterParser.getValue(node, "__FIELDS_ENCLOSED_BY__");
+String columns = "";//if schema is defined, use this option in clt file
    
 List<Map<String, String>> options = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__OPTIONS__");
 java.lang.StringBuilder optionStr = new java.lang.StringBuilder();
@@ -159,6 +160,41 @@ if(dbschema_<%=cid%> == null || dbschema_<%=cid%>.trim().length() == 0) {
 String tableAction = ElementParameterParser.getValue(node,"__TABLE_ACTION__");
 String dbmsId = ElementParameterParser.getValue(node,"__MAPPING__");
 if(columnList != null && columnList.size() > 0) {
+	//init value of columns
+	MappingTypeRetriever mappingType = MetadataTalendType.getMappingTypeRetriever(dbmsId);
+	columns = "(";
+	boolean flag = false;
+	for(IMetadataColumn column:columnList){
+		String dataType = null;
+        if(column.getType() == null || column.getType().trim().length() == 0) {
+        	dataType = mappingType.getDefaultSelectedDbType(column.getTalendType());
+        } else {
+        	dataType = column.getType().toUpperCase();
+        }
+        Integer length = column.getLength() == null ? 0 : column.getLength();
+        
+		if(flag){
+			columns += ", ";
+		}else{
+			flag = true;
+		}
+		columns += column.getOriginalDbColumnName();
+		if(column.getType().equals("DATE")){//date
+			String pattn = column.getPattern();
+			if(pattn.length() > 2){
+				pattn = "'" + pattn.substring(1, pattn.length() - 1) + "'";
+			}else{
+				pattn = "";
+			}
+			columns += (" DATE " + pattn);
+		}else if(dataType.equals("CHAR") || dataType.equals("NCHAR") || dataType.equals("NVARCHAR2") || dataType.equals("VARCHAR") || dataType.equals("VARCHAR2")){//long text
+			if(length > 255){
+				columns += " CHAR(" + length + ")";
+			}
+		}
+	}
+	columns += ")\\r\\n";
+	
     List<Column> stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, null);
     Manager manager = getManager(dbmsId, cid);
     if(tableAction.equals("DROP_CREATE")) {
@@ -197,34 +233,7 @@ if(columnList != null && columnList.size() > 0) {
         <%
     }    
 }
-%>
-
-java.sql.Statement stmt_<%=cid %> = conn_<%=cid%>.createStatement();
-
-java.sql.ResultSet rs_<%=cid %> = stmt_<%=cid %>.executeQuery("select * from " + tableName_<%=cid%> + " where 1=2");
-
-java.sql.ResultSetMetaData rsm_<%=cid %> = rs_<%=cid %>.getMetaData();
-
-int colCount_<%=cid %> = rsm_<%=cid %>.getColumnCount();
-
-StringBuilder sb_<%=cid %> = new StringBuilder();
-
-sb_<%=cid %>.append("(");
-
-for (int i = 1; i <= colCount_<%=cid %>; i++) {
-
-    sb_<%=cid %>.append(rsm_<%=cid %>.getColumnName(i));
-    
-    if(i < colCount_<%=cid %>){
-    
-        sb_<%=cid %>.append(", ");
-    
-    }	
-}
-
-sb_<%=cid %>.append(")");
-
-<%
+%><%
 if(!useExistingConn.equals("true"))
 {
     %>
@@ -248,8 +257,7 @@ java.io.FileWriter fw_<%=cid %> = new java.io.FileWriter(cltf_<%=cid %>);
 fw_<%=cid %>.write("\r\nLOAD DATA\r\nCHARACTERSET <%=encoding %>\r\n" +
     "<%=data_action %> INTO TABLE " + tableName_<%=cid%> + 
     "\r\nFIELDS TERMINATED BY \"" + <%=fields_terminated_by %> + 
-    "\"\r\nOPTIONALLY ENCLOSED BY '" + enclosure_<%=cid %> + "'\r\n" + 
-	               sb_<%=cid %>);
+    "\"\r\nOPTIONALLY ENCLOSED BY '" + enclosure_<%=cid %> + "'\r\n<%=columns %>");
             
 fw_<%=cid %>.close();
 
