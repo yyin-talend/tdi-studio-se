@@ -781,23 +781,6 @@ public class SchemaTypeController extends AbstractRepositoryController {
         }
 
         if (table != null && item != null) {
-            final IElementParameter parentParameter = param.getParentParameter();
-            if (parentParameter != null) {
-                IElementParameter typeParam = parentParameter.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName());
-                final IElementParameter dbTableParam = elem.getElementParameterFromField(EParameterFieldType.DBTABLE, param
-                        .getCategory());
-                if (dbTableParam != null) {
-                    if (typeParam != null && EmfComponent.REPOSITORY.equals(typeParam.getValue())) {
-                        dbTableParam.setValue(table.getLabel());
-                        dbTableParam.setReadOnly(true);
-                        dbTableParam.setRepositoryValueUsed(true);
-                    } else {
-                        dbTableParam.setReadOnly(false);
-                        dbTableParam.setRepositoryValueUsed(false);
-                    }
-                }
-            }
-
             return dynamicProperty.getRepositoryAliasName((ConnectionItem) item) + ":" + item.getProperty().getLabel() + " - " //$NON-NLS-1$ //$NON-NLS-2$
                     + table.getLabel();
         }

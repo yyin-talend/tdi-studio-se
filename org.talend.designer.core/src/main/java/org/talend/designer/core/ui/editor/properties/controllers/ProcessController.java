@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.fieldassist.DecoratedField;
 import org.eclipse.jface.fieldassist.FieldDecoration;
@@ -53,6 +54,7 @@ import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.controllers.creator.SelectAllTextControlCreator;
 import org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty;
 import org.talend.designer.runprocess.ProcessorUtilities;
+import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.ui.dialog.RepositoryReviewDialog;
 
 /**
@@ -543,11 +545,11 @@ public class ProcessController extends AbstractElementPropertySectionController 
         final String jobId = (String) jobNameParam.getValue();
         Item item = null;
         List<IRepositoryObject> allVersion = null;
-
-        if (jobId != null && !"".equals(jobId)) {
+        IRepositoryObject lastVersionObject = null;
+        if (jobId != null && !"".equals(jobId)) { //$NON-NLS-1$
             allVersion = ProcessorUtilities.getAllVersionProcessList(jobId);
         }
-
+        String label = null;
         if (allVersion != null) {
             String oldVersion = null;
             for (IRepositoryObject obj : allVersion) {
@@ -557,36 +559,42 @@ public class ProcessController extends AbstractElementPropertySectionController 
                 }
                 if (VersionUtils.compareTo(version, oldVersion) >= 0) {
                     item = obj.getProperty().getItem();
+                    lastVersionObject = obj;
                 }
                 oldVersion = version;
                 versionNameList.add(version);
                 versionValueList.add(version);
             }
-        }
-        if (item != null) {
-            jobNameParam.setLabelFromRepository(item.getProperty().getLabel());
-            if (item instanceof ProcessItem) {
-                for (Object o : ((ProcessItem) item).getProcess().getContext()) {
-                    if (o instanceof ContextType) {
-                        ContextType context = (ContextType) o;
-                        contextNameList.add(context.getName());
-                        contextValueList.add(context.getName());
-                    }
-                }
-            }
-            // set default context
-            String defalutValue = null;
-            if (item != null && item instanceof ProcessItem) {
-                defalutValue = ((ProcessItem) item).getProcess().getDefaultContext();
-            }
-            setProcessTypeRelatedValues(processParam, contextNameList, contextValueList, EParameterName.PROCESS_TYPE_CONTEXT
-                    .getName(), defalutValue);
 
-            setProcessTypeRelatedValues(processParam, versionNameList, versionValueList, EParameterName.PROCESS_TYPE_VERSION
-                    .getName(), null);
-
+            label = item.getProperty().getLabel();
+            IPath path = RepositoryNodeUtilities.getPath(lastVersionObject);
+            if (path != null) {
+                label = path.toString() + IPath.SEPARATOR + label;
+            }
+        } else {
+            final String parentName = processParam.getName() + ":"; //$NON-NLS-1$
+            elem.setPropertyValue(parentName + jobNameParam.getName(), null);
         }
         jobNameParam.setLinkedRepositoryItem(item);
+        jobNameParam.setLabelFromRepository(label);
+        // set default context
+        String defalutValue = null;
+        if (item != null && item instanceof ProcessItem) {
+            for (Object o : ((ProcessItem) item).getProcess().getContext()) {
+                if (o instanceof ContextType) {
+                    ContextType context = (ContextType) o;
+                    contextNameList.add(context.getName());
+                    contextValueList.add(context.getName());
+                }
+            }
+            defalutValue = ((ProcessItem) item).getProcess().getDefaultContext();
+        }
+
+        setProcessTypeRelatedValues(processParam, contextNameList, contextValueList, EParameterName.PROCESS_TYPE_CONTEXT
+                .getName(), defalutValue);
+
+        setProcessTypeRelatedValues(processParam, versionNameList, versionValueList, EParameterName.PROCESS_TYPE_VERSION
+                .getName(), null);
 
     }
 
@@ -601,8 +609,16 @@ public class ProcessController extends AbstractElementPropertySectionController 
         if (parentParam == null || childName == null) {
             return;
         }
-        final String fullChildName = parentParam.getName() + ":" + childName;
+        final String fullChildName = parentParam.getName() + ":" + childName; //$NON-NLS-1$
         IElementParameter childParam = parentParam.getChildParameters().get(childName);
+
+        IElementParameter jobNameParam = parentParam.getChildParameters().get(EParameterName.PROCESS_TYPE_PROCESS.getName());
+        if (jobNameParam != null) {
+            String value = (String) jobNameParam.getValue();
+            if (value == null || "".equals(value)) {
+                childParam.setValue(null);
+            }
+        }
         if (nameList == null) {
             childParam.setListItemsDisplayName(new String[0]);
         } else {

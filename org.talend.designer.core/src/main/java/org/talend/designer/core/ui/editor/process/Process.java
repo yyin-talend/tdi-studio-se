@@ -620,11 +620,10 @@ public class Process extends Element implements IProcess2 {
         if (param.getName().equals(EParameterName.PROCESS_TYPE_PROCESS.getName())) {
             // if this parameter is defined in a component, then we add a
             // dependancy to this job.
-            String jobName;
-            jobName = ((String) param.getValue());
+            String jobName = ((String) param.getValue());
             // if there is no job selected in the tRunJob, no need to add any
             // relationship in "required".
-            if (jobName.length() != 0) {
+            if (jobName != null && jobName.length() != 0) {
                 RequiredType rType = process.getRequired();
                 if (rType == null) {
                     rType = fileFact.createRequiredType();
