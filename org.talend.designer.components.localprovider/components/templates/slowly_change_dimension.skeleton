@@ -134,11 +134,18 @@ public class CLASS {
     }
     public class DimensionType1Configer {
         private List<Column> dimensionAttrbites;
+        private boolean isOnlyUpdateActive;
         public DimensionType1Configer(List<Column> dimensionAttrbites) {
             this.dimensionAttrbites = dimensionAttrbites;
         }
         public List<Column> getDimensionAttributes() {
             return dimensionAttrbites;
+        }
+        public void setOnlyUpdateActive(boolean isOnlyUpdateActive) {
+            this.isOnlyUpdateActive = isOnlyUpdateActive;
+        }
+        public boolean isOnlyUpdateActive() {
+            return isOnlyUpdateActive;
         }
     }
     public class DimensionType2Configer {
@@ -307,6 +314,8 @@ public class CLASS {
                 }
             }
             dimensionType1Configer = new DimensionType1Configer(dimensionAttrbites);
+            boolean isOnlyUpdateActive = ElementParameterParser.getValue(node, "__ONLY_UPDATE_ACTIVE__").equals("true");
+            dimensionType1Configer.setOnlyUpdateActive(isOnlyUpdateActive);
         }
         return dimensionType1Configer;
     }
@@ -800,6 +809,15 @@ public class CLASS {
                     }
                     updateWhereStmt += getLProtectedChar() + keyColumn.getColumnName() + getRProtectedChar() + " = ?";
                 }
+                if(scdConfiger.isEnableType2() && scdConfiger.getDimensionType1Configer().isOnlyUpdateActive()) {
+                    String endDateField = scdConfiger.getDimensionType2Configer().getEndDateField();
+                    if(scdConfiger.getDimensionType2Configer().getEndDateValueType().equals("NULL_VALUE")) {
+                        updateWhereStmt += keySeparator + getLProtectedChar() + endDateField + getRProtectedChar() + " IS NULL";
+                    } else {
+                        String endDateValue = scdConfiger.getDimensionType2Configer().getEndDateValue();
+                        updateWhereStmt += keySeparator + getYear(endDateField) + " = \" + " + endDateValue + " + \"";
+                    }
+                }
                 List<Column> dimensionAttrbites = scdConfiger.getDimensionType1Configer().getDimensionAttributes();
                 for(Column dimensionAttrbite : dimensionAttrbites) {
                     if(firstColumn) {
@@ -834,7 +852,7 @@ public class CLASS {
                 }                
                 String endDateField = scdConfiger.getDimensionType2Configer().getEndDateField();
                 if(scdConfiger.getDimensionType2Configer().getEndDateValueType().equals("NULL_VALUE")) {
-                    updateWhereStmt += keySeparator + getLProtectedChar() + endDateField + getRProtectedChar() + " = NULL";
+                    updateWhereStmt += keySeparator + getLProtectedChar() + endDateField + getRProtectedChar() + " IS NULL";
                 } else {
                     String endDateValue = scdConfiger.getDimensionType2Configer().getEndDateValue();
                     updateWhereStmt += keySeparator + getYear(endDateField) + " = \" + " + endDateValue + " + \"";
@@ -875,7 +893,7 @@ public class CLASS {
                 if(scdConfiger.isEnableType2()) {
                     String endDateField = scdConfiger.getDimensionType2Configer().getEndDateField();
                     if(scdConfiger.getDimensionType2Configer().getEndDateValueType().equals("NULL_VALUE")) {
-                        updateWhereStmt += keySeparator + getLProtectedChar() + endDateField + getRProtectedChar() + " = NULL";
+                        updateWhereStmt += keySeparator + getLProtectedChar() + endDateField + getRProtectedChar() + " IS NULL";
                     } else {
                         String endDateValue = scdConfiger.getDimensionType2Configer().getEndDateValue();
                         updateWhereStmt += keySeparator + getYear(endDateField) + " = \" + " + endDateValue + " + \"";
