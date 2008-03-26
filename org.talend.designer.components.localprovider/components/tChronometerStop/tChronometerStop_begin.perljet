@@ -14,6 +14,16 @@ CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 
+boolean sinceStarter = ElementParameterParser.getValue(
+    node,
+    "__SINCE_STARTER__"
+).equals("true");
+
+String starter = ElementParameterParser.getValue(
+    node,
+    "__STARTER__"
+);
+
 boolean display = ElementParameterParser.getValue(
     node,
     "__DISPLAY__"
@@ -24,15 +34,38 @@ boolean displayComponentName = ElementParameterParser.getValue(
     "__DISPLAY_COMPONENT_NAME__"
 ).equals("true");
 
+boolean displayReadableDuration = ElementParameterParser.getValue(
+    node,
+    "__DISPLAY_READABLE_DURATION__"
+).equals("true");
+
+
 String caption = ElementParameterParser.getValue(
     node,
     "__CAPTION__"
 );
+
+if (displayReadableDuration) {
+%>
+use Time::Duration;
+<%
+}
 %>
 
 $_globals{<%=cid%>}{DURATION} = int(
     tv_interval(
+<%
+if (sinceStarter) {
+%>
+        $_globals{<%=starter%>}{STARTTIME},
+<%
+}
+else {
+%>
         $_globals{start},
+<%
+}
+%>
         [gettimeofday]
     )
     * 1000
@@ -47,10 +80,18 @@ print '[<%=cid%>] ';
     }
 %>
 printf(
-    "%s %u milliseconds\n",
+    "%s %u milliseconds",
     <%=caption%>,
     $_globals{<%=cid%>}{DURATION}
 );
+<%
+    if (displayReadableDuration) {
+%>
+printf ' (%s)', duration(int($_globals{<%=cid%>}{DURATION}/1000));
+<%
+    }
+%>
+print "\n";
 <%
 }
 %>
