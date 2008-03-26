@@ -93,6 +93,8 @@
             				    								  
 		<%
 
+		String previousLookupName = null;
+
         HashMap<String, ExternalMapperTableEntry> hExternalInputTableEntries = new HashMap<String, ExternalMapperTableEntry>();
         for (ExternalMapperTable externalTable : inputTables) {
             String tableName = externalTable.getName();
@@ -162,17 +164,10 @@
 
                     hasValidLookupTables = true;
                     
-                    if (aKeysValues.length > 0 || checkingSyntax) {
-                        sb.append(cr
-                                + gm.buildLookupDataInstance(uniqueNameComponent, tableName, aKeysNames, aKeysValues,
-                                        indent, checkingSyntax));
-                        %>
-                        
-                        	<%= sb.toString()%>
-                          
-                     <% 
-                     }
-
+                    %>
+                    <%= sb.toString()%>
+                    
+                    <%
 
                      sb = new StringBuilder();
                      String matchingMode = externalTable.getMatchingMode();
@@ -193,6 +188,11 @@
        		  	    	
        		  	    	
        		  	    	<%
+       		  	    	
+       		  	    	String generatedKeyExpressions = gm.buildLookupDataInstance(uniqueNameComponent, tableName, aKeysNames, aKeysValues, 0, checkingSyntax);
+       		  	    	
+       		  	    	String beforeMatchFilter = null;
+       		  	    	
                         if(aKeysValues.length > 0) { // T 1
                         %>
 					  		<%if(isMultipleResultMode) { // T 80 %>
@@ -200,8 +200,20 @@
  							<% } // T 80 %>
  									 <%= className %> <%= tableName %>ObjectFromLookup = null;
                           
-		           		  	    if(!<%= rejectedInnerJoin %>)
-		           		  	    { // G 20
+		           		  	    if(!<%= rejectedInnerJoin %><%
+		           		  	    	if (beforeMatchFilter != null) { // T 101
+   	                    				%> && <%= beforeMatchFilter %><%
+           		  	    			} // T 101
+		           		  	    
+		           		  	    %>) { // G 20
+
+
+                        <%= generatedKeyExpressions %>
+	                    
+
+					<%                     
+                     %>
+
 		                          		  <%=tableName%>HashKey.hashCodeDirty = true;
 	  									  tHash_Lookup_<%= tableName %>.get( <%= tableName %>HashKey );
 
@@ -271,7 +283,11 @@
 									 <% 
 									 } // T 52 
                     		  	 } // T 1 
-                    		  	 else { // T 2
+                    		  	 else if(checkingSyntax) { // T 3
+                    		  	 	
+                    		  	 	%><%= generatedKeyExpressions %><%
+                    		  	 	
+                    		  	 } else { // T 2
                     		  	 %>
                     		  	 
 		                      	 boolean hasAtLeastOneValidLookup_<%= tableName %> = false;
