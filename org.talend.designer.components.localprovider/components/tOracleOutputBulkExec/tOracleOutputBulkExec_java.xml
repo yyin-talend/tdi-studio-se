@@ -32,15 +32,45 @@
       NAME="PROPERTY"
       FIELD="PROPERTY_TYPE"
       SHOW="true"
-      NUM_ROW="2"
+      NUM_ROW="1"
       REPOSITORY_VALUE="DATABASE:ORACLE"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     />
+    
+    <PARAMETER
+      NAME="USE_EXISTING_CONNECTION"
+      FIELD="CHECK"
+      NUM_ROW="2"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="CONNECTION"
+      FIELD="COMPONENT_LIST"
+      FILTER="tOracleConnection"
+      NUM_ROW="2"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
+    />        
+    
+    <PARAMETER
+      NAME="CONNECTION_TYPE"
+      FIELD="CLOSED_LIST"
+      NUM_ROW="3"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
+    >
+      <ITEMS DEFAULT="ORACLE_SID">
+        <ITEM NAME="ORACLE_SID" VALUE="ORACLE_SID" />
+        <ITEM NAME="ORACLE_SERVICE_NAME" VALUE="ORACLE_SERVICE_NAME"/>
+      </ITEMS>
+    </PARAMETER>
 
     <PARAMETER
       NAME="HOST"
       FIELD="TEXT"
-      NUM_ROW="3"
+      NUM_ROW="4"
       REPOSITORY_VALUE="SERVER_NAME"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -48,8 +78,9 @@
     <PARAMETER
       NAME="PORT"
       FIELD="TEXT"
-      NUM_ROW="3"
+      NUM_ROW="4"
       REPOSITORY_VALUE="PORT"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>"1521"</DEFAULT>
     </PARAMETER>
@@ -57,8 +88,9 @@
     <PARAMETER
       NAME="DBNAME"
       FIELD="TEXT"
-      NUM_ROW="4"
+      NUM_ROW="5"
       REPOSITORY_VALUE="SID"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -66,8 +98,9 @@
     <PARAMETER 
       NAME="SCHEMA_DB"
       FIELD="TEXT"
-      NUM_ROW="4"
+      NUM_ROW="5"
       REPOSITORY_VALUE="SCHEMA"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>"ROOT"</DEFAULT>
     </PARAMETER>
@@ -75,8 +108,9 @@
     <PARAMETER
       NAME="USER"
       FIELD="TEXT"
-      NUM_ROW="5"
+      NUM_ROW="6"
       REPOSITORY_VALUE="USERNAME"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -84,8 +118,17 @@
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
-      NUM_ROW="5"
+      NUM_ROW="6"
       REPOSITORY_VALUE="PASSWORD"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="TABLE"
+      FIELD="TEXT"
+      NUM_ROW="7"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -93,7 +136,7 @@
     <PARAMETER
       NAME="TABLE_ACTION"
       FIELD="CLOSED_LIST"
-      NUM_ROW="6"
+      NUM_ROW="7"
     >
       <ITEMS DEFAULT="NONE">
         <ITEM NAME="NONE" VALUE="NONE" />
@@ -102,14 +145,6 @@
         <ITEM NAME="CREATE_IF_NOT_EXISTS" VALUE="CREATE_IF_NOT_EXISTS"/>
         <ITEM NAME="CLEAR" VALUE="CLEAR"/>
       </ITEMS>
-    </PARAMETER>
-
-    <PARAMETER
-      NAME="TABLE"
-      FIELD="TEXT"
-      NUM_ROW="6"
-    >
-      <DEFAULT>""</DEFAULT>
     </PARAMETER>
     
 <!-- following property should not be displayed -->
@@ -180,7 +215,9 @@
       </TEMPLATE>
       
       <TEMPLATE NAME="tOBE" COMPONENT="tOracleBulkExec"/>
-      
+      <TEMPLATE_PARAM SOURCE="self.USE_EXISTING_CONNECTION"   TARGET="tOBE.USE_EXISTING_CONNECTION" />
+      <TEMPLATE_PARAM SOURCE="self.CONNECTION"   TARGET="tOBE.CONNECTION" />
+      <TEMPLATE_PARAM SOURCE="self.CONNECTION_TYPE"   TARGET="tOBE.CONNECTION_TYPE" />
       <TEMPLATE_PARAM SOURCE="self.HOST"   TARGET="tOBE.HOST" />
       <TEMPLATE_PARAM SOURCE="self.DBNAME" TARGET="tOBE.DBNAME" />
       <TEMPLATE_PARAM SOURCE="self.SCHEMA_DB" TARGET="tOBE.SCHEMA_DB" />
