@@ -419,11 +419,6 @@ public class ProcessController extends AbstractElementPropertySectionController 
                     jobNameParam.setLinkedRepositoryItem(item);
                 }
             }
-            // record
-            List<IRepositoryObject> allVersion = ProcessorUtilities.getAllRepositoryObjectById(id);
-            if (allVersion != null) {
-                ProcessorUtilities.setAllVersionProcessList(id, allVersion);
-            }
 
             // String jobName = item.getProperty().getLabel();
             String paramName = (String) button.getData(PARAMETER_NAME);
@@ -544,11 +539,10 @@ public class ProcessController extends AbstractElementPropertySectionController 
 
         final String jobId = (String) jobNameParam.getValue();
         Item item = null;
-        List<IRepositoryObject> allVersion = null;
+
+        List<IRepositoryObject> allVersion = ProcessorUtilities.getAllVersionObjectById(jobId);
+
         IRepositoryObject lastVersionObject = null;
-        if (jobId != null && !"".equals(jobId)) { //$NON-NLS-1$
-            allVersion = ProcessorUtilities.getAllVersionProcessList(jobId);
-        }
         String label = null;
         if (allVersion != null) {
             String oldVersion = null;
