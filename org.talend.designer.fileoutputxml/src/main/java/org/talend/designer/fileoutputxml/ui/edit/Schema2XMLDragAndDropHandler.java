@@ -243,7 +243,7 @@ public class Schema2XMLDragAndDropHandler {
             List<Object> dragdedData = draggedData.getTransferableEntryList();
             FOXTreeNode targetNode = (FOXTreeNode) (targetItem.getData());
 
-            if (dragdedData.size() == 1) {
+            if (dragdedData.size() == 1 && isDropRelatedColumn(event)) {
                 if (!targetNode.hasChildren()) {
                     IMetadataColumn metaColumn = (IMetadataColumn) dragdedData.get(0);
                     targetNode.setColumn(metaColumn);
@@ -258,7 +258,7 @@ public class Schema2XMLDragAndDropHandler {
 
                     linker.getSource().getShell().setCursor(null);
                 }
-            } else if (dragdedData.size() > 1) {
+            } else if (dragdedData.size() > 0) {
                 DragAndDrogDialog dialog = new DragAndDrogDialog(null);
                 dialog.open();
                 if (dialog.getReturnCode() == IDialogConstants.CANCEL_ID) {
