@@ -28,10 +28,12 @@ import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.DropTargetListener;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.graphics.Cursor;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.swt.widgets.TreeItem;
 import org.talend.commons.ui.swt.dnd.LocalDataTransfer;
 import org.talend.commons.ui.swt.dnd.LocalDraggedData;
 import org.talend.core.model.metadata.IMetadataColumn;
@@ -192,27 +194,34 @@ public class Schema2XMLDragAndDropHandler {
             FOXTreeNode targetNode = (FOXTreeNode) (targetItem.getData());
             LocalDraggedData draggedData = LocalDataTransfer.getInstance().getDraggedData();
             List<Object> dragdedData = draggedData.getTransferableEntryList();
-            // if (dragdedData.size() == 1) {
-            // if (targetNode instanceof Element) {
-            // Element element = (Element) targetNode;
-            // if (!element.getElementChildren().isEmpty() || element.getParent() == null) {
-            // event.detail = DND.DROP_NONE;
-            // return;
-            // }
-            // } else {
-            // FOXTreeNode parent = targetNode.getParent();
-            // if (parent == null) {
-            // event.detail = DND.DROP_NONE;
-            // return;
-            // }
-            // }
-            // } else if (dragdedData.size() > 1) {
-            // if (!(targetNode instanceof Element)) {
-            // event.detail = DND.DROP_NONE;
-            // return;
-            // }
-            // }
+            if (dragdedData.size() == 1 && isDropRelatedColumn(event)) {
+                if (targetNode instanceof Element) {
+                    Element element = (Element) targetNode;
+                    if (!element.getElementChildren().isEmpty() || element.getParent() == null) {
+                        event.detail = DND.DROP_NONE;
+                        return;
+                    }
+                } else {
+                    FOXTreeNode parent = targetNode.getParent();
+                    if (parent == null) {
+                        event.detail = DND.DROP_NONE;
+                        return;
+                    }
+                }
+            }
             event.detail = DND.DROP_LINK;
+        }
+
+        private boolean isDropRelatedColumn(DropTargetEvent event) {
+            DropTarget dropTarget = (DropTarget) event.getSource();
+            Display display = event.display;
+            Control control = dropTarget.getControl();
+            TreeItem item = (TreeItem) event.item;
+            Rectangle rec = display.map(control, null, item.getBounds(1));
+            if ((event.x >= rec.x) && (event.y >= rec.y) && ((event.x - rec.x) <= rec.width) && ((event.y - rec.y) <= rec.height)) {
+                return true;
+            }
+            return false;
         }
 
         /*
@@ -234,7 +243,22 @@ public class Schema2XMLDragAndDropHandler {
             List<Object> dragdedData = draggedData.getTransferableEntryList();
             FOXTreeNode targetNode = (FOXTreeNode) (targetItem.getData());
 
-            if (dragdedData.size() > 0) {
+            if (dragdedData.size() == 1) {
+                if (!targetNode.hasChildren()) {
+                    IMetadataColumn metaColumn = (IMetadataColumn) dragdedData.get(0);
+                    targetNode.setColumn(metaColumn);
+                    linker.getXMLViewer().refresh(targetNode);
+                    linker.getXMLViewer().expandAll();
+
+                    Display display = linker.getSource().getDisplay();
+                    Cursor cursor = new Cursor(display, SWT.CURSOR_WAIT);
+                    linker.getSource().getShell().setCursor(cursor);
+
+                    linker.valuedChanged(targetItem);
+
+                    linker.getSource().getShell().setCursor(null);
+                }
+            } else if (dragdedData.size() > 1) {
                 DragAndDrogDialog dialog = new DragAndDrogDialog(null);
                 dialog.open();
                 if (dialog.getReturnCode() == IDialogConstants.CANCEL_ID) {
