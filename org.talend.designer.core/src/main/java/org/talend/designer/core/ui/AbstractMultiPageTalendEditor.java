@@ -74,6 +74,7 @@ import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.editor.CodeEditorFactory;
 import org.talend.designer.core.ui.editor.TalendJavaEditor;
 import org.talend.designer.core.ui.editor.TalendPerlEditor;
+import org.talend.designer.core.ui.editor.nodecontainer.NodeContainerPart;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodeLabel;
 import org.talend.designer.core.ui.editor.nodes.NodeLabelEditPart;
@@ -81,6 +82,7 @@ import org.talend.designer.core.ui.editor.nodes.NodePart;
 import org.talend.designer.core.ui.editor.outline.NodeTreeEditPart;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.process.ProcessPart;
+import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainerPart;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
@@ -232,14 +234,26 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
      * 
      * @param node
      */
+    @SuppressWarnings("unchecked")
     public void selectNode(Node node) {
         GraphicalViewer viewer = designerEditor.getViewer();
         Object object = viewer.getRootEditPart().getChildren().get(0);
         if (object instanceof ProcessPart) {
+            // the structure in memory is:
+            // ProcessPart < SubjobContainerPart < NodeContainerPart < NodePart
             for (EditPart editPart : (List<EditPart>) ((ProcessPart) object).getChildren()) {
-                if (editPart instanceof NodePart) {
-                    if (((NodePart) editPart).getModel().equals(node)) {
-                        viewer.select(editPart);
+                if (editPart instanceof SubjobContainerPart) {
+                    SubjobContainerPart subjobPart = (SubjobContainerPart) editPart;
+                    for (EditPart part : (List<EditPart>) subjobPart.getChildren()) {
+                        if (part instanceof NodeContainerPart) {
+                            EditPart nodePart = (EditPart) part.getChildren().get(0);
+                            if (nodePart instanceof NodePart) {
+                                if (((NodePart) nodePart).getModel().equals(node)) {
+                                    viewer.select(nodePart);
+                                    return;
+                                }
+                            }
+                        }
                     }
                 }
             }
