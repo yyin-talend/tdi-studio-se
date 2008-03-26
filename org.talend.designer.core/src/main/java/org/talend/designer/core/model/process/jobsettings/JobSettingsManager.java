@@ -95,18 +95,16 @@ public class JobSettingsManager {
         // param.setShow(false);
         // paramList.add(param);
 
-        if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
-            IPreferenceStore preferenceStore = CorePlugin.getDefault().getPreferenceStore();
+        IPreferenceStore preferenceStore = CorePlugin.getDefault().getPreferenceStore();
 
-            param = new ElementParameter(process);
-            param.setName(EParameterName.MULTI_THREAD_EXECATION.getName());
-            param.setValue(preferenceStore.getBoolean(ITalendCorePrefConstants.RUN_IN_MULTI_THREAD));
-            param.setDisplayName(EParameterName.MULTI_THREAD_EXECATION.getDisplayName());
-            param.setField(EParameterFieldType.CHECK);
-            param.setCategory(EComponentCategory.EXTRA);
-            param.setNumRow(2);
-            paramList.add(param);
-        }
+        param = new ElementParameter(process);
+        param.setName(EParameterName.MULTI_THREAD_EXECATION.getName());
+        param.setValue(preferenceStore.getBoolean(ITalendCorePrefConstants.RUN_IN_MULTI_THREAD));
+        param.setDisplayName(EParameterName.MULTI_THREAD_EXECATION.getDisplayName());
+        param.setField(EParameterFieldType.CHECK);
+        param.setCategory(EComponentCategory.EXTRA);
+        param.setNumRow(2);
+        paramList.add(param);
 
         param = new ElementParameter(process);
         param.setName(EParameterName.IMPLICIT_TCONTEXTLOAD.getName());
