@@ -45,10 +45,10 @@ import org.talend.repository.plugin.integration.BindingActions;
 import org.talend.repository.plugin.integration.SwitchProjectAction;
 import org.talend.repository.ui.login.LoginDialog;
 import org.talend.repository.ui.utils.ColumnNameValidator;
-import org.talend.repository.ui.views.IRepositoryView;
 import org.talend.repository.ui.views.RepositoryView;
 import org.talend.repository.ui.wizards.metadata.connection.database.DatabaseWizard;
 import org.talend.repository.ui.wizards.metadata.connection.files.delimited.DelimitedFileWizard;
+import org.talend.repository.ui.wizards.metadata.connection.files.excel.ExcelFileWizard;
 import org.talend.repository.ui.wizards.metadata.connection.files.ldif.LdifFileWizard;
 import org.talend.repository.ui.wizards.metadata.connection.files.positional.FilePositionalWizard;
 import org.talend.repository.ui.wizards.metadata.connection.files.regexp.RegexpFileWizard;
@@ -288,25 +288,7 @@ public class RepositoryService implements IRepositoryService {
 
     public void openMetadataConnection(IRepositoryObject o) {
 
-        IRepositoryView view = RepositoryView.show();
-        // RepositoryContentProvider provider = (RepositoryContentProvider) view.getViewer().getContentProvider();
-
-        final RepositoryNode realNode = getRepositoryNode(view.getRoot(), o);
-
-        // if (realNode != null) {
-        // CreateConnectionAction action = new CreateConnectionAction() {
-        //
-        // public RepositoryNode getCurrentRepositoryNode() {
-        // return realNode;
-        // }
-        //
-        // public ISelection getSelection() {
-        // return new StructuredSelection(realNode);
-        // }
-        // };
-        //
-        // action.run();
-        // }
+        final RepositoryNode realNode = RepositoryNodeUtilities.getRepositoryNode(o);
 
         if (realNode != null) {
 
@@ -329,46 +311,18 @@ public class RepositoryService implements IRepositoryService {
                 relatedWizard = new WSDLSchemaWizard(PlatformUI.getWorkbench(), false, realNode, null, false);
             } else if (realNode.getObjectType().equals(ERepositoryObjectType.METADATA_LDAP_SCHEMA)) {
                 relatedWizard = new LDAPSchemaWizard(PlatformUI.getWorkbench(), false, realNode, null, false);
+            } else if (realNode.getObjectType().equals(ERepositoryObjectType.METADATA_FILE_EXCEL)) {
+                relatedWizard = new ExcelFileWizard(PlatformUI.getWorkbench(), false, realNode, null);
             }
-            // Open the Wizard
-            WizardDialog wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), relatedWizard);
-            wizardDialog.setPageSize(600, 500);
-            wizardDialog.create();
-            wizardDialog.open();
+            if (relatedWizard != null) {
+                // Open the Wizard
+                WizardDialog wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), relatedWizard);
+                wizardDialog.setPageSize(600, 500);
+                wizardDialog.create();
+                wizardDialog.open();
+            }
         }
 
     }
 
-    private RepositoryNode getRepositoryNode(RepositoryNode node, IRepositoryObject aNode) {
-        if (node == null || aNode == null) {
-            return null;
-        }
-        final List<RepositoryNode> children = node.getChildren();
-
-        if (children != null) {
-            for (RepositoryNode childNode : children) {
-                if (childNode.getId().equals(aNode.getId())) {
-                    return childNode;
-                } else {
-                    final RepositoryNode repositoryNode = getRepositoryNode(childNode, aNode);
-                    if (repositoryNode != null) {
-                        return repositoryNode;
-                    }
-                }
-
-            }
-        }
-
-        // for (RepositoryNode rootNode : children) {
-        // for (RepositoryNode fatherNode : rootNode.getChildren()) {
-        // for (RepositoryNode sonNode : fatherNode.getChildren()) {
-        // if (sonNode.getId().equals(aNode.getId())) {
-        // return sonNode;
-        // }
-        // }
-        // }
-        // }
-
-        return null;
-    }
 }

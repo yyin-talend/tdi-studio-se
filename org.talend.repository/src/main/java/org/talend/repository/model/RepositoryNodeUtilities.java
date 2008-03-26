@@ -12,11 +12,18 @@
 // ============================================================================
 package org.talend.repository.model;
 
+import java.util.List;
+
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
+import org.talend.repository.ui.views.IRepositoryView;
+import org.talend.repository.ui.views.RepositoryView;
 
 /**
  * Utility class to manage RepositoryNode.<br/>
@@ -62,4 +69,73 @@ public class RepositoryNodeUtilities {
         }
 
     }
+
+    /**
+     * 
+     * ggu Comment method "getPath".
+     * 
+     * get path by repository item id. can't get the folders.
+     */
+    public static IPath getPath(final String id) {
+        if (id == null || "".equals(id) || "-1".equals(id)) {
+            return null;
+        }
+        IProxyRepositoryFactory factory = RepositoryPlugin.getDefault().getRepositoryService().getProxyRepositoryFactory();
+        try {
+            final IRepositoryObject lastVersion = factory.getLastVersion(id);
+            return getPath(lastVersion);
+        } catch (PersistenceException e) {
+            //
+        }
+        return null;
+    }
+
+    public static IPath getPath(IRepositoryObject curNode) {
+        if (curNode == null) {
+            return null;
+        }
+        final RepositoryNode repositoryNode = getRepositoryNode(curNode);
+        if (repositoryNode != null) {
+            return getPath(repositoryNode);
+        }
+        return null;
+    }
+
+    /**
+     * 
+     * ggu Comment method "getRepositoryNode".
+     * 
+     * get the repository node by a IRepositoryObject.
+     */
+    public static RepositoryNode getRepositoryNode(RepositoryNode rootNode, IRepositoryObject curNode) {
+        if (rootNode == null || curNode == null) {
+            return null;
+        }
+        final List<RepositoryNode> children = rootNode.getChildren();
+
+        if (children != null) {
+            for (RepositoryNode childNode : children) {
+                if (childNode.getId().equals(curNode.getId())) {
+                    return childNode;
+                } else {
+                    final RepositoryNode repositoryNode = getRepositoryNode(childNode, curNode);
+                    if (repositoryNode != null) {
+                        return repositoryNode;
+                    }
+                }
+
+            }
+        }
+
+        return null;
+    }
+
+    public static RepositoryNode getRepositoryNode(IRepositoryObject curNode) {
+        IRepositoryView view = RepositoryView.show();
+        if (view == null || curNode == null) {
+            return null;
+        }
+        return getRepositoryNode(view.getRoot(), curNode);
+    }
+
 }
