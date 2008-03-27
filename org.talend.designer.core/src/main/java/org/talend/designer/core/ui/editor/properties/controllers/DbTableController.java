@@ -48,6 +48,7 @@ import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWithDetailAreaAndContinueButton;
 import org.talend.core.CorePlugin;
+import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
@@ -451,6 +452,11 @@ public class DbTableController extends AbstractElementPropertySectionController 
                     metadataConnection.getUrl(), metadataConnection.getUsername(), metadataConnection.getPassword(),
                     metadataConnection.getSchema());
             connParameters.setConnectionComment(testConnection.getMessageException());
+
+            if (EDatabaseTypeName.ACCESS.getDisplayName().equals(connParameters.getDbType())) {
+                return true;
+            }
+
             return testConnection.getResult();
         } catch (Exception e) {
             log.error(Messages.getString("CommonWizard.exception") + "\n" + e.toString());

@@ -58,6 +58,7 @@ import org.talend.commons.ui.utils.ControlUtils;
 import org.talend.commons.ui.utils.TypedTextCommandExecutor;
 import org.talend.commons.utils.generation.CodeGenerationUtils;
 import org.talend.core.context.RepositoryContext;
+import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.ICodeProblemsChecker;
 import org.talend.core.model.metadata.IMetadataTable;
@@ -945,7 +946,11 @@ public abstract class AbstractElementPropertySectionController implements Proper
         connParameters.setHost(getParameterValueWithContext(element, EConnectionParameterName.SERVER_NAME.getName(), context));
         connParameters.setUserName(getParameterValueWithContext(element, EConnectionParameterName.USERNAME.getName(), context));
         connParameters.setDirectory(getParameterValueWithContext(element, EConnectionParameterName.DIRECTORY.getName(), context));
-        connParameters.setFilename(getParameterValueWithContext(element, EConnectionParameterName.FILE.getName(), context));
+        if (!(EDatabaseTypeName.ACCESS.getDisplayName().equals(connParameters.getDbType()) && ""
+                .equals(getParameterValueWithContext(element, EConnectionParameterName.FILE.getName(), context)))) {
+            connParameters.setFilename(getParameterValueWithContext(element, EConnectionParameterName.FILE.getName(), context));
+        }
+
         connParameters.setJdbcProperties(getParameterValueWithContext(element, EConnectionParameterName.PROPERTIES_STRING
                 .getName(), context));
         connParameters

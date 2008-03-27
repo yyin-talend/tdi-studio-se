@@ -24,6 +24,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWithDetailAreaAndContinueButton;
+import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.utils.TalendTextUtils;
@@ -107,7 +108,8 @@ public class OpenSQLBuilderDialogJob extends Job {
         final Process process = (Process) controller.getDynamicProperty().getPart().getTalendEditor().getProcess();
         try {
             loginProgress.run(monitor);
-            if (connectionParameters.isStatus()) {
+            if (EDatabaseTypeName.ACCESS.getDisplayName().equals(connectionParameters.getDbType())
+                    || connectionParameters.isStatus()) {
                 Display.getDefault().asyncExec(new Runnable() {
 
                     public void run() {
