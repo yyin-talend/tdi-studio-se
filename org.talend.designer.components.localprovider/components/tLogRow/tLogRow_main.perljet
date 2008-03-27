@@ -3,6 +3,7 @@ imports="
     org.talend.core.model.process.INode 
     org.talend.core.model.process.ElementParameterParser
     org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.metadata.IMetadataColumn
     org.talend.designer.codegen.config.CodeGeneratorArgument
     java.util.List
 "
@@ -22,29 +23,65 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             "__FIELDSEPARATOR__"
         );
 
-        String printUniqueName = ElementParameterParser.getValue(
+        boolean printUniqueName = ElementParameterParser.getValue(
             node,
             "__PRINT_UNIQUE_NAME__"
-        );
+        ).equals("true");
 
-        String printColumnNames = ElementParameterParser.getValue(
+        boolean printColumnNames = ElementParameterParser.getValue(
             node,
             "__PRINT_COLNAMES__"
-        );
+        ).equals("true");
 
-        String useFixedLength = ElementParameterParser.getValue(
+        boolean useFixedLength = ElementParameterParser.getValue(
             node,
             "__USE_FIXED_LENGTH__"
-        );
+        ).equals("true");
 
-        String tablePrint = ElementParameterParser.getValue(
+        boolean basicMode = ElementParameterParser.getValue(
+            node,
+            "__BASIC_MODE__"
+        ).equals("true");
+
+        boolean tablePrint = ElementParameterParser.getValue(
             node,
             "__TABLE_PRINT__"
-        );
+        ).equals("true");
+
+        boolean vertical = ElementParameterParser.getValue(
+            node,
+            "__VERTICAL__"
+        ).equals("true");
 %>
+$line_num_<%=cid%>++;
+<%
+        if (vertical) {
+%>
+{
+    my $table = Text::ASCIITable->new({
+        headingText => sprintf(
+            '%5s. <%=cid%>',
+            '#'.$line_num_<%=cid%>
+        )
+    });
+
+    $table->setCols(qw/key value/);
 
 <%
-        if (tablePrint.equals("true")) {
+        int i = 0;
+        for (IMetadataColumn column: metadata.getListColumns()) {
+%>
+    $table->addRow('<%=column.getLabel()%>', $<%=cid %>->[<%=i%>]);
+<%
+            i++;
+        }
+%>
+
+    print $table;
+}
+<%
+        }
+        else if (tablePrint) {
 %>
 $table_<%=cid%>->addRow(@$<%=cid %>);
 <%
@@ -57,7 +94,7 @@ $colnum2 = 0;
 
 print STDOUT (
 <%
-            if (printUniqueName.equals("true")) {
+            if (printUniqueName) {
 %>
     '[<%=cid%>] ',
 <%
@@ -66,12 +103,12 @@ print STDOUT (
     join(
         <%=fieldSeparator %>,
 <%
-            if (printColumnNames.equals("true")) {
+            if (printColumnNames) {
 %>
         map {$colnames_<%=cid%>[$colnum1++].': '.$_}
 <%
             }
-            if (useFixedLength.equals("true")) {
+            if (useFixedLength) {
 %>
             map {sprintf('%*s', $collengths_<%=cid%>[$colnum2++], $_)}
 <%

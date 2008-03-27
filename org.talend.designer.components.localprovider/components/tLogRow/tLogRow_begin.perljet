@@ -30,10 +30,15 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             "__USE_FIXED_LENGTH__"
         );
 
-        String tablePrint = ElementParameterParser.getValue(
+        boolean tablePrint = ElementParameterParser.getValue(
             node,
             "__TABLE_PRINT__"
-        );
+        ).equals("true");
+
+        boolean vertical = ElementParameterParser.getValue(
+            node,
+            "__VERTICAL__"
+        ).equals("true");
 
         String encoding = ElementParameterParser.getValue(
             node,
@@ -65,7 +70,7 @@ my %desc_<%=cid %> = (
 
 my @colnames_<%=cid%> = map {$_->{name}} @{ $desc_<%=cid%>{schema} };
 my @collengths_<%=cid%> = map {$_->{printLength}} @{ $desc_<%=cid%>{schema} };
-
+my $line_num_<%=cid%> = 0;
 <%
         if (!encoding.equals("")) {
 %>
@@ -75,10 +80,16 @@ binmode(STDOUT, ':encoding('.<%=encoding%>.')');
 %>
 
 <%
-        if (tablePrint.equals("true")) {
+        if (tablePrint || vertical) {
 %>
 use Text::ASCIITable;
+<%
+        }
+%>
 
+<%
+        if (tablePrint) {
+%>
 my $table_<%=cid%> = Text::ASCIITable->new({headingText => '<%=cid%>'});
 $table_<%=cid%>->setCols(@colnames_<%=cid%>);
 <%
