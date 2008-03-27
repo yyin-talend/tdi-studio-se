@@ -61,6 +61,7 @@ import org.talend.core.model.general.Project;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTool;
+import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.impl.QueryImpl;
 import org.talend.core.model.metadata.designerproperties.RepositoryToComponentProperty;
 import org.talend.core.model.process.EComponentCategory;
@@ -80,6 +81,8 @@ import org.talend.core.model.process.ISubjobContainer;
 import org.talend.core.model.process.UniqueNodeNameGenerator;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.ContextItem;
+import org.talend.core.model.properties.DatabaseConnectionItem;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.User;
@@ -1004,7 +1007,7 @@ public class Process extends Element implements IProcess2 {
         initExternalComponents();
         setActivate(true);
         checkStartNodes();
-        // checkProcess();
+        checkStartJobSettingsParameters();
     }
 
     /**
@@ -1265,23 +1268,23 @@ public class Process extends Element implements IProcess2 {
         String propertyType = (String) node.getPropertyValue(EParameterName.PROPERTY_TYPE.getName());
         if (propertyType != null) {
             if (propertyType.equals(EmfComponent.REPOSITORY)) {
+                String propertyValue = (String) node.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
+                if (propertyValue == null || "".equals(propertyValue)) {
+                    return false;
+                }
+                org.talend.core.model.metadata.builder.connection.Connection repositoryConnection = null;
                 IProxyRepositoryFactory factory = DesignerPlugin.getDefault().getProxyRepositoryFactory();
-                List<ConnectionItem> metadataConnectionsItem = null;
                 try {
-                    metadataConnectionsItem = factory.getMetadataConnectionsItem();
+                    IRepositoryObject lastVersion = factory.getLastVersion(propertyValue);
+                    if (lastVersion != null) {
+                        final Item item = lastVersion.getProperty().getItem();
+                        if (item != null && item instanceof ConnectionItem) {
+                            repositoryConnection = ((ConnectionItem) item).getConnection();
+                        }
+                    }
                 } catch (PersistenceException e) {
                     throw new RuntimeException(e);
                 }
-                org.talend.core.model.metadata.builder.connection.Connection tmpRepositoryConnection = null;
-                if (metadataConnectionsItem != null) {
-                    for (ConnectionItem connectionItem : metadataConnectionsItem) {
-                        String value = connectionItem.getProperty().getId() + ""; //$NON-NLS-1$
-                        if (value.equals(node.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName()))) {
-                            tmpRepositoryConnection = connectionItem.getConnection();
-                        }
-                    }
-                }
-                final org.talend.core.model.metadata.builder.connection.Connection repositoryConnection = tmpRepositoryConnection;
 
                 MetadataUpdateCheckResult result = new MetadataUpdateCheckResult(node);
 
@@ -1314,20 +1317,21 @@ public class Process extends Element implements IProcess2 {
                                     String connectQuery = null;
                                     boolean flag = false;
 
-                                    for (IElementParameter elementParameter : node.getElementParameters()) {
+                                    for (IElementParameter elementParameter : node.getElementParametersWithChildrens()) {
                                         if ("QUERYSTORE_TYPE".equals(elementParameter.getName())) {
                                             if ("BUILT_IN".equals(elementParameter.getValue())) {
                                                 flag = true;
+                                                break;
                                             }
                                         }
                                     }
 
                                     if (!flag) {
-                                        for (IElementParameter elementParameter : node.getElementParameters()) {
+                                        for (IElementParameter elementParameter : node.getElementParametersWithChildrens()) {
                                             if ("REPOSITORY_QUERYSTORE_TYPE".equals(elementParameter.getName())) {
                                                 for (QueryImpl queryImpl : (EList<QueryImpl>) repositoryConnection.getQueries()
                                                         .getQuery()) {
-                                                    if (((String) elementParameter.getValue()).indexOf(queryImpl.getLabel()) != -1) {
+                                                    if (((String) elementParameter.getValue()).equals(queryImpl.getId())) {
                                                         connectQuery = queryImpl.getValue().replaceAll("\\s", " ").replaceAll(
                                                                 " {2,}", " ");
                                                     }
@@ -1350,6 +1354,8 @@ public class Process extends Element implements IProcess2 {
                                                             getCommandStack().execute(cc);
                                                         }
                                                     }
+                                                    elementParameter.setRepositoryValueUsed(true);
+                                                    elementParameter.setReadOnly(true);
                                                 }
                                             }
                                         }
@@ -2830,5 +2836,91 @@ public class Process extends Element implements IProcess2 {
      */
     public List<? extends ISubjobContainer> getSubjobContainers() {
         return this.subjobContainers;
+    }
+
+    /**
+     * 
+     * ggu Comment method "checkStartJobSettingsParameters".
+     */
+    public void checkStartJobSettingsParameters() {
+        checkStartJobSettingsParameters(EComponentCategory.EXTRA);
+        checkStartJobSettingsParameters(EComponentCategory.STATSANDLOGS);
+    }
+
+    private void checkStartJobSettingsParameters(EComponentCategory category) {
+        if (category != EComponentCategory.EXTRA && EComponentCategory.STATSANDLOGS != category) {
+            return;
+        }
+        final IElementParameter propertyTypeParam = this
+                .getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE, category);
+
+        if (propertyTypeParam != null && propertyTypeParam.isShow(this.getElementParameters())) {
+            final Map<String, IElementParameter> childParameters = propertyTypeParam.getChildParameters();
+            if (childParameters == null) {
+                return;
+            }
+            IElementParameter elementParameter = childParameters.get(EParameterName.PROPERTY_TYPE.getName());
+            // is repository
+            if (elementParameter != null && EmfComponent.REPOSITORY.equals(elementParameter.getValue())) {
+                IElementParameter repositoryParam = childParameters.get(EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
+                if (repositoryParam != null) {
+                    String value = (String) repositoryParam.getValue();
+                    if (value == null || "".equals(value)) {
+                        return;
+                    }
+                    // get the connection
+                    DatabaseConnection repositoryConnection = null;
+                    IProxyRepositoryFactory factory = DesignerPlugin.getDefault().getProxyRepositoryFactory();
+                    try {
+                        IRepositoryObject lastVersion = factory.getLastVersion(value);
+                        if (lastVersion != null) {
+                            final Item item = lastVersion.getProperty().getItem();
+                            if (item != null && item instanceof DatabaseConnectionItem) {
+                                repositoryConnection = (DatabaseConnection) ((DatabaseConnectionItem) item).getConnection();
+                            }
+                        }
+                    } catch (PersistenceException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                    if (repositoryConnection == null) {
+                        return;
+                    }
+                    for (IElementParameter param : this.getElementParameters()) {
+                        if (param.getCategory() == category) {
+                            String repositoryValue = param.getRepositoryValue();
+                            if (param.isShow(this.getElementParameters()) && (repositoryValue != null)
+                                    && !param.getName().equals(EParameterName.PROPERTY_TYPE.getName())) {
+                                Object repValue = RepositoryToComponentProperty.getValue(repositoryConnection, repositoryValue);
+                                if (repValue == null) {
+                                    continue;
+                                }
+                                if (repositoryValue.equals("TYPE")) { // datebase type
+                                    String[] listRepositoryItems = param.getListRepositoryItems();
+                                    if (listRepositoryItems != null) { // search the value
+                                        int index = 0;
+                                        for (String repItem : listRepositoryItems) {
+                                            if (repItem.equals(repValue)) {
+                                                break;
+                                            }
+                                            index++;
+                                        }
+                                        Object[] listItemsValue = param.getListItemsValue();
+                                        if (listItemsValue != null) {
+                                            param.setValue(listItemsValue[index]);
+                                        }
+                                    }
+                                } else {
+                                    param.setValue(repValue);
+                                }
+                                param.setRepositoryValueUsed(true);
+                                param.setReadOnly(true);
+                            }
+
+                        }
+                    }
+                }
+            }
+        }
     }
 }

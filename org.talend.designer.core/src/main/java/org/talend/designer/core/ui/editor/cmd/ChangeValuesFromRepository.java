@@ -150,6 +150,20 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                 boolean paramFlag = JobSettingsConstants.isExtraParameter(param.getName());
                 boolean extraFlag = JobSettingsConstants.isExtraParameter(propertyName.split(":")[0]);
                 if (paramFlag == extraFlag) {
+                    // for memo sql
+                    if (param.getField() == EParameterFieldType.MEMO_SQL) {
+                        IElementParameter querystoreParam = elem.getElementParameterFromField(
+                                EParameterFieldType.QUERYSTORE_TYPE, param.getCategory());
+                        if (querystoreParam != null) {
+                            Map<String, IElementParameter> childParam = querystoreParam.getChildParameters();
+                            if (childParam != null) {
+                                IElementParameter queryTypeParam = childParam.get(EParameterName.QUERYSTORE_TYPE.getName());
+                                if (queryTypeParam != null && EmfComponent.REPOSITORY.equals(queryTypeParam.getValue())) {// is
+                                    continue;
+                                }
+                            }
+                        }
+                    }
                     param.setReadOnly(false);
                     // for job settings extra.(feature 2710)
                     param.setRepositoryValueUsed(false);
@@ -167,7 +181,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                         && (!param.getName().equals(propertyTypeName))) {
                     IElementParameter relatedPropertyParam = elem.getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE,
                             param.getCategory());
-                    if (!relatedPropertyParam.getCategory().equals(currentCategory)) {
+                    if (!relatedPropertyParam.getCategory().equals(currentCategory) && !repositoryValue.equals("ENCODING")) {
                         continue;
                     }
                     Object objectValue = RepositoryToComponentProperty.getValue(connection, repositoryValue);
@@ -188,6 +202,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                                 IElementParameter paramEncoding = param.getChildParameters().get(
                                         EParameterName.ENCODING_TYPE.getName());
                                 paramEncoding.setValue(EmfComponent.ENCODING_TYPE_CUSTOM);
+                                // paramEncoding.setRepositoryValueUsed(true);
                             } else if (repositoryValue.equals("CSV_OPTION")) {
                                 setOtherProperties();
                             }

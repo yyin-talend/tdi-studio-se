@@ -140,7 +140,7 @@ public class EncodingTypeController extends AbstractElementPropertySectionContro
             }
             combo.setItems(stringToDisplay.toArray(new String[0]));
             combo.setEditable(false);
-            combo.setEnabled(!encodingTypeParameter.isReadOnly());
+            combo.setEnabled(!encodingTypeParameter.isReadOnly() && !encodingTypeParameter.isRepositoryValueUsed());
             if (elem instanceof Node) {
                 combo.setToolTipText(VARIABLE_TOOLTIP + encodingTypeParameter.getVariableName());
             }
@@ -255,8 +255,14 @@ public class EncodingTypeController extends AbstractElementPropertySectionContro
 
         editionControlHelper.register(param.getName(), labelText, true);
 
+        if (param.isRepositoryValueUsed()) {
+            addRepositoryPropertyListener(labelText);
+        }
+
+        addDragAndDropTarget(labelText);
+
         cLayout.setBackground(subComposite.getBackground());
-        labelText.setEditable(!param.isReadOnly());
+        labelText.setEditable(!param.isReadOnly() && !param.isRepositoryValueUsed());
         labelText.setToolTipText(VARIABLE_TOOLTIP + param.getVariableName());
         data = new FormData();
         data.left = new FormAttachment(lastControl, 0);

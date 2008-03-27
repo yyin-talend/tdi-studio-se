@@ -198,7 +198,7 @@ public class TextController extends AbstractElementPropertySectionController {
         // job settings extra (feature 2710)
         if (param.getCategory() == EComponentCategory.STATSANDLOGS || param.getCategory() == EComponentCategory.EXTRA) {
             Color red = Display.getCurrent().getSystemColor(SWT.COLOR_RED);
-            Color white = Display.getCurrent().getSystemColor(SWT.COLOR_WHITE);
+            // Color white = Display.getCurrent().getSystemColor(SWT.COLOR_WHITE);
 
             if ((value instanceof String) && param.isRequired()) {
 
@@ -209,7 +209,7 @@ public class TextController extends AbstractElementPropertySectionController {
                 if (str == null || removedQuotesStr.length() == 0 || str.length() == 0) {
                     setTextErrorInfo(labelText, red);
                 } else {
-                    labelText.setBackground(white);
+                    // labelText.setBackground(white);
                     labelText.setToolTipText("");
                 }
             }

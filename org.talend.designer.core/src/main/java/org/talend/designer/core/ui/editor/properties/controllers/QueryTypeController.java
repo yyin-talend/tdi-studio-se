@@ -35,7 +35,6 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
@@ -273,9 +272,9 @@ public class QueryTypeController extends AbstractRepositoryController {
                 if (repositoryQueryStoreMap.containsKey(querySelected)) {
                     repositoryQuery = repositoryQueryStoreMap.get(querySelected);
                 }/*
-                 * else if (dynamicProperty.getRepositoryQueryStoreMap().size() > 0) { repositoryQuery = (Query)
-                 * dynamicProperty.getRepositoryQueryStoreMap().values().toArray()[0]; }
-                 */
+                     * else if (dynamicProperty.getRepositoryQueryStoreMap().size() > 0) { repositoryQuery = (Query)
+                     * dynamicProperty.getRepositoryQueryStoreMap().values().toArray()[0]; }
+                     */
 
                 if (switchParam != null) {
                     switchParam.setValue(Boolean.FALSE);
@@ -335,22 +334,6 @@ public class QueryTypeController extends AbstractRepositoryController {
         }
 
         if (query != null && item != null && item instanceof ConnectionItem) {
-            final IElementParameter parentParameter = param.getParentParameter();
-            if (parentParameter != null) {
-                IElementParameter typeParam = parentParameter.getChildParameters().get(EParameterName.QUERYSTORE_TYPE.getName());
-                final IElementParameter memoSqlParam = elem.getElementParameterFromField(EParameterFieldType.MEMO_SQL, param
-                        .getCategory());
-                if (memoSqlParam != null) {
-                    if (typeParam != null && EmfComponent.REPOSITORY.equals(typeParam.getValue())) {
-                        memoSqlParam.setValue(TalendTextUtils.addSQLQuotes(query.getValue()));
-                        memoSqlParam.setRepositoryValueUsed(true);
-                        memoSqlParam.setReadOnly(true);
-                    } else {
-                        memoSqlParam.setRepositoryValueUsed(false);
-                        memoSqlParam.setReadOnly(false);
-                    }
-                }
-            }
             return dynamicProperty.getRepositoryAliasName((ConnectionItem) item) + ":" //$NON-NLS-1$
                     + item.getProperty().getLabel() + " - " + query.getLabel(); //$NON-NLS-1$
         }

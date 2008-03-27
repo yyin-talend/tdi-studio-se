@@ -121,7 +121,7 @@ public class CheckController extends AbstractElementPropertySectionController {
         cLayout.setLayoutData(data);
         checkBtn.setData(PARAMETER_NAME, param.getName());
         hashCurControls.put(param.getName(), checkBtn);
-        checkBtn.setEnabled(!param.isReadOnly());
+        checkBtn.setEnabled(!param.isReadOnly() && !param.isRepositoryValueUsed());
         checkBtn.addSelectionListener(listenerSelection);
         if (elem instanceof Node) {
             checkBtn.setToolTipText(VARIABLE_TOOLTIP + param.getVariableName());
