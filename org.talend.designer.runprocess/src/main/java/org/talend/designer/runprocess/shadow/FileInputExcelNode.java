@@ -25,22 +25,34 @@ public class FileInputExcelNode extends FileInputNode {
     private List<IMetadataTable> metadatas = null;
 
     /**
-     * Constructs a new FileInputNode.
+     * 
+     * DOC YeXiaowei FileInputExcelNode constructor comment.
+     * 
+     * @param filename
+     * @param metadatas
+     * @param encoding
+     * @param sheetName
+     * @param limitRows
+     * @param header
+     * @param footer
+     * @param emptyEmptyRow
      */
-    public FileInputExcelNode(String filename, List<IMetadataTable> metadatas, String encoding) {
+    public FileInputExcelNode(String filename, List<IMetadataTable> metadatas, String encoding, String sheetName,
+            String limitRows, String header, String footer, String emptyEmptyRow) {
         super("tFileInputExcel"); //$NON-NLS-1$
 
-        String[] paramNames = new String[] { "FILENAME", "ENCODING", "SHEETNAME" }; //$NON-NLS-1$
-        String[] paramValues = new String[] { filename, encoding, TalendTextUtils.addQuotes("Sheet1") };// TODO Need get
-        // from other
-        // places
+        String[] paramNames = new String[] { "FILENAME", "ENCODING", "SHEETNAME", "LIMIT", "HEADER", "FOOTER", "REMOVE_EMPTY_ROW" }; //$NON-NLS-1$
+        String[] paramValues = new String[] { filename, encoding == null ? TalendTextUtils.addQuotes("ISO-8859-1") : encoding,
+                (sheetName != null) ? TalendTextUtils.addQuotes(sheetName) : TalendTextUtils.addQuotes("Sheet1"),
+                limitRows.equals("0") ? "50" : limitRows, header, footer, emptyEmptyRow };
 
         for (int i = 0; i < paramNames.length; i++) {
-            if (paramValues[i] != null) {
+            if (paramValues[i] != null && !paramValues[i].equals("")) {
                 TextElementParameter param = new TextElementParameter(paramNames[i], paramValues[i]);
                 addParameter(param);
             }
         }
+
         setMetadataList(metadatas);
     }
 

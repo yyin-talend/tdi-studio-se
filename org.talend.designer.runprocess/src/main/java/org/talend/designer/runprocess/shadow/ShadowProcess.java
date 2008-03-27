@@ -32,6 +32,7 @@ import org.talend.designer.runprocess.ProcessStreamTrashReader;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.designer.runprocess.i18n.Messages;
+import org.talend.repository.preview.ExcelSchemaBean;
 import org.talend.repository.preview.IProcessDescription;
 
 /**
@@ -162,10 +163,39 @@ public class ShadowProcess<T extends IProcessDescription> {
             outNode = new FileOutputDelimitedForLDIF(TalendTextUtils.addQuotes(""
                     + PathUtils.getPortablePath(outPath.toOSString())), description.getEncoding());
 
-            FileInputExcelNode excelNode = new FileInputExcelNode(PathUtils.getPortablePath(inPath.toOSString()), description
-                    .getSchema(), description.getEncoding()); //$NON-NLS-1$ //$NON-NLS-2$
+            FileInputExcelNode excelNode = null;
+
+            ExcelSchemaBean desc = description.getExcelSchemaBean();
+
+            // some ext parameters
+            if (desc != null) {
+                excelNode = new FileInputExcelNode(PathUtils.getPortablePath(inPath.toOSString()), description.getSchema(),
+                        description.getEncoding() == null ? TalendTextUtils.addQuotes("ISO-8859-1") : description.getEncoding(),
+                        desc.getSheetName(), Integer.toString(description.getLimitRows()), Integer.toString(description
+                                .getHeaderRow()), Integer.toString(description.getFooterRow()), Boolean.toString(description
+                                .getRemoveEmptyRowsToSkip()));
+
+                String[] paramNames = new String[] { "FIRST_COLUMN", "LAST_COLUMN", "ADVANCED_SEPARATOR", "THOUSANDS_SEPARATOR",
+                        "DECIMAL_SEPARATOR" };
+                //$NON-NLS-1$
+                String[] paramValues = new String[] { desc.getFirstColumn(), desc.getLastColumn(),
+                        Boolean.toString(desc.isAdvancedSeparator()), desc.getThousandSeparator(), desc.getDecimalSeparator() };// TODO
+                for (int i = 0; i < paramNames.length; i++) {
+                    if (paramValues[i] != null && !paramValues[i].equals("")) {
+                        TextElementParameter param = new TextElementParameter(paramNames[i], paramValues[i]);
+                        excelNode.addParameter(param);
+                    }
+                }
+
+            } else {
+                excelNode = new FileInputExcelNode(PathUtils.getPortablePath(inPath.toOSString()), description.getSchema(),
+                        description.getEncoding(), null, Integer.toString(description.getLimitRows()), Integer
+                                .toString(description.getHeaderRow()), Integer.toString(description.getFooterRow()), Boolean
+                                .toString(description.getRemoveEmptyRowsToSkip())); //$NON-NLS-1$ //$NON-NLS-2$
+            }
 
             outNode.setMetadataList(excelNode.getMetadataList());
+
             ps = new FileinToDelimitedProcess<FileInputExcelNode>(excelNode, outNode);
             break;
         case FILE_LDIF:
