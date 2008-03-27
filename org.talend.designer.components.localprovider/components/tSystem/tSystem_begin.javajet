@@ -7,6 +7,7 @@
     	org.talend.core.model.metadata.IMetadataColumn 
     	org.talend.core.model.process.IConnection
     	java.util.List
+    	java.util.Map
 	"
 %>
 
@@ -24,6 +25,8 @@
 	boolean ifDir = ElementParameterParser.getValue(node, "__ROOTDIR__").equals("true");
 	
 	String rootDir  = ElementParameterParser.getValue(node, "__DIRECTORY__").replace("\\","/");
+	
+	List<Map<String, String>> params = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node,"__PARAMS__");
 		
 	// To launch an internal command to cmd.exe (XP), you have to call :
 	// cmd.exe /c dir (for example)
@@ -36,11 +39,34 @@ final java.util.Vector<String> output_<%=cid%> = new java.util.Vector<String>();
 %>
 Runtime runtime_<%=cid %> = Runtime.getRuntime();
 
-<%if(ifDir){%>
-final Process ps_<%=cid %> = runtime_<%=cid %>.exec(<%=command %>,null,new java.io.File(<%=rootDir%>));
-<%}else{%>
-final Process ps_<%=cid %> = runtime_<%=cid %>.exec(<%=command %>);
-<%}%>
+String[] env_<%=cid %>= null;
+java.util.Map<String,String> envMap_<%=cid %>= System.getenv();
+java.util.Map<String,String> envMapClone_<%=cid %>= new java.util.HashMap();
+envMapClone_<%=cid %>.putAll(envMap_<%=cid %>);
+
+<%
+    for (int i = 0; i < params.size(); i++) {
+        Map<String, String> line = params.get(i);
+%>
+envMapClone_<%=cid %>.put(<%= line.get("NAME") %>, <%= line.get("VALUE") %>);
+<%
+    }
+
+    if (params.size() > 0) {
+%>
+env_<%=cid %>= new String[envMapClone_<%=cid %>.size()];
+int i_<%=cid %>= 0;
+for (String envKey : (java.util.Set<String>) envMapClone_<%=cid %>.keySet()) {
+    env_<%=cid %>[i_<%=cid %>++]= envKey + "=" + envMapClone_<%=cid %>.get(envKey);
+}
+<%
+    }
+
+if(ifDir){%>
+final Process ps_<%=cid %> = runtime_<%=cid %>.exec(<%=command %>,env_<%=cid %>,new java.io.File(<%=rootDir%>));
+<%  }else{%>
+final Process ps_<%=cid %> = runtime_<%=cid %>.exec(<%=command %>,env_<%=cid %>);
+<%  }%>
 Thread normal_<%=cid %> = new Thread() {
 	public void run() {
 		try {
