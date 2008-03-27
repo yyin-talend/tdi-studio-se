@@ -12,10 +12,12 @@
 // ============================================================================
 package org.talend.sqlbuilder.dbstructure;
 
+import java.io.File;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.properties.ConnectionItem;
@@ -63,6 +65,15 @@ public class SessionTreeNodeManager {
         // Gets the DatabaseConnection
         DatabaseConnection connection = (DatabaseConnection) ((ConnectionItem) root.getObject().getProperty().getItem())
                 .getConnection();
+
+        if (EDatabaseTypeName.ACCESS.getDisplayName().equals(connection.getDatabaseType())) {
+            if (connection.getURL().lastIndexOf("=") != connection.getURL().length() - 1) {
+                connection.setDatasourceName(connection.getURL().substring(connection.getURL().lastIndexOf(File.separator) + 1,
+                        connection.getURL().length()));
+                connection.setSID(connection.getURL().substring(connection.getURL().lastIndexOf(File.separator) + 1,
+                        connection.getURL().length()));
+            }
+        }
 
         SessionTreeNode sessionTreeNode = map.get(connection);
         if (sessionTreeNode != null) {
