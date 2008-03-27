@@ -125,9 +125,11 @@ boolean sameGroup_<%=cid %> = true;
 				if(javaType == JavaTypesManager.BYTE || javaType == JavaTypesManager.CHARACTER 
 					|| javaType == JavaTypesManager.SHORT || javaType == JavaTypesManager.INTEGER 
 					|| javaType == JavaTypesManager.LONG || javaType == JavaTypesManager.FLOAT 
-					|| javaType == JavaTypesManager.DOUBLE){
+					|| javaType == JavaTypesManager.DOUBLE ){
 %><%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %> = <%=connName %>.<%=column_op[i][0].getLabel() %>;
-<%				}else{
+<%				}else if(javaType == JavaTypesManager.BIGDECIMAL){
+%><%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %> = (float)<%=connName %>.<%=column_op[i][0].getLabel() %>.doubleValue();
+<%		}else{
 %>sum_<%=column_op[i][0].getLabel() %>_<%=cid %> = 0;
 <%				}
 			}
@@ -135,9 +137,11 @@ boolean sameGroup_<%=cid %> = true;
 			if(javaType == JavaTypesManager.BYTE || javaType == JavaTypesManager.CHARACTER 
 					|| javaType == JavaTypesManager.SHORT || javaType == JavaTypesManager.INTEGER 
 					|| javaType == JavaTypesManager.LONG || javaType == JavaTypesManager.FLOAT 
-					|| javaType == JavaTypesManager.DOUBLE){
+					|| javaType == JavaTypesManager.DOUBLE ){
 %>sum_<%=column_op[i][0].getLabel() %>_<%=cid %> = <%=connName %>.<%=column_op[i][0].getLabel() %>;
-<%				}else{
+<%				}else if(javaType == JavaTypesManager.BIGDECIMAL){
+%>sum_<%=column_op[i][0].getLabel() %>_<%=cid %> = (float)<%=connName %>.<%=column_op[i][0].getLabel() %>.doubleValue();
+<%		}else{
 %>sum_<%=column_op[i][0].getLabel() %>_<%=cid %> = 0;
 <%			}
 %>count_<%=column_op[i][0].getLabel() %>_<%=cid %> = 1;
@@ -260,16 +264,16 @@ if(sameGroup_<%=cid %>){
 				if(javaType == JavaTypesManager.BYTE || javaType == JavaTypesManager.CHARACTER 
 					|| javaType == JavaTypesManager.SHORT || javaType == JavaTypesManager.INTEGER 
 					|| javaType == JavaTypesManager.LONG || javaType == JavaTypesManager.FLOAT 
-					|| javaType == JavaTypesManager.DOUBLE){
-%>sum_<%=column_op[i][0].getLabel() %>_<%=cid %> += <%=connName %>.<%=column_op[i][0].getLabel() %>;
+					|| javaType == JavaTypesManager.DOUBLE || javaType == JavaTypesManager.BIGDECIMAL){
+%>sum_<%=column_op[i][0].getLabel() %>_<%=cid %> += <%=connName %>.<%=column_op[i][0].getLabel() %><%if(javaType == JavaTypesManager.BIGDECIMAL){%>.doubleValue()<%}%>;
 <%				}
 			}
 		}else if(functions[i].equals("avg")){
 				if(javaType == JavaTypesManager.BYTE || javaType == JavaTypesManager.CHARACTER 
 					|| javaType == JavaTypesManager.SHORT || javaType == JavaTypesManager.INTEGER 
 					|| javaType == JavaTypesManager.LONG || javaType == JavaTypesManager.FLOAT 
-					|| javaType == JavaTypesManager.DOUBLE){
-%>sum_<%=column_op[i][0].getLabel() %>_<%=cid %> += <%=connName %>.<%=column_op[i][0].getLabel() %>;
+					|| javaType == JavaTypesManager.DOUBLE || javaType == JavaTypesManager.BIGDECIMAL){
+%>sum_<%=column_op[i][0].getLabel() %>_<%=cid %> += <%=connName %>.<%=column_op[i][0].getLabel() %><%if(javaType == JavaTypesManager.BIGDECIMAL){%>.doubleValue()<%}%>;
 <%				}
 %>count_<%=column_op[i][0].getLabel() %>_<%=cid %>++;
 <%		}else if(functions[i].equals("list")){
@@ -411,8 +415,10 @@ if( !sameGroup_<%=cid %> ){
 								if(javaType == JavaTypesManager.BYTE || javaType == JavaTypesManager.CHARACTER 
 									|| javaType == JavaTypesManager.SHORT || javaType == JavaTypesManager.INTEGER 
 									|| javaType == JavaTypesManager.LONG || javaType == JavaTypesManager.FLOAT 
-									|| javaType == JavaTypesManager.DOUBLE){
+									|| javaType == JavaTypesManager.DOUBLE ){
 %>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = (<%=javaType.getPrimitiveClass() %>)<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>;
+<%								}else if(javaType == JavaTypesManager.BIGDECIMAL) {
+%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = new BigDecimal("" + <%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>);
 <%								}else if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
 %>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = ""+<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>;
 <%								}else if(javaType == JavaTypesManager.BYTE_ARRAY) {
@@ -425,6 +431,8 @@ if( !sameGroup_<%=cid %> ){
 									|| javaType == JavaTypesManager.LONG || javaType == JavaTypesManager.FLOAT 
 									|| javaType == JavaTypesManager.DOUBLE){
 %>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = (<%=javaType.getPrimitiveClass() %>)avg_<%=i %>_<%=cid %>;
+<%								}else if(javaType == JavaTypesManager.BIGDECIMAL) {
+%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = new BigDecimal("" + avg_<%=i %>_<%=cid %>);
 <%								}else if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
 %>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = ""+avg_<%=i %>_<%=cid %>;
 <%								}else if(javaType == JavaTypesManager.BYTE_ARRAY) {
@@ -507,15 +515,26 @@ if( !sameGroup_<%=cid %> ){
 				}
 			}
 			if(!sumHasAvg){
+			if(javaType == JavaTypesManager.BYTE || javaType == JavaTypesManager.CHARACTER 
+					|| javaType == JavaTypesManager.SHORT || javaType == JavaTypesManager.INTEGER 
+					|| javaType == JavaTypesManager.LONG || javaType == JavaTypesManager.FLOAT 
+					|| javaType == JavaTypesManager.DOUBLE){
 %>sum_<%=column_op[i][0].getLabel() %>_<%=cid %> = <%=connName %>.<%=column_op[i][0].getLabel() %>;
+<%			}else if(javaType == JavaTypesManager.BIGDECIMAL) {
+%>sum_<%=column_op[i][0].getLabel() %>_<%=cid %> = (float)<%=connName %>.<%=column_op[i][0].getLabel() %>.doubleValue();
+<%								}else{
+%>sum_<%=column_op[i][0].getLabel() %>_<%=cid %> = 0;
 <%			}
+}
 		}else if(functions[i].equals("avg")){
 			if(javaType == JavaTypesManager.BYTE || javaType == JavaTypesManager.CHARACTER 
 					|| javaType == JavaTypesManager.SHORT || javaType == JavaTypesManager.INTEGER 
 					|| javaType == JavaTypesManager.LONG || javaType == JavaTypesManager.FLOAT 
 					|| javaType == JavaTypesManager.DOUBLE){
 %>sum_<%=column_op[i][0].getLabel() %>_<%=cid %> = <%=connName %>.<%=column_op[i][0].getLabel() %>;
-<%			}else{
+<%			}else if(javaType == JavaTypesManager.BIGDECIMAL) {
+%>sum_<%=column_op[i][0].getLabel() %>_<%=cid %> = (float)<%=connName %>.<%=column_op[i][0].getLabel() %>.doubleValue();
+<%								}else{
 %>sum_<%=column_op[i][0].getLabel() %>_<%=cid %> = 0;
 <%			}
 %>count_<%=column_op[i][0].getLabel() %>_<%=cid %> = 1;
@@ -651,6 +670,8 @@ if( currentRowIndex_<%=cid%>  == <%=rowCount %> ){
 									|| javaType == JavaTypesManager.LONG || javaType == JavaTypesManager.FLOAT 
 									|| javaType == JavaTypesManager.DOUBLE){
 %>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = (<%=javaType.getPrimitiveClass() %>)<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>;
+<%								}else if(javaType == JavaTypesManager.BIGDECIMAL) {
+%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = new BigDecimal("" + <%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>);
 <%								}else if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
 %>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = ""+<%=functions[i] %>_<%=column_op[i][0].getLabel() %>_<%=cid %>;
 <%								}else if(javaType == JavaTypesManager.BYTE_ARRAY) {
@@ -663,6 +684,8 @@ if( currentRowIndex_<%=cid%>  == <%=rowCount %> ){
 									|| javaType == JavaTypesManager.LONG || javaType == JavaTypesManager.FLOAT 
 									|| javaType == JavaTypesManager.DOUBLE){
 %>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = (<%=javaType.getPrimitiveClass() %>)avg_<%=i %>_<%=cid %>;
+<%								}else if(javaType == JavaTypesManager.BIGDECIMAL) {
+%>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = new BigDecimal("" + avg_<%=i %>_<%=cid %>);
 <%								}else if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
 %>emmitArray_<%=cid %>[tempCount_<%=cid %>].<%=column.getLabel() %> = ""+avg_<%=i %>_<%=cid %>;
 <%								}else if(javaType == JavaTypesManager.BYTE_ARRAY) {

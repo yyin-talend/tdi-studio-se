@@ -276,7 +276,7 @@ if(<%if(funin[0].equals("min")){%>!<%}%><%=conn.getName() %>.<%=funin[1] %>){
 //
 //end%>
 
-if(operation_result_<%=cid %>.<%=funin[1] %>_<%=funin[0] %> - <%=conn.getName() %>.<%=funin[1] %> <%if(funin[0].equals("min")){%>><%}else{%><<%}%> 0){
+if(operation_result_<%=cid %>.<%=funin[1] %>_<%=funin[0] %><%if(javaType == JavaTypesManager.BIGDECIMAL){%>.doubleValue()<%}%>  - <%=conn.getName() %>.<%=funin[1] %><%if(javaType == JavaTypesManager.BIGDECIMAL){%>.doubleValue()<%}%> <%if(funin[0].equals("min")){%>><%}else{%><<%}%> 0){
 	operation_result_<%=cid %>.<%=funin[1] %>_<%=funin[0] %> = <%=conn.getName() %>.<%=funin[1] %>;
 }
 <%//start
@@ -288,12 +288,18 @@ if(operation_result_<%=cid %>.<%=funin[1] %>_<%=funin[0] %> - <%=conn.getName() 
 					|| javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.BOOLEAN
 					|| javaType == JavaTypesManager.DATE){
 					//do nothing here
+				}else if(javaType == JavaTypesManager.BIGDECIMAL){
+//
+//end%>
+operation_result_<%=cid %>.<%=funin[1] %>_sum += <%=conn.getName() %>.<%=funin[1] %>.doubleValue();
+<%//start
+//
 				}else{
 //
 //end%>
 operation_result_<%=cid %>.<%=funin[1] %>_sum += <%=conn.getName() %>.<%=funin[1] %>;
 <%//start
-//
+//				
 				}
 			}
 			if(funin[0].equals("count")){
