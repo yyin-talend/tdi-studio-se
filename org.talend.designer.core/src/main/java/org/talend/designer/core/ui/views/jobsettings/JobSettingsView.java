@@ -48,6 +48,8 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView {
 
     private static final String VIEW_NAME = Messages.getString("JobSettingsView.JobSettings"); //$NON-NLS-1$
 
+    private static final String VIEW_NAME_JOBLET = "Joblet Settings";
+
     private HorizontalTabFactory tabFactory = null;
 
     private TalendPropertyTabDescriptor currentSelectedTab;

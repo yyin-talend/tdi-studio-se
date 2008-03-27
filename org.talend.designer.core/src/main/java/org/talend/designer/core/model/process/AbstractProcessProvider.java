@@ -141,4 +141,7 @@ public abstract class AbstractProcessProvider {
 
     public abstract List<PaletteEntry> addJobletEntry();
 
+    public boolean isExtensionComponent(Node node) {
+        return false;
+    }
 }

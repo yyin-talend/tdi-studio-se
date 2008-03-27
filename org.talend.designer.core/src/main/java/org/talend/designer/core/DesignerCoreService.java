@@ -210,33 +210,45 @@ public class DesignerCoreService implements IDesignerCoreService {
                 IMetadataTable newOutputMetadataTable = null;
 
                 ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
-                List<IRepositoryObject> allJobs = factory.getAll(ERepositoryObjectType.PROCESS, true);
-                for (IRepositoryObject repositoryObject : allJobs) {
+                List<IRepositoryObject> allJobsAndJoblets = new ArrayList<IRepositoryObject>();
+                allJobsAndJoblets.addAll(factory.getAll(ERepositoryObjectType.PROCESS, true));
+                allJobsAndJoblets.addAll(factory.getAll(ERepositoryObjectType.JOBLET, true));
+                for (IRepositoryObject repositoryObject : allJobsAndJoblets) {
                     String keyId = repositoryObject.getProperty().getLabel() + repositoryObject.getProperty().getVersion();
                     if (!openJobs.contains(keyId)) {
-                        ProcessItem item = (ProcessItem) repositoryObject.getProperty().getItem();
+                        Item item2 = repositoryObject.getProperty().getItem();
+                        EList node = null;
+                        if (item2 instanceof ProcessItem) {
+                            ProcessItem item = (ProcessItem) item2;
+                            node = item.getProcess().getNode();
+                        } else if (item2 instanceof JobletProcessItem) {
+                            JobletProcessItem item = (JobletProcessItem) item2;
+                            node = item.getJobletProcess().getNode();
+                        }
                         boolean isModify = false;
-                        for (Object o : item.getProcess().getNode()) {
-                            NodeType currentNode = (NodeType) o;
-                            if (currentNode.getComponentName().equals(oldName)) {
-                                EList metadata = currentNode.getMetadata();
-                                for (Object object : metadata) {
-                                    MetadataType metadataTable = (MetadataType) object;
-                                    newInputMetadataTable = getNewInputTableForConnection(newInputTableList, metadataTable
-                                            .getConnector());
-                                    newOutputMetadataTable = getNewOutputTableForConnection(newOutputTableList, metadataTable
-                                            .getName());
-                                    if (newInputMetadataTable != null) {
-                                        MetadataTool.copyTable(newInputMetadataTable, metadataTable);
-                                    } else if (newOutputMetadataTable != null) {
-                                        MetadataTool.copyTable(newOutputMetadataTable, metadataTable);
+                        if (node != null) {
+                            for (Object o : node) {
+                                NodeType currentNode = (NodeType) o;
+                                if (currentNode.getComponentName().equals(oldName)) {
+                                    EList metadata = currentNode.getMetadata();
+                                    for (Object object : metadata) {
+                                        MetadataType metadataTable = (MetadataType) object;
+                                        newInputMetadataTable = getNewInputTableForConnection(newInputTableList, metadataTable
+                                                .getConnector());
+                                        newOutputMetadataTable = getNewOutputTableForConnection(newOutputTableList, metadataTable
+                                                .getName());
+                                        if (newInputMetadataTable != null) {
+                                            MetadataTool.copyTable(newInputMetadataTable, metadataTable);
+                                        } else if (newOutputMetadataTable != null) {
+                                            MetadataTool.copyTable(newOutputMetadataTable, metadataTable);
+                                        }
+                                        isModify = true;
                                     }
-                                    isModify = true;
                                 }
                             }
                         }
                         if (isModify) {
-                            factory.save(item, true);
+                            factory.save(item2, true);
                         }
                     }
                 }

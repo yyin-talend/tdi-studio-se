@@ -257,6 +257,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
                 parameters.put(INode.RELOAD_PARAMETER_CONNECTORS, node.getListConnector());
 
                 node.reloadComponent(newComponent, parameters);
+                // System.out.println(node.getUniqueName() + " reload.");
             }
 
             for (Node node : (List<Node>) process.getGraphicalNodes()) {
@@ -282,10 +283,103 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
         } else if (propertyName.equals(ComponentUtilities.JOBLET_SCHEMA_CHANGED)) {
             updateGraphicalNodesSchema(evt);
         }
+        // else if (propertyName.equals(ComponentUtilities.JOBLET_INPUTOUTPUT_REDUCE)) {
+        // reduceGraphicalConnections(evt);
+        // }
         process.setProcessModified(true);
 
     }
 
+    /**
+     * DOC qzhang Comment method "reduceGraphicalConnections".
+     * 
+     * @param evt
+     */
+    // private void reduceGraphicalConnections(PropertyChangeEvent evt) {
+    // String oldName = ((IProcess) evt.getSource()).getName();
+    // if (process.getName().equals(oldName)) {
+    // return;
+    // }
+    // Object[] oldMetadataTables = (Object[]) evt.getOldValue();
+    // List<IMetadataTable> oldInputTableList = (List<IMetadataTable>) oldMetadataTables[0];
+    // List<IMetadataTable> oldOutputTableList = (List<IMetadataTable>) oldMetadataTables[1];
+    //
+    // Object[] newMetadataTables = (Object[]) evt.getNewValue();
+    // List<IMetadataTable> newInputTableList = (List<IMetadataTable>) newMetadataTables[0];
+    // List<IMetadataTable> newOutputTableList = (List<IMetadataTable>) newMetadataTables[1];
+    //
+    // List<String> removedInputcons = new ArrayList<String>();
+    // List<String> removedOutputcons = new ArrayList<String>();
+    //
+    // for (int i = 0; i < oldInputTableList.size(); i++) {
+    // IMetadataTable newTable = oldInputTableList.get(i);
+    // String attachedConnector = newTable.getAttachedConnector();
+    // String tableName = newTable.getTableName();
+    // boolean isRemove = true;
+    // for (IMetadataTable table : newInputTableList) {
+    // if (attachedConnector.equals(table.getAttachedConnector()) && tableName.equals(table.getTableName())) {
+    // isRemove = false;
+    // break;
+    // }
+    // }
+    // if (isRemove) {
+    // removedInputcons.add(attachedConnector);
+    // }
+    // }
+    //
+    // for (int i = 0; i < oldOutputTableList.size(); i++) {
+    // IMetadataTable newTable = oldOutputTableList.get(i);
+    // String attachedConnector = newTable.getAttachedConnector();
+    // String tableName = newTable.getTableName();
+    // boolean isRemove = true;
+    // for (IMetadataTable table : newOutputTableList) {
+    // if (attachedConnector.equals(table.getAttachedConnector()) && tableName.equals(table.getTableName())) {
+    // isRemove = false;
+    // break;
+    // }
+    // }
+    // if (isRemove) {
+    // removedOutputcons.add(tableName);
+    // }
+    // }
+    //
+    // boolean isChanged = false;
+    // for (Node node : (List<Node>) process.getGraphicalNodes()) {
+    // if (node.getComponent().getName().equals(oldName) || node.getLabel().contains(oldName)) {
+    // IComponent newComponent = components.get(oldName);
+    // if (newComponent == null) {
+    // continue;
+    // }
+    // List<? extends IConnection> incomingConnections = node.getIncomingConnections();
+    // for (int i = 0; i < incomingConnections.size(); i++) {
+    // IConnection connection = incomingConnections.get(i);
+    // IMetadataTable metaTable = connection.getMetadataTable();
+    // String string = metaTable.getAttachedConnector();
+    // if (removedInputcons.contains(string)) {
+    // ((org.talend.designer.core.ui.editor.connections.Connection) connection).disconnect();
+    // isChanged = true;
+    // }
+    // }
+    //
+    // List<? extends IConnection> outgoingConnections = node.getOutgoingConnections();
+    // for (int i = 0; i < outgoingConnections.size(); i++) {
+    // IConnection connection = outgoingConnections.get(i);
+    // IMetadataTable metaTable = connection.getMetadataTable();
+    // if (metaTable != null) {
+    // String string = metaTable.getAttachedConnector();
+    // if (removedOutputcons.contains(string)) {
+    // ((org.talend.designer.core.ui.editor.connections.Connection) connection).disconnect();
+    // isChanged = true;
+    // }
+    // }
+    // }
+    // }
+    // }
+    // if (isChanged) {
+    // getCommandStack().execute(new Command() {
+    // });
+    // }
+    // }
     /**
      * DOC qzhang Comment method "updateGraphicalNodesSchema".
      * 
@@ -333,13 +427,15 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
                     IConnection connection = outgoingConnections.get(i);
                     Node target = (Node) connection.getTarget();
                     IMetadataTable metadataTable = connection.getMetadataTable();
-                    IMetadataTable newOutputMetadataTable = getNewOutputTableForConnection(newOutputTableList, metadataTable
-                            .getAttachedConnector());
-                    if (newOutputMetadataTable != null && !metadataTable.sameMetadataAs(newOutputMetadataTable)) {
-                        IElementParameter elementParam = target.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
-                        command = new ChangeMetadataCommand(target, elementParam, target.getMetadataFromConnector(metadataTable
-                                .getAttachedConnector()), newOutputMetadataTable);
-                        command.execute(Boolean.FALSE);
+                    if (metadataTable != null) {
+                        IMetadataTable newOutputMetadataTable = getNewOutputTableForConnection(newOutputTableList, metadataTable
+                                .getAttachedConnector());
+                        if (newOutputMetadataTable != null && !metadataTable.sameMetadataAs(newOutputMetadataTable)) {
+                            IElementParameter elementParam = target.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
+                            command = new ChangeMetadataCommand(target, elementParam, target
+                                    .getMetadataFromConnector(metadataTable.getAttachedConnector()), newOutputMetadataTable);
+                            command.execute(Boolean.FALSE);
+                        }
                     }
                 }
 
