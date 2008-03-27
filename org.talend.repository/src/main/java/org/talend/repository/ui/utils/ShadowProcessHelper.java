@@ -155,6 +155,7 @@ public class ShadowProcessHelper {
         ProcessDescription processDescription = new ProcessDescription();
 
         processDescription.setFilepath(TalendTextUtils.addQuotes(PathUtils.getPortablePath(connection.getFilePath())));
+
         List<IMetadataTable> tableSchema = new ArrayList<IMetadataTable>();
 
         IMetadataTable table = new MetadataTable();
@@ -192,9 +193,8 @@ public class ShadowProcessHelper {
         table.setTableName("tFileInputExcel"); //$NON-NLS-1$
         table.setListColumns(schema);
         tableSchema.add(table);
-        processDescription.setSchema(tableSchema);
 
-        processDescription.setEncoding(TalendTextUtils.addQuotes("ISO-8859-15")); //$NON-NLS-1$
+        processDescription.setSchema(tableSchema);
 
         return processDescription;
     }

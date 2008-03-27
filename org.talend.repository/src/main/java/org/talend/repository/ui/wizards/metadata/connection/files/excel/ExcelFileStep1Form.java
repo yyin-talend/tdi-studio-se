@@ -122,7 +122,9 @@ public class ExcelFileStep1Form extends AbstractExcelFileStepForm {
         Composite compositeExcelViewer = Form.startNewDimensionnedGridLayout(group, 2, WIDTH_GRIDDATA_PIXEL, 150);
 
         sheetsCombo = new LabelledCombo(compositeExcelViewer, Messages.getString("ExcelFileStep1Form.sheet.choice"), Messages
-                .getString("ExcelFileStep1Form.sheet.tip"), new String[] { "Sheet1" });// Default name "Sheet1"
+                .getString("ExcelFileStep1Form.sheet.tip"), new String[] { "Sheet1" }, 1, false, SWT.NONE);// Default
+        // name
+        // "Sheet1"
 
         createTableViewer(compositeExcelViewer);
 
@@ -143,7 +145,7 @@ public class ExcelFileStep1Form extends AbstractExcelFileStepForm {
      */
     private void createTableViewer(Composite compositeExcelViewer) {
 
-        viewer = new TableViewer(compositeExcelViewer, SWT.FULL_SELECTION | SWT.H_SCROLL | SWT.V_SCROLL);
+        viewer = new TableViewer(compositeExcelViewer, SWT.FULL_SELECTION | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
 
         Table table = viewer.getTable();
 
@@ -340,6 +342,7 @@ public class ExcelFileStep1Form extends AbstractExcelFileStepForm {
                                 TableColumn tableColumn = new TableColumn(viewer.getTable(), SWT.NONE);
                                 tableColumn.setText(name);
                                 tableColumn.setWidth(60);
+                                // tableColumn.pack();
                             }
 
                             viewer.setInput(input);
@@ -380,7 +383,7 @@ public class ExcelFileStep1Form extends AbstractExcelFileStepForm {
      */
     private void initSheetsCombo(String[] sheets) {
 
-        String sheetOrigin = this.getConnection().getSheetName();
+        String sheetOrigin = getConnection().getSheetName();
 
         sheetsCombo.removeAll();
 

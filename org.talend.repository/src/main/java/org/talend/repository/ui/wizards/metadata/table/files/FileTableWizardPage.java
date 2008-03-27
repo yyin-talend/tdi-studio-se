@@ -31,7 +31,7 @@ import org.talend.core.model.metadata.builder.connection.util.ConnectionSwitch;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.repository.ui.swt.utils.AbstractForm;
 import org.talend.repository.ui.wizards.metadata.connection.files.delimited.DelimitedFileStep3Form;
-import org.talend.repository.ui.wizards.metadata.connection.files.excel.ExcelFileStep2Form;
+import org.talend.repository.ui.wizards.metadata.connection.files.excel.ExcelFileStep3Form;
 import org.talend.repository.ui.wizards.metadata.connection.files.ldif.LdifFileStep3Form;
 import org.talend.repository.ui.wizards.metadata.connection.files.positional.FileStep3Form;
 import org.talend.repository.ui.wizards.metadata.connection.files.regexp.RegexpFileStep3Form;
@@ -138,7 +138,7 @@ public class FileTableWizardPage extends WizardPage {
 
             @Override
             public Object caseFileExcelConnection(final FileExcelConnection object) {
-                ExcelFileStep2Form excelStep2Form = new ExcelFileStep2Form(parent, connectionItem, metadataTable, TableHelper
+                ExcelFileStep3Form excelStep2Form = new ExcelFileStep3Form(parent, connectionItem, metadataTable, TableHelper
                         .getTableNames(object, metadataTable.getLabel()));
                 excelStep2Form.setReadOnly(!isRepositoryObjectEditable);
                 excelStep2Form.setListener(listener);

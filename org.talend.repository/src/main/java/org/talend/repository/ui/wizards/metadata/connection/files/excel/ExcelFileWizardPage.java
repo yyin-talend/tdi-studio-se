@@ -63,9 +63,11 @@ public class ExcelFileWizardPage extends WizardPage {
         if (step == 1) {
             currentComposite = new ExcelFileStep1Form(parent, connectionItem, existingNames);
         } else if (step == 2) {
+            currentComposite = new ExcelFileStep2Form(parent, connectionItem);
+        } else if (step == 3) {
             MetadataTable metadataTable = (MetadataTable) ((FileExcelConnection) connectionItem.getConnection()).getTables().get(
                     0);
-            currentComposite = new ExcelFileStep2Form(parent, connectionItem, metadataTable, TableHelper.getTableNames(
+            currentComposite = new ExcelFileStep3Form(parent, connectionItem, metadataTable, TableHelper.getTableNames(
                     ((FileExcelConnection) connectionItem.getConnection()), metadataTable.getLabel()));
         }
 

@@ -24,6 +24,8 @@ public class ProcessDescription extends AbstractProcessDescription {
 
     private WSDLSchemaBean wsdlSchemaBean;
 
+    private ExcelSchemaBean excelSchemaBean;
+
     /**
      * Getter for wsdlSchemaBean.
      * 
@@ -55,6 +57,24 @@ public class ProcessDescription extends AbstractProcessDescription {
 
     public void setLdapSchemaBean(LDAPSchemaBean ldapSchemaBean) {
         this.ldapSchemaBean = ldapSchemaBean;
+    }
+
+    /**
+     * Getter for excelSchemaBean.
+     * 
+     * @return the excelSchemaBean
+     */
+    public ExcelSchemaBean getExcelSchemaBean() {
+        return this.excelSchemaBean;
+    }
+
+    /**
+     * Sets the excelSchemaBean.
+     * 
+     * @param excelSchemaBean the excelSchemaBean to set
+     */
+    public void setExcelSchemaBean(ExcelSchemaBean excelSchemaBean) {
+        this.excelSchemaBean = excelSchemaBean;
     }
 
 }
