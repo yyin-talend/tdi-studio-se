@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.repository.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
@@ -77,7 +78,7 @@ public class RepositoryNodeUtilities {
      * get path by repository item id. can't get the folders.
      */
     public static IPath getPath(final String id) {
-        if (id == null || "".equals(id) || "-1".equals(id)) {
+        if (id == null || "".equals(id) || RepositoryNode.NO_ID.equals(id)) {
             return null;
         }
         IProxyRepositoryFactory factory = RepositoryPlugin.getDefault().getRepositoryService().getProxyRepositoryFactory();
@@ -105,37 +106,142 @@ public class RepositoryNodeUtilities {
      * 
      * ggu Comment method "getRepositoryNode".
      * 
-     * get the repository node by a IRepositoryObject.
+     * @param id
+     * @return the repository node by id
      */
-    public static RepositoryNode getRepositoryNode(RepositoryNode rootNode, IRepositoryObject curNode) {
-        if (rootNode == null || curNode == null) {
+    public static RepositoryNode getRepositoryNode(final String id) {
+        if (id == null || "".equals(id) || RepositoryNode.NO_ID.equals(id)) {
             return null;
         }
+        IProxyRepositoryFactory factory = RepositoryPlugin.getDefault().getRepositoryService().getProxyRepositoryFactory();
+        try {
+            final IRepositoryObject lastVersion = factory.getLastVersion(id);
+            if (lastVersion != null) {
+                return getRepositoryNode(lastVersion);
+            }
+        } catch (PersistenceException e) {
+            //
+        }
+        return null;
+    }
+
+    /**
+     * 
+     * ggu Comment method "getRepositoryNode".
+     * 
+     * get the repository node by a IRepositoryObject.
+     */
+    public static RepositoryNode getRepositoryNode(IRepositoryObject curNode) {
+        if (curNode == null) {
+            return null;
+        }
+        IRepositoryView view = RepositoryView.show();
+        if (view == null) {
+            return null;
+        }
+        return getRepositoryNode(view.getRoot(), curNode, view);
+    }
+
+    private static RepositoryNode getRepositoryNode(RepositoryNode rootNode, IRepositoryObject curNode, IRepositoryView view) {
+        if (rootNode == null || curNode == null || view == null) {
+            return null;
+        }
+        // expande the unvisible node
+        expandNode(rootNode, curNode, view);
+
         final List<RepositoryNode> children = rootNode.getChildren();
 
         if (children != null) {
+            // in the first, search the current folder
+            List<RepositoryNode> folderChild = new ArrayList<RepositoryNode>();
+
             for (RepositoryNode childNode : children) {
-                if (childNode.getId().equals(curNode.getId())) {
+                if (isRepositoryFolder(childNode)) {
+                    folderChild.add(childNode);
+                } else if (childNode.getId().equals(curNode.getId()) && childNode.getObjectType() == curNode.getType()) {
                     return childNode;
-                } else {
-                    final RepositoryNode repositoryNode = getRepositoryNode(childNode, curNode);
-                    if (repositoryNode != null) {
-                        return repositoryNode;
-                    }
                 }
 
+            }
+            for (RepositoryNode folderNode : folderChild) {
+                final RepositoryNode repositoryNode = getRepositoryNode(folderNode, curNode, view);
+                if (repositoryNode != null) {
+                    return repositoryNode;
+                }
             }
         }
 
         return null;
     }
 
-    public static RepositoryNode getRepositoryNode(IRepositoryObject curNode) {
-        IRepositoryView view = RepositoryView.show();
-        if (view == null || curNode == null) {
-            return null;
+    private static void expandNode(RepositoryNode rootNode, IRepositoryObject curNode, IRepositoryView view) {
+        if (rootNode == null || curNode == null || view == null) {
+            return;
         }
-        return getRepositoryNode(view.getRoot(), curNode);
+        final ERepositoryObjectType rootContextType = rootNode.getContentType();
+        if (rootContextType != null) {
+            final ERepositoryObjectType curType = curNode.getType();
+            ERepositoryObjectType tmpType = null;
+            switch (curType) {
+            // case METADATA_CON_TABLE:
+            // case METADATA_CON_VIEW:
+            // case METADATA_CON_SYNONYM:
+            // case METADATA_CON_QUERY:
+            case METADATA_CONNECTIONS:
+            case METADATA_FILE_DELIMITED:
+            case METADATA_FILE_POSITIONAL:
+            case METADATA_FILE_REGEXP:
+            case METADATA_FILE_XML:
+            case METADATA_FILE_LDIF:
+            case METADATA_FILE_EXCEL:
+            case METADATA_GENERIC_SCHEMA:
+            case METADATA_LDAP_SCHEMA:
+            case METADATA_WSDL_SCHEMA:
+                tmpType = ERepositoryObjectType.METADATA;
+                break;
+            // case ROUTINES:
+            // case SNIPPETS:
+            // tmpType = ERepositoryObjectType.ROUTINES;
+            // break;
+            // case DOCUMENTATION:
+            // case JOB_DOC:
+            // case JOBLET_DOC:
+            // tmpType = ERepositoryObjectType.DOCUMENTATION;
+            // //
+            // break;
+            default:
+            }
+
+            if (tmpType != null && tmpType == rootContextType) {
+                expandParentNode(view, rootNode);
+            }
+            // expand the parent node
+
+            if (curType == rootContextType && isRepositoryFolder(rootNode)) {
+                expandParentNode(view, rootNode);
+                view.getViewer().refresh();
+            }
+
+        }
+    }
+
+    private static void expandParentNode(IRepositoryView view, RepositoryNode node) {
+        if (view == null || node == null) {
+            return;
+        }
+        expandParentNode(view, node.getParent());
+        view.expand(node, true);
+    }
+
+    private static boolean isRepositoryFolder(RepositoryNode node) {
+        if (node == null) {
+            return false;
+        }
+        final ENodeType type = node.getType();
+        if (type == ENodeType.SIMPLE_FOLDER || type == ENodeType.STABLE_SYSTEM_FOLDER || type == ENodeType.SYSTEM_FOLDER) {
+            return true;
+        }
+        return false;
     }
 
 }
