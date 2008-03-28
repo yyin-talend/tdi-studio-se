@@ -47,7 +47,7 @@ class HelloInput implements javax.jms.MessageListener {
 		msgQueue<%=cid%>=new java.util.LinkedList<String>();
 		java.util.Hashtable props<%=cid%>=new java.util.Hashtable();
 		props<%=cid%>.put(javax.naming.Context.INITIAL_CONTEXT_FACTORY,"org.jnp.interfaces.NamingContextFactory");
-		props<%=cid%>.put(javax.naming.Context.PROVIDER_URL, "<%=host%>:<%=port%>");
+		props<%=cid%>.put(javax.naming.Context.PROVIDER_URL, <%=host%>+":"+<%=port%>);
 		props<%=cid%>.put("java.naming.rmi.security.manager", "yes");
 		props<%=cid%>.put(javax.naming.Context.URL_PKG_PREFIXES, "org.jboss.naming");
 		props<%=cid%>.put("java.naming.factory.url.pkgs","org.jboss.naming:org.jnp.interfaces");	
@@ -94,7 +94,7 @@ class HelloInput implements javax.jms.MessageListener {
 		HelloInput input<%=cid%>=null;
 		try {
 		//begin part
-			input<%=cid%>=new HelloInput("<%if(msgType.equals("Topic")){%>TopicConnectionFactory<%}else{%>ConnectionFactory<%}%>","<%=from%>");			
+			input<%=cid%>=new HelloInput("<%if(msgType.equals("Topic")){%>TopicConnectionFactory<%}else{%>ConnectionFactory<%}%>",<%=from%>);			
 		} catch (java.lang.Exception e) {
 			System.err.println("An exception occurred while testing HelloSubscriber:" + e);
 			e.printStackTrace();
@@ -115,7 +115,7 @@ for(IConnection conn:conns){
  	String firstConnName = conn.getName();
 %>
 
-		<%=firstConnName%>.from="<%=from%>";	
+		<%=firstConnName%>.from=<%=from%>;	
 		<%=firstConnName%>.message=msg<%=cid%>;	
 			
 <%
@@ -128,9 +128,9 @@ else{
 	String queue = ElementParameterParser.getValue(node, "__QUEUE__");
 %>
 	java.util.Hashtable properties<%=cid%>=new java.util.Hashtable();
-	properties<%=cid%>.put("hostname", "<%=host%>");
-	properties<%=cid%>.put("port", new Integer(<%=port%>));
-	properties<%=cid%>.put("channel", "<%=channel%>");
+	properties<%=cid%>.put("hostname", <%=host%>);
+	properties<%=cid%>.put("port", Integer.valueOf(<%=port%>));
+	properties<%=cid%>.put("channel", <%=channel%>);
 	properties<%=cid%>.put("CCSID", new Integer(1208));
 	properties<%=cid%>.put("transport","MQSeries");
 	
@@ -151,8 +151,8 @@ else{
 	System.out.println("Ready to receive message");
 	System.out.println("Waiting...");
 	while(flag<%=cid%>){
-		qMgr<%=cid%>=new com.ibm.mq.MQQueueManager("<%=qm%>",properties<%=cid%>);
-		remoteQ<%=cid%>=qMgr<%=cid%>.accessQueue("<%=queue%>",openOptions<%=cid%>);
+		qMgr<%=cid%>=new com.ibm.mq.MQQueueManager(<%=qm%>,properties<%=cid%>);
+		remoteQ<%=cid%>=qMgr<%=cid%>.accessQueue(<%=queue%>,openOptions<%=cid%>);
 		<%if(kListen.equals("false")){%>if(Integer.valueOf(remoteQ<%=cid%>.getCurrentDepth()).equals(0)) break;<%}%>
 	
 		com.ibm.mq.MQMessage inMessage<%=cid%>=new com.ibm.mq.MQMessage();
@@ -165,7 +165,7 @@ for(IConnection conn:conns){
 	if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {
  	String firstConnName = conn.getName();
 %>
-		<%=firstConnName%>.from="<%=queue%>";	
+		<%=firstConnName%>.from=<%=queue%>;	
 		<%=firstConnName%>.message=message<%=cid%>;			
 <%
 }

@@ -66,7 +66,7 @@
       FIELD="TEXT"
       NUM_ROW="2"
     >
-	<DEFAULT>localhost</DEFAULT>
+	<DEFAULT>"localhost"</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
@@ -74,8 +74,8 @@
       FIELD="TEXT"
       NUM_ROW="2"
     >
-	<DEFAULT IF="(SERVER == 'JBOSS')">1099</DEFAULT>
-	<DEFAULT IF="(SERVER == 'WEBSPHERE')">1414</DEFAULT>
+	<DEFAULT IF="(SERVER == 'JBOSS')">"1099"</DEFAULT>
+	<DEFAULT IF="(SERVER == 'WEBSPHERE')">"1414"</DEFAULT>
     </PARAMETER>
 
 
@@ -87,7 +87,8 @@
       SHOW="true"
       NUM_ROW="3"
       SHOW_IF="(SERVER == 'JBOSS')"
-    />
+    ><DEFAULT>""</DEFAULT>
+    </PARAMETER>
     
     <PARAMETER
       NAME="MSGTYPE"
@@ -106,7 +107,7 @@
       FIELD="TEXT"
       NUM_ROW="3"
       SHOW_IF="(SERVER == 'WEBSPHERE')" >
-   	<DEFAULT>DC.SVRCONN</DEFAULT>
+   	<DEFAULT>"DC.SVRCONN"</DEFAULT>
     </PARAMETER>
     
     
@@ -133,7 +134,7 @@
       NUM_ROW="5"
       SHOW_IF="(SERVER == 'WEBSPHERE')"
     > 
-    <DEFAULT></DEFAULT>
+    <DEFAULT>""</DEFAULT>
     </PARAMETER>
     
   <PARAMETER
@@ -142,7 +143,7 @@
       NUM_ROW="5"
       SHOW_IF="(SERVER == 'WEBSPHERE')"
     > 
-    <DEFAULT></DEFAULT>
+    <DEFAULT>""</DEFAULT>
     </PARAMETER>
 
 
