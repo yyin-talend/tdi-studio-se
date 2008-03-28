@@ -22,6 +22,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionEvent;
@@ -87,6 +88,8 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
 
     private Map<String, EComponentCategory> categoryMap = null;
 
+    private Composite parent;
+
     /**
      * Getter for parentMap.
      * 
@@ -124,6 +127,10 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
         return DesignerPlugin.getDefault().getPreferenceStore();
     }
 
+    public Composite getParent() {
+        return parent;
+    }
+
     /*
      * (non-Javadoc)
      * 
@@ -131,6 +138,7 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
      */
     @Override
     public void createPartControl(Composite parent) {
+        this.parent = parent;
         tabFactory.initComposite(parent);
         tabFactory.addSelectionChangedListener(new ISelectionChangedListener() {
 
@@ -450,7 +458,26 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
             }
 
         });
+    }
 
+    public void selectTab(final EComponentCategory category) {
+        if (tabFactory.getSelection().getCategory().equals(category)) {
+            return;
+        }
+
+        List<TalendPropertyTabDescriptor> allTabs = tabFactory.getInput();
+        final List<TalendPropertyTabDescriptor> selection = new ArrayList<TalendPropertyTabDescriptor>();
+        for (TalendPropertyTabDescriptor talendPropertyTabDescriptor : allTabs) {
+            if (talendPropertyTabDescriptor.getCategory().equals(category)) {
+                selection.add(talendPropertyTabDescriptor);
+            }
+        }
+        tabFactory.setSelection(new StructuredSelection() {
+
+            public List toList() {
+                return selection;
+            }
+        });
     }
 
     public void updatePropertiesViewerTitle() {
