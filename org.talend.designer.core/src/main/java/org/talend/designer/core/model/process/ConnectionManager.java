@@ -18,7 +18,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.talend.core.model.components.IComponent;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IConnectionCategory;
@@ -278,8 +277,6 @@ public class ConnectionManager {
         int maxInput = newTarget.getConnectorFromType(newlineStyle).getMaxLinkInput();
         if (maxInput != -1 && (newTarget.getConnectorFromType(newlineStyle).getCurLinkNbInput() >= maxInput)) {
             return false;
-        } else if (AbstractProcessProvider.findProcessProviderFromPID(IComponent.JOBLET_PID).isExtensionComponent(newTarget)) {
-            return true;
         }
         if (!canConnect(source, newTarget, lineStyle, connectionName)) {
             return false;
