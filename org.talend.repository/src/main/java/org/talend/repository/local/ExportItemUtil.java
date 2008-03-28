@@ -46,6 +46,7 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.Project;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.PropertiesPackage;
+import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.User;
 import org.talend.core.model.properties.helper.ByteArrayResource;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -182,9 +183,13 @@ public class ExportItemUtil {
             computeProjectFileAndPath(destinationDirectory);
             createProjectResource(items);
             for (Item item : items) {
-                computeItemFilesAndPaths(destinationDirectory, item, projectFolderStructure);
-                createItemResources(item);
-                fixItemUserReferences(item);
+                Collection<EObject> copiedObjects = copyObjects(item);
+                
+                Item copiedItem = (Item) EcoreUtil.getObjectByType(copiedObjects, PropertiesPackage.eINSTANCE.getItem());
+                fixItem(copiedItem);
+                computeItemFilesAndPaths(destinationDirectory, copiedItem, projectFolderStructure);
+                createItemResources(copiedItem, copiedObjects);
+                fixItemUserReferences(copiedItem);
                 fixItemLockState();
                 toExport.put(propertyFile, propertyPath);
                 toExport.put(itemFile, itemPath);
@@ -277,9 +282,7 @@ public class ExportItemUtil {
         }
     }
 
-    private void createItemResources(Item item) {
-        Collection<EObject> copiedObjects = copyObjects(item);
-
+    private void createItemResources(Item item, Collection<EObject> copiedObjects) {
         propertyResource = createResource(propertyFile, false);
         moveObjectsToResource(propertyResource, copiedObjects, PropertiesPackage.eINSTANCE.getProperty());
         moveObjectsToResource(propertyResource, copiedObjects, PropertiesPackage.eINSTANCE.getItemState());
@@ -288,6 +291,10 @@ public class ExportItemUtil {
         boolean isFileItem = PropertiesPackage.eINSTANCE.getFileItem().isSuperTypeOf(item.eClass());
         itemResource = createResource(itemFile, isFileItem);
         moveObjectsToResource(itemResource, copiedObjects, null);
+    }
+
+    private void fixItem(Item item) {
+        item.getProperty().setLabel(item.getProperty().getLabel().replace(' ', '_'));
     }
 
     private Resource createResource(File file, boolean byteArrayResource) {
