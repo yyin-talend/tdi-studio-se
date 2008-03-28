@@ -37,10 +37,12 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.util.EcoreUtil.ExternalCrossReferencer;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.Project;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.PropertiesPackage;
 import org.talend.core.model.properties.User;
@@ -76,24 +78,22 @@ public class ExportItemUtil {
 
     private IPath itemPath;
 
+	private Project project;
+
+	public ExportItemUtil() {
+        Context ctx = CorePlugin.getContext();
+        RepositoryContext repositoryContext = (RepositoryContext) ctx.getProperty(Context.REPOSITORY_CONTEXT_KEY);
+        project = repositoryContext.getProject().getEmfProject();
+	}
+
+	public ExportItemUtil(Project project) {
+		this.project = project;
+	}
+	
     public void exportItems(File destination, Collection<Item> items) throws Exception {
         IFileExporterFullPath exporter = null;
         File tmpDirectory = null;
         Map<File, IPath> toExport;
-
-        boolean allVersions = true;
-        Collection<Item> itemsVersions = new ArrayList<Item>();
-        if (allVersions) {
-            for (Item item : items) {
-                List<IRepositoryObject> allVersion = ProxyRepositoryFactory.getInstance().getAllVersion(
-                        item.getProperty().getId());
-                for (IRepositoryObject repositoryObject : allVersion) {
-                    itemsVersions.add(repositoryObject.getProperty().getItem());
-                }
-            }
-        } else {
-            itemsVersions.addAll(items);
-        }
 
         if (destination.getName().endsWith(".tar")) {
             createFolder(destination.getParentFile());
@@ -115,7 +115,7 @@ public class ExportItemUtil {
 
             try {
                 if (exporter != null) {
-                    toExport = exportItems(itemsVersions, tmpDirectory, true);
+                    toExport = exportItems(items, tmpDirectory, true);
 
                     // in case of .tar.gz we remove extension twice
                     IPath rootPath = new Path(destination.getName()).removeFileExtension().removeFileExtension();
@@ -124,7 +124,7 @@ public class ExportItemUtil {
                         exporter.write(file.getAbsolutePath(), rootPath.append(path).toString());
                     }
                 } else {
-                    toExport = exportItems(itemsVersions, destination, true);
+                    toExport = exportItems(items, destination, true);
                 }
             } catch (Exception e) {
                 throw e;
@@ -145,6 +145,19 @@ public class ExportItemUtil {
             }
         }
     }
+
+	public Collection<Item> getAllVersions(Collection<Item> items)
+			throws PersistenceException {
+		Collection<Item> itemsVersions = new ArrayList<Item>();
+        for (Item item : items) {
+            List<IRepositoryObject> allVersion = ProxyRepositoryFactory.getInstance().getAllVersion(
+                    item.getProperty().getId());
+            for (IRepositoryObject repositoryObject : allVersion) {
+                itemsVersions.add(repositoryObject.getProperty().getItem());
+            }
+        }
+		return itemsVersions;
+	}
 
     public Set<File> createLocalResources(File destinationDirectory, Item item) throws Exception {
         List<Item> items = new ArrayList<Item>();
@@ -237,10 +250,7 @@ public class ExportItemUtil {
     }
 
     private void createProjectResource() {
-        Context ctx = CorePlugin.getContext();
-        RepositoryContext repositoryContext = (RepositoryContext) ctx.getProperty(Context.REPOSITORY_CONTEXT_KEY);
-
-        EObject projectCopy = EcoreUtil.copy(repositoryContext.getProject().getEmfProject());
+		EObject projectCopy = EcoreUtil.copy(project);
 
         User exportUser = PropertiesFactory.eINSTANCE.createUser();
         exportUser.setLogin("exportUser@talend.com");
