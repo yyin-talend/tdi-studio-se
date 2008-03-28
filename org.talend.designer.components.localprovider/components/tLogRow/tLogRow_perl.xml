@@ -117,8 +117,7 @@
       NAME="ENCODING"
       FIELD="ENCODING_TYPE"
       NUM_ROW="10"
-      REQUIRED="true"
-      REPOSITORY_VALUE="ENCODING"
+      REQUIRED="false"
     >
       <DEFAULT/>
     </PARAMETER>
