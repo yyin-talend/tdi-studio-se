@@ -142,10 +142,15 @@ public class ConnectionCreateCommand extends Command {
 
             } else {
                 newMetadata = null;
-                metaName = source.getMetadataFromConnector(mainConnector.getName()).getTableName();
-                String baseName = source.getConnectionName();
-                if (source.getProcess().checkValidConnectionName(baseName)) {
-                    connectionName = source.getProcess().generateUniqueConnectionName(baseName);
+
+                if (source.isELTComponent()) {
+                    connectionName = askForConnectionName(source.getLabel(), connectionName);
+                } else {
+                    metaName = source.getMetadataFromConnector(mainConnector.getName()).getTableName();
+                    String baseName = source.getConnectionName();
+                    if (source.getProcess().checkValidConnectionName(baseName)) {
+                        connectionName = source.getProcess().generateUniqueConnectionName(baseName);
+                    }
                 }
             }
 
