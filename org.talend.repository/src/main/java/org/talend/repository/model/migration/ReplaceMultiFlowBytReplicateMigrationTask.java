@@ -63,8 +63,8 @@ public class ReplaceMultiFlowBytReplicateMigrationTask extends AbstractJobMigrat
                         modified = true;
                     }
                 } else {
-                    ExceptionHandler.process(new Exception("Component \"" + nodeType.getComponentName() + "\" in the job \""
-                            + processItem.getProperty().getLabel() + "\" doesn't exist anymore"));
+                    ExceptionHandler.log("Component \"" + nodeType.getComponentName() + "\" in the job \""
+                            + processItem.getProperty().getLabel() + "\" doesn't exist anymore");
                 }
             }
             if (modified) {
