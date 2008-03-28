@@ -1544,7 +1544,7 @@ public class Node extends Element implements INode {
         Problems.addAll(moduleService.getProblems(this, this));
     }
 
-    private void checkLinks() {
+    public void checkLinks() {
         // check not startable components not linked
         if (!(Boolean) getPropertyValue(EParameterName.STARTABLE.getName())) {
             if ((getCurrentActiveLinksNbInput(EConnectionType.FLOW_MAIN) == 0)
@@ -1576,23 +1576,29 @@ public class Node extends Element implements INode {
         // not a sub process start
         if (!isSubProcessStart() || (!(Boolean) getPropertyValue(EParameterName.STARTABLE.getName()))) {
             if (/*
-                 * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_AFTER) > 0) ||
-                 * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_BEFORE) > 0)||
-                 */
+             * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_AFTER) > 0) ||
+             * (getCurrentActiveLinksNbOutput(EConnectionType.RUN_BEFORE) > 0)||
+             */
             (getCurrentActiveLinksNbOutput(EConnectionType.ON_SUBJOB_OK) > 0)
                     || getCurrentActiveLinksNbOutput(EConnectionType.ON_SUBJOB_ERROR) > 0) {
-                String errorMessage = "A component that is not a sub process start can not have any link run after / run before in output.";
+                String errorMessage = "A component that is not a sub process start can not have any link on sub job ok / on sub job error in input.";
                 Problems.add(ProblemStatus.ERROR, this, errorMessage);
             }
         }
+
+        // if (isSubProcessStart() && process.getMergelinkOrder(this) > 1) {
+        // String errorMessage = "A component that is not a sub process start can not have any link run after / run
+        // before in output.";
+        // Problems.add(ProblemStatus.ERROR, this, errorMessage);
+        // }
 
         // Check if there's an input run after / before on a component that is
         // not a sub process start
         if ((!isELTComponent() && !isSubProcessStart()) || (!(Boolean) getPropertyValue(EParameterName.STARTABLE.getName()))) {
             if (/*
-                 * (getCurrentActiveLinksNbInput(EConnectionType.RUN_AFTER) > 0) ||
-                 * (getCurrentActiveLinksNbInput(EConnectionType.RUN_BEFORE) > 0) ||
-                 */(getCurrentActiveLinksNbInput(EConnectionType.ON_SUBJOB_OK) > 0)
+             * (getCurrentActiveLinksNbInput(EConnectionType.RUN_AFTER) > 0) ||
+             * (getCurrentActiveLinksNbInput(EConnectionType.RUN_BEFORE) > 0) ||
+             */(getCurrentActiveLinksNbInput(EConnectionType.ON_SUBJOB_OK) > 0)
                     || (getCurrentActiveLinksNbInput(EConnectionType.RUN_IF) > 0)
                     || (getCurrentActiveLinksNbInput(EConnectionType.ON_COMPONENT_OK) > 0)
                     || (getCurrentActiveLinksNbInput(EConnectionType.ON_COMPONENT_ERROR) > 0)) {
@@ -1827,6 +1833,8 @@ public class Node extends Element implements INode {
             checkSchema();
             checkLinks();
             checkModules();
+            checkStartLinks();
+
             if (externalNode != null) {
                 List<Problem> problems = externalNode.getProblems();
                 if (problems != null) {
@@ -2294,6 +2302,17 @@ public class Node extends Element implements INode {
      */
     public boolean isVirtualGenerateNode() {
         return false;
+    }
+
+    /**
+     * ftang Comment method "checkStartLinks".
+     */
+    private void checkStartLinks() {
+        if ((getCurrentActiveLinksNbInput(EConnectionType.ON_SUBJOB_OK) > 0 || getCurrentActiveLinksNbInput(EConnectionType.ON_SUBJOB_ERROR) > 0)
+                && process.getMergelinkOrder(this) > 1) {
+            String errorMessage = "A component that is not a sub process start can not have any link on sub job ok / on sub job error in input.";
+            Problems.add(ProblemStatus.ERROR, this, errorMessage);
+        }
     }
 
 }

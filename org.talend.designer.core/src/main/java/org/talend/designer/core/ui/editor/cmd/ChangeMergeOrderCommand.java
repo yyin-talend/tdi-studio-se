@@ -15,6 +15,8 @@ package org.talend.designer.core.ui.editor.cmd;
 import java.util.List;
 
 import org.eclipse.gef.commands.Command;
+import org.talend.core.model.process.IProcess;
+import org.talend.core.model.process.IProcess2;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -41,6 +43,7 @@ public class ChangeMergeOrderCommand extends Command {
             throw new IllegalArgumentException("new connection list should have the same size as the old one"); //$NON-NLS-1$
         }
         this.setLabel(Messages.getString("ChangeMergeOrderCommand.label")); //$NON-NLS-1$
+
     }
 
     /*
@@ -54,6 +57,8 @@ public class ChangeMergeOrderCommand extends Command {
         mergeNode.setIncomingConnections(connectionInNewOrder);
         connectionInNewOrder.get(0).updateAllId();
         ((Process) mergeNode.getProcess()).checkStartNodes();
+
+        checkProcess();
     }
 
     /*
@@ -66,6 +71,28 @@ public class ChangeMergeOrderCommand extends Command {
         mergeNode.setIncomingConnections(connectionInOldOrder);
         connectionInOldOrder.get(0).updateAllId();
         ((Process) mergeNode.getProcess()).checkStartNodes();
+        checkProcess();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.gef.commands.Command#redo()
+     */
+    @Override
+    public void redo() {
+        super.redo();
+        checkProcess();
+    }
+
+    /**
+     * tang Comment method "checkProcess".
+     */
+    private void checkProcess() {
+        IProcess process = mergeNode.getProcess();
+        if (process instanceof IProcess2) {
+            ((IProcess2) process).checkProcess();
+        }
     }
 
 }

@@ -2100,7 +2100,8 @@ public class Process extends Element implements IProcess2 {
         for (Node node : nodes) {
             if ((Boolean) node.getPropertyValue(EParameterName.STARTABLE.getName())) {
                 if (node.isActivate()) {
-                    node.setStart(node.checkIfCanBeStart());
+                    boolean checkIfCanBeStart = node.checkIfCanBeStart();
+                    node.setStart(checkIfCanBeStart);
                 }
             }
         }
