@@ -18,6 +18,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.talend.core.model.components.IComponent;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IConnectionCategory;
@@ -64,7 +65,13 @@ public class ConnectionManager {
             int maxFlowInput = target.getConnectorFromName(EConnectionType.FLOW_MAIN.getName()).getMaxLinkInput();
             if (maxFlowInput > 1 && nbMain >= 1 && (nbMain <= maxFlowInput || maxFlowInput == -1)) {
                 // if the component accept several connections on the input, all inputs must come from the same process
-                if (!source.sameProcessAs(target, false)) {
+                boolean isExtensionComponent = false;
+                AbstractProcessProvider findProcessProviderFromPID = AbstractProcessProvider
+                        .findProcessProviderFromPID(IComponent.JOBLET_PID);
+                if (findProcessProviderFromPID != null) {
+                    isExtensionComponent = findProcessProviderFromPID.isExtensionComponent(target);
+                }
+                if (!isExtensionComponent && !source.sameProcessAs(target, false)) {
                     return false;
                 }
                 skipSameProcessTest = true;
