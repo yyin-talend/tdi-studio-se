@@ -46,7 +46,7 @@ public abstract class AbstractRoutineSynchronizer implements
 
 	public void syncRoutine(RoutineItem routineItem, boolean copyToTemp)
 			throws SystemException {
-		if (!isRoutineUptodate(routineItem)) {
+        if (!isRoutineUptodate(routineItem) || !getRoutineFile(routineItem).exists()) {
 			doSyncRoutine(routineItem, copyToTemp);
 			setRoutineAsUptodate(routineItem);
 		}
