@@ -33,6 +33,7 @@ import org.talend.core.properties.tab.HorizontalTabFactory;
 import org.talend.core.properties.tab.TalendPropertyTabDescriptor;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.core.model.process.AbstractProcessProvider;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.editor.process.Process;
@@ -201,6 +202,9 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView {
      */
     public void setPartName(String title) {
         String viewName = VIEW_NAME;
+        if (element instanceof IProcess && AbstractProcessProvider.isExtensionProcessForJoblet((IProcess) element)) {
+            viewName = VIEW_NAME_JOBLET;
+        }
         if (title == null) {
             title = ""; //$NON-NLS-1$
         }

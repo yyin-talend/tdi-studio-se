@@ -19,6 +19,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.gef.palette.PaletteEntry;
+import org.talend.core.model.components.IComponent;
+import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.Item;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
@@ -67,6 +69,20 @@ public abstract class AbstractProcessProvider {
             }
         }
         return processProviders;
+    }
+
+    /**
+     * DOC qzhang Comment method "isExtensionProcessForJoblet".
+     * 
+     * @param process
+     * @return
+     */
+    public static boolean isExtensionProcessForJoblet(IProcess process) {
+        AbstractProcessProvider findProcessProvider = findProcessProviderFromPID(IComponent.JOBLET_PID);
+        if (findProcessProvider != null) {
+            return findProcessProvider.isExtensionProcess(process);
+        }
+        return false;
     }
 
     /**
@@ -142,6 +158,17 @@ public abstract class AbstractProcessProvider {
     public abstract List<PaletteEntry> addJobletEntry();
 
     public boolean isExtensionComponent(Node node) {
+        return false;
+    }
+
+    /**
+     * DOC qzhang Comment method "isExtensionProcess".
+     * 
+     * @param process
+     * 
+     * @return
+     */
+    protected boolean isExtensionProcess(IProcess process) {
         return false;
     }
 }

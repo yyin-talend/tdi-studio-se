@@ -35,6 +35,7 @@ import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.model.components.EmfComponent;
+import org.talend.designer.core.model.process.AbstractProcessProvider;
 import org.talend.designer.core.model.process.DataNode;
 import org.talend.designer.core.model.process.jobsettings.JobSettingsConstants.ContextLoadInfo;
 import org.talend.designer.core.model.process.statsandlogs.StatsAndLogsManager;
@@ -106,6 +107,16 @@ public class JobSettingsManager {
         param.setNumRow(2);
         paramList.add(param);
 
+        if (AbstractProcessProvider.isExtensionProcessForJoblet(process)) {
+            param = new ElementParameter(process);
+            param.setName(EParameterName.STARTABLE.getName());
+            param.setValue(false);
+            param.setDisplayName(EParameterName.STARTABLE.getDisplayName());
+            param.setField(EParameterFieldType.CHECK);
+            param.setCategory(EComponentCategory.EXTRA);
+            param.setNumRow(2);
+            paramList.add(param);
+        }
         param = new ElementParameter(process);
         param.setName(EParameterName.IMPLICIT_TCONTEXTLOAD.getName());
         param.setValue(false);
