@@ -1241,4 +1241,8 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
 
     }
 
+
+    public boolean setAuthorByLogin(Item item, String login) throws PersistenceException {
+        return repositoryFactoryFromProvider.setAuthorByLogin(item, login);
+    }
 }

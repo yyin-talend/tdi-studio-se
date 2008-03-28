@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -58,6 +59,8 @@ import org.talend.repository.model.ProxyRepositoryFactory;
 /***/
 public class ExportItemUtil {
 
+    private static final String EXPORTUSER_TALEND_COM = "exportuser@talend.com";
+
     private ResourceSet resourceSet;
 
     private Resource projectResource;
@@ -79,6 +82,8 @@ public class ExportItemUtil {
     private IPath itemPath;
 
 	private Project project;
+	
+	private Map<String, User> login2user = new HashMap<String, User>();
 
 	public ExportItemUtil() {
         Context ctx = CorePlugin.getContext();
@@ -175,11 +180,11 @@ public class ExportItemUtil {
         try {
             init();
             computeProjectFileAndPath(destinationDirectory);
-            createProjectResource();
+            createProjectResource(items);
             for (Item item : items) {
                 computeItemFilesAndPaths(destinationDirectory, item, projectFolderStructure);
                 createItemResources(item);
-                fixItemUserReferences();
+                fixItemUserReferences(item);
                 fixItemLockState();
                 toExport.put(propertyFile, propertyPath);
                 toExport.put(itemFile, itemPath);
@@ -249,15 +254,27 @@ public class ExportItemUtil {
         resourceSet = new ResourceSetImpl();
     }
 
-    private void createProjectResource() {
-		EObject projectCopy = EcoreUtil.copy(project);
-
-        User exportUser = PropertiesFactory.eINSTANCE.createUser();
-        exportUser.setLogin("exportUser@talend.com");
-
+    private void createProjectResource(Collection<Item> items) {
         projectResource = createResource(projectFile, false);
+
+        EObject projectCopy = EcoreUtil.copy(project);
         projectResource.getContents().add(projectCopy);
-        projectResource.getContents().add(exportUser);
+
+		Set<String> logins = new HashSet<String>();
+		logins.add(EXPORTUSER_TALEND_COM);
+		for (Item item : items) {
+            User author = item.getProperty().getAuthor();
+            if (author != null) {
+                logins.add(author.getLogin());
+            }
+        }
+		
+		for (String login : logins) {
+	        User user = PropertiesFactory.eINSTANCE.createUser();
+	        user.setLogin(login);
+	        projectResource.getContents().add(user);
+	        login2user.put(login, user);
+        }
     }
 
     private void createItemResources(Item item) {
@@ -336,12 +353,15 @@ public class ExportItemUtil {
         objects.removeAll(objectsToTransfer);
     }
 
-    private void fixItemUserReferences() {
-        User exportUser = (User) EcoreUtil.getObjectByType(projectResource.getContents(), PropertiesPackage.eINSTANCE
-                .getUser());
-        Item item = (Item) EcoreUtil.getObjectByType(propertyResource.getContents(), PropertiesPackage.eINSTANCE
+    private void fixItemUserReferences(Item item) {
+        Item newItem = (Item) EcoreUtil.getObjectByType(propertyResource.getContents(), PropertiesPackage.eINSTANCE
                 .getItem());
-        item.getProperty().setAuthor(exportUser);
+        User author = item.getProperty().getAuthor();
+        String login = EXPORTUSER_TALEND_COM;
+        if (author != null) {
+            login = author.getLogin();
+        } 
+        newItem.getProperty().setAuthor(login2user.get(login));
     }
 
     private void fixItemLockState() {

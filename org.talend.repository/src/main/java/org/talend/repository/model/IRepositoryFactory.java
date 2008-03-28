@@ -272,4 +272,6 @@ public interface IRepositoryFactory {
 
     public void updateItemsPath(ERepositoryObjectType type, IPath targetPath) throws PersistenceException;
 
+    public boolean setAuthorByLogin(Item item, String login) throws PersistenceException;
+
 }
