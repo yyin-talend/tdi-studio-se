@@ -52,7 +52,7 @@
 //
 // ============================================================================
 <%
-  String packageName = codeGenArgument.getCurrentProjectName().toLowerCase() + "." + codeGenArgument.getJobName().toLowerCase();
+  String packageName = codeGenArgument.getCurrentProjectName().toLowerCase() + "." + codeGenArgument.getJobName().toLowerCase() + "_"+ jobVersion;
 %> 
 package <%= packageName %>;
 
@@ -88,7 +88,7 @@ import java.math.BigDecimal;
  * @version <%=jobVersion %>
  * @status <%=ElementParameterParser.getValue(process, "__STATUS__") %> 
  */                                
- public class <%=process.getName()+jobVersion%> {    
+ public class <%=process.getName()%> {    
     // create and load default properties
 	private static java.util.Properties defaultProps = new java.util.Properties();
 	// create application properties with default
@@ -182,17 +182,17 @@ private static RunTrace runTrace = new RunTrace();
 %>
 private class TalendException extends Exception {
 	private Exception e = null;
-	private <%=process.getName()+jobVersion %> c = null;
+	private <%=process.getName() %> c = null;
 <%
 	if(isRunInMultiThread ){
 %>	
 	private String currentComponent = null;
-	private TalendException(<%=process.getName()+jobVersion %> c, Exception e,String errorComponent) {
+	private TalendException(<%=process.getName() %> c, Exception e,String errorComponent) {
 		this.currentComponent= errorComponent;
 <%
 	}else{
 %>
-	private TalendException(<%=process.getName()+jobVersion %> c, Exception e) {
+	private TalendException(<%=process.getName() %> c, Exception e) {
 <%
 	}
 %>

@@ -69,10 +69,10 @@ import org.talend.core.model.properties.UserProjectAuthorizationType;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.Folder;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.utils.JavaResourcesHelper;
+import org.talend.core.model.utils.PerlResourcesHelper;
 import org.talend.repository.documentation.ERepositoryActionName;
 import org.talend.repository.i18n.Messages;
-import org.talend.repository.ui.utils.JavaResourcesHelper;
-import org.talend.repository.ui.utils.PerlResourcesHelper;
 import org.talend.repository.ui.views.RepositoryContentProvider.ISubRepositoryObject;
 import org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobJavaScriptsManager;
 import org.talend.repository.utils.RepositoryPathProvider;
@@ -1155,13 +1155,12 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
                 .getLanguage()) {
         case JAVA:
             IPath path = new Path(JavaUtils.JAVA_SRC_DIRECTORY).append(JavaResourcesHelper.getCurrentProjectName()).append(
-                    JavaResourcesHelper.getJobFolderName(process.getName())).append(JobJavaScriptsManager.JOB_CONTEXT_FOLDER)
-                    .append(context.getName() + JavaUtils.JAVA_CONTEXT_EXTENSION);
+                    JavaResourcesHelper.getJobFolderName(process.getName(), process.getVersion())).append(
+                    JobJavaScriptsManager.JOB_CONTEXT_FOLDER).append(context.getName() + JavaUtils.JAVA_CONTEXT_EXTENSION);
             return JavaResourcesHelper.getSpecificResourceInJavaProject(path);
         case PERL:
-            String contextFullName = PerlResourcesHelper.getCurrentProjectName()
-                    + ".job_" + PerlResourcesHelper.escapeSpace(process.getName()) + "_" //$NON-NLS-1$ //$NON-NLS-2$
-                    + PerlResourcesHelper.escapeSpace(context.getName()) + PerlResourcesHelper.CONTEXT_FILE_SUFFIX;
+            String contextFullName = PerlResourcesHelper.getContextFileName(process.getName(), process.getVersion(), context
+                    .getName());
             return PerlResourcesHelper.getSpecificResourceInPerlProject(new Path(contextFullName));
         }
         return null;

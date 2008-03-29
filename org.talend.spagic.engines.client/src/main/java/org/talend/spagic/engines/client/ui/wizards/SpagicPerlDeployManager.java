@@ -43,16 +43,16 @@ import org.talend.core.model.genhtml.HTMLDocUtils;
 import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.utils.JavaResourcesHelper;
+import org.talend.core.model.utils.PerlResourcesHelper;
 import org.talend.designer.core.IDesignerCoreService;
-import org.talend.designer.core.model.utils.emf.talendfile.JobType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.runprocess.IProcessor;
+import org.talend.designer.runprocess.JobInfo;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.documentation.ExportFileResource;
 import org.talend.repository.model.ComponentsFactoryProvider;
-import org.talend.repository.ui.utils.JavaResourcesHelper;
-import org.talend.repository.ui.utils.PerlResourcesHelper;
 
 /**
  * DOC qwei class global comment. Detailled comment <br/>
@@ -123,15 +123,13 @@ public class SpagicPerlDeployManager extends org.talend.repository.ui.wizards.ex
     private List<URL> getJobScripts(ProcessItem process, boolean needJob) {
         List<String> list = new ArrayList<String>();
         if (needJob) {
-            String projectName = getCurrentProjectName();
             try {
-                String name = escapeFileNameSpace(process);
-                name = projectName + ".job_" + name + PerlResourcesHelper.CONTEXT_FILE_SUFFIX; //$NON-NLS-1$ //$NON-NLS-2$
-                list.add(name);
+                String fileName = PerlResourcesHelper.getJobFileName(process.getProperty().getLabel(), process.getProperty()
+                        .getVersion());
+                list.add(fileName);
             } catch (Exception e) {
                 ExceptionHandler.process(e);
             }
-
         }
 
         IResource[] resources = this.getAllPerlFiles();
@@ -231,15 +229,10 @@ public class SpagicPerlDeployManager extends org.talend.repository.ui.wizards.ex
         List<String> list = new ArrayList<String>();
         if (needContext) {
             List<String> contexts = getJobContexts(process);
-            // String processName = process[0].getProperty().getLabel();
-            String processName = escapeFileNameSpace(process);
-            String projectName = getCurrentProjectName();
-            for (Iterator<String> iter = contexts.iterator(); iter.hasNext();) {
-                String contextName = iter.next();
-                contextName = escapeSpace(contextName);
-                String contextFullName = projectName + ".job_" + processName + "_" //$NON-NLS-1$ //$NON-NLS-2$
-                        + contextName + PerlResourcesHelper.CONTEXT_FILE_SUFFIX; //$NON-NLS-3$
-                list.add(contextFullName);
+            for (String contextName : contexts) {
+                String contextFileName = PerlResourcesHelper.getContextFileName(process.getProperty().getLabel(), process
+                        .getProperty().getVersion(), contextName);
+                list.add(contextFileName);
             }
         }
 
@@ -292,37 +285,22 @@ public class SpagicPerlDeployManager extends org.talend.repository.ui.wizards.ex
         }
         processedJob.add(process);
         addComponentModules(process, resource);
-        List<URL> srcList = getSource(process, exportChoice.get(ExportChoice.needSource));
-        resource.addResources(JOB_SOURCE_FOLDER_NAME, srcList);
-        if (process.getProcess().getRequired() == null) {
-            return;
-        }
-        EList jobList = process.getProcess().getRequired().getJob();
-        for (int j = 0; j < jobList.size(); j++) {
-            JobType jType = (JobType) jobList.get(j);
-            ProcessItem item = ProcessorUtilities.getProcessItemById(jType.getName());
-            if (item == null) {
-                continue;
-            }
-            String processLabel = item.getProperty().getLabel();
-            if (processLabel.equals(rootName)) {
-                continue;
-            }
+        addSource(process, exportChoice.get(ExportChoice.needSource), resource, JOB_SOURCE_FOLDER_NAME);
 
-            String processName = escapeSpace(processLabel);
-            String jobScriptName = projectName + ".job_" + processName + PerlResourcesHelper.CONTEXT_FILE_SUFFIX; //$NON-NLS-1$
-            String contextName = escapeSpace(jType.getContext());
-            String contextFullName = projectName
-                    + ".job_" + processName + "_" + contextName + PerlResourcesHelper.CONTEXT_FILE_SUFFIX; //$NON-NLS-1$ 
+        Set<JobInfo> subjobInfos = ProcessorUtilities.getChildrenJobInfo(process);
+        for (JobInfo subjobInfo : subjobInfos) {
+            if (subjobInfo.getJobName().equals(rootName)) {
+                continue;
+            }
+            String jobScriptName = PerlResourcesHelper.getJobFileName(subjobInfo.getJobName(), subjobInfo.getJobVersion());
+            String contextFullName = PerlResourcesHelper.getContextFileName(subjobInfo.getJobName(), subjobInfo.getJobVersion(),
+                    subjobInfo.getContextName());
 
             addToList(list, jobScriptName);
             addToList(list, contextFullName);
 
-            ProcessItem childProcess = findProcess(processLabel);
-            if (childProcess == null) {
-                return;
-            }
-            getChildrenJobAndContextName(rootName, list, childProcess, projectName, processedJob, resource, exportChoice);
+            getChildrenJobAndContextName(rootName, list, subjobInfo.getProcessItem(), projectName, processedJob, resource,
+                    exportChoice);
         }
     }
 
@@ -385,21 +363,10 @@ public class SpagicPerlDeployManager extends org.talend.repository.ui.wizards.ex
         List<URL> list = new ArrayList<URL>();
         Properties p = new Properties();
         FileOutputStream out = null;
-        String projectName = getCurrentProjectName();
-        // String jobName = processItem.getProperty().getLabel();
-        String name = escapeFileNameSpace(processItem);
-        name = projectName + ".job_" + name + PerlResourcesHelper.CONTEXT_FILE_SUFFIX;
+        String name = PerlResourcesHelper.getJobFileName(processItem.getProperty().getLabel(), processItem.getProperty()
+                .getVersion());
 
         try {
-            // List<SpagoBiServer> listServerSapgo = null;
-            // listServerSapgo = SpagicServerHelper.parse(new SpagicPreferencePage().getPreferenceStore().getString(
-            // SpagoBiServer.SPAGOBI_SERVER));
-            // if (listServerSapgo != null && !listServerSapgo.isEmpty()) {
-            // Iterator<SpagoBiServer> iterator = listServerSapgo.iterator();
-            // while (iterator.hasNext()) {
-            // SpagoBiServer spagoBiServer = iterator.next();
-            // }
-            // }
             IPath path = getSrcRootLocation();
             path = path.append(name);
             BufferedReader buff = new BufferedReader(new FileReader(path.toPortableString()));
@@ -416,9 +383,10 @@ public class SpagicPerlDeployManager extends org.talend.repository.ui.wizards.ex
             for (IContextParameter ctxParam : ctxParams) {
                 p.put(ctxParam.getName(), ctxParam.getValue());
             }
-            p.put("JobClassName", getCurrentProjectName() + "."
-                    + JavaResourcesHelper.getJobFolderName(processItem.getProperty().getLabel()) + "."
-                    + processItem.getProperty().getLabel());
+            p.put("JobClassName", getCurrentProjectName()
+                    + "."
+                    + JavaResourcesHelper.getJobFolderName(processItem.getProperty().getLabel(), processItem.getProperty()
+                            .getVersion()) + "." + processItem.getProperty().getLabel());
             p.put("talendJobClassDescription", HTMLDocUtils.checkString(processItem.getProperty().getDescription()));
             p.put("rowNumber", Integer.toString(nbLine));
             p.put("host", "localhost");

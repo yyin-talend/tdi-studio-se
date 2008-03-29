@@ -511,5 +511,4 @@ public abstract class Processor implements IProcessor {
     public boolean checkKillAllowed() {
         return true;
     }
-    
 }

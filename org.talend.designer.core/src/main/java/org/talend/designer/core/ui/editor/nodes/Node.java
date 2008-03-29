@@ -69,7 +69,6 @@ import org.talend.core.model.process.INodeReturn;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.Problem;
 import org.talend.core.model.process.Problem.ProblemStatus;
-import org.talend.core.model.properties.Item;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -929,14 +928,11 @@ public class Node extends Element implements INode {
                     IEditorPart part = activeWorkbenchWindow.getActivePage().getActiveEditor();
                     if (part instanceof AbstractMultiPageTalendEditor) {
                         if (process.isActivate() && ((AbstractMultiPageTalendEditor) part).getProcess().equals(process)) {
-                            final String propertyValue = (String) getPropertyValue(processPrefix
+                            final String jobId = (String) getPropertyValue(processPrefix
                                     + EParameterName.PROCESS_TYPE_PROCESS.getName());
-                            Item item = ProcessorUtilities.getProcessItemById(propertyValue);
-                            if (item != null) {
-                                ProcessorUtilities.generateCode(item.getProperty().getLabel(), (String) value, false, false,
-                                        ProcessorUtilities.GENERATE_MAIN_ONLY);
-                                ((AbstractMultiPageTalendEditor) part).updateChildrens();
-                            }
+                            ProcessorUtilities.generateCode(jobId, (String) value, null, false, false,
+                                    ProcessorUtilities.GENERATE_MAIN_ONLY);
+                            ((AbstractMultiPageTalendEditor) part).updateChildrens();
                         }
                     }
                 }

@@ -48,11 +48,12 @@ import org.talend.commons.utils.io.FilesUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.general.ILibrariesService;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.designer.runprocess.IProcessor;
+import org.talend.designer.runprocess.JobInfo;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.documentation.ExportFileResource;
-import org.talend.repository.ui.utils.JavaResourcesHelper;
 
 /**
  * DOC x class global comment. Detailled comment <br/>
@@ -177,7 +178,7 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
     private void addSubJobResources(ProcessItem process, boolean needChildren, Map<ExportChoice, Boolean> exportChoice,
             ExportFileResource libResource, ExportFileResource contextResource, ExportFileResource srcResource) {
 
-        List<String> list = new ArrayList<String>();
+        List<JobInfo> list = new ArrayList<JobInfo>();
 
         if (needChildren) {
             String projectName = getCurrentProjectName();
@@ -190,10 +191,10 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
             }
         }
 
-        for (Iterator<String> iter = list.iterator(); iter.hasNext();) {
-            String jobName = iter.next();
-            libResource.addResources(getJobScripts(jobName, true));
-            addContextScripts(jobName, contextResource, true);
+        for (Iterator<JobInfo> iter = list.iterator(); iter.hasNext();) {
+            JobInfo jobInfo = iter.next();
+            libResource.addResources(getJobScripts(jobInfo.getJobName(), jobInfo.getJobVersion(), true));
+            addContextScripts(jobInfo.getJobName(), jobInfo.getJobVersion(), contextResource, true);
         }
 
     }
@@ -214,7 +215,7 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
 
     protected void getContextScripts(ProcessItem processItem, Boolean needContext, ExportFileResource contextResource) {
         String jobName = processItem.getProperty().getLabel();
-        addContextScripts(jobName, contextResource, needContext);
+        addContextScripts(jobName, processItem.getProperty().getVersion(), contextResource, needContext);
     }
 
     protected List<URL> getAxisLib(Boolean needAxisLib) {
@@ -264,7 +265,8 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
         try {
             String projectName = getCurrentProjectName();
             String jobName = processItem.getProperty().getLabel();
-            String jobFolderName = JavaResourcesHelper.getJobFolderName(escapeFileNameSpace(processItem));
+            String jobFolderName = JavaResourcesHelper.getJobFolderName(escapeFileNameSpace(processItem), processItem
+                    .getProperty().getVersion());
 
             String classRoot = getClassRootLocation();
 

@@ -33,11 +33,12 @@ import org.talend.core.model.genhtml.HTMLDocUtils;
 import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.runprocess.IProcessor;
+import org.talend.designer.runprocess.JobInfo;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.documentation.ExportFileResource;
-import org.talend.repository.ui.utils.JavaResourcesHelper;
 
 /**
  * DOC qwei class global comment. Detailled comment <br/>
@@ -65,8 +66,8 @@ public class SpagicJavaDeployManager extends org.talend.repository.ui.wizards.ex
             resources.addAll(getLauncher(BooleanUtils.isTrue(exportChoice.get(ExportChoice.needLauncher)), processItem,
                     escapeSpace(contextName), escapeSpace(launcher), statisticPort, tracePort, codeOptions));
 
-            List<URL> srcList = getSource(processItem, BooleanUtils.isTrue(exportChoice.get(ExportChoice.needSource)));
-            process[i].addResources(JOB_SOURCE_FOLDER_NAME, srcList);
+            addSource(processItem, BooleanUtils.isTrue(exportChoice.get(ExportChoice.needSource)), process[i],
+                    JOB_SOURCE_FOLDER_NAME);
 
             resources.addAll(getJobScripts(processItem, BooleanUtils.isTrue(exportChoice.get(ExportChoice.needJob))));
             // resources.addAll(getProperties(processItem, srcList));
@@ -110,7 +111,7 @@ public class SpagicJavaDeployManager extends org.talend.repository.ui.wizards.ex
 
     private List<URL> addChildrenResources(ProcessItem process, boolean needChildren, ExportFileResource resource,
             Map<ExportChoice, Boolean> exportChoice) {
-        List<String> list = new ArrayList<String>();
+        List<JobInfo> list = new ArrayList<JobInfo>();
         if (needChildren) {
             String projectName = getCurrentProjectName();
             try {
@@ -124,10 +125,11 @@ public class SpagicJavaDeployManager extends org.talend.repository.ui.wizards.ex
         }
 
         List<URL> allJobScripts = new ArrayList<URL>();
-        for (Iterator<String> iter = list.iterator(); iter.hasNext();) {
-            String jobName = iter.next();
-            allJobScripts.addAll(getJobScripts(jobName, exportChoice.get(ExportChoice.needJob)));
-            addContextScripts(jobName, resource, exportChoice.get(ExportChoice.needContext));
+        for (Iterator<JobInfo> iter = list.iterator(); iter.hasNext();) {
+            JobInfo jobInfo = iter.next();
+            allJobScripts.addAll(getJobScripts(jobInfo.getJobName(), jobInfo.getJobVersion(), exportChoice
+                    .get(ExportChoice.needJob)));
+            addContextScripts(jobInfo.getJobName(), jobInfo.getJobVersion(), resource, exportChoice.get(ExportChoice.needContext));
         }
 
         return allJobScripts;
@@ -139,7 +141,8 @@ public class SpagicJavaDeployManager extends org.talend.repository.ui.wizards.ex
         FileOutputStream out = null;
         String projectName = getCurrentProjectName();
         String jobName = processItem.getProperty().getLabel();
-        String jobFolderName = JavaResourcesHelper.getJobFolderName(escapeFileNameSpace(processItem));
+        String jobFolderName = JavaResourcesHelper.getJobFolderName(escapeFileNameSpace(processItem), processItem.getProperty()
+                .getVersion());
         try {
             // List<SpagoBiServer> listServerSapgo = null;
             // listServerSapgo = SpagicServerHelper.parse(new SpagicPreferencePage().getPreferenceStore().getString(
@@ -166,9 +169,10 @@ public class SpagicJavaDeployManager extends org.talend.repository.ui.wizards.ex
             for (IContextParameter ctxParam : ctxParams) {
                 p.put(ctxParam.getName(), ctxParam.getValue());
             }
-            p.put("JobClassName", getCurrentProjectName() + "."
-                    + JavaResourcesHelper.getJobFolderName(processItem.getProperty().getLabel()) + "."
-                    + processItem.getProperty().getLabel());
+            p.put("JobClassName", getCurrentProjectName()
+                    + "."
+                    + JavaResourcesHelper.getJobFolderName(processItem.getProperty().getLabel(), processItem.getProperty()
+                            .getVersion()) + "." + processItem.getProperty().getLabel());
             p.put("talendJobClassDescription", HTMLDocUtils.checkString(processItem.getProperty().getDescription()));
             p.put("rowNumber", Integer.toString(nbLine));
             p.put("host", "localhost");

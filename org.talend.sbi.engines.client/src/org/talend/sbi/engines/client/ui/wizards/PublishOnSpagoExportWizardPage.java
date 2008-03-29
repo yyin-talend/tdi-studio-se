@@ -249,7 +249,9 @@ public abstract class PublishOnSpagoExportWizardPage extends WizardFileSystemRes
         // displayErrorDialog(e.getMessage());
         // }
 
-        serverSpagoBi = new LabelledCombo(optionsGroup, Messages.getString("PublishOnSpagoExportWizardPage.SpagoBI.Server"), Messages.getString("PublishOnSpagoExportWizardPage.SpecifyServer.PublishJob"), listEngine); //$NON-NLS-1$ //$NON-NLS-2$
+        serverSpagoBi = new LabelledCombo(
+                optionsGroup,
+                Messages.getString("PublishOnSpagoExportWizardPage.SpagoBI.Server"), Messages.getString("PublishOnSpagoExportWizardPage.SpecifyServer.PublishJob"), listEngine); //$NON-NLS-1$ //$NON-NLS-2$
         serverSpagoBi.select(0);
 
         jobLabel = new LabelledText(optionsGroup, Messages.getString("PublishOnSpagoExportWizardPage.jobLabel"), true);
@@ -403,9 +405,8 @@ public abstract class PublishOnSpagoExportWizardPage extends WizardFileSystemRes
 
         ProcessorUtilities.resetExportConfig();
         for (int i = 0; i < process.length; i++) {
-            ProcessItem processItem = (ProcessItem)process[i].getItem();
-            ProcessorUtilities.generateCode(processItem.getProperty().getLabel(), processItem.getProcess().getDefaultContext(),
-                    false, false);
+            ProcessItem processItem = (ProcessItem) process[i].getItem();
+            ProcessorUtilities.generateCode(processItem, processItem.getProcess().getDefaultContext(), false, false);
 
         }
 

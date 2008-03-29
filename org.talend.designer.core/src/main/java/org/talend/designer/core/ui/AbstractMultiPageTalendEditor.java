@@ -199,7 +199,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             JobResourceManager jobResourceManager = JobResourceManager.getInstance();
             jobResourceManager.removeProtection(designerEditor);
             for (String id : designerEditor.getProtectedIds()) {
-                if (designerEditor.getJobResource(id).getJobName().equalsIgnoreCase(oldJobName)) {
+                if (designerEditor.getJobResource(id).getJobInfo().getJobName().equalsIgnoreCase(oldJobName)) {
                     // delete only the job renamed
                     jobResourceManager.deleteResource(designerEditor.getJobResource(id));
                 }
@@ -207,7 +207,7 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
             designerEditor.resetJobResources();
 
             setName();
-            designerEditor.getCurrentJobResource().setJobName(getEditorInput().getName());
+            designerEditor.getCurrentJobResource().getJobInfo().setJobName(getEditorInput().getName());
             jobResourceManager.addProtection(designerEditor);
 
             processor.initPath();

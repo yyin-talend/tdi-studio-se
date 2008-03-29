@@ -34,15 +34,15 @@ import org.talend.core.model.components.IComponent;
 import org.talend.core.model.general.ILibrariesService;
 import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.utils.PerlResourcesHelper;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
-import org.talend.designer.core.model.utils.emf.talendfile.JobType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.runprocess.IProcessor;
+import org.talend.designer.runprocess.JobInfo;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.documentation.ExportFileResource;
 import org.talend.repository.model.ComponentsFactoryProvider;
-import org.talend.repository.ui.utils.PerlResourcesHelper;
 
 /**
  * Manages the job scripts to be exported. <br/>
@@ -105,7 +105,7 @@ public class JobPerlScriptsManager extends JobScriptsManager {
             resources.addAll(getJobScripts(processItem, exportChoice.get(ExportChoice.needJob)));
             resources.addAll(getContextScripts(processItem, exportChoice.get(ExportChoice.needContext)));
             boolean needChildren = exportChoice.get(ExportChoice.needJob) && exportChoice.get(ExportChoice.needContext);
-            addChildrenResources(processItem, needChildren, process[i], exportChoice,contextName);
+            addChildrenResources(processItem, needChildren, process[i], exportChoice, contextName);
             process[i].addResources(resources);
         }
         return Arrays.asList(process);
@@ -267,17 +267,14 @@ public class JobPerlScriptsManager extends JobScriptsManager {
     private List<URL> getJobScripts(ProcessItem process, boolean needJob) {
         List<String> list = new ArrayList<String>();
         if (needJob) {
-            String projectName = getCurrentProjectName();
             try {
-                String name = escapeFileNameSpace(process);
-                name = projectName + ".job_" + name + PerlResourcesHelper.CONTEXT_FILE_SUFFIX; //$NON-NLS-1$ //$NON-NLS-2$
-                list.add(name);
+                String fileName = PerlResourcesHelper.getJobFileName(process.getProperty().getLabel(), process.getProperty()
+                        .getVersion());
+                list.add(fileName);
             } catch (Exception e) {
                 ExceptionHandler.process(e);
             }
-
         }
-
         IResource[] resources = this.getAllPerlFiles();
         return getResourcesURL(resources, list);
     }
@@ -299,7 +296,7 @@ public class JobPerlScriptsManager extends JobScriptsManager {
             try {
                 List<ProcessItem> processedJob = new ArrayList<ProcessItem>();
                 getChildrenJobAndContextName(process.getProperty().getLabel(), list, process, projectName, processedJob,
-                        resource, exportChoice,contextName);
+                        resource, exportChoice, contextName);
             } catch (Exception e) {
                 ExceptionHandler.process(e);
             }
@@ -311,50 +308,38 @@ public class JobPerlScriptsManager extends JobScriptsManager {
     }
 
     private void getChildrenJobAndContextName(String rootName, List<String> list, ProcessItem process, String projectName,
-            List<ProcessItem> processedJob, ExportFileResource resource, Map<ExportChoice, Boolean> exportChoice, String fatherContext) {
+            List<ProcessItem> processedJob, ExportFileResource resource, Map<ExportChoice, Boolean> exportChoice,
+            String fatherContext) {
         if (processedJob.contains(process)) {
             // prevent circle
             return;
         }
         processedJob.add(process);
         addComponentModules(process, resource);
-        List<URL> srcList = getSource(process, exportChoice.get(ExportChoice.needSource));
-        resource.addResources(JOB_SOURCE_FOLDER_NAME, srcList);
-        if (process.getProcess().getRequired() == null) {
-            return;
-        }
-        EList jobList = process.getProcess().getRequired().getJob();
-        for (int j = 0; j < jobList.size(); j++) {
-            JobType jType = (JobType) jobList.get(j);
-            ProcessItem item = ProcessorUtilities.getProcessItemById(jType.getName());
-            if (item == null) {
-                continue;
-            }
-            String processLabel = item.getProperty().getLabel();
-            if (processLabel.equals(rootName)) {
+        addSource(process, exportChoice.get(ExportChoice.needSource), resource, JOB_SOURCE_FOLDER_NAME);
+
+        Set<JobInfo> subjobInfos = ProcessorUtilities.getChildrenJobInfo(process);
+        for (JobInfo subjobInfo : subjobInfos) {
+            if (subjobInfo.getJobName().equals(rootName)) {
                 continue;
             }
 
-            String processName = escapeSpace(processLabel);
-            String jobScriptName = projectName + ".job_" + processName + PerlResourcesHelper.CONTEXT_FILE_SUFFIX; //$NON-NLS-1$
+            String jobScriptName = PerlResourcesHelper.getJobFileName(subjobInfo.getJobName(), subjobInfo.getJobVersion());
             String contextName = null;
-            if (exportChoice.get(ExportChoice.applyToChildren)) { 
-                contextName = fatherContext; 
-            } else {    
-                contextName = escapeSpace(jType.getContext()); 
-            }  
-                
-            String contextFullName = projectName
-                    + ".job_" + processName + "_" + contextName + PerlResourcesHelper.CONTEXT_FILE_SUFFIX; //$NON-NLS-1$ 
+            if (exportChoice.get(ExportChoice.applyToChildren)) {
+                contextName = fatherContext;
+            } else {
+                contextName = escapeSpace(subjobInfo.getContextName());
+            }
+
+            String contextFullName = PerlResourcesHelper.getContextFileName(subjobInfo.getJobName(), subjobInfo.getJobVersion(),
+                    contextName);
 
             addToList(list, jobScriptName);
             addToList(list, contextFullName);
 
-            ProcessItem childProcess = findProcess(processLabel);
-            if (childProcess == null) {
-                return;
-            }
-            getChildrenJobAndContextName(rootName, list, childProcess, projectName, processedJob, resource, exportChoice,fatherContext);
+            getChildrenJobAndContextName(rootName, list, subjobInfo.getProcessItem(), projectName, processedJob, resource,
+                    exportChoice, fatherContext);
         }
     }
 
@@ -369,15 +354,10 @@ public class JobPerlScriptsManager extends JobScriptsManager {
         List<String> list = new ArrayList<String>();
         if (needContext) {
             List<String> contexts = getJobContexts(process);
-            // String processName = process[0].getProperty().getLabel();
-            String processName = escapeFileNameSpace(process);
-            String projectName = getCurrentProjectName();
-            for (Iterator<String> iter = contexts.iterator(); iter.hasNext();) {
-                String contextName = iter.next();
-                contextName = escapeSpace(contextName);
-                String contextFullName = projectName + ".job_" + processName + "_" //$NON-NLS-1$ //$NON-NLS-2$
-                        + contextName + PerlResourcesHelper.CONTEXT_FILE_SUFFIX; //$NON-NLS-3$
-                list.add(contextFullName);
+            for (String contextName : contexts) {
+                String contextFileName = PerlResourcesHelper.getContextFileName(process.getProperty().getLabel(), process
+                        .getProperty().getVersion(), contextName);
+                list.add(contextFileName);
             }
         }
 

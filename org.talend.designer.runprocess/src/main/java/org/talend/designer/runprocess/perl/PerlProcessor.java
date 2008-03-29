@@ -53,6 +53,7 @@ import org.talend.core.model.general.Project;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.model.utils.PerlResourcesHelper;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.designer.codegen.ICodeGenerator;
 import org.talend.designer.codegen.ICodeGeneratorService;
@@ -105,11 +106,11 @@ public class PerlProcessor extends Processor {
         RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
                 Context.REPOSITORY_CONTEXT_KEY);
         Project project = repositoryContext.getProject();
-        String filePrefix = project.getTechnicalLabel() + "."; //$NON-NLS-1$
-        filePrefix += "job_"; //$NON-NLS-1$
-        filePrefix += filenameFromLabel ? escapeFilename(process.getLabel()) : process.getId();
-        codePath = new Path(filePrefix + ".pl"); //$NON-NLS-1$
-        contextPath = new Path(filePrefix + "_" + escapeFilename(context.getName()) + ".pl"); //$NON-NLS-1$ //$NON-NLS-2$
+        codePath = new Path(PerlResourcesHelper.getJobFileName(filenameFromLabel ? escapeFilename(process.getLabel()) : process
+                .getId(), process.getVersion())); //$NON-NLS-1$
+
+        contextPath = new Path(PerlResourcesHelper.getContextFileName(filenameFromLabel ? process.getLabel() : process.getId(),
+                process.getVersion(), context.getName())); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     public void initPath() throws ProcessorException {

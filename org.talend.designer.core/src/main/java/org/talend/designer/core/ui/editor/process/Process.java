@@ -100,13 +100,11 @@ import org.talend.designer.core.model.process.jobsettings.JobSettingsManager;
 import org.talend.designer.core.model.utils.emf.talendfile.ConnectionType;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementValueType;
-import org.talend.designer.core.model.utils.emf.talendfile.JobType;
 import org.talend.designer.core.model.utils.emf.talendfile.MetadataType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.core.model.utils.emf.talendfile.NoteType;
 import org.talend.designer.core.model.utils.emf.talendfile.ParametersType;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
-import org.talend.designer.core.model.utils.emf.talendfile.RequiredType;
 import org.talend.designer.core.model.utils.emf.talendfile.SubjobType;
 import org.talend.designer.core.model.utils.emf.talendfile.TalendFileFactory;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
@@ -121,6 +119,7 @@ import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainer;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.designer.runprocess.IProcessor;
+import org.talend.designer.runprocess.JobInfo;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -619,34 +618,6 @@ public class Process extends Element implements IProcess2 {
 
         if (param.getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
             return;
-        }
-        if (param.getName().equals(EParameterName.PROCESS_TYPE_PROCESS.getName())) {
-            // if this parameter is defined in a component, then we add a
-            // dependancy to this job.
-            String jobName = ((String) param.getValue());
-            // if there is no job selected in the tRunJob, no need to add any
-            // relationship in "required".
-            if (jobName != null && jobName.length() != 0) {
-                RequiredType rType = process.getRequired();
-                if (rType == null) {
-                    rType = fileFact.createRequiredType();
-                    process.setRequired(rType);
-                }
-                JobType jType = fileFact.createJobType();
-                jType.setName(jobName);
-                String contextName = ""; //$NON-NLS-1$
-
-                if (param.getParentParameter() != null) {
-                    final IElementParameter contextParam = param.getParentParameter().getChildParameters().get(
-                            EParameterName.PROCESS_TYPE_CONTEXT.getName());
-                    if (contextParam != null) {
-                        contextName = ((String) contextParam.getValue());
-                    }
-                }
-
-                jType.setContext(contextName);
-                rType.getJob().add(jType);
-            }
         }
 
         pType = fileFact.createElementParameterType();
@@ -2505,81 +2476,17 @@ public class Process extends Element implements IProcess2 {
             }
         }
         if (withChildrens) {
-            Set<String> childrensList = new HashSet<String>(); // in case the
-            // same children
-            // is used
-            // several time
             if (property.getItem() instanceof ProcessItem) {
                 ProcessItem processItem = (ProcessItem) this.property.getItem();
-                if (processItem.getProcess().getRequired() != null) {
-                    EList jobList = processItem.getProcess().getRequired().getJob();
-                    for (int j = 0; j < jobList.size(); j++) {
-                        JobType jType = (JobType) jobList.get(j);
-                        final ProcessItem item = ProcessorUtilities.getProcessItemById(jType.getName());
-                        if (item != null) {
-                            final String jobName = item.getProperty().getLabel();
-                            if (!childrensList.contains(jobName)) {
-                                // check if we already have the libraries of this job
-                                childrensList.add(jobName);
-                                Process child = new Process(item.getProperty());
-                                child.loadXmlFile();
-                                neededLibraries.addAll(child.getNeededLibraries(true));
-                            }
-                        }
-                    }
+                Set<JobInfo> subjobInfos = ProcessorUtilities.getChildrenJobInfo(processItem);
+                for (JobInfo subjobInfo : subjobInfos) {
+                    Process child = new Process(subjobInfo.getProcessItem().getProperty());
+                    child.loadXmlFile();
+                    neededLibraries.addAll(child.getNeededLibraries(true));
                 }
             }
         }
         return neededLibraries;
-    }
-
-    /**
-     * Get sub jobs under this process
-     * 
-     * yzhang Comment method "getSubJobs".
-     * 
-     * @return
-     */
-    public Set<String> getSubJobs(String processName) {
-        Set<String> curSubJobs = new HashSet<String>();
-        calculateSubJobs(processName, curSubJobs);
-        return curSubJobs;
-    }
-
-    /**
-     * Get sub jobs under this process
-     * 
-     * yzhang Comment method "getSubJobs".
-     * 
-     * @return
-     */
-    public void calculateSubJobs(String processName, Set<String> curSubJobs) {
-        Process currentProcess;
-        if (processName == null) {
-            currentProcess = this;
-        } else {
-            ProcessItem pi = ProcessorUtilities.getProcessItem(processName);
-            if (pi == null) {
-                // if the job is not valid, then return empty childs
-                return;
-            }
-            currentProcess = new Process(pi.getProperty());
-            currentProcess.loadXmlFile();
-        }
-        for (Iterator iter = currentProcess.getGraphicalNodes().iterator(); iter.hasNext();) {
-            Node node = (Node) iter.next();
-            if ((node != null) && node.getComponent().getName().equals("tRunJob")) {
-                String curProcessName = (String) node.getPropertyValue(EParameterName.PROCESS_TYPE_PROCESS.getName());
-                final ProcessItem item = ProcessorUtilities.getProcessItemById(curProcessName);
-                if (item != null) {
-                    final String label = item.getProperty().getLabel();
-                    if (!curSubJobs.contains(label)) {
-                        curSubJobs.add(label);
-                        calculateSubJobs(label, curSubJobs);
-                    }
-                }
-            }
-        }
     }
 
     /**

@@ -20,10 +20,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.eclipse.core.runtime.IPath;
-import org.talend.core.model.properties.ProcessItem;
-import org.talend.designer.core.model.utils.emf.talendfile.JobType;
-import org.talend.designer.runprocess.ProcessorUtilities;
+import org.talend.designer.runprocess.JobInfo;
 import org.talend.repository.job.deletion.IJobResourceProtection;
 import org.talend.repository.job.deletion.JobResource;
 import org.talend.scheduler.i18n.Messages;
@@ -65,7 +62,7 @@ public class ScheduleTask implements IJobResourceProtection {
      * @return CommandModeType
      */
     public CommandModeType getTaskMode() {
-        if (context != null && job != null && project != null) {
+        if (context != null && jobInfo != null && project != null) {
             return CommandModeType.TalendJob;
         } else {
             return CommandModeType.Crontab;
@@ -101,30 +98,28 @@ public class ScheduleTask implements IJobResourceProtection {
     }
 
     public void initProtectionIdAndResource() {
-        String[] splited = job.split(String.valueOf(IPath.SEPARATOR));
-        String absJobName = splited[(splited.length - 1)];
-        protectionId = "schedule_taks" + taskNo + "_" + project + "_" + absJobName; //$NON-NLS-1$
-        currentResource = new JobResource(project, absJobName);
+        // String[] splited = job.split(String.valueOf(IPath.SEPARATOR));
+        // String absJobName = splited[(splited.length - 1)];
+        protectionId = "schedule_taks" + taskNo + "_" + project + "_" + jobInfo.getJobName(); //$NON-NLS-1$
+        currentResource = new JobResource(project, jobInfo);
         idAndResource.put(protectionId, currentResource);
         if (subJobs != null) {
-            for (JobType subJob : subJobs) {
-                final ProcessItem item = ProcessorUtilities.getProcessItemById(subJob.getName());
-                if (item != null) {
-                    final String name = item.getProperty().getLabel();
-                    String subJobId = "sub_job_of_" + absJobName + taskNo + "_" + project + "_" + name;
-                    idAndResource.put(subJobId, new JobResource(project, name));
-                }
+            for (JobInfo subJob : subJobs) {
+                String subJobId = "sub_job_of_" + jobInfo.getJobName() + taskNo + "_" + project + "_" + subJob.getJobName();
+                idAndResource.put(subJobId, new JobResource(project, subJob));
             }
         }
     }
 
     String context;
 
-    String job;
+    String fullJobNameAndPath;
+
+    JobInfo jobInfo;
 
     String project;
 
-    JobType[] subJobs;
+    JobInfo[] subJobs;
 
     int taskNo;
 
@@ -142,7 +137,7 @@ public class ScheduleTask implements IJobResourceProtection {
      * 
      * @param subJobs the subJobs to set
      */
-    public void setSubJobs(JobType[] subJobs) {
+    public void setSubJobs(JobInfo[] subJobs) {
         this.subJobs = subJobs;
     }
 
@@ -160,8 +155,8 @@ public class ScheduleTask implements IJobResourceProtection {
      * 
      * @return job
      */
-    public String getJob() {
-        return job;
+    public JobInfo getJob() {
+        return jobInfo;
     }
 
     /**
@@ -187,8 +182,8 @@ public class ScheduleTask implements IJobResourceProtection {
      * 
      * @param job String
      */
-    public void setJob(String job) {
-        this.job = job;
+    public void setJobInfo(JobInfo jobInfo) {
+        this.jobInfo = jobInfo;
     }
 
     /**
@@ -408,5 +403,13 @@ public class ScheduleTask implements IJobResourceProtection {
                 .append(space).append(getWeekly()).append(space).append(getCommand());
 
         return sb.toString();
+    }
+
+    public String getFullJobNameAndPath() {
+        return this.fullJobNameAndPath;
+    }
+
+    public void setFullJobNameAndPath(String fullJobNameAndPath) {
+        this.fullJobNameAndPath = fullJobNameAndPath;
     }
 }

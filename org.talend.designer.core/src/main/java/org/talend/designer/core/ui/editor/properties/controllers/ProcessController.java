@@ -40,12 +40,15 @@ import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.utils.VersionUtils;
 import org.talend.core.CorePlugin;
+import org.talend.core.language.ECodeLanguage;
+import org.talend.core.language.LanguageManager;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.utils.PerlResourcesHelper;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
@@ -158,11 +161,18 @@ public class ProcessController extends AbstractElementPropertySectionController 
 
         Point initialSize = dField.getLayoutControl().computeSize(SWT.DEFAULT, SWT.DEFAULT);
 
-        Control versionCombo = addJobVersionCombo(subComposite, param.getChildParameters().get(
-                EParameterName.PROCESS_TYPE_VERSION.getName()), btn, numInRow + 1, nbInRow, top);
+        boolean addVersionCombo = true;
+        if (LanguageManager.getCurrentLanguage() == ECodeLanguage.PERL) {
+            addVersionCombo = PerlResourcesHelper.USE_VERSIONING;
+        }
+        Control lastControlUsed = btn;
+        if (addVersionCombo) {
+            lastControlUsed = addJobVersionCombo(subComposite, param.getChildParameters().get(
+                    EParameterName.PROCESS_TYPE_VERSION.getName()), lastControlUsed, numInRow + 1, nbInRow, top);
+        }
 
         addContextCombo(subComposite, param.getChildParameters().get(EParameterName.PROCESS_TYPE_CONTEXT.getName()),
-                versionCombo, numInRow + 1, nbInRow, top);
+                lastControlUsed, numInRow + 1, nbInRow, top);
         dynamicProperty.setCurRowSize(Math.max(initialSize.y, btnSize.y) + ITabbedPropertyConstants.VSPACE);
         return btn;
     }
@@ -534,6 +544,8 @@ public class ProcessController extends AbstractElementPropertySectionController 
         // for version type
         List<String> versionNameList = new ArrayList<String>();
         List<String> versionValueList = new ArrayList<String>();
+        versionNameList.add(ProcessorUtilities.LATEST_JOB_VERSION);
+        versionValueList.add(ProcessorUtilities.LATEST_JOB_VERSION);
 
         IElementParameter jobNameParam = processParam.getChildParameters().get(EParameterName.PROCESS_TYPE_PROCESS.getName());
 
@@ -567,7 +579,7 @@ public class ProcessController extends AbstractElementPropertySectionController 
             }
         } else {
             final String parentName = processParam.getName() + ":"; //$NON-NLS-1$
-            elem.setPropertyValue(parentName + jobNameParam.getName(), null);
+            elem.setPropertyValue(parentName + jobNameParam.getName(), "");
         }
         jobNameParam.setLinkedRepositoryItem(item);
         jobNameParam.setLabelFromRepository(label);

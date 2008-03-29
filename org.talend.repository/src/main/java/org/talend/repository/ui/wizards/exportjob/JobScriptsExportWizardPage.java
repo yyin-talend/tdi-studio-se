@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -47,9 +48,8 @@ import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.IRepositoryObject;
-import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
-import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.runprocess.IProcessor;
+import org.talend.designer.runprocess.JobInfo;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.documentation.ArchiveFileExportOperationFullPath;
 import org.talend.repository.documentation.ExportFileResource;
@@ -514,33 +514,23 @@ public abstract class JobScriptsExportWizardPage extends WizardFileSystemResourc
 
         for (int i = 0; i < process.length; i++) {
             ProcessItem processItem = (ProcessItem) process[i].getItem();
-            String jobName = processItem.getProperty().getLabel();
+            JobInfo jobInfo = new JobInfo(processItem, processItem.getProcess().getDefaultContext());
+            jobResources.add(new JobResource(projectName, jobInfo));
 
-            jobResources.add(new JobResource(projectName, jobName));
-
-            List<NodeType> list = processItem.getProcess().getNode();
-            for (NodeType nodeType : list) {
-                if (nodeType.getComponentName().equals("tRunJob")) { //$NON-NLS-1$
-                    for (Object obj : nodeType.getElementParameter()) {
-                        ElementParameterType element = (ElementParameterType) obj;
-                        if ("PROCESS_TYPE_PROCESS".equals(element.getName())) {
-                            String subJobName = element.getValue().replaceAll("'", "");
-                            jobResources.add(new JobResource(projectName, subJobName));
-                        }
-                    }
-                }
-
+            Set<JobInfo> jobInfos = ProcessorUtilities.getChildrenJobInfo(processItem);
+            for (JobInfo subjobInfo : jobInfos) {
+                jobResources.add(new JobResource(projectName, subjobInfo));
             }
+        }
 
-            JobResourceManager reManager = JobResourceManager.getInstance();
-            for (JobResource r : jobResources) {
-                if (reManager.isProtected(r)) {
-                    ProcessorUtilities.generateCode(r.getJobName(), processItem.getProcess().getDefaultContext(), false, false);
-                } else {
-                    reManager.deleteResource(r);
-                }
+        JobResourceManager reManager = JobResourceManager.getInstance();
+        for (JobResource r : jobResources) {
+            if (reManager.isProtected(r)) {
+                ProcessorUtilities.generateCode(r.getJobInfo().getJobId(), r.getJobInfo().getContextName(), r.getJobInfo()
+                        .getJobVersion(), false, false);
+            } else {
+                reManager.deleteResource(r);
             }
-
         }
 
         return ok;

@@ -437,7 +437,8 @@ public class ExpressionBuilderDialog extends TrayDialog implements IExpressionBu
         IEditorPart editor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
         String jobName = null;
         if (editor instanceof AbstractMultiPageTalendEditor) {
-            jobName = ((AbstractMultiPageTalendEditor) editor).getTalendEditor().getCurrentJobResource().getJobName();
+            jobName = ((AbstractMultiPageTalendEditor) editor).getTalendEditor().getCurrentJobResource().getJobInfo()
+                    .getJobName();
         }
         IPath path = expressionFolder.getLocation().append(jobName + ".xml");
         return path.toOSString();

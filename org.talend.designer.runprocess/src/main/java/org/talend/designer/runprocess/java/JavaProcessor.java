@@ -48,7 +48,6 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragment;
@@ -85,12 +84,13 @@ import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.utils.JavaResourcesHelper;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.designer.codegen.ICodeGenerator;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.core.ISyntaxCheckableEditor;
-import org.talend.designer.core.model.utils.emf.talendfile.JobType;
 import org.talend.designer.runprocess.IJavaProcessorStates;
+import org.talend.designer.runprocess.JobInfo;
 import org.talend.designer.runprocess.Processor;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.ProcessorUtilities;
@@ -196,18 +196,8 @@ public class JavaProcessor extends Processor {
 
         String projectFolderName = project.getTechnicalLabel();
         projectFolderName = projectFolderName.toLowerCase();
-        String jobFolderName = process.getLabel();
-        jobFolderName = jobFolderName.toLowerCase();
+        String jobFolderName = JavaResourcesHelper.getJobFolderName(process.getLabel(), process.getVersion());
         String fileName = filenameFromLabel ? escapeFilename(process.getLabel()) : process.getId();
-
-        String version = "";
-        if (process.getProperty() != null && process.getProperty().getVersion() != null) {
-            version = process.getProperty().getVersion();
-        } else if (process.getVersion() != null) {
-            version = process.getVersion();
-        }
-        version = version.replace(".", "_");
-        fileName = fileName + version;
 
         try {
             IPackageFragment projectPackage = getProjectPackage(projectFolderName);
@@ -847,10 +837,20 @@ public class JavaProcessor extends Processor {
 
         String exportJar = "";
         if (ProcessorUtilities.isExportConfig()) {
-            exportJar = classPathSeparator + process.getName().toLowerCase() + ".jar" + classPathSeparator;
-            Set<String> childrenlist = getChildren((ProcessItem) process.getProperty().getItem());
-            for (String child : childrenlist) {
-                exportJar += child.toLowerCase() + ".jar" + classPathSeparator;
+            String version = "";
+            if (process.getVersion() != null) {
+                version = "_" + process.getVersion();
+                version = version.replace(".", "_");
+            }
+
+            exportJar = classPathSeparator + process.getName().toLowerCase() + version + ".jar" + classPathSeparator;
+            Set<JobInfo> jobInfos = ProcessorUtilities.getChildrenJobInfo((ProcessItem) process.getProperty().getItem());
+            for (JobInfo jobInfo : jobInfos) {
+                if (jobInfo.getJobVersion() != null) {
+                    version = "_" + jobInfo.getJobVersion();
+                    version = version.replace(".", "_");
+                }
+                exportJar += jobInfo.getJobName().toLowerCase() + version + ".jar" + classPathSeparator;
             }
         }
 
@@ -874,27 +874,6 @@ public class JavaProcessor extends Processor {
         System.arraycopy(vmargs, 0, lines, 1, vmargs.length);
         System.arraycopy(strings, 1, lines, vmargs.length + 1, strings.length - 1);
         return lines;
-    }
-
-    private Set<String> getChildren(ProcessItem processItem) {
-        Set<String> childrenList = new HashSet<String>(); // in case the same
-        // children is used
-        // several time
-        if (processItem.getProcess().getRequired() != null) {
-            EList jobList = processItem.getProcess().getRequired().getJob();
-            for (int j = 0; j < jobList.size(); j++) {
-                JobType jType = (JobType) jobList.get(j);
-                final ProcessItem item = ProcessorUtilities.getProcessItemById(jType.getName());
-                if (item != null) {
-                    final String name = item.getProperty().getLabel();
-                    if (!childrenList.contains(name)) {
-                        childrenList.add(name);
-                        childrenList.addAll(getChildren(item));
-                    }
-                }
-            }
-        }
-        return childrenList;
     }
 
     /*

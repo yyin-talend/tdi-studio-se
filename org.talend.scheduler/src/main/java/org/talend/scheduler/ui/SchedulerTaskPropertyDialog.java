@@ -14,7 +14,6 @@ package org.talend.scheduler.ui;
 
 import java.util.List;
 
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -35,7 +34,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
-import org.talend.designer.core.model.utils.emf.talendfile.JobType;
+import org.talend.designer.runprocess.JobInfo;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.scheduler.SchedulerPlugin;
 import org.talend.scheduler.core.CommandModeType;
@@ -203,7 +202,8 @@ public class SchedulerTaskPropertyDialog extends Dialog {
         } else if (commandComposite.getCommandMode() == CommandModeType.Crontab) {
             task.setContext(null);
             task.setProject(null);
-            task.setJob(null);
+            task.setJobInfo(null);
+            task.setFullJobNameAndPath(null);
         }
         super.okPressed();
     }
@@ -294,11 +294,9 @@ public class SchedulerTaskPropertyDialog extends Dialog {
     @Override
     protected void createButtonsForButtonBar(Composite parent) {
         if (dialogType == DialogType.ADD) {
-            createButton(parent, IDialogConstants.OK_ID, Messages
-                    .getString("SchedulerTaskPropertyDialog.addTaskButton"), true); //$NON-NLS-1$
+            createButton(parent, IDialogConstants.OK_ID, Messages.getString("SchedulerTaskPropertyDialog.addTaskButton"), true); //$NON-NLS-1$
         } else {
-            createButton(parent, IDialogConstants.OK_ID, Messages
-                    .getString("SchedulerTaskPropertyDialog.modifyTaskButton"), true); //$NON-NLS-1$
+            createButton(parent, IDialogConstants.OK_ID, Messages.getString("SchedulerTaskPropertyDialog.modifyTaskButton"), true); //$NON-NLS-1$
         }
         createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, false);
     }
@@ -342,19 +340,20 @@ public class SchedulerTaskPropertyDialog extends Dialog {
          * @param taskInput ScheduleTask
          */
         public void updateTaskProperty(ScheduleTask taskInput) {
-            taskInput.setJob(jobCombo.getText());
+            String[] splitedJobName = jobCombo.getText().split(String.valueOf(IPath.SEPARATOR));
+            String jobName = splitedJobName[splitedJobName.length - 1];
+
+            JobInfo jobInfo = jobManager.getMainJobInfoByName(jobName);
+
+            taskInput.setFullJobNameAndPath(jobCombo.getText());
+            taskInput.setJobInfo(jobInfo);
             taskInput.setContext(contextCombo.getText());
             taskInput.setProject(projectCombo.getText());
 
-            String[] splitedJobName = taskInput.getJob().split(String.valueOf(IPath.SEPARATOR));
-            List<JobType> runJobs = jobManager.getRunJobs(splitedJobName[splitedJobName.length - 1]);
-            if (runJobs != null) {
-                taskInput.setSubJobs(runJobs.toArray(new JobType[runJobs.size()]));
-            }
-
+            List<JobInfo> runJobs = jobManager.getRunJobs(jobName);
+            taskInput.setSubJobs(runJobs.toArray(new JobInfo[runJobs.size()]));
             // generated the code of jobs.
-            ProcessorUtilities.generateCode(splitedJobName[splitedJobName.length - 1], contextCombo.getText(), false,
-                    false);
+            ProcessorUtilities.generateCode(jobInfo.getJobId(), contextCombo.getText(), jobInfo.getJobVersion(), false, false);
         }
 
         /**
@@ -370,7 +369,7 @@ public class SchedulerTaskPropertyDialog extends Dialog {
             } else {
                 tf.setSelection(CommandModeType.TalendJob.ordinal());
                 projectCombo.setText(taskInput.getProject());
-                jobCombo.setText(taskInput.getJob());
+                jobCombo.setText(taskInput.getJob().getJobName());
                 contextCombo.setText(taskInput.getContext());
             }
         }
@@ -479,7 +478,7 @@ public class SchedulerTaskPropertyDialog extends Dialog {
             // gridData_1.widthHint = 525;
             contextCombo.setLayoutData(gd);
 
-            initailCombo();
+            initializeCombo();
 
             ModifyListener genCommandListener = new ModifyListener() {
 
@@ -518,8 +517,8 @@ public class SchedulerTaskPropertyDialog extends Dialog {
          */
         private void refreshTalendJobCommand() {
             try {
-                String command = jobManager.getCommandByTalendJob(projectCombo.getText(), jobCombo.getText(),
-                        contextCombo.getText());
+                String command = jobManager.getCommandByTalendJob(projectCombo.getText(), jobCombo.getText(), contextCombo
+                        .getText());
                 refreshCommandDiaplay(command);
             } catch (Exception ex) {
                 SchedulerPlugin.log(ex);
@@ -529,7 +528,7 @@ public class SchedulerTaskPropertyDialog extends Dialog {
         /**
          * Initial the status of the project combo,job combo and context combo.
          */
-        void initailCombo() {
+        void initializeCombo() {
             jobManager = new TalendJobManager();
 
             projectCombo.setItems(new String[] { (jobManager.getCurrentProject().getLabel()) });
@@ -561,7 +560,8 @@ public class SchedulerTaskPropertyDialog extends Dialog {
                 if (task.getTaskMode() != CommandModeType.TalendJob) {
                     return;
                 }
-                String selectedJobName = task.getJob();
+
+                String selectedJobName = task.getFullJobNameAndPath();
 
                 jobCombo.setText(selectedJobName);
 

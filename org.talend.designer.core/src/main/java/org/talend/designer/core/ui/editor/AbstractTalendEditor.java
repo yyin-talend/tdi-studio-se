@@ -143,6 +143,7 @@ import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.process.ISubjobContainer;
+import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
@@ -169,6 +170,7 @@ import org.talend.designer.core.ui.editor.process.TalendEditorDropTargetListener
 import org.talend.designer.core.ui.views.jobsettings.JobSettings;
 import org.talend.designer.core.ui.views.properties.ComponentSettingsView;
 import org.talend.designer.core.ui.views.properties.IComponentSettingsView;
+import org.talend.designer.runprocess.JobInfo;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.job.deletion.IJobResourceProtection;
@@ -668,11 +670,14 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
             MessageBoxExceptionHandler.process(e);
             return;
         }
-        currentJobResource.setJobName(process.getLabel());
-        currentJobResource.setProjectName(projectName);
 
-        JobResourceManager.getInstance().addProtection(this);
+        if (property.getItem() instanceof ProcessItem) {
+            currentJobResource.setJobInfo(new JobInfo((ProcessItem) property.getItem(), process.getContextManager()
+                    .getDefaultContext().getName()));
+            currentJobResource.setProjectName(projectName);
 
+            JobResourceManager.getInstance().addProtection(this);
+        }
     }
 
     /*
@@ -1317,14 +1322,19 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
      * @see org.talend.repository.job.deletion.IResourceProtection#getProtectedIds()
      */
     public String[] calculateProtectedIds() {
-        Set<String> subJobs = process.getSubJobs(null);
-
-        for (String protectedJobName : subJobs) {
-            String jobName = protectedJobName;
-            protectedJobName = "subjob_of_" + process.getLabel() + "_" + projectName + "_" + protectedJobName; //$NON-NLS-1$
-            protectedJobs.put(protectedJobName, new JobResource(projectName, jobName));
+        if (!(process.getProperty().getItem() instanceof ProcessItem)) {
+            return new String[] {};
         }
-        String currentJobId = "talend_editor_" + projectName + "_" + process.getLabel(); //$NON-NLS-1$
+
+        Set<JobInfo> subJobs = ProcessorUtilities.getChildrenJobInfo((ProcessItem) process.getProperty().getItem());
+
+        for (JobInfo jobInfo : subJobs) {
+            String protectedJob = "subjob_of_" + process.getLabel() + "_" + //$NON-NLS-1$ //$NON-NLS-2$ 
+                    projectName + "_" + jobInfo.getJobName() + "_" + jobInfo.getJobVersion(); //$NON-NLS-1$ //$NON-NLS-2$
+            protectedJobs.put(protectedJob, new JobResource(projectName, jobInfo));
+        }
+        String currentJobId = "talend_editor_" + projectName + "_" + process.getLabel() //$NON-NLS-1$ //$NON-NLS-2$
+                + "_" + process.getVersion(); //$NON-NLS-1$
         protectedJobs.put(currentJobId, currentJobResource);
 
         Set<String> set = protectedJobs.keySet();
