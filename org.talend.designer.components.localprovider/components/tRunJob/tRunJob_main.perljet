@@ -2,6 +2,7 @@
 imports="
     org.talend.core.model.process.INode 
     org.talend.core.model.process.ElementParameterParser
+    org.talend.core.model.utils.PerlResourcesHelper
     org.talend.designer.codegen.config.CodeGeneratorArgument
     org.talend.designer.runprocess.ProcessorUtilities
     org.talend.designer.runprocess.ProcessorException
@@ -15,7 +16,7 @@ CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 
-String process = ElementParameterParser.getValue(
+String processId = ElementParameterParser.getValue(
    node,
    "__PROCESS_TYPE_PROCESS__"
 );
@@ -23,6 +24,11 @@ String process = ElementParameterParser.getValue(
 String context = ElementParameterParser.getValue(
    node,
    "__PROCESS_TYPE_CONTEXT__"
+);
+
+String version = ElementParameterParser.getValue(
+   node,
+   "__PROCESS_TYPE_VERSION__"
 );
 
 boolean transmitWholeContext = ElementParameterParser.getValue(
@@ -41,6 +47,7 @@ List<Map<String, String>> contextParams =
         "__CONTEXTPARAMS__"
     );
 
+String processName = ProcessorUtilities.getProcessNameByProcessId(processId);
 
 // if it's a generation to run in talend.
 if (!ProcessorUtilities.isExportConfig()) {
@@ -50,7 +57,9 @@ if (!ProcessorUtilities.isExportConfig()) {
    };
    String[] commandLine = new String[] {"<command>"};
    try {
-      commandLine = ProcessorUtilities.getCommandLine(true, process, context, org.talend.designer.runprocess.IProcessor.NO_STATISTICS,org.talend.designer.runprocess.IProcessor.NO_TRACES,codeOptions);
+      commandLine = ProcessorUtilities.getCommandLine(true, processId, context, version, 
+      org.talend.designer.runprocess.IProcessor.NO_STATISTICS,
+      org.talend.designer.runprocess.IProcessor.NO_TRACES,codeOptions);
    } catch (ProcessorException e) {
 %>
 	<%= e.getMessage() %>
@@ -68,6 +77,7 @@ my @arguments = (
 );
 <%
 } else { // if it's a generation for an export
+   
    String interpreterPath = "<perl_interpreter_path>";
    if (codeGenArgument.getInterpreterPath() != null) {
        interpreterPath = codeGenArgument.getInterpreterPath();
@@ -86,10 +96,6 @@ my @arguments = (
        runtimeFilePath = runtimeFilePath.replace("\\","/");
    }
 
-   String currentProjectName = "<project_name>";
-   if (codeGenArgument.getCurrentProjectName() != null) {
-       currentProjectName = codeGenArgument.getCurrentProjectName();
-   }
 %>
 use FindBin;
 use File::Spec;
@@ -112,7 +118,7 @@ my @arguments = (
     '<%=interpreterPath %>',
     '-I "' . $libPath . '"',
     '-I "' . $runtimeFilePath . '"',
-    '"' . $runtimeFilePath . '<%=currentProjectName %>.job_<%=process %>.pl"',
+    '"' . $runtimeFilePath . '<%=PerlResourcesHelper.getJobFileName(processName, version)%>"',
     '--root_pid='.$_globals{root_pid},
     '--father_pid='.$_globals{pid},
     '--context='.<%=context %>,
@@ -177,7 +183,7 @@ push @arguments, '--context_param <%=name%>="'.<%=value%>.'"';
 if (dieOnChildError) {
 %>
     if ($_globals{<%=cid%>}{CHILD_RETURN_CODE}) {
-        die "Process <%=process %> died.\n" ;	
+        die "Process <%=processName %> died.\n" ;	
     }
 <%
 }
