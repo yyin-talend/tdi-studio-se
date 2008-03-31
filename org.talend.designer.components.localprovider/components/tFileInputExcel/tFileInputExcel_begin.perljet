@@ -74,11 +74,40 @@ my %desc_<%=cid%> = (
 );
 
 
+<%
+        if (withformat) {
+%>          
 my $book_<%=cid%> =  Spreadsheet::ParseExcel::Workbook->Parse(
     $desc_<%=cid%>{filename}
 );
 
 my @book_worksheets = map { $_->{Name} } @{$book_<%=cid%>->{Worksheet}};
+<%
+        }
+        else {
+%>
+my @book_worksheets;
+
+my $oExcel_<%=cid%> = Spreadsheet::ParseExcel->new(
+    CellHandler => \&CellHandler,
+    NotSetCell  => 1,
+);
+
+my $book_<%=cid%> = $oExcel_<%=cid%>->Parse(
+    $desc_<%=cid%>{filename}
+);
+
+sub CellHandler {
+    my ( $wb, $wsindex, $row, $col, $cell ) = @_;
+    
+    $book_worksheets[$wsindex] = $wb->{Worksheet}[$wsindex]->{Name} ;
+    $wb->{Worksheet}[$wsindex]->{Cells}[$row][$col] = $cell->{_Value};
+}
+
+<%
+        }
+%>
+
 
 <%
         if (allSheets) {
@@ -194,7 +223,7 @@ foreach my $sheet (@sheetlist) {
         } 
         else {
 %>
-                 $current_cell->{Val} 
+                 $current_cell 
 <%
         }
 %>
