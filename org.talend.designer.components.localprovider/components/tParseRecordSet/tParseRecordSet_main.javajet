@@ -64,18 +64,30 @@ if (outputConns!=null && outputConns.size()>0) {
 	<%=outputConnName%>.<%=column.getLabel() %> = re_<%=cid%>.getObject(<%=tmpMap.get("VALUE")%>);
 <%
 						}else if (javaType == JavaTypesManager.DATE) {
-							String patternValue = column.getPattern();
+    							String patternValue = column.getPattern();
 %>
-	<%=outputConnName%>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(re_<%=cid%>.getString(<%=tmpMap.get("VALUE")%>).trim(),<%=patternValue%>);
+	if(re_<%=cid%>.getString(<%=tmpMap.get("VALUE")%>)!=null){
+		<%=outputConnName%>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(re_<%=cid%>.getString(<%=tmpMap.get("VALUE")%>).trim(),<%=patternValue%>);
+	}else{
+		<%=outputConnName%>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(re_<%=cid%>.getString(<%=tmpMap.get("VALUE")%>),<%=patternValue%>);
+	}
 <%
 						}else if (javaType == JavaTypesManager.STRING) {
 %>
-	<%=outputConnName%>.<%=column.getLabel() %> = re_<%=cid%>.getString(<%=tmpMap.get("VALUE")%>).trim();
+	if(re_<%=cid%>.getString(<%=tmpMap.get("VALUE")%>)!=null){
+		<%=outputConnName%>.<%=column.getLabel() %> = re_<%=cid%>.getString(<%=tmpMap.get("VALUE")%>).trim();
+	}else{
+		<%=outputConnName%>.<%=column.getLabel() %> = re_<%=cid%>.getString(<%=tmpMap.get("VALUE")%>);
+	}
 <%
-						}else {
-							String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+    					}else {
+    							String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
 %>
+	if(re_<%=cid%>.getString(<%=tmpMap.get("VALUE")%>)!=null){
 		<%=outputConnName%>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(re_<%=cid%>.getString(<%=tmpMap.get("VALUE")%>).trim());
+	}else{
+		<%=outputConnName%>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(re_<%=cid%>.getString(<%=tmpMap.get("VALUE")%>));		
+	}
 <%
 						}
 					}else{
