@@ -217,6 +217,8 @@ private class TalendException extends Exception {
 					break;
 				}
 			}
+			
+			if(!(e instanceof TDieException)){
 <%
 		if (process.getNodesOfType("tLogCatcher").size() > 0) {
 			List<INode> logCatchers = (List<INode>)process.getNodesOfType("tLogCatcher");
@@ -224,19 +226,21 @@ private class TalendException extends Exception {
 				if (ElementParameterParser.getValue(logCatcher, "__CATCH_JAVA_EXCEPTION__").equals("true")) {
 					// 1) add the message to the stack
 %>
-		  if(!(e instanceof TDieException)){
             <%=logCatcher.getUniqueName() %>.addMessage("Java Exception", currentComponent, 6, e.getMessage(), 1);
 <%
+				}
+			}
+			for (INode logCatcher : logCatchers) {
+				if (ElementParameterParser.getValue(logCatcher, "__CATCH_JAVA_EXCEPTION__").equals("true")) {
 					// 2) launch logCatcher subProcess
 %>
 			<%=logCatcher.getUniqueName() %>Process();
-		  }
 <%
 				}
 			}
 		}
 %>
-
+			}
 		} catch (java.lang.SecurityException e) {
 			this.e.printStackTrace();
 		} catch (java.lang.IllegalArgumentException e) {
