@@ -175,7 +175,7 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
         if (ds == null || ds.equals("")) {
             decimalSeparatorText.setText("\'.\'");
         } else {
-            decimalSeparatorText.setText(ts);
+            decimalSeparatorText.setText(ds);
         }
 
         checkFieldsValue();
