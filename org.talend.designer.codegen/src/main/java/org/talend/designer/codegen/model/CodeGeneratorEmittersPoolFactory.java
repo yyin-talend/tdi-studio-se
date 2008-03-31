@@ -202,6 +202,7 @@ public final class CodeGeneratorEmittersPoolFactory {
                         return new Status(IStatus.ERROR, CodeGeneratorActivator.PLUGIN_ID, "Components compile fail : \r\n"
                                 + message.toString());
                     }
+                    CorePlugin.getDefault().getRcpService().activeSwitchProjectAction();
                     return Status.OK_STATUS;
                 }
             };
