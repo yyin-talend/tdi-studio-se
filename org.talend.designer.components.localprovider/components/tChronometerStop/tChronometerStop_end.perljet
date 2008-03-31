@@ -1,0 +1,77 @@
+<%@ jet
+imports="
+    org.talend.core.model.process.INode
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.core.model.metadata.IMetadataTable
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+" 
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+
+boolean display = ElementParameterParser.getValue(
+    node,
+    "__DISPLAY__"
+).equals("true");
+
+boolean displayComponentName = ElementParameterParser.getValue(
+    node,
+    "__DISPLAY_COMPONENT_NAME__"
+).equals("true");
+
+boolean displayReadableDuration = ElementParameterParser.getValue(
+    node,
+    "__DISPLAY_READABLE_DURATION__"
+).equals("true");
+
+String caption = ElementParameterParser.getValue(
+    node,
+    "__CAPTION__"
+);
+%>
+
+$_globals{<%=cid%>}{DURATION} = $total_duration_<%=cid%>;
+$_globals{<%=cid%>}{NB_RUN} = $nb_run_<%=cid%>;
+$_globals{<%=cid%>}{MIN} = $min_duration_<%=cid%>;
+$_globals{<%=cid%>}{MAX} = $max_duration_<%=cid%>;
+$_globals{<%=cid%>}{AVG} = int($total_duration_<%=cid%> / $nb_run_<%=cid%>);
+
+<%
+if (display) {
+    if (displayComponentName) {
+%>
+print '[<%=cid%>] ';
+<%
+    }
+%>
+printf(
+    "%s %u ms",
+    <%=caption%>,
+    $_globals{<%=cid%>}{DURATION}
+);
+<%
+    if (displayReadableDuration) {
+%>
+printf ' (%s)', duration(int($_globals{<%=cid%>}{DURATION}/1000));
+<%
+    }
+%>
+
+printf(
+    ', %u %s, average : %u ms; min : %u ms; max: %u ms',
+    $_globals{<%=cid%>}{NB_RUN},
+    $_globals{<%=cid%>}{NB_RUN} > 1 ? 'runs' : 'run',
+    $_globals{<%=cid%>}{AVG},
+    $_globals{<%=cid%>}{MIN},
+    $_globals{<%=cid%>}{MAX}
+);
+
+print "\n";
+<%
+}
+%>
