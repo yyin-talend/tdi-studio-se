@@ -747,6 +747,12 @@
             id="org.talend.repository.model.migration.AddDoubleQuoteTotMomMigrationTask"
             name="Add the double quote enclosure to tMomInput and tMomOutput">
       </projecttask>
+      <projecttask
+            class="org.talend.repository.model.migration.MoveExcelSheetnameToSheetlistForJava"
+            description="Excel sheetname to sheetlist for java"
+            id="org.talend.repository.model.migration.MoveExcelSheetnameToSheetlistForJava"
+            name="Excel sheetname to sheetlist for java">
+      </projecttask>
    </extension>
    <extension
          point="org.talend.core.librariesNeeded">
