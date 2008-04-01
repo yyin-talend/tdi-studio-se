@@ -15,6 +15,7 @@
 		org.talend.core.model.process.IContextParameter
 		org.talend.core.model.metadata.types.JavaTypesManager
 		org.talend.core.model.metadata.types.JavaType
+		org.talend.core.model.utils.JavaResourcesHelper
 	" 
 	class="Footer" 
 	skeleton="footer_java.skeleton"	
@@ -30,6 +31,7 @@
 	boolean isRunInMultiThread = codeGenArgument.getIsRunInMultiThread();
 	List<IContextParameter> params = new ArrayList<IContextParameter>();
     params=process.getContextManager().getDefaultContext().getContextParameterList();
+    String jobFolderName = JavaResourcesHelper.getJobFolderName(process.getLabel(), process.getVersion());
 %>
     public static boolean watch = false;
     public static int portStats = 3334;
@@ -128,7 +130,7 @@
     	}
     	
     	try {
-    		java.io.InputStream inContext = <%=process.getName()%>.class.getClassLoader().getResourceAsStream("<%=codeGenArgument.getCurrentProjectName().toLowerCase() %>/<%=codeGenArgument.getJobName().toLowerCase() %>/contexts/Default.properties");    		
+    		java.io.InputStream inContext = <%=process.getName()%>.class.getClassLoader().getResourceAsStream("<%=codeGenArgument.getCurrentProjectName().toLowerCase() %>/<%=jobFolderName %>/contexts/Default.properties");    		
     		if (inContext!=null) {
 	    		defaultProps.load(inContext);
     			inContext.close();
@@ -136,7 +138,7 @@
 	    	}
     		
     		if (contextStr.compareTo("Default")!=0) {
-    			inContext = <%=process.getName() %>.class.getClassLoader().getResourceAsStream("<%=codeGenArgument.getCurrentProjectName().toLowerCase() %>/<%=codeGenArgument.getJobName().toLowerCase() %>/contexts/"+contextStr+".properties");
+    			inContext = <%=process.getName() %>.class.getClassLoader().getResourceAsStream("<%=codeGenArgument.getCurrentProjectName().toLowerCase() %>/<%=jobFolderName %>/contexts/"+contextStr+".properties");
     			if (inContext!=null) {
 					context.load(inContext);
 					inContext.close();

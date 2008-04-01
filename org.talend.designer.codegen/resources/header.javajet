@@ -18,6 +18,7 @@
 		org.talend.core.model.process.IContextParameter
 		org.talend.core.model.metadata.types.JavaTypesManager
 		org.talend.core.model.utils.NodeUtil
+		org.talend.core.model.utils.JavaResourcesHelper
 	"
 	class="Header" 
 %>
@@ -33,11 +34,6 @@
 	boolean isRunInMultiThread = codeGenArgument.getIsRunInMultiThread();
 	List<IContextParameter> params = new ArrayList<IContextParameter>();
 	params=process.getContextManager().getDefaultContext().getContextParameterList();
-	String jobVersion = ""; 
-	if(process.getVersion()!=null)
-	{
-		jobVersion = process.getVersion().replace(".","_");
-	}	
 %>
 // ============================================================================
 //
@@ -52,7 +48,8 @@
 //
 // ============================================================================
 <%
-  String packageName = codeGenArgument.getCurrentProjectName().toLowerCase() + "." + codeGenArgument.getJobName().toLowerCase() + "_"+ jobVersion;
+  String jobFolderName = JavaResourcesHelper.getJobFolderName(process.getLabel(), process.getVersion());
+  String packageName = codeGenArgument.getCurrentProjectName().toLowerCase() + "." + jobFolderName;
 %> 
 package <%= packageName %>;
 
@@ -85,7 +82,7 @@ import java.math.BigDecimal;
  * Job: <%=process.getName() %> Purpose: <%=ElementParameterParser.getValue(process, "__PURPOSE__") %><br>
  * Description: <%=ElementParameterParser.getValue(process, "__DESCRIPTION__") %> <br>
  * @author <%=ElementParameterParser.getValue(process, "__AUTHOR__") %>
- * @version <%=jobVersion %>
+ * @version <%=version %>
  * @status <%=ElementParameterParser.getValue(process, "__STATUS__") %> 
  */                                
  public class <%=process.getName()%> {    
