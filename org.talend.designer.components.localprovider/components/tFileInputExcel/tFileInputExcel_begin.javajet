@@ -7,7 +7,8 @@
 		org.talend.core.model.process.IConnection
 		org.talend.core.model.process.IConnectionCategory
 		org.talend.designer.codegen.config.CodeGeneratorArgument
-		java.util.List 
+		java.util.List
+		java.util.Map
 		org.talend.core.model.metadata.types.JavaTypesManager
 		org.talend.core.model.metadata.types.JavaType
 	" 
@@ -29,6 +30,10 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		boolean dieOnError = (dieOnErrorStr!=null&&!dieOnErrorStr.equals(""))?dieOnErrorStr.equals("true"):false;
 		String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
 		
+		String allSheets = ElementParameterParser.getValue(node, "__ALL_SHEETS__");
+		boolean isAllSheets = (allSheets!=null&&!allSheets.equals(""))?allSheets.equals("true"):false;
+		List<Map<String, String>> sheetNameList = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__SHEETLIST__");
+		
 		String advancedSeparatorStr = ElementParameterParser.getValue(node, "__ADVANCED_SEPARATOR__");
 		boolean advancedSeparator = (advancedSeparatorStr!=null&&!advancedSeparatorStr.equals(""))?advancedSeparatorStr.equals("true"):false;
 		String thousandsSeparator = ElementParameterParser.getValueWithJavaType(node, "__THOUSANDS_SEPARATOR__", JavaTypesManager.CHARACTER);
@@ -39,27 +44,67 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         workbookSettings_<%= cid %>.setEncoding(<%=encoding %>);
         final jxl.Workbook workbook_<%= cid %> = jxl.Workbook.getWorkbook(new java.io.BufferedInputStream(new java.io.FileInputStream(
         						<%=ElementParameterParser.getValue(node,"__FILENAME__")%>)), workbookSettings_<%= cid %>);
-        final jxl.Sheet sheet_<%= cid %>  = workbook_<%= cid %>.getSheet(<%= ElementParameterParser.getValue(node, "__SHEETNAME__")%>);
-        if(sheet_<%= cid %> == null){
-        	throw new RuntimeException("Sheet \""+<%= ElementParameterParser.getValue(node, "__SHEETNAME__")%>+"\" not exist!");
+<%
+		if(isAllSheets){
+%>
+		java.util.List<jxl.Sheet> sheetList_<%= cid %> = java.util.Arrays.<jxl.Sheet> asList(workbook_<%= cid %>.getSheets());
+<%
+		}else{
+%>
+		String[] sheetNameList_<%=cid%> = new String[]{
+<%
+			for(Map<String, String> tmp:sheetNameList){
+			%><%=tmp.get("SHEETNAME")%>,<%
+			}
+%>
+		};
+		java.util.List<jxl.Sheet> sheetList_<%= cid %> = new java.util.ArrayList<jxl.Sheet>();
+		for (String name_<%=cid%> : sheetNameList_<%=cid%> ) {
+            jxl.Sheet sheet_<%=cid%> = workbook_<%= cid %>.getSheet(name_<%=cid%>);
+            if (sheet_<%=cid%> != null) {
+                sheetList_<%= cid %>.add(sheet_<%=cid%>);
+            }
         }
+<%
+		}
+%>
+        if(sheetList_<%= cid %>.size() <= 0){
+        	throw new RuntimeException("Special sheets not exist!");
+        }
+        
         int nb_line_<%= cid %> = 0;            
 
         int begin_line_<%= cid %> = <%if(header.trim().equals("")){%>0<%}else{%><%= header %><%}%>;
-        int end_line_<%= cid %> = sheet_<%= cid %>.getRows()- <%if(footer.trim().equals("")){%>0<%}else{%><%=footer%><%}%>;
+        int end_line_<%= cid %>=0;
+        for(jxl.Sheet sheet_<%=cid%>:sheetList_<%= cid %>){
+        	end_line_<%= cid %>+=sheet_<%=cid%>.getRows();
+        }
+        end_line_<%= cid %> -= <%if(footer.trim().equals("")){%>0<%}else{%><%=footer%><%}%>;
         int limit_<%= cid %> = <%if(limit.trim().equals("")){%>-1<%}else{%><%=limit%><%}%>;
         int start_column_<%= cid %> = <%if(firstColumn.trim().equals("")){%>0<%}else{%><%=firstColumn%>-1<%}%>;
-        int end_column_<%= cid %> = <%if(lastColumn.trim().equals("")){%>sheet_<%= cid %>.getColumns()<%}else{%><%=lastColumn%><%}%>;
+        int end_column_<%= cid %> = <%if(lastColumn.trim().equals("")){%>sheetList_<%= cid %>.get(0).getColumns()<%}else{%><%=lastColumn%><%}%>;
 
         jxl.Cell[] row_<%= cid %> = null;
+        jxl.Sheet sheet_<%= cid %> = sheetList_<%= cid %>.get(0);
+        int rowCount_<%= cid %> = 0;
+        int sheetIndex_<%= cid %> = 0;
+        int currentRows_<%= cid %> = sheetList_<%= cid %>.get(0).getRows();
         
         for(int i_<%= cid %> = begin_line_<%= cid %>; i_<%= cid %> < end_line_<%= cid %>; i_<%= cid %>++){
 
         	if (limit_<%= cid %> != -1 && nb_line_<%= cid %> >= limit_<%= cid %>) {
         		break;
         	}
-                
-        	row_<%= cid %> = sheet_<%= cid %>.getRow(i_<%= cid %>);     
+        	
+            while (i_<%= cid %> >= rowCount_<%= cid %> + currentRows_<%= cid %>) {
+                rowCount_<%= cid %> += currentRows_<%= cid %>;
+                sheet_<%= cid %> = sheetList_<%= cid %>.get(++sheetIndex_<%= cid %>);
+                currentRows_<%= cid %> = sheet_<%= cid %>.getRows();
+            }
+
+            if (rowCount_<%= cid %> <= i_<%= cid %>) {
+                row_<%= cid %> = sheet_<%= cid %>.getRow(i_<%= cid %> - rowCount_<%= cid %>);
+            }   
         
 <%
 //begin
