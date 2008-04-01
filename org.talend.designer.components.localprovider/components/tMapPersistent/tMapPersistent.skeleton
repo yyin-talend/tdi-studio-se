@@ -1,0 +1,10 @@
+public class CLASS {
+
+
+
+
+
+    public String generate(Object argument) {
+
+    }
+}
