@@ -184,193 +184,205 @@
        		  	    	String beforeMatchFilter = null;
        		  	    	
                         %>
- 									 <%= className %> <%= tableName %>ObjectFromLookup = null;
+ 							<%= className %> <%= tableName %>ObjectFromLookup = null;
                           
-		           		  	    if(!<%= rejectedInnerJoin %><%
-		           		  	    	if (beforeMatchFilter != null) { // T 101
+		           		  	if(!<%= rejectedInnerJoin %><%
+		           		  		
+		           		  		if (beforeMatchFilter != null) { // T 101
    	                    				%> && <%= beforeMatchFilter %><%
            		  	    			} // T 101
 		           		  	    
-		           		  	    %>) { // G 20
+		           		  	 %>) { // G 20
 
-						<% 
-                        if(aKeysValues.length > 0 || checkingSyntax) { // T 001
-                        %>
-                        	<%= generatedKeyExpressions %>
-                        <%
-                        } // T 001
-                        %>
-	                    
+								<% 
+                        		if(aKeysValues.length > 0 || checkingSyntax) { // T 001
+                        		%>
+                        			<%= generatedKeyExpressions %>
+                        		<%
+                        		} // T 001
+                        		%>
 
-					<%                     
-                     %>
+								<% 
+                        		if(aKeysValues.length > 0) { // T 002
+                        		%>
+		                        	<%=tableName%>HashKey.hashCodeDirty = true;
+                        		<%
+                        		} // T 002
+                        		%>
+	  					
+	  							tHash_Lookup_<%= tableName %>.lookup( <%= tableName %>HashKey );
 
-						<% 
-                        if(aKeysValues.length > 0) { // T 002
-                        %>
-		                          		  <%=tableName%>HashKey.hashCodeDirty = true;
-                        <%
-                        } // T 002
-                        %>
-	  									  tHash_Lookup_<%= tableName %>.lookup( <%= tableName %>HashKey );
-
-	  									  if(!tHash_Lookup_<%= tableName %>.hasNext()) { // G 90
-  									  
-		  										<%
-		  										if(externalTable.isInnerJoin()) {
-		  										%>
-		  										  <%= rejectedInnerJoin %> = true;
-		  										<%
-	  											}
-	  											%>
-												<%if(isMultipleResultMode) { // T 56 %>
-		  											forceLoop<%= tableName %> = true;
-	  											<% } // T 56 %>
+								if(!tHash_Lookup_<%= tableName %>.hasNext()) { // G 090
+		  				
+		  							<%
+		  							if(externalTable.isInnerJoin()) {
+		  							%>
+			  							<%= rejectedInnerJoin %> = true;
+		  							<%
+	  								}
+	  								%>
+						
+									<%if(isMultipleResultMode) { // T 56 %>
+	
+		  								forceLoop<%= tableName %> = true;
+		  					
+	  								<% } // T 56 %>
   									  		
   									  
 
-		  									} // G 90
+		  						} // G 090
 	  								
-			           		  	  } // G 20
+							} // G 20
 			           		  	  
-								  <%if(isMultipleResultMode) { // T 57 %>
-			           		  	    else { // G 20 - G 21
-   										 forceLoop<%= tableName %> = true;
-			           		  	    } // G 21
-                    		  	   <%
-                    		  	   } // T 57
-
-				           		  	  if(matchingMode.equals("UNIQUE_MATCH")) { // T 52 
-				           		  	  %>
-				           		  	   	if(tHash_Lookup_<%= tableName %>.getCount(<%= tableName %>HashKey) > 1) {
-			  							<%
-			  								StringBuilder sbMoreOneResult = new StringBuilder("\"WARNING: UNIQUE MATCH is configured for the lookup '"+ tableName +"' and it contains more one result from keys : ");
-			  								for(int iKeys = 0; iKeys < aKeysNames.length; iKeys++) {
-			  									if(iKeys > 0) {
-					  								sbMoreOneResult.append(",");
-			  								 	}
-				  								sbMoreOneResult.append( " " + tableName + "."+ aKeysNames[iKeys] + " = '\" + " + tableName + "HashKey."+ aKeysNames[iKeys] + " + \"'");
-									 		}
-			  								sbMoreOneResult.append( "\"");
-									 		%>
-									 		System.out.println(<%= sbMoreOneResult.toString()%>);
-									 	}
-									 <% 
-									 } // T 52 
-                    		  	 %>
-                    		  	 
-		                      	<%
-                    		  	if(isMultipleResultMode) { // T 60
-                    		  	 %>
-
-									 while (tHash_Lookup_<%= tableName %>.hasNext() || forceLoop<%= tableName %>) {
-
-										<%
-										gm.addBlocksCodeToClose(new BlockCode("close loop of lookup '" + tableName +"'"));
-									  	%>
-                    		  	 
-                    		  	 <% } // T 60 %>   
-                    		  	 
-                    		  	    <%= tableName %>Struct fromLookup_<%= tableName %> = null;
-		                            <%= tableName %>Struct <%= tableName %> = <%= tableName %>Default;
-										 
-		                          	<%if(isMultipleResultMode) { // T 69 %>
-										 if(!forceLoop<%= tableName %>) { // G 46
-                    		  	    <%
-                    		  	    } // T 69
-                    		  	    
-		                          	%>
-								 <%
-									if (!isMultipleResultMode) { // T 600
-                    		  	 %>
-										if(tHash_Lookup_<%= tableName %>.hasNext()) {
-								<%
-									} // T 600
-                    		  	 %>
+							<%
+							if(isMultipleResultMode) { // T 57 
+							%>
 								
-											fromLookup_<%= tableName %> = tHash_Lookup_<%= tableName %>.next();
+								else { // G 20 - G 21
+   									forceLoop<%= tableName %> = true;
+			           		  	} // G 21
+                    		  	
+                    		<%
+							} // T 57
 
-								 <%
-									if (!isMultipleResultMode) { // T 601
-                    		  	 %>
-										}
-								<%
-									} // T 601
-                    		  	 %>
-
-										if(fromLookup_<%= tableName %> != null) {
-		                    		  	    <%= tableName %> = fromLookup_<%= tableName %>;
-		                    		  	}
+							if(matchingMode.equals("UNIQUE_MATCH")) { // T 52 
+							%>
+				           		if(tHash_Lookup_<%= tableName %>.getCount(<%= tableName %>HashKey) > 1) { // G 071
 			  							
-                    		  	  	   <%
-                    		  	  	   if(
-                    		  	  	   		externalTable.isActivateExpressionFilter() 
-                    		  	  	   		&& externalTable.getExpressionFilter() != null 
-                    		  	  	   		&& !externalTable.getExpressionFilter().trim().equals("")
-                    		  	  	   ) { // T 012 
+			  						<%
+			  						StringBuilder sbMoreOneResult = new StringBuilder("\"WARNING: UNIQUE MATCH is configured for the lookup '"+ tableName +"' and it contains more one result from keys : ");
+			  						for(int iKeys = 0; iKeys < aKeysNames.length; iKeys++) {
+			  							if(iKeys > 0) {
+					  						sbMoreOneResult.append(",");
+			  						 	}
+				  						sbMoreOneResult.append( " " + tableName + "."+ aKeysNames[iKeys] + " = '\" + " + tableName + "HashKey."+ aKeysNames[iKeys] + " + \"'");
+									}
+			  						sbMoreOneResult.append( "\"");
+									%>
+									 		
+									System.out.println(<%= sbMoreOneResult.toString()%>);
+								} // G 071
+							<% 
+							} // T 52 
+							%>
+                    		  	 
+							<%
+							if(isMultipleResultMode) { // T 60
+							%>
+
+								while (tHash_Lookup_<%= tableName %>.hasNext() || forceLoop<%= tableName %>) { // G 043
+
+								<%
+								gm.addBlocksCodeToClose(new BlockCode("close loop of lookup '" + tableName +"' // G 043"));
+								%>
+                    		  	 
+							<% } // T 60 %>   
+                    		  	 
+							<%= tableName %>Struct fromLookup_<%= tableName %> = null;
+							<%= tableName %>Struct <%= tableName %> = <%= tableName %>Default;
+										 
+							<% 
+							if (isMultipleResultMode) { // T 69 
+							%>
+								
+								if(!forceLoop<%= tableName %>) { // G 46
+								
+							<%
+							} // T 69
+		                    %>
+								 
+							<%
+							if (!isMultipleResultMode) { // T 600
+                    		%>
+							
+								if (tHash_Lookup_<%= tableName %>.hasNext()) { // G 099
+								
+							<%
+							} // T 600
+                    		%>
+								
+								fromLookup_<%= tableName %> = tHash_Lookup_<%= tableName %>.next();
+
+							<%
+							if (!isMultipleResultMode) { // T 601
+							%>
+							
+								} // G 099
+							
+							<%
+							} // T 601
+							%>
+
+							if(fromLookup_<%= tableName %> != null) {
+								<%= tableName %> = fromLookup_<%= tableName %>;
+							}
+			  							
+							<%
+							if(
+								externalTable.isActivateExpressionFilter() 
+								&& externalTable.getExpressionFilter() != null 
+								&& !externalTable.getExpressionFilter().trim().equals("")
+							) { // T 012 
                     		  	  	   		
-							                String key = CodeGenerationUtils.buildProblemKey(uniqueNameComponent,
-			   		                     JavaGenerationManager.PROBLEM_KEY_FIELD.FILTER.toString(), tableName);
-                    		  	  	   %>
+								String key = CodeGenerationUtils.buildProblemKey(uniqueNameComponent,
+								JavaGenerationManager.PROBLEM_KEY_FIELD.FILTER.toString(), tableName);
+								%>
                     		  	  		
-                    		  	  		
-							   	  		  if( !<%= rejectedInnerJoin %> && 
-					 				  		  			<%= checkingSyntax ? CodeGenerationUtils.buildJavaStartFieldKey(key) : "" %>
-					 				  		  			!(
-					 				  		  			<%// keep this line to allow comments in filter %>
-					 				  		  			<%= externalTable.getExpressionFilter()%>
-					 				  		  			<%// keep this line to allow comments in filter %>
-					 				  		  			)
-					  				  		  			<%= checkingSyntax ? CodeGenerationUtils.buildJavaEndFieldKey(key) : "" %>
-						  	  		  			) { // G 16
+								if( !<%= rejectedInnerJoin %> && 
+									<%= checkingSyntax ? CodeGenerationUtils.buildJavaStartFieldKey(key) : "" %>
+									!(
+										<%// keep this line to allow comments in filter %>
+										<%= externalTable.getExpressionFilter()%>
+										<%// keep this line to allow comments in filter %>
+									)
+									<%= checkingSyntax ? CodeGenerationUtils.buildJavaEndFieldKey(key) : "" %>
+								) { // G 016
                     		  	  		  
-  		                    		  	    	fromLookup_<%= tableName %> = null;
-			  									<%= tableName %> = <%= tableName %>Default;
+									fromLookup_<%= tableName %> = null;
+									<%= tableName %> = <%= tableName %>Default;
                     		  	  		  		
-	  												<%
-				  									if(externalTable.isInnerJoin()) {
-				  									%>
-		         	            		  	  			<%= rejectedInnerJoin %> = true;
-													<%
-				  									}
-				  									%>
-     	               		  	  	  } // G 16
-     	               		  	  	  <%
-    	               		  	  	  if(aKeysValues.length == 0){
-     	               		  	  	  %>
-			                    		  	 if(fromLookup_<%= tableName %> == null && !<%= rejectedInnerJoin %>) 
-			                    		  	 { // 17
-				  										continue;
-				                    		 } // 17
-				                    		 <%
-			  									 if(externalTable.isInnerJoin()) {
-					  							 %>
-					  								// 17
-				                    		 	else if(!<%= rejectedInnerJoin %>)
-				                    		 	{ // 18
-					                    	   	hasAtLeastOneValidLookup_<%= tableName %> = true;
-					                    		} // 18
-				                    		 <%
-				                    		 }
-				                    		 %>	
-     	               		  	  	  <%
-     	               		  	  	  }
-     	               		  	  	  %>
+									<%
+									if(externalTable.isInnerJoin()) { // G 058
+									%>
+									
+										<%= rejectedInnerJoin %> = true;
+													
+									<%
+									} // G 058
+									%>
+								} // G 016
+     	               		  	
+								<%
+								if(aKeysValues.length == 0){ // T 081
+								%>
+								
+									if(fromLookup_<%= tableName %> == null && !<%= rejectedInnerJoin %>) { // G 017
+								
+										continue;
+									
+									} // G 017
+								
+								<%
+								} // T 081
+								%>
      	               		  	  	  
-                    		  	  		  
-	                    		  	   <%
-	                    		  	   } // T 012
-	                    		  	   
-	                    		  	%>	
+							<%
+							} // T 012
+							%>	
 	                    		  	
-		                        <%if(isMultipleResultMode) { // T 70 %>
-	                    		  	} // G 46
+		                    <%
+		                    if(isMultipleResultMode) { // T 70 
+		                    %>
+	                    	
+	                    		} // G 46
 	                    		  	
-									 	forceLoop<%= tableName %> = false;
+								forceLoop<%= tableName %> = false;
 									 	
-								<% } // T 70 %>
+							<%
+							} // T 70
+							%>
 	                    		  	
-	  									<%
+	  				<%
                 } // if(externalTable != null) {
             } // else if(connectionType == EConnectionType.FLOW_REF) {
         } // for (ExternalMapperTable externalTable : inputTables) {
