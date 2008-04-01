@@ -637,7 +637,7 @@ public class JavaProcessor extends Processor {
                 JavaUtils.JAVA_SRC_DIRECTORY)); //$NON-NLS-1$
         IPackageFragment leave = root.getPackageFragment(packageName);
         if (!leave.exists()) {
-            root.createPackageFragment(packageName, false, null);
+            root.createPackageFragment(packageName, true, null);
         }
 
         return root.getPackageFragment(packageName);
@@ -650,7 +650,7 @@ public class JavaProcessor extends Processor {
         IPackageFragment leave = root.getPackageFragment("internal");
         if (!leave.exists()) {
             try {
-                root.createPackageFragment("internal", false, null);
+                root.createPackageFragment("internal", true, null);
             } catch (JavaModelException e) {
                 throw new RuntimeException(Messages.getString("JavaProcessor.notFoundedFolderException")); //$NON-NLS-1$
             }
@@ -674,7 +674,7 @@ public class JavaProcessor extends Processor {
         IPackageFragmentRoot root = this.javaProject.getPackageFragmentRoot(projectPackage.getResource());
         IPackageFragment leave = root.getPackageFragment(jobName);
         if (!leave.exists()) {
-            root.createPackageFragment(jobName, false, null);
+            root.createPackageFragment(jobName, true, null);
         }
 
         return root.getPackageFragment(jobName);
