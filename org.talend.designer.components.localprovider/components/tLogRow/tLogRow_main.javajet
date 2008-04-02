@@ -24,9 +24,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
     
         String cid = node.getUniqueName();        
 
-		String tablePrint = ElementParameterParser.getValue(node,"__TABLE_PRINT__");
-		String vertical = ElementParameterParser.getValue(node,"__VERTICAL__");
-    	String basic = ElementParameterParser.getValue(node,"__BASIC_MODE__");
+		boolean tablePrint = ElementParameterParser.getValue(node,"__TABLE_PRINT__").equals("true");
+		boolean vertical = ElementParameterParser.getValue(node,"__VERTICAL__").equals("true");
+    	boolean basic = !(tablePrint||vertical);
 
         String printUniqueName = ElementParameterParser.getValue(node,"__PRINT_UNIQUE_NAME__");
         String printColumnNames = ElementParameterParser.getValue(node,"__PRINT_COLNAMES__");
@@ -45,7 +45,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
 %>
 
 <%
-   if (basic.equals("true")||vertical.equals("true")) {  // don't print the table form//***
+   if (basic||vertical) {  // don't print the table form//***
 %>
 
 
@@ -169,7 +169,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
 }
 
 			
-if (basic.equals("true")) { 
+if (basic) { 
 %> 
 
                     if (globalMap.get("tLogRow_CONSOLE")!=null)
@@ -189,7 +189,7 @@ if (basic.equals("true")) {
 	} 
 	
 	
-	if(tablePrint.equals("true")) { //print the table form//***
+	if(tablePrint) { //print the table form//***
 %>
 				
 				String[] row_<%=cid%> = new String[<%=sizeColumns %>];
@@ -250,7 +250,7 @@ if (basic.equals("true")) {
   }	//***
   
   
-  if (vertical.equals("true")) {
+  if (vertical) {
 %>
 				
 				String[] row_<%=cid%> = new String[<%=sizeColumns %>];

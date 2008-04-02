@@ -23,10 +23,10 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
 	String label = ElementParameterParser.getValue(node, "__LABEL__");
 	if(label.equals("__UNIQUE_NAME__"))
 	    label=cid;
-    String tablePrint = ElementParameterParser.getValue(node,"__TABLE_PRINT__");
+    boolean tablePrint = ElementParameterParser.getValue(node,"__TABLE_PRINT__").equals("true");
     String printHeader = ElementParameterParser.getValue(node,"__PRINT_HEADER__");
-    String vertical = ElementParameterParser.getValue(node,"__VERTICAL__");
-    String basic = ElementParameterParser.getValue(node,"__BASIC_MODE__");
+    boolean vertical = ElementParameterParser.getValue(node,"__VERTICAL__").equals("true");
+    boolean basic = !(tablePrint||vertical);
 
 
 	List<IMetadataColumn> columns = metadata.getListColumns();
@@ -34,7 +34,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
 	%>
 	///////////////////////
 	<%
-    if(tablePrint.equals("true")) { // table display mode
+    if(tablePrint) { // table display mode
         %>
         class Util_<%=cid %> {
 
@@ -182,7 +182,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
 <%
 	} 
 	// vertical display mode
-	if(vertical.equals("true")) { 
+	if(vertical) { 
 %>	
 
 
@@ -295,7 +295,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
 <%	
 	}
 	
-	if(basic.equals("true")) {// basic display mode
+	if(basic) {// basic display mode
 %>
 		final String OUTPUT_FIELD_SEPARATOR_<%=cid %> = <%=ElementParameterParser.getValue(node, "__FIELDSEPARATOR__") %>;
 		java.io.PrintStream consoleOut_<%=cid%> = null;
