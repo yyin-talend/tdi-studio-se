@@ -909,9 +909,6 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
      * @return the metadataConNode
      */
     public RepositoryNode getMetadataConNode() {
-        if (metadataConNode == null) {
-            getChildren(metadataNode);
-        }
         return this.metadataConNode;
     }
 
