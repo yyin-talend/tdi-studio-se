@@ -142,7 +142,7 @@ public class SubjobContainer extends Element implements ISubjobContainer {
      * @see org.talend.core.model.process.IElement#isReadOnly()
      */
     public boolean isReadOnly() {
-        return false;
+        return process.isReadOnly();
     }
 
     /*

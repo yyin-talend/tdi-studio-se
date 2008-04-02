@@ -19,12 +19,17 @@ import org.eclipse.gef.Request;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.editpolicies.XYLayoutEditPolicy;
 import org.eclipse.gef.requests.CreateRequest;
+import org.talend.designer.core.ui.editor.cmd.CreateNodeContainerCommand;
+import org.talend.designer.core.ui.editor.cmd.CreateNoteCommand;
 import org.talend.designer.core.ui.editor.cmd.MoveNodeCommand;
 import org.talend.designer.core.ui.editor.cmd.MoveNodeLabelCommand;
+import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodeLabel;
 import org.talend.designer.core.ui.editor.nodes.NodeLabelEditPart;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
+import org.talend.designer.core.ui.editor.notes.Note;
+import org.talend.designer.core.ui.editor.process.Process;
 
 /**
  * Edit policy of the Diagram that will allow to move the objects on it and create nodes. <br/>
@@ -115,7 +120,21 @@ public class SubjobContainerLayoutEditPolicy extends XYLayoutEditPolicy {
      * @see org.eclipse.gef.editpolicies.LayoutEditPolicy#getCreateCommand(org.eclipse.gef.requests.CreateRequest)
      */
     protected Command getCreateCommand(final CreateRequest request) {
-        return null;
+        if (((SubjobContainer) getHost().getModel()).isReadOnly()) {
+            return null;
+        }
+        Rectangle constraint = (Rectangle) getConstraintFor(request);
+        Process linkedProcess = (Process) ((SubjobContainer) getHost().getModel()).getProcess();
+
+        Command command = null;
+        if (Note.class.equals(request.getNewObjectType())) {
+            command = new CreateNoteCommand(linkedProcess, (Note) request.getNewObject(), constraint.getLocation());
+        } else if (request.getNewObject() instanceof Node) {
+            command = new CreateNodeContainerCommand(linkedProcess, new NodeContainer((Node) request.getNewObject()), constraint
+                    .getLocation());
+        }
+
+        return command;
     }
 
     /*
