@@ -28,11 +28,12 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
-import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -41,7 +42,6 @@ import org.talend.designer.core.ui.editor.cmd.QueryGuessCommand;
 import org.talend.designer.core.ui.editor.cmd.RepositoryChangeQueryCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty;
-import org.talend.repository.UpdateRepositoryUtils;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.dialog.RepositoryReviewDialog;
 
@@ -135,25 +135,21 @@ public class QueryTypeController extends AbstractRepositoryController {
                     ERepositoryObjectType.METADATA_CON_QUERY, null);
             if (dialog.open() == RepositoryReviewDialog.OK) {
                 RepositoryNode node = dialog.getResult();
-                String id = node.getObject().getId();
-
-                String paramName = (String) button.getData(PARAMETER_NAME);
-                IElementParameter param = elem.getElementParameter(paramName);
-                IElementParameter repositroyParam = param.getChildParameters().get(
-                        EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName());
-                final Item item = node.getObject().getProperty().getItem();
-
-                if (repositroyParam != null) {
-                    // repositroyParam.setValue(id);
-                    repositroyParam.setLinkedRepositoryItem(item);
+                while (node.getObject().getProperty().getItem() == null
+                        || (!(node.getObject().getProperty().getItem() instanceof ConnectionItem))) {
+                    node = node.getParent();
                 }
+                String id = node.getObject().getProperty().getId();
+                String name = dialog.getResult().getObject().getLabel();
+                String paramName = (String) button.getData(PARAMETER_NAME);
+                String value = id + " - " + name;
 
-                Query query = UpdateRepositoryUtils.getQueryById(item, id);
+                Query query = MetadataTool.getQueryFromRepository(value);
                 if (query != null) {
                     IElementParameter queryText = getQueryTextElementParameter(elem);
                     if (queryText != null) {
                         return new RepositoryChangeQueryCommand(elem, query, EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName(),
-                                id);
+                                value);
                     }
                 }
 
@@ -271,9 +267,9 @@ public class QueryTypeController extends AbstractRepositoryController {
                 if (repositoryQueryStoreMap.containsKey(querySelected)) {
                     repositoryQuery = repositoryQueryStoreMap.get(querySelected);
                 }/*
-                     * else if (dynamicProperty.getRepositoryQueryStoreMap().size() > 0) { repositoryQuery = (Query)
-                     * dynamicProperty.getRepositoryQueryStoreMap().values().toArray()[0]; }
-                     */
+                 * else if (dynamicProperty.getRepositoryQueryStoreMap().size() > 0) { repositoryQuery = (Query)
+                 * dynamicProperty.getRepositoryQueryStoreMap().values().toArray()[0]; }
+                 */
 
                 if (switchParam != null) {
                     switchParam.setValue(Boolean.FALSE);

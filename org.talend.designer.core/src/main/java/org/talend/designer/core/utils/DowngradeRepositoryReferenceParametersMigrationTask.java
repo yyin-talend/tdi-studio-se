@@ -25,9 +25,8 @@ import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.model.IProxyRepositoryFactory;
 
 /**
- * ggu class global comment. Detailled comment
- * 
- * feature 3310
+ * Temporary migration linked with the feature 3310. <br>
+ * This migration could be deleted later.
  */
 public class DowngradeRepositoryReferenceParametersMigrationTask extends AbstractItemMigrationTask {
 

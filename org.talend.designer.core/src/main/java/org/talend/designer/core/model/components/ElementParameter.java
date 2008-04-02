@@ -258,7 +258,7 @@ public class ElementParameter implements IElementParameter {
     }
 
     public int getIndexOfItemFromList(String item) {
-        int index = 0;
+        int index = -1;
         boolean found = false;
         if (itemsDisplayCodeName != null) {
             for (int i = 0; i < itemsDisplayCodeName.length && !found; i++) {

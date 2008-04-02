@@ -40,8 +40,15 @@ import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
+import org.talend.core.model.metadata.builder.connection.DelimitedFileConnection;
+import org.talend.core.model.metadata.builder.connection.GenericSchemaConnection;
+import org.talend.core.model.metadata.builder.connection.LDAPSchemaConnection;
+import org.talend.core.model.metadata.builder.connection.PositionalFileConnection;
 import org.talend.core.model.metadata.builder.connection.QueriesConnection;
 import org.talend.core.model.metadata.builder.connection.Query;
+import org.talend.core.model.metadata.builder.connection.RegexpFileConnection;
+import org.talend.core.model.metadata.builder.connection.WSDLSchemaConnection;
+import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
 import org.talend.core.model.metadata.designerproperties.RepositoryToComponentProperty;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EConnectionType;
@@ -141,6 +148,13 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
         monitor.getProgressMonitor().beginTask("Gathering informations from repository", total);
         int nbDone = 0;
 
+        IElementParameter propertyParam = elem.getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE, section);
+        String repositoryValue = null;
+
+        if (propertyParam != null) {
+            repositoryValue = propertyParam.getRepositoryValue();
+        }
+
         if (repositoryObjects != null && (repositoryObjects.size() != 0)) {
             repositoryTableMap.clear();
             repositoryQueryStoreMap.clear();
@@ -155,7 +169,42 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
                     continue;
                 }
 
-                repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
+                if (repositoryValue != null) {
+                    if ((connection instanceof DelimitedFileConnection) && (repositoryValue.equals("DELIMITED"))) { //$NON-NLS-1$
+                        repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
+                    }
+                    if ((connection instanceof PositionalFileConnection) && (repositoryValue.equals("POSITIONAL"))) { //$NON-NLS-1$
+                        repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
+                    }
+                    if ((connection instanceof RegexpFileConnection) && (repositoryValue.equals("REGEX"))) { //$NON-NLS-1$
+                        repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
+                    }
+                    if ((connection instanceof XmlFileConnection) && (repositoryValue.equals("XML"))) { //$NON-NLS-1$
+                        repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
+                    }
+                    if ((connection instanceof GenericSchemaConnection) && (repositoryValue.equals("GENERIC"))) { //$NON-NLS-1$
+                        repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
+                    }
+                    if ((connection instanceof LDAPSchemaConnection) && (repositoryValue.equals("LDAP"))) { //$NON-NLS-1$
+                        repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
+                    }
+                    if ((connection instanceof WSDLSchemaConnection) && (repositoryValue.equals("WSDL"))) { //$NON-NLS-1$
+                        repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
+                    }
+                    if ((connection instanceof DatabaseConnection) && (repositoryValue.startsWith("DATABASE"))) { //$NON-NLS-1$
+                        String currentDbType = (String) RepositoryToComponentProperty.getValue(connection, "TYPE"); //$NON-NLS-1$
+                        if (repositoryValue.contains(":")) { // database is specified //$NON-NLS-1$
+                            String neededDbType = repositoryValue.substring(repositoryValue.indexOf(":") + 1); //$NON-NLS-1$
+                            if (neededDbType.equals(currentDbType)) {
+                                repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
+                            }
+                        } else {
+                            repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
+                        }
+                    }
+                } else {
+                    repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
+                }
                 for (Object tableObj : connection.getTables()) {
                     org.talend.core.model.metadata.builder.connection.MetadataTable table;
 
@@ -164,7 +213,7 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
                     if (factory.getStatus(connectionItem) != ERepositoryStatus.DELETED) {
                         if (!factory.isDeleted(table)) {
                             IMetadataTable newTable = ConvertionHelper.convert(table);
-                            repositoryTableMap.put(table.getId(), newTable);
+                            repositoryTableMap.put(connectionItem.getProperty().getId(), newTable);
                             if (connection instanceof DatabaseConnection) {
                                 String dbType = ((DatabaseConnection) connection).getDatabaseType();
                                 String schema = ((DatabaseConnection) connection).getSchema();

@@ -194,20 +194,6 @@ public final class UpgradeParameterHelper {
             type = null;
 
         } else
-        // REPOSITORY_QUERYSTORE_TYPE
-        if (name.contains(EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName())) {
-            parentName = QUERYSTORE;
-            relatedName = EParameterName.QUERYSTORE_TYPE.getName();
-            type = ERepositoryObjectType.METADATA_CON_QUERY;
-
-        } else
-        // REPOSITORY_SCHEMA_TYPE
-        if (name.contains(EParameterName.REPOSITORY_SCHEMA_TYPE.getName())) {
-            parentName = SCHEMA;
-            relatedName = EParameterName.SCHEMA_TYPE.getName();
-            type = ERepositoryObjectType.METADATA_CON_TABLE;
-
-        } else
         // PROCESS_TYPE_PROCESS
         if (name.contains(EParameterName.PROCESS_TYPE_PROCESS.getName())) {
             parentName = PROCESS;
@@ -215,6 +201,14 @@ public final class UpgradeParameterHelper {
             type = ERepositoryObjectType.PROCESS;
 
         }
+        // disable the changes done for the query & schema
+        /*
+         * else // REPOSITORY_QUERYSTORE_TYPE if (name.contains(EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName())) {
+         * parentName = QUERYSTORE; relatedName = EParameterName.QUERYSTORE_TYPE.getName(); type =
+         * ERepositoryObjectType.METADATA_CON_QUERY; } else // REPOSITORY_SCHEMA_TYPE if
+         * (name.contains(EParameterName.REPOSITORY_SCHEMA_TYPE.getName())) { parentName = SCHEMA; relatedName =
+         * EParameterName.SCHEMA_TYPE.getName(); type = ERepositoryObjectType.METADATA_CON_TABLE; }
+         */
         if (parentName != null) { // above
             if (hasParent(name)) {
                 // only update value

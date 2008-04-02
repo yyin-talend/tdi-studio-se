@@ -57,7 +57,6 @@ import org.talend.designer.core.ui.views.contexts.Contexts;
 import org.talend.designer.core.ui.views.jobsettings.JobSettings;
 import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.designer.core.ui.views.properties.ComponentSettings;
-import org.talend.designer.core.utils.UpgradeParameterHelper;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.model.ProxyRepositoryFactory;
 
@@ -347,12 +346,5 @@ public class DesignerCoreService implements IDesignerCoreService {
         }
         return activeEditor.getSite().getId().equals(MultiPageTalendEditor.ID);
 
-    }
-
-    /**
-     * ggu upgrade the element parameters(feature 3310).
-     */
-    public boolean upgradeItemParameters(Item item) {
-        return UpgradeParameterHelper.upgradeItem(item);
     }
 }

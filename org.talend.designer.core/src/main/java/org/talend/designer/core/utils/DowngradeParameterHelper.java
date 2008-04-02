@@ -18,9 +18,7 @@ import org.apache.oro.text.regex.MalformedPatternException;
 import org.apache.oro.text.regex.Pattern;
 import org.apache.oro.text.regex.Perl5Compiler;
 import org.apache.oro.text.regex.Perl5Matcher;
-import org.eclipse.emf.common.util.EList;
 import org.talend.commons.exception.PersistenceException;
-import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.QueriesConnection;
 import org.talend.core.model.metadata.builder.connection.Query;
@@ -41,7 +39,7 @@ import org.talend.designer.joblet.model.JobletProcess;
 import org.talend.repository.model.IProxyRepositoryFactory;
 
 /**
- * ggu class global comment. Detailled comment
+ * Temporary class done for a migration linked with the feature 3310. This class could be deleted later.
  */
 public final class DowngradeParameterHelper {
 
@@ -308,47 +306,6 @@ public final class DowngradeParameterHelper {
     }
 
     /*
-     * get the id form value
-     */
-    private static String getValueId(final String value) {
-        if (value == null) {
-            return null;
-        }
-        if (hasChildValue(value)) {
-            return value.split(SEPARATOR)[0];
-        } else {
-            return value;
-        }
-    }
-
-    /*
-     * get the child label form value
-     */
-    private static String getValueLabel(final String value) {
-        if (value == null) {
-            return null;
-        }
-        if (hasChildValue(value)) {
-            return value.split(SEPARATOR)[1];
-        } else {
-            return null;
-        }
-    }
-
-    /*
-     * check the child from value
-     */
-    private static boolean hasChildValue(final String value) {
-        if (value == null) {
-            return false;
-        }
-        if (value.contains(SEPARATOR)) {
-            return true;
-        }
-        return false;
-    }
-
-    /*
      * check the parent form name
      */
     private static boolean hasParent(final String name, final String parent) {
@@ -419,93 +376,4 @@ public final class DowngradeParameterHelper {
         }
         return null;
     }
-
-    /**
-     * 
-     * ggu Comment method "getChildIdFormParent".
-     * 
-     * 
-     */
-    private static String getChildIdFormParent(final String parentId, final String childName, final ERepositoryObjectType type) {
-        if (parentId == null || childName == null || type == null) {
-            return null;
-        }
-        final IProxyRepositoryFactory proxyRepositoryFactory = DesignerPlugin.getDefault().getProxyRepositoryFactory();
-        try {
-            final IRepositoryObject lastVersion = proxyRepositoryFactory.getLastVersion(parentId);
-            if (lastVersion != null) {
-                final Item item = lastVersion.getProperty().getItem();
-                if (item != null) {
-                    if (item instanceof ConnectionItem) {
-                        return getChildIdFromParentConnection(((ConnectionItem) item).getConnection(), childName, type);
-
-                    }
-                }
-            }
-        } catch (PersistenceException e) {
-            // 
-        }
-        return null;
-    }
-
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
-    private static String getChildIdFromParentConnection(final Connection connection, final String childName,
-            final ERepositoryObjectType type) {
-        if (connection == null || childName == null || type == null) {
-            return null;
-        }
-        // query
-        if (type == ERepositoryObjectType.METADATA_CON_QUERY) {
-            final QueriesConnection queryConn = connection.getQueries();
-            if (queryConn != null) {
-                final EList queries = queryConn.getQuery();
-                if (queries != null) {
-                    for (Query query : (List<Query>) queries) {
-                        if (childName.equals(query.getLabel())) {
-                            return query.getId();
-                        }
-                    }
-                }
-
-            }
-        } else
-        // schema
-        if (type == ERepositoryObjectType.METADATA_CON_TABLE) {
-            final EList tables = connection.getTables();
-            if (tables != null) {
-                for (MetadataTable table : (List<MetadataTable>) tables) {
-                    if (childName.equals(table.getLabel())) {
-                        return table.getId();
-                    }
-                }
-            }
-        }
-        return null;
-    }
-
-    /**
-     * 
-     * ggu Comment method "getIdFormLabel".
-     * 
-     * get label of id by type.
-     */
-    private static String getIdFormLabel(final String label, ERepositoryObjectType type) {
-        if (label == null || type == null) {
-            return null;
-        }
-        final IProxyRepositoryFactory proxyRepositoryFactory = DesignerPlugin.getDefault().getProxyRepositoryFactory();
-        try {
-            List<IRepositoryObject> allRepositoryObject = proxyRepositoryFactory.getAll(type, true);
-            for (IRepositoryObject repObject : allRepositoryObject) {
-                Item item = repObject.getProperty().getItem();
-                if (item != null && label.equals(item.getProperty().getLabel())) {
-                    return item.getProperty().getId();
-                }
-            }
-        } catch (PersistenceException e) {
-            // 
-        }
-        return null;
-    }
-
 }

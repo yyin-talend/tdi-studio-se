@@ -15,6 +15,7 @@ package org.talend.designer.core.ui.editor.properties.controllers;
 import java.util.Map;
 
 import org.eclipse.gef.commands.Command;
+import org.eclipse.gef.commands.CompoundCommand;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Display;
@@ -89,6 +90,7 @@ public class PropertyTypeController extends AbstractRepositoryController {
     @Override
     protected Command createComboCommand(CCombo combo) {
         Connection repositoryConnection = null;
+        ConnectionItem repositoryConnectionItem = null;
 
         String paramName = (String) combo.getData(PARAMETER_NAME);
 
@@ -105,26 +107,40 @@ public class PropertyTypeController extends AbstractRepositoryController {
             return null;
         }
         Map<String, ConnectionItem> repositoryConnectionItemMap = null;
+        IElementParameter repositoryParam = null;
 
         if (value.equals(EmfComponent.REPOSITORY)) {
             repositoryConnectionItemMap = dynamicProperty.getRepositoryConnectionItemMap();
 
-            IElementParameter repositoryParam = param.getParentParameter().getChildParameters().get(
+            repositoryParam = param.getParentParameter().getChildParameters().get(
                     EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
             String connectionSelected = (String) repositoryParam.getValue();
 
             if (repositoryConnectionItemMap.containsKey(connectionSelected)) {
-                repositoryConnection = (org.talend.core.model.metadata.builder.connection.Connection) repositoryConnectionItemMap
-                        .get(connectionSelected).getConnection();
+                repositoryConnectionItem = repositoryConnectionItemMap.get(connectionSelected);
+                repositoryConnection = repositoryConnectionItem.getConnection();
             } else {
-                repositoryConnection = null;
+                if (!repositoryConnectionItemMap.isEmpty()) {
+                    repositoryConnectionItem = repositoryConnectionItemMap.values().iterator().next();
+                    repositoryConnection = repositoryConnectionItem.getConnection();
+                } else {
+                    repositoryConnection = null;
+                }
             }
         }
-        ChangeValuesFromRepository changeValuesFromRepository = new ChangeValuesFromRepository(elem, repositoryConnection,
+        CompoundCommand cc = new CompoundCommand();
+        ChangeValuesFromRepository changeValuesFromRepository1 = new ChangeValuesFromRepository(elem, repositoryConnection,
                 paramName, value);
-
-        changeValuesFromRepository.setMaps(dynamicProperty.getRepositoryTableMap());
-        return changeValuesFromRepository;
+        changeValuesFromRepository1.setMaps(dynamicProperty.getRepositoryTableMap());
+        cc.add(changeValuesFromRepository1);
+        if (repositoryConnection != null) {
+            ChangeValuesFromRepository changeValuesFromRepository2 = new ChangeValuesFromRepository(elem, repositoryConnection,
+                    repositoryParam.getParentParameter().getName() + ":" + repositoryParam.getName(), repositoryConnectionItem
+                            .getProperty().getId());
+            changeValuesFromRepository2.setMaps(dynamicProperty.getRepositoryTableMap());
+            cc.add(changeValuesFromRepository2);
+        }
+        return cc;
 
     }
 

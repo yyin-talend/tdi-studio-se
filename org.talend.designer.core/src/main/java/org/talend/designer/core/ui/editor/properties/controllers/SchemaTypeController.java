@@ -602,42 +602,32 @@ public class SchemaTypeController extends AbstractRepositoryController {
                         || (!(node.getObject().getProperty().getItem() instanceof ConnectionItem))) {
                     node = node.getParent();
                 }
-                String id = dialog.getResult().getObject().getId();
+                String id = dialog.getResult().getObject().getProperty().getId();
                 String paramName = (String) button.getData(PARAMETER_NAME);
+                String name = dialog.getResult().getObject().getLabel();
+                String value = id + " - " + name;
 
                 String fullParamName = paramName + ":" + getRepositoryChoiceParamName(); //$NON-NLS-1$
                 IElementParameter repostoryParam = elem.getElementParameter(fullParamName);
 
                 final Item item = node.getObject().getProperty().getItem();
                 if (repostoryParam != null) {
-                    // repostoryParam.setValue(id);
                     repostoryParam.setLinkedRepositoryItem(item);
                 }
 
                 org.talend.core.model.metadata.builder.connection.Connection connection = null;
-                Map<String, IMetadataTable> repositoryTableMap = dynamicProperty.getRepositoryTableMap();
                 if (elem instanceof Node) {
-                    IMetadataTable repositoryMetadata;
-                    if (repositoryTableMap.containsKey(id)) {
-                        repositoryMetadata = repositoryTableMap.get(id);
-                        IElementParameter property = ((Node) elem).getElementParameter(EParameterName.PROPERTY_TYPE.getName());
-                        if ((property != null) && EmfComponent.REPOSITORY.equals(property.getValue())) {
-                            String propertySelected = (String) ((Node) elem).getElementParameter(
-                                    EParameterName.REPOSITORY_PROPERTY_TYPE.getName()).getValue();
-                            final ConnectionItem connectionItem = dynamicProperty.getRepositoryConnectionItemMap().get(
-                                    propertySelected);
-                            if (connectionItem != null) {
-                                connection = connectionItem.getConnection();
-                            }
-                        }
-                    } else {
+                    IMetadataTable repositoryMetadata = MetadataTool.getMetadataFromRepository(value);
+                    connection = MetadataTool.getConnectionFromRepository(value);
+
+                    if (repositoryMetadata == null) {
                         repositoryMetadata = new MetadataTable();
                     }
                     if (switchParam != null) {
                         switchParam.setValue(Boolean.FALSE);
                     }
                     RepositoryChangeMetadataCommand changeMetadataCommand = new RepositoryChangeMetadataCommand((Node) elem,
-                            fullParamName, id, repositoryMetadata, null);
+                            fullParamName, value, repositoryMetadata, null);
                     changeMetadataCommand.setConnection(connection);
 
                     return changeMetadataCommand;
@@ -714,6 +704,7 @@ public class SchemaTypeController extends AbstractRepositoryController {
                 String schemaSelected = (String) repositorySchemaType.getValue();
                 if (repositoryTableMap.containsKey(schemaSelected)) {
                     repositoryMetadata = repositoryTableMap.get(schemaSelected);
+                    newRepositoryIdValue = schemaSelected + " - " + repositoryMetadata.getLabel();
                 } else {
                     if (repositoryTableMap.keySet().size() == 0) {
                         repositoryMetadata = new MetadataTable();
@@ -721,6 +712,7 @@ public class SchemaTypeController extends AbstractRepositoryController {
                         newRepositoryIdValue = repositoryTableMap.keySet().iterator().next();
                         // Gets the schema of the first item in repository schema type combo.
                         repositoryMetadata = repositoryTableMap.get(newRepositoryIdValue);
+                        newRepositoryIdValue = newRepositoryIdValue + " - " + repositoryMetadata.getLabel();
                     }
                 }
             } else {

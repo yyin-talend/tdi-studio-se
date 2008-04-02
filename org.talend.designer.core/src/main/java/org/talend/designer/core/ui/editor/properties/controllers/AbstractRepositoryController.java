@@ -418,16 +418,20 @@ public abstract class AbstractRepositoryController extends AbstractElementProper
     protected String getDisplayNameFromValue(IElementParameter param, String value) {
         // to load informations from repository only if needed.
 
-        if (param.getListItemsDisplayName().length == 0) {
+        int index = param.getIndexOfItemFromList(value);
+        if (index == -1) {
 
             fastInitializeRepositoryNames();
             // if even after the initialize there is nothing, just return an empty string
             if (param.getListItemsDisplayName().length == 0) {
                 return "";
             }
+            index = param.getIndexOfItemFromList(value);
+            if (index == -1) {
+                return "";
+            }
         }
 
-        int index = param.getIndexOfItemFromList(value);
         return param.getListItemsDisplayName()[index];
     }
 

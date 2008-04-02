@@ -87,7 +87,14 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
         } else {
             super.setSelected(value);
         }
+        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
         if (value == SELECTED_NONE) {
+            ComponentSettingsView viewer = (ComponentSettingsView) page.findView(ComponentSettingsView.ID); //$NON-NLS-1$
+            if (viewer == null) {
+                return;
+            }
+            ComponentSettingsView compSettings = (ComponentSettingsView) viewer;
+            compSettings.cleanDisplay();
             return;
         }
         Control ctrl = this.getViewer().getControl();
@@ -95,7 +102,6 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
         if (ctrl != null) {
             PlatformUI.getWorkbench().getHelpSystem().setHelp(ctrl, helpLink);
         }
-        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
         IViewPart view = page.findView("org.eclipse.help.ui.HelpView"); //$NON-NLS-1$
         if (view != null) {
             PlatformUI.getWorkbench().getHelpSystem().displayHelp(helpLink);
@@ -117,12 +123,7 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
                 compSettings.cleanDisplay();
             }
 
-        } /*
-             * else if (value == SELECTED_NONE) { ComponentSettingsView viewer = (ComponentSettingsView)
-             * page.findView(ComponentSettingsView.ID); //$NON-NLS-1$ if (viewer == null) { return; }
-             * ComponentSettingsView compSettings = (ComponentSettingsView) viewer; compSettings.cleanDisplay(); }
-             */
-
+        }
     }
 
     /*
