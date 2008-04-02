@@ -57,7 +57,6 @@ import org.talend.designer.core.ui.editor.cmd.RepositoryChangeMetadataCommand;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty;
-import org.talend.repository.UpdateRepositoryUtils;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.dialog.RepositoryReviewDialog;
 
@@ -761,31 +760,33 @@ public class SchemaTypeController extends AbstractRepositoryController {
         return EParameterName.SCHEMA_TYPE.getName();
     }
 
-    @Override
-    protected String getDisplayNameFromValue(IElementParameter param, String value) {
-        if (value == null || "".equals(value)) { //$NON-NLS-1$
-            return null;
-        }
-        Item item = param.getLinkedRepositoryItem();
-        org.talend.core.model.metadata.builder.connection.MetadataTable table = null;
-        if (item != null) {
-            // item not match
-            table = UpdateRepositoryUtils.getTableById(item, value);
-        }
-        if (item == null || table == null) {
-            // research
-            item = UpdateRepositoryUtils.getConnectionItemByChildId(dynamicProperty.getRepositoryConnectionItemMap(), value);
-            if (item != null) {
-                table = UpdateRepositoryUtils.getTableById(item, value);
-            }
-        }
-
-        if (table != null && item != null) {
-            return dynamicProperty.getRepositoryAliasName((ConnectionItem) item) + ":" + item.getProperty().getLabel() + " - " //$NON-NLS-1$ //$NON-NLS-2$
-                    + table.getLabel();
-        }
-
-        return null;
-    }
+    // @Override
+    // protected String getDisplayNameFromValue(IElementParameter param, String value) {
+    // super.getDisplayNameFromValue(param, value);
+    // if (value == null || "".equals(value)) { //$NON-NLS-1$
+    // return null;
+    // }
+    // Item item = param.getLinkedRepositoryItem();
+    // org.talend.core.model.metadata.builder.connection.MetadataTable table = null;
+    // if (item != null) {
+    // // item not match
+    // table = UpdateRepositoryUtils.getTableById(item, value);
+    // }
+    // if (item == null || table == null) {
+    // // research
+    // item = UpdateRepositoryUtils.getConnectionItemByChildId(dynamicProperty.getRepositoryConnectionItemMap(), value);
+    // if (item != null) {
+    // table = UpdateRepositoryUtils.getTableById(item, value);
+    // }
+    // }
+    //
+    // if (table != null && item != null) {
+    // return dynamicProperty.getRepositoryAliasName((ConnectionItem) item) + ":" + item.getProperty().getLabel() + " -
+    // " //$NON-NLS-1$ //$NON-NLS-2$
+    // + table.getLabel();
+    // }
+    //
+    // return null;
+    // }
 
 }

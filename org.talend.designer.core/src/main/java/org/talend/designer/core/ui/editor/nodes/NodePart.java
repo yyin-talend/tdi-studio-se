@@ -87,6 +87,9 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
         } else {
             super.setSelected(value);
         }
+        if (value == SELECTED_NONE) {
+            return;
+        }
         Control ctrl = this.getViewer().getControl();
         String helpLink = (String) ((Node) getModel()).getPropertyValue(EParameterName.HELP.getName());
         if (ctrl != null) {
@@ -114,14 +117,11 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
                 compSettings.cleanDisplay();
             }
 
-        } else if (value == SELECTED_NONE) {
-            ComponentSettingsView viewer = (ComponentSettingsView) page.findView(ComponentSettingsView.ID); //$NON-NLS-1$
-            if (viewer == null) {
-                return;
-            }
-            ComponentSettingsView compSettings = (ComponentSettingsView) viewer;
-            compSettings.cleanDisplay();
-        }
+        } /*
+             * else if (value == SELECTED_NONE) { ComponentSettingsView viewer = (ComponentSettingsView)
+             * page.findView(ComponentSettingsView.ID); //$NON-NLS-1$ if (viewer == null) { return; }
+             * ComponentSettingsView compSettings = (ComponentSettingsView) viewer; compSettings.cleanDisplay(); }
+             */
 
     }
 

@@ -21,13 +21,11 @@ import org.eclipse.swt.widgets.Display;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.properties.ConnectionItem;
-import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.editor.cmd.ChangeValuesFromRepository;
 import org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty;
-import org.talend.repository.UpdateRepositoryUtils;
 import org.talend.repository.ui.dialog.RepositoryReviewDialog;
 
 /**
@@ -150,30 +148,31 @@ public class PropertyTypeController extends AbstractRepositoryController {
         return EParameterName.PROPERTY_TYPE.getName();
     }
 
-    @Override
-    protected String getDisplayNameFromValue(IElementParameter param, String value) {
-        if (param == null || value == null || value.equals("")) { //$NON-NLS-1$
-            return null;
-        }
-        if (!param.getName().equals(getRepositoryChoiceParamName())) {
-            return null;
-        }
-        Item item = param.getLinkedRepositoryItem();
-        if (item == null || (item != null && !item.getProperty().getId().equals(value))) {
-            Map<String, ConnectionItem> itemMap = dynamicProperty.getRepositoryConnectionItemMap();
-            item = itemMap.get(value);
-            if (item == null) {
-                item = UpdateRepositoryUtils.getConnectionItemByItemId(value);
-                if (item != null) {
-                    // set in map
-                    itemMap.put(value, (ConnectionItem) item);
-                }
-            }
-        }
-        if (item != null && item instanceof ConnectionItem) {
-            return dynamicProperty.getRepositoryAliasName((ConnectionItem) item) + ":" + item.getProperty().getLabel(); //$NON-NLS-1$
-        }
-        return null;
-    }
+    // @Override
+    // protected String getDisplayNameFromValue(IElementParameter param, String value) {
+    // if (param == null || value == null || value.equals("")) { //$NON-NLS-1$
+    // return null;
+    // }
+    // if (!param.getName().equals(getRepositoryChoiceParamName())) {
+    // return null;
+    // }
+    // Item item = param.getLinkedRepositoryItem();
+    // if (item == null || (item != null && !item.getProperty().getId().equals(value))) {
+    // Map<String, ConnectionItem> itemMap = dynamicProperty.getRepositoryConnectionItemMap();
+    // item = itemMap.get(value);
+    // if (item == null) {
+    // item = UpdateRepositoryUtils.getConnectionItemByItemId(value);
+    // if (item != null) {
+    // // set in map
+    // itemMap.put(value, (ConnectionItem) item);
+    // }
+    // }
+    // }
+    // if (item != null && item instanceof ConnectionItem) {
+    // return dynamicProperty.getRepositoryAliasName((ConnectionItem) item) + ":" + item.getProperty().getLabel();
+    // //$NON-NLS-1$
+    // }
+    // return null;
+    // }
 
 }

@@ -1300,9 +1300,14 @@ public class Process extends Element implements IProcess2 {
                                     if (!flag) {
                                         for (IElementParameter elementParameter : node.getElementParametersWithChildrens()) {
                                             if ("REPOSITORY_QUERYSTORE_TYPE".equals(elementParameter.getName())) {
+                                                String names[] = ((String) elementParameter.getValue()).split(" - ");
+                                                if (names.length != 2) {
+                                                    continue;
+                                                }
+                                                String queryName = names[1];
                                                 for (QueryImpl queryImpl : (EList<QueryImpl>) repositoryConnection.getQueries()
                                                         .getQuery()) {
-                                                    if (((String) elementParameter.getValue()).equals(queryImpl.getId())) {
+                                                    if (queryImpl.getLabel().equals(queryName)) {
                                                         connectQuery = queryImpl.getValue().replaceAll("\\s", " ").replaceAll(
                                                                 " {2,}", " ");
                                                     }

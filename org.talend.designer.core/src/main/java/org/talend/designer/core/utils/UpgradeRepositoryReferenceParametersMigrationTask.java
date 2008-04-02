@@ -10,7 +10,7 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.repository.model.migration;
+package org.talend.designer.core.utils;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -21,7 +21,6 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.migration.AbstractItemMigrationTask;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.designer.core.IDesignerCoreService;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.model.IProxyRepositoryFactory;
 
@@ -44,17 +43,12 @@ public class UpgradeRepositoryReferenceParametersMigrationTask extends AbstractI
     @Override
     public final ExecutionResult execute(Item item) {
         final IProxyRepositoryFactory factory = RepositoryPlugin.getDefault().getRepositoryService().getProxyRepositoryFactory();
-        final IDesignerCoreService designerCoreService = RepositoryPlugin.getDefault().getDesignerCoreService();
-
-        if (designerCoreService != null) {
-            if (designerCoreService.upgradeItemParameters(item)) {
-                try {
-                    factory.save(item, true);
-                    return ExecutionResult.SUCCESS_WITH_ALERT;
-                } catch (PersistenceException e) {
-                    return ExecutionResult.FAILURE;
-                }
-
+        if (UpgradeParameterHelper.upgradeItem(item)) {
+            try {
+                factory.save(item, true);
+                return ExecutionResult.SUCCESS_WITH_ALERT;
+            } catch (PersistenceException e) {
+                return ExecutionResult.FAILURE;
             }
         }
 

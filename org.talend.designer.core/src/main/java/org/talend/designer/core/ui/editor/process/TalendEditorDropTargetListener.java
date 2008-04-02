@@ -285,7 +285,7 @@ public class TalendEditorDropTargetListener implements TransferDropTargetListene
             if (selectedNode.getProperties(EProperties.CONTENT_TYPE) == ERepositoryObjectType.METADATA_CON_TABLE) {
                 RepositoryObject object = (RepositoryObject) selectedNode.getObject();
                 MetadataTable table = (MetadataTable) object.getAdapter(MetadataTable.class);
-                String value = table.getId();
+                String value = connectionItem.getProperty().getId() + " - " + table.getLabel();
                 IElementParameter schemaParam = node.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
                 IElementParameter queryParam = node.getElementParameterFromField(EParameterFieldType.QUERYSTORE_TYPE);
                 if (queryParam != null) {
@@ -295,7 +295,7 @@ public class TalendEditorDropTargetListener implements TransferDropTargetListene
                     }
                 }
                 RepositoryChangeMetadataCommand command2 = new RepositoryChangeMetadataCommand(node, schemaParam.getName() + ":"
-                        + EParameterName.REPOSITORY_SCHEMA_TYPE.getName(), value, repositoryTableMap.get(value), null);
+                        + EParameterName.REPOSITORY_SCHEMA_TYPE.getName(), value, ConvertionHelper.convert(table), null);
                 list.add(command2);
             }
 
@@ -305,7 +305,7 @@ public class TalendEditorDropTargetListener implements TransferDropTargetListene
 
                 RepositoryObject object = (RepositoryObject) selectedNode.getObject();
                 Query query = (Query) object.getAdapter(Query.class);
-                String value = query.getId();
+                String value = connectionItem.getProperty().getId() + " - " + query.getLabel();
                 RepositoryChangeQueryCommand command3 = new RepositoryChangeQueryCommand(node, query, queryParam.getName() + ":"
                         + EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName(), value);
                 list.add(command3);

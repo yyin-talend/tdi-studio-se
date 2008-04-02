@@ -563,5 +563,22 @@
     
       </actionSet>
    </extension>
+    <extension
+          point="org.talend.core.migrationTask">
+       <projecttask
+             beforeLogon="false"
+             class="org.talend.designer.core.utils.UpgradeRepositoryReferenceParametersMigrationTask"
+             description="Upgrade the parameters from repository reference. such as Property Type, Schema Type, Query Type, Process Type."
+             id="org.talend.repository.migration.UpgradeRepositoryReferenceParameters"
+             name="Upgrade the parameters reference">
+       </projecttask>
+       <projecttask
+             beforeLogon="false"
+             class="org.talend.designer.core.utils.DowngradeRepositoryReferenceParametersMigrationTask"
+             description="Temporary migration task"
+             id="org.talend.designer.core.utils.DowngradeRepositoryReferenceParametersMigrationTask"
+             name="Temporary migration task (Downgrade repository parameters)">
+       </projecttask>
+    </extension>
    
 </plugin>

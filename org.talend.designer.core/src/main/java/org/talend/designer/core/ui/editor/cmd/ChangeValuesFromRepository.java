@@ -21,6 +21,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.Query;
@@ -252,7 +253,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
         if (item != null) {
             final List<MetadataTable> tables = UpdateRepositoryUtils.getMetadataTablesFromItem(item);
             if (tables != null && !tables.isEmpty()) {
-                return tables.get(0).getId();
+                return tables.get(0).getLabel();
             }
         }
         return "";
@@ -296,14 +297,15 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
                                 if (propertyName.split(":")[1].equals(EParameterName.PROPERTY_TYPE.getName())) {
                                     repositoryTable = (String) repositorySchemaTypeParameter.getValue();
                                 } else {
-                                    repositoryTable = getFirstRepositoryTable(item);
+                                    repositoryTable = item.getProperty().getId() + " - " + getFirstRepositoryTable(item);
                                     repositorySchemaTypeParameter.setValue(repositoryTable);
                                 }
                                 if (!"".equals(repositoryTable)) {
                                     param.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName()).setValue(
                                             EmfComponent.REPOSITORY);
 
-                                    IMetadataTable table = repositoryTableMap.get(repositoryTable);
+                                    IMetadataTable table = MetadataTool.getMetadataFromRepository(repositoryTable);
+                                    // repositoryTableMap.get(repositoryTable);
                                     if (table != null) {
                                         table = table.clone();
                                         setDBTableFieldValue(node, table.getTableName(), null);
@@ -385,7 +387,7 @@ public class ChangeValuesFromRepository extends ChangeMetadataCommand {
         if (query == null && queries != null && !queries.isEmpty()) {
             query = queries.get(0);
             if (query != null) {
-                repositoryParam.setValue(query.getId());
+                repositoryParam.setValue(item.getProperty().getId() + " - " + query.getLabel());
             }
 
         }

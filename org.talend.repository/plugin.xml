@@ -735,13 +735,6 @@
       </projecttask>
       <projecttask
             beforeLogon="false"
-            class="org.talend.repository.model.migration.UpgradeRepositoryReferenceParametersMigrationTask"
-            description="Upgrade the parameters from repository reference. such as Property Type, Schema Type, Query Type, Process Type."
-            id="org.talend.repository.migration.UpgradeRepositoryReferenceParameters"
-            name="Upgrade the parameters reference">
-      </projecttask>
-      <projecttask
-            beforeLogon="false"
             class="org.talend.repository.model.migration.AddDoubleQuoteTotMomMigrationTask"
             description="Add the double quote enclosure to tMomInput and tMomOutput"
             id="org.talend.repository.model.migration.AddDoubleQuoteTotMomMigrationTask"

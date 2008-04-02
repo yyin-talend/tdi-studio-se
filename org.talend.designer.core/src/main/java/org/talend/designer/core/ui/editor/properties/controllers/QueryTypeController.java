@@ -32,7 +32,6 @@ import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
-import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.designer.core.model.components.EParameterName;
@@ -311,33 +310,34 @@ public class QueryTypeController extends AbstractRepositoryController {
         return EParameterName.QUERYSTORE_TYPE.getName();
     }
 
-    @Override
-    protected String getDisplayNameFromValue(IElementParameter param, String value) {
-        if (param == null || value == null || value.equals("")) { //$NON-NLS-1$
-            return null;
-        }
-        if (!param.getName().equals(getRepositoryChoiceParamName())) {
-            return null;
-        }
-        Item item = param.getLinkedRepositoryItem();
-        Query query = null;
-        if (item != null) {
-            // item not match
-            query = UpdateRepositoryUtils.getQueryById(item, value);
-        }
-        if (item == null || query == null) {
-            // research
-            item = UpdateRepositoryUtils.getConnectionItemByChildId(dynamicProperty.getRepositoryConnectionItemMap(), value);
-            if (item != null) {
-                query = UpdateRepositoryUtils.getQueryById(item, value);
-            }
-        }
-
-        if (query != null && item != null && item instanceof ConnectionItem) {
-            return dynamicProperty.getRepositoryAliasName((ConnectionItem) item) + ":" //$NON-NLS-1$
-                    + item.getProperty().getLabel() + " - " + query.getLabel(); //$NON-NLS-1$
-        }
-        return null;
-    }
+    // @Override
+    // protected String getDisplayNameFromValue(IElementParameter param, String value) {
+    // super.getDisplayNameFromValue(param, value);
+    // if (param == null || value == null || value.equals("")) { //$NON-NLS-1$
+    // return null;
+    // }
+    // if (!param.getName().equals(getRepositoryChoiceParamName())) {
+    // return null;
+    // }
+    // Item item = param.getLinkedRepositoryItem();
+    // Query query = null;
+    // if (item != null) {
+    // // item not match
+    // query = UpdateRepositoryUtils.getQueryById(item, value);
+    // }
+    // if (item == null || query == null) {
+    // // research
+    // item = UpdateRepositoryUtils.getConnectionItemByChildId(dynamicProperty.getRepositoryConnectionItemMap(), value);
+    // if (item != null) {
+    // query = UpdateRepositoryUtils.getQueryById(item, value);
+    // }
+    // }
+    //
+    // if (query != null && item != null && item instanceof ConnectionItem) {
+    // return dynamicProperty.getRepositoryAliasName((ConnectionItem) item) + ":" //$NON-NLS-1$
+    // + item.getProperty().getLabel() + " - " + query.getLabel(); //$NON-NLS-1$
+    // }
+    // return null;
+    // }
 
 }
