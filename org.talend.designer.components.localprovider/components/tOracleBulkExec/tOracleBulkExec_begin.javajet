@@ -20,15 +20,14 @@ skeleton="../templates/db_output_bulk.skeleton"
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
-
 String filename = ElementParameterParser.getValue(node, "__DATA__");
 String host = ElementParameterParser.getValue(node, "__HOST__");
 String port = ElementParameterParser.getValue(node, "__PORT__");
 String dbname = ElementParameterParser.getValue(node, "__DBNAME__");
 String dbschema = ElementParameterParser.getValue(node, "__SCHEMA_DB__");
-String dbuser   = ElementParameterParser.getValue(node, "__USER__");
-String dbpass   = ElementParameterParser.getValue(node, "__PASS__");
-String table    = ElementParameterParser.getValue(node, "__TABLE__");
+String dbuser = ElementParameterParser.getValue(node, "__USER__");
+String dbpass = ElementParameterParser.getValue(node, "__PASS__");
+String table = ElementParameterParser.getValue(node, "__TABLE__");
 String data_action = ElementParameterParser.getValue(node, "__DATA_ACTION__");
 String fields_terminated_by = ElementParameterParser.getValue(node, "__FIELDS_TERMINATED_BY__");
 String fields_enclosed_by = ElementParameterParser.getValue(node, "__FIELDS_ENCLOSED_BY__");
@@ -36,33 +35,44 @@ String columns = "";//if schema is defined, use this option in clt file
    
 List<Map<String, String>> options = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__OPTIONS__");
 java.lang.StringBuilder optionStr = new java.lang.StringBuilder();
-java.lang.StringBuilder siletModeStr = new java.lang.StringBuilder(); 
-for(java.util.Map<String,String> option :options){
-   	String key = option.get("KEY");
-    if(key.equals("SILENT")){
-        if(siletModeStr.length()>0){
-        	siletModeStr.append(",").append(option.get("VALUE"));
-        }else{
-        	siletModeStr.append(option.get("VALUE"));
-    	}
-    }else{
-    	if(optionStr.length()>0){
-    		optionStr.append(",").append(key).append("=").append(option.get("VALUE"));
-    	}else{
-    	optionStr.append(key).append("=").append(option.get("VALUE"));
-		}
-	}
+String silentMode = "";
+String parallelRead = "false";
+String rowsPerCommit = "5000";
+String bindSize = "20000000";
+String readSize = "20000000";
+for(java.util.Map<String, String> option : options) {
+    String key = option.get("KEY");
+    if(key.equals("PARALLEL")) {
+        parallelRead = option.get("VALUE");
+    } else if(key.equals("ROWS")) {
+        rowsPerCommit = option.get("VALUE");
+    } else if(key.equals("BINDSIZE")) {
+        bindSize = option.get("VALUE");
+    } else if(key.equals("READSIZE")) {
+        readSize = option.get("VALUE");
+    } else if(key.equals("SILENT")) {
+        silentMode = option.get("VALUE");
+    } else {
+        if(optionStr.length() > 0) {
+            optionStr.append(",").append(key).append("=").append(option.get("VALUE"));
+        } else {
+            optionStr.append(key).append("=").append(option.get("VALUE"));
+        }
+    }
 }
-if(optionStr.length()>0 || siletModeStr.length()>0){
-	if(siletModeStr.length()>0){
-		if(optionStr.length()>0){
-			optionStr.append(",");
-		}
-		if(siletModeStr.indexOf(",")<0){
-		    optionStr.append("SILENT=").append(siletModeStr.toString());
-		}else{
-		    optionStr.append("SILENT=(").append(siletModeStr.toString()).append(")");
-		}
+if(optionStr.length() > 0) {
+    optionStr.append(",");
+}
+optionStr.append("PARALLEL").append("=").append(parallelRead);
+optionStr.append(",").append("ROWS").append("=").append(rowsPerCommit);
+optionStr.append(",").append("BINDSIZE").append("=").append(bindSize);
+optionStr.append(",").append("READSIZE").append("=").append(readSize);
+
+if(silentMode.length() > 0) {
+	if(silentMode.indexOf(",") < 0) {
+	    optionStr.append(",").append("SILENT=").append(silentMode);
+	} else {
+	    optionStr.append(",").append("SILENT=(").append(silentMode).append(")");
 	}
 }
    
