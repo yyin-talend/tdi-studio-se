@@ -15,6 +15,8 @@ package org.talend.repository.ui.swt.utils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.talend.core.CorePlugin;
+import org.talend.core.language.ECodeLanguage;
+import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.builder.connection.FileExcelConnection;
 import org.talend.core.model.metadata.builder.connection.LdifFileConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
@@ -54,5 +56,10 @@ public abstract class AbstractExcelFileStepForm extends AbstractForm {
 
     protected FileExcelConnection getConnection() {
         return (FileExcelConnection) connectionItem.getConnection();
+    }
+
+    public boolean isPerlProject() {
+        ECodeLanguage codeLanguage = LanguageManager.getCurrentLanguage();
+        return (codeLanguage == ECodeLanguage.PERL);
     }
 }

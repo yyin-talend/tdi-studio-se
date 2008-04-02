@@ -278,6 +278,8 @@ public class ExcelFileStep3Form extends AbstractExcelFileStepForm {
         ExcelSchemaBean bean = new ExcelSchemaBean();
 
         bean.setSheetName(getConnection().getSheetName());
+        bean.setSelectAllSheets(getConnection().isSelectAllSheets());
+        bean.setSheetsList(getConnection().getSheetList());
         // bean.setFirstColumn(getConnection().getFirstColumn());
         // bean.setLastColumn(getConnection().getLastColumn());
         //

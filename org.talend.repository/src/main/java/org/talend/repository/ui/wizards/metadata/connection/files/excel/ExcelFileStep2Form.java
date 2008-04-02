@@ -14,6 +14,7 @@ package org.talend.repository.ui.wizards.metadata.connection.files.excel;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.CoreException;
@@ -119,6 +120,8 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
 
     private boolean readOnly;
 
+    private List<String> originSchemaColumns = new ArrayList<String>();
+
     /**
      * 
      * Initialize value, forceFocus first field.
@@ -158,6 +161,7 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
 
         int firstColumn = stringToInteger(getConnection().getFirstColumn());
         firstColumnText.setText(firstColumn < 0 ? "1" : getConnection().getFirstColumn());
+        getConnection().setFirstColumn(firstColumnText.getText());
 
         int lastColumn = stringToInteger(getConnection().getLastColumn());
         lastColumnText.setText(lastColumn < 0 ? "" : getConnection().getLastColumn());
@@ -239,6 +243,10 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
 
         decimalSeparatorText = new LabelledText(compositeFileDelimitor, "Decimal separator:", 3);
 
+        // Only visible if current project is not perl project
+        advanceSeparatorCheckbox.setVisible(!isPerlProject());
+        thousandSeparaotrText.setVisible(!isPerlProject());
+        decimalSeparatorText.setVisible(!isPerlProject());
     }
 
     private void addGroupDieOnErrorSettings(final Composite mainComposite, final int width, final int height) {
@@ -411,6 +419,9 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
         bean.setThousandSeparator(thousandSeparaotrText.getText());
         bean.setDecimalSeparator(decimalSeparatorText.getText());
 
+        bean.setSelectAllSheets(getConnection().isSelectAllSheets());
+        bean.setSheetsList(getConnection().getSheetList());
+
         processDescription.setExcelSchemaBean(bean);
 
         return processDescription;
@@ -502,8 +513,24 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
                 getConnection().setLastColumn(lastColumnText.getText());
                 checkFieldsValue();
             }
-
         });
+    }
+
+    private void chopSchemaColumn() {
+        int first = getIntFromString(firstColumnText.getText());
+        int last = getIntFromString(lastColumnText.getText());
+
+        if (last <= 0 || last > originSchemaColumns.size()) {
+            last = originSchemaColumns.size();
+        }
+
+        List<String> schemaColumns = new ArrayList<String>();
+        for (int i = first - 1; i < last; i++) {
+            schemaColumns.add(originSchemaColumns.get(i));
+        }
+
+        getConnection().getSheetColumns().clear();
+        getConnection().getSheetColumns().addAll(schemaColumns);
     }
 
     /**
@@ -752,17 +779,25 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
     }
 
     private boolean checkFristAndLastColumn() {
-        String firstS = firstColumnText.getText();
-        if (!firstS.equals("") && getIntFromString(firstS) < 0) {
-            updateStatus(IStatus.ERROR, "First column value error"); //$NON-NLS-1$
+        int first = getIntFromString(firstColumnText.getText());
+
+        int last = -1;
+        if (lastColumnText.getText().equals("")) {
+            last = originSchemaColumns.size();
+        } else {
+            last = getIntFromString(lastColumnText.getText());
+        }
+
+        if (last <= first || last <= 0 || first <= 0) {
+            updateStatus(IStatus.ERROR, "Last column or First column parameter error"); //$NON-NLS-1$
             return false;
         }
 
-        String lastS = lastColumnText.getText();
-        if (!lastS.equals("") && getIntFromString(lastS) < 0) {
-            updateStatus(IStatus.ERROR, "Last column value error"); //$NON-NLS-1$
+        if (originSchemaColumns.size() < last) {
+            updateStatus(IStatus.ERROR, "Last column parameter error. Bigger than schmea columns size"); //$NON-NLS-1$
             return false;
         }
+
         return true;
 
     }
@@ -891,6 +926,7 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
 
             @Override
             public void widgetSelected(final SelectionEvent e) {
+                chopSchemaColumn();
                 processor.execute();
             }
         });
@@ -930,12 +966,23 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
             // Refresh the preview width the adapted rowSeparator
             // If metadata exist, refreshMetadata
             if ((!"".equals(getConnection().getFilePath())) && (getConnection().getFilePath() != null)) { //$NON-NLS-1$
+                saveOriginShcemaColumns();
+                chopSchemaColumn();
                 refreshPreview();
             }
             if (isReadOnly() != readOnly) {
                 adaptFormToReadOnly();
             }
         }
+    }
+
+    /**
+     * DOC YeXiaowei Comment method "saveOriginShcemaColumns".
+     */
+    private void saveOriginShcemaColumns() {
+        List<String> columns = getConnection().getSheetColumns();
+        originSchemaColumns.clear();
+        originSchemaColumns.addAll(columns);
     }
 
     /*

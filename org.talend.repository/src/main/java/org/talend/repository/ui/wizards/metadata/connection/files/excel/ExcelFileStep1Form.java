@@ -14,6 +14,7 @@ package org.talend.repository.ui.wizards.metadata.connection.files.excel;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.List;
 
 import jxl.read.biff.BiffException;
@@ -23,9 +24,14 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.jface.viewers.CheckStateChangedEvent;
+import org.eclipse.jface.viewers.CheckboxTreeViewer;
+import org.eclipse.jface.viewers.ICheckStateListener;
+import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
+import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
@@ -35,11 +41,14 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.ui.dialogs.ContainerCheckedTreeViewer;
 import org.talend.commons.ui.swt.formtools.Form;
 import org.talend.commons.ui.swt.formtools.LabelledCombo;
 import org.talend.commons.ui.swt.formtools.LabelledFileField;
@@ -68,11 +77,15 @@ public class ExcelFileStep1Form extends AbstractExcelFileStepForm {
 
     private ExcelReader excelReader = null;
 
+    private CheckboxTreeViewer sheetViewer = null;
+
     private static final int WIDTH_GRIDDATA_PIXEL = 300;
 
     private boolean filePathOk = false;
 
     private boolean sheetNameOk = false;
+
+    private List<String> allsheets = new ArrayList<String>();
 
     /**
      * DOC yexiaowei ExcelFileStep1Form constructor comment.
@@ -117,25 +130,174 @@ public class ExcelFileStep1Form extends AbstractExcelFileStepForm {
         String[] extensions = { "*.xls" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
         fileField = new LabelledFileField(compositeFileLocation, Messages.getString("FileStep1.filepath"), extensions); //$NON-NLS-1$
 
-        group = Form.createGroup(this, 2, Messages.getString("FileStep1.groupFileViewer"), 150); //$NON-NLS-1$
+        int numColumnForViewer = isPerlProject() ? 4 : 2;
+
+        group = Form.createGroup(this, numColumnForViewer,
+                isPerlProject() ? "File Viewer and Sheets setting" : Messages.getString("FileStep1.groupFileViewer"), 150); //$NON-NLS-1$
+
+        if (isPerlProject()) {
+            Composite sheetsViewerComposite = Form.startNewDimensionnedGridLayout(group, 2, 80, 150);
+            Label label = new Label(sheetsViewerComposite, SWT.NONE);
+            label.setText("Set sheets parameters");
+
+            Combo place = new Combo(sheetsViewerComposite, SWT.NONE);
+            place.setVisible(false);
+
+            createPerlSheetsViewer(sheetsViewerComposite);
+        }
 
         Composite compositeExcelViewer = Form.startNewDimensionnedGridLayout(group, 2, WIDTH_GRIDDATA_PIXEL, 150);
 
         sheetsCombo = new LabelledCombo(compositeExcelViewer, Messages.getString("ExcelFileStep1Form.sheet.choice"), Messages
-                .getString("ExcelFileStep1Form.sheet.tip"), new String[] { "Sheet1" }, 1, false, SWT.NONE);// Default
-        // name
-        // "Sheet1"
+                .getString("ExcelFileStep1Form.sheet.tip"), new String[] { "Sheet1" }, 1, false, SWT.NONE);
 
         createTableViewer(compositeExcelViewer);
 
         if (!isInWizard()) {
             Composite compositeBottomButton = Form.startNewGridLayout(this, 2, false, SWT.CENTER, SWT.CENTER);
-
             cancelButton = new UtilsButton(compositeBottomButton, Messages.getString("CommonWizard.cancel"), WIDTH_BUTTON_PIXEL, //$NON-NLS-1$
                     HEIGHT_BUTTON_PIXEL);
         }
 
         addUtilsButtonListeners();
+    }
+
+    private void createPerlSheetsViewer(Composite parent) {
+        sheetViewer = new ContainerCheckedTreeViewer(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.SINGLE | SWT.BORDER);
+
+        sheetViewer.setContentProvider(new ITreeContentProvider() {
+
+            public Object[] getChildren(Object parentElement) {
+                if (parentElement instanceof SheetNode) {
+                    return ((SheetNode) parentElement).getChildren().toArray();
+                }
+                return null;
+            }
+
+            public Object getParent(Object element) {
+
+                return null;
+            }
+
+            public boolean hasChildren(Object element) {
+                if (element instanceof SheetNode) {
+                    return ((SheetNode) element).getChildren() != null && ((SheetNode) element).getChildren().size() > 0;
+                }
+                return false;
+            }
+
+            public Object[] getElements(Object inputElement) {
+                if (inputElement instanceof List) {
+                    return ((List) inputElement).toArray();
+                }
+                return null;
+            }
+
+            public void dispose() {
+
+            }
+
+            public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+
+            }
+        });
+
+        sheetViewer.setLabelProvider(new ILabelProvider() {
+
+            public Image getImage(Object element) {
+                return null;
+            }
+
+            public String getText(Object element) {
+                if (element instanceof SheetNode) {
+                    return ((SheetNode) element).getLabel();
+                }
+                return null;
+            }
+
+            public void addListener(ILabelProviderListener listener) {
+
+            }
+
+            public void dispose() {
+
+            }
+
+            public boolean isLabelProperty(Object element, String property) {
+
+                return false;
+            }
+
+            public void removeListener(ILabelProviderListener listener) {
+
+            }
+
+        });
+        resetSheetViewer();
+        sheetViewer.expandAll();
+
+        GridData data = new GridData(GridData.FILL_BOTH);
+        data.horizontalSpan = 2;
+        sheetViewer.getTree().setLayoutData(data);
+
+        addTreeListener();
+    }
+
+    /**
+     * DOC YeXiaowei Comment method "resetSheetViewer".
+     */
+    private void resetSheetViewer() {
+        if (sheetViewer == null) {
+            return;
+        }
+        List<SheetNode> sheetChildren = new ArrayList<SheetNode>();
+        for (String s : allsheets) {
+            SheetNode current = new SheetNode(rootNode, s);
+            sheetChildren.add(current);
+        }
+        rootNode.setChildren(sheetChildren);
+
+        List<SheetNode> rootList = new ArrayList<SheetNode>();
+        rootList.add(rootNode);
+        sheetViewer.setInput(rootList);
+        sheetViewer.expandAll();
+    }
+
+    private void addTreeListener() {
+
+        sheetViewer.addCheckStateListener(new ICheckStateListener() {
+
+            public void checkStateChanged(CheckStateChangedEvent event) {
+                fillSheetList();
+                checkFieldsValue();
+            }
+        });
+    }
+
+    /**
+     * DOC YeXiaowei Comment method "fillSheetList".
+     */
+    private void fillSheetList() {
+        Object[] x = sheetViewer.getCheckedElements();
+        ArrayList sl = getConnection().getSheetList();
+        if (sl == null) {
+            sl = new ArrayList();
+            getConnection().setSheetList(sl);
+        }
+        sl.clear();
+        boolean allSheets = false;
+        for (Object o : x) {
+            if (o instanceof SheetNode) {
+                if (o.equals(rootNode)) {
+                    if (!sheetViewer.getGrayed(o))
+                        allSheets = true;
+                } else {
+                    sl.add(((SheetNode) o).getLabel());
+                }
+            }
+        }
+
+        getConnection().setSelectAllSheets(allSheets);
     }
 
     /**
@@ -233,6 +395,11 @@ public class ExcelFileStep1Form extends AbstractExcelFileStepForm {
 
             public void modifyText(final ModifyEvent e) {
                 readAndViewExcelFile();
+                if (isPerlProject()) {
+                    getConnection().setSelectAllSheets(false);
+                    getConnection().getSheetList().clear();
+                }
+                checkFieldsValue();
             }
 
         });
@@ -269,9 +436,17 @@ public class ExcelFileStep1Form extends AbstractExcelFileStepForm {
 
             String[] sheets = excelReader.getSheetNames();
 
+            allsheets.clear();
+
+            for (String s : sheets) {
+                allsheets.add(s);
+            }
+
+            resetSheetViewer();
+
             initSheetsCombo(sheets);
 
-            viewExcel(sheetsCombo.getText());// Default preview first one
+            viewExcel(sheetsCombo.getText());
 
             getConnection().setFilePath(filePath);
             getConnection().setSheetName(sheetsCombo.getText());
@@ -449,6 +624,15 @@ public class ExcelFileStep1Form extends AbstractExcelFileStepForm {
             return false;
         }
 
+        if (isPerlProject()) {
+            if (!getConnection().isSelectAllSheets()) {
+                if (getConnection().getSheetList() == null || getConnection().getSheetList().size() <= 0) {
+                    updateStatus(IStatus.ERROR, "At lease one sheet should be selected"); //$NON-NLS-1$
+                    return false;
+                }
+            }
+        }
+
         updateStatus(IStatus.OK, null);
         return true;
     }
@@ -483,11 +667,93 @@ public class ExcelFileStep1Form extends AbstractExcelFileStepForm {
         readAndViewExcelFile();
     }
 
+    /**
+     * DOC YeXiaowei Comment method "initTreeSelectStates".
+     */
+    private void initTreeSelectStates() {
+        if (rootNode == null || getConnection().getSheetList() == null) {
+            return;
+        }
+        List<SheetNode> ss = rootNode.getChildren();
+        if (ss == null || ss.size() <= 0) {
+            return;
+        }
+        for (SheetNode node : ss) {
+            if (getConnection().getSheetList().contains(node.getLabel())) {
+                sheetViewer.setChecked(node, true);
+            }
+        }
+    }
+
     public void setVisible(boolean visible) {
         super.setVisible(visible);
         if (isReadOnly() != readOnly) {
             adaptFormToReadOnly();
         }
+
+        if (sheetViewer != null) {
+            sheetViewer.expandAll();
+            initTreeSelectStates();
+        }
+
         checkFieldsValue();
+    }
+
+    private final SheetNode rootNode = new SheetNode(null, "All sheets/DSelect sheet");
+
+    /**
+     * 
+     * DOC YeXiaowei ExcelFileStep1Form class global comment. Detailled comment <br/>
+     * 
+     */
+    class SheetNode {
+
+        private final String label;
+
+        private final SheetNode parent;
+
+        private List<SheetNode> children = null;
+
+        public SheetNode(SheetNode parent, String label) {
+            this.label = label;
+            this.parent = parent;
+        }
+
+        /**
+         * Getter for label.
+         * 
+         * @return the label
+         */
+        public String getLabel() {
+            return this.label;
+        }
+
+        /**
+         * Getter for parent.
+         * 
+         * @return the parent
+         */
+        public SheetNode getParent() {
+            return this.parent;
+        }
+
+        /**
+         * Getter for children.
+         * 
+         * @return the children
+         */
+        public List<SheetNode> getChildren() {
+            return this.children;
+        }
+
+        /**
+         * Sets the children.
+         * 
+         * @param children the children to set
+         */
+        public void setChildren(List<SheetNode> children) {
+            this.children = children;
+        }
+
     }
 }
