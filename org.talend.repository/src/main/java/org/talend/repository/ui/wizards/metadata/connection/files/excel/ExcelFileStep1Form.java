@@ -130,21 +130,11 @@ public class ExcelFileStep1Form extends AbstractExcelFileStepForm {
         String[] extensions = { "*.xls" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
         fileField = new LabelledFileField(compositeFileLocation, Messages.getString("FileStep1.filepath"), extensions); //$NON-NLS-1$
 
-        int numColumnForViewer = isPerlProject() ? 4 : 2;
+        int numColumnForViewer = 4;
 
-        group = Form.createGroup(this, numColumnForViewer,
-                isPerlProject() ? "File Viewer and Sheets setting" : Messages.getString("FileStep1.groupFileViewer"), 150); //$NON-NLS-1$
+        group = Form.createGroup(this, numColumnForViewer, "File Viewer and Sheets setting", 150); //$NON-NLS-1$
 
-        if (isPerlProject()) {
-            Composite sheetsViewerComposite = Form.startNewDimensionnedGridLayout(group, 2, 80, 150);
-            Label label = new Label(sheetsViewerComposite, SWT.NONE);
-            label.setText("Set sheets parameters");
-
-            Combo place = new Combo(sheetsViewerComposite, SWT.NONE);
-            place.setVisible(false);
-
-            createPerlSheetsViewer(sheetsViewerComposite);
-        }
+        createSheetsSelectViewer(group);
 
         Composite compositeExcelViewer = Form.startNewDimensionnedGridLayout(group, 2, WIDTH_GRIDDATA_PIXEL, 150);
 
@@ -160,6 +150,22 @@ public class ExcelFileStep1Form extends AbstractExcelFileStepForm {
         }
 
         addUtilsButtonListeners();
+    }
+
+    /**
+     * DOC YeXiaowei Comment method "createSheetsSelectViewer".
+     * 
+     * @param group
+     */
+    private void createSheetsSelectViewer(Group group) {
+        Composite sheetsViewerComposite = Form.startNewDimensionnedGridLayout(group, 2, 80, 150);
+        Label label = new Label(sheetsViewerComposite, SWT.NONE);
+        label.setText("Set sheets parameters");
+
+        Combo place = new Combo(sheetsViewerComposite, SWT.NONE);
+        place.setVisible(false);
+
+        createPerlSheetsViewer(sheetsViewerComposite);
     }
 
     private void createPerlSheetsViewer(Composite parent) {
@@ -395,10 +401,8 @@ public class ExcelFileStep1Form extends AbstractExcelFileStepForm {
 
             public void modifyText(final ModifyEvent e) {
                 readAndViewExcelFile();
-                if (isPerlProject()) {
-                    getConnection().setSelectAllSheets(false);
-                    getConnection().getSheetList().clear();
-                }
+                getConnection().setSelectAllSheets(false);
+                getConnection().getSheetList().clear();
                 checkFieldsValue();
             }
 
@@ -624,12 +628,10 @@ public class ExcelFileStep1Form extends AbstractExcelFileStepForm {
             return false;
         }
 
-        if (isPerlProject()) {
-            if (!getConnection().isSelectAllSheets()) {
-                if (getConnection().getSheetList() == null || getConnection().getSheetList().size() <= 0) {
-                    updateStatus(IStatus.ERROR, "At lease one sheet should be selected"); //$NON-NLS-1$
-                    return false;
-                }
+        if (!getConnection().isSelectAllSheets()) {
+            if (getConnection().getSheetList() == null || getConnection().getSheetList().size() <= 0) {
+                updateStatus(IStatus.ERROR, "At lease one sheet should be selected"); //$NON-NLS-1$
+                return false;
             }
         }
 

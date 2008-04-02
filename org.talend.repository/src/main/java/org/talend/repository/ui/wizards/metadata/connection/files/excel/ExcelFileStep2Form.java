@@ -695,8 +695,8 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
             @Override
             public void widgetSelected(SelectionEvent e) {
                 boolean select = advanceSeparatorCheckbox.getSelection();
-                decimalSeparatorText.setEditable(select);
-                thousandSeparaotrText.setEditable(select);
+                decimalSeparatorText.setEnabled(select);
+                thousandSeparaotrText.setEnabled(select);
                 getConnection().setAdvancedSpearator(select);
                 getConnection().setThousandSeparator(thousandSeparaotrText.getText());
                 getConnection().setDecimalSeparator(decimalSeparatorText.getText());
@@ -961,7 +961,12 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
                 encodingCombo.setText(getConnection().getEncoding());
             } else {
                 encodingCombo.select(0);
+                getConnection().setEncoding(encodingCombo.getText());
             }
+
+            advanceSeparatorCheckbox.setSelection(getConnection().isAdvancedSpearator());
+            thousandSeparaotrText.setEnabled(advanceSeparatorCheckbox.getSelection());
+            decimalSeparatorText.setEnabled(advanceSeparatorCheckbox.getSelection());
 
             // Refresh the preview width the adapted rowSeparator
             // If metadata exist, refreshMetadata
