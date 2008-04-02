@@ -94,7 +94,7 @@ public class StatsAndLogsComposite extends MultipleThreadDynamicComposite {
                         .getString("StatsAndLogsComposite.StatsLogsSettings"), //$NON-NLS-1$
                         Messages.getString("StatsAndLogsComposite.ReloadMessages")); //$NON-NLS-1$
                 if (isOK) {
-                    StatsAndLogsViewHelper.reloadValuesFromPreferencePage(elem);
+                    StatsAndLogsViewHelper.reloadValuesFromPreferencePage(elem, StatsAndLogsComposite.this);
 
                     IEditorPart activeEditor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
                             .getActiveEditor();
@@ -124,7 +124,7 @@ public class StatsAndLogsComposite extends MultipleThreadDynamicComposite {
                         .getString("StatsAndLogsComposite.StatsLogsSettings"), //$NON-NLS-1$
                         Messages.getString("StatsAndLogsComposite.SavePreferenceMessages")); //$NON-NLS-1$
                 if (isOK) {
-                    StatsAndLogsViewHelper.saveValuesToPreferencePage(elem);
+                    StatsAndLogsViewHelper.saveValuesToPreferencePage(elem, StatsAndLogsComposite.this);
                 }
             }
 
