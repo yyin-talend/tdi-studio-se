@@ -95,7 +95,7 @@ public class JobSettingsManager {
         // param.setRequired(false);
         // param.setShow(false);
         // paramList.add(param);
-
+        boolean isJoblet = AbstractProcessProvider.isExtensionProcessForJoblet(process);
         IPreferenceStore preferenceStore = CorePlugin.getDefault().getPreferenceStore();
 
         param = new ElementParameter(process);
@@ -105,9 +105,10 @@ public class JobSettingsManager {
         param.setField(EParameterFieldType.CHECK);
         param.setCategory(EComponentCategory.EXTRA);
         param.setNumRow(2);
+        param.setShow(!isJoblet);
         paramList.add(param);
 
-        if (AbstractProcessProvider.isExtensionProcessForJoblet(process)) {
+        if (isJoblet) {
             param = new ElementParameter(process);
             param.setName(EParameterName.STARTABLE.getName());
             param.setValue(false);
@@ -126,6 +127,7 @@ public class JobSettingsManager {
         param.setCategory(EComponentCategory.EXTRA);
         param.setGroup(IMPLICIT_GROUP);
         param.setNumRow(3);
+        param.setShow(!isJoblet);
         paramList.add(param);
 
         // on files
