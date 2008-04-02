@@ -211,7 +211,7 @@ public class TalendEditorDropTargetListener implements TransferDropTargetListene
             Node node = new Node(element);
             IPreferenceStore preferenceStore = DesignerPlugin.getDefault().getPreferenceStore();
             if (preferenceStore.getBoolean(TalendDesignerPrefConstants.USE_REPOSITORY_NAME)) {
-                node.setPropertyValue(EParameterName.LABEL.getName(), selectedNode.getObject().getProperty().getLabel());
+                node.setPropertyValue(EParameterName.LABEL.getName(), selectedNode.getObject().getLabel());
             }
             processSpecificDBTypeIfSameProduct(store.componentName, node);
             NodeContainer nc = new NodeContainer(node);
