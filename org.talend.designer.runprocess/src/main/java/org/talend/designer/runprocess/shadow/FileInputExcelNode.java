@@ -64,21 +64,29 @@ public class FileInputExcelNode extends FileInputNode {
             }
         }
 
-        if (isPerlProject()) {
-            addSheetParametersForPerlProject();
-        } else {
-            addSheetParameterForJavaProject();
+        addSheetsParameters();
+
+        if (!isPerlProject()) {
+            addJavaSpecificParameters();
         }
 
         setMetadataList(metadatas);
     }
 
-    public void addSheetParameterForJavaProject() {
-        TextElementParameter param = new TextElementParameter("SHEETNAME", TalendTextUtils.addQuotes(excelBean.getSheetName()));
-        addParameter(param);
+    public void addJavaSpecificParameters() {
+        String[] paramNames = new String[] { "ADVANCED_SEPARATOR", "THOUSANDS_SEPARATOR", "DECIMAL_SEPARATOR" }; //$NON-NLS-1$
+        String[] paramValues = new String[] { Boolean.toString(excelBean.isAdvancedSeparator()),
+                TalendTextUtils.addQuotes(excelBean.getThousandSeparator()),
+                TalendTextUtils.addQuotes(excelBean.getDecimalSeparator()) };
+        for (int i = 0; i < paramNames.length; i++) {
+            if (paramValues[i] != null && !paramValues[i].equals("")) {
+                TextElementParameter param = new TextElementParameter(paramNames[i], paramValues[i]);
+                addParameter(param);
+            }
+        }
     }
 
-    public void addSheetParametersForPerlProject() {
+    public void addSheetsParameters() {
         TextElementParameter param = new TextElementParameter("ALL_SHEETS", Boolean.toString(excelBean.isSelectAllSheets()));
         addParameter(param);
 
