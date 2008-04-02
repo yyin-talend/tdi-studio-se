@@ -4,7 +4,11 @@
 	java.util.List
 	java.util.Map
 	java.util.HashMap
+	org.talend.core.model.metadata.IMetadataTable
+	org.talend.core.model.metadata.IMetadataColumn
 	org.talend.core.model.metadata.MetadataTalendType
+	org.talend.core.model.metadata.types.JavaTypesManager
+	org.talend.core.model.metadata.types.JavaType
 	org.talend.designer.mapper.MapperMain
 	org.talend.designer.codegen.config.CodeGeneratorArgument
 	org.talend.designer.mapper.MapperComponent
@@ -16,7 +20,6 @@
 	org.talend.designer.mapper.language.generation.GenerationManagerFactory
 	org.talend.designer.mapper.language.generation.JavaGenerationManager
 	org.talend.designer.mapper.language.LanguageProvider
-	org.talend.core.model.metadata.types.JavaTypesManager
 	" 
 %>
 
@@ -44,10 +47,10 @@
             hNameToConnection.put(connection.getName(), connection);
         }
 
-        List<ExternalMapperTable> inputTablesList = new ArrayList<ExternalMapperTable>(data.getInputTables());
-        int lstSizeInputs = inputTablesList.size();
+        List<ExternalMapperTable> inputTables = new ArrayList<ExternalMapperTable>(data.getInputTables());
+        int lstSizeInputs = inputTables.size();
         for (int i = 1; i < lstSizeInputs; i++) {
-            ExternalMapperTable inputTable = (ExternalMapperTable) inputTablesList.get(i);
+            ExternalMapperTable inputTable = (ExternalMapperTable) inputTables.get(i);
             String tableName = inputTable.getName();
             IConnection connection = hNameToConnection.get(tableName);
             if (connection == null) {
@@ -139,7 +142,239 @@ class  <%=className%>  {
 // ###############################
 <%
 
+HashMap<String, ExternalMapperTableEntry> hExternalInputTableEntries = new HashMap<String, ExternalMapperTableEntry>();
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+int sizeInputTables = inputTables.size();
 
-%>
+String currentPartialName = "";
+        
+for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { // T TM B 101
+        
+	ExternalMapperTable currentInputTable = inputTables.get(iInputTable);
+	ExternalMapperTable nextInputTable = inputTables.get(iInputTable + 1);
+	
+	if(currentPartialName.length() > 0) {
+		currentPartialName += "__";
+	}
+	
+	currentPartialName += currentInputTable.getName();
+
+	List<IMetadataColumn> nextColumnsKeys = new ArrayList<IMetadataColumn>();
+	List<IConnection> currentInputConnections = new ArrayList<IConnection>();
+	
+	%>
+	
+	org.talend.designer.components.thash.io.hashimpl.FlowSorterIterator fsi_<%= currentInputTable.getName() %> = new org.talend.designer.components.thash.io.hashimpl.FlowSorterIterator();
+	fsi_<%= currentInputTable.getName() %>.initPut("/home/amaumont/data/dev/projets/Talend/hashfile/sort/data_<%= currentPartialName %>");
+
+	class SortableRow_<%= currentPartialName %> implements Comparable<SortableRow_<%= currentPartialName %>> { // G TM B 001 
+
+	<%
+	        
+
+	        String nextTableName = nextInputTable.getName();
+            IConnection nextConection = hNameToConnection.get(nextTableName);
+            if (nextConection == null) {
+                continue;
+            }
+	
+	
+        
+                IMetadataTable nextMetadataTable = nextConection.getMetadataTable();
+                if (nextInputTable != null) {
+                    hExternalInputTableEntries.clear();
+                    List<ExternalMapperTableEntry> metadataTableEntries = nextInputTable.getMetadataTableEntries();
+                    if (metadataTableEntries == null) {
+                        continue;
+                    }
+                    for (ExternalMapperTableEntry nextInputTableEntry : metadataTableEntries) {
+                        hExternalInputTableEntries.put(nextInputTableEntry.getName(), nextInputTableEntry);
+                    }
+                    List<IMetadataColumn> listColumns = nextMetadataTable.getListColumns();
+                    for (IMetadataColumn column : listColumns) {
+                        String columnName = column.getLabel();
+                        ExternalMapperTableEntry externalInputTableEntry = hExternalInputTableEntries.get(columnName);
+                        if (externalInputTableEntry != null) {
+                            String expressionKey = externalInputTableEntry.getExpression();
+                            if (expressionKey != null && !"".equals(expressionKey.trim())) {
+                            
+                            	nextColumnsKeys.add(column);
+                            
+                            	%><%= JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable()) %> exprKey_<%= nextInputTable.getName() %>__<%=column.getLabel() %>;
+                            	
+                            	<%
+ 		                           
+                            }
+                        }
+                    }
+				}
+			
+			
+			
+				        String currentTableName = currentInputTable.getName();
+            IConnection currentConection = hNameToConnection.get(currentTableName);
+            if (currentConection == null) {
+                continue;
+            }
+	
+        
+                IMetadataTable currentMetadataTable = currentConection.getMetadataTable();
+                if (currentInputTable != null) {
+                    hExternalInputTableEntries.clear();
+                    List<ExternalMapperTableEntry> metadataTableEntries = currentInputTable.getMetadataTableEntries();
+                    if (metadataTableEntries == null) {
+                        continue;
+                    }
+                    for (ExternalMapperTableEntry currentInputTableEntry : metadataTableEntries) {
+                        hExternalInputTableEntries.put(currentInputTableEntry.getName(), currentInputTableEntry);
+                    }
+                    currentInputConnections.add(currentConection);
+                    List<IMetadataColumn> listColumns = currentMetadataTable.getListColumns();
+                    for (IMetadataColumn column : listColumns) {
+                        String columnName = column.getLabel();
+                            
+                            	%><%= JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable()) %> <%= currentInputTable.getName() %>__<%=column.getLabel() %>;
+                            	
+                            	<%
+ 		                           
+                    }
+				}
+				
+		%>
+		
+		
+		
+		         public void fillFrom(<%
+		         
+		         String comma = "";
+		         for(IConnection connection : currentInputConnections) {
+			         %><%=comma%><%= connection.getName() %>Struct <%= connection.getName() %><%
+		         	comma = ",";
+		         }
+                    int sizeNextColumns = nextColumnsKeys.size();
+                    for (int iColumn = 0; iColumn < sizeNextColumns; iColumn++) { // T TM B 105
+                    	IMetadataColumn column = nextColumnsKeys.get(iColumn);
+
+		         	%><%=comma%><%= JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable()) %> exprKey_<%= nextInputTable.getName() %>__<%=column.getLabel() %><%
+                    
+                    } // T TM B 105
+		         %>) {
+
+					<%
+		        	for(IConnection connection : currentInputConnections) {
+		        	
+		        		IMetadataTable table = connection.getMetadataTable();
+						List<IMetadataColumn> listColumns = table.getListColumns();
+                    	for (IMetadataColumn column : listColumns) {
+						%>
+					
+	                    this.<%= connection.getName() %>__<%= column.getLabel() %> = <%= connection.getName() %>.<%= column.getLabel() %>;
+                    
+	                	<%
+                		}
+                	}
+                	%>
+                    <%
+                    sizeNextColumns = nextColumnsKeys.size();
+                    for (int iColumn = 0; iColumn < sizeNextColumns; iColumn++) { // T TM B 104
+                    	IMetadataColumn column = nextColumnsKeys.get(iColumn);
+
+						%>this.exprKey_<%= nextInputTable.getName() %>__<%=column.getLabel() %> = exprKey_<%= nextInputTable.getName() %>__<%=column.getLabel() %>;
+						<%
+                    
+                    } // T TM B 104
+                    %>
+                }
+
+                public void copyDataTo(<%
+		         
+		         comma = "";
+		         for(IConnection connection : currentInputConnections) {
+			         %><%=comma%><%= connection.getName() %>Struct <%= connection.getName() %><%
+		         	comma = ",";
+		         }
+		         %>) {
+
+					<%
+		        	for(IConnection connection : currentInputConnections) {
+		        	
+		        		IMetadataTable table = connection.getMetadataTable();
+						List<IMetadataColumn> listColumns = table.getListColumns();
+                    	for (IMetadataColumn column : listColumns) {
+						%>
+					
+	                    <%= connection.getName() %>.<%= column.getLabel() %> = this.<%= connection.getName() %>__<%= column.getLabel() %>;
+                    
+	                	<%
+                		}
+                	}
+                	%>
+
+                }
+
+		
+		
+		
+		
+		        public int compareTo(SortableRow_<%= currentPartialName %> other) {
+
+                    int returnValue = 0;
+                    
+                    <%
+                    sizeNextColumns = nextColumnsKeys.size();
+                    for (int iColumn = 0; iColumn < sizeNextColumns; iColumn++) { // T TM B 102
+                    	IMetadataColumn column = nextColumnsKeys.get(iColumn);
+                    %>
+                    
+                    	returnValue = checkNullsAndCompare(this.exprKey_<%= nextInputTable.getName() %>__<%=column.getLabel() %>, other.exprKey_<%= nextInputTable.getName() %>__<%=column.getLabel() %>);
+                    	if (returnValue != 0) {
+	                        return returnValue;
+                    	}
+                    
+                    <%
+                    } // T TM B 102
+                    %>
+
+                    return returnValue;
+                }
+
+		    private int checkNullsAndCompare(Object object1, Object object2) {
+
+        int ascendingInt = 1;
+
+        int returnValue = 0;
+        if (object1 instanceof String && object2 instanceof String) {
+            returnValue = compareStrings((String) object1, (String) object2);
+        } else if (object1 instanceof Comparable && object2 instanceof Comparable) {
+            returnValue = ((Comparable) object1).compareTo(object2);
+        } else if (object1 != null && object2 != null) {
+            returnValue = compareStrings(object1.toString(), object2.toString());
+        } else if (object1 == null && object2 != null) {
+            returnValue = 1;
+        } else if (object1 != null && object2 == null) {
+            returnValue = -1;
+        } else {
+            returnValue = 0;
+        }
+
+        return ascendingInt * returnValue;
+    }
+
+    private int compareStrings(String string1, String string2) {
+        boolean ignoreCase = true;
+        if (ignoreCase) {
+            return string1.compareToIgnoreCase(string2);
+        } else {
+            return string1.compareTo(string2);
+        }
+    }
+
+		
+		
+		
+		} // G TM B 001
+		
+<%
+} // T TM B 101      
+%>        
+        
