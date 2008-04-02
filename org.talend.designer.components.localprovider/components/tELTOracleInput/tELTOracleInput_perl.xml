@@ -38,6 +38,14 @@
       <DEFAULT>''</DEFAULT>
     </PARAMETER>
 
+	<PARAMETER
+      NAME="ELT_TABLE_NAME"
+      FIELD="TEXT"
+      NUM_ROW="6"
+    >
+      <DEFAULT>''</DEFAULT>
+    </PARAMETER>
+    
     <PARAMETER
       NAME="MAPPING"
       FIELD="MAPPING_TYPE"
