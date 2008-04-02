@@ -702,6 +702,15 @@ public class CLASS {
                 selectionSQL.append(separator + getLProtectedChar() + versionField + getRProtectedChar());
             }
             selectionSQL.append(" FROM " + getLProtectedChar() + "\" + tableName_" + cid + " + \"" + getRProtectedChar());
+            if(scdConfiger.isEnableType2()) {
+                String endDateField = scdConfiger.getDimensionType2Configer().getEndDateField();
+                if(scdConfiger.getDimensionType2Configer().getEndDateValueType().equals("NULL_VALUE")) {
+                    selectionSQL.append(" WHERE " + getLProtectedChar() + endDateField + getRProtectedChar() + " IS NULL");
+                } else {
+                    String endDateValue = scdConfiger.getDimensionType2Configer().getEndDateValue();
+                    selectionSQL.append(" WHERE " + getYear(endDateField) + " = \" + " + endDateValue + " + \"");
+                }
+            }
             return selectionSQL.toString();
         }
         public String createInsertionSQL(SCDConfiger scdConfiger) {
