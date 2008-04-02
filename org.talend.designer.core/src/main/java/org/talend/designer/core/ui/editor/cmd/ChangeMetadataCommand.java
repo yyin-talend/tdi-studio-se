@@ -529,18 +529,35 @@ public class ChangeMetadataCommand extends Command {
         if (curNode != null) {
             String uniqueName = ((Node) curNode).getUniqueName();
             IElementParameter dbTableElementField = curNode.getElementParameterFromField(EParameterFieldType.DBTABLE);
-            if (dbTableElementField != null) {
-                Object value = dbTableElementField.getValue();
-                String removeQuotes = TalendTextUtils.removeQuotes((String) value);
-                boolean b = value == null || removeQuotes.equals("");
-                // add the code for table name equals uniqueName
-                b = b || uniqueName.equals(olddbTableName);
-                b = b || value != null && removeQuotes.toString().equals(olddbTableName);
+            changeTableNameParameter(newdbTableName, olddbTableName, uniqueName, dbTableElementField);
+            if (((Node) curNode).isELTComponent()) {
+                IElementParameter eltTablename = curNode.getElementParameter("ELT_TABLE_NAME");
+                changeTableNameParameter(newdbTableName, olddbTableName, uniqueName, eltTablename);
+            }
+        }
+    }
 
-                if (b) {
-                    if (newdbTableName != null) {
-                        dbTableElementField.setValue(TalendTextUtils.addQuotes(newdbTableName));
-                    }
+    /**
+     * DOC qzhang Comment method "changeTableNameParameter".
+     * 
+     * @param newdbTableName
+     * @param olddbTableName
+     * @param uniqueName
+     * @param dbTableElementField
+     */
+    private void changeTableNameParameter(String newdbTableName, String olddbTableName, String uniqueName,
+            IElementParameter dbTableElementField) {
+        if (dbTableElementField != null) {
+            Object value = dbTableElementField.getValue();
+            String removeQuotes = TalendTextUtils.removeQuotes((String) value);
+            boolean b = value == null || removeQuotes.equals("");
+            // add the code for table name equals uniqueName
+            b = b || uniqueName.equals(olddbTableName);
+            b = b || value != null && removeQuotes.toString().equals(olddbTableName);
+
+            if (b) {
+                if (newdbTableName != null) {
+                    dbTableElementField.setValue(TalendTextUtils.addQuotes(newdbTableName));
                 }
             }
         }

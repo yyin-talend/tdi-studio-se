@@ -69,6 +69,7 @@ import org.talend.core.model.process.INodeReturn;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.Problem;
 import org.talend.core.model.process.Problem.ProblemStatus;
+import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -700,6 +701,15 @@ public class Node extends Element implements INode {
                         }
                         if (takeSchema.booleanValue()) {
                             MetadataTool.copyTable(mainTargetTable, connection.getMetadataTable());
+                            if (connection.getTarget().isELTComponent()) {
+                                IElementParameter elemParam = connection.getTarget().getElementParameter("ELT_TABLE_NAME");
+                                if (elemParam != null && elemParam.getField().equals(EParameterFieldType.TEXT)) {
+                                    String removeQuotes = TalendTextUtils.removeQuotes(elemParam.getValue().toString());
+                                    if (!removeQuotes.equals("") && "Default".equals(connection.getName())) {
+                                        connection.setName(removeQuotes);
+                                    }
+                                }
+                            }
                         }
                     } else {
                         connection.getSource().checkAndRefreshNode();

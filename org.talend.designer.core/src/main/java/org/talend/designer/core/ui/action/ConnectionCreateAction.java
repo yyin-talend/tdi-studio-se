@@ -26,8 +26,11 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.process.EConnectionType;
+import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IConnectionCategory;
+import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INodeConnector;
+import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.connections.Connection;
@@ -159,12 +162,16 @@ public class ConnectionCreateAction extends SelectionAction {
                 }
             } else {
                 String menuName;
+                boolean addDefaultName = false;
                 if (connecType.equals(EConnectionType.TABLE)) {
+                    addDefaultName = addDefaultName();
                     menuName = getNewOutputMenuName();
                 } else {
                     menuName = curNodeConnector.getMenuName();
                 }
-                setText(menuName);
+                if (!addDefaultName) {
+                    setText(menuName);
+                }
                 menuList.add(menuName);
             }
 
@@ -205,6 +212,44 @@ public class ConnectionCreateAction extends SelectionAction {
             return true;
         }
         return false;
+    }
+
+    /**
+     * DOC qzhang Comment method "addDefaultName".
+     * 
+     * @param node
+     */
+    private boolean addDefaultName() {
+        String removeQuotes = getDefaultTableName();
+        if (removeQuotes != null) {
+            menuList.add(removeQuotes);
+            setText(removeQuotes);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * DOC qzhang Comment method "getDefaultTableName".
+     * 
+     * @param node
+     * @param removeQuotes
+     * @return
+     */
+    private String getDefaultTableName() {
+        Node node = (Node) nodePart.getModel();
+        String removeQuotes = null;
+        IElementParameter elementParam = node.getElementParameter("ELT_TABLE_NAME");
+        if (node.isELTComponent() && elementParam != null && elementParam.getField().equals(EParameterFieldType.TEXT)) {
+            String name2 = elementParam.getValue().toString();
+            if (name2 != null) {
+                name2 = TalendTextUtils.removeQuotes(name2);
+                if (!"".equals(name2)) {
+                    removeQuotes = name2 + " (" + curNodeConnector.getMenuName() + ")"; //$NON-NLS-1$ // //$NON-NLS-2$
+                }
+            }
+        }
+        return removeQuotes;
     }
 
     public List<INodeConnector> getConnectors() {
@@ -293,7 +338,11 @@ public class ConnectionCreateAction extends SelectionAction {
                 boolean nameOk = false;
                 while (!nameOk) {
 
-                    connectionName = askForConnectionName(node.getLabel(), connectionName);
+                    if (node.isELTComponent()) {
+                        connectionName = "Default";
+                    } else {
+                        connectionName = askForConnectionName(node.getLabel(), connectionName);
+                    }
                     if (connectionName.equals("")) { //$NON-NLS-1$
                         return;
                     }
@@ -355,7 +404,15 @@ public class ConnectionCreateAction extends SelectionAction {
             meta.setAttachedConnector(curNodeConnector.getName());
         } else {
             if (connecType.equals(EConnectionType.TABLE)) {
-                connectionName = askForConnectionName(node.getLabel(), null);
+                if (getText().equals(getDefaultTableName())) {
+                    int end = getText().lastIndexOf("(") - 1;//$NON-NLS-1$
+                    int start = 0; //$NON-NLS-1$
+                    connectionName = getText().substring(start, end);
+                    meta = node.getMetadataList().get(0);
+                    meta.setAttachedConnector(curNodeConnector.getName());
+                } else {
+                    connectionName = askForConnectionName(node.getLabel(), null);
+                }
             } else {
                 if (connecType.hasConnectionCategory(IConnectionCategory.FLOW)) {
                     connectionName = node.getProcess().generateUniqueConnectionName(Process.DEFAULT_ROW_CONNECTION_NAME);
