@@ -144,9 +144,9 @@ class  <%=className%>  {
 
 HashMap<String, ExternalMapperTableEntry> hExternalInputTableEntries = new HashMap<String, ExternalMapperTableEntry>();
 
-int sizeInputTables = inputTables.size();
-
 String currentPartialName = "";
+
+int sizeInputTables = inputTables.size();
         
 for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { // T TM B 101
         

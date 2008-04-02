@@ -61,6 +61,8 @@
 
         int indent = 1;
 
+		boolean isPersistent = true;
+
         DataMapExpressionParser expressionParser = new DataMapExpressionParser(currentLanguage);
 
         JavaGenerationManager gm = (JavaGenerationManager) node.initGenerationManager();
@@ -73,15 +75,126 @@
         // INPUTS : initialization of input arrays from expressions keys and hashes
         // 
         
-        %>
-        // ###############################
-        // # Input tables (lookups)
-        <%
-
         HashMap<String, IConnection> hNameToConnection = new HashMap<String, IConnection>();
         for (IConnection connection : inputConnections) {
             hNameToConnection.put(connection.getName(), connection);
         }
+        
+        HashMap<String, ExternalMapperTableEntry> hExternalInputTableEntries = new HashMap<String, ExternalMapperTableEntry>();
+		int sizeInputTables = inputTables.size();
+
+		ExternalMapperTable mainInputTable = null;
+		String mainInputTableName = null;
+		
+		if(sizeInputTables > 0) { // T TM M 199
+
+			ExternalMapperTable externalTable = inputTables.get(0);
+            String tableName = externalTable.getName();
+            IConnection connection = hNameToConnection.get(tableName);
+            EConnectionType connectionType = connection.getLineStyle();
+            if (connectionType == EConnectionType.FLOW_MAIN) {
+            	mainInputTable = externalTable;
+            	mainInputTableName = mainInputTable.getName();
+            }
+
+		} // T TM M 199
+
+		String nextLookupName = null;
+		List<IMetadataColumn> nextLookupColumnsKeys = new ArrayList<IMetadataColumn>();
+
+		if(sizeInputTables > 1) { // T TM M 200
+			for (int iInputTable = 1; iInputTable < sizeInputTables - 1; iInputTable++) { // T TM M 201
+				ExternalMapperTable inputTable = inputTables.get(iInputTable);
+            	String tableName = inputTable.getName();
+            	IConnection connection = hNameToConnection.get(tableName);
+            	if (connection == null) {
+	                continue;
+            	}
+            	//EConnectionType connectionType = connection.getLineStyle();
+	            
+            	IMetadataTable metadataTable = connection.getMetadataTable();
+            	if (inputTable != null) { // T TM M 204
+	                hExternalInputTableEntries.clear();
+                	List<ExternalMapperTableEntry> metadataTableEntries = inputTable.getMetadataTableEntries();
+                	if (metadataTableEntries == null) {
+	                    continue;
+                	}
+                	nextLookupName = inputTable.getName();
+                	for (ExternalMapperTableEntry externalTableEntry : metadataTableEntries) {
+	                    hExternalInputTableEntries.put(externalTableEntry.getName(), externalTableEntry);
+                	}
+                	List<IMetadataColumn> listColumns = metadataTable.getListColumns();
+                	for (IMetadataColumn column : listColumns) { // T TM M 204
+	                    String columnName = column.getLabel();
+                    	ExternalMapperTableEntry externalInputTableEntry = hExternalInputTableEntries.get(columnName);
+                    	if (externalInputTableEntry != null) { // T TM M 203
+	                        String expressionKey = externalInputTableEntry.getExpression();
+                        	if (expressionKey != null && !"".equals(expressionKey.trim())) { // T TM M 202
+                        		nextLookupColumnsKeys.add(column);
+					            String key = CodeGenerationUtils.buildProblemKey(uniqueNameComponent,
+				                JavaGenerationManager.PROBLEM_KEY_FIELD.METADATA_COLUMN.toString(), tableName, columnName);
+            					if (checkingSyntax) {
+    	        				%>
+ 	           						<%= CodeGenerationUtils.buildJavaStartFieldKey(key) %>
+        	    				<%
+            					}
+					            %>
+					            <%= JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable()) %> exprKey_<%= tableName %>__<%= column.getLabel() %> = <%= expressionKey %>;
+            					<%
+            					if (checkingSyntax) {
+                				%>
+                					<%= CodeGenerationUtils.buildJavaEndFieldKey(key) %>
+            				    <%
+            					}
+							} // T TM M 202
+                        } // T TM M 203
+                    } // T TM M 204
+					break;
+				} // T TM M 204
+             } // T TM M 201
+          } // T TM M 200
+		
+        %>
+
+                    SortableRow_<%= mainInputTableName %> rsc_<%= mainInputTableName %> = new SortableRow_<%= mainInputTableName %>();
+
+                    rsc_<%= mainInputTableName %>.fillFrom(<%= mainInputTableName %><%
+                    
+                    for (IMetadataColumn column : nextLookupColumnsKeys) {
+                    	String columnName = column.getLabel();
+                    	%>, exprKey_<%= nextLookupName %>__<%=column.getLabel() %><%
+                    }
+                    %>);
+
+                    fsi_<%= mainInputTableName %>.put(null, rsc_<%= mainInputTableName %>);
+
+                }// End of branch temporary "<%= mainInputTableName %>"
+
+            } // end temporary main loop
+
+            fsi_<%= mainInputTableName %>.endPut();
+
+            tHash_Lookup_LF1.initGet();
+            tHash_Lookup_LF2.initGet();
+            tHash_Lookup_LF3.initGet();
+
+            SortableRow_<%= mainInputTableName %> rsc_<%= mainInputTableName %>;
+            SortableRow_Join_M__LF1 rsc_Join_M__LF1;
+
+            boolean rejectedInnerJoin_tMap_1 = false;
+
+            org.talend.designer.components.thash.io.hashimpl.FlowSorterIterator fsi_Join_M__LF1 = new org.talend.designer.components.thash.io.hashimpl.FlowSorterIterator();
+            org.talend.designer.components.thash.io.hashimpl.FlowSorterIterator fsi_Join_M__LF1__LF2 = new org.talend.designer.components.thash.io.hashimpl.FlowSorterIterator();
+
+            // org.talend.designer.components.thash.io.IPersistentJoiner<V> fsi_Join_M__LF1 = null;//new
+            // org.talend.designer.components.thash.io.hashimpl.FlowSorterIterator();
+            // org.talend.designer.components.thash.io.IPersistentJoiner<V> fsi_Join_M__LF1__LF2 = null;//new
+            // org.talend.designer.components.thash.io.hashimpl.FlowSorterIterator();
+
+
+        // ###############################
+        // # Input tables (lookups)
+        <%
 
         ArrayList<ExternalMapperTable> inputTablesWithInnerJoin = new ArrayList<ExternalMapperTable>();
         ArrayList<ExternalMapperTable> lookupTables = new ArrayList<ExternalMapperTable>();
@@ -94,15 +207,23 @@
 		<%
 
 		String previousLookupName = null;
+		String previousTableName = mainInputTableName;
 
-        HashMap<String, ExternalMapperTableEntry> hExternalInputTableEntries = new HashMap<String, ExternalMapperTableEntry>();
-        for (ExternalMapperTable externalTable : inputTables) {
+
+		sizeInputTables = inputTables.size();
+        for (int iInputTable = 0; iInputTable < sizeInputTables; iInputTable++) {
+			ExternalMapperTable externalTable = inputTables.get(iInputTable);
+			
+			boolean isLastTable = (iInputTable == sizeInputTables - 1);
+			boolean isBeforeOfThirdTable = (iInputTable < 2);
+			
             String tableName = externalTable.getName();
             IConnection connection = hNameToConnection.get(tableName);
             if (connection == null) {
                 continue;
             }
             EConnectionType connectionType = connection.getLineStyle();
+            
             if (connectionType == EConnectionType.FLOW_MAIN) {
             
 			  	  	   if(externalTable.isActivateExpressionFilter() && externalTable.getExpressionFilter() != null && !externalTable.getExpressionFilter().trim().equals("")) { 
@@ -127,7 +248,9 @@
 			 	  	   }
                   continue;
                   
-            } else if (connectionType == EConnectionType.FLOW_REF) {
+            } else if (connectionType == EConnectionType.FLOW_REF) { // T TM M 249
+
+
 
                 IMetadataTable metadataTable = connection.getMetadataTable();
                 if (externalTable != null) {
@@ -140,6 +263,18 @@
                     if (metadataTableEntries == null) {
                         continue;
                     }
+
+            if(isPersistent && !isLastTable) {
+			%>
+	           	while (fsi_<%= previousTableName %>.hasNext()) { // G_TM_M_250 loop "<%= previousTableName %>"
+				
+					rsc_<%= previousTableName %> = (SortableRow_<%= previousTableName %>) fsi_<%= previousTableName %>.next();
+               		rsc_<%= previousTableName %>.copyDataTo(<%= previousTableName %>);
+               		
+			<%
+			}
+
+
                     for (ExternalMapperTableEntry externalTableEntry : metadataTableEntries) {
                         hExternalInputTableEntries.put(externalTableEntry.getName(), externalTableEntry);
                     }
@@ -179,7 +314,6 @@
        		  	    	
        		  	    	<%
        		  	    	
-       		  	    	String generatedKeyExpressions = gm.buildLookupDataInstance(uniqueNameComponent, tableName, aKeysNames, aKeysValues, 0, checkingSyntax);
        		  	    	
        		  	    	String beforeMatchFilter = null;
        		  	    	
@@ -195,15 +329,36 @@
 		           		  	 %>) { // G 20
 
 								<% 
-                        		if(aKeysValues.length > 0 || checkingSyntax) { // T 001
-                        		%>
-                        			<%= generatedKeyExpressions %>
-                        		<%
+                        		if(!isPersistent && (aKeysValues.length > 0 || checkingSyntax)) { // T 001
+
+
+                        		for (int iKeyName = 0; iKeyName < aKeysNames.length; iKeyName++) {
+
+                        		    String key = CodeGenerationUtils.buildProblemKey(uniqueNameComponent,
+                        		    JavaGenerationManager.PROBLEM_KEY_FIELD.METADATA_COLUMN.toString(), tableName, aKeysNames[iKeyName]);
+                        		    if (checkingSyntax) {
+    	                        		%>
+ 	                        		   <%= CodeGenerationUtils.buildJavaStartFieldKey(key) %>
+                        			    <%
+                        		    }
+
+                        		    String expression = tableName + "HashKey." + aKeysNames[iKeyName] + " = " + aKeysValues[iKeyName] + ";";
+                        		    %>
+                        		    <%= expression %>
+                        		    <%
+                        		    if (checkingSyntax) {
+                        		    	%>
+                        		        <%= CodeGenerationUtils.buildJavaEndFieldKey(key) %>
+                        		        <%
+                        		    }
+                        		}
+
+
                         		} // T 001
                         		%>
 
 								<% 
-                        		if(aKeysValues.length > 0) { // T 002
+                        		if(!isPersistent && aKeysValues.length > 0) { // T 002
                         		%>
 		                        	<%=tableName%>HashKey.hashCodeDirty = true;
                         		<%
@@ -270,10 +425,12 @@
 							if(isMultipleResultMode) { // T 60
 							%>
 
-								while (tHash_Lookup_<%= tableName %>.hasNext() || forceLoop<%= tableName %>) { // G 043
+								while (tHash_Lookup_<%= tableName %>.hasNext() || forceLoop<%= tableName %>) { // G_TM_M_043
 
 								<%
-								gm.addBlocksCodeToClose(new BlockCode("close loop of lookup '" + tableName +"' // G 043"));
+								if(!isPersistent) {
+									gm.addBlocksCodeToClose(new BlockCode("close loop of lookup '" + tableName +"' // G_TM_M_043"));
+								}
 								%>
                     		  	 
 							<% } // T 60 %>   
@@ -380,13 +537,38 @@
 									 	
 							<%
 							} // T 70
-							%>
-	                    		  	
-	  				<%
+
+
+                if(isPersistent && !isLastTable) {
+                	if(isBeforeOfThirdTable) {
+					%>
+	            		}  // G_TM_M_043 loop <%= tableName %>
+					<%
+					}
+					%>
+					
+	            	} // G_TM_M_250 loop <%= previousTableName %>
+	            	
+					<%
+				}
+
+            	previousTableName = tableName;
+
+
+
                 } // if(externalTable != null) {
-            } // else if(connectionType == EConnectionType.FLOW_REF) {
+
+            } // T TM M 249 else if(connectionType == EConnectionType.FLOW_REF) {
+            
+            
+            
         } // for (ExternalMapperTable externalTable : inputTables) {
         boolean atLeastOneInputTableWithInnerJoin = !inputTablesWithInnerJoin.isEmpty();
+
+
+		%>
+		{ // DUMMY BRACKET
+		<%
 
 
         %>// ###############################
