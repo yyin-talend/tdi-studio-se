@@ -151,7 +151,7 @@ public class QueryGuessCommand extends Command {
                 oldValue = node.getPropertyValue(param.getName());
                 this.propName = param.getName();
                 node.setPropertyValue(param.getName(), newQuery);
-                param.setRepositoryValueUsed(true);
+                param.setRepositoryValueUsed(false);
             }
         }
 

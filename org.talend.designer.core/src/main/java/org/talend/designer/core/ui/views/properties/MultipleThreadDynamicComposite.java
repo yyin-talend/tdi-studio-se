@@ -213,7 +213,7 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
                     if (factory.getStatus(connectionItem) != ERepositoryStatus.DELETED) {
                         if (!factory.isDeleted(table)) {
                             IMetadataTable newTable = ConvertionHelper.convert(table);
-                            repositoryTableMap.put(connectionItem.getProperty().getId(), newTable);
+                            repositoryTableMap.put(connectionItem.getProperty().getId() + " - " + table.getLabel(), newTable);
                             if (connection instanceof DatabaseConnection) {
                                 String dbType = ((DatabaseConnection) connection).getDatabaseType();
                                 String schema = ((DatabaseConnection) connection).getSchema();
@@ -232,7 +232,7 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
                     if (queriesConnection != null) {
                         List<Query> qs = (List<Query>) queriesConnection.getQuery();
                         for (Query query : qs) {
-                            repositoryQueryStoreMap.put(query.getId(), query);
+                            repositoryQueryStoreMap.put(connectionItem.getProperty().getId() + " - " + query.getLabel(), query);
                         }
                     }
                 }
