@@ -117,16 +117,15 @@ public class DesignerPreferencePage extends FieldEditorPreferencePage implements
                         { "32 pixels", "" + 32 } }, getFieldEditorParent()); //$NON-NLS-1$ //$NON-NLS-2$
         addField(largeIconsSizeField);
 
-        // BooleanFieldEditor interpolation;
-        // interpolation = new BooleanFieldEditor(TalendDesignerPrefConstants.EDITOR_INTERPOLATION,
-        // "interpolation in the Job Designer", getFieldEditorParent());
-        // addField(interpolation);
+        // disable this feature 1722 for the M1 release as it's not used yet in Perl or Java.
 
-        RadioGroupFieldEditor schemaOptions = new RadioGroupFieldEditor(
-                TalendDesignerPrefConstants.SCHEMA_OPTIONS,
-                Messages.getString("DesignerPreferencePage.schemaOptions"), 4, new String[][] { { "do nothing", "nothing" }, { "die", "die" }, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                        { "warn", "warn" }, { "enlarge or truncate row", "adapt" } }, getFieldEditorParent(), true); //$NON-NLS-1$ //$NON-NLS-2$
-        addField(schemaOptions);
+        // RadioGroupFieldEditor schemaOptions = new RadioGroupFieldEditor(
+        // TalendDesignerPrefConstants.SCHEMA_OPTIONS,
+        // Messages.getString("DesignerPreferencePage.schemaOptions"), 4, new String[][] { { "do nothing", "nothing" },
+        // { "die", "die" }, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        // { "warn", "warn" }, { "enlarge or truncate row", "adapt" } }, getFieldEditorParent(), true); //$NON-NLS-1$
+        // //$NON-NLS-2$
+        // addField(schemaOptions);
 
         RadioGroupFieldEditor viewOptions = new RadioGroupFieldEditor(TalendDesignerPrefConstants.VIEW_OPTIONS, Messages
                 .getString("DesignerPreferencePage.viewOptions"), 2, new String[][] { { "compact view", "default" }, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
