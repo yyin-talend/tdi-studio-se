@@ -33,6 +33,10 @@ List<? extends IConnection> outgoingConns = node.getOutgoingConnections();
 if(incomingConnName != null && columnList != null && columnList.size() > 0) {
     String advancedMode = ElementParameterParser.getValue( node, "__ADVANCED_MODE__" );
     String simpleMode = ElementParameterParser.getValue( node, "__SIMPLE_MODE__" );
+    
+    String ignoreNullValue = ElementParameterParser.getValue(node, "__IGNORE_NULL_VALUE__");
+	boolean isIgnoreNullValue = (ignoreNullValue!=null&&!ignoreNullValue.equals(""))?ignoreNullValue.equals("true"):false;
+    
     List<Map<String, String>> patterns = null;
           
     //simple mode Replacement    
@@ -49,9 +53,19 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
                     if(substitution.get("WHOLE_WORD").equals("true")) {
                         searchStr = "\"\\\\b\" + " + searchStr + " + \"\\\\b\"";
                     }
-                    %>
-                    <%=incomingConnName%>.<%=substitution.get("INPUT_COLUMN")%> = <%=incomingConnName%>.<%=substitution.get("INPUT_COLUMN")%>.replaceAll(<%=searchStr%>,<%=replaceStr%>);
-                    <%
+                    if(isIgnoreNullValue){
+%>
+                    if(<%=incomingConnName%>.<%=substitution.get("INPUT_COLUMN")%> !=null){
+<%
+                    }
+%>
+                    	<%=incomingConnName%>.<%=substitution.get("INPUT_COLUMN")%> = <%=incomingConnName%>.<%=substitution.get("INPUT_COLUMN")%>.replaceAll(<%=searchStr%>,<%=replaceStr%>);
+<%
+                    if(isIgnoreNullValue){
+%>
+                    }
+<%
+                    }
                 }
             }
             %>
@@ -69,9 +83,19 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
             for(Map<String,String> pattern:patterns){
                 String replacePat = pattern.get("REPLACE_COLUMN");
                 if(replacePat != null && !replacePat.equals("")) {
-                    %>
+                	if(isIgnoreNullValue){
+%>
+                    if(<%=incomingConnName%>.<%=pattern.get("INPUT_COLUMN")%> !=null){
+<%
+                    }
+%>
                     <%=incomingConnName%>.<%=pattern.get("INPUT_COLUMN")%> = <%=incomingConnName%>.<%=pattern.get("INPUT_COLUMN")%>.replaceAll(<%=pattern.get("SEARCH_COLUMN")%>, <%=pattern.get("REPLACE_COLUMN")%>);
-                    <%
+<%
+                    if(isIgnoreNullValue){
+%>
+                    }
+<%
+                    }
                 }
             }
         }
