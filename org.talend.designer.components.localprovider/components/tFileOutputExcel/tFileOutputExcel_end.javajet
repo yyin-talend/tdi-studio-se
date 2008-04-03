@@ -1,13 +1,46 @@
 <%@ jet 
 	imports="
 		org.talend.core.model.process.INode 
+		org.talend.core.model.process.ElementParameterParser
 		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.metadata.IMetadataTable
+        org.talend.core.model.metadata.IMetadataColumn
+        java.util.List
+        java.util.Map
 	"
 %>
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
-	String cid = node.getUniqueName();			
+	String cid = node.getUniqueName();	
+	
+	String allColumnAutoSize = ElementParameterParser.getValue(node, "__IS_ALL_AUTO_SZIE__");
+	boolean isAllColumnAutoSize = (allColumnAutoSize!=null&&!allColumnAutoSize.equals(""))?allColumnAutoSize.equals("true"):false;
+	List<Map<String, String>> autoSizeList = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__AUTO_SZIE_SETTING__");
+	
+	List<IMetadataTable> metadatas = node.getMetadataList();
+	if ((metadatas!=null)&&(metadatas.size()>0)) {
+    	IMetadataTable metadata = metadatas.get(0);
+        if (metadata!=null) {
+        	List<IMetadataColumn> columns = metadata.getListColumns();
+        	if(isAllColumnAutoSize){
+        		for(int i=0;i<columns.size();i++){
+%>
+	writableSheet_<%=cid %>.setColumnView(<%=i%>, fitWidth_<%=cid %>[<%=i%>]+2);
+<%
+    			}
+    		}else{
+            	for(int i=0;i<columns.size();i++){
+            		Map<String,String> tmp= autoSizeList.get(i);
+            		if(tmp.get("IS_AUTO_SIZE").equals("true")){
+%>
+	writableSheet_<%=cid %>.setColumnView(<%=i%>, fitWidth_<%=cid %>[<%=i%>]+2);
+<%
+            		}
+            	}
+    		}
+    	}
+    }
 %>
 	writeableWorkbook_<%=cid %>.write();
 	writeableWorkbook_<%=cid %>.close();

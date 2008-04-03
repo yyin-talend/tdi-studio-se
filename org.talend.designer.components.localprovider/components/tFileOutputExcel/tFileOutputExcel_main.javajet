@@ -42,36 +42,41 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     				<%
     				} 
     				%>
-    						writableSheet_<%=cid %>.addCell(new jxl.write.<%
-    									if(javaType == JavaTypesManager.BOOLEAN){
-    										%>Boolean<%
-										}else if(javaType == JavaTypesManager.DATE){
-											%>DateTime<%
-  									    }else if(javaType == JavaTypesManager.STRING||
-  									    		 javaType == JavaTypesManager.CHARACTER||
-  									    		 javaType == JavaTypesManager.BYTE_ARRAY||
-  									    		 javaType == JavaTypesManager.OBJECT||
-  									    		 (advancedSeparator && JavaTypesManager.isNumberType(javaType, column.isNullable()))
-  									    		 ){
-  									    	%>Label<%
-    									}else{
-    										%>Number<%
-    									}
-    																	%>(<%=i%>, startRowNum_<%=cid %> + nb_line_<%=cid%>, 
-    				<%
+    						jxl.write.WritableCell cell_<%=i%>_<%=cid%> = new jxl.write.<%
+    				int staticWidth = 0;
+    				boolean isNumber = false;
+					if(javaType == JavaTypesManager.BOOLEAN){
+						staticWidth=5;
+						%>Boolean<%
+					}else if(javaType == JavaTypesManager.DATE){
+						%>DateTime<%
+				    }else if(javaType == JavaTypesManager.STRING||
+				    		 javaType == JavaTypesManager.CHARACTER||
+				    		 javaType == JavaTypesManager.BYTE_ARRAY||
+				    		 javaType == JavaTypesManager.OBJECT||
+				    		 (advancedSeparator && JavaTypesManager.isNumberType(javaType, column.isNullable()))
+				    		 ){
+				    	%>Label<%
+					}else{
+						isNumber=true;
+						%>Number<%
+					}
+%>(<%=i%>, startRowNum_<%=cid %> + nb_line_<%=cid%>,<%
     				String pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
     				if (javaType == JavaTypesManager.DATE && pattern != null && pattern.trim().length() != 0) {
+						staticWidth = pattern.trim().length();
 %>
 								<%=conn.getName() %>.<%=column.getLabel() %>, cell_format_<%=column.getLabel() %>_<%= cid%>
-<%				
-					} else if(javaType == JavaTypesManager.CHARACTER) {
+<%
+					} else {
+					if(javaType == JavaTypesManager.CHARACTER) {
 %>
 								String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>)
-<%				
+<%
 					} else if(javaType == JavaTypesManager.OBJECT){
 %>					
 								<%=conn.getName() %>.<%=column.getLabel() %>.toString()
-<%					
+<%
 					} else if(javaType == JavaTypesManager.BYTE_ARRAY){
 %>					
 								java.nio.charset.Charset.defaultCharset().decode(java.nio.ByteBuffer.wrap(<%=conn.getName() %>.<%=column.getLabel() %>)).toString()
@@ -79,12 +84,12 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 					} else if(advancedSeparator && JavaTypesManager.isNumberType(javaType, column.isNullable())) { 
 %>
 							<% if(javaType == JavaTypesManager.BIGDECIMAL) {%>
-							FormatterUtils.format_Number(String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>.doubleValue()), <%= thousandsSeparator %>, <%= decimalSeparator %>)					
+							FormatterUtils.format_Number(String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>.doubleValue()), <%= thousandsSeparator %>, <%= decimalSeparator %>)				
 							<% } else { %>
-							FormatterUtils.format_Number(String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>), <%= thousandsSeparator %>, <%= decimalSeparator %>)						
+							FormatterUtils.format_Number(String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>), <%= thousandsSeparator %>, <%= decimalSeparator %>)				
 							<% } %>
 <%
-						}  else if (javaType == JavaTypesManager.BIGDECIMAL) {
+					} else if (javaType == JavaTypesManager.BIGDECIMAL) {
 %>
 								<%=conn.getName() %>.<%=column.getLabel() %>.doubleValue()
 <%
@@ -94,8 +99,32 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%				
 					}
 %>
-							));
+							,format_<%=cid%>
 <%
+					}
+%>
+							);
+							writableSheet_<%=cid %>.addCell(cell_<%=i%>_<%=cid%>);
+<%
+					if(isNumber){
+%>
+							int currentWith_<%=i%>_<%=cid%> = String.valueOf(((jxl.write.Number)cell_<%=i%>_<%=cid%>).getValue()).trim().length();
+							currentWith_<%=i%>_<%=cid%>=currentWith_<%=i%>_<%=cid%>>10?10:currentWith_<%=i%>_<%=cid%>;
+<%
+					}else{
+%>
+							int currentWith_<%=i%>_<%=cid%> = cell_<%=i%>_<%=cid%>.getContents().trim().length();
+<%
+					}
+					if(staticWidth ==0){
+%>
+							fitWidth_<%=cid%>[<%=i%>]=fitWidth_<%=cid%>[<%=i%>]>currentWith_<%=i%>_<%=cid%>?fitWidth_<%=cid%>[<%=i%>]:currentWith_<%=i%>_<%=cid%>;
+<%
+					}else{
+%>
+							fitWidth_<%=cid%>[<%=i%>]=<%=staticWidth%>;
+<%
+					}
 					if(!isPrimitive) {
     				%>
 	    				} 

@@ -8,6 +8,7 @@ imports="
     org.talend.core.model.metadata.types.JavaTypesManager
 	org.talend.core.model.metadata.types.JavaType
     java.util.List
+    java.util.Map
 " 
 %>
 
@@ -19,11 +20,15 @@ List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
     IMetadataTable metadata = metadatas.get(0);
     if (metadata!=null) {
+    	List<IMetadataColumn> columns = metadata.getListColumns();
+    	
         String cid = node.getUniqueName();
 
         String filename = ElementParameterParser.getValue(node, "__FILENAME__");
         String sheetname = ElementParameterParser.getValue(node, "__SHEETNAME__");
         
+        String font = ElementParameterParser.getValue(node, "__FONT__");
+		
         boolean isIncludeHeader = ElementParameterParser.getValue(node, "__INCLUDEHEADER__").equals("true");
         boolean isAppendFile = ElementParameterParser.getValue(node, "__APPEND_FILE__" ).equals("true");
         boolean isAppendSheet = ElementParameterParser.getValue(node, "__APPEND_SHEET__" ).equals("true");
@@ -88,18 +93,23 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%}%>
 
         int startRowNum_<%=cid %> = writableSheet_<%=cid %>.getRows();
-
+		
+		int[] fitWidth_<%=cid %> = new int[<%=columns.size()%>];
+		java.util.Arrays.fill(fitWidth_<%=cid %>,2);
+		
+		jxl.write.WritableFont wf_<%=cid%> = new jxl.write.WritableFont(jxl.write.WritableFont.<%=font%>, 10, jxl.write.WritableFont.NO_BOLD, false);
+        jxl.write.WritableCellFormat format_<%=cid%>  = new jxl.write.WritableCellFormat(wf_<%=cid%>); 
 <%
-		List<IMetadataColumn> columns = metadata.getListColumns();
-    	int sizeColumns = columns.size();
-    	for (int i = 0; i < sizeColumns; i++) {
+    	for (int i = 0; i < columns.size(); i++) {
     		IMetadataColumn column = columns.get(i);
     		JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
     		if (javaType == JavaTypesManager.DATE){
     			String pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
     			if(pattern != null && pattern.trim().length() != 0){%>
-    	final jxl.write.WritableCellFormat cell_format_<%=column.getLabel() %>_<%= cid%>=new jxl.write.WritableCellFormat(new jxl.write.DateFormat(<%=pattern %>));
-<%	    		}else{%>
+    	final jxl.write.WritableCellFormat cell_format_<%=column.getLabel() %>_<%= cid%>=new jxl.write.WritableCellFormat(wf_<%=cid%> ,new jxl.write.DateFormat(<%=pattern %>));
+<%
+				}else{
+%>
 		if(true){
 			throw new RuntimeException("Date pattern must be set for column <%=column.getLabel() %> in the schema of component <%=cid %>!");
 		}
@@ -113,10 +123,10 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%if(isIncludeHeader){ %>
 		if (startRowNum_<%=cid %>==0){
 <%
-    	for (int i = 0; i < sizeColumns; i++) {
+    	for (int i = 0; i < columns.size(); i++) {
     		IMetadataColumn column = columns.get(i);
 %>
-				writableSheet_<%=cid %>.addCell(new jxl.write.Label(<%=i%>, nb_line_<%=cid%>, "<%=column.getLabel() %>"));		
+				writableSheet_<%=cid %>.addCell(new jxl.write.Label(<%=i%>, nb_line_<%=cid%>, "<%=column.getLabel() %>"),format_<%=cid%>);		
 <% } %>
 				nb_line_<%=cid %>++;
 		}
