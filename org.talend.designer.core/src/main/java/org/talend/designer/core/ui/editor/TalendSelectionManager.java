@@ -87,7 +87,7 @@ public class TalendSelectionManager extends SelectionManager {
     @Override
     public void setSelection(ISelection arg0) {
         if (arg0 instanceof StructuredSelection) {
-            StructuredSelection selection = (StructuredSelection) arg0;
+            StructuredSelection selection = filterSelection((StructuredSelection) arg0);
             if (selection.size() != 1) {
                 // if there is more than one element, remove all the selections of labels
                 if (selection.size() > 1) {
@@ -95,7 +95,7 @@ public class TalendSelectionManager extends SelectionManager {
                 } else {
                     this.selectionType = ETalendSelectionType.NONE;
                 }
-                super.setSelection(filterSelection(selection));
+                super.setSelection(selection);
             }
         } else {
             this.selectionType = ETalendSelectionType.SINGLE;
