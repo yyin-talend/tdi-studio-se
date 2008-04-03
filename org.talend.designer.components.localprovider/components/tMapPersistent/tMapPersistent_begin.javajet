@@ -144,30 +144,34 @@ class  <%=className%>  {
 
 HashMap<String, ExternalMapperTableEntry> hExternalInputTableEntries = new HashMap<String, ExternalMapperTableEntry>();
 
-String currentPartialName = "";
+String currentJoinedTableNames = "";
 
 int sizeInputTables = inputTables.size();
         
-for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { // T TM B 101
+List<IConnection> cumulatedInputConnections = new ArrayList<IConnection>();
+
+for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { // T_TM_B_101
         
 	ExternalMapperTable currentInputTable = inputTables.get(iInputTable);
 	ExternalMapperTable nextInputTable = inputTables.get(iInputTable + 1);
 	
-	if(currentPartialName.length() > 0) {
-		currentPartialName += "__";
+	if(currentJoinedTableNames.length() > 0) {
+		currentJoinedTableNames += "__";
 	}
 	
-	currentPartialName += currentInputTable.getName();
+	currentJoinedTableNames += currentInputTable.getName();
 
 	List<IMetadataColumn> nextColumnsKeys = new ArrayList<IMetadataColumn>();
-	List<IConnection> currentInputConnections = new ArrayList<IConnection>();
+	
+	
+	
 	
 	%>
 	
-	org.talend.designer.components.thash.io.hashimpl.FlowSorterIterator fsi_<%= currentInputTable.getName() %> = new org.talend.designer.components.thash.io.hashimpl.FlowSorterIterator();
-	fsi_<%= currentInputTable.getName() %>.initPut("/home/amaumont/data/dev/projets/Talend/hashfile/sort/data_<%= currentPartialName %>");
+	org.talend.designer.components.thash.io.hashimpl.FlowSorterIterator fsi_<%= currentJoinedTableNames %> = new org.talend.designer.components.thash.io.hashimpl.FlowSorterIterator();
+	fsi_<%= currentJoinedTableNames %>.initPut("/home/amaumont/data/dev/projets/Talend/hashfile/sort/data_<%= currentJoinedTableNames %>");
 
-	class SortableRow_<%= currentPartialName %> implements Comparable<SortableRow_<%= currentPartialName %>> { // G TM B 001 
+	class SortableRow_<%= currentJoinedTableNames %> implements Comparable<SortableRow_<%= currentJoinedTableNames %>> { // G_TM_B_001 
 
 	<%
 	        
@@ -201,7 +205,6 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
                             	nextColumnsKeys.add(column);
                             
                             	%><%= JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable()) %> exprKey_<%= nextInputTable.getName() %>__<%=column.getLabel() %>;
-                            	
                             	<%
  		                           
                             }
@@ -220,6 +223,18 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
         
                 IMetadataTable currentMetadataTable = currentConection.getMetadataTable();
                 if (currentInputTable != null) {
+
+					for(IConnection connection : cumulatedInputConnections) {
+                    	IMetadataTable joinedTable = connection.getMetadataTable();
+	                    List<IMetadataColumn> listColumns = joinedTable.getListColumns();
+                    	for (IMetadataColumn column : listColumns) {
+	                        String columnName = column.getLabel();
+                            
+                            %><%= JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable()) %> <%= connection.getName() %>__<%=column.getLabel() %>;
+                            <%
+						}
+                    }
+
                     hExternalInputTableEntries.clear();
                     List<ExternalMapperTableEntry> metadataTableEntries = currentInputTable.getMetadataTableEntries();
                     if (metadataTableEntries == null) {
@@ -228,13 +243,13 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
                     for (ExternalMapperTableEntry currentInputTableEntry : metadataTableEntries) {
                         hExternalInputTableEntries.put(currentInputTableEntry.getName(), currentInputTableEntry);
                     }
-                    currentInputConnections.add(currentConection);
+                    cumulatedInputConnections.add(currentConection);
+
                     List<IMetadataColumn> listColumns = currentMetadataTable.getListColumns();
                     for (IMetadataColumn column : listColumns) {
                         String columnName = column.getLabel();
                             
                             	%><%= JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable()) %> <%= currentInputTable.getName() %>__<%=column.getLabel() %>;
-                            	
                             	<%
  		                           
                     }
@@ -246,83 +261,77 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
 		
 		         public void fillFrom(<%
 		         
-		         String comma = "";
-		         for(IConnection connection : currentInputConnections) {
-			         %><%=comma%><%= connection.getName() %>Struct <%= connection.getName() %><%
-		         	comma = ",";
-		         }
+			        String comma = "";
+		         	for(IConnection connection : cumulatedInputConnections) {
+			        	%><%=comma%><%= connection.getName() %>Struct <%= connection.getName() %><%
+		         		comma = ", ";
+		         	}
                     int sizeNextColumns = nextColumnsKeys.size();
-                    for (int iColumn = 0; iColumn < sizeNextColumns; iColumn++) { // T TM B 105
+                    for (int iColumn = 0; iColumn < sizeNextColumns; iColumn++) { // T_TM_B_105
                     	IMetadataColumn column = nextColumnsKeys.get(iColumn);
 
-		         	%><%=comma%><%= JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable()) %> exprKey_<%= nextInputTable.getName() %>__<%=column.getLabel() %><%
+		         		%><%=comma%><%= JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable()) %> exprKey_<%= nextInputTable.getName() %>__<%=column.getLabel() %><%
                     
-                    } // T TM B 105
+                    } // T_TM_B_105
+                    
 		         %>) {
 
 					<%
-		        	for(IConnection connection : currentInputConnections) {
+		        	for(IConnection connection : cumulatedInputConnections) {
 		        	
 		        		IMetadataTable table = connection.getMetadataTable();
 						List<IMetadataColumn> listColumns = table.getListColumns();
                     	for (IMetadataColumn column : listColumns) {
-						%>
-					
-	                    this.<%= connection.getName() %>__<%= column.getLabel() %> = <%= connection.getName() %>.<%= column.getLabel() %>;
-                    
-	                	<%
+							%>this.<%= connection.getName() %>__<%= column.getLabel() %> = <%= connection.getName() %>.<%= column.getLabel() %>;
+	                		<%
                 		}
                 	}
                 	%>
                     <%
                     sizeNextColumns = nextColumnsKeys.size();
-                    for (int iColumn = 0; iColumn < sizeNextColumns; iColumn++) { // T TM B 104
+                    for (int iColumn = 0; iColumn < sizeNextColumns; iColumn++) { // T_TM_B_104
                     	IMetadataColumn column = nextColumnsKeys.get(iColumn);
 
 						%>this.exprKey_<%= nextInputTable.getName() %>__<%=column.getLabel() %> = exprKey_<%= nextInputTable.getName() %>__<%=column.getLabel() %>;
 						<%
                     
-                    } // T TM B 104
+                    } // T_TM_B_104
                     %>
                 }
 
                 public void copyDataTo(<%
 		         
 		         comma = "";
-		         for(IConnection connection : currentInputConnections) {
+		         for(IConnection connection : cumulatedInputConnections) {
 			         %><%=comma%><%= connection.getName() %>Struct <%= connection.getName() %><%
-		         	comma = ",";
+		         	comma = ", ";
 		         }
 		         %>) {
 
 					<%
-		        	for(IConnection connection : currentInputConnections) {
+		        	for(IConnection connection : cumulatedInputConnections) {
 		        	
 		        		IMetadataTable table = connection.getMetadataTable();
 						List<IMetadataColumn> listColumns = table.getListColumns();
                     	for (IMetadataColumn column : listColumns) {
-						%>
-					
-	                    <%= connection.getName() %>.<%= column.getLabel() %> = this.<%= connection.getName() %>__<%= column.getLabel() %>;
-                    
+						%><%= connection.getName() %>.<%= column.getLabel() %> = this.<%= connection.getName() %>__<%= column.getLabel() %>;
 	                	<%
                 		}
                 	}
                 	%>
-
                 }
 
 		
 		
 		
 		
-		        public int compareTo(SortableRow_<%= currentPartialName %> other) {
+		        public int compareTo(SortableRow_<%= currentJoinedTableNames %> other) {
 
                     int returnValue = 0;
                     
                     <%
                     sizeNextColumns = nextColumnsKeys.size();
-                    for (int iColumn = 0; iColumn < sizeNextColumns; iColumn++) { // T TM B 102
+                    for (int iColumn = 0; iColumn < sizeNextColumns; iColumn++) { // T_TM_B_102
                     	IMetadataColumn column = nextColumnsKeys.get(iColumn);
                     %>
                     
@@ -332,7 +341,7 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
                     	}
                     
                     <%
-                    } // T TM B 102
+                    } // T_TM_B_102
                     %>
 
                     return returnValue;
@@ -372,9 +381,9 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
 		
 		
 		
-		} // G TM B 001
+		} // G_TM_B_001
 		
 <%
-} // T TM B 101      
+} // T_TM_B_101      
 %>        
         

@@ -86,7 +86,7 @@
 		ExternalMapperTable mainInputTable = null;
 		String mainInputTableName = null;
 		
-		if(sizeInputTables > 0) { // T TM M 199
+		if(sizeInputTables > 0) { // T_TM_M_199
 
 			ExternalMapperTable externalTable = inputTables.get(0);
             String tableName = externalTable.getName();
@@ -97,13 +97,13 @@
             	mainInputTableName = mainInputTable.getName();
             }
 
-		} // T TM M 199
+		} // T_TM_M_199
 
 		String nextLookupName = null;
 		List<IMetadataColumn> nextLookupColumnsKeys = new ArrayList<IMetadataColumn>();
 
-		if(sizeInputTables > 1) { // T TM M 200
-			for (int iInputTable = 1; iInputTable < sizeInputTables - 1; iInputTable++) { // T TM M 201
+		if(sizeInputTables > 1) { // T_TM_M_200
+			for (int iInputTable = 1; iInputTable < sizeInputTables - 1; iInputTable++) { // T_TM_M_201
 				ExternalMapperTable inputTable = inputTables.get(iInputTable);
             	String tableName = inputTable.getName();
             	IConnection connection = hNameToConnection.get(tableName);
@@ -113,7 +113,7 @@
             	//EConnectionType connectionType = connection.getLineStyle();
 	            
             	IMetadataTable metadataTable = connection.getMetadataTable();
-            	if (inputTable != null) { // T TM M 204
+            	if (inputTable != null) { // T_TM_M_205
 	                hExternalInputTableEntries.clear();
                 	List<ExternalMapperTableEntry> metadataTableEntries = inputTable.getMetadataTableEntries();
                 	if (metadataTableEntries == null) {
@@ -124,12 +124,12 @@
 	                    hExternalInputTableEntries.put(externalTableEntry.getName(), externalTableEntry);
                 	}
                 	List<IMetadataColumn> listColumns = metadataTable.getListColumns();
-                	for (IMetadataColumn column : listColumns) { // T TM M 204
+                	for (IMetadataColumn column : listColumns) { // T_TM_M_204
 	                    String columnName = column.getLabel();
                     	ExternalMapperTableEntry externalInputTableEntry = hExternalInputTableEntries.get(columnName);
-                    	if (externalInputTableEntry != null) { // T TM M 203
+                    	if (externalInputTableEntry != null) { // T_TM_M_203
 	                        String expressionKey = externalInputTableEntry.getExpression();
-                        	if (expressionKey != null && !"".equals(expressionKey.trim())) { // T TM M 202
+                        	if (expressionKey != null && !"".equals(expressionKey.trim())) { // T_TM_M_202
                         		nextLookupColumnsKeys.add(column);
 					            String key = CodeGenerationUtils.buildProblemKey(uniqueNameComponent,
 				                JavaGenerationManager.PROBLEM_KEY_FIELD.METADATA_COLUMN.toString(), tableName, columnName);
@@ -146,13 +146,13 @@
                 					<%= CodeGenerationUtils.buildJavaEndFieldKey(key) %>
             				    <%
             					}
-							} // T TM M 202
-                        } // T TM M 203
-                    } // T TM M 204
+							} // T_TM_M_202
+                        } // T_TM_M_203
+                    } // T_TM_M_204
 					break;
-				} // T TM M 204
-             } // T TM M 201
-          } // T TM M 200
+				} // T_TM_M_205
+             } // T_TM_M_201
+          } // T_TM_M_200
 		
         %>
 
@@ -173,13 +173,6 @@
             } // end temporary main loop
 
             fsi_<%= mainInputTableName %>.endPut();
-
-            tHash_Lookup_LF1.initGet();
-            tHash_Lookup_LF2.initGet();
-            tHash_Lookup_LF3.initGet();
-
-            SortableRow_<%= mainInputTableName %> rsc_<%= mainInputTableName %>;
-            SortableRow_Join_M__LF1 rsc_Join_M__LF1;
 
             boolean rejectedInnerJoin_tMap_1 = false;
 
@@ -209,13 +202,19 @@
 		String previousLookupName = null;
 		String previousTableName = mainInputTableName;
 
+		String currentJoinedTableNames = mainInputTableName;
+		String nextJoinedTableNames = mainInputTableName;
+
+		List<IConnection> cumulatedInputConnections = new ArrayList<IConnection>();
 
 		sizeInputTables = inputTables.size();
         for (int iInputTable = 0; iInputTable < sizeInputTables; iInputTable++) {
 			ExternalMapperTable externalTable = inputTables.get(iInputTable);
 			
+			boolean nextTableIsLast = iInputTable + 1 == sizeInputTables - 1;
 			boolean isLastTable = (iInputTable == sizeInputTables - 1);
 			boolean isBeforeOfThirdTable = (iInputTable < 2);
+			
 			
             String tableName = externalTable.getName();
             IConnection connection = hNameToConnection.get(tableName);
@@ -225,6 +224,8 @@
             EConnectionType connectionType = connection.getLineStyle();
             
             if (connectionType == EConnectionType.FLOW_MAIN) {
+            
+            		cumulatedInputConnections.add(connection);
             
 			  	  	   if(externalTable.isActivateExpressionFilter() && externalTable.getExpressionFilter() != null && !externalTable.getExpressionFilter().trim().equals("")) { 
 
@@ -248,7 +249,7 @@
 			 	  	   }
                   continue;
                   
-            } else if (connectionType == EConnectionType.FLOW_REF) { // T TM M 249
+            } else if (connectionType == EConnectionType.FLOW_REF) { // T_TM_M_249
 
 
 
@@ -264,12 +265,38 @@
                         continue;
                     }
 
-            if(isPersistent && !isLastTable) {
+
+            if(isPersistent) {
+					nextJoinedTableNames += "__" + tableName; 
+
 			%>
-	           	while (fsi_<%= previousTableName %>.hasNext()) { // G_TM_M_250 loop "<%= previousTableName %>"
+			
+				tHash_Lookup_<%= tableName %>.initGet();
+			
+				SortableRow_<%= currentJoinedTableNames %> rsc_<%= currentJoinedTableNames %>;
+
+				<%
+				if(!previousTableName.equals(mainInputTableName)) {
+				%>
+
+	       			<%= previousTableName %>Struct <%= previousTableName %> = new <%= previousTableName %>Struct();
+	       			
+				<%
+				}
+				%>
+			
+	           	while (fsi_<%= currentJoinedTableNames %>.hasNext()) { // G_TM_M_250 loop "<%= currentJoinedTableNames %>"
 				
-					rsc_<%= previousTableName %> = (SortableRow_<%= previousTableName %>) fsi_<%= previousTableName %>.next();
-               		rsc_<%= previousTableName %>.copyDataTo(<%= previousTableName %>);
+					rsc_<%= currentJoinedTableNames %> = (SortableRow_<%= currentJoinedTableNames %>) fsi_<%= currentJoinedTableNames %>.next();
+               		rsc_<%= currentJoinedTableNames %>.copyDataTo(<%
+               		
+               			String comma = "";
+		         		for(IConnection aConnection : cumulatedInputConnections) {
+			         		%><%=comma%> <%= aConnection.getName() %><%
+		         			comma = ", ";
+		         		}
+               		
+               		%>);
                		
 			<%
 			}
@@ -420,6 +447,8 @@
 							<% 
 							} // T 52 
 							%>
+
+							<%= tableName %>Struct <%= tableName %> = null;
                     		  	 
 							<%
 							if(isMultipleResultMode) { // T 60
@@ -436,7 +465,7 @@
 							<% } // T 60 %>   
                     		  	 
 							<%= tableName %>Struct fromLookup_<%= tableName %> = null;
-							<%= tableName %>Struct <%= tableName %> = <%= tableName %>Default;
+							<%= tableName %> = <%= tableName %>Default;
 										 
 							<% 
 							if (isMultipleResultMode) { // T 69 
@@ -545,9 +574,92 @@
 	            		}  // G_TM_M_043 loop <%= tableName %>
 					<%
 					}
-					%>
+
+			ExternalMapperTable nextInputTable = inputTables.get(iInputTable + 1);
+			if(!isLastTable) { // T_TM_M_216
+				nextLookupColumnsKeys.clear();
+            	String nextTableName = nextInputTable.getName();
+            	IConnection nextConnection = hNameToConnection.get(nextTableName);
+            	if (nextConnection == null) {
+	                continue;
+            	}
+            	//EConnectionType connectionType = nextConnection.getLineStyle();
+	            
+            	IMetadataTable nextMetadataTable = nextConnection.getMetadataTable();
+            	if (nextInputTable != null) { // T_TM_M_215
+	                hExternalInputTableEntries.clear();
+                	List<ExternalMapperTableEntry> nextMetadataTableEntries = nextInputTable.getMetadataTableEntries();
+                	if (nextMetadataTableEntries == null) {
+	                    continue;
+                	}
+                	nextLookupName = nextInputTable.getName();
+                	for (ExternalMapperTableEntry externalTableEntry : nextMetadataTableEntries) {
+	                    hExternalInputTableEntries.put(externalTableEntry.getName(), externalTableEntry);
+                	}
+                	List<IMetadataColumn> nextListColumns = nextMetadataTable.getListColumns();
+                	for (IMetadataColumn column : nextListColumns) { // T_TM_M_214
+	                    String columnName = column.getLabel();
+                    	ExternalMapperTableEntry externalInputTableEntry = hExternalInputTableEntries.get(columnName);
+                    	if (externalInputTableEntry != null) { // T_TM_M_213
+	                        String expressionKey = externalInputTableEntry.getExpression();
+                        	if (expressionKey != null && !"".equals(expressionKey.trim())) { // T_TM_M_212
+                        		nextLookupColumnsKeys.add(column);
+					            String key = CodeGenerationUtils.buildProblemKey(uniqueNameComponent,
+				                JavaGenerationManager.PROBLEM_KEY_FIELD.METADATA_COLUMN.toString(), nextTableName, columnName);
+            					if (checkingSyntax) {
+    	        				%>
+ 	           						<%= CodeGenerationUtils.buildJavaStartFieldKey(key) %>
+        	    				<%
+            					}
+					            %>
+					            <%= JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable()) %> exprKey_<%= nextTableName %>__<%= column.getLabel() %> = <%= expressionKey %>;
+            					<%
+            					if (checkingSyntax) {
+                				%>
+                					<%= CodeGenerationUtils.buildJavaEndFieldKey(key) %>
+            				    <%
+            					}
+							} // T_TM_M_212
+                        } // T_TM_M_213
+                    } // T_TM_M_214
+				} // T_TM_M_215
+
+           		cumulatedInputConnections.add(connection);
+				currentJoinedTableNames = nextJoinedTableNames;
+
+				%>
+
+					SortableRow_<%= currentJoinedTableNames %> rsc_<%= currentJoinedTableNames %> = new SortableRow_<%= currentJoinedTableNames %>();
+
+					rsc_<%= currentJoinedTableNames %>.fillFrom(<%
+
+				        String comma = "";
+		         		for(IConnection aConnection : cumulatedInputConnections) {
+				        	%><%=comma%> <%= aConnection.getName() %><%
+			         		comma = ", ";
+		         		}
+                    	int sizeNextColumns = nextLookupColumnsKeys.size();
+                    	for (int iColumn = 0; iColumn < sizeNextColumns; iColumn++) { // T_TM_M_105
+	                    	IMetadataColumn column = nextLookupColumnsKeys.get(iColumn);
+	
+		         			%><%=comma%> exprKey_<%= nextInputTable.getName() %>__<%=column.getLabel() %><%
+	                    
+                    	} // T_TM_M_105
 					
-	            	} // G_TM_M_250 loop <%= previousTableName %>
+					%>);
+
+					// Sort and store in KeyFile(s) and DataFile(s)
+					fsi_<%= currentJoinedTableNames %>.put(null, rsc_<%= currentJoinedTableNames %>);
+					
+				<%
+
+
+			} // T_TM_M_216
+
+
+	    		
+					%>
+	            	} // G_TM_M_250 loop "<%= currentJoinedTableNames %>"
 	            	
 					<%
 				}
@@ -558,7 +670,7 @@
 
                 } // if(externalTable != null) {
 
-            } // T TM M 249 else if(connectionType == EConnectionType.FLOW_REF) {
+            } // T_TM_M_249 else if(connectionType == EConnectionType.FLOW_REF) {
             
             
             
@@ -567,7 +679,7 @@
 
 
 		%>
-		{ // DUMMY BRACKET
+		{ // Dummy bracket to open block for "<%= mainInputTableName %>"
 		<%
 
 
