@@ -41,6 +41,7 @@ import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.DelimitedFileConnection;
+import org.talend.core.model.metadata.builder.connection.FileExcelConnection;
 import org.talend.core.model.metadata.builder.connection.GenericSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.LDAPSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.PositionalFileConnection;
@@ -174,6 +175,9 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
                         repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
                     }
                     if ((connection instanceof PositionalFileConnection) && (repositoryValue.equals("POSITIONAL"))) { //$NON-NLS-1$
+                        repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
+                    }
+                    if ((connection instanceof FileExcelConnection) && (repositoryValue.equals("EXCEL"))) { //$NON-NLS-1$
                         repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
                     }
                     if ((connection instanceof RegexpFileConnection) && (repositoryValue.equals("REGEX"))) { //$NON-NLS-1$
