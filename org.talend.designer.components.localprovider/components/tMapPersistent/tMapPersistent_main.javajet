@@ -166,7 +166,7 @@
                     }
                     %>);
 
-                    fsi_<%= mainInputTableName %>.put(null, rsc_<%= mainInputTableName %>);
+                    fsi_<%= mainInputTableName %>.put(rsc_<%= mainInputTableName %>);
 
                 }// End of branch temporary "<%= mainInputTableName %>"
 
@@ -649,7 +649,7 @@
 					%>);
 
 					// Sort and store in KeyFile(s) and DataFile(s)
-					fsi_<%= currentJoinedTableNames %>.put(null, rsc_<%= currentJoinedTableNames %>);
+					fsi_<%= currentJoinedTableNames %>.put(rsc_<%= currentJoinedTableNames %>);
 					
 				<%
 
