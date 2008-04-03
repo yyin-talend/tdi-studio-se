@@ -74,10 +74,10 @@ my %desc_<%=cid%> = (
 );
 
 
-my @book_worksheets;
+my @book_worksheets_<%=cid%>;
 
 my $oExcel_<%=cid%> = Spreadsheet::ParseExcel->new(
-    CellHandler => \&CellHandler,
+    CellHandler => \&CellHandler_<%=cid%>,
     NotSetCell  => 1,
 );
 
@@ -85,11 +85,10 @@ my $book_<%=cid%> = $oExcel_<%=cid%>->Parse(
     $desc_<%=cid%>{filename}
 );
 
-sub CellHandler {
-    my ( $wb, $wsindex, $row, $col, $cell ) = @_;
-    
-    $book_worksheets[$wsindex] = $wb->{Worksheet}[$wsindex]->{Name} ;
 
+sub CellHandler_<%=cid%> {
+    my ( $wb, $wsindex, $row, $col, $cell ) = @_;
+    $book_worksheets_<%=cid%>[$wsindex] = $wb->{Worksheet}[$wsindex]->{Name} ;
 <%
         if (withformat) {
 %>          
@@ -109,7 +108,7 @@ sub CellHandler {
 <%
         if (allSheets) {
 %>
-my @sheetlist = @book_worksheets;
+my @sheetlist = @book_worksheets_<%=cid%>;
 <%
         }
         else {
@@ -128,27 +127,27 @@ foreach my $sheet (@sheetlist) {
     # user can also provide a sheet position
     if ($sheet =~ m/^\d+$/) {
         my $position = $sheet;
-        if ($position >= scalar @book_worksheets) {
+        if ($position >= scalar @book_worksheets_<%=cid%>) {
             die(
                 sprintf(
                     '[<%=cid%>] worksheet position "%s" does exist, existing worksheet position {%s}',
                     $sheet,
                     join(
                         ',',
-                        map {$i++} @book_worksheets
+                        map {$i++} @book_worksheets_<%=cid%>
                     )
                 )
             );
         }
     }
-    elsif (not grep /^$sheet$/, @book_worksheets) {
+    elsif (not grep /^$sheet$/, @book_worksheets_<%=cid%>) {
         die(
             sprintf(
                 '[<%=cid%>] worksheet "%s" does not exists, existing worksheets {%s}',
                 $sheet,
                 join(
                     ',',
-                    @book_worksheets
+                    @book_worksheets_<%=cid%>
                 )
             ),
             "\n"
@@ -166,10 +165,10 @@ foreach my $sheet (@sheetlist) {
 
     if ($sheet =~ m/^\d+$/) {
         $sheet_position = $sheet;
-        $sheet_name = $book_worksheets[$sheet_position];
+        $sheet_name = $book_worksheets_<%=cid%>[$sheet_position];
     }
     else {
-        $sheet_position = first_index { $_ eq $sheet } @book_worksheets;
+        $sheet_position = first_index { $_ eq $sheet } @book_worksheets_<%=cid%>;
         $sheet_name = $sheet;
     }
 
