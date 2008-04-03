@@ -11,7 +11,66 @@ CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 String fileName = ElementParameterParser.getValue(node, "__FILENAME__");
+String dirName = ElementParameterParser.getValue(node, "__DIRECTORY__");
 String failon = ElementParameterParser.getValue(node, "__FAILON__");
+boolean ifFolder = ElementParameterParser.getValue(node, "__FOLDER__").equals("true");
+
+if(ifFolder){
+%>
+class DeleteFolder<%=cid%>{
+	 /**
+     * delete all the sub-files in 'file'
+     * 
+     * @param file
+     */
+	public void delete(java.io.File file) {
+        // TODO Auto-generated method stub
+        java.io.File[] files = file.listFiles();
+        for (int i = 0; i < files.length; i++) {
+            if (files[i].isFile()) {
+                files[i].delete();
+            } else if (files[i].isDirectory()) {
+                if (!files[i].delete()) {
+                    delete(files[i]);
+                }
+            }
+        }
+        deleteDirectory(file);
+        file.delete();
+    }
+
+    /**
+     * delete all the sub-folders in 'file'
+     * 
+     * @param file
+     */
+    private void deleteDirectory(java.io.File file) {
+        // TODO Auto-generated method stub
+        java.io.File[] filed = file.listFiles();
+        for (int i = 0; i < filed.length; i++) {
+            deleteDirectory(filed[i]);
+            filed[i].delete();
+        }
+    }
+
+}
+
+java.io.File file<%=cid%> = new java.io.File(<%=dirName%>);
+
+if(file<%=cid%>.exists()&& file<%=cid%>.isDirectory()){
+	DeleteFolder<%=cid%> df<%=cid%> = new DeleteFolder<%=cid%>();
+	df<%=cid%>.delete(file<%=cid%>);
+}
+<%
+	if(failon.equals("true")){
+%>
+    else{
+    	throw new RuntimeException("Directory does not exists or is invalid");
+    }
+<%
+	}
+
+}else{
 %>
     java.io.File file_<%=cid%>=new java.io.File(<%=fileName%>);
     if(file_<%=cid%>.exists()&& file_<%=cid%>.isFile())
@@ -26,6 +85,7 @@ String failon = ElementParameterParser.getValue(node, "__FAILON__");
     }
 <%
 	}
+}
 %>
     	
     	
