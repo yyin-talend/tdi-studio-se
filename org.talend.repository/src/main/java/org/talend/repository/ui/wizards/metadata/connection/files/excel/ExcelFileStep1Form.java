@@ -402,7 +402,9 @@ public class ExcelFileStep1Form extends AbstractExcelFileStepForm {
             public void modifyText(final ModifyEvent e) {
                 readAndViewExcelFile();
                 getConnection().setSelectAllSheets(false);
-                getConnection().getSheetList().clear();
+                if (getConnection().getSheetList() != null) {
+                    getConnection().getSheetList().clear();
+                }
                 checkFieldsValue();
             }
 
