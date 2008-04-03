@@ -45,12 +45,22 @@
         />
       </TABLE>
     </PARAMETER>
+
+    <PARAMETER
+      NAME="WARNING"
+      FIELD="LABEL"
+      REQUIRED="true"
+      NUM_ROW="11"
+      CONTEXT="0;255;0"
+    >
+      <DEFAULT>The GeoIP.dat database file is available for free, updated monthly on MaxMind website: http://www.maxmind.com/download/geoip/database/</DEFAULT>
+    </PARAMETER>
     
     <PARAMETER
       NAME="DATABASE_FILEPATH"
       FIELD="FILE"
       REQUIRED="true"
-      NUM_ROW="11"
+      NUM_ROW="12"
     >
       <DEFAULT>'/usr/local/share/GeoIP/GeoIP.dat'</DEFAULT>
     </PARAMETER>
