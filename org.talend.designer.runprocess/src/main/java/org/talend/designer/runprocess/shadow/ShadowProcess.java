@@ -160,8 +160,8 @@ public class ShadowProcess<T extends IProcessDescription> {
             ps = new FileinToDelimitedProcess<FileInputXmlNode>(inXmlNode, outNode);
             break;
         case FILE_EXCEL:
-            outNode = new FileOutputDelimitedForLDIF(TalendTextUtils.addQuotes(""
-                    + PathUtils.getPortablePath(outPath.toOSString())), description.getEncoding());
+            // outNode = new FileOutputDelimitedForLDIF(TalendTextUtils.addQuotes(""
+            // + PathUtils.getPortablePath(outPath.toOSString())), description.getEncoding());
 
             FileInputExcelNode excelNode = null;
 
@@ -187,8 +187,8 @@ public class ShadowProcess<T extends IProcessDescription> {
             ps = new FileinToDelimitedProcess<FileInputLdifNode>(inLdifNode, outNode);
             break;
         case LDAP_SCHEMA:
-            outNode = new FileOutputDelimitedForLDIF(TalendTextUtils.addQuotes(""
-                    + PathUtils.getPortablePath(outPath.toOSString())), description.getEncoding());
+            // outNode = new FileOutputDelimitedForLDIF(TalendTextUtils.addQuotes(""
+            // + PathUtils.getPortablePath(outPath.toOSString())), description.getEncoding());
 
             LDAPSchemaInputNode inLDAPSchemaNode = new LDAPSchemaInputNode(TalendTextUtils.addQuotes(""
                     + PathUtils.getPortablePath(outPath.toOSString())), description.getSchema(), description.getEncoding(),
@@ -198,8 +198,8 @@ public class ShadowProcess<T extends IProcessDescription> {
             ps = new FileinToDelimitedProcess<LDAPSchemaInputNode>(inLDAPSchemaNode, outNode);
             break;
         case WSDL_SCHEMA:
-            outNode = new FileOutputDelimitedForLDIF(TalendTextUtils.addQuotes(""
-                    + PathUtils.getPortablePath(outPath.toOSString())), description.getEncoding());
+            // outNode = new FileOutputDelimitedForLDIF(TalendTextUtils.addQuotes(""
+            // + PathUtils.getPortablePath(outPath.toOSString())), description.getEncoding());
 
             WSDLSchemaInputNode inWSDLSchemaNode = new WSDLSchemaInputNode(TalendTextUtils.addQuotes(""
                     + PathUtils.getPortablePath(outPath.toOSString())), description.getEncoding(), description.getSchema(),

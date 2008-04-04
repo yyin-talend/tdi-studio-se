@@ -125,6 +125,10 @@ public abstract class ShadowNode extends AbstractNode {
      * @see org.talend.core.model.process.INode#getMetaDataList()
      */
     public List<IMetadataTable> getMetadataList() {
+        List<IMetadataTable> metadataList = super.getMetadataList();
+        if (metadataList != null) {
+            return metadataList;
+        }
         List<IMetadataTable> metadatas = new ArrayList<IMetadataTable>();
         MetadataTable metadata = new MetadataTable();
         metadata.setTableName(this.getUniqueName());

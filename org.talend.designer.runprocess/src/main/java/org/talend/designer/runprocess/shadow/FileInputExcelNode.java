@@ -52,10 +52,20 @@ public class FileInputExcelNode extends FileInputNode {
 
         // add base parameters
         String[] paramNames = new String[] {
-                "FILENAME", "ENCODING", "LIMIT", "HEADER", "FOOTER", "REMOVE_EMPTY_ROW", "FIRST_COLUMN", "LAST_COLUMN" }; //$NON-NLS-1$
-        String[] paramValues = new String[] { filename, encoding == null ? TalendTextUtils.addQuotes("ISO-8859-1") : encoding,
-                limitRows.equals("0") ? "50" : limitRows, header, footer, emptyEmptyRow, bean.getFirstColumn(),
-                bean.getLastColumn() };
+                "FILENAME", "ENCODING", "LIMIT", "HEADER", "FOOTER", "REMOVE_EMPTY_ROW", "FIRST_COLUMN", "LAST_COLUMN", "WITH_FORMAT" }; //$NON-NLS-1$
+
+        String[] paramValues;
+        switch (LanguageManager.getCurrentLanguage()) {
+        case JAVA:
+            paramValues = new String[] { filename, encoding == null ? TalendTextUtils.addQuotes("ISO-8859-1") : encoding,
+                    limitRows.equals("0") ? "50" : limitRows, header, footer, emptyEmptyRow, bean.getFirstColumn(),
+                    bean.getLastColumn(), "true" };
+            break;
+        default: // PERL
+            paramValues = new String[] { filename, encoding == null ? TalendTextUtils.addQuotes("ISO-8859-1") : encoding,
+                    limitRows.equals("0") ? "50" : limitRows, header, footer, emptyEmptyRow, "'" + bean.getFirstColumn() + "'",
+                    "'" + bean.getLastColumn() + "'", "true" };
+        }
 
         for (int i = 0; i < paramNames.length; i++) {
             if (paramValues[i] != null && !paramValues[i].equals("")) {
@@ -71,6 +81,11 @@ public class FileInputExcelNode extends FileInputNode {
         }
 
         setMetadataList(metadatas);
+        int nbColumns = 0;
+        for (IMetadataTable metadata : metadatas) {
+            nbColumns += metadata.getListColumns().size();
+        }
+        setColumnNumber(nbColumns);
     }
 
     public void addJavaSpecificParameters() {
