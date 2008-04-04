@@ -146,8 +146,9 @@
       FIELD="MAPPING_TYPE"
       NUM_ROW="9"
       SHOW="false"
+      READONLY="true"
     >       
-      <DEFAULT>id_Vertica</DEFAULT>
+      <DEFAULT>vertica_id</DEFAULT>
     </PARAMETER>
     
   </PARAMETERS>
