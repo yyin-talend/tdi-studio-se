@@ -18,8 +18,8 @@
         <javaElement handleIdentifier="=HashTests/src&lt;org.talend.designer.components.persistent{PersistentSortedHash.java"/>
         <javaElement handleIdentifier="=HashTests/src&lt;org.talend.designer.components.thash.io.beans{IPersistentBean.java"/>
         <javaElement handleIdentifier="=HashTests/src&lt;org.talend.designer.components.persistent{PersistentRowSorterIterator.java"/>
-        <javaElement handleIdentifier="=HashTests/src&lt;org.talend.designer.components.persistent{IPersistentRowManager.java"/>
         <javaElement handleIdentifier="=HashTests/src&lt;org.talend.designer.components.persistent{IPersistableLookup.java"/>
+        <javaElement handleIdentifier="=HashTests/src&lt;org.talend.designer.components.persistent{IPersistentRowManager.java"/>
         <javaElement handleIdentifier="=HashTests/src&lt;org.talend.designer.components.persistent{IPersistableLookupRow.java"/>
         <javaElement handleIdentifier="=HashTests/src&lt;org.talend.designer.components.thash.io.hashimpl{SortedMultipleHashFile.java"/>
         <javaElement handleIdentifier="=HashTests/src&lt;org.talend.designer.components.persistent{IPersistableRow.java"/>

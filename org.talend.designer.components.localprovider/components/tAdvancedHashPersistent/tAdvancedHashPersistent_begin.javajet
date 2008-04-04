@@ -76,11 +76,22 @@
 					}
 					
 			   %>
-			   		org.talend.designer.components.commons.AdvancedMemoryLookup.MATCHING_MODE matchingModeEnum_<%=connectionName%> = 
-			   			org.talend.designer.components.commons.AdvancedMemoryLookup.MATCHING_MODE.<%= matchingModeStr %>;
-	   			org.talend.designer.components.commons.AdvancedMemoryLookup<<%=connectionName%>Struct> tHash_Lookup_<%=connectionName%> = 
-	   				org.talend.designer.components.commons.AdvancedMemoryLookup.
-	   					<<%=connectionName%>Struct>getLookup(matchingModeEnum_<%=connectionName%>);
+			   		org.talend.designer.components.commons.AdvancedLookup.MATCHING_MODE matchingModeEnum_<%=connectionName%> = 
+			   			org.talend.designer.components.commons.AdvancedLookup.MATCHING_MODE.<%= matchingModeStr %>;
+			   			
+	   			org.talend.designer.components.persistent.PersistentSortedAdvancedLookup<<%=connectionName%>Struct> tHash_Lookup_<%=connectionName%> = 
+	   				new org.talend.designer.components.persistent.PersistentSortedAdvancedLookup<<%=connectionName%>Struct>(matchingModeEnum_<%=connectionName%>, "/home/amaumont/data/dev/projets/Talend/hashfile/testData/container") {
+	   					public <%=connectionName%>Struct createRowInstance() {
+	   						return new <%=connectionName%>Struct();
+	   					}
+	   				}; 
+	   				
+	   				tHash_Lookup_<%=connectionName%>.initPut();
+	   				
+//	   			org.talend.designer.components.commons.AdvancedMemoryLookup<<%=connectionName%>Struct> tHash_Lookup_<%=connectionName%> = 
+//	   				org.talend.designer.components.commons.AdvancedMemoryLookup.
+//	   					<<%=connectionName%>Struct>getLookup(matchingModeEnum_<%=connectionName%>);
+
    	   	   globalMap.put("tHash_Lookup_<%=connectionName%>", tHash_Lookup_<%=connectionName%>);
 				<%
 			} else { 
