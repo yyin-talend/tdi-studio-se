@@ -35,12 +35,14 @@ String caption = ElementParameterParser.getValue(
 );
 %>
 
-$_globals{<%=cid%>}{DURATION} = $total_duration_<%=cid%>;
+$_globals{<%=cid%>}{DURATION} = int($total_duration_<%=cid%>/1000);
 $_globals{<%=cid%>}{NB_RUN} = $nb_run_<%=cid%>;
 $_globals{<%=cid%>}{MIN} = $min_duration_<%=cid%>;
 $_globals{<%=cid%>}{MAX} = $max_duration_<%=cid%>;
 $_globals{<%=cid%>}{AVG} = int($total_duration_<%=cid%> / $nb_run_<%=cid%>);
 
+$_globals{<%=cid%>}{SPEED} =
+    1000 * $_globals{<%=cid%>}{NB_RUN} / $_globals{<%=cid%>}{DURATION};
 <%
 if (display) {
     if (displayComponentName) {
@@ -63,12 +65,28 @@ printf ' (%s)', duration(int($_globals{<%=cid%>}{DURATION}/1000));
 %>
 
 printf(
-    ', %u %s, average : %u ms; min : %u ms; max: %u ms',
+    ', %u %s',
     $_globals{<%=cid%>}{NB_RUN},
-    $_globals{<%=cid%>}{NB_RUN} > 1 ? 'runs' : 'run',
-    $_globals{<%=cid%>}{AVG},
-    $_globals{<%=cid%>}{MIN},
+    $_globals{<%=cid%>}{NB_RUN} > 1 ? 'runs' : 'run'
+);
+printf(
+    ', average : %u microseconds',
+    $_globals{<%=cid%>}{AVG}
+);
+
+printf(
+    ', min : %u microseconds',
+    $_globals{<%=cid%>}{MIN}
+);
+
+printf(
+    ', max: %u microseconds',
     $_globals{<%=cid%>}{MAX}
+);
+
+printf(
+    ', speed: %u rows/second',
+    $_globals{<%=cid%>}{SPEED}
 );
 
 print "\n";

@@ -43,7 +43,7 @@ else {
 %>
         [gettimeofday]
     )
-    * 1000
+    * 1_000_000
 );
 
 $total_duration_<%=cid%> += $current_duration_<%=cid%>;
