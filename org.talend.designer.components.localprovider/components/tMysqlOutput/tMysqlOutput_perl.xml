@@ -300,9 +300,18 @@
     </PARAMETER>
 
     <PARAMETER
+      NAME="WARNING_EXTENDED_INSERTS"
+      FIELD="LABEL"
+      NUM_ROW="51"
+      SHOW_IF="USE_EXTENDED_INSERTS == 'true'"
+    >
+      <DEFAULT>Warning: extended insert is not compatible with tMysqlLastInsertId.</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
       NAME="NB_ROWS_PER_INSERT"
       FIELD="TEXT"
-      NUM_ROW="51"
+      NUM_ROW="52"
       REQUIRED="true"
       SHOW_IF="USE_EXTENDED_INSERTS == 'true'"
     >
