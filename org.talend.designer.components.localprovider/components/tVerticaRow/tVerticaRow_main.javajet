@@ -60,9 +60,6 @@ whetherReject_<%=cid%> = false;
             if (metadata!=null) {
                 List< ? extends IConnection> conns = node.getIncomingConnections();
                 columnList = metadata.getListColumns();
-				%>
-query_<%=cid %> = <%=dbquery%>;
-<%
 				if(conns != null && conns.size()>0){
         			IConnection conn = conns.get(0);
         			incomingConnName = conn.getName();
@@ -70,6 +67,7 @@ query_<%=cid %> = <%=dbquery%>;
 			}//end of metadatas
 	}
 	%>
+	query_<%=cid %> = <%=dbquery%>;
     globalMap.put("<%=cid %>_QUERY",query_<%=cid %>);
     try {
     	stmt_<%=cid %>.execute(query_<%=cid %>);
