@@ -42,10 +42,21 @@ if (metadata != null && inputRowName != null) {
 
 my $<%=cid%> = [ @$<%=inputRowName%> ];
 
-$sth_<%=cid%>->execute();
-
 {
-    my ($last_insert_id) = $sth_<%=cid%>->fetchrow_array();
+<%
+    String sth = null;
+    if (connection.startsWith("tMysqlOutput")) {
+        sth = "sth";
+%>
+    my $<%=sth%> = $<%=dbh%>->prepare('SELECT LAST_INSERT_ID()');
+<%
+    }
+    else {
+        sth = "sth_" + cid;
+    }
+%>
+    $<%=sth%>->execute();
+    my ($last_insert_id) = $<%=sth%>->fetchrow_array();
     $<%=cid%>->[<%=outputColumnIndex%>] = $last_insert_id;
 }
 

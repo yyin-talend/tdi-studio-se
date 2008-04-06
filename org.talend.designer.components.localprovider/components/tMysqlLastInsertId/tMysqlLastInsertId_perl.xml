@@ -48,7 +48,7 @@
     <PARAMETER
       NAME="CONNECTION"
       FIELD="COMPONENT_LIST"
-      FILTER="tMysqlConnection"
+      FILTER="REGEXP:^tMysqlConnection|tMysqlOutput$"
       NUM_ROW="20"
     />
     

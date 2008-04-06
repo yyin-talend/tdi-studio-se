@@ -37,11 +37,12 @@ String connection = ElementParameterParser.getValue(
 String dbh = "dbh_" + connection;
 
 if (metadata != null && inputRowName != null) {
-    int outputColumnIndex = metadata.getListColumns().size() - 1;
+    if (connection.startsWith("tMysqlConnection")) {
 %>
 
 my $sth_<%=cid%> = $<%=dbh%>->prepare('SELECT LAST_INSERT_ID()');
 
 <%
+    }
 }
 %>
