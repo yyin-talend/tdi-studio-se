@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.fieldassist.DecoratedField;
 import org.eclipse.jface.fieldassist.FieldDecoration;
@@ -57,7 +56,6 @@ import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.controllers.creator.SelectAllTextControlCreator;
 import org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty;
 import org.talend.designer.runprocess.ProcessorUtilities;
-import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.ui.dialog.RepositoryReviewDialog;
 
 /**
@@ -554,7 +552,7 @@ public class ProcessController extends AbstractElementPropertySectionController 
 
         List<IRepositoryObject> allVersion = ProcessorUtilities.getAllVersionObjectById(jobId);
 
-        IRepositoryObject lastVersionObject = null;
+        // IRepositoryObject lastVersionObject = null;
         String label = null;
         if (allVersion != null) {
             String oldVersion = null;
@@ -565,7 +563,7 @@ public class ProcessController extends AbstractElementPropertySectionController 
                 }
                 if (VersionUtils.compareTo(version, oldVersion) >= 0) {
                     item = obj.getProperty().getItem();
-                    lastVersionObject = obj;
+                    // lastVersionObject = obj;
                 }
                 oldVersion = version;
                 versionNameList.add(version);
@@ -573,10 +571,10 @@ public class ProcessController extends AbstractElementPropertySectionController 
             }
 
             label = item.getProperty().getLabel();
-            IPath path = RepositoryNodeUtilities.getPath(lastVersionObject);
-            if (path != null) {
-                label = path.toString() + IPath.SEPARATOR + label;
-            }
+            // IPath path = RepositoryNodeUtilities.getPath(lastVersionObject);
+            // if (path != null) {
+            // label = path.toString() + IPath.SEPARATOR + label;
+            // }
         } else {
             final String parentName = processParam.getName() + ":"; //$NON-NLS-1$
             elem.setPropertyValue(parentName + jobNameParam.getName(), "");
