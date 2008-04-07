@@ -75,7 +75,7 @@ if(sizeOps>0){
                 //
                 //end
     		    %>
-    		    double <%=funin[1] %>_sum;
+    		    BigDecimal <%=funin[1] %>_sum = new BigDecimal("0.0");
     		    <%//start
     		    //
     		}else if(funin[0].equals("count")){

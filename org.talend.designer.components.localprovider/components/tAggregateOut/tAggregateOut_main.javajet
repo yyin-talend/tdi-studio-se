@@ -291,13 +291,13 @@ if(operation_result_<%=cid %>.<%=funin[1] %>_<%=funin[0] %><%if(javaType == Java
 				}else if(javaType == JavaTypesManager.BIGDECIMAL){
 //
 //end%>
-operation_result_<%=cid %>.<%=funin[1] %>_sum += <%=conn.getName() %>.<%=funin[1] %>.doubleValue();
+operation_result_<%=cid %>.<%=funin[1] %>_sum = operation_result_<%=cid %>.<%=funin[1] %>_sum.add(<%=conn.getName() %>.<%=funin[1] %>);
 <%//start
 //
 				}else{
 //
 //end%>
-operation_result_<%=cid %>.<%=funin[1] %>_sum += <%=conn.getName() %>.<%=funin[1] %>;
+operation_result_<%=cid %>.<%=funin[1] %>_sum = operation_result_<%=cid %>.<%=funin[1] %>_sum.add(BigDecimal.valueOf(<%=conn.getName() %>.<%=funin[1] %>));
 <%//start
 //				
 				}
