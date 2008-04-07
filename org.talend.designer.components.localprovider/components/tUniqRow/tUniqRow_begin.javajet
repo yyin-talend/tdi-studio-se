@@ -12,6 +12,7 @@ imports="
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
+String onlyOnceEachDuplicatedKey = ElementParameterParser.getValue(node, "__ONLY_ONCE_EACH_DUPLICATED_KEY__");
 List<Map<String, String>> keyColumns = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__UNIQUE_KEY__");
 boolean hasKey = false;
 for(Map<String, String> keyColumn:keyColumns){
@@ -27,6 +28,13 @@ int nb_duplicates_<%=cid %> = 0;
 <%
 if(hasKey){%>
 java.util.Set<String> keys<%=cid %> = new java.util.HashSet<String>();
+<%
+	if(onlyOnceEachDuplicatedKey.equals("true")){
+%>
+java.util.Set<String> keysForDuplicated<%=cid %> = new java.util.HashSet<String>();
+<%
+	}
+%>
 String currentRowKey<%=cid %> = "";
 <%
 }%> 

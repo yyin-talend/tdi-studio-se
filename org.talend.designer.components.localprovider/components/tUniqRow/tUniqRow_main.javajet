@@ -31,7 +31,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		List<? extends IConnection> conns = node.getOutgoingSortedConnections();
 		List<? extends IConnection> connsUnique = node.getOutgoingConnections("UNIQUE");
 		List<? extends IConnection> connsDuplicate = node.getOutgoingConnections("DUPLICATE");
-		
+		String onlyOnceEachDuplicatedKey = ElementParameterParser.getValue(node, "__ONLY_ONCE_EACH_DUPLICATED_KEY__");
 		List<Map<String, String>> keyColumns = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__UNIQUE_KEY__");
 		boolean hasKey = false;
 		for(Map<String, String> keyColumn:keyColumns){
@@ -108,7 +108,13 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			for (int i=0;i<connsDuplicate.size();i++) {
 				IConnection conn = connsDuplicate.get(i);
 				if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
-				%>
+					if(onlyOnceEachDuplicatedKey.equals("true")){
+					%>
+if (!keysForDuplicated<%=cid %>.contains(currentRowKey<%=cid %>)) {
+	keysForDuplicated<%=cid %>.add(currentRowKey<%=cid %>);
+					<%
+					}
+%>
 if(<%=conn.getName() %> == null){ 
 	<%=conn.getName() %> = new <%=conn.getName() %>Struct();
 }				
@@ -116,6 +122,11 @@ if(<%=conn.getName() %> == null){
 			    	 for (IMetadataColumn column: metadata.getListColumns()) {
 			    	 %><%=conn.getName() %>.<%=column.getLabel() %> = <%=connName %>.<%=column.getLabel() %>;			
 <%					 }
+					if(onlyOnceEachDuplicatedKey.equals("true")){
+					%>
+}
+					<%
+					}
 				}
 			}
 		}
