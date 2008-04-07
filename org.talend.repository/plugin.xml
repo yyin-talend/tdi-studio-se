@@ -746,6 +746,13 @@
             id="org.talend.repository.model.migration.MoveExcelSheetnameToSheetlistForJava"
             name="Excel sheetname to sheetlist for java">
       </projecttask>
+      <projecttask
+            beforeLogon="false"
+            class="org.talend.repository.model.migration.HandleOracleSchemaMigrationTask"
+            description="handle schema of tOracleConnection"
+            id="org.talend.repository.model.migration.HandleOracleSchemaMigrationTask"
+            name="HandleOracleSchemaMigrationTask">
+      </projecttask>
    </extension>
    <extension
          point="org.talend.core.librariesNeeded">
