@@ -250,7 +250,7 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
     }
 
     private void addGroupDieOnErrorSettings(final Composite mainComposite, final int width, final int height) {
-        Group group = Form.createGroup(mainComposite, 2, "Ext setting");
+        Group group = Form.createGroup(mainComposite, 2, "Metadata column setting");
         Composite compositeExt = Form.startNewDimensionnedGridLayout(group, 4, width, height);
 
         firstColumnText = new LabelledText(compositeExt, "First column:", 3);
@@ -358,18 +358,17 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
 
         Composite mainComposite = Form.startNewGridLayout(this, 2);
 
-        addGroupDelimitedFileSettings(mainComposite, 280, 100);
-        addGroupRowsToSkip(mainComposite, 300, 100);
-        addGroupDieOnErrorSettings(mainComposite, 280, 100);
-        addGroupLimit(mainComposite, 300, 100);
+        addGroupDelimitedFileSettings(mainComposite, 280, 120);
+        addGroupRowsToSkip(mainComposite, 300, 120);
+        addGroupDieOnErrorSettings(mainComposite, 280, 50);
+        addGroupLimit(mainComposite, 300, 50);
 
-        addGroupFileViewer(this, 700, 210);
+        Composite mainComposite2 = Form.startNewGridLayout(this, 1);
+
+        addGroupFileViewer(mainComposite2, 600, 200);
 
         if (!isInWizard()) {
-            // Bottom Button
             Composite compositeBottomButton = Form.startNewGridLayout(this, 2, false, SWT.CENTER, SWT.CENTER);
-
-            // Button Cancel
             cancelButton = new UtilsButton(compositeBottomButton, Messages.getString("CommonWizard.cancel"), WIDTH_BUTTON_PIXEL, //$NON-NLS-1$
                     HEIGHT_BUTTON_PIXEL);
         }
