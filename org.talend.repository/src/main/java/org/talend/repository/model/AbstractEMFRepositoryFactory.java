@@ -22,6 +22,7 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.talend.commons.exception.BusinessException;
@@ -38,6 +39,8 @@ import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.ElementParameterParser;
 import org.talend.core.model.properties.ByteArray;
 import org.talend.core.model.properties.FolderItem;
+import org.talend.core.model.properties.Information;
+import org.talend.core.model.properties.InformationLevel;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.PropertiesFactory;
@@ -153,14 +156,15 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
      * @see org.talend.repository.model.IRepositoryFactory#getRecycleBinItems()
      */
     public List<IRepositoryObject> getRecycleBinItems() throws PersistenceException {
-        ERepositoryObjectType types[] = { ERepositoryObjectType.DOCUMENTATION, ERepositoryObjectType.METADATA_CONNECTIONS,
-                ERepositoryObjectType.METADATA_FILE_DELIMITED, ERepositoryObjectType.METADATA_FILE_POSITIONAL,
-                ERepositoryObjectType.PROCESS, ERepositoryObjectType.CONTEXT, ERepositoryObjectType.SNIPPETS,
-                ERepositoryObjectType.ROUTINES, ERepositoryObjectType.BUSINESS_PROCESS,
-                ERepositoryObjectType.METADATA_FILE_REGEXP, ERepositoryObjectType.METADATA_FILE_XML,
-                ERepositoryObjectType.METADATA_FILE_LDIF, ERepositoryObjectType.METADATA_FILE_EXCEL,
-                ERepositoryObjectType.METADATA_LDAP_SCHEMA, ERepositoryObjectType.METADATA_GENERIC_SCHEMA,
-                ERepositoryObjectType.METADATA_WSDL_SCHEMA, ERepositoryObjectType.JOBLET };
+        ERepositoryObjectType types[] = { ERepositoryObjectType.DOCUMENTATION,
+                ERepositoryObjectType.METADATA_CONNECTIONS, ERepositoryObjectType.METADATA_FILE_DELIMITED,
+                ERepositoryObjectType.METADATA_FILE_POSITIONAL, ERepositoryObjectType.PROCESS,
+                ERepositoryObjectType.CONTEXT, ERepositoryObjectType.SNIPPETS, ERepositoryObjectType.ROUTINES,
+                ERepositoryObjectType.BUSINESS_PROCESS, ERepositoryObjectType.METADATA_FILE_REGEXP,
+                ERepositoryObjectType.METADATA_FILE_XML, ERepositoryObjectType.METADATA_FILE_LDIF,
+                ERepositoryObjectType.METADATA_FILE_EXCEL, ERepositoryObjectType.METADATA_LDAP_SCHEMA,
+                ERepositoryObjectType.METADATA_GENERIC_SCHEMA, ERepositoryObjectType.METADATA_WSDL_SCHEMA,
+                ERepositoryObjectType.JOBLET };
 
         List<IRepositoryObject> deletedItems = new ArrayList<IRepositoryObject>();
         for (int i = 0; i < types.length; i++) {
@@ -189,18 +193,19 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         return toReturn;
     }
 
-    protected List<IRepositoryObject> getSerializable(Project project, String id, boolean allVersion) throws PersistenceException {
+    protected List<IRepositoryObject> getSerializable(Project project, String id, boolean allVersion)
+            throws PersistenceException {
         List<IRepositoryObject> toReturn = new ArrayList<IRepositoryObject>();
 
-        ERepositoryObjectType[] repositoryObjectTypeList = new ERepositoryObjectType[] { ERepositoryObjectType.BUSINESS_PROCESS,
-                ERepositoryObjectType.DOCUMENTATION, ERepositoryObjectType.METADATA_CONNECTIONS,
-                ERepositoryObjectType.METADATA_FILE_DELIMITED, ERepositoryObjectType.METADATA_FILE_POSITIONAL,
-                ERepositoryObjectType.METADATA_FILE_REGEXP, ERepositoryObjectType.METADATA_FILE_XML,
-                ERepositoryObjectType.METADATA_FILE_EXCEL, ERepositoryObjectType.METADATA_FILE_LDIF,
-                ERepositoryObjectType.PROCESS, ERepositoryObjectType.ROUTINES, ERepositoryObjectType.CONTEXT,
-                ERepositoryObjectType.SNIPPETS, ERepositoryObjectType.METADATA_LDAP_SCHEMA,
-                ERepositoryObjectType.METADATA_GENERIC_SCHEMA, ERepositoryObjectType.METADATA_WSDL_SCHEMA,
-                ERepositoryObjectType.JOBLET };
+        ERepositoryObjectType[] repositoryObjectTypeList = new ERepositoryObjectType[] {
+                ERepositoryObjectType.BUSINESS_PROCESS, ERepositoryObjectType.DOCUMENTATION,
+                ERepositoryObjectType.METADATA_CONNECTIONS, ERepositoryObjectType.METADATA_FILE_DELIMITED,
+                ERepositoryObjectType.METADATA_FILE_POSITIONAL, ERepositoryObjectType.METADATA_FILE_REGEXP,
+                ERepositoryObjectType.METADATA_FILE_XML, ERepositoryObjectType.METADATA_FILE_EXCEL,
+                ERepositoryObjectType.METADATA_FILE_LDIF, ERepositoryObjectType.PROCESS,
+                ERepositoryObjectType.ROUTINES, ERepositoryObjectType.CONTEXT, ERepositoryObjectType.SNIPPETS,
+                ERepositoryObjectType.METADATA_LDAP_SCHEMA, ERepositoryObjectType.METADATA_GENERIC_SCHEMA,
+                ERepositoryObjectType.METADATA_WSDL_SCHEMA, ERepositoryObjectType.JOBLET };
         for (ERepositoryObjectType repositoryObjectType : repositoryObjectTypeList) {
             Object folder = getFolder(project, repositoryObjectType);
             toReturn.addAll(getSerializableFromFolder(folder, id, repositoryObjectType, allVersion, true, true));
@@ -208,7 +213,8 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         return toReturn;
     }
 
-    protected abstract Object getFolder(Project project, ERepositoryObjectType repositoryObjectType) throws PersistenceException;
+    protected abstract Object getFolder(Project project, ERepositoryObjectType repositoryObjectType)
+            throws PersistenceException;
 
     public List<IRepositoryObject> getAllVersion(String id) throws PersistenceException {
         List<IRepositoryObject> serializableAllVersion = getSerializable(getRepositoryContext().getProject(), id, true);
@@ -241,19 +247,21 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         return true;
     }
 
-    protected abstract List<IRepositoryObject> getSerializableFromFolder(Object folder, String id, ERepositoryObjectType type,
-            boolean allVersion, boolean searchInChildren, boolean withDeleted) throws PersistenceException;
-
-    protected abstract <K, T> RootContainer<K, T> getObjectFromFolder(ERepositoryObjectType type, boolean onlyLastVersion)
+    protected abstract List<IRepositoryObject> getSerializableFromFolder(Object folder, String id,
+            ERepositoryObjectType type, boolean allVersion, boolean searchInChildren, boolean withDeleted)
             throws PersistenceException;
 
-    protected abstract <K, T> void addFolderMembers(ERepositoryObjectType type, Container<K, T> toReturn, Object objectFolder,
+    protected abstract <K, T> RootContainer<K, T> getObjectFromFolder(ERepositoryObjectType type,
             boolean onlyLastVersion) throws PersistenceException;
+
+    protected abstract <K, T> void addFolderMembers(ERepositoryObjectType type, Container<K, T> toReturn,
+            Object objectFolder, boolean onlyLastVersion) throws PersistenceException;
 
     protected abstract FolderHelper getFolderHelper(org.talend.core.model.properties.Project emfProject);
 
     protected Item copyFromResource(Resource createResource) throws PersistenceException, BusinessException {
-        Item newItem = (Item) EcoreUtil.getObjectByType(createResource.getContents(), PropertiesPackage.eINSTANCE.getItem());
+        Item newItem = (Item) EcoreUtil.getObjectByType(createResource.getContents(), PropertiesPackage.eINSTANCE
+                .getItem());
         Property property = newItem.getProperty();
         property.setId(getNextId());
         property.setAuthor(getRepositoryContext().getUser());
@@ -351,7 +359,8 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
 
     public List<ModuleNeeded> getModulesNeededForJobs() throws PersistenceException {
         List<ModuleNeeded> importNeedsList = new ArrayList<ModuleNeeded>();
-        IProxyRepositoryFactory repositoryFactory = CorePlugin.getDefault().getRepositoryService().getProxyRepositoryFactory();
+        IProxyRepositoryFactory repositoryFactory = CorePlugin.getDefault().getRepositoryService()
+                .getProxyRepositoryFactory();
         List<IRepositoryObject> jobs = repositoryFactory.getAll(ERepositoryObjectType.PROCESS, true);
         for (IRepositoryObject cur : jobs) {
             if (repositoryFactory.getStatus(cur) != ERepositoryStatus.DELETED) {
@@ -362,8 +371,8 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
                     for (ElementParameterType elementParam : elementParameter) {
                         if (elementParam.getField().equals(EParameterFieldType.MODULE_LIST.getName())) {
                             String uniquename = ElementParameterParser.getUNIQUENAME(node);
-                            ModuleNeeded toAdd = new ModuleNeeded("Job " + item.getProperty().getLabel(),
-                                    elementParam.getValue(), "Required for using component : " + uniquename + ".", true);
+                            ModuleNeeded toAdd = new ModuleNeeded("Job " + item.getProperty().getLabel(), elementParam
+                                    .getValue(), "Required for using component : " + uniquename + ".", true);
                             importNeedsList.add(toAdd);
                         }
                     }
@@ -388,17 +397,27 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
     }
 
     public IRepositoryObject getLastVersion(String id) throws PersistenceException {
-    	List<IRepositoryObject> serializableAllVersion = getSerializable(
-    			getRepositoryContext().getProject(), id, false);
-    
-    	if (serializableAllVersion.size() > 1) {
-    		throw new PersistenceException(
-    				Messages
-    						.getString("AbstractEMFRepositoryFactory.presistenceException.onlyOneOccurenceAllowed")); //$NON-NLS-1$
-    	} else if (serializableAllVersion.size() == 1) {
-    		return serializableAllVersion.get(0);
-    	} else {
-    		return null;
-    	}
+        List<IRepositoryObject> serializableAllVersion = getSerializable(getRepositoryContext().getProject(), id, false);
+
+        if (serializableAllVersion.size() > 1) {
+            throw new PersistenceException(Messages
+                    .getString("AbstractEMFRepositoryFactory.presistenceException.onlyOneOccurenceAllowed")); //$NON-NLS-1$
+        } else if (serializableAllVersion.size() == 1) {
+            return serializableAllVersion.get(0);
+        } else {
+            return null;
+        }
+    }
+
+    protected void computePropertyMaxInformationLevel(Property property) {
+        EList<Information> informations = property.getInformations();
+        InformationLevel maxLevel = null;
+        for (Information information : informations) {
+            int value = information.getLevel().getValue();
+            if (maxLevel == null || value > maxLevel.getValue()) {
+                maxLevel = information.getLevel();
+            }
+        }
+        property.setMaxInformationLevel(maxLevel);
     }
 }
