@@ -30,14 +30,16 @@
 <%
     			}
     		}else{
-            	for(int i=0;i<columns.size();i++){
-            		Map<String,String> tmp= autoSizeList.get(i);
-            		if(tmp.get("IS_AUTO_SIZE").equals("true")){
+    			if(autoSizeList.size() == columns.size()){
+                	for(int i=0;i<columns.size();i++){
+                		Map<String,String> tmp= autoSizeList.get(i);
+                		if(tmp.get("IS_AUTO_SIZE").equals("true")){
 %>
 	writableSheet_<%=cid %>.setColumnView(<%=i%>, fitWidth_<%=cid %>[<%=i%>]+2);
 <%
-            		}
-            	}
+                		}
+                	}
+                }
     		}
     	}
     }
