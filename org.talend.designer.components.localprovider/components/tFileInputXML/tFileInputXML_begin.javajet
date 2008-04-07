@@ -324,7 +324,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 					if(mode.equals("Xerces")){
 %>
 	node_<%=cid%> = xml_api_<%=cid%>.getSingleNode(tmp_<%=cid %>,<%=query%>);
-	str_<%=cid %> = node_<%=cid%>.getTextContent();
+	str_<%=cid %> = node_<%=cid%>!=null?node_<%=cid%>.getTextContent():"";
 <%
 					}else if(mode.equals("Dom4j")){
 %>
