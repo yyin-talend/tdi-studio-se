@@ -80,7 +80,7 @@
 			   			org.talend.designer.components.commons.AdvancedLookup.MATCHING_MODE.<%= matchingModeStr %>;
 			   			
 	   			org.talend.designer.components.persistent.PersistentSortedAdvancedLookup<<%=connectionName%>Struct> tHash_Lookup_<%=connectionName%> = 
-	   				new org.talend.designer.components.persistent.PersistentSortedAdvancedLookup<<%=connectionName%>Struct>(matchingModeEnum_<%=connectionName%>, "/home/amaumont/data/dev/projets/Talend/hashfile/testData/container") {
+	   				new org.talend.designer.components.persistent.PersistentSortedAdvancedLookup<<%=connectionName%>Struct>(matchingModeEnum_<%=connectionName%>, "/home/amaumont/data/dev/projets/Talend/hashfile/testData/container/<%=connectionName%>") {
 	   					public <%=connectionName%>Struct createRowInstance() {
 	   						return new <%=connectionName%>Struct();
 	   					}
