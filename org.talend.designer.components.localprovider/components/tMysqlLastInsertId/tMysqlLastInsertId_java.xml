@@ -32,7 +32,7 @@
 	<PARAMETER 
 	  NAME="CONNECTION" 
 	  FIELD="COMPONENT_LIST"
-	  FILTER="tMysqlConnection" 
+	  FILTER="REGEXP:^tMysqlConnection|tMysqlOutput|tMysqlRow$" 
 	  NUM_ROW="10" 
 	/>
 			
