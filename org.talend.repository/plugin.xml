@@ -753,6 +753,13 @@
             id="org.talend.repository.model.migration.HandleOracleSchemaMigrationTask"
             name="HandleOracleSchemaMigrationTask">
       </projecttask>
+      <projecttask
+            beforeLogon="false"
+            class="org.talend.repository.model.migration.ChangeValueOfTLogRowChecks"
+            description="Change the default value of tLogRow checks."
+            id="org.talend.repository.model.migration.ChangeValueOfTLogRowChecks"
+            name="Change values of tLogRow checks">
+      </projecttask>
    </extension>
    <extension
          point="org.talend.core.librariesNeeded">
