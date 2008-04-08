@@ -176,14 +176,6 @@
 
             boolean rejectedInnerJoin_tMap_1 = false;
 
-            org.talend.designer.components.thash.io.hashimpl.FlowSorterIterator fsi_Join_M__LF1 = new org.talend.designer.components.thash.io.hashimpl.FlowSorterIterator();
-            org.talend.designer.components.thash.io.hashimpl.FlowSorterIterator fsi_Join_M__LF1__LF2 = new org.talend.designer.components.thash.io.hashimpl.FlowSorterIterator();
-
-            // org.talend.designer.components.thash.io.IPersistentJoiner<V> fsi_Join_M__LF1 = null;//new
-            // org.talend.designer.components.thash.io.hashimpl.FlowSorterIterator();
-            // org.talend.designer.components.thash.io.IPersistentJoiner<V> fsi_Join_M__LF1__LF2 = null;//new
-            // org.talend.designer.components.thash.io.hashimpl.FlowSorterIterator();
-
 
         // ###############################
         // # Input tables (lookups)
@@ -298,6 +290,8 @@
                		
                		%>);
                		
+               		<%= rejectedInnerJoin %> = rsc_<%= currentJoinedTableNames %>.is__rejectedInnerJoin;
+               		
 			<%
 			}
 
@@ -356,7 +350,7 @@
 		           		  	 %>) { // G 20
 
 								<% 
-                        		if(!isPersistent && (aKeysValues.length > 0 || checkingSyntax)) { // T 001
+                        		if(aKeysValues.length > 0 || checkingSyntax) { // T 001
 
 
                         		for (int iKeyName = 0; iKeyName < aKeysNames.length; iKeyName++) {
@@ -369,10 +363,15 @@
                         			    <%
                         		    }
 
-                        		    String expression = tableName + "HashKey." + aKeysNames[iKeyName] + " = " + aKeysValues[iKeyName] + ";";
-                        		    %>
-                        		    <%= expression %>
-                        		    <%
+									if(isPersistent) {
+                        		    	%>
+                        		    	<%= tableName %>HashKey. <%= aKeysNames[iKeyName] %> = rsc_<%= currentJoinedTableNames %>.exprKey_<%= tableName %>__<%= aKeysNames[iKeyName] %>;
+                        		    	<%
+                        		    } else {
+                        		    	%>
+                        		    	<%= tableName %>HashKey. <%= aKeysNames[iKeyName] %> = <%= aKeysValues[iKeyName] %>;
+                        		    	<%
+                        		    }
                         		    if (checkingSyntax) {
                         		    	%>
                         		        <%= CodeGenerationUtils.buildJavaEndFieldKey(key) %>
@@ -569,11 +568,6 @@
 
 
                 if(isPersistent && !isLastTable) {
-                	if(isBeforeOfThirdTable) {
-					%>
-	            		}  // G_TM_M_043 loop <%= tableName %>
-					<%
-					}
 
 			ExternalMapperTable nextInputTable = inputTables.get(iInputTable + 1);
 			if(!isLastTable) { // T_TM_M_216
@@ -648,6 +642,10 @@
 					
 					%>);
 
+					rsc_<%= currentJoinedTableNames %>.is__rejectedInnerJoin = <%= rejectedInnerJoin %>;
+					
+					<%= rejectedInnerJoin %> = false;
+
 					// Sort and store in KeyFile(s) and DataFile(s)
 					fsi_<%= currentJoinedTableNames %>.put(rsc_<%= currentJoinedTableNames %>);
 					
@@ -657,9 +655,22 @@
 			} // T_TM_M_216
 
 
+                	if(isBeforeOfThirdTable) {
+					%>
+							if(forceLoop<%= tableName %>) {
+								break;
+							}
+							
+	            		}  // G_TM_M_043 loop <%= tableName %>
+					<%
+					}
 	    		
 					%>
+					
 	            	} // G_TM_M_250 loop "<%= currentJoinedTableNames %>"
+	            	
+	            	fsi_<%= currentJoinedTableNames %>.endPut();
+	            	
 	            	
 					<%
 				}

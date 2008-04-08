@@ -63,7 +63,9 @@
             String className = tableName + "Struct";
 %>
 
-org.talend.designer.components.commons.AdvancedMemoryLookup<<%=tableName%>Struct> tHash_Lookup_<%=tableName%> = (org.talend.designer.components.commons.AdvancedMemoryLookup<<%=tableName%>Struct>) globalMap.get( "tHash_Lookup_<%=tableName%>" );
+//org.talend.designer.components.commons.AdvancedMemoryLookup<<%=tableName%>Struct> tHash_Lookup_<%=tableName%> = (org.talend.designer.components.commons.AdvancedMemoryLookup<<%=tableName%>Struct>) globalMap.get( "tHash_Lookup_<%=tableName%>" );
+org.talend.designer.components.persistent.PersistentSortedAdvancedLookup<<%=tableName%>Struct> tHash_Lookup_<%=tableName%> = (org.talend.designer.components.persistent.PersistentSortedAdvancedLookup<<%=tableName%>Struct>) globalMap.get( "tHash_Lookup_<%=tableName%>" );
+
 <%=className%> <%=tableName%>HashKey = new <%=className%>();
 <%=className%> <%=tableName%>Default = new <%=className%>();
 <%
@@ -169,6 +171,8 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
 	%>
 	
 	class SortableRow_<%= currentJoinedTableNames %> implements Comparable<SortableRow_<%= currentJoinedTableNames %>>, org.talend.designer.components.persistent.IPersistableRow { // G_TM_B_001 
+
+		boolean is__rejectedInnerJoin;
 
 	<%
 	        
@@ -385,6 +389,9 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
             dis = new DataInputStream(bai);
             
 			int length = 0;
+			
+			this.is__rejectedInnerJoin = dis.readBoolean();
+			
 		<%	
 		boolean hasAtLeastOneRead = false;
 		if (currentMetadataTable !=null) {
@@ -520,6 +527,8 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
         try {
             bao = new ByteArrayOutputStream();
             dos = new DataOutputStream(bao);
+
+           	dos.writeBoolean(this.is__rejectedInnerJoin);
 
 		<%	
 		boolean hasAtLeastOneWrite = false;
