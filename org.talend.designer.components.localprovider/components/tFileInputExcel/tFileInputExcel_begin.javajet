@@ -51,21 +51,17 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
 		}else{
 %>
-		String[] sheetNameList_<%=cid%> = new String[]{
+		java.util.List<jxl.Sheet> sheetList_<%= cid %> = new java.util.ArrayList<jxl.Sheet>();
+		jxl.Sheet sh_<%=cid%> = null;
 <%
 			for(Map<String, String> tmp:sheetNameList){
-			%><%=tmp.get("SHEETNAME")%>,<%
-			}
 %>
-		};
-		java.util.List<jxl.Sheet> sheetList_<%= cid %> = new java.util.ArrayList<jxl.Sheet>();
-		for (String name_<%=cid%> : sheetNameList_<%=cid%> ) {
-            jxl.Sheet sheet_<%=cid%> = workbook_<%= cid %>.getSheet(name_<%=cid%>);
-            if (sheet_<%=cid%> != null) {
-                sheetList_<%= cid %>.add(sheet_<%=cid%>);
-            }
+		sh_<%=cid%> = workbook_<%= cid %>.getSheet(<%=tmp.get("SHEETNAME")%>);
+        if (sh_<%=cid%> != null) {
+            sheetList_<%= cid %>.add(sh_<%=cid%>);
         }
 <%
+			}
 		}
 %>
         if(sheetList_<%= cid %>.size() <= 0){
