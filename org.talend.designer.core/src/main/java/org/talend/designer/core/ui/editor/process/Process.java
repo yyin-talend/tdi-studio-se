@@ -2499,15 +2499,21 @@ public class Process extends Element implements IProcess2 {
                     }
                 }
             }
-        }
-        if (withChildrens) {
-            if (property.getItem() instanceof ProcessItem) {
-                ProcessItem processItem = (ProcessItem) this.property.getItem();
-                Set<JobInfo> subjobInfos = ProcessorUtilities.getChildrenJobInfo(processItem);
-                for (JobInfo subjobInfo : subjobInfos) {
-                    Process child = new Process(subjobInfo.getProcessItem().getProperty());
-                    child.loadXmlFile();
-                    neededLibraries.addAll(child.getNeededLibraries(true));
+            if (withChildrens) {
+                if (node.getComponent().getName().equals("tRunJob")) {
+                    IElementParameter processIdparam = node.getElementParameter("PROCESS_TYPE_PROCESS");
+                    String jobId = (String) processIdparam.getValue();
+                    ProcessItem processItem = (ProcessItem) processIdparam.getLinkedRepositoryItem();
+                    if (processItem == null) {
+                        processItem = ProcessorUtilities.getProcessItem(jobId);
+                    }
+                    String context = (String) node.getElementParameter("PROCESS_TYPE_CONTEXT").getValue();
+                    if (processItem != null) {
+                        JobInfo subJobInfo = new JobInfo(processItem, context);
+                        Process child = new Process(subJobInfo.getProcessItem().getProperty());
+                        child.loadXmlFile();
+                        neededLibraries.addAll(child.getNeededLibraries(true));
+                    }
                 }
             }
         }
