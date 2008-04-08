@@ -1075,7 +1075,15 @@ public class Process extends Element implements IProcess2 {
         if (processParam != null) {
             IElementParameter processIdParam = processParam.getChildParameters().get(
                     EParameterName.PROCESS_TYPE_PROCESS.getName());
-            ProcessItem processItem = ProcessorUtilities.getProcessItem((String) processIdParam.getValue());
+            IElementParameter processVersionParam = processParam.getChildParameters().get(
+                    EParameterName.PROCESS_TYPE_VERSION.getName());
+            ProcessItem processItem = null;
+            if (processVersionParam != null) {
+                processItem = ProcessorUtilities.getProcessItem((String) processIdParam.getValue(), (String) processVersionParam
+                        .getValue());
+            } else {
+                processItem = ProcessorUtilities.getProcessItem((String) processIdParam.getValue());
+            }
             if (processItem != null) {
                 nc.setPropertyValue(processParam.getName(), processItem.getProperty().getLabel());
                 processIdParam.setLinkedRepositoryItem(processItem);

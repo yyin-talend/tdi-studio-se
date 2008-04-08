@@ -21,12 +21,14 @@ import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IElementParameterDefaultValue;
+import org.talend.core.model.properties.ProcessItem;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.process.jobsettings.JobSettingsConstants;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.views.CodeView;
+import org.talend.designer.runprocess.ProcessorUtilities;
 
 /**
  * Command that changes a given property. It will call the set or get property value in an element. This element can be
@@ -125,6 +127,24 @@ public class PropertyChangeCommand extends Command {
 
         oldValue = elem.getPropertyValue(propName);
         elem.setPropertyValue(propName, newValue);
+        if (propName.contains(EParameterName.PROCESS_TYPE_PROCESS.getName())) {
+            // newValue is the id of the job
+            ProcessItem processItem = ProcessorUtilities.getProcessItem((String) newValue);
+            if (processItem != null) {
+                currentParam.setLinkedRepositoryItem(processItem);
+                currentParam.getParentParameter().setValue(processItem.getProperty().getLabel());
+            }
+        }
+        if (propName.contains(EParameterName.PROCESS_TYPE_VERSION.getName())) {
+            // newValue is the id of the job
+            IElementParameter processIdParam = currentParam.getParentParameter().getChildParameters().get(
+                    EParameterName.PROCESS_TYPE_PROCESS.getName());
+            ProcessItem processItem = ProcessorUtilities.getProcessItem((String) processIdParam.getValue(), (String) newValue);
+            if (processItem != null) {
+                processIdParam.setLinkedRepositoryItem(processItem);
+                currentParam.getParentParameter().setValue(processItem.getProperty().getLabel());
+            }
+        }
 
         if (!toUpdate
                 && (currentParam.getField().equals(EParameterFieldType.RADIO)
@@ -172,12 +192,6 @@ public class PropertyChangeCommand extends Command {
                 setDefaultValues(currentParam, testedParam);
             }
         }
-        // // for job settings extra.(feature 2710)
-        // if (!toUpdate) {
-        // if (oldValue != null && newValue != null && !newValue.equals(oldValue)) {
-        // toUpdate = true;
-        // }
-        // }
 
         if (currentParam.getName().equals(EParameterName.PROCESS_TYPE_PROCESS.getName())) {
             toUpdate = true;
@@ -261,8 +275,8 @@ public class PropertyChangeCommand extends Command {
 
     @Override
     public void undo() {
+        IElementParameter currentParam = elem.getElementParameter(propName);
         if (repositoryValueWasUsed) {
-            IElementParameter currentParam = elem.getElementParameter(propName);
             if (currentParam.getField() == EParameterFieldType.MEMO_SQL) {
                 elem.setPropertyValue(EParameterName.QUERYSTORE_TYPE.getName(), EmfComponent.REPOSITORY);
             } else {
@@ -277,6 +291,14 @@ public class PropertyChangeCommand extends Command {
             }
         }
         elem.setPropertyValue(propName, oldValue);
+        if (propName.contains(EParameterName.PROCESS_TYPE_PROCESS.getName())) {
+            // oldValue is the id of the job
+            ProcessItem processItem = ProcessorUtilities.getProcessItem((String) oldValue);
+            if (processItem != null) {
+                currentParam.setLinkedRepositoryItem(processItem);
+                currentParam.getParentParameter().setValue(processItem.getProperty().getLabel());
+            }
+        }
 
         for (IElementParameter param : oldElementValues.keySet()) {
             param.setValue(oldElementValues.get(param));
@@ -315,6 +337,14 @@ public class PropertyChangeCommand extends Command {
         }
 
         elem.setPropertyValue(propName, newValue);
+        if (propName.contains(EParameterName.PROCESS_TYPE_PROCESS.getName())) {
+            // newValue is the id of the job
+            ProcessItem processItem = ProcessorUtilities.getProcessItem((String) newValue);
+            if (processItem != null) {
+                currentParam.setLinkedRepositoryItem(processItem);
+                currentParam.getParentParameter().setValue(processItem.getProperty().getLabel());
+            }
+        }
 
         if (currentParam.getField().equals(EParameterFieldType.CLOSED_LIST)) {
             for (int i = 0; i < elem.getElementParameters().size(); i++) {

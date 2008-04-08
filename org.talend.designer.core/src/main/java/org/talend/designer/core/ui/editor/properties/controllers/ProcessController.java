@@ -66,8 +66,6 @@ import org.talend.repository.ui.dialog.RepositoryReviewDialog;
  */
 public class ProcessController extends AbstractElementPropertySectionController {
 
-    private IRepositoryObject repositoryObject;
-
     public ProcessController(IDynamicProperty dp) {
         super(dp);
     }
@@ -416,13 +414,11 @@ public class ProcessController extends AbstractElementPropertySectionController 
         }
         RepositoryReviewDialog dialog = new RepositoryReviewDialog((button).getShell(), ERepositoryObjectType.PROCESS, procssId);
         if (dialog.open() == RepositoryReviewDialog.OK) {
-            repositoryObject = dialog.getResult().getObject();
+            IRepositoryObject repositoryObject = dialog.getResult().getObject();
             final Item item = repositoryObject.getProperty().getItem();
             String id = item.getProperty().getId();
-            String jobName = dialog.getResult().getObject().getLabel();
 
             String paramName = (String) button.getData(PARAMETER_NAME);
-            elem.getElementParameter(paramName).getParentParameter().setValue(jobName);
             return new PropertyChangeCommand(elem, paramName, id);
         }
         return null;
