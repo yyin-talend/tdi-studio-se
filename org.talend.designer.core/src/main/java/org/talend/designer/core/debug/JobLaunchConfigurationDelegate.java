@@ -12,8 +12,6 @@
 // ============================================================================
 package org.talend.designer.core.debug;
 
-import java.util.List;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.DebugPlugin;
@@ -26,14 +24,12 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.ExceptionHandler;
-import org.talend.core.CorePlugin;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.ProcessItem;
-import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ui.editor.ProcessEditorInput;
 import org.talend.designer.runprocess.IRunProcessService;
+import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.editor.RepositoryEditorInput;
 
 /**
@@ -59,13 +55,14 @@ public class JobLaunchConfigurationDelegate extends org.eclipse.debug.core.model
 
     public void launch(ILaunchConfiguration configuration, String mode, ILaunch launch, IProgressMonitor monitor)
             throws CoreException {
+        String jobId = configuration.getAttribute(TalendDebugUIConstants.JOB_ID, (String) null);
         String jobName = configuration.getAttribute(TalendDebugUIConstants.JOB_NAME, (String) null);
         String jobVersion = configuration.getAttribute(TalendDebugUIConstants.JOB_VERSION, (String) null);
         // find process from open editor.
-        IProcess process = findProcessFromEditors(jobName,jobVersion);
+        IProcess process = findProcessFromEditors(jobId, jobVersion);
         // find process from repository
         if (process == null) {
-            process = findProcessFromRepository(jobName);
+            process = findProcessFromRepository(jobId);
         }
 
         if (process == null) {
@@ -92,18 +89,13 @@ public class JobLaunchConfigurationDelegate extends org.eclipse.debug.core.model
      * @param jobName
      * @return
      */
-    private IProcess findProcessFromRepository(String jobName) {
+    private IProcess findProcessFromRepository(String jobId) {
         try {
-            List<IRepositoryObject> list = CorePlugin.getDefault().getRepositoryService().getProxyRepositoryFactory().getAll(
-                    ERepositoryObjectType.PROCESS, true);
-            for (IRepositoryObject repositoryObject : list) {
-                if (repositoryObject.getProperty().getLabel().equals(jobName)) {
-                    ProcessEditorInput fileEditorInput = new ProcessEditorInput((ProcessItem) repositoryObject.getProperty()
-                            .getItem(), true);
-                    IProcess process = fileEditorInput.getLoadedProcess();
-                    return process;
-                }
-            }
+            ProcessItem processItem = ProcessorUtilities.getProcessItem(jobId);
+
+            ProcessEditorInput fileEditorInput = new ProcessEditorInput((ProcessItem) processItem, true);
+            IProcess process = fileEditorInput.getLoadedProcess();
+            return process;
         } catch (Exception e) {
             ExceptionHandler.process(e);
         }
@@ -114,9 +106,9 @@ public class JobLaunchConfigurationDelegate extends org.eclipse.debug.core.model
      * DOC bqian Comment method "findProcessFromEditors".
      * 
      * @param jobName
-     * @param jobVersion 
+     * @param jobVersion
      */
-    private IProcess findProcessFromEditors(final String jobName, final String jobVersion) {
+    private IProcess findProcessFromEditors(final String jobId, final String jobVersion) {
         final IProcess[] process = new IProcess[1];
 
         Display.getDefault().syncExec(new Runnable() {
@@ -130,7 +122,7 @@ public class JobLaunchConfigurationDelegate extends org.eclipse.debug.core.model
                     if (input instanceof RepositoryEditorInput) {
                         RepositoryEditorInput rInput = (RepositoryEditorInput) input;
                         IProcess p = rInput.getLoadedProcess();
-                        if (p != null && p.getLabel().equals(jobName) && p.getVersion().equals(jobVersion)) {
+                        if (p != null && p.getId().equals(jobId) && p.getVersion().equals(jobVersion)) {
                             process[0] = p;
                             break;
                         }

@@ -1070,6 +1070,18 @@ public class Process extends Element implements IProcess2 {
 
         loadElementParameters(nc, listParamType);
 
+        // update the value of process type
+        IElementParameter processParam = nc.getElementParameterFromField(EParameterFieldType.PROCESS_TYPE);
+        if (processParam != null) {
+            IElementParameter processIdParam = processParam.getChildParameters().get(
+                    EParameterName.PROCESS_TYPE_PROCESS.getName());
+            ProcessItem processItem = ProcessorUtilities.getProcessItem((String) processIdParam.getValue());
+            if (processItem != null) {
+                nc.setPropertyValue(processParam.getName(), processItem.getProperty().getLabel());
+                processIdParam.setLinkedRepositoryItem(processItem);
+            }
+        }
+
         nc.setData(nType.getBinaryData(), nType.getStringData());
 
         loadSchema(nc, nType);

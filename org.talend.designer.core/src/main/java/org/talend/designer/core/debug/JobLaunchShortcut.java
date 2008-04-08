@@ -164,13 +164,13 @@ public class JobLaunchShortcut implements ILaunchShortcut {
                 if (!projectName.equals(CorePlugin.getCurrentProject().getLabel())) {
                     continue;
                 }
-                String jobName = config.getAttribute(TalendDebugUIConstants.JOB_NAME, (String) null);
+                String jobId = config.getAttribute(TalendDebugUIConstants.JOB_ID, (String) null);
                 String jobVersion = config.getAttribute(TalendDebugUIConstants.JOB_VERSION, (String) null);
-                if (jobName == null) {
+                if (jobId == null) {
                     continue;
                 }
 
-                if (file.getProperty().getLabel().equals(jobName) && file.getProperty().getVersion().equals(jobVersion)) {
+                if (file.getProperty().getId().equals(jobId) && file.getProperty().getVersion().equals(jobVersion)) {
                     candidateConfigs.add(config);
                 }
             }
@@ -195,6 +195,7 @@ public class JobLaunchShortcut implements ILaunchShortcut {
      */
     private ILaunchConfiguration createConfiguration(ProcessItem file) {
         ILaunchConfiguration config = null;
+        String jobId = file.getProperty().getId();
         String jobName = file.getProperty().getLabel();
         String jobVersion = file.getProperty().getVersion();
         ILaunchConfigurationType type = getLaunchManager().getLaunchConfigurationType(
@@ -206,6 +207,7 @@ public class JobLaunchShortcut implements ILaunchShortcut {
                 ILaunchConfigurationWorkingCopy wc = type.newInstance(null, getLaunchManager()
                         .generateUniqueLaunchConfigurationNameFrom(displayName));
                 wc.setAttribute(TalendDebugUIConstants.JOB_NAME, jobName);
+                wc.setAttribute(TalendDebugUIConstants.JOB_ID, jobId);
                 wc.setAttribute(TalendDebugUIConstants.JOB_VERSION, jobVersion);
                 String projectName = CorePlugin.getCurrentProject().getLabel();
                 wc.setAttribute(TalendDebugUIConstants.CURRENT_PROJECT_NAME, projectName);

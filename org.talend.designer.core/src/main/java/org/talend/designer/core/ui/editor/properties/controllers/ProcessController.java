@@ -419,17 +419,10 @@ public class ProcessController extends AbstractElementPropertySectionController 
             repositoryObject = dialog.getResult().getObject();
             final Item item = repositoryObject.getProperty().getItem();
             String id = item.getProperty().getId();
+            String jobName = dialog.getResult().getObject().getLabel();
 
-            if (curParameter != null) {
-                IElementParameter jobNameParam = curParameter.getChildParameters().get(
-                        EParameterName.PROCESS_TYPE_PROCESS.getName());
-                if (jobNameParam != null) {
-                    jobNameParam.setLinkedRepositoryItem(item);
-                }
-            }
-
-            // String jobName = item.getProperty().getLabel();
             String paramName = (String) button.getData(PARAMETER_NAME);
+            elem.getElementParameter(paramName).getParentParameter().setValue(jobName);
             return new PropertyChangeCommand(elem, paramName, id);
         }
         return null;
