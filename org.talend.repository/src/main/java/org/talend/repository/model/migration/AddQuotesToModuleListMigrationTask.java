@@ -59,7 +59,6 @@ public class AddQuotesToModuleListMigrationTask extends AbstractJobMigrationTask
 
         boolean modified = false;
 
-        EList elementParameters = item.getProcess().getParameters().getElementParameter();
         EList node = item.getProcess().getNode();
         for (Object object2 : node) {
             NodeType type = (NodeType) object2;
