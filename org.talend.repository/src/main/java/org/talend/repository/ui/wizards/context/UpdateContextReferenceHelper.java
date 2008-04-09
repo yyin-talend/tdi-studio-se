@@ -96,14 +96,17 @@ public final class UpdateContextReferenceHelper {
 
                                 // have renamed this variable.
                                 contextParameter.setName(newName);
-                                updateVariableAttributions(curRepositoryManager, contextParameter, context.getName());
+                                // updateVariableAttributions(curRepositoryManager, contextParameter,
+                                // context.getName());
 
-                            } else if (!isExistedVarInCurRepositoryContext(contextParameter.getName(), repositoryVarsSet)) {
+                                // } else if (!isExistedVarInCurRepositoryContext(contextParameter.getName(),
+                                // repositoryVarsSet)) {
                                 // check the nonexistent variable and set to built-in.
-                                contextParameter.setSource(IContextParameter.BUILT_IN);
-                            } else {
+                                // contextParameter.setSource(IContextParameter.BUILT_IN);
+                                // } else {
                                 // update other variable value.
-                                updateVariableAttributions(curRepositoryManager, contextParameter, context.getName());
+                                // updateVariableAttributions(curRepositoryManager, contextParameter,
+                                // context.getName());
 
                             }
                             modified = true;
@@ -258,13 +261,16 @@ public final class UpdateContextReferenceHelper {
 
                                         // have renamed this variable.
                                         parameterType.setName(newName);
-                                        updateVariableAttributions(curRepositoryManager, parameterType, contextType.getName());
-                                    } else if (!isExistedVarInCurRepositoryContext(parameterType.getName(), repositoryVarsSet)) {
+                                        // updateVariableAttributions(curRepositoryManager, parameterType,
+                                        // contextType.getName());
+                                        // } else if (!isExistedVarInCurRepositoryContext(parameterType.getName(),
+                                        // repositoryVarsSet)) {
                                         // check the nonexistent variable and set to built-in.
-                                        parameterType.setRepositoryContextId(null);
-                                    } else {
+                                        // parameterType.setRepositoryContextId(null);
+                                        // } else {
                                         // update other variable value.
-                                        updateVariableAttributions(curRepositoryManager, parameterType, contextType.getName());
+                                        // updateVariableAttributions(curRepositoryManager, parameterType,
+                                        // contextType.getName());
                                     }
                                     modified = true;
                                 }
