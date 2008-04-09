@@ -45,16 +45,14 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
     <%
     List<Column> searchColumns = getSearchColumnList(scdConfiger);
     List<Column> sourceKeys = scdConfiger.getSourceKeys();
-    if(dbschema == null || dbschema.equals("\"\"") || dbschema.equals("")) {
-        %>
-        String tableName_<%=cid%> = <%=dbtable%>;
-        <%
-    } else {
-        %>
-        String tableName_<%=cid%> = <%=dbschema%> + "].[" + <%=dbtable%>;
-        <%
-    }
     %>
+    String tableName_<%=cid%> = null;
+    String schema_<%=cid%> = <%=dbschema%>;
+    if(schema_<%=cid%> == null || schema_<%=cid%>.trim().length() == 0) {
+        tableName_<%=cid%> = <%=dbtable%>;
+    } else {
+        tableName_<%=cid%> = schema_<%=cid%> + "].[" + <%=dbtable%>;
+    }
     java.lang.Class.forName("net.sourceforge.jtds.jdbc.Driver");
     String connectionString_<%=cid %> = "jdbc:jtds:sqlserver://" + <%=dbhost%> + ":" + <%=dbport%> + "//" + <%=dbname%> + ";appName=" + projectName + ";" + <%=dbproperties%>;
     java.sql.Connection connection_<%=cid%> = java.sql.DriverManager.getConnection(connectionString_<%=cid %>, <%=dbuser%>, <%=dbpwd%>);    

@@ -63,17 +63,13 @@ int deletedCount_<%=cid%>=0;
 int updatedCount_<%=cid%>=0;
 int insertedCount_<%=cid%>=0;
 
-<%
-if(tableSchema == null || tableSchema.equals("\"\"") || tableSchema.equals("")) {
-    %>
-    String tableName_<%=cid%> = <%=tableName%>;
-    <%
+String tableName_<%=cid%> = null;
+String schema_<%=cid%> = <%=tableSchema%>;
+if(schema_<%=cid%> == null || schema_<%=cid%>.trim().length() == 0) {
+    tableName_<%=cid%> = <%=tableName%>;
 } else {
-    %>
-    String tableName_<%=cid%> = <%=tableSchema%> + "\".\"" + <%=tableName%>;
-    <%
+    tableName_<%=cid%> = schema_<%=cid%> + "\".\"" + <%=tableName%>;
 }
-%>
 
 boolean whetherReject_<%=cid%> = false;
 
