@@ -35,7 +35,7 @@ import org.talend.designer.core.ui.views.properties.MultipleThreadDynamicComposi
 /**
  * ftang class global comment. Detailled comment <br/>
  * 
- * $Id: talend.epf 1 2006-09-29 17:06:40 +0000 (忙聵聼忙聹聼盲潞聰, 29 盲鹿聺忙聹聢 2006) nrousseau $
+ * $Id: talend.epf 1 2006-09-29 17:06:40 +0000 (ææäº, 29 ä¹æ 2006) nrousseau $
  * 
  */
 public class StatsAndLogsComposite extends MultipleThreadDynamicComposite {
@@ -94,7 +94,7 @@ public class StatsAndLogsComposite extends MultipleThreadDynamicComposite {
                         .getString("StatsAndLogsComposite.StatsLogsSettings"), //$NON-NLS-1$
                         Messages.getString("StatsAndLogsComposite.ReloadMessages")); //$NON-NLS-1$
                 if (isOK) {
-                    StatsAndLogsViewHelper.reloadValuesFromPreferencePage(elem);
+                    StatsAndLogsViewHelper.reloadValuesFromPreferencePage(elem, StatsAndLogsComposite.this);
 
                     IEditorPart activeEditor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
                             .getActiveEditor();
@@ -124,7 +124,7 @@ public class StatsAndLogsComposite extends MultipleThreadDynamicComposite {
                         .getString("StatsAndLogsComposite.StatsLogsSettings"), //$NON-NLS-1$
                         Messages.getString("StatsAndLogsComposite.SavePreferenceMessages")); //$NON-NLS-1$
                 if (isOK) {
-                    StatsAndLogsViewHelper.saveValuesToPreferencePage(elem);
+                    StatsAndLogsViewHelper.saveValuesToPreferencePage(elem, StatsAndLogsComposite.this);
                 }
             }
 

@@ -23,20 +23,53 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.talend.commons.utils.workbench.preferences.ComboFieldEditor;
+import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.language.ECodeLanguage;
+import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
+import org.talend.core.model.metadata.designerproperties.RepositoryToComponentProperty;
+import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
+import org.talend.designer.core.model.components.EmfComponent;
+import org.talend.designer.core.ui.views.statsandlogs.StatsAndLogsViewHelper;
+import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.ui.dialog.RepositoryReviewDialog;
+import org.talend.repository.ui.utils.DataStringConnection;
+import org.talend.repository.ui.views.RepositoryContentProvider;
+import org.talend.repository.ui.views.RepositoryView;
 
 /**
  * DOC Administrator class global comment. Detailled comment <br/>
  * 
  */
 public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
+
+    /**
+     * 
+     */
+    public static final String CONNECTION_ITEM_LABEL = "_CONNECTION_ITEM_LABEL";
+
+    /**
+     * 
+     */
+    private static final String REPOSITORY = "Repository";
+
+    /**
+     * 
+     */
+    private static final String BUILD_IN = "Build-in";
 
     private ECodeLanguage language;
 
@@ -99,6 +132,10 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
 
     private Composite finalPart;
 
+    private Combo comboRepositoryType;
+
+    private ConnectionItem connectionItem;
+
     /**
      * Default constructor.
      */
@@ -118,6 +155,113 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
         createFields();
         updateEnableStateFromPreferences();
         addListeners();
+    }
+
+    private void updateFileContent(ConnectionItem connectionItem) {
+        DatabaseConnection conn = (DatabaseConnection) connectionItem.getConnection();
+        DataStringConnection url = new DataStringConnection();
+        String[] connectionTypeLabels = url.getItem();
+        int selectionIndex = 0;
+        for (; selectionIndex < connectionTypeLabels.length; selectionIndex++) {
+            if (connectionTypeLabels[selectionIndex].equals(conn.getDatabaseType())) {
+                break;
+            }
+        }
+        url.setSelectionIndex(selectionIndex);
+        String stringConnection = url.getStringConnectionTemplate();
+
+        filePathField.getTextControl(parent).setText(conn.getFileFieldName());
+        hostField.getTextControl(parent).setText(conn.getServerName());
+        portField.getTextControl(parent).setText(conn.getPort());
+        dbNameField.getTextControl(parent).setText(conn.getDatasourceName());
+        schemaField.getTextControl(parent).setText(conn.getSchema());
+        userField.getTextControl(parent).setText(conn.getUsername());
+        passwordField.getTextControl(parent).setText(conn.getPassword());
+        dabasePathField.getTextControl(parent).setText(conn.getDBRootPath() == null ? "" : conn.getDBRootPath());
+        additionParamField.getTextControl(parent).setText(conn.getAdditionalParams() == null ? "" : conn.getAdditionalParams());
+
+        if (stringConnection != null && stringConnection.startsWith("jdbc:jtds:sqlserver:")) {
+            schemaField.getTextControl(parent).setEditable(true);
+            if (schemaField.getTextControl(parent).getText().equals("")) {
+                schemaField.getTextControl(parent).setText("dbo");
+            }
+        }
+
+        disableAllDbFields();
+
+        userField.setEnabled(true, parent);
+        passwordField.setEnabled(true, parent);
+
+        boolean visible = true;
+
+        if (stringConnection.contains("<host>")) { //$NON-NLS-1$
+            hostField.setEnabled(visible, parent);
+        }
+        if (stringConnection.contains("<port>")) { //$NON-NLS-1$
+            portField.setEnabled(visible, parent);
+        }
+        if (stringConnection.contains("<sid>") || stringConnection.contains("<service_name>")) { //$NON-NLS-1$ //$NON-NLS-2$
+            // sidOrDatabaseText.setEditable(visible);
+        }
+        if (stringConnection.contains("<filename>")) { // &&
+            if (EDatabaseTypeName.getTypeFromDisplayName(conn.getDatabaseType()).equals(EDatabaseTypeName.SQLITE)) {
+                userField.setEnabled(false, parent);
+                passwordField.setEnabled(false, parent);
+            } else {
+                userField.setEnabled(true, parent);
+                passwordField.setEnabled(true, parent);
+            }
+            dabasePathField.setEnabled(visible, parent);
+        }
+
+        if (stringConnection.contains("<datasource>")) { //$NON-NLS-1$
+            // datasourceText.setEditable(visible);
+        }
+        if (stringConnection.contains("<dbRootPath>")) {
+            // directoryField.setEditable(visible);
+            // sidOrDatabaseText.setEditable(visible);
+        }
+        if (url.isSchemaNeeded()) {
+            schemaField.getTextControl(parent).setEditable(visible);
+        }
+        if (url.isAddtionParamsNeeded()) {
+            additionParamField.getTextControl(parent).setEditable(visible);
+        }
+
+    }
+
+    public void disableAllDbFields() {
+        hostField.setEnabled(false, parent);
+        portField.setEnabled(false, parent);
+        dbNameField.setEnabled(false, parent);
+        additionParamField.setEnabled(false, parent);
+        schemaField.setEnabled(false, parent);
+        userField.setEnabled(false, parent);
+        passwordField.setEnabled(false, parent);
+        dabasePathField.setEnabled(false, parent);
+        statsTableField.setEnabled(false, parent);
+        logsTableField.setEnabled(false, parent);
+        metterTableField.setEnabled(false, parent);
+    }
+
+    /**
+     * yzhang Comment method "formRepositoryTypeText".
+     * 
+     * @param dialog
+     * @return
+     */
+    private String formRepositoryTypeText(ConnectionItem connectionItem) {
+        if (connectionItem == null) {
+            return "";
+        }
+        ERepositoryObjectType repositoryObjectType = ERepositoryObjectType.getItemType(connectionItem);
+        String aliasName = repositoryObjectType.getAlias();
+        org.talend.core.model.metadata.builder.connection.Connection connection = connectionItem.getConnection();
+        if (connection instanceof DatabaseConnection) {
+            String currentDbType = (String) RepositoryToComponentProperty.getValue(connection, "TYPE"); //$NON-NLS-1$
+            aliasName += " (" + currentDbType + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+        }
+        return aliasName + ":" + connectionItem.getProperty().getLabel();
     }
 
     private void createFields() {
@@ -166,6 +310,107 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
 
         onDatabaseField = new CheckBoxFieldEditor(languagePrefix + EParameterName.ON_DATABASE_FLAG.getName(),
                 EParameterName.ON_DATABASE_FLAG.getDisplayName(), parent);
+
+        Composite comboTypePanel = new Composite(parent, SWT.NONE);
+        GridData layout = new GridData(GridData.FILL_HORIZONTAL);
+        layout.horizontalSpan = 3;
+
+        comboTypePanel.setLayoutData(layout);
+        comboTypePanel.setLayout(new RowLayout());
+        Label labelRepositoryType = new Label(comboTypePanel, SWT.NONE);
+        labelRepositoryType.setText("Repository Type ");
+
+        comboRepositoryType = new Combo(comboTypePanel, SWT.READ_ONLY);
+
+        String[] repositoryTypes = new String[] { BUILD_IN, REPOSITORY };
+        comboRepositoryType.setItems(repositoryTypes);
+
+        String currentType = getPreferenceStore().getString(languagePrefix + EParameterName.PROPERTY_TYPE.getName());
+        currentType = currentType.equals(EmfComponent.REPOSITORY) ? REPOSITORY : BUILD_IN;
+        int currentTypeIndex = 0;
+        for (; currentTypeIndex < repositoryTypes.length; currentTypeIndex++) {
+            if (repositoryTypes[currentTypeIndex].equals(currentType)) {
+                break;
+            }
+
+        }
+        comboRepositoryType.select(currentTypeIndex);
+
+        String dbTypeLabel = getPreferenceStore().getString(
+                languagePrefix + EParameterName.REPOSITORY_PROPERTY_TYPE.getName()
+                        + StatsAndLogsPreferencePage.CONNECTION_ITEM_LABEL);
+
+        RepositoryContentProvider contentProvider = (RepositoryContentProvider) RepositoryView.show().getViewer()
+                .getContentProvider();
+        RepositoryNode repositoryNode = contentProvider.getMetadataConNode();
+        connectionItem = StatsAndLogsViewHelper.findConnectionItem(contentProvider, repositoryNode, dbTypeLabel);
+
+        textRepositoryType = new Text(comboTypePanel, SWT.SINGLE | SWT.BORDER);
+        textRepositoryType.setVisible(currentType.equals(REPOSITORY));
+        textRepositoryType.setEditable(false);
+        textRepositoryType.setText("                                         ");
+        textRepositoryType.setText(formRepositoryTypeText(connectionItem));
+
+        buttonShowRepository = new Button(comboTypePanel, SWT.NONE);
+        buttonShowRepository.setText("...");
+        buttonShowRepository.setVisible(currentType.equals(REPOSITORY));
+
+        buttonShowRepository.addSelectionListener(new SelectionListener() {
+
+            /*
+             * (non-Javadoc)
+             * 
+             * @see org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
+             */
+            public void widgetDefaultSelected(SelectionEvent e) {
+
+            }
+
+            public void widgetSelected(SelectionEvent e) {
+                RepositoryReviewDialog dialog = new RepositoryReviewDialog(Display.getCurrent().getActiveShell(),
+                        ERepositoryObjectType.METADATA, "DATABASE");
+
+                if (dialog.open() == RepositoryReviewDialog.OK) {
+                    setDbId(dialog.getResult().getObject().getId());
+                    connectionItem = (ConnectionItem) dialog.getResult().getObject().getProperty().getItem();
+                    String repositoryType = formRepositoryTypeText(connectionItem);
+                    textRepositoryType.setText(repositoryType);
+                    updateFileContent(connectionItem);
+                }
+            }
+
+        });
+
+        comboRepositoryType.addSelectionListener(new SelectionListener() {
+
+            /*
+             * (non-Javadoc)
+             * 
+             * @see org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
+             */
+            public void widgetDefaultSelected(SelectionEvent e) {
+
+            }
+
+            /*
+             * (non-Javadoc)
+             * 
+             * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)
+             */
+            public void widgetSelected(SelectionEvent e) {
+                if (comboRepositoryType.getText().equals(BUILD_IN)) {
+                    textRepositoryType.setVisible(false);
+                    buttonShowRepository.setVisible(false);
+                    dbTypeField.getControl().setEnabled(true);
+                    updateEnableStateFromDisplay();
+                } else {
+                    textRepositoryType.setVisible(true);
+                    buttonShowRepository.setVisible(true);
+                    dbTypeField.setEnabled(false, dbTypeComposite);
+                    dbTypeField.getComboBoxControl(dbTypeComposite).setEnabled(false);
+                }
+            }
+        });
 
         dbTypeComposite = new Composite(parent, SWT.NONE);
 
@@ -285,7 +530,8 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
         boolean onFiles = preferenceStore.getBoolean(languagePrefix + EParameterName.ON_FILES_FLAG.getName());
         boolean onDatabase = preferenceStore.getBoolean(languagePrefix + EParameterName.ON_DATABASE_FLAG.getName());
         String dbValue = preferenceStore.getString(languagePrefix + EParameterName.DB_TYPE.getName());
-        updateEnableState(onStatCatcher, onLogCatcher, onMetterCatcher, onFiles, onDatabase, dbValue);
+        boolean isBuildin = comboRepositoryType.getText().equals(BUILD_IN);
+        updateEnableState(onStatCatcher, onLogCatcher, onMetterCatcher, onFiles, onDatabase, dbValue, isBuildin);
     }
 
     private void updateEnableStateFromDisplay() {
@@ -295,21 +541,26 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
         boolean onFiles = onFilesField.getBooleanValue();
         boolean onDatabase = onDatabaseField.getBooleanValue();
         String dbValue = dbTypeField.getFieldValue();
-        updateEnableState(onStatCatcher, onLogCatcher, onMetterCatcher, onFiles, onDatabase, dbValue);
+        boolean isBuildin = comboRepositoryType.getText().equals(BUILD_IN);
+        updateEnableState(onStatCatcher, onLogCatcher, onMetterCatcher, onFiles, onDatabase, dbValue, isBuildin);
     }
 
     private void updateEnableState(boolean onStatCatcher, boolean onLogCatcher, boolean onMetterCatcher, boolean onFiles,
-            boolean onDatabase, String dbValue) {
+            boolean onDatabase, String dbValue, boolean isBuildin) {
         onFilesField.setEnabled(onStatCatcher || onLogCatcher || onMetterCatcher, parent);
         filePathField.setEnabled(onFiles && (onStatCatcher || onLogCatcher || onMetterCatcher), parent);
         statsFileNameField.setEnabled(onFiles && onStatCatcher, parent);
         logsFileNameField.setEnabled(onFiles && onLogCatcher, parent);
         metterFileNameField.setEnabled(onFiles && onMetterCatcher, parent);
 
+        comboRepositoryType.setEnabled(onLogCatcher && onDatabase);
+        textRepositoryType.setEnabled(onLogCatcher && onDatabase);
+        buttonShowRepository.setEnabled(onLogCatcher && onDatabase);
+
         onDatabaseField.setEnabled(onStatCatcher || onLogCatcher || onMetterCatcher, parent);
         dbTypeField.getComboBoxControl(dbTypeComposite).setEnabled(
-                onDatabase && (onStatCatcher || onLogCatcher || onMetterCatcher));
-        dbTypeField.setEnabled(onDatabase && (onStatCatcher || onLogCatcher || onMetterCatcher), dbTypeComposite);
+                isBuildin && onDatabase && (onStatCatcher || onLogCatcher || onMetterCatcher));
+        dbTypeField.setEnabled(isBuildin && onDatabase && (onStatCatcher || onLogCatcher || onMetterCatcher), dbTypeComposite);
         hostField.setEnabled((!dbValue.equals("tAccessOutput") && !dbValue.equals("tSQLiteOutput")) && onDatabase
                 && (onStatCatcher || onLogCatcher || onMetterCatcher), parent);
         portField.setEnabled((!dbValue.equals("tAccessOutput") && !dbValue.equals("tSQLiteOutput") && !dbValue
@@ -381,4 +632,40 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
 
     }
 
+    private String id;
+
+    private Text textRepositoryType;
+
+    private Button buttonShowRepository;
+
+    private void setDbId(String id) {
+        this.id = id;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jface.preference.FieldEditorPreferencePage#performOk()
+     */
+    @Override
+    public boolean performOk() {
+        boolean isRepositoryType = comboRepositoryType.getText().equals(REPOSITORY);
+
+        String key = languagePrefix + EParameterName.PROPERTY_TYPE.getName();
+        if (isRepositoryType) {
+            getPreferenceStore().setValue(key, EmfComponent.REPOSITORY);
+        } else {
+            getPreferenceStore().setValue(key, EmfComponent.BUILTIN);
+        }
+
+        getPreferenceStore().setValue(languagePrefix + EParameterName.REPOSITORY_PROPERTY_TYPE.getName(),
+                this.id == null ? "" : this.id);
+        String itemLabel = "";
+        if (connectionItem != null) {
+            itemLabel = connectionItem.getProperty().getLabel();
+        }
+        getPreferenceStore().setValue(languagePrefix + EParameterName.REPOSITORY_PROPERTY_TYPE.getName() + CONNECTION_ITEM_LABEL,
+                itemLabel);
+        return super.performOk();
+    }
 }
