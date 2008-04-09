@@ -46,6 +46,7 @@ import org.talend.core.CorePlugin;
 import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -80,7 +81,7 @@ public class ModuleListController extends AbstractElementPropertySectionControll
         if (file != null) {
             if (!file.equals("")) { //$NON-NLS-1$
                 String propertyName = (String) button.getData(PARAMETER_NAME);
-                String lastSegment = Path.fromOSString(file).lastSegment();
+                String lastSegment = TalendTextUtils.addQuotes(Path.fromOSString(file).lastSegment());
                 if (!elem.getPropertyValue(propertyName).equals(lastSegment)) {
                     try {
                         CorePlugin.getDefault().getLibrariesService().deployLibrary(Path.fromOSString(file).toFile().toURL());
@@ -122,7 +123,11 @@ public class ModuleListController extends AbstractElementPropertySectionControll
                                 }
                             }
                         }
-                        if (value.equals(elem.getPropertyValue(name))) { // same value so no need to do anything
+                        if (value.equals((String) elem.getPropertyValue(name))) { // same
+                            // value so
+                            // no
+                            // need to do
+                            // anything
                             return null;
                         }
                         CorePlugin.getDefault().getLibrariesService().resetModulesNeeded();
@@ -259,18 +264,22 @@ public class ModuleListController extends AbstractElementPropertySectionControll
 
     private void updateModuleList(Node node) {
         List<ModuleNeeded> moduleNeededList = ModulesNeededProvider.getModulesNeeded();
-        Set<String> moduleList = new HashSet<String>();
+        Set<String> moduleNameList = new HashSet<String>();
+        Set<String> moduleValueList = new HashSet<String>();
         for (ModuleNeeded module : moduleNeededList) {
-            moduleList.add(module.getModuleName());
+            String moduleName = module.getModuleName();
+            moduleNameList.add(moduleName);
+            moduleValueList.add(TalendTextUtils.addQuotes(moduleName));
         }
 
-        String[] moduleNameList = moduleList.toArray(new String[0]);
+        String[] moduleNameArray = moduleNameList.toArray(new String[0]);
+        String[] moduleValueArray = moduleValueList.toArray(new String[0]);
 
         for (int i = 0; i < node.getElementParameters().size(); i++) {
             IElementParameter param = node.getElementParameters().get(i);
             if (param.getField() == EParameterFieldType.MODULE_LIST) {
-                param.setListItemsDisplayName(moduleNameList);
-                param.setListItemsValue(moduleNameList);
+                param.setListItemsDisplayName(moduleNameArray);
+                param.setListItemsValue(moduleValueArray);
             }
         }
     }
@@ -315,7 +324,7 @@ public class ModuleListController extends AbstractElementPropertySectionControll
 
         combo.setItems(curNameList);
         if (value instanceof String) {
-            combo.setText((String) value);
+            combo.setText(TalendTextUtils.removeQuotes((String) value));
         }
 
         if (param.isContextMode()) {
