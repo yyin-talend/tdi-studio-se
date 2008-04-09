@@ -750,7 +750,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
             UpdateCheckDialog checkDialog = new UpdateCheckDialog(Display.getCurrent().getActiveShell(), results);
 
             if (checkDialog.open() == IDialogConstants.OK_ID) {
-                final List<UpdateResult> selectResult = Arrays.asList((UpdateResult[]) checkDialog.getResult());
+                final List<Object> selectResult = Arrays.asList(checkDialog.getResult());
                 ProgressDialog progress = new ProgressDialog(Display.getCurrent().getActiveShell()) {
 
                     @Override
@@ -787,13 +787,13 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
      * ggu Comment method "refreshViewers".
      */
     @SuppressWarnings("unchecked")
-    private void refreshRelatedViewers(List<UpdateResult> results) {
+    private void refreshRelatedViewers(List results) {
         boolean context = false;
         boolean jobSetting = false;
         boolean componentSettings = false;
         boolean palette = false;
 
-        for (UpdateResult result : results) {
+        for (UpdateResult result : (List<UpdateResult>) results) {
             switch (result.getUpdateType()) {
             case CONTEXT:
             case JOBLET_CONTEXT:
@@ -838,9 +838,9 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
      * can override the is method.
      */
     @SuppressWarnings("unchecked")//$NON-NLS-1$
-    private void executeUpdates(List<UpdateResult> selectResult, IProgressMonitor monitor) {
+    private void executeUpdates(List selectResult, IProgressMonitor monitor) {
         Command command = null;
-        for (UpdateResult result : selectResult) {
+        for (UpdateResult result : (List<UpdateResult>) selectResult) {
             switch (result.getUpdateType()) {
             case NODE_PROPERTY:
             case NODE_SCHEMA:
