@@ -766,6 +766,11 @@
             id="org.talend.repository.model.migration.AddQuotesToModuleListMigrationTask"
             name="%migrationtask.AddQuotesToModuleList.title">
       </projecttask>
+      <projecttask
+            class="org.talend.repository.model.migration.UpdateTheJobsActionsOnTable"
+            id="org.talend.repository.model.migration.UpdateTheJobsActionsOnTable"
+            name="Update the action on table drop box">
+      </projecttask>
    </extension>
    <extension
          point="org.talend.core.librariesNeeded">
