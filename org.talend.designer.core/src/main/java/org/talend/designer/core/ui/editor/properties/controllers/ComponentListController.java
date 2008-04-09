@@ -230,15 +230,19 @@ public class ComponentListController extends AbstractElementPropertySectionContr
             List<String> componentDisplayNames = new ArrayList<String>();
             List<String> componentUniqueNames = new ArrayList<String>();
             for (INode node : nodeList) {
-                String uniqueName = node.getUniqueName();
-                componentUniqueNames.add(uniqueName);
-                String displayName = (String) node.getElementParameter("LABEL").getValue();
-                if (displayName.indexOf("__UNIQUE_NAME__") != -1) {
-                    uniqueName = displayName.replaceAll("__UNIQUE_NAME__", uniqueName);
-                } else {
-                    uniqueName = uniqueName + " - " + displayName;
+                IElementParameter clearDataParam = node.getElementParameter("CLEAR_DATA");
+                // Only allow hashOutput "CLEAR_DATA" is enable.
+                if (clearDataParam != null && clearDataParam.getValue() != null && (Boolean) clearDataParam.getValue() == true) {
+                    String uniqueName = node.getUniqueName();
+                    componentUniqueNames.add(uniqueName);
+                    String displayName = (String) node.getElementParameter("LABEL").getValue();
+                    if (displayName.indexOf("__UNIQUE_NAME__") != -1) {
+                        uniqueName = displayName.replaceAll("__UNIQUE_NAME__", uniqueName);
+                    } else {
+                        uniqueName = uniqueName + " - " + displayName;
+                    }
+                    componentDisplayNames.add(uniqueName);
                 }
-                componentDisplayNames.add(uniqueName);
             }
 
             String[] componentNameList = (String[]) componentDisplayNames.toArray(new String[0]);

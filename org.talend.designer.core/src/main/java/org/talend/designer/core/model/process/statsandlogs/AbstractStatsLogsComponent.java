@@ -394,4 +394,13 @@ public abstract class AbstractStatsLogsComponent implements IComponent {
         return false;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.components.IComponent#isHashComponent()
+     */
+    public boolean isHashComponent() {
+        return false;
+    }
+
 }

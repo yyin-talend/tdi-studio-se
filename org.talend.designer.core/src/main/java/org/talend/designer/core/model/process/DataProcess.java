@@ -643,7 +643,12 @@ public class DataProcess {
         checkRefList.add(graphicalNode);
         for (IConnection connection : graphicalNode.getOutgoingConnections()) {
             if (connection.isActivate() && connection.getLineStyle().hasConnectionCategory(IConnectionCategory.USE_HASH)) {
+
                 INode refSource = buildCheckMap.get(graphicalNode);
+
+                if (refSource.getComponent().isHashComponent()) {
+                    continue;// If hash component, No need to create any virtual components.
+                }
 
                 // retrieve the starts node of each current nodes to add a before link
                 INode subNodeStartTarget = graphicalNode.getSubProcessStartNode(true);
@@ -676,6 +681,7 @@ public class DataProcess {
                 // dataConnec.setSource(subDataNodeStartTarget);
                 dataConnec.setTarget(subDataNodeStartTarget);
                 // dataConnec.setTarget(subDataNodeStartSource);
+
                 List<IConnection> outgoingConnections = (List<IConnection>) subDataNodeStartSource.getOutgoingConnections();
                 outgoingConnections.add(dataConnec);
                 List<IConnection> incomingConnections = (List<IConnection>) subDataNodeStartTarget.getIncomingConnections();

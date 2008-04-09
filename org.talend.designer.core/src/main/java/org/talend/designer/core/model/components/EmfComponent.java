@@ -1996,4 +1996,13 @@ public class EmfComponent implements IComponent {
         return EComponentType.EMF;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.components.IComponent#isHashComponent()
+     */
+    public boolean isHashComponent() {
+        return compType.getHEADER().isHASHCOMPONENT();
+    }
+
 }

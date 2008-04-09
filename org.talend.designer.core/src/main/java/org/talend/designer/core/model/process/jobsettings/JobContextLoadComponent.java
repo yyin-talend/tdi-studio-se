@@ -432,4 +432,13 @@ public class JobContextLoadComponent implements IComponent {
     public EComponentType getComponentType() {
         return EComponentType.JOB_CONTEXT_LOAD;
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.components.IComponent#isHashComponent()
+     */
+    public boolean isHashComponent() {
+        return false;
+    }
 }
