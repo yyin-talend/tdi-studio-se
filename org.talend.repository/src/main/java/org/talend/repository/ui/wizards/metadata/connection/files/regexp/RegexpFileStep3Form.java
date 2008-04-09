@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.metadata.connection.files.regexp;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -339,6 +340,8 @@ public class RegexpFileStep3Form extends AbstractRegexpFileStepForm {
         // clear all items
         tableEditorView.getMetadataEditor().removeAll();
 
+        List<MetadataColumn> columns = new ArrayList<MetadataColumn>();
+
         if (csvArray == null || csvArray.getRows().isEmpty()) {
             return;
         } else {
@@ -453,9 +456,10 @@ public class RegexpFileStep3Form extends AbstractRegexpFileStepForm {
 
                 // Check the label and add it to the table
                 metadataColumn.setLabel(tableEditorView.getMetadataEditor().getNextGeneratedColumnName(label[i]));
-                tableEditorView.getMetadataEditor().add(metadataColumn, i);
+                columns.add(i, metadataColumn);
             }
         }
+        tableEditorView.getMetadataEditor().registerDataList(columns);
         checkFieldsValue();
         tableEditorView.getTableViewerCreator().layout();
         informationLabel.setText(Messages.getString("FileStep3.guessTip")); //$NON-NLS-1$
