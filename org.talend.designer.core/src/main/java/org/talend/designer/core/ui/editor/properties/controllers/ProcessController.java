@@ -34,6 +34,7 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.commons.ui.image.ImageProvider;
@@ -451,29 +452,54 @@ public class ProcessController extends AbstractElementPropertySectionController 
     }
 
     @Override
-    public void refresh(IElementParameter param, boolean check) {
-        updateContextList(param);
-        if (hashCurControls == null) {
-            return;
-        }
-        IElementParameter processTypeParameter = param.getChildParameters().get(EParameterName.PROCESS_TYPE_PROCESS.getName());
-        Text jobName = (Text) hashCurControls.get(param.getName() + ":" + processTypeParameter.getName()); //$NON-NLS-1$
-        if (jobName != null && !jobName.isDisposed()) {
-            final String labelFromRepository = processTypeParameter.getLabelFromRepository();
-            if (labelFromRepository == null) {
-                jobName.setText(""); //$NON-NLS-1$
-            } else {
-                jobName.setText(labelFromRepository);
-            }
-        }
-        // context
-        refreshCombo(param, EParameterName.PROCESS_TYPE_CONTEXT.getName());
-        // version
-        refreshCombo(param, EParameterName.PROCESS_TYPE_VERSION.getName());
+    public void refresh(final IElementParameter param, boolean check) {
+        new Thread() {
 
-        if (elem != null && elem instanceof Node) {
-            ((Node) elem).checkAndRefreshNode();
-        }
+            /*
+             * (non-Javadoc)
+             * 
+             * @see java.lang.Thread#run()
+             */
+            @Override
+            public void run() {
+
+                Display.getDefault().syncExec(new Runnable() {
+
+                    /*
+                     * (non-Javadoc)
+                     * 
+                     * @see java.lang.Runnable#run()
+                     */
+                    public void run() {
+                        updateContextList(param);
+                        if (hashCurControls == null) {
+                            return;
+                        }
+                        IElementParameter processTypeParameter = param.getChildParameters().get(
+                                EParameterName.PROCESS_TYPE_PROCESS.getName());
+                        Text jobName = (Text) hashCurControls.get(param.getName() + ":" + processTypeParameter.getName()); //$NON-NLS-1$
+                        if (jobName != null && !jobName.isDisposed()) {
+                            final String labelFromRepository = processTypeParameter.getLabelFromRepository();
+                            if (labelFromRepository == null) {
+                                jobName.setText(""); //$NON-NLS-1$
+                            } else {
+                                jobName.setText(labelFromRepository);
+                            }
+                        }
+                        // context
+                        refreshCombo(param, EParameterName.PROCESS_TYPE_CONTEXT.getName());
+                        // version
+                        refreshCombo(param, EParameterName.PROCESS_TYPE_VERSION.getName());
+
+                        if (elem != null && elem instanceof Node) {
+                            ((Node) elem).checkAndRefreshNode();
+                        }
+                    }
+                });
+
+            }
+        }.start();
+
     }
 
     /**
