@@ -162,6 +162,13 @@ public class DataProcess {
         dataNode.setIncomingConnections(incomingConnections);
         dataNode.setOutgoingConnections(outgoingConnections);
 
+        // if the component is a hash, and that there is a lookup connection just after, don't generate the node.
+        // if (graphicalNode.getComponent().isHashComponent()) {
+        // if (graphicalNode.getOutgoingConnections(EConnectionType.FLOW_REF).size() != 0) {
+        // dataNode.setSubProcessStart(false);
+        // }
+        // }
+
         DataConnection dataConnec;
         for (IConnection connection : graphicalNode.getOutgoingConnections()) {
             if (!connection.isActivate()) {

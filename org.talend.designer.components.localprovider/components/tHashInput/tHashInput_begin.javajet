@@ -9,6 +9,7 @@
 		org.talend.core.model.metadata.IMetadataTable
 		org.talend.core.model.metadata.IMetadataColumn
 		org.talend.core.model.process.IConnectionCategory
+		org.talend.core.model.process.EConnectionType
 	"
 	class="HashInputBegin"
 %>
@@ -16,6 +17,10 @@
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
+	
+	if (node.getOutgoingConnections(EConnectionType.FLOW_REF).size() != 0) {
+	   return "";
+	}
 	List<IMetadataTable> metadatas = node.getMetadataList();
 	if ((metadatas!=null)&&(metadatas.size()>0)) {
     IMetadataTable metadata = metadatas.get(0);

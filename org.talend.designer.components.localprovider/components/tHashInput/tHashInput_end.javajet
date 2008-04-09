@@ -15,6 +15,9 @@
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
+	if (node.getOutgoingConnections(EConnectionType.FLOW_REF).size() != 0) {
+	   return "";
+	}
 	String cid = node.getUniqueName();
 %>
 nb_line_<%=cid %>++;

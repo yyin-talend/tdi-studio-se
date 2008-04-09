@@ -17,9 +17,11 @@ INode node = (INode)codeGenArgument.getArgument();
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {//1
     IMetadataTable metadata = metadatas.get(0);
+    String lookupConName = "";
     if (metadata!=null) {//2
     
         String cid = node.getUniqueName();
+        String hashName = "";
 
         //get the input Main and Lookup connection
         IConnection inMainCon = null;
@@ -32,6 +34,12 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
         	else if(conn.getLineStyle().equals(EConnectionType.FLOW_REF))
         	{
         		inRefCon = conn;
+        		lookupConName = inRefCon.getName();
+        		hashName = lookupConName;
+        		if (conn.getSource().getComponent().isHashComponent()) {
+        			hashName = ElementParameterParser.getValue(conn.getSource(), "__LIST__");
+        			lookupConName = "row2";
+        		}
         	}
         }//3 
         
@@ -39,12 +47,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {//1
         	return "";
         }
         
-        String lookupConName = inRefCon.getName();
         String incomingName = inMainCon.getName();
         
         List<Map<String, String>> joinKeys = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__JOIN_KEY__");
 %>
-    final java.util.Map<<%=lookupConName %>Struct, <%=lookupConName %>Struct> tHash_<%=cid %> = (java.util.Map<<%=lookupConName %>Struct, <%=lookupConName %>Struct>) globalMap.get("tHash_<%=lookupConName %>");
+    final java.util.Map<<%=lookupConName %>Struct, <%=lookupConName %>Struct> tHash_<%=cid %> = (java.util.Map<<%=lookupConName %>Struct, <%=lookupConName %>Struct>) globalMap.get("tHash_<%=hashName %>");
     
     class Util_<%=cid %>
     {
