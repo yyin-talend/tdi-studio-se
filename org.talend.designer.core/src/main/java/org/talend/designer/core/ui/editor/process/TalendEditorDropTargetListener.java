@@ -294,6 +294,9 @@ public class TalendEditorDropTargetListener implements TransferDropTargetListene
                         queryParam.setValue(EmfComponent.BUILTIN);
                     }
                 }
+                if (schemaParam != null && node.isELTComponent()) {
+                    schemaParam.getChildParameters().get(EParameterName.SCHEMA_TYPE.getName()).setValue(EmfComponent.REPOSITORY);
+                }
                 RepositoryChangeMetadataCommand command2 = new RepositoryChangeMetadataCommand(node, schemaParam.getName() + ":"
                         + EParameterName.REPOSITORY_SCHEMA_TYPE.getName(), value, ConvertionHelper.convert(table), null);
                 list.add(command2);
@@ -306,9 +309,11 @@ public class TalendEditorDropTargetListener implements TransferDropTargetListene
                 RepositoryObject object = (RepositoryObject) selectedNode.getObject();
                 Query query = (Query) object.getAdapter(Query.class);
                 String value = connectionItem.getProperty().getId() + " - " + query.getLabel();
-                RepositoryChangeQueryCommand command3 = new RepositoryChangeQueryCommand(node, query, queryParam.getName() + ":"
-                        + EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName(), value);
-                list.add(command3);
+                if (queryParam != null) {
+                    RepositoryChangeQueryCommand command3 = new RepositoryChangeQueryCommand(node, query, queryParam.getName()
+                            + ":" + EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName(), value);
+                    list.add(command3);
+                }
             } else {
                 if (connection instanceof DatabaseConnection) {
                     DatabaseConnection connection2 = (DatabaseConnection) connection;
