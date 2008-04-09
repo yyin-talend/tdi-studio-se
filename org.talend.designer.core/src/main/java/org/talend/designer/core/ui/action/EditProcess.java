@@ -12,9 +12,6 @@
 // ============================================================================
 package org.talend.designer.core.ui.action;
 
-import java.util.List;
-
-import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -29,10 +26,8 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
-import org.talend.designer.core.model.process.AbstractProcessProvider;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.ProcessEditorInput;
-import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.model.RepositoryNode;
@@ -82,21 +77,22 @@ public class EditProcess extends AContextualAction {
                 fileEditorInput.setRepositoryNode(node);
                 MultiPageTalendEditor openEditor = (MultiPageTalendEditor) page.openEditor(fileEditorInput,
                         MultiPageTalendEditor.ID, true);
-                List<AbstractProcessProvider> findAllProcessProviders = AbstractProcessProvider.findAllProcessProviders();
-                boolean isImport = false;
-                for (AbstractProcessProvider abstractProcessProvider : findAllProcessProviders) {
-                    if (abstractProcessProvider != null) {
-                        boolean update = abstractProcessProvider.updateProcessContexts((Process) fileEditorInput
-                                .getLoadedProcess());
-                        if (update) {
-                            isImport = true;
-                        }
-                    }
-                }
-                if (isImport) {
-                    openEditor.getTalendEditor().getCommandStack().execute(new Command() {
-                    });
-                }
+                // List<AbstractProcessProvider> findAllProcessProviders =
+                // AbstractProcessProvider.findAllProcessProviders();
+                // boolean isImport = false;
+                // for (AbstractProcessProvider abstractProcessProvider : findAllProcessProviders) {
+                // if (abstractProcessProvider != null) {
+                // boolean update = abstractProcessProvider.updateProcessContexts((Process) fileEditorInput
+                // .getLoadedProcess());
+                // if (update) {
+                // isImport = true;
+                // }
+                // }
+                // }
+                // if (isImport) {
+                // openEditor.getTalendEditor().getCommandStack().execute(new Command() {
+                // });
+                // }
             } else {
                 ((MultiPageTalendEditor) editorPart).setReadOnly(fileEditorInput.setForceReadOnly(false));
                 page.activate(editorPart);

@@ -12,7 +12,6 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor;
 
-import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.HashMap;
@@ -57,7 +56,6 @@ import org.eclipse.gef.MouseWheelZoomHandler;
 import org.eclipse.gef.RootEditPart;
 import org.eclipse.gef.SnapToGeometry;
 import org.eclipse.gef.SnapToGrid;
-import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.editparts.AbstractEditPart;
 import org.eclipse.gef.editparts.LayerManager;
@@ -127,18 +125,11 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.components.ComponentUtilities;
-import org.talend.core.model.components.EComponentType;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.general.ILibrariesService;
-import org.talend.core.model.metadata.IMetadataTable;
-import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.process.EConnectionType;
-import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
-import org.talend.core.model.process.IConnection;
-import org.talend.core.model.process.IElementParameter;
-import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
@@ -155,7 +146,6 @@ import org.talend.designer.core.ui.action.GEFPasteAction;
 import org.talend.designer.core.ui.action.ModifyMergeOrderAction;
 import org.talend.designer.core.ui.action.ModifyOutputOrderAction;
 import org.talend.designer.core.ui.action.TalendConnectionCreationTool;
-import org.talend.designer.core.ui.editor.cmd.ChangeMetadataCommand;
 import org.talend.designer.core.ui.editor.cmd.MoveNodeCommand;
 import org.talend.designer.core.ui.editor.connections.ConnectionPart;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -232,66 +222,67 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
 
     /**
      * yzhang Comment method "updatePaletteContent".
+     * 
+     * have moved to UpdateManager(feature 3232).
      */
-    public void updateGraphicalNodes(PropertyChangeEvent evt) {
-        String propertyName = evt.getPropertyName();
-        if (components == null) {
-            components = ComponentsFactoryProvider.getInstance();
-        }
-        if (propertyName.equals(ComponentUtilities.NORMAL)) {
-            for (Node node : (List<Node>) process.getGraphicalNodes()) {
-                IComponent newComponent = components.get(node.getComponent().getName());
-                if (newComponent == null) {
-                    continue;
-                }
-                Map<String, Object> parameters = new HashMap<String, Object>();
-
-                if (node.getComponent().getComponentType() != EComponentType.JOBLET) {
-                    if (node.getExternalData() != null) {
-                        parameters.put(INode.RELOAD_PARAMETER_EXTERNAL_BYTES_DATA, node.getExternalBytesData());
-                    }
-                    parameters.put(INode.RELOAD_PARAMETER_METADATA_LIST, node.getMetadataList());
-                    parameters.put(INode.RELAOD_PARAMETER_ELEMENT_PARAMETERS, node.getElementParameters());
-                } else {
-                    parameters.put(INode.RELOAD_NEW, true);
-                }
-
-                parameters.put(INode.RELOAD_PARAMETER_CONNECTORS, node.getListConnector());
-
-                node.reloadComponent(newComponent, parameters);
-                // System.out.println(node.getUniqueName() + " reload.");
-            }
-
-            for (Node node : (List<Node>) process.getGraphicalNodes()) {
-                node.checkAndRefreshNode();
-            }
-
-        } else if (propertyName.equals(ComponentUtilities.JOBLET_NAME_CHANGED)) {
-            String oldName = (String) evt.getOldValue();
-            String newName = (String) evt.getNewValue();
-
-            for (Node node : (List<Node>) process.getGraphicalNodes()) {
-                if (node.getComponent().getName().equals(oldName) || node.getLabel().contains(oldName)) {
-
-                    IComponent newComponent = components.get(newName);
-                    if (newComponent == null) {
-                        continue;
-                    }
-                    Map<String, Object> parameters = new HashMap<String, Object>();
-                    node.reloadComponent(newComponent, parameters);
-                }
-            }
-
-        } else if (propertyName.equals(ComponentUtilities.JOBLET_SCHEMA_CHANGED)) {
-            updateGraphicalNodesSchema(evt);
-        }
-        // else if (propertyName.equals(ComponentUtilities.JOBLET_INPUTOUTPUT_REDUCE)) {
-        // reduceGraphicalConnections(evt);
-        // }
-        process.setProcessModified(true);
-
-    }
-
+    // public void updateGraphicalNodes(PropertyChangeEvent evt) {
+    // String propertyName = evt.getPropertyName();
+    // if (components == null) {
+    // components = ComponentsFactoryProvider.getInstance();
+    // }
+    // if (propertyName.equals(ComponentUtilities.NORMAL)) {
+    // for (Node node : (List<Node>) process.getGraphicalNodes()) {
+    // IComponent newComponent = components.get(node.getComponent().getName());
+    // if (newComponent == null) {
+    // continue;
+    // }
+    // Map<String, Object> parameters = new HashMap<String, Object>();
+    //
+    // if (node.getComponent().getComponentType() != EComponentType.JOBLET) {
+    // if (node.getExternalData() != null) {
+    // parameters.put(INode.RELOAD_PARAMETER_EXTERNAL_BYTES_DATA, node.getExternalBytesData());
+    // }
+    // parameters.put(INode.RELOAD_PARAMETER_METADATA_LIST, node.getMetadataList());
+    // parameters.put(INode.RELAOD_PARAMETER_ELEMENT_PARAMETERS, node.getElementParameters());
+    // } else {
+    // parameters.put(INode.RELOAD_NEW, true);
+    // }
+    //
+    // parameters.put(INode.RELOAD_PARAMETER_CONNECTORS, node.getListConnector());
+    //
+    // node.reloadComponent(newComponent, parameters);
+    // // System.out.println(node.getUniqueName() + " reload.");
+    // }
+    //
+    // for (Node node : (List<Node>) process.getGraphicalNodes()) {
+    // node.checkAndRefreshNode();
+    // }
+    //
+    // } else if (propertyName.equals(ComponentUtilities.JOBLET_NAME_CHANGED)) {
+    // String oldName = (String) evt.getOldValue();
+    // String newName = (String) evt.getNewValue();
+    //
+    // for (Node node : (List<Node>) process.getGraphicalNodes()) {
+    // if (node.getComponent().getName().equals(oldName) || node.getLabel().contains(oldName)) {
+    //
+    // IComponent newComponent = components.get(newName);
+    // if (newComponent == null) {
+    // continue;
+    // }
+    // Map<String, Object> parameters = new HashMap<String, Object>();
+    // node.reloadComponent(newComponent, parameters);
+    // }
+    // }
+    //
+    // } else if (propertyName.equals(ComponentUtilities.JOBLET_SCHEMA_CHANGED)) {
+    // updateGraphicalNodesSchema(evt);
+    // }
+    // // else if (propertyName.equals(ComponentUtilities.JOBLET_INPUTOUTPUT_REDUCE)) {
+    // // reduceGraphicalConnections(evt);
+    // // }
+    // process.setProcessModified(true);
+    //
+    // }
     /**
      * DOC qzhang Comment method "reduceGraphicalConnections".
      * 
@@ -385,91 +376,92 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
     /**
      * DOC qzhang Comment method "updateGraphicalNodesSchema".
      * 
+     * have moved to UpdateManager.
+     * 
      * @param evt
      */
-    private void updateGraphicalNodesSchema(PropertyChangeEvent evt) {
-        String oldName = ((IProcess) evt.getSource()).getName();
-        Object[] newMetadataTables = (Object[]) evt.getNewValue();
-        List<IMetadataTable> newInputTableList = (List<IMetadataTable>) newMetadataTables[0];
-
-        List<IMetadataTable> newOutputTableList = (List<IMetadataTable>) newMetadataTables[1];
-
-        for (Node node : (List<Node>) process.getGraphicalNodes()) {
-            if (node.getComponent().getName().equals(oldName) || node.getLabel().contains(oldName)) {
-                IComponent newComponent = components.get(oldName);
-                if (newComponent == null) {
-                    continue;
-                }
-                List<IElementParameter> outputElemParams = new ArrayList<IElementParameter>();
-
-                IElementParameter outputElemParam = null;
-
-                List<? extends IElementParameter> elementParameters = node.getElementParameters();
-                for (IElementParameter elementParameter : elementParameters) {
-                    if (EParameterFieldType.SCHEMA_TYPE.equals(elementParameter.getField())) {
-                        outputElemParams.add(elementParameter);
-                    }
-                }
-                ChangeMetadataCommand command;
-                List<? extends IConnection> incomingConnections = node.getIncomingConnections();
-                for (int i = 0; i < incomingConnections.size(); i++) {
-                    IConnection connection = incomingConnections.get(i);
-                    Node source = (Node) connection.getSource();
-                    IMetadataTable metadataTable = connection.getMetadataTable();
-                    IMetadataTable newInputMetadataTable = getNewInputTableForConnection(newInputTableList, metadataTable
-                            .getAttachedConnector());
-                    if (newInputMetadataTable != null && !metadataTable.sameMetadataAs(newInputMetadataTable)) {
-                        IElementParameter elementParam = source.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
-                        command = new ChangeMetadataCommand(source, elementParam, metadataTable, newInputMetadataTable);
-                        command.execute(Boolean.FALSE);
-                    }
-                }
-                List<? extends IConnection> outgoingConnections = node.getOutgoingConnections();
-                for (int i = 0; i < outgoingConnections.size(); i++) {
-                    IConnection connection = outgoingConnections.get(i);
-                    Node target = (Node) connection.getTarget();
-                    IMetadataTable metadataTable = connection.getMetadataTable();
-                    if (metadataTable != null) {
-                        IMetadataTable newOutputMetadataTable = getNewOutputTableForConnection(newOutputTableList, metadataTable
-                                .getAttachedConnector());
-                        if (newOutputMetadataTable != null && !metadataTable.sameMetadataAs(newOutputMetadataTable)) {
-                            IElementParameter elementParam = target.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
-                            command = new ChangeMetadataCommand(target, elementParam, target
-                                    .getMetadataFromConnector(metadataTable.getAttachedConnector()), newOutputMetadataTable);
-                            command.execute(Boolean.FALSE);
-                        }
-                    }
-                }
-
-                List<IMetadataTable> metadataList = node.getMetadataList();
-                for (IMetadataTable metadataTable : metadataList) {
-                    IMetadataTable newInputMetadataTable = getNewInputTableForConnection(newInputTableList, metadataTable
-                            .getAttachedConnector());
-                    IMetadataTable newOutputMetadataTable = getNewOutputTableForConnection(newOutputTableList, metadataTable
-                            .getAttachedConnector());
-                    outputElemParam = getElemParam(outputElemParams, metadataTable.getAttachedConnector());
-
-                    if (outputElemParam != null && newInputMetadataTable != null) {
-                        command = new ChangeMetadataCommand(node, outputElemParam, (IMetadataTable) outputElemParam.getValue(),
-                                newInputMetadataTable);
-                        command.execute(Boolean.FALSE);
-                        IMetadataTable metadataFromConnector = node.getMetadataFromConnector(outputElemParam.getContext());
-                        MetadataTool.copyTable(newInputMetadataTable, metadataFromConnector);
-                    } else if (outputElemParam != null && newOutputMetadataTable != null) {
-                        command = new ChangeMetadataCommand(node, outputElemParam, (IMetadataTable) outputElemParam.getValue(),
-                                newOutputMetadataTable);
-                        command.execute(Boolean.FALSE);
-                        IMetadataTable metadataFromConnector = node.getMetadataFromConnector(outputElemParam.getContext());
-                        MetadataTool.copyTable(newOutputMetadataTable, metadataFromConnector);
-                    }
-                }
-
-                getCommandStack().execute(new Command() {
-                });
-            }
-        }
-    }
-
+    // private void updateGraphicalNodesSchema(PropertyChangeEvent evt) {
+    // String oldName = ((IProcess) evt.getSource()).getName();
+    // Object[] newMetadataTables = (Object[]) evt.getNewValue();
+    // List<IMetadataTable> newInputTableList = (List<IMetadataTable>) newMetadataTables[0];
+    //
+    // List<IMetadataTable> newOutputTableList = (List<IMetadataTable>) newMetadataTables[1];
+    //
+    // for (Node node : (List<Node>) process.getGraphicalNodes()) {
+    // if (node.getComponent().getName().equals(oldName) || node.getLabel().contains(oldName)) {
+    // IComponent newComponent = components.get(oldName);
+    // if (newComponent == null) {
+    // continue;
+    // }
+    // List<IElementParameter> outputElemParams = new ArrayList<IElementParameter>();
+    //
+    // IElementParameter outputElemParam = null;
+    //
+    // List<? extends IElementParameter> elementParameters = node.getElementParameters();
+    // for (IElementParameter elementParameter : elementParameters) {
+    // if (EParameterFieldType.SCHEMA_TYPE.equals(elementParameter.getField())) {
+    // outputElemParams.add(elementParameter);
+    // }
+    // }
+    // ChangeMetadataCommand command;
+    // List<? extends IConnection> incomingConnections = node.getIncomingConnections();
+    // for (int i = 0; i < incomingConnections.size(); i++) {
+    // IConnection connection = incomingConnections.get(i);
+    // Node source = (Node) connection.getSource();
+    // IMetadataTable metadataTable = connection.getMetadataTable();
+    // IMetadataTable newInputMetadataTable = getNewInputTableForConnection(newInputTableList, metadataTable
+    // .getAttachedConnector());
+    // if (newInputMetadataTable != null && !metadataTable.sameMetadataAs(newInputMetadataTable)) {
+    // IElementParameter elementParam = source.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
+    // command = new ChangeMetadataCommand(source, elementParam, metadataTable, newInputMetadataTable);
+    // command.execute(Boolean.FALSE);
+    // }
+    // }
+    // List<? extends IConnection> outgoingConnections = node.getOutgoingConnections();
+    // for (int i = 0; i < outgoingConnections.size(); i++) {
+    // IConnection connection = outgoingConnections.get(i);
+    // Node target = (Node) connection.getTarget();
+    // IMetadataTable metadataTable = connection.getMetadataTable();
+    // if (metadataTable != null) {
+    // IMetadataTable newOutputMetadataTable = getNewOutputTableForConnection(newOutputTableList, metadataTable
+    // .getAttachedConnector());
+    // if (newOutputMetadataTable != null && !metadataTable.sameMetadataAs(newOutputMetadataTable)) {
+    // IElementParameter elementParam = target.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
+    // command = new ChangeMetadataCommand(target, elementParam, target
+    // .getMetadataFromConnector(metadataTable.getAttachedConnector()), newOutputMetadataTable);
+    // command.execute(Boolean.FALSE);
+    // }
+    // }
+    // }
+    //
+    // List<IMetadataTable> metadataList = node.getMetadataList();
+    // for (IMetadataTable metadataTable : metadataList) {
+    // IMetadataTable newInputMetadataTable = getNewInputTableForConnection(newInputTableList, metadataTable
+    // .getAttachedConnector());
+    // IMetadataTable newOutputMetadataTable = getNewOutputTableForConnection(newOutputTableList, metadataTable
+    // .getAttachedConnector());
+    // outputElemParam = getElemParam(outputElemParams, metadataTable.getAttachedConnector());
+    //
+    // if (outputElemParam != null && newInputMetadataTable != null) {
+    // command = new ChangeMetadataCommand(node, outputElemParam, (IMetadataTable) outputElemParam.getValue(),
+    // newInputMetadataTable);
+    // command.execute(Boolean.FALSE);
+    // IMetadataTable metadataFromConnector = node.getMetadataFromConnector(outputElemParam.getContext());
+    // MetadataTool.copyTable(newInputMetadataTable, metadataFromConnector);
+    // } else if (outputElemParam != null && newOutputMetadataTable != null) {
+    // command = new ChangeMetadataCommand(node, outputElemParam, (IMetadataTable) outputElemParam.getValue(),
+    // newOutputMetadataTable);
+    // command.execute(Boolean.FALSE);
+    // IMetadataTable metadataFromConnector = node.getMetadataFromConnector(outputElemParam.getContext());
+    // MetadataTool.copyTable(newOutputMetadataTable, metadataFromConnector);
+    // }
+    // }
+    //
+    // getCommandStack().execute(new Command() {
+    // });
+    // }
+    // }
+    // }
     /**
      * DOC qzhang Comment method "getNewOutputTableForConnection".
      * 
@@ -477,16 +469,16 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
      * @param attachedConnector
      * @return
      */
-    private IMetadataTable getNewOutputTableForConnection(List<IMetadataTable> newOutputTableList, String tableName) {
-        for (IMetadataTable metadataTable : newOutputTableList) {
-            if (tableName != null && tableName.equals(metadataTable.getTableName())
-                    || tableName.equals(metadataTable.getTableName())) {
-                return metadataTable;
-            }
-        }
-        return null;
-    }
-
+    // private IMetadataTable getNewOutputTableForConnection(List<IMetadataTable> newOutputTableList, String tableName)
+    // {
+    // for (IMetadataTable metadataTable : newOutputTableList) {
+    // if (tableName != null && tableName.equals(metadataTable.getTableName())
+    // || tableName.equals(metadataTable.getTableName())) {
+    // return metadataTable;
+    // }
+    // }
+    // return null;
+    // }
     /**
      * DOC qzhang Comment method "getElemParam".
      * 
@@ -495,15 +487,14 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
      * 
      * @return
      */
-    private IElementParameter getElemParam(List<IElementParameter> elemParams, String string) {
-        for (IElementParameter elementParameter : elemParams) {
-            if (string != null && string.equals(elementParameter.getContext())) {
-                return elementParameter;
-            }
-        }
-        return null;
-    }
-
+    // private IElementParameter getElemParam(List<IElementParameter> elemParams, String string) {
+    // for (IElementParameter elementParameter : elemParams) {
+    // if (string != null && string.equals(elementParameter.getContext())) {
+    // return elementParameter;
+    // }
+    // }
+    // return null;
+    // }
     /**
      * DOC qzhang Comment method "getNewInputTableForConnection".
      * 
@@ -512,16 +503,15 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
      * 
      * @return
      */
-    private IMetadataTable getNewInputTableForConnection(List<IMetadataTable> newInputTableList, String connector) {
-        for (IMetadataTable metadataTable : newInputTableList) {
-            if (connector != null
-                    && (connector.equals(metadataTable.getAttachedConnector()) || connector.equals(metadataTable.getTableName()))) {
-                return metadataTable;
-            }
-        }
-        return null;
-    }
-
+    // private IMetadataTable getNewInputTableForConnection(List<IMetadataTable> newInputTableList, String connector) {
+    // for (IMetadataTable metadataTable : newInputTableList) {
+    // if (connector != null
+    // && (connector.equals(metadataTable.getAttachedConnector()) || connector.equals(metadataTable.getTableName()))) {
+    // return metadataTable;
+    // }
+    // }
+    // return null;
+    // }
     protected AbstractMultiPageTalendEditor parent;
 
     protected boolean savePreviouslyNeeded;

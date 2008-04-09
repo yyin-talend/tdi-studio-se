@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.gef.palette.PaletteEntry;
 import org.eclipse.gef.palette.PaletteRoot;
 import org.eclipse.jface.action.IAction;
@@ -26,23 +25,15 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.MultiPageEditorPart;
-import org.talend.commons.exception.ExceptionHandler;
-import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.IComponentsFactory;
-import org.talend.core.model.metadata.IMetadataTable;
-import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.properties.ProcessItem;
-import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.designer.core.model.process.AbstractProcessProvider;
-import org.talend.designer.core.model.utils.emf.talendfile.MetadataType;
-import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.action.CreateProcess;
@@ -58,7 +49,6 @@ import org.talend.designer.core.ui.views.jobsettings.JobSettings;
 import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.designer.core.ui.views.properties.ComponentSettings;
 import org.talend.designer.runprocess.ProcessorUtilities;
-import org.talend.repository.model.ProxyRepositoryFactory;
 
 /**
  * Detailled comment <br/>.
@@ -187,74 +177,77 @@ public class DesignerCoreService implements IDesignerCoreService {
      */
     public void synchronizeDesignerUI(PropertyChangeEvent evt) {
         ComponentUtilities.updatePalette();
-        List<String> openJobs = new ArrayList<String>();
+        // List<String> openJobs = new ArrayList<String>();
         for (IEditorPart editor : ProcessorUtilities.getOpenedEditors()) {
             AbstractTalendEditor abstractTalendEditor = ((AbstractTalendEditor) editor);
-            abstractTalendEditor.updateGraphicalNodes(evt);
+            // abstractTalendEditor.updateGraphicalNodes(evt);
             IProcess2 process = abstractTalendEditor.getProcess();
-            openJobs.add(process.getName() + process.getVersion());
+            process.getUpdateManager().addNodesPropertyChanger(evt);
+            // openJobs.add(process.getName() + process.getVersion());
         }
-        if (ComponentUtilities.JOBLET_SCHEMA_CHANGED.equals(evt.getPropertyName())) {
-            try {
-                String oldName = ((IProcess) evt.getSource()).getName();
+        // removed by (featrue 3232)
 
-                Object[] oldMetadataTables = (Object[]) evt.getOldValue();
-                Object[] newMetadataTables = (Object[]) evt.getNewValue();
-                List<IMetadataTable> oldInputTableList = (List<IMetadataTable>) oldMetadataTables[0];
-                List<IMetadataTable> newInputTableList = (List<IMetadataTable>) newMetadataTables[0];
-
-                List<IMetadataTable> oldOutputTableList = (List<IMetadataTable>) oldMetadataTables[1];
-                List<IMetadataTable> newOutputTableList = (List<IMetadataTable>) newMetadataTables[1];
-                IMetadataTable newInputMetadataTable = null;
-                IMetadataTable newOutputMetadataTable = null;
-
-                ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
-                List<IRepositoryObject> allJobsAndJoblets = new ArrayList<IRepositoryObject>();
-                allJobsAndJoblets.addAll(factory.getAll(ERepositoryObjectType.PROCESS, true));
-                allJobsAndJoblets.addAll(factory.getAll(ERepositoryObjectType.JOBLET, true));
-                for (IRepositoryObject repositoryObject : allJobsAndJoblets) {
-                    String keyId = repositoryObject.getProperty().getLabel() + repositoryObject.getProperty().getVersion();
-                    if (!openJobs.contains(keyId)) {
-                        Item item2 = repositoryObject.getProperty().getItem();
-                        EList node = null;
-                        if (item2 instanceof ProcessItem) {
-                            ProcessItem item = (ProcessItem) item2;
-                            node = item.getProcess().getNode();
-                        } else if (item2 instanceof JobletProcessItem) {
-                            JobletProcessItem item = (JobletProcessItem) item2;
-                            node = item.getJobletProcess().getNode();
-                        }
-                        boolean isModify = false;
-                        if (node != null) {
-                            for (Object o : node) {
-                                NodeType currentNode = (NodeType) o;
-                                if (currentNode.getComponentName().equals(oldName)) {
-                                    EList metadata = currentNode.getMetadata();
-                                    for (Object object : metadata) {
-                                        MetadataType metadataTable = (MetadataType) object;
-                                        newInputMetadataTable = getNewInputTableForConnection(newInputTableList, metadataTable
-                                                .getConnector());
-                                        newOutputMetadataTable = getNewOutputTableForConnection(newOutputTableList, metadataTable
-                                                .getName());
-                                        if (newInputMetadataTable != null) {
-                                            MetadataTool.copyTable(newInputMetadataTable, metadataTable);
-                                        } else if (newOutputMetadataTable != null) {
-                                            MetadataTool.copyTable(newOutputMetadataTable, metadataTable);
-                                        }
-                                        isModify = true;
-                                    }
-                                }
-                            }
-                        }
-                        if (isModify) {
-                            factory.save(item2, true);
-                        }
-                    }
-                }
-            } catch (PersistenceException e) {
-                ExceptionHandler.process(e);
-            }
-        }
+        // if (ComponentUtilities.JOBLET_SCHEMA_CHANGED.equals(evt.getPropertyName())) {
+        // try {
+        // String oldName = ((IProcess) evt.getSource()).getName();
+        //
+        // Object[] oldMetadataTables = (Object[]) evt.getOldValue();
+        // Object[] newMetadataTables = (Object[]) evt.getNewValue();
+        // List<IMetadataTable> oldInputTableList = (List<IMetadataTable>) oldMetadataTables[0];
+        // List<IMetadataTable> newInputTableList = (List<IMetadataTable>) newMetadataTables[0];
+        //
+        // List<IMetadataTable> oldOutputTableList = (List<IMetadataTable>) oldMetadataTables[1];
+        // List<IMetadataTable> newOutputTableList = (List<IMetadataTable>) newMetadataTables[1];
+        // IMetadataTable newInputMetadataTable = null;
+        // IMetadataTable newOutputMetadataTable = null;
+        //
+        // ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+        // List<IRepositoryObject> allJobsAndJoblets = new ArrayList<IRepositoryObject>();
+        // allJobsAndJoblets.addAll(factory.getAll(ERepositoryObjectType.PROCESS, true));
+        // allJobsAndJoblets.addAll(factory.getAll(ERepositoryObjectType.JOBLET, true));
+        // for (IRepositoryObject repositoryObject : allJobsAndJoblets) {
+        // String keyId = repositoryObject.getProperty().getLabel() + repositoryObject.getProperty().getVersion();
+        // // if (!openJobs.contains(keyId)) {
+        // Item item2 = repositoryObject.getProperty().getItem();
+        // EList node = null;
+        // if (item2 instanceof ProcessItem) {
+        // ProcessItem item = (ProcessItem) item2;
+        // node = item.getProcess().getNode();
+        // } else if (item2 instanceof JobletProcessItem) {
+        // JobletProcessItem item = (JobletProcessItem) item2;
+        // node = item.getJobletProcess().getNode();
+        // }
+        // boolean isModify = false;
+        // if (node != null) {
+        // for (Object o : node) {
+        // NodeType currentNode = (NodeType) o;
+        // if (currentNode.getComponentName().equals(oldName)) {
+        // EList metadata = currentNode.getMetadata();
+        // for (Object object : metadata) {
+        // MetadataType metadataTable = (MetadataType) object;
+        // newInputMetadataTable = getNewInputTableForConnection(newInputTableList, metadataTable
+        // .getConnector());
+        // newOutputMetadataTable = getNewOutputTableForConnection(newOutputTableList, metadataTable
+        // .getName());
+        // if (newInputMetadataTable != null) {
+        // MetadataTool.copyTable(newInputMetadataTable, metadataTable);
+        // } else if (newOutputMetadataTable != null) {
+        // MetadataTool.copyTable(newOutputMetadataTable, metadataTable);
+        // }
+        // isModify = true;
+        // }
+        // }
+        // }
+        // }
+        // if (isModify) {
+        // factory.save(item2, true);
+        // }
+        // // }
+        // }
+        // } catch (PersistenceException e) {
+        // ExceptionHandler.process(e);
+        // }
+        // }
     }
 
     /**
@@ -265,15 +258,14 @@ public class DesignerCoreService implements IDesignerCoreService {
      * 
      * @return
      */
-    private IMetadataTable getNewInputTableForConnection(List<IMetadataTable> newInputTableList, String connector) {
-        for (IMetadataTable metadataTable : newInputTableList) {
-            if (connector != null && connector.equals(metadataTable.getAttachedConnector())) {
-                return metadataTable;
-            }
-        }
-        return null;
-    }
-
+    // private IMetadataTable getNewInputTableForConnection(List<IMetadataTable> newInputTableList, String connector) {
+    // for (IMetadataTable metadataTable : newInputTableList) {
+    // if (connector != null && connector.equals(metadataTable.getAttachedConnector())) {
+    // return metadataTable;
+    // }
+    // }
+    // return null;
+    // }
     /**
      * DOC qzhang Comment method "getNewOutputTableForConnection".
      * 
@@ -281,15 +273,15 @@ public class DesignerCoreService implements IDesignerCoreService {
      * @param attachedConnector
      * @return
      */
-    private IMetadataTable getNewOutputTableForConnection(List<IMetadataTable> newOutputTableList, String tableName) {
-        for (IMetadataTable metadataTable : newOutputTableList) {
-            if (tableName != null && tableName.equals(metadataTable.getTableName())) {
-                return metadataTable;
-            }
-        }
-        return null;
-    }
-
+    // private IMetadataTable getNewOutputTableForConnection(List<IMetadataTable> newOutputTableList, String tableName)
+    // {
+    // for (IMetadataTable metadataTable : newOutputTableList) {
+    // if (tableName != null && tableName.equals(metadataTable.getTableName())) {
+    // return metadataTable;
+    // }
+    // }
+    // return null;
+    // }
     /*
      * (non-Javadoc)
      * 

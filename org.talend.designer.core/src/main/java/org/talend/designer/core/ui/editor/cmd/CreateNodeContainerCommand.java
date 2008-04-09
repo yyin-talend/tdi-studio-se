@@ -15,6 +15,7 @@ package org.talend.designer.core.ui.editor.cmd;
 import java.util.List;
 
 import org.eclipse.draw2d.geometry.Point;
+import org.talend.core.model.update.EUpdateItemType;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.process.AbstractProcessProvider;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
@@ -72,11 +73,12 @@ public class CreateNodeContainerCommand extends CreateCommand {
         process.checkStartNodes();
         nodeContainer.getNode().checkAndRefreshNode();
         // update joblet context.
-        AbstractProcessProvider provider = AbstractProcessProvider.findProcessProviderFromPID(nodeContainer.getNode()
-                .getComponent().getPluginFullName());
-        if (provider != null) {
-            provider.updateJobletContext(nodeContainer.getNode());
-        }
+        // AbstractProcessProvider provider = AbstractProcessProvider.findProcessProviderFromPID(nodeContainer.getNode()
+        // .getComponent().getPluginFullName());
+        // if (provider != null) {
+        // provider.updateJobletContext(nodeContainer.getNode());
+        // }
+        process.getUpdateManager().update(EUpdateItemType.JOBLET_CONTEXT);
     }
 
     public void undo() {

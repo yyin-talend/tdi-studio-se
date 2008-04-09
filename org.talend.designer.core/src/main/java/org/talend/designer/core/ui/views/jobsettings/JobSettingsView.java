@@ -47,9 +47,9 @@ import org.talend.designer.core.ui.views.statsandlogs.StatsAndLogsComposite;
  */
 public class JobSettingsView extends ViewPart implements IJobSettingsView {
 
-    private static final String VIEW_NAME = Messages.getString("JobSettingsView.JobSettings"); //$NON-NLS-1$
+    public static final String VIEW_NAME = Messages.getString("JobSettingsView.JobSettings"); //$NON-NLS-1$
 
-    private static final String VIEW_NAME_JOBLET = "Joblet Settings";
+    public static final String VIEW_NAME_JOBLET = "Joblet Settings";
 
     private HorizontalTabFactory tabFactory = null;
 

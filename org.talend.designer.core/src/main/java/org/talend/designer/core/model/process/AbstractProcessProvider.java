@@ -22,6 +22,7 @@ import org.eclipse.gef.palette.PaletteEntry;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.Item;
+import org.talend.core.model.update.UpdateResult;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
 
@@ -137,14 +138,22 @@ public abstract class AbstractProcessProvider {
      */
     public abstract void rebuildGraphicProcessFromNode(Node node, List<Node> graphicalNodeList);
 
-    public abstract void updateJobletContext(Node node);
+    // public abstract void updateJobletContext(Node node);
 
     /**
      * DOC qzhang Comment method "updateJobletContext".
      * 
      * @param nodes
      */
-    public abstract boolean updateProcessContexts(Process process);
+    public abstract List<String> updateProcessContexts(Process process);
+
+    /**
+     * 
+     * ggu Comment method "checkJobletNodeSchema".
+     * 
+     * 
+     */
+    public abstract List<UpdateResult> checkJobletNodeSchema(Process process);
 
     /**
      * DOC qzhang Comment method "canCreate".
