@@ -760,6 +760,12 @@
             id="org.talend.repository.model.migration.ChangeValueOfTLogRowChecks"
             name="Change values of tLogRow checks">
       </projecttask>
+      <projecttask
+            class="org.talend.repository.model.migration.AddQuotesToModuleListMigrationTask"
+            description="%migrationtask.AddQuotesToModuleList.title"
+            id="org.talend.repository.model.migration.AddQuotesToModuleListMigrationTask"
+            name="%migrationtask.AddQuotesToModuleList.title">
+      </projecttask>
    </extension>
    <extension
          point="org.talend.core.librariesNeeded">
