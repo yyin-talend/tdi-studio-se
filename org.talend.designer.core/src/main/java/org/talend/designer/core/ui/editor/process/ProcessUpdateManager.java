@@ -624,6 +624,12 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
 
             String propertyName = event.getPropertyName();
             if (propertyName.equals(ComponentUtilities.NORMAL)) {
+                AbstractProcessProvider processProvider = AbstractProcessProvider
+                        .findProcessProviderFromPID(IComponent.JOBLET_PID);
+                if (processProvider != null && !processProvider.hasJobletComponent(getProcess())) {
+                    break;
+
+                }
                 Object object = event.getSource();
                 if (object instanceof IProcess) {
                     IProcess process2 = (IProcess) object;

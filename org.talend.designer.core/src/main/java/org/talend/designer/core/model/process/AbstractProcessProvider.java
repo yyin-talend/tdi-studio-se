@@ -155,6 +155,8 @@ public abstract class AbstractProcessProvider {
      */
     public abstract List<UpdateResult> checkJobletNodeSchema(Process process);
 
+    public abstract boolean hasJobletComponent(Process process);
+
     /**
      * DOC qzhang Comment method "canCreate".
      * 
