@@ -113,6 +113,7 @@ import org.talend.designer.runprocess.JobInfo;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.migration.UpdateTheJobsActionsOnTable;
 
 /**
  * The diagram will contain all elements (nodes, connections) The xml that describes the diagram will be saved from the
@@ -125,6 +126,8 @@ public class Process extends Element implements IProcess2 {
 
     // properties
     public static final String NEED_UPDATE_JOB = "NEED_UPDATE_JOB"; //$NON-NLS-1$
+
+    public static final String TABLE_ACTION = "TABLE_ACTION"; //$NON-NLS-1$
 
     public static final String DEFAULT_ROW_CONNECTION_NAME = "row"; //$NON-NLS-1$
 
@@ -756,6 +759,11 @@ public class Process extends Element implements IProcess2 {
                     } else if (!param.getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
                         elemParam.setPropertyValue(pType.getName(), value);
                     }
+                } else if (UpdateTheJobsActionsOnTable.isClear && "CLEAR_TABLE".equals(pType.getName())
+                        && "true".equals(pType.getValue())
+                        && "NONE".equals(elemParam.getElementParameter(Process.TABLE_ACTION).getValue())) {
+                    elemParam.setPropertyValue(Process.TABLE_ACTION, "CLEAR");
+                    UpdateTheJobsActionsOnTable.isClear = false;
                 }
             }
         }
