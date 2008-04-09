@@ -85,6 +85,7 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
     java.sql.Statement statement_<%=cid%> = connection_<%=cid%>.createStatement();
     java.sql.ResultSet resultSet_<%=cid%> = statement_<%=cid%>.executeQuery(search_<%=cid %>);
     java.util.Map<SCDSK_<%=cid%>, SCDStruct_<%=cid%>> cache_<%=cid%> = new java.util.HashMap<SCDSK_<%=cid%>, SCDStruct_<%=cid%>>();
+    String dateStr_<%=cid%> = null;
     while(resultSet_<%=cid%>.next()) {
         SCDSK_<%=cid%> sk_<%=cid%> = new SCDSK_<%=cid%>();
         SCDStruct_<%=cid%> row_<%=cid%> = new SCDStruct_<%=cid%>();
@@ -138,7 +139,7 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
                 <%
             } else if(generatedType.equals("Timestamp")) {
                 %>
-                String dateStr_<%=cid%> = resultSet_<%=cid%>.getString(<%=index%>);
+                dateStr_<%=cid%> = resultSet_<%=cid%>.getString(<%=index%>);
                 if(dateStr_<%=cid%> != null) {
                     if(!dateStr_<%=cid%>.equals("0000-00-00") && !dateStr_<%=cid%>.equals("0000-00-00 00:00:00")) {
                         <%=struct%>.<%=searchColumn.getColumnName()%> = new java.util.Date(resultSet_<%=cid%>.getTimestamp(<%=index%>).getTime());

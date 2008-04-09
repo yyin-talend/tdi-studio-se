@@ -52,6 +52,7 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
     java.sql.Statement statement_<%=cid%> = connection_<%=cid%>.createStatement();
     java.sql.ResultSet resultSet_<%=cid%> = statement_<%=cid%>.executeQuery(search_<%=cid %>);
     java.util.Map<SCDSK_<%=cid%>, SCDStruct_<%=cid%>> cache_<%=cid%> = new java.util.HashMap<SCDSK_<%=cid%>, SCDStruct_<%=cid%>>();
+    java.sql.Timestamp timestamp_<%=cid%> = null;
     while(resultSet_<%=cid%>.next()) {
         SCDSK_<%=cid%> sk_<%=cid%> = new SCDSK_<%=cid%>();
         SCDStruct_<%=cid%> row_<%=cid%> = new SCDStruct_<%=cid%>();
@@ -105,7 +106,7 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
                 <%
             } else if(generatedType.equals("Timestamp")) {
                 %>
-                java.sql.Timestamp timestamp_<%=cid%> = resultSet_<%=cid%>.getTimestamp(<%=index%>);
+                timestamp_<%=cid%> = resultSet_<%=cid%>.getTimestamp(<%=index%>);
                 if(timestamp_<%=cid%> != null) {
                     <%=struct%>.<%=searchColumn.getColumnName()%> = new java.util.Date(timestamp_<%=cid%>.getTime());
                 } else {
