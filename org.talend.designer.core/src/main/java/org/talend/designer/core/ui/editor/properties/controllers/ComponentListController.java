@@ -230,18 +230,24 @@ public class ComponentListController extends AbstractElementPropertySectionContr
             List<String> componentDisplayNames = new ArrayList<String>();
             List<String> componentUniqueNames = new ArrayList<String>();
             for (INode node : nodeList) {
-                IElementParameter clearDataParam = node.getElementParameter("CLEAR_DATA");
-                // Only allow hashOutput "CLEAR_DATA" is enable.
-                if (clearDataParam != null && clearDataParam.getValue() != null && (Boolean) clearDataParam.getValue() == true) {
-                    String uniqueName = node.getUniqueName();
-                    componentUniqueNames.add(uniqueName);
-                    String displayName = (String) node.getElementParameter("LABEL").getValue();
-                    if (displayName.indexOf("__UNIQUE_NAME__") != -1) {
-                        uniqueName = displayName.replaceAll("__UNIQUE_NAME__", uniqueName);
-                    } else {
-                        uniqueName = uniqueName + " - " + displayName;
+                String uniqueName = node.getUniqueName();
+                String displayName = (String) node.getElementParameter("LABEL").getValue();
+                if (displayName.indexOf("__UNIQUE_NAME__") != -1) {
+                    displayName = displayName.replaceAll("__UNIQUE_NAME__", uniqueName);
+                } else {
+                    displayName = uniqueName + " - " + displayName;
+                }
+                if ("tHashOutput".equals(param.getFilter())) {
+                    IElementParameter clearDataParam = node.getElementParameter("CLEAR_DATA");
+                    // Only allow hashOutput "CLEAR_DATA" is enable.
+                    if (clearDataParam != null && clearDataParam.getValue() != null
+                            && (Boolean) clearDataParam.getValue() == true) {
+                        componentUniqueNames.add(uniqueName);
+                        componentDisplayNames.add(displayName);
                     }
-                    componentDisplayNames.add(uniqueName);
+                } else {
+                    componentUniqueNames.add(uniqueName);
+                    componentDisplayNames.add(displayName);
                 }
             }
 
