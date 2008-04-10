@@ -107,7 +107,7 @@ import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.Problem;
-import org.talend.core.ui.proposal.ProcessProposalProvider;
+import org.talend.core.ui.proposal.TalendProposalProvider;
 import org.talend.designer.abstractmap.model.table.IDataMapTable;
 import org.talend.designer.abstractmap.model.tableentry.IColumnEntry;
 import org.talend.designer.abstractmap.model.tableentry.ITableEntry;
@@ -1456,7 +1456,7 @@ public abstract class DataMapTableView extends Composite {
     protected ExpressionProposalProvider createExpressionProposalProvider() {
         IContentProposalProvider[] contentProposalProviders = new IContentProposalProvider[0];
         if (!MapperMain.isStandAloneMode()) {
-            contentProposalProviders = new IContentProposalProvider[] { new ProcessProposalProvider(mapperManager
+            contentProposalProviders = new IContentProposalProvider[] { new TalendProposalProvider(mapperManager
                     .getAbstractMapComponent().getProcess()) };
         }
         return new ExpressionProposalProvider(mapperManager, contentProposalProviders);
