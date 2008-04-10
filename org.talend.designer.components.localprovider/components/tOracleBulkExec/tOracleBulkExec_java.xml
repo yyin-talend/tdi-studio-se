@@ -29,11 +29,10 @@
   </CONNECTORS>
 
   <PARAMETERS>
-
     <PARAMETER
       NAME="PROPERTY"
       FIELD="PROPERTY_TYPE"
-      NUM_ROW="1"
+      NUM_ROW="10"
       REPOSITORY_VALUE="DATABASE:ORACLE"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     />
@@ -41,7 +40,7 @@
     <PARAMETER
       NAME="USE_EXISTING_CONNECTION"
       FIELD="CHECK"
-      NUM_ROW="2"
+      NUM_ROW="20"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
@@ -50,14 +49,14 @@
       NAME="CONNECTION"
       FIELD="COMPONENT_LIST"
       FILTER="tOracleConnection"
-      NUM_ROW="2"
+      NUM_ROW="20"
       SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
     />        
     
     <PARAMETER
       NAME="CONNECTION_TYPE"
       FIELD="CLOSED_LIST"
-      NUM_ROW="3"
+      NUM_ROW="30"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <ITEMS DEFAULT="ORACLE_SID">
@@ -70,7 +69,7 @@
    <PARAMETER
       NAME="HOST"
       FIELD="TEXT"
-      NUM_ROW="4"
+      NUM_ROW="40"
       REPOSITORY_VALUE="SERVER_NAME"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"      
     >
@@ -80,7 +79,7 @@
     <PARAMETER
       NAME="PORT"
       FIELD="TEXT"
-      NUM_ROW="4"
+      NUM_ROW="40"
       REPOSITORY_VALUE="PORT"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"      
     >
@@ -90,7 +89,7 @@
     <PARAMETER
       NAME="DBNAME"
       FIELD="TEXT"
-      NUM_ROW="5"
+      NUM_ROW="50"
       REPOSITORY_VALUE="SID"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"      
     >
@@ -100,7 +99,7 @@
     <PARAMETER 
       NAME="SCHEMA_DB"
       FIELD="TEXT"
-      NUM_ROW="5"
+      NUM_ROW="50"
       REPOSITORY_VALUE="SCHEMA"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"      
     >
@@ -110,7 +109,7 @@
     <PARAMETER
       NAME="USER"
       FIELD="TEXT"
-      NUM_ROW="6"
+      NUM_ROW="60"
       REQUIRED="true"
       REPOSITORY_VALUE="USERNAME"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"      
@@ -121,18 +120,27 @@
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
-      NUM_ROW="6"
+      NUM_ROW="60"
       REQUIRED="true"
       REPOSITORY_VALUE="PASSWORD"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"      
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+    
+    <PARAMETER
+      NAME="TABLE"
+      FIELD="TEXT"
+      NUM_ROW="70"
+      REQUIRED="true"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>     
 
     <PARAMETER
       NAME="TABLE_ACTION"
       FIELD="CLOSED_LIST"
-      NUM_ROW="9"
+      NUM_ROW="70"
     >
       <ITEMS DEFAULT="NONE">
         <ITEM NAME="NONE" VALUE="NONE" />
@@ -142,46 +150,24 @@
         <ITEM NAME="CLEAR" VALUE="CLEAR"/>
       </ITEMS>
     </PARAMETER>
-    
-    <PARAMETER
-      NAME="TABLE"
-      FIELD="TEXT"
-      NUM_ROW="9"
-      REQUIRED="true"
-    >
-      <DEFAULT>""</DEFAULT>
-    </PARAMETER>     
 
+    <!-- FEATURE WANTED: multiple data files to load from. but the current TABLE model doesn't support item whose field is FILE -->
     <PARAMETER
       NAME="DATA"
       FIELD="FILE"
-      NUM_ROW="10"
+      NUM_ROW="80"
       REQUIRED="true"
+      SHOW_IF="USE_EXISTING_CLT_FILE == 'false'"
     >
       <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/out.csv"</DEFAULT>
     </PARAMETER>
-
-    <PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" REQUIRED="true" NUM_ROW="14">
-      <DEFAULT/> 
-    </PARAMETER>
-
-	<PARAMETER
-      NAME="MAPPING"
-      FIELD="MAPPING_TYPE"
-      NUM_ROW="15"
-      SHOW="false"
-    >       
-      <DEFAULT>oracle_id</DEFAULT>
-    </PARAMETER>
-
-   </PARAMETERS>
-   
-   <ADVANCED_PARAMETERS>
-   	<PARAMETER
+    
+    <PARAMETER
       NAME="DATA_ACTION"
       FIELD="CLOSED_LIST"
-      NUM_ROW="9"
+      NUM_ROW="80"
       REQUIRED="true"
+      SHOW_IF="(USE_EXISTING_CLT_FILE == 'false') AND (INPUT_INTO_TABLE_CLAUSE == 'false')"
     >
       <ITEMS DEFAULT="INSERT">
         <ITEM NAME="INSERT"           VALUE="INSERT" />
@@ -191,30 +177,195 @@
       </ITEMS>
     </PARAMETER>
     
-    <PARAMETER
-      NAME="FIELDS_TERMINATED_BY"
-      FIELD="TEXT"
-      NUM_ROW="11"
-      REQUIRED="true"
-    >
-      <DEFAULT>";"</DEFAULT>
-    </PARAMETER>
-
-    <PARAMETER
-      NAME="FIELDS_ENCLOSED_BY"
-      FIELD="TEXT"
-      NUM_ROW="11"
-      REQUIRED="false"
-    >
-      <DEFAULT>"""</DEFAULT>
+    <PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" REQUIRED="true" NUM_ROW="100">
+      <DEFAULT/> 
     </PARAMETER>
 
 	<PARAMETER
+      NAME="MAPPING"
+      FIELD="MAPPING_TYPE"
+      NUM_ROW="110"
+      SHOW="false"
+    >       
+      <DEFAULT>oracle_id</DEFAULT>
+    </PARAMETER>
+
+   </PARAMETERS>
+   
+   <ADVANCED_PARAMETERS>
+   	<PARAMETER
+      NAME="USE_EXISTING_CLT_FILE"
+      FIELD="CHECK"
+      NUM_ROW="5"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="CLT_FILE"
+      FIELD="FILE"
+      NUM_ROW="5"
+      SHOW_IF="USE_EXISTING_CLT_FILE == 'true'"
+    >
+      <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/sqlldr.clt"</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="RECORD_FORMAT"
+      FIELD="CLOSED_LIST"
+      NUM_ROW="10"
+      REQUIRED="true"
+      SHOW_IF="USE_EXISTING_CLT_FILE == 'false'"
+    >
+      <ITEMS DEFAULT="DEFAULT">
+        <ITEM NAME="DEFAULT"           VALUE="DEFAULT" />
+        <ITEM NAME="STREAM"           VALUE="STREAM" />
+        <ITEM NAME="FIXED"          VALUE="FIXED"/>
+        <ITEM NAME="VARIABLE"         VALUE="VARIABLE"/>
+      </ITEMS>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="TERMINATOR_STRING"
+      FIELD="TEXT"
+      NUM_ROW="10"
+      SHOW_IF="(USE_EXISTING_CLT_FILE == 'false') AND (RECORD_FORMAT == 'STREAM')"
+    >
+      <DEFAULT>"\\n"</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="RECORD_LENGTH"
+      FIELD="TEXT"
+      NUM_ROW="10"
+      SHOW_IF="(USE_EXISTING_CLT_FILE == 'false') AND (RECORD_FORMAT == 'FIXED')"
+    >
+      <DEFAULT>20</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="RECORD_LENGTH_FIELD_SIZE"
+      FIELD="TEXT"
+      NUM_ROW="10"
+      SHOW_IF="(USE_EXISTING_CLT_FILE == 'false') AND (RECORD_FORMAT == 'VARIABLE')"
+    >
+      <DEFAULT>3</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="INPUT_INTO_TABLE_CLAUSE"
+      FIELD="CHECK"
+      NUM_ROW="15"
+      SHOW_IF="USE_EXISTING_CLT_FILE == 'false'"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+	
+	<PARAMETER 
+	  NAME="INTO_TABLE_CLAUSE" 
+	  FIELD="MEMO_JAVA" 
+	  REQUIRED="false"
+	  NUM_ROW="16" 
+	  NB_LINES="4"
+	  SHOW_IF="(USE_EXISTING_CLT_FILE == 'false') AND (INPUT_INTO_TABLE_CLAUSE == 'true')"
+	>
+	  <DEFAULT>"--EXAMPLE(loading data into multiple table): REPLACE INTO TABLE emp (empno POSITION(1:4) INTEGER EXTERNAL, ename POSITION(6:15) CHAR) INTO TABLE proj WHEN projno != ’ ’ (empno POSITION(1:4) INTEGER EXTERNAL,projno POSITION(25:27) INTEGER EXTERNAL)"</DEFAULT>
+	</PARAMETER>
+	
+   
+    <PARAMETER
+      NAME="FIELDS_TERMINATOR"
+      FIELD="CLOSED_LIST"
+      NUM_ROW="20"
+      SHOW_IF="(USE_EXISTING_CLT_FILE == 'false') AND (INPUT_INTO_TABLE_CLAUSE == 'false')"
+    >
+      <ITEMS DEFAULT="OTHER">
+        <ITEM NAME="NONE"           VALUE="NONE" />
+        <ITEM NAME="WHITESPACE"           VALUE="WHITESPACE" />
+        <ITEM NAME="EOF"          VALUE="EOF"/>
+        <ITEM NAME="OTHER"         VALUE="OTHER"/>
+      </ITEMS>
+    </PARAMETER>
+    
+	<PARAMETER
+      NAME="TERMINATOR_VALUE"
+      FIELD="TEXT"
+      NUM_ROW="20"
+      REQUIRED="true"
+      SHOW_IF="(USE_EXISTING_CLT_FILE == 'false') AND (FIELDS_TERMINATOR == 'OTHER') AND (INPUT_INTO_TABLE_CLAUSE == 'false')"
+    >
+      <DEFAULT>";"</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="USE_FIELDS_ENCLOSURE"
+      FIELD="CHECK"
+      NUM_ROW="25"
+      SHOW_IF="(USE_EXISTING_CLT_FILE == 'false') AND (INPUT_INTO_TABLE_CLAUSE == 'false')"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="FIELDS_ENCLOSURE_LEFT"
+      FIELD="TEXT"
+      NUM_ROW="25"
+      SHOW_IF="(USE_EXISTING_CLT_FILE == 'false') AND (INPUT_INTO_TABLE_CLAUSE == 'false') AND (USE_FIELDS_ENCLOSURE == 'true')"
+    >
+      <DEFAULT>"\""</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="FIELDS_ENCLOSURE_RIGHT"
+      FIELD="TEXT"
+      NUM_ROW="25"
+      SHOW_IF="(USE_EXISTING_CLT_FILE == 'false') AND (INPUT_INTO_TABLE_CLAUSE == 'false') AND (USE_FIELDS_ENCLOSURE == 'true')"
+    >
+      <DEFAULT>"\""</DEFAULT>
+    </PARAMETER>
+    
+	<PARAMETER
+      NAME="FIELD_CONDITION"
+      FIELD="CHECK"
+      NUM_ROW="30"
+      SHOW_IF="(USE_EXISTING_CLT_FILE == 'false') AND (INPUT_INTO_TABLE_CLAUSE == 'false')"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="FIELD_CONDITION_VALUE"
+      FIELD="FILE"
+      NUM_ROW="30"
+      SHOW_IF="(USE_EXISTING_CLT_FILE == 'false') AND (INPUT_INTO_TABLE_CLAUSE == 'false') AND (FIELD_CONDITION == 'true')"
+    >
+      <DEFAULT>"country='France'"</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="PRESERVE_BLANKS"
+      FIELD="CHECK"
+      NUM_ROW="35"
+      SHOW_IF="USE_EXISTING_CLT_FILE == 'false'"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="TRAILING_NULLCOLS"
+      FIELD="CHECK"
+      NUM_ROW="35"
+      SHOW_IF="(USE_EXISTING_CLT_FILE == 'false') AND (INPUT_INTO_TABLE_CLAUSE == 'false')"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+        
+    <PARAMETER
       NAME="OPTIONS"
       FIELD="TABLE"
-      REQUIRED="false"
-      NUM_ROW="12"
+      NUM_ROW="40"
       NB_LINES="5"
+      SHOW_IF="USE_EXISTING_CLT_FILE == 'false'"
     >
       <ITEMS>
         <ITEM NAME="KEY" FIELD="CLOSED_LIST" >
@@ -225,7 +376,6 @@
             <ITEM NAME="ERRORS"    VALUE="ERRORS"/>
             <ITEM NAME="LOAD"    VALUE="LOAD"/>
             <ITEM NAME="MULTITHREADING"    VALUE="MULTITHREADING"/>
-           	<ITEM NAME="PARFILE"    VALUE="PARFILE"/>
             <ITEM NAME="PARALLEL"    VALUE="PARALLEL"/>
             <ITEM NAME="READSIZE"    VALUE="READSIZE"/>
             <ITEM NAME="RESUMABLE"  VALUE="RESUMABLE"/>
@@ -242,17 +392,18 @@
         <ITEM NAME="VALUE" FIELD="TEXT"/>
       </ITEMS>
     </PARAMETER>
-
+    
     <PARAMETER
       NAME="ENCODING"
       FIELD="ENCODING_TYPE"
-      NUM_ROW="13"
+      NUM_ROW="45"
       REQUIRED="true"
+      SHOW_IF="USE_EXISTING_CLT_FILE == 'false'"
     >
       <DEFAULT>"ISO-8859-15"</DEFAULT>
     </PARAMETER>
 
-    <PARAMETER NAME="OUTPUT" FIELD="CLOSED_LIST" NUM_ROW="13">
+    <PARAMETER NAME="OUTPUT" FIELD="CLOSED_LIST" NUM_ROW="50">
        <ITEMS DEFAULT="OUTPUT_TO_CONSOLE">
           <ITEM NAME="OUTPUT_TO_CONSOLE" VALUE="OUTPUT_TO_CONSOLE" />
           <ITEM NAME="RETRIEVE_OUTPUT"   VALUE="RETRIEVE_OUTPUT" />
