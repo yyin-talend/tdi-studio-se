@@ -231,7 +231,10 @@ public class JobSettingsView extends ViewPart implements IJobSettingsView {
         List<EComponentCategory> category = new ArrayList<EComponentCategory>();
 
         category.add(EComponentCategory.EXTRA);
-        category.add(EComponentCategory.STATSANDLOGS);
+        boolean isJoblet = AbstractProcessProvider.isExtensionProcessForJoblet(process);
+        if (!isJoblet) {
+            category.add(EComponentCategory.STATSANDLOGS);
+        }
         // category.add(EComponentCategory.CONTEXT);
 
         return category.toArray(new EComponentCategory[0]);
