@@ -152,6 +152,7 @@ int sizeInputTables = inputTables.size();
         
 List<IConnection> cumulatedInputConnections = new ArrayList<IConnection>();
 
+String comma;
 for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { // T_TM_B_101
         
 	ExternalMapperTable currentInputTable = inputTables.get(iInputTable);
@@ -166,11 +167,9 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
 	List<IMetadataColumn> nextColumnsKeys = new ArrayList<IMetadataColumn>();
 	
 	
-	
-	
 	%>
 	
-	class SortableRow_<%= currentJoinedTableNames %> implements Comparable<SortableRow_<%= currentJoinedTableNames %>>, org.talend.designer.components.persistent.IPersistableRow { // G_TM_B_001 
+	class SortableRow_<%= currentJoinedTableNames %> implements Comparable<SortableRow_<%= currentJoinedTableNames %>>, routines.system.IPersistableRow { // G_TM_B_001 
 
 		boolean is__rejectedInnerJoin;
 
@@ -262,7 +261,7 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
 		
 		         public void fillFrom(<%
 		         
-			        String comma = "";
+			        comma = "";
 		         	for(IConnection connection : cumulatedInputConnections) {
 			        	%><%=comma%> <%= connection.getName() %>Struct <%= connection.getName() %><%
 		         		comma = ", ";
@@ -323,6 +322,38 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
                 }
 
 		
+    public String toString() {
+		
+		StringBuilder sb = new StringBuilder();
+		sb.append(super.toString());
+		sb.append("[");
+		<%	
+		comma = "";
+       	for(IConnection connection : cumulatedInputConnections) {
+		        	
+       		IMetadataTable metadata = connection.getMetadataTable();
+			if (metadata !=null) {
+				for (IMetadataColumn column: metadata.getListColumns()) {
+						if(comma.length() > 0) {
+						%>
+							sb.append("<%= comma %>");
+						<%
+						}
+						%>
+						sb.append("<%= connection.getName() %>__<%= column.getLabel() %>");
+						sb.append("=");
+						sb.append(String.valueOf(this.<%= connection.getName() %>__<%= column.getLabel() %>));
+					<%
+					comma = ", ";
+				}
+    		}
+    	}
+	    %>
+	    sb.append("]");
+	    
+	    return sb.toString();
+    }
+
 		
 		
 		
@@ -394,6 +425,7 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
 			
 		<%	
 		boolean hasAtLeastOneRead = false;
+		boolean hasAtLeastOneObjectType = false;
 		if (currentMetadataTable !=null) {
 		
 		        	for(IConnection connection : cumulatedInputConnections) {
@@ -406,6 +438,11 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
 			  	hasAtLeastOneRead = true;
 				JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 			 	String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+			 	
+			 	if(typeToGenerate.equals("Object")) {
+			 		hasAtLeastOneObjectType = true;
+			 	}
+			 	
 				if (JavaTypesManager.isJavaPrimitiveType(column.getTalendType(), column.isNullable())) {
 					typeToGenerate=typeToGenerate.substring(0,1).toUpperCase()+typeToGenerate.substring(1);
 					%>
@@ -439,7 +476,7 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
            				if (length == -1) {
            	    			this.<%= connection.getName() %>__<%= column.getLabel() %> = null;
            				} else {
-           			    	this.<%= connection.getName() %>__<%= column.getLabel() %> = dis.read<%= typeToGenerate %>();
+           					this.<%= connection.getName() %>__<%= column.getLabel() %> = dis.read<%= typeToGenerate %>();
            				}
 					<%
 				}
@@ -456,6 +493,11 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
 			  	hasAtLeastOneRead = true;
 				JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 			 	String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+
+			 	if(typeToGenerate.equals("Object")) {
+			 		hasAtLeastOneObjectType = true;
+			 	}
+			 	
 				if (JavaTypesManager.isJavaPrimitiveType(column.getTalendType(), column.isNullable())) {
 					typeToGenerate=typeToGenerate.substring(0,1).toUpperCase()+typeToGenerate.substring(1);
 					%>
@@ -489,7 +531,7 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
            				if (length == -1) {
            	    			this.exprKey_<%= nextInputTable.getName() %>__<%= column.getLabel() %> = null;
            				} else {
-           			    	this.exprKey_<%= nextInputTable.getName() %>__<%= column.getLabel() %> = dis.read<%= typeToGenerate %>();
+           					this.exprKey_<%= nextInputTable.getName() %>__<%= column.getLabel() %> = dis.read<%= typeToGenerate %>();
            				}
 					<%
 				}
@@ -509,6 +551,16 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
         <%
         }
         %>
+
+		<%
+		if(hasAtLeastOneObjectType) {
+		%>
+			} catch(ClassNotFoundException eCNFE) {
+				 throw new RuntimeException(eCNFE);
+		<%
+		}
+		%>
+
         } finally {
             if (dis != null) {
                 try {

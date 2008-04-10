@@ -63,6 +63,8 @@
 
 		boolean isPersistent = true;
 
+		boolean previousMainNodeIsVirtual = false;
+
         DataMapExpressionParser expressionParser = new DataMapExpressionParser(currentLanguage);
 
         JavaGenerationManager gm = (JavaGenerationManager) node.initGenerationManager();
@@ -111,6 +113,8 @@
 	                continue;
             	}
             	//EConnectionType connectionType = connection.getLineStyle();
+	            
+	            previousMainNodeIsVirtual = connection.getSource() != null ? connection.getSource().isVirtualGenerateNode() : false;
 	            
             	IMetadataTable metadataTable = connection.getMetadataTable();
             	if (inputTable != null) { // T_TM_M_205
@@ -170,12 +174,15 @@
 
                 }// End of branch temporary "<%= mainInputTableName %>"
 
-            } // end temporary main loop
+			<%
+			if(!previousMainNodeIsVirtual) {
+			%>
+             } // end temporary main loop
+            <%
+            }
+            %>
 
             fsi_<%= mainInputTableName %>.endPut();
-
-            boolean rejectedInnerJoin_tMap_1 = false;
-
 
         // ###############################
         // # Input tables (lookups)
@@ -456,7 +463,7 @@
 								while (tHash_Lookup_<%= tableName %>.hasNext() || forceLoop<%= tableName %>) { // G_TM_M_043
 
 								<%
-								if(!isPersistent) {
+								if(!isPersistent || (isPersistent && isLastTable)) {
 									gm.addBlocksCodeToClose(new BlockCode("close loop of lookup '" + tableName +"' // G_TM_M_043"));
 								}
 								%>
@@ -590,7 +597,27 @@
                 	for (ExternalMapperTableEntry externalTableEntry : nextMetadataTableEntries) {
 	                    hExternalInputTableEntries.put(externalTableEntry.getName(), externalTableEntry);
                 	}
+                	
                 	List<IMetadataColumn> nextListColumns = nextMetadataTable.getListColumns();
+                	for (IMetadataColumn column : nextListColumns) { // T_TM_M_214
+	                    String columnName = column.getLabel();
+                    	ExternalMapperTableEntry externalInputTableEntry = hExternalInputTableEntries.get(columnName);
+                    	if (externalInputTableEntry != null) { // T_TM_M_213
+	                        String expressionKey = externalInputTableEntry.getExpression();
+                        	if (expressionKey != null && !"".equals(expressionKey.trim())) { // T_TM_M_212
+								%>
+								
+								<%= JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable()) %> exprKey_<%= nextTableName %>__<%= column.getLabel() %> = <%= JavaTypesManager.getDefaultValueFromJavaIdType(externalInputTableEntry.getType(), externalInputTableEntry.isNullable()) %>;
+								
+								<%
+							} // T_TM_M_212
+                        } // T_TM_M_213
+                    } // T_TM_M_214
+
+                	%>
+		            	if(!<%= rejectedInnerJoin %>) { // G_TM_M_255
+		            <%
+
                 	for (IMetadataColumn column : nextListColumns) { // T_TM_M_214
 	                    String columnName = column.getLabel();
                     	ExternalMapperTableEntry externalInputTableEntry = hExternalInputTableEntries.get(columnName);
@@ -606,7 +633,7 @@
         	    				<%
             					}
 					            %>
-					            <%= JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable()) %> exprKey_<%= nextTableName %>__<%= column.getLabel() %> = <%= expressionKey %>;
+					            	exprKey_<%= nextTableName %>__<%= column.getLabel() %> = <%= expressionKey %>;
             					<%
             					if (checkingSyntax) {
                 				%>
@@ -616,16 +643,22 @@
 							} // T_TM_M_212
                         } // T_TM_M_213
                     } // T_TM_M_214
+                    
+                    %>
+                    	} // G_TM_M_255
+                    <%
+                    
 				} // T_TM_M_215
 
            		cumulatedInputConnections.add(connection);
-				currentJoinedTableNames = nextJoinedTableNames;
 
 				%>
 
-					SortableRow_<%= currentJoinedTableNames %> rsc_<%= currentJoinedTableNames %> = new SortableRow_<%= currentJoinedTableNames %>();
+				
 
-					rsc_<%= currentJoinedTableNames %>.fillFrom(<%
+					SortableRow_<%= nextJoinedTableNames %> rsc_<%= nextJoinedTableNames %> = new SortableRow_<%= nextJoinedTableNames %>();
+
+					rsc_<%= nextJoinedTableNames %>.fillFrom(<%
 
 				        String comma = "";
 		         		for(IConnection aConnection : cumulatedInputConnections) {
@@ -642,12 +675,12 @@
 					
 					%>);
 
-					rsc_<%= currentJoinedTableNames %>.is__rejectedInnerJoin = <%= rejectedInnerJoin %>;
+					rsc_<%= nextJoinedTableNames %>.is__rejectedInnerJoin = <%= rejectedInnerJoin %>;
 					
 					<%= rejectedInnerJoin %> = false;
 
 					// Sort and store in KeyFile(s) and DataFile(s)
-					fsi_<%= currentJoinedTableNames %>.put(rsc_<%= currentJoinedTableNames %>);
+					fsi_<%= nextJoinedTableNames %>.put(rsc_<%= nextJoinedTableNames %>);
 					
 				<%
 
@@ -655,24 +688,29 @@
 			} // T_TM_M_216
 
 
-                	if(isBeforeOfThirdTable) {
+
+                	if(!isLastTable && isMultipleResultMode) {
 					%>
-							if(forceLoop<%= tableName %>) {
-								break;
-							}
+								if(forceLoop<%= tableName %>) {
+									break;
+								}
 							
-	            		}  // G_TM_M_043 loop <%= tableName %>
+	            			}  // G_TM_M_043 loop <%= tableName %>
 					<%
 					}
 	    		
+                	if(isPersistent && !isLastTable) {
 					%>
-					
-	            	} // G_TM_M_250 loop "<%= currentJoinedTableNames %>"
+	    	        	} // G_TM_M_250 loop "<%= currentJoinedTableNames %>"
+	            	<%
+	            	}
+	            	%>
 	            	
-	            	fsi_<%= currentJoinedTableNames %>.endPut();
-	            	
+	            	fsi_<%= nextJoinedTableNames %>.endPut();
 	            	
 					<%
+					
+					currentJoinedTableNames = nextJoinedTableNames;
 				}
 
             	previousTableName = tableName;
@@ -689,10 +727,18 @@
         boolean atLeastOneInputTableWithInnerJoin = !inputTablesWithInnerJoin.isEmpty();
 
 
+		if(!previousMainNodeIsVirtual) {
 		%>
-		{ // Dummy bracket to open block for "<%= mainInputTableName %>"
+			{ // Dummy bracket to open block for "<%= mainInputTableName %>"
 		<%
-
+		}
+		%>					
+				System.out.println(row1.toString());
+				System.out.println(row2.toString());
+				System.out.println(row3.toString());
+				System.out.println();
+					
+			<%
 
         %>// ###############################
         <%
