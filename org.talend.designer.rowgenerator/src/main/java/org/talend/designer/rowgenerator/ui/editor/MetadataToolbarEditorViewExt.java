@@ -54,7 +54,7 @@ import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.ui.metadata.editor.MetadataToolbarEditorView;
-import org.talend.core.ui.proposal.ProcessProposalUtils;
+import org.talend.core.ui.proposal.TalendProposalUtils;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.rowgenerator.i18n.Messages;
 
@@ -130,7 +130,7 @@ public class MetadataToolbarEditorViewExt extends MetadataToolbarEditorView {
 
         IEditorPart editor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
         IProcess process = ((AbstractMultiPageTalendEditor) editor).getTalendEditor().getProcess();
-        ProcessProposalUtils.installOn(numRowText, process);
+        TalendProposalUtils.installOn(numRowText, process);
     }
 
     /**

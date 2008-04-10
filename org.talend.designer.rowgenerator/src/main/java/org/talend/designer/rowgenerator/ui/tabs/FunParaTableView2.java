@@ -42,7 +42,7 @@ import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.IService;
 import org.talend.core.model.process.INode;
-import org.talend.core.ui.proposal.ProcessProposalProvider;
+import org.talend.core.ui.proposal.TalendProposalProvider;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.rowgenerator.data.Function;
 import org.talend.designer.rowgenerator.data.ListParameter;
@@ -295,7 +295,7 @@ public class FunParaTableView2 extends AbstractDataTableEditorView<Parameter> {
 
         IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
         // create the proposal
-        IContentProposalProvider processProposalProvider = new ProcessProposalProvider(((AbstractMultiPageTalendEditor) page
+        IContentProposalProvider processProposalProvider = new TalendProposalProvider(((AbstractMultiPageTalendEditor) page
                 .getActiveEditor()).getProcess());
         return processProposalProvider;
 
