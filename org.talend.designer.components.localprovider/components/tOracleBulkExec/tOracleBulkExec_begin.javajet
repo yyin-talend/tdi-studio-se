@@ -138,16 +138,17 @@ else
     serviceUrl_<%=cid%> = "(description=(address=(protocol=tcp)(host=" + host_<%=cid%> + ")(port=" + port_<%=cid%> + "))(connect_data=(service_name=" + dbname_<%=cid%> + ")))";    
     <%
     String connectionType = ElementParameterParser.getValue(node, "__CONNECTION_TYPE__");
-    if(connectionType.equals("ORACLE_SID"))
-    {
+    if(connectionType.equals("ORACLE_SID")) {
         %>
         url_<%=cid%> = "jdbc:oracle:thin:@" + host_<%=cid%> + ":" + port_<%=cid%> + ":" + dbname_<%=cid%>;
         <%
-    }
-    else if(connectionType.equals("ORACLE_SERVICE_NAME"))
-    {
+    } else if(connectionType.equals("ORACLE_SERVICE_NAME")) {
         %>
         url_<%=cid%> = "jdbc:oracle:thin:@" + serviceUrl_<%=cid%>;
+        <%
+    } else if(connectionType.equals("ORACLE_OCI")) {
+        %>
+        url_<%=cid%> = "jdbc:oracle:oci8:@" + serviceUrl_<%=cid%>;
         <%
     }
     %>

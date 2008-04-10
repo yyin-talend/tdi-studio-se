@@ -64,6 +64,10 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
             %>
             String connectionString_<%=cid%> = "jdbc:oracle:thin:@(description=(address=(protocol=tcp)(host=" + <%=dbhost%> + ")(port=" + <%=dbport%> + "))(connect_data=(service_name=" + <%=dbname%> + ")))";
             <%
+        } else if(connectionType.equals("ORACLE_OCI")) {
+            %>
+            String connectionString_<%=cid%> = "jdbc:oracle:oci8:@(description=(address=(protocol=tcp)(host=" + <%=dbhost%> + ")(port=" + <%=dbport%> + "))(connect_data=(service_name=" + <%=dbname%> + ")))";
+            <%
         }
         %>
         String schema_<%=cid%> = <%=ElementParameterParser.getValue(node, "__SCHEMA_DB__")%>;

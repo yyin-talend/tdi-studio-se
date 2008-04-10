@@ -41,17 +41,13 @@ int nb_line_<%=cid%> = 0;
 java.sql.Connection conn_<%=cid%> = null;
 <%
 String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
-if(useExistingConn.equals("true"))
-{
+if(useExistingConn.equals("true")) {
 	String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
-
 	String conn = "conn_" + connection;
 	%>
 	conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
 	<%
-}
-else
-{   
+} else {   
 	%>
 	java.lang.Class.forName("oracle.jdbc.driver.OracleDriver");
 	<%
@@ -60,13 +56,17 @@ else
 	String url_<%=cid%> = null;
 	<%
 	if(connectionType.equals("ORACLE_SID")) {
-	%>
+	    %>
 		url_<%=cid %> = "jdbc:oracle:thin:@" + <%=dbhost%> + ":" + <%=dbport%> + ":" + <%=dbname%>;
-	<%
+		<%
 	} else if(connectionType.equals("ORACLE_SERVICE_NAME")) {
-	%>
+	    %>
 		url_<%=cid %> = "jdbc:oracle:thin:@(description=(address=(protocol=tcp)(host=" + <%=dbhost%> + ")(port=" + <%=dbport%> + "))(connect_data=(service_name=" + <%=dbname%> + ")))";
-	<%
+		<%
+	} else if(connectionType.equals("ORACLE_OCI")) {
+	    %>
+	    url_<%=cid %> = "jdbc:oracle:oci8:@(description=(address=(protocol=tcp)(host=" + <%=dbhost%> + ")(port=" + <%=dbport%> + "))(connect_data=(service_name=" + <%=dbname%> + ")))";
+	    <%
 	}
 	%>
 
