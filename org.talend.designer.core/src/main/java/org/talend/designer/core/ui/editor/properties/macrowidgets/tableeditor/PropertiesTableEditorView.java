@@ -41,7 +41,7 @@ import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
 import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.utils.TalendTextUtils;
-import org.talend.core.ui.proposal.ProcessProposalProvider;
+import org.talend.core.ui.proposal.TalendProposalProvider;
 import org.talend.designer.core.model.components.ElementParameter;
 
 /**
@@ -127,7 +127,7 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
         // and the other will be stored as the current value in the property
         // there is two lists because of the undo / redo capabilities
         PropertiesTableEditorModel model = getModel();
-        ProcessProposalProvider processProposalProvider = new ProcessProposalProvider(model.getProcess());
+        TalendProposalProvider processProposalProvider = new TalendProposalProvider(model.getProcess());
         String[] titles = model.getTitles();
         final Object[] itemsValue = model.getItemsValue();
         final String[] items = model.getItems();

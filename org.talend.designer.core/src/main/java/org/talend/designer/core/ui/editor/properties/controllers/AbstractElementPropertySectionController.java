@@ -76,7 +76,7 @@ import org.talend.core.model.process.Problem.ProblemStatus;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.core.model.utils.TalendTextUtils;
-import org.talend.core.ui.proposal.ProcessProposalUtils;
+import org.talend.core.ui.proposal.TalendProposalUtils;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
@@ -396,7 +396,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
             }
             if (!elem.getElementParameter(parameterName).isReadOnly()) {
                 IProcess process = part.getTalendEditor().getProcess();
-                this.extendedProposal = ProcessProposalUtils.installOn(control, process);
+                this.extendedProposal = TalendProposalUtils.installOn(control, process);
                 if (!elem.getElementParameter(parameterName).isNoCheck()) {
                     this.checkErrorsHelper.register(control, extendedProposal);
                 }
