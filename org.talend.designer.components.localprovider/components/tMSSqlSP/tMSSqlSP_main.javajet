@@ -220,7 +220,16 @@ if (canGenerate) {
 <%
 		if(hasOutput){ //fixed 2777 issue. it must get ResultSet first.
 %>
-		Object resultSet_<%=cid%> = statement_<%=cid%>.getResultSet();
+Object resultSet_<%=cid%> = null;
+do{
+	resultSet_<%=cid%> = statement_<%=cid%>.getResultSet();
+	if(resultSet_<%=cid%> != null){
+		break;
+	}
+	if(!statement_<%=cid%>.getMoreResults()){
+		break;
+	}
+}while(true);		
 <%
 		}
 		
