@@ -102,7 +102,10 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             }
            <%}else if(typeToGenerate.equals("Object")||typeToGenerate.equals("String") || typeToGenerate.equals("Character")){%>
            context.<%=ctxParam.getName()%>=value_<%=cid %>;
-           <%}else{%>
+           <%}else if(typeToGenerate.equals("BigDecimal")){%>
+           context.<%=ctxParam.getName()%>=new <%=typeToGenerate%> (value_<%=cid %>);
+           <%}
+           else{%>
            try{
                context.<%=ctxParam.getName()%>=<%=typeToGenerate%>.parse<%=typeToGenerate%>(value_<%=cid %>);
            }catch(NumberFormatException e){
@@ -140,6 +143,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
            }
            <%}else if(typeToGenerate.equals("Object")||typeToGenerate.equals("String") || typeToGenerate.equals("Character")){%>
            context.<%=ctxParam.getName()%>=value_<%=cid %>;
+           <%}else if(typeToGenerate.equals("BigDecimal")){%>
+           context.<%=ctxParam.getName()%>=new <%=typeToGenerate%> (value_<%=cid %>);
            <%}else{%>
            try{
                context.<%=ctxParam.getName()%>=<%=typeToGenerate%>.parse<%=typeToGenerate%>(value_<%=cid %>);
