@@ -225,12 +225,16 @@ public class ComponentListController extends AbstractElementPropertySectionContr
 
     public static void updateComponentList(Element elem, IElementParameter param) {
         if (elem instanceof Node) {
+            Node currentNode = (Node) elem;
             List<INode> nodeList = (List<INode>) ((Node) elem).getProcess().getNodesOfType(param.getFilter());
 
             List<String> componentDisplayNames = new ArrayList<String>();
             List<String> componentUniqueNames = new ArrayList<String>();
             for (INode node : nodeList) {
                 String uniqueName = node.getUniqueName();
+                if (uniqueName.equals(currentNode.getUniqueName())) {
+                    continue;
+                }
                 String displayName = (String) node.getElementParameter("LABEL").getValue();
                 if (displayName.indexOf("__UNIQUE_NAME__") != -1) {
                     displayName = displayName.replaceAll("__UNIQUE_NAME__", uniqueName);
