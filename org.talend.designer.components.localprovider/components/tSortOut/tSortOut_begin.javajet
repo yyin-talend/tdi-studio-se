@@ -382,7 +382,7 @@ java.util.List<Comparable<%=rowName %>Struct> list_<%=cid %> = new java.util.Arr
 %>
 ////////////////////////////////////
 class <%=rowName %>StructILightSerializable extends <%=rowName %>Struct implements
-                        org.talend.designer.components.thash.io.beans.ILightSerializable {
+                        org.talend.designer.components.thash.io.beans.ILightSerializable<<%=rowName %>StructILightSerializable> {
 <%
 	IMetadataTable metadata = null;
 	List<IMetadataTable> metadatas = node.getMetadataList();
@@ -391,8 +391,7 @@ class <%=rowName %>StructILightSerializable extends <%=rowName %>Struct implemen
     	if (metadata!=null) {
     		int alphaFlag = 0;
 %>	
-	public int compareTo(Object o) {
-		<%=rowName %>StructILightSerializable other = (<%=rowName %>StructILightSerializable) o;
+	public int compareTo(<%=rowName %>StructILightSerializable other) {
 <%
 			for (int i = 0 ; i < criteria.size() ; i++) {
 				Map<String, String> line = criteria.get(i);
