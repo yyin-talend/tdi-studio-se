@@ -52,14 +52,22 @@ public class EmptyRecycleBinAction extends AContextualAction {
         ISelection selection = getSelection();
         Object obj = ((IStructuredSelection) selection).getFirstElement();
         RepositoryNode node = (RepositoryNode) obj;
-        Boolean confirm = null;
-        // String title = Messages.getString("EmptyRecycleBinAction.dialog.title"); //$NON-NLS-1$
-        // String message = Messages.getString("EmptyRecycleBinAction.dialog.message1") + "\n" //$NON-NLS-1$
-        // //$NON-NLS-2$
-        // + Messages.getString("EmptyRecycleBinAction.dialog.message2"); //$NON-NLS-1$
-        // if (!(MessageDialog.openQuestion(new Shell(), title, message))) {
-        // return;
-        // }
+
+        String title = Messages.getString("EmptyRecycleBinAction.dialog.title"); //$NON-NLS-1$
+        String message = null;
+
+        if (node.getChildren().size() == 0) {
+            return;
+        } else if (node.getChildren().size() > 1) {
+            message = Messages.getString("DeleteAction.dialog.messageAllElements") + "\n" + //$NON-NLS-1$ //$NON-NLS-2$
+                    Messages.getString("DeleteAction.dialog.message2"); //$NON-NLS-1$;
+        } else {
+            message = node.getChildren().get(0).getLabel() + " " + Messages.getString("DeleteAction.dialog.message1") + "\n" //$NON-NLS-1$ //$NON-NLS-2$
+                    + Messages.getString("DeleteAction.dialog.message2"); //$NON-NLS-1$
+        }
+        if (!(MessageDialog.openQuestion(new Shell(), title, message))) {
+            return;
+        }
 
         IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         for (RepositoryNode child : node.getChildren()) {
@@ -72,23 +80,16 @@ public class EmptyRecycleBinAction extends AContextualAction {
                         factory.save(subRepositoryObject.getProperty().getItem());
                     }
                 } else {
-                    String title = Messages.getString("DeleteAction.dialog.title"); //$NON-NLS-1$
-                    String message = objToDelete.getLabel() + " " + Messages.getString("DeleteAction.dialog.message1") + "\n" //$NON-NLS-1$ //$NON-NLS-2$
-                            + Messages.getString("DeleteAction.dialog.message2"); //$NON-NLS-1$
-                    confirm = (MessageDialog.openQuestion(new Shell(), title, message));
-                    if (confirm) {
-
-                        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-                        for (IEditorReference editors : page.getEditorReferences()) {
-                            String nameInEditor = editors.getName();
-                            if (objToDelete.getLabel().equals(nameInEditor.substring(nameInEditor.indexOf(" ") + 1))) {
-                                page.closeEditor(editors.getEditor(false), false);
-                            }
+                    IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+                    for (IEditorReference editors : page.getEditorReferences()) {
+                        String nameInEditor = editors.getName();
+                        if (objToDelete.getLabel().equals(nameInEditor.substring(nameInEditor.indexOf(" ") + 1))) {
+                            page.closeEditor(editors.getEditor(false), false);
                         }
-                        if (objToDelete.getType() != ERepositoryObjectType.JOB_DOC
-                                && objToDelete.getType() != ERepositoryObjectType.JOBLET_DOC)
-                            factory.deleteObjectPhysical(objToDelete);
                     }
+                    if (objToDelete.getType() != ERepositoryObjectType.JOB_DOC
+                            && objToDelete.getType() != ERepositoryObjectType.JOBLET_DOC)
+                        factory.deleteObjectPhysical(objToDelete);
                 }
             } catch (Exception e) {
                 MessageBoxExceptionHandler.process(e);
