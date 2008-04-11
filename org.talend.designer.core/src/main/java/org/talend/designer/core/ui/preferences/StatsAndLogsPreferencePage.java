@@ -172,23 +172,6 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
         url.setSelectionIndex(selectionIndex);
         String stringConnection = url.getStringConnectionTemplate();
 
-        filePathField.getTextControl(parent).setText(conn.getFileFieldName());
-        hostField.getTextControl(parent).setText(conn.getServerName());
-        portField.getTextControl(parent).setText(conn.getPort());
-        dbNameField.getTextControl(parent).setText(conn.getDatasourceName());
-        schemaField.getTextControl(parent).setText(conn.getSchema());
-        userField.getTextControl(parent).setText(conn.getUsername());
-        passwordField.getTextControl(parent).setText(conn.getPassword());
-        dabasePathField.getTextControl(parent).setText(conn.getDBRootPath() == null ? "" : conn.getDBRootPath());
-        additionParamField.getTextControl(parent).setText(conn.getAdditionalParams() == null ? "" : conn.getAdditionalParams());
-
-        if (stringConnection != null && stringConnection.startsWith("jdbc:jtds:sqlserver:")) {
-            schemaField.getTextControl(parent).setEditable(true);
-            if (schemaField.getTextControl(parent).getText().equals("")) {
-                schemaField.getTextControl(parent).setText("dbo");
-            }
-        }
-
         disableAllDbFields();
 
         userField.setEnabled(true, parent);
@@ -228,6 +211,60 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
         }
         if (url.isAddtionParamsNeeded()) {
             additionParamField.getTextControl(parent).setEditable(visible);
+        }
+        if (filePathField.getTextControl(parent).isEnabled()) {
+            filePathField.getTextControl(parent).setText(TalendTextUtils.addQuotes(conn.getFileFieldName()));
+        } else {
+            filePathField.getTextControl(parent).setText("");
+        }
+        if (hostField.getTextControl(parent).isEnabled()) {
+            hostField.getTextControl(parent).setText(TalendTextUtils.addQuotes(conn.getServerName()));
+        } else {
+            hostField.getTextControl(parent).setText("");
+        }
+        if (portField.getTextControl(parent).isEnabled()) {
+            portField.getTextControl(parent).setText(TalendTextUtils.addQuotes(conn.getPort()));
+        } else {
+            portField.getTextControl(parent).setText("");
+        }
+        if (dbNameField.getTextControl(parent).isEnabled()) {
+            dbNameField.getTextControl(parent).setText(TalendTextUtils.addQuotes(conn.getDatasourceName()));
+        } else {
+            dbNameField.getTextControl(parent).setText("");
+        }
+        if (schemaField.getTextControl(parent).isEnabled()) {
+            schemaField.getTextControl(parent).setText(TalendTextUtils.addQuotes(conn.getSchema()));
+        } else {
+            schemaField.getTextControl(parent).setText("");
+        }
+        if (userField.getTextControl(parent).isEnabled()) {
+            userField.getTextControl(parent).setText(TalendTextUtils.addQuotes(conn.getUsername()));
+        } else {
+            userField.getTextControl(parent).setText("");
+        }
+        if (passwordField.getTextControl(parent).isEnabled()) {
+            passwordField.getTextControl(parent).setText(TalendTextUtils.addQuotes(conn.getPassword()));
+        } else {
+            passwordField.getTextControl(parent).setText("");
+        }
+        if (dabasePathField.getTextControl(parent).isEnabled()) {
+            dabasePathField.getTextControl(parent).setText(
+                    conn.getDBRootPath() == null ? "" : TalendTextUtils.addQuotes(conn.getDBRootPath()));
+        } else {
+            dabasePathField.getTextControl(parent).setText("");
+        }
+        if (additionParamField.getTextControl(parent).isEnabled()) {
+            additionParamField.getTextControl(parent).setText(
+                    conn.getAdditionalParams() == null ? "" : TalendTextUtils.addQuotes(conn.getAdditionalParams()));
+        } else {
+            additionParamField.getTextControl(parent).setText("");
+        }
+
+        if (stringConnection != null && stringConnection.startsWith("jdbc:jtds:sqlserver:")) {
+            schemaField.getTextControl(parent).setEditable(true);
+            if (schemaField.getTextControl(parent).getText().equals("")) {
+                schemaField.getTextControl(parent).setText(TalendTextUtils.addQuotes("dbo"));
+            }
         }
 
     }
