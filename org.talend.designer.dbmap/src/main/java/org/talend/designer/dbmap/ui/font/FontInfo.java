@@ -24,7 +24,10 @@ import org.eclipse.swt.widgets.Display;
  */
 public enum FontInfo {
 
-    FONT_SYSTEM_BOLD(SWT.BOLD); // system font bold
+    FONT_SYSTEM_BOLD(SWT.BOLD),
+    FONT_SYSTEM(SWT.NONE),
+    
+    ; // system font bold
 
     private FontData[] fontDatas;
 

@@ -43,6 +43,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Cursor;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -281,6 +282,7 @@ public abstract class DataMapTableView extends Composite {
 
         int rightStyle = toolbarNeedToHaveRightStyle() ? SWT.RIGHT : SWT.NONE;
         toolBarActions = new ToolBar(headerComposite, SWT.FLAT | rightStyle);
+        toolBarActions.setFont(FontProviderMapper.getFont(FontInfo.FONT_SYSTEM));
 
         if (addToolItems()) {
             addToolItemSeparator();
@@ -298,7 +300,7 @@ public abstract class DataMapTableView extends Composite {
 
         // gridData.grabExcessHorizontalSpace = true;
         // gridData.horizontalAlignment = SWT.END;
-        gridDataToolbar.heightHint = sizeToolBar.y;
+//        gridDataToolbar.heightHint = sizeToolBar.y + 8;
         if (toolbarNeedToHaveRightStyle() && WindowSystem.isWIN32()) {
             if (realToolbarSize != null) {
                 gridDataToolbar.widthHint = realToolbarSize.x;
@@ -307,10 +309,17 @@ public abstract class DataMapTableView extends Composite {
             // to correct invalid margin when SWT.RIGHT style set in ToolBar
             // gridData.widthHint -= 48;
         }
+        FontData fontData = Display.getCurrent().getSystemFont().getFontData()[0];
+
         if (WindowSystem.isGTK()) {
             gridDataToolbar.heightHint = 26;
+        } else if(WindowSystem.isWIN32()) {
+        	gridDataToolbar.heightHint = sizeToolBar.y + Math.abs(fontData.data.lfHeight);
+        } else {
+        	gridDataToolbar.heightHint = 30;
         }
-        toolBarActions.setLayoutData(gridDataToolbar);
+//        toolBarActions.setLayoutData(gridDataToolbar);
+        toolBarActions.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_END | GridData.GRAB_HORIZONTAL));
         // gridData.widthHint = 50;
 
         headerLayout.numColumns = headerComposite.getChildren().length;
