@@ -23,8 +23,8 @@
             IMetadataTable metadataTable = connection.getMetadataTable();
             
 %>
-<%=connectionName%>Struct <%=connectionName%>_HashRow = new <%=connectionName%>Struct();
-
+//<%=connectionName%>Struct <%=connectionName%>_HashRow = new <%=connectionName%>Struct();
+<%=connectionName%>Struct <%=connectionName%>_HashRow = tHash_Lookup_<%=connectionName%>.getNextFreeRow();
 <%
 			
             List<IMetadataColumn> listColumns = metadataTable.getListColumns();

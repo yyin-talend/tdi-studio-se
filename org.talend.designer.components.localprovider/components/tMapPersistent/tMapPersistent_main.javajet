@@ -105,7 +105,7 @@
 		List<IMetadataColumn> nextLookupColumnsKeys = new ArrayList<IMetadataColumn>();
 
 		if(sizeInputTables > 1) { // T_TM_M_200
-			for (int iInputTable = 1; iInputTable < sizeInputTables - 1; iInputTable++) { // T_TM_M_201
+			for (int iInputTable = 1; iInputTable < sizeInputTables; iInputTable++) { // T_TM_M_201
 				ExternalMapperTable inputTable = inputTables.get(iInputTable);
             	String tableName = inputTable.getName();
             	IConnection connection = hNameToConnection.get(tableName);
@@ -160,7 +160,8 @@
 		
         %>
 
-                    SortableRow_<%= mainInputTableName %> rsc_<%= mainInputTableName %> = new SortableRow_<%= mainInputTableName %>();
+                    //SortableRow_<%= mainInputTableName %> rsc_<%= mainInputTableName %> = new SortableRow_<%= mainInputTableName %>();
+                    SortableRow_<%= mainInputTableName %> rsc_<%= mainInputTableName %> = fsi_<%= mainInputTableName %>.getNextFreeRow();
 
                     rsc_<%= mainInputTableName %>.fillFrom(<%= mainInputTableName %><%
                     
@@ -733,11 +734,6 @@
 		<%
 		}
 		%>					
-				System.out.println(row1.toString());
-				System.out.println(row2.toString());
-				System.out.println(row3.toString());
-				System.out.println();
-					
 			<%
 
         %>// ###############################
