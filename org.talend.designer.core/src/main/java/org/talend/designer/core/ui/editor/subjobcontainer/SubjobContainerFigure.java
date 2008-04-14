@@ -35,6 +35,10 @@ public class SubjobContainerFigure extends Figure {
 
     private static final Color SUBJOB_TITLE_COLOR = new Color(null, 50, 50, 250);
 
+    private static final Color PREJOB_TITLE_COLOR = new Color(null, 230, 100, 0);
+
+    private static final Color POSTJOB_TITLE_COLOR = new Color(null, 230, 100, 0);
+
     private SubjobContainer subjobContainer;
 
     private RoundedRectangle outlineFigure;
@@ -50,6 +54,8 @@ public class SubjobContainerFigure extends Figure {
     private boolean showTitle;
 
     private String title;
+
+    private Color subjobTitleColor;
 
     /**
      * DOC nrousseau SubjobContainerFigure constructor comment.
@@ -105,8 +111,8 @@ public class SubjobContainerFigure extends Figure {
 
         outlineFigure.setLocation(location);
         outlineFigure.setVisible(showTitle);
-        outlineFigure.setBackgroundColor(SUBJOB_TITLE_COLOR);
-        outlineFigure.setForegroundColor(SUBJOB_TITLE_COLOR);
+        outlineFigure.setBackgroundColor(subjobTitleColor);
+        outlineFigure.setForegroundColor(subjobTitleColor);
         outlineFigure.setSize(rectangle.width, preferedSize.height);
 
         collapseFigure.setLocation(new Point(rectangle.width - preferedSize.height + location.x, location.y));
@@ -116,7 +122,7 @@ public class SubjobContainerFigure extends Figure {
         rectFig.setLocation(new Point(location.x, /* preferedSize.height + */location.y));
         rectFig.setSize(new Dimension(rectangle.width, rectangle.height /*- preferedSize.height*/));
         rectFig.setBackgroundColor(mainColor);
-        rectFig.setForegroundColor(SUBJOB_TITLE_COLOR);
+        rectFig.setForegroundColor(subjobTitleColor);
     }
 
     public void updateData() {
@@ -126,6 +132,16 @@ public class SubjobContainerFigure extends Figure {
         showTitle = (Boolean) subjobContainer.getPropertyValue(EParameterName.SHOW_SUBJOB_TITLE.getName());
 
         title = (String) subjobContainer.getPropertyValue(EParameterName.SUBJOB_TITLE.getName());
+
+        subjobTitleColor = SUBJOB_TITLE_COLOR;
+        if (subjobContainer.getSubjobStartNode().getComponent().getName().equals("tPrejob")) {
+            title = " Prejob:" + title;
+            subjobTitleColor = PREJOB_TITLE_COLOR;
+        }
+        if (subjobContainer.getSubjobStartNode().getComponent().getName().equals("tPostjob")) {
+            title = " Postjob:" + title;
+            subjobTitleColor = POSTJOB_TITLE_COLOR;
+        }
 
         this.getChildren().remove(outlineFigure);
         this.getChildren().remove(rectFig);

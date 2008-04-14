@@ -73,7 +73,7 @@ public class SubjobContainer extends Element implements ISubjobContainer {
         // Name of the subjob (title)
         param = new ElementParameter(this);
         param.setName(EParameterName.SUBJOB_TITLE.getName());
-        param.setValue("Subjob:");
+        param.setValue("");
         param.setDisplayName(EParameterName.SUBJOB_TITLE.getDisplayName());
         param.setField(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.BASIC);
@@ -238,6 +238,13 @@ public class SubjobContainer extends Element implements ISubjobContainer {
 
     public void setSubjobStartNode(Node node) {
         setPropertyValue(EParameterName.UNIQUE_NAME.getName(), node.getUniqueName());
+        if (node.getComponent().getName().equals("tPrejob") || node.getComponent().getName().equals("tPostjob")) {
+            setPropertyValue(EParameterName.SUBJOB_COLOR.getName(), "255;220;180");
+            setPropertyValue(EParameterName.SHOW_SUBJOB_TITLE.getName(), Boolean.TRUE);
+            getElementParameter(EParameterName.SHOW_SUBJOB_TITLE.getName()).setShow(false);
+        } else {
+            getElementParameter(EParameterName.SHOW_SUBJOB_TITLE.getName()).setShow(true);
+        }
     }
 
     public void updateSubjobContainer() {

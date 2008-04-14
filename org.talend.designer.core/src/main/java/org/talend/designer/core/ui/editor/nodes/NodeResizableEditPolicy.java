@@ -17,7 +17,7 @@ import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.editpolicies.ResizableEditPolicy;
 import org.eclipse.gef.requests.ChangeBoundsRequest;
 import org.talend.designer.core.ui.editor.cmd.ResizeNodeCommand;
-import org.talend.designer.core.ui.editor.process.Process;
+import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 
 /**
  */
@@ -26,7 +26,7 @@ public class NodeResizableEditPolicy extends ResizableEditPolicy {
     @Override
     protected Command getResizeCommand(ChangeBoundsRequest request) {
         Object parent = getHost().getParent().getModel();
-        if (!(parent instanceof Process)) {
+        if (!(parent instanceof NodeContainer)) {
             return null;
         }
 
@@ -35,9 +35,8 @@ public class NodeResizableEditPolicy extends ResizableEditPolicy {
             return null;
         }
 
-        return new ResizeNodeCommand(node, new Dimension(node.getSize().width + request.getSizeDelta().width, node
-                .getSize().height
-                + request.getSizeDelta().height));
+        return new ResizeNodeCommand(node, new Dimension(node.getSize().width + request.getSizeDelta().width,
+                node.getSize().height + request.getSizeDelta().height));
     }
 
 }
