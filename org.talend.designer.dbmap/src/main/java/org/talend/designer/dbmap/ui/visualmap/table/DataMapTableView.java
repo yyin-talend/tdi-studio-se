@@ -293,34 +293,26 @@ public abstract class DataMapTableView extends Composite {
 
         Point sizeToolBar = toolBarActions.computeSize(SWT.DEFAULT, SWT.DEFAULT);
 
-        // System.out.println(getDataMapTable().getName());
-        // System.out.println("sizeToolBar:" + sizeToolBar);
-
         GridData gridDataToolbar = new GridData();
 
-        // gridData.grabExcessHorizontalSpace = true;
-        // gridData.horizontalAlignment = SWT.END;
-//        gridDataToolbar.heightHint = sizeToolBar.y + 8;
         if (toolbarNeedToHaveRightStyle() && WindowSystem.isWIN32()) {
             if (realToolbarSize != null) {
                 gridDataToolbar.widthHint = realToolbarSize.x;
-                // System.out.println("realToolbarSize:" + realToolbarSize);
             }
-            // to correct invalid margin when SWT.RIGHT style set in ToolBar
-            // gridData.widthHint -= 48;
         }
         FontData fontData = Display.getCurrent().getSystemFont().getFontData()[0];
 
         if (WindowSystem.isGTK()) {
             gridDataToolbar.heightHint = 26;
-        } else if(WindowSystem.isWIN32()) {
-        	gridDataToolbar.heightHint = sizeToolBar.y + Math.abs(fontData.data.lfHeight);
         } else {
-        	gridDataToolbar.heightHint = 30;
+        	// gridDataToolbar.heightHint = 30; // Win32
         }
-//        toolBarActions.setLayoutData(gridDataToolbar);
-        toolBarActions.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_END | GridData.GRAB_HORIZONTAL));
-        // gridData.widthHint = 50;
+
+        if (WindowSystem.isGTK()) {
+            toolBarActions.setLayoutData(gridDataToolbar);
+        } else {
+            toolBarActions.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_END | GridData.GRAB_HORIZONTAL));
+        }
 
         headerLayout.numColumns = headerComposite.getChildren().length;
 
