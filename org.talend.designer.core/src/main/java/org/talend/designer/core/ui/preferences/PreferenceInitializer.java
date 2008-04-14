@@ -23,6 +23,7 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.widgets.Display;
 import org.talend.core.CorePlugin;
 import org.talend.core.language.ECodeLanguage;
+import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -53,7 +54,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
         String logPath = Platform.getLogFileLocation().toOSString();
         int lastIndex = logPath.lastIndexOf(File.separatorChar);
-        logPath = logPath.substring(0, lastIndex);
+        logPath = TalendTextUtils.addQuotes(logPath.substring(0, lastIndex));
 
         store.setDefault(TalendDesignerPrefConstants.DEFAULT_LABEL, "__UNIQUE_NAME__"); //$NON-NLS-1$
         store.setDefault(TalendDesignerPrefConstants.DEFAULT_HINT, "<b>__UNIQUE_NAME__</b><br>__COMMENT__"); //$NON-NLS-1$
@@ -78,9 +79,12 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
         store.setDefault(ECodeLanguage.JAVA.toString() + "_" + EParameterName.CATCH_USER_WARNING.getName(), true);
 
         store.setDefault(ECodeLanguage.JAVA.toString() + "_" + EParameterName.FILE_PATH.getName(), logPath);
-        store.setDefault(ECodeLanguage.JAVA.toString() + "_" + EParameterName.FILENAME_LOGS.getName(), DEFAULT_LOGS_FILE_NAME);
-        store.setDefault(ECodeLanguage.JAVA.toString() + "_" + EParameterName.FILENAME_STATS.getName(), DEFAULT_STATS_FILE_NAME);
-        store.setDefault(ECodeLanguage.JAVA.toString() + "_" + EParameterName.FILENAME_METTER.getName(), DEFAULT_METER_FILE_NAME);
+        store.setDefault(ECodeLanguage.JAVA.toString() + "_" + EParameterName.FILENAME_LOGS.getName(), TalendTextUtils
+                .addQuotes(DEFAULT_LOGS_FILE_NAME));
+        store.setDefault(ECodeLanguage.JAVA.toString() + "_" + EParameterName.FILENAME_STATS.getName(), TalendTextUtils
+                .addQuotes(DEFAULT_STATS_FILE_NAME));
+        store.setDefault(ECodeLanguage.JAVA.toString() + "_" + EParameterName.FILENAME_METTER.getName(), TalendTextUtils
+                .addQuotes(DEFAULT_METER_FILE_NAME));
 
         // defaults for the stats preferences for perl
         store.setDefault(ECodeLanguage.PERL.toString() + "_" + EParameterName.PROPERTY_TYPE.getName(), EmfComponent.BUILTIN);
@@ -89,9 +93,12 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
         store.setDefault(ECodeLanguage.PERL.toString() + "_" + EParameterName.CATCH_USER_ERRORS.getName(), true);
         store.setDefault(ECodeLanguage.PERL.toString() + "_" + EParameterName.CATCH_USER_WARNING.getName(), true);
         store.setDefault(ECodeLanguage.PERL.toString() + "_" + EParameterName.FILE_PATH.getName(), logPath);
-        store.setDefault(ECodeLanguage.PERL.toString() + "_" + EParameterName.FILENAME_LOGS.getName(), DEFAULT_LOGS_FILE_NAME);
-        store.setDefault(ECodeLanguage.PERL.toString() + "_" + EParameterName.FILENAME_STATS.getName(), DEFAULT_STATS_FILE_NAME);
-        store.setDefault(ECodeLanguage.PERL.toString() + "_" + EParameterName.FILENAME_METTER.getName(), DEFAULT_METER_FILE_NAME);
+        store.setDefault(ECodeLanguage.PERL.toString() + "_" + EParameterName.FILENAME_LOGS.getName(), TalendTextUtils
+                .addQuotes(DEFAULT_LOGS_FILE_NAME));
+        store.setDefault(ECodeLanguage.PERL.toString() + "_" + EParameterName.FILENAME_STATS.getName(), TalendTextUtils
+                .addQuotes(DEFAULT_STATS_FILE_NAME));
+        store.setDefault(ECodeLanguage.PERL.toString() + "_" + EParameterName.FILENAME_METTER.getName(), TalendTextUtils
+                .addQuotes(DEFAULT_METER_FILE_NAME));
 
         if (!CorePlugin.getContext().isHeadless()) {
             Font font = new Font(Display.getDefault(), "courier", 10, SWT.NONE);

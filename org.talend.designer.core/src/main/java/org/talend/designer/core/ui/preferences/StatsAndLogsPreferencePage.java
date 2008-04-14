@@ -12,12 +12,15 @@
 // ============================================================================
 package org.talend.designer.core.ui.preferences;
 
+import java.io.File;
+
 import org.eclipse.gmf.runtime.common.ui.preferences.CheckBoxFieldEditor;
 import org.eclipse.jface.preference.DirectoryFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.FileFieldEditor;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.StringFieldEditor;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -28,7 +31,9 @@ import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
@@ -77,7 +82,7 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
 
     private CheckBoxFieldEditor onFilesField;
 
-    private DirectoryFieldEditor filePathField;
+    private DirectoryFieldEditorWithQuotes filePathField;
 
     private StringFieldEditor statsFileNameField;
 
@@ -93,7 +98,7 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
 
     private StringFieldEditor additionParamField;
 
-    private FileFieldEditor dabasePathField;
+    private FileFieldEditorWithQuotes dabasePathField;
 
     private StringFieldEditor portField;
 
@@ -144,7 +149,6 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
      */
     public void createFieldEditors() {
         languagePrefix = language.toString() + "_";
-
         createFields();
         updateEnableStateFromPreferences();
         addListeners();
@@ -200,50 +204,54 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
         if (url.isSchemaNeeded()) {
             schemaField.getTextControl(parent).setEditable(visible);
         }
+
         if (url.isAddtionParamsNeeded()) {
             additionParamField.getTextControl(parent).setEditable(visible);
         }
-        if (filePathField.getTextControl(parent).isEnabled()) {
-            filePathField.getTextControl(parent).setText(TalendTextUtils.addQuotes(conn.getFileFieldName()));
-        } else {
-            filePathField.getTextControl(parent).setText("");
-        }
+
         if (hostField.getTextControl(parent).isEnabled()) {
             hostField.getTextControl(parent).setText(TalendTextUtils.addQuotes(conn.getServerName()));
         } else {
             hostField.getTextControl(parent).setText("");
         }
+
         if (portField.getTextControl(parent).isEnabled()) {
             portField.getTextControl(parent).setText(TalendTextUtils.addQuotes(conn.getPort()));
         } else {
             portField.getTextControl(parent).setText("");
         }
+
         if (dbNameField.getTextControl(parent).isEnabled()) {
             dbNameField.getTextControl(parent).setText(TalendTextUtils.addQuotes(conn.getDatasourceName()));
         } else {
             dbNameField.getTextControl(parent).setText("");
         }
+
         if (schemaField.getTextControl(parent).isEnabled()) {
             schemaField.getTextControl(parent).setText(TalendTextUtils.addQuotes(conn.getSchema()));
         } else {
             schemaField.getTextControl(parent).setText("");
         }
+
         if (userField.getTextControl(parent).isEnabled()) {
             userField.getTextControl(parent).setText(TalendTextUtils.addQuotes(conn.getUsername()));
         } else {
             userField.getTextControl(parent).setText("");
         }
+
         if (passwordField.getTextControl(parent).isEnabled()) {
             passwordField.getTextControl(parent).setText(TalendTextUtils.addQuotes(conn.getPassword()));
         } else {
             passwordField.getTextControl(parent).setText("");
         }
+
         if (dabasePathField.getTextControl(parent).isEnabled()) {
             dabasePathField.getTextControl(parent).setText(
-                    conn.getDBRootPath() == null ? "" : TalendTextUtils.addQuotes(conn.getDBRootPath()));
+                    conn.getDBRootPath() == null ? "" : TalendTextUtils.addQuotes(conn.getFileFieldName()));
         } else {
             dabasePathField.getTextControl(parent).setText("");
         }
+
         if (additionParamField.getTextControl(parent).isEnabled()) {
             additionParamField.getTextControl(parent).setText(
                     conn.getAdditionalParams() == null ? "" : TalendTextUtils.addQuotes(conn.getAdditionalParams()));
@@ -318,8 +326,8 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
 
         onFilesField = new CheckBoxFieldEditor(languagePrefix + EParameterName.ON_FILES_FLAG.getName(),
                 EParameterName.ON_FILES_FLAG.getDisplayName(), parent);
-        filePathField = new DirectoryFieldEditor(languagePrefix + EParameterName.FILE_PATH.getName(), EParameterName.FILE_PATH
-                .getDisplayName(), parent);
+        filePathField = new DirectoryFieldEditorWithQuotes(languagePrefix + EParameterName.FILE_PATH.getName(),
+                EParameterName.FILE_PATH.getDisplayName(), parent);
 
         statsFileNameField = new StringFieldEditor(languagePrefix + EParameterName.FILENAME_STATS.getName(),
                 EParameterName.FILENAME_STATS.getDisplayName(), parent);
@@ -387,63 +395,6 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
         buttonShowRepository.setText("...");
         buttonShowRepository.setVisible(currentType.equals(REPOSITORY));
 
-        buttonShowRepository.addSelectionListener(new SelectionListener() {
-
-            /*
-             * (non-Javadoc)
-             * 
-             * @see org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
-             */
-            public void widgetDefaultSelected(SelectionEvent e) {
-
-            }
-
-            public void widgetSelected(SelectionEvent e) {
-                RepositoryReviewDialog dialog = new RepositoryReviewDialog(Display.getCurrent().getActiveShell(),
-                        ERepositoryObjectType.METADATA, "DATABASE");
-
-                if (dialog.open() == RepositoryReviewDialog.OK) {
-                    setDbId(dialog.getResult().getObject().getId());
-                    connectionItem = (ConnectionItem) dialog.getResult().getObject().getProperty().getItem();
-                    String repositoryType = formRepositoryTypeText(connectionItem);
-                    textRepositoryType.setText(repositoryType);
-                    updateFileContent(connectionItem);
-                }
-            }
-
-        });
-
-        comboRepositoryType.addSelectionListener(new SelectionListener() {
-
-            /*
-             * (non-Javadoc)
-             * 
-             * @see org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
-             */
-            public void widgetDefaultSelected(SelectionEvent e) {
-
-            }
-
-            /*
-             * (non-Javadoc)
-             * 
-             * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)
-             */
-            public void widgetSelected(SelectionEvent e) {
-                if (comboRepositoryType.getText().equals(BUILT_IN)) {
-                    textRepositoryType.setVisible(false);
-                    buttonShowRepository.setVisible(false);
-                    dbTypeField.getControl().setEnabled(true);
-                    updateEnableStateFromDisplay();
-                } else {
-                    textRepositoryType.setVisible(true);
-                    buttonShowRepository.setVisible(true);
-                    dbTypeField.setEnabled(false, dbTypeComposite);
-                    dbTypeField.getComboBoxControl(dbTypeComposite).setEnabled(false);
-                }
-            }
-        });
-
         dbTypeComposite = new Composite(parent, SWT.NONE);
 
         String[] strDisplay, strValue;
@@ -494,7 +445,7 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
                 .getDisplayName(), parent);
         TalendProposalUtils.installOn(passwordField.getTextControl(parent), null);
 
-        dabasePathField = new FileFieldEditor(languagePrefix + EParameterName.DBFILE.getName(), EParameterName.DBFILE
+        dabasePathField = new FileFieldEditorWithQuotes(languagePrefix + EParameterName.DBFILE.getName(), EParameterName.DBFILE
                 .getDisplayName(), parent);
         TalendProposalUtils.installOn(dabasePathField.getTextControl(parent), null);
 
@@ -653,6 +604,63 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
         onFilesField.getCheckbox().addSelectionListener(listener);
         onDatabaseField.getCheckbox().addSelectionListener(listener);
         dbTypeField.getComboBoxControl(dbTypeComposite).addSelectionListener(listener);
+
+        buttonShowRepository.addSelectionListener(new SelectionListener() {
+
+            /*
+             * (non-Javadoc)
+             * 
+             * @see org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
+             */
+            public void widgetDefaultSelected(SelectionEvent e) {
+
+            }
+
+            public void widgetSelected(SelectionEvent e) {
+                RepositoryReviewDialog dialog = new RepositoryReviewDialog(Display.getCurrent().getActiveShell(),
+                        ERepositoryObjectType.METADATA, "DATABASE");
+
+                if (dialog.open() == RepositoryReviewDialog.OK) {
+                    setDbId(dialog.getResult().getObject().getId());
+                    connectionItem = (ConnectionItem) dialog.getResult().getObject().getProperty().getItem();
+                    String repositoryType = formRepositoryTypeText(connectionItem);
+                    textRepositoryType.setText(repositoryType);
+                    updateFileContent(connectionItem);
+                }
+            }
+
+        });
+
+        comboRepositoryType.addSelectionListener(new SelectionListener() {
+
+            /*
+             * (non-Javadoc)
+             * 
+             * @see org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
+             */
+            public void widgetDefaultSelected(SelectionEvent e) {
+
+            }
+
+            /*
+             * (non-Javadoc)
+             * 
+             * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)
+             */
+            public void widgetSelected(SelectionEvent e) {
+                if (comboRepositoryType.getText().equals(BUILT_IN)) {
+                    textRepositoryType.setVisible(false);
+                    buttonShowRepository.setVisible(false);
+                    dbTypeField.getControl().setEnabled(true);
+                    updateEnableStateFromDisplay();
+                } else {
+                    textRepositoryType.setVisible(true);
+                    buttonShowRepository.setVisible(true);
+                    dbTypeField.setEnabled(false, dbTypeComposite);
+                    dbTypeField.getComboBoxControl(dbTypeComposite).setEnabled(false);
+                }
+            }
+        });
     }
 
     /*
@@ -710,5 +718,177 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
         getPreferenceStore().setValue(languagePrefix + EParameterName.REPOSITORY_PROPERTY_TYPE.getName() + CONNECTION_ITEM_LABEL,
                 itemLabel);
         return super.performOk();
+    }
+
+    /**
+     * yzhang StatsAndLogsPreferencePage class global comment. Detailled comment
+     */
+    private class DirectoryFieldEditorWithQuotes extends DirectoryFieldEditor {
+
+        /**
+         * yzhang StatsAndLogsPreferencePage.DirectoryFieldEditorWithQuotes constructor comment.
+         */
+        public DirectoryFieldEditorWithQuotes(String name, String labelText, Composite parent) {
+            super(name, labelText, parent);
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.eclipse.jface.preference.DirectoryFieldEditor#changePressed()
+         */
+        @Override
+        protected String changePressed() {
+
+            File f = new File(getTextControl().getText());
+            if (!f.exists()) {
+                f = null;
+            }
+            File d = getDirectory(f);
+            if (d == null) {
+                return null;
+            }
+
+            return TalendTextUtils.addQuotes(d.getAbsolutePath());
+        }
+
+        /**
+         * yzhang Comment method "getDirectory".
+         * 
+         * @param startingDirectory
+         * @return
+         */
+        private File getDirectory(File startingDirectory) {
+
+            DirectoryDialog fileDialog = new DirectoryDialog(getShell(), SWT.OPEN);
+            if (startingDirectory != null) {
+                fileDialog.setFilterPath(startingDirectory.getPath());
+            }
+            String dir = fileDialog.open();
+            if (dir != null) {
+                dir = dir.trim();
+                if (dir.length() > 0) {
+                    return new File(dir);
+                }
+            }
+
+            return null;
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.eclipse.jface.preference.DirectoryFieldEditor#doCheckState()
+         */
+        protected boolean doCheckState() {
+            String fileName = TalendTextUtils.removeQuotes(getTextControl().getText());
+            fileName = fileName.trim();
+            if (fileName.length() == 0 && isEmptyStringAllowed()) {
+                return true;
+            }
+            File file = new File(fileName);
+            return file.isDirectory();
+        }
+
+    }
+
+    /**
+     * yzhang StatsAndLogsPreferencePage class global comment. Detailled comment
+     */
+    private class FileFieldEditorWithQuotes extends FileFieldEditor {
+
+        boolean enforceAbsolute = false;
+
+        /**
+         * yzhang StatsAndLogsPreferencePage.FileFieldEditorWithQuotes constructor comment.
+         */
+        public FileFieldEditorWithQuotes(String name, String labelText, Composite parent) {
+            super(name, labelText, parent);
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.eclipse.jface.preference.FileFieldEditor#changePressed()
+         */
+        @Override
+        protected String changePressed() {
+            File f = new File(getTextControl().getText());
+            if (!f.exists()) {
+                f = null;
+            }
+            File d = getFile(f);
+            if (d == null) {
+                return null;
+            }
+
+            return TalendTextUtils.addQuotes(d.getAbsolutePath());
+        }
+
+        /**
+         * Helper to open the file chooser dialog.
+         * 
+         * @param startingDirectory the directory to open the dialog on.
+         * @return File The File the user selected or <code>null</code> if they do not.
+         */
+        private File getFile(File startingDirectory) {
+
+            FileDialog dialog = new FileDialog(getShell(), SWT.OPEN);
+            if (startingDirectory != null) {
+                dialog.setFileName(startingDirectory.getPath());
+            }
+
+            String file = dialog.open();
+            if (file != null) {
+                file = file.trim();
+                if (file.length() > 0) {
+                    return new File(file);
+                }
+            }
+
+            return null;
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.eclipse.jface.preference.FileFieldEditor#checkState()
+         */
+        @Override
+        protected boolean checkState() {
+
+            String msg = null;
+
+            String path = TalendTextUtils.removeQuotes(getTextControl().getText());
+            if (path != null) {
+                path = path.trim();
+            } else {
+                path = "";//$NON-NLS-1$
+            }
+            if (path.length() == 0) {
+                if (!isEmptyStringAllowed()) {
+                    msg = getErrorMessage();
+                }
+            } else {
+                File file = new File(path);
+                if (file.isFile()) {
+                    if (enforceAbsolute && !file.isAbsolute()) {
+                        msg = JFaceResources.getString("FileFieldEditor.errorMessage2");//$NON-NLS-1$
+                    }
+                } else {
+                    msg = getErrorMessage();
+                }
+            }
+
+            if (msg != null) { // error
+                showErrorMessage(msg);
+                return false;
+            }
+
+            // OK!
+            clearErrorMessage();
+            return true;
+
+        }
     }
 }
