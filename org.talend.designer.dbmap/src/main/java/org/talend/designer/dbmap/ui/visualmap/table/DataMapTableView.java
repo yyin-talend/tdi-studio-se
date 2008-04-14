@@ -300,8 +300,6 @@ public abstract class DataMapTableView extends Composite {
                 gridDataToolbar.widthHint = realToolbarSize.x;
             }
         }
-        FontData fontData = Display.getCurrent().getSystemFont().getFontData()[0];
-
         if (WindowSystem.isGTK()) {
             gridDataToolbar.heightHint = 26;
         } else {
