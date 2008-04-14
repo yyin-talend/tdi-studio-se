@@ -126,7 +126,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     	for (int i = 0; i < columns.size(); i++) {
     		IMetadataColumn column = columns.get(i);
 %>
-				writableSheet_<%=cid %>.addCell(new jxl.write.Label(<%=i%>, nb_line_<%=cid%>, "<%=column.getLabel() %>"),format_<%=cid%>);		
+				writableSheet_<%=cid %>.addCell(new jxl.write.Label(<%=i%>, nb_line_<%=cid%>, "<%=column.getLabel() %>",format_<%=cid%>));		
+				fitWidth_<%=cid%>[<%=i%>]=fitWidth_<%=cid%>[<%=i%>]><%=column.getLabel().length()%>?fitWidth_<%=cid%>[<%=i%>]:<%=column.getLabel().length()%>;
 <% } %>
 				nb_line_<%=cid %>++;
 		}
