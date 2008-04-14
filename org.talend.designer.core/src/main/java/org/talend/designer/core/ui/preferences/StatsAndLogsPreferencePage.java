@@ -58,20 +58,11 @@ import org.talend.repository.ui.views.RepositoryView;
  */
 public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 
-    /**
-     * 
-     */
     public static final String CONNECTION_ITEM_LABEL = "_CONNECTION_ITEM_LABEL";
 
-    /**
-     * 
-     */
     private static final String REPOSITORY = "Repository";
 
-    /**
-     * 
-     */
-    private static final String BUILD_IN = "Build-in";
+    private static final String BUILT_IN = "Built-In";
 
     private ECodeLanguage language;
 
@@ -363,11 +354,11 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
 
         comboRepositoryType = new Combo(comboTypePanel, SWT.READ_ONLY);
 
-        String[] repositoryTypes = new String[] { BUILD_IN, REPOSITORY };
+        String[] repositoryTypes = new String[] { BUILT_IN, REPOSITORY };
         comboRepositoryType.setItems(repositoryTypes);
 
         String currentType = getPreferenceStore().getString(languagePrefix + EParameterName.PROPERTY_TYPE.getName());
-        currentType = currentType.equals(EmfComponent.REPOSITORY) ? REPOSITORY : BUILD_IN;
+        currentType = currentType.equals(EmfComponent.REPOSITORY) ? REPOSITORY : BUILT_IN;
         int currentTypeIndex = 0;
         for (; currentTypeIndex < repositoryTypes.length; currentTypeIndex++) {
             if (repositoryTypes[currentTypeIndex].equals(currentType)) {
@@ -439,7 +430,7 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
              * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)
              */
             public void widgetSelected(SelectionEvent e) {
-                if (comboRepositoryType.getText().equals(BUILD_IN)) {
+                if (comboRepositoryType.getText().equals(BUILT_IN)) {
                     textRepositoryType.setVisible(false);
                     buttonShowRepository.setVisible(false);
                     dbTypeField.getControl().setEnabled(true);
@@ -582,7 +573,7 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
         boolean onFiles = preferenceStore.getBoolean(languagePrefix + EParameterName.ON_FILES_FLAG.getName());
         boolean onDatabase = preferenceStore.getBoolean(languagePrefix + EParameterName.ON_DATABASE_FLAG.getName());
         String dbValue = preferenceStore.getString(languagePrefix + EParameterName.DB_TYPE.getName());
-        boolean isBuildin = comboRepositoryType.getText().equals(BUILD_IN);
+        boolean isBuildin = comboRepositoryType.getText().equals(BUILT_IN);
         updateEnableState(onStatCatcher, onLogCatcher, onMetterCatcher, onFiles, onDatabase, dbValue, isBuildin);
     }
 
@@ -593,7 +584,7 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
         boolean onFiles = onFilesField.getBooleanValue();
         boolean onDatabase = onDatabaseField.getBooleanValue();
         String dbValue = dbTypeField.getFieldValue();
-        boolean isBuildin = comboRepositoryType.getText().equals(BUILD_IN);
+        boolean isBuildin = comboRepositoryType.getText().equals(BUILT_IN);
         updateEnableState(onStatCatcher, onLogCatcher, onMetterCatcher, onFiles, onDatabase, dbValue, isBuildin);
     }
 
