@@ -487,13 +487,6 @@ public class StatsAndLogsViewHelper {
             return "";
         }
         value = value.trim();
-        String mark = TalendTextUtils.QUOTATION_MARK;
-        if (LanguageManager.getCurrentLanguage() == ECodeLanguage.PERL) {
-            mark = TalendTextUtils.SINGLE_QUOTE;
-        }
-        if (value.startsWith(mark) && value.endsWith(mark)) {
-            value = TalendTextUtils.removeQuotes(value, mark);
-        }
         return value;
     }
 }
