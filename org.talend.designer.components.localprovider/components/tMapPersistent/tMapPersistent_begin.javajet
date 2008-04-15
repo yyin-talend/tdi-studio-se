@@ -61,10 +61,21 @@
                 continue;
             }
             String className = tableName + "Struct";
+            
+            if(inputTable.isPersistent()) {
 %>
 
-//org.talend.designer.components.commons.AdvancedMemoryLookup<<%=tableName%>Struct> tHash_Lookup_<%=tableName%> = (org.talend.designer.components.commons.AdvancedMemoryLookup<<%=tableName%>Struct>) globalMap.get( "tHash_Lookup_<%=tableName%>" );
 org.talend.designer.components.persistent.PersistentSortedAdvancedLookup<<%=tableName%>Struct> tHash_Lookup_<%=tableName%> = (org.talend.designer.components.persistent.PersistentSortedAdvancedLookup<<%=tableName%>Struct>) globalMap.get( "tHash_Lookup_<%=tableName%>" );
+
+<%
+} else {
+%>
+
+org.talend.designer.components.commons.AdvancedMemoryLookup<<%=tableName%>Struct> tHash_Lookup_<%=tableName%> = (org.talend.designer.components.commons.AdvancedMemoryLookup<<%=tableName%>Struct>) globalMap.get( "tHash_Lookup_<%=tableName%>" );
+
+<%
+}
+%>
 
 <%=className%> <%=tableName%>HashKey = new <%=className%>();
 <%=className%> <%=tableName%>Default = new <%=className%>();

@@ -21,7 +21,7 @@ import java.util.NoSuchElementException;
 
 import org.apache.commons.collections.list.GrowthList;
 import org.talend.commons.utils.data.map.MultiLazyValuesMap;
-import org.talend.core.model.process.IMatchingMode;
+import org.talend.designer.components.commons.AdvancedLookup.MATCHING_MODE;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -59,32 +59,6 @@ public class AdvancedMemoryLookup<V> implements IMemoryLookup<V, V> {
     int currentIndex = 0;
 
     private int sizeResultList;
-
-    /**
-     * 
-     * DOC amaumont AdvancedLookup class global comment. Detailled comment <br/>
-     * 
-     */
-    public enum MATCHING_MODE implements IMatchingMode {
-        ALL_ROWS,
-        ALL_MATCHES,
-        FIRST_MATCH,
-        LAST_MATCH,
-        UNIQUE_MATCH, ;
-
-        public static MATCHING_MODE parse(String matchingMode) {
-            MATCHING_MODE multipleMatchingModeResult = null;
-            MATCHING_MODE[] multipleMatchingModes = values();
-            for (MATCHING_MODE multipleMatchingMode : multipleMatchingModes) {
-                if (multipleMatchingMode.toString().equals(matchingMode)) {
-                    multipleMatchingModeResult = multipleMatchingMode;
-                    break;
-                }
-            }
-            return multipleMatchingModeResult;
-        }
-
-    }
 
     /**
      * 
