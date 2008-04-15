@@ -29,23 +29,23 @@
   </CONNECTORS>
 
   <PARAMETERS>
-	<PARAMETER 
-	  NAME="CONNECTION" 
-	  FIELD="COMPONENT_LIST"
-	  FILTER="tMysqlConnection" 
-	  NUM_ROW="10" 
-	/>
-			
-	<PARAMETER 
+  	<PARAMETER 
 	  NAME="SCHEMA" 
 	  FIELD="SCHEMA_TYPE" 
 	  REQUIRED="true"
-	  NUM_ROW="20"
+	  NUM_ROW="10"
 	>
 	  <TABLE READONLY="true">
 		<COLUMN NAME="last_insert_id" TYPE="id_Integer" LENGTH="10" READONLY="false" CUSTOM="true" />
 	  </TABLE>
 	</PARAMETER>
+  
+	<PARAMETER 
+	  NAME="CONNECTION" 
+	  FIELD="COMPONENT_LIST"
+	  FILTER="REGEXP:^tMysqlConnection|tMysqlOutput$" 
+	  NUM_ROW="20" 
+	/>
   </PARAMETERS>
 
   <CODEGENERATION>
