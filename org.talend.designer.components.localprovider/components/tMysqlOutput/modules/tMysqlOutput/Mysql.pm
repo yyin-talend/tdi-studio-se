@@ -147,8 +147,8 @@ sub performTableAction {
         or $param{tableAction} eq "CREATE_IF_NOT_EXISTS") {
         # We need the table list to know if drop or "create if not exists"
         # is relevant
-        my $tabsth = $param{dbh}->prepare('SHOW TABLES');
-        $tabsth->execute();
+        my $tabsth = $param{dbh}->prepare("SHOW TABLES like ?");
+        $tabsth->execute($param{dbtable});
         $table_exists = 0;
         my $test_table = lc $param{dbtable};
 
