@@ -154,7 +154,7 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
         addListeners();
     }
 
-    private void updateFileContent(ConnectionItem connectionItem) {
+    private void updateDbFields(ConnectionItem connectionItem) {
         DatabaseConnection conn = (DatabaseConnection) connectionItem.getConnection();
         DataStringConnection url = new DataStringConnection();
         String[] connectionTypeLabels = url.getItem();
@@ -167,7 +167,7 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
         url.setSelectionIndex(selectionIndex);
         String stringConnection = url.getStringConnectionTemplate();
 
-        disableAllDbFields();
+        setDbFieldsEnable(false);
 
         userField.setEnabled(true, parent);
         passwordField.setEnabled(true, parent);
@@ -194,13 +194,6 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
             dabasePathField.setEnabled(visible, parent);
         }
 
-        if (stringConnection.contains("<datasource>")) { //$NON-NLS-1$
-            // datasourceText.setEditable(visible);
-        }
-        if (stringConnection.contains("<dbRootPath>")) {
-            // directoryField.setEditable(visible);
-            // sidOrDatabaseText.setEditable(visible);
-        }
         if (url.isSchemaNeeded()) {
             schemaField.getTextControl(parent).setEditable(visible);
         }
@@ -211,36 +204,42 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
 
         if (hostField.getTextControl(parent).isEnabled()) {
             hostField.getTextControl(parent).setText(TalendTextUtils.addQuotes(conn.getServerName()));
+            hostField.getTextControl(parent).setEnabled(false);
         } else {
             hostField.getTextControl(parent).setText("");
         }
 
         if (portField.getTextControl(parent).isEnabled()) {
             portField.getTextControl(parent).setText(TalendTextUtils.addQuotes(conn.getPort()));
+            portField.getTextControl(parent).setEnabled(false);
         } else {
             portField.getTextControl(parent).setText("");
         }
 
         if (dbNameField.getTextControl(parent).isEnabled()) {
             dbNameField.getTextControl(parent).setText(TalendTextUtils.addQuotes(conn.getDatasourceName()));
+            dbNameField.getTextControl(parent).setEditable(false);
         } else {
             dbNameField.getTextControl(parent).setText("");
         }
 
         if (schemaField.getTextControl(parent).isEnabled()) {
             schemaField.getTextControl(parent).setText(TalendTextUtils.addQuotes(conn.getSchema()));
+            schemaField.getTextControl(parent).setEditable(false);
         } else {
             schemaField.getTextControl(parent).setText("");
         }
 
         if (userField.getTextControl(parent).isEnabled()) {
             userField.getTextControl(parent).setText(TalendTextUtils.addQuotes(conn.getUsername()));
+            userField.getTextControl(parent).setEditable(false);
         } else {
             userField.getTextControl(parent).setText("");
         }
 
         if (passwordField.getTextControl(parent).isEnabled()) {
             passwordField.getTextControl(parent).setText(TalendTextUtils.addQuotes(conn.getPassword()));
+            passwordField.getTextControl(parent).setEditable(false);
         } else {
             passwordField.getTextControl(parent).setText("");
         }
@@ -248,6 +247,7 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
         if (dabasePathField.getTextControl(parent).isEnabled()) {
             dabasePathField.getTextControl(parent).setText(
                     conn.getDBRootPath() == null ? "" : TalendTextUtils.addQuotes(conn.getFileFieldName()));
+            dabasePathField.getTextControl(parent).setEditable(false);
         } else {
             dabasePathField.getTextControl(parent).setText("");
         }
@@ -255,6 +255,7 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
         if (additionParamField.getTextControl(parent).isEnabled()) {
             additionParamField.getTextControl(parent).setText(
                     conn.getAdditionalParams() == null ? "" : TalendTextUtils.addQuotes(conn.getAdditionalParams()));
+            additionParamField.getTextControl(parent).setEditable(false);
         } else {
             additionParamField.getTextControl(parent).setText("");
         }
@@ -268,18 +269,43 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
 
     }
 
-    public void disableAllDbFields() {
-        hostField.setEnabled(false, parent);
-        portField.setEnabled(false, parent);
-        dbNameField.setEnabled(false, parent);
-        additionParamField.setEnabled(false, parent);
-        schemaField.setEnabled(false, parent);
-        userField.setEnabled(false, parent);
-        passwordField.setEnabled(false, parent);
-        dabasePathField.setEnabled(false, parent);
-        statsTableField.setEnabled(false, parent);
-        logsTableField.setEnabled(false, parent);
-        metterTableField.setEnabled(false, parent);
+    private void resetAllDbFieldsContent() {
+        hostField.getTextControl(parent).setText("");
+        portField.getTextControl(parent).setText("");
+        dbNameField.getTextControl(parent).setText("");
+        additionParamField.getTextControl(parent).setText("");
+        schemaField.getTextControl(parent).setText("");
+        userField.getTextControl(parent).setText("");
+        passwordField.getTextControl(parent).setText("");
+        dabasePathField.getTextControl(parent).setText("");
+        statsTableField.getTextControl(parent).setText("");
+        logsTableField.getTextControl(parent).setText("");
+        metterTableField.getTextControl(parent).setText("");
+    }
+
+    private void setDbFieldsEnable(boolean f) {
+        hostField.setEnabled(f, parent);
+        hostField.getTextControl(parent).setEditable(f);
+        portField.setEnabled(f, parent);
+        portField.getTextControl(parent).setEditable(f);
+        dbNameField.setEnabled(f, parent);
+        dbNameField.getTextControl(parent).setEditable(f);
+        additionParamField.setEnabled(f, parent);
+        additionParamField.getTextControl(parent).setEditable(f);
+        schemaField.setEnabled(f, parent);
+        schemaField.getTextControl(parent).setEditable(f);
+        userField.setEnabled(f, parent);
+        userField.getTextControl(parent).setEditable(f);
+        passwordField.setEnabled(f, parent);
+        passwordField.getTextControl(parent).setEditable(f);
+        dabasePathField.setEnabled(f, parent);
+        dabasePathField.getTextControl(parent).setEditable(f);
+        statsTableField.setEnabled(f, parent);
+        statsTableField.getTextControl(parent).setEditable(f);
+        logsTableField.setEnabled(f, parent);
+        logsTableField.getTextControl(parent).setEditable(f);
+        metterTableField.setEnabled(f, parent);
+        metterTableField.getTextControl(parent).setEditable(f);
     }
 
     /**
@@ -524,8 +550,11 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
         boolean onFiles = preferenceStore.getBoolean(languagePrefix + EParameterName.ON_FILES_FLAG.getName());
         boolean onDatabase = preferenceStore.getBoolean(languagePrefix + EParameterName.ON_DATABASE_FLAG.getName());
         String dbValue = preferenceStore.getString(languagePrefix + EParameterName.DB_TYPE.getName());
-        boolean isBuildin = comboRepositoryType.getText().equals(BUILT_IN);
-        updateEnableState(onStatCatcher, onLogCatcher, onMetterCatcher, onFiles, onDatabase, dbValue, isBuildin);
+        boolean isBuiltIn = comboRepositoryType.getText().equals(BUILT_IN);
+        updateEnableState(onStatCatcher, onLogCatcher, onMetterCatcher, onFiles, onDatabase, dbValue, isBuiltIn);
+        if (!isBuiltIn && connectionItem != null) {
+            updateDbFields(connectionItem);
+        }
     }
 
     private void updateEnableStateFromDisplay() {
@@ -595,6 +624,7 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
             }
 
             public void widgetSelected(SelectionEvent e) {
+                setDbFieldsEnable(true);
                 updateEnableStateFromDisplay();
             }
         };
@@ -625,7 +655,7 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
                     connectionItem = (ConnectionItem) dialog.getResult().getObject().getProperty().getItem();
                     String repositoryType = formRepositoryTypeText(connectionItem);
                     textRepositoryType.setText(repositoryType);
-                    updateFileContent(connectionItem);
+                    updateDbFields(connectionItem);
                 }
             }
 
@@ -648,17 +678,7 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
              * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)
              */
             public void widgetSelected(SelectionEvent e) {
-                if (comboRepositoryType.getText().equals(BUILT_IN)) {
-                    textRepositoryType.setVisible(false);
-                    buttonShowRepository.setVisible(false);
-                    dbTypeField.getControl().setEnabled(true);
-                    updateEnableStateFromDisplay();
-                } else {
-                    textRepositoryType.setVisible(true);
-                    buttonShowRepository.setVisible(true);
-                    dbTypeField.setEnabled(false, dbTypeComposite);
-                    dbTypeField.getComboBoxControl(dbTypeComposite).setEnabled(false);
-                }
+                updateRepositoryType();
             }
         });
     }
@@ -718,6 +738,28 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
         getPreferenceStore().setValue(languagePrefix + EParameterName.REPOSITORY_PROPERTY_TYPE.getName() + CONNECTION_ITEM_LABEL,
                 itemLabel);
         return super.performOk();
+    }
+
+    /**
+     * yzhang Comment method "updateRepositoryType".
+     */
+    private void updateRepositoryType() {
+        if (comboRepositoryType.getText().equals(BUILT_IN)) {
+            textRepositoryType.setVisible(false);
+            buttonShowRepository.setVisible(false);
+            dbTypeField.getControl().setEnabled(true);
+            resetAllDbFieldsContent();
+            setDbFieldsEnable(true);
+            updateEnableStateFromDisplay();
+        } else {
+            textRepositoryType.setVisible(true);
+            buttonShowRepository.setVisible(true);
+            dbTypeField.setEnabled(false, dbTypeComposite);
+            dbTypeField.getComboBoxControl(dbTypeComposite).setEnabled(false);
+            if (connectionItem != null) {
+                updateDbFields(connectionItem);
+            }
+        }
     }
 
     /**
