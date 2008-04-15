@@ -127,6 +127,14 @@
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
+    
+    <PARAMETER NAME="IDENTITY_INSERT"
+	      FIELD="CHECK"
+	      NUM_ROW="5"
+	    >
+	      <DEFAULT>false</DEFAULT>
+	    </PARAMETER>    
+    
     <PARAMETER
       NAME="QUERYSTORE"
       FIELD="QUERYSTORE_TYPE"

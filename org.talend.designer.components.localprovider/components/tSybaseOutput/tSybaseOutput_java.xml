@@ -140,6 +140,13 @@
         <ITEM NAME="CLEAR" VALUE="CLEAR"/>
       </ITEMS>
     </PARAMETER>
+    
+   	<PARAMETER NAME="IDENTITY_INSERT"
+	      FIELD="CHECK"
+	      NUM_ROW="6"
+	    >
+	      <DEFAULT>false</DEFAULT>
+	    </PARAMETER>    
 
     <PARAMETER
       NAME="DATA_ACTION"
@@ -179,7 +186,7 @@
 	<PARAMETER
       NAME="DIE_ON_ERROR"
       FIELD="CHECK"
-      NUM_ROW="6"
+      NUM_ROW="8"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>

@@ -54,6 +54,8 @@ skeleton="../templates/db_output_bulk.skeleton"
 	String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
 	
 	boolean useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__").equals("true");
+	
+	String identityInsert = ElementParameterParser.getValue(node, "__IDENTITY_INSERT__");
 
 %>
 
@@ -225,6 +227,13 @@ if(columnList != null && columnList.size()>0) {
         
         <%
 	}
+}
+
+if(identityInsert.equals("true")){
+%>
+ java.sql.Statement stmt_<%=cid %> = conn_<%=cid%>.createStatement();
+ stmt_<%=cid %>.execute("SET IDENTITY_INSERT "+ <%=tableName%> +" ON");
+<%
 }
 %>
 

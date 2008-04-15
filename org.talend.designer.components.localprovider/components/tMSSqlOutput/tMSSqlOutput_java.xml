@@ -104,6 +104,13 @@
 	        <ITEM NAME="CLEAR" VALUE="CLEAR"/>
 	      </ITEMS>
 	    </PARAMETER>
+	    
+	    <PARAMETER NAME="IDENTITY_INSERT"
+	      FIELD="CHECK"
+	      NUM_ROW="7"
+	    >
+	      <DEFAULT>false</DEFAULT>
+	    </PARAMETER>    
 
 		<PARAMETER NAME="DATA_ACTION" FIELD="CLOSED_LIST" NUM_ROW="7">
 			<ITEMS DEFAULT="INSERT">

@@ -18,6 +18,10 @@ imports="
 	
 	boolean useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__").equals("true");
 	
+	String tableName = ElementParameterParser.getValue(node,"__TABLE__");
+	
+	String identityInsert = ElementParameterParser.getValue(node, "__IDENTITY_INSERT__");
+	
     if(dataAction.equals("INSERT_OR_UPDATE")) {
         %>
         if(pstmtUpdate_<%=cid%> != null){
@@ -57,7 +61,15 @@ imports="
             
         }        
         <%
-    }   
+    } 
+    
+    if(identityInsert.equals("true")){
+%>
+ stmt_<%=cid %>.execute("SET IDENTITY_INSERT "+ <%=tableName%> +" OFF");
+ stmt_<%=cid %>.close();
+<%
+	}
+    
 	if(!useExistingConn){
 		if(!commitEvery.equals("") && !commitEvery.equals("0")){
 %>

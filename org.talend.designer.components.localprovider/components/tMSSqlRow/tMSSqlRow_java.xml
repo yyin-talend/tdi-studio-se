@@ -149,15 +149,22 @@
 	<PARAMETER
       NAME="DBTABLE"
       FIELD="DBTABLE"
-      NUM_ROW="6"
+      NUM_ROW="7"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
     
+   	<PARAMETER NAME="IDENTITY_INSERT"
+	      FIELD="CHECK"
+	      NUM_ROW="7"
+	    >
+	      <DEFAULT>false</DEFAULT>
+	    </PARAMETER>    
+    
     <PARAMETER
       NAME="QUERYSTORE"
       FIELD="QUERYSTORE_TYPE"
-      NUM_ROW="7"
+      NUM_ROW="8"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -165,7 +172,7 @@
     <PARAMETER
       NAME="QUERY"
       FIELD="MEMO_SQL"
-      NUM_ROW="8"
+      NUM_ROW="9"
     >
       <DEFAULT>"select id, name from employee"</DEFAULT>
     </PARAMETER>
@@ -173,7 +180,7 @@
     <PARAMETER
       NAME="DIE_ON_ERROR"
       FIELD="CHECK"
-      NUM_ROW="9"
+      NUM_ROW="10"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>

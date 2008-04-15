@@ -55,6 +55,8 @@ skeleton="../templates/db_output_bulk.skeleton"
     String tableAction = ElementParameterParser.getValue(node,"__TABLE_ACTION__");
     
     String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
+    
+    String identityInsert = ElementParameterParser.getValue(node, "__IDENTITY_INSERT__");
 
 %>
 int nb_line_<%=cid%> = 0;
@@ -126,7 +128,6 @@ if(useExistingConn.equals("true")) {
     String dbUser_<%=cid %> = <%=dbuser%>;
     String dbPwd_<%=cid %> = <%=dbpwd%>;
     java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
-    conn_<%=cid%>.setAutoCommit(false);
     <%
 }
 %>
@@ -251,7 +252,16 @@ if(!useExistingConn.equals("true")) {
         
         int commitCounter_<%=cid%> = 0;
         
+        conn_<%=cid%>.setAutoCommit(false);
+        
         <%
     }
+}
+
+if(identityInsert.equals("true")){
+%>
+ java.sql.Statement stmt_<%=cid %> = conn_<%=cid%>.createStatement();
+ stmt_<%=cid %>.execute("SET IDENTITY_INSERT ["+ tableName_<%=cid%> +"] ON");
+<%
 }
 %>

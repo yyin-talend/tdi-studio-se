@@ -19,19 +19,25 @@ imports="
 	String dbpwd= ElementParameterParser.getValue(node, "__PASS__");
 	String dbencoding= ElementParameterParser.getValue(node, "__ENCODING__");
     String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
-
+    String dbschema = ElementParameterParser.getValue(node, "__DB_SCHEMA__");
+ 	String tableName = ElementParameterParser.getValue(node,"__DBTABLE__");
+    String identityInsert = ElementParameterParser.getValue(node, "__IDENTITY_INSERT__");
+	
 	String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
 	if(useExistingConn.equals("true"))
 	{
 		String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
 		String conn = "conn_" + connection;
-		%>
+		String schema = "dbschema_" + connection;
+    %>
+    String dbschema_<%=cid%> = (String)globalMap.get("<%=schema%>");
 		java.sql.Connection conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
 		<%
 	}
 	else
 	{
 	    %>
+	    String dbschema_<%=cid%> = <%=dbschema%>;
         java.lang.Class.forName("net.sourceforge.jtds.jdbc.Driver");
         String url_<%=cid %> = "jdbc:jtds:sqlserver://" + <%=dbhost%> + ":" + <%=dbport%> + "//" + <%=dbname%> + ";appName=" + projectName + ";" + <%=dbproperties%>;        
         String dbUser_<%=cid %> = <%=dbuser%>;
@@ -53,5 +59,18 @@ imports="
         conn_<%=cid%>.setAutoCommit(false);
         <%
     }
-    %>
+    
+if(identityInsert.equals("true")){
+	
+%>
+String  tableName_<%=cid%> = null;
+if(dbschema_<%=cid%> == null || dbschema_<%=cid%>.trim().length() == 0) {
+    tableName_<%=cid%> = <%=tableName%>;
+} else {
+    tableName_<%=cid%> = dbschema_<%=cid%> + "].[" + <%=tableName%>;
+}
+ stmt_<%=cid %>.execute("SET IDENTITY_INSERT ["+ tableName_<%=cid%> +"] ON");
+<%
+}
+%>
 String query_<%=cid %> = "";
