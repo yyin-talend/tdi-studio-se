@@ -13,6 +13,8 @@
 package org.talend.designer.core.ui.preferences;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.gmf.runtime.common.ui.preferences.CheckBoxFieldEditor;
 import org.eclipse.jface.preference.DirectoryFieldEditor;
@@ -270,17 +272,26 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
     }
 
     private void resetAllDbFieldsContent() {
-        hostField.getTextControl(parent).setText("");
-        portField.getTextControl(parent).setText("");
-        dbNameField.getTextControl(parent).setText("");
-        additionParamField.getTextControl(parent).setText("");
-        schemaField.getTextControl(parent).setText("");
-        userField.getTextControl(parent).setText("");
-        passwordField.getTextControl(parent).setText("");
-        dabasePathField.getTextControl(parent).setText("");
-        statsTableField.getTextControl(parent).setText("");
-        logsTableField.getTextControl(parent).setText("");
-        metterTableField.getTextControl(parent).setText("");
+        List<Text> texts = new ArrayList<Text>();
+        texts.add(hostField.getTextControl(parent));
+        texts.add(portField.getTextControl(parent));
+        texts.add(dbNameField.getTextControl(parent));
+        texts.add(additionParamField.getTextControl(parent));
+        texts.add(schemaField.getTextControl(parent));
+        texts.add(userField.getTextControl(parent));
+        texts.add(passwordField.getTextControl(parent));
+        texts.add(dabasePathField.getTextControl(parent));
+        texts.add(statsTableField.getTextControl(parent));
+        texts.add(logsTableField.getTextControl(parent));
+        texts.add(metterTableField.getTextControl(parent));
+
+        for (Text text : texts) {
+            if (text.isEnabled()) {
+                text.setText(TalendTextUtils.addQuotes(""));
+            } else {
+                text.setText("");
+            }
+        }
     }
 
     private void setDbFieldsEnable(boolean f) {
@@ -565,7 +576,11 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
         boolean onDatabase = onDatabaseField.getBooleanValue();
         String dbValue = dbTypeField.getFieldValue();
         boolean isBuildin = comboRepositoryType.getText().equals(BUILT_IN);
+
         updateEnableState(onStatCatcher, onLogCatcher, onMetterCatcher, onFiles, onDatabase, dbValue, isBuildin);
+        if (!isBuildin && connectionItem != null) {
+            updateDbFields(connectionItem);
+        }
     }
 
     private void updateEnableState(boolean onStatCatcher, boolean onLogCatcher, boolean onMetterCatcher, boolean onFiles,
@@ -748,9 +763,9 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
             textRepositoryType.setVisible(false);
             buttonShowRepository.setVisible(false);
             dbTypeField.getControl().setEnabled(true);
-            resetAllDbFieldsContent();
             setDbFieldsEnable(true);
             updateEnableStateFromDisplay();
+            resetAllDbFieldsContent();
         } else {
             textRepositoryType.setVisible(true);
             buttonShowRepository.setVisible(true);
