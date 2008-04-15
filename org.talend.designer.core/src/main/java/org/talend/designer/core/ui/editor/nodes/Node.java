@@ -44,6 +44,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
+import org.talend.core.model.components.EComponentType;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.components.IODataComponent;
@@ -181,11 +182,11 @@ public class Node extends Element implements INode {
 
     private final IComponent oldcomponent;
 
-    private List<? extends IElementParameter> oldElementParameters;
-
     private List<String> errorList = new ArrayList<String>(), warningList = new ArrayList<String>();
 
     private boolean schemaSynchronized = true;
+
+    private boolean reloadingComponent = false;
 
     /**
      * This constructor is called when the node is created from the palette the unique name will be determined with the
@@ -241,11 +242,7 @@ public class Node extends Element implements INode {
             }
         }
 
-        if (oldElementParameters != null) {
-            setElementParameters(oldElementParameters);
-        } else {
-            setElementParameters(component.createElementParameters(this));
-        }
+        setElementParameters(component.createElementParameters(this));
 
         String uniqueName2 = null;
         IElementParameter unparam = getElementParameter(EParameterName.UNIQUE_NAME.getName());
@@ -278,7 +275,7 @@ public class Node extends Element implements INode {
         // }
         listReturn = this.component.createReturns();
 
-        if (uniqueName2 == null || "".equals(uniqueName2)) {
+        if (!reloadingComponent && (uniqueName2 == null || "".equals(uniqueName2))) {
             uniqueName2 = ((Process) getProcess()).generateUniqueNodeName(this);
             ((Process) getProcess()).addUniqueNodeName(uniqueName2);
         }
@@ -330,10 +327,12 @@ public class Node extends Element implements INode {
                 }
             }
         }
-        setPropertyValue(EParameterName.LABEL.getName(), labelToParse);
-        setPropertyValue(EParameterName.HINT.getName(), hintToParse);
-        setPropertyValue(EParameterName.CONNECTION_FORMAT.getName(), connectionToParse);
-        setPropertyValue(EParameterName.SHOW_HINT.getName(), new Boolean(showHint));
+        if (!reloadingComponent) {
+            setPropertyValue(EParameterName.LABEL.getName(), labelToParse);
+            setPropertyValue(EParameterName.HINT.getName(), hintToParse);
+            setPropertyValue(EParameterName.CONNECTION_FORMAT.getName(), connectionToParse);
+            setPropertyValue(EParameterName.SHOW_HINT.getName(), new Boolean(showHint));
+        }
         pluginFullName = newComponent.getPluginFullName();
         if (pluginFullName != IComponentsFactory.COMPONENTS_LOCATION) {
             externalNode = ExternalNodesFactory.getInstance(pluginFullName);
@@ -1731,7 +1730,8 @@ public class Node extends Element implements INode {
         schemaSynchronized = true;
 
         // test if the columns can be checked or not
-        if (component.isSchemaAutoPropagated() && (getMetadataList().size() != 0)) {
+        if ((component.isSchemaAutoPropagated() || getComponent().getComponentType() == EComponentType.JOBLET)
+                && (getMetadataList().size() != 0)) {
             IConnection inputConnecion = null;
             int maxFlowInput = getConnectorFromName(EConnectionType.FLOW_MAIN.getName()).getMaxLinkInput();
             // if there is one only one input maximum or if the component use a lookup, that means
@@ -2232,25 +2232,35 @@ public class Node extends Element implements INode {
      * java.util.Map)
      */
     public void reloadComponent(IComponent component, Map<String, Object> parameters) {
-        Object obj = parameters.get(INode.RELOAD_NEW);
-        if (obj != null && (Boolean) obj) {
-            process = ActiveProcessTracker.getCurrentProcess();
-            currentStatus = 0;
-            init(component);
-            IElementParameter param = getElementParameter(EParameterName.REPOSITORY_ALLOW_AUTO_SWITCH.getName());
-            if (param != null) {
-                param.setValue(Boolean.TRUE);
-            }
-            return;
-        }
-
-        obj = parameters.get(INode.RELAOD_PARAMETER_ELEMENT_PARAMETERS);
-        if (obj != null) {
-            oldElementParameters = (List<? extends IElementParameter>) obj;
-        }
-
+        reloadingComponent = true;
+        currentStatus = 0;
         init(component);
+        IElementParameter param = getElementParameter(EParameterName.REPOSITORY_ALLOW_AUTO_SWITCH.getName());
+        if (param != null) {
+            param.setValue(Boolean.TRUE);
+        }
 
+        Object obj = parameters.get(INode.RELOAD_PARAMETER_ELEMENT_PARAMETERS);
+        if (obj != null) {
+            List<? extends IElementParameter> oldElementParameters = (List<? extends IElementParameter>) obj;
+            for (IElementParameter sourceParam : oldElementParameters) {
+                IElementParameter targetParam = getElementParameter(sourceParam.getName());
+                if (targetParam != null) {
+                    setPropertyValue(sourceParam.getName(), sourceParam.getValue());
+                    if (targetParam.getField() == EParameterFieldType.TABLE) {
+                        targetParam.setListItemsValue(sourceParam.getListItemsValue());
+                    }
+                    for (String name : targetParam.getChildParameters().keySet()) {
+                        IElementParameter targetChildParam = targetParam.getChildParameters().get(name);
+                        IElementParameter sourceChildParam = sourceParam.getChildParameters().get(name);
+                        setPropertyValue(sourceParam.getName() + ":" + sourceChildParam.getName(), sourceChildParam.getValue());
+                        if (targetChildParam.getField() == EParameterFieldType.TABLE) {
+                            targetChildParam.setListItemsValue(sourceChildParam.getListItemsValue());
+                        }
+                    }
+                }
+            }
+        }
         obj = parameters.get(INode.RELOAD_PARAMETER_METADATA_LIST);
         if (obj != null) {
             setMetadataList((List<IMetadataTable>) obj);
@@ -2281,6 +2291,7 @@ public class Node extends Element implements INode {
 
         }
 
+        reloadingComponent = false;
     }
 
     /*

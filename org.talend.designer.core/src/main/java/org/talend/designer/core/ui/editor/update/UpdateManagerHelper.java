@@ -14,30 +14,13 @@ package org.talend.designer.core.ui.editor.update;
 
 import java.util.List;
 
-import org.talend.core.model.components.IComponent;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.IElementParameter;
-import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
-import org.talend.designer.core.ui.editor.AbstractTalendEditor;
-import org.talend.designer.core.ui.editor.process.Process;
 
 /**
  * ggu class global comment. Detailled comment
  */
 public final class UpdateManagerHelper {
-
-    public static IComponent getComponent(Process process, final String name) {
-        if (name != null) {
-            AbstractMultiPageTalendEditor editor = process.getEditor();
-            if (editor != null) {
-                AbstractTalendEditor talendEditor = editor.getTalendEditor();
-                if (talendEditor != null) {
-                    return talendEditor.getComponent(name);
-                }
-            }
-        }
-        return null;
-    }
 
     // public static String checkQuotes(String query) {
     // if (query == null) {

@@ -64,7 +64,6 @@ import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.update.AbstractUpdateManager;
 import org.talend.designer.core.ui.editor.update.UpdateCheckDialog;
 import org.talend.designer.core.ui.editor.update.UpdateCheckResult;
-import org.talend.designer.core.ui.editor.update.UpdateManagerHelper;
 import org.talend.designer.core.ui.editor.update.cmd.UpdateContextParameterCommand;
 import org.talend.designer.core.ui.editor.update.cmd.UpdateJobletNodeCommand;
 import org.talend.designer.core.ui.editor.update.cmd.UpdateMainParameterCommand;
@@ -73,6 +72,7 @@ import org.talend.designer.core.ui.views.contexts.Contexts;
 import org.talend.designer.core.ui.views.jobsettings.JobSettings;
 import org.talend.designer.core.ui.views.properties.ComponentSettings;
 import org.talend.repository.UpdateRepositoryUtils;
+import org.talend.repository.model.ComponentsFactoryProvider;
 
 /**
  * ggu class global comment. Detailled comment
@@ -688,13 +688,13 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
         if (newJobletName == null) {
             newJobletName = oldjobletName;
         }
+        IComponent newComponent = ComponentsFactoryProvider.getInstance().get(newJobletName);
+        if (newComponent == null) {
+            return Collections.EMPTY_SET;
+        }
         Set<String> nodesName = new HashSet<String>();
         for (Node node : (List<Node>) process.getGraphicalNodes()) {
             if (node.getComponent().getName().equals(newJobletName)) {
-                IComponent newComponent = UpdateManagerHelper.getComponent(process, newJobletName);
-                if (newComponent == null) {
-                    continue;
-                }
                 if (node.getUniqueName().equals(node.getLabel())) {
                     nodesName.add(node.getUniqueName());
                 } else {
