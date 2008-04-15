@@ -22,7 +22,6 @@ import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.FileFieldEditor;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.StringFieldEditor;
-import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -52,6 +51,7 @@ import org.talend.core.ui.proposal.TalendProposalUtils;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
+import org.talend.designer.core.ui.editor.properties.ContextParameterExtractor;
 import org.talend.designer.core.ui.views.statsandlogs.StatsAndLogsViewHelper;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.dialog.RepositoryReviewDialog;
@@ -281,6 +281,7 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
         texts.add(userField.getTextControl(parent));
         texts.add(passwordField.getTextControl(parent));
         texts.add(dabasePathField.getTextControl(parent));
+
         texts.add(statsTableField.getTextControl(parent));
         texts.add(logsTableField.getTextControl(parent));
         texts.add(metterTableField.getTextControl(parent));
@@ -311,12 +312,6 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
         passwordField.getTextControl(parent).setEditable(f);
         dabasePathField.setEnabled(f, parent);
         dabasePathField.getTextControl(parent).setEditable(f);
-        statsTableField.setEnabled(f, parent);
-        statsTableField.getTextControl(parent).setEditable(f);
-        logsTableField.setEnabled(f, parent);
-        logsTableField.getTextControl(parent).setEditable(f);
-        metterTableField.setEnabled(f, parent);
-        metterTableField.getTextControl(parent).setEditable(f);
     }
 
     /**
@@ -368,13 +363,11 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
 
         statsFileNameField = new StringFieldEditor(languagePrefix + EParameterName.FILENAME_STATS.getName(),
                 EParameterName.FILENAME_STATS.getDisplayName(), parent);
-
         statsFileNameField.getTextControl(parent).setText(
                 TalendTextUtils.addQuotes(PreferenceInitializer.DEFAULT_STATS_FILE_NAME));
 
         logsFileNameField = new StringFieldEditor(languagePrefix + EParameterName.FILENAME_LOGS.getName(),
                 EParameterName.FILENAME_LOGS.getDisplayName(), parent);
-
         logsFileNameField.getTextControl(parent).setText(TalendTextUtils.addQuotes(PreferenceInitializer.DEFAULT_LOGS_FILE_NAME));
 
         metterFileNameField = new StringFieldEditor(languagePrefix + EParameterName.FILENAME_METTER.getName(),
@@ -457,6 +450,8 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
         hostField = new StringFieldEditor(languagePrefix + EParameterName.HOST.getName(), EParameterName.HOST.getDisplayName(),
                 parent);
         TalendProposalUtils.installOn(hostField.getTextControl(parent), null);
+        ContextParameterExtractor.installOn(hostField.getTextControl(parent), null, languagePrefix
+                + EParameterName.HOST.getName(), null);
 
         portField = new StringFieldEditor(languagePrefix + EParameterName.PORT.getName(), EParameterName.PORT.getDisplayName(),
                 parent);
@@ -475,7 +470,8 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
                 .getDisplayName(), parent);
         TalendProposalUtils.installOn(schemaField.getTextControl(parent), null);
 
-        userField = new StringFieldEditor(userField + EParameterName.USER.getName(), EParameterName.USER.getDisplayName(), parent);
+        userField = new StringFieldEditor(languagePrefix + EParameterName.USER.getName(), EParameterName.USER.getDisplayName(),
+                parent);
         TalendProposalUtils.installOn(userField.getTextControl(parent), null);
 
         passwordField = new StringFieldEditor(languagePrefix + EParameterName.PASS.getName(), EParameterName.PASS
@@ -838,13 +834,7 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
          * @see org.eclipse.jface.preference.DirectoryFieldEditor#doCheckState()
          */
         protected boolean doCheckState() {
-            String fileName = TalendTextUtils.removeQuotes(getTextControl().getText());
-            fileName = fileName.trim();
-            if (fileName.length() == 0 && isEmptyStringAllowed()) {
-                return true;
-            }
-            File file = new File(fileName);
-            return file.isDirectory();
+            return true;
         }
 
     }
@@ -914,36 +904,6 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
         @Override
         protected boolean checkState() {
 
-            String msg = null;
-
-            String path = TalendTextUtils.removeQuotes(getTextControl().getText());
-            if (path != null) {
-                path = path.trim();
-            } else {
-                path = "";//$NON-NLS-1$
-            }
-            if (path.length() == 0) {
-                if (!isEmptyStringAllowed()) {
-                    msg = getErrorMessage();
-                }
-            } else {
-                File file = new File(path);
-                if (file.isFile()) {
-                    if (enforceAbsolute && !file.isAbsolute()) {
-                        msg = JFaceResources.getString("FileFieldEditor.errorMessage2");//$NON-NLS-1$
-                    }
-                } else {
-                    msg = getErrorMessage();
-                }
-            }
-
-            if (msg != null) { // error
-                showErrorMessage(msg);
-                return false;
-            }
-
-            // OK!
-            clearErrorMessage();
             return true;
 
         }

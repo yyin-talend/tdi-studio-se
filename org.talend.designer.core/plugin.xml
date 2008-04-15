@@ -573,5 +573,14 @@
              name="Upgrade the parameters reference">
        </projecttask>
     </extension>
+    <extension
+          point="org.talend.core.migrationTask">
+       <projecttask
+             class="org.talend.designer.core.ui.preferences.migration.AddQuotesForStatLogsPreference"
+             description="Add quotes for stats and logs preference page."
+             id="org.talend.designer.core.ui.preferences.migration.AddQuotesForStatLogsPreference"
+             name="Add quotes for stats and logs preference page.">
+       </projecttask>
+    </extension>
    
 </plugin>

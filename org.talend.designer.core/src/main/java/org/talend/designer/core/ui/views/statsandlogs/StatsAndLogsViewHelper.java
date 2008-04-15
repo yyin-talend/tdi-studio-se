@@ -17,7 +17,6 @@ import java.util.Map;
 
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.process.Element;
@@ -469,13 +468,6 @@ public class StatsAndLogsViewHelper {
             return TalendTextUtils.addQuotes("");
         }
         value = value.trim();
-        String mark = TalendTextUtils.QUOTATION_MARK;
-        if (LanguageManager.getCurrentLanguage() == ECodeLanguage.PERL) {
-            mark = TalendTextUtils.SINGLE_QUOTE;
-        }
-        if (!value.startsWith(mark) && !value.endsWith(mark)) {
-            value = TalendTextUtils.addQuotes(value, mark);
-        }
         return value;
     }
 
