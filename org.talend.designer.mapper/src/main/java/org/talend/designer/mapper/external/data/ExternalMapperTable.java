@@ -36,7 +36,7 @@ public class ExternalMapperTable implements Serializable, Cloneable {
     private String name;
 
     private boolean minimized;
-    
+
     private String sizeState;
 
     /**
@@ -50,15 +50,20 @@ public class ExternalMapperTable implements Serializable, Cloneable {
     private boolean rejectInnerJoin;
 
     private String expressionFilter;
-    
+
     private boolean activateExpressionFilter;
- 
+
     private String matchingMode;
-    
+
     /**
      * Used only for lookup inputs. Reject main row if this lookup row doesn't exist.
      */
     private boolean innerJoin;
+
+    /**
+     * Used only for lookup inputs. Reject main row if this lookup row doesn't exist.
+     */
+    private boolean persistent;
 
     public String getName() {
         return this.name;
@@ -148,28 +153,34 @@ public class ExternalMapperTable implements Serializable, Cloneable {
         this.innerJoin = innerJoin;
     }
 
-    
-    
-    
+    public boolean isPersistent() {
+        return persistent;
+    }
+
+    public void setPersistent(boolean persistent) {
+        this.persistent = persistent;
+    }
+
     public String getExpressionFilter() {
         return this.expressionFilter;
     }
 
-    
     public void setExpressionFilter(String expressionFilter) {
         this.expressionFilter = expressionFilter;
     }
-    
+
     /**
      * Getter for activateExpressionFilter.
+     * 
      * @return the activateExpressionFilter
      */
     public boolean isActivateExpressionFilter() {
         return this.activateExpressionFilter;
     }
-    
+
     /**
      * Sets the activateExpressionFilter.
+     * 
      * @param activateExpressionFilter the activateExpressionFilter to set
      */
     public void setActivateExpressionFilter(boolean activateExpressionFilter) {
@@ -178,35 +189,34 @@ public class ExternalMapperTable implements Serializable, Cloneable {
 
     /**
      * Getter for lookupType.
+     * 
      * @return the lookupType
      */
     public String getMatchingMode() {
         return this.matchingMode;
     }
 
-    
     /**
      * Sets the lookupType.
+     * 
      * @param matchingMode the lookupType to set
      */
     public void setMatchingMode(String matchingMode) {
         this.matchingMode = matchingMode;
     }
 
-    
-    
-    
     /**
      * Getter for tableSizeState.
+     * 
      * @return the tableSizeState
      */
     public String getSizeState() {
         return this.sizeState;
     }
 
-    
     /**
      * Sets the tableSizeState.
+     * 
      * @param tableSizeState the tableSizeState to set
      */
     public void setSizeState(String tableSizeState) {
@@ -223,27 +233,26 @@ public class ExternalMapperTable implements Serializable, Cloneable {
     public Object clone() throws CloneNotSupportedException {
         ExternalMapperTable cloned = (ExternalMapperTable) super.clone();
         if (constraintTableEntries != null) {
-            cloned.constraintTableEntries = (List<ExternalMapperTableEntry>) ((ArrayList) constraintTableEntries)
-                    .clone();
+            cloned.constraintTableEntries = (List<ExternalMapperTableEntry>) ((ArrayList) constraintTableEntries).clone();
             int listSizeconstraintTableEntries = constraintTableEntries.size();
             for (int i = 0; i < listSizeconstraintTableEntries; i++) {
-                cloned.constraintTableEntries.set(i, (ExternalMapperTableEntry) cloned.constraintTableEntries.get(i)
-                        .clone());
+                cloned.constraintTableEntries.set(i, (ExternalMapperTableEntry) cloned.constraintTableEntries.get(i).clone());
             }
         }
         if (metadataTableEntries != null) {
             cloned.metadataTableEntries = (List<ExternalMapperTableEntry>) ((ArrayList) metadataTableEntries).clone();
             int listSizemetadataTableEntries = metadataTableEntries.size();
             for (int i = 0; i < listSizemetadataTableEntries; i++) {
-                cloned.metadataTableEntries.set(i, (ExternalMapperTableEntry) cloned.metadataTableEntries.get(i)
-                        .clone());
+                cloned.metadataTableEntries.set(i, (ExternalMapperTableEntry) cloned.metadataTableEntries.get(i).clone());
 
             }
         }
         return cloned;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.lang.Object#hashCode()
      */
     @Override
@@ -254,6 +263,7 @@ public class ExternalMapperTable implements Serializable, Cloneable {
         result = prime * result + ((this.constraintTableEntries == null) ? 0 : this.constraintTableEntries.hashCode());
         result = prime * result + ((this.expressionFilter == null) ? 0 : this.expressionFilter.hashCode());
         result = prime * result + (this.innerJoin ? 1231 : 1237);
+        result = prime * result + (this.persistent ? 1231 : 1237);
         result = prime * result + ((this.matchingMode == null) ? 0 : this.matchingMode.hashCode());
         result = prime * result + ((this.metadataTableEntries == null) ? 0 : this.metadataTableEntries.hashCode());
         result = prime * result + (this.minimized ? 1231 : 1237);
@@ -264,7 +274,9 @@ public class ExternalMapperTable implements Serializable, Cloneable {
         return result;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
@@ -311,6 +323,8 @@ public class ExternalMapperTable implements Serializable, Cloneable {
             return false;
         if (this.rejectInnerJoin != other.rejectInnerJoin)
             return false;
+        if (this.persistent != other.persistent)
+            return false;
         if (this.sizeState == null) {
             if (other.sizeState != null)
                 return false;
@@ -319,6 +333,4 @@ public class ExternalMapperTable implements Serializable, Cloneable {
         return true;
     }
 
-    
-    
 }

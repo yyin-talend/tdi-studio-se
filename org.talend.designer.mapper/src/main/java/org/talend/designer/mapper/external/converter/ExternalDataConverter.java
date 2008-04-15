@@ -267,6 +267,7 @@ public class ExternalDataConverter {
      */
     private void fillExternalTable(InputTable table, ExternalMapperTable externalMapperTable) {
         externalMapperTable.setInnerJoin(table.isInnerJoin());
+        externalMapperTable.setPersistent(table.isPersistent());
         externalMapperTable.setActivateExpressionFilter(table.isActivateExpressionFilter());
         String expressionFilter = null;
         if (table.getExpressionFilter() != null && table.getExpressionFilter().getExpression() != null) {

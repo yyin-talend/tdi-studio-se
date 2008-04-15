@@ -35,6 +35,7 @@ import org.talend.designer.mapper.i18n.Messages;
 import org.talend.designer.mapper.language.LanguageProvider;
 import org.talend.designer.mapper.language.perl.PerlLanguage;
 import org.talend.designer.mapper.managers.MapperManager;
+import org.talend.designer.mapper.model.table.AbstractInOutTable;
 import org.talend.designer.mapper.model.table.ILookupType;
 import org.talend.designer.mapper.model.table.InputTable;
 import org.talend.designer.mapper.model.table.TMAP_MATCHING_MODE;
@@ -83,6 +84,10 @@ public class InputDataMapTableView extends DataMapTableView {
     }
 
     private ExtendedTextCellEditor expressionCellEditor;
+
+    protected ToolItem activatePersistentCheck;
+
+    protected boolean previousStatePersistentCheckFilter;
 
     /*
      * (non-Javadoc)
@@ -284,17 +289,40 @@ public class InputDataMapTableView extends DataMapTableView {
 
             });
 
-        }
-        if (mapperManager.isAdvancedMap()) {
-            createActivateFilterCheck();
-            return true;
-        } else {
-            if (getInputTable().isMainConnection()) {
-                return false;
-            } else {
-                return true;
+            if (mapperManager.isPersistentMap()) {
+                final InputTable table = getInputTable();
+                activatePersistentCheck = new ToolItem(toolBarActions, SWT.CHECK);
+                activatePersistentCheck.setEnabled(!mapperManager.componentIsReadOnly());
+                //previousStatePersistentCheckFilter = table.isPersistent();
+                activatePersistentCheck.setSelection(table.isPersistent());
+                activatePersistentCheck.setToolTipText(Messages
+                        .getString("InputDataMapTableView.buttonTooltip.activatePersistentCheck")); //$NON-NLS-1$
+                activatePersistentCheck.setImage(ImageProviderMapper.getImage(ImageInfo.ACTIVATE_PERSISTENT_ICON));
+
+                // /////////////////////////////////////////////////////////////////
+                if (activatePersistentCheck != null) {
+
+                    activatePersistentCheck.addSelectionListener(new SelectionListener() {
+
+                        public void widgetDefaultSelected(SelectionEvent e) {
+                        }
+
+                        public void widgetSelected(SelectionEvent e) {
+                            // updateExepressionFilterTextAndLayout(true);
+                            //previousStatePersistentCheckFilter = activatePersistentCheck.getSelection();
+                            
+                            table.setPersistent(activatePersistentCheck.getSelection());
+                        }
+
+                    });
+                }
+                // /////////////////////////////////////////////////////////////////
             }
         }
+        
+        createActivateFilterCheck();
+
+        return true;
     }
 
     /*

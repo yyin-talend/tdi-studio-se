@@ -887,4 +887,9 @@ public class MapperManager extends AbstractMapperManager {
         return !originalExternalData.equals(currentExternalData);
     }
 
+    public boolean isPersistentMap() {
+        return getAbstractMapComponent().getComponent().getName().startsWith("tMapPersistent")
+                && LanguageProvider.getCurrentLanguage().getCodeLanguage() == ECodeLanguage.JAVA;
+    }
+
 }

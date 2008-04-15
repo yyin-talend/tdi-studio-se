@@ -36,6 +36,8 @@ public class InputTable extends AbstractInOutTable {
      */
     private boolean innerJoin; // else outer join
 
+    private boolean persistent;
+    
     private ILookupType matchingMode = TMAP_MATCHING_MODE.UNIQUE_MATCH;
     
     /**
@@ -61,6 +63,7 @@ public class InputTable extends AbstractInOutTable {
         super.initFromExternalData(externalMapperTable);
         if (externalMapperTable != null) {
             this.innerJoin = externalMapperTable.isInnerJoin();
+            this.persistent = externalMapperTable.isPersistent();
             this.matchingMode = TMAP_MATCHING_MODE.parse(externalMapperTable.getMatchingMode());
             if (matchingMode == null) {
                 if (mapperManager.isTableHasAtLeastOneHashKey(this)) {
@@ -107,6 +110,15 @@ public class InputTable extends AbstractInOutTable {
      */
     public void setInnerJoin(boolean innerJoin) {
         this.innerJoin = innerJoin;
+    }
+
+    
+    public boolean isPersistent() {
+        return persistent;
+    }
+    
+    public void setPersistent(boolean persistent) {
+        this.persistent = persistent;
     }
 
     /*
