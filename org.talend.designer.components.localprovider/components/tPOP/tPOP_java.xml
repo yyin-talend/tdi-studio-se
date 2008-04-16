@@ -74,10 +74,19 @@
     </PARAMETER>
 
     <PARAMETER
+      NAME="SUBJECT_PATTERN"
+      FIELD="TEXT"
+      REQUIRED="true"
+      NUM_ROW="5"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
       NAME="ALL_EMAILS"
       FIELD="CHECK"
       REQUIRED="true"
-      NUM_ROW="5"
+      NUM_ROW="6"
     >
       <DEFAULT>true</DEFAULT>
     </PARAMETER>
@@ -86,7 +95,7 @@
       NAME="MAX_EMAILS"
       FIELD="TEXT"
       REQUIRED="true"
-      NUM_ROW="5"
+      NUM_ROW="6"
       SHOW_IF="ALL_EMAILS == 'false'"
     >
       <DEFAULT>10</DEFAULT>
@@ -96,7 +105,7 @@
       NAME="DELETE_FROM_SERVER"
       FIELD="CHECK"
       REQUIRED="true"
-      NUM_ROW="6"
+      NUM_ROW="7"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
