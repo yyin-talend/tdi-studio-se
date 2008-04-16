@@ -267,15 +267,6 @@ public abstract class ShadowNode extends AbstractNode {
         return component.isMultiplyingOutputs();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.process.INode#isMultiplyingOutputs()
-     */
-    public Boolean isSubtreeWithLoop() {
-        return component.isSubtreeWithLoop();
-    }
-
     public boolean isExternalNode() {
         return false;
     }
