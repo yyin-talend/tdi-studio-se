@@ -130,13 +130,13 @@
 			} // T_TM_M_245
 		} // T_TM_M_241
 
+		boolean firstLookupIsPersistentSorted = false;
 
-
-
-		if (sizeInputTables > 1 && inputTables.get(0).isPersistent()) { // T_TM_M_201
-			ExternalMapperTable inputTable = inputTables.get(0);
+		if (sizeInputTables > 1 && inputTables.get(1).isPersistent()) { // T_TM_M_201
+			ExternalMapperTable inputTable = inputTables.get(1);
             String tableName = inputTable.getName();
             nextLookupName = inputTable.getName();
+            firstLookupIsPersistentSorted = true;
             IConnection connection = hNameToConnection.get(tableName);
             if (connection != null) { // T_TM_M_206
             	//EConnectionType connectionType = connection.getLineStyle();
@@ -330,7 +330,9 @@
 				}
 				%>
 
-				boolean <%= rejectedInnerJoin %> = false;
+				//TEST firstLookupIsPersistentSorted=<%= firstLookupIsPersistentSorted %> isFirstPersistentSortedTable=<%= isFirstPersistentSortedTable %>
+
+				<%= isFirstPersistentSortedTable && !firstLookupIsPersistentSorted ? "boolean " : "" %><%= rejectedInnerJoin %> = false;
 			
 	           	while (fsi_<%= currentJoinedTableNames %>.hasNext()) { // G_TM_M_250 loop "<%= currentJoinedTableNames %>"
 				
@@ -350,7 +352,7 @@
 			<%
 			} else if(isFirstPersistentSortedTable) {
 			%>
-				boolean <%= rejectedInnerJoin %> = false;
+				<%= rejectedInnerJoin %> = false;
 			<%
 			}
 
@@ -630,7 +632,7 @@
                 if(!isLastTable) { // T_TM_M_218 
 
 			nextInputTable = inputTables.get(iInputTable + 1);
-			if(!isLastTable && nextInputTable.isPersistent()) { // T_TM_M_216
+			if(!isLastTable && nextInputTable != null && nextInputTable.isPersistent()) { // T_TM_M_216
 				nextLookupColumnsKeys.clear();
             	String nextTableName = nextInputTable.getName();
             	IConnection nextConnection = hNameToConnection.get(nextTableName);
@@ -752,7 +754,7 @@
 					<%
 					} // T_TM_M_247
 	    		
-                	if(isPersistentSortedTable && !isLastTable) { // T_TM_M_248
+                	if(isPersistentSortedTable && !isLastTable && nextInputTable != null && nextInputTable.isPersistent()) { // T_TM_M_248
 					%>
 	    	        	} // G_TM_M_250 loop "<%= currentJoinedTableNames %>"
 	            	<%
@@ -778,7 +780,7 @@
            		%>
 	            
 	            <%
-                if(!isLastTable && nextInputTable.isPersistent()) { // T_TM_M_238
+                if(!isLastTable && nextInputTable != null && nextInputTable.isPersistent()) { // T_TM_M_238
                 %> 
 	            	
 	            	fsi_<%= nextJoinedTableNames %>.endPut();
@@ -786,13 +788,13 @@
 					<%
 				} // T_TM_M_238
 
-				if(!isFirstPersistentSortedTable && nextInputTable.isPersistent()) {
+				if(!isFirstPersistentSortedTable && nextInputTable != null && nextInputTable.isPersistent()) {
 					%>
 	     				//{ // start main loop 
            			<%
 				}
 
-				if(previousStateIsFirstPersistentSortedTable == true && isPersistentSortedTable) { // T_TM_M_219
+				if(isFirstPersistentSortedTable == true && previousStateIsFirstPersistentSortedTable == false) { // T_TM_M_219
 					previousStateIsFirstPersistentSortedTable = true;
 					isFirstPersistentSortedTable = false;
 				} // T_TM_M_219
