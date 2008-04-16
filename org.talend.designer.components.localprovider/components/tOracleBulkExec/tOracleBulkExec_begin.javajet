@@ -23,7 +23,7 @@ String cid = node.getUniqueName();
 String host = ElementParameterParser.getValue(node, "__HOST__");
 String port = ElementParameterParser.getValue(node, "__PORT__");
 String dbname = ElementParameterParser.getValue(node, "__DBNAME__");
-String localServiceName = ElementParameterParser.getValue(node, "__LOCAL_SERVICE_NAME__");
+String localServiceName = ElementParameterParser.getValue(node, "__LOCAL_SERVICE_NAME__"); 
 String dbschema = ElementParameterParser.getValue(node, "__SCHEMA_DB__");
 String dbuser = ElementParameterParser.getValue(node, "__USER__");
 String dbpass = ElementParameterParser.getValue(node, "__PASS__");
@@ -32,6 +32,7 @@ String data_action = ElementParameterParser.getValue(node, "__DATA_ACTION__");
 String outputAction  = ElementParameterParser.getValue(node, "__OUTPUT__");
 String use_existing_clt_file = ElementParameterParser.getValue(node, "__USE_EXISTING_CLT_FILE__");
 String inputIntoTableClause = ElementParameterParser.getValue(node, "__INPUT_INTO_TABLE_CLAUSE__");
+String useDatePattern = ElementParameterParser.getValue(node, "__USE_DATE_PATTERN__");
 String columns = "";//if schema is defined, use this option in clt file
 
 %>
@@ -45,7 +46,8 @@ String username_<%=cid %> = null;
 String password_<%=cid %> = null;
 <%       
 String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
-if(useExistingConn.equals("true")) {
+if(useExistingConn.equals("true"))
+{
     String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
     String conn = "conn_" + connection;
     String existHost = "host_" + connection;
@@ -64,7 +66,9 @@ if(useExistingConn.equals("true")) {
     serviceUrl_<%=cid%> = "(description=(address=(protocol=tcp)(host=" + host_<%=cid%> + ")(port=" + port_<%=cid%> + "))(connect_data=(service_name=" + dbname_<%=cid%> + ")))";
     conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
     <%
-} else {
+}
+else
+{
     %>
     String url_<%=cid%> = null;
     host_<%=cid%> = <%=host%>;
@@ -86,13 +90,13 @@ if(useExistingConn.equals("true")) {
         <%
     } else if(connectionType.equals("ORACLE_OCI")) {
         %>
-        url_<%=cid%> = "jdbc:oracle:oci8:@" + <%=localServiceName%>;
+        url_<%=cid%> = "jdbc:oracle:oci8:@" + <%=localServiceName%>; 
         <%
     }
     %>
     java.lang.Class.forName("oracle.jdbc.driver.OracleDriver");
     conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid%>,username_<%=cid %>,password_<%=cid %>);
-    <%
+<%
 }
 
 //table action begin
@@ -128,14 +132,11 @@ if(columnList != null && columnList.size() > 0) {
     			flag = true;
     		}
     		columns += column.getOriginalDbColumnName();
-    		if(column.getType().equals("DATE")){//date
+    		if(column.getType().equals("DATE") && useDatePattern.equals("true")){//date
     			String pattn = column.getPattern();
-    			if(pattn.length() > 2){
-    				pattn = "'" + pattn.substring(1, pattn.length() - 1) + "'";
-    			}else{
-    				pattn = "";
+    			if(pattn != null && pattn.length() > 2){
+    				columns += ("DATE '" + pattn.substring(1, pattn.length() - 1) + "'");
     			}
-    			columns += (" DATE " + pattn);
     		}else if(dataType.equals("CHAR") || dataType.equals("NCHAR") || dataType.equals("NVARCHAR2") || dataType.equals("VARCHAR") || dataType.equals("VARCHAR2")){//long text
     			if(length > 255){
     				columns += " CHAR(" + length + ")";
