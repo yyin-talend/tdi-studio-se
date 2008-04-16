@@ -33,6 +33,8 @@ skeleton="../templates/db_output_bulk.skeleton"
     List<Map<String, String>> fieldOptions = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__FIELD_OPTIONS__");
     
     String dbname= ElementParameterParser.getValue(node, "__DBNAME__");
+
+    String localServiceName = ElementParameterParser.getValue(node, "__LOCAL_SERVICE_NAME__");    
     
     String dbhost = ElementParameterParser.getValue(node, "__HOST__");
     
@@ -142,13 +144,13 @@ if(useExistingConn.equals("true")) {
 		<%
 	} else if(connectionType.equals("ORACLE_OCI")) {
 	    %>
-	    url_<%=cid%> = "jdbc:oracle:oci8:@(description=(address=(protocol=tcp)(host=" + <%=dbhost%> + ")(port=" + <%=dbport%> + "))(connect_data=(service_name=" + <%=dbname%> + ")))";
+	    url_<%=cid%> = "jdbc:oracle:oci8:@" + <%=localServiceName%>;;
 	    <%
 	}
 	%>
 	String dbUser_<%=cid%> = <%=dbuser%>;
 	String dbPwd_<%=cid%> = <%=dbpwd%>;
-	conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
+	conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>, dbUser_<%=cid%>, dbPwd_<%=cid%>);
 	dbschema_<%=cid%> = <%=tableSchema%>;
 	<%
 }

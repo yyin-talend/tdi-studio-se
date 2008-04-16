@@ -8,13 +8,13 @@ imports="
 
 <%
     CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
-    INode node = (INode)codeGenArgument.getArgument();
-	
+    INode node = (INode)codeGenArgument.getArgument();	
     String cid = node.getUniqueName();
 	String javaDbDriver = "oracle.jdbc.driver.OracleDriver";
     String dbhost = ElementParameterParser.getValue(node, "__HOST__");
     String dbport = ElementParameterParser.getValue(node, "__PORT__");
     String dbname = ElementParameterParser.getValue(node, "__DBNAME__");
+    String localServiceName = ElementParameterParser.getValue(node, "__LOCAL_SERVICE_NAME__");
     String dbschema = ElementParameterParser.getValue(node, "__SCHEMA_DB__");
     String dbuser = ElementParameterParser.getValue(node, "__USER__");
     String dbpass = ElementParameterParser.getValue(node, "__PASS__");
@@ -33,22 +33,29 @@ if(connectionType.equals("ORACLE_SID")) {
 	<%
 } else if(connectionType.equals("ORACLE_OCI")) {
     %>
-    String url_<%=cid%> = "jdbc:oracle:oci8:@(description=(address=(host=" + <%=dbhost%> + ")(protocol=tcp)(port=" + <%=dbport%> + "))(connect_data=(service_name=" + <%=dbname%> + ")))";
+    String url_<%=cid%> = "jdbc:oracle:oci8:@" + <%=localServiceName%>;
     <%
 }
 %>
-
 String dbUser_<%=cid %> = <%=dbuser%>;
 String dbPwd_<%=cid %> = <%=dbpass%>;
-
-java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
-
+java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>, dbUser_<%=cid%>, dbPwd_<%=cid%>);
 conn_<%=cid%>.setAutoCommit(false);
 
 globalMap.put("conn_" + "<%=cid%>",conn_<%=cid%>);
-globalMap.put("host_" + "<%=cid%>",<%=dbhost%>);
-globalMap.put("port_" + "<%=cid%>",<%=dbport%>);
-globalMap.put("dbname_" + "<%=cid%>",<%=dbname%>);
+<%
+if(connectionType.equals("ORACLE_OCI")) {
+    %>
+    globalMap.put("localServiceName_" + "<%=cid%>",<%=localServiceName%>);
+    <%
+} else {
+    %>
+    globalMap.put("host_" + "<%=cid%>",<%=dbhost%>);
+    globalMap.put("port_" + "<%=cid%>",<%=dbport%>);    
+    globalMap.put("dbname_" + "<%=cid%>",<%=dbname%>);
+    <%
+}
+%>
 globalMap.put("dbschema_" + "<%=cid%>", <%=dbschema%>);
 globalMap.put("username_" + "<%=cid%>",<%=dbuser%>);
 globalMap.put("password_" + "<%=cid%>",<%=dbpass%>);

@@ -71,7 +71,7 @@
       FIELD="TEXT"
       NUM_ROW="40"
       REPOSITORY_VALUE="SERVER_NAME"
-      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
+      SHOW_IF="(USE_EXISTING_CONNECTION == 'false' and CONNECTION_TYPE != 'ORACLE_OCI')"
     >
       <DEFAULT>"localhost"</DEFAULT>
     </PARAMETER>
@@ -81,7 +81,7 @@
       FIELD="TEXT"
       NUM_ROW="40"
       REPOSITORY_VALUE="PORT"
-      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
+      SHOW_IF="(USE_EXISTING_CONNECTION == 'false' and CONNECTION_TYPE != 'ORACLE_OCI')"
     >
       <DEFAULT>"1521"</DEFAULT>
     </PARAMETER>
@@ -91,7 +91,18 @@
       FIELD="TEXT"
       NUM_ROW="41"
       REPOSITORY_VALUE="SID"
-      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
+      SHOW_IF="(USE_EXISTING_CONNECTION == 'false' and CONNECTION_TYPE != 'ORACLE_OCI')"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="LOCAL_SERVICE_NAME"
+      FIELD="TEXT"
+      NUM_ROW="41"
+      REPOSITORY_VALUE="SID"
+      REQUIRED="true"
+      SHOW_IF="(USE_EXISTING_CONNECTION == 'false' and CONNECTION_TYPE == 'ORACLE_OCI')"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -394,7 +405,7 @@
   </ADVANCED_PARAMETERS>
   <CODEGENERATION>
     <IMPORTS>
-		<IMPORT NAME="Driver-Oracle" MODULE="ojdbc14.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-Oracle" MODULE="classes12.jar" REQUIRED="true" />
     </IMPORTS>
   </CODEGENERATION>
    

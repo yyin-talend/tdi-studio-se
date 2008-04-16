@@ -72,7 +72,7 @@
       FIELD="TEXT"
       NUM_ROW="4"
       REPOSITORY_VALUE="SERVER_NAME"
-      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
+      SHOW_IF="(USE_EXISTING_CONNECTION == 'false' and CONNECTION_TYPE != 'ORACLE_OCI')"
     >
       <DEFAULT>"localhost"</DEFAULT>
     </PARAMETER>
@@ -82,7 +82,7 @@
       FIELD="TEXT"
       NUM_ROW="4"
       REPOSITORY_VALUE="PORT"
-      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
+      SHOW_IF="(USE_EXISTING_CONNECTION == 'false' and CONNECTION_TYPE != 'ORACLE_OCI')"
     >
       <DEFAULT>"1521"</DEFAULT>
     </PARAMETER>
@@ -90,9 +90,20 @@
     <PARAMETER
       NAME="DBNAME"
       FIELD="TEXT"
-      NUM_ROW="4"
+      NUM_ROW="5"
       REPOSITORY_VALUE="SID"
-      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
+      SHOW_IF="(USE_EXISTING_CONNECTION == 'false' and CONNECTION_TYPE != 'ORACLE_OCI')"
+    >
+      <DEFAULT>""</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="LOCAL_SERVICE_NAME"
+      FIELD="TEXT"
+      NUM_ROW="5"
+      REPOSITORY_VALUE="SID"
+      REQUIRED="true"
+      SHOW_IF="(USE_EXISTING_CONNECTION == 'false' and CONNECTION_TYPE == 'ORACLE_OCI')"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -100,7 +111,7 @@
      <PARAMETER 
       NAME="SCHEMA_DB"
       FIELD="TEXT"
-      NUM_ROW="4"
+      NUM_ROW="5"
       REPOSITORY_VALUE="SCHEMA"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
@@ -110,7 +121,7 @@
     <PARAMETER
       NAME="TYPE"
       FIELD="TEXT"
-      NUM_ROW="4"
+      NUM_ROW="5"
       SHOW="false"
       REPOSITORY_VALUE="TYPE"
     >
@@ -120,7 +131,7 @@
     <PARAMETER
       NAME="USER"
       FIELD="TEXT"
-      NUM_ROW="5"
+      NUM_ROW="6"
       REPOSITORY_VALUE="USERNAME"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
@@ -130,7 +141,7 @@
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
-      NUM_ROW="5"
+      NUM_ROW="6"
       REPOSITORY_VALUE="PASSWORD"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
@@ -140,7 +151,7 @@
     <PARAMETER
       NAME="SCHEMA"
       FIELD="SCHEMA_TYPE"
-      NUM_ROW="6"
+      NUM_ROW="7"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -205,7 +216,7 @@
 
   <CODEGENERATION>
     <IMPORTS>
-		<IMPORT NAME="Driver-Oracle" MODULE="ojdbc14.jar" REQUIRED="true" />
+		<IMPORT NAME="Driver-Oracle" MODULE="classes12.jar" REQUIRED="true" />
     </IMPORTS>
   </CODEGENERATION>
    
