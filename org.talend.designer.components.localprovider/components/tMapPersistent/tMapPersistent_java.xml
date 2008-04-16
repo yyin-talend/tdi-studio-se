@@ -39,11 +39,13 @@
          <DEFAULT/>
       </PARAMETER>
       
+      <!-- 
       <PARAMETER NAME="MEMORY_HEAP_MAX_SIZE" FIELD="TEXT"
 			REQUIRED="false" NUM_ROW="3"
 	  >
 			<DEFAULT>1000</DEFAULT>
       </PARAMETER>
+       -->
       
       <!-- 
       <PARAMETER NAME="MAPPER_MODEL_DATA" FIELD="TEXT" SHOW="false">

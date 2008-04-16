@@ -99,6 +99,7 @@
             if (connectionType == EConnectionType.FLOW_MAIN) {
             	mainInputTable = externalTable;
             	mainInputTableName = mainInputTable.getName();
+	            previousMainNodeIsVirtual = connection.getSource() != null ? connection.getSource().isVirtualGenerateNode() : false;
             }
 
 		} // T_TM_M_199
@@ -107,6 +108,7 @@
 		List<IMetadataColumn> nextLookupColumnsKeys = new ArrayList<IMetadataColumn>();
 
 		boolean hasPersistentLookup = false;
+		int indexLastPersistentSortedTable = -1;		
 
 		for (int iInputTable = 1; iInputTable < sizeInputTables; iInputTable++) { // T_TM_M_241
 			ExternalMapperTable inputTable = inputTables.get(iInputTable);
@@ -125,6 +127,7 @@
                 	
                 if(inputTable.isPersistent()) {
                 	hasPersistentLookup = true;
+					indexLastPersistentSortedTable = iInputTable;
                 }
                 	
 			} // T_TM_M_245
@@ -141,8 +144,6 @@
             if (connection != null) { // T_TM_M_206
             	//EConnectionType connectionType = connection.getLineStyle();
 	
-	            previousMainNodeIsVirtual = connection.getSource() != null ? connection.getSource().isVirtualGenerateNode() : false;
-	            
             	IMetadataTable metadataTable = connection.getMetadataTable();
             	if (inputTable != null) { // T_TM_M_205
 		        	hExternalInputTableEntries.clear();
@@ -239,12 +240,16 @@
 		List<IConnection> cumulatedInputConnections = new ArrayList<IConnection>();
 
 		sizeInputTables = inputTables.size();
+
+		boolean lastPersistentSortedTableIsAlreadyProcessed = false;
+
         for (int iInputTable = 0; iInputTable < sizeInputTables; iInputTable++) {
 			ExternalMapperTable externalTable = inputTables.get(iInputTable);
 			
 			boolean nextTableIsLast = iInputTable + 1 == sizeInputTables - 1;
 			boolean isLastTable = (iInputTable == sizeInputTables - 1);
 			boolean isBeforeOfThirdTable = (iInputTable < 2);
+			boolean isLastPersistentSortedTable = (indexLastPersistentSortedTable == iInputTable);
 			
 			boolean nextTableIsPersistentSorted = !isLastTable && inputTables.get(iInputTable + 1).isPersistent();
 			
@@ -316,7 +321,14 @@
 
             if(isPersistentSortedTable) {
 
-			%>
+				if(isLastPersistentSortedTable && !previousMainNodeIsVirtual) {
+					%>
+	     				{ // start main loop 
+           			<%
+				}
+				%>
+			
+			
 			
 				tHash_Lookup_<%= tableName %>.initGet();
 
@@ -517,7 +529,10 @@
 								while (tHash_Lookup_<%= tableName %>.hasNext() || forceLoop<%= tableName %>) { // G_TM_M_043
 
 								<%
-								if(!isPersistentSortedTable || (isPersistentSortedTable && isLastTable)) {
+								if(!hasPersistentLookup || isLastPersistentSortedTable || lastPersistentSortedTableIsAlreadyProcessed) {
+									%>
+									 // CALL "close loop of lookup '" <%=tableName %>'
+									<%
 									gm.addBlocksCodeToClose(new BlockCode("close loop of lookup '" + tableName +"' // G_TM_M_043"));
 								}
 								%>
@@ -744,7 +759,7 @@
 
 
 
-                	if(!isLastTable && isMultipleResultMode) { // T_TM_M_247
+                	if(hasPersistentLookup && !isLastPersistentSortedTable && isMultipleResultMode) { // T_TM_M_247
 					%>
 								if(forceLoop<%= tableName %>) {
 									break;
@@ -788,16 +803,14 @@
 					<%
 				} // T_TM_M_238
 
-				if(!isFirstPersistentSortedTable && nextInputTable != null && nextInputTable.isPersistent()) {
-					%>
-	     				//{ // start main loop 
-           			<%
-				}
-
 				if(isFirstPersistentSortedTable == true && previousStateIsFirstPersistentSortedTable == false) { // T_TM_M_219
 					previousStateIsFirstPersistentSortedTable = true;
 					isFirstPersistentSortedTable = false;
 				} // T_TM_M_219
+
+				if(isLastPersistentSortedTable) {
+					lastPersistentSortedTableIsAlreadyProcessed = true;
+				}
 
 				currentJoinedTableNames = nextJoinedTableNames;
 
@@ -815,7 +828,7 @@
 
 		if(!previousMainNodeIsVirtual) {
 		%>
-			{ // Dummy bracket to open block for "<%= mainInputTableName %>" ##(1)## 
+			//{ // Dummy bracket to open block for "<%= mainInputTableName %>" ##(1)## 
 		<%
 		}
 		%>					
