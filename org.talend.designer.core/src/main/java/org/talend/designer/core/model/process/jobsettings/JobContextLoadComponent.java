@@ -153,10 +153,6 @@ public class JobContextLoadComponent implements IComponent {
         return null;
     }
 
-    public Boolean isSubtreeWithLoop() {
-        return null;
-    }
-
     public boolean isDataAutoPropagated() {
         return false;
     }

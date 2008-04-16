@@ -136,11 +136,6 @@ public abstract class AbstractStatsLogsComponent implements IComponent {
     }
 
     // no use for virtual component
-    public Boolean isSubtreeWithLoop() {
-        return null;
-    }
-
-    // no use for virtual component
     public boolean isDataAutoPropagated() {
         return false;
     }

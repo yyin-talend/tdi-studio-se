@@ -1895,10 +1895,6 @@ public class EmfComponent implements IComponent {
         return compType.getHEADER().isISMULTIPLYINGOUTPUTS();
     }
 
-    public Boolean isSubtreeWithLoop() {
-        return compType.getHEADER().isISSUBTREEWITHLOOP();
-    }
-
     /*
      * (non-Javadoc)
      * 

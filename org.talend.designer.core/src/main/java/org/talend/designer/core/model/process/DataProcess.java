@@ -136,7 +136,6 @@ public class DataProcess {
         dataNode.setThereLinkWithHash(graphicalNode.isThereLinkWithHash());
         dataNode.setHasConditionalOutputs(graphicalNode.hasConditionalOutputs());
         dataNode.setIsMultiplyingOutputs(graphicalNode.isMultiplyingOutputs());
-        dataNode.setIsSubtreeWithLoop(graphicalNode.isSubtreeWithLoop());
         dataNode.setProcess(graphicalNode.getProcess());
         dataNode.setComponent(graphicalNode.getComponent());
 
@@ -149,7 +148,6 @@ public class DataProcess {
             dataNode.setThereLinkWithHash(graphicalNode.isThereLinkWithHash());
             dataNode.setHasConditionalOutputs(false);
             dataNode.setIsMultiplyingOutputs(graphicalNode.isMultiplyingOutputs());
-            dataNode.setIsSubtreeWithLoop(graphicalNode.isSubtreeWithLoop());
             dataNode.setProcess(graphicalNode.getProcess());
         }
         dataNode.setDesignSubjobStartNode(graphicalNode.getDesignSubjobStartNode());
