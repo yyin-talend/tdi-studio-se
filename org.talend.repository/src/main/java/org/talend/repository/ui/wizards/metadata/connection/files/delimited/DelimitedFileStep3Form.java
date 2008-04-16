@@ -497,10 +497,11 @@ public class DelimitedFileStep3Form extends AbstractDelimitedFileStepForm {
                 columns.add(i, metadataColumn);
             }
         }
-        tableEditorView.getMetadataEditor().registerDataList(columns);
+        tableEditorView.getMetadataEditor().addAll(columns);
         checkFieldsValue();
         tableEditorView.getTableViewerCreator().layout();
-        tableEditorView.getTableViewerCreator().getTableViewer().refresh();
+        tableEditorView.getTableViewerCreator().getTable().deselectAll();
+        // tableEditorView.getTableViewerCreator().getTableViewer().refresh();
         informationLabel.setText(Messages.getString("FileStep3.guessTip")); //$NON-NLS-1$
     }
 

@@ -402,11 +402,11 @@ public class ShadowProcessPreview {
      * DOC ocarbone Comment method "clearTablePreview".
      */
     public void clearTablePreview() {
-        table.clearAll();
-        for (int i = 0; i < table.getColumnCount(); i++) {
-            table.getColumn(i).setText(""); //$NON-NLS-1$
-            table.getColumn(i).setWidth(0);
-        }
+        // table.clearAll();
+        // for (int i = 0; i < table.getColumnCount(); i++) {
+        // table.getColumn(i).setText(""); //$NON-NLS-1$
+        // table.getColumn(i).setWidth(0);
+        // }
     }
 
 }

@@ -473,9 +473,10 @@ public class WSDLSchemaStep2Form extends AbstractForm {
                 columns.add(i, metadataColumn);
             }
         }
-        tableEditorView.getMetadataEditor().registerDataList(columns);
+        tableEditorView.getMetadataEditor().addAll(columns);
         checkFieldsValue();
         tableEditorView.getTableViewerCreator().layout();
+        tableEditorView.getTableViewerCreator().getTable().deselectAll();
         informationLabel.setText(Messages.getString("FileStep3.guessTip")); //$NON-NLS-1$
     }
 
