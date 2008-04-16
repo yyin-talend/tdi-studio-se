@@ -5,7 +5,6 @@
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		org.talend.designer.codegen.config.SubTreeArgument
 		org.talend.core.model.process.IConnectionCategory
-		org.talend.core.model.temp.ECodePart
 	"
   class="SubTreeEnd"     
 %>
@@ -18,13 +17,6 @@ CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 %>
 		// end for
 	}
-<%
-	}
-
-	if(subTreeArgument.isSubtreeWithLoop() 
-		&& connection.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)){
-%>
-	} // End of tReplicate loop "<%= connection.getName()%>"
 <%
 	}
 

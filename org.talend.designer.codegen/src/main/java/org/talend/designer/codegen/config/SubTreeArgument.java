@@ -28,9 +28,6 @@ public class SubTreeArgument {
 
     private boolean isMultiplyingOutputComponents = false;
 
-    // fixed the bug 3127
-    private boolean isSubtreeWithLoop = false;
-
     /**
      * Getter for inputSubtreeConnection.
      * 
@@ -84,23 +81,4 @@ public class SubTreeArgument {
     public void setMultiplyingOutputComponents(boolean isMultiplyingOutputComponents) {
         this.isMultiplyingOutputComponents = isMultiplyingOutputComponents;
     }
-
-    /**
-     * Getter for addLoop2SubTree.
-     * 
-     * @return the addLoop2SubTree
-     */
-    public boolean isSubtreeWithLoop() {
-        return this.isSubtreeWithLoop;
-    }
-
-    /**
-     * Sets the addLoop2SubTree.
-     * 
-     * @param isSubtreeWithLoop the addLoop2SubTree to set
-     */
-    public void setSubtreeWithLoop(boolean isSubtreeWithLoop) {
-        this.isSubtreeWithLoop = isSubtreeWithLoop;
-    }
-
 }
