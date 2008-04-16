@@ -20,6 +20,7 @@
 	org.talend.designer.mapper.language.generation.GenerationManagerFactory
 	org.talend.designer.mapper.language.generation.JavaGenerationManager
 	org.talend.designer.mapper.language.LanguageProvider
+    org.talend.core.model.process.ElementParameterParser
 	" 
 %>
 
@@ -36,6 +37,7 @@
         ILanguage currentLanguage = LanguageProvider.getJavaLanguage();
         JavaGenerationManager gm = (JavaGenerationManager) GenerationManagerFactory.getInstance().getGenerationManager(currentLanguage);
 
+		String tempFolder = ElementParameterParser.getValue(node, "__TEMPORARY_DATA_DIRECTORY__");
 %>
 // ###############################
 // # Lookup's keys initialization<%
@@ -722,7 +724,7 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
 
 	org.talend.designer.components.persistent.PersistentRowSorterIterator<SortableRow_<%= currentJoinedTableNames %>> fsi_<%= currentJoinedTableNames %> = 
 		new org.talend.designer.components.persistent.PersistentRowSorterIterator<SortableRow_<%= currentJoinedTableNames %>>(
-			"/home/amaumont/data/dev/projets/Talend/hashfile/sort/data_<%= currentJoinedTableNames %>") {
+			<%= tempFolder %> + "/data_<%= currentJoinedTableNames %>") {
 			public SortableRow_<%= currentJoinedTableNames %> createRowInstance() {
 				return new SortableRow_<%= currentJoinedTableNames %>();
 			}

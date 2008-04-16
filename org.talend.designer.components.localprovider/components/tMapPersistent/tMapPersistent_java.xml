@@ -35,10 +35,16 @@
         </ITEMS>
       </PARAMETER>
    
-      <PARAMETER NAME="PREVIEW" FIELD="IMAGE" SHOW="true" NUM_ROW="2">
-         <DEFAULT/>
+      <PARAMETER NAME="TEMPORARY_DATA_DIRECTORY" FIELD="TEXT"
+			REQUIRED="false" NUM_ROW="2"
+	  >
+			<DEFAULT>""</DEFAULT>
       </PARAMETER>
       
+      <PARAMETER NAME="PREVIEW" FIELD="IMAGE" SHOW="true" NUM_ROW="3">
+         <DEFAULT/>
+      </PARAMETER>
+
       <!-- 
       <PARAMETER NAME="MEMORY_HEAP_MAX_SIZE" FIELD="TEXT"
 			REQUIRED="false" NUM_ROW="3"
