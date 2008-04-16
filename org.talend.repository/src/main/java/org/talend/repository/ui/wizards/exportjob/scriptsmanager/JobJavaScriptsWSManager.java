@@ -362,9 +362,10 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
      */
     private void editWSDDFile(ProcessItem processItem) {
         String projectName = getCurrentProjectName();
-        String jobName = processItem.getProperty().getLabel();
+        String jobFolderName = JavaResourcesHelper.getJobFolderName(escapeFileNameSpace(processItem), processItem.getProperty()
+                .getVersion());
 
-        String deployFileName = getTmpFolder() + PATH_SEPARATOR + projectName + PATH_SEPARATOR + jobName + PATH_SEPARATOR
+        String deployFileName = getTmpFolder() + PATH_SEPARATOR + projectName + PATH_SEPARATOR + jobFolderName + PATH_SEPARATOR
                 + "deploy.wsdd"; //$NON-NLS-1$
         String serverConfigFile = getTmpFolder() + PATH_SEPARATOR + "server-config.wsdd"; //$NON-NLS-1$
 
