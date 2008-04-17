@@ -57,6 +57,7 @@ import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.preview.ExcelSchemaBean;
 import org.talend.repository.preview.ProcessDescription;
 import org.talend.repository.ui.swt.utils.AbstractExcelFileStepForm;
+import org.talend.repository.ui.utils.ColumnNameValidator;
 import org.talend.repository.ui.utils.ShadowProcessHelper;
 
 /**
@@ -338,11 +339,16 @@ public class ExcelFileStep3Form extends AbstractExcelFileStepForm {
         tableEditorView.getMetadataEditor().removeAll();
 
         List<MetadataColumn> columns = new ArrayList<MetadataColumn>();
-        if (csvArray == null || csvArray.getRows().isEmpty()) {
+
+        if (csvArray == null) {
             return;
         } else {
 
             List<String[]> csvRows = csvArray.getRows();
+
+            if (csvRows.isEmpty()) {
+                return;
+            }
             String[] fields = csvRows.get(0);
             // int numberOfCol = fields.size();
 
@@ -350,13 +356,40 @@ public class ExcelFileStep3Form extends AbstractExcelFileStepForm {
 
             // define the label to the metadata width the content of the first row
             int firstRowToExtractMetadata = 0;
+            if (getConnection().isFirstLineCaption()) {
+                firstRowToExtractMetadata = 1;
+            }
 
             // the first rows is used to define the label of any metadata
             String[] label = new String[numberOfCol.intValue()];
+
+            String[] excelStyleTitles = ExcelReader.getColumnsTitle(label.length);// Excel style column title
             for (int i = 0; i < numberOfCol; i++) {
-                label[i] = DEFAULT_LABEL + i; //$NON-NLS-1$
-                if (firstRowToExtractMetadata == 0) {
-                    label[i] = "" + processDescription.getSchema().get(0).getListColumns().get(i); //$NON-NLS-1$
+                label[i] = excelStyleTitles[i]; //$NON-NLS-1$
+                if (firstRowToExtractMetadata == 1) {
+                    // String value = fields.get(i).getValue();
+                    // if (!value.equals("")) {
+                    // label[i] = value;
+                    // }
+                    if (numberOfCol <= fields.length) {// if current field size is greater than or equals bigest column
+                        // size
+                        if (fields[i] != null && !("").equals(fields[i])) { //$NON-NLS-1$
+                            label[i] = fields[i].trim().replaceAll(" ", "_"); //$NON-NLS-1$ //$NON-NLS-2$
+                            label[i] = ColumnNameValidator.validateColumnNameFormat(label[i], i);
+                        } else {
+                            label[i] = DEFAULT_LABEL + i;
+                        }
+                    } else {// current field size is less than bigest column size
+                        if (i < fields.length) {
+                            if (fields[i] != null && !("").equals(fields[i])) { //$NON-NLS-1$
+                                label[i] = fields[i].trim().replaceAll(" ", "_"); //$NON-NLS-1$ //$NON-NLS-2$
+                            } else {
+                                label[i] = DEFAULT_LABEL + " " + i; //$NON-NLS-1$ //$NON-NLS-2$
+                            }
+                        } else {
+                            label[i] = DEFAULT_LABEL + " " + i; //$NON-NLS-1$ //$NON-NLS-2$
+                        }
+                    }
                 }
             }
 
@@ -455,6 +488,7 @@ public class ExcelFileStep3Form extends AbstractExcelFileStepForm {
         checkFieldsValue();
         tableEditorView.getTableViewerCreator().layout();
         tableEditorView.getTableViewerCreator().getTable().deselectAll();
+        // tableEditorView.getTableViewerCreator().getTableViewer().refresh();
         informationLabel.setText(Messages.getString("FileStep3.guessTip")); //$NON-NLS-1$
     }
 

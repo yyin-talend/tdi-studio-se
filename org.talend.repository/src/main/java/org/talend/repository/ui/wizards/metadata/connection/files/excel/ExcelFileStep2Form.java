@@ -460,6 +460,7 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
 
             @Override
             public void widgetSelected(final SelectionEvent e) {
+
                 getConnection().setFirstLineCaption(firstRowIsCaptionCheckbox.getSelection());
 
                 if (firstRowIsCaptionCheckbox.getSelection()) {
@@ -898,7 +899,7 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
                 previewInformationLabel.setText("   " + Messages.getString("FileStep2.previewFailure")); //$NON-NLS-1$ //$NON-NLS-2$
             } else {
                 previewInformationLabel.setText("   " + Messages.getString("FileStep2.previewIsDone")); //$NON-NLS-1$ //$NON-NLS-2$
-                excelProcessPreview.refreshTablePreview(csvArray, false, processDescription);
+                excelProcessPreview.refreshTablePreview(csvArray, getConnection().isFirstLineCaption(), processDescription);
                 previewInformationLabel.setText(""); //$NON-NLS-1$
             }
         }
