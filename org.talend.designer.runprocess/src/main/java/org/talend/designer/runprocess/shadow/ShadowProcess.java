@@ -52,6 +52,8 @@ public class ShadowProcess<T extends IProcessDescription> {
 
     private static final String TEMP_WSDL_SCHEMA_FILE_NAME = "TempWSDLSchema";
 
+    private static final String TEMP_SALEFORCE_SCHEMA_FILE_NAME = "TempSALESFORCESchema";
+
     /**
      * Available Shadow Process Types.
      * 
@@ -67,7 +69,8 @@ public class ShadowProcess<T extends IProcessDescription> {
         FILE_EXCEL,
         FILE_LDIF,
         WSDL_SCHEMA,
-        LDAP_SCHEMA;
+        LDAP_SCHEMA,
+        SALESFORCE_SCHEMA;
 
         private EShadowProcessType() {
 
@@ -96,11 +99,11 @@ public class ShadowProcess<T extends IProcessDescription> {
 
         this.description = description;
         String filePath = description.getFilepath();
+
         if (filePath != null) {
             this.inPath = new Path(filePath);
             this.outPath = buildTempCSVFilename(this.inPath);
-        } else if (type.name().equals("LDAP_SCHEMA")) // Used for LDAP schema only
-        {
+        } else if (type.name().equals("LDAP_SCHEMA")) {
             IPath tempPath = Path.fromOSString(CorePlugin.getDefault().getPreferenceStore().getString(
                     ITalendCorePrefConstants.FILE_PATH_TEMP));
             this.outPath = tempPath.append(TEMP_LDAP_SCHEMA_FILE_NAME + "." + CSV_EXT);
@@ -108,7 +111,12 @@ public class ShadowProcess<T extends IProcessDescription> {
             IPath tempPath = Path.fromOSString(CorePlugin.getDefault().getPreferenceStore().getString(
                     ITalendCorePrefConstants.FILE_PATH_TEMP));
             this.outPath = tempPath.append(TEMP_WSDL_SCHEMA_FILE_NAME + "." + CSV_EXT);
+        } else if (type.name().equals("SALESFORCE_SCHEMA")) {
+            IPath tempPath = Path.fromOSString(CorePlugin.getDefault().getPreferenceStore().getString(
+                    ITalendCorePrefConstants.FILE_PATH_TEMP));
+            this.outPath = tempPath.append(TEMP_SALEFORCE_SCHEMA_FILE_NAME + "." + CSV_EXT);
         }
+
         this.type = type;
     }
 
@@ -160,9 +168,6 @@ public class ShadowProcess<T extends IProcessDescription> {
             ps = new FileinToDelimitedProcess<FileInputXmlNode>(inXmlNode, outNode);
             break;
         case FILE_EXCEL:
-            // outNode = new FileOutputDelimitedForLDIF(TalendTextUtils.addQuotes(""
-            // + PathUtils.getPortablePath(outPath.toOSString())), description.getEncoding());
-
             FileInputExcelNode excelNode = null;
 
             ExcelSchemaBean excelBean = description.getExcelSchemaBean();
@@ -207,6 +212,13 @@ public class ShadowProcess<T extends IProcessDescription> {
 
             outNode.setMetadataList(inWSDLSchemaNode.getMetadataList());
             ps = new FileinToDelimitedProcess<WSDLSchemaInputNode>(inWSDLSchemaNode, outNode);
+            break;
+
+        case SALESFORCE_SCHEMA:
+            SalesforceSchemaInputNode inSalesforceNode = new SalesforceSchemaInputNode(description.getSchema(), description
+                    .getSalesforceSchemaBean());
+            outNode.setMetadataList(inSalesforceNode.getMetadataList());
+            ps = new FileinToDelimitedProcess<SalesforceSchemaInputNode>(inSalesforceNode, outNode);
             break;
         default:
             break;
