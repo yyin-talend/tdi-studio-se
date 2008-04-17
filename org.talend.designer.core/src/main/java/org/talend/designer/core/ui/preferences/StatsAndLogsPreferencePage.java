@@ -360,21 +360,24 @@ public abstract class StatsAndLogsPreferencePage extends FieldEditorPreferencePa
                 EParameterName.ON_FILES_FLAG.getDisplayName(), parent);
         filePathField = new DirectoryFieldEditorWithQuotes(languagePrefix + EParameterName.FILE_PATH.getName(),
                 EParameterName.FILE_PATH.getDisplayName(), parent);
+        TalendProposalUtils.installOn(filePathField.getTextControl(parent), null);
 
         statsFileNameField = new StringFieldEditor(languagePrefix + EParameterName.FILENAME_STATS.getName(),
                 EParameterName.FILENAME_STATS.getDisplayName(), parent);
+        TalendProposalUtils.installOn(statsFileNameField.getTextControl(parent), null);
         statsFileNameField.getTextControl(parent).setText(
                 TalendTextUtils.addQuotes(PreferenceInitializer.DEFAULT_STATS_FILE_NAME));
 
         logsFileNameField = new StringFieldEditor(languagePrefix + EParameterName.FILENAME_LOGS.getName(),
                 EParameterName.FILENAME_LOGS.getDisplayName(), parent);
         logsFileNameField.getTextControl(parent).setText(TalendTextUtils.addQuotes(PreferenceInitializer.DEFAULT_LOGS_FILE_NAME));
+        TalendProposalUtils.installOn(logsFileNameField.getTextControl(parent), null);
 
         metterFileNameField = new StringFieldEditor(languagePrefix + EParameterName.FILENAME_METTER.getName(),
                 EParameterName.FILENAME_METTER.getDisplayName(), parent);
-
         metterFileNameField.getTextControl(parent).setText(
                 TalendTextUtils.addQuotes(PreferenceInitializer.DEFAULT_METER_FILE_NAME));
+        TalendProposalUtils.installOn(metterFileNameField.getTextControl(parent), null);
 
         onDatabaseField = new CheckBoxFieldEditor(languagePrefix + EParameterName.ON_DATABASE_FLAG.getName(),
                 EParameterName.ON_DATABASE_FLAG.getDisplayName(), parent);
