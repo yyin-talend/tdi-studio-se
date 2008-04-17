@@ -554,7 +554,8 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
                 if (matchingMode == null) {
                     matchingMode = MATCHING_MODE.UNIQUE_MATCH;
                 }
-                hashConfigurationForMapper = new HashConfiguration(hashableColumns, matchingMode, inputTable.isPersistent());
+                String tempFolder = (String) getElementParameter("TEMPORARY_DATA_DIRECTORY").getValue();
+                hashConfigurationForMapper = new HashConfiguration(hashableColumns, matchingMode, inputTable.isPersistent(), tempFolder);
                 break;
             }
         }
