@@ -25,8 +25,11 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.MultiPageEditorPart;
+import org.talend.core.CorePlugin;
 import org.talend.core.model.components.ComponentUtilities;
+import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
+import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.ConnectionItem;
@@ -34,6 +37,7 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.designer.core.model.process.AbstractProcessProvider;
+import org.talend.designer.core.model.process.DataNode;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.action.CreateProcess;
@@ -338,5 +342,17 @@ public class DesignerCoreService implements IDesignerCoreService {
         }
         return activeEditor.getSite().getId().equals(MultiPageTalendEditor.ID);
 
+    }
+
+    public INode getRefrenceNode(String componentName) {
+
+        if (componentName == null) {
+            return null;
+        }
+
+        IComponentsFactory compFac = CorePlugin.getDefault().getRepositoryService().getComponentsFactory();
+        IComponent salesforceComponent = compFac.get(componentName);
+
+        return new DataNode(salesforceComponent, componentName);
     }
 }

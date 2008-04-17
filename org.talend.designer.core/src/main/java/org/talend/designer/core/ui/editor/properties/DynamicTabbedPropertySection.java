@@ -61,6 +61,7 @@ import org.talend.core.model.metadata.builder.connection.PositionalFileConnectio
 import org.talend.core.model.metadata.builder.connection.QueriesConnection;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.metadata.builder.connection.RegexpFileConnection;
+import org.talend.core.model.metadata.builder.connection.SalesforceSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
 import org.talend.core.model.metadata.designerproperties.RepositoryToComponentProperty;
 import org.talend.core.model.process.EComponentCategory;
@@ -519,6 +520,9 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection implem
                     addOrderDisplayNames(connectionValuesList, connectionNamesList, key, name);
                 }
                 if ((connection instanceof LDAPSchemaConnection) && (repositoryValue.equals("LDAP"))) { //$NON-NLS-1$
+                    addOrderDisplayNames(connectionValuesList, connectionNamesList, key, name);
+                }
+                if ((connection instanceof SalesforceSchemaConnection) && (repositoryValue.equals("SALESFORCE"))) { //$NON-NLS-1$
                     addOrderDisplayNames(connectionValuesList, connectionNamesList, key, name);
                 }
 

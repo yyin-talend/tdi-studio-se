@@ -48,6 +48,7 @@ import org.talend.core.model.metadata.builder.connection.PositionalFileConnectio
 import org.talend.core.model.metadata.builder.connection.QueriesConnection;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.metadata.builder.connection.RegexpFileConnection;
+import org.talend.core.model.metadata.builder.connection.SalesforceSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.WSDLSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
 import org.talend.core.model.metadata.designerproperties.RepositoryToComponentProperty;
@@ -193,6 +194,9 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
                         repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
                     }
                     if ((connection instanceof WSDLSchemaConnection) && (repositoryValue.equals("WSDL"))) { //$NON-NLS-1$
+                        repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
+                    }
+                    if ((connection instanceof SalesforceSchemaConnection) && (repositoryValue.equals("SALESFORCE"))) { //$NON-NLS-1$
                         repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
                     }
                     if ((connection instanceof DatabaseConnection) && (repositoryValue.startsWith("DATABASE"))) { //$NON-NLS-1$
