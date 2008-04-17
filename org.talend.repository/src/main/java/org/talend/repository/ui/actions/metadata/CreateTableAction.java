@@ -107,6 +107,9 @@ public class CreateTableAction extends AbstractCreateTableAction {
         } else if (ERepositoryObjectType.METADATA_WSDL_SCHEMA.equals(nodeType)) {
             getViewPart().expand(metadataNode.getChildren().get(0), true);
             createWSDLSchemaWizard(selection, false);
+        } else if (ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA.equals(nodeType)) {
+            getViewPart().expand(metadataNode.getChildren().get(0), true);
+            createSalesforceSchemaWizard(selection, false);
         }
     }
 
@@ -162,7 +165,8 @@ public class CreateTableAction extends AbstractCreateTableAction {
                         || ERepositoryObjectType.METADATA_FILE_LDIF.equals(nodeType)
                         || ERepositoryObjectType.METADATA_FILE_EXCEL.equals(nodeType)
                         || ERepositoryObjectType.METADATA_GENERIC_SCHEMA.equals(nodeType)
-                        || ERepositoryObjectType.METADATA_LDAP_SCHEMA.equals(nodeType)) {
+                        || ERepositoryObjectType.METADATA_LDAP_SCHEMA.equals(nodeType)
+                        || ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA.equals(nodeType)) {
                     setText(CREATE_LABEL);
                     collectChildNames(node);
                     setEnabled(true);

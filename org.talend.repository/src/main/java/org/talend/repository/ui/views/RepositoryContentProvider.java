@@ -26,6 +26,8 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.exception.RuntimeExceptionHandler;
 import org.talend.commons.utils.data.container.Container;
 import org.talend.core.PluginChecker;
+import org.talend.core.language.ECodeLanguage;
+import org.talend.core.language.LanguageManager;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.genhtml.IHTMLDocConstants;
 import org.talend.core.model.metadata.MetadataTable;
@@ -41,6 +43,7 @@ import org.talend.core.model.metadata.builder.connection.PositionalFileConnectio
 import org.talend.core.model.metadata.builder.connection.QueriesConnection;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.metadata.builder.connection.RegexpFileConnection;
+import org.talend.core.model.metadata.builder.connection.SalesforceSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.SubItemHelper;
 import org.talend.core.model.metadata.builder.connection.TableHelper;
 import org.talend.core.model.metadata.builder.connection.WSDLSchemaConnection;
@@ -84,7 +87,7 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
     private RepositoryNode businessProcessNode, recBinNode, codeNode, routineNode, snippetsNode, processNode, contextNode,
             docNode, metadataConNode, metadataFileNode, metadataFilePositionalNode, metadataFileRegexpNode, metadataFileXmlNode,
             metadataFileLdifNode, metadataGenericSchemaNode, metadataLDAPSchemaNode, metadataWSDLSchemaNode,
-            metadataFileExcelNode;
+            metadataFileExcelNode, metadataSalesforceSchemaNode;
 
     private RepositoryNode jobletNode;
 
@@ -160,6 +163,9 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
                 } else if (parent == metadataFileExcelNode) {
                     convert(factory.getMetadataFileExcel(), metadataFileExcelNode, ERepositoryObjectType.METADATA_FILE_EXCEL,
                             recBinNode);
+                } else if (parent == metadataSalesforceSchemaNode) {
+                    convert(factory.getMetadataSalesforceSchema(), metadataSalesforceSchemaNode,
+                            ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA, recBinNode);
                 } else if (parent == metadataLDAPSchemaNode) {
                     convert(factory.getMetadataLDAPSchema(), metadataLDAPSchemaNode, ERepositoryObjectType.METADATA_LDAP_SCHEMA,
                             recBinNode);
@@ -356,6 +362,17 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
         metadataWSDLSchemaNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_WSDL_SCHEMA);
         metadataWSDLSchemaNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_WSDL_SCHEMA);
         metadataNode.getChildren().add(metadataWSDLSchemaNode);
+
+        // 6.11 Salesforce
+
+        ECodeLanguage codeLanguage = LanguageManager.getCurrentLanguage();
+        if (codeLanguage != ECodeLanguage.PERL) {
+            metadataSalesforceSchemaNode = new RepositoryNode(null, root, ENodeType.SYSTEM_FOLDER);
+            metadataSalesforceSchemaNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA);
+            metadataSalesforceSchemaNode
+                    .setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA);
+            metadataNode.getChildren().add(metadataSalesforceSchemaNode);
+        }
 
     }
 
@@ -584,6 +601,11 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
         }
         if (type == ERepositoryObjectType.METADATA_WSDL_SCHEMA) {
             WSDLSchemaConnection genericSchemaConnection = (WSDLSchemaConnection) ((ConnectionItem) repositoryObject
+                    .getProperty().getItem()).getConnection();
+            createTables(recBinNode, node, repositoryObject, genericSchemaConnection);
+        }
+        if (type == ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA) {
+            SalesforceSchemaConnection genericSchemaConnection = (SalesforceSchemaConnection) ((ConnectionItem) repositoryObject
                     .getProperty().getItem()).getConnection();
             createTables(recBinNode, node, repositoryObject, genericSchemaConnection);
         }
@@ -1030,6 +1052,24 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
      */
     public void setMetadataFileExcelNode(RepositoryNode metadataFileExcelNode) {
         this.metadataFileExcelNode = metadataFileExcelNode;
+    }
+
+    /**
+     * Getter for metadataSalesforceSchemaNode.
+     * 
+     * @return the metadataSalesforceSchemaNode
+     */
+    public RepositoryNode getMetadataSalesforceSchemaNode() {
+        return this.metadataSalesforceSchemaNode;
+    }
+
+    /**
+     * Sets the metadataSalesforceSchemaNode.
+     * 
+     * @param metadataSalesforceSchemaNode the metadataSalesforceSchemaNode to set
+     */
+    public void setMetadataSalesforceSchemaNode(RepositoryNode metadataSalesforceSchemaNode) {
+        this.metadataSalesforceSchemaNode = metadataSalesforceSchemaNode;
     }
 
 }

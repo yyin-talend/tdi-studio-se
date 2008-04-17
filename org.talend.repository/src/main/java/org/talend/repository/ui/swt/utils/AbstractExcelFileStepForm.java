@@ -18,7 +18,6 @@ import org.talend.core.CorePlugin;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.builder.connection.FileExcelConnection;
-import org.talend.core.model.metadata.builder.connection.LdifFileConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.prefs.ITalendCorePrefConstants;
@@ -34,7 +33,7 @@ public abstract class AbstractExcelFileStepForm extends AbstractForm {
 
     protected ConnectionItem connectionItem;
 
-    protected LdifFileConnection connection;
+    protected FileExcelConnection connection;
 
     public AbstractExcelFileStepForm(Composite parent, ConnectionItem connectionItem, String[] existingNames) {
         super(parent, SWT.NONE, existingNames);

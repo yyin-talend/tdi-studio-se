@@ -106,12 +106,18 @@ public class ReadTableAction extends AbstractCreateTableAction {
         } else if (ERepositoryObjectType.METADATA_FILE_LDIF.equals(nodeType)) {
             getViewPart().expand(metadataNode.getChildren().get(0), true);
             createFileLdifTableWizard(selection, true);
+
         } else if (ERepositoryObjectType.METADATA_GENERIC_SCHEMA.equals(nodeType)) {
             getViewPart().expand(metadataNode.getChildren().get(0), true);
             createGenericSchemaWizard(selection, true);
+
         } else if (ERepositoryObjectType.METADATA_LDAP_SCHEMA.equals(nodeType)) {
             getViewPart().expand(metadataNode.getChildren().get(0), true);
             createLDAPSchemaWizard(selection, true);
+
+        } else if (ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA.equals(nodeType)) {
+            getViewPart().expand(metadataNode.getChildren().get(0), true);
+            createSalesforceSchemaWizard(selection, true);
         }
     }
 

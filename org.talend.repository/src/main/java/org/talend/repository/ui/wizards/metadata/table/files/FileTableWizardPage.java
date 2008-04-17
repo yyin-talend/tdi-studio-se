@@ -24,6 +24,7 @@ import org.talend.core.model.metadata.builder.connection.LdifFileConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.PositionalFileConnection;
 import org.talend.core.model.metadata.builder.connection.RegexpFileConnection;
+import org.talend.core.model.metadata.builder.connection.SalesforceSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.TableHelper;
 import org.talend.core.model.metadata.builder.connection.WSDLSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
@@ -35,6 +36,8 @@ import org.talend.repository.ui.wizards.metadata.connection.files.excel.ExcelFil
 import org.talend.repository.ui.wizards.metadata.connection.files.ldif.LdifFileStep3Form;
 import org.talend.repository.ui.wizards.metadata.connection.files.positional.FileStep3Form;
 import org.talend.repository.ui.wizards.metadata.connection.files.regexp.RegexpFileStep3Form;
+import org.talend.repository.ui.wizards.metadata.connection.files.salesforce.SalesforceModuleParseAPI;
+import org.talend.repository.ui.wizards.metadata.connection.files.salesforce.SalesforceStep3Form;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.XmlFileStep3Form;
 import org.talend.repository.ui.wizards.metadata.connection.genericshema.GenericSchemaStep2Form;
 import org.talend.repository.ui.wizards.metadata.connection.ldap.LDAPSchemaStep4Form;
@@ -162,6 +165,15 @@ public class FileTableWizardPage extends WizardPage {
                 return ldapSchemaStep4Form;
             }
 
+            @Override
+            public Object caseSalesforceSchemaConnection(final SalesforceSchemaConnection object) {
+                SalesforceStep3Form salesforceStep3From = new SalesforceStep3Form(parent, connectionItem, metadataTable,
+                        TableHelper.getTableNames(object, metadataTable.getLabel()), new SalesforceModuleParseAPI());
+                salesforceStep3From.setReadOnly(!isRepositoryObjectEditable);
+                salesforceStep3From.setListener(listener);
+                return salesforceStep3From;
+            }
+
             /*
              * (non-Javadoc)
              * 
@@ -169,10 +181,10 @@ public class FileTableWizardPage extends WizardPage {
              */
             @Override
             public Object caseWSDLSchemaConnection(WSDLSchemaConnection object) {
-                WSDLSchemaStep2Form ldapSchemaStep4Form = new WSDLSchemaStep2Form(parent, connectionItem);
-                ldapSchemaStep4Form.setReadOnly(!isRepositoryObjectEditable);
-                ldapSchemaStep4Form.setListener(listener);
-                return ldapSchemaStep4Form;
+                WSDLSchemaStep2Form sadkSchemaStep2Form = new WSDLSchemaStep2Form(parent, connectionItem);
+                sadkSchemaStep2Form.setReadOnly(!isRepositoryObjectEditable);
+                sadkSchemaStep2Form.setListener(listener);
+                return sadkSchemaStep2Form;
             }
 
         }.doSwitch(connection);

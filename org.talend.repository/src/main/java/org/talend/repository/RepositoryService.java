@@ -52,6 +52,7 @@ import org.talend.repository.ui.wizards.metadata.connection.files.excel.ExcelFil
 import org.talend.repository.ui.wizards.metadata.connection.files.ldif.LdifFileWizard;
 import org.talend.repository.ui.wizards.metadata.connection.files.positional.FilePositionalWizard;
 import org.talend.repository.ui.wizards.metadata.connection.files.regexp.RegexpFileWizard;
+import org.talend.repository.ui.wizards.metadata.connection.files.salesforce.SalesforceSchemaWizard;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.XmlFileWizard;
 import org.talend.repository.ui.wizards.metadata.connection.genericshema.GenericSchemaWizard;
 import org.talend.repository.ui.wizards.metadata.connection.ldap.LDAPSchemaWizard;
@@ -313,6 +314,8 @@ public class RepositoryService implements IRepositoryService {
                 relatedWizard = new LDAPSchemaWizard(PlatformUI.getWorkbench(), false, realNode, null, false);
             } else if (realNode.getObjectType().equals(ERepositoryObjectType.METADATA_FILE_EXCEL)) {
                 relatedWizard = new ExcelFileWizard(PlatformUI.getWorkbench(), false, realNode, null);
+            } else if (realNode.getObjectType().equals(ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA)) {
+                relatedWizard = new SalesforceSchemaWizard(PlatformUI.getWorkbench(), false, realNode, null, false);
             }
             if (relatedWizard != null) {
                 // Open the Wizard

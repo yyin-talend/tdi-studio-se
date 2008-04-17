@@ -52,6 +52,7 @@ public class ReplaceSpaceCharForItemNameMigrationTask extends AbstractItemMigrat
         toReturn.add(ERepositoryObjectType.METADATA_GENERIC_SCHEMA);
         toReturn.add(ERepositoryObjectType.METADATA_LDAP_SCHEMA);
         toReturn.add(ERepositoryObjectType.METADATA_WSDL_SCHEMA);
+        toReturn.add(ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA);
 
         toReturn.add(ERepositoryObjectType.DOCUMENTATION);
         return toReturn;
@@ -110,6 +111,7 @@ public class ReplaceSpaceCharForItemNameMigrationTask extends AbstractItemMigrat
         case METADATA_FILE_LDIF:
         case METADATA_GENERIC_SCHEMA:
         case METADATA_LDAP_SCHEMA:
+        case METADATA_SALESFORCE_SCHEMA:
         case METADATA_WSDL_SCHEMA:
             ((ConnectionItem) item).getConnection();
             break;
@@ -120,6 +122,7 @@ public class ReplaceSpaceCharForItemNameMigrationTask extends AbstractItemMigrat
             break;
         }
     }
+
     public Date getOrder() {
         GregorianCalendar gc = new GregorianCalendar(2008, 2, 17, 12, 0, 0);
         return gc.getTime();

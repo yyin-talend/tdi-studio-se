@@ -631,6 +631,15 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
     /*
      * (non-Javadoc)
      * 
+     * @see org.talend.repository.model.IProxyRepositoryFactory#getMetadataSalesforceSchema()
+     */
+    public RootContainer<String, IRepositoryObject> getMetadataSalesforceSchema() throws PersistenceException {
+        return this.repositoryFactoryFromProvider.getMetadataSalesforceSchema();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.repository.model.IProxyRepositoryFactory#lock(org.talend.core.model.repository.IRepositoryObject)
      */
     public void lock(IRepositoryObject obj) throws PersistenceException, BusinessException {
@@ -1236,8 +1245,8 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
 
     }
 
-
     public boolean setAuthorByLogin(Item item, String login) throws PersistenceException {
         return repositoryFactoryFromProvider.setAuthorByLogin(item, login);
     }
+
 }

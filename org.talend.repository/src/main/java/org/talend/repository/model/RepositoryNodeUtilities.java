@@ -196,6 +196,7 @@ public class RepositoryNodeUtilities {
             case METADATA_FILE_EXCEL:
             case METADATA_GENERIC_SCHEMA:
             case METADATA_LDAP_SCHEMA:
+            case METADATA_SALESFORCE_SCHEMA:
             case METADATA_WSDL_SCHEMA:
                 tmpType = ERepositoryObjectType.METADATA;
                 break;

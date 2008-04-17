@@ -76,6 +76,8 @@ public class RepositoryNameSorter extends ViewerSorter {
                 return 50;
             case METADATA_LDAP_SCHEMA:
                 return 55;
+            case METADATA_SALESFORCE_SCHEMA:
+                return 56;
             case METADATA_GENERIC_SCHEMA:
                 return 60;
             case DOCUMENTATION:

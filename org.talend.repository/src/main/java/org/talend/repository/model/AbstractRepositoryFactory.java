@@ -155,6 +155,7 @@ public abstract class AbstractRepositoryFactory implements IRepositoryFactory {
         collect(getMetadataLDAPSchema(), result);
         collect(getMetadataGenericSchema(), result);
         collect(getMetadataWSDLSchema(), result);
+        collect(getMetadataSalesforceSchema(), result);
 
         return result;
     }

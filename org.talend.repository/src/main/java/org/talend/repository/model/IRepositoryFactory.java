@@ -228,6 +228,8 @@ public interface IRepositoryFactory {
 
     public RootContainer<String, IRepositoryObject> getMetadataFileExcel() throws PersistenceException;
 
+    public RootContainer<String, IRepositoryObject> getMetadataSalesforceSchema() throws PersistenceException;
+
     public RootContainer<String, IRepositoryObject> getMetadataFileLdif() throws PersistenceException;
 
     public RootContainer<String, IRepositoryObject> getMetadataLDAPSchema() throws PersistenceException;

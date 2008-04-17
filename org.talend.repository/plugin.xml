@@ -91,6 +91,13 @@
             level="10"
             name="Metadata/Create file Excel"/>
       <Action
+            class="org.talend.repository.ui.actions.metadata.CreateSalesforceSchemaAction"
+            id="org.talend.repository.actions.createsalesforceschema"
+            isEditAction="true"
+            isReadAction="true"
+            level="10"
+            name="Metadata/Create Salesforce"/>
+      <Action
             class="org.talend.repository.ui.actions.DeleteAction"
             id="org.talend.repository.actions.delete"
             level="40"

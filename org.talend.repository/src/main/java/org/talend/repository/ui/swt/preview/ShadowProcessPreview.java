@@ -253,6 +253,43 @@ public class ShadowProcessPreview {
      * @param csvArray
      * @param firstRowIsLabel
      */
+    public void refreshTablePreview(final CsvArray csvArray, final boolean firstRowIsLabel,
+            ProcessDescription processDescription, String[] titleColumns) {
+        List<String[]> xmlRows = csvArray.getRows();
+
+        if (xmlRows.isEmpty()) {
+            return;
+        }
+
+        this.header = titleColumns;
+
+        // clear all the item
+        table.clearAll();
+
+        // refresh the Header and the Item of the table
+        refreshPreviewHeader(titleColumns);
+        refreshPreviewItem(xmlRows, firstRowIsLabel);
+
+        refreshPreviewHeader(titleColumns);
+
+        // resize all the columns but not the table
+        for (int i = 0; i < table.getColumnCount(); i++) {
+            table.getColumn(i).pack();
+        }
+
+        // scroll to show the first col and first row
+        table.showItem(table.getItem(0));
+        if (table.getColumns() != null && table.getColumns().length > 0) {
+            table.showColumn(table.getColumn(0));
+        }
+    }
+
+    /**
+     * refresh TablePreview width the first rows of the file.
+     * 
+     * @param csvArray
+     * @param firstRowIsLabel
+     */
     public void refreshTablePreview(final CsvArray csvArray, final boolean firstRowIsLabel, List<SchemaTarget> schemaTarget) {
         List<String[]> csvRows = csvArray.getRows();
 

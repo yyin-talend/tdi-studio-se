@@ -26,6 +26,8 @@ public class ProcessDescription extends AbstractProcessDescription {
 
     private ExcelSchemaBean excelSchemaBean;
 
+    private SalesforceSchemaBean salesforceSchemaBean;
+
     /**
      * Getter for wsdlSchemaBean.
      * 
@@ -75,6 +77,24 @@ public class ProcessDescription extends AbstractProcessDescription {
      */
     public void setExcelSchemaBean(ExcelSchemaBean excelSchemaBean) {
         this.excelSchemaBean = excelSchemaBean;
+    }
+
+    /**
+     * Getter for salesforceSchemaBean.
+     * 
+     * @return the salesforceSchemaBean
+     */
+    public SalesforceSchemaBean getSalesforceSchemaBean() {
+        return this.salesforceSchemaBean;
+    }
+
+    /**
+     * Sets the salesforceSchemaBean.
+     * 
+     * @param salesforceSchemaBean the salesforceSchemaBean to set
+     */
+    public void setSalesforceSchemaBean(SalesforceSchemaBean salesforceSchemaBean) {
+        this.salesforceSchemaBean = salesforceSchemaBean;
     }
 
 }

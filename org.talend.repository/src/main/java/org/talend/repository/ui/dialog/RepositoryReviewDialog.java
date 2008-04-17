@@ -411,6 +411,9 @@ class RepositoryTypeProcessor implements ITypeProcessor {
         if (repositoryType.equals("WSDL")) {
             return contentProvider.getMetadataWSDLSchemaNode();
         }
+        if (repositoryType.equals("SALESFORCE")) {
+            return contentProvider.getMetadataSalesforceSchemaNode();
+        }
 
         if (repositoryType.startsWith("DATABASE")) { //$NON-NLS-1$
             return contentProvider.getMetadataConNode();
@@ -493,6 +496,7 @@ class SchemaTypeProcessor implements ITypeProcessor {
         container.add(contentProvider.getMetadataGenericSchemaNode());
         container.add(contentProvider.getMetadataLDAPSchemaNode());
         container.add(contentProvider.getMetadataWSDLSchemaNode());
+        container.add(contentProvider.getMetadataSalesforceSchemaNode());
         container.add(contentProvider.getMetadataConNode());
 
         RepositoryNode node = new RepositoryNode(null, null, null);

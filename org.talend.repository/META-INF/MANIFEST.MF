@@ -6,15 +6,16 @@ Bundle-Version: 2.2.0.qualifier
 Bundle-Localization: plugin
 Eclipse-LazyStart: true
 Bundle-Vendor: .Talend SA.
-Require-Bundle: org.talend.libraries.logging,
+Require-Bundle: org.talend.libraries,
+ org.apache.axis,
+ org.talend.libraries.logging,
+ org.talend.commons,
+ org.talend.core,
  org.eclipse.core.resources,
  org.eclipse.core.runtime,
  org.eclipse.ui.views.properties.tabbed,
- org.talend.commons,
- org.talend.core,
  org.eclipse.ui.editors,
  org.eclipse.ui.ide,
- org.apache.axis,
  org.eclipse.datatools.enablement.oda.xml,
  org.eclipse.datatools.enablement.oda.xml.ui,
  org.eclipse.datatools.connectivity.oda,
@@ -31,8 +32,7 @@ Require-Bundle: org.talend.libraries.logging,
  org.eclipse.core.expressions,
  org.eclipse.ui.browser,
  org.talend.commons.ui,
- org.eclipse.core.filesystem,
- org.talend.libraries
+ org.eclipse.core.filesystem
 Export-Package: org.talend.repository,
  org.talend.repository.constants,
  org.talend.repository.i18n,

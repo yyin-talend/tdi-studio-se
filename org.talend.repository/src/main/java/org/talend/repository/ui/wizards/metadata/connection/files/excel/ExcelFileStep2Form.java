@@ -894,8 +894,12 @@ public class ExcelFileStep2Form extends AbstractExcelFileStepForm implements IRe
                 new ErrorDialogWidthDetailArea(getShell(), PID,
                         Messages.getString("FileStep2.previewFailure"), getException().getMessage()); //$NON-NLS-1$
             }
-            if (csvArray != null) {
-                excelProcessPreview.refreshTablePreview(csvArray, firstRowIsCatption);
+            if (csvArray == null) {
+                previewInformationLabel.setText("   " + Messages.getString("FileStep2.previewFailure")); //$NON-NLS-1$ //$NON-NLS-2$
+            } else {
+                previewInformationLabel.setText("   " + Messages.getString("FileStep2.previewIsDone")); //$NON-NLS-1$ //$NON-NLS-2$
+                excelProcessPreview.refreshTablePreview(csvArray, false, processDescription);
+                previewInformationLabel.setText(""); //$NON-NLS-1$
             }
         }
 

@@ -32,6 +32,7 @@ import org.talend.core.model.metadata.builder.connection.FileConnection;
 import org.talend.core.model.metadata.builder.connection.FileExcelConnection;
 import org.talend.core.model.metadata.builder.connection.LDAPSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.LdifFileConnection;
+import org.talend.core.model.metadata.builder.connection.SalesforceSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.SchemaTarget;
 import org.talend.core.model.metadata.builder.connection.WSDLSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
@@ -105,6 +106,12 @@ public class ShadowProcessHelper {
         processDescription.setEncoding(TalendTextUtils.addQuotes(connection.getEncoding()));
 
         return processDescription;
+    }
+
+    public static ProcessDescription getProcessDescription(final SalesforceSchemaConnection connection) {
+        ProcessDescription processDescription = new ProcessDescription();
+        return processDescription;
+
     }
 
     /**
