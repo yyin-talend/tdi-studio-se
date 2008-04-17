@@ -38,13 +38,13 @@
    if ("false".equals(needAuth)) {
 %>  
      props_<%=cid %>.put("mail.smtp.auth", "false");
-     javax.mail.Session session_<%=cid %> = javax.mail.Session.getDefaultInstance(props_<%=cid %>, null);    
+     javax.mail.Session session_<%=cid %> = javax.mail.Session.getInstance(props_<%=cid %>, null);    
 <%
   } else  
   {
 %>   
 	 props_<%=cid %>.put("mail.smtp.auth", "true");
-     javax.mail.Session session_<%=cid %> = javax.mail.Session.getDefaultInstance(props_<%=cid %>, new  javax.mail.Authenticator ()
+     javax.mail.Session session_<%=cid %> = javax.mail.Session.getInstance(props_<%=cid %>, new  javax.mail.Authenticator ()
         {         
          protected javax.mail.PasswordAuthentication getPasswordAuthentication() {
              return new javax.mail.PasswordAuthentication(<%=authUsername %>,<%=authPassword %>); 

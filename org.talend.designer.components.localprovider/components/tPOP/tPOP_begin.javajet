@@ -31,7 +31,7 @@
     String popPassword_<%=cid %> = <%=password %>;
     
     java.util.Properties props_<%=cid %> = System.getProperties();
-    javax.mail.Session session_<%=cid %> = javax.mail.Session.getDefaultInstance(props_<%=cid %>, null);
+    javax.mail.Session session_<%=cid %> = javax.mail.Session.getInstance(props_<%=cid %>, null);
     
     javax.mail.Store store_<%=cid %> = session_<%=cid %>.getStore("pop3");
     store_<%=cid %>.connect(popServer_<%=cid %>, popUser_<%=cid %>, popPassword_<%=cid %>);

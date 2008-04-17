@@ -78,7 +78,7 @@ java.io.FileInputStream fileInput<%=cid%>=null;
 	
 try{
 	fileInput<%=cid%> = new java.io.FileInputStream(<%=filename %>);
-	javax.mail.Session session_<%=cid %> = javax.mail.Session.getDefaultInstance(System.getProperties(), null);
+	javax.mail.Session session_<%=cid %> = javax.mail.Session.getInstance(System.getProperties(), null);
     javax.mail.internet.MimeMessage msg_<%=cid %> = new javax.mail.internet.MimeMessage(session_<%=cid %>, fileInput<%=cid%>);
 	java.util.List<String> list_<%=cid %> = new java.util.ArrayList<String>();
 
