@@ -51,7 +51,7 @@ public class AddQuotesForStatLogsPreference extends AbstractMigrationTask implem
         for (String id : ids) {
             String value = store.getString(languagePrefix + id);
             if (value != null && (!value.endsWith(qouteType) || !value.startsWith(qouteType))) {
-                store.setValue(languagePrefix + id, TalendTextUtils.addQuotes(value));
+                store.setValue(languagePrefix + id, qouteType + value + qouteType);
             }
         }
     }
