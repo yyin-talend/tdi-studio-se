@@ -45,9 +45,9 @@ public class DataStringConnection {
         String file = "([\\w\\.\\-_]{0,})"; //$NON-NLS-1$
         String addParam = "([\\w\\.\\-_]{0,})"; //$NON-NLS-1$
 
-        dataConnection = new DataConnection[24];
+        dataConnection = new DataConnection[25];
 
-        defaultTable = new String[24];
+        defaultTable = new String[25];
 
         dataConnection[0] = new DataConnection(
                 "MySQL", "jdbc:mysql://<host>:<port>/<sid>?<property>", "jdbc:mysql://" + host + ":" + port //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
@@ -127,6 +127,10 @@ public class DataStringConnection {
 
         dataConnection[23] = new DataConnection("MaxDB", "jdbc:sapdb://<host>:<port>/<sid>",
                 "jdbc:sapdb://" + host + ":" + port + "/" + sid, "7210"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+
+        dataConnection[24] = new DataConnection(
+                "PostgresPlus", "jdbc:postgresql://<host>:<port>/<sid>", "jdbc:postgresql://" + host //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                        + ":" + port + "/" + sid, "5432"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
         // dataConnection[8] = new DataConnection("Sybase IQ", "jdbc:sybase:Tds:<host>:<port>/<sid>", "jdbc:sybase:Tds:"
         // + host + ":" + port //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
