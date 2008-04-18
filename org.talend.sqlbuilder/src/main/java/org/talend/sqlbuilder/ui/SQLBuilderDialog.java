@@ -25,7 +25,6 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressIndicator;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.resource.JFaceResources;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
@@ -47,14 +46,12 @@ import org.eclipse.ui.actions.SelectionProviderAction;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.process.EParameterFieldType;
-import org.talend.core.model.properties.DatabaseConnectionItem;
-import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.repository.IRepositoryChangedListener;
 import org.talend.repository.RepositoryChangedEvent;
 import org.talend.repository.RepositoryElementDelta;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
@@ -489,6 +486,7 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
                         }
                     }
                 }
+                RepositoryUpdateManager.updateQuery(connParameters.getQueryObject());
             }
         }
         super.okPressed();
