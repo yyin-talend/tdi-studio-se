@@ -1218,12 +1218,6 @@ public class UIManager extends AbstractUIManager {
         dataMapTableView.setLayoutData(formData);
         dataMapTableView.minimizeTable(inputTable.isMinimized());
         dataMapTableView.registerStyledExpressionEditor(getTabFolderEditors().getStyledTextHandler());
-        
-        if(WindowSystem.isWIN32()) {
-//        	updateDropDownJoinTypeForInputs();
-        	//dataMapTableView.refreshLabelForJoinDropDown();
-//        	dataMapTableView.layout();
-        }
         return dataMapTableView;
     }
 

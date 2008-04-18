@@ -221,7 +221,7 @@ public class AdvancedMemoryLookup<V> implements IMemoryLookup<V, V> {
     }
 
     public void endGet() {
-
+        clear();
     }
 
     /**

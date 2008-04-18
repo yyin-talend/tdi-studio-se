@@ -68,6 +68,7 @@ public class InputDataMapTableView extends DataMapTableView {
 
     public InputDataMapTableView(Composite parent, int style, InputTable inputTable, MapperManager mapperManager) {
         super(parent, style, inputTable, mapperManager);
+        previousValidPersistentMode = inputTable.isPersistent();
     }
 
     /*
@@ -88,6 +89,8 @@ public class InputDataMapTableView extends DataMapTableView {
     protected ToolItem activatePersistentCheck;
 
     protected boolean previousStatePersistentCheckFilter;
+
+    protected boolean previousValidPersistentMode;
 
     /*
      * (non-Javadoc)
@@ -293,7 +296,7 @@ public class InputDataMapTableView extends DataMapTableView {
                 final InputTable table = getInputTable();
                 activatePersistentCheck = new ToolItem(toolBarActions, SWT.CHECK);
                 activatePersistentCheck.setEnabled(!mapperManager.componentIsReadOnly());
-                //previousStatePersistentCheckFilter = table.isPersistent();
+                // previousStatePersistentCheckFilter = table.isPersistent();
                 activatePersistentCheck.setSelection(table.isPersistent());
                 activatePersistentCheck.setToolTipText(Messages
                         .getString("InputDataMapTableView.buttonTooltip.activatePersistentCheck")); //$NON-NLS-1$
@@ -309,9 +312,10 @@ public class InputDataMapTableView extends DataMapTableView {
 
                         public void widgetSelected(SelectionEvent e) {
                             // updateExepressionFilterTextAndLayout(true);
-                            //previousStatePersistentCheckFilter = activatePersistentCheck.getSelection();
-                            
+                            // previousStatePersistentCheckFilter = activatePersistentCheck.getSelection();
+
                             table.setPersistent(activatePersistentCheck.getSelection());
+                            previousValidPersistentMode = activatePersistentCheck.getSelection();
                         }
 
                     });
@@ -319,7 +323,7 @@ public class InputDataMapTableView extends DataMapTableView {
                 // /////////////////////////////////////////////////////////////////
             }
         }
-        
+
         createActivateFilterCheck();
 
         return true;
@@ -525,17 +529,18 @@ public class InputDataMapTableView extends DataMapTableView {
      */
     private void updateViewAfterChangeInnerJoinCheck() {
 
-//        if (LanguageProvider.getCurrentLanguage() instanceof PerlLanguage) {
-//            if (innerJoinCheck.getSelection() || getInputTable().getMatchingMode() == TMAP_MATCHING_MODE.ALL_ROWS) {
-//                getActivateFilterCheck().setSelection(isPreviousStateCheckFilter());
-//                getActivateFilterCheck().setEnabled(true);
-//            } else {
-//                getActivateFilterCheck().setSelection(false);
-//                getActivateFilterCheck().setEnabled(false);
-//            }
-//        }
+        // if (LanguageProvider.getCurrentLanguage() instanceof PerlLanguage) {
+        // if (innerJoinCheck.getSelection() || getInputTable().getMatchingMode() == TMAP_MATCHING_MODE.ALL_ROWS) {
+        // getActivateFilterCheck().setSelection(isPreviousStateCheckFilter());
+        // getActivateFilterCheck().setEnabled(true);
+        // } else {
+        // getActivateFilterCheck().setSelection(false);
+        // getActivateFilterCheck().setEnabled(false);
+        // }
+        // }
         updateExepressionFilterTextAndLayout(false);
 
+        enableDisablePersistentMode((TMAP_MATCHING_MODE) getInputTable().getMatchingMode());
     }
 
     /**
@@ -567,6 +572,35 @@ public class InputDataMapTableView extends DataMapTableView {
                 menuItems[j].setImage(null);
             }
             menuItem.setImage(ImageProviderMapper.getImage(ImageInfo.CHECKED_ICON));
+
+            TMAP_MATCHING_MODE matchingMode = (TMAP_MATCHING_MODE) menuItem.getData();
+            enableDisablePersistentMode(matchingMode);
+        }
+    }
+
+    private void enableDisablePersistentMode(TMAP_MATCHING_MODE matchingMode) {
+        if (mapperManager.isPersistentMap()) {
+            switch (matchingMode) {
+            case FIRST_MATCH:
+            case ALL_ROWS:
+                activatePersistentCheck
+                        .setToolTipText("The current lookup mode is incompatible with the 'Store on disk' mode for the moment"); //$NON-NLS-1$
+                activatePersistentCheck.setEnabled(false);
+                activatePersistentCheck.setSelection(false);
+                getInputTable().setPersistent(false);
+                break;
+
+            case UNIQUE_MATCH:
+            case ALL_MATCHES:
+            case LAST_MATCH:
+            default:
+                activatePersistentCheck.setToolTipText(Messages
+                        .getString("InputDataMapTableView.buttonTooltip.activatePersistentCheck")); //$NON-NLS-1$
+                activatePersistentCheck.setEnabled(true);
+                activatePersistentCheck.setSelection(previousValidPersistentMode);
+                getInputTable().setPersistent(previousValidPersistentMode);
+                break;
+            }
         }
     }
 

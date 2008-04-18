@@ -28,7 +28,6 @@
         List<? extends INode> nodesOfType = node.getProcess().getNodesOfType("tFileList");
         boolean hasTFileList = nodesOfType.size() > 0;
         
-        if(!hasTFileList) {
 %>
 // ###############################
 // # Lookup hashes releasing
@@ -36,6 +35,13 @@
 
 	        List<ExternalMapperTable> inputTablesList = new ArrayList<ExternalMapperTable>(data.getInputTables());
 	        int lstSizeInputs = inputTablesList.size();
+	        
+	        if(lstSizeInputs > 1 && inputTablesList.get(1).isPersistent()) {
+				%>
+					fsi_<%= inputTablesList.get(0).getName() %>.endGet();
+				<%
+	        }
+	        
 	        for (int i = 1; i < lstSizeInputs; i++) {
 	            ExternalMapperTable inputTable = (ExternalMapperTable) inputTablesList.get(i);
 	            List<ExternalMapperTableEntry> tableEntries = inputTable.getMetadataTableEntries();
@@ -43,10 +49,14 @@
 	                continue;
 	            }
 	            String tableName = inputTable.getName();
-	%>
-	globalMap.remove( "tHash_<%=tableName%>" );
-// ###############################        
-	<%
+				%>
+					tHash_Lookup_<%=tableName%>.endGet();
+				<%
+				if(!hasTFileList) {
+				%>
+					globalMap.remove( "tHash_Lookup_<%=tableName%>" );
+				<%
+				}
 	        }
-        }
 %>
+// ###############################        

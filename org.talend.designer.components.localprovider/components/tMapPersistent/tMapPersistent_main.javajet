@@ -54,6 +54,7 @@
         String cr = "\n";
         String rejected = "rejected_" + uniqueNameComponent;
         String rejectedInnerJoin = "rejectedInnerJoin_" + uniqueNameComponent;
+        String mainRowRejected = "mainRowRejected_" + uniqueNameComponent;
 
         List<ExternalMapperTable> inputTables = data.getInputTables();
         List<ExternalMapperTable> varsTables = data.getVarsTables();
@@ -228,9 +229,11 @@
 		  int closeBracketCounter = 0;
 		%>
 		  boolean <%= rejectedInnerJoin %> = false;
+		  boolean <%= mainRowRejected %> = false;
             				    								  
 		<%
 
+		boolean hasMainFilter = false;
 		String previousLookupName = null;
 		String previousTableName = mainInputTableName;
 
@@ -266,6 +269,8 @@
             
 			  	  	   if(externalTable.isActivateExpressionFilter() && externalTable.getExpressionFilter() != null && !externalTable.getExpressionFilter().trim().equals("")) { 
 
+						hasMainFilter = true;
+
 		                String key = CodeGenerationUtils.buildProblemKey(uniqueNameComponent,
    	                     JavaGenerationManager.PROBLEM_KEY_FIELD.FILTER.toString(), tableName);
 					  	  	 %>
@@ -279,7 +284,7 @@
  				  		  			)
   				  		  			<%= checkingSyntax ? CodeGenerationUtils.buildJavaEndFieldKey(key) : "" %>
 	  	  		  				) {
-		      	  				continue XXX;
+		      	  					<%= mainRowRejected %> = true;
 		    		  	  	   }
 		    	  	  	  
 				 	  	   <%
@@ -499,7 +504,7 @@
                     		<%
 							} // T 57
 
-							if(matchingMode.equals("UNIQUE_MATCH")) { // T 52 
+							if(!isPersistentSortedTable && matchingMode.equals("UNIQUE_MATCH")) { // T 52 
 							%>
 				           		if(tHash_Lookup_<%= tableName %>.getCount(<%= tableName %>HashKey) > 1) { // G 071
 			  							
@@ -989,6 +994,10 @@
 
 		// System.out.println(uniqueNameComponent + " lastValidOutputTableName="+lastValidOutputTableName);
 
+		if(hasMainFilter) { // T_TM_M_280
+			sb.append(cr + "if(!" + mainRowRejected + ") { // G_TM_M_280");
+		} // T_TM_M_280
+
         sb.append(cr);
 
         if (allNotRejectTablesHaveFilter && atLeastOneReject) {
@@ -1199,6 +1208,10 @@
             }
 
         } // for output tables
+
+		if(hasMainFilter) { // T_TM_M_280
+			sb.append(cr + "} // G_TM_M_280");
+		} // T_TM_M_280
 
         sb.append(cr + "// ###############################");
 
