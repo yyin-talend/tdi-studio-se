@@ -49,6 +49,7 @@ import org.talend.core.model.process.HashConfiguration;
 import org.talend.core.model.process.HashableColumn;
 import org.talend.core.model.process.IComponentDocumentation;
 import org.talend.core.model.process.IConnection;
+import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IExternalData;
 import org.talend.core.model.process.IHashConfiguration;
 import org.talend.core.model.process.IHashableColumn;
@@ -554,8 +555,14 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
                 if (matchingMode == null) {
                     matchingMode = MATCHING_MODE.UNIQUE_MATCH;
                 }
-                String tempFolder = (String) getElementParameter("TEMPORARY_DATA_DIRECTORY").getValue();
-                hashConfigurationForMapper = new HashConfiguration(hashableColumns, matchingMode, inputTable.isPersistent(), tempFolder);
+
+                IElementParameter tempFolderElem = getElementParameter("TEMPORARY_DATA_DIRECTORY");
+                String tempFolder = null;
+                if (tempFolderElem != null) {
+                    tempFolder = (String) tempFolderElem.getValue();
+                }
+                hashConfigurationForMapper = new HashConfiguration(hashableColumns, matchingMode, inputTable.isPersistent(),
+                        tempFolder);
                 break;
             }
         }
