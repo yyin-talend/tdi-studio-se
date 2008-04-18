@@ -31,7 +31,7 @@
     <PARAMETER
       NAME="CONNECTION"
       FIELD="COMPONENT_LIST"
-      FILTER="tPostgresqlConnection"
+      FILTER="tPostgresPlusConnection"
       NUM_ROW="1"
     />
     <PARAMETER
