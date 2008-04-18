@@ -203,7 +203,7 @@
       NUM_ROW="10"
       SHOW="false"
     >       
-      <DEFAULT>postgres_id</DEFAULT>
+      <DEFAULT>postgresplus_id</DEFAULT>
     </PARAMETER>    
     
   </PARAMETERS>

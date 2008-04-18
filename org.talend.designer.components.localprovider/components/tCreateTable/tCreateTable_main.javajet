@@ -737,6 +737,68 @@ class PostgreManager extends Manager {
         return javaCode.toString();        
     }
 }
+class PostgrePlusManager extends Manager {
+    private String host;
+    private String port;
+    private String dbSchema;
+    private boolean useExistingConnection;
+    private String connection;        
+    public PostgrePlusManager(String host, String port, String dbName, String tableName, String dbSchema, String userName, String password, boolean useExistingConnection, String connection, String cid) {
+        super(dbName, tableName, userName ,password, cid);
+        this.host = host;
+        this.port = port;
+        this.dbSchema = dbSchema;
+        this.useExistingConnection = useExistingConnection;
+        this.connection = connection;
+    }
+    protected String getDriver() {
+        return "org.postgresql.Driver";
+    }
+    public String getConnectionURL() {
+        return "\"jdbc:postgresql://\" + " + host + " + \":\" + " + port + " + \"/\" + " + dbName;
+    }
+    public String getConnection() {
+        StringBuilder javaCode = new StringBuilder();
+        if(useExistingConnection) {
+            javaCode.append(retrieveTable());
+            javaCode.append("java.sql.Connection conn_" + cid + " = (java.sql.Connection)globalMap.get(\"conn_" + connection + "\");");
+        } else {
+            javaCode.append(super.getConnection());
+        }
+        return javaCode.toString();
+    }        
+    protected String getDBMSId() {
+        return "postgresplus_id";
+    }
+    protected String getLProtectedChar() {
+        return "\\\"";
+    }
+    protected String getRProtectedChar() {
+        return "\\\"";
+    }
+    public String closeConnection() {
+        StringBuilder javaCode = new StringBuilder();
+        if(useExistingConnection) {
+            javaCode.append("");
+        } else {
+            javaCode.append(super.closeConnection());            
+        }
+        return javaCode.toString();
+    }
+    protected String retrieveTable() {
+        StringBuilder javaCode = new StringBuilder();
+        javaCode.append(super.retrieveTable());
+        if(useExistingConnection) {
+            javaCode.append("String dbSchema_" + cid + " = (String)globalMap.get(\"schema_" + connection + "\");\r\n"); 
+        } else {
+            javaCode.append("String dbSchema_" + cid + " = " + dbSchema + ";\r\n");            
+        }
+        javaCode.append("if(dbSchema_" + cid + " != null && dbSchema_" + cid + ".trim().length() != 0) {");
+        javaCode.append("tableName_" + cid + " = dbSchema_" + cid + " + \"" + getLProtectedChar() + "." + getRProtectedChar() + "\" + tableName_" + cid + ";\r\n");
+        javaCode.append("}");
+        return javaCode.toString();        
+    }    
+}
 class SQLiteManager extends Manager {
     public SQLiteManager(String dbName, String tableName, String userName, String password, String cid) {
         super(dbName, tableName, userName, password, cid);
@@ -960,6 +1022,16 @@ class ManagerFactory {
             boolean useExistingConnection = ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__").equals("true");
             String connection = stringUtil.getString(ElementParameterParser.getValue(node, "__CONNECTION_POSTGRE__"));
             manager = new PostgreManager(host, port, dbName, tableName, dbSchema, userName, password, useExistingConnection, connection, cid);
+        } else if(dbType.equals("POSTGREPLUS")) {
+            String host = ElementParameterParser.getValue(node, "__HOST__");
+            String port = ElementParameterParser.getValue(node, "__PORT__");
+            String dbSchema = ElementParameterParser.getValue(node, "__SCHEMA_DB__");
+            String dbName = ElementParameterParser.getValue(node, "__DBNAME__");
+            String userName = ElementParameterParser.getValue(node, "__USER__");
+            String password = ElementParameterParser.getValue(node, "__PASS__");            
+            boolean useExistingConnection = ElementParameterParser.getValue(node, "__USE_EXISTING_CONNECTION__").equals("true");
+            String connection = stringUtil.getString(ElementParameterParser.getValue(node, "__CONNECTION_POSTGREPLUS__"));
+            manager = new PostgrePlusManager(host, port, dbName, tableName, dbSchema, userName, password, useExistingConnection, connection, cid);            
         } else if(dbType.equals("SQLITE")) {
             String dbName = ElementParameterParser.getValue(node, "__DBFILE_SQLITE__");
             String userName = ElementParameterParser.getValue(node, "__USER__");

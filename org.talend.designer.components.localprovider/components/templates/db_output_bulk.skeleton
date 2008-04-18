@@ -25,6 +25,7 @@ public class CLASS {
     public static final String MYSQL = "mysql_id";
     public static final String ORACLE = "oracle_id";
     public static final String POSTGRESQL = "postgres_id";
+    public static final String POSTGREPLUS = "postgresplus_id";
     public static final String SQLITE = "sqlite_id";
     public static final String SYBASE = "sybase_id";
     public static final String TERADATA = "teradata_id";
@@ -1039,6 +1040,55 @@ public class CLASS {
         }        
     }
     
+    public class PostgrePlusManager extends Manager {
+        public PostgrePlusManager(String cid) {
+            super(cid);
+        }
+        protected String getDBMSId() {
+            return POSTGREPLUS;
+        }
+        protected String getLProtectedChar() {
+            return "\\\"";
+        }
+        protected String getRProtectedChar() {
+            return "\\\"";
+        }
+        public String getUpdateBulkSQL(List<IMetadataColumn> columnList) {
+            StringBuilder updateBulkSQL = new StringBuilder();
+            StringBuilder updateSetStmt = new StringBuilder();
+            StringBuilder updateWhereStmt = new StringBuilder();
+            updateBulkSQL.append("UPDATE " + getLProtectedChar() + "\" +  tableName_" + cid + " + \"" + getRProtectedChar());
+            boolean firstKeyColumn = true;
+            boolean firstUpdateColumn = true;
+            String keySeparator = null;
+            String updateSeparator = null;
+            for(IMetadataColumn column : columnList) {
+                if(column.isKey()) {
+                    if(firstKeyColumn) {
+                        keySeparator = "";
+                        firstKeyColumn = false;
+                        updateWhereStmt.append(" FROM " + getLProtectedChar() + "\" + tmpTableName_" + cid + " + \"" + getRProtectedChar() + " WHERE \" + \"");
+                    } else {
+                        keySeparator = " AND ";
+                    }
+                    updateWhereStmt.append(keySeparator);                    
+                    updateWhereStmt.append(getLProtectedChar() + "\" + tableName_" + cid + " + \"" + getRProtectedChar() + "." + getLProtectedChar() + "\" + \"" + column.getLabel() + "\" + \"" + getRProtectedChar() + " = " + getLProtectedChar() + "\" + tmpTableName_" + cid + " + \"" + getRProtectedChar() + "." + getLProtectedChar() + "\" + \"" + column.getLabel() + "\" + \"" + getRProtectedChar());
+                } else {
+                    if(firstUpdateColumn) {
+                        updateSeparator = "";
+                        firstUpdateColumn = false;
+                        updateSetStmt.append(" SET \" + \"");
+                    } else {
+                        updateSeparator = ", ";
+                    }
+                    updateSetStmt.append(updateSeparator);
+                    updateSetStmt.append(getLProtectedChar() + "\" + \"" + column.getLabel() + "\" + \"" + getRProtectedChar() + " = " + getLProtectedChar() + "\" + tmpTableName_" + cid + " + \"" + getRProtectedChar() + "." + getLProtectedChar() + "\" + \"" + column.getLabel() + "\" + \"" + getRProtectedChar());
+                }
+            }
+            return updateBulkSQL.toString() + updateSetStmt.toString() + updateWhereStmt.toString();            
+        }        
+    }
+    
     public class SQLiteManager extends Manager {
         public SQLiteManager(String cid) {
             super(cid);
@@ -1275,6 +1325,8 @@ public class CLASS {
                 manager = new MysqlManager(cid);
             } else if(dbmsId.equalsIgnoreCase(ORACLE)) {
                 manager = new OracleManager(cid);
+            } else if(dbmsId.equalsIgnoreCase(POSTGREPLUS)) {
+                manager = new PostgrePlusManager(cid);
             } else if(dbmsId.equalsIgnoreCase(POSTGRESQL)) {
                 manager = new PostgreManager(cid);
             } else if(dbmsId.equalsIgnoreCase(SQLITE)) {

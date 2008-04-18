@@ -33,7 +33,7 @@ if(inputSchema != null && inputSchema.size() > 0 && outputSchema != null && outp
     String dbtable = ElementParameterParser.getValue(node, "__TABLE__");
     boolean debug = ElementParameterParser.getValue(node, "__DEBUG__").equals("true");
     boolean useExistingConnection = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__").equals("true");
-    String dbType = POSTGRESQL;
+    String dbType = POSTGREPLUS;
     SCDConfiger scdConfiger = getSCDConfiger(node);
     SCDManager scdManager = getSCDManager(cid, dbType);
     %>
