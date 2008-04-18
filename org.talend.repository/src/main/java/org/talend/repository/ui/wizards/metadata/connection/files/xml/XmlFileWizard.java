@@ -33,6 +33,7 @@ import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -266,6 +267,9 @@ public class XmlFileWizard extends RepositoryWizard implements INewWizard {
                     connectionProperty.setId(nextId);
                     factory.create(connectionItem, xmlFileWizardPage0.getDestinationPath());
                 } else {
+                    // update
+                    RepositoryUpdateManager.updateFileConnection(connectionItem.getConnection());
+
                     factory.save(connectionItem);
                     closeLockStrategy();
                 }

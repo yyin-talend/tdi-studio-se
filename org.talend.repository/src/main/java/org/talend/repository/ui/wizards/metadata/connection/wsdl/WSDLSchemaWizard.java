@@ -33,6 +33,7 @@ import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -322,6 +323,10 @@ public class WSDLSchemaWizard extends RepositoryWizard implements INewWizard {
                     connectionProperty.setId(nextId);
                     factory.create(connectionItem, wsdlSchemaWizardPage0.getDestinationPath());
                 } else {
+                    // update
+                    RepositoryUpdateManager.updateSchema((MetadataTable) ((WSDLSchemaConnection) connectionItem.getConnection())
+                            .getTables().get(0));
+
                     factory.save(connectionItem);
                     closeLockStrategy();
                 }

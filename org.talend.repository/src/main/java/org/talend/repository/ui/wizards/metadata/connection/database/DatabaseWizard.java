@@ -37,6 +37,7 @@ import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
@@ -225,9 +226,13 @@ public class DatabaseWizard extends RepositoryWizard implements INewWizard {
                         if (equals) {
                             c.setSchema(c.getSchema().toUpperCase());
                         }
+                        // update
+                        RepositoryUpdateManager.updateDBConnection(c);
                     }
+
                     factory.save(connectionItem);
                     closeLockStrategy();
+
                 }
             } catch (PersistenceException e) {
                 String detailError = e.toString();
@@ -255,5 +260,4 @@ public class DatabaseWizard extends RepositoryWizard implements INewWizard {
         super.setWorkbench(workbench);
         this.selection = selection2;
     }
-
 }

@@ -95,7 +95,9 @@ public final class UpdateContextReferenceHelper {
                                 }
 
                                 // have renamed this variable.
-                                contextParameter.setName(newName);
+                                // moved to method checkRenamedContext of ProcessUpdateManger
+
+                                // contextParameter.setName(newName);
                                 // updateVariableAttributions(curRepositoryManager, contextParameter,
                                 // context.getName());
 
@@ -122,7 +124,7 @@ public final class UpdateContextReferenceHelper {
             if (modified) {
                 // update tRunJob component reference
                 UpdateRunJobComponentContextHelper.updateOpenedJobRunJobComponentReference(processes, realRenamedVarMap, process
-                        .getLabel(), null);
+                        .getProperty().getId(), null);
                 // update parameter for current job and nodes in it. for 2608
                 UpdateContextVariablesHelper.updateProcessForRenamed(process, realRenamedVarMap);
 
@@ -260,7 +262,9 @@ public final class UpdateContextReferenceHelper {
                                         }
 
                                         // have renamed this variable.
-                                        parameterType.setName(newName);
+                                        // moved to method checkRenamedContext of ProcessUpdateManger
+
+                                        // parameterType.setName(newName);
                                         // updateVariableAttributions(curRepositoryManager, parameterType,
                                         // contextType.getName());
                                         // } else if (!isExistedVarInCurRepositoryContext(parameterType.getName(),
@@ -283,7 +287,7 @@ public final class UpdateContextReferenceHelper {
                         if (modified) {
                             // update tRunJob component reference
                             UpdateRunJobComponentContextHelper.updateItemRunJobComponentReference(factory, realRenamedVarMap,
-                                    item.getProperty().getLabel(), null);
+                                    item.getProperty().getId(), null);
 
                             // update parameter reference for current item and nodes. for 2608
                             UpdateContextVariablesHelper.updateProcessForRenamed(item.getProcess(), realRenamedVarMap);

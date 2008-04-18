@@ -27,6 +27,7 @@ import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.database.TableInfoParameters;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
@@ -68,8 +69,7 @@ public class DatabaseTableWizard extends RepositoryWizard implements INewWizard 
      */
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     public DatabaseTableWizard(IWorkbench workbench, boolean creation, ConnectionItem connectionItem,
-            MetadataTable metadataTable, String[] existingNames, boolean forceReadOnly,
-            ManagerConnection managerConnection) {
+            MetadataTable metadataTable, String[] existingNames, boolean forceReadOnly, ManagerConnection managerConnection) {
         super(workbench, creation, forceReadOnly);
         this.connectionItem = connectionItem;
         this.metadataTable = metadataTable;
@@ -143,6 +143,9 @@ public class DatabaseTableWizard extends RepositoryWizard implements INewWizard 
     @Override
     public boolean performFinish() {
         if (tableWizardpage.isPageComplete()) {
+            // update
+            RepositoryUpdateManager.updateSchema(metadataTable);
+
             saveMetaData();
             closeLockStrategy();
 
@@ -173,8 +176,7 @@ public class DatabaseTableWizard extends RepositoryWizard implements INewWizard 
             factory.save(repositoryObject.getProperty().getItem());
         } catch (PersistenceException e) {
             String detailError = e.toString();
-            new ErrorDialogWidthDetailArea(getShell(), PID,
-                    Messages.getString("CommonWizard.persistenceException"), detailError); //$NON-NLS-1$
+            new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("CommonWizard.persistenceException"), detailError); //$NON-NLS-1$
             log.error(Messages.getString("CommonWizard.persistenceException") + "\n" + detailError); //$NON-NLS-1$ //$NON-NLS-2$
         }
     }

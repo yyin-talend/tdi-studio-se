@@ -34,6 +34,7 @@ import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.RepositoryObject;
+import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.designer.core.IDesignerCoreService;
 import org.talend.repository.RepositoryPlugin;
@@ -163,9 +164,12 @@ public class ContextWizard extends RepositoryWizard implements INewWizard {
                     if (contextManager instanceof JobContextManager) {
                         JobContextManager manager = (JobContextManager) contextManager;
                         if (manager.isModified()) {
+                            // update
+                            RepositoryUpdateManager.updateContext((JobContextManager) contextManager, contextItem);
                             // update the job context and tRunJob reference
                             UpdateContextReferenceHelper.updateJobContextReference((JobContextManager) contextManager,
                                     contextItem);
+
                         }
                     }
 

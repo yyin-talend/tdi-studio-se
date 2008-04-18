@@ -20,6 +20,7 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
@@ -84,6 +85,9 @@ public class FileExcelTableWizard extends RepositoryWizard implements INewWizard
 
     public boolean performFinish() {
         if (tableWizardpage.isPageComplete()) {
+            // update
+            RepositoryUpdateManager.updateSchema(metadataTable);
+
             IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             try {
                 factory.save(repositoryObject.getProperty().getItem());
