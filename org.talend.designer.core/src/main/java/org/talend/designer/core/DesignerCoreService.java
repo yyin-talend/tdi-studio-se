@@ -36,6 +36,7 @@ import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.update.UpdateResult;
 import org.talend.designer.core.model.process.AbstractProcessProvider;
 import org.talend.designer.core.model.process.DataNode;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
@@ -48,6 +49,7 @@ import org.talend.designer.core.ui.editor.TalendEditorPaletteFactory;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.properties.GefEditorLabelProvider;
 import org.talend.designer.core.ui.editor.properties.RepositoryValueUtils;
+import org.talend.designer.core.ui.editor.update.UpdateManagerUtils;
 import org.talend.designer.core.ui.views.contexts.Contexts;
 import org.talend.designer.core.ui.views.jobsettings.JobSettings;
 import org.talend.designer.core.ui.views.problems.Problems;
@@ -101,11 +103,12 @@ public class DesignerCoreService implements IDesignerCoreService {
      * @see org.talend.designer.core.IDesignerCoreService#getProcessFromJobletProcessItem(org.talend.core.model.properties.JobletProcessItem)
      */
     public IProcess getProcessFromJobletProcessItem(JobletProcessItem jobletProcessItem) {
-        Process process = null;
-        process = new Process(jobletProcessItem.getProperty());
-        process.loadXmlFile();
+        AbstractProcessProvider processProvider = AbstractProcessProvider.findProcessProviderFromPID(IComponent.JOBLET_PID);
+        if (processProvider != null) {
+            return processProvider.getProcessFromJobletProcessItem(jobletProcessItem);
+        }
 
-        return process;
+        return null;
     }
 
     public ILabelProvider getGEFEditorNodeLabelProvider() {
@@ -354,5 +357,14 @@ public class DesignerCoreService implements IDesignerCoreService {
         IComponent salesforceComponent = compFac.get(componentName);
 
         return new DataNode(salesforceComponent, componentName);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.core.IDesignerCoreService#executeUpdatesManager(java.util.List)
+     */
+    public boolean executeUpdatesManager(List<UpdateResult> results) {
+        return UpdateManagerUtils.executeUpdates(results);
     }
 }

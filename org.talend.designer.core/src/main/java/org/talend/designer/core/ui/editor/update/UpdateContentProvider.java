@@ -1,0 +1,114 @@
+// ============================================================================
+//
+// Copyright (C) 2006-2007 Talend Inc. - www.talend.com
+//
+// This source code is available under agreement available at
+// %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
+//
+// You should have received a copy of the agreement
+// along with this program; if not, write to Talend SA
+// 9 rue Pages 92150 Suresnes, France
+//
+// ============================================================================
+package org.talend.designer.core.ui.editor.update;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import org.eclipse.jface.viewers.ITreeContentProvider;
+import org.eclipse.jface.viewers.Viewer;
+import org.talend.core.model.process.IProcess2;
+import org.talend.core.model.update.UpdateResult;
+import org.talend.core.model.update.UpdatesConstants;
+
+/**
+ * ggu class global comment. Detailled comment
+ */
+public class UpdateContentProvider implements ITreeContentProvider {
+
+    public Object[] getChildren(Object parentElement) {
+        if (parentElement instanceof Job) {
+            return ((Job) parentElement).getCategories().toArray();
+        } else if (parentElement instanceof Category) {
+            return ((Category) parentElement).getItems().toArray();
+        }
+        return null;
+    }
+
+    public Object getParent(Object element) {
+        if (element instanceof Job) {
+            return null;
+        } else if (element instanceof Category) {
+            return ((Category) element).getParent();
+        } else if (element instanceof Item) {
+            return ((Item) element).getParent();
+        }
+        return null;
+    }
+
+    public boolean hasChildren(Object element) {
+        if (element instanceof Job) {
+            return !((Job) element).getCategories().isEmpty();
+        } else if (element instanceof Category) {
+            return !((Category) element).getItems().isEmpty();
+        } else if (element instanceof Item) {
+            return false;
+        }
+        return false;
+    }
+
+    @SuppressWarnings("unchecked")
+    public Object[] getElements(Object inputElement) {
+        List<Job> jobs = new ArrayList<Job>();
+        if (inputElement instanceof Collection) {
+            for (UpdateResult result : (List<UpdateResult>) inputElement) {
+                String jobName = result.getJobInfor();
+                if (jobName == null) {
+                    jobName = UpdatesConstants.EMPTY;
+                }
+                Job job = getJob(jobs, jobName);
+                if (job == null) {
+                    job = new Job(jobName);
+                    Object job2 = result.getJob();
+                    if (job2 != null) {
+                        if (job2 instanceof IProcess2) {
+                            job.setJoblet(((IProcess2) job2).disableRunJobView()); // ?? joblet
+                        }
+                    }
+                    jobs.add(job);
+                }
+
+                Category category = job.getCategory(result.getCategory());
+                if (category == null) {
+                    category = new Category(job, result.getCategory());
+                    category.setType(result.getUpdateType());
+                    job.addCategory(category);
+                }
+                Item item = new Item(category, result);
+                category.addItem(item);
+            }
+        }
+        return jobs.toArray();
+    }
+
+    private Job getJob(List<Job> jobs, String name) {
+        if (jobs == null || name == null) {
+            return null;
+        }
+        for (Job job : jobs) {
+            if (name.equals(job.getName())) {
+                return job;
+            }
+        }
+        return null;
+    }
+
+    public void dispose() {
+
+    }
+
+    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+
+    }
+}

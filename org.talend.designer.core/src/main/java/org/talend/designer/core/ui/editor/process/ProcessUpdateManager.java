@@ -13,9 +13,7 @@
 package org.talend.designer.core.ui.editor.process;
 
 import java.beans.PropertyChangeEvent;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -23,11 +21,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.gef.commands.Command;
-import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.swt.widgets.Display;
-import org.talend.commons.ui.swt.dialogs.ProgressDialog;
+import org.eclipse.gef.commands.CommandStack;
+import org.eclipse.ui.IEditorReference;
+import org.eclipse.ui.PlatformUI;
+import org.talend.core.CorePlugin;
 import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.context.ContextUtils;
@@ -35,6 +32,7 @@ import org.talend.core.model.context.JobContextManager;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.builder.connection.Connection;
+import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.metadata.designerproperties.RepositoryToComponentProperty;
 import org.talend.core.model.process.EComponentCategory;
@@ -43,12 +41,15 @@ import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.update.AbstractUpdateManager;
 import org.talend.core.model.update.EUpdateItemType;
 import org.talend.core.model.update.EUpdateResult;
 import org.talend.core.model.update.UpdateResult;
@@ -61,16 +62,8 @@ import org.talend.designer.core.model.process.AbstractProcessProvider;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.designer.core.ui.editor.nodes.Node;
-import org.talend.designer.core.ui.editor.update.AbstractUpdateManager;
-import org.talend.designer.core.ui.editor.update.UpdateCheckDialog;
 import org.talend.designer.core.ui.editor.update.UpdateCheckResult;
-import org.talend.designer.core.ui.editor.update.cmd.UpdateContextParameterCommand;
-import org.talend.designer.core.ui.editor.update.cmd.UpdateJobletNodeCommand;
-import org.talend.designer.core.ui.editor.update.cmd.UpdateMainParameterCommand;
-import org.talend.designer.core.ui.editor.update.cmd.UpdateNodeParameterCommand;
-import org.talend.designer.core.ui.views.contexts.Contexts;
-import org.talend.designer.core.ui.views.jobsettings.JobSettings;
-import org.talend.designer.core.ui.views.properties.ComponentSettings;
+import org.talend.designer.core.ui.editor.update.UpdateManagerUtils;
 import org.talend.repository.UpdateRepositoryUtils;
 import org.talend.repository.model.ComponentsFactoryProvider;
 
@@ -79,9 +72,23 @@ import org.talend.repository.model.ComponentsFactoryProvider;
  */
 public class ProcessUpdateManager extends AbstractUpdateManager {
 
-    public ProcessUpdateManager(org.talend.designer.core.ui.editor.process.Process process) {
-        super(process);
+    private Process process = null;
 
+    public ProcessUpdateManager(org.talend.designer.core.ui.editor.process.Process process) {
+        super();
+        if (process == null) {
+            throw new RuntimeException("The argument is null."); //$NON-NLS-1$
+        }
+        this.process = process;
+
+    }
+
+    public CommandStack getCommandStack() {
+        return process.getCommandStack();
+    }
+
+    public Process getProcess() {
+        return this.process;
     }
 
     /*
@@ -92,41 +99,81 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
         final IContextManager contextManager = getProcess().getContextManager();
         // record the unsame
         Map<ContextItem, Set<String>> unsameMap = new HashMap<ContextItem, Set<String>>();
+        // rename
+        Map<ContextItem, Set<String>> renamedMap = new HashMap<ContextItem, Set<String>>();
+        // built in
+        Map<ContextItem, Set<String>> builtInMap = new HashMap<ContextItem, Set<String>>();
         Set<String> builtInSet = new HashSet<String>();
+
+        Map<ContextItem, Map<String, String>> repositoryRenamedMap = ((JobContextManager) contextManager)
+                .getRepositoryRenamedMap();
 
         final List<ContextItem> allContextItem = ContextUtils.getAllContextItem();
 
         for (IContext context : contextManager.getListContext()) {
             for (IContextParameter param : context.getContextParameterList()) {
                 if (!param.isBuiltIn()) {
-                    final ContextItem contextItem = ContextUtils.getContextItemByName(allContextItem, param.getSource());
-                    if (contextItem != null) {
-                        boolean same = false;
-                        final ContextType contextType = ContextUtils.getContextTypeByName(contextItem, context.getName(), true);
-                        if (contextType != null) {
-                            final ContextParameterType contextParameterType = ContextUtils.getContextParameterTypeByName(
-                                    contextType, param.getName());
-                            if (contextParameterType != null
-                                    && ContextUtils.samePropertiesForContextParameter(param, contextParameterType)) {
-                                same = true;
+                    String source = param.getSource();
+                    String paramName = param.getName();
+
+                    // rename
+                    boolean renamed = false;
+                    for (ContextItem item : repositoryRenamedMap.keySet()) {
+                        if (source.equals(item.getProperty().getLabel())) {
+                            String newName = getRenamedVarName(paramName, repositoryRenamedMap.get(item));
+                            if (newName != null && !newName.equals(paramName)) {
+                                // param.setName(newName);
+                                Set<String> names = renamedMap.get(item);
+                                if (names == null) {
+                                    names = new HashSet<String>();
+                                    renamedMap.put(item, names);
+                                }
+                                names.add(paramName);
+                                renamed = true;
                             }
                         }
-                        if (!same) {
-                            Set<String> names = unsameMap.get(contextItem);
-                            if (names == null) {
-                                names = new HashSet<String>();
-                                unsameMap.put(contextItem, names);
+                    }
+                    if (!renamed) {
+                        // update
+                        final ContextItem contextItem = ContextUtils.getContextItemByName(allContextItem, source);
+                        boolean builtin = true;
+                        if (contextItem != null) {
+                            final ContextType contextType = ContextUtils.getContextTypeByName(contextItem, context.getName(),
+                                    true);
+                            if (contextType != null) {
+                                final ContextParameterType contextParameterType = ContextUtils.getContextParameterTypeByName(
+                                        contextType, paramName);
+                                if (contextParameterType != null) {
+                                    if (!ContextUtils.samePropertiesForContextParameter(param, contextParameterType)) {
+                                        Set<String> names = unsameMap.get(contextItem);
+                                        if (names == null) {
+                                            names = new HashSet<String>();
+                                            unsameMap.put(contextItem, names);
+                                        }
+                                        names.add(paramName);
+                                    }
+                                    builtin = false;
+                                }
                             }
-                            names.add(param.getName());
                         }
-                    } else { // built in
-                        builtInSet.add(param.getName());
+                        if (builtin) {
+                            // built in
+                            if (contextItem != null) {
+                                Set<String> names = builtInMap.get(contextItem);
+                                if (names == null) {
+                                    names = new HashSet<String>();
+                                    builtInMap.put(contextItem, names);
+                                }
+                                names.add(paramName);
+                            } else {
+                                builtInSet.add(paramName);
+                            }
+                        }
                     }
                 }
             }
         }
         // built-in
-
         if (contextManager instanceof JobContextManager) { // add the lost source for init process
             Set<String> lostParameters = ((JobContextManager) contextManager).getLostParameters();
             if (lostParameters != null && !lostParameters.isEmpty()) {
@@ -137,7 +184,20 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
         if (!builtInSet.isEmpty()) {
             UpdateCheckResult result = new UpdateCheckResult(builtInSet);
             result.setResult(EUpdateItemType.CONTEXT, EUpdateResult.BUIL_IN);
+            result.setJob(getProcess());
             contextResults.add(result);
+        }
+        if (!builtInMap.isEmpty()) {
+            for (ContextItem item : builtInMap.keySet()) {
+                Set<String> names = builtInMap.get(item);
+                if (names != null && !names.isEmpty()) {
+                    UpdateCheckResult result = new UpdateCheckResult(names);
+                    result.setResult(EUpdateItemType.CONTEXT, EUpdateResult.BUIL_IN, null, UpdateRepositoryUtils
+                            .getRepositorySourceName(item));
+                    result.setJob(getProcess());
+                    contextResults.add(result);
+                }
+            }
         }
         // update
         if (!unsameMap.isEmpty()) {
@@ -147,11 +207,71 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                     UpdateCheckResult result = new UpdateCheckResult(names);
                     result.setResult(EUpdateItemType.CONTEXT, EUpdateResult.UPDATE, item, UpdateRepositoryUtils
                             .getRepositorySourceName(item));
+                    result.setJob(getProcess());
                     contextResults.add(result);
                 }
             }
         }
+        // rename
+        if (!renamedMap.isEmpty()) {
+            for (ContextItem item : renamedMap.keySet()) {
+                Map<String, String> nameMap = repositoryRenamedMap.get(item);
+                if (nameMap != null && !nameMap.isEmpty()) {
+                    for (String newName : nameMap.keySet()) {
+                        String oldName = nameMap.get(newName);
+                        if (newName.equals(oldName)) {
+                            continue;
+                        }
+                        Set<String> nameSet = new HashSet<String>();
+                        nameSet.add(oldName);
+
+                        List<Object> parameterList = new ArrayList<Object>();
+                        parameterList.add(item);
+                        parameterList.add(oldName);
+                        parameterList.add(newName);
+
+                        UpdateCheckResult result = new UpdateCheckResult(nameSet);
+                        result.setResult(EUpdateItemType.CONTEXT, EUpdateResult.RENAME, parameterList, UpdateRepositoryUtils
+                                .getRepositorySourceName(item));
+                        result.setJob(getProcess());
+                        if (!isOpenedProcess(getProcess())) {
+                            result.setItemProcess(getProcess());
+                        }
+                        contextResults.add(result);
+                    }
+                }
+            }
+            repositoryRenamedMap.clear();
+        }
         return contextResults;
+    }
+
+    private static boolean isOpenedProcess(Process curProcess) {
+        IEditorReference[] reference = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getEditorReferences();
+        List<IProcess> openedProcessList = CorePlugin.getDefault().getDesignerCoreService().getOpenedProcess(reference);
+        for (IProcess process : openedProcessList) {
+            Property property = curProcess.getProperty();
+            if (process.getId().equals(property.getId()) && process.getLabel().equals(property.getLabel())
+                    && process.getVersion().equals(property.getVersion())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static String getRenamedVarName(final String varName, Map<String, String> renamedMap) {
+        if (varName == null || renamedMap == null || renamedMap.isEmpty()) {
+            return null;
+        }
+
+        Set<String> keySet = renamedMap.keySet();
+        for (String newName : keySet) {
+            String oldName = renamedMap.get(newName);
+            if (varName.equals(oldName)) {
+                return newName;
+            }
+        }
+        return null;
     }
 
     /*
@@ -201,7 +321,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                             repositoryConnection = ((DatabaseConnectionItem) item).getConnection();
                         }
                     }
-                    UpdateCheckResult result = new UpdateCheckResult(getProcess());
+                    UpdateCheckResult result = null;
 
                     if (repositoryConnection != null) {
                         boolean sameValues = true;
@@ -239,7 +359,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                             }
                         }
                         if (!sameValues) {
-
+                            result = new UpdateCheckResult(getProcess());
                             result.setResult(type, EUpdateResult.UPDATE, repositoryConnection, source);
 
                         } else {
@@ -254,9 +374,11 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                             }
                         }
                     } else {
+                        result = new UpdateCheckResult(getProcess());
                         result.setResult(type, EUpdateResult.BUIL_IN);
                     }
-                    if (result.getResultType() != null) {
+                    if (result != null) {
+                        result.setJob(getProcess());
                         jobSettingsResults.add(result);
                     }
                 }
@@ -329,7 +451,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                         }
                     }
 
-                    UpdateCheckResult result = new UpdateCheckResult(node);
+                    UpdateCheckResult result = null;
 
                     if (repositoryMetadata != null) {
                         final IMetadataTable copyOfrepositoryMetadata = repositoryMetadata.clone();
@@ -338,19 +460,20 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
 
                         IMetadataTable metadataTable = node.getMetadataFromConnector(schemaTypeParam.getContext());
                         if (!metadataTable.sameMetadataAs(copyOfrepositoryMetadata, IMetadataColumn.OPTIONS_NONE)) {
-
+                            result = new UpdateCheckResult(node);
                             result.setResult(EUpdateItemType.NODE_SCHEMA, EUpdateResult.UPDATE, copyOfrepositoryMetadata, source);
 
                         }
                     } else {
-
+                        result = new UpdateCheckResult(node);
                         result.setResult(EUpdateItemType.NODE_SCHEMA, EUpdateResult.BUIL_IN);
                         // if the repository connection doesn't exists then
                         // set to built-in
                     }
 
                     // add the check result to resultList, hold the value.
-                    if (result.getResultType() != null) {
+                    if (result != null) {
+                        result.setJob(getProcess());
                         schemaResults.add(result);
                     }
                 }
@@ -379,18 +502,17 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                 String propertyValue = (String) node.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
 
                 IRepositoryObject lastVersion = UpdateRepositoryUtils.getRepositoryObjectById(propertyValue);
-                if (lastVersion == null) {
-                    return Collections.emptyList();
-                }
+                UpdateCheckResult result = null;
+
                 Connection repositoryConnection = null;
                 String source = null;
-                final Item item = lastVersion.getProperty().getItem();
-                if (item != null && item instanceof ConnectionItem) {
-                    source = UpdateRepositoryUtils.getRepositorySourceName(item);
-                    repositoryConnection = ((ConnectionItem) item).getConnection();
+                if (lastVersion != null) {
+                    final Item item = lastVersion.getProperty().getItem();
+                    if (item != null && item instanceof ConnectionItem) {
+                        source = UpdateRepositoryUtils.getRepositorySourceName(item);
+                        repositoryConnection = ((ConnectionItem) item).getConnection();
+                    }
                 }
-
-                UpdateCheckResult result = new UpdateCheckResult(node);
 
                 if (repositoryConnection != null) {
                     boolean sameValues = true;
@@ -457,8 +579,29 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                         }
                     }
                     if (!sameValues) {
-
-                        result.setResult(EUpdateItemType.NODE_PROPERTY, EUpdateResult.UPDATE, repositoryConnection, source);
+                        result = new UpdateCheckResult(node);
+                        // for DBConnection
+                        boolean builtIn = true;
+                        if (repositoryConnection instanceof DatabaseConnection) {
+                            IElementParameter typeParam = node.getElementParameter(UpdatesConstants.TYPE);
+                            if (typeParam != null) {
+                                String dbType = ((DatabaseConnection) repositoryConnection).getDatabaseType();
+                                Object type = typeParam.getValue();
+                                if (dbType != null && type != null) {
+                                    if (dbType.equalsIgnoreCase((String) type)) {
+                                        result.setResult(EUpdateItemType.NODE_PROPERTY, EUpdateResult.UPDATE,
+                                                repositoryConnection, source);
+                                        builtIn = false;
+                                    }
+                                }
+                            }
+                        } else {
+                            result.setResult(EUpdateItemType.NODE_PROPERTY, EUpdateResult.UPDATE, repositoryConnection, source);
+                            builtIn = false;
+                        }
+                        if (builtIn) { // only for DB
+                            result.setResult(EUpdateItemType.NODE_PROPERTY, EUpdateResult.BUIL_IN, null, source);
+                        }
 
                     } else {
                         for (IElementParameter param : node.getElementParameters()) {
@@ -471,12 +614,13 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                         }
                     }
                 } else {
-
+                    result = new UpdateCheckResult(node);
                     result.setResult(EUpdateItemType.NODE_PROPERTY, EUpdateResult.BUIL_IN);
                 }
 
                 // add the check result to resultList, hold the value.
-                if (result.getResultType() != null) {
+                if (result != null) {
+                    result.setJob(getProcess());
                     propertiesResults.add(result);
                 }
             }
@@ -514,7 +658,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                             + query.getLabel();
                     connectQuery = query.getValue();
                 }
-                UpdateCheckResult result = new UpdateCheckResult(node);
+                UpdateCheckResult result = null;
 
                 if (connectQuery != null) {
                     IElementParameter sqlParam = node.getElementParameterFromField(EParameterFieldType.MEMO_SQL);
@@ -523,6 +667,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
 
                         connectQuery = TalendTextUtils.addSQLQuotes(connectQuery);
                         if (!connectQuery.equals(paramValue)) {
+                            result = new UpdateCheckResult(node);
                             result.setResult(EUpdateItemType.NODE_QUERY, EUpdateResult.UPDATE, query, source);
                         } else {
                             sqlParam.setReadOnly(true);
@@ -530,11 +675,14 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                         }
                     }
                 } else {
+                    result = new UpdateCheckResult(node);
                     result.setResult(EUpdateItemType.NODE_QUERY, EUpdateResult.BUIL_IN);
                 }
-                if (result.getResultType() != null) {
+                if (result != null) {
+                    result.setJob(getProcess());
                     queryResults.add(result);
                 }
+
             }
         }
 
@@ -588,6 +736,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                 UpdateCheckResult result = new UpdateCheckResult(set);
                 result.setResult(EUpdateItemType.JOBLET_CONTEXT, EUpdateResult.JOBLET_UPDATE, null, UpdatesConstants.CONTEXT
                         + UpdatesConstants.COLON + source);
+                result.setJob(getProcess());
                 contextResults.add(result);
             }
         }
@@ -635,14 +784,14 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                     IProcess process2 = (IProcess) object;
                     // avoid reload self
                     if (!getProcess().getId().equals(process2.getId())) {
-                        Set<String> nodesName = findRelatedJobletNode(getProcess(), process2.getLabel(), null);
-                        if (nodesName != null && !nodesName.isEmpty()) {
+                        List<INode> jobletNodes = findRelatedJobletNode(getProcess(), process2.getLabel(), null);
+                        if (jobletNodes != null && !jobletNodes.isEmpty()) {
                             String source = UpdatesConstants.JOBLET + UpdatesConstants.COLON + process2.getLabel();
-                            result = new UpdateCheckResult(nodesName);
+                            result = new UpdateCheckResult(jobletNodes);
                             result.setResult(EUpdateItemType.RELOAD, EUpdateResult.RELOAD, event, source);
                         }
                     }
-                } else {
+                } else { // reload all components
                     result = new UpdateCheckResult(UpdatesConstants.COMPONENT);
                     result.setResult(EUpdateItemType.RELOAD, EUpdateResult.RELOAD, event);
                 }
@@ -650,28 +799,28 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
             } else if (propertyName.equals(ComponentUtilities.JOBLET_NAME_CHANGED)) {
                 String oldName = (String) event.getOldValue();
                 String newName = (String) event.getNewValue();
-                Set<String> nodesName = findRelatedJobletNode(getProcess(), oldName, newName);
-
-                if (nodesName != null && !nodesName.isEmpty()) {
+                List<INode> jobletNodes = findRelatedJobletNode(getProcess(), oldName, newName);
+                if (jobletNodes != null && !jobletNodes.isEmpty()) {
                     String source = UpdatesConstants.JOBLET + UpdatesConstants.COLON + newName;
 
-                    result = new UpdateCheckResult(nodesName);
+                    result = new UpdateCheckResult(jobletNodes);
                     result.setResult(EUpdateItemType.JOBLET_RENAMED, EUpdateResult.JOBLET_UPDATE, event, source);
                 }
-            } else if (propertyName.equals(ComponentUtilities.JOBLET_SCHEMA_CHANGED)) {
-                Object object = event.getSource();
-                if (object instanceof IProcess) {
-                    String oldName = ((IProcess) object).getName();
-                    Set<String> nodesName = findRelatedJobletNode(getProcess(), oldName, null);
-                    if (nodesName != null && !nodesName.isEmpty()) {
-                        String source = UpdatesConstants.JOBLET + UpdatesConstants.COLON + ((IProcess) object).getLabel();
-
-                        result = new UpdateCheckResult(nodesName);
-                        result.setResult(EUpdateItemType.JOBLET_SCHEMA, EUpdateResult.JOBLET_UPDATE, event, source);
-                    }
-                }
+                // } else if (propertyName.equals(ComponentUtilities.JOBLET_SCHEMA_CHANGED)) {
+                // Object object = event.getSource();
+                // if (object instanceof IProcess) {
+                // String oldName = ((IProcess) object).getName();
+                // Set<String> nodesName = findRelatedJobletNode(getProcess(), oldName, null);
+                // if (nodesName != null && !nodesName.isEmpty()) {
+                // String source = UpdatesConstants.JOBLET + UpdatesConstants.COLON + ((IProcess) object).getLabel();
+                //
+                // result = new UpdateCheckResult(nodesName);
+                // result.setResult(EUpdateItemType.JOBLET_SCHEMA, EUpdateResult.JOBLET_UPDATE, event, source);
+                // }
+                // }
             }
             if (result != null) {
+                result.setJob(getProcess());
                 nodeResults.add(result);
             }
         }
@@ -681,7 +830,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
     }
 
     @SuppressWarnings("unchecked")//$NON-NLS-1$
-    private Set<String> findRelatedJobletNode(Process process, String oldjobletName, String newJobletName) {
+    private List<INode> findRelatedJobletNode(Process process, String oldjobletName, String newJobletName) {
         if (oldjobletName == null || process == null) {
             return null;
         }
@@ -690,20 +839,17 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
         }
         IComponent newComponent = ComponentsFactoryProvider.getInstance().get(newJobletName);
         if (newComponent == null) {
-            return Collections.EMPTY_SET;
+            return Collections.EMPTY_LIST;
         }
-        Set<String> nodesName = new HashSet<String>();
+
+        List<INode> jobletNodes = new ArrayList<INode>();
+
         for (Node node : (List<Node>) process.getGraphicalNodes()) {
             if (node.getComponent().getName().equals(newJobletName)) {
-                if (node.getUniqueName().equals(node.getLabel())) {
-                    nodesName.add(node.getUniqueName());
-                } else {
-                    nodesName.add(node.getLabel() + UpdatesConstants.SPACE + UpdatesConstants.LEFT_BRACKETS
-                            + node.getUniqueName() + UpdatesConstants.RIGHT_BRACKETS);
-                }
+                jobletNodes.add(node);
             }
         }
-        return nodesName;
+        return jobletNodes;
     }
 
     private List<UpdateResult> checkJobletNodeSchema() {
@@ -749,197 +895,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
 
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     public boolean executeUpdates(List<UpdateResult> results) {
-        if (results == null || results.isEmpty()) {
-            return false;
-        }
-        try {
-            UpdateCheckDialog checkDialog = new UpdateCheckDialog(Display.getCurrent().getActiveShell(), results);
-
-            if (checkDialog.open() == IDialogConstants.OK_ID) {
-                final List<Object> selectResult = Arrays.asList(checkDialog.getResult());
-                ProgressDialog progress = new ProgressDialog(Display.getCurrent().getActiveShell()) {
-
-                    @Override
-                    public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-                        monitor.setCanceled(false);
-                        monitor.beginTask("Progress...", selectResult.size() + 1); //$NON-NLS-1$
-                        // execute
-                        executeUpdates(selectResult, monitor);
-                        // refresh
-                        refreshRelatedViewers(selectResult);
-                        monitor.worked(1);
-
-                        monitor.done();
-                    }
-
-                };
-                try {
-                    progress.executeProcess();
-                } catch (InvocationTargetException e) {
-                    // 
-                } catch (InterruptedException e) {
-                    // 
-                }
-                return !selectResult.isEmpty();
-            }
-        } finally {
-            results.clear();
-        }
-        return false;
-    }
-
-    /**
-     * 
-     * ggu Comment method "refreshViewers".
-     */
-    @SuppressWarnings("unchecked")
-    private void refreshRelatedViewers(List results) {
-        boolean context = false;
-        boolean jobSetting = false;
-        boolean componentSettings = false;
-        boolean palette = false;
-
-        for (UpdateResult result : (List<UpdateResult>) results) {
-            switch (result.getUpdateType()) {
-            case CONTEXT:
-            case JOBLET_CONTEXT:
-                context = true;
-                break;
-            case JOB_PROPERTY_EXTRA:
-            case JOB_PROPERTY_STATS_LOGS:
-                jobSetting = true;
-                break;
-            case NODE_PROPERTY:
-            case NODE_QUERY:
-            case NODE_SCHEMA:
-                componentSettings = true;
-                break;
-            case RELOAD:
-            case JOBLET_RENAMED:
-            case JOBLET_SCHEMA:
-                palette = true;
-                break;
-            default:
-                break;
-            }
-        }
-        if (context) {
-            Contexts.switchToCurContextsView();
-        }
-        if (jobSetting) {
-            JobSettings.switchToCurJobSettingsView();
-        }
-        if (componentSettings) {
-            ComponentSettings.switchToCurComponentSettingsView();
-        }
-        if (palette) {
-            ComponentUtilities.updatePalette();
-        }
-    }
-
-    /**
-     * 
-     * ggu Comment method "executeUpdates".
-     * 
-     * can override the is method.
-     */
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
-    private void executeUpdates(List selectResult, IProgressMonitor monitor) {
-        Command command = null;
-        for (UpdateResult result : (List<UpdateResult>) selectResult) {
-            switch (result.getUpdateType()) {
-            case NODE_PROPERTY:
-            case NODE_SCHEMA:
-            case NODE_QUERY:
-                command = executeNodeUpdates(result);
-                break;
-            case JOB_PROPERTY_EXTRA:
-            case JOB_PROPERTY_STATS_LOGS:
-                command = executeMainUpdates(result);
-                break;
-            case CONTEXT:
-                command = executeContextUpdates(result);
-                break;
-            case JOBLET_RENAMED:
-            case JOBLET_SCHEMA:
-            case RELOAD:
-                command = executeJobletNodesUpdates(result);
-                break;
-            case JOBLET_CONTEXT:
-                command = executeJobletContextUpdates(result);
-                break;
-            default:
-                break;
-            }
-            if (command != null) {
-                getCommandStack().execute(command);
-                monitor.worked(1);
-            }
-        }
-
-    }
-
-    /*
-     * node
-     */
-    private Command executeNodeUpdates(UpdateResult result) {
-        if (result == null) {
-            return null;
-        }
-        Object element = result.getUpdateObject();
-        if (element instanceof Node) {
-            Node node = (Node) element;
-            return new UpdateNodeParameterCommand(node, result);
-        }
-        return null;
-    }
-
-    /*
-     * main
-     */
-    private Command executeMainUpdates(UpdateResult result) {
-        if (result == null) {
-            return null;
-        }
-        return new UpdateMainParameterCommand(getProcess(), result);
-    }
-
-    /*
-     * context
-     */
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
-    private Command executeContextUpdates(UpdateResult result) {
-        if (result == null) {
-            return null;
-        }
-        Object object = result.getUpdateObject();
-        if (object instanceof Set) {
-            return new UpdateContextParameterCommand(getProcess(), result);
-        }
-        return null;
-    }
-
-    /*
-     * joblet
-     */
-    private Command executeJobletNodesUpdates(UpdateResult result) {
-        if (result == null) {
-            return null;
-        }
-        Object parameter = result.getParameter();
-        if (parameter instanceof PropertyChangeEvent) {
-            return new UpdateJobletNodeCommand(getProcess(), (PropertyChangeEvent) parameter);
-        }
-        return null;
-    }
-
-    private Command executeJobletContextUpdates(UpdateResult result) {
-        if (result == null) {
-            return null;
-        }
-        // have updated in method "checkJobletNodesContext".
-        return new Command() {
-        };
+        return UpdateManagerUtils.executeUpdates(results);
     }
 
 }

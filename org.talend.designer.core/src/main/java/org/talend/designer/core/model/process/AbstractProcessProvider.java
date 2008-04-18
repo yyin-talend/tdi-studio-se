@@ -22,6 +22,7 @@ import org.eclipse.gef.palette.PaletteEntry;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.JobletProcessItem;
 import org.talend.core.model.update.UpdateResult;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
@@ -182,4 +183,6 @@ public abstract class AbstractProcessProvider {
     protected boolean isExtensionProcess(IProcess process) {
         return false;
     }
+
+    public abstract IProcess getProcessFromJobletProcessItem(JobletProcessItem jobletProcessItem);
 }

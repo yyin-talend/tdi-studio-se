@@ -39,22 +39,20 @@ import org.talend.designer.core.ui.editor.nodes.Node;
  */
 public class UpdateNodeParameterCommand extends Command {
 
-    private Node node;
-
     private UpdateResult result;
 
-    public UpdateNodeParameterCommand(Node node, UpdateResult result) {
+    public UpdateNodeParameterCommand(UpdateResult result) {
         super();
-        this.node = node;
         this.result = result;
     }
 
     @Override
     public void execute() {
-        if (node == null || result == null) {
+        if (result == null) {
             return;
         }
-        if (result.getUpdateObject() != node) {
+        Object updateObject = result.getUpdateObject();
+        if (updateObject == null) {
             return;
         }
         switch (result.getUpdateType()) {
@@ -71,103 +69,59 @@ public class UpdateNodeParameterCommand extends Command {
             return;
         }
 
-        if (node.getProcess() instanceof IProcess2) {
-            PropertyChangeCommand pcc = new PropertyChangeCommand(node, EParameterName.UPDATE_COMPONENTS.getName(), Boolean.TRUE);
-            ((IProcess2) node.getProcess()).getCommandStack().execute(pcc);
+        if (updateObject instanceof Node) {
+            Node node = (Node) updateObject;
+            if (node.getProcess() instanceof IProcess2) {
+                PropertyChangeCommand pcc = new PropertyChangeCommand(node, EParameterName.UPDATE_COMPONENTS.getName(),
+                        Boolean.TRUE);
+                ((IProcess2) node.getProcess()).getCommandStack().execute(pcc);
+            }
         }
     }
 
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     private void updateProperty() {
-        boolean update = false;
-        if (result.getResultType() == EUpdateResult.UPDATE) {
-            // upgrade from repository
-            if (result.isChecked()) {
-                for (IElementParameter param : node.getElementParameters()) {
-                    String repositoryValue = param.getRepositoryValue();
-                    if (param.isShow(node.getElementParameters()) && (repositoryValue != null)) {
-                        if (param.getName().equals(EParameterName.PROPERTY_TYPE.getName())
-                                || param.getField() == EParameterFieldType.MEMO_SQL) {
-                            continue;
-                        }
-                        Object objectValue = RepositoryToComponentProperty.getValue(
-                                (org.talend.core.model.metadata.builder.connection.Connection) result.getParameter(),
-                                repositoryValue);
-                        if (objectValue != null) {
-                            if (param.getField().equals(EParameterFieldType.CLOSED_LIST)
-                                    && repositoryValue.equals(UpdatesConstants.TYPE)) {
-                                boolean found = false;
-                                String[] items = param.getListRepositoryItems();
-                                for (int i = 0; (i < items.length) && (!found); i++) {
-                                    if (objectValue.equals(items[i])) {
-                                        found = true;
-                                        node.setPropertyValue(param.getName(), param.getListItemsValue()[i]);
-                                    }
-                                }
-                            } else {
-                                node.setPropertyValue(param.getName(), objectValue);
-                            }
-                        } else if (param.getField().equals(EParameterFieldType.TABLE)
-                                && UpdatesConstants.XML_MAPPING.equals(repositoryValue)) {
-                            RepositoryToComponentProperty.getTableXMLMappingValue(
-                                    (org.talend.core.model.metadata.builder.connection.Connection) result.getParameter(),
-                                    (List<Map<String, Object>>) param.getValue(), node.getMetadataList().get(0));
-                        }
-                        param.setRepositoryValueUsed(true);
-                        param.setReadOnly(true);
-                        update = true;
-                    }
-                }
-            }
+        Object updateObject = result.getUpdateObject();
+        if (updateObject == null) {
+            return;
         }
-        if (!update) { // bult-in
-            node.setPropertyValue(EParameterName.PROPERTY_TYPE.getName(), EmfComponent.BUILTIN);
-            for (IElementParameter param : node.getElementParameters()) {
-                String repositoryValue = param.getRepositoryValue();
-                if (param.isShow(node.getElementParameters()) && (repositoryValue != null)) {
-                    if (param.getName().equals(EParameterName.PROPERTY_TYPE.getName())
-                            || param.getField() == EParameterFieldType.MEMO_SQL) {
-                        continue;
-                    }
-                    param.setRepositoryValueUsed(false);
-                    param.setReadOnly(false);
-                }
-            }
-        }
-    }
+        if (updateObject instanceof Node) { // opened job
+            Node node = (Node) updateObject;
 
-    private void updateSchema() {
-
-        if (result.getResultType() == EUpdateResult.UPDATE) {
-            if (result.isChecked()) {
-                IMetadataTable newTable = ((IMetadataTable) result.getParameter());
-                // node.getMetadataFromConnector(newTable.getAttachedConnector()).setListColumns(newTable.getListColumns());
-                if (newTable != null) {
-                    for (INodeConnector nodeConnector : node.getListConnector()) {
-                        if (nodeConnector.getBaseSchema().equals(newTable.getAttachedConnector())) {
-                            MetadataTool.copyTable(newTable, node.getMetadataFromConnector(nodeConnector.getName()));
-                        }
-                    }
-                }
-            } else { // result.isChecked()==false
-                node.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
-            }
-        } else { // built-in
-            node.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
-
-        }
-
-    }
-
-    private void updateQuery() {
-        boolean update = false;
-        if (result.getResultType() == EUpdateResult.UPDATE) {
-            if (result.isChecked()) {
-                Query query = (Query) result.getParameter();
-                if (query != null) {
+            boolean update = false;
+            if (result.getResultType() == EUpdateResult.UPDATE) {
+                // upgrade from repository
+                if (result.isChecked()) {
                     for (IElementParameter param : node.getElementParameters()) {
-                        if (param.getField() == EParameterFieldType.MEMO_SQL && UpdatesConstants.QUERY.equals(param.getName())) {
-                            param.setValue(TalendTextUtils.addSQLQuotes(query.getValue()));
+                        String repositoryValue = param.getRepositoryValue();
+                        if (param.isShow(node.getElementParameters()) && (repositoryValue != null)) {
+                            if (param.getName().equals(EParameterName.PROPERTY_TYPE.getName())
+                                    || param.getField() == EParameterFieldType.MEMO_SQL) {
+                                continue;
+                            }
+                            Object objectValue = RepositoryToComponentProperty.getValue(
+                                    (org.talend.core.model.metadata.builder.connection.Connection) result.getParameter(),
+                                    repositoryValue);
+                            if (objectValue != null) {
+                                if (param.getField().equals(EParameterFieldType.CLOSED_LIST)
+                                        && repositoryValue.equals(UpdatesConstants.TYPE)) {
+                                    boolean found = false;
+                                    String[] items = param.getListRepositoryItems();
+                                    for (int i = 0; (i < items.length) && (!found); i++) {
+                                        if (objectValue.equals(items[i])) {
+                                            found = true;
+                                            node.setPropertyValue(param.getName(), param.getListItemsValue()[i]);
+                                        }
+                                    }
+                                } else {
+                                    node.setPropertyValue(param.getName(), objectValue);
+                                }
+                            } else if (param.getField().equals(EParameterFieldType.TABLE)
+                                    && UpdatesConstants.XML_MAPPING.equals(repositoryValue)) {
+                                RepositoryToComponentProperty.getTableXMLMappingValue(
+                                        (org.talend.core.model.metadata.builder.connection.Connection) result.getParameter(),
+                                        (List<Map<String, Object>>) param.getValue(), node.getMetadataList().get(0));
+                            }
                             param.setRepositoryValueUsed(true);
                             param.setReadOnly(true);
                             update = true;
@@ -175,14 +129,86 @@ public class UpdateNodeParameterCommand extends Command {
                     }
                 }
             }
-        }
-        if (!update) {
-            node.setPropertyValue(EParameterName.QUERYSTORE_TYPE.getName(), EmfComponent.BUILTIN);
-            IElementParameter sqlParam = node.getElementParameterFromField(EParameterFieldType.MEMO_SQL);
-            if (sqlParam != null) {
-                sqlParam.setRepositoryValueUsed(false);
-                sqlParam.setReadOnly(false);
+            if (!update) { // bult-in
+                node.setPropertyValue(EParameterName.PROPERTY_TYPE.getName(), EmfComponent.BUILTIN);
+                for (IElementParameter param : node.getElementParameters()) {
+                    String repositoryValue = param.getRepositoryValue();
+                    if (param.isShow(node.getElementParameters()) && (repositoryValue != null)) {
+                        if (param.getName().equals(EParameterName.PROPERTY_TYPE.getName())
+                                || param.getField() == EParameterFieldType.MEMO_SQL) {
+                            continue;
+                        }
+                        param.setRepositoryValueUsed(false);
+                        param.setReadOnly(false);
+                    }
+                }
             }
         }
     }
+
+    private void updateSchema() {
+        Object updateObject = result.getUpdateObject();
+        if (updateObject == null) {
+            return;
+        }
+        if (updateObject instanceof Node) { // opened job
+            Node node = (Node) updateObject;
+
+            if (result.getResultType() == EUpdateResult.UPDATE) {
+                if (result.isChecked()) {
+                    IMetadataTable newTable = ((IMetadataTable) result.getParameter());
+                    // node.getMetadataFromConnector(newTable.getAttachedConnector()).setListColumns(newTable.getListColumns());
+                    if (newTable != null) {
+                        for (INodeConnector nodeConnector : node.getListConnector()) {
+                            if (nodeConnector.getBaseSchema().equals(newTable.getAttachedConnector())) {
+                                MetadataTool.copyTable(newTable, node.getMetadataFromConnector(nodeConnector.getName()));
+                            }
+                        }
+                    }
+                } else { // result.isChecked()==false
+                    node.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
+                }
+            } else { // built-in
+                node.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
+
+            }
+        }
+    }
+
+    private void updateQuery() {
+        Object updateObject = result.getUpdateObject();
+        if (updateObject == null) {
+            return;
+        }
+        if (updateObject instanceof Node) { // opened job
+            Node node = (Node) updateObject;
+
+            boolean update = false;
+            if (result.getResultType() == EUpdateResult.UPDATE) {
+                if (result.isChecked()) {
+                    Query query = (Query) result.getParameter();
+                    if (query != null) {
+                        for (IElementParameter param : node.getElementParameters()) {
+                            if (param.getField() == EParameterFieldType.MEMO_SQL
+                                    && UpdatesConstants.QUERY.equals(param.getName())) {
+                                param.setValue(TalendTextUtils.addSQLQuotes(query.getValue()));
+                                param.setRepositoryValueUsed(true);
+                                param.setReadOnly(true);
+                                update = true;
+                            }
+                        }
+                    }
+                }
+            }
+            if (!update) {
+                node.setPropertyValue(EParameterName.QUERYSTORE_TYPE.getName(), EmfComponent.BUILTIN);
+                IElementParameter sqlParam = node.getElementParameterFromField(EParameterFieldType.MEMO_SQL);
+                if (sqlParam != null) {
+                    sqlParam.setRepositoryValueUsed(false);
+                    sqlParam.setReadOnly(false);
+                }
+            }
+        }
+    }
+
 }

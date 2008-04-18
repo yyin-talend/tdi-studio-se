@@ -416,15 +416,15 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                 IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
 
                 Set<String> curContextVars = getCurrentContextVariables(manager);
-                String jobName = getProcess().getLabel();
+                String jobId = getProcess().getProperty().getId();
 
-                UpdateRunJobComponentContextHelper.updateItemRunJobComponentReference(factory, nameMap, jobName, curContextVars);
+                UpdateRunJobComponentContextHelper.updateItemRunJobComponentReference(factory, nameMap, jobId, curContextVars);
 
                 IEditorReference[] reference = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
                         .getEditorReferences();
                 List<IProcess> processes = CorePlugin.getDefault().getDesignerCoreService().getOpenedProcess(reference);
 
-                UpdateRunJobComponentContextHelper.updateOpenedJobRunJobComponentReference(processes, nameMap, jobName,
+                UpdateRunJobComponentContextHelper.updateOpenedJobRunJobComponentReference(processes, nameMap, jobId,
                         curContextVars);
             } catch (PersistenceException e) {
                 e.printStackTrace();

@@ -12,12 +12,14 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.update.cmd;
 
+import java.util.List;
 import java.util.Set;
 
 import org.eclipse.gef.commands.Command;
 import org.talend.core.model.context.ContextUtils;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextParameter;
+import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.update.UpdateResult;
 
@@ -26,33 +28,62 @@ import org.talend.core.model.update.UpdateResult;
  */
 public class UpdateContextParameterCommand extends Command {
 
-    private org.talend.designer.core.ui.editor.process.Process process;
-
     private UpdateResult result;
 
-    public UpdateContextParameterCommand(org.talend.designer.core.ui.editor.process.Process process, UpdateResult result) {
-        this.process = process;
+    public UpdateContextParameterCommand(UpdateResult result) {
         this.result = result;
     }
 
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     @Override
     public void execute() {
-        if (process == null || result == null) {
+        if (result == null) {
             return;
         }
-        Set<String> names = (Set<String>) result.getUpdateObject();
-        ContextItem item = (ContextItem) result.getParameter();
+        Object job = result.getJob();
+        if (job == null) {
+            return;
+        }
+        if (job instanceof IProcess2) {
+            IProcess2 process = (IProcess2) job;
 
-        for (IContext context : process.getContextManager().getListContext()) {
-            for (IContextParameter param : context.getContextParameterList()) {
-                if (names != null && names.contains(param.getName())) {
-                    if (item != null && item.getProperty().getLabel().equals(param.getSource()) && result.isChecked()) {
+            Set<String> names = (Set<String>) result.getUpdateObject();
 
-                        ContextUtils.updateParameterFromRepository(item, param, context.getName());
-                    } else { // built-in
+            for (IContext context : process.getContextManager().getListContext()) {
+                for (IContextParameter param : context.getContextParameterList()) {
+                    ContextItem item = null;
+                    switch (result.getResultType()) {
+                    case UPDATE:
+                        item = (ContextItem) result.getParameter();
+                        if (names != null && names.contains(param.getName())) {
+                            if (item != null && item.getProperty().getLabel().equals(param.getSource()) && result.isChecked()) {
+
+                                ContextUtils.updateParameterFromRepository(item, param, context.getName());
+                            } else {
+                                param.setSource(IContextParameter.BUILT_IN);
+                            }
+                        }
+                        break;
+                    case RENAME:
+                        List<Object> parameter = (List<Object>) result.getParameter();
+                        if (parameter.size() >= 3) {
+                            item = (ContextItem) parameter.get(0);
+                            String oldName = (String) parameter.get(1);
+                            String newName = (String) parameter.get(2);
+                            if (names != null && names.contains(param.getName()) && oldName.equals(param.getName())) {
+                                if (newName != null) {
+                                    param.setName(newName);
+                                    ContextUtils.updateParameterFromRepository(item, param, context.getName());
+                                }
+                            }
+                        }
+                        break;
+                    case BUIL_IN: // built-in
+                    default:
                         param.setSource(IContextParameter.BUILT_IN);
+                        break;
                     }
+
                 }
             }
         }

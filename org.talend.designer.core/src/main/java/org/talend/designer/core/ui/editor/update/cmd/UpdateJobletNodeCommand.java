@@ -30,11 +30,12 @@ import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
+import org.talend.core.model.update.UpdateResult;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.cmd.ChangeMetadataCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
-import org.talend.designer.core.ui.editor.update.UpdateManagerHelper;
+import org.talend.designer.core.ui.editor.update.UpdateManagerUtils;
 import org.talend.repository.model.ComponentsFactoryProvider;
 
 /**
@@ -44,14 +45,11 @@ import org.talend.repository.model.ComponentsFactoryProvider;
  */
 public class UpdateJobletNodeCommand extends Command {
 
-    private Process process;
+    private UpdateResult result;
 
-    private PropertyChangeEvent evt;
-
-    public UpdateJobletNodeCommand(Process process, PropertyChangeEvent evt) {
+    public UpdateJobletNodeCommand(UpdateResult result) {
         super();
-        this.process = process;
-        this.evt = evt;
+        this.result = result;
     }
 
     /**
@@ -60,86 +58,108 @@ public class UpdateJobletNodeCommand extends Command {
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     @Override
     public void execute() {
-        if (process == null || evt == null) {
+        Object job = result.getJob();
+        if (job == null) {
             return;
         }
-        String propertyName = evt.getPropertyName();
+        if (job instanceof Process) {
+            Process process = (Process) job;
+            Object parameter = result.getParameter();
+            if (!(parameter instanceof PropertyChangeEvent)) {
+                return;
+            }
+            PropertyChangeEvent evt = (PropertyChangeEvent) parameter;
 
-        if (propertyName.equals(ComponentUtilities.NORMAL)) {
-            for (Node node : (List<Node>) process.getGraphicalNodes()) {
-                IComponent newComponent = ComponentsFactoryProvider.getInstance().get(node.getComponent().getName());
-                if (newComponent == null) {
-                    continue;
-                }
-                Map<String, Object> parameters = new HashMap<String, Object>();
+            String propertyName = evt.getPropertyName();
+            Object updateObject = result.getUpdateObject();
 
-                if (node.getComponent().getComponentType() != EComponentType.JOBLET) {
-                    if (node.getExternalData() != null) {
-                        parameters.put(INode.RELOAD_PARAMETER_EXTERNAL_BYTES_DATA, node.getExternalBytesData());
+            List<INode> jobletNodes = null;
+            if (updateObject instanceof List) {
+                jobletNodes = (List<INode>) updateObject;
+            }
+
+            if (propertyName.equals(ComponentUtilities.NORMAL)) {
+                for (Node node : (List<Node>) process.getGraphicalNodes()) {
+                    /*
+                     * if jobletNodes==null, will reload all component. Or, olny reload the fixed node.
+                     */
+                    if (jobletNodes != null && !jobletNodes.contains(node)) {
+                        continue;
                     }
-                    parameters.put(INode.RELOAD_PARAMETER_METADATA_LIST, node.getMetadataList());
-                    parameters.put(INode.RELOAD_PARAMETER_ELEMENT_PARAMETERS, node.getElementParameters());
-                } else {
-                    parameters.put(INode.RELOAD_PARAMETER_ELEMENT_PARAMETERS, node.getElementParameters());
-                }
 
-                parameters.put(INode.RELOAD_PARAMETER_CONNECTORS, node.getListConnector());
-
-                node.reloadComponent(newComponent, parameters);
-            }
-
-            for (Node node : (List<Node>) process.getGraphicalNodes()) {
-                node.checkAndRefreshNode();
-            }
-
-        } else if (propertyName.equals(ComponentUtilities.JOBLET_NAME_CHANGED)) {
-            String oldName = (String) evt.getOldValue();
-            String newName = (String) evt.getNewValue();
-            IComponent newComponent = ComponentsFactoryProvider.getInstance().get(newName);
-            if (newComponent == null) {
-                return;
-            }
-
-            for (Node node : (List<Node>) process.getGraphicalNodes()) {
-                if (node.getComponent().getName().equals(oldName) || node.getLabel().contains(oldName)) {
+                    IComponent newComponent = ComponentsFactoryProvider.getInstance().get(node.getComponent().getName());
+                    if (newComponent == null) {
+                        continue;
+                    }
                     Map<String, Object> parameters = new HashMap<String, Object>();
+
+                    if (node.getComponent().getComponentType() != EComponentType.JOBLET) {
+                        if (node.getExternalData() != null) {
+                            parameters.put(INode.RELOAD_PARAMETER_EXTERNAL_BYTES_DATA, node.getExternalBytesData());
+                        }
+                        parameters.put(INode.RELOAD_PARAMETER_METADATA_LIST, node.getMetadataList());
+                        parameters.put(INode.RELOAD_PARAMETER_ELEMENT_PARAMETERS, node.getElementParameters());
+                    } else {
+                        parameters.put(INode.RELOAD_PARAMETER_ELEMENT_PARAMETERS, node.getElementParameters());
+                    }
+
+                    parameters.put(INode.RELOAD_PARAMETER_CONNECTORS, node.getListConnector());
+
                     node.reloadComponent(newComponent, parameters);
-
                 }
-            }
 
-        } else if (propertyName.equals(ComponentUtilities.JOBLET_SCHEMA_CHANGED)) {
-            // updateGraphicalNodesSchema(process, evt);
-            INode sourceNode = (INode) evt.getSource();
-            String componentName = sourceNode.getComponent().getName();
-            IComponent newComponent = ComponentsFactoryProvider.getInstance().get(componentName);
-            if (newComponent == null) {
-                return;
-            }
-            List<Node> nodesToUpdate = new ArrayList<Node>();
-            for (Node node : (List<Node>) process.getGraphicalNodes()) {
-                if (node.getComponent().getName().equals(componentName)) {
-                    nodesToUpdate.add(node);
+                for (Node node : (List<Node>) process.getGraphicalNodes()) {
+                    node.checkAndRefreshNode();
                 }
+
+            } else if (propertyName.equals(ComponentUtilities.JOBLET_NAME_CHANGED)) {
+                String oldName = (String) evt.getOldValue();
+                String newName = (String) evt.getNewValue();
+                IComponent newComponent = ComponentsFactoryProvider.getInstance().get(newName);
+                if (newComponent == null) {
+                    return;
+                }
+
+                for (Node node : (List<Node>) process.getGraphicalNodes()) {
+                    if (node.getComponent().getName().equals(oldName) || node.getLabel().contains(oldName)) {
+                        Map<String, Object> parameters = new HashMap<String, Object>();
+                        node.reloadComponent(newComponent, parameters);
+
+                    }
+                }
+
+            } else if (propertyName.equals(ComponentUtilities.JOBLET_SCHEMA_CHANGED)) {
+                // updateGraphicalNodesSchema(process, evt);
+                INode sourceNode = (INode) evt.getSource();
+                String componentName = sourceNode.getComponent().getName();
+                IComponent newComponent = ComponentsFactoryProvider.getInstance().get(componentName);
+                if (newComponent == null) {
+                    return;
+                }
+                List<Node> nodesToUpdate = new ArrayList<Node>();
+                for (Node node : (List<Node>) process.getGraphicalNodes()) {
+                    if (node.getComponent().getName().equals(componentName)) {
+                        nodesToUpdate.add(node);
+                    }
+                }
+                for (Node node : nodesToUpdate) {
+                    Map<String, Object> parameters = new HashMap<String, Object>();
+
+                    // if (node.getComponent().getComponentType() != EComponentType.JOBLET) {
+                    // parameters.put(INode.RELOAD_PARAMETER_METADATA_LIST, node.getMetadataList());
+                    parameters.put(INode.RELOAD_PARAMETER_ELEMENT_PARAMETERS, node.getElementParameters());
+                    // } else {
+                    // parameters.put(INode.RELOAD_NEW, true);
+                    // }
+
+                    parameters.put(INode.RELOAD_PARAMETER_CONNECTORS, node.getListConnector());
+
+                    node.reloadComponent(newComponent, parameters);
+                }
+
+                ((Process) sourceNode.getProcess()).checkProcess();
             }
-            for (Node node : nodesToUpdate) {
-                Map<String, Object> parameters = new HashMap<String, Object>();
-
-                // if (node.getComponent().getComponentType() != EComponentType.JOBLET) {
-                // parameters.put(INode.RELOAD_PARAMETER_METADATA_LIST, node.getMetadataList());
-                parameters.put(INode.RELOAD_PARAMETER_ELEMENT_PARAMETERS, node.getElementParameters());
-                // } else {
-                // parameters.put(INode.RELOAD_NEW, true);
-                // }
-
-                parameters.put(INode.RELOAD_PARAMETER_CONNECTORS, node.getListConnector());
-
-                node.reloadComponent(newComponent, parameters);
-            }
-
-            ((Process) sourceNode.getProcess()).checkProcess();
         }
-
     }
 
     /**
@@ -185,7 +205,7 @@ public class UpdateJobletNodeCommand extends Command {
                         IConnection connection = incomingConnections.get(i);
                         Node source = (Node) connection.getSource();
                         IMetadataTable metadataTable = connection.getMetadataTable();
-                        IMetadataTable newInputMetadataTable = UpdateManagerHelper.getNewInputTableForConnection(
+                        IMetadataTable newInputMetadataTable = UpdateManagerUtils.getNewInputTableForConnection(
                                 newInputTableList, metadataTable.getAttachedConnector());
                         if (newInputMetadataTable != null && !metadataTable.sameMetadataAs(newInputMetadataTable)) {
                             IElementParameter elementParam = source.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
@@ -228,7 +248,7 @@ public class UpdateJobletNodeCommand extends Command {
                     Node target = (Node) connection.getTarget();
                     IMetadataTable metadataTable = connection.getMetadataTable();
                     if (metadataTable != null) {
-                        IMetadataTable newOutputMetadataTable = UpdateManagerHelper.getNewOutputTableForConnection(
+                        IMetadataTable newOutputMetadataTable = UpdateManagerUtils.getNewOutputTableForConnection(
                                 newOutputTableList, metadataTable.getAttachedConnector());
                         if (newOutputMetadataTable != null && !metadataTable.sameMetadataAs(newOutputMetadataTable)) {
                             IElementParameter elementParam = target.getElementParameterFromField(EParameterFieldType.SCHEMA_TYPE);
@@ -241,11 +261,11 @@ public class UpdateJobletNodeCommand extends Command {
 
                 List<IMetadataTable> metadataList = node.getMetadataList();
                 for (IMetadataTable metadataTable : metadataList) {
-                    IMetadataTable newInputMetadataTable = UpdateManagerHelper.getNewInputTableForConnection(newInputTableList,
+                    IMetadataTable newInputMetadataTable = UpdateManagerUtils.getNewInputTableForConnection(newInputTableList,
                             metadataTable.getAttachedConnector());
-                    IMetadataTable newOutputMetadataTable = UpdateManagerHelper.getNewOutputTableForConnection(
-                            newOutputTableList, metadataTable.getAttachedConnector());
-                    outputElemParam = UpdateManagerHelper.getElemParam(outputElemParams, metadataTable.getAttachedConnector());
+                    IMetadataTable newOutputMetadataTable = UpdateManagerUtils.getNewOutputTableForConnection(newOutputTableList,
+                            metadataTable.getAttachedConnector());
+                    outputElemParam = UpdateManagerUtils.getElemParam(outputElemParams, metadataTable.getAttachedConnector());
 
                     if (outputElemParam != null && newInputMetadataTable != null) {
                         command = new ChangeMetadataCommand(node, outputElemParam, (IMetadataTable) outputElemParam.getValue(),
