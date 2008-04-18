@@ -99,6 +99,7 @@ my %desc_<%=cid %> = (
     dbpass        => <%=dbpass %>,
     encoding      => <%=encoding %>,
     commit_every  => <%=commitEvery %>,
+    schemadb      => <%=schemaDB %>,
     schema        => [
 <%
         for (IMetadataColumn column: metadata.getListColumns()) {
@@ -157,6 +158,7 @@ my $<%=dbh%> = DBI->connect(
 
 my $sth_<%=cid %>;
 my $query;
+my $table_exists;
 
 <%
         if (tableAction.equals("DROP_CREATE")
@@ -164,24 +166,21 @@ my $query;
 %>
 # We need the table list to know if drop or "create if not exists" is
 # relevant
-my $schema = uc <%=schemaDB%>;
-my $catalog = undef;
-my $tabsth = $<%=dbh%>->table_info($catalog, $schema);
-my @tables = ();
-
-while (my $entity = $tabsth->fetchrow_hashref()) {
-    if ($entity->{TABLE_TYPE} eq 'TABLE') {
-        push @tables, lc $entity->{TABLE_NAME};
-    }
+my $tabsth = $<%=dbh%>->prepare(
+"
+select 1 
+from all_tables 
+where 
+owner = ?
+and table_name = ?
+"
+);
+$tabsth->execute(uc $desc_<%=cid %>{schemadb}, uc $desc_<%=cid %>{dbtable})
+    or die "can't execute query : $!";
+while (my $row = $tabsth->fetchrow_arrayref()) {
+    $table_exists = $row->[0];
+    last;
 }
-
-#     print "===\n";
-#     print "existing tables:\n";
-#     print join("\n", map {"  - ".$_} @tables), "\n";
-#     print "===\n";
-
-my $test_table = lc $desc_<%=cid %>{dbtable};
-my $table_exists = grep /^$test_table$/, @tables;
 <%
         }
 
@@ -194,7 +193,7 @@ DROP TABLE '.<%=dbtable%>.'
     $sth_<%=cid %> = $<%=dbh%>->prepare($query);
 
     $sth_<%=cid %>->execute()
-        or die "can't drop table";
+        or die "can't drop table : $!";
 
     # the table does not exist anymore
     $table_exists = 0;

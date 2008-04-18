@@ -110,7 +110,7 @@ if ($nb_rows) {
 %>
 
 $isth_<%=cid %>->execute(@$<%=cid %>)
-    or die "can't execute insert query\n";
+    or die "can't execute insert query : $!\n";
 
 $nb_line_inserted_<%=cid%>++;
 <%
