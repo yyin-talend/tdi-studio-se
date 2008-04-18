@@ -19,6 +19,9 @@ INode node = (INode)codeGenArgument.getArgument();
 ECodePart codePart = codeGenArgument.getCodePart();
 boolean stat = codeGenArgument.isStatistics();
 
+boolean parallelIterate = false;
+int nbParallelIterate = 2;
+
 String currentIncomingName = (String)codeGenArgument.getIncomingName();
 %>
 # +-------------------------------------------------------------------------+
@@ -163,6 +166,18 @@ SendStat(
     'stop'
 );
 
+<%
+            }
+        }
+    }
+
+    for (IConnection conn : node.getOutgoingConnections()) {
+        if (conn.getLineStyle().equals(EConnectionType.ITERATE)) {
+            if (parallelIterate) {
+%>
+        # end of the child process
+        exit();
+    }
 <%
             }
         }

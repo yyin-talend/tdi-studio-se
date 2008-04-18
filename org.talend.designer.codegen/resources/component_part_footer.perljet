@@ -17,8 +17,12 @@ class="ComponentPartFooter"
 
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
 ECodePart codePart = codeGenArgument.getCodePart();
 boolean trace = codeGenArgument.isTrace();
+
+boolean parallelIterate = false;
+int nbParallelIterate = 2;
 
 String componentName = node.getComponent().getName();
 %>
@@ -49,6 +53,29 @@ elsif (scalar @{ $desc_<%=node.getUniqueName() %>{schema} }) {
 <%
                         }
                     }
+                }
+            }
+        }
+
+        for (IConnection conn : node.getOutgoingConnections()) {
+            if (conn.getLineStyle().equals(EConnectionType.ITERATE)) {
+                if (parallelIterate) {
+%>
+    wait_for_a_kid() if keys %running_pids_<%=cid%> >= <%=nbParallelIterate%>;
+
+    if (my $pid = fork) {
+        # parent does...
+        $running_pids_<%=cid%>{$pid} = 1;
+
+        $|++;
+        printf(
+            '[<%=cid%>][%s] parallel execution #%u running'."\n",
+            getDate('CCYYMMDD hh:mm:ss'),
+            scalar keys %running_pids_<%=cid%>
+        );
+    }
+    else {
+<%
                 }
             }
         }
@@ -147,7 +174,14 @@ $_globals{<%=node.getUniqueName() %>}{OK} = true;
 <%
     for (IConnection outgoingConn : node.getOutgoingConnections()) {
     	if (outgoingConn.getTarget().isActivate()) {
- 
+            if (outgoingConn.getLineStyle().equals(EConnectionType.ITERATE)) {
+                if (parallelIterate) {
+%>
+1 while wait_for_a_kid();
+<%
+                }
+            }
+
     	    if (outgoingConn.getLineStyle().equals(EConnectionType.ON_COMPONENT_OK)) { %>
   
 <%=outgoingConn.getTarget().getUniqueName() %>_subprocess(); 
