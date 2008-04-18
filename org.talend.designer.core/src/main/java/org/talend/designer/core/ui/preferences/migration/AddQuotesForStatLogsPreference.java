@@ -46,12 +46,12 @@ public class AddQuotesForStatLogsPreference extends AbstractMigrationTask implem
     /**
      * yzhang Comment method "restoreValues".
      */
-    private void restoreValues(String languagePrefix, String qouteType) {
+    private void restoreValues(String languagePrefix, String quoteType) {
         IPreferenceStore store = DesignerPlugin.getDefault().getPreferenceStore();
         for (String id : ids) {
             String value = store.getString(languagePrefix + id);
-            if (value != null && (!value.endsWith(qouteType) || !value.startsWith(qouteType))) {
-                store.setValue(languagePrefix + id, qouteType + value + qouteType);
+            if (value != null && (!value.endsWith(quoteType) || !value.startsWith(quoteType))) {
+                store.setValue(languagePrefix + id, quoteType + value + quoteType);
             }
         }
     }
