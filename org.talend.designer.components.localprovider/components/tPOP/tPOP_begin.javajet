@@ -4,6 +4,7 @@
 		org.talend.core.model.process.ElementParameterParser
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		java.util.List
+		java.util.Map
 	"
 %>
 
@@ -17,12 +18,15 @@
     
     String outputDirectory = ElementParameterParser.getValue(node, "__OUTPUT_DIRECTORY__");
     String filenamePattern = ElementParameterParser.getValue(node, "__FILENAME_PATTERN__");
-    String subjectPattern = ElementParameterParser.getValue(node, "__SUBJECT_PATTERN__");
     String allEmails = ElementParameterParser.getValue(node, "__ALL_EMAILS__");
 
     String maxEmails = ElementParameterParser.getValue(node, "__MAX_EMAILS__");
     String deleteFromServer = ElementParameterParser.getValue(node, "__DELETE_FROM_SERVER__");
-        
+    
+    List<Map<String, String>> filterList = 
+		(List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__ADVANCED_FILTER__");
+    String condition = ElementParameterParser.getValue(node, "__FILTER_RELATION__");
+    
 	// component id
 	String cid = node.getUniqueName();
 %>	
@@ -57,7 +61,7 @@
 %> 
     folder_<%=cid %>.open(javax.mail.Folder.READ_ONLY);
 <%
-  }    
+  }
 %>	
     javax.mail.Message[] msgs_<%=cid %> = folder_<%=cid %>.getMessages();
     for (int counter_<%=cid %> = 0; counter_<%=cid %> < msgs_<%=cid %>.length; counter_<%=cid %>++) {
@@ -69,9 +73,51 @@
     }
 %>                
     javax.mail.Message message_<%=cid %> = msgs_<%=cid %>[counter_<%=cid %>];
-    java.util.regex.Pattern pattern_<%=cid %> = java.util.regex.Pattern.compile(<%=subjectPattern %>);
-    java.util.regex.Matcher matcher_<%=cid %> = pattern_<%=cid %>.matcher(message_<%=cid %>.getSubject());
-    if (matcher_<%=cid %>.find()) {
+    boolean isMatch_<%=cid%> = <%=condition.equals("&&")?"true":"false"%>;
+<%
+	for(int i=0;i<filterList.size();i++){
+		String filterItem = filterList.get(i).get("FILTER_TIEM");
+		String filterptn = filterList.get(i).get("PATTERN");
+		if(filterItem.equals("Subject")){
+%>
+	java.util.regex.Pattern pattern_<%=i%>_<%=cid %> = java.util.regex.Pattern.compile(<%=filterptn%>);
+	java.util.regex.Matcher matcher_<%=i%>_<%=cid %> = pattern_<%=i%>_<%=cid %>.matcher(message_<%=cid %>.getSubject()==null?"":message_<%=cid %>.getSubject());
+	isMatch_<%=cid%> = isMatch_<%=cid%> <%=condition%> matcher_<%=i%>_<%=cid %>.find();
+<%
+		}else if(filterItem.equals("From")){
+%>
+	java.util.regex.Pattern pattern_<%=i%>_<%=cid %> = java.util.regex.Pattern.compile(<%=filterptn%>);
+	java.util.regex.Matcher matcher_<%=i%>_<%=cid %> = pattern_<%=i%>_<%=cid %>.matcher(message_<%=cid %>.getFrom()[0]==null?"":message_<%=cid %>.getFrom()[0].toString());
+	isMatch_<%=cid%> = isMatch_<%=cid%> <%=condition%> matcher_<%=i%>_<%=cid %>.find();
+<%
+		}else if(filterItem.equals("To")){
+%>
+	java.util.regex.Pattern pattern_<%=i%>_<%=cid %> = java.util.regex.Pattern.compile(<%=filterptn%>);
+	java.util.regex.Matcher matcher_<%=i%>_<%=cid %> = pattern_<%=i%>_<%=cid %>.matcher(message_<%=cid %>.getReplyTo()[0]==null?"":message_<%=cid %>.getReplyTo()[0].toString());
+	isMatch_<%=cid%> = isMatch_<%=cid%> <%=condition%> matcher_<%=i%>_<%=cid %>.find();
+<%
+		}else if(filterItem.equals("BeforeDate")){
+%>
+	java.util.Date date_<%=i%>_<%=cid%> = ParserUtils.parseTo_Date(<%=filterptn%>,"dd-MM-yyy");
+	if(date_<%=i%>_<%=cid%>!=null){
+		isMatch_<%=cid%> = isMatch_<%=cid%> <%=condition%> (message_<%=cid %>.getSentDate()!=null && message_<%=cid %>.getSentDate().before(date_<%=i%>_<%=cid%>));
+	}
+<%
+		}else if(filterItem.equals("AfterDate")){
+%>
+	java.util.Date date_<%=i%>_<%=cid%> = ParserUtils.parseTo_Date(<%=filterptn%>,"dd-MM-yyy");
+	if(date_<%=i%>_<%=cid%>!=null){
+		isMatch_<%=cid%> = isMatch_<%=cid%> <%=condition%> (message_<%=cid %>.getSentDate()!=null && message_<%=cid %>.getSentDate().after(date_<%=i%>_<%=cid%>));
+	}
+<%
+		}
+	}
+	if(filterList.size()>0){
+%>
+	if(isMatch_<%=cid%>){
+<%
+	}
+%>
         message_<%=cid %>.setFlag(javax.mail.Flags.Flag.DELETED, true);    
         String filename_<%=cid %> = <%=filenamePattern %>;
         java.io.File file_<%=cid %> = new java.io.File(<%=outputDirectory %>, filename_<%=cid %>);
@@ -93,4 +139,10 @@
         nb_email_<%=cid %>++;
         globalMap.put("<%=cid %>_CURRENT_FILE", filename_<%=cid %>);
             globalMap.put("<%=cid %>_CURRENT_FILEPATH", file_<%=cid %>.getAbsolutePath());
-    }
+<%
+	if(filterList.size()>0){
+%>
+	}
+<%
+	}
+%>

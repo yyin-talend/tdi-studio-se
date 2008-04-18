@@ -74,15 +74,6 @@
     </PARAMETER>
 
     <PARAMETER
-      NAME="SUBJECT_PATTERN"
-      FIELD="TEXT"
-      REQUIRED="true"
-      NUM_ROW="5"
-    >
-      <DEFAULT>""</DEFAULT>
-    </PARAMETER>
-
-    <PARAMETER
       NAME="ALL_EMAILS"
       FIELD="CHECK"
       REQUIRED="true"
@@ -110,6 +101,28 @@
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
 
+	<PARAMETER NAME="ADVANCED_FILTER" FIELD="TABLE" REQUIRED="false"
+		NUM_ROW="90" NB_LINES="5" SHOW="true">
+	  <ITEMS>
+		<ITEM NAME="FILTER_TIEM" FIELD="CLOSED_LIST" >
+			<ITEMS DEFAULT="FROM">
+        		<ITEM NAME="FROM" VALUE="From" />
+        		<ITEM NAME="TO" VALUE="To"/>
+        		<ITEM NAME="SUBJECT" VALUE="Subject"/>
+        		<ITEM NAME="BEFORE_DATE" VALUE="BeforeDate"/>
+        		<ITEM NAME="AFTER_DATE" VALUE="AfterDate"/>
+      		</ITEMS>
+		</ITEM>
+		<ITEM NAME="PATTERN" FIELD="TEXT" />
+	  </ITEMS>
+	</PARAMETER>
+
+	<PARAMETER NAME="FILTER_RELATION" FIELD="CLOSED_LIST" NUM_ROW="100">
+      <ITEMS DEFAULT="AND">
+        <ITEM NAME="AND" VALUE="&amp;&amp;" />
+        <ITEM NAME="OR" VALUE="||"/>
+      </ITEMS>
+    </PARAMETER>  
   </PARAMETERS>
 
   <CODEGENERATION>
