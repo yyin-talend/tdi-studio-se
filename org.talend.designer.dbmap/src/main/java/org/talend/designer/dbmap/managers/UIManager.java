@@ -49,6 +49,7 @@ import org.talend.commons.ui.swt.tableviewer.ModifiedBeanEvent;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.selection.ILineSelectionListener;
 import org.talend.commons.ui.swt.tableviewer.selection.LineSelectionEvent;
+import org.talend.commons.ui.ws.WindowSystem;
 import org.talend.commons.utils.data.list.IListenableListListener;
 import org.talend.commons.utils.data.list.ListenableListEvent;
 import org.talend.commons.utils.data.list.ListenableListEvent.TYPE;
@@ -1217,6 +1218,12 @@ public class UIManager extends AbstractUIManager {
         dataMapTableView.setLayoutData(formData);
         dataMapTableView.minimizeTable(inputTable.isMinimized());
         dataMapTableView.registerStyledExpressionEditor(getTabFolderEditors().getStyledTextHandler());
+        
+        if(WindowSystem.isWIN32()) {
+//        	updateDropDownJoinTypeForInputs();
+        	//dataMapTableView.refreshLabelForJoinDropDown();
+//        	dataMapTableView.layout();
+        }
         return dataMapTableView;
     }
 

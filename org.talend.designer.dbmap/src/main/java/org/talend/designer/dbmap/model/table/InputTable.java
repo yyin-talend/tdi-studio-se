@@ -58,7 +58,7 @@ public class InputTable extends AbstractInOutTable {
 	 */
 	public InputTable(MapperManager mapperManager, IOConnection connection,
 			String name) {
-		super(mapperManager, null, name);
+		this(mapperManager, (IMetadataTable) null, name);
 		this.connection = connection;
 	}
 
@@ -72,6 +72,7 @@ public class InputTable extends AbstractInOutTable {
 	public InputTable(MapperManager mapperManager,
 			IMetadataTable metadataTable, String name) {
 		super(mapperManager, metadataTable, name);
+		joinType = mapperManager.getCurrentLanguage().getAvailableJoins()[0];
 	}
 
 	/*

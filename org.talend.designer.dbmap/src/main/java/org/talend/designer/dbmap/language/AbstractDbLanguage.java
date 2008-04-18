@@ -35,7 +35,7 @@ public abstract class AbstractDbLanguage implements IDbLanguage {
      * 
      */
     public static enum JOIN implements IJoinType {
-        NO_JOIN("NO JOIN"),
+        NO_JOIN("(IMPLICIT JOIN)"),
         INNER_JOIN("INNER JOIN"),
         LEFT_OUTER_JOIN("LEFT OUTER JOIN"),
         RIGHT_OUTER_JOIN("RIGHT OUTER JOIN"),
