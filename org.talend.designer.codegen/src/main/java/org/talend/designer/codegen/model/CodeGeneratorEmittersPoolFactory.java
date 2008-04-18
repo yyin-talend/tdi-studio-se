@@ -122,7 +122,7 @@ public final class CodeGeneratorEmittersPoolFactory {
                         setAutomaticBuild(false);
 
                         IProgressMonitor monitorWrap = null;
-                        if (!CorePlugin.getContext().isHeadless()) {
+                        if (!CommonsPlugin.isHeadless()) {
                             monitorWrap = new CodeGeneratorProgressMonitor(monitor);
                         } else {
                             monitorWrap = new NullProgressMonitor();
@@ -167,7 +167,7 @@ public final class CodeGeneratorEmittersPoolFactory {
                         initializeEmittersPool(jetBeans, codeLanguage, monitorWrap);
                         monitorWrap.done();
 
-                        if (!CorePlugin.getContext().isHeadless()) {
+                        if (!CommonsPlugin.isHeadless()) {
                             Display.getDefault().asyncExec(new Runnable() {
 
                                 public void run() {

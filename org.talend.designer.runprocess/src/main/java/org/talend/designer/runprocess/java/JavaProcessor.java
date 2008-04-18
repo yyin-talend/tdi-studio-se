@@ -71,6 +71,7 @@ import org.eclipse.jface.text.IDocumentExtension4;
 import org.eclipse.jface.text.formatter.FormattingContextProperties;
 import org.eclipse.jface.text.formatter.IFormattingContext;
 import org.eclipse.jface.text.formatter.MultiPassContentFormatter;
+import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.SystemException;
 import org.talend.commons.utils.generation.JavaUtils;
@@ -313,7 +314,7 @@ public class JavaProcessor extends Processor {
         IDocument document = new Document(processCode);
 
         // we cannot make calls to Ui in headless mode
-        if (CorePlugin.getContext().isHeadless()) {
+        if (CommonsPlugin.isHeadless()) {
             return document.get();
         }
 
@@ -680,7 +681,6 @@ public class JavaProcessor extends Processor {
         return root.getPackageFragment(jobName);
 
     }
-
     /*
      * Get the interpreter of Java.
      * 
@@ -864,7 +864,6 @@ public class JavaProcessor extends Processor {
                 libPath.toString() + new Path(projectPath).toPortableString() + exportJar + libFolder, className };
         return addVMArguments(strings);
     }
-
     private String[] addVMArguments(String[] strings) {
         String string = RunProcessPlugin.getDefault().getPreferenceStore().getString(RunProcessPrefsConstants.VMARGUMENTS);
         String replaceAll = string.trim();

@@ -19,6 +19,7 @@ import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.graphics.Image;
+import org.talend.commons.CommonsPlugin;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.CorePlugin;
@@ -67,7 +68,7 @@ public class NodeContainer extends Element {
         nodePerformance = new NodePerformance(this);
         elements.add(nodePerformance);
 
-        if (!CorePlugin.getContext().isHeadless()) {
+        if (!CommonsPlugin.isHeadless()) {
             Image image = ImageProvider.getImage(CorePlugin.getImageDescriptor(NodeContainerFigure.BREAKPOINT_IMAGE));
             breakpointSize = new Dimension(image.getImageData().width, image.getImageData().height);
             image = ImageProvider.getImage(EImage.ERROR_SMALL);

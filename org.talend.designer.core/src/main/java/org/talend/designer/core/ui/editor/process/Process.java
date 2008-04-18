@@ -47,6 +47,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
+import org.talend.commons.CommonsPlugin;
 import org.talend.commons.emf.EmfHelper;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.CorePlugin;
@@ -1685,7 +1686,7 @@ public class Process extends Element implements IProcess2 {
                     message += ","; //$NON-NLS-1$
                 }
             }
-            if (!CorePlugin.getContext().isHeadless()) {
+            if (!CommonsPlugin.isHeadless()) {
                 MessageBox mb = new MessageBox(PlatformUI.getWorkbench().getDisplay().getActiveShell(), SWT.ICON_ERROR);
                 mb.setText(Messages.getString("Process.errorLoadingConnectionTitle")); //$NON-NLS-1$
                 mb.setMessage(message);

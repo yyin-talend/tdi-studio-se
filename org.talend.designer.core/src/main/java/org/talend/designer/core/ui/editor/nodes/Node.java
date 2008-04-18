@@ -42,6 +42,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
+import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.components.EComponentType;
@@ -925,7 +926,7 @@ public class Node extends Element implements INode {
 
         final String processPrefix = "PROCESS:";
         if (id.equals(processPrefix + EParameterName.PROCESS_TYPE_CONTEXT.getName())) { // is child
-            if (!CorePlugin.getContext().isHeadless()) {
+            if (!CommonsPlugin.isHeadless()) {
                 IWorkbenchWindow activeWorkbenchWindow;
 
                 try {

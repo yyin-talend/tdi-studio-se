@@ -21,7 +21,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.widgets.Display;
-import org.talend.core.CorePlugin;
+import org.talend.commons.CommonsPlugin;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.DesignerPlugin;
@@ -100,7 +100,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
         store.setDefault(ECodeLanguage.PERL.toString() + "_" + EParameterName.FILENAME_METTER.getName(), TalendTextUtils
                 .addQuotes(DEFAULT_METER_FILE_NAME));
 
-        if (!CorePlugin.getContext().isHeadless()) {
+        if (!CommonsPlugin.isHeadless()) {
             Font font = new Font(Display.getDefault(), "courier", 10, SWT.NONE);
             store.setDefault(TalendDesignerPrefConstants.MEMO_TEXT_FONT, font.getFontData()[0].toString());
             store.setDefault(TalendDesignerPrefConstants.EDITOR_ANTIALIASING, false);

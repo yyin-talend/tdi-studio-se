@@ -16,7 +16,7 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.compiler.BuildContext;
 import org.eclipse.jdt.core.compiler.CompilationParticipant;
 import org.eclipse.swt.widgets.Display;
-import org.talend.core.CorePlugin;
+import org.talend.commons.CommonsPlugin;
 import org.talend.designer.core.ui.views.problems.Problems;
 
 /**
@@ -76,7 +76,7 @@ public class JavaCompilationParticipant extends CompilationParticipant {
      */
     @Override
     public boolean isActive(IJavaProject project) {
-        if (CorePlugin.getContext().isHeadless()) {
+        if (CommonsPlugin.isHeadless()) {
             return false;
         }
         if (JavaProcessor.getJavaProject() != null) {
