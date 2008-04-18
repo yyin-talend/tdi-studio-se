@@ -30,7 +30,12 @@ import java.util.Map;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
+import org.apache.axis.encoding.TypeMappingRegistryImpl;
+import org.apache.axis.utils.CLArgsParser;
+import org.apache.axis.utils.CLOption;
+import org.apache.axis.utils.Messages;
 import org.apache.axis.wsdl.Java2WSDL;
+import org.apache.axis.wsdl.fromJava.Emitter;
 import org.apache.commons.lang.BooleanUtils;
 import org.dom4j.Attribute;
 import org.dom4j.Document;
@@ -503,6 +508,119 @@ public class JobJavaScriptsWSManager extends JobJavaScriptsManager {
         public static void generateWSDL(String[] args) {
             TalendJava2WSDL java2WSDL = new TalendJava2WSDL();
             java2WSDL.run(args);
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.apache.axis.wsdl.Java2WSDL#run(java.lang.String[])
+         */
+        protected int run(String[] args) {
+
+            // Parse the arguments
+            CLArgsParser argsParser = new CLArgsParser(args, options);
+
+            // Print parser errors, if any
+            if (null != argsParser.getErrorString()) {
+                System.err.println(Messages.getMessage("j2werror00", argsParser.getErrorString()));
+                printUsage();
+
+                return (1);
+            }
+
+            // Get a list of parsed options
+            List clOptions = argsParser.getArguments();
+            int size = clOptions.size();
+
+            try {
+
+                // Parse the options and configure the emitter as appropriate.
+                for (int i = 0; i < size; i++) {
+                    if (!parseOption((CLOption) clOptions.get(i))) {
+                        return (1);
+                    }
+                }
+
+                // validate argument combinations
+                if (!validateOptions()) {
+                    return (1);
+                }
+
+                // Set the namespace map
+                if (!namespaceMap.isEmpty()) {
+                    emitter.setNamespaceMap(namespaceMap);
+                }
+
+                TypeMappingRegistryImpl tmr = new TypeMappingRegistryImpl();
+                tmr.doRegisterFromVersion(typeMappingVersion);
+                emitter.setTypeMappingRegistry(tmr);
+
+                // Find the class using the name
+                emitter.setCls(className);
+
+                // Generate a full wsdl, or interface & implementation wsdls
+                if (wsdlImplFilename == null) {
+                    emitter.emit(wsdlFilename, mode);
+                } else {
+                    emitter.emit(wsdlFilename, wsdlImplFilename);
+                }
+
+                if (isDeploy) {
+                    generateServerSide(emitter, (wsdlImplFilename != null) ? wsdlImplFilename : wsdlFilename);
+                }
+                // everything is good
+                return (0);
+            } catch (Throwable t) {
+                t.printStackTrace();
+
+                return (1);
+            }
+        } // run
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.apache.axis.wsdl.Java2WSDL#generateServerSide(org.apache.axis.wsdl.fromJava.Emitter,
+         * java.lang.String)
+         */
+        protected void generateServerSide(Emitter j2w, String wsdlFileName) throws Exception {
+            org.apache.axis.wsdl.toJava.Emitter w2j = new org.apache.axis.wsdl.toJava.Emitter();
+            File wsdlFile = new File(wsdlFileName);
+            w2j.setServiceDesc(j2w.getServiceDesc());
+            w2j.setQName2ClassMap(j2w.getQName2ClassMap());
+            w2j.setOutputDir(wsdlFile.getParent());
+            w2j.setServerSide(true);
+            w2j.setHelperWanted(true);
+
+            // setup namespace-to-package mapping
+            String ns = j2w.getIntfNamespace();
+            String pkg = j2w.getCls().getPackage().getName();
+            w2j.getNamespaceMap().put(ns, pkg);
+
+            Map nsmap = j2w.getNamespaceMap();
+            if (nsmap != null) {
+                for (Iterator i = nsmap.keySet().iterator(); i.hasNext();) {
+                    pkg = (String) i.next();
+                    ns = (String) nsmap.get(pkg);
+                    w2j.getNamespaceMap().put(ns, pkg);
+                }
+            }
+
+            // set 'deploy' mode
+            w2j.setDeploy(true);
+
+            if (j2w.getImplCls() != null) {
+                w2j.setImplementationClassName(j2w.getImplCls().getName());
+            } else {
+                if (!j2w.getCls().isInterface()) {
+                    w2j.setImplementationClassName(j2w.getCls().getName());
+                } else {
+                    throw new Exception("implementation class is not specified.");
+                }
+            }
+            // w2j.run(wsdlFileName);
+            // Note by xtan: in order to support the "jdk1.6.0_05"
+            w2j.run(wsdlFile.toURI().toString());
         }
 
     }
