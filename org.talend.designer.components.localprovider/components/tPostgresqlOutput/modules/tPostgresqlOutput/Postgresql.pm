@@ -125,6 +125,10 @@ sub performTableAction {
     # component
     # schema
 
+    if (not defined $param{dbschema} or $param{dbschema} eq '') {
+        $param{dbschema} = 'public';
+    }
+
     my $sth;
     my $table_exists;
 
@@ -217,6 +221,8 @@ sub performTableAction {
                 $param{component}
             );
     }
+
+    return $query;
 }
 
 1;
