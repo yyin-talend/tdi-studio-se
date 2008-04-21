@@ -720,7 +720,7 @@
             beforeLogon="false"
             class="org.talend.repository.model.migration.ReplaceOldContextScriptCodeMigrationTask"
             description="Replace old syntax of script code to new one for context variables"
-            id="org.talend.repository.migration.ReplaceOldContextScriptCodeMigrationTask"
+            id="org.talend.repository.migration.ReplaceOldContextScriptCode"
             name="Replace old syntax of script code for context variables">
       </projecttask>
       <projecttask
