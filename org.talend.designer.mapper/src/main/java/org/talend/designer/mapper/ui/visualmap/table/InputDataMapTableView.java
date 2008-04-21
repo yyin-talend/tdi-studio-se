@@ -581,7 +581,6 @@ public class InputDataMapTableView extends DataMapTableView {
     private void enableDisablePersistentMode(TMAP_MATCHING_MODE matchingMode) {
         if (mapperManager.isPersistentMap()) {
             switch (matchingMode) {
-            case FIRST_MATCH:
             case ALL_ROWS:
                 activatePersistentCheck
                         .setToolTipText("The current lookup mode is incompatible with the 'Store on disk' mode for the moment"); //$NON-NLS-1$
@@ -590,6 +589,7 @@ public class InputDataMapTableView extends DataMapTableView {
                 getInputTable().setPersistent(false);
                 break;
 
+            case FIRST_MATCH:
             case UNIQUE_MATCH:
             case ALL_MATCHES:
             case LAST_MATCH:
