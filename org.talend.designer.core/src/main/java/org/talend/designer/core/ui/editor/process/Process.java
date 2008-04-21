@@ -1037,6 +1037,7 @@ public class Process extends Element implements IProcess2 {
         Node nc;
 
         EList listParamType;
+
         unloadedNodeNames = new ArrayList<String>();
         for (int i = 0; i < nodeList.size(); i++) {
             nType = (NodeType) nodeList.get(i);
@@ -1099,6 +1100,7 @@ public class Process extends Element implements IProcess2 {
         addNodeContainer(new NodeContainer(nc));
         nodesHashtable.put(nc.getUniqueName(), nc);
         updateAllMappingTypes();
+
         return nc;
     }
 
@@ -2563,9 +2565,11 @@ public class Process extends Element implements IProcess2 {
      * @param editor the editor to set
      */
     public void setEditor(AbstractMultiPageTalendEditor editor) {
-        if (editor != null) {
+        if (editor != null && !duplicate) {
             CommandStack commandStack = (CommandStack) editor.getTalendEditor().getAdapter(CommandStack.class);
             commandStack.addCommandStackEventListener(commandStackEventListener);
+            getUpdateManager().updateAll();
+
         }
         this.editor = editor;
     }

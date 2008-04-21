@@ -79,16 +79,16 @@ public class ActiveProcessTracker implements IPartListener {
             ComponentUtilities.setExtraEntryVisible(((AbstractMultiPageTalendEditor) part).showExtraPaletteEntry());
         }
 
-        IProcess process = getJobFromActivatedEditor(part);
-        if (process != null) {
-            currentProcess = process;
-            if (process instanceof Process) {
-                Process p = (Process) process;
-                if (!p.isReadOnly() && p.isActivate()) {
-                    p.checkDifferenceWithRepository();
-                }
-            }
-        }
+        // IProcess process = getJobFromActivatedEditor(part);
+        // if (process != null) {
+        // currentProcess = process;
+        // if (process instanceof Process) {
+        // Process p = (Process) process;
+        // if (!p.isReadOnly() && p.isActivate()) {
+        // p.checkDifferenceWithRepository();
+        // }
+        // }
+        // }
     }
 
     /*
@@ -104,12 +104,12 @@ public class ActiveProcessTracker implements IPartListener {
             // setStatsAndLogsView(process);
             JobSettings.switchToCurJobSettingsView();
 
-            if (process instanceof Process) {
-                Process p = (Process) process;
-                if (!p.isReadOnly() && p.isActivate()) {
-                    p.checkDifferenceWithRepository();
-                }
-            }
+            // if (process instanceof Process) {
+            // Process p = (Process) process;
+            // if (!p.isReadOnly() && p.isActivate()) {
+            // p.checkDifferenceWithRepository();
+            // }
+            // }
         }
     }
 

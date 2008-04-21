@@ -117,6 +117,8 @@ public class TalendSelectionManager extends SelectionManager {
                         }
                     }
                 }
+            } else if (!(element instanceof NodePart)) {
+                newSelection.remove(element);
             }
         }
         StructuredSelection newList = new StructuredSelection(newSelection);

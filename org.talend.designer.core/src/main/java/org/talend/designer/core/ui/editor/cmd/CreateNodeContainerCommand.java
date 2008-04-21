@@ -15,6 +15,7 @@ package org.talend.designer.core.ui.editor.cmd;
 import java.util.List;
 
 import org.eclipse.draw2d.geometry.Point;
+import org.talend.core.model.components.EComponentType;
 import org.talend.core.model.update.EUpdateItemType;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.process.AbstractProcessProvider;
@@ -78,7 +79,9 @@ public class CreateNodeContainerCommand extends CreateCommand {
         // if (provider != null) {
         // provider.updateJobletContext(nodeContainer.getNode());
         // }
-        process.getUpdateManager().update(EUpdateItemType.JOBLET_CONTEXT);
+        if (nodeContainer.getNode().getComponent().getComponentType() == EComponentType.JOBLET) {
+            process.getUpdateManager().update(EUpdateItemType.JOBLET_CONTEXT);
+        }
     }
 
     public void undo() {

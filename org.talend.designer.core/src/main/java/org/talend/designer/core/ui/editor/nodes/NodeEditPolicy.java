@@ -51,9 +51,13 @@ public class NodeEditPolicy extends ComponentEditPolicy {
         List<Node> nodeList = new ArrayList<Node>();
         for (int i = 0; i < request.getEditParts().size(); i++) {
             if (request.getEditParts().get(i) instanceof NodePart) {
-                nodeList.add(((Node) ((NodePart) request.getEditParts().get(i)).getModel()));
+                Node node = ((Node) ((NodePart) request.getEditParts().get(i)).getModel());
+                if (!nodeList.contains(node)) {
+                    nodeList.add(node);
+                }
             }
         }
+        this.getHost().getViewer().deselectAll();
 
         DeleteNodeContainerCommand deleteCommand = new DeleteNodeContainerCommand((Process) nodeList.get(0).getProcess(),
                 nodeList);

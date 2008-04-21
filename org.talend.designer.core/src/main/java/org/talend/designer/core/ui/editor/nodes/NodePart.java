@@ -243,19 +243,26 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
      * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
      */
     public void propertyChange(final PropertyChangeEvent changeEvent) {
+        boolean needUpdateSubjob = false;
+
         if (changeEvent.getPropertyName().equals(Node.LOCATION)) {
             refreshVisuals();
+            needUpdateSubjob = true;
         } else if (changeEvent.getPropertyName().equals(Node.PERFORMANCE_DATA)) {
             refreshVisuals();
             getParent().refresh();
+            needUpdateSubjob = true;
         } else if (changeEvent.getPropertyName().equals(Node.INPUTS)) {
             refreshTargetConnections();
+            needUpdateSubjob = true;
         } else if (changeEvent.getPropertyName().equals(Node.OUTPUTS)) {
             refreshSourceConnections();
             refreshTargetConnections();
+            needUpdateSubjob = true;
         } else if (changeEvent.getPropertyName().equals(Node.SIZE)) {
             refreshVisuals();
             getParent().refresh();
+            needUpdateSubjob = true;
         } else if (changeEvent.getPropertyName().equals(EParameterName.ACTIVATE.getName())) {
             if (((INode) getModel()).isActivate()) {
                 ((NodeFigure) figure).setDummy(((Node) getModel()).isDummy());
@@ -284,6 +291,7 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
             } else {
                 ((NodeFigure) figure).setHint(""); //$NON-NLS-1$
             }
+            needUpdateSubjob = true;
         } else if (changeEvent.getPropertyName().equals(EParameterName.CONNECTION_FORMAT.getName())) {
             Node node = (Node) getModel();
 
@@ -304,16 +312,17 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
                 } else {
                     node.getProcess().addUniqueConnectionName(oldName);
                 }
-
             }
         }
-        EditPart editPart = getParent();
-        if (editPart != null) {
-            while ((!(editPart instanceof ProcessPart)) && (!(editPart instanceof SubjobContainerPart))) {
-                editPart = editPart.getParent();
-            }
-            if (editPart instanceof SubjobContainerPart) {
-                editPart.refresh();
+        if (needUpdateSubjob) {
+            EditPart editPart = getParent();
+            if (editPart != null) {
+                while ((!(editPart instanceof ProcessPart)) && (!(editPart instanceof SubjobContainerPart))) {
+                    editPart = editPart.getParent();
+                }
+                if (editPart instanceof SubjobContainerPart) {
+                    editPart.refresh();
+                }
             }
         }
     }
