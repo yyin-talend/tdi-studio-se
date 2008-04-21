@@ -36,7 +36,7 @@ import org.talend.repository.ui.wizards.metadata.connection.files.salesforce.Sal
 
 public class CreateSalesforceSchemaAction extends AbstractCreateAction {
 
-    private static final String EDIT_LABEL = Messages.getString("CreateSalesforceSchemaAction.editTitle"); //$NON-NLS-1$
+    private static final String EDIT_LABEL = Messages.getString("CreateSalesforceSchemaAction.action.editTitle"); //$NON-NLS-1$
 
     private static final String CREATE_LABEL = Messages.getString("CreateSalesforceSchemaAction.action.createTitle"); //$NON-NLS-1$
 

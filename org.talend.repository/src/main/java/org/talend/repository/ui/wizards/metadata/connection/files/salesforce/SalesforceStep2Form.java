@@ -236,7 +236,6 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
      */
     @Override
     protected boolean checkFieldsValue() {
-
         previewInformationLabel.setText("   " + Messages.getString("FileStep2.settingsIncomplete")); //$NON-NLS-1$ //$NON-NLS-2$
         updateStatus(IStatus.OK, null);
         previewButton.setEnabled(false);
@@ -255,12 +254,10 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
     @Override
     protected void initialize() {
 
-        String queryConnection = queryConditionText.getText();
-
-        if (queryConnection != null && !queryConnection.equals("")) {
-            getConnection().setQueryCondition(queryConnection);
+        String queryCondition = getConnection().getQueryCondition();
+        if (queryCondition != null && !queryCondition.equals("")) {
+            queryConditionText.setText(queryCondition);
         }
-
         checkFieldsValue();
     }
 
@@ -328,7 +325,7 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
         public void nonUIProcessInThread() {
             // get the XmlArray width an adapt ProcessDescription
             try {
-                csvArray = ShadowProcessHelper.getCsvArray(processDescription, "SALESFORCE_SCHEMA"); //$NON-NLS-1$
+                csvArray = ShadowProcessHelper.getCsvArray(processDescription, "SALESFORCE_SCHEMA", true); //$NON-NLS-1$
                 if (csvArray == null) {
                     previewInformationLabelMsg = "   " + Messages.getString("FileStep2.previewFailure"); //$NON-NLS-1$ //$NON-NLS-2$
                 } else {
@@ -340,7 +337,6 @@ public class SalesforceStep2Form extends AbstractSalesforceStepForm {
             } catch (CoreException ex) {
                 setException(ex);
                 previewInformationLabelMsg = "   " + Messages.getString("FileStep2.previewFailure"); //$NON-NLS-1$ //$NON-NLS-2$
-                log.error(Messages.getString("FileStep2.previewFailure") + " " + ex.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$
             }
         }
 

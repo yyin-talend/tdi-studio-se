@@ -319,7 +319,7 @@ public class SalesforceStep3Form extends AbstractSalesforceStepForm {
             informationLabel.setText("   " + Messages.getString("FileStep3.guessProgress")); //$NON-NLS-1$ //$NON-NLS-2$
 
             // get the XmlArray width an adapt ProcessDescription
-            CsvArray csvArray = ShadowProcessHelper.getCsvArray(getProcessDescription(), "SALESFORCE_SCHEMA"); //$NON-NLS-1$
+            CsvArray csvArray = ShadowProcessHelper.getCsvArray(getProcessDescription(), "SALESFORCE_SCHEMA", true); //$NON-NLS-1$
 
             if (csvArray == null) {
                 informationLabel.setText("   " + Messages.getString("FileStep3.guessFailure")); //$NON-NLS-1$ //$NON-NLS-2$

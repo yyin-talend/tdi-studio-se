@@ -58,6 +58,8 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
 
     private final String defaultWebServiceURL = "https://www.salesforce.com/services/Soap/u/10.0";
 
+    private final char pwdEhcoChar = '*';
+
     private List<String> moduleNames = null;
 
     /**
@@ -102,6 +104,7 @@ public class SalesforceStep1Form extends AbstractSalesforceStepForm {
         userNameText = new LabelledText(group, "User name");
 
         passwordText = new LabelledText(group, "Password ");
+        passwordText.getTextControl().setEchoChar(pwdEhcoChar);
 
         moduleNameCombo = new LabelledCombo(group, "Module name", "Please select a module name", moduleNames);
 

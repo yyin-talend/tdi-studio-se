@@ -295,6 +295,25 @@ public class ShadowProcessHelper {
     }
 
     /**
+     * parse a file describe by a processDescription in XmlArray.
+     * 
+     * @param processDescription
+     * @return xmlArray
+     */
+    public static CsvArray getCsvArray(final ProcessDescription processDescription, String type, boolean errorOutoutAsException)
+            throws CoreException {
+
+        CsvArray csvArray = null;
+
+        IPreview preview = createPreview();
+
+        if (preview != null) {
+            csvArray = preview.preview(processDescription, type, errorOutoutAsException);
+        }
+        return csvArray;
+    }
+
+    /**
      * DOC amaumont Comment method "createPreview".
      * 
      * @param configurationElements
