@@ -13,7 +13,9 @@
     <selectedElements exportClassFiles="true" exportJavaFiles="true" exportOutputFolder="false">
         <javaElement handleIdentifier="=org.talend.designer.components.localprovider/src\/main\/java&lt;org.talend.designer.components.commons"/>
         <javaElement handleIdentifier="=HashTests/src&lt;org.talend.designer.components.persistent{AbstractOrderedBeanLookup.java"/>
+        <javaElement handleIdentifier="=HashTests/src&lt;org.talend.designer.components.persistent{ILookupManagerUnit.java"/>
         <javaElement handleIdentifier="=HashTests/src&lt;org.talend.designer.components.persistent{IRowCreator.java"/>
+        <javaElement handleIdentifier="=HashTests/src&lt;org.talend.designer.components.persistent{OrderedBeanLookupAll.java"/>
         <javaElement handleIdentifier="=HashTests/src&lt;org.talend.designer.components.thash.io.beans{IPersistentBean.java"/>
         <javaElement handleIdentifier="=HashTests/src&lt;org.talend.designer.components.persistent{PersistentRowSorterIterator.java"/>
         <javaElement handleIdentifier="=HashTests/src&lt;org.talend.designer.components.persistent{IPersistableLookup.java"/>
@@ -24,17 +26,19 @@
         <javaElement handleIdentifier="=HashTests/src&lt;org.talend.designer.components.persistent{DataContainer.java"/>
         <javaElement handleIdentifier="=org.talend.core/src\/main\/java&lt;org.talend.core.model.process{IMatchingMode.java"/>
         <javaElement handleIdentifier="=HashTests/src&lt;org.talend.designer.components.persistent{MemoryHelper.java"/>
+        <javaElement handleIdentifier="=HashTests/src&lt;org.talend.designer.components.persistent{PersistentSortedLookupManager.java"/>
         <javaElement handleIdentifier="=org.talend.commons/src\/main\/java&lt;org.talend.commons.utils.time"/>
-        <javaElement handleIdentifier="=HashTests/src&lt;org.talend.designer.components.persistent{IPersistableHash.java"/>
-        <javaElement handleIdentifier="=HashTests/src&lt;org.talend.designer.components.thash.io.beans{KeyForMap.java"/>
         <javaElement handleIdentifier="=HashTests/src&lt;org.talend.designer.components.persistent{RowProvider.java"/>
-        <javaElement handleIdentifier="=HashTests/src&lt;org.talend.designer.components.persistent{PersistentSortedAdvancedLookup.java"/>
+        <javaElement handleIdentifier="=HashTests/src&lt;org.talend.designer.components.thash.io.beans{KeyForMap.java"/>
+        <javaElement handleIdentifier="=HashTests/src&lt;org.talend.designer.components.persistent{AbstractPersistentLookup.java"/>
+        <javaElement handleIdentifier="=HashTests/src&lt;org.talend.designer.components.persistent{IPersistentLookupManager.java"/>
         <javaElement handleIdentifier="=HashTests/src&lt;org.talend.designer.components.thash.io.hashimpl{DataContainer.java"/>
+        <javaElement handleIdentifier="=HashTests/src&lt;org.talend.designer.components.persistent{PersistentSortedAdvancedLookup.java"/>
         <javaElement handleIdentifier="=HashTests/src&lt;org.talend.designer.components.thash.io.hashimpl{FlowSorterIterator.java"/>
-        <javaElement handleIdentifier="=HashTests/src&lt;org.talend.designer.components.persistent{PersistentSortedHash.java"/>
         <javaElement handleIdentifier="=HashTests/src&lt;org.talend.designer.components.persistent{IRowProvider.java"/>
         <javaElement handleIdentifier="=HashTests/src&lt;org.talend.designer.components.persistent{IPersistentRowManager.java"/>
         <javaElement handleIdentifier="=HashTests/src&lt;org.talend.designer.components.persistent{OrderedBeanLookupMatchLast.java"/>
+        <javaElement handleIdentifier="=HashTests/src&lt;org.talend.designer.components.persistent{PersistentLookupManager.java"/>
         <javaElement handleIdentifier="=org.talend.commons/src\/main\/java&lt;org.talend.commons.utils.data.map{MultiLazyValuesMap.java"/>
         <javaElement handleIdentifier="=HashTests/src&lt;org.talend.designer.components.thash.io.beans{ILightSerializable.java"/>
     </selectedElements>
