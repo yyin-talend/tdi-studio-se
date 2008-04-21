@@ -42,6 +42,7 @@
     public static String pid = "0";
     public static String rootPid = null;
     public static String fatherPid = null;
+    public static long startTime = 0;
     
 <%
 	if(isRunInMultiThread){
@@ -237,7 +238,9 @@
 	long startUsedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
 	long endUsedMemory = 0;
 	long end = 0;
+	
 	long start = System.currentTimeMillis();
+	startTime = System.currentTimeMillis();
 	final <%=process.getName() %> <%=process.getName() %>Class = new <%=process.getName() %>(); 
 <%
 		for (INode statCatcherNode : process.getNodesOfType("tStatCatcher")) {
@@ -300,8 +303,9 @@
 }// end if(isRunInMultiThread)
 %>	
 		end = System.currentTimeMillis();
+		
 		if (watch) {
-    		System.out.println((end-start)+" milliseconds");
+    		System.out.println((end-startTime)+" milliseconds");
 	    }
 	
 		endUsedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();

@@ -1,0 +1,78 @@
+<%@ jet
+imports="
+    org.talend.core.model.process.INode
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.core.model.metadata.IMetadataTable
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+" 
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+
+boolean sinceStarter = ElementParameterParser.getValue(
+    node,
+    "__SINCE_STARTER__"
+).equals("true");
+
+String starter = ElementParameterParser.getValue(
+    node,
+    "__STARTER__"
+);
+
+boolean display = ElementParameterParser.getValue(
+    node,
+    "__DISPLAY__"
+).equals("true");
+
+boolean displayComponentName = ElementParameterParser.getValue(
+    node,
+    "__DISPLAY_COMPONENT_NAME__"
+).equals("true");
+
+boolean displayReadableDuration = ElementParameterParser.getValue(
+    node,
+    "__DISPLAY_READABLE_DURATION__"
+).equals("true");
+
+
+String caption = ElementParameterParser.getValue(
+    node,
+    "__CAPTION__"
+);
+%>
+		long time<%=cid%>;
+
+<%
+if (sinceStarter) {
+%>
+        time<%=cid%> = System.currentTimeMillis()-((Long)globalMap.get("<%=starter%>")).longValue();
+<%
+}
+else {
+%>
+		time<%=cid%> = System.currentTimeMillis()-startTime;
+<%
+}
+
+if (display) {
+    if (displayComponentName) {
+%>
+System.out.print("[ <%=cid%> ]  ");
+<%
+    }
+%>
+System.out.print(<%=caption%> + "  " + time<%=cid%> + " milliseconds"); 
+    
+<%
+    if (displayReadableDuration) {
+%>
+	    System.out.print("   " + time<%=cid%>/1000 + "seconds");
+	    
+<%  }
+}
+%>
