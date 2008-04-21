@@ -239,7 +239,6 @@
 	long endUsedMemory = 0;
 	long end = 0;
 	
-	long start = System.currentTimeMillis();
 	startTime = System.currentTimeMillis();
 	final <%=process.getName() %> <%=process.getName() %>Class = new <%=process.getName() %>(); 
 <%
@@ -327,7 +326,7 @@
 	
 	for (INode statCatcherNode : process.getNodesOfType("tStatCatcher")) {
 %>
-		<%=process.getName() %>Class.<%=statCatcherNode.getUniqueName() %>.addMessage(status==""?"end":status, (end-start));
+		<%=process.getName() %>Class.<%=statCatcherNode.getUniqueName() %>.addMessage(status==""?"end":status, (end-startTime));
 		try {
 			<%=process.getName() %>Class.<%=statCatcherNode.getUniqueName() %>Process();
 		} catch (Exception e) {
