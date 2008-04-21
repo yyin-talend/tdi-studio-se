@@ -52,6 +52,7 @@ import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.designer.codegen.IRoutineSynchronizer;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
+import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.preference.StatusPreferenceInitializer;
 
@@ -355,7 +356,13 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
 
     public void logOnProject(Project project) throws LoginException, PersistenceException {
         new StatusPreferenceInitializer().initializeDefaultPreferences();
+        String productVersion = RepositoryPlugin.getDefault().getBundle().getHeaders().get(
+                org.osgi.framework.Constants.BUNDLE_VERSION).toString();
+        project.getEmfProject().setProductVersion(productVersion);
+        saveProject();
     }
+
+    protected abstract void saveProject() throws PersistenceException;
 
     public List<ModuleNeeded> getModulesNeededForJobs() throws PersistenceException {
         List<ModuleNeeded> importNeedsList = new ArrayList<ModuleNeeded>();
