@@ -32,7 +32,6 @@ import org.talend.core.model.context.JobContextManager;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.builder.connection.Connection;
-import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.metadata.designerproperties.RepositoryToComponentProperty;
 import org.talend.core.model.process.EComponentCategory;
@@ -606,27 +605,27 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                     if (!sameValues) {
                         result = new UpdateCheckResult(node);
                         // for DBConnection
-                        boolean builtIn = true;
-                        if (repositoryConnection instanceof DatabaseConnection) {
-                            IElementParameter typeParam = node.getElementParameter(UpdatesConstants.TYPE);
-                            if (typeParam != null) {
-                                String dbType = ((DatabaseConnection) repositoryConnection).getDatabaseType();
-                                Object type = typeParam.getValue();
-                                if (dbType != null && type != null) {
-                                    if (dbType.equalsIgnoreCase((String) type)) {
-                                        result.setResult(EUpdateItemType.NODE_PROPERTY, EUpdateResult.UPDATE,
-                                                repositoryConnection, source);
-                                        builtIn = false;
-                                    }
-                                }
-                            }
-                        } else {
-                            result.setResult(EUpdateItemType.NODE_PROPERTY, EUpdateResult.UPDATE, repositoryConnection, source);
-                            builtIn = false;
-                        }
-                        if (builtIn) { // only for DB
-                            result.setResult(EUpdateItemType.NODE_PROPERTY, EUpdateResult.BUIL_IN, null, source);
-                        }
+                        // boolean builtIn = true;
+                        // if (repositoryConnection instanceof DatabaseConnection) {
+                        // IElementParameter typeParam = node.getElementParameter(UpdatesConstants.TYPE);
+                        // if (typeParam != null) {
+                        // String dbType = ((DatabaseConnection) repositoryConnection).getDatabaseType();
+                        // Object type = typeParam.getValue();
+                        // if (dbType != null && type != null) {
+                        // if (dbType.equalsIgnoreCase((String) type)) {
+                        // result.setResult(EUpdateItemType.NODE_PROPERTY, EUpdateResult.UPDATE,
+                        // repositoryConnection, source);
+                        // builtIn = false;
+                        // }
+                        // }
+                        // }
+                        // } else {
+                        result.setResult(EUpdateItemType.NODE_PROPERTY, EUpdateResult.UPDATE, repositoryConnection, source);
+                        // builtIn = false;
+                        // }
+                        // if (builtIn) { // only for DB
+                        // result.setResult(EUpdateItemType.NODE_PROPERTY, EUpdateResult.BUIL_IN, null, source);
+                        // }
 
                     } else {
                         for (IElementParameter param : node.getElementParameters()) {
