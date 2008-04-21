@@ -421,22 +421,22 @@ public class TableController extends AbstractElementPropertySectionController {
             return;
         }
         IElementParameter jobElemParam = processTypeParam.getChildParameters().get(EParameterName.PROCESS_TYPE_PROCESS.getName());
+        IElementParameter jobVersionParam = processTypeParam.getChildParameters().get(
+                EParameterName.PROCESS_TYPE_VERSION.getName());
+
         IElementParameter contextElemParam = processTypeParam.getChildParameters().get(
                 EParameterName.PROCESS_TYPE_CONTEXT.getName());
         // get context list
-        String processName = (String) jobElemParam.getValue();
+        String processId = (String) jobElemParam.getValue();
         String contextName = (String) contextElemParam.getValue();
 
-        if (processName == null || contextName == null) {
+        if (processId == null || contextName == null) {
             return;
         }
 
-        processName = processName.replaceAll("'", "");
-        contextName = contextName.replaceAll("'", "");
-
         ProcessItem processItem = (ProcessItem) jobElemParam.getLinkedRepositoryItem();
         if (processItem == null) {
-            processItem = ProcessorUtilities.getProcessItem(processName);
+            processItem = ProcessorUtilities.getProcessItem(processId, (String) jobVersionParam.getValue());
         }
         Process process = null;
         String[] contextParameterNames = null;

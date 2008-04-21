@@ -39,9 +39,6 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PlatformUI;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
@@ -75,7 +72,6 @@ import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
-import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.ActiveProcessTracker;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.editor.cmd.ChangeMetadataCommand;
@@ -87,7 +83,6 @@ import org.talend.designer.core.ui.editor.properties.NodeQueryCheckUtil;
 import org.talend.designer.core.ui.editor.properties.controllers.ColumnListController;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.core.ui.views.problems.Problems;
-import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.model.ExternalNodesFactory;
 
 /**
@@ -927,24 +922,15 @@ public class Node extends Element implements INode {
         final String processPrefix = "PROCESS:";
         if (id.equals(processPrefix + EParameterName.PROCESS_TYPE_CONTEXT.getName())) { // is child
             if (!CommonsPlugin.isHeadless()) {
-                IWorkbenchWindow activeWorkbenchWindow;
+                if (((Process) getProcess()).getEditor() != null && (!((Process) getProcess()).isDuplicate())) {
+                    // ((Process) getProcess()).get
 
-                try {
-                    activeWorkbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-                } catch (IllegalStateException e) {
-                    return;
-                }
-                if (activeWorkbenchWindow != null) {
-                    IEditorPart part = activeWorkbenchWindow.getActivePage().getActiveEditor();
-                    if (part instanceof AbstractMultiPageTalendEditor) {
-                        if (process.isActivate() && ((AbstractMultiPageTalendEditor) part).getProcess().equals(process)) {
-                            final String jobId = (String) getPropertyValue(processPrefix
-                                    + EParameterName.PROCESS_TYPE_PROCESS.getName());
-                            ProcessorUtilities.generateCode(jobId, (String) value, null, false, false,
-                                    ProcessorUtilities.GENERATE_MAIN_ONLY);
-                            ((AbstractMultiPageTalendEditor) part).updateChildrens();
-                        }
-                    }
+                    // final String jobId = (String) getPropertyValue(processPrefix +
+                    // EParameterName.PROCESS_TYPE_PROCESS.getName());
+                    // ProcessorUtilities.generateCode(jobId, (String) value, null, false, false,
+                    // ProcessorUtilities.GENERATE_MAIN_ONLY);
+
+                    ((Process) getProcess()).getEditor().updateChildrens();
                 }
             }
         }
