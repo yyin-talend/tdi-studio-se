@@ -151,6 +151,9 @@ public class PerlProcessor extends Processor {
             IFile codeFile = project.getFile(codePath);
             InputStream codeStream = new ByteArrayInputStream(processCode.getBytes());
             if (!codeFile.exists()) {
+                // see bug 0003592, detele file with different case in windows
+                deleteFileIfExisted(codeFile);
+
                 codeFile.create(codeStream, true, null);
             } else {
                 codeFile.setContents(codeStream, true, false, null);

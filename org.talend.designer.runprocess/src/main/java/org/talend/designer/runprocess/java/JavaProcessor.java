@@ -232,6 +232,7 @@ public class JavaProcessor extends Processor {
      * @see org.talend.designer.runprocess.IProcessor#generateCode(org.talend.core.model.process.IContext, boolean,
      * boolean, boolean)
      */
+    @SuppressWarnings("restriction")
     @Override
     public void generateCode(boolean statistics, boolean trace, boolean javaProperties) throws ProcessorException {
         super.generateCode(statistics, trace, javaProperties);
@@ -269,6 +270,9 @@ public class JavaProcessor extends Processor {
             InputStream codeStream = new ByteArrayInputStream(processCode.getBytes());
 
             if (!codeFile.exists()) {
+                // see bug 0003592, detele file with different case in windows
+                deleteFileIfExisted(codeFile);
+
                 codeFile.create(codeStream, true, null);
             } else {
                 codeFile.setContents(codeStream, true, false, null);
@@ -681,6 +685,7 @@ public class JavaProcessor extends Processor {
         return root.getPackageFragment(jobName);
 
     }
+
     /*
      * Get the interpreter of Java.
      * 
@@ -864,6 +869,7 @@ public class JavaProcessor extends Processor {
                 libPath.toString() + new Path(projectPath).toPortableString() + exportJar + libFolder, className };
         return addVMArguments(strings);
     }
+
     private String[] addVMArguments(String[] strings) {
         String string = RunProcessPlugin.getDefault().getPreferenceStore().getString(RunProcessPrefsConstants.VMARGUMENTS);
         String replaceAll = string.trim();
