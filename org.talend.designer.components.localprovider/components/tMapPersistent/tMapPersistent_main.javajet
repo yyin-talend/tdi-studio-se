@@ -186,7 +186,6 @@
 		
         %>
 
-                    //SortableRow_<%= mainInputTableName %> rsc_<%= mainInputTableName %> = new SortableRow_<%= mainInputTableName %>();
                     SortableRow_<%= mainInputTableName %> rsc_<%= mainInputTableName %> = fsi_<%= mainInputTableName %>.getNextFreeRow();
 
                     rsc_<%= mainInputTableName %>.fillFrom(<%= mainInputTableName %><%
@@ -321,10 +320,13 @@
 				// Starting Lookup Table "<%= tableName %>" 
 				///////////////////////////////////////////////
 				
-				SortableRow_<%= currentJoinedTableNames %> rsc_<%= currentJoinedTableNames %>;
 				<%
 
             if(isPersistentSortedTable) {
+
+				%>				
+				SortableRow_<%= currentJoinedTableNames %> rsc_<%= currentJoinedTableNames %>;
+				<%
 
 				if(isLastPersistentSortedTable && !previousMainNodeIsVirtual) {
 					%>

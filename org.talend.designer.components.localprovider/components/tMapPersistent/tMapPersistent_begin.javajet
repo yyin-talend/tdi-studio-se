@@ -169,7 +169,11 @@ String comma;
 for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { // T_TM_B_101
         
 	ExternalMapperTable currentInputTable = inputTables.get(iInputTable);
-	ExternalMapperTable nextInputTable = inputTables.get(iInputTable + 1);
+	ExternalMapperTable nextInputTable = null; 
+	
+	if(sizeInputTables > 1) {
+		nextInputTable = inputTables.get(iInputTable + 1);
+	}
 	
 	if(currentJoinedTableNames.length() > 0) {
 		currentJoinedTableNames += "__";
@@ -177,16 +181,19 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
 	
 	currentJoinedTableNames += currentInputTable.getName();
 
-	List<IMetadataColumn> nextColumnsKeys = new ArrayList<IMetadataColumn>();
-	
-	
-	%>
-	
-	class SortableRow_<%= currentJoinedTableNames %> implements Comparable<SortableRow_<%= currentJoinedTableNames %>>, routines.system.IPersistableRow { // G_TM_B_001 
 
-		boolean is__rejectedInnerJoin;
+	if(nextInputTable != null && nextInputTable.isPersistent()) { // T_TM_B_103
+	
+		List<IMetadataColumn> nextColumnsKeys = new ArrayList<IMetadataColumn>();
+	
+	
+		%>
+	
+		class SortableRow_<%= currentJoinedTableNames %> implements Comparable<SortableRow_<%= currentJoinedTableNames %>>, routines.system.IPersistableRow { // G_TM_B_001 
 
-	<%
+			boolean is__rejectedInnerJoin;
+
+		<%
 	        
 
 	        String nextTableName = nextInputTable.getName();
@@ -735,6 +742,7 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
 		
 		
 <%
+	} // T_TM_B_103
 } // T_TM_B_101      
 %>        
         
