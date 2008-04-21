@@ -12,15 +12,9 @@
 // ============================================================================
 package org.talend.designer.runprocess;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
-import java.io.DataInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Reader;
-
-import javax.swing.plaf.basic.BasicInternalFrameTitlePane.SystemMenuBar;
 
 /**
  * Read streams of a process. <br/>
@@ -35,6 +29,44 @@ public final class ProcessStreamTrashReader {
      */
     private ProcessStreamTrashReader() {
         super();
+    }
+
+    /**
+     * 
+     * DOC YeXiaowei Comment method "readErrorStream".
+     * 
+     * @param process
+     * @return
+     */
+    public static String readErrorStream(final Process process) {
+
+        String lineSep = System.getProperty("line.separator");
+
+        StringBuilder builder = new StringBuilder();
+
+        InputStream is = process.getErrorStream();
+        InputStreamReader din = new InputStreamReader(is);
+        BufferedReader reader = new BufferedReader(din);
+        try {
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                builder.append(line);
+                builder.append(lineSep);
+            }
+        } catch (Exception ex) {
+            ex.getMessage();
+        } finally {
+            try {
+                is.close();
+            } catch (Exception ex) {
+            }
+        }
+
+        if (builder.toString().equals("")) {
+            return null;
+        }
+
+        return builder.toString();
     }
 
     public static void readAndForget(final Process process) {
@@ -104,7 +136,7 @@ public final class ProcessStreamTrashReader {
                     // Do nothing
                 }
             }
-        } catch (Exception ioe) {//IO
+        } catch (Exception ioe) {// IO
             // Do nothing
         }
     }

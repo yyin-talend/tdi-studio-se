@@ -282,6 +282,48 @@ public class ShadowProcess<T extends IProcessDescription> {
     }
 
     /**
+     * If the process generate any error output, throw an ProcessorException.
+     * <p>
+     * DOC YeXiaowei Comment method "runWithErrorOutputAsException".
+     * 
+     * @return
+     * @throws ProcessorException
+     */
+    public CsvArray runWithErrorOutputAsException() throws ProcessorException {
+
+        IProcess talendProcess = buildProcess();
+
+        IProcessor processor = ProcessorUtilities.getProcessor(talendProcess);
+
+        File previousFile = outPath.toFile();
+        if (previousFile.exists()) {
+            previousFile.delete();
+        }
+
+        IContext context = talendProcess.getContextManager().getDefaultContext();
+        processor.setContext(context);
+        process = processor.run(IProcessor.NO_STATISTICS, IProcessor.NO_TRACES, null);
+
+        String error = ProcessStreamTrashReader.readErrorStream(process);
+
+        if (error != null) {
+            throw new ProcessorException(error); //$NON-NLS-1$
+        }
+
+        if (!outPath.toFile().exists()) {
+            throw new ProcessorException(Messages.getString("ShadowProcess.notGeneratedOutputException")); //$NON-NLS-1$
+        }
+
+        try {
+            CsvArray array = new CsvArray();
+            array = array.createFrom(outPath.toFile());
+            return array;
+        } catch (IOException ioe) {
+            throw new ProcessorException(ioe);
+        }
+    }
+
+    /**
      * Destroy the current process if exists.
      * 
      * @return error code of {@link java.lang.Process#exitValue()}

@@ -15,7 +15,6 @@ package org.talend.designer.runprocess.shadow;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Status;
 import org.talend.core.utils.CsvArray;
-import org.talend.core.utils.XmlArray;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.RunProcessPlugin;
 import org.talend.designer.runprocess.shadow.ShadowProcess.EShadowProcessType;
@@ -42,14 +41,14 @@ public class ShadowFilePreview implements IPreview {
      * (non-Javadoc)
      * 
      * @see org.talend.repository.preview.filedelimited.IFileDelimitedPreview#
-     *      preview(org.talend.repository.preview.filedelimited.ProcessDescription)
+     * preview(org.talend.repository.preview.filedelimited.ProcessDescription)
      */
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     public CsvArray preview(IProcessDescription description, String type) throws CoreException {
         CsvArray res = null;
-        
+
         EShadowProcessType typeShadow = EShadowProcessType.valueOf(type);
-        
+
         shadowProcess = new ShadowProcess(description, typeShadow);
         try {
             res = shadowProcess.run();
@@ -61,12 +60,35 @@ public class ShadowFilePreview implements IPreview {
         return res;
     }
 
-    
     /**
      * Stop loading preview.
      */
     public void stopLoading() {
         shadowProcess.destroy();
     }
-    
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.preview.IPreview#preview(org.talend.repository.preview.IProcessDescription,
+     * java.lang.String, boolean)
+     */
+    public CsvArray preview(IProcessDescription description, String type, boolean errorOutputAsException) throws CoreException {
+
+        CsvArray res = null;
+
+        EShadowProcessType typeShadow = EShadowProcessType.valueOf(type);
+
+        shadowProcess = new ShadowProcess(description, typeShadow);
+
+        try {
+            res = shadowProcess.runWithErrorOutputAsException();
+        } catch (ProcessorException e) {
+            Status status = new Status(Status.ERROR, RunProcessPlugin.PLUGIN_ID, Status.OK, e.getMessage(), e);
+            RunProcessPlugin.getDefault().getLog().log(status);
+            throw new CoreException(status);
+        }
+        return res;
+    }
+
 }
