@@ -303,10 +303,10 @@ public class CLASS {
                             }
                             createSQL.append(suffix);
                         }
+                        createSQL.append(setDefaultValue(column.getColumn().getDefault(), dataType));                        
                         if (!column.getColumn().isNullable()) {
                             createSQL.append(" not null ");
-                        }
-                        createSQL.append(setDefaultValue(column.getColumn().getDefault(), dataType));                        
+                        }                        
                         if (count == columnList.size() - 1 && pkList.size() == 0) {
                             ending = "";
                         }
