@@ -3,6 +3,8 @@
 		org.talend.core.model.process.INode
 		org.talend.core.model.process.ElementParameterParser
 		org.talend.designer.codegen.config.CodeGeneratorArgument
+		java.util.List
+		java.util.Map
 	"
 %>
 <%
@@ -12,6 +14,14 @@
 	// component id
 	String cid = node.getUniqueName();
 	String deleteFromServer = ElementParameterParser.getValue(node, "__DELETE_FROM_SERVER__");
+	List<Map<String, String>> filterList = 
+		(List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__ADVANCED_FILTER__");
+
+	if(filterList.size()>0){
+%>
+		}
+<%
+	}
 %>
 
    }  

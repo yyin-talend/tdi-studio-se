@@ -139,10 +139,3 @@
         nb_email_<%=cid %>++;
         globalMap.put("<%=cid %>_CURRENT_FILE", filename_<%=cid %>);
             globalMap.put("<%=cid %>_CURRENT_FILEPATH", file_<%=cid %>.getAbsolutePath());
-<%
-	if(filterList.size()>0){
-%>
-	}
-<%
-	}
-%>
