@@ -56,7 +56,6 @@ skeleton="../templates/db_output_bulk.skeleton"
 	boolean useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__").equals("true");
 	
 	String identityInsert = ElementParameterParser.getValue(node, "__IDENTITY_INSERT__");
-
 %>
 
 int nb_line_<%=cid%> = 0;
@@ -68,6 +67,7 @@ int deletedCount_<%=cid%>=0;
 int updatedCount_<%=cid%>=0;
 int insertedCount_<%=cid%>=0;
 
+String tableName_<%=cid%> = <%=tableName%>;
 boolean whetherReject_<%=cid%> = false;
 
 <%
@@ -110,24 +110,26 @@ if(dataAction.equals("UPDATE") || dataAction.equals("INSERT_OR_UPDATE") || dataA
         <%
     }
 }
-%><%	
-	if(useExistingConn){
-		String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
-		String conn = "conn_" + connection;
-		commitEvery = "0";
 %>
-java.sql.Connection conn_<%=cid %> = (java.sql.Connection)globalMap.get("<%=conn %>");
-<%
-	}else{
-%> 
-String dbUser_<%=cid %> = <%=dbuser %>;
-String dbPwd_<%=cid %> = <%=dbpwd %>;
-java.lang.Class.forName("com.sybase.jdbc3.jdbc.SybDriver");
-String url_<%=cid %> = "jdbc:sybase:Tds:" + <%=dbServer%> + ":" + <%=dbport%> + "/" + <%=dbname%>; 
-java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
-<%
+<%	
+if(useExistingConn){
+	String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
+	String conn = "conn_" + connection;
+	commitEvery = "0";
+	%>
+	java.sql.Connection conn_<%=cid %> = (java.sql.Connection)globalMap.get("<%=conn %>");
+	<%
+} else {
+    %> 
+    String dbUser_<%=cid %> = <%=dbuser %>;
+    String dbPwd_<%=cid %> = <%=dbpwd %>;
+    java.lang.Class.forName("com.sybase.jdbc3.jdbc.SybDriver");
+    String url_<%=cid %> = "jdbc:sybase:Tds:" + <%=dbServer%> + ":" + <%=dbport%> + "/" + <%=dbname%>; 
+    java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
+    <%
 	}
-%><%
+%>
+<%
 if(columnList != null && columnList.size()>0) {    
     if(!tableAction.equals("NONE")) {
         Manager manager = getManager(dbmsId, cid);
