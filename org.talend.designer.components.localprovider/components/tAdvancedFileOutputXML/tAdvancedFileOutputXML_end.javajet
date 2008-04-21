@@ -210,9 +210,16 @@ if(currentRowCount_<%=cid %> > 0){
 <%
 	}
 	if(mode.equals("Dom4j")){
+		if(split.equals("true")){
 %>
 	java.io.FileOutputStream stream_<%=cid%> = new java.io.FileOutputStream(file_<%=cid%> + currentFileCount_<%=cid %> + ".xml");
-    org.dom4j.io.XMLWriter output_<%=cid%> = new org.dom4j.io.XMLWriter(stream_<%=cid%>, format_<%=cid%>);
+<%
+		}else{
+%>
+	java.io.FileOutputStream stream_<%=cid%> = new java.io.FileOutputStream(fileName_<%=cid%>);
+<%
+		}
+%>    org.dom4j.io.XMLWriter output_<%=cid%> = new org.dom4j.io.XMLWriter(stream_<%=cid%>, format_<%=cid%>);
 <%
 		if(outputAsXSD.equals("true")){
 %>
