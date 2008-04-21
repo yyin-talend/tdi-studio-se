@@ -18,8 +18,8 @@ import java.util.List;
 
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.IProcess;
-import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.update.EUpdateResult;
+import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.core.model.update.UpdateResult;
 import org.talend.core.model.update.UpdatesConstants;
 import org.talend.designer.core.model.process.AbstractProcessProvider;
@@ -44,8 +44,19 @@ public class UpdateCheckResult extends UpdateResult {
     public String getName() {
         String displayName = getUpdateType().getDisplayName();
         switch (getUpdateType()) {
-        case NODE_PROPERTY:
         case NODE_SCHEMA:
+            if (getResultType() == EUpdateResult.RENAME) {
+                List<Object> param = (List<Object>) getParameter();
+                String[] oldSourceIdAndChildName = UpdateManagerUtils.getSourceIdAndChildName((String) param.get(1));
+                String[] newSourceIdAndChildName = UpdateManagerUtils.getSourceIdAndChildName((String) param.get(2));
+                if (oldSourceIdAndChildName != null && newSourceIdAndChildName != null) {
+                    displayName = oldSourceIdAndChildName[1];
+                    displayName = displayName + UpdatesConstants.RENAME_SIGN;
+                    displayName = displayName + newSourceIdAndChildName[1];
+                }
+            }
+            break;
+        case NODE_PROPERTY:
         case NODE_QUERY:
         case JOBLET_SCHEMA:
             break;
@@ -167,33 +178,19 @@ public class UpdateCheckResult extends UpdateResult {
     @Override
     public String getJobInfor() {
         if (getJob() != null) {
-            StringBuffer infor = new StringBuffer();
-            String prefix = UpdatesConstants.JOB;
-            String label = null;
-            String version = null;
-            String others = null;
-            if (getJob() instanceof IProcess2) {
-                IProcess2 process = (IProcess2) getJob();
-                if (process.disableRunJobView()) { // ?? for joblet
-                    prefix = UpdatesConstants.JOBLET;
-                }
-                label = process.getLabel();
-                version = process.getVersion();
+            String jobInfor = null;
+            if (getJob() instanceof IProcess) {
+                jobInfor = RepositoryUpdateManager.getUpdateJobInfor((IProcess) getJob());
             }
+            String others = null;
             if (getItemProcess() != null) { // update item
                 others = UpdatesConstants.START;
             }
-            infor.append(prefix);
-            if (label != null) {
-                infor.append(UpdatesConstants.SPACE);
-                infor.append(label);
-                infor.append(UpdatesConstants.SPACE);
-                infor.append(version);
-                infor.append(UpdateManagerUtils.addBrackets(others));
+            if (jobInfor != null) {
+                return jobInfor + UpdatesConstants.SPACE + UpdateManagerUtils.addBrackets(others);
             }
-            return infor.toString();
         }
-        return UpdatesConstants.EMPTY;
+        return UpdatesConstants.JOB;
     }
 
 }

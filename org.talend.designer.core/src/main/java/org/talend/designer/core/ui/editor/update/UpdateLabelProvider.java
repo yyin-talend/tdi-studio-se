@@ -16,10 +16,14 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.swt.graphics.Image;
 import org.talend.commons.ui.image.ImageProvider;
+import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.update.EUpdateItemType;
 import org.talend.core.model.update.EUpdateResult;
+import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.core.model.update.UpdatesConstants;
+import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.core.ui.images.ECoreImage;
+import org.talend.designer.core.ui.editor.nodes.Node;
 
 /**
  * ggu class global comment. Detailled comment
@@ -40,20 +44,19 @@ public class UpdateLabelProvider implements ITableLabelProvider {
                 EUpdateItemType type = category.getType();
                 if (type != null) {
                     switch (type) {
-                    case NODE_PROPERTY:
-                    case NODE_SCHEMA:
-                    case NODE_QUERY:
-                    case JOBLET_SCHEMA:
-                    case JOBLET_RENAMED:
-                    case RELOAD:
-                        // return ImageProvider.getImage(ECoreImage.TALEND_PICTO);
-                        break;
                     case JOB_PROPERTY_EXTRA:
                     case JOB_PROPERTY_STATS_LOGS:
                         return ImageProvider.getImage(ECoreImage.CONTEXT_ICON);
                     case CONTEXT:
                     case JOBLET_CONTEXT:
                         return ImageProvider.getImage(ECoreImage.CONTEXT_ICON);
+                    case NODE_PROPERTY:
+                    case NODE_SCHEMA:
+                    case NODE_QUERY:
+                    case JOBLET_SCHEMA:
+                    case JOBLET_RENAMED:
+                    case RELOAD:
+                        return getImageFromNode(category.getNode());
                     default:
                         // return ImageProvider.getImage(ECoreImage.TALEND_PICTO);
                     }
@@ -69,6 +72,10 @@ public class UpdateLabelProvider implements ITableLabelProvider {
                 case NODE_PROPERTY:
                 case JOB_PROPERTY_EXTRA:
                 case JOB_PROPERTY_STATS_LOGS:
+                    ERepositoryObjectType type = RepositoryUpdateManager.getTypeFromSource(item.getRemark());
+                    if (type != null) {
+                        return CoreImageProvider.getImage(type);
+                    }
                 case JOBLET_RENAMED:
                 case RELOAD:
                     // return ImageProvider.getImage(ECoreImage.TALEND_PICTO);
@@ -146,5 +153,12 @@ public class UpdateLabelProvider implements ITableLabelProvider {
             return true;
         }
         return false;
+    }
+
+    private Image getImageFromNode(Node node) {
+        if (node == null) {
+            return ImageProvider.getImage(ECoreImage.TALEND_PICTO);
+        }
+        return node.getComponent().getIcon16().createImage();
     }
 }

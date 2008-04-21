@@ -18,6 +18,7 @@ import java.util.List;
 import org.talend.core.model.update.EUpdateItemType;
 import org.talend.core.model.update.EUpdateResult;
 import org.talend.core.model.update.UpdateResult;
+import org.talend.designer.core.ui.editor.nodes.Node;
 
 /**
  * DOC ggu class global comment. Detailled comment
@@ -97,6 +98,11 @@ class Category {
      */
     private EUpdateItemType type;
 
+    /**
+     * only used for node icon.
+     */
+    private Node node;
+
     public Category(Job parent, String name) {
         this.parent = parent;
         this.name = name;
@@ -127,6 +133,14 @@ class Category {
 
     public void setType(EUpdateItemType type) {
         this.type = type;
+    }
+
+    public Node getNode() {
+        return this.node;
+    }
+
+    public void setNode(Node node) {
+        this.node = node;
     }
 
 }

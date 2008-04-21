@@ -21,6 +21,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.talend.core.model.process.IProcess2;
 import org.talend.core.model.update.UpdateResult;
 import org.talend.core.model.update.UpdatesConstants;
+import org.talend.designer.core.ui.editor.nodes.Node;
 
 /**
  * ggu class global comment. Detailled comment
@@ -82,7 +83,11 @@ public class UpdateContentProvider implements ITreeContentProvider {
                 Category category = job.getCategory(result.getCategory());
                 if (category == null) {
                     category = new Category(job, result.getCategory());
-                    category.setType(result.getUpdateType());
+                    category.setType(result.getUpdateType()); // for icon
+                    if (result.getUpdateObject() instanceof Node) { // for node icon
+                        category.setNode((Node) result.getUpdateObject());
+                    }
+
                     job.addCategory(category);
                 }
                 Item item = new Item(category, result);

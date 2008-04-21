@@ -146,6 +146,7 @@ public class UpdateNodeParameterCommand extends Command {
         }
     }
 
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     private void updateSchema() {
         Object updateObject = result.getUpdateObject();
         if (updateObject == null) {
@@ -154,9 +155,11 @@ public class UpdateNodeParameterCommand extends Command {
         if (updateObject instanceof Node) { // opened job
             Node node = (Node) updateObject;
 
+            boolean builtIn = true;
+
             if (result.getResultType() == EUpdateResult.UPDATE) {
                 if (result.isChecked()) {
-                    IMetadataTable newTable = ((IMetadataTable) result.getParameter());
+                    IMetadataTable newTable = (IMetadataTable) result.getParameter();
                     // node.getMetadataFromConnector(newTable.getAttachedConnector()).setListColumns(newTable.getListColumns());
                     if (newTable != null) {
                         for (INodeConnector nodeConnector : node.getListConnector()) {
@@ -164,11 +167,34 @@ public class UpdateNodeParameterCommand extends Command {
                                 MetadataTool.copyTable(newTable, node.getMetadataFromConnector(nodeConnector.getName()));
                             }
                         }
+                        builtIn = false;
                     }
-                } else { // result.isChecked()==false
-                    node.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
                 }
-            } else { // built-in
+            } else if (result.getResultType() == EUpdateResult.RENAME) {
+                List<Object> parameter = (List<Object>) result.getParameter();
+                if (parameter.size() >= 3) {
+                    IMetadataTable newTable = (IMetadataTable) parameter.get(0);
+                    String oldSourceId = (String) parameter.get(1);
+                    String newSourceId = (String) parameter.get(2);
+
+                    String schemaParamName = UpdatesConstants.SCHEMA + UpdatesConstants.COLON
+                            + EParameterName.REPOSITORY_SCHEMA_TYPE.getName();
+                    IElementParameter repositoryParam = node.getElementParameter(schemaParamName);
+                    if (repositoryParam != null && oldSourceId.equals(repositoryParam.getValue())) {
+                        node.setPropertyValue(schemaParamName, newSourceId);
+
+                        if (newTable != null) {
+                            for (INodeConnector nodeConnector : node.getListConnector()) {
+                                if (nodeConnector.getBaseSchema().equals(newTable.getAttachedConnector())) {
+                                    MetadataTool.copyTable(newTable, node.getMetadataFromConnector(nodeConnector.getName()));
+                                }
+                            }
+                        }
+                        builtIn = false;
+                    }
+                }
+            }
+            if (builtIn) { // built-in
                 node.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
 
             }

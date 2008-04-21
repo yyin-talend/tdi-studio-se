@@ -241,8 +241,8 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                     }
                 }
             }
-            repositoryRenamedMap.clear();
         }
+        repositoryRenamedMap.clear();
         return contextResults;
     }
 
@@ -408,6 +408,7 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                 return Collections.emptyList();
             }
         }
+        getSchemaRenamedMap().clear();
         return nodesResults;
     }
 
@@ -435,40 +436,64 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                     String propertyValue = (String) schemaTypeParam.getChildParameters().get(
                             EParameterName.REPOSITORY_SCHEMA_TYPE.getName()).getValue();
                     ConnectionItem connectionItem = null;
-                    String[] names = propertyValue.split(UpdatesConstants.SEGMENT_LINE); //$NON-NLS-1$
-                    if (names.length == 2) {
+                    String[] names = UpdateManagerUtils.getSourceIdAndChildName(propertyValue);
+                    if (names != null) {
                         connectionItem = UpdateRepositoryUtils.getConnectionItemByItemId(names[0]);
                     }
 
-                    IMetadataTable repositoryMetadata = null;
-                    String source = null;
+                    boolean builtIn = true;
+                    UpdateCheckResult result = null;
+
                     if (connectionItem != null) {
-                        IMetadataTable table = UpdateRepositoryUtils.getTableByName(connectionItem, names[1]);
-                        if (table != null) {
-                            source = UpdateRepositoryUtils.getRepositorySourceName(connectionItem)
-                                    + UpdatesConstants.SEGMENT_LINE + table.getLabel();
-                            repositoryMetadata = table;
+                        String newSourceId = getSchemaRenamedMap().get(propertyValue);
+                        // renamed
+                        if (newSourceId != null && !newSourceId.equals(propertyValue)) {
+                            String[] newSourceIdAndName = UpdateManagerUtils.getSourceIdAndChildName(newSourceId);
+                            if (newSourceIdAndName != null) {
+                                IMetadataTable table = UpdateRepositoryUtils
+                                        .getTableByName(connectionItem, newSourceIdAndName[1]);
+                                if (table != null) {
+                                    String source = UpdateRepositoryUtils.getRepositorySourceName(connectionItem);
+
+                                    final IMetadataTable copyOfrepositoryMetadata = table.clone();
+                                    copyOfrepositoryMetadata.setTableName(uniqueName);
+                                    copyOfrepositoryMetadata.setAttachedConnector(schemaTypeParam.getContext());
+
+                                    List<Object> parameter = new ArrayList<Object>();
+                                    parameter.add(copyOfrepositoryMetadata);
+                                    parameter.add(propertyValue);
+                                    parameter.add(newSourceId);
+
+                                    result = new UpdateCheckResult(node);
+                                    result.setResult(EUpdateItemType.NODE_SCHEMA, EUpdateResult.RENAME, parameter, source);
+                                    builtIn = false;
+                                }
+                            }
+                        } else {
+                            IMetadataTable table = UpdateRepositoryUtils.getTableByName(connectionItem, names[1]);
+                            if (table != null) {
+                                String source = UpdateRepositoryUtils.getRepositorySourceName(connectionItem)
+                                        + UpdatesConstants.SEGMENT_LINE + table.getLabel();
+
+                                final IMetadataTable copyOfrepositoryMetadata = table.clone();
+                                copyOfrepositoryMetadata.setTableName(uniqueName);
+                                copyOfrepositoryMetadata.setAttachedConnector(schemaTypeParam.getContext());
+
+                                IMetadataTable metadataTable = node.getMetadataFromConnector(schemaTypeParam.getContext());
+                                if (!metadataTable.sameMetadataAs(copyOfrepositoryMetadata, IMetadataColumn.OPTIONS_NONE)) {
+                                    result = new UpdateCheckResult(node);
+                                    result.setResult(EUpdateItemType.NODE_SCHEMA, EUpdateResult.UPDATE, copyOfrepositoryMetadata,
+                                            source);
+                                }
+                                builtIn = false;
+                            }
                         }
                     }
 
-                    UpdateCheckResult result = null;
-
-                    if (repositoryMetadata != null) {
-                        final IMetadataTable copyOfrepositoryMetadata = repositoryMetadata.clone();
-                        copyOfrepositoryMetadata.setTableName(uniqueName);
-                        copyOfrepositoryMetadata.setAttachedConnector(schemaTypeParam.getContext());
-
-                        IMetadataTable metadataTable = node.getMetadataFromConnector(schemaTypeParam.getContext());
-                        if (!metadataTable.sameMetadataAs(copyOfrepositoryMetadata, IMetadataColumn.OPTIONS_NONE)) {
-                            result = new UpdateCheckResult(node);
-                            result.setResult(EUpdateItemType.NODE_SCHEMA, EUpdateResult.UPDATE, copyOfrepositoryMetadata, source);
-
-                        }
-                    } else {
+                    if (builtIn) {
+                        // if the repository connection doesn't exists then set to built-in
                         result = new UpdateCheckResult(node);
                         result.setResult(EUpdateItemType.NODE_SCHEMA, EUpdateResult.BUIL_IN);
-                        // if the repository connection doesn't exists then
-                        // set to built-in
                     }
 
                     // add the check result to resultList, hold the value.
@@ -643,8 +668,8 @@ public class ProcessUpdateManager extends AbstractUpdateManager {
                 String propertyValue = (String) node.getPropertyValue(EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName());
 
                 ConnectionItem connectionItem = null;
-                String[] names = propertyValue.split(UpdatesConstants.SEGMENT_LINE); //$NON-NLS-1$
-                if (names.length == 2) {
+                String[] names = UpdateManagerUtils.getSourceIdAndChildName(propertyValue);
+                if (names != null) {
                     connectionItem = UpdateRepositoryUtils.getConnectionItemByItemId(names[0]);
                 }
                 Query query = null;

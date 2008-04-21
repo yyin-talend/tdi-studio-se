@@ -33,6 +33,7 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.dialogs.SelectionDialog;
 import org.eclipse.ui.internal.WorkbenchMessages;
+import org.talend.core.model.update.EUpdateResult;
 import org.talend.core.model.update.UpdateResult;
 import org.talend.core.model.update.UpdatesConstants;
 import org.talend.designer.core.i18n.Messages;
@@ -57,7 +58,7 @@ public class UpdateDetectionDialog extends SelectionDialog {
 
     private static final int SIZING_SELECTION_WIDGET_WIDTH = 550;
 
-    private static final int SIZING_COLUMN_WIDTH = 23;
+    private static final int SIZING_COLUMN_WIDTH = 25;
 
     private List<UpdateResult> inputElement;
 
@@ -66,6 +67,8 @@ public class UpdateDetectionDialog extends SelectionDialog {
     private UpdateViewerHelper helper;
 
     private Button selectButton;
+
+    private boolean canCancel = true;
 
     /**
      * ggu UpdateCheckDialog constructor comment.
@@ -111,15 +114,23 @@ public class UpdateDetectionDialog extends SelectionDialog {
     }
 
     private void checkInitialSelections() {
+        boolean cancel = true;
         for (UpdateResult result : getInputElements()) {
             result.setChecked(true);
+            if (result.getResultType() == EUpdateResult.RENAME) {
+                cancel = false;
+            }
         }
+        this.canCancel = cancel;
     }
 
     @Override
     protected void createButtonsForButtonBar(Composite parent) {
         // Ok
         createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, true);
+        if (canCancel) {
+            createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, false);
+        }
     }
 
     public void setSelectButtonLabel(String label) {
@@ -261,7 +272,7 @@ public class UpdateDetectionDialog extends SelectionDialog {
 
         column = new TreeColumn(tree, SWT.NONE);
         column.setText(REMARKS);
-        column.setWidth(SIZING_COLUMN_WIDTH * 8);
+        column.setWidth(SIZING_COLUMN_WIDTH * 6);
     }
 
     private void addViewerListener() {
@@ -278,12 +289,12 @@ public class UpdateDetectionDialog extends SelectionDialog {
 
     @Override
     protected void okPressed() {
-        setResult(getInputElements());
 
         Tree tree = viewer.getTree();
         if (tree.isDisposed()) {
             return;
         }
+        setResult(getInputElements());
         super.okPressed();
 
     }

@@ -13,8 +13,9 @@
 package org.talend.designer.core.ui.editor.update;
 
 import java.beans.PropertyChangeEvent;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -23,15 +24,24 @@ import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.PlatformUI;
+import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.swt.dialogs.ProgressDialog;
+import org.talend.core.CorePlugin;
 import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IProcess2;
+import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.JobletProcessItem;
+import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.core.model.update.UpdateResult;
 import org.talend.core.model.update.UpdatesConstants;
+import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.editor.process.Process;
@@ -42,11 +52,29 @@ import org.talend.designer.core.ui.editor.update.cmd.UpdateNodeParameterCommand;
 import org.talend.designer.core.ui.views.contexts.Contexts;
 import org.talend.designer.core.ui.views.jobsettings.JobSettings;
 import org.talend.designer.core.ui.views.properties.ComponentSettings;
+import org.talend.designer.joblet.model.JobletProcess;
+import org.talend.repository.model.IProxyRepositoryFactory;
 
 /**
  * ggu class global comment. Detailled comment
  */
 public final class UpdateManagerUtils {
+
+    /**
+     * 
+     * used for get repository id and child name, such as "xxxxxxxxxxx - metadata".
+     */
+    public static String[] getSourceIdAndChildName(final String idAndName) {
+        if (idAndName == null) {
+            return null;
+        }
+        String[] result = idAndName.split(UpdatesConstants.SEGMENT_LINE);
+        if (result.length == 2) {
+            return result;
+        }
+        return null;
+
+    }
 
     public static IComponent getComponent(Process process, final String name) {
         if (name != null) {
@@ -129,21 +157,21 @@ public final class UpdateManagerUtils {
             UpdateDetectionDialog checkDialog = new UpdateDetectionDialog(Display.getCurrent().getActiveShell(), results);
 
             if (checkDialog.open() == IDialogConstants.OK_ID) {
-                final List<Object> selectResult = Arrays.asList(checkDialog.getResult());
-                ProgressDialog progress = new ProgressDialog(Display.getCurrent().getActiveShell()) {
+                // final List<Object> selectResult = Arrays.asList(checkDialog.getResult());
+                ProgressDialog progress = new ProgressDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell()) {
 
                     @Override
                     public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                         monitor.setCanceled(false);
-                        monitor.beginTask("Progress...", selectResult.size() + 4); //$NON-NLS-1$
+                        int size = (results.size() * 2 + 1) * UpdatesConstants.SCALE;
+                        monitor.beginTask(Messages.getString("UpdateManagerUtils.Update"), size); //$NON-NLS-1$
                         // execute
-                        executeUpdates(selectResult, monitor);
-                        // refresh
-                        refreshRelatedViewers(selectResult);
-                        monitor.worked(2);
+                        executeUpdates(results, monitor);
                         // save repository item
-                        RepositoryUpdateManager.saveModifiedItem(results);
-                        monitor.worked(2);
+                        saveModifiedItem(results, monitor);
+                        // refresh
+                        refreshRelatedViewers(results);
+                        monitor.worked(1 * UpdatesConstants.SCALE);
                         monitor.done();
                     }
 
@@ -151,11 +179,13 @@ public final class UpdateManagerUtils {
                 try {
                     progress.executeProcess();
                 } catch (InvocationTargetException e) {
+                    ExceptionHandler.process(e);
                     // 
                 } catch (InterruptedException e) {
+                    ExceptionHandler.process(e);
                     // 
                 }
-                return !selectResult.isEmpty();
+                return !results.isEmpty();
             }
         } finally {
             results.clear();
@@ -167,7 +197,7 @@ public final class UpdateManagerUtils {
      * 
      * ggu Comment method "refreshViewers".
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     private static void refreshRelatedViewers(List results) {
         boolean context = false;
         boolean jobSetting = false;
@@ -212,6 +242,49 @@ public final class UpdateManagerUtils {
         }
     }
 
+    private static void saveModifiedItem(List<UpdateResult> updatesNeededResult, IProgressMonitor monitor) {
+        if (updatesNeededResult == null) {
+            return;
+        }
+        Set<IProcess2> process2List = new HashSet<IProcess2>();
+
+        for (UpdateResult result : updatesNeededResult) {
+            IProcess2 process2 = result.getItemProcess();
+            if (process2 != null) { // for item update
+                process2List.add(process2);
+            }
+        }
+        if (process2List.isEmpty()) {
+            return;
+        }
+        final int rate = updatesNeededResult.size() / process2List.size();
+        // save
+        IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
+        for (IProcess2 process2 : process2List) {
+            try {
+                SubProgressMonitor subMonitor = new SubProgressMonitor(monitor, 1 * UpdatesConstants.SCALE,
+                        SubProgressMonitor.PREPEND_MAIN_LABEL_TO_SUBTASK);
+                subMonitor.beginTask(UpdatesConstants.EMPTY, 1 * rate);
+                subMonitor.subTask(RepositoryUpdateManager.getUpdateJobInfor(process2));
+
+                ProcessType processType = process2.saveXmlFile();
+                Item item = process2.getProperty().getItem();
+                if (item instanceof JobletProcessItem) {
+                    ((JobletProcessItem) item).setJobletProcess((JobletProcess) processType);
+                } else {
+                    ((ProcessItem) item).setProcess(processType);
+                }
+                factory.save(item);
+                subMonitor.worked(1);
+                subMonitor.done();
+            } catch (PersistenceException e) {
+                // 
+            } catch (IOException e) {
+                // 
+            }
+        }
+    }
+
     /**
      * 
      * ggu Comment method "executeUpdates".
@@ -248,7 +321,7 @@ public final class UpdateManagerUtils {
                 break;
             }
             if (command != null) {
-                SubProgressMonitor subMonitor = new SubProgressMonitor(monitor, 1,
+                SubProgressMonitor subMonitor = new SubProgressMonitor(monitor, 1 * UpdatesConstants.SCALE,
                         SubProgressMonitor.PREPEND_MAIN_LABEL_TO_SUBTASK);
                 subMonitor.beginTask(UpdatesConstants.EMPTY, 1);
                 subMonitor.subTask(getResultTaskInfor(result));
