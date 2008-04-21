@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.metadata.connection.ldap;
 
+import java.util.Map;
+
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.viewers.ISelection;
@@ -73,6 +75,8 @@ public class LDAPSchemaWizard extends RepositoryWizard implements INewWizard {
     private boolean isSinglePageOnly;
 
     private static final String ALL_STEPS = "5";
+
+    private Map<String, String> oldTableMap;
 
     /**
      * LDAPSchemaWizard constructor comment.
@@ -149,7 +153,7 @@ public class LDAPSchemaWizard extends RepositoryWizard implements INewWizard {
             initLockStrategy();
             break;
         }
-
+        initTable();
     }
 
     public LDAPSchemaWizard(IWorkbench workbench, boolean creation, RepositoryNode node, String[] existingNames,
@@ -201,7 +205,13 @@ public class LDAPSchemaWizard extends RepositoryWizard implements INewWizard {
             initLockStrategy();
             break;
         }
+        initTable();
+    }
 
+    private void initTable() {
+        if (connectionItem != null) {
+            oldTableMap = RepositoryUpdateManager.getTableIdAndNameMap(connectionItem);
+        }
     }
 
     /**
@@ -323,7 +333,7 @@ public class LDAPSchemaWizard extends RepositoryWizard implements INewWizard {
                 } else {
                     // update
                     RepositoryUpdateManager.updateSchema((MetadataTable) ((LDAPSchemaConnection) connectionItem.getConnection())
-                            .getTables().get(0));
+                            .getTables().get(0), connectionItem, oldTableMap);
 
                     factory.save(connectionItem);
                     closeLockStrategy();
@@ -358,4 +368,5 @@ public class LDAPSchemaWizard extends RepositoryWizard implements INewWizard {
     public Property getConnectionProperty() {
         return this.connectionProperty;
     }
+
 }

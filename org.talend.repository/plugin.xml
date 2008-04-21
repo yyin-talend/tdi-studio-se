@@ -446,12 +446,12 @@
                tooltip="%exportProjectsAction.toolTip"/>
          <action
                class="org.talend.repository.ui.actions.toolbar.UpdateModificationsAction"
-               icon="icons/process_icon.gif"
+               icon="icons/refresh.gif"
                id="org.talend.repository.updateModifications"
                label="Upate modified jobs"
                style="push"
                toolbarPath="Default"
-               tooltip="Detecte and update opened jobs">
+               tooltip="Detecte and update all jobs">
          </action>
          <!--action
                class="org.talend.repository.ui.actions.importproject.DeleteProjectsAsAction"

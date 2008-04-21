@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.metadata.connection.genericshema;
 
+import java.util.Map;
+
 import org.apache.log4j.Logger;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.INewWizard;
@@ -21,6 +23,7 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
@@ -28,9 +31,8 @@ import org.talend.repository.ui.wizards.RepositoryWizard;
 import org.talend.repository.ui.wizards.metadata.table.files.FileTableWizardPage;
 
 /**
- * DOC Administrator  class global comment. Detailled comment
- * <br/>
- *
+ * DOC Administrator class global comment. Detailled comment <br/>
+ * 
  */
 public class GenericSchemaTableWizard extends RepositoryWizard implements INewWizard {
 
@@ -41,6 +43,8 @@ public class GenericSchemaTableWizard extends RepositoryWizard implements INewWi
     private ConnectionItem connectionItem;
 
     private MetadataTable metadataTable;
+
+    private Map<String, String> oldTableMap;
 
     /**
      * Constructor for TableWizard.
@@ -53,6 +57,9 @@ public class GenericSchemaTableWizard extends RepositoryWizard implements INewWi
         super(workbench, creation, forceReadOnly);
         this.connectionItem = connectionItem;
         this.metadataTable = metadataTable;
+        if (connectionItem != null) {
+            oldTableMap = RepositoryUpdateManager.getTableIdAndNameMap(connectionItem);
+        }
         setNeedsProgressMonitor(true);
 
         isRepositoryObjectEditable();
@@ -89,6 +96,9 @@ public class GenericSchemaTableWizard extends RepositoryWizard implements INewWi
         if (tableWizardpage.isPageComplete()) {
             IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             try {
+                // update
+                RepositoryUpdateManager.updateSchema(metadataTable, connectionItem, oldTableMap);
+
                 factory.save(repositoryObject.getProperty().getItem());
                 closeLockStrategy();
             } catch (PersistenceException e) {

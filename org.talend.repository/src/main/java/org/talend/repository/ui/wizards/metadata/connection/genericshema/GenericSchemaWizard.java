@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.metadata.connection.genericshema;
 
+import java.util.Map;
+
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -64,6 +66,8 @@ public class GenericSchemaWizard extends RepositoryWizard implements INewWizard 
     private ConnectionItem connectionItem;
 
     private boolean isSinglePageOnly;
+
+    private Map<String, String> oldTableMap;
 
     /**
      * Constructor for FileWizard.
@@ -137,6 +141,7 @@ public class GenericSchemaWizard extends RepositoryWizard implements INewWizard 
             initLockStrategy();
             break;
         }
+        initTable();
     }
 
     public GenericSchemaWizard(IWorkbench workbench, boolean creation, RepositoryNode node, String[] existingNames,
@@ -185,6 +190,13 @@ public class GenericSchemaWizard extends RepositoryWizard implements INewWizard 
             isRepositoryObjectEditable();
             initLockStrategy();
             break;
+        }
+        initTable();
+    }
+
+    private void initTable() {
+        if (connectionItem != null) {
+            oldTableMap = RepositoryUpdateManager.getTableIdAndNameMap(connectionItem);
         }
     }
 
@@ -282,7 +294,7 @@ public class GenericSchemaWizard extends RepositoryWizard implements INewWizard 
                 } else {
                     // update
                     RepositoryUpdateManager.updateSchema((MetadataTable) ((GenericSchemaConnection) connectionItem
-                            .getConnection()).getTables().get(0));
+                            .getConnection()).getTables().get(0), connectionItem, oldTableMap);
 
                     factory.save(connectionItem);
                     closeLockStrategy();

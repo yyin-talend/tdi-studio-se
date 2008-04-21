@@ -14,6 +14,7 @@ package org.talend.repository.ui.wizards.metadata.table.database;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -58,6 +59,8 @@ public class DatabaseTableWizard extends RepositoryWizard implements INewWizard 
 
     private final ManagerConnection managerConnection;
 
+    private Map<String, String> oldTableMap;
+
     /**
      * DOC ocarbone DatabaseTableWizard constructor comment.
      * 
@@ -75,6 +78,9 @@ public class DatabaseTableWizard extends RepositoryWizard implements INewWizard 
         this.metadataTable = metadataTable;
         this.existingNames = existingNames;
         this.managerConnection = managerConnection;
+        if (connectionItem != null) {
+            oldTableMap = RepositoryUpdateManager.getTableIdAndNameMap(connectionItem);
+        }
         setNeedsProgressMonitor(true);
 
         // set the repositoryObject, lock and set isRepositoryObjectEditable
@@ -144,7 +150,7 @@ public class DatabaseTableWizard extends RepositoryWizard implements INewWizard 
     public boolean performFinish() {
         if (tableWizardpage.isPageComplete()) {
             // update
-            RepositoryUpdateManager.updateSchema(metadataTable);
+            RepositoryUpdateManager.updateSchema(metadataTable, connectionItem, oldTableMap);
 
             saveMetaData();
             closeLockStrategy();

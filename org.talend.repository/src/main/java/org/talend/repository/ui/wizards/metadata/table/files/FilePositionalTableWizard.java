@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.metadata.table.files;
 
+import java.util.Map;
+
 import org.apache.log4j.Logger;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.INewWizard;
@@ -43,6 +45,8 @@ public class FilePositionalTableWizard extends RepositoryWizard implements INewW
 
     private MetadataTable metadataTable;
 
+    private Map<String, String> oldTableMap;
+
     /**
      * Constructor for TableWizard.
      * 
@@ -54,6 +58,9 @@ public class FilePositionalTableWizard extends RepositoryWizard implements INewW
         super(workbench, creation, forceReadOnly);
         this.connectionItem = connectionItem;
         this.metadataTable = metadataTable;
+        if (connectionItem != null) {
+            oldTableMap = RepositoryUpdateManager.getTableIdAndNameMap(connectionItem);
+        }
         setNeedsProgressMonitor(true);
 
         isRepositoryObjectEditable();
@@ -91,7 +98,7 @@ public class FilePositionalTableWizard extends RepositoryWizard implements INewW
             return false;
         }
         // update
-        RepositoryUpdateManager.updateSchema(metadataTable);
+        RepositoryUpdateManager.updateSchema(metadataTable, connectionItem, oldTableMap);
 
         IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         try {

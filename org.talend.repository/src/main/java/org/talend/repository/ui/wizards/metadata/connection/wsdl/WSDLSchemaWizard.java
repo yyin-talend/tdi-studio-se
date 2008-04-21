@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.metadata.connection.wsdl;
 
+import java.util.Map;
+
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.viewers.ISelection;
@@ -66,6 +68,8 @@ public class WSDLSchemaWizard extends RepositoryWizard implements INewWizard {
     private boolean isSinglePageOnly;
 
     private static final String ALL_STEPS = "3";
+
+    private Map<String, String> oldTableMap;
 
     /**
      * WSDLSchemaWizard constructor comment.
@@ -142,7 +146,7 @@ public class WSDLSchemaWizard extends RepositoryWizard implements INewWizard {
             initLockStrategy();
             break;
         }
-
+        initTable();
     }
 
     public WSDLSchemaWizard(IWorkbench workbench, boolean creation, RepositoryNode node, String[] existingNames,
@@ -194,7 +198,13 @@ public class WSDLSchemaWizard extends RepositoryWizard implements INewWizard {
             initLockStrategy();
             break;
         }
+        initTable();
+    }
 
+    private void initTable() {
+        if (connectionItem != null) {
+            oldTableMap = RepositoryUpdateManager.getTableIdAndNameMap(connectionItem);
+        }
     }
 
     /**
@@ -325,7 +335,7 @@ public class WSDLSchemaWizard extends RepositoryWizard implements INewWizard {
                 } else {
                     // update
                     RepositoryUpdateManager.updateSchema((MetadataTable) ((WSDLSchemaConnection) connectionItem.getConnection())
-                            .getTables().get(0));
+                            .getTables().get(0), connectionItem, oldTableMap);
 
                     factory.save(connectionItem);
                     closeLockStrategy();
@@ -342,4 +352,5 @@ public class WSDLSchemaWizard extends RepositoryWizard implements INewWizard {
             return false;
         }
     }
+
 }
