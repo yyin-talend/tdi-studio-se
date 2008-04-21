@@ -136,10 +136,10 @@ abstract class  Manager {
                 }
                 createTableSQL.append(suffix);
             }
-            createTableSQL.append(getDefaultValueSQL(metadataColumn.getDefault()));
             if(!metadataColumn.isNullable()) {
-                createTableSQL.append("not null");
+                createTableSQL.append(" not null ");
             }
+            createTableSQL.append(getDefaultValueSQL(metadataColumn.getDefault()));            
             if(count == listColumn.size() - 1 && pkList.size() == 0) {
                 ending = "";
             }
@@ -165,11 +165,11 @@ abstract class  Manager {
         if(defaultValue == null || defaultValue.equals("\"\"") || defaultValue.equals("")) {
             return " ";
         } else if((defaultValue.startsWith("\"") || defaultValue.startsWith("'")) && (defaultValue.endsWith("\"") || defaultValue.endsWith("'"))) {
-            return "default '" + defaultValue.substring(1,defaultValue.length() - 1) + "' ";
+            return " default '" + defaultValue.substring(1,defaultValue.length() - 1) + "' ";
         } else if(defaultValue.equalsIgnoreCase("null")) {
-            return "default null ";
+            return " default null ";
         } else {
-            return "default " + defaultValue + " ";
+            return " default " + defaultValue + " ";
         }            
     }
 }
