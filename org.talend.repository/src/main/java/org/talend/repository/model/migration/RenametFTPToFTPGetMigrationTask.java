@@ -37,8 +37,8 @@ public class RenametFTPToFTPGetMigrationTask extends AbstractJobMigrationTask {
 
     public ExecutionResult executeOnProcess(ProcessItem item) {
         try {
-
-            if (getProject().getLanguage().equals(ECodeLanguage.JAVA)) {
+            ECodeLanguage projectLanguage = getProject().getLanguage();
+            if (projectLanguage.equals(ECodeLanguage.JAVA) || projectLanguage.equals(ECodeLanguage.PERL)) {
                 IComponentConversion removePropertyComponentConversion = new RemovePropertyComponentConversion("TYPE"); //$NON-NLS-1$
 
                 RenameComponentConversion renameComponentConversion = new RenameComponentConversion("tFTPGet"); //$NON-NLS-1$

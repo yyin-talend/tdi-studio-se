@@ -1,14 +1,13 @@
-<!-- $Id$ -->
 <COMPONENT>
   <HEADER
     PLATEFORM="ALL"
-       SERIAL=""
-      VERSION="0.101"
-       STATUS="ALPHA"
+    SERIAL=""
+    VERSION="0.101"
+    STATUS="ALPHA"
          
-COMPATIBILITY="ALL"
-       AUTHOR="Talend"
- RELEASE_DATE="20050320A"
+    COMPATIBILITY="ALL"
+    AUTHOR="Talend"
+    RELEASE_DATE="20050320A"
     STARTABLE="true"
   >
     <SIGNATURE></SIGNATURE>
@@ -53,19 +52,9 @@ COMPATIBILITY="ALL"
       <DEFAULT>'/share/ftp'</DEFAULT>
     </PARAMETER>
 
-    <PARAMETER NAME="ACTION" FIELD="CLOSED_LIST" NUM_ROW="5">
-      <ITEMS DEFAULT="put">
-        <ITEM NAME="PUT"    VALUE="put" />
-        <ITEM NAME="GET"    VALUE="get" />
-        <ITEM NAME="RENAME" VALUE="rename" />
-        <ITEM NAME="DELETE" VALUE="delete" />
-      </ITEMS>
-    </PARAMETER>
-
     <PARAMETER NAME="FILES" FIELD="TABLE" REQUIRED="false" NUM_ROW="6" NB_LINES="5">
       <ITEMS>
         <ITEM NAME="FILEMASK" />
-        <ITEM NAME="NEWNAME" SHOW_IF="ACTION=='RENAME'"/>
       </ITEMS>
     </PARAMETER>
   </PARAMETERS>
