@@ -75,7 +75,7 @@ public class EditProcess extends AContextualAction {
             if (editorPart == null) {
                 fileEditorInput.setView(getViewPart());
                 fileEditorInput.setRepositoryNode(node);
-                MultiPageTalendEditor openEditor = (MultiPageTalendEditor) page.openEditor(fileEditorInput,
+                /* MultiPageTalendEditor openEditor = (MultiPageTalendEditor) */page.openEditor(fileEditorInput,
                         MultiPageTalendEditor.ID, true);
                 // List<AbstractProcessProvider> findAllProcessProviders =
                 // AbstractProcessProvider.findAllProcessProviders();

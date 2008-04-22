@@ -1160,7 +1160,8 @@ public class Process extends Element implements IProcess2 {
             factory.setMetadataType(mType);
             metadataTable = factory.getMetadataTable();
             listMetaData.add(metadataTable);
-            if (nc.getConnectorFromType(EConnectionType.FLOW_MAIN).isBuiltIn()) {
+            if (nc.getConnectorFromType(EConnectionType.FLOW_MAIN).isBuiltIn()
+                    && checkValidConnectionName(metadataTable.getTableName())) {
                 addUniqueConnectionName(metadataTable.getTableName());
             } else {
                 if (metadataTable.getTableName() == null) {

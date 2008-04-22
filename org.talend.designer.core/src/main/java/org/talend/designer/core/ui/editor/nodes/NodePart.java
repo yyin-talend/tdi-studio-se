@@ -305,7 +305,7 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
                     connIdName = node.getProcess().generateUniqueConnectionName("row");
                 }
                 if (conn instanceof Connection && conn.getLineStyle().hasConnectionCategory(IConnectionCategory.FLOW)
-                        && node.getProcess().checkValidConnectionName(connIdName, false)) {
+                        && node.getProcess().checkValidConnectionName(connIdName)) {
                     ((Connection) conn).setUniqueName(connIdName);
                     node.getProcess().addUniqueConnectionName(connIdName);
                     ((Connection) conn).setName(connIdName);
