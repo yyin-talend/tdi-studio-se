@@ -1,0 +1,112 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.metadata.IMetadataTable
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.core.model.process.IConnection
+    org.talend.core.model.process.IConnectionCategory
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.metadata.types.JavaTypesManager
+    java.util.List
+    java.util.Map
+    java.util.ArrayList
+    java.util.HashMap
+"
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+
+    IMetadataTable metadata = metadatas.get(0);
+    
+    if (metadata != null) { 
+    	List<IMetadataColumn> columns = metadata.getListColumns();
+    	Map<String, String> typesMap = new HashMap<String, String>();
+    	for(IMetadataColumn column : columns){
+    		String type = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+    		typesMap.put(column.getLabel(), type);
+    	}
+        List<Map<String, String>> denormalizes = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__DENORMALIZE_COLUMNS__");
+        List<String> denormalizeColumns = new ArrayList<String>();
+        List<String> denormalizeDelimiters = new ArrayList<String>();
+        List<Boolean> denormalizeMergeFlags = new ArrayList<Boolean>();
+        List<String> groupColumns = new ArrayList<String>();
+		boolean invalidFlag = false;
+        for(Map<String, String> denormalize : denormalizes){
+        	String columnName = denormalize.get("INPUT_COLUMN");
+        	if(denormalizeColumns.contains(columnName)){
+        		continue;
+        	}
+        	if(!typesMap.get(columnName).equals("String")){
+        		invalidFlag = true;
+        	}
+        	denormalizeColumns.add(columnName);
+        	denormalizeDelimiters.add(denormalize.get("DELIMITER"));
+        	denormalizeMergeFlags.add(denormalize.get("MERGE").equals("true"));
+        }
+        for(IMetadataColumn column : columns){
+        	String columnName = column.getLabel();
+        	if(denormalizeColumns.contains(columnName)){
+        		continue;
+        	}
+        	groupColumns.add(column.getLabel());
+        }
+        if(invalidFlag){
+%>
+boolean hasInvalidType = true;
+if(hasInvalidType){
+	throw new RuntimeException("The Denormalize fields should be for String type.");
+}	
+<%
+        }
+        
+		List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
+		if (conns!=null) {
+			if (conns.size()>0) {
+				IConnection conn = conns.get(0);
+				if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+%>final <%=conn.getName() %>Struct[] emmitArray_<%=cid %> = new <%=conn.getName() %>Struct[2];
+emmitArray_<%=cid %>[0] = new <%=conn.getName() %>Struct();
+emmitArray_<%=cid %>[1] = new <%=conn.getName() %>Struct();
+<%
+				}
+			}
+		}
+%>int nb_line_<%=cid%> = 0;
+int currentRowIndex_<%=cid%> = 0;
+boolean  flag_<%=cid%> = true;//flag for the encounter of first row.
+
+<%	
+	//gen groups variable
+	for(String columnName : groupColumns){
+		String type = typesMap.get(columnName);
+%><%=type %> group_<%=columnName %>_<%=cid %><%
+if(type.equals("String") || type.equals("Object") || type.equals("Date") || type.equals("byte[]")){%>=null<%}else if(type.equals("boolean") || type.equals("Boolean")){%>=false<%}else{%>=(<%=type %>)0<%}%>;
+<%	}
+	
+	//gen denormalize variable
+	boolean flag = false;
+	for(int i = 0; i < denormalizeColumns.size(); i++){
+		String columnName = denormalizeColumns.get(i);
+		if(denormalizeMergeFlags.get(i)){
+			if(!flag){
+				flag = true;
+%>StringBuilder tempSB_<%=cid %> = new StringBuilder();
+<%
+			}
+%>
+java.util.List<String> denormalize_<%=columnName %>_<%=cid %> = new java.util.ArrayList<String>();
+<%
+		}else{
+%>StringBuilder denormalize_<%=columnName %>_<%=cid %> = new StringBuilder();
+<%
+		}
+	}
+	}
+}
+%>
