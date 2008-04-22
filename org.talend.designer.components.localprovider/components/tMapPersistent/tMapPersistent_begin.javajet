@@ -64,10 +64,12 @@
             }
             String className = tableName + "Struct";
             
+            boolean isAllRows = "ALL_ROWS".equals(inputTable.getMatchingMode());
+            
             if(inputTable.isPersistent()) {
 %>
 
-org.talend.designer.components.persistent.PersistentSortedAdvancedLookup<<%=tableName%>Struct> tHash_Lookup_<%=tableName%> = (org.talend.designer.components.persistent.PersistentSortedAdvancedLookup<<%=tableName%>Struct>) globalMap.get( "tHash_Lookup_<%=tableName%>" );
+org.talend.designer.components.persistent.Persistent<%= isAllRows ? "" : "Sorted" %>LookupManager<<%=tableName%>Struct> tHash_Lookup_<%=tableName%> = (org.talend.designer.components.persistent.Persistent<%= isAllRows ? "" : "Sorted" %>LookupManager<<%=tableName%>Struct>) globalMap.get( "tHash_Lookup_<%=tableName%>" );
 
 <%
 } else {
@@ -77,6 +79,16 @@ org.talend.designer.components.commons.AdvancedMemoryLookup<<%=tableName%>Struct
 
 <%
 }
+
+if(isAllRows) {
+%>
+	tHash_Lookup_<%= tableName %>.initGet();
+<%
+}
+
+
+
+
 %>
 
 <%=className%> <%=tableName%>HashKey = new <%=className%>();
@@ -171,6 +183,8 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
 	ExternalMapperTable currentInputTable = inputTables.get(iInputTable);
 	ExternalMapperTable nextInputTable = null; 
 	
+	
+	
 	if(sizeInputTables > 1) {
 		nextInputTable = inputTables.get(iInputTable + 1);
 	}
@@ -181,7 +195,15 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
 	
 	currentJoinedTableNames += currentInputTable.getName();
 
-
+	String currentTableName = currentInputTable.getName();
+    IConnection currentConection = hNameToConnection.get(currentTableName);
+    if (currentConection == null) {
+        continue;
+    }
+	
+	
+    cumulatedInputConnections.add(currentConection);
+	
 	if(nextInputTable != null && nextInputTable.isPersistent()) { // T_TM_B_103
 	
 		List<IMetadataColumn> nextColumnsKeys = new ArrayList<IMetadataColumn>();
@@ -189,21 +211,19 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
 	
 		%>
 	
-		class SortableRow_<%= currentJoinedTableNames %> implements Comparable<SortableRow_<%= currentJoinedTableNames %>>, routines.system.IPersistableRow { // G_TM_B_001 
+		class SortableRow_<%= currentJoinedTableNames %> implements Comparable<SortableRow_<%= currentJoinedTableNames %>>, routines.system.IPersistableRow<SortableRow_<%= currentJoinedTableNames %>> { // G_TM_B_001 
 
 			boolean is__rejectedInnerJoin;
 
 		<%
 	        
-
 	        String nextTableName = nextInputTable.getName();
             IConnection nextConection = hNameToConnection.get(nextTableName);
             if (nextConection == null) {
                 continue;
             }
 	
-	
-        
+	        
                 IMetadataTable nextMetadataTable = nextConection.getMetadataTable();
                 if (nextInputTable != null) {
                     hExternalInputTableEntries.clear();
@@ -233,13 +253,11 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
 				}
 			
 			
+			// properties declarations 
+			%>
+			//<%= currentInputTable.getName() %>
+			<%
 			
-				        String currentTableName = currentInputTable.getName();
-            IConnection currentConection = hNameToConnection.get(currentTableName);
-            if (currentConection == null) {
-                continue;
-            }
-	
         
                 IMetadataTable currentMetadataTable = currentConection.getMetadataTable();
                 if (currentInputTable != null) {
@@ -263,16 +281,7 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
                     for (ExternalMapperTableEntry currentInputTableEntry : metadataTableEntries) {
                         hExternalInputTableEntries.put(currentInputTableEntry.getName(), currentInputTableEntry);
                     }
-                    cumulatedInputConnections.add(currentConection);
 
-                    List<IMetadataColumn> listColumns = currentMetadataTable.getListColumns();
-                    for (IMetadataColumn column : listColumns) {
-                        String columnName = column.getLabel();
-                            
-                            	%><%= JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable()) %> <%= currentInputTable.getName() %>__<%=column.getLabel() %>;
-                            	<%
- 		                           
-                    }
 				}
 				
 		%>

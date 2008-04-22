@@ -76,6 +76,8 @@
 					}
 					
 					String tempFolder = hashConfiguration.getTemporaryDataDirectory();
+					boolean isAllRows = "ALL_ROWS".equals(matchingModeStr);
+					
 					
 			   %>
 			   		org.talend.designer.components.commons.AdvancedLookup.MATCHING_MODE matchingModeEnum_<%=connectionName%> = 
@@ -84,12 +86,13 @@
 			   <%
 				if(hashConfiguration.isPersistent()) {
 				%>
-					org.talend.designer.components.persistent.PersistentSortedAdvancedLookup<<%=connectionName%>Struct> tHash_Lookup_<%=connectionName%> = 
-	   					new org.talend.designer.components.persistent.PersistentSortedAdvancedLookup<<%=connectionName%>Struct>(matchingModeEnum_<%=connectionName%>, <%= tempFolder %> + "/Lookup_<%=connectionName%>_") {
+					org.talend.designer.components.persistent.Persistent<%= isAllRows ? "" : "Sorted" %>LookupManager<<%=connectionName%>Struct> tHash_Lookup_<%=connectionName%> = 
+	   					new org.talend.designer.components.persistent.Persistent<%= isAllRows ? "" : "Sorted" %>LookupManager<<%=connectionName%>Struct>(matchingModeEnum_<%=connectionName%>, <%= tempFolder %> + "/Lookup_<%=connectionName%>_"
+	   					, new org.talend.designer.components.persistent.IRowCreator() {
 	   						public <%=connectionName%>Struct createRowInstance() {
 	   							return new <%=connectionName%>Struct();
 	   						}
-	   					}; 
+	   					}); 
 
 	   				tHash_Lookup_<%=connectionName%>.initPut();
 

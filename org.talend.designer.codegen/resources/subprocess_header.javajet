@@ -98,7 +98,7 @@
 						
 %>
 
-private class <%=conn.getName() %>Struct<%=templateOrigin %> implements routines.system.<%= isLookup ? "IPersistableLookupRow<"+conn.getName()+"Struct>" : "IPersistableRow<"+conn.getName()+"Struct"+ templateOrigin + ">" %>, Comparable<<%=conn.getName() %>Struct<%=templateOrigin %>> {
+private class <%=conn.getName() %>Struct<%=templateOrigin %> implements routines.system.<%= isLookup ? "IPersistableComparableLookupRow<"+conn.getName()+"Struct>" : "IPersistableRow<"+conn.getName()+"Struct"+ templateOrigin + ">" %> {
 <%
 	if(hasAtLeastOneKey) {
 %>

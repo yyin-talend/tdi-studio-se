@@ -126,7 +126,7 @@
 	            	continue;
                 }
                 	
-                if(inputTable.isPersistent()) {
+                if(inputTable.isPersistent() && !"ALL_ROWS".equals(inputTable.getMatchingMode())) {
                 	hasPersistentLookup = true;
 					indexLastPersistentSortedTable = iInputTable;
                 }
@@ -136,7 +136,7 @@
 
 		boolean firstLookupIsPersistentSorted = false;
 
-		if (sizeInputTables > 1 && inputTables.get(1).isPersistent()) { // T_TM_M_201
+		if (sizeInputTables > 1 && inputTables.get(1).isPersistent() && !"ALL_ROWS".equals(inputTables.get(1).getMatchingMode())) { // T_TM_M_201
 			ExternalMapperTable inputTable = inputTables.get(1);
             String tableName = inputTable.getName();
             nextLookupName = inputTable.getName();
@@ -253,7 +253,10 @@
 			boolean isBeforeOfThirdTable = (iInputTable < 2);
 			boolean isLastPersistentSortedTable = (indexLastPersistentSortedTable == iInputTable);
 			
-			boolean nextTableIsPersistentSorted = !isLastTable && inputTables.get(iInputTable + 1).isPersistent();
+			boolean nextTableIsPersistentSorted = 
+				!isLastTable 
+				&& inputTables.get(iInputTable + 1).isPersistent() 
+				&& !"ALL_ROWS".equals(inputTables.get(iInputTable + 1).getMatchingMode());
 			
             String tableName = externalTable.getName();
             IConnection connection = hNameToConnection.get(tableName);
@@ -306,7 +309,7 @@
                         continue;
                     }
 
-					isPersistentSortedTable = externalTable.isPersistent();
+					isPersistentSortedTable = externalTable.isPersistent() && !"ALL_ROWS".equals(externalTable.getMatchingMode());
 
 					if(previousStateIsFirstPersistentSortedTable == false && isPersistentSortedTable) {
 						isFirstPersistentSortedTable = true;
@@ -334,8 +337,6 @@
            			<%
 				}
 				%>
-			
-			
 			
 				tHash_Lookup_<%= tableName %>.initGet();
 
@@ -654,7 +655,7 @@
                 if(!isLastTable) { // T_TM_M_218 
 
 			nextInputTable = inputTables.get(iInputTable + 1);
-			if(!isLastTable && nextInputTable != null && nextInputTable.isPersistent()) { // T_TM_M_216
+			if(!isLastTable && nextInputTable != null && nextInputTable.isPersistent() && !"ALL_ROWS".equals(nextInputTable.getMatchingMode())) { // T_TM_M_216
 				nextLookupColumnsKeys.clear();
             	String nextTableName = nextInputTable.getName();
             	IConnection nextConnection = hNameToConnection.get(nextTableName);
