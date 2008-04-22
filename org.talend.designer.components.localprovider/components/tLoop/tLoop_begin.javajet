@@ -12,7 +12,9 @@ INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 
 String loopType = ElementParameterParser.getValue(node, "__LOOPTYPE__");
-
+%>
+int current_iteration_<%=cid%> = 0;
+<%
 if(loopType.equals("FORLOOP")){// For type
 
 String from = ElementParameterParser.getValue(node, "__FROM__");
@@ -24,6 +26,9 @@ if (step.equals("")) step = "1";
 %>
 
 for(int loop<%=cid%> =<%=from%>; loop<%=cid%><<%=to%>; loop<%=cid%>=loop<%=cid%>+<%=step%>){
+
+current_iteration_<%=cid%>++;
+globalMap.put("<%=cid%>_CURRENT_ITERATION",current_iteration_<%=cid%>);
 
 <%
 }else{// While type
@@ -39,7 +44,8 @@ declaration = declaration.substring(1,declaration.length()-1);
 
 while(<%=condition%>){
 
-
+current_iteration_<%=cid%>++;
+globalMap.put("<%=cid%>_CURRENT_ITERATION",current_iteration_<%=cid%>);
 
 <%
 }
