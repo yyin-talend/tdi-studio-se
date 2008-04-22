@@ -310,20 +310,25 @@ public final class CodeGeneratorEmittersPoolFactory {
             TalendJetEmitter dummyEmitter = new TalendJetEmitter(null, null, sub, globalClasspath, !ComponentCompilations
                     .getMarkers());
 
-            try {
-                alreadyCompiledEmitters = loadEmfPersistentData(EmfEmittersPersistenceFactory.getInstance(codeLanguage)
-                        .loadEmittersPool(), components, monitorWrap);
-                for (JetBean jetBean : alreadyCompiledEmitters) {
-                    TalendJetEmitter emitter = new TalendJetEmitter(jetBean.getTemplateFullUri(), jetBean.getClassLoader(),
-                            jetBean.getFamily(), jetBean.getClassName(), jetBean.getLanguage(), jetBean.getCodePart(),
-                            dummyEmitter.getTalendEclipseHelper());
-                    emitter.setMethod(jetBean.getMethod());
-                    emitterPool.put(jetBean, emitter);
-                    monitorWrap.worked(1);
+            boolean isSkeletonChanged = JetSkeletonManager.updateSkeletonPersistenceData();
+            // if there is one skeleton changed, there need generate all jet--->java again. so, it won't load the
+            // JetPersistenceJAVA
+            if (!isSkeletonChanged) {
+                try {
+                    alreadyCompiledEmitters = loadEmfPersistentData(EmfEmittersPersistenceFactory.getInstance(codeLanguage)
+                            .loadEmittersPool(), components, monitorWrap);
+                    for (JetBean jetBean : alreadyCompiledEmitters) {
+                        TalendJetEmitter emitter = new TalendJetEmitter(jetBean.getTemplateFullUri(), jetBean.getClassLoader(),
+                                jetBean.getFamily(), jetBean.getClassName(), jetBean.getLanguage(), jetBean.getCodePart(),
+                                dummyEmitter.getTalendEclipseHelper());
+                        emitter.setMethod(jetBean.getMethod());
+                        emitterPool.put(jetBean, emitter);
+                        monitorWrap.worked(1);
+                    }
+                } catch (BusinessException e) {
+                    // error already loggued
+                    emitterPool = new HashMap<JetBean, JETEmitter>();
                 }
-            } catch (BusinessException e) {
-                // error already loggued
-                emitterPool = new HashMap<JetBean, JETEmitter>();
             }
 
             for (JetBean jetBean : components) {
