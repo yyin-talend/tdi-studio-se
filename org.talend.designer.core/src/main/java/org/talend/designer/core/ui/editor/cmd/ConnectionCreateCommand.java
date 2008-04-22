@@ -20,7 +20,10 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.process.EConnectionType;
+import org.talend.core.model.process.EParameterFieldType;
+import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INodeConnector;
+import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.process.ConnectionManager;
 import org.talend.designer.core.ui.editor.connections.Connection;
@@ -79,6 +82,31 @@ public class ConnectionCreateCommand extends Command {
     }
 
     private String askForConnectionName(String nodeLabel, String oldName) {
+
+        // check if the source got the ELT Table parameter, if yes, take the name by default
+        IElementParameter elementParam = source.getElementParameter("ELT_TABLE_NAME");
+        if (source.isELTComponent() && elementParam != null && elementParam.getField().equals(EParameterFieldType.TEXT)) {
+            String name2 = elementParam.getValue().toString();
+            if (name2 != null) {
+                name2 = TalendTextUtils.removeQuotes(name2);
+                if (!name2.equals("")) {
+                    return name2;
+                }
+            }
+        }
+
+        // check if the target got the ELT Table parameter, if yes, take the name by default
+        elementParam = target.getElementParameter("ELT_TABLE_NAME");
+        if (target.isELTComponent() && elementParam != null && elementParam.getField().equals(EParameterFieldType.TEXT)) {
+            String name2 = elementParam.getValue().toString();
+            if (name2 != null) {
+                name2 = TalendTextUtils.removeQuotes(name2);
+                if (!name2.equals("")) {
+                    return name2;
+                }
+            }
+        }
+
         InputDialog id = new InputDialog(null, nodeLabel + Messages.getString("ConnectionCreateAction.dialogTitle"), //$NON-NLS-1$
                 Messages.getString("ConnectionCreateAction.dialogMessage"), oldName, null); //$NON-NLS-1$ //$NON-NLS-2$
         id.open();

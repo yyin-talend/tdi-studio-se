@@ -19,12 +19,10 @@ import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.gef.requests.CreationFactory;
 import org.eclipse.gef.ui.actions.SelectionAction;
 import org.eclipse.jface.dialogs.InputDialog;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.ui.IWorkbenchPart;
 import org.talend.core.model.metadata.IMetadataTable;
-import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IConnectionCategory;
@@ -335,45 +333,47 @@ public class ConnectionCreateAction extends SelectionAction {
         Node node = (Node) nodePart.getModel();
         if (curNodeConnector.isBuiltIn()) {
             if (getText().equals(getNewOutputMenuName())) {
-                boolean nameOk = false;
-                while (!nameOk) {
-
-                    if (node.isELTComponent()) {
-                        connectionName = "Default";
-                    } else {
-                        connectionName = askForConnectionName(node.getLabel(), connectionName);
-                    }
-                    if (connectionName.equals("")) { //$NON-NLS-1$
-                        return;
-                    }
-                    if (connecType.equals(EConnectionType.TABLE) || node.getProcess().checkValidConnectionName(connectionName)) {
-                        nameOk = true;
-                    } else {
-                        String message = Messages.getString("ConnectionCreateAction.errorCreateConnectionName", connectionName); //$NON-NLS-1$
-                        MessageDialog.openError(getWorkbenchPart().getSite().getShell(), Messages
-                                .getString("ConnectionCreateAction.error"), message); //$NON-NLS-1$
-                    }
-                }
-
-                if (connecType.equals(EConnectionType.TABLE)) {
-                    meta = new MetadataTable();
-                    meta.setTableName(connectionName);
-                    meta.setLabel(connectionName);
-                    // meta.setTableId(node.getMetadataList().size());
-                    newMetadata = meta;
-                } else {
-                    boolean metaExist = false;
-                    for (int i = 0; i < node.getMetadataList().size(); i++) {
-                        if ((node.getMetadataList().get(i)).getTableName().equals(connectionName)) {
-                            metaExist = true;
-                        }
-                    }
-                    if (!metaExist) {
-                        meta = new MetadataTable();
-                        meta.setTableName(connectionName);
-                        newMetadata = meta;
-                    }
-                }
+                // boolean nameOk = false;
+                // while (!nameOk) {
+                //
+                // if (node.isELTComponent()) {
+                // connectionName = "Default";
+                // } else {
+                // connectionName = askForConnectionName(node.getLabel(), connectionName);
+                // }
+                // if (connectionName.equals("")) { //$NON-NLS-1$
+                // return;
+                // }
+                // if (connecType.equals(EConnectionType.TABLE) ||
+                // node.getProcess().checkValidConnectionName(connectionName)) {
+                // nameOk = true;
+                // } else {
+                // String message = Messages.getString("ConnectionCreateAction.errorCreateConnectionName",
+                // connectionName); //$NON-NLS-1$
+                // MessageDialog.openError(getWorkbenchPart().getSite().getShell(), Messages
+                // .getString("ConnectionCreateAction.error"), message); //$NON-NLS-1$
+                // }
+                // }
+                //
+                // if (connecType.equals(EConnectionType.TABLE)) {
+                // meta = new MetadataTable();
+                // meta.setTableName(connectionName);
+                // meta.setLabel(connectionName);
+                // // meta.setTableId(node.getMetadataList().size());
+                // newMetadata = meta;
+                // } else {
+                // boolean metaExist = false;
+                // for (int i = 0; i < node.getMetadataList().size(); i++) {
+                // if ((node.getMetadataList().get(i)).getTableName().equals(connectionName)) {
+                // metaExist = true;
+                // }
+                // }
+                // if (!metaExist) {
+                // meta = new MetadataTable();
+                // meta.setTableName(connectionName);
+                // newMetadata = meta;
+                // }
+                // }
             } else {
                 String tableName;
                 // int tableId = -1;
@@ -401,7 +401,9 @@ public class ConnectionCreateAction extends SelectionAction {
                 }
             }
             // for built-in only:
-            meta.setAttachedConnector(curNodeConnector.getName());
+            if (meta != null) {
+                meta.setAttachedConnector(curNodeConnector.getName());
+            }
         } else {
             if (connecType.equals(EConnectionType.TABLE)) {
                 if (getText().equals(getDefaultTableName())) {
@@ -460,7 +462,11 @@ public class ConnectionCreateAction extends SelectionAction {
         listArgs = new ArrayList<Object>();
         if (connecType.equals(EConnectionType.FLOW_MAIN) || connecType.equals(EConnectionType.FLOW_REF)
                 || connecType.equals(EConnectionType.TABLE)) {
-            listArgs.add(meta.getTableName());
+            if (meta == null) {
+                listArgs.add(null);
+            } else {
+                listArgs.add(meta.getTableName());
+            }
         } else {
             listArgs.add(node.getUniqueName());
         }
