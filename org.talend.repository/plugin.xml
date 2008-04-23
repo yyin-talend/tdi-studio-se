@@ -787,6 +787,12 @@
             id="org.talend.repository.model.migration.UpdateTheJobsActionsOnTable"
             name="Update the action on table drop box">
       </projecttask>
+      <projecttask
+            beforeLogon="false"
+            class="org.talend.repository.model.migration.RenametFTPToFTPGetMigrationTaskForPerl"
+            id="org.talend.repository.model.migration.RenametFTPToFTPGetMigrationTaskForPerl"
+            name="RenametFTPToFTPGetMigrationTaskForPerl">
+      </projecttask>
    </extension>
    <extension
          point="org.talend.core.librariesNeeded">

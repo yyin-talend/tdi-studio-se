@@ -33,12 +33,12 @@ import org.talend.core.model.properties.ProcessItem;
  * $Id: talend.epf 1 2006-09-29 17:06:40 +0000 (ven., 29 sept. 2006) nrousseau $
  * 
  */
-public class RenametFTPToFTPGetMigrationTask extends AbstractJobMigrationTask {
+public class RenametFTPToFTPGetMigrationTaskForPerl extends AbstractJobMigrationTask {
 
     public ExecutionResult executeOnProcess(ProcessItem item) {
         try {
-
-            if (getProject().getLanguage().equals(ECodeLanguage.JAVA)) {
+            ECodeLanguage projectLanguage = getProject().getLanguage();
+            if (projectLanguage.equals(ECodeLanguage.PERL)) {
                 IComponentConversion removePropertyComponentConversion = new RemovePropertyComponentConversion("TYPE"); //$NON-NLS-1$
 
                 RenameComponentConversion renameComponentConversion = new RenameComponentConversion("tFTPGet"); //$NON-NLS-1$
@@ -71,7 +71,7 @@ public class RenametFTPToFTPGetMigrationTask extends AbstractJobMigrationTask {
         }
     }
     public Date getOrder() {
-        GregorianCalendar gc = new GregorianCalendar(2008, 2, 17, 12, 0, 0);
+        GregorianCalendar gc = new GregorianCalendar(2008, 4, 23, 16, 46, 0);
         return gc.getTime();
     }
 }
