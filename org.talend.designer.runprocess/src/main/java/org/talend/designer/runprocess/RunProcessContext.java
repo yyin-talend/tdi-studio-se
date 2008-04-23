@@ -366,7 +366,7 @@ public class RunProcessContext {
                                                     psMonitor = createProcessMonitor(ps);
 
                                                     startingMessageWritten = true;
-                                                    
+
                                                     final String startingPattern = Messages
                                                             .getString("ProcessComposite.startPattern"); //$NON-NLS-1$
                                                     MessageFormat mf = new MessageFormat(startingPattern);
@@ -379,7 +379,8 @@ public class RunProcessContext {
                                                 } else {
                                                     setRunning(false);
                                                 }
-                                            } catch (Exception e) {
+                                            } catch (Throwable e) {
+                                                // catch any Exception or Error to kill the process, see bug 0003567
                                                 Throwable cause = e.getCause();
                                                 if (cause != null && cause.getClass().equals(InterruptedException.class)) {
                                                     setRunning(false);
@@ -411,7 +412,8 @@ public class RunProcessContext {
 
                             }
 
-                        } catch (Exception e) {
+                        } catch (Throwable e) {
+                            // catch any Exception or Error to kill the process, see bug 0003567
                             ExceptionHandler.process(e);
                             addErrorMessage(e);
                             kill();
@@ -426,6 +428,10 @@ public class RunProcessContext {
                 addErrorMessage(e1);
             }
 
+        } else {
+            // See bug 0003567: When a prompt from context is cancelled or a fatal error occurs during a job exec the
+            // Kill button have to be pressed manually.
+            setRunning(false);
         }
     }
 
@@ -513,7 +519,7 @@ public class RunProcessContext {
         return exitCode;
     }
 
-    public void addErrorMessage(Exception e) {
+    public void addErrorMessage(Throwable e) {
         StringBuffer message = new StringBuffer(STRING_LENGTH);
         message.append(Messages.getString("ProcessComposite.execFailed")); //$NON-NLS-1$
         message.append(e.getMessage());
