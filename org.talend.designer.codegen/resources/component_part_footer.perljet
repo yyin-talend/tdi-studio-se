@@ -21,8 +21,6 @@ String cid = node.getUniqueName();
 ECodePart codePart = codeGenArgument.getCodePart();
 boolean trace = codeGenArgument.isTrace();
 
-boolean parallelIterate = false;
-int nbParallelIterate = 2;
 
 String componentName = node.getComponent().getName();
 %>
@@ -59,6 +57,12 @@ elsif (scalar @{ $desc_<%=node.getUniqueName() %>{schema} }) {
 
         for (IConnection conn : node.getOutgoingConnections()) {
             if (conn.getLineStyle().equals(EConnectionType.ITERATE)) {
+	            boolean parallelIterate = "true".equals(ElementParameterParser.getValue(conn, "__ENABLE_PARALLEL__"));
+				int nbParallelIterate = 2;
+	            if (parallelIterate) {
+	            	nbParallelIterate = Integer.valueOf((String)ElementParameterParser.getValue(conn,"__NUMBER_PARALLEL__"));
+	            }
+            
                 if (parallelIterate) {
 %>
     wait_for_a_kid() if keys %running_pids_<%=cid%> >= <%=nbParallelIterate%>;
@@ -175,6 +179,8 @@ $_globals{<%=node.getUniqueName() %>}{OK} = true;
     for (IConnection outgoingConn : node.getOutgoingConnections()) {
     	if (outgoingConn.getTarget().isActivate()) {
             if (outgoingConn.getLineStyle().equals(EConnectionType.ITERATE)) {
+	            boolean parallelIterate = "true".equals(ElementParameterParser.getValue(outgoingConn, "__ENABLE_PARALLEL__"));
+            
                 if (parallelIterate) {
 %>
 1 while wait_for_a_kid();

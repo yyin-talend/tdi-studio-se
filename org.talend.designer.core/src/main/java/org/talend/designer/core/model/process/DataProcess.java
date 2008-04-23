@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.talend.core.language.LanguageManager;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IMultipleComponentConnection;
 import org.talend.core.model.components.IMultipleComponentItem;
@@ -27,6 +28,7 @@ import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.AbstractConnection;
 import org.talend.core.model.process.AbstractExternalNode;
 import org.talend.core.model.process.AbstractNode;
+import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IConnection;
@@ -39,6 +41,7 @@ import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IProcess;
 import org.talend.designer.core.model.components.EParameterName;
+import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.model.process.jobsettings.JobSettingsManager;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
@@ -201,6 +204,37 @@ public class DataProcess {
                 dataConnec.setCondition(connection.getCondition());
                 dataConnec.setConnectorName(connection.getConnectorName());
                 dataConnec.setInputId(connection.getInputId());
+                if (connection.getLineStyle().equals(EConnectionType.ITERATE)) {
+                    switch (LanguageManager.getCurrentLanguage()) {
+                    case PERL:
+                        IElementParameter param = new ElementParameter(dataConnec);
+                        param.setField(EParameterFieldType.CHECK);
+                        param.setCategory(EComponentCategory.BASIC);
+                        param.setValue(Boolean.FALSE); //$NON-NLS-1$
+                        param.setName("ENABLE_PARALLEL");
+                        param.setDisplayName("Enable parallel execution");
+                        param.setShow(true);
+                        param.setNumRow(1);
+                        ((List<IElementParameter>) dataConnec.getElementParameters()).add(param);
+
+                        param = new ElementParameter(dataConnec);
+                        param.setField(EParameterFieldType.CLOSED_LIST);
+                        param.setCategory(EComponentCategory.BASIC);
+                        param.setListItemsDisplayName(new String[] { "2", "3", "4" });
+                        param.setListItemsDisplayCodeName(new String[] { "2", "3", "4" });
+                        param.setListItemsValue(new String[] { "2", "3", "4" });
+                        param.setValue("2"); //$NON-NLS-1$
+                        param.setName("NUMBER_PARALLEL");
+                        param.setDisplayName("Number of parallel execution");
+                        param.setShow(true);
+                        param.setShowIf("ENABLE_PARALLEL == 'true'");
+                        param.setNumRow(1);
+                        ((List<IElementParameter>) dataConnec.getElementParameters()).add(param);
+                        break;
+                    default:
+                    }
+                    copyElementParametersValue(connection, dataConnec);
+                }
                 INode target = buildDataNodeFromNode((Node) connection.getTarget(), prefix);
                 dataConnec.setTarget(target);
                 incomingConnections = (List<IConnection>) target.getIncomingConnections();

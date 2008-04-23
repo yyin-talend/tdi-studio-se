@@ -147,6 +147,37 @@ public class Connection extends Element implements IConnection, IPerformance {
             addElementParameter(param);
         }
 
+        if (lineStyle.equals(EConnectionType.ITERATE)) {
+            switch (LanguageManager.getCurrentLanguage()) {
+            case PERL:
+                IElementParameter param = new ElementParameter(this);
+                param.setField(EParameterFieldType.CHECK);
+                param.setCategory(EComponentCategory.BASIC);
+                param.setValue(Boolean.FALSE); //$NON-NLS-1$
+                param.setName("ENABLE_PARALLEL");
+                param.setDisplayName("Enable parallel execution");
+                param.setShow(true);
+                param.setNumRow(1);
+                addElementParameter(param);
+
+                param = new ElementParameter(this);
+                param.setField(EParameterFieldType.CLOSED_LIST);
+                param.setCategory(EComponentCategory.BASIC);
+                param.setListItemsDisplayName(new String[] { "2", "3", "4" });
+                param.setListItemsDisplayCodeName(new String[] { "2", "3", "4" });
+                param.setListItemsValue(new String[] { "2", "3", "4" });
+                param.setValue("2"); //$NON-NLS-1$
+                param.setName("NUMBER_PARALLEL");
+                param.setDisplayName("Number of parallel execution");
+                param.setShow(true);
+                param.setShowIf("ENABLE_PARALLEL == 'true'");
+                param.setNumRow(1);
+                addElementParameter(param);
+                break;
+            default:
+            }
+        }
+
         // add activate parameter
         IElementParameter param = new ElementParameter(this);
         param.setField(EParameterFieldType.CHECK);

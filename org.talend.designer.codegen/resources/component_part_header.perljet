@@ -19,9 +19,6 @@ INode node = (INode)codeGenArgument.getArgument();
 ECodePart codePart = codeGenArgument.getCodePart();
 boolean stat = codeGenArgument.isStatistics();
 
-boolean parallelIterate = false;
-int nbParallelIterate = 2;
-
 String currentIncomingName = (String)codeGenArgument.getIncomingName();
 %>
 # +-------------------------------------------------------------------------+
@@ -173,6 +170,7 @@ SendStat(
 
     for (IConnection conn : node.getOutgoingConnections()) {
         if (conn.getLineStyle().equals(EConnectionType.ITERATE)) {
+            boolean parallelIterate = "true".equals(ElementParameterParser.getValue(conn, "__ENABLE_PARALLEL__"));
             if (parallelIterate) {
 %>
         # end of the child process
