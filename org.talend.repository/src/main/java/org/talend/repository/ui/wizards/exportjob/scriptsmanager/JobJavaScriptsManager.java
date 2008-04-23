@@ -161,7 +161,8 @@ public class JobJavaScriptsManager extends JobScriptsManager {
             File contextDir = classRoot.toFile();
             if (contextDir.isDirectory()) {
                 for (File contextFile : classRoot.toFile().listFiles()) {
-                    list.add(contextFile.toURL());
+                    // See bug 0003568: Three contexts file exported, while only two contexts in the job.
+                    list.addAll(getActiveContextFiles(classRoot.toFile().listFiles(), (ProcessItem) resource.getItem()));
                 }
             }
 
@@ -172,6 +173,41 @@ public class JobJavaScriptsManager extends JobScriptsManager {
         } catch (Exception e) {
             ExceptionHandler.process(e);
         }
+    }
+
+    /**
+     * User may delete some contexts after generating the context files. So we will only export those files that match
+     * any existing context name. See bug 0003568: Three contexts file exported, while only two contexts in the job.
+     * 
+     * @param listFiles The generated context files.
+     * @param processItem The current process item that will be exported.
+     * @return An url list of context files.
+     * @throws MalformedURLException
+     */
+    private List<URL> getActiveContextFiles(File[] listFiles, ProcessItem processItem) throws MalformedURLException {
+        List<URL> contextFileUrls = new ArrayList<URL>();
+        try {
+            // get all context name from process
+            Set<String> contextNames = new HashSet<String>();
+            for (Object o : processItem.getProcess().getContext()) {
+                if (o instanceof ContextType) {
+                    ContextType context = (ContextType) o;
+                    contextNames.add(context.getName().replace(" ", ""));
+                }
+            }
+            for (File file : listFiles) {
+                String fileName = file.getName();
+                // remove file extension
+                fileName = fileName.substring(0, fileName.lastIndexOf('.'));
+                if (contextNames.contains(fileName)) {
+                    // if the file match any existing context, add this file to list
+                    contextFileUrls.add(file.toURL());
+                }
+            }
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
+        }
+        return contextFileUrls;
     }
 
     /*
