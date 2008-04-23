@@ -44,6 +44,11 @@
       <PARAMETER NAME="PREVIEW" FIELD="IMAGE" SHOW="true" NUM_ROW="3">
          <DEFAULT/>
       </PARAMETER>
+      
+      <PARAMETER NAME="MODE" FIELD="TEXT" SHOW="false" NUM_ROW="99">
+         <DEFAULT>PERSISTENT</DEFAULT> <!-- NORMAL / PERSISTENT -->
+      </PARAMETER>
+      
 
       <!-- 
       <PARAMETER NAME="MEMORY_HEAP_MAX_SIZE" FIELD="TEXT"
