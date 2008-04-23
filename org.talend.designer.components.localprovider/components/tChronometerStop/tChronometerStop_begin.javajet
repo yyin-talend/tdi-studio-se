@@ -66,13 +66,14 @@ System.out.print("[ <%=cid%> ]  ");
 <%
     }
 %>
-System.out.print(<%=caption%> + "  " + time<%=cid%> + " milliseconds"); 
-    
+   
 <%
     if (displayReadableDuration) {
 %>
-	    System.out.print("   " + time<%=cid%>/1000 + "seconds");
+	    System.out.print("   " + time<%=cid%>/1000 + "seconds   ");
 	    
-<%  }
+<%  }%>
+System.out.println(<%=caption%> + "  " + time<%=cid%> + " milliseconds"); 
+<%
 }
 %>
