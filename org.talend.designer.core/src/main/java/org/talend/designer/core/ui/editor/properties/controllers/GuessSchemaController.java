@@ -313,7 +313,8 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
                         } catch (Exception e) {
                             ExtractMetaDataUtils.closeConnection();
 
-                            final String strExcepton = e.getMessage();
+                            final String strExcepton = "Connect to DB error ,or some errors in SQL query string, or 'Guess Schema' not compatible with current SQL query string."
+                                    + System.getProperty("line.separator");
                             Display.getDefault().asyncExec(new Runnable() {
 
                                 public void run() {
