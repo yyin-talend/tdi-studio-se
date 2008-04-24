@@ -161,11 +161,11 @@ public class Connection extends Element implements IConnection, IPerformance {
                 addElementParameter(param);
 
                 param = new ElementParameter(this);
-                param.setField(EParameterFieldType.CLOSED_LIST);
+                param.setField(EParameterFieldType.TEXT);
                 param.setCategory(EComponentCategory.BASIC);
-                param.setListItemsDisplayName(new String[] { "2", "3", "4" });
-                param.setListItemsDisplayCodeName(new String[] { "2", "3", "4" });
-                param.setListItemsValue(new String[] { "2", "3", "4" });
+                // param.setListItemsDisplayName(new String[] { "2", "3", "4" });
+                // param.setListItemsDisplayCodeName(new String[] { "2", "3", "4" });
+                // param.setListItemsValue(new String[] { "2", "3", "4" });
                 param.setValue("2"); //$NON-NLS-1$
                 param.setName("NUMBER_PARALLEL");
                 param.setDisplayName("Number of parallel execution");
@@ -365,9 +365,9 @@ public class Connection extends Element implements IConnection, IPerformance {
             }
             updateName = true;
         } /*
-         * else if (getLineStyle().equals(EConnectionType.LOOKUP)) { labelText += " (" + nodeConnector.getLinkName() +
-         * ")"; updateName = true; }
-         */
+             * else if (getLineStyle().equals(EConnectionType.LOOKUP)) { labelText += " (" + nodeConnector.getLinkName() +
+             * ")"; updateName = true; }
+             */
 
         if (updateName) {
 

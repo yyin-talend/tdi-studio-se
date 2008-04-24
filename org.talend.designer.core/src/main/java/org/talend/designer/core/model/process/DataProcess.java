@@ -18,7 +18,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.talend.core.language.LanguageManager;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IMultipleComponentConnection;
 import org.talend.core.model.components.IMultipleComponentItem;
@@ -216,11 +215,11 @@ public class DataProcess {
                     ((List<IElementParameter>) dataConnec.getElementParameters()).add(param);
 
                     param = new ElementParameter(dataConnec);
-                    param.setField(EParameterFieldType.CLOSED_LIST);
+                    param.setField(EParameterFieldType.TEXT);
                     param.setCategory(EComponentCategory.BASIC);
-                    param.setListItemsDisplayName(new String[] { "2", "3", "4" });
-                    param.setListItemsDisplayCodeName(new String[] { "2", "3", "4" });
-                    param.setListItemsValue(new String[] { "2", "3", "4" });
+                    // param.setListItemsDisplayName(new String[] { "2", "3", "4" });
+                    // param.setListItemsDisplayCodeName(new String[] { "2", "3", "4" });
+                    // param.setListItemsValue(new String[] { "2", "3", "4" });
                     param.setValue("2"); //$NON-NLS-1$
                     param.setName("NUMBER_PARALLEL");
                     param.setDisplayName("Number of parallel execution");
