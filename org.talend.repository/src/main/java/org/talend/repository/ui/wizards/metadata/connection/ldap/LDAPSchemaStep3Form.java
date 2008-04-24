@@ -15,8 +15,6 @@ package org.talend.repository.ui.wizards.metadata.connection.ldap;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.naming.directory.Attribute;
-
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
@@ -44,7 +42,6 @@ import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.ui.swt.thread.SWTUIThreadProcessor;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
-import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.LDAPSchemaConnection;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.utils.CsvArray;
@@ -134,8 +131,7 @@ public class LDAPSchemaStep3Form extends AbstractForm implements IRefreshable {
             // Bottom Button
             Composite compositeBottomButton = Form.startNewGridLayout(this, 2, false, SWT.CENTER, SWT.CENTER);
             // Button Cancel
-            cancelButton = new UtilsButton(compositeBottomButton,
-                    Messages.getString("CommonWizard.cancel"), WIDTH_BUTTON_PIXEL, //$NON-NLS-1$
+            cancelButton = new UtilsButton(compositeBottomButton, Messages.getString("CommonWizard.cancel"), WIDTH_BUTTON_PIXEL, //$NON-NLS-1$
                     HEIGHT_BUTTON_PIXEL);
         }
     }
@@ -312,8 +308,7 @@ public class LDAPSchemaStep3Form extends AbstractForm implements IRefreshable {
             if (csvArray == null || csvArray.getRows() == null || csvArray.getRows().size() == 0) {
                 previewInformationLabel.setText(" " + Messages.getString("FileStep2.previewFailure")); //$NON-NLS-1$
                 //$NON-NLS-2$
-                MessageDialog.openError(getShell(), "Error",
-                        "Preview refresh failed, please check attributes and filter.");
+                MessageDialog.openError(getShell(), "Error", "Preview refresh failed, please check attributes and filter.");
                 filterText.setText(ConnectionUIConstants.DEFAULT_FILTER);
                 connection.setFilter(ConnectionUIConstants.DEFAULT_FILTER);
             } else {
@@ -324,8 +319,7 @@ public class LDAPSchemaStep3Form extends AbstractForm implements IRefreshable {
                 try {
                     ldapSchemaPreview.refreshTablePreview(csvArray, false, processDescription);
                 } catch (Exception e) {
-                    MessageDialog.openError(getShell(), "Error",
-                            "Preview refresh failed, please check attributes and filter.");
+                    MessageDialog.openError(getShell(), "Error", "Preview refresh failed, please check attributes and filter.");
                     filterText.setText(ConnectionUIConstants.DEFAULT_FILTER);
                     connection.setFilter(ConnectionUIConstants.DEFAULT_FILTER);
                 }
@@ -460,14 +454,25 @@ public class LDAPSchemaStep3Form extends AbstractForm implements IRefreshable {
 
         itemTableNameList = new ArrayList<String>();
 
-        List<Attribute> attributeList = LDAPConnectionUtils.getAttributes((LDAPSchemaConnection) this.connectionItem
-                .getConnection());
-        for (Attribute attribute : attributeList) {
-            String attributeId = attribute.getID();
-            if (itemTableNameList.contains(attributeId) == false) {
-                itemTableNameList.add(attributeId);
-                // System.out.println(attributeId);
-            }
+        // List<javax.naming.directory.Attribute> attributeList = LDAPConnectionUtils
+        // .getAttributes((LDAPSchemaConnection) this.connectionItem.getConnection());
+
+        Object[] attributeList = LDAPConnectionUtils.getAttributes((LDAPSchemaConnection) this.connectionItem.getConnection());
+
+        // String[] attributes = LDAPConnectionUtils.getAttributes((LDAPSchemaConnection)
+        // this.connectionItem.getConnection());
+        // Arrays.sort(attributes);
+        // for (Attribute attribute : attributeList) {
+        // String id = attribute.getID();
+        // if (itemTableNameList.contains(id) == false) {
+        // itemTableNameList.add(id);
+        // System.out.println(id);
+        // }
+        // }
+
+        for (Object object : attributeList) {
+            String str = (String) object;
+            itemTableNameList.add(str);
         }
     }
 

@@ -14,6 +14,8 @@ package org.talend.repository.ui.wizards.metadata.connection.ldap;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
@@ -21,6 +23,8 @@ import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 import javax.naming.ldap.InitialLdapContext;
 
+import org.apache.directory.studio.ldapbrowser.core.model.schema.ObjectClassDescription;
+import org.apache.directory.studio.ldapbrowser.core.model.schema.Schema;
 import org.eclipse.emf.common.util.EList;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.core.ldap.AdvancedSocketFactory;
@@ -51,17 +55,18 @@ public class LDAPConnectionUtils {
      * 
      * @return
      */
-    public static List<Attribute> getAttributes(LDAPSchemaConnection connection) {
+    // public static List<Attribute> getAttributes(LDAPSchemaConnection connection) {
+    public static Object[] getAttributes(LDAPSchemaConnection connection) {
         if (ctx == null) {
             return null;
         }
 
-        List<Attribute> attributeList = new ArrayList<Attribute>();
         String baseDN = connection.getSelectedDN();
         EList baseDNs = connection.getBaseDNs();
         String searchFilter = connection.getFilter();
         int timeLimit = (Integer.valueOf(connection.getTimeOutLimit()).intValue());
         EList returnAttributeList = connection.getReturnAttributes();
+        List<String> allObjectClassList = new ArrayList<String>();
 
         int size = returnAttributeList.size();
 
@@ -79,10 +84,9 @@ public class LDAPConnectionUtils {
             String searchBase = null;
             if (baseDN == null) {
                 searchBase = ((namingContextValue == null) || ((namingContextValue != null)
-                        && (namingContextValue.get().toString() != null)
-                        && (namingContextValue.get().toString().length() > 0) && (Character
-                        .isIdentifierIgnorable(namingContextValue.get().toString().charAt(0))))) ? ""
-                        : namingContextValue.get().toString();
+                        && (namingContextValue.get().toString() != null) && (namingContextValue.get().toString().length() > 0) && (Character
+                        .isIdentifierIgnorable(namingContextValue.get().toString().charAt(0))))) ? "" : namingContextValue.get()
+                        .toString();
             } else {
                 searchBase = baseDN;
             }
@@ -110,10 +114,10 @@ public class LDAPConnectionUtils {
             if (isGetBaseDNsFromRoot) {
                 EList baseDNList = baseDNs;
                 for (Object tempBaseDN : baseDNList) {
-                    attributeList.addAll(getAttributeList(searchFilter, searchCtls, (String) tempBaseDN));
+                    allObjectClassList.addAll(getAttributeList(searchFilter, searchCtls, (String) tempBaseDN));
                 }
             } else {
-                attributeList.addAll(getAttributeList(searchFilter, searchCtls, searchBase));
+                allObjectClassList.addAll(getAttributeList(searchFilter, searchCtls, searchBase));
             }
             // System.out.println("Total attrs: " + totalResults);
         } catch (Exception e) {
@@ -121,7 +125,27 @@ public class LDAPConnectionUtils {
             connection.setFilter(ConnectionUIConstants.DEFAULT_FILTER);
         }
 
-        return attributeList;
+        Schema defaultSchema = new Schema().DEFAULT_SCHEMA;
+
+        Set<String> attributeSet = new TreeSet<String>();
+
+        for (String objectClassName : allObjectClassList) {
+            ObjectClassDescription objectClassDescription = defaultSchema.getObjectClassDescription(objectClassName);
+            String[] mustAttributeTypeDescriptionNames = objectClassDescription.getMustAttributeTypeDescriptionNames();
+            String[] mayAttributeTypeDescriptionNames = objectClassDescription.getMayAttributeTypeDescriptionNames();
+
+            for (String string : mustAttributeTypeDescriptionNames) {
+                attributeSet.add(string);
+            }
+            for (String string2 : mayAttributeTypeDescriptionNames) {
+                attributeSet.add(string2);
+            }
+        }
+
+        Object[] array = (Object[]) attributeSet.toArray();
+
+        return array;
+        // return attributeList;
 
     }
 
@@ -135,36 +159,35 @@ public class LDAPConnectionUtils {
      * @return
      * @throws NamingException
      */
-    private static List<Attribute> getAttributeList(String searchFilter,
-            javax.naming.directory.SearchControls searchCtls, String searchBase) throws NamingException {
+    private static List<String> getAttributeList(String searchFilter, javax.naming.directory.SearchControls searchCtls,
+            String searchBase) throws NamingException {
 
-        List<Attribute> attributeList = new ArrayList<Attribute>();
-        // Search for objects using the filter
+        List<String> objectClassList = new ArrayList<String>();
         javax.naming.NamingEnumeration answer = ctx.search(searchBase, searchFilter, searchCtls);
+
         // Loop through the search results
         while (answer.hasMoreElements()) {
             javax.naming.directory.SearchResult sr = (javax.naming.directory.SearchResult) answer.next();
 
-            // System.out.println(">>>" + sr.getName());
-
-            // Print out the groups
-
             Attributes attrs = sr.getAttributes();
+
             if (attrs != null) {
                 for (NamingEnumeration ae = attrs.getAll(); ae.hasMore();) {
                     Attribute attr = (Attribute) ae.next();
-                    // System.out.println("Attribute: " + attr.getID());
-                    if (attributeList.contains(attr) == false) {
-                        attributeList.add(attr);
+                    String id = attr.getID();
+                    if (id.equals("objectClass")) {
+                        NamingEnumeration<?> all = attr.getAll();
+                        while (all.hasMore()) {
+                            String next = (String) all.next();
+                            if (!objectClassList.contains(next)) {
+                                objectClassList.add(next);
+                            }
+                        }
                     }
-                    // int totalResults = 1;
-                    // for (javax.naming.NamingEnumeration e = attr.getAll(); e.hasMore(); totalResults++) {
-                    // System.out.println(" " + totalResults + ". " + e.next());
-                    // }
                 }
             }
         }
-        return attributeList;
+        return objectClassList;
     }
 
     /**
@@ -199,7 +222,7 @@ public class LDAPConnectionUtils {
             return list;
 
         } catch (NamingException e) {
-            // MessageBoxExceptionHandler.process(e);
+            MessageBoxExceptionHandler.process(e);
             return null;
         }
     }
@@ -265,11 +288,11 @@ public class LDAPConnectionUtils {
             ctx = new javax.naming.ldap.InitialLdapContext(env, null);
             if (encryptionMethod.equals(EEncryptionMethod.STARTTSL_EXTENSION_METHOD)) {
                 javax.naming.ldap.StartTlsRequest tldsReq = new javax.naming.ldap.StartTlsRequest();
-                javax.naming.ldap.StartTlsResponse tls = (javax.naming.ldap.StartTlsResponse) ctx
-                        .extendedOperation(tldsReq);
+                javax.naming.ldap.StartTlsResponse tls = (javax.naming.ldap.StartTlsResponse) ctx.extendedOperation(tldsReq);
                 javax.net.ssl.SSLSession session = tls.negotiate((javax.net.ssl.SSLSocketFactory) AdvancedSocketFactory
                         .getDefault());
             }
+
             return true;
         } catch (Exception e) {
             // e.printStackTrace();
