@@ -33,9 +33,12 @@ import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.utils.data.list.IListenableListListener;
 import org.talend.commons.utils.data.list.ListenableListEvent;
+import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
+import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextParameter;
+import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.utils.TalendTextUtils;
@@ -46,6 +49,7 @@ import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty;
 import org.talend.designer.core.ui.editor.properties.macrowidgets.tableeditor.PropertiesTableEditorModel;
 import org.talend.designer.core.ui.editor.properties.macrowidgets.tableeditor.PropertiesTableEditorView;
+import org.talend.designer.core.ui.views.properties.ComponentSettings;
 import org.talend.designer.runprocess.ProcessorUtilities;
 
 /**
@@ -255,6 +259,56 @@ public class TableController extends AbstractElementPropertySectionController {
         updateContextList(param);
         updateConnectionList(param);
         updateComponentList(param);
+        // updateSubjobStarts(elem, param);
+    }
+
+    /**
+     * DOC nrousseau Comment method "updateSubjobStarts".
+     * 
+     * @param param
+     */
+    public static void updateSubjobStarts(IElement element, IElementParameter param) {
+        if (!param.isBasedOnSubjobStarts() || !(element instanceof Node)) {
+            return;
+        }
+        // Each time one link of the type SUBJOB_START_ORDER will be connected or disconnected
+        // it will update the value of this table.
+
+        List<String> uniqueNameStarts = new ArrayList<String>();
+
+        Node node = (Node) element;
+        List<IConnection> incomingSubjobStartsConn = (List<IConnection>) node
+                .getIncomingConnections(EConnectionType.SUBJOB_START_ORDER);
+        for (IConnection connection : incomingSubjobStartsConn) {
+            uniqueNameStarts.add(connection.getSource().getUniqueName());
+        }
+
+        List<Map<String, Object>> paramValues = (List<Map<String, Object>>) param.getValue();
+        List<Map<String, Object>> newParamValues = new ArrayList<Map<String, Object>>();
+        String[] codes = param.getListItemsDisplayCodeName();
+        for (String currentUniqueNameStart : uniqueNameStarts) {
+            Map<String, Object> newLine = null;
+            boolean found = false;
+            for (int k = 0; k < paramValues.size() && !found; k++) {
+                Map<String, Object> currentLine = paramValues.get(k);
+                if (currentLine.get(codes[0]).equals(currentUniqueNameStart)) {
+                    found = true;
+                    newLine = currentLine;
+                }
+            }
+
+            if (!found) {
+                newLine = TableController.createNewLine(param);
+                newLine.put(codes[0], currentUniqueNameStart);
+            }
+            newParamValues.add(newLine);
+        }
+
+        paramValues.clear();
+        paramValues.addAll(newParamValues);
+
+        // to optimize
+        ComponentSettings.switchToCurComponentSettingsView();
     }
 
     private void updateColumnList(IElementParameter param) {

@@ -100,7 +100,8 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
      */
     @Override
     protected ExtendedToolbarView initToolBar() {
-        return new PropertiesTableToolbarEditorView(getMainComposite(), SWT.NONE, this.getExtendedTableViewer());
+        return new PropertiesTableToolbarEditorView(getMainComposite(), SWT.NONE, this.getExtendedTableViewer(),
+                (PropertiesTableEditorModel) getExtendedTableModel());
     }
 
     /*
@@ -256,8 +257,8 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                 default: // TEXT
                     TextCellEditorWithProposal textCellEditor = new TextCellEditorWithProposal(table, column);
                     textCellEditor.setContentProposalProvider(processProposalProvider);
-                    if (((i == 0) && (param.isBasedOnSchema())) || (param.isRepositoryValueUsed()) || (param.isReadOnly())
-                            || tmpParam.isReadOnly()) {
+                    if (((i == 0) && (param.isBasedOnSchema() || param.isBasedOnSubjobStarts()))
+                            || (param.isRepositoryValueUsed()) || (param.isReadOnly()) || tmpParam.isReadOnly()) {
                         // read only cell
                     } else {
                         // writable cell

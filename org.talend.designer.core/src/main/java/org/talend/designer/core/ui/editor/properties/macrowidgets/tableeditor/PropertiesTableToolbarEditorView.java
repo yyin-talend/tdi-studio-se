@@ -23,6 +23,8 @@ import org.talend.commons.ui.swt.advanced.dataeditor.button.ExportPushButton;
 import org.talend.commons.ui.swt.advanced.dataeditor.button.ImportPushButton;
 import org.talend.commons.ui.swt.advanced.dataeditor.button.PastePushButton;
 import org.talend.commons.ui.swt.advanced.dataeditor.button.PastePushButtonForExtendedTable;
+import org.talend.commons.ui.swt.advanced.dataeditor.button.RemovePushButton;
+import org.talend.commons.ui.swt.advanced.dataeditor.button.RemovePushButtonForExtendedTable;
 import org.talend.commons.ui.swt.extended.table.AbstractExtendedTableViewer;
 import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
 import org.talend.designer.core.ui.editor.cmd.PropertyTablePasteCommand;
@@ -33,6 +35,8 @@ import org.talend.designer.core.ui.editor.cmd.PropertyTablePasteCommand;
  */
 public class PropertiesTableToolbarEditorView extends ExtendedToolbarView {
 
+    private PropertiesTableEditorModel model;
+
     /**
      * DOC amaumont MetadataToolbarEditorView constructor comment.
      * 
@@ -40,23 +44,22 @@ public class PropertiesTableToolbarEditorView extends ExtendedToolbarView {
      * @param style
      * @param extendedTableViewer
      */
-    public PropertiesTableToolbarEditorView(Composite parent, int style, AbstractExtendedTableViewer extendedTableViewer) {
+    public PropertiesTableToolbarEditorView(Composite parent, int style, AbstractExtendedTableViewer extendedTableViewer,
+            PropertiesTableEditorModel model) {
         super(parent, style, extendedTableViewer);
+        this.model = model;
     }
 
-    
-    
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.core.ui.extended.ExtendedToolbarView#createComponents(org.eclipse.swt.widgets.Composite)
      */
     @Override
     protected void createComponents(Composite parent) {
         super.createComponents(parent);
-        
+
     }
-
-
-
 
     /*
      * (non-Javadoc)
@@ -66,6 +69,11 @@ public class PropertiesTableToolbarEditorView extends ExtendedToolbarView {
     @Override
     protected AddPushButton createAddPushButton() {
         return new AddPushButtonForExtendedTable(this.toolbar, getExtendedTableViewer()) {
+
+            @Override
+            public boolean getEnabledState() {
+                return super.getEnabledState() && (model == null || !model.getElemParameter().isBasedOnSubjobStarts());
+            }
 
             @Override
             protected Object getObjectToAdd() {
@@ -87,8 +95,13 @@ public class PropertiesTableToolbarEditorView extends ExtendedToolbarView {
         return new PastePushButtonForExtendedTable(toolbar, extendedTableViewer) {
 
             @Override
+            public boolean getEnabledState() {
+                return super.getEnabledState() && (model == null || !model.getElemParameter().isBasedOnSubjobStarts());
+            }
+
+            @Override
             protected Command getCommandToExecute(ExtendedTableModel extendedTableModel, Integer indexWhereInsert) {
-                 return new PropertyTablePasteCommand<Map<String,Object>>(extendedTableModel, indexWhereInsert);
+                return new PropertyTablePasteCommand<Map<String, Object>>(extendedTableModel, indexWhereInsert);
             }
 
         };
@@ -101,15 +114,6 @@ public class PropertiesTableToolbarEditorView extends ExtendedToolbarView {
      */
     @Override
     protected ExportPushButton createExportPushButton() {
-//        return new ExportPushButtonForExtendedTable(toolbar, extendedTableViewer) {
-//
-//            @Override
-//            protected Command getCommandToExecute(ExtendedTableModel extendedTableModel, File file) {
-//                // return new MetadataExportXmlCommand((MetadataTableEditor) extendedTableModel, file);
-//                return null;
-//            }
-//
-//        };
         return null;
     }
 
@@ -120,16 +124,18 @@ public class PropertiesTableToolbarEditorView extends ExtendedToolbarView {
      */
     @Override
     public ImportPushButton createImportPushButton() {
-//        return new ImportPushButtonForExtendedTable(toolbar, extendedTableViewer) {
-//
-//            @Override
-//            protected Command getCommandToExecute(ExtendedTableModel extendedTableModel, File file) {
-//                // return new MetadataImportXmlCommand(extendedTableModel, file);
-//                return null;
-//            }
-//
-//        };
         return null;
+    }
+
+    @Override
+    protected RemovePushButton createRemovePushButton() {
+        return new RemovePushButtonForExtendedTable(this.toolbar, getExtendedTableViewer()) {
+
+            @Override
+            public boolean getEnabledState() {
+                return super.getEnabledState() && (model == null || !model.getElemParameter().isBasedOnSubjobStarts());
+            }
+        };
     }
 
 }

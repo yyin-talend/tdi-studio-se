@@ -1274,8 +1274,11 @@ public class EmfComponent implements IComponent {
             if (items.isSetBASEDONSCHEMA()) {
                 param.setBasedOnSchema(items.isBASEDONSCHEMA());
             }
+            if (items.isSetBASEDONSUBJOBSTARTS()) {
+                param.setBasedOnSubjobStarts(items.isBASEDONSUBJOBSTARTS());
+            }
             nbItems = items.getITEM().size();
-            if (param.isBasedOnSchema()) {
+            if (param.isBasedOnSchema() || param.isBasedOnSubjobStarts()) {
                 nbItems++;
             }
         }
@@ -1290,21 +1293,37 @@ public class EmfComponent implements IComponent {
 
         for (int k = 0; k < nbItems; k++) {
             int currentItem = k;
-            if (param.isBasedOnSchema()) {
+            if (param.isBasedOnSchema() || param.isBasedOnSubjobStarts()) {
                 if (k == 0) {
-                    listItemsDisplayCodeValue[k] = "SCHEMA_COLUMN"; //$NON-NLS-1$
-                    listItemsDisplayValue[k] = "Column"; //$NON-NLS-1$
-                    listField[k] = ""; //$NON-NLS-1$
-                    listRepositoryItem[k] = ""; //$NON-NLS-1$
-                    listItemsShowIf[k] = null;
-                    listItemsNotShowIf[k] = null;
-                    newParam = new ElementParameter(node);
-                    newParam.setName("SCHEMA_COLUMN"); //$NON-NLS-1$
-                    newParam.setDisplayName(""); //$NON-NLS-1$
-                    newParam.setField(EParameterFieldType.TEXT);
-                    newParam.setValue(""); //$NON-NLS-1$
-                    listItemsValue[k] = newParam;
-                    continue;
+                    if (param.isBasedOnSchema()) {
+                        listItemsDisplayCodeValue[k] = "SCHEMA_COLUMN"; //$NON-NLS-1$
+                        listItemsDisplayValue[k] = "Column"; //$NON-NLS-1$
+                        listField[k] = ""; //$NON-NLS-1$
+                        listRepositoryItem[k] = ""; //$NON-NLS-1$
+                        listItemsShowIf[k] = null;
+                        listItemsNotShowIf[k] = null;
+                        newParam = new ElementParameter(node);
+                        newParam.setName("SCHEMA_COLUMN"); //$NON-NLS-1$
+                        newParam.setDisplayName(""); //$NON-NLS-1$
+                        newParam.setField(EParameterFieldType.TEXT);
+                        newParam.setValue(""); //$NON-NLS-1$
+                        listItemsValue[k] = newParam;
+                        continue;
+                    } else { // based on subjobs starts
+                        listItemsDisplayCodeValue[k] = "SUBJOB_START_COLUMN"; //$NON-NLS-1$
+                        listItemsDisplayValue[k] = "Subjob Start"; //$NON-NLS-1$
+                        listField[k] = ""; //$NON-NLS-1$
+                        listRepositoryItem[k] = ""; //$NON-NLS-1$
+                        listItemsShowIf[k] = null;
+                        listItemsNotShowIf[k] = null;
+                        newParam = new ElementParameter(node);
+                        newParam.setName("SUBJOB_START_COLUMN"); //$NON-NLS-1$
+                        newParam.setDisplayName(""); //$NON-NLS-1$
+                        newParam.setField(EParameterFieldType.TEXT);
+                        newParam.setValue(""); //$NON-NLS-1$
+                        listItemsValue[k] = newParam;
+                        continue;
+                    }
                 } else {
                     currentItem = k - 1;
                 }
@@ -1552,7 +1571,11 @@ public class EmfComponent implements IComponent {
                 nodeConnector.setMenuName(currentType.getDefaultMenuName());
                 nodeConnector.setMaxLinkInput(0);
                 nodeConnector.setMinLinkInput(0);
-                nodeConnector.setMaxLinkOutput(0);
+                if (currentType == EConnectionType.SUBJOB_START_ORDER) {
+                    nodeConnector.setMaxLinkOutput(1);
+                } else {
+                    nodeConnector.setMaxLinkOutput(0);
+                }
                 nodeConnector.setMinLinkOutput(0);
                 if (currentType == EConnectionType.FLOW_MAIN) {
                     nodeConnector.addConnectionProperty(EConnectionType.FLOW_REF, EConnectionType.FLOW_REF.getRGB(),

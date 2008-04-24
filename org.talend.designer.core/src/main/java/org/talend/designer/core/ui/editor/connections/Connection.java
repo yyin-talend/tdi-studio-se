@@ -34,6 +34,7 @@ import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
+import org.talend.designer.core.ui.editor.properties.controllers.TableController;
 import org.talend.repository.model.ComponentsFactoryProvider;
 
 /**
@@ -449,6 +450,14 @@ public class Connection extends Element implements IConnection, IPerformance {
             target.addInput(this);
             updateAllId();
             isConnected = true;
+
+            if (lineStyle.equals(EConnectionType.SUBJOB_START_ORDER)) {
+                for (IElementParameter param : target.getElementParameters()) {
+                    if (param.isBasedOnSubjobStarts()) {
+                        TableController.updateSubjobStarts(target, param);
+                    }
+                }
+            }
         }
     }
 
@@ -466,6 +475,14 @@ public class Connection extends Element implements IConnection, IPerformance {
             target.removeInput(this);
             updateAllId();
             isConnected = false;
+
+            if (lineStyle.equals(EConnectionType.SUBJOB_START_ORDER)) {
+                for (IElementParameter param : target.getElementParameters()) {
+                    if (param.isBasedOnSubjobStarts()) {
+                        TableController.updateSubjobStarts(target, param);
+                    }
+                }
+            }
         }
     }
 

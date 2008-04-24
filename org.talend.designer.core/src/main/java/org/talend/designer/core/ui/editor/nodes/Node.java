@@ -1548,6 +1548,23 @@ public class Node extends Element implements INode {
             }
         }
 
+        // check Subjob start order links
+        boolean atLeastOneLinkOnNonStartNode = false;
+
+        for (IConnection connection : getOutgoingConnections(EConnectionType.SUBJOB_START_ORDER)) {
+            if (!connection.getTarget().isStart() || !connection.getSource().isStart()) {
+                atLeastOneLinkOnNonStartNode = true;
+            }
+        }
+        if (atLeastOneLinkOnNonStartNode) {
+            String errorMessage = "The source and the target of a " + EConnectionType.SUBJOB_START_ORDER.getDefaultLinkName()
+                    + " link must be starts component (green state).";
+            Problems.add(ProblemStatus.ERROR, this, errorMessage);
+        }
+        // for (IConnection connection : getIncomingConnections(EConnectionType.SUBJOB_START_ORDER)) {
+        //            
+        // }
+
         // check not startable components not linked
         if ((getConnectorFromType(EConnectionType.FLOW_MAIN).getMaxLinkInput() == 0)
                 && (getConnectorFromType(EConnectionType.FLOW_MAIN).getMaxLinkOutput() != 0)) {
@@ -2167,7 +2184,8 @@ public class Node extends Element implements INode {
                 IConnection connection = getIncomingConnections().get(j);
                 // connection that will generate a hash file are not
                 // considered as activated for this test.
-                if (connection.isActivate() && !connection.getLineStyle().hasConnectionCategory(IConnectionCategory.USE_HASH)) {
+                if (connection.isActivate() && !connection.getLineStyle().hasConnectionCategory(IConnectionCategory.USE_HASH)
+                        && connection.getLineStyle() != EConnectionType.SUBJOB_START_ORDER) {
                     isActivatedConnection = true;
                 }
             }

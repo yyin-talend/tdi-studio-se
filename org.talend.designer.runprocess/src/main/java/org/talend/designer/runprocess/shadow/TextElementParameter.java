@@ -671,4 +671,21 @@ public class TextElementParameter implements IElementParameter {
     public void setBackgroundColor(Color backgroundColor) {
         this.backgroundColor = backgroundColor;
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IElementParameter#isBasedOnSubjobStarts()
+     */
+    public boolean isBasedOnSubjobStarts() {
+        return false;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IElementParameter#setBasedOnSubjobStarts(boolean)
+     */
+    public void setBasedOnSubjobStarts(boolean basedOnSubjobStarts) {
+    }
 }

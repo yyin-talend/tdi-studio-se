@@ -231,6 +231,14 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
                 subMenu.add(action);
             }
 
+            subMenu.add(new Separator());
+
+            action = new ConnectionCreateAction(part, EConnectionType.SUBJOB_START_ORDER);
+            ((ConnectionCreateAction) action).update();
+            if (action.isEnabled()) {
+                subMenu.add(action);
+            }
+
             /*
              * action = new ConnectionCreateAction(part, EConnectionType.RUN_AFTER); ((ConnectionCreateAction)
              * action).update(); if (action.isEnabled()) { subMenu.add(action); }

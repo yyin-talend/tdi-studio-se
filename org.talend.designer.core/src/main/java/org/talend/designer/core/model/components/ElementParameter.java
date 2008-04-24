@@ -74,6 +74,8 @@ public class ElementParameter implements IElementParameter {
 
     private boolean basedOnSchema = false;
 
+    private boolean basedOnSubjobStarts = false;
+
     private int nbLines = NB_LINES_DEFAULT, numRow = 0; // Default values
 
     private String repositoryValue;
@@ -658,5 +660,23 @@ public class ElementParameter implements IElementParameter {
      */
     public void setBackgroundColor(Color backgroundColor) {
         this.backgroundColor = backgroundColor;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IElementParameter#isBasedOnSubjobStarts()
+     */
+    public boolean isBasedOnSubjobStarts() {
+        return basedOnSubjobStarts;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.IElementParameter#setBasedOnSubjobStarts(boolean)
+     */
+    public void setBasedOnSubjobStarts(boolean basedOnSubjobStarts) {
+        this.basedOnSubjobStarts = basedOnSubjobStarts;
     }
 }
