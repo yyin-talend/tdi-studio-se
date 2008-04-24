@@ -40,7 +40,6 @@ import org.exolab.castor.xml.ValidationException;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.SystemException;
 import org.talend.commons.ui.swt.cursor.CursorHelper;
-import org.talend.core.model.components.IComponent;
 import org.talend.core.model.genhtml.HTMLDocUtils;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.BlockCode;
@@ -59,7 +58,6 @@ import org.talend.core.model.temp.ECodePart;
 import org.talend.designer.abstractmap.AbstractMapComponent;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.components.commons.AdvancedLookup.MATCHING_MODE;
-import org.talend.designer.mapper.component.PersistentMapperComponent;
 import org.talend.designer.mapper.external.data.ExternalMapperData;
 import org.talend.designer.mapper.external.data.ExternalMapperTable;
 import org.talend.designer.mapper.external.data.ExternalMapperTableEntry;
@@ -102,27 +100,6 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
         super.initialize();
         initMapperMain(false);
         mapperMain.loadInitialParamters();
-        reInitializeComponentIfNeeded();
-    }
-
-    private void reInitializeComponentIfNeeded() {
-        IElementParameter param = this.getElementParameter("MODE");
-        if (param != null) {
-            // check the current mode, NORMAL or PERSISTENT
-            // new component will only be set and not reloaded as there is no modification for UI.
-            if ("NORMAL".equals(param.getValue())) {
-                if (getComponent() instanceof PersistentMapperComponent) {
-                    // if the previous mode used was PERSISTENT, set the basic (emf) component.
-                    IComponent baseComponent = ((PersistentMapperComponent) getComponent()).getBaseComponent();
-                    setComponent(baseComponent);
-                }
-            } else {
-                if (!(getComponent() instanceof PersistentMapperComponent)) {
-                    // if the previous mode used was NORMAL, set the PersistentMapperComponent
-                    setComponent(new PersistentMapperComponent(getComponent()));
-                }
-            }
-        }
     }
 
     /*
@@ -188,7 +165,6 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
         if (MapperMain.isStandAloneMode()) {
             display.dispose();
         }
-        reInitializeComponentIfNeeded();
         return mapperMain.getMapperDialogResponse();
     }
 

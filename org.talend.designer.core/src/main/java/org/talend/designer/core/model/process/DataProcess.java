@@ -818,12 +818,11 @@ public class DataProcess {
         }
         AbstractNode dataNode;
 
-        List<IMultipleComponentManager> multipleComponentManagers = graphicalNode.getComponent().getMultipleComponentManagers();
-
         dataNode = (AbstractNode) buildCheckMap.get(graphicalNode);
         checkMultipleMap.put(graphicalNode, dataNode);
-        if (multipleComponentManagers.size() > 0) {
-            // dataNode = addMultipleNode(graphicalNode, multipleComponentManagers);
+        if (dataNode.isGeneratedAsVirtualComponent()) {
+            List<IMultipleComponentManager> multipleComponentManagers = graphicalNode.getComponent()
+                    .getMultipleComponentManagers();
             addMultipleNode(graphicalNode, multipleComponentManagers);
         }
         for (IConnection connection : graphicalNode.getOutgoingConnections()) {
