@@ -486,12 +486,10 @@ private class <%=conn.getName() %>Struct<%=templateOrigin %> implements routines
 			  }
 			}
     	}
-	    if(hasAtLeastOneRead) {
 	    %>
         	} catch (IOException e) {
 	            throw new RuntimeException(e);
         <%
-        }
         %>
         
 		<%
@@ -582,12 +580,10 @@ private class <%=conn.getName() %>Struct<%=templateOrigin %> implements routines
 			}
     	}
 
-	    if(hasAtLeastOneWrite) {
 	    %>
         	} catch (IOException e) {
 	            throw new RuntimeException(e);
         <%
-        }
         %>
         } finally {
             if (dos != null) {

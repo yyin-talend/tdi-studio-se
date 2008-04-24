@@ -204,29 +204,29 @@ public class DataProcess {
                 dataConnec.setConnectorName(connection.getConnectorName());
                 dataConnec.setInputId(connection.getInputId());
                 if (connection.getLineStyle().equals(EConnectionType.ITERATE)) {
-                    IElementParameter param = new ElementParameter(dataConnec);
-                    param.setField(EParameterFieldType.CHECK);
-                    param.setCategory(EComponentCategory.BASIC);
-                    param.setValue(Boolean.FALSE); //$NON-NLS-1$
-                    param.setName("ENABLE_PARALLEL");
-                    param.setDisplayName("Enable parallel execution");
-                    param.setShow(true);
-                    param.setNumRow(1);
-                    ((List<IElementParameter>) dataConnec.getElementParameters()).add(param);
+                        IElementParameter param = new ElementParameter(dataConnec);
+                        param.setField(EParameterFieldType.CHECK);
+                        param.setCategory(EComponentCategory.BASIC);
+                        param.setValue(Boolean.FALSE); //$NON-NLS-1$
+                        param.setName("ENABLE_PARALLEL");
+                        param.setDisplayName("Enable parallel execution");
+                        param.setShow(true);
+                        param.setNumRow(1);
+                        ((List<IElementParameter>) dataConnec.getElementParameters()).add(param);
 
-                    param = new ElementParameter(dataConnec);
+                        param = new ElementParameter(dataConnec);
                     param.setField(EParameterFieldType.TEXT);
-                    param.setCategory(EComponentCategory.BASIC);
+                        param.setCategory(EComponentCategory.BASIC);
                     // param.setListItemsDisplayName(new String[] { "2", "3", "4" });
                     // param.setListItemsDisplayCodeName(new String[] { "2", "3", "4" });
                     // param.setListItemsValue(new String[] { "2", "3", "4" });
-                    param.setValue("2"); //$NON-NLS-1$
-                    param.setName("NUMBER_PARALLEL");
-                    param.setDisplayName("Number of parallel execution");
-                    param.setShow(true);
-                    param.setShowIf("ENABLE_PARALLEL == 'true'");
-                    param.setNumRow(1);
-                    ((List<IElementParameter>) dataConnec.getElementParameters()).add(param);
+                        param.setValue("2"); //$NON-NLS-1$
+                        param.setName("NUMBER_PARALLEL");
+                        param.setDisplayName("Number of parallel execution");
+                        param.setShow(true);
+                        param.setShowIf("ENABLE_PARALLEL == 'true'");
+                        param.setNumRow(1);
+                        ((List<IElementParameter>) dataConnec.getElementParameters()).add(param);
                     copyElementParametersValue(connection, dataConnec);
                 }
                 INode target = buildDataNodeFromNode((Node) connection.getTarget(), prefix);
@@ -406,7 +406,9 @@ public class DataProcess {
                 dataConnec.setActivate(graphicalNode.isActivate());
                 dataConnec.setLineStyle(EConnectionType.getTypeFromName(curConnec.getConnectionType()));
                 dataConnec.setConnectorName(curConnec.getConnectionType());
-                dataConnec.setMetadataTable(nodeSource.getMetadataList().get(0));
+                if (nodeSource.getMetadataList() != null) {
+                    dataConnec.setMetadataTable(nodeSource.getMetadataList().get(0));
+                }
                 // INodeConnector connector = nodeSource.getConnectorFromName(curConnec.getConnectionType());
                 // dataConnec.setLineStyle(connector.getDefaultConnectionType());
                 // dataConnec.setConnectorName(curConnec.getConnectionType());
@@ -512,13 +514,42 @@ public class DataProcess {
             if (component == null) {
                 continue;
             }
-            DataNode curNode = new DataNode(component, uniqueName);
+//            DataNode curNode = new DataNode(component, uniqueName);
+            
+            
+            AbstractNode curNode;
+            if (graphicalNode.getExternalNode() == null) {
+                curNode = new DataNode(component, uniqueName);
+            } else {
+                // mapper
+                curNode = (AbstractNode) ExternalNodesFactory.getInstance(graphicalNode.getPluginFullName());
+                IExternalData externalData = ((Node) graphicalNode).getExternalData();
+                if (externalData != null) {
+                    ((IExternalNode) curNode).setExternalData(externalData);
+                }
+                curNode.setStart(graphicalNode.isStart());
+                // curNode.setMetadataList(graphicalNode.getMetadataList());
+                curNode.setPluginFullName(graphicalNode.getPluginFullName());
+                curNode.setElementParameters(graphicalNode.getComponent().createElementParameters(curNode));
+                curNode.setListConnector(((Node) graphicalNode).getListConnector());
+                copyElementParametersValue(graphicalNode, curNode);
+                curNode.setUniqueName(uniqueName);
+                curNode.setSubProcessStart(graphicalNode.isSubProcessStart());
+                curNode.setThereLinkWithHash(graphicalNode.isThereLinkWithHash());
+                curNode.setHasConditionalOutputs(graphicalNode.hasConditionalOutputs());
+                curNode.setIsMultiplyingOutputs(graphicalNode.isMultiplyingOutputs());
+                curNode.setComponent(graphicalNode.getComponent());
+            }
+
+            
             curNode.setActivate(graphicalNode.isActivate());
             IMetadataTable newMetadata = null;
             if (multipleComponentManager.isSetConnector()) {
                 newMetadata = graphicalNode.getMetadataFromConnector(multipleComponentManager.getConnector()).clone();
             } else {
-                newMetadata = graphicalNode.getMetadataList().get(0).clone();
+                if (graphicalNode.getMetadataList() != null) {
+                    newMetadata = graphicalNode.getMetadataList().get(0).clone();
+                }
             }
             newMetadata.setTableName(uniqueName);
             if (graphicalNode.isDesignSubjobStartNode()) {
@@ -536,15 +567,19 @@ public class DataProcess {
                 } else {
                     // propagate all metadataTables
                     List<IMetadataTable> newMetadataList = new ArrayList<IMetadataTable>();
-                    for (IMetadataTable metadataTable : graphicalNode.getMetadataList()) {
-                        newMetadataList.add(metadataTable.clone());
+                    if (graphicalNode.getMetadataList() != null) {
+                        for (IMetadataTable metadataTable : graphicalNode.getMetadataList()) {
+                            newMetadataList.add(metadataTable.clone());
+                        }
                     }
                     curNode.setMetadataList(newMetadataList);
                 }
 
             } else {
-                curNode.getMetadataList().remove(0);
-                curNode.getMetadataList().add(newMetadata);
+                if (curNode.getMetadataList() != null) {
+                    curNode.getMetadataList().remove(0);
+                    curNode.getMetadataList().add(newMetadata);
+                }
             }
 
             List<IConnection> outgoingConnections = new ArrayList<IConnection>();

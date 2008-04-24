@@ -102,6 +102,49 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
         mapperMain.loadInitialParamters();
     }
 
+    @Override
+    public boolean isGeneratedAsVirtualComponent() {
+
+        boolean hasPersistentSortedLookup = false;
+
+        List<IConnection> incomingConnections = (List<IConnection>) getIncomingConnections();
+
+        ExternalMapperData internalExternalData = (ExternalMapperData) getExternalData();
+
+        if (internalExternalData != null && incomingConnections.size() > 0) {
+            List<ExternalMapperTable> inputTables = internalExternalData.getInputTables();
+
+            int sizeInputTables = incomingConnections.size();
+
+            HashMap<String, IConnection> hNameToConnection = new HashMap<String, IConnection>();
+            for (IConnection connection : incomingConnections) {
+                hNameToConnection.put(connection.getName(), connection);
+            }
+
+            for (int iInputTable = 1; iInputTable < sizeInputTables; iInputTable++) { // T_TM_M_241
+                ExternalMapperTable inputTable = inputTables.get(iInputTable);
+                String tableName = inputTable.getName();
+                IConnection connection = hNameToConnection.get(tableName);
+                if (connection == null) {
+                    continue;
+                }
+
+                if (inputTable != null) { // T_TM_M_245
+                    List<ExternalMapperTableEntry> metadataTableEntries = inputTable.getMetadataTableEntries();
+                    if (metadataTableEntries == null) {
+                        continue;
+                    }
+
+                    if (inputTable.isPersistent() && !"ALL_ROWS".equals(inputTable.getMatchingMode())) {
+                        hasPersistentSortedLookup = true;
+                    }
+
+                } // T_TM_M_245
+            } // T_TM_M_241
+        }
+        return hasPersistentSortedLookup;
+    }
+
     /*
      * (non-Javadoc)
      * 

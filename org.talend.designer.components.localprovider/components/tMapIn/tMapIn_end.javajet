@@ -9,8 +9,8 @@
 	org.talend.designer.mapper.MapperComponent
 	org.talend.core.model.process.IElementParameter
 	org.talend.core.model.process.INode
+
 	" 
 %>
 
-
-<%@ include file="tMapPersistent_end.inc.javajet" %>
+<%@ include file="../tMapPersistent/tMapPersistent_end.inc.javajet" %>

@@ -40,7 +40,7 @@
       </PARAMETER>
 
       <PARAMETER NAME="MODE" FIELD="TEXT" SHOW="false" NUM_ROW="99">
-         <DEFAULT>NORMAL</DEFAULT> <!-- NORMAL / PERSISTENT -->
+         <DEFAULT>NORMAL</DEFAULT> <!-- NORMAL / VIRTUAL -->
       </PARAMETER>
       
       <!-- 
