@@ -214,11 +214,11 @@
     </PARAMETER>
   </ADVANCED_PARAMETERS>
 
-  <CODEGENERATION>
-    <IMPORTS>
-		<IMPORT NAME="Driver-Oracle" MODULE="classes12.jar" REQUIRED="true" />
-    </IMPORTS>
-  </CODEGENERATION>
+   <CODEGENERATION>
+     <IMPORTS>
+		<IMPORT NAME="Driver-Oracle" MODULE="ojdbc5.jar" REQUIRED="true" />
+     </IMPORTS>
+   </CODEGENERATION>
    
   <RETURNS/>
 </COMPONENT>

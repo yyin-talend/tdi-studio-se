@@ -433,8 +433,7 @@
 
    <CODEGENERATION>
      <IMPORTS>
-		<IMPORT NAME="Driver-Oracle" MODULE="classes12.jar" REQUIRED="true" /> 
-		<IMPORT NAME="Delimited_File_Reader" MODULE="file_delimited.jar" REQUIRED="true"/>
+		<IMPORT NAME="Driver-Oracle" MODULE="ojdbc5.jar" REQUIRED="true" /> 
      </IMPORTS>
    </CODEGENERATION>
 
