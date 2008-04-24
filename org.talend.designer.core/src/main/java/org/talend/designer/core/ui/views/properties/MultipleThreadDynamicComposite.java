@@ -12,16 +12,17 @@
 // ============================================================================
 package org.talend.designer.core.ui.views.properties;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections.BidiMap;
 import org.apache.commons.collections.bidimap.DualHashBidiMap;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.commands.CommandStackEvent;
 import org.eclipse.gef.commands.CommandStackEventListener;
-import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.layout.FormAttachment;
@@ -32,8 +33,11 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.ui.internal.dialogs.EventLoopProgressMonitor;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.ui.swt.dialogs.ProgressDialog;
 import org.talend.commons.utils.threading.ExecutionLimiter;
 import org.talend.commons.utils.time.TimeMeasure;
 import org.talend.core.model.metadata.IMetadataTable;
@@ -134,124 +138,140 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
     }
 
     private void updateRepositoryList() {
-        ProgressMonitorDialog monitor = new ProgressMonitorDialog(this.getShell());
-        monitor.create();
-        monitor.open();
-        IProxyRepositoryFactory factory = DesignerPlugin.getDefault().getProxyRepositoryFactory();
 
-        List<IRepositoryObject> repositoryObjects;
-        try {
-            repositoryObjects = factory.getAll(ERepositoryObjectType.METADATA);
-        } catch (PersistenceException e) {
-            throw new RuntimeException(e);
-        }
+        ProgressDialog progressDialog = new ProgressDialog(this.getShell(), 1000) {
 
-        int total = repositoryObjects.size() + elem.getElementParameters().size();
-        monitor.getProgressMonitor().beginTask("Gathering informations from repository", total);
-        int nbDone = 0;
+            private IProgressMonitor monitorWrap;
 
-        IElementParameter propertyParam = elem.getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE, section);
-        String repositoryValue = null;
+            @Override
+            public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+                monitorWrap = new EventLoopProgressMonitor(monitor);
+                IProxyRepositoryFactory factory = DesignerPlugin.getDefault().getProxyRepositoryFactory();
 
-        if (propertyParam != null) {
-            repositoryValue = propertyParam.getRepositoryValue();
-        }
-
-        if (repositoryObjects != null && (repositoryObjects.size() != 0)) {
-            repositoryTableMap.clear();
-            repositoryQueryStoreMap.clear();
-            repositoryConnectionItemMap.clear();
-            tableIdAndDbTypeMap.clear();
-            tableIdAndDbSchemaMap.clear();
-
-            for (IRepositoryObject curObject : repositoryObjects) {
-                ConnectionItem connectionItem = (ConnectionItem) curObject.getProperty().getItem();
-                Connection connection = connectionItem.getConnection();
-                if (connection.isReadOnly()) {
-                    continue;
+                List<IRepositoryObject> repositoryObjects;
+                try {
+                    repositoryObjects = factory.getAll(ERepositoryObjectType.METADATA);
+                } catch (PersistenceException e) {
+                    throw new RuntimeException(e);
                 }
 
-                if (repositoryValue != null) {
-                    if ((connection instanceof DelimitedFileConnection) && (repositoryValue.equals("DELIMITED"))) { //$NON-NLS-1$
-                        repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
-                    }
-                    if ((connection instanceof PositionalFileConnection) && (repositoryValue.equals("POSITIONAL"))) { //$NON-NLS-1$
-                        repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
-                    }
-                    if ((connection instanceof FileExcelConnection) && (repositoryValue.equals("EXCEL"))) { //$NON-NLS-1$
-                        repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
-                    }
-                    if ((connection instanceof RegexpFileConnection) && (repositoryValue.equals("REGEX"))) { //$NON-NLS-1$
-                        repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
-                    }
-                    if ((connection instanceof XmlFileConnection) && (repositoryValue.equals("XML"))) { //$NON-NLS-1$
-                        repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
-                    }
-                    if ((connection instanceof GenericSchemaConnection) && (repositoryValue.equals("GENERIC"))) { //$NON-NLS-1$
-                        repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
-                    }
-                    if ((connection instanceof LDAPSchemaConnection) && (repositoryValue.equals("LDAP"))) { //$NON-NLS-1$
-                        repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
-                    }
-                    if ((connection instanceof WSDLSchemaConnection) && (repositoryValue.equals("WSDL"))) { //$NON-NLS-1$
-                        repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
-                    }
-                    if ((connection instanceof SalesforceSchemaConnection) && (repositoryValue.equals("SALESFORCE"))) { //$NON-NLS-1$
-                        repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
-                    }
-                    if ((connection instanceof DatabaseConnection) && (repositoryValue.startsWith("DATABASE"))) { //$NON-NLS-1$
-                        String currentDbType = (String) RepositoryToComponentProperty.getValue(connection, "TYPE"); //$NON-NLS-1$
-                        if (repositoryValue.contains(":")) { // database is specified //$NON-NLS-1$
-                            String neededDbType = repositoryValue.substring(repositoryValue.indexOf(":") + 1); //$NON-NLS-1$
-                            if (neededDbType.equals(currentDbType)) {
+                int total = repositoryObjects.size(); // + elem.getElementParameters().size();
+                monitorWrap.beginTask("Gathering informations from repository", total);
+
+                IElementParameter propertyParam = elem.getElementParameterFromField(EParameterFieldType.PROPERTY_TYPE, section);
+                String repositoryValue = null;
+
+                if (propertyParam != null) {
+                    repositoryValue = propertyParam.getRepositoryValue();
+                }
+
+                if (repositoryObjects != null && (repositoryObjects.size() != 0)) {
+                    repositoryTableMap.clear();
+                    repositoryQueryStoreMap.clear();
+                    repositoryConnectionItemMap.clear();
+                    tableIdAndDbTypeMap.clear();
+                    tableIdAndDbSchemaMap.clear();
+
+                    for (IRepositoryObject curObject : repositoryObjects) {
+                        ConnectionItem connectionItem = (ConnectionItem) curObject.getProperty().getItem();
+                        Connection connection = connectionItem.getConnection();
+                        if (connection.isReadOnly()) {
+                            continue;
+                        }
+
+                        if (repositoryValue != null) {
+                            if ((connection instanceof DelimitedFileConnection) && (repositoryValue.equals("DELIMITED"))) { //$NON-NLS-1$
                                 repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
+                            }
+                            if ((connection instanceof PositionalFileConnection) && (repositoryValue.equals("POSITIONAL"))) { //$NON-NLS-1$
+                                repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
+                            }
+                            if ((connection instanceof FileExcelConnection) && (repositoryValue.equals("EXCEL"))) { //$NON-NLS-1$
+                                repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
+                            }
+                            if ((connection instanceof RegexpFileConnection) && (repositoryValue.equals("REGEX"))) { //$NON-NLS-1$
+                                repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
+                            }
+                            if ((connection instanceof XmlFileConnection) && (repositoryValue.equals("XML"))) { //$NON-NLS-1$
+                                repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
+                            }
+                            if ((connection instanceof GenericSchemaConnection) && (repositoryValue.equals("GENERIC"))) { //$NON-NLS-1$
+                                repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
+                            }
+                            if ((connection instanceof LDAPSchemaConnection) && (repositoryValue.equals("LDAP"))) { //$NON-NLS-1$
+                                repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
+                            }
+                            if ((connection instanceof WSDLSchemaConnection) && (repositoryValue.equals("WSDL"))) { //$NON-NLS-1$
+                                repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
+                            }
+                            if ((connection instanceof SalesforceSchemaConnection) && (repositoryValue.equals("SALESFORCE"))) { //$NON-NLS-1$
+                                repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
+                            }
+                            if ((connection instanceof DatabaseConnection) && (repositoryValue.startsWith("DATABASE"))) { //$NON-NLS-1$
+                                String currentDbType = (String) RepositoryToComponentProperty.getValue(connection, "TYPE"); //$NON-NLS-1$
+                                if (repositoryValue.contains(":")) { // database is specified //$NON-NLS-1$
+                                    String neededDbType = repositoryValue.substring(repositoryValue.indexOf(":") + 1); //$NON-NLS-1$
+                                    if (neededDbType.equals(currentDbType)) {
+                                        repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
+                                    }
+                                } else {
+                                    repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
+                                }
                             }
                         } else {
                             repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
                         }
-                    }
-                } else {
-                    repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
-                }
-                for (Object tableObj : connection.getTables()) {
-                    org.talend.core.model.metadata.builder.connection.MetadataTable table;
+                        for (Object tableObj : connection.getTables()) {
+                            org.talend.core.model.metadata.builder.connection.MetadataTable table;
 
-                    table = (org.talend.core.model.metadata.builder.connection.MetadataTable) tableObj;
+                            table = (org.talend.core.model.metadata.builder.connection.MetadataTable) tableObj;
 
-                    if (factory.getStatus(connectionItem) != ERepositoryStatus.DELETED) {
-                        if (!factory.isDeleted(table)) {
-                            IMetadataTable newTable = ConvertionHelper.convert(table);
-                            repositoryTableMap.put(connectionItem.getProperty().getId() + " - " + table.getLabel(), newTable);
-                            if (connection instanceof DatabaseConnection) {
-                                String dbType = ((DatabaseConnection) connection).getDatabaseType();
-                                String schema = ((DatabaseConnection) connection).getSchema();
-                                tableIdAndDbTypeMap.put(newTable.getId(), dbType);
-                                if (schema != null && !schema.equals("")) {
-                                    tableIdAndDbSchemaMap.put(newTable.getId(), schema);
+                            if (factory.getStatus(connectionItem) != ERepositoryStatus.DELETED) {
+                                if (!factory.isDeleted(table)) {
+                                    IMetadataTable newTable = ConvertionHelper.convert(table);
+                                    repositoryTableMap.put(connectionItem.getProperty().getId() + " - " + table.getLabel(),
+                                            newTable);
+                                    if (connection instanceof DatabaseConnection) {
+                                        String dbType = ((DatabaseConnection) connection).getDatabaseType();
+                                        String schema = ((DatabaseConnection) connection).getSchema();
+                                        tableIdAndDbTypeMap.put(newTable.getId(), dbType);
+                                        if (schema != null && !schema.equals("")) {
+                                            tableIdAndDbSchemaMap.put(newTable.getId(), schema);
+                                        }
+                                    }
                                 }
                             }
                         }
-                    }
-                }
-
-                if (connection instanceof DatabaseConnection) {
-                    DatabaseConnection dbConnection = (DatabaseConnection) connection;
-                    QueriesConnection queriesConnection = dbConnection.getQueries();
-                    if (queriesConnection != null) {
-                        List<Query> qs = (List<Query>) queriesConnection.getQuery();
-                        for (Query query : qs) {
-                            repositoryQueryStoreMap.put(connectionItem.getProperty().getId() + " - " + query.getLabel(), query);
+                        if (connection instanceof DatabaseConnection) {
+                            DatabaseConnection dbConnection = (DatabaseConnection) connection;
+                            QueriesConnection queriesConnection = dbConnection.getQueries();
+                            if (queriesConnection != null) {
+                                List<Query> qs = (List<Query>) queriesConnection.getQuery();
+                                for (Query query : qs) {
+                                    repositoryQueryStoreMap.put(connectionItem.getProperty().getId() + " - " + query.getLabel(),
+                                            query);
+                                }
+                            }
                         }
+
+                        monitorWrap.worked(1);
                     }
+
                 }
-                nbDone++;
-                monitor.getProgressMonitor().worked(nbDone);
+
+                monitorWrap.done();
             }
+        };
 
+        try {
+            progressDialog.executeProcess();
+        } catch (InvocationTargetException e) {
+            ExceptionHandler.process(e);
+            return;
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
+            return;
         }
-
-        monitor.getProgressMonitor().done();
-        monitor.close();
     }
 
     /**
