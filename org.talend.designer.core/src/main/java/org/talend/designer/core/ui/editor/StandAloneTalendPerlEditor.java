@@ -28,6 +28,7 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.properties.ByteArray;
+import org.talend.core.model.properties.FileItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.ui.IUIRefresher;
@@ -79,7 +80,7 @@ public class StandAloneTalendPerlEditor extends PerlEditor implements IUIRefresh
         }
         super.doSetInput(rEditorInput);
         try {
-            item = (RoutineItem) rEditorInput.getItem();
+            item = (FileItem) rEditorInput.getItem();
             item.getProperty().eAdapters().add(dirtyListener);
             if (!rEditorInput.isReadOnly()) {
                 repFactory.lock(item);
@@ -145,7 +146,10 @@ public class StandAloneTalendPerlEditor extends PerlEditor implements IUIRefresh
 
             ICodeGeneratorService codeGenService = (ICodeGeneratorService) GlobalServiceRegister.getDefault().getService(
                     ICodeGeneratorService.class);
-            codeGenService.createPerlRoutineSynchronizer().syncRoutine(item, false);
+            if(item instanceof RoutineItem){
+                codeGenService.createPerlRoutineSynchronizer().syncRoutine((RoutineItem) item, false);
+            }
+            
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -172,7 +176,7 @@ public class StandAloneTalendPerlEditor extends PerlEditor implements IUIRefresh
         });
     }
 
-    private RoutineItem item;
+    private FileItem item;
 
     private boolean propertyIsDirty;
 

@@ -85,6 +85,9 @@ public enum EParameterName {
     SHOW_SUBJOB_TITLE("Show subjob title"),
     SUBJOB_TITLE("Title"),
     SUBJOB_COLOR("Subjob color"),
+    SQLPATTERN_DB_NAME("SQL Pattern DB"),
+    SQLPATTERN_VALUE("SQL Pattern"),
+    SQLPATTERN_CODE("Code"),
 
     /**
      * For stats & logs parameters.

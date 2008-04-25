@@ -435,6 +435,10 @@ public class Problems {
             ExceptionHandler.process(e);
         }
 
+        if (property == null) {
+            return;
+        }
+
         if (hasError) {
             property.setMaxInformationLevel(InformationLevel.ERROR_LITERAL);
         } else {

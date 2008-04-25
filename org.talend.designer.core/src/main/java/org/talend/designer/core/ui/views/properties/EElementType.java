@@ -32,7 +32,16 @@ public enum EElementType {
                   EComponentCategory.ADVANCED,
                   EComponentCategory.ADVANCED_CONTEXT,
                   EComponentCategory.VIEW,
-                  EComponentCategory.DOC);
+                  EComponentCategory.DOC),
+    ELT_NODE(
+             EComponentCategory.BASIC,
+             EComponentCategory.ADVANCED,
+             EComponentCategory.ADVANCED_CONTEXT,
+             EComponentCategory.SQL_PATTERN,
+             EComponentCategory.VIEW,
+             EComponentCategory.DOC)
+
+    ;
 
     private EComponentCategory[] categories;
 

@@ -527,6 +527,9 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
             return EElementType.CONNECTION.getCategories();
         } else if (elem instanceof Node) {
             // if (isAdvancedType(elem)) {
+            if(((Node)elem).isELTComponent()){
+                return EElementType.ELT_NODE.getCategories();
+            }
             return EElementType.ADVANCED_NODE.getCategories();
             // } else {
             // return EElementType.NODE.getCategories();
@@ -534,7 +537,7 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
         } else if (elem instanceof Note) {
             return EElementType.NOTE.getCategories();
         } else if (elem instanceof SubjobContainer) {
-            return EElementType.NOTE.getCategories();
+            return EElementType.SUBJOB.getCategories();
         }
         return null;
     }

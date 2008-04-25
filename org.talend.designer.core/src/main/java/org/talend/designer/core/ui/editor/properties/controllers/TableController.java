@@ -18,6 +18,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.custom.CLabel;
@@ -29,6 +33,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.utils.data.list.IListenableListListener;
@@ -41,8 +46,15 @@ import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.properties.SQLPatternItem;
+import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.utils.TalendTextUtils;
+import org.talend.designer.core.DesignerCoreService;
+import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
+import org.talend.designer.core.model.components.EmfComponent;
+import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
@@ -163,14 +175,59 @@ public class TableController extends AbstractElementPropertySectionController {
         mainComposite.setLayoutData(formData);
 
         hashCurControls.put(param.getName(), tableEditorView.getExtendedTableViewer().getTableViewerCreator());
-
         updateTableValues(param);
 
         this.dynamicProperty.setCurRowSize(ySize2 + ITabbedPropertyConstants.VSPACE);
 
         top += this.dynamicProperty.getCurRowSize();
-
+        addSelectionChangeListener(tableEditorView.getExtendedTableViewer().getTableViewerCreator().getTableViewer());
         return null;
+    }
+
+    /**
+     * DOC bqian Comment method "addSelectionChangeListener".
+     * 
+     * @param tableViewer
+     */
+    private void addSelectionChangeListener(final TableViewer tableViewer) {
+        if (curParameter.getName() != EParameterName.SQLPATTERN_VALUE.getName()) {
+            return;
+        }
+
+        tableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+
+            public void selectionChanged(SelectionChangedEvent event) {
+                Object o = ((IStructuredSelection) tableViewer.getSelection()).getFirstElement();
+                Map<String, String> map = (Map<String, String>) o;
+                String sqlpatternName = map.get(EmfComponent.SQLPATTERNLIST);
+                String eltNodeName = (String) elem.getElementParameter(EParameterName.SQLPATTERN_DB_NAME.getName()).getValue();
+
+                SQLPatternItem sqlpatternItem = null;
+                try {
+                    List<IRepositoryObject> list = DesignerPlugin.getDefault().getRepositoryService().getProxyRepositoryFactory()
+                            .getAll(ERepositoryObjectType.METADATA_SQLPATTERNS, false);
+
+                    for (IRepositoryObject repositoryObject : list) {
+                        SQLPatternItem item = (SQLPatternItem) repositoryObject.getProperty().getItem();
+                        if (item.getEltName().equals(eltNodeName) && item.getProperty().getLabel().equals(sqlpatternName)) {
+                            sqlpatternItem = item;
+                            break;
+                        }
+
+                    }
+
+                } catch (Exception e) {
+                    ExceptionHandler.process(e);
+                }
+
+                if (sqlpatternItem != null) {
+                    PropertyChangeCommand command = new PropertyChangeCommand(elem, EParameterName.SQLPATTERN_CODE.getName(),
+                            new String(sqlpatternItem.getContent().getInnerContent()));
+                    getCommandStack().execute(command);
+                }
+            }
+        });
+
     }
 
     /*

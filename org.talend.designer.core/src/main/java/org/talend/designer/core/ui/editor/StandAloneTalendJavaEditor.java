@@ -44,6 +44,7 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.properties.ByteArray;
+import org.talend.core.model.properties.FileItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.ui.IUIRefresher;
@@ -94,7 +95,7 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
         }
         try {
             // see bug 1321
-            item = (RoutineItem) rEditorInput.getItem();
+            item = (FileItem) rEditorInput.getItem();
             item.getProperty().eAdapters().add(dirtyListener);
             if (!rEditorInput.isReadOnly()) {
                 repFactory.lock(item);
@@ -203,7 +204,7 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
         viewPart.refresh();
     }
 
-    private RoutineItem item;
+    private FileItem item;
 
     private boolean propertyIsDirty;
 

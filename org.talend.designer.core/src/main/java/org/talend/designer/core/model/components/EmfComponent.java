@@ -15,6 +15,8 @@ package org.talend.designer.core.model.components;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -76,6 +78,8 @@ import org.talend.designer.core.model.utils.emf.component.ITEMType;
 import org.talend.designer.core.model.utils.emf.component.LINKTOType;
 import org.talend.designer.core.model.utils.emf.component.PARAMETERType;
 import org.talend.designer.core.model.utils.emf.component.RETURNType;
+import org.talend.designer.core.model.utils.emf.component.SQLPATTERNSType;
+import org.talend.designer.core.model.utils.emf.component.SQLPATTERNType;
 import org.talend.designer.core.model.utils.emf.component.TABLEType;
 import org.talend.designer.core.model.utils.emf.component.TEMPLATEPARAMType;
 import org.talend.designer.core.model.utils.emf.component.TEMPLATESType;
@@ -92,6 +96,11 @@ import org.talend.repository.model.ExternalNodesFactory;
  * 02:23:53Z nrousseau $
  */
 public class EmfComponent implements IComponent {
+
+    /**
+     * 
+     */
+    public static final String SQLPATTERNLIST = "SQLPATTERNLIST";
 
     private static Logger log = Logger.getLogger(EmfComponent.class);
 
@@ -220,6 +229,7 @@ public class EmfComponent implements IComponent {
         checkSchemaParameter(listParam, node);
         addViewParameters(listParam, node);
         addDocParameters(listParam, node);
+        addSqlPatternParameters(listParam, node);
         return listParam;
     }
 
@@ -363,6 +373,93 @@ public class EmfComponent implements IComponent {
         param.setCategory(EComponentCategory.DOC);
         param.setNumRow(1);
         param.setReadOnly(false);
+        param.setRequired(false);
+        param.setShow(true);
+        listParam.add(param);
+    }
+
+    private void addSqlPatternParameters(final List<ElementParameter> listParam, INode node) {
+        if (!node.isELTComponent()) {
+            return;
+        }
+        ElementParameter param;
+        SQLPATTERNSType patterns = compType.getSQLPATTERNS();
+        param = new ElementParameter(node);
+        param.setName(EParameterName.SQLPATTERN_DB_NAME.getName());
+        param.setDisplayName(EParameterName.SQLPATTERN_DB_NAME.getDisplayName());
+        param.setField(EParameterFieldType.TEXT);
+        param.setNbLines(5);
+        param.setValue(patterns.getDB());
+        param.setCategory(EComponentCategory.SQL_PATTERN);
+        param.setNumRow(1);
+        param.setReadOnly(false);
+        param.setRequired(false);
+        param.setShow(false);
+        listParam.add(param);
+        
+        param = new ElementParameter(node);
+        param.setName(EParameterName.SQLPATTERN_VALUE.getName());
+        param.setDisplayName(EParameterName.SQLPATTERN_VALUE.getDisplayName());
+        param.setField(EParameterFieldType.TABLE);
+        param.setNbLines(10);
+        param.setCategory(EComponentCategory.SQL_PATTERN);
+        param.setNumRow(1);
+        param.setReadOnly(true);
+        param.setRequired(false);
+        param.setShow(true);
+
+        EList patternList = patterns.getSQLPATTERN();
+
+        List<Map> value = new ArrayList<Map>();
+        for (Iterator iterator = patternList.iterator(); iterator.hasNext();) {
+            SQLPATTERNType pattern = (SQLPATTERNType) iterator.next();
+            Map map = new HashMap();
+            map.put(SQLPATTERNLIST, pattern.getNAME());
+            value.add(map);
+        }
+        param.setValue(value);
+
+        String[] listRepositoryItem = new String[1];
+        String[] listItemsDisplayValue = new String[1];
+        String[] listItemsDisplayCodeValue = new String[1];
+        Object[] listItemsValue = new Object[1];
+        String[] listItemsShowIf = new String[1];
+        String[] listItemsNotShowIf = new String[1];
+        String[] listField = new String[1];
+
+        listItemsDisplayCodeValue[0] = SQLPATTERNLIST;
+        listItemsDisplayValue[0] = "SQLPattern List";
+
+        ElementParameter newParam = new ElementParameter(node);
+        newParam = new ElementParameter(node);
+        newParam.setName(SQLPATTERNLIST);
+        newParam.setFilter("");
+        newParam.setDisplayName(""); //$NON-NLS-1$
+        newParam.setField(EParameterFieldType.TEXT);
+        newParam.setContext("");
+        newParam.setValue("");
+
+        listItemsValue[0] = newParam;
+
+        listField[0] = EParameterFieldType.TEXT.getName();
+        param.setListItemsDisplayName(listItemsDisplayValue);
+        param.setListItemsDisplayCodeName(listItemsDisplayCodeValue);
+        param.setListItemsValue(listItemsValue);
+        param.setListRepositoryItems(listRepositoryItem);
+        param.setListItemsShowIf(listItemsShowIf);
+        param.setListItemsNotShowIf(listItemsNotShowIf);
+        listParam.add(param);
+        
+        
+        param = new ElementParameter(node);
+        param.setName(EParameterName.SQLPATTERN_CODE.getName());
+        param.setValue(""); //$NON-NLS-1$
+        param.setDisplayName(EParameterName.SQLPATTERN_CODE.getDisplayName());
+        param.setField(EParameterFieldType.MEMO);
+        param.setNbLines(10);
+        param.setCategory(EComponentCategory.SQL_PATTERN);
+        param.setNumRow(3);
+        param.setReadOnly(true);
         param.setRequired(false);
         param.setShow(true);
         listParam.add(param);
