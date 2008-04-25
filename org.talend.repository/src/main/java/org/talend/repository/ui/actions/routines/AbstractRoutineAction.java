@@ -25,7 +25,7 @@ import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.designer.codegen.ICodeGeneratorService;
-import org.talend.designer.codegen.IRoutineSynchronizer;
+import org.talend.designer.codegen.ITalendSynchronizer;
 import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.ui.actions.AContextualAction;
 
@@ -53,7 +53,7 @@ public abstract class AbstractRoutineAction extends AContextualAction {
 
         ECodeLanguage lang = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
                 .getProject().getLanguage();
-        IRoutineSynchronizer routineSynchronizer;
+        ITalendSynchronizer routineSynchronizer;
         switch (lang) {
         case JAVA:
             routineSynchronizer = service.createJavaRoutineSynchronizer();
@@ -88,7 +88,7 @@ public abstract class AbstractRoutineAction extends AContextualAction {
 
         if (!found) {
             routineSynchronizer.syncRoutine(routineItem, true);
-            IFile file = routineSynchronizer.getRoutineFile(routineItem);
+            IFile file = routineSynchronizer.getFile(routineItem);
 
             RepositoryEditorInput input = new RepositoryEditorInput(file, routineItem);
             input.setReadOnly(readOnly);

@@ -49,7 +49,7 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
-import org.talend.designer.codegen.IRoutineSynchronizer;
+import org.talend.designer.codegen.ITalendSynchronizer;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.repository.RepositoryPlugin;
@@ -339,7 +339,7 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
             routineItem.setProperty(property);
             routineItem.setContent(byteArray);
             routineItem.setBuiltIn(true);
-            if (!routineItem.getProperty().getLabel().equals(IRoutineSynchronizer.TEMPLATE)) {
+            if (!routineItem.getProperty().getLabel().equals(ITalendSynchronizer.TEMPLATE)) {
                 create(routineItem, path);
             }
         } catch (IOException ioe) {

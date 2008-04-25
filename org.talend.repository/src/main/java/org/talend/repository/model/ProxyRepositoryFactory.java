@@ -55,6 +55,7 @@ import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.properties.FolderItem;
 import org.talend.core.model.properties.FolderType;
+import org.talend.core.model.properties.InformationLevel;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.JobDocumentationItem;
 import org.talend.core.model.properties.JobletDocumentationItem;
@@ -1044,6 +1045,21 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         }
 
         return toReturn;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.model.IProxyRepositoryFactory#getStatus(org.talend.core.model.properties.InformationLevel)
+     */
+    public ERepositoryStatus getStatus(InformationLevel level) {
+
+        if (level.getValue() == InformationLevel.WARN) {
+            return ERepositoryStatus.WARN;
+        } else if (level.getValue() == InformationLevel.ERROR) {
+            return ERepositoryStatus.ERROR;
+        }
+        return ERepositoryStatus.DEFAULT;
     }
 
     /*
