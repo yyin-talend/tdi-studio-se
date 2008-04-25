@@ -11,6 +11,7 @@ imports="
 	org.talend.core.model.metadata.types.JavaTypesManager
 	org.talend.core.model.metadata.types.JavaType
 	java.util.List
+	java.util.Map
 " 
 %>
 
@@ -18,7 +19,6 @@ imports="
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode) codeGenArgument.getArgument();
 String cid = node.getUniqueName();
-
 String driverJar = ElementParameterParser.getValue(node, "__DRIVER_JAR__");
 String driverClass = ElementParameterParser.getValue(node, "__DRIVER_CLASS__");
 String jdbcUrl = ElementParameterParser.getValue(node, "__URL__");
@@ -28,6 +28,8 @@ String dbencoding = ElementParameterParser.getValue(node, "__ENCODING__");
 String dbquery = ElementParameterParser.getValue(node, "__QUERY__");
 dbquery = dbquery.replaceAll("\n"," ");
 dbquery = dbquery.replaceAll("\r"," ");
+boolean whetherTrimAllCol = ElementParameterParser.getValue(node, "__TRIM_ALL_COLUMN__").equals("true");
+List<Map<String, String>> trimColumnList = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__TRIM_COLUMN__");
 
 List<IMetadataTable> metadatas = node.getMetadataList();
 IMetadataTable metadata = null;
@@ -37,56 +39,63 @@ if ((metadatas != null) && (metadatas.size() > 0)) {
 
 if (metadata != null) {
 	%>
-	int nb_line_<%=cid%> = 0;
-	
-<%
+	int nb_line_<%=cid%> = 0;	
+	<%
 	boolean useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__").equals("true");
 	if(useExistingConn){
 		String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
 		String conn = "conn_" + connection;
-%>
-java.sql.Connection connection_<%=cid %> = (java.sql.Connection)globalMap.get("<%=conn %>");
-<%
-	}else{       
-%>
-java.lang.Class.forName(<%=driverClass %>);
-String connectionString_<%=cid %> = <%=jdbcUrl %>;
-java.sql.Connection connection_<%=cid %> = java.sql.DriverManager.getConnection(connectionString_<%=cid %>, <%=dbuser %>, <%=dbpwd %>);
-<%
-	}
-%>
-	
+		%>
+		java.sql.Connection connection_<%=cid %> = (java.sql.Connection)globalMap.get("<%=conn %>");
+		<%
+	    } else {       
+	        %>
+	        java.lang.Class.forName(<%=driverClass %>);
+	        String connectionString_<%=cid %> = <%=jdbcUrl %>;
+	        java.sql.Connection connection_<%=cid %> = java.sql.DriverManager.getConnection(connectionString_<%=cid %>, <%=dbuser %>, <%=dbpwd %>);
+	        <%
+	    }
+	%>	
 	java.sql.Statement statement_<%=cid%> = connection_<%=cid%>.createStatement();
 	java.sql.ResultSet resultSet_<%=cid%> = statement_<%=cid%>.executeQuery(<%=dbquery%>);
 	java.sql.ResultSetMetaData resultSetMetadata_<%=cid%> = resultSet_<%=cid%>.getMetaData();
 	int columnsCount_<%=cid%> = resultSetMetadata_<%=cid%>.getColumnCount();
-	String tmpString_<%=cid%> = null;
-	java.sql.Date tmpDate_<%=cid%> = null;
-	
+	java.sql.Date tmpDate_<%=cid%> = null;	
 	globalMap.put("<%=cid%>_QUERY", <%=dbquery%>);
-	
+	String tmpContent_<%=cid%> = null;
 	while (resultSet_<%=cid%>.next()) {
-		nb_line_<%=cid%>++;
-		
+		nb_line_<%=cid%>++;		
 		<%
 		List<? extends IConnection> outConnections = node.getOutgoingSortedConnections();
-		List<IMetadataColumn> columnList = metadata.getListColumns();
-		
+		List<IMetadataColumn> columnList = metadata.getListColumns();		
 		if (outConnections != null && outConnections.size() > 0) {
 		 	IConnection firstOutConnection = outConnections.get(0);
-		 	int currentColumn = 1;
-		
+		 	int currentColumn = 1;		
 		 	for (IMetadataColumn column : columnList) {
-				String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
-			 	String defaultValue = JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate);
-				
+                boolean whetherTrimCol = false;
+                if((trimColumnList != null && trimColumnList.size() > 0) && !whetherTrimAllCol) {
+                    for(Map<String, String> trimColumn : trimColumnList) {
+                        if(column.getLabel().equals(trimColumn.get("SCHEMA_COLUMN"))) {
+                            if(trimColumn.get("TRIM").equals("true")) {
+                                whetherTrimCol = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+                String trimMethod = "";
+                if(whetherTrimAllCol || whetherTrimCol) {
+                    trimMethod = ".trim()";
+                }				
+		 	    String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+			 	String defaultValue = JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate);				
 				if (firstOutConnection.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
 					%>
  					if (columnsCount_<%=cid%> < <%=currentColumn%>) {
 			 			<%=firstOutConnection.getName()%>.<%=column.getLabel()%> = <%=defaultValue%>;
  					} else {
 						<%
-						String method;
+						String method = null;
 						if (typeToGenerate.equals("byte[]")) {
 							method = "Bytes";
 						} else if (typeToGenerate.equals("Integer")) {
@@ -97,9 +106,18 @@ java.sql.Connection connection_<%=cid %> = java.sql.DriverManager.getConnection(
 						
 			  			if (typeToGenerate.equals("Char") || typeToGenerate.equals("Character")) {
 							%>
-							tmpString_<%=cid%> = resultSet_<%=cid%>.getString(<%=currentColumn%>);
-				  			if (tmpString_<%=cid%> != null && tmpString_<%=cid%>.length() > 0) {
-				  				<%=firstOutConnection.getName()%>.<%=column.getLabel()%> = tmpString_<%=cid%>.charAt(0);
+							tmpContent_<%=cid%> = resultSet_<%=cid%>.getString(<%=currentColumn%>);
+                            <%
+                            if(whetherTrimAllCol || whetherTrimCol) {
+                                %>
+                                if(tmpContent_<%=cid%> != null) {
+                                    tmpContent_<%=cid%> = tmpContent_<%=cid%><%=trimMethod%>;
+                                }
+                                <%
+                            }                                   
+                            %> 							
+				  			if (tmpContent_<%=cid%> != null && tmpContent_<%=cid%>.length() > 0) {
+				  				<%=firstOutConnection.getName()%>.<%=column.getLabel()%> = tmpContent_<%=cid%>.charAt(0);
 					  		}
 						 	<%
 						} else if (typeToGenerate.equals("java.util.Date")) {
@@ -107,38 +125,39 @@ java.sql.Connection connection_<%=cid %> = java.sql.DriverManager.getConnection(
 							tmpDate_<%=cid%> = resultSet_<%=cid%>.getDate(<%=currentColumn%>);
 							if (tmpDate_<%=cid%> != null) {
 								<%=firstOutConnection.getName()%>.<%=column.getLabel()%> = new java.util.Date(tmpDate_<%=cid%>.getTime());
-							}
-						
+							}						
 						    <%
-			           		 }else if (typeToGenerate.equals("List")) {
+						} else if (typeToGenerate.equals("List")) {
 			          	    %>
 			         		<%=firstOutConnection.getName()%>.<%=column.getLabel()%> = (List)resultSet_<%=cid%>.getObject(<%=currentColumn%>);
 				 			<%
-				 		} else {
-			   	 			%>
-			   	 			
-			   	 			
-    			   	 		if(resultSet_<%=cid%>.getObject(<%=currentColumn%>) != null)
-                            {
-                               <%=firstOutConnection.getName()%>.<%=column.getLabel()%> = resultSet_<%=cid%>.get<%=method%>(<%=currentColumn%>);
-                            }
-                            else
-                            {
-                                <%
-                                if(column.isNullable())
-                                {
-                                %>
+						} else if(typeToGenerate.equals("String")) {
+						    %>
+                            tmpContent_<%=cid%> = resultSet_<%=cid %>.getString(<%=currentColumn%>);
+                            if(tmpContent_<%=cid%> != null) {
+                                <%=firstOutConnection.getName()%>.<%=column.getLabel()%> = tmpContent_<%=cid%><%=trimMethod%>;
+                            } else {
                                 <%=firstOutConnection.getName()%>.<%=column.getLabel()%> = null;
+                            }						    
+						    <%
+						} else {
+			   	 			%>			   	 						   	 			
+    			   	 		if(resultSet_<%=cid%>.getObject(<%=currentColumn%>) != null) {
+                               <%=firstOutConnection.getName()%>.<%=column.getLabel()%> = resultSet_<%=cid%>.get<%=method%>(<%=currentColumn%>);
+                            } else {
                                 <%
-                                }else{
-                                %>    
+                                if(column.isNullable()) {
+                                    %>
+                                    <%=firstOutConnection.getName()%>.<%=column.getLabel()%> = null;
+                                    <%
+                                } else {
+                                    %>    
                                     throw new RuntimeException("Null value in non-Nullable column");
-                                <%    
-                                }
+                                    <%    
+                                    }
                                 %>
-                            }<%
-                        
-                        
+                            }
+    			   	 		<%                        
 						}
 						
 						if (column.isNullable()) {

@@ -10,7 +10,8 @@
 		org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils
 		org.talend.core.model.metadata.types.JavaTypesManager
 		org.talend.core.model.metadata.types.JavaType		
-		java.util.List		
+		java.util.List
+		java.util.Map
 	" 
 %>
 
@@ -22,9 +23,7 @@
 	String dbtypeDefinition = ElementParameterParser.getValue(node, "__TYPE__");
     String[] dbtypes = dbtypeDefinition.split(";");
     String javaDbtype   = dbtypes[0];
-    String javaDbDriver   = dbtypes[1];
-    
-    
+    String javaDbDriver   = dbtypes[1];        
 	String dbhost = ElementParameterParser.getValue(node, "__HOST__");
 	String dbport = ElementParameterParser.getValue(node, "__PORT__");
 	String dbname= ElementParameterParser.getValue(node, "__DBNAME__");
@@ -34,7 +33,9 @@
 	String dbquery= ElementParameterParser.getValue(node, "__QUERY__");
 	       dbquery = dbquery.replaceAll("\n"," ");
     		dbquery = dbquery.replaceAll("\r"," ");
-	
+    boolean whetherTrimAllCol = ElementParameterParser.getValue(node, "__TRIM_ALL_COLUMN__").equals("true");
+    List<Map<String, String>> trimColumnList = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__TRIM_COLUMN__");
+    		
 	List<IMetadataTable> metadatas = node.getMetadataList();
 	if ((metadatas != null) && (metadatas.size() > 0)) {
 		IMetadataTable metadata = metadatas.get(0);
@@ -78,6 +79,7 @@
 		    List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
 		    List<IMetadataColumn> columnList = metadata.getListColumns();
 		    %>
+		    String tmpContent_<%=cid%> = null;
 		    while (rs_<%=cid %>.next()) {
 		        nb_line_<%=cid%>++;
 		        <%
@@ -86,7 +88,22 @@
                  	String firstConnName = conn.getName();
                  	int currentColNo = 1;
                  	for(IMetadataColumn column : columnList) { 	
-                     	String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+                        boolean whetherTrimCol = false;
+                        if((trimColumnList != null && trimColumnList.size() > 0) && !whetherTrimAllCol) {
+                            for(Map<String, String> trimColumn : trimColumnList) {
+                                if(column.getLabel().equals(trimColumn.get("SCHEMA_COLUMN"))) {
+                                    if(trimColumn.get("TRIM").equals("true")) {
+                                        whetherTrimCol = true;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        String trimMethod = "";
+                        if(whetherTrimAllCol || whetherTrimCol) {
+                            trimMethod = ".trim()";
+                        }                     	
+                 	    String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
                      	String defVal = JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate);	
                      	if(conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)){
                      	    %> 	
@@ -103,16 +120,25 @@
                      	        } else {
                      	            typeToGenerate=typeToGenerate.substring(0,1).toUpperCase()+typeToGenerate.substring(1);
                      	        }		  
-                     	        if(typeToGenerate.equals("Char")||typeToGenerate.equals("Character")){
+                     	        if(typeToGenerate.equals("Char") || typeToGenerate.equals("Character")) {
                      	            %>
-                     	            String tmpString_<%=cid%> = rs_<%=cid %>.getString(<%=currentColNo%>);
-                     	            if(tmpString_<%=cid%> != null && tmpString_<%=cid%>.length() > 0) {			  	
-                     	                <%=firstConnName%>.<%=column.getLabel()%> = tmpString_<%=cid%>.charAt(0);			  		
+                     	            tmpContent_<%=cid%> = rs_<%=cid %>.getString(<%=currentColNo%>);
+                     	            <%
+                                    if(whetherTrimAllCol || whetherTrimCol) {
+                                        %>
+                                        if(tmpContent_<%=cid%> != null) {
+                                            tmpContent_<%=cid%> = tmpContent_<%=cid%><%=trimMethod%>;
+                                        }
+                                        <%
+                                    }                     	            
+                     	            %>
+                     	            if(tmpContent_<%=cid%> != null && tmpContent_<%=cid%>.length() > 0) {			  	
+                     	                <%=firstConnName%>.<%=column.getLabel()%> = tmpContent_<%=cid%>.charAt(0);			  		
                      	            } else {			  	
                      	                <%
                      	                if(typeToGenerate.equals("Character")) {
                      	                   %>
-                     	                   if((rs_<%=cid %>.getString(<%=currentColNo%>)) == null) {			  	   	
+                     	                   if(tmpContent_<%=cid%> == null) {			  	   	
                      	                       <%=firstConnName%>.<%=column.getLabel()%> = null;			  			
                      	                   } else {			  		
                      	                       <%=firstConnName%>.<%=column.getLabel()%> = '\0';			  			
@@ -120,7 +146,7 @@
                      	                   <%
                      	                } else {
                      	                    %>
-                     	                    if((rs_<%=cid %>.getString(<%=currentColNo%>)).equals("")) {			  		
+                     	                    if(tmpContent_<%=cid%>.equals("")) {			  		
                      	                        <%=firstConnName%>.<%=column.getLabel()%> = '\0';			  			
                      	                    } else {			  		
                         			  			throw new RuntimeException(
@@ -146,7 +172,12 @@
                      	            <%
                      	        } else if(typeToGenerate.equals("String")) {
                      	            %>
-                     	            <%=firstConnName%>.<%=column.getLabel()%> = rs_<%=cid %>.getString(<%=currentColNo%>);
+                                    tmpContent_<%=cid%> = rs_<%=cid %>.getString(<%=currentColNo%>);
+                                    if(tmpContent_<%=cid%> != null) {
+                                        <%=firstConnName%>.<%=column.getLabel()%> = tmpContent_<%=cid%><%=trimMethod%>;
+                                    } else {
+                                        <%=firstConnName%>.<%=column.getLabel()%> = null;
+                                    }
                      	            <%
                      	        } else {		  
                      	            %>
