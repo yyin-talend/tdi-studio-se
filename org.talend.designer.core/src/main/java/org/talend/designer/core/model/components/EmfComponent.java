@@ -384,6 +384,9 @@ public class EmfComponent implements IComponent {
         }
         ElementParameter param;
         SQLPATTERNSType patterns = compType.getSQLPATTERNS();
+        if (patterns == null) {
+            return;
+        }
         param = new ElementParameter(node);
         param.setName(EParameterName.SQLPATTERN_DB_NAME.getName());
         param.setDisplayName(EParameterName.SQLPATTERN_DB_NAME.getDisplayName());
@@ -396,7 +399,7 @@ public class EmfComponent implements IComponent {
         param.setRequired(false);
         param.setShow(false);
         listParam.add(param);
-        
+
         param = new ElementParameter(node);
         param.setName(EParameterName.SQLPATTERN_VALUE.getName());
         param.setDisplayName(EParameterName.SQLPATTERN_VALUE.getDisplayName());
@@ -449,8 +452,7 @@ public class EmfComponent implements IComponent {
         param.setListItemsShowIf(listItemsShowIf);
         param.setListItemsNotShowIf(listItemsNotShowIf);
         listParam.add(param);
-        
-        
+
         param = new ElementParameter(node);
         param.setName(EParameterName.SQLPATTERN_CODE.getName());
         param.setValue(""); //$NON-NLS-1$
