@@ -166,6 +166,16 @@
             isReadAction="true"
             level="12"
             name="Read routine"/>
+            
+      <Action
+            class="org.talend.repository.ui.actions.sqlpattern.ReadSqlpatternAction"
+            id="org.talend.repositorys.actions.readsqlpattern"
+            isReadAction="true"
+            level="13"
+            name="Read SQLPattern"/>
+            
+      ReadSqlpatternAction      
+            
        
        <Action
             class="org.talend.repository.ui.actions.ExportJobScriptAction"

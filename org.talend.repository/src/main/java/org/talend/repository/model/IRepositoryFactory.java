@@ -218,6 +218,8 @@ public interface IRepositoryFactory {
 
     public RootContainer<String, IRepositoryObject> getMetadataConnection() throws PersistenceException;
 
+    public RootContainer<String, IRepositoryObject> getMetadataSQLPattern() throws PersistenceException;
+
     public RootContainer<String, IRepositoryObject> getMetadataFileDelimited() throws PersistenceException;
 
     public RootContainer<String, IRepositoryObject> getMetadataFilePositional() throws PersistenceException;

@@ -10,7 +10,7 @@
 // 9 rue Pages 92150 Suresnes, France
 //
 // ============================================================================
-package org.talend.repository.ui.actions.routines;
+package org.talend.repository.ui.actions.sqlpattern;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.viewers.ISelection;
@@ -27,12 +27,11 @@ import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.core.ui.images.OverlayImageProvider;
-import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.model.RepositoryNode.EProperties;
-import org.talend.repository.ui.wizards.routines.NewRoutineWizard;
+import org.talend.repository.ui.wizards.sqlpattern.NewSqlpatternWizard;
 
 /**
  * Action that will edit routines.
@@ -40,19 +39,19 @@ import org.talend.repository.ui.wizards.routines.NewRoutineWizard;
  * $Id: EditRoutinesAction.java 906 2006-12-08 02:18:54 +0000 (ven., 08 déc. 2006) rli $
  * 
  */
-public class CreateRoutineAction extends AbstractRoutineAction {
+public class CreateSqlpatternAction extends AbstractSqlpatternAction {
 
-    public CreateRoutineAction() {
+    public CreateSqlpatternAction() {
         super();
 
-        setText(Messages.getString("CreateRoutineAction.text.createRoutine")); //$NON-NLS-1$
-        setToolTipText(Messages.getString("CreateRoutineAction.toolTipText.createRoutine")); //$NON-NLS-1$
+        setText("Create SQLPattern"); //$NON-NLS-1$
+        setToolTipText("Create SQLPattern"); //$NON-NLS-1$
 
-        Image folderImg = ImageProvider.getImage(ECoreImage.ROUTINE_ICON);
+        Image folderImg = ImageProvider.getImage(ECoreImage.METADATA_SQLPATTERN_ICON);
         this.setImageDescriptor(OverlayImageProvider.getImageWithNew(folderImg));
     }
 
-    public CreateRoutineAction(boolean isToolbar) {
+    public CreateSqlpatternAction(boolean isToolbar) {
         this();
         setToolbar(isToolbar);
     }
@@ -75,7 +74,7 @@ public class CreateRoutineAction extends AbstractRoutineAction {
             case SIMPLE_FOLDER:
             case SYSTEM_FOLDER:
                 ERepositoryObjectType nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
-                if (nodeType != ERepositoryObjectType.ROUTINES) {
+                if (nodeType != ERepositoryObjectType.METADATA_SQLPATTERNS) {
                     canWork = false;
                 }
                 break;
@@ -92,22 +91,20 @@ public class CreateRoutineAction extends AbstractRoutineAction {
      * @see org.eclipse.jface.action.Action#run()
      */
     public void run() {
-        // RepositoryNode codeNode = getViewPart().getRoot().getChildren().get(4);
-        // RepositoryNode routineNode = codeNode.getChildren().get(0);
-        RepositoryNode routineNode = getCurrentRepositoryNode();
+        RepositoryNode sqlPatternNode = getCurrentRepositoryNode();
 
         if (isToolbar()) {
-            if (routineNode != null && routineNode.getContentType() != ERepositoryObjectType.ROUTINES) {
-                routineNode = null;
+            if (sqlPatternNode != null && sqlPatternNode.getContentType() != ERepositoryObjectType.METADATA_SQLPATTERNS) {
+                sqlPatternNode = null;
             }
-            if (routineNode == null) {
-                routineNode = getRepositoryNodeForDefault(ERepositoryObjectType.ROUTINES);
+            if (sqlPatternNode == null) {
+                sqlPatternNode = getRepositoryNodeForDefault(ERepositoryObjectType.METADATA_SQLPATTERNS);
             }
         }
         RepositoryNode node = null;
         IPath path;
         if (isToolbar()) {
-            path = RepositoryNodeUtilities.getPath(routineNode);
+            path = RepositoryNodeUtilities.getPath(sqlPatternNode);
 
         } else {
             ISelection selection = getSelection();
@@ -116,18 +113,18 @@ public class CreateRoutineAction extends AbstractRoutineAction {
             path = RepositoryNodeUtilities.getPath(node);
         }
 
-        NewRoutineWizard routineWizard = new NewRoutineWizard(path);
+        NewSqlpatternWizard routineWizard = new NewSqlpatternWizard(path);
         WizardDialog dlg = new WizardDialog(Display.getCurrent().getActiveShell(), routineWizard);
 
         if (dlg.open() == Window.OK) {
             if (isToolbar()) {
-                refresh(routineNode);
+                refresh(sqlPatternNode);
             } else {
                 refresh(node);
             }
 
             try {
-                openRoutineEditor(routineWizard.getRoutine(), false);
+                openSQLPatternEditor(routineWizard.getSQLPattern(), false);
             } catch (PartInitException e) {
                 MessageBoxExceptionHandler.process(e);
             } catch (SystemException e) {

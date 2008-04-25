@@ -47,6 +47,7 @@ import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.PropertiesPackage;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RoutineItem;
+import org.talend.core.model.properties.SQLPatternItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.designer.codegen.ITalendSynchronizer;
@@ -115,6 +116,10 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         return getObjectFromFolder(ERepositoryObjectType.ROUTINES, true);
     }
 
+    public RootContainer<String, IRepositoryObject> getMetadataSQLPattern() throws PersistenceException {
+        return getObjectFromFolder(ERepositoryObjectType.METADATA_SQLPATTERNS, true);
+    }
+
     public RootContainer<String, IRepositoryObject> getSnippets() throws PersistenceException {
         return getObjectFromFolder(ERepositoryObjectType.SNIPPETS, true);
     }
@@ -162,9 +167,9 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
      */
     public List<IRepositoryObject> getRecycleBinItems() throws PersistenceException {
         ERepositoryObjectType types[] = { ERepositoryObjectType.DOCUMENTATION, ERepositoryObjectType.METADATA_CONNECTIONS,
-                ERepositoryObjectType.METADATA_FILE_DELIMITED, ERepositoryObjectType.METADATA_FILE_POSITIONAL,
-                ERepositoryObjectType.PROCESS, ERepositoryObjectType.CONTEXT, ERepositoryObjectType.SNIPPETS,
-                ERepositoryObjectType.ROUTINES, ERepositoryObjectType.BUSINESS_PROCESS,
+                ERepositoryObjectType.METADATA_SQLPATTERNS, ERepositoryObjectType.METADATA_FILE_DELIMITED,
+                ERepositoryObjectType.METADATA_FILE_POSITIONAL, ERepositoryObjectType.PROCESS, ERepositoryObjectType.CONTEXT,
+                ERepositoryObjectType.SNIPPETS, ERepositoryObjectType.ROUTINES, ERepositoryObjectType.BUSINESS_PROCESS,
                 ERepositoryObjectType.METADATA_FILE_REGEXP, ERepositoryObjectType.METADATA_FILE_XML,
                 ERepositoryObjectType.METADATA_FILE_LDIF, ERepositoryObjectType.METADATA_FILE_EXCEL,
                 ERepositoryObjectType.METADATA_LDAP_SCHEMA, ERepositoryObjectType.METADATA_GENERIC_SCHEMA,
@@ -203,11 +208,11 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
 
         ERepositoryObjectType[] repositoryObjectTypeList = new ERepositoryObjectType[] { ERepositoryObjectType.BUSINESS_PROCESS,
                 ERepositoryObjectType.DOCUMENTATION, ERepositoryObjectType.METADATA_CONNECTIONS,
-                ERepositoryObjectType.METADATA_FILE_DELIMITED, ERepositoryObjectType.METADATA_FILE_POSITIONAL,
-                ERepositoryObjectType.METADATA_FILE_REGEXP, ERepositoryObjectType.METADATA_FILE_XML,
-                ERepositoryObjectType.METADATA_FILE_EXCEL, ERepositoryObjectType.METADATA_FILE_LDIF,
-                ERepositoryObjectType.PROCESS, ERepositoryObjectType.ROUTINES, ERepositoryObjectType.CONTEXT,
-                ERepositoryObjectType.SNIPPETS, ERepositoryObjectType.METADATA_LDAP_SCHEMA,
+                ERepositoryObjectType.METADATA_SQLPATTERNS, ERepositoryObjectType.METADATA_FILE_DELIMITED,
+                ERepositoryObjectType.METADATA_FILE_POSITIONAL, ERepositoryObjectType.METADATA_FILE_REGEXP,
+                ERepositoryObjectType.METADATA_FILE_XML, ERepositoryObjectType.METADATA_FILE_EXCEL,
+                ERepositoryObjectType.METADATA_FILE_LDIF, ERepositoryObjectType.PROCESS, ERepositoryObjectType.ROUTINES,
+                ERepositoryObjectType.CONTEXT, ERepositoryObjectType.SNIPPETS, ERepositoryObjectType.METADATA_LDAP_SCHEMA,
                 ERepositoryObjectType.METADATA_GENERIC_SCHEMA, ERepositoryObjectType.METADATA_WSDL_SCHEMA,
                 ERepositoryObjectType.METADATA_SALESFORCE_SCHEMA, ERepositoryObjectType.JOBLET };
         for (ERepositoryObjectType repositoryObjectType : repositoryObjectTypeList) {
@@ -308,6 +313,16 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         }
     }
 
+    protected void createSystemSQLPatterns() throws PersistenceException {
+        ILibrariesService service = CorePlugin.getDefault().getLibrariesService();
+
+        List<URL> routines = service.getSystemSQLPatterns();
+
+        for (URL url : routines) {
+            createSQLPattern(url);
+        }
+    }
+
     /**
      * DOC smallet Comment method "createRoutine".
      * 
@@ -342,6 +357,59 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
             if (!routineItem.getProperty().getLabel().equals(ITalendSynchronizer.TEMPLATE)) {
                 create(routineItem, path);
             }
+        } catch (IOException ioe) {
+            if (stream != null) {
+                try {
+                    stream.close();
+                } catch (IOException e) {
+                    throw new PersistenceException(ioe);
+                }
+            }
+            throw new PersistenceException(ioe);
+        }
+    }
+
+    private void createSQLPattern(URL url) throws PersistenceException {
+        if (url == null) {
+            throw new IllegalArgumentException();
+        }
+        InputStream stream = null;
+        try {
+            Property property = PropertiesFactory.eINSTANCE.createProperty();
+            property.setId(getNextId());
+
+            String[] fragments = url.toString().split("/"); //$NON-NLS-1$
+            String label = fragments[fragments.length - 1];
+            String[] tmp = label.split("\\."); //$NON-NLS-1$
+
+            Path relativePath = new Path(url.getFile());
+
+            // for instance: categoryName is Teradata; fileName is Loadfile.sqlpattern
+            String fileName = relativePath.segment(relativePath.segmentCount() - 1);
+            String categoryName = relativePath.segment(relativePath.segmentCount() - 2);
+
+            tmp = fileName.split("\\."); //$NON-NLS-1$
+
+            property.setLabel(tmp[0]);
+
+            ByteArray byteArray = PropertiesFactory.eINSTANCE.createByteArray();
+            stream = url.openStream();
+            byte[] innerContent = new byte[stream.available()];
+            stream.read(innerContent);
+            stream.close();
+            byteArray.setInnerContent(innerContent);
+
+            SQLPatternItem sqlpatternItem = PropertiesFactory.eINSTANCE.createSQLPatternItem();
+            sqlpatternItem.setProperty(property);
+            sqlpatternItem.setEltName(categoryName);
+            sqlpatternItem.setContent(byteArray);
+            sqlpatternItem.setSystem(true);
+
+            // set the item's relative path in the repository view
+            IPath path = new Path(categoryName);
+            path= path.append(RepositoryConstants.SYSTEM_DIRECTORY);
+
+            create(sqlpatternItem, path);
         } catch (IOException ioe) {
             if (stream != null) {
                 try {

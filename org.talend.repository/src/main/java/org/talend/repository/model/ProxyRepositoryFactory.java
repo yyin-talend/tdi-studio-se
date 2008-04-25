@@ -410,6 +410,10 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         return this.repositoryFactoryFromProvider.getRoutine();
     }
 
+    public  RootContainer<String, IRepositoryObject>  getMetadataSQLPattern() throws PersistenceException{
+        return this.repositoryFactoryFromProvider.getMetadataSQLPattern();
+    }
+    
     public RootContainer<String, IRepositoryObject> getRoutineFromProject(Project project) throws PersistenceException {
         return this.repositoryFactoryFromProvider.getRoutineFromProject(project);
     }

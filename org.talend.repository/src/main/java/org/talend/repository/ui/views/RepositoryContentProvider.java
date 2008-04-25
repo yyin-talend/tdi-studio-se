@@ -85,7 +85,7 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
     private final List<IRepositoryObject> joblets = new ArrayList<IRepositoryObject>();
 
     private RepositoryNode businessProcessNode, recBinNode, codeNode, routineNode, snippetsNode, processNode, contextNode,
-            docNode, metadataConNode, metadataFileNode, metadataFilePositionalNode, metadataFileRegexpNode, metadataFileXmlNode,
+            docNode, metadataConNode,metadataSQLPatternNode, metadataFileNode, metadataFilePositionalNode, metadataFileRegexpNode, metadataFileXmlNode,
             metadataFileLdifNode, metadataGenericSchemaNode, metadataLDAPSchemaNode, metadataWSDLSchemaNode,
             metadataFileExcelNode, metadataSalesforceSchemaNode;
 
@@ -144,6 +144,9 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
                     convert(factory.getDocumentation(), docNode, ERepositoryObjectType.DOCUMENTATION, recBinNode);
                 } else if (parent == metadataConNode) {
                     convert(factory.getMetadataConnection(), metadataConNode, ERepositoryObjectType.METADATA_CONNECTIONS,
+                            recBinNode);
+                } else if (parent == metadataSQLPatternNode) {
+                    convert(factory.getMetadataSQLPattern(), metadataSQLPatternNode, ERepositoryObjectType.METADATA_SQLPATTERNS,
                             recBinNode);
                 } else if (parent == metadataFileNode) {
                     convert(factory.getMetadataFileDelimited(), metadataFileNode, ERepositoryObjectType.METADATA_FILE_DELIMITED,
@@ -310,6 +313,12 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
         metadataConNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_CONNECTIONS);
         metadataNode.getChildren().add(metadataConNode);
 
+        // 6.1. Metadata connections
+        metadataSQLPatternNode = new RepositoryNode(null, root, ENodeType.SYSTEM_FOLDER);
+        metadataSQLPatternNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_SQLPATTERNS);
+        metadataSQLPatternNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_SQLPATTERNS);
+        metadataNode.getChildren().add(metadataSQLPatternNode);
+        
         // 6.2. Metadata file delimited
         metadataFileNode = new RepositoryNode(null, root, ENodeType.SYSTEM_FOLDER);
         metadataFileNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_FILE_DELIMITED);

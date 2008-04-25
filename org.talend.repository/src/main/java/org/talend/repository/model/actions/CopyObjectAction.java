@@ -18,6 +18,7 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RoutineItem;
+import org.talend.core.model.properties.SQLPatternItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.repository.model.ERepositoryStatus;
@@ -71,6 +72,12 @@ public class CopyObjectAction {
             Property property = objectToCopy.getProperty();
             RoutineItem item = (RoutineItem) property.getItem();
             return !item.isBuiltIn();
+        }
+     // Cannot copy system sql pattern:
+        if (objectToCopy.getType() == ERepositoryObjectType.METADATA_SQLPATTERNS) {
+            Property property = objectToCopy.getProperty();
+            SQLPatternItem item = (SQLPatternItem) property.getItem();
+            return !item.isSystem();
         }
 
         // Special rule : temp ?

@@ -62,6 +62,8 @@ public class RepositoryNameSorter extends ViewerSorter {
                 return 20;
             case METADATA_CONNECTIONS:
                 return 25;
+            case METADATA_SQLPATTERNS:
+                return 26;
             case METADATA_FILE_DELIMITED:
                 return 30;
             case METADATA_FILE_POSITIONAL:
