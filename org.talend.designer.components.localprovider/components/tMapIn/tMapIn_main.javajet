@@ -32,9 +32,11 @@
 	org.talend.core.model.metadata.types.JavaType
 	org.talend.core.model.process.BlockCode
 	org.talend.core.model.process.IMatchingMode
+	org.talend.core.model.process.INode
 	" 
 	
 	
 %>
+
 
 <%@ include file="../tMapPersistent/tMapPersistent_main.inc.javajet" %>

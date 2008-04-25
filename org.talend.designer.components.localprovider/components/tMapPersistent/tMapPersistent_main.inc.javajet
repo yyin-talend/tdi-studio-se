@@ -297,6 +297,9 @@ if(false) {
 
 
             String tableName = externalTable.getName();
+            
+            System.out.println("tableName=" + tableName);
+            
             IConnection connection = hNameToConnection.get(tableName);
             if (connection == null) {
                 continue;
@@ -366,10 +369,13 @@ if(false) {
 				///////////////////////////////////////////////
 				// Starting Lookup Table "<%= tableName %>" 
 				///////////////////////////////////////////////
+
+
 				
 				<%
+				System.out.println("previousStateIsFirstPersistentSortedTable=" + previousStateIsFirstPersistentSortedTable + ", isFirstPersistentSortedTable=" + isFirstPersistentSortedTable + ", nextTableIsPersistentSorted=" + nextTableIsPersistentSorted); 
 
-            if(isPersistentSortedTable) {
+            if(isPersistentSortedTable) { // T_TM_M_294
 
 				%>				
 				SortableRow_<%= currentJoinedTableNames %> rsc_<%= currentJoinedTableNames %>;
@@ -398,7 +404,7 @@ if(false) {
 
 				//TEST firstLookupIsPersistentSorted=<%= firstLookupIsPersistentSorted %> isFirstPersistentSortedTable=<%= isFirstPersistentSortedTable %>
 
-				<%= isFirstPersistentSortedTable && !firstLookupIsPersistentSorted ? "boolean " : "" %><%= rejectedInnerJoin %> = false;
+				<%= isFirstPersistentSortedTable && !firstLookupIsPersistentSorted && !isVirtualIn ? "boolean " : "" %><%= rejectedInnerJoin %> = false;
 			
 	           	while (fsi_<%= currentJoinedTableNames %>.hasNext()) { // G_TM_M_250 loop "<%= currentJoinedTableNames %>"
 				
@@ -430,11 +436,26 @@ if(false) {
                		<%= rejectedInnerJoin %> = rsc_<%= currentJoinedTableNames %>.is__rejectedInnerJoin;
                		
 			<%
-			} else if(isFirstPersistentSortedTable) {
+			} else if(isFirstPersistentSortedTable) { // T_TM_M_294  // T_TM_M_295
 			%>
 				<%= rejectedInnerJoin %> = false;
 			<%
+			} // T_TM_M_295
+
+			ExternalMapperTable nextInputTable = null;
+			
+			if(!isLastTable) {
+				nextInputTable = inputTables.get(iInputTable + 1);
 			}
+
+ 			if (
+ 					!isVirtualIn 
+	 				|| 
+ 					(
+	 					isVirtualIn 
+ 						&& (isFirstPersistentSortedTable || previousStateIsFirstPersistentSortedTable) 
+ 					)
+ 				) { // T_TM_M_296
 
 
                     for (ExternalMapperTableEntry externalTableEntry : metadataTableEntries) {
@@ -711,10 +732,8 @@ if(false) {
 							} // T 70
 
 
-			ExternalMapperTable nextInputTable = null;
                 if(!isLastTable) { // T_TM_M_218 
 
-			nextInputTable = inputTables.get(iInputTable + 1);
 			if(!isLastTable && nextInputTable != null && nextInputTable.isPersistent() && !"ALL_ROWS".equals(nextInputTable.getMatchingMode())) { // T_TM_M_216
 				nextLookupColumnsKeys.clear();
             	String nextTableName = nextInputTable.getName();
@@ -850,26 +869,32 @@ if(false) {
 	            	
 	            	
 	            <%
-				if(nextTableIsPersistentSorted && !isFirstPersistentSortedTable) { // T_TM_M_235
+				if(false && nextTableIsPersistentSorted && !isFirstPersistentSortedTable) { // T_TM_M_235
 				%>
 							} // End of branch temporary "<%= mainInputTableName %>"
 					<%
-					if(!previousMainNodeIsVirtual) { // T_TM_M_236
+					if(false && !previousMainNodeIsVirtual) { // T_TM_M_236
 					%>
 	     				} // end temporary main loop ##(2)## 
            			<%
            			} // T_TM_M_237
            		} // T_TM_M_235
-           		%>
 	            
-	            <%
-                if(!isLastTable && nextInputTable != null && nextInputTable.isPersistent()) { // T_TM_M_238
+				} else { // T_TM_M_296  // T_TM_M_297  
+				
+					cumulatedInputConnections.add(connection);
+				
+				} // T_TM_M_297
+
+				
+                if(!isVirtualOut && !isLastTable && nextInputTable != null && nextInputTable.isPersistent()) { // T_TM_M_238
                 %> 
 	            	
 	            	fsi_<%= nextJoinedTableNames %>.endPut();
 	            	
-					<%
+				<%
 				} // T_TM_M_238
+
 
 				if(isFirstPersistentSortedTable == true && previousStateIsFirstPersistentSortedTable == false) { // T_TM_M_219
 					previousStateIsFirstPersistentSortedTable = true;
@@ -879,8 +904,11 @@ if(false) {
 				if(isLastPersistentSortedTable) {
 					lastPersistentSortedTableIsAlreadyProcessed = true;
 				}
+				
 
 				currentJoinedTableNames = nextJoinedTableNames;
+				
+				System.out.println("currentJoinedTableNames=" + currentJoinedTableNames);
 
             	previousTableName = tableName;
 
