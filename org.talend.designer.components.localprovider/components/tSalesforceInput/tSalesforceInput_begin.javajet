@@ -58,8 +58,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
         if(condition!=null && condition.trim().length()!=0)     {
 %>
+        String condition_<%=cid%> = <%=condition%>;
+		if(condition_<%=cid%>.trim().length()>0){
            sb_<%=cid %>.append(" WHERE ");
-           sb_<%=cid %>.append(<%=condition%>);        
+           sb_<%=cid %>.append(condition_<%=cid%>);
+		}          
 <%
         }
 %>         
