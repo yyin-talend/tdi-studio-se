@@ -12,12 +12,23 @@
 // ============================================================================
 package org.talend.designer.runprocess.java;
 
+import java.util.List;
+
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.compiler.BuildContext;
 import org.eclipse.jdt.core.compiler.CompilationParticipant;
 import org.eclipse.swt.widgets.Display;
 import org.talend.commons.CommonsPlugin;
+import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.exception.SystemException;
+import org.talend.core.CorePlugin;
+import org.talend.core.model.properties.Property;
+import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.designer.codegen.ITalendSynchronizer;
 import org.talend.designer.core.ui.views.problems.Problems;
+import org.talend.repository.model.IProxyRepositoryFactory;
 
 /**
  * DOC xhuang class global comment. Detailled comment <br/>
@@ -38,25 +49,45 @@ public class JavaCompilationParticipant extends CompilationParticipant {
      */
     @Override
     public void processAnnotations(BuildContext[] files) {
-        boolean recordRoutineFileModified = false;
+        // boolean recordRoutineFileModified = false;
         super.processAnnotations(files);
-        for (BuildContext context : files) {
-            String filePath = (context.getFile().getProjectRelativePath()).toString();
-            if (!isRoutineFile(filePath)) {
-                continue;
+        // for (BuildContext // String filePath = (context.getFile().getProjectRelativePath()).toString();
+        // if (!isRoutineFile(filePath)) {
+        // continue;
+        // }
+        // recordRoutineFileModified = true;
+        // } context : files) {
+
+        updateProblems(ERepositoryObjectType.ROUTINES);
+        updateProblems(ERepositoryObjectType.PROCESS);
+
+        // if (recordRoutineFileModified) {
+        Display.getDefault().asyncExec(new Runnable() {
+
+            public void run() {
+                Problems.refreshRepositoryView();
+                Problems.refreshProblemTreeView();
             }
-            Problems.addRoutineFile(context.getFile(), null);
-            recordRoutineFileModified =true;
-        }
-        if (recordRoutineFileModified) {
-            Display.getDefault().asyncExec(new Runnable() {
+        });
+        // }
+    }
 
-                public void run() {
-
-                    Problems.refreshRepositoryView();
-                    Problems.refreshProblemTreeView();
-                }
-            });
+    /**
+     * yzhang Comment method "updateProblems".
+     */
+    private void updateProblems(ERepositoryObjectType type) {
+        IProxyRepositoryFactory factory = CorePlugin.getDefault().getProxyRepositoryFactory();
+        try {
+            List<IRepositoryObject> routineObjectList = factory.getAll(type, false);
+            for (IRepositoryObject repositoryObject : routineObjectList) {
+                Property property = repositoryObject.getProperty();
+                ITalendSynchronizer synchronizer = CorePlugin.getDefault().getCodeGeneratorService().createRoutineSynchronizer();
+                Problems.addRoutineFile(synchronizer.getFile(property.getItem()), property);
+            }
+        } catch (PersistenceException e) {
+            ExceptionHandler.process(e);
+        } catch (SystemException e) {
+            ExceptionHandler.process(e);
         }
     }
 
