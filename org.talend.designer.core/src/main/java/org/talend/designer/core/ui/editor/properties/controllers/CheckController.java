@@ -188,7 +188,7 @@ public class CheckController extends AbstractElementPropertySectionController {
             }
         } else {
             checkBtn.setSelection(true);
-            checkBtn.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_RED));
+            checkBtn.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_YELLOW));
             checkBtn.setEnabled(false);
         }
     }
