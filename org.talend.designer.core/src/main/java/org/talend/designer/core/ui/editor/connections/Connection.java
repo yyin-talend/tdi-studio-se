@@ -360,15 +360,22 @@ public class Connection extends Element implements IConnection, IPerformance {
             // if "RunIf" got a custom name
             labelText = sourceNodeConnector.getLinkName() + " (" + name + ")";
             updateName = true;
+        } else if (getLineStyle().equals(EConnectionType.ITERATE)) {
+            IElementParameter enableParam = this.getElementParameter("ENABLE_PARALLEL");
+            IElementParameter numberParam = this.getElementParameter("NUMBER_PARALLEL");
+            if (enableParam != null && (Boolean) enableParam.getValue()) {
+                labelText = sourceNodeConnector.getLinkName() + " (x " + (String) numberParam.getValue() + ")";
+            }
+            updateName = true;
         } else {
             if (outputId >= 0) {
                 labelText += " (" + "order:" + outputId + ")";
             }
             updateName = true;
         } /*
-             * else if (getLineStyle().equals(EConnectionType.LOOKUP)) { labelText += " (" + nodeConnector.getLinkName() +
-             * ")"; updateName = true; }
-             */
+         * else if (getLineStyle().equals(EConnectionType.LOOKUP)) { labelText += " (" + nodeConnector.getLinkName() +
+         * ")"; updateName = true; }
+         */
 
         if (updateName) {
 
@@ -552,6 +559,9 @@ public class Connection extends Element implements IConnection, IPerformance {
             } else {
                 super.setPropertyValue(id, value);
             }
+        }
+        if (id.equals("NUMBER_PARALLEL") || id.equals("ENABLE_PARALLEL")) {
+            updateName();
         }
     }
 

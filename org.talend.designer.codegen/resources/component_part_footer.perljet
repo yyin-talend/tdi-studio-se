@@ -58,9 +58,9 @@ elsif (scalar @{ $desc_<%=node.getUniqueName() %>{schema} }) {
         for (IConnection conn : node.getOutgoingConnections()) {
             if (conn.getLineStyle().equals(EConnectionType.ITERATE)) {
 	            boolean parallelIterate = "true".equals(ElementParameterParser.getValue(conn, "__ENABLE_PARALLEL__"));
-				int nbParallelIterate = 2;
+				String nbParallelIterate = "2";
 	            if (parallelIterate) {
-	            	nbParallelIterate = Integer.valueOf((String)ElementParameterParser.getValue(conn,"__NUMBER_PARALLEL__"));
+	            	nbParallelIterate = (String)ElementParameterParser.getValue(conn,"__NUMBER_PARALLEL__");
 	            }
             
                 if (parallelIterate) {
