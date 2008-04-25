@@ -56,12 +56,12 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.process.Problem;
-import org.talend.core.model.process.RoutineProblem;
+import org.talend.core.model.process.TalendProblem;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.designer.codegen.ICodeGeneratorService;
-import org.talend.designer.codegen.IRoutineSynchronizer;
+import org.talend.designer.codegen.ITalendSynchronizer;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.AbstractMultiPageTalendEditor;
@@ -123,8 +123,8 @@ public class ProblemsView extends ViewPart implements PropertyChangeListener {
                 if (problem != null && problem.isConcrete()) {
                     if (problem.getElement() instanceof Node) {
                         selectInDesigner((Node) problem.getElement());
-                    } else if (problem instanceof RoutineProblem) {
-                        selectInRoutine((RoutineProblem) problem);
+                    } else if (problem instanceof TalendProblem) {
+                        selectInRoutine((TalendProblem) problem);
                     }
                 }
             }
@@ -202,7 +202,7 @@ public class ProblemsView extends ViewPart implements PropertyChangeListener {
         }
     }
 
-    private void selectInRoutine(RoutineProblem problem) {
+    private void selectInRoutine(TalendProblem problem) {
         OpenRoutineAction openRoutineAction = new OpenRoutineAction(problem);
         openRoutineAction.run();
 
@@ -277,7 +277,7 @@ public class ProblemsView extends ViewPart implements PropertyChangeListener {
      */
     private class OpenRoutineAction extends AbstractRoutineAction {
 
-        RoutineProblem problem;
+        TalendProblem problem;
 
         /*
          * (non-Javadoc)
@@ -286,7 +286,7 @@ public class ProblemsView extends ViewPart implements PropertyChangeListener {
          * org.eclipse.jface.viewers.IStructuredSelection)
          * 
          */
-        public OpenRoutineAction(RoutineProblem problem) {
+        public OpenRoutineAction(TalendProblem problem) {
             super();
             this.problem = problem;
         }
@@ -428,7 +428,7 @@ public class ProblemsView extends ViewPart implements PropertyChangeListener {
     private void restoreProblem(RoutineItem item) {
         ICodeGeneratorService service = (ICodeGeneratorService) GlobalServiceRegister.getDefault().getService(
                 ICodeGeneratorService.class);
-        IRoutineSynchronizer routineSynchronizer = null;
+        ITalendSynchronizer routineSynchronizer = null;
         switch (LanguageManager.getCurrentLanguage()) {
         case JAVA:
             routineSynchronizer = service.createJavaRoutineSynchronizer();
@@ -441,9 +441,9 @@ public class ProblemsView extends ViewPart implements PropertyChangeListener {
         if (routineSynchronizer != null) {
             try {
                 routineSynchronizer.syncRoutine(item, true);
-                IFile file = routineSynchronizer.getRoutineFile(item);
+                IFile file = routineSynchronizer.getFile(item);
                 file.refreshLocal(IResource.DEPTH_ONE, null);
-                Problems.addRoutineFile(file, item.getProperty().getLabel());
+                Problems.addRoutineFile(file, item.getProperty());
             } catch (SystemException e) {
                 ExceptionHandler.process(e);
             } catch (CoreException e) {

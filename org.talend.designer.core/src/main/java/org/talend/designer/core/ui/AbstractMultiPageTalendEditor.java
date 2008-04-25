@@ -547,6 +547,8 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         return node;
     }
 
+    public abstract void updateTitleImage();
+
     /**
      * Closes all project files on project close.
      */
@@ -566,6 +568,8 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
                     }
                 }
             });
+        } else if (event.getType() == IResourceChangeEvent.POST_CHANGE) {
+            updateTitleImage();
         }
     }
 

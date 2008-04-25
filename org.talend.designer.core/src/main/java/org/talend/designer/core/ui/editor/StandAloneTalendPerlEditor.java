@@ -162,7 +162,7 @@ public class StandAloneTalendPerlEditor extends PerlEditor implements IUIRefresh
      * add routine compilation errors into problems view.
      */
     private void addProblems() {
-        Problems.addRoutineFile(rEditorInput.getFile(), item.getProperty().getLabel());
+        Problems.addRoutineFile(rEditorInput.getFile(), item.getProperty());
 
         Display.getDefault().asyncExec(new Runnable() {
 

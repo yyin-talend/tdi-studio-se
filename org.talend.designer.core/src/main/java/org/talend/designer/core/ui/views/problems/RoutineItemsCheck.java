@@ -30,11 +30,12 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.ECodeLanguage;
+import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.designer.codegen.ICodeGeneratorService;
-import org.talend.designer.codegen.IRoutineSynchronizer;
+import org.talend.designer.codegen.ITalendSynchronizer;
 import org.talend.repository.model.IProxyRepositoryFactory;
 
 /**
@@ -42,7 +43,7 @@ import org.talend.repository.model.IProxyRepositoryFactory;
  */
 public class RoutineItemsCheck {
 
-    private IRoutineSynchronizer routineSynchronizer;
+    private ITalendSynchronizer routineSynchronizer;
 
     private ECodeLanguage language;
 
@@ -66,8 +67,8 @@ public class RoutineItemsCheck {
                 for (IRepositoryObject repositoryObj : routineObjList) {
                     RoutineItem item = (RoutineItem) repositoryObj.getProperty().getItem();
                     routineSynchronizer.syncRoutine(item, true);
-                    IFile file = routineSynchronizer.getRoutineFile(item);
-                    addProblems(item, item.getProperty().getLabel(), file);
+                    IFile file = routineSynchronizer.getFile(item);
+                    addProblems(item, item.getProperty(), file);
                 }
             } catch (PersistenceException e) {
                 ExceptionHandler.process(e);
@@ -92,7 +93,7 @@ public class RoutineItemsCheck {
      * @param file
      */
 
-    private void addProblems(RoutineItem item, String itemLabel, IFile file) {
+    private void addProblems(RoutineItem item, Property property, IFile file) {
 
         try {
             String sourceCode = readSourceFile(file.getLocation().toOSString());
@@ -102,7 +103,7 @@ public class RoutineItemsCheck {
         } catch (CoreException ex) {
             ExceptionHandler.process(ex);
         }
-        Problems.addRoutineFile(file, itemLabel);
+        Problems.addRoutineFile(file, property);
 
     }
 

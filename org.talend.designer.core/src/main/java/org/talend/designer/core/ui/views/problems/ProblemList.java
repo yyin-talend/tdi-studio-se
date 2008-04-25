@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.talend.core.model.process.Problem;
-import org.talend.core.model.process.RoutineProblem;
+import org.talend.core.model.process.TalendProblem;
 import org.talend.core.model.process.Problem.ProblemStatus;
 import org.talend.core.model.process.Problem.ProblemType;
 
@@ -83,8 +83,8 @@ public class ProblemList {
             }
         } else if (status.equals(ProblemType.ROUTINE)) {
             for (Problem problem : problemList) {
-                if (problem instanceof RoutineProblem) {
-                    RoutineProblem routineProblem = (RoutineProblem) problem;
+                if (problem instanceof TalendProblem) {
+                    TalendProblem routineProblem = (TalendProblem) problem;
                     if (routineProblem.getMarker() != null) {
                         list.add(problem);
                     }

@@ -63,7 +63,7 @@ import org.talend.core.model.properties.ByteArray;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RoutineItem;
-import org.talend.designer.codegen.IRoutineSynchronizer;
+import org.talend.designer.codegen.ITalendSynchronizer;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty;
@@ -328,8 +328,8 @@ public class WSDL2JAVAController extends AbstractElementPropertySectionControlle
             if (copyToTemp) {
                 String routineContent = new String(routineItem.getContent().getInnerContent());
                 String label = routineItem.getProperty().getLabel();
-                if (!label.equals(IRoutineSynchronizer.TEMPLATE)) {
-                    routineContent = routineContent.replaceAll(IRoutineSynchronizer.TEMPLATE, label);
+                if (!label.equals(ITalendSynchronizer.TEMPLATE)) {
+                    routineContent = routineContent.replaceAll(ITalendSynchronizer.TEMPLATE, label);
                     File f = file.getLocation().toFile();
                     fos = new FileOutputStream(f);
                     fos.write(routineContent.getBytes());

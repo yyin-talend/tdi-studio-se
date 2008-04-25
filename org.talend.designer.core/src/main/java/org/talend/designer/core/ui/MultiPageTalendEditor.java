@@ -12,13 +12,17 @@
 // ============================================================================
 package org.talend.designer.core.ui;
 
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.PartInitException;
 import org.talend.commons.ui.image.ImageProvider;
+import org.talend.core.model.properties.InformationLevel;
 import org.talend.core.ui.images.ECoreImage;
+import org.talend.core.ui.images.OverlayImageProvider;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.ProcessEditorInput;
 import org.talend.designer.core.ui.editor.TalendEditor;
@@ -46,7 +50,28 @@ public class MultiPageTalendEditor extends AbstractMultiPageTalendEditor {
     @Override
     protected void createPages() {
         super.createPages();
-        setTitleImage(ImageProvider.getImage(ECoreImage.PROCESS_ICON));
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.core.ui.AbstractMultiPageTalendEditor#updateTitleImage()
+     */
+    public void updateTitleImage() {
+        Display.getDefault().syncExec(new Runnable() {
+
+            public void run() {
+                Image image = null;
+                InformationLevel level = process.getProperty().getMaxInformationLevel();
+                if (level.getValue() == InformationLevel.ERROR) {
+                    image = OverlayImageProvider.getImageWithError(ImageProvider.getImage(ECoreImage.PROCESS_ICON)).createImage();
+                } else {
+                    image = ImageProvider.getImage(ECoreImage.PROCESS_ICON);
+                }
+                setTitleImage(image);
+            }
+
+        });
     }
 
     /**
@@ -69,9 +94,9 @@ public class MultiPageTalendEditor extends AbstractMultiPageTalendEditor {
     public void setName() {
         super.setName();
         String label = getEditorInput().getName();
-        String jobVersion=this.getProcess().getVersion();
+        String jobVersion = this.getProcess().getVersion();
         // if (getActivePage() == 1) {
-        setPartName(Messages.getString("MultiPageTalendEditor.Job", label,jobVersion)); //$NON-NLS-1$
+        setPartName(Messages.getString("MultiPageTalendEditor.Job", label, jobVersion)); //$NON-NLS-1$
         // } else {
         // setPartName(Messages.getString("other Label??", label));
         // //$NON-NLS-1$

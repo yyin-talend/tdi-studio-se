@@ -14,15 +14,14 @@ package org.talend.designer.core.ui.views.problems;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.markers.internal.MarkerMessages;
 import org.talend.commons.exception.ExceptionHandler;
@@ -30,9 +29,13 @@ import org.talend.core.model.process.Element;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.Problem;
-import org.talend.core.model.process.RoutineProblem;
+import org.talend.core.model.process.TalendProblem;
 import org.talend.core.model.process.Problem.ProblemStatus;
 import org.talend.core.model.process.Problem.ProblemType;
+import org.talend.core.model.properties.InformationLevel;
+import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.properties.Property;
+import org.talend.core.model.properties.RoutineItem;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -62,8 +65,6 @@ public class Problems {
     private static ProblemsView problemView;
 
     private static List<IProcess> openJobs = new ArrayList<IProcess>();
-
-    private static Map<String, Boolean> routineCompileInfo = new HashMap<String, Boolean>();
 
     private static String currentTitle = ""; //$NON-NLS-1$
 
@@ -105,8 +106,8 @@ public class Problems {
     public static void clearAllComliationError(String javaEditorName) {
         for (Iterator<Problem> iter = problemList.getProblemList().iterator(); iter.hasNext();) {
             Problem problem = iter.next();
-            if (problem instanceof RoutineProblem) {
-                RoutineProblem routineProblem = (RoutineProblem) problem;
+            if (problem instanceof TalendProblem) {
+                TalendProblem routineProblem = (TalendProblem) problem;
                 if (routineProblem.getJavaUnitName() != null && (routineProblem.getJavaUnitName().equals(javaEditorName))) {
                     iter.remove();
                 }
@@ -166,8 +167,8 @@ public class Problems {
     }
 
     public static void add(ProblemStatus status, IMarker marker, String javaUnitName, String markerErrorMessage, Integer lineN,
-            Integer charStart, Integer charEnd) {
-        Problem problem = new RoutineProblem(status, javaUnitName, marker, markerErrorMessage, lineN, charStart, charEnd);
+            Integer charStart, Integer charEnd, ProblemType type) {
+        Problem problem = new TalendProblem(status, javaUnitName, marker, markerErrorMessage, lineN, charStart, charEnd, type);
         add(problem);
     }
 
@@ -244,17 +245,40 @@ public class Problems {
      */
     public static void refreshProblemTreeView() {
         if (getProblemView() != null) {
-            getProblemView().refresh();
+            Display.getDefault().syncExec(new Runnable() {
+
+                /*
+                 * (non-Javadoc)
+                 * 
+                 * @see java.lang.Runnable#run()
+                 */
+                public void run() {
+                    getProblemView().refresh();
+                }
+            });
         }
+    }
+
+    public static void refreshEditorTitleImage() {
     }
 
     /**
      * DOC xtan Comment method "refreshRepositoryView".
      */
     public static void refreshRepositoryView() {
-        IRepositoryView viewPart = (IRepositoryView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-                .findView(IRepositoryView.VIEW_ID);
-        viewPart.refresh();
+        Display.getDefault().syncExec(new Runnable() {
+
+            /*
+             * (non-Javadoc)
+             * 
+             * @see java.lang.Runnable#run()
+             */
+            public void run() {
+                IRepositoryView viewPart = (IRepositoryView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+                        .findView(IRepositoryView.VIEW_ID);
+                viewPart.refresh();
+            }
+        });
     }
 
     /**
@@ -330,7 +354,7 @@ public class Problems {
         for (Iterator<Problem> iter = problemList.getProblemList().iterator(); iter.hasNext();) {
             Problem problem = iter.next();
             if (problem.getType().equals(ProblemType.ROUTINE)) {
-                RoutineProblem rp = (RoutineProblem) problem;
+                TalendProblem rp = (TalendProblem) problem;
                 if (rp.getJavaUnitName().equals(routineName)) {
                     iter.remove();
                 }
@@ -354,7 +378,7 @@ public class Problems {
      * 
      * 
      */
-    public static void addRoutineFile(IFile file, final String label) {
+    public static void addRoutineFile(IFile file, final Property property) {
         if (file == null || !file.exists()) {
             return;
         }
@@ -362,10 +386,10 @@ public class Problems {
         boolean hasError = false;
 
         String routineFileName = null;
-        if (label == null) {
+        if (property == null) {
             routineFileName = getFileName(file);
         } else {
-            routineFileName = label;
+            routineFileName = property.getLabel();
         }
 
         try {
@@ -396,7 +420,13 @@ public class Problems {
                 }
 
                 if (status != null) {
-                    add(status, marker, routineFileName, message, lineNr, start, end);
+                    ProblemType type = ProblemType.NONE;
+                    if (property.getItem() instanceof RoutineItem) {
+                        type = ProblemType.ROUTINE;
+                    } else if (property.getItem() instanceof ProcessItem) {
+                        type = ProblemType.JOB;
+                    }
+                    add(status, marker, routineFileName, message, lineNr, start, end, type);
                 }
 
             }
@@ -405,7 +435,11 @@ public class Problems {
             ExceptionHandler.process(e);
         }
 
-        routineCompileInfo.put(routineFileName, !hasError);
+        if (hasError) {
+            property.setMaxInformationLevel(InformationLevel.ERROR_LITERAL);
+        } else {
+            property.setMaxInformationLevel(InformationLevel.DEBUG_LITERAL);
+        }
     }
 
     private static String getFileName(IFile file) {
@@ -421,8 +455,4 @@ public class Problems {
         return fileName;
     }
 
-    public static Boolean isRoutineCompilePass(String routineName) {
-        Boolean compilePass = routineCompileInfo.get(routineName);
-        return compilePass;
-    }
 }
