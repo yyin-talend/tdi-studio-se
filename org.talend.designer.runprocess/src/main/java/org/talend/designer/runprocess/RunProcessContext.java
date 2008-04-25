@@ -419,6 +419,7 @@ public class RunProcessContext {
                             kill();
                         } finally {
                             progressMonitor.done();
+                            // System.out.println("exitValue:" + ps.exitValue());
                         }
                     }
                 });
@@ -578,6 +579,8 @@ public class RunProcessContext {
         /** Input stream for stderr of the process. */
         private final BufferedReader errIs;
 
+        private boolean hasCompilationError = false;
+
         public ProcessMonitor(Process ps) {
 
             super();
@@ -596,7 +599,10 @@ public class RunProcessContext {
 
                 boolean ended;
                 try {
-                    process.exitValue();
+
+                    if (!hasCompilationError) {
+                        process.exitValue();
+                    }
 
                     // flush remaining messages
                     while (extractMessages(true) && !stopThread) {
@@ -652,6 +658,9 @@ public class RunProcessContext {
             try {
                 messageErr = extractMessage(errIs, MsgType.STD_ERR, flush);
                 if (messageErr != null) {
+                    if (messageErr.getContent().contains("Unresolved compilation problem")) {
+                        hasCompilationError = true;
+                    }
                     processMessageManager.addMessage(messageErr);
                 }
                 messageOut = extractMessage(outIs, MsgType.STD_OUT, flush);
