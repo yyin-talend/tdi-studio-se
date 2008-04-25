@@ -50,7 +50,7 @@ public class CodeGeneratorService implements ICodeGeneratorService {
      * 
      * @see org.talend.designer.codegen.ICodeGeneratorService#getRoutineSynchronizer()
      */
-    public IRoutineSynchronizer createPerlRoutineSynchronizer() {
+    public ITalendSynchronizer createPerlRoutineSynchronizer() {
         return new PerlRoutineSynchronizer();
     }
 
@@ -59,12 +59,12 @@ public class CodeGeneratorService implements ICodeGeneratorService {
      * 
      * @see org.talend.designer.codegen.ICodeGeneratorService#createJavaRoutineSynchronizer()
      */
-    public IRoutineSynchronizer createJavaRoutineSynchronizer() {
+    public ITalendSynchronizer createJavaRoutineSynchronizer() {
         // TODO Auto-generated method stub
         return new JavaRoutineSynchronizer();
     }
 
-    public IRoutineSynchronizer createRoutineSynchronizer() {
+    public ITalendSynchronizer createRoutineSynchronizer() {
         ECodeLanguage lan = LanguageManager.getCurrentLanguage();
         if (lan.equals(ECodeLanguage.PERL)) {
             return createPerlRoutineSynchronizer();

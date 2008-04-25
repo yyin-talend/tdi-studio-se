@@ -23,6 +23,7 @@ import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.general.ILibrariesService;
 import org.talend.core.model.general.Project;
+import org.talend.core.model.properties.InformationLevel;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
@@ -66,8 +67,8 @@ public final class CodeGeneratorRoutine {
             List<IRepositoryObject> routines = repositoryFactory.getAll(ERepositoryObjectType.ROUTINES);
             for (IRepositoryObject routine : routines) {
                 if (currentLanguage.equals(ECodeLanguage.JAVA)) {
-                    Boolean routineCompilePass = designerCoreService.isRoutineCompilePass(routine.getLabel());
-                    if (routineCompilePass != null && !routineCompilePass) {
+                    InformationLevel level = routine.getProperty().getMaxInformationLevel();
+                    if (level.getValue() == InformationLevel.ERROR) {
                         continue;
                     }
                     toReturn.add(routine.getLabel());

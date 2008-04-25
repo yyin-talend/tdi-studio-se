@@ -15,7 +15,6 @@ package org.talend.designer.codegen;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -31,6 +30,8 @@ import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.general.ILibrariesService;
 import org.talend.core.model.general.Project;
+import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.designer.runprocess.IRunProcessService;
@@ -73,8 +74,8 @@ public class PerlRoutineSynchronizer extends AbstractRoutineSynchronizer {
             }
 
             IResource tempfile = getRoutineFile(routineItem);
-            
-			if (copyToTemp) {
+
+            if (copyToTemp) {
                 routineItem.getContent().setInnerContentToFile(tempfile.getLocation().toFile());
             }
             tempfile.refreshLocal(1, null);
@@ -91,16 +92,29 @@ public class PerlRoutineSynchronizer extends AbstractRoutineSynchronizer {
         }
     }
 
-	public IFile getRoutineFile(RoutineItem routineItem) throws SystemException {
+    private IFile getRoutineFile(RoutineItem routineItem) throws SystemException {
         IRunProcessService service = CodeGeneratorActivator.getDefault().getRunProcessService();
-        Project project = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
-                .getProject();
+        Project project = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject();
 
         IProject fsProject = ResourceModelUtils.getProject(project);
         IFolder folder = ResourceUtils.getFolder(fsProject, RepositoryConstants.TEMP_DIRECTORY, true);
         IFile tempfile = ResourceUtils.getFile(folder, "tempRoutine" + routineItem.getProperty().getId(), false); //$NON-NLS-1$
 
         return tempfile;
-	}
-	
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.codegen.ITalendSynchronizer#getFile(org.talend.core.model.properties.Item)
+     */
+    public IFile getFile(Item item) throws SystemException {
+        if (item instanceof RoutineItem) {
+            return getRoutineFile((RoutineItem) item);
+        } else if (item instanceof ProcessItem) {
+            return null;
+        }
+        return null;
+    }
+
 }

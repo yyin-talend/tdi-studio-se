@@ -11,7 +11,7 @@
 		org.talend.designer.codegen.i18n.Messages
 		org.talend.core.ui.branding.IBrandingService
 		org.talend.core.GlobalServiceRegister
-		org.talend.designer.codegen.IRoutineSynchronizer
+		org.talend.designer.codegen.ITalendSynchronizer
 		java.util.List
 		java.util.ArrayList
 		java.util.Vector
@@ -54,7 +54,7 @@
 package <%= packageName %>;
 
 <%for (String routine : CodeGeneratorRoutine.getRoutineName()) {
-	if(!routine.equals(IRoutineSynchronizer.TEMPLATE)){%>
+	if(!routine.equals(ITalendSynchronizer.TEMPLATE)){%>
 import routines.<%=routine%>;
 <%	}
 }%>
