@@ -73,6 +73,16 @@ public class CodeGeneratorService implements ICodeGeneratorService {
         }
         throw new IllegalArgumentException("invalid language type.");
     }
+    
+    public ISQLPatternSynchronizer getSQLPatternSynchronizer() {
+        ECodeLanguage lan = LanguageManager.getCurrentLanguage();
+        if (lan.equals(ECodeLanguage.PERL)) {
+            return new PerlSQLPatternSynchronizer();
+        } else if (lan.equals(ECodeLanguage.JAVA)) {
+            return new JavaSQLPatternSynchronizer();
+        }
+        throw new IllegalArgumentException("invalid language type.");
+    }
 
     /*
      * (non-Javadoc)
