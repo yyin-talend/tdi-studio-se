@@ -83,7 +83,6 @@
       NUM_ROW="4"
       SHOW="false"
       REPOSITORY_VALUE="TYPE"
-      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>Oracle</DEFAULT>
     </PARAMETER>
