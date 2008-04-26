@@ -298,7 +298,7 @@ if(false) {
 
             String tableName = externalTable.getName();
             
-            System.out.println("tableName=" + tableName);
+            //System.out.println("tableName=" + tableName);
             
             IConnection connection = hNameToConnection.get(tableName);
             if (connection == null) {
@@ -373,7 +373,7 @@ if(false) {
 
 				
 				<%
-				System.out.println("previousStateIsFirstPersistentSortedTable=" + previousStateIsFirstPersistentSortedTable + ", isFirstPersistentSortedTable=" + isFirstPersistentSortedTable + ", nextTableIsPersistentSorted=" + nextTableIsPersistentSorted); 
+				//System.out.println("previousStateIsFirstPersistentSortedTable=" + previousStateIsFirstPersistentSortedTable + ", isFirstPersistentSortedTable=" + isFirstPersistentSortedTable + ", nextTableIsPersistentSorted=" + nextTableIsPersistentSorted); 
 
             if(isPersistentSortedTable) { // T_TM_M_294
 
@@ -448,16 +448,6 @@ if(false) {
 				nextInputTable = inputTables.get(iInputTable + 1);
 			}
 
- 			if (
- 					!isVirtualIn 
-	 				|| 
- 					(
-	 					isVirtualIn 
- 						&& (isFirstPersistentSortedTable || previousStateIsFirstPersistentSortedTable) 
- 					)
- 				) { // T_TM_M_296
-
-
                     for (ExternalMapperTableEntry externalTableEntry : metadataTableEntries) {
                         hExternalInputTableEntries.put(externalTableEntry.getName(), externalTableEntry);
                     }
@@ -491,6 +481,20 @@ if(false) {
 						}
 					}
                      boolean isMultipleResultMode = matchingMode.equals("ALL_ROWS") || matchingMode.equals("ALL_MATCHES");
+
+			//System.out.println("tableName=" +  tableName + " => isMultipleResultMode=" + isMultipleResultMode);
+
+ 			if (
+ 					!isVirtualIn 
+	 				|| 
+ 					(
+	 					isVirtualIn 
+ 						&& (isFirstPersistentSortedTable || previousStateIsFirstPersistentSortedTable) 
+ 					)
+ 				) { // T_TM_M_296
+
+
+
                      %>
                             
  					    boolean forceLoop<%= tableName %> = false;
@@ -603,7 +607,7 @@ if(false) {
 			  						sbMoreOneResult.append( "\"");
 									%>
 									 		
-									System.out.println(<%= sbMoreOneResult.toString()%>);
+									//System.out.println(<%= sbMoreOneResult.toString()%>);
 								} // G 071
 							<% 
 							} // T 52 
@@ -856,7 +860,7 @@ if(false) {
 					<%
 					} // T_TM_M_247
 	    		
-                	if(isPersistentSortedTable && !isLastTable && nextInputTable != null && nextInputTable.isPersistent()) { // T_TM_M_248
+                	if(isPersistentSortedTable && !isLastTable && nextTableIsPersistentSorted) { // T_TM_M_248
 					%>
 	    	        	} // G_TM_M_250 loop "<%= currentJoinedTableNames %>"
 	            	<%
@@ -908,7 +912,7 @@ if(false) {
 
 				currentJoinedTableNames = nextJoinedTableNames;
 				
-				System.out.println("currentJoinedTableNames=" + currentJoinedTableNames);
+				//System.out.println("currentJoinedTableNames=" + currentJoinedTableNames);
 
             	previousTableName = tableName;
 
