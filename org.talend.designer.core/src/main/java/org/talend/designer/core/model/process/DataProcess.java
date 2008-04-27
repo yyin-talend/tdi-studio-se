@@ -204,29 +204,29 @@ public class DataProcess {
                 dataConnec.setConnectorName(connection.getConnectorName());
                 dataConnec.setInputId(connection.getInputId());
                 if (connection.getLineStyle().equals(EConnectionType.ITERATE)) {
-                        IElementParameter param = new ElementParameter(dataConnec);
-                        param.setField(EParameterFieldType.CHECK);
-                        param.setCategory(EComponentCategory.BASIC);
-                        param.setValue(Boolean.FALSE); //$NON-NLS-1$
-                        param.setName("ENABLE_PARALLEL");
-                        param.setDisplayName("Enable parallel execution");
-                        param.setShow(true);
-                        param.setNumRow(1);
-                        ((List<IElementParameter>) dataConnec.getElementParameters()).add(param);
+                    IElementParameter param = new ElementParameter(dataConnec);
+                    param.setField(EParameterFieldType.CHECK);
+                    param.setCategory(EComponentCategory.BASIC);
+                    param.setValue(Boolean.FALSE); //$NON-NLS-1$
+                    param.setName("ENABLE_PARALLEL");
+                    param.setDisplayName("Enable parallel execution");
+                    param.setShow(true);
+                    param.setNumRow(1);
+                    ((List<IElementParameter>) dataConnec.getElementParameters()).add(param);
 
-                        param = new ElementParameter(dataConnec);
+                    param = new ElementParameter(dataConnec);
                     param.setField(EParameterFieldType.TEXT);
-                        param.setCategory(EComponentCategory.BASIC);
+                    param.setCategory(EComponentCategory.BASIC);
                     // param.setListItemsDisplayName(new String[] { "2", "3", "4" });
                     // param.setListItemsDisplayCodeName(new String[] { "2", "3", "4" });
                     // param.setListItemsValue(new String[] { "2", "3", "4" });
-                        param.setValue("2"); //$NON-NLS-1$
-                        param.setName("NUMBER_PARALLEL");
-                        param.setDisplayName("Number of parallel execution");
-                        param.setShow(true);
-                        param.setShowIf("ENABLE_PARALLEL == 'true'");
-                        param.setNumRow(1);
-                        ((List<IElementParameter>) dataConnec.getElementParameters()).add(param);
+                    param.setValue("2"); //$NON-NLS-1$
+                    param.setName("NUMBER_PARALLEL");
+                    param.setDisplayName("Number of parallel execution");
+                    param.setShow(true);
+                    param.setShowIf("ENABLE_PARALLEL == 'true'");
+                    param.setNumRow(1);
+                    ((List<IElementParameter>) dataConnec.getElementParameters()).add(param);
                     copyElementParametersValue(connection, dataConnec);
                 }
                 INode target = buildDataNodeFromNode((Node) connection.getTarget(), prefix);
@@ -514,9 +514,8 @@ public class DataProcess {
             if (component == null) {
                 continue;
             }
-//            DataNode curNode = new DataNode(component, uniqueName);
-            
-            
+            // DataNode curNode = new DataNode(component, uniqueName);
+
             AbstractNode curNode;
             if (graphicalNode.getExternalNode() == null) {
                 curNode = new DataNode(component, uniqueName);
@@ -541,7 +540,6 @@ public class DataProcess {
                 curNode.setComponent(graphicalNode.getComponent());
             }
 
-            
             curNode.setActivate(graphicalNode.isActivate());
             IMetadataTable newMetadata = null;
             if (multipleComponentManager.isSetConnector()) {
@@ -892,6 +890,21 @@ public class DataProcess {
                 buildDataNodeFromNode(node);
             }
         }
+
+        // make sure the new tUnite incomingConnections order is the same as the old one. @see
+        // Connection.setInputId(int id)
+        for (Node graphicalNode : graphicalNodeList) {
+            if (graphicalNode.getComponent().useMerge()) {
+                for (INode dataNode : dataNodeList) {
+                    if (graphicalNode.getUniqueName().equals(dataNode.getUniqueName())) {
+                        adjustMergeOrderForDuplicateNode(graphicalNode, dataNode);
+                        break;
+                    }
+                }
+
+            }
+        }
+
         for (Node node : newGraphicalNodeList) {
             if (node.isSubProcessStart() && node.isActivate()) {
                 checkFlowRefLink(node);
@@ -1022,6 +1035,15 @@ public class DataProcess {
             }
         }
 
+        // make sure the new tUnite incomingConnections order is the same as the old one. @see
+        // Connection.setInputId(int id)
+        for (Node oldNode : graphicalNodeList) {
+            if (oldNode.getComponent().useMerge()) {
+                INode newNode = buildCheckMap.get(oldNode);
+                adjustMergeOrderForDuplicateNode(oldNode, newNode);
+            }
+        }
+
         List<Node> newBuildNodeList = new ArrayList<Node>();
 
         for (INode gnode : graphicalNodeList) {
@@ -1071,6 +1093,32 @@ public class DataProcess {
      */
     public Process getDuplicatedProcess() {
         return this.duplicatedProcess;
+    }
+
+    /**
+     * xtan make sure the new tUnite incomingConnections order is the same as the old one.(bug:3417).
+     * 
+     * @see Connection.setInputId(int id)
+     * 
+     * @param oldtUnite
+     * @param newtUnite
+     */
+    private void adjustMergeOrderForDuplicateNode(INode oldtUnite, INode newtUnite) {
+        if (newtUnite == null) {
+            return;
+        }
+        List<? extends IConnection> incomingConnectionsOld = oldtUnite.getIncomingConnections();
+        List<? extends IConnection> incomingConnectionsNew = newtUnite.getIncomingConnections();
+        for (int i = 0; i < incomingConnectionsOld.size(); i++) {
+            IConnection connOld = incomingConnectionsOld.get(i);
+            for (int j = 0; j < incomingConnectionsNew.size(); j++) {
+                IConnection connNew = incomingConnectionsNew.get(j);
+                if (connNew.getName().equals(connOld.getName()) && i != j) {
+                    Collections.swap(incomingConnectionsNew, i, j);
+                    break;
+                }
+            }
+        }
     }
 
 }
