@@ -13,6 +13,7 @@
 package org.talend.designer.codegen;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -93,6 +94,8 @@ public class CodeGenerator implements ICodeGenerator {
 
     private static final long INIT_PAUSE = 1000; // 1s
 
+    private static final boolean DEBUG = false;
+
     /**
      * Constructor : use the process and laguage to initialize internal components.
      * 
@@ -130,7 +133,19 @@ public class CodeGenerator implements ICodeGenerator {
                 this.currentProjectName = "";
             }
 
+            if (DEBUG) {
+                nodes = process.getGraphicalNodes();
+                System.out.println("------process.getGraphicalNodes()------");
+                printForDebug();
+            }
+
             nodes = process.getGeneratingNodes();
+
+            if (DEBUG) {
+                System.out.println("------process.getGeneratingNodes()------");
+                printForDebug();
+            }
+
             processTree = new NodesTree(nodes, true);
             RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
                     Context.REPOSITORY_CONTEXT_KEY);
@@ -781,5 +796,34 @@ public class CodeGenerator implements ICodeGenerator {
             }
         }
         return null;
+    }
+
+    /**
+     * DOC xtan for debug
+     * <p>
+     * output the nodes info to console to check the intial input info from design level.
+     * </p>
+     */
+    public void printForDebug() {
+        // get unique name
+        List<String> nameList = new ArrayList<String>(nodes.size());
+        for (INode node : nodes) {
+            nameList.add(node.getUniqueName());
+        }
+
+        // sort in nameList, in order to keep the intial node inder in nodes.
+        Collections.sort(nameList);
+
+        for (String string : nameList) {
+            for (INode node : nodes) {
+                if (string.equals(node.getUniqueName())) {
+                    // output the node info
+                    System.out.println(node);
+                    break;
+                }
+            }
+        }
+
+        System.out.println("\n\n\n\n");
     }
 }
