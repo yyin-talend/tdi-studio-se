@@ -53,6 +53,11 @@ public class ComponentsFactory implements IComponentsFactory {
 
     private static List<IComponent> componentList = null;
 
+    // only the in the directory /components ,not including /resource
+    private static List<String> skeletonList = null;
+
+    private static final String SKELETON_SUFFIX = ".skeleton";
+
     public ComponentsFactory() {
     }
 
@@ -63,6 +68,7 @@ public class ComponentsFactory implements IComponentsFactory {
         TimeMeasure.begin("ComponentsFactory.init");
         long startTime = System.currentTimeMillis();
         componentList = new ArrayList<IComponent>();
+        skeletonList = new ArrayList<String>();
 
         XsdValidationCacheManager.getInstance().load();
 
@@ -104,8 +110,7 @@ public class ComponentsFactory implements IComponentsFactory {
     }
 
     private void removeOldComponentsUserFolder() {
-        String userPath = IComponentsFactory.COMPONENTS_INNER_FOLDER + File.separatorChar
-                + OLD_COMPONENTS_USER_INNER_FOLDER;
+        String userPath = IComponentsFactory.COMPONENTS_INNER_FOLDER + File.separatorChar + OLD_COMPONENTS_USER_INNER_FOLDER;
         File componentsLocation = getComponentsLocation(userPath);
         if (componentsLocation != null && componentsLocation.exists()) {
             FilesUtils.removeFolder(componentsLocation, true);
@@ -149,8 +154,25 @@ public class ComponentsFactory implements IComponentsFactory {
         };
         childDirectories = source.listFiles(fileFilter);
 
+        FileFilter skeletonFilter = new FileFilter() {
+
+            public boolean accept(final File file) {
+                return file.isFile() && file.getName().charAt(0) != '.' && file.getName().endsWith(SKELETON_SUFFIX);
+            }
+
+        };
+
         if (childDirectories != null) {
             for (File currentFolder : childDirectories) {
+
+                // get the skeleton files first, then XML config files later.
+                File[] skeletonFiles = currentFolder.listFiles(skeletonFilter);
+                if (skeletonFiles != null) {
+                    for (File file : skeletonFiles) {
+                        skeletonList.add(file.getAbsolutePath()); // path
+                    }
+                }
+
                 try {
                     TimeMeasure.resume("ComponentsFactory.loadComponentsFromFolder.checkFiles");
                     ComponentFileChecker.checkComponentFolder(currentFolder, getCodeLanguageSuffix());
@@ -175,9 +197,8 @@ public class ComponentsFactory implements IComponentsFactory {
                 } catch (MissingMainXMLComponentFileException e) {
                     log.trace(currentFolder.getName() + " is not a " + getCodeLanguageSuffix() + " component", e);
                 } catch (BusinessException e) {
-                    BusinessException ex = new BusinessException(
-                            "Cannot load component \"" + currentFolder.getName() + "\": " //$NON-NLS-1$ //$NON-NLS-2$
-                                    + e.getMessage(), e);
+                    BusinessException ex = new BusinessException("Cannot load component \"" + currentFolder.getName() + "\": " //$NON-NLS-1$ //$NON-NLS-2$
+                            + e.getMessage(), e);
                     ExceptionHandler.process(ex, Level.WARN);
                 }
             }
@@ -305,8 +326,19 @@ public class ComponentsFactory implements IComponentsFactory {
      */
     public URL getComponentPath() throws IOException {
         Bundle b = Platform.getBundle(IComponentsFactory.COMPONENTS_LOCATION);
-        URL url = FileLocator
-                .toFileURL(FileLocator.find(b, new Path(IComponentsFactory.COMPONENTS_INNER_FOLDER), null));
+        URL url = FileLocator.toFileURL(FileLocator.find(b, new Path(IComponentsFactory.COMPONENTS_INNER_FOLDER), null));
         return url;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.components.IComponentsFactory#getSkeletons()
+     */
+    public List<String> getSkeletons() {
+        if (skeletonList == null) {
+            init();
+        }
+        return skeletonList;
     }
 }
