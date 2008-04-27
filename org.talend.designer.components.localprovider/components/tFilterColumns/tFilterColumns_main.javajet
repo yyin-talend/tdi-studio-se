@@ -6,6 +6,7 @@
 		org.talend.core.model.process.EConnectionType
 		org.talend.core.model.metadata.IMetadataTable
 		org.talend.core.model.metadata.IMetadataColumn
+		org.talend.core.model.process.IConnectionCategory
 		java.util.List
 		java.util.Set
 		java.util.HashSet
@@ -20,7 +21,7 @@
 	Set<String> inputCols = new HashSet<String>();
 	if (node.getIncomingConnections()!=null) {
 		for (IConnection incomingConn : node.getIncomingConnections()) {
-			if (incomingConn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
+			if (incomingConn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
 				inputConnName = incomingConn.getName();
 				IMetadataTable inputMetadataTable = incomingConn.getMetadataTable();
 				for (IMetadataColumn inputCol : inputMetadataTable.getListColumns()) {
@@ -33,7 +34,7 @@
 	
 	
 	for (IConnection conn : node.getOutgoingConnections()) {
-		if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
+		if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
 			IMetadataTable outputMetadataTable = conn.getMetadataTable();
 			if (outputMetadataTable!=null) {
 				for (IMetadataColumn outputCol : outputMetadataTable.getListColumns()) { 
