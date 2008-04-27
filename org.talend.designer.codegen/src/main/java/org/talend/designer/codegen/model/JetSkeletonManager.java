@@ -15,14 +15,17 @@ package org.talend.designer.codegen.model;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
@@ -37,8 +40,10 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.osgi.framework.Bundle;
 import org.talend.core.model.components.ComponentCompilations;
+import org.talend.core.model.components.IComponentsFactory;
 import org.talend.designer.codegen.CodeGeneratorActivator;
-import org.talend.designer.codegen.config.JetSkeleton;
+import org.talend.designer.codegen.config.TemplateUtil;
+import org.talend.repository.model.ComponentsFactoryProvider;
 
 /**
  * DOC xtan
@@ -52,7 +57,7 @@ import org.talend.designer.codegen.config.JetSkeleton;
  * $Id: talend.epf 1 2006-09-29 17:06:40 +0000 (ææäº, 29 ä¹æ 2006) nrousseau $
  * 
  */
-public class JetSkeletonManager {
+public final class JetSkeletonManager {
 
     private Map<String, Long> alreadyCheckedSkeleton;
 
@@ -60,10 +65,12 @@ public class JetSkeletonManager {
 
     private final boolean forceSkeletonAlreadyChecked = ComponentCompilations.getMarkers();
 
+    private static final String SKELETON_SUFFIX = ".skeleton";
+
     private JetSkeletonManager() {
     }
 
-    private synchronized static JetSkeletonManager getInstance() {
+    private static synchronized JetSkeletonManager getInstance() {
         if (instance == null) {
             instance = new JetSkeletonManager();
         }
@@ -171,40 +178,87 @@ public class JetSkeletonManager {
      * check the skeleton file whether changed or not, and save the SkeletonUpdateCache file again.
      * </p>
      * 
-     * @return true if there is one skeleton file changed,
+     * @return true if there is one skeleton file changed.
      */
     public static boolean updateSkeletonPersistenceData() {
 
         boolean doUpdate = false;
 
-        JetSkeletonManager instance = JetSkeletonManager.getInstance();
-        instance.load();
+        JetSkeletonManager localInstance = JetSkeletonManager.getInstance();
+        localInstance.load();
 
-        JetSkeleton[] values = JetSkeleton.values();
+        IComponentsFactory componentsFactory = ComponentsFactoryProvider.getInstance();
 
-        for (JetSkeleton jetSkeleton : values) {
+        List<String> skeletons = new ArrayList<String>();
+        List<String> systemSkeletons = getSystemSkeletons();
+        List<String> componentSkeletons = componentsFactory.getSkeletons();
+
+        if (systemSkeletons != null && !systemSkeletons.isEmpty()) {
+            skeletons.addAll(systemSkeletons);
+        }
+        if (componentSkeletons != null && !componentSkeletons.isEmpty()) {
+            skeletons.addAll(componentSkeletons);
+        }
+
+        for (String jetSkeleton : skeletons) {
             try {
 
-                String skeletonLocation = jetSkeleton.getSkeletonLocation();
-                Bundle b = Platform.getBundle(jetSkeleton.getPluginId());
-                URL skeletonUrl = FileLocator.toFileURL(FileLocator.find(b, new Path(skeletonLocation), null));
-                File file = new File(skeletonUrl.toURI());
-                if (instance.needCheck(file)) {
-                    instance.setChecked(file);
+                File file = new File(jetSkeleton);
+                if (localInstance.needCheck(file)) {
+                    localInstance.setChecked(file);
                     doUpdate = true;
+                    // System.out.println("need check:" + jetSkeleton);
                 }
             } catch (Exception e) {
                 IStatus status = new Status(IStatus.WARNING, CodeGeneratorActivator.PLUGIN_ID,
                         "when update skeleton persistence data, there have some problems", e);
                 CodeGeneratorActivator.getDefault().getLog().log(status);
-                instance.save();
+                localInstance.save();
                 return true;
             }
         }
 
-        instance.save();
+        localInstance.save();
 
         return doUpdate;
+    }
+
+    /**
+     * DOC xtan get the skeleton file: subprocess_header_java.skeleton.
+     * 
+     * @return
+     */
+    private static List<String> getSystemSkeletons() {
+
+        List<String> skeletonList = new ArrayList<String>();
+
+        // here add the skeleton file in org.talend.designer.codegen\resources
+        FileFilter skeletonFilter = new FileFilter() {
+
+            public boolean accept(final File file) {
+                return file.isFile() && file.getName().charAt(0) != '.' && file.getName().endsWith(SKELETON_SUFFIX);
+            }
+
+        };
+
+        Bundle b = Platform.getBundle(CodeGeneratorActivator.PLUGIN_ID);
+        URL resourcesUrl = null;
+        try {
+            resourcesUrl = FileLocator.toFileURL(FileLocator.find(b, new Path(TemplateUtil.RESOURCES_DIRECTORY), null));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (resourcesUrl != null) {
+            File resourcesDir = new File(resourcesUrl.getFile());
+            File[] skeletonFiles = resourcesDir.listFiles(skeletonFilter);
+            if (skeletonFiles != null) {
+                for (File file : skeletonFiles) {
+                    skeletonList.add(file.getAbsolutePath()); // path
+                }
+            }
+        }
+
+        return skeletonList;
     }
 
 }
