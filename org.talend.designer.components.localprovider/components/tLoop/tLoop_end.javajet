@@ -12,7 +12,17 @@ CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 
-if(ElementParameterParser.getValue(node, "__LOOPTYPE__").equals("FORLOOP")){// For type
+boolean forLoop = ElementParameterParser.getValue(
+    node,
+    "__FORLOOP__"
+).equals("true");
+
+boolean whileLoop = ElementParameterParser.getValue(
+    node,
+    "__WHILELOOP__"
+).equals("true");
+
+if (forLoop) {
 %>
 	}
 <%

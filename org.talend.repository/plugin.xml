@@ -803,6 +803,12 @@
             id="org.talend.repository.model.migration.RenametFTPToFTPGetMigrationTaskForPerl"
             name="RenametFTPToFTPGetMigrationTaskForPerl">
       </projecttask>
+      <projecttask
+            beforeLogon="false"
+            class="org.talend.repository.model.migration.RenametForForPerl"
+            id="org.talend.repository.model.migration.RenametForForPerl"
+            name="RenametForForPerl">
+      </projecttask>
    </extension>
    <extension
          point="org.talend.core.librariesNeeded">

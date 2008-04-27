@@ -11,11 +11,20 @@ CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 
-String loopType = ElementParameterParser.getValue(node, "__LOOPTYPE__");
+boolean forLoop = ElementParameterParser.getValue(
+    node,
+    "__FORLOOP__"
+).equals("true");
+
+boolean whileLoop = ElementParameterParser.getValue(
+    node,
+    "__WHILELOOP__"
+).equals("true");
+
 %>
 int current_iteration_<%=cid%> = 0;
 <%
-if(loopType.equals("FORLOOP")){// For type
+if (forLoop) {
 
 String from = ElementParameterParser.getValue(node, "__FROM__");
 if (from.equals("")) from = "1";
