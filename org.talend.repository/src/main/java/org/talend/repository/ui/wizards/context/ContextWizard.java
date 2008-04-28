@@ -12,6 +12,8 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.context;
 
+import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -20,6 +22,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWizard;
+import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
@@ -28,7 +31,9 @@ import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.context.JobContextManager;
+import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextManager;
+import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
@@ -65,7 +70,41 @@ public class ContextWizard extends RepositoryWizard implements INewWizard {
 
     String oldSource;
 
-    ProxyRepositoryFactory factory;
+    ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();;
+
+    /**
+     * 
+     * this constructor only for context mode. (feature 2449)
+     */
+    public ContextWizard(final String contextName, boolean creation, ISelection selection, final List<IContextParameter> paramList) {
+        this(PlatformUI.getWorkbench(), creation, selection, false);
+        initContextMode(contextName, paramList);
+    }
+
+    private void initContextMode(final String contextName, final List<IContextParameter> paramList) {
+        if (creation && contextName != null && contextProperty != null) {
+            contextProperty.setLabel(contextName);
+        }
+        if (paramList != null && contextManager != null) {
+            for (IContext context : contextManager.getListContext()) {
+                for (IContextParameter param : paramList) {
+                    boolean existed = false;
+                    for (IContextParameter existedParam : context.getContextParameterList()) {
+                        if (existedParam.getName().equals(param.getName())) {
+                            existed = true;
+                            break;
+                        }
+                    }
+                    if (!existed) {
+                        IContextParameter toAdd = param.clone();
+                        toAdd.setContext(context);
+                        context.getContextParameterList().add(toAdd);
+                    }
+                }
+
+            }
+        }
+    }
 
     /**
      * Constructor for FileWizard.
@@ -77,7 +116,6 @@ public class ContextWizard extends RepositoryWizard implements INewWizard {
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     public ContextWizard(IWorkbench workbench, boolean creation, ISelection selection, boolean forceReadOnly) {
         super(workbench, creation, forceReadOnly);
-        factory = ProxyRepositoryFactory.getInstance();
         pathToSave = getPath(selection);
 
         setWindowTitle(""); //$NON-NLS-1$
@@ -215,15 +253,21 @@ public class ContextWizard extends RepositoryWizard implements INewWizard {
     }
 
     private IPath getPath(ISelection selection) {
-        RepositoryNode node = (RepositoryNode) ((IStructuredSelection) selection).getFirstElement();
+        if (selection != null) {
+            RepositoryNode node = (RepositoryNode) ((IStructuredSelection) selection).getFirstElement();
 
-        IPath path;
-        if (node.getType() == ENodeType.SIMPLE_FOLDER || node.getType() == ENodeType.SYSTEM_FOLDER) {
-            path = RepositoryNodeUtilities.getPath(node);
-        } else {
-            path = new Path(""); //$NON-NLS-1$
+            IPath path;
+            if (node != null && (node.getType() == ENodeType.SIMPLE_FOLDER || node.getType() == ENodeType.SYSTEM_FOLDER)) {
+                path = RepositoryNodeUtilities.getPath(node);
+                return path;
+            }
         }
-        return path;
+
+        return new Path(""); //$NON-NLS-1$
+    }
+
+    public ContextItem getContextItem() {
+        return this.contextItem;
     }
 
 }

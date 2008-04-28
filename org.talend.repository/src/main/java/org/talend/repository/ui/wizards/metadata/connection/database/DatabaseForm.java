@@ -51,6 +51,7 @@ import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.swt.utils.AbstractForm;
+import org.talend.repository.ui.utils.DBConnectionContextUtils;
 import org.talend.repository.ui.utils.DataStringConnection;
 import org.talend.repository.ui.utils.ManagerConnection;
 
@@ -133,7 +134,8 @@ public class DatabaseForm extends AbstractForm {
     public DatabaseForm(Composite parent, ConnectionItem connectionItem, String[] existingNames) {
         super(parent, SWT.NONE, existingNames);
         this.connectionItem = connectionItem;
-        setupForm();
+        setConnectionItem(connectionItem); // must be first.
+        setupForm(true);
         addStringConnectionControls();
         GridLayout layout2 = (GridLayout) getLayout();
         layout2.marginHeight = 0;
@@ -150,7 +152,13 @@ public class DatabaseForm extends AbstractForm {
             dbTypeCombo.select(indexOfCombo);
             urlDataStringConnection.setSelectionIndex(indexOfCombo);
         }
-        urlConnectionStringText.setText(getConnection().getURL());
+        if (isContextMode()) {
+            adaptFormToEditable();
+            urlConnectionStringText.setText(getStringConnection());
+        } else {
+            urlConnectionStringText.setText(getConnection().getURL());
+
+        }
         usernameText.setText(getConnection().getUsername());
         passwordText.setText(getConnection().getPassword());
         serverText.setText(getConnection().getServerName());
@@ -221,7 +229,7 @@ public class DatabaseForm extends AbstractForm {
         int width = getSize().x;
         GridLayout layout2;
         // Group Database Settings
-        Group group = Form.createGroup(this, 1, Messages.getString("DatabaseForm.groupDatabaseSettings"), 365); //$NON-NLS-1$
+        Group group = Form.createGroup(this, 1, Messages.getString("DatabaseForm.groupDatabaseSettings"), 340); //$NON-NLS-1$
         Composite compositeGroupDbSettings = Form.startNewGridLayout(group, 1);
         layout2 = (GridLayout) compositeGroupDbSettings.getLayout();
         layout2.marginHeight = 0;
@@ -231,7 +239,7 @@ public class DatabaseForm extends AbstractForm {
         layout2.marginRight = 0;
         layout2.marginWidth = 0;
 
-        compositeDbSettings = Form.startNewDimensionnedGridLayout(compositeGroupDbSettings, 3, width, 330);
+        compositeDbSettings = Form.startNewDimensionnedGridLayout(compositeGroupDbSettings, 3, width, 275);
         layout2 = (GridLayout) compositeDbSettings.getLayout();
         layout2.marginHeight = 0;
         layout2.marginTop = 0;
@@ -245,22 +253,22 @@ public class DatabaseForm extends AbstractForm {
         // PTODO cantoine : HIDDEN some Database connection in function of project MODE (Perl/Java).
         if (LanguageManager.getCurrentLanguage() == ECodeLanguage.PERL) {
             Collection<String> databasePerl = new ArrayList<String>(Arrays.asList(urlDataStringConnection.getItem()));
-            databasePerl.remove("Microsoft SQL Server");
-            databasePerl.remove("Ingres");
-            databasePerl.remove("Interbase");
-            databasePerl.remove("FireBird");
-            databasePerl.remove("Informix");
-            databasePerl.remove("Access");
-            databasePerl.remove("Teradata");
-            databasePerl.remove("AS400");
+            databasePerl.remove("Microsoft SQL Server"); //$NON-NLS-1$
+            databasePerl.remove("Ingres"); //$NON-NLS-1$
+            databasePerl.remove("Interbase"); //$NON-NLS-1$
+            databasePerl.remove("FireBird"); //$NON-NLS-1$
+            databasePerl.remove("Informix"); //$NON-NLS-1$
+            databasePerl.remove("Access"); //$NON-NLS-1$
+            databasePerl.remove("Teradata"); //$NON-NLS-1$
+            databasePerl.remove("AS400"); //$NON-NLS-1$
 
-            databasePerl.remove("JavaDB Embeded");
-            databasePerl.remove("JavaDB JCCJDBC");
-            databasePerl.remove("JavaDB DerbyClient");
+            databasePerl.remove("JavaDB Embeded"); //$NON-NLS-1$
+            databasePerl.remove("JavaDB JCCJDBC"); //$NON-NLS-1$
+            databasePerl.remove(Messages.getString("DatabaseForm.10")); //$NON-NLS-1$
 
-            databasePerl.remove("HSQLDB Server");
-            databasePerl.remove("HSQLDB WebServer");
-            databasePerl.remove("HSQLDB In-Process");
+            databasePerl.remove("HSQLDB Server"); //$NON-NLS-1$
+            databasePerl.remove("HSQLDB WebServer"); //$NON-NLS-1$
+            databasePerl.remove("HSQLDB In-Process"); //$NON-NLS-1$
 
             String[] dbPerl = databasePerl.toArray(new String[databasePerl.size()]);
             dbTypeCombo = new LabelledCombo(compositeDbSettings, Messages.getString("DatabaseForm.dbType"), Messages //$NON-NLS-1$
@@ -283,7 +291,7 @@ public class DatabaseForm extends AbstractForm {
         // Another fields
         serverText = new LabelledText(compositeDbSettings, Messages.getString("DatabaseForm.server"), 2); //$NON-NLS-1$
         portText = new LabelledText(compositeDbSettings, Messages.getString("DatabaseForm.port"), 2); //$NON-NLS-1$
-        portText.setTextLimit(5);
+        // portText.setTextLimit(5);
         sidOrDatabaseText = new LabelledText(compositeDbSettings, Messages.getString("DatabaseForm.database"), 2); //$NON-NLS-1$
         schemaText = new LabelledText(compositeDbSettings, Messages.getString("DatabaseForm.schema"), 2); //$NON-NLS-1$
         datasourceText = new LabelledText(compositeDbSettings, Messages.getString("DatabaseForm.dataSource"), 2); //$NON-NLS-1$
@@ -294,7 +302,7 @@ public class DatabaseForm extends AbstractForm {
         directoryField = new LabelledDirectoryField(compositeDbSettings, "DB Root Path"); //$NON-NLS-1$
 
         // Button Check
-        Composite compositeCheckButton = Form.startNewGridLayout(compositeGroupDbSettings, 1, false, SWT.CENTER, SWT.BOTTOM);
+        Composite compositeCheckButton = Form.startNewGridLayout(compositeGroupDbSettings, 1, false, SWT.CENTER, SWT.TOP);
         layout2 = (GridLayout) compositeCheckButton.getLayout();
         layout2.marginHeight = 0;
         layout2.marginTop = 0;
@@ -304,7 +312,11 @@ public class DatabaseForm extends AbstractForm {
         checkButton.setEnabled(false);
 
         // Group Database Properties
-        Group group1 = Form.createGroup(this, 1, Messages.getString("DatabaseForm.groupDatabaseProperties"), 60); //$NON-NLS-1$
+        Group group1 = Form.createGroup(this, 1, Messages.getString("DatabaseForm.groupDatabaseProperties")); //$NON-NLS-1$
+        GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
+        gridData.minimumHeight = 80;
+        gridData.heightHint = 80;
+        group1.setLayoutData(gridData);
         // Composite compositeGroupDbProperties = Form.startNewGridLayout(group1, 4, false, SWT.LEFT, SWT.CENTER);
         Composite compositeGroupDbProperties = Form.startNewDimensionnedGridLayout(group1, 4, width, 70);
 
@@ -315,13 +327,13 @@ public class DatabaseForm extends AbstractForm {
 
         stringQuoteText = new LabelledText(compositeGroupDbProperties, Messages.getString("DatabaseForm.stringQuote"), false); //$NON-NLS-1$
         nullCharText = new LabelledText(compositeGroupDbProperties, Messages.getString("DatabaseForm.nullChar"), false); //$NON-NLS-1$
-        GridData gridData = new GridData();
+        gridData = new GridData();
         gridData.horizontalSpan = 2;
         standardButton = new Button(compositeGroupDbProperties, SWT.RADIO);
-        standardButton.setText("Standard SQL Statement");
+        standardButton.setText(Messages.getString("DatabaseForm.StandardSQL")); //$NON-NLS-1$
         standardButton.setLayoutData(gridData);
         systemButton = new Button(compositeGroupDbProperties, SWT.RADIO);
-        systemButton.setText("System SQL Statement");
+        systemButton.setText(Messages.getString("DatabaseForm.SystemSQL")); //$NON-NLS-1$
         systemButton.setLayoutData(gridData);
         checkDBTypeAS400();
 
@@ -350,19 +362,32 @@ public class DatabaseForm extends AbstractForm {
         if (connectionItem.getConnection() instanceof DatabaseConnection) {
             DatabaseConnection c = (DatabaseConnection) connectionItem.getConnection();
             if (c.getProductId().equals(EDatabaseTypeName.ORACLEFORSID.getProduct())) {
-                schemaText.setText(schemaText.getText().toUpperCase());
+                if (!isContextMode()) {
+                    schemaText.setText(schemaText.getText().toUpperCase());
+                }
             }
         }
         ManagerConnection managerConnection = new ManagerConnection();
-        // set the value
-        managerConnection.setValue(0, dbTypeCombo.getItem(dbTypeCombo.getSelectionIndex()), urlConnectionStringText.getText(),
-                serverText.getText(), usernameText.getText(), passwordText.getText(), sidOrDatabaseText.getText(), portText
-                        .getText(), fileField.getText(), datasourceText.getText(), schemaText.getText(), additionParamText
-                        .getText());
-        managerConnection.setDbRootPath(directoryField.getText());
+
+        if (isContextMode()) { // context mode
+
+            String urlStr = DBConnectionContextUtils.setManagerConnectionValues(managerConnection, connectionItem, dbTypeCombo
+                    .getItem(dbTypeCombo.getSelectionIndex()), dbTypeCombo.getSelectionIndex());
+            if (urlStr == null) {
+                urlStr = getStringConnection();
+            }
+            urlConnectionStringText.setText(urlStr);
+        } else {
+            // set the value
+            managerConnection.setValue(0, dbTypeCombo.getItem(dbTypeCombo.getSelectionIndex()),
+                    urlConnectionStringText.getText(), serverText.getText(), usernameText.getText(), passwordText.getText(),
+                    sidOrDatabaseText.getText(), portText.getText(), fileField.getText(), datasourceText.getText(), schemaText
+                            .getText(), additionParamText.getText());
+            managerConnection.setDbRootPath(directoryField.getText());
+
+        }
         managerConnection.setValueProperties(sqlSyntaxCombo.getItem(sqlSyntaxCombo.getSelectionIndex()), stringQuoteText
                 .getText(), nullCharText.getText());
-
         // check the connection
         databaseSettingIsValide = managerConnection.check();
 
@@ -377,8 +402,13 @@ public class DatabaseForm extends AbstractForm {
             MessageDialog.openInformation(getShell(), Messages.getString("DatabaseForm.checkConnectionTitle"), "\"" //$NON-NLS-1$ //$NON-NLS-2$
                     + connectionItem.getProperty().getLabel() + "\" " + Messages.getString("DatabaseForm.checkIsDone")); //$NON-NLS-1$ //$NON-NLS-2$
             if (!isReadOnly()) {
-                setPropertiesFormEditable(true);
+                if (isContextMode()) {
+                    adaptFormToEditable();
+                } else {
+                    setPropertiesFormEditable(true);
+                }
             }
+
         } else {
             String mainMsg = Messages.getString("DatabaseForm.checkFailure") + " " //$NON-NLS-1$ //$NON-NLS-2$
                     + Messages.getString("DatabaseForm.checkFailureTip"); //$NON-NLS-1$
@@ -397,11 +427,13 @@ public class DatabaseForm extends AbstractForm {
         urlConnectionStringText.addListener(SWT.FocusIn, new Listener() {
 
             public void handleEvent(final Event e) {
-                if (dbTypeCombo.getSelectionIndex() >= 0) {
-                    setPropertiesFormEditable(false);
-                    urlConnectionStringText.setEditable(true);
-                } else {
-                    updateStatus(IStatus.ERROR, Messages.getString("DatabaseForm.alert", dbTypeCombo.getLabel())); //$NON-NLS-1$
+                if (!isContextMode()) {
+                    if (dbTypeCombo.getSelectionIndex() >= 0) {
+                        setPropertiesFormEditable(false);
+                        urlConnectionStringText.setEditable(true);
+                    } else {
+                        updateStatus(IStatus.ERROR, Messages.getString("DatabaseForm.alert", dbTypeCombo.getLabel())); //$NON-NLS-1$
+                    }
                 }
             }
         });
@@ -409,34 +441,36 @@ public class DatabaseForm extends AbstractForm {
         urlConnectionStringText.addModifyListener(new ModifyListener() {
 
             public void modifyText(final ModifyEvent e) {
-                if (urlConnectionStringText.getEditable()) {
-                    if (!databaseSettingIsValide) {
-                        updateStatus(IStatus.INFO, Messages.getString("DatabaseForm.checkInformation")); //$NON-NLS-1$
-                    }
-                    databaseSettingIsValide = false;
-                    checkButton.setEnabled(true);
-                    String[] s = urlDataStringConnection.getAnalyse(urlConnectionStringText.getText());
-                    // if the ConnectionString write manually don't correspond width selectedIndex of combo DbType
-                    // we search if another regex corresponding at this string
-                    if (new Integer(s[0]) != dbTypeCombo.getSelectionIndex()) {
-                        dbTypeCombo.select(new Integer(s[0]));
-                        dbTypeCombo.forceFocus();
-                    }
+                if (!isContextMode()) {
+                    if (urlConnectionStringText.getEditable()) {
+                        if (!databaseSettingIsValide) {
+                            updateStatus(IStatus.INFO, Messages.getString("DatabaseForm.checkInformation")); //$NON-NLS-1$
+                        }
+                        databaseSettingIsValide = false;
+                        checkButton.setEnabled(true);
+                        String[] s = urlDataStringConnection.getAnalyse(urlConnectionStringText.getText());
+                        // if the ConnectionString write manually don't correspond width selectedIndex of combo DbType
+                        // we search if another regex corresponding at this string
+                        if (new Integer(s[0]) != dbTypeCombo.getSelectionIndex()) {
+                            dbTypeCombo.select(new Integer(s[0]));
+                            dbTypeCombo.forceFocus();
+                        }
 
-                    if (s[1] != "") { //$NON-NLS-1$
-                        serverText.setText(s[1]);
-                        getConnection().setServerName(s[1]);
+                        if (s[1] != "") { //$NON-NLS-1$
+                            serverText.setText(s[1]);
+                            getConnection().setServerName(s[1]);
+                        }
+                        if (s[2] != "") { //$NON-NLS-1$
+                            portText.setText(s[2]);
+                            getConnection().setPort(s[2]);
+                        }
+                        if (s[3] != "") { //$NON-NLS-1$
+                            sidOrDatabaseText.setText(s[3]);
+                            getConnection().setSID(s[3]);
+                        }
                     }
-                    if (s[2] != "") { //$NON-NLS-1$
-                        portText.setText(s[2]);
-                        getConnection().setPort(s[2]);
-                    }
-                    if (s[3] != "") { //$NON-NLS-1$
-                        sidOrDatabaseText.setText(s[3]);
-                        getConnection().setSID(s[3]);
-                    }
+                    checkDBTypeAS400();
                 }
-                checkDBTypeAS400();
             }
         });
 
@@ -469,11 +503,15 @@ public class DatabaseForm extends AbstractForm {
         Listener listener = new Listener() {
 
             public void handleEvent(final Event e) {
-                if (dbTypeCombo.getSelectionIndex() == -1) {
-                    dbTypeCombo.forceFocus();
+                if (isContextMode()) {
+                    //
+                } else {
+                    if (dbTypeCombo.getSelectionIndex() == -1) {
+                        dbTypeCombo.forceFocus();
+                    }
+                    setPropertiesFormEditable(dbTypeCombo.getSelectionIndex() > -1);
+                    urlConnectionStringText.setEditable(false);
                 }
-                setPropertiesFormEditable(dbTypeCombo.getSelectionIndex() > -1);
-                urlConnectionStringText.setEditable(false);
             }
         };
 
@@ -491,9 +529,11 @@ public class DatabaseForm extends AbstractForm {
         serverText.addModifyListener(new ModifyListener() {
 
             public void modifyText(final ModifyEvent e) {
-                if (!urlConnectionStringText.getEditable()) {
-                    getConnection().setServerName(serverText.getText());
-                    checkFieldsValue();
+                if (!isContextMode()) {
+                    if (!urlConnectionStringText.getEditable()) {
+                        getConnection().setServerName(serverText.getText());
+                        checkFieldsValue();
+                    }
                 }
             }
         });
@@ -502,18 +542,23 @@ public class DatabaseForm extends AbstractForm {
         portText.addModifyListener(new ModifyListener() {
 
             public void modifyText(final ModifyEvent e) {
-                if (!urlConnectionStringText.getEditable()) {
-                    getConnection().setPort(portText.getText());
-                    checkFieldsValue();
+                if (!isContextMode()) {
+                    if (!urlConnectionStringText.getEditable()) {
+                        getConnection().setPort(portText.getText());
+                        checkFieldsValue();
+                    }
+                    // Check port
+                    boolean b = true;
+                    if (getConnection().getDatabaseType().equals("Ingres")) { //$NON-NLS-1$
+                        b = Pattern.matches(Messages.getString("DatabaseForm.ingresDBRegex"), portText.getText()); //$NON-NLS-1$
+                    } else {
+                        b = Pattern.matches(Messages.getString("DatabaseForm.otherDBRegex"), portText.getText()); //$NON-NLS-1$
+                    }
+                    if (b) {
+                        b = portText.getText().length() <= 5;
+                    }
+                    evaluateTextField(b);
                 }
-                // Check port
-                boolean b = true;
-                if (getConnection().getDatabaseType().equals("Ingres")) {
-                    b = Pattern.matches(Messages.getString("DatabaseForm.ingresDBRegex"), portText.getText());
-                } else {
-                    b = Pattern.matches(Messages.getString("DatabaseForm.otherDBRegex"), portText.getText());
-                }
-                evaluateTextField(b);
             }
         });
 
@@ -532,8 +577,10 @@ public class DatabaseForm extends AbstractForm {
         usernameText.addModifyListener(new ModifyListener() {
 
             public void modifyText(final ModifyEvent e) {
-                if (!urlConnectionStringText.getEditable()) {
-                    getConnection().setUsername(usernameText.getText());
+                if (!isContextMode()) {
+                    if (!urlConnectionStringText.getEditable()) {
+                        getConnection().setUsername(usernameText.getText());
+                    }
                 }
             }
         });
@@ -542,8 +589,10 @@ public class DatabaseForm extends AbstractForm {
         passwordText.addModifyListener(new ModifyListener() {
 
             public void modifyText(final ModifyEvent e) {
-                if (!urlConnectionStringText.getEditable()) {
-                    getConnection().setPassword(passwordText.getText());
+                if (!isContextMode()) {
+                    if (!urlConnectionStringText.getEditable()) {
+                        getConnection().setPassword(passwordText.getText());
+                    }
                 }
             }
         });
@@ -552,9 +601,11 @@ public class DatabaseForm extends AbstractForm {
         sidOrDatabaseText.addModifyListener(new ModifyListener() {
 
             public void modifyText(final ModifyEvent e) {
-                if (!urlConnectionStringText.getEditable()) {
-                    getConnection().setSID(sidOrDatabaseText.getText());
-                    checkFieldsValue();
+                if (!isContextMode()) {
+                    if (!urlConnectionStringText.getEditable()) {
+                        getConnection().setSID(sidOrDatabaseText.getText());
+                        checkFieldsValue();
+                    }
                 }
             }
         });
@@ -563,9 +614,11 @@ public class DatabaseForm extends AbstractForm {
         datasourceText.addModifyListener(new ModifyListener() {
 
             public void modifyText(final ModifyEvent e) {
-                if (!urlConnectionStringText.getEditable()) {
-                    getConnection().setDatasourceName(datasourceText.getText());
-                    checkFieldsValue();
+                if (!isContextMode()) {
+                    if (!urlConnectionStringText.getEditable()) {
+                        getConnection().setDatasourceName(datasourceText.getText());
+                        checkFieldsValue();
+                    }
                 }
             }
         });
@@ -574,9 +627,11 @@ public class DatabaseForm extends AbstractForm {
         schemaText.addModifyListener(new ModifyListener() {
 
             public void modifyText(final ModifyEvent e) {
-                if (!urlConnectionStringText.getEditable()) {
-                    getConnection().setSchema(schemaText.getText());
-                    checkFieldsValue();
+                if (!isContextMode()) {
+                    if (!urlConnectionStringText.getEditable()) {
+                        getConnection().setSchema(schemaText.getText());
+                        checkFieldsValue();
+                    }
                 }
             }
         });
@@ -584,9 +639,11 @@ public class DatabaseForm extends AbstractForm {
         additionParamText.addModifyListener(new ModifyListener() {
 
             public void modifyText(final ModifyEvent e) {
-                if (!urlConnectionStringText.getEditable()) {
-                    getConnection().setAdditionalParams(additionParamText.getText());
-                    checkFieldsValue();
+                if (!isContextMode()) {
+                    if (!urlConnectionStringText.getEditable()) {
+                        getConnection().setAdditionalParams(additionParamText.getText());
+                        checkFieldsValue();
+                    }
                 }
             }
         });
@@ -594,8 +651,10 @@ public class DatabaseForm extends AbstractForm {
         standardButton.addSelectionListener(new SelectionAdapter() {
 
             public void widgetSelected(SelectionEvent e) {
-                getConnection().setStandardSQL(standardButton.getSelection());
-                getConnection().setSystemSQL(systemButton.getSelection());
+                if (!isContextMode()) {
+                    getConnection().setStandardSQL(standardButton.getSelection());
+                    getConnection().setSystemSQL(systemButton.getSelection());
+                }
             }
 
         });
@@ -603,8 +662,10 @@ public class DatabaseForm extends AbstractForm {
         systemButton.addSelectionListener(new SelectionAdapter() {
 
             public void widgetSelected(SelectionEvent e) {
-                getConnection().setStandardSQL(standardButton.getSelection());
-                getConnection().setSystemSQL(systemButton.getSelection());
+                if (!isContextMode()) {
+                    getConnection().setStandardSQL(standardButton.getSelection());
+                    getConnection().setSystemSQL(systemButton.getSelection());
+                }
             }
 
         });
@@ -613,22 +674,25 @@ public class DatabaseForm extends AbstractForm {
 
             // Event Modify
             public void modifyText(final ModifyEvent e) {
-                urlDataStringConnection.setSelectionIndex(dbTypeCombo.getSelectionIndex());
-                setPropertiesFormEditable(true);
-                getConnection().setDatabaseType(dbTypeCombo.getText());
-                portText.setText(urlDataStringConnection.getDefaultPort());
-                final String product = EDatabaseTypeName.getTypeFromDisplayName(getConnection().getDatabaseType()).getProduct();
-                getConnection().setProductId(product);
-                final String mapping = MetadataTalendType.getDefaultDbmsFromProduct(product).getId();
-                getConnection().setDbmsId(mapping);
-                if (dbTypeCombo.getSelectionIndex() == 0) {
-                    // additionParamText.setText(DataStringConnection.mySQlDefaultValue);
-                    additionParamText.setText(DataStringConnection.mySQlDefaultValue);
+                if (!isContextMode()) {
+                    urlDataStringConnection.setSelectionIndex(dbTypeCombo.getSelectionIndex());
+                    setPropertiesFormEditable(true);
+                    getConnection().setDatabaseType(dbTypeCombo.getText());
+                    portText.setText(urlDataStringConnection.getDefaultPort());
+                    final String product = EDatabaseTypeName.getTypeFromDisplayName(getConnection().getDatabaseType())
+                            .getProduct();
+                    getConnection().setProductId(product);
+                    final String mapping = MetadataTalendType.getDefaultDbmsFromProduct(product).getId();
+                    getConnection().setDbmsId(mapping);
+                    if (dbTypeCombo.getSelectionIndex() == 0) {
+                        // additionParamText.setText(DataStringConnection.mySQlDefaultValue);
+                        additionParamText.setText(DataStringConnection.mySQlDefaultValue);
+                    }
+                    if (dbTypeCombo.getSelectionIndex() == 16) {
+                        additionParamText.setText(DataStringConnection.as400DefaultValue);
+                    }
+                    checkFieldsValue();
                 }
-                if (dbTypeCombo.getSelectionIndex() == 16) {
-                    additionParamText.setText(DataStringConnection.as400DefaultValue);
-                }
-                checkFieldsValue();
             }
         });
 
@@ -651,14 +715,16 @@ public class DatabaseForm extends AbstractForm {
 
             // Event FocusIn
             public void handleEvent(final Event e) {
-                if (dbTypeCombo.getSelectionIndex() == -1) {
-                    dbTypeCombo.forceFocus();
-                } else {
-                    if (urlDataStringConnection.getStringConnectionTemplate().contains("<filename>")) { //$NON-NLS-1$
-                        setPropertiesFormEditable(true);
-                        urlConnectionStringText.setEditable(false);
+                if (!isContextMode()) {
+                    if (dbTypeCombo.getSelectionIndex() == -1) {
+                        dbTypeCombo.forceFocus();
+                    } else {
+                        if (urlDataStringConnection.getStringConnectionTemplate().contains("<filename>")) { //$NON-NLS-1$
+                            setPropertiesFormEditable(true);
+                            urlConnectionStringText.setEditable(false);
+                        }
+                        getConnection().setFileFieldName(PathUtils.getPortablePath(fileField.getText()));
                     }
-                    getConnection().setFileFieldName(PathUtils.getPortablePath(fileField.getText()));
                 }
             }
         });
@@ -666,9 +732,11 @@ public class DatabaseForm extends AbstractForm {
         fileField.addModifyListener(new ModifyListener() {
 
             public void modifyText(final ModifyEvent e) {
-                if (!urlConnectionStringText.getEditable()) {
-                    getConnection().setFileFieldName(fileField.getText());
-                    checkFieldsValue();
+                if (!isContextMode()) {
+                    if (!urlConnectionStringText.getEditable()) {
+                        getConnection().setFileFieldName(fileField.getText());
+                        checkFieldsValue();
+                    }
                 }
             }
         });
@@ -676,10 +744,12 @@ public class DatabaseForm extends AbstractForm {
         directoryField.addModifyListener(new ModifyListener() {
 
             public void modifyText(final ModifyEvent e) {
-                if (!urlConnectionStringText.getEditable()) {
-                    String text = directoryField.getText();
-                    getConnection().setDBRootPath(text);
-                    checkFieldsValue();
+                if (!isContextMode()) {
+                    if (!urlConnectionStringText.getEditable()) {
+                        String text = directoryField.getText();
+                        getConnection().setDBRootPath(text);
+                        checkFieldsValue();
+                    }
                 }
             }
         });
@@ -687,7 +757,9 @@ public class DatabaseForm extends AbstractForm {
         sqlSyntaxCombo.addModifyListener(new ModifyListener() {
 
             public void modifyText(final ModifyEvent e) {
-                getConnection().setSqlSynthax(sqlSyntaxCombo.getText());
+                if (!isContextMode()) {
+                    getConnection().setSqlSynthax(sqlSyntaxCombo.getText());
+                }
             }
         });
 
@@ -695,7 +767,9 @@ public class DatabaseForm extends AbstractForm {
         nullCharText.addModifyListener(new ModifyListener() {
 
             public void modifyText(final ModifyEvent e) {
-                getConnection().setNullChar(nullCharText.getText());
+                if (!isContextMode()) {
+                    getConnection().setNullChar(nullCharText.getText());
+                }
             }
         });
 
@@ -703,7 +777,9 @@ public class DatabaseForm extends AbstractForm {
         stringQuoteText.addModifyListener(new ModifyListener() {
 
             public void modifyText(final ModifyEvent e) {
-                getConnection().setStringQuote(stringQuoteText.getText());
+                if (!isContextMode()) {
+                    getConnection().setStringQuote(stringQuoteText.getText());
+                }
             }
         });
 
@@ -711,18 +787,20 @@ public class DatabaseForm extends AbstractForm {
         urlConnectionStringText.addModifyListener(new ModifyListener() {
 
             public void modifyText(final ModifyEvent e) {
-                getConnection().setURL(urlConnectionStringText.getText());
-                getConnection().setServerName(serverText.getText());
-                getConnection().setPort(portText.getText());
-                getConnection().setUsername(usernameText.getText());
-                getConnection().setPassword(passwordText.getText());
-                getConnection().setSID(sidOrDatabaseText.getText());
-                getConnection().setDatasourceName(datasourceText.getText());
-                getConnection().setSchema(schemaText.getText());
-                getConnection().setDatabaseType(dbTypeCombo.getText());
-                getConnection().setFileFieldName(fileField.getText());
-                getConnection().setDBRootPath(directoryField.getText());
-                getConnection().setAdditionalParams(additionParamText.getText());
+                if (!isContextMode()) {
+                    getConnection().setURL(urlConnectionStringText.getText());
+                    getConnection().setServerName(serverText.getText());
+                    getConnection().setPort(portText.getText());
+                    getConnection().setUsername(usernameText.getText());
+                    getConnection().setPassword(passwordText.getText());
+                    getConnection().setSID(sidOrDatabaseText.getText());
+                    getConnection().setDatasourceName(datasourceText.getText());
+                    getConnection().setSchema(schemaText.getText());
+                    getConnection().setDatabaseType(dbTypeCombo.getText());
+                    getConnection().setFileFieldName(fileField.getText());
+                    getConnection().setDBRootPath(directoryField.getText());
+                    getConnection().setAdditionalParams(additionParamText.getText());
+                }
             }
         });
 
@@ -733,7 +811,9 @@ public class DatabaseForm extends AbstractForm {
      */
     @Override
     public boolean checkFieldsValue() {
-
+        if (isContextMode()) {
+            return true;
+        }
         databaseSettingIsValide = false;
         urlConnectionStringText.setText(getStringConnection());
         urlConnectionStringText.setToolTipText(urlDataStringConnection.getStringConnectionTemplate());
@@ -801,17 +881,27 @@ public class DatabaseForm extends AbstractForm {
     }
 
     private String getStringConnection() {
-        String s = urlDataStringConnection.getString(dbTypeCombo.getSelectionIndex(), serverText.getText(), usernameText
-                .getText(), passwordText.getText(), portText.getText(), sidOrDatabaseText.getText(), fileField.getText()
-                .toLowerCase(), datasourceText.getText(), directoryField.getText(), additionParamText.getText());
+        String s = null;
+        if (isContextMode()) {
+            s = DBConnectionContextUtils.getUrlConnectionString(dbTypeCombo.getSelectionIndex(), connectionItem, false)
+                    .getUrlConnectionStr();
+        } else {
+            s = urlDataStringConnection.getString(dbTypeCombo.getSelectionIndex(), serverText.getText(), usernameText.getText(),
+                    passwordText.getText(), portText.getText(), sidOrDatabaseText.getText(), fileField.getText().toLowerCase(),
+                    datasourceText.getText(), directoryField.getText(), additionParamText.getText());
+        }
 
         return s;
     }
 
     private void updateCheckButton() {
         // update checkEnable
-        checkButton.setEnabled((dbTypeCombo.getSelectionIndex() >= 0)
-                && (getStringConnection() != urlDataStringConnection.getStringConnectionTemplate()));
+        if (isContextMode()) {
+            checkButton.setEnabled(true);
+        } else {
+            checkButton.setEnabled((dbTypeCombo.getSelectionIndex() >= 0)
+                    && (getStringConnection() != urlDataStringConnection.getStringConnectionTemplate()));
+        }
     }
 
     /**
@@ -850,10 +940,10 @@ public class DatabaseForm extends AbstractForm {
             String s = urlDataStringConnection.getStringConnectionTemplate();
             urlConnectionStringText.setEditable(!visible);
 
-            if (s != null && s.startsWith("jdbc:jtds:sqlserver:")) {
+            if (s != null && s.startsWith("jdbc:jtds:sqlserver:")) { //$NON-NLS-1$
                 schemaText.setEditable(true);
-                if (schemaText.getText().equals("")) {
-                    schemaText.setText("dbo");
+                if (schemaText.getText().equals("")) { //$NON-NLS-1$
+                    schemaText.setText("dbo"); //$NON-NLS-1$
                 }
             }
 
@@ -866,7 +956,7 @@ public class DatabaseForm extends AbstractForm {
             if (s.contains("<sid>") || s.contains("<service_name>")) { //$NON-NLS-1$ //$NON-NLS-2$
                 sidOrDatabaseText.setEditable(visible);
             }
-            if (s.contains("<filename>")) { // &&
+            if (s.contains("<filename>")) { // && //$NON-NLS-1$
                 // urlDataStringConnection.getStringConnectionTemplate().contains("jdbc:sqlite")
                 fileField.setEditable(visible);
                 if (EDatabaseTypeName.getTypeFromDisplayName(getConnection().getDatabaseType()).equals(EDatabaseTypeName.SQLITE)) {
@@ -883,7 +973,7 @@ public class DatabaseForm extends AbstractForm {
             if (s.contains("<datasource>")) { //$NON-NLS-1$
                 datasourceText.setEditable(visible);
             }
-            if (s.contains("<dbRootPath>")) {
+            if (s.contains("<dbRootPath>")) { //$NON-NLS-1$
                 directoryField.setEditable(visible);
                 sidOrDatabaseText.setEditable(visible);
             }
@@ -909,8 +999,11 @@ public class DatabaseForm extends AbstractForm {
         if (urlConnectionStringText.getText().equals("")) { //$NON-NLS-1$
             urlConnectionStringText.setText(getStringConnection());
         }
-        setPropertiesFormEditable((urlDataStringConnection.getIndexOfLabel(getConnection().getDatabaseType()) > -1));
-
+        if (isContextMode()) {
+            adaptFormToEditable();
+        } else {
+            setPropertiesFormEditable((urlDataStringConnection.getIndexOfLabel(getConnection().getDatabaseType()) > -1));
+        }
         if (isReadOnly() != readOnly) {
             adaptFormToReadOnly();
         }
@@ -922,9 +1015,34 @@ public class DatabaseForm extends AbstractForm {
 
     protected void evaluateTextField(boolean b) {
 
-        if (!b) {
-            updateStatus(IStatus.ERROR, Messages.getString("DatabaseForm.portError"));
+        if (b) {
+            updateStatus(IStatus.OK, null);
+        } else {
+            updateStatus(IStatus.ERROR, Messages.getString("DatabaseForm.portError")); //$NON-NLS-1$
+
         }
+    }
+
+    @Override
+    protected void adaptFormToEditable() {
+        super.adaptFormToEditable();
+        dbTypeCombo.setReadOnly(isContextMode());
+
+        urlConnectionStringText.setEditable(!isContextMode());
+        usernameText.setEditable(!isContextMode());
+        passwordText.setEditable(!isContextMode());
+        serverText.setEditable(!isContextMode());
+        portText.setEditable(!isContextMode());
+        sidOrDatabaseText.setEditable(!isContextMode());
+        schemaText.setEditable(!isContextMode());
+        datasourceText.setEditable(!isContextMode());
+        additionParamText.setEditable(!isContextMode());
+        fileField.setEditable(!isContextMode());
+        directoryField.setEditable(!isContextMode());
+
+        sqlSyntaxCombo.setReadOnly(isContextMode());
+        stringQuoteText.setEditable(!isContextMode());
+        nullCharText.setEditable(!isContextMode());
     }
 
 }

@@ -45,6 +45,7 @@ import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
+import org.talend.repository.ui.utils.ConnectionContextHelper;
 import org.talend.repository.ui.wizards.PropertiesWizardPage;
 import org.talend.repository.ui.wizards.RepositoryWizard;
 import org.talend.repository.ui.wizards.metadata.connection.Step0WizardPage;
@@ -117,6 +118,8 @@ public class DatabaseWizard extends RepositoryWizard implements INewWizard {
             initLockStrategy();
             break;
         }
+        // initialize the context mode
+        ConnectionContextHelper.checkContextMode(connectionItem);
     }
 
     /**
@@ -166,6 +169,8 @@ public class DatabaseWizard extends RepositoryWizard implements INewWizard {
             initLockStrategy();
             break;
         }
+        // initialize the context mode
+        ConnectionContextHelper.checkContextMode(connectionItem);
     }
 
     /**
@@ -214,7 +219,7 @@ public class DatabaseWizard extends RepositoryWizard implements INewWizard {
                     if (connectionItem.getConnection() instanceof DatabaseConnection) {
                         DatabaseConnection c = (DatabaseConnection) connectionItem.getConnection();
                         final boolean equals = c.getProductId().equals(EDatabaseTypeName.ORACLEFORSID.getProduct());
-                        if (equals) {
+                        if (equals && !c.isContextMode()) {
                             c.setSchema(c.getSchema().toUpperCase());
                         }
                     }
@@ -223,7 +228,7 @@ public class DatabaseWizard extends RepositoryWizard implements INewWizard {
                     if (connectionItem.getConnection() instanceof DatabaseConnection) {
                         DatabaseConnection c = (DatabaseConnection) connectionItem.getConnection();
                         final boolean equals = c.getProductId().equals(EDatabaseTypeName.ORACLEFORSID.getProduct());
-                        if (equals) {
+                        if (equals && !c.isContextMode()) {
                             c.setSchema(c.getSchema().toUpperCase());
                         }
                         // update

@@ -65,6 +65,7 @@ import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.EProperties;
+import org.talend.repository.ui.utils.ConnectionContextHelper;
 
 /**
  * Performs a native Drop for the talendEditor. see feature
@@ -328,6 +329,8 @@ public class TalendEditorDropTargetListener implements TransferDropTargetListene
                     list.add(queryGuessCommand);
                 }
             }
+            // context
+            ConnectionContextHelper.addContextForNodeParameter(node, connectionItem);
         } else if (selectedNode.getObject().getProperty().getItem() instanceof ProcessItem) {
             ProcessItem processItem = (ProcessItem) selectedNode.getObject().getProperty().getItem();
             // command used to set job

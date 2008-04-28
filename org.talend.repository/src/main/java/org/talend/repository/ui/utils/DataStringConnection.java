@@ -36,6 +36,8 @@ public class DataStringConnection {
 
     private int selectionIndex;
 
+    private String urlConnectionStr;
+
     public DataStringConnection() {
         String host = "(\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.|[\\w\\.\\-_]{0,})"; //$NON-NLS-1$
         String port = "(\\d{0,5})"; //$NON-NLS-1$
@@ -193,7 +195,7 @@ public class DataStringConnection {
         s = getStringReplace(s, "<datasource>", datasource); //$NON-NLS-1$
         // PTODO OCA : if needed, adapt the file separator to all OS (not only backslashes)
         s = getStringReplace(s, "<filename>", filename); //$NON-NLS-1$
-
+        this.urlConnectionStr = s;
         return s;
     }
 
@@ -383,6 +385,7 @@ public class DataStringConnection {
         } else {
             string = getStringReplace(string, "<dbRootPath>", sid);
         }
+        this.urlConnectionStr = string;
         return string;
     }
 
@@ -401,7 +404,12 @@ public class DataStringConnection {
         if (dbTypeItemIndex == 11 || dbTypeItemIndex == 13 || dbTypeItemIndex == 0 || dbTypeItemIndex == 16) {
             string = getStringReplace(string, "<property>", addParams);
         }
+        this.urlConnectionStr = string;
         return string;
+    }
+
+    public String getUrlConnectionStr() {
+        return this.urlConnectionStr;
     }
 
 }

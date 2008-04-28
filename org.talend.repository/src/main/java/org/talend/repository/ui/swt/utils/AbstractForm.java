@@ -21,12 +21,21 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.talend.commons.ui.swt.formtools.Form;
+import org.talend.commons.ui.swt.formtools.UtilsButton;
+import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.properties.ContextItem;
 import org.talend.repository.RepositoryPlugin;
+import org.talend.repository.i18n.Messages;
+import org.talend.repository.ui.utils.ConnectionContextHelper;
 
 /**
  * DOC tguiu class global comment. Detailled comment <br/>
@@ -73,6 +82,15 @@ public abstract class AbstractForm extends Composite {
     protected static final String DEFAULT_LABEL = "Column"; //$NON-NLS-1$
 
     /**
+     * Use to export field as context. (feature 2449)
+     */
+    private boolean hasContextBtn = false;
+
+    protected UtilsButton exportContextBtn;
+
+    protected ConnectionItem connectionItem;
+
+    /**
      * DOC ocarbone AbstractForm constructor comment.
      * 
      * @param parent
@@ -112,10 +130,15 @@ public abstract class AbstractForm extends Composite {
      */
     protected abstract boolean checkFieldsValue();
 
+    protected void setupForm() {
+        setupForm(false);
+    }
+
     /**
      * DOC ocarbone Comment method "setupForm".
      */
-    protected void setupForm() {
+    protected void setupForm(boolean hasContextBtn) {
+        this.hasContextBtn = hasContextBtn;
         addComponents();
         // statusLabel is only use to SWT form / not use to Wizard
         if (!isInWizard) {
@@ -124,6 +147,7 @@ public abstract class AbstractForm extends Composite {
             statusLabel.setForeground(getDisplay().getSystemColor(SWT.COLOR_RED));
         }
         addFields();
+        addExportContextButton();
         initialize();
         addUtilsButtonListeners();
         addFieldsListeners();
@@ -187,6 +211,10 @@ public abstract class AbstractForm extends Composite {
         this.readOnly = readOnly;
         // adapt all the fields to enabled
         adaptFormToReadOnly();
+
+        if (exportContextBtn != null) {
+            exportContextBtn.setEnabled(!readOnly);
+        }
         if (!readOnly) {
             // adapt the field to the context
             checkFieldsValue();
@@ -310,4 +338,86 @@ public abstract class AbstractForm extends Composite {
         }
 
     }
+
+    /**
+     * 
+     * ggu Comment method "addExportContextButton".
+     * 
+     * export as context button
+     */
+    private void addExportContextButton() {
+        if (hasContextBtn() && connectionItem != null) {
+            final int height = 45;
+            Group group = Form.createGroup(this, 1, null);
+            GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
+            gridData.minimumHeight = height;
+            gridData.heightHint = height;
+            group.setLayoutData(gridData);
+
+            Composite exportComposite = Form.startNewGridLayout(group, 1, false, SWT.CENTER, SWT.CENTER);
+
+            exportContextBtn = new UtilsButton(exportComposite,
+                    Messages.getString("AbstractForm.ExportAsContext"), 130, HEIGHT_BUTTON_PIXEL); //$NON-NLS-1$
+            exportContextBtn.addSelectionListener(new SelectionAdapter() {
+
+                @Override
+                public void widgetSelected(SelectionEvent e) {
+                    exportAsContext();
+                }
+            });
+
+            refreshContextBtn();
+        }
+    }
+
+    /**
+     * 
+     * ggu Comment method "hasContextBtn".
+     * 
+     * Use to export field as context.(feature 2449)
+     */
+    public boolean hasContextBtn() {
+        return this.hasContextBtn;
+    }
+
+    public void setConnectionItem(ConnectionItem connectionItem) {
+        ConnectionContextHelper.checkContextMode(connectionItem);
+        this.connectionItem = connectionItem;
+    }
+
+    protected final boolean isContextMode() {
+        if (connectionItem != null) {
+            return connectionItem.getConnection().isContextMode();
+        }
+        return false;
+    }
+
+    protected void exportAsContext() {
+        if (hasContextBtn() && connectionItem != null) {
+            if (isContextMode()) {
+                ConnectionContextHelper.openInConetxtModeDialog();
+            } else {
+
+                ContextItem contextItem = ConnectionContextHelper.exportAsContext(connectionItem);
+                if (contextItem != null) { // create
+                    connectionItem.getConnection().setContextMode(true);
+                    connectionItem.getConnection().setContextId(contextItem.getProperty().getId());
+                    // refresh current UI.
+                    initialize();
+                    adaptFormToEditable();
+                }
+            }
+        }
+    }
+
+    private void refreshContextBtn() {
+        if (exportContextBtn != null) {
+            exportContextBtn.setEnabled(!isContextMode());
+        }
+    }
+
+    protected void adaptFormToEditable() {
+        refreshContextBtn();
+    }
+
 }
