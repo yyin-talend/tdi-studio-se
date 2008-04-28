@@ -25,7 +25,9 @@ import org.eclipse.jface.viewers.Viewer;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.exception.RuntimeExceptionHandler;
 import org.talend.commons.utils.data.container.Container;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.PluginChecker;
+import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.components.IComponent;
@@ -49,11 +51,14 @@ import org.talend.core.model.metadata.builder.connection.TableHelper;
 import org.talend.core.model.metadata.builder.connection.WSDLSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.properties.DatabaseConnectionItem;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.Project;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.Folder;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.ui.ICDCProviderService;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.BinRepositoryNode;
@@ -724,6 +729,7 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
                     createTable(recBinNode, tablesNode, repObj, metadataTable, ERepositoryObjectType.METADATA_CON_TABLE);
                 }
             }
+
             // if (!node.getChildren().contains(tablesNode)) {
             // node.getChildren().add(tablesNode);
             // }
@@ -740,6 +746,20 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
                         ERepositoryObjectType.METADATA_CON_TABLE);
             }
 
+            // 5. Change Data Capture
+            Item item = node.getObject().getProperty().getItem();
+            if (item instanceof DatabaseConnectionItem) {
+                DatabaseConnectionItem connectionItem = (DatabaseConnectionItem) item;
+                DatabaseConnection connection = (DatabaseConnection) connectionItem.getConnection();
+                boolean isOral = EDatabaseTypeName.ORACLEFORSID.getProduct().equals((connection).getProductId());
+                if (isOral && PluginChecker.isCDCPluginLoaded()) {
+                    RepositoryNode cdcNode = new StableRepositoryNode(node, "CDC Foundation", ECoreImage.FOLDER_CLOSE_ICON);
+                    node.getChildren().add(cdcNode);
+                    ICDCProviderService service = (ICDCProviderService) GlobalServiceRegister.getDefault().getService(
+                            ICDCProviderService.class);
+                    service.createCDCTypes(recBinNode, cdcNode, connection.getCdcConns());
+                }
+            }
         } else {
             createTables(recBinNode, node, repObj, metadataConnection.getTables(), ERepositoryObjectType.METADATA_CON_TABLE);
         }
