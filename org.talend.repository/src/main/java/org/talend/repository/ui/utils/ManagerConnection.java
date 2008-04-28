@@ -58,6 +58,8 @@ public class ManagerConnection {
 
     Integer id = null;
 
+    String additionalParams;
+
     private String schemaOracle;
 
     private String dbRootPath;
@@ -74,8 +76,8 @@ public class ManagerConnection {
      * @param password
      */
     public void setValue(Integer id, final String dbType, final String url, final String server, final String username,
-            final String password, final String sidOrDatabase, final String port, final String file,
-            final String datasource, final String schemaOracle) {
+            final String password, final String sidOrDatabase, final String port, final String file, final String datasource,
+            final String schemaOracle, final String additionalParams) {
         this.id = id;
         this.dbTypeString = dbType;
         this.urlConnectionString = url;
@@ -87,6 +89,8 @@ public class ManagerConnection {
         this.filePath = file;
         this.datasource = datasource;
         this.schemaOracle = schemaOracle;
+        this.additionalParams = additionalParams;
+
     }
 
     public void setValueProperties(final String sqlSyntax, final String strQuote, final String nullChar) {
@@ -103,8 +107,8 @@ public class ManagerConnection {
     public boolean check() {
         messageException = null;
         try {
-            ConnectionStatus testConnection = ExtractMetaDataFromDataBase.testConnection(dbTypeString,
-                    urlConnectionString, username, password, schemaOracle);
+            ConnectionStatus testConnection = ExtractMetaDataFromDataBase.testConnection(dbTypeString, urlConnectionString,
+                    username, password, schemaOracle);
             isValide = testConnection.getResult();
             messageException = testConnection.getMessageException();
         } catch (Exception e) {
@@ -124,9 +128,9 @@ public class ManagerConnection {
             setDbRootPath(metadataConnection.getDbRootPath());
         }
         try {
-            ConnectionStatus testConnection = ExtractMetaDataFromDataBase.testConnection(
-                    metadataConnection.getDbType(), metadataConnection.getUrl(), metadataConnection.getUsername(),
-                    metadataConnection.getPassword(), metadataConnection.getSchema());
+            ConnectionStatus testConnection = ExtractMetaDataFromDataBase.testConnection(metadataConnection.getDbType(),
+                    metadataConnection.getUrl(), metadataConnection.getUsername(), metadataConnection.getPassword(),
+                    metadataConnection.getSchema());
             isValide = testConnection.getResult();
             messageException = testConnection.getMessageException();
         } catch (Exception e) {

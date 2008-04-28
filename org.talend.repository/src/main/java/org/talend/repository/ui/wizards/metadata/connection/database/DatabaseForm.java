@@ -357,7 +357,8 @@ public class DatabaseForm extends AbstractForm {
         // set the value
         managerConnection.setValue(0, dbTypeCombo.getItem(dbTypeCombo.getSelectionIndex()), urlConnectionStringText.getText(),
                 serverText.getText(), usernameText.getText(), passwordText.getText(), sidOrDatabaseText.getText(), portText
-                        .getText(), fileField.getText(), datasourceText.getText(), schemaText.getText());
+                        .getText(), fileField.getText(), datasourceText.getText(), schemaText.getText(), additionParamText
+                        .getText());
         managerConnection.setDbRootPath(directoryField.getText());
         managerConnection.setValueProperties(sqlSyntaxCombo.getItem(sqlSyntaxCombo.getSelectionIndex()), stringQuoteText
                 .getText(), nullCharText.getText());
