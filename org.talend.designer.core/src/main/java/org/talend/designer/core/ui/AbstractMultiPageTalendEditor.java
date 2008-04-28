@@ -103,11 +103,15 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         @Override
         public void notifyChanged(Notification notification) {
             if (notification.getEventType() != Notification.REMOVING_ADAPTER) {
-                propertyIsDirty = true;
+//                propertyIsDirty = true;
                 designerEditor.getProperty().eAdapters().remove(dirtyListener);
                 process.updateProperties();
                 designerEditor.getProperty().eAdapters().add(dirtyListener);
-                firePropertyChange(IEditorPart.PROP_DIRTY);
+
+                if(Display.getCurrent()!=null){
+                    propertyIsDirty=true;
+                    firePropertyChange(IEditorPart.PROP_DIRTY);
+                }
             }
         }
     };
