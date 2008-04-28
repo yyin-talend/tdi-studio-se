@@ -31,12 +31,26 @@
   </CONNECTORS>
 
   <PARAMETERS>
+   <PARAMETER 
+      NAME="USE_EXISTING_CONNECTION" 
+      FIELD="CHECK" 
+      NUM_ROW="2">
+		<DEFAULT>false</DEFAULT>
+     </PARAMETER>
+     <PARAMETER 
+	  NAME="CONNECTION" 
+	  FIELD="COMPONENT_LIST" 
+	  FILTER="tInterbaseConnection" 
+	  NUM_ROW="2" 
+	  SHOW_IF="USE_EXISTING_CONNECTION == 'true'">
+	</PARAMETER>
     <PARAMETER
       NAME="PROPERTY"
       FIELD="PROPERTY_TYPE"
       SHOW="true"
       NUM_ROW="1"
       REPOSITORY_VALUE="DATABASE:INTERBASE"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     />
     
 	<PARAMETER
@@ -46,6 +60,7 @@
       SHOW="true"
       REQUIRED="true"
       REPOSITORY_VALUE="SERVER_NAME"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>"Interbase"</DEFAULT>
     </PARAMETER>     
@@ -56,6 +71,7 @@
       NUM_ROW="2"
       REQUIRED="true"
       REPOSITORY_VALUE="SID"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>"out.gdb"</DEFAULT>
     </PARAMETER>
@@ -65,6 +81,7 @@
       NUM_ROW="2"
       SHOW="false"
       REPOSITORY_VALUE="TYPE"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>Interbase</DEFAULT>
     </PARAMETER>
@@ -74,6 +91,7 @@
       NUM_ROW="3"
       REPOSITORY_VALUE="USERNAME"
       REQUIRED="true"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -84,12 +102,13 @@
       NUM_ROW="3"
       REPOSITORY_VALUE="PASSWORD"
       REQUIRED="true"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
     
     <PARAMETER
-      NAME="TABLE"
+      NAME="DBTABLE"
       FIELD="DBTABLE"
       NUM_ROW="4"
       REQUIRED="true"

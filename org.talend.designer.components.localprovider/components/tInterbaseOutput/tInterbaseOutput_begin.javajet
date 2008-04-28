@@ -34,7 +34,7 @@ skeleton="../templates/db_output_bulk.skeleton"
     
     String dbname= ElementParameterParser.getValue(node, "__DBNAME__");
     			
-	String tableName = ElementParameterParser.getValue(node,"__TABLE__");
+	String tableName = ElementParameterParser.getValue(node,"__DBTABLE__");
 	
 	String dbmsId = ElementParameterParser.getValue(node,"__MAPPING__");
 	
@@ -104,13 +104,27 @@ if(dataAction.equals("UPDATE") || dataAction.equals("INSERT_OR_UPDATE") || dataA
         <%
     }
 }
-%> 
+%>
+
+<%
+String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
+if(useExistingConn.equals("true")) {
+    String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
+    String conn = "conn_" + connection;
+    %>
+    java.sql.Connection conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
+    <%
+} else {
+    %>
+ 
 java.lang.Class.forName("<%=javaDbDriver %>");
 String url_<%=cid %> = "jdbc:interbase://" + <%=host%> + "/" + <%=dbname%>;
 String userName_<%=cid%> = <%=username%>;
 String password_<%=cid%> = <%=password%>;
 java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,userName_<%=cid%>,password_<%=cid%>);
 conn_<%=cid%>.setAutoCommit(false);
+<%}%>
+
 <%
 if(columnList != null && columnList.size() > 0) {    
     if(!tableAction.equals("NONE")) {
