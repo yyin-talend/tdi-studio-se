@@ -280,10 +280,14 @@ if(false) {
 		sizeInputTables = inputTables.size();
 
 		boolean lastPersistentSortedTableIsAlreadyProcessed = false;
+		boolean previousTableIsPersistentSorted = false;
+		boolean previousTableIsMultipleResultMode = false;
+		List<String> declarationsStructForNextSortedWhile = new ArrayList<String>();
 
-        for (int iInputTable = 0; iInputTable < sizeInputTables; iInputTable++) {
+        for (int iInputTable = 0; iInputTable < sizeInputTables; iInputTable++) { // T_TM_M_261
 			ExternalMapperTable externalTable = inputTables.get(iInputTable);
 			
+			boolean isMultipleResultMode = false;
 			boolean nextTableIsLast = iInputTable + 1 == sizeInputTables - 1;
 			boolean isLastTable = (iInputTable == sizeInputTables - 1);
 			boolean isBeforeOfThirdTable = (iInputTable < 2);
@@ -293,7 +297,10 @@ if(false) {
 				!isLastTable 
 				&& inputTables.get(iInputTable + 1).isPersistent() 
 				&& !"ALL_ROWS".equals(inputTables.get(iInputTable + 1).getMatchingMode());
+
+			boolean nextTableIsFirstPersistentSorted = nextTableIsPersistentSorted && !previousStateIsFirstPersistentSortedTable;
 			
+			boolean isLastTableForTMAP_OUT = isVirtualOut && nextTableIsFirstPersistentSorted;
 
 
             String tableName = externalTable.getName();
@@ -393,12 +400,17 @@ if(false) {
 				fsi_<%= currentJoinedTableNames %>.initGet();
 
 				<%
-				if(previousTableName != null && !previousTableName.equals(mainInputTableName)) {
+				if(true || previousTableName != null && !previousTableName.equals(mainInputTableName)) {
+	         		for(String structName : declarationsStructForNextSortedWhile) {
 				%>
 
-	       			<%= previousTableName %>Struct <%= previousTableName %> = new <%= previousTableName %>Struct();
+	       			//<%= previousTableIsMultipleResultMode ? "" : previousTableName + "Struct " %><%= previousTableName %> = new <%= previousTableName %>Struct();
+
+	       			 <%= structName %>Struct <%= structName %> = new <%= structName %>Struct();
 	       			
-				<%
+					<%
+					}
+					declarationsStructForNextSortedWhile.clear();
 				}
 				%>
 
@@ -480,9 +492,11 @@ if(false) {
 							matchingMode = "ALL_ROWS";
 						}
 					}
-                     boolean isMultipleResultMode = matchingMode.equals("ALL_ROWS") || matchingMode.equals("ALL_MATCHES");
+                    isMultipleResultMode = matchingMode.equals("ALL_ROWS") || matchingMode.equals("ALL_MATCHES");
 
 			//System.out.println("tableName=" +  tableName + " => isMultipleResultMode=" + isMultipleResultMode);
+
+			declarationsStructForNextSortedWhile.add(tableName);
 
  			if (
  					!isVirtualIn 
@@ -846,7 +860,12 @@ if(false) {
 				<%
 
 
-			} // T_TM_M_216
+			} /* T_TM_M_216 */ else { // T_TM_M_217  
+			
+				cumulatedInputConnections.add(connection);
+			
+			} // T_TM_M_217
+			
 
 
 
@@ -860,7 +879,7 @@ if(false) {
 					<%
 					} // T_TM_M_247
 	    		
-                	if(isPersistentSortedTable && !isLastTable && nextTableIsPersistentSorted) { // T_TM_M_248
+                	if(!isLastTableForTMAP_OUT && !isLastTable && nextTableIsPersistentSorted) { // T_TM_M_248
 					%>
 	    	        	} // G_TM_M_250 loop "<%= currentJoinedTableNames %>"
 	            	<%
@@ -920,9 +939,10 @@ if(false) {
 
             } // T_TM_M_249
             
+            previousTableIsMultipleResultMode = isMultipleResultMode; 
+            previousTableIsPersistentSorted = isPersistentSortedTable;
             
-            
-        } // for (ExternalMapperTable externalTable : inputTables) {
+        } // for (ExternalMapperTable externalTable : inputTables) {  // T_TM_M_261
         boolean atLeastOneInputTableWithInnerJoin = !inputTablesWithInnerJoin.isEmpty();
 
 
