@@ -114,7 +114,7 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
         if (internalExternalData != null && incomingConnections.size() > 0) {
             List<ExternalMapperTable> inputTables = internalExternalData.getInputTables();
 
-            int sizeInputTables = incomingConnections.size();
+            int sizeInputTables = inputTables.size();
 
             HashMap<String, IConnection> hNameToConnection = new HashMap<String, IConnection>();
             for (IConnection connection : incomingConnections) {

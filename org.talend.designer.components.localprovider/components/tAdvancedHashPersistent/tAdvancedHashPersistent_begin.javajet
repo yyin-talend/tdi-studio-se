@@ -57,9 +57,14 @@
 					IHashConfiguration hashConfiguration = target.getHashConfiguration(connection.getName());
 					List<IHashableColumn> hashableColumns = null;
 					IMatchingMode matchingMode = null;
+					String tempFolder = null;
 					if(hashConfiguration == null) {
 						hashableColumns = new ArrayList(0);
+						
+						//System.out.println(connectionName + " ### " + hashConfiguration + "IS NULL ##### " + validTarget + " " + validTarget.getClass());
+						
 					} else {
+						tempFolder = hashConfiguration.getTemporaryDataDirectory();
 						hashableColumns = hashConfiguration.getHashableColumns();
 						matchingMode = hashConfiguration.getMatchingMode();
 					}
@@ -75,7 +80,6 @@
 						matchingModeStr = matchingMode.toString();
 					}
 					
-					String tempFolder = hashConfiguration.getTemporaryDataDirectory();
 					boolean isAllRows = "ALL_ROWS".equals(matchingModeStr);
 					
 					
@@ -84,7 +88,7 @@
 			   			org.talend.designer.components.commons.AdvancedLookup.MATCHING_MODE.<%= matchingModeStr %>;
 			   
 			   <%
-				if(hashConfiguration.isPersistent()) {
+				if(hashConfiguration != null && hashConfiguration.isPersistent()) {
 				%>
 					org.talend.designer.components.persistent.Persistent<%= isAllRows ? "" : "Sorted" %>LookupManager<<%=connectionName%>Struct> tHash_Lookup_<%=connectionName%> = 
 	   					new org.talend.designer.components.persistent.Persistent<%= isAllRows ? "" : "Sorted" %>LookupManager<<%=connectionName%>Struct>(matchingModeEnum_<%=connectionName%>, <%= tempFolder %> + "/Lookup_<%=connectionName%>_"

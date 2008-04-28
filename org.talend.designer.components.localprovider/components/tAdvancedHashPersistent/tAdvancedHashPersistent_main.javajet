@@ -80,7 +80,7 @@
 			   %>
 			   
 			   <%
-				if(hashConfiguration.isPersistent()) {
+				if(hashConfiguration != null && hashConfiguration.isPersistent()) {
 				%>
 
 	<%=connectionName%>Struct <%=connectionName%>_HashRow = tHash_Lookup_<%=connectionName%>.getNextFreeRow();
