@@ -147,8 +147,7 @@ if (canGenerate) {
 			boolean nullable = false;
 			for (IMetadataColumn column : columnList) {
 				if (column.getLabel().equals(argName)) {
-					typeToGenerate = JavaTypesManager.getTypeToGenerate(
-						column.getTalendType(), column.isNullable());
+					typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
 					nullable = column.isNullable();
 					break;
 				}
@@ -209,28 +208,28 @@ if (canGenerate) {
 				%>
 				statement_<%=cid%>.registerOutParameter(<%=argIndex%>, java.sql.Types.<%=converter.convert(typeToGenerate)%>);
 	  			<%
-			}
-            argIndex++;			
+			}			
 			if(argType.equals("RECORDSET")){
 				hasOutput=true;
 			}
+            argIndex++;			
 		}
-%>
+		%>
 		statement_<%=cid%>.execute();
-<%
-		if(hasOutput){ //fixed 2777 issue. it must get ResultSet first.
-%>
-Object resultSet_<%=cid%> = null;
-do{
-	resultSet_<%=cid%> = statement_<%=cid%>.getResultSet();
-	if(resultSet_<%=cid%> != null){
-		break;
-	}
-	if(!statement_<%=cid%>.getMoreResults()){
-		break;
-	}
-}while(true);		
-<%
+		<%
+		if(hasOutput) { //fixed 2777 issue. it must get ResultSet first.
+            %>
+            Object resultSet_<%=cid%> = null;
+            do {
+            	resultSet_<%=cid%> = statement_<%=cid%>.getResultSet();
+            	if(resultSet_<%=cid%> != null){
+            		break;
+            	}
+            	if(!statement_<%=cid%>.getMoreResults()){
+            		break;
+            	}
+            } while(true);		
+            <%
 		}
 		
 		List<? extends IConnection> outConnections = node.getOutgoingConnections();
@@ -260,8 +259,7 @@ do{
 						
 						if (column.getLabel().equals(argName)) {
 							String argType = spArg.get("TYPE");
-							String typeToGenerate = JavaTypesManager.getTypeToGenerate(
-								column.getTalendType(), column.isNullable());
+							String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
 							boolean nullable = column.isNullable();
 							
 							if (argType.equals("IN")) {
@@ -270,9 +268,9 @@ do{
 								<%=firstOutConnection.getName()%>.<%=argName%> = <%=inConnectionName%>.<%=argName%>;
 								<%
 							} else if(argType.equals("RECORDSET")){
-%>
+							    %>
 								<%=firstOutConnection.getName()%>.<%=argName%> = resultSet_<%=cid%>;
-<%
+								<%
 							} else {
 								// Retrieve parameter value (INOUT or OUT)
 								String method;
@@ -312,19 +310,16 @@ do{
 									}
 									<%
 								}
-								argIndex++;
 							}
-							
+                            argIndex++;							
 							for (int j = connectionIndex + 1; j < outConnections.size(); j++) {
 								IConnection connection = outConnections.get(j);
-		    					if (connection.getLineStyle().hasConnectionCategory(
-				    					IConnectionCategory.DATA)) {
+		    					if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
 									%>
 									<%=connection.getName()%>.<%=argName%> = <%=firstOutConnection.getName()%>.<%=argName%>;
 									<%
 								}
-							}
-							
+							}							
 							continue columns;
 						}
 					}
@@ -335,8 +330,7 @@ do{
 							if (column.getLabel().equals(inColumn.getLabel())) {
 								for (int j = 0; j < outConnections.size(); j++) {
 									IConnection connection = outConnections.get(j);
-			    					if (connection.getLineStyle().hasConnectionCategory(
-					    					IConnectionCategory.DATA)) {
+			    					if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
 										%>
 										<%=connection.getName()%>.<%=column.getLabel()%> = <%=inConnectionName%>.<%=column.getLabel()%>;
 										<%
