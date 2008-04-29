@@ -51,6 +51,7 @@ public class LDIFReader {
      */
     private void add(Attributes entry, String attribute, String value, int type) throws IOException {
         Attribute vals = entry.get(attribute);
+
         if (vals == null) {
             vals = new BasicAttribute(attribute);
         } else if (type == 1) {
@@ -60,7 +61,8 @@ public class LDIFReader {
             try {
                 url = new URL(value);
             } catch (MalformedURLException ex) {
-                throw new IOException(String.valueOf(ex) + Messages.getString("LDIFReader.ioException.cannotConstrauctURL") + value); //$NON-NLS-1$
+                throw new IOException(String.valueOf(ex)
+                        + Messages.getString("LDIFReader.ioException.cannotConstrauctURL") + value); //$NON-NLS-1$
             }
             if (!url.getProtocol().equalsIgnoreCase("file")) { //$NON-NLS-1$
                 throw new IOException(Messages.getString("LDIFReader.ioException.protocolNotSupported") + url.getProtocol()); //$NON-NLS-1$
@@ -159,8 +161,14 @@ public class LDIFReader {
                     int to = pos;
                     int from = pos + 1;
                     if (line.charAt(from) == ':') {
-                        type = 2;
-                        from++;
+                        if (line.charAt(from - 1) != ':') {
+                            type = 2;
+                            from++;
+                        } else {
+                            type = 1;
+                            from += 2;
+                        }
+
                     } else if (line.charAt(from) == '<') {
                         type = 3;
                         from++;
@@ -181,6 +189,5 @@ public class LDIFReader {
         }
         return entry;
     }
-    
-}
 
+}
