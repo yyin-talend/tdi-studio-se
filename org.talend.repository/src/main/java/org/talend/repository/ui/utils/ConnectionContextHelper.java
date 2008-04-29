@@ -61,6 +61,7 @@ import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.ui.wizards.context.ContextWizard;
+import org.talend.repository.ui.wizards.metadata.ContextSetsSelectionDialog;
 import org.talend.repository.ui.wizards.metadata.ShowAddedContextdialog;
 
 /**
@@ -403,5 +404,84 @@ public final class ConnectionContextHelper {
             }
         }
         return addedVars;
+    }
+
+    /*
+     * maybe will open dialog to confirm the context set.
+     */
+    public static ContextType getContextTypeForContextMode(Connection connection) {
+        return getContextTypeForContextMode(connection, false);
+    }
+
+    /*
+     * if defaultContext is false, maybe will open dialog to confirm the context set. same as
+     * getContextTypeForContextMode(connection).
+     * 
+     * if defaultContext is true, will use the default context.
+     */
+    public static ContextType getContextTypeForContextMode(Connection connection, boolean defaultContext) {
+        if (connection == null) {
+            return null;
+        }
+        return getContextTypeForContextMode(null, connection, null, defaultContext);
+    }
+
+    /**
+     * 
+     * ggu Comment method "getContextTypeForContextMode".
+     * 
+     * if connection is in context mode,choose the context. if return null, the connection is not in context mode
+     */
+    private static ContextType getContextTypeForContextMode(Shell shell, Connection connection, String selectedContext,
+            boolean defaultContext) {
+        if (connection == null) {
+            return null;
+        }
+        ContextItem contextItem = ContextUtils.getContextItemById(connection.getContextId());
+        if (contextItem != null && connection.isContextMode()) {
+            if (defaultContext) {
+                selectedContext = contextItem.getDefaultContext();
+            } else if (selectedContext == null) {
+                if (contextItem.getContext().size() > 1) {
+                    ContextSetsSelectionDialog setsDialog = new ContextSetsSelectionDialog(shell, contextItem);
+                    setsDialog.open();
+                    selectedContext = setsDialog.getSelectedContext();
+                } else {
+                    selectedContext = contextItem.getDefaultContext();
+                }
+            }
+            return ContextUtils.getContextTypeByName(contextItem, selectedContext, true);
+        }
+        return null;
+    }
+
+    /**
+     * 
+     * ggu Comment method "getOriginalValue".
+     * 
+     * if value is context mode, return original value.
+     */
+    @SuppressWarnings("unchecked")
+    public static String getOriginalValue(ContextType contextType, final String value) {
+        if (value == null) {
+            return EMPTY;
+        }
+        if (contextType != null && ContextParameterUtils.isContainContextParam(value)) {
+            String var = ContextParameterUtils.getVariableFromCode(value);
+            if (var != null) {
+                ContextParameterType param = null;
+                for (ContextParameterType paramType : (List<ContextParameterType>) contextType.getContextParameter()) {
+                    if (paramType.getName().equals(var)) {
+                        param = paramType;
+                        break;
+                    }
+                }
+                if (param != null && param.getValue() != null) {
+                    return param.getValue();
+                }
+                return EMPTY;
+            }
+        }
+        return value;
     }
 }

@@ -15,6 +15,7 @@ package org.talend.repository.ui.wizards.metadata.table.database;
 import org.eclipse.jface.dialogs.IDialogPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.widgets.Composite;
+import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.database.TableInfoParameters;
 import org.talend.core.model.properties.ConnectionItem;
@@ -36,6 +37,8 @@ public class SelectorTableWizardPage extends WizardPage {
 
     private final TableInfoParameters tableInfoParameters;
 
+    private IMetadataConnection metadataConnection;
+
     /**
      * SelectorTableWizardPage constructor (to instance IMetadataConnection OR MetaDataTableType). If MetaDataTableType
      * exist, it's an update of existing metadata else it's a new metadata.
@@ -45,12 +48,13 @@ public class SelectorTableWizardPage extends WizardPage {
      * @param ISelection
      */
     public SelectorTableWizardPage(ConnectionItem connectionItem, MetadataTable metadataTable,
-            boolean isRepositoryObjectEditable, TableInfoParameters tableInfoParameters) {
+            boolean isRepositoryObjectEditable, TableInfoParameters tableInfoParameters, IMetadataConnection metadataConnection) {
         super("wizardPage"); //$NON-NLS-1$
         this.connectionItem = connectionItem;
         this.metadataTable = metadataTable;
         this.isRepositoryObjectEditable = isRepositoryObjectEditable;
         this.tableInfoParameters = tableInfoParameters;
+        this.metadataConnection = metadataConnection;
     }
 
     /**
@@ -61,6 +65,7 @@ public class SelectorTableWizardPage extends WizardPage {
     public void createControl(final Composite parent) {
 
         tableForm = new SelectorTableForm(parent, connectionItem, this);
+        tableForm.setIMetadataConnection(metadataConnection);
         tableForm.setReadOnly(!isRepositoryObjectEditable);
 
         AbstractForm.ICheckListener listener = new AbstractForm.ICheckListener() {

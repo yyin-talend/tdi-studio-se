@@ -59,7 +59,6 @@ import org.talend.commons.utils.data.list.IListenableListListener;
 import org.talend.commons.utils.data.list.ListenableListEvent;
 import org.talend.commons.utils.data.text.IndiceHelper;
 import org.talend.core.model.metadata.IMetadataConnection;
-import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
@@ -512,8 +511,7 @@ public class DatabaseTableForm extends AbstractForm {
                 public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                     monitor.beginTask(Messages.getString("CreateTableAction.action.createTitle"), IProgressMonitor.UNKNOWN);
 
-                    iMetadataConnection = ConvertionHelper.convert(getConnection());
-                    managerConnection.check(iMetadataConnection);
+                    managerConnection.check(getIMetadataConnection());
 
                     if (managerConnection.getIsValide()) {
                         itemTableName = ExtractMetaDataFromDataBase.returnTablesFormConnection(iMetadataConnection);
@@ -711,8 +709,7 @@ public class DatabaseTableForm extends AbstractForm {
      */
     private void pressRetreiveSchemaButton() {
 
-        IMetadataConnection iMetadataConnection = ConvertionHelper.convert(getConnection());
-        boolean checkConnectionIsDone = managerConnection.check(iMetadataConnection);
+        boolean checkConnectionIsDone = managerConnection.check(getIMetadataConnection());
 
         if (!checkConnectionIsDone) {
             adaptFormToCheckConnection();
@@ -787,6 +784,19 @@ public class DatabaseTableForm extends AbstractForm {
     }
 
     /**
+     * 
+     * for featrue 2449
+     */
+
+    public IMetadataConnection getIMetadataConnection() {
+        return this.iMetadataConnection;
+    }
+
+    public void setIMetadataConnection(IMetadataConnection metadataConnection) {
+        this.iMetadataConnection = metadataConnection;
+    }
+
+    /**
      * Comment method "changeTableNavigatorStatus".
      * 
      * @param schemaLabel
@@ -830,4 +840,5 @@ public class DatabaseTableForm extends AbstractForm {
         leftGroup.setEnabled(isEnabled);
         changeControlStatus(children, isEnabled);
     }
+
 }

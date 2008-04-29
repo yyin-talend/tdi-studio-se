@@ -24,6 +24,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
@@ -40,6 +41,7 @@ import org.talend.core.model.metadata.builder.connection.TableHelper;
 import org.talend.core.model.metadata.builder.connection.WSDLSchemaConnection;
 import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataFromDataBase;
+import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.DelimitedFileConnectionItem;
 import org.talend.core.model.properties.ExcelFileConnectionItem;
@@ -57,6 +59,7 @@ import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
+import org.talend.repository.ui.utils.ConnectionContextHelper;
 import org.talend.repository.ui.utils.ManagerConnection;
 import org.talend.repository.ui.wizards.metadata.connection.files.salesforce.SalesforceSchemaTableWizard;
 import org.talend.repository.ui.wizards.metadata.connection.genericshema.GenericSchemaTableWizard;
@@ -145,6 +148,10 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
         return true;
     }
 
+    private void initContextMode(ConnectionItem item) {
+        ConnectionContextHelper.checkContextMode(item);
+    }
+
     /**
      * DOC ocarbone Comment method "createFilePositionalTableWizard".
      * 
@@ -187,6 +194,7 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
             default:
                 return;
             }
+            initContextMode(item);
             FilePositionalTableWizard filePositionalTableWizard = new FilePositionalTableWizard(PlatformUI.getWorkbench(),
                     creation, item, metadataTable, forceReadOnly);
             filePositionalTableWizard.setRepositoryObject(node.getObject());
@@ -235,6 +243,7 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
             default:
                 return;
             }
+            initContextMode(item);
             // set the repositoryObject, lock and set isRepositoryObjectEditable
             FileRegexpTableWizard fileRegexpTableWizard = new FileRegexpTableWizard(PlatformUI.getWorkbench(), creation, item,
                     metadataTable, forceReadOnly);
@@ -284,6 +293,7 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
             default:
                 return;
             }
+            initContextMode(item);
             // set the repositoryObject, lock and set isRepositoryObjectEditable
             FileXmlTableWizard fileXmlTableWizard = new FileXmlTableWizard(PlatformUI.getWorkbench(), creation, item,
                     metadataTable, forceReadOnly);
@@ -333,7 +343,7 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
             default:
                 return;
             }
-
+            initContextMode(item);
             // set the repositoryObject, lock and set isRepositoryObjectEditable
             FileDelimitedTableWizard fileDelimitedTableWizard = new FileDelimitedTableWizard(PlatformUI.getWorkbench(), creation,
                     item, metadataTable, forceReadOnly);
@@ -383,7 +393,7 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
             default:
                 return;
             }
-
+            initContextMode(item);
             // set the repositoryObject, lock and set isRepositoryObjectEditable
             FileLdifTableWizard fileLdifTableWizard = new FileLdifTableWizard(PlatformUI.getWorkbench(), creation, item,
                     metadataTable, forceReadOnly);
@@ -434,7 +444,7 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
             default:
                 return;
             }
-
+            initContextMode(item);
             // set the repositoryObject, lock and set isRepositoryObjectEditable
             FileExcelTableWizard fileExcelTableWizard = new FileExcelTableWizard(PlatformUI.getWorkbench(), creation, item,
                     metadataTable, forceReadOnly);
@@ -477,7 +487,7 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
             default:
                 return;
             }
-
+            initContextMode(item);
             // set the repositoryObject, lock and set isRepositoryObjectEditable
             GenericSchemaTableWizard genericSchemaWizard = new GenericSchemaTableWizard(PlatformUI.getWorkbench(), creation,
                     item, metadataTable, forceReadOnly);
@@ -526,7 +536,7 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
             default:
                 return;
             }
-
+            initContextMode(item);
             // set the repositoryObject, lock and set isRepositoryObjectEditable
             LDAPSchemaTableWizard ldapSchemaWizard = new LDAPSchemaTableWizard(PlatformUI.getWorkbench(), creation, item,
                     metadataTable, forceReadOnly);
@@ -577,7 +587,7 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
             default:
                 return;
             }
-
+            initContextMode(item);
             // set the repositoryObject, lock and set isRepositoryObjectEditable
             SalesforceSchemaTableWizard salesforceSchemaWizard = new SalesforceSchemaTableWizard(PlatformUI.getWorkbench(),
                     creation, item, metadataTable, forceReadOnly);
@@ -626,7 +636,7 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
             default:
                 return;
             }
-
+            initContextMode(item);
             // set the repositoryObject, lock and set isRepositoryObjectEditable
             WSDLSchemaTableWizard ldapSchemaWizard = new WSDLSchemaTableWizard(PlatformUI.getWorkbench(), creation, item,
                     metadataTable, forceReadOnly);
@@ -683,6 +693,7 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
             default:
                 break;
             }
+            initContextMode(item);
             openDatabaseTableWizard(item, metadataTable, forceReadOnly, node, creation);
         }
     }
@@ -701,16 +712,20 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
 
                 monitor.beginTask(Messages.getString("CreateTableAction.action.createTitle"), IProgressMonitor.UNKNOWN);
 
-                final ManagerConnection managerConnection = new ManagerConnection();
-                final boolean skipStep = checkConnectStatus(managerConnection, item);
-
                 if (!monitor.isCanceled()) {
                     try {
                         Display.getDefault().syncExec(new Runnable() {
 
                             public void run() {
+                                final ManagerConnection managerConnection = new ManagerConnection();
+
+                                IMetadataConnection metadataConnection = ConvertionHelper.convert((DatabaseConnection) item
+                                        .getConnection());
+
+                                final boolean skipStep = checkConnectStatus(managerConnection, metadataConnection);
                                 DatabaseTableWizard databaseTableWizard = new DatabaseTableWizard(PlatformUI.getWorkbench(),
-                                        creation, item, metadataTable, getExistingNames(), forceReadOnly, managerConnection);
+                                        creation, item, metadataTable, getExistingNames(), forceReadOnly, managerConnection,
+                                        metadataConnection);
                                 databaseTableWizard.setSkipStep(skipStep);
                                 databaseTableWizard.setRepositoryObject(node.getObject());
 
@@ -733,13 +748,12 @@ public abstract class AbstractCreateTableAction extends AbstractCreateAction {
         job.schedule();
     }
 
-    public boolean checkConnectStatus(ManagerConnection managerConnection, DatabaseConnectionItem connectionItem) {
+    public boolean checkConnectStatus(ManagerConnection managerConnection, IMetadataConnection metadataConnection) {
         boolean skipStep = false;
 
-        managerConnection.check(ConvertionHelper.convert((DatabaseConnection) connectionItem.getConnection()));
+        managerConnection.check(metadataConnection);
         if (managerConnection.getIsValide()) {
-            List<String> itemTableName = ExtractMetaDataFromDataBase.returnTablesFormConnection(ConvertionHelper
-                    .convert((DatabaseConnection) connectionItem.getConnection()));
+            List<String> itemTableName = ExtractMetaDataFromDataBase.returnTablesFormConnection(metadataConnection);
             if (itemTableName == null || itemTableName.isEmpty()) {
                 skipStep = true;
             }

@@ -59,7 +59,6 @@ import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.LAYOUT_MODE;
 import org.talend.commons.utils.data.text.IndiceHelper;
 import org.talend.core.model.metadata.IMetadataConnection;
-import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
@@ -170,8 +169,7 @@ public class SelectorTableForm extends AbstractForm {
         int height = headerCompositeHeight + tableSettingsCompositeHeight + tableCompositeHeight;
 
         // Main Composite : 2 columns
-        Composite mainComposite = Form.startNewDimensionnedGridLayout(this, 1,
-                leftCompositeWidth + rightCompositeWidth, height);
+        Composite mainComposite = Form.startNewDimensionnedGridLayout(this, 1, leftCompositeWidth + rightCompositeWidth, height);
         mainComposite.setLayout(new GridLayout(1, false));
         GridData gridData = new GridData(GridData.FILL_BOTH);
         mainComposite.setLayoutData(gridData);
@@ -179,12 +177,12 @@ public class SelectorTableForm extends AbstractForm {
         Composite rightComposite = Form.startNewDimensionnedGridLayout(mainComposite, 1, rightCompositeWidth, height);
 
         // Group Table Settings
-        Group groupTableSettings = Form.createGroup(rightComposite, 1, Messages
-                .getString("SelectorTableForm.groupTableSettings"), tableSettingsCompositeHeight); //$NON-NLS-1$
+        Group groupTableSettings = Form.createGroup(rightComposite, 1,
+                Messages.getString("SelectorTableForm.groupTableSettings"), tableSettingsCompositeHeight); //$NON-NLS-1$
 
         // Composite TableSettings
-        Composite compositeTableSettings = Form.startNewDimensionnedGridLayout(groupTableSettings, 1,
-                rightCompositeWidth, tableSettingsCompositeHeight);
+        Composite compositeTableSettings = Form.startNewDimensionnedGridLayout(groupTableSettings, 1, rightCompositeWidth,
+                tableSettingsCompositeHeight);
         gridData = new GridData(GridData.FILL_BOTH);
         gridData.widthHint = rightCompositeWidth;
         gridData.horizontalSpan = 3;
@@ -201,8 +199,7 @@ public class SelectorTableForm extends AbstractForm {
         nameFilter.setEditable(true);
         gridData2 = new GridData(GridData.FILL_HORIZONTAL);
         nameFilter.setLayoutData(gridData2);
-        scrolledCompositeFileViewer = new ScrolledComposite(compositeTableSettings, SWT.H_SCROLL | SWT.V_SCROLL
-                | SWT.NONE);
+        scrolledCompositeFileViewer = new ScrolledComposite(compositeTableSettings, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NONE);
         scrolledCompositeFileViewer.setExpandHorizontal(true);
         scrolledCompositeFileViewer.setExpandVertical(true);
         GridData gridData1 = new GridData(GridData.FILL_BOTH);
@@ -459,11 +456,9 @@ public class SelectorTableForm extends AbstractForm {
             parentWizardPage.getWizard().getContainer().run(true, true, new IRunnableWithProgress() {
 
                 public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-                    monitor.beginTask(Messages.getString("CreateTableAction.action.createTitle"),
-                            IProgressMonitor.UNKNOWN);
+                    monitor.beginTask(Messages.getString("CreateTableAction.action.createTitle"), IProgressMonitor.UNKNOWN);
 
-                    iMetadataConnection = ConvertionHelper.convert(getConnection());
-                    managerConnection.check(iMetadataConnection);
+                    managerConnection.check(getIMetadataConnection());
 
                     if (managerConnection.getIsValide()) {
                         itemTableName = ExtractMetaDataFromDataBase.returnTablesFormConnection(iMetadataConnection,
@@ -471,9 +466,9 @@ public class SelectorTableForm extends AbstractForm {
                         if (itemTableName.size() <= 0) {
                             // connection is done but any table exist
                             if (displayMessageBox) {
-                                openInfoDialogInUIThread(getShell(), Messages
-                                        .getString("DatabaseTableForm.checkConnection"), Messages //$NON-NLS-1$
-                                        .getString("DatabaseTableForm.tableNoExist"), true);//$NON-NLS-1$
+                                openInfoDialogInUIThread(getShell(),
+                                        Messages.getString("DatabaseTableForm.checkConnection"), Messages //$NON-NLS-1$
+                                                .getString("DatabaseTableForm.tableNoExist"), true);//$NON-NLS-1$
                             }
                         } else {
                             createAllItems(displayMessageBox, null);
@@ -527,15 +522,13 @@ public class SelectorTableForm extends AbstractForm {
                 }
                 if (displayMessageBox) {
                     String msg = Messages.getString("DatabaseTableForm.connectionIsDone"); //$NON-NLS-1$
-                    openInfoDialogInUIThread(getShell(), Messages.getString("DatabaseTableForm.checkConnection"), msg,
-                            false);
+                    openInfoDialogInUIThread(getShell(), Messages.getString("DatabaseTableForm.checkConnection"), msg, false);
                 }
             }
         });
     }
 
-    public static void openInfoDialogInUIThread(final Shell shell, final String title, final String msg,
-            boolean ifUseRunnable) {
+    public static void openInfoDialogInUIThread(final Shell shell, final String title, final String msg, boolean ifUseRunnable) {
         if (ifUseRunnable) {
             shell.getDisplay().asyncExec(new Runnable() {
 
@@ -556,8 +549,7 @@ public class SelectorTableForm extends AbstractForm {
     protected void createTable(TableItem tableItem) {
         String tableString = tableItem.getText(0);
 
-        IMetadataConnection iMetadataConnection = ConvertionHelper.convert(getConnection());
-        boolean checkConnectionIsDone = managerConnection.check(iMetadataConnection);
+        boolean checkConnectionIsDone = managerConnection.check(getIMetadataConnection());
         if (!checkConnectionIsDone) {
             updateStatus(IStatus.WARNING, Messages.getString("DatabaseTableForm.connectionFailure")); //$NON-NLS-1$
             new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("DatabaseTableForm.connectionFailure"), //$NON-NLS-1$
@@ -754,14 +746,12 @@ public class SelectorTableForm extends AbstractForm {
             if (isCanceled()) {
                 return;
             }
-            IMetadataConnection iMetadataConnection = ConvertionHelper.convert(getConnection());
-            checkConnectionIsDone = managerConnection.check(iMetadataConnection);
+            checkConnectionIsDone = managerConnection.check(getIMetadataConnection());
             if (checkConnectionIsDone) {
                 if (isCanceled()) {
                     return;
                 }
-                metadataColumns = ExtractMetaDataFromDataBase.returnMetadataColumnsFormTable(iMetadataConnection,
-                        tableString);
+                metadataColumns = ExtractMetaDataFromDataBase.returnMetadataColumnsFormTable(iMetadataConnection, tableString);
                 if (isCanceled()) {
                     return;
                 }
@@ -807,8 +797,7 @@ public class SelectorTableForm extends AbstractForm {
                 tableItem.setText(3, Messages.getString("SelectorTableForm.Success")); //$NON-NLS-1$
             } else {
                 updateStatus(IStatus.WARNING, Messages.getString("DatabaseTableForm.connectionFailure")); //$NON-NLS-1$
-                new ErrorDialogWidthDetailArea(getShell(), PID, Messages
-                        .getString("DatabaseTableForm.connectionFailure"), //$NON-NLS-1$
+                new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("DatabaseTableForm.connectionFailure"), //$NON-NLS-1$
                         managerConnection.getMessageException());
 
             }
@@ -984,4 +973,13 @@ public class SelectorTableForm extends AbstractForm {
     public TableInfoParameters getTableInfoParameters() {
         return this.tableInfoParameters;
     }
+
+    public IMetadataConnection getIMetadataConnection() {
+        return this.iMetadataConnection;
+    }
+
+    public void setIMetadataConnection(IMetadataConnection metadataConnection) {
+        this.iMetadataConnection = metadataConnection;
+    }
+
 }

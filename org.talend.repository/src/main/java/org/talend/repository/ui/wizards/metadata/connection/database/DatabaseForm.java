@@ -883,7 +883,7 @@ public class DatabaseForm extends AbstractForm {
     private String getStringConnection() {
         String s = null;
         if (isContextMode()) {
-            s = DBConnectionContextUtils.getUrlConnectionString(dbTypeCombo.getSelectionIndex(), connectionItem, false)
+            s = DBConnectionContextUtils.getUrlConnectionString(dbTypeCombo.getSelectionIndex(), connectionItem, true)
                     .getUrlConnectionStr();
         } else {
             s = urlDataStringConnection.getString(dbTypeCombo.getSelectionIndex(), serverText.getText(), usernameText.getText(),

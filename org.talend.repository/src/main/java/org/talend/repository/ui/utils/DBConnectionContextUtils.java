@@ -19,15 +19,13 @@ import java.util.List;
 import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
-import org.talend.core.model.context.ContextUtils;
+import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.properties.ConnectionItem;
-import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
-import org.talend.repository.ui.wizards.metadata.ContextSetsSelectionDialog;
 
 /**
  * ggu class global comment. Detailled comment
@@ -122,69 +120,27 @@ public final class DBConnectionContextUtils {
             return null;
         }
         DatabaseConnection dbConn = (DatabaseConnection) connectionItem.getConnection();
-        ContextItem contextItem = ContextUtils.getContextItemById(dbConn.getContextId());
 
-        String server = dbConn.getServerName();
-        String username = dbConn.getUsername();
-        String password = dbConn.getPassword();
-        String port = dbConn.getPort();
-        String sidOrDatabase = dbConn.getSID();
-        String datasource = dbConn.getDatasourceName();
-        String filePath = dbConn.getFileFieldName();
-        String schemaOracle = dbConn.getSchema();
-        String dbRootPath = dbConn.getDBRootPath();
-        String additionParam = dbConn.getAdditionalParams();
+        ContextType contextType = ConnectionContextHelper.getContextTypeForContextMode(dbConn);
 
-        String selectedContext = null;
-        if (contextItem != null && dbConn.isContextMode()) {
-            if (contextItem.getContext().size() > 1) {
-                ContextSetsSelectionDialog setsDialog = new ContextSetsSelectionDialog(contextItem);
-                setsDialog.open();
-                selectedContext = setsDialog.getSelectedContext();
-            } else { // not show the select dialog.
-                selectedContext = contextItem.getDefaultContext();
-            }
-            ContextType contextType = ContextUtils.getContextTypeByName(contextItem, selectedContext, true);
-            if (contextType != null) {
-                final String prefixName = connectionItem.getProperty().getLabel() + ConnectionContextHelper.LINE;
-                String paramName = null;
+        String server = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getServerName());
+        String username = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getUsername());
+        String password = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getPassword());
+        String port = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getPort());
+        String sidOrDatabase = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getSID());
+        String datasource = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getDatasourceName());
+        String filePath = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getFileFieldName());
+        String schemaOracle = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getSchema());
+        String dbRootPath = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getDBRootPath());
+        String additionParam = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getAdditionalParams());
 
-                paramName = prefixName + EDBParamName.ServerName;
-                server = ConnectionContextHelper.getContextValue(contextType, server, paramName);
-
-                paramName = prefixName + EDBParamName.Username;
-                username = ConnectionContextHelper.getContextValue(contextType, username, paramName);
-
-                paramName = prefixName + EDBParamName.Password;
-                password = ConnectionContextHelper.getContextValue(contextType, password, paramName);
-
-                paramName = prefixName + EDBParamName.Port;
-                port = ConnectionContextHelper.getContextValue(contextType, port, paramName);
-
-                paramName = prefixName + EDBParamName.SID;
-                sidOrDatabase = ConnectionContextHelper.getContextValue(contextType, sidOrDatabase, paramName);
-
-                paramName = prefixName + EDBParamName.DatasourceName;
-                datasource = ConnectionContextHelper.getContextValue(contextType, datasource, paramName);
-
-                paramName = prefixName + EDBParamName.FileFieldName;
-                filePath = ConnectionContextHelper.getContextValue(contextType, filePath, paramName);
-
-                paramName = prefixName + EDBParamName.Schema;
-                schemaOracle = ConnectionContextHelper.getContextValue(contextType, schemaOracle, paramName);
-
-                paramName = prefixName + EDBParamName.DBRootPath;
-                dbRootPath = ConnectionContextHelper.getContextValue(contextType, dbRootPath, paramName);
-
-                paramName = prefixName + EDBParamName.AdditionalParams;
-                additionParam = ConnectionContextHelper.getContextValue(contextType, additionParam, paramName);
-
-            }
-
-        }
         // url
+        DataStringConnection dataStringConn = new DataStringConnection();
+        dataStringConn.setSelectionIndex(dbTypeIndex);
+        dataStringConn.getString(dbTypeIndex, server, username, password, port, sidOrDatabase, filePath.toLowerCase(),
+                datasource, dbRootPath, additionParam);
 
-        String urlConnection = getUrlConnectionString(dbTypeIndex, connectionItem, false, selectedContext).getUrlConnectionStr();
+        String urlConnection = dataStringConn.getUrlConnectionStr();
 
         if (dbConn.getProductId().equals(EDatabaseTypeName.ORACLEFORSID.getProduct())) {
             schemaOracle = schemaOracle.toUpperCase();
@@ -203,77 +159,24 @@ public final class DBConnectionContextUtils {
      * 
      * if display is false, the string connection will be returned by default context.
      */
-    public static DataStringConnection getUrlConnectionString(int dbIndex, ConnectionItem connectionItem, boolean display) {
-        return getUrlConnectionString(dbIndex, connectionItem, display, null);
-    }
-
-    private static DataStringConnection getUrlConnectionString(int dbIndex, ConnectionItem connectionItem, boolean display,
-            String selectedContext) {
+    public static DataStringConnection getUrlConnectionString(int dbIndex, ConnectionItem connectionItem, boolean defaultContext) {
         if (dbIndex < 0 || connectionItem == null) {
             return null;
         }
         DatabaseConnection dbConn = (DatabaseConnection) connectionItem.getConnection();
+        ContextType contextType = ConnectionContextHelper.getContextTypeForContextMode(dbConn, defaultContext);
 
-        String server = dbConn.getServerName();
-        String username = dbConn.getUsername();
-        String password = dbConn.getPassword();
-        String port = dbConn.getPort();
-        String sidOrDatabase = dbConn.getSID();
-        String datasource = dbConn.getDatasourceName();
-        String filePath = dbConn.getFileFieldName();
-        String schemaOracle = dbConn.getSchema();
-        String dbRootPath = dbConn.getDBRootPath();
-        String additionParam = dbConn.getAdditionalParams();
+        String server = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getServerName());
+        String username = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getUsername());
+        String password = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getPassword());
+        String port = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getPort());
+        String sidOrDatabase = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getSID());
+        String datasource = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getDatasourceName());
+        String filePath = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getFileFieldName());
+        String schemaOracle = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getSchema());
+        String dbRootPath = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getDBRootPath());
+        String additionParam = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getAdditionalParams());
 
-        ContextItem contextItem = ContextUtils.getContextItemById(dbConn.getContextId());
-        if (contextItem != null && dbConn.isContextMode()) {
-            if (display) {
-                ContextSetsSelectionDialog setsDialog = new ContextSetsSelectionDialog(contextItem);
-                setsDialog.open();
-                selectedContext = setsDialog.getSelectedContext();
-            } else { // not show the select dialog.
-                if (selectedContext == null) { // not set, then set the default.
-                    selectedContext = contextItem.getDefaultContext();
-                }
-            }
-            ContextType contextType = ContextUtils.getContextTypeByName(contextItem, selectedContext, true);
-            if (contextType != null) {
-                final String prefixName = connectionItem.getProperty().getLabel() + ConnectionContextHelper.LINE;
-                String paramName = null;
-
-                paramName = prefixName + EDBParamName.ServerName;
-                server = ConnectionContextHelper.getContextValue(contextType, server, paramName);
-
-                paramName = prefixName + EDBParamName.Username;
-                username = ConnectionContextHelper.getContextValue(contextType, username, paramName);
-
-                paramName = prefixName + EDBParamName.Password;
-                password = ConnectionContextHelper.getContextValue(contextType, password, paramName);
-
-                paramName = prefixName + EDBParamName.Port;
-                port = ConnectionContextHelper.getContextValue(contextType, port, paramName);
-
-                paramName = prefixName + EDBParamName.SID;
-                sidOrDatabase = ConnectionContextHelper.getContextValue(contextType, sidOrDatabase, paramName);
-
-                paramName = prefixName + EDBParamName.DatasourceName;
-                datasource = ConnectionContextHelper.getContextValue(contextType, datasource, paramName);
-
-                paramName = prefixName + EDBParamName.FileFieldName;
-                filePath = ConnectionContextHelper.getContextValue(contextType, filePath, paramName);
-
-                paramName = prefixName + EDBParamName.Schema;
-                schemaOracle = ConnectionContextHelper.getContextValue(contextType, schemaOracle, paramName);
-
-                paramName = prefixName + EDBParamName.DBRootPath;
-                dbRootPath = ConnectionContextHelper.getContextValue(contextType, dbRootPath, paramName);
-
-                paramName = prefixName + EDBParamName.AdditionalParams;
-                additionParam = ConnectionContextHelper.getContextValue(contextType, additionParam, paramName);
-
-            }
-
-        }
         DataStringConnection dataStringConn = new DataStringConnection();
         dataStringConn.setSelectionIndex(dbIndex);
         dataStringConn.getString(dbIndex, server, username, password, port, sidOrDatabase, filePath.toLowerCase(), datasource,
@@ -282,4 +185,78 @@ public final class DBConnectionContextUtils {
 
     }
 
+    /**
+     * 
+     * ggu Comment method "cloneOriginalValueConnection".
+     * 
+     * perhaps, if connection is in context mode, will open dialog to choose context sets.
+     */
+    public static DatabaseConnection cloneOriginalValueConnection(DatabaseConnection dbConn) {
+        if (dbConn == null) {
+            return null;
+        }
+        ContextType contextType = ConnectionContextHelper.getContextTypeForContextMode(dbConn);
+        DatabaseConnection cloneConn = ConnectionFactory.eINSTANCE.createDatabaseConnection();
+        // get values
+        String server = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getServerName());
+        String username = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getUsername());
+        String password = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getPassword());
+        String port = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getPort());
+        String sidOrDatabase = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getSID());
+        String datasource = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getDatasourceName());
+        String filePath = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getFileFieldName());
+        String schemaOracle = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getSchema());
+        String dbRootPath = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getDBRootPath());
+        String additionParam = ConnectionContextHelper.getOriginalValue(contextType, dbConn.getAdditionalParams());
+
+        cloneConn.setAdditionalParams(additionParam);
+        cloneConn.setDatasourceName(datasource);
+        cloneConn.setDBRootPath(dbRootPath);
+        cloneConn.setFileFieldName(filePath);
+        cloneConn.setPassword(password);
+        cloneConn.setPort(port);
+        cloneConn.setSchema(schemaOracle);
+        cloneConn.setServerName(server);
+        cloneConn.setSID(sidOrDatabase);
+        cloneConn.setUsername(username);
+
+        cloneConn.setComment(dbConn.getComment());
+        cloneConn.setDatabaseType(dbConn.getDatabaseType());
+        cloneConn.setDbmsId(dbConn.getDbmsId());
+        cloneConn.setDivergency(dbConn.isDivergency());
+        cloneConn.setDriverClass(dbConn.getDriverClass());
+        cloneConn.setId(dbConn.getId());
+        cloneConn.setLabel(dbConn.getLabel());
+        cloneConn.setNullChar(dbConn.getNullChar());
+        cloneConn.setProductId(dbConn.getProductId());
+        cloneConn.setSqlSynthax(dbConn.getSqlSynthax());
+        cloneConn.setStandardSQL(dbConn.isStandardSQL());
+        cloneConn.setStringQuote(dbConn.getStringQuote());
+        cloneConn.setSynchronised(dbConn.isSynchronised());
+        cloneConn.setSystemSQL(dbConn.isSystemSQL());
+        cloneConn.setVersion(dbConn.getVersion());
+
+        // cloneConn.setReadOnly(dbConn.isReadOnly());
+        // cloneConn.setProperties(dbConn.getProperties());
+        // cloneConn.setCdcConns(value)
+        // cloneConn.setQueries(value)
+
+        /*
+         * mustn't be set, is flag for method convert in class ConvertionHelper.
+         * 
+         */
+        // cloneConn.setContextId(dbConn.getContextId());
+        // cloneConn.setContextMode(dbConn.isContextMode());
+        DataStringConnection dataStringConn = new DataStringConnection();
+        int dbIndex = 0;
+        if (cloneConn.getDatabaseType() != null) {
+            dbIndex = dataStringConn.getIndexOfLabel(cloneConn.getDatabaseType());
+        }
+        dataStringConn.setSelectionIndex(dbIndex);
+        dataStringConn.getString(dbIndex, server, username, password, port, sidOrDatabase, filePath.toLowerCase(), datasource,
+                dbRootPath, additionParam);
+        cloneConn.setURL(dataStringConn.getUrlConnectionStr());
+
+        return cloneConn;
+    }
 }

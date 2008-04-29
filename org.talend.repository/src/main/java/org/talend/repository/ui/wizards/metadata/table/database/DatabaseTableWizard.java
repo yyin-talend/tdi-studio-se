@@ -24,6 +24,7 @@ import org.eclipse.ui.IWorkbenchWizard;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
+import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.database.TableInfoParameters;
 import org.talend.core.model.properties.ConnectionItem;
@@ -61,6 +62,8 @@ public class DatabaseTableWizard extends RepositoryWizard implements INewWizard 
 
     private Map<String, String> oldTableMap;
 
+    private IMetadataConnection metadataConnection;
+
     /**
      * DOC ocarbone DatabaseTableWizard constructor comment.
      * 
@@ -72,12 +75,14 @@ public class DatabaseTableWizard extends RepositoryWizard implements INewWizard 
      */
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     public DatabaseTableWizard(IWorkbench workbench, boolean creation, ConnectionItem connectionItem,
-            MetadataTable metadataTable, String[] existingNames, boolean forceReadOnly, ManagerConnection managerConnection) {
+            MetadataTable metadataTable, String[] existingNames, boolean forceReadOnly, ManagerConnection managerConnection,
+            IMetadataConnection metadataConnection) {
         super(workbench, creation, forceReadOnly);
         this.connectionItem = connectionItem;
         this.metadataTable = metadataTable;
         this.existingNames = existingNames;
         this.managerConnection = managerConnection;
+        this.metadataConnection = metadataConnection;
         if (connectionItem != null) {
             oldTableMap = RepositoryUpdateManager.getTableIdAndNameMap(connectionItem);
         }
@@ -106,10 +111,10 @@ public class DatabaseTableWizard extends RepositoryWizard implements INewWizard 
         setDefaultPageImageDescriptor(ImageProvider.getImageDesc(ECoreImage.METADATA_TABLE_WIZ));
         TableInfoParameters tableInfoParameters = new TableInfoParameters();
         selectorWizardPage = new SelectorTableWizardPage(connectionItem, metadataTable, isRepositoryObjectEditable(),
-                tableInfoParameters);
+                tableInfoParameters, metadataConnection);
 
         tableWizardpage = new DatabaseTableWizardPage(managerConnection, connectionItem, metadataTable,
-                isRepositoryObjectEditable());
+                isRepositoryObjectEditable(), metadataConnection);
         tableFilterWizardPage = new DatabaseTableFilterWizardPage(tableInfoParameters);
         if (creation && !skipStep) {
 

@@ -28,6 +28,7 @@ import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.IComponentsFactory;
+import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.migration.IMigrationToolService;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -45,6 +46,7 @@ import org.talend.repository.plugin.integration.BindingActions;
 import org.talend.repository.plugin.integration.SwitchProjectAction;
 import org.talend.repository.ui.login.LoginDialog;
 import org.talend.repository.ui.utils.ColumnNameValidator;
+import org.talend.repository.ui.utils.DBConnectionContextUtils;
 import org.talend.repository.ui.views.RepositoryView;
 import org.talend.repository.ui.wizards.metadata.connection.database.DatabaseWizard;
 import org.talend.repository.ui.wizards.metadata.connection.files.delimited.DelimitedFileWizard;
@@ -328,4 +330,7 @@ public class RepositoryService implements IRepositoryService {
 
     }
 
+    public DatabaseConnection cloneOriginalValueConnection(DatabaseConnection dbConn) {
+        return DBConnectionContextUtils.cloneOriginalValueConnection(dbConn);
+    }
 }

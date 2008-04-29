@@ -62,6 +62,7 @@ import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.designer.core.DesignerPlugin;
@@ -173,90 +174,94 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
                     tableIdAndDbSchemaMap.clear();
 
                     for (IRepositoryObject curObject : repositoryObjects) {
-                        ConnectionItem connectionItem = (ConnectionItem) curObject.getProperty().getItem();
-                        Connection connection = connectionItem.getConnection();
-                        if (connection.isReadOnly()) {
-                            continue;
-                        }
 
-                        if (repositoryValue != null) {
-                            if ((connection instanceof DelimitedFileConnection) && (repositoryValue.equals("DELIMITED"))) { //$NON-NLS-1$
-                                repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
+                        Item item = curObject.getProperty().getItem();
+                        if (item instanceof ConnectionItem) {
+                            ConnectionItem connectionItem = (ConnectionItem) item;
+                            Connection connection = connectionItem.getConnection();
+                            if (connection.isReadOnly()) {
+                                continue;
                             }
-                            if ((connection instanceof PositionalFileConnection) && (repositoryValue.equals("POSITIONAL"))) { //$NON-NLS-1$
-                                repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
-                            }
-                            if ((connection instanceof FileExcelConnection) && (repositoryValue.equals("EXCEL"))) { //$NON-NLS-1$
-                                repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
-                            }
-                            if ((connection instanceof RegexpFileConnection) && (repositoryValue.equals("REGEX"))) { //$NON-NLS-1$
-                                repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
-                            }
-                            if ((connection instanceof XmlFileConnection) && (repositoryValue.equals("XML"))) { //$NON-NLS-1$
-                                repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
-                            }
-                            if ((connection instanceof GenericSchemaConnection) && (repositoryValue.equals("GENERIC"))) { //$NON-NLS-1$
-                                repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
-                            }
-                            if ((connection instanceof LDAPSchemaConnection) && (repositoryValue.equals("LDAP"))) { //$NON-NLS-1$
-                                repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
-                            }
-                            if ((connection instanceof WSDLSchemaConnection) && (repositoryValue.equals("WSDL"))) { //$NON-NLS-1$
-                                repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
-                            }
-                            if ((connection instanceof SalesforceSchemaConnection) && (repositoryValue.equals("SALESFORCE"))) { //$NON-NLS-1$
-                                repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
-                            }
-                            if ((connection instanceof DatabaseConnection) && (repositoryValue.startsWith("DATABASE"))) { //$NON-NLS-1$
-                                String currentDbType = (String) RepositoryToComponentProperty.getValue(connection, "TYPE"); //$NON-NLS-1$
-                                if (repositoryValue.contains(":")) { // database is specified //$NON-NLS-1$
-                                    String neededDbType = repositoryValue.substring(repositoryValue.indexOf(":") + 1); //$NON-NLS-1$
-                                    if (neededDbType.equals(currentDbType)) {
-                                        repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
-                                    }
-                                } else {
+
+                            if (repositoryValue != null) {
+                                if ((connection instanceof DelimitedFileConnection) && (repositoryValue.equals("DELIMITED"))) { //$NON-NLS-1$
                                     repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
                                 }
+                                if ((connection instanceof PositionalFileConnection) && (repositoryValue.equals("POSITIONAL"))) { //$NON-NLS-1$
+                                    repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
+                                }
+                                if ((connection instanceof FileExcelConnection) && (repositoryValue.equals("EXCEL"))) { //$NON-NLS-1$
+                                    repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
+                                }
+                                if ((connection instanceof RegexpFileConnection) && (repositoryValue.equals("REGEX"))) { //$NON-NLS-1$
+                                    repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
+                                }
+                                if ((connection instanceof XmlFileConnection) && (repositoryValue.equals("XML"))) { //$NON-NLS-1$
+                                    repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
+                                }
+                                if ((connection instanceof GenericSchemaConnection) && (repositoryValue.equals("GENERIC"))) { //$NON-NLS-1$
+                                    repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
+                                }
+                                if ((connection instanceof LDAPSchemaConnection) && (repositoryValue.equals("LDAP"))) { //$NON-NLS-1$
+                                    repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
+                                }
+                                if ((connection instanceof WSDLSchemaConnection) && (repositoryValue.equals("WSDL"))) { //$NON-NLS-1$
+                                    repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
+                                }
+                                if ((connection instanceof SalesforceSchemaConnection) && (repositoryValue.equals("SALESFORCE"))) { //$NON-NLS-1$
+                                    repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
+                                }
+                                if ((connection instanceof DatabaseConnection) && (repositoryValue.startsWith("DATABASE"))) { //$NON-NLS-1$
+                                    String currentDbType = (String) RepositoryToComponentProperty.getValue(connection, "TYPE"); //$NON-NLS-1$
+                                    if (repositoryValue.contains(":")) { // database is specified //$NON-NLS-1$
+                                        String neededDbType = repositoryValue.substring(repositoryValue.indexOf(":") + 1); //$NON-NLS-1$
+                                        if (neededDbType.equals(currentDbType)) {
+                                            repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
+                                        }
+                                    } else {
+                                        repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
+                                    }
+                                }
+                            } else {
+                                repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
                             }
-                        } else {
-                            repositoryConnectionItemMap.put(connectionItem.getProperty().getId(), connectionItem);
-                        }
-                        for (Object tableObj : connection.getTables()) {
-                            org.talend.core.model.metadata.builder.connection.MetadataTable table;
+                            for (Object tableObj : connection.getTables()) {
+                                org.talend.core.model.metadata.builder.connection.MetadataTable table;
 
-                            table = (org.talend.core.model.metadata.builder.connection.MetadataTable) tableObj;
+                                table = (org.talend.core.model.metadata.builder.connection.MetadataTable) tableObj;
 
-                            if (factory.getStatus(connectionItem) != ERepositoryStatus.DELETED) {
-                                if (!factory.isDeleted(table)) {
-                                    IMetadataTable newTable = ConvertionHelper.convert(table);
-                                    repositoryTableMap.put(connectionItem.getProperty().getId() + " - " + table.getLabel(),
-                                            newTable);
-                                    if (connection instanceof DatabaseConnection) {
-                                        String dbType = ((DatabaseConnection) connection).getDatabaseType();
-                                        String schema = ((DatabaseConnection) connection).getSchema();
-                                        tableIdAndDbTypeMap.put(newTable.getId(), dbType);
-                                        if (schema != null && !schema.equals("")) {
-                                            tableIdAndDbSchemaMap.put(newTable.getId(), schema);
+                                if (factory.getStatus(connectionItem) != ERepositoryStatus.DELETED) {
+                                    if (!factory.isDeleted(table)) {
+                                        IMetadataTable newTable = ConvertionHelper.convert(table);
+                                        repositoryTableMap.put(connectionItem.getProperty().getId() + " - " + table.getLabel(),
+                                                newTable);
+                                        if (connection instanceof DatabaseConnection) {
+                                            String dbType = ((DatabaseConnection) connection).getDatabaseType();
+                                            String schema = ((DatabaseConnection) connection).getSchema();
+                                            tableIdAndDbTypeMap.put(newTable.getId(), dbType);
+                                            if (schema != null && !schema.equals("")) {
+                                                tableIdAndDbSchemaMap.put(newTable.getId(), schema);
+                                            }
                                         }
                                     }
                                 }
                             }
-                        }
-                        if (connection instanceof DatabaseConnection) {
-                            DatabaseConnection dbConnection = (DatabaseConnection) connection;
-                            QueriesConnection queriesConnection = dbConnection.getQueries();
-                            if (queriesConnection != null) {
-                                List<Query> qs = (List<Query>) queriesConnection.getQuery();
-                                for (Query query : qs) {
-                                    repositoryQueryStoreMap.put(connectionItem.getProperty().getId() + " - " + query.getLabel(),
-                                            query);
+                            if (connection instanceof DatabaseConnection) {
+                                DatabaseConnection dbConnection = (DatabaseConnection) connection;
+                                QueriesConnection queriesConnection = dbConnection.getQueries();
+                                if (queriesConnection != null) {
+                                    List<Query> qs = (List<Query>) queriesConnection.getQuery();
+                                    for (Query query : qs) {
+                                        repositoryQueryStoreMap.put(connectionItem.getProperty().getId() + " - "
+                                                + query.getLabel(), query);
+                                    }
                                 }
                             }
+
+                            monitorWrap.worked(1);
                         }
 
-                        monitorWrap.worked(1);
                     }
-
                 }
 
                 monitorWrap.done();

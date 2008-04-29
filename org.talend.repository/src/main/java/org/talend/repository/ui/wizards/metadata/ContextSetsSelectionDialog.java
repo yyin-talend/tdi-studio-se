@@ -23,6 +23,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.SelectionDialog;
 import org.talend.commons.ui.swt.formtools.LabelledCombo;
@@ -52,13 +53,17 @@ public class ContextSetsSelectionDialog extends SelectionDialog {
 
     private String selectedContext = null;
 
-    public ContextSetsSelectionDialog(ContextItem contextItem) {
-        super(PlatformUI.getWorkbench().getDisplay().getActiveShell());
+    public ContextSetsSelectionDialog(Shell parentShell, ContextItem contextItem) {
+        super(parentShell == null ? PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell() : parentShell);
         this.contextItem = contextItem;
         setHelpAvailable(false);
         setTitle(TITLE);
         setMessage(MESSAGE);
         initSets();
+    }
+
+    public ContextSetsSelectionDialog(ContextItem contextItem) {
+        this(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), contextItem);
     }
 
     @SuppressWarnings("unchecked")//$NON-NLS-1$
