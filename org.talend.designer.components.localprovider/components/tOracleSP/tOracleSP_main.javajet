@@ -187,7 +187,7 @@ if (canGenerate) {
 					<%
 				} else if (typeToGenerate.equals("java.util.Date")) {
 					%>
-					statement_<%=cid%>.setDate(<%=argIndex%>, new java.sql.Date(<%=inConnectionName%>.<%=argName%>.getTime()));
+					statement_<%=cid%>.setTimestamp(<%=argIndex%>, new java.sql.Timestamp(<%=inConnectionName%>.<%=argName%>.getTime()));
 					<%
 				} else {
 					%>
@@ -279,7 +279,7 @@ if (canGenerate) {
 							  		<%
 						  		} else if (method.equals("Date")) {
 									%>
-									tmpDate_<%=cid%> = statement_<%=cid%>.getDate(<%=argIndex%>);
+									tmpDate_<%=cid%> = statement_<%=cid%>.getTimestamp(<%=argIndex%>);
 									if (tmpDate_<%=cid%> != null)
 										<%=firstOutConnection.getName()%>.<%=argName%> = new java.util.Date(tmpDate_<%=cid%>.getTime());
 									<%

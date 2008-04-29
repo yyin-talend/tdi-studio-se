@@ -66,5 +66,5 @@ for (int i = 0; i < spArgs.size(); i++) {
 }
 %>)}");
 
-java.sql.Date tmpDate_<%=cid%>;
+java.sql.Timestamp tmpDate_<%=cid%>;
 String tmpString_<%=cid%>;
