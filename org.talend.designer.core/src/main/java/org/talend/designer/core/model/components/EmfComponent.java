@@ -59,10 +59,14 @@ import org.talend.core.model.process.IConnectionProperty;
 import org.talend.core.model.process.IElementParameterDefaultValue;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
+import org.talend.core.model.properties.SQLPatternItem;
+import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.temp.ECodePart;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.designer.components.IComponentsLocalProviderService;
+import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.utils.emf.component.ADVANCEDPARAMETERSType;
 import org.talend.designer.core.model.utils.emf.component.COLUMNType;
@@ -407,17 +411,20 @@ public class EmfComponent implements IComponent {
         param.setNbLines(10);
         param.setCategory(EComponentCategory.SQL_PATTERN);
         param.setNumRow(1);
-        param.setReadOnly(true);
+        param.setReadOnly(false);
         param.setRequired(false);
         param.setShow(true);
 
         EList patternList = patterns.getSQLPATTERN();
 
+        // this is the sql patterns defined in the node's xml
+        List<String> patternNames = new ArrayList<String>();
         List<Map> value = new ArrayList<Map>();
         for (Iterator iterator = patternList.iterator(); iterator.hasNext();) {
             SQLPATTERNType pattern = (SQLPATTERNType) iterator.next();
             Map map = new HashMap();
             map.put(SQLPATTERNLIST, pattern.getNAME());
+            patternNames.add(pattern.getNAME());
             value.add(map);
         }
         param.setValue(value);
@@ -438,13 +445,26 @@ public class EmfComponent implements IComponent {
         newParam.setName(SQLPATTERNLIST);
         newParam.setFilter("");
         newParam.setDisplayName(""); //$NON-NLS-1$
-        newParam.setField(EParameterFieldType.TEXT);
+        newParam.setField(EParameterFieldType.CLOSED_LIST);
         newParam.setContext("");
         newParam.setValue("");
+        {
+            String[] allPatternNames = getSqlPatternsByDB(patterns.getDB());
+
+            String[] names = allPatternNames;
+            newParam.setListItemsDisplayName(names);
+            newParam.setListItemsDisplayCodeName(names);
+            newParam.setListItemsValue(names);
+            newParam.setListRepositoryItems(names);
+            newParam.setListItemsShowIf(new String[names.length]);
+            newParam.setListItemsNotShowIf(new String[names.length]);
+            newParam.setDefaultClosedListValue(allPatternNames[0]);
+            newParam.setValue(allPatternNames[0]);
+        }
 
         listItemsValue[0] = newParam;
 
-        listField[0] = EParameterFieldType.TEXT.getName();
+        listField[0] = EParameterFieldType.CLOSED_LIST.getName();
         param.setListItemsDisplayName(listItemsDisplayValue);
         param.setListItemsDisplayCodeName(listItemsDisplayCodeValue);
         param.setListItemsValue(listItemsValue);
@@ -465,6 +485,31 @@ public class EmfComponent implements IComponent {
         param.setRequired(false);
         param.setShow(true);
         listParam.add(param);
+    }
+
+    /**
+     * DOC bqian Comment method "getSqlPatternsByDB".
+     * 
+     * @param db
+     * @return
+     */
+    private String[] getSqlPatternsByDB(String db) {
+        List<String> patterns = new ArrayList<String>();
+        try {
+
+            List<IRepositoryObject> list = DesignerPlugin.getDefault().getRepositoryService().getProxyRepositoryFactory().getAll(
+                    ERepositoryObjectType.METADATA_SQLPATTERNS, false);
+            for (IRepositoryObject repositoryObject : list) {
+                SQLPatternItem item = (SQLPatternItem) repositoryObject.getProperty().getItem();
+                if (item.getEltName().equals(db)) {
+                    patterns.add(item.getProperty().getLabel());
+                }
+            }
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+
+        return patterns.toArray(new String[0]);
     }
 
     private final IPreferenceStore store = CorePlugin.getDefault().getComponentsLocalProviderService().getPreferenceStore();

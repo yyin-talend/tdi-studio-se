@@ -32,6 +32,7 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
@@ -50,7 +51,6 @@ import org.talend.core.model.properties.SQLPatternItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.utils.TalendTextUtils;
-import org.talend.designer.core.DesignerCoreService;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -198,8 +198,19 @@ public class TableController extends AbstractElementPropertySectionController {
 
             public void selectionChanged(SelectionChangedEvent event) {
                 Object o = ((IStructuredSelection) tableViewer.getSelection()).getFirstElement();
-                Map<String, String> map = (Map<String, String>) o;
-                String sqlpatternName = map.get(EmfComponent.SQLPATTERNLIST);
+                if (o == null) {
+                    return;
+                }
+                Map map = (Map) o;
+                Object object = map.get(EmfComponent.SQLPATTERNLIST);
+                String sqlpatternName = null;
+                if (object instanceof String) {
+                    sqlpatternName = (String) object;
+                } else {
+                    TableItem item = tableViewer.getTable().getSelection()[0];
+                    sqlpatternName = item.getText(1);
+                }
+
                 String eltNodeName = (String) elem.getElementParameter(EParameterName.SQLPATTERN_DB_NAME.getName()).getValue();
 
                 SQLPatternItem sqlpatternItem = null;

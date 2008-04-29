@@ -208,7 +208,10 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
                 }
             } else if (category == EComponentCategory.ADVANCED_CONTEXT) {
                 dc = new AdvancedContextComposite(parent, SWT.NONE, element);
-            } else {
+            } else if (category == EComponentCategory.SQL_PATTERN) {
+                dc = new SQLPatternComposite(parent, SWT.NONE, element);
+            }
+            else {
                 tabFactory.getTabbedPropertyComposite().getCompactButton().setVisible(false);
                 tabFactory.getTabbedPropertyComposite().getTableButton().setVisible(false);
                 dc = new MultipleThreadDynamicComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS, category, element,
@@ -527,7 +530,7 @@ public class ComponentSettingsView extends ViewPart implements IComponentSetting
             return EElementType.CONNECTION.getCategories();
         } else if (elem instanceof Node) {
             // if (isAdvancedType(elem)) {
-            if(((Node)elem).isELTComponent()){
+            if (((Node) elem).isELTComponent()) {
                 return EElementType.ELT_NODE.getCategories();
             }
             return EElementType.ADVANCED_NODE.getCategories();
