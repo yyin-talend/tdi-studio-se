@@ -32,6 +32,7 @@ import org.talend.commons.utils.data.container.Container;
 import org.talend.commons.utils.data.container.RootContainer;
 import org.talend.commons.utils.workbench.resources.ResourceUtils;
 import org.talend.core.CorePlugin;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.general.ILibrariesService;
 import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.general.Project;
@@ -50,6 +51,7 @@ import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.properties.SQLPatternItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.ui.branding.IBrandingService;
 import org.talend.designer.codegen.ITalendSynchronizer;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
@@ -407,7 +409,7 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
 
             // set the item's relative path in the repository view
             IPath path = new Path(categoryName);
-            path= path.append(RepositoryConstants.SYSTEM_DIRECTORY);
+            path = path.append(RepositoryConstants.SYSTEM_DIRECTORY);
 
             create(sqlpatternItem, path);
         } catch (IOException ioe) {
@@ -426,7 +428,14 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         new StatusPreferenceInitializer().initializeDefaultPreferences();
         String productVersion = RepositoryPlugin.getDefault().getBundle().getHeaders().get(
                 org.osgi.framework.Constants.BUNDLE_VERSION).toString();
-        project.getEmfProject().setProductVersion(productVersion);
+
+        IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
+                IBrandingService.class);
+
+        String productBranding = brandingService.getFullProductName();
+
+        project.getEmfProject().setProductVersion(productBranding + "-" + productVersion);
+
         saveProject();
     }
 
