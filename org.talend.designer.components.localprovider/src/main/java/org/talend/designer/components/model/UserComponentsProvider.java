@@ -26,36 +26,11 @@ import org.talend.designer.components.ui.ComponentsPreferencePage;
 /***/
 public class UserComponentsProvider extends AbstractComponentsProvider {
 
-    private static Logger logger = Logger.getLogger(UserComponentsProvider.class);
-
     /***/
     public UserComponentsProvider() {
     }
 
-    public void preComponentsLoad() throws IOException {
-        File installationFolder = getInstallationFolder();
-
-        // clean folder
-        if (installationFolder.exists()) {
-            FilesUtils.removeFolder(installationFolder, true);
-        }
-        FilesUtils.createFoldersIfNotExists(installationFolder.getAbsolutePath(), false);
-
-        File externalComponentsLocation = getExternalComponentsLocation();
-        if (externalComponentsLocation != null) {
-            if (externalComponentsLocation.exists()) {
-                try {
-                    FilesUtils.copyFolder(externalComponentsLocation, installationFolder, false, null, null, true);
-                } catch (IOException e) {
-                    ExceptionHandler.process(e);
-                }
-            } else {
-                logger.warn("Folder " + externalComponentsLocation.toString() + " does not exist.");
-            }
-        }
-    }
-
-    private File getExternalComponentsLocation() {
+    protected File getExternalComponentsLocation() {
         IPreferenceStore prefStore = ComponentsLocalProviderPlugin.getDefault().getPreferenceStore();
         String path = prefStore.getString(ComponentsPreferencePage.USER_COMPONENTS_FOLDER);
         return (path == null || path.length() == 0 ? null : new File(path));
