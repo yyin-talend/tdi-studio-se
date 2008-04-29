@@ -35,8 +35,6 @@
 	org.talend.core.model.process.INode
 	" 
 
-
-
 %>
 
 <%@ include file="tMapPersistent_main.inc.javajet" %>

@@ -283,6 +283,7 @@ if(false) {
 		boolean previousTableIsPersistentSorted = false;
 		boolean previousTableIsMultipleResultMode = false;
 		List<String> declarationsStructForNextSortedWhile = new ArrayList<String>();
+		List<String> closeAllRowsBlockCount = new ArrayList<String>();
 
         for (int iInputTable = 0; iInputTable < sizeInputTables; iInputTable++) { // T_TM_M_261
 			ExternalMapperTable externalTable = inputTables.get(iInputTable);
@@ -301,6 +302,7 @@ if(false) {
 			boolean nextTableIsFirstPersistentSorted = nextTableIsPersistentSorted && !previousStateIsFirstPersistentSortedTable;
 			
 			boolean isLastTableForTMAP_OUT = isVirtualOut && nextTableIsFirstPersistentSorted;
+			boolean isLastPersistentSortedTableForTMAP_OUT = false;
 
 
             String tableName = externalTable.getName();
@@ -364,6 +366,8 @@ if(false) {
 					if(previousStateIsFirstPersistentSortedTable == false && isPersistentSortedTable) {
 						isFirstPersistentSortedTable = true;
 					}
+					
+					isLastPersistentSortedTableForTMAP_OUT = isVirtualOut && isFirstPersistentSortedTable;
 
 					nextJoinedTableNames += "__" + tableName; 
 
@@ -636,7 +640,7 @@ if(false) {
 								while (tHash_Lookup_<%= tableName %>.hasNext() || forceLoop<%= tableName %>) { // G_TM_M_043
 
 								<%
-								if(!hasPersistentLookup || isLastPersistentSortedTable || lastPersistentSortedTableIsAlreadyProcessed) {
+								if(!hasPersistentLookup || isLastPersistentSortedTable || lastPersistentSortedTableIsAlreadyProcessed || (isVirtualOut && hasPersistentLookup && !isPersistentSortedTable)) {
 									%>
 									 // CALL close loop of lookup '<%=tableName %>'
 									<%
@@ -869,17 +873,37 @@ if(false) {
 
 
 
-                	if(hasPersistentLookup && !isLastPersistentSortedTable && isMultipleResultMode) { // T_TM_M_247
+                	if(hasPersistentLookup && !isLastPersistentSortedTable && isMultipleResultMode 
+                		&& !(isVirtualOut && hasPersistentLookup && !isPersistentSortedTable)
+                		&& !(isVirtualIn && hasPersistentLookup && !isPersistentSortedTable)
+                		) { // T_TM_M_247
 					%>
 								if(forceLoop<%= tableName %>) {
 									break;
 								}
 							
-	            			}  // G_TM_M_043 loop <%= tableName %>
+	            			}  // G_TM_M_043 loop (MultipleResult) <%= tableName %>
 					<%
-					} // T_TM_M_247
+					} /* T_TM_M_247 */ else if(isVirtualIn && !isPersistentSortedTable) { // T_TM_M_259
+					
+						closeAllRowsBlockCount.add(tableName);
+					
+					} // T_TM_M_259
 	    		
                 	if(!isLastTableForTMAP_OUT && !isLastTable && nextTableIsPersistentSorted) { // T_TM_M_248
+                	
+                		if(isVirtualIn && nextTableIsPersistentSorted) {
+							int sizeCloseAllRowsBlocks = closeAllRowsBlockCount.size();
+                			for(int iCloseBlockAllRows = 0; iCloseBlockAllRows < sizeCloseAllRowsBlocks; iCloseBlockAllRows++) {
+                				String lookupName = closeAllRowsBlockCount.get(iCloseBlockAllRows);
+							%>
+	        	    			}  // G_TM_M_043 loop (closeAllRowsBlock) <%= lookupName %>
+							<%
+                				
+                			}
+                			closeAllRowsBlockCount.clear();
+                		}
+                	
 					%>
 	    	        	} // G_TM_M_250 loop "<%= currentJoinedTableNames %>"
 	            	<%
