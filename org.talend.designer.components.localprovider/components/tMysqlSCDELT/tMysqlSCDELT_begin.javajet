@@ -1,0 +1,467 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser 
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.metadata.MetadataTalendType
+    java.util.List
+    java.util.Map
+    java.util.HashMap
+    java.util.ArrayList
+    org.talend.commons.utils.StringUtils
+    org.talend.core.model.metadata.MappingTypeRetriever
+" 
+skeleton="../templates/db_output_bulk.skeleton"
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+
+
+
+// searching the outgoing schema
+IMetadataTable metadata = null;
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if (metadatas != null && metadatas.size() > 0) {
+    metadata = metadatas.get(0);
+}
+
+// we only generate output if incoming and outgoing schema are defined
+if (metadata != null) {
+	
+    String debugString = ElementParameterParser.getValue(node, "__DEBUG__");
+    boolean debug = false;
+    if (debugString.equals("true")) {
+        debug = true;
+    }
+
+    String useExistingConnection = ElementParameterParser.getValue(
+        node,
+        "__USE_EXISTING_CONNECTION__"
+    );
+
+    String dbhost = ElementParameterParser.getValue(node, "__HOST__");
+    String dbport = ElementParameterParser.getValue(node, "__PORT__");
+    String dbname = ElementParameterParser.getValue(node, "__DBNAME__");
+    String dbuser = ElementParameterParser.getValue(node, "__USER__");
+    String dbpass = ElementParameterParser.getValue(node, "__PASS__");
+    String dbmsId = ElementParameterParser.getValue(node,"__MAPPING__");
+    List<IMetadataColumn> columnList = getColumnList(node);
+	List<Column> stmtStructure = null;
+	if(columnList != null && columnList.size() > 0) {
+    	stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, false, new ArrayList<Map<String, String>>(), new ArrayList<Map<String, String>>());
+	}
+    String dbproperties = ElementParameterParser.getValue(node, "__PROPERTIES__");
+    String encoding = ElementParameterParser.getValue(
+        node,
+        "__ENCODING__"
+    );
+
+
+    String dbtable = ElementParameterParser.getValue(node, "__TABLE__");
+    String dbtablesrc = ElementParameterParser.getValue(node, "__TABLE_SRC__");
+    String tableAction = ElementParameterParser.getValue(
+        node,
+        "__TABLE_ACTION__"
+    );
+
+
+    List<Map<String, String>> sourceKeys =
+        (List<Map<String,String>>)ElementParameterParser.getObjectValue(
+            node,
+            "__SOURCE_KEYS__"
+    );
+
+
+    String useL1 = ElementParameterParser.getValue(node, "__USE_L1__");
+    List<Map<String, String>> l1fields = new ArrayList<Map<String, String>>();
+
+    if (useL1.equals("true")) {
+        l1fields =
+            (List<Map<String,String>>)ElementParameterParser.getObjectValue(
+                node,
+                "__L1_FIELDS__"
+        );
+    }
+
+    String useL2 = ElementParameterParser.getValue(node, "__USE_L2__");
+    List<Map<String, String>> l2fields = new ArrayList<Map<String, String>>();
+
+    if (useL2.equals("true")) {
+        l2fields =
+            (List<Map<String,String>>)ElementParameterParser.getObjectValue(
+                node,
+                "__L2_FIELDS__"
+        );
+    }
+
+    String startdateField = ElementParameterParser.getValue(
+        node,
+        "__L2_STARTDATE_FIELD__"
+    );
+    
+    String enddateField = ElementParameterParser.getValue(
+        node,
+        "__L2_ENDDATE_FIELD__"
+    );
+
+    String useActive = ElementParameterParser.getValue(
+        node,
+        "__USE_L2_ACTIVE__"
+    );
+    
+    String activeField = ElementParameterParser.getValue(
+        node,
+        "__L2_ACTIVE_FIELD__"
+    );
+    
+    String useVersion = ElementParameterParser.getValue(
+        node,
+        "__USE_L2_VERSION__"
+    );
+    
+    String versionField = ElementParameterParser.getValue(
+        node,
+        "__L2_VERSION_FIELD__"
+    );
+
+
+    Map<String, String> typeOfColumn = new HashMap();
+
+    for (Map<String, String> sk : sourceKeys) {
+        typeOfColumn.put(sk.get("NAME"), "SK");
+    }
+
+    for (Map<String, String> l1field : l1fields) {  
+        typeOfColumn.put(l1field.get("NAME"), "L1");
+    }
+
+    for (Map<String, String> l2field : l2fields) {
+        typeOfColumn.put(l2field.get("NAME"), "L2");
+    }
+
+    for (String key : typeOfColumn.keySet()) {
+%>
+// <%=key%> : <%=typeOfColumn.get(key)%>
+<%
+    }
+
+
+    if (useExistingConnection.equals("true")) {
+        String connection = ElementParameterParser.getValue(node, "__CONNECTION__");
+        String connectionName = "conn_" + connection;
+        %>
+        java.sql.Connection conn_<%=cid%> = (java.sql.Connection) globalMap.get("<%=connectionName%>");
+        <%        
+    } else {
+        %>
+        java.lang.Class.forName("org.gjt.mm.mysql.Driver");
+        <%
+        if(dbproperties == null || dbproperties.equals("\"\"") || dbproperties.equals("")) {
+            %>
+            String connectionString_<%=cid%> = "jdbc:mysql://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%>;
+            <%
+        } else {
+            %>
+            String connectionString_<%=cid%> = "jdbc:mysql://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%> + "?" + <%=dbproperties%>;
+            <%
+        }       
+        %>
+        java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(connectionString_<%=cid %>, <%=dbuser%>, <%=dbpass%>);
+        <%        
+    }
+    %>
+    
+    
+	java.sql.Statement stmt_<%=cid %> = conn_<%=cid %>.createStatement();
+    <%
+    
+    if(!tableAction.equals("NONE")) {
+%>
+    String tableName_<%=cid%> = <%=dbtable%>;
+<%
+        Manager manager = getManager(dbmsId, cid);
+        if(tableAction.equals("DROP_CREATE")) {
+            %>
+            stmt_<%=cid%>.execute("<%=manager.getDropTableSQL()%>");
+            stmt_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
+            <%
+        } else if(tableAction.equals("CREATE")) {
+            %>
+            stmt_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");
+            <%
+        } else if(tableAction.equals("CREATE_IF_NOT_EXISTS") || tableAction.equals("DROP_IF_EXISTS_AND_CREATE")) {
+            %>
+            java.sql.DatabaseMetaData dbMetaData_<%=cid%> = conn_<%=cid%>.getMetaData();
+            java.sql.ResultSet rsTable_<%=cid%> = dbMetaData_<%=cid%>.getTables(null, null, null, new String[]{"TABLE"});
+            boolean whetherExist_<%=cid%> = false;
+            while(rsTable_<%=cid%>.next()) {
+                String table_<%=cid%> = rsTable_<%=cid%>.getString("TABLE_NAME");
+                if(table_<%=cid%>.equalsIgnoreCase(<%=dbtable%>)) {
+                    whetherExist_<%=cid%> = true;
+                    break;
+                }
+            }
+            <%
+            if(tableAction.equals("CREATE_IF_NOT_EXISTS")) {
+                %>
+                if(!whetherExist_<%=cid%>) {
+                    stmt_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");            
+                }                
+                <%
+            } else {
+                %>
+                if(whetherExist_<%=cid%>) {
+                    stmt_<%=cid%>.execute("<%=manager.getDropTableSQL()%>");
+                }
+                stmt_<%=cid%>.execute("<%=manager.getCreateTableSQL(stmtStructure)%>");                
+            <%
+            }
+        } else if(tableAction.equals("CLEAR")) {
+            %>
+            java.sql.ResultSet rsClearCount_<%=cid%> = stmt_<%=cid%>.executeQuery("<%=manager.getSelectionSQL()%>");
+            stmt_<%=cid%>.executeUpdate("<%=manager.getTruncateTableSQL()%>");
+            while(rsClearCount_<%=cid%>.next()) {
+                deletedCount_<%=cid%> += rsClearCount_<%=cid%>.getInt(1);
+            }
+            <%
+        }
+    }
+%>
+<%
+    if (debug) {
+%>
+     System.out.println("[<%=cid%>] table action <%=tableAction%> done\n");
+
+<%
+    }
+
+
+    if( useL1.equals("true") ) {
+        List setcols = new ArrayList();
+        List joinclause = new ArrayList();
+        List whereclause = new ArrayList();
+
+        for (Map<String, String> sk : sourceKeys) {
+            joinclause.add(
+                "    d." + 
+                StringUtils.getMysqlProtectedColumnName(sk.get("NAME"))+
+                " = t." + 
+                StringUtils.getMysqlProtectedColumnName(sk.get("NAME"))
+            );
+        }
+
+        for (Map<String, String> l1field : l1fields) {
+            setcols.add(
+                "  d." + 
+                StringUtils.getMysqlProtectedColumnName(l1field.get("NAME"))+
+                " = t." + 
+                StringUtils.getMysqlProtectedColumnName(l1field.get("NAME"))
+            );
+        }
+
+        for (Map<String, String> l1field : l1fields) {
+            whereclause.add(
+                "  d." + 
+                StringUtils.getMysqlProtectedColumnName(l1field.get("NAME"))+
+                " <> t." + 
+                StringUtils.getMysqlProtectedColumnName(l1field.get("NAME"))
+            );
+        }
+    
+        String setcolsString = StringUtils.join(
+            setcols.toArray(),
+            ", "
+        );
+    
+        String joinclauseString = StringUtils.join(
+            joinclause.toArray(),
+            " AND "
+        );
+    
+        String whereclauseString = StringUtils.join(
+            whereclause.toArray(),
+            " OR "
+        );
+
+%>	
+
+
+
+// SCD TYPE 1
+String l1_update_query_<%=cid %> = "UPDATE " + <%=dbtable%> + " d, " + <%=dbtablesrc%> + " t SET <%=setcolsString%> WHERE <%=joinclauseString%> AND (<%=whereclauseString%>)";
+
+stmt_<%=cid%>.executeUpdate(l1_update_query_<%=cid %>);
+
+<%
+    if (debug) {
+%>
+	System.out.println("[<%=cid%>] l1 update sql\n" + l1_update_query_<%=cid %> + "\ndone");
+<%
+    }
+%>
+<%
+    }
+%>
+<%  
+        List setcols = new ArrayList();
+        List joinclause = new ArrayList();
+        List whereclause = new ArrayList();
+        List outerwhereclause = new ArrayList();
+
+        for (Map<String, String> sk : sourceKeys) {
+            joinclause.add(
+                " d." + 
+                StringUtils.getMysqlProtectedColumnName(sk.get("NAME"))+
+                " = t." + 
+                StringUtils.getMysqlProtectedColumnName(sk.get("NAME"))
+            );
+
+            outerwhereclause.add(
+                " d." + 
+                StringUtils.getMysqlProtectedColumnName(sk.get("NAME"))+
+                " IS NULL "
+            );
+
+        }
+
+
+
+        for (Map<String, String> l2field : l2fields) {
+            whereclause.add(
+                " d." + 
+                StringUtils.getMysqlProtectedColumnName(l2field.get("NAME"))+
+                " <> t." + 
+                StringUtils.getMysqlProtectedColumnName(l2field.get("NAME"))
+            );
+        }
+    
+        String setcolsString = StringUtils.join(
+            setcols.toArray(),
+            ", "
+        );
+    
+        String joinclauseString = StringUtils.join(
+            joinclause.toArray(),
+            " AND"
+        );
+
+        String outerwhereclauseString = StringUtils.join(
+            outerwhereclause.toArray(),
+            " AND"
+        );
+
+    
+        String whereclauseString = StringUtils.join(
+            whereclause.toArray(),
+            " OR"
+        );
+
+        // insert query generation
+        List colnames = new ArrayList();
+
+        // first we iterate on schema columns...
+        for (IMetadataColumn column: metadata.getListColumns()) {
+            if (typeOfColumn.containsKey(column.getLabel())) {
+                colnames.add(
+                    StringUtils.getMysqlProtectedColumnName(column.getLabel())
+                );
+            }
+        }
+
+        String l2SelectString = StringUtils.join(colnames.toArray(), ", t.");
+    
+        // then we add L2 dedicated columns to store historical informations
+        if (useL2.equals("true")) {
+            colnames.add(StringUtils.getMysqlProtectedColumnName(startdateField));
+
+            colnames.add(StringUtils.getMysqlProtectedColumnName(enddateField));
+  
+            if (useActive.equals("true")) {
+                colnames.add(
+                    StringUtils.getMysqlProtectedColumnName(activeField)
+                );
+            }
+    
+            if (useVersion.equals("true")) {
+                colnames.add(
+                    StringUtils.getMysqlProtectedColumnName(versionField)
+                );
+            }
+        }
+    
+        String colnamesString = StringUtils.join(colnames.toArray(), ", ");
+
+    if( useL2.equals("true") ) {
+%>	
+
+// SCD TYPE 2 : EXPIRATION DATE
+String l2_expiration_query_<%=cid %> = "UPDATE " + <%=dbtable%> + " d, " + <%=dbtablesrc%> + 
+	" t SET `<%=enddateField%>` = '" + (new java.sql.Date((Long)start_Hash.get("<%=cid %>")))  + 
+	"'<%if (useActive.equals("true")) {%>, `<%=activeField%>` = 0<%}%> WHERE <%=joinclauseString%> AND (<%=whereclauseString%>) AND d.`<%=enddateField%>` IS NULL";
+
+//String l2_expiration_query_<%=cid %> = "UPDATE " + <%=dbtable%> + " d, " + <%=dbtablesrc%> + " t SET d.`<%=enddateField%>` = '" + 
+//(new java.sql.Date((Long)start_Hash.get("<%=cid %>"))) + 
+//"'<% if (useActive.equals("true")) {%>, d.`<%=activeField%>` = 0<%}%> WHERE <%=joinclauseString%> AND (<%=whereclauseString%>) AND d.`<%=enddateField%>` IS NULL";
+stmt_<%=cid%>.execute(l2_expiration_query_<%=cid %>);
+
+<%
+    if (debug) {
+%>
+	System.out.println("[<%=cid%>] l2 expiration date\n" + l2_expiration_query_<%=cid %> + "\ndone");
+<%
+    }
+%>
+
+
+// SCD TYPE 2 : NEW ACTIVE ROW
+String l2_new_active_query_<%=cid %> = "INSERT INTO " + <%=dbtable%> + "(<%=colnamesString%>) select t.<%=l2SelectString%>, '" + 
+(new java.sql.Date((Long)start_Hash.get("<%=cid %>"))) + "', NULL<%if (useActive.equals("true")) {%>, 1<%}%><%if (useVersion.equals("true")) {%>, d.`<%=versionField%>` + 1<%}%> FROM " +
+<%=dbtablesrc%> + " t," + <%=dbtable%> + " d WHERE <%=joinclauseString%> AND (<%=whereclauseString%>) AND d.`<%=enddateField%>` = '" + 
+(new java.sql.Date((Long)start_Hash.get("<%=cid %>"))) + "'";
+
+stmt_<%=cid%>.execute(l2_new_active_query_<%=cid %>);
+
+<%
+    if (debug) {
+%>
+	System.out.println("[<%=cid%>] l2 new active row slq\n" + l2_new_active_query_<%=cid %> + "\ndone");
+<%
+    }
+    
+    
+    }
+%>
+
+
+// NEW ROWS ( TYPE 1 or 2 )
+String new_rows_query_<%=cid %> = "INSERT INTO " + <%=dbtable%> + "(<%=colnamesString%>) select t.<%=l2SelectString%><%if( useL2.equals("true") ){%>, '" + 
+(new java.sql.Date((Long)start_Hash.get("<%=cid %>")))+ 
+"', NULL<%if (useActive.equals("true")) {%>, 1<%}%><%if (useVersion.equals("true")) {%>, 1<%}%><%}//l2 fields are defined%> FROM " + 
+<%=dbtablesrc%> + " t LEFT JOIN " +
+<%=dbtable%> + " d ON <%=joinclauseString%> WHERE (<%=outerwhereclauseString%>)";
+
+stmt_<%=cid%>.execute(new_rows_query_<%=cid %>);
+
+<%
+    if (debug) {
+%>
+	System.out.println("[<%=cid%>] l2 new rows sql\n" + new_rows_query_<%=cid %> + "\ndone");
+<%
+    }
+%>
+
+
+<%
+}
+else {
+%>
+// no code generated until input and output schema defined
+<%
+}
+%>
