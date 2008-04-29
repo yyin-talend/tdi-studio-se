@@ -180,65 +180,7 @@ public class TableController extends AbstractElementPropertySectionController {
         this.dynamicProperty.setCurRowSize(ySize2 + ITabbedPropertyConstants.VSPACE);
 
         top += this.dynamicProperty.getCurRowSize();
-        addSelectionChangeListener(tableEditorView.getExtendedTableViewer().getTableViewerCreator().getTableViewer());
         return null;
-    }
-
-    /**
-     * DOC bqian Comment method "addSelectionChangeListener".
-     * 
-     * @param tableViewer
-     */
-    private void addSelectionChangeListener(final TableViewer tableViewer) {
-        if (curParameter.getName() != EParameterName.SQLPATTERN_VALUE.getName()) {
-            return;
-        }
-
-        tableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-
-            public void selectionChanged(SelectionChangedEvent event) {
-                Object o = ((IStructuredSelection) tableViewer.getSelection()).getFirstElement();
-                if (o == null) {
-                    return;
-                }
-                Map map = (Map) o;
-                Object object = map.get(EmfComponent.SQLPATTERNLIST);
-                String sqlpatternName = null;
-                if (object instanceof String) {
-                    sqlpatternName = (String) object;
-                } else {
-                    TableItem item = tableViewer.getTable().getSelection()[0];
-                    sqlpatternName = item.getText(1);
-                }
-
-                String eltNodeName = (String) elem.getElementParameter(EParameterName.SQLPATTERN_DB_NAME.getName()).getValue();
-
-                SQLPatternItem sqlpatternItem = null;
-                try {
-                    List<IRepositoryObject> list = DesignerPlugin.getDefault().getRepositoryService().getProxyRepositoryFactory()
-                            .getAll(ERepositoryObjectType.METADATA_SQLPATTERNS, false);
-
-                    for (IRepositoryObject repositoryObject : list) {
-                        SQLPatternItem item = (SQLPatternItem) repositoryObject.getProperty().getItem();
-                        if (item.getEltName().equals(eltNodeName) && item.getProperty().getLabel().equals(sqlpatternName)) {
-                            sqlpatternItem = item;
-                            break;
-                        }
-
-                    }
-
-                } catch (Exception e) {
-                    ExceptionHandler.process(e);
-                }
-
-                if (sqlpatternItem != null) {
-                    PropertyChangeCommand command = new PropertyChangeCommand(elem, EParameterName.SQLPATTERN_CODE.getName(),
-                            new String(sqlpatternItem.getContent().getInnerContent()));
-                    getCommandStack().execute(command);
-                }
-            }
-        });
-
     }
 
     /*
