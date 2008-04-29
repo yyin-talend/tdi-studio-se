@@ -9,7 +9,11 @@
 	org.talend.designer.mapper.MapperComponent
 	org.talend.core.model.process.IElementParameter
 	org.talend.core.model.process.INode
-	" 
+	org.talend.core.model.process.IConnection
+	java.util.HashMap
+	java.util.Map
+	"
+
 %>
 
 
