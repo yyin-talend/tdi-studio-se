@@ -26,15 +26,58 @@
 	connSet.addAll(node.getOutgoingConnections(EConnectionType.FLOW_MAIN));
 	connSet.addAll(node.getOutgoingConnections(EConnectionType.FLOW_MERGE));
 	String incomingName = codeGenArgument.getIncomingName();
+	
+	Set<IConnection> iterateConnSet =  new HashSet<IConnection>();
+	iterateConnSet.addAll(node.getOutgoingConnections(EConnectionType.ITERATE));
+	
+	List<IConnection> allSubProcessConnection = codeGenArgument.getAllMainSubTreeConnections();
 %>
-/**
+/*/*
  * [<%=node.getUniqueName() %> <%=codePart %> ] start
  */
 
 <%
-	if (codePart.equals(ECodePart.BEGIN)) {
+	if (codePart.equals(ECodePart.END)) {
+		boolean parallelIterate = false;
+		for (IConnection iterateConn : iterateConnSet) {
+			parallelIterate = "true".equals(ElementParameterParser.getValue(iterateConn, "__ENABLE_PARALLEL__")); 
+	        if (parallelIterate) {
+	        	String rowList=","; 
+				for (IConnection conn : allSubProcessConnection) {
+					rowList += conn.getUniqueName()+",";
+				}
+				rowList = rowList.substring(0, rowList.length()-1);
+%>
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			this.isRunning = false;
+		}
+	}
+	
+	<%=node.getUniqueName() %>Thread bt_<%=node.getUniqueName() %> = new <%=node.getUniqueName() %>Thread(globalMap<%=rowList %>);
+	mtp_<%=node.getUniqueName() %>.execute(bt_<%=node.getUniqueName() %>);
+<%
+				continue;
+			}
+		}
+	}
 %>
 
+<%
+	if (codePart.equals(ECodePart.BEGIN)) {
+		boolean parallelIterate = false;
+		for (IConnection iterateConn : iterateConnSet) { 
+			parallelIterate = "true".equals(ElementParameterParser.getValue(iterateConn, "__ENABLE_PARALLEL__"));
+	        if (parallelIterate) {
+%>
+			TalendThreadPool mtp_<%=node.getUniqueName() %> = new TalendThreadPool(<%=ElementParameterParser.getValue(iterateConn,"__NUMBER_PARALLEL__") %>);
+			final Object[] lockWrite = new Object[0];
+<%
+			}
+			continue;
+		}
+%>
 
 ok_Hash.put("<%=node.getUniqueName() %>", false);
 start_Hash.put("<%=node.getUniqueName() %>", System.currentTimeMillis());

@@ -12,6 +12,10 @@
 // ============================================================================
 package org.talend.designer.codegen.config;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.talend.core.model.process.IConnection;
 import org.talend.core.model.temp.ECodePart;
 
 /**
@@ -23,6 +27,10 @@ import org.talend.core.model.temp.ECodePart;
 public class CodeGeneratorArgument {
 
     private Object argument;
+    
+    private NodesSubTree subTree;
+
+    private List<IConnection> allMainSubTreeConnections;
 
     private boolean statistics;
 
@@ -51,6 +59,8 @@ public class CodeGeneratorArgument {
     private boolean isRunInMultiThread;
 
     private int pauseTime;
+    
+    private boolean subTreeContainsParallelIterate;
 
     /**
      * Constructor.
@@ -226,5 +236,50 @@ public class CodeGeneratorArgument {
 
     public void setJobVersion(String jobVersion) {
         this.jobVersion = jobVersion;
+    }
+
+    /**
+     * Getter for allMainSubTreeConnections.
+     * 
+     * @return the allMainSubTreeConnections
+     */
+    public List<IConnection> getAllMainSubTreeConnections() {
+        if (allMainSubTreeConnections != null) {
+            return allMainSubTreeConnections;
+        }
+        return new ArrayList<IConnection>();
+    }
+
+    /**
+     * Sets the allMainSubTreeConnections.
+     * 
+     * @param allMainSubTreeConnections the allMainSubTreeConnections to set
+     */
+    public void setAllMainSubTreeConnections(List<IConnection> allMainSubTreeConnections) {
+        this.allMainSubTreeConnections = allMainSubTreeConnections;
+    }
+    
+    /**
+     * Getter for subTree.
+     * @return the subTree
+     */
+    public NodesSubTree getSubTree() {
+        return subTree;
+    }
+    
+    /**
+     * Sets the subTree.
+     * @param subTree the subTree to set
+     */
+    public void setSubTree(NodesSubTree subTree) {
+        this.subTree = subTree;
+    }
+
+    public boolean subTreeContainsParallelIterate() {
+        return subTreeContainsParallelIterate;
+    }
+    
+    public void setSubTreeContainsParallelIterate(boolean subTreeContainsParallelIterate) {
+        this.subTreeContainsParallelIterate = subTreeContainsParallelIterate;
     }
 }

@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.talend.core.model.process.EConnectionType;
+import org.talend.core.model.process.ElementParameterParser;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IConnectionCategory;
 import org.talend.core.model.process.INode;
@@ -52,6 +53,10 @@ public class NodesSubTree {
     private static final boolean DEBUG = false;
 
     boolean isMergeSubTree = false;
+    
+    List<IConnection> allMainSubTreeConnections = null;
+    
+    boolean subTreeContainsParallelIterate = false;
 
     List<INode> mergeBranchStarts;
 
@@ -72,6 +77,7 @@ public class NodesSubTree {
         this.visitedNodesBeginCode = new HashMap<INode, Integer>();
         this.visitedNodesEndCode = new HashMap<INode, Integer>();
         this.isMergeSubTree = node.isThereLinkWithMerge();
+        allMainSubTreeConnections = new ArrayList<IConnection>();
 
         buildSubTree(node, false);
 
@@ -134,6 +140,13 @@ public class NodesSubTree {
                 }
 
                 if (connection.getLineStyle().hasConnectionCategory(IConnectionCategory.MAIN)) {
+                    if (!connection.getLineStyle().hasConnectionCategory(IConnectionCategory.USE_ITERATE)) {
+                        allMainSubTreeConnections.add(connection);
+                    } else {
+                        if ("true".equals(ElementParameterParser.getValue(connection, "__ENABLE_PARALLEL__"))) {
+                            subTreeContainsParallelIterate = true;
+                        }
+                    }
                     if (DEBUG) {
                         System.out.print(" -> ");
                     }
@@ -338,5 +351,31 @@ public class NodesSubTree {
 
     public INode getMergeNode() {
         return this.mergeNode;
+    }
+    
+    /**
+     * Getter for allMainSubTreeConnections.
+     * @return the allMainSubTreeConnections
+     */
+    public List<IConnection> getAllMainSubTreeConnections() {
+        return allMainSubTreeConnections;
+    }
+    
+    /**
+     * Sets the allMainSubTreeConnections.
+     * @param allMainSubTreeConnections the allMainSubTreeConnections to set
+     */
+    public void setAllMainSubTreeConnections(List<IConnection> allMainSubTreeConnections) {
+        this.allMainSubTreeConnections = allMainSubTreeConnections;
+    }
+
+    
+    public boolean subTreeContainsParallelIterate() {
+        return subTreeContainsParallelIterate;
+    }
+
+    
+    public void setSubTreeContainsParallelIterate(boolean subTreeContainsParallelIterate) {
+        this.subTreeContainsParallelIterate = subTreeContainsParallelIterate;
     }
 }

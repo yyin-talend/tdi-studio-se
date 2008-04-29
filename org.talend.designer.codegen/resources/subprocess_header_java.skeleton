@@ -34,6 +34,35 @@ public class CLASS
         }
         return toReturn;
     }
+    
+    public String createPriveClassMethodDeclaration(INode n, String parentLastRoot, boolean force, Set<String> names) {
+    	String toReturn = "";
+        // declare root structs (all main outgoing connections)
+        for (IConnection conn : n.getOutgoingConnections()) {
+            if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN) || conn.getLineStyle().equals(EConnectionType.FLOW_MERGE)) {
+                if ((force)||(n.isSubProcessStart() || !(n.getComponent().isDataAutoPropagated()))) {
+                    // new Instance
+                    if (!names.contains(conn.getName())) {
+	                    toReturn += conn.getName() + "Struct " + conn.getName() + ",";
+	                    names.add(conn.getName());
+	                    parentLastRoot = conn.getName();
+                    }
+	            } else {
+                    // copy
+                    if (!names.contains(conn.getName())) {
+	                    toReturn += parentLastRoot + "Struct " + conn.getName() + ",";
+	                    names.add(conn.getName());
+                    }
+                }
+                if(!conn.getTarget().getComponent().useMerge()) {
+                   toReturn += createPriveClassMethodDeclaration(conn.getTarget(), parentLastRoot, false, names);
+                }
+            } else if (conn.getLineStyle().equals(EConnectionType.ITERATE)||conn.getLineStyle().equals(EConnectionType.ON_ROWS_END)) {
+            	toReturn += createPriveClassMethodDeclaration(conn.getTarget(), parentLastRoot, true, names);
+            }
+        }
+        return toReturn;
+    }
 		 
     public String generate(Object argument) {
         return "";

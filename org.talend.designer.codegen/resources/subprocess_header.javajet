@@ -99,6 +99,7 @@
 %>
 
 private class <%=conn.getName() %>Struct<%=templateOrigin %> implements routines.system.<%= isLookup ? "IPersistableComparableLookupRow<"+conn.getName()+"Struct>" : "IPersistableRow<"+conn.getName()+"Struct"+ templateOrigin + ">" %> {
+
 <%
 	if(hasAtLeastOneKey) {
 %>
@@ -708,29 +709,28 @@ public void <%=subTree.getName() %>Process() throws TalendException {
 
 <%
 	if(!subTree.isMergeSubTree()) {
-	List< ? extends IConnection> rootConns = subTree.getRootNode().getOutgoingConnections();
-	if ((rootConns!=null)&&(rootConns.size()>0)) {
+		List< ? extends IConnection> rootConns = subTree.getRootNode().getOutgoingConnections();
+		if ((rootConns!=null)&&(rootConns.size()>0)) {
 %>
 		<%=createPrivateClassInstance(subTree.getRootNode(), rootConns.get(0).getName(), false)%>
 <%
-	}
-  } else {  
-    List<INode> sortedMergeBranchStarts = subTree.getSortedMergeBranchStarts();    
-    for (INode startNode : sortedMergeBranchStarts) {
-       List< ? extends IConnection> rootConns = startNode.getOutgoingConnections();
-       if ((rootConns!=null)&&(rootConns.size()>0)) {
+		}
+  	} else {  
+    	List<INode> sortedMergeBranchStarts = subTree.getSortedMergeBranchStarts();    
+    	for (INode startNode : sortedMergeBranchStarts) {
+    		List< ? extends IConnection> rootConns = startNode.getOutgoingConnections();
+    		if ((rootConns!=null)&&(rootConns.size()>0)) {
 %>		  
 		<%=createPrivateClassInstance(startNode, rootConns.get(0).getName(), false)%>
 <%
-      }
-    }
+			}
+		}
     
-	List< ? extends IConnection> rootConns = subTree.getMergeNode().getOutgoingConnections();
-	if ((rootConns!=null)&&(rootConns.size()>0)) {
+		List< ? extends IConnection> rootConns = subTree.getMergeNode().getOutgoingConnections();
+		if ((rootConns!=null)&&(rootConns.size()>0)) {
 %>
 		<%=createPrivateClassInstance(subTree.getMergeNode(), rootConns.get(0).getName(), false)%>
 <%
+		}
 	}
-    
-  }
 %>
