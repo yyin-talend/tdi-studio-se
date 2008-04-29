@@ -129,7 +129,14 @@ if(ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("false")) {
     		        %>
     		        sb_<%=cid %>.append(OUT_DELIM_ROWSEP_<%=cid %>);
     		
+    				<% 
+    					if (codeGenArgument.subTreeContainsParallelIterate()) {
+    				%>
+    				synchronized (lockWrite) {
     		        <% 
+    		        	}
+    		        %>
+    		        <%
     		        if(split){ 
     		            %>
     		            if(currentRow_<%=cid%> % splitEvery_<%=cid%>==0 && currentRow_<%=cid%>!=0){
@@ -206,7 +213,14 @@ if(ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("false")) {
     		            %>     			
     		            <%
     		        }
-    		        %>  			
+    		        %>
+    		        <% 
+    					if (codeGenArgument.subTreeContainsParallelIterate()) {
+    				%>
+    				} 
+    		        <% 
+    		        	}
+    		        %> 			
     		        nb_line_<%=cid %>++;
     		        <%
     	        }
@@ -329,7 +343,16 @@ if(ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("false")) {
                 			    }
                 			    <%   			
                 			}
-            			} 
+            			}
+%>
+<% 
+    					if (codeGenArgument.subTreeContainsParallelIterate()) {
+%>
+				synchronized (lockWrite) {
+<%
+						}
+%>
+<%
             			if(split){
             			    %>
             			    if(currentRow_<%=cid%> % splitEvery_<%=cid%>==0 && currentRow_<%=cid%>!=0){
@@ -418,6 +441,13 @@ if(ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("false")) {
             		
             			}
             			%>
+<% 
+    					if (codeGenArgument.subTreeContainsParallelIterate()) {
+%>
+				}
+<%
+						}
+%>
             			nb_line_<%=cid %>++;
             			<%   		
             		}

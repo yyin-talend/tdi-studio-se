@@ -147,6 +147,13 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			}
 			%>
 			sb_<%=cid %>.append(<%=separator%>);
+			<% 
+				if (codeGenArgument.subTreeContainsParallelIterate()) {
+			%>
+			synchronized (lockWrite) {
+			<% 
+				}
+			%>
 			out<%=cid %>.write(sb_<%=cid %>.toString());
     		<% if(flushOnRow) { %>
         		if(nb_line_<%=cid %>%<%=flushMod %> == 0) {
@@ -154,8 +161,14 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         		}
     		<%
     			}
-    		%> 			
-			
+    		%>
+    		<% 
+				if (codeGenArgument.subTreeContainsParallelIterate()) {
+			%>
+				}
+			<% 
+				}
+			%> 						
 			nb_line_<%=cid %>++;
 <%
 		}

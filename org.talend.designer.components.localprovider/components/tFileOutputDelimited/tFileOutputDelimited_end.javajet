@@ -11,7 +11,18 @@
 <% 
     CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
     INode node = (INode)codeGenArgument.getArgument();
-    String cid = node.getUniqueName();	
+    String cid = node.getUniqueName();
+%>
+
+<% 
+	if (codeGenArgument.subTreeContainsParallelIterate()) {
+%>
+	synchronized (lockWrite) {
+<% 
+	}
+%>
+
+<%	
 	if(ElementParameterParser.getValue(node,"__CSV_OPTION__").equals("false")) {	
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 %>
@@ -51,4 +62,11 @@
 <%
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   }
+%>
+<% 
+	if (codeGenArgument.subTreeContainsParallelIterate()) {
+%>
+}
+<% 
+	}
 %>

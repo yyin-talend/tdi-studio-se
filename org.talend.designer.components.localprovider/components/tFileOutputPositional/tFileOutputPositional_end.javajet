@@ -16,7 +16,21 @@
 		if (metadata!=null) {
 			String cid = node.getUniqueName();
 %>
+<% 
+	if (codeGenArgument.subTreeContainsParallelIterate()) {
+%>
+	synchronized (lockWrite) {
+<% 
+	}
+%>
 	out<%=cid %>.close();
+<% 
+	if (codeGenArgument.subTreeContainsParallelIterate()) {
+%>
+	}
+<% 
+	}
+%>
 	globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid %>);
 <%
 		}
