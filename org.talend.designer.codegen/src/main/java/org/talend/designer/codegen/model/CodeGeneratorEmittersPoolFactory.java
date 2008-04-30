@@ -41,10 +41,12 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.emf.codegen.jet.JETEmitter;
 import org.eclipse.emf.codegen.jet.JETException;
 import org.eclipse.emf.common.CommonPlugin;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.swt.widgets.Display;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.BusinessException;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.utils.StringUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
@@ -55,6 +57,8 @@ import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentFileNaming;
 import org.talend.core.model.components.IComponentsFactory;
+import org.talend.core.model.properties.ComponentSetting;
+import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.temp.ECodePart;
 import org.talend.core.utils.AccessingEmfJob;
 import org.talend.designer.codegen.CodeGeneratorActivator;
@@ -66,6 +70,7 @@ import org.talend.designer.codegen.config.TemplateUtil;
 import org.talend.designer.codegen.i18n.Messages;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.ExternalNodesFactory;
+import org.talend.repository.model.IProxyRepositoryFactory;
 
 /**
  * Pool of initialized Jet Emitters. There are as many Emitters in this pool as Templzte available. Used for generation
@@ -183,6 +188,8 @@ public final class CodeGeneratorEmittersPoolFactory {
                         // remove compilations markers
                         ComponentCompilations.deleteMarkers();
 
+                        saveComponentVisibilityStatus();
+
                     } catch (Exception e) {
                         log.error("Exception during Initialization", e);
                         return new Status(IStatus.ERROR, CodeGeneratorActivator.PLUGIN_ID, "Exception during Initialization", e);
@@ -205,6 +212,7 @@ public final class CodeGeneratorEmittersPoolFactory {
                     CorePlugin.getDefault().getRcpService().activeSwitchProjectAction();
                     return Status.OK_STATUS;
                 }
+
             };
             job.setUser(true);
             job.setPriority(Job.INTERACTIVE);
@@ -529,5 +537,29 @@ public final class CodeGeneratorEmittersPoolFactory {
      */
     public static void setInitialized(boolean initialized) {
         CodeGeneratorEmittersPoolFactory.initialized = initialized;
+    }
+
+    private static void saveComponentVisibilityStatus() {
+        IComponentsFactory componentsFactory = ComponentsFactoryProvider.getInstance();
+        List<IComponent> components = componentsFactory.getComponents();
+
+        RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
+                Context.REPOSITORY_CONTEXT_KEY);
+        EList list = repositoryContext.getProject().getEmfProject().getComponentsSettings();
+        if (list.isEmpty()) {
+            for (IComponent component : components) {
+                ComponentSetting setting = PropertiesFactory.eINSTANCE.createComponentSetting();
+                setting.setName(component.getName());
+                setting.setHidden(!component.isVisible());
+                list.add(setting);
+            }
+        }
+        IProxyRepositoryFactory prf = CorePlugin.getDefault().getProxyRepositoryFactory();
+
+        try {
+            prf.saveProject(repositoryContext.getProject());
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
+        }
     }
 }
