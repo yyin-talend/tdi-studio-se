@@ -183,16 +183,18 @@ public class ExportItemUtil {
             computeProjectFileAndPath(destinationDirectory);
             createProjectResource(items);
             for (Item item : items) {
-                Collection<EObject> copiedObjects = copyObjects(item);
-                
-                Item copiedItem = (Item) EcoreUtil.getObjectByType(copiedObjects, PropertiesPackage.eINSTANCE.getItem());
-                fixItem(copiedItem);
-                computeItemFilesAndPaths(destinationDirectory, copiedItem, projectFolderStructure);
-                createItemResources(copiedItem, copiedObjects);
-                fixItemUserReferences(copiedItem);
-                fixItemLockState();
-                toExport.put(propertyFile, propertyPath);
-                toExport.put(itemFile, itemPath);
+                if (ERepositoryObjectType.getItemType(item).isResourceItem()) {
+                    Collection<EObject> copiedObjects = copyObjects(item);
+                    
+                    Item copiedItem = (Item) EcoreUtil.getObjectByType(copiedObjects, PropertiesPackage.eINSTANCE.getItem());
+                    fixItem(copiedItem);
+                    computeItemFilesAndPaths(destinationDirectory, copiedItem, projectFolderStructure);
+                    createItemResources(copiedItem, copiedObjects);
+                    fixItemUserReferences(copiedItem);
+                    fixItemLockState();
+                    toExport.put(propertyFile, propertyPath);
+                    toExport.put(itemFile, itemPath);
+                }
             }
             toExport.put(projectFile, projectPath);
             dereferenceNotContainedObjects();
