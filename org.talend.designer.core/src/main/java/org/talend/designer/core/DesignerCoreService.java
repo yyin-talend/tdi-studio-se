@@ -306,6 +306,10 @@ public class DesignerCoreService implements IDesignerCoreService {
         return TalendEditorPaletteFactory.createPalette(factory);
     }
 
+    public PaletteRoot getAllNodeStructure(IComponentsFactory factory) {
+        return TalendEditorPaletteFactory.getAllNodeStructure(factory);
+    }
+
     /*
      * (non-Javadoc)
      * 

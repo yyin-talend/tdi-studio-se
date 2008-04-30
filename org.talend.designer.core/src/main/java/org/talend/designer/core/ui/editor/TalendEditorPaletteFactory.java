@@ -152,6 +152,95 @@ public final class TalendEditorPaletteFactory {
         }
     }
 
+    /**
+     * This mothod should be refactored, but no time to do it right now.
+     * 
+     * @param compFac
+     */
+    private static void createComponentsDrawerForGetAllNodeStructure(final IComponentsFactory compFac) {
+        PaletteDrawer componentsDrawer;
+        String name, longName;
+        String family;
+        List<String> families = new ArrayList<String>();
+
+        CombinedTemplateCreationEntry component;
+        Hashtable<String, PaletteDrawer> ht = new Hashtable<String, PaletteDrawer>();
+
+        componentsDrawer = new PaletteDrawer(Messages.getString("TalendEditorPaletteFactory.Default")); //$NON-NLS-1$
+        List<IComponent> componentList = compFac.getComponents();
+
+        Collections.sort(componentList, new Comparator<IComponent>() {
+
+            public int compare(IComponent component1, IComponent component2) {
+                return component1.getTranslatedName().compareTo(component2.getTranslatedName());
+            }
+
+        });
+        IPreferenceStore preferenceStore = DesignerPlugin.getDefault().getPreferenceStore();
+        boolean displayTechnical = preferenceStore.getBoolean(TalendDesignerPrefConstants.DEFAULT_DISPLAY);
+
+        for (int i = 0; i < componentList.size(); i++) {
+            IComponent xmlComponent = componentList.get(i);
+
+            if (!displayTechnical) {
+                continue;
+            }
+
+            if (xmlComponent.isLoaded()) {
+                family = xmlComponent.getFamily();
+                String[] strings = family.split(FAMILY_SEPARATOR_REGEX);
+                for (int j = 0; j < strings.length; j++) {
+                    families.add(strings[j]);
+                }
+            }
+        }
+
+        Collections.sort(families);
+
+        for (Iterator iter = families.iterator(); iter.hasNext();) {
+            family = (String) iter.next();
+
+            componentsDrawer = ht.get(family);
+            if (componentsDrawer == null) {
+                componentsDrawer = createComponentDrawer(ht, family);
+            }
+        }
+
+        for (int i = 0; i < componentList.size(); i++) {
+            IComponent xmlComponent = componentList.get(i);
+
+            if (!displayTechnical) {
+                continue;
+            }
+
+            if (xmlComponent.isLoaded()) {
+                name = xmlComponent.getTranslatedName();
+                family = xmlComponent.getFamily();
+                longName = xmlComponent.getLongName();
+
+                ImageDescriptor imageSmall = xmlComponent.getIcon16();
+                IPreferenceStore store = DesignerPlugin.getDefault().getPreferenceStore();
+                ImageDescriptor imageLarge;
+                final String string = store.getString(TalendDesignerPrefConstants.LARGE_ICONS_SIZE);
+                if (string.equals("24")) {
+                    imageLarge = xmlComponent.getIcon24();
+                } else {
+                    imageLarge = xmlComponent.getIcon32();
+                }
+
+                component = new CombinedTemplateCreationEntry(name, name, Node.class, new PaletteComponentFactory(xmlComponent),
+                        imageSmall, imageLarge);
+                component.setDescription(longName);
+
+                String[] strings = family.split(FAMILY_SEPARATOR_REGEX);
+                for (int j = 0; j < strings.length; j++) {
+                    componentsDrawer = ht.get(strings[j]);
+                    componentsDrawer.add(component);
+                }
+            }
+        }
+    }
+
     private static PaletteDrawer createComponentDrawer(Hashtable<String, PaletteDrawer> ht, String familyToCreate) {
         int index = familyToCreate.lastIndexOf(FAMILY_HIER_SEPARATOR);
         String family;
@@ -235,6 +324,13 @@ public final class TalendEditorPaletteFactory {
         AbstractProcessProvider.loadComponentsFromProviders();
         palette.add(createToolsGroup());
         createComponentsDrawer(compFac);
+        return palette;
+    }
+
+    public static PaletteRoot getAllNodeStructure(final IComponentsFactory compFac) {
+        palette = new PaletteRoot();
+        AbstractProcessProvider.loadComponentsFromProviders();
+        createComponentsDrawerForGetAllNodeStructure(compFac);
         return palette;
     }
 
