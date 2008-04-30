@@ -158,12 +158,12 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
         IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         ERepositoryStatus repositoryStatus = factory.getStatus(item);
 
-        Image image = OverlayImageProvider.getImageWithStatus(img, repositoryStatus).createImage();
+        Image image = OverlayImageProvider.getImageWithStatus(img, repositoryStatus);
 
         InformationLevel informationLevel = property.getMaxInformationLevel();
         ERepositoryStatus informationStatus = factory.getStatus(informationLevel);
 
-        return OverlayImageProvider.getImageWithStatus(image, informationStatus).createImage();
+        return OverlayImageProvider.getImageWithStatus(image, informationStatus);
     }
 
     public Image getImage(Object obj) {
