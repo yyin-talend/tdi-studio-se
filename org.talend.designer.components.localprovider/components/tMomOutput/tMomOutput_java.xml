@@ -34,7 +34,7 @@
     <PARAMETER
       NAME="SERVER"
       FIELD="CLOSED_LIST"
-      NUM_ROW="2"
+      NUM_ROW="20"
     >
       <ITEMS DEFAULT="WEBSPHERE">
         <ITEM NAME="WEBSPHERE"   VALUE="WebSphere" />
@@ -45,7 +45,7 @@
     <PARAMETER
       NAME="SERVERADDRESS"
       FIELD="TEXT"
-      NUM_ROW="2"
+      NUM_ROW="20"
     >
 	<DEFAULT>"localhost"</DEFAULT>
     </PARAMETER>
@@ -53,7 +53,7 @@
     <PARAMETER
       NAME="SERVERPORT"
       FIELD="TEXT"
-      NUM_ROW="2"
+      NUM_ROW="20"
     >
 	<DEFAULT IF="(SERVER == 'JBOSS')">"1099"</DEFAULT>
 	<DEFAULT IF="(SERVER == 'WEBSPHERE')">"1414"</DEFAULT>
@@ -63,7 +63,7 @@
       NAME="TO"
       FIELD="TEXT"
       SHOW="true"
-      NUM_ROW="3"
+      NUM_ROW="30"
       SHOW_IF="(SERVER == 'JBOSS')"
     > 
     <DEFAULT>""</DEFAULT>
@@ -72,7 +72,7 @@
     <PARAMETER
       NAME="MSGTYPE"
       FIELD="CLOSED_LIST"
-      NUM_ROW="3"
+      NUM_ROW="30"
       SHOW_IF="(SERVER == 'JBOSS')"
     >
       <ITEMS DEFAULT="TOPIC">
@@ -84,7 +84,7 @@
   <PARAMETER
       NAME="CHANNEL"
       FIELD="TEXT"
-      NUM_ROW="3"
+      NUM_ROW="30"
       SHOW_IF="(SERVER == 'WEBSPHERE')" >
    	<DEFAULT>"DC.SVRCONN"</DEFAULT>
     </PARAMETER>
@@ -93,7 +93,7 @@
       NAME="SCHEMA"
       FIELD="SCHEMA_TYPE"
       REQUIRED="true"
-      NUM_ROW="4"
+      NUM_ROW="40"
 	  READONLY="true"
     >
       <TABLE>
@@ -101,11 +101,19 @@
       </TABLE>
     </PARAMETER>
     
+	<PARAMETER
+      NAME="MSG_ID"
+      FIELD="TEXT"
+      NUM_ROW="45"
+      SHOW_IF="(SERVER == 'WEBSPHERE')"
+    > 
+    	<DEFAULT>""</DEFAULT>
+	</PARAMETER>
    
   <PARAMETER
       NAME="QM"
       FIELD="TEXT"
-      NUM_ROW="5"
+      NUM_ROW="50"
       SHOW_IF="(SERVER == 'WEBSPHERE')"
     > 
     <DEFAULT>""</DEFAULT>
@@ -114,7 +122,7 @@
   <PARAMETER
       NAME="QUEUE"
       FIELD="TEXT"
-      NUM_ROW="5"
+      NUM_ROW="50"
       SHOW_IF="(SERVER == 'WEBSPHERE')"
     > 
     <DEFAULT>""</DEFAULT>
