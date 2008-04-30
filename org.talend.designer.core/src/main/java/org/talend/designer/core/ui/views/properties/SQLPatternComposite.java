@@ -67,6 +67,7 @@ import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
+import org.talend.core.model.process.ElementParameterParser;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.SQLPatternItem;
@@ -86,6 +87,8 @@ import org.talend.repository.model.RepositoryConstants;
  * bqian class global comment. Detailled comment
  */
 public class SQLPatternComposite extends ScrolledComposite implements IDynamicProperty {
+
+    private static final String SEPARATOR = ":";
 
     // private static final String CODE_PROPERTY = "codeProperty";
 
@@ -286,6 +289,7 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
                     }
                     executeCommand(new PropertyChangeCommand(element, EParameterName.SQLPATTERN_VALUE.getName(), element
                             .getElementParameter(EParameterName.SQLPATTERN_VALUE.getName()).getValue()));
+                    refreshCode(element);
                 }
             }
 
@@ -313,6 +317,7 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
                 }
 
                 if (needRefresh) {
+                    refreshCode(element);
                     refreshComboContent(tableViewer);
                     tableViewer.refresh();
                     executeCommand(new PropertyChangeCommand(element, EParameterName.SQLPATTERN_VALUE.getName(), element
@@ -562,10 +567,18 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
                     sqlpatternName = item.getText();
                 }
 
-                SQLPatternItem sqlpatternItem = getSQLPatternItem(sqlpatternName);
+                List<Map<String, Object>> codes = (List<Map<String, Object>>) ElementParameterParser.getObjectValue(element,
+                        EParameterName.SQLPATTERN_CODE.getName());
 
-                if (sqlpatternItem != null) {
-                    codeText.setText(new String(sqlpatternItem.getContent().getInnerContent()));
+                String code = null;
+                for (Map<String, Object> codeMap : codes) {
+                    if (codeMap.get(sqlpatternName) != null) {
+                        code = (String) codeMap.get(sqlpatternName);
+                        break;
+                    }
+                }
+                if (code != null) {
+                    codeText.setText(code);
                 }
             }
         });
@@ -579,11 +592,40 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
      * @return
      */
     private List<Map> getTableInput(Element element) {
+        List<Map> value = refreshCode(element);
+        return value;
+    }
+
+    /**
+     * yzhang Comment method "updateCodeParameter".
+     * 
+     * @param element
+     * @return
+     */
+    private List<Map> refreshCode(Element element) {
+        IElementParameter codes = element.getElementParameter(EParameterName.SQLPATTERN_CODE.getName());
+
+        List<Map<String, Object>> tableContent = new ArrayList<Map<String, Object>>();
+        Map<String, Object> codeMap = new HashMap<String, Object>();
+
         IElementParameter parameter = element.getElementParameter(EParameterName.SQLPATTERN_VALUE.getName());
         if (parameter == null) {
             return Collections.EMPTY_LIST;
         }
         List<Map> value = (List<Map>) parameter.getValue();
+        List<String> names = new ArrayList<String>();
+        for (Map map : value) {
+            String patternName = (String) map.get(EmfComponent.SQLPATTERNLIST);
+            SQLPatternItem sqlPatternItem = getSQLPatternItem(patternName);
+            String content = new String(sqlPatternItem.getContent().getInnerContent());
+
+            names.add(patternName);
+            codeMap.put(patternName, content);
+        }
+        tableContent.add(codeMap);
+        codes.setValue(tableContent);
+        codes.setListItemsDisplayCodeName(names.toArray(new String[names.size()]));
+
         return value;
     }
 
@@ -891,6 +933,7 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
      * @see org.talend.designer.core.ui.editor.properties.controllers.generator.IDynamicProperty#refresh()
      */
     public void refresh() {
+        refreshCode(element);
         getParent().layout();
     }
 

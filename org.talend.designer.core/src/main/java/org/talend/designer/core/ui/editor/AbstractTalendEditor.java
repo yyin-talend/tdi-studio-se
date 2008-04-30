@@ -574,6 +574,7 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
                     throw new InterruptedException();
                 }
             }
+
             getCommandStack().markSaveLocation();
             setDirty(false);
             ((ILibrariesService) GlobalServiceRegister.getDefault().getService(ILibrariesService.class)).resetModulesNeeded();
