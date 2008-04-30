@@ -271,6 +271,12 @@
              level="13"
              name="Edit Sql Pattern">
        </Action>
+       <Action
+             class="org.talend.repository.ui.actions.metadata.DetectedSchemaModificationAction"
+             id="org.talend.repository.actions.DetectedSchemaModification"
+             level="20"
+             name="Metadata/Detected Schema Modification">
+       </Action>
    </extension>
    <extension
          point="org.eclipse.ui.views.properties.tabbed.propertyContributor">
