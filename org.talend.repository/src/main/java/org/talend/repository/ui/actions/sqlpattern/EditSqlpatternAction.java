@@ -56,7 +56,7 @@ public class EditSqlpatternAction extends AbstractSqlpatternAction {
         if (canWork) {
             RepositoryNode node = (RepositoryNode) selection.getFirstElement();
             canWork = node.getType() == ENodeType.REPOSITORY_ELEMENT
-                    && node.getObject().getType() == ERepositoryObjectType.METADATA_SQLPATTERNS
+                    && node.getObject().getType() == ERepositoryObjectType.SQLPATTERNS
                     && !((SQLPatternItem) node.getObject().getProperty().getItem()).isSystem();
         }
         setEnabled(canWork);

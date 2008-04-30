@@ -90,8 +90,8 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
     private final List<IRepositoryObject> joblets = new ArrayList<IRepositoryObject>();
 
     private RepositoryNode businessProcessNode, recBinNode, codeNode, routineNode, snippetsNode, processNode, contextNode,
-            docNode, metadataConNode,metadataSQLPatternNode, metadataFileNode, metadataFilePositionalNode, metadataFileRegexpNode, metadataFileXmlNode,
-            metadataFileLdifNode, metadataGenericSchemaNode, metadataLDAPSchemaNode, metadataWSDLSchemaNode,
+            docNode, metadataConNode, sqlPatternNode, metadataFileNode, metadataFilePositionalNode, metadataFileRegexpNode,
+            metadataFileXmlNode, metadataFileLdifNode, metadataGenericSchemaNode, metadataLDAPSchemaNode, metadataWSDLSchemaNode,
             metadataFileExcelNode, metadataSalesforceSchemaNode;
 
     private RepositoryNode jobletNode;
@@ -150,9 +150,8 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
                 } else if (parent == metadataConNode) {
                     convert(factory.getMetadataConnection(), metadataConNode, ERepositoryObjectType.METADATA_CONNECTIONS,
                             recBinNode);
-                } else if (parent == metadataSQLPatternNode) {
-                    convert(factory.getMetadataSQLPattern(), metadataSQLPatternNode, ERepositoryObjectType.METADATA_SQLPATTERNS,
-                            recBinNode);
+                } else if (parent == sqlPatternNode) {
+                    convert(factory.getMetadataSQLPattern(), sqlPatternNode, ERepositoryObjectType.SQLPATTERNS, recBinNode);
                 } else if (parent == metadataFileNode) {
                     convert(factory.getMetadataFileDelimited(), metadataFileNode, ERepositoryObjectType.METADATA_FILE_DELIMITED,
                             recBinNode);
@@ -300,84 +299,84 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
             codeNode.getChildren().add(snippetsNode);
         }
 
-        // 5. Documentation
+        // 5. Sql patterns
+        sqlPatternNode = new RepositoryNode(null, root, ENodeType.SYSTEM_FOLDER);
+        sqlPatternNode.setProperties(EProperties.LABEL, ERepositoryObjectType.SQLPATTERNS);
+        sqlPatternNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.SQLPATTERNS);
+        nodes.add(sqlPatternNode);
+
+        // 6. Documentation
         docNode = new RepositoryNode(null, root, ENodeType.SYSTEM_FOLDER);
         docNode.setProperties(EProperties.LABEL, ERepositoryObjectType.DOCUMENTATION);
         docNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.DOCUMENTATION);
         nodes.add(docNode);
 
-        // 6. Metadata
+        // 7. Metadata
         metadataNode = new RepositoryNode(null, root, ENodeType.STABLE_SYSTEM_FOLDER);
         metadataNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA);
         metadataNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA);
         nodes.add(metadataNode);
 
-        // 6.1. Metadata connections
+        // 7.1. Metadata connections
         metadataConNode = new RepositoryNode(null, root, ENodeType.SYSTEM_FOLDER);
         metadataConNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_CONNECTIONS);
         metadataConNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_CONNECTIONS);
         metadataNode.getChildren().add(metadataConNode);
 
-        // 6.1. Metadata connections
-        metadataSQLPatternNode = new RepositoryNode(null, root, ENodeType.SYSTEM_FOLDER);
-        metadataSQLPatternNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_SQLPATTERNS);
-        metadataSQLPatternNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_SQLPATTERNS);
-        metadataNode.getChildren().add(metadataSQLPatternNode);
-        
-        // 6.2. Metadata file delimited
+        // 7.2. Metadata file delimited
         metadataFileNode = new RepositoryNode(null, root, ENodeType.SYSTEM_FOLDER);
         metadataFileNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_FILE_DELIMITED);
         metadataFileNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_FILE_DELIMITED);
         metadataNode.getChildren().add(metadataFileNode);
 
-        // 6.3. Metadata file positional
+        // 7.3. Metadata file positional
         metadataFilePositionalNode = new RepositoryNode(null, root, ENodeType.SYSTEM_FOLDER);
         metadataFilePositionalNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_FILE_POSITIONAL);
         metadataFilePositionalNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_FILE_POSITIONAL);
         metadataNode.getChildren().add(metadataFilePositionalNode);
 
-        // 6.4. Metadata file regexp
+        // 7.4. Metadata file regexp
         metadataFileRegexpNode = new RepositoryNode(null, root, ENodeType.SYSTEM_FOLDER);
         metadataFileRegexpNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_FILE_REGEXP);
         metadataFileRegexpNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_FILE_REGEXP);
         metadataNode.getChildren().add(metadataFileRegexpNode);
 
-        // 6.5. Metadata file xml
+        // 7.5. Metadata file xml
         metadataFileXmlNode = new RepositoryNode(null, root, ENodeType.SYSTEM_FOLDER);
         metadataFileXmlNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_FILE_XML);
         metadataFileXmlNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_FILE_XML);
         metadataNode.getChildren().add(metadataFileXmlNode);
 
-        // 6.6. Metadata file ldif
+        // 7.6. Metadata file ldif
         metadataFileLdifNode = new RepositoryNode(null, root, ENodeType.SYSTEM_FOLDER);
         metadataFileLdifNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_FILE_LDIF);
         metadataFileLdifNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_FILE_LDIF);
         metadataNode.getChildren().add(metadataFileLdifNode);
 
-        // 6.7. Metadata file Excel
+        // 7.7. Metadata file Excel
         metadataFileExcelNode = new RepositoryNode(null, root, ENodeType.SYSTEM_FOLDER);
         metadataFileExcelNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_FILE_EXCEL);
         metadataFileExcelNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_FILE_EXCEL);
         metadataNode.getChildren().add(metadataFileExcelNode);
 
-        // 6.8. LDAP schemas
+        // 7.8. LDAP schemas
         metadataLDAPSchemaNode = new RepositoryNode(null, root, ENodeType.SYSTEM_FOLDER);
         metadataLDAPSchemaNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_LDAP_SCHEMA);
         metadataLDAPSchemaNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_LDAP_SCHEMA);
         metadataNode.getChildren().add(metadataLDAPSchemaNode);
 
-        // 6.9. Generic schemas
+        // 7.9. Generic schemas
         metadataGenericSchemaNode = new RepositoryNode(null, root, ENodeType.SYSTEM_FOLDER);
         metadataGenericSchemaNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_GENERIC_SCHEMA);
         metadataGenericSchemaNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_GENERIC_SCHEMA);
         metadataNode.getChildren().add(metadataGenericSchemaNode);
-        // 6.10 WSDL
+        // 7.10 WSDL
         metadataWSDLSchemaNode = new RepositoryNode(null, root, ENodeType.SYSTEM_FOLDER);
         metadataWSDLSchemaNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_WSDL_SCHEMA);
         metadataWSDLSchemaNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_WSDL_SCHEMA);
         metadataNode.getChildren().add(metadataWSDLSchemaNode);
 
-        // 6.11 Salesforce
+        // 7.11 Salesforce
 
         ECodeLanguage codeLanguage = LanguageManager.getCurrentLanguage();
         if (codeLanguage != ECodeLanguage.PERL) {

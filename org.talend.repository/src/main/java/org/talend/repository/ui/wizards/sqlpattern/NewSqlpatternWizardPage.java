@@ -55,6 +55,6 @@ public class NewSqlpatternWizardPage extends PropertiesWizardPage {
     }
 
     public ERepositoryObjectType getRepositoryObjectType() {
-        return ERepositoryObjectType.METADATA_SQLPATTERNS;
+        return ERepositoryObjectType.SQLPATTERNS;
     }
 }

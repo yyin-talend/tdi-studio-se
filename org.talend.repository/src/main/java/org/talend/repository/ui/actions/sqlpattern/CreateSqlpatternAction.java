@@ -28,6 +28,7 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.core.ui.images.OverlayImageProvider;
 import org.talend.repository.model.ProxyRepositoryFactory;
+import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.model.RepositoryNode.EProperties;
@@ -72,12 +73,19 @@ public class CreateSqlpatternAction extends AbstractSqlpatternAction {
             RepositoryNode node = (RepositoryNode) o;
             switch (node.getType()) {
             case SIMPLE_FOLDER:
-            case SYSTEM_FOLDER:
-                ERepositoryObjectType nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
-                if (nodeType != ERepositoryObjectType.METADATA_SQLPATTERNS) {
+                if (!isUnderUserDefined(node)) {
                     canWork = false;
                 }
                 break;
+            case SYSTEM_FOLDER:
+                Object obj = node.getProperties(EProperties.LABEL);
+                if (obj instanceof String) {
+                    String nodeLabel = (String) obj;
+                    if (!nodeLabel.equals(RepositoryConstants.USER_DEFINED)) {
+                        canWork = false;
+                    }
+                    break;
+                }
             default:
                 canWork = false;
             }
@@ -94,11 +102,11 @@ public class CreateSqlpatternAction extends AbstractSqlpatternAction {
         RepositoryNode sqlPatternNode = getCurrentRepositoryNode();
 
         if (isToolbar()) {
-            if (sqlPatternNode != null && sqlPatternNode.getContentType() != ERepositoryObjectType.METADATA_SQLPATTERNS) {
+            if (sqlPatternNode != null && sqlPatternNode.getContentType() != ERepositoryObjectType.SQLPATTERNS) {
                 sqlPatternNode = null;
             }
             if (sqlPatternNode == null) {
-                sqlPatternNode = getRepositoryNodeForDefault(ERepositoryObjectType.METADATA_SQLPATTERNS);
+                sqlPatternNode = getRepositoryNodeForDefault(ERepositoryObjectType.SQLPATTERNS);
             }
         }
         RepositoryNode node = null;

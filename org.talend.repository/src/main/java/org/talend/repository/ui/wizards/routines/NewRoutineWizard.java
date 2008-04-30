@@ -21,6 +21,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.Wizard;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.exception.RuntimeExceptionHandler;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.utils.VersionUtils;
 import org.talend.core.CorePlugin;
@@ -86,8 +87,7 @@ public class NewRoutineWizard extends Wizard {
             stream.close();
             byteArray.setInnerContent(innerContent);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            RuntimeExceptionHandler.process(e);
         }
 
         routineItem.setContent(byteArray);

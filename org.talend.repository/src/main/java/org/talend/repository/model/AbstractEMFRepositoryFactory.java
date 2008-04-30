@@ -119,7 +119,7 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
     }
 
     public RootContainer<String, IRepositoryObject> getMetadataSQLPattern() throws PersistenceException {
-        return getObjectFromFolder(ERepositoryObjectType.METADATA_SQLPATTERNS, true);
+        return getObjectFromFolder(ERepositoryObjectType.SQLPATTERNS, true);
     }
 
     public RootContainer<String, IRepositoryObject> getSnippets() throws PersistenceException {
@@ -169,7 +169,7 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
      */
     public List<IRepositoryObject> getRecycleBinItems() throws PersistenceException {
         ERepositoryObjectType types[] = { ERepositoryObjectType.DOCUMENTATION, ERepositoryObjectType.METADATA_CONNECTIONS,
-                ERepositoryObjectType.METADATA_SQLPATTERNS, ERepositoryObjectType.METADATA_FILE_DELIMITED,
+                ERepositoryObjectType.SQLPATTERNS, ERepositoryObjectType.METADATA_FILE_DELIMITED,
                 ERepositoryObjectType.METADATA_FILE_POSITIONAL, ERepositoryObjectType.PROCESS, ERepositoryObjectType.CONTEXT,
                 ERepositoryObjectType.SNIPPETS, ERepositoryObjectType.ROUTINES, ERepositoryObjectType.BUSINESS_PROCESS,
                 ERepositoryObjectType.METADATA_FILE_REGEXP, ERepositoryObjectType.METADATA_FILE_XML,
@@ -210,7 +210,7 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
 
         ERepositoryObjectType[] repositoryObjectTypeList = new ERepositoryObjectType[] { ERepositoryObjectType.BUSINESS_PROCESS,
                 ERepositoryObjectType.DOCUMENTATION, ERepositoryObjectType.METADATA_CONNECTIONS,
-                ERepositoryObjectType.METADATA_SQLPATTERNS, ERepositoryObjectType.METADATA_FILE_DELIMITED,
+                ERepositoryObjectType.SQLPATTERNS, ERepositoryObjectType.METADATA_FILE_DELIMITED,
                 ERepositoryObjectType.METADATA_FILE_POSITIONAL, ERepositoryObjectType.METADATA_FILE_REGEXP,
                 ERepositoryObjectType.METADATA_FILE_XML, ERepositoryObjectType.METADATA_FILE_EXCEL,
                 ERepositoryObjectType.METADATA_FILE_LDIF, ERepositoryObjectType.PROCESS, ERepositoryObjectType.ROUTINES,
@@ -408,10 +408,12 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
             sqlpatternItem.setSystem(true);
 
             // set the item's relative path in the repository view
-            IPath path = new Path(categoryName);
-            path = path.append(RepositoryConstants.SYSTEM_DIRECTORY);
+            IPath categoryPath = new Path(categoryName);
+            IPath systemPath = categoryPath.append(RepositoryConstants.SYSTEM_DIRECTORY);
 
-            create(sqlpatternItem, path);
+            create(sqlpatternItem, systemPath);
+            createFolder(ERepositoryObjectType.SQLPATTERNS, categoryPath, RepositoryConstants.USER_DEFINED);
+
         } catch (IOException ioe) {
             if (stream != null) {
                 try {

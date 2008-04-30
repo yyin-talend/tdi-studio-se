@@ -74,7 +74,7 @@ public class CopyObjectAction {
             return !item.isBuiltIn();
         }
      // Cannot copy system sql pattern:
-        if (objectToCopy.getType() == ERepositoryObjectType.METADATA_SQLPATTERNS) {
+        if (objectToCopy.getType() == ERepositoryObjectType.SQLPATTERNS) {
             Property property = objectToCopy.getProperty();
             SQLPatternItem item = (SQLPatternItem) property.getItem();
             return !item.isSystem();

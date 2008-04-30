@@ -259,6 +259,18 @@
              level="50"
              name="Duplicate">
        </Action>
+       <Action
+             class="org.talend.repository.ui.actions.sqlpattern.CreateSqlpatternAction"
+             id="org.talend.repository.ui.actions.sqlpattern.createsqlpatternaction"
+             level="13"
+             name="Create Sql Pattern">
+       </Action>
+       <Action
+             class="org.talend.repository.ui.actions.sqlpattern.EditSqlpatternAction"
+             id="org.talend.repository.ui.actions.sqlpattern.editsqlpatternaction"
+             level="13"
+             name="Edit Sql Pattern">
+       </Action>
    </extension>
    <extension
          point="org.eclipse.ui.views.properties.tabbed.propertyContributor">

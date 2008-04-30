@@ -21,6 +21,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.Wizard;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.exception.RuntimeExceptionHandler;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.utils.VersionUtils;
 import org.talend.core.CorePlugin;
@@ -30,7 +31,6 @@ import org.talend.core.model.general.ILibrariesService;
 import org.talend.core.model.properties.ByteArray;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
-import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.properties.SQLPatternItem;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.i18n.Messages;
@@ -76,10 +76,24 @@ public class NewSqlpatternWizard extends Wizard {
 
         sqlpatternItem.setProperty(property);
 
+        ILibrariesService service = CorePlugin.getDefault().getLibrariesService();
+        URL url = service.getSqlPatternTemplate();
+
         ByteArray byteArray = PropertiesFactory.eINSTANCE.createByteArray();
-        byte[] innerContent = new byte[0];
-        byteArray.setInnerContent(innerContent);
+        InputStream stream = null;
+        try {
+            stream = url.openStream();
+            byte[] innerContent = new byte[stream.available()];
+            stream.read(innerContent);
+            stream.close();
+            byteArray.setInnerContent(innerContent);
+        } catch (IOException e) {
+            RuntimeExceptionHandler.process(e);
+        }
+
+        sqlpatternItem.setEltName(path.segment(0));
         sqlpatternItem.setContent(byteArray);
+        sqlpatternItem.setSystem(false);
     }
 
     /**

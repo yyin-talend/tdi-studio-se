@@ -104,7 +104,7 @@ public class CreateFolderAction extends AContextualAction {
                 break;
             case SYSTEM_FOLDER:
                 if (property == ERepositoryObjectType.GENERATED || property == ERepositoryObjectType.JOBS
-                        || property == ERepositoryObjectType.JOBLETS) {
+                        || property == ERepositoryObjectType.JOBLETS || property == ERepositoryObjectType.SQLPATTERNS) {
                     canWork = false;
                 }
                 break;
