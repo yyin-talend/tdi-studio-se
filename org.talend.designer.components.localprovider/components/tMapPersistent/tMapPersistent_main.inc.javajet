@@ -34,6 +34,7 @@
 	org.talend.core.model.process.IMatchingMode
 	org.talend.core.model.process.INode
 	" 
+
 %>
 <%
 
@@ -44,14 +45,19 @@
 	
 	boolean stats = codeGenArgument.isStatistics(); 
 
-	String componentName = node.getUniqueName();
-	boolean isVirtualIn = componentName.endsWith("TMAP_IN");
-	boolean isVirtualOut = componentName.endsWith("TMAP_OUT");
+	String tMapInName = "TMAP_IN";
+	String tMapOutName = "TMAP_OUT";
 
+	String componentName = node.getUniqueName();
+	boolean isVirtualIn = componentName.endsWith(tMapInName);
+	boolean isVirtualOut = componentName.endsWith(tMapOutName);
+	
+	String componentNameForKeyProblem = componentName.replaceAll("_" + tMapOutName, "").replaceAll("_" + tMapInName, "");
+	
     List<IConnection> inputConnections = (List<IConnection>) node.getIncomingConnections();
 
 	if(isVirtualIn) {
-		String searchedComponentName = componentName.replaceAll("TMAP_IN", "TMAP_OUT");
+		String searchedComponentName = componentName.replaceAll(tMapInName, tMapOutName);
 		List<? extends INode> generatedNodes = node.getProcess().getGeneratingNodes();
 		for(INode loopNode : generatedNodes) {
 			if(loopNode.getUniqueName().equals(searchedComponentName)) {
@@ -70,6 +76,8 @@
         ExternalMapperData data = (ExternalMapperData) node.getExternalData();
         String uniqueNameComponent = node.getUniqueName();
         boolean checkingSyntax = codeGenArgument.isCheckingSyntax();
+
+		//System.out.println("checkingSyntax=" + checkingSyntax + ", componentNameForKeyProblem=" + componentNameForKeyProblem);
 
         String cr = "\n";
         String rejected = "rejected_" + uniqueNameComponent;
@@ -196,7 +204,7 @@
 			                	String expressionKey = externalInputTableEntry.getExpression();
                         		if (expressionKey != null && !"".equals(expressionKey.trim())) { // T_TM_M_202
 		                        	nextLookupColumnsKeys.add(column);
-				            		String key = CodeGenerationUtils.buildProblemKey(uniqueNameComponent,
+				            		String key = CodeGenerationUtils.buildProblemKey(componentNameForKeyProblem,
 			                		JavaGenerationManager.PROBLEM_KEY_FIELD.METADATA_COLUMN.toString(), tableName, columnName);
             						if (checkingSyntax) {
 	    	        				%>
@@ -326,7 +334,7 @@
 
 						hasMainFilter = true;
 
-		                String key = CodeGenerationUtils.buildProblemKey(uniqueNameComponent,
+		                String key = CodeGenerationUtils.buildProblemKey(componentNameForKeyProblem,
    	                     JavaGenerationManager.PROBLEM_KEY_FIELD.FILTER.toString(), tableName);
 					  	  	 %>
 		              
@@ -526,7 +534,7 @@
 
                         		for (int iKeyName = 0; iKeyName < aKeysNames.length; iKeyName++) {
 
-                        		    String key = CodeGenerationUtils.buildProblemKey(uniqueNameComponent,
+                        		    String key = CodeGenerationUtils.buildProblemKey(componentNameForKeyProblem,
                         		    JavaGenerationManager.PROBLEM_KEY_FIELD.METADATA_COLUMN.toString(), tableName, aKeysNames[iKeyName]);
                         		    if (checkingSyntax) {
     	                        		%>
@@ -683,7 +691,7 @@
 								&& !externalTable.getExpressionFilter().trim().equals("")
 							) { // T 012 
                     		  	  	   		
-								String key = CodeGenerationUtils.buildProblemKey(uniqueNameComponent,
+								String key = CodeGenerationUtils.buildProblemKey(componentNameForKeyProblem,
 								JavaGenerationManager.PROBLEM_KEY_FIELD.FILTER.toString(), tableName);
 								%>
                     		  	  		
@@ -788,7 +796,7 @@
 	                        				String expressionKey = externalInputTableEntry.getExpression();
                         					if (expressionKey != null && !"".equals(expressionKey.trim())) { // T_TM_M_212
                         						nextLookupColumnsKeys.add(column);
-					            				String key = CodeGenerationUtils.buildProblemKey(uniqueNameComponent,
+					            				String key = CodeGenerationUtils.buildProblemKey(componentNameForKeyProblem,
 				                				JavaGenerationManager.PROBLEM_KEY_FIELD.METADATA_COLUMN.toString(), nextTableName, columnName);
             									if (checkingSyntax) {
     	        								%>
@@ -994,7 +1002,7 @@
                     }
                 }
 
-                String key = CodeGenerationUtils.buildProblemKey(uniqueNameComponent,
+                String key = CodeGenerationUtils.buildProblemKey(componentNameForKeyProblem,
                         JavaGenerationManager.PROBLEM_KEY_FIELD.METADATA_COLUMN.toString(), varsTableName,
                         varsColumnName);
 
@@ -1186,7 +1194,7 @@
 	                if (hasFilters || hasExpressionFilter || currentIsReject || currentIsRejectInnerJoin && atLeastOneInputTableWithInnerJoin) {
 	                    sb.append(cr + "// # Filter conditions ");
 	
-	                    String key = CodeGenerationUtils.buildProblemKey(uniqueNameComponent,
+	                    String key = CodeGenerationUtils.buildProblemKey(componentNameForKeyProblem,
 	                            JavaGenerationManager.PROBLEM_KEY_FIELD.FILTER.toString(), outputTableName, null);
 	                    if (checkingSyntax) {
 	                        sb.append("\n").append(CodeGenerationUtils.buildJavaStartFieldKey(key));
@@ -1262,7 +1270,7 @@
 	                        
 	                        }
 	
-	                        String key = CodeGenerationUtils.buildProblemKey(uniqueNameComponent,
+	                        String key = CodeGenerationUtils.buildProblemKey(componentNameForKeyProblem,
 	                                JavaGenerationManager.PROBLEM_KEY_FIELD.METADATA_COLUMN.toString(), outputTableName,
 	                                outputColumnName);
 	                        if (checkingSyntax) {
