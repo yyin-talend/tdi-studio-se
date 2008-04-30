@@ -37,7 +37,7 @@ public final class DBConnectionContextUtils {
     /**
      * 
      */
-    public enum EDBParamName {
+    enum EDBParamName {
         AdditionalParams,
         DatasourceName,
         DBRootPath,
@@ -61,27 +61,21 @@ public final class DBConnectionContextUtils {
 
         paramName = prefixName + EDBParamName.AdditionalParams;
         ConnectionContextHelper.createParameters(varList, paramName, conn.getAdditionalParams());
-        conn.setAdditionalParams(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
 
         paramName = prefixName + EDBParamName.DatasourceName;
         ConnectionContextHelper.createParameters(varList, paramName, conn.getDatasourceName());
-        conn.setDatasourceName(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
 
         paramName = prefixName + EDBParamName.DBRootPath;
         ConnectionContextHelper.createParameters(varList, paramName, conn.getDBRootPath(), JavaTypesManager.DIRECTORY);
-        conn.setDBRootPath(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
 
         paramName = prefixName + EDBParamName.FileFieldName;
         ConnectionContextHelper.createParameters(varList, paramName, conn.getFileFieldName(), JavaTypesManager.FILE);
-        conn.setFileFieldName(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
 
         paramName = prefixName + EDBParamName.Password;
         ConnectionContextHelper.createParameters(varList, paramName, conn.getPassword());
-        conn.setPassword(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
 
         paramName = prefixName + EDBParamName.Port;
         ConnectionContextHelper.createParameters(varList, paramName, conn.getPort(), JavaTypesManager.INTEGER);
-        conn.setPort(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
 
         paramName = prefixName + EDBParamName.Schema;
         if (conn.getProductId().equals(EDatabaseTypeName.ORACLEFORSID.getProduct())) {
@@ -91,21 +85,55 @@ public final class DBConnectionContextUtils {
             }
         }
         ConnectionContextHelper.createParameters(varList, paramName, conn.getSchema());
-        conn.setSchema(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
 
         paramName = prefixName + EDBParamName.ServerName;
         ConnectionContextHelper.createParameters(varList, paramName, conn.getServerName());
-        conn.setServerName(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
 
         paramName = prefixName + EDBParamName.SID;
         ConnectionContextHelper.createParameters(varList, paramName, conn.getSID());
-        conn.setSID(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
 
         paramName = prefixName + EDBParamName.Username;
         ConnectionContextHelper.createParameters(varList, paramName, conn.getUsername());
-        conn.setUsername(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
 
         return varList;
+    }
+
+    static void setPropertiesForContextMode(String prefixName, DatabaseConnection conn) {
+        if (conn == null || prefixName == null) {
+            return;
+        }
+        prefixName = prefixName + ConnectionContextHelper.LINE;
+        String paramName = null;
+
+        paramName = prefixName + EDBParamName.AdditionalParams;
+        conn.setAdditionalParams(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
+
+        paramName = prefixName + EDBParamName.DatasourceName;
+        conn.setDatasourceName(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
+
+        paramName = prefixName + EDBParamName.DBRootPath;
+        conn.setDBRootPath(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
+
+        paramName = prefixName + EDBParamName.FileFieldName;
+        conn.setFileFieldName(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
+
+        paramName = prefixName + EDBParamName.Password;
+        conn.setPassword(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
+
+        paramName = prefixName + EDBParamName.Port;
+        conn.setPort(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
+
+        paramName = prefixName + EDBParamName.Schema;
+        conn.setSchema(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
+
+        paramName = prefixName + EDBParamName.ServerName;
+        conn.setServerName(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
+
+        paramName = prefixName + EDBParamName.SID;
+        conn.setSID(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
+
+        paramName = prefixName + EDBParamName.Username;
+        conn.setUsername(ContextParameterUtils.getNewScriptCode(paramName, LANGUAGE));
     }
 
     /**
@@ -244,6 +272,7 @@ public final class DBConnectionContextUtils {
         /*
          * mustn't be set, is flag for method convert in class ConvertionHelper.
          * 
+         * working for sql builder especially.
          */
         // cloneConn.setContextId(dbConn.getContextId());
         // cloneConn.setContextMode(dbConn.isContextMode());

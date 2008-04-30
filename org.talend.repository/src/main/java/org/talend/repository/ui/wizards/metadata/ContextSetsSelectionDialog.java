@@ -26,8 +26,10 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.SelectionDialog;
+import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.swt.formtools.LabelledCombo;
 import org.talend.core.model.properties.ContextItem;
+import org.talend.core.ui.images.ECoreImage;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.utils.ConnectionContextHelper;
@@ -40,8 +42,6 @@ public class ContextSetsSelectionDialog extends SelectionDialog {
     private static final String DEFAULT_FLAG = "(default)"; //$NON-NLS-1$
 
     private static final String TITLE = Messages.getString("ContextSetsSelectionDialog.Title"); //$NON-NLS-1$
-
-    private static final String MESSAGE = Messages.getString("ContextSetsSelectionDialog.Messages"); //$NON-NLS-1$
 
     private ContextItem contextItem;
 
@@ -56,9 +56,10 @@ public class ContextSetsSelectionDialog extends SelectionDialog {
     public ContextSetsSelectionDialog(Shell parentShell, ContextItem contextItem) {
         super(parentShell == null ? PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell() : parentShell);
         this.contextItem = contextItem;
+        setDefaultImage(ImageProvider.getImage(ECoreImage.CONTEXT_ICON));
         setHelpAvailable(false);
         setTitle(TITLE);
-        setMessage(MESSAGE);
+        setMessage(Messages.getString("ContextSetsSelectionDialog.Messages", contextItem.getProperty().getLabel())); //$NON-NLS-1$
         initSets();
     }
 
@@ -106,7 +107,8 @@ public class ContextSetsSelectionDialog extends SelectionDialog {
         gridLayout.horizontalSpacing = 10;
         group.setLayout(new GridLayout(2, false));
         group.setLayoutData(new GridData(GridData.FILL_BOTH));
-        combo = new LabelledCombo(group, Messages.getString("ContextSetsSelectionDialog.Context"), null, contextSetsList, true); //$NON-NLS-1$
+
+        combo = new LabelledCombo(group, null, null, contextSetsList, true);
         combo.setText(defalutContext + DEFAULT_FLAG);
         return inner;
     }

@@ -72,7 +72,6 @@ import org.eclipse.ui.views.properties.tabbed.ITabbedPropertySheetPageContributo
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
-import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.swt.actions.ITreeContextualAction;
 import org.talend.commons.utils.Timer;
@@ -510,16 +509,25 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
     }
 
     public void expand(Object object) {
+        if (object == null) {
+            return;
+        }
         boolean state = getExpandedState(object);
         expand(object, !state);
     }
 
     public boolean getExpandedState(Object object) {
+        if (object == null) {
+            return false;
+        }
         boolean state = viewer.getExpandedState(object);
         return state;
     }
 
     public void expand(Object object, boolean state) {
+        if (object == null) {
+            return;
+        }
         viewer.setExpandedState(object, state);
     }
 
@@ -534,8 +542,8 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
 
     public List<IRepositoryObject> getAll(ERepositoryObjectType type) {
         // find the system folder
-        RepositoryNode container = findContainer(root,type);
-       
+        RepositoryNode container = findContainer(root, type);
+
         if (container == null) {
             throw new IllegalArgumentException(type + " not found");
         }
@@ -547,7 +555,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
 
     // see RepositoryContentProvider.initialize();
     private RepositoryNode findContainer(RepositoryNode node, ERepositoryObjectType type) {
-        if (node.getType() == ENodeType.SYSTEM_FOLDER||node.getType() == ENodeType.STABLE_SYSTEM_FOLDER) {
+        if (node.getType() == ENodeType.SYSTEM_FOLDER || node.getType() == ENodeType.STABLE_SYSTEM_FOLDER) {
             if (type == node.getProperties(EProperties.CONTENT_TYPE)) {
                 return node;
             }

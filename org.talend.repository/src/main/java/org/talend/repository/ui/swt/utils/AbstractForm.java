@@ -397,11 +397,11 @@ public abstract class AbstractForm extends Composite {
             if (isContextMode()) {
                 ConnectionContextHelper.openInConetxtModeDialog();
             } else {
-
                 ContextItem contextItem = ConnectionContextHelper.exportAsContext(connectionItem);
                 if (contextItem != null) { // create
-                    connectionItem.getConnection().setContextMode(true);
-                    connectionItem.getConnection().setContextId(contextItem.getProperty().getId());
+                    // set properties for context mode
+                    ConnectionContextHelper.setPropertiesForContextMode(connectionItem, contextItem);
+
                     // refresh current UI.
                     initialize();
                     adaptFormToEditable();

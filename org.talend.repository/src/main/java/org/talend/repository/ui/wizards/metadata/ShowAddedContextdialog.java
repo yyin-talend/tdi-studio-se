@@ -33,8 +33,6 @@ import org.talend.repository.i18n.Messages;
  */
 public class ShowAddedContextdialog extends SelectionDialog {
 
-    private static final String DEFAULTMESAGE = Messages.getString("ShowAddedContextdialog.Messages"); //$NON-NLS-1$
-
     private static final String TITILE = Messages.getString("ShowAddedContextdialog.Title"); //$NON-NLS-1$
 
     private Set<String> contextSet;
@@ -45,8 +43,8 @@ public class ShowAddedContextdialog extends SelectionDialog {
         setShellStyle(getShellStyle() | SWT.RESIZE);
         setBlockOnOpen(true);
         setDefaultImage(ImageProvider.getImage(ECoreImage.CONTEXT_ICON));
-        setTitle(TITILE + " " + label); //$NON-NLS-1$
-        setMessage(DEFAULTMESAGE);
+        setTitle(TITILE);
+        setMessage(Messages.getString("ShowAddedContextdialog.Messages", label)); //$NON-NLS-1$
         setHelpAvailable(false);
     }
 

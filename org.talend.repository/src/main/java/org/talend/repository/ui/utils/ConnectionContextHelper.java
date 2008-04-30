@@ -31,10 +31,13 @@ import org.talend.core.model.context.JobContextParameter;
 import org.talend.core.model.metadata.MetadataTalendType;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
-import org.talend.core.model.metadata.builder.connection.DelimitedFileConnection;
-import org.talend.core.model.metadata.builder.connection.FileExcelConnection;
-import org.talend.core.model.metadata.builder.connection.PositionalFileConnection;
-import org.talend.core.model.metadata.builder.connection.RegexpFileConnection;
+import org.talend.core.model.metadata.builder.connection.FileConnection;
+import org.talend.core.model.metadata.builder.connection.GenericSchemaConnection;
+import org.talend.core.model.metadata.builder.connection.LDAPSchemaConnection;
+import org.talend.core.model.metadata.builder.connection.LdifFileConnection;
+import org.talend.core.model.metadata.builder.connection.SalesforceSchemaConnection;
+import org.talend.core.model.metadata.builder.connection.WSDLSchemaConnection;
+import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
 import org.talend.core.model.metadata.designerproperties.RepositoryToComponentProperty;
 import org.talend.core.model.metadata.types.ContextParameterJavaTypeManager;
 import org.talend.core.model.metadata.types.JavaType;
@@ -127,30 +130,77 @@ public final class ConnectionContextHelper {
         if (varList == null || varList.isEmpty()) {
             return null;
         }
+        String contextName = connItem.getProperty().getLabel();
+        ISelection selection = getRepositoryContext(contextName, false);
+        if (selection == null) {
+            return null;
+        }
 
-        return openContextDialog(connItem.getProperty().getLabel(), varList);
+        ContextWizard contextWizard = new ContextWizard(contextName, selection.isEmpty(), selection, varList);
+        WizardDialog dlg = new WizardDialog(Display.getCurrent().getActiveShell(), contextWizard);
+        if (dlg.open() == Window.OK) {
+            return contextWizard.getContextItem();
+        }
+        return null;
     }
 
     private static List<IContextParameter> createContextParameters(ConnectionItem connectionItem) {
         if (connectionItem == null) {
             return null;
         }
+        final String label = connectionItem.getProperty().getLabel();
         Connection conn = connectionItem.getConnection();
 
         List<IContextParameter> varList = null;
         if (conn instanceof DatabaseConnection) {
-            varList = DBConnectionContextUtils.getDBVariables(connectionItem.getProperty().getLabel(), (DatabaseConnection) conn);
-        } else if (conn instanceof DelimitedFileConnection) {
+            varList = DBConnectionContextUtils.getDBVariables(label, (DatabaseConnection) conn);
+        } else if (conn instanceof FileConnection) {
+            // varList = FileConnectionContextUtils.getDBVariables(label, (FileConnection) conn);
+        } else if (conn instanceof LdifFileConnection) {
             //
-        } else if (conn instanceof FileExcelConnection) {
+        } else if (conn instanceof XmlFileConnection) {
             //
-        } else if (conn instanceof PositionalFileConnection) {
+        } else if (conn instanceof LDAPSchemaConnection) {
             //
-        } else if (conn instanceof RegexpFileConnection) {
+        } else if (conn instanceof WSDLSchemaConnection) {
+            //
+        } else if (conn instanceof SalesforceSchemaConnection) {
+            //
+        } else if (conn instanceof GenericSchemaConnection) {
             //
         }
 
         return varList;
+    }
+
+    public static void setPropertiesForContextMode(ConnectionItem connectionItem, ContextItem contextItem) {
+        if (connectionItem == null || contextItem == null) {
+            return;
+        }
+        final String label = connectionItem.getProperty().getLabel();
+        Connection conn = connectionItem.getConnection();
+
+        if (conn instanceof DatabaseConnection) {
+            DBConnectionContextUtils.setPropertiesForContextMode(label, (DatabaseConnection) conn);
+        } else if (conn instanceof FileConnection) {
+            // FileConnectionContextUtils.setPropertiesForContextMode(label, (FileConnection) conn);
+        } else if (conn instanceof LdifFileConnection) {
+            //
+        } else if (conn instanceof XmlFileConnection) {
+            //
+        } else if (conn instanceof LDAPSchemaConnection) {
+            //
+        } else if (conn instanceof WSDLSchemaConnection) {
+            //
+        } else if (conn instanceof SalesforceSchemaConnection) {
+            //
+        } else if (conn instanceof GenericSchemaConnection) {
+            //
+        }
+        // set connection for context mode
+        connectionItem.getConnection().setContextMode(true);
+        connectionItem.getConnection().setContextId(contextItem.getProperty().getId());
+
     }
 
     static void createParameters(List<IContextParameter> varList, String paramName, String value) {
@@ -201,27 +251,6 @@ public final class ConnectionContextHelper {
         }
         contextParam.setComment(EMPTY);
         varList.add(contextParam);
-    }
-
-    private static ContextItem openContextDialog(String contextName, List<IContextParameter> varList) {
-        if (contextName == null) {
-            return null;
-        }
-        ISelection selection = getRepositoryContext(contextName, false);
-        if (selection == null) {
-            return null;
-        }
-        boolean creation = true;
-        if (!selection.isEmpty()) {
-            creation = false;
-        }
-        ContextWizard contextWizard = new ContextWizard(contextName, creation, selection, varList);
-        WizardDialog dlg = new WizardDialog(Display.getCurrent().getActiveShell(), contextWizard);
-        if (dlg.open() == Window.OK) {
-
-            return contextWizard.getContextItem();
-        }
-        return null;
     }
 
     private static ISelection getRepositoryContext(final String contextNameOrId, boolean isId) {
