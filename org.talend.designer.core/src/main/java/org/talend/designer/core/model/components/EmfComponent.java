@@ -477,7 +477,7 @@ public class EmfComponent implements IComponent {
         param.setName(EParameterName.SQLPATTERN_CODE.getName());
         param.setValue(""); //$NON-NLS-1$
         param.setDisplayName(EParameterName.SQLPATTERN_CODE.getDisplayName());
-        param.setField(EParameterFieldType.MEMO);
+        param.setField(EParameterFieldType.TABLE);
         param.setNbLines(10);
         param.setCategory(EComponentCategory.SQL_PATTERN);
         param.setNumRow(3);
