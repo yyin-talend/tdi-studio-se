@@ -13,6 +13,7 @@
 package org.talend.designer.core.ui.views.properties;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -579,6 +580,9 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
      */
     private List<Map> getTableInput(Element element) {
         IElementParameter parameter = element.getElementParameter(EParameterName.SQLPATTERN_VALUE.getName());
+        if (parameter == null) {
+            return Collections.EMPTY_LIST;
+        }
         List<Map> value = (List<Map>) parameter.getValue();
         return value;
     }
@@ -650,7 +654,12 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
 
     private List<String> getAllSqlPatterns() {
 
-        String dbName = (String) element.getElementParameter(EParameterName.SQLPATTERN_DB_NAME.getName()).getValue();
+        IElementParameter elementParam = element.getElementParameter(EParameterName.SQLPATTERN_DB_NAME.getName());
+        if (elementParam == null) {
+            return Collections.EMPTY_LIST;
+        }
+
+        String dbName = (String) elementParam.getValue();
         List<String> patterns = new ArrayList<String>();
         try {
 
