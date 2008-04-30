@@ -109,7 +109,8 @@ public class CreateFolderAction extends AContextualAction {
                 }
                 break;
             case SIMPLE_FOLDER:
-                if (property == ERepositoryObjectType.JOB_DOC || property == ERepositoryObjectType.JOBLET_DOC) {
+                if (property == ERepositoryObjectType.JOB_DOC || property == ERepositoryObjectType.JOBLET_DOC
+                        || (property == ERepositoryObjectType.SQLPATTERNS && !isUnderUserDefined(node))) {
                     canWork = false;
                 }
                 break;

@@ -36,6 +36,7 @@ import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ProxyRepositoryFactory;
+import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.model.RepositoryNode.ENodeType;
@@ -109,10 +110,17 @@ public class RenameFolderAction extends AContextualAction {
         if (canWork) {
             Object o = selection.getFirstElement();
             RepositoryNode node = (RepositoryNode) o;
+            Object obj = node.getProperties(EProperties.LABEL);
             switch (node.getType()) {
             case SIMPLE_FOLDER:
+                String label = null;
+                if (obj instanceof String) {
+                    label = (String) obj;
+                }
                 if (node.getContentType() == ERepositoryObjectType.JOB_DOC
-                        || node.getContentType() == ERepositoryObjectType.JOBLET_DOC) {
+                        || node.getContentType() == ERepositoryObjectType.JOBLET_DOC
+                        || (node.getContentType() == ERepositoryObjectType.SQLPATTERNS && !isUnderUserDefined(node))
+                        || RepositoryConstants.USER_DEFINED.equals(label)) {
                     canWork = false;
                 }
                 break;
