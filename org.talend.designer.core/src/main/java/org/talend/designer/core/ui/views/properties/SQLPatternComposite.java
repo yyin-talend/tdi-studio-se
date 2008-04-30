@@ -22,6 +22,7 @@ import org.eclipse.emf.common.ui.celleditor.ExtendedComboBoxCellEditor;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.ColumnViewer;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
@@ -34,6 +35,7 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -175,21 +177,18 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
         buttonRemoveData.top = new FormAttachment(table, 2);
         buttonRemove.setLayoutData(buttonRemoveData);
 
-//       Button buttonT = new Button(panel, SWT.NONE);
-//       buttonT.setText("Test");
-//
-//        FormData fd = new FormData();
-//        fd.left = new FormAttachment(buttonAdd, 1, SWT.RIGHT);
-//        fd.top = new FormAttachment(buttonAdd, 2);
-//        fd.right = new FormAttachment(90, 0);
-//        fd.bottom = new FormAttachment(100, 0);
-        
-        
-//        buttonT.setLayoutData(fd);
-        
-        
-        
-        createCodeControl(panel,buttonAdd);
+        // Button buttonT = new Button(panel, SWT.NONE);
+        // buttonT.setText("Test");
+        //
+        // FormData fd = new FormData();
+        // fd.left = new FormAttachment(buttonAdd, 1, SWT.RIGHT);
+        // fd.top = new FormAttachment(buttonAdd, 2);
+        // fd.right = new FormAttachment(90, 0);
+        // fd.bottom = new FormAttachment(100, 0);
+
+        // buttonT.setLayoutData(fd);
+
+        createCodeControl(panel, buttonAdd);
         setMinSize(panel.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 
         final List<String> legalParameters = getAllSqlPatterns();
@@ -197,6 +196,8 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
         TableViewerProvider provider = new TableViewerProvider();
         tableViewer.setContentProvider(provider);
         tableViewer.setLabelProvider(provider);
+        addTableSorter(tableViewer, columnName);
+
         tableViewer.setCellModifier(new ICellModifier() {
 
             public boolean canModify(Object element, String property) {
@@ -312,26 +313,107 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
                 }
             }
         });
-        
-      
-        
+
+    }
+
+    /**
+     * DOC bqian Comment method "addTableSorter".
+     * 
+     * @param tableViewer2
+     * @param columnName
+     */
+    private void addTableSorter(TableViewer viewer, TableColumn columnName) {
+        new ColumnViewerSorter(viewer, columnName);
+    }
+
+    /**
+     * bqian SQLPatternComposite class global comment. Detailled comment
+     */
+    private static class ColumnViewerSorter extends ViewerComparator {
+
+        public static final int ASC = 1;
+
+        public static final int NONE = 0;
+
+        public static final int DESC = -1;
+
+        private int direction = 0;
+
+        private TableColumn column;
+
+        private ColumnViewer viewer;
+
+        public ColumnViewerSorter(ColumnViewer viewer, TableColumn column) {
+            this.column = column;
+            this.viewer = viewer;
+            this.column.addSelectionListener(new SelectionAdapter() {
+
+                public void widgetSelected(SelectionEvent e) {
+                    if (ColumnViewerSorter.this.viewer.getComparator() != null) {
+                        if (ColumnViewerSorter.this.viewer.getComparator() == ColumnViewerSorter.this) {
+                            int tdirection = ColumnViewerSorter.this.direction;
+
+                            if (tdirection == ASC) {
+                                setSorter(ColumnViewerSorter.this, DESC);
+                            } else if (tdirection == DESC) {
+                                setSorter(ColumnViewerSorter.this, NONE);
+                            }
+                        } else {
+                            setSorter(ColumnViewerSorter.this, ASC);
+                        }
+                    } else {
+                        setSorter(ColumnViewerSorter.this, ASC);
+                    }
+                }
+            });
+        }
+
+        public void setSorter(ColumnViewerSorter sorter, int direction) {
+            if (direction == NONE) {
+                column.getParent().setSortColumn(null);
+                column.getParent().setSortDirection(SWT.NONE);
+                viewer.setComparator(null);
+            } else {
+                column.getParent().setSortColumn(column);
+                sorter.direction = direction;
+
+                if (direction == ASC) {
+                    column.getParent().setSortDirection(SWT.DOWN);
+                } else {
+                    column.getParent().setSortDirection(SWT.UP);
+                }
+                if (viewer.getComparator() == sorter) {
+                    viewer.refresh();
+                } else {
+                    viewer.setComparator(sorter);
+                }
+            }
+        }
+
+        public int compare(Viewer viewer, Object e1, Object e2) {
+            return direction * super.compare(viewer, e1, e2);
+        }
+
     }
 
     /**
      * DOC bqian Comment method "createCodeControl".
-     * @param panel 
-     * @param  
+     * 
+     * @param panel
+     * @param
      */
     private void createCodeControl(Composite panel, Control reference) {
-        codeText = new Text(panel, SWT.BORDER | SWT.MULTI|SWT.H_SCROLL|SWT.V_SCROLL);
+        codeText = new Text(panel, SWT.BORDER | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
+        codeText.setEditable(false);
         FormData fd = new FormData();
         fd.left = new FormAttachment(10, 0);
         fd.right = new FormAttachment(90, 0);
         fd.top = new FormAttachment(reference, 2);
         fd.bottom = new FormAttachment(95, 0);
         codeText.setLayoutData(fd);
-        
+
     }
+
     /**
      * DOC bqian Comment method "addSelectionChangeListener".
      * 
@@ -382,6 +464,7 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
         });
 
     }
+
     /**
      * bqian Comment method "getTableInput".
      * 
