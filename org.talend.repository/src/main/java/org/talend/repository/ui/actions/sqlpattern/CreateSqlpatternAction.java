@@ -13,6 +13,7 @@
 package org.talend.repository.ui.actions.sqlpattern;
 
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -42,6 +43,10 @@ import org.talend.repository.ui.wizards.sqlpattern.NewSqlpatternWizard;
  */
 public class CreateSqlpatternAction extends AbstractSqlpatternAction {
 
+    boolean isFromSqlPatternComposite = false;
+
+    String sqlPatternPath;
+
     public CreateSqlpatternAction() {
         super();
 
@@ -55,6 +60,12 @@ public class CreateSqlpatternAction extends AbstractSqlpatternAction {
     public CreateSqlpatternAction(boolean isToolbar) {
         this();
         setToolbar(isToolbar);
+    }
+
+    public CreateSqlpatternAction(String path, boolean isFromSqlPatternComposite) {
+        this();
+        this.sqlPatternPath = path;
+        this.isFromSqlPatternComposite = isFromSqlPatternComposite;
     }
 
     /*
@@ -99,8 +110,10 @@ public class CreateSqlpatternAction extends AbstractSqlpatternAction {
      * @see org.eclipse.jface.action.Action#run()
      */
     public void run() {
-        RepositoryNode sqlPatternNode = getCurrentRepositoryNode();
-
+        RepositoryNode sqlPatternNode = null;
+        if (!isFromSqlPatternComposite) {
+            sqlPatternNode = getCurrentRepositoryNode();
+        }
         if (isToolbar()) {
             if (sqlPatternNode != null && sqlPatternNode.getContentType() != ERepositoryObjectType.SQLPATTERNS) {
                 sqlPatternNode = null;
@@ -111,7 +124,12 @@ public class CreateSqlpatternAction extends AbstractSqlpatternAction {
         }
         RepositoryNode node = null;
         IPath path;
-        if (isToolbar()) {
+
+        if (this.sqlPatternPath != null) {
+            path = new Path(this.sqlPatternPath);
+        }
+
+        else if (isToolbar()) {
             path = RepositoryNodeUtilities.getPath(sqlPatternNode);
 
         } else {
@@ -125,7 +143,9 @@ public class CreateSqlpatternAction extends AbstractSqlpatternAction {
         WizardDialog dlg = new WizardDialog(Display.getCurrent().getActiveShell(), routineWizard);
 
         if (dlg.open() == Window.OK) {
-            if (isToolbar()) {
+            if (isFromSqlPatternComposite) {
+                // do nothing
+            } else if (isToolbar()) {
                 refresh(sqlPatternNode);
             } else {
                 refresh(node);

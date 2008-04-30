@@ -22,8 +22,12 @@ import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.SystemException;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.model.components.ComponentUtilities;
@@ -31,6 +35,7 @@ import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.migration.IMigrationToolService;
 import org.talend.core.model.properties.Property;
+import org.talend.core.model.properties.SQLPatternItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.ui.DisableLanguageActions;
@@ -44,6 +49,8 @@ import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.plugin.integration.BindingActions;
 import org.talend.repository.plugin.integration.SwitchProjectAction;
+import org.talend.repository.ui.actions.sqlpattern.CreateSqlpatternAction;
+import org.talend.repository.ui.actions.sqlpattern.EditSqlpatternAction;
 import org.talend.repository.ui.login.LoginDialog;
 import org.talend.repository.ui.utils.ColumnNameValidator;
 import org.talend.repository.ui.utils.DBConnectionContextUtils;
@@ -333,4 +340,26 @@ public class RepositoryService implements IRepositoryService {
     public DatabaseConnection cloneOriginalValueConnection(DatabaseConnection dbConn) {
         return DBConnectionContextUtils.cloneOriginalValueConnection(dbConn);
     }
+
+    public IEditorPart openSQLPatternEditor(SQLPatternItem item, boolean readOnly) {
+        IEditorPart openSQLPatternEditor = null;
+        try {
+            openSQLPatternEditor = new EditSqlpatternAction().openSQLPatternEditor(item, readOnly);
+        } catch (PartInitException e) {
+            ExceptionHandler.process(e);
+        } catch (SystemException e) {
+            ExceptionHandler.process(e);
+        }
+        return openSQLPatternEditor;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.model.IRepositoryService#createSqlpattern()
+     */
+    public void createSqlpattern(String path, boolean isFromSqlPatternComposite) {
+        new CreateSqlpatternAction(path, isFromSqlPatternComposite).run();
+    }
+
 }
