@@ -76,10 +76,17 @@ public class JavaSQLPatternSynchronizer extends AbstractSQLPatternSynchronizer {
             rep.create(true, true, null);
         }
 
-        path = path.append(JavaUtils.JAVA_SYSTEM_ROUTINES_DIRECTORY);
-        rep = javaProject.getFolder(path);
+        IPath temp = path;
+        temp = path.append(JavaUtils.JAVA_SYSTEM_ROUTINES_DIRECTORY);
+        rep = javaProject.getFolder(temp);
         if (!rep.exists()) {
             rep.create(true, true, null);
+        }
+
+        temp = path.append(JavaUtils.JAVA_USER_DEFINED);
+        rep = javaProject.getFolder(temp);
+        if (!rep.exists()) {
+            rep.create(true, false, null);
         }
     }
 
