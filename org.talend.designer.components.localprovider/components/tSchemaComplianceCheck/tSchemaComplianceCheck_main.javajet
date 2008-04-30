@@ -33,23 +33,38 @@ if(rejectConns != null && rejectConns.size() > 0) {
         rejectConnName = conn.getName();
     }
 }
-List<? extends IConnection> outgoingConns = node.getOutgoingSortedConnections();
-List<IMetadataColumn> columnList = node.getMetadataFromConnector("FLOW").getListColumns();
+
+List<IMetadataColumn> columnList = null;
+List<? extends IConnection> incomingConnections = node.getIncomingConnections();
+if(incomingConnections != null && incomingConnections.size() > 0) {
+    for(IConnection incomingConnection : incomingConnections) {
+        if(incomingConnection.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
+            IMetadataTable schemaTable = incomingConnection.getMetadataTable();
+            if(schemaTable != null) {
+                columnList = schemaTable.getListColumns();
+            }
+        }
+    }
+}
 List<IMetadataColumn> columnListToTest = columnList;
+List<? extends IConnection> outgoingConns = node.getOutgoingSortedConnections();
+
 
 if(incomingConnName != null && columnList != null && columnList.size() > 0) {
     for(IConnection conn : outgoingConns) {
     	if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
-    %><%=conn.getName() %> = null;			
-<%
+    	    %>
+    	    <%=conn.getName() %> = null;			
+    	    <%
     	}
 	}
-%>    
+    %>    
     boolean ifPassed_<%=cid%> = true;
     int errorCode_<%=cid%> = 0;
     String errorMessage_<%=cid%> = "";
     int resultErrorCode_<%=cid%> = 0;
-    String resultErrorMessage_<%=cid%>="";
+    String resultErrorMessage_<%=cid%> = "";
+    String tmpContent_<%=cid%> = null;
     <%
     String anotherChecked = ElementParameterParser.getValue(node,"__CHECK_ANOTHER__");
     String checkAll = ElementParameterParser.getValue(node,"__CHECK_ALL__");
@@ -92,9 +107,8 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
         public void testDataLength(String incomingConnName, IMetadataColumn metadataColumn, Integer maxLength, String cid) {
             JavaType javaType = JavaTypesManager.getJavaTypeFromId(metadataColumn.getTalendType());
             if(javaType == JavaTypesManager.STRING) {
-                if(maxLength != null)
-                {
-%>
+                if(maxLength != null) {
+                    %>
                     //validate maxlength
                     if(<%=incomingConnName%>.<%=metadataColumn.getLabel()%> != null) {
                         if(<%=incomingConnName%>.<%=metadataColumn.getLabel()%>.length() > <%=maxLength%>) {
@@ -103,39 +117,65 @@ if(incomingConnName != null && columnList != null && columnList.size() > 0) {
                             errorMessage_<%=cid%> += "|exceed max length";                        
                         }
                     }
-<%
+                    <%
+                }
+            } else if(javaType == JavaTypesManager.INTEGER) {
+                if(maxLength != null) {
+                    String generatedType = JavaTypesManager.getTypeToGenerate(metadataColumn.getTalendType(), metadataColumn.isNullable());
+                    if(generatedType.equals("int")) {
+                        %>
+                        tmpContent_<%=cid%> = String.valueOf(<%=incomingConnName%>.<%=metadataColumn.getLabel()%>);
+                        if(tmpContent_<%=cid%>.length() > <%=maxLength%>) {
+                            ifPassed_<%=cid%> = false;
+                            errorCode_<%=cid%> += 8;
+                            errorMessage_<%=cid%> += "|exceed max length";                            
+                        }
+                        <%
+                    } else {
+                        %>
+                        if(<%=incomingConnName%>.<%=metadataColumn.getLabel()%> != null) {
+                            tmpContent_<%=cid%> = <%=incomingConnName%>.<%=metadataColumn.getLabel()%>.toString();
+                            if(tmpContent_<%=cid%>.length() > <%=maxLength%>) {
+                                ifPassed_<%=cid%> = false;
+                                errorCode_<%=cid%> += 8;
+                                errorMessage_<%=cid%> += "|exceed max length";                                
+                            }
+                        }
+                        <%
+                    }
                 }
             }
         }
         public void  testDate(String incomingConnName, IMetadataColumn metadataColumn, String pattern, String cid) {
 			JavaType javaType = JavaTypesManager.getJavaTypeFromId(metadataColumn.getTalendType());
             if(javaType == JavaTypesManager.STRING) {
-%>
-			if(<%=incomingConnName%>.<%=metadataColumn.getLabel()%>!=null){
-				try {
-					java.text.SimpleDateFormat dateFormate_<%=cid%> = new java.text.SimpleDateFormat(<%=pattern%>);
-					dateFormate_<%=cid%>.setLenient(false);
-					dateFormate_<%=cid%>.parse(<%=incomingConnName%>.<%=metadataColumn.getLabel()%>);
-				} catch(Exception e) {
-                    ifPassed_<%=cid%> = false;
-                    errorCode_<%=cid%> += 2;
-                    errorMessage_<%=cid%> += "|Date format not valid";
-                }
-			}
-<%
+                %>
+    			if(<%=incomingConnName%>.<%=metadataColumn.getLabel()%>!=null){
+    				try {
+    					java.text.SimpleDateFormat dateFormate_<%=cid%> = new java.text.SimpleDateFormat(<%=pattern%>);
+    					dateFormate_<%=cid%>.setLenient(false);
+    					dateFormate_<%=cid%>.parse(<%=incomingConnName%>.<%=metadataColumn.getLabel()%>);
+    				} catch(Exception e) {
+                        ifPassed_<%=cid%> = false;
+                        errorCode_<%=cid%> += 2;
+                        errorMessage_<%=cid%> += "|Date format not valid";
+                    }
+    			}
+    			<%
 			}
         }
         
         public void testNull(String incomingConnName, IMetadataColumn metadataColumn, String cid){
-        	if(!metadataColumn.isNullable()){
-%>
-			// validate nullable
-			if(<%=incomingConnName%>.<%=metadataColumn.getLabel()%> == null) {
-                ifPassed_<%=cid%> = false;
-                errorCode_<%=cid%> += 4;
-                errorMessage_<%=cid%> += "|empty or null";                        
-            }
-<%
+        	boolean isPrimitive = JavaTypesManager.isJavaPrimitiveType(metadataColumn.getTalendType(), metadataColumn.isNullable());
+            if(!isPrimitive){
+        	    %>
+    			// validate nullable
+    			if(<%=incomingConnName%>.<%=metadataColumn.getLabel()%> == null) {
+                    ifPassed_<%=cid%> = false;
+                    errorCode_<%=cid%> += 4;
+                    errorMessage_<%=cid%> += "|empty or null";                        
+                }
+    			<%
 			}
         }
     }
