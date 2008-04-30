@@ -442,7 +442,7 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
                 SQLPatternItem sqlpatternItem = null;
                 try {
                     List<IRepositoryObject> list = DesignerPlugin.getDefault().getRepositoryService().getProxyRepositoryFactory()
-                            .getAll(ERepositoryObjectType.METADATA_SQLPATTERNS, false);
+                            .getAll(ERepositoryObjectType.SQLPATTERNS, false);
 
                     for (IRepositoryObject repositoryObject : list) {
                         SQLPatternItem item = (SQLPatternItem) repositoryObject.getProperty().getItem();
@@ -549,7 +549,7 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
         try {
 
             List<IRepositoryObject> list = DesignerPlugin.getDefault().getRepositoryService().getProxyRepositoryFactory().getAll(
-                    ERepositoryObjectType.METADATA_SQLPATTERNS, false);
+                    ERepositoryObjectType.SQLPATTERNS, false);
             for (IRepositoryObject repositoryObject : list) {
                 SQLPatternItem item = (SQLPatternItem) repositoryObject.getProperty().getItem();
                 if (item.getEltName().equals(dbName)) {
