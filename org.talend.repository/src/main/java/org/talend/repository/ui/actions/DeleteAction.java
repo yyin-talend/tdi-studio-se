@@ -44,6 +44,7 @@ import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
+import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.model.RepositoryNode.ENodeType;
@@ -315,8 +316,14 @@ public class DeleteAction extends AContextualAction {
                     visible = false;
                     break;
                 case SIMPLE_FOLDER:
+                    Object obj = node.getProperties(EProperties.LABEL);
+                    String label = null;
+                    if (obj instanceof String) {
+                        label = (String) obj;
+                    }
                     if (node.getContentType() == ERepositoryObjectType.JOB_DOC
-                            || node.getContentType() == ERepositoryObjectType.JOBLET_DOC) {
+                            || node.getContentType() == ERepositoryObjectType.JOBLET_DOC
+                            || RepositoryConstants.USER_DEFINED.equals(label)) {
                         visible = false;
                     } else {
                         this.setText(DELETE_LOGICAL_TITLE);
