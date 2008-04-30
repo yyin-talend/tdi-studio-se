@@ -1,0 +1,125 @@
+// ============================================================================
+//
+// Copyright (C) 2006-2007 Talend Inc. - www.talend.com
+//
+// This source code is available under agreement available at
+// %InstallDIR%\features\org.talend.rcp.branding.%PRODUCTNAME%\%PRODUCTNAME%license.txt
+//
+// You should have received a copy of the agreement
+// along with this program; if not, write to Talend SA
+// 9 rue Pages 92150 Suresnes, France
+//
+// ============================================================================
+package org.talend.repository.ui.wizards;
+
+import org.eclipse.jface.wizard.WizardPage;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Text;
+import org.talend.commons.exception.ExceptionHandler;
+import org.talend.core.CorePlugin;
+import org.talend.core.i18n.Messages;
+import org.talend.core.model.general.Project;
+import org.talend.repository.model.IProxyRepositoryFactory;
+
+/**
+ * DOC qwei class global comment. Detailled comment
+ */
+public class ProjectSettingsWizardPage extends WizardPage {
+
+    /** Name text. */
+    protected Text nameText;
+
+    /** Comment text. */
+    protected Text descriptionText;
+
+    /** Project settings button */
+    private Button projectSetBtn;
+
+    private Project pro;
+
+    protected ProjectSettingsWizardPage(String pageName, Project pro) {
+        super(pageName);
+        this.pro = pro;
+        // TODO Auto-generated constructor stub
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
+     */
+    public void createControl(Composite parent) {
+        Composite container = new Composite(parent, SWT.NONE);
+        GridLayout layout = new GridLayout(2, false);
+        container.setLayout(layout);
+        GridData data;
+
+        // Name
+        Label nameLab = new Label(container, SWT.NONE);
+        nameLab.setText(Messages.getString("PropertiesWizardPage.Name")); //$NON-NLS-1$
+
+        nameText = new Text(container, SWT.BORDER);
+        nameText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        nameText.setEditable(false);
+        // Description
+        Label descriptionLab = new Label(container, SWT.NONE);
+        descriptionLab.setText(Messages.getString("PropertiesWizardPage.Description")); //$NON-NLS-1$
+        descriptionLab.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
+
+        descriptionText = new Text(container, SWT.BORDER | SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
+        data = new GridData(GridData.FILL_HORIZONTAL);
+        data.heightHint = 60;
+        descriptionText.setLayoutData(data);
+
+        // Project settings
+        GridData gd = new GridData();
+        gd.horizontalSpan = 2;
+        projectSetBtn = new Button(container, SWT.PUSH);
+        projectSetBtn.setText("Palette Settings");
+        projectSetBtn.setLayoutData(gd);
+        setControl(container);
+        updateContent();
+        addListeners();
+        setPageComplete(true);
+
+    }
+
+    protected void updateContent() {
+        nameText.setText(pro.getLabel());
+        descriptionText.setText(pro.getEmfProject().getDescription());
+    }
+
+    protected void addListeners() {
+
+        projectSetBtn.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                PaletteSettingsDialog dialog = new PaletteSettingsDialog(getShell(), pro);
+                dialog.open();
+            }
+        });
+    }
+
+    protected void finish() {
+        if (descriptionText.getText().equals(pro.getEmfProject().getDescription())) {
+            return;
+        }
+
+        pro.getEmfProject().setDescription(descriptionText.getText());
+        IProxyRepositoryFactory prf = CorePlugin.getDefault().getProxyRepositoryFactory();
+
+        try {
+            prf.saveProject(pro);
+        } catch (Exception ex) {
+            ExceptionHandler.process(ex);
+        }
+    }
+}

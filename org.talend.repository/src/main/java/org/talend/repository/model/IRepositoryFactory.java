@@ -70,6 +70,8 @@ public interface IRepositoryFactory {
     public Project createProject(String label, String description, ECodeLanguage language, User author)
             throws PersistenceException;
 
+    public void saveProject(Project project) throws PersistenceException;
+
     // public boolean doesLoggedUserExist() throws PersistenceException;
 
     // public void createUser() throws PersistenceException;

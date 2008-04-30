@@ -481,6 +481,15 @@
                toolbarPath="Default"
                tooltip="Detecte and update all jobs">
          </action>
+         <action
+               class="org.talend.repository.ui.actions.toolbar.ProjectSettingsAction"
+               icon="icons/newProject.png"
+               id="org.talend.repository.projectsettings"
+               label="Project settings"
+               style="push"
+               toolbarPath="Default"
+               tooltip="Project settings">
+         </action>
          <!--action
                class="org.talend.repository.ui.actions.importproject.DeleteProjectsAsAction"
                icon="icons/delete.gif"
