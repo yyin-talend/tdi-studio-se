@@ -75,7 +75,7 @@ public class DesignerPreferencePage extends FieldEditorPreferencePage implements
         StringFieldEditor hintField;
         StringFieldEditor connectionField;
         BooleanFieldEditor showHint;
-        BooleanFieldEditor displayComponent;
+        // BooleanFieldEditor displayComponent;
         BooleanFieldEditor useRepositoryName;
 
         labelField = new StringFieldEditor(TalendDesignerPrefConstants.DEFAULT_LABEL, Messages
@@ -89,15 +89,15 @@ public class DesignerPreferencePage extends FieldEditorPreferencePage implements
         showHint = new BooleanFieldEditor(TalendDesignerPrefConstants.DEFAULT_HINT_USED, Messages
                 .getString("DesignerPreferencePage.hintShowed"), //$NON-NLS-1$
                 getFieldEditorParent());
-        displayComponent = new BooleanFieldEditor(TalendDesignerPrefConstants.DEFAULT_DISPLAY, Messages
-                .getString("DesignerPreferencePage.display.hiddenComponents"), getFieldEditorParent()); //$NON-NLS-1$
+        // displayComponent = new BooleanFieldEditor(TalendDesignerPrefConstants.DEFAULT_DISPLAY, Messages
+        // .getString("DesignerPreferencePage.display.hiddenComponents"), getFieldEditorParent()); //$NON-NLS-1$
         useRepositoryName = new BooleanFieldEditor(TalendDesignerPrefConstants.USE_REPOSITORY_NAME, Messages
                 .getString("DesignerPreferencePage.display.useRepositoryName"), getFieldEditorParent()); //$NON-NLS-1$
         addField(labelField);
         addField(hintField);
         addField(connectionField);
         addField(showHint);
-        addField(displayComponent);
+        // addField(displayComponent);
         addField(useRepositoryName);
 
         addField(new BooleanFieldEditor(TalendDesignerPrefConstants.PROPERTY_CODE_CHECK, Messages

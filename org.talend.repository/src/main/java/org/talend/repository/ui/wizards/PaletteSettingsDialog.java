@@ -47,6 +47,7 @@ import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.swt.advanced.composite.ThreeCompositesSashForm;
 import org.talend.core.CorePlugin;
+import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.ComponentSetting;
@@ -428,6 +429,7 @@ public class PaletteSettingsDialog extends Dialog {
         IProxyRepositoryFactory prf = CorePlugin.getDefault().getProxyRepositoryFactory();
         try {
             prf.saveProject(project);
+            ComponentUtilities.updatePalette();
         } catch (Exception ex) {
             ExceptionHandler.process(ex);
         }

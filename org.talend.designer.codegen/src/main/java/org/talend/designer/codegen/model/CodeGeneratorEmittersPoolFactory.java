@@ -121,6 +121,8 @@ public final class CodeGeneratorEmittersPoolFactory {
                 @Override
                 protected IStatus doRun(IProgressMonitor monitor) {
                     try {
+                        saveComponentVisibilityStatus();
+
                         jetFilesCompileFail.clear();
                         initInProgress = true;
 
@@ -162,9 +164,11 @@ public final class CodeGeneratorEmittersPoolFactory {
                         if (components != null) {
                             ECodePart codePart = ECodePart.MAIN;
                             for (IComponent component : components) {
+                                // if (component.isTechnical() || component.isVisible()) {
                                 if (component.getAvailableCodeParts().size() > 0) {
                                     initComponent(codeLanguage, jetBeans, codePart, component);
                                 }
+                                // }
                                 monitorWrap.worked(1);
                             }
                         }
@@ -187,8 +191,6 @@ public final class CodeGeneratorEmittersPoolFactory {
 
                         // remove compilations markers
                         ComponentCompilations.deleteMarkers();
-
-                        saveComponentVisibilityStatus();
 
                     } catch (Exception e) {
                         log.error("Exception during Initialization", e);

@@ -23,12 +23,14 @@ import org.talend.designer.core.ui.editor.cmd.CreateNodeContainerCommand;
 import org.talend.designer.core.ui.editor.cmd.CreateNoteCommand;
 import org.talend.designer.core.ui.editor.cmd.MoveNodeCommand;
 import org.talend.designer.core.ui.editor.cmd.MoveNodeLabelCommand;
+import org.talend.designer.core.ui.editor.cmd.MoveNoteCommand;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodeLabel;
 import org.talend.designer.core.ui.editor.nodes.NodeLabelEditPart;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
 import org.talend.designer.core.ui.editor.notes.Note;
+import org.talend.designer.core.ui.editor.notes.NoteEditPart;
 import org.talend.designer.core.ui.editor.process.Process;
 
 /**
@@ -60,6 +62,13 @@ public class SubjobContainerLayoutEditPolicy extends XYLayoutEditPolicy {
      * java.lang.Object)
      */
     protected Command createAddCommand(final EditPart child, final Object constraint) {
+        if (child instanceof NoteEditPart) {
+            if (((Note) child.getModel()).isReadOnly()) {
+                return null;
+            }
+            MoveNoteCommand locationCommand = new MoveNoteCommand((Note) child.getModel(), ((Rectangle) constraint).getLocation());
+            return locationCommand;
+        }
         if (child instanceof NodeLabelEditPart) {
             boolean nodeSelected;
             // if (((NodeLabelEditPart) child).getNodePart().getSelected() != 0) {
@@ -89,6 +98,14 @@ public class SubjobContainerLayoutEditPolicy extends XYLayoutEditPolicy {
      */
     protected Command createChangeConstraintCommand(final EditPart child, final Object constraint) {
         // return a command to move the part to the location given by the constraint
+
+        if (child instanceof NoteEditPart) {
+            if (((Note) child.getModel()).isReadOnly()) {
+                return null;
+            }
+            MoveNoteCommand locationCommand = new MoveNoteCommand((Note) child.getModel(), ((Rectangle) constraint).getLocation());
+            return locationCommand;
+        }
 
         if (child instanceof NodeLabelEditPart) {
             boolean nodeSelected;

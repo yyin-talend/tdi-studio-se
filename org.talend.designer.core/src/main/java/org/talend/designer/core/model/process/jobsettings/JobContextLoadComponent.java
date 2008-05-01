@@ -437,4 +437,13 @@ public class JobContextLoadComponent implements IComponent {
     public boolean isHashComponent() {
         return false;
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.components.IComponent#isTechnical()
+     */
+    public boolean isTechnical() {
+        return false;
+    }
 }

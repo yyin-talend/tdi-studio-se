@@ -47,6 +47,7 @@ import org.talend.core.model.components.IMultipleComponentItem;
 import org.talend.core.model.components.IMultipleComponentManager;
 import org.talend.core.model.general.InstallModule;
 import org.talend.core.model.general.ModuleNeeded;
+import org.talend.core.model.general.Project;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataColumn;
@@ -59,6 +60,7 @@ import org.talend.core.model.process.IConnectionProperty;
 import org.talend.core.model.process.IElementParameterDefaultValue;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
+import org.talend.core.model.properties.ComponentSetting;
 import org.talend.core.model.properties.SQLPatternItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
@@ -1753,7 +1755,19 @@ public class EmfComponent implements IComponent {
     }
 
     public boolean isVisible() {
-        return compType.getHEADER().isVISIBLE();
+        RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
+                Context.REPOSITORY_CONTEXT_KEY);
+        Project project = repositoryContext.getProject();
+
+        List<ComponentSetting> components = (List<ComponentSetting>) project.getEmfProject().getComponentsSettings();
+        for (ComponentSetting componentSetting : components) {
+            if (componentSetting.getName().equals(getName())) {
+                return !componentSetting.isHidden();
+            }
+        }
+
+        // return compType.getHEADER().isVISIBLE();
+        return true;
     }
 
     public String getVersion() {
@@ -2166,6 +2180,15 @@ public class EmfComponent implements IComponent {
      */
     public boolean isHashComponent() {
         return compType.getHEADER().isHASHCOMPONENT();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.components.IComponent#isTechnical()
+     */
+    public boolean isTechnical() {
+        return compType.getHEADER().isTECHNICAL();
     }
 
 }

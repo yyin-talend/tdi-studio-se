@@ -87,13 +87,11 @@ public final class TalendEditorPaletteFactory {
             }
 
         });
-        IPreferenceStore preferenceStore = DesignerPlugin.getDefault().getPreferenceStore();
-        boolean displayTechnical = preferenceStore.getBoolean(TalendDesignerPrefConstants.DEFAULT_DISPLAY);
 
         for (int i = 0; i < componentList.size(); i++) {
             IComponent xmlComponent = componentList.get(i);
 
-            if (!displayTechnical && !xmlComponent.isVisible()) {
+            if (xmlComponent.isTechnical() || !xmlComponent.isVisible()) {
                 continue;
             }
 
@@ -120,7 +118,7 @@ public final class TalendEditorPaletteFactory {
         for (int i = 0; i < componentList.size(); i++) {
             IComponent xmlComponent = componentList.get(i);
 
-            if (!displayTechnical && !xmlComponent.isVisible()) {
+            if (xmlComponent.isTechnical() || !xmlComponent.isVisible()) {
                 continue;
             }
 
