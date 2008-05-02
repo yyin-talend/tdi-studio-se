@@ -1,9 +1,10 @@
 <%@ jet 
 imports="
-     org.talend.core.model.process.INode 
-     org.talend.core.model.metadata.IMetadataTable 
-     java.util.List
-     org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.process.INode 
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.process.ElementParameterParser
+    java.util.List
+    org.talend.designer.codegen.config.CodeGeneratorArgument
 " 
 %>
 
@@ -17,17 +18,47 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     IMetadataTable metadata = metadatas.get(0);
     if (metadata!=null) {
 
+        String useExistingConnection = ElementParameterParser.getValue(
+            node,
+            "__USE_EXISTING_CONNECTION__"
+        );
+
+        String connection = ElementParameterParser.getValue(
+            node,
+            "__CONNECTION__"
+        );
+
+        String dbh = "dbh_";
+        String dbh2 = "dbh2_";
+    
+        if (useExistingConnection.equals("true")) {
+            dbh+= connection;
+            dbh2+= connection;
+        }
+        else {
+            dbh+= cid;
+            dbh2+= cid;
+        }
+
 %>
 
 
 $usth_<%=cid %>->finish() if defined( $usth_<%=cid %> );
 $isth_<%=cid %>->finish() if defined( $isth_<%=cid %> );
 
-$dbh_<%=cid %>->commit() if defined($dbh_<%=cid %>);
-$dbh_<%=cid %>->disconnect() if defined($dbh_<%=cid %>);
+<%
+    if (useExistingConnection.equals("false")) {
+%>
+$<%=dbh%>->commit();
+$<%=dbh%>->disconnect();
 
-$dbh2_<%=cid %>->commit() if defined($dbh2_<%=cid %>);
-$dbh2_<%=cid %>->disconnect() if defined($dbh2_<%=cid %>);
+$<%=dbh2%>->commit() if defined($<%=dbh2%>);
+$<%=dbh2%>->disconnect() if defined($<%=dbh2%>);
+
+<%
+    }
+%>
+
 
 $_globals{<%=cid %>}{NB_LINE} = $nb_line_<%=cid %>;
 $_globals{<%=cid %>}{NB_LINE_UPDATED}  = $nb_line_updated_<%=cid %>;

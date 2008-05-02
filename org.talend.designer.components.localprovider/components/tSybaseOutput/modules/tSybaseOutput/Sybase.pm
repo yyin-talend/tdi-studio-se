@@ -75,6 +75,11 @@ sub getTableCreationQuery {
         if (not $column_href->{null}) {
             $query.= ' NOT NULL';
         }
+        else{
+            $query.= ' NULL';
+        }
+        
+        
 
         if ($column_href->{default} != '') {
             $query.= " DEFAULT '".$column_href->{default}."'";

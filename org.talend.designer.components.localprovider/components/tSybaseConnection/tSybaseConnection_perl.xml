@@ -19,7 +19,7 @@
   </DOCUMENTATION>
 
   <CONNECTORS>
-    <CONNECTOR CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="1"/>
+    <CONNECTOR CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="0"/>
     <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="1" MAX_INPUT="1"/>
     <CONNECTOR CTYPE="SUBJOB_OK" MAX_INPUT="1" />
     <CONNECTOR CTYPE="SUBJOB_ERROR" MAX_INPUT="1" />
@@ -47,30 +47,12 @@
     >
       <DEFAULT>SybaseASE</DEFAULT>
     </PARAMETER>
-
-    <PARAMETER
-      NAME="USE_EXISTING_CONNECTION"
-      FIELD="CHECK"
-      NUM_ROW="2"
-    >
-      <DEFAULT>false</DEFAULT>
-    </PARAMETER>
-    
-    <PARAMETER
-      NAME="CONNECTION"
-      FIELD="COMPONENT_LIST"
-      FILTER="tSybaseConnection"
-      NUM_ROW="2"
-      SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
-    />
-
     
     <PARAMETER
       NAME="SERVER"
       FIELD="TEXT"
       NUM_ROW="3"
       REPOSITORY_VALUE="SERVER_NAME"
-      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>'SYBASE'</DEFAULT>
     </PARAMETER>
@@ -81,7 +63,6 @@
       NUM_ROW="3"
       SHOW="false"
       REPOSITORY_VALUE="TYPE"
-      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>Sybase ASE</DEFAULT>
     </PARAMETER>
@@ -92,7 +73,6 @@
       NUM_ROW="3"
       REPOSITORY_VALUE="SID"
       REQUIRED="true"
-      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>''</DEFAULT>
     </PARAMETER>
@@ -103,7 +83,6 @@
       NUM_ROW="4"
       REPOSITORY_VALUE="USERNAME"
       REQUIRED="true"
-      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>'sa'</DEFAULT>
     </PARAMETER>
@@ -114,49 +93,10 @@
       NUM_ROW="4"
       REPOSITORY_VALUE="PASSWORD"
       REQUIRED="true"
-      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
     >
       <DEFAULT>''</DEFAULT>
     </PARAMETER>
 
-    <PARAMETER
-      NAME="SCHEMA"
-      FIELD="SCHEMA_TYPE"
-      NUM_ROW="5"
-    >
-      <DEFAULT>''</DEFAULT>
-    </PARAMETER>
-    <PARAMETER
-      NAME="DBTABLE"
-      FIELD="DBTABLE"
-      NUM_ROW="6"
-    >
-      <DEFAULT>''</DEFAULT>
-    </PARAMETER>
-    <PARAMETER
-      NAME="QUERYSTORE"
-      FIELD="QUERYSTORE_TYPE"
-      NUM_ROW="7"
-    >
-      <DEFAULT>''</DEFAULT>
-    </PARAMETER>
-
- 	<PARAMETER
-      NAME="GUESS_SCHEMA"
-      FIELD="GUESS_SCHEMA"
-      NUM_ROW="7"
-    >
-      <DEFAULT>""</DEFAULT>
-    </PARAMETER>
-
-    <PARAMETER
-      NAME="QUERY"
-      FIELD="MEMO_SQL"
-      NUM_ROW="8"
-      REQUIRED="true"
-    >
-      <DEFAULT>'select * from sysobjects '</DEFAULT>
-    </PARAMETER>
 
   </PARAMETERS>
 
@@ -167,8 +107,5 @@
     </IMPORTS>
   </CODEGENERATION>
 
-  <RETURNS>
-    <RETURN NAME="NB_LINE" TYPE="INTEGER" AVAILABILITY="AFTER"/>
-    <RETURN NAME="QUERY" TYPE="STRING" AVAILABILITY="FLOW"/>
-  </RETURNS>
+   <RETURNS/>
 </COMPONENT>

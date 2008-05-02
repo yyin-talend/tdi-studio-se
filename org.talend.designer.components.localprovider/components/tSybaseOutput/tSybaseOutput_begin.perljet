@@ -59,6 +59,24 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             || tableAction.equals("CREATE_IF_NOT_EXISTS")) {
             addCols.clear();
         }
+
+        String useExistingConnection = ElementParameterParser.getValue(
+            node,
+            "__USE_EXISTING_CONNECTION__"
+        );
+
+        String connection = ElementParameterParser.getValue(
+            node,
+            "__CONNECTION__"
+        );
+
+        String dbh = "dbh_";
+        if (useExistingConnection.equals("true")) {
+            dbh+= connection;
+        }
+        else {
+            dbh+= cid;
+        }
 %>
 
 use DBI;
@@ -94,7 +112,10 @@ my %desc_<%=cid %> = (
     ],
 );
 
-my $dbh_<%=cid %> = DBI->connect(
+<%
+        if (useExistingConnection.equals("false")) {
+%>
+my $<%=dbh %> = DBI->connect(
     sprintf(
 #        'DBI:Sybase:server=%s;database=%s;charset=%s',
         'DBI:Sybase:server=%s;database=%s',
@@ -110,6 +131,34 @@ my $dbh_<%=cid %> = DBI->connect(
     }
 )
     or die "can't connect to database";
+<%
+        }
+%>
+
+<%
+        if (tableAction.equals("CREATE")
+            || tableAction.equals("DROP_CREATE")
+            || tableAction.equals("CREATE_IF_NOT_EXISTS")) {
+%>
+# we need a dedicated connection with Autocommit set to ON  for ddl operations
+my $dbh_ddl_<%=cid%> = DBI->connect(
+    sprintf(
+        'DBI:Sybase:server=%s;database=%s',
+        <%=dbserver %>,
+        <%=dbname %>,
+    ),
+    <%=dbuser %>,
+    <%=dbpass %>,
+    {
+        AutoCommit => 1,
+    }
+)
+    or die "[<%=cid%>] can't connect to database"
+
+;
+<%
+        }
+%>
 
 
 my $sth_<%=cid %>;
@@ -122,23 +171,30 @@ my $query;
 %>
 # We need the table list to know if drop or "create if not exists" is
 # relevant
-my $tabsth = $dbh_<%=cid %>->table_info();
-my @tables = ();
+my $tabsth = $<%=dbh%>->prepare("
+SELECT name 
+FROM sysobjects 
+WHERE type = 'U' and name = ?
+"
+);
+$tabsth->execute($desc_<%=cid %>{dbtable});
+$table_exists = 0;
+my $test_table = lc $desc_<%=cid %>{dbtable};
 
-while (my $entity = $tabsth->fetchrow_hashref()) {
-    if ($entity->{table_type} eq 'TABLE') {
-        push @tables, lc $entity->{table_name};
+while (my $row_aref = $tabsth->fetchrow_arrayref()) {
+    if (lc $row_aref->[0] eq $test_table) {
+        $table_exists = 1;
+        last;
     }
 }
-$tabsth->finish() ;
+$tabsth->finish();
+
 
 #     print "===\n";
 #     print "existing tables:\n";
 #     print join("\n", map {"  - ".$_} @tables), "\n";
 #     print "===\n";
 
-my $test_table = lc $desc_<%=cid %>{dbtable};
-my $table_exists = grep /^$test_table$/, @tables;
 <%
         }
 
@@ -148,11 +204,10 @@ if ($table_exists) {
     $query = '
 DROP TABLE '.<%=dbtable%>.'
 ';
-    $sth_<%=cid %> = $dbh_<%=cid %>->prepare($query);
+    $sth_<%=cid %> = $dbh_ddl_<%=cid%>->prepare($query);
 
     $sth_<%=cid %>->execute()
         or die "can't drop table";
-    $dbh_<%=cid %>->commit();
 
     # the table does not exist anymore
     $table_exists = 0;
@@ -176,13 +231,11 @@ $query = tSybaseOutput::Sybase::getTableCreationQuery(
     schema     => $desc_<%=cid %>{schema},
 );
 
-$sth_<%=cid %> = $dbh_<%=cid %>->prepare(
+
+$sth_<%=cid %> = $dbh_ddl_<%=cid%>->do(
     $query
 );
 
-$sth_<%=cid %>->execute()
-    or die "can't create table\n===\n$query\n===\n";
-$dbh_<%=cid %>->commit();
 <%
             if (tableAction.equals("CREATE_IF_NOT_EXISTS")) {
 %>
@@ -198,10 +251,10 @@ DELETE
   FROM '.<%=dbtable%>.'
 ';
 
-$sth_<%=cid %> = $dbh_<%=cid %>->prepare($query);
+$sth_<%=cid %> = $<%=dbh %>->prepare($query);
 $sth_<%=cid %>->execute()
     or die "can't clear table";
-$dbh_<%=cid %>->commit();
+$<%=dbh %>->commit();
 $sth_<%=cid %>->finish();
 <%
         }
@@ -305,7 +358,7 @@ if(keyString.trim().length() > 0){
 <%
     if ( dataAction.equals("UPDATE") ){
 %>
-my $usth_<%=cid %> = $dbh_<%=cid %>->prepare($query_upd);
+my $usth_<%=cid %> = $<%=dbh %>->prepare($query_upd);
 <%
     }
     else
@@ -348,7 +401,7 @@ DELETE FROM '.<%=dbtable%>.'
   WHERE <%=keyString%>
 ';
 
-my $dsth_<%=cid %> = $dbh_<%=cid %>->prepare($query);
+my $dsth_<%=cid %> = $<%=dbh %>->prepare($query);
 
 <%
     }
@@ -409,7 +462,7 @@ INSERT
   (<%=parametersString%>)
 ';
 
-my $isth_<%=cid %> = $dbh_<%=cid %>->prepare($query_ins);
+my $isth_<%=cid %> = $<%=dbh %>->prepare($query_ins);
 
 <%
 }

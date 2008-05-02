@@ -26,6 +26,25 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         String dbuser = ElementParameterParser.getValue(node, "__USER__");
         String dbpass = ElementParameterParser.getValue(node, "__PASS__");
         String query = ElementParameterParser.getValue(node, "__QUERY__");
+
+        String useExistingConnection = ElementParameterParser.getValue(
+            node,
+            "__USE_EXISTING_CONNECTION__"
+        );
+
+        String connection = ElementParameterParser.getValue(
+            node,
+            "__CONNECTION__"
+        );
+
+        String dbh = "dbh_";
+        if (useExistingConnection.equals("true")) {
+            dbh+= connection;
+        }
+        else {
+            dbh+= cid;
+        }
+        
 %>
 
 use DBI;
@@ -58,7 +77,10 @@ my %desc_<%=cid %> = (
 
 my $nb_line_<%=cid%> = 0;
 
-my $dbh_<%=cid %> = DBI->connect(
+<%
+        if (useExistingConnection.equals("false")) {
+%>
+my $<%=dbh%> = DBI->connect(
     sprintf(
         'DBI:Sybase:server=%s;database=%s',
         <%=dbserver %>,
@@ -69,11 +91,15 @@ my $dbh_<%=cid %> = DBI->connect(
 )
     or die "can't connect to database";
 
+<%
+        }
+%>
+
 my $sth_<%=cid %>;
 my $query;
 
 
-$sth_<%=cid %> = $dbh_<%=cid %>->prepare(
+$sth_<%=cid %> = $<%=dbh %>->prepare(
     <%=query%>
 );
 

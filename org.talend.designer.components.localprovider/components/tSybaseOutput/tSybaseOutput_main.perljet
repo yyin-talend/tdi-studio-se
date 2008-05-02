@@ -21,6 +21,29 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     IMetadataTable metadata = metadatas.get(0);
     if (metadata!=null) {
 
+        String useExistingConnection = ElementParameterParser.getValue(
+            node,
+            "__USE_EXISTING_CONNECTION__"
+        );
+
+        String connection = ElementParameterParser.getValue(
+            node,
+            "__CONNECTION__"
+        );
+
+        String dbh = "dbh_";
+        String dbh2 = "dbh2_";
+    
+        if (useExistingConnection.equals("true")) {
+            dbh+= connection;
+            dbh2+= connection;
+        }
+        else {
+            dbh+= cid;
+            dbh2+= cid;
+        }
+
+
         String commitEvery = ElementParameterParser.getValue(
             node,
             "__COMMIT_EVERY__"
@@ -87,10 +110,16 @@ if ($nb_rows) {
     $nb_line_updated_<%=cid%>+= $nb_rows;
 }
 
+<%
+        if (useExistingConnection.equals("false")) {
+%>
 if (++$nb_line_current_commit_upd_<%=cid%> >= <%=commitEvery %>) {
-    $dbh_<%=cid %>->commit() ;
+    $<%=dbh2 %>->commit() ;
     $nb_line_current_commit_upd_<%=cid%> = 0;
 }
+<%
+        }
+%>
 
 
 <%
@@ -103,10 +132,16 @@ $isth_<%=cid %>->execute(@$<%=cid %>)
 
 $nb_line_inserted_<%=cid%>++;
 
+<%
+        if (useExistingConnection.equals("false")) {
+%>
 if (++$nb_line_current_commit_ins_<%=cid%> >= <%=commitEvery %>) {
-    $dbh_<%=cid %>->commit() ;
+    $<%=dbh %>->commit() ;
     $nb_line_current_commit_ins_<%=cid%> = 0;
 }
+<%
+        }
+%>
 
 <%
         }
@@ -118,19 +153,32 @@ eval {
 } ;
 if($@){
     eval {
-        $dbh_<%=cid%>->rollback();
+        $<%=dbh%>->rollback();
         $nb_line_updated_<%=cid%> += $usth_<%=cid %>->execute(@$<%=cid%>[<%=positionsString%>]) ;
-    	$dbh2_<%=cid %>->commit();
+<%
+        if (useExistingConnection.equals("false")) {
+%>
+    	$<%=dbh2%>->commit();
+<%
+        }
+%>
     } ;
     if($@){
         die "can't execute update query\n";
     }
-} else {
+} 
+<%
+        if (useExistingConnection.equals("false")) {
+%>
+else {
     if (++$nb_line_current_commit_ins_<%=cid%> >= <%=commitEvery %>) {
-        $dbh_<%=cid %>->commit() ;
+        $<%=dbh %>->commit() ;
         $nb_line_current_commit_ins_<%=cid%> = 0;
     }
 }
+<%
+        }
+%>
 <%
         }
         else if (dataAction.equals("UPDATE_OR_INSERT")) {
@@ -139,17 +187,26 @@ $usth_<%=cid %>->{PrintError} = 0;
     $nb_line_updated_<%=cid%> += $usth_<%=cid %>->execute(@$<%=cid%>[<%=positionsString%>]) 
         or die "can't execute update query\n";
 
+<%
+        if (useExistingConnection.equals("false")) {
+%>
+
     if($nb_line_updated_<%=cid%>){
         if (++$nb_line_current_commit_upd_<%=cid%> >= <%=commitEvery %>) {
-            $dbh2_<%=cid %>->commit() ;
+            $<%=dbh2 %>->commit() ;
             $nb_line_current_commit_upd_<%=cid%> = 0;
         }
     }
     else {
         $nb_line_inserted_<%=cid%> += $isth_<%=cid %>->execute(@$<%=cid%>)
             or die "can't execute insert query\n"  ;
-    	$dbh_<%=cid %>->commit();
+    	$<%=dbh %>->commit();
     }
+<%
+        }
+%>
+
+
 <%
         }
         else if (dataAction.equals("DELETE")) {
