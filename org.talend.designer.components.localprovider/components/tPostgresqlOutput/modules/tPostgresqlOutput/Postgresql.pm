@@ -136,24 +136,20 @@ sub performTableAction {
         or $param{tableAction} eq "CREATE_IF_NOT_EXISTS") {
         # We need the table list to know if drop or "create if not exists"
         # is relevant
-        my $schema = $param{dbschema};
-        my $catalog = undef;
-        my $tabsth = $param{dbh}->table_info($catalog, $schema);
-        my @tables = ();
-
-        while (my $entity = $tabsth->fetchrow_hashref()) {
-            if ($entity->{TABLE_TYPE} eq 'TABLE') {
-                push @tables, lc $entity->{TABLE_NAME};
-            }
+        my $tabsth = $param{dbh}->prepare("
+            select table_name 
+            from information_schema.tables
+            where
+            table_schema = ?
+            and table_name = ?
+            "
+        );
+        $tabsth->execute($param{dbschema}, lc $param{dbtable})
+            or die "can't execute query : $!";
+        while (my $row = $tabsth->fetchrow_arrayref()) {
+            $table_exists = 1;
+            last;
         }
-
-        # print "===\n";
-        # print "existing tables:\n";
-        # print join("\n", map {"  - ".$_} @tables), "\n";
-        # print "===\n";
-
-        my $test_table = lc $param{dbtable};
-        $table_exists = grep /^$test_table$/, @tables;
     }
 
     if ($param{tableAction} eq "DROP_CREATE" and $table_exists) {
