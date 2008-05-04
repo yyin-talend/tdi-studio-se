@@ -272,10 +272,10 @@
              name="Edit Sql Pattern">
        </Action>
        <Action
-             class="org.talend.repository.ui.actions.metadata.DetectedSchemaModificationAction"
-             id="org.talend.repository.actions.DetectedSchemaModification"
+             class="org.talend.repository.ui.actions.metadata.DetecteViewImpactAction"
+             id="org.talend.repository.actions.DetecteViewImpact"
              level="20"
-             name="Metadata/Detected Schema Modification">
+             name="View Impact">
        </Action>
    </extension>
    <extension
