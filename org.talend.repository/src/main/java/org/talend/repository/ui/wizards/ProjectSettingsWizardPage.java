@@ -75,7 +75,7 @@ public class ProjectSettingsWizardPage extends WizardPage {
 
         descriptionText = new Text(container, SWT.BORDER | SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
         data = new GridData(GridData.FILL_HORIZONTAL);
-        data.heightHint = 60;
+        data.heightHint = 120;
         descriptionText.setLayoutData(data);
 
         // Project settings

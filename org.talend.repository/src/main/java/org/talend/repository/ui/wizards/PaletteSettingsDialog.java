@@ -51,6 +51,7 @@ import org.talend.core.model.components.ComponentUtilities;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.ComponentSetting;
+import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.designer.components.preference.labelformat.TalendPaletteLabelProvider;
 import org.talend.designer.components.preference.labelformat.TalendPaletteTreeProvider;
 import org.talend.repository.model.ComponentsFactoryProvider;
@@ -73,6 +74,7 @@ public class PaletteSettingsDialog extends Dialog {
 
     private ThreeCompositesSashForm compositesSachForm;
 
+    // <name:visiblility>
     private Map<String, Boolean> statusBackup = new HashMap<String, Boolean>();
 
     /**
@@ -207,6 +209,10 @@ public class PaletteSettingsDialog extends Dialog {
     protected boolean isFolderVisible(PaletteContainer container, boolean isVisible) {
         for (Iterator iterator = container.getChildren().iterator(); iterator.hasNext();) {
             PaletteEntry entry = (PaletteEntry) iterator.next();
+            if (entry.getLabel().equals("tOracleSCDELT")) {
+                System.out.println(entry);
+            }
+
             if (entry instanceof PaletteContainer) {
                 boolean display = isFolderVisible((PaletteContainer) entry, isVisible);
                 if (display) {
@@ -347,14 +353,29 @@ public class PaletteSettingsDialog extends Dialog {
         return true;
     }
 
+    private void setComponentVisibleForRestore(String name, boolean visible) {
+        List<ComponentSetting> components = getComponentsFromProject();
+        for (ComponentSetting componentSetting : components) {
+            if (componentSetting.getName().equals(name)) {
+                componentSetting.setHidden(!visible);
+                return;
+            }
+        }
+    }
+
     private void setComponentVisible(String name, boolean visible) {
         List<ComponentSetting> components = getComponentsFromProject();
         for (ComponentSetting componentSetting : components) {
             if (componentSetting.getName().equals(name)) {
                 componentSetting.setHidden(!visible);
-                break;
+                return;
             }
         }
+        ComponentSetting cs = PropertiesFactory.eINSTANCE.createComponentSetting();
+        cs.setName(name);
+        cs.setHidden(!visible);
+        components.add(cs);
+        statusBackup.put(name, !visible);
     }
 
     /**
@@ -405,7 +426,7 @@ public class PaletteSettingsDialog extends Dialog {
         super.cancelPressed();
         for (Iterator iterator = statusBackup.keySet().iterator(); iterator.hasNext();) {
             String name = (String) iterator.next();
-            setComponentVisible(name, statusBackup.get(name));
+            setComponentVisibleForRestore(name, statusBackup.get(name));
         }
     }
 }
