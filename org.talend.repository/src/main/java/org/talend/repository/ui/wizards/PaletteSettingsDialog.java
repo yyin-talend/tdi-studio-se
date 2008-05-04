@@ -84,18 +84,9 @@ public class PaletteSettingsDialog extends Dialog {
     protected PaletteSettingsDialog(Shell parentShell, Project pro) {
         super(parentShell);
         this.project = pro;
-        // IComponentsService service = (IComponentsService)
-        // GlobalServiceRegister.getDefault().getService(IComponentsService.class);
-        // List<IComponent> components = service.getComponentsFactory().getComponents();
-        // for (IComponent component : components) {
-        // System.out.println(component.isVisible() + " " + component.getName() + " " + component.getFamily());
-        // }
-        //
-        // System.out.println("----------------------");
         List<ComponentSetting> c = getComponentsFromProject();
         for (ComponentSetting componentSetting : c) {
             statusBackup.put(componentSetting.getName(), !componentSetting.isHidden());
-            System.out.println(!componentSetting.isHidden() + " " + componentSetting.getName());
         }
 
     }
@@ -182,7 +173,7 @@ public class PaletteSettingsDialog extends Dialog {
     }
 
     /**
-     * DOC qwei Comment method "getFilterForHiddenComponent".
+     * DOC qwei Comment method "getFilterForHiddenComponent". isVisible false for left viewer; true for right viewer
      * 
      * @return
      */
@@ -190,12 +181,10 @@ public class PaletteSettingsDialog extends Dialog {
         ViewerFilter filter = new ViewerFilter() {
 
             public boolean select(Viewer viewer, Object parentElement, Object element) {
-                // PaletteComponentFactory
-
                 PaletteEntry entry = (PaletteEntry) element;
+
                 if (entry instanceof PaletteContainer) {
                     return isFolderVisible((PaletteContainer) entry, isVisible);
-                    // return true;
                 }
 
                 if (isVisible) {
@@ -203,13 +192,6 @@ public class PaletteSettingsDialog extends Dialog {
                 } else {
                     return !isComponentVisible(entry.getLabel());
                 }
-
-                // if (entry instanceof PaletteContainer) {
-                // } else if (entry instanceof PaletteSeparator) {
-                // } else {
-                // }
-                // return true;
-
             }
         };
         return filter;
@@ -226,7 +208,12 @@ public class PaletteSettingsDialog extends Dialog {
         for (Iterator iterator = container.getChildren().iterator(); iterator.hasNext();) {
             PaletteEntry entry = (PaletteEntry) iterator.next();
             if (entry instanceof PaletteContainer) {
-                return isFolderVisible((PaletteContainer) entry, isVisible);
+                boolean display = isFolderVisible((PaletteContainer) entry, isVisible);
+                if (display) {
+                    return true;
+                } else {
+                    continue;
+                }
             } else {
                 if (isVisible) {
                     if (isComponentVisible(entry.getLabel())) {
@@ -238,37 +225,9 @@ public class PaletteSettingsDialog extends Dialog {
                     }
                 }
                 continue;
-
             }
         }
 
-        // // right viewer
-        // if (isVisible) {
-        // for (Iterator iterator = container.getChildren().iterator(); iterator.hasNext();) {
-        // PaletteEntry entry = (PaletteEntry) iterator.next();
-        // if (entry instanceof PaletteContainer) {
-        // return isFolderVisible((PaletteContainer) entry, isVisible);
-        // } else {
-        // if (isComponentVisible(entry.getLabel())) {
-        // return true;
-        // }
-        // continue;
-        // }
-        // }
-        // } else {
-        // // left viewer
-        // for (Iterator iterator = container.getChildren().iterator(); iterator.hasNext();) {
-        // PaletteEntry entry = (PaletteEntry) iterator.next();
-        // if (entry instanceof PaletteContainer) {
-        // return isFolderVisible((PaletteContainer) entry, isVisible);
-        // } else {
-        // if (!isComponentVisible(entry.getLabel())) {
-        // return true;
-        // }
-        // continue;
-        // }
-        // }
-        // }
         return false;
     }
 
@@ -393,6 +352,7 @@ public class PaletteSettingsDialog extends Dialog {
         for (ComponentSetting componentSetting : components) {
             if (componentSetting.getName().equals(name)) {
                 componentSetting.setHidden(!visible);
+                break;
             }
         }
     }
