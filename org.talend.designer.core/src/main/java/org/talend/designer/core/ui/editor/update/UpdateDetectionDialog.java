@@ -237,8 +237,8 @@ public class UpdateDetectionDialog extends SelectionDialog {
 
         viewer.setContentProvider(new UpdateContentProvider());
         viewer.setLabelProvider(new UpdateLabelProvider());
+        viewer.setSorter(new UpdateViewerSorter());
         viewer.setInput(getInputElements());
-
         // viewer.setColumnProperties(new String[] { ITEMS, OPERATIONS, REMARKS });
         // viewer.setCellEditors(new CellEditor[] { null, null, null });
         // viewer.setCellModifier(new UpdateCellModifier());
