@@ -21,6 +21,7 @@ class="MomInput"
 	String host=ElementParameterParser.getValue(node, "__SERVERADDRESS__");
 	String port=ElementParameterParser.getValue(node, "__SERVERPORT__");
 	String kListen=ElementParameterParser.getValue(node, "__KEEPLISTENING__");
+	
 	IMetadataTable metadata=null;
 	List<IMetadataTable> metadatas = node.getMetadataList();
 		if ((metadatas!=null)&&(metadatas.size()>0)) {
@@ -126,6 +127,7 @@ else{
 	String channel=ElementParameterParser.getValue(node, "__CHANNEL__");
 	String qm=ElementParameterParser.getValue(node, "__QM__");
 	String queue = ElementParameterParser.getValue(node, "__QUEUE__");
+	String msgId=ElementParameterParser.getValue(node, "__MSG_ID__");
 %>
 	java.util.Hashtable properties<%=cid%>=new java.util.Hashtable();
 	properties<%=cid%>.put("hostname", <%=host%>);
@@ -136,6 +138,10 @@ else{
 	
 	com.ibm.mq.MQQueueManager qMgr<%=cid%>=null;
 	com.ibm.mq.MQQueue remoteQ<%=cid%>=null;
+	String msgId_<%=cid%> = <%=msgId%>;
+	if(msgId_<%=cid%>.length()>24){
+		msgId_<%=cid%> = msgId_<%=cid%>.substring(0,24);
+	}
 	try{
 
 	int openOptions<%=cid%>=com.ibm.mq.MQC.MQOO_INPUT_SHARED | com.ibm.mq.MQC.MQOO_FAIL_IF_QUIESCING | com.ibm.mq.MQC.MQOO_INQUIRE;
@@ -145,7 +151,7 @@ else{
 	gmo<%=cid%>.options=gmo<%=cid%>.options+com.ibm.mq.MQC.<%if(kListen.equals("false")){%>MQGMO_NO_WAIT<%}else{%>MQGMO_WAIT<%}%>;
 	gmo<%=cid%>.options=gmo<%=cid%>.options+com.ibm.mq.MQC.MQGMO_FAIL_IF_QUIESCING;
 	gmo<%=cid%>.waitInterval=com.ibm.mq.MQC.MQWI_UNLIMITED;
-	
+	com.ibm.mq.MQException.log = null;
 	boolean flag<%=cid%>=true;
 
 	System.out.println("Ready to receive message");
@@ -153,10 +159,35 @@ else{
 	while(flag<%=cid%>){
 		qMgr<%=cid%>=new com.ibm.mq.MQQueueManager(<%=qm%>,properties<%=cid%>);
 		remoteQ<%=cid%>=qMgr<%=cid%>.accessQueue(<%=queue%>,openOptions<%=cid%>);
-		<%if(kListen.equals("false")){%>if(Integer.valueOf(remoteQ<%=cid%>.getCurrentDepth()).equals(0)) break;<%}%>
-	
+<%
+	if(kListen.equals("false")){
+%>
+		if(Integer.valueOf(remoteQ<%=cid%>.getCurrentDepth()).equals(0)) 
+			break;
+<%
+	}
+%>
 		com.ibm.mq.MQMessage inMessage<%=cid%>=new com.ibm.mq.MQMessage();
+		inMessage<%=cid%>.messageId = msgId_<%=cid%>.getBytes("UTF8");
+<%
+	if(kListen.equals("false")){
+%>		
+		try{
+			remoteQ<%=cid%>.get(inMessage<%=cid%>,gmo<%=cid%>);
+		}catch (com.ibm.mq.MQException me_<%=cid%>) {   
+            if (me_<%=cid%>.reasonCode == com.ibm.mq.MQException.MQRC_NO_MSG_AVAILABLE) {
+            	break;   
+            }else{
+            	throw me_<%=cid%>;
+            }   
+     	}
+<%
+	}else{
+%>
 		remoteQ<%=cid%>.get(inMessage<%=cid%>,gmo<%=cid%>);
+<%
+	}
+%>
 		String message<%=cid%>=inMessage<%=cid%>.readString(inMessage<%=cid%>.getMessageLength());
 <%
 List< ? extends IConnection> conns = node.getOutgoingSortedConnections();
