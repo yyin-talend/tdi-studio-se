@@ -341,7 +341,7 @@ class GenerateToolByNull{
 			if(0 == (node.special & 4) ){ // is not main node
 				endElement(node,emptySpace);
 			}
-			if(node.relatedColumn != null && allowEmpty && !outputAsXSD && (node.special & 2)==0 && (node.special & 1)==0){
+			if(node.relatedColumn != null && (node.special & 2)==0 && (node.special & 1)==0){
 				if(!outputAsXSD && !allowEmpty){
 %>
 		}
