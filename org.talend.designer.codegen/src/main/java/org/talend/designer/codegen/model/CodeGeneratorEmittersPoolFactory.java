@@ -555,13 +555,13 @@ public final class CodeGeneratorEmittersPoolFactory {
                 setting.setHidden(!component.isVisible());
                 list.add(setting);
             }
-        }
-        IProxyRepositoryFactory prf = CorePlugin.getDefault().getProxyRepositoryFactory();
+            IProxyRepositoryFactory prf = CorePlugin.getDefault().getProxyRepositoryFactory();
 
-        try {
-            prf.saveProject(repositoryContext.getProject());
-        } catch (Exception e) {
-            ExceptionHandler.process(e);
+            try {
+                prf.saveProject(repositoryContext.getProject());
+            } catch (Exception e) {
+                ExceptionHandler.process(e);
+            }
         }
     }
 }
