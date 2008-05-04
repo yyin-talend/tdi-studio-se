@@ -204,8 +204,6 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
         createCodeControl(panel, buttonAdd);
         setMinSize(panel.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 
-        final List<String> legalParameters = getAllSqlPatterns();
-
         TableViewerProvider provider = new TableViewerProvider();
         tableViewer.setContentProvider(provider);
         tableViewer.setLabelProvider(provider);
@@ -667,20 +665,31 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
      * @param tableViewer
      * @param legalParameters
      */
-    private void refreshComboContent(TableViewer tableViewer) {
-        if (comboContent == null) {
-            comboContent = new ArrayList<String>();
-        }
-        comboContent.clear();
+    private void refreshComboContent(final TableViewer tableViewer) {
+        Display.getDefault().syncExec(new Runnable() {
 
-        List<Map> tableInput = (List<Map>) tableViewer.getInput();
-        List<String> content = getAllSqlPatterns();
-        for (Map map : tableInput) {
-            content.remove(map.get(EmfComponent.SQLPATTERNLIST));
-        }
+            /*
+             * (non-Javadoc)
+             * 
+             * @see java.lang.Runnable#run()
+             */
+            public void run() {
+                if (comboContent == null) {
+                    comboContent = new ArrayList<String>();
+                }
+                comboContent.clear();
 
-        comboContent.addAll(content);
-        refreshButton();
+                List<Map> tableInput = (List<Map>) tableViewer.getInput();
+                List<String> content = getAllSqlPatterns();
+                for (Map map : tableInput) {
+                    content.remove(map.get(EmfComponent.SQLPATTERNLIST));
+                }
+
+                comboContent.addAll(content);
+                refreshButton();
+
+            }
+        });
     }
 
     private void refreshButton() {
@@ -1035,6 +1044,7 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
      */
     public void resourceChanged(IResourceChangeEvent event) {
         if (event.getType() == IResourceChangeEvent.POST_CHANGE) {
+            refreshComboContent(this.tableViewer);
             refresh();
         }
     }
