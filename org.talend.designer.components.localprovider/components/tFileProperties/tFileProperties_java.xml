@@ -42,10 +42,6 @@
       	<COLUMN NAME="size"         TYPE="id_Long" 	  LENGTH="20" />
       	<COLUMN NAME="mtime"        TYPE="id_Long" 	  LENGTH="20" />
       	<COLUMN NAME="mtime_string" TYPE="id_String"  LENGTH="20" />
-       	<COLUMN NAME="uid"          TYPE="id_Integer" LENGTH="10" />
-      	<COLUMN NAME="gid"          TYPE="id_Integer" LENGTH="10" />	     	
-      	<COLUMN NAME="atime_string" TYPE="id_String"  LENGTH="20" />
-      	<COLUMN NAME="ctime_string" TYPE="id_String"  LENGTH="20" />
       </TABLE>
     </PARAMETER>
 
@@ -55,7 +51,7 @@
       NUM_ROW="20"
       REQUIRED="true"
     >
-      <DEFAULT>((String)globalMap.get("tFileList_1_CURRENT_FILEPATH"))</DEFAULT>
+      <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/file.txt"</DEFAULT>
     </PARAMETER>
   </PARAMETERS>
   

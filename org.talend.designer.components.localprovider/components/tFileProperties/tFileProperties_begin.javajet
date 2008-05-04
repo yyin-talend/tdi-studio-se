@@ -51,10 +51,6 @@ if(file_<%=cid %>.exists()) {
     <%=outputConnName %>.size = file_<%=cid %>.length();
     <%=outputConnName %>.mtime = file_<%=cid %>.lastModified();
     <%=outputConnName %>.mtime_string =(new java.util.Date(file_<%=cid%>.lastModified())).toString();
-    <%=outputConnName %>.uid = 0; //"unknown"
-    <%=outputConnName %>.gid = 0; //"unknown"
-    <%=outputConnName %>.atime_string = "unknown";
-    <%=outputConnName %>.ctime_string = "unknown";
 }
 
 <%
