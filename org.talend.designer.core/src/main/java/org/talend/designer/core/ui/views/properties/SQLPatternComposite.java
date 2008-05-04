@@ -19,6 +19,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections.BidiMap;
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceChangeListener;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.emf.common.ui.celleditor.ExtendedComboBoxCellEditor;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
@@ -86,7 +89,7 @@ import org.talend.repository.model.RepositoryConstants;
 /**
  * bqian class global comment. Detailled comment
  */
-public class SQLPatternComposite extends ScrolledComposite implements IDynamicProperty {
+public class SQLPatternComposite extends ScrolledComposite implements IDynamicProperty, IResourceChangeListener {
 
     private static final String SEPARATOR = ":";
 
@@ -326,6 +329,19 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
             }
         });
 
+        ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
+
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.swt.widgets.Widget#dispose()
+     */
+    @Override
+    public void dispose() {
+        ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
+        super.dispose();
     }
 
     /**
@@ -553,33 +569,7 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
         tableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
             public void selectionChanged(SelectionChangedEvent event) {
-                Object o = ((IStructuredSelection) tableViewer.getSelection()).getFirstElement();
-                if (o == null) {
-                    return;
-                }
-                Map map = (Map) o;
-                Object object = map.get(EmfComponent.SQLPATTERNLIST);
-                String sqlpatternName = null;
-                if (object instanceof String) {
-                    sqlpatternName = (String) object;
-                } else {
-                    TableItem item = tableViewer.getTable().getSelection()[0];
-                    sqlpatternName = item.getText();
-                }
-
-                List<Map<String, Object>> codes = (List<Map<String, Object>>) ElementParameterParser.getObjectValue(element,
-                        EParameterName.SQLPATTERN_CODE.getName());
-
-                String code = null;
-                for (Map<String, Object> codeMap : codes) {
-                    if (codeMap.get(sqlpatternName) != null) {
-                        code = (String) codeMap.get(sqlpatternName);
-                        break;
-                    }
-                }
-                if (code != null) {
-                    codeText.setText(code);
-                }
+                updateCodeText();
             }
         });
 
@@ -597,7 +587,7 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
     }
 
     /**
-     * yzhang Comment method "updateCodeParameter".
+     * yzhang Comment method "refreshCode".
      * 
      * @param element
      * @return
@@ -617,6 +607,10 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
         for (Map map : value) {
             String patternName = (String) map.get(EmfComponent.SQLPATTERNLIST);
             SQLPatternItem sqlPatternItem = getSQLPatternItem(patternName);
+            if (sqlPatternItem == null) {
+                value.remove(map);
+                continue;
+            }
             String content = new String(sqlPatternItem.getContent().getInnerContent());
 
             names.add(patternName);
@@ -934,7 +928,19 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
      */
     public void refresh() {
         refreshCode(element);
-        getParent().layout();
+        updateCodeText();
+
+        Display.getDefault().syncExec(new Runnable() {
+
+            /*
+             * (non-Javadoc)
+             * 
+             * @see java.lang.Runnable#run()
+             */
+            public void run() {
+                getParent().layout();
+            }
+        });
     }
 
     /*
@@ -973,6 +979,64 @@ public class SQLPatternComposite extends ScrolledComposite implements IDynamicPr
             ExceptionHandler.process(e);
         }
         return sqlpatternItem;
+    }
+
+    /**
+     * yzhang Comment method "updateCodeText".
+     */
+    private void updateCodeText() {
+
+        Display.getDefault().syncExec(new Runnable() {
+
+            /*
+             * (non-Javadoc)
+             * 
+             * @see java.lang.Runnable#run()
+             */
+            public void run() {
+
+                Object o = ((IStructuredSelection) tableViewer.getSelection()).getFirstElement();
+                if (o == null) {
+                    return;
+                }
+                Map map = (Map) o;
+                Object object = map.get(EmfComponent.SQLPATTERNLIST);
+                String sqlpatternName = null;
+                if (object instanceof String) {
+                    sqlpatternName = (String) object;
+                } else {
+                    TableItem item = tableViewer.getTable().getSelection()[0];
+                    sqlpatternName = item.getText();
+                }
+
+                List<Map<String, Object>> codes = (List<Map<String, Object>>) ElementParameterParser.getObjectValue(element,
+                        EParameterName.SQLPATTERN_CODE.getName());
+
+                String code = null;
+                for (Map<String, Object> codeMap : codes) {
+                    if (codeMap.get(sqlpatternName) != null) {
+                        code = (String) codeMap.get(sqlpatternName);
+                        break;
+                    }
+                }
+                if (code != null) {
+
+                    codeText.setText(code);
+
+                }
+            }
+        });
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.core.resources.IResourceChangeListener#resourceChanged(org.eclipse.core.resources.IResourceChangeEvent)
+     */
+    public void resourceChanged(IResourceChangeEvent event) {
+        if (event.getType() == IResourceChangeEvent.POST_CHANGE) {
+            refresh();
+        }
     }
 
 }
