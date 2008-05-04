@@ -34,7 +34,7 @@
   	<PARAMETER
       NAME="USE_EXISTING_CONNECTION"
       FIELD="CHECK"
-      NUM_ROW="1"
+      NUM_ROW="2"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
@@ -43,7 +43,7 @@
       NAME="CONNECTION"
       FIELD="COMPONENT_LIST"
       FILTER="tInterbaseConnection"
-      NUM_ROW="1"
+      NUM_ROW="2"
       SHOW_IF="USE_EXISTING_CONNECTION == 'true'"
     />
   	
@@ -69,7 +69,7 @@
 	<PARAMETER
       NAME="HOST"
       FIELD="TEXT"
-      NUM_ROW="2"
+      NUM_ROW="3"
       SHOW="true"
       REQUIRED="true"
       REPOSITORY_VALUE="SERVER_NAME"
@@ -81,7 +81,7 @@
     <PARAMETER
       NAME="DBNAME"
       FIELD="TEXT"
-      NUM_ROW="2"
+      NUM_ROW="4"
       REQUIRED="true"
       REPOSITORY_VALUE="SID"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
@@ -92,7 +92,7 @@
     <PARAMETER
       NAME="USER"
       FIELD="TEXT"
-      NUM_ROW="3"
+      NUM_ROW="5"
       REPOSITORY_VALUE="USERNAME"
       REQUIRED="true"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
@@ -103,7 +103,7 @@
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
-      NUM_ROW="3"
+      NUM_ROW="6"
       REPOSITORY_VALUE="PASSWORD"
       REQUIRED="true"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
@@ -114,7 +114,7 @@
     <PARAMETER
       NAME="SCHEMA_FLOW"
       FIELD="SCHEMA_TYPE"
-      NUM_ROW="4"
+      NUM_ROW="8"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -123,7 +123,7 @@
       NAME="SCHEMA_REJECT"
       FIELD="SCHEMA_TYPE"
       REQUIRED="true"
-      NUM_ROW="4"
+      NUM_ROW="9"
       CONTEXT="REJECT"
       SHOW="true">
       <TABLE READONLY="true">
@@ -135,14 +135,14 @@
 	<PARAMETER
       NAME="DBTABLE"
       FIELD="DBTABLE"
-      NUM_ROW="4"
+      NUM_ROW="7"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
     <PARAMETER
       NAME="QUERYSTORE"
       FIELD="QUERYSTORE_TYPE"
-      NUM_ROW="5"
+      NUM_ROW="10"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -150,7 +150,7 @@
     <PARAMETER
       NAME="QUERY"
       FIELD="MEMO_SQL"
-      NUM_ROW="6"
+      NUM_ROW="11"
     >
       <DEFAULT>"select id, name from employee"</DEFAULT>
     </PARAMETER>
@@ -158,7 +158,7 @@
     <PARAMETER
       NAME="DIE_ON_ERROR"
       FIELD="CHECK"
-      NUM_ROW="7"
+      NUM_ROW="12"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
@@ -168,7 +168,7 @@
     <PARAMETER
       NAME="PROPAGATE_RECORD_SET"
       FIELD="CHECK"
-      NUM_ROW="5"
+      NUM_ROW="2"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
@@ -176,16 +176,16 @@
     <PARAMETER
       NAME="RECORD_SET_COLUMN"
       FIELD="COLUMN_LIST"
-      NUM_ROW="5"
+      NUM_ROW="2"
       SHOW_IF="PROPAGATE_RECORD_SET == 'true'"
     />
   
-  	<PARAMETER NAME="ENCODING" FIELD="ENCODING_TYPE" NUM_ROW="7"
+  	<PARAMETER NAME="ENCODING" FIELD="ENCODING_TYPE" NUM_ROW="1"
 		REQUIRED="true">
 		<DEFAULT>"ISO-8859-15"</DEFAULT>
 	</PARAMETER>
 
-	<PARAMETER NAME="COMMIT_EVERY" FIELD="TEXT" NUM_ROW="7"
+	<PARAMETER NAME="COMMIT_EVERY" FIELD="TEXT" NUM_ROW="1"
 		REQUIRED="true">
 		<DEFAULT>10000</DEFAULT>
 	</PARAMETER>

@@ -31,7 +31,16 @@
   </CONNECTORS>
 
   <PARAMETERS>
-   <PARAMETER 
+   
+    <PARAMETER
+      NAME="PROPERTY"
+      FIELD="PROPERTY_TYPE"
+      SHOW="true"
+      NUM_ROW="1"
+      REPOSITORY_VALUE="DATABASE:INTERBASE"
+      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
+    />
+    <PARAMETER 
       NAME="USE_EXISTING_CONNECTION" 
       FIELD="CHECK" 
       NUM_ROW="2">
@@ -44,19 +53,11 @@
 	  NUM_ROW="2" 
 	  SHOW_IF="USE_EXISTING_CONNECTION == 'true'">
 	</PARAMETER>
-    <PARAMETER
-      NAME="PROPERTY"
-      FIELD="PROPERTY_TYPE"
-      SHOW="true"
-      NUM_ROW="1"
-      REPOSITORY_VALUE="DATABASE:INTERBASE"
-      SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
-    />
     
 	<PARAMETER
       NAME="HOST"
       FIELD="TEXT"
-      NUM_ROW="2"
+      NUM_ROW="3"
       SHOW="true"
       REQUIRED="true"
       REPOSITORY_VALUE="SERVER_NAME"
@@ -68,7 +69,7 @@
     <PARAMETER
       NAME="DBNAME"
       FIELD="TEXT"
-      NUM_ROW="2"
+      NUM_ROW="4"
       REQUIRED="true"
       REPOSITORY_VALUE="SID"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
@@ -78,7 +79,7 @@
 	<PARAMETER
       NAME="TYPE"
       FIELD="TEXT"
-      NUM_ROW="2"
+      NUM_ROW="4"
       SHOW="false"
       REPOSITORY_VALUE="TYPE"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
@@ -88,7 +89,7 @@
     <PARAMETER
       NAME="USER"
       FIELD="TEXT"
-      NUM_ROW="3"
+      NUM_ROW="5"
       REPOSITORY_VALUE="USERNAME"
       REQUIRED="true"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
@@ -99,7 +100,7 @@
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
-      NUM_ROW="3"
+      NUM_ROW="6"
       REPOSITORY_VALUE="PASSWORD"
       REQUIRED="true"
       SHOW_IF="USE_EXISTING_CONNECTION == 'false'"
@@ -110,7 +111,7 @@
     <PARAMETER
       NAME="DBTABLE"
       FIELD="DBTABLE"
-      NUM_ROW="4"
+      NUM_ROW="7"
       REQUIRED="true"
     >
       <DEFAULT>""</DEFAULT>
@@ -119,7 +120,7 @@
     <PARAMETER
       NAME="TABLE_ACTION"
       FIELD="CLOSED_LIST"
-      NUM_ROW="5"
+      NUM_ROW="8"
     >
       <ITEMS DEFAULT="NONE">
         <ITEM NAME="NONE" VALUE="NONE" />
@@ -134,7 +135,7 @@
     <PARAMETER
       NAME="DATA_ACTION"
       FIELD="CLOSED_LIST"
-      NUM_ROW="5"
+      NUM_ROW="8"
     >
       <ITEMS DEFAULT="INSERT">
         <ITEM NAME="INSERT"           VALUE="INSERT" />
@@ -148,7 +149,7 @@
     <PARAMETER
       NAME="SCHEMA_FLOW"
       FIELD="SCHEMA_TYPE"
-      NUM_ROW="6"
+      NUM_ROW="9"
     >
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
@@ -157,7 +158,7 @@
       NAME="SCHEMA_REJECT"
       FIELD="SCHEMA_TYPE"
       REQUIRED="true"
-      NUM_ROW="6"
+      NUM_ROW="10"
       CONTEXT="REJECT"
       SHOW="true">
       <TABLE READONLY="true">
@@ -169,7 +170,7 @@
     <PARAMETER
       NAME="DIE_ON_ERROR"
       FIELD="CHECK"
-      NUM_ROW="7"
+      NUM_ROW="11"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
@@ -177,7 +178,7 @@
 	<PARAMETER
       NAME="MAPPING"
       FIELD="MAPPING_TYPE"
-      NUM_ROW="10"
+      NUM_ROW="13"
       SHOW="false"
     >       
       <DEFAULT>interbase_id</DEFAULT>
@@ -189,7 +190,7 @@
   	<PARAMETER
       NAME="ENCODING"
       FIELD="ENCODING_TYPE"
-      NUM_ROW="7"
+      NUM_ROW="1"
       REQUIRED="true"
     >
       <DEFAULT>"ISO-8859-15"</DEFAULT>
@@ -198,7 +199,7 @@
     <PARAMETER
       NAME="COMMIT_EVERY"
       FIELD="TEXT"
-      NUM_ROW="7"
+      NUM_ROW="1"
       REQUIRED="true"
     >
       <DEFAULT>10000</DEFAULT>
@@ -208,7 +209,7 @@
       NAME="ADD_COLS"
       FIELD="TABLE"
       REQUIRED="false"
-      NUM_ROW="8"
+      NUM_ROW="3"
       NB_LINES="3"
     >
       <ITEMS>
@@ -229,7 +230,7 @@
     <PARAMETER
       NAME="USE_FIELD_OPTIONS"
       FIELD="CHECK"
-      NUM_ROW="12"
+      NUM_ROW="4"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
@@ -238,7 +239,7 @@
       NAME="FIELD_OPTIONS"
       FIELD="TABLE"
       REQUIRED="true"
-      NUM_ROW="13"
+      NUM_ROW="5"
       NB_LINES="5"
       SHOW_IF="USE_FIELD_OPTIONS == 'true'"
     >
