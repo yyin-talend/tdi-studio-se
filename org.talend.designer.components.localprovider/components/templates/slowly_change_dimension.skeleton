@@ -608,6 +608,34 @@ public class CLASS {
         }
         return insertionColumnList;
     }
+    public List<Column> getSearchingColumnList(SCDConfiger scdConfiger) {
+        List<Column> columnList = new ArrayList<Column>();
+        if(scdConfiger.isEnableType1()) {
+            List<Column> type1Attributes = scdConfiger.getDimensionType1Configer().getDimensionAttributes();
+            for(Column type1Attribute : type1Attributes) {
+                columnList.add(type1Attribute);
+            }
+        }
+        if(scdConfiger.isEnableType2()) {
+            List<Column> type2Attributes = scdConfiger.getDimensionType2Configer().getDimensionAttributes();
+            for(Column type2Attribute : type2Attributes) {
+                columnList.add(type2Attribute);
+            }
+        }
+        if(scdConfiger.isEnableType3()) {
+            List<DimensionType3Attribute> type3Attributes = scdConfiger.getDimensionType3Configer().getDimensionAttributes();
+            for(DimensionType3Attribute type3Attribute : type3Attributes) {
+                columnList.add(type3Attribute.getCurrentColumn());
+                columnList.add(type3Attribute.getPrevColumn());
+            }
+        }
+        if(scdConfiger.isEnableType2() && scdConfiger.getDimensionType2Configer().isEnableVersion()) {
+            String versionField = scdConfiger.getDimensionType2Configer().getVersionField();
+            String versionFieldType = scdConfiger.getDimensionType2Configer().getVersionFieldType();
+            columnList.add(getColumn(versionField, versionFieldType));
+        }        
+        return columnList;
+    }
     public List<Column> getSearchColumnList(SCDConfiger scdConfiger) {
         List<Column> columnList = new ArrayList<Column>();
         List<Column> sourceKeys = scdConfiger.getSourceKeys();
@@ -650,6 +678,73 @@ public class CLASS {
         protected abstract String getSequence(String surrogateKeySequence);
         protected abstract String getDate(String endDateValue);
         protected abstract String getYear(String endDateField);
+        public String createSearchingSQL(SCDConfiger scdConfiger) {
+            StringBuilder searchingSQL = new StringBuilder();
+            boolean firstColumn = true;
+            boolean firstKeyColumn = true;
+            String separator = ", ";
+            String keySeparator = " AND ";
+            searchingSQL.append("SELECT ");
+            if(scdConfiger.isEnableType1()) {
+                List<Column> type1Attributes = scdConfiger.getDimensionType1Configer().getDimensionAttributes();
+                for(Column type1Attribute : type1Attributes) {
+                    if(firstColumn) {
+                        firstColumn = false;
+                    } else {
+                        searchingSQL.append(separator);
+                    }
+                    searchingSQL.append(getLProtectedChar() + type1Attribute.getColumnName() + getRProtectedChar());
+                }
+            }
+            if(scdConfiger.isEnableType2()) {
+                List<Column> type2Attributes = scdConfiger.getDimensionType2Configer().getDimensionAttributes();
+                for(Column type2Attribute : type2Attributes) {
+                    if(firstColumn) {
+                        firstColumn = false;
+                    } else {
+                        searchingSQL.append(separator);
+                    }
+                    searchingSQL.append(getLProtectedChar() + type2Attribute.getColumnName() + getRProtectedChar());
+                }
+            }
+            if(scdConfiger.isEnableType3()) {
+                List<DimensionType3Attribute> type3Attributes = scdConfiger.getDimensionType3Configer().getDimensionAttributes();
+                for(DimensionType3Attribute type3Attribute : type3Attributes) {
+                    if(firstColumn) {
+                        firstColumn = false;
+                    } else {
+                        searchingSQL.append(separator);
+                    }
+                    searchingSQL.append(getLProtectedChar() + type3Attribute.getCurrentColumn().getColumnName() + getRProtectedChar());
+                    searchingSQL.append(", " + getLProtectedChar() + type3Attribute.getPrevColumn().getColumnName() + getRProtectedChar());                    
+                }
+            }
+            if(scdConfiger.isEnableType2() && scdConfiger.getDimensionType2Configer().isEnableVersion()) {
+                String versionField = scdConfiger.getDimensionType2Configer().getVersionField();
+                searchingSQL.append(separator + getLProtectedChar() + versionField + getRProtectedChar());                
+            }
+            searchingSQL.append(" FROM " + getLProtectedChar() + "\" + tableName_" + cid + " + \"" + getRProtectedChar() + " WHERE ");
+            List<Column> sourceKeys = scdConfiger.getSourceKeys();
+            for(Column sourceKey : sourceKeys) {
+                if(firstKeyColumn) {
+                    firstKeyColumn = false;
+                } else {
+                    searchingSQL.append(keySeparator);
+                }
+                searchingSQL.append(getLProtectedChar() + sourceKey.getColumnName() + getRProtectedChar() + " = ?");
+            }
+            if(scdConfiger.isEnableType2()) {
+                searchingSQL.append(keySeparator);
+                String endDateField = scdConfiger.getDimensionType2Configer().getEndDateField();
+                if(scdConfiger.getDimensionType2Configer().getEndDateValueType().equals("NULL_VALUE")) {
+                    searchingSQL.append(getLProtectedChar() + endDateField + getRProtectedChar() + " IS NULL");
+                } else {
+                    String endDateValue = scdConfiger.getDimensionType2Configer().getEndDateValue();
+                    searchingSQL.append(getYear(endDateField) + " = \" + " + endDateValue + " + \"");
+                }                
+            }
+            return searchingSQL.toString();
+        }
         public String createSelectionSQL(SCDConfiger scdConfiger) {
             StringBuilder selectionSQL = new StringBuilder();
             selectionSQL.append("SELECT ");
