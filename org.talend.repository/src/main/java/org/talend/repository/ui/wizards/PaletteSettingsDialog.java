@@ -209,10 +209,6 @@ public class PaletteSettingsDialog extends Dialog {
     protected boolean isFolderVisible(PaletteContainer container, boolean isVisible) {
         for (Iterator iterator = container.getChildren().iterator(); iterator.hasNext();) {
             PaletteEntry entry = (PaletteEntry) iterator.next();
-            if (entry.getLabel().equals("tOracleSCDELT")) {
-                System.out.println(entry);
-            }
-
             if (entry instanceof PaletteContainer) {
                 boolean display = isFolderVisible((PaletteContainer) entry, isVisible);
                 if (display) {
