@@ -61,6 +61,10 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
 
     private List<String> designActionKeys = new ArrayList<String>();
 
+    private static final String[] VIEW_MENU_ACTIONS_ID = new String[] { GEFActionConstants.ZOOM_IN, GEFActionConstants.ZOOM_OUT,
+            GEFActionConstants.TOGGLE_GRID_VISIBILITY, GEFActionConstants.TOGGLE_SNAP_TO_GEOMETRY };
+
+    @Override
     public void init(final IActionBars bars) {
         buildDesignActions();
         super.init(bars);
@@ -133,6 +137,7 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
      * 
      * @see org.eclipse.ui.part.MultiPageEditorActionBarContributor#setActivePage(org.eclipse.ui.IEditorPart)
      */
+    @Override
     public void setActivePage(final IEditorPart activeEditor) {
         if ((activeEditorPart == activeEditor) || (activeEditor == null)) {
             return;
@@ -152,7 +157,23 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
             actionBars.setGlobalActionHandler(ActionFactory.PASTE.getId(), getAction(activeEditor, ActionFactory.PASTE.getId()));
             actionBars.setGlobalActionHandler(ActionFactory.SELECT_ALL.getId(), getAction(activeEditor, ActionFactory.SELECT_ALL
                     .getId()));
+            // see bug 0003656: Actions in the main menu "View" are always disabled.
+            activateActionsInViewMenu(activeEditor, actionBars, VIEW_MENU_ACTIONS_ID);
             actionBars.updateActionBars();
+        }
+    }
+
+    /**
+     * See bug 0003656: Actions in the main menu "View" are always disabled. Reset the handlers for view menu to
+     * activate action items.
+     * 
+     * @param activeEditor
+     * @param actionBars
+     * @param viewActionIds
+     */
+    private void activateActionsInViewMenu(IEditorPart activeEditor, IActionBars actionBars, String... viewActionIds) {
+        for (String actionId : viewActionIds) {
+            actionBars.setGlobalActionHandler(actionId, getAction(activeEditor, actionId));
         }
     }
 
@@ -161,6 +182,7 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
      * 
      * @see org.eclipse.ui.part.EditorActionBarContributor#contributeToMenu(org.eclipse.jface.action.IMenuManager)
      */
+    @Override
     public void contributeToMenu(final IMenuManager menubar) {
         super.contributeToMenu(menubar);
         MenuManager viewMenu = new MenuManager(Messages.getString("MultiPageEditorContributor.View")); //$NON-NLS-1$
@@ -177,6 +199,7 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
      * 
      * @see org.eclipse.ui.part.EditorActionBarContributor#contributeToToolBar(org.eclipse.jface.action.IToolBarManager)
      */
+    @Override
     public void contributeToToolBar(final IToolBarManager toolBarManager) {
         // toolBarManager.add(CorePlugin.getDefault().getRunProcessService().getRunProcessAction());
         toolBarManager.add(getAction(ActionFactory.UNDO.getId()));
