@@ -58,6 +58,7 @@
 					List<IHashableColumn> hashableColumns = null;
 					IMatchingMode matchingMode = null;
 					String tempFolder = null;
+					String rowsBufferSize = null;
 					if(hashConfiguration == null) {
 						hashableColumns = new ArrayList(0);
 						
@@ -67,6 +68,7 @@
 						tempFolder = hashConfiguration.getTemporaryDataDirectory();
 						hashableColumns = hashConfiguration.getHashableColumns();
 						matchingMode = hashConfiguration.getMatchingMode();
+						rowsBufferSize = hashConfiguration.getRowsBufferSize();
 					}
 					
 					String matchingModeStr = null;
@@ -96,7 +98,11 @@
 	   						public <%=connectionName%>Struct createRowInstance() {
 	   							return new <%=connectionName%>Struct();
 	   						}
-	   					}); 
+	   					}
+	   					<% if(!isAllRows) { %>
+	   						, <%= rowsBufferSize %>
+	   					<% } %>
+	   					); 
 
 	   				tHash_Lookup_<%=connectionName%>.initPut();
 

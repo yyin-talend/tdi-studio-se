@@ -372,9 +372,9 @@ public class TalendJetEmitter extends JETEmitter {
 
                 subProgressMonitor.done();
             } catch (CoreException exception) {
-                throw new JETException(exception);
+                throw new JETException("Exception on " + templateName + codePart + templateLanguage, exception);
             } catch (Exception exception) {
-                throw new JETException(exception);
+                throw new JETException("Exception on " + templateName + codePart + templateLanguage, exception);
             } finally {
                 try {
                     contents.close();

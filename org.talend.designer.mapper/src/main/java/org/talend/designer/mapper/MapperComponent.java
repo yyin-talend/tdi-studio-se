@@ -602,8 +602,14 @@ public class MapperComponent extends AbstractMapComponent implements IHashableIn
                 if (tempFolderElem != null) {
                     tempFolder = (String) tempFolderElem.getValue();
                 }
+
+                IElementParameter rowsBufferSizeElem = getElementParameter("ROWS_BUFFER_SIZE");
+                String rowsBufferSize = null;
+                if (rowsBufferSizeElem != null) {
+                    rowsBufferSize = (String) rowsBufferSizeElem.getValue();
+                }
                 hashConfigurationForMapper = new HashConfiguration(hashableColumns, matchingMode, inputTable.isPersistent(),
-                        tempFolder);
+                        tempFolder, rowsBufferSize);
                 break;
             }
         }

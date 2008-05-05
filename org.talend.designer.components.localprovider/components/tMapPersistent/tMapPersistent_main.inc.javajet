@@ -873,7 +873,7 @@
 	            			}  // G_TM_M_043 loop (MultipleResult) <%= tableName %>
 					<%
 					} // T_TM_M_247
-					else if(isVirtualIn && !isPersistentSortedTable) { // T_TM_M_259
+					else if(isVirtualIn && !isPersistentSortedTable && externalTable.isPersistent()) { // T_TM_M_259
 					
 						closeAllRowsBlockCount.add(tableName);
 					

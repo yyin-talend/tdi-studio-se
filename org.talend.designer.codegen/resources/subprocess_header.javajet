@@ -99,7 +99,6 @@
 %>
 
 private class <%=conn.getName() %>Struct<%=templateOrigin %> implements routines.system.<%= isLookup ? "IPersistableComparableLookupRow<"+conn.getName()+"Struct>" : "IPersistableRow<"+conn.getName()+"Struct"+ templateOrigin + ">" %> {
-
 <%
 	if(hasAtLeastOneKey) {
 %>
@@ -135,13 +134,21 @@ private class <%=conn.getName() %>Struct<%=templateOrigin %> implements routines
 			for (IMetadataColumn column: metadata.getListColumns()) {
 				if (hashableColumnsNames.contains(column.getLabel())) {
 					if (JavaTypesManager.isJavaPrimitiveType(column.getTalendType(), column.isNullable())) {
-	%>
-				result = prime * result + (int) this.<%=column.getLabel() %>;
-	<%
-				} else {
-	%>
-				result = prime * result + ((this.<%=column.getLabel() %> == null) ? 0 : this.<%=column.getLabel() %>.hashCode());
-	<%
+					
+					 	String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+					 	if("boolean".equals(typeToGenerate)) {
+						%>
+		        			result = prime * result + (this.<%=column.getLabel() %> ? 1231 : 1237);
+						<%
+						} else {	
+						%>
+							result = prime * result + (int) this.<%=column.getLabel() %>;
+						<%
+						}
+					} else {
+					%>
+						result = prime * result + ((this.<%=column.getLabel() %> == null) ? 0 : this.<%=column.getLabel() %>.hashCode());
+					<%
 					}
 				}
 			}
@@ -218,16 +225,11 @@ private class <%=conn.getName() %>Struct<%=templateOrigin %> implements routines
 	} // T SH 001
 	%>
     
-    
-    public void load<%= isLookup ? "Keys" : "" %>Data(byte[] data) {
+    public void <%= isLookup ? "loadKeys" : "read" %>Data(DataInputStream dis) {
 
-        ByteArrayInputStream bai = null;
-        ObjectInputStream dis = null;
-        byte[] byteArray = null;
         try {
-            bai = new ByteArrayInputStream(data);
-            dis = new ObjectInputStream(bai);
-            
+
+			ObjectInputStream ois = null;            
 			int length = 0;
 		<%	
 		boolean hasAtLeastOneRead = false;
@@ -254,7 +256,7 @@ private class <%=conn.getName() %>Struct<%=templateOrigin %> implements routines
            				if (length == -1) {
            	    			this.<%=column.getLabel() %> = null;
            				} else {
-               				byteArray = new byte[length];
+               				byte[] byteArray = new byte[length];
                				dis.read(byteArray);
                				this.<%=column.getLabel() %> = new String(byteArray);
            				}
@@ -265,7 +267,7 @@ private class <%=conn.getName() %>Struct<%=templateOrigin %> implements routines
            				if (length == -1) {
            	    			this.<%=column.getLabel() %> = null;
            				} else {
-               				byteArray = new byte[length];
+               				byte[] byteArray = new byte[length];
                				dis.read(byteArray);
                				this.<%=column.getLabel() %> = byteArray;
            				}
@@ -278,6 +280,14 @@ private class <%=conn.getName() %>Struct<%=templateOrigin %> implements routines
            				} else {
            			    	this.<%=column.getLabel() %> = new Date(dis.readLong());
            				}
+					<%
+				} else if(typeToGenerate.equals("Object")) {
+					%>
+						if(ois == null) {
+							ois = new ObjectInputStream(dis);
+						}
+						this.<%=column.getLabel() %> = ois.readObject();
+					
 					<%
 				} else {
 					typeToGenerate =JavaTypesManager.getTypeToGenerate(column.getTalendType(), false);
@@ -311,24 +321,13 @@ private class <%=conn.getName() %>Struct<%=templateOrigin %> implements routines
 		}
 		%>
         
-        } finally {
-            if (dis != null) {
-                try {
-                    dis.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
         }
     }
 
-    public byte[] to<%= isLookup ? "Keys" : "" %>Data() {
-        ByteArrayOutputStream bao = null;
-        ObjectOutputStream dos = null;
-        byte[] byteArray = null;
+    public void <%= isLookup ? "toKeys" : "write" %>Data(DataOutputStream dos) {
         try {
-            bao = new ByteArrayOutputStream();
-            dos = new ObjectOutputStream(bao);
+
+            ObjectOutputStream oos = null;
 
 		<%	
 		boolean hasAtLeastOneWrite = false;
@@ -349,7 +348,7 @@ private class <%=conn.getName() %>Struct<%=templateOrigin %> implements routines
 						if(this.<%=column.getLabel() %> == null) {
 			                dos.writeInt(-1);
 						} else {
-			                byteArray = this.<%=column.getLabel() %>.getBytes();
+			                byte[] byteArray = this.<%=column.getLabel() %>.getBytes();
            			    	dos.writeInt(byteArray.length);
                				dos.write(byteArray);
 		            	}
@@ -370,6 +369,13 @@ private class <%=conn.getName() %>Struct<%=templateOrigin %> implements routines
 						} else {
            			    	dos.writeLong(this.<%=column.getLabel() %>.getTime());
 		            	}
+					<%
+				} else if(typeToGenerate.equals("Object")) {
+					%>
+						if(oos == null) {
+	           				oos = new ObjectOutputStream(dos);
+						}
+       			    	oos.writeObject(this.<%=column.getLabel() %>);
 					<%
 				} else {
 					typeToGenerate =JavaTypesManager.getTypeToGenerate(column.getTalendType(), false);
@@ -394,33 +400,21 @@ private class <%=conn.getName() %>Struct<%=templateOrigin %> implements routines
         <%
         }
         %>
-        } finally {
-            if (dos != null) {
-                try {
-                    dos.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
         }
-        return bao.toByteArray();
     }
 
     <%
 	if(isLookup) { // T SH 002
 	%>
 
+
     /** 
-     * Fill Values data from the given byte array.
+     * Fill Values data by reading DataInputStream.
      */
-    public void loadValuesData(byte[] data) {
-        ByteArrayInputStream bai = null;
-        ObjectInputStream dis = null;
-        byte[] byteArray = null;
+    public void loadValuesData(DataInputStream dis) {
         try {
-            bai = new ByteArrayInputStream(data);
-            dis = new ObjectInputStream(bai);
             
+            ObjectInputStream ois = null;
 			int length = 0;
 		<%	
 		hasAtLeastOneRead = false;
@@ -447,7 +441,7 @@ private class <%=conn.getName() %>Struct<%=templateOrigin %> implements routines
            				if (length == -1) {
            	    			this.<%=column.getLabel() %> = null;
            				} else {
-               				byteArray = new byte[length];
+               				byte[] byteArray = new byte[length];
                				dis.read(byteArray);
                				this.<%=column.getLabel() %> = new String(byteArray);
            				}
@@ -458,7 +452,7 @@ private class <%=conn.getName() %>Struct<%=templateOrigin %> implements routines
            				if (length == -1) {
            	    			this.<%=column.getLabel() %> = null;
            				} else {
-               				byteArray = new byte[length];
+               				byte[] byteArray = new byte[length];
                				dis.read(byteArray);
                				this.<%=column.getLabel() %> = byteArray;
            				}
@@ -471,6 +465,13 @@ private class <%=conn.getName() %>Struct<%=templateOrigin %> implements routines
            				} else {
            			    	this.<%=column.getLabel() %> = new Date(dis.readLong());
            				}
+					<%
+				} else if(typeToGenerate.equals("Object")) {
+					%>
+						if(ois == null) {
+	           				ois = new ObjectInputStream(dis);
+						}
+       			    	this.<%=column.getLabel() %> = ois.readObject();
 					<%
 				} else {
 					typeToGenerate =JavaTypesManager.getTypeToGenerate(column.getTalendType(), false);
@@ -502,28 +503,18 @@ private class <%=conn.getName() %>Struct<%=templateOrigin %> implements routines
 		}
 		%>
         
-        } finally {
-            if (dis != null) {
-                try {
-                    dis.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
         }
     }
 
     /** 
      * Return a byte array which represents Values data.
      */
-    public byte[] toValuesData() {
-        ByteArrayOutputStream bao = null;
-        ObjectOutputStream dos = null;
-        byte[] byteArray = null;
+    public int toValuesData(DataOutputStream dos) {
+    	int previousSize = dos.size();
         try {
-            bao = new ByteArrayOutputStream();
-            dos = new ObjectOutputStream(bao);
-
+        
+            ObjectOutputStream oos = null;
+        	
 		<%	
 		hasAtLeastOneWrite = false;
 		if (metadata !=null) {
@@ -542,7 +533,7 @@ private class <%=conn.getName() %>Struct<%=templateOrigin %> implements routines
 						if(this.<%=column.getLabel() %> == null) {
 			                dos.writeInt(-1);
 						} else {
-			                byteArray = this.<%=column.getLabel() %>.getBytes();
+			                byte[] byteArray = this.<%=column.getLabel() %>.getBytes();
            			    	dos.writeInt(byteArray.length);
                				dos.write(byteArray);
 		            	}
@@ -563,6 +554,13 @@ private class <%=conn.getName() %>Struct<%=templateOrigin %> implements routines
 						} else {
            			    	dos.writeLong(this.<%=column.getLabel() %>.getTime());
 		            	}
+					<%
+				} else if(typeToGenerate.equals("Object")) {
+					%>
+						if(oos == null) {
+	           				oos = new ObjectOutputStream(dos);
+						}
+       			    	oos.writeObject(this.<%=column.getLabel() %>);
 					<%
 				} else {
 					typeToGenerate =JavaTypesManager.getTypeToGenerate(column.getTalendType(), false);
@@ -586,16 +584,8 @@ private class <%=conn.getName() %>Struct<%=templateOrigin %> implements routines
 	            throw new RuntimeException(e);
         <%
         %>
-        } finally {
-            if (dos != null) {
-                try {
-                    dos.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
         }
-        return bao.toByteArray();
+        return dos.size() - previousSize;
     }
 
     <%
@@ -709,28 +699,29 @@ public void <%=subTree.getName() %>Process() throws TalendException {
 
 <%
 	if(!subTree.isMergeSubTree()) {
-		List< ? extends IConnection> rootConns = subTree.getRootNode().getOutgoingConnections();
-		if ((rootConns!=null)&&(rootConns.size()>0)) {
+	List< ? extends IConnection> rootConns = subTree.getRootNode().getOutgoingConnections();
+	if ((rootConns!=null)&&(rootConns.size()>0)) {
 %>
 		<%=createPrivateClassInstance(subTree.getRootNode(), rootConns.get(0).getName(), false)%>
 <%
-		}
-  	} else {  
-    	List<INode> sortedMergeBranchStarts = subTree.getSortedMergeBranchStarts();    
-    	for (INode startNode : sortedMergeBranchStarts) {
-    		List< ? extends IConnection> rootConns = startNode.getOutgoingConnections();
-    		if ((rootConns!=null)&&(rootConns.size()>0)) {
+	}
+  } else {  
+    List<INode> sortedMergeBranchStarts = subTree.getSortedMergeBranchStarts();    
+    for (INode startNode : sortedMergeBranchStarts) {
+       List< ? extends IConnection> rootConns = startNode.getOutgoingConnections();
+       if ((rootConns!=null)&&(rootConns.size()>0)) {
 %>		  
 		<%=createPrivateClassInstance(startNode, rootConns.get(0).getName(), false)%>
 <%
-			}
-		}
+      }
+    }
     
-		List< ? extends IConnection> rootConns = subTree.getMergeNode().getOutgoingConnections();
-		if ((rootConns!=null)&&(rootConns.size()>0)) {
+	List< ? extends IConnection> rootConns = subTree.getMergeNode().getOutgoingConnections();
+	if ((rootConns!=null)&&(rootConns.size()>0)) {
 %>
 		<%=createPrivateClassInstance(subTree.getMergeNode(), rootConns.get(0).getName(), false)%>
 <%
-		}
 	}
+    
+  }
 %>
