@@ -126,15 +126,6 @@
         <COLUMN NAME="message" TYPE="id_String" LENGTH="255"/>
       </TABLE>
     </PARAMETER>
-    
-   <PARAMETER
-      NAME="MSG_ID"
-      FIELD="TEXT"
-      NUM_ROW="45"
-      SHOW_IF="(SERVER == 'WEBSPHERE')"
-    > 
-    	<DEFAULT>""</DEFAULT>
-	</PARAMETER> 
    
   <PARAMETER
       NAME="QM"
@@ -154,10 +145,19 @@
     <DEFAULT>""</DEFAULT>
     </PARAMETER>
 
-
+    <PARAMETER NAME="IS_USE_MESSAGE_ID" FIELD="CHECK" REQUIRED="true" NUM_ROW="60" 
+      SHOW_IF="(SERVER == 'WEBSPHERE')">
+	  <DEFAULT>false</DEFAULT>
+	</PARAMETER>
     
-
-    
+   <PARAMETER
+      NAME="MSG_ID"
+      FIELD="TEXT"
+      NUM_ROW="70"
+      SHOW_IF="(SERVER == 'WEBSPHERE') and (IS_USE_MESSAGE_ID == 'true')"
+    > 
+    	<DEFAULT>""</DEFAULT>
+	</PARAMETER> 
 
   </PARAMETERS>
 
