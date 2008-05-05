@@ -63,7 +63,7 @@ public class ComponentIconLoading {
     }
 
     public ImageDescriptor getImage24() {
-        if (image24 == null) {
+        if (image24 == null && image32 != null) {
             File file24 = new File(folder, ComponentFilesNaming.getInstance().getIcon24FileName(folder.getName()));
             if (file24.exists()) {
                 image24 = getImage(ComponentFilesNaming.getInstance().getIcon24FileName(folder.getName()));
@@ -75,7 +75,7 @@ public class ComponentIconLoading {
     }
 
     public ImageDescriptor getImage16() {
-        if (image16 == null) {
+        if (image16 == null && image32 != null) {
             File file16 = new File(folder, ComponentFilesNaming.getInstance().getIcon16FileName(folder.getName()));
             if (file16.exists()) {
                 image16 = getImage(ComponentFilesNaming.getInstance().getIcon16FileName(folder.getName()));
