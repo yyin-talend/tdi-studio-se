@@ -757,8 +757,12 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
         if (DynamicTabbedPropertySection.DEBUG_TIME) {
             System.out.println("DC;total;" + getCurrentComponent() + ";" + time);
         }
+        
+        isRefreshing=false;
     }
 
+    public static boolean isRefreshing=false;
+    
     private final Listener resizeListener = new Listener() {
 
         public void handleEvent(Event event) {
