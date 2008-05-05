@@ -1,0 +1,127 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser 
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.metadata.MetadataTalendType
+    java.util.List
+    java.util.Map
+    java.util.ArrayList
+    org.talend.commons.utils.StringUtils
+" 
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+
+String commitEvery = ElementParameterParser.getValue(
+    node,
+    "__COMMIT_EVERY__"
+);
+String tableAction = ElementParameterParser.getValue(
+    node,
+    "__TABLE_ACTION__"
+);
+String dbtable = ElementParameterParser.getValue(node, "__TABLE__");
+String dbschema = ElementParameterParser.getValue(
+    node,
+    "__SCHEMA_DB__"
+);
+String dbhost = ElementParameterParser.getValue(node, "__HOST__");
+String dbport = ElementParameterParser.getValue(node, "__PORT__");
+String dbname = ElementParameterParser.getValue(node, "__DBNAME__");
+String dbuser = ElementParameterParser.getValue(node, "__USER__");
+String dbpass = ElementParameterParser.getValue(node, "__PASS__");
+String encoding = ElementParameterParser.getValue(
+    node,
+    "__ENCODING__"
+);
+
+String dbh = "dbh_" + cid;
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+%>
+
+use DBI;
+use tPostgresqlOutput::Postgresql;
+
+my %desc_<%=cid %> = (
+    dbhost        => <%=dbhost %>,
+    dbport        => <%=dbport %>,
+    dbname        => <%=dbname %>,
+    dbtable       => <%=dbtable %>,
+    dbschema      => <%=dbschema %>,
+    dbuser        => <%=dbuser %>,
+    dbpass        => <%=dbpass %>,
+    encoding      => <%=encoding %>,
+    commit_every  => <%=commitEvery %>,
+    schema        => [
+<%
+        for (IMetadataColumn column: metadata.getListColumns()) {
+%>
+        {
+            name    => '"<%=column.getLabel() %>"',
+            key     => <%=column.isKey() %>,
+            type    => '<%=column.getTalendType() %>',
+            len     => <%=column.getLength() %>,
+            precision => <%=column.getPrecision() %>,
+            null    => <%=column.isNullable() %>,
+            default => '<%=column.getDefault() %>',
+            comment => '<%=column.getComment() %>',
+        },
+<%
+        }
+%>
+    ],
+);
+
+my $<%=dbh%> = DBI->connect(
+    sprintf(
+        'DBI:Pg:dbname=%s;host=%s;port=%s;',
+        <%=dbname %>,
+        <%=dbhost %>,
+        <%=dbport %>,
+    ),
+    <%=dbuser %>,
+    <%=dbpass %>,
+    {
+        AutoCommit => 0,
+#        RaiseError => 0,
+#        PrintError => 1,
+#        PrintWarn => 0,
+    }
+)
+    or die "can't connect to database";
+
+$<%=dbh%>->do("set names '".<%=encoding %>."'")
+    or die '[<%=cid%>] cannot set encoding';
+
+tPostgresqlOutput::Postgresql::performTableAction(
+    tableAction => '<%=tableAction%>',
+    dbschema => <%=dbschema %>,
+    dbh => $<%=dbh%>,
+    dbtable => <%=dbtable %>,
+    component => <%=cid%>,
+    schema => $desc_<%=cid %>{schema},
+
+);
+
+my $sth_<%=cid %>;
+my $query;
+my $nb_line_current_commit_<%=cid%> = 0;
+
+my $sql_copy_<%=cid%> = 'COPY '.<%=dbtable%>.' FROM STDIN';
+$<%=dbh%>->do($sql_copy_<%=cid%>)
+    or die '[<%=cid%>] cannot initialize copy';
+
+<%
+    }
+}
+%>

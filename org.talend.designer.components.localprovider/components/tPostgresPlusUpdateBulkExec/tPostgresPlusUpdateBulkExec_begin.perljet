@@ -1,0 +1,184 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser 
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+    java.util.ArrayList
+    java.util.Map
+    org.talend.commons.utils.StringUtils
+" 
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+
+String dbhost = ElementParameterParser.getValue(node, "__HOST__");
+String dbport = ElementParameterParser.getValue(node, "__PORT__");
+String dbname = ElementParameterParser.getValue(node, "__DBNAME__");
+String dbuser = ElementParameterParser.getValue(node, "__USER__");
+String dbpass = ElementParameterParser.getValue(node, "__PASS__");
+String dbschema = ElementParameterParser.getValue(node, "__SCHEMA_DB__");
+String dbtable = ElementParameterParser.getValue(node, "__TABLE__");
+String encoding = ElementParameterParser.getValue(
+    node,
+    "__ENCODING__"
+);
+
+String filename = ElementParameterParser.getValue(
+    node,
+    "__FILENAME__"
+);
+
+String delimiter = ElementParameterParser.getValue(
+    node,
+    "__DELIMITER__"
+);
+
+List<Map<String, String>> fieldOptionsList =
+    (List<Map<String,String>>)ElementParameterParser.getObjectValue(
+        node,
+        "__FIELD_OPTIONS__"
+);
+
+String dbh = "dbh_" + cid;
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if (metadatas != null && metadatas.size() > 0) {
+    IMetadataTable metadata = metadatas.get(0);
+%>
+use DBI;
+
+my $<%=dbh%> = DBI->connect(
+    sprintf(
+        'DBI:Pg:dbname=%s;host=%s;port=%s;',
+        <%=dbname %>,
+        <%=dbhost %>,
+        <%=dbport %>,
+    ),
+    <%=dbuser %>,
+    <%=dbpass %>,
+    {
+        AutoCommit => 0,
+    }
+)
+    or die "[<%=cid%>] can't connect to database";
+
+$<%=dbh%>->do("set names '".<%=encoding%>."'")
+    or die "[<%=cid%>] can't execute input query";
+
+my @metadata_columns = (
+<%
+    List pkCols = new ArrayList();
+    List pkColStrings = new ArrayList();
+    List upColStrings = new ArrayList();
+    
+    int i = 0;
+    for (IMetadataColumn column: metadata.getListColumns()) {
+        String colname = column.getLabel();
+%>
+    '<%=colname%>',
+<%
+        if (fieldOptionsList.get(i).get("UPDATE_KEY").equals("true")) {
+            pkCols.add(colname);
+            pkColStrings.add(
+                "'." + dbtable + ".'." + colname + " = t2." + colname
+            );
+        }
+        else {
+            upColStrings.add(colname + " = t2." + colname);
+        }
+    
+        i++;
+    }
+    
+    String pkColsString = StringUtils.join(
+        pkCols.toArray(),
+        ", "
+    );
+%>
+);
+
+my @creation_columns = ();
+
+my $table = <%=dbtable%>;
+if ($table !~ m/^"/) {
+    $table = lc $table;
+}
+
+my $sth_<%=cid%> = $<%=dbh%>->column_info(
+    undef,         # catalog, means nothing in PostgreSQL
+    <%=dbschema%>, # schema
+    $table,        # table
+    '%'            # column filter
+);
+
+while (my $entity = $sth_<%=cid%>->fetchrow_hashref()) {
+    my $fieldname = $entity->{COLUMN_NAME};
+
+    if (grep /^$fieldname$/, @metadata_columns) {
+        my $column = $fieldname.' '.$entity->{pg_type};
+        push @creation_columns, $column;
+    }
+}
+
+{
+    my $tablename = sprintf(
+        '%s_%s',
+        <%=dbtable%>,
+        getRandomString(
+            63 - 1 - length(<%=dbtable%>),
+            ['a'..'z', 0..9]
+        )
+    );
+
+    $query = '
+CREATE TABLE '.$tablename.' (
+  '.join(",\n  ", @creation_columns).',
+  PRIMARY KEY (<%=pkColsString%>)
+)';
+    # print $query, "\n"; exit();
+
+    $<%=dbh%>->do($query)
+        or die sprintf(
+            "[<%=cid%>] cannot create table\n===\n%s\n===\n",
+            $query,
+        );
+
+    $<%=dbh%>->do(
+        sprintf(
+            'COPY '.$tablename." FROM '%s' DELIMITER '%s'",
+            <%=filename%>,
+            <%=delimiter%>
+        )
+    )
+        or die '[<%=cid%>] cannot perform copy';
+    
+    $<%=dbh%>->commit()
+        or die '[<%=cid%>] cannot commit';
+
+    $query = '
+UPDATE '.<%=dbtable%>.'
+  SET <%=StringUtils.join(upColStrings.toArray(), ",\n    ")%>
+  FROM '.$tablename.' AS t2
+  WHERE <%=StringUtils.join(pkColStrings.toArray(), "\n    AND ")%>
+';
+    $<%=dbh%>->do($query)
+        or die "[<%=cid%>] cannot perform bulk table";
+
+    $query = '
+DROP TABLE '.$tablename.'
+';
+    $<%=dbh%>->do($query)
+        or die "[<%=cid%>] cannot delete temporary table";
+
+    $<%=dbh%>->commit();
+    $<%=dbh%>->disconnect();
+}
+<%
+}
+%>

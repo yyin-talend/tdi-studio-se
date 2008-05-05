@@ -1,0 +1,61 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.core.model.metadata.IMetadataTable
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+"
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+
+String filename = ElementParameterParser.getValue(
+    node,
+    "__FILENAME__"
+);
+
+boolean append = ElementParameterParser.getValue(
+    node,
+    "__APPEND__"
+).equals("true");
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if (metadatas != null && metadatas.size() > 0) {
+    IMetadataTable metadata = metadatas.get(0);
+%>
+
+use FileHandle;
+
+my %desc_<%=cid %> = (
+    filename => <%=filename %>,
+    colnames => [
+<%
+    for (IMetadataColumn column: metadata.getListColumns()) {
+%>
+        '<%=column.getLabel() %>',
+<%
+    }
+%>
+    ]
+);
+
+my $output_FH_<%=cid %> = new FileHandle;
+
+<%
+    String writeMode = ">";
+    if (append) {
+        writeMode = ">>";
+    }
+%>
+
+open($output_FH_<%=cid %>, '<%=writeMode%>', $desc_<%=cid %>{filename})
+    or die '[<%=cid%>] cannot open file "' . $desc_<%=cid %>{filename} . '"';
+
+<%
+}
+%>

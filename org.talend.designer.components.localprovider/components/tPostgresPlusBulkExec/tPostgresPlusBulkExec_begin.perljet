@@ -1,0 +1,124 @@
+<%@ jet 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser 
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.metadata.MetadataTalendType
+    java.util.List
+    java.util.Map
+    java.util.ArrayList
+    org.talend.commons.utils.StringUtils
+" 
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+
+String filename = ElementParameterParser.getValue(
+    node,
+    "__FILENAME__"
+);
+
+String delimiter = ElementParameterParser.getValue(
+    node,
+    "__DELIMITER__"
+);
+
+String tableAction = ElementParameterParser.getValue(
+    node,
+    "__TABLE_ACTION__"
+);
+
+String dbtable = ElementParameterParser.getValue(node, "__TABLE__");
+String dbschema = ElementParameterParser.getValue(
+    node,
+    "__SCHEMA_DB__"
+);
+String dbhost = ElementParameterParser.getValue(node, "__HOST__");
+String dbport = ElementParameterParser.getValue(node, "__PORT__");
+String dbname = ElementParameterParser.getValue(node, "__DBNAME__");
+String dbuser = ElementParameterParser.getValue(node, "__USER__");
+String dbpass = ElementParameterParser.getValue(node, "__PASS__");
+String encoding = ElementParameterParser.getValue(
+    node,
+    "__ENCODING__"
+);
+
+String dbh = "dbh_" + cid;
+
+IMetadataTable metadata = null;
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    metadata = metadatas.get(0);
+}
+%>
+
+use DBI;
+use tPostgresqlOutput::Postgresql;
+
+my %desc_<%=cid %> = (
+    schema        => [
+<%
+for (IMetadataColumn column: metadata.getListColumns()) {
+%>
+        {
+            name    => '"<%=column.getLabel() %>"',
+            key     => <%=column.isKey() %>,
+            type    => '<%=column.getTalendType() %>',
+            len     => <%=column.getLength() %>,
+            precision => <%=column.getPrecision() %>,
+            null    => <%=column.isNullable() %>,
+            default => '<%=column.getDefault() %>',
+            comment => '<%=column.getComment() %>',
+        },
+<%
+}
+%>
+    ],
+);
+
+my $<%=dbh%> = DBI->connect(
+    sprintf(
+        'DBI:Pg:dbname=%s;host=%s;port=%s;',
+        <%=dbname %>,
+        <%=dbhost %>,
+        <%=dbport %>,
+    ),
+    <%=dbuser %>,
+    <%=dbpass %>,
+    {
+        AutoCommit => 0,
+        PrintError => 1,
+    }
+)
+    or die "can't connect to database";
+
+$<%=dbh%>->do("set names '".<%=encoding %>."'")
+    or die '[<%=cid%>] cannot set encoding';
+
+tPostgresqlOutput::Postgresql::performTableAction(
+    tableAction => '<%=tableAction%>',
+    dbschema => <%=dbschema %>,
+    dbh => $<%=dbh%>,
+    dbtable => <%=dbtable %>,
+    component => <%=cid%>,
+    schema => $desc_<%=cid %>{schema},
+);
+
+$<%=dbh%>->do(
+        sprintf(
+            'COPY '.<%=dbtable%>." FROM '%s' DELIMITER '%s'",
+            <%=filename%>,
+            <%=delimiter%>
+        )
+    )
+    or die '[<%=cid%>] cannot perform copy';
+
+$<%=dbh%>->commit()
+    or die '[<%=cid%>] cannot commit';
+$<%=dbh%>->disconnect();
+

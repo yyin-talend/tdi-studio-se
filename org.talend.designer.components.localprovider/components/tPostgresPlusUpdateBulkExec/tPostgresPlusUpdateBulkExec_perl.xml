@@ -10,6 +10,7 @@
     AUTHOR="Talend"
     RELEASE_DATE="20050320A"
     STARTABLE="true"
+    VISIBLE="false"
   >
     <SIGNATURE/>
   </HEADER>
@@ -54,13 +55,13 @@
       SHOW="false"
       REPOSITORY_VALUE="TYPE"
     >
-      <DEFAULT>Posgresql</DEFAULT>
+      <DEFAULT>MySQL</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
       NAME="PORT"
       FIELD="TEXT"
-      NUM_ROW="20"
+      NUM_ROW="21"
       REPOSITORY_VALUE="PORT"
     >
       <DEFAULT>5432</DEFAULT>
@@ -77,6 +78,15 @@
     </PARAMETER>
 
     <PARAMETER
+      NAME="SCHEMA_DB"
+      FIELD="TEXT"
+      NUM_ROW="31"
+      REPOSITORY_VALUE="SCHEMA"
+    >
+      <DEFAULT>'public'</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
       NAME="USER"
       FIELD="TEXT"
       NUM_ROW="40"
@@ -89,7 +99,7 @@
     <PARAMETER
       NAME="PASS"
       FIELD="TEXT"
-      NUM_ROW="40"
+      NUM_ROW="41"
       REPOSITORY_VALUE="PASSWORD"
       REQUIRED="true"
     >
@@ -97,15 +107,65 @@
     </PARAMETER>
 
     <PARAMETER
+      NAME="TABLE"
+      FIELD="TEXT"
+      NUM_ROW="80"
+    >
+      <DEFAULT>'employee'</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="FILENAME"
+      FIELD="FILE"
+      NUM_ROW="90"
+      REQUIRED="true"
+    >
+      <DEFAULT>'__COMP_DEFAULT_FILE_DIR__/postgresql_bulk.txt'</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="SCHEMA"
+      FIELD="SCHEMA_TYPE"
+      NUM_ROW="110"
+    >
+      <DEFAULT/> 
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="FIELD_OPTIONS"
+      FIELD="TABLE"
+      REQUIRED="true"
+      NUM_ROW="120"
+      NB_LINES="5"
+    >
+      <ITEMS BASED_ON_SCHEMA="true">
+        <ITEM NAME="UPDATE_KEY" VALUE="false" FIELD="CHECK" />
+       </ITEMS>
+    </PARAMETER>
+
+  </PARAMETERS>
+
+  <ADVANCED_PARAMETERS>
+
+    <PARAMETER
       NAME="ENCODING"
       FIELD="ENCODING_TYPE"
-      NUM_ROW="8"
+      NUM_ROW="10"
       REQUIRED="true"
     >
       <DEFAULT>'ISO-8859-15'</DEFAULT>
     </PARAMETER>
 
-  </PARAMETERS>
+    <PARAMETER
+      NAME="DELIMITER"
+      FIELD="TEXT"
+      NUM_ROW="20"
+      REQUIRED="true"
+    >
+      <DEFAULT>';'</DEFAULT>
+    </PARAMETER>
+
+  </ADVANCED_PARAMETERS>
 
   <CODEGENERATION>
     <IMPORTS>
