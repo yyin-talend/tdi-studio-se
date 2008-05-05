@@ -134,4 +134,5 @@ String filename = ElementParameterParser.getValue(node, "__FILENAME__");
 	System.out.println("*** Response Body ***");
 	System.out.println(responseBody_<%=cid %>);
 <%  }%>
+	post_<%=cid %>.releaseConnection();
 <%}%>
