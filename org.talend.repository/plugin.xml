@@ -836,6 +836,12 @@
             id="org.talend.repository.model.migration.RenametForForPerl"
             name="RenametForForPerl">
       </projecttask>
+      <projecttask
+            class="org.talend.repository.model.migration.RenameDbProductIdMigrationTask"
+            description="Rename DB product ID."
+            id="org.talend.repository.model.migration.RenameDbProductIdMigrationTask"
+            name="Rename DB product ID">
+      </projecttask>
    </extension>
    <extension
          point="org.talend.core.librariesNeeded">
