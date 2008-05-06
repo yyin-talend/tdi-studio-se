@@ -888,8 +888,7 @@ public class MapperManager extends AbstractMapperManager {
     }
 
     public boolean isPersistentMap() {
-        return getAbstractMapComponent().getComponent().getName().startsWith("tMapPersistent")
-                && LanguageProvider.getCurrentLanguage().getCodeLanguage() == ECodeLanguage.JAVA;
+        return LanguageProvider.getCurrentLanguage().getCodeLanguage() == ECodeLanguage.JAVA;
     }
 
 }

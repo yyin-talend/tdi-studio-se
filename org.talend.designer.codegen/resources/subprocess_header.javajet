@@ -241,10 +241,6 @@ private class <%=conn.getName() %>Struct<%=templateOrigin %> implements routines
 				JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 			 	String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
 
-			 	if(typeToGenerate.equals("Object")) {
-			 		hasAtLeastOneObjectType = true;
-			 	}
-			 	
 				if (JavaTypesManager.isJavaPrimitiveType(column.getTalendType(), column.isNullable())) {
 					typeToGenerate=typeToGenerate.substring(0,1).toUpperCase()+typeToGenerate.substring(1);
 					%>
@@ -282,6 +278,7 @@ private class <%=conn.getName() %>Struct<%=templateOrigin %> implements routines
            				}
 					<%
 				} else if(typeToGenerate.equals("Object")) {
+			 		hasAtLeastOneObjectType = true;
 					%>
 						if(ois == null) {
 							ois = new ObjectInputStream(dis);
@@ -304,7 +301,7 @@ private class <%=conn.getName() %>Struct<%=templateOrigin %> implements routines
 			  }
 			}
     	}
-	    if(hasAtLeastOneRead || !isLookup) {
+	    if(hasAtLeastOneRead) {
 	    %>
         	} catch (IOException e) {
 	            throw new RuntimeException(e);
@@ -322,6 +319,17 @@ private class <%=conn.getName() %>Struct<%=templateOrigin %> implements routines
 		%>
         
         }
+        
+		<%
+		if(!hasAtLeastOneRead) {
+		%>
+			finally {}
+		<%
+		}
+		%>
+        
+        
+        
     }
 
     public void <%= isLookup ? "toKeys" : "write" %>Data(DataOutputStream dos) {
@@ -393,7 +401,7 @@ private class <%=conn.getName() %>Struct<%=templateOrigin %> implements routines
 			  }
 			}
     	}
-	    if(hasAtLeastOneWrite || !isLookup) {
+	    if(hasAtLeastOneWrite) {
 	    %>
         	} catch (IOException e) {
 	            throw new RuntimeException(e);
@@ -401,6 +409,15 @@ private class <%=conn.getName() %>Struct<%=templateOrigin %> implements routines
         }
         %>
         }
+        
+        <%
+		if(!hasAtLeastOneWrite) {
+		%>
+			finally {}
+		<%
+		}
+		%>
+        
     }
 
     <%

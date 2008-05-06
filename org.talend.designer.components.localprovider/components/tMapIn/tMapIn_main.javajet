@@ -41,4 +41,4 @@
 %>
 
 
-<%@ include file="../tMapPersistent/tMapPersistent_main.inc.javajet" %>
+<%@ include file="../tMap/tMap_main.inc.javajet" %>
