@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.fieldassist.DecoratedField;
 import org.eclipse.jface.fieldassist.FieldDecoration;
@@ -37,6 +38,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.utils.VersionUtils;
 import org.talend.core.CorePlugin;
@@ -412,6 +414,11 @@ public class ProcessController extends AbstractElementPropertySectionController 
             procssId = runJobNode.getProcess().getId();
         }
         RepositoryReviewDialog dialog = new RepositoryReviewDialog((button).getShell(), ERepositoryObjectType.PROCESS, procssId);
+
+        // see feature 0003664: tRunJob: When opening the tree dialog to select the job target, it could be useful to
+        // open it on previous selected job if exists
+        selectJobNodeIfExists(button, dialog);
+
         if (dialog.open() == RepositoryReviewDialog.OK) {
             IRepositoryObject repositoryObject = dialog.getResult().getObject();
             final Item item = repositoryObject.getProperty().getItem();
@@ -421,6 +428,32 @@ public class ProcessController extends AbstractElementPropertySectionController 
             return new PropertyChangeCommand(elem, paramName, id);
         }
         return null;
+    }
+
+    /**
+     * see feature 0003664: tRunJob: When opening the tree dialog to select the job target, it could be useful to open
+     * it on previous selected job if exists.
+     * 
+     * @param button
+     * @param dialog
+     */
+    private void selectJobNodeIfExists(Button button, RepositoryReviewDialog dialog) {
+        try {
+            if (elem != null && elem instanceof Node) {
+                Node runJobNode = (Node) elem;
+                String paramName = (String) button.getData(PARAMETER_NAME);
+                String jobId = (String) runJobNode.getPropertyValue(paramName); // .getElementParameter(name).getValue();
+                if (StringUtils.isNotEmpty(jobId)) {
+                    // if user have selected job
+                    ProcessItem processItem = ProcessorUtilities.getProcessItem(jobId);
+                    String jobName = processItem.getProperty().getLabel();
+                    // expand the tree node and reveal it
+                    dialog.setSelectedNodeName(jobName);
+                }
+            }
+        } catch (Throwable e) {
+            ExceptionHandler.process(e);
+        }
     }
 
     /*
