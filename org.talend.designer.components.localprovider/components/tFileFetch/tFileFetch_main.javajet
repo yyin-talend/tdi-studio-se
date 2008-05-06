@@ -67,6 +67,7 @@ String filename = ElementParameterParser.getValue(node, "__FILENAME__");
     String timeout = ElementParameterParser.getValue(node,"__TIMEOUT__");
     
     boolean printResponse = ElementParameterParser.getValue(node,"__PRINT__").equals("true");
+    boolean uploadFile = ElementParameterParser.getValue(node,"__UPLOAD__").equals("true");
     
 	List<Map<String, String>> commonParams = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__COMMON_PARAMS__");
 	List<Map<String, String>> fileParams = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__FILE_PARAMS__");
@@ -95,6 +96,7 @@ String filename = ElementParameterParser.getValue(node, "__FILENAME__");
 %>
 
 <%	//file parameter part
+	if(uploadFile){
 	int j = 0;	
 	for(Map<String, String> param : fileParams){
 		String name = param.get("FILE_PARAMS_NAME");
@@ -103,6 +105,7 @@ String filename = ElementParameterParser.getValue(node, "__FILENAME__");
 %>
 	org.apache.commons.httpclient.methods.multipart.FilePart file_<%=j %>_<%=cid %>  = new org.apache.commons.httpclient.methods.multipart.FilePart(<%=name %>, new java.io.File(<%=value %>));	
 <%
+	}
 	}
 %>
     org.apache.commons.httpclient.methods.multipart.Part[] parts_<%=cid %> = new org.apache.commons.httpclient.methods.multipart.Part[]{<%for(String var: varPartList){%><%=var %>,<%}%>};		

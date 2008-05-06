@@ -34,9 +34,16 @@ COMPATIBILITY="ALL"
       NUM_ROW="10"
     >
       <DEFAULT>false</DEFAULT>
-    </PARAMETER>  
-  
-    <!-- this is download file part -->
+    </PARAMETER> 
+    
+    <PARAMETER
+    	NAME="PRINT"
+    	FIELD="CHECK"
+    	NUM_ROW="10"
+    	SHOW_IF="POST == 'true'"
+    >
+    </PARAMETER> 
+
     <PARAMETER
        NAME="URI"
        FIELD="TEXT"
@@ -67,7 +74,7 @@ COMPATIBILITY="ALL"
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
     
-   <!-- this is upload file part -->
+   
     <PARAMETER
       NAME="POSTURL"
       FIELD="TEXT"
@@ -131,12 +138,25 @@ COMPATIBILITY="ALL"
     </PARAMETER>
     
     
+    </PARAMETERS>
+    
+    <ADVANCED_PARAMETERS>
+    
+    <PARAMETER
+      NAME="UPLOAD"
+      FIELD="CHECK"
+      NUM_ROW="10"
+      SHOW_IF="POST == 'true'"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER> 
+    
     <PARAMETER 
       NAME="FILE_PARAMS" 
       FIELD="TABLE" 
-      NUM_ROW="90" 
+      NUM_ROW="20" 
       NB_LINES="8" 
-      SHOW_IF="POST == 'true'"
+      SHOW_IF="(POST=='true') AND (UPLOAD == 'true')"
     >
       <ITEMS>
         <ITEM NAME="FILE_PARAMS_NAME" />
@@ -144,14 +164,7 @@ COMPATIBILITY="ALL"
       </ITEMS>
     </PARAMETER> 
     
-    <PARAMETER
-    	NAME="PRINT"
-    	FIELD="CHECK"
-    	NUM_ROW="10"
-    	SHOW_IF="POST == 'true'"
-    >
-    </PARAMETER>
-    </PARAMETERS>
+    </ADVANCED_PARAMETERS>
 
   <CODEGENERATION>
    <IMPORTS>
