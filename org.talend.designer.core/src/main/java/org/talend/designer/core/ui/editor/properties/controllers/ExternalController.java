@@ -182,9 +182,7 @@ public class ExternalController extends AbstractElementPropertySectionController
 
         public void widgetSelected(SelectionEvent e) {
             Command cmd = createCommand();
-            if (cmd != null) {
-                getCommandStack().execute(cmd);
-            }
+            executeCommand(cmd);
 
         }
 

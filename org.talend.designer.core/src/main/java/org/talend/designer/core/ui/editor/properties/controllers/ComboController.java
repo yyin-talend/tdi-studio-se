@@ -275,10 +275,7 @@ public class ComboController extends AbstractElementPropertySectionController {
         public void widgetSelected(SelectionEvent event) {
             // dynamicProperty.updateRepositoryList();
             Command cmd = createCommand(event);
-
-            if (cmd != null) {
-                getCommandStack().execute(cmd);
-            }
+            executeCommand(cmd);
             IElementParameter elementParameterFromField = elem.getElementParameterFromField(EParameterFieldType.MEMO_SQL);
             if (elementParameterFromField != null) {
                 Object value = elementParameterFromField.getValue();

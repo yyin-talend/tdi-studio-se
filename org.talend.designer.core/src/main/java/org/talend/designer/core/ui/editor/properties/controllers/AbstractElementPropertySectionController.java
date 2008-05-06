@@ -45,7 +45,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.IPropertyListener;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
@@ -395,7 +394,9 @@ public abstract class AbstractElementPropertySectionController implements Proper
                 throw new NullPointerException();
             }
             if (!elem.getElementParameter(parameterName).isReadOnly()) {
-                IProcess process = part.getTalendEditor().getProcess();
+
+                IProcess process = getProcess(elem, part);
+
                 this.extendedProposal = TalendProposalUtils.installOn(control, process);
                 if (!elem.getElementParameter(parameterName).isNoCheck()) {
                     this.checkErrorsHelper.register(control, extendedProposal);
@@ -644,25 +645,34 @@ public abstract class AbstractElementPropertySectionController implements Proper
                     String name = getParameterName(control);
                     String text = ControlUtils.getText(control);
                     Command cmd = getTextCommandForHelper(name, text);
-                    getCommandStack().execute(cmd);
+                    // getCommandStack().execute(cmd);
+                    executeCommand(cmd);
                 }
 
                 @Override
                 public void updateCommand(Control control) {
                     CommandStack commandStack = getCommandStack();
+
+                    String name = getParameterName(control);
+                    String text = ControlUtils.getText(control);
+
+                    if (commandStack == null) {
+                        executeCommand(new PropertyChangeCommand(elem, name, text));
+                        return;
+                    }
+
                     Object[] commands = commandStack.getCommands();
 
                     if (commands.length == 0 || commandStack.getRedoCommand() != null) {
                         addNewCommand(control);
                     } else {
                         Object lastCommandObject = commands[commands.length - 1];
-                        String name = getParameterName(control);
                         if (lastCommandObject instanceof PropertyChangeCommand) {
                             PropertyChangeCommand lastCommand = (PropertyChangeCommand) lastCommandObject;
                             if (name.equals(lastCommand.getPropName()) && (lastCommand.getElement() == elem)) {
-                                String text = ControlUtils.getText(control);
                                 lastCommand.dispose();
-                                commandStack.execute(new PropertyChangeCommand(elem, name, text));
+                                // commandStack.execute(new PropertyChangeCommand(elem, name, text));
+                                executeCommand(new PropertyChangeCommand(elem, name, text));
                                 // lastCommand.modifyValue(text);
                             }
                         }
@@ -710,8 +720,32 @@ public abstract class AbstractElementPropertySectionController implements Proper
      * @return
      */
     protected CommandStack getCommandStack() {
+        if (part == null) {
+            return null;
+        }
         Object adapter = part.getTalendEditor().getAdapter(CommandStack.class);
         return (CommandStack) adapter;
+    }
+
+    protected void executeCommand(Command c) {
+
+        if (c == null) {
+            return;
+        }
+
+        if (getCommandStack() != null) {
+            getCommandStack().execute(c);
+        } else {
+            // if can't find command stack, just execute it.
+            c.execute();
+            refreshDynamicProperty();
+        }
+    }
+
+    private void refreshDynamicProperty() {
+        if (this.dynamicProperty == null)
+            return;
+        dynamicProperty.refresh();
     }
 
     /**
@@ -756,7 +790,8 @@ public abstract class AbstractElementPropertySectionController implements Proper
                         text = ((Text) textControl).getText() + (String) event.data;
                     }
                     Command cmd = new PropertyChangeCommand(elem, propertyName, text);
-                    getCommandStack().execute(cmd);
+                    // getCommandStack().execute(cmd);
+                    executeCommand(cmd);
                 }
             }
 
@@ -1145,7 +1180,10 @@ public abstract class AbstractElementPropertySectionController implements Proper
                         .getString("NoRepositoryDialog.Text")); //$NON-NLS-1$
                 return null;
             }
-            String key = this.part.getTalendEditor().getProcess().getName() + ((Node) elem).getUniqueName() + repositoryName2;
+
+            // Part maybe not exist
+            String key = ((Node) elem).getProcess().getName() + ((Node) elem).getUniqueName() + repositoryName2;
+
             final SQLBuilderDialog builderDialog = sqlbuilers.get(key);
             if (!composite.isDisposed() && builderDialog != null && builderDialog.getShell() != null
                     && !builderDialog.getShell().isDisposed()) {
@@ -1153,32 +1191,22 @@ public abstract class AbstractElementPropertySectionController implements Proper
             } else {
                 connParameters.setRepositoryName(repositoryName2);
                 Shell parentShell = new Shell(composite.getShell().getDisplay());
-                TextUtil.setDialogTitle(this.part.getTalendEditor().getProcess().getName(), (String) ((Node) elem)
-                        .getElementParameter("LABEL").getValue(), elem.getElementName());
-                part.addPropertyListener(new IPropertyListener() {
+                TextUtil.setDialogTitle(((Node) elem).getProcess().getName(), (String) ((Node) elem).getElementParameter("LABEL")
+                        .getValue(), elem.getElementName());
 
-                    /*
-                     * (non-Javadoc)
-                     * 
-                     * @see org.eclipse.ui.IPropertyListener#propertyChanged(java.lang.Object, int)
-                     */
-                    public void propertyChanged(Object source, int propId) {
-
-                    }
-
-                });
-                SQLBuilderDialog dial = new SQLBuilderDialog(parentShell);
-                UIUtils.addSqlBuilderDialog(part.getTalendEditor().getProcess().getName(), dial);
+                SQLBuilderDialog sqlBuilder = new SQLBuilderDialog(parentShell);
+                UIUtils.addSqlBuilderDialog(((Node) elem).getProcess().getName(), sqlBuilder);
                 connParameters.setQuery(query);
-                dial.setConnParameters(connParameters);
-                sqlbuilers.put(key, dial);
-                if (Window.OK == dial.open()) {
+                sqlBuilder.setConnParameters(connParameters);
+                sqlbuilers.put(key, sqlBuilder);
+                if (Window.OK == sqlBuilder.open()) {
                     if (!composite.isDisposed() && !connParameters.isNodeReadOnly()) {
                         String sql = connParameters.getQuery();
                         sql = TalendTextUtils.addSQLQuotes(sql);
                         return sql;
                     }
                 }
+
             }
         }
         return null;
@@ -1214,11 +1242,13 @@ public abstract class AbstractElementPropertySectionController implements Proper
             if (modelSelect.open() == ModelSelectionDialog.OK) {
                 if (modelSelect.getOptionValue() == 0) {
 
-                    getCommandStack().execute(changeToBuildInCommand((Control) e.getSource()));
+                    // getCommandStack().execute(changeToBuildInCommand((Control) e.getSource()));
+                    executeCommand(changeToBuildInCommand((Control) e.getSource()));
                 }
                 if (modelSelect.getOptionValue() == 1) {
 
-                    getCommandStack().execute(refreshConnectionCommand((Control) e.getSource()));
+                    // getCommandStack().execute(refreshConnectionCommand((Control) e.getSource()));
+                    executeCommand(refreshConnectionCommand((Control) e.getSource()));
                 }
             }
         }
@@ -1261,5 +1291,15 @@ public abstract class AbstractElementPropertySectionController implements Proper
         }
 
         return null;
+    }
+
+    protected IProcess getProcess(final Element elem, final AbstractMultiPageTalendEditor part) {
+        IProcess process = null;
+        if (part == null) {
+            process = ((Node) elem).getProcess();
+        } else {
+            process = part.getTalendEditor().getProcess();
+        }
+        return process;
     }
 }

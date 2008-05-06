@@ -264,7 +264,7 @@ public class ColumnListController extends AbstractElementPropertySectionControll
             // dynamicProperty.updateRepositoryList();
             Command cmd = createCommand(event);
             if (cmd != null) {
-                getCommandStack().execute(cmd);
+                executeCommand(cmd);
                 if (updateColumnListFlag) {
                     updateData();
                 }

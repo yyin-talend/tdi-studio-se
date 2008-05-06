@@ -282,9 +282,7 @@ public class ComponentListController extends AbstractElementPropertySectionContr
 
         public void widgetSelected(SelectionEvent event) {
             Command cmd = createCommand(event);
-            if (cmd != null) {
-                getCommandStack().execute(cmd);
-            }
+            executeCommand(cmd);
         }
     };
 

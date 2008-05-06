@@ -94,9 +94,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
 
         public void widgetSelected(SelectionEvent e) {
             Command cmd = createCommand();
-            if (cmd != null) {
-                getCommandStack().execute(cmd);
-            }
+            executeCommand(cmd);
         }
     };
 
@@ -122,7 +120,8 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
         }
 
         query = this.removeStrInQuery(query);
-        initConnectionParametersWithContext(elem, part.getTalendEditor().getProcess().getContextManager().getDefaultContext());
+        initConnectionParametersWithContext(elem, part == null ? new EmptyContextManager().getDefaultContext() : part
+                .getTalendEditor().getProcess().getContextManager().getDefaultContext());
         String sql = openSQLBuilder(repositoryType, propertyName, query);
         if (sql != null) {
             queryText.setText(sql);
@@ -372,12 +371,10 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
 
             if (modelSelect.open() == ModelSelectionDialog.OK) {
                 if (modelSelect.getOptionValue() == 0) {
-
-                    getCommandStack().execute(changeToBuildInCommand());
+                    executeCommand(changeToBuildInCommand());
                 }
                 if (modelSelect.getOptionValue() == 1) {
-
-                    getCommandStack().execute(refreshConnectionCommand());
+                    executeCommand(refreshConnectionCommand());
                 }
             }
         }

@@ -222,12 +222,7 @@ public class MappingTypeController extends AbstractElementPropertySectionControl
         public void widgetSelected(SelectionEvent event) {
             // dynamicTabbedPropertySection.updateRepositoryList();
             Command cmd = createCommand(event);
-            if (cmd != null) {
-                getCommandStack().execute(cmd);
-                // if (updateColumnListFlag) {
-                // MappingTypeController.this.dynamicTabbedPropertySection.updateColumnList(null);
-                // }
-            }
+            executeCommand(cmd);
         }
     };
 

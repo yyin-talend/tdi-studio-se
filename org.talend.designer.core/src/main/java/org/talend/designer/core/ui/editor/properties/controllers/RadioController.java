@@ -147,7 +147,7 @@ public class RadioController extends AbstractElementPropertySectionController {
                 return;
             }
             for (Command cmd : cmds) {
-                getCommandStack().execute(cmd);
+                executeCommand(cmd);
             }
         }
     };

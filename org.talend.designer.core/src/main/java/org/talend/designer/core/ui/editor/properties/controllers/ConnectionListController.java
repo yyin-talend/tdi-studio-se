@@ -219,9 +219,7 @@ public class ConnectionListController extends AbstractElementPropertySectionCont
         public void widgetSelected(SelectionEvent event) {
             // updateRepositoryList();
             Command cmd = createCommand(event);
-            if (cmd != null) {
-                getCommandStack().execute(cmd);
-            }
+            executeCommand(cmd);
         }
     };
 

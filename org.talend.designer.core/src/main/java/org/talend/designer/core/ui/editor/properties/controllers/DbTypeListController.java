@@ -233,9 +233,7 @@ public class DbTypeListController extends AbstractElementPropertySectionControll
             // updateRepositoryList();
             // dynamicProperty.updateRepositoryList();
             Command cmd = createCommand(event);
-            if (cmd != null) {
-                getCommandStack().execute(cmd);
-            }
+            executeCommand(cmd);
         }
     };
 

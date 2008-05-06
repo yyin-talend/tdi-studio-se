@@ -1659,7 +1659,6 @@ public abstract class AbstractTalendEditor extends GraphicalEditorWithFlyoutPale
      */
     @Override
     public CommandStack getCommandStack() {
-        // TODO Auto-generated method stub
         return super.getCommandStack();
     }
 

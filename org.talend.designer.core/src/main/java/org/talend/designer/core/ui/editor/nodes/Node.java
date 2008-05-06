@@ -1366,8 +1366,11 @@ public class Node extends Element implements INode {
         if (oldStatus != currentStatus) {
             toUpdate = true;
         } else {
-            List<String> newErrorList = Problems.getStatusList(ProblemStatus.ERROR, nodeContainer.getNode());
-            List<String> newWarningList = Problems.getStatusList(ProblemStatus.WARNING, nodeContainer.getNode());
+
+            List<String> newErrorList = Problems.getStatusList(ProblemStatus.ERROR, nodeContainer == null ? this : nodeContainer
+                    .getNode());
+            List<String> newWarningList = Problems.getStatusList(ProblemStatus.WARNING, nodeContainer == null ? this
+                    : nodeContainer.getNode());
 
             if (newErrorList.size() != errorList.size()) {
                 toUpdate = true;

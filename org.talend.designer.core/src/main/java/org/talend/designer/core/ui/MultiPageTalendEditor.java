@@ -24,6 +24,7 @@ import org.talend.core.model.properties.InformationLevel;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.core.ui.images.OverlayImageProvider;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.core.ui.editor.AbstractTalendEditor;
 import org.talend.designer.core.ui.editor.ProcessEditorInput;
 import org.talend.designer.core.ui.editor.TalendEditor;
 
@@ -42,6 +43,15 @@ public class MultiPageTalendEditor extends AbstractMultiPageTalendEditor {
     public MultiPageTalendEditor() {
         super();
         designerEditor = new TalendEditor();
+    }
+
+    /**
+     * Getter for designerEditor.
+     * 
+     * @return the designerEditor
+     */
+    public AbstractTalendEditor getDesignerEditor() {
+        return this.designerEditor;
     }
 
     /**

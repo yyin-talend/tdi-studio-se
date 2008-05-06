@@ -669,7 +669,6 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
                     operationInThread();
                 } catch (Exception e) {
                     // e.printStackTrace();
-
                 }
             }
         };
@@ -935,8 +934,6 @@ public class MultipleThreadDynamicComposite extends ScrolledComposite implements
             if (0 != (detail & CommandStack.POST_EXECUTE) || 0 != (detail & CommandStack.POST_UNDO)
                     || 0 != (detail & CommandStack.POST_REDO)) {
                 Boolean updateNeeded = (Boolean) elem.getPropertyValue(updataComponentParamName);
-                // System.out.println("elem:" + elem.getElementName() + "(" + section + ") --- update needed:" +
-                // updateNeeded);
                 if (updateNeeded) {
                     refresh();
                 }

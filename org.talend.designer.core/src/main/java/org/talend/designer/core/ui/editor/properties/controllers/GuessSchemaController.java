@@ -158,11 +158,15 @@ public class GuessSchemaController extends AbstractElementPropertySectionControl
         @Override
         public void widgetSelected(SelectionEvent e) {
 
-            Command cmd = createButtonCommand((Button) e.getSource(), part.getTalendEditor().getProcess().getContextManager());
+            Command cmd = null;
 
-            if (cmd != null) {
-                getCommandStack().execute(cmd);
+            if (part == null) {
+                cmd = createButtonCommand((Button) e.getSource(), new EmptyContextManager());
+            } else {
+                cmd = createButtonCommand((Button) e.getSource(), part.getTalendEditor().getProcess().getContextManager());
             }
+
+            executeCommand(cmd);
         }
 
     };

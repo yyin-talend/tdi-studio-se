@@ -213,9 +213,7 @@ public class DirectoryController extends AbstractElementPropertySectionControlle
 
         public void widgetSelected(SelectionEvent event) {
             Command command = createCommand(event);
-            if (command != null) {
-                getCommandStack().execute(command);
-            }
+            executeCommand(command);
 
         }
 

@@ -228,10 +228,7 @@ public class FileController extends AbstractElementPropertySectionController {
 
         public void widgetSelected(SelectionEvent e) {
             Command cmd = createCommand((Button) e.getSource());
-            if (cmd != null) {
-                getCommandStack().execute(cmd);
-            }
-
+            executeCommand(cmd);
         }
 
     };

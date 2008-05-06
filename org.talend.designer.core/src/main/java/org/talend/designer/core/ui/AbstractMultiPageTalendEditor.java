@@ -772,4 +772,5 @@ public abstract class AbstractMultiPageTalendEditor extends MultiPageEditorPart 
         process = null;
         dirtyListener = null;
     }
+
 }

@@ -354,9 +354,7 @@ public class EncodingTypeController extends AbstractElementPropertySectionContro
         public void widgetSelected(SelectionEvent e) {
             selectionEvent = e;
             Command cmd = createComboCommand((CCombo) selectionEvent.getSource());
-            if (cmd != null) {
-                getCommandStack().execute(cmd);
-            }
+            executeCommand(cmd);
         }
     };
 }

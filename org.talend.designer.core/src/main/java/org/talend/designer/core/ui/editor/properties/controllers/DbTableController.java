@@ -41,6 +41,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.progress.IWorkbenchSiteProgressService;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.commons.exception.ExceptionHandler;
@@ -97,7 +98,11 @@ public class DbTableController extends AbstractElementPropertySectionController 
         }
 
         public void widgetSelected(SelectionEvent e) {
-            createListTablesCommand((Button) e.getSource(), part.getTalendEditor().getProcess().getContextManager());
+            if (part == null) {
+                createListTablesCommand((Button) e.getSource(), new EmptyContextManager());
+            } else {
+                createListTablesCommand((Button) e.getSource(), part.getTalendEditor().getProcess().getContextManager());
+            }
         }
     };
 
@@ -108,7 +113,12 @@ public class DbTableController extends AbstractElementPropertySectionController 
         }
 
         public void widgetSelected(SelectionEvent e) {
-            createOpenSQLCommand((Button) e.getSource(), part.getTalendEditor().getProcess().getContextManager());
+            if (part == null) {
+                createOpenSQLCommand((Button) e.getSource(), new EmptyContextManager());
+            } else {
+                createOpenSQLCommand((Button) e.getSource(), part.getTalendEditor().getProcess().getContextManager());
+            }
+
         }
     };
 
@@ -388,7 +398,7 @@ public class DbTableController extends AbstractElementPropertySectionController 
                                         if (name != null) {
                                             Command dbSelectorCommand = new PropertyChangeCommand(elem, propertyName,
                                                     TalendTextUtils.addQuotes(name));
-                                            getCommandStack().execute(dbSelectorCommand);
+                                            executeCommand(dbSelectorCommand);
                                             Text labelText = (Text) hashCurControls.get(propertyName);
                                             labelText.setText(TalendTextUtils.addQuotes(name));
                                         }
@@ -421,9 +431,15 @@ public class DbTableController extends AbstractElementPropertySectionController 
             }
 
         };
-        IWorkbenchSiteProgressService siteps = (IWorkbenchSiteProgressService) part.getSite().getAdapter(
-                IWorkbenchSiteProgressService.class);
-        siteps.showInDialog(composite.getShell(), job);
+
+        if (part != null) {
+            IWorkbenchSiteProgressService siteps = (IWorkbenchSiteProgressService) part.getSite().getAdapter(
+                    IWorkbenchSiteProgressService.class);
+            siteps.showInDialog(composite.getShell(), job);
+        } else {
+            PlatformUI.getWorkbench().getProgressService().showInDialog(composite.getShell(), job);
+        }
+
         job.setUser(true);
         job.schedule();
     }

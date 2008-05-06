@@ -298,14 +298,10 @@ public class ModuleListController extends AbstractElementPropertySectionControll
         public void widgetSelected(SelectionEvent event) {
             if (event.getSource() instanceof Button) {
                 Command cmd = createCommand((Button) event.getSource());
-                if (cmd != null) {
-                    getCommandStack().execute(cmd);
-                }
+                executeCommand(cmd);
             } else {
                 Command cmd = createCommand(event);
-                if (cmd != null) {
-                    getCommandStack().execute(cmd);
-                }
+                executeCommand(cmd);
             }
         }
     };

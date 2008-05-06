@@ -232,9 +232,7 @@ public abstract class AbstractRepositoryController extends AbstractElementProper
 
         public void widgetSelected(SelectionEvent e) {
             Command cmd = createCommand(e);
-            if (cmd != null) {
-                getCommandStack().execute(cmd);
-            }
+            executeCommand(cmd);
         }
     };
 
