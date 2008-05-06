@@ -1715,9 +1715,13 @@ public class EmfComponent implements IComponent {
                 nodeConnector.addConnectionProperty(currentType, currentType.getRGB(), currentType.getDefaultLineStyle());
                 nodeConnector.setLinkName(currentType.getDefaultLinkName());
                 nodeConnector.setMenuName(currentType.getDefaultMenuName());
-                nodeConnector.setMaxLinkInput(0);
+                if (currentType == EConnectionType.PARALLELIZE) {
+                    nodeConnector.setMaxLinkInput(1);
+                } else {
+                    nodeConnector.setMaxLinkInput(0);
+                }
                 nodeConnector.setMinLinkInput(0);
-                if (currentType == EConnectionType.SUBJOB_START_ORDER) {
+                if (currentType == EConnectionType.SYNCHRONIZE) {
                     nodeConnector.setMaxLinkOutput(1);
                 } else {
                     nodeConnector.setMaxLinkOutput(0);

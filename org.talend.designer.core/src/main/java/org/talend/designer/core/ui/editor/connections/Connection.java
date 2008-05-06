@@ -368,9 +368,9 @@ public class Connection extends Element implements IConnection, IPerformance {
             }
             updateName = true;
         } /*
-             * else if (getLineStyle().equals(EConnectionType.LOOKUP)) { labelText += " (" + nodeConnector.getLinkName() +
-             * ")"; updateName = true; }
-             */
+         * else if (getLineStyle().equals(EConnectionType.LOOKUP)) { labelText += " (" + nodeConnector.getLinkName() +
+         * ")"; updateName = true; }
+         */
 
         if (updateName) {
 
@@ -453,7 +453,7 @@ public class Connection extends Element implements IConnection, IPerformance {
             updateAllId();
             isConnected = true;
 
-            if (lineStyle.equals(EConnectionType.SUBJOB_START_ORDER)) {
+            if (lineStyle.equals(EConnectionType.SYNCHRONIZE)) {
                 for (IElementParameter param : target.getElementParameters()) {
                     if (param.isBasedOnSubjobStarts()) {
                         TableController.updateSubjobStarts(target, param);
@@ -478,7 +478,7 @@ public class Connection extends Element implements IConnection, IPerformance {
             updateAllId();
             isConnected = false;
 
-            if (lineStyle.equals(EConnectionType.SUBJOB_START_ORDER)) {
+            if (lineStyle.equals(EConnectionType.SYNCHRONIZE)) {
                 for (IElementParameter param : target.getElementParameters()) {
                     if (param.isBasedOnSubjobStarts()) {
                         TableController.updateSubjobStarts(target, param);

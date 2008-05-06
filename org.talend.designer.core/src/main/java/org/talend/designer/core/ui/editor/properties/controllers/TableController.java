@@ -18,10 +18,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.custom.CLabel;
@@ -32,9 +28,7 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
-import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.utils.data.list.IListenableListListener;
@@ -47,14 +41,8 @@ import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.properties.ProcessItem;
-import org.talend.core.model.properties.SQLPatternItem;
-import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.utils.TalendTextUtils;
-import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
-import org.talend.designer.core.model.components.EmfComponent;
-import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
@@ -287,8 +275,7 @@ public class TableController extends AbstractElementPropertySectionController {
         List<String> uniqueNameStarts = new ArrayList<String>();
 
         Node node = (Node) element;
-        List<IConnection> incomingSubjobStartsConn = (List<IConnection>) node
-                .getIncomingConnections(EConnectionType.SUBJOB_START_ORDER);
+        List<IConnection> incomingSubjobStartsConn = (List<IConnection>) node.getIncomingConnections(EConnectionType.SYNCHRONIZE);
         for (IConnection connection : incomingSubjobStartsConn) {
             uniqueNameStarts.add(connection.getSource().getUniqueName());
         }

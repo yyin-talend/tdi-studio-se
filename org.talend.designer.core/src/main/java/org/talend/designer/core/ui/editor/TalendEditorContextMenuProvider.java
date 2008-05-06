@@ -235,7 +235,13 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
             if (PluginChecker.isJobLetPluginLoaded()) {
                 subMenu.add(new Separator());
 
-                action = new ConnectionCreateAction(part, EConnectionType.SUBJOB_START_ORDER);
+                action = new ConnectionCreateAction(part, EConnectionType.SYNCHRONIZE);
+                ((ConnectionCreateAction) action).update();
+                if (action.isEnabled()) {
+                    subMenu.add(action);
+                }
+
+                action = new ConnectionCreateAction(part, EConnectionType.PARALLELIZE);
                 ((ConnectionCreateAction) action).update();
                 if (action.isEnabled()) {
                     subMenu.add(action);
