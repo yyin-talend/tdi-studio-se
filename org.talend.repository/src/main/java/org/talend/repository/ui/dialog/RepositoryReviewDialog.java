@@ -266,12 +266,7 @@ class FakeRepositoryView extends RepositoryView {
     public void refresh() {
         super.refresh();
         // getViewer().setInput(this.getViewSite());
-        try {
-            getViewer().setInput(getInput());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
+        getViewer().setInput(getInput());
     }
 
     private RepositoryNode getInput() {
