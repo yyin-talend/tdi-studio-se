@@ -266,7 +266,11 @@ class FakeRepositoryView extends RepositoryView {
     public void refresh() {
         super.refresh();
         // getViewer().setInput(this.getViewSite());
-        getViewer().setInput(getInput());
+        try {
+            getViewer().setInput(getInput());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -496,8 +500,13 @@ class SchemaTypeProcessor implements ITypeProcessor {
         container.add(contentProvider.getMetadataGenericSchemaNode());
         container.add(contentProvider.getMetadataLDAPSchemaNode());
         container.add(contentProvider.getMetadataWSDLSchemaNode());
+
+        // Salesforce metadata node is not exist in Perl Project.
         container.add(contentProvider.getMetadataSalesforceSchemaNode());
+
         container.add(contentProvider.getMetadataConNode());
+
+        container.remove(null); // Not allow null element
 
         RepositoryNode node = new RepositoryNode(null, null, null);
         node.getChildren().addAll(container);
