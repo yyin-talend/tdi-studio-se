@@ -198,7 +198,7 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
 
     public SQLBuilderDialog(Shell parentShell) {
         super(parentShell);
-        setShellStyle(SWT.DIALOG_TRIM | SWT.RESIZE | SWT.RESIZE | SWT.MIN | SWT.MAX);
+        setShellStyle(SWT.DIALOG_TRIM | SWT.RESIZE | SWT.RESIZE | SWT.MIN | SWT.MAX | SWT.APPLICATION_MODAL);
         parentShell.setImage(ImageUtil.getImage("Images.title")); //$NON-NLS-1$
         SqlBuilderPlugin.getDefault().getRepositoryService().registerRepositoryChangedListener(this);
     }
