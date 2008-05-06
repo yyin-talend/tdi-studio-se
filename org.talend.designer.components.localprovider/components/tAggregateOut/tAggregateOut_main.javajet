@@ -87,6 +87,7 @@ for(int i = 0; i < sizeGroupbys; i++){
 			Map<String, String> operation = operations.get(i);
 			String fun = operation.get("FUNCTION");
 			String in = operation.get("INPUT_COLUMN");
+			String ignoreNull = operation.get("IGNORE_NULL");
 			if(fun.equals("sum") || fun.equals("count")){
 				for(int j=0; j<sizeOperations; j++){
 					Map<String, String> tOperation = operations.get(j);
@@ -95,25 +96,28 @@ for(int i = 0; i < sizeGroupbys; i++){
 					}
 				}
 			}
-			for(int j = 0; j < i; j++){
+			for(int j = 0; j < i; j++){//skip depulicate operation
 				Map<String, String> tOperation = operations.get(j);
 				if(tOperation.get("FUNCTION").equals(fun) && tOperation.get("INPUT_COLUMN").equals(in)){
 					continue next;
 				}
 			}
 			if(fun.equals("avg")){
-				String[] funin = new String[2];
+				String[] funin = new String[3];
 				funin[0]="sum";
 				funin[1]=in;
+				funin[2]=ignoreNull;
 				funinOperations.add(funin);
-				funin=new String[2];
+				funin=new String[3];
 				funin[0]="count";
 				funin[1]=in;
+				funin[2]=ignoreNull;
 				funinOperations.add(funin);
 			}else{
-				String[] funin = new String[2];
+				String[] funin = new String[3];
 				funin[0]=fun;
 				funin[1]=in;
+				funin[2]=ignoreNull;
 				funinOperations.add(funin);
 			}
 		}
@@ -254,6 +258,7 @@ operation_result_<%=cid %>.<%=funin[1] %>_<%=funin[0] %> = <%=conn.getName() %>.
 				if(javaType == JavaTypesManager.BYTE_ARRAY || javaType == JavaTypesManager.OBJECT){
 					//do nothing here
 				}else if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.DATE){
+					if(funin[2].equals("false")){
 //
 //end%>
 if(operation_result_<%=cid %>.<%=funin[1] %>_<%=funin[0] %>.compareTo(<%=conn.getName() %>.<%=funin[1] %>) <%if(funin[0].equals("min")){%>><%}else{%><<%}%> 0){
@@ -261,7 +266,23 @@ if(operation_result_<%=cid %>.<%=funin[1] %>_<%=funin[0] %>.compareTo(<%=conn.ge
 }
 <%//start
 //
+					}else{
+//
+//end%>
+if(operation_result_<%=cid %>.<%=funin[1] %>_<%=funin[0] %> == null){
+	if(<%=conn.getName() %>.<%=funin[1] %> != null){
+		operation_result_<%=cid %>.<%=funin[1] %>_<%=funin[0] %> = <%=conn.getName() %>.<%=funin[1] %>;
+	}
+}else if(<%=conn.getName() %>.<%=funin[1] %> != null){
+	if(operation_result_<%=cid %>.<%=funin[1] %>_<%=funin[0] %>.compareTo(<%=conn.getName() %>.<%=funin[1] %>) <%if(funin[0].equals("min")){%>><%}else{%><<%}%> 0){
+		operation_result_<%=cid %>.<%=funin[1] %>_<%=funin[0] %> = <%=conn.getName() %>.<%=funin[1] %>;
+	}
+}
+<%//start
+//
+					}
 				}else if(javaType == JavaTypesManager.BOOLEAN){
+					if(funin[2].equals("false")){
 //
 //end%>
 if(<%if(funin[0].equals("min")){%>!<%}%><%=conn.getName() %>.<%=funin[1] %>){
@@ -271,16 +292,48 @@ if(<%if(funin[0].equals("min")){%>!<%}%><%=conn.getName() %>.<%=funin[1] %>){
 }
 <%//start
 //
-				}else{
-					//for numbers(byte, char, short, int, long, float, double)
+					}else{
 //
 //end%>
-
+if(operation_result_<%=cid %>.<%=funin[1] %>_<%=funin[0] %> == null){
+	if(<%=conn.getName() %>.<%=funin[1] %> != null){
+		operation_result_<%=cid %>.<%=funin[1] %>_<%=funin[0] %> = <%=conn.getName() %>.<%=funin[1] %>;
+	}
+}else if(<%=conn.getName() %>.<%=funin[1] %> != null){
+    if(<%if(funin[0].equals("min")){%>!<%}%><%=conn.getName() %>.<%=funin[1] %>){
+    	if(<%if(funin[0].equals("max")){%>!<%}%>operation_result_<%=cid %>.<%=funin[1] %>_<%=funin[0] %>){
+    		operation_result_<%=cid %>.<%=funin[1] %>_<%=funin[0] %> = <%if(funin[0].equals("min")){%>false<%}else{%>true<%}%>;
+    	}
+    }
+}
+<%//start
+//
+					}
+				}else{
+					//for numbers(byte, char, short, int, long, float, double)
+					if(funin[2].equals("false")){
+//
+//end%>
 if(operation_result_<%=cid %>.<%=funin[1] %>_<%=funin[0] %><%if(javaType == JavaTypesManager.BIGDECIMAL){%>.doubleValue()<%}%>  - <%=conn.getName() %>.<%=funin[1] %><%if(javaType == JavaTypesManager.BIGDECIMAL){%>.doubleValue()<%}%> <%if(funin[0].equals("min")){%>><%}else{%><<%}%> 0){
 	operation_result_<%=cid %>.<%=funin[1] %>_<%=funin[0] %> = <%=conn.getName() %>.<%=funin[1] %>;
 }
 <%//start
 //
+					}else{
+//
+//end%>
+if(operation_result_<%=cid %>.<%=funin[1] %>_<%=funin[0] %> == null){
+	if(<%=conn.getName() %>.<%=funin[1] %> != null){
+		operation_result_<%=cid %>.<%=funin[1] %>_<%=funin[0] %> = <%=conn.getName() %>.<%=funin[1] %>;
+	}
+}else if(<%=conn.getName() %>.<%=funin[1] %> != null){
+    if(operation_result_<%=cid %>.<%=funin[1] %>_<%=funin[0] %><%if(javaType == JavaTypesManager.BIGDECIMAL){%>.doubleValue()<%}%>  - <%=conn.getName() %>.<%=funin[1] %><%if(javaType == JavaTypesManager.BIGDECIMAL){%>.doubleValue()<%}%> <%if(funin[0].equals("min")){%>><%}else{%><<%}%> 0){
+		operation_result_<%=cid %>.<%=funin[1] %>_<%=funin[0] %> = <%=conn.getName() %>.<%=funin[1] %>;
+	}
+}
+<%//start
+//
+					}
 				}
 			}
 			if(funin[0].equals("sum")){
@@ -289,56 +342,120 @@ if(operation_result_<%=cid %>.<%=funin[1] %>_<%=funin[0] %><%if(javaType == Java
 					|| javaType == JavaTypesManager.DATE){
 					//do nothing here
 				}else if(javaType == JavaTypesManager.BIGDECIMAL){
+					if(funin[2].equals("false")){
 //
 //end%>
 operation_result_<%=cid %>.<%=funin[1] %>_sum = operation_result_<%=cid %>.<%=funin[1] %>_sum.add(<%=conn.getName() %>.<%=funin[1] %>);
 <%//start
 //
+					}else{
+//
+//end%>
+if(<%=conn.getName() %>.<%=funin[1] %> != null){
+	operation_result_<%=cid %>.<%=funin[1] %>_sum = operation_result_<%=cid %>.<%=funin[1] %>_sum.add(<%=conn.getName() %>.<%=funin[1] %>);
+}
+<%//start
+//
+					}
 				}else{
+					if(funin[2].equals("false")){
 //
 //end%>
 operation_result_<%=cid %>.<%=funin[1] %>_sum = operation_result_<%=cid %>.<%=funin[1] %>_sum.add(BigDecimal.valueOf(<%=conn.getName() %>.<%=funin[1] %>));
 <%//start
-//				
+//
+					}else{
+//
+//end%>
+if(<%=conn.getName() %>.<%=funin[1] %> != null){
+	operation_result_<%=cid %>.<%=funin[1] %>_sum = operation_result_<%=cid %>.<%=funin[1] %>_sum.add(BigDecimal.valueOf(<%=conn.getName() %>.<%=funin[1] %>));
+}
+<%//start
+//
+					}
 				}
 			}
 			if(funin[0].equals("count")){
+				if(funin[2].equals("false")){
 //
 //end%>
 operation_result_<%=cid %>.<%=funin[1] %>_count ++;
 <%//start
 //
+				}else{
+//
+//end%>
+if(<%=conn.getName() %>.<%=funin[1] %> != null){
+	operation_result_<%=cid %>.<%=funin[1] %>_count ++;
+}
+<%//start
+//
+				}
+			}
+			if(funin[0].equals("first") && funin[2].equals("true")){
+//
+//end%>
+//get the first value that is not null
+if((operation_result_<%=cid %>.<%=funin[1] %>_<%=funin[0] %> == null) && (<%=conn.getName() %>.<%=funin[1] %> != null)){
+	operation_result_<%=cid %>.<%=funin[1] %>_<%=funin[0] %> = <%=conn.getName() %>.<%=funin[1]  %>;
+}
+<%//start
+//
 			}
 			if(funin[0].equals("last")){
+					if(funin[2].equals("false")){
 //
 //end%>
 operation_result_<%=cid %>.<%=funin[1] %>_last = <%=conn.getName() %>.<%=funin[1] %>;
 <%//start
 //
-			}
-			if(funin[0].equals("list")){
+					}else{
 //
 //end%>
-operation_result_<%=cid %>.<%=funin[1] %>_list = 
-operation_result_<%=cid %>.<%=funin[1] %>_list == null? 
-String.valueOf(<%=conn.getName() %>.<%=funin[1] %>) 
-: 
-operation_result_<%=cid %>.<%=funin[1] %>_list + "," + <%=conn.getName() %>.<%=funin[1] %>;
+if(<%=conn.getName() %>.<%=funin[1] %> != null){
+	operation_result_<%=cid %>.<%=funin[1] %>_last = <%=conn.getName() %>.<%=funin[1] %>;
+}
 <%//start
 //
+					}
+			}
+			if(funin[0].equals("list")){
+				if(funin[2].equals("false")){
+//
+//end%>
+operation_result_<%=cid %>.<%=funin[1] %>_list = (operation_result_<%=cid %>.<%=funin[1] %>_list.length() == 0) ? String.valueOf(<%=conn.getName() %>.<%=funin[1] %>) : (operation_result_<%=cid %>.<%=funin[1] %>_list + "," + <%=conn.getName() %>.<%=funin[1] %>);
+<%//start
+//
+				}else{
+//
+//end%>
+if(<%=conn.getName() %>.<%=funin[1] %> != null){
+	operation_result_<%=cid %>.<%=funin[1] %>_list = (operation_result_<%=cid %>.<%=funin[1] %>_list.length() == 0) ? String.valueOf(<%=conn.getName() %>.<%=funin[1] %>) : (operation_result_<%=cid %>.<%=funin[1] %>_list + "," + <%=conn.getName() %>.<%=funin[1] %>);
+}
+<%//start
+//
+				}
 			}
 			if(funin[0].equals("distinct")){
+				if(funin[2].equals("false")){
 //
 //end%>
 operation_result_<%=cid %>.<%=funin[1] %>_distinct.add(<%=conn.getName() %>.<%=funin[1] %>);
 <%//start
 //
-			}			
+				}else{
+//
+//end%>
+if(<%=conn.getName() %>.<%=funin[1] %> != null){
+	operation_result_<%=cid %>.<%=funin[1] %>_distinct.add(<%=conn.getName() %>.<%=funin[1] %>);
+}
+<%//start
+//
+				}
+			}
 		}
 //
-//end%>	
-
-<%
+//end
 	}
 }
 //

@@ -83,6 +83,7 @@
           </ITEMS>
         </ITEM>
         <ITEM NAME="INPUT_COLUMN" FIELD="PREV_COLUMN_LIST" />
+        <ITEM NAME="IGNORE_NULL" FIELD="CHECK" />
       </ITEMS>
     </PARAMETER>
 

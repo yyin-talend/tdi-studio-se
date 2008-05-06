@@ -82,7 +82,7 @@ if(sizeOps>0){
                 //
                 //end
     		    %>
-    		    int <%=funin[1] %>_count;
+    		    Integer <%=funin[1] %>_count = 0;
     		    <%//start
     		    //
        		}else{
@@ -99,7 +99,7 @@ if(sizeOps>0){
                     				    <% if("distinct".equals(funin[0])) { %> 
                     				    		java.util.Set <%=funin[1] %>_<%=funin[0] %> = new java.util.HashSet(); 
                     				    <% } else if("list".equals(funin[0])) {%>
-                    				    		String <%=funin[1] %>_<%=funin[0] %>;
+                    				    		String <%=funin[1] %>_<%=funin[0] %> = "";
                     				    <% } else {%> 
                     				    		<%=JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable()) %> <%=funin[1] %>_<%=funin[0] %>;
                     				    <% } %>                                   
