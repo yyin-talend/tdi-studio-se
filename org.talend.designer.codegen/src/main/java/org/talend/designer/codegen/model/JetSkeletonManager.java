@@ -67,6 +67,8 @@ public final class JetSkeletonManager {
 
     private static final String SKELETON_SUFFIX = ".skeleton";
 
+    private static final String INCLUDEFILEINJET_SUFFIX = ".inc.javajet";
+
     private JetSkeletonManager() {
     }
 
@@ -201,6 +203,7 @@ public final class JetSkeletonManager {
         }
 
         for (String jetSkeleton : skeletons) {
+            // System.out.println(jetSkeleton);
             try {
 
                 File file = new File(jetSkeleton);
@@ -236,7 +239,9 @@ public final class JetSkeletonManager {
         FileFilter skeletonFilter = new FileFilter() {
 
             public boolean accept(final File file) {
-                return file.isFile() && file.getName().charAt(0) != '.' && file.getName().endsWith(SKELETON_SUFFIX);
+                String fileName = file.getName();
+                return file.isFile() && fileName.charAt(0) != '.'
+                        && (fileName.endsWith(SKELETON_SUFFIX) || fileName.endsWith(INCLUDEFILEINJET_SUFFIX));
             }
 
         };

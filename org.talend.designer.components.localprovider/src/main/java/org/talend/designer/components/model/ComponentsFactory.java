@@ -53,10 +53,13 @@ public class ComponentsFactory implements IComponentsFactory {
 
     private static List<IComponent> componentList = null;
 
-    // only the in the directory /components ,not including /resource
+    // 1. only the in the directory /components ,not including /resource
+    // 2. include the skeleton files and external include files
     private static List<String> skeletonList = null;
 
     private static final String SKELETON_SUFFIX = ".skeleton";
+
+    private static final String INCLUDEFILEINJET_SUFFIX = ".inc.javajet";
 
     public ComponentsFactory() {
     }
@@ -157,7 +160,9 @@ public class ComponentsFactory implements IComponentsFactory {
         FileFilter skeletonFilter = new FileFilter() {
 
             public boolean accept(final File file) {
-                return file.isFile() && file.getName().charAt(0) != '.' && file.getName().endsWith(SKELETON_SUFFIX);
+                String fileName = file.getName();
+                return file.isFile() && fileName.charAt(0) != '.'
+                        && (fileName.endsWith(SKELETON_SUFFIX) || fileName.endsWith(INCLUDEFILEINJET_SUFFIX));
             }
 
         };
