@@ -21,6 +21,7 @@ import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
@@ -61,6 +62,8 @@ public class RepositoryReviewDialog extends Dialog {
     private RepositoryNode result;
 
     ITypeProcessor typeProcessor;
+
+    private String selectedNodeName;
 
     /**
      * DOC bqian RepositoryReviewDialog constructor comment.
@@ -147,6 +150,13 @@ public class RepositoryReviewDialog extends Dialog {
 
         repositoryView.createPartControl(content);
         repositoryView.refresh();
+
+        // see feature 0003664: tRunJob: When opening the tree dialog to select the job target, it could be useful to
+        // open it on previous selected job if exists
+        if (selectedNodeName != null) {
+            repositoryView.selectNode((RepositoryNode) repositoryView.getViewer().getInput(), selectedNodeName);
+        }
+
         repositoryView.getViewer().addSelectionChangedListener(new ISelectionChangedListener() {
 
             public void selectionChanged(SelectionChangedEvent event) {
@@ -167,6 +177,10 @@ public class RepositoryReviewDialog extends Dialog {
             }
         });
         return content;
+    }
+
+    public void setSelectedNodeName(String selectionNode) {
+        this.selectedNodeName = selectionNode;
     }
 
     /*
@@ -240,6 +254,23 @@ class FakeRepositoryView extends RepositoryView {
             getViewer().addFilter(filter);
         }
         CorePlugin.getDefault().getRepositoryService().removeRepositoryChangedListener(this);
+    }
+
+    /**
+     * see feature 0003664: tRunJob: When opening the tree dialog to select the job target, it could be useful to open
+     * it on previous selected job if exists.
+     * 
+     * @param root The root node of the sub tree that we are searching.
+     * @param label The label that we are looking for.
+     */
+    public void selectNode(RepositoryNode root, String label) {
+        if (root.getProperties(EProperties.LABEL).equals(label)) {
+            getViewer().setSelection(new StructuredSelection(root), true);
+        } else if (root.hasChildren()) {
+            for (RepositoryNode child : root.getChildren()) {
+                selectNode(child, label);
+            }
+        }
     }
 
     /*
