@@ -34,6 +34,7 @@ import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.ISaveablePart2;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.WorkbenchMessages;
+import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.EImage;
@@ -57,7 +58,7 @@ import org.talend.repository.model.actions.CopyObjectAction;
 import org.talend.repository.ui.dialog.DuplicateDialog;
 
 /**
- * DOC zwang class global comment. Detailled comment
+ * zwang class global comment. Detailled comment
  */
 public class DuplicateAction extends AContextualAction {
 
@@ -78,6 +79,8 @@ public class DuplicateAction extends AContextualAction {
     private boolean isErrorName = false;
 
     private boolean isExistName = false;
+
+    private IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
 
     public DuplicateAction() {
         super();
@@ -107,22 +110,6 @@ public class DuplicateAction extends AContextualAction {
 
         // see feature 0001563: Display "Save job" prompt when "copy" action for a job is requested.
         promptForSavingIfNecessary();
-
-        while (true) {
-            isOk = openInputNameDialog();
-            if (!isOk) {
-                return;
-            }
-            String newName = rename;
-            boolean valid = isValid(newName, selectionInClipboard);
-            if (!valid) {
-                openErrorDialog();
-                isError = true;
-                continue;
-            } else {
-                break;
-            }
-        }
         createOperation(target, copyObjectAction, selectionInClipboard);
         refresh();
     }
@@ -187,30 +174,69 @@ public class DuplicateAction extends AContextualAction {
      * DOC zwang Comment method "createOperation".
      */
     private void createOperation(RepositoryNode target, CopyObjectAction copyObjectAction, TreeSelection selectionInClipboard) {
-        // TODO Auto-generated method stub
         Item item = null;
 
-        if (names != null && names.size() == 1 && selectionInClipboard != null && selectionInClipboard.toArray().length == 1) {
-            String name = (String) names.keySet().toArray()[0];
+        if (selectionInClipboard != null && selectionInClipboard.toArray().length == 1) {
             Object currentSource = selectionInClipboard.toArray()[0];
-            if (name.trim().equals(((RepositoryNode) currentSource).getObject().getProperty().getLabel().trim())) {
-                try {
-                    IPath path = RepositoryNodeUtilities.getPath(target);
-                    IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+            // if (name.trim().equals(((RepositoryNode) currentSource).getObject().getProperty().getLabel().trim())) {
+            try {
+                IPath path = RepositoryNodeUtilities.getPath(target);
 
-                    if (((RepositoryNode) currentSource).getType().equals(ENodeType.REPOSITORY_ELEMENT)) {
-                        // Source is an repository element :
-                        Item originalItem = ((RepositoryNode) currentSource).getObject().getProperty().getItem();
-                        item = factory.copy(originalItem, path);
-                        item.getProperty().setLabel(names.get(name));
-                        // refresh();
+                if (((RepositoryNode) currentSource).getType().equals(ENodeType.REPOSITORY_ELEMENT)) {
+                    // Source is an repository element :
+                    Item originalItem = ((RepositoryNode) currentSource).getObject().getProperty().getItem();
+                    String newName = getPropNewName(originalItem.getProperty());
+                    while (true) {
+                        if (!openInputNameDialog(newName)) {
+                            return;
+                        }
+                        if (!isValid(rename, selectionInClipboard)) {
+                            openErrorDialog();
+                            isError = true;
+                            continue;
+                        }
+                        break;
                     }
-                } catch (Exception e) {
-                    // TODO Auto-generated catch block
-                    ExceptionHandler.process(e);
+                    item = factory.copy(originalItem, path);
+                    String name = (String) names.keySet().toArray()[0];
+                    item.getProperty().setLabel(names.get(name));
+                    // refresh();
                 }
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                ExceptionHandler.process(e);
+            }
+            // }
+        }
+    }
+
+    /**
+     * yzhang Comment method "setPropNewName".
+     * 
+     * @param copiedProperty
+     * @throws PersistenceException
+     * @throws BusinessException
+     */
+    private String getPropNewName(Property copiedProperty) throws PersistenceException, BusinessException {
+        String originalLabel = copiedProperty.getLabel();
+        String add1 = "Copy_of_"; //$NON-NLS-1$
+        String initialTry = add1 + originalLabel;
+
+        String nextTry = initialTry;
+
+        if (factory.isNameAvailable(copiedProperty.getItem(), initialTry)) {
+            return initialTry;
+        } else {
+            char j = 'a';
+            while (!factory.isNameAvailable(copiedProperty.getItem(), nextTry)) {
+                if (j > 'z') {
+                    throw new BusinessException("Cannot generate pasted item label.");
+                }
+                nextTry = initialTry + "_" + (j++) + ""; //$NON-NLS-1$ //$NON-NLS-2$
             }
         }
+
+        return nextTry;
     }
 
     private Item createNewItem() {
@@ -250,7 +276,7 @@ public class DuplicateAction extends AContextualAction {
     /**
      * DOC zwang Comment method "openInputNameDialog".
      */
-    private boolean openInputNameDialog() {
+    private boolean openInputNameDialog(String newName) {
         // TODO Auto-generated method stub
         boolean isOk = false;
         if (isError) {
@@ -259,7 +285,7 @@ public class DuplicateAction extends AContextualAction {
             isError = false;
         } else {
             dlg = new DuplicateDialog(Display.getCurrent().getActiveShell(), selection, Messages
-                    .getString("DuplicateDialog.title"), Messages.getString("DuplicateDialog.rename"), "", null);
+                    .getString("DuplicateDialog.title"), Messages.getString("DuplicateDialog.rename"), newName, null);
         }
 
         if (dlg.open() == Dialog.OK) {
