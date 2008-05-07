@@ -19,90 +19,42 @@ skeleton="../templates/db_output_bulk.skeleton"
 %>
 
 <%
-	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
-	INode node = (INode)codeGenArgument.getArgument();	
-	String cid = node.getUniqueName();	
-    List<Map<String, String>> addCols =
-            (List<Map<String,String>>)ElementParameterParser.getObjectValue(
-                node,"__ADD_COLS__" );
-
-    boolean useFieldOptions = ElementParameterParser.getValue(node, "__USE_FIELD_OPTIONS__").equals("true");
-    
-    List<Map<String, String>> fieldOptions = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__FIELD_OPTIONS__");
-    
-    String dbname= ElementParameterParser.getValue(node, "__DBNAME__");
-    
-    String tableSchema = ElementParameterParser.getValue(node, "__TABLESCHEMA__");
-    
-    String dbhost = ElementParameterParser.getValue(node, "__HOST__");
-    
-	String dbport = ElementParameterParser.getValue(node, "__PORT__");
-	
-	String dbuser= ElementParameterParser.getValue(node, "__USER__");
-	
-	String dbpwd= ElementParameterParser.getValue(node, "__PASS__");
-	
-	String tableName = ElementParameterParser.getValue(node,"__TABLE__");
-	
-	String dbmsId = ElementParameterParser.getValue(node,"__MAPPING__");
-	
-	String dataAction = ElementParameterParser.getValue(node,"__DATA_ACTION__");
-	
-	String tableAction = ElementParameterParser.getValue(node,"__TABLE_ACTION__");	
-	
-	String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
-
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();	
+String cid = node.getUniqueName();	
+List<Map<String, String>> addCols = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node,"__ADD_COLS__" );
+boolean useFieldOptions = ElementParameterParser.getValue(node, "__USE_FIELD_OPTIONS__").equals("true");    
+List<Map<String, String>> fieldOptions = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__FIELD_OPTIONS__");    
+String dbname= ElementParameterParser.getValue(node, "__DBNAME__");    
+String tableSchema = ElementParameterParser.getValue(node, "__TABLESCHEMA__");    
+String dbhost = ElementParameterParser.getValue(node, "__HOST__");    
+String dbport = ElementParameterParser.getValue(node, "__PORT__");	
+String dbuser= ElementParameterParser.getValue(node, "__USER__");	
+String dbpwd= ElementParameterParser.getValue(node, "__PASS__");	
+String tableName = ElementParameterParser.getValue(node,"__TABLE__");	
+String dbmsId = ElementParameterParser.getValue(node,"__MAPPING__");	
+String dataAction = ElementParameterParser.getValue(node,"__DATA_ACTION__");	
+String tableAction = ElementParameterParser.getValue(node,"__TABLE_ACTION__");		
+String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
+boolean convertToUppercase = ElementParameterParser.getValue(node, "__CONVERT_COLUMN_TABLE_TO_UPPERCASE__").equals("true");
 %>
 
-int nb_line_<%=cid%> = 0;
-int nb_line_update_<%=cid%> = 0;
-int nb_line_inserted_<%=cid%> = 0;
-int nb_line_deleted_<%=cid%> = 0;
-
-int deletedCount_<%=cid%>=0;
-int updatedCount_<%=cid%>=0;
-int insertedCount_<%=cid%>=0;
-boolean whetherReject_<%=cid%> = false;
-
-<%
-        	String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
-        	if(useExistingConn.equals("true")) {
-        		String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
-        		String conn = "conn_" + connection;
-        		String tableschema = "tableschema_" + connection;
-        		commitEvery = "";
-        		%>
-    java.sql.Connection conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
-    String schema_<%=cid%> = (String)globalMap.get("<%=tableschema%>");
-        		<%
-        	} else {       
-        	    %>
-    java.lang.Class.forName("com.ibm.db2.jcc.DB2Driver");
-    
-    String url_<%=cid %> = "jdbc:db2://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%>;
-    
-    String dbUser_<%=cid %> = <%=dbuser%>;
-    
-    String dbPwd_<%=cid %> = <%=dbpwd%>;
-    
-    java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
-    
-    String schema_<%=cid%> = <%=tableSchema%>;
-        	    <%
-			}
-        	%>
-
-String tableName_<%=cid%> = null;
-if(schema_<%=cid%> == null || schema_<%=cid%>.trim().length() == 0) {
-    tableName_<%=cid%> = <%=tableName%>;
-} else {
-    tableName_<%=cid%> = schema_<%=cid%> + "\".\"" + <%=tableName%>;
-}
 <%
 List<IMetadataColumn> columnList = getColumnList(node);
 List<Column> stmtStructure = null;
 if(columnList != null && columnList.size() > 0) {
     stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, useFieldOptions, fieldOptions, addCols);
+    if(convertToUppercase) {
+        for(Column column : stmtStructure) {
+            if(column.isReplaced()) {
+                for (Column replacedColumn : column.getReplacement()) {
+                    replacedColumn.setColumnName(replacedColumn.getColumnName().toUpperCase());
+                }
+            } else {
+                column.setColumnName(column.getColumnName().toUpperCase());
+            }
+        }
+    }
 }
 %>
 
@@ -138,7 +90,45 @@ if(dataAction.equals("UPDATE") || dataAction.equals("INSERT_OR_UPDATE") || dataA
         <%
     }
 }
-%>  
+%>
+
+int nb_line_<%=cid%> = 0;
+int nb_line_update_<%=cid%> = 0;
+int nb_line_inserted_<%=cid%> = 0;
+int nb_line_deleted_<%=cid%> = 0;
+int deletedCount_<%=cid%> = 0;
+int updatedCount_<%=cid%> = 0;
+int insertedCount_<%=cid%> = 0;
+boolean whetherReject_<%=cid%> = false;
+<%
+String useExistingConn = ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__");
+if(useExistingConn.equals("true")) {
+    String connection = ElementParameterParser.getValue(node,"__CONNECTION__");
+    String conn = "conn_" + connection;
+    String tableschema = "tableschema_" + connection;
+    commitEvery = "";
+    %>
+    java.sql.Connection conn_<%=cid%> = (java.sql.Connection)globalMap.get("<%=conn%>");
+    String schema_<%=cid%> = (String)globalMap.get("<%=tableschema%>");
+    <%
+} else {       
+    %>
+    java.lang.Class.forName("com.ibm.db2.jcc.DB2Driver");    
+    String url_<%=cid %> = "jdbc:db2://" + <%=dbhost%> + ":" + <%=dbport%> + "/" + <%=dbname%>;    
+    String dbUser_<%=cid %> = <%=dbuser%>;    
+    String dbPwd_<%=cid %> = <%=dbpwd%>;    
+    java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);    
+    String schema_<%=cid%> = <%=tableSchema%>;
+    <%
+}
+%>
+String tableName_<%=cid%> = null;
+if(schema_<%=cid%> == null || schema_<%=cid%>.trim().length() == 0) {
+    tableName_<%=cid%> = <%=tableName%><%=convertToUppercase ? ".toUpperCase()" : ""%>;
+} else {
+    tableName_<%=cid%> = schema_<%=cid%> + "\".\"" + <%=tableName%><%=convertToUppercase ? ".toUpperCase()" : ""%>;
+}
+
 <%
 if(columnList != null && columnList.size() > 0) {        
     if(!tableAction.equals("NONE")) {

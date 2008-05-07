@@ -19,43 +19,25 @@ skeleton="../templates/db_output_bulk.skeleton"
 %>
 
 <%
-	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
-	INode node = (INode)codeGenArgument.getArgument();
-	
-	String cid = node.getUniqueName();
-	
-    List<Map<String, String>> addCols =
-            (List<Map<String,String>>)ElementParameterParser.getObjectValue(
-                node,"__ADD_COLS__" );
-    
-    boolean useFieldOptions = ElementParameterParser.getValue(node, "__USE_FIELD_OPTIONS__").equals("true");
-    
-    List<Map<String, String>> fieldOptions = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__FIELD_OPTIONS__");
-    
-    String dbname= ElementParameterParser.getValue(node, "__DBNAME__");
-
-    String localServiceName = ElementParameterParser.getValue(node, "__LOCAL_SERVICE_NAME__");    
-    
-    String dbhost = ElementParameterParser.getValue(node, "__HOST__");
-    
-	String dbport = ElementParameterParser.getValue(node, "__PORT__");
-	
-	String dbuser= ElementParameterParser.getValue(node, "__USER__");
-	
-	String dbpwd= ElementParameterParser.getValue(node, "__PASS__");
-	
-	String tableName = ElementParameterParser.getValue(node,"__TABLE__");
-	
-	String dbmsId = ElementParameterParser.getValue(node,"__MAPPING__");
-	
-	String dataAction = ElementParameterParser.getValue(node,"__DATA_ACTION__");
-	
-	String tableAction = ElementParameterParser.getValue(node,"__TABLE_ACTION__");
-	
-	String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");
-	
-	String tableSchema = ElementParameterParser.getValue(node,"__TABLESCHEMA__");
-
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();	
+String cid = node.getUniqueName();	
+List<Map<String, String>> addCols = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node,"__ADD_COLS__" );    
+boolean useFieldOptions = ElementParameterParser.getValue(node, "__USE_FIELD_OPTIONS__").equals("true");    
+List<Map<String, String>> fieldOptions = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__FIELD_OPTIONS__");    
+String dbname= ElementParameterParser.getValue(node, "__DBNAME__");
+String localServiceName = ElementParameterParser.getValue(node, "__LOCAL_SERVICE_NAME__");        
+String dbhost = ElementParameterParser.getValue(node, "__HOST__");    
+String dbport = ElementParameterParser.getValue(node, "__PORT__");	
+String dbuser= ElementParameterParser.getValue(node, "__USER__");	
+String dbpwd= ElementParameterParser.getValue(node, "__PASS__");	
+String tableName = ElementParameterParser.getValue(node,"__TABLE__");	
+String dbmsId = ElementParameterParser.getValue(node,"__MAPPING__");	
+String dataAction = ElementParameterParser.getValue(node,"__DATA_ACTION__");	
+String tableAction = ElementParameterParser.getValue(node,"__TABLE_ACTION__");	
+String commitEvery = ElementParameterParser.getValue(node, "__COMMIT_EVERY__");	
+String tableSchema = ElementParameterParser.getValue(node,"__TABLESCHEMA__");
+boolean convertToUppercase = ElementParameterParser.getValue(node, "__CONVERT_COLUMN_TABLE_TO_UPPERCASE__").equals("true");
 %>
 
 <%
@@ -63,6 +45,17 @@ List<IMetadataColumn> columnList = getColumnList(node);
 List<Column> stmtStructure = null;
 if(columnList != null && columnList.size() > 0) {
     stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, useFieldOptions, fieldOptions, addCols);
+    if(convertToUppercase) {
+        for(Column column : stmtStructure) {
+            if(column.isReplaced()) {
+                for (Column replacedColumn : column.getReplacement()) {
+                    replacedColumn.setColumnName(replacedColumn.getColumnName().toUpperCase());
+                }
+            } else {
+                column.setColumnName(column.getColumnName().toUpperCase());
+            }
+        }
+    }    
 }
 %>
 
@@ -157,9 +150,9 @@ if(useExistingConn.equals("true")) {
 %> 
 
 if(dbschema_<%=cid%> == null || dbschema_<%=cid%>.trim().length() == 0) {
-    tableName_<%=cid%> = <%=tableName%>;
+    tableName_<%=cid%> = <%=tableName%><%=convertToUppercase ? ".toUpperCase()" : ""%>;
 } else {
-    tableName_<%=cid%> = dbschema_<%=cid%> + "." + <%=tableName%>;
+    tableName_<%=cid%> = dbschema_<%=cid%> + "." + <%=tableName%><%=convertToUppercase ? ".toUpperCase()" : ""%>;
 }
 
 <%

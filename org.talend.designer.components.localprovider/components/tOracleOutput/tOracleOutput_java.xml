@@ -294,7 +294,15 @@
         <ITEM NAME="UPDATABLE"  VALUE="true"  FIELD="CHECK" />
         <ITEM NAME="INSERTABLE" VALUE="true"  FIELD="CHECK" />
       </ITEMS>
-    </PARAMETER>    
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="CONVERT_COLUMN_TABLE_TO_UPPERCASE"
+      FIELD="CHECK"
+      NUM_ROW="14"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>        
   </ADVANCED_PARAMETERS>
  
   <CODEGENERATION>

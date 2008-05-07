@@ -226,9 +226,9 @@ public class CLASS {
             for (Column column : columnList) {
                 if (column.isReplaced()) {
                     List<Column> replacedColumns = column.getReplacement();
-                    if (column.getColumn() != null && column.getColumn().isKey()) {
+                    if (column.isKey()) {
                         for (Column replacedColumn : replacedColumns) {
-                            pkList.add(getLProtectedChar() + replacedColumn.getName() + getRProtectedChar());
+                            pkList.add(getLProtectedChar() + replacedColumn.getColumnName() + getRProtectedChar());
                         }
                     }
                     int replacedCount = 0;
@@ -236,7 +236,7 @@ public class CLASS {
                         if (count == columnList.size() - 1 && replacedCount == replacedColumns.size() - 1 && pkList.size() == 0) {
                             ending = "";
                         }
-                        createSQL.append(getLProtectedChar() + replacedColumn.getName() + getRProtectedChar() + " ");
+                        createSQL.append(getLProtectedChar() + replacedColumn.getColumnName() + getRProtectedChar() + " ");
                         createSQL.append(replacedColumn.getDataType() + ending);
                         replacedCount++;
                     }
@@ -245,13 +245,13 @@ public class CLASS {
                         if (count == columnList.size() - 1 && pkList.size() == 0) {
                             ending = "";
                         }
-                        createSQL.append(getLProtectedChar() + column.getName() + getRProtectedChar() + " ");
+                        createSQL.append(getLProtectedChar() + column.getColumnName() + getRProtectedChar() + " ");
                         createSQL.append(column.getDataType() + ending);
                     } else {
-                        if (column.getColumn() != null && column.getColumn().isKey()) {
-                            pkList.add(getLProtectedChar() + column.getColumn().getOriginalDbColumnName() + getRProtectedChar());
+                        if (column.isKey()) {
+                            pkList.add(getLProtectedChar() + column.getColumnName() + getRProtectedChar());
                         }
-                        createSQL.append(getLProtectedChar() + column.getColumn().getOriginalDbColumnName() + getRProtectedChar() + " ");
+                        createSQL.append(getLProtectedChar() + column.getColumnName() + getRProtectedChar() + " ");
                         String dataType = null;
                         if (column.getColumn().getType() == null || column.getColumn().getType().trim().equals("")) {
                             dataType = mappingType.getDefaultSelectedDbType(column.getColumn().getTalendType());

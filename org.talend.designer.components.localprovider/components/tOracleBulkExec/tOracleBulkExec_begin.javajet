@@ -33,6 +33,7 @@ String outputAction  = ElementParameterParser.getValue(node, "__OUTPUT__");
 String use_existing_clt_file = ElementParameterParser.getValue(node, "__USE_EXISTING_CLT_FILE__");
 String inputIntoTableClause = ElementParameterParser.getValue(node, "__INPUT_INTO_TABLE_CLAUSE__");
 String useDatePattern = ElementParameterParser.getValue(node, "__USE_DATE_PATTERN__");
+boolean convertToUppercase = ElementParameterParser.getValue(node, "__CONVERT_COLUMN_TABLE_TO_UPPERCASE__").equals("true");
 String columns = "";//if schema is defined, use this option in clt file
 
 %>
@@ -104,9 +105,9 @@ List<IMetadataColumn> columnList = getColumnList(node);
 %>
 String tableName_<%=cid%> = null;
 if(dbschema_<%=cid%> == null || dbschema_<%=cid%>.trim().length() == 0) {
-    tableName_<%=cid%> = <%=table%>;
+    tableName_<%=cid%> = <%=table%><%=convertToUppercase ? ".toUpperCase()" : ""%>;
 } else {
-    tableName_<%=cid%> = dbschema_<%=cid%> + "." + <%=table%>;
+    tableName_<%=cid%> = dbschema_<%=cid%> + "." + <%=table%><%=convertToUppercase ? ".toUpperCase()" : ""%>;
 }
 <%
 String tableAction = ElementParameterParser.getValue(node,"__TABLE_ACTION__");
@@ -147,6 +148,11 @@ if(columnList != null && columnList.size() > 0) {
     }
 	
     List<Column> stmtStructure = getManager(dbmsId, cid).createColumnList(columnList, null);
+    if(convertToUppercase) {
+        for(Column column : stmtStructure) {
+            column.setColumnName(column.getColumnName().toUpperCase());
+        }
+    }
     Manager manager = getManager(dbmsId, cid);
     if(tableAction.equals("DROP_CREATE")) {
         %>
