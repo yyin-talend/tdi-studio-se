@@ -25,7 +25,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     if (metadata!=null) {
 
         String URL = ElementParameterParser.getValue(node,"__URL__");
-
+        
+        boolean needAuth = ElementParameterParser.getValue(node,"__NEED_AUTH__").equals("true");
+		
         String fromRev = ElementParameterParser.getValue(node,"__FROM_REV__");
 
         boolean singleRev = ElementParameterParser.getValue(node,"__SINGLE_REV__").equals("true");
@@ -46,10 +48,20 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         org.tmatesoft.svn.core.internal.io.fs.FSRepositoryFactory.setup();
         
         org.tmatesoft.svn.core.io.SVNRepository repository<%=cid%> = org.tmatesoft.svn.core.io.SVNRepositoryFactory.create(org.tmatesoft.svn.core.SVNURL.parseURIEncoded(url<%=cid%>));
+        <%if(needAuth){
+        String user = ElementParameterParser.getValue(node,"__USERNAME__");
+        String passwd = ElementParameterParser.getValue(node,"__PASSWORD__");
+        %>
+        String username<%=cid%> = <%=user%>;
+		String password<%=cid%> = <%=passwd%>;
+        org.tmatesoft.svn.core.auth.ISVNAuthenticationManager authManager<%=cid%> = 
+        org.tmatesoft.svn.core.wc.SVNWCUtil.createDefaultAuthenticationManager(username<%=cid%>, password<%=cid%>);
+        repository<%=cid%>.setAuthenticationManager(authManager<%=cid%>);
+        <%}%>
       
-<%if(singleRev){%>  
+<%if(singleRev){%>
     
-        long endRevision<%=cid%> = startRevision<%=cid%>;  
+        long endRevision<%=cid%> = startRevision<%=cid%>;
              
 <%}else if(toRev.equals("'HEAD'")){%>
 
@@ -104,7 +116,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         if(conns!=null){
             if (conns.size()>0){
                 for(IConnection conn:conns){
-                    if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {                        
+                    if (conn.getLineStyle().hasConnectionCategory(IConnectionCategory.DATA)) {
 %>
                     
                     <%=conn.getName() %>.revision = ((Long)logEntry<%=cid%>.getRevision()).intValue();
@@ -123,7 +135,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                     
 <%
                     }
-                }         
+                }
             }
         }
 %>        

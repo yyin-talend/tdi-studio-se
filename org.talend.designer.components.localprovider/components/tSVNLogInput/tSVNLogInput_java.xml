@@ -37,11 +37,40 @@
     >
       <DEFAULT>"http://svn.gna.org/svn/phpwebgallery"</DEFAULT>
     </PARAMETER>
+    
+    <PARAMETER 
+		NAME="NEED_AUTH"
+		FIELD="CHECK" 
+		REQUIRED="true"
+		NUM_ROW="20"
+	 >
+		<DEFAULT>false</DEFAULT>
+	</PARAMETER>
+    
+    <PARAMETER
+      NAME="USERNAME"
+      FIELD="TEXT"
+      NUM_ROW="30"
+      REQUIRED="true"
+      SHOW_IF="NEED_AUTH == 'true'"
+    >
+      <DEFAULT>"anonymous"</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="PASSWORD"
+      FIELD="TEXT"
+      NUM_ROW="30"
+      REQUIRED="true"
+      SHOW_IF="NEED_AUTH == 'true'"
+    >
+      <DEFAULT>"anonymous"</DEFAULT>
+    </PARAMETER>
 
     <PARAMETER
       NAME="FROM_REV"
       FIELD="TEXT"
-      NUM_ROW="20"
+      NUM_ROW="40"
     >
       <DEFAULT>1</DEFAULT>
     </PARAMETER>
@@ -49,7 +78,7 @@
     <PARAMETER
       NAME="SINGLE_REV"
       FIELD="CHECK"
-      NUM_ROW="20"
+      NUM_ROW="40"
     >
       <DEFAULT>false</DEFAULT>
     </PARAMETER>
@@ -57,7 +86,7 @@
     <PARAMETER
       NAME="TO_REV"
       FIELD="TEXT"
-      NUM_ROW="40"
+      NUM_ROW="50"
       SHOW_IF="SINGLE_REV == 'false'"
     >
       <DEFAULT>'HEAD'</DEFAULT>
@@ -67,7 +96,7 @@
       NAME="SCHEMA"
       FIELD="SCHEMA_TYPE"
       REQUIRED="true"
-      NUM_ROW="50"
+      NUM_ROW="60"
       READONLY="true"
     >
       <TABLE>
