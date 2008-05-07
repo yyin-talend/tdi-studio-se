@@ -213,7 +213,12 @@ public class StandAloneTalendJavaEditor extends CompilationUnitEditor implements
         public void notifyChanged(Notification notification) {
             if (notification.getEventType() != Notification.REMOVING_ADAPTER) {
                 propertyIsDirty = true;
-                firePropertyChange(IEditorPart.PROP_DIRTY);
+                Display.getDefault().syncExec(new Runnable() {
+
+                    public void run() {
+                        firePropertyChange(IEditorPart.PROP_DIRTY);
+                    }
+                });
             }
         }
     };
