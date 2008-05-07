@@ -130,7 +130,7 @@ public class SpagicJavaDeployManager extends org.talend.repository.ui.wizards.ex
             JobInfo jobInfo = iter.next();
             allJobScripts.addAll(getJobScripts(jobInfo.getJobName(), jobInfo.getJobVersion(), exportChoice
                     .get(ExportChoice.needJob)));
-            addContextScripts(process, jobInfo.getJobName(), jobInfo.getJobVersion(), resource, exportChoice
+            addContextScripts(jobInfo.getProcessItem(), jobInfo.getJobName(), jobInfo.getJobVersion(), resource, exportChoice
                     .get(ExportChoice.needContext));
         }
 
