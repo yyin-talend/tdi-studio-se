@@ -46,6 +46,7 @@ import org.talend.repository.documentation.ExportFileResource;
  */
 public class SpagicJavaDeployManager extends org.talend.repository.ui.wizards.exportjob.scriptsmanager.JobJavaScriptsManager {
 
+    @Override
     public List<ExportFileResource> getExportResources(ExportFileResource[] process, Map<ExportChoice, Boolean> exportChoice,
             String contextName, String launcher, int statisticPort, int tracePort, String... codeOptions) {
 
@@ -129,7 +130,8 @@ public class SpagicJavaDeployManager extends org.talend.repository.ui.wizards.ex
             JobInfo jobInfo = iter.next();
             allJobScripts.addAll(getJobScripts(jobInfo.getJobName(), jobInfo.getJobVersion(), exportChoice
                     .get(ExportChoice.needJob)));
-            addContextScripts(jobInfo.getJobName(), jobInfo.getJobVersion(), resource, exportChoice.get(ExportChoice.needContext));
+            addContextScripts(process, jobInfo.getJobName(), jobInfo.getJobVersion(), resource, exportChoice
+                    .get(ExportChoice.needContext));
         }
 
         return allJobScripts;
