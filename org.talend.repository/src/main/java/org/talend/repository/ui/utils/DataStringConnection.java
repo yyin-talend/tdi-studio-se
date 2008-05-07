@@ -47,9 +47,9 @@ public class DataStringConnection {
         String file = "([\\w\\.\\-_]{0,})"; //$NON-NLS-1$
         String addParam = "([\\w\\.\\-_]{0,})"; //$NON-NLS-1$
 
-        dataConnection = new DataConnection[25];
+        dataConnection = new DataConnection[26];
 
-        defaultTable = new String[25];
+        defaultTable = new String[26];
 
         dataConnection[0] = new DataConnection(
                 "MySQL", "jdbc:mysql://<host>:<port>/<sid>?<property>", "jdbc:mysql://" + host + ":" + port //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
@@ -133,6 +133,9 @@ public class DataStringConnection {
         dataConnection[24] = new DataConnection(
                 "PostgresPlus", "jdbc:postgresql://<host>:<port>/<sid>", "jdbc:postgresql://" + host //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                         + ":" + port + "/" + sid, "5432"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+
+        dataConnection[25] = new DataConnection("Mckoi", "jdbc:mckoi://<host>:<port>", "jdbc:mckoi://" + host //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                + ":" + port, "9157"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
         // dataConnection[8] = new DataConnection("Sybase IQ", "jdbc:sybase:Tds:<host>:<port>/<sid>", "jdbc:sybase:Tds:"
         // + host + ":" + port //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
@@ -341,7 +344,8 @@ public class DataStringConnection {
             return false;
         }
         return getStringConnectionTemplate().substring(0, 12).equals("jdbc:oracle:") //$NON-NLS-1$
-                || getStringConnectionTemplate().substring(0, 15).equals("jdbc:postgresql"); //$NON-NLS-1$
+                || getStringConnectionTemplate().substring(0, 15).equals("jdbc:postgresql")
+                || getStringConnectionTemplate().substring(0, 10).equals("jdbc:mckoi"); //$NON-NLS-1$
     }
 
     /**
