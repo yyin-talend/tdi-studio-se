@@ -31,6 +31,7 @@ import org.talend.designer.core.ui.editor.nodes.NodeLabelEditPart;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
 import org.talend.designer.core.ui.editor.notes.NoteDirectEditManager;
 import org.talend.designer.core.ui.editor.notes.NoteEditPart;
+import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainerPart;
 
 /**
  * Action that manage to create a connection from the context menu. A connection type is used to know which kind of
@@ -72,6 +73,9 @@ public class GEFCopyAction extends SelectionAction {
                 if (o instanceof ConnLabelEditPart) {
                     return true;
                 }
+                if (o instanceof SubjobContainerPart) {
+                    return true;
+                }
                 if (!(o instanceof NodePart) && !(o instanceof NoteEditPart)) {
                     return false;
                 }
@@ -92,7 +96,7 @@ public class GEFCopyAction extends SelectionAction {
      */
     @Override
     public void run() {
-        List objects = getSelectedObjects();
+        List objects = GEFDeleteAction.filterSameObject(getSelectedObjects());
         if (!objects.isEmpty()) {
             Clipboard clipboard = Clipboard.getDefault();
 

@@ -13,6 +13,7 @@
 package org.talend.designer.core.ui.action;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.gef.EditPart;
@@ -25,9 +26,11 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.talend.core.model.components.IComponent;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.process.AbstractProcessProvider;
+import org.talend.designer.core.ui.editor.nodecontainer.NodeContainerPart;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
 import org.talend.designer.core.ui.editor.notes.NoteEditPart;
+import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainerPart;
 
 /**
  * Modification of the delete action to enhance the speed of the action from GEF. <br/>
@@ -65,8 +68,21 @@ public class GEFDeleteAction extends DeleteAction {
         return true;
     }
 
+    public static List filterSameObject(List list) {
+        List newList = new ArrayList();
+        for (Object object : list) {
+            if (!newList.contains(object)) {
+                newList.add(object);
+            }
+        }
+
+        return newList;
+
+    }
+
     @Override
     public Command createDeleteCommand(List objects) {
+        objects = filterSameObject(objects);
         if (objects.isEmpty()) {
             return null;
         }
@@ -87,6 +103,17 @@ public class GEFDeleteAction extends DeleteAction {
             } else if (o instanceof NoteEditPart) {
                 noteParts.add(o);
                 others.remove(o);
+            } else if (o instanceof SubjobContainerPart) {
+                others.remove(o);
+                SubjobContainerPart subjob = (SubjobContainerPart) o;
+
+                for (Iterator iterator = subjob.getChildren().iterator(); iterator.hasNext();) {
+                    NodeContainerPart nodeContainerPart = (NodeContainerPart) iterator.next();
+                    NodePart nodePart = nodeContainerPart.getNodePart();
+                    if (nodePart != null) {
+                        nodeParts.add(nodePart);
+                    }
+                }
             }
         }
 

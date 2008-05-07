@@ -13,6 +13,7 @@
 package org.talend.designer.core.ui.action;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.gef.EditPart;
@@ -31,9 +32,11 @@ import org.talend.designer.core.ui.editor.cmd.MultiplePasteCommand;
 import org.talend.designer.core.ui.editor.cmd.NodesPasteCommand;
 import org.talend.designer.core.ui.editor.cmd.NotesPasteCommand;
 import org.talend.designer.core.ui.editor.connections.ConnLabelEditPart;
+import org.talend.designer.core.ui.editor.nodecontainer.NodeContainerPart;
 import org.talend.designer.core.ui.editor.nodes.NodeLabelEditPart;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
 import org.talend.designer.core.ui.editor.notes.NoteEditPart;
+import org.talend.designer.core.ui.editor.subjobcontainer.SubjobContainerPart;
 
 /**
  * DOC nrousseau class global comment. Detailled comment <br/>
@@ -117,7 +120,7 @@ public class GEFPasteAction extends SelectionAction {
             return false;
         }
         for (Object currentObject : objects) {
-            if (!(currentObject instanceof NodePart) && !(currentObject instanceof NoteEditPart)) {
+            if (!(currentObject instanceof NodePart) && !(currentObject instanceof NoteEditPart)&&!(currentObject instanceof SubjobContainerPart)) {
                 return false;
             }
         }
@@ -151,6 +154,16 @@ public class GEFPasteAction extends SelectionAction {
                     nodeParts.add((NodePart) o);
                 } else if (o instanceof NoteEditPart) {
                     noteParts.add((NoteEditPart) o);
+                } else if (o instanceof SubjobContainerPart) {
+                    SubjobContainerPart subjob = (SubjobContainerPart) o;
+
+                    for (Iterator iterator = subjob.getChildren().iterator(); iterator.hasNext();) {
+                        NodeContainerPart nodeContainerPart = (NodeContainerPart) iterator.next();
+                        NodePart nodePart = nodeContainerPart.getNodePart();
+                        if (nodePart != null) {
+                            nodeParts.add(nodePart);
+                        }
+                    }
                 }
             }
 

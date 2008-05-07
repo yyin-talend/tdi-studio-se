@@ -29,6 +29,7 @@ import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.gef.rulers.RulerProvider;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.editor.nodes.Node;
+import org.talend.designer.core.ui.editor.nodes.NodePart;
 import org.talend.designer.core.ui.editor.process.NodeSnapToGeometry;
 
 /**
@@ -63,6 +64,14 @@ public class NodeContainerPart extends AbstractGraphicalEditPart implements Prop
     @Override
     public void setSelected(int value) {
         super.setSelected(SELECTED_NONE);
+    }
+
+    public NodePart getNodePart() {
+        Object o = this.getChildren().get(0);
+        if (o instanceof NodePart) {
+            return (NodePart) o;
+        }
+        return null;
     }
 
     /*
