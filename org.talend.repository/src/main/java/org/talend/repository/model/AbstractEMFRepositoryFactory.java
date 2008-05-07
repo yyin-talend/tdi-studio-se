@@ -269,11 +269,20 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
     protected abstract FolderHelper getFolderHelper(org.talend.core.model.properties.Project emfProject);
 
     protected Item copyFromResource(Resource createResource) throws PersistenceException, BusinessException {
+        return copyFromResource(createResource, true);
+    }
+
+    protected Item copyFromResource(Resource createResource, boolean changeLabelWithCopyPrefix) throws PersistenceException,
+            BusinessException {
         Item newItem = (Item) EcoreUtil.getObjectByType(createResource.getContents(), PropertiesPackage.eINSTANCE.getItem());
         Property property = newItem.getProperty();
         property.setId(getNextId());
         property.setAuthor(getRepositoryContext().getUser());
-        setPropNewName(property);
+
+        if (changeLabelWithCopyPrefix) {
+            setPropNewName(property);
+        }
+
         EcoreUtil.resolveAll(createResource);
         return newItem;
     }

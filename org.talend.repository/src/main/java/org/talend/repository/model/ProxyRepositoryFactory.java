@@ -902,6 +902,17 @@ public final class ProxyRepositoryFactory implements IProxyRepositoryFactory {
 
     }
 
+    public Item copy(Item sourceItem, IPath targetPath, boolean changeLabelWithCopyPrefix) throws PersistenceException,
+            BusinessException {
+        Item targetItem = this.repositoryFactoryFromProvider.copy(sourceItem, targetPath, changeLabelWithCopyPrefix);
+
+        if (sourceItem instanceof ProcessItem || sourceItem instanceof JobletProcessItem) {
+            fireRepositoryPropertyChange(ERepositoryActionName.JOB_COPY.getName(), sourceItem, targetItem);
+        }
+        return targetItem;
+
+    }
+
     /*
      * (non-Javadoc)
      * 

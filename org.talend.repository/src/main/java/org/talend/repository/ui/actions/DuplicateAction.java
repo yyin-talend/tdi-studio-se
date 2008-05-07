@@ -12,28 +12,16 @@
 // ============================================================================
 package org.talend.repository.ui.actions;
 
-import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.dialogs.IInputValidator;
+import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.MessageBox;
-import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IEditorReference;
-import org.eclipse.ui.ISaveablePart2;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.internal.WorkbenchMessages;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
@@ -55,282 +43,38 @@ import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.model.actions.CopyObjectAction;
-import org.talend.repository.ui.dialog.DuplicateDialog;
 
 /**
- * zwang class global comment. Detailled comment
+ * DOC zwang class global comment. Detailled comment
  */
 public class DuplicateAction extends AContextualAction {
 
-    private static DuplicateAction singleton;
-
-    private DuplicateDialog dlg = null;
-
-    private String rename = null;;
+    private RepositoryNode sourceNode = null;
 
     private IStructuredSelection selection = null;
 
-    private Map<String, String> names = null;
-
-    private boolean isError = false;
-
-    private boolean isEmptyName = false;
-
-    private boolean isErrorName = false;
-
-    private boolean isExistName = false;
-
-    private IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+    private static final String JOB_INIT_VERSION = "0.1";
 
     public DuplicateAction() {
         super();
         this.setText(Messages.getString("DuplicateAction.thisText.duplicate")); //$NON-NLS-1$
         this.setImageDescriptor(ImageProvider.getImageDesc(EImage.COPY_ICON));
-        singleton = this;
     }
 
-    public static DuplicateAction getInstance() {
-        return singleton;
-    }
-
-    @Override
-    public void run() {
-        // int count = 0;
-        boolean isOk = false;
-
-        if (null != (IStructuredSelection) getSelection()) {
-            selection = (IStructuredSelection) getSelection();
-        }
-
-        RepositoryNode target = ((RepositoryNode) selection.getFirstElement()).getParent();
-
-        CopyObjectAction copyObjectAction = CopyObjectAction.getInstance();
-
-        TreeSelection selectionInClipboard = (TreeSelection) selection;
-
-        // see feature 0001563: Display "Save job" prompt when "copy" action for a job is requested.
-        promptForSavingIfNecessary();
-        createOperation(target, copyObjectAction, selectionInClipboard);
-        refresh();
-    }
-
-    /**
-     * see feature 0001563: Display "Save job" prompt when "copy" action for a job is requested.
-     */
-    private void promptForSavingIfNecessary() {
-        try {
-            IEditorReference[] references = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-                    .getEditorReferences();
-            if (references == null || references.length == 0) {
-                return;
-            }
-
-            RepositoryNode selectedNode = (RepositoryNode) selection.getFirstElement();
-            String label = selectedNode.getObject().getProperty().getLabel();
-
-            for (int i = 0; i < references.length; i++) {
-                IEditorPart part = references[i].getEditor(false);
-                // find unsaved dialog
-                if (part == null || part.isDirty() == false) {
-                    continue;
-                }
-
-                IEditorInput input = part.getEditorInput();
-
-                if (label.equals(input.getName())) {
-                    // we have found an unsaved editor that matches the selected repository node
-                    if (promptForSavingDialog(part) == ISaveablePart2.YES) {
-                        part.doSave(new NullProgressMonitor());
-                    }
-                }
-            }
-        } catch (Exception e) {
-            ExceptionHandler.process(e);
-        }
-    }
-
-    /**
-     * Display a prompt dialog to ask the user if we should save the job before duplicating.
-     * 
-     * @param part
-     * @return
-     */
-    @SuppressWarnings("restriction")
-    private int promptForSavingDialog(IEditorPart part) {
-        String[] buttons = new String[] { IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL };
-        String message = NLS.bind(WorkbenchMessages.EditorManager_saveChangesQuestion, part.getTitle());
-        Dialog dialog = new MessageDialog(Display.getCurrent().getActiveShell(), WorkbenchMessages.Save_Resource, null, message,
-                MessageDialog.QUESTION, buttons, 0) {
-
-            @Override
-            protected int getShellStyle() {
-                return SWT.NONE | SWT.TITLE | SWT.BORDER | SWT.APPLICATION_MODAL | getDefaultOrientation();
-            }
-        };
-        return dialog.open();
-    }
-
-    /**
-     * DOC zwang Comment method "createOperation".
-     */
-    private void createOperation(RepositoryNode target, CopyObjectAction copyObjectAction, TreeSelection selectionInClipboard) {
-        Item item = null;
-
-        if (selectionInClipboard != null && selectionInClipboard.toArray().length == 1) {
-            Object currentSource = selectionInClipboard.toArray()[0];
-            // if (name.trim().equals(((RepositoryNode) currentSource).getObject().getProperty().getLabel().trim())) {
-            try {
-                IPath path = RepositoryNodeUtilities.getPath(target);
-
-                if (((RepositoryNode) currentSource).getType().equals(ENodeType.REPOSITORY_ELEMENT)) {
-                    // Source is an repository element :
-                    Item originalItem = ((RepositoryNode) currentSource).getObject().getProperty().getItem();
-                    String newName = getPropNewName(originalItem.getProperty());
-                    while (true) {
-                        if (!openInputNameDialog(newName)) {
-                            return;
-                        }
-                        if (!isValid(rename, selectionInClipboard)) {
-                            openErrorDialog();
-                            isError = true;
-                            continue;
-                        }
-                        break;
-                    }
-                    item = factory.copy(originalItem, path);
-                    String name = (String) names.keySet().toArray()[0];
-                    item.getProperty().setLabel(names.get(name));
-                    // refresh();
-                }
-            } catch (Exception e) {
-                // TODO Auto-generated catch block
-                ExceptionHandler.process(e);
-            }
-            // }
-        }
-    }
-
-    /**
-     * yzhang Comment method "setPropNewName".
-     * 
-     * @param copiedProperty
-     * @throws PersistenceException
-     * @throws BusinessException
-     */
-    private String getPropNewName(Property copiedProperty) throws PersistenceException, BusinessException {
-        String originalLabel = copiedProperty.getLabel();
-        String add1 = "Copy_of_"; //$NON-NLS-1$
-        String initialTry = add1 + originalLabel;
-
-        String nextTry = initialTry;
-
-        if (factory.isNameAvailable(copiedProperty.getItem(), initialTry)) {
-            return initialTry;
-        } else {
-            char j = 'a';
-            while (!factory.isNameAvailable(copiedProperty.getItem(), nextTry)) {
-                if (j > 'z') {
-                    throw new BusinessException("Cannot generate pasted item label.");
-                }
-                nextTry = initialTry + "_" + (j++) + ""; //$NON-NLS-1$ //$NON-NLS-2$
-            }
-        }
-
-        return nextTry;
-    }
-
-    private Item createNewItem() {
-        Property property = PropertiesFactory.eINSTANCE.createProperty();
-        ProcessItem processItem = PropertiesFactory.eINSTANCE.createProcessItem();
-        processItem.setProperty(property);
-        return processItem;
-    }
-
-    // validate if the new name is existent.
-    public boolean isValid(String itemName, TreeSelection selectionInClipboard) {
-        IRepositoryService service = (IRepositoryService) GlobalServiceRegister.getDefault().getService(IRepositoryService.class);
-        IProxyRepositoryFactory repositoryFactory = service.getProxyRepositoryFactory();
-
-        try {
-            if (itemName.length() == 0) {
-                isEmptyName = true;
-                return false;
-            } else if (!Pattern.matches(RepositoryConstants.getPattern(((RepositoryNode) selectionInClipboard.toArray()[0])
-                    .getObject().getType()), itemName)) {
-                isErrorName = true;
-                return false;
-            } else {
-                if (repositoryFactory.isNameAvailable(createNewItem(), itemName)) {
-                    return true;
-                } else {
-                    isExistName = true;
-                    return false;
-                }
-            }
-        } catch (PersistenceException e) {
-            ExceptionHandler.process(e);
-            return false;
-        }
-    }
-
-    /**
-     * DOC zwang Comment method "openInputNameDialog".
-     */
-    private boolean openInputNameDialog(String newName) {
-        // TODO Auto-generated method stub
-        boolean isOk = false;
-        if (isError) {
-            dlg = new DuplicateDialog(Display.getCurrent().getActiveShell(), selection, Messages
-                    .getString("DuplicateDialog.title"), Messages.getString("DuplicateDialog.rename"), rename, null);
-            isError = false;
-        } else {
-            dlg = new DuplicateDialog(Display.getCurrent().getActiveShell(), selection, Messages
-                    .getString("DuplicateDialog.title"), Messages.getString("DuplicateDialog.rename"), newName, null);
-        }
-
-        if (dlg.open() == Dialog.OK) {
-            isOk = true;
-            names = dlg.getCopyNameMap();
-            rename = names.values().toArray()[0].toString();
-        }
-        return isOk;
-    }
-
-    /**
-     * DOC zwang Comment method "openInputNameDialog".
-     */
-    private void openErrorDialog() {
-        // TODO Auto-generated method stub
-        MessageBox box = new MessageBox(Display.getCurrent().getActiveShell(), SWT.ICON_ERROR | SWT.OK);
-        box.setText(Messages.getString("DuplicateDialog.warn.title"));
-
-        if (isEmptyName) {
-            isEmptyName = false;
-            box.setMessage(Messages.getString("DuplicateDialog.warn.message.emptyName"));
-        } else if (isErrorName) {
-            box.setMessage(Messages.getString("DuplicateDialog.warn.message.errorName"));
-            isErrorName = false;
-        } else if (isExistName) {
-            box.setMessage(Messages.getString("DuplicateDialog.warn.message"));
-            isExistName = false;
-        }
-        box.open();
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.commons.ui.swt.actions.ITreeContextualAction#init(org.eclipse.jface.viewers.TreeViewer,
-     * org.eclipse.jface.viewers.IStructuredSelection)
-     */
     public void init(TreeViewer viewer, IStructuredSelection selection) {
-        // TODO Auto-generated method stub
+
         boolean canWork = true;
+
         RepositoryNode node = (RepositoryNode) selection.getFirstElement();
+
         if (selection.isEmpty()) {
             setEnabled(false);
             return;
         }
+
+        this.sourceNode = node;
+        this.selection = selection;
+
         if (ProxyRepositoryFactory.getInstance().isUserReadOnlyOnCurrentProject()) {
             canWork = false;
         }
@@ -361,5 +105,140 @@ public class DuplicateAction extends AContextualAction {
         }
 
         setEnabled(canWork);
+    }
+
+    @Override
+    public void run() {
+
+        if (sourceNode == null) {
+            return;
+        }
+
+        String initNameValue = "Copy_of_" + sourceNode.getObject().getProperty().getItem().getProperty().getLabel();
+
+        CopyObjectAction copyObjectAction = CopyObjectAction.getInstance();
+
+        final TreeSelection selectionInClipboard = (TreeSelection) selection;
+
+        String jobNameValue = null;
+
+        try {
+            jobNameValue = getDuplicateName(initNameValue, selectionInClipboard);
+        } catch (BusinessException e) {
+            jobNameValue = "";
+        }
+
+        InputDialog jobNewNameDialog = new InputDialog(null, Messages.getString("DuplicateAction.dialog.title"), Messages
+                .getString("DuplicateAction.dialog.message"), jobNameValue, new IInputValidator() {
+
+            public String isValid(String newText) {
+                return validJobName(newText, selectionInClipboard);
+            }
+
+        });
+
+        if (jobNewNameDialog.open() != Dialog.OK) {
+            return;
+        }
+
+        String jobNewName = jobNewNameDialog.getValue();
+
+        createOperation(jobNewName, sourceNode, copyObjectAction, selectionInClipboard);
+
+        refresh();
+
+    }
+
+    public String getDuplicateName(String value, final TreeSelection selectionInClipboard) throws BusinessException {
+
+        if (validJobName(value, selectionInClipboard) == null) {
+            return value;
+        } else {
+            char j = 'a';
+            String temp = value;
+            while (validJobName(temp, selectionInClipboard) != null) {
+                if (j > 'z') {
+                    throw new BusinessException("Cannot generate pasted item label.");
+                }
+                temp = value + "_" + (j++) + "";
+            }
+            return temp;
+        }
+    }
+
+    /**
+     * 
+     * DOC YeXiaowei Comment method "isValid".
+     * 
+     * @param itemName
+     * @param selectionInClipboard
+     * @return null means valid, other means some error exist
+     */
+    private String validJobName(String itemName, TreeSelection selectionInClipboard) {
+
+        IRepositoryService service = (IRepositoryService) GlobalServiceRegister.getDefault().getService(IRepositoryService.class);
+        IProxyRepositoryFactory repositoryFactory = service.getProxyRepositoryFactory();
+        if (itemName.length() == 0) {
+            return org.talend.core.i18n.Messages.getString("PropertiesWizardPage.NameEmptyError");
+        } else if (!Pattern.matches(RepositoryConstants.getPattern(((RepositoryNode) selectionInClipboard.toArray()[0])
+                .getObject().getType()), itemName)) {
+            /*
+             * maybe Messages.getString("PropertiesWizardPage.KeywordsError")
+             */
+            return org.talend.core.i18n.Messages.getString("PropertiesWizardPage.NameFormatError");
+        } else {
+            try {
+                if (!repositoryFactory.isNameAvailable(createNewItem(), itemName)) {
+                    return org.talend.core.i18n.Messages.getString("PropertiesWizardPage.ItemExistsError");
+                }
+            } catch (PersistenceException e) {
+                return org.talend.core.i18n.Messages.getString("PropertiesWizardPage.ItemExistsError");
+            }
+        }
+
+        return null;
+    }
+
+    private Item createNewItem() {
+        Property property = PropertiesFactory.eINSTANCE.createProperty();
+        ProcessItem processItem = PropertiesFactory.eINSTANCE.createProcessItem();
+        processItem.setProperty(property);
+        return processItem;
+    }
+
+    private void createOperation(String newJobName, RepositoryNode target, CopyObjectAction copyObjectAction,
+            TreeSelection selectionInClipboard) {
+
+        Object currentSource = selectionInClipboard.toArray()[0];
+        try {
+            IPath path = RepositoryNodeUtilities.getPath(target);
+            IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+
+            if (((RepositoryNode) currentSource).getType().equals(ENodeType.REPOSITORY_ELEMENT)) {
+                Item originalItem = ((RepositoryNode) currentSource).getObject().getProperty().getItem();
+                String version = originalItem.getProperty().getVersion();
+                String name = originalItem.getProperty().getLabel();
+                if (resetProcessVersion()) {
+                    originalItem.getProperty().setVersion(JOB_INIT_VERSION);
+                }
+                originalItem.getProperty().setLabel(newJobName);
+                factory.copy(originalItem, path, false);
+                // restore originalItem
+                originalItem.getProperty().setLabel(name);
+                originalItem.getProperty().setVersion(version);
+            }
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
+        }
+    }
+
+    /**
+     * 
+     * DOC YeXiaowei Comment method "resetProcessVersion".
+     * 
+     * @return
+     */
+    protected boolean resetProcessVersion() {
+        return false;
     }
 }
