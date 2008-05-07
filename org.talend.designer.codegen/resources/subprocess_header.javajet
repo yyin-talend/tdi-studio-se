@@ -225,7 +225,7 @@ private class <%=conn.getName() %>Struct<%=templateOrigin %> implements routines
 	} // T SH 001
 	%>
     
-    public void <%= isLookup ? "loadKeys" : "read" %>Data(DataInputStream dis) {
+    public void <%= isLookup ? "readKeys" : "read" %>Data(DataInputStream dis) {
 
         try {
 
@@ -257,6 +257,15 @@ private class <%=conn.getName() %>Struct<%=templateOrigin %> implements routines
                				this.<%=column.getLabel() %> = new String(byteArray);
            				}
 					<%
+				} else if(typeToGenerate.equals("java.util.Date")) {
+					%>
+			            length = dis.readByte();
+           				if (length == -1) {
+           	    			this.<%=column.getLabel() %> = null;
+           				} else {
+           			    	this.<%=column.getLabel() %> = new Date(dis.readLong());
+           				}
+					<%
 				} else if(typeToGenerate.equals("byte[]")) {
 					%>
 			            length = dis.readInt();
@@ -266,15 +275,6 @@ private class <%=conn.getName() %>Struct<%=templateOrigin %> implements routines
                				byte[] byteArray = new byte[length];
                				dis.read(byteArray);
                				this.<%=column.getLabel() %> = byteArray;
-           				}
-					<%
-				} else if(typeToGenerate.equals("java.util.Date")) {
-					%>
-			            length = dis.readByte();
-           				if (length == -1) {
-           	    			this.<%=column.getLabel() %> = null;
-           				} else {
-           			    	this.<%=column.getLabel() %> = new Date(dis.readLong());
            				}
 					<%
 				} else if(typeToGenerate.equals("Object")) {
@@ -332,7 +332,7 @@ private class <%=conn.getName() %>Struct<%=templateOrigin %> implements routines
         
     }
 
-    public void <%= isLookup ? "toKeys" : "write" %>Data(DataOutputStream dos) {
+    public void <%= isLookup ? "writeKeys" : "write" %>Data(DataOutputStream dos) {
         try {
 
             ObjectOutputStream oos = null;
@@ -346,6 +346,9 @@ private class <%=conn.getName() %>Struct<%=templateOrigin %> implements routines
 				JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 				hasAtLeastOneWrite = true;
 			 	String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+				%>
+					// <%=typeToGenerate %>
+				<%
 				if (JavaTypesManager.isJavaPrimitiveType(column.getTalendType(), column.isNullable())) {
 					typeToGenerate=typeToGenerate.substring(0,1).toUpperCase()+typeToGenerate.substring(1);
 					%>
@@ -361,6 +364,14 @@ private class <%=conn.getName() %>Struct<%=templateOrigin %> implements routines
                				dos.write(byteArray);
 		            	}
 					<%
+				} else if(typeToGenerate.equals("java.util.Date")) {
+					%>
+						if(this.<%=column.getLabel() %> == null) {
+			                dos.writeInt(-1);
+						} else {
+           			    	dos.writeLong(this.<%=column.getLabel() %>.getTime());
+		            	}
+					<%
 				} else if(typeToGenerate.equals("byte[]")) {
 					%>
 						if(this.<%=column.getLabel() %> == null) {
@@ -368,14 +379,6 @@ private class <%=conn.getName() %>Struct<%=templateOrigin %> implements routines
 						} else {
            			    	dos.writeInt(this.<%=column.getLabel() %>.length);
                				dos.write(this.<%=column.getLabel() %>);
-		            	}
-					<%
-				} else if(typeToGenerate.equals("java.util.Date")) {
-					%>
-						if(this.<%=column.getLabel() %> == null) {
-			                dos.writeInt(-1);
-						} else {
-           			    	dos.writeLong(this.<%=column.getLabel() %>.getTime());
 		            	}
 					<%
 				} else if(typeToGenerate.equals("Object")) {
@@ -428,7 +431,7 @@ private class <%=conn.getName() %>Struct<%=templateOrigin %> implements routines
     /** 
      * Fill Values data by reading DataInputStream.
      */
-    public void loadValuesData(DataInputStream dis) {
+    public void readValuesData(DataInputStream dis) {
         try {
             
             ObjectInputStream ois = null;
@@ -526,7 +529,7 @@ private class <%=conn.getName() %>Struct<%=templateOrigin %> implements routines
     /** 
      * Return a byte array which represents Values data.
      */
-    public int toValuesData(DataOutputStream dos) {
+    public int writeValuesData(DataOutputStream dos) {
     	int previousSize = dos.size();
         try {
         

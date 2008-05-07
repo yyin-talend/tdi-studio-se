@@ -75,7 +75,8 @@
         List<IConnection> outputConnections = (List<IConnection>) node.getOutgoingConnections();
         ExternalMapperData data = (ExternalMapperData) node.getExternalData();
         String uniqueNameComponent = node.getUniqueName();
-        boolean checkingSyntax = codeGenArgument.isCheckingSyntax();
+        //boolean checkingSyntax = codeGenArgument.isCheckingSyntax();
+        boolean checkingSyntax = true;
 
 		//System.out.println("checkingSyntax=" + checkingSyntax + ", componentNameForKeyProblem=" + componentNameForKeyProblem);
 

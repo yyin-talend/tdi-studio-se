@@ -93,7 +93,7 @@
 				if(hashConfiguration != null && hashConfiguration.isPersistent()) {
 				%>
 					org.talend.designer.components.persistent.Persistent<%= isAllRows ? "" : "Sorted" %>LookupManager<<%=connectionName%>Struct> tHash_Lookup_<%=connectionName%> = 
-	   					new org.talend.designer.components.persistent.Persistent<%= isAllRows ? "" : "Sorted" %>LookupManager<<%=connectionName%>Struct>(matchingModeEnum_<%=connectionName%>, <%= tempFolder %> + "/Lookup_<%=connectionName%>_"
+	   					new org.talend.designer.components.persistent.Persistent<%= isAllRows ? "" : "Sorted" %>LookupManager<<%=connectionName%>Struct>(matchingModeEnum_<%=connectionName%>, <%= tempFolder %> + "/"+ jobName +"_tMapData_Lookup_<%=connectionName%>_"
 	   					, new org.talend.designer.components.persistent.IRowCreator() {
 	   						public <%=connectionName%>Struct createRowInstance() {
 	   							return new <%=connectionName%>Struct();

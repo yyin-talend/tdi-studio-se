@@ -442,16 +442,14 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
         }
     }
 
-    public void loadData(byte[] data) {
+		
+    public void readData(DataInputStream dis) {
 
-        ByteArrayInputStream bai = null;
-        DataInputStream dis = null;
-        byte[] byteArray = null;
         try {
-            bai = new ByteArrayInputStream(data);
-            dis = new DataInputStream(bai);
             
 			int length = 0;
+			
+			ObjectInputStream ois = null;            
 			
 			this.is__rejectedInnerJoin = dis.readBoolean();
 			
@@ -471,312 +469,10 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
 				JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 			 	String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
 			 	
-			 	if(typeToGenerate.equals("Object")) {
-			 		hasAtLeastOneObjectType = true;
-			 	}
-			 	
 				if (JavaTypesManager.isJavaPrimitiveType(column.getTalendType(), column.isNullable())) {
 					typeToGenerate=typeToGenerate.substring(0,1).toUpperCase()+typeToGenerate.substring(1);
 					%>
 			            this.<%= connection.getName() %>__<%= column.getLabel() %> = dis.read<%= typeToGenerate %>();
-					<%
-				} else if(typeToGenerate.equals("java.util.Date")) {
-					%>
-			            length = dis.readByte();
-           				if (length == -1) {
-           	    			this.<%= connection.getName() %>__<%= column.getLabel() %> = null;
-           				} else {
-           			    	this.<%= connection.getName() %>__<%= column.getLabel() %> = new Date(dis.readLong());
-           				}
-					<%
-				} else if(typeToGenerate.equals("String")) {
-					%>
-			            length = dis.readInt();
-           				if (length == -1) {
-           	    			this.<%= connection.getName() %>__<%= column.getLabel() %> = null;
-           				} else {
-               				byteArray = new byte[length];
-               				dis.read(byteArray);
-               				this.<%= connection.getName() %>__<%= column.getLabel() %> = new String(byteArray);
-           				}
-					<%
-				} else {
-					typeToGenerate =JavaTypesManager.getTypeToGenerate(column.getTalendType(), false);
-					typeToGenerate=typeToGenerate.substring(0,1).toUpperCase()+typeToGenerate.substring(1);
-					%>
-			            length = dis.readByte();
-           				if (length == -1) {
-           	    			this.<%= connection.getName() %>__<%= column.getLabel() %> = null;
-           				} else {
-           					this.<%= connection.getName() %>__<%= column.getLabel() %> = dis.read<%= typeToGenerate %>();
-           				}
-					<%
-				}
-
-
-                		}
-                	}
-                	%>
-                    <%
-                    sizeNextColumns = nextColumnsKeys.size();
-                    for (int iColumn = 0; iColumn < sizeNextColumns; iColumn++) { // T_TM_B_104
-                    	IMetadataColumn column = nextColumnsKeys.get(iColumn);
-
-			  	hasAtLeastOneRead = true;
-				JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
-			 	String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
-
-			 	if(typeToGenerate.equals("Object")) {
-			 		hasAtLeastOneObjectType = true;
-			 	}
-			 	
-				if (JavaTypesManager.isJavaPrimitiveType(column.getTalendType(), column.isNullable())) {
-					typeToGenerate=typeToGenerate.substring(0,1).toUpperCase()+typeToGenerate.substring(1);
-					%>
-			            this.exprKey_<%= nextInputTable.getName() %>__<%= column.getLabel() %> = dis.read<%= typeToGenerate %>();
-					<%
-				} else if(typeToGenerate.equals("java.util.Date")) {
-					%>
-			            length = dis.readByte();
-           				if (length == -1) {
-           	    			this.exprKey_<%= nextInputTable.getName() %>__<%= column.getLabel() %> = null;
-           				} else {
-           			    	this.exprKey_<%= nextInputTable.getName() %>__<%= column.getLabel() %> = new Date(dis.readLong());
-           				}
-					<%
-				} else if(typeToGenerate.equals("String")) {
-					%>
-			            length = dis.readInt();
-           				if (length == -1) {
-           	    			this.exprKey_<%= nextInputTable.getName() %>__<%= column.getLabel() %> = null;
-           				} else {
-               				byteArray = new byte[length];
-               				dis.read(byteArray);
-               				this.exprKey_<%= nextInputTable.getName() %>__<%= column.getLabel() %> = new String(byteArray);
-           				}
-					<%
-				} else {
-					typeToGenerate =JavaTypesManager.getTypeToGenerate(column.getTalendType(), false);
-					typeToGenerate=typeToGenerate.substring(0,1).toUpperCase()+typeToGenerate.substring(1);
-					%>
-			            length = dis.readByte();
-           				if (length == -1) {
-           	    			this.exprKey_<%= nextInputTable.getName() %>__<%= column.getLabel() %> = null;
-           				} else {
-           					this.exprKey_<%= nextInputTable.getName() %>__<%= column.getLabel() %> = dis.read<%= typeToGenerate %>();
-           				}
-					<%
-				}
-                    
-                    } // T_TM_B_104
-		
-		
-		
-
-
-
-    	}
-	    if(hasAtLeastOneRead) {
-	    %>
-        	} catch (IOException e) {
-	            throw new RuntimeException(e);
-        <%
-        }
-        %>
-
-		<%
-		if(hasAtLeastOneObjectType) {
-		%>
-			} catch(ClassNotFoundException eCNFE) {
-				 throw new RuntimeException(eCNFE);
-		<%
-		}
-		%>
-
-        } finally {
-            if (dis != null) {
-                try {
-                    dis.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
-    public byte[] toData() {
-        ByteArrayOutputStream bao = null;
-        DataOutputStream dos = null;
-        byte[] byteArray = null;
-        try {
-            bao = new ByteArrayOutputStream();
-            dos = new DataOutputStream(bao);
-
-           	dos.writeBoolean(this.is__rejectedInnerJoin);
-
-		<%	
-		boolean hasAtLeastOneWrite = false;
-		if (currentMetadataTable !=null) {
-			
-			
-		        	for(IConnection connection : cumulatedInputConnections) {
-		        	
-		        		IMetadataTable table = connection.getMetadataTable();
-						List<IMetadataColumn> listColumns = table.getListColumns();
-                    	for (IMetadataColumn column : listColumns) {
-				JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
-				hasAtLeastOneWrite = true;
-			 	String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
-				if (JavaTypesManager.isJavaPrimitiveType(column.getTalendType(), column.isNullable())) {
-					typeToGenerate=typeToGenerate.substring(0,1).toUpperCase()+typeToGenerate.substring(1);
-					%>
-		            	dos.write<%= typeToGenerate %>(this.<%= connection.getName() %>__<%= column.getLabel() %>);
-					<%
-				} else if(typeToGenerate.equals("String")) {
-					%>
-						if(this.<%= connection.getName() %>__<%= column.getLabel() %> == null) {
-			                dos.writeInt(-1);
-						} else {
-			                byteArray = this.<%= connection.getName() %>__<%= column.getLabel() %>.getBytes();
-           			    	dos.writeInt(byteArray.length);
-               				dos.write(byteArray);
-		            	}
-					<%
-				} else if(typeToGenerate.equals("java.util.Date")) {
-					%>
-						if(this.<%= connection.getName() %>__<%= column.getLabel() %> == null) {
-			                dos.writeInt(-1);
-						} else {
-           			    	dos.writeLong(this.<%= connection.getName() %>__<%= column.getLabel() %>.getTime());
-		            	}
-					<%
-				} else {
-					typeToGenerate =JavaTypesManager.getTypeToGenerate(column.getTalendType(), false);
-					typeToGenerate = typeToGenerate.substring(0,1).toUpperCase()+typeToGenerate.substring(1);
-					%>
-						if(this.<%= connection.getName() %>__<%= column.getLabel() %> == null) {
-			                dos.writeByte(-1);
-						} else {
-               				dos.writeByte(0);
-           			    	dos.write<%= typeToGenerate %>(this.<%= connection.getName() %>__<%= column.getLabel() %>);
-		            	}
-					<%
-				
-				}
-                		}
-                	}
-                	%>
-                    <%
-                    sizeNextColumns = nextColumnsKeys.size();
-                    for (int iColumn = 0; iColumn < sizeNextColumns; iColumn++) { // T_TM_B_104
-                    	IMetadataColumn column = nextColumnsKeys.get(iColumn);
-
-				JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
-				hasAtLeastOneWrite = true;
-			 	String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
-				if (JavaTypesManager.isJavaPrimitiveType(column.getTalendType(), column.isNullable())) {
-					typeToGenerate=typeToGenerate.substring(0,1).toUpperCase()+typeToGenerate.substring(1);
-					%>
-		            	dos.write<%= typeToGenerate %>(this.exprKey_<%= nextInputTable.getName() %>__<%= column.getLabel() %>);
-					<%
-				} else if(typeToGenerate.equals("String")) {
-					%>
-						if(this.exprKey_<%= nextInputTable.getName() %>__<%= column.getLabel() %> == null) {
-			                dos.writeInt(-1);
-						} else {
-			                byteArray = this.exprKey_<%= nextInputTable.getName() %>__<%= column.getLabel() %>.getBytes();
-           			    	dos.writeInt(byteArray.length);
-               				dos.write(byteArray);
-		            	}
-					<%
-				} else if(typeToGenerate.equals("java.util.Date")) {
-					%>
-						if(this.exprKey_<%= nextInputTable.getName() %>__<%= column.getLabel() %> == null) {
-			                dos.writeInt(-1);
-						} else {
-           			    	dos.writeLong(this.exprKey_<%= nextInputTable.getName() %>__<%= column.getLabel() %>.getTime());
-		            	}
-					<%
-				} else {
-					typeToGenerate =JavaTypesManager.getTypeToGenerate(column.getTalendType(), false);
-					typeToGenerate = typeToGenerate.substring(0,1).toUpperCase()+typeToGenerate.substring(1);
-					%>
-						if(this.exprKey_<%= nextInputTable.getName() %>__<%= column.getLabel() %> == null) {
-			                dos.writeByte(-1);
-						} else {
-               				dos.writeByte(0);
-           			    	dos.write<%= typeToGenerate %>(this.exprKey_<%= nextInputTable.getName() %>__<%= column.getLabel() %>);
-		            	}
-					<%
-				
-				}
-                    
-                    } // T_TM_B_104
-			
-			
-
-
-    	}
-	    if(hasAtLeastOneWrite) {
-	    %>
-        	} catch (IOException e) {
-	            throw new RuntimeException(e);
-        <%
-        }
-        %>
-        } finally {
-            if (dos != null) {
-                try {
-                    dos.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return bao.toByteArray();
-    }
-		
-    public void readData(DataInputStream dis) {
-
-        try {
-            
-			int length = 0;
-			
-			this.is__rejectedInnerJoin = dis.readBoolean();
-			
-		<%	
-		hasAtLeastOneRead = false;
-		hasAtLeastOneObjectType = false;
-		if (currentMetadataTable !=null) {
-		
-		        	for(IConnection connection : cumulatedInputConnections) {
-		        	
-		        	
-		        	
-		        		IMetadataTable table = connection.getMetadataTable();
-						List<IMetadataColumn> listColumns = table.getListColumns();
-                    	for (IMetadataColumn column : listColumns) {
-			  	hasAtLeastOneRead = true;
-				JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
-			 	String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
-			 	
-			 	if(typeToGenerate.equals("Object")) {
-			 		hasAtLeastOneObjectType = true;
-			 	}
-			 	
-				if (JavaTypesManager.isJavaPrimitiveType(column.getTalendType(), column.isNullable())) {
-					typeToGenerate=typeToGenerate.substring(0,1).toUpperCase()+typeToGenerate.substring(1);
-					%>
-			            this.<%= connection.getName() %>__<%= column.getLabel() %> = dis.read<%= typeToGenerate %>();
-					<%
-				} else if(typeToGenerate.equals("java.util.Date")) {
-					%>
-			            length = dis.readByte();
-           				if (length == -1) {
-           	    			this.<%= connection.getName() %>__<%= column.getLabel() %> = null;
-           				} else {
-           			    	this.<%= connection.getName() %>__<%= column.getLabel() %> = new Date(dis.readLong());
-           				}
 					<%
 				} else if(typeToGenerate.equals("String")) {
 					%>
@@ -789,6 +485,35 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
                				this.<%= connection.getName() %>__<%= column.getLabel() %> = new String(byteArray);
            				}
 					<%
+				} else if(typeToGenerate.equals("java.util.Date")) {
+					%>
+			            length = dis.readByte();
+           				if (length == -1) {
+           	    			this.<%= connection.getName() %>__<%= column.getLabel() %> = null;
+           				} else {
+           			    	this.<%= connection.getName() %>__<%= column.getLabel() %> = new Date(dis.readLong());
+           				}
+					<%
+				} else if(typeToGenerate.equals("byte[]")) {
+					%>
+			            length = dis.readInt();
+           				if (length == -1) {
+           	    			this.<%= connection.getName() %>__<%= column.getLabel() %> = null;
+           				} else {
+               				byte[] byteArray = new byte[length];
+               				dis.read(byteArray);
+               				this.<%= connection.getName() %>__<%= column.getLabel() %> = byteArray;
+           				}
+					<%
+				} else if(typeToGenerate.equals("Object")) {
+			 		hasAtLeastOneObjectType = true;
+					%>
+						if(ois == null) {
+							ois = new ObjectInputStream(dis);
+						}
+						this.<%= connection.getName() %>__<%= column.getLabel() %> = ois.readObject();
+					
+					<%
 				} else {
 					typeToGenerate =JavaTypesManager.getTypeToGenerate(column.getTalendType(), false);
 					typeToGenerate=typeToGenerate.substring(0,1).toUpperCase()+typeToGenerate.substring(1);
@@ -815,10 +540,6 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
 				JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 			 	String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
 
-			 	if(typeToGenerate.equals("Object")) {
-			 		hasAtLeastOneObjectType = true;
-			 	}
-			 	
 				if (JavaTypesManager.isJavaPrimitiveType(column.getTalendType(), column.isNullable())) {
 					typeToGenerate=typeToGenerate.substring(0,1).toUpperCase()+typeToGenerate.substring(1);
 					%>
@@ -839,10 +560,30 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
            				if (length == -1) {
            	    			this.exprKey_<%= nextInputTable.getName() %>__<%= column.getLabel() %> = null;
            				} else {
-               				byteArray = new byte[length];
+               				byte[] byteArray = new byte[length];
                				dis.read(byteArray);
                				this.exprKey_<%= nextInputTable.getName() %>__<%= column.getLabel() %> = new String(byteArray);
            				}
+					<%
+				} else if(typeToGenerate.equals("byte[]")) {
+					%>
+			            length = dis.readInt();
+           				if (length == -1) {
+           	    			this.exprKey_<%= nextInputTable.getName() %>__<%= column.getLabel() %> = null;
+           				} else {
+               				byte[] byteArray = new byte[length];
+               				dis.read(byteArray);
+               				this.exprKey_<%= nextInputTable.getName() %>__<%= column.getLabel() %> = byteArray;
+           				}
+					<%
+				} else if(typeToGenerate.equals("Object")) {
+			 		hasAtLeastOneObjectType = true;
+					%>
+						if(ois == null) {
+							ois = new ObjectInputStream(dis);
+						}
+           				this.exprKey_<%= nextInputTable.getName() %>__<%= column.getLabel() %> = ois.readObject();
+					
 					<%
 				} else {
 					typeToGenerate =JavaTypesManager.getTypeToGenerate(column.getTalendType(), false);
@@ -888,10 +629,12 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
     public void writeData(DataOutputStream dos) {
         try {
 
+            ObjectOutputStream oos = null;
+
            	dos.writeBoolean(this.is__rejectedInnerJoin);
 
 		<%	
-		hasAtLeastOneWrite = false;
+		boolean hasAtLeastOneWrite = false;
 		if (currentMetadataTable !=null) {
 			
 			
@@ -925,6 +668,22 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
 						} else {
            			    	dos.writeLong(this.<%= connection.getName() %>__<%= column.getLabel() %>.getTime());
 		            	}
+					<%
+				} else if(typeToGenerate.equals("byte[]")) {
+					%>
+						if(this.<%= connection.getName() %>__<%= column.getLabel() %> == null) {
+			                dos.writeInt(-1);
+						} else {
+           			    	dos.writeInt(this.<%= connection.getName() %>__<%= column.getLabel() %>.length);
+               				dos.write(this.<%= connection.getName() %>__<%= column.getLabel() %>);
+		            	}
+					<%
+				} else if(typeToGenerate.equals("Object")) {
+					%>
+						if(oos == null) {
+	           				oos = new ObjectOutputStream(dos);
+						}
+       			    	oos.writeObject(this.<%= connection.getName() %>__<%= column.getLabel() %>);
 					<%
 				} else {
 					typeToGenerate =JavaTypesManager.getTypeToGenerate(column.getTalendType(), false);
@@ -1010,7 +769,7 @@ for (int iInputTable = 0; iInputTable < sizeInputTables - 1; iInputTable++) { //
 
 	org.talend.designer.components.persistent.PersistentRowSorterIterator<SortableRow_<%= currentJoinedTableNames %>> fsi_<%= currentJoinedTableNames %> = 
 		new org.talend.designer.components.persistent.PersistentRowSorterIterator<SortableRow_<%= currentJoinedTableNames %>>(
-			<%= tempFolder %> + "/tMapData_<%= currentJoinedTableNames %>", <%= rowsBufferSize %>) {
+			<%= tempFolder %> + "/"+ jobName +"_tMapData_<%= currentJoinedTableNames %>", <%= rowsBufferSize %>) {
 			public SortableRow_<%= currentJoinedTableNames %> createRowInstance() {
 				return new SortableRow_<%= currentJoinedTableNames %>();
 			}
