@@ -1802,6 +1802,9 @@ public class EmfComponent implements IComponent {
         for (IMultipleComponentManager multipleComponentManager : multipleComponentManagers) {
             for (IMultipleComponentItem multipleComponentItem : multipleComponentManager.getItemList()) {
                 IComponent component = ComponentsFactoryProvider.getInstance().get(multipleComponentItem.getComponent());
+                if (component == null) {
+                    continue;
+                }
                 for (ModuleNeeded moduleNeeded : component.getModulesNeeded()) {
                     if (!moduleNames.contains(moduleNeeded.getModuleName())) {
                         ModuleNeeded componentImportNeeds = new ModuleNeeded(this.getName(), moduleNeeded.getModuleName(),
