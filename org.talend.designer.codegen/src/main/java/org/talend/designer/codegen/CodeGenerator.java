@@ -146,7 +146,7 @@ public class CodeGenerator implements ICodeGenerator {
                 printForDebug();
             }
 
-            processTree = new NodesTree(nodes, true);
+            processTree = new NodesTree(process, nodes, true);
             RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
                     Context.REPOSITORY_CONTEXT_KEY);
             language = repositoryContext.getProject().getLanguage();
@@ -743,7 +743,7 @@ public class CodeGenerator implements ICodeGenerator {
                 List<INode> lightProcessNodes = new ArrayList<INode>();
                 lightProcessNodes.add(node);
 
-                NodesTree lightProcess = new NodesTree(lightProcessNodes, false);
+                NodesTree lightProcess = new NodesTree(process, lightProcessNodes, false);
                 lightProcess.addRootNode(node);
                 lightProcess.buildSubTrees(false);
 

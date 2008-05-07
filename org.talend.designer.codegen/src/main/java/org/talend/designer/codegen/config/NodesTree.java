@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.talend.core.model.process.INode;
+import org.talend.core.model.process.IProcess;
 
 /**
  * A NodesTree is the Code Gerator Implementation of a process. A NodesTree is built using the Nodes of the Process.
@@ -33,22 +34,21 @@ public class NodesTree {
     private List<INode> rootNodes;
 
     /**
-     * Constuctor for NodesTree.
-     * Note: the param init=false, when it is called in generateComponentCodeWithRows(). 
+     * Constuctor for NodesTree. Note: the param init=false, when it is called in generateComponentCodeWithRows().
+     * 
      * @param List of Available Nodes in this tree.
      * @param execute init method or not
      */
-    public NodesTree(List<? extends INode> treeNodes, boolean init) {
+    public NodesTree(IProcess process, List<? extends INode> treeNodes, boolean init) {
         this.nodes = treeNodes;
-        buildRootNodes();
+        buildRootNodes(process);
         if (init) {
             buildSubTrees(true);
         }
     }
 
     /**
-     * Build SubTrees List.
-     * Note: the param init=false, when it is called in generateComponentCodeWithRows().
+     * Build SubTrees List. Note: the param init=false, when it is called in generateComponentCodeWithRows().
      */
     public void buildSubTrees(boolean init) {
         subTrees = new ArrayList<NodesSubTree>();
@@ -56,7 +56,7 @@ public class NodesTree {
             if (((node.isSubProcessStart()) && (node.isActivate())) || (rootNodes.contains(node))) {
 
                 // need to unite the merge branches to one subStree
-                if (node.isThereLinkWithMerge()&& init) {
+                if (node.isThereLinkWithMerge() && init) {
 
                     Map<INode, Integer> mergeInfo = node.getLinkedMergeInfo();
                     if (mergeInfo != null && mergeInfo.values().toArray()[0].equals(1)) {
@@ -78,10 +78,28 @@ public class NodesTree {
      * 
      * @return
      */
-    public void buildRootNodes() {
+    @SuppressWarnings("unchecked")
+    public void buildRootNodes(IProcess process) {
         rootNodes = new ArrayList<INode>();
+
+        List<INode> preJobsNode = (List<INode>) process.getNodesOfType("tPrejob");
+        for (INode node : preJobsNode) {
+            if (node.isActivate()) {
+                rootNodes.add(node);
+            }
+        }
+
         for (INode node : nodes) {
-            if ((node.isStart()) && (node.isActivate())) {
+            String componentName = node.getComponent().getName();
+            if ((node.isStart()) && (node.isActivate()) && (!componentName.equals("tPrejob"))
+                    && (!componentName.equals("tPostjob"))) {
+                rootNodes.add(node);
+            }
+        }
+
+        List<INode> postJobsNode = (List<INode>) process.getNodesOfType("tPostjob");
+        for (INode node : postJobsNode) {
+            if (node.isActivate()) {
                 rootNodes.add(node);
             }
         }
