@@ -16,14 +16,24 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IEditorReference;
+import org.eclipse.ui.ISaveablePart2;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.internal.WorkbenchMessages;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.EImage;
@@ -95,6 +105,9 @@ public class DuplicateAction extends AContextualAction {
 
         TreeSelection selectionInClipboard = (TreeSelection) selection;
 
+        // see feature 0001563: Display "Save job" prompt when "copy" action for a job is requested.
+        promptForSavingIfNecessary();
+
         while (true) {
             isOk = openInputNameDialog();
             if (!isOk) {
@@ -112,6 +125,62 @@ public class DuplicateAction extends AContextualAction {
         }
         createOperation(target, copyObjectAction, selectionInClipboard);
         refresh();
+    }
+
+    /**
+     * see feature 0001563: Display "Save job" prompt when "copy" action for a job is requested.
+     */
+    private void promptForSavingIfNecessary() {
+        try {
+            IEditorReference[] references = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+                    .getEditorReferences();
+            if (references == null || references.length == 0) {
+                return;
+            }
+
+            RepositoryNode selectedNode = (RepositoryNode) selection.getFirstElement();
+            String label = selectedNode.getObject().getProperty().getLabel();
+
+            for (int i = 0; i < references.length; i++) {
+                IEditorPart part = references[i].getEditor(false);
+                // find unsaved dialog
+                if (part == null || part.isDirty() == false) {
+                    continue;
+                }
+
+                IEditorInput input = part.getEditorInput();
+
+                if (label.equals(input.getName())) {
+                    // we have found an unsaved editor that matches the selected repository node
+                    if (promptForSavingDialog(part) == ISaveablePart2.YES) {
+                        part.doSave(new NullProgressMonitor());
+                    }
+                }
+            }
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
+        }
+    }
+
+    /**
+     * Display a prompt dialog to ask the user if we should save the job before duplicating.
+     * 
+     * @param part
+     * @return
+     */
+    @SuppressWarnings("restriction")
+    private int promptForSavingDialog(IEditorPart part) {
+        String[] buttons = new String[] { IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL };
+        String message = NLS.bind(WorkbenchMessages.EditorManager_saveChangesQuestion, part.getTitle());
+        Dialog dialog = new MessageDialog(Display.getCurrent().getActiveShell(), WorkbenchMessages.Save_Resource, null, message,
+                MessageDialog.QUESTION, buttons, 0) {
+
+            @Override
+            protected int getShellStyle() {
+                return SWT.NONE | SWT.TITLE | SWT.BORDER | SWT.APPLICATION_MODAL | getDefaultOrientation();
+            }
+        };
+        return dialog.open();
     }
 
     /**
